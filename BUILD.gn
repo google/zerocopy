@@ -1,0 +1,41 @@
+# Copyright 2018 The Fuchsia Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/rust/rustc_library.gni")
+import("//build/test/test_package.gni")
+
+rustc_library("zerocopy") {
+  name = "zerocopy"
+  version = "0.1.0"
+  edition = "2018"
+
+  with_unit_tests = true
+
+  deps = [
+    "//src/lib/zerocopy/zerocopy-derive",
+    "//third_party/rust_crates:byteorder",
+    "//third_party/rust_crates:rand",
+  ]
+}
+
+unittest_package("zerocopy_tests") {
+  deps = [
+    ":zerocopy_test",
+  ]
+
+  tests = [
+    {
+      name = "zerocopy_lib_test"
+      environments = basic_envs
+    },
+  ]
+}
+
+group("tests") {
+  testonly = true
+
+  deps = [
+    ":zerocopy_tests",
+  ]
+}

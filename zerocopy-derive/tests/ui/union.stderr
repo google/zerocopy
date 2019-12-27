@@ -1,0 +1,26 @@
+error: unexpected unsupported untagged union
+  --> $DIR/union.rs:11:1
+   |
+11 | union Foo {}
+   | ^^^^^^^^^^^^
+
+error: unexpected unsupported untagged union
+  --> $DIR/union.rs:14:1
+   |
+14 | union Bar {}
+   | ^^^^^^^^^^^^
+
+error: unions cannot have zero fields
+  --> $DIR/union.rs:11:1
+   |
+11 | union Foo {}
+   | ^^^^^^^^^^^^
+
+error: unions cannot have zero fields
+  --> $DIR/union.rs:14:1
+   |
+14 | union Bar {}
+   | ^^^^^^^^^^^^
+
+error: aborting due to 4 previous errors
+

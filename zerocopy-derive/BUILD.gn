@@ -1,0 +1,16 @@
+# Copyright 2019 The Fuchsia Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/rust/rustc_macro.gni")
+
+rustc_macro("zerocopy-derive") {
+  version = "0.1.0"
+  edition = "2018"
+
+  deps = [
+    "//third_party/rust_crates:proc-macro2",
+    "//third_party/rust_crates:syn",
+    "//third_party/rust_crates:synstructure",
+  ]
+}
