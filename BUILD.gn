@@ -20,9 +20,7 @@ rustc_library("zerocopy") {
 }
 
 unittest_package("zerocopy_tests") {
-  deps = [
-    ":zerocopy_test",
-  ]
+  deps = [ ":zerocopy_test" ]
 
   tests = [
     {
@@ -35,7 +33,5 @@ unittest_package("zerocopy_tests") {
 group("tests") {
   testonly = true
 
-  deps = [
-    ":zerocopy_tests",
-  ]
+  deps = [ ":zerocopy_tests" ]
 }
