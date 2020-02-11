@@ -131,8 +131,6 @@ macro_rules! impl_for_array_sizes {
 /// If a type has the following properties, then it is safe to implement
 /// `FromBytes` for that type:
 /// - If the type is a struct:
-///   - It must have a defined representation (`repr(C)`, `repr(transparent)`,
-///     or `repr(packed)`)
 ///   - All of its fields must implement `FromBytes`
 /// - If the type is an enum:
 ///   - It must be a C-like enum (meaning that all variants have no fields)
@@ -142,6 +140,31 @@ macro_rules! impl_for_array_sizes {
 ///     bit pattern is a valid one). Be very careful when using the `C`,
 ///     `usize`, or `isize` representations, as their size is
 ///     platform-dependent.
+///
+/// # Rationale
+///
+/// ## Why isn't an explicit representation required for structs?
+///
+/// Per the [Rust reference](reference),
+/// > The representation of a type can change the padding between fields, but
+/// does not change the layout of the fields themselves.
+///
+/// [reference]: https://doc.rust-lang.org/reference/type-layout.html#representations
+///
+/// Since the layout of structs only consists of padding bytes and field bytes,
+/// a struct is soundly `FromBytes` if:
+/// 1. its padding is soundly `FromBytes`, and
+/// 2. its fields are soundly `FromBytes`.
+///
+/// The answer to the first question is always yes: padding bytes do not have
+/// any validity constraints. A [discussion] of this question in the Unsafe Code
+/// Guidelines Working Group concluded that it would be virtually unimaginable
+/// for future versions of rustc to add validity constraints to padding bytes.
+///
+/// [discussion]: https://github.com/rust-lang/unsafe-code-guidelines/issues/174
+///
+/// Whether a struct is soundly `FromBytes` therefore solely depends on whether
+/// its fields are `FromBytes`.
 pub unsafe trait FromBytes {
     // NOTE: The Self: Sized bound makes it so that FromBytes is still object
     // safe.

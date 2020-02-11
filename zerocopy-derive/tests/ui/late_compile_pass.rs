@@ -16,7 +16,6 @@ fn main() {}
 //
 
 #[derive(FromBytes)]
-#[repr(C)]
 struct FromBytes1 {
     not_from_bytes: &'static str,
 }

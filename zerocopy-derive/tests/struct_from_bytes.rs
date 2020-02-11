@@ -21,48 +21,29 @@ macro_rules! is_from_bytes {
 }
 
 // A struct is FromBytes if:
-// - repr(C) or repr(transparent)
 // - all fields are FromBytes
 
 #[derive(FromBytes)]
-#[repr(C)]
-struct CZst;
+struct Zst;
 
-is_from_bytes!(CZst);
+is_from_bytes!(Zst);
 
 #[derive(FromBytes)]
-#[repr(C)]
-struct C {
+struct One {
     a: u8,
 }
 
-is_from_bytes!(C);
+is_from_bytes!(One);
 
 #[derive(FromBytes)]
-#[repr(transparent)]
-struct Transparent {
+struct Two {
     a: u8,
-    b: CZst,
+    b: Zst,
 }
 
-is_from_bytes!(Transparent);
+is_from_bytes!(Two);
 
 #[derive(FromBytes)]
-#[repr(C, packed)]
-struct CZstPacked;
-
-is_from_bytes!(CZstPacked);
-
-#[derive(FromBytes)]
-#[repr(C, packed)]
-struct CPacked {
-    a: u8,
-}
-
-is_from_bytes!(CPacked);
-
-#[derive(FromBytes)]
-#[repr(C)]
 struct TypeParams<'a, T, I: Iterator> {
     a: T,
     c: I::Item,

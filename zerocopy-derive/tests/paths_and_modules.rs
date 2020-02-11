@@ -12,13 +12,11 @@ mod foo {
     use zerocopy::FromBytes;
 
     #[derive(FromBytes)]
-    #[repr(C, align(8))]
     pub struct Foo {
         foo: u8,
     }
 
     #[derive(FromBytes)]
-    #[repr(C)]
     pub struct Bar {
         bar: u8,
     }
@@ -27,7 +25,6 @@ mod foo {
 use foo::Foo;
 
 #[derive(FromBytes)]
-#[repr(C)]
 struct Baz {
     foo: Foo,
     bar: foo::Bar,

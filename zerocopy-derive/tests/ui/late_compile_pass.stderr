@@ -2,43 +2,55 @@ error[E0277]: the trait bound `&'static str: zerocopy::FromBytes` is not satisfi
   --> $DIR/late_compile_pass.rs:18:10
    |
 18 | #[derive(FromBytes)]
+   |          ^^^^^^^^^ the trait `zerocopy::FromBytes` is not implemented for `&'static str`
+   |
+note: required by `<FromBytes1 as zerocopy::FromBytes>::only_derive_is_allowed_to_implement_this_trait::ImplementsFromBytes`
+  --> $DIR/late_compile_pass.rs:18:10
+   |
+18 | #[derive(FromBytes)]
    |          ^^^^^^^^^
-   |          |
-   |          the trait `zerocopy::FromBytes` is not implemented for `&'static str`
-   |          required by `<FromBytes1 as zerocopy::FromBytes>::only_derive_is_allowed_to_implement_this_trait::ImplementsFromBytes`
 
 error[E0080]: evaluation of constant value failed
-  --> $DIR/late_compile_pass.rs:28:10
+  --> $DIR/late_compile_pass.rs:27:10
    |
-28 | #[derive(AsBytes)]
+27 | #[derive(AsBytes)]
    |          ^^^^^^^ attempt to divide by zero
 
 error[E0277]: the trait bound `u16: zerocopy::Unaligned` is not satisfied
-  --> $DIR/late_compile_pass.rs:40:10
+  --> $DIR/late_compile_pass.rs:39:10
    |
-40 | #[derive(Unaligned)]
+39 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `u16`
+   |
+note: required by `<Unaligned1 as zerocopy::Unaligned>::only_derive_is_allowed_to_implement_this_trait::ImplementsUnaligned`
+  --> $DIR/late_compile_pass.rs:39:10
+   |
+39 | #[derive(Unaligned)]
    |          ^^^^^^^^^
-   |          |
-   |          the trait `zerocopy::Unaligned` is not implemented for `u16`
-   |          required by `<Unaligned1 as zerocopy::Unaligned>::only_derive_is_allowed_to_implement_this_trait::ImplementsUnaligned`
 
 error[E0277]: the trait bound `u16: zerocopy::Unaligned` is not satisfied
-  --> $DIR/late_compile_pass.rs:48:10
+  --> $DIR/late_compile_pass.rs:47:10
    |
-48 | #[derive(Unaligned)]
+47 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `u16`
+   |
+note: required by `<Unaligned2 as zerocopy::Unaligned>::only_derive_is_allowed_to_implement_this_trait::ImplementsUnaligned`
+  --> $DIR/late_compile_pass.rs:47:10
+   |
+47 | #[derive(Unaligned)]
    |          ^^^^^^^^^
-   |          |
-   |          the trait `zerocopy::Unaligned` is not implemented for `u16`
-   |          required by `<Unaligned2 as zerocopy::Unaligned>::only_derive_is_allowed_to_implement_this_trait::ImplementsUnaligned`
 
 error[E0277]: the trait bound `u16: zerocopy::Unaligned` is not satisfied
-  --> $DIR/late_compile_pass.rs:55:10
+  --> $DIR/late_compile_pass.rs:54:10
    |
-55 | #[derive(Unaligned)]
+54 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `u16`
+   |
+note: required by `<Unaligned3 as zerocopy::Unaligned>::only_derive_is_allowed_to_implement_this_trait::ImplementsUnaligned`
+  --> $DIR/late_compile_pass.rs:54:10
+   |
+54 | #[derive(Unaligned)]
    |          ^^^^^^^^^
-   |          |
-   |          the trait `zerocopy::Unaligned` is not implemented for `u16`
-   |          required by `<Unaligned3 as zerocopy::Unaligned>::only_derive_is_allowed_to_implement_this_trait::ImplementsUnaligned`
 
 error: aborting due to 5 previous errors
 

@@ -75,35 +75,11 @@ macro_rules! try_or_print {
 }
 
 // A struct is FromBytes if:
-// - repr(C), repr(transparent) or repr(packed)
 // - all fields are FromBytes
 
 fn derive_from_bytes_struct(s: &Structure<'_>, strct: &DataStruct) -> proc_macro2::TokenStream {
-    // We only need to validate that the repr is either repr(C),
-    // repr(transparent), or repr(packed), possibly with a repr(align(N)); we
-    // don't care which.
-    try_or_print!(STRUCT_FROM_BYTES_CFG.validate_reprs(s.ast()));
-
     impl_block(s.ast(), strct, "FromBytes", true, false)
 }
-
-#[rustfmt::skip]
-const STRUCT_FROM_BYTES_CFG: Config<StructRepr> = {
-    use StructRepr::*;
-    Config {
-        // NOTE: Since disallowed_but_legal_combinations is empty, this message
-        // will never actually be emitted.
-        allowed_combinations_message: r#"FromBytes requires repr of "C", "transparent", or "packed""#,
-        derive_unaligned: false,
-        allowed_combinations: &[
-            &[C],
-            &[Transparent],
-            &[C, Packed],
-            &[Packed],
-        ],
-        disallowed_but_legal_combinations: &[],
-    }
-};
 
 // An enum is FromBytes if:
 // - Every possible bit pattern must be valid, which means that every bit
@@ -600,7 +576,6 @@ mod tests {
                 && elements_are_sorted_and_deduped(&config.disallowed_but_legal_combinations)
         }
 
-        assert!(config_is_sorted(&STRUCT_FROM_BYTES_CFG));
         assert!(config_is_sorted(&STRUCT_UNALIGNED_CFG));
         assert!(config_is_sorted(&ENUM_FROM_BYTES_CFG));
         assert!(config_is_sorted(&ENUM_UNALIGNED_CFG));
@@ -619,7 +594,6 @@ mod tests {
             overlap(config.allowed_combinations, config.disallowed_but_legal_combinations)
         }
 
-        assert!(!config_overlaps(&STRUCT_FROM_BYTES_CFG));
         assert!(!config_overlaps(&STRUCT_UNALIGNED_CFG));
         assert!(!config_overlaps(&ENUM_FROM_BYTES_CFG));
         assert!(!config_overlaps(&ENUM_UNALIGNED_CFG));

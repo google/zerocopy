@@ -15,7 +15,6 @@ use std::option::IntoIter;
 use _zerocopy::FromBytes;
 
 #[derive(FromBytes)]
-#[repr(C)]
 struct TypeParams<'a, T, I: Iterator> {
     a: T,
     c: I::Item,
