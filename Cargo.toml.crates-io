@@ -7,7 +7,7 @@
 [package]
 edition = "2018"
 name = "zerocopy"
-version = "0.2.8"
+version = "0.3.0"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Utilities for zero-copy parsing and serialization"
 license = "BSD-3-Clause"
@@ -16,7 +16,7 @@ repository = "https://fuchsia.googlesource.com/fuchsia/+/master/src/lib/zerocopy
 include = ["src/*", "Cargo.toml", "LICENSE"]
 
 [dependencies]
-zerocopy-derive = { version = "0.1.4" }
+zerocopy-derive = { version = "0.2.0" }
 
 [dependencies.byteorder]
 version = "1.3"
