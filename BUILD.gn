@@ -33,5 +33,8 @@ unittest_package("zerocopy_tests") {
 group("tests") {
   testonly = true
 
-  deps = [ ":zerocopy_tests" ]
+  deps = [
+    ":zerocopy_tests",
+    "zerocopy-derive:tests",
+  ]
 }

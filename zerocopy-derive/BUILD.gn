@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 
 import("//build/rust/rustc_macro.gni")
+import("//build/rust/rustc_test.gni")
 
 rustc_macro("zerocopy-derive") {
   version = "0.1.0"
@@ -13,4 +14,22 @@ rustc_macro("zerocopy-derive") {
     "//third_party/rust_crates:syn",
     "//third_party/rust_crates:synstructure",
   ]
+}
+
+group("tests") {
+  testonly = true
+  deps = [ ":zerocopy-derive-test($host_toolchain)" ]
+}
+
+if (is_host) {
+  rustc_test("zerocopy-derive-test") {
+    version = "0.1.0"
+    edition = "2018"
+
+    deps = [
+      "//third_party/rust_crates:proc-macro2",
+      "//third_party/rust_crates:syn",
+      "//third_party/rust_crates:synstructure",
+    ]
+  }
 }
