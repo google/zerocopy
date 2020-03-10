@@ -25,4 +25,4 @@ synstructure = "0.12.1"
 
 [dev-dependencies]
 zerocopy = { path = "../" }
-compiletest_rs = "=0.3.22"
+compiletest_rs = "0.3"
