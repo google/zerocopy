@@ -32,3 +32,11 @@ struct Unaligned2 {
 #[derive(Unaligned)]
 #[repr(packed, align(2))]
 struct Unaligned3;
+
+#[derive(Unaligned)]
+#[repr(align(1), align(2))]
+struct Unaligned4;
+
+#[derive(Unaligned)]
+#[repr(align(2), align(4))]
+struct Unaligned5;

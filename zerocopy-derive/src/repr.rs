@@ -5,6 +5,7 @@
 use core::fmt::{self, Display, Formatter};
 
 use proc_macro2::Span;
+use syn::spanned::Spanned;
 use syn::{Attribute, DeriveInput, Error, Lit, Meta, NestedMeta};
 
 pub struct Config<Repr: KindRepr> {
@@ -39,33 +40,51 @@ impl<R: KindRepr> Config<R> {
     /// whether `align` attributes are considered during validation, they are
     /// stripped out of the returned value since no callers care about them.
     pub fn validate_reprs(&self, input: &DeriveInput) -> Result<Vec<R>, Vec<Error>> {
-        let mut reprs = reprs(&input.attrs)?;
-        reprs.sort();
+        let mut metas_reprs = reprs(&input.attrs)?;
+        metas_reprs.sort_by(|a: &(NestedMeta, R), b| a.1.partial_cmp(&b.1).unwrap());
 
-        if self.derive_unaligned && reprs.iter().any(KindRepr::is_align_gt_one) {
-            // TODO(joshlf): Have the span correspond just to the attributes
-            // instead of the entire input.
-            return Err(vec![Error::new_spanned(
-                input,
-                "cannot derive Unaligned with repr(align(N > 1))",
-            )]);
+        if self.derive_unaligned {
+            match metas_reprs.iter().find(|&repr: &&(NestedMeta, R)| repr.1.is_align_gt_one()) {
+                Some((meta, _)) => {
+                    return Err(vec![Error::new_spanned(
+                        meta,
+                        "cannot derive Unaligned with repr(align(N > 1))",
+                    )])
+                }
+                None => (),
+            }
         }
-        reprs.retain(|repr: &R| !repr.is_align());
+
+        let mut metas = Vec::new();
+        let mut reprs = Vec::new();
+        metas_reprs.into_iter().filter(|(_, repr)| !repr.is_align()).for_each(|(meta, repr)| {
+            metas.push(meta);
+            reprs.push(repr)
+        });
 
         if reprs.is_empty() {
             // Use Span::call_site to report this error on the #[derive(...)]
             // itself.
-            Err(vec![Error::new(Span::call_site(), "must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout")])
-        } else if self.allowed_combinations.contains(&reprs.as_slice()) {
+            return Err(vec![Error::new(Span::call_site(), "must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout")]);
+        }
+
+        let initial_sp = metas[0].span();
+        let err_span = metas.iter().skip(1).fold(Some(initial_sp), |sp_option, meta| {
+            sp_option.and_then(|sp| sp.join(meta.span()))
+        });
+
+        if self.allowed_combinations.contains(&reprs.as_slice()) {
             Ok(reprs)
         } else if self.disallowed_but_legal_combinations.contains(&reprs.as_slice()) {
-            // TODO(joshlf): Have the span correspond just to the attributes
-            // instead of the entire input.
-            Err(vec![Error::new_spanned(input, self.allowed_combinations_message)])
+            Err(vec![Error::new(
+                err_span.unwrap_or(input.span()),
+                self.allowed_combinations_message,
+            )])
         } else {
-            // TODO(joshlf): Have the span correspond just to the attributes
-            // instead of the entire input.
-            Err(vec![Error::new_spanned(input, "conflicting representation hints")])
+            Err(vec![Error::new(
+                err_span.unwrap_or(input.span()),
+                "conflicting representation hints",
+            )])
         }
     }
 }
@@ -227,7 +246,7 @@ impl Display for Repr {
     }
 }
 
-fn reprs<R: KindRepr>(attrs: &[Attribute]) -> Result<Vec<R>, Vec<Error>> {
+fn reprs<R: KindRepr>(attrs: &[Attribute]) -> Result<Vec<(NestedMeta, R)>, Vec<Error>> {
     let mut reprs = Vec::new();
     let mut errors = Vec::new();
     for attr in attrs {
@@ -240,7 +259,7 @@ fn reprs<R: KindRepr>(attrs: &[Attribute]) -> Result<Vec<R>, Vec<Error>> {
                 if meta_list.path.is_ident("repr") {
                     for nested_meta in &meta_list.nested {
                         match R::parse(nested_meta) {
-                            Ok(repr) => reprs.push(repr),
+                            Ok(repr) => reprs.push((nested_meta.clone(), repr)),
                             Err(err) => errors.push(err),
                         }
                     }

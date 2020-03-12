@@ -5,27 +5,34 @@ error: unsupported on types with type parameters
    |          ^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> $DIR/struct.rs:23:1
+  --> $DIR/struct.rs:23:11
    |
-23 | / #[repr(C, align(2))]
-24 | | struct Unaligned1;
-   | |__________________^
+23 | #[repr(C, align(2))]
+   |           ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> $DIR/struct.rs:27:1
+  --> $DIR/struct.rs:27:21
    |
-27 | / #[repr(transparent, align(2))]
-28 | | struct Unaligned2 {
-29 | |     foo: u8,
-30 | | }
-   | |_^
+27 | #[repr(transparent, align(2))]
+   |                     ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> $DIR/struct.rs:33:1
+  --> $DIR/struct.rs:33:16
    |
-33 | / #[repr(packed, align(2))]
-34 | | struct Unaligned3;
-   | |__________________^
+33 | #[repr(packed, align(2))]
+   |                ^^^^^^^^
+
+error: cannot derive Unaligned with repr(align(N > 1))
+  --> $DIR/struct.rs:37:18
+   |
+37 | #[repr(align(1), align(2))]
+   |                  ^^^^^^^^
+
+error: cannot derive Unaligned with repr(align(N > 1))
+  --> $DIR/struct.rs:41:8
+   |
+41 | #[repr(align(2), align(4))]
+   |        ^^^^^^^^
 
 error[E0692]: transparent struct cannot have other repr hints
   --> $DIR/struct.rs:27:8
@@ -39,6 +46,7 @@ error[E0587]: type has conflicting packed and align representation hints
 34 | struct Unaligned3;
    | ^^^^^^^^^^^^^^^^^^
 
-error: aborting due to 6 previous errors
+error: aborting due to 8 previous errors
 
-For more information about this error, try `rustc --explain E0692`.
+Some errors have detailed explanations: E0587, E0692.
+For more information about an error, try `rustc --explain E0587`.

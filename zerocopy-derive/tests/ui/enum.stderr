@@ -17,13 +17,10 @@ error: unsupported representation for deriving FromBytes, AsBytes, or Unaligned 
    |        ^^^^^^^^^^^
 
 error: conflicting representation hints
-  --> $DIR/enum.rs:33:1
+  --> $DIR/enum.rs:33:8
    |
-33 | / #[repr(u8, u16)]
-34 | | enum Generic4 {
-35 | |     A,
-36 | | }
-   | |_^
+33 | #[repr(u8, u16)]
+   |        ^^^^^^^
 
 error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
   --> $DIR/enum.rs:38:10
@@ -32,166 +29,124 @@ error: must have a non-align #[repr(...)] attribute in order to guarantee this t
    |          ^^^^^^^^^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-  --> $DIR/enum.rs:48:1
+  --> $DIR/enum.rs:48:8
    |
-48 | / #[repr(C)]
-49 | | enum FromBytes1 {
-50 | |     A,
-51 | | }
-   | |_^
+48 | #[repr(C)]
+   |        ^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-  --> $DIR/enum.rs:54:1
+  --> $DIR/enum.rs:54:8
    |
-54 | / #[repr(usize)]
-55 | | enum FromBytes2 {
-56 | |     A,
-57 | | }
-   | |_^
+54 | #[repr(usize)]
+   |        ^^^^^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-  --> $DIR/enum.rs:60:1
+  --> $DIR/enum.rs:60:8
    |
-60 | / #[repr(isize)]
-61 | | enum FromBytes3 {
-62 | |     A,
-63 | | }
-   | |_^
+60 | #[repr(isize)]
+   |        ^^^^^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-  --> $DIR/enum.rs:66:1
+  --> $DIR/enum.rs:66:8
    |
-66 | / #[repr(u32)]
-67 | | enum FromBytes4 {
-68 | |     A,
-69 | | }
-   | |_^
+66 | #[repr(u32)]
+   |        ^^^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-  --> $DIR/enum.rs:72:1
+  --> $DIR/enum.rs:72:8
    |
-72 | / #[repr(i32)]
-73 | | enum FromBytes5 {
-74 | |     A,
-75 | | }
-   | |_^
+72 | #[repr(i32)]
+   |        ^^^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-  --> $DIR/enum.rs:78:1
+  --> $DIR/enum.rs:78:8
    |
-78 | / #[repr(u64)]
-79 | | enum FromBytes6 {
-80 | |     A,
-81 | | }
-   | |_^
+78 | #[repr(u64)]
+   |        ^^^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-  --> $DIR/enum.rs:84:1
+  --> $DIR/enum.rs:84:8
    |
-84 | / #[repr(i64)]
-85 | | enum FromBytes7 {
-86 | |     A,
-87 | | }
-   | |_^
+84 | #[repr(i64)]
+   |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-  --> $DIR/enum.rs:94:1
+  --> $DIR/enum.rs:94:8
    |
-94 | / #[repr(C)]
-95 | | enum Unaligned1 {
-96 | |     A,
-97 | | }
-   | |_^
+94 | #[repr(C)]
+   |        ^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> $DIR/enum.rs:100:1
+   --> $DIR/enum.rs:100:8
     |
-100 | / #[repr(u16)]
-101 | | enum Unaligned2 {
-102 | |     A,
-103 | | }
-    | |_^
+100 | #[repr(u16)]
+    |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> $DIR/enum.rs:106:1
+   --> $DIR/enum.rs:106:8
     |
-106 | / #[repr(i16)]
-107 | | enum Unaligned3 {
-108 | |     A,
-109 | | }
-    | |_^
+106 | #[repr(i16)]
+    |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> $DIR/enum.rs:112:1
+   --> $DIR/enum.rs:112:8
     |
-112 | / #[repr(u32)]
-113 | | enum Unaligned4 {
-114 | |     A,
-115 | | }
-    | |_^
+112 | #[repr(u32)]
+    |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> $DIR/enum.rs:118:1
+   --> $DIR/enum.rs:118:8
     |
-118 | / #[repr(i32)]
-119 | | enum Unaligned5 {
-120 | |     A,
-121 | | }
-    | |_^
+118 | #[repr(i32)]
+    |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> $DIR/enum.rs:124:1
+   --> $DIR/enum.rs:124:8
     |
-124 | / #[repr(u64)]
-125 | | enum Unaligned6 {
-126 | |     A,
-127 | | }
-    | |_^
+124 | #[repr(u64)]
+    |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> $DIR/enum.rs:130:1
+   --> $DIR/enum.rs:130:8
     |
-130 | / #[repr(i64)]
-131 | | enum Unaligned7 {
-132 | |     A,
-133 | | }
-    | |_^
+130 | #[repr(i64)]
+    |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> $DIR/enum.rs:136:1
+   --> $DIR/enum.rs:136:8
     |
-136 | / #[repr(usize)]
-137 | | enum Unaligned8 {
-138 | |     A,
-139 | | }
-    | |_^
+136 | #[repr(usize)]
+    |        ^^^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> $DIR/enum.rs:142:1
+   --> $DIR/enum.rs:142:8
     |
-142 | / #[repr(isize)]
-143 | | enum Unaligned9 {
-144 | |     A,
-145 | | }
-    | |_^
+142 | #[repr(isize)]
+    |        ^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> $DIR/enum.rs:148:1
+   --> $DIR/enum.rs:148:12
     |
-148 | / #[repr(u8, align(2))]
-149 | | enum Unaligned10 {
-150 | |     A,
-151 | | }
-    | |_^
+148 | #[repr(u8, align(2))]
+    |            ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> $DIR/enum.rs:154:1
+   --> $DIR/enum.rs:154:12
     |
-154 | / #[repr(i8, align(2))]
-155 | | enum Unaligned11 {
-156 | |     A,
-157 | | }
-    | |_^
+154 | #[repr(i8, align(2))]
+    |            ^^^^^^^^
+
+error: cannot derive Unaligned with repr(align(N > 1))
+   --> $DIR/enum.rs:160:18
+    |
+160 | #[repr(align(1), align(2))]
+    |                  ^^^^^^^^
+
+error: cannot derive Unaligned with repr(align(N > 1))
+   --> $DIR/enum.rs:166:8
+    |
+166 | #[repr(align(2), align(4))]
+    |        ^^^^^^^^
 
 error[E0565]: meta item in `repr` must be an identifier
   --> $DIR/enum.rs:15:8
@@ -205,13 +160,17 @@ error[E0552]: unrecognized representation hint
 21 | #[repr(foo)]
    |        ^^^
 
-warning[E0566]: conflicting representation hints
+error[E0566]: conflicting representation hints
   --> $DIR/enum.rs:33:8
    |
 33 | #[repr(u8, u16)]
    |        ^^  ^^^
+   |
+   = note: `#[deny(conflicting_repr_hints)]` on by default
+   = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+   = note: for more information, see issue #68585 <https://github.com/rust-lang/rust/issues/68585>
 
-error: aborting due to 25 previous errors
+error: aborting due to 28 previous errors
 
 Some errors have detailed explanations: E0552, E0565, E0566.
 For more information about an error, try `rustc --explain E0552`.

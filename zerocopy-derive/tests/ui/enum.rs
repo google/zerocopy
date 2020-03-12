@@ -155,3 +155,15 @@ enum Unaligned10 {
 enum Unaligned11 {
     A,
 }
+
+#[derive(Unaligned)]
+#[repr(align(1), align(2))]
+enum Unaligned12 {
+    A,
+}
+
+#[derive(Unaligned)]
+#[repr(align(2), align(4))]
+enum Unaligned13 {
+    A,
+}
