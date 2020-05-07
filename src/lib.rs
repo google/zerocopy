@@ -1447,7 +1447,7 @@ mod tests {
     }
 
     #[test]
-    #[allow(clippy::cyclomatic_complexity)]
+    #[allow(clippy::cognitive_complexity)]
     fn test_new_error() {
         // fail because the buffer is too large
 
