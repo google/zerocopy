@@ -457,6 +457,56 @@ where
         }
         Some(LayoutVerified(bytes, PhantomData))
     }
+
+    /// Construct a new `LayoutVerified` of a slice type from the prefix of a byte slice.
+    ///
+    /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() * count`
+    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the first
+    /// `size_of::<T>() * count` bytes from `bytes` to construct a `LayoutVerified`, and
+    /// returns the remaining bytes to the caller. It also ensures that
+    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the length,
+    /// alignment, or overflow checks fail, it returns `None`.
+    ///
+    /// # Panics
+    ///
+    /// `new_slice_from_prefix` panics if `T` is a zero-sized type.
+    #[inline]
+    pub fn new_slice_from_prefix(bytes: B, count: usize) -> Option<(LayoutVerified<B, [T]>, B)> {
+        let expected_len = match mem::size_of::<T>().checked_mul(count) {
+            Some(len) => len,
+            None => return None,
+        };
+        if bytes.len() < expected_len {
+            return None;
+        }
+        let (prefix, bytes) = bytes.split_at(expected_len);
+        Self::new_slice(prefix).map(move |l| (l, bytes))
+    }
+
+    /// Construct a new `LayoutVerified` of a slice type from the suffix of a byte slice.
+    ///
+    /// `new_slice_from_suffix` verifies that `bytes.len() >= size_of::<T>() * count`
+    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the last
+    /// `size_of::<T>() * count` bytes from `bytes` to construct a `LayoutVerified`, and
+    /// returns the preceding bytes to the caller. It also ensures that
+    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the length,
+    /// alignment, or overflow checks fail, it returns `None`.
+    ///
+    /// # Panics
+    ///
+    /// `new_slice_from_suffix` panics if `T` is a zero-sized type.
+    #[inline]
+    pub fn new_slice_from_suffix(bytes: B, count: usize) -> Option<(B, LayoutVerified<B, [T]>)> {
+        let expected_len = match mem::size_of::<T>().checked_mul(count) {
+            Some(len) => len,
+            None => return None,
+        };
+        if bytes.len() < expected_len {
+            return None;
+        }
+        let (bytes, suffix) = bytes.split_at(expected_len);
+        Self::new_slice(suffix).map(move |l| (bytes, l))
+    }
 }
 
 fn map_zeroed<B: ByteSliceMut, T: ?Sized>(
@@ -570,6 +620,56 @@ where
     pub fn new_slice_zeroed(bytes: B) -> Option<LayoutVerified<B, [T]>> {
         map_zeroed(Self::new_slice(bytes))
     }
+
+    /// Construct a new `LayoutVerified` of a slice type from the prefix of a byte slice,
+    /// after zeroing the bytes.
+    ///
+    /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() * count`
+    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the first
+    /// `size_of::<T>() * count` bytes from `bytes` to construct a `LayoutVerified`, and
+    /// returns the remaining bytes to the caller. It also ensures that
+    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the length,
+    /// alignment, or overflow checks fail, it returns `None`.
+    ///
+    /// If the checks succeed, then the suffix which is consumed will be
+    /// initialized to zero. This can be useful when re-using buffers to ensure
+    /// that sensitive data previously stored in the buffer is not leaked.
+    ///
+    /// # Panics
+    ///
+    /// `new_slice_from_prefix_zeroed` panics if `T` is a zero-sized type.
+    #[inline]
+    pub fn new_slice_from_prefix_zeroed(
+        bytes: B,
+        count: usize,
+    ) -> Option<(LayoutVerified<B, [T]>, B)> {
+        map_prefix_tuple_zeroed(Self::new_slice_from_prefix(bytes, count))
+    }
+
+    /// Construct a new `LayoutVerified` of a slice type from the prefix of a byte slice,
+    /// after zeroing the bytes.
+    ///
+    /// `new_slice_from_suffix` verifies that `bytes.len() >= size_of::<T>() * count`
+    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the last
+    /// `size_of::<T>() * count` bytes from `bytes` to construct a `LayoutVerified`, and
+    /// returns the preceding bytes to the caller. It also ensures that
+    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the length,
+    /// alignment, or overflow checks fail, it returns `None`.
+    ///
+    /// If the checks succeed, then the consumed suffix will be initialized to zero. This
+    /// can be useful when re-using buffers to ensure that sensitive data
+    /// previously stored in the buffer is not leaked.
+    ///
+    /// # Panics
+    ///
+    /// `new_slice_from_suffix_zeroed` panics if `T` is a zero-sized type.
+    #[inline]
+    pub fn new_slice_from_suffix_zeroed(
+        bytes: B,
+        count: usize,
+    ) -> Option<(B, LayoutVerified<B, [T]>)> {
+        map_suffix_tuple_zeroed(Self::new_slice_from_suffix(bytes, count))
+    }
 }
 
 impl<B, T> LayoutVerified<B, T>
@@ -648,6 +748,62 @@ where
         }
         Some(LayoutVerified(bytes, PhantomData))
     }
+
+    /// Construct a new `LayoutVerified` of a slice type with no alignment requirement
+    /// from the prefix of a byte slice.
+    ///
+    /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() * count`.
+    /// It consumes the first `size_of::<T>() * count` bytes from `bytes` to construct
+    /// a `LayoutVerified`, and returns the remaining bytes to the caller. It also
+    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`. If either the
+    /// length, or overflow checks fail, it returns `None`.
+    ///
+    /// # Panics
+    ///
+    /// `new_slice_unaligned_from_prefix` panics if `T` is a zero-sized type.
+    #[inline]
+    pub fn new_slice_unaligned_from_prefix(
+        bytes: B,
+        count: usize,
+    ) -> Option<(LayoutVerified<B, [T]>, B)> {
+        let expected_len = match mem::size_of::<T>().checked_mul(count) {
+            Some(len) => len,
+            None => return None,
+        };
+        if bytes.len() < expected_len {
+            return None;
+        }
+        let (prefix, bytes) = bytes.split_at(expected_len);
+        Self::new_slice_unaligned(prefix).map(move |l| (l, bytes))
+    }
+
+    /// Construct a new `LayoutVerified` of a slice type with no alignment requirement
+    /// from the suffix of a byte slice.
+    ///
+    /// `new_slice_from_suffix` verifies that `bytes.len() >= size_of::<T>() * count`.
+    /// It consumes the last `size_of::<T>() * count` bytes from `bytes` to construct
+    /// a `LayoutVerified`, and returns the remaining bytes to the caller. It also
+    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`. If either the
+    /// length, or overflow checks fail, it returns `None`.
+    ///
+    /// # Panics
+    ///
+    /// `new_slice_unaligned_from_suffix` panics if `T` is a zero-sized type.
+    #[inline]
+    pub fn new_slice_unaligned_from_suffix(
+        bytes: B,
+        count: usize,
+    ) -> Option<(B, LayoutVerified<B, [T]>)> {
+        let expected_len = match mem::size_of::<T>().checked_mul(count) {
+            Some(len) => len,
+            None => return None,
+        };
+        if bytes.len() < expected_len {
+            return None;
+        }
+        let (bytes, suffix) = bytes.split_at(expected_len);
+        Self::new_slice_unaligned(suffix).map(move |l| (bytes, l))
+    }
 }
 
 impl<B, T> LayoutVerified<B, T>
@@ -725,6 +881,54 @@ where
     #[inline]
     pub fn new_slice_unaligned_zeroed(bytes: B) -> Option<LayoutVerified<B, [T]>> {
         map_zeroed(Self::new_slice_unaligned(bytes))
+    }
+
+    /// Construct a new `LayoutVerified` of a slice type with no alignment requirement
+    /// from the prefix of a byte slice, after zeroing the bytes.
+    ///
+    /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() * count`.
+    /// It consumes the first `size_of::<T>() * count` bytes from `bytes` to construct
+    /// a `LayoutVerified`, and returns the remaining bytes to the caller. It also
+    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`. If either the
+    /// length, or overflow checks fail, it returns `None`.
+    ///
+    /// If the checks succeed, then the prefix will be initialized to zero. This
+    /// can be useful when re-using buffers to ensure that sensitive data
+    /// previously stored in the buffer is not leaked.
+    ///
+    /// # Panics
+    ///
+    /// `new_slice_unaligned_from_prefix_zeroed` panics if `T` is a zero-sized type.
+    #[inline]
+    pub fn new_slice_unaligned_from_prefix_zeroed(
+        bytes: B,
+        count: usize,
+    ) -> Option<(LayoutVerified<B, [T]>, B)> {
+        map_prefix_tuple_zeroed(Self::new_slice_unaligned_from_prefix(bytes, count))
+    }
+
+    /// Construct a new `LayoutVerified` of a slice type with no alignment requirement
+    /// from the suffix of a byte slice, after zeroing the bytes.
+    ///
+    /// `new_slice_from_suffix` verifies that `bytes.len() >= size_of::<T>() * count`.
+    /// It consumes the last `size_of::<T>() * count` bytes from `bytes` to construct
+    /// a `LayoutVerified`, and returns the remaining bytes to the caller. It also
+    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`. If either the
+    /// length, or overflow checks fail, it returns `None`.
+    ///
+    /// If the checks succeed, then the suffix will be initialized to zero. This
+    /// can be useful when re-using buffers to ensure that sensitive data
+    /// previously stored in the buffer is not leaked.
+    ///
+    /// # Panics
+    ///
+    /// `new_slice_unaligned_from_suffix_zeroed` panics if `T` is a zero-sized type.
+    #[inline]
+    pub fn new_slice_unaligned_from_suffix_zeroed(
+        bytes: B,
+        count: usize,
+    ) -> Option<(B, LayoutVerified<B, [T]>)> {
+        map_suffix_tuple_zeroed(Self::new_slice_unaligned_from_suffix(bytes, count))
     }
 }
 
@@ -1136,11 +1340,6 @@ mod tests {
         unsafe { ptr::read(&u as *const u64 as *const [u8; 8]) }
     }
 
-    // convert a u128 to bytes using this platform's endianness
-    fn u128_to_bytes(u: u128) -> [u8; 16] {
-        unsafe { ptr::read(&u as *const u128 as *const [u8; 16]) }
-    }
-
     #[test]
     fn test_address() {
         // test that the Deref and DerefMut implementations return a reference which
@@ -1180,25 +1379,29 @@ mod tests {
 
     // verify that values written to a LayoutVerified are properly shared
     // between the typed and untyped representations; pass a value with
-    // byte length 16/typed length 2
-    fn test_new_helper_slice<'a>(mut lv: LayoutVerified<&'a mut [u8], [u64]>) {
-        // assert that the value starts at [0, 0]
-        assert_eq!(*lv, [0, 0]);
+    // `typed_len` `u64`s backed by an array of `typed_len * 8` bytes.
+    fn test_new_helper_slice<'a>(mut lv: LayoutVerified<&'a mut [u8], [u64]>, typed_len: usize) {
+        // assert that the value starts out zeroed
+        assert_eq!(&*lv, vec![0; typed_len].as_slice());
+
+        // check the backing storage is the exact same slice
+        let untyped_len = typed_len * 8;
+        assert_eq!(lv.bytes().len(), untyped_len);
+        assert_eq!(lv.bytes().as_ptr(), lv.as_ptr() as *const u8);
 
         // assert that values written to the typed value are reflected in the
         // byte slice
         const VAL1: u64 = 0xFF00FF00FF00FF00;
-        const VAL1_DOUBLED: u128 = 0xFF00FF00FF00FF00FF00FF00FF00FF00;
-        lv[0] = VAL1;
-        lv[1] = VAL1;
-        assert_eq!(lv.bytes(), &u128_to_bytes(VAL1_DOUBLED));
+        for typed in &mut *lv {
+            *typed = VAL1;
+        }
+        assert_eq!(lv.bytes(), VAL1.to_ne_bytes().repeat(typed_len).as_slice());
 
         // assert that values written to the byte slice are reflected in the
         // typed value
         const VAL2: u64 = !VAL1; // different from VAL1
-        const VAL2_DOUBLED: u128 = !VAL1_DOUBLED;
-        lv.bytes_mut().copy_from_slice(&u128_to_bytes(VAL2_DOUBLED)[..]);
-        assert_eq!(*lv, [VAL2, VAL2]);
+        lv.bytes_mut().copy_from_slice(&VAL2.to_ne_bytes().repeat(typed_len));
+        assert!(lv.iter().copied().all(|x| x == VAL2));
     }
 
     // verify that values written to a LayoutVerified are properly shared
@@ -1222,28 +1425,28 @@ mod tests {
 
     // verify that values written to a LayoutVerified are properly shared
     // between the typed and untyped representations; pass a value with
-    // length 16
-    fn test_new_helper_slice_unaligned<'a>(mut lv: LayoutVerified<&'a mut [u8], [u8]>) {
-        // assert that the value starts at [0; 16]
-        assert_eq!(*lv, [0u8; 16][..]);
+    // `len` `u8`s backed by an array of `len` bytes.
+    fn test_new_helper_slice_unaligned<'a>(mut lv: LayoutVerified<&'a mut [u8], [u8]>, len: usize) {
+        // assert that the value starts out zeroed
+        assert_eq!(&*lv, vec![0u8; len].as_slice());
+
+        // check the backing storage is the exact same slice
+        assert_eq!(lv.bytes().len(), len);
+        assert_eq!(lv.bytes().as_ptr(), lv.as_ptr());
 
         // assert that values written to the typed value are reflected in the
         // byte slice
-        const VAL1: [u8; 16] = [
-            0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00,
-            0xFF, 0x00,
-        ];
-        lv.copy_from_slice(&VAL1[..]);
-        assert_eq!(lv.bytes(), &VAL1);
+        let mut expected_bytes = [0xFF, 0x00].iter().copied().cycle().take(len).collect::<Vec<_>>();
+        lv.copy_from_slice(&expected_bytes);
+        assert_eq!(lv.bytes(), expected_bytes.as_slice());
 
         // assert that values written to the byte slice are reflected in the
         // typed value
-        const VAL2: [u8; 16] = [
-            0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF,
-            0x00, 0xFF,
-        ];
-        lv.bytes_mut().copy_from_slice(&VAL2[..]);
-        assert_eq!(*lv, VAL2);
+        for byte in &mut expected_bytes {
+            *byte = !*byte; // different from expected_len
+        }
+        lv.bytes_mut().copy_from_slice(&expected_bytes);
+        assert_eq!(&*lv, expected_bytes.as_slice());
     }
 
     #[test]
@@ -1293,11 +1496,43 @@ mod tests {
         let mut buf = AlignedBuffer::<u64, [u8; 16]>::default();
         // buf.buf should be aligned to 8 and have a length which is a multiple
         // of size_of::<u64>(), so this should always succeed
-        test_new_helper_slice(LayoutVerified::<_, [u64]>::new_slice(&mut buf.buf[..]).unwrap());
+        test_new_helper_slice(LayoutVerified::<_, [u64]>::new_slice(&mut buf.buf[..]).unwrap(), 2);
         buf.buf = [0xFFu8; 16];
         test_new_helper_slice(
             LayoutVerified::<_, [u64]>::new_slice_zeroed(&mut buf.buf[..]).unwrap(),
+            2,
         );
+
+        {
+            buf.clear_buf();
+            let (lv, suffix) =
+                LayoutVerified::<_, [u64]>::new_slice_from_prefix(&mut buf.buf[..], 1).unwrap();
+            assert_eq!(suffix, [0; 8]);
+            test_new_helper_slice(lv, 1);
+        }
+        {
+            buf.buf = [0xFFu8; 16];
+            let (lv, suffix) =
+                LayoutVerified::<_, [u64]>::new_slice_from_prefix_zeroed(&mut buf.buf[..], 1)
+                    .unwrap();
+            assert_eq!(suffix, [0xFF; 8]);
+            test_new_helper_slice(lv, 1);
+        }
+        {
+            buf.clear_buf();
+            let (prefix, lv) =
+                LayoutVerified::<_, [u64]>::new_slice_from_suffix(&mut buf.buf[..], 1).unwrap();
+            assert_eq!(prefix, [0; 8]);
+            test_new_helper_slice(lv, 1);
+        }
+        {
+            buf.buf = [0xFFu8; 16];
+            let (prefix, lv) =
+                LayoutVerified::<_, [u64]>::new_slice_from_suffix_zeroed(&mut buf.buf[..], 1)
+                    .unwrap();
+            assert_eq!(prefix, [0xFF; 8]);
+            test_new_helper_slice(lv, 1);
+        }
     }
 
     #[test]
@@ -1354,12 +1589,47 @@ mod tests {
         // buf.buf should be aligned to 8 and have a length which is a multiple
         // of size_of::<u64>(), so this should always succeed
         test_new_helper_slice_unaligned(
-            LayoutVerified::<_, [u8]>::new_slice(&mut buf[..]).unwrap(),
+            LayoutVerified::<_, [u8]>::new_slice_unaligned(&mut buf[..]).unwrap(),
+            16,
         );
         buf = [0xFFu8; 16];
         test_new_helper_slice_unaligned(
-            LayoutVerified::<_, [u8]>::new_slice_zeroed(&mut buf[..]).unwrap(),
+            LayoutVerified::<_, [u8]>::new_slice_unaligned_zeroed(&mut buf[..]).unwrap(),
+            16,
         );
+
+        {
+            buf = [0u8; 16];
+            let (lv, suffix) =
+                LayoutVerified::<_, [u8]>::new_slice_unaligned_from_prefix(&mut buf[..], 8)
+                    .unwrap();
+            assert_eq!(suffix, [0; 8]);
+            test_new_helper_slice_unaligned(lv, 8);
+        }
+        {
+            buf = [0xFFu8; 16];
+            let (lv, suffix) =
+                LayoutVerified::<_, [u8]>::new_slice_unaligned_from_prefix_zeroed(&mut buf[..], 8)
+                    .unwrap();
+            assert_eq!(suffix, [0xFF; 8]);
+            test_new_helper_slice_unaligned(lv, 8);
+        }
+        {
+            buf = [0u8; 16];
+            let (prefix, lv) =
+                LayoutVerified::<_, [u8]>::new_slice_unaligned_from_suffix(&mut buf[..], 8)
+                    .unwrap();
+            assert_eq!(prefix, [0; 8]);
+            test_new_helper_slice_unaligned(lv, 8);
+        }
+        {
+            buf = [0xFFu8; 16];
+            let (prefix, lv) =
+                LayoutVerified::<_, [u8]>::new_slice_unaligned_from_suffix_zeroed(&mut buf[..], 8)
+                    .unwrap();
+            assert_eq!(prefix, [0xFF; 8]);
+            test_new_helper_slice_unaligned(lv, 8);
+        }
     }
 
     #[test]
@@ -1490,6 +1760,32 @@ mod tests {
             LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_zeroed(&mut buf.buf[..]).is_none()
         );
 
+        // fail beacuse the buffer is too short.
+        let mut buf = AlignedBuffer::<u64, [u8; 12]>::default();
+        // buf.buf has length 12, but the element size is 8 (and we're expecting two of them).
+        assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix(&buf.buf[..], 2).is_none());
+        assert!(
+            LayoutVerified::<_, [u64]>::new_slice_from_prefix_zeroed(&mut buf.buf[..], 2).is_none()
+        );
+        assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix(&buf.buf[..], 2).is_none());
+        assert!(
+            LayoutVerified::<_, [u64]>::new_slice_from_suffix_zeroed(&mut buf.buf[..], 2).is_none()
+        );
+        assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_prefix(&buf.buf[..], 2)
+            .is_none());
+        assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_prefix_zeroed(
+            &mut buf.buf[..],
+            2
+        )
+        .is_none());
+        assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_suffix(&buf.buf[..], 2)
+            .is_none());
+        assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_suffix_zeroed(
+            &mut buf.buf[..],
+            2
+        )
+        .is_none());
+
         // fail because the alignment is insufficient
 
         // a buffer with an alignment of 8
@@ -1502,34 +1798,84 @@ mod tests {
         assert!(LayoutVerified::<_, u64>::new_from_prefix_zeroed(&mut buf.buf[4..]).is_none());
         assert!(LayoutVerified::<_, [u64]>::new_slice(&buf.buf[4..]).is_none());
         assert!(LayoutVerified::<_, [u64]>::new_slice_zeroed(&mut buf.buf[4..]).is_none());
+        assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix(&buf.buf[4..], 1).is_none());
+        assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix_zeroed(&mut buf.buf[4..], 1)
+            .is_none());
+        assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix(&buf.buf[4..], 1).is_none());
+        assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix_zeroed(&mut buf.buf[4..], 1)
+            .is_none());
         // slicing from 4 should be unnecessary because new_from_suffix[_zeroed]
         // use the suffix of the slice
         assert!(LayoutVerified::<_, u64>::new_from_suffix(&buf.buf[..]).is_none());
         assert!(LayoutVerified::<_, u64>::new_from_suffix_zeroed(&mut buf.buf[..]).is_none());
+
+        // fail due to arithmetic overflow
+
+        let mut buf = AlignedBuffer::<u64, [u8; 16]>::default();
+        let unreasonable_len = std::usize::MAX / mem::size_of::<u64>() + 1;
+        assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix(&buf.buf[..], unreasonable_len)
+            .is_none());
+        assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix_zeroed(
+            &mut buf.buf[..],
+            unreasonable_len
+        )
+        .is_none());
+        assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix(&buf.buf[..], unreasonable_len)
+            .is_none());
+        assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix_zeroed(
+            &mut buf.buf[..],
+            unreasonable_len
+        )
+        .is_none());
+        assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_prefix(
+            &buf.buf[..],
+            unreasonable_len
+        )
+        .is_none());
+        assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_prefix_zeroed(
+            &mut buf.buf[..],
+            unreasonable_len
+        )
+        .is_none());
+        assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_suffix(
+            &buf.buf[..],
+            unreasonable_len
+        )
+        .is_none());
+        assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_suffix_zeroed(
+            &mut buf.buf[..],
+            unreasonable_len
+        )
+        .is_none());
     }
 
-    #[test]
-    #[should_panic]
-    fn test_new_slice_zst_panics() {
-        LayoutVerified::<_, [()]>::new_slice(&[0u8][..]);
-    }
-
-    #[test]
-    #[should_panic]
-    fn test_new_slice_zeroed_zst_panics() {
-        LayoutVerified::<_, [()]>::new_slice_zeroed(&mut [0u8][..]);
-    }
-
-    #[test]
-    #[should_panic]
-    fn test_new_slice_unaligned_zst_panics() {
-        LayoutVerified::<_, [()]>::new_slice_unaligned(&[0u8][..]);
-    }
-
-    #[test]
-    #[should_panic]
-    fn test_new_slice_unaligned_zeroed_zst_panics() {
-        LayoutVerified::<_, [()]>::new_slice_unaligned_zeroed(&mut [0u8][..]);
+    // Tests for ensuring that, if a ZST is passed into a slice-like function, we always
+    // panic. Since these tests need to be separate per-function, and they tend to take
+    // up a lot of space, we genrate them using a macro in a submodule instead. The
+    // submodule ensures that we can just re-use the name of the function under test for
+    // the name of the test itself.
+    mod test_zst_panics {
+        macro_rules! zst_test {
+            ($name:ident($($tt:tt)*)) => {
+                #[test]
+                #[should_panic]
+                fn $name() {
+                    $crate::LayoutVerified::<_, [()]>::$name(&mut [0u8][..], $($tt)*);
+                }
+            }
+        }
+        zst_test!(new_slice());
+        zst_test!(new_slice_zeroed());
+        zst_test!(new_slice_from_prefix(1));
+        zst_test!(new_slice_from_prefix_zeroed(1));
+        zst_test!(new_slice_from_suffix(1));
+        zst_test!(new_slice_from_suffix_zeroed(1));
+        zst_test!(new_slice_unaligned());
+        zst_test!(new_slice_unaligned_zeroed());
+        zst_test!(new_slice_unaligned_from_prefix(1));
+        zst_test!(new_slice_unaligned_from_prefix_zeroed(1));
+        zst_test!(new_slice_unaligned_from_suffix(1));
+        zst_test!(new_slice_unaligned_from_suffix_zeroed(1));
     }
 
     #[test]
