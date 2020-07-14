@@ -1254,6 +1254,14 @@ mod sealed {
 /// `ByteSlice` abstracts over the mutability of a byte slice reference, and is
 /// implemented for various special reference types such as `Ref<[u8]>` and
 /// `RefMut<[u8]>`.
+///
+/// Note that, while it would be technically possible, `ByteSlice` is not
+/// implemented for [`Vec<u8>`], as the only way to implement the [`split_at`]
+/// method would involve reallocation, and `split_at` must be a very cheap
+/// operation in order for the utilities in this crate to perform as designed.
+///
+/// [`Vec<u8>`]: std::vec::Vec
+/// [`split_at`]: crate::ByteSlice::split_at
 pub unsafe trait ByteSlice: Deref<Target = [u8]> + Sized + self::sealed::Sealed {
     fn as_ptr(&self) -> *const u8;
     fn split_at(self, mid: usize) -> (Self, Self);
