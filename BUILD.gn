@@ -18,8 +18,6 @@ rustc_library("zerocopy") {
     "//third_party/rust_crates:rand",
   ]
 
-  enforce_source_listing = true
-
   sources = [
     "src/byteorder.rs",
     "src/lib.rs",

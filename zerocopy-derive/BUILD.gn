@@ -15,8 +15,6 @@ rustc_macro("zerocopy-derive") {
     "//third_party/rust_crates:synstructure",
   ]
 
-  enforce_source_listing = true
-
   sources = [
     "src/ext.rs",
     "src/lib.rs",
@@ -39,8 +37,6 @@ if (is_host) {
       "//third_party/rust_crates:syn",
       "//third_party/rust_crates:synstructure",
     ]
-
-    enforce_source_listing = true
 
     sources = [
       "src/ext.rs",
