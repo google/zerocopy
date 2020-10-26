@@ -11,7 +11,7 @@ version = "0.2.0"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Custom derive for traits from the zerocopy crate"
 license = "BSD-3-Clause"
-repository = "https://fuchsia.googlesource.com/fuchsia/+/master/src/lib/zerocopy/zerocopy-derive"
+repository = "https://fuchsia.googlesource.com/fuchsia/+/HEAD/src/lib/zerocopy/zerocopy-derive"
 
 include = ["src/*", "tests/*", "Cargo.toml", "LICENSE"]
 

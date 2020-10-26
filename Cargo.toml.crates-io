@@ -11,7 +11,7 @@ version = "0.3.0"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Utilities for zero-copy parsing and serialization"
 license = "BSD-3-Clause"
-repository = "https://fuchsia.googlesource.com/fuchsia/+/master/src/lib/zerocopy"
+repository = "https://fuchsia.googlesource.com/fuchsia/+/HEAD/src/lib/zerocopy"
 
 include = ["src/*", "Cargo.toml", "LICENSE"]
 
