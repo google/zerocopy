@@ -58,8 +58,10 @@
 //! }
 //! ```
 
+use core::convert::{TryFrom, TryInto};
 use core::fmt::{self, Binary, Debug, Display, Formatter, LowerHex, Octal, UpperHex};
 use core::marker::PhantomData;
+use core::num::TryFromIntError;
 
 use byteorder::ByteOrder;
 use zerocopy_derive::*;
@@ -107,7 +109,16 @@ macro_rules! define_max_value_constant {
 }
 
 macro_rules! define_type {
-    ($article:ident, $name:ident, $native:ident, $bits:expr, $bytes:expr, $read_method:ident, $write_method:ident, $sign:ident) => {
+    ($article:ident,
+        $name:ident,
+        $native:ident,
+        $bits:expr,
+        $bytes:expr,
+        $read_method:ident,
+        $write_method:ident,
+        $sign:ident,
+        [$($larger_native:ty),*],
+        [$($larger_byteorder:ident),*]) => {
         doc_comment! {
             concat!("A ", stringify!($bits), "-bit ", stringify!($sign), " integer
 stored in `O` byte order.
@@ -186,15 +197,10 @@ example of how it can be used for parsing UDP packets.
             }
         }
 
-        // NOTE: The reasoning behind which traits to implement here is a) only
-        // implement traits which do not involve implicit endianness swaps and,
-        // b) only implement traits which won't cause inference issues. Most of
-        // the traits which would cause inference issues would also involve
-        // endianness swaps anyway (like comparison/ordering with the native
-        // representation or conversion from/to that representation). Note that
-        // we make an exception for the format traits since the cost of
-        // formatting dwarfs cost of performing an endianness swap, and they're
-        // very useful.
+        // NOTE: The reasoning behind which traits to implement here is to only
+        // implement traits which won't cause inference issues. Notably,
+        // comparison traits like PartialEq and PartialOrd tend to cause
+        // inference issues.
 
         impl<O: ByteOrder> From<$name<O>> for [u8; $bytes] {
             fn from(x: $name<O>) -> [u8; $bytes] {
@@ -207,6 +213,48 @@ example of how it can be used for parsing UDP packets.
                 $name(bytes, PhantomData)
             }
         }
+
+        impl<O: ByteOrder> From<$name<O>> for $native {
+            fn from(x: $name<O>) -> $native {
+                x.get()
+            }
+        }
+
+        impl<O: ByteOrder> From<$native> for $name<O> {
+            fn from(x: $native) -> $name<O> {
+                $name::new(x)
+            }
+        }
+
+        $(
+            impl<O: ByteOrder> From<$name<O>> for $larger_native {
+                fn from(x: $name<O>) -> $larger_native {
+                    x.get().into()
+                }
+            }
+
+            impl<O: ByteOrder> TryFrom<$larger_native> for $name<O> {
+                type Error = TryFromIntError;
+                fn try_from(x: $larger_native) -> Result<$name<O>, TryFromIntError> {
+                    $native::try_from(x).map($name::new)
+                }
+            }
+        )*
+
+        $(
+            impl<O: ByteOrder, P: ByteOrder> From<$name<O>> for $larger_byteorder<P> {
+                fn from(x: $name<O>) -> $larger_byteorder<P> {
+                    $larger_byteorder::new(x.get().into())
+                }
+            }
+
+            impl<O: ByteOrder, P: ByteOrder> TryFrom<$larger_byteorder<P>> for $name<O> {
+                type Error = TryFromIntError;
+                fn try_from(x: $larger_byteorder<P>) -> Result<$name<O>, TryFromIntError> {
+                    x.get().try_into().map($name::new)
+                }
+            }
+        )*
 
         impl<O: ByteOrder> AsRef<[u8; $bytes]> for $name<O> {
             fn as_ref(&self) -> &[u8; $bytes] {
@@ -247,14 +295,36 @@ example of how it can be used for parsing UDP packets.
     };
 }
 
-define_type!(A, U16, u16, 16, 2, read_u16, write_u16, unsigned);
-define_type!(A, U32, u32, 32, 4, read_u32, write_u32, unsigned);
-define_type!(A, U64, u64, 64, 8, read_u64, write_u64, unsigned);
-define_type!(A, U128, u128, 128, 16, read_u128, write_u128, unsigned);
-define_type!(An, I16, i16, 16, 2, read_i16, write_i16, signed);
-define_type!(An, I32, i32, 32, 4, read_i32, write_i32, signed);
-define_type!(An, I64, i64, 64, 8, read_i64, write_i64, signed);
-define_type!(An, I128, i128, 128, 16, read_i128, write_i128, signed);
+define_type!(
+    A,
+    U16,
+    u16,
+    16,
+    2,
+    read_u16,
+    write_u16,
+    unsigned,
+    [u32, u64, u128, usize],
+    [U32, U64, U128]
+);
+define_type!(A, U32, u32, 32, 4, read_u32, write_u32, unsigned, [u64, u128], [U64, U128]);
+define_type!(A, U64, u64, 64, 8, read_u64, write_u64, unsigned, [u128], [U128]);
+define_type!(A, U128, u128, 128, 16, read_u128, write_u128, unsigned, [], []);
+define_type!(
+    An,
+    I16,
+    i16,
+    16,
+    2,
+    read_i16,
+    write_i16,
+    signed,
+    [i32, i64, i128, isize],
+    [I32, I64, I128]
+);
+define_type!(An, I32, i32, 32, 4, read_i32, write_i32, signed, [i64, i128], [I64, I128]);
+define_type!(An, I64, i64, 64, 8, read_i64, write_i64, signed, [i128], [I128]);
+define_type!(An, I128, i128, 128, 16, read_i128, write_i128, signed, [], []);
 
 #[cfg(test)]
 mod tests {
