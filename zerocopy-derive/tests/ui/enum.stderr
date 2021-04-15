@@ -27,6 +27,8 @@ error: must have a non-align #[repr(...)] attribute in order to guarantee this t
    |
 38 | #[derive(FromBytes)]
    |          ^^^^^^^^^
+   |
+   = note: this error originates in a derive macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
   --> $DIR/enum.rs:48:8

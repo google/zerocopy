@@ -527,8 +527,16 @@ fn impl_block<D: DataExt>(
 
     let size_check_body = if require_size_check && !field_types.is_empty() {
         quote!(
-            const HAS_PADDING: bool = core::mem::size_of::<#type_ident>() != #(core::mem::size_of::<#field_types>())+*;
-            let _: [(); 1/(1 - HAS_PADDING as usize)];
+            const _: () = {
+                trait HasPadding<const HAS_PADDING: bool> {}
+                fn assert_no_padding<T: HasPadding<false>>() {}
+
+                const COMPOSITE_TYPE_SIZE: usize = ::core::mem::size_of::<#type_ident>();
+                const SUM_FIELD_SIZES: usize = 0 #(+ ::core::mem::size_of::<#field_types>())*;
+                const HAS_PADDING: bool = COMPOSITE_TYPE_SIZE > SUM_FIELD_SIZES;
+                impl HasPadding<HAS_PADDING> for #type_ident {}
+                let _ = assert_no_padding::<#type_ident>;
+            };
         )
     } else {
         quote!()

@@ -3,6 +3,8 @@ error: unsupported on types with type parameters
    |
 14 | #[derive(AsBytes)]
    |          ^^^^^^^
+   |
+   = note: this error originates in a derive macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: cannot derive Unaligned with repr(align(N > 1))
   --> $DIR/struct.rs:23:11
