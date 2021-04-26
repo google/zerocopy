@@ -31,6 +31,7 @@ pub use crate::byteorder::*;
 pub use zerocopy_derive::*;
 
 use core::cell::{Ref, RefMut};
+use core::cmp::Ordering;
 use core::fmt::{self, Debug, Display, Formatter};
 use core::marker::PhantomData;
 use core::mem;
@@ -1179,18 +1180,6 @@ where
     }
 }
 
-impl<T, B> Debug for LayoutVerified<B, T>
-where
-    B: ByteSlice,
-    T: FromBytes + Debug,
-{
-    #[inline]
-    fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
-        let inner: &T = self;
-        fmt.debug_tuple("LayoutVerified").field(&inner).finish()
-    }
-}
-
 impl<T, B> Display for LayoutVerified<B, [T]>
 where
     B: ByteSlice,
@@ -1204,6 +1193,18 @@ where
     }
 }
 
+impl<T, B> Debug for LayoutVerified<B, T>
+where
+    B: ByteSlice,
+    T: FromBytes + Debug,
+{
+    #[inline]
+    fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
+        let inner: &T = self;
+        fmt.debug_tuple("LayoutVerified").field(&inner).finish()
+    }
+}
+
 impl<T, B> Debug for LayoutVerified<B, [T]>
 where
     B: ByteSlice,
@@ -1213,6 +1214,94 @@ where
     fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
         let inner: &[T] = self;
         fmt.debug_tuple("LayoutVerified").field(&inner).finish()
+    }
+}
+
+impl<T, B> Eq for LayoutVerified<B, T>
+where
+    B: ByteSlice,
+    T: FromBytes + Eq,
+{
+}
+
+impl<T, B> Eq for LayoutVerified<B, [T]>
+where
+    B: ByteSlice,
+    T: FromBytes + Eq,
+{
+}
+
+impl<T, B> PartialEq for LayoutVerified<B, T>
+where
+    B: ByteSlice,
+    T: FromBytes + PartialEq,
+{
+    #[inline]
+    fn eq(&self, other: &Self) -> bool {
+        self.deref().eq(other.deref())
+    }
+}
+
+impl<T, B> PartialEq for LayoutVerified<B, [T]>
+where
+    B: ByteSlice,
+    T: FromBytes + PartialEq,
+{
+    #[inline]
+    fn eq(&self, other: &Self) -> bool {
+        self.deref().eq(other.deref())
+    }
+}
+
+impl<T, B> Ord for LayoutVerified<B, T>
+where
+    B: ByteSlice,
+    T: FromBytes + Ord,
+{
+    #[inline]
+    fn cmp(&self, other: &Self) -> Ordering {
+        let inner: &T = self;
+        let other_inner: &T = other;
+        inner.cmp(other_inner)
+    }
+}
+
+impl<T, B> Ord for LayoutVerified<B, [T]>
+where
+    B: ByteSlice,
+    T: FromBytes + Ord,
+{
+    #[inline]
+    fn cmp(&self, other: &Self) -> Ordering {
+        let inner: &[T] = self;
+        let other_inner: &[T] = other;
+        inner.cmp(other_inner)
+    }
+}
+
+impl<T, B> PartialOrd for LayoutVerified<B, T>
+where
+    B: ByteSlice,
+    T: FromBytes + PartialOrd,
+{
+    #[inline]
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        let inner: &T = self;
+        let other_inner: &T = other;
+        inner.partial_cmp(other_inner)
+    }
+}
+
+impl<T, B> PartialOrd for LayoutVerified<B, [T]>
+where
+    B: ByteSlice,
+    T: FromBytes + PartialOrd,
+{
+    #[inline]
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        let inner: &[T] = self;
+        let other_inner: &[T] = other;
+        inner.partial_cmp(other_inner)
     }
 }
 
@@ -1925,5 +2014,31 @@ mod tests {
         let buf = AlignedBuffer::<u64, [u8; 8]>::default();
         let lv = LayoutVerified::<_, [u64]>::new_slice(&buf.buf[..]).unwrap();
         assert_eq!(format!("{:?}", lv), "LayoutVerified([0])");
+    }
+
+    #[test]
+    fn test_eq() {
+        let buf = [0u8; 8];
+        let lv1 = LayoutVerified::<_, u64>::new(&buf[..]).unwrap();
+        let lv2 = LayoutVerified::<_, u64>::new(&buf[..]).unwrap();
+        assert_eq!(lv1, lv2);
+    }
+
+    #[test]
+    fn test_ne() {
+        let buf1 = [0u8; 8];
+        let lv1 = LayoutVerified::<_, u64>::new(&buf1[..]).unwrap();
+        let buf2 = [1u8; 8];
+        let lv2 = LayoutVerified::<_, u64>::new(&buf2[..]).unwrap();
+        assert_ne!(lv1, lv2);
+    }
+
+    #[test]
+    fn test_ord() {
+        let buf1 = [0u8; 8];
+        let lv1 = LayoutVerified::<_, u64>::new(&buf1[..]).unwrap();
+        let buf2 = [1u8; 8];
+        let lv2 = LayoutVerified::<_, u64>::new(&buf2[..]).unwrap();
+        assert!(lv1 < lv2);
     }
 }
