@@ -434,11 +434,11 @@ fn impl_block<D: DataExt>(
     struct FromTypeParamVisit<'a, 'b>(&'a Punctuated<GenericParam, Comma>, &'b mut bool);
 
     impl<'a, 'b> Visit<'a> for FromTypeParamVisit<'a, 'b> {
-        fn visit_type_path(&mut self, i: &'a TypePath) {
-            visit::visit_type_path(self, i);
+        fn visit_lifetime(&mut self, i: &'a Lifetime) {
+            visit::visit_lifetime(self, i);
             if self.0.iter().any(|param| {
-                if let GenericParam::Type(param) = param {
-                    i.path.segments.first().unwrap().ident == param.ident
+                if let GenericParam::Lifetime(param) = param {
+                    param.lifetime.ident == i.ident
                 } else {
                     false
                 }
@@ -447,11 +447,11 @@ fn impl_block<D: DataExt>(
             }
         }
 
-        fn visit_lifetime(&mut self, i: &'a Lifetime) {
-            visit::visit_lifetime(self, i);
+        fn visit_type_path(&mut self, i: &'a TypePath) {
+            visit::visit_type_path(self, i);
             if self.0.iter().any(|param| {
-                if let GenericParam::Lifetime(param) = param {
-                    param.lifetime.ident == i.ident
+                if let GenericParam::Type(param) = param {
+                    i.path.segments.first().unwrap().ident == param.ident
                 } else {
                     false
                 }
