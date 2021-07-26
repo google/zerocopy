@@ -1934,16 +1934,18 @@ mod tests {
 
     // Tests for ensuring that, if a ZST is passed into a slice-like function, we always
     // panic. Since these tests need to be separate per-function, and they tend to take
-    // up a lot of space, we genrate them using a macro in a submodule instead. The
+    // up a lot of space, we generate them using a macro in a submodule instead. The
     // submodule ensures that we can just re-use the name of the function under test for
     // the name of the test itself.
     mod test_zst_panics {
         macro_rules! zst_test {
             ($name:ident($($tt:tt)*)) => {
                 #[test]
-                #[should_panic]
+                #[should_panic = "assertion failed"]
                 fn $name() {
-                    $crate::LayoutVerified::<_, [()]>::$name(&mut [0u8][..], $($tt)*);
+                    let mut buffer = [0u8];
+                    let lv = $crate::LayoutVerified::<_, [()]>::$name(&mut buffer[..], $($tt)*);
+                    unreachable!("should have panicked, got {:?}", lv);
                 }
             }
         }

@@ -202,7 +202,7 @@ fn derive_as_bytes_enum(s: &Structure<'_>, enm: &DataEnum) -> proc_macro2::Token
 
     // We don't care what the repr is; we only care that it is one of the
     // allowed ones.
-    try_or_print!(ENUM_AS_BYTES_CFG.validate_reprs(s.ast()));
+    let _: Vec<repr::EnumRepr> = try_or_print!(ENUM_AS_BYTES_CFG.validate_reprs(s.ast()));
     impl_block(s.ast(), enm, "AsBytes", false, false)
 }
 
@@ -283,7 +283,7 @@ fn derive_unaligned_enum(s: &Structure<'_>, enm: &DataEnum) -> proc_macro2::Toke
     // The only valid reprs are u8 and i8, and optionally align(1). We don't
     // actually care what the reprs are so long as they satisfy that
     // requirement.
-    try_or_print!(ENUM_UNALIGNED_CFG.validate_reprs(s.ast()));
+    let _: Vec<repr::EnumRepr> = try_or_print!(ENUM_UNALIGNED_CFG.validate_reprs(s.ast()));
 
     // NOTE: C-like enums cannot currently have type parameters, so this value
     // of true for require_trait_bounds doesn't really do anything. But it's

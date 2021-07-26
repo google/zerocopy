@@ -8,6 +8,7 @@ import("//build/rust/rustc_test.gni")
 
 template("rustc_macro_with_test") {
   rustc_macro(target_name) {
+    configs -= [ "//build/config/rust:allow_unused_results" ]
     forward_variables_from(invoker,
                            [
                              "version",
@@ -20,6 +21,7 @@ template("rustc_macro_with_test") {
   # proc-macro dependencies are only available on host.
   if (is_host) {
     rustc_test("${target_name}_test") {
+      configs -= [ "//build/config/rust:allow_unused_results" ]
       forward_variables_from(invoker,
                              [
                                "version",
