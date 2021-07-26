@@ -24,15 +24,16 @@ rustc_library("zerocopy") {
   ]
 }
 
-fuchsia_unittest_package("zerocopy_tests") {
+fuchsia_unittest_package("zerocopy-test-package") {
+  package_name = "zerocopy-test"
   deps = [ ":zerocopy_test" ]
 }
 
 group("tests") {
   testonly = true
-
-  deps = [
-    ":zerocopy_tests",
+  public_deps = [
+    ":zerocopy-test-package",
+    ":zerocopy_test($host_toolchain)",
     "zerocopy-derive:tests",
   ]
 }
