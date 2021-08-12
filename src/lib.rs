@@ -159,6 +159,111 @@ pub unsafe trait FromBytes {
     fn only_derive_is_allowed_to_implement_this_trait()
     where
         Self: Sized;
+
+    /// Creates an instance of `Self` from zeroed bytes.
+    fn new_zeroed() -> Self
+    where
+        Self: Sized,
+    {
+        unsafe {
+            // Safe because FromBytes says all bit patterns (including zeroes)
+            // are legal.
+            core::mem::zeroed()
+        }
+    }
+
+    /// Creates a `Box<Self>` from zeroed bytes.
+    ///
+    /// This function is useful for allocating large values on the heap and
+    /// zero-initializing them, without ever creating a temporary instance of
+    /// `Self` on the stack. For example, `<[u8; 1048576]>::new_box_zeroed()`
+    /// will allocate `[u8; 1048576]` directly on the heap; it does not require
+    /// storing `[u8; 1048576]` in a temporary variable on the stack.
+    ///
+    /// On systems that use a heap implementation that supports allocating from
+    /// pre-zeroed memory, using `new_box_zeroed` (or related functions) may
+    /// have performance benefits.
+    ///
+    /// Note that `Box<Self>` can be converted to `Arc<Self>` and other
+    /// container types without reallocation.
+    ///
+    /// # Panics
+    ///
+    /// Panics if allocation of `size_of::<Self>()` bytes fails.
+    #[cfg(any(test, feature = "alloc"))]
+    fn new_box_zeroed() -> Box<Self>
+    where
+        Self: Sized,
+    {
+        // If T is a ZST, then return a proper boxed instance of it. There is no
+        // allocation, but Box does require a correct dangling pointer.
+        let layout = Layout::new::<Self>();
+        if layout.size() == 0 {
+            return Box::new(Self::new_zeroed());
+        }
+
+        unsafe {
+            let ptr = alloc::alloc::alloc_zeroed(layout) as *mut Self;
+            if ptr.is_null() {
+                alloc::alloc::handle_alloc_error(layout);
+            }
+            Box::from_raw(ptr)
+        }
+    }
+
+    /// Creates a `Box<[Self]>` (a boxed slice) from zeroed bytes.
+    ///
+    /// This function is useful for allocating large values of `[Self]` on the
+    /// heap and zero-initializing them, without ever creating a temporary
+    /// instance of `[Self; _]` on the stack. For example,
+    /// `u8::new_box_slice_zeroed(1048576)` will allocate the slice directly on
+    /// the heap; it does not require storing the slice on the stack.
+    ///
+    /// On systems that use a heap implementation that supports allocating from
+    /// pre-zeroed memory, using `new_box_slice_zeroed` may have performance
+    /// benefits.
+    ///
+    /// If `Self` is a zero-sized type, then this function will return a
+    /// `Box<[Self]>` that has the correct `len`. Such a box cannot contain any
+    /// actual information, but its `len()` property will report the correct
+    /// value.
+    ///
+    /// # Panics
+    ///
+    /// * Panics if `size_of::<Self>() * len` overflows.
+    /// * Panics if allocation of `size_of::<Self>() * len` bytes fails.
+    #[cfg(any(test, feature = "alloc"))]
+    fn new_box_slice_zeroed(len: usize) -> Box<[Self]>
+    where
+        Self: Sized,
+    {
+        // TODO(https://fxbug.dev/80757): Use Layout::repeat() when `alloc_layout_extra` is stabilized
+        // This will intentionally panic if it overflows.
+        unsafe {
+            // from_size_align_unchecked() is sound because slice_len_bytes is
+            // guaranteed to be properly aligned (we just multiplied it by
+            // size_of::<T>(), which is guaranteed to be aligned).
+            let layout = Layout::from_size_align_unchecked(
+                size_of::<Self>().checked_mul(len).unwrap(),
+                align_of::<Self>(),
+            );
+            if layout.size() != 0 {
+                let ptr = alloc::alloc::alloc_zeroed(layout) as *mut Self;
+                if ptr.is_null() {
+                    alloc::alloc::handle_alloc_error(layout);
+                }
+                Box::from_raw(core::slice::from_raw_parts_mut(ptr, len))
+            } else {
+                // Box<[T]> does not allocate when T is zero-sized or when len
+                // is zero, but it does require a non-null dangling pointer for
+                // its allocation.
+                Box::from_raw(core::slice::from_raw_parts_mut(
+                    NonNull::<Self>::dangling().as_ptr(),
+                    len,
+                ))
+            }
+        }
+    }
 }
 
 /// Types which are safe to treat as an immutable byte slice.
@@ -1395,6 +1500,57 @@ unsafe impl<'a> ByteSliceMut for RefMut<'a, [u8]> {
     }
 }
 
+#[cfg(any(test, feature = "alloc"))]
+mod alloc_support {
+    pub(crate) extern crate alloc;
+    pub(crate) use super::*;
+    pub(crate) use alloc::alloc::Layout;
+    pub(crate) use alloc::boxed::Box;
+    pub(crate) use alloc::vec::Vec;
+    pub(crate) use core::mem::{align_of, size_of};
+    pub(crate) use core::ptr::NonNull;
+
+    /// Extends a `Vec<T>` by pushing `additional` new items onto the end of the
+    /// vector. The new items are initialized with zeroes.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `Vec::reserve(additional)` fails to reserve enough memory.
+    pub fn extend_vec_zeroed<T: FromBytes>(v: &mut Vec<T>, additional: usize) {
+        insert_vec_zeroed(v, v.len(), additional);
+    }
+
+    /// Inserts `additional` new items into `Vec<T>` at `position`.
+    /// The new items are initialized with zeroes.
+    ///
+    /// # Panics
+    ///
+    /// * Panics if `position > v.len()`.
+    /// * Panics if `Vec::reserve(additional)` fails to reserve enough memory.
+    pub fn insert_vec_zeroed<T: FromBytes>(v: &mut Vec<T>, position: usize, additional: usize) {
+        assert!(position <= v.len());
+        v.reserve(additional);
+        // The reserve() call guarantees that these cannot overflow:
+        // * `ptr.add(position)`
+        // * `position + additional`
+        // * `v.len() + additional`
+        //
+        // `v.len() - position` cannot overflow because we asserted that
+        // position <= v.len().
+        unsafe {
+            // This is a potentially overlapping copy.
+            let ptr = v.as_mut_ptr();
+            ptr.add(position).copy_to(ptr.add(position + additional), v.len() - position);
+            ptr.add(position).write_bytes(0, additional);
+            v.set_len(v.len() + additional);
+        }
+    }
+}
+
+#[cfg(any(test, feature = "alloc"))]
+#[doc(inline)]
+pub use alloc_support::*;
+
 #[cfg(test)]
 mod tests {
     #![allow(clippy::unreadable_literal)]
@@ -1425,8 +1581,8 @@ mod tests {
 
     #[test]
     fn test_address() {
-        // test that the Deref and DerefMut implementations return a reference which
-        // points to the right region of memory
+        // test that the Deref and DerefMut implementations return a reference
+        // which points to the right region of memory
 
         let buf = [0];
         let lv = LayoutVerified::<_, u8>::new(&buf[..]).unwrap();
@@ -2042,5 +2198,175 @@ mod tests {
         let buf2 = [1u8; 8];
         let lv2 = LayoutVerified::<_, u64>::new(&buf2[..]).unwrap();
         assert!(lv1 < lv2);
+    }
+
+    #[test]
+    fn test_new_zeroed() {
+        assert_eq!(u64::new_zeroed(), 0);
+        assert_eq!(<()>::new_zeroed(), ());
+    }
+
+    #[test]
+    fn test_new_box_zeroed() {
+        assert_eq!(*u64::new_box_zeroed(), 0);
+    }
+
+    #[test]
+    fn test_new_box_zeroed_array() {
+        drop(<[u32; 0x1000]>::new_box_zeroed());
+    }
+
+    #[test]
+    fn test_new_box_zeroed_zst() {
+        assert_eq!(*<()>::new_box_zeroed(), ());
+    }
+
+    #[test]
+    fn test_new_box_slice_zeroed() {
+        let mut s: Box<[u64]> = u64::new_box_slice_zeroed(3);
+        assert_eq!(s.len(), 3);
+        assert_eq!(&*s, &[0, 0, 0]);
+        s[1] = 3;
+        assert_eq!(&*s, &[0, 3, 0]);
+    }
+
+    #[test]
+    fn test_new_box_slice_zeroed_empty() {
+        let s: Box<[u64]> = u64::new_box_slice_zeroed(0);
+        assert_eq!(s.len(), 0);
+    }
+
+    #[test]
+    fn test_new_box_slice_zeroed_zst() {
+        let mut s: Box<[()]> = <()>::new_box_slice_zeroed(3);
+        assert_eq!(s.len(), 3);
+        assert!(s.get(10).is_none());
+        assert_eq!(s[1], ());
+        s[2] = ();
+    }
+
+    #[test]
+    fn test_new_box_slice_zeroed_zst_empty() {
+        let s: Box<[()]> = <()>::new_box_slice_zeroed(0);
+        assert_eq!(s.len(), 0);
+    }
+
+    #[test]
+    fn test_extend_vec_zeroed() {
+        // test extending when there is an existing allocation
+        let mut v: Vec<u64> = Vec::with_capacity(3);
+        v.push(100);
+        v.push(200);
+        v.push(300);
+        extend_vec_zeroed(&mut v, 3);
+        assert_eq!(v.len(), 6);
+        assert_eq!(&*v, &[100, 200, 300, 0, 0, 0]);
+        drop(v);
+
+        // test extending when there is no existing allocation
+        let mut v: Vec<u64> = Vec::new();
+        extend_vec_zeroed(&mut v, 3);
+        assert_eq!(v.len(), 3);
+        assert_eq!(&*v, &[0, 0, 0]);
+        drop(v);
+    }
+
+    #[test]
+    fn test_extend_vec_zeroed_zst() {
+        // test extending when there is an existing (fake) allocation
+        let mut v: Vec<()> = Vec::with_capacity(3);
+        v.push(());
+        v.push(());
+        v.push(());
+        extend_vec_zeroed(&mut v, 3);
+        assert_eq!(v.len(), 6);
+        assert_eq!(&*v, &[(), (), (), (), (), ()]);
+        drop(v);
+
+        // test extending when there is no existing (fake) allocation
+        let mut v: Vec<()> = Vec::new();
+        extend_vec_zeroed(&mut v, 3);
+        assert_eq!(&*v, &[(), (), ()]);
+        drop(v);
+    }
+
+    #[test]
+    fn test_insert_vec_zeroed() {
+        // insert at start (no existing allocation)
+        let mut v: Vec<u64> = Vec::new();
+        insert_vec_zeroed(&mut v, 0, 2);
+        assert_eq!(v.len(), 2);
+        assert_eq!(&*v, &[0, 0]);
+        drop(v);
+
+        // insert at start
+        let mut v: Vec<u64> = Vec::with_capacity(3);
+        v.push(100);
+        v.push(200);
+        v.push(300);
+        insert_vec_zeroed(&mut v, 0, 2);
+        assert_eq!(v.len(), 5);
+        assert_eq!(&*v, &[0, 0, 100, 200, 300]);
+        drop(v);
+
+        // insert at middle
+        let mut v: Vec<u64> = Vec::with_capacity(3);
+        v.push(100);
+        v.push(200);
+        v.push(300);
+        insert_vec_zeroed(&mut v, 1, 1);
+        assert_eq!(v.len(), 4);
+        assert_eq!(&*v, &[100, 0, 200, 300]);
+        drop(v);
+
+        // insert at end
+        let mut v: Vec<u64> = Vec::with_capacity(3);
+        v.push(100);
+        v.push(200);
+        v.push(300);
+        insert_vec_zeroed(&mut v, 3, 1);
+        assert_eq!(v.len(), 4);
+        assert_eq!(&*v, &[100, 200, 300, 0]);
+        drop(v);
+    }
+
+    #[test]
+    fn test_insert_vec_zeroed_zst() {
+        // insert at start (no existing fake allocation)
+        let mut v: Vec<()> = Vec::new();
+        insert_vec_zeroed(&mut v, 0, 2);
+        assert_eq!(v.len(), 2);
+        assert_eq!(&*v, &[(), ()]);
+        drop(v);
+
+        // insert at start
+        let mut v: Vec<()> = Vec::with_capacity(3);
+        v.push(());
+        v.push(());
+        v.push(());
+        insert_vec_zeroed(&mut v, 0, 2);
+        assert_eq!(v.len(), 5);
+        assert_eq!(&*v, &[(), (), (), (), ()]);
+        drop(v);
+
+        // insert at middle
+        let mut v: Vec<()> = Vec::with_capacity(3);
+        v.push(());
+        v.push(());
+        v.push(());
+        insert_vec_zeroed(&mut v, 1, 1);
+        assert_eq!(v.len(), 4);
+        assert_eq!(&*v, &[(), (), (), ()]);
+        drop(v);
+
+        // insert at end
+        let mut v: Vec<()> = Vec::with_capacity(3);
+        v.push(());
+        v.push(());
+        v.push(());
+        insert_vec_zeroed(&mut v, 3, 1);
+        assert_eq!(v.len(), 4);
+        assert_eq!(&*v, &[(), (), (), ()]);
+        drop(v);
     }
 }

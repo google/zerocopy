@@ -18,6 +18,8 @@ rustc_library("zerocopy") {
     "//third_party/rust_crates:rand",
   ]
 
+  features = [ "alloc" ]
+
   sources = [
     "src/byteorder.rs",
     "src/lib.rs",
