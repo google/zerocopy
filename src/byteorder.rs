@@ -63,13 +63,17 @@ use core::fmt::{self, Binary, Debug, Display, Formatter, LowerHex, Octal, UpperH
 use core::marker::PhantomData;
 use core::num::TryFromIntError;
 
-use byteorder::ByteOrder;
 use zerocopy_derive::*;
 
 use crate::AsBytes;
 // This allows the custom derives to work. See the comment on this module for an
 // explanation.
 use crate::zerocopy;
+
+// NOTE: We don't reexport `WriteBytesExt` or `ReadBytesExt` because those are
+// only available with the `std` feature enabled, and zerocopy is `no_std` by
+// default.
+pub use byteorder::{BigEndian, ByteOrder, LittleEndian, NativeEndian, NetworkEndian, BE, LE};
 
 macro_rules! impl_fmt_trait {
     ($name:ident, $native:ident, $trait:ident) => {
