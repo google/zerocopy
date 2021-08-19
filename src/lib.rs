@@ -407,6 +407,56 @@ unsafe impl Unaligned for i8 {
 }
 impl_for_composite_types!(Unaligned);
 
+// Used in `transmute!` below.
+#[doc(hidden)]
+pub use core::mem::transmute as __real_transmute;
+
+/// Safely transmutes a value of one type to a value of another type of the same
+/// size.
+///
+/// The expression `$e` must have a concrete type, `T`, which implements
+/// `AsBytes`. The `transmute!` expression must also have a concrete type, `U`
+/// (`U` is inferred from the calling context), and `U` must implement
+/// `FromBytes`.
+///
+/// Note that the `T` produced by the expression `$e` will *not* be dropped.
+/// Semantically, its bits will be copied into a new value of type `U`, the
+/// original `T` will be forgotten, and the value of type `U` will be returned.
+#[macro_export]
+macro_rules! transmute {
+    ($e:expr) => {{
+        // NOTE: This must be a macro (rather than a function with trait bounds)
+        // because there's no way, in a generic context, to enforce that two
+        // types have the same size. `core::mem::transmute` uses compiler magic
+        // to enforce this so long as the types are concrete.
+
+        let e = $e;
+        if false {
+            // This branch, though never taken, ensures that the type of `e` is
+            // `AsBytes` and that the type of this macro invocation expression
+            // is `FromBytes`.
+            fn transmute<T: $crate::AsBytes, U: $crate::FromBytes>(_t: T) -> U {
+                unreachable!()
+            }
+            transmute(e)
+        } else {
+            // `core::mem::transmute` ensures that the type of `e` and the type
+            // of this macro invocation expression have the same size. We know
+            // this transmute is safe thanks to the `AsBytes` and `FromBytes`
+            // bounds enforced by the `false` branch.
+            //
+            // We use `$crate::__real_transmute` because we know it will always
+            // be available for crates which are using the 2015 edition of Rust.
+            // By contrast, if we were to use `std::mem::transmute`, this macro
+            // would not work for such crates in `no_std` contexts, and if we
+            // were to use `core::mem::transmute`, this macro would not work in
+            // `std` contexts in which `core` was not manually imported. This is
+            // not a problem for 2018 edition crates.
+            unsafe { $crate::__real_transmute(e) }
+        }
+    }}
+}
+
 /// A length- and alignment-checked reference to a byte slice which can safely
 /// be reinterpreted as another type.
 ///
@@ -1577,6 +1627,29 @@ mod tests {
     // convert a u64 to bytes using this platform's endianness
     fn u64_to_bytes(u: u64) -> [u8; 8] {
         unsafe { ptr::read(&u as *const u64 as *const [u8; 8]) }
+    }
+
+    #[test]
+    fn test_transmute() {
+        // Test that memory is transmuted as expected.
+        let array_of_u8s = [0u8, 1, 2, 3, 4, 5, 6, 7];
+        let array_of_arrays = [[0, 1], [2, 3], [4, 5], [6, 7]];
+        let x: [[u8; 2]; 4] = transmute!(array_of_u8s);
+        assert_eq!(x, array_of_arrays);
+        let x: [u8; 8] = transmute!(array_of_arrays);
+        assert_eq!(x, array_of_u8s);
+
+        // Test that the source expression's value is forgotten rather than
+        // dropped.
+        #[derive(AsBytes)]
+        #[repr(transparent)]
+        struct PanicOnDrop(());
+        impl Drop for PanicOnDrop {
+            fn drop(&mut self) {
+                panic!("PanicOnDrop::drop");
+            }
+        }
+        let _: () = transmute!(PanicOnDrop(()));
     }
 
     #[test]
