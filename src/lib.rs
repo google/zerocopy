@@ -22,6 +22,7 @@
 //! Note that these traits are ignorant of byte order. For byte order-aware
 //! types, see the [`byteorder`] module.
 
+#![deny(missing_docs)]
 #![cfg_attr(not(test), no_std)]
 #![recursion_limit = "2048"]
 
@@ -325,7 +326,7 @@ pub unsafe trait AsBytes {
     where
         Self: Sized;
 
-    /// Get the bytes of this value.
+    /// Gets the bytes of this value.
     ///
     /// `as_bytes` provides access to the bytes of this value as an immutable
     /// byte slice.
@@ -338,7 +339,7 @@ pub unsafe trait AsBytes {
         }
     }
 
-    /// Get the bytes of this value mutably.
+    /// Gets the bytes of this value mutably.
     ///
     /// `as_bytes_mut` provides access to the bytes of this value as a mutable
     /// byte slice.
@@ -512,7 +513,7 @@ impl<B, T> LayoutVerified<B, T>
 where
     B: ByteSlice,
 {
-    /// Construct a new `LayoutVerified`.
+    /// Constructs a new `LayoutVerified`.
     ///
     /// `new` verifies that `bytes.len() == size_of::<T>()` and that `bytes` is
     /// aligned to `align_of::<T>()`, and constructs a new `LayoutVerified`. If
@@ -525,7 +526,7 @@ where
         Some(LayoutVerified(bytes, PhantomData))
     }
 
-    /// Construct a new `LayoutVerified` from the prefix of a byte slice.
+    /// Constructs a new `LayoutVerified` from the prefix of a byte slice.
     ///
     /// `new_from_prefix` verifies that `bytes.len() >= size_of::<T>()` and that
     /// `bytes` is aligned to `align_of::<T>()`. It consumes the first
@@ -541,7 +542,7 @@ where
         Some((LayoutVerified(bytes, PhantomData), suffix))
     }
 
-    /// Construct a new `LayoutVerified` from the suffix of a byte slice.
+    /// Constructs a new `LayoutVerified` from the suffix of a byte slice.
     ///
     /// `new_from_suffix` verifies that `bytes.len() >= size_of::<T>()` and that
     /// the last `size_of::<T>()` bytes of `bytes` are aligned to
@@ -563,23 +564,11 @@ where
     }
 }
 
-impl<B, T> LayoutVerified<B, T>
-where
-    B: ByteSlice,
-    T: ?Sized,
-{
-    // Get the underlying bytes.
-    #[inline]
-    pub fn bytes(&self) -> &[u8] {
-        &self.0
-    }
-}
-
 impl<B, T> LayoutVerified<B, [T]>
 where
     B: ByteSlice,
 {
-    /// Construct a new `LayoutVerified` of a slice type.
+    /// Constructs a new `LayoutVerified` of a slice type.
     ///
     /// `new_slice` verifies that `bytes.len()` is a multiple of
     /// `size_of::<T>()` and that `bytes` is aligned to `align_of::<T>()`, and
@@ -600,14 +589,15 @@ where
         Some(LayoutVerified(bytes, PhantomData))
     }
 
-    /// Construct a new `LayoutVerified` of a slice type from the prefix of a byte slice.
+    /// Constructs a new `LayoutVerified` of a slice type from the prefix of a
+    /// byte slice.
     ///
-    /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() * count`
-    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the first
-    /// `size_of::<T>() * count` bytes from `bytes` to construct a `LayoutVerified`, and
-    /// returns the remaining bytes to the caller. It also ensures that
-    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the length,
-    /// alignment, or overflow checks fail, it returns `None`.
+    /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() *
+    /// count` and that `bytes` is aligned to `align_of::<T>()`. It consumes the
+    /// first `size_of::<T>() * count` bytes from `bytes` to construct a
+    /// `LayoutVerified`, and returns the remaining bytes to the caller. It also
+    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`. If any
+    /// of the length, alignment, or overflow checks fail, it returns `None`.
     ///
     /// # Panics
     ///
@@ -625,14 +615,15 @@ where
         Self::new_slice(prefix).map(move |l| (l, bytes))
     }
 
-    /// Construct a new `LayoutVerified` of a slice type from the suffix of a byte slice.
+    /// Constructs a new `LayoutVerified` of a slice type from the suffix of a
+    /// byte slice.
     ///
-    /// `new_slice_from_suffix` verifies that `bytes.len() >= size_of::<T>() * count`
-    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the last
-    /// `size_of::<T>() * count` bytes from `bytes` to construct a `LayoutVerified`, and
-    /// returns the preceding bytes to the caller. It also ensures that
-    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the length,
-    /// alignment, or overflow checks fail, it returns `None`.
+    /// `new_slice_from_suffix` verifies that `bytes.len() >= size_of::<T>() *
+    /// count` and that `bytes` is aligned to `align_of::<T>()`. It consumes the
+    /// last `size_of::<T>() * count` bytes from `bytes` to construct a
+    /// `LayoutVerified`, and returns the preceding bytes to the caller. It also
+    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`. If any
+    /// of the length, alignment, or overflow checks fail, it returns `None`.
     ///
     /// # Panics
     ///
@@ -689,7 +680,7 @@ impl<B, T> LayoutVerified<B, T>
 where
     B: ByteSliceMut,
 {
-    /// Construct a new `LayoutVerified` after zeroing the bytes.
+    /// Constructs a new `LayoutVerified` after zeroing the bytes.
     ///
     /// `new_zeroed` verifies that `bytes.len() == size_of::<T>()` and that
     /// `bytes` is aligned to `align_of::<T>()`, and constructs a new
@@ -703,7 +694,7 @@ where
         map_zeroed(Self::new(bytes))
     }
 
-    /// Construct a new `LayoutVerified` from the prefix of a byte slice,
+    /// Constructs a new `LayoutVerified` from the prefix of a byte slice,
     /// zeroing the prefix.
     ///
     /// `new_from_prefix_zeroed` verifies that `bytes.len() >= size_of::<T>()`
@@ -720,11 +711,11 @@ where
         map_prefix_tuple_zeroed(Self::new_from_prefix(bytes))
     }
 
-    /// Construct a new `LayoutVerified` from the suffix of a byte slice,
+    /// Constructs a new `LayoutVerified` from the suffix of a byte slice,
     /// zeroing the suffix.
     ///
-    /// `new_from_suffix_zeroed` verifies that `bytes.len() >= size_of::<T>()` and that
-    /// the last `size_of::<T>()` bytes of `bytes` are aligned to
+    /// `new_from_suffix_zeroed` verifies that `bytes.len() >= size_of::<T>()`
+    /// and that the last `size_of::<T>()` bytes of `bytes` are aligned to
     /// `align_of::<T>()`. It consumes the last `size_of::<T>()` bytes from
     /// `bytes` to construct a `LayoutVerified`, and returns the preceding bytes
     /// to the caller. If either the length or alignment checks fail, it returns
@@ -743,7 +734,7 @@ impl<B, T> LayoutVerified<B, [T]>
 where
     B: ByteSliceMut,
 {
-    /// Construct a new `LayoutVerified` of a slice type after zeroing the
+    /// Constructs a new `LayoutVerified` of a slice type after zeroing the
     /// bytes.
     ///
     /// `new_slice_zeroed` verifies that `bytes.len()` is a multiple of
@@ -763,15 +754,15 @@ where
         map_zeroed(Self::new_slice(bytes))
     }
 
-    /// Construct a new `LayoutVerified` of a slice type from the prefix of a byte slice,
-    /// after zeroing the bytes.
+    /// Constructs a new `LayoutVerified` of a slice type from the prefix of a
+    /// byte slice, after zeroing the bytes.
     ///
-    /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() * count`
-    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the first
-    /// `size_of::<T>() * count` bytes from `bytes` to construct a `LayoutVerified`, and
-    /// returns the remaining bytes to the caller. It also ensures that
-    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the length,
-    /// alignment, or overflow checks fail, it returns `None`.
+    /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() *
+    /// count` and that `bytes` is aligned to `align_of::<T>()`. It consumes the
+    /// first `size_of::<T>() * count` bytes from `bytes` to construct a
+    /// `LayoutVerified`, and returns the remaining bytes to the caller. It also
+    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`. If any
+    /// of the length, alignment, or overflow checks fail, it returns `None`.
     ///
     /// If the checks succeed, then the suffix which is consumed will be
     /// initialized to zero. This can be useful when re-using buffers to ensure
@@ -788,19 +779,19 @@ where
         map_prefix_tuple_zeroed(Self::new_slice_from_prefix(bytes, count))
     }
 
-    /// Construct a new `LayoutVerified` of a slice type from the prefix of a byte slice,
-    /// after zeroing the bytes.
+    /// Constructs a new `LayoutVerified` of a slice type from the prefix of a
+    /// byte slice, after zeroing the bytes.
     ///
-    /// `new_slice_from_suffix` verifies that `bytes.len() >= size_of::<T>() * count`
-    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the last
-    /// `size_of::<T>() * count` bytes from `bytes` to construct a `LayoutVerified`, and
-    /// returns the preceding bytes to the caller. It also ensures that
-    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the length,
-    /// alignment, or overflow checks fail, it returns `None`.
+    /// `new_slice_from_suffix` verifies that `bytes.len() >= size_of::<T>() *
+    /// count` and that `bytes` is aligned to `align_of::<T>()`. It consumes the
+    /// last `size_of::<T>() * count` bytes from `bytes` to construct a
+    /// `LayoutVerified`, and returns the preceding bytes to the caller. It also
+    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`. If any
+    /// of the length, alignment, or overflow checks fail, it returns `None`.
     ///
-    /// If the checks succeed, then the consumed suffix will be initialized to zero. This
-    /// can be useful when re-using buffers to ensure that sensitive data
-    /// previously stored in the buffer is not leaked.
+    /// If the checks succeed, then the consumed suffix will be initialized to
+    /// zero. This can be useful when re-using buffers to ensure that sensitive
+    /// data previously stored in the buffer is not leaked.
     ///
     /// # Panics
     ///
@@ -819,7 +810,7 @@ where
     B: ByteSlice,
     T: Unaligned,
 {
-    /// Construct a new `LayoutVerified` for a type with no alignment
+    /// Constructs a new `LayoutVerified` for a type with no alignment
     /// requirement.
     ///
     /// `new_unaligned` verifies that `bytes.len() == size_of::<T>()` and
@@ -833,7 +824,7 @@ where
         Some(LayoutVerified(bytes, PhantomData))
     }
 
-    /// Construct a new `LayoutVerified` from the prefix of a byte slice for a
+    /// Constructs a new `LayoutVerified` from the prefix of a byte slice for a
     /// type with no alignment requirement.
     ///
     /// `new_unaligned_from_prefix` verifies that `bytes.len() >=
@@ -849,7 +840,7 @@ where
         Some((LayoutVerified(bytes, PhantomData), suffix))
     }
 
-    /// Construct a new `LayoutVerified` from the suffix of a byte slice for a
+    /// Constructs a new `LayoutVerified` from the suffix of a byte slice for a
     /// type with no alignment requirement.
     ///
     /// `new_unaligned_from_suffix` verifies that `bytes.len() >=
@@ -872,7 +863,7 @@ where
     B: ByteSlice,
     T: Unaligned,
 {
-    /// Construct a new `LayoutVerified` of a slice type with no alignment
+    /// Constructs a new `LayoutVerified` of a slice type with no alignment
     /// requirement.
     ///
     /// `new_slice_unaligned` verifies that `bytes.len()` is a multiple of
@@ -891,14 +882,15 @@ where
         Some(LayoutVerified(bytes, PhantomData))
     }
 
-    /// Construct a new `LayoutVerified` of a slice type with no alignment requirement
-    /// from the prefix of a byte slice.
+    /// Constructs a new `LayoutVerified` of a slice type with no alignment
+    /// requirement from the prefix of a byte slice.
     ///
-    /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() * count`.
-    /// It consumes the first `size_of::<T>() * count` bytes from `bytes` to construct
-    /// a `LayoutVerified`, and returns the remaining bytes to the caller. It also
-    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`. If either the
-    /// length, or overflow checks fail, it returns `None`.
+    /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() *
+    /// count`. It consumes the first `size_of::<T>() * count` bytes from
+    /// `bytes` to construct a `LayoutVerified`, and returns the remaining bytes
+    /// to the caller. It also ensures that `sizeof::<T>() * count` does not
+    /// overflow a `usize`. If either the length, or overflow checks fail, it
+    /// returns `None`.
     ///
     /// # Panics
     ///
@@ -919,14 +911,15 @@ where
         Self::new_slice_unaligned(prefix).map(move |l| (l, bytes))
     }
 
-    /// Construct a new `LayoutVerified` of a slice type with no alignment requirement
-    /// from the suffix of a byte slice.
+    /// Constructs a new `LayoutVerified` of a slice type with no alignment
+    /// requirement from the suffix of a byte slice.
     ///
-    /// `new_slice_from_suffix` verifies that `bytes.len() >= size_of::<T>() * count`.
-    /// It consumes the last `size_of::<T>() * count` bytes from `bytes` to construct
-    /// a `LayoutVerified`, and returns the remaining bytes to the caller. It also
-    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`. If either the
-    /// length, or overflow checks fail, it returns `None`.
+    /// `new_slice_from_suffix` verifies that `bytes.len() >= size_of::<T>() *
+    /// count`. It consumes the last `size_of::<T>() * count` bytes from `bytes`
+    /// to construct a `LayoutVerified`, and returns the remaining bytes to the
+    /// caller. It also ensures that `sizeof::<T>() * count` does not overflow a
+    /// `usize`. If either the length, or overflow checks fail, it returns
+    /// `None`.
     ///
     /// # Panics
     ///
@@ -953,7 +946,7 @@ where
     B: ByteSliceMut,
     T: Unaligned,
 {
-    /// Construct a new `LayoutVerified` for a type with no alignment
+    /// Constructs a new `LayoutVerified` for a type with no alignment
     /// requirement, zeroing the bytes.
     ///
     /// `new_unaligned_zeroed` verifies that `bytes.len() == size_of::<T>()` and
@@ -968,7 +961,7 @@ where
         map_zeroed(Self::new_unaligned(bytes))
     }
 
-    /// Construct a new `LayoutVerified` from the prefix of a byte slice for a
+    /// Constructs a new `LayoutVerified` from the prefix of a byte slice for a
     /// type with no alignment requirement, zeroing the prefix.
     ///
     /// `new_unaligned_from_prefix_zeroed` verifies that `bytes.len() >=
@@ -984,7 +977,7 @@ where
         map_prefix_tuple_zeroed(Self::new_unaligned_from_prefix(bytes))
     }
 
-    /// Construct a new `LayoutVerified` from the suffix of a byte slice for a
+    /// Constructs a new `LayoutVerified` from the suffix of a byte slice for a
     /// type with no alignment requirement, zeroing the suffix.
     ///
     /// `new_unaligned_from_suffix_zeroed` verifies that `bytes.len() >=
@@ -1006,7 +999,7 @@ where
     B: ByteSliceMut,
     T: Unaligned,
 {
-    /// Construct a new `LayoutVerified` for a slice type with no alignment
+    /// Constructs a new `LayoutVerified` for a slice type with no alignment
     /// requirement, zeroing the bytes.
     ///
     /// `new_slice_unaligned_zeroed` verifies that `bytes.len()` is a multiple
@@ -1025,14 +1018,15 @@ where
         map_zeroed(Self::new_slice_unaligned(bytes))
     }
 
-    /// Construct a new `LayoutVerified` of a slice type with no alignment requirement
-    /// from the prefix of a byte slice, after zeroing the bytes.
+    /// Constructs a new `LayoutVerified` of a slice type with no alignment
+    /// requirement from the prefix of a byte slice, after zeroing the bytes.
     ///
-    /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() * count`.
-    /// It consumes the first `size_of::<T>() * count` bytes from `bytes` to construct
-    /// a `LayoutVerified`, and returns the remaining bytes to the caller. It also
-    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`. If either the
-    /// length, or overflow checks fail, it returns `None`.
+    /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() *
+    /// count`. It consumes the first `size_of::<T>() * count` bytes from
+    /// `bytes` to construct a `LayoutVerified`, and returns the remaining bytes
+    /// to the caller. It also ensures that `sizeof::<T>() * count` does not
+    /// overflow a `usize`. If either the length, or overflow checks fail, it
+    /// returns `None`.
     ///
     /// If the checks succeed, then the prefix will be initialized to zero. This
     /// can be useful when re-using buffers to ensure that sensitive data
@@ -1040,7 +1034,8 @@ where
     ///
     /// # Panics
     ///
-    /// `new_slice_unaligned_from_prefix_zeroed` panics if `T` is a zero-sized type.
+    /// `new_slice_unaligned_from_prefix_zeroed` panics if `T` is a zero-sized
+    /// type.
     #[inline]
     pub fn new_slice_unaligned_from_prefix_zeroed(
         bytes: B,
@@ -1049,14 +1044,15 @@ where
         map_prefix_tuple_zeroed(Self::new_slice_unaligned_from_prefix(bytes, count))
     }
 
-    /// Construct a new `LayoutVerified` of a slice type with no alignment requirement
-    /// from the suffix of a byte slice, after zeroing the bytes.
+    /// Constructs a new `LayoutVerified` of a slice type with no alignment
+    /// requirement from the suffix of a byte slice, after zeroing the bytes.
     ///
-    /// `new_slice_from_suffix` verifies that `bytes.len() >= size_of::<T>() * count`.
-    /// It consumes the last `size_of::<T>() * count` bytes from `bytes` to construct
-    /// a `LayoutVerified`, and returns the remaining bytes to the caller. It also
-    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`. If either the
-    /// length, or overflow checks fail, it returns `None`.
+    /// `new_slice_from_suffix` verifies that `bytes.len() >= size_of::<T>() *
+    /// count`. It consumes the last `size_of::<T>() * count` bytes from `bytes`
+    /// to construct a `LayoutVerified`, and returns the remaining bytes to the
+    /// caller. It also ensures that `sizeof::<T>() * count` does not overflow a
+    /// `usize`. If either the length, or overflow checks fail, it returns
+    /// `None`.
     ///
     /// If the checks succeed, then the suffix will be initialized to zero. This
     /// can be useful when re-using buffers to ensure that sensitive data
@@ -1064,7 +1060,8 @@ where
     ///
     /// # Panics
     ///
-    /// `new_slice_unaligned_from_suffix_zeroed` panics if `T` is a zero-sized type.
+    /// `new_slice_unaligned_from_suffix_zeroed` panics if `T` is a zero-sized
+    /// type.
     #[inline]
     pub fn new_slice_unaligned_from_suffix_zeroed(
         bytes: B,
@@ -1079,7 +1076,7 @@ where
     B: 'a + ByteSlice,
     T: FromBytes,
 {
-    /// Convert this `LayoutVerified` into a reference.
+    /// Converts this `LayoutVerified` into a reference.
     ///
     /// `into_ref` consumes the `LayoutVerified`, and returns a reference to
     /// `T`.
@@ -1099,7 +1096,7 @@ where
     B: 'a + ByteSliceMut,
     T: FromBytes + AsBytes,
 {
-    /// Convert this `LayoutVerified` into a mutable reference.
+    /// Converts this `LayoutVerified` into a mutable reference.
     ///
     /// `into_mut` consumes the `LayoutVerified`, and returns a mutable
     /// reference to `T`.
@@ -1119,7 +1116,7 @@ where
     B: 'a + ByteSlice,
     T: FromBytes,
 {
-    /// Convert this `LayoutVerified` into a slice reference.
+    /// Converts this `LayoutVerified` into a slice reference.
     ///
     /// `into_slice` consumes the `LayoutVerified`, and returns a reference to
     /// `[T]`.
@@ -1139,10 +1136,10 @@ where
     B: 'a + ByteSliceMut,
     T: FromBytes + AsBytes,
 {
-    /// Convert this `LayoutVerified` into a mutable slice reference.
+    /// Converts this `LayoutVerified` into a mutable slice reference.
     ///
-    /// `into_mut_slice` consumes the `LayoutVerified`, and returns a mutable reference to
-    /// `[T]`.
+    /// `into_mut_slice` consumes the `LayoutVerified`, and returns a mutable
+    /// reference to `[T]`.
     pub fn into_mut_slice(mut self) -> &'a mut [T] {
         // NOTE: This is safe because `B` is guaranteed to live for the lifetime
         // `'a`, meaning that a) the returned reference cannot outlive the `B`
@@ -1159,7 +1156,7 @@ where
     B: ByteSlice,
     T: FromBytes,
 {
-    /// Create an immutable reference to `T` with a specific lifetime.
+    /// Creates an immutable reference to `T` with a specific lifetime.
     ///
     /// # Safety
     ///
@@ -1180,7 +1177,7 @@ where
     B: ByteSliceMut,
     T: FromBytes + AsBytes,
 {
-    /// Create a mutable reference to `T` with a specific lifetime.
+    /// Creates a mutable reference to `T` with a specific lifetime.
     ///
     /// # Safety
     ///
@@ -1201,7 +1198,7 @@ where
     B: ByteSlice,
     T: FromBytes,
 {
-    /// Create an immutable reference to `[T]` with a specific lifetime.
+    /// Creates an immutable reference to `[T]` with a specific lifetime.
     ///
     /// # Safety
     ///
@@ -1221,7 +1218,7 @@ where
     B: ByteSliceMut,
     T: FromBytes + AsBytes,
 {
-    /// Create a mutable reference to `[T]` with a specific lifetime.
+    /// Creates a mutable reference to `[T]` with a specific lifetime.
     ///
     /// # Safety
     ///
@@ -1243,10 +1240,22 @@ fn aligned_to(bytes: &[u8], align: usize) -> bool {
 
 impl<B, T> LayoutVerified<B, T>
 where
+    B: ByteSlice,
+    T: ?Sized,
+{
+    /// Gets the underlying bytes.
+    #[inline]
+    pub fn bytes(&self) -> &[u8] {
+        &self.0
+    }
+}
+
+impl<B, T> LayoutVerified<B, T>
+where
     B: ByteSliceMut,
     T: ?Sized,
 {
-    // Get the underlying bytes mutably.
+    /// Gets the underlying bytes mutably.
     #[inline]
     pub fn bytes_mut(&mut self) -> &mut [u8] {
         &mut self.0
@@ -1261,10 +1270,10 @@ where
     type Target = T;
     #[inline]
     fn deref(&self) -> &T {
-        // NOTE: This is safe because the lifetime of `self` is the same as the
-        // lifetime of the return value, meaning that a) the returned reference
-        // cannot outlive `self` and, b) no mutable methods on `self` can be
-        // called during the lifetime of the returned reference. See the
+        // SAFETY: This is safe because the lifetime of `self` is the same as
+        // the lifetime of the return value, meaning that a) the returned
+        // reference cannot outlive `self` and, b) no mutable methods on `self`
+        // can be called during the lifetime of the returned reference. See the
         // documentation on `deref_helper` for what invariants we are required
         // to uphold.
         unsafe { self.deref_helper() }
@@ -1278,10 +1287,10 @@ where
 {
     #[inline]
     fn deref_mut(&mut self) -> &mut T {
-        // NOTE: This is safe because the lifetime of `self` is the same as the
-        // lifetime of the return value, meaning that a) the returned reference
-        // cannot outlive `self` and, b) no other methods on `self` can be
-        // called during the lifetime of the returned reference. See the
+        // SAFETY: This is safe because the lifetime of `self` is the same as
+        // the lifetime of the return value, meaning that a) the returned
+        // reference cannot outlive `self` and, b) no other methods on `self`
+        // can be called during the lifetime of the returned reference. See the
         // documentation on `deref_mut_helper` for what invariants we are
         // required to uphold.
         unsafe { self.deref_mut_helper() }
@@ -1296,10 +1305,10 @@ where
     type Target = [T];
     #[inline]
     fn deref(&self) -> &[T] {
-        // NOTE: This is safe because the lifetime of `self` is the same as the
-        // lifetime of the return value, meaning that a) the returned reference
-        // cannot outlive `self` and, b) no mutable methods on `self` can be
-        // called during the lifetime of the returned reference. See the
+        // SAFETY: This is safe because the lifetime of `self` is the same as
+        // the lifetime of the return value, meaning that a) the returned
+        // reference cannot outlive `self` and, b) no mutable methods on `self`
+        // can be called during the lifetime of the returned reference. See the
         // documentation on `deref_slice_helper` for what invariants we are
         // required to uphold.
         unsafe { self.deref_slice_helper() }
@@ -1313,10 +1322,10 @@ where
 {
     #[inline]
     fn deref_mut(&mut self) -> &mut [T] {
-        // NOTE: This is safe because the lifetime of `self` is the same as the
-        // lifetime of the return value, meaning that a) the returned reference
-        // cannot outlive `self` and, b) no other methods on `self` can be
-        // called during the lifetime of the returned reference. See the
+        // SAFETY: This is safe because the lifetime of `self` is the same as
+        // the lifetime of the return value, meaning that a) the returned
+        // reference cannot outlive `self` and, b) no other methods on `self`
+        // can be called during the lifetime of the returned reference. See the
         // documentation on `deref_mut_slice_helper` for what invariants we are
         // required to uphold.
         unsafe { self.deref_mut_slice_helper() }
@@ -1493,7 +1502,16 @@ mod sealed {
 /// [`Vec<u8>`]: std::vec::Vec
 /// [`split_at`]: crate::ByteSlice::split_at
 pub unsafe trait ByteSlice: Deref<Target = [u8]> + Sized + self::sealed::Sealed {
+    /// Gets a raw pointer to the first byte in the slice.
     fn as_ptr(&self) -> *const u8;
+
+    /// Splits the slice at the midpoint.
+    ///
+    /// `x.split_at(mid)` returns `x[..mid]` and `x[mid..]`.
+    ///
+    /// # Panics
+    ///
+    /// `x.split_at(mid)` panics if `mid > x.len()`.
     fn split_at(self, mid: usize) -> (Self, Self);
 }
 
@@ -1503,6 +1521,7 @@ pub unsafe trait ByteSlice: Deref<Target = [u8]> + Sized + self::sealed::Sealed 
 /// a byte slice, and is implemented for various special reference types such as
 /// `RefMut<[u8]>`.
 pub unsafe trait ByteSliceMut: ByteSlice + DerefMut {
+    /// Gets a mutable raw pointer to the first byte in the slice.
     fn as_mut_ptr(&mut self) -> *mut u8;
 }
 
