@@ -15,8 +15,13 @@ repository = "https://fuchsia.googlesource.com/fuchsia/+/HEAD/src/lib/zerocopy"
 
 include = ["src/*", "Cargo.toml", "LICENSE"]
 
+[package.metadata.docs.rs]
+all-features = true
+
 [features]
 alloc = []
+simd = []
+simd-nightly = ["simd"]
 
 [dependencies]
 zerocopy-derive = "0.3.0"

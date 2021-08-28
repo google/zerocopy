@@ -21,6 +21,25 @@
 //!
 //! Note that these traits are ignorant of byte order. For byte order-aware
 //! types, see the [`byteorder`] module.
+//!
+//! # Features
+//!
+//! `alloc`: By default, `zerocopy` is `no_std`. When the `alloc` feature is
+//! enabled, the `alloc` crate is added as a dependency, and some
+//! allocation-related functionality is added.
+//!
+//! `simd`: When the `simd` feature is enabled, `FromBytes` and `AsBytes` impls
+//! are emitted for all stable SIMD types which exist on the target platform.
+//! Note that the layout of SIMD types is not yet stabilized, so these impls may
+//! be removed in the future if layout changes make them invalid. For more
+//! information, see the Unsafe Code Guidelines Reference page on the [Layout of
+//! packed SIMD vectors][simd-layout].
+//!
+//! `simd-nightly`: Enables the `simd` feature and adds support for SIMD types
+//! which are only available on nightly. Since these types are unstable, support
+//! for any type may be removed at any point in the future.
+//!
+//! [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 
 #![deny(missing_docs)]
 #![cfg_attr(not(test), no_std)]
@@ -80,22 +99,28 @@ macro_rules! impl_for_composite_types {
     };
 }
 
-// implement an unsafe trait for all signed and unsigned primitive types
+/// Implements `$trait` for one or more `$type`s.
+macro_rules! impl_for_types {
+    ($trait:ident, $type:ty) => (
+        unsafe impl $trait for $type {
+            fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
+        }
+    );
+    ($trait:ident, $type:ty, $($types:ty),*) => (
+        unsafe impl $trait for $type {
+            fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
+        }
+        impl_for_types!($trait, $($types),*);
+    );
+}
+
+/// Implements `$trait` for all signed and unsigned primitive types.
 macro_rules! impl_for_primitives {
-    ($trait:ident) => (
-        impl_for_primitives!(@inner $trait, u8, i8, u16, i16, u32, i32, u64, i64, u128, i128, usize, isize, f32, f64);
-    );
-    (@inner $trait:ident, $type:ty) => (
-        unsafe impl $trait for $type {
-            fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
-        }
-    );
-    (@inner $trait:ident, $type:ty, $($types:ty),*) => (
-        unsafe impl $trait for $type {
-            fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
-        }
-        impl_for_primitives!(@inner $trait, $($types),*);
-    );
+    ($trait:ident) => {
+        impl_for_types!(
+            $trait, u8, i8, u16, i16, u32, i32, u64, i64, u128, i128, usize, isize, f32, f64
+        );
+    };
 }
 
 /// Types for which any byte pattern is valid.
@@ -356,14 +381,8 @@ pub unsafe trait AsBytes {
     }
 }
 
-// Special case for bool
-unsafe impl AsBytes for bool {
-    fn only_derive_is_allowed_to_implement_this_trait()
-    where
-        Self: Sized,
-    {
-    }
-}
+// Special case for bool (it is not included in `impl_for_primitives!`).
+impl_for_types!(AsBytes, bool);
 
 impl_for_primitives!(FromBytes);
 impl_for_primitives!(AsBytes);
@@ -392,21 +411,137 @@ pub unsafe trait Unaligned {
         Self: Sized;
 }
 
-unsafe impl Unaligned for u8 {
-    fn only_derive_is_allowed_to_implement_this_trait()
-    where
-        Self: Sized,
-    {
-    }
-}
-unsafe impl Unaligned for i8 {
-    fn only_derive_is_allowed_to_implement_this_trait()
-    where
-        Self: Sized,
-    {
-    }
-}
+impl_for_types!(Unaligned, u8, i8);
 impl_for_composite_types!(Unaligned);
+
+// SIMD support
+//
+// Per the Unsafe Code Guidelines Reference [1]:
+//
+//   Packed SIMD vector types are `repr(simd)` homogeneous tuple-structs
+//   containing `N` elements of type `T` where `N` is a power-of-two and the
+//   size and alignment requirements of `T` are equal:
+//
+//   ```rust
+//   #[repr(simd)]
+//   struct Vector<T, N>(T_0, ..., T_(N - 1));
+//   ```
+//
+//   ...
+//
+//   The size of `Vector` is `N * size_of::<T>()` and its alignment is an
+//   implementation-defined function of `T` and `N` greater than or equal to
+//   `align_of::<T>()`.
+//
+//   ...
+//
+//   Vector elements are laid out in source field order, enabling random access
+//   to vector elements by reinterpreting the vector as an array:
+//
+//   ```rust
+//   union U {
+//      vec: Vector<T, N>,
+//      arr: [T; N]
+//   }
+//
+//   assert_eq!(size_of::<Vector<T, N>>(), size_of::<[T; N]>());
+//   assert!(align_of::<Vector<T, N>>() >= align_of::<[T; N]>());
+//
+//   unsafe {
+//     let u = U { vec: Vector<T, N>(t_0, ..., t_(N - 1)) };
+//
+//     assert_eq!(u.vec.0, u.arr[0]);
+//     // ...
+//     assert_eq!(u.vec.(N - 1), u.arr[N - 1]);
+//   }
+//   ```
+//
+// Given this background, we can observe that:
+// - The size and bit pattern requirements of a SIMD type are equivalent to the
+//   equivalent array type. Thus, for any SIMD type whose primitive `T` is
+//   `FromBytes`, that SIMD type is also `FromBytes`. The same holds for
+//   `AsBytes`.
+// - Since no upper bound is placed on the alignment, no SIMD type can be
+//   guaranteed to be `Unaligned`.
+//
+// Also per [1]:
+//
+//   This chapter represents the consensus from issue #38. The statements in
+//   here are not (yet) "guaranteed" not to change until an RFC ratifies them.
+//
+// See issue #38 [2]. While this behavior is not technically guaranteed, the
+// likelihood that the behavior will change such that SIMD types are no longer
+// `FromBytes` or `AsBytes` is next to zero, as that would defeat the entire
+// purpose of SIMD types. Nonetheless, we put this behavior behind the `simd`
+// Cargo feature, which requires consumers to opt into this stability hazard.
+//
+// [1] https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
+// [2] https://github.com/rust-lang/unsafe-code-guidelines/issues/38
+#[cfg(feature = "simd")]
+mod simd {
+    /// Defines a module which implements `FromBytes` and `AsBytes` for a set of
+    /// types from a module in `core::arch`.
+    ///
+    /// `$arch` is both the name of the defined module and the name of the
+    /// module in `core::arch`, and `$typ` is the list of items from that module
+    /// to implement `FromBytes` and `AsBytes` for.
+    macro_rules! simd_arch_mod {
+        ($arch:ident, $($typ:ident),*) => {
+            mod $arch {
+                use core::arch::$arch::{$($typ),*};
+
+                use crate::*;
+
+                impl_for_types!(FromBytes, $($typ),*);
+                impl_for_types!(AsBytes, $($typ),*);
+            }
+        };
+    }
+
+    #[cfg(target_arch = "x86")]
+    simd_arch_mod!(x86, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
+    #[cfg(target_arch = "x86_64")]
+    simd_arch_mod!(x86_64, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
+    #[cfg(target_arch = "wasm32")]
+    simd_arch_mod!(wasm32, v128);
+    #[cfg(all(feature = "simd-nightly", target_arch = "powerpc"))]
+    simd_arch_mod!(
+        powerpc,
+        vector_bool_long,
+        vector_double,
+        vector_signed_long,
+        vector_unsigned_long
+    );
+    #[cfg(all(feature = "simd-nightly", target_arch = "powerpc64"))]
+    simd_arch_mod!(
+        powerpc64,
+        vector_bool_long,
+        vector_double,
+        vector_signed_long,
+        vector_unsigned_long
+    );
+    #[cfg(all(feature = "simd-nightly", target_arch = "aarch64"))]
+    #[rustfmt::skip]
+    simd_arch_mod!(
+        aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,
+        int8x8x3_t, int8x8x4_t, int8x16_t, int8x16x2_t, int8x16x3_t, int8x16x4_t, int16x4_t,
+        int16x8_t, int32x2_t, int32x4_t, int64x1_t, int64x2_t, poly8x8_t, poly8x8x2_t, poly8x8x3_t,
+        poly8x8x4_t, poly8x16_t, poly8x16x2_t, poly8x16x3_t, poly8x16x4_t, poly16x4_t, poly16x8_t,
+        poly64x1_t, poly64x2_t, uint8x8_t, uint8x8x2_t, uint8x8x3_t, uint8x8x4_t, uint8x16_t,
+        uint8x16x2_t, uint8x16x3_t, uint8x16x4_t, uint16x4_t, uint16x8_t, uint32x2_t, uint32x4_t,
+        uint64x1_t, uint64x2_t
+    );
+    #[cfg(all(feature = "simd-nightly", target_arch = "arm"))]
+    #[rustfmt::skip]
+    simd_arch_mod!(
+        arm, float32x2_t, float32x4_t, int8x4_t, int8x8_t, int8x8x2_t, int8x8x3_t, int8x8x4_t,
+        int8x16_t, int16x2_t, int16x4_t, int16x8_t, int32x2_t, int32x4_t, int64x1_t, int64x2_t,
+        poly8x8_t, poly8x8x2_t, poly8x8x3_t, poly8x8x4_t, poly8x16_t, poly16x4_t, poly16x8_t,
+        poly64x1_t, poly64x2_t, uint8x4_t, uint8x8_t, uint8x8x2_t, uint8x8x3_t, uint8x8x4_t,
+        uint8x16_t, uint16x2_t, uint16x4_t, uint16x8_t, uint32x2_t, uint32x4_t, uint64x1_t,
+        uint64x2_t
+    );
+}
 
 // Used in `transmute!` below.
 #[doc(hidden)]
