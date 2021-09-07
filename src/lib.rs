@@ -56,6 +56,7 @@ use core::fmt::{self, Debug, Display, Formatter};
 use core::marker::PhantomData;
 use core::mem;
 use core::ops::{Deref, DerefMut};
+use core::ptr;
 use core::slice;
 
 // This is a hack to allow derives of FromBytes, AsBytes, and Unaligned to work
@@ -185,6 +186,43 @@ pub unsafe trait FromBytes {
     fn only_derive_is_allowed_to_implement_this_trait()
     where
         Self: Sized;
+
+    /// Reads a copy of `Self` from `bytes`.
+    ///
+    /// If `bytes.len() != size_of::<Self>()`, `read_from` returns `None`.
+    fn read_from<B: ByteSlice>(bytes: B) -> Option<Self>
+    where
+        Self: Sized,
+    {
+        let lv = LayoutVerified::<_, Unalign<Self>>::new_unaligned(bytes)?;
+        Some(lv.read().into_inner())
+    }
+
+    /// Reads a copy of `Self` from the prefix of `bytes`.
+    ///
+    /// `read_from_prefix` reads a `Self` from the first `size_of::<Self>()`
+    /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()`, it returns
+    /// `None`.
+    fn read_from_prefix<B: ByteSlice>(bytes: B) -> Option<Self>
+    where
+        Self: Sized,
+    {
+        let (lv, _suffix) = LayoutVerified::<_, Unalign<Self>>::new_unaligned_from_prefix(bytes)?;
+        Some(lv.read().into_inner())
+    }
+
+    /// Reads a copy of `Self` from the suffix of `bytes`.
+    ///
+    /// `read_from_suffix` reads a `Self` from the last `size_of::<Self>()`
+    /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()`, it returns
+    /// `None`.
+    fn read_from_suffix<B: ByteSlice>(bytes: B) -> Option<Self>
+    where
+        Self: Sized,
+    {
+        let (_prefix, lv) = LayoutVerified::<_, Unalign<Self>>::new_unaligned_from_suffix(bytes)?;
+        Some(lv.read().into_inner())
+    }
 
     /// Creates an instance of `Self` from zeroed bytes.
     fn new_zeroed() -> Self
@@ -379,6 +417,42 @@ pub unsafe trait AsBytes {
             slice::from_raw_parts_mut(self as *mut Self as *mut u8, len)
         }
     }
+
+    /// Writes a copy of `self` to `bytes`.
+    ///
+    /// If `bytes.len() != size_of_val(self)`, `write_to` returns `None`.
+    fn write_to<B: ByteSliceMut>(&self, mut bytes: B) -> Option<()> {
+        if bytes.len() != mem::size_of_val(self) {
+            return None;
+        }
+
+        bytes.copy_from_slice(self.as_bytes());
+        Some(())
+    }
+
+    /// Writes a copy of `self` to the prefix of `bytes`.
+    ///
+    /// `write_to_prefix` writes `self` to the first `size_of_val(self)` bytes
+    /// of `bytes`. If `bytes.len() < size_of_val(self)`, it returns `None`.
+    fn write_to_prefix<B: ByteSliceMut>(&self, mut bytes: B) -> Option<()> {
+        let size = mem::size_of_val(self);
+        if bytes.len() < size {
+            return None;
+        }
+
+        bytes[..size].copy_from_slice(self.as_bytes());
+        Some(())
+    }
+
+    /// Writes a copy of `self` to the suffix of `bytes`.
+    ///
+    /// `write_to_suffix` writes `self` to the last `size_of_val(self)` bytes
+    /// of `bytes`. If `bytes.len() < size_of_val(self)`, it returns `None`.
+    fn write_to_suffix<B: ByteSliceMut>(&self, mut bytes: B) -> Option<()> {
+        let start = bytes.len().checked_sub(mem::size_of_val(self))?;
+        bytes[start..].copy_from_slice(self.as_bytes());
+        Some(())
+    }
 }
 
 // Special case for bool (it is not included in `impl_for_primitives!`).
@@ -541,6 +615,103 @@ mod simd {
         uint8x16_t, uint16x2_t, uint16x4_t, uint16x8_t, uint32x2_t, uint32x4_t, uint64x1_t,
         uint64x2_t
     );
+}
+
+/// A type with no alignment requirement.
+///
+/// A `Unalign` wraps a `T`, removing any alignment requirement. `Unalign<T>`
+/// has the same size and ABI as `T`, but not necessarily the same alignment.
+/// This is useful if a type with an alignment requirement needs to be read from
+/// a chunk of memory which provides no alignment guarantees.
+///
+/// Since `Unalign` has no alignment requirement, the inner `T` may not be
+/// properly aligned in memory, and so `Unalign` provides no way of getting a
+/// reference to the inner `T`. Instead, the `T` may only be obtained by value
+/// (see [`get`] and [`into_inner`]).
+///
+/// [`get`]: Unalign::get
+/// [`into_inner`]: Unalign::into_inner
+#[derive(FromBytes, Unaligned, Copy)]
+#[repr(C, packed)]
+pub struct Unalign<T>(T);
+
+// Note that `Unalign: Clone` only if `T: Copy`. Since the inner `T` may not be
+// aligned, there's no way to safely call `T::clone`, and so a `T: Clone` bound
+// is not sufficient to implement `Clone` for `Unalign`.
+impl<T: Copy> Clone for Unalign<T> {
+    fn clone(&self) -> Unalign<T> {
+        *self
+    }
+}
+
+impl<T> Unalign<T> {
+    /// Constructs a new `Unalign`.
+    pub fn new(val: T) -> Unalign<T> {
+        Unalign(val)
+    }
+
+    /// Consumes `self`, returning the inner `T`.
+    pub fn into_inner(self) -> T {
+        let Unalign(val) = self;
+        val
+    }
+
+    /// Gets an unaligned raw pointer to the inner `T`.
+    ///
+    /// # Safety
+    ///
+    /// The returned raw pointer is not necessarily aligned to
+    /// `align_of::<T>()`. Most functions which operate on raw pointers require
+    /// those pointers to be aligned, so calling those functions with the result
+    /// of `get_ptr` will be undefined behavior if alignment is not guaranteed
+    /// using some out-of-band mechanism. In general, the only functions which
+    /// are safe to call with this pointer are which that are explicitly
+    /// documented as being sound to use with an unaligned pointer, such as
+    /// [`read_unaligned`].
+    ///
+    /// [`read_unaligned`]: core::ptr::read_unaligned
+    pub fn get_ptr(&self) -> *const T {
+        ptr::addr_of!(self.0)
+    }
+
+    /// Gets an unaligned mutable raw pointer to the inner `T`.
+    ///
+    /// # Safety
+    ///
+    /// The returned raw pointer is not necessarily aligned to
+    /// `align_of::<T>()`. Most functions which operate on raw pointers require
+    /// those pointers to be aligned, so calling those functions with the result
+    /// of `get_ptr` will be undefined behavior if alignment is not guaranteed
+    /// using some out-of-band mechanism. In general, the only functions which
+    /// are safe to call with this pointer are those which are explicitly
+    /// documented as being sound to use with an unaligned pointer, such as
+    /// [`read_unaligned`].
+    ///
+    /// [`read_unaligned`]: core::ptr::read_unaligned
+    pub fn get_mut_ptr(&mut self) -> *mut T {
+        ptr::addr_of_mut!(self.0)
+    }
+}
+
+impl<T: Copy> Unalign<T> {
+    /// Gets a copy of the inner `T`.
+    pub fn get(&self) -> T {
+        let Unalign(val) = *self;
+        val
+    }
+}
+
+// SAFETY: Since `T: AsBytes`, we know that it's safe to construct a `&[u8]`
+// from an aligned `&T`. Since `&[u8]` itself has no alignment requirements, it
+// must also be safe to construct a `&[u8]` from a `&T` at any address. Since
+// `Unalign<T>` is `#[repr(packed)]`, everything about its layout except for its
+// alignment is the same as `T`'s layout.
+unsafe impl<T: AsBytes> AsBytes for Unalign<T> {
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized,
+    {
+    }
 }
 
 // Used in `transmute!` below.
@@ -1397,6 +1568,39 @@ where
     }
 }
 
+impl<B, T> LayoutVerified<B, T>
+where
+    B: ByteSlice,
+    T: FromBytes,
+{
+    /// Reads a copy of `T`.
+    #[inline]
+    pub fn read(&self) -> T {
+        // SAFETY: Because of the invariants on `LayoutVerified`, we know that
+        // `self.0` is at least `size_of::<T>()` bytes long, and that it is at
+        // least as aligned as `align_of::<T>()`. Because `T: FromBytes`, it is
+        // sound to interpret these bytes as a `T`.
+        unsafe { ptr::read(self.0.as_ptr() as *const T) }
+    }
+}
+
+impl<B, T> LayoutVerified<B, T>
+where
+    B: ByteSliceMut,
+    T: AsBytes,
+{
+    /// Writes the bytes of `t` and then forgets `t`.
+    #[inline]
+    pub fn write(&mut self, t: T) {
+        // SAFETY: Because of the invariants on `LayoutVerified`, we know that
+        // `self.0` is at least `size_of::<T>()` bytes long, and that it is at
+        // least as aligned as `align_of::<T>()`. Writing `t` to the buffer will
+        // allow all of the bytes of `t` to be accessed as a `[u8]`, but because
+        // `T: AsBytes`, we know this is sound.
+        unsafe { ptr::write(self.0.as_mut_ptr() as *mut T, t) }
+    }
+}
+
 impl<B, T> Deref for LayoutVerified<B, T>
 where
     B: ByteSlice,
@@ -1760,7 +1964,6 @@ mod tests {
     #![allow(clippy::unreadable_literal)]
 
     use core::ops::Deref;
-    use core::ptr;
 
     use super::*;
 
@@ -1781,6 +1984,43 @@ mod tests {
     // convert a u64 to bytes using this platform's endianness
     fn u64_to_bytes(u: u64) -> [u8; 8] {
         unsafe { ptr::read(&u as *const u64 as *const [u8; 8]) }
+    }
+
+    #[test]
+    fn test_read_write() {
+        const VAL: u64 = 0x12345678;
+        #[cfg(target_endian = "big")]
+        const VAL_BYTES: [u8; 8] = VAL.to_be_bytes();
+        #[cfg(target_endian = "little")]
+        const VAL_BYTES: [u8; 8] = VAL.to_le_bytes();
+
+        // Test FromBytes::{read_from, read_from_prefix, read_from_suffix}
+
+        assert_eq!(u64::read_from(&VAL_BYTES[..]), Some(VAL));
+        // The first 8 bytes are from `VAL_BYTES` and the second 8 bytes are all
+        // zeroes.
+        let bytes_with_prefix: [u8; 16] = transmute!([VAL_BYTES, [0; 8]]);
+        assert_eq!(u64::read_from_prefix(&bytes_with_prefix[..]), Some(VAL));
+        assert_eq!(u64::read_from_suffix(&bytes_with_prefix[..]), Some(0));
+        // The first 8 bytes are all zeroes and the second 8 bytes are from
+        // `VAL_BYTES`
+        let bytes_with_suffix: [u8; 16] = transmute!([[0; 8], VAL_BYTES]);
+        assert_eq!(u64::read_from_prefix(&bytes_with_suffix[..]), Some(0));
+        assert_eq!(u64::read_from_suffix(&bytes_with_suffix[..]), Some(VAL));
+
+        // Test AsBytes::{write_to, write_to_prefix, write_to_suffix}
+
+        let mut bytes = [0u8; 8];
+        assert_eq!(VAL.write_to(&mut bytes[..]), Some(()));
+        assert_eq!(bytes, VAL_BYTES);
+        let mut bytes = [0u8; 16];
+        assert_eq!(VAL.write_to_prefix(&mut bytes[..]), Some(()));
+        let want: [u8; 16] = transmute!([VAL_BYTES, [0; 8]]);
+        assert_eq!(bytes, want);
+        let mut bytes = [0u8; 16];
+        assert_eq!(VAL.write_to_suffix(&mut bytes[..]), Some(()));
+        let want: [u8; 16] = transmute!([[0; 8], VAL_BYTES]);
+        assert_eq!(bytes, want);
     }
 
     #[test]
@@ -1825,15 +2065,21 @@ mod tests {
     }
 
     // verify that values written to a LayoutVerified are properly shared
-    // between the typed and untyped representations
+    // between the typed and untyped representations, that reads via `deref` and
+    // `read` behave the same, and that writes via `deref_mut` and `write`
+    // behave the same
     fn test_new_helper<'a>(mut lv: LayoutVerified<&'a mut [u8], u64>) {
         // assert that the value starts at 0
         assert_eq!(*lv, 0);
+        assert_eq!(lv.read(), 0);
 
         // assert that values written to the typed value are reflected in the
         // byte slice
         const VAL1: u64 = 0xFF00FF00FF00FF00;
         *lv = VAL1;
+        assert_eq!(lv.bytes(), &u64_to_bytes(VAL1));
+        *lv = 0;
+        lv.write(VAL1);
         assert_eq!(lv.bytes(), &u64_to_bytes(VAL1));
 
         // assert that values written to the byte slice are reflected in the
@@ -1841,6 +2087,7 @@ mod tests {
         const VAL2: u64 = !VAL1; // different from VAL1
         lv.bytes_mut().copy_from_slice(&u64_to_bytes(VAL2)[..]);
         assert_eq!(*lv, VAL2);
+        assert_eq!(lv.read(), VAL2);
     }
 
     // verify that values written to a LayoutVerified are properly shared
@@ -1871,15 +2118,21 @@ mod tests {
     }
 
     // verify that values written to a LayoutVerified are properly shared
-    // between the typed and untyped representations
+    // between the typed and untyped representations, that reads via `deref` and
+    // `read` behave the same, and that writes via `deref_mut` and `write`
+    // behave the same
     fn test_new_helper_unaligned<'a>(mut lv: LayoutVerified<&'a mut [u8], [u8; 8]>) {
         // assert that the value starts at 0
         assert_eq!(*lv, [0; 8]);
+        assert_eq!(lv.read(), [0; 8]);
 
         // assert that values written to the typed value are reflected in the
         // byte slice
         const VAL1: [u8; 8] = [0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00];
         *lv = VAL1;
+        assert_eq!(lv.bytes(), &VAL1);
+        *lv = [0; 8];
+        lv.write(VAL1);
         assert_eq!(lv.bytes(), &VAL1);
 
         // assert that values written to the byte slice are reflected in the
@@ -1887,6 +2140,7 @@ mod tests {
         const VAL2: [u8; 8] = [0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF]; // different from VAL1
         lv.bytes_mut().copy_from_slice(&VAL2[..]);
         assert_eq!(*lv, VAL2);
+        assert_eq!(lv.read(), VAL2);
     }
 
     // verify that values written to a LayoutVerified are properly shared
