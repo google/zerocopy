@@ -150,9 +150,15 @@ example of how it can be used for parsing UDP packets.
 [`FromBytes`]: crate::FromBytes
 [`AsBytes`]: crate::AsBytes
 [`Unaligned`]: crate::Unaligned"),
-            #[derive(FromBytes, Unaligned, Default, Copy, Clone, Eq, PartialEq, Hash)]
+            #[derive(FromBytes, Unaligned, Copy, Clone, Eq, PartialEq, Hash)]
             #[repr(transparent)]
-            pub struct $name<O: ByteOrder>([u8; $bytes], PhantomData<O>);
+            pub struct $name<O>([u8; $bytes], PhantomData<O>);
+        }
+
+        impl<O> Default for $name<O> {
+            fn default() -> $name<O> {
+                $name::ZERO
+            }
         }
 
         // TODO(joshlf): Replace this with #[derive(AsBytes)] once that derive
@@ -165,7 +171,7 @@ example of how it can be used for parsing UDP packets.
             }
         }
 
-        impl<O: ByteOrder> $name<O> {
+        impl<O> $name<O> {
             /// The value zero.
             ///
             /// This constant should be preferred to constructing a new value
@@ -175,6 +181,14 @@ example of how it can be used for parsing UDP packets.
 
             define_max_value_constant!($name, $bytes, $sign);
 
+            /// Constructs a new value from bytes which are already in the
+            /// endianness `O`.
+            pub const fn from_bytes(bytes: [u8; $bytes]) -> $name<O> {
+                $name(bytes, PhantomData)
+            }
+        }
+
+        impl<O: ByteOrder> $name<O> {
             // TODO(joshlf): Make these const fns if the ByteOrder methods ever
             // become const fns.
 
