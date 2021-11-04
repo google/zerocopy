@@ -7,13 +7,13 @@
 [package]
 edition = "2018"
 name = "zerocopy"
-version = "0.6.0"
+version = "0.6.1"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Utilities for zero-copy parsing and serialization"
-license = "BSD-3-Clause"
+license-file = "../../../LICENSE"
 repository = "https://fuchsia.googlesource.com/fuchsia/+/HEAD/src/lib/zerocopy"
 
-include = ["src/*", "Cargo.toml", "LICENSE"]
+include = ["src/*", "Cargo.toml"]
 
 [package.metadata.docs.rs]
 all-features = true
@@ -24,7 +24,7 @@ simd = []
 simd-nightly = ["simd"]
 
 [dependencies]
-zerocopy-derive = "0.3.0"
+zerocopy-derive = "0.3.1"
 
 [dependencies.byteorder]
 version = "1.3"

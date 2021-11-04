@@ -7,13 +7,13 @@
 [package]
 edition = "2018"
 name = "zerocopy-derive"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Custom derive for traits from the zerocopy crate"
-license = "BSD-3-Clause"
+license-file = "../../../../LICENSE"
 repository = "https://fuchsia.googlesource.com/fuchsia/+/HEAD/src/lib/zerocopy/zerocopy-derive"
 
-include = ["src/*", "tests/*", "Cargo.toml", "LICENSE"]
+include = ["src/*", "tests/*", "Cargo.toml"]
 
 [lib]
 proc-macro = true
