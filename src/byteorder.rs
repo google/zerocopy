@@ -307,7 +307,7 @@ example of how it can be used for parsing UDP packets.
         impl<O: ByteOrder> Debug for $name<O> {
             fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
                 // This results in a format like "U16(42)"
-                write!(f, concat!(stringify!($name), "({})"), self.get())
+                f.debug_tuple(stringify!($name)).field(&self.get()).finish()
             }
         }
     };
@@ -553,5 +553,14 @@ mod tests {
         }
 
         call_for_all_types!(test_non_native_endian, NonNativeEndian);
+    }
+
+    #[test]
+    fn test_debug_impl() {
+        // Ensure that Debug applies format options to the inner value.
+        let val = U16::<LE>::new(10);
+        assert_eq!(format!("{:?}", val), "U16(10)");
+        assert_eq!(format!("{:03?}", val), "U16(010)");
+        assert_eq!(format!("{:x?}", val), "U16(a)");
     }
 }
