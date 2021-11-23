@@ -7,8 +7,9 @@
 //! This module contains equivalents of the native multi-byte integer types with
 //! no alignment requirement and supporting byte order conversions.
 //!
-//! For each native multi-byte integer type - `u16`, `i16`, `u32`, etc - an
-//! equivalent type is defined by this module - [`U16`], [`I16`], [`U32`], etc.
+//! For each native multi-byte integer type - `u16`, `i16`, `u32`, etc - and
+//! floating point type - `f32` and `f64` - an equivalent type is defined by
+//! this module - [`U16`], [`I16`], [`U32`], [`F64`], etc.
 //! Unlike their native counterparts, these types have alignment 1, and take a
 //! type parameter specifying the byte order in which the bytes are stored in
 //! memory. Each type implements the [`FromBytes`], [`AsBytes`], and
@@ -85,6 +86,26 @@ macro_rules! impl_fmt_trait {
     };
 }
 
+macro_rules! impl_fmt_traits {
+    ($name:ident, $native:ident, "floating point number") => {
+        impl_fmt_trait!($name, $native, Display);
+    };
+    ($name:ident, $native:ident, "unsigned integer") => {
+        impl_fmt_traits!($name, $native, @all_traits);
+    };
+    ($name:ident, $native:ident, "signed integer") => {
+        impl_fmt_traits!($name, $native, @all_traits);
+    };
+
+    ($name:ident, $native:ident, @all_traits) => {
+        impl_fmt_trait!($name, $native, Display);
+        impl_fmt_trait!($name, $native, Octal);
+        impl_fmt_trait!($name, $native, LowerHex);
+        impl_fmt_trait!($name, $native, UpperHex);
+        impl_fmt_trait!($name, $native, Binary);
+    };
+}
+
 macro_rules! doc_comment {
     ($x:expr, $($tt:tt)*) => {
         #[doc = $x]
@@ -93,7 +114,7 @@ macro_rules! doc_comment {
 }
 
 macro_rules! define_max_value_constant {
-    ($name:ident, $bytes:expr, unsigned) => {
+    ($name:ident, $bytes:expr, "unsigned integer") => {
         /// The maximum value.
         ///
         /// This constant should be preferred to constructing a new value using
@@ -101,15 +122,15 @@ macro_rules! define_max_value_constant {
         /// endianness `O` and the endianness of the platform.
         pub const MAX_VALUE: $name<O> = $name([0xFFu8; $bytes], PhantomData);
     };
-    ($name:ident, $bytes:expr, signed) => {
-        // We don't provide maximum and minimum value constants for signed
-        // values because there's no way to do it generically - it would require
-        // a different value depending on the value of the ByteOrder type
-        // parameter. Currently, one workaround would be to provide
-        // implementations for concrete implementations of that trait. In the
-        // long term, if we are ever able to make the `new` constructor a const
-        // fn, we could use that instead.
-    };
+    // We don't provide maximum and minimum value constants for signed values
+    // and floats because there's no way to do it generically - it would
+    // require a different value depending on the value of the ByteOrder type
+    // parameter. Currently, one workaround would be to provide
+    // implementations for concrete implementations of that trait. In the
+    // long term, if we are ever able to make the `new` constructor a const
+    // fn, we could use that instead.
+    ($name:ident, $bytes:expr, "signed integer") => {};
+    ($name:ident, $bytes:expr, "floating point number") => {};
 }
 
 macro_rules! define_type {
@@ -120,12 +141,14 @@ macro_rules! define_type {
         $bytes:expr,
         $read_method:ident,
         $write_method:ident,
-        $sign:ident,
+        $number_kind:tt,
         [$($larger_native:ty),*],
-        [$($larger_byteorder:ident),*]) => {
+        [$($larger_native_try:ty),*],
+        [$($larger_byteorder:ident),*],
+        [$($larger_byteorder_try:ident),*]) => {
         doc_comment! {
-            concat!("A ", stringify!($bits), "-bit ", stringify!($sign), " integer
-stored in `O` byte order.
+            concat!("A ", stringify!($bits), "-bit ", $number_kind,
+            " stored in `O` byte order.
 
 `", stringify!($name), "` is like the native `", stringify!($native), "` type with
 two major differences: First, it has no alignment requirement (its alignment is 1).
@@ -179,7 +202,7 @@ example of how it can be used for parsing UDP packets.
             /// on the endianness and platform.
             pub const ZERO: $name<O> = $name([0u8; $bytes], PhantomData);
 
-            define_max_value_constant!($name, $bytes, $sign);
+            define_max_value_constant!($name, $bytes, $number_kind);
 
             /// Constructs a new value from bytes which are already in the
             /// endianness `O`.
@@ -250,10 +273,12 @@ example of how it can be used for parsing UDP packets.
                     x.get().into()
                 }
             }
+        )*
 
-            impl<O: ByteOrder> TryFrom<$larger_native> for $name<O> {
+        $(
+            impl<O: ByteOrder> TryFrom<$larger_native_try> for $name<O> {
                 type Error = TryFromIntError;
-                fn try_from(x: $larger_native) -> Result<$name<O>, TryFromIntError> {
+                fn try_from(x: $larger_native_try) -> Result<$name<O>, TryFromIntError> {
                     $native::try_from(x).map($name::new)
                 }
             }
@@ -265,10 +290,12 @@ example of how it can be used for parsing UDP packets.
                     $larger_byteorder::new(x.get().into())
                 }
             }
+        )*
 
-            impl<O: ByteOrder, P: ByteOrder> TryFrom<$larger_byteorder<P>> for $name<O> {
+        $(
+            impl<O: ByteOrder, P: ByteOrder> TryFrom<$larger_byteorder_try<P>> for $name<O> {
                 type Error = TryFromIntError;
-                fn try_from(x: $larger_byteorder<P>) -> Result<$name<O>, TryFromIntError> {
+                fn try_from(x: $larger_byteorder_try<P>) -> Result<$name<O>, TryFromIntError> {
                     x.get().try_into().map($name::new)
                 }
             }
@@ -298,11 +325,7 @@ example of how it can be used for parsing UDP packets.
             }
         }
 
-        impl_fmt_trait!($name, $native, Display);
-        impl_fmt_trait!($name, $native, Octal);
-        impl_fmt_trait!($name, $native, LowerHex);
-        impl_fmt_trait!($name, $native, UpperHex);
-        impl_fmt_trait!($name, $native, Binary);
+        impl_fmt_traits!($name, $native, $number_kind);
 
         impl<O: ByteOrder> Debug for $name<O> {
             fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
@@ -321,13 +344,41 @@ define_type!(
     2,
     read_u16,
     write_u16,
-    unsigned,
+    "unsigned integer",
     [u32, u64, u128, usize],
+    [u32, u64, u128, usize],
+    [U32, U64, U128],
     [U32, U64, U128]
 );
-define_type!(A, U32, u32, 32, 4, read_u32, write_u32, unsigned, [u64, u128], [U64, U128]);
-define_type!(A, U64, u64, 64, 8, read_u64, write_u64, unsigned, [u128], [U128]);
-define_type!(A, U128, u128, 128, 16, read_u128, write_u128, unsigned, [], []);
+define_type!(
+    A,
+    U32,
+    u32,
+    32,
+    4,
+    read_u32,
+    write_u32,
+    "unsigned integer",
+    [u64, u128],
+    [u64, u128],
+    [U64, U128],
+    [U64, U128]
+);
+define_type!(
+    A,
+    U64,
+    u64,
+    64,
+    8,
+    read_u64,
+    write_u64,
+    "unsigned integer",
+    [u128],
+    [u128],
+    [U128],
+    [U128]
+);
+define_type!(A, U128, u128, 128, 16, read_u128, write_u128, "unsigned integer", [], [], [], []);
 define_type!(
     An,
     I16,
@@ -336,13 +387,56 @@ define_type!(
     2,
     read_i16,
     write_i16,
-    signed,
+    "signed integer",
     [i32, i64, i128, isize],
+    [i32, i64, i128, isize],
+    [I32, I64, I128],
     [I32, I64, I128]
 );
-define_type!(An, I32, i32, 32, 4, read_i32, write_i32, signed, [i64, i128], [I64, I128]);
-define_type!(An, I64, i64, 64, 8, read_i64, write_i64, signed, [i128], [I128]);
-define_type!(An, I128, i128, 128, 16, read_i128, write_i128, signed, [], []);
+define_type!(
+    An,
+    I32,
+    i32,
+    32,
+    4,
+    read_i32,
+    write_i32,
+    "signed integer",
+    [i64, i128],
+    [i64, i128],
+    [I64, I128],
+    [I64, I128]
+);
+define_type!(
+    An,
+    I64,
+    i64,
+    64,
+    8,
+    read_i64,
+    write_i64,
+    "signed integer",
+    [i128],
+    [i128],
+    [I128],
+    [I128]
+);
+define_type!(An, I128, i128, 128, 16, read_i128, write_i128, "signed integer", [], [], [], []);
+define_type!(
+    An,
+    F32,
+    f32,
+    32,
+    4,
+    read_f32,
+    write_f32,
+    "floating point number",
+    [f64],
+    [],
+    [F64],
+    []
+);
+define_type!(An, F64, f64, 64, 8, read_f64, write_f64, "floating point number", [], [], [], []);
 
 #[cfg(test)]
 mod tests {
@@ -352,7 +446,7 @@ mod tests {
     use crate::{AsBytes, FromBytes, Unaligned};
 
     // A native integer type (u16, i32, etc)
-    trait Native: FromBytes + AsBytes + Copy + Eq + Debug {
+    trait Native: FromBytes + AsBytes + Copy + PartialEq + Debug {
         const ZERO: Self;
         const MAX_VALUE: Self;
 
@@ -411,7 +505,7 @@ mod tests {
     macro_rules! impl_traits {
         ($name:ident, $native:ident, $bytes:expr, $sign:ident) => {
             impl Native for $native {
-                const ZERO: $native = 0;
+                const ZERO: $native = 0 as _;
                 const MAX_VALUE: $native = ::core::$native::MAX;
 
                 fn rand() -> $native {
@@ -458,6 +552,8 @@ mod tests {
     impl_traits!(I32, i32, 4, signed);
     impl_traits!(I64, i64, 8, signed);
     impl_traits!(I128, i128, 16, signed);
+    impl_traits!(F32, f32, 4, signed);
+    impl_traits!(F64, f64, 8, signed);
 
     macro_rules! call_for_all_types {
         ($fn:ident, $byteorder:ident) => {
@@ -469,6 +565,8 @@ mod tests {
             $fn::<I32<$byteorder>>();
             $fn::<I64<$byteorder>>();
             $fn::<I128<$byteorder>>();
+            $fn::<F32<$byteorder>>();
+            $fn::<F64<$byteorder>>();
         };
     }
 
