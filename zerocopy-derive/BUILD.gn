@@ -6,36 +6,10 @@ import("//build/components.gni")
 import("//build/rust/rustc_macro.gni")
 import("//build/rust/rustc_test.gni")
 
-template("rustc_macro_with_test") {
-  rustc_macro(target_name) {
-    configs -= [ "//build/config/rust:allow_unused_results" ]
-    forward_variables_from(invoker,
-                           [
-                             "version",
-                             "edition",
-                             "deps",
-                             "sources",
-                           ])
-  }
-
-  # proc-macro dependencies are only available on host.
-  if (is_host) {
-    rustc_test("${target_name}_test") {
-      configs -= [ "//build/config/rust:allow_unused_results" ]
-      forward_variables_from(invoker,
-                             [
-                               "version",
-                               "edition",
-                               "deps",
-                               "sources",
-                             ])
-    }
-  }
-}
-
-rustc_macro_with_test("zerocopy-derive") {
+rustc_macro("zerocopy-derive") {
   version = "0.1.0"
   edition = "2018"
+  with_unit_tests = true
 
   deps = [
     "//third_party/rust_crates:proc-macro2",
@@ -47,6 +21,18 @@ rustc_macro_with_test("zerocopy-derive") {
     "src/ext.rs",
     "src/lib.rs",
     "src/repr.rs",
+    "tests/enum_as_bytes.rs",
+    "tests/enum_from_bytes.rs",
+    "tests/enum_unaligned.rs",
+    "tests/hygiene.rs",
+    "tests/paths_and_modules.rs",
+    "tests/struct_as_bytes.rs",
+    "tests/struct_from_bytes.rs",
+    "tests/struct_unaligned.rs",
+
+    # "tests/compiletest.rs" is intentionally omitted since it needs to be able
+    # to invoke rustc and there's currently no way for test code to allow
+    # invoking the compiler from GN.
   ]
 }
 
