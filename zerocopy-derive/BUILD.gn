@@ -13,8 +13,8 @@ rustc_macro("zerocopy-derive") {
 
   deps = [
     "//third_party/rust_crates:proc-macro2",
+    "//third_party/rust_crates:quote",
     "//third_party/rust_crates:syn",
-    "//third_party/rust_crates:synstructure",
   ]
 
   sources = [

@@ -7,13 +7,14 @@
 mod ext;
 mod repr;
 
+use proc_macro;
 use proc_macro2::Span;
+use quote::quote;
 use syn::visit::{self, Visit};
 use syn::{
     parse_quote, punctuated::Punctuated, token::Comma, Data, DataEnum, DataStruct, DeriveInput,
     Error, GenericParam, Ident, Lifetime, Type, TypePath,
 };
-use synstructure::{decl_derive, quote, Structure};
 
 use ext::*;
 use repr::*;
@@ -35,32 +36,34 @@ use repr::*;
 // (https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.error),
 // which is currently unstable. Revisit this once it's stable.
 
-decl_derive!([FromBytes] => derive_from_bytes);
-decl_derive!([AsBytes] => derive_as_bytes);
-decl_derive!([Unaligned] => derive_unaligned);
-
-fn derive_from_bytes(s: Structure<'_>) -> proc_macro2::TokenStream {
-    match &s.ast().data {
-        Data::Struct(strct) => derive_from_bytes_struct(&s, strct),
-        Data::Enum(enm) => derive_from_bytes_enum(&s, enm),
+#[proc_macro_derive(FromBytes)]
+pub fn derive_from_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let ast = syn::parse_macro_input!(ts as DeriveInput);
+    match &ast.data {
+        Data::Struct(strct) => derive_from_bytes_struct(&ast, strct),
+        Data::Enum(enm) => derive_from_bytes_enum(&ast, enm),
         Data::Union(_) => Error::new(Span::call_site(), "unsupported on unions").to_compile_error(),
-    }
+    }.into()
 }
 
-fn derive_as_bytes(s: Structure<'_>) -> proc_macro2::TokenStream {
-    match &s.ast().data {
-        Data::Struct(strct) => derive_as_bytes_struct(&s, strct),
-        Data::Enum(enm) => derive_as_bytes_enum(&s, enm),
+#[proc_macro_derive(AsBytes)]
+pub fn derive_as_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let ast = syn::parse_macro_input!(ts as DeriveInput);
+    match &ast.data {
+        Data::Struct(strct) => derive_as_bytes_struct(&ast, strct),
+        Data::Enum(enm) => derive_as_bytes_enum(&ast, enm),
         Data::Union(_) => Error::new(Span::call_site(), "unsupported on unions").to_compile_error(),
-    }
+    }.into()
 }
 
-fn derive_unaligned(s: Structure<'_>) -> proc_macro2::TokenStream {
-    match &s.ast().data {
-        Data::Struct(strct) => derive_unaligned_struct(&s, strct),
-        Data::Enum(enm) => derive_unaligned_enum(&s, enm),
+#[proc_macro_derive(Unaligned)]
+pub fn derive_unaligned(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let ast = syn::parse_macro_input!(ts as DeriveInput);
+    match &ast.data {
+        Data::Struct(strct) => derive_unaligned_struct(&ast, strct),
+        Data::Enum(enm) => derive_unaligned_enum(&ast, enm),
         Data::Union(_) => Error::new(Span::call_site(), "unsupported on unions").to_compile_error(),
-    }
+    }.into()
 }
 
 // Unwrap a Result<_, Vec<Error>>, converting any Err value into a TokenStream
@@ -77,8 +80,8 @@ macro_rules! try_or_print {
 // A struct is FromBytes if:
 // - all fields are FromBytes
 
-fn derive_from_bytes_struct(s: &Structure<'_>, strct: &DataStruct) -> proc_macro2::TokenStream {
-    impl_block(s.ast(), strct, "FromBytes", true, false)
+fn derive_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
+    impl_block(ast, strct, "FromBytes", true, false)
 }
 
 // An enum is FromBytes if:
@@ -95,13 +98,13 @@ fn derive_from_bytes_struct(s: &Structure<'_>, strct: &DataStruct) -> proc_macro
 //   platform-specific and, b) even on Rust's smallest bit width platform (32),
 //   this would require ~4 billion enum variants, which obviously isn't a thing.
 
-fn derive_from_bytes_enum(s: &Structure<'_>, enm: &DataEnum) -> proc_macro2::TokenStream {
+fn derive_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
     if !enm.is_c_like() {
-        return Error::new_spanned(s.ast(), "only C-like enums can implement FromBytes")
+        return Error::new_spanned(ast, "only C-like enums can implement FromBytes")
             .to_compile_error();
     }
 
-    let reprs = try_or_print!(ENUM_FROM_BYTES_CFG.validate_reprs(s.ast()));
+    let reprs = try_or_print!(ENUM_FROM_BYTES_CFG.validate_reprs(ast));
 
     let variants_required = match reprs.as_slice() {
         [EnumRepr::U8] | [EnumRepr::I8] => 1usize << 8,
@@ -112,7 +115,7 @@ fn derive_from_bytes_enum(s: &Structure<'_>, enm: &DataEnum) -> proc_macro2::Tok
     };
     if enm.variants.len() != variants_required {
         return Error::new_spanned(
-            s.ast(),
+            ast,
             format!(
                 "FromBytes only supported on {} enum with {} variants",
                 reprs[0], variants_required
@@ -121,7 +124,7 @@ fn derive_from_bytes_enum(s: &Structure<'_>, enm: &DataEnum) -> proc_macro2::Tok
         .to_compile_error();
     }
 
-    impl_block(s.ast(), enm, "FromBytes", true, false)
+    impl_block(ast, enm, "FromBytes", true, false)
 }
 
 #[rustfmt::skip]
@@ -154,14 +157,14 @@ const ENUM_FROM_BYTES_CFG: Config<EnumRepr> = {
 //   - no padding (size of struct equals sum of size of field types)
 // - repr(packed)
 
-fn derive_as_bytes_struct(s: &Structure<'_>, strct: &DataStruct) -> proc_macro2::TokenStream {
+fn derive_as_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
     // TODO(joshlf): Support type parameters.
-    if !s.ast().generics.params.is_empty() {
+    if !ast.generics.params.is_empty() {
         return Error::new(Span::call_site(), "unsupported on types with type parameters")
             .to_compile_error();
     }
 
-    let reprs = try_or_print!(STRUCT_AS_BYTES_CFG.validate_reprs(s.ast()));
+    let reprs = try_or_print!(STRUCT_AS_BYTES_CFG.validate_reprs(ast));
 
     let require_size_check = match reprs.as_slice() {
         [StructRepr::C] | [StructRepr::Transparent] => true,
@@ -171,7 +174,7 @@ fn derive_as_bytes_struct(s: &Structure<'_>, strct: &DataStruct) -> proc_macro2:
         _ => unreachable!(),
     };
 
-    impl_block(s.ast(), strct, "AsBytes", true, require_size_check)
+    impl_block(ast, strct, "AsBytes", true, require_size_check)
 }
 
 #[rustfmt::skip]
@@ -194,16 +197,16 @@ const STRUCT_AS_BYTES_CFG: Config<StructRepr> = {
 
 // An enum is AsBytes if it is C-like and has a defined repr
 
-fn derive_as_bytes_enum(s: &Structure<'_>, enm: &DataEnum) -> proc_macro2::TokenStream {
+fn derive_as_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
     if !enm.is_c_like() {
-        return Error::new_spanned(s.ast(), "only C-like enums can implement AsBytes")
+        return Error::new_spanned(ast, "only C-like enums can implement AsBytes")
             .to_compile_error();
     }
 
     // We don't care what the repr is; we only care that it is one of the
     // allowed ones.
-    let _: Vec<repr::EnumRepr> = try_or_print!(ENUM_AS_BYTES_CFG.validate_reprs(s.ast()));
-    impl_block(s.ast(), enm, "AsBytes", false, false)
+    let _: Vec<repr::EnumRepr> = try_or_print!(ENUM_AS_BYTES_CFG.validate_reprs(ast));
+    impl_block(ast, enm, "AsBytes", false, false)
 }
 
 #[rustfmt::skip]
@@ -237,8 +240,8 @@ const ENUM_AS_BYTES_CFG: Config<EnumRepr> = {
 //     - all fields Unaligned
 //   - repr(packed)
 
-fn derive_unaligned_struct(s: &Structure<'_>, strct: &DataStruct) -> proc_macro2::TokenStream {
-    let reprs = try_or_print!(STRUCT_UNALIGNED_CFG.validate_reprs(s.ast()));
+fn derive_unaligned_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
+    let reprs = try_or_print!(STRUCT_UNALIGNED_CFG.validate_reprs(ast));
 
     let require_trait_bound = match reprs.as_slice() {
         [StructRepr::C] | [StructRepr::Transparent] => true,
@@ -248,7 +251,7 @@ fn derive_unaligned_struct(s: &Structure<'_>, strct: &DataStruct) -> proc_macro2
         _ => unreachable!(),
     };
 
-    impl_block(s.ast(), strct, "Unaligned", require_trait_bound, false)
+    impl_block(ast, strct, "Unaligned", require_trait_bound, false)
 }
 
 #[rustfmt::skip]
@@ -274,22 +277,22 @@ const STRUCT_UNALIGNED_CFG: Config<StructRepr> = {
 // - No repr(align(N > 1))
 // - repr(u8) or repr(i8)
 
-fn derive_unaligned_enum(s: &Structure<'_>, enm: &DataEnum) -> proc_macro2::TokenStream {
+fn derive_unaligned_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
     if !enm.is_c_like() {
-        return Error::new_spanned(s.ast(), "only C-like enums can implement Unaligned")
+        return Error::new_spanned(ast, "only C-like enums can implement Unaligned")
             .to_compile_error();
     }
 
     // The only valid reprs are u8 and i8, and optionally align(1). We don't
     // actually care what the reprs are so long as they satisfy that
     // requirement.
-    let _: Vec<repr::EnumRepr> = try_or_print!(ENUM_UNALIGNED_CFG.validate_reprs(s.ast()));
+    let _: Vec<repr::EnumRepr> = try_or_print!(ENUM_UNALIGNED_CFG.validate_reprs(ast));
 
     // NOTE: C-like enums cannot currently have type parameters, so this value
     // of true for require_trait_bounds doesn't really do anything. But it's
     // marginally more future-proof in case that restriction is lifted in the
     // future.
-    impl_block(s.ast(), enm, "Unaligned", true, false)
+    impl_block(ast, enm, "Unaligned", true, false)
 }
 
 #[rustfmt::skip]
