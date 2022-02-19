@@ -485,7 +485,7 @@ pub unsafe trait Unaligned {
         Self: Sized;
 }
 
-impl_for_types!(Unaligned, u8, i8);
+impl_for_types!(Unaligned, u8, i8, bool);
 impl_for_composite_types!(Unaligned);
 
 // SIMD support

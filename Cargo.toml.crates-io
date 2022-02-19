@@ -24,7 +24,7 @@ simd = []
 simd-nightly = ["simd"]
 
 [dependencies]
-zerocopy-derive = "0.3.1"
+zerocopy-derive = { version = "0.3.1", path = "zerocopy-derive" }
 
 [dependencies.byteorder]
 version = "1.3"
