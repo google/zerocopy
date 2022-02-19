@@ -7,13 +7,12 @@
 mod ext;
 mod repr;
 
-use proc_macro;
 use proc_macro2::Span;
 use quote::quote;
 use syn::visit::{self, Visit};
 use syn::{
-    parse_quote, punctuated::Punctuated, token::Comma, Data, DataEnum, DataStruct, DeriveInput,
-    Error, GenericParam, Ident, Lifetime, Type, TypePath,
+    parse_quote, punctuated::Punctuated, token::Comma, Data, DataEnum, DataStruct, DataUnion,
+    DeriveInput, Error, GenericParam, Ident, Lifetime, Type, TypePath,
 };
 
 use ext::*;
@@ -42,8 +41,9 @@ pub fn derive_from_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream
     match &ast.data {
         Data::Struct(strct) => derive_from_bytes_struct(&ast, strct),
         Data::Enum(enm) => derive_from_bytes_enum(&ast, enm),
-        Data::Union(_) => Error::new(Span::call_site(), "unsupported on unions").to_compile_error(),
-    }.into()
+        Data::Union(unn) => derive_from_bytes_union(&ast, unn),
+    }
+    .into()
 }
 
 #[proc_macro_derive(AsBytes)]
@@ -52,8 +52,9 @@ pub fn derive_as_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     match &ast.data {
         Data::Struct(strct) => derive_as_bytes_struct(&ast, strct),
         Data::Enum(enm) => derive_as_bytes_enum(&ast, enm),
-        Data::Union(_) => Error::new(Span::call_site(), "unsupported on unions").to_compile_error(),
-    }.into()
+        Data::Union(unn) => derive_as_bytes_union(&ast, unn),
+    }
+    .into()
 }
 
 #[proc_macro_derive(Unaligned)]
@@ -62,8 +63,9 @@ pub fn derive_unaligned(ts: proc_macro::TokenStream) -> proc_macro::TokenStream 
     match &ast.data {
         Data::Struct(strct) => derive_unaligned_struct(&ast, strct),
         Data::Enum(enm) => derive_unaligned_enum(&ast, enm),
-        Data::Union(_) => Error::new(Span::call_site(), "unsupported on unions").to_compile_error(),
-    }.into()
+        Data::Union(unn) => derive_unaligned_union(&ast, unn),
+    }
+    .into()
 }
 
 // Unwrap a Result<_, Vec<Error>>, converting any Err value into a TokenStream
@@ -77,11 +79,18 @@ macro_rules! try_or_print {
     };
 }
 
+const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[
+    &[StructRepr::C],
+    &[StructRepr::Transparent],
+    &[StructRepr::Packed],
+    &[StructRepr::C, StructRepr::Packed],
+];
+
 // A struct is FromBytes if:
 // - all fields are FromBytes
 
 fn derive_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    impl_block(ast, strct, "FromBytes", true, false)
+    impl_block(ast, strct, "FromBytes", true, PaddingCheck::None)
 }
 
 // An enum is FromBytes if:
@@ -124,7 +133,7 @@ fn derive_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
         .to_compile_error();
     }
 
-    impl_block(ast, enm, "FromBytes", true, false)
+    impl_block(ast, enm, "FromBytes", true, PaddingCheck::None)
 }
 
 #[rustfmt::skip]
@@ -151,6 +160,13 @@ const ENUM_FROM_BYTES_CFG: Config<EnumRepr> = {
     }
 };
 
+// Like structs, unions are FromBytes if
+// - all fields are FromBytes
+
+fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
+    impl_block(ast, unn, "FromBytes", true, PaddingCheck::None)
+}
+
 // A struct is AsBytes if:
 // - all fields are AsBytes
 // - repr(C) or repr(transparent) and
@@ -164,35 +180,26 @@ fn derive_as_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2:
             .to_compile_error();
     }
 
-    let reprs = try_or_print!(STRUCT_AS_BYTES_CFG.validate_reprs(ast));
+    // TODO(https://github.com/rust-lang/reference/pull/1163): If this PR gets
+    // merged, remove this TODO comment. Otherwise, if the repr(packed) guarantees
+    // turn out to not be as strong as we're relying on them to be (namely, that
+    // repr(packed) or repr(packed(1)) guarantee no inter-field padding), we will
+    // need to change what guarantees we accept from repr(packed).
 
-    let require_size_check = match reprs.as_slice() {
-        [StructRepr::C] | [StructRepr::Transparent] => true,
-        [StructRepr::Packed] | [StructRepr::C, StructRepr::Packed] => false,
-        // validate_reprs has already validated that it's one of the preceding
-        // patterns
-        _ => unreachable!(),
-    };
+    let reprs = try_or_print!(STRUCT_UNION_AS_BYTES_CFG.validate_reprs(ast));
+    let padding_check =
+        if reprs.contains(&StructRepr::Packed) { PaddingCheck::None } else { PaddingCheck::Struct };
 
-    impl_block(ast, strct, "AsBytes", true, require_size_check)
+    impl_block(ast, strct, "AsBytes", true, padding_check)
 }
 
-#[rustfmt::skip]
-const STRUCT_AS_BYTES_CFG: Config<StructRepr> = {
-    use StructRepr::*;
-    Config {
-        // NOTE: Since disallowed_but_legal_combinations is empty, this message
-        // will never actually be emitted.
-        allowed_combinations_message: r#"AsBytes requires repr of "C", "transparent", or "packed""#,
-        derive_unaligned: false,
-        allowed_combinations: &[
-            &[C],
-            &[Transparent],
-            &[C, Packed],
-            &[Packed],
-        ],
-        disallowed_but_legal_combinations: &[],
-    }
+const STRUCT_UNION_AS_BYTES_CFG: Config<StructRepr> = Config {
+    // NOTE: Since disallowed_but_legal_combinations is empty, this message
+    // will never actually be emitted.
+    allowed_combinations_message: r#"AsBytes requires either a) repr "C" or "transparent" with all fields implementing AsBytes or, b) repr "packed""#,
+    derive_unaligned: false,
+    allowed_combinations: STRUCT_UNION_ALLOWED_REPR_COMBINATIONS,
+    disallowed_but_legal_combinations: &[],
 };
 
 // An enum is AsBytes if it is C-like and has a defined repr
@@ -206,7 +213,7 @@ fn derive_as_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Token
     // We don't care what the repr is; we only care that it is one of the
     // allowed ones.
     let _: Vec<repr::EnumRepr> = try_or_print!(ENUM_AS_BYTES_CFG.validate_reprs(ast));
-    impl_block(ast, enm, "AsBytes", false, false)
+    impl_block(ast, enm, "AsBytes", false, PaddingCheck::None)
 }
 
 #[rustfmt::skip]
@@ -234,6 +241,28 @@ const ENUM_AS_BYTES_CFG: Config<EnumRepr> = {
     }
 };
 
+// A union is AsBytes if:
+// - all fields are AsBytes
+// - repr(C), repr(transparent), or repr(packed)
+// - no padding (size of union equals size of each field type)
+
+fn derive_as_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
+    // TODO: Support type parameters.
+    if !ast.generics.params.is_empty() {
+        return Error::new(Span::call_site(), "unsupported on types with type parameters")
+            .to_compile_error();
+    }
+
+    // TODO(https://github.com/rust-lang/reference/pull/1163): If this PR gets
+    // merged, remove this TODO comment. Otherwise, if the repr(packed) guarantees
+    // turn out to not be as strong as we're relying on them to be (namely, that
+    // repr(packed) or repr(packed(1)) guarantee no inter-field padding), we will
+    // need to change what guarantees we accept from repr(packed).
+    try_or_print!(STRUCT_UNION_AS_BYTES_CFG.validate_reprs(ast));
+
+    impl_block(ast, unn, "AsBytes", true, PaddingCheck::Union)
+}
+
 // A struct is Unaligned if:
 // - repr(align) is no more than 1 and either
 //   - repr(C) or repr(transparent) and
@@ -241,36 +270,19 @@ const ENUM_AS_BYTES_CFG: Config<EnumRepr> = {
 //   - repr(packed)
 
 fn derive_unaligned_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    let reprs = try_or_print!(STRUCT_UNALIGNED_CFG.validate_reprs(ast));
+    let reprs = try_or_print!(STRUCT_UNION_UNALIGNED_CFG.validate_reprs(ast));
+    let require_trait_bound = !reprs.contains(&StructRepr::Packed);
 
-    let require_trait_bound = match reprs.as_slice() {
-        [StructRepr::C] | [StructRepr::Transparent] => true,
-        [StructRepr::Packed] | [StructRepr::C, StructRepr::Packed] => false,
-        // validate_reprs has already validated that it's one of the preceding
-        // patterns
-        _ => unreachable!(),
-    };
-
-    impl_block(ast, strct, "Unaligned", require_trait_bound, false)
+    impl_block(ast, strct, "Unaligned", require_trait_bound, PaddingCheck::None)
 }
 
-#[rustfmt::skip]
-const STRUCT_UNALIGNED_CFG: Config<StructRepr> = {
-    use StructRepr::*;
-    Config {
-        // NOTE: Since disallowed_but_legal_combinations is empty, this message
-        // will never actually be emitted.
-        allowed_combinations_message:
-            r#"Unaligned requires either a) repr "C" or "transparent" with all fields implementing Unaligned or, b) repr "packed""#,
-            derive_unaligned: true,
-        allowed_combinations: &[
-            &[C],
-            &[Transparent],
-            &[Packed],
-            &[C, Packed],
-        ],
-        disallowed_but_legal_combinations: &[],
-    }
+const STRUCT_UNION_UNALIGNED_CFG: Config<StructRepr> = Config {
+    // NOTE: Since disallowed_but_legal_combinations is empty, this message
+    // will never actually be emitted.
+    allowed_combinations_message: r#"Unaligned requires either a) repr "C" or "transparent" with all fields implementing Unaligned or, b) repr "packed""#,
+    derive_unaligned: true,
+    allowed_combinations: STRUCT_UNION_ALLOWED_REPR_COMBINATIONS,
+    disallowed_but_legal_combinations: &[],
 };
 
 // An enum is Unaligned if:
@@ -292,7 +304,7 @@ fn derive_unaligned_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Toke
     // of true for require_trait_bounds doesn't really do anything. But it's
     // marginally more future-proof in case that restriction is lifted in the
     // future.
-    impl_block(ast, enm, "Unaligned", true, false)
+    impl_block(ast, enm, "Unaligned", true, PaddingCheck::None)
 }
 
 #[rustfmt::skip]
@@ -320,12 +332,35 @@ const ENUM_UNALIGNED_CFG: Config<EnumRepr> = {
     }
 };
 
+// Like structs, a union is Unaligned if:
+// - repr(align) is no more than 1 and either
+//   - repr(C) or repr(transparent) and
+//     - all fields Unaligned
+//   - repr(packed)
+
+fn derive_unaligned_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
+    let reprs = try_or_print!(STRUCT_UNION_UNALIGNED_CFG.validate_reprs(ast));
+    let require_trait_bound = !reprs.contains(&StructRepr::Packed);
+
+    impl_block(ast, unn, "Unaligned", require_trait_bound, PaddingCheck::None)
+}
+
+// This enum describes what kind of padding check needs to be generated for the associated impl
+enum PaddingCheck {
+    // No additional padding check is required
+    None,
+    // Check that the sum of the fields' sizes exactly equals the struct's size
+    Struct,
+    // Check that the size of each field exactly equals the union's size
+    Union,
+}
+
 fn impl_block<D: DataExt>(
     input: &DeriveInput,
     data: &D,
     trait_name: &str,
     require_trait_bound: bool,
-    require_size_check: bool,
+    padding_check: PaddingCheck,
 ) -> proc_macro2::TokenStream {
     // In this documentation, we will refer to this hypothetical struct:
     //
@@ -528,8 +563,9 @@ fn impl_block<D: DataExt>(
         quote!()
     };
 
-    let size_check_body = if require_size_check && !field_types.is_empty() {
-        quote!(
+    let size_check_body = match (field_types.is_empty(), padding_check) {
+        (true, _) | (false, PaddingCheck::None) => quote!(),
+        (false, PaddingCheck::Struct) => quote!(
             const _: () = {
                 trait HasPadding<const HAS_PADDING: bool> {}
                 fn assert_no_padding<T: HasPadding<false>>() {}
@@ -540,9 +576,19 @@ fn impl_block<D: DataExt>(
                 impl HasPadding<HAS_PADDING> for #type_ident {}
                 let _ = assert_no_padding::<#type_ident>;
             };
-        )
-    } else {
-        quote!()
+        ),
+        (false, PaddingCheck::Union) => quote!(
+            const _: () = {
+                trait FieldsAreSameSize<const FIELDS_ARE_SAME_SIZE: bool> {}
+                fn assert_fields_are_same_size<T: FieldsAreSameSize<true>>() {}
+
+                const COMPOSITE_TYPE_SIZE: usize = ::core::mem::size_of::<#type_ident>();
+                const FIELDS_ARE_SAME_SIZE: bool = true
+                    #(&& (::core::mem::size_of::<#field_types>() == COMPOSITE_TYPE_SIZE))*;
+                impl FieldsAreSameSize<FIELDS_ARE_SAME_SIZE> for #type_ident {}
+                let _ = assert_fields_are_same_size::<#type_ident>;
+            };
+        ),
     };
 
     quote! {
@@ -587,7 +633,7 @@ mod tests {
                 && elements_are_sorted_and_deduped(&config.disallowed_but_legal_combinations)
         }
 
-        assert!(config_is_sorted(&STRUCT_UNALIGNED_CFG));
+        assert!(config_is_sorted(&STRUCT_UNION_UNALIGNED_CFG));
         assert!(config_is_sorted(&ENUM_FROM_BYTES_CFG));
         assert!(config_is_sorted(&ENUM_UNALIGNED_CFG));
     }
@@ -605,7 +651,7 @@ mod tests {
             overlap(config.allowed_combinations, config.disallowed_but_legal_combinations)
         }
 
-        assert!(!config_overlaps(&STRUCT_UNALIGNED_CFG));
+        assert!(!config_overlaps(&STRUCT_UNION_UNALIGNED_CFG));
         assert!(!config_overlaps(&ENUM_FROM_BYTES_CFG));
         assert!(!config_overlaps(&ENUM_UNALIGNED_CFG));
     }

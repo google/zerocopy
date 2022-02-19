@@ -29,6 +29,9 @@ rustc_macro("zerocopy-derive") {
     "tests/struct_as_bytes.rs",
     "tests/struct_from_bytes.rs",
     "tests/struct_unaligned.rs",
+    "tests/union_as_bytes.rs",
+    "tests/union_from_bytes.rs",
+    "tests/union_unaligned.rs",
 
     # "tests/compiletest.rs" is intentionally omitted since it needs to be able
     # to invoke rustc and there's currently no way for test code to allow

@@ -9,6 +9,8 @@ use compiletest_rs::{common::Mode, Config};
 #[test]
 fn ui() {
     let mut config = Config {
+        // Uncomment to bless tests
+        // bless: true,
         mode: Mode::Ui,
         src_base: PathBuf::from("tests/ui"),
         target_rustcflags: Some("-L target/debug -L target/debug/deps".to_string()),
