@@ -55,6 +55,7 @@ use core::cmp::Ordering;
 use core::fmt::{self, Debug, Display, Formatter};
 use core::marker::PhantomData;
 use core::mem;
+use core::num::{self, Wrapping};
 use core::ops::{Deref, DerefMut};
 use core::ptr;
 use core::slice;
@@ -83,6 +84,16 @@ macro_rules! impl_for_composite_types {
             {
             }
         }
+        // According to the `Wrapping` docs, "`Wrapping<T>` is guaranteed to have
+        // the same layout and ABI as `T`."
+        unsafe impl<T: $trait> $trait for Wrapping<T> {
+            fn only_derive_is_allowed_to_implement_this_trait()
+            where
+                Self: Sized,
+            {
+            }
+        }
+        // Unit type has empty representation
         unsafe impl $trait for () {
             fn only_derive_is_allowed_to_implement_this_trait()
             where
@@ -90,6 +101,7 @@ macro_rules! impl_for_composite_types {
             {
             }
         }
+        // Constant sized array with elements implementing $trait
         unsafe impl<T: $trait, const N: usize> $trait for [T; N] {
             fn only_derive_is_allowed_to_implement_this_trait()
             where
@@ -119,7 +131,36 @@ macro_rules! impl_for_types {
 macro_rules! impl_for_primitives {
     ($trait:ident) => {
         impl_for_types!(
-            $trait, u8, i8, u16, i16, u32, i32, u64, i64, u128, i128, usize, isize, f32, f64
+            $trait,
+            u8,
+            i8,
+            u16,
+            i16,
+            u32,
+            i32,
+            u64,
+            i64,
+            u128,
+            i128,
+            usize,
+            isize,
+            f32,
+            f64,
+            // Rust compiler reuses `0` value to represent `None`, so
+            // size_of::<Option<NonZeroXxx>>() == size_of::<xxx>(); see
+            // `NonZeroXXX` documentation.
+            Option<num::NonZeroU8>,
+            Option<num::NonZeroU16>,
+            Option<num::NonZeroU32>,
+            Option<num::NonZeroU64>,
+            Option<num::NonZeroU128>,
+            Option<num::NonZeroUsize>,
+            Option<num::NonZeroI8>,
+            Option<num::NonZeroI16>,
+            Option<num::NonZeroI32>,
+            Option<num::NonZeroI64>,
+            Option<num::NonZeroI128>,
+            Option<num::NonZeroIsize>
         );
     };
 }
@@ -455,8 +496,8 @@ pub unsafe trait AsBytes {
     }
 }
 
-// Special case for bool (it is not included in `impl_for_primitives!`).
-impl_for_types!(AsBytes, bool);
+// Special case for bool and char (they are not included in `impl_for_primitives!`).
+impl_for_types!(AsBytes, bool, char);
 
 impl_for_primitives!(FromBytes);
 impl_for_primitives!(AsBytes);
@@ -2606,24 +2647,38 @@ mod tests {
         #[repr(C)]
         struct Foo {
             a: u32,
-            b: u32,
+            b: Wrapping<u32>,
+            c: Option<core::num::NonZeroU32>,
         }
 
-        let mut foo = Foo { a: 1, b: 2 };
+        let mut foo = Foo { a: 1, b: Wrapping(2), c: None };
         // Test that we can access the underlying bytes, and that we get the
         // right bytes and the right number of bytes.
-        assert_eq!(foo.as_bytes(), [1, 0, 0, 0, 2, 0, 0, 0]);
+        assert_eq!(foo.as_bytes(), [1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0]);
         // Test that changes to the underlying byte slices are reflected in the
         // original object.
         foo.as_bytes_mut()[0] = 3;
-        assert_eq!(foo, Foo { a: 3, b: 2 });
+        assert_eq!(foo, Foo { a: 3, b: Wrapping(2), c: None });
 
         // Do the same tests for a slice, which ensures that this logic works
         // for unsized types as well.
-        let foo = &mut [Foo { a: 1, b: 2 }, Foo { a: 3, b: 4 }];
-        assert_eq!(foo.as_bytes(), [1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0]);
+        let foo = &mut [
+            Foo { a: 1, b: Wrapping(2), c: None },
+            Foo { a: 3, b: Wrapping(4), c: num::NonZeroU32::new(1) },
+        ];
+        assert_eq!(
+            foo.as_bytes(),
+            [1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0, 1, 0, 0, 0]
+        );
         foo.as_bytes_mut()[8] = 5;
-        assert_eq!(foo, &mut [Foo { a: 1, b: 2 }, Foo { a: 5, b: 4 }]);
+        foo.as_bytes_mut()[16] = 6;
+        assert_eq!(
+            foo,
+            &mut [
+                Foo { a: 1, b: Wrapping(2), c: num::NonZeroU32::new(5) },
+                Foo { a: 3, b: Wrapping(6), c: num::NonZeroU32::new(1) }
+            ]
+        );
     }
 
     #[test]
