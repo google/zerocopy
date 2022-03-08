@@ -2736,6 +2736,7 @@ mod tests {
         assert!(lv1 < lv2);
     }
 
+    #[allow(clippy::unit_cmp)] // TODO(fxbug.dev/95083)
     #[test]
     fn test_new_zeroed() {
         assert_eq!(u64::new_zeroed(), 0);
@@ -2752,6 +2753,7 @@ mod tests {
         drop(<[u32; 0x1000]>::new_box_zeroed());
     }
 
+    #[allow(clippy::unit_cmp)] // TODO(fxbug.dev/95083)
     #[test]
     fn test_new_box_zeroed_zst() {
         assert_eq!(*<()>::new_box_zeroed(), ());
@@ -2772,6 +2774,7 @@ mod tests {
         assert_eq!(s.len(), 0);
     }
 
+    #[allow(clippy::unit_cmp)] // TODO(fxbug.dev/95083)
     #[test]
     fn test_new_box_slice_zeroed_zst() {
         let mut s: Box<[()]> = <()>::new_box_slice_zeroed(3);
