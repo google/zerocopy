@@ -2736,11 +2736,15 @@ mod tests {
         assert!(lv1 < lv2);
     }
 
-    #[allow(clippy::unit_cmp)] // TODO(fxbug.dev/95083)
     #[test]
     fn test_new_zeroed() {
         assert_eq!(u64::new_zeroed(), 0);
-        assert_eq!(<()>::new_zeroed(), ());
+        // This test exists in order to exercise unsafe code, especially when
+        // running under Miri.
+        #[allow(clippy::unit_cmp)]
+        {
+            assert_eq!(<()>::new_zeroed(), ());
+        }
     }
 
     #[test]
@@ -2753,10 +2757,14 @@ mod tests {
         drop(<[u32; 0x1000]>::new_box_zeroed());
     }
 
-    #[allow(clippy::unit_cmp)] // TODO(fxbug.dev/95083)
     #[test]
     fn test_new_box_zeroed_zst() {
-        assert_eq!(*<()>::new_box_zeroed(), ());
+        // This test exists in order to exercise unsafe code, especially when
+        // running under Miri.
+        #[allow(clippy::unit_cmp)]
+        {
+            assert_eq!(*<()>::new_box_zeroed(), ());
+        }
     }
 
     #[test]
@@ -2774,13 +2782,17 @@ mod tests {
         assert_eq!(s.len(), 0);
     }
 
-    #[allow(clippy::unit_cmp)] // TODO(fxbug.dev/95083)
     #[test]
     fn test_new_box_slice_zeroed_zst() {
         let mut s: Box<[()]> = <()>::new_box_slice_zeroed(3);
         assert_eq!(s.len(), 3);
         assert!(s.get(10).is_none());
-        assert_eq!(s[1], ());
+        // This test exists in order to exercise unsafe code, especially when
+        // running under Miri.
+        #[allow(clippy::unit_cmp)]
+        {
+            assert_eq!(s[1], ());
+        }
         s[2] = ();
     }
 
