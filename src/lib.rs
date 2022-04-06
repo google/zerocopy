@@ -54,8 +54,11 @@ use core::cell::{Ref, RefMut};
 use core::cmp::Ordering;
 use core::fmt::{self, Debug, Display, Formatter};
 use core::marker::PhantomData;
-use core::mem;
-use core::num::{self, Wrapping};
+use core::mem::{self, MaybeUninit};
+use core::num::{
+    NonZeroI128, NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8, NonZeroIsize, NonZeroU128,
+    NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize, Wrapping,
+};
 use core::ops::{Deref, DerefMut};
 use core::ptr;
 use core::slice;
@@ -114,16 +117,12 @@ macro_rules! impl_for_composite_types {
 
 /// Implements `$trait` for one or more `$type`s.
 macro_rules! impl_for_types {
-    ($trait:ident, $type:ty) => (
-        unsafe impl $trait for $type {
-            fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
-        }
-    );
-    ($trait:ident, $type:ty, $($types:ty),*) => (
-        unsafe impl $trait for $type {
-            fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
-        }
-        impl_for_types!($trait, $($types),*);
+    ($trait:ident, $($types:ty),* $(,)?) => (
+        $(
+            unsafe impl $trait for $types {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+            }
+        )*
     );
 }
 
@@ -149,18 +148,18 @@ macro_rules! impl_for_primitives {
             // Rust compiler reuses `0` value to represent `None`, so
             // size_of::<Option<NonZeroXxx>>() == size_of::<xxx>(); see
             // `NonZeroXXX` documentation.
-            Option<num::NonZeroU8>,
-            Option<num::NonZeroU16>,
-            Option<num::NonZeroU32>,
-            Option<num::NonZeroU64>,
-            Option<num::NonZeroU128>,
-            Option<num::NonZeroUsize>,
-            Option<num::NonZeroI8>,
-            Option<num::NonZeroI16>,
-            Option<num::NonZeroI32>,
-            Option<num::NonZeroI64>,
-            Option<num::NonZeroI128>,
-            Option<num::NonZeroIsize>
+            Option<NonZeroU8>,
+            Option<NonZeroU16>,
+            Option<NonZeroU32>,
+            Option<NonZeroU64>,
+            Option<NonZeroU128>,
+            Option<NonZeroUsize>,
+            Option<NonZeroI8>,
+            Option<NonZeroI16>,
+            Option<NonZeroI32>,
+            Option<NonZeroI64>,
+            Option<NonZeroI128>,
+            Option<NonZeroIsize>,
         );
     };
 }
@@ -273,7 +272,7 @@ pub unsafe trait FromBytes {
         unsafe {
             // Safe because FromBytes says all bit patterns (including zeroes)
             // are legal.
-            core::mem::zeroed()
+            mem::zeroed()
         }
     }
 
@@ -357,15 +356,12 @@ pub unsafe trait FromBytes {
                 if ptr.is_null() {
                     alloc::alloc::handle_alloc_error(layout);
                 }
-                Box::from_raw(core::slice::from_raw_parts_mut(ptr, len))
+                Box::from_raw(slice::from_raw_parts_mut(ptr, len))
             } else {
                 // Box<[T]> does not allocate when T is zero-sized or when len
                 // is zero, but it does require a non-null dangling pointer for
                 // its allocation.
-                Box::from_raw(core::slice::from_raw_parts_mut(
-                    NonNull::<Self>::dangling().as_ptr(),
-                    len,
-                ))
+                Box::from_raw(slice::from_raw_parts_mut(NonNull::<Self>::dangling().as_ptr(), len))
             }
         }
     }
@@ -496,8 +492,40 @@ pub unsafe trait AsBytes {
     }
 }
 
-// Special case for bool and char (they are not included in `impl_for_primitives!`).
-impl_for_types!(AsBytes, bool, char);
+// Special case for AsBytes-only types (they are not included in `impl_for_primitives!`).
+impl_for_types!(
+    AsBytes,
+    bool,
+    char,
+    str,
+    // NonZero* is AsBytes, but not FromBytes.
+    // SAFETY: NonZero* has the same layout as its associated primitive.
+    // Since it is the same size, this guarantees it has no padding -
+    // integers have no padding, and there's no room for padding if it can
+    // represent all of the same values except 0.
+    NonZeroU8,
+    NonZeroU16,
+    NonZeroU32,
+    NonZeroU64,
+    NonZeroU128,
+    NonZeroUsize,
+    NonZeroI8,
+    NonZeroI16,
+    NonZeroI32,
+    NonZeroI64,
+    NonZeroI128,
+    NonZeroIsize,
+);
+
+// MaybeUninit<T> is FromBytes, but never AsBytes since it may contain uninit.
+// SAFETY: MaybeUninit<T> has no restrictions on its contents.
+unsafe impl<T> FromBytes for MaybeUninit<T> {
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized,
+    {
+    }
+}
 
 impl_for_primitives!(FromBytes);
 impl_for_primitives!(AsBytes);
@@ -2648,7 +2676,7 @@ mod tests {
         struct Foo {
             a: u32,
             b: Wrapping<u32>,
-            c: Option<core::num::NonZeroU32>,
+            c: Option<NonZeroU32>,
         }
 
         let mut foo = Foo { a: 1, b: Wrapping(2), c: None };
@@ -2664,7 +2692,7 @@ mod tests {
         // for unsized types as well.
         let foo = &mut [
             Foo { a: 1, b: Wrapping(2), c: None },
-            Foo { a: 3, b: Wrapping(4), c: num::NonZeroU32::new(1) },
+            Foo { a: 3, b: Wrapping(4), c: NonZeroU32::new(1) },
         ];
         assert_eq!(
             foo.as_bytes(),
@@ -2675,8 +2703,8 @@ mod tests {
         assert_eq!(
             foo,
             &mut [
-                Foo { a: 1, b: Wrapping(2), c: num::NonZeroU32::new(5) },
-                Foo { a: 3, b: Wrapping(6), c: num::NonZeroU32::new(1) }
+                Foo { a: 1, b: Wrapping(2), c: NonZeroU32::new(5) },
+                Foo { a: 3, b: Wrapping(6), c: NonZeroU32::new(1) }
             ]
         );
     }
