@@ -15,8 +15,9 @@ rustc_library("zerocopy") {
   deps = [
     "//src/lib/zerocopy/zerocopy-derive",
     "//third_party/rust_crates:byteorder",
-    "//third_party/rust_crates:rand",
   ]
+
+  test_deps = [ "//third_party/rust_crates:rand" ]
 
   features = [ "alloc" ]
 
