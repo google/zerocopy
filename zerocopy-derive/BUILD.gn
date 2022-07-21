@@ -11,6 +11,11 @@ rustc_macro("zerocopy-derive") {
   edition = "2021"
   with_unit_tests = true
 
+  # Since zerocopy reexports `zerocopy_derive::*`, dependents should depend on
+  # zerocopy and use the reexport, and should not depend on zerocopy-derive
+  # directly.
+  visibility = [ "../*" ]
+
   deps = [
     "//third_party/rust_crates:proc-macro2",
     "//third_party/rust_crates:quote",
