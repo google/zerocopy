@@ -18,8 +18,8 @@ use syn::{
 use ext::*;
 use repr::*;
 
-// TODO(joshlf): Some errors could be made better if we could add multiple lines
-// of error output like this:
+// TODO(https://github.com/rust-lang/rust/issues/54140): Some errors could be
+// made better if we could add multiple lines of error output like this:
 //
 // error: unsupported representation
 //   --> enum.rs:28:8
@@ -180,12 +180,6 @@ fn derive_as_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2:
             .to_compile_error();
     }
 
-    // TODO(https://github.com/rust-lang/reference/pull/1163): If this PR gets
-    // merged, remove this TODO comment. Otherwise, if the repr(packed) guarantees
-    // turn out to not be as strong as we're relying on them to be (namely, that
-    // repr(packed) or repr(packed(1)) guarantee no inter-field padding), we will
-    // need to change what guarantees we accept from repr(packed).
-
     let reprs = try_or_print!(STRUCT_UNION_AS_BYTES_CFG.validate_reprs(ast));
     let padding_check =
         if reprs.contains(&StructRepr::Packed) { PaddingCheck::None } else { PaddingCheck::Struct };
@@ -247,17 +241,12 @@ const ENUM_AS_BYTES_CFG: Config<EnumRepr> = {
 // - no padding (size of union equals size of each field type)
 
 fn derive_as_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    // TODO: Support type parameters.
+    // TODO(https://fxbug.dev/100235): Support type parameters.
     if !ast.generics.params.is_empty() {
         return Error::new(Span::call_site(), "unsupported on types with type parameters")
             .to_compile_error();
     }
 
-    // TODO(https://github.com/rust-lang/reference/pull/1163): If this PR gets
-    // merged, remove this TODO comment. Otherwise, if the repr(packed) guarantees
-    // turn out to not be as strong as we're relying on them to be (namely, that
-    // repr(packed) or repr(packed(1)) guarantee no inter-field padding), we will
-    // need to change what guarantees we accept from repr(packed).
     try_or_print!(STRUCT_UNION_AS_BYTES_CFG.validate_reprs(ast));
 
     impl_block(ast, unn, "AsBytes", true, PaddingCheck::Union)
@@ -615,8 +604,8 @@ mod tests {
         // canonical order. If they aren't, then our algorithm to look up in
         // those lists won't work.
 
-        // TODO(joshlf): Remove once the is_sorted method is stabilized
-        // (issue #53485).
+        // TODO(https://github.com/rust-lang/rust/issues/53485): Remove once
+        // `Vec::is_sorted` is stabilized.
         fn is_sorted_and_deduped<T: Clone + Ord>(ts: &[T]) -> bool {
             let mut sorted = ts.to_vec();
             sorted.sort();
