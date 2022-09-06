@@ -294,7 +294,7 @@ pub unsafe trait FromBytes {
     /// # Panics
     ///
     /// Panics if allocation of `size_of::<Self>()` bytes fails.
-    #[cfg(any(test, feature = "alloc"))]
+    #[cfg(feature = "alloc")]
     fn new_box_zeroed() -> Box<Self>
     where
         Self: Sized,
@@ -336,7 +336,7 @@ pub unsafe trait FromBytes {
     ///
     /// * Panics if `size_of::<Self>() * len` overflows.
     /// * Panics if allocation of `size_of::<Self>() * len` bytes fails.
-    #[cfg(any(test, feature = "alloc"))]
+    #[cfg(feature = "alloc")]
     fn new_box_slice_zeroed(len: usize) -> Box<[Self]>
     where
         Self: Sized,
@@ -628,6 +628,9 @@ mod simd {
     /// `$arch` is both the name of the defined module and the name of the
     /// module in `core::arch`, and `$typ` is the list of items from that module
     /// to implement `FromBytes` and `AsBytes` for.
+    // Some target/feature combinations don't emit any impls and thus don't use
+    // this macro.
+    #[allow(unused_macros)]
     macro_rules! simd_arch_mod {
         ($arch:ident, $($typ:ident),*) => {
             mod $arch {
@@ -734,7 +737,7 @@ impl<T> Unalign<T> {
     /// those pointers to be aligned, so calling those functions with the result
     /// of `get_ptr` will be undefined behavior if alignment is not guaranteed
     /// using some out-of-band mechanism. In general, the only functions which
-    /// are safe to call with this pointer are which that are explicitly
+    /// are safe to call with this pointer are those which are explicitly
     /// documented as being sound to use with an unaligned pointer, such as
     /// [`read_unaligned`].
     ///
@@ -773,8 +776,8 @@ impl<T: Copy> Unalign<T> {
 // SAFETY: Since `T: AsBytes`, we know that it's safe to construct a `&[u8]`
 // from an aligned `&T`. Since `&[u8]` itself has no alignment requirements, it
 // must also be safe to construct a `&[u8]` from a `&T` at any address. Since
-// `Unalign<T>` is `#[repr(packed)]`, everything about its layout except for its
-// alignment is the same as `T`'s layout.
+// `Unalign<T>` is `#[repr(C, packed)]`, everything about its layout except for
+// its alignment is the same as `T`'s layout.
 unsafe impl<T: AsBytes> AsBytes for Unalign<T> {
     fn only_derive_is_allowed_to_implement_this_trait()
     where
@@ -1979,7 +1982,7 @@ unsafe impl<'a> ByteSliceMut for RefMut<'a, [u8]> {
     }
 }
 
-#[cfg(any(test, feature = "alloc"))]
+#[cfg(feature = "alloc")]
 mod alloc_support {
     pub(crate) extern crate alloc;
     pub(crate) use super::*;
@@ -2024,9 +2027,188 @@ mod alloc_support {
             v.set_len(v.len() + additional);
         }
     }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+
+        #[test]
+        fn test_extend_vec_zeroed() {
+            // test extending when there is an existing allocation
+            let mut v: Vec<u64> = Vec::with_capacity(3);
+            v.push(100);
+            v.push(200);
+            v.push(300);
+            extend_vec_zeroed(&mut v, 3);
+            assert_eq!(v.len(), 6);
+            assert_eq!(&*v, &[100, 200, 300, 0, 0, 0]);
+            drop(v);
+
+            // test extending when there is no existing allocation
+            let mut v: Vec<u64> = Vec::new();
+            extend_vec_zeroed(&mut v, 3);
+            assert_eq!(v.len(), 3);
+            assert_eq!(&*v, &[0, 0, 0]);
+            drop(v);
+        }
+
+        #[test]
+        fn test_extend_vec_zeroed_zst() {
+            // test extending when there is an existing (fake) allocation
+            let mut v: Vec<()> = Vec::with_capacity(3);
+            v.push(());
+            v.push(());
+            v.push(());
+            extend_vec_zeroed(&mut v, 3);
+            assert_eq!(v.len(), 6);
+            assert_eq!(&*v, &[(), (), (), (), (), ()]);
+            drop(v);
+
+            // test extending when there is no existing (fake) allocation
+            let mut v: Vec<()> = Vec::new();
+            extend_vec_zeroed(&mut v, 3);
+            assert_eq!(&*v, &[(), (), ()]);
+            drop(v);
+        }
+
+        #[test]
+        fn test_insert_vec_zeroed() {
+            // insert at start (no existing allocation)
+            let mut v: Vec<u64> = Vec::new();
+            insert_vec_zeroed(&mut v, 0, 2);
+            assert_eq!(v.len(), 2);
+            assert_eq!(&*v, &[0, 0]);
+            drop(v);
+
+            // insert at start
+            let mut v: Vec<u64> = Vec::with_capacity(3);
+            v.push(100);
+            v.push(200);
+            v.push(300);
+            insert_vec_zeroed(&mut v, 0, 2);
+            assert_eq!(v.len(), 5);
+            assert_eq!(&*v, &[0, 0, 100, 200, 300]);
+            drop(v);
+
+            // insert at middle
+            let mut v: Vec<u64> = Vec::with_capacity(3);
+            v.push(100);
+            v.push(200);
+            v.push(300);
+            insert_vec_zeroed(&mut v, 1, 1);
+            assert_eq!(v.len(), 4);
+            assert_eq!(&*v, &[100, 0, 200, 300]);
+            drop(v);
+
+            // insert at end
+            let mut v: Vec<u64> = Vec::with_capacity(3);
+            v.push(100);
+            v.push(200);
+            v.push(300);
+            insert_vec_zeroed(&mut v, 3, 1);
+            assert_eq!(v.len(), 4);
+            assert_eq!(&*v, &[100, 200, 300, 0]);
+            drop(v);
+        }
+
+        #[test]
+        fn test_insert_vec_zeroed_zst() {
+            // insert at start (no existing fake allocation)
+            let mut v: Vec<()> = Vec::new();
+            insert_vec_zeroed(&mut v, 0, 2);
+            assert_eq!(v.len(), 2);
+            assert_eq!(&*v, &[(), ()]);
+            drop(v);
+
+            // insert at start
+            let mut v: Vec<()> = Vec::with_capacity(3);
+            v.push(());
+            v.push(());
+            v.push(());
+            insert_vec_zeroed(&mut v, 0, 2);
+            assert_eq!(v.len(), 5);
+            assert_eq!(&*v, &[(), (), (), (), ()]);
+            drop(v);
+
+            // insert at middle
+            let mut v: Vec<()> = Vec::with_capacity(3);
+            v.push(());
+            v.push(());
+            v.push(());
+            insert_vec_zeroed(&mut v, 1, 1);
+            assert_eq!(v.len(), 4);
+            assert_eq!(&*v, &[(), (), (), ()]);
+            drop(v);
+
+            // insert at end
+            let mut v: Vec<()> = Vec::with_capacity(3);
+            v.push(());
+            v.push(());
+            v.push(());
+            insert_vec_zeroed(&mut v, 3, 1);
+            assert_eq!(v.len(), 4);
+            assert_eq!(&*v, &[(), (), (), ()]);
+            drop(v);
+        }
+
+        #[test]
+        fn test_new_box_zeroed() {
+            assert_eq!(*u64::new_box_zeroed(), 0);
+        }
+
+        #[test]
+        fn test_new_box_zeroed_array() {
+            drop(<[u32; 0x1000]>::new_box_zeroed());
+        }
+
+        #[test]
+        fn test_new_box_zeroed_zst() {
+            // This test exists in order to exercise unsafe code, especially when
+            // running under Miri.
+            #[allow(clippy::unit_cmp)]
+            {
+                assert_eq!(*<()>::new_box_zeroed(), ());
+            }
+        }
+
+        #[test]
+        fn test_new_box_slice_zeroed() {
+            let mut s: Box<[u64]> = u64::new_box_slice_zeroed(3);
+            assert_eq!(s.len(), 3);
+            assert_eq!(&*s, &[0, 0, 0]);
+            s[1] = 3;
+            assert_eq!(&*s, &[0, 3, 0]);
+        }
+
+        #[test]
+        fn test_new_box_slice_zeroed_empty() {
+            let s: Box<[u64]> = u64::new_box_slice_zeroed(0);
+            assert_eq!(s.len(), 0);
+        }
+
+        #[test]
+        fn test_new_box_slice_zeroed_zst() {
+            let mut s: Box<[()]> = <()>::new_box_slice_zeroed(3);
+            assert_eq!(s.len(), 3);
+            assert!(s.get(10).is_none());
+            // This test exists in order to exercise unsafe code, especially when
+            // running under Miri.
+            #[allow(clippy::unit_cmp)]
+            {
+                assert_eq!(s[1], ());
+            }
+            s[2] = ();
+        }
+
+        #[test]
+        fn test_new_box_slice_zeroed_zst_empty() {
+            let s: Box<[()]> = <()>::new_box_slice_zeroed(0);
+            assert_eq!(s.len(), 0);
+        }
+    }
 }
 
-#[cfg(any(test, feature = "alloc"))]
+#[cfg(feature = "alloc")]
 #[doc(inline)]
 pub use alloc_support::*;
 
@@ -2775,179 +2957,5 @@ mod tests {
         {
             assert_eq!(<()>::new_zeroed(), ());
         }
-    }
-
-    #[test]
-    fn test_new_box_zeroed() {
-        assert_eq!(*u64::new_box_zeroed(), 0);
-    }
-
-    #[test]
-    fn test_new_box_zeroed_array() {
-        drop(<[u32; 0x1000]>::new_box_zeroed());
-    }
-
-    #[test]
-    fn test_new_box_zeroed_zst() {
-        // This test exists in order to exercise unsafe code, especially when
-        // running under Miri.
-        #[allow(clippy::unit_cmp)]
-        {
-            assert_eq!(*<()>::new_box_zeroed(), ());
-        }
-    }
-
-    #[test]
-    fn test_new_box_slice_zeroed() {
-        let mut s: Box<[u64]> = u64::new_box_slice_zeroed(3);
-        assert_eq!(s.len(), 3);
-        assert_eq!(&*s, &[0, 0, 0]);
-        s[1] = 3;
-        assert_eq!(&*s, &[0, 3, 0]);
-    }
-
-    #[test]
-    fn test_new_box_slice_zeroed_empty() {
-        let s: Box<[u64]> = u64::new_box_slice_zeroed(0);
-        assert_eq!(s.len(), 0);
-    }
-
-    #[test]
-    fn test_new_box_slice_zeroed_zst() {
-        let mut s: Box<[()]> = <()>::new_box_slice_zeroed(3);
-        assert_eq!(s.len(), 3);
-        assert!(s.get(10).is_none());
-        // This test exists in order to exercise unsafe code, especially when
-        // running under Miri.
-        #[allow(clippy::unit_cmp)]
-        {
-            assert_eq!(s[1], ());
-        }
-        s[2] = ();
-    }
-
-    #[test]
-    fn test_new_box_slice_zeroed_zst_empty() {
-        let s: Box<[()]> = <()>::new_box_slice_zeroed(0);
-        assert_eq!(s.len(), 0);
-    }
-
-    #[test]
-    fn test_extend_vec_zeroed() {
-        // test extending when there is an existing allocation
-        let mut v: Vec<u64> = Vec::with_capacity(3);
-        v.push(100);
-        v.push(200);
-        v.push(300);
-        extend_vec_zeroed(&mut v, 3);
-        assert_eq!(v.len(), 6);
-        assert_eq!(&*v, &[100, 200, 300, 0, 0, 0]);
-        drop(v);
-
-        // test extending when there is no existing allocation
-        let mut v: Vec<u64> = Vec::new();
-        extend_vec_zeroed(&mut v, 3);
-        assert_eq!(v.len(), 3);
-        assert_eq!(&*v, &[0, 0, 0]);
-        drop(v);
-    }
-
-    #[test]
-    fn test_extend_vec_zeroed_zst() {
-        // test extending when there is an existing (fake) allocation
-        let mut v: Vec<()> = Vec::with_capacity(3);
-        v.push(());
-        v.push(());
-        v.push(());
-        extend_vec_zeroed(&mut v, 3);
-        assert_eq!(v.len(), 6);
-        assert_eq!(&*v, &[(), (), (), (), (), ()]);
-        drop(v);
-
-        // test extending when there is no existing (fake) allocation
-        let mut v: Vec<()> = Vec::new();
-        extend_vec_zeroed(&mut v, 3);
-        assert_eq!(&*v, &[(), (), ()]);
-        drop(v);
-    }
-
-    #[test]
-    fn test_insert_vec_zeroed() {
-        // insert at start (no existing allocation)
-        let mut v: Vec<u64> = Vec::new();
-        insert_vec_zeroed(&mut v, 0, 2);
-        assert_eq!(v.len(), 2);
-        assert_eq!(&*v, &[0, 0]);
-        drop(v);
-
-        // insert at start
-        let mut v: Vec<u64> = Vec::with_capacity(3);
-        v.push(100);
-        v.push(200);
-        v.push(300);
-        insert_vec_zeroed(&mut v, 0, 2);
-        assert_eq!(v.len(), 5);
-        assert_eq!(&*v, &[0, 0, 100, 200, 300]);
-        drop(v);
-
-        // insert at middle
-        let mut v: Vec<u64> = Vec::with_capacity(3);
-        v.push(100);
-        v.push(200);
-        v.push(300);
-        insert_vec_zeroed(&mut v, 1, 1);
-        assert_eq!(v.len(), 4);
-        assert_eq!(&*v, &[100, 0, 200, 300]);
-        drop(v);
-
-        // insert at end
-        let mut v: Vec<u64> = Vec::with_capacity(3);
-        v.push(100);
-        v.push(200);
-        v.push(300);
-        insert_vec_zeroed(&mut v, 3, 1);
-        assert_eq!(v.len(), 4);
-        assert_eq!(&*v, &[100, 200, 300, 0]);
-        drop(v);
-    }
-
-    #[test]
-    fn test_insert_vec_zeroed_zst() {
-        // insert at start (no existing fake allocation)
-        let mut v: Vec<()> = Vec::new();
-        insert_vec_zeroed(&mut v, 0, 2);
-        assert_eq!(v.len(), 2);
-        assert_eq!(&*v, &[(), ()]);
-        drop(v);
-
-        // insert at start
-        let mut v: Vec<()> = Vec::with_capacity(3);
-        v.push(());
-        v.push(());
-        v.push(());
-        insert_vec_zeroed(&mut v, 0, 2);
-        assert_eq!(v.len(), 5);
-        assert_eq!(&*v, &[(), (), (), (), ()]);
-        drop(v);
-
-        // insert at middle
-        let mut v: Vec<()> = Vec::with_capacity(3);
-        v.push(());
-        v.push(());
-        v.push(());
-        insert_vec_zeroed(&mut v, 1, 1);
-        assert_eq!(v.len(), 4);
-        assert_eq!(&*v, &[(), (), (), ()]);
-        drop(v);
-
-        // insert at end
-        let mut v: Vec<()> = Vec::with_capacity(3);
-        v.push(());
-        v.push(());
-        v.push(());
-        insert_vec_zeroed(&mut v, 3, 1);
-        assert_eq!(v.len(), 4);
-        assert_eq!(&*v, &[(), (), (), ()]);
-        drop(v);
     }
 }
