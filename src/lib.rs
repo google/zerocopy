@@ -50,18 +50,19 @@ pub mod byteorder;
 pub use crate::byteorder::*;
 pub use zerocopy_derive::*;
 
-use core::cell::{Ref, RefMut};
-use core::cmp::Ordering;
-use core::fmt::{self, Debug, Display, Formatter};
-use core::marker::PhantomData;
-use core::mem::{self, MaybeUninit};
-use core::num::{
-    NonZeroI128, NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8, NonZeroIsize, NonZeroU128,
-    NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize, Wrapping,
+use core::{
+    cell::{Ref, RefMut},
+    cmp::Ordering,
+    fmt::{self, Debug, Display, Formatter},
+    marker::PhantomData,
+    mem::{self, MaybeUninit},
+    num::{
+        NonZeroI128, NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8, NonZeroIsize, NonZeroU128,
+        NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize, Wrapping,
+    },
+    ops::{Deref, DerefMut},
+    ptr, slice,
 };
-use core::ops::{Deref, DerefMut};
-use core::ptr;
-use core::slice;
 
 // This is a hack to allow derives of FromBytes, AsBytes, and Unaligned to work
 // in this crate. They assume that zerocopy is linked as an extern crate, so
@@ -634,9 +635,10 @@ mod simd {
     macro_rules! simd_arch_mod {
         ($arch:ident, $($typ:ident),*) => {
             mod $arch {
-                use core::arch::$arch::{$($typ),*};
-
-                use crate::*;
+                use {
+                    crate::*,
+                    core::arch::$arch::{$($typ),*},
+                };
 
                 impl_for_types!(FromBytes, $($typ),*);
                 impl_for_types!(AsBytes, $($typ),*);
@@ -2216,9 +2218,7 @@ pub use alloc_support::*;
 mod tests {
     #![allow(clippy::unreadable_literal)]
 
-    use core::ops::Deref;
-
-    use super::*;
+    use {super::*, core::ops::Deref};
 
     // B should be [u8; N]. T will require that the entire structure is aligned
     // to the alignment of T.
