@@ -10,10 +10,10 @@ name = "zerocopy-derive"
 version = "0.3.1"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Custom derive for traits from the zerocopy crate"
-license-file = "../../../../LICENSE"
-repository = "https://fuchsia.googlesource.com/fuchsia/+/HEAD/src/lib/zerocopy/zerocopy-derive"
+license-file = "../LICENSE"
+repository = "https://github.com/google/zerocopy"
 
-include = ["src/*", "tests/*", "Cargo.toml"]
+exclude = [".*"]
 
 [lib]
 proc-macro = true
