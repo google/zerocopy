@@ -10,10 +10,10 @@ name = "zerocopy"
 version = "0.6.1"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Utilities for zero-copy parsing and serialization"
-license-file = "../../../LICENSE"
-repository = "https://fuchsia.googlesource.com/fuchsia/+/HEAD/src/lib/zerocopy"
+license-file = "LICENSE"
+repository = "https://github.com/google/zerocopy"
 
-include = ["src/*", "Cargo.toml"]
+exclude = [".*"]
 
 [package.metadata.docs.rs]
 all-features = true
