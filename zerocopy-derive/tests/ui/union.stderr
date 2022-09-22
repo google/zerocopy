@@ -36,8 +36,7 @@ error[E0277]: the trait bound `AsBytes: FieldsAreSameSize<true>` is not satisfie
 22 | #[derive(AsBytes)]
    |          ^^^^^^^ the trait `FieldsAreSameSize<true>` is not implemented for `AsBytes`
    |
-   = help: the following implementations were found:
-             <AsBytes as FieldsAreSameSize<false>>
+   = help: the trait `FieldsAreSameSize<false>` is implemented for `AsBytes`
 note: required by a bound in `assert_fields_are_same_size`
   --> $DIR/union.rs:22:10
    |
@@ -48,10 +47,8 @@ note: required by a bound in `assert_fields_are_same_size`
 error[E0587]: type has conflicting packed and align representation hints
   --> $DIR/union.rs:51:1
    |
-51 | / union Unaligned3 {
-52 | |     foo: u8,
-53 | | }
-   | |_^
+51 | union Unaligned3 {
+   | ^^^^^^^^^^^^^^^^
 
 error: aborting due to 7 previous errors
 

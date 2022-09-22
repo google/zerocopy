@@ -25,4 +25,4 @@ syn = { version = "1.0.5", features = ["visit"] }
 
 [dev-dependencies]
 zerocopy = { path = "../" }
-compiletest_rs = "0.7"
+compiletest_rs = "0.8"
