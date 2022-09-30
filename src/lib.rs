@@ -2924,27 +2924,28 @@ mod tests {
 
     #[test]
     fn test_eq() {
-        let buf = [0u8; 8];
-        let lv1 = LayoutVerified::<_, u64>::new(&buf[..]).unwrap();
-        let lv2 = LayoutVerified::<_, u64>::new(&buf[..]).unwrap();
+        let buf1 = 0_u64;
+        let lv1 = LayoutVerified::<_, u64>::new(buf1.as_bytes()).unwrap();
+        let buf2 = 0_u64;
+        let lv2 = LayoutVerified::<_, u64>::new(buf2.as_bytes()).unwrap();
         assert_eq!(lv1, lv2);
     }
 
     #[test]
     fn test_ne() {
-        let buf1 = [0u8; 8];
-        let lv1 = LayoutVerified::<_, u64>::new(&buf1[..]).unwrap();
-        let buf2 = [1u8; 8];
-        let lv2 = LayoutVerified::<_, u64>::new(&buf2[..]).unwrap();
+        let buf1 = 0_u64;
+        let lv1 = LayoutVerified::<_, u64>::new(buf1.as_bytes()).unwrap();
+        let buf2 = 1_u64;
+        let lv2 = LayoutVerified::<_, u64>::new(buf2.as_bytes()).unwrap();
         assert_ne!(lv1, lv2);
     }
 
     #[test]
     fn test_ord() {
-        let buf1 = [0u8; 8];
-        let lv1 = LayoutVerified::<_, u64>::new(&buf1[..]).unwrap();
-        let buf2 = [1u8; 8];
-        let lv2 = LayoutVerified::<_, u64>::new(&buf2[..]).unwrap();
+        let buf1 = 0_u64;
+        let lv1 = LayoutVerified::<_, u64>::new(buf1.as_bytes()).unwrap();
+        let buf2 = 1_u64;
+        let lv2 = LayoutVerified::<_, u64>::new(buf2.as_bytes()).unwrap();
         assert!(lv1 < lv2);
     }
 
