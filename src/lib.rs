@@ -1918,7 +1918,10 @@ mod sealed {
 /// [`split_at`]: crate::ByteSlice::split_at
 pub unsafe trait ByteSlice: Deref<Target = [u8]> + Sized + self::sealed::Sealed {
     /// Gets a raw pointer to the first byte in the slice.
-    fn as_ptr(&self) -> *const u8;
+    #[inline]
+    fn as_ptr(&self) -> *const u8 {
+        <[u8]>::as_ptr(self)
+    }
 
     /// Splits the slice at the midpoint.
     ///
@@ -1938,14 +1941,13 @@ pub unsafe trait ByteSlice: Deref<Target = [u8]> + Sized + self::sealed::Sealed 
 /// `RefMut<[u8]>`.
 pub unsafe trait ByteSliceMut: ByteSlice + DerefMut {
     /// Gets a mutable raw pointer to the first byte in the slice.
-    fn as_mut_ptr(&mut self) -> *mut u8;
+    #[inline]
+    fn as_mut_ptr(&mut self) -> *mut u8 {
+        <[u8]>::as_mut_ptr(self)
+    }
 }
 
 unsafe impl<'a> ByteSlice for &'a [u8] {
-    #[inline]
-    fn as_ptr(&self) -> *const u8 {
-        <[u8]>::as_ptr(self)
-    }
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at(self, mid)
@@ -1953,19 +1955,11 @@ unsafe impl<'a> ByteSlice for &'a [u8] {
 }
 unsafe impl<'a> ByteSlice for &'a mut [u8] {
     #[inline]
-    fn as_ptr(&self) -> *const u8 {
-        <[u8]>::as_ptr(self)
-    }
-    #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at_mut(self, mid)
     }
 }
 unsafe impl<'a> ByteSlice for Ref<'a, [u8]> {
-    #[inline]
-    fn as_ptr(&self) -> *const u8 {
-        <[u8]>::as_ptr(self)
-    }
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         Ref::map_split(self, |slice| <[u8]>::split_at(slice, mid))
@@ -1973,27 +1967,13 @@ unsafe impl<'a> ByteSlice for Ref<'a, [u8]> {
 }
 unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
     #[inline]
-    fn as_ptr(&self) -> *const u8 {
-        <[u8]>::as_ptr(self)
-    }
-    #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         RefMut::map_split(self, |slice| <[u8]>::split_at_mut(slice, mid))
     }
 }
 
-unsafe impl<'a> ByteSliceMut for &'a mut [u8] {
-    #[inline]
-    fn as_mut_ptr(&mut self) -> *mut u8 {
-        <[u8]>::as_mut_ptr(self)
-    }
-}
-unsafe impl<'a> ByteSliceMut for RefMut<'a, [u8]> {
-    #[inline]
-    fn as_mut_ptr(&mut self) -> *mut u8 {
-        <[u8]>::as_mut_ptr(self)
-    }
-}
+unsafe impl<'a> ByteSliceMut for &'a mut [u8] {}
+unsafe impl<'a> ByteSliceMut for RefMut<'a, [u8]> {}
 
 #[cfg(feature = "alloc")]
 mod alloc_support {
