@@ -6,22 +6,22 @@
 
 use zerocopy::FromBytes;
 
-// An enum is FromBytes if:
-// - repr(uN) or repr(iN)
+// An enum is `FromBytes` if:
+// - `repr(uN)` or `repr(iN)`
 // - 2^N variants
 
 // Summary since it's hard to scan this file quickly:
-// - An enum with repr(u8) and 256 variants
-// - An enum with repr(i8) and 256 variants
-// - An enum with repr(u8), 256 variants, and repr(align(2))
-// - An enum with repr(i8), 256 variants, and repr(align(2))
-// - An enum with repr(u16) and 65536 variants
-// - An enum with repr(i16) and 65536 variants
+// - An enum with `repr(u8)` and 256 variants
+// - An enum with `repr(i8)` and 256 variants
+// - An enum with `repr(u8)`, 256 variants, and `repr(align(2))`
+// - An enum with `repr(i8)`, 256 variants, and `repr(align(2))`
+// - An enum with `repr(u16)` and 65536 variants
+// - An enum with `repr(i16)` and 65536 variants
 //
-// For the i8 and i16 enums, we have to explicitly set the descriminant of the
-// first variant whose discriminant needs to be negative (e.g., FooI8's
-// Variant128 has a discriminant of -128) since Rust won't automatically wrap a
-// signed discriminant around without you explicitly telling it to.
+// For the `i8` and `i16` enums, we have to explicitly set the descriminant of
+// the first variant whose discriminant needs to be negative (e.g., `FooI8`'s
+// `Variant128` has a discriminant of -128) since Rust won't automatically wrap
+// a signed discriminant around without you explicitly telling it to.
 
 struct IsFromBytes<T: FromBytes>(T);
 

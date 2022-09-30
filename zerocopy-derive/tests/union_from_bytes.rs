@@ -20,8 +20,8 @@ macro_rules! is_from_bytes {
     };
 }
 
-// A union is FromBytes if:
-// - all fields are FromBytes
+// A union is `FromBytes` if:
+// - all fields are `FromBytes`
 
 #[derive(Clone, Copy, FromBytes)]
 union Zst {

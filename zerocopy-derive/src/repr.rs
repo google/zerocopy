@@ -13,11 +13,12 @@ pub struct Config<Repr: KindRepr> {
     // are allowed. This will be printed to the user if they use an invalid
     // combination.
     pub allowed_combinations_message: &'static str,
-    // Whether we're checking as part of derive(Unaligned). If not, we can
-    // ignore repr(align), which makes the code (and the list of valid repr
+    // Whether we're checking as part of `derive(Unaligned)`. If not, we can
+    // ignore `repr(align)`, which makes the code (and the list of valid repr
     // combinations we have to enumerate) somewhat simpler. If we're checking
-    // for Unaligned, then in addition to checking against illegal combinations,
-    // we also check to see if there exists a repr(align(N > 1)) attribute.
+    // for `Unaligned`, then in addition to checking against illegal
+    // combinations, we also check to see if there exists a `repr(align(N > 1))`
+    // attribute.
     pub derive_unaligned: bool,
     // Combinations which are valid for the trait.
     pub allowed_combinations: &'static [&'static [Repr]],
@@ -63,8 +64,8 @@ impl<R: KindRepr> Config<R> {
         });
 
         if reprs.is_empty() {
-            // Use Span::call_site to report this error on the #[derive(...)]
-            // itself.
+            // Use `Span::call_site` to report this error on the
+            // `#[derive(...)]` itself.
             return Err(vec![Error::new(Span::call_site(), "must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout")]);
         }
 
@@ -96,9 +97,9 @@ pub trait KindRepr: 'static + Sized + Ord {
     fn parse(meta: &NestedMeta) -> syn::Result<Self>;
 }
 
-// Define an enum for reprs which are valid for a given kind (structs, enums,
-// etc), and provide implementations of KindRepr, Ord, and Display, and those
-// traits' super-traits.
+// Defines an enum for reprs which are valid for a given kind (structs, enums,
+// etc), and provide implementations of `KindRepr`, `Ord`, and `Display`, and
+// those traits' super-traits.
 macro_rules! define_kind_specific_repr {
     ($type_name:expr, $repr_name:ident, $($repr_variant:ident),*) => {
         #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -250,7 +251,7 @@ fn reprs<R: KindRepr>(attrs: &[Attribute]) -> Result<Vec<(NestedMeta, R)>, Vec<E
     let mut reprs = Vec::new();
     let mut errors = Vec::new();
     for attr in attrs {
-        // ignore documentation attributes
+        // Ignore documentation attributes.
         if attr.path.is_ident("doc") {
             continue;
         }

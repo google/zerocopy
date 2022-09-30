@@ -71,8 +71,8 @@ use crate::AsBytes;
 // explanation.
 use crate::zerocopy;
 
-// NOTE: We don't reexport `WriteBytesExt` or `ReadBytesExt` because those are
-// only available with the `std` feature enabled, and zerocopy is `no_std` by
+// We don't reexport `WriteBytesExt` or `ReadBytesExt` because those are only
+// available with the `std` feature enabled, and zerocopy is `no_std` by
 // default.
 pub use byteorder::{BigEndian, ByteOrder, LittleEndian, NativeEndian, NetworkEndian, BE, LE};
 
@@ -123,12 +123,12 @@ macro_rules! define_max_value_constant {
         pub const MAX_VALUE: $name<O> = $name([0xFFu8; $bytes], PhantomData);
     };
     // We don't provide maximum and minimum value constants for signed values
-    // and floats because there's no way to do it generically - it would
-    // require a different value depending on the value of the ByteOrder type
-    // parameter. Currently, one workaround would be to provide
-    // implementations for concrete implementations of that trait. In the
-    // long term, if we are ever able to make the `new` constructor a const
-    // fn, we could use that instead.
+    // and floats because there's no way to do it generically - it would require
+    // a different value depending on the value of the `ByteOrder` type
+    // parameter. Currently, one workaround would be to provide implementations
+    // for concrete implementations of that trait. In the long term, if we are
+    // ever able to make the `new` constructor a const fn, we could use that
+    // instead.
     ($name:ident, $bytes:expr, "signed integer") => {};
     ($name:ident, $bytes:expr, "floating point number") => {};
 }
@@ -184,7 +184,7 @@ example of how it can be used for parsing UDP packets.
             }
         }
 
-        // TODO(joshlf): Replace this with #[derive(AsBytes)] once that derive
+        // TODO(#10): Replace this with `#[derive(AsBytes)]` once that derive
         // supports type parameters.
         unsafe impl<O: ByteOrder> AsBytes for $name<O> {
             fn only_derive_is_allowed_to_implement_this_trait()
@@ -212,8 +212,8 @@ example of how it can be used for parsing UDP packets.
         }
 
         impl<O: ByteOrder> $name<O> {
-            // TODO(joshlf): Make these const fns if the ByteOrder methods ever
-            // become const fns.
+            // TODO(joshlf): Make these const fns if the `ByteOrder` methods
+            // ever become const fns.
 
             /// Constructs a new value, possibly performing an endianness swap
             /// to guarantee that the returned value has endianness `O`.
@@ -238,7 +238,7 @@ example of how it can be used for parsing UDP packets.
             }
         }
 
-        // NOTE: The reasoning behind which traits to implement here is to only
+        // The reasoning behind which traits to implement here is to only
         // implement traits which won't cause inference issues. Notably,
         // comparison traits like PartialEq and PartialOrd tend to cause
         // inference issues.
@@ -329,7 +329,7 @@ example of how it can be used for parsing UDP packets.
 
         impl<O: ByteOrder> Debug for $name<O> {
             fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-                // This results in a format like "U16(42)"
+                // This results in a format like "U16(42)".
                 f.debug_tuple(stringify!($name)).field(&self.get()).finish()
             }
         }
@@ -445,7 +445,7 @@ mod tests {
     use super::*;
     use crate::{AsBytes, FromBytes, Unaligned};
 
-    // A native integer type (u16, i32, etc)
+    // A native integer type (u16, i32, etc).
     trait Native: FromBytes + AsBytes + Copy + PartialEq + Debug {
         const ZERO: Self;
         const MAX_VALUE: Self;

@@ -20,11 +20,11 @@ macro_rules! is_unaligned {
     };
 }
 
-// A union is Unaligned if:
-// - repr(align) is no more than 1 and either
-//   - repr(C) or repr(transparent) and
-//     - all fields Unaligned
-//   - repr(packed)
+// A union is `Unaligned` if:
+// - `repr(align)` is no more than 1 and either
+//   - `repr(C)` or `repr(transparent)` and
+//     - all fields `Unaligned`
+//   - `repr(packed)`
 
 #[derive(Unaligned)]
 #[repr(C)]
@@ -34,8 +34,8 @@ union Foo {
 
 is_unaligned!(Foo);
 
-// transparent unions are unstable
-// see issue #60405 <https://github.com/rust-lang/rust/issues/60405> for more information
+// Transparent unions are unstable; see issue #60405
+// <https://github.com/rust-lang/rust/issues/60405> for more information.
 
 // #[derive(Unaligned)]
 // #[repr(transparent)]

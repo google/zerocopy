@@ -20,11 +20,11 @@ macro_rules! is_as_bytes {
     };
 }
 
-// A struct is AsBytes if:
-// - all fields are AsBytes
-// - repr(C) or repr(transparent) and
+// A struct is `AsBytes` if:
+// - all fields are `AsBytes`
+// - `repr(C)` or `repr(transparent)` and
 //   - no padding (size of struct equals sum of size of field types)
-// - repr(packed)
+// - `repr(packed)`
 
 #[derive(AsBytes)]
 #[repr(C)]

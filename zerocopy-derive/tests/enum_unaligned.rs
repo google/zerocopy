@@ -17,9 +17,9 @@ macro_rules! is_unaligned {
     };
 }
 
-// An enum is Unaligned if:
-// - No repr(align(N > 1))
-// - repr(u8) or repr(i8)
+// An enum is `Unaligned` if:
+// - No `repr(align(N > 1))`
+// - `repr(u8)` or `repr(i8)`
 
 #[derive(Unaligned)]
 #[repr(u8)]
