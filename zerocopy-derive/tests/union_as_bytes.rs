@@ -20,11 +20,11 @@ macro_rules! is_as_bytes {
     };
 }
 
-// A union is AsBytes if:
-// - all fields are AsBytes
-// - repr(C) or repr(transparent) and
+// A union is `AsBytes` if:
+// - all fields are `AsBytes`
+// - `repr(C)` or `repr(transparent)` and
 //   - no padding (size of union equals size of each field type)
-// - repr(packed)
+// - `repr(packed)`
 
 #[derive(AsBytes, Clone, Copy)]
 #[repr(C)]
@@ -43,8 +43,8 @@ union C {
 
 is_as_bytes!(C);
 
-// transparent unions are unstable
-// see issue #60405 <https://github.com/rust-lang/rust/issues/60405> for more information
+// Transparent unions are unstable; see issue #60405
+// <https://github.com/rust-lang/rust/issues/60405> for more information.
 
 // #[derive(AsBytes)]
 // #[repr(transparent)]

@@ -17,7 +17,7 @@ macro_rules! is_as_bytes {
     };
 }
 
-// An enum is AsBytes if if has a defined repr
+// An enum is `AsBytes` if if has a defined repr.
 
 #[derive(AsBytes)]
 #[repr(C)]

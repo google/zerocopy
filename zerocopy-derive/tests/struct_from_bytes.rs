@@ -20,8 +20,8 @@ macro_rules! is_from_bytes {
     };
 }
 
-// A struct is FromBytes if:
-// - all fields are FromBytes
+// A struct is `FromBytes` if:
+// - all fields are `FromBytes`
 
 #[derive(FromBytes)]
 struct Zst;

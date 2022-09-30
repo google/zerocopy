@@ -68,8 +68,8 @@ pub fn derive_unaligned(ts: proc_macro::TokenStream) -> proc_macro::TokenStream 
     .into()
 }
 
-// Unwrap a Result<_, Vec<Error>>, converting any Err value into a TokenStream
-// and returning it.
+// Unwraps a `Result<_, Vec<Error>>`, converting any `Err` value into a
+// `TokenStream` and returning it.
 macro_rules! try_or_print {
     ($e:expr) => {
         match $e {
@@ -86,23 +86,23 @@ const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[
     &[StructRepr::C, StructRepr::Packed],
 ];
 
-// A struct is FromBytes if:
-// - all fields are FromBytes
+// A struct is `FromBytes` if:
+// - all fields are `FromBytes`
 
 fn derive_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
     impl_block(ast, strct, "FromBytes", true, PaddingCheck::None)
 }
 
-// An enum is FromBytes if:
+// An enum is `FromBytes` if:
 // - Every possible bit pattern must be valid, which means that every bit
 //   pattern must correspond to a different enum variant. Thus, for an enum
 //   whose layout takes up N bytes, there must be 2^N variants.
 // - Since we must know N, only representations which guarantee the layout's
-//   size are allowed. These are repr(uN) and repr(iN) (repr(C) implies an
-//   implementation-defined size). size and isize technically guarantee the
+//   size are allowed. These are `repr(uN)` and `repr(iN)` (`repr(C)` implies an
+//   implementation-defined size). `usize` and `isize` technically guarantee the
 //   layout's size, but would require us to know how large those are on the
 //   target platform. This isn't terribly difficult - we could emit a const
-//   expression that could call core::mem::size_of in order to determine the
+//   expression that could call `core::mem::size_of` in order to determine the
 //   size and check against the number of enum variants, but a) this would be
 //   platform-specific and, b) even on Rust's smallest bit width platform (32),
 //   this would require ~4 billion enum variants, which obviously isn't a thing.
@@ -118,8 +118,8 @@ fn derive_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
     let variants_required = match reprs.as_slice() {
         [EnumRepr::U8] | [EnumRepr::I8] => 1usize << 8,
         [EnumRepr::U16] | [EnumRepr::I16] => 1usize << 16,
-        // validate_reprs has already validated that it's one of the preceding
-        // patterns
+        // `validate_reprs` has already validated that it's one of the preceding
+        // patterns.
         _ => unreachable!(),
     };
     if enm.variants.len() != variants_required {
@@ -160,21 +160,21 @@ const ENUM_FROM_BYTES_CFG: Config<EnumRepr> = {
     }
 };
 
-// Like structs, unions are FromBytes if
-// - all fields are FromBytes
+// Like structs, unions are `FromBytes` if
+// - all fields are `FromBytes`
 
 fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
     impl_block(ast, unn, "FromBytes", true, PaddingCheck::None)
 }
 
-// A struct is AsBytes if:
-// - all fields are AsBytes
-// - repr(C) or repr(transparent) and
+// A struct is `AsBytes` if:
+// - all fields are `AsBytes`
+// - `repr(C)` or `repr(transparent)` and
 //   - no padding (size of struct equals sum of size of field types)
-// - repr(packed)
+// - `repr(packed)`
 
 fn derive_as_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    // TODO(https://fxbug.dev/100235): Support type parameters.
+    // TODO(#10): Support type parameters.
     if !ast.generics.params.is_empty() {
         return Error::new(Span::call_site(), "unsupported on types with type parameters")
             .to_compile_error();
@@ -188,15 +188,15 @@ fn derive_as_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2:
 }
 
 const STRUCT_UNION_AS_BYTES_CFG: Config<StructRepr> = Config {
-    // NOTE: Since disallowed_but_legal_combinations is empty, this message
-    // will never actually be emitted.
+    // Since `disallowed_but_legal_combinations` is empty, this message will
+    // never actually be emitted.
     allowed_combinations_message: r#"AsBytes requires either a) repr "C" or "transparent" with all fields implementing AsBytes or, b) repr "packed""#,
     derive_unaligned: false,
     allowed_combinations: STRUCT_UNION_ALLOWED_REPR_COMBINATIONS,
     disallowed_but_legal_combinations: &[],
 };
 
-// An enum is AsBytes if it is C-like and has a defined repr
+// An enum is `AsBytes` if it is C-like and has a defined repr.
 
 fn derive_as_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
     if !enm.is_c_like() {
@@ -214,8 +214,8 @@ fn derive_as_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Token
 const ENUM_AS_BYTES_CFG: Config<EnumRepr> = {
     use EnumRepr::*;
     Config {
-        // NOTE: Since disallowed_but_legal_combinations is empty, this message
-        // will never actually be emitted.
+        // Since `disallowed_but_legal_combinations` is empty, this message will
+        // never actually be emitted.
         allowed_combinations_message: r#"AsBytes requires repr of "C", "u8", "u16", "u32", "u64", "usize", "i8", "i16", "i32", "i64", or "isize""#,
         derive_unaligned: false,
         allowed_combinations: &[
@@ -235,13 +235,13 @@ const ENUM_AS_BYTES_CFG: Config<EnumRepr> = {
     }
 };
 
-// A union is AsBytes if:
-// - all fields are AsBytes
-// - repr(C), repr(transparent), or repr(packed)
+// A union is `AsBytes` if:
+// - all fields are `AsBytes`
+// - `repr(C)`, `repr(transparent)`, or `repr(packed)`
 // - no padding (size of union equals size of each field type)
 
 fn derive_as_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    // TODO(https://fxbug.dev/100235): Support type parameters.
+    // TODO(#10): Support type parameters.
     if !ast.generics.params.is_empty() {
         return Error::new(Span::call_site(), "unsupported on types with type parameters")
             .to_compile_error();
@@ -252,11 +252,11 @@ fn derive_as_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::Tok
     impl_block(ast, unn, "AsBytes", true, PaddingCheck::Union)
 }
 
-// A struct is Unaligned if:
-// - repr(align) is no more than 1 and either
-//   - repr(C) or repr(transparent) and
-//     - all fields Unaligned
-//   - repr(packed)
+// A struct is `Unaligned` if:
+// - `repr(align)` is no more than 1 and either
+//   - `repr(C)` or `repr(transparent)` and
+//     - all fields `Unaligned`
+//   - `repr(packed)`
 
 fn derive_unaligned_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
     let reprs = try_or_print!(STRUCT_UNION_UNALIGNED_CFG.validate_reprs(ast));
@@ -266,17 +266,17 @@ fn derive_unaligned_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2
 }
 
 const STRUCT_UNION_UNALIGNED_CFG: Config<StructRepr> = Config {
-    // NOTE: Since disallowed_but_legal_combinations is empty, this message
-    // will never actually be emitted.
+    // Since `disallowed_but_legal_combinations` is empty, this message will
+    // never actually be emitted.
     allowed_combinations_message: r#"Unaligned requires either a) repr "C" or "transparent" with all fields implementing Unaligned or, b) repr "packed""#,
     derive_unaligned: true,
     allowed_combinations: STRUCT_UNION_ALLOWED_REPR_COMBINATIONS,
     disallowed_but_legal_combinations: &[],
 };
 
-// An enum is Unaligned if:
-// - No repr(align(N > 1))
-// - repr(u8) or repr(i8)
+// An enum is `Unaligned` if:
+// - No `repr(align(N > 1))`
+// - `repr(u8)` or `repr(i8)`
 
 fn derive_unaligned_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
     if !enm.is_c_like() {
@@ -284,13 +284,13 @@ fn derive_unaligned_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Toke
             .to_compile_error();
     }
 
-    // The only valid reprs are u8 and i8, and optionally align(1). We don't
-    // actually care what the reprs are so long as they satisfy that
+    // The only valid reprs are `u8` and `i8`, and optionally `align(1)`. We
+    // don't actually care what the reprs are so long as they satisfy that
     // requirement.
     let _: Vec<repr::EnumRepr> = try_or_print!(ENUM_UNALIGNED_CFG.validate_reprs(ast));
 
-    // NOTE: C-like enums cannot currently have type parameters, so this value
-    // of true for require_trait_bounds doesn't really do anything. But it's
+    // C-like enums cannot currently have type parameters, so this value of true
+    // for `require_trait_bounds` doesn't really do anything. But it's
     // marginally more future-proof in case that restriction is lifted in the
     // future.
     impl_block(ast, enm, "Unaligned", true, PaddingCheck::None)
@@ -321,11 +321,11 @@ const ENUM_UNALIGNED_CFG: Config<EnumRepr> = {
     }
 };
 
-// Like structs, a union is Unaligned if:
-// - repr(align) is no more than 1 and either
-//   - repr(C) or repr(transparent) and
-//     - all fields Unaligned
-//   - repr(packed)
+// Like structs, a union is `Unaligned` if:
+// - `repr(align)` is no more than 1 and either
+//   - `repr(C)` or `repr(transparent)` and
+//     - all fields `Unaligned`
+//   - `repr(packed)`
 
 fn derive_unaligned_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
     let reprs = try_or_print!(STRUCT_UNION_UNALIGNED_CFG.validate_reprs(ast));
@@ -334,13 +334,14 @@ fn derive_unaligned_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::To
     impl_block(ast, unn, "Unaligned", require_trait_bound, PaddingCheck::None)
 }
 
-// This enum describes what kind of padding check needs to be generated for the associated impl
+// This enum describes what kind of padding check needs to be generated for the
+// associated impl.
 enum PaddingCheck {
-    // No additional padding check is required
+    // No additional padding check is required.
     None,
-    // Check that the sum of the fields' sizes exactly equals the struct's size
+    // Check that the sum of the fields' sizes exactly equals the struct's size.
     Struct,
-    // Check that the size of each field exactly equals the union's size
+    // Check that the size of each field exactly equals the union's size.
     Union,
 }
 
@@ -365,11 +366,11 @@ fn impl_block<D: DataExt>(
     //       c: I::Item,
     //   }
     //
-    // First, we extract the field types, which in this case are u8, T, and
-    // I::Item. We use the names of the type parameters to split the field types
-    // into two sets - a set of types which are based on the type parameters,
-    // and a set of types which are not. First, we re-use the existing
-    // parameters and where clauses, generating an impl block like:
+    // First, we extract the field types, which in this case are `u8`, `T`, and
+    // `I::Item`. We use the names of the type parameters to split the field
+    // types into two sets - a set of types which are based on the type
+    // parameters, and a set of types which are not. First, we re-use the
+    // existing parameters and where clauses, generating an `impl` block like:
     //
     //   impl<T, I: Iterator> FromBytes for Foo<T, I>
     //   where
@@ -380,7 +381,7 @@ fn impl_block<D: DataExt>(
     //   }
     //
     // Then, we use the list of types which are based on the type parameters to
-    // generate new entries in the where clause:
+    // generate new entries in the `where` clause:
     //
     //   impl<T, I: Iterator> FromBytes for Foo<T, I>
     //   where
@@ -392,8 +393,8 @@ fn impl_block<D: DataExt>(
     //   {
     //   }
     //
-    // Finally, we use a different technique to generate the bounds for the types
-    // which are not based on type parameters:
+    // Finally, we use a different technique to generate the bounds for the
+    // types which are not based on type parameters:
     //
     //
     //   fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {
@@ -542,10 +543,10 @@ fn impl_block<D: DataExt>(
         let implements_type_tokens = quote!(#implements_type_ident);
         let types = non_type_param_field_types.map(|ty| quote!(#implements_type_tokens<#ty>));
         quote!(
-            // A type with a type parameter that must implement #trait_ident
+            // A type with a type parameter that must implement `#trait_ident`.
             struct #implements_type_ident<F: ?Sized + zerocopy::#trait_ident>(::core::marker::PhantomData<F>);
             // For each field type, an instantiation that won't type check if
-            // that type doesn't implement #trait_ident
+            // that type doesn't implement `#trait_ident`.
             #(let _: #types;)*
         )
     } else {
@@ -629,8 +630,8 @@ mod tests {
 
     #[test]
     fn test_config_repr_no_overlap() {
-        // Validate that no set of reprs appears in both th allowed_combinations
-        // and disallowed_but_legal_combinations lists.
+        // Validate that no set of reprs appears in both the
+        // `allowed_combinations` and `disallowed_but_legal_combinations` lists.
 
         fn overlap<T: Eq>(a: &[T], b: &[T]) -> bool {
             a.iter().any(|elem| b.contains(elem))

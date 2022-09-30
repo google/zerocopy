@@ -37,8 +37,8 @@ union Unaligned1 {
     bar: u16,
 }
 
-// transparent unions are unstable
-// see issue #60405 <https://github.com/rust-lang/rust/issues/60405> for more information
+// Transparent unions are unstable; see issue #60405
+// <https://github.com/rust-lang/rust/issues/60405> for more information.
 
 // #[derive(Unaligned)]
 // #[repr(transparent, align(2))]

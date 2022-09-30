@@ -20,11 +20,11 @@ macro_rules! is_unaligned {
     };
 }
 
-// A struct is Unaligned if:
-// - repr(align) is no more than 1 and either
-//   - repr(C) or repr(transparent) and
+// A struct is `Unaligned` if:
+// - `repr(align)` is no more than 1 and either
+//   - `repr(C)` or `repr(transparent)` and
 //     - all fields Unaligned
-//   - repr(packed)
+//   - `repr(packed)`
 
 #[derive(Unaligned)]
 #[repr(C)]

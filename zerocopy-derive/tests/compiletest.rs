@@ -9,7 +9,7 @@ use compiletest_rs::{common::Mode, Config};
 #[test]
 fn ui() {
     let mut config = Config {
-        // Uncomment to bless tests
+        // Uncomment to bless tests:
         // bless: true,
         mode: Mode::Ui,
         src_base: PathBuf::from("tests/ui"),
