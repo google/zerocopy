@@ -2,6 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// After updating the following doc comment, make sure to run the following
+// command to update `README.md` based on its contents:
+//
+//   cargo readme | sed 's/\[\(`[^`]*`\)]/\1/g' > README.md
+//
+// The `sed` command removes code links like:
+//
+//   /// Here is a link to [`Vec<u8>`].
+//
+// The `cargo readme` command can be installed by running:
+//
+//   cargo install cargo-readme
+
 //! Utilities for safe zero-copy parsing and serialization.
 //!
 //! This crate provides utilities which make it easy to perform zero-copy
