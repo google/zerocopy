@@ -1,0 +1,45 @@
+name: Build & Tests
+
+on:
+  push:
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build_test:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        channel: [ "stable", "nightly" ]
+        target: [ "aarch64-unknown-linux-gnu" ]
+
+    continue-on-error: ${{ matrix.channel == 'nightly' }}
+    name: Build & Test - Channel ${{ matrix.channel }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Rust ${{ matrix.channel }} ${{ matrix.target }}
+      uses: ATiltedTree/setup-rust@v1
+      with:
+        rust-version: ${{ matrix.channel }}
+        targets: ${{ matrix.target }}
+
+    - name: Check ${{ matrix.channel }}
+      run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} --verbose
+
+    - name: Build ${{ matrix.channel }}
+      run: cargo +${{ matrix.channel }} build --target ${{ matrix.target }} --verbose
+
+    - name: Run ${{ matrix.channel }} tests
+      run: cargo +${{ matrix.channel }} test --target ${{ matrix.target }} --verbose
+    
+    - name: Install cargo-miri
+      run: cargo install miri
+    
+    - name: Run miri test
+      run: cargo miri test -y
