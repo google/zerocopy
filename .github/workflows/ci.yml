@@ -31,11 +31,6 @@ jobs:
         rust-version: ${{ matrix.channel }}
         targets: ${{ matrix.target }}
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update && sudo apt-get upgrade
-        sudo apt-get install libxkbcommon-dev
-
     - name: Check ${{ matrix.channel }}
       run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} --verbose
 
@@ -43,10 +38,10 @@ jobs:
       run: cargo +${{ matrix.channel }} build --target ${{ matrix.target }} --verbose
 
     - name: Run ${{ matrix.channel }} tests
-      run: cargo +${{ matrix.channel }} test  --verbose
+      run: cargo +${{ matrix.channel }} test --target ${{ matrix.target }} --verbose
     
-    # - name: Install cargo-miri
-    #   run: cargo install miri
+    - name: Install cargo-miri
+      run: cargo install miri
     
-    # - name: Run miri test
-    #   run: cargo miri test -y
+    - name: Run miri test
+      run: cargo miri test -y
