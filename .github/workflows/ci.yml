@@ -41,7 +41,9 @@ jobs:
       run: cargo +${{ matrix.channel }} test --verbose
     
     - name: Install cargo-miri
-      run: rustup +nightly component add miri
+      run: |
+        rustup toolchain install nightly-2022-09-26
+        rustup +nightly component add miri
     
     - name: Run miri test
       run: cargo miri test -y
