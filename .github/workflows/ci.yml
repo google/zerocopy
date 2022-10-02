@@ -34,7 +34,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update && sudo apt-get upgrade
-        sudo apt-get install libffi-devel libxml2-devel zlib-devel libxkbcommon-dev
+        sudo apt-get install libxkbcommon-dev
 
     - name: Check ${{ matrix.channel }}
       run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} --verbose
