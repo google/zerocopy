@@ -1,5 +1,5 @@
 error: FromBytes only supported on repr(u8) enum with 256 variants
-   --> $DIR/enum_from_bytes_u8_too_few.rs:11:1
+   --> tests/ui/enum_from_bytes_u8_too_few.rs:11:1
     |
 11  | / #[repr(u8)]
 12  | | enum Foo {
@@ -9,6 +9,3 @@ error: FromBytes only supported on repr(u8) enum with 256 variants
 267 | |     Variant254,
 268 | | }
     | |_^
-
-error: aborting due to previous error
-
