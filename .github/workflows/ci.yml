@@ -41,8 +41,10 @@ jobs:
     - name: Build ${{ matrix.channel }}
       run: cargo +${{ matrix.channel }} build --target ${{ matrix.target }} --verbose
 
+    # Only run tests in the architecture that the runners are using
     - name: Run ${{ matrix.channel }} tests
       run: cargo +${{ matrix.channel }} test --target ${{ matrix.target }} --verbose
+      if: ${{ matrix.target == "x86_64-unknown-linux-gnu" }}
     
     - name: Install cargo-miri
       run: |
