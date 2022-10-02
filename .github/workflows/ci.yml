@@ -9,13 +9,17 @@ env:
 
 jobs:
   build_test:
+    # Used for installing miri
+    # https://rust-lang.github.io/rustup-components-history/
+    env:
+      TOOLCHAIN_VERSION: '2022-09-26'
 
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         channel: [ "stable", "nightly" ]
-        target: [ "aarch64-unknown-linux-gnu" ]
+        target: [ "x86_64-unknown-linux-gnu" ]
 
     # Prevents a workflow run from failing when a job fails
     continue-on-error: ${{ matrix.channel == 'nightly' }}
@@ -42,8 +46,8 @@ jobs:
     
     - name: Install cargo-miri
       run: |
-        rustup toolchain install nightly-2022-09-26
-        rustup component add miri --toolchain nightly-2022-09-26-x86_64-unknown-linux-gnu
+        rustup toolchain install nightly-${{ TOOLCHAIN_VERSION }}
+        rustup component add miri --toolchain nightly-${{ TOOLCHAIN_VERSION }}-${{ matrix.target }}
     
     - name: Run miri test
-      run: cargo +nightly-2022-09-26-x86_64-unknown-linux-gnu miri test
+      run: cargo +nightly-${{ TOOLCHAIN_VERSION }}-${{ matrix.target }} miri test
