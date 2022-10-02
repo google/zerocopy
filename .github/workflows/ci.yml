@@ -23,7 +23,7 @@ jobs:
         features: [ "" , "--features alloc,simd,simd-nightly"]
 
     # Prevents a workflow run from failing when a job fails
-    continue-on-error: ${{ matrix.channel == 'nightly' }}
+    continue-on-error: ${{ matrix.channel != 'stable' }}
 
     name: Build & Test (${{ matrix.channel }} for ${{ matrix.target }}, features set to ${{ matrix.features != '' }})
 
