@@ -18,7 +18,7 @@ cat > $COPYRIGHT_HEADER <<EOF
 EOF
 
 # This uses the `cargo readme` tool, which you can install via `cargo install
-# cargo-readme`.
+# cargo-readme --version 3.2.0`.
 #
 # The `sed` command is used to strip code links like:
 #

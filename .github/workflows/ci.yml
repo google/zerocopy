@@ -1,0 +1,90 @@
+name: Build & Tests
+
+on:
+  push:
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build_test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # Nightly is specificied at a particular date since not all nightlies
+        # have a working Miri. See here for details:
+        # https://rust-lang.github.io/rustup-components-history/
+        channel: [ "1.56.1", "stable", "beta", "nightly-2022-09-26" ]
+        target: [ "i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "arm-unknown-linux-gnueabi", "aarch64-unknown-linux-gnu", "powerpc-unknown-linux-gnu", "powerpc64-unknown-linux-gnu", "wasm32-wasi" ]
+        features: [ "" , "alloc,simd"]
+
+    name: Build & Test (${{ matrix.channel }} for ${{ matrix.target }}, features set to "${{ matrix.features }}")
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Rust with toolchain ${{ matrix.channel }} and target ${{ matrix.target }}
+      uses: actions-rs/toolchain@v1
+      with:
+          toolchain: ${{ matrix.channel }}
+          target: ${{ matrix.target }}
+          # Only nightly has a working Miri, so we skip installing on all other
+          # toolchains. This expression is effectively a ternary expression -
+          # see [1] for details.
+          #
+          # [1]
+          # https://github.com/actions/runner/issues/409#issuecomment-752775072
+          components: ${{ contains(matrix.channel, 'nightly') && 'miri' || '' }}
+
+    - name: Rust Cache
+      uses: Swatinem/rust-cache@v2.0.0
+      with:
+        key: "${{ matrix.channel }}-${{ matrix.target }}-${{ matrix.features }}-${{ hashFiles('**/Cargo.lock') }}"
+
+    - name: Check
+      run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
+
+    - name: Build
+      run: cargo +${{ matrix.channel }} build --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
+
+    # When building tests for the i686 target, we need certain libraries which
+    # are not installed by default; `gcc-multilib` includes these libraries.
+    - name: Install gcc-multilib
+      run: sudo apt-get install gcc-multilib
+      if: ${{ contains(matrix.target, 'i686') }}
+
+    # Only run tests in the x86 architecture
+    - name: Run tests
+      # TODO(#21): Fix `test_new_error` on i686 and re-enable it here.
+      run: cargo +${{ matrix.channel }} test --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose -- ${{ contains(matrix.target, 'i686') && '--skip test_new_error' || '' }}
+      if: ${{ contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686') }}
+    
+    - name: Run tests under Miri
+      # Skip the `ui` test since it invokes the compiler, which we can't do from
+      # Miri (and wouldn't want to do anyway).
+      #
+      # TODO(#21): Fix `test_new_error` on i686 and re-enable it here.
+      # TODO(#23): Fix `test_as_bytes_methods` on powerpc and re-enable it here.
+      run: cargo +${{ matrix.channel }} miri test --target ${{ matrix.target }} --features "${{ matrix.features }}" -- --skip ui ${{ contains(matrix.target, 'i686') && '--skip test_new_error' || '' }} ${{ contains(matrix.target, 'powerpc') && '--skip test_as_bytes_methods' || '' }}
+      # Only nightly has a working Miri, so we skip installing on all other
+      # toolchains.
+      #
+      # TODO(#22): Re-enable testing on wasm32-wasi once it works.
+      if: ${{ contains(matrix.channel, 'nightly') && matrix.target != 'wasm32-wasi' }}
+      
+  check_readme:
+    runs-on: ubuntu-latest
+    name: Check README.md
+    steps:
+      - uses: actions/checkout@v3
+      # Cache the `cargo-readme` installation.
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2.0.0
+      - name: Check README.md
+        run: |
+          set -e
+          cargo install cargo-readme --version 3.2.0
+          diff <(./generate-readme.sh) README.md
+          exit $?
