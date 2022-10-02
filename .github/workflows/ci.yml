@@ -31,14 +31,14 @@ jobs:
         rust-version: ${{ matrix.channel }}
         targets: ${{ matrix.target }}
 
+    - name: Install dependencies
+      run: sudo apt-get install libffi-devel libxml2-devel zlib-devel
+
     - name: Check ${{ matrix.channel }}
       run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} --verbose
 
     - name: Build ${{ matrix.channel }}
       run: cargo +${{ matrix.channel }} build --target ${{ matrix.target }} --verbose
-
-    - name: Clean
-      run: cargo clean
 
     - name: Run ${{ matrix.channel }} tests
       run: cargo +${{ matrix.channel }} test --target ${{ matrix.target }} --verbose
