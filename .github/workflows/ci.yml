@@ -18,13 +18,14 @@ jobs:
 
     strategy:
       matrix:
-        channel: [ "stable", "nightly" ]
+        channel: [ "stable", "beta", "nightly" ]
         target: [ "x86_64-unknown-linux-gnu" ]
+        features: [ "" , "--features alloc,simd,simd-nightly"]
 
     # Prevents a workflow run from failing when a job fails
     continue-on-error: ${{ matrix.channel == 'nightly' }}
 
-    name: Build & Test (${{ matrix.channel }})
+    name: Build & Test (${{ matrix.channel }} for ${{ matrix.target }}, features set to ${{ matrix.features != '' }})
 
     steps:
     - uses: actions/checkout@v3
