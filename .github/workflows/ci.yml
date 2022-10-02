@@ -37,14 +37,14 @@ jobs:
         targets: ${{ matrix.target }}
 
     - name: Check ${{ matrix.channel }}
-      run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} --verbose
+      run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} ${{ matrix.features }} --verbose
 
     - name: Build ${{ matrix.channel }}
-      run: cargo +${{ matrix.channel }} build --target ${{ matrix.target }} --verbose
+      run: cargo +${{ matrix.channel }} build --target ${{ matrix.target }} ${{ matrix.features }} --verbose
 
     # Only run tests in the architecture that the runners are using
     - name: Run ${{ matrix.channel }} tests
-      run: cargo +${{ matrix.channel }} test --target ${{ matrix.target }} --verbose
+      run: cargo +${{ matrix.channel }} test --target ${{ matrix.target }} ${{ matrix.features }} --verbose
       if: ${{ matrix.target == 'x86_64-unknown-linux-gnu' }}
     
     - name: Install cargo-miri
@@ -53,4 +53,4 @@ jobs:
         rustup component add miri --toolchain nightly-${{ env.TOOLCHAIN_VERSION }}-${{ matrix.target }}
     
     - name: Run miri test
-      run: cargo +nightly-${{ env.TOOLCHAIN_VERSION }}-${{ matrix.target }} miri test
+      run: cargo +nightly-${{ env.TOOLCHAIN_VERSION }}-${{ matrix.target }} miri test ${{ matrix.features }}
