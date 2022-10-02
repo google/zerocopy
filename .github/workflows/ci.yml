@@ -46,8 +46,8 @@ jobs:
     
     - name: Install cargo-miri
       run: |
-        rustup toolchain install nightly-${{ TOOLCHAIN_VERSION }}
-        rustup component add miri --toolchain nightly-${{ TOOLCHAIN_VERSION }}-${{ matrix.target }}
+        rustup toolchain install nightly-${{ env.TOOLCHAIN_VERSION }}
+        rustup component add miri --toolchain nightly-${{ env.TOOLCHAIN_VERSION }}-${{ matrix.target }}
     
     - name: Run miri test
-      run: cargo +nightly-${{ TOOLCHAIN_VERSION }}-${{ matrix.target }} miri test
+      run: cargo +nightly-${{ env.TOOLCHAIN_VERSION }}-${{ matrix.target }} miri test
