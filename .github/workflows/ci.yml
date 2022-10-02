@@ -46,4 +46,4 @@ jobs:
         rustup +nightly component add miri
     
     - name: Run miri test
-      run: cargo miri test -y
+      run: cargo +nightly-2022-09-26-x86_64-unknown-linux-gnu miri test
