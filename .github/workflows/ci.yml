@@ -31,6 +31,9 @@ jobs:
         rust-version: ${{ matrix.channel }}
         targets: ${{ matrix.target }}
 
+    - name: Install libwayland-dev
+      run: apt install libwayland-dev
+
     - name: Check ${{ matrix.channel }}
       run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} --verbose
 
