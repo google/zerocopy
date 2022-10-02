@@ -35,14 +35,14 @@ jobs:
         rust-version: ${{ matrix.channel }}
         targets: ${{ matrix.target }}
 
-    # - name: Check ${{ matrix.channel }}
-    #   run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} --verbose
+    - name: Check ${{ matrix.channel }}
+      run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} --verbose
 
-    # - name: Build ${{ matrix.channel }}
-    #   run: cargo +${{ matrix.channel }} build --target ${{ matrix.target }} --verbose
+    - name: Build ${{ matrix.channel }}
+      run: cargo +${{ matrix.channel }} build --target ${{ matrix.target }} --verbose
 
-    # - name: Run ${{ matrix.channel }} tests
-    #   run: cargo +${{ matrix.channel }} test --verbose
+    - name: Run ${{ matrix.channel }} tests
+      run: cargo +${{ matrix.channel }} test --target ${{ matrix.target }} --verbose
     
     - name: Install cargo-miri
       run: |
