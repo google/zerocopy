@@ -25,7 +25,7 @@ jobs:
     # Prevents a workflow run from failing when a job fails
     # If target is x86 or x86_64, 
     # or we are using simd-nightly while not on the nightly channel
-    # do not continue on error
+    # do not continue on error (so crash on error)
     continue-on-error: ${{ !(contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) || ((contains(matrix.features, 'simd-nightly')) && (matrix.channel != 'nightly')) }}
 
     name: Build & Test (${{ matrix.channel }} for ${{ matrix.target }}, features set to ${{ matrix.features != '' }})
@@ -45,11 +45,22 @@ jobs:
     - name: Build ${{ matrix.channel }}
       run: cargo +${{ matrix.channel }} build --target ${{ matrix.target }} ${{ matrix.features }} --verbose
 
-    # Only run tests in the architecture that the runners are using
+    # Only run tests in the x86 architecture
     - name: Run ${{ matrix.channel }} tests
       run: cargo +${{ matrix.channel }} test --target ${{ matrix.target }} ${{ matrix.features }} --verbose
       if: ${{ contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686') }}
 
+    # - name: Check README consistency
+    #   run: |
+    #     cargo install cargo-readme
+    #     cargo readme
+    #     DIFF=$(diff <(cat README.md) <(cargo readme))
+
+    #     if [ "$DIFF" != "" ]; then
+    #       exit 1
+    #     else
+    #       exit 0
+    #     fi
     
     - name: Install cargo-miri
       run: |
