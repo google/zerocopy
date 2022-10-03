@@ -9,7 +9,7 @@ env:
 
 jobs:
   build_test:
-    # Used for installing miri
+    # Used for installing Miri
     # https://rust-lang.github.io/rustup-components-history/
     env:
       TOOLCHAIN_VERSION: '2022-09-26'
@@ -23,7 +23,10 @@ jobs:
         features: [ "" , "--features alloc,simd,simd-nightly"]
 
     # Prevents a workflow run from failing when a job fails
-    continue-on-error: ${{ matrix.channel != 'stable' }}
+    # If target is x86 or x86_64, 
+    # or we are using simd-nightly while not on the nightly channel
+    # do not continue on error
+    continue-on-error: ${{ !contains(matrix.target, 'x86') || (contains(matrix.features, 'simd-nightly') && matrix.channel != 'nightly') }}
 
     name: Build & Test (${{ matrix.channel }} for ${{ matrix.target }}, features set to ${{ matrix.features != '' }})
 
@@ -45,7 +48,7 @@ jobs:
     # Only run tests in the architecture that the runners are using
     - name: Run ${{ matrix.channel }} tests
       run: cargo +${{ matrix.channel }} test --target ${{ matrix.target }} ${{ matrix.features }} --verbose
-      if: ${{ matrix.target == 'x86_64-unknown-linux-gnu' }}
+      if: ${{ contains(matrix.target, 'x86') }}
     
     - name: Install cargo-miri
       run: |
