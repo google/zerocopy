@@ -29,7 +29,7 @@ jobs:
     # or we are using simd-nightly while not on the nightly channel
     # do not continue on error
     # continue-on-error: ${{ ((!(contains(matrix.target, 'x86_64')) || !contains(matrix.target, 'i686')) || ((contains(matrix.features, 'simd-nightly')) && (matrix.channel != 'nightly'))) }}
-    continue-on-error: ${{ (!(contains(matrix.target, 'x86_64')) || !contains(matrix.target, 'i686')) }}
+    continue-on-error: ${{ !(contains(matrix.target, 'x86_64') || !contains(matrix.target, 'i686')) }}
 
     name: Build & Test (${{ matrix.channel }} for ${{ matrix.target }}, features set to ${{ matrix.features != '' }})
 
