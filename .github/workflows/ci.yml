@@ -18,8 +18,10 @@ jobs:
 
     strategy:
       matrix:
-        channel: [ "stable", "beta", "nightly" ]
-        target: [ "i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "aarch64-unknown-linux-gnu", "arm-unknown-linux-gnueabi", "powerpc-unknown-linux-gnu", "powerpc64-unknown-linux-gnu", "wasm32-wasi" ]
+        channel: [ "stable" ]
+        # channel: [ "1.51.0", "stable", "beta", "nightly" ]
+        target: [ "x86_64-unknown-linux-gnu" ]
+        # target: [ "i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "arm-unknown-linux-gnueabi", "aarch64-unknown-linux-gnu", "powerpc-unknown-linux-gnu", "powerpc64-unknown-linux-gnu", "wasm32-wasi" ]
         features: [ "" , "--features alloc,simd,simd-nightly"]
 
     # Prevents a workflow run from failing when a job fails
