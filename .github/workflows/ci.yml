@@ -48,7 +48,8 @@ jobs:
     # Only run tests in the architecture that the runners are using
     - name: Run ${{ matrix.channel }} tests
       run: cargo +${{ matrix.channel }} test --target ${{ matrix.target }} ${{ matrix.features }} --verbose
-      if: ${{ (contains(matrix.target, 'x86_64')) || (contains(matrix.target, 'i686')) }}
+      if: ${{ contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686') }}
+
     
     - name: Install cargo-miri
       run: |
