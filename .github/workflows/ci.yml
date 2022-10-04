@@ -61,10 +61,10 @@ jobs:
     #       exit 0
     #     fi
     
-    - name: Install Miri
-      run: |
-        rustup toolchain install nightly-${{ env.MIRI_TOOLCHAIN_VERSION }}
-        rustup component add miri --toolchain nightly-${{ env.MIRI_TOOLCHAIN_VERSION }}-${{ matrix.target }}
+    # - name: Install Miri
+    #   run: |
+    #     rustup toolchain install nightly-${{ env.MIRI_TOOLCHAIN_VERSION }}
+    #     rustup component add miri --toolchain nightly-${{ env.MIRI_TOOLCHAIN_VERSION }}-${{ matrix.target }}
     
-    - name: Run miri test
-      run: cargo +nightly-${{ env.MIRI_TOOLCHAIN_VERSION }}-${{ matrix.target }} miri test ${{ matrix.features }} -- --skip ui
+    # - name: Run miri test
+    #   run: cargo +nightly-${{ env.MIRI_TOOLCHAIN_VERSION }}-${{ matrix.target }} miri test ${{ matrix.features }} -- --skip ui
