@@ -18,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        channel: [ "1.51.0", "stable", "beta", "nightly" ]
+        channel: [ "1.56.1", "stable", "beta", "nightly" ]
         target: [ "i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "arm-unknown-linux-gnueabi", "aarch64-unknown-linux-gnu", "powerpc-unknown-linux-gnu", "powerpc64-unknown-linux-gnu", "wasm32-wasi" ]
         features: [ "" , "--features alloc,simd,simd-nightly"]
 
@@ -26,7 +26,9 @@ jobs:
     # If target is x86 or x86_64, 
     # or we are using simd-nightly while not on the nightly channel
     # do not continue on error (so crash on error)
-    continue-on-error: ${{ !(contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) || ((contains(matrix.features, 'simd-nightly')) && (matrix.channel != 'nightly')) }}
+    continue-on-error: ${{ !(contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) }}
+    # Use this instead when https://github.com/rust-lang/rust/issues/48556#issuecomment-1264564803 is resolved
+    # continue-on-error: ${{ !(contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) || ((contains(matrix.features, 'simd-nightly')) && (matrix.channel != 'nightly')) }}
 
     name: Build & Test (${{ matrix.channel }} for ${{ matrix.target }}, features set to ${{ matrix.features != '' }})
 
@@ -38,6 +40,9 @@ jobs:
       with:
         rust-version: ${{ matrix.channel }}
         targets: ${{ matrix.target }}
+    
+    - name: Rust Cache
+      uses: Swatinem/rust-cache@v2.0.0
 
     - name: Check ${{ matrix.channel }}
       run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} ${{ matrix.features }} --verbose
@@ -50,22 +55,22 @@ jobs:
       run: cargo +${{ matrix.channel }} test --target ${{ matrix.target }} ${{ matrix.features }} --verbose
       if: ${{ contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686') }}
 
-    # - name: Check README consistency
-    #   run: |
-    #     cargo install cargo-readme
-    #     cargo readme
-    #     DIFF=$(diff <(cat README.md) <(cargo readme))
+    - name: Check README consistency
+      run: |
+        cargo install cargo-readme
+        cargo readme
+        DIFF=$(diff <(cat README.md) <(cargo readme))
 
-    #     if [ "$DIFF" != "" ]; then
-    #       exit 1
-    #     else
-    #       exit 0
-    #     fi
+        if [ "$DIFF" != "" ]; then
+          exit 1
+        else
+          exit 0
+        fi
     
     - name: Install cargo-miri
       run: |
         rustup toolchain install nightly-${{ env.TOOLCHAIN_VERSION }}
         rustup component add miri --toolchain nightly-${{ env.TOOLCHAIN_VERSION }}-${{ matrix.target }}
     
-    - name: Run miri test
+    - name: Run miri test -- --skip ui
       run: cargo +nightly-${{ env.TOOLCHAIN_VERSION }}-${{ matrix.target }} miri test ${{ matrix.features }}
