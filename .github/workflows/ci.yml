@@ -61,7 +61,7 @@ jobs:
     #       exit 0
     #     fi
     
-    - name: Install cargo-miri
+    - name: Install Miri
       run: |
         rustup toolchain install nightly-${{ env.MIRI_TOOLCHAIN_VERSION }}
         rustup component add miri --toolchain nightly-${{ env.MIRI_TOOLCHAIN_VERSION }}-${{ matrix.target }}
