@@ -12,7 +12,7 @@ jobs:
     # Used for installing Miri
     # https://rust-lang.github.io/rustup-components-history/
     env:
-      TOOLCHAIN_VERSION: '2022-09-26'
+      MIRI_TOOLCHAIN_VERSION: '2022-09-26'
 
     runs-on: ubuntu-latest
 
@@ -71,8 +71,8 @@ jobs:
     
     - name: Install cargo-miri
       run: |
-        rustup toolchain install nightly-${{ env.TOOLCHAIN_VERSION }}
-        rustup component add miri --toolchain nightly-${{ env.TOOLCHAIN_VERSION }}-${{ matrix.target }}
+        rustup toolchain install nightly-${{ env.MIRI_TOOLCHAIN_VERSION }}
+        rustup component add miri --toolchain nightly-${{ env.MIRI_TOOLCHAIN_VERSION }}-${{ matrix.target }}
     
     - name: Run miri test -- --skip ui
-      run: cargo +nightly-${{ env.TOOLCHAIN_VERSION }}-${{ matrix.target }} miri test ${{ matrix.features }}
+      run: cargo +nightly-${{ env.MIRI_TOOLCHAIN_VERSION }}-${{ matrix.target }} miri test ${{ matrix.features }}
