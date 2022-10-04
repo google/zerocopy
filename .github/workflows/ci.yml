@@ -22,14 +22,6 @@ jobs:
         target: [ "i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "arm-unknown-linux-gnueabi", "aarch64-unknown-linux-gnu", "powerpc-unknown-linux-gnu", "powerpc64-unknown-linux-gnu", "wasm32-wasi" ]
         features: [ "" , "--features alloc,simd,simd-nightly"]
 
-    # Prevents a workflow run from failing when a job fails
-    # If target is x86 or x86_64, 
-    # or we are using simd-nightly while not on the nightly channel
-    # do not continue on error (so crash on error)
-    continue-on-error: ${{ !(contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) }}
-    # Use this instead when https://github.com/rust-lang/rust/issues/48556#issuecomment-1264564803 is resolved
-    # continue-on-error: ${{ !(contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) || ((contains(matrix.features, 'simd-nightly')) && (matrix.channel != 'nightly')) }}
-
     name: Build & Test (${{ matrix.channel }} for ${{ matrix.target }}, features set to ${{ matrix.features != '' }})
 
     steps:
