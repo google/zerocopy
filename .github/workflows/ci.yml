@@ -43,6 +43,8 @@ jobs:
     
     - name: Rust Cache
       uses: Swatinem/rust-cache@v2.0.0
+      with:
+        key: ${{ matrix.channel }}-${{ matrix.target }}-${{ matrix.features }}-${{ hashFiles('**/Cargo.lock') }}
 
     - name: Check ${{ matrix.channel }}
       run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} ${{ matrix.features }} --verbose
