@@ -20,7 +20,7 @@ jobs:
       matrix:
         channel: [ "1.56.1", "stable", "beta", "nightly" ]
         target: [ "i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "arm-unknown-linux-gnueabi", "aarch64-unknown-linux-gnu", "powerpc-unknown-linux-gnu", "powerpc64-unknown-linux-gnu", "wasm32-wasi" ]
-        features: [ "" , "--features alloc,simd,simd-nightly"]
+        features: [ "" , "--features alloc,simd"]
 
     name: Build & Test (${{ matrix.channel }} for ${{ matrix.target }}, features set to ${{ matrix.features != '' }})
 
