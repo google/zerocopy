@@ -56,6 +56,7 @@
 
 #![deny(missing_docs)]
 #![cfg_attr(not(test), no_std)]
+#![cfg_attr(feature = "simd-nightly", feature(stdsimd))]
 #![recursion_limit = "2048"]
 
 pub mod byteorder;
@@ -702,14 +703,7 @@ mod simd {
     );
     #[cfg(all(feature = "simd-nightly", target_arch = "arm"))]
     #[rustfmt::skip]
-    simd_arch_mod!(
-        arm, float32x2_t, float32x4_t, int8x4_t, int8x8_t, int8x8x2_t, int8x8x3_t, int8x8x4_t,
-        int8x16_t, int16x2_t, int16x4_t, int16x8_t, int32x2_t, int32x4_t, int64x1_t, int64x2_t,
-        poly8x8_t, poly8x8x2_t, poly8x8x3_t, poly8x8x4_t, poly8x16_t, poly16x4_t, poly16x8_t,
-        poly64x1_t, poly64x2_t, uint8x4_t, uint8x8_t, uint8x8x2_t, uint8x8x3_t, uint8x8x4_t,
-        uint8x16_t, uint16x2_t, uint16x4_t, uint16x8_t, uint32x2_t, uint32x4_t, uint64x1_t,
-        uint64x2_t
-    );
+    simd_arch_mod!(arm, int8x4_t, uint8x4_t);
 }
 
 /// A type with no alignment requirement.
