@@ -1,0 +1,15 @@
+# Copyright 2022 The Fuchsia Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+edition = "2021"
+
+# The "Default" setting has a heuristic which splits lines too aggresively.
+# We are willing to revisit this setting in future versions of rustfmt.
+# Bugs:
+#   * https://github.com/rust-lang/rustfmt/issues/3119
+#   * https://github.com/rust-lang/rustfmt/issues/3120
+use_small_heuristics = "Max"
+
+# Prevent carriage returns
+newline_style = "Unix"

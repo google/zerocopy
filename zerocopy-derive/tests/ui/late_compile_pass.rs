@@ -35,7 +35,6 @@ struct AsBytes1 {
 // Unaligned errors
 //
 
-
 #[derive(Unaligned)]
 #[repr(C)]
 struct Unaligned1 {
