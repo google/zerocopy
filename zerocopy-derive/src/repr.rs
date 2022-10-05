@@ -4,9 +4,11 @@
 
 use core::fmt::{self, Display, Formatter};
 
-use proc_macro2::Span;
-use syn::spanned::Spanned;
-use syn::{Attribute, DeriveInput, Error, Lit, Meta, NestedMeta};
+use {
+    proc_macro2::Span,
+    syn::spanned::Spanned,
+    syn::{Attribute, DeriveInput, Error, Lit, Meta, NestedMeta},
+};
 
 pub struct Config<Repr: KindRepr> {
     // A human-readable message describing what combinations of representations
