@@ -59,17 +59,21 @@
 //! }
 //! ```
 
-use core::convert::{TryFrom, TryInto};
-use core::fmt::{self, Binary, Debug, Display, Formatter, LowerHex, Octal, UpperHex};
-use core::marker::PhantomData;
-use core::num::TryFromIntError;
+use core::{
+    convert::{TryFrom, TryInto},
+    fmt::{self, Binary, Debug, Display, Formatter, LowerHex, Octal, UpperHex},
+    marker::PhantomData,
+    num::TryFromIntError,
+};
 
 use zerocopy_derive::*;
 
-use crate::AsBytes;
-// This allows the custom derives to work. See the comment on this module for an
-// explanation.
-use crate::zerocopy;
+use crate::{
+    // This allows the custom derives to work. See the comment on the `zerocopy`
+    // module for an explanation.
+    zerocopy,
+    AsBytes,
+};
 
 // We don't reexport `WriteBytesExt` or `ReadBytesExt` because those are only
 // available with the `std` feature enabled, and zerocopy is `no_std` by
@@ -442,8 +446,10 @@ define_type!(An, F64, f64, 64, 8, read_f64, write_f64, "floating point number", 
 mod tests {
     use byteorder::NativeEndian;
 
-    use super::*;
-    use crate::{AsBytes, FromBytes, Unaligned};
+    use {
+        super::*,
+        crate::{AsBytes, FromBytes, Unaligned},
+    };
 
     // A native integer type (u16, i32, etc).
     trait Native: FromBytes + AsBytes + Copy + PartialEq + Debug {

@@ -4,8 +4,7 @@
 
 #![allow(warnings)]
 
-use std::marker::PhantomData;
-use std::option::IntoIter;
+use std::{marker::PhantomData, option::IntoIter};
 
 use zerocopy::Unaligned;
 

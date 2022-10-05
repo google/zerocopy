@@ -70,6 +70,14 @@ use core::{
     ptr, slice,
 };
 
+#[cfg(feature = "alloc")]
+extern crate alloc;
+#[cfg(feature = "alloc")]
+use {
+    alloc::boxed::Box,
+    core::{alloc::Layout, ptr::NonNull},
+};
+
 // This is a hack to allow derives of `FromBytes`, `AsBytes`, and `Unaligned` to
 // work in this crate. They assume that zerocopy is linked as an extern crate,
 // so they access items from it as `zerocopy::Xxx`. This makes that still work.
@@ -358,8 +366,8 @@ pub unsafe trait FromBytes {
             // multiplied it by `size_of::<T>()`, which is guaranteed to be
             // aligned).
             let layout = Layout::from_size_align_unchecked(
-                size_of::<Self>().checked_mul(len).unwrap(),
-                align_of::<Self>(),
+                mem::size_of::<Self>().checked_mul(len).unwrap(),
+                mem::align_of::<Self>(),
             );
             if layout.size() != 0 {
                 let ptr = alloc::alloc::alloc_zeroed(layout) as *mut Self;
@@ -649,10 +657,9 @@ mod simd {
     macro_rules! simd_arch_mod {
         ($arch:ident, $($typ:ident),*) => {
             mod $arch {
-                use {
-                    crate::*,
-                    core::arch::$arch::{$($typ),*},
-                };
+                use core::arch::$arch::{$($typ),*};
+
+                use crate::*;
 
                 impl_for_types!(FromBytes, $($typ),*);
                 impl_for_types!(AsBytes, $($typ),*);
@@ -1985,13 +1992,9 @@ unsafe impl<'a> ByteSliceMut for RefMut<'a, [u8]> {}
 
 #[cfg(feature = "alloc")]
 mod alloc_support {
-    pub(crate) extern crate alloc;
-    pub(crate) use super::*;
-    pub(crate) use alloc::alloc::Layout;
-    pub(crate) use alloc::boxed::Box;
-    pub(crate) use alloc::vec::Vec;
-    pub(crate) use core::mem::{align_of, size_of};
-    pub(crate) use core::ptr::NonNull;
+    use alloc::vec::Vec;
+
+    use super::*;
 
     /// Extends a `Vec<T>` by pushing `additional` new items onto the end of the
     /// vector. The new items are initialized with zeroes.
@@ -2217,7 +2220,9 @@ pub use alloc_support::*;
 mod tests {
     #![allow(clippy::unreadable_literal)]
 
-    use {super::*, core::ops::Deref};
+    use core::ops::Deref;
+
+    use super::*;
 
     // `B` should be `[u8; N]`. `T` will require that the entire structure is
     // aligned to the alignment of `T`.
@@ -2897,10 +2902,6 @@ mod tests {
 
     #[test]
     fn test_array() {
-        // This is a hack, as per above in `test_as_bytes_methods`.
-        mod zerocopy {
-            pub use crate::*;
-        }
         #[derive(FromBytes, AsBytes)]
         #[repr(C)]
         struct Foo {

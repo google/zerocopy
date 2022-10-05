@@ -9,8 +9,7 @@
 
 extern crate zerocopy as _zerocopy;
 
-use std::marker::PhantomData;
-use std::option::IntoIter;
+use std::{marker::PhantomData, option::IntoIter};
 
 use _zerocopy::FromBytes;
 
