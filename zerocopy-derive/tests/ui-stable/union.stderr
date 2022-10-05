@@ -1,0 +1,51 @@
+error: unsupported on types with type parameters
+  --> tests/ui-stable/union.rs:16:10
+   |
+16 | #[derive(AsBytes)]
+   |          ^^^^^^^
+   |
+   = note: this error originates in the derive macro `AsBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: cannot derive Unaligned with repr(align(N > 1))
+  --> tests/ui-stable/union.rs:34:11
+   |
+34 | #[repr(C, align(2))]
+   |           ^^^^^^^^
+
+error: cannot derive Unaligned with repr(align(N > 1))
+  --> tests/ui-stable/union.rs:50:16
+   |
+50 | #[repr(packed, align(2))]
+   |                ^^^^^^^^
+
+error: cannot derive Unaligned with repr(align(N > 1))
+  --> tests/ui-stable/union.rs:56:18
+   |
+56 | #[repr(align(1), align(2))]
+   |                  ^^^^^^^^
+
+error: cannot derive Unaligned with repr(align(N > 1))
+  --> tests/ui-stable/union.rs:62:8
+   |
+62 | #[repr(align(2), align(4))]
+   |        ^^^^^^^^
+
+error[E0277]: the trait bound `AsBytes: FieldsAreSameSize<true>` is not satisfied
+  --> tests/ui-stable/union.rs:22:10
+   |
+22 | #[derive(AsBytes)]
+   |          ^^^^^^^ the trait `FieldsAreSameSize<true>` is not implemented for `AsBytes`
+   |
+   = help: the trait `FieldsAreSameSize<false>` is implemented for `AsBytes`
+note: required by a bound in `assert_fields_are_same_size`
+  --> tests/ui-stable/union.rs:22:10
+   |
+22 | #[derive(AsBytes)]
+   |          ^^^^^^^ required by this bound in `assert_fields_are_same_size`
+   = note: this error originates in the derive macro `AsBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0587]: type has conflicting packed and align representation hints
+  --> tests/ui-stable/union.rs:51:1
+   |
+51 | union Unaligned3 {
+   | ^^^^^^^^^^^^^^^^
