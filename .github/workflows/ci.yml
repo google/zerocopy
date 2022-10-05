@@ -82,7 +82,19 @@ jobs:
       #
       # TODO(#22): Re-enable testing on wasm32-wasi once it works.
       if: ${{ contains(matrix.channel, 'nightly') && matrix.target != 'wasm32-wasi' }}
-      
+
+  check_fmt:
+    runs-on: ubuntu-latest
+    name: Check Rust formatting
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check Rust formatting
+        run: |
+          set -e
+          cargo fmt --check
+          cargo fmt --check --manifest-path ./zerocopy-derive/Cargo.toml
+          rustfmt --check ./zerocopy-derive/tests/ui/*.rs
+
   check_readme:
     runs-on: ubuntu-latest
     name: Check README.md
