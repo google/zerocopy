@@ -7,16 +7,17 @@
 mod ext;
 mod repr;
 
-use proc_macro2::Span;
-use quote::quote;
-use syn::visit::{self, Visit};
-use syn::{
-    parse_quote, punctuated::Punctuated, token::Comma, Data, DataEnum, DataStruct, DataUnion,
-    DeriveInput, Error, GenericParam, Ident, Lifetime, Type, TypePath,
+use {
+    proc_macro2::Span,
+    quote::quote,
+    syn::visit::{self, Visit},
+    syn::{
+        parse_quote, punctuated::Punctuated, token::Comma, Data, DataEnum, DataStruct, DataUnion,
+        DeriveInput, Error, GenericParam, Ident, Lifetime, Type, TypePath,
+    },
 };
 
-use ext::*;
-use repr::*;
+use {crate::ext::*, crate::repr::*};
 
 // TODO(https://github.com/rust-lang/rust/issues/54140): Some errors could be
 // made better if we could add multiple lines of error output like this:
