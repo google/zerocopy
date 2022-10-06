@@ -24,5 +24,6 @@ quote = "1.0.10"
 syn = { version = "1.0.5", features = ["visit"] }
 
 [dev-dependencies]
+rustversion = "1.0"
 trybuild = "1.0"
 zerocopy = { path = "../" }
