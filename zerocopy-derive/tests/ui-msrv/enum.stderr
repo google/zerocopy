@@ -1,0 +1,173 @@
+error: unrecognized representation hint
+  --> tests/ui-msrv/enum.rs:15:8
+   |
+15 | #[repr("foo")]
+   |        ^^^^^
+
+error: unrecognized representation hint
+  --> tests/ui-msrv/enum.rs:21:8
+   |
+21 | #[repr(foo)]
+   |        ^^^
+
+error: unsupported representation for deriving FromBytes, AsBytes, or Unaligned on an enum
+  --> tests/ui-msrv/enum.rs:27:8
+   |
+27 | #[repr(transparent)]
+   |        ^^^^^^^^^^^
+
+error: conflicting representation hints
+  --> tests/ui-msrv/enum.rs:33:1
+   |
+33 | #[repr(u8, u16)]
+   | ^
+
+error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+  --> tests/ui-msrv/enum.rs:38:10
+   |
+38 | #[derive(FromBytes)]
+   |          ^^^^^^^^^
+   |
+   = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
+  --> tests/ui-msrv/enum.rs:48:8
+   |
+48 | #[repr(C)]
+   |        ^
+
+error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
+  --> tests/ui-msrv/enum.rs:54:8
+   |
+54 | #[repr(usize)]
+   |        ^^^^^
+
+error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
+  --> tests/ui-msrv/enum.rs:60:8
+   |
+60 | #[repr(isize)]
+   |        ^^^^^
+
+error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
+  --> tests/ui-msrv/enum.rs:66:8
+   |
+66 | #[repr(u32)]
+   |        ^^^
+
+error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
+  --> tests/ui-msrv/enum.rs:72:8
+   |
+72 | #[repr(i32)]
+   |        ^^^
+
+error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
+  --> tests/ui-msrv/enum.rs:78:8
+   |
+78 | #[repr(u64)]
+   |        ^^^
+
+error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
+  --> tests/ui-msrv/enum.rs:84:8
+   |
+84 | #[repr(i64)]
+   |        ^^^
+
+error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
+  --> tests/ui-msrv/enum.rs:94:8
+   |
+94 | #[repr(C)]
+   |        ^
+
+error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
+   --> tests/ui-msrv/enum.rs:100:8
+    |
+100 | #[repr(u16)]
+    |        ^^^
+
+error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
+   --> tests/ui-msrv/enum.rs:106:8
+    |
+106 | #[repr(i16)]
+    |        ^^^
+
+error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
+   --> tests/ui-msrv/enum.rs:112:8
+    |
+112 | #[repr(u32)]
+    |        ^^^
+
+error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
+   --> tests/ui-msrv/enum.rs:118:8
+    |
+118 | #[repr(i32)]
+    |        ^^^
+
+error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
+   --> tests/ui-msrv/enum.rs:124:8
+    |
+124 | #[repr(u64)]
+    |        ^^^
+
+error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
+   --> tests/ui-msrv/enum.rs:130:8
+    |
+130 | #[repr(i64)]
+    |        ^^^
+
+error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
+   --> tests/ui-msrv/enum.rs:136:8
+    |
+136 | #[repr(usize)]
+    |        ^^^^^
+
+error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
+   --> tests/ui-msrv/enum.rs:142:8
+    |
+142 | #[repr(isize)]
+    |        ^^^^^
+
+error: cannot derive Unaligned with repr(align(N > 1))
+   --> tests/ui-msrv/enum.rs:148:12
+    |
+148 | #[repr(u8, align(2))]
+    |            ^^^^^^^^
+
+error: cannot derive Unaligned with repr(align(N > 1))
+   --> tests/ui-msrv/enum.rs:154:12
+    |
+154 | #[repr(i8, align(2))]
+    |            ^^^^^^^^
+
+error: cannot derive Unaligned with repr(align(N > 1))
+   --> tests/ui-msrv/enum.rs:160:18
+    |
+160 | #[repr(align(1), align(2))]
+    |                  ^^^^^^^^
+
+error: cannot derive Unaligned with repr(align(N > 1))
+   --> tests/ui-msrv/enum.rs:166:8
+    |
+166 | #[repr(align(2), align(4))]
+    |        ^^^^^^^^
+
+error[E0565]: meta item in `repr` must be an identifier
+  --> tests/ui-msrv/enum.rs:15:8
+   |
+15 | #[repr("foo")]
+   |        ^^^^^
+
+error[E0552]: unrecognized representation hint
+  --> tests/ui-msrv/enum.rs:21:8
+   |
+21 | #[repr(foo)]
+   |        ^^^
+
+error[E0566]: conflicting representation hints
+  --> tests/ui-msrv/enum.rs:33:8
+   |
+33 | #[repr(u8, u16)]
+   |        ^^  ^^^
+   |
+   = note: `#[deny(conflicting_repr_hints)]` on by default
+   = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+   = note: for more information, see issue #68585 <https://github.com/rust-lang/rust/issues/68585>

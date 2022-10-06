@@ -1,0 +1,84 @@
+error[E0277]: the trait bound `AsBytes1: HasPadding<false>` is not satisfied
+  --> tests/ui-stable/late_compile_pass.rs:27:10
+   |
+27 | #[derive(AsBytes)]
+   |          ^^^^^^^ the trait `HasPadding<false>` is not implemented for `AsBytes1`
+   |
+   = help: the trait `HasPadding<true>` is implemented for `AsBytes1`
+note: required by a bound in `assert_no_padding`
+  --> tests/ui-stable/late_compile_pass.rs:27:10
+   |
+27 | #[derive(AsBytes)]
+   |          ^^^^^^^ required by this bound in `assert_no_padding`
+   = note: this error originates in the derive macro `AsBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `&'static str: FromBytes` is not satisfied
+  --> tests/ui-stable/late_compile_pass.rs:18:10
+   |
+18 | #[derive(FromBytes)]
+   |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `&'static str`
+   |
+   = help: the following other types implement trait `FromBytes`:
+             ()
+             F32<O>
+             F64<O>
+             FromBytes1
+             I128<O>
+             I16<O>
+             I32<O>
+             I64<O>
+           and 36 others
+note: required by a bound in `ImplementsFromBytes`
+  --> tests/ui-stable/late_compile_pass.rs:18:10
+   |
+18 | #[derive(FromBytes)]
+   |          ^^^^^^^^^ required by this bound in `ImplementsFromBytes`
+   = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `u16: Unaligned` is not satisfied
+  --> tests/ui-stable/late_compile_pass.rs:38:10
+   |
+38 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `u16`
+   |
+   = help: the following other types implement trait `Unaligned`:
+             i8
+             u8
+note: required by a bound in `<Unaligned1 as Unaligned>::only_derive_is_allowed_to_implement_this_trait::ImplementsUnaligned`
+  --> tests/ui-stable/late_compile_pass.rs:38:10
+   |
+38 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ required by this bound in `<Unaligned1 as Unaligned>::only_derive_is_allowed_to_implement_this_trait::ImplementsUnaligned`
+   = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `u16: Unaligned` is not satisfied
+  --> tests/ui-stable/late_compile_pass.rs:46:10
+   |
+46 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `u16`
+   |
+   = help: the following other types implement trait `Unaligned`:
+             i8
+             u8
+note: required by a bound in `<Unaligned2 as Unaligned>::only_derive_is_allowed_to_implement_this_trait::ImplementsUnaligned`
+  --> tests/ui-stable/late_compile_pass.rs:46:10
+   |
+46 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ required by this bound in `<Unaligned2 as Unaligned>::only_derive_is_allowed_to_implement_this_trait::ImplementsUnaligned`
+   = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `u16: Unaligned` is not satisfied
+  --> tests/ui-stable/late_compile_pass.rs:53:10
+   |
+53 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `u16`
+   |
+   = help: the following other types implement trait `Unaligned`:
+             i8
+             u8
+note: required by a bound in `<Unaligned3 as Unaligned>::only_derive_is_allowed_to_implement_this_trait::ImplementsUnaligned`
+  --> tests/ui-stable/late_compile_pass.rs:53:10
+   |
+53 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ required by this bound in `<Unaligned3 as Unaligned>::only_derive_is_allowed_to_implement_this_trait::ImplementsUnaligned`
+   = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
