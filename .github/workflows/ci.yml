@@ -75,8 +75,7 @@ jobs:
       if: ${{ contains(matrix.target, 'i686') }}
 
     - name: Run tests
-      # TODO(#21): Fix `test_new_error` on i686 and re-enable it here.
-      run: cargo +${{ matrix.channel }} test --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose -- ${{ contains(matrix.target, 'i686') && '--skip test_new_error' || '' }}
+      run: cargo +${{ matrix.channel }} test --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
       # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
       # x86_64, so we can't run tests for any non-x86 target.
       if: ${{ contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686') }}
