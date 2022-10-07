@@ -2768,24 +2768,25 @@ mod tests {
 
         // Fail because the alignment is insufficient.
 
-        // A buffer with an alignment of 8.
-        let mut buf = AlignedBuffer::<u64, [u8; 12]>::default();
-        // Slicing from 4, we get a buffer with size 8 (so the length check
-        // should succeed) but an alignment of only 4, which is insufficient.
-        assert!(LayoutVerified::<_, u64>::new(&buf.buf[4..]).is_none());
-        assert!(LayoutVerified::<_, u64>::new_zeroed(&mut buf.buf[4..]).is_none());
-        assert!(LayoutVerified::<_, u64>::new_from_prefix(&buf.buf[4..]).is_none());
-        assert!(LayoutVerified::<_, u64>::new_from_prefix_zeroed(&mut buf.buf[4..]).is_none());
-        assert!(LayoutVerified::<_, [u64]>::new_slice(&buf.buf[4..]).is_none());
-        assert!(LayoutVerified::<_, [u64]>::new_slice_zeroed(&mut buf.buf[4..]).is_none());
-        assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix(&buf.buf[4..], 1).is_none());
-        assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix_zeroed(&mut buf.buf[4..], 1)
+        // A buffer with an alignment of 8. An odd buffer size is chosen so that
+        // the last byte of the buffer has odd alignment.
+        let mut buf = AlignedBuffer::<u64, [u8; 13]>::default();
+        // Slicing from 1, we get a buffer with size 12 (so the length check
+        // should succeed) but an alignment of only 1, which is insufficient.
+        assert!(LayoutVerified::<_, u64>::new(&buf.buf[1..]).is_none());
+        assert!(LayoutVerified::<_, u64>::new_zeroed(&mut buf.buf[1..]).is_none());
+        assert!(LayoutVerified::<_, u64>::new_from_prefix(&buf.buf[1..]).is_none());
+        assert!(LayoutVerified::<_, u64>::new_from_prefix_zeroed(&mut buf.buf[1..]).is_none());
+        assert!(LayoutVerified::<_, [u64]>::new_slice(&buf.buf[1..]).is_none());
+        assert!(LayoutVerified::<_, [u64]>::new_slice_zeroed(&mut buf.buf[1..]).is_none());
+        assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix(&buf.buf[1..], 1).is_none());
+        assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix_zeroed(&mut buf.buf[1..], 1)
             .is_none());
-        assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix(&buf.buf[4..], 1).is_none());
-        assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix_zeroed(&mut buf.buf[4..], 1)
+        assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix(&buf.buf[1..], 1).is_none());
+        assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix_zeroed(&mut buf.buf[1..], 1)
             .is_none());
-        // Slicing from 4 should be unnecessary because
-        // `new_from_suffix[_zeroed]` use the suffix of the slice.
+        // Slicing is unnecessary here because `new_from_suffix[_zeroed]` use
+        // the suffix of the slice, which has odd alignment.
         assert!(LayoutVerified::<_, u64>::new_from_suffix(&buf.buf[..]).is_none());
         assert!(LayoutVerified::<_, u64>::new_from_suffix_zeroed(&mut buf.buf[..]).is_none());
 
