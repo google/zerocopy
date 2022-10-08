@@ -2872,13 +2872,21 @@ mod tests {
         }
 
         let mut foo = Foo { a: 1, b: Wrapping(2), c: None };
+
         // Test that we can access the underlying bytes, and that we get the
         // right bytes and the right number of bytes.
-        assert_eq!(foo.as_bytes(), [1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0]);
+        let expected: Vec<u8> = if cfg!(target_endian = "little") {
+            vec![1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0]
+        } else {
+            vec![0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0]
+        };
+        assert_eq!(foo.as_bytes(), expected.as_bytes());
+
         // Test that changes to the underlying byte slices are reflected in the
         // original object.
         foo.as_bytes_mut()[0] = 3;
-        assert_eq!(foo, Foo { a: 3, b: Wrapping(2), c: None });
+        let expected_a = if cfg!(target_endian = "little") { 0x00_00_00_03 } else { 0x03_00_00_01 };
+        assert_eq!(foo, Foo { a: expected_a, b: Wrapping(2), c: None });
 
         // Do the same tests for a slice, which ensures that this logic works
         // for unsized types as well.
@@ -2886,17 +2894,27 @@ mod tests {
             Foo { a: 1, b: Wrapping(2), c: None },
             Foo { a: 3, b: Wrapping(4), c: NonZeroU32::new(1) },
         ];
-        assert_eq!(
-            foo.as_bytes(),
-            [1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0, 1, 0, 0, 0]
-        );
+        let expected = if cfg!(target_endian = "little") {
+            vec![1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0, 1, 0, 0, 0]
+        } else {
+            vec![0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0, 1]
+        };
+        assert_eq!(foo.as_bytes(), expected);
+
         foo.as_bytes_mut()[8] = 5;
         foo.as_bytes_mut()[16] = 6;
+        let expected_c_1 = NonZeroU32::new(if cfg!(target_endian = "little") {
+            0x00_00_00_05
+        } else {
+            0x05_00_00_00
+        });
+        let expected_b_2 =
+            Wrapping(if cfg!(target_endian = "little") { 0x00_00_00_06 } else { 0x06_00_00_04 });
         assert_eq!(
             foo,
-            &mut [
-                Foo { a: 1, b: Wrapping(2), c: NonZeroU32::new(5) },
-                Foo { a: 3, b: Wrapping(6), c: NonZeroU32::new(1) }
+            &[
+                Foo { a: 1, b: Wrapping(2), c: expected_c_1 },
+                Foo { a: 3, b: expected_b_2, c: NonZeroU32::new(1) },
             ]
         );
     }
