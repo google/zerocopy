@@ -96,8 +96,7 @@ jobs:
       # Miri (and wouldn't want to do anyway).
       #
       # TODO(#21): Fix `test_new_error` on i686 and re-enable it here.
-      # TODO(#23): Fix `test_as_bytes_methods` on powerpc and re-enable it here.
-      run: cargo +${{ matrix.channel }} miri test --target ${{ matrix.target }} --features "${{ matrix.features }}" -- --skip ui ${{ contains(matrix.target, 'i686') && '--skip test_new_error' || '' }} ${{ contains(matrix.target, 'powerpc') && '--skip test_as_bytes_methods' || '' }}
+      run: cargo +${{ matrix.channel }} miri test --target ${{ matrix.target }} --features "${{ matrix.features }}" -- --skip ui ${{ contains(matrix.target, 'i686') && '--skip test_new_error' || '' }}
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
       #
