@@ -2069,6 +2069,54 @@ macro_rules! transmute_ref {
     }}
 }
 
+/// Includes a file and safely transmutes it to a value of an arbitrary type.
+///
+/// The file will be included as a byte array, `[u8; N]`, which will be
+/// transmuted to another type, `T`. `T` is inferred from the calling context,
+/// and must implement [`FromBytes`].
+///
+/// The file is located relative to the current file (similarly to how modules
+/// are found). The provided path is interpreted in a platform-specific way at
+/// compile time. So, for instance, an invocation with a Windows path containing
+/// backslashes `\` would not compile correctly on Unix.
+///
+/// `include_bytes!` is ignorant of byte order. For byte order-aware types, see
+/// the [`byteorder`] module.
+///
+/// # Examples
+///
+/// Assume there are two files in the same directory with the following
+/// contents:
+///
+/// File 'data' (no trailing newline):
+///
+/// ```text
+/// abcd
+/// ```
+///
+/// File 'main.rs':
+///
+/// ```rust
+/// use zerocopy::include_value;
+/// # macro_rules! include_value {
+/// # ($file:expr) => { zerocopy::include_value!(concat!("../testdata/include_value/", $file)) };
+/// # }
+///
+/// fn main() {
+///     let as_u32: u32 = include_value!("data");
+///     assert_eq!(as_u32, u32::from_ne_bytes([b'a', b'b', b'c', b'd']));
+///     let as_i32: i32 = include_value!("data");
+///     assert_eq!(as_i32, i32::from_ne_bytes([b'a', b'b', b'c', b'd']));
+/// }
+/// ```
+#[doc(alias("include_bytes", "include_data", "include_type"))]
+#[macro_export]
+macro_rules! include_value {
+    ($file:expr $(,)?) => {
+        $crate::transmute!(*::core::include_bytes!($file))
+    };
+}
+
 /// A typed reference derived from a byte slice.
 ///
 /// A `Ref<B, T>` is a reference to a `T` which is stored in a byte slice, `B`.
@@ -4248,6 +4296,14 @@ mod tests {
             &0usize
         });
         assert_eq!(ctr, 1);
+    }
+
+    #[test]
+    fn test_include_value() {
+        const AS_U32: u32 = include_value!("../testdata/include_value/data");
+        assert_eq!(AS_U32, u32::from_ne_bytes([b'a', b'b', b'c', b'd']));
+        const AS_I32: i32 = include_value!("../testdata/include_value/data");
+        assert_eq!(AS_I32, i32::from_ne_bytes([b'a', b'b', b'c', b'd']));
     }
 
     #[test]
