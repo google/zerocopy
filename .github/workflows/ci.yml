@@ -14,13 +14,13 @@ jobs:
       matrix:
         # See `INTERNAL.md` for an explanation of these pinned toolchain
         # versions.
-        channel: [ "1.56.1", "1.64.0", "nightly-2022-09-26" ]
+        channel: [ "1.61.0", "1.64.0", nightly-2022-09-26 ]
         target: [ "i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "arm-unknown-linux-gnueabi", "aarch64-unknown-linux-gnu", "powerpc-unknown-linux-gnu", "powerpc64-unknown-linux-gnu", "wasm32-wasi" ]
         features: [ "" , "alloc,simd", "alloc,simd,simd-nightly" ]
         exclude:
           # Exclude any combination which uses a non-nightly toolchain but
           # enables nightly features.
-          - channel: "1.56.1"
+          - channel: "1.61.0"
             features: "alloc,simd,simd-nightly"
           - channel: "1.64.0"
             features: "alloc,simd,simd-nightly"
