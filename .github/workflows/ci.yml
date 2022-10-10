@@ -95,8 +95,7 @@ jobs:
       # Skip the `ui` test since it invokes the compiler, which we can't do from
       # Miri (and wouldn't want to do anyway).
       #
-      # TODO(#21): Fix `test_new_error` on i686 and re-enable it here.
-      run: cargo +${{ matrix.channel }} miri test --target ${{ matrix.target }} --features "${{ matrix.features }}" -- --skip ui ${{ contains(matrix.target, 'i686') && '--skip test_new_error' || '' }}
+      run: cargo +${{ matrix.channel }} miri test --target ${{ matrix.target }} --features "${{ matrix.features }}" -- --skip ui
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
       #
