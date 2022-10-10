@@ -1041,9 +1041,7 @@ fn map_zeroed<B: ByteSliceMut, T: ?Sized>(
 ) -> Option<LayoutVerified<B, T>> {
     match opt {
         Some(mut lv) => {
-            for b in lv.0.iter_mut() {
-                *b = 0;
-            }
+            lv.0.fill(0);
             Some(lv)
         }
         None => None,
@@ -1055,9 +1053,7 @@ fn map_prefix_tuple_zeroed<B: ByteSliceMut, T: ?Sized>(
 ) -> Option<(LayoutVerified<B, T>, B)> {
     match opt {
         Some((mut lv, rest)) => {
-            for b in lv.0.iter_mut() {
-                *b = 0;
-            }
+            lv.0.fill(0);
             Some((lv, rest))
         }
         None => None,
