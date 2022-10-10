@@ -5,6 +5,9 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  ZEROCOPY_MSRV: 1.61.0
+  ZEROCOPY_CURRENT_STABLE: 1.64.0
+  ZEROCOPY_CURRENT_NIGHTLY: nightly-2022-09-26
 
 jobs:
   build_test:
@@ -14,15 +17,15 @@ jobs:
       matrix:
         # See `INTERNAL.md` for an explanation of these pinned toolchain
         # versions.
-        channel: [ "1.56.1", "1.64.0", "nightly-2022-09-26" ]
+        channel: [ ${{ env.ZEROCOPY_MSRV }}, ${{ env.ZEROCOPY_CURRENT_STABLE }}, ${{ env.ZEROCOPY_CURRENT_NIGHTLY }} ]
         target: [ "i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "arm-unknown-linux-gnueabi", "aarch64-unknown-linux-gnu", "powerpc-unknown-linux-gnu", "powerpc64-unknown-linux-gnu", "wasm32-wasi" ]
         features: [ "" , "alloc,simd", "alloc,simd,simd-nightly" ]
         exclude:
           # Exclude any combination which uses a non-nightly toolchain but
           # enables nightly features.
-          - channel: "1.56.1"
+          - channel: ${{ env.ZEROCOPY_MSRV }}
             features: "alloc,simd,simd-nightly"
-          - channel: "1.64.0"
+          - channel: ${{ env.ZEROCOPY_CURRENT_STABLE }}
             features: "alloc,simd,simd-nightly"
 
     name: Build & Test (${{ matrix.channel }} for ${{ matrix.target }}, features set to "${{ matrix.features }}")
