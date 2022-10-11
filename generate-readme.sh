@@ -3,6 +3,8 @@
 # Copyright 2018 The Fuchsia Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
+# README.md is generated automatically
+# Edits should be made in the doc comment on src/lib.rs or in generate-readme.sh
 
 set -e
 
