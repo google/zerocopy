@@ -46,7 +46,7 @@
 //!
 //! [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 
-#![deny(missing_docs)]
+#![deny(missing_docs, clippy::indexing_slicing)]
 #![cfg_attr(not(test), no_std)]
 #![cfg_attr(feature = "simd-nightly", feature(stdsimd))]
 #![recursion_limit = "2048"]
@@ -492,11 +492,7 @@ pub unsafe trait AsBytes {
     /// of `bytes`. If `bytes.len() < size_of_val(self)`, it returns `None`.
     fn write_to_prefix<B: ByteSliceMut>(&self, mut bytes: B) -> Option<()> {
         let size = mem::size_of_val(self);
-        if bytes.len() < size {
-            return None;
-        }
-
-        bytes[..size].copy_from_slice(self.as_bytes());
+        bytes.get_mut(..size)?.copy_from_slice(self.as_bytes());
         Some(())
     }
 
@@ -506,7 +502,10 @@ pub unsafe trait AsBytes {
     /// `bytes`. If `bytes.len() < size_of_val(self)`, it returns `None`.
     fn write_to_suffix<B: ByteSliceMut>(&self, mut bytes: B) -> Option<()> {
         let start = bytes.len().checked_sub(mem::size_of_val(self))?;
-        bytes[start..].copy_from_slice(self.as_bytes());
+        bytes
+            .get_mut(start..)
+            .expect("`start` should be in-bounds of `bytes`")
+            .copy_from_slice(self.as_bytes());
         Some(())
     }
 }
