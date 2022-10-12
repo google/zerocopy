@@ -47,14 +47,13 @@ impl<R: KindRepr> Config<R> {
         metas_reprs.sort_by(|a: &(NestedMeta, R), b| a.1.partial_cmp(&b.1).unwrap());
 
         if self.derive_unaligned {
-            match metas_reprs.iter().find(|&repr: &&(NestedMeta, R)| repr.1.is_align_gt_one()) {
-                Some((meta, _)) => {
-                    return Err(vec![Error::new_spanned(
-                        meta,
-                        "cannot derive Unaligned with repr(align(N > 1))",
-                    )])
-                }
-                None => (),
+            if let Some((meta, _)) =
+                metas_reprs.iter().find(|&repr: &&(NestedMeta, R)| repr.1.is_align_gt_one())
+            {
+                return Err(vec![Error::new_spanned(
+                    meta,
+                    "cannot derive Unaligned with repr(align(N > 1))",
+                )]);
             }
         }
 
@@ -80,12 +79,12 @@ impl<R: KindRepr> Config<R> {
             Ok(reprs)
         } else if self.disallowed_but_legal_combinations.contains(&reprs.as_slice()) {
             Err(vec![Error::new(
-                err_span.unwrap_or(input.span()),
+                err_span.unwrap_or_else(|| input.span()),
                 self.allowed_combinations_message,
             )])
         } else {
             Err(vec![Error::new(
-                err_span.unwrap_or(input.span()),
+                err_span.unwrap_or_else(|| input.span()),
                 "conflicting representation hints",
             )])
         }
@@ -189,7 +188,7 @@ impl Repr {
             NestedMeta::Meta(Meta::Path(path)) => {
                 let ident = path
                     .get_ident()
-                    .ok_or(Error::new_spanned(meta, "unrecognized representation hint"))?;
+                    .ok_or_else(|| Error::new_spanned(meta, "unrecognized representation hint"))?;
                 match format!("{}", ident).as_str() {
                     "u8" => return Ok(Repr::U8),
                     "u16" => return Ok(Repr::U16),
