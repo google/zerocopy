@@ -3,8 +3,6 @@
 # Copyright 2018 The Fuchsia Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
-# README.md is generated automatically
-# Edits should be made in the doc comment on src/lib.rs or in generate-readme.sh
 
 set -e
 
@@ -18,6 +16,10 @@ Use of this source code is governed by a BSD-style license that can be
 found in the LICENSE file. -->
 
 EOF
+<< comment 
+README.md is generated automatically
+Edits should be made in the doc comment on src/lib.rs or in generate-readme.sh
+comment
 
 # This uses the `cargo readme` tool, which you can install via `cargo install
 # cargo-readme --version 3.2.0`.
