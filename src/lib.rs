@@ -129,8 +129,10 @@ pub use crate::byteorder::*;
 pub use zerocopy_derive::*;
 
 use core::{
+    borrow::{Borrow, BorrowMut},
     cell::{Ref, RefMut},
     cmp::Ordering,
+    convert::TryFrom,
     fmt::{self, Debug, Display, Formatter},
     hash::{Hash, Hasher},
     marker::PhantomData,
@@ -139,7 +141,7 @@ use core::{
         NonZeroI128, NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8, NonZeroIsize, NonZeroU128,
         NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize, Wrapping,
     },
-    ops::{Deref, DerefMut},
+    ops::{Deref, DerefMut, Index, IndexMut},
     ptr, slice,
 };
 
@@ -1291,6 +1293,274 @@ impl<T: Unaligned + Debug> Debug for Unalign<T> {
 impl<T: Unaligned + Display> Display for Unalign<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         Display::fmt(self.deref(), f)
+    }
+}
+
+/// An array of `size_of::<T>()` bytes.
+///
+/// Since the `generic_const_exprs` feature is unstable, it is not possible
+/// to use the type `[u8; std::mem::size_of::<T>()]` in a context in which `T`
+/// is generic. `ByteArray<T>` fills this gap.
+#[derive(FromBytes, Unaligned)]
+#[repr(transparent)]
+pub struct ByteArray<T>(
+    // INVARIANT: All of the bytes of this field are initialized.
+    Unalign<MaybeUninit<T>>,
+);
+
+impl<T> Clone for ByteArray<T> {
+    fn clone(&self) -> ByteArray<T> {
+        // SAFETY: The read itself is guaranteed to be sound because the pointer
+        // is derived from a reference. The new instance satisfies all of
+        // `ByteArray`'s invariants because `self` does and because none of
+        // those invariants preclude creating multiple copies of a given
+        // instance (like, for example, `Box` does).
+        unsafe { ptr::read(self) }
+    }
+}
+
+// Note that there's no way to convince Rust that this is sound without the `T:
+// Copy` bound. This has the same behavior as `#[derive(Copy)]`, but we write
+// it out explicitly to have a place to put this comment :).
+impl<T: Copy> Copy for ByteArray<T> {}
+
+impl<T> ByteArray<T> {
+    /// Constructs a new `ByteArray` whose bytes are all 0.
+    // TODO(https://github.com/rust-lang/rust/issues/91850): Make this const
+    // once `MaybeUninit::zeroed` is stably const.
+    pub fn zeroed() -> ByteArray<T> {
+        // INVARIANT: We are required to uphold the invariant that all of the
+        // bytes of the `0` field of `ByteArray` are initialized. This is
+        // guaranteed by the behavior of `MaybeUninit::zeroed`.
+        ByteArray(Unalign::new(MaybeUninit::zeroed()))
+    }
+
+    /// Converts a slice reference to a byte array reference without checking
+    /// the length.
+    ///
+    /// # Safety
+    ///
+    /// Calling this method with `bytes.len() < mem::size_of::<ByteArray<T>>()`
+    /// may cause undefined behavior.
+    pub unsafe fn from_slice_unchecked(bytes: &[u8]) -> &ByteArray<T> {
+        // SAFETY: The caller guarantees that `bytes.len() >=
+        // size_of::<ByteArray<T>>()`. We know that `ByteArray<T>` has no
+        // alignment requirement and that, thanks to `ByteArray<T>: FromBytes`,
+        // any initialized sequence of bytes is a valid instance of
+        // `ByteArray<T>`.
+        unsafe { &*bytes.as_ptr().cast::<ByteArray<T>>() }
+    }
+
+    /// Converts a mutable slice reference to a mutable byte array reference
+    /// without checking the length.
+    ///
+    /// # Safety
+    ///
+    /// Calling this method with `bytes.len() < mem::size_of::<ByteArray<T>>()`
+    /// may cause undefined behavior.
+    pub unsafe fn from_mut_slice_unchecked(bytes: &mut [u8]) -> &mut ByteArray<T> {
+        // SAFETY: The caller guarantees that `bytes.len() >=
+        // size_of::<ByteArray<T>>()`. We know that `ByteArray<T>` has no
+        // alignment requirement and that, thanks to `ByteArray<T>: FromBytes`,
+        // any initialized sequence of bytes is a valid instance of
+        // `ByteArray<T>`.
+        //
+        // Since `ByteArray<T>: AsBytes`, any instance of `ByteArray<T>` can be
+        // written to a byte slice, and so it's sound to return a mutable
+        // reference.
+        unsafe { &mut *bytes.as_mut_ptr().cast::<ByteArray<T>>() }
+    }
+
+    /// Returns a slice containing the entire array.
+    pub fn as_slice(&self) -> &[u8] {
+        self.as_bytes()
+    }
+
+    /// Returns a mutable slice containing the entire array.
+    pub fn as_mut_slice(&mut self) -> &mut [u8] {
+        self.as_bytes_mut()
+    }
+}
+
+impl<T: AsBytes> ByteArray<T> {
+    /// Constructs a new `ByteArray<T>` from a `T`.
+    pub const fn from_t(t: T) -> ByteArray<T> {
+        // INVARIANT: We are required to uphold the invariant that all of the
+        // bytes of the `0` field of `ByteArray` are initialized. This is
+        // guaranteed by `T: AsBytes`.
+        ByteArray(Unalign::new(MaybeUninit::new(t)))
+    }
+}
+
+impl<T: FromBytes> ByteArray<T> {
+    /// Consumes this `ByteArray` and constructs a new `T` from its bytes.
+    pub const fn into_t(self) -> T {
+        // SAFETY: `self.0` has the invariant that all bytes are initialized.
+        // Since `T: FromBytes`, any initialized byte sequence is a valid `T`.
+        unsafe { self.0.into_inner().assume_init() }
+    }
+}
+
+// SAFETY: Since `ByteArray` is `repr(transparent)`, it has the same layout
+// as its single field. Since that field has an invariant that all of its bytes
+// are initialized, `ByteArray` can be `AsBytes` even if `T` is not.
+unsafe impl<T> AsBytes for ByteArray<T> {
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized,
+    {
+    }
+}
+
+impl<T> AsRef<[u8]> for ByteArray<T> {
+    fn as_ref(&self) -> &[u8] {
+        self.as_slice()
+    }
+}
+
+impl<T> AsMut<[u8]> for ByteArray<T> {
+    fn as_mut(&mut self) -> &mut [u8] {
+        self.as_mut_slice()
+    }
+}
+
+impl<T> Borrow<[u8]> for ByteArray<T> {
+    fn borrow(&self) -> &[u8] {
+        self.as_slice()
+    }
+}
+
+impl<T> BorrowMut<[u8]> for ByteArray<T> {
+    fn borrow_mut(&mut self) -> &mut [u8] {
+        self.as_mut_slice()
+    }
+}
+
+impl<T, I> Index<I> for ByteArray<T>
+where
+    [u8]: Index<I>,
+{
+    type Output = <[u8] as Index<I>>::Output;
+
+    fn index(&self, index: I) -> &Self::Output {
+        Index::index(self.as_slice(), index)
+    }
+}
+
+impl<T, I> IndexMut<I> for ByteArray<T>
+where
+    [u8]: IndexMut<I>,
+{
+    fn index_mut(&mut self, index: I) -> &mut Self::Output {
+        IndexMut::index_mut(self.as_mut_slice(), index)
+    }
+}
+
+/// The error returned when a conversion from a slice to [`ByteArray`] fails.
+///
+/// This type is analogous to the standard library's
+/// [`core::array::TryFromSliceError`].
+#[derive(Debug, Copy, Clone)]
+pub struct TryFromSliceError;
+
+impl Display for TryFromSliceError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "could not convert slice to array")
+    }
+}
+
+impl<'a, T> TryFrom<&'a [u8]> for &'a ByteArray<T> {
+    type Error = TryFromSliceError;
+
+    fn try_from(bytes: &'a [u8]) -> Result<&'a ByteArray<T>, TryFromSliceError> {
+        if bytes.len() != mem::size_of::<ByteArray<T>>() {
+            return Err(TryFromSliceError);
+        }
+
+        // SAFETY: The only safety requirement of `from_slice_unchecked` is that
+        // `bytes.len() >= size_of::<ByteArray<T>>()`, which we just verified.
+        unsafe { Ok(ByteArray::from_slice_unchecked(bytes)) }
+    }
+}
+
+impl<'a, T> TryFrom<&'a mut [u8]> for &'a mut ByteArray<T> {
+    type Error = TryFromSliceError;
+
+    fn try_from(bytes: &'a mut [u8]) -> Result<&'a mut ByteArray<T>, TryFromSliceError> {
+        if bytes.len() != mem::size_of::<ByteArray<T>>() {
+            return Err(TryFromSliceError);
+        }
+
+        // SAFETY: The only safety requirement of `from_mut_slice_unchecked` is
+        // that `bytes.len() >= size_of::<ByteArray<T>>()`, which we just
+        // verified.
+        unsafe { Ok(&mut *bytes.as_mut_ptr().cast::<ByteArray<T>>()) }
+    }
+}
+
+impl<T> Hash for ByteArray<T> {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        Hash::hash(self.as_slice(), state)
+    }
+}
+
+impl<T> Debug for ByteArray<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        Debug::fmt(self.as_slice(), f)
+    }
+}
+
+impl<'a, T> IntoIterator for &'a ByteArray<T> {
+    type Item = &'a u8;
+    type IntoIter = core::slice::Iter<'a, u8>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.as_slice().iter()
+    }
+}
+
+impl<'a, T> IntoIterator for &'a mut ByteArray<T> {
+    type Item = &'a mut u8;
+    type IntoIter = core::slice::IterMut<'a, u8>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.as_mut_slice().iter_mut()
+    }
+}
+
+impl<T> PartialEq<ByteArray<T>> for ByteArray<T> {
+    fn eq(&self, other: &ByteArray<T>) -> bool {
+        PartialEq::eq(self.as_slice(), other.as_slice())
+    }
+}
+
+impl<T> Eq for ByteArray<T> {}
+
+impl<T> PartialOrd for ByteArray<T> {
+    fn partial_cmp(&self, other: &ByteArray<T>) -> Option<Ordering> {
+        PartialOrd::partial_cmp(self.as_slice(), other.as_slice())
+    }
+
+    fn lt(&self, other: &ByteArray<T>) -> bool {
+        PartialOrd::lt(self.as_slice(), other.as_slice())
+    }
+
+    fn le(&self, other: &ByteArray<T>) -> bool {
+        PartialOrd::le(self.as_slice(), other.as_slice())
+    }
+
+    fn ge(&self, other: &ByteArray<T>) -> bool {
+        PartialOrd::ge(self.as_slice(), other.as_slice())
+    }
+
+    fn gt(&self, other: &ByteArray<T>) -> bool {
+        PartialOrd::gt(self.as_slice(), other.as_slice())
+    }
+}
+
+impl<T> Ord for ByteArray<T> {
+    fn cmp(&self, other: &ByteArray<T>) -> Ordering {
+        Ord::cmp(self.as_slice(), other.as_slice())
     }
 }
 
