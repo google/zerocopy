@@ -48,6 +48,9 @@ jobs:
       uses: Swatinem/rust-cache@v2.0.0
       with:
         key: "${{ matrix.channel }}-${{ matrix.target }}-${#${{ matrix.features }}}-${{ hashFiles('**/Cargo.lock') }}"
+  
+    - name: tmp
+      run: ${{ matrix.channel }}-${{ matrix.target }}-${#${{ matrix.features }}}-${{ hashFiles('**/Cargo.lock') }}
 
     - name: Check
       run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
