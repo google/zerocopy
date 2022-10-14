@@ -1018,6 +1018,364 @@ mod simd {
     simd_arch_mod!(arm, int8x4_t, uint8x4_t);
 }
 
+/// A `T` which is at least as aligned as `A`.
+///
+/// `Align<T, A>`'s alignment is the maximum of the alignments of `T` and `A`,
+/// and its size is `T`'s size rounded up to the next multiple of `A`'s
+/// alignment (note that 0 is a valid multiple; if `T` is zero-sized, then
+/// `Align<T, A>` will be zero-sized as well).
+///
+/// The first `mem::size_of::<T>()` bytes of `Align<T, A>` have the same layout
+/// as `T`, and any remaining bytes are initialized to unspecified values.
+#[derive(Unaligned)]
+#[repr(C)]
+pub struct Align<T: ?Sized, A> {
+    // The layout of `Align` is guaranteed to have `t` at byte offset 0 possibly
+    // followed by some padding bytes.
+    //
+    // `Align<T, A>` is guaranteed to have the maximum alignment of `T` and `A`.
+    // This means that `_a`'s alignment requirement (equal to `A`'s) is
+    // satisfied by `_a` living at byte offset 0. Since `_a` is 0 bytes in
+    // length, `t` is properly aligned even if there is no padding between `_a`
+    // and `t` (namely, if `t` lives at byte offset 0). `repr(C)` guarantees
+    // that each field is located at the minimum address that satisfies the
+    // field's alignment, which means that there is guaranteed to be no padding
+    // between `_a` and `t`. Finally, if `size_of::<T>() > 0` and
+    // `size_of::<T>()` is not a multiple of `align_of::<A>()`, there will be
+    // trailing padding to ensure that `Align<T, A>`'s size is a multiple of its
+    // alignment.
+    _a: [A; 0],
+    t: T,
+    // INVARIANT: Any padding bytes are initialized. This is required in order
+    // to make it sound for `Align<T, A>` to implement `AsBytes`.
+}
+
+impl<T: Default, A> Default for Align<T, A> {
+    fn default() -> Align<T, A> {
+        Align::new(T::default())
+    }
+}
+
+impl<T: Clone, A> Clone for Align<T, A> {
+    fn clone(&self) -> Align<T, A> {
+        Align::new(self.t.clone())
+    }
+}
+
+// Note: The `A: Copy` bound is required because Rust requires that `A: Copy` in
+// order for `[A; 0]: Copy`.
+impl<T: Copy, A: Copy> Copy for Align<T, A> {}
+
+impl<T, A> Align<T, A> {
+    /// Constructs a new `Align`.
+    pub fn new(t: T) -> Align<T, A> {
+        let mut align = MaybeUninit::<Align<T, A>>::new_zeroed();
+        // SAFETY: The first `size_of::<T>()` bytes of `Align` correspond to the
+        // bytes of the `t` variant.
+        unsafe { ptr::write(align.as_mut_ptr().cast::<T>(), t) };
+        // SAFETY: We just initialized the entire structure with zeroes,
+        // satisfying the invariant that any padding bytes are initialized. We
+        // overwrote the `t` field, ensuring that it contains a valid `T`. The
+        // `_a` field is zero-sized, meaning that it does not need to be
+        // overwritten in order to be valid.
+        unsafe { align.assume_init() }
+    }
+
+    /// Extracts the `T`.
+    pub fn into_inner(self) -> T {
+        self.t
+    }
+
+    /// Attempts to convert a `&T` to an `&Align<T, A>` if the reference is
+    /// sufficiently-aligned.
+    ///
+    /// Returns `None` if `t` does not satisfy `Align`'s alignment requirement
+    /// or if `mem::size_of::<Align<T, A>>() > mem::size_of::<T>()`. This second
+    /// condition will happen if `mem::size_of::<T>() > 0` and
+    /// `mem::size_of::<T>()` is not a multiple of `mem::align_of::<A>()`.
+    pub fn try_from_ref(t: &T) -> Option<&Align<T, A>> {
+        if mem::size_of::<Align<T, A>>() > mem::size_of::<T>() || !aligned_to::<_, Align<T, A>>(t) {
+            return None;
+        }
+
+        // SAFETY: We just confirmed that `t` satisfies `Align`'s alignment
+        // requirement, and that `T` is not smaller than `Align`, which are
+        // `from_ref_unchecked`'s only safety requirements.
+        unsafe { Some(Align::from_ref_unchecked(t)) }
+    }
+
+    /// Attempts to convert a `&mut T` to a `&mut Align<T, A>` if the reference
+    /// is sufficiently-aligned.
+    ///
+    /// Returns `None` if `t` does not satisfy `Align`'s alignment requirement
+    /// or if `mem::size_of::<Align<T, A>>() > mem::size_of::<T>()`. This second
+    /// condition will happen if `mem::align_of::<A>() > mem::size_of::<T>() >
+    /// 0`.
+    pub fn try_from_mut(t: &mut T) -> Option<&mut Align<T, A>> {
+        if mem::size_of::<Align<T, A>>() > mem::size_of::<T>() || !aligned_to::<_, Align<T, A>>(&*t)
+        {
+            return None;
+        }
+
+        // SAFETY: We just confirmed that `t` satisfies `Align`'s alignment
+        // requirement and that `T` is not smaller than `Align`, which are
+        // `from_mut_unchecked`'s only safety requirements.
+        unsafe { Some(Align::from_mut_unchecked(t)) }
+    }
+
+    /// Converts a `&T` to an `&Align<T, A>` without checking alignment.
+    ///
+    /// # Safety
+    ///
+    /// Calling `from_ref_unchecked` is undefined behavior if `t` does not
+    /// satisfy `Align<T, A>`'s alignment requirement or if
+    /// `mem::size_of::<Align<T, A>>() > mem::size_of::<T>()`. This second
+    /// condition will happen if `mem::size_of::<T>() > 0` and
+    /// `mem::size_of::<T>()` is not a multiple of `mem::align_of::<A>()`.
+    pub const unsafe fn from_ref_unchecked(t: &T) -> &Align<T, A> {
+        // SAFETY: The caller is responsible for ensuring size and alignment.
+        // Since `Align`'s layout is equivalent to `T`'s followed by padding, if
+        // there are no padding bytes, then `Align`'s layout is equivalent to
+        // `T`'s.
+
+        // TODO: Is this transmute sound? Are we allowed to assume the layout of
+        // `Sized` references?
+        unsafe { mem::transmute(t) }
+    }
+
+    /// Converts a `&mut T` to a `&mut Align<T, A>` without checking alignment.
+    ///
+    /// # Safety
+    ///
+    /// Calling `from_mut_unchecked` is undefined behavior if `t` does not
+    /// satisfy `Align<T, A>`'s alignment requirement or if
+    /// `mem::size_of::<Align<T, A>>() > mem::size_of::<T>()`. This second
+    /// condition will happen if `mem::size_of::<T>() > 0` and
+    /// `mem::size_of::<T>()` is not a multiple of `mem::align_of::<A>()`.
+    // TODO(https://github.com/rust-lang/rust/issues/57349): Make this `const`
+    // once mutable references in const contexts are stable.
+    pub unsafe fn from_mut_unchecked(t: &mut T) -> &mut Align<T, A> {
+        // SAFETY: The caller is responsible for ensuring size and alignment.
+        // Since `Align`'s layout is equivalent to `T`'s followed by padding, if
+        // there are no padding bytes, then `Align`'s layout is equivalent to
+        // `T`'s.
+
+        // TODO: Is this transmute sound? Are we allowed to assume the layout of
+        // `Sized` references?
+        unsafe { mem::transmute(t) }
+    }
+}
+
+impl<T, A> Align<[T], A> {
+    /// Attempts to convert a `&[T]` to an `&[Align<T, A>]` if the reference is
+    /// sufficiently-aligned.
+    ///
+    /// Returns `None` if `t` does not satisfy `Align`'s alignment requirement
+    /// or if `mem::size_of::<Align<T, A>>() > mem::size_of::<T>()`. This second
+    /// condition will happen if `mem::size_of::<T>() > 0` and
+    /// `mem::size_of::<T>()` is not a multiple of `mem::align_of::<A>()`.
+    pub fn try_from_slice(t: &[T]) -> Option<&[Align<T, A>]> {
+        if mem::size_of::<Align<T, A>>() > mem::size_of::<T>() || !aligned_to::<_, Align<T, A>>(t) {
+            return None;
+        }
+
+        // SAFETY: We just confirmed that `t` satisfies `Align`'s alignment
+        // requirement, and that `T` is not smaller than `Align`, which are
+        // `from_slice_unchecked`'s only safety requirements.
+        unsafe { Some(Align::from_slice_unchecked(t)) }
+    }
+
+    /// Attempts to convert a `&mut [T]` to a `&mut [Align<T, A>]` if the
+    /// reference is sufficiently-aligned.
+    ///
+    /// Returns `None` if `t` does not satisfy `Align`'s alignment requirement
+    /// or if `mem::size_of::<Align<T, A>>() > mem::size_of::<T>()`. This second
+    /// condition will happen if `mem::align_of::<A>() > mem::size_of::<T>() >
+    /// 0`.
+    pub fn try_from_slice_mut(t: &mut [T]) -> Option<&[Align<T, A>]> {
+        if mem::size_of::<Align<T, A>>() > mem::size_of::<T>() || !aligned_to::<_, Align<T, A>>(&*t)
+        {
+            return None;
+        }
+
+        // SAFETY: We just confirmed that `t` satisfies `Align`'s alignment
+        // requirement and that `T` is not smaller than `Align`, which are
+        // `from_mut_slice_unchecked`'s only safety requirements.
+        unsafe { Some(Align::from_mut_slice_unchecked(t)) }
+    }
+
+    /// Converts a `&[T]` to an `&[Align<T, A>]` without checking alignment.
+    ///
+    /// # Safety
+    ///
+    /// Calling `from_slice_unchecked` is undefined behavior if `t` does not
+    /// satisfy `Align<T, A>`'s alignment requirement or if
+    /// `mem::size_of::<Align<T, A>>() > mem::size_of::<T>()`. This second
+    /// condition will happen if `mem::size_of::<T>() > 0` and
+    /// `mem::size_of::<T>()` is not a multiple of `mem::align_of::<A>()`.
+    pub const unsafe fn from_slice_unchecked(t: &[T]) -> &[Align<T, A>] {
+        let ptr = t.as_ptr().cast::<Align<T, A>>();
+        let len = t.len();
+        // SAFETY: The caller is responsible for ensuring size. The caller is
+        // also responsible for ensuring that `t` is aligned to `Align<T, A>`.
+        // The alignment requirement of `[Align<T, A>]` is the same as that of
+        // `Align<T, A>`. Taken together, this means that `t` points to a slice
+        // of `t.len()` instances of `T`, each of which has the same size and
+        // alignment as `Align<T, A>`.
+        //
+        // Since `Align`'s layout is equivalent to `T`'s followed by padding, if
+        // there are no padding bytes, then `Align`'s layout is equivalent to
+        // `T`'s. Thus, it is sound to view a (sufficiently-aligned) sequence of
+        // `T`s as a sequence of `Align<T, A>`s of the same length.
+        unsafe { slice::from_raw_parts(ptr, len) }
+    }
+
+    /// Converts a `&mut [T]` to a `&mut [Align<T, A>]` without checking
+    /// alignment.
+    ///
+    /// # Safety
+    ///
+    /// Calling `from_mut_slice_unchecked` is undefined behavior if `t` does not
+    /// satisfy `Align<T, A>`'s alignment requirement or if
+    /// `mem::size_of::<Align<T, A>>() > mem::size_of::<T>()`. This second
+    /// condition will happen if `mem::size_of::<T>() > 0` and
+    /// `mem::size_of::<T>()` is not a multiple of `mem::align_of::<A>()`.
+    // TODO(https://github.com/rust-lang/rust/issues/57349): Make this `const`
+    // once mutable references in const contexts are stable.
+    pub unsafe fn from_mut_slice_unchecked(t: &mut [T]) -> &mut [Align<T, A>] {
+        let ptr = t.as_mut_ptr().cast::<Align<T, A>>();
+        let len = t.len();
+        // SAFETY: The caller is responsible for ensuring size. The caller is
+        // also responsible for ensuring that `t` is aligned to `Align<T, A>`.
+        // The alignment requirement of `[Align<T, A>]` is the same as that of
+        // `Align<T, A>`. Taken together, this means that `t` points to a slice
+        // of `t.len()` instances of `T`, each of which has the same size and
+        // alignment as `Align<T, A>`.
+        //
+        // Since `Align`'s layout is equivalent to `T`'s followed by padding, if
+        // there are no padding bytes, then `Align`'s layout is equivalent to
+        // `T`'s. Thus, it is sound to view a (sufficiently-aligned) sequence of
+        // `T`s as a sequence of `Align<T, A>`s of the same length, and vice
+        // versa. The "vice versa" means that it is sound not only to construct
+        // a slice reference to `Align<T, A>`s, but a mutable slice reference.
+        unsafe { slice::from_raw_parts_mut(ptr, len) }
+    }
+}
+
+impl<T: FromBytes, A> Align<T, A> {
+    /// Converts an aligned byte reference to an aligned type reference.
+    ///
+    /// Since `bytes` is guaranteed to have the same alignment as `Align<T, A>`,
+    /// this operation is infallible.
+    pub fn from_bytes(bytes: &Align<ByteArray<T>, A>) -> &Align<T, A> {
+        // SAFETY: `size_of::<ByteArray<T>>() == size_of::<T>()`. Thus,
+        // `Align<ByteArray<T>, A>` and `Align<T, A>` have the same size and
+        // alignment, and `ByteArray<T>` and `T` are at the same byte range
+        // within `Align`. Since a) `T: FromBytes`, b) `ByteArray<T>` is
+        // guaranteed to have all of its bytes initialized, and c)
+        // `ByteArray<T>` and `T` are at the same byte range within `Align`, any
+        // instance of `Align<ByteArray<T>, A>` is a valid instance of `Align<T,
+        // A>`.
+
+        // TODO: Is this transmute sound? Are we allowed to assume the layout of
+        // `Sized` references?
+        unsafe { mem::transmute(bytes) }
+    }
+}
+
+impl<T: FromBytes + AsBytes, A> Align<T, A> {
+    /// Converts an aligned byte reference to an aligned type reference.
+    ///
+    /// Since `bytes` is guaranteed to have the same alignment as `Align<T, A>`,
+    /// this operation is infallible.
+    pub fn from_bytes_mut(bytes: &mut Align<ByteArray<T>, A>) -> &mut Align<T, A> {
+        // SAFETY: `size_of::<ByteArray<T>>() == size_of::<T>()`. Thus,
+        // `Align<ByteArray<T>, A>` and `Align<T, A>` have the same size and
+        // alignment, and `ByteArray<T>` and `T` are at the same byte range
+        // within `Align`. Since a) `T: FromBytes`, b) `ByteArray<T>` is
+        // guaranteed to have all of its bytes initialized, and c)
+        // `ByteArray<T>` and `T` are at the same byte range within `Align`, any
+        // instance of `Align<ByteArray<T>, A>` is a valid instance of `Align<T,
+        // A>`. Since `T: AsBytes`, any instance of `Align<T, A>` is a valid
+        // instance of `Align<ByteArray<T>, A>`, and so it's sound to return a
+        // mutable reference.
+
+        // TODO: Is this transmute sound? Are we allowed to assume the layout of
+        // `Sized` references?
+        unsafe { mem::transmute(bytes) }
+    }
+}
+
+// SAFETY: The only field in `Align` has type `T`, so `T: FromBytes` is a
+// sufficient bound. There is also an invariant that all padding bytes are
+// intialized, but `FromBytes` does not allow transmuting from unaligned bytes.
+unsafe impl<T: FromBytes + ?Sized, A> FromBytes for Align<T, A> {
+    fn only_derive_is_allowed_to_implement_this_trait() {}
+}
+
+// SAFETY: `Align`'s layout comprises `T` and any trailing padding bytes. We
+// uphold the invariant that any padding bytes are initialized, so all of
+// `Align`'s bytes are initialized so long as all of `T`'s are (in other words,
+// `T: AsBytes`).
+unsafe impl<T: AsBytes + ?Sized, A> AsBytes for Align<T, A> {
+    fn only_derive_is_allowed_to_implement_this_trait() {}
+}
+
+impl<T: ?Sized, A> Deref for Align<T, A> {
+    type Target = T;
+
+    fn deref(&self) -> &T {
+        &self.t
+    }
+}
+
+impl<T: ?Sized, A> DerefMut for Align<T, A> {
+    fn deref_mut(&mut self) -> &mut T {
+        &mut self.t
+    }
+}
+
+impl<T: PartialOrd + ?Sized, A> PartialOrd<Align<T, A>> for Align<T, A> {
+    fn partial_cmp(&self, other: &Align<T, A>) -> Option<Ordering> {
+        PartialOrd::partial_cmp(self.deref(), other.deref())
+    }
+}
+
+impl<T: Ord + ?Sized, A> Ord for Align<T, A> {
+    fn cmp(&self, other: &Align<T, A>) -> Ordering {
+        Ord::cmp(self.deref(), other.deref())
+    }
+}
+
+impl<T: PartialEq + ?Sized, A> PartialEq<Align<T, A>> for Align<T, A> {
+    fn eq(&self, other: &Align<T, A>) -> bool {
+        PartialEq::eq(self.deref(), other.deref())
+    }
+}
+
+impl<T: Eq + ?Sized, A> Eq for Align<T, A> {}
+
+impl<T: Hash + ?Sized, A> Hash for Align<T, A> {
+    fn hash<H>(&self, state: &mut H)
+    where
+        H: Hasher,
+    {
+        self.deref().hash(state);
+    }
+}
+
+impl<T: Debug + ?Sized, A> Debug for Align<T, A> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        Debug::fmt(self.deref(), f)
+    }
+}
+
+impl<T: Display + ?Sized, A> Display for Align<T, A> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        Display::fmt(self.deref(), f)
+    }
+}
+
 /// A type with no alignment requirement.
 ///
 /// An `Unalign` wraps a `T`, removing any alignment requirement. `Unalign<T>`
@@ -3126,7 +3484,7 @@ pub use alloc_support::*;
 mod tests {
     #![allow(clippy::unreadable_literal)]
 
-    use core::{convert::TryInto, ops::Deref};
+    use core::{cmp, convert::Infallible as Never, convert::TryInto as _, ops::Deref};
 
     use super::*;
 
@@ -3208,6 +3566,59 @@ mod tests {
             // [1] https://github.com/rust-lang/unsafe-code-guidelines/issues/375
             unsafe { mem::transmute(slc) }
         }
+    }
+
+    const fn size_align_of<T>() -> (usize, usize) {
+        (mem::size_of::<T>(), mem::align_of::<T>())
+    }
+
+    #[test]
+    fn test_align() {
+        // Assert that the layout of `Align<$T, $A>` is what we expect it to be.
+        macro_rules! assert_layout {
+            ($T:ty, $A:ty) => {{
+                type TY = Align<$T, $A>;
+                let tyname = stringify!(Align<$T, $A>);
+                let t_size = mem::size_of::<$T>();
+                let t_align = mem::align_of::<$T>();
+                let a_align = mem::align_of::<$A>();
+                let outer_size = mem::size_of::<TY>();
+                let outer_align = mem::align_of::<TY>();
+                let a_span = memoffset::span_of!(TY, _a);
+                let t_span = memoffset::span_of!(TY, t);
+
+                let expect_align = cmp::max(t_align, a_align);
+                let expect_size = if t_size == 0 { 0 } else {
+                    ((t_size + expect_align - 1) / expect_align) * expect_align
+                };
+
+                assert_eq!(
+                    (outer_size, outer_align, a_span, t_span),
+                    (expect_size, expect_align, 0..0, 0..t_size),
+                    "{tyname}: (size, align, a_span, t_span)",
+                );
+            }};
+        }
+
+        // TODO: Test with unsized types as well.
+        assert_eq!(size_align_of::<Never>(), (0, 1));
+        assert_layout!(Never, Never);
+        assert_layout!((), Never);
+        assert_layout!(Never, ());
+        assert_layout!((), ());
+        assert_layout!((), u8);
+        assert_layout!((), u16);
+        assert_layout!(u8, u8);
+        assert_layout!(u8, u16);
+        assert_layout!(u16, ());
+        assert_layout!(u16, u8);
+        assert_layout!(u16, u16);
+        assert_layout!(u16, u32);
+        assert_layout!([u8; 0], u16);
+        assert_layout!([u8; 1], u16);
+        assert_layout!([u8; 2], u16);
+        assert_layout!([u8; 3], u16);
+        assert_layout!([u8; 4], u16);
     }
 
     #[test]
