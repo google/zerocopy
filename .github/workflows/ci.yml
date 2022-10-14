@@ -51,7 +51,7 @@ jobs:
     - name: Rust Cache
       uses: Swatinem/rust-cache@v2.0.0
       with:
-        key: "${{ matrix.channel }}-${{ matrix.target }}-${{ env.FEATURES }}-${{ hashFiles('**/Cargo.lock') }}"
+        key: "${{ matrix.channel }}-${{ matrix.target }}-${{ env.FEATURES_HASH }}-${{ hashFiles('**/Cargo.lock') }}"
 
     - name: Check
       run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
