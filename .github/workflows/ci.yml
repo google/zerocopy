@@ -1,7 +1,6 @@
 name: Build & Tests
 
 on:
-  push:
   pull_request:
 
 env:
