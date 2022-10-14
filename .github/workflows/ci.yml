@@ -44,13 +44,16 @@ jobs:
           # https://github.com/actions/runner/issues/409#issuecomment-752775072
           components: ${{ contains(matrix.channel, 'nightly') && 'miri' || '' }}
 
+    - name: Set feature string for cache key
+      run: |
+        features=${{matrix.features}}
+        features_key=${#features}
+        echo "FEATURES=$(echo $features_key)" >> $GITHUB_ENV
+
     - name: Rust Cache
       uses: Swatinem/rust-cache@v2.0.0
       with:
-        key: "${{ matrix.channel }}-${{ matrix.target }}-${#${{ matrix.features }}}-${{ hashFiles('**/Cargo.lock') }}"
-  
-    - name: tmp
-      run: ${{ matrix.channel }}-${{ matrix.target }}-${#${{ matrix.features }}}-${{ hashFiles('**/Cargo.lock') }}
+        key: "${{ matrix.channel }}-${{ matrix.target }}-${{ env.FEATURES }}-${{ hashFiles('**/Cargo.lock') }}"
 
     - name: Check
       run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
