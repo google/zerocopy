@@ -45,9 +45,7 @@ jobs:
 
     - name: Set feature string for cache key
       run: |
-        features=${{matrix.features}}
-        features_key=${#features}
-        echo "FEATURES=$(echo $features_key)" >> $GITHUB_ENV
+        echo "FEATURES_HASH=$(echo ${{ matrix.features }} | sha256sum | cut -d ' ' -f 1)" >> $GITHUB_ENV
 
     - name: Rust Cache
       uses: Swatinem/rust-cache@v2.0.0
