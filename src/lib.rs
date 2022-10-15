@@ -271,6 +271,71 @@ pub unsafe trait FromBytes {
         unsafe { mem::zeroed() }
     }
 
+    /// Zeroes the bytes of `self` and then returns a reference to them.
+    ///
+    /// If `Self: !Sized`, use [`zero_and_get_bytes`] instead.
+    ///
+    /// Zeroing is necessary since some of the bytes may have been uninitialized
+    /// (for example, thanks to inter-field padding), and it's not sound to
+    /// provide access to uninitialized bytes via `&mut [u8]`.
+    ///
+    /// If `Self` implements [`AsBytes`], prefer [`AsBytes::as_bytes_mut`],
+    /// which does not zero `self`'s bytes first, and is a no-op at runtime.
+    ///
+    /// [`zero_and_get_bytes`]: FromBytes::zero_and_get_bytes
+    fn zero_and_get_byte_array(&mut self) -> &mut Align<ByteArray<Self>, Self>
+    where
+        Self: Sized,
+    {
+        let bytes = self.zero_and_get_bytes();
+        // SAFETY: We know that `bytes.len() == size_of::<Self>()`, and we know
+        // that `size_of::<Self>() == size_of::<ByteArray<Self>>()`.
+        // `ByteArray::from_mut_slice_unchecked`'s only safety condition is that
+        // `bytes.len() >= size_of::<ByteArray<Self>>()`.
+        let byte_array = unsafe { ByteArray::from_mut_slice_unchecked(bytes) };
+        // SAFETY: We know that `byte_array` is aligned to `Self` because it
+        // came from `self`. We know that `align_of::<Self>()` is not larger
+        // than `size_of::<Self>()` because that's guaranteed by Rust. Those are
+        // the only two safety requirements of `Align::from_mut_unchecked`.
+        unsafe { Align::from_mut_unchecked(byte_array) }
+    }
+
+    /// Zeroes the bytes of `self` and then returns a reference to them.
+    ///
+    /// If `Self: Sized`, consider using [`zero_and_get_byte_array`] instead,
+    /// as it provides a compile-time size guarantee which this method does not.
+    ///
+    /// Zeroing is necessary since some of the bytes may have been uninitialized
+    /// (for example, thanks to inter-field padding), and it's not sound to
+    /// provide access to uninitialized bytes via `&mut [u8]`.
+    ///
+    /// If `Self` implements [`AsBytes`], prefer [`AsBytes::as_bytes_mut`],
+    /// which does not zero `self`'s bytes first, and is a no-op at runtime.
+    ///
+    /// [`zero_and_get_byte_array`]: FromBytes::zero_and_get_bytes
+    fn zero_and_get_bytes(&mut self) -> &mut [u8] {
+        // SAFETY: Writing zeroes to `self` is sound because `Self: FromBytes`.
+        // Exposing `self` as a `&mut [u8]` is sound for two reasons:
+        // - It's sound to expose the bytes to be read since we just wrote
+        //   zeroes to all of the bytes of `self`, and so we overwrote any
+        //   uninitialized bytes.
+        // - It's sound to expose the bytes to be written (we return `&mut
+        //   [u8]`, not `&[u8]`) because `Self: FromBytes`, and so any bytes
+        //   that are written via the returned slice will leave `self` as a
+        //   valid `Self`.
+        unsafe {
+            // Use `ptr::write_bytes` instead of doing `ptr::write(self as *mut
+            // Self, mem::zeroed())` because the latter only works for `Sized`
+            // types. It may also be slower (if the optimizer isn't smart, it
+            // may stack-allocate the `mem::zeroed()` instance before writing it
+            // to `self`), although that's speculation.
+            let ptr = <*mut Self>::cast::<u8>(self);
+            let len = mem::size_of_val(self);
+            ptr::write_bytes::<u8>(ptr, 0, len);
+            slice::from_raw_parts_mut(ptr, len)
+        }
+    }
+
     /// Creates a `Box<Self>` from zeroed bytes.
     ///
     /// This function is useful for allocating large values on the heap and
@@ -3570,6 +3635,17 @@ mod tests {
 
     const fn size_align_of<T>() -> (usize, usize) {
         (mem::size_of::<T>(), mem::align_of::<T>())
+    }
+
+    #[test]
+    fn test_zero_and_get_bytes() {
+        #[repr(C)]
+        #[derive(FromBytes)]
+        struct HasPadding(u8, u16);
+        let mut x = HasPadding(u8::MAX, u16::MAX);
+        // When run under Miri, this will fail if `zero_and_get_bytes` doesn't
+        // properly overwrite the padding bytes in `x` with zeroes.
+        assert_eq!(x.zero_and_get_bytes(), [0, 0, 0, 0]);
     }
 
     #[test]
