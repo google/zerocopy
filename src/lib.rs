@@ -1747,7 +1747,7 @@ impl<T> Unalign<T> {
 
     /// Returns a reference to the wrapped `T` without checking alignment.
     ///
-    /// If `T: Unaligned`, then `Unalign<T>` implements[ `Deref`], and callers
+    /// If `T: Unaligned`, then `Unalign<T>` implements [`Deref`], and callers
     /// may prefer [`Deref::deref`], which is safe.
     ///
     /// # Safety
@@ -1766,7 +1766,7 @@ impl<T> Unalign<T> {
     /// Returns a mutable reference to the wrapped `T` without checking
     /// alignment.
     ///
-    /// If `T: Unaligned`, then `Unalign<T>` implements[ `DerefMut`], and
+    /// If `T: Unaligned`, then `Unalign<T>` implements [`DerefMut`], and
     /// callers may prefer [`DerefMut::deref_mut`], which is safe.
     ///
     /// # Safety
@@ -2837,7 +2837,7 @@ where
 
 impl<'a, B, T> LayoutVerified<B, T>
 where
-    B: 'a + ByteSlice,
+    B: ByteSlice + Into<&'a [u8]>,
     T: FromBytes,
 {
     /// Converts this `LayoutVerified` into a reference.
@@ -2845,33 +2845,35 @@ where
     /// `into_ref` consumes the `LayoutVerified`, and returns a reference to
     /// `T`.
     pub fn into_ref(self) -> &'a T {
-        // SAFETY: This is sound because `B` is guaranteed to live for the
-        // lifetime `'a`, meaning that a) the returned reference cannot outlive
-        // the `B` from which `self` was constructed and, b) no mutable methods
-        // on that `B` can be called during the lifetime of the returned
-        // reference. See the documentation on `deref_helper` for what
-        // invariants we are required to uphold.
-        unsafe { self.deref_helper() }
+        let bytes = self.0.into();
+        // SAFETY: `LayoutVerified` upholds the invariant that `.0`'s length is
+        // equal to `size_of::<T>()`. `size_of::<ByteArray<T>>() ==
+        // size_of::<T>()`, so this call is sound.
+        let byte_array = unsafe { ByteArray::from_slice_unchecked(bytes) };
+        // SAFETY: `LayoutVerified` upholds the invariant that `.0` satisfies
+        // `T`'s alignment requirement.
+        unsafe { T::ref_from_bytes_unchecked(byte_array) }
     }
 }
 
 impl<'a, B, T> LayoutVerified<B, T>
 where
-    B: 'a + ByteSliceMut,
+    B: ByteSliceMut + Into<&'a mut [u8]>,
     T: FromBytes + AsBytes,
 {
     /// Converts this `LayoutVerified` into a mutable reference.
     ///
     /// `into_mut` consumes the `LayoutVerified`, and returns a mutable
     /// reference to `T`.
-    pub fn into_mut(mut self) -> &'a mut T {
-        // SAFETY: This is sound because `B` is guaranteed to live for the
-        // lifetime `'a`, meaning that a) the returned reference cannot outlive
-        // the `B` from which `self` was constructed and, b) no other methods -
-        // mutable or immutable - on that `B` can be called during the lifetime
-        // of the returned reference. See the documentation on
-        // `deref_mut_helper` for what invariants we are required to uphold.
-        unsafe { self.deref_mut_helper() }
+    pub fn into_mut(self) -> &'a mut T {
+        let bytes = self.0.into();
+        // SAFETY: `LayoutVerified` upholds the invariant that `.0`'s length is
+        // equal to `size_of::<T>()`. `size_of::<ByteArray<T>>() ==
+        // size_of::<T>()`, so this call is sound.
+        let byte_array = unsafe { ByteArray::from_mut_slice_unchecked(bytes) };
+        // SAFETY: `LayoutVerified` upholds the invariant that `.0` satisfies
+        // `T`'s alignment requirement.
+        unsafe { T::mut_from_bytes_unchecked(byte_array) }
     }
 }
 
@@ -2913,56 +2915,6 @@ where
         // `deref_mut_slice_helper` for what invariants we are required to
         // uphold.
         unsafe { self.deref_mut_slice_helper() }
-    }
-}
-
-impl<B, T> LayoutVerified<B, T>
-where
-    B: ByteSlice,
-    T: FromBytes,
-{
-    /// Creates an immutable reference to `T` with a specific lifetime.
-    ///
-    /// # Safety
-    ///
-    /// The type bounds on this method guarantee that it is safe to create an
-    /// immutable reference to `T` from `self`. However, since the lifetime `'a`
-    /// is not required to be shorter than the lifetime of the reference to
-    /// `self`, the caller must guarantee that the lifetime `'a` is valid for
-    /// this reference. In particular, the referent must exist for all of `'a`,
-    /// and no mutable references to the same memory may be constructed during
-    /// `'a`.
-    unsafe fn deref_helper<'a>(&self) -> &'a T {
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe {
-            &*self.0.as_ptr().cast::<T>()
-        }
-    }
-}
-
-impl<B, T> LayoutVerified<B, T>
-where
-    B: ByteSliceMut,
-    T: FromBytes + AsBytes,
-{
-    /// Creates a mutable reference to `T` with a specific lifetime.
-    ///
-    /// # Safety
-    ///
-    /// The type bounds on this method guarantee that it is safe to create a
-    /// mutable reference to `T` from `self`. However, since the lifetime `'a`
-    /// is not required to be shorter than the lifetime of the reference to
-    /// `self`, the caller must guarantee that the lifetime `'a` is valid for
-    /// this reference. In particular, the referent must exist for all of `'a`,
-    /// and no other references - mutable or immutable - to the same memory may
-    /// be constructed during `'a`.
-    unsafe fn deref_mut_helper<'a>(&mut self) -> &'a mut T {
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe {
-            &mut *self.0.as_mut_ptr().cast::<T>()
-        }
     }
 }
 
@@ -3158,13 +3110,13 @@ where
     type Target = T;
     #[inline]
     fn deref(&self) -> &T {
-        // SAFETY: This is sound because the lifetime of `self` is the same as
-        // the lifetime of the return value, meaning that a) the returned
-        // reference cannot outlive `self` and, b) no mutable methods on `self`
-        // can be called during the lifetime of the returned reference. See the
-        // documentation on `deref_helper` for what invariants we are required
-        // to uphold.
-        unsafe { self.deref_helper() }
+        // SAFETY: `LayoutVerified` upholds the invariant that `.0`'s length is
+        // equal to `size_of::<T>()`. `size_of::<ByteArray<T>>() ==
+        // size_of::<T>()`, so this call is sound.
+        let byte_array = unsafe { ByteArray::from_slice_unchecked(self.0.deref()) };
+        // SAFETY: `LayoutVerified` upholds the invariant that `.0` satisfies
+        // `T`'s alignment requirement.
+        unsafe { T::ref_from_bytes_unchecked(byte_array) }
     }
 }
 
@@ -3175,13 +3127,13 @@ where
 {
     #[inline]
     fn deref_mut(&mut self) -> &mut T {
-        // SAFETY: This is sound because the lifetime of `self` is the same as
-        // the lifetime of the return value, meaning that a) the returned
-        // reference cannot outlive `self` and, b) no other methods on `self`
-        // can be called during the lifetime of the returned reference. See the
-        // documentation on `deref_mut_helper` for what invariants we are
-        // required to uphold.
-        unsafe { self.deref_mut_helper() }
+        // SAFETY: `LayoutVerified` upholds the invariant that `.0`'s length is
+        // equal to `size_of::<T>()`. `size_of::<ByteArray<T>>() ==
+        // size_of::<T>()`, so this call is sound.
+        let byte_array = unsafe { ByteArray::from_mut_slice_unchecked(self.0.deref_mut()) };
+        // SAFETY: `LayoutVerified` upholds the invariant that `.0` satisfies
+        // `T`'s alignment requirement.
+        unsafe { T::mut_from_bytes_unchecked(byte_array) }
     }
 }
 
@@ -3390,6 +3342,7 @@ mod sealed {
 ///
 /// [`Vec<u8>`]: alloc::vec::Vec
 /// [`split_at`]: crate::ByteSlice::split_at
+// TODO(joshlf): Require that Into<&[u8]> and Into<&mut [u8]> are stable.
 pub unsafe trait ByteSlice: Deref<Target = [u8]> + Sized + self::sealed::Sealed {
     /// Gets a raw pointer to the first byte in the slice.
     #[inline]
