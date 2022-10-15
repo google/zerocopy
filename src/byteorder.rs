@@ -190,6 +190,9 @@ example of how it can be used for parsing UDP packets.
 
         // TODO(#10): Replace this with `#[derive(AsBytes)]` once that derive
         // supports type parameters.
+        //
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe impl<O: ByteOrder> AsBytes for $name<O> {
             fn only_derive_is_allowed_to_implement_this_trait()
             where
