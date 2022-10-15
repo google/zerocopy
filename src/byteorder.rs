@@ -650,7 +650,7 @@ mod tests {
                 let mut bytes = T::ByteArray::default();
                 bytes.as_bytes_mut().copy_from_slice(native.as_bytes());
                 let mut from_native = T::new(native);
-                let from_bytes = T::from_bytes(bytes);
+                let from_bytes = <T as ByteOrderType>::from_bytes(bytes);
                 assert_eq!(from_native, from_bytes);
                 assert_eq!(from_native.get(), native);
                 assert_eq!(from_bytes.get(), native);
@@ -675,7 +675,7 @@ mod tests {
                 bytes.as_bytes_mut().copy_from_slice(native.as_bytes());
                 bytes = bytes.invert();
                 let mut from_native = T::new(native);
-                let from_bytes = T::from_bytes(bytes);
+                let from_bytes = <T as ByteOrderType>::from_bytes(bytes);
                 assert_eq!(from_native, from_bytes);
                 assert_eq!(from_native.get(), native);
                 assert_eq!(from_bytes.get(), native);

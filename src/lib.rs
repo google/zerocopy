@@ -224,6 +224,153 @@ pub unsafe trait FromBytes {
     where
         Self: Sized;
 
+    /// Converts a byte array to `Self`.
+    fn from_bytes(bytes: ByteArray<Self>) -> Self
+    where
+        Self: Sized,
+    {
+        bytes.into_t()
+    }
+
+    /// Attempts to convert a byte array reference to a reference to `Self`.
+    ///
+    /// This can fail if `bytes` does not satisfy `Self`'s alignment
+    /// requirement.
+    ///
+    /// This alignment check is unnecessary for types which have no alignment
+    /// requirement; for those types, see [`ref_from_bytes_unaligned`].
+    ///
+    /// [`ref_from_bytes_unaligned`]: FromBytes::ref_from_bytes_unaligned
+    fn ref_from_bytes(bytes: &ByteArray<Self>) -> Option<&Self>
+    where
+        Self: Sized,
+    {
+        if !aligned_to::<_, Self>(bytes) {
+            return None;
+        }
+
+        // SAFETY: The only safety requirement of `ref_from_bytes_unchecked`
+        // is that `bytes` is properly aligned, which we just checked.
+        unsafe { Some(Self::ref_from_bytes_unchecked(bytes)) }
+    }
+
+    /// Converts a byte array reference to a reference to `Self` without
+    /// checking alignment.
+    ///
+    /// For types with no alignment requirement, the safe
+    /// [`ref_from_bytes_unaligned`] is also provided.
+    ///
+    /// # Safety
+    ///
+    /// If `bytes` does not satisfy `Self`'s alignment requirement
+    /// `mem::align_of::<Self>()`, calling `ref_from_bytes_unchecked` may cause
+    /// undefined behavior.
+    ///
+    /// [`ref_from_bytes_unaligned`]: FromBytes::ref_from_bytes_unaligned
+    unsafe fn ref_from_bytes_unchecked(bytes: &ByteArray<Self>) -> &Self
+    where
+        Self: Sized,
+    {
+        // SAFETY: Only the `deref_unchecked` is unsafe, and we document the
+        // same safety requirement on this method as is documented on
+        // `deref_unchecked`.
+        unsafe { Self::unaligned_ref_from_bytes(bytes).deref_unchecked() }
+    }
+
+    /// Converts a byte array reference to a reference to an unaligned `Self`.
+    ///
+    /// TODO: Clean this paragraph up. Ew.
+    ///
+    /// If `Self: Unaligned`, then the returned `Unalign<Self>` reference
+    /// implements `Deref`, and so a `&Self` can be obtained by doing
+    /// `Self::unaligned_ref_from_bytes(bytes).deref()`.
+    fn unaligned_ref_from_bytes(bytes: &ByteArray<Self>) -> &Unalign<Self>
+    where
+        Self: Sized,
+    {
+        // SAFETY: `Unalign<Self>` has the same layout and ABI as `Self`, except
+        // has no alignment requirement. Since `Self: FromBytes`, all bytes of
+        // `*bytes` are initialized, and `size_of::<ByteArray<Self>>() ==
+        // size_of::<Self>()`, `bytes` points to a valid, although possibly not
+        // properly aligned, `Self`. Thus, it points to a valid and properly
+        // aligned `Unalign<Self>`.
+        unsafe { mem::transmute(bytes) }
+    }
+
+    /// Attempts to convert a mutable byte array reference to a mutable
+    /// reference to `Self`.
+    ///
+    /// This can fail if `bytes` does not satisfy `Self`'s alignment
+    /// requirement.
+    ///
+    /// This alignment check is unnecessary for types which have no alignment
+    /// requirement; for those types, see [`mut_from_bytes_unaligned`].
+    ///
+    /// [`mut_from_bytes_unaligned`]: FromBytes::mut_from_bytes_unaligned
+    fn mut_from_bytes(bytes: &mut ByteArray<Self>) -> Option<&mut Self>
+    where
+        Self: AsBytes + Sized,
+    {
+        if !aligned_to::<_, Self>(&*bytes) {
+            return None;
+        }
+
+        // SAFETY: The only safety requirement of `ref_from_bytes_unchecked`
+        // is that `bytes` is properly aligned, which we just checked.
+        unsafe { Some(Self::mut_from_bytes_unchecked(bytes)) }
+    }
+
+    /// Converts a mutable byte array reference to a mutable reference to `Self`
+    /// without checking alignment.
+    ///
+    /// For types with no alignment requirement, the safe
+    /// [`mut_from_bytes_unaligned`] is also provided.
+    ///
+    /// # Safety
+    ///
+    /// If `bytes` does not satisfy `Self`'s alignment requirement
+    /// `mem::align_of::<Self>()`, calling `mut_from_bytes_unchecked` may cause
+    /// undefined behavior.
+    ///
+    /// [`mut_from_bytes_unaligned`]: FromBytes::ref_from_bytes_unaligned
+    unsafe fn mut_from_bytes_unchecked(bytes: &mut ByteArray<Self>) -> &mut Self
+    where
+        Self: AsBytes + Sized,
+    {
+        // SAFETY: Only the `deref_mut_unchecked` is unsafe, and we document the
+        // same safety requirement on this method as is documented on
+        // `deref_mut_unchecked`.
+        unsafe { Self::unaligned_mut_from_bytes(bytes).deref_mut_unchecked() }
+    }
+
+    /// Converts a mutable byte array reference to a mutable reference to an
+    /// unaligned `Self`.
+    ///
+    /// TODO: Clean this paragraph up. Ew.
+    ///
+    /// If `Self: Unaligned`, then the returned `Unalign<Self>` reference
+    /// implements `DerefMut`, and so a `&mut Self` can be obtained by doing
+    /// `Self::unaligned_mut_from_bytes(bytes).deref_mut()`.
+    fn unaligned_mut_from_bytes(bytes: &mut ByteArray<Self>) -> &mut Unalign<Self>
+    where
+        Self: AsBytes + Sized,
+    {
+        // SAFETY: `Unalign<Self>` has the same layout and ABI as `Self`, except
+        // has no alignment requirement. Since `Self: FromBytes`, all bytes of
+        // `*bytes` are initialized, and `size_of::<ByteArray<Self>>() ==
+        // size_of::<Self>()`, `bytes` points to a valid, although possibly not
+        // properly aligned, `Self`. Thus, it points to a valid and properly
+        // aligned `Unalign<Self>`.
+        //
+        // Thanks to `Self: AsBytes`, we know that every byte of an instance of
+        // `Self` is initialized, which means that any instance of `Self` is a
+        // valid instance of `ByteArray<Self>`. Since `Unalign<Self>` has the
+        // same layout and ABI as `Self` (except for alignment), any insstance
+        // of `Unalign<Self>` is a valid instance of `ByteArray<Self>`. Thus,
+        // it's sound to return a mutable reference.
+        unsafe { mem::transmute(bytes) }
+    }
+
     /// Reads a copy of `Self` from `bytes`.
     ///
     /// If `bytes.len() != size_of::<Self>()`, `read_from` returns `None`.
@@ -279,7 +426,7 @@ pub unsafe trait FromBytes {
     /// (for example, thanks to inter-field padding), and it's not sound to
     /// provide access to uninitialized bytes via `&mut [u8]`.
     ///
-    /// If `Self` implements [`AsBytes`], prefer [`AsBytes::as_bytes_mut`],
+    /// If `Self` implements [`AsBytes`], prefer [`AsBytes::as_byte_array_mut`],
     /// which does not zero `self`'s bytes first, and is a no-op at runtime.
     ///
     /// [`zero_and_get_bytes`]: FromBytes::zero_and_get_bytes
@@ -524,6 +671,48 @@ pub unsafe trait AsBytes {
     fn only_derive_is_allowed_to_implement_this_trait()
     where
         Self: Sized;
+
+    /// Converts `self` to a byte array.
+    fn to_bytes(self) -> ByteArray<Self>
+    where
+        Self: Sized,
+    {
+        ByteArray::from_t(self)
+    }
+
+    /// Gets the bytes of this value as a byte array.
+    fn as_byte_array(&self) -> &ByteArray<Self>
+    where
+        Self: Sized,
+    {
+        // SAFETY: We know that `size_of::<Self>() ==
+        // size_of::<ByteArray<Self>>()`. Since `ByteArray<Self>: FromBytes`, we
+        // know that any initialized sequence of `size_of::<ByteArray<Self>>()`
+        // bytes is a valid instance of `ByteArray<Self>`. Since `Self:
+        // AsBytes`, we know that `self` points to an initialized sequence of
+        // `size_of::<ByteArray<Self>>()` bytes. Finally, we know that
+        // `ByteArray<Self>` has no alignment requirement.
+        unsafe { mem::transmute(self) }
+    }
+
+    /// Gets the bytes of this value as a mutable byte array.
+    fn as_byte_array_mut(&mut self) -> &mut ByteArray<Self>
+    where
+        Self: FromBytes + Sized,
+    {
+        // SAFETY: We know that `size_of::<Self>() ==
+        // size_of::<ByteArray<Self>>()`. Since `ByteArray<Self>: FromBytes`, we
+        // know that any initialized sequence of `size_of::<ByteArray<Self>>()`
+        // bytes is a valid instance of `ByteArray<Self>`. Since `Self:
+        // AsBytes`, we know that `self` points to an initialized sequence of
+        // `size_of::<ByteArray<Self>>()` bytes. Finally, we know that
+        // `ByteArray<Self>` has no alignment requirement.
+        //
+        // Since `Self: FromBytes`, we know that any instance of
+        // `ByteArray<Self>` is a valid instance of `Self`, and so it is sound
+        // to give out a mutable reference.
+        unsafe { mem::transmute(self) }
+    }
 
     /// Gets the bytes of this value.
     ///
