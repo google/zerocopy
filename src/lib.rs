@@ -358,17 +358,14 @@ pub unsafe trait FromBytes {
     {
         // TODO(#2): Use `Layout::repeat` when `alloc_layout_extra` is
         // stabilized.
-        //
-        // This will intentionally panic if it overflows.
+        let layout = Layout::from_size_align(
+            mem::size_of::<Self>()
+                .checked_mul(len)
+                .expect("mem::size_of::<Self>() * len overflows `usize`"),
+            mem::align_of::<Self>(),
+        )
+        .expect("total allocation size overflows `isize`");
         unsafe {
-            // SAFETY: `from_size_align_unchecked` is sound because
-            // slice_len_bytes is guaranteed to be properly aligned (we just
-            // multiplied it by `size_of::<T>()`, which is guaranteed to be
-            // aligned).
-            let layout = Layout::from_size_align_unchecked(
-                mem::size_of::<Self>().checked_mul(len).unwrap(),
-                mem::align_of::<Self>(),
-            );
             if layout.size() != 0 {
                 let ptr = alloc::alloc::alloc_zeroed(layout) as *mut Self;
                 if ptr.is_null() {
@@ -2203,6 +2200,40 @@ mod alloc_support {
         fn test_new_box_slice_zeroed_zst_empty() {
             let s: Box<[()]> = <()>::new_box_slice_zeroed(0);
             assert_eq!(s.len(), 0);
+        }
+
+        #[test]
+        #[should_panic(expected = "mem::size_of::<Self>() * len overflows `usize`")]
+        fn test_new_box_slice_zeroed_panics_mul_overflow() {
+            let _ = u16::new_box_slice_zeroed(usize::MAX);
+        }
+
+        // This test fails on stable <= 1.64.0, but succeeds on 1.65.0-beta.2
+        // (2022-09-13). In particular, on stable <= 1.64.0,
+        // `new_box_slice_zeroed` attempts to perform the allocation (which of
+        // course fails). `Layout::from_size_align` should be returning an error
+        // due to `isize` overflow, but it doesn't. I (joshlf) haven't
+        // investigated enough to confirm, but my guess is that this was a bug
+        // that was fixed recently.
+        //
+        // Triggering the bug requires calling `FromBytes::new_box_slice_zeroed`
+        // with an allocation which overflows `isize`, and all that happens is
+        // that the program panics due to a failed allocation. Even on 32-bit
+        // platforms, this requires a 2GB allocation. On 64-bit platforms, this
+        // requires a 2^63-byte allocation. In both cases, even a slightly
+        // smaller allocation that didn't trigger this bug would likely
+        // (absolutely certainly in the case of 64-bit platforms) fail to
+        // allocate in exactly the same way regardless.
+        //
+        // Given how minor the impact is, and given that the bug seems fixed in
+        // 1.65.0, I've chosen to just release the code as-is and disable the
+        // test on buggy toolchains. Once our MSRV is at or above 1.65.0, we can
+        // remove this conditional compilation (and this comment) entirely.
+        #[rustversion::since(1.65.0)]
+        #[test]
+        #[should_panic(expected = "total allocation size overflows `isize`: LayoutError")]
+        fn test_new_box_slice_zeroed_panics_isize_overflow() {
+            let _ = u16::new_box_slice_zeroed((isize::MAX as usize / mem::size_of::<u16>()) + 1);
         }
     }
 }
