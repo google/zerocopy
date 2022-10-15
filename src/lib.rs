@@ -66,6 +66,7 @@
     clippy::style,
     clippy::suspicious,
     clippy::todo,
+    clippy::undocumented_unsafe_blocks,
     clippy::unimplemented,
     clippy::unnested_or_patterns,
     clippy::unwrap_used,
@@ -143,6 +144,8 @@ mod zerocopy {
 // Implements an unsafe trait for a range of container types.
 macro_rules! impl_for_composite_types {
     ($trait:ident) => {
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe impl<T> $trait for PhantomData<T> {
             fn only_derive_is_allowed_to_implement_this_trait()
             where
@@ -150,6 +153,8 @@ macro_rules! impl_for_composite_types {
             {
             }
         }
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe impl<T: $trait> $trait for [T] {
             fn only_derive_is_allowed_to_implement_this_trait()
             where
@@ -157,8 +162,8 @@ macro_rules! impl_for_composite_types {
             {
             }
         }
-        // According to the `Wrapping` docs, "`Wrapping<T>` is guaranteed to
-        // have the same layout and ABI as `T`."
+        // SAFETY: According to the `Wrapping` docs, "`Wrapping<T>` is
+        // guaranteed to have the same layout and ABI as `T`."
         unsafe impl<T: $trait> $trait for Wrapping<T> {
             fn only_derive_is_allowed_to_implement_this_trait()
             where
@@ -167,6 +172,9 @@ macro_rules! impl_for_composite_types {
             }
         }
         // Unit type has an empty representation.
+        //
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe impl $trait for () {
             fn only_derive_is_allowed_to_implement_this_trait()
             where
@@ -175,6 +183,9 @@ macro_rules! impl_for_composite_types {
             }
         }
         // Constant sized array with elements implementing `$trait`.
+        //
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe impl<T: $trait, const N: usize> $trait for [T; N] {
             fn only_derive_is_allowed_to_implement_this_trait()
             where
@@ -189,6 +200,8 @@ macro_rules! impl_for_composite_types {
 macro_rules! impl_for_types {
     ($trait:ident, $($types:ty),* $(,)?) => (
         $(
+            // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+            #[allow(clippy::undocumented_unsafe_blocks)]
             unsafe impl $trait for $types {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
             }
@@ -339,11 +352,9 @@ pub unsafe trait FromBytes {
     where
         Self: Sized,
     {
-        unsafe {
-            // SAFETY: `FromBytes` says all bit patterns (including zeroes) are
-            // legal.
-            mem::zeroed()
-        }
+        // SAFETY: `FromBytes` says all bit patterns (including zeroes) are
+        // legal.
+        unsafe { mem::zeroed() }
     }
 
     /// Creates a `Box<Self>` from zeroed bytes.
@@ -502,6 +513,8 @@ pub unsafe trait AsBytes {
     /// `as_bytes` provides access to the bytes of this value as an immutable
     /// byte slice.
     fn as_bytes(&self) -> &[u8] {
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe {
             // Note that this method does not have a `Self: Sized` bound;
             // `size_of_val` works for unsized values too.
@@ -519,6 +532,8 @@ pub unsafe trait AsBytes {
     where
         Self: FromBytes,
     {
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe {
             // Note that this method does not have a `Self: Sized` bound;
             // `size_of_val` works for unsized values too.
@@ -889,10 +904,10 @@ macro_rules! transmute {
             }
             transmute(e)
         } else {
-            // `core::mem::transmute` ensures that the type of `e` and the type
-            // of this macro invocation expression have the same size. We know
-            // this transmute is safe thanks to the `AsBytes` and `FromBytes`
-            // bounds enforced by the `false` branch.
+            // SAFETY: `core::mem::transmute` ensures that the type of `e` and
+            // the type of this macro invocation expression have the same size.
+            // We know this transmute is safe thanks to the `AsBytes` and
+            // `FromBytes` bounds enforced by the `false` branch.
             //
             // We use `$crate::__real_transmute` because we know it will always
             // be available for crates which are using the 2015 edition of Rust.
@@ -1613,7 +1628,11 @@ where
     /// and no mutable references to the same memory may be constructed during
     /// `'a`.
     unsafe fn deref_helper<'a>(&self) -> &'a T {
-        unsafe { &*self.0.as_ptr().cast::<T>() }
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
+        unsafe {
+            &*self.0.as_ptr().cast::<T>()
+        }
     }
 }
 
@@ -1634,7 +1653,11 @@ where
     /// and no other references - mutable or immutable - to the same memory may
     /// be constructed during `'a`.
     unsafe fn deref_mut_helper<'a>(&mut self) -> &'a mut T {
-        unsafe { &mut *self.0.as_mut_ptr().cast::<T>() }
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
+        unsafe {
+            &mut *self.0.as_mut_ptr().cast::<T>()
+        }
     }
 }
 
@@ -1659,7 +1682,11 @@ where
             debug_assert_eq!(len % elem_size, 0);
             len / elem_size
         };
-        unsafe { slice::from_raw_parts(self.0.as_ptr().cast::<T>(), elems) }
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
+        unsafe {
+            slice::from_raw_parts(self.0.as_ptr().cast::<T>(), elems)
+        }
     }
 }
 
@@ -1685,7 +1712,11 @@ where
             debug_assert_eq!(len % elem_size, 0);
             len / elem_size
         };
-        unsafe { slice::from_raw_parts_mut(self.0.as_mut_ptr().cast::<T>(), elems) }
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
+        unsafe {
+            slice::from_raw_parts_mut(self.0.as_mut_ptr().cast::<T>(), elems)
+        }
     }
 }
 
@@ -2032,24 +2063,35 @@ pub unsafe trait ByteSliceMut: ByteSlice + DerefMut {
     }
 }
 
+// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+#[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a [u8] {
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at(self, mid)
     }
 }
+
+// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+#[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a mut [u8] {
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at_mut(self, mid)
     }
 }
+
+// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+#[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for Ref<'a, [u8]> {
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         Ref::map_split(self, |slice| <[u8]>::split_at(slice, mid))
     }
 }
+
+// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+#[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
@@ -2057,7 +2099,12 @@ unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
     }
 }
 
+// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+#[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSliceMut for &'a mut [u8] {}
+
+// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+#[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSliceMut for RefMut<'a, [u8]> {}
 
 #[cfg(feature = "alloc")]
@@ -2326,7 +2373,7 @@ pub use alloc_support::*;
 mod tests {
     #![allow(clippy::unreadable_literal)]
 
-    use core::ops::Deref;
+    use core::{convert::TryInto, ops::Deref};
 
     use super::*;
 
@@ -2346,8 +2393,7 @@ mod tests {
 
     // Converts a `u64` to bytes using this platform's endianness.
     fn u64_to_bytes(u: u64) -> [u8; 8] {
-        let u: *const u64 = &u;
-        unsafe { ptr::read(u.cast::<[u8; 8]>()) }
+        U64::<NativeEndian>::new(u).as_bytes().try_into().unwrap()
     }
 
     #[test]
