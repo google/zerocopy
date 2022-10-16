@@ -46,10 +46,66 @@
 //!
 //! [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 
-#![deny(missing_docs, clippy::indexing_slicing)]
+#![deny(
+    anonymous_parameters,
+    clippy::all,
+    clippy::alloc_instead_of_core,
+    clippy::arithmetic_side_effects,
+    clippy::as_underscore,
+    clippy::assertions_on_result_states,
+    clippy::as_conversions,
+    clippy::correctness,
+    clippy::dbg_macro,
+    clippy::decimal_literal_representation,
+    clippy::get_unwrap,
+    clippy::indexing_slicing,
+    clippy::obfuscated_if_else,
+    clippy::perf,
+    clippy::print_stdout,
+    clippy::std_instead_of_core,
+    clippy::style,
+    clippy::suspicious,
+    clippy::todo,
+    clippy::undocumented_unsafe_blocks,
+    clippy::unimplemented,
+    clippy::unnested_or_patterns,
+    clippy::unwrap_used,
+    clippy::use_debug,
+    const_err,
+    deprecated_in_future,
+    illegal_floating_point_literal_pattern,
+    late_bound_lifetime_arguments,
+    missing_copy_implementations,
+    missing_debug_implementations,
+    missing_docs,
+    path_statements,
+    patterns_in_fns_without_body,
+    rust_2018_idioms,
+    rustdoc::broken_intra_doc_links,
+    rustdoc::private_intra_doc_links,
+    trivial_numeric_casts,
+    unreachable_pub,
+    unsafe_op_in_unsafe_fn,
+    unused_extern_crates,
+    unused_qualifications,
+    variant_size_differences
+)]
+// In test code, it makes sense to weight more heavily towards concise, readable
+// code over correct or debuggable code.
+#![cfg_attr(test, allow(
+    // In tests, you get line numbers and have access to source code, so panic
+    // messages are less important. You also often unwrap a lot, which would
+    // make expect'ing instead very verbose.
+    clippy::unwrap_used,
+    // In tests, there's no harm to "panic risks" - the worst that can happen is
+    // that your test will fail, and you'll fix it. By contrast, panic risks in
+    // production code introduce the possibly of code panicking unexpectedly "in
+    // the field".
+    clippy::arithmetic_side_effects,
+    clippy::indexing_slicing,
+))]
 #![cfg_attr(not(test), no_std)]
 #![cfg_attr(feature = "simd-nightly", feature(stdsimd))]
-#![recursion_limit = "2048"]
 
 pub mod byteorder;
 
@@ -82,12 +138,14 @@ use {
 // work in this crate. They assume that zerocopy is linked as an extern crate,
 // so they access items from it as `zerocopy::Xxx`. This makes that still work.
 mod zerocopy {
-    pub use crate::*;
+    pub(crate) use crate::*;
 }
 
 // Implements an unsafe trait for a range of container types.
 macro_rules! impl_for_composite_types {
     ($trait:ident) => {
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe impl<T> $trait for PhantomData<T> {
             fn only_derive_is_allowed_to_implement_this_trait()
             where
@@ -95,6 +153,8 @@ macro_rules! impl_for_composite_types {
             {
             }
         }
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe impl<T: $trait> $trait for [T] {
             fn only_derive_is_allowed_to_implement_this_trait()
             where
@@ -102,8 +162,8 @@ macro_rules! impl_for_composite_types {
             {
             }
         }
-        // According to the `Wrapping` docs, "`Wrapping<T>` is guaranteed to
-        // have the same layout and ABI as `T`."
+        // SAFETY: According to the `Wrapping` docs, "`Wrapping<T>` is
+        // guaranteed to have the same layout and ABI as `T`."
         unsafe impl<T: $trait> $trait for Wrapping<T> {
             fn only_derive_is_allowed_to_implement_this_trait()
             where
@@ -112,6 +172,9 @@ macro_rules! impl_for_composite_types {
             }
         }
         // Unit type has an empty representation.
+        //
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe impl $trait for () {
             fn only_derive_is_allowed_to_implement_this_trait()
             where
@@ -120,6 +183,9 @@ macro_rules! impl_for_composite_types {
             }
         }
         // Constant sized array with elements implementing `$trait`.
+        //
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe impl<T: $trait, const N: usize> $trait for [T; N] {
             fn only_derive_is_allowed_to_implement_this_trait()
             where
@@ -134,6 +200,8 @@ macro_rules! impl_for_composite_types {
 macro_rules! impl_for_types {
     ($trait:ident, $($types:ty),* $(,)?) => (
         $(
+            // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+            #[allow(clippy::undocumented_unsafe_blocks)]
             unsafe impl $trait for $types {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
             }
@@ -284,11 +352,9 @@ pub unsafe trait FromBytes {
     where
         Self: Sized,
     {
-        unsafe {
-            // SAFETY: `FromBytes` says all bit patterns (including zeroes) are
-            // legal.
-            mem::zeroed()
-        }
+        // SAFETY: `FromBytes` says all bit patterns (including zeroes) are
+        // legal.
+        unsafe { mem::zeroed() }
     }
 
     /// Creates a `Box<Self>` from zeroed bytes.
@@ -358,17 +424,14 @@ pub unsafe trait FromBytes {
     {
         // TODO(#2): Use `Layout::repeat` when `alloc_layout_extra` is
         // stabilized.
-        //
-        // This will intentionally panic if it overflows.
+        let layout = Layout::from_size_align(
+            mem::size_of::<Self>()
+                .checked_mul(len)
+                .expect("mem::size_of::<Self>() * len overflows `usize`"),
+            mem::align_of::<Self>(),
+        )
+        .expect("total allocation size overflows `isize`");
         unsafe {
-            // SAFETY: `from_size_align_unchecked` is sound because
-            // slice_len_bytes is guaranteed to be properly aligned (we just
-            // multiplied it by `size_of::<T>()`, which is guaranteed to be
-            // aligned).
-            let layout = Layout::from_size_align_unchecked(
-                mem::size_of::<Self>().checked_mul(len).unwrap(),
-                mem::align_of::<Self>(),
-            );
             if layout.size() != 0 {
                 let ptr = alloc::alloc::alloc_zeroed(layout) as *mut Self;
                 if ptr.is_null() {
@@ -450,11 +513,14 @@ pub unsafe trait AsBytes {
     /// `as_bytes` provides access to the bytes of this value as an immutable
     /// byte slice.
     fn as_bytes(&self) -> &[u8] {
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe {
             // Note that this method does not have a `Self: Sized` bound;
             // `size_of_val` works for unsized values too.
             let len = mem::size_of_val(self);
-            slice::from_raw_parts(self as *const Self as *const u8, len)
+            let slf: *const Self = self;
+            slice::from_raw_parts(slf.cast::<u8>(), len)
         }
     }
 
@@ -466,11 +532,14 @@ pub unsafe trait AsBytes {
     where
         Self: FromBytes,
     {
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe {
             // Note that this method does not have a `Self: Sized` bound;
             // `size_of_val` works for unsized values too.
             let len = mem::size_of_val(self);
-            slice::from_raw_parts_mut(self as *mut Self as *mut u8, len)
+            let slf: *mut Self = self;
+            slice::from_raw_parts_mut(slf.cast::<u8>(), len)
         }
     }
 
@@ -718,6 +787,7 @@ mod simd {
 ///
 /// [`get`]: Unalign::get
 /// [`into_inner`]: Unalign::into_inner
+#[allow(missing_debug_implementations)]
 #[derive(FromBytes, Unaligned, Copy)]
 #[repr(C, packed)]
 pub struct Unalign<T>(T);
@@ -834,10 +904,10 @@ macro_rules! transmute {
             }
             transmute(e)
         } else {
-            // `core::mem::transmute` ensures that the type of `e` and the type
-            // of this macro invocation expression have the same size. We know
-            // this transmute is safe thanks to the `AsBytes` and `FromBytes`
-            // bounds enforced by the `false` branch.
+            // SAFETY: `core::mem::transmute` ensures that the type of `e` and
+            // the type of this macro invocation expression have the same size.
+            // We know this transmute is safe thanks to the `AsBytes` and
+            // `FromBytes` bounds enforced by the `false` branch.
             //
             // We use `$crate::__real_transmute` because we know it will always
             // be available for crates which are using the 2015 edition of Rust.
@@ -913,7 +983,7 @@ where
     /// either of these checks fail, it returns `None`.
     #[inline]
     pub fn new(bytes: B) -> Option<LayoutVerified<B, T>> {
-        if bytes.len() != mem::size_of::<T>() || !aligned_to(bytes.deref(), mem::align_of::<T>()) {
+        if bytes.len() != mem::size_of::<T>() || !aligned_to::<T>(bytes.deref()) {
             return None;
         }
         Some(LayoutVerified(bytes, PhantomData))
@@ -928,7 +998,7 @@ where
     /// alignment checks fail, it returns `None`.
     #[inline]
     pub fn new_from_prefix(bytes: B) -> Option<(LayoutVerified<B, T>, B)> {
-        if bytes.len() < mem::size_of::<T>() || !aligned_to(bytes.deref(), mem::align_of::<T>()) {
+        if bytes.len() < mem::size_of::<T>() || !aligned_to::<T>(bytes.deref()) {
             return None;
         }
         let (bytes, suffix) = bytes.split_at(mem::size_of::<T>());
@@ -946,11 +1016,9 @@ where
     #[inline]
     pub fn new_from_suffix(bytes: B) -> Option<(B, LayoutVerified<B, T>)> {
         let bytes_len = bytes.len();
-        if bytes_len < mem::size_of::<T>() {
-            return None;
-        }
-        let (prefix, bytes) = bytes.split_at(bytes_len - mem::size_of::<T>());
-        if !aligned_to(bytes.deref(), mem::align_of::<T>()) {
+        let split_at = bytes_len.checked_sub(mem::size_of::<T>())?;
+        let (prefix, bytes) = bytes.split_at(split_at);
+        if !aligned_to::<T>(bytes.deref()) {
             return None;
         }
         Some((prefix, LayoutVerified(bytes, PhantomData)))
@@ -973,10 +1041,11 @@ where
     /// `new_slice` panics if `T` is a zero-sized type.
     #[inline]
     pub fn new_slice(bytes: B) -> Option<LayoutVerified<B, [T]>> {
-        assert_ne!(mem::size_of::<T>(), 0);
-        if bytes.len() % mem::size_of::<T>() != 0
-            || !aligned_to(bytes.deref(), mem::align_of::<T>())
-        {
+        let remainder = bytes
+            .len()
+            .checked_rem(mem::size_of::<T>())
+            .expect("LayoutVerified::new_slice called on a zero-sized type");
+        if remainder != 0 || !aligned_to::<T>(bytes.deref()) {
             return None;
         }
         Some(LayoutVerified(bytes, PhantomData))
@@ -1239,10 +1308,8 @@ where
     #[inline]
     pub fn new_unaligned_from_suffix(bytes: B) -> Option<(B, LayoutVerified<B, T>)> {
         let bytes_len = bytes.len();
-        if bytes_len < mem::size_of::<T>() {
-            return None;
-        }
-        let (prefix, bytes) = bytes.split_at(bytes_len - mem::size_of::<T>());
+        let split_at = bytes_len.checked_sub(mem::size_of::<T>())?;
+        let (prefix, bytes) = bytes.split_at(split_at);
         Some((prefix, LayoutVerified(bytes, PhantomData)))
     }
 }
@@ -1264,8 +1331,11 @@ where
     /// `new_slice` panics if `T` is a zero-sized type.
     #[inline]
     pub fn new_slice_unaligned(bytes: B) -> Option<LayoutVerified<B, [T]>> {
-        assert_ne!(mem::size_of::<T>(), 0);
-        if bytes.len() % mem::size_of::<T>() != 0 {
+        let remainder = bytes
+            .len()
+            .checked_rem(mem::size_of::<T>())
+            .expect("LayoutVerified::new_slice_unaligned called on a zero-sized type");
+        if remainder != 0 {
             return None;
         }
         Some(LayoutVerified(bytes, PhantomData))
@@ -1558,7 +1628,11 @@ where
     /// and no mutable references to the same memory may be constructed during
     /// `'a`.
     unsafe fn deref_helper<'a>(&self) -> &'a T {
-        &*(self.0.as_ptr() as *const T)
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
+        unsafe {
+            &*self.0.as_ptr().cast::<T>()
+        }
     }
 }
 
@@ -1579,7 +1653,11 @@ where
     /// and no other references - mutable or immutable - to the same memory may
     /// be constructed during `'a`.
     unsafe fn deref_mut_helper<'a>(&mut self) -> &'a mut T {
-        &mut *(self.0.as_mut_ptr() as *mut T)
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
+        unsafe {
+            &mut *self.0.as_mut_ptr().cast::<T>()
+        }
     }
 }
 
@@ -1597,9 +1675,18 @@ where
         let len = self.0.len();
         let elem_size = mem::size_of::<T>();
         debug_assert_ne!(elem_size, 0);
-        debug_assert_eq!(len % elem_size, 0);
-        let elems = len / elem_size;
-        slice::from_raw_parts(self.0.as_ptr() as *const T, elems)
+        // `LayoutVerified<_, [T]>` maintains the invariant that `size_of::<T>()
+        // > 0`. Thus, neither the mod nor division operations here can panic.
+        #[allow(clippy::arithmetic_side_effects)]
+        let elems = {
+            debug_assert_eq!(len % elem_size, 0);
+            len / elem_size
+        };
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
+        unsafe {
+            slice::from_raw_parts(self.0.as_ptr().cast::<T>(), elems)
+        }
     }
 }
 
@@ -1618,15 +1705,34 @@ where
         let len = self.0.len();
         let elem_size = mem::size_of::<T>();
         debug_assert_ne!(elem_size, 0);
-        debug_assert_eq!(len % elem_size, 0);
-        let elems = len / elem_size;
-        slice::from_raw_parts_mut(self.0.as_mut_ptr() as *mut T, elems)
+        // `LayoutVerified<_, [T]>` maintains the invariant that `size_of::<T>()
+        // > 0`. Thus, neither the mod nor division operations here can panic.
+        #[allow(clippy::arithmetic_side_effects)]
+        let elems = {
+            debug_assert_eq!(len % elem_size, 0);
+            len / elem_size
+        };
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
+        unsafe {
+            slice::from_raw_parts_mut(self.0.as_mut_ptr().cast::<T>(), elems)
+        }
     }
 }
 
-#[inline]
-fn aligned_to(bytes: &[u8], align: usize) -> bool {
-    (bytes as *const _ as *const () as usize) % align == 0
+/// Are `bytes` aligned to `mem::align_of::<T>()`?
+#[inline(always)]
+fn aligned_to<T>(bytes: &[u8]) -> bool {
+    // TODO(https://github.com/rust-lang/rust/issues/91126): Use `.to_bits()`
+    // instead of `as usize` once it's stable, and get rid of this `allow`.
+    // Currently, `as usize` is the only way to accomplish this.
+    #[allow(clippy::as_conversions)]
+    let addr = bytes.as_ptr().cast::<()>() as usize;
+    // `mem::align_of::<T>()` is guaranteed to return a non-zero value, which in
+    // turn guarantees that this mod operation will not panic.
+    #[allow(clippy::arithmetic_side_effects)]
+    let remainder = addr % mem::align_of::<T>();
+    remainder == 0
 }
 
 impl<B, T> LayoutVerified<B, T>
@@ -1665,7 +1771,7 @@ where
         // `self.0` is at least `size_of::<T>()` bytes long, and that it is at
         // least as aligned as `align_of::<T>()`. Because `T: FromBytes`, it is
         // sound to interpret these bytes as a `T`.
-        unsafe { ptr::read(self.0.as_ptr() as *const T) }
+        unsafe { ptr::read(self.0.as_ptr().cast::<T>()) }
     }
 }
 
@@ -1682,7 +1788,7 @@ where
         // least as aligned as `align_of::<T>()`. Writing `t` to the buffer will
         // allow all of the bytes of `t` to be accessed as a `[u8]`, but because
         // `T: AsBytes`, we know this is sound.
-        unsafe { ptr::write(self.0.as_mut_ptr() as *mut T, t) }
+        unsafe { ptr::write(self.0.as_mut_ptr().cast::<T>(), t) }
     }
 }
 
@@ -1957,24 +2063,35 @@ pub unsafe trait ByteSliceMut: ByteSlice + DerefMut {
     }
 }
 
+// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+#[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a [u8] {
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at(self, mid)
     }
 }
+
+// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+#[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a mut [u8] {
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at_mut(self, mid)
     }
 }
+
+// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+#[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for Ref<'a, [u8]> {
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         Ref::map_split(self, |slice| <[u8]>::split_at(slice, mid))
     }
 }
+
+// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+#[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
@@ -1982,7 +2099,12 @@ unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
     }
 }
 
+// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+#[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSliceMut for &'a mut [u8] {}
+
+// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+#[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSliceMut for RefMut<'a, [u8]> {}
 
 #[cfg(feature = "alloc")]
@@ -2021,8 +2143,10 @@ mod alloc_support {
         unsafe {
             // This is a potentially overlapping copy.
             let ptr = v.as_mut_ptr();
+            #[allow(clippy::arithmetic_side_effects)]
             ptr.add(position).copy_to(ptr.add(position + additional), v.len() - position);
             ptr.add(position).write_bytes(0, additional);
+            #[allow(clippy::arithmetic_side_effects)]
             v.set_len(v.len() + additional);
         }
     }
@@ -2204,6 +2328,40 @@ mod alloc_support {
             let s: Box<[()]> = <()>::new_box_slice_zeroed(0);
             assert_eq!(s.len(), 0);
         }
+
+        #[test]
+        #[should_panic(expected = "mem::size_of::<Self>() * len overflows `usize`")]
+        fn test_new_box_slice_zeroed_panics_mul_overflow() {
+            let _ = u16::new_box_slice_zeroed(usize::MAX);
+        }
+
+        // This test fails on stable <= 1.64.0, but succeeds on 1.65.0-beta.2
+        // (2022-09-13). In particular, on stable <= 1.64.0,
+        // `new_box_slice_zeroed` attempts to perform the allocation (which of
+        // course fails). `Layout::from_size_align` should be returning an error
+        // due to `isize` overflow, but it doesn't. I (joshlf) haven't
+        // investigated enough to confirm, but my guess is that this was a bug
+        // that was fixed recently.
+        //
+        // Triggering the bug requires calling `FromBytes::new_box_slice_zeroed`
+        // with an allocation which overflows `isize`, and all that happens is
+        // that the program panics due to a failed allocation. Even on 32-bit
+        // platforms, this requires a 2GB allocation. On 64-bit platforms, this
+        // requires a 2^63-byte allocation. In both cases, even a slightly
+        // smaller allocation that didn't trigger this bug would likely
+        // (absolutely certainly in the case of 64-bit platforms) fail to
+        // allocate in exactly the same way regardless.
+        //
+        // Given how minor the impact is, and given that the bug seems fixed in
+        // 1.65.0, I've chosen to just release the code as-is and disable the
+        // test on buggy toolchains. Once our MSRV is at or above 1.65.0, we can
+        // remove this conditional compilation (and this comment) entirely.
+        #[rustversion::since(1.65.0)]
+        #[test]
+        #[should_panic(expected = "total allocation size overflows `isize`: LayoutError")]
+        fn test_new_box_slice_zeroed_panics_isize_overflow() {
+            let _ = u16::new_box_slice_zeroed((isize::MAX as usize / mem::size_of::<u16>()) + 1);
+        }
     }
 }
 
@@ -2215,7 +2373,7 @@ pub use alloc_support::*;
 mod tests {
     #![allow(clippy::unreadable_literal)]
 
-    use core::ops::Deref;
+    use core::{convert::TryInto, ops::Deref};
 
     use super::*;
 
@@ -2235,7 +2393,7 @@ mod tests {
 
     // Converts a `u64` to bytes using this platform's endianness.
     fn u64_to_bytes(u: u64) -> [u8; 8] {
-        unsafe { ptr::read(&u as *const u64 as *const [u8; 8]) }
+        U64::<NativeEndian>::new(u).as_bytes().try_into().unwrap()
     }
 
     #[test]
@@ -2306,7 +2464,7 @@ mod tests {
         let buf = [0];
         let lv = LayoutVerified::<_, u8>::new(&buf[..]).unwrap();
         let buf_ptr = buf.as_ptr();
-        let deref_ptr = lv.deref() as *const u8;
+        let deref_ptr: *const u8 = lv.deref();
         assert_eq!(buf_ptr, deref_ptr);
 
         let buf = [0];
@@ -2320,7 +2478,7 @@ mod tests {
     // between the typed and untyped representations, that reads via `deref` and
     // `read` behave the same, and that writes via `deref_mut` and `write`
     // behave the same.
-    fn test_new_helper<'a>(mut lv: LayoutVerified<&'a mut [u8], u64>) {
+    fn test_new_helper(mut lv: LayoutVerified<&mut [u8], u64>) {
         // assert that the value starts at 0
         assert_eq!(*lv, 0);
         assert_eq!(lv.read(), 0);
@@ -2345,14 +2503,14 @@ mod tests {
     // Verify that values written to a `LayoutVerified` are properly shared
     // between the typed and untyped representations; pass a value with
     // `typed_len` `u64`s backed by an array of `typed_len * 8` bytes.
-    fn test_new_helper_slice<'a>(mut lv: LayoutVerified<&'a mut [u8], [u64]>, typed_len: usize) {
+    fn test_new_helper_slice(mut lv: LayoutVerified<&mut [u8], [u64]>, typed_len: usize) {
         // Assert that the value starts out zeroed.
         assert_eq!(&*lv, vec![0; typed_len].as_slice());
 
         // Check the backing storage is the exact same slice.
         let untyped_len = typed_len * 8;
         assert_eq!(lv.bytes().len(), untyped_len);
-        assert_eq!(lv.bytes().as_ptr(), lv.as_ptr() as *const u8);
+        assert_eq!(lv.bytes().as_ptr(), lv.as_ptr().cast::<u8>());
 
         // Assert that values written to the typed value are reflected in the
         // byte slice.
@@ -2373,7 +2531,7 @@ mod tests {
     // between the typed and untyped representations, that reads via `deref` and
     // `read` behave the same, and that writes via `deref_mut` and `write`
     // behave the same.
-    fn test_new_helper_unaligned<'a>(mut lv: LayoutVerified<&'a mut [u8], [u8; 8]>) {
+    fn test_new_helper_unaligned(mut lv: LayoutVerified<&mut [u8], [u8; 8]>) {
         // assert that the value starts at 0
         assert_eq!(*lv, [0; 8]);
         assert_eq!(lv.read(), [0; 8]);
@@ -2398,7 +2556,7 @@ mod tests {
     // Verify that values written to a `LayoutVerified` are properly shared
     // between the typed and untyped representations; pass a value with `len`
     // `u8`s backed by an array of `len` bytes.
-    fn test_new_helper_slice_unaligned<'a>(mut lv: LayoutVerified<&'a mut [u8], [u8]>, len: usize) {
+    fn test_new_helper_slice_unaligned(mut lv: LayoutVerified<&mut [u8], [u8]>, len: usize) {
         // Assert that the value starts out zeroed.
         assert_eq!(&*lv, vec![0u8; len].as_slice());
 
@@ -2788,7 +2946,7 @@ mod tests {
         // Fail due to arithmetic overflow.
 
         let mut buf = AlignedBuffer::<u64, [u8; 16]>::default();
-        let unreasonable_len = std::usize::MAX / mem::size_of::<u64>() + 1;
+        let unreasonable_len = usize::MAX / mem::size_of::<u64>() + 1;
         assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix(&buf.buf[..], unreasonable_len)
             .is_none());
         assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix_zeroed(
@@ -2832,9 +2990,9 @@ mod tests {
     // of the function under test for the name of the test itself.
     mod test_zst_panics {
         macro_rules! zst_test {
-            ($name:ident($($tt:tt)*)) => {
+            ($name:ident($($tt:tt)*), $constructor_in_panic_msg:tt) => {
                 #[test]
-                #[should_panic = "assertion failed"]
+                #[should_panic = concat!("LayoutVerified::", $constructor_in_panic_msg, " called on a zero-sized type")]
                 fn $name() {
                     let mut buffer = [0u8];
                     let lv = $crate::LayoutVerified::<_, [()]>::$name(&mut buffer[..], $($tt)*);
@@ -2842,18 +3000,18 @@ mod tests {
                 }
             }
         }
-        zst_test!(new_slice());
-        zst_test!(new_slice_zeroed());
-        zst_test!(new_slice_from_prefix(1));
-        zst_test!(new_slice_from_prefix_zeroed(1));
-        zst_test!(new_slice_from_suffix(1));
-        zst_test!(new_slice_from_suffix_zeroed(1));
-        zst_test!(new_slice_unaligned());
-        zst_test!(new_slice_unaligned_zeroed());
-        zst_test!(new_slice_unaligned_from_prefix(1));
-        zst_test!(new_slice_unaligned_from_prefix_zeroed(1));
-        zst_test!(new_slice_unaligned_from_suffix(1));
-        zst_test!(new_slice_unaligned_from_suffix_zeroed(1));
+        zst_test!(new_slice(), "new_slice");
+        zst_test!(new_slice_zeroed(), "new_slice");
+        zst_test!(new_slice_from_prefix(1), "new_slice");
+        zst_test!(new_slice_from_prefix_zeroed(1), "new_slice");
+        zst_test!(new_slice_from_suffix(1), "new_slice");
+        zst_test!(new_slice_from_suffix_zeroed(1), "new_slice");
+        zst_test!(new_slice_unaligned(), "new_slice_unaligned");
+        zst_test!(new_slice_unaligned_zeroed(), "new_slice_unaligned");
+        zst_test!(new_slice_unaligned_from_prefix(1), "new_slice_unaligned");
+        zst_test!(new_slice_unaligned_from_prefix_zeroed(1), "new_slice_unaligned");
+        zst_test!(new_slice_unaligned_from_suffix(1), "new_slice_unaligned");
+        zst_test!(new_slice_unaligned_from_suffix_zeroed(1), "new_slice_unaligned");
     }
 
     #[test]

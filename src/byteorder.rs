@@ -190,6 +190,9 @@ example of how it can be used for parsing UDP packets.
 
         // TODO(#10): Replace this with `#[derive(AsBytes)]` once that derive
         // supports type parameters.
+        //
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe impl<O: ByteOrder> AsBytes for $name<O> {
             fn only_derive_is_allowed_to_implement_this_trait()
             where
@@ -511,8 +514,13 @@ mod tests {
     macro_rules! impl_traits {
         ($name:ident, $native:ident, $bytes:expr, $sign:ident) => {
             impl Native for $native {
+                // For some types, `0 as _` is required (for example, when
+                // `$native` is a floating-point type; `0` is an integer), but
+                // for other types, it's a trivial cast. In all cases, Clippy
+                // thinks it's dangerous.
+                #[allow(trivial_numeric_casts, clippy::as_conversions)]
                 const ZERO: $native = 0 as _;
-                const MAX_VALUE: $native = ::core::$native::MAX;
+                const MAX_VALUE: $native = $native::MAX;
 
                 fn rand() -> $native {
                     rand::random()
@@ -586,9 +594,9 @@ mod tests {
     }
 
     #[cfg(target_endian = "big")]
-    type NonNativeEndian = byteorder::LittleEndian;
+    type NonNativeEndian = LittleEndian;
     #[cfg(target_endian = "little")]
-    type NonNativeEndian = byteorder::BigEndian;
+    type NonNativeEndian = BigEndian;
 
     #[test]
     fn test_zero() {
