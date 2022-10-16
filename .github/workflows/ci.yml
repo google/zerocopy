@@ -145,3 +145,38 @@ jobs:
           cargo install cargo-readme --version 3.2.0
           diff <(./generate-readme.sh) README.md
           exit $?
+
+  check_msrv:
+    runs-on: ubuntu-latest
+    name: Check MSRV
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check MSRV
+        run: |
+          # Allow commands to fail without terminating the script
+          set +e
+
+          vers=$(mktemp)
+          ver_regex='\d+\.\d+.\d+'
+
+          <.github/workflows/ci.yml yq '.jobs.build_test.strategy.matrix.channel[0] // ""' | grep . | tee -a $vers
+          <src/lib.rs grep "//! zerocopy's MSRV is"                           | grep -Po $ver_regex | tee -a $vers
+          <tests/trybuild.rs                 grep' #\[rustversion::stable'    | grep -Po $ver_regex | tee -a $vers
+          <tests/trybuild.rs                 grep' #\[rustversion::all'       | grep -Po $ver_regex | tee -a $vers
+          <zerocopy-derive/tests/trybuild.rs grep '#\[rustversion::stable'    | grep -Po $ver_regex | tee -a $vers
+          <zerocopy-derive/tests/trybuild.rs grep '#\[rustversion::all'       | grep -Po $ver_regex | tee -a $vers
+
+          number_of_uniq_vers=$(<$vers uniq | wc -l)
+
+          if (( $number_of_uniq_vers == 0 )); then
+            echo "No MSRV found in checked places."       | tee -a $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
+          if (( $number_of_uniq_vers == 1 )); then
+            echo "Same MSRV found in all checked places." | tee -a $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+
+          echo "Different MSRVs found in checked places." | tee -a $GITHUB_STEP_SUMMARY
+          exit 1
