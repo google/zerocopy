@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#![deny(clippy::all)]
 #![recursion_limit = "128"]
 
 mod ext;
@@ -616,12 +617,12 @@ mod tests {
         }
 
         fn elements_are_sorted_and_deduped<T: Clone + Ord>(lists: &[&[T]]) -> bool {
-            lists.iter().all(|list| is_sorted_and_deduped(*list))
+            lists.iter().all(|list| is_sorted_and_deduped(list))
         }
 
         fn config_is_sorted<T: KindRepr + Clone>(config: &Config<T>) -> bool {
-            elements_are_sorted_and_deduped(&config.allowed_combinations)
-                && elements_are_sorted_and_deduped(&config.disallowed_but_legal_combinations)
+            elements_are_sorted_and_deduped(config.allowed_combinations)
+                && elements_are_sorted_and_deduped(config.disallowed_but_legal_combinations)
         }
 
         assert!(config_is_sorted(&STRUCT_UNION_UNALIGNED_CFG));

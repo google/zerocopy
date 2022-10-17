@@ -387,8 +387,10 @@ pub unsafe trait FromBytes {
             return Box::new(Self::new_zeroed());
         }
 
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe {
-            let ptr = alloc::alloc::alloc_zeroed(layout) as *mut Self;
+            let ptr = alloc::alloc::alloc_zeroed(layout).cast::<Self>();
             if ptr.is_null() {
                 alloc::alloc::handle_alloc_error(layout);
             }
@@ -431,9 +433,12 @@ pub unsafe trait FromBytes {
             mem::align_of::<Self>(),
         )
         .expect("total allocation size overflows `isize`");
+
+        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe {
             if layout.size() != 0 {
-                let ptr = alloc::alloc::alloc_zeroed(layout) as *mut Self;
+                let ptr = alloc::alloc::alloc_zeroed(layout).cast::<Self>();
                 if ptr.is_null() {
                     alloc::alloc::handle_alloc_error(layout);
                 }
@@ -2153,6 +2158,8 @@ mod alloc_support {
 
     #[cfg(test)]
     mod tests {
+        use core::convert::TryFrom as _;
+
         use super::*;
 
         #[test]
@@ -2360,7 +2367,8 @@ mod alloc_support {
         #[test]
         #[should_panic(expected = "total allocation size overflows `isize`: LayoutError")]
         fn test_new_box_slice_zeroed_panics_isize_overflow() {
-            let _ = u16::new_box_slice_zeroed((isize::MAX as usize / mem::size_of::<u16>()) + 1);
+            let max = usize::try_from(isize::MAX).unwrap();
+            let _ = u16::new_box_slice_zeroed((max / mem::size_of::<u16>()) + 1);
         }
     }
 }
