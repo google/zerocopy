@@ -41,7 +41,7 @@ jobs:
           #
           # [1]
           # https://github.com/actions/runner/issues/409#issuecomment-752775072
-          components: ${{ contains(matrix.channel, 'nightly') && 'miri' || '' }}
+          components: clippy ${{ contains(matrix.channel, 'nightly') && ', miri' || '' }}
 
     # The features string contains commas which cannot be part of the cache
     # key for the Rust Cache action. Instead, we hash the features
@@ -108,6 +108,9 @@ jobs:
       #
       # TODO(#22): Re-enable testing on wasm32-wasi once it works.
       if: ${{ contains(matrix.channel, 'nightly') && matrix.target != 'wasm32-wasi' }}
+
+    - name: Clippy check
+      run: cargo +${{ matrix.channel }} clippy --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
 
   check_fmt:
     runs-on: ubuntu-latest
