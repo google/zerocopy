@@ -112,6 +112,13 @@ jobs:
     - name: Clippy check
       run: cargo +${{ matrix.channel }} clippy --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
 
+    - name: Clippy check zerocopy-derive
+      run: cargo +${{ matrix.channel }} clippy --manifest-path ./zerocopy-derive/Cargo.toml --target ${{ matrix.target }} --verbose
+      # Don't bother to check `zerocopy-derive` multiple times with clippy;
+      # that's what would happen if we ran this step once for each set of
+      # `zerocopy` features.
+      if: ${{ matrix.features == '' }}
+
   check_fmt:
     runs-on: ubuntu-latest
     name: Check Rust formatting
