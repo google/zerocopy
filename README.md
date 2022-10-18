@@ -41,8 +41,12 @@ packed SIMD vectors][simd-layout].
 which are only available on nightly. Since these types are unstable, support
 for any type may be removed at any point in the future.
 
+## Minimum Supported Rust Version (MSRV)
+
+zerocopy's MSRV is 1.61.0.
+
 [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 
-## Dislcaimer
+## Disclaimer
 
 Disclaimer: Zerocopy is not an officially supported Google product.

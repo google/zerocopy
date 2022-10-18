@@ -44,6 +44,10 @@
 //! which are only available on nightly. Since these types are unstable, support
 //! for any type may be removed at any point in the future.
 //!
+//! # Minimum Supported Rust Version (MSRV)
+//!
+//! zerocopy's MSRV is 1.61.0.
+//!
 //! [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 
 #![deny(
@@ -808,7 +812,7 @@ impl<T: Copy> Clone for Unalign<T> {
 
 impl<T> Unalign<T> {
     /// Constructs a new `Unalign`.
-    pub fn new(val: T) -> Unalign<T> {
+    pub const fn new(val: T) -> Unalign<T> {
         Unalign(val)
     }
 
@@ -832,7 +836,7 @@ impl<T> Unalign<T> {
     /// [`read_unaligned`].
     ///
     /// [`read_unaligned`]: core::ptr::read_unaligned
-    pub fn get_ptr(&self) -> *const T {
+    pub const fn get_ptr(&self) -> *const T {
         ptr::addr_of!(self.0)
     }
 
@@ -850,6 +854,7 @@ impl<T> Unalign<T> {
     /// [`read_unaligned`].
     ///
     /// [`read_unaligned`]: core::ptr::read_unaligned
+    // TODO(https://github.com/rust-lang/rust/issues/57349): Make this `const`.
     pub fn get_mut_ptr(&mut self) -> *mut T {
         ptr::addr_of_mut!(self.0)
     }
@@ -857,6 +862,7 @@ impl<T> Unalign<T> {
 
 impl<T: Copy> Unalign<T> {
     /// Gets a copy of the inner `T`.
+    // TODO(https://github.com/rust-lang/rust/issues/57349): Make this `const`.
     pub fn get(&self) -> T {
         let Unalign(val) = *self;
         val
@@ -904,7 +910,7 @@ macro_rules! transmute {
             // This branch, though never taken, ensures that the type of `e` is
             // `AsBytes` and that the type of this macro invocation expression
             // is `FromBytes`.
-            fn transmute<T: $crate::AsBytes, U: $crate::FromBytes>(_t: T) -> U {
+            const fn transmute<T: $crate::AsBytes, U: $crate::FromBytes>(_t: T) -> U {
                 unreachable!()
             }
             transmute(e)
@@ -930,7 +936,7 @@ macro_rules! transmute {
 /// be reinterpreted as another type.
 ///
 /// `LayoutVerified` is a byte slice reference (`&[u8]`, `&mut [u8]`,
-/// `Ref<[u8]>`, `RefMut<[u8]>`, etc) with the invaraint that the slice's length
+/// `Ref<[u8]>`, `RefMut<[u8]>`, etc) with the invariant that the slice's length
 /// and alignment are each greater than or equal to the length and alignment of
 /// `T`. Using this invariant, it implements `Deref` for `T` so long as `T:
 /// FromBytes` and `DerefMut` so long as `T: FromBytes + AsBytes`.
@@ -2462,6 +2468,12 @@ mod tests {
             }
         }
         let _: () = transmute!(PanicOnDrop(()));
+
+        // Test that `transmute!` is legal in a const context.
+        const ARRAY_OF_U8S: [u8; 8] = [0u8, 1, 2, 3, 4, 5, 6, 7];
+        const ARRAY_OF_ARRAYS: [[u8; 2]; 4] = [[0, 1], [2, 3], [4, 5], [6, 7]];
+        const X: [[u8; 2]; 4] = transmute!(ARRAY_OF_U8S);
+        assert_eq!(X, ARRAY_OF_ARRAYS);
     }
 
     #[test]
@@ -2590,7 +2602,7 @@ mod tests {
     #[test]
     fn test_new_aligned_sized() {
         // Test that a properly-aligned, properly-sized buffer works for new,
-        // new_from_preifx, and new_from_suffix, and that new_from_prefix and
+        // new_from_prefix, and new_from_suffix, and that new_from_prefix and
         // new_from_suffix return empty slices. Test that a properly-aligned
         // buffer whose length is a multiple of the element size works for
         // new_slice. Test that xxx_zeroed behaves the same, and zeroes the
@@ -2900,7 +2912,7 @@ mod tests {
             LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_zeroed(&mut buf.buf[..]).is_none()
         );
 
-        // Fail beacuse the buffer is too short.
+        // Fail because the buffer is too short.
         let mut buf = AlignedBuffer::<u64, [u8; 12]>::default();
         // `buf.buf` has length 12, but the element size is 8 (and we're
         // expecting two of them).

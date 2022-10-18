@@ -1,4 +1,4 @@
-// Copyright 2022 The Fuchsia Authors. All rights reserved.
+// Copyright 2019 The Fuchsia Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -14,12 +14,13 @@
 //   contains `.err` and `.out` files for stable
 // - `tests/ui-msrv` - Contains symlinks to the `.rs` files in `tests/ui`, and
 //   contains `.err` and `.out` files for MSRV
+
 #[rustversion::any(nightly, beta)]
-const SOURCE_FILES_GLOB: &str = "tests/ui/**/*.rs";
-#[rustversion::all(stable, not(stable(1.56.1)))]
-const SOURCE_FILES_GLOB: &str = "tests/ui-stable/**/*.rs";
-#[rustversion::stable(1.56.1)]
-const SOURCE_FILES_GLOB: &str = "tests/ui-msrv/**/*.rs";
+const SOURCE_FILES_GLOB: &str = "tests/ui/*.rs";
+#[rustversion::all(stable, not(stable(1.61.0)))]
+const SOURCE_FILES_GLOB: &str = "tests/ui-stable/*.rs";
+#[rustversion::stable(1.61.0)]
+const SOURCE_FILES_GLOB: &str = "tests/ui-msrv/*.rs";
 
 #[test]
 fn ui() {
