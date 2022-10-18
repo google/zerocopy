@@ -43,6 +43,6 @@ for any type may be removed at any point in the future.
 
 [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 
-## Dislcaimer
+## Disclaimer
 
 Disclaimer: Zerocopy is not an officially supported Google product.
