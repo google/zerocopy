@@ -9,12 +9,12 @@ locations.
 ## CI and toolchain versions
 
 In CI (`.github/workflows/ci.yml`), we pin to specific versions or dates of the
-stable and nightly toolchains. The reason is twofold: First, `zerocopy-derive`'s
-UI tests (see `zerocopy-derive/tests/trybuild.rs`) depend on the format of
-rustc's error messages, and that format can change between toolchain versions
-(we also maintain multiple copies of our UI tests - one for each toolchain
-version pinned in CI - for this reason). Second, not all nightlies have a
-working Miri, so we need to pin to one that does (see
+stable and nightly toolchains. The reason is twofold: First, our UI tests (see
+`tests/trybuild.rs` and `zerocopy-derive/tests/trybuild.rs`) depend on the
+format of rustc's error messages, and that format can change between toolchain
+versions (we also maintain multiple copies of our UI tests - one for each
+toolchain version pinned in CI - for this reason). Second, not all nightlies
+have a working Miri, so we need to pin to one that does (see
 https://rust-lang.github.io/rustup-components-history/).
 
 Updating the versions pinned in CI may cause the UI tests to break. In order to
