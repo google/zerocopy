@@ -30,7 +30,7 @@ cargo readme | sed 's/\[\(`[^`]*`\)]/\1/g' > $BODY
 
 cat > $DISCLAIMER_FOOTER <<EOF
 
-## Dislcaimer
+## Disclaimer
 
 Disclaimer: Zerocopy is not an officially supported Google product.
 EOF
