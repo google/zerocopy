@@ -930,7 +930,7 @@ macro_rules! transmute {
 /// be reinterpreted as another type.
 ///
 /// `LayoutVerified` is a byte slice reference (`&[u8]`, `&mut [u8]`,
-/// `Ref<[u8]>`, `RefMut<[u8]>`, etc) with the invaraint that the slice's length
+/// `Ref<[u8]>`, `RefMut<[u8]>`, etc) with the invariant that the slice's length
 /// and alignment are each greater than or equal to the length and alignment of
 /// `T`. Using this invariant, it implements `Deref` for `T` so long as `T:
 /// FromBytes` and `DerefMut` so long as `T: FromBytes + AsBytes`.
@@ -2590,7 +2590,7 @@ mod tests {
     #[test]
     fn test_new_aligned_sized() {
         // Test that a properly-aligned, properly-sized buffer works for new,
-        // new_from_preifx, and new_from_suffix, and that new_from_prefix and
+        // new_from_prefix, and new_from_suffix, and that new_from_prefix and
         // new_from_suffix return empty slices. Test that a properly-aligned
         // buffer whose length is a multiple of the element size works for
         // new_slice. Test that xxx_zeroed behaves the same, and zeroes the
@@ -2900,7 +2900,7 @@ mod tests {
             LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_zeroed(&mut buf.buf[..]).is_none()
         );
 
-        // Fail beacuse the buffer is too short.
+        // Fail because the buffer is too short.
         let mut buf = AlignedBuffer::<u64, [u8; 12]>::default();
         // `buf.buf` has length 12, but the element size is 8 (and we're
         // expecting two of them).
