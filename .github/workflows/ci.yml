@@ -17,6 +17,7 @@ jobs:
         channel: [ "1.61.0", "1.64.0", nightly-2022-09-26 ]
         target: [ "i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "arm-unknown-linux-gnueabi", "aarch64-unknown-linux-gnu", "powerpc-unknown-linux-gnu", "powerpc64-unknown-linux-gnu", "wasm32-wasi" ]
         features: [ "" , "alloc,simd", "alloc,simd,simd-nightly" ]
+        manifest-path: [ "Cargo.toml", "zerocopy-derive/Cargo.toml" ]
         exclude:
           # Exclude any combination which uses a non-nightly toolchain but
           # enables nightly features.
@@ -24,8 +25,14 @@ jobs:
             features: "alloc,simd,simd-nightly"
           - channel: "1.64.0"
             features: "alloc,simd,simd-nightly"
+          # Exclude any combination for the zerocopy-derive crate which
+          # uses zerocopy features.
+          - manifest-path: "zerocopy-derive/Cargo.toml"
+            features: "alloc,simd"
+          - manifest-path: "zerocopy-derive/Cargo.toml"
+            features: "alloc,simd,simd-nightly"
 
-    name: Build & Test (${{ matrix.channel }} for ${{ matrix.target }}, features set to "${{ matrix.features }}")
+    name: Build & Test (manifest-path:${{ matrix.manifest-path }}, channel:${{ matrix.channel }}, target:${{ matrix.target }}, features:${{ matrix.features }})
 
     steps:
     - uses: actions/checkout@v3
@@ -56,24 +63,10 @@ jobs:
         key: "${{ matrix.channel }}-${{ matrix.target }}-${{ env.FEATURES_HASH }}-${{ hashFiles('**/Cargo.lock') }}"
 
     - name: Check
-      run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
-
-    - name: Check zerocopy-derive
-      run: cargo +${{ matrix.channel }} check --manifest-path ./zerocopy-derive/Cargo.toml --target ${{ matrix.target }} --verbose
-      # Don't bother to check `zerocopy-derive` multiple times; that's what
-      # would happen if we ran this step once for each set of `zerocopy`
-      # features.
-      if: ${{ matrix.features == '' }}
+      run: cargo +${{ matrix.channel }} check --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
 
     - name: Build
-      run: cargo +${{ matrix.channel }} build --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
-
-    - name: Build zerocopy-derive
-      run: cargo +${{ matrix.channel }} build --manifest-path ./zerocopy-derive/Cargo.toml --target ${{ matrix.target }} --verbose
-      # Don't bother to build `zerocopy-derive` multiple times; that's what
-      # would happen if we ran this step once for each set of `zerocopy`
-      # features.
-      if: ${{ matrix.features == '' }}
+      run: cargo +${{ matrix.channel }} build --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
 
     # When building tests for the i686 target, we need certain libraries which
     # are not installed by default; `gcc-multilib` includes these libraries.
@@ -82,27 +75,18 @@ jobs:
       if: ${{ contains(matrix.target, 'i686') }}
 
     - name: Run tests
-      run: ${{ contains(matrix.channel, 'nightly') && 'RUSTFLAGS="-Z randomize-layout"' || '' }} cargo +${{ matrix.channel }} test --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
+      run: ${{ contains(matrix.channel, 'nightly') && 'RUSTFLAGS="-Z randomize-layout"' || '' }} cargo +${{ matrix.channel }} test --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
       # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
       # x86_64, so we can't run tests for any non-x86 target.
-      if: ${{ contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686') }}
-
-    - name: Run zerocopy-derive tests
-      run: cargo +${{ matrix.channel }} test --manifest-path ./zerocopy-derive/Cargo.toml --target ${{ matrix.target }} --verbose
-      # Don't bother to test `zerocopy-derive` multiple times; that's what would
-      # happen if we ran this step once for each set of `zerocopy` features.
-      # Also, only run tests when targetting x86 (32- or 64-bit) - we're
-      # executing on x86_64, so we can't run tests for any non-x86 target.
       #
       # TODO(https://github.com/dtolnay/trybuild/issues/184#issuecomment-1269097742):
       # Run compile tests when building for other targets.
-      if: ${{ matrix.features == '' && (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) }}
+      if: ${{ contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686') }}
 
     - name: Run tests under Miri
       # Skip the `ui` test since it invokes the compiler, which we can't do from
       # Miri (and wouldn't want to do anyway).
-      #
-      run:  ${{ contains(matrix.channel, 'nightly') && 'RUSTFLAGS="-Z randomize-layout"' || '' }} cargo +${{ matrix.channel }} miri test --target ${{ matrix.target }} --features "${{ matrix.features }}" -- --skip ui
+      run:  ${{ contains(matrix.channel, 'nightly') && 'RUSTFLAGS="-Z randomize-layout"' || '' }} cargo +${{ matrix.channel }} miri test --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" -- --skip ui
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
       #
@@ -110,14 +94,7 @@ jobs:
       if: ${{ contains(matrix.channel, 'nightly') && matrix.target != 'wasm32-wasi' }}
 
     - name: Clippy check
-      run: cargo +${{ matrix.channel }} clippy --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
-
-    - name: Clippy check zerocopy-derive
-      run: cargo +${{ matrix.channel }} clippy --manifest-path ./zerocopy-derive/Cargo.toml --target ${{ matrix.target }} --verbose
-      # Don't bother to check `zerocopy-derive` multiple times with clippy;
-      # that's what would happen if we ran this step once for each set of
-      # `zerocopy` features.
-      if: ${{ matrix.features == '' }}
+      run: cargo +${{ matrix.channel }} clippy --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
 
   check_fmt:
     runs-on: ubuntu-latest
