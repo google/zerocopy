@@ -145,3 +145,28 @@ jobs:
           cargo install cargo-readme --version 3.2.0
           diff <(./generate-readme.sh) README.md
           exit $?
+
+  check_msrv:
+    runs-on: ubuntu-latest
+    name: Check MSRV
+    steps:
+      - uses: actions/checkout@v3
+      # Make sure that the MSRV documented in our crate documentation
+      # is the same one that we test for in CI.
+      - name: Check MSRV
+        run: |
+          set -e
+
+          path_ci=.github/workflows/ci.yml
+          ver_ci=$(<$path_ci yq '.jobs.build_test.strategy.matrix.channel[0] // ""' | grep .)
+
+          path_lib=src/lib.rs
+          ver_lib=$(<$path_lib grep "//! zerocopy's MSRV is" | grep -Po '\d+\.\d+.\d+')
+
+          if [[ "$ver_ci" == "$ver_lib" ]]; then
+            echo "Same MSRV found in '$path_ci' ($ver_ci) and '$path_lib' ($ver_lib)." | tee -a $GITHUB_STEP_SUMMARY
+            exit 0
+          else
+            echo "Different MSRVs found in '$path_ci' ($ver_ci) and '$path_lib' ($ver_lib)." | tee -a $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
