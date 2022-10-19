@@ -46,7 +46,7 @@
 //!
 //! # Minimum Supported Rust Version (MSRV)
 //!
-//! zerocopy's MSRV is 1.61.0.
+//! zerocopy's MSRV is 1.61.1.
 //!
 //! [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 
