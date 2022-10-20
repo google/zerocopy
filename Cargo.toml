@@ -12,6 +12,7 @@ authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Utilities for zero-copy parsing and serialization"
 license-file = "LICENSE"
 repository = "https://github.com/google/zerocopy"
+rust-version = "1.61.0"
 
 exclude = [".*"]
 
