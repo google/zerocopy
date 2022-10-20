@@ -128,22 +128,31 @@ jobs:
     name: Check MSRV
     steps:
       - uses: actions/checkout@v3
-      # Make sure that the MSRV documented in our crate documentation
-      # is the same one that we test for in CI.
+      # Make sure that the MSRV in zerocopy's and zerocopy-derive's `Cargo.toml`
+      # files are the same and are the same as the one we test for in CI.
       - name: Check MSRV
         run: |
           set -e
 
+          function msrv {
+            cargo metadata --manifest-path $1 --format-version 1 | jq -r '.packages[] | select(.name == "zerocopy").rust_version'
+          }
+
           path_ci=.github/workflows/ci.yml
           ver_ci=$(<$path_ci yq '.jobs.build_test.strategy.matrix.toolchain[0] // ""' | grep .)
 
-          path_lib=src/lib.rs
-          ver_lib=$(<$path_lib grep "//! zerocopy's MSRV is" | grep -Po '\d+\.\d+.\d+')
+          path_zerocopy=Cargo.toml
+          ver_zerocopy=$(msrv $path_zerocopy)
 
-          if [[ "$ver_ci" == "$ver_lib" ]]; then
-            echo "Same MSRV found in '$path_ci' ($ver_ci) and '$path_lib' ($ver_lib)." | tee -a $GITHUB_STEP_SUMMARY
+          path_zerocopy_derive=zerocopy-derive/Cargo.toml
+          ver_zerocopy_derive=$(msrv $path_zerocopy_derive)
+
+          if [[ "$ver_ci" == "$ver_zerocopy" && "$ver_ci" == "$ver_zerocopy_derive" ]]; then
+            echo "Same MSRV ($ver_ci) found in '$path_ci', '$path_zerocopy', and '$path_zerocopy_derve'." \
+              | tee -a $GITHUB_STEP_SUMMARY
             exit 0
           else
-            echo "Different MSRVs found in '$path_ci' ($ver_ci) and '$path_lib' ($ver_lib)." | tee -a $GITHUB_STEP_SUMMARY >&2
+            echo "Different MSRVs found in '$path_ci' ($ver_ci), '$path_zerocopy' ($ver_zerocopy), and '$path_zerocopy_derve' ($ver_zerocopy_derive)." \
+              | tee -a $GITHUB_STEP_SUMMARY >&2
             exit 1
           fi
