@@ -46,6 +46,19 @@
 //!
 //! [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 
+// Sometimes we want to use lints which were added after our MSRV.
+// `unknown_lints` is `warn` by default and we deny warnings in CI, so without
+// this attribute, any unknown lint would cause a CI failure when testing with
+// our MSRV.
+//
+// TODO(https://github.com/rust-lang/rust/issues/54726): Only allow
+// `unknown_lints` when we're compiling with the MSRV toolchain. This will
+// detect a typo'd lint name, which will go unnoticed today since it has no
+// effect and will cause no warning or error. Once that issue is resolved, we
+// can use an attribute like:
+//
+//   #![rustversion::attr(stable(<MSRV>), allow(unknown_lints))]
+#![allow(unknown_lints)]
 #![deny(
     anonymous_parameters,
     clippy::all,
@@ -2160,8 +2173,6 @@ mod alloc_support {
 
     #[cfg(test)]
     mod tests {
-        use core::convert::TryFrom as _;
-
         use super::*;
 
         #[test]
@@ -2369,6 +2380,12 @@ mod alloc_support {
         #[test]
         #[should_panic(expected = "total allocation size overflows `isize`: LayoutError")]
         fn test_new_box_slice_zeroed_panics_isize_overflow() {
+            // TODO: Move this to the top of the module once this test is
+            // compiled unconditionally. Right now, it causes an unused import
+            // warning (which in CI becomes an error) on versions prior to
+            // 1.65.0.
+            use core::convert::TryFrom as _;
+
             let max = usize::try_from(isize::MAX).unwrap();
             let _ = u16::new_box_slice_zeroed((max / mem::size_of::<u16>()) + 1);
         }
