@@ -6,6 +6,7 @@ on:
 env:
   CARGO_TERM_COLOR: always
   RUSTFLAGS: -Dwarnings
+  RUSTDOCFLAGS: -Dwarnings
   # `ZC_NIGHTLY_XXX` are flags that we add to `XXX` only on the nightly
   # toolchain.
   ZC_NIGHTLY_RUSTFLAGS: -Zrandomize-layout
@@ -154,6 +155,19 @@ jobs:
 
     - name: Clippy check
       run: cargo +${{ env.ZC_TOOLCHAIN }} clippy --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
+
+  check_docs:
+    runs-on: ubuntu-latest
+    name: Check docs
+    steps:
+      - uses: actions/checkout@v3
+        # TODO(#85): Would this job benefit from `Swatinem/rust-cache` or
+        # similar?
+      - name: Check docs
+        run: |
+          set -e
+          cargo doc --all-features
+          cargo doc --all-features --manifest-path zerocopy-derive/Cargo.toml
 
   check_fmt:
     runs-on: ubuntu-latest
