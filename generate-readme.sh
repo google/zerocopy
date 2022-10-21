@@ -10,7 +10,7 @@ COPYRIGHT_HEADER=$(mktemp)
 BODY=$(mktemp)
 DISCLAIMER_FOOTER=$(mktemp)
 
-cat > $COPYRIGHT_HEADER <<EOF
+cat > $COPYRIGHT_HEADER <<'EOF'
 <!-- Copyright 2022 The Fuchsia Authors. All rights reserved.
 Use of this source code is governed by a BSD-style license that can be
 found in the LICENSE file.
@@ -32,7 +32,7 @@ EOF
 # characters to convert them to non-link code snippets.
 cargo readme | sed 's/\[\(`[^`]*`\)]/\1/g' > $BODY
 
-cat > $DISCLAIMER_FOOTER <<EOF
+cat > $DISCLAIMER_FOOTER <<'EOF'
 
 ## Dislcaimer
 
