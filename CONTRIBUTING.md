@@ -7,6 +7,9 @@ found in the LICENSE file. -->
 We'd love to accept your patches and contributions to zerocopy. There are just a
 few small guidelines you need to follow.
 
+Once you've read the rest of this doc, check out our [good-first-issue 
+label][good-first-issue] for some good issues you can use to get your toes wet!
+
 ## Contributor License Agreement
 
 Contributions to this project must be accompanied by a Contributor License
@@ -109,7 +112,7 @@ guidelines on how to test code in zerocopy:
    any potential [undefined behavior][undefined_behavior] so that Miri can catch
    it.
 1. If there's some user code that should be impossible to compile, add a
-   [compile-test][compile_test] to ensure that it's properly rejected.
+   [trybuild test][trybuild] to ensure that it's properly rejected.
 
 ### Source Control Best Practices
 
@@ -192,16 +195,17 @@ Commit messages should never contain references to any of:
 This project follows [Google's Open Source Community
 Guidelines][google_open_source_guidelines].
 
-[magic_number]: https://en.wikipedia.org/wiki/Magic_number_(programming)
-[miri]: https://github.com/rust-lang/miri
-[cargo_example]: http://xion.io/post/code/rust-examples.html
-[commit_guidelines]: https://www.git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project#_commit_guidelines
-[compile_test]: https://crates.io/crates/compiletest_rs
-[flutter_philosophy]: https://github.com/flutter/flutter/wiki/Style-guide-for-Flutter-repo#philosophy
-[change_detector_tests]: https://testing.googleblog.com/2015/01/testing-on-toilet-change-detector-tests.html
-[determinism]: https://fuchsia.dev/fuchsia-src/contribute/testing/best-practices#write_reproducible_deterministic_tests
-[undefined_behavior]: https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html
 [about_pull_requests]: https://help.github.com/articles/about-pull-requests/
 [beams_git_commit]: https://chris.beams.io/posts/git-commit/
+[cargo_example]: http://xion.io/post/code/rust-examples.html
+[change_detector_tests]: https://testing.googleblog.com/2015/01/testing-on-toilet-change-detector-tests.html
 [chris_beams]: https://chris.beams.io/
+[commit_guidelines]: https://www.git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project#_commit_guidelines
+[determinism]: https://fuchsia.dev/fuchsia-src/contribute/testing/best-practices#write_reproducible_deterministic_tests
+[flutter_philosophy]: https://github.com/flutter/flutter/wiki/Style-guide-for-Flutter-repo#philosophy
+[good-first-issue]: https://github.com/google/zerocopy/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
 [google_open_source_guidelines]: https://opensource.google/conduct/
+[magic_number]: https://en.wikipedia.org/wiki/Magic_number_(programming)
+[miri]: https://github.com/rust-lang/miri
+[trybuild]: https://crates.io/crates/trybuild
+[undefined_behavior]: https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html
