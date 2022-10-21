@@ -106,8 +106,9 @@ jobs:
         run: |
           set -e
           cargo fmt --check
-          cargo fmt --check --manifest-path ./zerocopy-derive/Cargo.toml
-          rustfmt --check ./zerocopy-derive/tests/ui/*.rs
+          cargo fmt --check --manifest-path zerocopy-derive/Cargo.toml
+          rustfmt --check tests/ui/*.rs
+          rustfmt --check zerocopy-derive/tests/ui/*.rs
 
   check_readme:
     runs-on: ubuntu-latest
