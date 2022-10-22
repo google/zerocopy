@@ -1,0 +1,8 @@
+error: literal out of range for `u8`
+   --> tests/ui-msrv/read_from_literal_out_of_range.rs:271:29
+    |
+271 |     let _ = Foo::read_from([256].as_slice()).unwrap();
+    |                             ^^^
+    |
+    = note: `#[deny(overflowing_literals)]` on by default
+    = note: the literal `256` does not fit into the type `u8` whose range is `0..=255`

@@ -1,0 +1,16 @@
+error[E0277]: the trait bound `u8: Neg` is not satisfied
+   --> tests/ui-stable/read_from_u8_neg.rs:271:29
+    |
+271 |     let _ = Foo::read_from([-1].as_slice()).unwrap();
+    |                             ^^ the trait `Neg` is not implemented for `u8`
+    |
+    = help: the following other types implement trait `Neg`:
+              &f32
+              &f64
+              &i128
+              &i16
+              &i32
+              &i64
+              &i8
+              &isize
+            and $N others

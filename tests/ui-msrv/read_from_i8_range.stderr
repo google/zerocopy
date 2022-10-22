@@ -1,0 +1,14 @@
+error[E0277]: the trait bound `u8: Neg` is not satisfied
+   --> tests/ui-msrv/read_from_i8_range.rs:271:28
+    |
+271 |     let _ = Foo::read_from([-1].as_slice()).unwrap();
+    |             -------------- ^^^^^^^^^^^^^^^ the trait `Neg` is not implemented for `u8`
+    |             |
+    |             required by a bound introduced by this call
+    |
+    = help: the following implementations were found:
+              <&f32 as Neg>
+              <&f64 as Neg>
+              <&i128 as Neg>
+              <&i16 as Neg>
+            and $N others
