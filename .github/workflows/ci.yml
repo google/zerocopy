@@ -122,7 +122,7 @@ jobs:
         key: "${{ env.ZC_TOOLCHAIN }}-${{ matrix.target }}-${{ env.FEATURES_HASH }}-${{ hashFiles('**/Cargo.lock') }}"
 
     - name: Check
-      run: cargo +${{ env.ZC_TOOLCHAIN }} check --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
+      run: cargo +${{ env.ZC_TOOLCHAIN }} check --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --all-targets --verbose
 
     - name: Build
       run: cargo +${{ env.ZC_TOOLCHAIN }} build --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
