@@ -50,14 +50,6 @@
 // `unknown_lints` is `warn` by default and we deny warnings in CI, so without
 // this attribute, any unknown lint would cause a CI failure when testing with
 // our MSRV.
-//
-// TODO(https://github.com/rust-lang/rust/issues/54726): Only allow
-// `unknown_lints` when we're compiling with the MSRV toolchain. This will
-// detect a typo'd lint name, which will go unnoticed today since it has no
-// effect and will cause no warning or error. Once that issue is resolved, we
-// can use an attribute like:
-//
-//   #![rustversion::attr(stable(<MSRV>), allow(unknown_lints))]
 #![allow(unknown_lints)]
 #![deny(renamed_and_removed_lints)]
 #![deny(
