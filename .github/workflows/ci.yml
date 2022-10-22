@@ -87,7 +87,7 @@ jobs:
     - name: Run tests under Miri
       # Skip the `ui` test since it invokes the compiler, which we can't do from
       # Miri (and wouldn't want to do anyway).
-      run:  ${{ contains(matrix.toolchain, 'nightly') && 'RUSTFLAGS="-Z randomize-layout"' || '' }} cargo +${{ matrix.toolchain }} miri test --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" -- --skip ui
+      run: RUSTFLAGS="-Z randomize-layout" MIRIFLAGS="-Z miri-symbolic-alignment-check" cargo +${{ matrix.toolchain }} miri test --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" -- --skip ui
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
       #
