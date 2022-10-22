@@ -5,6 +5,10 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  RUSTFLAGS: -Dwarnings
+  # Currently, we only run Miri on nightly, so it's fine to use
+  # unstable flags.
+  MIRIFLAGS: "-Zmiri-symbolic-alignment-check -Zmiri-strict-provenance"
 
 jobs:
   build_test:
@@ -14,26 +18,33 @@ jobs:
       matrix:
         # See `INTERNAL.md` for an explanation of these pinned toolchain
         # versions.
-        channel: [ "1.61.0", "1.64.0", nightly-2022-09-26 ]
+        toolchain: [ "1.61.0", "1.64.0", "nightly-2022-10-17" ]
         target: [ "i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "arm-unknown-linux-gnueabi", "aarch64-unknown-linux-gnu", "powerpc-unknown-linux-gnu", "powerpc64-unknown-linux-gnu", "wasm32-wasi" ]
         features: [ "" , "alloc,simd", "alloc,simd,simd-nightly" ]
+        manifest-path: [ "Cargo.toml", "zerocopy-derive/Cargo.toml" ]
         exclude:
           # Exclude any combination which uses a non-nightly toolchain but
           # enables nightly features.
-          - channel: "1.61.0"
+          - toolchain: "1.61.0"
             features: "alloc,simd,simd-nightly"
-          - channel: "1.64.0"
+          - toolchain: "1.64.0"
+            features: "alloc,simd,simd-nightly"
+          # Exclude any combination for the zerocopy-derive crate which
+          # uses zerocopy features.
+          - manifest-path: "zerocopy-derive/Cargo.toml"
+            features: "alloc,simd"
+          - manifest-path: "zerocopy-derive/Cargo.toml"
             features: "alloc,simd,simd-nightly"
 
-    name: Build & Test (${{ matrix.channel }} for ${{ matrix.target }}, features set to "${{ matrix.features }}")
+    name: Build & Test (manifest-path:${{ matrix.manifest-path }}, toolchain:${{ matrix.toolchain }}, target:${{ matrix.target }}, features:${{ matrix.features }})
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install Rust with toolchain ${{ matrix.channel }} and target ${{ matrix.target }}
+    - name: Install Rust with toolchain ${{ matrix.toolchain }} and target ${{ matrix.target }}
       uses: actions-rs/toolchain@v1
       with:
-          toolchain: ${{ matrix.channel }}
+          toolchain: ${{ matrix.toolchain }}
           target: ${{ matrix.target }}
           # Only nightly has a working Miri, so we skip installing on all other
           # toolchains. This expression is effectively a ternary expression -
@@ -41,7 +52,7 @@ jobs:
           #
           # [1]
           # https://github.com/actions/runner/issues/409#issuecomment-752775072
-          components: clippy ${{ contains(matrix.channel, 'nightly') && ', miri' || '' }}
+          components: clippy ${{ contains(matrix.toolchain, 'nightly') && ', miri' || '' }}
 
     # The features string contains commas which cannot be part of the cache
     # key for the Rust Cache action. Instead, we hash the features
@@ -53,27 +64,13 @@ jobs:
     - name: Rust Cache
       uses: Swatinem/rust-cache@v2.0.0
       with:
-        key: "${{ matrix.channel }}-${{ matrix.target }}-${{ env.FEATURES_HASH }}-${{ hashFiles('**/Cargo.lock') }}"
+        key: "${{ matrix.toolchain }}-${{ matrix.target }}-${{ env.FEATURES_HASH }}-${{ hashFiles('**/Cargo.lock') }}"
 
     - name: Check
-      run: cargo +${{ matrix.channel }} check --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
-
-    - name: Check zerocopy-derive
-      run: cargo +${{ matrix.channel }} check --manifest-path ./zerocopy-derive/Cargo.toml --target ${{ matrix.target }} --verbose
-      # Don't bother to check `zerocopy-derive` multiple times; that's what
-      # would happen if we ran this step once for each set of `zerocopy`
-      # features.
-      if: ${{ matrix.features == '' }}
+      run: cargo +${{ matrix.toolchain }} check --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
 
     - name: Build
-      run: cargo +${{ matrix.channel }} build --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
-
-    - name: Build zerocopy-derive
-      run: cargo +${{ matrix.channel }} build --manifest-path ./zerocopy-derive/Cargo.toml --target ${{ matrix.target }} --verbose
-      # Don't bother to build `zerocopy-derive` multiple times; that's what
-      # would happen if we ran this step once for each set of `zerocopy`
-      # features.
-      if: ${{ matrix.features == '' }}
+      run: cargo +${{ matrix.toolchain }} build --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
 
     # When building tests for the i686 target, we need certain libraries which
     # are not installed by default; `gcc-multilib` includes these libraries.
@@ -82,42 +79,26 @@ jobs:
       if: ${{ contains(matrix.target, 'i686') }}
 
     - name: Run tests
-      run: ${{ contains(matrix.channel, 'nightly') && 'RUSTFLAGS="-Z randomize-layout"' || '' }} cargo +${{ matrix.channel }} test --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
+      run: ${{ contains(matrix.toolchain, 'nightly') && 'RUSTFLAGS="-Z randomize-layout"' || '' }} cargo +${{ matrix.toolchain }} test --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
       # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
       # x86_64, so we can't run tests for any non-x86 target.
-      if: ${{ contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686') }}
-
-    - name: Run zerocopy-derive tests
-      run: cargo +${{ matrix.channel }} test --manifest-path ./zerocopy-derive/Cargo.toml --target ${{ matrix.target }} --verbose
-      # Don't bother to test `zerocopy-derive` multiple times; that's what would
-      # happen if we ran this step once for each set of `zerocopy` features.
-      # Also, only run tests when targetting x86 (32- or 64-bit) - we're
-      # executing on x86_64, so we can't run tests for any non-x86 target.
       #
       # TODO(https://github.com/dtolnay/trybuild/issues/184#issuecomment-1269097742):
       # Run compile tests when building for other targets.
-      if: ${{ matrix.features == '' && (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) }}
+      if: ${{ contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686') }}
 
     - name: Run tests under Miri
       # Skip the `ui` test since it invokes the compiler, which we can't do from
       # Miri (and wouldn't want to do anyway).
-      #
-      run:  ${{ contains(matrix.channel, 'nightly') && 'RUSTFLAGS="-Z randomize-layout"' || '' }} cargo +${{ matrix.channel }} miri test --target ${{ matrix.target }} --features "${{ matrix.features }}" -- --skip ui
+      run: RUSTFLAGS="-Zrandomize-layout" cargo +${{ matrix.toolchain }} miri test --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" -- --skip ui
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
       #
       # TODO(#22): Re-enable testing on wasm32-wasi once it works.
-      if: ${{ contains(matrix.channel, 'nightly') && matrix.target != 'wasm32-wasi' }}
+      if: ${{ contains(matrix.toolchain, 'nightly') && matrix.target != 'wasm32-wasi' }}
 
     - name: Clippy check
-      run: cargo +${{ matrix.channel }} clippy --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
-
-    - name: Clippy check zerocopy-derive
-      run: cargo +${{ matrix.channel }} clippy --manifest-path ./zerocopy-derive/Cargo.toml --target ${{ matrix.target }} --verbose
-      # Don't bother to check `zerocopy-derive` multiple times with clippy;
-      # that's what would happen if we ran this step once for each set of
-      # `zerocopy` features.
-      if: ${{ matrix.features == '' }}
+      run: cargo +${{ matrix.toolchain }} clippy --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
 
   check_fmt:
     runs-on: ubuntu-latest
@@ -128,8 +109,9 @@ jobs:
         run: |
           set -e
           cargo fmt --check
-          cargo fmt --check --manifest-path ./zerocopy-derive/Cargo.toml
-          rustfmt --check ./zerocopy-derive/tests/ui/*.rs
+          cargo fmt --check --manifest-path zerocopy-derive/Cargo.toml
+          rustfmt --check tests/ui/*.rs
+          rustfmt --check zerocopy-derive/tests/ui/*.rs
 
   check_readme:
     runs-on: ubuntu-latest
@@ -145,3 +127,37 @@ jobs:
           cargo install cargo-readme --version 3.2.0
           diff <(./generate-readme.sh) README.md
           exit $?
+
+  check_msrv:
+    runs-on: ubuntu-latest
+    name: Check MSRV
+    steps:
+      - uses: actions/checkout@v3
+      # Make sure that the MSRV in zerocopy's and zerocopy-derive's `Cargo.toml`
+      # files are the same and are the same as the one we test for in CI.
+      - name: Check MSRV
+        run: |
+          set -e
+
+          function msrv {
+            cargo metadata --manifest-path $1 --format-version 1 | jq -r '.packages[] | select(.name == "zerocopy").rust_version'
+          }
+
+          path_ci=.github/workflows/ci.yml
+          ver_ci=$(<$path_ci yq '.jobs.build_test.strategy.matrix.toolchain[0] // ""' | grep .)
+
+          path_zerocopy=Cargo.toml
+          ver_zerocopy=$(msrv $path_zerocopy)
+
+          path_zerocopy_derive=zerocopy-derive/Cargo.toml
+          ver_zerocopy_derive=$(msrv $path_zerocopy_derive)
+
+          if [[ "$ver_ci" == "$ver_zerocopy" && "$ver_ci" == "$ver_zerocopy_derive" ]]; then
+            echo "Same MSRV ($ver_ci) found in '$path_ci', '$path_zerocopy', and '$path_zerocopy_derve'." \
+              | tee -a $GITHUB_STEP_SUMMARY
+            exit 0
+          else
+            echo "Different MSRVs found in '$path_ci' ($ver_ci), '$path_zerocopy' ($ver_zerocopy), and '$path_zerocopy_derve' ($ver_zerocopy_derive)." \
+              | tee -a $GITHUB_STEP_SUMMARY >&2
+            exit 1
+          fi
