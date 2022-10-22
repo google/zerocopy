@@ -8,7 +8,7 @@ env:
   RUSTFLAGS: -Dwarnings
   # Currently, we only run Miri on nightly, so it's fine to use
   # unstable flags.
-  MIRIFLAGS: "-Zmiri-symbolic-alignment-check miri-strict-provenance"
+  MIRIFLAGS: "-Zmiri-symbolic-alignment-check -Zmiri-strict-provenance"
 
 jobs:
   build_test:
