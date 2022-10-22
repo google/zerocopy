@@ -59,6 +59,7 @@
 //
 //   #![rustversion::attr(stable(<MSRV>), allow(unknown_lints))]
 #![allow(unknown_lints)]
+#![deny(renamed_and_removed_lints)]
 #![deny(
     anonymous_parameters,
     clippy::all,
@@ -84,7 +85,6 @@
     clippy::unnested_or_patterns,
     clippy::unwrap_used,
     clippy::use_debug,
-    const_err,
     deprecated_in_future,
     illegal_floating_point_literal_pattern,
     late_bound_lifetime_arguments,

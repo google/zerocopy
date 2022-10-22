@@ -15,6 +15,7 @@
 //
 //   #![rustversion::attr(stable(<MSRV>), allow(unknown_lints))]
 #![allow(unknown_lints)]
+#![deny(renamed_and_removed_lints)]
 #![deny(clippy::all)]
 #![recursion_limit = "128"]
 
