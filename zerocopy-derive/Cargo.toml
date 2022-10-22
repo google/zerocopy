@@ -5,7 +5,7 @@
 # This file is used when publishing to crates.io
 
 [package]
-edition = "2018"
+edition = "2021"
 name = "zerocopy-derive"
 version = "0.3.2"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
