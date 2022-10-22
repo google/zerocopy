@@ -6,9 +6,10 @@ on:
 env:
   CARGO_TERM_COLOR: always
   RUSTFLAGS: -Dwarnings
-  # Currently, we only run Miri on nightly, so it's fine to use
-  # unstable flags.
-  MIRIFLAGS: "-Zmiri-symbolic-alignment-check -Zmiri-strict-provenance"
+  # `ZC_NIGHTLY_XXX` are flags that we add to `XXX` only on the nightly
+  # toolchain.
+  ZC_NIGHTLY_RUSTFLAGS: -Zrandomize-layout
+  ZC_NIGHTLY_MIRIFLAGS: "-Zmiri-symbolic-alignment-check -Zmiri-strict-provenance"
 
 jobs:
   build_test:
@@ -18,16 +19,16 @@ jobs:
       matrix:
         # See `INTERNAL.md` for an explanation of these pinned toolchain
         # versions.
-        toolchain: [ "1.61.0", "1.64.0", "nightly-2022-10-17" ]
+        toolchain: [ "msrv", "stable", "nightly" ]
         target: [ "i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "arm-unknown-linux-gnueabi", "aarch64-unknown-linux-gnu", "powerpc-unknown-linux-gnu", "powerpc64-unknown-linux-gnu", "wasm32-wasi" ]
         features: [ "" , "alloc,simd", "alloc,simd,simd-nightly" ]
         manifest-path: [ "Cargo.toml", "zerocopy-derive/Cargo.toml" ]
         exclude:
           # Exclude any combination which uses a non-nightly toolchain but
           # enables nightly features.
-          - toolchain: "1.61.0"
+          - toolchain: "msrv"
             features: "alloc,simd,simd-nightly"
-          - toolchain: "1.64.0"
+          - toolchain: "stable"
             features: "alloc,simd,simd-nightly"
           # Exclude any combination for the zerocopy-derive crate which
           # uses zerocopy features.
@@ -41,10 +42,64 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install Rust with toolchain ${{ matrix.toolchain }} and target ${{ matrix.target }}
+    # We use toolchain descriptors ("msrv", "stable", and "nightly") in the
+    # matrix. This step converts the current descriptor to a particular
+    # toolchain version by looking up the corresponding key in `Cargo.toml`. It
+    # sets the `ZC_TOOLCHAIN` environment variable for future steps to use.
+    #
+    # Note that all metadata is stored in zerocopy's `Cargo.toml` (the one at
+    # the repository root). zerocopy-derive is tested with the same versions,
+    # and we have another CI job (see below) that makes sure that the
+    # `package.rust_version` key in zerocopy-derive's `Cargo.toml` is the same
+    # as the one in zerocopy's `Cargo.toml`. This key indicates the crate's
+    # MSRV, and if this check weren't present, it would be possible for
+    # zerocopy-derive to be published with an earlier MSRV than the one we test
+    # for in CI - and thus potentially an MSRV that zerocopy-derive isn't
+    # actually compatible with.
+    - name: Set toolchain version
+      run: |
+        set -e
+
+        function pkg-meta {
+          cargo metadata --manifest-path Cargo.toml --format-version 1 | jq -r ".packages[] | select(.name == \"zerocopy\").$1"
+        }
+
+        case ${{ matrix.toolchain }} in
+          msrv)
+            ZC_TOOLCHAIN="$(pkg-meta rust_version)"
+            ;;
+          stable)
+            ZC_TOOLCHAIN="$(pkg-meta 'metadata.ci."pinned-stable"')"
+            ;;
+          nightly)
+            ZC_TOOLCHAIN="$(pkg-meta 'metadata.ci."pinned-nightly"')"
+            ;;
+          *)
+            echo 'Unrecognized toolchain: ${{ matrix.toolchain }}' | tee -a $GITHUB_STEP_SUMMARY >&2
+            exit 1
+            ;;
+        esac
+
+        echo "Found that the '${{ matrix.toolchain }}' toolchain is $ZC_TOOLCHAIN" | tee -a $GITHUB_STEP_SUMMARY
+        echo "ZC_TOOLCHAIN=$ZC_TOOLCHAIN" >> $GITHUB_ENV
+
+    - name: Configure environment variables
+      run: |
+        set -e
+        if [[ '${{ matrix.toolchain }}' == 'nightly' ]]; then
+          RUSTFLAGS="$RUSTFLAGS $ZC_NIGHTLY_RUSTFLAGS"
+          MIRIFLAGS="$MIRIFLAGS $ZC_NIGHTLY_MIRIFLAGS"
+          echo "Using nightly toolchain; setting RUSTFLAGS='$RUSTFLAGS' and MIRIFLAGS='$MIRIFLAGS'" | tee -a $GITHUB_STEP_SUMMARY
+          echo "RUSTFLAGS=$RUSTFLAGS" >> $GITHUB_ENV
+          echo "MIRIFLAGS=$MIRIFLAGS" >> $GITHUB_ENV
+        else
+          echo "Using non-nightly toolchain; not modifying RUSTFLAGS='$RUSTFLAGS' or MIRIFLAGS='$MIRIFLAGS'" | tee -a $GITHUB_STEP_SUMMARY
+        fi
+
+    - name: Install Rust with toolchain ${{ env.ZC_TOOLCHAIN }} and target ${{ matrix.target }}
       uses: actions-rs/toolchain@v1
       with:
-          toolchain: ${{ matrix.toolchain }}
+          toolchain: ${{ env.ZC_TOOLCHAIN }}
           target: ${{ matrix.target }}
           # Only nightly has a working Miri, so we skip installing on all other
           # toolchains. This expression is effectively a ternary expression -
@@ -52,7 +107,7 @@ jobs:
           #
           # [1]
           # https://github.com/actions/runner/issues/409#issuecomment-752775072
-          components: clippy ${{ contains(matrix.toolchain, 'nightly') && ', miri' || '' }}
+          components: clippy ${{ matrix.toolchain == 'nightly' && ', miri' || '' }}
 
     # The features string contains commas which cannot be part of the cache
     # key for the Rust Cache action. Instead, we hash the features
@@ -64,13 +119,13 @@ jobs:
     - name: Rust Cache
       uses: Swatinem/rust-cache@v2.0.0
       with:
-        key: "${{ matrix.toolchain }}-${{ matrix.target }}-${{ env.FEATURES_HASH }}-${{ hashFiles('**/Cargo.lock') }}"
+        key: "${{ env.ZC_TOOLCHAIN }}-${{ matrix.target }}-${{ env.FEATURES_HASH }}-${{ hashFiles('**/Cargo.lock') }}"
 
     - name: Check
-      run: cargo +${{ matrix.toolchain }} check --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
+      run: cargo +${{ env.ZC_TOOLCHAIN }} check --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
 
     - name: Build
-      run: cargo +${{ matrix.toolchain }} build --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
+      run: cargo +${{ env.ZC_TOOLCHAIN }} build --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
 
     # When building tests for the i686 target, we need certain libraries which
     # are not installed by default; `gcc-multilib` includes these libraries.
@@ -79,7 +134,7 @@ jobs:
       if: ${{ contains(matrix.target, 'i686') }}
 
     - name: Run tests
-      run: ${{ contains(matrix.toolchain, 'nightly') && 'RUSTFLAGS="-Z randomize-layout"' || '' }} cargo +${{ matrix.toolchain }} test --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
+      run: cargo +${{ env.ZC_TOOLCHAIN }} test --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
       # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
       # x86_64, so we can't run tests for any non-x86 target.
       #
@@ -90,15 +145,15 @@ jobs:
     - name: Run tests under Miri
       # Skip the `ui` test since it invokes the compiler, which we can't do from
       # Miri (and wouldn't want to do anyway).
-      run: RUSTFLAGS="-Zrandomize-layout" cargo +${{ matrix.toolchain }} miri test --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" -- --skip ui
+      run: cargo +${{ env.ZC_TOOLCHAIN }} miri test --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" -- --skip ui
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
       #
       # TODO(#22): Re-enable testing on wasm32-wasi once it works.
-      if: ${{ contains(matrix.toolchain, 'nightly') && matrix.target != 'wasm32-wasi' }}
+      if: ${{ matrix.toolchain == 'nightly' && matrix.target != 'wasm32-wasi' }}
 
     - name: Clippy check
-      run: cargo +${{ matrix.toolchain }} clippy --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
+      run: cargo +${{ env.ZC_TOOLCHAIN }} clippy --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
 
   check_fmt:
     runs-on: ubuntu-latest
@@ -130,34 +185,31 @@ jobs:
 
   check_msrv:
     runs-on: ubuntu-latest
-    name: Check MSRV
+    name: Check MSRVs match
     steps:
       - uses: actions/checkout@v3
       # Make sure that the MSRV in zerocopy's and zerocopy-derive's `Cargo.toml`
-      # files are the same and are the same as the one we test for in CI.
-      - name: Check MSRV
+      # files are the same.
+      - name: Check MSRVs match
         run: |
           set -e
 
+          # Usage: msrv <crate-name> <manifest-path>
           function msrv {
-            cargo metadata --manifest-path $1 --format-version 1 | jq -r '.packages[] | select(.name == "zerocopy").rust_version'
+            cargo metadata --manifest-path $2 --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").rust_version"
           }
 
-          path_ci=.github/workflows/ci.yml
-          ver_ci=$(<$path_ci yq '.jobs.build_test.strategy.matrix.toolchain[0] // ""' | grep .)
-
           path_zerocopy=Cargo.toml
-          ver_zerocopy=$(msrv $path_zerocopy)
+          ver_zerocopy=$(msrv zerocopy $path_zerocopy)
 
           path_zerocopy_derive=zerocopy-derive/Cargo.toml
-          ver_zerocopy_derive=$(msrv $path_zerocopy_derive)
+          ver_zerocopy_derive=$(msrv zerocopy-derive $path_zerocopy_derive)
 
-          if [[ "$ver_ci" == "$ver_zerocopy" && "$ver_ci" == "$ver_zerocopy_derive" ]]; then
-            echo "Same MSRV ($ver_ci) found in '$path_ci', '$path_zerocopy', and '$path_zerocopy_derve'." \
-              | tee -a $GITHUB_STEP_SUMMARY
+          if [[ "$ver_zerocopy" == "$ver_zerocopy_derive" ]]; then
+            echo "Same MSRV ($ver_zerocopy) found in '$path_zerocopy' and '$path_zerocopy_derve'." | tee -a $GITHUB_STEP_SUMMARY
             exit 0
           else
-            echo "Different MSRVs found in '$path_ci' ($ver_ci), '$path_zerocopy' ($ver_zerocopy), and '$path_zerocopy_derve' ($ver_zerocopy_derive)." \
+            echo "Different MSRVs found in '$path_zerocopy' ($ver_zerocopy) and '$path_zerocopy_derve' ($ver_zerocopy_derive)." \
               | tee -a $GITHUB_STEP_SUMMARY >&2
             exit 1
           fi

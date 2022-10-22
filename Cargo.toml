@@ -19,6 +19,11 @@ exclude = [".*"]
 [package.metadata.docs.rs]
 all-features = true
 
+[package.metadata.ci]
+# The versions of the stable and nightly compiler toolchains to use in CI.
+pinned-stable = "1.64.0"
+pinned-nightly = "nightly-2022-10-17"
+
 [features]
 alloc = []
 simd = []
