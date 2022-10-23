@@ -436,31 +436,9 @@ fn impl_block<D: DataExt>(
     // `T::Foo: !FromBytes`. It would not be sound for us to accept a type with
     // a `T::Foo` field as `FromBytes` simply because `T: FromBytes`.
     //
-    // While there's no getting around this requirement for us, it does have
-    // some pretty serious downsides that are worth calling out:
-    //
-    // 1. You lose the ability to have fields of generic type with reduced visibility.
-    //
-    //     #[derive(Unaligned)]
-    //     #[repr(C)]
-    //     pub struct Public<T>(Private<T>);
-    //
-    //     #[derive(Unaligned)]
-    //     #[repr(C)]
-    //     struct Private<T>(T);
-    //
-    //
-    //     warning: private type `Private<T>` in public interface (error E0446)
-    //      --> src/main.rs:6:10
-    //       |
-    //     6 | #[derive(Unaligned)]
-    //       |          ^^^^^^^^^
-    //       |
-    //       = note: #[warn(private_in_public)] on by default
-    //       = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-    //       = note: for more information, see issue #34537 <https://github.com/rust-lang/rust/issues/34537>
-    //
-    // 2. When lifetimes are involved, the trait solver ties itself in knots.
+    // While there's no getting around this requirement for us, it does have the
+    // pretty serious downside that, when lifetimes are involved, the trait
+    // solver ties itself in knots:
     //
     //     #[derive(Unaligned)]
     //     #[repr(C)]
