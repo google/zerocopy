@@ -5,7 +5,7 @@
 use zerocopy::{AsBytes, FromBytes, Unaligned};
 
 // These derives do not result in E0446 as of Rust 1.59.0, because of
-// https://github.com/rust-lang/rust/pull/90586
+// https://github.com/rust-lang/rust/pull/90586.
 //
 // This change eliminates one of the major downsides of emitting `where`
 // bounds for field types (i.e., the emission of E0446 for private field
