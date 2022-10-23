@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+//! Derive macros for [zerocopy]'s traits.
+//!
+//! [zerocopy]: https://docs.rs/zerocopy
+
 // Sometimes we want to use lints which were added after our MSRV.
 // `unknown_lints` is `warn` by default and we deny warnings in CI, so without
 // this attribute, any unknown lint would cause a CI failure when testing with
@@ -9,6 +13,15 @@
 #![allow(unknown_lints)]
 #![deny(renamed_and_removed_lints)]
 #![deny(clippy::all)]
+#![deny(
+    rustdoc::bare_urls,
+    rustdoc::broken_intra_doc_links,
+    rustdoc::invalid_codeblock_attributes,
+    rustdoc::invalid_html_tags,
+    rustdoc::invalid_rust_codeblocks,
+    rustdoc::missing_crate_level_docs,
+    rustdoc::private_intra_doc_links
+)]
 #![recursion_limit = "128"]
 
 mod ext;

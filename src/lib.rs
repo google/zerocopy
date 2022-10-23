@@ -54,6 +54,23 @@
 #![deny(renamed_and_removed_lints)]
 #![deny(
     anonymous_parameters,
+    deprecated_in_future,
+    illegal_floating_point_literal_pattern,
+    late_bound_lifetime_arguments,
+    missing_copy_implementations,
+    missing_debug_implementations,
+    missing_docs,
+    path_statements,
+    patterns_in_fns_without_body,
+    rust_2018_idioms,
+    trivial_numeric_casts,
+    unreachable_pub,
+    unsafe_op_in_unsafe_fn,
+    unused_extern_crates,
+    unused_qualifications,
+    variant_size_differences
+)]
+#![deny(
     clippy::all,
     clippy::alloc_instead_of_core,
     clippy::arithmetic_side_effects,
@@ -76,24 +93,16 @@
     clippy::unimplemented,
     clippy::unnested_or_patterns,
     clippy::unwrap_used,
-    clippy::use_debug,
-    deprecated_in_future,
-    illegal_floating_point_literal_pattern,
-    late_bound_lifetime_arguments,
-    missing_copy_implementations,
-    missing_debug_implementations,
-    missing_docs,
-    path_statements,
-    patterns_in_fns_without_body,
-    rust_2018_idioms,
+    clippy::use_debug
+)]
+#![deny(
+    rustdoc::bare_urls,
     rustdoc::broken_intra_doc_links,
-    rustdoc::private_intra_doc_links,
-    trivial_numeric_casts,
-    unreachable_pub,
-    unsafe_op_in_unsafe_fn,
-    unused_extern_crates,
-    unused_qualifications,
-    variant_size_differences
+    rustdoc::invalid_codeblock_attributes,
+    rustdoc::invalid_html_tags,
+    rustdoc::invalid_rust_codeblocks,
+    rustdoc::missing_crate_level_docs,
+    rustdoc::private_intra_doc_links
 )]
 // In test code, it makes sense to weight more heavily towards concise, readable
 // code over correct or debuggable code.
@@ -2042,7 +2051,7 @@ mod sealed {
 /// method would involve reallocation, and `split_at` must be a very cheap
 /// operation in order for the utilities in this crate to perform as designed.
 ///
-/// [`Vec<u8>`]: std::vec::Vec
+/// [`Vec<u8>`]: alloc::vec::Vec
 /// [`split_at`]: crate::ByteSlice::split_at
 pub unsafe trait ByteSlice: Deref<Target = [u8]> + Sized + self::sealed::Sealed {
     /// Gets a raw pointer to the first byte in the slice.
