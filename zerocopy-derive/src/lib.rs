@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+//! Derive macros for [zerocopy]'s traits.
+//!
+//! [zerocopy]: https://docs.rs/zerocopy
+
 // Sometimes we want to use lints which were added after our MSRV.
 // `unknown_lints` is `warn` by default and we deny warnings in CI, so without
 // this attribute, any unknown lint would cause a CI failure when testing with
@@ -9,6 +13,15 @@
 #![allow(unknown_lints)]
 #![deny(renamed_and_removed_lints)]
 #![deny(clippy::all)]
+#![deny(
+    rustdoc::bare_urls,
+    rustdoc::broken_intra_doc_links,
+    rustdoc::invalid_codeblock_attributes,
+    rustdoc::invalid_html_tags,
+    rustdoc::invalid_rust_codeblocks,
+    rustdoc::missing_crate_level_docs,
+    rustdoc::private_intra_doc_links
+)]
 #![recursion_limit = "128"]
 
 mod ext;
@@ -423,31 +436,9 @@ fn impl_block<D: DataExt>(
     // `T::Foo: !FromBytes`. It would not be sound for us to accept a type with
     // a `T::Foo` field as `FromBytes` simply because `T: FromBytes`.
     //
-    // While there's no getting around this requirement for us, it does have
-    // some pretty serious downsides that are worth calling out:
-    //
-    // 1. You lose the ability to have fields of generic type with reduced visibility.
-    //
-    //     #[derive(Unaligned)]
-    //     #[repr(C)]
-    //     pub struct Public<T>(Private<T>);
-    //
-    //     #[derive(Unaligned)]
-    //     #[repr(C)]
-    //     struct Private<T>(T);
-    //
-    //
-    //     warning: private type `Private<T>` in public interface (error E0446)
-    //      --> src/main.rs:6:10
-    //       |
-    //     6 | #[derive(Unaligned)]
-    //       |          ^^^^^^^^^
-    //       |
-    //       = note: #[warn(private_in_public)] on by default
-    //       = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-    //       = note: for more information, see issue #34537 <https://github.com/rust-lang/rust/issues/34537>
-    //
-    // 2. When lifetimes are involved, the trait solver ties itself in knots.
+    // While there's no getting around this requirement for us, it does have the
+    // pretty serious downside that, when lifetimes are involved, the trait
+    // solver ties itself in knots:
     //
     //     #[derive(Unaligned)]
     //     #[repr(C)]

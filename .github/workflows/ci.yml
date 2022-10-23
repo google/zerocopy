@@ -6,6 +6,7 @@ on:
 env:
   CARGO_TERM_COLOR: always
   RUSTFLAGS: -Dwarnings
+  RUSTDOCFLAGS: -Dwarnings
   # `ZC_NIGHTLY_XXX` are flags that we add to `XXX` only on the nightly
   # toolchain.
   ZC_NIGHTLY_RUSTFLAGS: -Zrandomize-layout
@@ -21,21 +22,21 @@ jobs:
         # versions.
         toolchain: [ "msrv", "stable", "nightly" ]
         target: [ "i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "arm-unknown-linux-gnueabi", "aarch64-unknown-linux-gnu", "powerpc-unknown-linux-gnu", "powerpc64-unknown-linux-gnu", "wasm32-wasi" ]
-        features: [ "" , "alloc,simd", "alloc,simd,simd-nightly" ]
+        features: [ "" , "--features __internal_use_only_features_that_work_on_stable", "--all-features" ]
         manifest-path: [ "Cargo.toml", "zerocopy-derive/Cargo.toml" ]
         exclude:
           # Exclude any combination which uses a non-nightly toolchain but
           # enables nightly features.
           - toolchain: "msrv"
-            features: "alloc,simd,simd-nightly"
+            features: "--all-features"
           - toolchain: "stable"
-            features: "alloc,simd,simd-nightly"
+            features: "--all-features"
           # Exclude any combination for the zerocopy-derive crate which
           # uses zerocopy features.
           - manifest-path: "zerocopy-derive/Cargo.toml"
-            features: "alloc,simd"
+            features: "--features __internal_use_only_features_that_work_on_stable"
           - manifest-path: "zerocopy-derive/Cargo.toml"
-            features: "alloc,simd,simd-nightly"
+            features: "--all-features"
 
     name: Build & Test (manifest-path:${{ matrix.manifest-path }}, toolchain:${{ matrix.toolchain }}, target:${{ matrix.target }}, features:${{ matrix.features }})
 
@@ -122,10 +123,10 @@ jobs:
         key: "${{ env.ZC_TOOLCHAIN }}-${{ matrix.target }}-${{ env.FEATURES_HASH }}-${{ hashFiles('**/Cargo.lock') }}"
 
     - name: Check
-      run: cargo +${{ env.ZC_TOOLCHAIN }} check --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --all-targets --verbose
+      run: cargo +${{ env.ZC_TOOLCHAIN }} check --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} ${{ matrix.features }} --all-targets --verbose
 
     - name: Build
-      run: cargo +${{ env.ZC_TOOLCHAIN }} build --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --all-targets --verbose
+      run: cargo +${{ env.ZC_TOOLCHAIN }} build --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} ${{ matrix.features }} --all-targets --verbose
 
     # When building tests for the i686 target, we need certain libraries which
     # are not installed by default; `gcc-multilib` includes these libraries.
@@ -134,7 +135,7 @@ jobs:
       if: ${{ contains(matrix.target, 'i686') }}
 
     - name: Run tests
-      run: cargo +${{ env.ZC_TOOLCHAIN }} test --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
+      run: cargo +${{ env.ZC_TOOLCHAIN }} test --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
       # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
       # x86_64, so we can't run tests for any non-x86 target.
       #
@@ -145,7 +146,7 @@ jobs:
     - name: Run tests under Miri
       # Skip the `ui` test since it invokes the compiler, which we can't do from
       # Miri (and wouldn't want to do anyway).
-      run: cargo +${{ env.ZC_TOOLCHAIN }} miri test --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" -- --skip ui
+      run: cargo +${{ env.ZC_TOOLCHAIN }} miri test --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} ${{ matrix.features }} -- --skip ui
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
       #
@@ -153,7 +154,16 @@ jobs:
       if: ${{ matrix.toolchain == 'nightly' && matrix.target != 'wasm32-wasi' }}
 
     - name: Clippy check
-      run: cargo +${{ env.ZC_TOOLCHAIN }} clippy --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} --features "${{ matrix.features }}" --verbose
+      run: cargo +${{ env.ZC_TOOLCHAIN }} clippy --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+
+    - name: Cargo doc
+      run: cargo +${{ env.ZC_TOOLCHAIN }} doc --manifest-path ${{ matrix.manifest-path }} ${{ matrix.features }}
+      # When the `alloc` feature is disabled, `cargo doc` fails because we link
+      # to `alloc::vec::Vec` in a doc comment, and the `alloc` crate is not in
+      # scope without the `alloc` feature. This isn't a big deal because we care
+      # primarily about `cargo doc` working for `docs.rs`, which enables the
+      # `alloc` feature.
+      if: ${{ matrix.features != '' }}
 
   check_fmt:
     runs-on: ubuntu-latest
