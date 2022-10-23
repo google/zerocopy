@@ -423,10 +423,9 @@ fn impl_block<D: DataExt>(
     // `T::Foo: !FromBytes`. It would not be sound for us to accept a type with
     // a `T::Foo` field as `FromBytes` simply because `T: FromBytes`.
     //
-    // While there's no getting around this requirement for us, it does have
-    // some pretty serious downsides that are worth calling out:
-    //
-    // 1. When lifetimes are involved, the trait solver ties itself in knots.
+    // While there's no getting around this requirement for us, it does have the
+    // pretty serious downside that, when lifetimes are involved, the trait
+    // solver ties itself in knots:
     //
     //     #[derive(Unaligned)]
     //     #[repr(C)]
