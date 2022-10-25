@@ -121,18 +121,18 @@ jobs:
       uses: Swatinem/rust-cache@v2.0.0
       with:
         key: "${{ env.ZC_TOOLCHAIN }}-${{ matrix.target }}-${{ env.FEATURES_HASH }}-${{ hashFiles('**/Cargo.lock') }}"
+        
+    # When building for the i686 target, we need certain libraries which are
+    # not installed by default; `gcc-multilib` includes these libraries.
+    - name: Install gcc-multilib
+      run: sudo apt-get install gcc-multilib
+      if: ${{ contains(matrix.target, 'i686') }}
 
     - name: Check
       run: cargo +${{ env.ZC_TOOLCHAIN }} check --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} ${{ matrix.features }} --all-targets --verbose
 
     - name: Build
       run: cargo +${{ env.ZC_TOOLCHAIN }} build --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} ${{ matrix.features }} --all-targets --verbose
-
-    # When building tests for the i686 target, we need certain libraries which
-    # are not installed by default; `gcc-multilib` includes these libraries.
-    - name: Install gcc-multilib
-      run: sudo apt-get install gcc-multilib
-      if: ${{ contains(matrix.target, 'i686') }}
 
     - name: Run tests
       run: cargo +${{ env.ZC_TOOLCHAIN }} test --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
