@@ -7,7 +7,7 @@ found in the LICENSE file. -->
 We'd love to accept your patches and contributions to zerocopy. There are just a
 few small guidelines you need to follow.
 
-Once you've read the rest of this doc, check out our [good-first-issue 
+Once you've read the rest of this doc, check out our [good-first-issue
 label][good-first-issue] for some good issues you can use to get your toes wet!
 
 ## Contributor License Agreement
