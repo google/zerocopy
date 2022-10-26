@@ -98,10 +98,10 @@ jobs:
         fi
 
     - name: Install Rust with toolchain ${{ env.ZC_TOOLCHAIN }} and target ${{ matrix.target }}
-      uses: actions-rs/toolchain@v1
+      uses: dtolnay/rust-toolchain@stable
       with:
           toolchain: ${{ env.ZC_TOOLCHAIN }}
-          target: ${{ matrix.target }}
+          targets: ${{ matrix.target }}
           # Only nightly has a working Miri, so we skip installing on all other
           # toolchains. This expression is effectively a ternary expression -
           # see [1] for details.
