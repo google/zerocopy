@@ -30,7 +30,7 @@ EOF
 #
 # These links don't work in a Markdown file, and so we remove the `[` and `]`
 # characters to convert them to non-link code snippets.
-cargo readme | sed 's/\[\(`[^`]*`\)]/\1/g' > $BODY
+cargo readme --no-license | sed 's/\[\(`[^`]*`\)]/\1/g' > $BODY
 
 cat > $DISCLAIMER_FOOTER <<'EOF'
 
