@@ -2,6 +2,8 @@ name: Build & Tests
 
 on:
   pull_request:
+  push:
+    branches: main
 
 env:
   CARGO_TERM_COLOR: always
@@ -110,17 +112,10 @@ jobs:
           # https://github.com/actions/runner/issues/409#issuecomment-752775072
           components: clippy ${{ matrix.toolchain == 'nightly' && ', miri' || '' }}
 
-    # The features string contains commas which cannot be part of the cache
-    # key for the Rust Cache action. Instead, we hash the features
-    # to get a string of legal characters.
-    - name: Set feature string for cache key
-      run: |
-        echo "FEATURES_HASH=$(echo ${{ matrix.features }} | sha256sum | cut -d ' ' -f 1)" >> $GITHUB_ENV
-
     - name: Rust Cache
       uses: Swatinem/rust-cache@v2.0.0
       with:
-        key: "${{ env.ZC_TOOLCHAIN }}-${{ matrix.target }}-${{ env.FEATURES_HASH }}-${{ hashFiles('**/Cargo.lock') }}"
+        key: "${{ matrix.target }}"
 
     - name: Check
       run: cargo +${{ env.ZC_TOOLCHAIN }} check --manifest-path ${{ matrix.manifest-path }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
