@@ -20,3 +20,14 @@ https://rust-lang.github.io/rustup-components-history/).
 Updating the versions pinned in CI may cause the UI tests to break. In order to
 fix UI tests after a version update, set the environment variable
 `TRYBUILD=overwrite` while running `cargo test`.
+
+## Crate versions
+
+We ensure that the crate versions of zerocopy and zerocopy-derive are always the
+same in-tree, and that zerocopy depends upon zerocopy-derive using an exact
+version match to the current version in-tree. This has the result that, even
+when published on crates.io, both crates effectively constitute a single atomic
+version. So long as the code in zerocopy is compatible with the code in
+zerocopy-derive in the same Git commit, then publishing them both is fine. This
+frees us from the normal task of reasoning about compatibility with a range of
+semver-compatible versions of different crates.

@@ -211,10 +211,53 @@ jobs:
           ver_zerocopy_derive=$(msrv zerocopy-derive $path_zerocopy_derive)
 
           if [[ "$ver_zerocopy" == "$ver_zerocopy_derive" ]]; then
-            echo "Same MSRV ($ver_zerocopy) found in '$path_zerocopy' and '$path_zerocopy_derve'." | tee -a $GITHUB_STEP_SUMMARY
+            echo "Same MSRV ($ver_zerocopy) found in '$path_zerocopy' and '$path_zerocopy_derive'." | tee -a $GITHUB_STEP_SUMMARY
             exit 0
           else
-            echo "Different MSRVs found in '$path_zerocopy' ($ver_zerocopy) and '$path_zerocopy_derve' ($ver_zerocopy_derive)." \
+            echo "Different MSRVs found in '$path_zerocopy' ($ver_zerocopy) and '$path_zerocopy_derive' ($ver_zerocopy_derive)." \
+              | tee -a $GITHUB_STEP_SUMMARY >&2
+            exit 1
+          fi
+
+  check_versions:
+    runs-on: ubuntu-latest
+    name: Check crate versions match
+    steps:
+      - uses: actions/checkout@v3
+      # Make sure that both crates are at the same version, and that zerocopy
+      # depends exactly upon the current version of zerocopy-derive. See
+      # `INTERNAL.md` for an explanation of why we do this.
+      - name: Check crate versions match
+        run: |
+          set -e
+
+          # Usage: version <crate-name> <manifest-path>
+          function version {
+            cargo metadata --manifest-path $2 --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").version"
+          }
+
+          path_zerocopy=Cargo.toml
+          ver_zerocopy=$(version zerocopy $path_zerocopy)
+
+          path_zerocopy_derive=zerocopy-derive/Cargo.toml
+          ver_zerocopy_derive=$(version zerocopy-derive $path_zerocopy_derive)
+
+          zerocopy_derive_dep_ver=$(cargo metadata --manifest-path Cargo.toml --format-version 1 \
+            | jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select(.name == \"zerocopy-derive\").req")
+
+          if [[ "$ver_zerocopy" == "$ver_zerocopy_derive" ]]; then
+            echo "Same crate version ($ver_zerocopy) found in '$path_zerocopy' and '$path_zerocopy_derive'." | tee -a $GITHUB_STEP_SUMMARY
+          else
+            echo "Different crate versions found in '$path_zerocopy' ($ver_zerocopy) and '$path_zerocopy_derive' ($ver_zerocopy_derive)." \
+              | tee -a $GITHUB_STEP_SUMMARY >&2
+            exit 1
+          fi
+
+          # Note the leading `=` sign - the dependency needs to be an exact one.
+          if [[ "=$ver_zerocopy_derive" == "$zerocopy_derive_dep_ver" ]]; then
+            echo "zerocopy depends upon same version of zerocopy-derive in-tree ($zerocopy_derive_dep_ver)." | tee -a $GITHUB_STEP_SUMMARY
+          else
+            echo "zerocopy depends upon different version of zerocopy-derive ($zerocopy_derive_dep_ver) than the one in-tree ($ver_zerocopy_derive)." \
               | tee -a $GITHUB_STEP_SUMMARY >&2
             exit 1
           fi
