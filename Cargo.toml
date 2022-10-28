@@ -34,7 +34,7 @@ simd-nightly = ["simd"]
 __internal_use_only_features_that_work_on_stable = ["alloc", "simd"]
 
 [dependencies]
-zerocopy-derive = { version = "0.3.1", path = "zerocopy-derive" }
+zerocopy-derive = { version = "=0.6.1", path = "zerocopy-derive" }
 
 [dependencies.byteorder]
 version = "1.3"
