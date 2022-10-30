@@ -521,7 +521,12 @@ pub unsafe trait FromBytes {
 ///
 /// [Rust Reference]: https://doc.rust-lang.org/reference/type-layout.html
 pub unsafe trait AsBytes {
-    // The `Self: Sized` bound makes it so that `AsBytes` is still object safe.
+    // The `Self: Sized` bound makes it so that this function doesn't prevent
+    // `AsBytes` from being object safe. Note that other `AsBytes` methods
+    // prevent object safety, but those provide a benefit in exchange for object
+    // safety. If at some point we remove those methods, change their type
+    // signatures, or move them out of this trait so that `AsBytes` is object
+    // safe again, it's important that this function not prevent object safety.
     #[doc(hidden)]
     fn only_derive_is_allowed_to_implement_this_trait()
     where
@@ -2421,6 +2426,12 @@ mod tests {
     // Converts a `u64` to bytes using this platform's endianness.
     fn u64_to_bytes(u: u64) -> [u8; 8] {
         U64::<NativeEndian>::new(u).as_bytes().try_into().unwrap()
+    }
+
+    #[test]
+    fn test_object_safety() {
+        fn _takes_from_bytes(_: &dyn FromBytes) {}
+        fn _takes_unaligned(_: &dyn Unaligned) {}
     }
 
     #[test]
