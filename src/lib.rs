@@ -145,6 +145,7 @@ extern crate alloc;
 #[cfg(feature = "alloc")]
 use {
     alloc::boxed::Box,
+    alloc::vec::Vec,
     core::{alloc::Layout, ptr::NonNull},
 };
 
@@ -464,6 +465,34 @@ pub unsafe trait FromBytes {
                 Box::from_raw(slice::from_raw_parts_mut(NonNull::<Self>::dangling().as_ptr(), len))
             }
         }
+    }
+
+    /// Creates a `Vec<Self>` from zeroed bytes.
+    ///
+    /// This function is useful for allocating large values of `Vec`s and
+    /// zero-initializing them, without ever creating a temporary instance of
+    /// `[Self; _]` (or many temporary instances of `Self`) on the stack. For
+    /// example, `u8::new_vec_zeroed(1048576)` will allocate directly on the
+    /// heap; it does not require storing intermediate values on the stack.
+    ///
+    /// On systems that use a heap implementation that supports allocating from
+    /// pre-zeroed memory, using `new_vec_zeroed` may have performance benefits.
+    ///
+    /// If `Self` is a zero-sized type, then this function will return a
+    /// `Vec<Self>` that has the correct `len`. Such a `Vec` cannot contain any
+    /// actual information, but its `len()` property will report the correct
+    /// value.
+    ///
+    /// # Panics
+    ///
+    /// * Panics if `size_of::<Self>() * len` overflows.
+    /// * Panics if allocation of `size_of::<Self>() * len` bytes fails.
+    #[cfg(feature = "alloc")]
+    fn new_vec_zeroed(len: usize) -> Vec<Self>
+    where
+        Self: Sized,
+    {
+        Self::new_box_slice_zeroed(len).into()
     }
 }
 
