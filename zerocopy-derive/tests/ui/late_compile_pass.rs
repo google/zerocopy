@@ -17,12 +17,21 @@ fn main() {}
 // the compiler will never get to that pass, and so we won't get the errors.
 
 //
+// FromZeroes errors
+//
+
+#[derive(FromZeroes)]
+struct FromZeroes1 {
+    value: NotZerocopy,
+}
+
+//
 // FromBytes errors
 //
 
 #[derive(FromBytes)]
 struct FromBytes1 {
-    not_from_bytes: &'static str,
+    value: NotZerocopy,
 }
 
 //

@@ -14,8 +14,10 @@ This crate provides utilities which make it easy to perform zero-copy
 parsing and serialization by allowing zero-copy conversion to/from byte
 slices.
 
-This is enabled by three core marker traits, each of which can be derived
+This is enabled by four core marker traits, each of which can be derived
 (e.g., `#[derive(FromBytes)]`):
+- `FromZeroes` indicates that a sequence of zero bytes represents a valid
+  instance of a type
 - `FromBytes` indicates that a type may safely be converted from an
   arbitrary byte sequence
 - `AsBytes` indicates that a type may safely be converted *to* a byte
@@ -34,12 +36,12 @@ types, see the `byteorder` module.
 enabled, the `alloc` crate is added as a dependency, and some
 allocation-related functionality is added.
 
-`simd`: When the `simd` feature is enabled, `FromBytes` and `AsBytes` impls
-are emitted for all stable SIMD types which exist on the target platform.
-Note that the layout of SIMD types is not yet stabilized, so these impls may
-be removed in the future if layout changes make them invalid. For more
-information, see the Unsafe Code Guidelines Reference page on the [Layout of
-packed SIMD vectors][simd-layout].
+`simd`: When the `simd` feature is enabled, `FromZeroes`, `FromBytes`, and
+`AsBytes` impls are emitted for all stable SIMD types which exist on the
+target platform. Note that the layout of SIMD types is not yet stabilized,
+so these impls may be removed in the future if layout changes make them
+invalid. For more information, see the Unsafe Code Guidelines Reference page
+on the [Layout of packed SIMD vectors][simd-layout].
 
 `simd-nightly`: Enables the `simd` feature and adds support for SIMD types
 which are only available on nightly. Since these types are unstable, support
