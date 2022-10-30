@@ -576,19 +576,6 @@ macro_rules! safety_comment {
 
 /// Unsafely implements trait(s) for a type.
 macro_rules! unsafe_impl {
-    // Implement `Unaligned` for `$ty` with no bounds.
-    //
-    // For `Unaligned` in particular, it's possible to assert at compile time
-    // that the trait impl is sound. This provides a small speed bump to
-    // accidentally implementing `Unaligned` for a type with alignment greater
-    // than 1.
-    ($ty:ty: Unaligned) => {
-        // We only compile this assertion under `cfg(test)` to avoid making this
-        // crate more expensive to compile for our dependents.
-        #[cfg(test)]
-        const _: () = { static_assertions::const_assert_eq!(core::mem::align_of::<$ty>(), 1); };
-        unsafe impl Unaligned for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
-    };
     // Implement `$trait` for `$ty` with no bounds.
     ($ty:ty: $trait:ty) => {
         unsafe impl $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
@@ -622,6 +609,23 @@ macro_rules! unsafe_impl {
     };
 }
 
+/// Uses `align_of` to confirm that a type or set of types have alignment 1.
+///
+/// Note that `align_of<T>` requires `T: Sized`, so this macro doesn't work for
+/// unsized types.
+macro_rules! assert_unaligned {
+    ($ty:ty) => {
+        // We only compile this assertion under `cfg(test)` to avoid taking an
+        // extra non-dev dependency (and making this crate more expensive to
+        // compile for our dependents).
+        #[cfg(test)]
+        static_assertions::const_assert_eq!(core::mem::align_of::<$ty>(), 1);
+    };
+    ($($ty:ty),*) => {
+        $(assert_unaligned!($ty);)*
+    };
+}
+
 safety_comment! {
     /// SAFETY:
     /// Per the reference [1], "the unit tuple (`()`) ... is guaranteed as a
@@ -633,6 +637,7 @@ safety_comment! {
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#tuple-layout
     unsafe_impl!((): FromBytes, AsBytes, Unaligned);
+    assert_unaligned!(());
 }
 
 safety_comment! {
@@ -651,6 +656,7 @@ safety_comment! {
     /// [2] https://doc.rust-lang.org/reference/type-layout.html#primitive-data-layout
     unsafe_impl!(u8: FromBytes, AsBytes, Unaligned);
     unsafe_impl!(i8: FromBytes, AsBytes, Unaligned);
+    assert_unaligned!(u8, i8);
     unsafe_impl!(u16: FromBytes, AsBytes);
     unsafe_impl!(i16: FromBytes, AsBytes);
     unsafe_impl!(u32: FromBytes, AsBytes);
@@ -692,6 +698,7 @@ safety_comment! {
     ///
     /// [1] https://doc.rust-lang.org/reference/types/boolean.html
     unsafe_impl!(bool: AsBytes, Unaligned);
+    assert_unaligned!(bool);
 }
 safety_comment! {
     /// SAFETY:
@@ -704,26 +711,41 @@ safety_comment! {
 }
 safety_comment! {
     /// SAFETY:
-    /// - `AsBytes`: Per the reference [1], `str` has the same layout as `[u8]`,
-    ///   and `[u8]` is `AsBytes`.
+    /// - `AsBytes`, `Unaligned`: Per the reference [1], `str` has the same
+    ///   layout as `[u8]`, and `[u8]` is `AsBytes` and `Unaligned`.
+    ///
+    /// Note that we don't `assert_unaligned!(str)` because `assert_unaligned!`
+    /// uses `align_of`, which only works for `Sized` types.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#str-layout
-    unsafe_impl!(str: AsBytes);
+    unsafe_impl!(str: AsBytes, Unaligned);
 }
 
 safety_comment! {
     // `NonZeroXxx` is `AsBytes`, but not `FromBytes`.
     //
     /// SAFETY:
-    /// `NonZeroXxx` has the same layout as its associated primitive. Since it
-    /// is the same size, this guarantees it has no padding - integers have no
-    /// padding, and there's no room for padding if it can represent all of the
-    /// same values except 0.
+    /// - `AsBytes`: `NonZeroXxx` has the same layout as its associated
+    ///    primitive. Since it is the same size, this guarantees it has no
+    ///    padding - integers have no padding, and there's no room for padding
+    ///    if it can represent all of the same values except 0.
+    /// - `Unaligned`: `NonZeroU8` and `NonZeroI8` document that
+    ///   `Option<NonZeroU8>` and `Option<NonZeroI8>` both have size 1. [1] [2]
+    ///   This is worded in a way that makes it unclear whether it's meant as a
+    ///   guarantee, but given the purpose of those types, it's virtually
+    ///   unthinkable that that would ever change. `Option` cannot be smaller
+    ///   than its contained type, which implies that, and `NonZeroX8` are of
+    ///   size 1 or 0. `NonZeroX8` can represent multiple states, so they cannot
+    ///   be 0 bytes, which means that they must be 1 byte. The only valid
+    ///   alignment for a 1-byte type is 1.
     ///
+    /// [1] https://doc.rust-lang.org/stable/std/num/struct.NonZeroU8.html
+    /// [2] https://doc.rust-lang.org/stable/std/num/struct.NonZeroI8.html
     /// TODO(https://github.com/rust-lang/rust/pull/104082): Cite documentation
     /// that layout is the same as primitive layout.
-    unsafe_impl!(NonZeroU8: AsBytes);
-    unsafe_impl!(NonZeroI8: AsBytes);
+    unsafe_impl!(NonZeroU8: AsBytes, Unaligned);
+    unsafe_impl!(NonZeroI8: AsBytes, Unaligned);
+    assert_unaligned!(NonZeroU8, NonZeroI8);
     unsafe_impl!(NonZeroU16: AsBytes);
     unsafe_impl!(NonZeroI16: AsBytes);
     unsafe_impl!(NonZeroU32: AsBytes);
@@ -735,17 +757,26 @@ safety_comment! {
     unsafe_impl!(NonZeroUsize: AsBytes);
     unsafe_impl!(NonZeroIsize: AsBytes);
 }
-
 safety_comment! {
     /// SAFETY:
-    /// The Rust compiler reuses `0` value to represent `None`, so
-    /// `size_of::<Option<NonZeroXxx>>() == size_of::<xxx>()`; see `NonZeroXxx`
-    /// documentation.
+    /// - `FromBytes`, `AsBytes`: The Rust compiler reuses `0` value to
+    ///   represent `None`, so `size_of::<Option<NonZeroXxx>>() ==
+    ///   size_of::<xxx>()`; see `NonZeroXxx` documentation.
+    /// - `Unaligned`: `NonZeroU8` and `NonZeroI8` document that
+    ///   `Option<NonZeroU8>` and `Option<NonZeroI8>` both have size 1. [1] [2]
+    ///   This is worded in a way that makes it unclear whether it's meant as a
+    ///   guarantee, but given the purpose of those types, it's virtually
+    ///   unthinkable that that would ever change. The only valid alignment for
+    ///   a 1-byte type is 1.
+    ///
+    /// [1] https://doc.rust-lang.org/stable/std/num/struct.NonZeroU8.html
+    /// [2] https://doc.rust-lang.org/stable/std/num/struct.NonZeroI8.html
     ///
     /// TODO(https://github.com/rust-lang/rust/pull/104082): Cite documentation
     /// for layout guarantees.
-    unsafe_impl!(Option<NonZeroU8>: FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroI8>: FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU8>: FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(Option<NonZeroI8>: FromBytes, AsBytes, Unaligned);
+    assert_unaligned!(Option<NonZeroU8>, Option<NonZeroI8>);
     unsafe_impl!(Option<NonZeroU16>: FromBytes, AsBytes);
     unsafe_impl!(Option<NonZeroI16>: FromBytes, AsBytes);
     unsafe_impl!(Option<NonZeroU32>: FromBytes, AsBytes);
@@ -776,6 +807,7 @@ safety_comment! {
     unsafe_impl!(T: ?Sized => FromBytes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => AsBytes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => Unaligned for PhantomData<T>);
+    assert_unaligned!(PhantomData<()>, PhantomData<u8>, PhantomData<u64>);
 }
 safety_comment! {
     /// SAFETY:
@@ -789,17 +821,22 @@ safety_comment! {
     unsafe_impl!(T: FromBytes => FromBytes for Wrapping<T>);
     unsafe_impl!(T: AsBytes => AsBytes for Wrapping<T>);
     unsafe_impl!(T: Unaligned => Unaligned for Wrapping<T>);
+    assert_unaligned!(Wrapping<()>, Wrapping<u8>);
 }
-
 safety_comment! {
     // `MaybeUninit<T>` is `FromBytes`, but never `AsBytes` since it may contain
     // uninitialized bytes.
     //
     /// SAFETY:
-    /// `MaybeUninit<T>` has no restrictions on its contents.
+    /// - `FromBytes`: `MaybeUninit<T>` has no restrictions on its contents.
+    /// - `Unaligned`: `MaybeUninit<T>` is guaranteed by its documentation [1]
+    ///   to have the same alignment as `T`.
+    ///
+    /// [1] https://doc.rust-lang.org/nightly/core/mem/union.MaybeUninit.html#layout-1
     unsafe_impl!(T => FromBytes for MaybeUninit<T>);
+    unsafe_impl!(T: Unaligned => Unaligned for MaybeUninit<T>);
+    assert_unaligned!(MaybeUninit<()>, MaybeUninit<u8>);
 }
-
 safety_comment! {
     /// SAFETY:
     /// `ManuallyDrop` has the same layout as `T`, and accessing the inner value
@@ -818,8 +855,8 @@ safety_comment! {
     unsafe_impl!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + AsBytes => AsBytes for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + Unaligned => Unaligned for ManuallyDrop<T>);
+    assert_unaligned!(ManuallyDrop<()>, ManuallyDrop<u8>);
 }
-
 safety_comment! {
     /// SAFETY:
     /// Per the reference [1]:
@@ -839,10 +876,14 @@ safety_comment! {
     /// since an array/slice has "the same alignment of `T`", `[T]` and `[T; N]`
     /// are `Unaligned` if `T` is.
     ///
+    /// Note that we don't `assert_unaligned!` for slice types because
+    /// `assert_unaligned!` uses `align_of`, which only works for `Sized` types.
+    ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#array-layout
     unsafe_impl!(T: FromBytes, const N: usize => FromBytes for [T; N]);
     unsafe_impl!(T: AsBytes, const N: usize => AsBytes for [T; N]);
     unsafe_impl!(T: Unaligned, const N: usize => Unaligned for [T; N]);
+    assert_unaligned!([(); 0], [(); 1], [u8; 0], [u8; 1]);
     unsafe_impl!(T: FromBytes => FromBytes for [T]);
     unsafe_impl!(T: AsBytes => AsBytes for [T]);
     unsafe_impl!(T: Unaligned => Unaligned for [T]);
@@ -3830,10 +3871,8 @@ mod tests {
         // `!Unaligned` at some point.
         assert_impls!(str: AsBytes, !FromBytes, !Unaligned);
 
-        // `NonZeroU8/NonZeroI8: Unaligned` is probably sound, so we can
-        // probably remove `!Unaligned` at some point.
-        assert_impls!(NonZeroU8: AsBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI8: AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU8: AsBytes, Unaligned, !FromBytes);
+        assert_impls!(NonZeroI8: AsBytes, Unaligned, !FromBytes);
         assert_impls!(NonZeroU16: AsBytes, !FromBytes, !Unaligned);
         assert_impls!(NonZeroI16: AsBytes, !FromBytes, !Unaligned);
         assert_impls!(NonZeroU32: AsBytes, !FromBytes, !Unaligned);
@@ -3845,10 +3884,8 @@ mod tests {
         assert_impls!(NonZeroUsize: AsBytes, !FromBytes, !Unaligned);
         assert_impls!(NonZeroIsize: AsBytes, !FromBytes, !Unaligned);
 
-        // `Option<NonZeroU8>/Option<NonZeroI8>: Unaligned` is probably sound,
-        // so we can probably remove `!Unaligned` at some point.
-        assert_impls!(Option<NonZeroU8>: FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI8>: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU8>: FromBytes, AsBytes, Unaligned);
+        assert_impls!(Option<NonZeroI8>: FromBytes, AsBytes, Unaligned);
         assert_impls!(Option<NonZeroU16>: FromBytes, AsBytes, !Unaligned);
         assert_impls!(Option<NonZeroI16>: FromBytes, AsBytes, !Unaligned);
         assert_impls!(Option<NonZeroU32>: FromBytes, AsBytes, !Unaligned);
@@ -3871,7 +3908,7 @@ mod tests {
         assert_impls!(ManuallyDrop<NotZerocopy>: !FromBytes, !AsBytes, !Unaligned);
         assert_impls!(ManuallyDrop<[NotZerocopy]>: !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(MaybeUninit<u8>: FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(MaybeUninit<u8>: FromBytes, Unaligned, !AsBytes);
         assert_impls!(MaybeUninit<NotZerocopy>: FromBytes, !AsBytes, !Unaligned);
 
         assert_impls!(Wrapping<u8>: FromBytes, AsBytes, Unaligned);
