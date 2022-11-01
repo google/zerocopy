@@ -21,7 +21,7 @@ union AsBytes1<T> {
 
 #[derive(AsBytes)]
 #[repr(C)]
-union AsBytes {
+union AsBytes2 {
     foo: u8,
     bar: [u8; 2],
 }

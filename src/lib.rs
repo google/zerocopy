@@ -122,6 +122,8 @@
 #![cfg_attr(feature = "simd-nightly", feature(stdsimd))]
 
 pub mod byteorder;
+#[doc(hidden)]
+pub mod derive_util;
 
 pub use crate::byteorder::*;
 pub use zerocopy_derive::*;
