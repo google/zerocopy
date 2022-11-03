@@ -44,6 +44,13 @@ is_unaligned!(Bar);
 #[derive(Unaligned)]
 #[repr(packed)]
 struct Baz {
+    // NOTE: The `u16` type is not guaranteed to have alignment 2, although it
+    // does on many platforms. However, to fix this would require a custom type
+    // with a `#[repr(align(2))]` attribute, and `#[repr(packed)]` types are not
+    // allowed to transitively contain `#[repr(align(...))]` types. Thus, we
+    // have no choice but to use `u16` here. Luckily, these tests run in CI on
+    // platforms on which `u16` has alignment 2, so this isn't that big of a
+    // deal.
     a: u16,
 }
 

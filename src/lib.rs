@@ -2454,9 +2454,23 @@ mod tests {
         }
     }
 
-    // Converts a `u64` to bytes using this platform's endianness.
-    fn u64_to_bytes(u: u64) -> [u8; 8] {
-        U64::<NativeEndian>::new(u).as_bytes().try_into().unwrap()
+    // A `u64` with alignment 8.
+    //
+    // Though `u64` has alignment 8 on some platforms, it's not guaranteed.
+    // By contrast, `AU64` is guaranteed to have alignment 8.
+    #[derive(FromBytes, AsBytes, Eq, PartialEq, Ord, PartialOrd, Default, Debug, Copy, Clone)]
+    #[repr(C, align(8))]
+    struct AU64(u64);
+
+    impl Display for AU64 {
+        fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+            Display::fmt(&self.0, f)
+        }
+    }
+
+    // Converts an `AU64` to bytes using this platform's endianness.
+    fn au64_to_bytes(u: AU64) -> [u8; 8] {
+        U64::<NativeEndian>::new(u.0).as_bytes().try_into().unwrap()
     }
 
     #[test]
@@ -2553,34 +2567,34 @@ mod tests {
     // between the typed and untyped representations, that reads via `deref` and
     // `read` behave the same, and that writes via `deref_mut` and `write`
     // behave the same.
-    fn test_new_helper(mut lv: LayoutVerified<&mut [u8], u64>) {
+    fn test_new_helper(mut lv: LayoutVerified<&mut [u8], AU64>) {
         // assert that the value starts at 0
-        assert_eq!(*lv, 0);
-        assert_eq!(lv.read(), 0);
+        assert_eq!(*lv, AU64(0));
+        assert_eq!(lv.read(), AU64(0));
 
         // Assert that values written to the typed value are reflected in the
         // byte slice.
-        const VAL1: u64 = 0xFF00FF00FF00FF00;
+        const VAL1: AU64 = AU64(0xFF00FF00FF00FF00);
         *lv = VAL1;
-        assert_eq!(lv.bytes(), &u64_to_bytes(VAL1));
-        *lv = 0;
+        assert_eq!(lv.bytes(), &au64_to_bytes(VAL1));
+        *lv = AU64(0);
         lv.write(VAL1);
-        assert_eq!(lv.bytes(), &u64_to_bytes(VAL1));
+        assert_eq!(lv.bytes(), &au64_to_bytes(VAL1));
 
         // Assert that values written to the byte slice are reflected in the
         // typed value.
-        const VAL2: u64 = !VAL1; // different from `VAL1`
-        lv.bytes_mut().copy_from_slice(&u64_to_bytes(VAL2)[..]);
+        const VAL2: AU64 = AU64(!VAL1.0); // different from `VAL1`
+        lv.bytes_mut().copy_from_slice(&au64_to_bytes(VAL2)[..]);
         assert_eq!(*lv, VAL2);
         assert_eq!(lv.read(), VAL2);
     }
 
     // Verify that values written to a `LayoutVerified` are properly shared
     // between the typed and untyped representations; pass a value with
-    // `typed_len` `u64`s backed by an array of `typed_len * 8` bytes.
-    fn test_new_helper_slice(mut lv: LayoutVerified<&mut [u8], [u64]>, typed_len: usize) {
+    // `typed_len` `AU64`s backed by an array of `typed_len * 8` bytes.
+    fn test_new_helper_slice(mut lv: LayoutVerified<&mut [u8], [AU64]>, typed_len: usize) {
         // Assert that the value starts out zeroed.
-        assert_eq!(&*lv, vec![0; typed_len].as_slice());
+        assert_eq!(&*lv, vec![AU64(0); typed_len].as_slice());
 
         // Check the backing storage is the exact same slice.
         let untyped_len = typed_len * 8;
@@ -2589,16 +2603,16 @@ mod tests {
 
         // Assert that values written to the typed value are reflected in the
         // byte slice.
-        const VAL1: u64 = 0xFF00FF00FF00FF00;
+        const VAL1: AU64 = AU64(0xFF00FF00FF00FF00);
         for typed in &mut *lv {
             *typed = VAL1;
         }
-        assert_eq!(lv.bytes(), VAL1.to_ne_bytes().repeat(typed_len).as_slice());
+        assert_eq!(lv.bytes(), VAL1.0.to_ne_bytes().repeat(typed_len).as_slice());
 
         // Assert that values written to the byte slice are reflected in the
         // typed value.
-        const VAL2: u64 = !VAL1; // different from VAL1
-        lv.bytes_mut().copy_from_slice(&VAL2.to_ne_bytes().repeat(typed_len));
+        const VAL2: AU64 = AU64(!VAL1.0); // different from VAL1
+        lv.bytes_mut().copy_from_slice(&VAL2.0.to_ne_bytes().repeat(typed_len));
         assert!(lv.iter().copied().all(|x| x == VAL2));
     }
 
@@ -2664,61 +2678,61 @@ mod tests {
         // memory.
 
         // A buffer with an alignment of 8.
-        let mut buf = Align::<[u8; 8], u64>::default();
+        let mut buf = Align::<[u8; 8], AU64>::default();
         // `buf.t` should be aligned to 8, so this should always succeed.
-        test_new_helper(LayoutVerified::<_, u64>::new(&mut buf.t[..]).unwrap());
+        test_new_helper(LayoutVerified::<_, AU64>::new(&mut buf.t[..]).unwrap());
         buf.t = [0xFFu8; 8];
-        test_new_helper(LayoutVerified::<_, u64>::new_zeroed(&mut buf.t[..]).unwrap());
+        test_new_helper(LayoutVerified::<_, AU64>::new_zeroed(&mut buf.t[..]).unwrap());
         {
             // In a block so that `lv` and `suffix` don't live too long.
             buf.set_default();
-            let (lv, suffix) = LayoutVerified::<_, u64>::new_from_prefix(&mut buf.t[..]).unwrap();
+            let (lv, suffix) = LayoutVerified::<_, AU64>::new_from_prefix(&mut buf.t[..]).unwrap();
             assert!(suffix.is_empty());
             test_new_helper(lv);
         }
         {
             buf.t = [0xFFu8; 8];
             let (lv, suffix) =
-                LayoutVerified::<_, u64>::new_from_prefix_zeroed(&mut buf.t[..]).unwrap();
+                LayoutVerified::<_, AU64>::new_from_prefix_zeroed(&mut buf.t[..]).unwrap();
             assert!(suffix.is_empty());
             test_new_helper(lv);
         }
         {
             buf.set_default();
-            let (prefix, lv) = LayoutVerified::<_, u64>::new_from_suffix(&mut buf.t[..]).unwrap();
+            let (prefix, lv) = LayoutVerified::<_, AU64>::new_from_suffix(&mut buf.t[..]).unwrap();
             assert!(prefix.is_empty());
             test_new_helper(lv);
         }
         {
             buf.t = [0xFFu8; 8];
             let (prefix, lv) =
-                LayoutVerified::<_, u64>::new_from_suffix_zeroed(&mut buf.t[..]).unwrap();
+                LayoutVerified::<_, AU64>::new_from_suffix_zeroed(&mut buf.t[..]).unwrap();
             assert!(prefix.is_empty());
             test_new_helper(lv);
         }
 
         // A buffer with alignment 8 and length 16.
-        let mut buf = Align::<[u8; 16], u64>::default();
+        let mut buf = Align::<[u8; 16], AU64>::default();
         // `buf.t` should be aligned to 8 and have a length which is a multiple
-        // of `size_of::<u64>()`, so this should always succeed.
-        test_new_helper_slice(LayoutVerified::<_, [u64]>::new_slice(&mut buf.t[..]).unwrap(), 2);
+        // of `size_of::<AU64>()`, so this should always succeed.
+        test_new_helper_slice(LayoutVerified::<_, [AU64]>::new_slice(&mut buf.t[..]).unwrap(), 2);
         buf.t = [0xFFu8; 16];
         test_new_helper_slice(
-            LayoutVerified::<_, [u64]>::new_slice_zeroed(&mut buf.t[..]).unwrap(),
+            LayoutVerified::<_, [AU64]>::new_slice_zeroed(&mut buf.t[..]).unwrap(),
             2,
         );
 
         {
             buf.set_default();
             let (lv, suffix) =
-                LayoutVerified::<_, [u64]>::new_slice_from_prefix(&mut buf.t[..], 1).unwrap();
+                LayoutVerified::<_, [AU64]>::new_slice_from_prefix(&mut buf.t[..], 1).unwrap();
             assert_eq!(suffix, [0; 8]);
             test_new_helper_slice(lv, 1);
         }
         {
             buf.t = [0xFFu8; 16];
             let (lv, suffix) =
-                LayoutVerified::<_, [u64]>::new_slice_from_prefix_zeroed(&mut buf.t[..], 1)
+                LayoutVerified::<_, [AU64]>::new_slice_from_prefix_zeroed(&mut buf.t[..], 1)
                     .unwrap();
             assert_eq!(suffix, [0xFF; 8]);
             test_new_helper_slice(lv, 1);
@@ -2726,14 +2740,14 @@ mod tests {
         {
             buf.set_default();
             let (prefix, lv) =
-                LayoutVerified::<_, [u64]>::new_slice_from_suffix(&mut buf.t[..], 1).unwrap();
+                LayoutVerified::<_, [AU64]>::new_slice_from_suffix(&mut buf.t[..], 1).unwrap();
             assert_eq!(prefix, [0; 8]);
             test_new_helper_slice(lv, 1);
         }
         {
             buf.t = [0xFFu8; 16];
             let (prefix, lv) =
-                LayoutVerified::<_, [u64]>::new_slice_from_suffix_zeroed(&mut buf.t[..], 1)
+                LayoutVerified::<_, [AU64]>::new_slice_from_suffix_zeroed(&mut buf.t[..], 1)
                     .unwrap();
             assert_eq!(prefix, [0xFF; 8]);
             test_new_helper_slice(lv, 1);
@@ -2792,7 +2806,7 @@ mod tests {
 
         let mut buf = [0u8; 16];
         // `buf.t` should be aligned to 8 and have a length which is a multiple
-        // of `size_of::<u64>()`, so this should always succeed.
+        // of `size_of::AU64>()`, so this should always succeed.
         test_new_helper_slice_unaligned(
             LayoutVerified::<_, [u8]>::new_slice_unaligned(&mut buf[..]).unwrap(),
             16,
@@ -2844,11 +2858,11 @@ mod tests {
         // remainder and prefix of the slice respectively. Test that
         // `xxx_zeroed` behaves the same, and zeroes the memory.
 
-        let mut buf = Align::<[u8; 16], u64>::default();
+        let mut buf = Align::<[u8; 16], AU64>::default();
         {
             // In a block so that `lv` and `suffix` don't live too long.
             // `buf.t` should be aligned to 8, so this should always succeed.
-            let (lv, suffix) = LayoutVerified::<_, u64>::new_from_prefix(&mut buf.t[..]).unwrap();
+            let (lv, suffix) = LayoutVerified::<_, AU64>::new_from_prefix(&mut buf.t[..]).unwrap();
             assert_eq!(suffix.len(), 8);
             test_new_helper(lv);
         }
@@ -2856,7 +2870,7 @@ mod tests {
             buf.t = [0xFFu8; 16];
             // `buf.t` should be aligned to 8, so this should always succeed.
             let (lv, suffix) =
-                LayoutVerified::<_, u64>::new_from_prefix_zeroed(&mut buf.t[..]).unwrap();
+                LayoutVerified::<_, AU64>::new_from_prefix_zeroed(&mut buf.t[..]).unwrap();
             // Assert that the suffix wasn't zeroed.
             assert_eq!(suffix, &[0xFFu8; 8]);
             test_new_helper(lv);
@@ -2864,7 +2878,7 @@ mod tests {
         {
             buf.set_default();
             // `buf.t` should be aligned to 8, so this should always succeed.
-            let (prefix, lv) = LayoutVerified::<_, u64>::new_from_suffix(&mut buf.t[..]).unwrap();
+            let (prefix, lv) = LayoutVerified::<_, AU64>::new_from_suffix(&mut buf.t[..]).unwrap();
             assert_eq!(prefix.len(), 8);
             test_new_helper(lv);
         }
@@ -2872,7 +2886,7 @@ mod tests {
             buf.t = [0xFFu8; 16];
             // `buf.t` should be aligned to 8, so this should always succeed.
             let (prefix, lv) =
-                LayoutVerified::<_, u64>::new_from_suffix_zeroed(&mut buf.t[..]).unwrap();
+                LayoutVerified::<_, AU64>::new_from_suffix_zeroed(&mut buf.t[..]).unwrap();
             // Assert that the prefix wasn't zeroed.
             assert_eq!(prefix, &[0xFFu8; 8]);
             test_new_helper(lv);
@@ -2927,26 +2941,26 @@ mod tests {
         // Fail because the buffer is too large.
 
         // A buffer with an alignment of 8.
-        let mut buf = Align::<[u8; 16], u64>::default();
+        let mut buf = Align::<[u8; 16], AU64>::default();
         // `buf.t` should be aligned to 8, so only the length check should fail.
-        assert!(LayoutVerified::<_, u64>::new(&buf.t[..]).is_none());
-        assert!(LayoutVerified::<_, u64>::new_zeroed(&mut buf.t[..]).is_none());
+        assert!(LayoutVerified::<_, AU64>::new(&buf.t[..]).is_none());
+        assert!(LayoutVerified::<_, AU64>::new_zeroed(&mut buf.t[..]).is_none());
         assert!(LayoutVerified::<_, [u8; 8]>::new_unaligned(&buf.t[..]).is_none());
         assert!(LayoutVerified::<_, [u8; 8]>::new_unaligned_zeroed(&mut buf.t[..]).is_none());
 
         // Fail because the buffer is too small.
 
         // A buffer with an alignment of 8.
-        let mut buf = Align::<[u8; 4], u64>::default();
+        let mut buf = Align::<[u8; 4], AU64>::default();
         // `buf.t` should be aligned to 8, so only the length check should fail.
-        assert!(LayoutVerified::<_, u64>::new(&buf.t[..]).is_none());
-        assert!(LayoutVerified::<_, u64>::new_zeroed(&mut buf.t[..]).is_none());
+        assert!(LayoutVerified::<_, AU64>::new(&buf.t[..]).is_none());
+        assert!(LayoutVerified::<_, AU64>::new_zeroed(&mut buf.t[..]).is_none());
         assert!(LayoutVerified::<_, [u8; 8]>::new_unaligned(&buf.t[..]).is_none());
         assert!(LayoutVerified::<_, [u8; 8]>::new_unaligned_zeroed(&mut buf.t[..]).is_none());
-        assert!(LayoutVerified::<_, u64>::new_from_prefix(&buf.t[..]).is_none());
-        assert!(LayoutVerified::<_, u64>::new_from_prefix_zeroed(&mut buf.t[..]).is_none());
-        assert!(LayoutVerified::<_, u64>::new_from_suffix(&buf.t[..]).is_none());
-        assert!(LayoutVerified::<_, u64>::new_from_suffix_zeroed(&mut buf.t[..]).is_none());
+        assert!(LayoutVerified::<_, AU64>::new_from_prefix(&buf.t[..]).is_none());
+        assert!(LayoutVerified::<_, AU64>::new_from_prefix_zeroed(&mut buf.t[..]).is_none());
+        assert!(LayoutVerified::<_, AU64>::new_from_suffix(&buf.t[..]).is_none());
+        assert!(LayoutVerified::<_, AU64>::new_from_suffix_zeroed(&mut buf.t[..]).is_none());
         assert!(LayoutVerified::<_, [u8; 8]>::new_unaligned_from_prefix(&buf.t[..]).is_none());
         assert!(LayoutVerified::<_, [u8; 8]>::new_unaligned_from_prefix_zeroed(&mut buf.t[..])
             .is_none());
@@ -2956,26 +2970,26 @@ mod tests {
 
         // Fail because the length is not a multiple of the element size.
 
-        let mut buf = Align::<[u8; 12], u64>::default();
+        let mut buf = Align::<[u8; 12], AU64>::default();
         // `buf.t` has length 12, but element size is 8.
-        assert!(LayoutVerified::<_, [u64]>::new_slice(&buf.t[..]).is_none());
-        assert!(LayoutVerified::<_, [u64]>::new_slice_zeroed(&mut buf.t[..]).is_none());
+        assert!(LayoutVerified::<_, [AU64]>::new_slice(&buf.t[..]).is_none());
+        assert!(LayoutVerified::<_, [AU64]>::new_slice_zeroed(&mut buf.t[..]).is_none());
         assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned(&buf.t[..]).is_none());
         assert!(
             LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_zeroed(&mut buf.t[..]).is_none()
         );
 
         // Fail because the buffer is too short.
-        let mut buf = Align::<[u8; 12], u64>::default();
+        let mut buf = Align::<[u8; 12], AU64>::default();
         // `buf.t` has length 12, but the element size is 8 (and we're expecting
         // two of them).
-        assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix(&buf.t[..], 2).is_none());
+        assert!(LayoutVerified::<_, [AU64]>::new_slice_from_prefix(&buf.t[..], 2).is_none());
         assert!(
-            LayoutVerified::<_, [u64]>::new_slice_from_prefix_zeroed(&mut buf.t[..], 2).is_none()
+            LayoutVerified::<_, [AU64]>::new_slice_from_prefix_zeroed(&mut buf.t[..], 2).is_none()
         );
-        assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix(&buf.t[..], 2).is_none());
+        assert!(LayoutVerified::<_, [AU64]>::new_slice_from_suffix(&buf.t[..], 2).is_none());
         assert!(
-            LayoutVerified::<_, [u64]>::new_slice_from_suffix_zeroed(&mut buf.t[..], 2).is_none()
+            LayoutVerified::<_, [AU64]>::new_slice_from_suffix_zeroed(&mut buf.t[..], 2).is_none()
         );
         assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_prefix(&buf.t[..], 2)
             .is_none());
@@ -2996,42 +3010,42 @@ mod tests {
 
         // A buffer with an alignment of 8. An odd buffer size is chosen so that
         // the last byte of the buffer has odd alignment.
-        let mut buf = Align::<[u8; 13], u64>::default();
+        let mut buf = Align::<[u8; 13], AU64>::default();
         // Slicing from 1, we get a buffer with size 12 (so the length check
         // should succeed) but an alignment of only 1, which is insufficient.
-        assert!(LayoutVerified::<_, u64>::new(&buf.t[1..]).is_none());
-        assert!(LayoutVerified::<_, u64>::new_zeroed(&mut buf.t[1..]).is_none());
-        assert!(LayoutVerified::<_, u64>::new_from_prefix(&buf.t[1..]).is_none());
-        assert!(LayoutVerified::<_, u64>::new_from_prefix_zeroed(&mut buf.t[1..]).is_none());
-        assert!(LayoutVerified::<_, [u64]>::new_slice(&buf.t[1..]).is_none());
-        assert!(LayoutVerified::<_, [u64]>::new_slice_zeroed(&mut buf.t[1..]).is_none());
-        assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix(&buf.t[1..], 1).is_none());
+        assert!(LayoutVerified::<_, AU64>::new(&buf.t[1..]).is_none());
+        assert!(LayoutVerified::<_, AU64>::new_zeroed(&mut buf.t[1..]).is_none());
+        assert!(LayoutVerified::<_, AU64>::new_from_prefix(&buf.t[1..]).is_none());
+        assert!(LayoutVerified::<_, AU64>::new_from_prefix_zeroed(&mut buf.t[1..]).is_none());
+        assert!(LayoutVerified::<_, [AU64]>::new_slice(&buf.t[1..]).is_none());
+        assert!(LayoutVerified::<_, [AU64]>::new_slice_zeroed(&mut buf.t[1..]).is_none());
+        assert!(LayoutVerified::<_, [AU64]>::new_slice_from_prefix(&buf.t[1..], 1).is_none());
         assert!(
-            LayoutVerified::<_, [u64]>::new_slice_from_prefix_zeroed(&mut buf.t[1..], 1).is_none()
+            LayoutVerified::<_, [AU64]>::new_slice_from_prefix_zeroed(&mut buf.t[1..], 1).is_none()
         );
-        assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix(&buf.t[1..], 1).is_none());
+        assert!(LayoutVerified::<_, [AU64]>::new_slice_from_suffix(&buf.t[1..], 1).is_none());
         assert!(
-            LayoutVerified::<_, [u64]>::new_slice_from_suffix_zeroed(&mut buf.t[1..], 1).is_none()
+            LayoutVerified::<_, [AU64]>::new_slice_from_suffix_zeroed(&mut buf.t[1..], 1).is_none()
         );
         // Slicing is unnecessary here because `new_from_suffix[_zeroed]` use
         // the suffix of the slice, which has odd alignment.
-        assert!(LayoutVerified::<_, u64>::new_from_suffix(&buf.t[..]).is_none());
-        assert!(LayoutVerified::<_, u64>::new_from_suffix_zeroed(&mut buf.t[..]).is_none());
+        assert!(LayoutVerified::<_, AU64>::new_from_suffix(&buf.t[..]).is_none());
+        assert!(LayoutVerified::<_, AU64>::new_from_suffix_zeroed(&mut buf.t[..]).is_none());
 
         // Fail due to arithmetic overflow.
 
-        let mut buf = Align::<[u8; 16], u64>::default();
-        let unreasonable_len = usize::MAX / mem::size_of::<u64>() + 1;
-        assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix(&buf.t[..], unreasonable_len)
+        let mut buf = Align::<[u8; 16], AU64>::default();
+        let unreasonable_len = usize::MAX / mem::size_of::<AU64>() + 1;
+        assert!(LayoutVerified::<_, [AU64]>::new_slice_from_prefix(&buf.t[..], unreasonable_len)
             .is_none());
-        assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix_zeroed(
+        assert!(LayoutVerified::<_, [AU64]>::new_slice_from_prefix_zeroed(
             &mut buf.t[..],
             unreasonable_len
         )
         .is_none());
-        assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix(&buf.t[..], unreasonable_len)
+        assert!(LayoutVerified::<_, [AU64]>::new_slice_from_suffix(&buf.t[..], unreasonable_len)
             .is_none());
-        assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix_zeroed(
+        assert!(LayoutVerified::<_, [AU64]>::new_slice_from_suffix_zeroed(
             &mut buf.t[..],
             unreasonable_len
         )

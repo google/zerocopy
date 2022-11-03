@@ -5,6 +5,11 @@
 #[macro_use]
 extern crate zerocopy;
 
+#[path = "../util.rs"]
+mod util;
+
+use crate::util::AU16;
+
 fn main() {}
 
 //
@@ -16,14 +21,10 @@ fn main() {}
 struct AsBytes1<T>(T);
 
 #[derive(AsBytes)]
-#[repr(C, align(4))]
-struct AlignedU32(u32);
-
-#[derive(AsBytes)]
 #[repr(C)]
 struct AsBytes2 {
     foo: u8,
-    bar: AlignedU32,
+    bar: AU16,
 }
 
 //
