@@ -552,41 +552,66 @@ fn impl_block<D: DataExt>(
         quote!()
     };
 
-    let size_check_body = match (field_types.is_empty(), padding_check) {
-        (true, _) | (false, PaddingCheck::None) => quote!(),
-        (false, PaddingCheck::Struct) => quote!(
-            const _: () = {
-                trait HasPadding<const HAS_PADDING: bool> {}
-                fn assert_no_padding<T: HasPadding<false>>() {}
+    match (field_types.is_empty(), padding_check) {
+        (true, _) | (false, PaddingCheck::None) => (),
+        (false, PaddingCheck::Struct) => {
+            let fields = field_types.iter();
+            // `parse_quote!` doesn't parse macro invocations in const generics
+            // properly without enabling syn's `full` feature, so the type has
+            // to be manually constructed as `syn::Type::Verbatim`.
+            //
+            // This where clause is equivalent to adding:
+            // ```
+            // HasPadding<Foo, {struct_has_padding!(Foo, a, b, ...)}>: ShouldBe<false>
+            // ```
+            // with fully-qualified paths.
+            where_clause.predicates.push(syn::WherePredicate::Type(syn::PredicateType {
+                lifetimes: None,
+                bounded_ty: syn::Type::Verbatim(quote!(zerocopy::derive_util::HasPadding<#type_ident, {zerocopy::struct_has_padding!(#type_ident, #(#fields),*)}>)),
+                colon_token: syn::Token![:](Span::mixed_site()),
+                bounds: parse_quote!(zerocopy::derive_util::ShouldBe<false>),
+            }));
+        }
+        (false, PaddingCheck::Union) => {
+            let fields = field_types.iter();
+            // `parse_quote!` doesn't parse macro invocations in const generics
+            // properly without enabling syn's `full` feature, so the type has
+            // to be manually constructed as `syn::Type::Verbatim`.
+            //
+            // This where clause is equivalent to adding:
+            // ```
+            // HasPadding<Foo, {union_has_padding!(Foo, a, b, ...)}>: ShouldBe<false>
+            // ```
+            // with fully-qualified paths.
+            where_clause.predicates.push(syn::WherePredicate::Type(syn::PredicateType {
+                lifetimes: None,
+                bounded_ty: syn::Type::Verbatim(quote!(zerocopy::derive_util::HasPadding<#type_ident, {zerocopy::union_has_padding!(#type_ident, #(#fields),*)}>)),
+                colon_token: syn::Token![:](Span::mixed_site()),
+                bounds: parse_quote!(zerocopy::derive_util::ShouldBe<false>),
+            }));
+        }
+    }
 
-                const COMPOSITE_TYPE_SIZE: usize = ::core::mem::size_of::<#type_ident>();
-                const SUM_FIELD_SIZES: usize = 0 #(+ ::core::mem::size_of::<#field_types>())*;
-                const HAS_PADDING: bool = COMPOSITE_TYPE_SIZE > SUM_FIELD_SIZES;
-                impl HasPadding<HAS_PADDING> for #type_ident {}
-                let _ = assert_no_padding::<#type_ident>;
-            };
-        ),
-        (false, PaddingCheck::Union) => quote!(
+    // We use a constant to force the compiler to emit an error when a concrete
+    // type does not satisfy the where clauses on its impl.
+    let use_concrete = if input.generics.params.is_empty() {
+        Some(quote! {
             const _: () = {
-                trait FieldsAreSameSize<const FIELDS_ARE_SAME_SIZE: bool> {}
-                fn assert_fields_are_same_size<T: FieldsAreSameSize<true>>() {}
-
-                const COMPOSITE_TYPE_SIZE: usize = ::core::mem::size_of::<#type_ident>();
-                const FIELDS_ARE_SAME_SIZE: bool = true
-                    #(&& (::core::mem::size_of::<#field_types>() == COMPOSITE_TYPE_SIZE))*;
-                impl FieldsAreSameSize<FIELDS_ARE_SAME_SIZE> for #type_ident {}
-                let _ = assert_fields_are_same_size::<#type_ident>;
+                fn must_implement_trait<T: zerocopy::#trait_ident>() {}
+                let _ = must_implement_trait::<#type_ident>;
             };
-        ),
+        })
+    } else {
+        None
     };
 
     quote! {
         unsafe impl < #(#params),* > zerocopy::#trait_ident for #type_ident < #(#param_idents),* > #where_clause {
             fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {
                 #trait_bound_body
-                #size_check_body
             }
         }
+        #use_concrete
     }
 }
 

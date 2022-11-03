@@ -24,11 +24,13 @@ struct FromBytes1 {
 // AsBytes errors
 //
 
+#[repr(C)]
+struct NotAsBytes(u32);
+
 #[derive(AsBytes)]
 #[repr(C)]
 struct AsBytes1 {
-    a: u8,
-    b: u16,
+    value: NotAsBytes,
 }
 
 //
