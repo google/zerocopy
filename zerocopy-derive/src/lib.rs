@@ -536,21 +536,11 @@ fn impl_block<D: DataExt>(
         GenericParam::Const(cnst) => quote!(#cnst),
     });
 
-    let trait_bound_body = if require_trait_bound {
-        let implements_type_ident =
-            Ident::new(format!("Implements{}", trait_ident).as_str(), Span::call_site());
-        let implements_type_tokens = quote!(#implements_type_ident);
-        let types = non_type_param_field_types.map(|ty| quote!(#implements_type_tokens<#ty>));
-        quote!(
-            // A type with a type parameter that must implement `#trait_ident`.
-            struct #implements_type_ident<F: ?Sized + zerocopy::#trait_ident>(::core::marker::PhantomData<F>);
-            // For each field type, an instantiation that won't type check if
-            // that type doesn't implement `#trait_ident`.
-            #(let _: #types;)*
-        )
-    } else {
-        quote!()
-    };
+    if require_trait_bound {
+        for ty in non_type_param_field_types {
+            where_clause.predicates.push(parse_quote!(#ty: zerocopy::#trait_ident));
+        }
+    }
 
     match (field_types.is_empty(), padding_check) {
         (true, _) | (false, PaddingCheck::None) => (),
@@ -608,7 +598,6 @@ fn impl_block<D: DataExt>(
     quote! {
         unsafe impl < #(#params),* > zerocopy::#trait_ident for #type_ident < #(#param_idents),* > #where_clause {
             fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {
-                #trait_bound_body
             }
         }
         #use_concrete
