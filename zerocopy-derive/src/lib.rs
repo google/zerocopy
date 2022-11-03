@@ -602,7 +602,7 @@ fn impl_block<D: DataExt>(
     let use_concrete = if input.generics.params.is_empty() {
         Some(quote! {
             const _: () = {
-                fn must_implement_trait<T: zerocopy::#trait_ident>() {}
+                fn must_implement_trait<T: zerocopy::#trait_ident + ?Sized>() {}
                 let _ = must_implement_trait::<#type_ident>;
             };
         })
@@ -612,8 +612,7 @@ fn impl_block<D: DataExt>(
 
     quote! {
         unsafe impl < #(#params),* > zerocopy::#trait_ident for #type_ident < #(#param_idents),* > #where_clause {
-            fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {
-            }
+            fn only_derive_is_allowed_to_implement_this_trait() {}
         }
         #use_concrete
     }
