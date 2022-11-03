@@ -133,7 +133,7 @@ use core::{
     cmp::Ordering,
     fmt::{self, Debug, Display, Formatter},
     marker::PhantomData,
-    mem::{self, MaybeUninit},
+    mem::{self, ManuallyDrop, MaybeUninit},
     num::{
         NonZeroI128, NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8, NonZeroIsize, NonZeroU128,
         NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize, Wrapping,
@@ -863,9 +863,29 @@ impl<T> Unalign<T> {
     }
 
     /// Consumes `self`, returning the inner `T`.
-    pub fn into_inner(self) -> T {
-        let Unalign(val) = self;
-        val
+    pub const fn into_inner(self) -> T {
+        // Use this instead of `mem::transmute` since the latter can't tell
+        // that `Unalign<T>` and `T` have the same size.
+        #[repr(C)]
+        union Transmute<T> {
+            u: ManuallyDrop<Unalign<T>>,
+            t: ManuallyDrop<T>,
+        }
+
+        // SAFETY: Since `Unalign` is `#[repr(C, packed)]`, it has the same
+        // layout as `T`. `ManuallyDrop<U>` is guaranteed to have the same
+        // layout as `U`, and so `ManuallyDrop<Unalign<T>>` has the same layout
+        // as `ManuallyDrop<T>`. Since `Transmute<T>` is `#[repr(C)]`, its `t`
+        // and `u` fields both start at the same offset (namely, 0) within the
+        // union.
+        //
+        // We do this instead of just destructuring in order to prevent
+        // `Unalign`'s `Drop::drop` from being run, since dropping is not
+        // supported in `const fn`s.
+        //
+        // TODO(https://github.com/rust-lang/rust/issues/73255): Destructure
+        // instead of using unsafe.
+        unsafe { ManuallyDrop::into_inner(Transmute { u: ManuallyDrop::new(self) }.t) }
     }
 
     /// Gets an unaligned raw pointer to the inner `T`.
@@ -2463,6 +2483,14 @@ mod tests {
     fn test_object_safety() {
         fn _takes_from_bytes(_: &dyn FromBytes) {}
         fn _takes_unaligned(_: &dyn Unaligned) {}
+    }
+
+    #[test]
+    fn test_unalign_const() {
+        // Test that some `Unalign` functions and methods are `const`.
+        const _UNALIGN: Unalign<u64> = Unalign::new(0);
+        const _UNALIGN_PTR: *const u64 = _UNALIGN.get_ptr();
+        const _U64: u64 = _UNALIGN.into_inner();
     }
 
     #[test]
