@@ -1,39 +1,39 @@
 error: unsupported on types with type parameters
-  --> tests/ui-msrv/union.rs:16:10
+  --> tests/ui-msrv/union.rs:21:10
    |
-16 | #[derive(AsBytes)]
+21 | #[derive(AsBytes)]
    |          ^^^^^^^
    |
    = note: this error originates in the derive macro `AsBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-msrv/union.rs:34:11
+  --> tests/ui-msrv/union.rs:39:11
    |
-34 | #[repr(C, align(2))]
+39 | #[repr(C, align(2))]
    |           ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-msrv/union.rs:50:16
+  --> tests/ui-msrv/union.rs:55:16
    |
-50 | #[repr(packed, align(2))]
+55 | #[repr(packed, align(2))]
    |                ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-msrv/union.rs:56:18
+  --> tests/ui-msrv/union.rs:61:18
    |
-56 | #[repr(align(1), align(2))]
+61 | #[repr(align(1), align(2))]
    |                  ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-msrv/union.rs:62:8
+  --> tests/ui-msrv/union.rs:67:8
    |
-62 | #[repr(align(2), align(4))]
+67 | #[repr(align(2), align(4))]
    |        ^^^^^^^^
 
 error[E0277]: the trait bound `HasPadding<AsBytes2, true>: ShouldBe<false>` is not satisfied
-  --> tests/ui-msrv/union.rs:22:10
+  --> tests/ui-msrv/union.rs:27:10
    |
-22 | #[derive(AsBytes)]
+27 | #[derive(AsBytes)]
    |          ^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<AsBytes2, true>`
    |
    = help: the following implementations were found:
