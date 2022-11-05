@@ -1,53 +1,44 @@
 error[E0277]: the trait bound `&'static str: FromBytes` is not satisfied
-  --> tests/ui-msrv/late_compile_pass.rs:18:10
+  --> tests/ui-msrv/late_compile_pass.rs:23:10
    |
-18 | #[derive(FromBytes)]
+23 | #[derive(FromBytes)]
    |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `&'static str`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotAsBytes: AsBytes` is not satisfied
-  --> tests/ui-msrv/late_compile_pass.rs:30:10
+  --> tests/ui-msrv/late_compile_pass.rs:35:10
    |
-30 | #[derive(AsBytes)]
+35 | #[derive(AsBytes)]
    |          ^^^^^^^ the trait `AsBytes` is not implemented for `NotAsBytes`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `AsBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `u16: Unaligned` is not satisfied
-  --> tests/ui-msrv/late_compile_pass.rs:40:10
+error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
+  --> tests/ui-msrv/late_compile_pass.rs:45:10
    |
-40 | #[derive(Unaligned)]
-   |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `u16`
+45 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
    |
-   = help: the following implementations were found:
-             <i8 as Unaligned>
-             <u8 as Unaligned>
    = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `u16: Unaligned` is not satisfied
-  --> tests/ui-msrv/late_compile_pass.rs:48:10
+error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
+  --> tests/ui-msrv/late_compile_pass.rs:53:10
    |
-48 | #[derive(Unaligned)]
-   |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `u16`
+53 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
    |
-   = help: the following implementations were found:
-             <i8 as Unaligned>
-             <u8 as Unaligned>
    = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `u16: Unaligned` is not satisfied
-  --> tests/ui-msrv/late_compile_pass.rs:55:10
+error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
+  --> tests/ui-msrv/late_compile_pass.rs:60:10
    |
-55 | #[derive(Unaligned)]
-   |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `u16`
+60 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
    |
-   = help: the following implementations were found:
-             <i8 as Unaligned>
-             <u8 as Unaligned>
    = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
