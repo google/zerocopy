@@ -1,4 +1,4 @@
-error: unsupported on types with type parameters
+error: unsupported on generic structs that are not repr(transparent)
   --> tests/ui-stable/struct.rs:19:10
    |
 19 | #[derive(AsBytes)]

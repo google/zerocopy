@@ -11,3 +11,33 @@ use zerocopy::AsBytes;
 #[derive(AsBytes, Copy, Clone)]
 #[repr(C, align(2))]
 pub struct AU16(u16);
+
+#[allow(unused_macros)]
+macro_rules! assert_is_as_bytes {
+    ($ty:ty) => {
+        const _: () = {
+            struct IsAsBytes<T: zerocopy::AsBytes>(T);
+            const _: fn($ty) -> IsAsBytes<$ty> = IsAsBytes::<$ty>;
+        };
+    };
+}
+
+#[allow(unused_macros)]
+macro_rules! assert_is_from_bytes {
+    ($ty:ty) => {
+        const _: () = {
+            struct IsFromBytes<T: zerocopy::FromBytes>(T);
+            const _: fn($ty) -> IsFromBytes<$ty> = IsFromBytes::<$ty>;
+        };
+    };
+}
+
+#[allow(unused_macros)]
+macro_rules! assert_is_unaligned {
+    ($ty:ty) => {
+        const _: () = {
+            struct IsUnaligned<T: zerocopy::Unaligned>(T);
+            const _: fn($ty) -> IsUnaligned<$ty> = IsUnaligned::<$ty>;
+        };
+    };
+}

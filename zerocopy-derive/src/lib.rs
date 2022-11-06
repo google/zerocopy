@@ -195,16 +195,26 @@ fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::T
 // - `repr(packed)`
 
 fn derive_as_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    // TODO(#10): Support type parameters.
-    if !ast.generics.params.is_empty() {
-        return Error::new(Span::call_site(), "unsupported on types with type parameters")
-            .to_compile_error();
+    let reprs = try_or_print!(STRUCT_UNION_AS_BYTES_CFG.validate_reprs(ast));
+    let is_transparent = reprs.contains(&StructRepr::Transparent);
+
+    // TODO(#10): Support type parameters for non-transparent structs.
+    if !ast.generics.params.is_empty() && !is_transparent {
+        return Error::new(
+            Span::call_site(),
+            "unsupported on generic structs that are not repr(transparent)",
+        )
+        .to_compile_error();
     }
 
-    let reprs = try_or_print!(STRUCT_UNION_AS_BYTES_CFG.validate_reprs(ast));
-    let padding_check =
-        if reprs.contains(&StructRepr::Packed) { PaddingCheck::None } else { PaddingCheck::Struct };
-
+    // We don't need a padding check if the struct is repr(transparent) since
+    // the layout and ABI of the whole struct is the same as its only non-ZST
+    // field, and we require that field to be `AsBytes`.
+    let padding_check = if is_transparent || reprs.contains(&StructRepr::Packed) {
+        PaddingCheck::None
+    } else {
+        PaddingCheck::Struct
+    };
     impl_block(ast, strct, "AsBytes", true, padding_check)
 }
 
