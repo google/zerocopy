@@ -4,6 +4,9 @@
 
 #![allow(warnings)]
 
+#[macro_use]
+mod util;
+
 use zerocopy::FromBytes;
 
 // An enum is `FromBytes` if:
@@ -22,17 +25,6 @@ use zerocopy::FromBytes;
 // the first variant whose discriminant needs to be negative (e.g., `FooI8`'s
 // `Variant128` has a discriminant of -128) since Rust won't automatically wrap
 // a signed discriminant around without you explicitly telling it to.
-
-struct IsFromBytes<T: FromBytes>(T);
-
-// Fail compilation if `$ty: !FromBytes`.
-macro_rules! is_from_bytes {
-    ($ty:ty) => {
-        const _: () = {
-            let _: IsFromBytes<$ty>;
-        };
-    };
-}
 
 #[derive(FromBytes)]
 #[repr(u8)]
@@ -295,7 +287,7 @@ enum FooU8 {
     Variant255,
 }
 
-is_from_bytes!(FooU8);
+assert_is_from_bytes!(FooU8);
 
 #[derive(FromBytes)]
 #[repr(i8)]
@@ -558,7 +550,7 @@ enum FooI8 {
     Variant255,
 }
 
-is_from_bytes!(FooI8);
+assert_is_from_bytes!(FooI8);
 
 #[derive(FromBytes)]
 #[repr(u8, align(2))]
@@ -821,7 +813,7 @@ enum FooU8Align {
     Variant255,
 }
 
-is_from_bytes!(FooU8Align);
+assert_is_from_bytes!(FooU8Align);
 
 #[derive(FromBytes)]
 #[repr(i8, align(2))]
@@ -1084,7 +1076,7 @@ enum FooI8Align {
     Variant255,
 }
 
-is_from_bytes!(FooI8Align);
+assert_is_from_bytes!(FooI8Align);
 
 #[derive(FromBytes)]
 #[repr(u16)]
@@ -66627,7 +66619,7 @@ enum FooU16 {
     Variant65535,
 }
 
-is_from_bytes!(FooU16);
+assert_is_from_bytes!(FooU16);
 
 #[derive(FromBytes)]
 #[repr(i16)]
@@ -132170,4 +132162,4 @@ enum FooI16 {
     Variant65535,
 }
 
-is_from_bytes!(FooI16);
+assert_is_from_bytes!(FooI16);

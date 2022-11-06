@@ -4,24 +4,12 @@
 
 #![allow(warnings)]
 
+#[macro_use]
 mod util;
 
+use self::util::AU16;
 use std::{marker::PhantomData, option::IntoIter};
-
 use zerocopy::AsBytes;
-
-use crate::util::AU16;
-
-struct IsAsBytes<T: AsBytes>(T);
-
-// Fail compilation if `$ty: !AsBytes`.
-macro_rules! is_as_bytes {
-    ($ty:ty) => {
-        const _: () = {
-            let _: IsAsBytes<$ty>;
-        };
-    };
-}
 
 // A struct is `AsBytes` if:
 // - all fields are `AsBytes`
@@ -33,7 +21,7 @@ macro_rules! is_as_bytes {
 #[repr(C)]
 struct CZst;
 
-is_as_bytes!(CZst);
+assert_is_as_bytes!(CZst);
 
 #[derive(AsBytes)]
 #[repr(C)]
@@ -43,7 +31,7 @@ struct C {
     c: AU16,
 }
 
-is_as_bytes!(C);
+assert_is_as_bytes!(C);
 
 #[derive(AsBytes)]
 #[repr(transparent)]
@@ -52,13 +40,13 @@ struct Transparent {
     b: CZst,
 }
 
-is_as_bytes!(Transparent);
+assert_is_as_bytes!(Transparent);
 
 #[derive(AsBytes)]
 #[repr(C, packed)]
 struct CZstPacked;
 
-is_as_bytes!(CZstPacked);
+assert_is_as_bytes!(CZstPacked);
 
 #[derive(AsBytes)]
 #[repr(C, packed)]
@@ -74,4 +62,4 @@ struct CPacked {
     b: u16,
 }
 
-is_as_bytes!(CPacked);
+assert_is_as_bytes!(CPacked);
