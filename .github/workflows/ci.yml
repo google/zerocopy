@@ -69,20 +69,17 @@ jobs:
     - name: Set toolchain version
       run: |
         set -e
-
-        function pkg-meta {
-          cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"zerocopy\").$1"
-        }
+        . util.sh
 
         case ${{ matrix.toolchain }} in
           msrv)
-            ZC_TOOLCHAIN="$(pkg-meta rust_version)"
+            ZC_TOOLCHAIN="$(pkg-meta zerocopy rust_version)"
             ;;
           stable)
-            ZC_TOOLCHAIN="$(pkg-meta 'metadata.ci."pinned-stable"')"
+            ZC_TOOLCHAIN="$(pkg-meta zerocopy 'metadata.ci."pinned-stable"')"
             ;;
           nightly)
-            ZC_TOOLCHAIN="$(pkg-meta 'metadata.ci."pinned-nightly"')"
+            ZC_TOOLCHAIN="$(pkg-meta zerocopy 'metadata.ci."pinned-nightly"')"
             ;;
           *)
             echo 'Unrecognized toolchain: ${{ matrix.toolchain }}' | tee -a $GITHUB_STEP_SUMMARY >&2
@@ -184,10 +181,8 @@ jobs:
       - name: Check Rust formatting
         run: |
           set -e
-          cargo fmt --check -p zerocopy
-          cargo fmt --check -p zerocopy-derive
-          rustfmt --check tests/ui-nightly/*.rs
-          rustfmt --check zerocopy-derive/tests/ui-nightly/*.rs
+          . util.sh
+          run_test_in_github_action test_check_fmt
 
   check_readme:
     runs-on: ubuntu-latest
@@ -200,74 +195,44 @@ jobs:
       - name: Check README.md
         run: |
           set -e
-          cargo install cargo-readme --version 3.2.0
-          diff <(./generate-readme.sh) README.md
-          exit $?
+          . util.sh
+          run_test_in_github_action test_check_readme
 
   check_msrv:
     runs-on: ubuntu-latest
     name: Check MSRVs match
     steps:
       - uses: actions/checkout@v3
-      # Make sure that the MSRV in zerocopy's and zerocopy-derive's `Cargo.toml`
-      # files are the same.
       - name: Check MSRVs match
         run: |
           set -e
-
-          # Usage: msrv <crate-name>
-          function msrv {
-            cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").rust_version"
-          }
-
-          ver_zerocopy=$(msrv zerocopy)
-          ver_zerocopy_derive=$(msrv zerocopy-derive)
-
-          if [[ "$ver_zerocopy" == "$ver_zerocopy_derive" ]]; then
-            echo "Same MSRV ($ver_zerocopy) found for zerocopy and zerocopy-derive." | tee -a $GITHUB_STEP_SUMMARY
-            exit 0
-          else
-            echo "Different MSRVs found for zerocopy ($ver_zerocopy) and zerocopy-derive ($ver_zerocopy_derive)." \
-              | tee -a $GITHUB_STEP_SUMMARY >&2
-            exit 1
-          fi
+          . util.sh
+          run_test_in_github_action test_check_msrvs
 
   check_versions:
     runs-on: ubuntu-latest
     name: Check crate versions match
     steps:
       - uses: actions/checkout@v3
-      # Make sure that both crates are at the same version, and that zerocopy
-      # depends exactly upon the current version of zerocopy-derive. See
-      # `INTERNAL.md` for an explanation of why we do this.
       - name: Check crate versions match
         run: |
           set -e
+          . util.sh
+          run_test_in_github_action test_check_versions
 
-          # Usage: version <crate-name>
-          function version {
-            cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").version"
-          }
-
-          ver_zerocopy=$(version zerocopy)
-          ver_zerocopy_derive=$(version zerocopy-derive)
-
-          zerocopy_derive_dep_ver=$(cargo metadata --format-version 1 \
-            | jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select(.name == \"zerocopy-derive\").req")
-
-          if [[ "$ver_zerocopy" == "$ver_zerocopy_derive" ]]; then
-            echo "Same crate version ($ver_zerocopy) found for zerocopy and zerocopy-derive." | tee -a $GITHUB_STEP_SUMMARY
-          else
-            echo "Different crate versions found for zerocopy ($ver_zerocopy) and zerocopy-derive ($ver_zerocopy_derive)." \
-              | tee -a $GITHUB_STEP_SUMMARY >&2
-            exit 1
-          fi
-
-          # Note the leading `=` sign - the dependency needs to be an exact one.
-          if [[ "=$ver_zerocopy_derive" == "$zerocopy_derive_dep_ver" ]]; then
-            echo "zerocopy depends upon same version of zerocopy-derive in-tree ($zerocopy_derive_dep_ver)." | tee -a $GITHUB_STEP_SUMMARY
-          else
-            echo "zerocopy depends upon different version of zerocopy-derive ($zerocopy_derive_dep_ver) than the one in-tree ($ver_zerocopy_derive)." \
-              | tee -a $GITHUB_STEP_SUMMARY >&2
-            exit 1
-          fi
+  # Run the `test.sh` script to make sure it doesn't become stale. While this
+  # effectively reproduces all of our CI tests, we wouldn't want to replace our
+  # CI tests with this script. First, its output is much less helpful for
+  # debugging CI failures. Second, it is meant to serve as a best-effort
+  # approximation of what runs in CI in order to help developers; it may not
+  # reproduce the behavior of CI tests perfectly, and it may contain gaps. It is
+  # not meant as the source of truth for what constitutes a passing test run.
+  run_test_script:
+    runs-on: ubuntu-latest
+    name: Run `test.sh` script
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run `test.sh` script
+        run: |
+          set -e
+          bash -x test.sh
