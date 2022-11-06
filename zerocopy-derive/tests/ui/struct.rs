@@ -8,7 +8,7 @@ extern crate zerocopy;
 #[path = "../util.rs"]
 mod util;
 
-use crate::util::AU16;
+use self::util::AU16;
 
 fn main() {}
 

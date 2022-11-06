@@ -4,20 +4,11 @@
 
 #![allow(warnings)]
 
+#[macro_use]
+mod util;
+
 use std::{marker::PhantomData, option::IntoIter};
-
 use zerocopy::Unaligned;
-
-struct IsUnaligned<T: Unaligned>(T);
-
-// Fail compilation if `$ty: !Unaligned`.
-macro_rules! is_unaligned {
-    ($ty:ty) => {
-        const _: () = {
-            let _: IsUnaligned<$ty>;
-        };
-    };
-}
 
 // A struct is `Unaligned` if:
 // - `repr(align)` is no more than 1 and either
@@ -31,7 +22,7 @@ struct Foo {
     a: u8,
 }
 
-is_unaligned!(Foo);
+assert_is_unaligned!(Foo);
 
 #[derive(Unaligned)]
 #[repr(transparent)]
@@ -39,7 +30,7 @@ struct Bar {
     a: u8,
 }
 
-is_unaligned!(Bar);
+assert_is_unaligned!(Bar);
 
 #[derive(Unaligned)]
 #[repr(packed)]
@@ -54,7 +45,7 @@ struct Baz {
     a: u16,
 }
 
-is_unaligned!(Baz);
+assert_is_unaligned!(Baz);
 
 #[derive(Unaligned)]
 #[repr(C, align(1))]
@@ -62,7 +53,7 @@ struct FooAlign {
     a: u8,
 }
 
-is_unaligned!(FooAlign);
+assert_is_unaligned!(FooAlign);
 
 #[derive(Unaligned)]
 #[repr(C)]
@@ -75,4 +66,4 @@ struct TypeParams<'a, T, I: Iterator> {
     g: PhantomData<String>,
 }
 
-is_unaligned!(TypeParams<'static, (), IntoIter<()>>);
+assert_is_unaligned!(TypeParams<'static, (), IntoIter<()>>);

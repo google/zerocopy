@@ -1,0 +1,92 @@
+error[E0432]: unresolved import `self::util::NotAsBytes`
+  --> tests/ui-msrv/derive_transparent.rs:11:18
+   |
+11 | use self::util::{NotAsBytes, AU16};
+   |                  ^^^^^^^^^^
+   |                  |
+   |                  no `NotAsBytes` in `util`
+   |                  help: a similar name exists in the module: `AsBytes`
+
+error[E0277]: the trait bound `NotAsBytes: AsBytes` is not satisfied
+  --> tests/ui-msrv/../util.rs
+   |
+   |             const _: fn($ty) -> IsAsBytes<$ty> = IsAsBytes::<$ty>;
+   |                                 ^^^^^^^^^^^^^^ the trait `AsBytes` is not implemented for `NotAsBytes`
+   |
+  ::: tests/ui-msrv/derive_transparent.rs:33:1
+   |
+33 | assert_is_as_bytes!(TransparentStruct<NotAsBytes>);
+   | -------------------------------------------------- in this macro invocation
+   |
+note: required because of the requirements on the impl of `AsBytes` for `TransparentStruct<NotAsBytes>`
+  --> tests/ui-msrv/derive_transparent.rs:20:10
+   |
+20 | #[derive(AsBytes, FromBytes, Unaligned)]
+   |          ^^^^^^^
+note: required by a bound in `IsAsBytes`
+  --> tests/ui-msrv/../util.rs
+   |
+   |             struct IsAsBytes<T: zerocopy::AsBytes>(T);
+   |                                 ^^^^^^^^^^^^^^^^^ required by this bound in `IsAsBytes`
+   |
+  ::: tests/ui-msrv/derive_transparent.rs:33:1
+   |
+33 | assert_is_as_bytes!(TransparentStruct<NotAsBytes>);
+   | -------------------------------------------------- in this macro invocation
+   = note: this error originates in the macro `assert_is_as_bytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `char: FromBytes` is not satisfied
+  --> tests/ui-msrv/../util.rs
+   |
+   |             const _: fn($ty) -> IsFromBytes<$ty> = IsFromBytes::<$ty>;
+   |                                 ^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `char`
+   |
+  ::: tests/ui-msrv/derive_transparent.rs:34:1
+   |
+34 | assert_is_from_bytes!(TransparentStruct<char>);
+   | ---------------------------------------------- in this macro invocation
+   |
+note: required because of the requirements on the impl of `FromBytes` for `TransparentStruct<char>`
+  --> tests/ui-msrv/derive_transparent.rs:20:19
+   |
+20 | #[derive(AsBytes, FromBytes, Unaligned)]
+   |                   ^^^^^^^^^
+note: required by a bound in `IsFromBytes`
+  --> tests/ui-msrv/../util.rs
+   |
+   |             struct IsFromBytes<T: zerocopy::FromBytes>(T);
+   |                                   ^^^^^^^^^^^^^^^^^^^ required by this bound in `IsFromBytes`
+   |
+  ::: tests/ui-msrv/derive_transparent.rs:34:1
+   |
+34 | assert_is_from_bytes!(TransparentStruct<char>);
+   | ---------------------------------------------- in this macro invocation
+   = note: this error originates in the macro `assert_is_from_bytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
+  --> tests/ui-msrv/../util.rs
+   |
+   |             const _: fn($ty) -> IsUnaligned<$ty> = IsUnaligned::<$ty>;
+   |                                 ^^^^^^^^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
+   |
+  ::: tests/ui-msrv/derive_transparent.rs:35:1
+   |
+35 | assert_is_unaligned!(TransparentStruct<AU16>);
+   | --------------------------------------------- in this macro invocation
+   |
+note: required because of the requirements on the impl of `Unaligned` for `TransparentStruct<AU16>`
+  --> tests/ui-msrv/derive_transparent.rs:20:30
+   |
+20 | #[derive(AsBytes, FromBytes, Unaligned)]
+   |                              ^^^^^^^^^
+note: required by a bound in `IsUnaligned`
+  --> tests/ui-msrv/../util.rs
+   |
+   |             struct IsUnaligned<T: zerocopy::Unaligned>(T);
+   |                                   ^^^^^^^^^^^^^^^^^^^ required by this bound in `IsUnaligned`
+   |
+  ::: tests/ui-msrv/derive_transparent.rs:35:1
+   |
+35 | assert_is_unaligned!(TransparentStruct<AU16>);
+   | --------------------------------------------- in this macro invocation
+   = note: this error originates in the macro `assert_is_unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)

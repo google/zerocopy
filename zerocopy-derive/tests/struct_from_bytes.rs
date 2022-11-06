@@ -4,20 +4,11 @@
 
 #![allow(warnings)]
 
+#[macro_use]
+mod util;
+
 use std::{marker::PhantomData, option::IntoIter};
-
 use zerocopy::FromBytes;
-
-struct IsFromBytes<T: FromBytes>(T);
-
-// Fail compilation if `$ty: !FromBytes`.
-macro_rules! is_from_bytes {
-    ($ty:ty) => {
-        const _: () = {
-            let _: IsFromBytes<$ty>;
-        };
-    };
-}
 
 // A struct is `FromBytes` if:
 // - all fields are `FromBytes`
@@ -25,14 +16,14 @@ macro_rules! is_from_bytes {
 #[derive(FromBytes)]
 struct Zst;
 
-is_from_bytes!(Zst);
+assert_is_from_bytes!(Zst);
 
 #[derive(FromBytes)]
 struct One {
     a: u8,
 }
 
-is_from_bytes!(One);
+assert_is_from_bytes!(One);
 
 #[derive(FromBytes)]
 struct Two {
@@ -40,7 +31,7 @@ struct Two {
     b: Zst,
 }
 
-is_from_bytes!(Two);
+assert_is_from_bytes!(Two);
 
 #[derive(FromBytes)]
 struct TypeParams<'a, T, I: Iterator> {
@@ -52,4 +43,4 @@ struct TypeParams<'a, T, I: Iterator> {
     g: PhantomData<String>,
 }
 
-is_from_bytes!(TypeParams<'static, (), IntoIter<()>>);
+assert_is_from_bytes!(TypeParams<'static, (), IntoIter<()>>);

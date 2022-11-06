@@ -3251,4 +3251,22 @@ mod tests {
             assert_eq!(<()>::new_zeroed(), ());
         }
     }
+
+    #[test]
+    fn test_transparent_generic_struct() {
+        #[derive(AsBytes, FromBytes, Unaligned)]
+        #[repr(transparent)]
+        struct Foo<T> {
+            _bar: T,
+            _phantom: PhantomData<()>,
+        }
+
+        fn assert_impls_asbytes<T: AsBytes>() {}
+        fn assert_impls_frombytes<T: FromBytes>() {}
+        fn assert_impls_unaligned<T: Unaligned>() {}
+
+        assert_impls_asbytes::<Foo<f32>>();
+        assert_impls_frombytes::<Foo<u32>>();
+        assert_impls_unaligned::<Foo<u8>>();
+    }
 }
