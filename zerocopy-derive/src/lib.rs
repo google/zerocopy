@@ -197,24 +197,29 @@ fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::T
 fn derive_as_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
     let reprs = try_or_print!(STRUCT_UNION_AS_BYTES_CFG.validate_reprs(ast));
     let is_transparent = reprs.contains(&StructRepr::Transparent);
+    let is_packed = reprs.contains(&StructRepr::Packed);
 
-    // TODO(#10): Support type parameters for non-transparent structs.
-    if !ast.generics.params.is_empty() && !is_transparent {
+    // TODO(#10): Support type parameters for non-transparent, non-packed
+    // structs.
+    if !ast.generics.params.is_empty() && !is_transparent && !is_packed {
         return Error::new(
             Span::call_site(),
-            "unsupported on generic structs that are not repr(transparent)",
+            "unsupported on generic structs that are not repr(transparent) or repr(packed)",
         )
         .to_compile_error();
     }
 
-    // We don't need a padding check if the struct is repr(transparent) since
-    // the layout and ABI of the whole struct is the same as its only non-ZST
-    // field, and we require that field to be `AsBytes`.
-    let padding_check = if is_transparent || reprs.contains(&StructRepr::Packed) {
-        PaddingCheck::None
-    } else {
-        PaddingCheck::Struct
-    };
+    // We don't need a padding check if the struct is repr(transparent) or
+    // repr(packed).
+    // - repr(transparent): The layout and ABI of the whole struct is the same
+    //   as its only non-ZST field (meaning there's no padding outside of that
+    //   field) and we require that field to be `AsBytes` (meaning there's no
+    //   padding in that field).
+    // - repr(packed): Any inter-field padding bytes are removed, meaning that
+    //   any padding bytes would need to come from the fields, all of which
+    //   we require to be `AsBytes` (meaning they don't have any padding).
+    let padding_check =
+        if is_transparent || is_packed { PaddingCheck::None } else { PaddingCheck::Struct };
     impl_block(ast, strct, "AsBytes", true, padding_check)
 }
 
