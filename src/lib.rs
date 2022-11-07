@@ -3253,20 +3253,31 @@ mod tests {
     }
 
     #[test]
-    fn test_transparent_generic_struct() {
+    fn test_transparent_packed_generic_struct() {
         #[derive(AsBytes, FromBytes, Unaligned)]
         #[repr(transparent)]
         struct Foo<T> {
-            _bar: T,
+            _t: T,
             _phantom: PhantomData<()>,
         }
 
-        fn assert_impls_asbytes<T: AsBytes>() {}
-        fn assert_impls_frombytes<T: FromBytes>() {}
+        fn assert_impls_as_bytes<T: AsBytes>() {}
+        fn assert_impls_from_bytes<T: FromBytes>() {}
         fn assert_impls_unaligned<T: Unaligned>() {}
 
-        assert_impls_asbytes::<Foo<f32>>();
-        assert_impls_frombytes::<Foo<u32>>();
+        assert_impls_as_bytes::<Foo<f32>>();
+        assert_impls_from_bytes::<Foo<u32>>();
         assert_impls_unaligned::<Foo<u8>>();
+
+        #[derive(AsBytes, FromBytes, Unaligned)]
+        #[repr(packed)]
+        struct Bar<T, U> {
+            _t: T,
+            _u: U,
+        }
+
+        assert_impls_as_bytes::<Bar<u8, AU64>>();
+        assert_impls_from_bytes::<Bar<u8, AU64>>();
+        assert_impls_unaligned::<Bar<u8, AU64>>();
     }
 }

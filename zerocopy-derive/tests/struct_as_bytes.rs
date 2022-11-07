@@ -7,9 +7,11 @@
 #[macro_use]
 mod util;
 
-use self::util::AU16;
 use std::{marker::PhantomData, option::IntoIter};
+
 use zerocopy::AsBytes;
+
+use self::util::AU16;
 
 // A struct is `AsBytes` if:
 // - all fields are `AsBytes`
@@ -43,6 +45,15 @@ struct Transparent {
 assert_is_as_bytes!(Transparent);
 
 #[derive(AsBytes)]
+#[repr(transparent)]
+struct TransparentGeneric<T> {
+    a: T,
+    b: CZst,
+}
+
+assert_is_as_bytes!(TransparentGeneric<u64>);
+
+#[derive(AsBytes)]
 #[repr(C, packed)]
 struct CZstPacked;
 
@@ -63,3 +74,37 @@ struct CPacked {
 }
 
 assert_is_as_bytes!(CPacked);
+
+#[derive(AsBytes)]
+#[repr(C, packed)]
+struct CPackedGeneric<T, U> {
+    t: T,
+    u: U,
+}
+
+assert_is_as_bytes!(CPackedGeneric<u8, AU16>);
+
+#[derive(AsBytes)]
+#[repr(packed)]
+struct Packed {
+    a: u8,
+    // NOTE: The `u16` type is not guaranteed to have alignment 2, although it
+    // does on many platforms. However, to fix this would require a custom type
+    // with a `#[repr(align(2))]` attribute, and `#[repr(packed)]` types are not
+    // allowed to transitively contain `#[repr(align(...))]` types. Thus, we
+    // have no choice but to use `u16` here. Luckily, these tests run in CI on
+    // platforms on which `u16` has alignment 2, so this isn't that big of a
+    // deal.
+    b: u16,
+}
+
+assert_is_as_bytes!(Packed);
+
+#[derive(AsBytes)]
+#[repr(packed)]
+struct PackedGeneric<T, U> {
+    t: T,
+    u: U,
+}
+
+assert_is_as_bytes!(PackedGeneric<u8, AU16>);
