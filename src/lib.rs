@@ -3362,58 +3362,91 @@ mod tests {
 
     #[test]
     fn test_impls() {
+        // Asserts that `$ty` implements any `$trait` and doesn't implement any
+        // `!$trait`. Note that all `$trait`s must come before any `!$trait`s.
         macro_rules! assert_impls {
-            ($ty:ty: $($trait:path),*) => {{
-                fn assert_impls_traits<T: $($trait +)* ?Sized>() {}
-                let _ = assert_impls_traits::<$ty>;
-            }};
+            ($ty:ty: $trait:ident) => {
+                #[allow(dead_code)]
+                const _: () = {
+                    fn assert_impls_trait<T: $trait + ?Sized>() {}
+                    let _ = assert_impls_trait::<$ty>;
+                };
+            };
+            ($ty:ty: !$trait:ident) => {
+                #[allow(dead_code)]
+                const _: () = {
+                    // This works by defining `$trait`, which is given a blanket
+                    // impl for all `T: crate::$trait`, and is also implemented
+                    // specifically for `$ty`. If `$ty` spuriously implements
+                    // `crate::$trait`, this will result in a "conflicting
+                    // implementations" error.
+                    trait $trait {}
+                    impl<T: crate::$trait> $trait for T {}
+                    impl $trait for $ty {}
+                };
+            };
+            ($ty:ty: $($trait:ident),* $(,)? $(!$negative_trait:ident),*) => {
+                $(
+                    assert_impls!($ty: $trait);
+                )*
+
+                $(
+                    assert_impls!($ty: !$negative_trait);
+                )*
+            };
         }
 
         assert_impls!((): FromBytes, AsBytes, Unaligned);
         assert_impls!(u8: FromBytes, AsBytes, Unaligned);
         assert_impls!(i8: FromBytes, AsBytes, Unaligned);
-        assert_impls!(u16: FromBytes, AsBytes);
-        assert_impls!(i16: FromBytes, AsBytes);
-        assert_impls!(u32: FromBytes, AsBytes);
-        assert_impls!(i32: FromBytes, AsBytes);
-        assert_impls!(u64: FromBytes, AsBytes);
-        assert_impls!(i64: FromBytes, AsBytes);
-        assert_impls!(u128: FromBytes, AsBytes);
-        assert_impls!(i128: FromBytes, AsBytes);
-        assert_impls!(usize: FromBytes, AsBytes);
-        assert_impls!(isize: FromBytes, AsBytes);
-        assert_impls!(f32: FromBytes, AsBytes);
-        assert_impls!(f64: FromBytes, AsBytes);
+        assert_impls!(u16: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i16: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(u32: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i32: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(u64: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i64: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(u128: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i128: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(usize: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(isize: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(f32: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(f64: FromBytes, AsBytes, !Unaligned);
 
-        assert_impls!(bool: AsBytes, Unaligned);
-        assert_impls!(char: AsBytes);
-        assert_impls!(str: AsBytes);
+        assert_impls!(bool: AsBytes, Unaligned, !FromBytes);
+        assert_impls!(char: AsBytes, !FromBytes, !Unaligned);
+        // `str: Unaligned` is probably sound, so we can probably remove
+        // `!Unaligned` at some point.
+        assert_impls!(str: AsBytes, !FromBytes, !Unaligned);
 
-        assert_impls!(NonZeroU8: AsBytes);
-        assert_impls!(NonZeroI8: AsBytes);
-        assert_impls!(NonZeroU16: AsBytes);
-        assert_impls!(NonZeroI16: AsBytes);
-        assert_impls!(NonZeroU32: AsBytes);
-        assert_impls!(NonZeroI32: AsBytes);
-        assert_impls!(NonZeroU64: AsBytes);
-        assert_impls!(NonZeroI64: AsBytes);
-        assert_impls!(NonZeroU128: AsBytes);
-        assert_impls!(NonZeroI128: AsBytes);
-        assert_impls!(NonZeroUsize: AsBytes);
-        assert_impls!(NonZeroIsize: AsBytes);
+        // `NonZeroU8/NonZeroI8: Unaligned` is probably sound, so we can
+        // probably remove `!Unaligned` at some point.
+        assert_impls!(NonZeroU8: AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI8: AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU16: AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI16: AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU32: AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI32: AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU64: AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI64: AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU128: AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI128: AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroUsize: AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroIsize: AsBytes, !FromBytes, !Unaligned);
 
-        assert_impls!(Option<NonZeroU8>: FromBytes, AsBytes);
-        assert_impls!(Option<NonZeroI8>: FromBytes, AsBytes);
-        assert_impls!(Option<NonZeroU16>: FromBytes, AsBytes);
-        assert_impls!(Option<NonZeroI16>: FromBytes, AsBytes);
-        assert_impls!(Option<NonZeroU32>: FromBytes, AsBytes);
-        assert_impls!(Option<NonZeroI32>: FromBytes, AsBytes);
-        assert_impls!(Option<NonZeroU64>: FromBytes, AsBytes);
-        assert_impls!(Option<NonZeroI64>: FromBytes, AsBytes);
-        assert_impls!(Option<NonZeroU128>: FromBytes, AsBytes);
-        assert_impls!(Option<NonZeroI128>: FromBytes, AsBytes);
-        assert_impls!(Option<NonZeroUsize>: FromBytes, AsBytes);
-        assert_impls!(Option<NonZeroIsize>: FromBytes, AsBytes);
+        // `Option<NonZeroU8>/Option<NonZeroI8>: Unaligned` is probably sound,
+        // so we can probably remove `!Unaligned` at some point.
+        assert_impls!(Option<NonZeroU8>: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI8>: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU16>: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI16>: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU32>: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI32>: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU64>: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI64>: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU128>: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI128>: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroUsize>: FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroIsize>: FromBytes, AsBytes, !Unaligned);
 
         // Implements none of the ZC traits.
         struct NotZerocopy;
@@ -3423,9 +3456,23 @@ mod tests {
 
         assert_impls!(ManuallyDrop<u8>: FromBytes, AsBytes, Unaligned);
         assert_impls!(ManuallyDrop<[u8]>: FromBytes, AsBytes, Unaligned);
+        assert_impls!(ManuallyDrop<NotZerocopy>: !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<[NotZerocopy]>: !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(MaybeUninit<u8>: FromBytes);
+        assert_impls!(MaybeUninit<u8>: FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(MaybeUninit<NotZerocopy>: FromBytes, !AsBytes, !Unaligned);
 
         assert_impls!(Wrapping<u8>: FromBytes, AsBytes, Unaligned);
+        assert_impls!(Wrapping<NotZerocopy>: !FromBytes, !AsBytes, !Unaligned);
+
+        assert_impls!(Unalign<u8>: FromBytes, AsBytes, Unaligned);
+        assert_impls!(Unalign<NotZerocopy>: Unaligned, !FromBytes, !AsBytes);
+
+        assert_impls!([u8]: FromBytes, AsBytes, Unaligned);
+        assert_impls!([NotZerocopy]: !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!([u8; 0]: FromBytes, AsBytes, Unaligned);
+        assert_impls!([NotZerocopy; 0]: !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!([u8; 1]: FromBytes, AsBytes, Unaligned);
+        assert_impls!([NotZerocopy; 1]: !FromBytes, !AsBytes, !Unaligned);
     }
 }
