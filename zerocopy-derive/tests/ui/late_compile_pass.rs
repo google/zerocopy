@@ -8,7 +8,7 @@ extern crate zerocopy;
 #[path = "../util.rs"]
 mod util;
 
-use self::util::AU16;
+use self::util::{NotZerocopy, AU16};
 
 fn main() {}
 
@@ -29,13 +29,10 @@ struct FromBytes1 {
 // AsBytes errors
 //
 
-#[repr(C)]
-struct NotAsBytes(u32);
-
 #[derive(AsBytes)]
 #[repr(C)]
 struct AsBytes1 {
-    value: NotAsBytes,
+    value: NotZerocopy,
 }
 
 //

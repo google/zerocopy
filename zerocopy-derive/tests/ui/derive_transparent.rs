@@ -8,12 +8,13 @@ extern crate zerocopy;
 #[macro_use]
 mod util;
 
-use self::util::{NotAsBytes, AU16};
+use core::marker::PhantomData;
+
+use zerocopy::{AsBytes, FromBytes, Unaligned};
+
+use self::util::NotZerocopy;
 
 fn main() {}
-
-use core::marker::PhantomData;
-use zerocopy::{AsBytes, FromBytes, Unaligned};
 
 // Test generic transparent structs
 
@@ -24,12 +25,9 @@ struct TransparentStruct<T> {
     _phantom: PhantomData<()>,
 }
 
-// A type that does not implement `AsBytes`.
-pub struct NotAsBytes;
-
 // It should be legal to derive these traits on a transparent struct, but it
 // must also ensure the traits are only implemented when the inner type
 // implements them.
-assert_is_as_bytes!(TransparentStruct<NotAsBytes>);
-assert_is_from_bytes!(TransparentStruct<char>);
-assert_is_unaligned!(TransparentStruct<AU16>);
+assert_is_as_bytes!(TransparentStruct<NotZerocopy>);
+assert_is_from_bytes!(TransparentStruct<NotZerocopy>);
+assert_is_unaligned!(TransparentStruct<NotZerocopy>);

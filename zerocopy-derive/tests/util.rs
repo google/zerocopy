@@ -2,13 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-use zerocopy::AsBytes;
+use zerocopy::{AsBytes, FromBytes};
 
-// A `u16` with alignment 2.
-//
-// Though `u16` has alignment 2 on some platforms, it's not guaranteed.
-// By contrast, `AU16` is guaranteed to have alignment 2.
-#[derive(AsBytes, Copy, Clone)]
+/// A type that doesn't implement any zerocopy traits.
+pub struct NotZerocopy(());
+
+/// A `u16` with alignment 2.
+///
+/// Though `u16` has alignment 2 on some platforms, it's not guaranteed. By
+/// contrast, `AU16` is guaranteed to have alignment 2.
+#[derive(FromBytes, AsBytes, Copy, Clone)]
 #[repr(C, align(2))]
 pub struct AU16(u16);
 
@@ -16,8 +19,8 @@ pub struct AU16(u16);
 macro_rules! assert_is_as_bytes {
     ($ty:ty) => {
         const _: () = {
-            struct IsAsBytes<T: zerocopy::AsBytes>(T);
-            const _: fn($ty) -> IsAsBytes<$ty> = IsAsBytes::<$ty>;
+            const fn is_as_bytes<T: zerocopy::AsBytes + ?Sized>() {}
+            const _: () = is_as_bytes::<$ty>();
         };
     };
 }
@@ -26,8 +29,8 @@ macro_rules! assert_is_as_bytes {
 macro_rules! assert_is_from_bytes {
     ($ty:ty) => {
         const _: () = {
-            struct IsFromBytes<T: zerocopy::FromBytes>(T);
-            const _: fn($ty) -> IsFromBytes<$ty> = IsFromBytes::<$ty>;
+            const fn is_from_bytes<T: zerocopy::FromBytes + ?Sized>() {}
+            const _: () = is_from_bytes::<$ty>();
         };
     };
 }
@@ -36,8 +39,8 @@ macro_rules! assert_is_from_bytes {
 macro_rules! assert_is_unaligned {
     ($ty:ty) => {
         const _: () = {
-            struct IsUnaligned<T: zerocopy::Unaligned>(T);
-            const _: fn($ty) -> IsUnaligned<$ty> = IsUnaligned::<$ty>;
+            const fn is_unaligned<T: zerocopy::Unaligned + ?Sized>() {}
+            const _: () = is_unaligned::<$ty>();
         };
     };
 }
