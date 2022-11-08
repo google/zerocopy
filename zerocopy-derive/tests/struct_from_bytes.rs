@@ -8,7 +8,10 @@
 mod util;
 
 use std::{marker::PhantomData, option::IntoIter};
+
 use zerocopy::FromBytes;
+
+use crate::util::AU16;
 
 // A struct is `FromBytes` if:
 // - all fields are `FromBytes`
@@ -34,13 +37,22 @@ struct Two {
 assert_is_from_bytes!(Two);
 
 #[derive(FromBytes)]
-struct TypeParams<'a, T, I: Iterator> {
-    a: T,
-    c: I::Item,
-    d: u8,
-    e: PhantomData<&'a [u8]>,
-    f: PhantomData<&'static str>,
-    g: PhantomData<String>,
+struct Unsized {
+    a: [u8],
+}
+
+assert_is_from_bytes!(Unsized);
+
+#[derive(FromBytes)]
+struct TypeParams<'a, T: ?Sized, I: Iterator> {
+    a: I::Item,
+    b: u8,
+    c: PhantomData<&'a [u8]>,
+    d: PhantomData<&'static str>,
+    e: PhantomData<String>,
+    f: T,
 }
 
 assert_is_from_bytes!(TypeParams<'static, (), IntoIter<()>>);
+assert_is_from_bytes!(TypeParams<'static, AU16, IntoIter<()>>);
+assert_is_from_bytes!(TypeParams<'static, [AU16], IntoIter<()>>);

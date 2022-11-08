@@ -8,7 +8,10 @@
 mod util;
 
 use std::{marker::PhantomData, option::IntoIter};
+
 use zerocopy::Unaligned;
+
+use crate::util::AU16;
 
 // A struct is `Unaligned` if:
 // - `repr(align)` is no more than 1 and either
@@ -56,14 +59,24 @@ struct FooAlign {
 assert_is_unaligned!(FooAlign);
 
 #[derive(Unaligned)]
+#[repr(transparent)]
+struct Unsized {
+    a: [u8],
+}
+
+assert_is_unaligned!(Unsized);
+
+#[derive(Unaligned)]
 #[repr(C)]
-struct TypeParams<'a, T, I: Iterator> {
-    a: T,
-    c: I::Item,
-    d: u8,
-    e: PhantomData<&'a [u8]>,
-    f: PhantomData<&'static str>,
-    g: PhantomData<String>,
+struct TypeParams<'a, T: ?Sized, I: Iterator> {
+    a: I::Item,
+    b: u8,
+    c: PhantomData<&'a [u8]>,
+    d: PhantomData<&'static str>,
+    e: PhantomData<String>,
+    f: T,
 }
 
 assert_is_unaligned!(TypeParams<'static, (), IntoIter<()>>);
+assert_is_unaligned!(TypeParams<'static, u8, IntoIter<()>>);
+assert_is_unaligned!(TypeParams<'static, [u8], IntoIter<()>>);

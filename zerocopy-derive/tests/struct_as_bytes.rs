@@ -7,7 +7,7 @@
 #[macro_use]
 mod util;
 
-use std::{marker::PhantomData, option::IntoIter};
+use std::{marker::PhantomData, mem::ManuallyDrop, option::IntoIter};
 
 use zerocopy::AsBytes;
 
@@ -46,12 +46,13 @@ assert_is_as_bytes!(Transparent);
 
 #[derive(AsBytes)]
 #[repr(transparent)]
-struct TransparentGeneric<T> {
-    a: T,
-    b: CZst,
+struct TransparentGeneric<T: ?Sized> {
+    a: CZst,
+    b: T,
 }
 
 assert_is_as_bytes!(TransparentGeneric<u64>);
+assert_is_as_bytes!(TransparentGeneric<[u64]>);
 
 #[derive(AsBytes)]
 #[repr(C, packed)]
@@ -77,12 +78,18 @@ assert_is_as_bytes!(CPacked);
 
 #[derive(AsBytes)]
 #[repr(C, packed)]
-struct CPackedGeneric<T, U> {
+struct CPackedGeneric<T, U: ?Sized> {
     t: T,
-    u: U,
+    // Unsized types stored in `repr(packed)` structs must not be dropped
+    // because dropping them in-place might be unsound depending on the
+    // alignment of the outer struct. Sized types can be dropped by first being
+    // moved to an aligned stack variable, but this isn't possible with unsized
+    // types.
+    u: ManuallyDrop<U>,
 }
 
 assert_is_as_bytes!(CPackedGeneric<u8, AU16>);
+assert_is_as_bytes!(CPackedGeneric<u8, [AU16]>);
 
 #[derive(AsBytes)]
 #[repr(packed)]
@@ -102,9 +109,23 @@ assert_is_as_bytes!(Packed);
 
 #[derive(AsBytes)]
 #[repr(packed)]
-struct PackedGeneric<T, U> {
+struct PackedGeneric<T, U: ?Sized> {
     t: T,
-    u: U,
+    // Unsized types stored in `repr(packed)` structs must not be dropped
+    // because dropping them in-place might be unsound depending on the
+    // alignment of the outer struct. Sized types can be dropped by first being
+    // moved to an aligned stack variable, but this isn't possible with unsized
+    // types.
+    u: ManuallyDrop<U>,
 }
 
 assert_is_as_bytes!(PackedGeneric<u8, AU16>);
+assert_is_as_bytes!(PackedGeneric<u8, [AU16]>);
+
+#[derive(AsBytes)]
+#[repr(transparent)]
+struct Unsized {
+    a: [u8],
+}
+
+assert_is_as_bytes!(Unsized);

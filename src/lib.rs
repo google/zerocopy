@@ -163,7 +163,29 @@ macro_rules! impl_for_composite_types {
     ($trait:ident) => {
         // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
         #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe impl<T> $trait for PhantomData<T> {
+        unsafe impl<T: ?Sized> $trait for PhantomData<T> {
+            fn only_derive_is_allowed_to_implement_this_trait()
+            where
+                Self: Sized,
+            {
+            }
+        }
+        // SAFETY: `ManuallyDrop` has the same layout as `T`, and accessing the
+        // inner value is safe (meaning that it's unsound to leave the inner
+        // value uninitialized while exposing the `ManuallyDrop` to safe code).
+        // - `FromBytes`: Since it has the same layout as `T`, any valid `T` is
+        //   a valid `ManuallyDrop<T>`. Since `T: FromBytes`, any sequence of
+        //   bytes is a valid `T`, and thus a valid `ManuallyDrop<T>`.
+        // - `AsBytes`: Since it has the same layout as `T`, and since it's
+        //   unsound to let safe code access a `ManuallyDrop` whose inner value
+        //   is uninitialized, safe code can only ever access a `ManuallyDrop`
+        //   whose contents are a valid `T`. Since `T: AsBytes`, this means that
+        //   safe code can only ever access a `ManuallyDrop` with all
+        //   initialized bytes.
+        // - `Unaligned`: `ManuallyDrop` has the same layout (and thus
+        //   alignment) as `T`, and `T: Unaligned` guarantees that that
+        //   alignment is 1.
+        unsafe impl<T: $trait + ?Sized> $trait for ManuallyDrop<T> {
             fn only_derive_is_allowed_to_implement_this_trait()
             where
                 Self: Sized,
@@ -2493,6 +2515,27 @@ mod tests {
         U64::<NativeEndian>::new(u.0).as_bytes().try_into().unwrap()
     }
 
+    // An unsized type.
+    //
+    // This is used to test the custom derives of our traits. The `[u8]` type
+    // gets a hand-rolled impl, so it doesn't exercise our custom derives.
+    #[derive(Debug, Eq, PartialEq, FromBytes, AsBytes, Unaligned)]
+    #[repr(transparent)]
+    struct Unsized([u8]);
+
+    impl Unsized {
+        fn from_mut_slice(slc: &mut [u8]) -> &mut Unsized {
+            // SAFETY: This *probably* sound - since the layouts of `[u8]` and
+            // `Unsized` are the same, so are the layouts of `&mut [u8]` and
+            // `&mut Unsized`. [1] Even if it turns out that this isn't actually
+            // guaranteed by the language spec, we can just change this since
+            // it's in test code.
+            //
+            // [1] https://github.com/rust-lang/unsafe-code-guidelines/issues/375
+            unsafe { mem::transmute(slc) }
+        }
+    }
+
     #[test]
     fn test_object_safety() {
         fn _takes_from_bytes(_: &dyn FromBytes) {}
@@ -3133,6 +3176,71 @@ mod tests {
 
     #[test]
     fn test_as_bytes_methods() {
+        /// Run a series of tests by calling `AsBytes` methods on `t`.
+        ///
+        /// `bytes` is the expected byte sequence returned from `t.as_bytes()`
+        /// before `t` has been modified. `post_mutation` is the expected
+        /// sequence returned from `t.as_bytes()` after `t.as_bytes_mut()[0]`
+        /// has had its bits flipped (by applying `^= 0xFF`).
+        ///
+        /// `N` is the size of `t` in bytes.
+        fn test<const N: usize, T: FromBytes + AsBytes + Debug + Eq + ?Sized>(
+            t: &mut T,
+            bytes: &[u8],
+            post_mutation: &T,
+        ) {
+            // Test that we can access the underlying bytes, and that we get the
+            // right bytes and the right number of bytes.
+            assert_eq!(t.as_bytes(), bytes);
+
+            // Test that changes to the underlying byte slices are reflected in
+            // the original object.
+            t.as_bytes_mut()[0] ^= 0xFF;
+            assert_eq!(t, post_mutation);
+            t.as_bytes_mut()[0] ^= 0xFF;
+
+            // `write_to` rejects slices that are too small or too large.
+            assert_eq!(t.write_to(&mut vec![0; N - 1][..]), None);
+            assert_eq!(t.write_to(&mut vec![0; N + 1][..]), None);
+
+            // `write_to` works as expected.
+            let mut bytes = [0; N];
+            assert_eq!(t.write_to(&mut bytes[..]), Some(()));
+            assert_eq!(bytes, t.as_bytes());
+
+            // `write_to_prefix` rejects slices that are too small.
+            assert_eq!(t.write_to_prefix(&mut vec![0; N - 1][..]), None);
+
+            // `write_to_prefix` works with exact-sized slices.
+            let mut bytes = [0; N];
+            assert_eq!(t.write_to_prefix(&mut bytes[..]), Some(()));
+            assert_eq!(bytes, t.as_bytes());
+
+            // `write_to_prefix` works with too-large slices, and any bytes past
+            // the prefix aren't modified.
+            let mut too_many_bytes = vec![0; N + 1];
+            too_many_bytes[N] = 123;
+            assert_eq!(t.write_to_prefix(&mut too_many_bytes[..]), Some(()));
+            assert_eq!(&too_many_bytes[..N], t.as_bytes());
+            assert_eq!(too_many_bytes[N], 123);
+
+            // `write_to_suffix` rejects slices that are too small.
+            assert_eq!(t.write_to_suffix(&mut vec![0; N - 1][..]), None);
+
+            // `write_to_suffix` works with exact-sized slices.
+            let mut bytes = [0; N];
+            assert_eq!(t.write_to_suffix(&mut bytes[..]), Some(()));
+            assert_eq!(bytes, t.as_bytes());
+
+            // `write_to_suffix` works with too-large slices, and any bytes
+            // before the suffix aren't modified.
+            let mut too_many_bytes = vec![0; N + 1];
+            too_many_bytes[0] = 123;
+            assert_eq!(t.write_to_suffix(&mut too_many_bytes[..]), Some(()));
+            assert_eq!(&too_many_bytes[1..], t.as_bytes());
+            assert_eq!(too_many_bytes[0], 123);
+        }
+
         #[derive(Debug, Eq, PartialEq, FromBytes, AsBytes)]
         #[repr(C)]
         struct Foo {
@@ -3141,51 +3249,22 @@ mod tests {
             c: Option<NonZeroU32>,
         }
 
-        let mut foo = Foo { a: 1, b: Wrapping(2), c: None };
-
-        // Test that we can access the underlying bytes, and that we get the
-        // right bytes and the right number of bytes.
-        let expected: Vec<u8> = if cfg!(target_endian = "little") {
+        let expected_bytes: Vec<u8> = if cfg!(target_endian = "little") {
             vec![1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0]
         } else {
             vec![0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0]
         };
-        assert_eq!(foo.as_bytes(), expected.as_bytes());
-
-        // Test that changes to the underlying byte slices are reflected in the
-        // original object.
-        foo.as_bytes_mut()[0] = 3;
-        let expected_a = if cfg!(target_endian = "little") { 0x00_00_00_03 } else { 0x03_00_00_01 };
-        assert_eq!(foo, Foo { a: expected_a, b: Wrapping(2), c: None });
-
-        // Do the same tests for a slice, which ensures that this logic works
-        // for unsized types as well.
-        let foo = &mut [
-            Foo { a: 1, b: Wrapping(2), c: None },
-            Foo { a: 3, b: Wrapping(4), c: NonZeroU32::new(1) },
-        ];
-        let expected = if cfg!(target_endian = "little") {
-            vec![1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0, 1, 0, 0, 0]
-        } else {
-            vec![0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0, 1]
-        };
-        assert_eq!(foo.as_bytes(), expected);
-
-        foo.as_bytes_mut()[8] = 5;
-        foo.as_bytes_mut()[16] = 6;
-        let expected_c_1 = NonZeroU32::new(if cfg!(target_endian = "little") {
-            0x00_00_00_05
-        } else {
-            0x05_00_00_00
-        });
-        let expected_b_2 =
-            Wrapping(if cfg!(target_endian = "little") { 0x00_00_00_06 } else { 0x06_00_00_04 });
-        assert_eq!(
-            foo,
-            &[
-                Foo { a: 1, b: Wrapping(2), c: expected_c_1 },
-                Foo { a: 3, b: expected_b_2, c: NonZeroU32::new(1) },
-            ]
+        let post_mutation_expected_a =
+            if cfg!(target_endian = "little") { 0x00_00_00_FE } else { 0xFF_00_00_01 };
+        test::<12, _>(
+            &mut Foo { a: 1, b: Wrapping(2), c: None },
+            expected_bytes.as_bytes(),
+            &Foo { a: post_mutation_expected_a, b: Wrapping(2), c: None },
+        );
+        test::<3, _>(
+            Unsized::from_mut_slice(&mut [1, 2, 3]),
+            &[1, 2, 3],
+            Unsized::from_mut_slice(&mut [0xFE, 2, 3]),
         );
     }
 
@@ -3279,5 +3358,74 @@ mod tests {
         assert_impls_as_bytes::<Bar<u8, AU64>>();
         assert_impls_from_bytes::<Bar<u8, AU64>>();
         assert_impls_unaligned::<Bar<u8, AU64>>();
+    }
+
+    #[test]
+    fn test_impls() {
+        macro_rules! assert_impls {
+            ($ty:ty: $($trait:path),*) => {{
+                fn assert_impls_traits<T: $($trait +)* ?Sized>() {}
+                let _ = assert_impls_traits::<$ty>;
+            }};
+        }
+
+        assert_impls!((): FromBytes, AsBytes, Unaligned);
+        assert_impls!(u8: FromBytes, AsBytes, Unaligned);
+        assert_impls!(i8: FromBytes, AsBytes, Unaligned);
+        assert_impls!(u16: FromBytes, AsBytes);
+        assert_impls!(i16: FromBytes, AsBytes);
+        assert_impls!(u32: FromBytes, AsBytes);
+        assert_impls!(i32: FromBytes, AsBytes);
+        assert_impls!(u64: FromBytes, AsBytes);
+        assert_impls!(i64: FromBytes, AsBytes);
+        assert_impls!(u128: FromBytes, AsBytes);
+        assert_impls!(i128: FromBytes, AsBytes);
+        assert_impls!(usize: FromBytes, AsBytes);
+        assert_impls!(isize: FromBytes, AsBytes);
+        assert_impls!(f32: FromBytes, AsBytes);
+        assert_impls!(f64: FromBytes, AsBytes);
+
+        assert_impls!(bool: AsBytes, Unaligned);
+        assert_impls!(char: AsBytes);
+        assert_impls!(str: AsBytes);
+
+        assert_impls!(NonZeroU8: AsBytes);
+        assert_impls!(NonZeroI8: AsBytes);
+        assert_impls!(NonZeroU16: AsBytes);
+        assert_impls!(NonZeroI16: AsBytes);
+        assert_impls!(NonZeroU32: AsBytes);
+        assert_impls!(NonZeroI32: AsBytes);
+        assert_impls!(NonZeroU64: AsBytes);
+        assert_impls!(NonZeroI64: AsBytes);
+        assert_impls!(NonZeroU128: AsBytes);
+        assert_impls!(NonZeroI128: AsBytes);
+        assert_impls!(NonZeroUsize: AsBytes);
+        assert_impls!(NonZeroIsize: AsBytes);
+
+        assert_impls!(Option<NonZeroU8>: FromBytes, AsBytes);
+        assert_impls!(Option<NonZeroI8>: FromBytes, AsBytes);
+        assert_impls!(Option<NonZeroU16>: FromBytes, AsBytes);
+        assert_impls!(Option<NonZeroI16>: FromBytes, AsBytes);
+        assert_impls!(Option<NonZeroU32>: FromBytes, AsBytes);
+        assert_impls!(Option<NonZeroI32>: FromBytes, AsBytes);
+        assert_impls!(Option<NonZeroU64>: FromBytes, AsBytes);
+        assert_impls!(Option<NonZeroI64>: FromBytes, AsBytes);
+        assert_impls!(Option<NonZeroU128>: FromBytes, AsBytes);
+        assert_impls!(Option<NonZeroI128>: FromBytes, AsBytes);
+        assert_impls!(Option<NonZeroUsize>: FromBytes, AsBytes);
+        assert_impls!(Option<NonZeroIsize>: FromBytes, AsBytes);
+
+        // Implements none of the ZC traits.
+        struct NotZerocopy;
+
+        assert_impls!(PhantomData<NotZerocopy>: FromBytes, AsBytes, Unaligned);
+        assert_impls!(PhantomData<[u8]>: FromBytes, AsBytes, Unaligned);
+
+        assert_impls!(ManuallyDrop<u8>: FromBytes, AsBytes, Unaligned);
+        assert_impls!(ManuallyDrop<[u8]>: FromBytes, AsBytes, Unaligned);
+
+        assert_impls!(MaybeUninit<u8>: FromBytes);
+
+        assert_impls!(Wrapping<u8>: FromBytes, AsBytes, Unaligned);
     }
 }
