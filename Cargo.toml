@@ -43,5 +43,6 @@ default-features = false
 [dev-dependencies]
 rand = "0.6"
 rustversion = "1.0"
+static_assertions = "1.1"
 # Required for "and $N others" normalization
 trybuild = ">=1.0.70"

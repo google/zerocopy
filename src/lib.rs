@@ -159,134 +159,6 @@ mod zerocopy {
     pub(crate) use crate::*;
 }
 
-// Implements an unsafe trait for a range of container types.
-macro_rules! impl_for_composite_types {
-    ($trait:ident) => {
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe impl<T: ?Sized> $trait for PhantomData<T> {
-            fn only_derive_is_allowed_to_implement_this_trait()
-            where
-                Self: Sized,
-            {
-            }
-        }
-        // SAFETY: `ManuallyDrop` has the same layout as `T`, and accessing the
-        // inner value is safe (meaning that it's unsound to leave the inner
-        // value uninitialized while exposing the `ManuallyDrop` to safe code).
-        // - `FromBytes`: Since it has the same layout as `T`, any valid `T` is
-        //   a valid `ManuallyDrop<T>`. Since `T: FromBytes`, any sequence of
-        //   bytes is a valid `T`, and thus a valid `ManuallyDrop<T>`.
-        // - `AsBytes`: Since it has the same layout as `T`, and since it's
-        //   unsound to let safe code access a `ManuallyDrop` whose inner value
-        //   is uninitialized, safe code can only ever access a `ManuallyDrop`
-        //   whose contents are a valid `T`. Since `T: AsBytes`, this means that
-        //   safe code can only ever access a `ManuallyDrop` with all
-        //   initialized bytes.
-        // - `Unaligned`: `ManuallyDrop` has the same layout (and thus
-        //   alignment) as `T`, and `T: Unaligned` guarantees that that
-        //   alignment is 1.
-        unsafe impl<T: $trait + ?Sized> $trait for ManuallyDrop<T> {
-            fn only_derive_is_allowed_to_implement_this_trait()
-            where
-                Self: Sized,
-            {
-            }
-        }
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe impl<T: $trait> $trait for [T] {
-            fn only_derive_is_allowed_to_implement_this_trait()
-            where
-                Self: Sized,
-            {
-            }
-        }
-        // SAFETY: According to the `Wrapping` docs, "`Wrapping<T>` is
-        // guaranteed to have the same layout and ABI as `T`."
-        unsafe impl<T: $trait> $trait for Wrapping<T> {
-            fn only_derive_is_allowed_to_implement_this_trait()
-            where
-                Self: Sized,
-            {
-            }
-        }
-        // Unit type has an empty representation.
-        //
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe impl $trait for () {
-            fn only_derive_is_allowed_to_implement_this_trait()
-            where
-                Self: Sized,
-            {
-            }
-        }
-        // Constant sized array with elements implementing `$trait`.
-        //
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe impl<T: $trait, const N: usize> $trait for [T; N] {
-            fn only_derive_is_allowed_to_implement_this_trait()
-            where
-                Self: Sized,
-            {
-            }
-        }
-    };
-}
-
-/// Implements `$trait` for one or more `$type`s.
-macro_rules! impl_for_types {
-    ($trait:ident, $($types:ty),* $(,)?) => (
-        $(
-            // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
-            #[allow(clippy::undocumented_unsafe_blocks)]
-            unsafe impl $trait for $types {
-                fn only_derive_is_allowed_to_implement_this_trait() {}
-            }
-        )*
-    );
-}
-
-/// Implements `$trait` for all signed and unsigned primitive types.
-macro_rules! impl_for_primitives {
-    ($trait:ident) => {
-        impl_for_types!(
-            $trait,
-            u8,
-            i8,
-            u16,
-            i16,
-            u32,
-            i32,
-            u64,
-            i64,
-            u128,
-            i128,
-            usize,
-            isize,
-            f32,
-            f64,
-            // The Rust compiler reuses `0` value to represent `None`, so
-            // `size_of::<Option<NonZeroXxx>>() == size_of::<xxx>()`; see
-            // `NonZeroXXX` documentation.
-            Option<NonZeroU8>,
-            Option<NonZeroU16>,
-            Option<NonZeroU32>,
-            Option<NonZeroU64>,
-            Option<NonZeroU128>,
-            Option<NonZeroUsize>,
-            Option<NonZeroI8>,
-            Option<NonZeroI16>,
-            Option<NonZeroI32>,
-            Option<NonZeroI64>,
-            Option<NonZeroI128>,
-            Option<NonZeroIsize>,
-        );
-    };
-}
-
 /// Types for which any byte pattern is valid.
 ///
 /// WARNING: Do not implement this trait yourself! Instead, use
@@ -657,50 +529,6 @@ pub unsafe trait AsBytes {
     }
 }
 
-// Special case for `AsBytes`-only types (they are not included in
-// `impl_for_primitives!`).
-impl_for_types!(
-    AsBytes,
-    bool,
-    char,
-    str,
-    // `NonZeroXxx` is `AsBytes`, but not `FromBytes`.
-    //
-    // SAFETY: `NonZeroXxx` has the same layout as its associated primitive.
-    // Since it is the same size, this guarantees it has no padding - integers
-    // have no padding, and there's no room for padding if it can represent all
-    // of the same values except 0.
-    NonZeroU8,
-    NonZeroU16,
-    NonZeroU32,
-    NonZeroU64,
-    NonZeroU128,
-    NonZeroUsize,
-    NonZeroI8,
-    NonZeroI16,
-    NonZeroI32,
-    NonZeroI64,
-    NonZeroI128,
-    NonZeroIsize,
-);
-
-// `MaybeUninit<T>` is `FromBytes`, but never `AsBytes` since it may contain
-// uninitialized bytes.
-//
-// SAFETY: `MaybeUninit<T>` has no restrictions on its contents.
-unsafe impl<T> FromBytes for MaybeUninit<T> {
-    fn only_derive_is_allowed_to_implement_this_trait()
-    where
-        Self: Sized,
-    {
-    }
-}
-
-impl_for_primitives!(FromBytes);
-impl_for_primitives!(AsBytes);
-impl_for_composite_types!(FromBytes);
-impl_for_composite_types!(AsBytes);
-
 /// Types with no alignment requirement.
 ///
 /// WARNING: Do not implement this trait yourself! Instead, use
@@ -723,8 +551,302 @@ pub unsafe trait Unaligned {
         Self: Sized;
 }
 
-impl_for_types!(Unaligned, u8, i8, bool);
-impl_for_composite_types!(Unaligned);
+/// Documents multiple unsafe blocks with a single safety comment.
+///
+/// Invoked as:
+///
+/// ```rust,ignore
+/// safety_comment! {
+///     // Non-doc comments come first.
+///     /// SAFETY:
+///     /// Safety comment starts on its own line.
+///     macro_1!(args);
+///     macro_2! { args };
+/// }
+/// ```
+///
+/// The macro invocations are emitted, each decorated with the following
+/// attribute: `#[allow(clippy::undocumented_unsafe_blocks)]`.
+macro_rules! safety_comment {
+    (#[doc = r" SAFETY:"] $(#[doc = $_doc:literal])* $($macro:ident!$args:tt;)*) => {
+        #[allow(clippy::undocumented_unsafe_blocks)]
+        const _: () = { $($macro!$args;)* };
+    }
+}
+
+/// Unsafely implements trait(s) for a type.
+macro_rules! unsafe_impl {
+    // Implement `Unaligned` for `$ty` with no bounds.
+    //
+    // For `Unaligned` in particular, it's possible to assert at compile time
+    // that the trait impl is sound. This provides a small speed bump to
+    // accidentally implementing `Unaligned` for a type with alignment greater
+    // than 1.
+    ($ty:ty: Unaligned) => {
+        // We only compile this assertion under `cfg(test)` to avoid making this
+        // crate more expensive to compile for our dependents.
+        #[cfg(test)]
+        const _: () = { static_assertions::const_assert_eq!(core::mem::align_of::<$ty>(), 1); };
+        unsafe impl Unaligned for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
+    };
+    // Implement `$trait` for `$ty` with no bounds.
+    ($ty:ty: $trait:ty) => {
+        unsafe impl $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
+    };
+    // Implement all `$traits` for `$ty` with no bounds.
+    ($ty:ty: $($traits:ty),*) => {
+        $( unsafe_impl!($ty: $traits); )*
+    };
+    // For all `$tyvar` with no bounds, implement `$trait` for `$ty`.
+    ($tyvar:ident => $trait:ident for $ty:ty) => {
+        unsafe impl<$tyvar> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
+    };
+    // For all `$tyvar: ?Sized` with no bounds, implement `$trait` for `$ty`.
+    ($tyvar:ident: ?Sized => $trait:ident for $ty:ty) => {
+        unsafe impl<$tyvar: ?Sized> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
+    };
+    // For all `$tyvar: $bound`, implement `$trait` for `$ty`.
+    ($tyvar:ident: $bound:path => $trait:ident for $ty:ty) => {
+        unsafe impl<$tyvar: $bound> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
+    };
+    // For all `$tyvar: $bound + ?Sized`, implement `$trait` for `$ty`.
+    ($tyvar:ident: ?Sized + $bound:path => $trait:ident for $ty:ty) => {
+        unsafe impl<$tyvar: ?Sized + $bound> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
+    };
+    // For all `$tyvar: $bound` and for all `const $constvar: $constty`,
+    // implement `$trait` for `$ty`.
+    ($tyvar:ident: $bound:path, const $constvar:ident: $constty:ty => $trait:ident for $ty:ty) => {
+        unsafe impl<$tyvar: $bound, const $constvar: $constty> $trait for $ty {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+    };
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// Per the reference [1], "the unit tuple (`()`) ... is guaranteed as a
+    /// zero-sized type to have a size of 0 and an alignment of 1."
+    /// - `FromBytes`: There is only one possible sequence of 0 bytes, and `()`
+    ///   is inhabited.
+    /// - `AsBytes`: Since `()` has size 0, it contains no padding bytes.
+    /// - `Unaligned`: `()` has alignment 1.
+    ///
+    /// [1] https://doc.rust-lang.org/reference/type-layout.html#tuple-layout
+    unsafe_impl!((): FromBytes, AsBytes, Unaligned);
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// - `FromBytes`: all bit patterns are valid for integers [1]
+    /// - `AsBytes`: integers have no padding bytes [1]
+    /// - `Unaligned` (`u8` and `i8` only): The reference [2] specifies the size
+    ///   of `u8` and `i8` as 1 byte. We also know that:
+    ///   - Alignment is >= 1
+    ///   - Size is an integer multiple of alignment
+    ///   - The only value >= 1 for which 1 is an integer multiple is 1
+    ///   Therefore, the only possible alignment for `u8` and `i8` is 1.
+    ///
+    /// [1] TODO(https://github.com/rust-lang/reference/issues/1291): Once the
+    ///     reference explicitly guarantees these properties, cite it.
+    /// [2] https://doc.rust-lang.org/reference/type-layout.html#primitive-data-layout
+    unsafe_impl!(u8: FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(i8: FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(u16: FromBytes, AsBytes);
+    unsafe_impl!(i16: FromBytes, AsBytes);
+    unsafe_impl!(u32: FromBytes, AsBytes);
+    unsafe_impl!(i32: FromBytes, AsBytes);
+    unsafe_impl!(u64: FromBytes, AsBytes);
+    unsafe_impl!(i64: FromBytes, AsBytes);
+    unsafe_impl!(u128: FromBytes, AsBytes);
+    unsafe_impl!(i128: FromBytes, AsBytes);
+    unsafe_impl!(usize: FromBytes, AsBytes);
+    unsafe_impl!(isize: FromBytes, AsBytes);
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// - `FromBytes`: the `{f32,f64}::from_bits` constructors' documentation
+    ///   [1,2] states that they are currently equivalent to `transmute`. [3]
+    /// - `AsBytes`: the `{f32,f64}::to_bits` methods' documentation [4,5]
+    ///   states that they are currently equivalent to `transmute`. [3]
+    ///
+    /// TODO: Make these arguments more precisely in terms of the documentation.
+    ///
+    /// [1] https://doc.rust-lang.org/nightly/std/primitive.f32.html#method.from_bits
+    /// [2] https://doc.rust-lang.org/nightly/std/primitive.f64.html#method.from_bits
+    /// [3] TODO(https://github.com/rust-lang/reference/issues/1291): Once the
+    ///     reference explicitly guarantees these properties, cite it.
+    /// [4] https://doc.rust-lang.org/nightly/std/primitive.f32.html#method.to_bits
+    /// [5] https://doc.rust-lang.org/nightly/std/primitive.f64.html#method.to_bits
+    unsafe_impl!(f32: FromBytes, AsBytes);
+    unsafe_impl!(f64: FromBytes, AsBytes);
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// - `AsBytes`: Per the reference [1], `bool` always has a size of 1 with
+    ///   valid bit patterns 0x01 and 0x00, so the only byte of the bool is
+    ///   always initialized
+    /// - `Unaligned`: Per the reference [1], "[a]n object with the boolean type
+    ///   has a size and alignment of 1 each."
+    ///
+    /// [1] https://doc.rust-lang.org/reference/types/boolean.html
+    unsafe_impl!(bool: AsBytes, Unaligned);
+}
+safety_comment! {
+    /// SAFETY:
+    /// - `AsBytes`: `char` is represented as a 32-bit unsigned word (`u32`)
+    ///   [1], which is `AsBytes`. Note that unlike `u32`, not all bit patterns
+    ///   are valid for `char`.
+    ///
+    /// [1] https://doc.rust-lang.org/reference/types/textual.html
+    unsafe_impl!(char: AsBytes);
+}
+safety_comment! {
+    /// SAFETY:
+    /// - `AsBytes`: Per the reference [1], `str` has the same layout as `[u8]`,
+    ///   and `[u8]` is `AsBytes`.
+    ///
+    /// [1] https://doc.rust-lang.org/reference/type-layout.html#str-layout
+    unsafe_impl!(str: AsBytes);
+}
+
+safety_comment! {
+    // `NonZeroXxx` is `AsBytes`, but not `FromBytes`.
+    //
+    /// SAFETY:
+    /// `NonZeroXxx` has the same layout as its associated primitive. Since it
+    /// is the same size, this guarantees it has no padding - integers have no
+    /// padding, and there's no room for padding if it can represent all of the
+    /// same values except 0.
+    ///
+    /// TODO(https://github.com/rust-lang/rust/pull/104082): Cite documentation
+    /// that layout is the same as primitive layout.
+    unsafe_impl!(NonZeroU8: AsBytes);
+    unsafe_impl!(NonZeroI8: AsBytes);
+    unsafe_impl!(NonZeroU16: AsBytes);
+    unsafe_impl!(NonZeroI16: AsBytes);
+    unsafe_impl!(NonZeroU32: AsBytes);
+    unsafe_impl!(NonZeroI32: AsBytes);
+    unsafe_impl!(NonZeroU64: AsBytes);
+    unsafe_impl!(NonZeroI64: AsBytes);
+    unsafe_impl!(NonZeroU128: AsBytes);
+    unsafe_impl!(NonZeroI128: AsBytes);
+    unsafe_impl!(NonZeroUsize: AsBytes);
+    unsafe_impl!(NonZeroIsize: AsBytes);
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// The Rust compiler reuses `0` value to represent `None`, so
+    /// `size_of::<Option<NonZeroXxx>>() == size_of::<xxx>()`; see `NonZeroXxx`
+    /// documentation.
+    ///
+    /// TODO(https://github.com/rust-lang/rust/pull/104082): Cite documentation
+    /// for layout guarantees.
+    unsafe_impl!(Option<NonZeroU8>: FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI8>: FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU16>: FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI16>: FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU32>: FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI32>: FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU64>: FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI64>: FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU128>: FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI128>: FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroUsize>: FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroIsize>: FromBytes, AsBytes);
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// The reference [1] suggests (but does not clearly promise) that
+    /// `PhantomData` has size 0 and alignment 1.
+    /// - `FromBytes`: There is only one possible sequence of 0 bytes, and
+    ///   `PhantomData` is inhabited.
+    /// - `AsBytes`: Since `PhantomData` has size 0, it contains no padding
+    ///   bytes.
+    /// - `Unaligned`: Per the preceding reference, `PhantomData` has alignment
+    ///   1.
+    ///
+    /// [1] https://doc.rust-lang.org/reference/type-layout.html#the-transparent-representation
+    ///
+    /// TODO(https://github.com/rust-lang/rust/pull/104081): Cite guaranteed
+    /// size and alignment.
+    unsafe_impl!(T: ?Sized => FromBytes for PhantomData<T>);
+    unsafe_impl!(T: ?Sized => AsBytes for PhantomData<T>);
+    unsafe_impl!(T: ?Sized => Unaligned for PhantomData<T>);
+}
+safety_comment! {
+    /// SAFETY:
+    /// `Wrapping<T>` is guaranteed by its docs [1] to have the same layout as
+    /// `T`. Also, `Wrapping<T>` is `#[repr(transparent)]`, and has a single
+    /// field, which is `pub`. Per the reference [2], this means that the
+    /// `#[repr(transparent)]` attribute is "considered part of the public ABI".
+    ///
+    /// [1] https://doc.rust-lang.org/nightly/core/num/struct.Wrapping.html#layout-1
+    /// [2] https://doc.rust-lang.org/nomicon/other-reprs.html#reprtransparent
+    unsafe_impl!(T: FromBytes => FromBytes for Wrapping<T>);
+    unsafe_impl!(T: AsBytes => AsBytes for Wrapping<T>);
+    unsafe_impl!(T: Unaligned => Unaligned for Wrapping<T>);
+}
+
+safety_comment! {
+    // `MaybeUninit<T>` is `FromBytes`, but never `AsBytes` since it may contain
+    // uninitialized bytes.
+    //
+    /// SAFETY:
+    /// `MaybeUninit<T>` has no restrictions on its contents.
+    unsafe_impl!(T => FromBytes for MaybeUninit<T>);
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// `ManuallyDrop` has the same layout as `T`, and accessing the inner value
+    /// is safe (meaning that it's unsound to leave the inner value
+    /// uninitialized while exposing the `ManuallyDrop` to safe code).
+    /// - `FromBytes`: Since it has the same layout as `T`, any valid `T` is a
+    ///   valid `ManuallyDrop<T>`. Since `T: FromBytes`, any sequence of bytes
+    ///   is a valid `T`, and thus a valid `ManuallyDrop<T>`.
+    /// - `AsBytes`: Since it has the same layout as `T`, and since it's unsound
+    ///   to let safe code access a `ManuallyDrop` whose inner value is
+    ///   uninitialized, safe code can only ever access a `ManuallyDrop` whose
+    ///   contents are a valid `T`. Since `T: AsBytes`, this means that safe
+    ///   code can only ever access a `ManuallyDrop` with all initialized bytes.
+    /// - `Unaligned`: `ManuallyDrop` has the same layout (and thus alignment)
+    ///   as `T`, and `T: Unaligned` guarantees that that alignment is 1.
+    unsafe_impl!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>);
+    unsafe_impl!(T: ?Sized + AsBytes => AsBytes for ManuallyDrop<T>);
+    unsafe_impl!(T: ?Sized + Unaligned => Unaligned for ManuallyDrop<T>);
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// Per the reference [1]:
+    ///
+    ///   An array of `[T; N]` has a size of `size_of::<T>() * N` and the same
+    ///   alignment of `T`. Arrays are laid out so that the zero-based `nth`
+    ///   element of the array is offset from the start of the array by `n *
+    ///   size_of::<T>()` bytes.
+    ///
+    ///   ...
+    ///
+    ///   Slices have the same layout as the section of the array they slice.
+    ///
+    /// In other words, the layout of a `[T]` or `[T; N]` is a sequence of `T`s
+    /// laid out back-to-back with no bytes in between. Therefore, `[T]` or `[T;
+    /// N]` are `FromBytes` and `AsBytes` if `T` is (respectively). Furthermore,
+    /// since an array/slice has "the same alignment of `T`", `[T]` and `[T; N]`
+    /// are `Unaligned` if `T` is.
+    ///
+    /// [1] https://doc.rust-lang.org/reference/type-layout.html#array-layout
+    unsafe_impl!(T: FromBytes, const N: usize => FromBytes for [T; N]);
+    unsafe_impl!(T: AsBytes, const N: usize => AsBytes for [T; N]);
+    unsafe_impl!(T: Unaligned, const N: usize => Unaligned for [T; N]);
+    unsafe_impl!(T: FromBytes => FromBytes for [T]);
+    unsafe_impl!(T: AsBytes => AsBytes for [T]);
+    unsafe_impl!(T: Unaligned => Unaligned for [T]);
+}
 
 // SIMD support
 //
@@ -806,9 +928,11 @@ mod simd {
                 use core::arch::$arch::{$($typ),*};
 
                 use crate::*;
-
-                impl_for_types!(FromBytes, $($typ),*);
-                impl_for_types!(AsBytes, $($typ),*);
+                safety_comment! {
+                    /// SAFETY:
+                    /// See comment on module definition for justification.
+                    $( unsafe_impl!($typ: FromBytes, AsBytes); )*
+                }
             }
         };
     }
@@ -1056,17 +1180,14 @@ impl<T: Copy> Unalign<T> {
     }
 }
 
-// SAFETY: Since `T: AsBytes`, we know that it's safe to construct a `&[u8]`
-// from an aligned `&T`. Since `&[u8]` itself has no alignment requirements, it
-// must also be safe to construct a `&[u8]` from a `&T` at any address. Since
-// `Unalign<T>` is `#[repr(C, packed)]`, everything about its layout except for
-// its alignment is the same as `T`'s layout.
-unsafe impl<T: AsBytes> AsBytes for Unalign<T> {
-    fn only_derive_is_allowed_to_implement_this_trait()
-    where
-        Self: Sized,
-    {
-    }
+safety_comment! {
+    /// SAFETY:
+    /// Since `T: AsBytes`, we know that it's safe to construct a `&[u8]` from
+    /// an aligned `&T`. Since `&[u8]` itself has no alignment requirements, it
+    /// must also be safe to construct a `&[u8]` from a `&T` at any address.
+    /// Since `Unalign<T>` is `#[repr(C, packed)]`, everything about its layout
+    /// except for its alignment is the same as `T`'s layout.
+    unsafe_impl!(T: AsBytes => AsBytes for Unalign<T>);
 }
 
 impl<T: Unaligned> Deref for Unalign<T> {
