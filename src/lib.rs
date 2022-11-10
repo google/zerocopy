@@ -2712,10 +2712,6 @@ mod tests {
     }
 
     impl<T, A> Align<T, A> {
-        // This is used in an anonymous constant in `test_unalign`; it is
-        // considered unused due to this bug:
-        // https://github.com/rust-lang/rust/issues/104084
-        #[allow(dead_code)]
         const fn new(t: T) -> Align<T, A> {
             Align { t, _a: [] }
         }
@@ -2829,6 +2825,11 @@ mod tests {
         const _UNALIGN: Unalign<u64> = Unalign::new(0);
         const _UNALIGN_PTR: *const u64 = _UNALIGN.get_ptr();
         const _U64: u64 = _UNALIGN.into_inner();
+        // Make sure all code is considered "used".
+        //
+        // TODO(https://github.com/rust-lang/rust/issues/104084): Remove this
+        // attribute.
+        #[allow(dead_code)]
         const _: () = {
             let x: Align<_, AU64> = Align::new(Unalign::new(AU64(123)));
             // Make sure that `deref_unchecked` is `const`.
@@ -3658,14 +3659,12 @@ mod tests {
         // `!$trait`. Note that all `$trait`s must come before any `!$trait`s.
         macro_rules! assert_impls {
             ($ty:ty: $trait:ident) => {
-                #[allow(dead_code)]
                 const _: () = {
                     fn assert_impls_trait<T: $trait + ?Sized>() {}
                     let _ = assert_impls_trait::<$ty>;
                 };
             };
             ($ty:ty: !$trait:ident) => {
-                #[allow(dead_code)]
                 const _: () = {
                     // This works by defining `$trait`, which is given a blanket
                     // impl for all `T: crate::$trait`, and is also implemented
