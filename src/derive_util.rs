@@ -55,6 +55,7 @@ macro_rules! struct_has_padding {
 /// representations (such as `repr(C)`) can use this macro to check for padding.
 /// Note that while this may yield some consistent value for some `repr(Rust)`
 /// unions, it is not guaranteed across platforms or compilations.
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
 macro_rules! union_has_padding {
     ($t:ty, $($ts:ty),*) => {
