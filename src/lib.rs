@@ -590,11 +590,11 @@ macro_rules! unsafe_impl {
         unsafe impl Unaligned for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
     };
     // Implement `$trait` for `$ty` with no bounds.
-    ($ty:ty: $trait:ty) => {
+    ($ty:ty: $trait:tt) => {
         unsafe impl $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
     };
     // Implement all `$traits` for `$ty` with no bounds.
-    ($ty:ty: $($traits:ty),*) => {
+    ($ty:ty: $($traits:tt),*) => {
         $( unsafe_impl!($ty: $traits); )*
     };
     // For all `$tyvar` with no bounds, implement `$trait` for `$ty`.
