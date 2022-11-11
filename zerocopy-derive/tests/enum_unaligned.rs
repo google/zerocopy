@@ -4,10 +4,7 @@
 
 #![allow(warnings)]
 
-#[macro_use]
-mod util;
-
-use zerocopy::Unaligned;
+use {static_assertions::assert_impl_all, zerocopy::Unaligned};
 
 // An enum is `Unaligned` if:
 // - No `repr(align(N > 1))`
@@ -19,7 +16,7 @@ enum Foo {
     A,
 }
 
-assert_is_unaligned!(Foo);
+assert_impl_all!(Foo: Unaligned);
 
 #[derive(Unaligned)]
 #[repr(i8)]
@@ -27,7 +24,7 @@ enum Bar {
     A,
 }
 
-assert_is_unaligned!(Bar);
+assert_impl_all!(Bar: Unaligned);
 
 #[derive(Unaligned)]
 #[repr(u8, align(1))]
@@ -35,7 +32,7 @@ enum Baz {
     A,
 }
 
-assert_is_unaligned!(Baz);
+assert_impl_all!(Baz: Unaligned);
 
 #[derive(Unaligned)]
 #[repr(i8, align(1))]
@@ -43,4 +40,4 @@ enum Blah {
     B,
 }
 
-assert_is_unaligned!(Blah);
+assert_impl_all!(Blah: Unaligned);

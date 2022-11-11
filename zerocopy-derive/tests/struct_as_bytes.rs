@@ -4,12 +4,11 @@
 
 #![allow(warnings)]
 
-#[macro_use]
 mod util;
 
 use std::{marker::PhantomData, mem::ManuallyDrop, option::IntoIter};
 
-use zerocopy::AsBytes;
+use {static_assertions::assert_impl_all, zerocopy::AsBytes};
 
 use self::util::AU16;
 
@@ -23,7 +22,7 @@ use self::util::AU16;
 #[repr(C)]
 struct CZst;
 
-assert_is_as_bytes!(CZst);
+assert_impl_all!(CZst: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(C)]
@@ -33,7 +32,7 @@ struct C {
     c: AU16,
 }
 
-assert_is_as_bytes!(C);
+assert_impl_all!(C: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(transparent)]
@@ -42,7 +41,7 @@ struct Transparent {
     b: CZst,
 }
 
-assert_is_as_bytes!(Transparent);
+assert_impl_all!(Transparent: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(transparent)]
@@ -51,14 +50,14 @@ struct TransparentGeneric<T: ?Sized> {
     b: T,
 }
 
-assert_is_as_bytes!(TransparentGeneric<u64>);
-assert_is_as_bytes!(TransparentGeneric<[u64]>);
+assert_impl_all!(TransparentGeneric<u64>: AsBytes);
+assert_impl_all!(TransparentGeneric<[u64]>: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(C, packed)]
 struct CZstPacked;
 
-assert_is_as_bytes!(CZstPacked);
+assert_impl_all!(CZstPacked: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(C, packed)]
@@ -74,7 +73,7 @@ struct CPacked {
     b: u16,
 }
 
-assert_is_as_bytes!(CPacked);
+assert_impl_all!(CPacked: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(C, packed)]
@@ -88,8 +87,8 @@ struct CPackedGeneric<T, U: ?Sized> {
     u: ManuallyDrop<U>,
 }
 
-assert_is_as_bytes!(CPackedGeneric<u8, AU16>);
-assert_is_as_bytes!(CPackedGeneric<u8, [AU16]>);
+assert_impl_all!(CPackedGeneric<u8, AU16>: AsBytes);
+assert_impl_all!(CPackedGeneric<u8, [AU16]>: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(packed)]
@@ -105,7 +104,7 @@ struct Packed {
     b: u16,
 }
 
-assert_is_as_bytes!(Packed);
+assert_impl_all!(Packed: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(packed)]
@@ -119,8 +118,8 @@ struct PackedGeneric<T, U: ?Sized> {
     u: ManuallyDrop<U>,
 }
 
-assert_is_as_bytes!(PackedGeneric<u8, AU16>);
-assert_is_as_bytes!(PackedGeneric<u8, [AU16]>);
+assert_impl_all!(PackedGeneric<u8, AU16>: AsBytes);
+assert_impl_all!(PackedGeneric<u8, [AU16]>: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(transparent)]
@@ -128,4 +127,4 @@ struct Unsized {
     a: [u8],
 }
 
-assert_is_as_bytes!(Unsized);
+assert_impl_all!(Unsized: AsBytes);

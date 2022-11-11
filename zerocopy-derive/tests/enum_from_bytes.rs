@@ -4,10 +4,9 @@
 
 #![allow(warnings)]
 
-#[macro_use]
 mod util;
 
-use zerocopy::FromBytes;
+use {static_assertions::assert_impl_all, zerocopy::FromBytes};
 
 // An enum is `FromBytes` if:
 // - `repr(uN)` or `repr(iN)`
@@ -287,7 +286,7 @@ enum FooU8 {
     Variant255,
 }
 
-assert_is_from_bytes!(FooU8);
+assert_impl_all!(FooU8: FromBytes);
 
 #[derive(FromBytes)]
 #[repr(i8)]
@@ -550,7 +549,7 @@ enum FooI8 {
     Variant255,
 }
 
-assert_is_from_bytes!(FooI8);
+assert_impl_all!(FooI8: FromBytes);
 
 #[derive(FromBytes)]
 #[repr(u8, align(2))]
@@ -813,7 +812,7 @@ enum FooU8Align {
     Variant255,
 }
 
-assert_is_from_bytes!(FooU8Align);
+assert_impl_all!(FooU8Align: FromBytes);
 
 #[derive(FromBytes)]
 #[repr(i8, align(2))]
@@ -1076,7 +1075,7 @@ enum FooI8Align {
     Variant255,
 }
 
-assert_is_from_bytes!(FooI8Align);
+assert_impl_all!(FooI8Align: FromBytes);
 
 #[derive(FromBytes)]
 #[repr(u16)]
@@ -66619,7 +66618,7 @@ enum FooU16 {
     Variant65535,
 }
 
-assert_is_from_bytes!(FooU16);
+assert_impl_all!(FooU16: FromBytes);
 
 #[derive(FromBytes)]
 #[repr(i16)]
@@ -132162,4 +132161,4 @@ enum FooI16 {
     Variant65535,
 }
 
-assert_is_from_bytes!(FooI16);
+assert_impl_all!(FooI16: FromBytes);
