@@ -26,6 +26,7 @@ syn = { version = "1.0.5", features = ["visit"] }
 
 [dev-dependencies]
 rustversion = "1.0"
+static_assertions = "1.1"
 # Required for "and $N others" normalization
 trybuild = ">=1.0.70"
 zerocopy = { path = "../" }

@@ -14,33 +14,3 @@ pub struct NotZerocopy(());
 #[derive(FromBytes, AsBytes, Copy, Clone)]
 #[repr(C, align(2))]
 pub struct AU16(u16);
-
-#[allow(unused_macros)]
-macro_rules! assert_is_as_bytes {
-    ($ty:ty) => {
-        const _: () = {
-            const fn is_as_bytes<T: zerocopy::AsBytes + ?Sized>() {}
-            const _: () = is_as_bytes::<$ty>();
-        };
-    };
-}
-
-#[allow(unused_macros)]
-macro_rules! assert_is_from_bytes {
-    ($ty:ty) => {
-        const _: () = {
-            const fn is_from_bytes<T: zerocopy::FromBytes + ?Sized>() {}
-            const _: () = is_from_bytes::<$ty>();
-        };
-    };
-}
-
-#[allow(unused_macros)]
-macro_rules! assert_is_unaligned {
-    ($ty:ty) => {
-        const _: () = {
-            const fn is_unaligned<T: zerocopy::Unaligned + ?Sized>() {}
-            const _: () = is_unaligned::<$ty>();
-        };
-    };
-}

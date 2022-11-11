@@ -11,7 +11,7 @@ extern crate zerocopy as _zerocopy;
 
 use std::{marker::PhantomData, option::IntoIter};
 
-use _zerocopy::FromBytes;
+use {_zerocopy::FromBytes, static_assertions::assert_impl_all};
 
 #[derive(FromBytes)]
 struct TypeParams<'a, T, I: Iterator> {
@@ -23,8 +23,4 @@ struct TypeParams<'a, T, I: Iterator> {
     g: PhantomData<String>,
 }
 
-const _FOO: () = {
-    let _: IsFromBytes<TypeParams<'static, (), IntoIter<()>>>;
-};
-
-struct IsFromBytes<T: FromBytes>(PhantomData<T>);
+assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: FromBytes);

@@ -4,10 +4,7 @@
 
 #![allow(warnings)]
 
-#[macro_use]
-mod util;
-
-use zerocopy::AsBytes;
+use {static_assertions::assert_impl_all, zerocopy::AsBytes};
 
 // An enum is `AsBytes` if if has a defined repr.
 
@@ -17,7 +14,7 @@ enum C {
     A,
 }
 
-assert_is_as_bytes!(C);
+assert_impl_all!(C: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(u8)]
@@ -25,7 +22,7 @@ enum U8 {
     A,
 }
 
-assert_is_as_bytes!(U8);
+assert_impl_all!(U8: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(u16)]
@@ -33,7 +30,7 @@ enum U16 {
     A,
 }
 
-assert_is_as_bytes!(U16);
+assert_impl_all!(U16: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(u32)]
@@ -41,7 +38,7 @@ enum U32 {
     A,
 }
 
-assert_is_as_bytes!(U32);
+assert_impl_all!(U32: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(u64)]
@@ -49,7 +46,7 @@ enum U64 {
     A,
 }
 
-assert_is_as_bytes!(U64);
+assert_impl_all!(U64: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(usize)]
@@ -57,7 +54,7 @@ enum Usize {
     A,
 }
 
-assert_is_as_bytes!(Usize);
+assert_impl_all!(Usize: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(i8)]
@@ -65,7 +62,7 @@ enum I8 {
     A,
 }
 
-assert_is_as_bytes!(I8);
+assert_impl_all!(I8: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(i16)]
@@ -73,7 +70,7 @@ enum I16 {
     A,
 }
 
-assert_is_as_bytes!(I16);
+assert_impl_all!(I16: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(i32)]
@@ -81,7 +78,7 @@ enum I32 {
     A,
 }
 
-assert_is_as_bytes!(I32);
+assert_impl_all!(I32: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(i64)]
@@ -89,7 +86,7 @@ enum I64 {
     A,
 }
 
-assert_is_as_bytes!(I64);
+assert_impl_all!(I64: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(isize)]
@@ -97,4 +94,4 @@ enum Isize {
     A,
 }
 
-assert_is_as_bytes!(Isize);
+assert_impl_all!(Isize: AsBytes);

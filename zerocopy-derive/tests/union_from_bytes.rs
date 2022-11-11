@@ -4,11 +4,9 @@
 
 #![allow(warnings)]
 
-#[macro_use]
-mod util;
-
 use std::{marker::PhantomData, option::IntoIter};
-use zerocopy::FromBytes;
+
+use {static_assertions::assert_impl_all, zerocopy::FromBytes};
 
 // A union is `FromBytes` if:
 // - all fields are `FromBytes`
@@ -18,14 +16,14 @@ union Zst {
     a: (),
 }
 
-assert_is_from_bytes!(Zst);
+assert_impl_all!(Zst: FromBytes);
 
 #[derive(FromBytes)]
 union One {
     a: u8,
 }
 
-assert_is_from_bytes!(One);
+assert_impl_all!(One: FromBytes);
 
 #[derive(FromBytes)]
 union Two {
@@ -33,7 +31,7 @@ union Two {
     b: Zst,
 }
 
-assert_is_from_bytes!(Two);
+assert_impl_all!(Two: FromBytes);
 
 #[derive(FromBytes)]
 union TypeParams<'a, T: Copy, I: Iterator>
@@ -48,4 +46,4 @@ where
     g: PhantomData<String>,
 }
 
-assert_is_from_bytes!(TypeParams<'static, (), IntoIter<()>>);
+assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: FromBytes);

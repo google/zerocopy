@@ -4,12 +4,11 @@
 
 #![allow(warnings)]
 
-#[macro_use]
 mod util;
 
 use std::{marker::PhantomData, option::IntoIter};
 
-use zerocopy::FromBytes;
+use {static_assertions::assert_impl_all, zerocopy::FromBytes};
 
 use crate::util::AU16;
 
@@ -19,14 +18,14 @@ use crate::util::AU16;
 #[derive(FromBytes)]
 struct Zst;
 
-assert_is_from_bytes!(Zst);
+assert_impl_all!(Zst: FromBytes);
 
 #[derive(FromBytes)]
 struct One {
     a: u8,
 }
 
-assert_is_from_bytes!(One);
+assert_impl_all!(One: FromBytes);
 
 #[derive(FromBytes)]
 struct Two {
@@ -34,14 +33,14 @@ struct Two {
     b: Zst,
 }
 
-assert_is_from_bytes!(Two);
+assert_impl_all!(Two: FromBytes);
 
 #[derive(FromBytes)]
 struct Unsized {
     a: [u8],
 }
 
-assert_is_from_bytes!(Unsized);
+assert_impl_all!(Unsized: FromBytes);
 
 #[derive(FromBytes)]
 struct TypeParams<'a, T: ?Sized, I: Iterator> {
@@ -53,6 +52,6 @@ struct TypeParams<'a, T: ?Sized, I: Iterator> {
     f: T,
 }
 
-assert_is_from_bytes!(TypeParams<'static, (), IntoIter<()>>);
-assert_is_from_bytes!(TypeParams<'static, AU16, IntoIter<()>>);
-assert_is_from_bytes!(TypeParams<'static, [AU16], IntoIter<()>>);
+assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: FromBytes);
+assert_impl_all!(TypeParams<'static, AU16, IntoIter<()>>: FromBytes);
+assert_impl_all!(TypeParams<'static, [AU16], IntoIter<()>>: FromBytes);

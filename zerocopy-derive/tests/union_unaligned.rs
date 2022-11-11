@@ -4,11 +4,9 @@
 
 #![allow(warnings)]
 
-#[macro_use]
-mod util;
-
 use std::{marker::PhantomData, option::IntoIter};
-use zerocopy::Unaligned;
+
+use {static_assertions::assert_impl_all, zerocopy::Unaligned};
 
 // A union is `Unaligned` if:
 // - `repr(align)` is no more than 1 and either
@@ -22,7 +20,7 @@ union Foo {
     a: u8,
 }
 
-assert_is_unaligned!(Foo);
+assert_impl_all!(Foo: Unaligned);
 
 // Transparent unions are unstable; see issue #60405
 // <https://github.com/rust-lang/rust/issues/60405> for more information.
@@ -48,7 +46,7 @@ union Baz {
     a: u16,
 }
 
-assert_is_unaligned!(Baz);
+assert_impl_all!(Baz: Unaligned);
 
 #[derive(Unaligned)]
 #[repr(C, align(1))]
@@ -56,7 +54,7 @@ union FooAlign {
     a: u8,
 }
 
-assert_is_unaligned!(FooAlign);
+assert_impl_all!(FooAlign: Unaligned);
 
 #[derive(Unaligned)]
 #[repr(C)]
@@ -72,4 +70,4 @@ where
     g: PhantomData<String>,
 }
 
-assert_is_unaligned!(TypeParams<'static, (), IntoIter<()>>);
+assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: Unaligned);

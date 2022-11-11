@@ -5,12 +5,14 @@
 extern crate zerocopy;
 
 #[path = "../util.rs"]
-#[macro_use]
 mod util;
 
 use core::marker::PhantomData;
 
-use zerocopy::{AsBytes, FromBytes, Unaligned};
+use {
+    static_assertions::assert_impl_all,
+    zerocopy::{AsBytes, FromBytes, Unaligned},
+};
 
 use self::util::NotZerocopy;
 
@@ -28,6 +30,6 @@ struct TransparentStruct<T> {
 // It should be legal to derive these traits on a transparent struct, but it
 // must also ensure the traits are only implemented when the inner type
 // implements them.
-assert_is_as_bytes!(TransparentStruct<NotZerocopy>);
-assert_is_from_bytes!(TransparentStruct<NotZerocopy>);
-assert_is_unaligned!(TransparentStruct<NotZerocopy>);
+assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
+assert_impl_all!(TransparentStruct<NotZerocopy>: AsBytes);
+assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
