@@ -4,12 +4,11 @@
 
 #![allow(warnings)]
 
-#[macro_use]
 mod util;
 
 use std::{marker::PhantomData, option::IntoIter};
 
-use zerocopy::Unaligned;
+use {static_assertions::assert_impl_all, zerocopy::Unaligned};
 
 use crate::util::AU16;
 
@@ -25,7 +24,7 @@ struct Foo {
     a: u8,
 }
 
-assert_is_unaligned!(Foo);
+assert_impl_all!(Foo: Unaligned);
 
 #[derive(Unaligned)]
 #[repr(transparent)]
@@ -33,7 +32,7 @@ struct Bar {
     a: u8,
 }
 
-assert_is_unaligned!(Bar);
+assert_impl_all!(Bar: Unaligned);
 
 #[derive(Unaligned)]
 #[repr(packed)]
@@ -48,7 +47,7 @@ struct Baz {
     a: u16,
 }
 
-assert_is_unaligned!(Baz);
+assert_impl_all!(Baz: Unaligned);
 
 #[derive(Unaligned)]
 #[repr(C, align(1))]
@@ -56,7 +55,7 @@ struct FooAlign {
     a: u8,
 }
 
-assert_is_unaligned!(FooAlign);
+assert_impl_all!(FooAlign: Unaligned);
 
 #[derive(Unaligned)]
 #[repr(transparent)]
@@ -64,7 +63,7 @@ struct Unsized {
     a: [u8],
 }
 
-assert_is_unaligned!(Unsized);
+assert_impl_all!(Unsized: Unaligned);
 
 #[derive(Unaligned)]
 #[repr(C)]
@@ -77,6 +76,6 @@ struct TypeParams<'a, T: ?Sized, I: Iterator> {
     f: T,
 }
 
-assert_is_unaligned!(TypeParams<'static, (), IntoIter<()>>);
-assert_is_unaligned!(TypeParams<'static, u8, IntoIter<()>>);
-assert_is_unaligned!(TypeParams<'static, [u8], IntoIter<()>>);
+assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: Unaligned);
+assert_impl_all!(TypeParams<'static, u8, IntoIter<()>>: Unaligned);
+assert_impl_all!(TypeParams<'static, [u8], IntoIter<()>>: Unaligned);

@@ -2858,6 +2858,8 @@ mod tests {
 
     use core::{convert::TryInto, ops::Deref};
 
+    use static_assertions::assert_impl_all;
+
     use super::*;
 
     /// A `T` which is aligned to at least `align_of::<A>()`.
@@ -3795,13 +3797,9 @@ mod tests {
             _phantom: PhantomData<()>,
         }
 
-        fn assert_impls_as_bytes<T: AsBytes>() {}
-        fn assert_impls_from_bytes<T: FromBytes>() {}
-        fn assert_impls_unaligned<T: Unaligned>() {}
-
-        assert_impls_as_bytes::<Foo<f32>>();
-        assert_impls_from_bytes::<Foo<u32>>();
-        assert_impls_unaligned::<Foo<u8>>();
+        assert_impl_all!(Foo<u32>: FromBytes);
+        assert_impl_all!(Foo<f32>: AsBytes);
+        assert_impl_all!(Foo<u8>: Unaligned);
 
         #[derive(AsBytes, FromBytes, Unaligned)]
         #[repr(packed)]
@@ -3810,9 +3808,7 @@ mod tests {
             _u: U,
         }
 
-        assert_impls_as_bytes::<Bar<u8, AU64>>();
-        assert_impls_from_bytes::<Bar<u8, AU64>>();
-        assert_impls_unaligned::<Bar<u8, AU64>>();
+        assert_impl_all!(Bar<u8, AU64>: FromBytes, AsBytes, Unaligned);
     }
 
     #[test]
@@ -3821,22 +3817,12 @@ mod tests {
         // `!$trait`. Note that all `$trait`s must come before any `!$trait`s.
         macro_rules! assert_impls {
             ($ty:ty: $trait:ident) => {
-                const _: () = {
-                    fn assert_impls_trait<T: $trait + ?Sized>() {}
-                    let _ = assert_impls_trait::<$ty>;
-                };
+                #[allow(dead_code)]
+                const _: () = { static_assertions::assert_impl_all!($ty: $trait); };
             };
             ($ty:ty: !$trait:ident) => {
-                const _: () = {
-                    // This works by defining `$trait`, which is given a blanket
-                    // impl for all `T: crate::$trait`, and is also implemented
-                    // specifically for `$ty`. If `$ty` spuriously implements
-                    // `crate::$trait`, this will result in a "conflicting
-                    // implementations" error.
-                    trait $trait {}
-                    impl<T: crate::$trait> $trait for T {}
-                    impl $trait for $ty {}
-                };
+                #[allow(dead_code)]
+                const _: () = { static_assertions::assert_not_impl_any!($ty: $trait); };
             };
             ($ty:ty: $($trait:ident),* $(,)? $(!$negative_trait:ident),*) => {
                 $(
@@ -3867,9 +3853,7 @@ mod tests {
 
         assert_impls!(bool: AsBytes, Unaligned, !FromBytes);
         assert_impls!(char: AsBytes, !FromBytes, !Unaligned);
-        // `str: Unaligned` is probably sound, so we can probably remove
-        // `!Unaligned` at some point.
-        assert_impls!(str: AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(str: AsBytes, Unaligned, !FromBytes);
 
         assert_impls!(NonZeroU8: AsBytes, Unaligned, !FromBytes);
         assert_impls!(NonZeroI8: AsBytes, Unaligned, !FromBytes);
