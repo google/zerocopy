@@ -2,7 +2,11 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-# This file is used when publishing to crates.io
+# Put both crates in a single workspace so that `trybuild` compiler errors have
+# paths that are stable regardless of the path to the repository root. This
+# avoids issues like:
+# https://github.com/dtolnay/trybuild/issues/207#issuecomment-1312277494
+[workspace]
 
 [package]
 edition = "2021"
