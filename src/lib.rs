@@ -185,11 +185,10 @@ mod zerocopy {
 ///
 /// If a type has the following properties, then it is safe to implement
 /// `FromZeroes` for that type:
-/// - If the type is a struct:
-///   - All of its fields must implement `FromZeroes`
-/// - If the type is an enum, all of its variants must be fieldless and it must
-///   have a variant with a discriminant of `0` (see [the reference] for a
-///   description of how discriminant values are chosen)
+/// - If the type is a struct, all of its fields must implement `FromZeroes`
+/// - If the type is an enum, it must be C-like (meaning that all variants have
+///   no fields) and it must have a variant with a discriminant of `0` (see [the
+///   reference] for a description of how discriminant values are chosen)
 ///
 /// [the reference]: https://doc.rust-lang.org/reference/items/enumerations.html#custom-discriminant-values-for-fieldless-enumerations
 ///
@@ -218,6 +217,8 @@ mod zerocopy {
 ///
 /// Whether a struct is soundly `FromZeroes` therefore solely depends on whether
 /// its fields are `FromZeroes`.
+// TODO(#146): Document why we don't require an enum to have an explicit `repr`
+// attribute.
 pub unsafe trait FromZeroes {
     // The `Self: Sized` bound makes it so that `FromZeroes` is still object
     // safe.
@@ -398,8 +399,7 @@ pub unsafe trait FromZeroes {
 ///
 /// If a type has the following properties, then it is safe to implement
 /// `FromBytes` for that type:
-/// - If the type is a struct:
-///   - All of its fields must implement `FromBytes`
+/// - If the type is a struct, all of its fields must implement `FromBytes`
 /// - If the type is an enum:
 ///   - It must be a C-like enum (meaning that all variants have no fields)
 ///   - It must have a defined representation (`repr`s `C`, `u8`, `u16`, `u32`,
@@ -500,16 +500,21 @@ pub unsafe trait FromBytes: FromZeroes {
 /// get an error like this:
 ///
 /// ```text
-/// error[E0080]: evaluation of constant value failed
-///   --> lib.rs:1:10
+/// error[E0277]: the trait bound `HasPadding<Foo, true>: ShouldBe<false>` is not satisfied
+///   --> lib.rs:23:10
 ///    |
 ///  1 | #[derive(AsBytes)]
-///    |          ^^^^^^^ attempt to divide by zero
+///    |          ^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<Foo, true>`
+///    |
+///    = help: the trait `ShouldBe<VALUE>` is implemented for `HasPadding<T, VALUE>`
 /// ```
 ///
-/// This error means that the type being annotated has padding bytes, which is
-/// illegal for `AsBytes` types. Consider either adding explicit struct fields
-/// where those padding bytes would be or using `#[repr(packed)]`.
+/// This error indicates that the type being annotated has padding bytes, which
+/// is illegal for `AsBytes` types. Consider reducing the alignment of some
+/// fields by using types in the [`byteorder`] module, adding explicit struct
+/// fields where those padding bytes would be, or using `#[repr(packed)]`. See
+/// the Rust Reference's [page on type layout](type-layout) for more information
+/// about type layout and padding.
 ///
 /// # Safety
 ///
@@ -532,6 +537,7 @@ pub unsafe trait FromBytes: FromZeroes {
 ///   - It must have a defined representation (`repr`s `C`, `u8`, `u16`, `u32`,
 ///     `u64`, `usize`, `i8`, `i16`, `i32`, `i64`, or `isize`).
 ///
+/// [type-layout]: https://doc.rust-lang.org/reference/type-layout.html
 /// [Rust Reference]: https://doc.rust-lang.org/reference/type-layout.html
 pub unsafe trait AsBytes {
     // The `Self: Sized` bound makes it so that this function doesn't prevent
