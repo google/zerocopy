@@ -187,8 +187,11 @@ mod zerocopy {
 /// `FromZeroes` for that type:
 /// - If the type is a struct:
 ///   - All of its fields must implement `FromZeroes`
-/// - If the type is an enum, it must follow the same rules as [`FromBytes`]
-///   enums. this will likely change soon.
+/// - If the type is an enum, all of its variants must be fieldless and it must
+///   have a variant with a discriminant of `0` (see [the reference] for a
+///   description of how discriminant values are chosen)
+///
+/// [the reference]: https://doc.rust-lang.org/reference/items/enumerations.html#custom-discriminant-values-for-fieldless-enumerations
 ///
 /// # Rationale
 ///
