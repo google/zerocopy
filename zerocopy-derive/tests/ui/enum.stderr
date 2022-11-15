@@ -23,14 +23,6 @@ error: conflicting representation hints
    |        ^^^^^^^
 
 error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
-  --> tests/ui/enum.rs:38:10
-   |
-38 | #[derive(FromZeroes, FromBytes)]
-   |          ^^^^^^^^^^
-   |
-   = note: this error originates in the derive macro `FromZeroes` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
   --> tests/ui/enum.rs:38:22
    |
 38 | #[derive(FromZeroes, FromBytes)]
@@ -38,124 +30,150 @@ error: must have a non-align #[repr(...)] attribute in order to guarantee this t
    |
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-  --> tests/ui/enum.rs:48:8
+error: only C-like enums can implement FromZeroes
+  --> tests/ui/enum.rs:48:1
    |
-48 | #[repr(C)]
+48 | / enum FromZeroes1 {
+49 | |     A(u8),
+50 | | }
+   | |_^
+
+error: only C-like enums can implement FromZeroes
+  --> tests/ui/enum.rs:53:1
+   |
+53 | / enum FromZeroes2 {
+54 | |     A,
+55 | |     B(u8),
+56 | | }
+   | |_^
+
+error: FromZeroes only supported on enums with a variant that has a discriminant of `0`
+  --> tests/ui/enum.rs:59:1
+   |
+59 | / enum FromZeroes3 {
+60 | |     A = 1,
+61 | |     B,
+62 | | }
+   | |_^
+
+error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
+  --> tests/ui/enum.rs:69:8
+   |
+69 | #[repr(C)]
    |        ^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-  --> tests/ui/enum.rs:54:8
+  --> tests/ui/enum.rs:75:8
    |
-54 | #[repr(usize)]
+75 | #[repr(usize)]
    |        ^^^^^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-  --> tests/ui/enum.rs:60:8
+  --> tests/ui/enum.rs:81:8
    |
-60 | #[repr(isize)]
+81 | #[repr(isize)]
    |        ^^^^^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-  --> tests/ui/enum.rs:66:8
+  --> tests/ui/enum.rs:87:8
    |
-66 | #[repr(u32)]
+87 | #[repr(u32)]
    |        ^^^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-  --> tests/ui/enum.rs:72:8
+  --> tests/ui/enum.rs:93:8
    |
-72 | #[repr(i32)]
+93 | #[repr(i32)]
    |        ^^^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-  --> tests/ui/enum.rs:78:8
+  --> tests/ui/enum.rs:99:8
    |
-78 | #[repr(u64)]
+99 | #[repr(u64)]
    |        ^^^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-  --> tests/ui/enum.rs:84:8
-   |
-84 | #[repr(i64)]
-   |        ^^^
-
-error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-  --> tests/ui/enum.rs:94:8
-   |
-94 | #[repr(C)]
-   |        ^
-
-error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui/enum.rs:100:8
+   --> tests/ui/enum.rs:105:8
     |
-100 | #[repr(u16)]
+105 | #[repr(i64)]
     |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui/enum.rs:106:8
+   --> tests/ui/enum.rs:115:8
     |
-106 | #[repr(i16)]
+115 | #[repr(C)]
+    |        ^
+
+error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
+   --> tests/ui/enum.rs:121:8
+    |
+121 | #[repr(u16)]
     |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui/enum.rs:112:8
+   --> tests/ui/enum.rs:127:8
     |
-112 | #[repr(u32)]
+127 | #[repr(i16)]
     |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui/enum.rs:118:8
+   --> tests/ui/enum.rs:133:8
     |
-118 | #[repr(i32)]
+133 | #[repr(u32)]
     |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui/enum.rs:124:8
+   --> tests/ui/enum.rs:139:8
     |
-124 | #[repr(u64)]
+139 | #[repr(i32)]
     |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui/enum.rs:130:8
+   --> tests/ui/enum.rs:145:8
     |
-130 | #[repr(i64)]
+145 | #[repr(u64)]
     |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui/enum.rs:136:8
+   --> tests/ui/enum.rs:151:8
     |
-136 | #[repr(usize)]
+151 | #[repr(i64)]
+    |        ^^^
+
+error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
+   --> tests/ui/enum.rs:157:8
+    |
+157 | #[repr(usize)]
     |        ^^^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui/enum.rs:142:8
+   --> tests/ui/enum.rs:163:8
     |
-142 | #[repr(isize)]
+163 | #[repr(isize)]
     |        ^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui/enum.rs:148:12
+   --> tests/ui/enum.rs:169:12
     |
-148 | #[repr(u8, align(2))]
+169 | #[repr(u8, align(2))]
     |            ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui/enum.rs:154:12
+   --> tests/ui/enum.rs:175:12
     |
-154 | #[repr(i8, align(2))]
+175 | #[repr(i8, align(2))]
     |            ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui/enum.rs:160:18
+   --> tests/ui/enum.rs:181:18
     |
-160 | #[repr(align(1), align(2))]
+181 | #[repr(align(1), align(2))]
     |                  ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui/enum.rs:166:8
+   --> tests/ui/enum.rs:187:8
     |
-166 | #[repr(align(2), align(4))]
+187 | #[repr(align(2), align(4))]
     |        ^^^^^^^^
 
 error[E0565]: meta item in `repr` must be an identifier

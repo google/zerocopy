@@ -41,6 +41,27 @@ enum Generic5 {
 }
 
 //
+// FromZeroes errors
+//
+
+#[derive(FromZeroes)]
+enum FromZeroes1 {
+    A(u8),
+}
+
+#[derive(FromZeroes)]
+enum FromZeroes2 {
+    A,
+    B(u8),
+}
+
+#[derive(FromZeroes)]
+enum FromZeroes3 {
+    A = 1,
+    B,
+}
+
+//
 // FromBytes errors
 //
 

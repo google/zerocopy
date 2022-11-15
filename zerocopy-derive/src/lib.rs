@@ -33,7 +33,7 @@ use {
     syn::visit::{self, Visit},
     syn::{
         parse_quote, punctuated::Punctuated, token::Comma, Data, DataEnum, DataStruct, DataUnion,
-        DeriveInput, Error, GenericParam, Ident, Lifetime, Type, TypePath,
+        DeriveInput, Error, Expr, ExprLit, GenericParam, Ident, Lifetime, Lit, Type, TypePath,
     },
 };
 
@@ -126,18 +126,8 @@ fn derive_from_zeroes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macr
 }
 
 // An enum is `FromZeroes` if:
-// - Every possible bit pattern must be valid, which means that every bit
-//   pattern must correspond to a different enum variant. Thus, for an enum
-//   whose layout takes up N bytes, there must be 2^N variants.
-// - Since we must know N, only representations which guarantee the layout's
-//   size are allowed. These are `repr(uN)` and `repr(iN)` (`repr(C)` implies an
-//   implementation-defined size). `usize` and `isize` technically guarantee the
-//   layout's size, but would require us to know how large those are on the
-//   target platform. This isn't terribly difficult - we could emit a const
-//   expression that could call `core::mem::size_of` in order to determine the
-//   size and check against the number of enum variants, but a) this would be
-//   platform-specific and, b) even on Rust's smallest bit width platform (32),
-//   this would require ~4 billion enum variants, which obviously isn't a thing.
+// - all of its variants are fieldless
+// - one of the variants has a discriminant of `0`
 
 fn derive_from_zeroes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
     if !enm.is_c_like() {
@@ -145,22 +135,23 @@ fn derive_from_zeroes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::To
             .to_compile_error();
     }
 
-    let reprs = try_or_print!(ENUM_FROM_BYTES_CFG.validate_reprs(ast));
+    let has_explicit_zero_discriminant =
+        enm.variants.iter().filter_map(|v| v.discriminant.as_ref()).any(|(_, e)| {
+            if let Expr::Lit(ExprLit { lit: Lit::Int(i), .. }) = e {
+                i.base10_parse::<usize>().ok() == Some(0)
+            } else {
+                false
+            }
+        });
+    // If the first variant of an enum does not specify its discriminant, it is set to zero:
+    // https://doc.rust-lang.org/reference/items/enumerations.html#custom-discriminant-values-for-fieldless-enumerations
+    let has_implicit_zero_discriminant =
+        enm.variants.iter().next().map(|v| v.discriminant.is_none()) == Some(true);
 
-    let variants_required = match reprs.as_slice() {
-        [EnumRepr::U8] | [EnumRepr::I8] => 1usize << 8,
-        [EnumRepr::U16] | [EnumRepr::I16] => 1usize << 16,
-        // `validate_reprs` has already validated that it's one of the preceding
-        // patterns.
-        _ => unreachable!(),
-    };
-    if enm.variants.len() != variants_required {
+    if !has_explicit_zero_discriminant && !has_implicit_zero_discriminant {
         return Error::new_spanned(
             ast,
-            format!(
-                "FromZeroes only supported on {} enum with {} variants",
-                reprs[0], variants_required
-            ),
+            "FromZeroes only supported on enums with a variant that has a discriminant of `0`",
         )
         .to_compile_error();
     }
