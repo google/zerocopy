@@ -50,11 +50,22 @@ use {crate::ext::*, crate::repr::*};
 // help: required by the derive of FromBytes
 //
 // Instead, we have more verbose error messages like "unsupported representation
-// for deriving FromBytes, AsBytes, or Unaligned on an enum"
+// for deriving FromZeroes, FromBytes, AsBytes, or Unaligned on an enum"
 //
 // This will probably require Span::error
 // (https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.error),
 // which is currently unstable. Revisit this once it's stable.
+
+#[proc_macro_derive(FromZeroes)]
+pub fn derive_from_zeroes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let ast = syn::parse_macro_input!(ts as DeriveInput);
+    match &ast.data {
+        Data::Struct(strct) => derive_from_zeroes_struct(&ast, strct),
+        Data::Enum(enm) => derive_from_zeroes_enum(&ast, enm),
+        Data::Union(unn) => derive_from_zeroes_union(&ast, unn),
+    }
+    .into()
+}
 
 #[proc_macro_derive(FromBytes)]
 pub fn derive_from_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
@@ -106,6 +117,63 @@ const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[
     &[StructRepr::Packed],
     &[StructRepr::C, StructRepr::Packed],
 ];
+
+// A struct is `FromZeroes` if:
+// - all fields are `FromZeroes`
+
+fn derive_from_zeroes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
+    impl_block(ast, strct, "FromZeroes", true, PaddingCheck::None)
+}
+
+// An enum is `FromZeroes` if:
+// - Every possible bit pattern must be valid, which means that every bit
+//   pattern must correspond to a different enum variant. Thus, for an enum
+//   whose layout takes up N bytes, there must be 2^N variants.
+// - Since we must know N, only representations which guarantee the layout's
+//   size are allowed. These are `repr(uN)` and `repr(iN)` (`repr(C)` implies an
+//   implementation-defined size). `usize` and `isize` technically guarantee the
+//   layout's size, but would require us to know how large those are on the
+//   target platform. This isn't terribly difficult - we could emit a const
+//   expression that could call `core::mem::size_of` in order to determine the
+//   size and check against the number of enum variants, but a) this would be
+//   platform-specific and, b) even on Rust's smallest bit width platform (32),
+//   this would require ~4 billion enum variants, which obviously isn't a thing.
+
+fn derive_from_zeroes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
+    if !enm.is_c_like() {
+        return Error::new_spanned(ast, "only C-like enums can implement FromZeroes")
+            .to_compile_error();
+    }
+
+    let reprs = try_or_print!(ENUM_FROM_BYTES_CFG.validate_reprs(ast));
+
+    let variants_required = match reprs.as_slice() {
+        [EnumRepr::U8] | [EnumRepr::I8] => 1usize << 8,
+        [EnumRepr::U16] | [EnumRepr::I16] => 1usize << 16,
+        // `validate_reprs` has already validated that it's one of the preceding
+        // patterns.
+        _ => unreachable!(),
+    };
+    if enm.variants.len() != variants_required {
+        return Error::new_spanned(
+            ast,
+            format!(
+                "FromZeroes only supported on {} enum with {} variants",
+                reprs[0], variants_required
+            ),
+        )
+        .to_compile_error();
+    }
+
+    impl_block(ast, enm, "FromZeroes", true, PaddingCheck::None)
+}
+
+// Like structs, unions are `FromZeroes` if
+// - all fields are `FromZeroes`
+
+fn derive_from_zeroes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
+    impl_block(ast, unn, "FromZeroes", true, PaddingCheck::None)
+}
 
 // A struct is `FromBytes` if:
 // - all fields are `FromBytes`

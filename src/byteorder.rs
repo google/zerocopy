@@ -30,10 +30,10 @@
 //! UDP:
 //!
 //! ```edition2021
-//! use zerocopy::{AsBytes, ByteSlice, FromBytes, LayoutVerified, Unaligned};
+//! use zerocopy::{AsBytes, ByteSlice, FromBytes, FromZeroes, LayoutVerified, Unaligned};
 //! use zerocopy::byteorder::network_endian::U16;
 //!
-//! #[derive(FromBytes, AsBytes, Unaligned)]
+//! #[derive(FromZeroes, FromBytes, AsBytes, Unaligned)]
 //! #[repr(C)]
 //! struct UdpHeader {
 //!     src_port: U16,
@@ -179,7 +179,7 @@ example of how it can be used for parsing UDP packets.
 [`FromBytes`]: crate::FromBytes
 [`AsBytes`]: crate::AsBytes
 [`Unaligned`]: crate::Unaligned"),
-            #[derive(FromBytes, AsBytes, Unaligned, Copy, Clone, Eq, PartialEq, Hash)]
+            #[derive(FromZeroes, FromBytes, AsBytes, Unaligned, Copy, Clone, Eq, PartialEq, Hash)]
             #[repr(transparent)]
             pub struct $name<O>([u8; $bytes], PhantomData<O>);
         }

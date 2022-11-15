@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-use zerocopy::{AsBytes, FromBytes};
+use zerocopy::{AsBytes, FromBytes, FromZeroes};
 
 /// A type that doesn't implement any zerocopy traits.
 pub struct NotZerocopy(());
@@ -11,6 +11,6 @@ pub struct NotZerocopy(());
 ///
 /// Though `u16` has alignment 2 on some platforms, it's not guaranteed. By
 /// contrast, `AU16` is guaranteed to have alignment 2.
-#[derive(FromBytes, AsBytes, Copy, Clone)]
+#[derive(FromZeroes, FromBytes, AsBytes, Copy, Clone)]
 #[repr(C, align(2))]
 pub struct AU16(u16);
