@@ -19,7 +19,8 @@ https://rust-lang.github.io/rustup-components-history/).
 
 Updating the versions pinned in CI may cause the UI tests to break. In order to
 fix UI tests after a version update, set the environment variable
-`TRYBUILD=overwrite` while running `cargo test`.
+`TRYBUILD=overwrite` while running `cargo test` and `cargo test
+--manifest-path=zerocopy-derive/Cargo.toml`.
 
 ## Crate versions
 

@@ -1432,7 +1432,7 @@ macro_rules! transmute {
             // `AsBytes` and that the type of this macro invocation expression
             // is `FromBytes`.
             const fn transmute<T: $crate::AsBytes, U: $crate::FromBytes>(_t: T) -> U {
-                unreachable!()
+                loop {}
             }
             transmute(e)
         } else {
@@ -1451,6 +1451,47 @@ macro_rules! transmute {
             unsafe { $crate::__real_transmute(e) }
         }
     }}
+}
+
+/// Includes a file and safely transmutes it to an arbitrary type.
+///
+/// The file will be included as a byte array, `[u8; N]`, which will be
+/// transmuted to another type, `T`. `T` is inferred from the calling context,
+/// and must implement [`FromBytes`].
+///
+/// The file is located relative to the current file (similarly to how modules
+/// are found). The provided path is interpreted in a platform-specific way at
+/// compile time. So, for instance, an invocation with a Windows path containing
+/// backslashes `\` would not compile correctly on Unix.
+///
+/// # Examples
+///
+/// Assume there are two files in the same directory with the following
+/// contents:
+///
+/// File 'data' (no trailing newline):
+///
+/// ```text
+/// abcd
+/// ```
+///
+/// File 'main.rs':
+///
+/// ```rust,ignore (cannot-doctest-external-file-dependency)
+/// use zerocopy::{I32, NativeEndian, U32};
+///
+/// fn main() {
+///     let as_u32: u32 = zerocopy::include_bytes!("data");
+///     assert_eq!(as_u32, U32::<NativeEndian>::from([b'a', b'b', b'c', b'd']).get());
+///     let as_i32: i32 = zerocopy::include_bytes!("data");
+///     assert_eq!(as_u32, I32::<NativeEndian>::from([b'a', b'b', b'c', b'd']).get());
+/// }
+/// ```
+#[macro_export]
+macro_rules! include_bytes {
+    ($file:expr $(,)?) => {
+        transmute!(*core::include_bytes!($file))
+    };
 }
 
 /// A length- and alignment-checked reference to a byte slice which can safely
@@ -3210,6 +3251,14 @@ mod tests {
         const ARRAY_OF_ARRAYS: [[u8; 2]; 4] = [[0, 1], [2, 3], [4, 5], [6, 7]];
         const X: [[u8; 2]; 4] = transmute!(ARRAY_OF_U8S);
         assert_eq!(X, ARRAY_OF_ARRAYS);
+    }
+
+    #[test]
+    fn test_include_bytes() {
+        const AS_U32: u32 = include_bytes!("../tests/include_bytes.data");
+        assert_eq!(AS_U32, U32::<NativeEndian>::from([b'a', b'b', b'c', b'd']).get());
+        const AS_I32: i32 = include_bytes!("../tests/include_bytes.data");
+        assert_eq!(AS_I32, I32::<NativeEndian>::from([b'a', b'b', b'c', b'd']).get());
     }
 
     #[test]
