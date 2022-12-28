@@ -571,6 +571,9 @@ pub unsafe trait AsBytes {
     ///
     /// `as_bytes_mut` provides access to the bytes of this value as a mutable
     /// byte slice.
+    // TODO(#150): Resolve trait to object resolution by reworking reference
+    // to `Self` in `where` clause. Then, remove this `allow`.
+    #[allow(where_clauses_object_safety)]
     fn as_bytes_mut(&mut self) -> &mut [u8]
     where
         Self: FromBytes,
