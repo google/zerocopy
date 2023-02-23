@@ -26,7 +26,7 @@ all-features = true
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.
 pinned-stable = "1.65.0"
-pinned-nightly = "nightly-2022-11-04"
+pinned-nightly = "nightly-2022-11-13"
 
 [features]
 alloc = []
