@@ -2738,6 +2738,8 @@ mod alloc_support {
 
     #[cfg(test)]
     mod tests {
+        use core::convert::TryFrom as _;
+
         use super::*;
 
         #[test]
@@ -2920,38 +2922,9 @@ mod alloc_support {
             let _ = u16::new_box_slice_zeroed(usize::MAX);
         }
 
-        // This test fails on stable <= 1.64.0, but succeeds on 1.65.0-beta.2
-        // (2022-09-13). In particular, on stable <= 1.64.0,
-        // `new_box_slice_zeroed` attempts to perform the allocation (which of
-        // course fails). `Layout::from_size_align` should be returning an error
-        // due to `isize` overflow, but it doesn't. I (joshlf) haven't
-        // investigated enough to confirm, but my guess is that this was a bug
-        // that was fixed recently.
-        //
-        // Triggering the bug requires calling
-        // `FromZeroes::new_box_slice_zeroed` with an allocation which overflows
-        // `isize`, and all that happens is that the program panics due to a
-        // failed allocation. Even on 32-bit platforms, this requires a 2GB
-        // allocation. On 64-bit platforms, this requires a 2^63-byte
-        // allocation. In both cases, even a slightly smaller allocation that
-        // didn't trigger this bug would likely (absolutely certainly in the
-        // case of 64-bit platforms) fail to allocate in exactly the same way
-        // regardless.
-        //
-        // Given how minor the impact is, and given that the bug seems fixed in
-        // 1.65.0, I've chosen to just release the code as-is and disable the
-        // test on buggy toolchains. Once our MSRV is at or above 1.65.0, we can
-        // remove this conditional compilation (and this comment) entirely.
-        #[rustversion::since(1.65.0)]
         #[test]
         #[should_panic(expected = "total allocation size overflows `isize`: LayoutError")]
         fn test_new_box_slice_zeroed_panics_isize_overflow() {
-            // TODO: Move this to the top of the module once this test is
-            // compiled unconditionally. Right now, it causes an unused import
-            // warning (which in CI becomes an error) on versions prior to
-            // 1.65.0.
-            use core::convert::TryFrom as _;
-
             let max = usize::try_from(isize::MAX).unwrap();
             let _ = u16::new_box_slice_zeroed((max / mem::size_of::<u16>()) + 1);
         }

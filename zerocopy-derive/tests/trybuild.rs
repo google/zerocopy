@@ -17,9 +17,9 @@
 
 #[rustversion::any(nightly, beta)]
 const SOURCE_FILES_GLOB: &str = "tests/ui/*.rs";
-#[rustversion::all(stable, not(stable(1.61.0)))]
+#[rustversion::all(stable, not(stable(1.65.0)))]
 const SOURCE_FILES_GLOB: &str = "tests/ui-stable/*.rs";
-#[rustversion::stable(1.61.0)]
+#[rustversion::stable(1.65.0)]
 const SOURCE_FILES_GLOB: &str = "tests/ui-msrv/*.rs";
 
 #[test]

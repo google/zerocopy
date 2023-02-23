@@ -16,7 +16,7 @@ authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Utilities for zero-copy parsing and serialization"
 license = "BSD-2-Clause"
 repository = "https://github.com/google/zerocopy"
-rust-version = "1.61.0"
+rust-version = "1.65.0"
 
 exclude = [".*"]
 
@@ -25,8 +25,8 @@ all-features = true
 
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.
-pinned-stable = "1.64.0"
-pinned-nightly = "nightly-2022-10-17"
+pinned-stable = "1.65.0"
+pinned-nightly = "nightly-2022-11-04"
 
 [features]
 alloc = []
