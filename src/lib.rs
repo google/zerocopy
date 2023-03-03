@@ -35,6 +35,15 @@
 //! enabled, the `alloc` crate is added as a dependency, and some
 //! allocation-related functionality is added.
 //!
+//! `byteorder` (enabled by default): Adds the [`byteorder`] module and a
+//! dependency on the `byteorder` crate. The `byteorder` module provides byte
+//! order-aware equivalents of the multi-byte primitive numerical types. Unlike
+//! their primitive equivalents, the types in this module have no alignment
+//! requirement and support byte order conversions. This can be useful in
+//! handling file formats, network packet layouts, etc which don't provide
+//! alignment guarantees and which may use a byte order different from that of
+//! the execution platform.
+//!
 //! `simd`: When the `simd` feature is enabled, `FromZeroes`, `FromBytes`, and
 //! `AsBytes` impls are emitted for all stable SIMD types which exist on the
 //! target platform. Note that the layout of SIMD types is not yet stabilized,
@@ -123,10 +132,12 @@
 #![cfg_attr(not(test), no_std)]
 #![cfg_attr(feature = "simd-nightly", feature(stdsimd))]
 
+#[cfg(feature = "byteorder")]
 pub mod byteorder;
 #[doc(hidden)]
 pub mod derive_util;
 
+#[cfg(feature = "byteorder")]
 pub use crate::byteorder::*;
 pub use zerocopy_derive::*;
 
@@ -2939,7 +2950,7 @@ pub use alloc_support::*;
 mod tests {
     #![allow(clippy::unreadable_literal)]
 
-    use core::{convert::TryInto, ops::Deref};
+    use core::ops::Deref;
 
     use static_assertions::assert_impl_all;
 
@@ -3003,7 +3014,7 @@ mod tests {
 
     // Converts an `AU64` to bytes using this platform's endianness.
     fn au64_to_bytes(u: AU64) -> [u8; 8] {
-        U64::<NativeEndian>::new(u.0).as_bytes().try_into().unwrap()
+        transmute!(u)
     }
 
     // An unsized type.

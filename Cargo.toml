@@ -11,7 +11,7 @@
 [package]
 edition = "2021"
 name = "zerocopy"
-version = "0.7.0-alpha.2"
+version = "0.7.0-alpha.3"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Utilities for zero-copy parsing and serialization"
 license = "BSD-2-Clause"
@@ -29,6 +29,8 @@ pinned-stable = "1.65.0"
 pinned-nightly = "nightly-2022-11-04"
 
 [features]
+default = ["byteorder"]
+
 alloc = []
 simd = []
 simd-nightly = ["simd"]
@@ -38,11 +40,12 @@ simd-nightly = ["simd"]
 __internal_use_only_features_that_work_on_stable = ["alloc", "simd"]
 
 [dependencies]
-zerocopy-derive = { version = "=0.7.0-alpha.2", path = "zerocopy-derive" }
+zerocopy-derive = { version = "=0.7.0-alpha.3", path = "zerocopy-derive" }
 
 [dependencies.byteorder]
 version = "1.3"
 default-features = false
+optional = true
 
 [dev-dependencies]
 rand = "0.6"
