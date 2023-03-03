@@ -24,7 +24,7 @@ jobs:
         # versions.
         toolchain: [ "msrv", "stable", "nightly" ]
         target: [ "i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "arm-unknown-linux-gnueabi", "aarch64-unknown-linux-gnu", "powerpc-unknown-linux-gnu", "powerpc64-unknown-linux-gnu", "wasm32-wasi" ]
-        features: [ "" , "--features __internal_use_only_features_that_work_on_stable", "--all-features" ]
+        features: [ "--no-default-features", "" , "--features __internal_use_only_features_that_work_on_stable", "--all-features" ]
         crate: [ "zerocopy", "zerocopy-derive" ]
         exclude:
           # Exclude any combination which uses a non-nightly toolchain but
@@ -35,6 +35,8 @@ jobs:
             features: "--all-features"
           # Exclude any combination for the zerocopy-derive crate which
           # uses zerocopy features.
+          - crate: "zerocopy-derive"
+            features: "--no-default-features"
           - crate: "zerocopy-derive"
             features: "--features __internal_use_only_features_that_work_on_stable"
           - crate: "zerocopy-derive"
@@ -158,7 +160,7 @@ jobs:
       # scope without the `alloc` feature. This isn't a big deal because we care
       # primarily about `cargo doc` working for `docs.rs`, which enables the
       # `alloc` feature.
-      if: ${{ matrix.features != '' }}
+      if: ${{ matrix.features != '' && matrix.features != '--no-default-features' }}
 
   check_fmt:
     runs-on: ubuntu-latest
