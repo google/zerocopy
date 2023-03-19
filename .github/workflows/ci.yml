@@ -124,7 +124,7 @@ jobs:
       run: cargo +${{ env.ZC_TOOLCHAIN }} check --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
 
     - name: Build
-      run: cargo +${{ env.ZC_TOOLCHAIN }} build --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --profile ci --verbose
+      run: cargo +${{ env.ZC_TOOLCHAIN }} build --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
 
     # When building tests for the i686 target, we need certain libraries which
     # are not installed by default; `gcc-multilib` includes these libraries.
@@ -133,7 +133,7 @@ jobs:
       if: ${{ contains(matrix.target, 'i686') }}
 
     - name: Run tests
-      run: cargo +${{ env.ZC_TOOLCHAIN }} test --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --profile ci --verbose
+      run: cargo +${{ env.ZC_TOOLCHAIN }} test --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
       # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
       # x86_64, so we can't run tests for any non-x86 target.
       #
@@ -144,7 +144,7 @@ jobs:
     - name: Run tests under Miri
       # Skip the `ui` test since it invokes the compiler, which we can't do from
       # Miri (and wouldn't want to do anyway).
-      run: cargo +${{ env.ZC_TOOLCHAIN }} miri test --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --profile ci -- --skip ui
+      run: cargo +${{ env.ZC_TOOLCHAIN }} miri test --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} -- --skip ui
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
       #
@@ -152,10 +152,10 @@ jobs:
       if: ${{ matrix.toolchain == 'nightly' && matrix.target != 'wasm32-wasi' }}
 
     - name: Clippy check
-      run: cargo +${{ env.ZC_TOOLCHAIN }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose --profile ci
+      run: cargo +${{ env.ZC_TOOLCHAIN }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
 
     - name: Cargo doc
-      run: cargo +${{ env.ZC_TOOLCHAIN }} doc --package ${{ matrix.crate }} ${{ matrix.features }} --profile ci
+      run: cargo +${{ env.ZC_TOOLCHAIN }} doc --package ${{ matrix.crate }} ${{ matrix.features }}
       # When the `alloc` feature is disabled, `cargo doc` fails because we link
       # to `alloc::vec::Vec` in a doc comment, and the `alloc` crate is not in
       # scope without the `alloc` feature. This isn't a big deal because we care
