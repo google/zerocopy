@@ -6,8 +6,10 @@ use core::fmt::{self, Display, Formatter};
 
 use {
     proc_macro2::Span,
+    syn::punctuated::Punctuated,
     syn::spanned::Spanned,
-    syn::{Attribute, DeriveInput, Error, Lit, Meta, NestedMeta},
+    syn::token::Comma,
+    syn::{Attribute, DeriveInput, Error, LitInt, Meta},
 };
 
 pub struct Config<Repr: KindRepr> {
@@ -44,11 +46,11 @@ impl<R: KindRepr> Config<R> {
     /// stripped out of the returned value since no callers care about them.
     pub fn validate_reprs(&self, input: &DeriveInput) -> Result<Vec<R>, Vec<Error>> {
         let mut metas_reprs = reprs(&input.attrs)?;
-        metas_reprs.sort_by(|a: &(NestedMeta, R), b| a.1.partial_cmp(&b.1).unwrap());
+        metas_reprs.sort_by(|a: &(_, R), b| a.1.partial_cmp(&b.1).unwrap());
 
         if self.derive_unaligned {
             if let Some((meta, _)) =
-                metas_reprs.iter().find(|&repr: &&(NestedMeta, R)| repr.1.is_align_gt_one())
+                metas_reprs.iter().find(|&repr: &&(_, R)| repr.1.is_align_gt_one())
             {
                 return Err(vec![Error::new_spanned(
                     meta,
@@ -95,7 +97,7 @@ impl<R: KindRepr> Config<R> {
 pub trait KindRepr: 'static + Sized + Ord {
     fn is_align(&self) -> bool;
     fn is_align_gt_one(&self) -> bool;
-    fn parse(meta: &NestedMeta) -> syn::Result<Self>;
+    fn parse(meta: &Meta) -> syn::Result<Self>;
 }
 
 // Defines an enum for reprs which are valid for a given kind (structs, enums,
@@ -124,8 +126,8 @@ macro_rules! define_kind_specific_repr {
                 }
             }
 
-            fn parse(meta: &NestedMeta) -> syn::Result<$repr_name> {
-                match Repr::from_nested_meta(meta)? {
+            fn parse(meta: &Meta) -> syn::Result<$repr_name> {
+                match Repr::from_meta(meta)? {
                     $(Repr::$repr_variant => Ok($repr_name::$repr_variant),)*
                     Repr::Align(u) => Ok($repr_name::Align(u)),
                     _ => Err(Error::new_spanned(meta, concat!("unsupported representation for deriving FromBytes, AsBytes, or Unaligned on ", $type_name)))
@@ -183,9 +185,9 @@ pub enum Repr {
 }
 
 impl Repr {
-    fn from_nested_meta(meta: &NestedMeta) -> Result<Repr, Error> {
+    fn from_meta(meta: &Meta) -> Result<Repr, Error> {
         match meta {
-            NestedMeta::Meta(Meta::Path(path)) => {
+            Meta::Path(path) => {
                 let ident = path
                     .get_ident()
                     .ok_or_else(|| Error::new_spanned(meta, "unrecognized representation hint"))?;
@@ -206,12 +208,8 @@ impl Repr {
                     _ => {}
                 }
             }
-            NestedMeta::Meta(Meta::List(list)) => {
-                if let [&NestedMeta::Lit(Lit::Int(ref n))] =
-                    list.nested.iter().collect::<Vec<_>>().as_slice()
-                {
-                    return Ok(Repr::Align(n.base10_parse::<u64>()?));
-                }
+            Meta::List(list) => {
+                return Ok(Repr::Align(list.parse_args::<LitInt>()?.base10_parse::<u64>()?))
             }
             _ => {}
         }
@@ -248,27 +246,34 @@ impl Display for Repr {
     }
 }
 
-fn reprs<R: KindRepr>(attrs: &[Attribute]) -> Result<Vec<(NestedMeta, R)>, Vec<Error>> {
+fn reprs<R: KindRepr>(attrs: &[Attribute]) -> Result<Vec<(Meta, R)>, Vec<Error>> {
     let mut reprs = Vec::new();
     let mut errors = Vec::new();
     for attr in attrs {
         // Ignore documentation attributes.
-        if attr.path.is_ident("doc") {
+        if attr.path().is_ident("doc") {
             continue;
         }
-        match attr.parse_meta() {
-            Ok(Meta::List(meta_list)) => {
-                if meta_list.path.is_ident("repr") {
-                    for nested_meta in &meta_list.nested {
-                        match R::parse(nested_meta) {
-                            Ok(repr) => reprs.push((nested_meta.clone(), repr)),
-                            Err(err) => errors.push(err),
+        if let Meta::List(ref meta_list) = attr.meta {
+            if meta_list.path.is_ident("repr") {
+                let parsed: Punctuated<Meta, Comma> =
+                    match meta_list.parse_args_with(Punctuated::parse_terminated) {
+                        Ok(parsed) => parsed,
+                        Err(_) => {
+                            errors.push(Error::new_spanned(
+                                &meta_list.tokens,
+                                "unrecognized representation hint",
+                            ));
+                            continue;
                         }
+                    };
+                for meta in parsed {
+                    match R::parse(&meta) {
+                        Ok(repr) => reprs.push((meta, repr)),
+                        Err(err) => errors.push(err),
                     }
                 }
             }
-            Err(e) => errors.push(e),
-            _ => {}
         }
     }
 
