@@ -1030,9 +1030,10 @@ mod simd {
 /// A type with no alignment requirement.
 ///
 /// An `Unalign` wraps a `T`, removing any alignment requirement. `Unalign<T>`
-/// has the same size and ABI as `T`, but not necessarily the same alignment.
-/// This is useful if a type with an alignment requirement needs to be read from
-/// a chunk of memory which provides no alignment guarantees.
+/// has the same size and bit validity as `T`, but not necessarily the same
+/// alignment [or ABI]. This is useful if a type with an alignment requirement
+/// needs to be read from a chunk of memory which provides no alignment
+/// guarantees.
 ///
 /// Since `Unalign` has no alignment requirement, the inner `T` may not be
 /// properly aligned in memory. There are four ways to access the inner `T`:
@@ -1046,6 +1047,7 @@ mod simd {
 /// - (where `T: Unaligned`) infallibly by reference, using [`Deref::deref`] or
 ///   [`DerefMut::deref_mut`]
 ///
+/// [or ABI]: https://github.com/google/zerocopy/issues/164
 /// [`get`]: Unalign::get
 /// [`into_inner`]: Unalign::into_inner
 /// [`try_deref`]: Unalign::try_deref
