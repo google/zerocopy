@@ -126,7 +126,16 @@ jobs:
     # When building tests for the i686 target, we need certain libraries which
     # are not installed by default; `gcc-multilib` includes these libraries.
     - name: Install gcc-multilib
-      run: sudo apt-get install gcc-multilib
+      # Per [1]:
+      #
+      #   Note: Always run `sudo apt-get update` before installing a package. In
+      #   case the `apt` index is stale, this command fetches and re-indexes any
+      #   available packages, which helps prevent package installation failures.
+      #
+      # [1] https://docs.github.com/en/actions/using-github-hosted-runners/customizing-github-hosted-runners
+      run: |
+        sudo apt-get update
+        sudo apt-get install gcc-multilib
       if: ${{ contains(matrix.target, 'i686') }}
 
     - name: Run tests
