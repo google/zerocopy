@@ -775,6 +775,30 @@ safety_comment! {
 
 safety_comment! {
     /// SAFETY:
+    /// - Raw pointers to `Sized` types have the same size and alignment as
+    ///   `usize` [1]
+    /// - We know that any bit pattern is valid for a raw pointer to a `Sized`
+    ///   type because it is a safe operation to `as` cast from a `usize`
+    /// - We know that raw pointers to `Sized` types do not contain
+    ///   uninitialized or padding bytes - and more generally that it is always
+    ///   valid to view the bytes of a raw pointer to a `Sized` type as a `[u8]`
+    ///   - because it is a safe operation to `as` cast such a pointer to a
+    ///   `usize`
+    ///
+    /// TODO: Make the bit validity argument in terms of the reference once bit
+    /// validity is described in the reference
+    ///
+    /// [1] https://doc.rust-lang.org/reference/type-layout.html#pointers-and-references-layout
+    unsafe_impl!(T: Sized => FromZeroes for *const T);
+    unsafe_impl!(T: Sized => FromBytes for *const T);
+    unsafe_impl!(T: Sized => AsBytes for *const T);
+    unsafe_impl!(T: Sized => FromZeroes for *mut T);
+    unsafe_impl!(T: Sized => FromBytes for *mut T);
+    unsafe_impl!(T: Sized => AsBytes for *mut T);
+}
+
+safety_comment! {
+    /// SAFETY:
     /// - `FromZeroes`, `FromBytes`: the `{f32,f64}::from_bits` constructors'
     ///   documentation [1,2] states that they are currently equivalent to
     ///   `transmute`. [3]
@@ -3976,6 +4000,12 @@ mod tests {
         assert_impls!(f32: FromZeroes, FromBytes, AsBytes, !Unaligned);
         assert_impls!(f64: FromZeroes, FromBytes, AsBytes, !Unaligned);
 
+        // Implements none of the ZC traits.
+        struct NotZerocopy;
+
+        assert_impls!(*const NotZerocopy: FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(*mut NotZerocopy: FromZeroes, FromBytes, AsBytes, !Unaligned);
+
         assert_impls!(bool: FromZeroes, AsBytes, Unaligned, !FromBytes);
         assert_impls!(char: FromZeroes, AsBytes, !FromBytes, !Unaligned);
         assert_impls!(str: FromZeroes, AsBytes, Unaligned, !FromBytes);
@@ -4005,9 +4035,6 @@ mod tests {
         assert_impls!(Option<NonZeroI128>: FromZeroes, FromBytes, AsBytes, !Unaligned);
         assert_impls!(Option<NonZeroUsize>: FromZeroes, FromBytes, AsBytes, !Unaligned);
         assert_impls!(Option<NonZeroIsize>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-
-        // Implements none of the ZC traits.
-        struct NotZerocopy;
 
         assert_impls!(PhantomData<NotZerocopy>: FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!(PhantomData<[u8]>: FromZeroes, FromBytes, AsBytes, Unaligned);
