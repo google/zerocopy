@@ -1014,7 +1014,7 @@ mod simd {
         vector_signed_long,
         vector_unsigned_long
     );
-    #[cfg(all(feature = "simd-nightly", target_arch = "aarch64"))]
+    #[cfg(target_arch = "aarch64")]
     #[rustfmt::skip]
     simd_arch_mod!(
         aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,
