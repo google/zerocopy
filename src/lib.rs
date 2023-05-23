@@ -93,6 +93,7 @@
     clippy::decimal_literal_representation,
     clippy::get_unwrap,
     clippy::indexing_slicing,
+    clippy::missing_safety_doc,
     clippy::obfuscated_if_else,
     clippy::perf,
     clippy::print_stdout,
@@ -901,8 +902,7 @@ safety_comment! {
 
 safety_comment! {
     /// SAFETY:
-    /// The reference [1] suggests (but does not clearly promise) that
-    /// `PhantomData` has size 0 and alignment 1.
+    /// For all `T`, `PhantomData<T>` has size 0 and alignment 1. [1]
     /// - `FromZeroes`, `FromBytes`: There is only one possible sequence of 0
     ///   bytes, and `PhantomData` is inhabited.
     /// - `AsBytes`: Since `PhantomData` has size 0, it contains no padding
@@ -910,10 +910,7 @@ safety_comment! {
     /// - `Unaligned`: Per the preceding reference, `PhantomData` has alignment
     ///   1.
     ///
-    /// [1] https://doc.rust-lang.org/reference/type-layout.html#the-transparent-representation
-    ///
-    /// TODO(https://github.com/rust-lang/rust/pull/104081): Cite guaranteed
-    /// size and alignment.
+    /// [1] https://doc.rust-lang.org/std/marker/struct.PhantomData.html#layout-1
     unsafe_impl!(T: ?Sized => FromZeroes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => FromBytes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => AsBytes for PhantomData<T>);
