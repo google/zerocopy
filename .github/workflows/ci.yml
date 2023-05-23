@@ -160,7 +160,7 @@ jobs:
       if: ${{ matrix.toolchain == 'nightly' && matrix.target != 'wasm32-wasi' }}
 
     - name: Clippy check
-      run: cargo +${{ env.ZC_TOOLCHAIN }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      run: cargo +${{ env.ZC_TOOLCHAIN }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --tests --verbose
 
     - name: Cargo doc
       run: cargo +${{ env.ZC_TOOLCHAIN }} doc --package ${{ matrix.crate }} ${{ matrix.features }}

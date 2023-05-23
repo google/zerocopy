@@ -3051,7 +3051,7 @@ mod tests {
     fn test_from_zeroes_only() {
         // Test types that implement `FromZeroes` but not `FromBytes`.
 
-        assert_eq!(bool::new_zeroed(), false);
+        assert!(!bool::new_zeroed());
         assert_eq!(char::new_zeroed(), '\0');
 
         #[cfg(feature = "alloc")]
@@ -3904,7 +3904,7 @@ mod tests {
 
     #[test]
     fn test_new_zeroed() {
-        assert_eq!(bool::new_zeroed(), false);
+        assert!(!bool::new_zeroed());
         assert_eq!(u64::new_zeroed(), 0);
         // This test exists in order to exercise unsafe code, especially when
         // running under Miri.
