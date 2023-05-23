@@ -68,19 +68,12 @@ use core::{
     num::TryFromIntError,
 };
 
-use zerocopy_derive::*;
-
-use crate::{
-    // This allows the custom derives to work. See the comment on the `zerocopy`
-    // module for an explanation.
-    zerocopy,
-    AsBytes,
-};
-
 // We don't reexport `WriteBytesExt` or `ReadBytesExt` because those are only
 // available with the `std` feature enabled, and zerocopy is `no_std` by
 // default.
-pub use byteorder::{BigEndian, ByteOrder, LittleEndian, NativeEndian, NetworkEndian, BE, LE};
+pub use ::byteorder::{BigEndian, ByteOrder, LittleEndian, NativeEndian, NetworkEndian, BE, LE};
+
+use super::*;
 
 macro_rules! impl_fmt_trait {
     ($name:ident, $native:ident, $trait:ident) => {
@@ -179,9 +172,21 @@ example of how it can be used for parsing UDP packets.
 [`FromBytes`]: crate::FromBytes
 [`AsBytes`]: crate::AsBytes
 [`Unaligned`]: crate::Unaligned"),
-            #[derive(FromZeroes, FromBytes, AsBytes, Unaligned, Copy, Clone, Eq, PartialEq, Hash)]
+            #[derive(Copy, Clone, Eq, PartialEq, Hash)]
+            #[cfg_attr(any(feature = "derive", test), derive(FromZeroes, FromBytes, AsBytes, Unaligned))]
             #[repr(transparent)]
             pub struct $name<O>([u8; $bytes], PhantomData<O>);
+        }
+
+        safety_comment! {
+            /// SAFETY:
+            /// `$name<O>` is `repr(transparent)`, and so it has the same layout
+            /// as its only non-zero field, which is a `u8` array. `u8` arrays
+            /// are `FromZeroes`, `FromBytes`, `AsBytes`, and `Unaligned`.
+            impl_or_verify!(O => FromZeroes for $name<O>);
+            impl_or_verify!(O => FromBytes for $name<O>);
+            impl_or_verify!(O => AsBytes for $name<O>);
+            impl_or_verify!(O => Unaligned for $name<O>);
         }
 
         impl<O> Default for $name<O> {
@@ -471,7 +476,7 @@ module!(native_endian, NativeEndian, "native-endian");
 
 #[cfg(test)]
 mod tests {
-    use byteorder::NativeEndian;
+    use ::byteorder::NativeEndian;
 
     use {
         super::*,

@@ -31,7 +31,7 @@ jobs:
         # versions.
         toolchain: [ "msrv", "stable", "nightly" ]
         target: [ "i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "arm-unknown-linux-gnueabi", "aarch64-unknown-linux-gnu", "powerpc-unknown-linux-gnu", "powerpc64-unknown-linux-gnu", "wasm32-wasi" ]
-        features: [ "--no-default-features", "" , "--features __internal_use_only_features_that_work_on_stable", "--all-features" ]
+        features: [ "--no-default-features", "", "--features __internal_use_only_features_that_work_on_stable", "--all-features" ]
         crate: [ "zerocopy", "zerocopy-derive" ]
         exclude:
           # Exclude any combination which uses a non-nightly toolchain but
@@ -166,6 +166,20 @@ jobs:
       # TODO(#22): Re-enable testing on wasm32-wasi once it works.
       if: matrix.toolchain == 'nightly' && matrix.target != 'wasm32-wasi'
 
+    - name: Run doc tests
+      # We explicitly pass `--doc` here because doc tests are disabled by
+      # default in zerocopy's `Cargo.toml`. This is because some doc examples
+      # make use of derives, and so would fail without the `derive` feature
+      # enabled. We skip this step for `zerocopy` when the `derive` feature is
+      # omitted for that reason.
+      run: cargo +${{ env.ZC_TOOLCHAIN }} test --doc --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
+      # x86_64, so we can't run tests for any non-x86 target.
+      #
+      # TODO(https://github.com/dtolnay/trybuild/issues/184#issuecomment-1269097742):
+      # Run compile tests when building for other targets.
+      if: ${{ (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) && !(matrix.crate == 'zerocopy' && !contains(matrix.features, 'derive')) }}
+
     - name: Clippy check
       run: cargo +${{ env.ZC_TOOLCHAIN }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --tests --verbose
 
@@ -255,8 +269,14 @@ jobs:
           ver_zerocopy=$(version zerocopy)
           ver_zerocopy_derive=$(version zerocopy-derive)
 
+          # The non-dev dependency version (`.kind == null` filters out the dev
+          # dependency).
           zerocopy_derive_dep_ver=$(cargo metadata --format-version 1 \
-            | jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select(.name == \"zerocopy-derive\").req")
+            | jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select((.name == \"zerocopy-derive\") and .kind == null).req")
+          # The dev dependency version (`.kind == \"dev\"` selects only the dev
+          # dependency).
+          zerocopy_derive_dev_dep_ver=$(cargo metadata --format-version 1 \
+            | jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select((.name == \"zerocopy-derive\") and .kind == \"dev\").req")
 
           if [[ "$ver_zerocopy" == "$ver_zerocopy_derive" ]]; then
             echo "Same crate version ($ver_zerocopy) found for zerocopy and zerocopy-derive." | tee -a $GITHUB_STEP_SUMMARY
@@ -271,6 +291,14 @@ jobs:
             echo "zerocopy depends upon same version of zerocopy-derive in-tree ($zerocopy_derive_dep_ver)." | tee -a $GITHUB_STEP_SUMMARY
           else
             echo "zerocopy depends upon different version of zerocopy-derive ($zerocopy_derive_dep_ver) than the one in-tree ($ver_zerocopy_derive)." \
+              | tee -a $GITHUB_STEP_SUMMARY >&2
+            exit 1
+          fi
+
+          if [[ "=$ver_zerocopy_derive" == "$zerocopy_derive_dev_dep_ver" ]]; then
+            echo "In dev mode, zerocopy depends upon same version of zerocopy-derive in-tree ($zerocopy_derive_dev_dep_ver)." | tee -a $GITHUB_STEP_SUMMARY
+          else
+            echo "In dev mode, zerocopy depends upon different version of zerocopy-derive ($zerocopy_derive_dev_dep_ver) than the one in-tree ($ver_zerocopy_derive)." \
               | tee -a $GITHUB_STEP_SUMMARY >&2
             exit 1
           fi

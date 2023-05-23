@@ -45,6 +45,10 @@ handling file formats, network packet layouts, etc which don't provide
 alignment guarantees and which may use a byte order different from that of
 the execution platform.
 
+`derive`: Provides derives for the core marker traits via the
+`zerocopy-derive` crate. These derives are re-exported from `zerocopy`, so
+it is not necessary to depend on `zerocopy-derive` directly.
+
 `simd`: When the `simd` feature is enabled, `FromZeroes`, `FromBytes`, and
 `AsBytes` impls are emitted for all stable SIMD types which exist on the
 target platform. Note that the layout of SIMD types is not yet stabilized,

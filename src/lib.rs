@@ -44,6 +44,10 @@
 //! alignment guarantees and which may use a byte order different from that of
 //! the execution platform.
 //!
+//! `derive`: Provides derives for the core marker traits via the
+//! `zerocopy-derive` crate. These derives are re-exported from `zerocopy`, so
+//! it is not necessary to depend on `zerocopy-derive` directly.
+//!
 //! `simd`: When the `simd` feature is enabled, `FromZeroes`, `FromBytes`, and
 //! `AsBytes` impls are emitted for all stable SIMD types which exist on the
 //! target platform. Note that the layout of SIMD types is not yet stabilized,
@@ -133,6 +137,9 @@
 #![cfg_attr(not(test), no_std)]
 #![cfg_attr(feature = "simd-nightly", feature(stdsimd))]
 
+#[macro_use]
+mod macros;
+
 #[cfg(feature = "byteorder")]
 pub mod byteorder;
 #[doc(hidden)]
@@ -140,6 +147,7 @@ pub mod derive_util;
 
 #[cfg(feature = "byteorder")]
 pub use crate::byteorder::*;
+#[cfg(any(feature = "derive", test))]
 pub use zerocopy_derive::*;
 
 use core::{
@@ -166,10 +174,10 @@ use {
     core::{alloc::Layout, ptr::NonNull},
 };
 
-// This is a hack to allow derives of `FromZeroes`, `FromBytes`, `AsBytes`, and
-// `Unaligned` to work in this crate. They assume that zerocopy is linked as an
-// extern crate, so they access items from it as `zerocopy::Xxx`. This makes
-// that still work.
+// This is a hack to allow zerocopy-derive derives to work in this crate. They
+// assume that zerocopy is linked as an extern crate, so they access items from
+// it as `zerocopy::Xxx`. This makes that still work.
+#[cfg(any(feature = "derive", test))]
 mod zerocopy {
     pub(crate) use crate::*;
 }
@@ -178,7 +186,7 @@ mod zerocopy {
 /// instance of the type.
 ///
 /// WARNING: Do not implement this trait yourself! Instead, use
-/// `#[derive(FromZeroes)]`.
+/// `#[derive(FromZeroes)]` (requires the `derive` Cargo feature).
 ///
 /// Any memory region of the appropriate length which is guaranteed to contain
 /// only zero bytes can be viewed as any `FromZeroes` type with no runtime
@@ -402,7 +410,7 @@ pub unsafe trait FromZeroes {
 /// Types for which any byte pattern is valid.
 ///
 /// WARNING: Do not implement this trait yourself! Instead, use
-/// `#[derive(FromBytes)]`.
+/// `#[derive(FromBytes)]` (requires the `derive` Cargo feature).
 ///
 /// `FromBytes` types can safely be deserialized from an untrusted sequence of
 /// bytes because any byte sequence corresponds to a valid instance of the type.
@@ -503,7 +511,7 @@ pub unsafe trait FromBytes: FromZeroes {
 /// Types which are safe to treat as an immutable byte slice.
 ///
 /// WARNING: Do not implement this trait yourself! Instead, use
-/// `#[derive(AsBytes)]`.
+/// `#[derive(AsBytes)]` (requires the `derive` Cargo feature).
 ///
 /// `AsBytes` types can be safely viewed as a slice of bytes. In particular,
 /// this means that, in any valid instance of the type, none of the bytes of the
@@ -678,7 +686,7 @@ pub unsafe trait AsBytes {
 /// Types with no alignment requirement.
 ///
 /// WARNING: Do not implement this trait yourself! Instead, use
-/// `#[derive(Unaligned)]`.
+/// `#[derive(Unaligned)]` (requires the `derive` Cargo feature).
 ///
 /// If `T: Unaligned`, then `align_of::<T>() == 1`.
 ///
@@ -695,81 +703,6 @@ pub unsafe trait Unaligned {
     fn only_derive_is_allowed_to_implement_this_trait()
     where
         Self: Sized;
-}
-
-/// Documents multiple unsafe blocks with a single safety comment.
-///
-/// Invoked as:
-///
-/// ```rust,ignore
-/// safety_comment! {
-///     // Non-doc comments come first.
-///     /// SAFETY:
-///     /// Safety comment starts on its own line.
-///     macro_1!(args);
-///     macro_2! { args };
-/// }
-/// ```
-///
-/// The macro invocations are emitted, each decorated with the following
-/// attribute: `#[allow(clippy::undocumented_unsafe_blocks)]`.
-macro_rules! safety_comment {
-    (#[doc = r" SAFETY:"] $(#[doc = $_doc:literal])* $($macro:ident!$args:tt;)*) => {
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        const _: () = { $($macro!$args;)* };
-    }
-}
-
-/// Unsafely implements trait(s) for a type.
-macro_rules! unsafe_impl {
-    // Implement `$trait` for `$ty` with no bounds.
-    ($ty:ty: $trait:ty) => {
-        unsafe impl $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
-    };
-    // Implement all `$traits` for `$ty` with no bounds.
-    ($ty:ty: $($traits:ty),*) => {
-        $( unsafe_impl!($ty: $traits); )*
-    };
-    // For all `$tyvar` with no bounds, implement `$trait` for `$ty`.
-    ($tyvar:ident => $trait:ident for $ty:ty) => {
-        unsafe impl<$tyvar> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
-    };
-    // For all `$tyvar: ?Sized` with no bounds, implement `$trait` for `$ty`.
-    ($tyvar:ident: ?Sized => $trait:ident for $ty:ty) => {
-        unsafe impl<$tyvar: ?Sized> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
-    };
-    // For all `$tyvar: $bound`, implement `$trait` for `$ty`.
-    ($tyvar:ident: $bound:path => $trait:ident for $ty:ty) => {
-        unsafe impl<$tyvar: $bound> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
-    };
-    // For all `$tyvar: $bound + ?Sized`, implement `$trait` for `$ty`.
-    ($tyvar:ident: ?Sized + $bound:path => $trait:ident for $ty:ty) => {
-        unsafe impl<$tyvar: ?Sized + $bound> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
-    };
-    // For all `$tyvar: $bound` and for all `const $constvar: $constty`,
-    // implement `$trait` for `$ty`.
-    ($tyvar:ident: $bound:path, const $constvar:ident: $constty:ty => $trait:ident for $ty:ty) => {
-        unsafe impl<$tyvar: $bound, const $constvar: $constty> $trait for $ty {
-            fn only_derive_is_allowed_to_implement_this_trait() {}
-        }
-    };
-}
-
-/// Uses `align_of` to confirm that a type or set of types have alignment 1.
-///
-/// Note that `align_of<T>` requires `T: Sized`, so this macro doesn't work for
-/// unsized types.
-macro_rules! assert_unaligned {
-    ($ty:ty) => {
-        // We only compile this assertion under `cfg(test)` to avoid taking an
-        // extra non-dev dependency (and making this crate more expensive to
-        // compile for our dependents).
-        #[cfg(test)]
-        static_assertions::const_assert_eq!(core::mem::align_of::<$ty>(), 1);
-    };
-    ($($ty:ty),*) => {
-        $(assert_unaligned!($ty);)*
-    };
 }
 
 safety_comment! {
@@ -1214,9 +1147,22 @@ mod simd {
 // [2] https://github.com/google/zerocopy/pull/126#discussion_r1018512323
 // [3] https://github.com/google/zerocopy/issues/209
 #[allow(missing_debug_implementations)]
-#[derive(FromZeroes, FromBytes, Unaligned, Default, Copy)]
+#[derive(Default, Copy)]
+#[cfg_attr(any(feature = "derive", test), derive(Unaligned, FromZeroes, FromBytes, AsBytes))]
 #[repr(C, packed)]
 pub struct Unalign<T>(T);
+
+safety_comment! {
+    /// SAFETY:
+    /// - `Unalign<T>` is `repr(packed)`, so it is unaligned regardless of the
+    ///   alignment of `T`, and so we don't require that `T: Unaligned`
+    /// - `Unalign<T>` has the same bit validity as `T`, and so it is
+    ///   `FromZeroes`, `FromBytes`, or `AsBytes` exactly when `T` is as well.
+    impl_or_verify!(T => Unaligned for Unalign<T>);
+    impl_or_verify!(T: FromZeroes => FromZeroes for Unalign<T>);
+    impl_or_verify!(T: FromBytes => FromBytes for Unalign<T>);
+    impl_or_verify!(T: AsBytes => AsBytes for Unalign<T>);
+}
 
 // Note that `Unalign: Clone` only if `T: Copy`. Since the inner `T` may not be
 // aligned, there's no way to safely call `T::clone`, and so a `T: Clone` bound
@@ -1443,16 +1389,6 @@ impl<T: Copy> Unalign<T> {
         let Unalign(val) = *self;
         val
     }
-}
-
-safety_comment! {
-    /// SAFETY:
-    /// Since `T: AsBytes`, we know that it's safe to construct a `&[u8]` from
-    /// an aligned `&T`. Since `&[u8]` itself has no alignment requirements, it
-    /// must also be safe to construct a `&[u8]` from a `&T` at any address.
-    /// Since `Unalign<T>` is `#[repr(C, packed)]`, everything about its layout
-    /// except for its alignment is the same as `T`'s layout.
-    unsafe_impl!(T: AsBytes => AsBytes for Unalign<T>);
 }
 
 impl<T: Unaligned> Deref for Unalign<T> {
