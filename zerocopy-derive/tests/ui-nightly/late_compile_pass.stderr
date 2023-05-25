@@ -1,5 +1,5 @@
 error[E0277]: the trait bound `NotZerocopy: FromZeroes` is not satisfied
-  --> tests/ui/late_compile_pass.rs:23:10
+  --> tests/ui-nightly/late_compile_pass.rs:23:10
    |
 23 | #[derive(FromZeroes)]
    |          ^^^^^^^^^^ the trait `FromZeroes` is not implemented for `NotZerocopy`
@@ -19,7 +19,7 @@ error[E0277]: the trait bound `NotZerocopy: FromZeroes` is not satisfied
    = note: this error originates in the derive macro `FromZeroes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: FromBytes` is not satisfied
-  --> tests/ui/late_compile_pass.rs:32:10
+  --> tests/ui-nightly/late_compile_pass.rs:32:10
    |
 32 | #[derive(FromBytes)]
    |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `NotZerocopy`
@@ -39,7 +39,7 @@ error[E0277]: the trait bound `NotZerocopy: FromBytes` is not satisfied
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `FromBytes1: FromZeroes` is not satisfied
-  --> tests/ui/late_compile_pass.rs:32:10
+  --> tests/ui-nightly/late_compile_pass.rs:32:10
    |
 32 | #[derive(FromBytes)]
    |          ^^^^^^^^^ the trait `FromZeroes` is not implemented for `FromBytes1`
@@ -62,7 +62,7 @@ note: required by a bound in `FromBytes`
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: AsBytes` is not satisfied
-  --> tests/ui/late_compile_pass.rs:41:10
+  --> tests/ui-nightly/late_compile_pass.rs:41:10
    |
 41 | #[derive(AsBytes)]
    |          ^^^^^^^ the trait `AsBytes` is not implemented for `NotZerocopy`
@@ -82,7 +82,7 @@ error[E0277]: the trait bound `NotZerocopy: AsBytes` is not satisfied
    = note: this error originates in the derive macro `AsBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
-  --> tests/ui/late_compile_pass.rs:51:10
+  --> tests/ui-nightly/late_compile_pass.rs:51:10
    |
 51 | #[derive(Unaligned)]
    |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
@@ -102,7 +102,7 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
-  --> tests/ui/late_compile_pass.rs:59:10
+  --> tests/ui-nightly/late_compile_pass.rs:59:10
    |
 59 | #[derive(Unaligned)]
    |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
@@ -122,7 +122,7 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
-  --> tests/ui/late_compile_pass.rs:66:10
+  --> tests/ui-nightly/late_compile_pass.rs:66:10
    |
 66 | #[derive(Unaligned)]
    |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`

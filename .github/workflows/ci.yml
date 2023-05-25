@@ -186,8 +186,8 @@ jobs:
           set -e
           cargo fmt --check -p zerocopy
           cargo fmt --check -p zerocopy-derive
-          rustfmt --check tests/ui/*.rs
-          rustfmt --check zerocopy-derive/tests/ui/*.rs
+          rustfmt --check tests/ui-nightly/*.rs
+          rustfmt --check zerocopy-derive/tests/ui-nightly/*.rs
 
   check_readme:
     runs-on: ubuntu-latest

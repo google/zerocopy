@@ -1,1 +1,1 @@
-../ui/transmute-illegal.rs
+../ui-nightly/transmute-illegal.rs

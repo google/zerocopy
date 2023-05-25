@@ -1,5 +1,5 @@
 error[E0277]: the trait bound `NotZerocopy: FromZeroes` is not satisfied
-  --> tests/ui/derive_transparent.rs:33:18
+  --> tests/ui-nightly/derive_transparent.rs:33:18
    |
 33 | assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeroes);
    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromZeroes` is not implemented for `NotZerocopy`
@@ -15,19 +15,19 @@ error[E0277]: the trait bound `NotZerocopy: FromZeroes` is not satisfied
              I64<O>
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `FromZeroes`
-  --> tests/ui/derive_transparent.rs:23:19
+  --> tests/ui-nightly/derive_transparent.rs:23:19
    |
 23 | #[derive(AsBytes, FromZeroes, FromBytes, Unaligned)]
-   |                   ^^^^^^^^^^
+   |                   ^^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `_::{closure#0}::assert_impl_all`
-  --> tests/ui/derive_transparent.rs:33:1
+  --> tests/ui-nightly/derive_transparent.rs:33:1
    |
 33 | assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeroes);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `_::{closure#0}::assert_impl_all`
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
    = note: this error originates in the derive macro `FromZeroes` which comes from the expansion of the macro `assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: FromBytes` is not satisfied
-  --> tests/ui/derive_transparent.rs:34:18
+  --> tests/ui-nightly/derive_transparent.rs:34:18
    |
 34 | assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `NotZerocopy`
@@ -43,19 +43,19 @@ error[E0277]: the trait bound `NotZerocopy: FromBytes` is not satisfied
              I64<O>
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `FromBytes`
-  --> tests/ui/derive_transparent.rs:23:31
+  --> tests/ui-nightly/derive_transparent.rs:23:31
    |
 23 | #[derive(AsBytes, FromZeroes, FromBytes, Unaligned)]
-   |                               ^^^^^^^^^
+   |                               ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `_::{closure#0}::assert_impl_all`
-  --> tests/ui/derive_transparent.rs:34:1
+  --> tests/ui-nightly/derive_transparent.rs:34:1
    |
 34 | assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `_::{closure#0}::assert_impl_all`
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: AsBytes` is not satisfied
-  --> tests/ui/derive_transparent.rs:35:18
+  --> tests/ui-nightly/derive_transparent.rs:35:18
    |
 35 | assert_impl_all!(TransparentStruct<NotZerocopy>: AsBytes);
    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `AsBytes` is not implemented for `NotZerocopy`
@@ -71,19 +71,19 @@ error[E0277]: the trait bound `NotZerocopy: AsBytes` is not satisfied
              I64<O>
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `AsBytes`
-  --> tests/ui/derive_transparent.rs:23:10
+  --> tests/ui-nightly/derive_transparent.rs:23:10
    |
 23 | #[derive(AsBytes, FromZeroes, FromBytes, Unaligned)]
-   |          ^^^^^^^
+   |          ^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `_::{closure#0}::assert_impl_all`
-  --> tests/ui/derive_transparent.rs:35:1
+  --> tests/ui-nightly/derive_transparent.rs:35:1
    |
 35 | assert_impl_all!(TransparentStruct<NotZerocopy>: AsBytes);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `_::{closure#0}::assert_impl_all`
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
    = note: this error originates in the derive macro `AsBytes` which comes from the expansion of the macro `assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: Unaligned` is not satisfied
-  --> tests/ui/derive_transparent.rs:36:18
+  --> tests/ui-nightly/derive_transparent.rs:36:18
    |
 36 | assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Unaligned` is not implemented for `NotZerocopy`
@@ -99,13 +99,13 @@ error[E0277]: the trait bound `NotZerocopy: Unaligned` is not satisfied
              ManuallyDrop<T>
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `Unaligned`
-  --> tests/ui/derive_transparent.rs:23:42
+  --> tests/ui-nightly/derive_transparent.rs:23:42
    |
 23 | #[derive(AsBytes, FromZeroes, FromBytes, Unaligned)]
-   |                                          ^^^^^^^^^
+   |                                          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `_::{closure#0}::assert_impl_all`
-  --> tests/ui/derive_transparent.rs:36:1
+  --> tests/ui-nightly/derive_transparent.rs:36:1
    |
 36 | assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `_::{closure#0}::assert_impl_all`
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
    = note: this error originates in the derive macro `Unaligned` which comes from the expansion of the macro `assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
