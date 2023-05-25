@@ -8,15 +8,15 @@
 // pin to specific versions in CI (a specific stable version, a specific date of
 // the nightly compiler, and a specific MSRV). Updating those pinned versions
 // may also require updating these tests.
-// - `tests/ui` - Contains the source of truth for our UI test source files
-//   (`.rs`), and contains `.err` and `.out` files for nightly and beta
-// - `tests/ui-stable` - Contains symlinks to the `.rs` files in `tests/ui`, and
-//   contains `.err` and `.out` files for stable
-// - `tests/ui-msrv` - Contains symlinks to the `.rs` files in `tests/ui`, and
-//   contains `.err` and `.out` files for MSRV
+// - `tests/ui-nightly` - Contains the source of truth for our UI test source
+//   files (`.rs`), and contains `.err` and `.out` files for nightly
+// - `tests/ui-stable` - Contains symlinks to the `.rs` files in
+//   `tests/ui-nightly`, and contains `.err` and `.out` files for stable
+// - `tests/ui-msrv` - Contains symlinks to the `.rs` files in
+//   `tests/ui-nightly`, and contains `.err` and `.out` files for MSRV
 
-#[rustversion::any(nightly, beta)]
-const SOURCE_FILES_GLOB: &str = "tests/ui/*.rs";
+#[rustversion::any(nightly)]
+const SOURCE_FILES_GLOB: &str = "tests/ui-nightly/*.rs";
 #[rustversion::all(stable, not(stable(1.61.0)))]
 const SOURCE_FILES_GLOB: &str = "tests/ui-stable/*.rs";
 #[rustversion::stable(1.61.0)]
