@@ -19,6 +19,11 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      # By default, this is set to `true`, which means that a single CI job
+      # failure will cause all outstanding jobs to be canceled. This slows down
+      # development because it means that errors need to be encountered and
+      # fixed one at a time.
+      fail-fast: false
       matrix:
         # See `INTERNAL.md` for an explanation of these pinned toolchain
         # versions.
