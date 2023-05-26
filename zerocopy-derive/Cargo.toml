@@ -25,6 +25,9 @@ syn = { version = "2", features = ["visit"] }
 [dev-dependencies]
 rustversion = "1.0"
 static_assertions = "1.1"
-# Required for "and $N others" normalization
-trybuild = ">=1.0.70"
+# Pinned to a specific version so that the version used for local development
+# and the version used in CI are guaranteed to be the same. Future versions
+# sometimes change the output format slightly, so a version mismatch can cause
+# CI test failures.
+trybuild = "=1.0.80"
 zerocopy = { path = "../" }
