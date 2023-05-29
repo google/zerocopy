@@ -9,42 +9,52 @@ set -e
 ROOT=$(git rev-parse --show-toplevel)
 . $ROOT/util.sh
 
-function run_test {
-    if [[ $# != 1 ]]; then
-        echo "Usage: run_test <test-function>" >&2
+# Usage: `run-test <command>...`
+#
+# Runs the named test, exiting the script on failure.
+function run-test {
+    if [[ $# == 0 ]]; then
+        echo "Usage: run-test <command>..." >&2
         return 1
     fi
 
-    # Run `$1`, capturing stdout and stderr.
-    #
-    # https://stackoverflow.com/a/59592881/836390
-    {
-        IFS=$'\n' read -r -d '' STDERR;
-        IFS=$'\n' read -r -d '' STDOUT;
-    } < <((printf '\0%s\0' "$($1)" 1>&2) 2>&1)
-    RESULT=$?
-
-    if [[ $RESULT != 0 ]]; then
-        echo "Test \"$1\" failed with return code $RESULT." >&2
-        echo "stdout:"                                      >&2
-        echo "$STDOUT" | sed -e 's/^/    /g'                >&2
-        echo "stderr:"                                      >&2
-        echo "$STDERR" | sed -e 's/^/    /g'                >&2
-        echo                                                >&2
-    fi
-
-    return $?
+    echo "Running test \"$@\" ..."
+    "$@" || (RET=$? && echo "Test \"$@\" failed." >&2 && exit $RET)
+    echo
 }
 
-FAIL=0
-run_test test_check_fmt      || FAIL=1
-run_test test_check_readme   || FAIL=1
-run_test test_check_msrvs    || FAIL=1
-run_test test_check_versions || FAIL=1
+# TODO: Colorize, baby!
 
-if [[ $FAIL == 0 ]]; then
-    echo "All tests completed successfully!"
-    exit 0
-else
-    exit 1
-fi
+# run-test test-check-fmt
+# run-test test-check-readme
+# run-test test-check-msrvs
+# run-test test-check-versions
+
+# TODO: Consistent strategy around failing early for internal errors
+
+for TOOLCHAIN_NAME in msrv stable nightly; do
+    TOOLCHAIN=$(get-toolchain-by-name "$TOOLCHAIN_NAME") || exit $?
+    for TARGET in i686-unknown-linux-gnu x86_64-unknown-linux-gnu arm-unknown-linux-gnueabi aarch64-unknown-linux-gnu powerpc-unknown-linux-gnu powerpc64-unknown-linux-gnu wasm32-wasi; do
+        for FEATURES in "--no-default-features" "" "--features __internal_use_only_features_that_work_on_stable" "--all-features"; do
+            for CRATE in zerocopy zerocopy-derive; do
+                if [[
+                    ($TOOLCHAIN_NAME == msrv && "$FEATURES" == --all-features) ||
+                    ($TOOLCHAIN_NAME == stable && "$FEATURES" == --all-features) ||
+                    ($CRATE == zerocopy-derive && "$FEATURES" != "")
+                ]]; then
+                    echo skipping...
+                    continue
+                fi
+
+                run-test test-check "$TOOLCHAIN_NAME" "$TOOLCHAIN" "$CRATE" "$TARGET" "$FEATURES"
+                run-test test-build "$TOOLCHAIN_NAME" "$TOOLCHAIN" "$CRATE" "$TARGET" "$FEATURES"
+                run-test test-tests "$TOOLCHAIN_NAME" "$TOOLCHAIN" "$CRATE" "$TARGET" "$FEATURES"
+                run-test test-miri "$TOOLCHAIN_NAME" "$TOOLCHAIN" "$CRATE" "$TARGET" "$FEATURES"
+                run-test test-clippy "$TOOLCHAIN_NAME" "$TOOLCHAIN" "$CRATE" "$TARGET" "$FEATURES"
+                run-test test-doc "$TOOLCHAIN_NAME" "$TOOLCHAIN" "$CRATE" "$TARGET" "$FEATURES"
+            done
+        done
+    done
+done
+
+echo "All tests completed successfully!"

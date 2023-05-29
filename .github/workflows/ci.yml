@@ -122,7 +122,7 @@ jobs:
         key: "${{ matrix.target }}"
 
     - name: Check
-      run: cargo +${{ env.ZC_TOOLCHAIN }} check --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      run: cargo +${{ env.ZC_TOOLCHAIN }} check --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --tests --verbose
 
     - name: Build
       run: cargo +${{ env.ZC_TOOLCHAIN }} build --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
@@ -182,7 +182,7 @@ jobs:
         run: |
           set -e
           . util.sh
-          run_test_in_github_action test_check_fmt
+          run-test-in-github-action test-check-fmt
 
   check_readme:
     runs-on: ubuntu-latest
@@ -196,7 +196,7 @@ jobs:
         run: |
           set -e
           . util.sh
-          run_test_in_github_action test_check_readme
+          run-test-in-github-action test-check-readme
 
   check_msrv:
     runs-on: ubuntu-latest
@@ -207,7 +207,7 @@ jobs:
         run: |
           set -e
           . util.sh
-          run_test_in_github_action test_check_msrvs
+          run-test-in-github-action test-check-msrvs
 
   check_versions:
     runs-on: ubuntu-latest
@@ -218,7 +218,7 @@ jobs:
         run: |
           set -e
           . util.sh
-          run_test_in_github_action test_check_versions
+          run-test-in-github-action test-check-versions
 
   # Run the `test.sh` script to make sure it doesn't become stale. While this
   # effectively reproduces all of our CI tests, we wouldn't want to replace our
