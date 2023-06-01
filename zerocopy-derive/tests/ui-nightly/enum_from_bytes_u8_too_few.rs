@@ -9,6 +9,7 @@ fn main() {}
 
 #[derive(FromBytes)]
 #[repr(u8)]
+//~^ ERROR: FromBytes only supported on repr(u8) enum with 256 variants
 enum Foo {
     Variant0,
     Variant1,

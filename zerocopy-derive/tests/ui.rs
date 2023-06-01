@@ -15,15 +15,26 @@
 // - `tests/ui-msrv` - Contains symlinks to the `.rs` files in
 //   `tests/ui-nightly`, and contains `.err` and `.out` files for MSRV
 
-#[rustversion::any(nightly)]
-const SOURCE_FILES_GLOB: &str = "tests/ui-nightly/*.rs";
-#[rustversion::all(stable, not(stable(1.65.0)))]
-const SOURCE_FILES_GLOB: &str = "tests/ui-stable/*.rs";
-#[rustversion::stable(1.65.0)]
-const SOURCE_FILES_GLOB: &str = "tests/ui-msrv/*.rs";
+use test_util::*;
 
-#[test]
-fn ui() {
-    let t = trybuild::TestCases::new();
-    t.compile_fail(SOURCE_FILES_GLOB);
+fn main() -> color_eyre::eyre::Result<()> {
+    let bless = should_bless();
+
+    let PinnedToolchains { msrv, stable, nightly } = test_util::pinned_toolchains()?;
+
+    let folder = if TOOLCHAIN == msrv {
+        "tests/ui-msrv"
+    } else if TOOLCHAIN == stable {
+        "tests/ui-stable"
+    } else if TOOLCHAIN == nightly {
+        "tests/ui-nightly"
+    } else {
+        unreachable!(
+            "UI tests must be runned with the MSRV ({msrv}),\
+            pinned stable ({stable}), \
+            or pinned nightly ({nightly}) toolchains."
+        );
+    };
+
+    ui_test(TOOLCHAIN, folder, bless)
 }

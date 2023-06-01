@@ -21,6 +21,7 @@ fn main() {}
 //
 
 #[derive(FromZeroes)]
+//~^ ERROR: the trait bound `NotZerocopy: FromZeroes` is not satisfied
 struct FromZeroes1 {
     value: NotZerocopy,
 }
@@ -30,6 +31,8 @@ struct FromZeroes1 {
 //
 
 #[derive(FromBytes)]
+//~^ ERROR: the trait bound `NotZerocopy: FromBytes` is not satisfied
+//~| ERROR: the trait bound `FromBytes1: FromZeroes` is not satisfied
 struct FromBytes1 {
     value: NotZerocopy,
 }
@@ -39,6 +42,7 @@ struct FromBytes1 {
 //
 
 #[derive(AsBytes)]
+//~^ ERROR: the trait bound `NotZerocopy: AsBytes` is not satisfied
 #[repr(C)]
 struct AsBytes1 {
     value: NotZerocopy,
@@ -49,6 +53,7 @@ struct AsBytes1 {
 //
 
 #[derive(Unaligned)]
+//~^ ERROR: the trait bound `AU16: Unaligned` is not satisfied
 #[repr(C)]
 struct Unaligned1 {
     aligned: AU16,
@@ -57,6 +62,7 @@ struct Unaligned1 {
 // This specifically tests a bug we had in an old version of the code in which
 // the trait bound would only be enforced for the first field's type.
 #[derive(Unaligned)]
+//~^ ERROR: the trait bound `AU16: Unaligned` is not satisfied
 #[repr(C)]
 struct Unaligned2 {
     unaligned: u8,
@@ -64,6 +70,7 @@ struct Unaligned2 {
 }
 
 #[derive(Unaligned)]
+//~^ ERROR: the trait bound `AU16: Unaligned` is not satisfied
 #[repr(transparent)]
 struct Unaligned3 {
     aligned: AU16,
