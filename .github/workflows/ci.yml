@@ -79,10 +79,10 @@ jobs:
             ZC_TOOLCHAIN="$(pkg-meta rust_version)"
             ;;
           stable)
-            ZC_TOOLCHAIN="$(pkg-meta 'metadata.ci."pinned-stable"')"
+            ZC_TOOLCHAIN="$(pkg-meta 'metadata."pinned-stable"')"
             ;;
           nightly)
-            ZC_TOOLCHAIN="$(pkg-meta 'metadata.ci."pinned-nightly"')"
+            ZC_TOOLCHAIN="$(pkg-meta 'metadata."pinned-nightly"')"
             ;;
           *)
             echo 'Unrecognized toolchain: ${{ matrix.toolchain }}' | tee -a $GITHUB_STEP_SUMMARY >&2

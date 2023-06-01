@@ -17,10 +17,12 @@ fn main() {}
 //
 
 #[derive(AsBytes)]
+//~^ ERROR: unsupported on generic structs that are not repr(transparent) or repr(packed)
 #[repr(C)]
 struct AsBytes1<T>(T);
 
 #[derive(AsBytes)]
+//~^ ERROR: the trait bound `HasPadding<AsBytes2, true>: ShouldBe<false>` is not satisfied
 #[repr(C)]
 struct AsBytes2 {
     foo: u8,
@@ -33,22 +35,28 @@ struct AsBytes2 {
 
 #[derive(Unaligned)]
 #[repr(C, align(2))]
+//~^ ERROR: cannot derive Unaligned with repr(align(N > 1))
 struct Unaligned1;
 
 #[derive(Unaligned)]
 #[repr(transparent, align(2))]
+//~^ ERROR: transparent struct cannot have other repr hints
+//~| ERROR: cannot derive Unaligned with repr(align(N > 1))
 struct Unaligned2 {
     foo: u8,
 }
 
 #[derive(Unaligned)]
 #[repr(packed, align(2))]
+//~^ ERROR: cannot derive Unaligned with repr(align(N > 1))
 struct Unaligned3;
 
 #[derive(Unaligned)]
 #[repr(align(1), align(2))]
+//~^ ERROR: cannot derive Unaligned with repr(align(N > 1))
 struct Unaligned4;
 
 #[derive(Unaligned)]
 #[repr(align(2), align(4))]
+//~^ ERROR: cannot derive Unaligned with repr(align(N > 1))
 struct Unaligned5;
