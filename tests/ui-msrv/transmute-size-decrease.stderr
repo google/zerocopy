@@ -1,0 +1,9 @@
+error[E0512]: cannot transmute between types of different sizes, or dependently-sized types
+ --> tests/ui-msrv/transmute-size-decrease.rs:7:32
+  |
+7 | const SIZE_DECREASE: [u8; 1] = zerocopy::transmute!([0u8; 2]);
+  |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: source type: `[u8; 2]` (16 bits)
+  = note: target type: `[u8; 1]` (8 bits)
+  = note: this error originates in the macro `zerocopy::transmute` (in Nightly builds, run with -Z macro-backtrace for more info)

@@ -1,0 +1,1 @@
+../ui-nightly/transmute-bound-dst-not-frombytes.rs

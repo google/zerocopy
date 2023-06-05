@@ -146,7 +146,14 @@ jobs:
       if: ${{ contains(matrix.target, 'i686') }}
 
     - name: Run tests
-      run: cargo +${{ env.ZC_TOOLCHAIN }} test --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      # We skip `ui` tests unless the `byteorder` feature is enabled (currently,
+      # all feature sets besides `--no-default-features`). The reason is that,
+      # when a trait impl is missing, rustc emits different suggestions for
+      # types that implement the trait when the `byteorder` feature is enabled
+      # than when it's disabled. Thus, any given compiler output will be
+      # incorrect either when run with `byteorder` or without it, but no output
+      # can be correct in both circumstances.
+      run: cargo +${{ env.ZC_TOOLCHAIN }} test --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose -- ${{ matrix.features == '--no-default-features' && '--skip ui' || '' }}
       # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
       # x86_64, so we can't run tests for any non-x86 target.
       #

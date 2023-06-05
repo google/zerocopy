@@ -1,10 +1,11 @@
 // Copyright 2022 The Fuchsia Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
 extern crate zerocopy;
 
-fn main() {}
+// It is usually unsound to increase the size of a transmuted value.
+const SIZE_INCREASE: [u8; 2] = zerocopy::transmute!([0u8; 1]);
 
-// It is unsound to inspect the usize value of a pointer during const eval.
-const POINTER_VALUE: usize = zerocopy::transmute!(&0usize as *const usize);
+fn main() {
+    _ = SIZE_INCREASE;
+}
