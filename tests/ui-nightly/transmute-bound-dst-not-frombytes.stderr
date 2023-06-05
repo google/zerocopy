@@ -1,22 +1,11 @@
-error[E0277]: the trait bound `NotZerocopy<AU16>: FromBytes` is not satisfied
- --> tests/ui-nightly/transmute-bound-dst-not-frombytes.rs:9:47
+error[E0433]: failed to resolve: could not find `transmute` in `zerocopy`
+ --> tests/ui-nightly/transmute-bound-dst-not-frombytes.rs:9:57
   |
 9 | const DST_NOT_FROM_BYTES: NotZerocopy<AU16> = zerocopy::transmute!(AU16(0));
-  |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `NotZerocopy<AU16>`
+  |                                                         ^^^^^^^^^ could not find `transmute` in `zerocopy`
   |
-  = help: the following other types implement trait `FromBytes`:
-            ()
-            AU16
-            F32<O>
-            F64<O>
-            I128<O>
-            I16<O>
-            I32<O>
-            I64<O>
-          and $N others
-note: required by a bound in `DST_NOT_FROM_BYTES::transmute`
- --> tests/ui-nightly/transmute-bound-dst-not-frombytes.rs:9:47
+help: zerocopy::transmute is not a macro, but a function, try to remove `!`
   |
-9 | const DST_NOT_FROM_BYTES: NotZerocopy<AU16> = zerocopy::transmute!(AU16(0));
-  |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `transmute`
-  = note: this error originates in the macro `zerocopy::transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+9 - const DST_NOT_FROM_BYTES: NotZerocopy<AU16> = zerocopy::transmute!(AU16(0));
+9 + const DST_NOT_FROM_BYTES: NotZerocopy<AU16> = zerocopy::transmute(AU16(0));
+  |

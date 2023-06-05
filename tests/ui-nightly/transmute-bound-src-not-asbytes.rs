@@ -6,7 +6,7 @@ extern crate zerocopy;
 include!("../../zerocopy-derive/tests/util.rs");
 
 // The source type must be `AsBytes`.
-const SRC_NOT_AS_BYTES: AU16 = zerocopy::transmute!(NotZerocopy(AU16(0)));
+const SRC_NOT_AS_BYTES: AU16 = zerocopy::transmute(NotZerocopy(AU16(0)));
 
 fn main() {
     _ = SRC_NOT_AS_BYTES;

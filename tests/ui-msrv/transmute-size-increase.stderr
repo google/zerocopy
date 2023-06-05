@@ -1,9 +1,26 @@
-error[E0512]: cannot transmute between types of different sizes, or dependently-sized types
- --> tests/ui-msrv/transmute-size-increase.rs:7:32
+error[E0080]: evaluation of `<[u8; 2] as zerocopy::TransmuteFrom<[u8; 1]>>::IS_TRANSMUTABLE` failed
+ --> src/lib.rs
   |
-7 | const SIZE_INCREASE: [u8; 2] = zerocopy::transmute!([0u8; 1]);
-  |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |         assert!(mem::size_of::<Src>() == mem::size_of::<Dst>());
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the evaluated program panicked at 'assertion failed: mem::size_of::<Src>() == mem::size_of::<Dst>()', $DIR/src/lib.rs:1427:9
   |
-  = note: source type: `[u8; 1]` (8 bits)
-  = note: target type: `[u8; 2]` (16 bits)
-  = note: this error originates in the macro `zerocopy::transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+  = note: this error originates in the macro `assert` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: any use of this value will cause an error
+ --> src/lib.rs
+  |
+  |     assert!(<Dst as TransmuteFrom<Src>>::IS_TRANSMUTABLE);
+  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |             |
+  |             referenced constant has errors
+  |             inside `zerocopy::transmute::<[u8; 1], [u8; 2]>` at $DIR/src/lib.rs:1452:13
+  |             inside `SIZE_INCREASE` at $DIR/tests/ui-msrv/transmute-size-increase.rs:7:32
+  |
+ ::: tests/ui-msrv/transmute-size-increase.rs:7:1
+  |
+7 | const SIZE_INCREASE: [u8; 2] = zerocopy::transmute([0u8; 1]);
+  | ----------------------------
+  |
+  = note: `#[deny(const_err)]` on by default
+  = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+  = note: for more information, see issue #71800 <https://github.com/rust-lang/rust/issues/71800>
