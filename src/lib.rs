@@ -1413,54 +1413,48 @@ impl<T: Unaligned + Display> Display for Unalign<T> {
     }
 }
 
-// Used in `transmute!` below.
 #[doc(hidden)]
-pub use core::mem::transmute as __real_transmute;
+pub trait TransmuteFrom<Src>: Sized {
+    const IS_TRANSMUTABLE: bool;
+}
+
+impl<Src, Dst> TransmuteFrom<Src> for Dst
+where
+    Src: AsBytes,
+    Dst: FromBytes,
+{
+    const IS_TRANSMUTABLE: bool = {
+        assert!(mem::size_of::<Src>() == mem::size_of::<Dst>());
+        true
+    };
+}
 
 /// Safely transmutes a value of one type to a value of another type of the same
 /// size.
 ///
-/// The expression `$e` must have a concrete type, `T`, which implements
-/// `AsBytes`. The `transmute!` expression must also have a concrete type, `U`
-/// (`U` is inferred from the calling context), and `U` must implement
-/// `FromBytes`.
+/// ## `cargo check` and size errors
 ///
-/// Note that the `T` produced by the expression `$e` will *not* be dropped.
-/// Semantically, its bits will be copied into a new value of type `U`, the
-/// original `T` will be forgotten, and the value of type `U` will be returned.
-#[macro_export]
-macro_rules! transmute {
-    ($e:expr) => {{
-        // NOTE: This must be a macro (rather than a function with trait bounds)
-        // because there's no way, in a generic context, to enforce that two
-        // types have the same size. `core::mem::transmute` uses compiler magic
-        // to enforce this so long as the types are concrete.
+/// This function reports type size errors at a later compiler phase than
+/// `mem::transmute`. Consequently, size errors may not be detected by `cargo
+/// check`; only by `cargo build`. Run `cargo build` to be sure that your
+/// transmute is valid.
+pub const fn transmute<Src, Dst>(src: Src) -> Dst
+where
+    Src: AsBytes,
+    Dst: FromBytes + TransmuteFrom<Src>,
+{
+    #[repr(C)]
+    union Transmute<Src, Dst> {
+        src: ManuallyDrop<Src>,
+        dst: ManuallyDrop<Dst>,
+    }
 
-        let e = $e;
-        if false {
-            // This branch, though never taken, ensures that the type of `e` is
-            // `AsBytes` and that the type of this macro invocation expression
-            // is `FromBytes`.
-            const fn transmute<T: $crate::AsBytes, U: $crate::FromBytes>(_t: T) -> U {
-                unreachable!()
-            }
-            transmute(e)
-        } else {
-            // SAFETY: `core::mem::transmute` ensures that the type of `e` and
-            // the type of this macro invocation expression have the same size.
-            // We know this transmute is safe thanks to the `AsBytes` and
-            // `FromBytes` bounds enforced by the `false` branch.
-            //
-            // We use `$crate::__real_transmute` because we know it will always
-            // be available for crates which are using the 2015 edition of Rust.
-            // By contrast, if we were to use `std::mem::transmute`, this macro
-            // would not work for such crates in `no_std` contexts, and if we
-            // were to use `core::mem::transmute`, this macro would not work in
-            // `std` contexts in which `core` was not manually imported. This is
-            // not a problem for 2018 edition crates.
-            unsafe { $crate::__real_transmute(e) }
-        }
-    }}
+    assert!(<Dst as TransmuteFrom<Src>>::IS_TRANSMUTABLE);
+
+    // SAFETY: This is sound because `transmute`'s bounds ensure that `Src` is
+    // `AsBytes`, that `Dst` is `FromBytes`, and the above assert ensures that
+    // `Src` is at least as many bytes as `Dst`.
+    unsafe { ManuallyDrop::into_inner(Transmute { src: ManuallyDrop::new(src) }.dst) }
 }
 
 /// A length- and alignment-checked reference to a byte slice which can safely
@@ -3013,7 +3007,7 @@ mod tests {
 
     // Converts an `AU64` to bytes using this platform's endianness.
     fn au64_to_bytes(u: AU64) -> [u8; 8] {
-        transmute!(u)
+        transmute(u)
     }
 
     // An unsized type.
@@ -3142,12 +3136,12 @@ mod tests {
         assert_eq!(u64::read_from(&VAL_BYTES[..]), Some(VAL));
         // The first 8 bytes are from `VAL_BYTES` and the second 8 bytes are all
         // zeroes.
-        let bytes_with_prefix: [u8; 16] = transmute!([VAL_BYTES, [0; 8]]);
+        let bytes_with_prefix: [u8; 16] = transmute([VAL_BYTES, [0; 8]]);
         assert_eq!(u64::read_from_prefix(&bytes_with_prefix[..]), Some(VAL));
         assert_eq!(u64::read_from_suffix(&bytes_with_prefix[..]), Some(0));
         // The first 8 bytes are all zeroes and the second 8 bytes are from
         // `VAL_BYTES`
-        let bytes_with_suffix: [u8; 16] = transmute!([[0; 8], VAL_BYTES]);
+        let bytes_with_suffix: [u8; 16] = transmute([[0; 8], VAL_BYTES]);
         assert_eq!(u64::read_from_prefix(&bytes_with_suffix[..]), Some(0));
         assert_eq!(u64::read_from_suffix(&bytes_with_suffix[..]), Some(VAL));
 
@@ -3158,11 +3152,11 @@ mod tests {
         assert_eq!(bytes, VAL_BYTES);
         let mut bytes = [0u8; 16];
         assert_eq!(VAL.write_to_prefix(&mut bytes[..]), Some(()));
-        let want: [u8; 16] = transmute!([VAL_BYTES, [0; 8]]);
+        let want: [u8; 16] = transmute([VAL_BYTES, [0; 8]]);
         assert_eq!(bytes, want);
         let mut bytes = [0u8; 16];
         assert_eq!(VAL.write_to_suffix(&mut bytes[..]), Some(()));
-        let want: [u8; 16] = transmute!([[0; 8], VAL_BYTES]);
+        let want: [u8; 16] = transmute([[0; 8], VAL_BYTES]);
         assert_eq!(bytes, want);
     }
 
@@ -3171,9 +3165,9 @@ mod tests {
         // Test that memory is transmuted as expected.
         let array_of_u8s = [0u8, 1, 2, 3, 4, 5, 6, 7];
         let array_of_arrays = [[0, 1], [2, 3], [4, 5], [6, 7]];
-        let x: [[u8; 2]; 4] = transmute!(array_of_u8s);
+        let x: [[u8; 2]; 4] = transmute(array_of_u8s);
         assert_eq!(x, array_of_arrays);
-        let x: [u8; 8] = transmute!(array_of_arrays);
+        let x: [u8; 8] = transmute(array_of_arrays);
         assert_eq!(x, array_of_u8s);
 
         // Test that the source expression's value is forgotten rather than
@@ -3186,12 +3180,12 @@ mod tests {
                 panic!("PanicOnDrop::drop");
             }
         }
-        let _: () = transmute!(PanicOnDrop(()));
+        let _: () = transmute(PanicOnDrop(()));
 
-        // Test that `transmute!` is legal in a const context.
+        // Test that `transmute` is legal in a const context.
         const ARRAY_OF_U8S: [u8; 8] = [0u8, 1, 2, 3, 4, 5, 6, 7];
         const ARRAY_OF_ARRAYS: [[u8; 2]; 4] = [[0, 1], [2, 3], [4, 5], [6, 7]];
-        const X: [[u8; 2]; 4] = transmute!(ARRAY_OF_U8S);
+        const X: [[u8; 2]; 4] = transmute(ARRAY_OF_U8S);
         assert_eq!(X, ARRAY_OF_ARRAYS);
     }
 

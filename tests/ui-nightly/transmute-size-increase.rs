@@ -4,7 +4,7 @@
 extern crate zerocopy;
 
 // It is usually unsound to increase the size of a transmuted value.
-const SIZE_INCREASE: [u8; 2] = zerocopy::transmute!([0u8; 1]);
+const SIZE_INCREASE: [u8; 2] = zerocopy::transmute([0u8; 1]);
 
 fn main() {
     _ = SIZE_INCREASE;

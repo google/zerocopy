@@ -4,7 +4,7 @@
 extern crate zerocopy;
 
 // It is unsupported to decrease the size of a transmuted value.
-const SIZE_DECREASE: [u8; 1] = zerocopy::transmute!([0u8; 2]);
+const SIZE_DECREASE: [u8; 1] = zerocopy::transmute([0u8; 2]);
 
 fn main() {
     _ = SIZE_DECREASE;

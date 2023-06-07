@@ -4,7 +4,7 @@
 extern crate zerocopy;
 
 // It is unsound to inspect the usize value of a pointer during const eval.
-const POINTER_VALUE: usize = zerocopy::transmute!(&0usize as *const usize);
+const POINTER_VALUE: usize = zerocopy::transmute(&0usize as *const usize);
 
 fn main() {
     _ = POINTER_VALUE;
