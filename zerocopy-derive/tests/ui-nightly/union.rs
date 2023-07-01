@@ -18,12 +18,14 @@ fn main() {}
 //
 
 #[derive(AsBytes)]
+//~^ ERROR: unsupported on types with type parameters
 #[repr(C)]
 union AsBytes1<T> {
     foo: ManuallyDrop<T>,
 }
 
 #[derive(AsBytes)]
+//~^ ERROR: the trait bound `HasPadding<AsBytes2, true>: ShouldBe<false>` is not satisfied
 #[repr(C)]
 union AsBytes2 {
     foo: u8,
@@ -36,6 +38,7 @@ union AsBytes2 {
 
 #[derive(Unaligned)]
 #[repr(C, align(2))]
+//~^ ERROR: cannot derive Unaligned with repr(align(N > 1))
 union Unaligned1 {
     foo: i16,
     bar: AU16,
@@ -52,18 +55,21 @@ union Unaligned1 {
 
 #[derive(Unaligned)]
 #[repr(packed, align(2))]
+//~^ ERROR: cannot derive Unaligned with repr(align(N > 1))
 union Unaligned3 {
     foo: u8,
 }
 
 #[derive(Unaligned)]
 #[repr(align(1), align(2))]
+//~^ ERROR: cannot derive Unaligned with repr(align(N > 1))
 struct Unaligned4 {
     foo: u8,
 }
 
 #[derive(Unaligned)]
 #[repr(align(2), align(4))]
+//~^ ERROR: cannot derive Unaligned with repr(align(N > 1))
 struct Unaligned5 {
     foo: u8,
 }

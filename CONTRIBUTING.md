@@ -112,7 +112,7 @@ guidelines on how to test code in zerocopy:
    any potential [undefined behavior][undefined_behavior] so that Miri can catch
    it.
 1. If there's some user code that should be impossible to compile, add a
-   [trybuild test][trybuild] to ensure that it's properly rejected.
+   [UI test][uitest] to ensure that it's properly rejected.
 
 ### Source Control Best Practices
 
@@ -207,5 +207,5 @@ Guidelines][google_open_source_guidelines].
 [google_open_source_guidelines]: https://opensource.google/conduct/
 [magic_number]: https://en.wikipedia.org/wiki/Magic_number_(programming)
 [miri]: https://github.com/rust-lang/miri
-[trybuild]: https://crates.io/crates/trybuild
+[uitest]: https://crates.io/crates/ui-test
 [undefined_behavior]: https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html

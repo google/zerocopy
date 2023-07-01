@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-extern crate zerocopy;
-
 #[path = "../util.rs"]
 mod util;
+
+use test_util::*;
 
 use core::marker::PhantomData;
 
@@ -31,6 +31,10 @@ struct TransparentStruct<T> {
 // must also ensure the traits are only implemented when the inner type
 // implements them.
 assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeroes);
+//~^ ERROR: the trait bound `NotZerocopy: FromZeroes` is not satisfied
 assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
+//~^ ERROR: the trait bound `NotZerocopy: FromBytes` is not satisfied
 assert_impl_all!(TransparentStruct<NotZerocopy>: AsBytes);
+//~^ ERROR: the trait bound `NotZerocopy: AsBytes` is not satisfied
 assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
+//~^ ERROR: the trait bound `NotZerocopy: Unaligned` is not satisfied
