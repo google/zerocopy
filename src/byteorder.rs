@@ -30,7 +30,7 @@
 //! UDP:
 //!
 //! ```edition2021
-//! use zerocopy::{AsBytes, ByteSlice, FromBytes, FromZeroes, LayoutVerified, Unaligned};
+//! use zerocopy::{AsBytes, ByteSlice, FromBytes, FromZeroes, Ref, Unaligned};
 //! use zerocopy::byteorder::network_endian::U16;
 //!
 //! #[derive(FromZeroes, FromBytes, AsBytes, Unaligned)]
@@ -43,13 +43,13 @@
 //! }
 //!
 //! struct UdpPacket<B: ByteSlice> {
-//!     header: LayoutVerified<B, UdpHeader>,
+//!     header: Ref<B, UdpHeader>,
 //!     body: B,
 //! }
 //!
 //! impl<B: ByteSlice> UdpPacket<B> {
 //!     fn parse(bytes: B) -> Option<UdpPacket<B>> {
-//!         let (header, body) = LayoutVerified::new_from_prefix(bytes)?;
+//!         let (header, body) = Ref::new_from_prefix(bytes)?;
 //!         Some(UdpPacket { header, body })
 //!     }
 //!
