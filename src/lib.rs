@@ -457,7 +457,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// Reads a copy of `Self` from `bytes`.
     ///
     /// If `bytes.len() != size_of::<Self>()`, `read_from` returns `None`.
-    fn read_from<B: ByteSlice>(bytes: B) -> Option<Self>
+    fn read_from(bytes: &[u8]) -> Option<Self>
     where
         Self: Sized,
     {
@@ -470,7 +470,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// `read_from_prefix` reads a `Self` from the first `size_of::<Self>()`
     /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()`, it returns
     /// `None`.
-    fn read_from_prefix<B: ByteSlice>(bytes: B) -> Option<Self>
+    fn read_from_prefix(bytes: &[u8]) -> Option<Self>
     where
         Self: Sized,
     {
@@ -483,7 +483,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// `read_from_suffix` reads a `Self` from the last `size_of::<Self>()`
     /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()`, it returns
     /// `None`.
-    fn read_from_suffix<B: ByteSlice>(bytes: B) -> Option<Self>
+    fn read_from_suffix(bytes: &[u8]) -> Option<Self>
     where
         Self: Sized,
     {
@@ -601,7 +601,7 @@ pub unsafe trait AsBytes {
     /// Writes a copy of `self` to `bytes`.
     ///
     /// If `bytes.len() != size_of_val(self)`, `write_to` returns `None`.
-    fn write_to<B: ByteSliceMut>(&self, mut bytes: B) -> Option<()> {
+    fn write_to(&self, bytes: &mut [u8]) -> Option<()> {
         if bytes.len() != mem::size_of_val(self) {
             return None;
         }
@@ -614,7 +614,7 @@ pub unsafe trait AsBytes {
     ///
     /// `write_to_prefix` writes `self` to the first `size_of_val(self)` bytes
     /// of `bytes`. If `bytes.len() < size_of_val(self)`, it returns `None`.
-    fn write_to_prefix<B: ByteSliceMut>(&self, mut bytes: B) -> Option<()> {
+    fn write_to_prefix(&self, bytes: &mut [u8]) -> Option<()> {
         let size = mem::size_of_val(self);
         bytes.get_mut(..size)?.copy_from_slice(self.as_bytes());
         Some(())
@@ -624,7 +624,7 @@ pub unsafe trait AsBytes {
     ///
     /// `write_to_suffix` writes `self` to the last `size_of_val(self)` bytes of
     /// `bytes`. If `bytes.len() < size_of_val(self)`, it returns `None`.
-    fn write_to_suffix<B: ByteSliceMut>(&self, mut bytes: B) -> Option<()> {
+    fn write_to_suffix(&self, bytes: &mut [u8]) -> Option<()> {
         let start = bytes.len().checked_sub(mem::size_of_val(self))?;
         bytes
             .get_mut(start..)
