@@ -538,12 +538,12 @@ mod tests {
     macro_rules! impl_traits {
         ($name:ident, $native:ident, $bytes:expr, $sign:ident) => {
             impl Native for $native {
-                // For some types, `0 as _` is required (for example, when
+                // For some types, `0 as $native` is required (for example, when
                 // `$native` is a floating-point type; `0` is an integer), but
                 // for other types, it's a trivial cast. In all cases, Clippy
                 // thinks it's dangerous.
                 #[allow(trivial_numeric_casts, clippy::as_conversions)]
-                const ZERO: $native = 0 as _;
+                const ZERO: $native = 0 as $native;
                 const MAX_VALUE: $native = $native::MAX;
 
                 fn rand() -> $native {
