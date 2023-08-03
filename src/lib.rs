@@ -1036,8 +1036,9 @@ mod simd {
 /// guarantees.
 ///
 /// Since `Unalign` has no alignment requirement, the inner `T` may not be
-/// properly aligned in memory. There are four ways to access the inner `T`:
+/// properly aligned in memory. There are five ways to access the inner `T`:
 /// - by value, using [`get`] or [`into_inner`]
+/// - by reference inside of a callback, using [`update`]
 /// - fallibly by reference, using [`try_deref`] or [`try_deref_mut`]; these can
 ///   fail if the `Unalign` does not satisfy `T`'s alignment requirement at
 ///   runtime
@@ -1050,6 +1051,7 @@ mod simd {
 /// [or ABI]: https://github.com/google/zerocopy/issues/164
 /// [`get`]: Unalign::get
 /// [`into_inner`]: Unalign::into_inner
+/// [`update`]: Unalign::update
 /// [`try_deref`]: Unalign::try_deref
 /// [`try_deref_mut`]: Unalign::try_deref_mut
 /// [`deref_unchecked`]: Unalign::deref_unchecked
@@ -1057,10 +1059,13 @@ mod simd {
 // NOTE: This type is sound to use with types that need to be dropped. The
 // reason is that the compiler-generated drop code automatically moves all
 // values to aligned memory slots before dropping them in-place. This is not
-// well-documented, but it's hinted at in places like [1] and [2].
+// well-documented, but it's hinted at in places like [1] and [2]. However, this
+// also means that `T` must be `Sized`; unless something changes, we can never
+// support unsized `T`. [3]
 //
 // [1] https://github.com/rust-lang/rust/issues/54148#issuecomment-420529646
 // [2] https://github.com/google/zerocopy/pull/126#discussion_r1018512323
+// [3] https://github.com/google/zerocopy/issues/209
 #[allow(missing_debug_implementations)]
 #[derive(FromBytes, Unaligned, Default, Copy)]
 #[repr(C, packed)]
@@ -1222,6 +1227,61 @@ impl<T> Unalign<T> {
     // TODO(https://github.com/rust-lang/rust/issues/57349): Make this `const`.
     pub fn set(&mut self, t: T) {
         *self = Unalign::new(t);
+    }
+
+    /// Updates the inner `T` by calling a function on it.
+    ///
+    /// For large types, this method may be expensive, as it requires copying
+    /// `2 * size_of::<T>()` bytes. \[1\]
+    ///
+    /// \[1\] Since the inner `T` may not be aligned, it would not be sound to
+    /// invoke `f` on it directly. Instead, `update` moves it into a
+    /// properly-aligned location in the local stack frame, calls `f` on it, and
+    /// then moves it back to its original location in `self`.
+    pub fn update<O, F: FnOnce(&mut T) -> O>(&mut self, f: F) -> O {
+        // On drop, this moves `copy` out of itself and uses `ptr::write` to
+        // overwrite `slf`.
+        struct WriteBackOnDrop<T> {
+            copy: ManuallyDrop<T>,
+            slf: *mut Unalign<T>,
+        }
+
+        impl<T> Drop for WriteBackOnDrop<T> {
+            fn drop(&mut self) {
+                // SAFETY: See inline comments.
+                unsafe {
+                    // SAFETY: We never use `copy` again as required by
+                    // `ManuallyDrop::take`.
+                    let copy = ManuallyDrop::take(&mut self.copy);
+                    // SAFETY: `slf` is the raw pointer value of `self`. We know
+                    // it is valid for writes and properly aligned because
+                    // `self` is a mutable reference, which guarantees both of
+                    // these properties.
+                    ptr::write(self.slf, Unalign::new(copy));
+                }
+            }
+        }
+
+        // SAFETY: We know that `self` is valid for reads, properly aligned, and
+        // points to an initialized `Unalign<T>` because it is a mutable
+        // reference, which guarantees all of these properties.
+        //
+        // Since `T: !Copy`, it would be unsound in the general case to allow
+        // both the original `Unalign<T>` and the copy to be used by safe code.
+        // We guarantee that the copy is used to overwrite the original in the
+        // `Drop::drop` impl of `WriteBackOnDrop`. So long as this `drop` is
+        // called before any other safe code executes, soundness is upheld.
+        // While this method can terminate in two ways (by returning normally or
+        // by unwinding due to a panic in `f`), in both cases, `write_back` is
+        // dropped - and its `drop` called - before any other safe code can
+        // execute.
+        let copy = unsafe { ptr::read(self) }.into_inner();
+        let mut write_back = WriteBackOnDrop { copy: ManuallyDrop::new(copy), slf: self };
+
+        let ret = f(&mut write_back.copy);
+
+        drop(write_back);
+        ret
     }
 }
 
@@ -2874,7 +2934,7 @@ pub use alloc_support::*;
 mod tests {
     #![allow(clippy::unreadable_literal)]
 
-    use core::ops::Deref;
+    use core::{ops::Deref, panic::AssertUnwindSafe};
 
     use static_assertions::assert_impl_all;
 
@@ -3023,6 +3083,34 @@ mod tests {
                 _ => unreachable!(),
             }
         };
+    }
+
+    #[test]
+    fn test_unalign_update() {
+        let mut u = Unalign::new(AU64(123));
+        u.update(|a| a.0 += 1);
+        assert_eq!(u.get(), AU64(124));
+
+        // Test that, even if the callback panics, the original is still
+        // correctly overwritten. Use a `Box` so that Miri is more likely to
+        // catch any unsoundness (which would likely result in two `Box`es for
+        // the same heap object, which is the sort of thing that Miri would
+        // probably catch).
+        let mut u = Unalign::new(Box::new(AU64(123)));
+        let res = std::panic::catch_unwind(AssertUnwindSafe(|| {
+            u.update(|a| {
+                a.0 += 1;
+                panic!();
+            })
+        }));
+        // Only required on the v0.6.x branch due to behavior of older versions
+        // of Clippy which is no longer present on the MSRV we use on the main
+        // branch.
+        #[allow(clippy::assertions_on_result_states)]
+        {
+            assert!(res.is_err());
+        }
+        assert_eq!(u.into_inner(), Box::new(AU64(124)));
     }
 
     #[test]
