@@ -34,6 +34,15 @@ types, see the `byteorder` module.
 enabled, the `alloc` crate is added as a dependency, and some
 allocation-related functionality is added.
 
+`byteorder` (enabled by default): Adds the `byteorder` module and a
+dependency on the `byteorder` crate. The `byteorder` module provides byte
+order-aware equivalents of the multi-byte primitive numerical types. Unlike
+their primitive equivalents, the types in this module have no alignment
+requirement and support byte order conversions. This can be useful in
+handling file formats, network packet layouts, etc which don't provide
+alignment guarantees and which may use a byte order different from that of
+the execution platform.
+
 `simd`: When the `simd` feature is enabled, `FromBytes` and `AsBytes` impls
 are emitted for all stable SIMD types which exist on the target platform.
 Note that the layout of SIMD types is not yet stabilized, so these impls may
