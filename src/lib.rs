@@ -104,6 +104,9 @@
     clippy::unwrap_used,
     clippy::use_debug
 )]
+// Only required on the v0.6.x branch due to behavior of older versions of
+// Clippy which is no longer present on the MSRV we use on the main branch.
+#![allow(clippy::vec_init_then_push)]
 #![deny(
     rustdoc::bare_urls,
     rustdoc::broken_intra_doc_links,
@@ -1352,6 +1355,11 @@ macro_rules! transmute {
             // were to use `core::mem::transmute`, this macro would not work in
             // `std` contexts in which `core` was not manually imported. This is
             // not a problem for 2018 edition crates.
+            //
+            // This `allow` is only required on the v0.6.x branch due to
+            // behavior of older versions of Clippy which is no longer present
+            // on the MSRV we use on the main branch.
+            #[allow(clippy::undocumented_unsafe_blocks)]
             unsafe { $crate::__real_transmute(e) }
         }
     }}
