@@ -568,15 +568,33 @@ pub unsafe trait AsBytes {
     /// `as_bytes` provides access to the bytes of this value as an immutable
     /// byte slice.
     fn as_bytes(&self) -> &[u8] {
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe {
-            // Note that this method does not have a `Self: Sized` bound;
-            // `size_of_val` works for unsized values too.
-            let len = mem::size_of_val(self);
-            let slf: *const Self = self;
-            slice::from_raw_parts(slf.cast::<u8>(), len)
-        }
+        // Note that this method does not have a `Self: Sized` bound;
+        // `size_of_val` works for unsized values too.
+        let len = mem::size_of_val(self);
+        let slf: *const Self = self;
+
+        // SAFETY:
+        // - `slf.cast::<u8>()` is valid for reads for `len *
+        //   mem::size_of::<u8>()` many bytes because...
+        //   - `slf` is the same pointer as `self`, and `self` is a reference
+        //     which points to an object whose size is `len`. Thus...
+        //     - The entire region of `len` bytes starting at `slf` is contained
+        //       within a single allocation.
+        //     - `slf` is non-null.
+        //   - `slf` is trivially aligned to `align_of::<u8>() == 1`.
+        // - `Self: AsBytes` ensures that all of the bytes of `slf` are
+        //   initialized.
+        // - Since `slf` is derived from `self`, and `self` is an immutable
+        //   reference, the only other references to this memory region that
+        //   could exist are other immutable references, and those don't allow
+        //   mutation.
+        //
+        //   TODO(#8): Update `AsRef` docs to require that `Self` doesn't allow
+        //   interior mutability so that this bullet point is actually true.
+        // - The total size of the resulting slice is no larger than
+        //   `isize::MAX` because no allocation produced by safe code can be
+        //   larger than `isize::MAX`.
+        unsafe { slice::from_raw_parts(slf.cast::<u8>(), len) }
     }
 
     /// Gets the bytes of this value mutably.
@@ -587,15 +605,30 @@ pub unsafe trait AsBytes {
     where
         Self: FromBytes,
     {
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe {
-            // Note that this method does not have a `Self: Sized` bound;
-            // `size_of_val` works for unsized values too.
-            let len = mem::size_of_val(self);
-            let slf: *mut Self = self;
-            slice::from_raw_parts_mut(slf.cast::<u8>(), len)
-        }
+        // Note that this method does not have a `Self: Sized` bound;
+        // `size_of_val` works for unsized values too.
+        let len = mem::size_of_val(self);
+        let slf: *mut Self = self;
+
+        // SAFETY:
+        // - `slf.cast::<u8>()` is valid for reads and writes for `len *
+        //   mem::size_of::<u8>()` many bytes because...
+        //   - `slf` is the same pointer as `self`, and `self` is a reference
+        //     which points to an object whose size is `len`. Thus...
+        //     - The entire region of `len` bytes starting at `slf` is contained
+        //       within a single allocation.
+        //     - `slf` is non-null.
+        //   - `slf` is trivially aligned to `align_of::<u8>() == 1`.
+        // - `Self: AsBytes` ensures that all of the bytes of `slf` are
+        //   initialized.
+        // - `Self: FromBytes` ensures that no write to this memory region
+        //   could result in it containing an invalid `Self`.
+        // - Since `slf` is derived from `self`, and `self` is a mutable
+        //   reference, no other references to this memory region can exist.
+        // - The total size of the resulting slice is no larger than
+        //   `isize::MAX` because no allocation produced by safe code can be
+        //   larger than `isize::MAX`.
+        unsafe { slice::from_raw_parts_mut(slf.cast::<u8>(), len) }
     }
 
     /// Writes a copy of `self` to `bytes`.
