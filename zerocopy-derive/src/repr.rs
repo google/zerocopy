@@ -191,7 +191,7 @@ impl Repr {
                 let ident = path
                     .get_ident()
                     .ok_or_else(|| Error::new_spanned(meta, "unrecognized representation hint"))?;
-                match format!("{ident}").as_str() {
+                match format!("{}", ident).as_str() {
                     "u8" => return Ok(Repr::U8),
                     "u16" => return Ok(Repr::U16),
                     "u32" => return Ok(Repr::U32),
@@ -221,7 +221,7 @@ impl Repr {
 impl Display for Repr {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), fmt::Error> {
         if let Repr::Align(n) = self {
-            return write!(f, "repr(align({n}))");
+            return write!(f, "repr(align({}))", n);
         }
         write!(
             f,
