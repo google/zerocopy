@@ -15,9 +15,9 @@
 // - `tests/ui-msrv` - Contains symlinks to the `.rs` files in
 //   `tests/ui-nightly`, and contains `.err` and `.out` files for MSRV
 
-#[rustversion::any(nightly)]
+#[rustversion::nightly]
 const SOURCE_FILES_GLOB: &str = "tests/ui-nightly/*.rs";
-#[rustversion::all(stable, not(stable(1.61.0)))]
+#[rustversion::stable(1.69.0)]
 const SOURCE_FILES_GLOB: &str = "tests/ui-stable/*.rs";
 #[rustversion::stable(1.61.0)]
 const SOURCE_FILES_GLOB: &str = "tests/ui-msrv/*.rs";

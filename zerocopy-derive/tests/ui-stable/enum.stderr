@@ -161,6 +161,8 @@ error[E0552]: unrecognized representation hint
    |
 21 | #[repr(foo)]
    |        ^^^
+   |
+   = help: valid reprs are `C`, `align`, `packed`, `transparent`, `simd`, `i8`, `u8`, `i16`, `u16`, `i32`, `u32`, `i64`, `u64`, `i128`, `u128`, `isize`, `usize`
 
 error[E0566]: conflicting representation hints
   --> tests/ui-stable/enum.rs:33:8
@@ -168,6 +170,6 @@ error[E0566]: conflicting representation hints
 33 | #[repr(u8, u16)]
    |        ^^  ^^^
    |
-   = note: `#[deny(conflicting_repr_hints)]` on by default
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
    = note: for more information, see issue #68585 <https://github.com/rust-lang/rust/issues/68585>
+   = note: `#[deny(conflicting_repr_hints)]` on by default
