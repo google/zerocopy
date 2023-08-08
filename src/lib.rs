@@ -334,15 +334,23 @@ pub unsafe trait FromZeroes {
     where
         Self: Sized,
     {
+        let size = mem::size_of::<Self>()
+            .checked_mul(len)
+            .expect("mem::size_of::<Self>() * len overflows `usize`");
+        let align = mem::align_of::<Self>();
+        // On stable Rust versions <= 1.64.0, `Layout::from_size_align` has a
+        // bug in which sufficiently-large allocations (those which, when
+        // rounded up to the alignment, overflow `isize`) are not rejected,
+        // which can cause undefined behavior. See #64 for details.
+        //
+        // TODO(#67): Once our MSRV is > 1.64.0, remove this assertion.
+        #[allow(clippy::as_conversions)]
+        let max_alloc = (isize::MAX as usize).saturating_sub(align);
+        assert!(size <= max_alloc);
         // TODO(#2): Use `Layout::repeat` when `alloc_layout_extra` is
         // stabilized.
-        let layout = Layout::from_size_align(
-            mem::size_of::<Self>()
-                .checked_mul(len)
-                .expect("mem::size_of::<Self>() * len overflows `usize`"),
-            mem::align_of::<Self>(),
-        )
-        .expect("total allocation size overflows `isize`");
+        let layout =
+            Layout::from_size_align(size, align).expect("total allocation size overflows `isize`");
 
         // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
         #[allow(clippy::undocumented_unsafe_blocks)]
@@ -1265,12 +1273,16 @@ impl<T> Unalign<T> {
     /// If `self` does not satisfy `mem::align_of::<T>()`, then
     /// `self.deref_unchecked()` may cause undefined behavior.
     pub const unsafe fn deref_unchecked(&self) -> &T {
-        // SAFETY: `self.get_ptr()` returns a raw pointer to a valid `T` at the
-        // same memory location as `self`. It has no alignment guarantee, but
-        // the caller has promised that `self` is properly aligned, so we know
-        // that the pointer itself is aligned, and thus that it is sound to
-        // create a reference to a `T` at this memory location.
-        unsafe { &*self.get_ptr() }
+        // SAFETY: `Unalign<T>` is `repr(transparent)`, so there is a valid `T`
+        // at the same memory location as `self`. It has no alignment guarantee,
+        // but the caller has promised that `self` is properly aligned, so we
+        // know that it is sound to create a reference to `T` at this memory
+        // location.
+        //
+        // We use `mem::transmute` instead of `&*self.get_ptr()` because
+        // dereferencing pointers is not stable in `const` on our current MSRV
+        // (1.56 as of this writing).
+        unsafe { mem::transmute(self) }
     }
 
     /// Returns a mutable reference to the wrapped `T` without checking
@@ -1518,6 +1530,10 @@ macro_rules! transmute {
             // were to use `core::mem::transmute`, this macro would not work in
             // `std` contexts in which `core` was not manually imported. This is
             // not a problem for 2018 edition crates.
+            //
+            // Some older versions of Clippy have a bug in which they don't
+            // recognize the preceding safety comment.
+            #[allow(clippy::undocumented_unsafe_blocks)]
             unsafe { $crate::__real_transmute(e) }
         }
     }}
@@ -2777,17 +2793,12 @@ mod alloc_support {
 
     #[cfg(test)]
     mod tests {
-        use core::convert::TryFrom as _;
-
         use super::*;
 
         #[test]
         fn test_extend_vec_zeroed() {
             // Test extending when there is an existing allocation.
-            let mut v: Vec<u64> = Vec::with_capacity(3);
-            v.push(100);
-            v.push(200);
-            v.push(300);
+            let mut v = vec![100u64, 200, 300];
             extend_vec_zeroed(&mut v, 3);
             assert_eq!(v.len(), 6);
             assert_eq!(&*v, &[100, 200, 300, 0, 0, 0]);
@@ -2804,10 +2815,7 @@ mod alloc_support {
         #[test]
         fn test_extend_vec_zeroed_zst() {
             // Test extending when there is an existing (fake) allocation.
-            let mut v: Vec<()> = Vec::with_capacity(3);
-            v.push(());
-            v.push(());
-            v.push(());
+            let mut v = vec![(), (), ()];
             extend_vec_zeroed(&mut v, 3);
             assert_eq!(v.len(), 6);
             assert_eq!(&*v, &[(), (), (), (), (), ()]);
@@ -2830,30 +2838,21 @@ mod alloc_support {
             drop(v);
 
             // Insert at start.
-            let mut v: Vec<u64> = Vec::with_capacity(3);
-            v.push(100);
-            v.push(200);
-            v.push(300);
+            let mut v = vec![100u64, 200, 300];
             insert_vec_zeroed(&mut v, 0, 2);
             assert_eq!(v.len(), 5);
             assert_eq!(&*v, &[0, 0, 100, 200, 300]);
             drop(v);
 
             // Insert at middle.
-            let mut v: Vec<u64> = Vec::with_capacity(3);
-            v.push(100);
-            v.push(200);
-            v.push(300);
+            let mut v = vec![100u64, 200, 300];
             insert_vec_zeroed(&mut v, 1, 1);
             assert_eq!(v.len(), 4);
             assert_eq!(&*v, &[100, 0, 200, 300]);
             drop(v);
 
             // Insert at end.
-            let mut v: Vec<u64> = Vec::with_capacity(3);
-            v.push(100);
-            v.push(200);
-            v.push(300);
+            let mut v = vec![100u64, 200, 300];
             insert_vec_zeroed(&mut v, 3, 1);
             assert_eq!(v.len(), 4);
             assert_eq!(&*v, &[100, 200, 300, 0]);
@@ -2870,30 +2869,21 @@ mod alloc_support {
             drop(v);
 
             // Insert at start.
-            let mut v: Vec<()> = Vec::with_capacity(3);
-            v.push(());
-            v.push(());
-            v.push(());
+            let mut v = vec![(), (), ()];
             insert_vec_zeroed(&mut v, 0, 2);
             assert_eq!(v.len(), 5);
             assert_eq!(&*v, &[(), (), (), (), ()]);
             drop(v);
 
             // Insert at middle.
-            let mut v: Vec<()> = Vec::with_capacity(3);
-            v.push(());
-            v.push(());
-            v.push(());
+            let mut v = vec![(), (), ()];
             insert_vec_zeroed(&mut v, 1, 1);
             assert_eq!(v.len(), 4);
             assert_eq!(&*v, &[(), (), (), ()]);
             drop(v);
 
             // Insert at end.
-            let mut v: Vec<()> = Vec::with_capacity(3);
-            v.push(());
-            v.push(());
-            v.push(());
+            let mut v = vec![(), (), ()];
             insert_vec_zeroed(&mut v, 3, 1);
             assert_eq!(v.len(), 4);
             assert_eq!(&*v, &[(), (), (), ()]);
@@ -2962,7 +2952,7 @@ mod alloc_support {
         }
 
         #[test]
-        #[should_panic(expected = "total allocation size overflows `isize`: LayoutError")]
+        #[should_panic(expected = "assertion failed: size <= max_alloc")]
         fn test_new_box_slice_zeroed_panics_isize_overflow() {
             let max = usize::try_from(isize::MAX).unwrap();
             let _ = u16::new_box_slice_zeroed((max / mem::size_of::<u16>()) + 1);
@@ -3753,7 +3743,7 @@ mod tests {
         /// has had its bits flipped (by applying `^= 0xFF`).
         ///
         /// `N` is the size of `t` in bytes.
-        fn test<const N: usize, T: FromBytes + AsBytes + Debug + Eq + ?Sized>(
+        fn test<T: FromBytes + AsBytes + Debug + Eq + ?Sized, const N: usize>(
             t: &mut T,
             bytes: &[u8],
             post_mutation: &T,
@@ -3825,12 +3815,12 @@ mod tests {
         };
         let post_mutation_expected_a =
             if cfg!(target_endian = "little") { 0x00_00_00_FE } else { 0xFF_00_00_01 };
-        test::<12, _>(
+        test::<_, 12>(
             &mut Foo { a: 1, b: Wrapping(2), c: None },
             expected_bytes.as_bytes(),
             &Foo { a: post_mutation_expected_a, b: Wrapping(2), c: None },
         );
-        test::<3, _>(
+        test::<_, 3>(
             Unsized::from_mut_slice(&mut [1, 2, 3]),
             &[1, 2, 3],
             Unsized::from_mut_slice(&mut [0xFE, 2, 3]),
