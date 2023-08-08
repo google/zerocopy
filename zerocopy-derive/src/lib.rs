@@ -602,7 +602,7 @@ fn impl_block<D: DataExt>(
     let use_concrete = if input.generics.params.is_empty() {
         Some(quote! {
             const _: () = {
-                fn must_implement_trait<T: zerocopy::#trait_ident + ?Sized>() {}
+                fn must_implement_trait<T: zerocopy::#trait_ident + ?::core::marker::Sized>() {}
                 let _ = must_implement_trait::<#type_ident>;
             };
         })
