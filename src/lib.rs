@@ -1571,6 +1571,11 @@ macro_rules! transmute {
 /// ```
 pub struct Ref<B, T: ?Sized>(B, PhantomData<T>);
 
+/// Deprecated: prefer [`Ref`] instead.
+#[deprecated(since = "0.7.0", note = "LayoutVerified has been renamed to Ref")]
+#[doc(hidden)]
+pub type LayoutVerified<B, T> = Ref<B, T>;
+
 impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
