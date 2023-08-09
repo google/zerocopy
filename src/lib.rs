@@ -7,6 +7,8 @@
 //
 //   ./generate-readme.sh > README.md
 
+//! [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/google/zerocopy/badge)](https://securityscorecards.dev/viewer/?uri=github.com/google/zerocopy)
+//!
 //! Utilities for safe zero-copy parsing and serialization.
 //!
 //! This crate provides utilities which make it easy to perform zero-copy
