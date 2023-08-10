@@ -145,7 +145,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install gcc-multilib
-      if: ${{ contains(matrix.target, 'i686') }}
+      if: contains(matrix.target, 'i686')
 
     - name: Run tests
       run: cargo +${{ env.ZC_TOOLCHAIN }} test --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
@@ -154,7 +154,7 @@ jobs:
       #
       # TODO(https://github.com/dtolnay/trybuild/issues/184#issuecomment-1269097742):
       # Run compile tests when building for other targets.
-      if: ${{ contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686') }}
+      if: contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')
 
     - name: Run tests under Miri
       # Skip the `ui` test since it invokes the compiler, which we can't do from
@@ -164,7 +164,7 @@ jobs:
       # toolchains.
       #
       # TODO(#22): Re-enable testing on wasm32-wasi once it works.
-      if: ${{ matrix.toolchain == 'nightly' && matrix.target != 'wasm32-wasi' }}
+      if: matrix.toolchain == 'nightly' && matrix.target != 'wasm32-wasi'
 
     - name: Clippy check
       run: cargo +${{ env.ZC_TOOLCHAIN }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --tests --verbose
@@ -176,7 +176,7 @@ jobs:
       # scope without the `alloc` feature. This isn't a big deal because we care
       # primarily about `cargo doc` working for `docs.rs`, which enables the
       # `alloc` feature.
-      if: ${{ matrix.features != '' && matrix.features != '--no-default-features' }}
+      if: matrix.features != '' && matrix.features != '--no-default-features'
 
   check_fmt:
     runs-on: ubuntu-latest
