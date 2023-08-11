@@ -50,7 +50,7 @@ the execution platform.
 target platform. Note that the layout of SIMD types is not yet stabilized,
 so these impls may be removed in the future if layout changes make them
 invalid. For more information, see the Unsafe Code Guidelines Reference page
-on the [Layout of packed SIMD vectors][simd-layout].
+on the [layout of packed SIMD vectors][simd-layout].
 
 `simd-nightly`: Enables the `simd` feature and adds support for SIMD types
 which are only available on nightly. Since these types are unstable, support
