@@ -62,3 +62,62 @@ macro_rules! union_has_padding {
         false $(|| core::mem::size_of::<$t>() != core::mem::size_of::<$ts>())*
     };
 }
+
+/// Implements `TryFromBytes` for a struct type by delegating to existing
+/// implementations for each of its fields, and optionally supports a custom
+/// validation method.
+///
+/// ```rust
+/// # use zerocopy::impl_try_from_bytes_for_struct;
+///
+/// #[repr(C)]
+/// struct Foo {
+///     a: u8,
+///     b: u16,
+/// }
+///
+/// impl_try_from_bytes_for_struct!(Foo { a: u8, b: u16 });
+///
+/// #[repr(transparent)]
+/// struct Bar(Foo);
+///
+/// impl Bar {
+///     fn is_valid(&self) -> bool {
+///         u16::from(self.0.a) < self.0.b
+///     }
+/// }
+///
+/// impl_try_from_bytes_for_struct!(Bar { 0: Foo } => is_valid);
+/// ```
+///
+/// # Safety
+///
+/// `$ty` must be a struct type, `$f` must list every field's name, and `$f_ty`
+/// must be the correct types for those fields.
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! impl_try_from_bytes_for_struct {
+    ($ty:ty { $($f:tt: $f_ty:ty),* } $(=> $validation_method:ident)?) => {
+        // SAFETY: The caller promises that all fields are listed with their
+        // correct types. We validate that every field is valid, which is the
+        // only requirement for the entire struct to be valid. Thus, we
+        // correctly implement `is_bit_valid` as required by the trait's safety
+        // documentation.
+        #[allow(unused_qualifications)]
+        unsafe impl zerocopy::TryFromBytes for $ty {
+            fn is_bit_valid(bytes: &zerocopy::MaybeValid<Self>) -> bool {
+                true $(&& {
+                    let f: &zerocopy::MaybeValid<$f_ty> = zerocopy::project!(&bytes.$f);
+                    zerocopy::TryFromBytes::is_bit_valid(f)
+                })*
+                $(&& {
+                    // SAFETY: We just validated that all of the struct's fields
+                    // are valid, which means that the struct itself is valid.
+                    // That is the only precondition of `assume_valid_ref`.
+                    let slf = unsafe { bytes.assume_valid_ref() };
+                    slf.$validation_method()
+                })?
+            }
+        }
+    }
+}
