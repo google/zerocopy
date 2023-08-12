@@ -13,46 +13,89 @@
 ///     /// Safety comment starts on its own line.
 ///     macro_1!(args);
 ///     macro_2! { args };
+///     /// SAFETY:
+///     /// Subsequent safety comments are allowed but not required.
+///     macro_3! { args };
 /// }
 /// ```
 ///
 /// The macro invocations are emitted, each decorated with the following
 /// attribute: `#[allow(clippy::undocumented_unsafe_blocks)]`.
 macro_rules! safety_comment {
-    (#[doc = r" SAFETY:"] $(#[doc = $_doc:literal])* $($macro:ident!$args:tt;)*) => {
+    (#[doc = r" SAFETY:"] $(#[doc = $_doc:literal])* $($macro:ident!$args:tt; $(#[doc = r" SAFETY:"] $(#[doc = $__doc:literal])*)?)*) => {
         #[allow(clippy::undocumented_unsafe_blocks)]
         const _: () = { $($macro!$args;)* };
     }
 }
 
 /// Unsafely implements trait(s) for a type.
+///
+/// # Safety
+///
+/// The trait impl must be sound.
+///
+/// When implementing `TryFromBytes`:
+/// - If no `is_bit_valid` impl is provided, then it must be valid for
+///   `is_bit_valid` to unconditionally return `true`.
+/// - If an `is_bit_valid` impl is provided, then:
+///   - It must be sound to transmute `&MaybeValid<$ty>` into `&$repr`.
+///   - The impl of `is_bit_valid` must satisfy `TryFromByte`'s safety
+///     requirements.
 macro_rules! unsafe_impl {
     // Implement `$trait` for `$ty` with no bounds.
-    ($ty:ty: $trait:ty) => {
-        unsafe impl $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
+    ($ty:ty: $trait:ident $(; |$candidate:ident: &$repr:ty| $is_bit_valid:expr)?) => {
+        unsafe impl $trait for $ty {
+            unsafe_impl!(@method $trait $(; |$candidate: &$repr| $is_bit_valid)?);
+        }
     };
     // Implement all `$traits` for `$ty` with no bounds.
-    ($ty:ty: $($traits:ty),*) => {
+    ($ty:ty: $($traits:ident),*) => {
         $( unsafe_impl!($ty: $traits); )*
     };
     // For all `$tyvar` with no bounds, implement `$trait` for `$ty`.
-    ($tyvar:ident => $trait:ident for $ty:ty) => {
-        unsafe impl<$tyvar> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
+    ($tyvar:ident => $trait:ident for $ty:ty $(; |$candidate:ident: &$repr:ty| $is_bit_valid:expr)?) => {
+        unsafe impl<$tyvar> $trait for $ty {
+            unsafe_impl!(@method $trait $(; |$candidate: &$repr| $is_bit_valid)?);
+        }
     };
     // For all `$tyvar: $bound`, implement `$trait` for `$ty`.
-    ($tyvar:ident: $bound:path => $trait:ident for $ty:ty) => {
-        unsafe impl<$tyvar: $bound> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
+    ($tyvar:ident: $bound:path => $trait:ident for $ty:ty $(; |$candidate:ident: &$repr:ty| $is_bit_valid:expr)?) => {
+        unsafe impl<$tyvar: $bound> $trait for $ty {
+            unsafe_impl!(@method $trait $(; |$candidate: &$repr| $is_bit_valid)?);
+        }
     };
     // For all `$tyvar: $bound + ?Sized`, implement `$trait` for `$ty`.
-    ($tyvar:ident: ?Sized $(+ $bounds:path)* => $trait:ident for $ty:ty) => {
-        unsafe impl<$tyvar: ?Sized $(+ $bounds)*> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
+    ($tyvar:ident: ?Sized $(+ $bounds:path)* => $trait:ident for $ty:ty $(; |$candidate:ident: &$repr:ty| $is_bit_valid:expr)?) => {
+        unsafe impl<$tyvar: ?Sized $(+ $bounds)*> $trait for $ty {
+            unsafe_impl!(@method $trait $(; |$candidate: &$repr| $is_bit_valid)?);
+        }
     };
     // For all `$tyvar: $bound` and for all `const $constvar: $constty`,
     // implement `$trait` for `$ty`.
-    ($tyvar:ident: $bound:path, const $constvar:ident: $constty:ty => $trait:ident for $ty:ty) => {
+    ($tyvar:ident: $bound:path, const $constvar:ident: $constty:ty => $trait:ident for $ty:ty $(; |$candidate:ident: &$repr:ty| $is_bit_valid:expr)?) => {
         unsafe impl<$tyvar: $bound, const $constvar: $constty> $trait for $ty {
-            fn only_derive_is_allowed_to_implement_this_trait() {}
+            unsafe_impl!(@method $trait $(; |$candidate: &$repr| $is_bit_valid)?);
         }
+    };
+
+    (@method TryFromBytes ; |$candidate:ident: &$repr:ty| $is_bit_valid:expr) => {
+        fn is_bit_valid(candidate: &MaybeValid<Self>) -> bool {
+            // SAFETY: The macro caller has promised that it is sound to
+            // transmute `&MaybeValid<Self>` to `&$repr`.
+            //
+            // Note: this Clippy warning is only emitted on our MSRV (1.61), but
+            // not on later versions of Clippy. Thus, we consider it spurious.
+            #[allow(clippy::as_conversions)]
+            let $candidate = unsafe { &*(candidate as *const MaybeValid<Self> as *const $repr) };
+            $is_bit_valid
+        }
+    };
+    (@method TryFromBytes) => { fn is_bit_valid(_: &MaybeValid<Self>) -> bool { true } };
+    (@method $trait:ident) => {
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+    };
+    (@method $trait:ident; |$_candidate:ident: &$_repr:ty| $_is_bit_valid:expr) => {
+        compile_error!("Can't provide `is_bit_valid` impl for trait other than `TryFromBytes`");
     };
 }
 
