@@ -162,6 +162,12 @@ pub mod byteorder;
 #[doc(hidden)]
 pub mod derive_util;
 
+// TODO(#196): Once we figure out how to make the `project!` macro safe
+// (specifically, by statically rejecting projection through `deref`), remove
+// this `#[doc(hidden)]` and make `project` part of our public API.
+#[doc(hidden)]
+pub mod project;
+
 #[cfg(feature = "byteorder")]
 pub use crate::byteorder::*;
 #[cfg(any(feature = "derive", test))]
