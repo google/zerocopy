@@ -178,11 +178,11 @@ safety_comment! {
     //
     /// SAFETY:
     /// - `FromZeroes`, `FromBytes`: `MaybeUninit<T>` has no restrictions on its
-    ///   contents. Unfortunately, in addition to bit validity, `FromZeroes` and
-    ///   `FromBytes` also require that implementers contain no `UnsafeCell`s.
-    ///   Thus, we require `T: FromZeroes` and `T: FromBytes` in order to ensure
-    ///   that `T` - and thus `MaybeUninit<T>` - contains to `UnsafeCell`s.
-    ///   Thus, requiring that `T` implement each of these traits is sufficient
+    ///   contents. Unfortunately, in addition to bit validity, these traits
+    ///   also require that implementers contain no `UnsafeCell`s. Thus, we
+    ///   require a trait bound for `T` in order to ensure that `T` - and thus
+    ///   `MaybeUninit<T>` - contains no `UnsafeCell`s. Thus, requiring that `T`
+    ///   implement each of these traits is sufficient.
     /// - `Unaligned`: `MaybeUninit<T>` is guaranteed by its documentation [1]
     ///   to have the same alignment as `T`.
     ///
@@ -192,12 +192,22 @@ safety_comment! {
     /// `FromBytes` and `RefFromBytes`, or if we introduce a separate
     /// `NoCell`/`Freeze` trait, we can relax the trait bounds for `FromZeroes`
     /// and `FromBytes`.
+    ///
+    /// TODO(https://github.com/rust-lang/rust/issues/115080#issuecomment-1704524775):
+    /// Support implementing `TryFromBytes` for `MaybeUninit<T>`. We would like
+    /// to use a `T: TryFromBytes` bound, but can't as explained in that issue
+    /// comment. It's possible that future improvements made as part of #5 may
+    /// allow us to work around this rustc limitation. In particular, if we
+    /// allow deriving `AsMaybeUninit` and at the same time remove our blanket
+    /// impl of `AsMaybeUninit` for `T: Sized`, there's a chance that that may
+    /// fix things, although I'm not 100% sure and I haven't tested it. Another
+    /// fix might be to introduce a `NoCell`/`Freeze` trait and use that as the
+    /// bound instead of `TryFromBytes`.
     unsafe_impl!(T: ?Sized + KnownLayout + FromZeroes => FromZeroes for MaybeUninit<T>);
     unsafe_impl!(T: ?Sized + KnownLayout + FromBytes => FromBytes for MaybeUninit<T>);
     unsafe_impl!(T: ?Sized + KnownLayout + Unaligned => Unaligned for MaybeUninit<T>);
     assert_unaligned!(mem::MaybeUninit<()>, MaybeUninit<u8>);
 }
-
 /// A value which might or might not constitute a valid instance of `T`.
 ///
 /// `MaybeValid<T>` has the same layout (size and alignment) and field offsets
@@ -240,6 +250,16 @@ pub struct MaybeValid<T: ?Sized + KnownLayout> {
 
 safety_comment! {
     /// SAFETY:
+    /// - `FromZeroes`, `FromBytes`: `MaybeValid` doesn't impose any bit
+    ///   validity constraints beyond requiring that certain bytes are
+    ///   initialized. `T: TryFromBytes` ensures that `T` (or `[T]`) don't
+    ///   contain any `UnsafeCell`s, which in turn ensures that `T::MaybeUninit`
+    ///   (and thus `MaybeValid<T>`) doesn't contain any `UnsafeCell`s. Note
+    ///   that we cannot require `T: FromZeroes` or `T: FromBytes` in the
+    ///   `FromZeroes` and `FromBytes` impls. The reason is that we rely on
+    ///   `MaybeValid<T>` to be `FromBytes` in our default method impls on
+    ///   `TryFromBytes`, where we don't have any guarantee that `T: FromZeroes`
+    ///   or `T: FromBytes`.
     /// - `AsBytes`: `MaybeValid` requires that, if a byte in `T` is always
     ///   initialized, the equivalent byte in `MaybeValid<T>` must be
     ///   initialized. `T: AsBytes` implies that all bytes in `T` must always be
@@ -253,8 +273,34 @@ safety_comment! {
     ///   - It is valid to perform an `as` cast in either direction, and this
     ///     operation preserves referent size
     ///
-    /// TODO(#5): Implement `FromZeroes` and `FromBytes` for `MaybeValid<T>` and
-    /// `MaybeValid<[T]>`.
+    /// TODO(#5): In a future in which we derive `AsMaybeUninit` rather than
+    /// using the blanket impl for all `T: Sized`, we can be more precise about
+    /// `UnsafeCell`s. In particular, instead of guaranteeing that
+    /// `T::MaybeUninit` contains `UnsafeCell`s where `T` does, but we can
+    /// guarantee that `T::MaybeUninit` never contains any `UnsafeCell`s
+    /// regardless of whether `T` does. We can do this by doing the following:
+    ///
+    /// ```
+    /// unsafe impl<T> AsMaybeUninnit for UnsafeCell<T> {
+    ///     type MaybeUninit = MaybeUninit<T>;
+    /// }
+    /// ```
+    ///
+    /// Then, in code emitted by custom derive, we can set `MaybeUninit` to an
+    /// anonymous struct type where each field type, `F`, is replaced by
+    /// `F::MaybeUninit`. Once we've done this, we can implement `TryFromBytes`,
+    /// `FromZeroes`, and `FromBytes` for `MaybeValid<T>` with no bounds on `T`.
+    ///
+    /// TODO(#5): Implement `TryFromBytes` for `MaybeValid<T>` once we support
+    /// unsized types or once we support implementing traits for `MaybeValid<T>`
+    /// without bounds on `T` (see previous TODO). Currently, `T: TryFromBytes
+    /// => TryFromBytes for MaybeValid<T>` doesn't work because the impl emitted
+    /// by `unsafe_impl!` isn't smart enough to realize that `MaybeValid<T>` is
+    /// `Sized` (I suspect this is another instance of
+    /// https://github.com/rust-lang/rust/issues/115080, but I'm not sure).
+    unsafe_impl!(T: ?Sized + KnownLayout + TryFromBytes => TryFromBytes for MaybeValid<T>);
+    unsafe_impl!(T: ?Sized + KnownLayout + TryFromBytes => FromZeroes for MaybeValid<T>);
+    unsafe_impl!(T: ?Sized + KnownLayout + TryFromBytes => FromBytes for MaybeValid<T>);
     unsafe_impl!(T: ?Sized + KnownLayout + AsBytes => AsBytes for MaybeValid<T>);
     unsafe_impl!(T: ?Sized + KnownLayout + Unaligned => Unaligned for MaybeValid<T>);
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(MaybeUninit<T>)] MaybeValid<T>);
