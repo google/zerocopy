@@ -191,6 +191,8 @@ use core::{
     ptr, slice,
 };
 
+use project::Projectable;
+
 #[cfg(feature = "alloc")]
 extern crate alloc;
 #[cfg(feature = "alloc")]
@@ -402,7 +404,8 @@ pub unsafe trait FromZeroes {
         #[allow(clippy::as_conversions)]
         let max_alloc = (isize::MAX as usize).saturating_sub(align);
         assert!(size <= max_alloc);
-        // TODO(https://github.com/rust-lang/rust/issues/55724): Use `Layout::repeat` once it's stabilized.
+        // TODO(https://github.com/rust-lang/rust/issues/55724): Use
+        // `Layout::repeat` once it's stabilized.
         let layout =
             Layout::from_size_align(size, align).expect("total allocation size overflows `isize`");
 
@@ -575,6 +578,484 @@ pub unsafe trait FromBytes: FromZeroes {
     }
 }
 
+/// Types which have a known [`MaybeUninit`] equivalent.
+///
+/// Since `MaybeUninit<T>` requires `T: Sized`, this trait exists to support
+/// `MaybeUninit`-like behavior for unsized types. Roughly speaking, the
+/// associated `MaybeUninit` type has the same layout and bit validity that
+/// `MaybeUninit<Self>` would have if `MaybeUninit` supported both sized and
+/// unsized types.
+///
+/// # Safety
+///
+/// The safety invariants on `MaybeUninit` must be upheld.
+pub unsafe trait AsMaybeUninit {
+    /// A type which has the same layout as `Self`, but which has no validity
+    /// constraints.
+    ///
+    /// Roughly speaking, this type is equivalent to what [`MaybeUninit<Self>`]
+    /// would be if `MaybeUninit` supported unsized types.
+    ///
+    /// # Safety
+    ///
+    /// For `T: AsMaybeUninit`, the following must hold:
+    /// - Given `m: T::MaybeUninit`, it is sound to write uninitialized bytes at
+    ///   every byte offset in `m`
+    /// - `T` and `T::MaybeUninit` have the same alignment requirement
+    /// - It is valid to use an `as` cast to convert a `t: *const T` to a `m:
+    ///   *const T::MaybeUninit` and vice-versa (and likewise for `*mut T`/`*mut
+    ///   T::MaybeUninit`). Regardless of which direction the conversion was
+    ///   performed, the sizes of the pointers' referents are always equal (in
+    ///   terms of an API which is not yet stable, `size_of_val_raw(t) ==
+    ///   size_of_val_raw(m)`).
+    /// - `T::MaybeUninit` contains [`UnsafeCell`]s at exactly the same byte
+    ///   ranges that `T` does.
+    ///
+    /// [`MaybeUninit<Self>`]: core::mem::MaybeUninit
+    /// [`UnsafeCell`]: core::cell::UnsafeCell
+    type MaybeUninit: ?Sized;
+}
+
+// SAFETY: See safety comment on `MaybeUninit`.
+unsafe impl<T: Sized> AsMaybeUninit for T {
+    // SAFETY:
+    // - `MaybeUninit` has no validity requirements, so it is sound to write
+    //   uninitialized bytes at every offset.
+    // - `MaybeUninit<T>` has the same layout as `T`, so they have the same
+    //   alignment requirement. For the same reason, their sizes are equal.
+    // - Since their sizes are equal, raw pointers to both types are thin
+    //   pointers, and thus can be converted using as casts. For the same
+    //   reason, the sizes of these pointers' referents are always equal.
+    // - `MaybeUninit<T>` has the same field offsets as `T`, and so it contains
+    //   `UnsafeCell`s at exactly the same byte ranges as `T`.
+    type MaybeUninit = MaybeUninit<T>;
+}
+
+// SAFETY: See safety comment on `MaybeUninit`.
+unsafe impl<T: Sized> AsMaybeUninit for [T] {
+    // SAFETY:
+    // - `MaybeUninit` has no bit validity requirements and `[U]` has the same
+    //   bit validity requirements as `U`, so `[MaybeUninit<T>]` has no bit
+    //   validity requirements. Thus, it is sound to write uninitialized bytes
+    //   at every offset.
+    // - Since `MaybeUninit<T>` has the same layout as `T`, and `[U]` has the
+    //   same alignment as `U`, `[MaybeUninit<T>]` has the same alignment as
+    //   `[T]`.
+    // - `[T]` and `[MaybeUninit<T>]` are both slice types, and so pointers can
+    //   be converted using an `as` cast. Since `T` and `MaybeUninit<T>` have
+    //   the same size, and since such a cast preserves the number of elements
+    //   in the slice, the referent slices themselves will have the same size.
+    // - `MaybeUninit<T>` has the same field offsets as `[T]`, and so it
+    //   contains `UnsafeCell`s at exactly the same byte ranges as `[T]`.
+    type MaybeUninit = [MaybeUninit<T>];
+}
+
+// SAFETY: See safety comment on `MaybeUninit`.
+unsafe impl AsMaybeUninit for str {
+    // SAFETY: `str` has the same layout as `[u8]`. Thus, the same safety
+    // argument for `<[u8] as AsMaybeUninit>::MaybeUninit` applies here.
+    type MaybeUninit = <[u8] as AsMaybeUninit>::MaybeUninit;
+}
+
+/// A value which might or might not constitute a valid instance of `T`.
+///
+/// `MaybeValid<T>` has the same layout (size and alignment) and field offsets
+/// as `T`. However, it may contain any bit pattern with a few restrictions:
+/// Given `m: MaybeValid<T>` and a byte offset, `b` in the range `[0,
+/// size_of_val(m))`:
+/// - If, in all valid instances `t: T`, the byte at offset `b` in `t` is
+///   initialized, then the byte at offset `b` within `m` is guaranteed to be
+///   initialized.
+/// - Let `s` be the sequence of bytes of length `b` in the offset range `[0,
+///   b)` in `m`. Let `TT` be the subset of valid instances of `T` which contain
+///   this sequence in the offset range `[0, b)`. If, for all instances of `t:
+///   T` in `TT`, the byte at offset `b` in `t` is initialized, then the byte at
+///   offset `b` in `m` is guaranteed to be initialized.
+///
+///   Pragmatically, this means that if `m` is guaranteed to contain an enum
+///   type at a particular offset, and the enum discriminant stored in `m`
+///   corresponds to a valid variant of that enum type, then it is guaranteed
+///   that the appropriate bytes of `m` are initialized as defined by that
+///   variant's layout (although note that the variant's layout may contain
+///   another enum type, in which case the same rules apply depending on the
+///   state of its discriminant, and so on recursively).
+///
+/// # Safety
+///
+/// Unsafe code may assume that an instance of `MaybeValid` satisfies the
+/// constraints described above. Unsafe code may produce a `MaybeValid` or
+/// modify the bytes of an existing `MaybeValid` so long as these constraints
+/// are upheld. It is unsound to produce a `MaybeValid` which fails to uphold
+/// these constraints.
+#[repr(transparent)]
+pub struct MaybeValid<T: AsMaybeUninit + ?Sized> {
+    inner: T::MaybeUninit,
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// - `FromZeroes`, `FromBytes`: `MaybeValid` doesn't impose any bit
+    ///   validity constraints beyond requiring that certain bytes are
+    ///   initialized. `T: TryFromBytes` ensures that `T` doesn't contain any
+    ///   `UnsafeCell`s, which in turn ensures that `T::MaybeUninit` (and thus
+    ///   `MaybeValid<T>`) doesn't contain any `UnsafeCell`s. Note that we
+    ///   cannot require `T: FromZeroes` or `T: FromBytes` in the `FromZeroes`
+    ///   and `FromBytes` impls. The reason is that we rely on `MaybeValid<T>`
+    ///   to be `FromBytes` in our default method impls on `TryFromBytes`, where
+    ///   we don't have any guarantee that `T: FromZeroes` or `T: FromBytes`.
+    /// - `AsBytes`: `MaybeValid` requires that, if a byte in `T` is always
+    ///   initialized, the equivalent byte in `MaybeValid<T>` must be
+    ///   initialized. `T: AsBytes` implies that all bytes in `T` must always be
+    ///   initialized, and so all bytes in `MaybeValid<T>` must always be
+    ///   initialized, and so `MaybeValid<T>` satisfies `AsBytes`.
+    /// - `Unaligned`: `MaybeValid<T>` has the same alignment as `T`.
+    ///
+    /// TODO(#5): In a future in which we derive `AsMaybeUninit` rather than
+    /// using the blanket impl for all `T: Sized`, we can be more precise about
+    /// `UnsafeCell`s. In particular, instead of guaranteeing that
+    /// `T::MaybeUninit` contains `UnsafeCell`s where `T` does, but we can
+    /// guarantee that `T::MaybeUninit` never contains any `UnsafeCell`s
+    /// regardless of whether `T` does. We can do this by doing the following:
+    ///
+    /// ```
+    /// unsafe impl<T> AsMaybeUninnit for UnsafeCell<T> {
+    ///     type MaybeUninit = MaybeUninit<T>;
+    /// }
+    /// ```
+    ///
+    /// Then, in code emitted by custom derive, we can set `MaybeUninit` to an
+    /// anonymous struct type where each field type, `F`, is replaced by
+    /// `F::MaybeUninit`. Once we've done this, we can implement `TryFromBytes`,
+    /// `FromZeroes`, and `FromBytes` for `MaybeValid<T>` with no bounds on `T`.
+    ///
+    /// TODO(#5): Implement `TryFromBytes` for `MaybeValid<T>` once we support
+    /// unsized types or once we support implementing traits for `MaybeValid<T>`
+    /// without bounds on `T` (see previous TODO). Currently, `T: TryFromBytes
+    /// => TryFromBytes for MaybeValid<T>` doesn't work because the impl emitted
+    /// by `unsafe_impl!` isn't smart enough to realize that `MaybeValid<T>` is
+    /// `Sized` (I suspect this is another instance of
+    /// https://github.com/rust-lang/rust/issues/115080, but I'm not sure).
+    unsafe_impl!(T: TryFromBytes => FromZeroes for MaybeValid<T>);
+    unsafe_impl!(T: TryFromBytes => FromZeroes for MaybeValid<[T]>);
+    unsafe_impl!(T: TryFromBytes => FromBytes for MaybeValid<T>);
+    unsafe_impl!(T: TryFromBytes => FromBytes for MaybeValid<[T]>);
+    unsafe_impl!(T: AsBytes => AsBytes for MaybeValid<T>);
+    unsafe_impl!(T: AsBytes => AsBytes for MaybeValid<[T]>);
+    unsafe_impl!(T: Unaligned => Unaligned for MaybeValid<T>);
+    unsafe_impl!(T: Unaligned => Unaligned for MaybeValid<[T]>);
+}
+
+// SAFETY: See safety comment on `MaybeUninit`.
+unsafe impl<T> AsMaybeUninit for MaybeValid<[T]> {
+    // SAFETY:
+    // - `MaybeUninit` has no bit validity requirements and `[U]` has the same
+    //   bit validity requirements as `U`, so `[MaybeUninit<T>]` has no bit
+    //   validity requirements. Thus, it is sound to write uninitialized bytes
+    //   at every offset.
+    // - `MaybeValid<U>` is `repr(transparent)`, and thus has the same layout
+    //   and field offsets as its contained field of type `U::MaybeUninit`. In
+    //   this case, `U = [T]`, and so `U::MaybeUninit = [MaybeUninit<T>]`. Thus,
+    //   `MaybeValid<[T]>` has the same layout and field offsets as
+    //   `[MaybeUninit<T>]`, which is what we set `MaybeUninit` to here. Thus,
+    //   they trivially have the same alignment.
+    // - By the same token, their raw pointer types are trivially `as` castable
+    //   and preserve size.
+    // - By the same token, `[MaybeUninit<T>]` contains `UnsafeCell`s at the
+    //   same byte ranges as `MaybeValid<[T]>` does.
+    type MaybeUninit = [MaybeUninit<T>];
+}
+
+impl<T> Default for MaybeValid<T> {
+    fn default() -> MaybeValid<T> {
+        MaybeValid { inner: MaybeUninit::uninit() }
+    }
+}
+
+impl<T> MaybeValid<T> {
+    /// Converts this `MaybeValid<T>` to a `T`.
+    ///
+    /// # Safety
+    ///
+    /// `self` must contain a valid `T`.
+    pub const unsafe fn assume_valid(self) -> T {
+        // SAFETY: The caller has promised that `self` contains a valid `T`.
+        // Since `T: Sized`, we know that `T::MaybeUninit = MaybeUninit<T>`.
+        // Since `MaybeValid` is `repr(transparent)`, its layout is identical to
+        // the contained `MaybeUninit`. Thus, the promise that `self` contains a
+        // valid `T` implies that the contained `MaybeUninit` contains a valid
+        // `T`.
+        unsafe { self.inner.assume_init() }
+    }
+
+    /// Converts this `&MaybeValid<T>` to a `&T`.
+    ///
+    /// # Safety
+    ///
+    /// `self` must contain a valid `T`.
+    pub const unsafe fn assume_valid_ref(&self) -> &T {
+        // SAFETY: The caller has promised that `self` contains a valid `T`.
+        // Since `T: Sized`, we know that `T::MaybeUninit = MaybeUninit<T>`.
+        // Since `MaybeValid` is `repr(transparent)`, its layout is identical to
+        // the contained `MaybeUninit`. Thus, the promise that `self` contains a
+        // valid `T` implies that the contained `MaybeUninit` contains a valid
+        // `T`.
+        //
+        // Further, thanks to the safety requirements on `T::MaybeUninit`, we
+        // know that there are `UnsafeCell`s at the same byte ranges in both
+        // types.  See [1] for a discussion of why this is a required safety
+        // condition.
+        //
+        // [1] https://github.com/rust-lang/unsafe-code-guidelines/issues/455
+        unsafe { self.inner.assume_init_ref() }
+    }
+
+    /// Converts this `&mut MaybeValid<T>` to a `&mut T`.
+    ///
+    /// # Safety
+    ///
+    /// `self` must contain a valid `T`.
+    pub unsafe fn assume_valid_mut(&mut self) -> &mut T {
+        // SAFETY: The caller has promised that `self` contains a valid `T`.
+        // Since `T: Sized`, we know that `T::MaybeUninit = MaybeUninit<T>`.
+        // Since `MaybeValid` is `repr(transparent)`, its layout is identical to
+        // the contained `MaybeUninit`. Thus, the promise that `self` contains a
+        // valid `T` implies that the contained `MaybeUninit` contains a valid
+        // `T`.
+        //
+        // Further, thanks to the safety requirements on `T::MaybeUninit`, we
+        // know that there are `UnsafeCell`s at the same byte ranges in both
+        // types.  See [1] for a discussion of why this is a required safety
+        // condition.
+        //
+        // [1] https://github.com/rust-lang/unsafe-code-guidelines/issues/455
+        unsafe { self.inner.assume_init_mut() }
+    }
+}
+
+impl<T> MaybeValid<[T]> {
+    /// Converts a `MaybeValid<[T]>` to a `[MaybeValid<T>]`.
+    ///
+    /// `MaybeValid` has the same layout as `T`, so these layouts are
+    /// equivalent.
+    pub const fn as_slice_of_maybe_valids(&self) -> &[MaybeValid<T>] {
+        let inner: &[<T as AsMaybeUninit>::MaybeUninit] = &self.inner;
+        let inner_ptr: *const [<T as AsMaybeUninit>::MaybeUninit] = inner;
+        // Note: this Clippy warning is only emitted on our MSRV (1.61), but not
+        // on later versions of Clippy. Thus, we consider it spurious.
+        #[allow(clippy::as_conversions)]
+        let ret_ptr = inner_ptr as *const [MaybeValid<T>];
+        // SAFETY: Since `inner` is a `&[T::MaybeUninit]`, and `MaybeValid<T>`
+        // is a `repr(transparent)` struct around `T::MaybeUninit`, `inner` has
+        // the same layout as `&[MaybeValid<T>]`.
+        unsafe { &*ret_ptr }
+    }
+}
+
+impl<const N: usize, T> MaybeValid<[T; N]> {
+    /// Converts a `&MaybeValid<[T; N]>` to a `&MaybeValid<[T]>`.
+    // TODO(#64): Make this `const` once our MSRV is >= 1.64.0 (when
+    // `slice_from_raw_parts` was stabilized as `const`).
+    pub fn as_slice(&self) -> &MaybeValid<[T]> {
+        let base: *const MaybeValid<[T; N]> = self;
+        let slice_of_t: *const [T] = ptr::slice_from_raw_parts(base.cast::<T>(), N);
+        // Note: this Clippy warning is only emitted on our MSRV (1.61), but not
+        // on later versions of Clippy. Thus, we consider it spurious.
+        #[allow(clippy::as_conversions)]
+        let mv_of_slice = slice_of_t as *const MaybeValid<[T]>;
+        // SAFETY: TODO
+        unsafe { &*mv_of_slice }
+    }
+}
+
+// SAFETY:
+// - Given `p: *const MaybeValid<T>` or `p: *mut MaybeValid<T>`, it is valid to
+//   perform `let i = p as *const T` or `let i = p as *mut T`: This is true
+//   because `MaybeValid<T>` and `T` have the same sizedness. Further, if they
+//   are unsized, then they are both slice types.
+//   - The size of the referents of `p` and `i` must be identical: This is true
+//     because `MaybeValid<T>` and `T` always have the same size, and if they
+//     are slice types, then their tail element types have the same sizes.
+// - If the following hold:
+//   - `p: &MaybeValid<T>` or `p: &mut MaybeValid<T>`
+//   - Given `t: T` of size `size_of_val(p)`, there exists an `F` at byte range
+//     `f` within `i`.
+//
+//   ... then it is sound to materialize a `&MaybeValid<F>` or `&mut
+//   MaybeValid<F>` which points to range `f` within `p`: TODO
+unsafe impl<T, F> Projectable<F, MaybeValid<F>> for MaybeValid<T> {
+    type Inner = T;
+}
+
+impl<T> Debug for MaybeValid<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.pad(core::any::type_name::<Self>())
+    }
+}
+
+/// Types whose validity can be checked at runtime, allowing them to be
+/// conditionally converted from byte slices.
+///
+/// WARNING: Do not implement this trait yourself! Instead, use
+/// `#[derive(TryFromBytes)]`.
+///
+/// `TryFromBytes` types can safely be deserialized from an untrusted sequence
+/// of bytes by performing a runtime check that the byte sequence contains a
+/// valid instance of `Self`.
+///
+/// `TryFromBytes` is ignorant of byte order. For byte order-aware types, see
+/// the [`byteorder`] module.
+///
+/// # Safety
+///
+/// Unsafe code may assume that [`is_bit_valid`] is correct; that, if
+/// `is_bit_valid(candidate)` returns true, `candidate` contains a valid `Self`;
+/// and that it is sound to treat `candidate` as a `&Self`.
+///
+/// Implementations of `TryFromBytes` must ensure that [`is_bit_valid`]
+/// satisfies its documented safety invariants.
+///
+/// It is unsound to implement `TryFromBytes` for a type which contains any
+/// `UnsafeCell`s.
+///
+/// [`is_bit_valid`]: TryFromBytes::is_bit_valid
+// TODO(#5): Describe in the documentation that `TryFromBytes` is compositional?
+// Describe anything about the `is_bit_valid` impls that the custom derive
+// emits?
+pub unsafe trait TryFromBytes: AsMaybeUninit {
+    /// Does this [`MaybeValid`] contain a valid instance of `Self`?
+    ///
+    /// # Safety
+    ///
+    /// Unsafe code may assume that, if `is_bit_valid(candidate)` returns true,
+    /// `candidate` contains a valid `Self`, and that it is sound to treat
+    /// `candidate` as a `&Self`.
+    fn is_bit_valid(candidate: &MaybeValid<Self>) -> bool;
+
+    /// Attempts to interpret a byte slice as a `Self`.
+    ///
+    /// `try_from_ref` validates that `bytes` contains a valid `Self` as defined
+    /// by [`is_bit_valid`]. If it does, then `bytes` is reinterpreted as a
+    /// `Self`.
+    ///
+    /// [`is_bit_valid`]: TryFromBytes::is_bit_valid
+    // TODO(#251): In a future in which we distinguish between `FromBytes` and
+    // `RefFromBytes`, this requires `where Self: RefFromBytes` to disallow
+    // interior mutability.
+    fn try_from_ref(bytes: &[u8]) -> Option<&Self>
+    where
+        // TODO(#5): Support unsized types.
+        Self: Sized,
+    {
+        // TODO(https://github.com/rust-lang/rust/issues/115080): Inline this
+        // function once #115080 is resolved.
+        #[inline(always)]
+        fn try_read_from_inner<T, F>(bytes: &[u8], is_bit_valid: F) -> Option<&T>
+        where
+            F: FnOnce(&MaybeValid<T>) -> bool,
+            MaybeValid<T>: FromBytes,
+        {
+            let maybe_valid = Ref::<_, MaybeValid<T>>::new(bytes)?.into_ref();
+            if is_bit_valid(maybe_valid) {
+                // SAFETY: `is_bit_valid` promises that it only returns true if
+                // its argument contains a valid `T`. This is exactly the safety
+                // precondition of `MaybeValid::assume_valid_ref`.
+                Some(unsafe { maybe_valid.assume_valid_ref() })
+            } else {
+                None
+            }
+        }
+
+        try_read_from_inner(bytes, Self::is_bit_valid)
+    }
+
+    /// Attempts to interpret a mutable byte slice as a `Self`.
+    ///
+    /// `try_from_mut` validates that `bytes` contains a valid `Self` as defined
+    /// by [`is_bit_valid`]. If it does, then `bytes` is reinterpreted as a
+    /// `Self`.
+    ///
+    /// [`is_bit_valid`]: TryFromBytes::is_bit_valid
+    // TODO(#251): In a future in which we distinguish between `FromBytes` and
+    // `RefFromBytes`, this requires `where Self: RefFromBytes` to disallow
+    // interior mutability.
+    fn try_from_mut(bytes: &mut [u8]) -> Option<&mut Self>
+    where
+        // TODO(#5): Support unsized types.
+        Self: AsBytes + Sized,
+    {
+        // TODO(https://github.com/rust-lang/rust/issues/115080): Inline this
+        // function once #115080 is resolved.
+        #[inline(always)]
+        fn try_read_from_mut_inner<T, F>(bytes: &mut [u8], is_bit_valid: F) -> Option<&mut T>
+        where
+            T: AsBytes,
+            F: FnOnce(&MaybeValid<T>) -> bool,
+            MaybeValid<T>: FromBytes,
+        {
+            let maybe_valid = Ref::<_, MaybeValid<T>>::new(bytes)?.into_mut();
+            if is_bit_valid(maybe_valid) {
+                // SAFETY: `is_bit_valid` promises that it only returns true if
+                // its argument contains a valid `T`. This is exactly the safety
+                // precondition of `MaybeValid::assume_valid_mut`.
+                Some(unsafe { maybe_valid.assume_valid_mut() })
+            } else {
+                None
+            }
+        }
+
+        try_read_from_mut_inner(bytes, Self::is_bit_valid)
+    }
+
+    /// Attempts to read a `Self` from a byte slice.
+    ///
+    /// `try_read_from` validates that `bytes` contains a valid `Self` as
+    /// defined by [`is_bit_valid`]. If it does, then that `Self` is copied and
+    /// returned by-value.
+    ///
+    /// [`is_bit_valid`]: TryFromBytes::is_bit_valid
+    // TODO(#251): In a future in which we distinguish between `FromBytes` and
+    // `RefFromBytes`, this requires `where Self: RefFromBytes` to disallow
+    // interior mutability.
+    fn try_read_from(bytes: &[u8]) -> Option<Self>
+    where
+        Self: Sized,
+    {
+        // TODO(https://github.com/rust-lang/rust/issues/115080): Inline this
+        // function once #115080 is resolved.
+        #[inline(always)]
+        fn try_read_from_inner<T, F>(bytes: &[u8], is_bit_valid: F) -> Option<T>
+        where
+            F: FnOnce(&MaybeValid<T>) -> bool,
+            MaybeValid<T>: FromBytes,
+        {
+            // A note on performance: We unconditionally read `size_of::<T>()`
+            // bytes into the local stack frame before validation. This has
+            // advantages and disadvantages:
+            // - It allows `MaybeValid` to be aligned to `T`, and thus allows
+            //   `is_bit_valid` to operate on an aligned value.
+            // - It requires us to perform the copy even if validation fails.
+            //
+            // The authors believe that this is a worthwhile tradeoff. Allowing
+            // `is_bit_valid` to operate on an aligned value can make the
+            // generated machine code significantly smaller and faster. On the
+            // other hand, we expect the vast majority of calls to
+            // `try_read_from` to succeed, and in these cases, the copy will not
+            // be wasted.
+            let maybe_valid = MaybeValid::<T>::read_from(bytes)?;
+            if is_bit_valid(&maybe_valid) {
+                // SAFETY: `is_bit_valid` promises that it only returns true if
+                // its argument contains a valid `T`. This is exactly the safety
+                // precondition of `MaybeValid::assume_valid`.
+                Some(unsafe { maybe_valid.assume_valid() })
+            } else {
+                None
+            }
+        }
+
+        try_read_from_inner(bytes, Self::is_bit_valid)
+    }
+}
+
 /// Types which are safe to treat as an immutable byte slice.
 ///
 /// WARNING: Do not implement this trait yourself! Instead, use
@@ -691,8 +1172,9 @@ pub unsafe trait AsBytes {
         //   could exist are other immutable references, and those don't allow
         //   mutation.
         //
-        //   TODO(#8): Update `AsRef` docs to require that `Self` doesn't allow
-        //   interior mutability so that this bullet point is actually true.
+        //   TODO(#8): Update `AsBytes` docs to require that `Self` doesn't
+        //   allow interior mutability so that this bullet point is actually
+        //   true.
         // - The total size of the resulting slice is no larger than
         //   `isize::MAX` because no allocation produced by safe code can be
         //   larger than `isize::MAX`.
@@ -802,19 +1284,20 @@ safety_comment! {
     /// SAFETY:
     /// Per the reference [1], "the unit tuple (`()`) ... is guaranteed as a
     /// zero-sized type to have a size of 0 and an alignment of 1."
-    /// - `FromZeroes`, `FromBytes`: There is only one possible sequence of 0
-    ///   bytes, and `()` is inhabited.
+    /// - `TryFromBytes` (with no validator), `FromZeroes`, `FromBytes`: There
+    ///   is only one possible sequence of 0 bytes, and `()` is inhabited.
     /// - `AsBytes`: Since `()` has size 0, it contains no padding bytes.
     /// - `Unaligned`: `()` has alignment 1.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#tuple-layout
-    unsafe_impl!((): FromZeroes, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!((): TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
     assert_unaligned!(());
 }
 
 safety_comment! {
     /// SAFETY:
-    /// - `FromZeroes`, `FromBytes`: all bit patterns are valid for integers [1]
+    /// - `TryFromBytes` (with no validator), `FromZeroes`, `FromBytes`: all bit
+    ///   patterns are valid for integers [1]
     /// - `AsBytes`: integers have no padding bytes [1]
     /// - `Unaligned` (`u8` and `i8` only): The reference [2] specifies the size
     ///   of `u8` and `i8` as 1 byte. We also know that:
@@ -826,26 +1309,26 @@ safety_comment! {
     /// [1] TODO(https://github.com/rust-lang/reference/issues/1291): Once the
     ///     reference explicitly guarantees these properties, cite it.
     /// [2] https://doc.rust-lang.org/reference/type-layout.html#primitive-data-layout
-    unsafe_impl!(u8: FromZeroes, FromBytes, AsBytes, Unaligned);
-    unsafe_impl!(i8: FromZeroes, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(u8: TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(i8: TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
     assert_unaligned!(u8, i8);
-    unsafe_impl!(u16: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(i16: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(u32: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(i32: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(u64: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(i64: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(u128: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(i128: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(usize: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(isize: FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(u16: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(i16: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(u32: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(i32: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(u64: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(i64: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(u128: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(i128: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(usize: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(isize: TryFromBytes, FromZeroes, FromBytes, AsBytes);
 }
 
 safety_comment! {
     /// SAFETY:
-    /// - `FromZeroes`, `FromBytes`: the `{f32,f64}::from_bits` constructors'
-    ///   documentation [1,2] states that they are currently equivalent to
-    ///   `transmute`. [3]
+    /// - `TryFromBytes` (with no validator), `FromZeroes`, `FromBytes`: the
+    ///   `{f32,f64}::from_bits` constructors' documentation [1, 2] states that
+    ///   they are currently equivalent to `transmute`. [3]
     /// - `AsBytes`: the `{f32,f64}::to_bits` methods' documentation [4,5]
     ///   states that they are currently equivalent to `transmute`. [3]
     ///
@@ -857,8 +1340,8 @@ safety_comment! {
     ///     reference explicitly guarantees these properties, cite it.
     /// [4] https://doc.rust-lang.org/nightly/std/primitive.f32.html#method.to_bits
     /// [5] https://doc.rust-lang.org/nightly/std/primitive.f64.html#method.to_bits
-    unsafe_impl!(f32: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(f64: FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(f32: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(f64: TryFromBytes, FromZeroes, FromBytes, AsBytes);
 }
 
 safety_comment! {
@@ -874,6 +1357,17 @@ safety_comment! {
     /// [1] https://doc.rust-lang.org/reference/types/boolean.html
     unsafe_impl!(bool: FromZeroes, AsBytes, Unaligned);
     assert_unaligned!(bool);
+    /// SAFETY:
+    /// - Since `bool`'s single byte is always initialized, `MaybeValid<bool>`'s
+    ///   single byte must also always be initialized. Thus, it is sound to
+    ///   transmute a `MaybeValid<bool>` to a `u8`. Since `u8` has alignment 1,
+    ///   there can never be any alignment issues, and so it is sound to
+    ///   transmute a `&MaybeValid<bool>` to a `&u8`.
+    /// - All values less than 2 are valid instances of `bool` [1], and so this
+    ///   is a sound implementation of `TryFromBytes::is_bit_valid`.
+    ///
+    /// [1] https://doc.rust-lang.org/reference/types/boolean.html
+    unsafe_impl!(bool: TryFromBytes; |byte: &u8| *byte < 2);
 }
 safety_comment! {
     /// SAFETY:
@@ -885,6 +1379,22 @@ safety_comment! {
     ///
     /// [1] https://doc.rust-lang.org/reference/types/textual.html
     unsafe_impl!(char: FromZeroes, AsBytes);
+    /// SAFETY:
+    /// - Since `char`'s 4 bytes are always initialized, `MaybeValid<char>`'s
+    ///   bytes must also always be initialized. Thus, it is sound to transmute
+    ///   a `MaybeValid<char>` to a `[u8; 4]`. Since `[u8; 4]` has alignment 1,
+    ///   there can never be any alignment issues, and so it is sound to
+    ///   transmute a `&MaybeValid<char>` to a `&[u8; 4]`.
+    /// - Since we use `from_ne_bytes`, `c` has the same bits as the argument to
+    ///   `is_bit_valid`. `char::from_u32` guarantees that it returns `None` if
+    ///   its input is not a valid `char` [1], and so this is a sound
+    ///   implementation of `TryFromBytes::is_bit_valid`.
+    ///
+    /// [1] https://doc.rust-lang.org/std/primitive.char.html#method.from_u32
+    unsafe_impl!(char: TryFromBytes; |bytes: &[u8; 4]| {
+        let c = u32::from_ne_bytes(*bytes);
+        char::from_u32(c).is_some()
+    });
 }
 safety_comment! {
     /// SAFETY:
@@ -897,6 +1407,22 @@ safety_comment! {
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#str-layout
     unsafe_impl!(str: FromZeroes, AsBytes, Unaligned);
+    /// SAFETY:
+    /// - Since `str`'s bytes are all always initialized, `MaybeValid<str>`'s
+    ///   bytes must also always be initialized. Thus, it is sound to transmute
+    ///   `MaybeValid<str>` to `[u8]`. Since `str` and `[u8]` have the same
+    ///   layout, they have the same alignment, and so it is sound to transmute
+    ///   `&MaybeValid<str>` to `&u8`.
+    /// - `str`'s bit validity requirement is that it is valid UTF-8. [1] Thus,
+    ///   if `from_utf8` can successfully convert `bytes` to a `str`, then the
+    ///   `str` is valid [2], and so this is a sound implementation of
+    ///   `TryFromBytes::is_bit_valid`.
+    ///
+    /// [1] https://doc.rust-lang.org/reference/types/textual.html
+    /// [2] https://doc.rust-lang.org/core/str/fn.from_utf8.html
+    unsafe_impl!(str: TryFromBytes; |bytes: &[u8]| {
+        core::str::from_utf8(bytes).is_ok()
+    });
 }
 
 safety_comment! {
@@ -934,12 +1460,34 @@ safety_comment! {
     unsafe_impl!(NonZeroI128: AsBytes);
     unsafe_impl!(NonZeroUsize: AsBytes);
     unsafe_impl!(NonZeroIsize: AsBytes);
+
+    /// SAFETY:
+    /// - `NonZeroXxx` has the same layout as `Xxx`. Also, every byte of
+    ///   `NonZeroXxx` is required to be initialized, so it is guaranteed that
+    ///   every byte of `MaybeValid<NonZeroXxx>` must also be initialized. Thus,
+    ///   it is sound to transmute a `&MaybeValid<NonZeroXxx>` to a `&Xxx`.
+    /// - `NonZeroXxx`'s only validity constraint is that it is non-zero, which
+    ///   all of these closures ensure. Thus, these closures are sound
+    ///   implementations of `TryFromBytes::is_bit_valid`.
+    unsafe_impl!(NonZeroU8: TryFromBytes; |n: &u8| *n != 0);
+    unsafe_impl!(NonZeroI8: TryFromBytes; |n: &i8| *n != 0);
+    unsafe_impl!(NonZeroU16: TryFromBytes; |n: &u16| *n != 0);
+    unsafe_impl!(NonZeroI16: TryFromBytes; |n: &i16| *n != 0);
+    unsafe_impl!(NonZeroU32: TryFromBytes; |n: &u32| *n != 0);
+    unsafe_impl!(NonZeroI32: TryFromBytes; |n: &i32| *n != 0);
+    unsafe_impl!(NonZeroU64: TryFromBytes; |n: &u64| *n != 0);
+    unsafe_impl!(NonZeroI64: TryFromBytes; |n: &i64| *n != 0);
+    unsafe_impl!(NonZeroU128: TryFromBytes; |n: &u128| *n != 0);
+    unsafe_impl!(NonZeroI128: TryFromBytes; |n: &i128| *n != 0);
+    unsafe_impl!(NonZeroUsize: TryFromBytes; |n: &usize| *n != 0);
+    unsafe_impl!(NonZeroIsize: TryFromBytes; |n: &isize| *n != 0);
 }
 safety_comment! {
     /// SAFETY:
-    /// - `FromZeroes`, `FromBytes`, `AsBytes`: The Rust compiler reuses `0`
-    ///   value to represent `None`, so `size_of::<Option<NonZeroXxx>>() ==
-    ///   size_of::<xxx>()`; see `NonZeroXxx` documentation.
+    /// - `TryFromBytes` (with no validator), `FromZeroes`, `FromBytes`,
+    ///   `AsBytes`: The Rust compiler reuses `0` value to represent `None`, so
+    ///   `size_of::<Option<NonZeroXxx>>() == size_of::<xxx>()`; see
+    ///   `NonZeroXxx` documentation.
     /// - `Unaligned`: `NonZeroU8` and `NonZeroI8` document that
     ///   `Option<NonZeroU8>` and `Option<NonZeroI8>` both have size 1. [1] [2]
     ///   This is worded in a way that makes it unclear whether it's meant as a
@@ -952,32 +1500,34 @@ safety_comment! {
     ///
     /// TODO(https://github.com/rust-lang/rust/pull/104082): Cite documentation
     /// for layout guarantees.
-    unsafe_impl!(Option<NonZeroU8>: FromZeroes, FromBytes, AsBytes, Unaligned);
-    unsafe_impl!(Option<NonZeroI8>: FromZeroes, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(Option<NonZeroU8>: TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(Option<NonZeroI8>: TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
     assert_unaligned!(Option<NonZeroU8>, Option<NonZeroI8>);
-    unsafe_impl!(Option<NonZeroU16>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroI16>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroU32>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroI32>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroU64>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroI64>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroU128>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroI128>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroUsize>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroIsize>: FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU16>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI16>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU32>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI32>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU64>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI64>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU128>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI128>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroUsize>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroIsize>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
 }
 
 safety_comment! {
     /// SAFETY:
     /// For all `T`, `PhantomData<T>` has size 0 and alignment 1. [1]
-    /// - `FromZeroes`, `FromBytes`: There is only one possible sequence of 0
-    ///   bytes, and `PhantomData` is inhabited.
+    /// - `TryFromBytes` (with no validator), `FromZeroes`, `FromBytes`: There
+    ///   is only one possible sequence of 0 bytes, and `PhantomData` is
+    ///   inhabited.
     /// - `AsBytes`: Since `PhantomData` has size 0, it contains no padding
     ///   bytes.
     /// - `Unaligned`: Per the preceding reference, `PhantomData` has alignment
     ///   1.
     ///
     /// [1] https://doc.rust-lang.org/std/marker/struct.PhantomData.html#layout-1
+    unsafe_impl!(T: ?Sized => TryFromBytes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => FromZeroes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => FromBytes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => AsBytes for PhantomData<T>);
@@ -993,6 +1543,7 @@ safety_comment! {
     ///
     /// [1] https://doc.rust-lang.org/nightly/core/num/struct.Wrapping.html#layout-1
     /// [2] https://doc.rust-lang.org/nomicon/other-reprs.html#reprtransparent
+    // TODO(#5): Implement `TryFromBytes` for `Wrapping<T>`.
     unsafe_impl!(T: FromZeroes => FromZeroes for Wrapping<T>);
     unsafe_impl!(T: FromBytes => FromBytes for Wrapping<T>);
     unsafe_impl!(T: AsBytes => AsBytes for Wrapping<T>);
@@ -1004,22 +1555,23 @@ safety_comment! {
     // since it may contain uninitialized bytes.
     //
     /// SAFETY:
-    /// - `FromZeroes`, `FromBytes`: `MaybeUninit<T>` has no restrictions on its
-    ///   contents. Unfortunately, in addition to bit validity, `FromZeroes` and
-    ///   `FromBytes` also require that implementers contain no `UnsafeCell`s.
-    ///   Thus, we require `T: FromZeroes` and `T: FromBytes` in order to ensure
-    ///   that `T` - and thus `MaybeUninit<T>` - contains to `UnsafeCell`s.
-    ///   Thus, requiring that `T` implement each of these traits is sufficient
+    /// - `TryFromBytes` (with no validator), `FromZeroes`, `FromBytes`:
+    ///   `MaybeUninit<T>` has no restrictions on its contents. Unfortunately,
+    ///   in addition to bit validity, `FromZeroes` and `FromBytes` also require
+    ///   that implementers contain no `UnsafeCell`s. Thus, we require `T:
+    ///   FromZeroes` and `T: FromBytes` in order to ensure that `T` - and thus
+    ///   `MaybeUninit<T>` - contains to `UnsafeCell`s. Thus, requiring that `T`
+    ///   implement each of these traits is sufficient
     /// - `Unaligned`: `MaybeUninit<T>` is guaranteed by its documentation [1]
     ///   to have the same alignment as `T`.
     ///
-    /// [1]
-    /// https://doc.rust-lang.org/nightly/core/mem/union.MaybeUninit.html#layout-1
+    /// [1] https://doc.rust-lang.org/nightly/core/mem/union.MaybeUninit.html#layout-1
     ///
     /// TODO(https://github.com/google/zerocopy/issues/251): If we split
     /// `FromBytes` and `RefFromBytes`, or if we introduce a separate
     /// `NoCell`/`Freeze` trait, we can relax the trait bounds for `FromZeroes`
     /// and `FromBytes`.
+    unsafe_impl!(T: TryFromBytes => TryFromBytes for MaybeUninit<T>);
     unsafe_impl!(T: FromZeroes => FromZeroes for MaybeUninit<T>);
     unsafe_impl!(T: FromBytes => FromBytes for MaybeUninit<T>);
     unsafe_impl!(T: Unaligned => Unaligned for MaybeUninit<T>);
@@ -1042,6 +1594,7 @@ safety_comment! {
     ///   code can only ever access a `ManuallyDrop` with all initialized bytes.
     /// - `Unaligned`: `ManuallyDrop` has the same layout (and thus alignment)
     ///   as `T`, and `T: Unaligned` guarantees that that alignment is 1.
+    // TODO(#5): Implement `TryFromBytes` for `ManuallyDrop<T>`.
     unsafe_impl!(T: ?Sized + FromZeroes => FromZeroes for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + AsBytes => AsBytes for ManuallyDrop<T>);
@@ -1067,15 +1620,34 @@ safety_comment! {
     /// (respectively). Furthermore, since an array/slice has "the same
     /// alignment of `T`", `[T]` and `[T; N]` are `Unaligned` if `T` is.
     ///
+    /// Finally, because of this layout equivalence, an instance of `[T]` or
+    /// `[T; N]` is valid if each `T` is valid. Thus, it is sound to implement
+    /// `TryFromBytes::is_bit_valid` by calling `is_bit_valid` on each element.
+    ///
     /// Note that we don't `assert_unaligned!` for slice types because
     /// `assert_unaligned!` uses `align_of`, which only works for `Sized` types.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#array-layout
+    unsafe_impl!(T: TryFromBytes, const N: usize => TryFromBytes for [T; N]; |c: &MaybeValid<[T; N]>| {
+        <[T] as TryFromBytes>::is_bit_valid(c.as_slice())
+    });
     unsafe_impl!(T: FromZeroes, const N: usize => FromZeroes for [T; N]);
     unsafe_impl!(T: FromBytes, const N: usize => FromBytes for [T; N]);
     unsafe_impl!(T: AsBytes, const N: usize => AsBytes for [T; N]);
     unsafe_impl!(T: Unaligned, const N: usize => Unaligned for [T; N]);
     assert_unaligned!([(); 0], [(); 1], [u8; 0], [u8; 1]);
+    unsafe_impl!(T: TryFromBytes => TryFromBytes for [T]; |c: &MaybeValid<[T]>| {
+        // TODO(https://github.com/rust-lang/rust/issues/115080): Inline this
+        // function once #115080 is resolved.
+        #[inline(always)]
+        fn is_bit_valid<T, F: Fn(&MaybeValid<T>) -> bool>(
+            c: &MaybeValid<[T]>,
+            is_bit_valid: F,
+        ) -> bool {
+            c.as_slice_of_maybe_valids().iter().all(is_bit_valid)
+        }
+        is_bit_valid(c, T::is_bit_valid)
+    });
     unsafe_impl!(T: FromZeroes => FromZeroes for [T]);
     unsafe_impl!(T: FromBytes => FromBytes for [T]);
     unsafe_impl!(T: AsBytes => AsBytes for [T]);
@@ -1127,8 +1699,8 @@ safety_comment! {
 // Given this background, we can observe that:
 // - The size and bit pattern requirements of a SIMD type are equivalent to the
 //   equivalent array type. Thus, for any SIMD type whose primitive `T` is
-//   `FromZeroes`, `FromBytes`, or `AsBytes`, that SIMD type is also
-//   `FromZeroes`, `FromBytes`, or `AsBytes` respectively.
+//   `FromZeroes`, `FromBytes`, `TryFromBytes`, or `AsBytes`, that SIMD type is
+//   also `FromZeroes`, `FromBytes`, `TryFromBytes`, or `AsBytes` respectively.
 // - Since no upper bound is placed on the alignment, no SIMD type can be
 //   guaranteed to be `Unaligned`.
 //
@@ -1139,21 +1711,23 @@ safety_comment! {
 //
 // See issue #38 [2]. While this behavior is not technically guaranteed, the
 // likelihood that the behavior will change such that SIMD types are no longer
-// `FromZeroes`, `FromBytes`, or `AsBytes` is next to zero, as that would defeat
-// the entire purpose of SIMD types. Nonetheless, we put this behavior behind
-// the `simd` Cargo feature, which requires consumers to opt into this stability
-// hazard.
+// `FromZeroes`, `FromBytes`, `TryFromBytes`, or `AsBytes` is next to zero, as
+// that would defeat the entire purpose of SIMD types. Nonetheless, we put this
+// behavior behind the `simd` Cargo feature, which requires consumers to opt
+// into this stability hazard.
 //
 // [1] https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 // [2] https://github.com/rust-lang/unsafe-code-guidelines/issues/38
 #[cfg(feature = "simd")]
 mod simd {
-    /// Defines a module which implements `FromZeroes`, `FromBytes`, and
-    /// `AsBytes` for a set of types from a module in `core::arch`.
+    /// Defines a module which implements `FromZeroes`, `FromBytes`,
+    /// `TryFromBytes`, and `AsBytes` for a set of types from a module in
+    /// `core::arch`.
     ///
     /// `$arch` is both the name of the defined module and the name of the
     /// module in `core::arch`, and `$typ` is the list of items from that module
-    /// to implement `FromZeroes`, `FromBytes`, and `AsBytes` for.
+    /// for which to implement `FromZeroes`, `FromBytes`, `TryFromBytes`, and
+    /// `AsBytes`.
     #[allow(unused_macros)] // `allow(unused_macros)` is needed because some
                             // target/feature combinations don't emit any impls
                             // and thus don't use this macro.
@@ -1166,7 +1740,7 @@ mod simd {
                 safety_comment! {
                     /// SAFETY:
                     /// See comment on module definition for justification.
-                    $( unsafe_impl!($typ: FromZeroes, FromBytes, AsBytes); )*
+                    $( unsafe_impl!($typ: TryFromBytes, FromZeroes, FromBytes, AsBytes); )*
                 }
             }
         };

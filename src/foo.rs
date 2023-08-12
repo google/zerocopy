@@ -240,6 +240,249 @@ unsafe impl<T: Sized> AsMaybeUninit for MaybeUninit<[T]> {
     }
 }
 
+/// A value which might or might not constitute a valid instance of `T`.
+///
+/// `MaybeValid<T>` has the same layout (size and alignment) and field offsets
+/// as `T`. However, it may contain any bit pattern with a few restrictions:
+/// Given `m: MaybeValid<T>` and a byte offset, `b` in the range `[0,
+/// size_of_val(m))`:
+/// - If, in all valid instances `t: T`, the byte at offset `b` in `t` is
+///   initialized, then the byte at offset `b` within `m` is guaranteed to be
+///   initialized.
+/// - Let `s` be the sequence of bytes of length `b` in the offset range `[0,
+///   b)` in `m`. Let `TT` be the subset of valid instances of `T` which contain
+///   this sequence in the offset range `[0, b)`. If, for all instances of `t:
+///   T` in `TT`, the byte at offset `b` in `t` is initialized, then the byte at
+///   offset `b` in `m` is guaranteed to be initialized.
+///
+///   Pragmatically, this means that if `m` is guaranteed to contain an enum
+///   type at a particular offset, and the enum discriminant stored in `m`
+///   corresponds to a valid variant of that enum type, then it is guaranteed
+///   that the appropriate bytes of `m` are initialized as defined by that
+///   variant's layout (although note that the variant's layout may contain
+///   another enum type, in which case the same rules apply depending on the
+///   state of its discriminant, and so on recursively).
+///
+/// # Safety
+///
+/// Unsafe code may assume that an instance of `MaybeValid` satisfies the
+/// constraints described above. Unsafe code may produce a `MaybeValid` or
+/// modify the bytes of an existing `MaybeValid` so long as these constraints
+/// are upheld. It is unsound to produce a `MaybeValid` which fails to uphold
+/// these constraints.
+#[repr(transparent)]
+pub struct MaybeValid<T: AsMaybeUninit + ?Sized> {
+    inner: MaybeUninit<T>,
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// - `FromZeroes`, `FromBytes`: `MaybeValid` doesn't impose any bit
+    ///   validity constraints beyond requiring that certain bytes are
+    ///   initialized. `T: TryFromBytes` ensures that `T` doesn't contain any
+    ///   `UnsafeCell`s, which in turn ensures that `T::MaybeUninit` (and thus
+    ///   `MaybeValid<T>`) doesn't contain any `UnsafeCell`s. Note that we
+    ///   cannot require `T: FromZeroes` or `T: FromBytes` in the `FromZeroes`
+    ///   and `FromBytes` impls. The reason is that we rely on `MaybeValid<T>`
+    ///   to be `FromBytes` in our default method impls on `TryFromBytes`, where
+    ///   we don't have any guarantee that `T: FromZeroes` or `T: FromBytes`.
+    /// - `AsBytes`: `MaybeValid` requires that, if a byte in `T` is always
+    ///   initialized, the equivalent byte in `MaybeValid<T>` must be
+    ///   initialized. `T: AsBytes` implies that all bytes in `T` must always be
+    ///   initialized, and so all bytes in `MaybeValid<T>` must always be
+    ///   initialized, and so `MaybeValid<T>` satisfies `AsBytes`.
+    /// - `Unaligned`: `MaybeValid<T>` has the same alignment as `T`.
+    ///
+    /// TODO(#5): In a future in which we derive `AsMaybeUninit` rather than
+    /// using the blanket impl for all `T: Sized`, we can be more precise about
+    /// `UnsafeCell`s. In particular, instead of guaranteeing that
+    /// `T::MaybeUninit` contains `UnsafeCell`s where `T` does, but we can
+    /// guarantee that `T::MaybeUninit` never contains any `UnsafeCell`s
+    /// regardless of whether `T` does. We can do this by doing the following:
+    ///
+    /// ```
+    /// unsafe impl<T> AsMaybeUninnit for UnsafeCell<T> {
+    ///     type MaybeUninit = MaybeUninit<T>;
+    /// }
+    /// ```
+    ///
+    /// Then, in code emitted by custom derive, we can set `MaybeUninit` to an
+    /// anonymous struct type where each field type, `F`, is replaced by
+    /// `F::MaybeUninit`. Once we've done this, we can implement `TryFromBytes`,
+    /// `FromZeroes`, and `FromBytes` for `MaybeValid<T>` with no bounds on `T`.
+    ///
+    /// TODO(#5): Implement `TryFromBytes` for `MaybeValid<T>` once we support
+    /// unsized types or once we support implementing traits for `MaybeValid<T>`
+    /// without bounds on `T` (see previous TODO). Currently, `T: TryFromBytes
+    /// => TryFromBytes for MaybeValid<T>` doesn't work because the impl emitted
+    /// by `unsafe_impl!` isn't smart enough to realize that `MaybeValid<T>` is
+    /// `Sized` (I suspect this is another instance of
+    /// https://github.com/rust-lang/rust/issues/115080, but I'm not sure).
+    unsafe_impl!(T: TryFromBytes => FromZeroes for MaybeValid<T>);
+    unsafe_impl!(T: TryFromBytes => FromZeroes for MaybeValid<[T]>);
+    unsafe_impl!(T: TryFromBytes => FromBytes for MaybeValid<T>);
+    unsafe_impl!(T: TryFromBytes => FromBytes for MaybeValid<[T]>);
+    unsafe_impl!(T: AsBytes => AsBytes for MaybeValid<T>);
+    unsafe_impl!(T: AsBytes => AsBytes for MaybeValid<[T]>);
+    unsafe_impl!(T: Unaligned => Unaligned for MaybeValid<T>);
+    unsafe_impl!(T: Unaligned => Unaligned for MaybeValid<[T]>);
+}
+
+// SAFETY: See safety comment on `MaybeUninit`.
+unsafe impl<T> AsMaybeUninit for MaybeValid<[T]> {
+    // SAFETY:
+    // - `MaybeUninit` has no bit validity requirements and `[U]` has the same
+    //   bit validity requirements as `U`, so `[MaybeUninit<T>]` has no bit
+    //   validity requirements. Thus, it is sound to write uninitialized bytes
+    //   at every offset.
+    // - `MaybeValid<U>` is `repr(transparent)`, and thus has the same layout
+    //   and field offsets as its contained field of type `U::MaybeUninit`. In
+    //   this case, `U = [T]`, and so `U::MaybeUninit = [MaybeUninit<T>]`. Thus,
+    //   `MaybeValid<[T]>` has the same layout and field offsets as
+    //   `[MaybeUninit<T>]`, which is what we set `MaybeUninit` to here. Thus,
+    //   they trivially have the same alignment.
+    // - By the same token, their raw pointer types are trivially `as` castable
+    //   and preserve size.
+    // - By the same token, `[MaybeUninit<T>]` contains `UnsafeCell`s at the
+    //   same byte ranges as `MaybeValid<[T]>` does.
+    type MaybeUninit = [MaybeUninit<T>];
+
+    fn raw_from_maybe_uninit(maybe_uninit: *const [MaybeUninit<T>]) -> *const MaybeValid<[T]> {
+        maybe_uninit as *const MaybeValid<[T]>
+    }
+
+    fn raw_mut_from_maybe_uninit(maybe_uninit: *mut [MaybeUninit<T>]) -> *mut MaybeValid<[T]> {
+        maybe_uninit as *mut MaybeValid<[T]>
+    }
+}
+
+impl<T> Default for MaybeValid<T> {
+    fn default() -> MaybeValid<T> {
+        MaybeValid { inner: MaybeUninit::uninit() }
+    }
+}
+
+impl<T: AsMaybeUninit + ?Sized> MaybeValid<T> {
+    /// Converts this `&MaybeValid<T>` to a `&T`.
+    ///
+    /// # Safety
+    ///
+    /// `self` must contain a valid `T`.
+    pub const unsafe fn assume_valid_ref(&self) -> &T {
+        // SAFETY: The caller has promised that `self` contains a valid `T`.
+        // Since `T: Sized`, we know that `T::MaybeUninit = MaybeUninit<T>`.
+        // Since `MaybeValid` is `repr(transparent)`, its layout is identical to
+        // the contained `MaybeUninit`. Thus, the promise that `self` contains a
+        // valid `T` implies that the contained `MaybeUninit` contains a valid
+        // `T`.
+        //
+        // Further, thanks to the safety requirements on `T::MaybeUninit`, we
+        // know that there are `UnsafeCell`s at the same byte ranges in both
+        // types.  See [1] for a discussion of why this is a required safety
+        // condition.
+        //
+        // [1] https://github.com/rust-lang/unsafe-code-guidelines/issues/455
+        unsafe { self.inner.assume_init_ref() }
+    }
+
+    /// Converts this `&mut MaybeValid<T>` to a `&mut T`.
+    ///
+    /// # Safety
+    ///
+    /// `self` must contain a valid `T`.
+    pub unsafe fn assume_valid_mut(&mut self) -> &mut T {
+        // SAFETY: The caller has promised that `self` contains a valid `T`.
+        // Since `T: Sized`, we know that `T::MaybeUninit = MaybeUninit<T>`.
+        // Since `MaybeValid` is `repr(transparent)`, its layout is identical to
+        // the contained `MaybeUninit`. Thus, the promise that `self` contains a
+        // valid `T` implies that the contained `MaybeUninit` contains a valid
+        // `T`.
+        //
+        // Further, thanks to the safety requirements on `T::MaybeUninit`, we
+        // know that there are `UnsafeCell`s at the same byte ranges in both
+        // types.  See [1] for a discussion of why this is a required safety
+        // condition.
+        //
+        // [1] https://github.com/rust-lang/unsafe-code-guidelines/issues/455
+        unsafe { self.inner.assume_init_mut() }
+    }
+}
+
+impl<T> MaybeValid<T> {
+    /// Converts this `MaybeValid<T>` to a `T`.
+    ///
+    /// # Safety
+    ///
+    /// `self` must contain a valid `T`.
+    pub const unsafe fn assume_valid(self) -> T {
+        // SAFETY: The caller has promised that `self` contains a valid `T`.
+        // Since `MaybeValid` has the same layout as `MaybeUninit<T>`, which in
+        // turn has the same layout as `T`, that means that it is sound to
+        // extract the value via `self.inner.assume_init()`.
+        unsafe { self.inner.assume_init() }
+    }
+}
+
+impl<T> MaybeValid<[T]> {
+    /// Converts a `MaybeValid<[T]>` to a `[MaybeValid<T>]`.
+    ///
+    /// `MaybeValid` has the same layout as `T`, so these layouts are
+    /// equivalent.
+    pub const fn as_slice_of_maybe_valids(&self) -> &[MaybeValid<T>] {
+        let inner: &[<T as AsMaybeUninit>::MaybeUninit] = &self.inner.inner;
+        let inner_ptr: *const [<T as AsMaybeUninit>::MaybeUninit] = inner;
+        // Note: this Clippy warning is only emitted on our MSRV (1.61), but not
+        // on later versions of Clippy. Thus, we consider it spurious.
+        #[allow(clippy::as_conversions)]
+        let ret_ptr = inner_ptr as *const [MaybeValid<T>];
+        // SAFETY: Since `inner` is a `&[T::MaybeUninit]`, and `MaybeValid<T>`
+        // is a `repr(transparent)` struct around `T::MaybeUninit`, `inner` has
+        // the same layout as `&[MaybeValid<T>]`.
+        unsafe { &*ret_ptr }
+    }
+}
+
+impl<const N: usize, T> MaybeValid<[T; N]> {
+    /// Converts a `&MaybeValid<[T; N]>` to a `&MaybeValid<[T]>`.
+    // TODO(#64): Make this `const` once our MSRV is >= 1.64.0 (when
+    // `slice_from_raw_parts` was stabilized as `const`).
+    pub fn as_slice(&self) -> &MaybeValid<[T]> {
+        let base: *const MaybeValid<[T; N]> = self;
+        let slice_of_t: *const [T] = ptr::slice_from_raw_parts(base.cast::<T>(), N);
+        // Note: this Clippy warning is only emitted on our MSRV (1.61), but not
+        // on later versions of Clippy. Thus, we consider it spurious.
+        #[allow(clippy::as_conversions)]
+        let mv_of_slice = slice_of_t as *const MaybeValid<[T]>;
+        // SAFETY: TODO
+        unsafe { &*mv_of_slice }
+    }
+}
+
+// SAFETY:
+// - Given `p: *const MaybeValid<T>` or `p: *mut MaybeValid<T>`, it is valid to
+//   perform `let i = p as *const T` or `let i = p as *mut T`: This is true
+//   because `MaybeValid<T>` and `T` have the same sizedness. Further, if they
+//   are unsized, then they are both slice types.
+//   - The size of the referents of `p` and `i` must be identical: This is true
+//     because `MaybeValid<T>` and `T` always have the same size, and if they
+//     are slice types, then their tail element types have the same sizes.
+// - If the following hold:
+//   - `p: &MaybeValid<T>` or `p: &mut MaybeValid<T>`
+//   - Given `t: T` of size `size_of_val(p)`, there exists an `F` at byte range
+//     `f` within `i`.
+//
+//   ... then it is sound to materialize a `&MaybeValid<F>` or `&mut
+//   MaybeValid<F>` which points to range `f` within `p`: TODO
+unsafe impl<T, F> Projectable<F, MaybeValid<F>> for MaybeValid<T> {
+    type Inner = T;
+}
+
+impl<T> Debug for MaybeValid<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.pad(core::any::type_name::<Self>())
+    }
+}
+
 /// A type with no alignment requirement.
 ///
 /// An `Unalign` wraps a `T`, removing any alignment requirement. `Unalign<T>`
