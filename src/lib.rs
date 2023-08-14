@@ -347,8 +347,7 @@ pub unsafe trait FromZeroes {
         #[allow(clippy::as_conversions)]
         let max_alloc = (isize::MAX as usize).saturating_sub(align);
         assert!(size <= max_alloc);
-        // TODO(#2): Use `Layout::repeat` when `alloc_layout_extra` is
-        // stabilized.
+        // TODO(https://github.com/rust-lang/rust/issues/55724): Use `Layout::repeat` once it's stabilized.
         let layout =
             Layout::from_size_align(size, align).expect("total allocation size overflows `isize`");
 
