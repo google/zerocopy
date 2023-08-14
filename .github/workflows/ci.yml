@@ -7,7 +7,7 @@ on:
       - main
       - v0.6.x
 
-permissions: read
+permissions: read-all
 
 env:
   CARGO_TERM_COLOR: always
