@@ -52,7 +52,7 @@ jobs:
     name: Build & Test (crate:${{ matrix.crate }}, toolchain:${{ matrix.toolchain }}, target:${{ matrix.target }}, features:${{ matrix.features }})
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
 
     # We use toolchain descriptors ("msrv", "stable", and "nightly") in the
     # matrix. This step converts the current descriptor to a particular
@@ -109,7 +109,7 @@ jobs:
         fi
 
     - name: Install Rust with toolchain ${{ env.ZC_TOOLCHAIN }} and target ${{ matrix.target }}
-      uses: dtolnay/rust-toolchain@stable
+      uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
       with:
           toolchain: ${{ env.ZC_TOOLCHAIN }}
           targets: ${{ matrix.target }}
@@ -122,7 +122,7 @@ jobs:
           components: clippy ${{ matrix.toolchain == 'nightly' && ', miri' || '' }}
 
     - name: Rust Cache
-      uses: Swatinem/rust-cache@v2.6.1
+      uses: Swatinem/rust-cache@578b235f6e5f613f7727f1c17bd3305b4d4d4e1f # v2.6.1
       with:
         key: "${{ matrix.target }}"
 
@@ -182,7 +182,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check Rust formatting
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: Check Rust formatting
         run: |
           set -e
@@ -196,10 +196,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Check README.md
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       # Cache the `cargo-readme` installation.
       - name: Rust Cache
-        uses: Swatinem/rust-cache@v2.6.1
+        uses: Swatinem/rust-cache@578b235f6e5f613f7727f1c17bd3305b4d4d4e1f # v2.6.1
       - name: Check README.md
         run: |
           set -e
@@ -211,7 +211,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check MSRVs match
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       # Make sure that the MSRV in zerocopy's and zerocopy-derive's `Cargo.toml`
       # files are the same.
       - name: Check MSRVs match
@@ -239,7 +239,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check crate versions match
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       # Make sure that both crates are at the same version, and that zerocopy
       # depends exactly upon the current version of zerocopy-derive. See
       # `INTERNAL.md` for an explanation of why we do this.
