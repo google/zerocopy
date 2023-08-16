@@ -12,7 +12,7 @@
 // our MSRV.
 #![allow(unknown_lints)]
 #![deny(renamed_and_removed_lints)]
-#![deny(clippy::all, clippy::missing_safety_doc)]
+#![deny(clippy::all, clippy::missing_safety_doc, clippy::undocumented_unsafe_blocks)]
 #![deny(
     rustdoc::bare_urls,
     rustdoc::broken_intra_doc_links,

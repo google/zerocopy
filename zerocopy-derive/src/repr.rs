@@ -73,9 +73,7 @@ impl<R: KindRepr> Config<R> {
         }
 
         let initial_sp = metas[0].span();
-        let err_span = metas.iter().skip(1).fold(Some(initial_sp), |sp_option, meta| {
-            sp_option.and_then(|sp| sp.join(meta.span()))
-        });
+        let err_span = metas.iter().skip(1).try_fold(initial_sp, |sp, meta| sp.join(meta.span()));
 
         if self.allowed_combinations.contains(&reprs.as_slice()) {
             Ok(reprs)
