@@ -1327,6 +1327,10 @@ impl<T> Unalign<T> {
 
     /// Updates the inner `T` by calling a function on it.
     ///
+    /// If [`T: Unaligned`], then `Unalign<T>` implements [`DerefMut`], and that
+    /// impl should be preferred over this method when performing updates, as it
+    /// will usually be faster and more ergonomic.
+    ///
     /// For large types, this method may be expensive, as it requires copying
     /// `2 * size_of::<T>()` bytes. \[1\]
     ///
@@ -1334,6 +1338,8 @@ impl<T> Unalign<T> {
     /// invoke `f` on it directly. Instead, `update` moves it into a
     /// properly-aligned location in the local stack frame, calls `f` on it, and
     /// then moves it back to its original location in `self`.
+    ///
+    /// [`T: Unaligned`]: Unaligned
     pub fn update<O, F: FnOnce(&mut T) -> O>(&mut self, f: F) -> O {
         // On drop, this moves `copy` out of itself and uses `ptr::write` to
         // overwrite `slf`.
