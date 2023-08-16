@@ -16,7 +16,7 @@ env:
   # `ZC_NIGHTLY_XXX` are flags that we add to `XXX` only on the nightly
   # toolchain.
   ZC_NIGHTLY_RUSTFLAGS: -Zrandomize-layout
-  ZC_NIGHTLY_MIRIFLAGS: "-Zmiri-symbolic-alignment-check -Zmiri-strict-provenance -Zmiri-backtrace=full"
+  ZC_NIGHTLY_MIRIFLAGS: "-Zmiri-symbolic-alignment-check -Zmiri-strict-provenance -Zmiri-backtrace=full -Zmiri-disable-isolation"
 
 jobs:
   build_test:
@@ -40,6 +40,7 @@ jobs:
           "powerpc-unknown-linux-gnu",
           "powerpc64-unknown-linux-gnu",
           "riscv64gc-unknown-linux-gnu",
+          "loongarch64-unknown-linux-gnu",
           "mips-unknown-linux-gnu",
           "mips64-unknown-linux-gnuabi64",
           "s390x-unknown-linux-gnu",
@@ -62,6 +63,12 @@ jobs:
             features: "--features __internal_use_only_features_that_work_on_stable"
           - crate: "zerocopy-derive"
             features: "--all-features"
+          # TODO(#67): Remove these once our MSRV and stable toolchains are at
+          # versions that support loongarch64-unknown-linux-gnu.
+          - toolchain: "msrv"
+            target: "loongarch64-unknown-linux-gnu"
+          - toolchain: "stable"
+            target: "loongarch64-unknown-linux-gnu"
 
     name: Build & Test (crate:${{ matrix.crate }}, toolchain:${{ matrix.toolchain }}, target:${{ matrix.target }}, features:${{ matrix.features }})
 
