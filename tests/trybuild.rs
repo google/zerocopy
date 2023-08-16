@@ -16,14 +16,28 @@
 //   `tests/ui-nightly`, and contains `.err` and `.out` files for MSRV
 
 #[rustversion::nightly]
-const SOURCE_FILES_GLOB: &str = "tests/ui-nightly/*.rs";
+const SOURCE_FILES_DIR: &str = "tests/ui-nightly";
 #[rustversion::stable(1.69.0)]
-const SOURCE_FILES_GLOB: &str = "tests/ui-stable/*.rs";
+const SOURCE_FILES_DIR: &str = "tests/ui-stable";
 #[rustversion::stable(1.61.0)]
-const SOURCE_FILES_GLOB: &str = "tests/ui-msrv/*.rs";
+const SOURCE_FILES_DIR: &str = "tests/ui-msrv";
 
 #[test]
 fn ui() {
     let t = trybuild::TestCases::new();
-    t.compile_fail(SOURCE_FILES_GLOB);
+    t.compile_fail(format!("{SOURCE_FILES_DIR}/*.rs"));
+}
+
+// The file `invalid-impls.rs` directly includes `src/macros.rs` in order to
+// test the `impl_or_verify!` macro which is defined in that file. Specifically,
+// it tests the verification portion of that macro, which is enabled when
+// `cfg(any(feature = "derive", test))`. While `--cfg test` is of course passed
+// to the code in the file you're reading right now, `trybuild` does not pass
+// `--cfg test` when it invokes Cargo. As a result, this `trybuild` test only
+// tests the correct behavior when the "derive" feature is enabled.
+#[cfg(feature = "derive")]
+#[test]
+fn ui_invalid_impls() {
+    let t = trybuild::TestCases::new();
+    t.compile_fail(format!("{SOURCE_FILES_DIR}/invalid-impls/*.rs"));
 }

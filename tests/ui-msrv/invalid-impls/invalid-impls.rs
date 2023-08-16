@@ -1,0 +1,1 @@
+../../ui-nightly/invalid-impls/invalid-impls.rs

@@ -30,4 +30,4 @@ static_assertions = "1.1"
 # sometimes change the output format slightly, so a version mismatch can cause
 # CI test failures.
 trybuild = "=1.0.80"
-zerocopy = { path = "../" }
+zerocopy = { path = "../", features = ["default", "derive"] }
