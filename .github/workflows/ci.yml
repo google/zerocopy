@@ -32,7 +32,7 @@ jobs:
         # See `INTERNAL.md` for an explanation of these pinned toolchain
         # versions.
         toolchain: [ "msrv", "stable", "nightly" ]
-        target: [ "i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "arm-unknown-linux-gnueabi", "aarch64-unknown-linux-gnu", "powerpc-unknown-linux-gnu", "powerpc64-unknown-linux-gnu", "wasm32-wasi" ]
+        target: [ "i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "arm-unknown-linux-gnueabi", "aarch64-unknown-linux-gnu", "powerpc-unknown-linux-gnu", "powerpc64-unknown-linux-gnu", "riscv64gc-unknown-linux-gnu", "wasm32-wasi" ]
         features: [ "--no-default-features", "", "--features __internal_use_only_features_that_work_on_stable", "--all-features" ]
         crate: [ "zerocopy", "zerocopy-derive" ]
         exclude:
@@ -165,8 +165,9 @@ jobs:
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
       #
-      # TODO(#22): Re-enable testing on wasm32-wasi once it works.
-      if: matrix.toolchain == 'nightly' && matrix.target != 'wasm32-wasi'
+      # TODO(#22): Re-enable testing on riscv64gc-unknown-linux-gnu and/or
+      # wasm32-wasi once those work.
+      if: matrix.toolchain == 'nightly' && matrix.target != 'riscv64gc-unknown-linux-gnu' && matrix.target != 'wasm32-wasi'
 
     - name: Run doc tests
       # We explicitly pass `--doc` here because doc tests are disabled by
