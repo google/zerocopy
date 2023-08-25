@@ -142,6 +142,7 @@ mod macros;
 
 #[cfg(feature = "byteorder")]
 pub mod byteorder;
+#[cfg(any(feature = "derive", test))]
 #[doc(hidden)]
 pub mod derive_util;
 
