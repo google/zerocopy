@@ -199,19 +199,40 @@ mod zerocopy {
 ///
 /// # Safety
 ///
-/// If `T: FromZeroes`, then unsafe code may assume that it is sound to treat
-/// any initialized sequence of zero bytes of length `size_of::<T>()` as a `T`.
+/// *This section describes what is required in order for `T: FromZeroes`, and
+/// what unsafe code may assume of such types. `#[derive(FromZeroes)]` only
+/// permits types which satisfy these requirements. If you don't plan on
+/// implementing `FromZeroes` manually, and you don't plan on writing unsafe
+/// code that operates on `FromZeroes` types, then you don't need to read this
+/// section.*
+///
+/// If `T: FromZeroes`, then unsafe code may assume that:
+/// - It is sound to treat any initialized sequence of zero bytes of length
+///   `size_of::<T>()` as a `T`.
+/// - Given `b: &[u8]` where `b.len() == size_of::<T>()`, `b` is aligned to
+///   `align_of::<T>()`, and `b` contains only zero bytes, it is sound to
+///   construct a `t: &T` at the same address as `b`, and it is sound for both
+///   `b` and `t` to be live at the same time.
+///
 /// If a type is marked as `FromZeroes` which violates this contract, it may
 /// cause undefined behavior.
 ///
-/// If a type has the following properties, then it is safe to implement
+/// If a type has the following properties, then it is sound to implement
 /// `FromZeroes` for that type:
-/// - If the type is a struct, all of its fields must implement `FromZeroes`
+/// - If the type is a struct, all of its fields must satisfy the requirements
+///   to be `FromZeroes` (they do not actually have to be `FromZeroes`).
 /// - If the type is an enum, it must be C-like (meaning that all variants have
-///   no fields) and it must have a variant with a discriminant of `0` (see [the
-///   reference] for a description of how discriminant values are chosen)
+///   no fields) and it must have a variant with a discriminant of `0`. See [the
+///   reference] for a description of how discriminant values are chosen.
+/// - The type must not contain any [`UnsafeCell`]s (this is required in order
+///   for it to be sound to construct a `&[u8]` and a `&T` to the same region of
+///   memory). The type may contain references or pointers to `UnsafeCell`s so
+///   long as those values can themselves be initialized from zeroes
+///   (`FromZeroes` is not currently implemented for, e.g.,
+///   `Option<&UnsafeCell<_>>`, but it could be one day).
 ///
 /// [the reference]: https://doc.rust-lang.org/reference/items/enumerations.html#custom-discriminant-values-for-fieldless-enumerations
+/// [`UnsafeCell`]: core::cell::UnsafeCell
 ///
 /// # Rationale
 ///
@@ -420,22 +441,43 @@ pub unsafe trait FromZeroes {
 ///
 /// # Safety
 ///
-/// If `T: FromBytes`, then unsafe code may assume that it is sound to treat any
-/// initialized sequence of bytes of length `size_of::<T>()` as a `T`. If a type
-/// is marked as `FromBytes` which violates this contract, it may cause
-/// undefined behavior.
+/// *This section describes what is required in order for `T: FromBytes`, and
+/// what unsafe code may assume of such types. `#[derive(FromBytes)]` only
+/// permits types which satisfy these requirements. If you don't plan on
+/// implementing `FromBytes` manually, and you don't plan on writing unsafe code
+/// that operates on `FromBytes` types, then you don't need to read this
+/// section.*
 ///
-/// If a type has the following properties, then it is safe to implement
+/// If `T: FromBytes`, then unsafe code may assume that:
+/// - It is sound to treat any initialized sequence of bytes of length
+///   `size_of::<T>()` as a `T`.
+/// - Given `b: &[u8]` where `b.len() == size_of::<T>()` and `b` is aligned to
+///   `align_of::<T>()`, it is sound to construct a `t: &T` at the same address
+///   as `b`, and it is sound for both `b` and `t` to be live at the same time.
+///
+/// If a type is marked as `FromBytes` which violates this contract, it may
+/// cause undefined behavior.
+///
+/// If a type has the following properties, then it is sound to implement
 /// `FromBytes` for that type:
-/// - If the type is a struct, all of its fields must implement `FromBytes`
+/// - If the type is a struct, all of its fields must satisfy the requirements
+///   to be `FromBytes` (they do not actually have to be `FromBytes`)
 /// - If the type is an enum:
-///   - It must be a C-like enum (meaning that all variants have no fields)
+///   - It must be a C-like enum (meaning that all variants have no fields).
 ///   - It must have a defined representation (`repr`s `C`, `u8`, `u16`, `u32`,
 ///     `u64`, `usize`, `i8`, `i16`, `i32`, `i64`, or `isize`).
 ///   - The maximum number of discriminants must be used (so that every possible
 ///     bit pattern is a valid one). Be very careful when using the `C`,
 ///     `usize`, or `isize` representations, as their size is
 ///     platform-dependent.
+/// - The type must not contain any [`UnsafeCell`]s (this is required in order
+///   for it to be sound to construct a `&[u8]` and a `&T` to the same region of
+///   memory). The type may contain references or pointers to `UnsafeCell`s so
+///   long as those values can themselves be initialized from zeroes
+///   (`FromBytes` is not currently implemented for, e.g., `Option<*const
+///   UnsafeCell<_>>`, but it could be one day).
+///
+/// [`UnsafeCell`]: core::cell::UnsafeCell
 ///
 /// # Rationale
 ///
@@ -546,27 +588,46 @@ pub unsafe trait FromBytes: FromZeroes {
 ///
 /// # Safety
 ///
-/// If `T: AsBytes`, then unsafe code may assume that it is sound to treat any
-/// instance of the type as an immutable `[u8]` of length `size_of::<T>()`. If a
-/// type is marked as `AsBytes` which violates this contract, it may cause
+/// *This section describes what is required in order for `T: AsBytes`, and what
+/// unsafe code may assume of such types. `#[derive(AsBytes)]` only permits
+/// types which satisfy these requirements. If you don't plan on implementing
+/// `AsBytes` manually, and you don't plan on writing unsafe code that operates
+/// on `AsBytes` types, then you don't need to read this section.*
+///
+/// If `T: AsBytes`, then unsafe code may assume that:
+/// - It is sound to treat any `t: T` as an immutable `[u8]` of length
+///   `size_of_val(t)`.
+/// - Given `t: &T`, it is sound to construct a `b: &[u8]` where `b.len() ==
+///   size_of_val(t)` at the same address as `t`, and it is sound for both `b`
+///   and `t` to be live at the same time.
+///
+/// If a type is marked as `AsBytes` which violates this contract, it may cause
 /// undefined behavior.
 ///
-/// If a type has the following properties, then it is safe to implement
-/// `AsBytes` for that type
+/// If a type has the following properties, then it is sound to implement
+/// `AsBytes` for that type:
 /// - If the type is a struct:
 ///   - It must have a defined representation (`repr(C)`, `repr(transparent)`,
 ///     or `repr(packed)`).
-///   - All of its fields must be `AsBytes`
+///   - All of its fields must satisfy the requirements to be `AsBytes` (they do
+///     not actually have to be `AsBytes`).
 ///   - Its layout must have no padding. This is always true for
 ///     `repr(transparent)` and `repr(packed)`. For `repr(C)`, see the layout
 ///     algorithm described in the [Rust Reference].
 /// - If the type is an enum:
-///   - It must be a C-like enum (meaning that all variants have no fields)
+///   - It must be a C-like enum (meaning that all variants have no fields).
 ///   - It must have a defined representation (`repr`s `C`, `u8`, `u16`, `u32`,
 ///     `u64`, `usize`, `i8`, `i16`, `i32`, `i64`, or `isize`).
+/// - The type must not contain any [`UnsafeCell`]s (this is required in order
+///   for it to be sound to construct a `&[u8]` and a `&T` to the same region of
+///   memory). The type may contain references or pointers to `UnsafeCell`s so
+///   long as those values can themselves be initialized from zeroes (`AsBytes`
+///   is not currently implemented for, e.g., `Option<&UnsafeCell<_>>`, but it
+///   could be one day).
 ///
 /// [type-layout]: https://doc.rust-lang.org/reference/type-layout.html
 /// [Rust Reference]: https://doc.rust-lang.org/reference/type-layout.html
+/// [`UnsafeCell`]: core::cell::UnsafeCell
 pub unsafe trait AsBytes {
     // The `Self: Sized` bound makes it so that this function doesn't prevent
     // `AsBytes` from being object safe. Note that other `AsBytes` methods
@@ -691,6 +752,13 @@ pub unsafe trait AsBytes {
 /// If `T: Unaligned`, then `align_of::<T>() == 1`.
 ///
 /// # Safety
+///
+/// *This section describes what is required in order for `T: Unaligned`, and
+/// what unsafe code may assume of such types. `#[derive(Unaligned)]` only
+/// permits types which satisfy these requirements. If you don't plan on
+/// implementing `Unaligned` manually, and you don't plan on writing unsafe code
+/// that operates on `Unaligned` types, then you don't need to read this
+/// section.*
 ///
 /// If `T: Unaligned`, then unsafe code may assume that it is sound to produce a
 /// reference to `T` at any memory location regardless of alignment. If a type
