@@ -86,6 +86,7 @@ jobs:
       run: |
         set -e
 
+        cargo check
         function pkg-meta {
           cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"zerocopy\").$1"
         }
