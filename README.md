@@ -15,7 +15,7 @@ parsing and serialization by allowing zero-copy conversion to/from byte
 slices.
 
 This is enabled by four core marker traits, each of which can be derived
-(e.g., `#[derive(FromBytes)]`):
+(e.g., `#[derive(FromZeroes)]`):
 - `FromZeroes` indicates that a sequence of zero bytes represents a valid
   instance of a type
 - `FromBytes` indicates that a type may safely be converted from an
