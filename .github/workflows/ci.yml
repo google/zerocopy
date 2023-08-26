@@ -84,9 +84,8 @@ jobs:
     # actually compatible with.
     - name: Set toolchain version
       run: |
-        set -e
+        set -eo pipefail
 
-        cargo check
         function pkg-meta {
           cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"zerocopy\").$1"
         }
