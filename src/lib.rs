@@ -29,35 +29,51 @@
 //! Note that these traits are ignorant of byte order. For byte order-aware
 //! types, see the [`byteorder`] module.
 //!
-//! # Features
+//! # Cargo Features
 //!
-//! `alloc`: By default, `zerocopy` is `no_std`. When the `alloc` feature is
-//! enabled, the `alloc` crate is added as a dependency, and some
-//! allocation-related functionality is added.
+//! - **`alloc`**   
+//!   By default, `zerocopy` is `no_std`. When the `alloc` feature is enabled,
+//!   the `alloc` crate is added as a dependency, and some allocation-related
+//!   functionality is added.
 //!
-//! `byteorder` (enabled by default): Adds the [`byteorder`] module and a
-//! dependency on the `byteorder` crate. The `byteorder` module provides byte
-//! order-aware equivalents of the multi-byte primitive numerical types. Unlike
-//! their primitive equivalents, the types in this module have no alignment
-//! requirement and support byte order conversions. This can be useful in
-//! handling file formats, network packet layouts, etc which don't provide
-//! alignment guarantees and which may use a byte order different from that of
-//! the execution platform.
+//! - **`byteorder`** (enabled by default)   
+//!   Adds the [`byteorder`] module and a dependency on the `byteorder` crate.
+//!   The `byteorder` module provides byte order-aware equivalents of the
+//!   multi-byte primitive numerical types. Unlike their primitive equivalents,
+//!   the types in this module have no alignment requirement and support byte
+//!   order conversions. This can be useful in handling file formats, network
+//!   packet layouts, etc which don't provide alignment guarantees and which may
+//!   use a byte order different from that of the execution platform.
 //!
-//! `derive`: Provides derives for the core marker traits via the
-//! `zerocopy-derive` crate. These derives are re-exported from `zerocopy`, so
-//! it is not necessary to depend on `zerocopy-derive` directly.
+//! - **`derive`**   
+//!   Provides derives for the core marker traits via the `zerocopy-derive`
+//!   crate. These derives are re-exported from `zerocopy`, so it is not
+//!   necessary to depend on `zerocopy-derive` directly.   
 //!
-//! `simd`: When the `simd` feature is enabled, `FromZeroes`, `FromBytes`, and
-//! `AsBytes` impls are emitted for all stable SIMD types which exist on the
-//! target platform. Note that the layout of SIMD types is not yet stabilized,
-//! so these impls may be removed in the future if layout changes make them
-//! invalid. For more information, see the Unsafe Code Guidelines Reference page
-//! on the [layout of packed SIMD vectors][simd-layout].
+//!   However, you may experience better compile times if you instead directly
+//!   depend on both `zerocopy` and `zerocopy-derive` in your `Cargo.toml`,
+//!   since doing so will allow Rust to compile these crates in parallel. To do
+//!   so, do *not* enable the `derive` feature, and list both dependencies in
+//!   your `Cargo.toml` with the same leading non-zero version number; e.g:
 //!
-//! `simd-nightly`: Enables the `simd` feature and adds support for SIMD types
-//! which are only available on nightly. Since these types are unstable, support
-//! for any type may be removed at any point in the future.
+//!   ```toml
+//!   [dependencies]
+//!   zerocopy = "0.X"
+//!   zerocopy-derive = "0.X"
+//!   ```
+//!
+//! - **`simd`**   
+//!   When the `simd` feature is enabled, `FromZeroes`, `FromBytes`, and
+//!   `AsBytes` impls are emitted for all stable SIMD types which exist on the
+//!   target platform. Note that the layout of SIMD types is not yet stabilized,
+//!   so these impls may be removed in the future if layout changes make them
+//!   invalid. For more information, see the Unsafe Code Guidelines Reference
+//!   page on the [layout of packed SIMD vectors][simd-layout].
+//!
+//! - **`simd-nightly`**   
+//!   Enables the `simd` feature and adds support for SIMD types which are only
+//!   available on nightly. Since these types are unstable, support for any type
+//!   may be removed at any point in the future.
 //!
 //! [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 
