@@ -11,7 +11,7 @@
 [package]
 edition = "2021"
 name = "zerocopy"
-version = "0.7.0"
+version = "0.7.1"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Utilities for zero-copy parsing and serialization"
 license = "BSD-2-Clause"
@@ -55,12 +55,18 @@ simd-nightly = ["simd"]
 __internal_use_only_features_that_work_on_stable = ["alloc", "simd"]
 
 [dependencies]
-zerocopy-derive = { version = "=0.7.0", path = "zerocopy-derive", optional = true }
+zerocopy-derive = { version = "=0.7.1", path = "zerocopy-derive", optional = true }
 
 [dependencies.byteorder]
 version = "1.3"
 default-features = false
 optional = true
+
+# The "associated proc macro pattern" ensures that the versions of zerocopy and
+# zerocopy-derive remain equal, even if the 'derive' feature isn't used.
+# See: https://github.com/matklad/macro-dep-test
+[target.'cfg(any())'.dependencies]
+zerocopy-derive = { version = "=0.7.1", path = "zerocopy-derive" }
 
 [dev-dependencies]
 rand = "0.6"
@@ -72,4 +78,4 @@ static_assertions = "1.1"
 # CI test failures.
 trybuild = "=1.0.80"
 # In tests, unlike in production, zerocopy-derive is not optional
-zerocopy-derive = { version = "=0.7.0", path = "zerocopy-derive" }
+zerocopy-derive = { version = "=0.7.1", path = "zerocopy-derive" }

@@ -305,9 +305,14 @@ jobs:
           ver_zerocopy_derive=$(version zerocopy-derive)
 
           # The non-dev dependency version (`.kind == null` filters out the dev
-          # dependency).
+          # dependency, and `.target == null` filters out the targeted version).
           zerocopy_derive_dep_ver=$(cargo metadata --format-version 1 \
-            | jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select((.name == \"zerocopy-derive\") and .kind == null).req")
+            | jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select((.name == \"zerocopy-derive\") and .kind == null and .target == null).req")
+
+          # The non-dev dependency, targeted version.
+          zerocopy_derive_targeted_ver=$(cargo metadata --format-version 1 \
+            | jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select((.name == \"zerocopy-derive\") and .kind == null and .target == \"cfg(any())\").req")
+
           # The dev dependency version (`.kind == \"dev\"` selects only the dev
           # dependency).
           zerocopy_derive_dev_dep_ver=$(cargo metadata --format-version 1 \
@@ -334,6 +339,15 @@ jobs:
             echo "In dev mode, zerocopy depends upon same version of zerocopy-derive in-tree ($zerocopy_derive_dev_dep_ver)." | tee -a $GITHUB_STEP_SUMMARY
           else
             echo "In dev mode, zerocopy depends upon different version of zerocopy-derive ($zerocopy_derive_dev_dep_ver) than the one in-tree ($ver_zerocopy_derive)." \
+              | tee -a $GITHUB_STEP_SUMMARY >&2
+            exit 1
+          fi
+
+          if [[ "$zerocopy_derive_dep_ver" == "$zerocopy_derive_targeted_ver" ]]; then
+            echo "Same crate version ($zerocopy_derive_dep_ver) found for optional and targeted zerocopy-derive dependency." \
+              | tee -a $GITHUB_STEP_SUMMARY
+          else
+            echo "Different crate versions found for optional ($zerocopy_derive_dep_ver) and targeted ($zerocopy_derive_targeted_ver) dependency." \
               | tee -a $GITHUB_STEP_SUMMARY >&2
             exit 1
           fi
