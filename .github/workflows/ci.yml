@@ -181,9 +181,19 @@ jobs:
       if: contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')
 
     - name: Run tests under Miri
-      # Skip the `ui` test since it invokes the compiler, which we can't do from
-      # Miri (and wouldn't want to do anyway).
-      run: cargo +${{ env.ZC_TOOLCHAIN }} miri test --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} -- --skip ui
+      run: |
+        # Run under both the stacked borrows model (default) and under the tree 
+        # borrows model to ensure we're compliant with both.
+        for EXTRA_FLAGS in "" "-Zmiri-tree-borrows"; do
+          # Skip the `ui` test since it invokes the compiler, which we can't do from
+          # Miri (and wouldn't want to do anyway).
+          MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" cargo +${{ env.ZC_TOOLCHAIN }} \
+            miri test \
+            --package ${{ matrix.crate }} \
+            --target ${{ matrix.target }} \
+            ${{ matrix.features }} \
+            -- --skip ui
+        done
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
       #
