@@ -947,6 +947,40 @@ safety_comment! {
 }
 safety_comment! {
     /// SAFETY:
+    /// The all-zeroes const and mut raw pointers are valid, and it is sound to
+    /// materialize them from nothing. The existence of `ptr::null` [1] and
+    /// `ptr::null_mut` [2], which are safe functions, guarantees this (if this
+    /// were not sound, these functions could not exist). Unlike non-null
+    /// pointers, it is always unsound to dereference null pointers, and so it's
+    /// not a footgun that converting from zeroes may not preserve pointer
+    /// provenance information.
+    ///
+    /// Since the encoding of fat pointers is not currently defined by the
+    /// reference, it would not be sound to implement `FromZeroes` for fat
+    /// pointer types such `*const T` for `T: ?Sized` or even for more
+    /// constrained pointer types such as `*const [T]` for `T: Sized`.
+    ///
+    /// Currently, though it would likely be sound, we choose not to implement
+    /// `FromBytes` or `AsBytes` for raw pointers because it would be easy for
+    /// code to mistakenly assume that converting from a raw pointer to a
+    /// different representation (such as a byte array) and back again via
+    /// `FromBytes` and `AsBytes` would result in a semantically identical
+    /// pointer. Thanks to provenance information, that may not actually be
+    /// true, so this would present a serious footgun. Note that this aspect of
+    /// Rust's memory model is still up in the air, so it's possible that these
+    /// conversions will one day be determined to be sound, at which point we
+    /// could choose to support these impls. See #170 for more information.
+    ///
+    /// [1] https://doc.rust-lang.org/core/ptr/fn.null.html
+    /// [2] https://doc.rust-lang.org/core/ptr/fn.null_mut.html
+    // TODO(https://github.com/rust-lang/reference/pull/1392#issuecomment-1696768191):
+    // Once the validity of materializing null pointers is guaranteed in the
+    // reference, cite that instead of `null` and `null_mut`.
+    unsafe_impl!(T: Sized => FromZeroes for *const T);
+    unsafe_impl!(T: Sized => FromZeroes for *mut T);
+}
+safety_comment! {
+    /// SAFETY:
     /// Per the reference [1]:
     ///
     ///   An array of `[T; N]` has a size of `size_of::<T>() * N` and the same
@@ -3982,6 +4016,9 @@ mod tests {
 
         assert_impls!(Unalign<u8>: FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!(Unalign<NotZerocopy>: Unaligned, !FromZeroes, !FromBytes, !AsBytes);
+
+        assert_impls!(*const NotZerocopy: FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*mut NotZerocopy: FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
         assert_impls!([u8]: FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!([NotZerocopy]: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);

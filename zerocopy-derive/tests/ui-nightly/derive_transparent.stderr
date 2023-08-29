@@ -6,13 +6,13 @@ error[E0277]: the trait bound `NotZerocopy: FromZeroes` is not satisfied
    |
    = help: the following other types implement trait `FromZeroes`:
              ()
+             *const T
+             *mut T
              AU16
              F32<O>
              F64<O>
              I128<O>
              I16<O>
-             I32<O>
-             I64<O>
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `FromZeroes`
   --> tests/ui-nightly/derive_transparent.rs:23:19
