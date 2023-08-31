@@ -78,6 +78,18 @@ jobs:
     steps:
     - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
 
+    - uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+    - name: Clean build artifacts
+      run: |
+        cargo clean
     # We use toolchain descriptors ("msrv", "stable", and "nightly") in the
     # matrix. This step converts the current descriptor to a particular
     # toolchain version by looking up the corresponding key in `Cargo.toml`. It
