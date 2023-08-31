@@ -97,18 +97,19 @@ jobs:
         set -eo pipefail
 
         function pkg-meta {
-          cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"zerocopy\").$1"
+          grep $1 Cargo.toml | sed 's/.*= "\(.*\)"/\1/g'
+
         }
 
         case ${{ matrix.toolchain }} in
           msrv)
-            ZC_TOOLCHAIN="$(pkg-meta rust_version)"
+            ZC_TOOLCHAIN="$(pkg-meta rust-version)"
             ;;
           stable)
-            ZC_TOOLCHAIN="$(pkg-meta 'metadata.ci."pinned-stable"')"
+            ZC_TOOLCHAIN="$(pkg-meta pinned-stable)"
             ;;
           nightly)
-            ZC_TOOLCHAIN="$(pkg-meta 'metadata.ci."pinned-nightly"')"
+            ZC_TOOLCHAIN="$(pkg-meta pinned-nightly)"
             ;;
           *)
             echo 'Unrecognized toolchain: ${{ matrix.toolchain }}' | tee -a $GITHUB_STEP_SUMMARY >&2
