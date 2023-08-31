@@ -363,8 +363,6 @@ jobs:
             exit 1
           fi
 
-
-
   generate_cache:
     runs-on: ubuntu-latest
     name: Generate cache
