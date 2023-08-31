@@ -31,6 +31,7 @@ env:
 jobs:
   build_test:
     runs-on: ubuntu-latest
+    needs: generate_cache
 
     strategy:
       # By default, this is set to `true`, which means that a single CI job
@@ -81,12 +82,10 @@ jobs:
     - uses: actions/cache@v3
       with:
         path: |
-          ~/.cargo/bin/
           ~/.cargo/registry/index/
           ~/.cargo/registry/cache/
-          ~/.cargo/git/db/
-          target/
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
+        key: ${{ runner.os }}-cargo-test-CI2-${{ hashFiles('**/Cargo.toml') }}
+
     - name: Clean build artifacts
       run: |
         cargo clean
@@ -371,15 +370,18 @@ jobs:
     name: Generate cache
     steps:
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
       - uses: actions/cache@v3
         with:
           path: |
-            ~/.cargo/bin/
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-test-CI-${{ hashFiles('**/Cargo.toml') }}
+          key: ${{ runner.os }}-cargo-test-CI2-${{ hashFiles('**/Cargo.toml') }}
+
+      - name: Cargo metadata
+        run: |
+          cargo metadata
+
       - name: Clean build artifacts
         run: |
           cargo clean
