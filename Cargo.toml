@@ -79,3 +79,4 @@ static_assertions = "1.1"
 trybuild = "=1.0.80"
 # In tests, unlike in production, zerocopy-derive is not optional
 zerocopy-derive = { version = "=0.7.1", path = "zerocopy-derive" }
+

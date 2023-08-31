@@ -78,35 +78,6 @@ jobs:
     steps:
     - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
 
-    - name: Check cache
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.cargo/bin/
-          ~/.cargo/registry/index/
-          ~/.cargo/registry/cache/
-          ~/.cargo/git/db/
-          target/
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
-    - name: Get the packages
-      if: steps.cache-check.outputs.cache-hit != 'true'
-      run: |
-        cargo metadata
-    - name: Save cache
-      if: steps.cache-check.outputs.cache-hit != 'true'
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.cargo/bin/
-          ~/.cargo/registry/index/
-          ~/.cargo/registry/cache/
-          ~/.cargo/git/db/
-          target/
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
-
-    - name: Clean build artifacts
-      run: |
-        cargo clean
     # We use toolchain descriptors ("msrv", "stable", and "nightly") in the
     # matrix. This step converts the current descriptor to a particular
     # toolchain version by looking up the corresponding key in `Cargo.toml`. It
@@ -380,3 +351,24 @@ jobs:
               | tee -a $GITHUB_STEP_SUMMARY >&2
             exit 1
           fi
+  generate_cache:
+    runs-on: ubuntu-latest
+    name: Generate rust package cache
+    steps:
+      - name: Check cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
+      - name: Get the packages
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        run: |
+          cargo metadata
+      - name: Clean build artifacts
+        run: |
+          cargo clean
