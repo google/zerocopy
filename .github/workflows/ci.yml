@@ -219,7 +219,14 @@ jobs:
       run: cargo +${{ env.ZC_TOOLCHAIN }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --tests --verbose
 
     - name: Cargo doc
-      run: cargo +${{ env.ZC_TOOLCHAIN }} doc --package ${{ matrix.crate }} ${{ matrix.features }}
+      # We pass --document-private-items and --document-hidden items to ensure that 
+      # documentation always builds even for these items. This makes future changes to 
+      # make those items public/non-hidden more painless. Note that 
+      # --document-hidden-items is unstable; if a future release breaks or removes it,
+      # we can just update CI to no longer pass that flag.
+      run: |
+        export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-items --document-hidden-items' || '' }} $RUSTDOCFLAGS"
+        cargo +${{ env.ZC_TOOLCHAIN }} doc --document-private-items --package ${{ matrix.crate }} ${{ matrix.features }}
       # When the `alloc` feature is disabled, `cargo doc` fails because we link
       # to `alloc::vec::Vec` in a doc comment, and the `alloc` crate is not in
       # scope without the `alloc` feature. This isn't a big deal because we care
