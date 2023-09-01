@@ -225,7 +225,7 @@ jobs:
       # --document-hidden-items is unstable; if a future release breaks or removes it,
       # we can just update CI to no longer pass that flag.
       run: |
-        export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-items --document-hidden-items' || '' }} $RUSTDOCFLAGS"
+        export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items' || '' }} $RUSTDOCFLAGS"
         cargo +${{ env.ZC_TOOLCHAIN }} doc --document-private-items --package ${{ matrix.crate }} ${{ matrix.features }}
       # When the `alloc` feature is disabled, `cargo doc` fails because we link
       # to `alloc::vec::Vec` in a doc comment, and the `alloc` crate is not in
