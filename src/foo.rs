@@ -15,6 +15,231 @@ use core::{
 
 use super::*;
 
+/// An alternative to the standard library's [`MaybeUninit`] that supports
+/// unsized types.
+///
+/// `MaybeUninit<T>` is identical to the standard library's `MaybeUninit` type
+/// with the exception that it supports wrapping unsized types. Namely,
+/// `MaybeUninit<T>` has the same layout as `T`, but it has no bit validity
+/// constraints - any byte of a `MaybeUninit<T>` may have any value, including
+/// uninitialized.
+///
+/// [`MaybeUninit`]: core::mem::MaybeUninit
+#[derive(Copy, Clone)]
+#[repr(transparent)]
+pub struct MaybeUninit<T: AsMaybeUninit + ?Sized> {
+    inner: T::MaybeUninit,
+}
+
+impl<T: AsMaybeUninit + ?Sized> Debug for MaybeUninit<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.pad(core::any::type_name::<Self>())
+    }
+}
+
+impl<T: AsMaybeUninit + ?Sized> MaybeUninit<T> {
+    /// Gets a shared reference to the contained value.
+    ///
+    /// # Safety
+    ///
+    /// Calling this when the content is not yet fully initialized causes
+    /// undefined behavior. It is up to the caller to guarantee that `self` is
+    /// really in an initialized state.
+    pub unsafe fn assume_init_ref(&self) -> &T {
+        let ptr = T::raw_from_maybe_uninit(&self.inner);
+        // SAFETY: TODO
+        unsafe { &*ptr }
+    }
+
+    /// Gets a mutable reference to the contained value.
+    ///
+    /// # Safety
+    ///
+    /// Calling this when the content is not yet fully initialized causes
+    /// undefined behavior. It is up to the caller to guarantee that `self` is
+    /// really in an initialized state.
+    pub unsafe fn assume_init_mut(&mut self) -> &mut T {
+        let ptr = T::raw_mut_from_maybe_uninit(&mut self.inner);
+        // SAFETY: TODO
+        unsafe { &mut *ptr }
+    }
+}
+
+impl<T: Sized> MaybeUninit<T> {
+    /// Creates a new `MaybeUninit<T>` in an uninitialized state.
+    pub const fn uninit() -> MaybeUninit<T> {
+        MaybeUninit { inner: mem::MaybeUninit::uninit() }
+    }
+
+    /// Extracts the value from the `MaybeUninit<T>` container.
+    ///
+    /// # Safety
+    ///
+    /// `assume_init` has the same safety requirements and guarantees as the
+    /// standard library's [`MaybeUninit::assume_init`] method.
+    ///
+    /// [`MaybeUninit::assume_init`]: mem::MaybeUninit::assume_init
+    pub const unsafe fn assume_init(self) -> T {
+        // SAFETY: The caller has promised to uphold the safety invariants of
+        // the exact function we're calling here. Since, for `T: Sized`,
+        // `MaybeUninit<T>` is a `repr(transparent)` wrapper around
+        // `mem::MaybeUninit<T>`, it is sound to treat `Self` as equivalent to a
+        // `mem::MaybeUninit<T>` for the purposes of
+        // `mem::MaybeUninit::assume_init`'s safety invariants.
+        unsafe { self.inner.assume_init() }
+    }
+}
+
+/// A type which can be wrapped in [`MaybeUninit`].
+///
+/// # Safety
+///
+/// The safety invariants on the associated `MaybeUninit` type must be
+/// upheld.
+pub unsafe trait AsMaybeUninit {
+    /// A type which has the same layout as `Self`, but which has no validity
+    /// constraints.
+    ///
+    /// Roughly speaking, this type is equivalent to what the standard library's
+    /// [`MaybeUninit<Self>`] would be if `MaybeUninit` supported unsized types.
+    ///
+    /// # Safety
+    ///
+    /// For `T: AsMaybeUninit`, the following must hold:
+    /// - Given `m: T::MaybeUninit`, it is sound to write any byte value,
+    ///   including an uninitialized byte, at any byte offset in `m`
+    /// - `T` and `T::MaybeUninit` have the same alignment requirement
+    /// - It is valid to use an `as` cast to convert a `t: *const T` to a `m:
+    ///   *const T::MaybeUninit` and vice-versa (and likewise for `*mut T`/`*mut
+    ///   T::MaybeUninit`). Regardless of which direction the conversion was
+    ///   performed, the sizes of the pointers' referents are always equal (in
+    ///   terms of an API which is not yet stable, `size_of_val_raw(t) ==
+    ///   size_of_val_raw(m)`).
+    /// - `T::MaybeUninit` contains [`UnsafeCell`]s at exactly the same byte
+    ///   ranges that `T` does.
+    ///
+    /// [`MaybeUninit<Self>`]: core::mem::MaybeUninit
+    /// [`UnsafeCell`]: core::cell::UnsafeCell
+    type MaybeUninit: ?Sized;
+
+    /// Converts a const pointer at the type level.
+    ///
+    /// # Safety
+    ///
+    /// Callers may assume that the memory region addressed by the return value
+    /// is the same as that addressed by the argument, and that both the return
+    /// value and the argument have the same provenance.
+    fn raw_from_maybe_uninit(maybe_uninit: *const Self::MaybeUninit) -> *const Self;
+
+    /// Converts a mut pointer at the type level.
+    ///
+    /// # Safety
+    ///
+    /// Callers may assume that the memory region addressed by the return value
+    /// is the same as that addressed by the argument, and that both the return
+    /// value and the argument have the same provenance.
+    fn raw_mut_from_maybe_uninit(maybe_uninit: *mut Self::MaybeUninit) -> *mut Self;
+}
+
+// SAFETY: See safety comment on `MaybeUninit`.
+unsafe impl<T: Sized> AsMaybeUninit for T {
+    // SAFETY:
+    // - `MaybeUninit` has no validity requirements, so it is sound to write any
+    //   byte value, including an uninitialized byte, at any offset.
+    // - `MaybeUninit<T>` has the same layout as `T`, so they have the same
+    //   alignment requirement. For the same reason, their sizes are equal.
+    // - Since their sizes are equal, raw pointers to both types are thin
+    //   pointers, and thus can be converted using as casts. For the same
+    //   reason, the sizes of these pointers' referents are always equal.
+    // - `MaybeUninit<T>` has the same field offsets as `T`, and so it contains
+    //   `UnsafeCell`s at exactly the same byte ranges as `T`.
+    type MaybeUninit = mem::MaybeUninit<T>;
+
+    fn raw_from_maybe_uninit(maybe_uninit: *const mem::MaybeUninit<T>) -> *const T {
+        maybe_uninit.cast::<T>()
+    }
+
+    fn raw_mut_from_maybe_uninit(maybe_uninit: *mut mem::MaybeUninit<T>) -> *mut T {
+        maybe_uninit.cast::<T>()
+    }
+}
+
+// SAFETY: See safety comment on `MaybeUninit`.
+unsafe impl<T: Sized> AsMaybeUninit for [T] {
+    // SAFETY:
+    // - `MaybeUninit` has no bit validity requirements and `[U]` has the same
+    //   bit validity requirements as `U`, so `[MaybeUninit<T>]` has no bit
+    //   validity requirements. Thus, it is sound to write any byte value,
+    //   including an uninitialized byte, at any byte offset.
+    // - Since `MaybeUninit<T>` has the same layout as `T`, and `[U]` has the
+    //   same alignment as `U`, `[MaybeUninit<T>]` has the same alignment as
+    //   `[T]`.
+    // - `[T]` and `[MaybeUninit<T>]` are both slice types, and so pointers can
+    //   be converted using an `as` cast. Since `T` and `MaybeUninit<T>` have
+    //   the same size, and since such a cast preserves the number of elements
+    //   in the slice, the referent slices themselves will have the same size.
+    // - `MaybeUninit<T>` has the same field offsets as `[T]`, and so it
+    //   contains `UnsafeCell`s at exactly the same byte ranges as `[T]`.
+    type MaybeUninit = [mem::MaybeUninit<T>];
+
+    fn raw_from_maybe_uninit(maybe_uninit: *const [mem::MaybeUninit<T>]) -> *const [T] {
+        maybe_uninit as *const [T]
+    }
+
+    fn raw_mut_from_maybe_uninit(maybe_uninit: *mut [mem::MaybeUninit<T>]) -> *mut [T] {
+        maybe_uninit as *mut [T]
+    }
+}
+
+// SAFETY: See safety comment on `MaybeUninit`.
+unsafe impl AsMaybeUninit for str {
+    // SAFETY: `str` has the same layout as `[u8]`. Thus, the same safety
+    // argument for `<[u8] as AsMaybeUninit>::MaybeUninit` applies here.
+    type MaybeUninit = <[u8] as AsMaybeUninit>::MaybeUninit;
+
+    fn raw_from_maybe_uninit(
+        maybe_uninit: *const <[u8] as AsMaybeUninit>::MaybeUninit,
+    ) -> *const str {
+        maybe_uninit as *const str
+    }
+
+    fn raw_mut_from_maybe_uninit(
+        maybe_uninit: *mut <[u8] as AsMaybeUninit>::MaybeUninit,
+    ) -> *mut str {
+        maybe_uninit as *mut str
+    }
+}
+
+// SAFETY: See safety comment on `MaybeUninit`.
+unsafe impl<T: Sized> AsMaybeUninit for MaybeUninit<[T]> {
+    // SAFETY: `MaybeUninit<[T]>` is a `repr(transparent)` wrapper around
+    // `[T::MaybeUninit]`. Thus:
+    // - Given `m: Self::MaybeUninit = [T::MaybeUninit]`, it is sound to write
+    //   any byte value, including an uninitialized byte, at any byte offset in
+    //   `m` because that is already required of `T::MaybeUninit`, and thus of
+    //   [`T::MaybeUninit`]
+    // - `Self` and `[T::MaybeUninit]` have the same representation, and so:
+    //   - Alignments are equal
+    //   - Pointer casts are valid, and sizes of referents of both pointer types
+    //     are equal.
+    // - `Self::MaybeUninit = [T::MaybeUninit]` contains `UnsafeCell`s at
+    //   exactly the same byte ranges that `Self` does because `Self` has the
+    //   same bit validity as `[T::MaybeUninit]`.
+    type MaybeUninit = [<T as AsMaybeUninit>::MaybeUninit];
+
+    fn raw_from_maybe_uninit(
+        maybe_uninit: *const [<T as AsMaybeUninit>::MaybeUninit],
+    ) -> *const MaybeUninit<[T]> {
+        maybe_uninit as *const MaybeUninit<[T]>
+    }
+
+    fn raw_mut_from_maybe_uninit(
+        maybe_uninit: *mut [<T as AsMaybeUninit>::MaybeUninit],
+    ) -> *mut MaybeUninit<[T]> {
+        maybe_uninit as *mut MaybeUninit<[T]>
+    }
+}
+
 /// A type with no alignment requirement.
 ///
 /// An `Unalign` wraps a `T`, removing any alignment requirement. `Unalign<T>`
