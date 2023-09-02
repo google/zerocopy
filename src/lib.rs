@@ -870,11 +870,21 @@ safety_comment! {
     //
     /// SAFETY:
     /// - `FromBytes`: `MaybeUninit<T>` has no restrictions on its contents.
+    ///   Unfortunately, in addition to bit validity, `FromZeroes` and
+    ///   `FromBytes` also require that implementers contain no `UnsafeCell`s.
+    ///   Thus, we require `T: FromZeroes` and `T: FromBytes` in order to ensure
+    ///   that `T` - and thus `MaybeUninit<T>` - contains to `UnsafeCell`s.
+    ///   Thus, requiring that `T` implement each of these traits is sufficient
     /// - `Unaligned`: `MaybeUninit<T>` is guaranteed by its documentation [1]
     ///   to have the same alignment as `T`.
     ///
     /// [1] https://doc.rust-lang.org/nightly/core/mem/union.MaybeUninit.html#layout-1
-    unsafe_impl!(T => FromBytes for MaybeUninit<T>);
+    ///
+    /// TODO(https://github.com/google/zerocopy/issues/251): If we split
+    /// `FromBytes` and `RefFromBytes`, or if we introduce a separate
+    /// `NoCell`/`Freeze` trait, we can relax the trait bounds for `FromZeroes`
+    /// and `FromBytes`.
+    unsafe_impl!(T: FromBytes => FromBytes for MaybeUninit<T>);
     unsafe_impl!(T: Unaligned => Unaligned for MaybeUninit<T>);
     assert_unaligned!(MaybeUninit<()>, MaybeUninit<u8>);
 }
@@ -4008,7 +4018,7 @@ mod tests {
         assert_impls!(ManuallyDrop<[NotZerocopy]>: !FromBytes, !AsBytes, !Unaligned);
 
         assert_impls!(MaybeUninit<u8>: FromBytes, Unaligned, !AsBytes);
-        assert_impls!(MaybeUninit<NotZerocopy>: FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(MaybeUninit<NotZerocopy>: !FromBytes, !AsBytes, !Unaligned);
 
         assert_impls!(Wrapping<u8>: FromBytes, AsBytes, Unaligned);
         assert_impls!(Wrapping<NotZerocopy>: !FromBytes, !AsBytes, !Unaligned);
