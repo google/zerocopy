@@ -3002,6 +3002,91 @@ mod tests {
     }
 
     #[test]
+    fn test_maybe_valid() {
+        let m = MaybeValid::<usize>::default();
+        // SAFETY: all bit patterns are valid `usize`s, and `m` is initialized.
+        let u = unsafe { m.assume_valid() };
+        // This ensures that Miri can see whether `u` (and thus `m`) has been
+        // properly initialized.
+        assert_eq!(u, u);
+
+        fn bytes_to_maybe_valid(bytes: &mut [u8]) -> &mut MaybeValid<[u8]> {
+            // SAFETY: `MaybeValid<[u8]>` has the same layout as `[u8]`, and
+            // `bytes` is initialized.
+            unsafe {
+                #[allow(clippy::as_conversions)]
+                let m = &mut *(bytes as *mut [u8] as *mut MaybeValid<[u8]>);
+                m
+            }
+        }
+
+        let mut bytes = [0u8, 1, 2];
+        let m = bytes_to_maybe_valid(&mut bytes[..]);
+
+        // SAFETY: `m` was created from a valid `[u8]`.
+        let r = unsafe { m.assume_valid_ref() };
+        assert_eq!(r.len(), 3);
+        assert_eq!(r, [0, 1, 2]);
+
+        // SAFETY: `m` was created from a valid `[u8]`.
+        let r = unsafe { m.assume_valid_mut() };
+        assert_eq!(r.len(), 3);
+        assert_eq!(r, [0, 1, 2]);
+
+        r[0] = 1;
+        assert_eq!(bytes, [1, 1, 2]);
+
+        let mut bytes = [0u8, 1, 2];
+        let m = bytes_to_maybe_valid(&mut bytes[..]);
+        let slc = m.as_slice_of_maybe_valids();
+        assert_eq!(slc.len(), 3);
+        for i in 0u8..3 {
+            // SAFETY: `m` was created from a valid `[u8]`.
+            let u = unsafe { slc[usize::from(i)].assume_valid_ref() };
+            assert_eq!(u, &i);
+        }
+    }
+
+    #[test]
+    fn test_maybe_valid_as_slice() {
+        let mut m = MaybeValid::<[u8; 3]>::default();
+        // SAFETY: all bit patterns are valid `[u8; 3]`s, and `m` is
+        // initialized.
+        unsafe { *m.assume_valid_mut() = [0, 1, 2] };
+
+        let slc = m.as_slice().as_slice_of_maybe_valids();
+        assert_eq!(slc.len(), 3);
+
+        for i in 0u8..3 {
+            // SAFETY: `m` was initialized as a valid `[u8; 3]`.
+            let u = unsafe { slc[usize::from(i)].assume_valid_ref() };
+            assert_eq!(u, &i);
+        }
+    }
+
+    #[test]
+    fn test_maybe_valid_from_ref() {
+        use core::cell::Cell;
+
+        let u = 1usize;
+        let m = MaybeValid::from_ref(&u);
+        // SAFETY: `m` was constructed from a valid `&usize`.
+        assert_eq!(unsafe { m.assume_valid_ref() }, &1usize);
+
+        // Test that interior mutability doesn't affect correctness or
+        // soundness.
+
+        let c = Cell::new(1usize);
+        let m = MaybeValid::from_ref(&c);
+        // SAFETY: `m` was constructed from a valid `&usize`.
+        assert_eq!(unsafe { m.assume_valid_ref() }, &Cell::new(1));
+
+        c.set(2);
+        // SAFETY: `m` was constructed from a valid `&usize`.
+        assert_eq!(unsafe { m.assume_valid_ref() }, &Cell::new(2));
+    }
+
+    #[test]
     fn test_read_write() {
         const VAL: u64 = 0x12345678;
         #[cfg(target_endian = "big")]
@@ -3837,6 +3922,12 @@ mod tests {
         assert_impls!(MaybeUninit<MaybeUninit<[u8]>>: FromZeroes, FromBytes, Unaligned, !AsBytes);
         assert_impls!(MaybeUninit<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
         assert_impls!(MaybeUninit<MaybeUninit<NotZerocopy>>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+
+        assert_impls!(MaybeValid<u8>: Unaligned, AsBytes, !FromZeroes, !FromBytes);
+        assert_impls!(MaybeValid<MaybeValid<u8>>: Unaligned, AsBytes, !FromZeroes, !FromBytes);
+        assert_impls!(MaybeValid<[u8]>: Unaligned, AsBytes, !FromZeroes, !FromBytes);
+        assert_impls!(MaybeValid<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(MaybeValid<MaybeValid<NotZerocopy>>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
         assert_impls!(Wrapping<u8>: FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!(Wrapping<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
