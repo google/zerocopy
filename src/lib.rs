@@ -177,7 +177,7 @@ use core::{
     fmt::{self, Debug, Display, Formatter},
     hash::Hasher,
     marker::PhantomData,
-    mem::{self, ManuallyDrop, MaybeUninit},
+    mem::{self, ManuallyDrop},
     num::{
         NonZeroI128, NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8, NonZeroIsize, NonZeroU128,
         NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize, Wrapping,
@@ -229,11 +229,54 @@ pub unsafe trait KnownLayout: sealed::KnownLayoutSealed {
     #[doc(hidden)]
     const TRAILING_SLICE_ELEM_SIZE: Option<usize>;
 
+    /// A type which has the same layout as `Self`, but which has no validity
+    /// constraints.
+    ///
+    /// Roughly speaking, this type is equivalent to what the standard library's
+    /// [`MaybeUninit<Self>`] would be if it supported unsized types.
+    ///
+    /// # Safety
+    ///
+    /// For `T: KnownLayout`, the following must hold:
+    /// - Given `m: T::MaybeUninit`, it is sound to write any byte value,
+    ///   including an uninitialized byte, at any byte offset in `m`
+    /// - `T` and `T::MaybeUninit` have the same alignment requirement
+    /// - It is valid to use an `as` cast to convert a `t: *const T` to a `m:
+    ///   *const T::MaybeUninit` and vice-versa (and likewise for `*mut T`/`*mut
+    ///   T::MaybeUninit`). Regardless of which direction the conversion was
+    ///   performed, the sizes of the pointers' referents are always equal (in
+    ///   terms of an API which is not yet stable, `size_of_val_raw(t) ==
+    ///   size_of_val_raw(m)`).
+    /// - `T::MaybeUninit` contains [`UnsafeCell`]s at exactly the same byte
+    ///   ranges that `T` does.
+    ///
+    /// [`MaybeUninit<Self>`]: core::mem::MaybeUninit
+    /// [`UnsafeCell`]: core::cell::UnsafeCell
+    type MaybeUninit: ?Sized + KnownLayout;
+
     /// SAFETY: The returned pointer has the same address and provenance as
     /// `bytes`. If `Self` is a DST, the returned pointer's referent has `elems`
     /// elements in its trailing slice.
     #[doc(hidden)]
     fn raw_from_ptr_len(bytes: NonNull<u8>, elems: usize) -> NonNull<Self>;
+
+    /// Converts a pointer at the type level.
+    ///
+    /// # Safety
+    ///
+    /// Callers may assume that the memory region addressed by the return value
+    /// is the same as that addressed by the argument, and that both the return
+    /// value and the argument have the same provenance.
+    fn cast_from_maybe_uninit(maybe_uninit: NonNull<Self::MaybeUninit>) -> NonNull<Self>;
+
+    /// Converts a pointer at the type level.
+    ///
+    /// # Safety
+    ///
+    /// Callers may assume that the memory region addressed by the return value
+    /// is the same as that addressed by the argument, and that both the return
+    /// value and the argument have the same provenance.
+    fn cast_to_maybe_uninit(slf: NonNull<Self>) -> NonNull<Self::MaybeUninit>;
 }
 
 impl<T: KnownLayout> sealed::KnownLayoutSealed for [T] {}
@@ -253,6 +296,22 @@ unsafe impl<T: KnownLayout> KnownLayout for [T] {
     };
     const TRAILING_SLICE_ELEM_SIZE: Option<usize> = Some(mem::size_of::<T>());
 
+    // SAFETY:
+    // - `MaybeUninit` has no bit validity requirements and `[U]` has the same
+    //   bit validity requirements as `U`, so `[MaybeUninit<T>]` has no bit
+    //   validity requirements. Thus, it is sound to write any byte value,
+    //   including an uninitialized byte, at any byte offset.
+    // - Since `MaybeUninit<T>` has the same layout as `T`, and `[U]` has the
+    //   same alignment as `U`, `[MaybeUninit<T>]` has the same alignment as
+    //   `[T]`.
+    // - `[T]` and `[MaybeUninit<T>]` are both slice types, and so pointers can
+    //   be converted using an `as` cast. Since `T` and `MaybeUninit<T>` have
+    //   the same size, and since such a cast preserves the number of elements
+    //   in the slice, the referent slices themselves will have the same size.
+    // - `MaybeUninit<T>` has the same field offsets as `[T]`, and so it
+    //   contains `UnsafeCell`s at exactly the same byte ranges as `[T]`.
+    type MaybeUninit = [mem::MaybeUninit<T>];
+
     // SAFETY: `.cast` preserves address and provenance. The returned pointer
     // refers to an object with `elems` elements by construction.
     #[inline(always)]
@@ -260,6 +319,20 @@ unsafe impl<T: KnownLayout> KnownLayout for [T] {
         // TODO(#67): Remove this allow. See NonNullExt for more details.
         #[allow(unstable_name_collisions)]
         NonNull::slice_from_raw_parts(data.cast::<T>(), elems)
+    }
+
+    fn cast_from_maybe_uninit(maybe_uninit: NonNull<[mem::MaybeUninit<T>]>) -> NonNull<[T]> {
+        let (ptr, len) = (maybe_uninit.cast::<T>(), maybe_uninit.len());
+        // TODO(#67): Remove this allow. See NonNullExt for more details.
+        #[allow(unstable_name_collisions)]
+        NonNull::slice_from_raw_parts(ptr, len)
+    }
+
+    fn cast_to_maybe_uninit(slf: NonNull<[T]>) -> NonNull<[mem::MaybeUninit<T>]> {
+        let (ptr, len) = (slf.cast::<mem::MaybeUninit<T>>(), slf.len());
+        // TODO(#67): Remove this allow. See NonNullExt for more details.
+        #[allow(unstable_name_collisions)]
+        NonNull::slice_from_raw_parts(ptr, len)
     }
 }
 
@@ -297,10 +370,35 @@ macro_rules! impl_known_layout {
             // `T` is sized so it has no trailing slice.
             const TRAILING_SLICE_ELEM_SIZE: Option<usize> = None;
 
+            // SAFETY:
+            // - `MaybeUninit` has no validity requirements, so it is sound to
+            //   write any byte value, including an uninitialized byte, at any
+            //   offset.
+            // - `MaybeUninit<T>` has the same layout as `T`, so they have the
+            //   same alignment requirement. For the same reason, their sizes
+            //   are equal.
+            // - Since their sizes are equal, raw pointers to both types are
+            //   thin pointers, and thus can be converted using as casts. For
+            //   the same reason, the sizes of these pointers' referents are
+            //   always equal.
+            // - `MaybeUninit<T>` has the same field offsets as `T`, and so it
+            //   contains `UnsafeCell`s at exactly the same byte ranges as `T`.
+            type MaybeUninit = mem::MaybeUninit<$ty>;
+
             // SAFETY: `.cast` preserves address and provenance.
             #[inline(always)]
             fn raw_from_ptr_len(bytes: NonNull<u8>, _elems: usize) -> NonNull<Self> {
                 bytes.cast::<Self>()
+            }
+
+            // SAFETY: `.cast` preserves pointer address and provenance.
+            fn cast_from_maybe_uninit(maybe_uninit: NonNull<Self::MaybeUninit>) -> NonNull<Self> {
+                maybe_uninit.cast::<Self>()
+            }
+
+            // SAFETY: `.cast` preserves pointer address and provenance.
+            fn cast_to_maybe_uninit(slf: NonNull<Self>) -> NonNull<Self::MaybeUninit> {
+                slf.cast::<Self::MaybeUninit>()
             }
         }
     };
@@ -317,16 +415,85 @@ impl_known_layout!(
 impl_known_layout!(T => Option<T>);
 impl_known_layout!(T: ?Sized => PhantomData<T>);
 impl_known_layout!(T => Wrapping<T>);
-impl_known_layout!(T => MaybeUninit<T>);
+impl_known_layout!(T => mem::MaybeUninit<T>);
 impl_known_layout!(const N: usize, T => [T; N]);
 
 safety_comment! {
     /// SAFETY:
     /// `str` and `ManuallyDrop<[T]>` have the same representations as `[u8]`
-    /// and `[T]` repsectively. `str` has different bit validity than `[u8]`,
-    /// but that doesn't affect the soundness of this impl.
+    /// and `[T]` repsectively, including with respect to the locations of
+    /// `UnsafeCell`s. `str` has different bit validity than `[u8]`, but that
+    /// doesn't affect the soundness of this impl.
     unsafe_impl_known_layout!(#[repr([u8])] str);
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] ManuallyDrop<T>);
+    /// SAFETY:
+    /// `Cell<T>` and `UnsafeCell<T>` have the same representations, including
+    /// (trivially) with respect to the locations of `UnsafeCell`s.
+    unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(cell::UnsafeCell<T>)] cell::Cell<T>);
+}
+
+impl<T: ?Sized + sealed::KnownLayoutSealed> sealed::KnownLayoutSealed for cell::UnsafeCell<T> {}
+// SAFETY: See inline comments.
+unsafe impl<T: ?Sized + KnownLayout> KnownLayout for cell::UnsafeCell<T> {
+    // SAFETY: `UnsafeCell<T>` and `T` have the same size, alignment, and
+    // trailing element size.
+    const FIXED_PREFIX_SIZE: usize = <T as KnownLayout>::FIXED_PREFIX_SIZE;
+    const ALIGN: NonZeroUsize = <T as KnownLayout>::ALIGN;
+    const TRAILING_SLICE_ELEM_SIZE: Option<usize> = <T as KnownLayout>::TRAILING_SLICE_ELEM_SIZE;
+
+    // SAFETY:
+    // - By `MaybeUninit` invariant, it is sound to write any byte - including
+    //   an uninitialized byte - at any byte offset in
+    //   `UnsafeCell<T::MaybeUninit>`.
+    // - `UnsafeCell<T>` and `T` have the same size, alignment, and trailing
+    //   element size. Also, by `MaybeUninit` invariants:
+    //   - `T` and `T::MaybeUninit` have the same alignment.
+    //   - It is valid to cast `*const T` to `*const T::MaybeUninit` and
+    //     vice-versa (and likewise for `*mut`), and these operations preserve
+    //     pointer referent size.
+    //
+    //   Thus, these properties hold between `UnsafeCell<T>` and
+    //   `UnsafeCell<T::MaybeUninit>`.
+    // - `UnsafeCell<T>` and `UnsafeCell<T::MaybeUninit>` trivially have
+    //   `UnsafeCell`s in exactly the same locations.
+    type MaybeUninit = cell::UnsafeCell<<T as KnownLayout>::MaybeUninit>;
+
+    // SAFETY: All operations preserve address and provenance. Caller
+    // has promised that the `as` cast preserves size.
+    #[inline(always)]
+    fn raw_from_ptr_len(bytes: NonNull<u8>, elems: usize) -> NonNull<Self> {
+        let slf = T::raw_from_ptr_len(bytes, elems).as_ptr();
+        #[allow(clippy::as_conversions)]
+        let slf = slf as *mut cell::UnsafeCell<T>;
+        // SAFETY: `.as_ptr()` called on a non-null pointer.
+        unsafe { NonNull::new_unchecked(slf) }
+    }
+
+    // SAFETY: All operations preserve pointer address and provenance.
+    fn cast_from_maybe_uninit(maybe_uninit: NonNull<Self::MaybeUninit>) -> NonNull<Self> {
+        #[allow(clippy::as_conversions)]
+        let maybe_uninit = maybe_uninit.as_ptr() as *mut <T as KnownLayout>::MaybeUninit;
+        // SAFETY: `.as_ptr()` called on a non-null pointer.
+        let maybe_uninit = unsafe { NonNull::new_unchecked(maybe_uninit) };
+        let repr = <T as KnownLayout>::cast_from_maybe_uninit(maybe_uninit).as_ptr();
+        #[allow(clippy::as_conversions)]
+        let slf = repr as *mut Self;
+        // SAFETY: `.as_ptr()` called on non-null pointer.
+        unsafe { NonNull::new_unchecked(slf) }
+    }
+
+    // SAFETY: `.cast` preserves pointer address and provenance.
+    fn cast_to_maybe_uninit(slf: NonNull<Self>) -> NonNull<Self::MaybeUninit> {
+        #[allow(clippy::as_conversions)]
+        let repr = slf.as_ptr() as *mut T;
+        // SAFETY: `.as_ptr()` called on non-null pointer.
+        let repr = unsafe { NonNull::new_unchecked(repr) };
+        let maybe_uninit = <T as KnownLayout>::cast_to_maybe_uninit(repr).as_ptr();
+        #[allow(clippy::as_conversions)]
+        let maybe_uninit = maybe_uninit as *mut cell::UnsafeCell<T::MaybeUninit>;
+        // SAFETY: `.as_ptr()` called on non-null pointer.
+        unsafe { NonNull::new_unchecked(maybe_uninit) }
+    }
 }
 
 /// Types for which a sequence of bytes all set to zero represents a valid
@@ -1133,17 +1300,16 @@ safety_comment! {
     /// - `Unaligned`: `MaybeUninit<T>` is guaranteed by its documentation [1]
     ///   to have the same alignment as `T`.
     ///
-    /// [1]
-    /// https://doc.rust-lang.org/nightly/core/mem/union.MaybeUninit.html#layout-1
+    /// [1] https://doc.rust-lang.org/nightly/core/mem/union.MaybeUninit.html#layout-1
     ///
     /// TODO(https://github.com/google/zerocopy/issues/251): If we split
     /// `FromBytes` and `RefFromBytes`, or if we introduce a separate
     /// `NoCell`/`Freeze` trait, we can relax the trait bounds for `FromZeroes`
     /// and `FromBytes`.
-    unsafe_impl!(T: FromZeroes => FromZeroes for MaybeUninit<T>);
-    unsafe_impl!(T: FromBytes => FromBytes for MaybeUninit<T>);
-    unsafe_impl!(T: Unaligned => Unaligned for MaybeUninit<T>);
-    assert_unaligned!(MaybeUninit<()>, MaybeUninit<u8>);
+    unsafe_impl!(T: FromZeroes => FromZeroes for mem::MaybeUninit<T>);
+    unsafe_impl!(T: FromBytes => FromBytes for mem::MaybeUninit<T>);
+    unsafe_impl!(T: Unaligned => Unaligned for mem::MaybeUninit<T>);
+    assert_unaligned!(mem::MaybeUninit<()>, mem::MaybeUninit<u8>);
 }
 safety_comment! {
     /// SAFETY:
@@ -3648,8 +3814,11 @@ mod tests {
         assert_impls!(Option<NonZeroUsize>: FromZeroes, FromBytes, AsBytes, !Unaligned);
         assert_impls!(Option<NonZeroIsize>: FromZeroes, FromBytes, AsBytes, !Unaligned);
 
-        // Implements none of the ZC traits.
+        // Implements none of the ZC traits, but implements `KnownLayout` so
+        // that types like `MaybeUninit<KnownLayout>` can at least be written
+        // down without causing errors so that we can test them.
         struct NotZerocopy;
+        impl_known_layout!(NotZerocopy);
 
         assert_impls!(PhantomData<NotZerocopy>: FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!(PhantomData<[u8]>: FromZeroes, FromBytes, AsBytes, Unaligned);
@@ -3659,8 +3828,15 @@ mod tests {
         assert_impls!(ManuallyDrop<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
         assert_impls!(ManuallyDrop<[NotZerocopy]>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
+        assert_impls!(mem::MaybeUninit<u8>: FromZeroes, FromBytes, Unaligned, !AsBytes);
+        assert_impls!(mem::MaybeUninit<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+
         assert_impls!(MaybeUninit<u8>: FromZeroes, FromBytes, Unaligned, !AsBytes);
+        assert_impls!(MaybeUninit<MaybeUninit<u8>>: FromZeroes, FromBytes, Unaligned, !AsBytes);
+        assert_impls!(MaybeUninit<[u8]>: FromZeroes, FromBytes, Unaligned, !AsBytes);
+        assert_impls!(MaybeUninit<MaybeUninit<[u8]>>: FromZeroes, FromBytes, Unaligned, !AsBytes);
         assert_impls!(MaybeUninit<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(MaybeUninit<MaybeUninit<NotZerocopy>>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
         assert_impls!(Wrapping<u8>: FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!(Wrapping<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);

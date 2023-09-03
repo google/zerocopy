@@ -19,7 +19,7 @@
 /// The macro invocations are emitted, each decorated with the following
 /// attribute: `#[allow(clippy::undocumented_unsafe_blocks)]`.
 macro_rules! safety_comment {
-    (#[doc = r" SAFETY:"] $(#[doc = $_doc:literal])* $($macro:ident!$args:tt;)*) => {
+    (#[doc = r" SAFETY:"] $(#[doc = $_doc:literal])* $($macro:ident!$args:tt; $(#[doc = r" SAFETY:"] $(#[doc = $__doc:literal])*)?)*) => {
         #[allow(clippy::undocumented_unsafe_blocks)]
         const _: () = { $($macro!$args;)* };
     }
@@ -199,6 +199,7 @@ macro_rules! impl_or_verify {
 ///   - Fixed prefix size
 ///   - Alignment
 ///   - (For DSTs) trailing slice element size
+///   - `UnsafeCell`s covering exactly the same byte ranges
 /// - It must be valid to perform an `as` cast from `*mut $repr` to `*mut $ty`,
 ///   and this operation must preserve referent size (ie, `size_of_val_raw`).
 macro_rules! unsafe_impl_known_layout {
@@ -211,14 +212,47 @@ macro_rules! unsafe_impl_known_layout {
             const ALIGN: NonZeroUsize = <$repr as KnownLayout>::ALIGN;
             const TRAILING_SLICE_ELEM_SIZE: Option<usize> = <$repr as KnownLayout>::TRAILING_SLICE_ELEM_SIZE;
 
+            // SAFETY:
+            // - By `MaybeUninit` invariant, it is sound to write any byte -
+            //   including an uninitialized byte - at any byte offset in
+            //   `$repr::MaybeUninit`.
+            // - Caller has promised that `$ty` and `$repr` have the same
+            //   alignment, size, trailing element size, and `UnsafeCell`
+            //   locations. Also, by `MaybeUninit` invariants:
+            //   - `$repr` and `$repr::MaybeUninit` have the same alignment.
+            //   - It is valid to cast `*const $repr` to `*const
+            //     $repr::MaybeUninit` and vice-versa (and likewise for `*mut`),
+            //     and these operations preserve pointer referent size.
+            //   - `$repr` and `$repr::MaybeUninit` contain `UnsafeCell`s at
+            //     exactly the same byte ranges.
+            //
+            //   Thus, all of the same properties hold between `$ty` and
+            //   `$repr::MaybeUninit`.
+            type MaybeUninit = <$repr as KnownLayout>::MaybeUninit;
+
             // SAFETY: All operations preserve address and provenance. Caller
             // has promised that the `as` cast preserves size.
             #[inline(always)]
             fn raw_from_ptr_len(bytes: NonNull<u8>, elems: usize) -> NonNull<Self> {
+                Self::cast_from_maybe_uninit(Self::MaybeUninit::raw_from_ptr_len(bytes, elems))
+            }
+
+            // SAFETY: All operations preserve pointer address and provenance.
+            fn cast_from_maybe_uninit(maybe_uninit: NonNull<Self::MaybeUninit>) -> NonNull<Self> {
+                let repr = <$repr as KnownLayout>::cast_from_maybe_uninit(maybe_uninit).as_ptr();
                 #[allow(clippy::as_conversions)]
-                let ptr = <$repr>::raw_from_ptr_len(bytes, elems).as_ptr() as *mut Self;
-                // SAFETY: `ptr` was converted from `bytes`, which is non-null.
-                unsafe { NonNull::new_unchecked(ptr) }
+                let slf = repr as *mut Self;
+                // SAFETY: `.as_ptr()` called on non-null pointer.
+                unsafe { NonNull::new_unchecked(slf) }
+            }
+
+            // SAFETY: `.cast` preserves pointer address and provenance.
+            fn cast_to_maybe_uninit(slf: NonNull<Self>) -> NonNull<Self::MaybeUninit> {
+                #[allow(clippy::as_conversions)]
+                let repr = slf.as_ptr() as *mut $repr;
+                 // SAFETY: `.as_ptr()` called on non-null pointer.
+                let repr = unsafe { NonNull::new_unchecked(repr) };
+                <$repr as KnownLayout>::cast_to_maybe_uninit(repr)
             }
         }
     };

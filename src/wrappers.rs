@@ -13,6 +13,191 @@ use core::{
 
 use super::*;
 
+/// An alternative to the standard library's [`MaybeUninit`] that supports
+/// unsized types.
+///
+/// `MaybeUninit<T>` is identical to the standard library's `MaybeUninit` type
+/// with the exception that it supports wrapping unsized types. Namely,
+/// `MaybeUninit<T>` has the same layout as `T`, but it has no bit validity
+/// constraints - any byte of a `MaybeUninit<T>` may have any value, including
+/// uninitialized.
+///
+/// [`MaybeUninit`]: core::mem::MaybeUninit
+#[derive(Copy, Clone)]
+#[repr(transparent)]
+pub struct MaybeUninit<T: KnownLayout + ?Sized> {
+    inner: T::MaybeUninit,
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// Since `MaybeUninit<T>` is a `repr(transparent)` wrapper around
+    /// `T::MaybeUninit`:
+    /// - They have the same prefix size, alignment, and trailing slice element
+    ///   size
+    /// - It is valid to perform an `as` cast in either direction, and this
+    ///   operation preserves referent size
+    unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T::MaybeUninit)] MaybeUninit<T>);
+}
+
+impl<T: KnownLayout + ?Sized> Debug for MaybeUninit<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.pad(core::any::type_name::<Self>())
+    }
+}
+
+impl<T: KnownLayout + ?Sized> MaybeUninit<T> {
+    /// Gets a shared reference to the contained value.
+    ///
+    /// # Safety
+    ///
+    /// `self` must contain a validly-initialized `T`.
+    pub unsafe fn assume_init_ref(&self) -> &T {
+        let ptr = T::cast_from_maybe_uninit(NonNull::from(&self.inner));
+        // SAFETY: The caller has promised that `self` contains an initialized
+        // `T`. Since `Self` is `repr(transparent)`, it has the same layout as
+        // `T::MaybeUninit`, which in turn is guaranteed (by safety invariant)
+        // to have the same layout as `T`. Thus, it is sound to treat `ptr` as
+        // pointing to a valid `T` of the correct size and alignment.
+        //
+        // Further, thanks to the safety requirements on `T::MaybeUninit`, we
+        // know that there are `UnsafeCell`s at the same byte ranges in both
+        // types.  See [1] for a discussion of why this is a required safety
+        // condition.
+        //
+        // [1] https://github.com/rust-lang/unsafe-code-guidelines/issues/455
+        unsafe { &*ptr.as_ptr() }
+    }
+
+    /// Gets a mutable reference to the contained value.
+    ///
+    /// # Safety
+    ///
+    /// `self` must contain a validly-initialized `T`.
+    pub unsafe fn assume_init_mut(&mut self) -> &mut T {
+        let ptr = T::cast_from_maybe_uninit(NonNull::from(&mut self.inner));
+        // SAFETY: The caller has promised that `self` contains an initialized
+        // `T`. Since `Self` is `repr(transparent)`, it has the same layout as
+        // `T::MaybeUninit`, which in turn is guaranteed (by safety invariant)
+        // to have the same layout as `T`. Thus, it is sound to treat `ptr` as
+        // pointing to a valid `T` of the correct size and alignment.
+        //
+        // Further, thanks to the safety requirements on `T::MaybeUninit`, we
+        // know that there are `UnsafeCell`s at the same byte ranges in both
+        // types.  See [1] for a discussion of why this is a required safety
+        // condition.
+        //
+        // [1] https://github.com/rust-lang/unsafe-code-guidelines/issues/455
+        unsafe { &mut *ptr.as_ptr() }
+    }
+
+    /// Gets a pointer to the contained value.
+    ///
+    /// Reading from this pointer or turning it into a reference is undefined
+    /// behavior unless `self` is initialized. Writing to memory that this
+    /// pointer (non-transitively) points to is undefined behavior (except
+    /// inside an `UnsafeCell<T>`).
+    pub fn as_ptr(&self) -> *const T {
+        T::cast_from_maybe_uninit(NonNull::from(&self.inner)).as_ptr().cast_const()
+    }
+
+    /// Gets a mutable pointer to the contained value.
+    ///
+    /// Reading from this pointer or turning it into a reference is undefined
+    /// behavior unless `self` is initialized.
+    pub fn as_mut_ptr(&mut self) -> *mut T {
+        T::cast_from_maybe_uninit(NonNull::from(&mut self.inner)).as_ptr()
+    }
+
+    /// Gets a view of this `&T` as a `&MaybeUninit<T>`.
+    ///
+    /// There is no mutable equivalent to this function, as producing a `&mut
+    /// MaybeUninit<T>` from a `&mut T` would allow safe code to write invalid
+    /// values which would be accessible through `&mut T`.
+    pub fn from_ref(r: &T) -> &MaybeUninit<T> {
+        let ptr = T::cast_to_maybe_uninit(NonNull::from(r));
+        #[allow(clippy::as_conversions)]
+        let ptr = ptr.as_ptr() as *const MaybeUninit<T>;
+        // SAFETY: Since `Self` is `repr(transparent)`, it has the same layout
+        // as `T::MaybeUninit`, so the size and alignment here are valid.
+        //
+        // `MaybeUninit<T>` has no bit validity constraints, so this is
+        // guaranteed not to produce in invalid `MaybeUninit<T>`. If it were
+        // possible to write a different value for `MaybeUninit<T>` through the
+        // returned reference, it could result in an invalid value being exposed
+        // via the `&T`. Luckily, the only way for mutation to happen is if `T`
+        // contains an `UnsafeCell` and the caller uses it to perform interior
+        // mutation. Importantly, `T` containing an `UnsafeCell` does not permit
+        // interior mutation through `MaybeUninit<T>`, so it doesn't permit
+        // writing uninitialized or otherwise invalid values which would be
+        // visible through the original `&T`.
+        unsafe { &*ptr }
+    }
+}
+
+impl<T: KnownLayout<MaybeUninit = mem::MaybeUninit<T>> + Sized> MaybeUninit<T> {
+    /// Creates a new `MaybeUninit<T>` with the given value.
+    pub const fn new(val: T) -> MaybeUninit<T> {
+        MaybeUninit { inner: mem::MaybeUninit::new(val) }
+    }
+
+    /// Creates a new `MaybeUninit<T>` in an uninitialized state.
+    pub const fn uninit() -> MaybeUninit<T> {
+        MaybeUninit { inner: mem::MaybeUninit::uninit() }
+    }
+
+    /// Creates a new `MaybeUninit<T>` whose bytes are initialized to 0.
+    // TODO(https://github.com/rust-lang/rust/issues/91850): Make this const
+    // once `MaybeUninit::zeroed` is const.
+    pub fn zeroed() -> MaybeUninit<T> {
+        MaybeUninit { inner: mem::MaybeUninit::zeroed() }
+    }
+
+    /// Extracts the value from the `MaybeUninit<T>` container.
+    ///
+    /// # Safety
+    ///
+    /// `assume_init` has the same safety requirements and guarantees as the
+    /// standard library's [`MaybeUninit::assume_init`] method.
+    ///
+    /// [`MaybeUninit::assume_init`]: mem::MaybeUninit::assume_init
+    pub const unsafe fn assume_init(self) -> T {
+        // SAFETY: The caller has promised to uphold the safety invariants of
+        // the exact function we're calling here. Since, for `T: Sized`,
+        // `MaybeUninit<T>` is a `repr(transparent)` wrapper around
+        // `mem::MaybeUninit<T>`, it is sound to treat `Self` as equivalent to a
+        // `mem::MaybeUninit<T>` for the purposes of
+        // `mem::MaybeUninit::assume_init`'s safety invariants.
+        unsafe { self.inner.assume_init() }
+    }
+}
+
+safety_comment! {
+    // `MaybeUninit<T>` is `FromZeroes` and `FromBytes`, but never `AsBytes`
+    // since it may contain uninitialized bytes.
+    //
+    /// SAFETY:
+    /// - `FromZeroes`, `FromBytes`: `MaybeUninit<T>` has no restrictions on its
+    ///   contents. Unfortunately, in addition to bit validity, `FromZeroes` and
+    ///   `FromBytes` also require that implementers contain no `UnsafeCell`s.
+    ///   Thus, we require `T: FromZeroes` and `T: FromBytes` in order to ensure
+    ///   that `T` - and thus `MaybeUninit<T>` - contains to `UnsafeCell`s.
+    ///   Thus, requiring that `T` implement each of these traits is sufficient
+    /// - `Unaligned`: `MaybeUninit<T>` is guaranteed by its documentation [1]
+    ///   to have the same alignment as `T`.
+    ///
+    /// [1] https://doc.rust-lang.org/nightly/core/mem/union.MaybeUninit.html#layout-1
+    ///
+    /// TODO(https://github.com/google/zerocopy/issues/251): If we split
+    /// `FromBytes` and `RefFromBytes`, or if we introduce a separate
+    /// `NoCell`/`Freeze` trait, we can relax the trait bounds for `FromZeroes`
+    /// and `FromBytes`.
+    unsafe_impl!(T: ?Sized + KnownLayout + FromZeroes => FromZeroes for MaybeUninit<T>);
+    unsafe_impl!(T: ?Sized + KnownLayout + FromBytes => FromBytes for MaybeUninit<T>);
+    unsafe_impl!(T: ?Sized + KnownLayout + Unaligned => Unaligned for MaybeUninit<T>);
+    assert_unaligned!(mem::MaybeUninit<()>, MaybeUninit<u8>);
+}
+
 /// A type with no alignment requirement.
 ///
 /// An `Unalign` wraps a `T`, removing any alignment requirement. `Unalign<T>`
@@ -392,6 +577,78 @@ mod tests {
         const fn new(t: T) -> ForceUnalign<T, A> {
             ForceUnalign { _u: 0, t, _a: [] }
         }
+    }
+
+    #[test]
+    fn test_maybe_uninit() {
+        let m = MaybeUninit::new(1usize);
+        // SAFETY: `m` was initialized with a valid `usize`.
+        assert_eq!(unsafe { m.assume_init() }, 1);
+
+        let mut m = MaybeUninit::<usize>::uninit();
+        // SAFETY: Writing a valid `usize`.
+        unsafe { core::ptr::write(m.as_mut_ptr(), 1) };
+        // SAFETY: We just initialized `m`.
+        assert_eq!(unsafe { m.assume_init_ref() }, &1);
+        // SAFETY: We just initialized `m`.
+        assert_eq!(unsafe { m.assume_init_mut() }, &mut 1);
+        // SAFETY: We just initialized `m`.
+        assert_eq!(unsafe { m.assume_init() }, 1);
+
+        let mut bytes = [0u8, 1, 2];
+        let bytes_mut = &mut bytes[..];
+
+        // SAFETY: `MaybeUninit<[u8]>` has the same layout as `[u8]`.
+        let m = unsafe {
+            // Assign to `m` rather than leaving as a trailing expression
+            // because annotations on expressions are unstable.
+            #[allow(clippy::as_conversions)]
+            let m = &mut *(bytes_mut as *mut [u8] as *mut MaybeUninit<[u8]>);
+            m
+        };
+
+        // // SAFETY: `m` was created from an initialized value.
+        // let r = unsafe { m.assume_init_ref() };
+        // assert_eq!(r.len(), 3);
+        // assert_eq!(r, [0, 1, 2]);
+
+        // SAFETY: `m` was created from an initialized value.
+        let r = unsafe { m.assume_init_mut() };
+        assert_eq!(r.len(), 3);
+        assert_eq!(r, [0, 1, 2]);
+
+        r[0] = 1;
+        assert_eq!(bytes, [1, 1, 2]);
+    }
+
+    #[test]
+    fn test_maybe_uninit_zeroed() {
+        let m = MaybeUninit::<usize>::zeroed();
+        // SAFETY: `m` was initialized with zeroes, which constitute a valid
+        // instance of `usize`.
+        assert_eq!(unsafe { m.assume_init() }, 0);
+    }
+
+    #[test]
+    fn test_maybe_uninit_from_ref() {
+        use core::cell::Cell;
+
+        let u = 1usize;
+        let m = MaybeUninit::from_ref(&u);
+        // SAFETY: `m` was constructed from a valid `&usize`.
+        assert_eq!(unsafe { m.assume_init_ref() }, &1usize);
+
+        // Test that interior mutability doesn't affect correctness or
+        // soundness.
+
+        let c = Cell::new(1usize);
+        let m = MaybeUninit::from_ref(&c);
+        // SAFETY: `m` was constructed from a valid `&usize`.
+        assert_eq!(unsafe { m.assume_init_ref() }, &Cell::new(1));
+
+        c.set(2);
+        // SAFETY: `m` was constructed from a valid `&usize`.
+        assert_eq!(unsafe { m.assume_init_ref() }, &Cell::new(2));
     }
 
     #[test]
