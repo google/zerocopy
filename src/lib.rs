@@ -681,10 +681,8 @@ pub unsafe trait AsBytes {
         // - Since `slf` is derived from `self`, and `self` is an immutable
         //   reference, the only other references to this memory region that
         //   could exist are other immutable references, and those don't allow
-        //   mutation.
-        //
-        //   TODO(#8): Update `AsRef` docs to require that `Self` doesn't allow
-        //   interior mutability so that this bullet point is actually true.
+        //   mutation. `AsBytes` prohibits types which contain `UnsafeCell`s,
+        //   which are the only types for which this rule wouldn't be sufficient.
         // - The total size of the resulting slice is no larger than
         //   `isize::MAX` because no allocation produced by safe code can be
         //   larger than `isize::MAX`.
