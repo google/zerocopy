@@ -173,7 +173,7 @@ use core::{
     fmt::{self, Debug, Display, Formatter},
     hash::{Hash, Hasher},
     marker::PhantomData,
-    mem::{self, ManuallyDrop, MaybeUninit},
+    mem::{self, ManuallyDrop},
     num::{
         NonZeroI128, NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8, NonZeroIsize, NonZeroU128,
         NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize, Wrapping,
@@ -1003,17 +1003,16 @@ safety_comment! {
     /// - `Unaligned`: `MaybeUninit<T>` is guaranteed by its documentation [1]
     ///   to have the same alignment as `T`.
     ///
-    /// [1]
-    /// https://doc.rust-lang.org/nightly/core/mem/union.MaybeUninit.html#layout-1
+    /// [1] https://doc.rust-lang.org/nightly/core/mem/union.MaybeUninit.html#layout-1
     ///
     /// TODO(https://github.com/google/zerocopy/issues/251): If we split
     /// `FromBytes` and `RefFromBytes`, or if we introduce a separate
     /// `NoCell`/`Freeze` trait, we can relax the trait bounds for `FromZeroes`
     /// and `FromBytes`.
-    unsafe_impl!(T: FromZeroes => FromZeroes for MaybeUninit<T>);
-    unsafe_impl!(T: FromBytes => FromBytes for MaybeUninit<T>);
-    unsafe_impl!(T: Unaligned => Unaligned for MaybeUninit<T>);
-    assert_unaligned!(MaybeUninit<()>, MaybeUninit<u8>);
+    unsafe_impl!(T: FromZeroes => FromZeroes for mem::MaybeUninit<T>);
+    unsafe_impl!(T: FromBytes => FromBytes for mem::MaybeUninit<T>);
+    unsafe_impl!(T: Unaligned => Unaligned for mem::MaybeUninit<T>);
+    assert_unaligned!(mem::MaybeUninit<()>, mem::MaybeUninit<u8>);
 }
 safety_comment! {
     /// SAFETY:
@@ -1198,6 +1197,314 @@ mod simd {
     #[cfg(all(feature = "simd-nightly", target_arch = "arm"))]
     #[rustfmt::skip]
     simd_arch_mod!(arm, int8x4_t, uint8x4_t);
+}
+
+/// An alternative to the standard library's [`MaybeUninit`] that supports
+/// unsized types.
+///
+/// `MaybeUninit<T>` is identical to the standard library's `MaybeUninit` type
+/// with the exception that it supports wrapping unsized types. Namely,
+/// `MaybeUninit<T>` has the same layout as `T`, but it has no bit validity
+/// constraints - any byte of a `MaybeUninit<T>` may have any value, including
+/// uninitialized.
+///
+/// [`MaybeUninit`]: core::mem::MaybeUninit
+#[derive(Copy, Clone)]
+#[repr(transparent)]
+pub struct MaybeUninit<T: AsMaybeUninit + ?Sized> {
+    inner: T::MaybeUninit,
+}
+
+impl<T: AsMaybeUninit + ?Sized> Debug for MaybeUninit<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.pad(core::any::type_name::<Self>())
+    }
+}
+
+impl<T: AsMaybeUninit + ?Sized> MaybeUninit<T> {
+    /// Gets a shared reference to the contained value.
+    ///
+    /// # Safety
+    ///
+    /// `self` must contain a validly-initialized `T`.
+    pub unsafe fn assume_init_ref(&self) -> &T {
+        let ptr = T::raw_from_maybe_uninit(&self.inner);
+        // SAFETY: The caller has promised that `self` contains an initialized
+        // `T`. Since `Self` is `repr(transparent)`, it has the same layout as
+        // `T::MaybeUninit`, which in turn is guaranteed (by safety invariant)
+        // to have the same layout as `T`. Thus, it is sound to treat `ptr` as
+        // pointing to a valid `T` of the correct size and alignment.
+        //
+        // Further, thanks to the safety requirements on `T::MaybeUninit`, we
+        // know that there are `UnsafeCell`s at the same byte ranges in both
+        // types.  See [1] for a discussion of why this is a required safety
+        // condition.
+        //
+        // [1] https://github.com/rust-lang/unsafe-code-guidelines/issues/455
+        unsafe { &*ptr }
+    }
+
+    /// Gets a mutable reference to the contained value.
+    ///
+    /// # Safety
+    ///
+    /// `self` must contain a validly-initialized `T`.
+    pub unsafe fn assume_init_mut(&mut self) -> &mut T {
+        let ptr = T::raw_mut_from_maybe_uninit(&mut self.inner);
+        // SAFETY: The caller has promised that `self` contains an initialized
+        // `T`. Since `Self` is `repr(transparent)`, it has the same layout as
+        // `T::MaybeUninit`, which in turn is guaranteed (by safety invariant)
+        // to have the same layout as `T`. Thus, it is sound to treat `ptr` as
+        // pointing to a valid `T` of the correct size and alignment.
+        //
+        // Further, thanks to the safety requirements on `T::MaybeUninit`, we
+        // know that there are `UnsafeCell`s at the same byte ranges in both
+        // types.  See [1] for a discussion of why this is a required safety
+        // condition.
+        //
+        // [1] https://github.com/rust-lang/unsafe-code-guidelines/issues/455
+        unsafe { &mut *ptr }
+    }
+
+    /// Gets a pointer to the contained value.
+    ///
+    /// Reading from this pointer or turning it into a reference is undefined
+    /// behavior unless `self` is initialized. Writing to memory that this
+    /// pointer (non-transitively) points to is undefined behavior (except
+    /// inside an `UnsafeCell<T>`).
+    pub fn as_ptr(&self) -> *const T {
+        T::raw_from_maybe_uninit(&self.inner)
+    }
+
+    /// Gets a mutable pointer to the contained value.
+    ///
+    /// Reading from this pointer or turning it into a reference is undefined
+    /// behavior unless `self` is initialized.
+    pub fn as_mut_ptr(&mut self) -> *mut T {
+        T::raw_mut_from_maybe_uninit(&mut self.inner)
+    }
+}
+
+impl<T: Sized> MaybeUninit<T> {
+    /// Creates a new `MaybeUninit<T>` in an uninitialized state.
+    pub const fn uninit() -> MaybeUninit<T> {
+        MaybeUninit { inner: mem::MaybeUninit::uninit() }
+    }
+
+    /// Creates a new `MaybeUninit<T>` whose bytes are initialized to 0.
+    // TODO(https://github.com/rust-lang/rust/issues/91850): Make this const
+    // once `MaybeUninit::zeroed` is const.
+    pub fn zeroed() -> MaybeUninit<T> {
+        MaybeUninit { inner: mem::MaybeUninit::zeroed() }
+    }
+
+    /// Extracts the value from the `MaybeUninit<T>` container.
+    ///
+    /// # Safety
+    ///
+    /// `assume_init` has the same safety requirements and guarantees as the
+    /// standard library's [`MaybeUninit::assume_init`] method.
+    ///
+    /// [`MaybeUninit::assume_init`]: mem::MaybeUninit::assume_init
+    pub const unsafe fn assume_init(self) -> T {
+        // SAFETY: The caller has promised to uphold the safety invariants of
+        // the exact function we're calling here. Since, for `T: Sized`,
+        // `MaybeUninit<T>` is a `repr(transparent)` wrapper around
+        // `mem::MaybeUninit<T>`, it is sound to treat `Self` as equivalent to a
+        // `mem::MaybeUninit<T>` for the purposes of
+        // `mem::MaybeUninit::assume_init`'s safety invariants.
+        unsafe { self.inner.assume_init() }
+    }
+}
+
+/// A type which can be wrapped in [`MaybeUninit`].
+///
+/// # Safety
+///
+/// The safety invariants on the associated `MaybeUninit` type and on all
+/// methods must be upheld.
+pub unsafe trait AsMaybeUninit {
+    /// A type which has the same layout as `Self`, but which has no validity
+    /// constraints.
+    ///
+    /// Roughly speaking, this type is equivalent to what the standard library's
+    /// [`MaybeUninit<Self>`] would be if it supported unsized types.
+    ///
+    /// # Safety
+    ///
+    /// For `T: AsMaybeUninit`, the following must hold:
+    /// - Given `m: T::MaybeUninit`, it is sound to write any byte value,
+    ///   including an uninitialized byte, at any byte offset in `m`
+    /// - `T` and `T::MaybeUninit` have the same alignment requirement
+    /// - It is valid to use an `as` cast to convert a `t: *const T` to a `m:
+    ///   *const T::MaybeUninit` and vice-versa (and likewise for `*mut T`/`*mut
+    ///   T::MaybeUninit`). Regardless of which direction the conversion was
+    ///   performed, the sizes of the pointers' referents are always equal (in
+    ///   terms of an API which is not yet stable, `size_of_val_raw(t) ==
+    ///   size_of_val_raw(m)`).
+    /// - `T::MaybeUninit` contains [`UnsafeCell`]s at exactly the same byte
+    ///   ranges that `T` does.
+    ///
+    /// [`MaybeUninit<Self>`]: core::mem::MaybeUninit
+    /// [`UnsafeCell`]: core::cell::UnsafeCell
+    type MaybeUninit: ?Sized;
+
+    /// Converts a const pointer at the type level.
+    ///
+    /// # Safety
+    ///
+    /// Callers may assume that the memory region addressed by the return value
+    /// is the same as that addressed by the argument, and that both the return
+    /// value and the argument have the same provenance.
+    fn raw_from_maybe_uninit(maybe_uninit: *const Self::MaybeUninit) -> *const Self;
+
+    /// Converts a mut pointer at the type level.
+    ///
+    /// # Safety
+    ///
+    /// Callers may assume that the memory region addressed by the return value
+    /// is the same as that addressed by the argument, and that both the return
+    /// value and the argument have the same provenance.
+    fn raw_mut_from_maybe_uninit(maybe_uninit: *mut Self::MaybeUninit) -> *mut Self;
+}
+
+// SAFETY: See inline safety comments.
+unsafe impl<T: Sized> AsMaybeUninit for T {
+    // SAFETY:
+    // - `MaybeUninit` has no validity requirements, so it is sound to write any
+    //   byte value, including an uninitialized byte, at any offset.
+    // - `MaybeUninit<T>` has the same layout as `T`, so they have the same
+    //   alignment requirement. For the same reason, their sizes are equal.
+    // - Since their sizes are equal, raw pointers to both types are thin
+    //   pointers, and thus can be converted using as casts. For the same
+    //   reason, the sizes of these pointers' referents are always equal.
+    // - `MaybeUninit<T>` has the same field offsets as `T`, and so it contains
+    //   `UnsafeCell`s at exactly the same byte ranges as `T`.
+    type MaybeUninit = mem::MaybeUninit<T>;
+
+    // SAFETY: `.cast` preserves pointer address and provenance.
+    fn raw_from_maybe_uninit(maybe_uninit: *const mem::MaybeUninit<T>) -> *const T {
+        maybe_uninit.cast::<T>()
+    }
+
+    // SAFETY: `.cast` preserves pointer address and provenance.
+    fn raw_mut_from_maybe_uninit(maybe_uninit: *mut mem::MaybeUninit<T>) -> *mut T {
+        maybe_uninit.cast::<T>()
+    }
+}
+
+// SAFETY: See inline safety comments.
+unsafe impl<T: Sized> AsMaybeUninit for [T] {
+    // SAFETY:
+    // - `MaybeUninit` has no bit validity requirements and `[U]` has the same
+    //   bit validity requirements as `U`, so `[MaybeUninit<T>]` has no bit
+    //   validity requirements. Thus, it is sound to write any byte value,
+    //   including an uninitialized byte, at any byte offset.
+    // - Since `MaybeUninit<T>` has the same layout as `T`, and `[U]` has the
+    //   same alignment as `U`, `[MaybeUninit<T>]` has the same alignment as
+    //   `[T]`.
+    // - `[T]` and `[MaybeUninit<T>]` are both slice types, and so pointers can
+    //   be converted using an `as` cast. Since `T` and `MaybeUninit<T>` have
+    //   the same size, and since such a cast preserves the number of elements
+    //   in the slice, the referent slices themselves will have the same size.
+    // - `MaybeUninit<T>` has the same field offsets as `[T]`, and so it
+    //   contains `UnsafeCell`s at exactly the same byte ranges as `[T]`.
+    type MaybeUninit = [mem::MaybeUninit<T>];
+
+    // SAFETY: `as` preserves pointer address and provenance.
+    #[allow(clippy::as_conversions)]
+    fn raw_from_maybe_uninit(maybe_uninit: *const [mem::MaybeUninit<T>]) -> *const [T] {
+        maybe_uninit as *const [T]
+    }
+
+    // SAFETY: `as` preserves pointer address and provenance.
+    #[allow(clippy::as_conversions)]
+    fn raw_mut_from_maybe_uninit(maybe_uninit: *mut [mem::MaybeUninit<T>]) -> *mut [T] {
+        maybe_uninit as *mut [T]
+    }
+}
+
+// SAFETY: See inline safety comments.
+unsafe impl AsMaybeUninit for str {
+    // SAFETY: `str` has the same layout as `[u8]`. Thus, the same safety
+    // argument for `<[u8] as AsMaybeUninit>::MaybeUninit` applies here.
+    type MaybeUninit = <[u8] as AsMaybeUninit>::MaybeUninit;
+
+    // SAFETY: `as` preserves pointer address and provenance.
+    #[allow(clippy::as_conversions)]
+    fn raw_from_maybe_uninit(
+        maybe_uninit: *const <[u8] as AsMaybeUninit>::MaybeUninit,
+    ) -> *const str {
+        maybe_uninit as *const str
+    }
+
+    // SAFETY: `as` preserves pointer address and provenance.
+    #[allow(clippy::as_conversions)]
+    fn raw_mut_from_maybe_uninit(
+        maybe_uninit: *mut <[u8] as AsMaybeUninit>::MaybeUninit,
+    ) -> *mut str {
+        maybe_uninit as *mut str
+    }
+}
+
+// SAFETY: See inline safety comments.
+unsafe impl<T: Sized> AsMaybeUninit for MaybeUninit<[T]> {
+    // SAFETY: `MaybeUninit<[T]>` is a `repr(transparent)` wrapper around
+    // `[T::MaybeUninit]`. Thus:
+    // - Given `m: Self::MaybeUninit = [T::MaybeUninit]`, it is sound to write
+    //   any byte value, including an uninitialized byte, at any byte offset in
+    //   `m` because that is already required of `T::MaybeUninit`, and thus of
+    //   [`T::MaybeUninit`]
+    // - `Self` and `[T::MaybeUninit]` have the same representation, and so:
+    //   - Alignments are equal
+    //   - Pointer casts are valid, and sizes of referents of both pointer types
+    //     are equal.
+    // - `Self::MaybeUninit = [T::MaybeUninit]` contains `UnsafeCell`s at
+    //   exactly the same byte ranges that `Self` does because `Self` has the
+    //   same bit validity as `[T::MaybeUninit]`.
+    type MaybeUninit = [<T as AsMaybeUninit>::MaybeUninit];
+
+    // SAFETY: `as` preserves pointer address and provenance.
+    #[allow(clippy::as_conversions)]
+    fn raw_from_maybe_uninit(
+        maybe_uninit: *const [<T as AsMaybeUninit>::MaybeUninit],
+    ) -> *const MaybeUninit<[T]> {
+        maybe_uninit as *const MaybeUninit<[T]>
+    }
+
+    // SAFETY: `as` preserves pointer address and provenance.
+    #[allow(clippy::as_conversions)]
+    fn raw_mut_from_maybe_uninit(
+        maybe_uninit: *mut [<T as AsMaybeUninit>::MaybeUninit],
+    ) -> *mut MaybeUninit<[T]> {
+        maybe_uninit as *mut MaybeUninit<[T]>
+    }
+}
+
+safety_comment! {
+    // `MaybeUninit<T>` is `FromZeroes` and `FromBytes`, but never `AsBytes`
+    // since it may contain uninitialized bytes.
+    //
+    /// SAFETY:
+    /// - `FromZeroes`, `FromBytes`: `MaybeUninit<T>` has no restrictions on its
+    ///   contents. Unfortunately, in addition to bit validity, `FromZeroes` and
+    ///   `FromBytes` also require that implementers contain no `UnsafeCell`s.
+    ///   Thus, we require `T: FromZeroes` and `T: FromBytes` in order to ensure
+    ///   that `T` - and thus `MaybeUninit<T>` - contains to `UnsafeCell`s.
+    ///   Thus, requiring that `T` implement each of these traits is sufficient
+    /// - `Unaligned`: `MaybeUninit<T>` is guaranteed by its documentation [1]
+    ///   to have the same alignment as `T`.
+    ///
+    /// [1] https://doc.rust-lang.org/nightly/core/mem/union.MaybeUninit.html#layout-1
+    ///
+    /// TODO(https://github.com/google/zerocopy/issues/251): If we split
+    /// `FromBytes` and `RefFromBytes`, or if we introduce a separate
+    /// `NoCell`/`Freeze` trait, we can relax the trait bounds for `FromZeroes`
+    /// and `FromBytes`.
+    unsafe_impl!(T: ?Sized + AsMaybeUninit + FromZeroes => FromZeroes for MaybeUninit<T>);
+    unsafe_impl!(T: ?Sized + AsMaybeUninit + FromBytes => FromBytes for MaybeUninit<T>);
+    unsafe_impl!(T: ?Sized + AsMaybeUninit + Unaligned => Unaligned for MaybeUninit<T>);
+    assert_unaligned!(mem::MaybeUninit<()>, MaybeUninit<u8>);
 }
 
 /// A type with no alignment requirement.
@@ -3163,6 +3470,52 @@ mod tests {
     }
 
     #[test]
+    fn test_maybe_uninit() {
+        let mut m = MaybeUninit::<usize>::uninit();
+        // SAFETY: Writing a valid `usize`.
+        unsafe { core::ptr::write(m.as_mut_ptr(), 1) };
+        // SAFETY: We just initialized `m`.
+        assert_eq!(unsafe { m.assume_init_ref() }, &1);
+        // SAFETY: We just initialized `m`.
+        assert_eq!(unsafe { m.assume_init_mut() }, &mut 1);
+        // SAFETY: We just initialized `m`.
+        assert_eq!(unsafe { m.assume_init() }, 1);
+
+        let mut bytes = [0u8, 1, 2];
+        let bytes_mut = &mut bytes[..];
+
+        // SAFETY: `MaybeUninit<[u8]>` has the same layout as `[u8]`.
+        let m = unsafe {
+            // Assign to `m` rather than leaving as a trailing expression
+            // because annotations on expressions are unstable.
+            #[allow(clippy::as_conversions)]
+            let m = &mut *(bytes_mut as *mut [u8] as *mut MaybeUninit<[u8]>);
+            m
+        };
+
+        // SAFETY: `m` was created from an initialized value.
+        let r = unsafe { m.assume_init_ref() };
+        assert_eq!(r.len(), 3);
+        assert_eq!(r, [0, 1, 2]);
+
+        // SAFETY: `m` was created from an initialized value.
+        let r = unsafe { m.assume_init_mut() };
+        assert_eq!(r.len(), 3);
+        assert_eq!(r, [0, 1, 2]);
+
+        r[0] = 1;
+        assert_eq!(bytes, [1, 1, 2]);
+    }
+
+    #[test]
+    fn test_maybe_uninit_zeroed() {
+        let m = MaybeUninit::<usize>::zeroed();
+        // SAFETY: `m` was initialized with zeroes, which constitute a valid
+        // instance of `usize`.
+        assert_eq!(unsafe { m.assume_init() }, 0);
+    }
+
+    #[test]
     fn test_unalign() {
         // Test methods that don't depend on alignment.
         let mut u = Unalign::new(AU64(123));
@@ -4067,8 +4420,15 @@ mod tests {
         assert_impls!(ManuallyDrop<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
         assert_impls!(ManuallyDrop<[NotZerocopy]>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
+        assert_impls!(mem::MaybeUninit<u8>: FromZeroes, FromBytes, Unaligned, !AsBytes);
+        assert_impls!(mem::MaybeUninit<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+
         assert_impls!(MaybeUninit<u8>: FromZeroes, FromBytes, Unaligned, !AsBytes);
+        assert_impls!(MaybeUninit<MaybeUninit<u8>>: FromZeroes, FromBytes, Unaligned, !AsBytes);
+        assert_impls!(MaybeUninit<[u8]>: FromZeroes, FromBytes, Unaligned, !AsBytes);
+        assert_impls!(MaybeUninit<MaybeUninit<[u8]>>: FromZeroes, FromBytes, Unaligned, !AsBytes);
         assert_impls!(MaybeUninit<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(MaybeUninit<MaybeUninit<NotZerocopy>>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
         assert_impls!(Wrapping<u8>: FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!(Wrapping<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);

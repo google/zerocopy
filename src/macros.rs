@@ -39,17 +39,13 @@ macro_rules! unsafe_impl {
     ($tyvar:ident => $trait:ident for $ty:ty) => {
         unsafe impl<$tyvar> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
     };
-    // For all `$tyvar: ?Sized` with no bounds, implement `$trait` for `$ty`.
-    ($tyvar:ident: ?Sized => $trait:ident for $ty:ty) => {
-        unsafe impl<$tyvar: ?Sized> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
-    };
     // For all `$tyvar: $bound`, implement `$trait` for `$ty`.
     ($tyvar:ident: $bound:path => $trait:ident for $ty:ty) => {
         unsafe impl<$tyvar: $bound> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
     };
     // For all `$tyvar: $bound + ?Sized`, implement `$trait` for `$ty`.
-    ($tyvar:ident: ?Sized + $bound:path => $trait:ident for $ty:ty) => {
-        unsafe impl<$tyvar: ?Sized + $bound> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
+    ($tyvar:ident: ?Sized $(+ $bounds:path)* => $trait:ident for $ty:ty) => {
+        unsafe impl<$tyvar: ?Sized $(+ $bounds)*> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
     };
     // For all `$tyvar: $bound` and for all `const $constvar: $constty`,
     // implement `$trait` for `$ty`.
