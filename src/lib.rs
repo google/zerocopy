@@ -1570,6 +1570,235 @@ safety_comment! {
     assert_unaligned!(mem::MaybeUninit<()>, MaybeUninit<u8>);
 }
 
+/// A value which might or might not constitute a valid instance of `T`.
+///
+/// `MaybeValid<T>` has the same layout (size and alignment) and field offsets
+/// as `T`. Unlike `T`, it may contain any bit pattern, except that
+/// uninitialized bytes may only appear in `MaybeValid<T>` at byte offsets where
+/// they may appear in `T`. This is a dynamic property: if, at a particular byte
+/// offset, a valid enum discriminant is set, the subsequent bytes may only have
+/// uninitialized bytes as specified by the corresponding enum variant.
+///
+/// Formally, given `m: MaybeValid<T>` and a byte offset, `b` in the range `[0,
+/// size_of_val(m))`:
+/// - If, in all valid instances `t: T`, the byte at offset `b` in `t` is
+///   initialized, then the byte at offset `b` within `m` is guaranteed to be
+///   initialized.
+/// - Let `c` be the contents of the byte range `[0, b)` in `m`. Let `TT` be the
+///   subset of valid instances of `T` which contain `c` in the offset range
+///   `[0, b)`. If, for all instances of `t: T` in `TT`, the byte at offset `b`
+///   in `t` is initialized, then the byte at offset `b` in `m` is guaranteed to
+///   be initialized.
+///
+///   Pragmatically, this means that if `m` is guaranteed to contain an enum
+///   type at a particular offset, and the enum discriminant stored in `m`
+///   corresponds to a valid variant of that enum type, then it is guaranteed
+///   that the appropriate bytes of `m` are initialized as defined by that
+///   variant's bit validity (although note that the variant may contain another
+///   enum type, in which case the same rules apply depending on the state of
+///   its discriminant, and so on recursively).
+///
+/// # Safety
+///
+/// Unsafe code may assume that an instance of `MaybeValid` satisfies the
+/// constraints described above. Unsafe code may produce a `MaybeValid` or
+/// modify the bytes of an existing `MaybeValid` so long as these constraints
+/// are upheld. It is unsound to produce a `MaybeValid` which fails to uphold
+/// these constraints.
+#[repr(transparent)]
+pub struct MaybeValid<T: AsMaybeUninit + ?Sized> {
+    inner: MaybeUninit<T>,
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// - `AsBytes`: `MaybeValid` requires that, if a byte in `T` is always
+    ///   initialized, the equivalent byte in `MaybeValid<T>` must be
+    ///   initialized. `T: AsBytes` implies that all bytes in `T` must always be
+    ///   initialized, and so all bytes in `MaybeValid<T>` must always be
+    ///   initialized, and so `MaybeValid<T>` satisfies `AsBytes`. `T: AsBytes`
+    ///   implies that `[T]: AsBytes`, so this holds is a sufficient bound for
+    ///   `MaybeValid<[T]>` too.
+    /// - `Unaligned`: `MaybeValid<T>` and `MaybeValid<[T]>` have the same
+    ///   alignment as `T`.
+    ///
+    /// TODO(#5): Implement `FromZeroes` and `FromBytes` for `MaybeValid<T>` and
+    /// `MaybeValid<[T]>`.
+    unsafe_impl!(T: AsBytes => AsBytes for MaybeValid<T>);
+    unsafe_impl!(T: AsBytes => AsBytes for MaybeValid<[T]>);
+    unsafe_impl!(T: Unaligned => Unaligned for MaybeValid<T>);
+    unsafe_impl!(T: Unaligned => Unaligned for MaybeValid<[T]>);
+}
+
+// SAFETY: See safety comment on `MaybeUninit`.
+unsafe impl<T> AsMaybeUninit for MaybeValid<[T]> {
+    // SAFETY:
+    // - `MaybeUninit` has no bit validity requirements and `[U]` has the same
+    //   bit validity requirements as `U`, so `[MaybeUninit<T>]` has no bit
+    //   validity requirements. Thus, it is sound to write uninitialized bytes
+    //   at every offset.
+    // - `MaybeValid<U>` is `repr(transparent)`, and thus has the same layout
+    //   and field offsets as its contained field of type `U::MaybeUninit`. In
+    //   this case, `U = [T]`, and so `U::MaybeUninit = [MaybeUninit<T>]`. Thus,
+    //   `MaybeValid<[T]>` has the same layout and field offsets as
+    //   `[MaybeUninit<T>]`, which is what we set `MaybeUninit` to here. Thus,
+    //   they trivially have the same alignment.
+    // - By the same token, their raw pointer types are trivially `as` castable
+    //   and preserve size.
+    // - By the same token, `[MaybeUninit<T>]` contains `UnsafeCell`s at the
+    //   same byte ranges as `MaybeValid<[T]>` does.
+    type MaybeUninit = [MaybeUninit<T>];
+
+    // SAFETY: `as` preserves pointer address and provenance.
+    #[allow(clippy::as_conversions)]
+    fn raw_from_maybe_uninit(maybe_uninit: *const [MaybeUninit<T>]) -> *const MaybeValid<[T]> {
+        maybe_uninit as *const MaybeValid<[T]>
+    }
+
+    // SAFETY: `as` preserves pointer address and provenance.
+    #[allow(clippy::as_conversions)]
+    fn raw_mut_from_maybe_uninit(maybe_uninit: *mut [MaybeUninit<T>]) -> *mut MaybeValid<[T]> {
+        maybe_uninit as *mut MaybeValid<[T]>
+    }
+
+    // SAFETY: `as` preserves pointer address and provenance.
+    #[allow(clippy::as_conversions)]
+    fn raw_maybe_uninit_from(s: *const MaybeValid<[T]>) -> *const [MaybeUninit<T>] {
+        s as *const [MaybeUninit<T>]
+    }
+}
+
+impl<T> Default for MaybeValid<T> {
+    fn default() -> MaybeValid<T> {
+        // SAFETY: All of the bytes of `inner` are initialized to 0, and so the
+        // safety invariant on `MaybeValid` is upheld.
+        MaybeValid { inner: MaybeUninit::zeroed() }
+    }
+}
+
+impl<T: AsMaybeUninit + ?Sized> MaybeValid<T> {
+    /// Converts this `&MaybeValid<T>` to a `&T`.
+    ///
+    /// # Safety
+    ///
+    /// `self` must contain a valid `T`.
+    pub unsafe fn assume_valid_ref(&self) -> &T {
+        // SAFETY: The caller has promised that `self` contains a valid `T`.
+        // Since `Self` is `repr(transparent)`, it has the same layout as
+        // `MaybeUninit<T>`, which in turn is guaranteed to have the same layout
+        // as `T`. Thus, it is sound to treat `self.inner` as containing a valid
+        // `T`.
+        unsafe { self.inner.assume_init_ref() }
+    }
+
+    /// Converts this `&mut MaybeValid<T>` to a `&mut T`.
+    ///
+    /// # Safety
+    ///
+    /// `self` must contain a valid `T`.
+    pub unsafe fn assume_valid_mut(&mut self) -> &mut T {
+        // SAFETY: The caller has promised that `self` contains a valid `T`.
+        // Since `Self` is `repr(transparent)`, it has the same layout as
+        // `MaybeUninit<T>`, which in turn is guaranteed to have the same layout
+        // as `T`. Thus, it is sound to treat `self.inner` as containing a valid
+        // `T`.
+        unsafe { self.inner.assume_init_mut() }
+    }
+
+    /// Gets a view of this `&T` as a `&MaybeValid<T>`.
+    ///
+    /// There is no mutable equivalent to this function, as producing a `&mut
+    /// MaybeValid<T>` from a `&mut T` would allow safe code to write invalid
+    /// values which would be accessible through `&mut T`.
+    pub fn from_ref(r: &T) -> &MaybeValid<T> {
+        let m: *const MaybeUninit<T> = MaybeUninit::from_ref(r);
+        #[allow(clippy::as_conversions)]
+        let ptr = m as *const MaybeValid<T>;
+        // SAFETY: Since `Self` is `repr(transparent)`, it has the same layout
+        // as `MaybeUninit<T>`, so the size and alignment here are valid.
+        //
+        // `MaybeValid<T>`'s bit validity constraints are weaker than those of
+        // `T`, so this is guaranteed not to produce an invalid `MaybeValid<T>`.
+        // If it were possible to write a different value for `MaybeValid<T>`
+        // through the returned reference, it could result in an invalid value
+        // being exposed via the `&T`. Luckily, the only way for mutation to
+        // happen is if `T` contains an `UnsafeCell` and the caller uses it to
+        // perform interior mutation. Importantly, `T` containing an
+        // `UnsafeCell` does not permit interior mutation through
+        // `MaybeValid<T>`, so it doesn't permit writing uninitialized or
+        // otherwise invalid values which would be visible through the original
+        // `&T`.
+        unsafe { &*ptr }
+    }
+}
+
+impl<T> MaybeValid<T> {
+    /// Converts this `MaybeValid<T>` to a `T`.
+    ///
+    /// # Safety
+    ///
+    /// `self` must contain a valid `T`.
+    pub const unsafe fn assume_valid(self) -> T {
+        // SAFETY: The caller has promised that `self` contains a valid `T`.
+        // Since `Self` is `repr(transparent)`, it has the same layout as
+        // `MaybeUninit<T>`, which in turn is guaranteed to have the same layout
+        // as `T`. Thus, it is sound to treat `self.inner` as containing a valid
+        // `T`.
+        unsafe { self.inner.assume_init() }
+    }
+}
+
+impl<T> MaybeValid<[T]> {
+    /// Converts a `MaybeValid<[T]>` to a `[MaybeValid<T>]`.
+    ///
+    /// `MaybeValid<T>` has the same layout as `T`, so these layouts are
+    /// equivalent.
+    pub const fn as_slice_of_maybe_valids(&self) -> &[MaybeValid<T>] {
+        let inner: &[<T as AsMaybeUninit>::MaybeUninit] = &self.inner.inner;
+        let inner_ptr: *const [<T as AsMaybeUninit>::MaybeUninit] = inner;
+        // Note: this Clippy warning is only emitted on our MSRV (1.61), but not
+        // on later versions of Clippy. Thus, we consider it spurious.
+        #[allow(clippy::as_conversions)]
+        let ret_ptr = inner_ptr as *const [MaybeValid<T>];
+        // SAFETY: Since `inner` is a `&[MaybeUninit<T>]`, and `MaybeValid<T>`
+        // is a `repr(transparent)` struct around `MaybeUninit<T>`, `inner` has
+        // the same layout as `&[MaybeValid<T>]`.
+        unsafe { &*ret_ptr }
+    }
+}
+
+impl<const N: usize, T> MaybeValid<[T; N]> {
+    /// Converts a `MaybeValid<[T; N]>` to a `MaybeValid<[T]>`.
+    // TODO(#64): Make this `const` once our MSRV is >= 1.64.0 (when
+    // `slice_from_raw_parts` was stabilized as `const`).
+    pub fn as_slice(&self) -> &MaybeValid<[T]> {
+        let base: *const MaybeValid<[T; N]> = self;
+        let slice_of_t: *const [T] = ptr::slice_from_raw_parts(base.cast::<T>(), N);
+        // Note: this Clippy warning is only emitted on our MSRV (1.61), but not
+        // on later versions of Clippy. Thus, we consider it spurious.
+        #[allow(clippy::as_conversions)]
+        let mv_of_slice = slice_of_t as *const MaybeValid<[T]>;
+        // SAFETY: `MaybeValid<T>` is a `repr(transparent)` wrapper around
+        // `MaybeUninit<T>`, which in turn has the same layout as `T`. Thus, the
+        // trailing slices of `[T]` and of `MaybeValid<[T]>` both have element
+        // type `T`. Since the number of elements is preserved during an `as`
+        // cast of slice/DST pointers, the resulting `*const MaybeValid<[T]>`
+        // has the same number of elements - and thus the same length - as the
+        // original `*const [T]`.
+        //
+        // Thanks to their layouts, `MaybeValid<[T; N]>` and `MaybeValid<[T]>`
+        // have the same alignment, so `mv_of_slice` is guaranteed to be
+        // aligned.
+        unsafe { &*mv_of_slice }
+    }
+}
+
+impl<T> Debug for MaybeValid<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.pad(core::any::type_name::<Self>())
+    }
+}
+
 /// A type with no alignment requirement.
 ///
 /// An `Unalign` wraps a `T`, removing any alignment requirement. `Unalign<T>`
@@ -3602,6 +3831,90 @@ mod tests {
         c.set(2);
         // SAFETY: `m` was constructed from a valid `&usize`.
         assert_eq!(unsafe { m.assume_init_ref() }, &Cell::new(2));
+    }
+
+    #[test]
+    fn test_maybe_valid() {
+        let m = MaybeValid::<usize>::default();
+        // SAFETY: all bit patterns are valid `usize`s, and `m` is initialized.
+        let u = unsafe { m.assume_valid() };
+        // This ensures that Miri can see whether `u` (and thus `m`) has been
+        // properly initialized.
+        assert_eq!(u, u);
+
+        fn bytes_to_maybe_valid(bytes: &mut [u8]) -> &mut MaybeValid<[u8]> {
+            // SAFETY: `MaybeValid<[u8]>` has the same layout as `[u8]`, and
+            // `bytes` is initialized.
+            unsafe {
+                #[allow(clippy::as_conversions)]
+                return &mut *(bytes as *mut [u8] as *mut MaybeValid<[u8]>);
+            }
+        }
+
+        let mut bytes = [0u8, 1, 2];
+        let m = bytes_to_maybe_valid(&mut bytes[..]);
+
+        // SAFETY: `m` was created from a valid `[u8]`.
+        let r = unsafe { m.assume_valid_ref() };
+        assert_eq!(r.len(), 3);
+        assert_eq!(r, [0, 1, 2]);
+
+        // SAFETY: `m` was created from a valid `[u8]`.
+        let r = unsafe { m.assume_valid_mut() };
+        assert_eq!(r.len(), 3);
+        assert_eq!(r, [0, 1, 2]);
+
+        r[0] = 1;
+        assert_eq!(bytes, [1, 1, 2]);
+
+        let mut bytes = [0u8, 1, 2];
+        let m = bytes_to_maybe_valid(&mut bytes[..]);
+        let slc = m.as_slice_of_maybe_valids();
+        assert_eq!(slc.len(), 3);
+        for i in 0u8..3 {
+            // SAFETY: `m` was created from a valid `[u8]`.
+            let u = unsafe { slc[usize::from(i)].assume_valid_ref() };
+            assert_eq!(u, &i);
+        }
+    }
+
+    #[test]
+    fn test_maybe_valid_as_slice() {
+        let mut m = MaybeValid::<[u8; 3]>::default();
+        // SAFETY: all bit patterns are valid `[u8; 3]`s, and `m` is
+        // initialized.
+        unsafe { *m.assume_valid_mut() = [0, 1, 2] };
+
+        let slc = m.as_slice().as_slice_of_maybe_valids();
+        assert_eq!(slc.len(), 3);
+
+        for i in 0u8..3 {
+            // SAFETY: `m` was initialized as a valid `[u8; 3]`.
+            let u = unsafe { slc[usize::from(i)].assume_valid_ref() };
+            assert_eq!(u, &i);
+        }
+    }
+
+    #[test]
+    fn test_maybe_valid_from_ref() {
+        use core::cell::Cell;
+
+        let u = 1usize;
+        let m = MaybeValid::from_ref(&u);
+        // SAFETY: `m` was constructed from a valid `&usize`.
+        assert_eq!(unsafe { m.assume_valid_ref() }, &1usize);
+
+        // Test that interior mutability doesn't affect correctness or
+        // soundness.
+
+        let c = Cell::new(1usize);
+        let m = MaybeValid::from_ref(&c);
+        // SAFETY: `m` was constructed from a valid `&usize`.
+        assert_eq!(unsafe { m.assume_valid_ref() }, &Cell::new(1));
+
+        c.set(2);
+        // SAFETY: `m` was constructed from a valid `&usize`.
+        assert_eq!(unsafe { m.assume_valid_ref() }, &Cell::new(2));
     }
 
     #[test]
