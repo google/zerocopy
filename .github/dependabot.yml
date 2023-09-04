@@ -4,3 +4,7 @@ updates:
     directory: /
     schedule:
       interval: daily
+    commit-message:
+      # The trailing space instructs dependabot not to insert a colon between
+      # the prefix and the rest of the message.
+      prefix: "[CI] "
