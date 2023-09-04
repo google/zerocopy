@@ -11,16 +11,6 @@ permissions: read-all
 
 env:
   CARGO_TERM_COLOR: always
-  # Increased from the default value of 3 in order to address #295. As of that issue's 
-  # writing, we were experiencing a few failures per 149 jobs due to network timeouts.
-  # This implies a failure rate of (very roughly) 1 in 50. Assuming statistically 
-  # independent network failures (probably a bad assumption, but we can't really do 
-  # better without a lot more investigating), every subsequent 3 retries should reduce 
-  # the incidence of failures 50-fold. Setting this to 9 should result in a failure 
-  # rate of 1 in 125,000. Assuming 149 jobs per PR, we should expect at least one 
-  # failure per set of 149 jobs to occur with 1 - (1 - (1/125000))^149 = 0.001% 
-  # probability, which is plenty low enough to not meaningfully impact development.
-  CARGO_NET_RETRY: 9
   RUSTFLAGS: -Dwarnings
   RUSTDOCFLAGS: -Dwarnings
   # `ZC_NIGHTLY_XXX` are flags that we add to `XXX` only on the nightly
