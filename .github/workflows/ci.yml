@@ -89,7 +89,7 @@ jobs:
         path: |
           ~/.cargo/registry/index/
           ~/.cargo/registry/cache/
-        key: ${{ runner.os }}-cargo-test-CI2-${{ hashFiles('**/Cargo.toml') }}
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
 
     # We use toolchain descriptors ("msrv", "stable", and "nightly") in the
     # matrix. This step converts the current descriptor to a particular
@@ -376,7 +376,7 @@ jobs:
           path: |
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
-          key: ${{ runner.os }}-cargo-test-CI2-${{ hashFiles('**/Cargo.toml') }}
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
 
       - name: Populate cache
         run: |
