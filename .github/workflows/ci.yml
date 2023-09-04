@@ -31,6 +31,12 @@ env:
 jobs:
   build_test:
     runs-on: ubuntu-latest
+    # Generate and populate the global Cargo registry and cache first. Each
+    # job in the matrix runs in parallel, so without populating the cache
+    # first, most jobs would duplicate the work of downloading crates from
+    # the internet. Populating the cache first ensures that this work only
+    # happens once.
+    needs: generate_cache
 
     strategy:
       # By default, this is set to `true`, which means that a single CI job
@@ -77,6 +83,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+
+    - uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
 
     # We use toolchain descriptors ("msrv", "stable", and "nightly") in the
     # matrix. This step converts the current descriptor to a particular
@@ -358,3 +371,33 @@ jobs:
               | tee -a $GITHUB_STEP_SUMMARY >&2
             exit 1
           fi
+
+  generate_cache:
+    runs-on: ubuntu-latest
+    name: Generate cache
+    steps:
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
+
+      - name: Populate cache
+        run: |
+          # Ensure all dependencies are downloaded - both for our crates and for tools
+          # we use in CI. We don't care about these tools succeeding for two reasons:
+          # First, this entire job is best-effort since it's just a performance optimization.
+          # Second, there may be failures due to issues other than failing to download
+          # dependencies (e.g., `cargo metadata` called with a malformed `Cargo.toml`,
+          # build failure in our own crate or in dependencies, etc). For those reasons,
+          # we discard stderr and ignore status codes.
+          #
+          # For downloading our crates' dependencies in particular, note that there is
+          # no support for doing this directly [1], so we just check all crates using --tests.
+          #
+          # [1]  https://stackoverflow.com/a/42139535/836390
+          cargo check --workspace --tests &> /dev/null || true
+          cargo metadata &> /dev/null || true
