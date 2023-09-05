@@ -1897,6 +1897,7 @@ pub type LayoutVerified<B, T> = Ref<B, T>;
 impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
+    T: ?Sized + KnownLayout,
 {
     /// Constructs a new `Ref`.
     ///
@@ -1905,10 +1906,11 @@ where
     /// these checks fail, it returns `None`.
     #[inline]
     pub fn new(bytes: B) -> Option<Ref<B, T>> {
-        if bytes.len() != mem::size_of::<T>() || !aligned_to::<_, T>(bytes.deref()) {
+        let (r, rest) = Ref::new_from_prefix(bytes)?;
+        if rest.len() != 0 {
             return None;
         }
-        Some(Ref(bytes, PhantomData))
+        Some(r)
     }
 
     /// Constructs a new `Ref` from the prefix of a byte slice.
@@ -1920,10 +1922,9 @@ where
     /// checks fail, it returns `None`.
     #[inline]
     pub fn new_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
-        if bytes.len() < mem::size_of::<T>() || !aligned_to::<_, T>(bytes.deref()) {
-            return None;
-        }
-        let (bytes, suffix) = bytes.split_at(mem::size_of::<T>());
+        let (_elems, split_at, _suffix_bytes) =
+            T::validate_size_align(bytes.deref(), bytes.len(), CastType::Prefix)?;
+        let (bytes, suffix) = bytes.split_at(split_at);
         Some((Ref(bytes, PhantomData), suffix))
     }
 
@@ -1937,12 +1938,9 @@ where
     /// `None`.
     #[inline]
     pub fn new_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
-        let bytes_len = bytes.len();
-        let split_at = bytes_len.checked_sub(mem::size_of::<T>())?;
+        let (_elems, split_at, _prefix_bytes) =
+            T::validate_size_align(bytes.deref(), bytes.len(), CastType::Suffix)?;
         let (prefix, bytes) = bytes.split_at(split_at);
-        if !aligned_to::<_, T>(bytes.deref()) {
-            return None;
-        }
         Some((prefix, Ref(bytes, PhantomData)))
     }
 }
@@ -2055,6 +2053,7 @@ fn map_suffix_tuple_zeroed<B: ByteSliceMut, T: ?Sized>(
 impl<B, T> Ref<B, T>
 where
     B: ByteSliceMut,
+    T: ?Sized + KnownLayout,
 {
     /// Constructs a new `Ref` after zeroing the bytes.
     ///
@@ -2177,7 +2176,7 @@ where
 impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
-    T: Unaligned,
+    T: ?Sized + KnownLayout + Unaligned,
 {
     /// Constructs a new `Ref` for a type with no alignment requirement.
     ///
