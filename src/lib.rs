@@ -2389,28 +2389,16 @@ trait AsAddress {
 impl<'a, T: ?Sized> AsAddress for &'a T {
     #[inline(always)]
     fn addr(self) -> usize {
-        #![allow(clippy::needless_return)]
-
         let ptr: *const T = self;
-        // TODO(https://github.com/rust-lang/rust/issues/95228): Use `.addr()`
-        // instead of `as usize` once it's stable, and get rid of this `allow`.
-        // Currently, `as usize` is the only way to accomplish this.
-        #[allow(clippy::as_conversions)]
-        return ptr.cast::<()>() as usize;
+        AsAddress::addr(ptr)
     }
 }
 
 impl<'a, T: ?Sized> AsAddress for &'a mut T {
     #[inline(always)]
     fn addr(self) -> usize {
-        #![allow(clippy::needless_return)]
-
-        let ptr: *mut T = self;
-        // TODO(https://github.com/rust-lang/rust/issues/95228): Use `.addr()`
-        // instead of `as usize` once it's stable, and get rid of this `allow`.
-        // Currently, `as usize` is the only way to accomplish this.
-        #[allow(clippy::as_conversions)]
-        return ptr.cast::<()>() as usize;
+        let ptr: *const T = self;
+        AsAddress::addr(ptr)
     }
 }
 
@@ -2430,13 +2418,8 @@ impl<T: ?Sized> AsAddress for *const T {
 impl<T: ?Sized> AsAddress for *mut T {
     #[inline(always)]
     fn addr(self) -> usize {
-        #![allow(clippy::needless_return)]
-
-        // TODO(https://github.com/rust-lang/rust/issues/95228): Use `.addr()`
-        // instead of `as usize` once it's stable, and get rid of this `allow`.
-        // Currently, `as usize` is the only way to accomplish this.
-        #[allow(clippy::as_conversions)]
-        return self.cast::<()>() as usize;
+        let ptr: *const T = self;
+        AsAddress::addr(ptr)
     }
 }
 
