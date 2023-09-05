@@ -1598,10 +1598,6 @@ macro_rules! transmute {
             // were to use `core::mem::transmute`, this macro would not work in
             // `std` contexts in which `core` was not manually imported. This is
             // not a problem for 2018 edition crates.
-            //
-            // Some older versions of Clippy have a bug in which they don't
-            // recognize the preceding safety comment.
-            #[allow(clippy::undocumented_unsafe_blocks)]
             unsafe { $crate::__real_transmute(e) }
         }
     }}
@@ -2405,8 +2401,6 @@ impl<'a, T: ?Sized> AsAddress for &'a mut T {
 impl<T: ?Sized> AsAddress for *const T {
     #[inline(always)]
     fn addr(self) -> usize {
-        #![allow(clippy::needless_return)]
-
         // TODO(https://github.com/rust-lang/rust/issues/95228): Use `.addr()`
         // instead of `as usize` once it's stable, and get rid of this `allow`.
         // Currently, `as usize` is the only way to accomplish this.

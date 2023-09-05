@@ -220,6 +220,11 @@ jobs:
 
     - name: Clippy check
       run: cargo +${{ env.ZC_TOOLCHAIN }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --tests --verbose
+      # Clippy improves the accuracy of lints over time, and fixes bugs. Only
+      # running Clippy on nightly allows us to avoid having to write code which
+      # is compatible with older versions of Clippy, which sometimes requires
+      # hacks to work around limitations that are fixed in more recent versions.
+      if: matrix.toolchain == 'nightly'
 
     - name: Cargo doc
       # We pass --document-private-items and --document-hidden items to ensure that 
