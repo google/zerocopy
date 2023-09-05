@@ -190,6 +190,40 @@ macro_rules! impl_or_verify {
     };
 }
 
+/// Implements `KnownLayout` for a type in terms of the implementation of
+/// another type with the same representation.
+///
+/// # Safety
+///
+/// - `$ty` and `$repr` must have the same:
+///   - Fixed prefix size
+///   - Alignment
+///   - (For DSTs) trailing slice element size
+/// - It must be valid to perform an `as` cast from `*mut $repr` to `*mut $ty`,
+///   and this operation must preserve referent size (ie, `size_of_val_raw`).
+macro_rules! unsafe_impl_known_layout {
+    ($($tyvar:ident: ?Sized + KnownLayout =>)? #[repr($repr:ty)] $ty:ty) => {
+        impl<$($tyvar: ?Sized + KnownLayout)?> sealed::KnownLayoutSealed for $ty {}
+        unsafe impl<$($tyvar: ?Sized + KnownLayout)?> KnownLayout for $ty {
+            // SAFETY: Caller has promised that these values are the same for
+            // `$ty` and `$repr`.
+            const FIXED_PREFIX_SIZE: usize = <$repr as KnownLayout>::FIXED_PREFIX_SIZE;
+            const ALIGN: NonZeroUsize = <$repr as KnownLayout>::ALIGN;
+            const TRAILING_SLICE_ELEM_SIZE: Option<usize> = <$repr as KnownLayout>::TRAILING_SLICE_ELEM_SIZE;
+
+            // SAFETY: All operations preserve address and provenance. Caller
+            // has promised that the `as` cast preserves size.
+            #[inline(always)]
+            fn raw_from_ptr_len(bytes: NonNull<u8>, elems: usize) -> NonNull<Self> {
+                #[allow(clippy::as_conversions)]
+                let ptr = <$repr>::raw_from_ptr_len(bytes, elems).as_ptr() as *mut Self;
+                // SAFETY: `ptr` was converted from `bytes`, which is non-null.
+                unsafe { NonNull::new_unchecked(ptr) }
+            }
+        }
+    };
+}
+
 /// Uses `align_of` to confirm that a type or set of types have alignment 1.
 ///
 /// Note that `align_of<T>` requires `T: Sized`, so this macro doesn't work for
