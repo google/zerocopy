@@ -2693,10 +2693,6 @@ where
 
 mod sealed {
     pub trait Sealed {}
-    impl<'a> Sealed for &'a [u8] {}
-    impl<'a> Sealed for &'a mut [u8] {}
-    impl<'a> Sealed for core::cell::Ref<'a, [u8]> {}
-    impl<'a> Sealed for core::cell::RefMut<'a, [u8]> {}
 }
 
 // ByteSlice and ByteSliceMut abstract over [u8] references (&[u8], &mut [u8],
@@ -2753,6 +2749,7 @@ pub unsafe trait ByteSliceMut: ByteSlice + DerefMut {
     }
 }
 
+impl<'a> sealed::Sealed for &'a [u8] {}
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a [u8] {
@@ -2762,6 +2759,7 @@ unsafe impl<'a> ByteSlice for &'a [u8] {
     }
 }
 
+impl<'a> sealed::Sealed for &'a mut [u8] {}
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a mut [u8] {
@@ -2771,6 +2769,7 @@ unsafe impl<'a> ByteSlice for &'a mut [u8] {
     }
 }
 
+impl<'a> sealed::Sealed for cell::Ref<'a, [u8]> {}
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {
@@ -2780,6 +2779,7 @@ unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {
     }
 }
 
+impl<'a> sealed::Sealed for RefMut<'a, [u8]> {}
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
