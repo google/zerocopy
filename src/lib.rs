@@ -77,6 +77,7 @@
 //!
 //! [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 
+#![feature(layout_for_ptr)]
 // Sometimes we want to use lints which were added after our MSRV.
 // `unknown_lints` is `warn` by default and we deny warnings in CI, so without
 // this attribute, any unknown lint would cause a CI failure when testing with
@@ -298,6 +299,11 @@ pub unsafe trait KnownLayout: sealed::KnownLayoutSealed {
     /// elements in its trailing slice.
     #[doc(hidden)]
     fn raw_from_ptr_len(bytes: NonNull<u8>, elems: usize) -> NonNull<Self>;
+
+    /// SAFETY: The returned pointer has the same address, provenance, and size
+    /// (in bytes) as `slf`.
+    #[doc(hidden)]
+    fn raw_as_slice_of_u8s(slf: NonNull<Self>) -> NonNull<[u8]>;
 }
 
 impl<T: KnownLayout> sealed::KnownLayoutSealed for [T] {}
@@ -317,13 +323,25 @@ unsafe impl<T: KnownLayout> KnownLayout for [T] {
     };
     const TRAILING_SLICE_ELEM_SIZE: Option<usize> = Some(mem::size_of::<T>());
 
-    // SAFETY: `.cast` preserves address and provenance. The returned pointer
-    // refers to an object with `elems` elements by construction.
+    // SAFETY: `slice_from_raw_parts` preserves address and provenance. The
+    // returned pointer refers to an object with `elems` elements by
+    // construction.
     #[inline(always)]
     fn raw_from_ptr_len(data: NonNull<u8>, elems: usize) -> NonNull<Self> {
         // TODO(#67): Remove this allow. See NonNullExt for more details.
         #[allow(unstable_name_collisions)]
         NonNull::slice_from_raw_parts(data.cast::<T>(), elems)
+    }
+
+    // SAFETY: `slice_from_raw_parts` preserves address and provenance. It is
+    // called with `slf.len() * mem::size_of::<T>()`, which is the size of
+    // `slf`.
+    #[inline(always)]
+    fn raw_as_slice_of_u8s(slf: NonNull<Self>) -> NonNull<[u8]> {
+        // TODO(#67): Remove this allow. See NonNullExt and NonNullSliceExt for
+        // more details.
+        #[allow(unstable_name_collisions, clippy::arithmetic_side_effects)]
+        NonNull::slice_from_raw_parts(slf.cast::<u8>(), slf.len() * mem::size_of::<T>())
     }
 }
 
@@ -366,6 +384,16 @@ macro_rules! impl_known_layout {
             fn raw_from_ptr_len(bytes: NonNull<u8>, _elems: usize) -> NonNull<Self> {
                 bytes.cast::<Self>()
             }
+
+            // SAFETY: `slice_from_raw_parts` preserves address and provenance.
+            // It is called with `mem::size_of::<Self>()`, which is the size of
+            // `slf`.
+            #[inline(always)]
+            fn raw_as_slice_of_u8s(slf: NonNull<Self>) -> NonNull<[u8]> {
+                // TODO(#67): Remove this allow. See NonNullExt for more details.
+                #[allow(unstable_name_collisions)]
+                NonNull::slice_from_raw_parts(slf.cast::<u8>(), mem::size_of::<Self>())
+            }
         }
     };
 }
@@ -379,8 +407,9 @@ macro_rules! impl_known_layout {
 ///   - Fixed prefix size
 ///   - Alignment
 ///   - (For DSTs) trailing slice element size
-/// - It must be valid to perform an `as` cast from `*mut $repr` to `*mut $ty`,
-///   and this operation must preserve referent size (ie, `size_of_val_raw`).
+/// - It must be valid to perform an `as` cast from `*mut $repr` to `*mut $ty`
+///   and vice-versa, and these operations must preserve referent size (ie,
+///   `size_of_val_raw`).
 macro_rules! unsafe_impl_known_layout {
     ($($tyvar:ident: ?Sized + KnownLayout =>)? #[repr($repr:ty)] $ty:ty) => {
         impl<$($tyvar: ?Sized + KnownLayout)?> sealed::KnownLayoutSealed for $ty {}
@@ -399,6 +428,17 @@ macro_rules! unsafe_impl_known_layout {
                 let ptr = <$repr>::raw_from_ptr_len(bytes, elems).as_ptr() as *mut Self;
                 // SAFETY: `ptr` was converted from `bytes`, which is non-null.
                 unsafe { NonNull::new_unchecked(ptr) }
+            }
+
+            // SAFETY: All operations preserve address and provenance. Caller
+            // has promised that the `as` cast preserves size.
+            #[inline(always)]
+            fn raw_as_slice_of_u8s(slf: NonNull<Self>) -> NonNull<[u8]> {
+                #[allow(clippy::as_conversions)]
+                let ptr = slf.as_ptr() as *mut $repr;
+                // SAFETY: `ptr` is cast from `slf`, which is non-null.
+                let nonnull = unsafe { NonNull::new_unchecked(ptr) };
+                <$repr as KnownLayout>::raw_as_slice_of_u8s(nonnull)
             }
         }
     };
@@ -1887,12 +1927,55 @@ macro_rules! transmute {
 ///     }
 /// }
 /// ```
-pub struct Ref<B, T: ?Sized>(B, PhantomData<T>);
+pub struct Ref<B, T: ?Sized> {
+    // INVARIANT: For the lifetime of `B`, the following are guaranteed:
+    // - `data` satisfies `T`'s alignment
+    // - `data` points to an initialized sequence of `size_of_val(data)` `u8`s
+    //   (note one consequence of this: code must never write uninitialized
+    //   bytes to `data`)
+    // - `data` is valid for reads
+    // - if `B: ByteSliceMut`, `data` is valid for writes
+    //
+    // TODO: Anything about UnsafeCells? Remember stacked borrows: banning
+    // interior mutation isn't enough; UnsafeCells cannot exist at all.
+    data: NonNull<T>,
+    _marker: PhantomData<B>,
+}
 
 /// Deprecated: prefer [`Ref`] instead.
 #[deprecated(since = "0.7.0", note = "LayoutVerified has been renamed to Ref")]
 #[doc(hidden)]
 pub type LayoutVerified<B, T> = Ref<B, T>;
+
+impl<B, T: ?Sized> Ref<B, T> {
+    /// TODO
+    ///
+    /// # Safety
+    ///
+    /// `data` must uphold the invariants on the `data` field.
+    unsafe fn from_raw(data: NonNull<T>) -> Ref<B, T> {
+        Ref { data, _marker: PhantomData }
+    }
+}
+
+impl<B, T: ?Sized> Ref<B, T> {
+    /// Converts the stored `data` pointer to a `[u8]` pointer of the same
+    /// address, size, and provenance.
+    fn bytes_raw(&self) -> NonNull<[u8]> {
+        // TODO(https://users.rust-lang.org/t/get-size-of-nonnull-t-for-t-sized/99427):
+        // Figure out how to get the size of `self.data` on stable Rust.
+        // Alternatively, go with `KnownLayout::raw_as_slice_of_u8s` and accept
+        // that we'll need to add a `T: KnownLayout` bound here. That probably
+        // won't be problematic for any callers because there's no way to
+        // construct a `Ref` where `T: !KnownLayout`. The only potential issue
+        // would be in code which is generic over `T`.
+        let len = unsafe { mem::size_of_val_raw(self.data.as_ptr().cast_const()) };
+        // TODO(#67): Remove this allow. See NonNullExt for more details.
+        #[allow(unstable_name_collisions)]
+        NonNull::slice_from_raw_parts(self.data.cast::<u8>(), len)
+        // T::raw_as_slice_of_u8s(self.data)
+    }
+}
 
 impl<B, T> Ref<B, T>
 where
@@ -1922,10 +2005,23 @@ where
     /// checks fail, it returns `None`.
     #[inline]
     pub fn new_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
-        let (_elems, split_at, _suffix_bytes) =
+        let (elems, split_at, _suffix_bytes) =
             T::validate_size_align(bytes.deref(), bytes.len(), CastType::Prefix)?;
         let (bytes, suffix) = bytes.split_at(split_at);
-        Some((Ref(bytes, PhantomData), suffix))
+
+        let slf = T::raw_from_ptr_len(bytes.into_non_null(), elems);
+        // SAFETY:
+        // - `validate_size_align` checked alignment, so we know alignment is
+        //   satisfied.
+        // - `bytes` was originally a `ByteSlice`, so all of its referent bytes
+        //   are guaranteed to be initialized. `validate_size_align` checked
+        //   size, so we know that `bytes` points to `size_of_val(slf)` bytes,
+        //   and that that is a valid length for `T`.
+        // - `bytes` is valid for reads, so `slf` is as well.
+        // - `split_at` guarantees that, if `B: ByteSliceMut`, both returned
+        //   values have exclusive access to their referents. Thus, if `B:
+        //   ByteSliceMut`, `slf` is valid for writes.
+        Some((unsafe { Ref::from_raw(slf) }, suffix))
     }
 
     /// Constructs a new `Ref` from the suffix of a byte slice.
@@ -1938,10 +2034,23 @@ where
     /// `None`.
     #[inline]
     pub fn new_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
-        let (_elems, split_at, _prefix_bytes) =
+        let (elems, split_at, _prefix_bytes) =
             T::validate_size_align(bytes.deref(), bytes.len(), CastType::Suffix)?;
         let (prefix, bytes) = bytes.split_at(split_at);
-        Some((prefix, Ref(bytes, PhantomData)))
+
+        let slf = T::raw_from_ptr_len(bytes.into_non_null(), elems);
+        // SAFETY:
+        // - `validate_size_align` checked alignment, so we know alignment is
+        //   satisfied.
+        // - `bytes` was originally a `ByteSlice`, so all of its referent bytes
+        //   are guaranteed to be initialized. `validate_size_align` checked
+        //   size, so we know that `bytes` points to `size_of_val(slf)` bytes,
+        //   and that that is a valid length for `T`.
+        // - `bytes` is valid for reads, so `slf` is as well.
+        // - `split_at` guarantees that, if `B: ByteSliceMut`, both returned
+        //   values have exclusive access to their referents. Thus, if `B:
+        //   ByteSliceMut`, `slf` is valid for writes.
+        Some((prefix, unsafe { Ref::from_raw(slf) }))
     }
 }
 
@@ -1961,14 +2070,7 @@ where
     /// `new_slice` panics if `T` is a zero-sized type.
     #[inline]
     pub fn new_slice(bytes: B) -> Option<Ref<B, [T]>> {
-        let remainder = bytes
-            .len()
-            .checked_rem(mem::size_of::<T>())
-            .expect("Ref::new_slice called on a zero-sized type");
-        if remainder != 0 || !aligned_to::<_, T>(bytes.deref()) {
-            return None;
-        }
-        Some(Ref(bytes, PhantomData))
+        Ref::new(bytes)
     }
 
     /// Constructs a new `Ref` of a slice type from the prefix of a byte slice.
@@ -2025,7 +2127,7 @@ where
 fn map_zeroed<B: ByteSliceMut, T: ?Sized>(opt: Option<Ref<B, T>>) -> Option<Ref<B, T>> {
     match opt {
         Some(mut r) => {
-            r.0.fill(0);
+            r.bytes_mut().fill(0);
             Some(r)
         }
         None => None,
@@ -2037,7 +2139,7 @@ fn map_prefix_tuple_zeroed<B: ByteSliceMut, T: ?Sized>(
 ) -> Option<(Ref<B, T>, B)> {
     match opt {
         Some((mut r, rest)) => {
-            r.0.fill(0);
+            r.bytes_mut().fill(0);
             Some((r, rest))
         }
         None => None,
@@ -2398,38 +2500,41 @@ where
 impl<'a, B, T> Ref<B, T>
 where
     B: 'a + ByteSlice,
-    T: FromBytes,
+    T: ?Sized + FromBytes,
 {
     /// Converts this `Ref` into a reference.
     ///
     /// `into_ref` consumes the `Ref`, and returns a reference to `T`.
     pub fn into_ref(self) -> &'a T {
-        // SAFETY: This is sound because `B` is guaranteed to live for the
-        // lifetime `'a`, meaning that a) the returned reference cannot outlive
-        // the `B` from which `self` was constructed and, b) no mutable methods
-        // on that `B` can be called during the lifetime of the returned
-        // reference. See the documentation on `deref_helper` for what
-        // invariants we are required to uphold.
-        unsafe { self.deref_helper() }
+        // SAFETY: `data` is guaranteed to be valid for reads for the lifetime
+        // of `B`, and is guaranteed to have all its bytes initialized. Since
+        // `T: FromBytes`, this is sufficient to ensure that `data` points to a
+        // valid `T`, and that it will point to a valid `T` for the lifetime
+        // `'a`.
+        unsafe { &*self.data.as_ptr() }
     }
 }
 
 impl<'a, B, T> Ref<B, T>
 where
     B: 'a + ByteSliceMut,
-    T: FromBytes + AsBytes,
+    T: ?Sized + FromBytes + AsBytes,
 {
     /// Converts this `Ref` into a mutable reference.
     ///
     /// `into_mut` consumes the `Ref`, and returns a mutable reference to `T`.
-    pub fn into_mut(mut self) -> &'a mut T {
-        // SAFETY: This is sound because `B` is guaranteed to live for the
-        // lifetime `'a`, meaning that a) the returned reference cannot outlive
-        // the `B` from which `self` was constructed and, b) no other methods -
-        // mutable or immutable - on that `B` can be called during the lifetime
-        // of the returned reference. See the documentation on
-        // `deref_mut_helper` for what invariants we are required to uphold.
-        unsafe { self.deref_mut_helper() }
+    pub fn into_mut(self) -> &'a mut T {
+        // SAFETY: `data` is guaranteed to be valid for reads for the lifetime
+        // of `B`, and is guaranteed to have all its bytes initialized. Since
+        // `T: FromBytes`, this is sufficient to ensure that `data` points to a
+        // valid `T`, and that it will point to a valid `T` for the lifetime
+        // `'a`.
+        //
+        // Since `B: ByteSliceMut`, `data` is also valid for `writes` for the
+        // lifetime of `B`. Since `T: AsBytes`, all bytes of any `T` are
+        // initialized, so allowing the caller to write `T`s will not violate
+        // the invariant that all of `data`'s bytes are initialized.
+        unsafe { &mut *self.data.as_ptr() }
     }
 }
 
@@ -2441,14 +2546,10 @@ where
     /// Converts this `Ref` into a slice reference.
     ///
     /// `into_slice` consumes the `Ref`, and returns a reference to `[T]`.
+    // TODO: Before merging, add a blocking-next-release issue to track marking
+    // this as deprecated. Marking it as deprecated is a breaking change.
     pub fn into_slice(self) -> &'a [T] {
-        // SAFETY: This is sound because `B` is guaranteed to live for the
-        // lifetime `'a`, meaning that a) the returned reference cannot outlive
-        // the `B` from which `self` was constructed and, b) no mutable methods
-        // on that `B` can be called during the lifetime of the returned
-        // reference. See the documentation on `deref_slice_helper` for what
-        // invariants we are required to uphold.
-        unsafe { self.deref_slice_helper() }
+        self.into_ref()
     }
 }
 
@@ -2461,124 +2562,10 @@ where
     ///
     /// `into_mut_slice` consumes the `Ref`, and returns a mutable reference to
     /// `[T]`.
-    pub fn into_mut_slice(mut self) -> &'a mut [T] {
-        // SAFETY: This is sound because `B` is guaranteed to live for the
-        // lifetime `'a`, meaning that a) the returned reference cannot outlive
-        // the `B` from which `self` was constructed and, b) no other methods -
-        // mutable or immutable - on that `B` can be called during the lifetime
-        // of the returned reference. See the documentation on
-        // `deref_mut_slice_helper` for what invariants we are required to
-        // uphold.
-        unsafe { self.deref_mut_slice_helper() }
-    }
-}
-
-impl<B, T> Ref<B, T>
-where
-    B: ByteSlice,
-    T: FromBytes,
-{
-    /// Creates an immutable reference to `T` with a specific lifetime.
-    ///
-    /// # Safety
-    ///
-    /// The type bounds on this method guarantee that it is safe to create an
-    /// immutable reference to `T` from `self`. However, since the lifetime `'a`
-    /// is not required to be shorter than the lifetime of the reference to
-    /// `self`, the caller must guarantee that the lifetime `'a` is valid for
-    /// this reference. In particular, the referent must exist for all of `'a`,
-    /// and no mutable references to the same memory may be constructed during
-    /// `'a`.
-    unsafe fn deref_helper<'a>(&self) -> &'a T {
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe {
-            &*self.0.as_ptr().cast::<T>()
-        }
-    }
-}
-
-impl<B, T> Ref<B, T>
-where
-    B: ByteSliceMut,
-    T: FromBytes + AsBytes,
-{
-    /// Creates a mutable reference to `T` with a specific lifetime.
-    ///
-    /// # Safety
-    ///
-    /// The type bounds on this method guarantee that it is safe to create a
-    /// mutable reference to `T` from `self`. However, since the lifetime `'a`
-    /// is not required to be shorter than the lifetime of the reference to
-    /// `self`, the caller must guarantee that the lifetime `'a` is valid for
-    /// this reference. In particular, the referent must exist for all of `'a`,
-    /// and no other references - mutable or immutable - to the same memory may
-    /// be constructed during `'a`.
-    unsafe fn deref_mut_helper<'a>(&mut self) -> &'a mut T {
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe {
-            &mut *self.0.as_mut_ptr().cast::<T>()
-        }
-    }
-}
-
-impl<B, T> Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes,
-{
-    /// Creates an immutable reference to `[T]` with a specific lifetime.
-    ///
-    /// # Safety
-    ///
-    /// `deref_slice_helper` has the same safety requirements as `deref_helper`.
-    unsafe fn deref_slice_helper<'a>(&self) -> &'a [T] {
-        let len = self.0.len();
-        let elem_size = mem::size_of::<T>();
-        debug_assert_ne!(elem_size, 0);
-        // `Ref<_, [T]>` maintains the invariant that `size_of::<T>() > 0`.
-        // Thus, neither the mod nor division operations here can panic.
-        #[allow(clippy::arithmetic_side_effects)]
-        let elems = {
-            debug_assert_eq!(len % elem_size, 0);
-            len / elem_size
-        };
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe {
-            slice::from_raw_parts(self.0.as_ptr().cast::<T>(), elems)
-        }
-    }
-}
-
-impl<B, T> Ref<B, [T]>
-where
-    B: ByteSliceMut,
-    T: FromBytes + AsBytes,
-{
-    /// Creates a mutable reference to `[T]` with a specific lifetime.
-    ///
-    /// # Safety
-    ///
-    /// `deref_mut_slice_helper` has the same safety requirements as
-    /// `deref_mut_helper`.
-    unsafe fn deref_mut_slice_helper<'a>(&mut self) -> &'a mut [T] {
-        let len = self.0.len();
-        let elem_size = mem::size_of::<T>();
-        debug_assert_ne!(elem_size, 0);
-        // `Ref<_, [T]>` maintains the invariant that `size_of::<T>() > 0`.
-        // Thus, neither the mod nor division operations here can panic.
-        #[allow(clippy::arithmetic_side_effects)]
-        let elems = {
-            debug_assert_eq!(len % elem_size, 0);
-            len / elem_size
-        };
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe {
-            slice::from_raw_parts_mut(self.0.as_mut_ptr().cast::<T>(), elems)
-        }
+    // TODO: Before merging, add a blocking-next-release issue to track marking
+    // this as deprecated. Marking it as deprecated is a breaking change.
+    pub fn into_mut_slice(self) -> &'a mut [T] {
+        self.into_mut()
     }
 }
 
@@ -2622,6 +2609,13 @@ impl<T: ?Sized> AsAddress for *mut T {
     }
 }
 
+impl<T: ?Sized> AsAddress for NonNull<T> {
+    #[inline(always)]
+    fn addr(self) -> usize {
+        AsAddress::addr(self.as_ptr())
+    }
+}
+
 /// Is `t` aligned to `mem::align_of::<U>()`?
 #[inline(always)]
 fn aligned_to<T: AsAddress, U>(t: T) -> bool {
@@ -2640,7 +2634,11 @@ where
     /// Gets the underlying bytes.
     #[inline]
     pub fn bytes(&self) -> &[u8] {
-        &self.0
+        // SAFETY: `self.bytes_raw()` just performs a type cast on the `data`
+        // field. That field is guaranteed to be valid for reads for the
+        // lifetime of `B`, and all of its bytes are guaranteed to be
+        // initialized, so it is guaranteed to refer to a valid `[u8]`.
+        unsafe { &*self.bytes_raw().as_ptr().cast_const() }
     }
 }
 
@@ -2652,7 +2650,14 @@ where
     /// Gets the underlying bytes mutably.
     #[inline]
     pub fn bytes_mut(&mut self) -> &mut [u8] {
-        &mut self.0
+        // SAFETY: `self.bytes_raw()` just performs a type cast on the `data`
+        // field. That field is guaranteed to be valid for reads for the
+        // lifetime of `B`, and all of its bytes are guaranteed to be
+        // initialized, so it is guaranteed to refer to a valid `[u8]`.
+        //
+        // Since `B: ByteSliceMut`, `data` is guaranteed to be valid for writes
+        // for the lifetime of `B`.
+        unsafe { &mut *self.bytes_raw().as_ptr() }
     }
 }
 
@@ -2664,11 +2669,10 @@ where
     /// Reads a copy of `T`.
     #[inline]
     pub fn read(&self) -> T {
-        // SAFETY: Because of the invariants on `Ref`, we know that `self.0` is
-        // at least `size_of::<T>()` bytes long, and that it is at least as
-        // aligned as `align_of::<T>()`. Because `T: FromBytes`, it is sound to
-        // interpret these bytes as a `T`.
-        unsafe { ptr::read(self.0.as_ptr().cast::<T>()) }
+        // SAFETY: `data` is guaranteed to be valid for reads, and all bytes in
+        // `data` are guaranteed to be initialized. Since `T: FromBytes`, the
+        // contents of `data` constitute a valid `T`.
+        unsafe { ptr::read(self.data.as_ptr().cast_const()) }
     }
 }
 
@@ -2680,82 +2684,48 @@ where
     /// Writes the bytes of `t` and then forgets `t`.
     #[inline]
     pub fn write(&mut self, t: T) {
-        // SAFETY: Because of the invariants on `Ref`, we know that `self.0` is
-        // at least `size_of::<T>()` bytes long, and that it is at least as
-        // aligned as `align_of::<T>()`. Writing `t` to the buffer will allow
-        // all of the bytes of `t` to be accessed as a `[u8]`, but because `T:
-        // AsBytes`, we know this is sound.
-        unsafe { ptr::write(self.0.as_mut_ptr().cast::<T>(), t) }
+        // SAFETY: It is guaranteed that, if `B: ByteSliceMut`, `data` is valid
+        // for writes. Since `T: AsBytes`, this is guaranteed not to violate the
+        // invariant that all bytes of `data` are initialized.
+        unsafe { ptr::write(self.data.as_ptr(), t) }
     }
 }
 
 impl<B, T> Deref for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes,
+    T: ?Sized + FromBytes,
 {
     type Target = T;
     #[inline]
     fn deref(&self) -> &T {
-        // SAFETY: This is sound because the lifetime of `self` is the same as
-        // the lifetime of the return value, meaning that a) the returned
-        // reference cannot outlive `self` and, b) no mutable methods on `self`
-        // can be called during the lifetime of the returned reference. See the
-        // documentation on `deref_helper` for what invariants we are required
-        // to uphold.
-        unsafe { self.deref_helper() }
+        // SAFETY: `data` is guaranteed to be valid for reads for the lifetime
+        // of `B`, and is guaranteed to have all its bytes initialized. Since
+        // `T: FromBytes`, this is sufficient to ensure that `data` points to a
+        // valid `T`, and that it will point to a valid `T` for the lifetime of
+        // `self`.
+        unsafe { &*self.data.as_ptr() }
     }
 }
 
 impl<B, T> DerefMut for Ref<B, T>
 where
     B: ByteSliceMut,
-    T: FromBytes + AsBytes,
+    T: ?Sized + FromBytes + AsBytes,
 {
     #[inline]
     fn deref_mut(&mut self) -> &mut T {
-        // SAFETY: This is sound because the lifetime of `self` is the same as
-        // the lifetime of the return value, meaning that a) the returned
-        // reference cannot outlive `self` and, b) no other methods on `self`
-        // can be called during the lifetime of the returned reference. See the
-        // documentation on `deref_mut_helper` for what invariants we are
-        // required to uphold.
-        unsafe { self.deref_mut_helper() }
-    }
-}
-
-impl<B, T> Deref for Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes,
-{
-    type Target = [T];
-    #[inline]
-    fn deref(&self) -> &[T] {
-        // SAFETY: This is sound because the lifetime of `self` is the same as
-        // the lifetime of the return value, meaning that a) the returned
-        // reference cannot outlive `self` and, b) no mutable methods on `self`
-        // can be called during the lifetime of the returned reference. See the
-        // documentation on `deref_slice_helper` for what invariants we are
-        // required to uphold.
-        unsafe { self.deref_slice_helper() }
-    }
-}
-
-impl<B, T> DerefMut for Ref<B, [T]>
-where
-    B: ByteSliceMut,
-    T: FromBytes + AsBytes,
-{
-    #[inline]
-    fn deref_mut(&mut self) -> &mut [T] {
-        // SAFETY: This is sound because the lifetime of `self` is the same as
-        // the lifetime of the return value, meaning that a) the returned
-        // reference cannot outlive `self` and, b) no other methods on `self`
-        // can be called during the lifetime of the returned reference. See the
-        // documentation on `deref_mut_slice_helper` for what invariants we are
-        // required to uphold.
-        unsafe { self.deref_mut_slice_helper() }
+        // SAFETY: `data` is guaranteed to be valid for reads for the lifetime
+        // of `B`, and is guaranteed to have all its bytes initialized. Since
+        // `T: FromBytes`, this is sufficient to ensure that `data` points to a
+        // valid `T`, and that it will point to a valid `T` for the lifetime of
+        // `self`.
+        //
+        // Since `B: ByteSliceMut`, `data` is also valid for `writes` for the
+        // lifetime of `B`. Since `T: AsBytes`, all bytes of any `T` are
+        // initialized, so allowing the caller to write `T`s will not violate
+        // the invariant that all of `data`'s bytes are initialized.
+        unsafe { &mut *self.data.as_ptr() }
     }
 }
 
@@ -2933,9 +2903,19 @@ pub unsafe trait ByteSlice:
         <[u8]>::as_ptr(self)
     }
 
+    /// Converts `self` a non-null pointer to the first byte in the slice.
+    ///
+    /// Conveys the same mutability as `self`. If `self` provides mutable
+    /// access, then the returned pointer provides mutable access under the
+    /// (experimental) Stacked Borrows memory model implemented by Miri.
+    fn into_non_null(self) -> NonNull<u8>;
+
     /// Splits the slice at the midpoint.
     ///
     /// `x.split_at(mid)` returns `x[..mid]` and `x[mid..]`.
+    ///
+    /// If `Self: ByteSliceMut`, it is guaranteed that each return value will
+    /// have exclusive access to its referent for the lifetime of `Self`.
     ///
     /// # Panics
     ///
@@ -2965,6 +2945,13 @@ unsafe impl<'a> ByteSlice for &'a [u8] {
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at(self, mid)
     }
+
+    #[inline]
+    fn into_non_null(self) -> NonNull<u8> {
+        // TODO(https://github.com/rust-lang/rust/issues/74265): Use
+        // `NonNull::into_non_null_ptr`.
+        NonNull::from(self.deref()).cast::<u8>()
+    }
 }
 
 impl<'a> sealed::ByteSliceSealed for &'a mut [u8] {}
@@ -2974,6 +2961,13 @@ unsafe impl<'a> ByteSlice for &'a mut [u8] {
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at_mut(self, mid)
+    }
+
+    #[inline]
+    fn into_non_null(mut self) -> NonNull<u8> {
+        // TODO(https://github.com/rust-lang/rust/issues/74265): Use
+        // `NonNull::into_non_null_ptr`.
+        NonNull::from(self.deref_mut()).cast::<u8>()
     }
 }
 
@@ -2985,6 +2979,13 @@ unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {
     fn split_at(self, mid: usize) -> (Self, Self) {
         cell::Ref::map_split(self, |slice| <[u8]>::split_at(slice, mid))
     }
+
+    #[inline]
+    fn into_non_null(self) -> NonNull<u8> {
+        // TODO(https://github.com/rust-lang/rust/issues/74265): Use
+        // `NonNull::into_non_null_ptr`.
+        NonNull::from(self.deref()).cast::<u8>()
+    }
 }
 
 impl<'a> sealed::ByteSliceSealed for RefMut<'a, [u8]> {}
@@ -2994,6 +2995,13 @@ unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         RefMut::map_split(self, |slice| <[u8]>::split_at_mut(slice, mid))
+    }
+
+    #[inline]
+    fn into_non_null(mut self) -> NonNull<u8> {
+        // TODO(https://github.com/rust-lang/rust/issues/74265): Use
+        // `NonNull::into_non_null_ptr`.
+        NonNull::from(self.deref_mut()).cast::<u8>()
     }
 }
 
@@ -3059,6 +3067,29 @@ impl<T> NonNullExt for NonNull<T> {
         let ptr = ptr::slice_from_raw_parts_mut(data.as_ptr(), len);
         // SAFETY: `ptr` is converted from `data`, which is non-null.
         unsafe { NonNull::new_unchecked(ptr) }
+    }
+}
+
+// A polyfill for `NonNull::len` that we can use before our MSRV is 1.63, when
+// that method was stabilized.
+//
+// TODO(#67): Once our MSRV is 1.63, remove this.
+trait NonNullSliceExt {
+    fn len(self) -> usize;
+}
+
+impl<T> NonNullSliceExt for NonNull<[T]> {
+    #[inline(always)]
+    fn len(self) -> usize {
+        #[allow(clippy::as_conversions)]
+        let ptr = self.as_ptr().cast_const() as *const [()];
+        // SAFETY:
+        // - `()` has alignment 1, so this is guaranteed to be aligned
+        // - `[()]` takes up no space, so this never aliases other memory
+        //   regardless of the provenance of `self` or the validity of `self`'s
+        //   referent.
+        let slice: &'static [()] = unsafe { &*ptr };
+        slice.len()
     }
 }
 
@@ -3549,6 +3580,26 @@ mod tests {
         const ARRAY_OF_ARRAYS: [[u8; 2]; 4] = [[0, 1], [2, 3], [4, 5], [6, 7]];
         const X: [[u8; 2]; 4] = transmute!(ARRAY_OF_U8S);
         assert_eq!(X, ARRAY_OF_ARRAYS);
+    }
+
+    #[test]
+    fn test_ref_size() {
+        // Test that `Ref`'s size is only dependent upon `T`, not upon `B`.
+
+        macro_rules! assert_ref_size {
+            ($ty:ty) => {
+                assert_eq!(mem::size_of::<Ref<&[u8], $ty>>(), mem::size_of::<&$ty>());
+                assert_eq!(
+                    mem::size_of::<Ref<cell::Ref<'static, [u8]>, $ty>>(),
+                    mem::size_of::<&$ty>()
+                );
+            };
+        }
+
+        assert_ref_size!(());
+        assert_ref_size!(u8);
+        assert_ref_size!([u8]);
+        assert_ref_size!(dyn Debug);
     }
 
     #[test]
