@@ -179,17 +179,14 @@ use core::{
         NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize, Wrapping,
     },
     ops::{Deref, DerefMut},
-    ptr, slice,
+    ptr::{self, NonNull},
+    slice,
 };
 
 #[cfg(feature = "alloc")]
 extern crate alloc;
 #[cfg(feature = "alloc")]
-use {
-    alloc::boxed::Box,
-    alloc::vec::Vec,
-    core::{alloc::Layout, ptr::NonNull},
-};
+use {alloc::boxed::Box, alloc::vec::Vec, core::alloc::Layout};
 
 // This is a hack to allow zerocopy-derive derives to work in this crate. They
 // assume that zerocopy is linked as an extern crate, so they access items from
@@ -197,6 +194,199 @@ use {
 #[cfg(any(feature = "derive", test))]
 mod zerocopy {
     pub(crate) use crate::*;
+}
+
+/// When performing a byte-slice-to-type cast, is the type taken from the prefix
+/// of the byte slice or from the suffix of the byte slice?
+#[doc(hidden)]
+#[allow(missing_debug_implementations, missing_copy_implementations)]
+pub enum CastType {
+    Prefix,
+    Suffix,
+}
+
+/// A trait which carries information about a type's layout that is used by the
+/// internals of this crate.
+///
+/// This trait is not meant for consumption by code outsie of this crate. While
+/// the normal semver stability guarantees apply with respect to which types
+/// implement this trait and which trait implementations are implied by this
+/// trait, no semver stability guarantees are made regarding its internals; they
+/// may change at any time, and code which makes use of them may break.
+///
+/// # Safety
+///
+/// This trait does not convey any safety guarantees to code outside this crate.
+pub unsafe trait KnownLayout: sealed::KnownLayoutSealed {
+    #[doc(hidden)]
+    const FIXED_PREFIX_SIZE: usize;
+    #[doc(hidden)]
+    const ALIGN: NonZeroUsize;
+    #[doc(hidden)]
+    const TRAILING_SLICE_ELEM_SIZE: Option<usize>;
+
+    /// Validates that the memory region at `addr` of length `bytes_len`
+    /// satisfies `Self`'s size and alignment requirements, returning `(elems,
+    /// split_at, prefix_suffix_bytes)`.
+    ///
+    ///  In particular, `validate_size_align` validates that:
+    /// - `bytes_len` is large enough to hold an instance of `Self`
+    /// - If `cast_type` is `Prefix`, `addr` satisfies `Self`'s alignment
+    ///   requirements
+    /// - If `cast_type` is `Suffix`, `addr + split_at` satisfies `Self`'s
+    ///   alignment requirements
+    ///
+    /// For DSTs, `elems` is the maximum number of trailing slice elements such
+    /// that a `Self` with that number of trailing slice elements can fit in the
+    /// provided space. For sized types, `elems` is always 0.
+    ///
+    /// `split_at` indicates the point at which to split the memory region in
+    /// order to split it into the `Self` and the prefix or suffix. If
+    /// `cast_type` is `Prefix`, `split_at` is the address of the first byte of
+    /// the suffix. If `cast_type` is `Suffix`, `split_at` is the address of the
+    /// first byte of the `Self`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if called on a DST whose trailing slice element type is a
+    /// zero-sized type.
+    #[doc(hidden)]
+    #[inline(always)]
+    fn validate_size_align<A: AsAddress>(
+        addr: A,
+        bytes_len: usize,
+        cast_type: CastType,
+    ) -> Option<(usize, usize, usize)> {
+        let trailing_slice_bytes = bytes_len.checked_sub(Self::FIXED_PREFIX_SIZE)?;
+        let (elems, self_bytes) = if let Some(elem_size) = Self::TRAILING_SLICE_ELEM_SIZE {
+            let elem_size = NonZeroUsize::new(elem_size)
+                .expect("attempted to cast to slice type with zero-sized element");
+            #[allow(clippy::arithmetic_side_effects)]
+            let elems = trailing_slice_bytes / elem_size;
+            #[allow(clippy::arithmetic_side_effects)]
+            let self_bytes = Self::FIXED_PREFIX_SIZE + (elems * elem_size.get());
+            (elems, self_bytes)
+        } else {
+            (0, Self::FIXED_PREFIX_SIZE)
+        };
+
+        // `self_addr` indicates where in the given byte range the `Self` will
+        // start. If we're doing a prefix cast, it starts at the beginning. If
+        // we're doing a suffix cast, it starts after whatever bytes are
+        // remaining.
+        #[allow(clippy::arithmetic_side_effects)]
+        let (self_addr, split_at) = match cast_type {
+            CastType::Prefix => (addr.addr(), self_bytes),
+            CastType::Suffix => {
+                let split_at = bytes_len - self_bytes;
+                (addr.addr() + split_at, split_at)
+            }
+        };
+
+        #[allow(clippy::arithmetic_side_effects)]
+        if self_addr % Self::ALIGN != 0 {
+            return None;
+        }
+
+        #[allow(clippy::arithmetic_side_effects)]
+        let ret = Some((elems, split_at, bytes_len - self_bytes));
+        ret
+    }
+
+    /// SAFETY: The returned pointer has the same address and provenance as
+    /// `bytes`. If `Self` is a DST, the returned pointer's referent has `elems`
+    /// elements in its trailing slice.
+    #[doc(hidden)]
+    fn raw_from_ptr_len(bytes: NonNull<u8>, elems: usize) -> NonNull<Self>;
+}
+
+impl<T> sealed::KnownLayoutSealed for T {}
+// SAFETY: See inline comments.
+unsafe impl<T> KnownLayout for T {
+    const FIXED_PREFIX_SIZE: usize = mem::size_of::<T>();
+    const ALIGN: NonZeroUsize = if let Some(align) = NonZeroUsize::new(mem::align_of::<T>()) {
+        align
+    } else {
+        unreachable!()
+    };
+    // `T` is sized so it has no trailing slice.
+    const TRAILING_SLICE_ELEM_SIZE: Option<usize> = None;
+
+    // SAFETY: `.cast` preserves address and provenance.
+    #[inline(always)]
+    fn raw_from_ptr_len(bytes: NonNull<u8>, _elems: usize) -> NonNull<Self> {
+        bytes.cast::<Self>()
+    }
+}
+
+impl<T> sealed::KnownLayoutSealed for [T] {}
+// SAFETY: See inline comments.
+unsafe impl<T> KnownLayout for [T] {
+    // `[T]` is a slice type; it has no fields before the trailing slice.
+    const FIXED_PREFIX_SIZE: usize = 0;
+    // Slices have the same layout as the array they slice. [1] Arrays `[T; _]`
+    // have the same alignment as `T`. [2]
+    //
+    // [1] https://doc.rust-lang.org/reference/type-layout.html#slice-layout
+    // [2] https://doc.rust-lang.org/reference/type-layout.html#array-layout
+    const ALIGN: NonZeroUsize = if let Some(align) = NonZeroUsize::new(mem::align_of::<T>()) {
+        align
+    } else {
+        unreachable!()
+    };
+    const TRAILING_SLICE_ELEM_SIZE: Option<usize> = Some(mem::size_of::<T>());
+
+    // SAFETY: `.cast` preserves address and provenance. The returned pointer
+    // refers to an object with `elems` elements by construction.
+    #[inline(always)]
+    fn raw_from_ptr_len(data: NonNull<u8>, elems: usize) -> NonNull<Self> {
+        // TODO(#67): Remove this allow. See NonNullExt for more details.
+        #[allow(unstable_name_collisions)]
+        NonNull::slice_from_raw_parts(data.cast::<T>(), elems)
+    }
+}
+
+/// Implements `KnownLayout` for a type in terms of the implementation of
+/// another type with the same representation.
+///
+/// # Safety
+///
+/// - `$ty` and `$repr` must have the same:
+///   - Fixed prefix size
+///   - Alignment
+///   - (For DSTs) trailing slice element size
+/// - It must be valid to perform an `as` cast from `*mut $repr` to `*mut $ty`,
+///   and this operation must preserve referent size (ie, `size_of_val_raw`).
+macro_rules! unsafe_impl_known_layout {
+    ($($tyvar:ident =>)? #[repr($repr:ty)] $ty:ty) => {
+        impl<$($tyvar)?> sealed::KnownLayoutSealed for $ty {}
+        unsafe impl<$($tyvar)?> KnownLayout for $ty {
+            // SAFETY: Caller has promised that these values are the same for
+            // `$ty` and `$repr`.
+            const FIXED_PREFIX_SIZE: usize = <$repr as KnownLayout>::FIXED_PREFIX_SIZE;
+            const ALIGN: NonZeroUsize = <$repr as KnownLayout>::ALIGN;
+            const TRAILING_SLICE_ELEM_SIZE: Option<usize> = <$repr as KnownLayout>::TRAILING_SLICE_ELEM_SIZE;
+
+            // SAFETY: All operations preserve address and provenance. Caller
+            // has promised that the `as` cast preserves size.
+            #[inline(always)]
+            fn raw_from_ptr_len(bytes: NonNull<u8>, elems: usize) -> NonNull<Self> {
+                #[allow(clippy::as_conversions)]
+                let ptr = <$repr>::raw_from_ptr_len(bytes, elems).as_ptr() as *mut Self;
+                // SAFETY: `ptr` was converted from `bytes`, which is non-null.
+                unsafe { NonNull::new_unchecked(ptr) }
+            }
+        }
+    };
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// `str` and `ManuallyDrop<[T]>` have the same representations as `[u8]`
+    /// and `[T]` repsectively. `str` has different bit validity than `[u8]`,
+    /// but that doesn't affect the soundness of this impl.
+    unsafe_impl_known_layout!(#[repr([u8])] str);
+    unsafe_impl_known_layout!(T => #[repr([T])] ManuallyDrop<[T]>);
 }
 
 /// Types for which a sequence of bytes all set to zero represents a valid
@@ -1659,6 +1849,7 @@ pub type LayoutVerified<B, T> = Ref<B, T>;
 impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
+    T: ?Sized + KnownLayout,
 {
     /// Constructs a new `Ref`.
     ///
@@ -1667,10 +1858,11 @@ where
     /// these checks fail, it returns `None`.
     #[inline]
     pub fn new(bytes: B) -> Option<Ref<B, T>> {
-        if bytes.len() != mem::size_of::<T>() || !aligned_to::<_, T>(bytes.deref()) {
+        let (r, rest) = Ref::new_from_prefix(bytes)?;
+        if rest.len() != 0 {
             return None;
         }
-        Some(Ref(bytes, PhantomData))
+        Some(r)
     }
 
     /// Constructs a new `Ref` from the prefix of a byte slice.
@@ -1682,10 +1874,9 @@ where
     /// checks fail, it returns `None`.
     #[inline]
     pub fn new_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
-        if bytes.len() < mem::size_of::<T>() || !aligned_to::<_, T>(bytes.deref()) {
-            return None;
-        }
-        let (bytes, suffix) = bytes.split_at(mem::size_of::<T>());
+        let (_elems, split_at, _suffix_bytes) =
+            T::validate_size_align(bytes.deref(), bytes.len(), CastType::Prefix)?;
+        let (bytes, suffix) = bytes.split_at(split_at);
         Some((Ref(bytes, PhantomData), suffix))
     }
 
@@ -1699,12 +1890,9 @@ where
     /// `None`.
     #[inline]
     pub fn new_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
-        let bytes_len = bytes.len();
-        let split_at = bytes_len.checked_sub(mem::size_of::<T>())?;
+        let (_elems, split_at, _prefix_bytes) =
+            T::validate_size_align(bytes.deref(), bytes.len(), CastType::Suffix)?;
         let (prefix, bytes) = bytes.split_at(split_at);
-        if !aligned_to::<_, T>(bytes.deref()) {
-            return None;
-        }
         Some((prefix, Ref(bytes, PhantomData)))
     }
 }
@@ -2345,7 +2533,8 @@ where
     }
 }
 
-trait AsAddress {
+#[doc(hidden)]
+pub trait AsAddress {
     fn addr(self) -> usize;
 }
 
@@ -2659,7 +2848,8 @@ where
 }
 
 mod sealed {
-    pub trait Sealed {}
+    pub trait ByteSliceSealed {}
+    pub trait KnownLayoutSealed {}
 }
 
 // ByteSlice and ByteSliceMut abstract over [u8] references (&[u8], &mut [u8],
@@ -2685,7 +2875,9 @@ mod sealed {
 ///
 /// [`Vec<u8>`]: alloc::vec::Vec
 /// [`split_at`]: crate::ByteSlice::split_at
-pub unsafe trait ByteSlice: Deref<Target = [u8]> + Sized + self::sealed::Sealed {
+pub unsafe trait ByteSlice:
+    Deref<Target = [u8]> + Sized + self::sealed::ByteSliceSealed
+{
     /// Gets a raw pointer to the first byte in the slice.
     #[inline]
     fn as_ptr(&self) -> *const u8 {
@@ -2716,7 +2908,7 @@ pub unsafe trait ByteSliceMut: ByteSlice + DerefMut {
     }
 }
 
-impl<'a> sealed::Sealed for &'a [u8] {}
+impl<'a> sealed::ByteSliceSealed for &'a [u8] {}
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a [u8] {
@@ -2726,7 +2918,7 @@ unsafe impl<'a> ByteSlice for &'a [u8] {
     }
 }
 
-impl<'a> sealed::Sealed for &'a mut [u8] {}
+impl<'a> sealed::ByteSliceSealed for &'a mut [u8] {}
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a mut [u8] {
@@ -2736,7 +2928,7 @@ unsafe impl<'a> ByteSlice for &'a mut [u8] {
     }
 }
 
-impl<'a> sealed::Sealed for cell::Ref<'a, [u8]> {}
+impl<'a> sealed::ByteSliceSealed for cell::Ref<'a, [u8]> {}
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {
@@ -2746,7 +2938,7 @@ unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {
     }
 }
 
-impl<'a> sealed::Sealed for RefMut<'a, [u8]> {}
+impl<'a> sealed::ByteSliceSealed for RefMut<'a, [u8]> {}
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
@@ -2763,6 +2955,63 @@ unsafe impl<'a> ByteSliceMut for &'a mut [u8] {}
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSliceMut for RefMut<'a, [u8]> {}
+
+// A polyfill for `<*const _>::cast_mut` that we can use before our MSRV is
+// 1.65, when that method was stabilized.
+
+// TODO(#67): Once our MSRV is 1.65, remove this.
+trait RawPtrExt {
+    type Mut;
+    fn cast_mut(self) -> Self::Mut;
+}
+
+impl<T: ?Sized> RawPtrExt for *const T {
+    type Mut = *mut T;
+    #[allow(clippy::as_conversions)]
+    #[inline(always)]
+    fn cast_mut(self) -> *mut T {
+        self as *mut T
+    }
+}
+
+// A polyfill for `<*mut _>::cast_const` that we can use before our MSRV is
+// 1.65, when that method was stabilized.
+//
+// TODO(#67): Once our MSRV is 1.65, remove this.
+trait RawMutPtrExt {
+    type Const;
+    fn cast_const(self) -> Self::Const;
+}
+
+impl<T: ?Sized> RawMutPtrExt for *mut T {
+    type Const = *const T;
+    #[allow(clippy::as_conversions)]
+    #[inline(always)]
+    fn cast_const(self) -> *const T {
+        self as *const T
+    }
+}
+
+// A polyfill for `NonNull::slice_from_raw_parts` that we can use before our
+// MSRV is 1.70, when that function was stabilized.
+//
+// TODO(#67): Once our MSRV is 1.70, remove this.
+trait NonNullExt {
+    type SliceOfSelf;
+
+    fn slice_from_raw_parts(data: Self, len: usize) -> Self::SliceOfSelf;
+}
+
+impl<T> NonNullExt for NonNull<T> {
+    type SliceOfSelf = NonNull<[T]>;
+
+    #[inline(always)]
+    fn slice_from_raw_parts(data: Self, len: usize) -> NonNull<[T]> {
+        let ptr = ptr::slice_from_raw_parts_mut(data.as_ptr(), len);
+        // SAFETY: `ptr` is converted from `data`, which is non-null.
+        unsafe { NonNull::new_unchecked(ptr) }
+    }
+}
 
 #[cfg(feature = "alloc")]
 mod alloc_support {
