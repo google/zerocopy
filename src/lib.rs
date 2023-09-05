@@ -1827,7 +1827,7 @@ where
     /// If the checks succeed, then `bytes` will be initialized to zero. This
     /// can be useful when re-using buffers to ensure that sensitive data
     /// previously stored in the buffer is not leaked.
-    #[inline]
+    #[inline(always)]
     pub fn new_zeroed(bytes: B) -> Option<Ref<B, T>> {
         map_zeroed(Self::new(bytes))
     }
@@ -1844,7 +1844,7 @@ where
     /// If the checks succeed, then the prefix which is consumed will be
     /// initialized to zero. This can be useful when re-using buffers to ensure
     /// that sensitive data previously stored in the buffer is not leaked.
-    #[inline]
+    #[inline(always)]
     pub fn new_from_prefix_zeroed(bytes: B) -> Option<(Ref<B, T>, B)> {
         map_prefix_tuple_zeroed(Self::new_from_prefix(bytes))
     }
@@ -1862,7 +1862,7 @@ where
     /// If the checks succeed, then the suffix which is consumed will be
     /// initialized to zero. This can be useful when re-using buffers to ensure
     /// that sensitive data previously stored in the buffer is not leaked.
-    #[inline]
+    #[inline(always)]
     pub fn new_from_suffix_zeroed(bytes: B) -> Option<(B, Ref<B, T>)> {
         map_suffix_tuple_zeroed(Self::new_from_suffix(bytes))
     }
@@ -1886,7 +1886,7 @@ where
     /// # Panics
     ///
     /// `new_slice` panics if `T` is a zero-sized type.
-    #[inline]
+    #[inline(always)]
     pub fn new_slice_zeroed(bytes: B) -> Option<Ref<B, [T]>> {
         map_zeroed(Self::new_slice(bytes))
     }
@@ -1908,7 +1908,7 @@ where
     /// # Panics
     ///
     /// `new_slice_from_prefix_zeroed` panics if `T` is a zero-sized type.
-    #[inline]
+    #[inline(always)]
     pub fn new_slice_from_prefix_zeroed(bytes: B, count: usize) -> Option<(Ref<B, [T]>, B)> {
         map_prefix_tuple_zeroed(Self::new_slice_from_prefix(bytes, count))
     }
@@ -1930,7 +1930,7 @@ where
     /// # Panics
     ///
     /// `new_slice_from_suffix_zeroed` panics if `T` is a zero-sized type.
-    #[inline]
+    #[inline(always)]
     pub fn new_slice_from_suffix_zeroed(bytes: B, count: usize) -> Option<(B, Ref<B, [T]>)> {
         map_suffix_tuple_zeroed(Self::new_slice_from_suffix(bytes, count))
     }
@@ -1945,12 +1945,9 @@ where
     ///
     /// `new_unaligned` verifies that `bytes.len() == size_of::<T>()` and
     /// constructs a new `Ref`. If the check fails, it returns `None`.
-    #[inline]
+    #[inline(always)]
     pub fn new_unaligned(bytes: B) -> Option<Ref<B, T>> {
-        if bytes.len() != mem::size_of::<T>() {
-            return None;
-        }
-        Some(Ref(bytes, PhantomData))
+        Ref::new(bytes)
     }
 
     /// Constructs a new `Ref` from the prefix of a byte slice for a type with
@@ -1960,13 +1957,9 @@ where
     /// size_of::<T>()`. It consumes the first `size_of::<T>()` bytes from
     /// `bytes` to construct a `Ref`, and returns the remaining bytes to the
     /// caller. If the length check fails, it returns `None`.
-    #[inline]
+    #[inline(always)]
     pub fn new_unaligned_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
-        if bytes.len() < mem::size_of::<T>() {
-            return None;
-        }
-        let (bytes, suffix) = bytes.split_at(mem::size_of::<T>());
-        Some((Ref(bytes, PhantomData), suffix))
+        Ref::new_from_prefix(bytes)
     }
 
     /// Constructs a new `Ref` from the suffix of a byte slice for a type with
@@ -1976,12 +1969,9 @@ where
     /// size_of::<T>()`. It consumes the last `size_of::<T>()` bytes from
     /// `bytes` to construct a `Ref`, and returns the preceding bytes to the
     /// caller. If the length check fails, it returns `None`.
-    #[inline]
+    #[inline(always)]
     pub fn new_unaligned_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
-        let bytes_len = bytes.len();
-        let split_at = bytes_len.checked_sub(mem::size_of::<T>())?;
-        let (prefix, bytes) = bytes.split_at(split_at);
-        Some((prefix, Ref(bytes, PhantomData)))
+        Ref::new_from_suffix(bytes)
     }
 }
 
@@ -1999,16 +1989,9 @@ where
     /// # Panics
     ///
     /// `new_slice` panics if `T` is a zero-sized type.
-    #[inline]
+    #[inline(always)]
     pub fn new_slice_unaligned(bytes: B) -> Option<Ref<B, [T]>> {
-        let remainder = bytes
-            .len()
-            .checked_rem(mem::size_of::<T>())
-            .expect("Ref::new_slice_unaligned called on a zero-sized type");
-        if remainder != 0 {
-            return None;
-        }
-        Some(Ref(bytes, PhantomData))
+        Ref::new_slice(bytes)
     }
 
     /// Constructs a new `Ref` of a slice type with no alignment requirement
@@ -2024,17 +2007,9 @@ where
     /// # Panics
     ///
     /// `new_slice_unaligned_from_prefix` panics if `T` is a zero-sized type.
-    #[inline]
+    #[inline(always)]
     pub fn new_slice_unaligned_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, [T]>, B)> {
-        let expected_len = match mem::size_of::<T>().checked_mul(count) {
-            Some(len) => len,
-            None => return None,
-        };
-        if bytes.len() < expected_len {
-            return None;
-        }
-        let (prefix, bytes) = bytes.split_at(expected_len);
-        Self::new_slice_unaligned(prefix).map(move |l| (l, bytes))
+        Ref::new_slice_from_prefix(bytes, count)
     }
 
     /// Constructs a new `Ref` of a slice type with no alignment requirement
@@ -2049,17 +2024,9 @@ where
     /// # Panics
     ///
     /// `new_slice_unaligned_from_suffix` panics if `T` is a zero-sized type.
-    #[inline]
+    #[inline(always)]
     pub fn new_slice_unaligned_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, [T]>)> {
-        let expected_len = match mem::size_of::<T>().checked_mul(count) {
-            Some(len) => len,
-            None => return None,
-        };
-        if bytes.len() < expected_len {
-            return None;
-        }
-        let (bytes, suffix) = bytes.split_at(expected_len);
-        Self::new_slice_unaligned(suffix).map(move |l| (bytes, l))
+        Ref::new_slice_from_suffix(bytes, count)
     }
 }
 
@@ -2077,7 +2044,7 @@ where
     /// If the check succeeds, then `bytes` will be initialized to zero. This
     /// can be useful when re-using buffers to ensure that sensitive data
     /// previously stored in the buffer is not leaked.
-    #[inline]
+    #[inline(always)]
     pub fn new_unaligned_zeroed(bytes: B) -> Option<Ref<B, T>> {
         map_zeroed(Self::new_unaligned(bytes))
     }
@@ -2093,7 +2060,7 @@ where
     /// If the check succeeds, then the prefix which is consumed will be
     /// initialized to zero. This can be useful when re-using buffers to ensure
     /// that sensitive data previously stored in the buffer is not leaked.
-    #[inline]
+    #[inline(always)]
     pub fn new_unaligned_from_prefix_zeroed(bytes: B) -> Option<(Ref<B, T>, B)> {
         map_prefix_tuple_zeroed(Self::new_unaligned_from_prefix(bytes))
     }
@@ -2109,7 +2076,7 @@ where
     /// If the check succeeds, then the suffix which is consumed will be
     /// initialized to zero. This can be useful when re-using buffers to ensure
     /// that sensitive data previously stored in the buffer is not leaked.
-    #[inline]
+    #[inline(always)]
     pub fn new_unaligned_from_suffix_zeroed(bytes: B) -> Option<(B, Ref<B, T>)> {
         map_suffix_tuple_zeroed(Self::new_unaligned_from_suffix(bytes))
     }
@@ -2134,7 +2101,7 @@ where
     /// # Panics
     ///
     /// `new_slice` panics if `T` is a zero-sized type.
-    #[inline]
+    #[inline(always)]
     pub fn new_slice_unaligned_zeroed(bytes: B) -> Option<Ref<B, [T]>> {
         map_zeroed(Self::new_slice_unaligned(bytes))
     }
@@ -2157,7 +2124,7 @@ where
     ///
     /// `new_slice_unaligned_from_prefix_zeroed` panics if `T` is a zero-sized
     /// type.
-    #[inline]
+    #[inline(always)]
     pub fn new_slice_unaligned_from_prefix_zeroed(
         bytes: B,
         count: usize,
@@ -2182,7 +2149,7 @@ where
     ///
     /// `new_slice_unaligned_from_suffix_zeroed` panics if `T` is a zero-sized
     /// type.
-    #[inline]
+    #[inline(always)]
     pub fn new_slice_unaligned_from_suffix_zeroed(
         bytes: B,
         count: usize,
