@@ -2779,7 +2779,7 @@ unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {
     }
 }
 
-impl<'a> sealed::Sealed for cell::RefMut<'a, [u8]> {}
+impl<'a> sealed::Sealed for RefMut<'a, [u8]> {}
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
