@@ -1947,10 +1947,7 @@ where
     /// constructs a new `Ref`. If the check fails, it returns `None`.
     #[inline]
     pub fn new_unaligned(bytes: B) -> Option<Ref<B, T>> {
-        if bytes.len() != mem::size_of::<T>() {
-            return None;
-        }
-        Some(Ref(bytes, PhantomData))
+        Ref::new(bytes)
     }
 
     /// Constructs a new `Ref` from the prefix of a byte slice for a type with
@@ -1962,11 +1959,7 @@ where
     /// caller. If the length check fails, it returns `None`.
     #[inline]
     pub fn new_unaligned_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
-        if bytes.len() < mem::size_of::<T>() {
-            return None;
-        }
-        let (bytes, suffix) = bytes.split_at(mem::size_of::<T>());
-        Some((Ref(bytes, PhantomData), suffix))
+        Ref::new_from_prefix(bytes)
     }
 
     /// Constructs a new `Ref` from the suffix of a byte slice for a type with
@@ -1978,10 +1971,7 @@ where
     /// caller. If the length check fails, it returns `None`.
     #[inline]
     pub fn new_unaligned_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
-        let bytes_len = bytes.len();
-        let split_at = bytes_len.checked_sub(mem::size_of::<T>())?;
-        let (prefix, bytes) = bytes.split_at(split_at);
-        Some((prefix, Ref(bytes, PhantomData)))
+        Ref::new_from_suffix(bytes)
     }
 }
 
@@ -2001,14 +1991,7 @@ where
     /// `new_slice` panics if `T` is a zero-sized type.
     #[inline]
     pub fn new_slice_unaligned(bytes: B) -> Option<Ref<B, [T]>> {
-        let remainder = bytes
-            .len()
-            .checked_rem(mem::size_of::<T>())
-            .expect("Ref::new_slice_unaligned called on a zero-sized type");
-        if remainder != 0 {
-            return None;
-        }
-        Some(Ref(bytes, PhantomData))
+        Ref::new_slice(bytes)
     }
 
     /// Constructs a new `Ref` of a slice type with no alignment requirement
@@ -2026,15 +2009,7 @@ where
     /// `new_slice_unaligned_from_prefix` panics if `T` is a zero-sized type.
     #[inline]
     pub fn new_slice_unaligned_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, [T]>, B)> {
-        let expected_len = match mem::size_of::<T>().checked_mul(count) {
-            Some(len) => len,
-            None => return None,
-        };
-        if bytes.len() < expected_len {
-            return None;
-        }
-        let (prefix, bytes) = bytes.split_at(expected_len);
-        Self::new_slice_unaligned(prefix).map(move |l| (l, bytes))
+        Ref::new_slice_from_prefix(bytes, count)
     }
 
     /// Constructs a new `Ref` of a slice type with no alignment requirement
@@ -2051,15 +2026,7 @@ where
     /// `new_slice_unaligned_from_suffix` panics if `T` is a zero-sized type.
     #[inline]
     pub fn new_slice_unaligned_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, [T]>)> {
-        let expected_len = match mem::size_of::<T>().checked_mul(count) {
-            Some(len) => len,
-            None => return None,
-        };
-        if bytes.len() < expected_len {
-            return None;
-        }
-        let (bytes, suffix) = bytes.split_at(expected_len);
-        Self::new_slice_unaligned(suffix).map(move |l| (bytes, l))
+        Ref::new_slice_from_suffix(bytes, count)
     }
 }
 
