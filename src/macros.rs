@@ -29,13 +29,40 @@ macro_rules! safety_comment {
 }
 
 /// Unsafely implements trait(s) for a type.
+///
+/// # Safety
+///
+/// The trait impl must be sound.
+///
+/// TODO: Update these for `as_bit_valid` taking raw pointer.
+///
+/// When implementing `TryFromBytes`:
+/// - If no `is_bit_valid` impl is provided, then it must be valid for
+///   `is_bit_valid` to unconditionally return `true`. In other words, it must
+///   be the case that any initialized sequence of bytes constitutes a valid
+///   instance of `$ty`.
+/// - If an `is_bit_valid` impl is provided, then:
+///   - If the provided closure takes a `NonNull<$repr>` argument, then given a
+///     `NonNull<$ty>` which satisfies the preconditions of
+///     `TryFromBytes::<$ty>::is_bit_valid`, it must be guaranteed that a
+///     `NonNull<$repr>` with the same address, provenance, and pointer metadata
+///     satisfies the preconditions of `TryFromBytes::<$repr>::is_bit_valid`.
+///   - If the provided closure takes a `&$repr` argument, then given a
+///     `NonNull<$ty>` which satisfies the preconditions of
+///     `TryFromBytes::<$ty>::is_bit_valid`, it must be sound to convert it to a
+///     `$repr` pointer with the same address, provenance, and pointer metadata,
+///     and to subsequently dereference that pointer as a `&$repr`.
+///   - The impl of `is_bit_valid` must only return `true` for its argument
+///     `NonNull<$repr>` if the original `NonNull<$ty>` refers to a valid `$ty`.
 macro_rules! unsafe_impl {
     // Implement `$trait` for `$ty` with no bounds.
-    ($ty:ty: $trait:ty) => {
-        unsafe impl $trait for $ty { #[allow(clippy::missing_inline_in_public_items)] fn only_derive_is_allowed_to_implement_this_trait() {} }
+    ($ty:ty: $trait:ident $(; |$candidate:ident: &$repr:ty| $is_bit_valid:expr)?) => {
+        unsafe impl $trait for $ty {
+            unsafe_impl!(@method $trait $(; |$candidate: &$repr| $is_bit_valid)?);
+        }
     };
     // Implement all `$traits` for `$ty` with no bounds.
-    ($ty:ty: $($traits:ty),*) => {
+    ($ty:ty: $($traits:ident),*) => {
         $( unsafe_impl!($ty: $traits); )*
     };
     // This arm is identical to the following one, except it contains a
@@ -66,35 +93,65 @@ macro_rules! unsafe_impl {
     (
         const $constname:ident : $constty:ident $(,)?
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty
+        => $trait:ident for $ty:ty $(; |$candidate:ident $(: &$ref_repr:ty)? $(: NonNull<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         unsafe_impl!(
             @inner
             @const $constname: $constty,
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
-            => $trait for $ty
+            => $trait for $ty $(; |$candidate $(: &$ref_repr)? $(: NonNull<$ptr_repr>)?| $is_bit_valid)?
         );
     };
     (
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty
+        => $trait:ident for $ty:ty $(; |$candidate:ident $(: &$ref_repr:ty)? $(: NonNull<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         unsafe_impl!(
             @inner
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
-            => $trait for $ty
+            => $trait for $ty $(; |$candidate $(: &$ref_repr)? $(: NonNull<$ptr_repr>)?| $is_bit_valid)?
         );
     };
     (
         @inner
         $(@const $constname:ident : $constty:ident,)*
         $($tyvar:ident $(: $(? $optbound:ident +)* + $($bound:ident +)* )?,)*
-        => $trait:ident for $ty:ty
+        => $trait:ident for $ty:ty $(; |$candidate:ident $(: &$ref_repr:ty)? $(: NonNull<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         unsafe impl<$(const $constname: $constty,)* $($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> $trait for $ty {
-            #[allow(clippy::missing_inline_in_public_items)]
-            fn only_derive_is_allowed_to_implement_this_trait() {}
+            unsafe_impl!(@method $trait $(; |$candidate: $(&$ref_repr)? $(NonNull<$ptr_repr>)?| $is_bit_valid)?);
         }
+    };
+
+    (@method TryFromBytes ; |$candidate:ident: &$repr:ty| $is_bit_valid:expr) => {
+        #[inline]
+        unsafe fn is_bit_valid(candidate: NonNull<Self>) -> bool {
+            // SAFETY: The caller has promised that it is sound to perform this
+            // pointer cast and dereference.
+            #[allow(clippy::as_conversions)]
+            let $candidate = unsafe { &*(candidate.as_ptr() as *const $repr) };
+            $is_bit_valid
+        }
+    };
+    (@method TryFromBytes ; |$candidate:ident: NonNull<$repr:ty>| $is_bit_valid:expr) => {
+        #[inline]
+        unsafe fn is_bit_valid(candidate: NonNull<Self>) -> bool {
+            // SAFETY: `candidate` is a non-null pointer. The caller has
+            // promised that it is sound to invoke their `$is_bit_valid` with
+            // this pointer.
+            #[allow(clippy::as_conversions)]
+            let $candidate = unsafe { NonNull::new_unchecked(candidate.as_ptr() as *mut $repr) };
+            $is_bit_valid
+        }
+    };
+    (@method TryFromBytes) => { #[inline(always)] unsafe fn is_bit_valid(_: NonNull<Self>) -> bool { true } };
+    (@method $trait:ident) => {
+        #[allow(clippy::missing_inline_in_public_items)]
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+    };
+    // TODO: Test this with trybuild.
+    (@method $trait:ident; |$_candidate:ident $(: &$_ref_repr:ty)? $(: NonNull<$_ptr_repr:ty>)?| $_is_bit_valid:expr) => {
+        compile_error!("Can't provide `is_bit_valid` impl for trait other than `TryFromBytes`");
     };
 }
 
@@ -204,11 +261,21 @@ macro_rules! impl_known_layout {
     };
     ($($ty:ty),*) => { $(impl_known_layout!(@inner , => $ty);)* };
     (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?)? => $ty:ty) => {
-        impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> sealed::KnownLayoutSealed for $ty {}
-        // SAFETY: Delegates safety to `DstLayout::for_type`.
-        unsafe impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> KnownLayout for $ty {
-            const LAYOUT: DstLayout = DstLayout::for_type::<$ty>();
-        }
+        const _: () = {
+            use core::ptr::NonNull;
+
+            impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> sealed::KnownLayoutSealed for $ty {}
+            // SAFETY: Delegates safety to `DstLayout::for_type`.
+            unsafe impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> KnownLayout for $ty {
+                const LAYOUT: DstLayout = DstLayout::for_type::<$ty>();
+
+                // SAFETY: `.cast` preserves address and provenance.
+                #[inline(always)]
+                fn raw_from_ptr_len(bytes: NonNull<u8>, _elems: usize) -> NonNull<Self> {
+                    bytes.cast::<Self>()
+                }
+            }
+        };
     };
 }
 
@@ -225,10 +292,25 @@ macro_rules! impl_known_layout {
 ///   and this operation must preserve referent size (ie, `size_of_val_raw`).
 macro_rules! unsafe_impl_known_layout {
     ($($tyvar:ident: ?Sized + KnownLayout =>)? #[repr($repr:ty)] $ty:ty) => {
-        impl<$($tyvar: ?Sized + KnownLayout)?> sealed::KnownLayoutSealed for $ty {}
-        unsafe impl<$($tyvar: ?Sized + KnownLayout)?> KnownLayout for $ty {
-            const LAYOUT: DstLayout = <$repr as KnownLayout>::LAYOUT;
-        }
+        const _: () = {
+            use core::ptr::NonNull;
+
+            impl<$($tyvar: ?Sized + KnownLayout)?> sealed::KnownLayoutSealed for $ty {}
+            unsafe impl<$($tyvar: ?Sized + KnownLayout)?> KnownLayout for $ty {
+                const LAYOUT: DstLayout = <$repr as KnownLayout>::LAYOUT;
+
+                // SAFETY: All operations preserve address and provenance. Caller
+                // has promised that the `as` cast preserves size.
+                #[inline(always)]
+                #[allow(unused_qualifications)] // for `core::ptr::NonNull`
+                fn raw_from_ptr_len(bytes: NonNull<u8>, elems: usize) -> NonNull<Self> {
+                    #[allow(clippy::as_conversions)]
+                    let ptr = <$repr>::raw_from_ptr_len(bytes, elems).as_ptr() as *mut Self;
+                    // SAFETY: `ptr` was converted from `bytes`, which is non-null.
+                    unsafe { NonNull::new_unchecked(ptr) }
+                }
+            }
+        };
     };
 }
 
