@@ -35,26 +35,60 @@ macro_rules! unsafe_impl {
     ($ty:ty: $($traits:ty),*) => {
         $( unsafe_impl!($ty: $traits); )*
     };
-    // For all `$tyvar` with no bounds, implement `$trait` for `$ty`.
-    ($tyvar:ident => $trait:ident for $ty:ty) => {
-        unsafe impl<$tyvar> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
+    // This arm is identical to the following one, except it contains a
+    // preceding `const`. If we attempt to handle these with a single arm, there
+    // is an inherent ambiguity between `const` (the keyword) and `const` (the
+    // ident match for `$tyvar:ident`).
+    //
+    // To explain how this works, consider the following invocation:
+    //
+    //   unsafe_impl!(const N: usize, T: ?Sized + Copy => Clone for Foo<T>);
+    //
+    // In this invocation, here are the assignments to meta-variables:
+    //
+    //   |---------------|------------|
+    //   | Meta-variable | Assignment |
+    //   |---------------|------------|
+    //   | $constname    |  N         |
+    //   | $constty      |  usize     |
+    //   | $tyvar        |  T         |
+    //   | $optbound     |  Sized     |
+    //   | $bound        |  Copy      |
+    //   | $trait        |  Clone     |
+    //   | $ty           |  Foo<T>    |
+    //   |---------------|------------|
+    //
+    // The following arm has the same behavior with the exception of the lack of
+    // support for a leading `const` parameter.
+    (
+        const $constname:ident : $constty:ident $(,)?
+        $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
+        => $trait:ident for $ty:ty
+    ) => {
+        unsafe_impl!(
+            @inner
+            @const $constname: $constty,
+            $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
+            => $trait for $ty
+        );
     };
-    // For all `$tyvar: ?Sized` with no bounds, implement `$trait` for `$ty`.
-    ($tyvar:ident: ?Sized => $trait:ident for $ty:ty) => {
-        unsafe impl<$tyvar: ?Sized> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
+    (
+        $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
+        => $trait:ident for $ty:ty
+    ) => {
+        unsafe_impl!(
+            @inner
+            $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
+            => $trait for $ty
+        );
     };
-    // For all `$tyvar: $bound`, implement `$trait` for `$ty`.
-    ($tyvar:ident: $bound:path => $trait:ident for $ty:ty) => {
-        unsafe impl<$tyvar: $bound> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
-    };
-    // For all `$tyvar: $bound + ?Sized`, implement `$trait` for `$ty`.
-    ($tyvar:ident: ?Sized + $bound:path => $trait:ident for $ty:ty) => {
-        unsafe impl<$tyvar: ?Sized + $bound> $trait for $ty { fn only_derive_is_allowed_to_implement_this_trait() {} }
-    };
-    // For all `$tyvar: $bound` and for all `const $constvar: $constty`,
-    // implement `$trait` for `$ty`.
-    ($tyvar:ident: $bound:path, const $constvar:ident: $constty:ty => $trait:ident for $ty:ty) => {
-        unsafe impl<$tyvar: $bound, const $constvar: $constty> $trait for $ty {
+    (
+        @inner
+        $(@const $constname:ident : $constty:ident,)*
+        $($tyvar:ident $(: $(? $optbound:ident +)* + $($bound:ident +)* )?,)*
+        => $trait:ident for $ty:ty
+    ) => {
+        unsafe impl<$(const $constname: $constty,)* $($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> $trait for $ty {
             fn only_derive_is_allowed_to_implement_this_trait() {}
         }
     };
@@ -107,40 +141,41 @@ macro_rules! unsafe_impl {
 /// }
 /// ```
 macro_rules! impl_or_verify {
-    // Implement `$trait` for `$ty` with no bounds.
-    ($ty:ty: $trait:ty) => {
-        impl_or_verify!(@impl { unsafe_impl!($ty: $trait); });
-        impl_or_verify!(@verify $trait, { impl Subtrait for $ty {} });
+    // The following two match arms follow the same pattern as their
+    // counterparts in `unsafe_impl!`; see the documentation on those arms for
+    // more details.
+    (
+        const $constname:ident : $constty:ident $(,)?
+        $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
+        => $trait:ident for $ty:ty
+    ) => {
+        impl_or_verify!(@impl { unsafe_impl!(
+            const $constname: $constty, $($tyvar $(: $(? $optbound +)* $($bound +)*)?),* => $trait for $ty
+        ); });
+        impl_or_verify!(@verify $trait, {
+            impl<const $constname: $constty, $($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> Subtrait for $ty {}
+        });
     };
-    // Implement all `$traits` for `$ty` with no bounds.
-    ($ty:ty: $($traits:ty),*) => {
-        $( foobar!($ty: $traits); )*
+    (
+        $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
+        => $trait:ident for $ty:ty
+    ) => {
+        impl_or_verify!(@impl { unsafe_impl!(
+            $($tyvar $(: $(? $optbound +)* $($bound +)*)?),* => $trait for $ty
+        ); });
+        impl_or_verify!(@verify $trait, {
+            impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> Subtrait for $ty {}
+        });
     };
-    // For all `$tyvar` with no bounds, implement `$trait` for `$ty`.
-    ($tyvar:ident => $trait:ident for $ty:ty) => {
-        impl_or_verify!(@impl { unsafe_impl!($tyvar => $trait for $ty); });
-        impl_or_verify!(@verify $trait, { impl<$tyvar> Subtrait for $ty {} });
-    };
-    // For all `$tyvar: ?Sized` with no bounds, implement `$trait` for `$ty`.
-    ($tyvar:ident: ?Sized => $trait:ident for $ty:ty) => {
-        impl_or_verify!(@impl { unsafe_impl!($tyvar: ?Sized => $trait for $ty); });
-        impl_or_verify!(@verify $trait, { impl<$tyvar: ?Sized> Subtrait for $ty {} });
-    };
-    // For all `$tyvar: $bound`, implement `$trait` for `$ty`.
-    ($tyvar:ident: $bound:path => $trait:ident for $ty:ty) => {
-        impl_or_verify!(@impl { unsafe_impl!($tyvar: $bound => $trait for $ty); });
-        impl_or_verify!(@verify $trait, { impl<$tyvar: $bound> Subtrait for $ty {} });
-    };
-    // For all `$tyvar: $bound + ?Sized`, implement `$trait` for `$ty`.
-    ($tyvar:ident: ?Sized + $bound:path => $trait:ident for $ty:ty) => {
-        impl_or_verify!(@impl { unsafe_impl!($tyvar: ?Sized + $bound => $trait for $ty); });
-        impl_or_verify!(@verify $trait, { impl<$tyvar: ?Sized + $bound> Subtrait for $ty {} });
-    };
-    // For all `$tyvar: $bound` and for all `const $constvar: $constty`,
-    // implement `$trait` for `$ty`.
-    ($tyvar:ident: $bound:path, const $constvar:ident: $constty:ty => $trait:ident for $ty:ty) => {
-        impl_or_verify!(@impl { unsafe_impl!($tyvar: $bound, const $constvar: $constty => $trait for $ty); });
-        impl_or_verify!(@verify $trait, { impl<$tyvar: $bound, const $constvar: $constty> Subtrait for $ty {} });
+    (
+        $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
+        => $trait:ident for $ty:ty
+    ) => {
+        unsafe_impl!(
+            @inner
+            $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
+            => $trait for $ty
+        );
     };
     (@impl $impl_block:tt) => {
         #[cfg(not(any(feature = "derive", test)))]
