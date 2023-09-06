@@ -53,6 +53,61 @@ pub(crate) fn aligned_to<T: AsAddress, U>(t: T) -> bool {
     remainder == 0
 }
 
+/// Since we support multiple versions of Rust, there are often features which
+/// have been stabilized in the most recent stable release which do not yet
+/// exist (stably) on our MSRV. This module provides polyfills for those
+/// features so that we can write more "modern" code, and just remove the
+/// polyfill once our MSRV supports the corresponding feature. Without this,
+/// we'd have to write worse/more verbose code and leave TODO comments sprinkled
+/// throughout the codebase to update to the new pattern once it's stabilized.
+///
+/// Each trait is imported as `_` at the crate root; each polyfill should "just
+/// work" at usage sites.
+pub(crate) mod polyfills {
+    use core::ptr::{self, NonNull};
+
+    // A polyfill for `NonNull::slice_from_raw_parts` that we can use before our
+    // MSRV is 1.70, when that function was stabilized.
+    //
+    // TODO(#67): Once our MSRV is 1.70, remove this.
+    pub(crate) trait NonNullExt<T> {
+        fn slice_from_raw_parts(data: Self, len: usize) -> NonNull<[T]>;
+    }
+
+    impl<T> NonNullExt<T> for NonNull<T> {
+        #[inline(always)]
+        fn slice_from_raw_parts(data: Self, len: usize) -> NonNull<[T]> {
+            let ptr = ptr::slice_from_raw_parts_mut(data.as_ptr(), len);
+            // SAFETY: `ptr` is converted from `data`, which is non-null.
+            unsafe { NonNull::new_unchecked(ptr) }
+        }
+    }
+
+    // A polyfill for `NonNull::len` that we can use before our MSRV is 1.63,
+    // when that function was stabilized.
+    //
+    // TODO(#67): Once our MSRV is 1.63, remove this.
+    pub(crate) trait NonNullSliceExt<T> {
+        fn len(&self) -> usize;
+    }
+
+    impl<T> NonNullSliceExt<T> for NonNull<[T]> {
+        #[inline(always)]
+        fn len(&self) -> usize {
+            #[allow(clippy::as_conversions)]
+            let slc = self.as_ptr() as *const [()];
+            // SAFETY:
+            // - `()` has alignment 1, so `slc` is trivially aligned
+            // - `slc` was derived from a non-null pointer
+            // - the size is 0 regardless of the length, so it is sound to
+            //   materialize a reference regardless of location
+            // - pointer provenance may be an issue, but we never dereference
+            let slc = unsafe { &*slc };
+            slc.len()
+        }
+    }
+}
+
 #[cfg(test)]
 pub(crate) mod testutil {
     use core::fmt::{self, Display, Formatter};
