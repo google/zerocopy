@@ -77,8 +77,7 @@ jobs:
     - uses: actions/cache@v3
       with:
         path: |
-          ~/.cargo/registry/index/
-          ~/.cargo/registry/cache/
+          ~/.cargo/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
 
     # We use toolchain descriptors ("msrv", "stable", and "nightly") in the
@@ -257,25 +256,43 @@ jobs:
           rustfmt --check zerocopy-derive/tests/**/*.rs
 
   check_readme:
+    needs: generate_cache
     runs-on: ubuntu-latest
     name: Check README.md
     steps:
       - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
-      # Cache the `cargo-readme` installation.
-      - name: Rust Cache
-        uses: Swatinem/rust-cache@e207df5d269b42b69c8bc5101da26f7d31feddb4 # v2.6.2
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
+
       - name: Check README.md
         run: |
           set -eo pipefail
+
+          # Install again in case the installation failed during the
+          # `generate_cache` step. We treat that step as best-effort and
+          # suppress all errors from it.
           cargo install cargo-readme --version 3.2.0
+
           diff <(./generate-readme.sh) README.md
           exit $?
 
   check_msrv:
+    needs: generate_cache
     runs-on: ubuntu-latest
     name: Check MSRVs match
     steps:
       - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
+
       # Make sure that the MSRV in zerocopy's and zerocopy-derive's `Cargo.toml`
       # files are the same.
       - name: Check MSRVs match
@@ -300,10 +317,18 @@ jobs:
           fi
 
   check_versions:
+    needs: generate_cache
     runs-on: ubuntu-latest
     name: Check crate versions match
     steps:
       - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
+
       # Make sure that both crates are at the same version, and that zerocopy
       # depends exactly upon the current version of zerocopy-derive. See
       # `INTERNAL.md` for an explanation of why we do this.
@@ -376,23 +401,25 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
+            ~/.cargo/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
 
       - name: Populate cache
         run: |
-          # Ensure all dependencies are downloaded - both for our crates and for tools
-          # we use in CI. We don't care about these tools succeeding for two reasons:
-          # First, this entire job is best-effort since it's just a performance optimization.
-          # Second, there may be failures due to issues other than failing to download
-          # dependencies (e.g., `cargo metadata` called with a malformed `Cargo.toml`,
-          # build failure in our own crate or in dependencies, etc). For those reasons,
-          # we discard stderr and ignore status codes.
+          # Ensure all dependencies are downloaded - both for our crates and for
+          # tools we use in CI. We don't care about these tools succeeding for
+          # two reasons: First, this entire job is best-effort since it's just a
+          # performance optimization. Second, there may be failures due to
+          # issues other than failing to download dependencies (e.g., `cargo
+          # metadata` called with a malformed `Cargo.toml`, build failure in our
+          # own crate or in dependencies, etc). For those reasons, we discard
+          # stderr and ignore status codes.
           #
-          # For downloading our crates' dependencies in particular, note that there is
-          # no support for doing this directly [1], so we just check all crates using --tests.
+          # For downloading our crates' dependencies in particular, note that
+          # there is no support for doing this directly [1], so we just check
+          # all crates using --tests.
           #
           # [1]  https://stackoverflow.com/a/42139535/836390
-          cargo check --workspace --tests &> /dev/null || true
-          cargo metadata &> /dev/null || true
+          cargo check --workspace --tests            &> /dev/null || true
+          cargo metadata                             &> /dev/null || true
+          cargo install cargo-readme --version 3.2.0 &> /dev/null || true
