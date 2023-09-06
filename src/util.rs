@@ -4,7 +4,8 @@
 
 use core::mem;
 
-pub(crate) trait AsAddress {
+#[doc(hidden)]
+pub trait AsAddress {
     fn addr(self) -> usize;
 }
 

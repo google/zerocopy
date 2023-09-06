@@ -254,6 +254,74 @@ pub unsafe trait KnownLayout: sealed::KnownLayoutSealed {
     /// [`UnsafeCell`]: core::cell::UnsafeCell
     type MaybeUninit: ?Sized + KnownLayout;
 
+    /// Validates that the memory region at `addr` of length `bytes_len`
+    /// satisfies `Self`'s size and alignment requirements, returning `(elems,
+    /// split_at, prefix_suffix_bytes)`.
+    ///
+    ///  In particular, `validate_size_align` validates that:
+    /// - `bytes_len` is large enough to hold an instance of `Self`
+    /// - If `cast_type` is `Prefix`, `addr` satisfies `Self`'s alignment
+    ///   requirements
+    /// - If `cast_type` is `Suffix`, `addr + split_at` satisfies `Self`'s
+    ///   alignment requirements
+    ///
+    /// For DSTs, `elems` is the maximum number of trailing slice elements such
+    /// that a `Self` with that number of trailing slice elements can fit in the
+    /// provided space. For sized types, `elems` is always 0.
+    ///
+    /// `split_at` indicates the point at which to split the memory region in
+    /// order to split it into the `Self` and the prefix or suffix. If
+    /// `cast_type` is `Prefix`, `split_at` is the address of the first byte of
+    /// the suffix. If `cast_type` is `Suffix`, `split_at` is the address of the
+    /// first byte of the `Self`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if called on a DST whose trailing slice element type is a
+    /// zero-sized type.
+    #[doc(hidden)]
+    #[inline(always)]
+    fn validate_size_align<A: crate::util::AsAddress>(
+        addr: A,
+        bytes_len: usize,
+        cast_type: CastType,
+    ) -> Option<(usize, usize, usize)> {
+        let trailing_slice_bytes = bytes_len.checked_sub(Self::FIXED_PREFIX_SIZE)?;
+        let (elems, self_bytes) = if let Some(elem_size) = Self::TRAILING_SLICE_ELEM_SIZE {
+            let elem_size = NonZeroUsize::new(elem_size)
+                .expect("attempted to cast to slice type with zero-sized element");
+            #[allow(clippy::arithmetic_side_effects)]
+            let elems = trailing_slice_bytes / elem_size;
+            #[allow(clippy::arithmetic_side_effects)]
+            let self_bytes = Self::FIXED_PREFIX_SIZE + (elems * elem_size.get());
+            (elems, self_bytes)
+        } else {
+            (0, Self::FIXED_PREFIX_SIZE)
+        };
+
+        // `self_addr` indicates where in the given byte range the `Self` will
+        // start. If we're doing a prefix cast, it starts at the beginning. If
+        // we're doing a suffix cast, it starts after whatever bytes are
+        // remaining.
+        #[allow(clippy::arithmetic_side_effects)]
+        let (self_addr, split_at) = match cast_type {
+            CastType::Prefix => (addr.addr(), self_bytes),
+            CastType::Suffix => {
+                let split_at = bytes_len - self_bytes;
+                (addr.addr() + split_at, split_at)
+            }
+        };
+
+        #[allow(clippy::arithmetic_side_effects)]
+        if self_addr % Self::ALIGN != 0 {
+            return None;
+        }
+
+        #[allow(clippy::arithmetic_side_effects)]
+        let ret = Some((elems, split_at, bytes_len - self_bytes));
+        ret
+    }
+
     /// SAFETY: The returned pointer has the same address and provenance as
     /// `bytes`. If `Self` is a DST, the returned pointer's referent has `elems`
     /// elements in its trailing slice.
