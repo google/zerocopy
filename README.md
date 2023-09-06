@@ -23,12 +23,14 @@ so you don't have to.
 
 ## Overview
 
-Zerocopy provides four core marker traits, each of which can be derived
+Zerocopy provides five core marker traits, each of which can be derived
 (e.g., `#[derive(FromZeroes)]`):
 - `FromZeroes` indicates that a sequence of zero bytes represents a valid
   instance of a type
 - `FromBytes` indicates that a type may safely be converted from an
   arbitrary byte sequence
+- `TryFromBytes` supports non-`FromBytes` types by providing the ability
+  to check the validity of a conversion at runtime
 - `AsBytes` indicates that a type may safely be converted *to* a byte
   sequence
 - `Unaligned` indicates that a type's alignment requirement is 1

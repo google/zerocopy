@@ -19,7 +19,7 @@ pub(crate) mod ptr {
         ptr::NonNull,
     };
 
-    use crate::{util::AsAddress, KnownLayout, _CastType};
+    use crate::{util::AsAddress, CastType, KnownLayout};
 
     /// A raw pointer with more restrictions.
     ///
@@ -38,7 +38,7 @@ pub(crate) mod ptr {
     /// `Ptr<'a, T>` is [covariant] in `'a` and `T`.
     ///
     /// [covariant]: https://doc.rust-lang.org/reference/subtyping.html
-    pub(crate) struct Ptr<'a, T: 'a + ?Sized> {
+    pub struct Ptr<'a, T: 'a + ?Sized> {
         // INVARIANTS:
         // - `ptr` is derived from some valid Rust allocation, `A`
         // - `ptr` has the same provenance as `A`
@@ -134,6 +134,112 @@ pub(crate) mod ptr {
                 self.ptr.as_ref()
             }
         }
+
+        /// Returns a unique reference to the value.
+        ///
+        /// # Safety
+        ///
+        /// - The referenced memory must contain a validly-initialized `T`.
+        /// - The referenced memory must not also be referenced by any other
+        ///   references during the lifetime `'a`.
+        ///
+        /// [`UnsafeCell`]: core::cell::UnsafeCell
+        pub(crate) unsafe fn as_mut(&mut self) -> &'a mut T {
+            // SAFETY:
+            // - By invariant, `self.ptr` is properly-aligned for `T`.
+            // - By invariant, `self.ptr` is "dereferenceable" in that it points to
+            //   a single allocation
+            // - By invariant, the allocation is live for `'a`
+            // - The caller promises that no other references exist to this memory
+            //   region for `'a`
+            // - The caller promises that the memory region contains a
+            //   validly-intialized `T`
+            unsafe { self.ptr.as_mut() }
+        }
+
+        /// TODO
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that, given `t: *mut T` and `u: *mut U` with the
+        /// same pointer metadata, `u` references an object which is less than or
+        /// equal to the size of the object referenced by `t`.
+        pub(crate) unsafe fn cast<U>(self) -> Ptr<'a, U> {
+            // SAFETY: We pass a vanilla `as` cast for the `cast` argument as
+            // required. The caller is responsible for guaranteeing the size
+            // relationship.
+            unsafe { self.cast_unsized(|p| p as *mut _) }
+        }
+
+        /// TODO
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that
+        /// - `cast(p)` is implemented exactly as follows: `|p: *mut T| p as *mut U`
+        /// - The size of the object referenced by the resulting pointer is less
+        ///   than or equal to the size of the object referenced by `self`
+        pub(crate) unsafe fn cast_unsized<U: 'a + ?Sized>(
+            self,
+            cast: impl FnOnce(*mut T) -> *mut U,
+        ) -> Ptr<'a, U> {
+            let ptr = cast(self.ptr.as_ptr());
+            // SAFETY: Caller promises that `cast` is just an `as` cast. We call
+            // `cast` on `self.ptr.as_ptr()`, which is non-null by construction.
+            let ptr = unsafe { NonNull::new_unchecked(ptr) };
+            // SAFETY: TODO
+            Ptr { ptr, _lifetime: PhantomData, _bytes_len: self._bytes_len }
+        }
+    }
+
+    impl<'a, T: 'a> Ptr<'a, [T]> {
+        pub(crate) fn len(&self) -> usize {
+            // TODO(#67): Remove this allow. See NonNullSliceExt for more details.
+            #[allow(unstable_name_collisions)]
+            self.ptr.len()
+        }
+
+        pub(crate) fn iter(&self) -> impl Iterator<Item = Ptr<'a, T>> {
+            let base = self.ptr.cast::<T>().as_ptr();
+            let bytes_len = self._bytes_len;
+            (0..self.len()).map(move |i| {
+                // TODO(https://github.com/rust-lang/rust/issues/74265): Use
+                // `NonNull::get_unchecked_mut`.
+
+                // SAFETY: TODO
+                //
+                // Old safety comment:
+                //
+                // SAFETY:
+                // - `i` is in bounds of `c.len()` by construction, and so the
+                //   result of this addition cannot overflow past the end of the
+                //   allocation referred to by `c`.
+                // - It is a precondition of `is_bit_valid` that the total length
+                //   encoded by `c` doesn't overflow `isize`.
+                // - Since `c` must point to a valid allocation, and valid
+                //   allocations cannot wrap around the address space, we know that
+                //   this addition will not wrap around either.
+                let elem = unsafe { base.add(i) };
+                // SAFETY: TODO
+                //
+                // Old safety comment:
+                //
+                // SAFETY: `base` is constructed from a `NonNull` pointer, and the
+                // addition that produces `elem` is guaranteed not to wrap
+                // around/overflow, so `elem >= base > 0`.
+                let elem = unsafe { NonNull::new_unchecked(elem) };
+                // SAFETY: TODO
+                Ptr { ptr: elem, _lifetime: PhantomData, _bytes_len: bytes_len }
+            })
+        }
+    }
+
+    impl<'a, const N: usize, T: 'a> Ptr<'a, [T; N]> {
+        pub(crate) fn as_slice(&self) -> Ptr<'a, [T]> {
+            let ptr = NonNull::slice_from_raw_parts(self.ptr.cast::<T>(), N);
+            // SAFETY: TODO
+            Ptr { ptr, _lifetime: PhantomData, _bytes_len: self._bytes_len }
+        }
     }
 
     impl<'a> Ptr<'a, [u8]> {
@@ -159,7 +265,7 @@ pub(crate) mod ptr {
         /// Panics if `U` is a DST whose trailing slice element is zero-sized.
         pub(crate) fn _try_cast_into<U: 'a + ?Sized + KnownLayout>(
             &self,
-            cast_type: _CastType,
+            cast_type: CastType,
         ) -> Option<(Ptr<'a, U>, usize)> {
             // PANICS: By invariant, the byte range addressed by `self.ptr` does
             // not wrap around the address space. This implies that the sum of
@@ -167,18 +273,18 @@ pub(crate) mod ptr {
             // `usize`, as required by `validate_cast_and_convert_metadata`.
             // Thus, this call to `validate_cast_and_convert_metadata` won't
             // panic.
-            let (elems, split_at) = U::LAYOUT._validate_cast_and_convert_metadata(
+            let (elems, split_at) = U::LAYOUT.validate_cast_and_convert_metadata(
                 AsAddress::addr(self.ptr.as_ptr()),
                 self._bytes_len,
                 cast_type,
             )?;
             let (offset, ret_len) = match cast_type {
-                _CastType::_Prefix => (0, split_at),
+                CastType::Prefix => (0, split_at),
                 // Guaranteed not to underflow:
                 // `validate_cast_and_convert_metadata` promises that `split_at`
                 // is in the range `[0, bytes_len]`.
                 #[allow(clippy::arithmetic_side_effects)]
-                _CastType::_Suffix => (split_at, self._bytes_len - split_at),
+                CastType::_Suffix => (split_at, self._bytes_len - split_at),
             };
 
             let ptr = self.ptr.cast::<u8>().as_ptr();
@@ -250,7 +356,7 @@ pub(crate) mod ptr {
             // TODO(#67): Remove this allow. See NonNulSlicelExt for more
             // details.
             #[allow(unstable_name_collisions)]
-            match self._try_cast_into(_CastType::_Prefix) {
+            match self._try_cast_into(CastType::Prefix) {
                 Some((slf, split_at)) if split_at == self._bytes_len => Some(slf),
                 Some(_) | None => None,
             }
@@ -290,6 +396,13 @@ pub(crate) mod ptr {
             // - [2] Where does the reference document that allocations don't
             //   wrap around the address space?
             Ptr { ptr: NonNull::from(t), _bytes_len: mem::size_of_val(t), _lifetime: PhantomData }
+        }
+    }
+
+    impl<'a, T: 'a + ?Sized> From<&'a mut T> for Ptr<'a, T> {
+        #[inline(always)]
+        fn from(t: &'a mut T) -> Ptr<'a, T> {
+            Ptr::from(&*t)
         }
     }
 
@@ -392,7 +505,7 @@ pub(crate) mod ptr {
                             mem::size_of_val(t)
                         }
 
-                        for cast_type in [_CastType::_Prefix, _CastType::_Suffix] {
+                        for cast_type in [CastType::Prefix, CastType::_Suffix] {
                             if let Some((slf, split_at)) =
                                 Ptr::from(bytes)._try_cast_into::<T>(cast_type)
                             {
@@ -400,8 +513,8 @@ pub(crate) mod ptr {
                                 // initialized.
                                 let len = unsafe { validate_and_get_len(slf) };
                                 match cast_type {
-                                    _CastType::_Prefix => assert_eq!(split_at, len),
-                                    _CastType::_Suffix => assert_eq!(split_at, bytes.len() - len),
+                                    CastType::Prefix => assert_eq!(split_at, len),
+                                    CastType::_Suffix => assert_eq!(split_at, bytes.len() - len),
                                 }
                             }
                         }
@@ -499,7 +612,7 @@ pub(crate) fn aligned_to<T: AsAddress, U>(t: T) -> bool {
 /// May panic if `align` is not a power of two. Even if it doesn't panic in this
 /// case, it will produce nonsense results.
 #[inline(always)]
-pub(crate) const fn _round_down_to_next_multiple_of_alignment(
+pub(crate) const fn round_down_to_next_multiple_of_alignment(
     n: usize,
     align: NonZeroUsize,
 ) -> usize {
@@ -627,7 +740,7 @@ mod tests {
             for n in 0..256 {
                 let align = NonZeroUsize::new(align).unwrap();
                 let want = alt_impl(n, align);
-                let got = _round_down_to_next_multiple_of_alignment(n, align);
+                let got = round_down_to_next_multiple_of_alignment(n, align);
                 assert_eq!(got, want, "round_down_to_next_multiple_of_alignment({n}, {align})");
             }
         }
@@ -651,7 +764,7 @@ mod proofs {
         let n: usize = kani::any();
 
         let expected = model_impl(n, align);
-        let actual = _round_down_to_next_multiple_of_alignment(n, align);
+        let actual = round_down_to_next_multiple_of_alignment(n, align);
         assert_eq!(expected, actual, "round_down_to_next_multiple_of_alignment({n}, {align})");
     }
 
