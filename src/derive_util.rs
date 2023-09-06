@@ -62,3 +62,66 @@ macro_rules! union_has_padding {
         false $(|| core::mem::size_of::<$t>() != core::mem::size_of::<$ts>())*
     };
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::testutil::*;
+
+    #[test]
+    fn test_struct_has_padding() {
+        // Test that, for each provided repr, `struct_has_padding!` reports the
+        // expected value.
+        macro_rules! test {
+            (#[$cfg:meta] ($($ts:ty),*) => $expect:expr) => {{
+                #[$cfg]
+                struct Test($($ts),*);
+                assert_eq!(struct_has_padding!(Test, $($ts),*), $expect);
+            }};
+            (#[$cfg:meta] $(#[$cfgs:meta])* ($($ts:ty),*) => $expect:expr) => {
+                test!(#[$cfg] ($($ts),*) => $expect);
+                test!($(#[$cfgs])* ($($ts),*) => $expect);
+            };
+        }
+
+        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)] () => false);
+        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)] (u8) => false);
+        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)] (u8, ()) => false);
+        test!(#[repr(C)] #[repr(packed)] (u8, u8) => false);
+
+        test!(#[repr(C)] (u8, AU64) => true);
+        // Rust won't let you put `#[repr(packed)]` on a type which contains a
+        // `#[repr(align(n > 1))]` type (`AU64`), so we have to use `u64` here.
+        // It's not ideal, but it definitely has align > 1 on /some/ of our CI
+        // targets, and this isn't a particularly complex macro we're testing
+        // anyway.
+        test!(#[repr(packed)] (u8, u64) => false);
+    }
+
+    #[test]
+    fn test_union_has_padding() {
+        // Test that, for each provided repr, `union_has_padding!` reports the
+        // expected value.
+        macro_rules! test {
+            (#[$cfg:meta] {$($fs:ident: $ts:ty),*} => $expect:expr) => {{
+                #[$cfg]
+                #[allow(unused)] // fields are never read
+                union Test{ $($fs: $ts),* }
+                assert_eq!(union_has_padding!(Test, $($ts),*), $expect);
+            }};
+            (#[$cfg:meta] $(#[$cfgs:meta])* {$($fs:ident: $ts:ty),*} => $expect:expr) => {
+                test!(#[$cfg] {$($fs: $ts),*} => $expect);
+                test!($(#[$cfgs])* {$($fs: $ts),*} => $expect);
+            };
+        }
+
+        test!(#[repr(C)] #[repr(packed)] {a: u8} => false);
+        test!(#[repr(C)] #[repr(packed)] {a: u8, b: u8} => false);
+
+        // Rust won't let you put `#[repr(packed)]` on a type which contains a
+        // `#[repr(align(n > 1))]` type (`AU64`), so we have to use `u64` here.
+        // It's not ideal, but it definitely has align > 1 on /some/ of our CI
+        // targets, and this isn't a particularly complex macro we're testing
+        // anyway.
+        test!(#[repr(C)] #[repr(packed)] {a: u8, b: u64} => true);
+    }
+}
