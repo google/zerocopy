@@ -1061,10 +1061,10 @@ safety_comment! {
     /// `assert_unaligned!` uses `align_of`, which only works for `Sized` types.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#array-layout
-    unsafe_impl!(T: FromZeroes, const N: usize => FromZeroes for [T; N]);
-    unsafe_impl!(T: FromBytes, const N: usize => FromBytes for [T; N]);
-    unsafe_impl!(T: AsBytes, const N: usize => AsBytes for [T; N]);
-    unsafe_impl!(T: Unaligned, const N: usize => Unaligned for [T; N]);
+    unsafe_impl!(const N: usize, T: FromZeroes => FromZeroes for [T; N]);
+    unsafe_impl!(const N: usize, T: FromBytes => FromBytes for [T; N]);
+    unsafe_impl!(const N: usize, T: AsBytes => AsBytes for [T; N]);
+    unsafe_impl!(const N: usize, T: Unaligned => Unaligned for [T; N]);
     assert_unaligned!([(); 0], [(); 1], [u8; 0], [u8; 1]);
     unsafe_impl!(T: FromZeroes => FromZeroes for [T]);
     unsafe_impl!(T: FromBytes => FromBytes for [T]);
