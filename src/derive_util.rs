@@ -65,7 +65,7 @@ macro_rules! union_has_padding {
 
 #[cfg(test)]
 mod tests {
-    use crate::testutil::*;
+    use crate::util::testutil::*;
 
     #[test]
     fn test_struct_has_padding() {
