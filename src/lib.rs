@@ -155,6 +155,8 @@
 
 #[macro_use]
 mod macros;
+#[cfg(test)]
+mod testutil;
 
 #[cfg(feature = "byteorder")]
 pub mod byteorder;
@@ -3023,6 +3025,7 @@ mod tests {
     use static_assertions::assert_impl_all;
 
     use super::*;
+    use crate::testutil::AU64;
 
     /// A `T` which is aligned to at least `align_of::<A>()`.
     #[derive(Default)]
@@ -3062,27 +3065,6 @@ mod tests {
         const fn new(t: T) -> ForceUnalign<T, A> {
             ForceUnalign { _u: 0, t, _a: [] }
         }
-    }
-
-    // A `u64` with alignment 8.
-    //
-    // Though `u64` has alignment 8 on some platforms, it's not guaranteed.
-    // By contrast, `AU64` is guaranteed to have alignment 8.
-    #[derive(
-        FromZeroes, FromBytes, AsBytes, Eq, PartialEq, Ord, PartialOrd, Default, Debug, Copy, Clone,
-    )]
-    #[repr(C, align(8))]
-    struct AU64(u64);
-
-    impl Display for AU64 {
-        fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-            Display::fmt(&self.0, f)
-        }
-    }
-
-    // Converts an `AU64` to bytes using this platform's endianness.
-    fn au64_to_bytes(u: AU64) -> [u8; 8] {
-        transmute!(u)
     }
 
     // An unsized type.
@@ -3317,15 +3299,15 @@ mod tests {
         // byte slice.
         const VAL1: AU64 = AU64(0xFF00FF00FF00FF00);
         *r = VAL1;
-        assert_eq!(r.bytes(), &au64_to_bytes(VAL1));
+        assert_eq!(r.bytes(), &VAL1.to_bytes());
         *r = AU64(0);
         r.write(VAL1);
-        assert_eq!(r.bytes(), &au64_to_bytes(VAL1));
+        assert_eq!(r.bytes(), &VAL1.to_bytes());
 
         // Assert that values written to the byte slice are reflected in the
         // typed value.
         const VAL2: AU64 = AU64(!VAL1.0); // different from `VAL1`
-        r.bytes_mut().copy_from_slice(&au64_to_bytes(VAL2)[..]);
+        r.bytes_mut().copy_from_slice(&VAL2.to_bytes()[..]);
         assert_eq!(*r, VAL2);
         assert_eq!(r.read(), VAL2);
     }
