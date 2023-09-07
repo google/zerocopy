@@ -194,6 +194,44 @@ macro_rules! impl_or_verify {
     };
 }
 
+/// Implements `KnownLayout` for a sized type.
+macro_rules! impl_known_layout {
+    ($(const $constvar:ident : $constty:ty, $tyvar:ident $(: ?$optbound:ident)? => $ty:ty),* $(,)?) => {
+        $(impl_known_layout!(@inner const $constvar: $constty, $tyvar $(: ?$optbound)? => $ty);)*
+    };
+    ($($tyvar:ident $(: ?$optbound:ident)? => $ty:ty),* $(,)?) => {
+        $(impl_known_layout!(@inner , $tyvar $(: ?$optbound)? => $ty);)*
+    };
+    ($($ty:ty),*) => { $(impl_known_layout!(@inner , => $ty);)* };
+    (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?)? => $ty:ty) => {
+        impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> sealed::KnownLayoutSealed for $ty {}
+        // SAFETY: Delegates safety to `DstLayout::for_type`.
+        unsafe impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> KnownLayout for $ty {
+            const LAYOUT: DstLayout = DstLayout::for_type::<$ty>();
+        }
+    };
+}
+
+/// Implements `KnownLayout` for a type in terms of the implementation of
+/// another type with the same representation.
+///
+/// # Safety
+///
+/// - `$ty` and `$repr` must have the same:
+///   - Fixed prefix size
+///   - Alignment
+///   - (For DSTs) trailing slice element size
+/// - It must be valid to perform an `as` cast from `*mut $repr` to `*mut $ty`,
+///   and this operation must preserve referent size (ie, `size_of_val_raw`).
+macro_rules! unsafe_impl_known_layout {
+    ($($tyvar:ident: ?Sized + KnownLayout =>)? #[repr($repr:ty)] $ty:ty) => {
+        impl<$($tyvar: ?Sized + KnownLayout)?> sealed::KnownLayoutSealed for $ty {}
+        unsafe impl<$($tyvar: ?Sized + KnownLayout)?> KnownLayout for $ty {
+            const LAYOUT: DstLayout = <$repr as KnownLayout>::LAYOUT;
+        }
+    };
+}
+
 /// Uses `align_of` to confirm that a type or set of types have alignment 1.
 ///
 /// Note that `align_of<T>` requires `T: Sized`, so this macro doesn't work for

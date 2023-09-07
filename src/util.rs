@@ -100,4 +100,6 @@ pub(crate) mod testutil {
             Display::fmt(&self.0, f)
         }
     }
+
+    impl_known_layout!(AU64);
 }

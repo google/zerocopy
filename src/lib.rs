@@ -173,6 +173,7 @@ pub use crate::wrappers::*;
 pub use zerocopy_derive::*;
 
 use core::{
+    alloc::Layout,
     cell::{self, RefMut},
     cmp::Ordering,
     fmt::{self, Debug, Display, Formatter},
@@ -191,9 +192,8 @@ use core::{
 extern crate alloc;
 #[cfg(feature = "alloc")]
 use {
-    alloc::boxed::Box,
-    alloc::vec::Vec,
-    core::{alloc::Layout, ptr::NonNull},
+    alloc::{boxed::Box, vec::Vec},
+    core::ptr::NonNull,
 };
 
 // This is a hack to allow zerocopy-derive derives to work in this crate. They
@@ -202,6 +202,105 @@ use {
 #[cfg(any(feature = "derive", test))]
 mod zerocopy {
     pub(crate) use crate::*;
+}
+
+/// The layout of a type which might be dynamically-sized.
+///
+/// `DstLayout` describes the layout of sized types, slice types, and "custom
+/// DSTs" - ie, those that are known by the type system to have a trailing slice
+/// (as distinguished from `dyn Trait` types - such types *might* have a
+/// trailing slice type, but the type system isn't aware of it).
+#[doc(hidden)]
+#[allow(missing_debug_implementations, missing_copy_implementations)]
+#[cfg_attr(test, derive(Debug, PartialEq, Eq))]
+pub struct DstLayout {
+    /// The base size and the alignment of the type:
+    /// - For sized types, the size encoded by this `Layout` is
+    ///   `size_of::<T>()`. For DSTs, the size represents the size of the type
+    ///   when the trailing slice field contains 0 elements.
+    /// - For all types, the alignment represents the alignment of the type.
+    _base_layout: Layout,
+    /// For sized types, `None`. For DSTs, the size of the element type of the
+    /// trailing slice.
+    _trailing_slice_elem_size: Option<usize>,
+}
+
+impl DstLayout {
+    /// Constructs a `DstLayout` which describes `T`.
+    ///
+    /// # Safety
+    ///
+    /// Unsafe code may assume that `DstLayout` is the correct layout for `T`.
+    const fn for_type<T>() -> DstLayout {
+        DstLayout { _base_layout: Layout::new::<T>(), _trailing_slice_elem_size: None }
+    }
+
+    /// Constructs a `DstLayout` which describes `[T]`.
+    ///
+    /// # Safety
+    ///
+    /// Unsafe code may assume that `DstLayout` is the correct layout for `[T]`.
+    const fn for_slice<T>() -> DstLayout {
+        DstLayout {
+            // SAFETY: `[T; 0]` has the same alignment as `T`, but zero size.
+            // [1] A slice of length 0 has no size, so 0 is the correct size for
+            // the base of the type.
+            //
+            // [1] https://doc.rust-lang.org/reference/type-layout.html#array-layout
+            _base_layout: Layout::new::<[T; 0]>(),
+            _trailing_slice_elem_size: Some(mem::size_of::<T>()),
+        }
+    }
+}
+
+/// A trait which carries information about a type's layout that is used by the
+/// internals of this crate.
+///
+/// This trait is not meant for consumption by code outside of this crate. While
+/// the normal semver stability guarantees apply with respect to which types
+/// implement this trait and which trait implementations are implied by this
+/// trait, no semver stability guarantees are made regarding its internals; they
+/// may change at any time, and code which makes use of them may break.
+///
+/// # Safety
+///
+/// This trait does not convey any safety guarantees to code outside this crate.
+#[doc(hidden)] // TODO: Remove this once KnownLayout is used by other APIs
+pub unsafe trait KnownLayout: sealed::KnownLayoutSealed {
+    #[doc(hidden)]
+    const LAYOUT: DstLayout;
+}
+
+impl<T: KnownLayout> sealed::KnownLayoutSealed for [T] {}
+// SAFETY: Delegates safety to `DstLayout::for_slice`.
+unsafe impl<T: KnownLayout> KnownLayout for [T] {
+    const LAYOUT: DstLayout = DstLayout::for_slice::<T>();
+}
+
+#[rustfmt::skip]
+impl_known_layout!(
+    (),
+    u8, i8, u16, i16, u32, i32, u64, i64, u128, i128, usize, isize, f32, f64,
+    bool, char,
+    NonZeroU8, NonZeroI8, NonZeroU16, NonZeroI16, NonZeroU32, NonZeroI32,
+    NonZeroU64, NonZeroI64, NonZeroU128, NonZeroI128, NonZeroUsize, NonZeroIsize
+);
+#[rustfmt::skip]
+impl_known_layout!(
+    T         => Option<T>,
+    T: ?Sized => PhantomData<T>,
+    T         => Wrapping<T>,
+    T         => MaybeUninit<T>,
+);
+impl_known_layout!(const N: usize, T => [T; N]);
+
+safety_comment! {
+    /// SAFETY:
+    /// `str` and `ManuallyDrop<[T]>` have the same representations as `[u8]`
+    /// and `[T]` repsectively. `str` has different bit validity than `[u8]`,
+    /// but that doesn't affect the soundness of this impl.
+    unsafe_impl_known_layout!(#[repr([u8])] str);
+    unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] ManuallyDrop<T>);
 }
 
 /// Types for which a sequence of bytes all set to zero represents a valid
@@ -1171,6 +1270,7 @@ mod simd {
                 use core::arch::$arch::{$($typ),*};
 
                 use crate::*;
+                impl_known_layout!($($typ),*);
                 safety_comment! {
                     /// SAFETY:
                     /// See comment on module definition for justification.
@@ -2279,7 +2379,8 @@ where
 }
 
 mod sealed {
-    pub trait Sealed {}
+    pub trait ByteSliceSealed {}
+    pub trait KnownLayoutSealed {}
 }
 
 // ByteSlice and ByteSliceMut abstract over [u8] references (&[u8], &mut [u8],
@@ -2305,7 +2406,9 @@ mod sealed {
 ///
 /// [`Vec<u8>`]: alloc::vec::Vec
 /// [`split_at`]: crate::ByteSlice::split_at
-pub unsafe trait ByteSlice: Deref<Target = [u8]> + Sized + self::sealed::Sealed {
+pub unsafe trait ByteSlice:
+    Deref<Target = [u8]> + Sized + self::sealed::ByteSliceSealed
+{
     /// Gets a raw pointer to the first byte in the slice.
     #[inline]
     fn as_ptr(&self) -> *const u8 {
@@ -2336,7 +2439,7 @@ pub unsafe trait ByteSliceMut: ByteSlice + DerefMut {
     }
 }
 
-impl<'a> sealed::Sealed for &'a [u8] {}
+impl<'a> sealed::ByteSliceSealed for &'a [u8] {}
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a [u8] {
@@ -2346,7 +2449,7 @@ unsafe impl<'a> ByteSlice for &'a [u8] {
     }
 }
 
-impl<'a> sealed::Sealed for &'a mut [u8] {}
+impl<'a> sealed::ByteSliceSealed for &'a mut [u8] {}
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a mut [u8] {
@@ -2356,7 +2459,7 @@ unsafe impl<'a> ByteSlice for &'a mut [u8] {
     }
 }
 
-impl<'a> sealed::Sealed for cell::Ref<'a, [u8]> {}
+impl<'a> sealed::ByteSliceSealed for cell::Ref<'a, [u8]> {}
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {
@@ -2366,7 +2469,7 @@ unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {
     }
 }
 
-impl<'a> sealed::Sealed for RefMut<'a, [u8]> {}
+impl<'a> sealed::ByteSliceSealed for RefMut<'a, [u8]> {}
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
@@ -2633,6 +2736,39 @@ mod tests {
             // [1] https://github.com/rust-lang/unsafe-code-guidelines/issues/375
             unsafe { mem::transmute(slc) }
         }
+    }
+
+    #[test]
+    fn test_known_layout() {
+        // Test that `$ty` and `ManuallyDrop<$ty>` have the expected layout.
+        // Test that `PhantomData<$ty>` has the same layout as `()` regardless
+        // of `$ty`.
+        macro_rules! test {
+            ($ty:ty, $expect:expr) => {
+                let expect = $expect;
+                assert_eq!(<$ty as KnownLayout>::LAYOUT, expect);
+                assert_eq!(<ManuallyDrop<$ty> as KnownLayout>::LAYOUT, expect);
+                assert_eq!(<PhantomData<$ty> as KnownLayout>::LAYOUT, <() as KnownLayout>::LAYOUT);
+            };
+        }
+
+        let layout = |base_size, align, _trailing_slice_elem_size| DstLayout {
+            _base_layout: Layout::from_size_align(base_size, align).unwrap(),
+            _trailing_slice_elem_size,
+        };
+
+        test!((), layout(0, 1, None));
+        test!(u8, layout(1, 1, None));
+        // Use `align_of` because `u64` alignment may be smaller than 8 on some
+        // platforms.
+        test!(u64, layout(8, mem::align_of::<u64>(), None));
+        test!(AU64, layout(8, 8, None));
+
+        test!(Option<&'static ()>, usize::LAYOUT);
+
+        test!([()], layout(0, 1, Some(0)));
+        test!([u8], layout(0, 1, Some(1)));
+        test!(str, layout(0, 1, Some(1)));
     }
 
     #[test]
