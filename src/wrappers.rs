@@ -74,6 +74,7 @@ safety_comment! {
 // aligned, there's no way to safely call `T::clone`, and so a `T: Clone` bound
 // is not sufficient to implement `Clone` for `Unalign`.
 impl<T: Copy> Clone for Unalign<T> {
+    #[inline(always)]
     fn clone(&self) -> Unalign<T> {
         *self
     }
@@ -81,11 +82,13 @@ impl<T: Copy> Clone for Unalign<T> {
 
 impl<T> Unalign<T> {
     /// Constructs a new `Unalign`.
+    #[inline(always)]
     pub const fn new(val: T) -> Unalign<T> {
         Unalign(val)
     }
 
     /// Consumes `self`, returning the inner `T`.
+    #[inline(always)]
     pub const fn into_inner(self) -> T {
         // Use this instead of `mem::transmute` since the latter can't tell
         // that `Unalign<T>` and `T` have the same size.
@@ -119,6 +122,7 @@ impl<T> Unalign<T> {
     ///
     /// If `T: Unaligned`, then `Unalign<T>` implements [`Deref`], and callers
     /// may prefer [`Deref::deref`], which is infallible.
+    #[inline(always)]
     pub fn try_deref(&self) -> Option<&T> {
         if !crate::util::aligned_to::<_, T>(self) {
             return None;
@@ -138,6 +142,7 @@ impl<T> Unalign<T> {
     ///
     /// If `T: Unaligned`, then `Unalign<T>` implements [`DerefMut`], and
     /// callers may prefer [`DerefMut::deref_mut`], which is infallible.
+    #[inline(always)]
     pub fn try_deref_mut(&mut self) -> Option<&mut T> {
         if !crate::util::aligned_to::<_, T>(&*self) {
             return None;
@@ -157,6 +162,7 @@ impl<T> Unalign<T> {
     ///
     /// If `self` does not satisfy `mem::align_of::<T>()`, then
     /// `self.deref_unchecked()` may cause undefined behavior.
+    #[inline(always)]
     pub const unsafe fn deref_unchecked(&self) -> &T {
         // SAFETY: `Unalign<T>` is `repr(transparent)`, so there is a valid `T`
         // at the same memory location as `self`. It has no alignment guarantee,
@@ -180,6 +186,7 @@ impl<T> Unalign<T> {
     ///
     /// If `self` does not satisfy `mem::align_of::<T>()`, then
     /// `self.deref_mut_unchecked()` may cause undefined behavior.
+    #[inline(always)]
     pub unsafe fn deref_mut_unchecked(&mut self) -> &mut T {
         // SAFETY: `self.get_mut_ptr()` returns a raw pointer to a valid `T` at
         // the same memory location as `self`. It has no alignment guarantee,
@@ -203,6 +210,7 @@ impl<T> Unalign<T> {
     /// [`read_unaligned`].
     ///
     /// [`read_unaligned`]: core::ptr::read_unaligned
+    #[inline(always)]
     pub const fn get_ptr(&self) -> *const T {
         ptr::addr_of!(self.0)
     }
@@ -222,12 +230,14 @@ impl<T> Unalign<T> {
     ///
     /// [`read_unaligned`]: core::ptr::read_unaligned
     // TODO(https://github.com/rust-lang/rust/issues/57349): Make this `const`.
+    #[inline(always)]
     pub fn get_mut_ptr(&mut self) -> *mut T {
         ptr::addr_of_mut!(self.0)
     }
 
     /// Sets the inner `T`, dropping the previous value.
     // TODO(https://github.com/rust-lang/rust/issues/57349): Make this `const`.
+    #[inline(always)]
     pub fn set(&mut self, t: T) {
         *self = Unalign::new(t);
     }
@@ -247,6 +257,7 @@ impl<T> Unalign<T> {
     /// then moves it back to its original location in `self`.
     ///
     /// [`T: Unaligned`]: Unaligned
+    #[inline]
     pub fn update<O, F: FnOnce(&mut T) -> O>(&mut self, f: F) -> O {
         // On drop, this moves `copy` out of itself and uses `ptr::write` to
         // overwrite `slf`.
@@ -297,6 +308,7 @@ impl<T> Unalign<T> {
 impl<T: Copy> Unalign<T> {
     /// Gets a copy of the inner `T`.
     // TODO(https://github.com/rust-lang/rust/issues/57349): Make this `const`.
+    #[inline(always)]
     pub fn get(&self) -> T {
         let Unalign(val) = *self;
         val
@@ -306,6 +318,7 @@ impl<T: Copy> Unalign<T> {
 impl<T: Unaligned> Deref for Unalign<T> {
     type Target = T;
 
+    #[inline(always)]
     fn deref(&self) -> &T {
         // SAFETY: `deref_unchecked`'s safety requirement is that `self` is
         // aligned to `align_of::<T>()`. `T: Unaligned` guarantees that
@@ -316,6 +329,7 @@ impl<T: Unaligned> Deref for Unalign<T> {
 }
 
 impl<T: Unaligned> DerefMut for Unalign<T> {
+    #[inline(always)]
     fn deref_mut(&mut self) -> &mut T {
         // SAFETY: `deref_mut_unchecked`'s safety requirement is that `self` is
         // aligned to `align_of::<T>()`. `T: Unaligned` guarantees that
@@ -326,18 +340,21 @@ impl<T: Unaligned> DerefMut for Unalign<T> {
 }
 
 impl<T: Unaligned + PartialOrd> PartialOrd<Unalign<T>> for Unalign<T> {
+    #[inline(always)]
     fn partial_cmp(&self, other: &Unalign<T>) -> Option<Ordering> {
         PartialOrd::partial_cmp(self.deref(), other.deref())
     }
 }
 
 impl<T: Unaligned + Ord> Ord for Unalign<T> {
+    #[inline(always)]
     fn cmp(&self, other: &Unalign<T>) -> Ordering {
         Ord::cmp(self.deref(), other.deref())
     }
 }
 
 impl<T: Unaligned + PartialEq> PartialEq<Unalign<T>> for Unalign<T> {
+    #[inline(always)]
     fn eq(&self, other: &Unalign<T>) -> bool {
         PartialEq::eq(self.deref(), other.deref())
     }
@@ -346,6 +363,7 @@ impl<T: Unaligned + PartialEq> PartialEq<Unalign<T>> for Unalign<T> {
 impl<T: Unaligned + Eq> Eq for Unalign<T> {}
 
 impl<T: Unaligned + Hash> Hash for Unalign<T> {
+    #[inline(always)]
     fn hash<H>(&self, state: &mut H)
     where
         H: Hasher,
@@ -355,12 +373,14 @@ impl<T: Unaligned + Hash> Hash for Unalign<T> {
 }
 
 impl<T: Unaligned + Debug> Debug for Unalign<T> {
+    #[inline(always)]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         Debug::fmt(self.deref(), f)
     }
 }
 
 impl<T: Unaligned + Display> Display for Unalign<T> {
+    #[inline(always)]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         Display::fmt(self.deref(), f)
     }

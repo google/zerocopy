@@ -78,6 +78,7 @@ use super::*;
 macro_rules! impl_fmt_trait {
     ($name:ident, $native:ident, $trait:ident) => {
         impl<O: ByteOrder> $trait for $name<O> {
+            #[inline(always)]
             fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
                 $trait::fmt(&self.get(), f)
             }
@@ -190,6 +191,7 @@ example of how it can be used for parsing UDP packets.
         }
 
         impl<O> Default for $name<O> {
+            #[inline(always)]
             fn default() -> $name<O> {
                 $name::ZERO
             }
@@ -207,6 +209,7 @@ example of how it can be used for parsing UDP packets.
 
             /// Constructs a new value from bytes which are already in the
             /// endianness `O`.
+            #[inline(always)]
             pub const fn from_bytes(bytes: [u8; $bytes]) -> $name<O> {
                 $name(bytes, PhantomData)
             }
@@ -218,6 +221,7 @@ example of how it can be used for parsing UDP packets.
 
             /// Constructs a new value, possibly performing an endianness swap
             /// to guarantee that the returned value has endianness `O`.
+            #[inline(always)]
             pub fn new(n: $native) -> $name<O> {
                 let mut out = $name::default();
                 O::$write_method(&mut out.0[..], n);
@@ -227,6 +231,7 @@ example of how it can be used for parsing UDP packets.
             /// Returns the value as a primitive type, possibly performing an
             /// endianness swap to guarantee that the return value has the
             /// endianness of the native platform.
+            #[inline(always)]
             pub fn get(self) -> $native {
                 O::$read_method(&self.0[..])
             }
@@ -234,6 +239,7 @@ example of how it can be used for parsing UDP packets.
             /// Updates the value in place as a primitive type, possibly
             /// performing an endianness swap to guarantee that the stored value
             /// has the endianness `O`.
+            #[inline(always)]
             pub fn set(&mut self, n: $native) {
                 O::$write_method(&mut self.0[..], n);
             }
@@ -245,24 +251,28 @@ example of how it can be used for parsing UDP packets.
         // inference issues.
 
         impl<O: ByteOrder> From<$name<O>> for [u8; $bytes] {
+            #[inline(always)]
             fn from(x: $name<O>) -> [u8; $bytes] {
                 x.0
             }
         }
 
         impl<O: ByteOrder> From<[u8; $bytes]> for $name<O> {
+            #[inline(always)]
             fn from(bytes: [u8; $bytes]) -> $name<O> {
                 $name(bytes, PhantomData)
             }
         }
 
         impl<O: ByteOrder> From<$name<O>> for $native {
+            #[inline(always)]
             fn from(x: $name<O>) -> $native {
                 x.get()
             }
         }
 
         impl<O: ByteOrder> From<$native> for $name<O> {
+            #[inline(always)]
             fn from(x: $native) -> $name<O> {
                 $name::new(x)
             }
@@ -270,6 +280,7 @@ example of how it can be used for parsing UDP packets.
 
         $(
             impl<O: ByteOrder> From<$name<O>> for $larger_native {
+                #[inline(always)]
                 fn from(x: $name<O>) -> $larger_native {
                     x.get().into()
                 }
@@ -279,6 +290,7 @@ example of how it can be used for parsing UDP packets.
         $(
             impl<O: ByteOrder> TryFrom<$larger_native_try> for $name<O> {
                 type Error = TryFromIntError;
+                #[inline(always)]
                 fn try_from(x: $larger_native_try) -> Result<$name<O>, TryFromIntError> {
                     $native::try_from(x).map($name::new)
                 }
@@ -287,6 +299,7 @@ example of how it can be used for parsing UDP packets.
 
         $(
             impl<O: ByteOrder, P: ByteOrder> From<$name<O>> for $larger_byteorder<P> {
+                #[inline(always)]
                 fn from(x: $name<O>) -> $larger_byteorder<P> {
                     $larger_byteorder::new(x.get().into())
                 }
@@ -296,6 +309,7 @@ example of how it can be used for parsing UDP packets.
         $(
             impl<O: ByteOrder, P: ByteOrder> TryFrom<$larger_byteorder_try<P>> for $name<O> {
                 type Error = TryFromIntError;
+                #[inline(always)]
                 fn try_from(x: $larger_byteorder_try<P>) -> Result<$name<O>, TryFromIntError> {
                     x.get().try_into().map($name::new)
                 }
@@ -303,24 +317,28 @@ example of how it can be used for parsing UDP packets.
         )*
 
         impl<O: ByteOrder> AsRef<[u8; $bytes]> for $name<O> {
+            #[inline(always)]
             fn as_ref(&self) -> &[u8; $bytes] {
                 &self.0
             }
         }
 
         impl<O: ByteOrder> AsMut<[u8; $bytes]> for $name<O> {
+            #[inline(always)]
             fn as_mut(&mut self) -> &mut [u8; $bytes] {
                 &mut self.0
             }
         }
 
         impl<O: ByteOrder> PartialEq<$name<O>> for [u8; $bytes] {
+            #[inline(always)]
             fn eq(&self, other: &$name<O>) -> bool {
                 self.eq(&other.0)
             }
         }
 
         impl<O: ByteOrder> PartialEq<[u8; $bytes]> for $name<O> {
+            #[inline(always)]
             fn eq(&self, other: &[u8; $bytes]) -> bool {
                 self.0.eq(other)
             }
@@ -329,6 +347,7 @@ example of how it can be used for parsing UDP packets.
         impl_fmt_traits!($name, $native, $number_kind);
 
         impl<O: ByteOrder> Debug for $name<O> {
+            #[inline]
             fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
                 // This results in a format like "U16(42)".
                 f.debug_tuple(stringify!($name)).field(&self.get()).finish()

@@ -113,6 +113,7 @@
     clippy::decimal_literal_representation,
     clippy::get_unwrap,
     clippy::indexing_slicing,
+    clippy::missing_inline_in_public_items,
     clippy::missing_safety_doc,
     clippy::obfuscated_if_else,
     clippy::perf,
@@ -295,6 +296,7 @@ pub unsafe trait FromZeroes {
     /// Self::new_zeroed()`, it differs in that `zero` does not semantically
     /// drop the current value and replace it with a new one - it simply
     /// modifies the bytes of the existing value.
+    #[inline(always)]
     fn zero(&mut self) {
         let slf: *mut Self = self;
         let len = mem::size_of_val(self);
@@ -309,6 +311,7 @@ pub unsafe trait FromZeroes {
     }
 
     /// Creates an instance of `Self` from zeroed bytes.
+    #[inline(always)]
     fn new_zeroed() -> Self
     where
         Self: Sized,
@@ -336,6 +339,7 @@ pub unsafe trait FromZeroes {
     ///
     /// Panics if allocation of `size_of::<Self>()` bytes fails.
     #[cfg(feature = "alloc")]
+    #[inline]
     fn new_box_zeroed() -> Box<Self>
     where
         Self: Sized,
@@ -380,6 +384,7 @@ pub unsafe trait FromZeroes {
     /// * Panics if `size_of::<Self>() * len` overflows.
     /// * Panics if allocation of `size_of::<Self>() * len` bytes fails.
     #[cfg(feature = "alloc")]
+    #[inline]
     fn new_box_slice_zeroed(len: usize) -> Box<[Self]>
     where
         Self: Sized,
@@ -441,6 +446,7 @@ pub unsafe trait FromZeroes {
     /// * Panics if `size_of::<Self>() * len` overflows.
     /// * Panics if allocation of `size_of::<Self>() * len` bytes fails.
     #[cfg(feature = "alloc")]
+    #[inline(always)]
     fn new_vec_zeroed(len: usize) -> Vec<Self>
     where
         Self: Sized,
@@ -536,6 +542,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// Reads a copy of `Self` from `bytes`.
     ///
     /// If `bytes.len() != size_of::<Self>()`, `read_from` returns `None`.
+    #[inline]
     fn read_from(bytes: &[u8]) -> Option<Self>
     where
         Self: Sized,
@@ -549,6 +556,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// `read_from_prefix` reads a `Self` from the first `size_of::<Self>()`
     /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()`, it returns
     /// `None`.
+    #[inline]
     fn read_from_prefix(bytes: &[u8]) -> Option<Self>
     where
         Self: Sized,
@@ -562,6 +570,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// `read_from_suffix` reads a `Self` from the last `size_of::<Self>()`
     /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()`, it returns
     /// `None`.
+    #[inline]
     fn read_from_suffix(bytes: &[u8]) -> Option<Self>
     where
         Self: Sized,
@@ -665,6 +674,7 @@ pub unsafe trait AsBytes {
     ///
     /// `as_bytes` provides access to the bytes of this value as an immutable
     /// byte slice.
+    #[inline(always)]
     fn as_bytes(&self) -> &[u8] {
         // Note that this method does not have a `Self: Sized` bound;
         // `size_of_val` works for unsized values too.
@@ -697,6 +707,7 @@ pub unsafe trait AsBytes {
     ///
     /// `as_bytes_mut` provides access to the bytes of this value as a mutable
     /// byte slice.
+    #[inline(always)]
     fn as_bytes_mut(&mut self) -> &mut [u8]
     where
         Self: FromBytes,
@@ -730,6 +741,7 @@ pub unsafe trait AsBytes {
     /// Writes a copy of `self` to `bytes`.
     ///
     /// If `bytes.len() != size_of_val(self)`, `write_to` returns `None`.
+    #[inline]
     fn write_to(&self, bytes: &mut [u8]) -> Option<()> {
         if bytes.len() != mem::size_of_val(self) {
             return None;
@@ -743,6 +755,7 @@ pub unsafe trait AsBytes {
     ///
     /// `write_to_prefix` writes `self` to the first `size_of_val(self)` bytes
     /// of `bytes`. If `bytes.len() < size_of_val(self)`, it returns `None`.
+    #[inline]
     fn write_to_prefix(&self, bytes: &mut [u8]) -> Option<()> {
         let size = mem::size_of_val(self);
         bytes.get_mut(..size)?.copy_from_slice(self.as_bytes());
@@ -753,6 +766,7 @@ pub unsafe trait AsBytes {
     ///
     /// `write_to_suffix` writes `self` to the last `size_of_val(self)` bytes of
     /// `bytes`. If `bytes.len() < size_of_val(self)`, it returns `None`.
+    #[inline]
     fn write_to_suffix(&self, bytes: &mut [u8]) -> Option<()> {
         let start = bytes.len().checked_sub(mem::size_of_val(self))?;
         bytes
@@ -1817,6 +1831,7 @@ where
     /// Converts this `Ref` into a reference.
     ///
     /// `into_ref` consumes the `Ref`, and returns a reference to `T`.
+    #[inline(always)]
     pub fn into_ref(self) -> &'a T {
         // SAFETY: This is sound because `B` is guaranteed to live for the
         // lifetime `'a`, meaning that a) the returned reference cannot outlive
@@ -1836,6 +1851,7 @@ where
     /// Converts this `Ref` into a mutable reference.
     ///
     /// `into_mut` consumes the `Ref`, and returns a mutable reference to `T`.
+    #[inline(always)]
     pub fn into_mut(mut self) -> &'a mut T {
         // SAFETY: This is sound because `B` is guaranteed to live for the
         // lifetime `'a`, meaning that a) the returned reference cannot outlive
@@ -1855,6 +1871,7 @@ where
     /// Converts this `Ref` into a slice reference.
     ///
     /// `into_slice` consumes the `Ref`, and returns a reference to `[T]`.
+    #[inline(always)]
     pub fn into_slice(self) -> &'a [T] {
         // SAFETY: This is sound because `B` is guaranteed to live for the
         // lifetime `'a`, meaning that a) the returned reference cannot outlive
@@ -1875,6 +1892,7 @@ where
     ///
     /// `into_mut_slice` consumes the `Ref`, and returns a mutable reference to
     /// `[T]`.
+    #[inline(always)]
     pub fn into_mut_slice(mut self) -> &'a mut [T] {
         // SAFETY: This is sound because `B` is guaranteed to live for the
         // lifetime `'a`, meaning that a) the returned reference cannot outlive
@@ -2378,6 +2396,7 @@ mod alloc_support {
     /// # Panics
     ///
     /// Panics if `Vec::reserve(additional)` fails to reserve enough memory.
+    #[inline(always)]
     pub fn extend_vec_zeroed<T: FromZeroes>(v: &mut Vec<T>, additional: usize) {
         insert_vec_zeroed(v, v.len(), additional);
     }
@@ -2389,6 +2408,7 @@ mod alloc_support {
     ///
     /// * Panics if `position > v.len()`.
     /// * Panics if `Vec::reserve(additional)` fails to reserve enough memory.
+    #[inline]
     pub fn insert_vec_zeroed<T: FromZeroes>(v: &mut Vec<T>, position: usize, additional: usize) {
         assert!(position <= v.len());
         v.reserve(additional);
