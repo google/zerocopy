@@ -13,13 +13,16 @@
 ///     /// Safety comment starts on its own line.
 ///     macro_1!(args);
 ///     macro_2! { args };
+///     /// SAFETY:
+///     /// Subsequent safety comments are allowed but not required.
+///     macro_3! { args };
 /// }
 /// ```
 ///
 /// The macro invocations are emitted, each decorated with the following
 /// attribute: `#[allow(clippy::undocumented_unsafe_blocks)]`.
 macro_rules! safety_comment {
-    (#[doc = r" SAFETY:"] $(#[doc = $_doc:literal])* $($macro:ident!$args:tt;)*) => {
+    (#[doc = r" SAFETY:"] $($(#[doc = $_doc:literal])* $macro:ident!$args:tt;)*) => {
         #[allow(clippy::undocumented_unsafe_blocks)]
         const _: () = { $($macro!$args;)* };
     }
