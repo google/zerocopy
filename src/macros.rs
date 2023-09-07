@@ -32,7 +32,7 @@ macro_rules! safety_comment {
 macro_rules! unsafe_impl {
     // Implement `$trait` for `$ty` with no bounds.
     ($ty:ty: $trait:ty) => {
-        unsafe impl $trait for $ty { #[inline] fn only_derive_is_allowed_to_implement_this_trait() {} }
+        unsafe impl $trait for $ty { #[allow(clippy::missing_inline_in_public_items)] fn only_derive_is_allowed_to_implement_this_trait() {} }
     };
     // Implement all `$traits` for `$ty` with no bounds.
     ($ty:ty: $($traits:ty),*) => {
@@ -92,7 +92,8 @@ macro_rules! unsafe_impl {
         => $trait:ident for $ty:ty
     ) => {
         unsafe impl<$(const $constname: $constty,)* $($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> $trait for $ty {
-            #[inline] fn only_derive_is_allowed_to_implement_this_trait() {}
+            #[allow(clippy::missing_inline_in_public_items)]
+            fn only_derive_is_allowed_to_implement_this_trait() {}
         }
     };
 }
