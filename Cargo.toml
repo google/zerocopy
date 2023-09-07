@@ -69,7 +69,7 @@ optional = true
 zerocopy-derive = { version = "=0.7.3", path = "zerocopy-derive" }
 
 [dev-dependencies]
-rand = "0.6"
+rand = { version = "0.8.5", features = ["small_rng"] }
 rustversion = "1.0"
 static_assertions = "1.1"
 # Pinned to a specific version so that the version used for local development

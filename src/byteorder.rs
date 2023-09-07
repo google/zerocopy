@@ -496,6 +496,11 @@ module!(native_endian, NativeEndian, "native-endian");
 #[cfg(test)]
 mod tests {
     use ::byteorder::NativeEndian;
+    use rand::{
+        distributions::{Distribution, Standard},
+        rngs::SmallRng,
+        Rng, SeedableRng,
+    };
 
     use {
         super::*,
@@ -507,7 +512,12 @@ mod tests {
         const ZERO: Self;
         const MAX_VALUE: Self;
 
-        fn rand() -> Self;
+        type Distribution: Distribution<Self>;
+        const DIST: Self::Distribution;
+
+        fn rand<R: Rng>(rng: &mut R) -> Self {
+            rng.sample(Self::DIST)
+        }
     }
 
     trait ByteArray:
@@ -570,9 +580,8 @@ mod tests {
                 const ZERO: $native = 0 as $native;
                 const MAX_VALUE: $native = $native::MAX;
 
-                fn rand() -> $native {
-                    rand::random()
-                }
+                type Distribution = Standard;
+                const DIST: Standard = Standard;
             }
 
             impl<O: ByteOrder> ByteOrderType for $name<O> {
@@ -646,6 +655,36 @@ mod tests {
     #[cfg(target_endian = "little")]
     type NonNativeEndian = BigEndian;
 
+    // We use a `u64` seed so that we can use `SeedableRng::seed_from_u64`.
+    // `SmallRng`'s `SeedableRng::Seed` differs by platform, so if we wanted to
+    // call `SeedableRng::from_seed`, which takes a `Seed`, we would need
+    // conditional compilation by `target_pointer_width`.
+    const RNG_SEED: u64 = 0x7A03CAE2F32B5B8F;
+
+    const RAND_ITERS: usize = if cfg!(miri) {
+        // The tests below which use this constant used to take a very long time
+        // on Miri, which slows down local development and CI jobs. We're not
+        // using Miri to check for the correctness of our code, but rather its
+        // soundness, and at least in the context of these particular tests, a
+        // single loop iteration is just as good for surfacing UB as multiple
+        // iterations are.
+        //
+        // As of the writing of this comment, here's one set of measurements:
+        //
+        //   $ # RAND_ITERS == 1
+        //   $ cargo miri test -- -Z unstable-options --report-time endian
+        //   test byteorder::tests::test_native_endian ... ok <0.049s>
+        //   test byteorder::tests::test_non_native_endian ... ok <0.061s>
+        //
+        //   $ # RAND_ITERS == 1024
+        //   $ cargo miri test -- -Z unstable-options --report-time endian
+        //   test byteorder::tests::test_native_endian ... ok <25.716s>
+        //   test byteorder::tests::test_non_native_endian ... ok <38.127s>
+        1
+    } else {
+        1024
+    };
+
     #[test]
     fn test_zero() {
         fn test_zero<T: ByteOrderType>() {
@@ -669,8 +708,9 @@ mod tests {
     #[test]
     fn test_native_endian() {
         fn test_native_endian<T: ByteOrderType>() {
-            for _ in 0..1024 {
-                let native = T::Native::rand();
+            let mut r = SmallRng::seed_from_u64(RNG_SEED);
+            for _ in 0..RAND_ITERS {
+                let native = T::Native::rand(&mut r);
                 let mut bytes = T::ByteArray::default();
                 bytes.as_bytes_mut().copy_from_slice(native.as_bytes());
                 let mut from_native = T::new(native);
@@ -681,7 +721,7 @@ mod tests {
                 assert_eq!(from_native.into_bytes(), bytes);
                 assert_eq!(from_bytes.into_bytes(), bytes);
 
-                let updated = T::Native::rand();
+                let updated = T::Native::rand(&mut r);
                 from_native.set(updated);
                 assert_eq!(from_native.get(), updated);
             }
@@ -693,8 +733,9 @@ mod tests {
     #[test]
     fn test_non_native_endian() {
         fn test_non_native_endian<T: ByteOrderType>() {
-            for _ in 0..1024 {
-                let native = T::Native::rand();
+            let mut r = SmallRng::seed_from_u64(RNG_SEED);
+            for _ in 0..RAND_ITERS {
+                let native = T::Native::rand(&mut r);
                 let mut bytes = T::ByteArray::default();
                 bytes.as_bytes_mut().copy_from_slice(native.as_bytes());
                 bytes = bytes.invert();
@@ -706,7 +747,7 @@ mod tests {
                 assert_eq!(from_native.into_bytes(), bytes);
                 assert_eq!(from_bytes.into_bytes(), bytes);
 
-                let updated = T::Native::rand();
+                let updated = T::Native::rand(&mut r);
                 from_native.set(updated);
                 assert_eq!(from_native.get(), updated);
             }
