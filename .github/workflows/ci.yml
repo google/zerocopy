@@ -241,6 +241,28 @@ jobs:
       # `alloc` feature.
       if: matrix.features != '' && matrix.features != '--no-default-features'
 
+    # Check semver compatibility with the most recently-published version on
+    # crates.io. We do this in the matrix rather than in its own job so that it
+    # gets run on different targets. Some of our API is target-specific (e.g.,
+    # SIMD type impls), and so we need to run on each target.
+    #
+    # TODO(https://github.com/obi1kenobi/cargo-semver-checks-action/issues/54):
+    # Currently we don't actually do anything with `matrix.target`, so we're
+    # just duplicating work by running this job multiple times, each time
+    # targetting the host platform.
+    - name: Check semver compatibility
+      uses: obi1kenobi/cargo-semver-checks-action@v2
+      with:
+        # Don't semver check zerocopy-derive; as a proc macro, it doesn't have
+        # an API that cargo-semver-checks can understand.
+        package: zerocopy
+        feature-group: all-features
+        # TODO: Set this to the specific nightly we have pinned in CI. Not a big
+        # deal since this isn't affected by the trybuild stderr files, which is
+        # the reason we need to pin to a specific nightly.
+        rust-toolchain: nightly
+      if: matrix.crate == 'zerocopy' && matrix.features == '--all-features' && matrix.toolchain == 'nightly'
+
   check_fmt:
     runs-on: ubuntu-latest
     name: Check Rust formatting
