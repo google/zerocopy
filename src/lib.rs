@@ -31,12 +31,12 @@
 //!
 //! # Cargo Features
 //!
-//! - **`alloc`**   
+//! - **`alloc`**
 //!   By default, `zerocopy` is `no_std`. When the `alloc` feature is enabled,
 //!   the `alloc` crate is added as a dependency, and some allocation-related
 //!   functionality is added.
 //!
-//! - **`byteorder`** (enabled by default)   
+//! - **`byteorder`** (enabled by default)
 //!   Adds the [`byteorder`] module and a dependency on the `byteorder` crate.
 //!   The `byteorder` module provides byte order-aware equivalents of the
 //!   multi-byte primitive numerical types. Unlike their primitive equivalents,
@@ -45,10 +45,10 @@
 //!   packet layouts, etc which don't provide alignment guarantees and which may
 //!   use a byte order different from that of the execution platform.
 //!
-//! - **`derive`**   
+//! - **`derive`**
 //!   Provides derives for the core marker traits via the `zerocopy-derive`
 //!   crate. These derives are re-exported from `zerocopy`, so it is not
-//!   necessary to depend on `zerocopy-derive` directly.   
+//!   necessary to depend on `zerocopy-derive` directly.
 //!
 //!   However, you may experience better compile times if you instead directly
 //!   depend on both `zerocopy` and `zerocopy-derive` in your `Cargo.toml`,
@@ -62,7 +62,7 @@
 //!   zerocopy-derive = "0.X"
 //!   ```
 //!
-//! - **`simd`**   
+//! - **`simd`**
 //!   When the `simd` feature is enabled, `FromZeroes`, `FromBytes`, and
 //!   `AsBytes` impls are emitted for all stable SIMD types which exist on the
 //!   target platform. Note that the layout of SIMD types is not yet stabilized,
@@ -70,7 +70,7 @@
 //!   invalid. For more information, see the Unsafe Code Guidelines Reference
 //!   page on the [layout of packed SIMD vectors][simd-layout].
 //!
-//! - **`simd-nightly`**   
+//! - **`simd-nightly`**
 //!   Enables the `simd` feature and adds support for SIMD types which are only
 //!   available on nightly. Since these types are unstable, support for any type
 //!   may be removed at any point in the future.
@@ -171,6 +171,8 @@ pub use crate::byteorder::*;
 pub use crate::wrappers::*;
 #[cfg(any(feature = "derive", test))]
 pub use zerocopy_derive::*;
+
+pub mod parser;
 
 use core::{
     alloc::Layout,

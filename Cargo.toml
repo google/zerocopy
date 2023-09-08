@@ -49,6 +49,7 @@ derive = ["zerocopy-derive"]
 alloc = []
 simd = []
 simd-nightly = ["simd"]
+std = []
 # This feature depends on all other features that work on the stable compiler.
 # We make no stability guarantees about this feature; it may be modified or
 # removed at any time.
