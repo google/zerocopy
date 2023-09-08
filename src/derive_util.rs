@@ -63,6 +63,90 @@ macro_rules! union_has_padding {
     };
 }
 
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! derive_known_layout {
+    (
+        struct $name:ident<$($tyvar_def:ident),*>
+        where
+            $(
+                $tyvar_where:ident: [
+                    $( $bound:path,     $( $bounds:path,    )*)?
+                    $(?$neg_bound:path, $(?$neg_bounds:path,)*)?
+                ],
+            )*
+        {
+            // `$field` is a `tt` so it can match names and integer indices
+            // (used for tuple structs).
+            $($field:tt: $field_ty:ty),*
+        }
+    ) => {
+        impl<$($tyvar_def),*> crate::sealed::KnownLayoutSealed for $name<$($tyvar_def),*>
+        where
+            $($tyvar_where: $($bound+ $($bounds+)*)? $(?$neg_bound+ $(?$neg_bounds+)*)?,)*
+        {}
+
+        unsafe impl<$($tyvar_def),*> crate::KnownLayout for $name<$($tyvar_def),*>
+        where
+            $($tyvar_where: $($bound+ $($bounds+)*)? $(?$neg_bound+ $(?$neg_bounds+)*)?,)*
+        {
+            const LAYOUT: crate::DstLayout = todo!();
+
+            #[inline(always)]
+            fn raw_from_ptr_len(bytes: core::ptr::NonNull<u8>, elems: usize) -> core::ptr::NonNull<Self> {
+                todo!()
+            }
+        }
+    };
+}
+
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! derive_try_from_bytes {
+    (
+        struct $name:ident<$($tyvar_def:ident),*>
+        where
+            $(
+                $tyvar_where:ident: [
+                    $( $bound:path,     $( $bounds:path,    )*)?
+                    $(?$neg_bound:path, $(?$neg_bounds:path,)*)?
+                ],
+            )*
+        {
+            // `$field` is a `tt` so it can match names and integer indices
+            // (used for tuple structs).
+            $($field:tt: $field_ty:ty),*
+        }
+    ) => {
+        derive_known_layout! {
+            struct $name<$($tyvar_def),*>
+            where
+                $($tyvar_where: [ $($bound, $($bounds:path,)*)? $(?$neg_bound, $(?$neg_bounds,)*)? ],)*
+            {
+                $($field: $field_ty),*
+            }
+        }
+
+        unsafe impl<$($tyvar_def),*> crate::TryFromBytes for $name<$($tyvar_def),*>
+        where
+            $($tyvar_where: $($bound+ $($bounds+)*)? $(?$neg_bound+ $(?$neg_bounds+)*)?,)*
+            $($field_ty: crate::TryFromBytes),*
+        {
+            unsafe fn is_bit_valid(candidate: core::ptr::NonNull<Self>) -> bool {
+                let _c = candidate.as_ptr();
+                true $(&& {
+                    let ptr = core::ptr::addr_of!((*_c).$field);
+                    let ptr = ptr as *mut $field_ty;
+                    // SAFETY: TODO
+                    let nonnull = unsafe { core::ptr::NonNull::new_unchecked(ptr) };
+                    // SAFETY: TODO
+                    unsafe { <$field_ty as crate::TryFromBytes>::is_bit_valid(nonnull) }
+                })*
+            }
+        }
+    };
+}
+
 #[cfg(test)]
 mod tests {
     use crate::util::testutil::*;
@@ -123,5 +207,13 @@ mod tests {
         // targets, and this isn't a particularly complex macro we're testing
         // anyway.
         test!(#[repr(C)] #[repr(packed)] {a: u8, b: u64} => true);
+    }
+
+    #[test]
+    fn test_derive_try_from_bytes() {
+        struct Foo<T: ?Sized>(T);
+        derive_try_from_bytes! {
+            struct Foo<T> where T: [?Sized,], { 0: T }
+        }
     }
 }
