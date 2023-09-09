@@ -66,6 +66,7 @@ macro_rules! union_has_padding {
 #[cfg(test)]
 mod tests {
     use crate::util::testutil::*;
+    use crate::*;
 
     #[test]
     fn test_struct_has_padding() {
@@ -123,5 +124,16 @@ mod tests {
         // targets, and this isn't a particularly complex macro we're testing
         // anyway.
         test!(#[repr(C)] #[repr(packed)] {a: u8, b: u64} => true);
+    }
+
+    #[test]
+    fn foo() {
+        #[derive(TryFromBytes)]
+        struct Foo {
+            f: u8,
+            b: bool,
+        }
+
+        impl_known_layout!(Foo);
     }
 }
