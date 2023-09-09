@@ -141,6 +141,9 @@ macro_rules! unsafe_impl {
             let $candidate: &$repr = unsafe { candidate.as_ref() };
             $is_bit_valid
         }
+
+        #[allow(clippy::missing_inline_in_public_items)]
+        fn only_derive_is_allowed_to_implement_this_trait() {}
     };
     (@method TryFromBytes ; |$candidate:ident: Ptr<$repr:ty>| $is_bit_valid:expr) => {
         #[inline]
@@ -154,8 +157,15 @@ macro_rules! unsafe_impl {
             let $candidate = unsafe { candidate.cast_unsized::<$repr>(|p| p as *mut _) };
             $is_bit_valid
         }
+
+        #[allow(clippy::missing_inline_in_public_items)]
+        fn only_derive_is_allowed_to_implement_this_trait() {}
     };
-    (@method TryFromBytes) => { #[inline(always)] unsafe fn is_bit_valid(_: Ptr<'_, Self>) -> bool { true } };
+    (@method TryFromBytes) => {
+        #[inline(always)] unsafe fn is_bit_valid(_: Ptr<'_, Self>) -> bool { true }
+        #[allow(clippy::missing_inline_in_public_items)]
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+    };
     (@method $trait:ident) => {
         #[allow(clippy::missing_inline_in_public_items)]
         fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -266,17 +276,17 @@ macro_rules! impl_known_layout {
     ($(const $constvar:ident : $constty:ty, $tyvar:ident $(: ?$optbound:ident)? => $ty:ty),* $(,)?) => {
         $(impl_known_layout!(@inner const $constvar: $constty, $tyvar $(: ?$optbound)? => $ty);)*
     };
-    ($($tyvar:ident $(: ?$optbound:ident)? => $ty:ty),* $(,)?) => {
-        $(impl_known_layout!(@inner , $tyvar $(: ?$optbound)? => $ty);)*
+    ($($($tyvar:ident $(: ?$optbound:ident)?),* => $ty:ty),* $(,)?) => {
+        $(impl_known_layout!(@inner , $($tyvar $(: ?$optbound)?),* => $ty);)*
     };
     ($($ty:ty),*) => { $(impl_known_layout!(@inner , => $ty);)* };
-    (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?)? => $ty:ty) => {
+    (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?),* => $ty:ty) => {
         const _: () = {
             use core::ptr::NonNull;
 
-            impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> sealed::KnownLayoutSealed for $ty {}
+            impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?),*> sealed::KnownLayoutSealed for $ty {}
             // SAFETY: Delegates safety to `DstLayout::for_type`.
-            unsafe impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> KnownLayout for $ty {
+            unsafe impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?),*> KnownLayout for $ty {
                 const LAYOUT: DstLayout = DstLayout::for_type::<$ty>();
 
                 // SAFETY: `.cast` preserves address and provenance.

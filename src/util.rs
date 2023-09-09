@@ -41,6 +41,7 @@ use crate::util::polyfills::NonNullSliceExt as _;
 /// `Ptr<'a, T>` is [covariant] in `'a` and `T`.
 ///
 /// [covariant]: https://doc.rust-lang.org/reference/subtyping.html
+#[doc(hidden)]
 pub struct Ptr<'a, T: 'a + ?Sized> {
     // INVARIANTS:
     // - `ptr` is derived from some valid Rust allocation, `A`
@@ -141,9 +142,7 @@ impl<'a, T: ?Sized> Ptr<'a, T> {
         //   validly-intialized `T`
         unsafe { self.ptr.as_mut() }
     }
-}
 
-impl<'a, T: 'a + ?Sized> Ptr<'a, T> {
     /// TODO
     ///
     /// # Safety
@@ -176,6 +175,23 @@ impl<'a, T: 'a + ?Sized> Ptr<'a, T> {
         let ptr = unsafe { NonNull::new_unchecked(ptr) };
         // SAFETY: TODO
         Ptr { ptr, _lifetime: PhantomData }
+    }
+
+    /// TODO
+    ///
+    /// # Safety
+    ///
+    /// TODO
+    #[doc(hidden)]
+    pub unsafe fn project<U: 'a + ?Sized>(
+        self,
+        project: impl FnOnce(*mut T) -> *mut U,
+    ) -> Ptr<'a, U> {
+        let field = project(self.ptr.as_ptr());
+        // SAFETY: TODO
+        let field = unsafe { NonNull::new_unchecked(field) };
+        // SAFETY: TODO
+        Ptr { ptr: field, _lifetime: PhantomData }
     }
 }
 

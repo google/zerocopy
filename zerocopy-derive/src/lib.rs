@@ -49,11 +49,27 @@ use {crate::ext::*, crate::repr::*};
 // help: required by the derive of FromBytes
 //
 // Instead, we have more verbose error messages like "unsupported representation
-// for deriving FromZeroes, FromBytes, AsBytes, or Unaligned on an enum"
+// for deriving TryFromBytes, FromZeroes, FromBytes, AsBytes, or Unaligned on an
+// enum"
 //
 // This will probably require Span::error
 // (https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.error),
 // which is currently unstable. Revisit this once it's stable.
+
+#[proc_macro_derive(TryFromBytes)]
+pub fn derive_try_from_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let ast = syn::parse_macro_input!(ts as DeriveInput);
+    match &ast.data {
+        Data::Struct(strct) => derive_try_from_bytes_struct(&ast, strct),
+        Data::Enum(_) => {
+            Error::new_spanned(&ast, "TryFromBytes not supported on enum types").to_compile_error()
+        }
+        Data::Union(_) => {
+            Error::new_spanned(&ast, "TryFromBytes not supported on union types").to_compile_error()
+        }
+    }
+    .into()
+}
 
 #[proc_macro_derive(FromZeroes)]
 pub fn derive_from_zeroes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
@@ -110,6 +126,10 @@ macro_rules! try_or_print {
     };
 }
 
+fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
+    impl_block(ast, strct, "TryFromBytes", true, None, true)
+}
+
 const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[
     &[StructRepr::C],
     &[StructRepr::Transparent],
@@ -121,7 +141,7 @@ const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[
 // - all fields are `FromZeroes`
 
 fn derive_from_zeroes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    impl_block(ast, strct, "FromZeroes", true, None)
+    impl_block(ast, strct, "FromZeroes", true, None, false)
 }
 
 // An enum is `FromZeroes` if:
@@ -155,21 +175,21 @@ fn derive_from_zeroes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::To
         .to_compile_error();
     }
 
-    impl_block(ast, enm, "FromZeroes", true, None)
+    impl_block(ast, enm, "FromZeroes", true, None, false)
 }
 
 // Like structs, unions are `FromZeroes` if
 // - all fields are `FromZeroes`
 
 fn derive_from_zeroes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    impl_block(ast, unn, "FromZeroes", true, None)
+    impl_block(ast, unn, "FromZeroes", true, None, false)
 }
 
 // A struct is `FromBytes` if:
 // - all fields are `FromBytes`
 
 fn derive_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    impl_block(ast, strct, "FromBytes", true, None)
+    impl_block(ast, strct, "FromBytes", true, None, false)
 }
 
 // An enum is `FromBytes` if:
@@ -212,7 +232,7 @@ fn derive_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
         .to_compile_error();
     }
 
-    impl_block(ast, enm, "FromBytes", true, None)
+    impl_block(ast, enm, "FromBytes", true, None, false)
 }
 
 #[rustfmt::skip]
@@ -243,7 +263,7 @@ const ENUM_FROM_BYTES_CFG: Config<EnumRepr> = {
 // - all fields are `FromBytes`
 
 fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    impl_block(ast, unn, "FromBytes", true, None)
+    impl_block(ast, unn, "FromBytes", true, None, false)
 }
 
 // A struct is `AsBytes` if:
@@ -277,7 +297,7 @@ fn derive_as_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2:
     //   any padding bytes would need to come from the fields, all of which
     //   we require to be `AsBytes` (meaning they don't have any padding).
     let padding_check = if is_transparent || is_packed { None } else { Some(PaddingCheck::Struct) };
-    impl_block(ast, strct, "AsBytes", true, padding_check)
+    impl_block(ast, strct, "AsBytes", true, padding_check, false)
 }
 
 const STRUCT_UNION_AS_BYTES_CFG: Config<StructRepr> = Config {
@@ -300,7 +320,7 @@ fn derive_as_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Token
     // We don't care what the repr is; we only care that it is one of the
     // allowed ones.
     let _: Vec<repr::EnumRepr> = try_or_print!(ENUM_AS_BYTES_CFG.validate_reprs(ast));
-    impl_block(ast, enm, "AsBytes", false, None)
+    impl_block(ast, enm, "AsBytes", false, None, false)
 }
 
 #[rustfmt::skip]
@@ -342,7 +362,7 @@ fn derive_as_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::Tok
 
     try_or_print!(STRUCT_UNION_AS_BYTES_CFG.validate_reprs(ast));
 
-    impl_block(ast, unn, "AsBytes", true, Some(PaddingCheck::Union))
+    impl_block(ast, unn, "AsBytes", true, Some(PaddingCheck::Union), false)
 }
 
 // A struct is `Unaligned` if:
@@ -355,7 +375,7 @@ fn derive_unaligned_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2
     let reprs = try_or_print!(STRUCT_UNION_UNALIGNED_CFG.validate_reprs(ast));
     let require_trait_bound = !reprs.contains(&StructRepr::Packed);
 
-    impl_block(ast, strct, "Unaligned", require_trait_bound, None)
+    impl_block(ast, strct, "Unaligned", require_trait_bound, None, false)
 }
 
 const STRUCT_UNION_UNALIGNED_CFG: Config<StructRepr> = Config {
@@ -386,7 +406,7 @@ fn derive_unaligned_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Toke
     // for `require_trait_bounds` doesn't really do anything. But it's
     // marginally more future-proof in case that restriction is lifted in the
     // future.
-    impl_block(ast, enm, "Unaligned", true, None)
+    impl_block(ast, enm, "Unaligned", true, None, false)
 }
 
 #[rustfmt::skip]
@@ -424,7 +444,7 @@ fn derive_unaligned_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::To
     let reprs = try_or_print!(STRUCT_UNION_UNALIGNED_CFG.validate_reprs(ast));
     let require_trait_bound = !reprs.contains(&StructRepr::Packed);
 
-    impl_block(ast, unn, "Unaligned", require_trait_bound, None)
+    impl_block(ast, unn, "Unaligned", require_trait_bound, None, false)
 }
 
 // This enum describes what kind of padding check needs to be generated for the
@@ -455,6 +475,7 @@ fn impl_block<D: DataExt>(
     trait_name: &str,
     require_trait_bound: bool,
     padding_check: Option<PaddingCheck>,
+    emit_is_bit_valid: bool,
 ) -> proc_macro2::TokenStream {
     // In this documentation, we will refer to this hypothetical struct:
     //
@@ -516,18 +537,18 @@ fn impl_block<D: DataExt>(
 
     let type_ident = &input.ident;
     let trait_ident = Ident::new(trait_name, Span::call_site());
-    let field_types = data.field_types();
+    let fields = data.fields();
 
     let field_type_bounds = require_trait_bound
-        .then(|| field_types.iter().map(|ty| parse_quote!(#ty: zerocopy::#trait_ident)))
+        .then(|| fields.iter().map(|(_name, ty)| parse_quote!(#ty: zerocopy::#trait_ident)))
         .into_iter()
         .flatten()
         .collect::<Vec<_>>();
 
     // Don't bother emitting a padding check if there are no fields.
     #[allow(unstable_name_collisions)] // See `BoolExt` below
-    let padding_check_bound = padding_check.and_then(|check| (!field_types.is_empty()).then_some(check)).map(|check| {
-        let fields = field_types.iter();
+    let padding_check_bound = padding_check.and_then(|check| (!fields.is_empty()).then_some(check)).map(|check| {
+        let fields = fields.iter().map(|(_name, ty)| ty);
         let validator_macro = check.validator_macro_ident();
         parse_quote!(
             zerocopy::macro_util::HasPadding<#type_ident, {zerocopy::#validator_macro!(#type_ident, #(#fields),*)}>:
@@ -564,12 +585,65 @@ fn impl_block<D: DataExt>(
         GenericParam::Const(cnst) => quote!(#cnst),
     });
 
+    let is_bit_valid = emit_is_bit_valid.then(|| {
+        let field_names = fields.iter().map(|(name, _ty)| name);
+        let field_tys = fields.iter().map(|(_name, ty)| ty);
+        quote!(
+            // SAFETY: We use `is_bit_valid` to validate that each field is
+            // bit-valid, and only return `true` if all of them are. The bit
+            // validity of a struct is just the composition of the bit
+            // validities of its fields, so this is a sound implementation of
+            // `is_bit_valid`.
+            unsafe fn is_bit_valid(_candidate: zerocopy::Ptr<Self>) -> bool {
+                true #(&& {
+                    let project = |slf: *mut Self| ::core::ptr::addr_of_mut!((*slf).#field_names);
+                    // SAFETY: TODO
+                    let field_candidate = unsafe { _candidate.project(project) };
+                    // SAFETY: TODO
+                    //
+                    // Old safety comment:
+                    //
+                    // SAFETY:
+                    // - `f` is properly aligned for `#field_tys` because
+                    //   `candidate` is properly aligned for `Self`.
+                    // - `f` is valid for reads because `candidate` is.
+                    // - Total length encoded by `f` doesn't overflow `isize`
+                    //   because it's no greater than the size encoded by
+                    //   `candidate`, whose size doesn't overflow `isize`.
+                    // - `f` addresses a range which falls inside a single
+                    //   allocation because that range is a subset of the range
+                    //   addressed by `candidate`, and that latter range falls
+                    //   inside a single allocation.
+                    // - The bit validity property of `is_bit_valid` is
+                    //   trivially compositional for structs. In particular, in
+                    //   a struct, there is no data dependency between bit
+                    //   validity in any two byte offsets (this is notably not
+                    //   true of enums). Since we know that the bit validity
+                    //   property holds for all of `candidate`, we also know
+                    //   that it holds for `f` regardless of the contents of any
+                    //   other region of `candidate`.
+                    //
+                    // Note that it's possible that this call will panic -
+                    // `is_bit_valid` does not promise that it doesn't panic,
+                    // and in practice, we support user-defined validators,
+                    // which could panic. This is sound because we haven't
+                    // violated any safety invariants which we would need to fix
+                    // before returning.
+                    <#field_tys as zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                })*
+            }
+        )
+    });
+
     quote! {
+        #[deny(unsafe_op_in_unsafe_fn)]
         unsafe impl < #(#params),* > zerocopy::#trait_ident for #type_ident < #(#param_idents),* >
         where
             #(#bounds,)*
         {
             fn only_derive_is_allowed_to_implement_this_trait() {}
+
+            #is_bit_valid
         }
     }
 }

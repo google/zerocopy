@@ -233,6 +233,8 @@ mod wrappers;
 
 #[cfg(feature = "byteorder")]
 pub use crate::byteorder::*;
+#[doc(hidden)] // Used in `doc(hidden)` methods in `TryFromBytes`.
+pub use crate::util::Ptr;
 pub use crate::wrappers::*;
 #[cfg(any(feature = "derive", test))]
 pub use zerocopy_derive::*;
@@ -260,8 +262,6 @@ use {
     alloc::{boxed::Box, vec::Vec},
     core::alloc::Layout,
 };
-
-use crate::util::Ptr;
 
 // For each polyfill, as soon as the corresponding feature is stable, the
 // polyfill import will be unused because method/function resolution will prefer
@@ -1134,6 +1134,11 @@ pub unsafe trait FromBytes: FromZeroes {
 /// [github-repo]: https://github.com/google/zerocopy
 /// [`try_from_ref`]: TryFromBytes::try_from_ref
 pub unsafe trait TryFromBytes: KnownLayout {
+    #[doc(hidden)]
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized;
+
     /// Does a given memory range contain a valid instance of `Self`?
     ///
     /// # Safety
@@ -3979,9 +3984,15 @@ mod tests {
     //
     // This is used to test the custom derives of our traits. The `[u8]` type
     // gets a hand-rolled impl, so it doesn't exercise our custom derives.
-    #[derive(Debug, Eq, PartialEq, FromZeroes, FromBytes, AsBytes, Unaligned)]
+    #[derive(Debug, Eq, PartialEq, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned)]
     #[repr(transparent)]
     struct Unsized([u8]);
+
+    // SAFETY: `Unsized` is a `#[repr(transparent)]` wrapper around `[u8]`.
+    unsafe_impl_known_layout!(
+        #[repr([u8])]
+        Unsized
+    );
 
     impl Unsized {
         fn from_mut_slice(slc: &mut [u8]) -> &mut Unsized {
@@ -5399,13 +5410,15 @@ mod tests {
             assert_eq!(too_many_bytes[0], 123);
         }
 
-        #[derive(Debug, Eq, PartialEq, FromZeroes, FromBytes, AsBytes)]
+        #[derive(Debug, Eq, PartialEq, TryFromBytes, FromZeroes, FromBytes, AsBytes)]
         #[repr(C)]
         struct Foo {
             a: u32,
             b: Wrapping<u32>,
             c: Option<NonZeroU32>,
         }
+
+        impl_known_layout!(Foo);
 
         let expected_bytes: Vec<u8> = if cfg!(target_endian = "little") {
             vec![1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0]
@@ -5428,11 +5441,13 @@ mod tests {
 
     #[test]
     fn test_array() {
-        #[derive(FromZeroes, FromBytes, AsBytes)]
+        #[derive(TryFromBytes, FromZeroes, FromBytes, AsBytes)]
         #[repr(C)]
         struct Foo {
             a: [u16; 33],
         }
+
+        impl_known_layout!(Foo);
 
         let foo = Foo { a: [0xFFFF; 33] };
         let expected = [0xFFu8; 66];
@@ -5492,23 +5507,25 @@ mod tests {
 
     #[test]
     fn test_transparent_packed_generic_struct() {
-        #[derive(AsBytes, FromZeroes, FromBytes, Unaligned)]
+        #[derive(AsBytes, TryFromBytes, FromZeroes, FromBytes, Unaligned)]
         #[repr(transparent)]
         struct Foo<T> {
             _t: T,
             _phantom: PhantomData<()>,
         }
 
+        impl_known_layout!(T => Foo<T>);
         assert_impl_all!(Foo<u32>: FromZeroes, FromBytes, AsBytes);
         assert_impl_all!(Foo<u8>: Unaligned);
 
-        #[derive(AsBytes, FromZeroes, FromBytes, Unaligned)]
+        #[derive(AsBytes, TryFromBytes, FromZeroes, FromBytes, Unaligned)]
         #[repr(packed)]
         struct Bar<T, U> {
             _t: T,
             _u: U,
         }
 
+        impl_known_layout!(T, U => Bar<T, U>);
         assert_impl_all!(Bar<u8, AU64>: FromZeroes, FromBytes, AsBytes, Unaligned);
     }
 
@@ -5772,7 +5789,7 @@ mod tests {
         assert_impls!(Wrapping<bool>: TryFromBytes, FromZeroes, AsBytes, Unaligned, !FromBytes);
         assert_impls!(Wrapping<NotZerocopy>: !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(Unalign<u8>: FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
+        assert_impls!(Unalign<u8>: TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned, TryFromBytes);
         assert_impls!(Unalign<NotZerocopy>: Unaligned, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes);
 
         assert_impls!([u8]: TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
