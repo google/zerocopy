@@ -80,50 +80,26 @@ jobs:
           ~/.cargo/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
 
-    # We use toolchain descriptors ("msrv", "stable", and "nightly") in the
-    # matrix. This step converts the current descriptor to a particular
-    # toolchain version by looking up the corresponding key in `Cargo.toml`. It
-    # sets the `ZC_TOOLCHAIN` environment variable for future steps to use.
-    #
-    # Note that all metadata is stored in zerocopy's `Cargo.toml` (the one at
-    # the repository root). zerocopy-derive is tested with the same versions,
-    # and we have another CI job (see below) that makes sure that the
-    # `package.rust_version` key in zerocopy-derive's `Cargo.toml` is the same
-    # as the one in zerocopy's `Cargo.toml`. This key indicates the crate's
-    # MSRV, and if this check weren't present, it would be possible for
-    # zerocopy-derive to be published with an earlier MSRV than the one we test
-    # for in CI - and thus potentially an MSRV that zerocopy-derive isn't
-    # actually compatible with.
-    - name: Set toolchain version
-      run: |
-        set -eo pipefail
-
-        function pkg-meta {
-          cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"zerocopy\").$1"
-        }
-
-        case ${{ matrix.toolchain }} in
-          msrv)
-            ZC_TOOLCHAIN="$(pkg-meta rust_version)"
-            ;;
-          stable)
-            ZC_TOOLCHAIN="$(pkg-meta 'metadata.ci."pinned-stable"')"
-            ;;
-          nightly)
-            ZC_TOOLCHAIN="$(pkg-meta 'metadata.ci."pinned-nightly"')"
-            ;;
-          *)
-            echo 'Unrecognized toolchain: ${{ matrix.toolchain }}' | tee -a $GITHUB_STEP_SUMMARY >&2
-            exit 1
-            ;;
-        esac
-
-        echo "Found that the '${{ matrix.toolchain }}' toolchain is $ZC_TOOLCHAIN" | tee -a $GITHUB_STEP_SUMMARY
-        echo "ZC_TOOLCHAIN=$ZC_TOOLCHAIN" >> $GITHUB_ENV
-
     - name: Configure environment variables
       run: |
         set -eo pipefail
+
+        # We use toolchain descriptors ("msrv", "stable", and "nightly") in the
+        # matrix. This step converts the current descriptor to a particular
+        # toolchain version by looking up the corresponding key in `Cargo.toml`. It
+        # sets the `ZC_TOOLCHAIN` environment variable for use in the next step
+        # (toolchain installation) because GitHub variable interpolation doesn't
+        # support running arbitrary commands. In other words, we can't rewrite:
+        #
+        #   toolchain: $ {{ env.ZC_TOOLCHAIN }}
+        #
+        # ...to:
+        #
+        #   toolchain: $ {{ ./cargo.sh --version matrix.toolchain }} # hypothetical syntax
+        ZC_TOOLCHAIN="$(./cargo.sh --version ${{ matrix.toolchain }})"
+        echo "Found that the '${{ matrix.toolchain }}' toolchain is $ZC_TOOLCHAIN" | tee -a $GITHUB_STEP_SUMMARY
+        echo "ZC_TOOLCHAIN=$ZC_TOOLCHAIN" >> $GITHUB_ENV
+
         if [[ '${{ matrix.toolchain }}' == 'nightly' ]]; then
           RUSTFLAGS="$RUSTFLAGS $ZC_NIGHTLY_RUSTFLAGS"
           MIRIFLAGS="$MIRIFLAGS $ZC_NIGHTLY_MIRIFLAGS"
@@ -134,7 +110,7 @@ jobs:
           echo "Using non-nightly toolchain; not modifying RUSTFLAGS='$RUSTFLAGS' or MIRIFLAGS='$MIRIFLAGS'" | tee -a $GITHUB_STEP_SUMMARY
         fi
 
-    - name: Install Rust with toolchain ${{ env.ZC_TOOLCHAIN }} and target ${{ matrix.target }}
+    - name: Install Rust with ${{ matrix.toolchain }} toolchain (${{ env.ZC_TOOLCHAIN }}) and target ${{ matrix.target }}
       uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
       with:
           toolchain: ${{ env.ZC_TOOLCHAIN }}
@@ -153,10 +129,10 @@ jobs:
         key: "${{ matrix.target }}"
 
     - name: Check
-      run: cargo +${{ env.ZC_TOOLCHAIN }} check --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      run: ./cargo.sh +${{ matrix.toolchain }} check --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
 
     - name: Build
-      run: cargo +${{ env.ZC_TOOLCHAIN }} build --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      run: ./cargo.sh +${{ matrix.toolchain }} build --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
 
     # When building tests for the i686 target, we need certain libraries which
     # are not installed by default; `gcc-multilib` includes these libraries.
@@ -174,7 +150,7 @@ jobs:
       if: contains(matrix.target, 'i686')
 
     - name: Run tests
-      run: cargo +${{ env.ZC_TOOLCHAIN }} test --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      run: ./cargo.sh +${{ matrix.toolchain }} test --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
       # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
       # x86_64, so we can't run tests for any non-x86 target.
       #
@@ -189,7 +165,7 @@ jobs:
         for EXTRA_FLAGS in "" "-Zmiri-tree-borrows"; do
           # Skip the `ui` test since it invokes the compiler, which we can't do from
           # Miri (and wouldn't want to do anyway).
-          MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" cargo +${{ env.ZC_TOOLCHAIN }} \
+          MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" ./cargo.sh +${{ matrix.toolchain }} \
             miri test \
             --package ${{ matrix.crate }} \
             --target ${{ matrix.target }} \
@@ -209,7 +185,7 @@ jobs:
       # make use of derives, and so would fail without the `derive` feature
       # enabled. We skip this step for `zerocopy` when the `derive` feature is
       # omitted for that reason.
-      run: cargo +${{ env.ZC_TOOLCHAIN }} test --doc --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      run: ./cargo.sh +${{ matrix.toolchain }} test --doc --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
       # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
       # x86_64, so we can't run tests for any non-x86 target.
       #
@@ -218,7 +194,7 @@ jobs:
       if: ${{ (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) && !(matrix.crate == 'zerocopy' && !contains(matrix.features, 'derive')) }}
 
     - name: Clippy check
-      run: cargo +${{ env.ZC_TOOLCHAIN }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --tests --verbose
+      run: ./cargo.sh +${{ matrix.toolchain }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --tests --verbose
       # Clippy improves the accuracy of lints over time, and fixes bugs. Only
       # running Clippy on nightly allows us to avoid having to write code which
       # is compatible with older versions of Clippy, which sometimes requires
@@ -233,7 +209,7 @@ jobs:
       # we can just update CI to no longer pass that flag.
       run: |
         export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items' || '' }} $RUSTDOCFLAGS"
-        cargo +${{ env.ZC_TOOLCHAIN }} doc --document-private-items --package ${{ matrix.crate }} ${{ matrix.features }}
+        ./cargo.sh +${{ matrix.toolchain }} doc --document-private-items --package ${{ matrix.crate }} ${{ matrix.features }}
       # When the `alloc` feature is disabled, `cargo doc` fails because we link
       # to `alloc::vec::Vec` in a doc comment, and the `alloc` crate is not in
       # scope without the `alloc` feature. This isn't a big deal because we care
@@ -316,7 +292,14 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
 
       # Make sure that the MSRV in zerocopy's and zerocopy-derive's `Cargo.toml`
-      # files are the same.
+      # files are the same. In CI, we test with a single MSRV (the one indicated
+      # in zerocopy's `Cargo.toml`), so it's important that:
+      # - zerocopy-derive's MSRV is not lower than zerocopy's (we don't test with
+      #   a lower MSRV in CI, so we couldn't guarantee that zerocopy-derive
+      #   actually built and ran on a lower MSRV)
+      # - zerocopy-derive's MSRV is not higher than zerocopy's (this would mean
+      #   that compiling zerocopy with the `derive` feature enabled would fail
+      #   on its own published MSRV)
       - name: Check MSRVs match
         run: |
           set -eo pipefail
