@@ -9,7 +9,7 @@ use {
     syn::punctuated::Punctuated,
     syn::spanned::Spanned,
     syn::token::Comma,
-    syn::{Attribute, DeriveInput, Error, LitInt, Meta},
+    syn::{Attribute, DeriveInput, Error, Ident, LitInt, Meta},
 };
 
 pub struct Config<Repr: KindRepr> {
@@ -149,10 +149,17 @@ macro_rules! define_kind_specific_repr {
 
         impl core::fmt::Display for $repr_name {
             fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-                match self {
+                let r: Repr = (*self).into();
+                r.fmt(f)
+            }
+        }
+
+        impl From<$repr_name> for Repr {
+            fn from(repr: $repr_name) -> Repr {
+                match repr {
                     $($repr_name::$repr_variant => Repr::$repr_variant,)*
-                    $repr_name::Align(u) => Repr::Align(*u),
-                }.fmt(f)
+                    $repr_name::Align(u) => Repr::Align(u),
+                }
             }
         }
     }
@@ -162,6 +169,17 @@ define_kind_specific_repr!("a struct", StructRepr, C, Transparent, Packed);
 define_kind_specific_repr!(
     "an enum", EnumRepr, C, U8, U16, U32, U64, Usize, I8, I16, I32, I64, Isize
 );
+
+impl EnumRepr {
+    // TODO: Having this exist and return `Option` is a hack. We should
+    // restructure the types so this is infallible.
+    pub fn type_ident(&self) -> Option<Ident> {
+        use EnumRepr::*;
+        let r: Repr = (*self).into();
+        matches!(self, U8 | U16 | U32 | U64 | Usize | I8 | I16 | I32 | I64 | Isize)
+            .then(|| Ident::new(r.foo(), Span::call_site()))
+    }
+}
 
 // All representations known to Rust.
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -214,6 +232,25 @@ impl Repr {
 
         Err(Error::new_spanned(meta, "unrecognized representation hint"))
     }
+
+    fn foo(&self) -> &str {
+        match self {
+            Repr::U8 => "u8",
+            Repr::U16 => "u16",
+            Repr::U32 => "u32",
+            Repr::U64 => "u64",
+            Repr::Usize => "usize",
+            Repr::I8 => "i8",
+            Repr::I16 => "i16",
+            Repr::I32 => "i32",
+            Repr::I64 => "i64",
+            Repr::Isize => "isize",
+            Repr::C => "C",
+            Repr::Transparent => "transparent",
+            Repr::Packed => "packed",
+            _ => unreachable!(),
+        }
+    }
 }
 
 impl Display for Repr {
@@ -221,26 +258,7 @@ impl Display for Repr {
         if let Repr::Align(n) = self {
             return write!(f, "repr(align({}))", n);
         }
-        write!(
-            f,
-            "repr({})",
-            match self {
-                Repr::U8 => "u8",
-                Repr::U16 => "u16",
-                Repr::U32 => "u32",
-                Repr::U64 => "u64",
-                Repr::Usize => "usize",
-                Repr::I8 => "i8",
-                Repr::I16 => "i16",
-                Repr::I32 => "i32",
-                Repr::I64 => "i64",
-                Repr::Isize => "isize",
-                Repr::C => "C",
-                Repr::Transparent => "transparent",
-                Repr::Packed => "packed",
-                _ => unreachable!(),
-            }
-        )
+        write!(f, "repr({})", self.foo())
     }
 }
 

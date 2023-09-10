@@ -4,7 +4,7 @@
 
 use proc_macro2::TokenStream;
 use quote::ToTokens;
-use syn::{Data, DataEnum, DataStruct, DataUnion, Field, Index, Type};
+use syn::{Data, DataEnum, DataStruct, DataUnion, Field, Fields, Index, Type};
 
 pub trait DataExt {
     /// Extract the names and types of all fields. For enums, extract the names
@@ -43,6 +43,12 @@ impl DataExt for DataEnum {
 impl DataExt for DataUnion {
     fn fields(&self) -> Vec<(TokenStream, &Type)> {
         map_fields(&self.fields.named)
+    }
+}
+
+impl DataExt for Fields {
+    fn fields(&self) -> Vec<(TokenStream, &Type)> {
+        map_fields(self)
     }
 }
 

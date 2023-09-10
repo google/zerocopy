@@ -139,5 +139,37 @@ mod tests {
         assert_eq!(try_transmute!([1u8, 1]), Some(Foo(1, true)));
         assert_eq!(try_transmute!([2u8, 2]), None::<Foo>);
         assert_eq!(try_transmute!([128u8, 1]), None::<Foo>);
+
+        #[derive(TryFromBytes, Eq, PartialEq, Debug)]
+        #[zerocopy(validator = Baz::validate)]
+        #[repr(u8)]
+        enum Baz {
+            A,         // 0
+            B = 5,     // 5
+            C,         // 6
+            D = 1 + 1, // 2
+            E,         // 3
+            F,         // 4
+        }
+
+        impl Baz {
+            fn validate(&self) -> bool {
+                use Baz::*;
+                matches!(self, A | B | C | D | E)
+            }
+        }
+
+        impl_known_layout!(Baz);
+
+        assert_eq!(try_transmute!(0u8), Some(Baz::A));
+        assert_eq!(try_transmute!(1u8), None::<Baz>);
+        assert_eq!(try_transmute!(2u8), Some(Baz::D));
+        assert_eq!(try_transmute!(3u8), Some(Baz::E));
+
+        assert_eq!(try_transmute!(4u8), None::<Baz>);
+
+        assert_eq!(try_transmute!(5u8), Some(Baz::B));
+        assert_eq!(try_transmute!(6u8), Some(Baz::C));
+        assert_eq!(try_transmute!(7u8), None::<Baz>);
     }
 }
