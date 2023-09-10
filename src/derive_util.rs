@@ -128,12 +128,16 @@ mod tests {
 
     #[test]
     fn foo() {
-        #[derive(TryFromBytes)]
-        struct Foo {
-            f: u8,
-            b: bool,
-        }
+        #[derive(TryFromBytes, Eq, PartialEq, Debug)]
+        #[zerocopy(validator = |f| f.0 < 128)]
+        #[repr(C)]
+        struct Foo(u8, bool);
 
         impl_known_layout!(Foo);
+
+        assert_eq!(try_transmute!([0u8, 0]), Some(Foo(0, false)));
+        assert_eq!(try_transmute!([1u8, 1]), Some(Foo(1, true)));
+        assert_eq!(try_transmute!([2u8, 2]), None::<Foo>);
+        assert_eq!(try_transmute!([128u8, 1]), None::<Foo>);
     }
 }
