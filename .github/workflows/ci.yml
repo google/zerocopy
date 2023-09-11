@@ -179,20 +179,6 @@ jobs:
       # wasm32-wasi once those work.
       if: matrix.toolchain == 'nightly' && matrix.target != 'riscv64gc-unknown-linux-gnu' && matrix.target != 'wasm32-wasi'
 
-    - name: Run doc tests
-      # We explicitly pass `--doc` here because doc tests are disabled by
-      # default in zerocopy's `Cargo.toml`. This is because some doc examples
-      # make use of derives, and so would fail without the `derive` feature
-      # enabled. We skip this step for `zerocopy` when the `derive` feature is
-      # omitted for that reason.
-      run: ./cargo.sh +${{ matrix.toolchain }} test --doc --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
-      # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
-      # x86_64, so we can't run tests for any non-x86 target.
-      #
-      # TODO(https://github.com/dtolnay/trybuild/issues/184#issuecomment-1269097742):
-      # Run compile tests when building for other targets.
-      if: ${{ (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) && !(matrix.crate == 'zerocopy' && !contains(matrix.features, 'derive')) }}
-
     - name: Clippy check
       run: ./cargo.sh +${{ matrix.toolchain }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --tests --verbose
       # Clippy improves the accuracy of lints over time, and fixes bugs. Only
@@ -210,12 +196,11 @@ jobs:
       run: |
         export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items' || '' }} $RUSTDOCFLAGS"
         ./cargo.sh +${{ matrix.toolchain }} doc --document-private-items --package ${{ matrix.crate }} ${{ matrix.features }}
-      # When the `alloc` feature is disabled, `cargo doc` fails because we link
-      # to `alloc::vec::Vec` in a doc comment, and the `alloc` crate is not in
-      # scope without the `alloc` feature. This isn't a big deal because we care
-      # primarily about `cargo doc` working for `docs.rs`, which enables the
-      # `alloc` feature.
-      if: matrix.features != '' && matrix.features != '--no-default-features'
+      # When the `byteorder` feature is disabled, `cargo doc` fails because we
+      # link to the `byteorder` module in doc comments. This isn't a big deal
+      # because we primarily care about `cargo doc` working for `docs.rs`, which
+      # enables the `byteorder` feature.
+      if: matrix.features != '--no-default-features'
 
     # Check semver compatibility with the most recently-published version on
     # crates.io. We do this in the matrix rather than in its own job so that it

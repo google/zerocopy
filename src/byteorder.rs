@@ -29,7 +29,8 @@
 //! One use of these types is for representing network packet formats, such as
 //! UDP:
 //!
-//! ```edition2021
+//! ```rust,edition2021
+//! # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
 //! use zerocopy::{AsBytes, ByteSlice, FromBytes, FromZeroes, Ref, Unaligned};
 //! use zerocopy::byteorder::network_endian::U16;
 //!
@@ -59,6 +60,7 @@
 //!
 //!     // more getters...
 //! }
+//! # }
 //! ```
 
 use core::{

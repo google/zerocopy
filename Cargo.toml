@@ -28,20 +28,6 @@ all-features = true
 pinned-stable = "1.69.0"
 pinned-nightly = "nightly-2023-05-25"
 
-# Don't run doctests during `cargo test` without the `--doc` flag (the `--doc`
-# flag will still cause doctests to run despite this directive). Running
-# doctests without the `derive` feature fails because our doc examples make use
-# of zerocopy-derive, which is an optional dependency and is disabled by
-# default. Unfortunately, there's no way to automatically include
-# zerocopy-derive as a dependency during doctests, so we have to do it manually
-# by passing the appropriate flags in CI.
-[lib]
-doctest = false
-# Not technically necessary - this is the default value for `path` - but if a
-# `lib` section is present, then `cargo readme` expects it to have a `path`
-# field, and will fail if it's missing.
-path = "src/lib.rs"
-
 [features]
 default = ["byteorder"]
 
