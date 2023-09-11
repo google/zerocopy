@@ -1381,6 +1381,7 @@ macro_rules! transmute {
 /// simply a reference to that type.
 ///
 /// ```rust
+/// # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
 /// use zerocopy::{AsBytes, ByteSlice, ByteSliceMut, FromBytes, FromZeroes, Ref, Unaligned};
 ///
 /// #[derive(FromZeroes, FromBytes, AsBytes, Unaligned)]
@@ -1413,6 +1414,7 @@ macro_rules! transmute {
 ///         self.header.src_port = src_port;
 ///     }
 /// }
+/// # }
 /// ```
 pub struct Ref<B, T: ?Sized>(B, PhantomData<T>);
 
@@ -2404,8 +2406,16 @@ mod sealed {
 /// method would involve reallocation, and `split_at` must be a very cheap
 /// operation in order for the utilities in this crate to perform as designed.
 ///
-/// [`Vec<u8>`]: alloc::vec::Vec
 /// [`split_at`]: crate::ByteSlice::split_at
+// It may seem overkill to go to this length to ensure that this doc link never
+// breaks. We do this because it simplifies CI - it means that generating docs
+// always succeeds, so we don't need special logic to only generate docs under
+// certain features.
+#[cfg_attr(feature = "alloc", doc = "[`Vec<u8>`]: alloc::vec::Vec")]
+#[cfg_attr(
+    not(feature = "alloc"),
+    doc = "[`Vec<u8>`]: https://doc.rust-lang.org/std/vec/struct.Vec.html"
+)]
 pub unsafe trait ByteSlice:
     Deref<Target = [u8]> + Sized + self::sealed::ByteSliceSealed
 {
