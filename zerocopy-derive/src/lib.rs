@@ -56,6 +56,17 @@ use {crate::ext::*, crate::repr::*};
 // (https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.error),
 // which is currently unstable. Revisit this once it's stable.
 
+#[proc_macro_derive(NoCell)]
+pub fn derive_no_cell(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let ast = syn::parse_macro_input!(ts as DeriveInput);
+    match &ast.data {
+        Data::Struct(strct) => impl_block(&ast, strct, "NoCell", true, PaddingCheck::None),
+        Data::Enum(enm) => impl_block(&ast, enm, "NoCell", true, PaddingCheck::None),
+        Data::Union(unn) => impl_block(&ast, unn, "NoCell", true, PaddingCheck::None),
+    }
+    .into()
+}
+
 #[proc_macro_derive(FromZeroes)]
 pub fn derive_from_zeroes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let ast = syn::parse_macro_input!(ts as DeriveInput);

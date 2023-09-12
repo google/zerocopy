@@ -54,7 +54,10 @@ use super::*;
 // [3] https://github.com/google/zerocopy/issues/209
 #[allow(missing_debug_implementations)]
 #[derive(Default, Copy)]
-#[cfg_attr(any(feature = "derive", test), derive(FromZeroes, FromBytes, AsBytes, Unaligned))]
+#[cfg_attr(
+    any(feature = "derive", test),
+    derive(NoCell, FromZeroes, FromBytes, AsBytes, Unaligned)
+)]
 #[repr(C, packed)]
 pub struct Unalign<T>(T);
 
@@ -65,6 +68,7 @@ safety_comment! {
     /// - `Unalign<T>` has the same bit validity as `T`, and so it is
     ///   `FromZeroes`, `FromBytes`, or `AsBytes` exactly when `T` is as well.
     impl_or_verify!(T => Unaligned for Unalign<T>);
+    impl_or_verify!(T: NoCell => NoCell for Unalign<T>);
     impl_or_verify!(T: FromZeroes => FromZeroes for Unalign<T>);
     impl_or_verify!(T: FromBytes => FromBytes for Unalign<T>);
     impl_or_verify!(T: AsBytes => AsBytes for Unalign<T>);

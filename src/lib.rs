@@ -303,6 +303,18 @@ safety_comment! {
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] ManuallyDrop<T>);
 }
 
+pub unsafe trait NoCell {
+    // The `Self: Sized` bound makes it so that `NoCell` is still object safe.
+    //
+    // TODO: Remove this. It's only here since our derives expect to always emit
+    // it. The soundness property is very straightforward, so it should be fine
+    // to let users implement it themselves.
+    #[doc(hidden)]
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized;
+}
+
 /// Types for which a sequence of bytes all set to zero represents a valid
 /// instance of the type.
 ///
@@ -381,7 +393,7 @@ safety_comment! {
 /// its fields are `FromZeroes`.
 // TODO(#146): Document why we don't require an enum to have an explicit `repr`
 // attribute.
-pub unsafe trait FromZeroes {
+pub unsafe trait FromZeroes: NoCell {
     // The `Self: Sized` bound makes it so that `FromZeroes` is still object
     // safe.
     #[doc(hidden)]
@@ -757,7 +769,7 @@ pub unsafe trait FromBytes: FromZeroes {
 /// [type-layout]: https://doc.rust-lang.org/reference/type-layout.html
 /// [Rust Reference]: https://doc.rust-lang.org/reference/type-layout.html
 /// [`UnsafeCell`]: core::cell::UnsafeCell
-pub unsafe trait AsBytes {
+pub unsafe trait AsBytes: NoCell {
     // The `Self: Sized` bound makes it so that this function doesn't prevent
     // `AsBytes` from being object safe. Note that other `AsBytes` methods
     // prevent object safety, but those provide a benefit in exchange for object
@@ -915,7 +927,7 @@ safety_comment! {
     /// - `Unaligned`: `()` has alignment 1.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#tuple-layout
-    unsafe_impl!((): FromZeroes, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!((): NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
     assert_unaligned!(());
 }
 
@@ -933,19 +945,19 @@ safety_comment! {
     /// [1] TODO(https://github.com/rust-lang/reference/issues/1291): Once the
     ///     reference explicitly guarantees these properties, cite it.
     /// [2] https://doc.rust-lang.org/reference/type-layout.html#primitive-data-layout
-    unsafe_impl!(u8: FromZeroes, FromBytes, AsBytes, Unaligned);
-    unsafe_impl!(i8: FromZeroes, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(u8: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(i8: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
     assert_unaligned!(u8, i8);
-    unsafe_impl!(u16: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(i16: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(u32: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(i32: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(u64: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(i64: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(u128: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(i128: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(usize: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(isize: FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(u16: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(i16: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(u32: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(i32: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(u64: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(i64: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(u128: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(i128: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(usize: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(isize: NoCell, FromZeroes, FromBytes, AsBytes);
 }
 
 safety_comment! {
@@ -964,8 +976,8 @@ safety_comment! {
     ///     reference explicitly guarantees these properties, cite it.
     /// [4] https://doc.rust-lang.org/nightly/std/primitive.f32.html#method.to_bits
     /// [5] https://doc.rust-lang.org/nightly/std/primitive.f64.html#method.to_bits
-    unsafe_impl!(f32: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(f64: FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(f32: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(f64: NoCell, FromZeroes, FromBytes, AsBytes);
 }
 
 safety_comment! {
@@ -979,7 +991,7 @@ safety_comment! {
     ///   has a size and alignment of 1 each."
     ///
     /// [1] https://doc.rust-lang.org/reference/types/boolean.html
-    unsafe_impl!(bool: FromZeroes, AsBytes, Unaligned);
+    unsafe_impl!(bool: NoCell, FromZeroes, AsBytes, Unaligned);
     assert_unaligned!(bool);
 }
 safety_comment! {
@@ -991,7 +1003,7 @@ safety_comment! {
     ///   are valid for `char`.
     ///
     /// [1] https://doc.rust-lang.org/reference/types/textual.html
-    unsafe_impl!(char: FromZeroes, AsBytes);
+    unsafe_impl!(char: NoCell, FromZeroes, AsBytes);
 }
 safety_comment! {
     /// SAFETY:
@@ -1003,7 +1015,7 @@ safety_comment! {
     /// uses `align_of`, which only works for `Sized` types.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#str-layout
-    unsafe_impl!(str: FromZeroes, AsBytes, Unaligned);
+    unsafe_impl!(str: NoCell, FromZeroes, AsBytes, Unaligned);
 }
 
 safety_comment! {
@@ -1059,19 +1071,19 @@ safety_comment! {
     ///
     /// TODO(https://github.com/rust-lang/rust/pull/104082): Cite documentation
     /// for layout guarantees.
-    unsafe_impl!(Option<NonZeroU8>: FromZeroes, FromBytes, AsBytes, Unaligned);
-    unsafe_impl!(Option<NonZeroI8>: FromZeroes, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(Option<NonZeroU8>: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(Option<NonZeroI8>: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
     assert_unaligned!(Option<NonZeroU8>, Option<NonZeroI8>);
-    unsafe_impl!(Option<NonZeroU16>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroI16>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroU32>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroI32>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroU64>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroI64>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroU128>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroI128>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroUsize>: FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroIsize>: FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU16>: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI16>: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU32>: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI32>: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU64>: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI64>: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU128>: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI128>: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroUsize>: NoCell, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroIsize>: NoCell, FromZeroes, FromBytes, AsBytes);
 }
 
 safety_comment! {
@@ -1085,6 +1097,7 @@ safety_comment! {
     ///   1.
     ///
     /// [1] https://doc.rust-lang.org/std/marker/struct.PhantomData.html#layout-1
+    unsafe_impl!(T: ?Sized => NoCell for PhantomData<T>);
     unsafe_impl!(T: ?Sized => FromZeroes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => FromBytes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => AsBytes for PhantomData<T>);
@@ -1100,6 +1113,7 @@ safety_comment! {
     ///
     /// [1] https://doc.rust-lang.org/nightly/core/num/struct.Wrapping.html#layout-1
     /// [2] https://doc.rust-lang.org/nomicon/other-reprs.html#reprtransparent
+    unsafe_impl!(T: NoCell => NoCell for Wrapping<T>);
     unsafe_impl!(T: FromZeroes => FromZeroes for Wrapping<T>);
     unsafe_impl!(T: FromBytes => FromBytes for Wrapping<T>);
     unsafe_impl!(T: AsBytes => AsBytes for Wrapping<T>);
@@ -1127,8 +1141,9 @@ safety_comment! {
     /// `FromBytes` and `RefFromBytes`, or if we introduce a separate
     /// `NoCell`/`Freeze` trait, we can relax the trait bounds for `FromZeroes`
     /// and `FromBytes`.
-    unsafe_impl!(T: FromZeroes => FromZeroes for MaybeUninit<T>);
-    unsafe_impl!(T: FromBytes => FromBytes for MaybeUninit<T>);
+    unsafe_impl!(T: NoCell => NoCell for MaybeUninit<T>);
+    unsafe_impl!(T: NoCell => FromZeroes for MaybeUninit<T>);
+    unsafe_impl!(T: NoCell => FromBytes for MaybeUninit<T>);
     unsafe_impl!(T: Unaligned => Unaligned for MaybeUninit<T>);
     assert_unaligned!(MaybeUninit<()>, MaybeUninit<u8>);
 }
@@ -1149,6 +1164,7 @@ safety_comment! {
     ///   code can only ever access a `ManuallyDrop` with all initialized bytes.
     /// - `Unaligned`: `ManuallyDrop` has the same layout (and thus alignment)
     ///   as `T`, and `T: Unaligned` guarantees that that alignment is 1.
+    unsafe_impl!(T: ?Sized + NoCell => NoCell for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + FromZeroes => FromZeroes for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + AsBytes => AsBytes for ManuallyDrop<T>);
@@ -1178,11 +1194,13 @@ safety_comment! {
     /// `assert_unaligned!` uses `align_of`, which only works for `Sized` types.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#array-layout
+    unsafe_impl!(const N: usize, T: NoCell => NoCell for [T; N]);
     unsafe_impl!(const N: usize, T: FromZeroes => FromZeroes for [T; N]);
     unsafe_impl!(const N: usize, T: FromBytes => FromBytes for [T; N]);
     unsafe_impl!(const N: usize, T: AsBytes => AsBytes for [T; N]);
     unsafe_impl!(const N: usize, T: Unaligned => Unaligned for [T; N]);
     assert_unaligned!([(); 0], [(); 1], [u8; 0], [u8; 1]);
+    unsafe_impl!(T: NoCell => NoCell for [T]);
     unsafe_impl!(T: FromZeroes => FromZeroes for [T]);
     unsafe_impl!(T: FromBytes => FromBytes for [T]);
     unsafe_impl!(T: AsBytes => AsBytes for [T]);
@@ -1274,7 +1292,7 @@ mod simd {
                 safety_comment! {
                     /// SAFETY:
                     /// See comment on module definition for justification.
-                    $( unsafe_impl!($typ: FromZeroes, FromBytes, AsBytes); )*
+                    $( unsafe_impl!($typ: NoCell, FromZeroes, FromBytes, AsBytes); )*
                 }
             }
         };
@@ -2731,7 +2749,7 @@ mod tests {
     //
     // This is used to test the custom derives of our traits. The `[u8]` type
     // gets a hand-rolled impl, so it doesn't exercise our custom derives.
-    #[derive(Debug, Eq, PartialEq, FromZeroes, FromBytes, AsBytes, Unaligned)]
+    #[derive(Debug, Eq, PartialEq, NoCell, FromZeroes, FromBytes, AsBytes, Unaligned)]
     #[repr(transparent)]
     struct Unsized([u8]);
 
@@ -3444,7 +3462,7 @@ mod tests {
             assert_eq!(too_many_bytes[0], 123);
         }
 
-        #[derive(Debug, Eq, PartialEq, FromZeroes, FromBytes, AsBytes)]
+        #[derive(Debug, Eq, PartialEq, NoCell, FromZeroes, FromBytes, AsBytes)]
         #[repr(C)]
         struct Foo {
             a: u32,
@@ -3473,7 +3491,7 @@ mod tests {
 
     #[test]
     fn test_array() {
-        #[derive(FromZeroes, FromBytes, AsBytes)]
+        #[derive(NoCell, FromZeroes, FromBytes, AsBytes)]
         #[repr(C)]
         struct Foo {
             a: [u16; 33],
@@ -3537,7 +3555,7 @@ mod tests {
 
     #[test]
     fn test_transparent_packed_generic_struct() {
-        #[derive(AsBytes, FromZeroes, FromBytes, Unaligned)]
+        #[derive(AsBytes, NoCell, FromZeroes, FromBytes, Unaligned)]
         #[repr(transparent)]
         struct Foo<T> {
             _t: T,
@@ -3547,7 +3565,7 @@ mod tests {
         assert_impl_all!(Foo<u32>: FromZeroes, FromBytes, AsBytes);
         assert_impl_all!(Foo<u8>: Unaligned);
 
-        #[derive(AsBytes, FromZeroes, FromBytes, Unaligned)]
+        #[derive(AsBytes, NoCell, FromZeroes, FromBytes, Unaligned)]
         #[repr(packed)]
         struct Bar<T, U> {
             _t: T,
