@@ -12,9 +12,26 @@ extern crate zerocopy;
 #[path = "../util.rs"]
 mod util;
 
+use static_assertions::assert_impl_all;
+use zerocopy::KnownLayout;
+
 use self::util::AU16;
 
 fn main() {}
+
+//
+// KnownLayout errors
+//
+
+#[derive(KnownLayout)]
+struct KnownLayout1([u8]);
+
+assert_impl_all!(KnownLayout1: KnownLayout);
+
+#[derive(KnownLayout)]
+struct KnownLayout2<T: ?Sized>(T);
+
+assert_impl_all!(KnownLayout2: KnownLayout);
 
 //
 // AsBytes errors

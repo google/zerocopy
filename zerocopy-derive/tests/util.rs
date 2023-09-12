@@ -6,7 +6,7 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use zerocopy::{AsBytes, FromBytes, FromZeroes};
+use zerocopy::{AsBytes, FromBytes, FromZeroes, KnownLayout};
 
 /// A type that doesn't implement any zerocopy traits.
 pub struct NotZerocopy<T = ()>(T);
@@ -15,6 +15,6 @@ pub struct NotZerocopy<T = ()>(T);
 ///
 /// Though `u16` has alignment 2 on some platforms, it's not guaranteed. By
 /// contrast, `AU16` is guaranteed to have alignment 2.
-#[derive(FromZeroes, FromBytes, AsBytes, Copy, Clone)]
+#[derive(KnownLayout, FromZeroes, FromBytes, AsBytes, Copy, Clone)]
 #[repr(C, align(2))]
 pub struct AU16(u16);

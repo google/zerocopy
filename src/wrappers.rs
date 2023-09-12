@@ -58,9 +58,15 @@ use super::*;
 // [3] https://github.com/google/zerocopy/issues/209
 #[allow(missing_debug_implementations)]
 #[derive(Default, Copy)]
-#[cfg_attr(any(feature = "derive", test), derive(FromZeroes, FromBytes, AsBytes, Unaligned))]
+#[cfg_attr(
+    any(feature = "derive", test),
+    derive(KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned)
+)]
 #[repr(C, packed)]
 pub struct Unalign<T>(T);
+
+#[cfg(not(any(feature = "derive", test)))]
+impl_known_layout!(T => Unalign<T>);
 
 safety_comment! {
     /// SAFETY:

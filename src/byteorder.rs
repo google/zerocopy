@@ -276,10 +276,13 @@ example of how it can be used for parsing UDP packets.
 [`AsBytes`]: crate::AsBytes
 [`Unaligned`]: crate::Unaligned"),
             #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-            #[cfg_attr(any(feature = "derive", test), derive(FromZeroes, FromBytes, AsBytes, Unaligned))]
+            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned))]
             #[repr(transparent)]
             pub struct $name<O>([u8; $bytes], PhantomData<O>);
         }
+
+        #[cfg(not(any(feature = "derive", test)))]
+        impl_known_layout!(O => $name<O>);
 
         safety_comment! {
             /// SAFETY:

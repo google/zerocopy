@@ -7,7 +7,8 @@
 // those terms.
 
 // Make sure that macro hygiene will ensure that when we reference "zerocopy",
-// that will work properly even if they've renamed the crate.
+// that will work properly even if they've renamed the crate and have not
+// imported its traits.
 
 #![allow(warnings)]
 
@@ -18,12 +19,11 @@ mod util;
 
 use std::{marker::PhantomData, option::IntoIter};
 
-use {
-    _zerocopy::{FromBytes, FromZeroes, Unaligned},
-    static_assertions::assert_impl_all,
-};
+use static_assertions::assert_impl_all;
 
-#[derive(FromZeroes, FromBytes, Unaligned)]
+#[derive(
+    _zerocopy::KnownLayout, _zerocopy::FromZeroes, _zerocopy::FromBytes, _zerocopy::Unaligned,
+)]
 #[repr(C)]
 struct TypeParams<'a, T, I: Iterator> {
     a: T,
@@ -34,4 +34,10 @@ struct TypeParams<'a, T, I: Iterator> {
     g: PhantomData<String>,
 }
 
-assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: FromZeroes, FromBytes, Unaligned);
+assert_impl_all!(
+    TypeParams<'static, (), IntoIter<()>>:
+        _zerocopy::KnownLayout,
+        _zerocopy::FromZeroes,
+        _zerocopy::FromBytes,
+        _zerocopy::Unaligned
+);
