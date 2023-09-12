@@ -303,6 +303,7 @@ safety_comment! {
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] ManuallyDrop<T>);
 }
 
+/// TODO
 pub unsafe trait NoCell {
     // The `Self: Sized` bound makes it so that `NoCell` is still object safe.
     //
@@ -393,7 +394,7 @@ pub unsafe trait NoCell {
 /// its fields are `FromZeroes`.
 // TODO(#146): Document why we don't require an enum to have an explicit `repr`
 // attribute.
-pub unsafe trait FromZeroes: NoCell {
+pub unsafe trait FromZeroes {
     // The `Self: Sized` bound makes it so that `FromZeroes` is still object
     // safe.
     #[doc(hidden)]
@@ -407,6 +408,7 @@ pub unsafe trait FromZeroes: NoCell {
     /// Self::new_zeroed()`, it differs in that `zero` does not semantically
     /// drop the current value and replace it with a new one - it simply
     /// modifies the bytes of the existing value.
+    // TODO: Is it possible to implement this soundly without NoCell?
     #[inline(always)]
     fn zero(&mut self) {
         let slf: *mut Self = self;
@@ -769,7 +771,12 @@ pub unsafe trait FromBytes: FromZeroes {
 /// [type-layout]: https://doc.rust-lang.org/reference/type-layout.html
 /// [Rust Reference]: https://doc.rust-lang.org/reference/type-layout.html
 /// [`UnsafeCell`]: core::cell::UnsafeCell
-pub unsafe trait AsBytes: NoCell {
+// TODO: Maybe introduce a new IntoBytes super-trait which doesn't require
+// NoCell, and then make this a blanket impl for `IntoBytes + NoCell`? We could
+// do the same for `FromBytes` and `FromZeroes`, but what about naming? A)
+// `Into` : `As :: ??? `From`?. B) We'd need two extra traits - one each for
+// `FromZeroes` and `FromBytes`.
+pub unsafe trait AsBytes {
     // The `Self: Sized` bound makes it so that this function doesn't prevent
     // `AsBytes` from being object safe. Note that other `AsBytes` methods
     // prevent object safety, but those provide a benefit in exchange for object
@@ -786,7 +793,10 @@ pub unsafe trait AsBytes: NoCell {
     /// `as_bytes` provides access to the bytes of this value as an immutable
     /// byte slice.
     #[inline(always)]
-    fn as_bytes(&self) -> &[u8] {
+    fn as_bytes(&self) -> &[u8]
+    where
+        Self: NoCell,
+    {
         // Note that this method does not have a `Self: Sized` bound;
         // `size_of_val` works for unsized values too.
         let len = mem::size_of_val(self);
@@ -853,7 +863,10 @@ pub unsafe trait AsBytes: NoCell {
     ///
     /// If `bytes.len() != size_of_val(self)`, `write_to` returns `None`.
     #[inline]
-    fn write_to(&self, bytes: &mut [u8]) -> Option<()> {
+    fn write_to(&self, bytes: &mut [u8]) -> Option<()>
+    where
+        Self: NoCell,
+    {
         if bytes.len() != mem::size_of_val(self) {
             return None;
         }
@@ -867,7 +880,10 @@ pub unsafe trait AsBytes: NoCell {
     /// `write_to_prefix` writes `self` to the first `size_of_val(self)` bytes
     /// of `bytes`. If `bytes.len() < size_of_val(self)`, it returns `None`.
     #[inline]
-    fn write_to_prefix(&self, bytes: &mut [u8]) -> Option<()> {
+    fn write_to_prefix(&self, bytes: &mut [u8]) -> Option<()>
+    where
+        Self: NoCell,
+    {
         let size = mem::size_of_val(self);
         bytes.get_mut(..size)?.copy_from_slice(self.as_bytes());
         Some(())
@@ -878,7 +894,10 @@ pub unsafe trait AsBytes: NoCell {
     /// `write_to_suffix` writes `self` to the last `size_of_val(self)` bytes of
     /// `bytes`. If `bytes.len() < size_of_val(self)`, it returns `None`.
     #[inline]
-    fn write_to_suffix(&self, bytes: &mut [u8]) -> Option<()> {
+    fn write_to_suffix(&self, bytes: &mut [u8]) -> Option<()>
+    where
+        Self: NoCell,
+    {
         let start = bytes.len().checked_sub(mem::size_of_val(self))?;
         bytes
             .get_mut(start..)
@@ -899,7 +918,7 @@ pub unsafe trait AsBytes: NoCell {
 ///
 /// *This section describes what is required in order for `T: Unaligned`, and
 /// what unsafe code may assume of such types. `#[derive(Unaligned)]` only
-/// permits types which satisfy these requirements. If you don't plan on
+/// permits types which s1atisfy these requirements. If you don't plan on
 /// implementing `Unaligned` manually, and you don't plan on writing unsafe code
 /// that operates on `Unaligned` types, then you don't need to read this
 /// section.*
@@ -1040,19 +1059,19 @@ safety_comment! {
     /// [2] https://doc.rust-lang.org/stable/std/num/struct.NonZeroI8.html
     /// TODO(https://github.com/rust-lang/rust/pull/104082): Cite documentation
     /// that layout is the same as primitive layout.
-    unsafe_impl!(NonZeroU8: AsBytes, Unaligned);
-    unsafe_impl!(NonZeroI8: AsBytes, Unaligned);
+    unsafe_impl!(NonZeroU8: NoCell, AsBytes, Unaligned);
+    unsafe_impl!(NonZeroI8: NoCell, AsBytes, Unaligned);
     assert_unaligned!(NonZeroU8, NonZeroI8);
-    unsafe_impl!(NonZeroU16: AsBytes);
-    unsafe_impl!(NonZeroI16: AsBytes);
-    unsafe_impl!(NonZeroU32: AsBytes);
-    unsafe_impl!(NonZeroI32: AsBytes);
-    unsafe_impl!(NonZeroU64: AsBytes);
-    unsafe_impl!(NonZeroI64: AsBytes);
-    unsafe_impl!(NonZeroU128: AsBytes);
-    unsafe_impl!(NonZeroI128: AsBytes);
-    unsafe_impl!(NonZeroUsize: AsBytes);
-    unsafe_impl!(NonZeroIsize: AsBytes);
+    unsafe_impl!(NonZeroU16: NoCell, AsBytes);
+    unsafe_impl!(NonZeroI16: NoCell, AsBytes);
+    unsafe_impl!(NonZeroU32: NoCell, AsBytes);
+    unsafe_impl!(NonZeroI32: NoCell, AsBytes);
+    unsafe_impl!(NonZeroU64: NoCell, AsBytes);
+    unsafe_impl!(NonZeroI64: NoCell, AsBytes);
+    unsafe_impl!(NonZeroU128: NoCell, AsBytes);
+    unsafe_impl!(NonZeroI128: NoCell, AsBytes);
+    unsafe_impl!(NonZeroUsize: NoCell, AsBytes);
+    unsafe_impl!(NonZeroIsize: NoCell, AsBytes);
 }
 safety_comment! {
     /// SAFETY:
@@ -1946,7 +1965,7 @@ where
 impl<'a, B, T> Ref<B, T>
 where
     B: 'a + ByteSlice,
-    T: FromBytes,
+    T: FromBytes + NoCell,
 {
     /// Converts this `Ref` into a reference.
     ///
@@ -1986,7 +2005,7 @@ where
 impl<'a, B, T> Ref<B, [T]>
 where
     B: 'a + ByteSlice,
-    T: FromBytes,
+    T: FromBytes + NoCell,
 {
     /// Converts this `Ref` into a slice reference.
     ///
@@ -2028,7 +2047,7 @@ where
 impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes,
+    T: FromBytes + NoCell,
 {
     /// Creates an immutable reference to `T` with a specific lifetime.
     ///
@@ -2078,7 +2097,7 @@ where
 impl<B, T> Ref<B, [T]>
 where
     B: ByteSlice,
-    T: FromBytes,
+    T: FromBytes + NoCell,
 {
     /// Creates an immutable reference to `[T]` with a specific lifetime.
     ///
@@ -2170,6 +2189,8 @@ where
         // at least `size_of::<T>()` bytes long, and that it is at least as
         // aligned as `align_of::<T>()`. Because `T: FromBytes`, it is sound to
         // interpret these bytes as a `T`.
+        //
+        // TODO: Why doesn't this need NoCell?
         unsafe { ptr::read(self.0.as_ptr().cast::<T>()) }
     }
 }
@@ -2194,7 +2215,7 @@ where
 impl<B, T> Deref for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes,
+    T: FromBytes + NoCell,
 {
     type Target = T;
     #[inline]
@@ -2212,7 +2233,7 @@ where
 impl<B, T> DerefMut for Ref<B, T>
 where
     B: ByteSliceMut,
-    T: FromBytes + AsBytes,
+    T: FromBytes + AsBytes + NoCell,
 {
     #[inline]
     fn deref_mut(&mut self) -> &mut T {
@@ -2229,7 +2250,7 @@ where
 impl<B, T> Deref for Ref<B, [T]>
 where
     B: ByteSlice,
-    T: FromBytes,
+    T: FromBytes + NoCell,
 {
     type Target = [T];
     #[inline]
@@ -2247,7 +2268,7 @@ where
 impl<B, T> DerefMut for Ref<B, [T]>
 where
     B: ByteSliceMut,
-    T: FromBytes + AsBytes,
+    T: FromBytes + AsBytes + NoCell,
 {
     #[inline]
     fn deref_mut(&mut self) -> &mut [T] {
@@ -2264,7 +2285,7 @@ where
 impl<T, B> Display for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + Display,
+    T: FromBytes + Display + NoCell,
 {
     #[inline]
     fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
@@ -2276,7 +2297,7 @@ where
 impl<T, B> Display for Ref<B, [T]>
 where
     B: ByteSlice,
-    T: FromBytes,
+    T: FromBytes + NoCell,
     [T]: Display,
 {
     #[inline]
@@ -2289,7 +2310,7 @@ where
 impl<T, B> Debug for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + Debug,
+    T: FromBytes + Debug + NoCell,
 {
     #[inline]
     fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
@@ -2301,7 +2322,7 @@ where
 impl<T, B> Debug for Ref<B, [T]>
 where
     B: ByteSlice,
-    T: FromBytes + Debug,
+    T: FromBytes + Debug + NoCell,
 {
     #[inline]
     fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
@@ -2313,21 +2334,21 @@ where
 impl<T, B> Eq for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + Eq,
+    T: FromBytes + NoCell + Eq,
 {
 }
 
 impl<T, B> Eq for Ref<B, [T]>
 where
     B: ByteSlice,
-    T: FromBytes + Eq,
+    T: FromBytes + NoCell + Eq,
 {
 }
 
 impl<T, B> PartialEq for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + PartialEq,
+    T: FromBytes + NoCell + PartialEq,
 {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -2338,7 +2359,7 @@ where
 impl<T, B> PartialEq for Ref<B, [T]>
 where
     B: ByteSlice,
-    T: FromBytes + PartialEq,
+    T: FromBytes + NoCell + PartialEq,
 {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -2349,7 +2370,7 @@ where
 impl<T, B> Ord for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + Ord,
+    T: FromBytes + Ord + NoCell,
 {
     #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
@@ -2362,7 +2383,7 @@ where
 impl<T, B> Ord for Ref<B, [T]>
 where
     B: ByteSlice,
-    T: FromBytes + Ord,
+    T: FromBytes + Ord + NoCell,
 {
     #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
@@ -2375,7 +2396,7 @@ where
 impl<T, B> PartialOrd for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + PartialOrd,
+    T: FromBytes + PartialOrd + NoCell,
 {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
@@ -2388,7 +2409,7 @@ where
 impl<T, B> PartialOrd for Ref<B, [T]>
 where
     B: ByteSlice,
-    T: FromBytes + PartialOrd,
+    T: FromBytes + PartialOrd + NoCell,
 {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
@@ -3405,7 +3426,7 @@ mod tests {
         /// has had its bits flipped (by applying `^= 0xFF`).
         ///
         /// `N` is the size of `t` in bytes.
-        fn test<T: FromBytes + AsBytes + Debug + Eq + ?Sized, const N: usize>(
+        fn test<T: NoCell + FromBytes + AsBytes + Debug + Eq + ?Sized, const N: usize>(
             t: &mut T,
             bytes: &[u8],
             post_mutation: &T,
@@ -3599,77 +3620,77 @@ mod tests {
             };
         }
 
-        assert_impls!((): FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(u8: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(i8: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(u16: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(i16: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(u32: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(i32: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(u64: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(i64: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(u128: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(i128: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(usize: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(isize: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(f32: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(f64: FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!((): NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(u8: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(i8: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(u16: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i16: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(u32: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i32: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(u64: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i64: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(u128: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i128: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(usize: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(isize: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(f32: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(f64: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
 
-        assert_impls!(bool: FromZeroes, AsBytes, Unaligned, !FromBytes);
-        assert_impls!(char: FromZeroes, AsBytes, !FromBytes, !Unaligned);
-        assert_impls!(str: FromZeroes, AsBytes, Unaligned, !FromBytes);
+        assert_impls!(bool: NoCell, FromZeroes, AsBytes, Unaligned, !FromBytes);
+        assert_impls!(char: NoCell, FromZeroes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(str: NoCell, FromZeroes, AsBytes, Unaligned, !FromBytes);
 
-        assert_impls!(NonZeroU8: AsBytes, Unaligned, !FromZeroes, !FromBytes);
-        assert_impls!(NonZeroI8: AsBytes, Unaligned, !FromZeroes, !FromBytes);
-        assert_impls!(NonZeroU16: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI16: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroU32: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI32: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroU64: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI64: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroU128: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI128: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroUsize: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroIsize: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU8: NoCell, AsBytes, Unaligned, !FromZeroes, !FromBytes);
+        assert_impls!(NonZeroI8: NoCell, AsBytes, Unaligned, !FromZeroes, !FromBytes);
+        assert_impls!(NonZeroU16: NoCell, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI16: NoCell, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU32: NoCell, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI32: NoCell, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU64: NoCell, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI64: NoCell, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU128: NoCell, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI128: NoCell, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroUsize: NoCell, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroIsize: NoCell, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
 
-        assert_impls!(Option<NonZeroU8>: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(Option<NonZeroI8>: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(Option<NonZeroU16>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI16>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU32>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI32>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU64>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI64>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU128>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI128>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroUsize>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroIsize>: FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU8>: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(Option<NonZeroI8>: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(Option<NonZeroU16>: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI16>: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU32>: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI32>: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU64>: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI64>: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU128>: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI128>: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroUsize>: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroIsize>: NoCell, FromZeroes, FromBytes, AsBytes, !Unaligned);
 
         // Implements none of the ZC traits.
         struct NotZerocopy;
 
-        assert_impls!(PhantomData<NotZerocopy>: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(PhantomData<[u8]>: FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(PhantomData<NotZerocopy>: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(PhantomData<[u8]>: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
 
-        assert_impls!(ManuallyDrop<u8>: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(ManuallyDrop<[u8]>: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(ManuallyDrop<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(ManuallyDrop<[NotZerocopy]>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<u8>: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(ManuallyDrop<[u8]>: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(ManuallyDrop<NotZerocopy>: !NoCell, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<[NotZerocopy]>:!NoCell,  !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(MaybeUninit<u8>: FromZeroes, FromBytes, Unaligned, !AsBytes);
-        assert_impls!(MaybeUninit<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(MaybeUninit<u8>: NoCell, FromZeroes, FromBytes, Unaligned, !AsBytes);
+        assert_impls!(MaybeUninit<NotZerocopy>: !NoCell, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(Wrapping<u8>: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(Wrapping<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Wrapping<u8>: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(Wrapping<NotZerocopy>: !NoCell, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(Unalign<u8>: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(Unalign<NotZerocopy>: Unaligned, !FromZeroes, !FromBytes, !AsBytes);
+        assert_impls!(Unalign<u8>: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(Unalign<NotZerocopy>: Unaligned, !NoCell, !FromZeroes, !FromBytes, !AsBytes);
 
-        assert_impls!([u8]: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!([NotZerocopy]: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!([u8; 0]: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!([NotZerocopy; 0]: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!([u8; 1]: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!([NotZerocopy; 1]: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!([u8]: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!([NotZerocopy]: !NoCell, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!([u8; 0]: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!([NotZerocopy; 0]: !NoCell, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!([u8; 1]: NoCell, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!([NotZerocopy; 1]: !NoCell, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
     }
 }

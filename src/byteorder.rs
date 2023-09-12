@@ -511,7 +511,7 @@ mod tests {
     };
 
     // A native integer type (u16, i32, etc).
-    trait Native: FromBytes + AsBytes + Copy + PartialEq + Debug {
+    trait Native: NoCell + FromBytes + AsBytes + Copy + PartialEq + Debug {
         const ZERO: Self;
         const MAX_VALUE: Self;
 
@@ -524,13 +524,13 @@ mod tests {
     }
 
     trait ByteArray:
-        FromBytes + AsBytes + Copy + AsRef<[u8]> + AsMut<[u8]> + Debug + Default + Eq
+        NoCell + FromBytes + AsBytes + Copy + AsRef<[u8]> + AsMut<[u8]> + Debug + Default + Eq
     {
         /// Invert the order of the bytes in the array.
         fn invert(self) -> Self;
     }
 
-    trait ByteOrderType: FromBytes + AsBytes + Unaligned + Copy + Eq + Debug {
+    trait ByteOrderType: NoCell + FromBytes + AsBytes + Unaligned + Copy + Eq + Debug {
         type Native: Native;
         type ByteArray: ByteArray;
 
