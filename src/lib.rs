@@ -252,19 +252,19 @@ const _: () = {
 /// [the reference]: https://doc.rust-lang.org/reference/type-layout.html
 #[doc(hidden)]
 #[allow(missing_debug_implementations, missing_copy_implementations)]
-#[cfg_attr(test, derive(Copy, Clone, Debug, PartialEq, Eq))]
+#[cfg_attr(any(test, kani), derive(Copy, Clone, Debug, PartialEq, Eq))]
 pub struct DstLayout {
     _align: NonZeroUsize,
     _size_info: SizeInfo,
 }
 
-#[cfg_attr(test, derive(Copy, Clone, Debug, PartialEq, Eq))]
+#[cfg_attr(any(test, kani), derive(Copy, Clone, Debug, PartialEq, Eq))]
 enum SizeInfo<E = usize> {
     Sized { _size: usize },
     SliceDst(TrailingSliceLayout<E>),
 }
 
-#[cfg_attr(test, derive(Copy, Clone, Debug, PartialEq, Eq))]
+#[cfg_attr(any(test, kani), derive(Copy, Clone, Debug, PartialEq, Eq))]
 struct TrailingSliceLayout<E = usize> {
     // The offset of the first byte of the trailing slice field. Note that this
     // is NOT the same as the minimum size of the type. For example, consider
@@ -300,7 +300,7 @@ impl SizeInfo {
     }
 }
 
-#[cfg_attr(test, derive(Copy, Clone, Debug))]
+#[cfg_attr(any(test, kani), derive(Copy, Clone, Debug))]
 enum _CastType {
     _Prefix,
     _Suffix,
@@ -484,21 +484,12 @@ impl DstLayout {
                 (0, size)
             }
             SizeInfo::SliceDst(TrailingSliceLayout { _offset: offset, _elem_size: elem_size }) => {
-                let align = self._align.get();
-
                 // Calculate the maximum number of bytes that could be consumed
                 // - any number of bytes larger than this will either not be a
                 // multiple of the alignment, or will be larger than
                 // `bytes_len`.
-                //
-                // Guaranteed not to:
-                // - divide by zero: `align` is non-zero.
-                // - overflow on multiplication: `usize::MAX >= bytes_len >=
-                //   (bytes_len / align) * align`
-                //
-                // TODO(#390): Compute this more efficiently.
-                #[allow(clippy::arithmetic_side_effects)]
-                let max_total_bytes = (bytes_len / align) * align;
+                let max_total_bytes =
+                    util::_round_down_to_next_multiple_of_alignment(bytes_len, self._align);
                 // Calculate the maximum number of bytes that could be consumed
                 // by the trailing slice.
                 //
@@ -510,23 +501,29 @@ impl DstLayout {
                     None => return None,
                 };
 
-                // Calculate the number of elements that fit in
-                // `max_slice_and_padding_bytes`; any remaining bytes will be
-                // considered padding.
-                //
-                // Guaranteed not to divide by zero: `elem_size` is non-zero.
-                #[allow(clippy::arithmetic_side_effects)]
+                // // Calculate the number of elements that fit in
+                // // `max_slice_and_padding_bytes`; any remaining bytes will be
+                // // considered padding.
+                // //
+                // // Guaranteed not to divide by zero: `elem_size` is non-zero.
+                // #[allow(clippy::arithmetic_side_effects)]
+                // let elems = max_slice_and_padding_bytes / elem_size.get();
+                // // Guaranteed not to overflow on multiplication: `usize::MAX >=
+                // // max_slice_and_padding_bytes >= (max_slice_and_padding_bytes /
+                // // elem_size) * elem_size`.
+                // //
+                // // Guaranteed not to overflow on addition:
+                // // - max_slice_and_padding_bytes == max_total_bytes - offset
+                // // - elems * elem_size <= max_slice_and_padding_bytes == max_total_bytes - offset
+                // // - elems * elem_size + offset <= max_total_bytes <= usize::MAX
+                // #[allow(clippy::arithmetic_side_effects)]
+                // let without_padding = offset + elems * elem_size.get();
+
+                let padding = max_slice_and_padding_bytes % elem_size.get();
                 let elems = max_slice_and_padding_bytes / elem_size.get();
-                // Guaranteed not to overflow on multiplication: `usize::MAX >=
-                // max_slice_and_padding_bytes >= (max_slice_and_padding_bytes /
-                // elem_size) * elem_size`.
-                //
-                // Guaranteed not to overflow on addition:
-                // - max_slice_and_padding_bytes == max_total_bytes - offset
-                // - elems * elem_size <= max_slice_and_padding_bytes == max_total_bytes - offset
-                // - elems * elem_size + offset <= max_total_bytes <= usize::MAX
-                #[allow(clippy::arithmetic_side_effects)]
-                let without_padding = offset + elems * elem_size.get();
+
+                let without_padding = offset + (max_slice_and_padding_bytes - padding);
+
                 // `self_bytes` is equal to the offset bytes plus the bytes
                 // consumed by the trailing slice plus any padding bytes
                 // required to satisfy the alignment. Note that we have computed
@@ -3245,9 +3242,13 @@ mod tests {
                 layout._validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
             {
                 let (size_info, align) = (layout._size_info, layout._align);
-                let debug_str = format!(
-                    "layout({size_info:?}, {align}).validate_cast_and_convert_metadata({addr}, {bytes_len}, {cast_type:?}) => ({elems}, {split_at})",
-                );
+                let debug_str = if !cfg!(kani) {
+                    format!(
+                        "layout({size_info:?}, {align}).validate_cast_and_convert_metadata({addr}, {bytes_len}, {cast_type:?}) => ({elems}, {split_at})",
+                    )
+                } else {
+                    String::new()
+                };
 
                 // If this is a sized type (no trailing slice), then `elems` is
                 // meaningless, but in practice we set it to 0. Callers are not
@@ -4594,4 +4595,249 @@ mod tests {
         assert_impls!([u8; 1]: FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!([NotZerocopy; 1]: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
     }
+}
+
+#[cfg(kani)]
+mod proofs {
+    use super::*;
+    use core::num::NonZeroUsize;
+    // use core::alloc::Layout;
+
+    // /// Synthesizes a valid instance of `core::alloc::Layout`.
+    // fn layout() -> Layout {
+    //     // Adapted from the (private) `Layout::max_size_for_align`
+    //     const fn max_size_for_align(align: usize) -> usize {
+    //         isize::MAX as usize - (align - 1)
+    //     }
+
+    //     let align = kani::any::<usize>();
+    //     kani::assume(align.is_power_of_two());
+
+    //     let base_size = kani::any::<usize>();
+    //     kani::assume(base_size < max_size_for_align(align));
+
+    //     //
+    //     kani::assume(base_size % align == 0);
+
+    //     Layout::from_size_align(base_size, align).unwrap()
+    // }
+
+    /// Produces a value for `trailing_slice_elem_size` that is either `None` or
+    /// `Some(<nonzero>)`.
+    fn castable_trailing_slice_elem_size() -> Option<usize> {
+        use core::num::NonZeroUsize;
+        kani::any::<Option<NonZeroUsize>>().map(NonZeroUsize::get)
+    }
+
+    // pub struct DstLayout {
+    //     _align: NonZeroUsize,
+    //     _size_info: SizeInfo,
+    // }
+
+    // #[cfg_attr(any(test, kani), derive(Copy, Clone, Debug, PartialEq, Eq))]
+    // enum SizeInfo<E = usize> {
+    //     Sized { _size: usize },
+    //     SliceDst(TrailingSliceLayout<E>),
+    // }
+
+    // #[cfg_attr(any(test, kani), derive(Copy, Clone, Debug, PartialEq, Eq))]
+    // struct TrailingSliceLayout<E = usize> {
+    //     // The offset of the first byte of the trailing slice field. Note that this
+    //     // is NOT the same as the minimum size of the type. For example, consider
+    //     // the following type:
+    //     //
+    //     //   struct Foo {
+    //     //       a: u16,
+    //     //       b: u8,
+    //     //       c: [u8],
+    //     //   }
+    //     //
+    //     // In `Foo`, `c` is at byte offset 3. When `c.len() == 0`, `c` is followed
+    //     // by a padding byte.
+    //     _offset: usize,
+    //     // The size of the element type of the trailing slice field.
+    //     _elem_size: E,
+    // }
+
+    impl kani::Arbitrary for DstLayout {
+        // TODO: Safety comments inline that justify that we could generate any
+        // possible valid `DstLayout`.
+        fn any() -> Self {
+            let align: NonZeroUsize = kani::any();
+            kani::assume(align.is_power_of_two());
+            kani::assume(align.get() <= (1usize << 29));
+
+            let offset: usize = kani::any();
+            kani::assume(offset <= isize::MAX as usize);
+
+            let size_info = if kani::any() {
+                kani::assume(offset % align == 0);
+                SizeInfo::Sized { _size: offset }
+            } else {
+                let min_size = offset + util::core_layout::_padding_needed_for(offset, align);
+                kani::assume(min_size <= isize::MAX as usize);
+                let elem_size: NonZeroUsize = kani::any();
+                SizeInfo::SliceDst(TrailingSliceLayout {
+                    _offset: offset,
+                    _elem_size: elem_size.get(),
+                })
+            };
+
+            DstLayout { _align: align, _size_info: size_info }
+        }
+    }
+
+    impl kani::Arbitrary for _CastType {
+        fn any() -> Self {
+            if kani::any() {
+                _CastType::_Prefix
+            } else {
+                _CastType::_Suffix
+            }
+        }
+    }
+
+    // Validates that `validate_cast_and_convert_metadata` satisfies its own
+    // documented safety postconditions, and also a few other properties
+    // that aren't documented but we want to guarantee anyway.
+    fn validate_behavior(
+        (layout, addr, bytes_len, cast_type): (DstLayout, usize, usize, _CastType),
+    ) {
+        if let Some((elems, split_at)) =
+            layout._validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
+        {
+            let (size_info, align) = (layout._size_info, layout._align);
+            // If this is a sized type (no trailing slice), then `elems` is
+            // meaningless, but in practice we set it to 0. Callers are not
+            // allowed to rely on this, but a lot of math is nicer if
+            // they're able to, and some callers might accidentally do that.
+            let sized = matches!(layout._size_info, SizeInfo::Sized { .. });
+            assert!(!(sized && elems != 0), "{}", "");
+
+            let resulting_size = match layout._size_info {
+                SizeInfo::Sized { _size } => _size,
+                SizeInfo::SliceDst(TrailingSliceLayout {
+                    _offset: offset,
+                    _elem_size: elem_size,
+                }) => {
+                    // TODO: Explain why this logic is correct for both prefix and suffix casts.
+                    let max_total_bytes = bytes_len - (bytes_len % align);
+                    let max_total_slice_and_padding_bytes = max_total_bytes - offset;
+                    let slice_bytes = max_slice_and_padding_bytes - (max_slice_and_padding_bytes % elem_size);
+                    let without_padding = offset + slice_bytes;
+                    let resulting_size = without_padding + util::core_layout::_padding_needed_for(without_padding, align);
+
+                    // Test that `validate_cast_and_convert_metadata` computed
+                    // the largest possible value that fits in the given range.
+                    // Do this by adding an extra `elem_size` to
+                    // `without_padding` and then adding necesary padding. This
+                    // quantity should either overflow `usize` (note the use of
+                    // `checked_add`) or should produce a value which wouldn't
+                    // fit in `bytes_len`.
+                    if let Some(one_extra_padded) =
+                        without_padding.checked_add(elem_size).and_then(|unpadded| {
+                            unpadded.checked_add(util::core_layout::_padding_needed_for(
+                                unpadded,
+                                align,
+                            ))
+                        })
+                    {
+                        assert!(one_extra_padded > bytes_len, "{}", "");
+                    }
+
+                    resulting_size
+                }
+            };
+            // Test safety postconditions guaranteed by
+            // `validate_cast_and_convert_metadata`.
+            assert!(resulting_size <= bytes_len, "{}", "");
+            match cast_type {
+                _CastType::_Prefix => {
+                    assert_eq!(addr % align, 0, "{}", "");
+                    assert_eq!(resulting_size, split_at, "{}", "");
+                }
+                _CastType::_Suffix => {
+                    assert_eq!(split_at, bytes_len - resulting_size, "{}", "");
+                    assert_eq!((addr + split_at) % align, 0, "{}", "");
+                }
+            }
+        } else {
+            /*let min_size = match layout._size_info {
+                SizeInfo::Sized { _size } => _size,
+                SizeInfo::SliceDst(TrailingSliceLayout { _offset, .. }) => {
+                    _offset + util::core_layout::_padding_needed_for(_offset, layout._align)
+                }
+            };
+
+            // If a cast is invalid, it is either because...
+            // 1. there are insufficent bytes at the given region for type:
+            let insufficient_bytes = bytes_len < min_size;
+            // 2. performing the cast would misalign type:
+            let base = match cast_type {
+                _CastType::_Prefix => 0,
+                _CastType::_Suffix => bytes_len,
+            };
+            let misaligned = (base + addr) % layout._align != 0;
+
+            assert!(insufficient_bytes || misaligned);*/
+        }
+    }
+
+    /// Prove that `validate_cast_and_convert_metadata` does not panic for
+    /// inputs satisfying its preconditions.
+    #[kani::proof]
+    fn prove_validate_cast_and_convert_metadata() {
+        let layout: DstLayout = kani::any();
+
+        // Generate the other arguments to `validate_cast`
+        let addr: usize = kani::any();
+        let bytes_len: usize = kani::any();
+        kani::assume(bytes_len < isize::MAX as usize);
+        // addr + bytes_len must not overflow usize
+        kani::assume(addr.checked_add(bytes_len).is_some());
+        let cast_type = _CastType::_Prefix;
+
+        validate_behavior((layout, addr, bytes_len, cast_type));
+    }
+
+    // #[kani::proof]
+    // #[kani::should_panic]
+    // fn prove_validate_cast_and_convert_metadata_panics_on_zst_suffix() {
+    //     let base_layout = layout();
+
+    //     let layout = DstLayout { _base_layout: base_layout, _trailing_slice_elem_size: Some(0) };
+
+    //     // Generate the other arguments to `validate_cast_and_convert_metadata`
+    //     let addr: usize = kani::any();
+    //     let bytes_len: usize = kani::any();
+    //     kani::assume(bytes_len < isize::MAX as usize);
+    //     // addr + bytes_len must not overflow usize
+    //     kani::assume(addr.checked_add(bytes_len).is_some());
+    //     let cast_type = kani::any();
+
+    //     // Check that `validate_cast_and_convert_metadata` panics
+    //     let _ = layout._validate_cast_and_convert_metadata(addr, bytes_len, cast_type);
+    // }
+
+    // #[kani::proof]
+    // #[kani::should_panic]
+    // fn prove_validate_cast_and_convert_metadata_panics_on_overflow() {
+    //     let base_layout = layout();
+
+    //     let layout = DstLayout {
+    //         _base_layout: base_layout,
+    //         _trailing_slice_elem_size: castable_trailing_slice_elem_size(),
+    //     };
+
+    //     // Generate the other arguments to `validate_cast_and_convert_metadata`
+    //     let addr: usize = kani::any();
+    //     let bytes_len: usize = kani::any();
+    //     kani::assume(bytes_len < isize::MAX as usize);
+    //     // addr + bytes_len MUST overflow usize
+    //     kani::assume(addr.checked_add(bytes_len).is_none());
+    //     let cast_type = kani::any();
+
+    //     // Check that `validate_cast_and_convert_metadata` panics
+    //     let _ = layout._validate_cast_and_convert_metadata(addr, bytes_len, cast_type);
+    // }
 }
