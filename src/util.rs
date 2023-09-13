@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#[path = "third_party/rust/layout.rs"]
+pub(crate) mod core_layout;
+
 use core::mem;
 
 pub(crate) trait AsAddress {

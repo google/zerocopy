@@ -55,6 +55,10 @@ function lookup-version {
   esac
 }
 
+function get-rustflags {
+  [ "$1" == nightly ] && echo "--cfg __INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS"
+}
+
 case "$1" in
   # cargo.sh --version <toolchain-name>
   --version)
@@ -67,14 +71,14 @@ case "$1" in
     for toolchain in msrv stable nightly; do
       echo "[cargo.sh] running with toolchain: $toolchain" >&2
       TOOLCHAIN="$(lookup-version $toolchain)"
-      cargo "+$TOOLCHAIN" ${@:2}
+      RUSTFLAGS="$(get-rustflags $toolchain)" cargo "+$TOOLCHAIN" ${@:2}
     done
     exit 0
     ;;
   # cargo.sh +<toolchain-name> [...]
   +*)
     TOOLCHAIN="$(lookup-version ${1:1})"
-    cargo "+$TOOLCHAIN" ${@:2}
+    RUSTFLAGS="$(get-rustflags ${1:1})" cargo "+$TOOLCHAIN" ${@:2}
     ;;
   *)
     print-usage-and-exit
