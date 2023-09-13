@@ -495,22 +495,61 @@ module!(little_endian, LittleEndian, "little-endian");
 module!(network_endian, NetworkEndian, "network-endian");
 module!(native_endian, NativeEndian, "native-endian");
 
-#[cfg(test)]
+#[cfg(any(test, kani))]
 mod tests {
     use ::byteorder::NativeEndian;
-    use rand::{
-        distributions::{Distribution, Standard},
-        rngs::SmallRng,
-        Rng, SeedableRng,
-    };
 
     use {
         super::*,
         crate::{AsBytes, FromBytes, Unaligned},
     };
 
+    #[cfg(not(kani))]
+    mod compatibility {
+        pub(super) use rand::{
+            distributions::{Distribution, Standard},
+            rngs::SmallRng,
+            Rng, SeedableRng,
+        };
+
+        pub(crate) trait Arbitrary {}
+
+        impl<T> Arbitrary for T {}
+    }
+
+    #[cfg(kani)]
+    mod compatibility {
+        pub(crate) use kani::Arbitrary;
+
+        pub(crate) struct SmallRng;
+
+        impl SmallRng {
+            pub(crate) fn seed_from_u64(_state: u64) -> Self {
+                Self
+            }
+        }
+
+        pub(crate) trait Rng {
+            fn sample<T, D: Distribution<T>>(&mut self, _distr: D) -> T
+            where
+                T: Arbitrary,
+            {
+                kani::any()
+            }
+        }
+
+        impl Rng for SmallRng {}
+
+        pub(crate) trait Distribution<T> {}
+        impl<T, U> Distribution<T> for U {}
+
+        pub(crate) struct Standard;
+    }
+
+    use compatibility::*;
+
     // A native integer type (u16, i32, etc).
-    trait Native: FromBytes + AsBytes + Copy + PartialEq + Debug {
+    trait Native: Arbitrary + FromBytes + AsBytes + Copy + PartialEq + Debug {
         const ZERO: Self;
         const MAX_VALUE: Self;
 
@@ -520,6 +559,13 @@ mod tests {
         fn rand<R: Rng>(rng: &mut R) -> Self {
             rng.sample(Self::DIST)
         }
+
+        #[cfg(kani)]
+        fn any() -> Self {
+            kani::any()
+        }
+
+        fn is_nan(self) -> bool;
     }
 
     trait ByteArray:
@@ -572,7 +618,7 @@ mod tests {
     }
 
     macro_rules! impl_traits {
-        ($name:ident, $native:ident, $bytes:expr, $sign:ident) => {
+        ($name:ident, $native:ident, $bytes:expr, $sign:ident $(, $is_nan:ident)?) => {
             impl Native for $native {
                 // For some types, `0 as $native` is required (for example, when
                 // `$native` is a floating-point type; `0` is an integer), but
@@ -584,6 +630,10 @@ mod tests {
 
                 type Distribution = Standard;
                 const DIST: Standard = Standard;
+
+                fn is_nan(self) -> bool {
+                    false $(|| self.$is_nan())?
+                }
             }
 
             impl<O: ByteOrder> ByteOrderType for $name<O> {
@@ -625,8 +675,8 @@ mod tests {
     impl_traits!(I32, i32, 4, signed);
     impl_traits!(I64, i64, 8, signed);
     impl_traits!(I128, i128, 16, signed);
-    impl_traits!(F32, f32, 4, signed);
-    impl_traits!(F64, f64, 8, signed);
+    impl_traits!(F32, f32, 4, signed, is_nan);
+    impl_traits!(F64, f64, 8, signed, is_nan);
 
     macro_rules! call_for_all_types {
         ($fn:ident, $byteorder:ident) => {
@@ -663,7 +713,7 @@ mod tests {
     // conditional compilation by `target_pointer_width`.
     const RNG_SEED: u64 = 0x7A03CAE2F32B5B8F;
 
-    const RAND_ITERS: usize = if cfg!(miri) {
+    const RAND_ITERS: usize = if cfg!(any(miri, kani)) {
         // The tests below which use this constant used to take a very long time
         // on Miri, which slows down local development and CI jobs. We're not
         // using Miri to check for the correctness of our code, but rather its
@@ -687,7 +737,8 @@ mod tests {
         1024
     };
 
-    #[test]
+    #[cfg_attr(test, test)]
+    #[cfg_attr(kani, kani::proof)]
     fn test_zero() {
         fn test_zero<T: ByteOrderType>() {
             assert_eq!(T::ZERO.get(), T::Native::ZERO);
@@ -697,7 +748,8 @@ mod tests {
         call_for_all_types!(test_zero, NonNativeEndian);
     }
 
-    #[test]
+    #[cfg_attr(test, test)]
+    #[cfg_attr(kani, kani::proof)]
     fn test_max_value() {
         fn test_max_value<T: ByteOrderTypeUnsigned>() {
             assert_eq!(T::MAX_VALUE.get(), T::Native::MAX_VALUE);
@@ -707,7 +759,8 @@ mod tests {
         call_for_unsigned_types!(test_max_value, NonNativeEndian);
     }
 
-    #[test]
+    #[cfg_attr(test, test)]
+    #[cfg_attr(kani, kani::proof)]
     fn test_native_endian() {
         fn test_native_endian<T: ByteOrderType>() {
             let mut r = SmallRng::seed_from_u64(RNG_SEED);
@@ -717,22 +770,34 @@ mod tests {
                 bytes.as_bytes_mut().copy_from_slice(native.as_bytes());
                 let mut from_native = T::new(native);
                 let from_bytes = T::from_bytes(bytes);
-                assert_eq!(from_native, from_bytes);
-                assert_eq!(from_native.get(), native);
-                assert_eq!(from_bytes.get(), native);
+
+                // For `f32` and `f64`, NaN values are not considered equal to
+                // themselves.
+                if !T::Native::is_nan(native) {
+                    assert_eq!(from_native, from_bytes);
+                    assert_eq!(from_native.get(), native);
+                    assert_eq!(from_bytes.get(), native);
+                }
+
                 assert_eq!(from_native.into_bytes(), bytes);
                 assert_eq!(from_bytes.into_bytes(), bytes);
 
                 let updated = T::Native::rand(&mut r);
                 from_native.set(updated);
-                assert_eq!(from_native.get(), updated);
+
+                // For `f32` and `f64`, NaN values are not considered equal to
+                // themselves.
+                if !T::Native::is_nan(from_native.get()) {
+                    assert_eq!(from_native.get(), updated);
+                }
             }
         }
 
         call_for_all_types!(test_native_endian, NativeEndian);
     }
 
-    #[test]
+    #[cfg_attr(test, test)]
+    #[cfg_attr(kani, kani::proof)]
     fn test_non_native_endian() {
         fn test_non_native_endian<T: ByteOrderType>() {
             let mut r = SmallRng::seed_from_u64(RNG_SEED);
@@ -743,15 +808,26 @@ mod tests {
                 bytes = bytes.invert();
                 let mut from_native = T::new(native);
                 let from_bytes = T::from_bytes(bytes);
-                assert_eq!(from_native, from_bytes);
-                assert_eq!(from_native.get(), native);
-                assert_eq!(from_bytes.get(), native);
+
+                // For `f32` and `f64`, NaN values are not considered equal to
+                // themselves.
+                if !T::Native::is_nan(native) {
+                    assert_eq!(from_native, from_bytes);
+                    assert_eq!(from_native.get(), native);
+                    assert_eq!(from_bytes.get(), native);
+                }
+
                 assert_eq!(from_native.into_bytes(), bytes);
                 assert_eq!(from_bytes.into_bytes(), bytes);
 
                 let updated = T::Native::rand(&mut r);
                 from_native.set(updated);
-                assert_eq!(from_native.get(), updated);
+
+                // For `f32` and `f64`, NaN values are not considered equal to
+                // themselves.
+                if !T::Native::is_nan(from_native.get()) {
+                    assert_eq!(from_native.get(), updated);
+                }
             }
         }
 
