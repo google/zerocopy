@@ -8,15 +8,18 @@ made in the doc comment on `src/lib.rs` or in `generate-readme.sh`.
 
 # zerocopy
 
-*Want to help improve zerocopy? Fill out our [user survey][user-survey]!*
+*<span style="font-size: 100%; color:grey;">Want to help improve zerocopy?
+Fill out our [user survey][user-survey]!</span>*
 
-Utilities for safe zero-copy parsing and serialization.
+***<span style="font-size: 140%">Fast, safe, <span
+style="color:red;">compile error</span>. Pick two.</span>***
 
-This crate provides utilities which make it easy to perform zero-copy
-parsing and serialization by allowing zero-copy conversion to/from byte
-slices.
+Zerocopy makes zero-cost memory manipulation effortless. We write `unsafe`
+so you don't have to.
 
-This is enabled by four core marker traits, each of which can be derived
+## Overview
+
+Zerocopy provides four core marker traits, each of which can be derived
 (e.g., `#[derive(FromZeroes)]`):
 - `FromZeroes` indicates that a sequence of zero bytes represents a valid
   instance of a type
@@ -29,8 +32,9 @@ This is enabled by four core marker traits, each of which can be derived
 Types which implement a subset of these traits can then be converted to/from
 byte sequences with little to no runtime overhead.
 
-Note that these traits are ignorant of byte order. For byte order-aware
-types, see the `byteorder` module.
+Zerocopy also provides byte-order aware integer types that support these
+conversions; see the `byteorder` module. These types are especially useful
+for network parsing.
 
 [user-survey]: https://docs.google.com/forms/d/e/1FAIpQLSdzBNTN9tzwsmtyZxRFNL02K36IWCdHWW2ZBckyQS2xiO3i8Q/viewform?usp=published_options
 
