@@ -8,6 +8,8 @@ made in the doc comment on `src/lib.rs` or in `generate-readme.sh`.
 
 # zerocopy
 
+*Want to help improve zerocopy? Fill out our [user survey][user-survey]!*
+
 Utilities for safe zero-copy parsing and serialization.
 
 This crate provides utilities which make it easy to perform zero-copy
@@ -29,6 +31,8 @@ byte sequences with little to no runtime overhead.
 
 Note that these traits are ignorant of byte order. For byte order-aware
 types, see the `byteorder` module.
+
+[user-survey]: https://docs.google.com/forms/d/e/1FAIpQLSdzBNTN9tzwsmtyZxRFNL02K36IWCdHWW2ZBckyQS2xiO3i8Q/viewform?usp=published_options
 
 ## Cargo Features
 
