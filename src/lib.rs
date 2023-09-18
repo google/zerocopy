@@ -32,7 +32,7 @@
 //! byte sequences with little to no runtime overhead.
 //!
 //! Zerocopy also provides byte-order aware integer types that support these
-//! conversions; see the `byteorder` module. These types are especially useful
+//! conversions; see the [`byteorder`] module. These types are especially useful
 //! for network parsing.
 //!
 //! [user-survey]: https://docs.google.com/forms/d/e/1FAIpQLSdzBNTN9tzwsmtyZxRFNL02K36IWCdHWW2ZBckyQS2xiO3i8Q/viewform?usp=published_options
