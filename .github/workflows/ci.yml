@@ -150,7 +150,12 @@ jobs:
       if: contains(matrix.target, 'i686')
 
     - name: Run tests
-      run: ./cargo.sh +${{ matrix.toolchain }} test --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      run: |
+        ./cargo.sh +${{ matrix.toolchain }} test \
+          --package ${{ matrix.crate }} \
+          --target ${{ matrix.target }} \
+          ${{ matrix.features }} \
+          --verbose
       # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
       # x86_64, so we can't run tests for any non-x86 target.
       #
@@ -163,14 +168,24 @@ jobs:
         # Run under both the stacked borrows model (default) and under the tree 
         # borrows model to ensure we're compliant with both.
         for EXTRA_FLAGS in "" "-Zmiri-tree-borrows"; do
-          # Skip the `ui` test since it invokes the compiler, which we can't do from
-          # Miri (and wouldn't want to do anyway).
+          # On `--skip ui`: Skip the `ui` test since it invokes the compiler,
+          # which we can't do from Miri (and wouldn't want to do anyway).
+          #
+          # On `matrix.features == '--all-features': We mark tests which are
+          # particularly expensive to run under Miri as
+          # `#[cfg_attr(miri, ignore)]`. We want to run them once per
+          # toolchain/target combination, but not once per feature set so we
+          # keep the expensive computation to a minimum.
+          #
+          # TODO(#391): Optimize these tests.
           MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" ./cargo.sh +${{ matrix.toolchain }} \
             miri test \
             --package ${{ matrix.crate }} \
             --target ${{ matrix.target }} \
             ${{ matrix.features }} \
-            -- --skip ui
+            -- --skip ui \
+            ${{ matrix.features == '--all-features' && '--ignored' || '' }}
+
         done
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.

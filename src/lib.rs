@@ -161,7 +161,10 @@
 ))]
 #![cfg_attr(not(test), no_std)]
 #![cfg_attr(feature = "simd-nightly", feature(stdsimd))]
-
+#![cfg_attr(
+    __INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS,
+    feature(layout_for_ptr, pointer_byte_offsets, strict_provenance)
+)]
 #[macro_use]
 mod macros;
 
@@ -181,7 +184,6 @@ pub use crate::wrappers::*;
 pub use zerocopy_derive::*;
 
 use core::{
-    alloc::Layout,
     cell::{self, RefMut},
     cmp::Ordering,
     fmt::{self, Debug, Display, Formatter},
@@ -201,7 +203,7 @@ extern crate alloc;
 #[cfg(feature = "alloc")]
 use {
     alloc::{boxed::Box, vec::Vec},
-    core::ptr::NonNull,
+    core::{alloc::Layout, ptr::NonNull},
 };
 
 // This is a hack to allow zerocopy-derive derives to work in this crate. They
@@ -212,28 +214,90 @@ mod zerocopy {
     pub(crate) use crate::*;
 }
 
+#[rustversion::nightly]
+#[cfg(all(test, not(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)))]
+const _: () = {
+    #[deprecated = "some tests may be skipped due to missing RUSTFLAGS=\"--cfg __INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS\""]
+    const _WARNING: () = ();
+    #[warn(deprecated)]
+    _WARNING
+};
+
 /// The layout of a type which might be dynamically-sized.
 ///
-/// `DstLayout` describes the layout of sized types, slice types, and "custom
+/// `DstLayout` describes the layout of sized types, slice types, and "slice
 /// DSTs" - ie, those that are known by the type system to have a trailing slice
 /// (as distinguished from `dyn Trait` types - such types *might* have a
 /// trailing slice type, but the type system isn't aware of it).
+///
+/// # Safety
+///
+/// Unlike [`core::alloc::Layout`], `DstLayout` is only used to describe full
+/// Rust types - ie, those that satisfy the layout requirements outlined by
+/// [the reference]. Callers may assume that an instance of `DstLayout`
+/// satisfies any conditions imposed on Rust types by the reference.
+///
+/// If `layout: DstLayout` describes a type, `T`, then it is guaranteed that:
+/// - `layout.align` is equal to `T`'s alignment
+/// - If `layout.size_info` is `SizeInfo::Sized { size }`, then `T: Sized` and
+///   `size_of::<T>() == size`
+/// - If `layout.size_info` is `SizeInfo::SliceDst(slice_layout)`, then
+///   - `T` is a slice DST
+/// - The `size` of an instance of `T` with `elems` trailing slice elements is
+///   equal to `slice_layout.offset + slice_layout.elem_size * elems` rounded up
+///   to the nearest multiple of `layout.align`. Any bytes in the range
+///   `[slice_layout.offset + slice_layout.elem_size * elems, size)` are padding
+///   and must not be assumed to be initialized.
+///
+/// [the reference]: https://doc.rust-lang.org/reference/type-layout.html
 #[doc(hidden)]
 #[allow(missing_debug_implementations, missing_copy_implementations)]
 #[cfg_attr(test, derive(Copy, Clone, Debug, PartialEq, Eq))]
 pub struct DstLayout {
-    /// The base size and the alignment of the type:
-    /// - For sized types, the size encoded by this `Layout` is
-    ///   `size_of::<T>()`. For DSTs, the size represents the size of the type
-    ///   when the trailing slice field contains 0 elements.
-    /// - For all types, the alignment represents the alignment of the type.
-    // TODO: If we end up replacing this with separate size and alignment to
-    // make Kani happy, file an issue to eventually adopt the stdlib's
-    // `Alignment` type trick.
-    _base_layout: Layout,
-    /// For sized types, `None`. For DSTs, the size of the element type of the
-    /// trailing slice.
-    _trailing_slice_elem_size: Option<usize>,
+    _align: NonZeroUsize,
+    _size_info: SizeInfo,
+}
+
+#[cfg_attr(test, derive(Copy, Clone, Debug, PartialEq, Eq))]
+enum SizeInfo<E = usize> {
+    Sized { _size: usize },
+    SliceDst(TrailingSliceLayout<E>),
+}
+
+#[cfg_attr(test, derive(Copy, Clone, Debug, PartialEq, Eq))]
+struct TrailingSliceLayout<E = usize> {
+    // The offset of the first byte of the trailing slice field. Note that this
+    // is NOT the same as the minimum size of the type. For example, consider
+    // the following type:
+    //
+    //   struct Foo {
+    //       a: u16,
+    //       b: u8,
+    //       c: [u8],
+    //   }
+    //
+    // In `Foo`, `c` is at byte offset 3. When `c.len() == 0`, `c` is followed
+    // by a padding byte.
+    _offset: usize,
+    // The size of the element type of the trailing slice field.
+    _elem_size: E,
+}
+
+impl SizeInfo {
+    /// Attempts to create a `SizeInfo` from `Self` in which `elem_size` is a
+    /// `NonZeroUsize`. If `elem_size` is 0, returns `None`.
+    const fn _try_to_nonzero_elem_size(&self) -> Option<SizeInfo<NonZeroUsize>> {
+        Some(match *self {
+            SizeInfo::Sized { _size } => SizeInfo::Sized { _size },
+            SizeInfo::SliceDst(TrailingSliceLayout { _offset, _elem_size }) => {
+                if let Some(_elem_size) = NonZeroUsize::new(_elem_size) {
+                    SizeInfo::SliceDst(TrailingSliceLayout { _offset, _elem_size })
+                } else {
+                    return None;
+                }
+            }
+        })
+    }
 }
 
 #[cfg_attr(test, derive(Copy, Clone, Debug))]
@@ -249,7 +313,16 @@ impl DstLayout {
     ///
     /// Unsafe code may assume that `DstLayout` is the correct layout for `T`.
     const fn for_type<T>() -> DstLayout {
-        DstLayout { _base_layout: Layout::new::<T>(), _trailing_slice_elem_size: None }
+        // SAFETY: `align` is correct by construction. `T: Sized`, and so it is
+        // sound to initialize `size_info` to `SizeInfo::Sized { size }`; the
+        // `size` field is also correct by construction.
+        DstLayout {
+            _align: match NonZeroUsize::new(mem::align_of::<T>()) {
+                Some(align) => align,
+                None => unreachable!(),
+            },
+            _size_info: SizeInfo::Sized { _size: mem::size_of::<T>() },
+        }
     }
 
     /// Constructs a `DstLayout` which describes `[T]`.
@@ -258,14 +331,23 @@ impl DstLayout {
     ///
     /// Unsafe code may assume that `DstLayout` is the correct layout for `[T]`.
     const fn for_slice<T>() -> DstLayout {
+        // SAFETY: The alignment of a slice is equal to the alignment of its
+        // element type, and so `align` is initialized correctly.
+        //
+        // Since this is just a slice type, there is no offset between the
+        // beginning of the type and the beginning of the slice, so it is
+        // correct to set `offset: 0`. The `elem_size` is correct by
+        // construction. Since `[T]` is a (degenerate case of a) slice DST, it
+        // is correct to initialize `size_info` to `SizeInfo::SliceDst`.
         DstLayout {
-            // SAFETY: `[T; 0]` has the same alignment as `T`, but zero size.
-            // [1] A slice of length 0 has no size, so 0 is the correct size for
-            // the base of the type.
-            //
-            // [1] https://doc.rust-lang.org/reference/type-layout.html#array-layout
-            _base_layout: Layout::new::<[T; 0]>(),
-            _trailing_slice_elem_size: Some(mem::size_of::<T>()),
+            _align: match NonZeroUsize::new(mem::align_of::<T>()) {
+                Some(align) => align,
+                None => unreachable!(),
+            },
+            _size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                _offset: 0,
+                _elem_size: mem::size_of::<T>(),
+            }),
         }
     }
 
@@ -291,10 +373,9 @@ impl DstLayout {
     /// - A prefix cast is requested, and `addr` does not satisfy `self`'s
     ///   alignment requirement
     /// - A suffix cast is requested, and `addr + bytes_len` does not satisfy
-    ///   `self`'s alignment requirement (as a consequence, since the size of
-    ///   the trailing slice element is a multiple of the alignment, no length
-    ///   for the trailing slice will result in a starting address which is
-    ///   properly aligned)
+    ///   `self`'s alignment requirement (as a consequence, since all instances
+    ///   of the type are a multiple of its alignment, no size for the type will
+    ///   result in a starting address which is properly aligned)
     ///
     /// # Safety
     ///
@@ -348,133 +429,135 @@ impl DstLayout {
             };
         }
 
-        // Note that, in practice, `elem_size` is always a compile-time
-        // constant. We do this check earlier than needed to ensure that we
-        // always panic as a result of bugs in the program (such as calling this
-        // function on an invalid type) instead of allowing this panic to be
-        // hidden if the cast would have failed anyway for runtime reasons (such
-        // as a too-small memory region).
+        // Note that, in practice, `self` is always a compile-time constant. We
+        // do this check earlier than needed to ensure that we always panic as a
+        // result of bugs in the program (such as calling this function on an
+        // invalid type) instead of allowing this panic to be hidden if the cast
+        // would have failed anyway for runtime reasons (such as a too-small
+        // memory region).
         //
         // TODO(#67): Once our MSRV is 1.65, use let-else:
         // https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html#let-else-statements
-        let elem_size = match self._trailing_slice_elem_size {
-            Some(elem_size) => match NonZeroUsize::new(elem_size) {
-                Some(elem_size) => Some(elem_size),
-                None => panic!("attempted to cast to slice type with zero-sized element"),
-            },
-            None => None,
+        let size_info = match self._size_info._try_to_nonzero_elem_size() {
+            Some(size_info) => size_info,
+            None => panic!("attempted to cast to slice type with zero-sized element"),
         };
 
         // Precondition
         __debug_assert!(addr.checked_add(bytes_len).is_some(), "`addr` + `bytes_len` > usize::MAX");
 
-        // We check alignment for `addr` (for prefix casts) or `addr +
-        // bytes_len` (for suffix casts). For a prefix cast, the correctness of
-        // this check is trivial - `addr` is the address the object will live
-        // at.
-        //
-        // For a suffix cast, we know that all valid sizes for the type are a
-        // multiple of the alignment. Thus, a validly-sized instance which lives
-        // at a validly-aligned address must also end at a validly-aligned
-        // address. Thus, if the end address for a suffix cast (`addr +
-        // bytes_len`) is not aligned, then no valid start address will be
-        // aligned either.
-        let offset = match cast_type {
-            _CastType::_Prefix => 0,
-            _CastType::_Suffix => bytes_len,
-        };
+        // Alignment checks go in their own block to avoid introducing variables
+        // into the top-level scope.
+        {
+            // We check alignment for `addr` (for prefix casts) or `addr +
+            // bytes_len` (for suffix casts). For a prefix cast, the correctness
+            // of this check is trivial - `addr` is the address the object will
+            // live at.
+            //
+            // For a suffix cast, we know that all valid sizes for the type are
+            // a multiple of the alignment (and by safety precondition, we know
+            // `DstLayout` may only describe valid Rust types). Thus, a
+            // validly-sized instance which lives at a validly-aligned address
+            // must also end at a validly-aligned address. Thus, if the end
+            // address for a suffix cast (`addr + bytes_len`) is not aligned,
+            // then no valid start address will be aligned either.
+            let offset = match cast_type {
+                _CastType::_Prefix => 0,
+                _CastType::_Suffix => bytes_len,
+            };
 
-        // Addition is guaranteed not to overflow because `offset <= bytes_len`,
-        // and `addr + bytes_len <= usize::MAX` is a precondition of this
-        // method. Modulus is guaranteed not to divide by 0 because `.align()`
-        // guarantees that its return value is non-zero.
-        #[allow(clippy::arithmetic_side_effects)]
-        if (addr + offset) % self._base_layout.align() != 0 {
-            return None;
+            // Addition is guaranteed not to overflow because `offset <=
+            // bytes_len`, and `addr + bytes_len <= usize::MAX` is a
+            // precondition of this method. Modulus is guaranteed not to divide
+            // by 0 because `align` is non-zero.
+            #[allow(clippy::arithmetic_side_effects)]
+            if (addr + offset) % self._align.get() != 0 {
+                return None;
+            }
         }
 
-        let base_size = self._base_layout.size();
+        let (elems, self_bytes) = match size_info {
+            SizeInfo::Sized { _size: size } => {
+                if size > bytes_len {
+                    return None;
+                }
+                (0, size)
+            }
+            SizeInfo::SliceDst(TrailingSliceLayout { _offset: offset, _elem_size: elem_size }) => {
+                let align = self._align.get();
 
-        // LEMMA 0: max_slice_bytes + base_size == bytes_len
-        //
-        // LEMMA 1: base_size <= bytes_len:
-        // - If `base_size > bytes_len`, `bytes_len.checked_sub(base_size)`
-        //   returns `None`, and we return.
-        //
-        // TODO(#67): Once our MSRV is 1.65, use let-else:
-        // https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html#let-else-statements
-        let max_slice_bytes = if let Some(max_byte_slice) = bytes_len.checked_sub(base_size) {
-            max_byte_slice
-        } else {
-            return None;
+                // Calculate the maximum number of bytes that could be consumed
+                // - any number of bytes larger than this will either not be a
+                // multiple of the alignment, or will be larger than
+                // `bytes_len`.
+                //
+                // Guaranteed not to:
+                // - divide by zero: `align` is non-zero.
+                // - overflow on multiplication: `usize::MAX >= bytes_len >=
+                //   (bytes_len / align) * align`
+                //
+                // TODO(#390): Compute this more efficiently.
+                #[allow(clippy::arithmetic_side_effects)]
+                let max_total_bytes = (bytes_len / align) * align;
+                // Calculate the maximum number of bytes that could be consumed
+                // by the trailing slice.
+                //
+                // TODO(#67): Once our MSRV is 1.65, use let-else:
+                // https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html#let-else-statements
+                let max_slice_and_padding_bytes = match max_total_bytes.checked_sub(offset) {
+                    Some(max) => max,
+                    // `bytes_len` too small even for 0 trailing slice elements.
+                    None => return None,
+                };
+
+                // Calculate the number of elements that fit in
+                // `max_slice_and_padding_bytes`; any remaining bytes will be
+                // considered padding.
+                //
+                // Guaranteed not to divide by zero: `elem_size` is non-zero.
+                #[allow(clippy::arithmetic_side_effects)]
+                let elems = max_slice_and_padding_bytes / elem_size.get();
+                // Guaranteed not to overflow on multiplication: `usize::MAX >=
+                // max_slice_and_padding_bytes >= (max_slice_and_padding_bytes /
+                // elem_size) * elem_size`.
+                //
+                // Guaranteed not to overflow on addition:
+                // - max_slice_and_padding_bytes == max_total_bytes - offset
+                // - elems * elem_size <= max_slice_and_padding_bytes == max_total_bytes - offset
+                // - elems * elem_size + offset <= max_total_bytes <= usize::MAX
+                #[allow(clippy::arithmetic_side_effects)]
+                let without_padding = offset + elems * elem_size.get();
+                // `self_bytes` is equal to the offset bytes plus the bytes
+                // consumed by the trailing slice plus any padding bytes
+                // required to satisfy the alignment. Note that we have computed
+                // the maximum number of trailing slice elements that could fit
+                // in `self_bytes`, so any padding is guaranteed to be less than
+                // the size of an extra element.
+                //
+                // Guaranteed not to overflow:
+                // - By previous comment: without_padding == elems * elem_size +
+                //   offset <= max_total_bytes
+                // - By construction, `max_total_bytes` is a multiple of
+                //   `self._align`.
+                // - At most, adding padding needed to round `without_padding`
+                //   up to the next multiple of the alignment will bring
+                //   `self_bytes` up to `max_total_bytes`.
+                #[allow(clippy::arithmetic_side_effects)]
+                let self_bytes = without_padding
+                    + util::core_layout::_padding_needed_for(without_padding, self._align);
+                (elems, self_bytes)
+            }
         };
 
-        // Lemma 0
-        __debug_assert!(max_slice_bytes + base_size == bytes_len);
-
-        // Lemma 1
-        __debug_assert!(base_size <= bytes_len);
-
-        let (elems, self_bytes) = if let Some(elem_size) = elem_size {
-            // Guaranteed not to divide by 0 because `elem_size` is a
-            // `NonZeroUsize`.
-            #[allow(clippy::arithmetic_side_effects)]
-            let elems = max_slice_bytes / elem_size.get();
-
-            // NOTE: Another option for this step in the algorithm is to set
-            // `slice_bytes = elems * elem_size`. However, using multiplication
-            // causes Kani to choke. In practice, the compiler is likely to
-            // generate identical machine code in both cases. Note that this
-            // divide-then-mod approach is trivially optimizable into a single
-            // operation that computes both the quotient and the remainder.
-
-            // First line is guaranteed not to mod by 0 because `elem_size` is a
-            // `NonZeroUsize`. Second line is guaranteed not to underflow
-            // because `rem <= max_slice_bytes` thanks to the mod operation.
-            //
-            // LEMMA 2: slice_bytes <= max_slice_bytes
-            #[allow(clippy::arithmetic_side_effects)]
-            let rem = max_slice_bytes % elem_size.get();
-            #[allow(clippy::arithmetic_side_effects)]
-            let slice_bytes = max_slice_bytes - rem;
-
-            // Lemma 2
-            __debug_assert!(slice_bytes <= max_slice_bytes);
-
-            // Guaranteed not to overflow:
-            // - max_slice_bytes + base_size == bytes_len       (lemma 0)
-            // - slice_bytes                 <= max_slice_bytes (lemma 2)
-            // - slice_bytes + base_size     <= bytes_len       (substitution) ------+
-            // - bytes_len                   <= usize::MAX      (bytes_len: usize)   |
-            // - slice_bytes + base_size     <= usize::MAX      (substitution)       |
-            //                                                                       |
-            // LEMMA 3: self_bytes <= bytes_len:                                     |
-            // - slice_bytes + base_size     <= bytes_len <--------------------------+ (reused for lemma)
-            // - slice_bytes                 <= bytes_len
-            #[allow(clippy::arithmetic_side_effects)]
-            let self_bytes = base_size + slice_bytes;
-
-            // Lemma 3
-            __debug_assert!(self_bytes <= bytes_len);
-
-            (elems, self_bytes)
-        } else {
-            (0, base_size)
-        };
-
-        // LEMMA 4: self_bytes <= bytes_len:
-        // - `if` branch returns `self_bytes`; lemma 3 guarantees `self_bytes <=
-        //   bytes_len`
-        // - `else` branch returns `base_size`; lemma 1 guarantees `base_size <=
-        //   bytes_len`
-
-        // Lemma 4
         __debug_assert!(self_bytes <= bytes_len);
 
         let split_at = match cast_type {
             _CastType::_Prefix => self_bytes,
-            // Guaranteed not to underflow because `self_bytes <= bytes_len`
-            // (lemma 4).
+            // Guaranteed not to underflow:
+            // - In the `Sized` branch, only returns `size` if `size <=
+            //   bytes_len`.
+            // - In the `SliceDst` branch, calculates `self_bytes <=
+            //   max_toatl_bytes`, which is upper-bounded by `bytes_len`.
             #[allow(clippy::arithmetic_side_effects)]
             _CastType::_Suffix => bytes_len - self_bytes,
         };
@@ -2984,15 +3067,20 @@ mod tests {
     #[test]
     #[cfg_attr(miri, ignore)]
     fn test_validate_cast_and_convert_metadata() {
-        fn layout(
-            base_size: usize,
-            align: usize,
-            _trailing_slice_elem_size: Option<usize>,
-        ) -> DstLayout {
-            DstLayout {
-                _base_layout: Layout::from_size_align(base_size, align).unwrap(),
-                _trailing_slice_elem_size,
+        impl From<usize> for SizeInfo {
+            fn from(_size: usize) -> SizeInfo {
+                SizeInfo::Sized { _size }
             }
+        }
+
+        impl From<(usize, usize)> for SizeInfo {
+            fn from((_offset, _elem_size): (usize, usize)) -> SizeInfo {
+                SizeInfo::SliceDst(TrailingSliceLayout { _offset, _elem_size })
+            }
+        }
+
+        fn layout<S: Into<SizeInfo>>(s: S, align: usize) -> DstLayout {
+            DstLayout { _size_info: s.into(), _align: NonZeroUsize::new(align).unwrap() }
         }
 
         /// This macro accepts arguments in the form of:
@@ -3032,30 +3120,64 @@ mod tests {
         /// `a..b`). In this case, wrap the expression in parentheses, and it
         /// will become valid `tt`.
         macro_rules! test {
-            (
-                layout($base_size:tt, $align:tt, $trailing_size:tt)
+            ($(:$sizes:expr =>)?
+                layout($size:tt, $align:tt)
                 .validate($addr:tt, $bytes_len:tt, $cast_type:tt), $expect:pat $(,)?
             ) => {
                 itertools::iproduct!(
-                    test!(@generate_usize $base_size),
+                    test!(@generate_size $size),
                     test!(@generate_align $align),
-                    test!(@generate_opt_usize $trailing_size),
                     test!(@generate_usize $addr),
                     test!(@generate_usize $bytes_len),
                     test!(@generate_cast_type $cast_type)
-                ).for_each(|(base_size, align, trailing_size, addr, bytes_len, cast_type)| {
+                ).for_each(|(size_info, align, addr, bytes_len, cast_type)| {
+                    // Temporarily disable the panic hook installed by the test
+                    // harness. If we don't do this, all panic messages will be
+                    // kept in an internal log. On its own, this isn't a
+                    // problem, but if a non-caught panic ever happens (ie, in
+                    // code later in this test not in this macro), all of the
+                    // previously-buffered messages will be dumped, hiding the
+                    // real culprit.
+                    let previous_hook = std::panic::take_hook();
+                    // I don't understand why, but this seems to be required in
+                    // addition to the previous line.
+                    std::panic::set_hook(Box::new(|_| {}));
                     let actual = std::panic::catch_unwind(|| {
-                        layout(base_size, align, trailing_size)._validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
+                        layout(size_info, align)._validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
                     }).map_err(|d| {
                         *d.downcast::<&'static str>().expect("expected string panic message").as_ref()
                     });
+                    std::panic::set_hook(previous_hook);
+
                     assert_matches::assert_matches!(
                         actual, $expect,
-                        "layout({base_size}, {align}, {trailing_size:?}).validate_cast_and_convert_metadata({addr}, {bytes_len}, {cast_type:?})",
+                        "layout({size_info:?}, {align}).validate_cast_and_convert_metadata({addr}, {bytes_len}, {cast_type:?})",
                     );
                 });
             };
             (@generate_usize _) => { 0..8 };
+            // Generate sizes for both Sized and !Sized types.
+            (@generate_size _) => {
+                test!(@generate_size (_)).chain(test!(@generate_size (_, _)))
+            };
+            // Generate sizes for both Sized and !Sized types by chaining
+            // specified iterators for each.
+            (@generate_size ($sized_sizes:tt | $unsized_sizes:tt)) => {
+                test!(@generate_size ($sized_sizes)).chain(test!(@generate_size $unsized_sizes))
+            };
+            // Generate sizes for Sized types.
+            (@generate_size (_)) => { test!(@generate_size (0..8)) };
+            (@generate_size ($sizes:expr)) => { $sizes.into_iter().map(Into::<SizeInfo>::into) };
+            // Generate sizes for !Sized types.
+            (@generate_size ($min_sizes:tt, $elem_sizes:tt)) => {
+                itertools::iproduct!(
+                    test!(@generate_min_size $min_sizes),
+                    test!(@generate_elem_size $elem_sizes)
+                ).map(Into::<SizeInfo>::into)
+            };
+            (@generate_fixed_size _) => { (0..8).into_iter().map(Into::<SizeInfo>::into) };
+            (@generate_min_size _) => { 0..8 };
+            (@generate_elem_size _) => { 1..8 };
             (@generate_align _) => { [1, 2, 4, 8, 16] };
             (@generate_opt_usize _) => { [None].into_iter().chain((0..8).map(Some).into_iter()) };
             (@generate_cast_type _) => { [_CastType::_Prefix, _CastType::_Suffix] };
@@ -3068,21 +3190,20 @@ mod tests {
             (@$_:ident $vals:expr) => { $vals };
         }
 
-        const EVENS: [usize; 5] = [0, 2, 4, 6, 8];
-        const NZ_EVENS: [usize; 5] = [2, 4, 6, 8, 10];
-        const ODDS: [usize; 5] = [1, 3, 5, 7, 9];
+        const EVENS: [usize; 8] = [0, 2, 4, 6, 8, 10, 12, 14];
+        const ODDS: [usize; 8] = [1, 3, 5, 7, 9, 11, 13, 15];
 
         // base_size is too big for the memory region.
-        test!(layout((1..8), _, ((1..8).map(Some))).validate(_, [0], _), Ok(None));
-        test!(layout((2..8), _, ((1..8).map(Some))).validate(_, [1], _), Ok(None));
+        test!(layout(((1..8) | ((1..8), (1..8))), _).validate(_, [0], _), Ok(None));
+        test!(layout(((2..8) | ((2..8), (2..8))), _).validate(_, [1], _), Ok(None));
 
         // addr is unaligned for prefix cast
-        test!(layout(_, [2], [None]).validate(ODDS, _, _Prefix), Ok(None));
-        test!(layout(_, [2], (NZ_EVENS.map(Some))).validate(ODDS, _, _Prefix), Ok(None));
+        test!(layout(_, [2]).validate(ODDS, _, _Prefix), Ok(None));
+        test!(layout(_, [2]).validate(ODDS, _, _Prefix), Ok(None));
 
         // addr is aligned, but end of buffer is unaligned for suffix cast
-        test!(layout(_, [2], [None]).validate(EVENS, ODDS, _Suffix), Ok(None));
-        test!(layout(_, [2], (NZ_EVENS.map(Some))).validate(EVENS, ODDS, _Suffix), Ok(None));
+        test!(layout(_, [2]).validate(EVENS, ODDS, _Suffix), Ok(None));
+        test!(layout(_, [2]).validate(EVENS, ODDS, _Suffix), Ok(None));
 
         // Unfortunately, these constants cannot easily be used in the
         // implementation of `validate_cast_and_convert_metadata`, since
@@ -3100,16 +3221,13 @@ mod tests {
         }
 
         // casts with ZST trailing element types are unsupported
-        test!(layout(_, _, [Some(0)]).validate(_, _, _), Err(msgs::TRAILING),);
+        test!(layout((_, [0]), _).validate(_, _, _), Err(msgs::TRAILING),);
 
         // addr + bytes_len must not overflow usize
+        test!(layout(_, _).validate([usize::MAX], (1..100), _), Err(msgs::OVERFLOW));
+        test!(layout(_, _).validate((1..100), [usize::MAX], _), Err(msgs::OVERFLOW));
         test!(
-            layout(_, [1], (NZ_EVENS.map(Some))).validate([usize::MAX], (1..100), _),
-            Err(msgs::OVERFLOW)
-        );
-        test!(layout(_, [1], [None]).validate((1..100), [usize::MAX], _), Err(msgs::OVERFLOW));
-        test!(
-            layout([1], [1], [None]).validate(
+            layout(_, _).validate(
                 [usize::MAX / 2 + 1, usize::MAX],
                 [usize::MAX / 2 + 1, usize::MAX],
                 _
@@ -3126,35 +3244,42 @@ mod tests {
             if let Some((elems, split_at)) =
                 layout._validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
             {
-                let (base_size, align, trailing_elem_size) = (
-                    layout._base_layout.size(),
-                    layout._base_layout.align(),
-                    layout._trailing_slice_elem_size,
-                );
-
+                let (size_info, align) = (layout._size_info, layout._align);
                 let debug_str = format!(
-                    "layout({base_size}, {align}, {trailing_elem_size:?}).validate_cast_and_convert_metadata({addr}, {bytes_len}, {cast_type:?}) => ({elems}, {split_at})",
+                    "layout({size_info:?}, {align}).validate_cast_and_convert_metadata({addr}, {bytes_len}, {cast_type:?}) => ({elems}, {split_at})",
                 );
 
                 // If this is a sized type (no trailing slice), then `elems` is
                 // meaningless, but in practice we set it to 0. Callers are not
                 // allowed to rely on this, but a lot of math is nicer if
                 // they're able to, and some callers might accidentally do that.
-                assert!(!(trailing_elem_size.is_none() && elems != 0), "{}", debug_str);
+                let sized = matches!(layout._size_info, SizeInfo::Sized { .. });
+                assert!(!(sized && elems != 0), "{}", debug_str);
 
-                let resulting_size = base_size + (elems * trailing_elem_size.unwrap_or(0));
-                // Test that, for unsized types, `validate_cast_and_convert_metadata` computed the
-                // largest possible value that fits in the given byte range.
-                assert!(
-                    trailing_elem_size
-                        .map(|elem_size| resulting_size + elem_size > bytes_len)
-                        .unwrap_or(true),
-                    "{}",
-                    debug_str
-                );
+                let resulting_size = match layout._size_info {
+                    SizeInfo::Sized { _size } => _size,
+                    SizeInfo::SliceDst(TrailingSliceLayout {
+                        _offset: offset,
+                        _elem_size: elem_size,
+                    }) => {
+                        let padded_size = |elems| {
+                            let without_padding = offset + elems * elem_size;
+                            without_padding
+                                + util::core_layout::_padding_needed_for(without_padding, align)
+                        };
 
-                // Test safety postconditions guaranteed by `validate_cast_and_convert_metadata`.
-                assert!(resulting_size <= bytes_len);
+                        let resulting_size = padded_size(elems);
+                        // Test that `validate_cast_and_convert_metadata`
+                        // computed the largest possible value that fits in the
+                        // given range.
+                        assert!(padded_size(elems + 1) > bytes_len, "{}", debug_str);
+                        resulting_size
+                    }
+                };
+
+                // Test safety postconditions guaranteed by
+                // `validate_cast_and_convert_metadata`.
+                assert!(resulting_size <= bytes_len, "{}", debug_str);
                 match cast_type {
                     _CastType::_Prefix => {
                         assert_eq!(addr % align, 0, "{}", debug_str);
@@ -3168,13 +3293,375 @@ mod tests {
             }
         }
 
-        let layouts = itertools::iproduct!(0..8, [1, 2, 4, 8], (1..8).map(Some).chain([None]))
-            .filter(|(size, align, trailing_elem_size)| {
-                size % align == 0 && trailing_elem_size.unwrap_or(*align) % align == 0
-            })
-            .map(|(s, a, t)| layout(s, a, t));
+        let sizes = 0..8;
+        let elem_sizes = 1..8;
+        let size_infos = sizes
+            .clone()
+            .map(Into::<SizeInfo>::into)
+            .chain(itertools::iproduct!(sizes, elem_sizes).map(Into::<SizeInfo>::into));
+        let layouts = itertools::iproduct!(size_infos, [1, 2, 4, 8, 16, 32])
+            .filter(|(size_info, align)| !matches!(size_info, SizeInfo::Sized { _size } if _size % align != 0))
+            .map(|(size_info, align)| layout(size_info, align));
         itertools::iproduct!(layouts, 0..8, 0..8, [_CastType::_Prefix, _CastType::_Suffix])
             .for_each(validate_behavior);
+    }
+
+    // TODO(#391): Optimize this test so we it consumes less time under Miri in
+    // CI.
+    #[test]
+    #[cfg_attr(miri, ignore)]
+    #[cfg(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)]
+    fn test_validate_rust_layout() {
+        use core::ptr::NonNull;
+
+        // This test synthesizes pointers with various metadata and uses Rust's
+        // built-in APIs to confirm that Rust makes decisions about type layout
+        // which are consistent with what we believe is guaranteed by the
+        // language. If this test fails, it doesn't just mean our code is wrong
+        // - it means we're misunderstanding the language's guarantees.
+
+        #[derive(Debug)]
+        struct MacroArgs {
+            offset: usize,
+            align: NonZeroUsize,
+            elem_size: Option<usize>,
+        }
+
+        /// # Safety
+        ///
+        /// `test` promises to only call `addr_of_slice_field` on a `NonNull<T>`
+        /// which points to a valid `T`.
+        ///
+        /// `with_elems` must produce a pointer which points to a valid `T`.
+        fn test<T: ?Sized, W: Fn(usize) -> NonNull<T>>(
+            args: MacroArgs,
+            with_elems: W,
+            addr_of_slice_field: Option<fn(NonNull<T>) -> NonNull<u8>>,
+        ) {
+            let dst = args.elem_size.is_some();
+            let layout = {
+                let size_info = match args.elem_size {
+                    Some(elem_size) => SizeInfo::SliceDst(TrailingSliceLayout {
+                        _offset: args.offset,
+                        _elem_size: elem_size,
+                    }),
+                    None => SizeInfo::Sized {
+                        // Rust only supports types whose sizes are a multiple
+                        // of their alignment. If the macro created a type like
+                        // this:
+                        //
+                        //   #[repr(C, align(2))]
+                        //   struct Foo([u8; 1]);
+                        //
+                        // ...then Rust will automatically round the type's size
+                        // up to 2.
+                        _size: args.offset
+                            + util::core_layout::_padding_needed_for(args.offset, args.align),
+                    },
+                };
+                DstLayout { _size_info: size_info, _align: args.align }
+            };
+
+            const MAX_ELEMS: usize = if cfg!(miri) { 16 } else { 128 };
+            for elems in 0..MAX_ELEMS {
+                let ptr = with_elems(elems);
+
+                if let Some(addr_of_slice_field) = addr_of_slice_field {
+                    let slc_field_ptr = addr_of_slice_field(ptr).as_ptr();
+                    // SAFETY: Both `slc_field_ptr` and `ptr` are pointers to
+                    // the same valid Rust object.
+                    //
+                    // TODO(https://github.com/rust-lang/rust-clippy/issues/11534):
+                    // Remove this `allow` once Clippy recognizes this block as
+                    // having a safety comment.
+                    #[allow(clippy::undocumented_unsafe_blocks)]
+                    let offset: usize =
+                        unsafe { slc_field_ptr.byte_offset_from(ptr.as_ptr()).try_into().unwrap() };
+                    assert_eq!(offset, args.offset);
+                }
+
+                // SAFETY: `ptr` points to a valid `T`.
+                let (size, align) = unsafe {
+                    (mem::size_of_val_raw(ptr.as_ptr()), mem::align_of_val_raw(ptr.as_ptr()))
+                };
+
+                // Avoid expensive allocation when running under Miri.
+                let assert_msg = if cfg!(miri) {
+                    format!("\n{args:?}\nsize:{size}, align:{align}")
+                } else {
+                    String::new()
+                };
+
+                let without_padding =
+                    args.offset + args.elem_size.map(|elem_size| elems * elem_size).unwrap_or(0);
+                assert!(size >= without_padding, "{}", assert_msg);
+                assert_eq!(align, args.align.get(), "{}", assert_msg);
+
+                // This encodes the most important part of the test: our
+                // understanding of how Rust determines the layout of repr(C)
+                // types. Sized repr(C) types are trivial, but DST types have
+                // some subtlety. Note that:
+                // - For sized types, `without_padding` is just the size of the
+                //   type that we constructed for `Foo`. Since we may have
+                //   requested a larger alignment, `Foo` may actually be larger
+                //   than this, hence `padding_needed_for`.
+                // - For unsized types, `without_padding` is dynamically
+                //   computed from the offset, the element size, and element
+                //   count. We expect that the size of the object should be
+                //   `offset + elem_size * elems` rounded up to the next
+                //   alignment.
+                let expected_size = without_padding
+                    + util::core_layout::_padding_needed_for(without_padding, args.align);
+                assert_eq!(expected_size, size, "{}", assert_msg);
+
+                // For zero-sized element types,
+                // `validate_cast_and_convert_metadata` just panics, so we skip
+                // testing those types.
+                if args.elem_size.map(|elem_size| elem_size > 0).unwrap_or(true) {
+                    let addr = ptr.addr().get();
+                    let (got_elems, got_split_at) = layout
+                        ._validate_cast_and_convert_metadata(addr, size, _CastType::_Prefix)
+                        .unwrap();
+                    // Avoid expensive allocation when running under Miri.
+                    let assert_msg = if cfg!(miri) {
+                        format!(
+                            "{}\nvalidate_cast_and_convert_metadata({addr}, {size})",
+                            assert_msg
+                        )
+                    } else {
+                        String::new()
+                    };
+                    assert_eq!(got_split_at, size, "{}", assert_msg);
+                    if dst {
+                        assert!(got_elems >= elems, "{}", assert_msg);
+                        if got_elems != elems {
+                            // If `validate_cast_and_convert_metadata`
+                            // returned more elements than `elems`, that
+                            // means that `elems` is not the maximum number
+                            // of elements that can fit in `size` - in other
+                            // words, there is enough padding at the end of
+                            // the value to fit at least one more element.
+                            // If we use this metadata to synthesize a
+                            // pointer, despite having a different element
+                            // count, we still expect it to have the same
+                            // size.
+                            let got_ptr = with_elems(got_elems);
+                            // SAFETY: `got_ptr` is a pointer to a valid `T`.
+                            let size_of_got_ptr = unsafe { mem::size_of_val_raw(got_ptr.as_ptr()) };
+                            assert_eq!(size_of_got_ptr, size, "{}", assert_msg);
+                        }
+                    } else {
+                        // For sized casts, the returned element value is
+                        // technically meaningless, and we don't guarantee any
+                        // particular value. In practice, it's always zero.
+                        assert_eq!(got_elems, 0, "{}", assert_msg)
+                    }
+                }
+            }
+        }
+
+        macro_rules! validate_against_rust {
+            ($offset:literal, $align:literal $(, $elem_size:literal)?) => {{
+                #[repr(C, align($align))]
+                struct Foo([u8; $offset]$(, [[u8; $elem_size]])?);
+
+                let args = MacroArgs {
+                    offset: $offset,
+                    align: $align.try_into().unwrap(),
+                    elem_size: {
+                        #[allow(unused)]
+                        let ret = None::<usize>;
+                        $(let ret = Some($elem_size);)?
+                        ret
+                    }
+                };
+
+                #[repr(C, align($align))]
+                struct FooAlign;
+                // Create an aligned buffer to use in order to synthesize
+                // pointers to `Foo`. We don't ever load values from these
+                // pointers - we just do arithmetic on them - so having a "real"
+                // block of memory as opposed to a validly-aligned-but-dangling
+                // pointer is only necessary to make Miri happy since we run it
+                // with "strict provenance" checking enabled.
+                let aligned_buf = Align::<_, FooAlign>::new([0u8; 1024]);
+                let with_elems = |elems| {
+                    let slc = NonNull::slice_from_raw_parts(NonNull::from(&aligned_buf.t), elems);
+                    #[allow(clippy::as_conversions)]
+                    NonNull::new(slc.as_ptr() as *mut Foo).unwrap()
+                };
+                let addr_of_slice_field = {
+                    #[allow(unused)]
+                    let f = None::<fn(NonNull<Foo>) -> NonNull<u8>>;
+                    $(
+                        // SAFETY: `test` promises to only call `f` with a `ptr`
+                        // to a valid `Foo`.
+                        let f: Option<fn(NonNull<Foo>) -> NonNull<u8>> = Some(|ptr: NonNull<Foo>| unsafe {
+                            NonNull::new(ptr::addr_of_mut!((*ptr.as_ptr()).1)).unwrap().cast::<u8>()
+                        });
+                        let _ = $elem_size;
+                    )?
+                    f
+                };
+
+                test::<Foo, _>(args, with_elems, addr_of_slice_field);
+            }};
+        }
+
+        // Every permutation of:
+        // - offset in [0, 4]
+        // - align in [1, 16]
+        // - elem_size in [0, 4] (plus no elem_size)
+        validate_against_rust!(0, 1);
+        validate_against_rust!(0, 1, 0);
+        validate_against_rust!(0, 1, 1);
+        validate_against_rust!(0, 1, 2);
+        validate_against_rust!(0, 1, 3);
+        validate_against_rust!(0, 1, 4);
+        validate_against_rust!(0, 2);
+        validate_against_rust!(0, 2, 0);
+        validate_against_rust!(0, 2, 1);
+        validate_against_rust!(0, 2, 2);
+        validate_against_rust!(0, 2, 3);
+        validate_against_rust!(0, 2, 4);
+        validate_against_rust!(0, 4);
+        validate_against_rust!(0, 4, 0);
+        validate_against_rust!(0, 4, 1);
+        validate_against_rust!(0, 4, 2);
+        validate_against_rust!(0, 4, 3);
+        validate_against_rust!(0, 4, 4);
+        validate_against_rust!(0, 8);
+        validate_against_rust!(0, 8, 0);
+        validate_against_rust!(0, 8, 1);
+        validate_against_rust!(0, 8, 2);
+        validate_against_rust!(0, 8, 3);
+        validate_against_rust!(0, 8, 4);
+        validate_against_rust!(0, 16);
+        validate_against_rust!(0, 16, 0);
+        validate_against_rust!(0, 16, 1);
+        validate_against_rust!(0, 16, 2);
+        validate_against_rust!(0, 16, 3);
+        validate_against_rust!(0, 16, 4);
+        validate_against_rust!(1, 1);
+        validate_against_rust!(1, 1, 0);
+        validate_against_rust!(1, 1, 1);
+        validate_against_rust!(1, 1, 2);
+        validate_against_rust!(1, 1, 3);
+        validate_against_rust!(1, 1, 4);
+        validate_against_rust!(1, 2);
+        validate_against_rust!(1, 2, 0);
+        validate_against_rust!(1, 2, 1);
+        validate_against_rust!(1, 2, 2);
+        validate_against_rust!(1, 2, 3);
+        validate_against_rust!(1, 2, 4);
+        validate_against_rust!(1, 4);
+        validate_against_rust!(1, 4, 0);
+        validate_against_rust!(1, 4, 1);
+        validate_against_rust!(1, 4, 2);
+        validate_against_rust!(1, 4, 3);
+        validate_against_rust!(1, 4, 4);
+        validate_against_rust!(1, 8);
+        validate_against_rust!(1, 8, 0);
+        validate_against_rust!(1, 8, 1);
+        validate_against_rust!(1, 8, 2);
+        validate_against_rust!(1, 8, 3);
+        validate_against_rust!(1, 8, 4);
+        validate_against_rust!(1, 16);
+        validate_against_rust!(1, 16, 0);
+        validate_against_rust!(1, 16, 1);
+        validate_against_rust!(1, 16, 2);
+        validate_against_rust!(1, 16, 3);
+        validate_against_rust!(1, 16, 4);
+        validate_against_rust!(2, 1);
+        validate_against_rust!(2, 1, 0);
+        validate_against_rust!(2, 1, 1);
+        validate_against_rust!(2, 1, 2);
+        validate_against_rust!(2, 1, 3);
+        validate_against_rust!(2, 1, 4);
+        validate_against_rust!(2, 2);
+        validate_against_rust!(2, 2, 0);
+        validate_against_rust!(2, 2, 1);
+        validate_against_rust!(2, 2, 2);
+        validate_against_rust!(2, 2, 3);
+        validate_against_rust!(2, 2, 4);
+        validate_against_rust!(2, 4);
+        validate_against_rust!(2, 4, 0);
+        validate_against_rust!(2, 4, 1);
+        validate_against_rust!(2, 4, 2);
+        validate_against_rust!(2, 4, 3);
+        validate_against_rust!(2, 4, 4);
+        validate_against_rust!(2, 8);
+        validate_against_rust!(2, 8, 0);
+        validate_against_rust!(2, 8, 1);
+        validate_against_rust!(2, 8, 2);
+        validate_against_rust!(2, 8, 3);
+        validate_against_rust!(2, 8, 4);
+        validate_against_rust!(2, 16);
+        validate_against_rust!(2, 16, 0);
+        validate_against_rust!(2, 16, 1);
+        validate_against_rust!(2, 16, 2);
+        validate_against_rust!(2, 16, 3);
+        validate_against_rust!(2, 16, 4);
+        validate_against_rust!(3, 1);
+        validate_against_rust!(3, 1, 0);
+        validate_against_rust!(3, 1, 1);
+        validate_against_rust!(3, 1, 2);
+        validate_against_rust!(3, 1, 3);
+        validate_against_rust!(3, 1, 4);
+        validate_against_rust!(3, 2);
+        validate_against_rust!(3, 2, 0);
+        validate_against_rust!(3, 2, 1);
+        validate_against_rust!(3, 2, 2);
+        validate_against_rust!(3, 2, 3);
+        validate_against_rust!(3, 2, 4);
+        validate_against_rust!(3, 4);
+        validate_against_rust!(3, 4, 0);
+        validate_against_rust!(3, 4, 1);
+        validate_against_rust!(3, 4, 2);
+        validate_against_rust!(3, 4, 3);
+        validate_against_rust!(3, 4, 4);
+        validate_against_rust!(3, 8);
+        validate_against_rust!(3, 8, 0);
+        validate_against_rust!(3, 8, 1);
+        validate_against_rust!(3, 8, 2);
+        validate_against_rust!(3, 8, 3);
+        validate_against_rust!(3, 8, 4);
+        validate_against_rust!(3, 16);
+        validate_against_rust!(3, 16, 0);
+        validate_against_rust!(3, 16, 1);
+        validate_against_rust!(3, 16, 2);
+        validate_against_rust!(3, 16, 3);
+        validate_against_rust!(3, 16, 4);
+        validate_against_rust!(4, 1);
+        validate_against_rust!(4, 1, 0);
+        validate_against_rust!(4, 1, 1);
+        validate_against_rust!(4, 1, 2);
+        validate_against_rust!(4, 1, 3);
+        validate_against_rust!(4, 1, 4);
+        validate_against_rust!(4, 2);
+        validate_against_rust!(4, 2, 0);
+        validate_against_rust!(4, 2, 1);
+        validate_against_rust!(4, 2, 2);
+        validate_against_rust!(4, 2, 3);
+        validate_against_rust!(4, 2, 4);
+        validate_against_rust!(4, 4);
+        validate_against_rust!(4, 4, 0);
+        validate_against_rust!(4, 4, 1);
+        validate_against_rust!(4, 4, 2);
+        validate_against_rust!(4, 4, 3);
+        validate_against_rust!(4, 4, 4);
+        validate_against_rust!(4, 8);
+        validate_against_rust!(4, 8, 0);
+        validate_against_rust!(4, 8, 1);
+        validate_against_rust!(4, 8, 2);
+        validate_against_rust!(4, 8, 3);
+        validate_against_rust!(4, 8, 4);
+        validate_against_rust!(4, 16);
+        validate_against_rust!(4, 16, 0);
+        validate_against_rust!(4, 16, 1);
+        validate_against_rust!(4, 16, 2);
+        validate_against_rust!(4, 16, 3);
+        validate_against_rust!(4, 16, 4);
     }
 
     #[test]
@@ -3191,9 +3678,15 @@ mod tests {
             };
         }
 
-        let layout = |base_size, align, _trailing_slice_elem_size| DstLayout {
-            _base_layout: Layout::from_size_align(base_size, align).unwrap(),
-            _trailing_slice_elem_size,
+        let layout = |offset, align, _trailing_slice_elem_size| DstLayout {
+            _align: NonZeroUsize::new(align).unwrap(),
+            _size_info: match _trailing_slice_elem_size {
+                None => SizeInfo::Sized { _size: offset },
+                Some(elem_size) => SizeInfo::SliceDst(TrailingSliceLayout {
+                    _offset: offset,
+                    _elem_size: elem_size,
+                }),
+            },
         };
 
         test!((), layout(0, 1, None));
