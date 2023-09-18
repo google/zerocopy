@@ -942,7 +942,7 @@ pub unsafe trait FromBytes: FromZeroes {
 /// is illegal for `AsBytes` types. Consider reducing the alignment of some
 /// fields by using types in the [`byteorder`] module, adding explicit struct
 /// fields where those padding bytes would be, or using `#[repr(packed)]`. See
-/// the Rust Reference's [page on type layout](type-layout) for more information
+/// the Rust Reference's page on [type layout] for more information
 /// about type layout and padding.
 ///
 /// # Safety
@@ -984,7 +984,7 @@ pub unsafe trait FromBytes: FromZeroes {
 ///   is not currently implemented for, e.g., `Option<&UnsafeCell<_>>`, but it
 ///   could be one day).
 ///
-/// [type-layout]: https://doc.rust-lang.org/reference/type-layout.html
+/// [type layout]: https://doc.rust-lang.org/reference/type-layout.html
 /// [Rust Reference]: https://doc.rust-lang.org/reference/type-layout.html
 /// [`UnsafeCell`]: core::cell::UnsafeCell
 pub unsafe trait AsBytes {
