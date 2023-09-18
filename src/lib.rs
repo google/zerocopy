@@ -484,21 +484,12 @@ impl DstLayout {
                 (0, size)
             }
             SizeInfo::SliceDst(TrailingSliceLayout { _offset: offset, _elem_size: elem_size }) => {
-                let align = self._align.get();
-
                 // Calculate the maximum number of bytes that could be consumed
                 // - any number of bytes larger than this will either not be a
                 // multiple of the alignment, or will be larger than
                 // `bytes_len`.
-                //
-                // Guaranteed not to:
-                // - divide by zero: `align` is non-zero.
-                // - overflow on multiplication: `usize::MAX >= bytes_len >=
-                //   (bytes_len / align) * align`
-                //
-                // TODO(#390): Compute this more efficiently.
-                #[allow(clippy::arithmetic_side_effects)]
-                let max_total_bytes = (bytes_len / align) * align;
+                let max_total_bytes =
+                    util::_round_down_to_next_multiple_of_alignment(bytes_len, self._align);
                 // Calculate the maximum number of bytes that could be consumed
                 // by the trailing slice.
                 //
