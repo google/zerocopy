@@ -3325,10 +3325,7 @@ mod tests {
             .for_each(validate_behavior);
     }
 
-    // TODO(#391): Optimize this test so we it consumes less time under Miri in
-    // CI.
     #[test]
-    #[cfg_attr(miri, ignore)]
     #[cfg(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)]
     fn test_validate_rust_layout() {
         use core::ptr::NonNull;
