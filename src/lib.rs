@@ -3290,6 +3290,25 @@ mod tests {
                         assert_eq!((addr + split_at) % align, 0, "{}", debug_str);
                     }
                 }
+            } else {
+                let min_size = match layout._size_info {
+                    SizeInfo::Sized { _size } => _size,
+                    SizeInfo::SliceDst(TrailingSliceLayout { _offset, .. }) => {
+                        _offset + util::core_layout::_padding_needed_for(_offset, layout._align)
+                    }
+                };
+
+                // If a cast is invalid, it is either because...
+                // 1. there are insufficent bytes at the given region for type:
+                let insufficient_bytes = bytes_len < min_size;
+                // 2. performing the cast would misalign type:
+                let base = match cast_type {
+                    _CastType::_Prefix => 0,
+                    _CastType::_Suffix => bytes_len,
+                };
+                let misaligned = (base + addr) % layout._align != 0;
+
+                assert!(insufficient_bytes || misaligned);
             }
         }
 
