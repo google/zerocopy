@@ -5,7 +5,7 @@
 #[path = "third_party/rust/layout.rs"]
 pub(crate) mod core_layout;
 
-use core::mem;
+use core::{mem, num::NonZeroUsize};
 
 pub(crate) trait AsAddress {
     fn addr(self) -> usize;
@@ -54,6 +54,27 @@ pub(crate) fn aligned_to<T: AsAddress, U>(t: T) -> bool {
     #[allow(clippy::arithmetic_side_effects)]
     let remainder = t.addr() % mem::align_of::<U>();
     remainder == 0
+}
+
+/// Round `n` down to the largest value `m` such that `m <= n` and `m % align ==
+/// 0`.
+///
+/// # Panics
+///
+/// May panic if `align` is not a power of two. Even if it doesn't panic in this
+/// case, it will produce nonsense results.
+#[inline(always)]
+pub(crate) const fn _round_down_to_next_multiple_of_alignment(
+    n: usize,
+    align: NonZeroUsize,
+) -> usize {
+    let align = align.get();
+    debug_assert!(align.is_power_of_two());
+
+    // Subtraction can't underflow because `align.get() >= 1`.
+    #[allow(clippy::arithmetic_side_effects)]
+    let mask = !(align - 1);
+    n & mask
 }
 
 #[cfg(test)]
@@ -105,4 +126,26 @@ pub(crate) mod testutil {
     }
 
     impl_known_layout!(AU64);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_round_down_to_next_multiple_of_alignment() {
+        fn alt_impl(n: usize, align: NonZeroUsize) -> usize {
+            let mul = n / align.get();
+            mul * align.get()
+        }
+
+        for align in [1, 2, 4, 8, 16] {
+            for n in 0..256 {
+                let align = NonZeroUsize::new(align).unwrap();
+                let want = alt_impl(n, align);
+                let got = _round_down_to_next_multiple_of_alignment(n, align);
+                assert_eq!(got, want, "round_down_to_next_multiple_of_alignment({n}, {align})");
+            }
+        }
+    }
 }
