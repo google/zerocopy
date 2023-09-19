@@ -239,6 +239,29 @@ jobs:
         rust-toolchain: nightly
       if: matrix.crate == 'zerocopy' && matrix.features == '--all-features' && matrix.toolchain == 'nightly'
 
+  kani:
+    runs-on: ubuntu-latest
+    name: Run tests under Kani
+    needs: generate_cache
+    steps:
+      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - name: Configure ZC_TOOLCHAIN environment variable
+        run: |
+          set -eo pipefail
+          echo "ZC_TOOLCHAIN=$(./cargo.sh --version nightly)" >> $GITHUB_ENV
+      - name: Install nigtly Rust toolchain (${{ env.ZC_TOOLCHAIN }})
+        uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
+        with:
+          toolchain: ${{ env.ZC_TOOLCHAIN }}
+      - run: |
+          set -eo pipefail
+          cargo install --locked kani-verifier
+          cargo kani setup
+          RUSTFLAGS="$ZC_NIGHTLY_RUSTFLAGS" ./cargo.sh +nightly kani                   \
+            --package zerocopy --all-features --output-format terse --randomize-layout \
+            --memory-safety-checks --overflow-checks --undefined-function-checks       \
+            --unwinding-checks
+
   check_fmt:
     runs-on: ubuntu-latest
     name: Check Rust formatting
@@ -428,3 +451,5 @@ jobs:
           cargo check --workspace --tests            &> /dev/null || true
           cargo metadata                             &> /dev/null || true
           cargo install cargo-readme --version 3.2.0 &> /dev/null || true
+          cargo install --locked kani-verifier       &> /dev/null || true
+          cargo kani setup                           &> /dev/null || true

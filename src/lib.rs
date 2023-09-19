@@ -147,7 +147,7 @@
 )]
 // In test code, it makes sense to weight more heavily towards concise, readable
 // code over correct or debuggable code.
-#![cfg_attr(test, allow(
+#![cfg_attr(any(test, kani), allow(
     // In tests, you get line numbers and have access to source code, so panic
     // messages are less important. You also often unwrap a lot, which would
     // make expect'ing instead very verbose.
