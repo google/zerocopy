@@ -23,6 +23,7 @@ const SOURCE_FILES_DIR: &str = "tests/ui-stable";
 const SOURCE_FILES_DIR: &str = "tests/ui-msrv";
 
 #[test]
+#[cfg_attr(miri, ignore)]
 fn ui() {
     let t = trybuild::TestCases::new();
     t.compile_fail(format!("{SOURCE_FILES_DIR}/*.rs"));
@@ -37,6 +38,7 @@ fn ui() {
 // tests the correct behavior when the "derive" feature is enabled.
 #[cfg(feature = "derive")]
 #[test]
+#[cfg_attr(miri, ignore)]
 fn ui_invalid_impls() {
     let t = trybuild::TestCases::new();
     t.compile_fail(format!("{SOURCE_FILES_DIR}/invalid-impls/*.rs"));

@@ -23,6 +23,7 @@ const SOURCE_FILES_GLOB: &str = "tests/ui-stable/*.rs";
 const SOURCE_FILES_GLOB: &str = "tests/ui-msrv/*.rs";
 
 #[test]
+#[cfg_attr(miri, ignore)]
 fn ui() {
     let t = trybuild::TestCases::new();
     t.compile_fail(SOURCE_FILES_GLOB);
