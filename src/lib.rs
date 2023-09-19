@@ -214,6 +214,21 @@ mod zerocopy {
     pub(crate) use crate::*;
 }
 
+#[cfg(not(any(
+    target_arch = "i686",
+    target_arch = "x86",
+    target_arch = "x86_64",
+    target_arch = "arm",
+    target_arch = "aarch64",
+)))]
+compile_error!(
+r#"Zerocopy has not been proven sound on this architecture.
+
+This doesn't mean that it is unsound - just that we haven't gotten around to
+proving it sound. If you need support for this architecture, let us know and
+we'll prioritize it: https://github.com/google/zerocopy/issues/383"#
+);
+
 #[rustversion::nightly]
 #[cfg(all(test, not(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)))]
 const _: () = {
