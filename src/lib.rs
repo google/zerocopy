@@ -3362,8 +3362,7 @@ mod tests {
                 DstLayout { _size_info: size_info, _align: args.align }
             };
 
-            const MAX_ELEMS: usize = if cfg!(miri) { 16 } else { 128 };
-            for elems in 0..MAX_ELEMS {
+            for elems in 0..128 {
                 let ptr = with_elems(elems);
 
                 if let Some(addr_of_slice_field) = addr_of_slice_field {
@@ -3386,7 +3385,7 @@ mod tests {
                 };
 
                 // Avoid expensive allocation when running under Miri.
-                let assert_msg = if cfg!(miri) {
+                let assert_msg = if !cfg!(miri) {
                     format!("\n{args:?}\nsize:{size}, align:{align}")
                 } else {
                     String::new()
@@ -3423,7 +3422,7 @@ mod tests {
                         ._validate_cast_and_convert_metadata(addr, size, _CastType::_Prefix)
                         .unwrap();
                     // Avoid expensive allocation when running under Miri.
-                    let assert_msg = if cfg!(miri) {
+                    let assert_msg = if !cfg!(miri) {
                         format!(
                             "{}\nvalidate_cast_and_convert_metadata({addr}, {size})",
                             assert_msg
