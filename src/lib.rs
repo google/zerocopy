@@ -3626,11 +3626,6 @@ mod tests {
                     let slc_field_ptr = addr_of_slice_field(ptr).as_ptr();
                     // SAFETY: Both `slc_field_ptr` and `ptr` are pointers to
                     // the same valid Rust object.
-                    //
-                    // TODO(https://github.com/rust-lang/rust-clippy/issues/11534):
-                    // Remove this `allow` once Clippy recognizes this block as
-                    // having a safety comment.
-                    #[allow(clippy::undocumented_unsafe_blocks)]
                     let offset: usize =
                         unsafe { slc_field_ptr.byte_offset_from(ptr.as_ptr()).try_into().unwrap() };
                     assert_eq!(offset, args.offset);

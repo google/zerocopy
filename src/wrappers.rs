@@ -268,17 +268,13 @@ impl<T> Unalign<T> {
 
         impl<T> Drop for WriteBackOnDrop<T> {
             fn drop(&mut self) {
-                // SAFETY: See inline comments.
-                unsafe {
-                    // SAFETY: We never use `copy` again as required by
-                    // `ManuallyDrop::take`.
-                    let copy = ManuallyDrop::take(&mut self.copy);
-                    // SAFETY: `slf` is the raw pointer value of `self`. We know
-                    // it is valid for writes and properly aligned because
-                    // `self` is a mutable reference, which guarantees both of
-                    // these properties.
-                    ptr::write(self.slf, Unalign::new(copy));
-                }
+                // SAFETY: We never use `copy` again as required by
+                // `ManuallyDrop::take`.
+                let copy = unsafe { ManuallyDrop::take(&mut self.copy) };
+                // SAFETY: `slf` is the raw pointer value of `self`. We know it
+                // is valid for writes and properly aligned because `self` is a
+                // mutable reference, which guarantees both of these properties.
+                unsafe { ptr::write(self.slf, Unalign::new(copy)) };
             }
         }
 
