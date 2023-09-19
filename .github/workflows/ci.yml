@@ -168,14 +168,11 @@ jobs:
         # Run under both the stacked borrows model (default) and under the tree 
         # borrows model to ensure we're compliant with both.
         for EXTRA_FLAGS in "" "-Zmiri-tree-borrows"; do
-          # Skip the `ui` test since it invokes the compiler, which we can't do
-          # from Miri (and wouldn't want to do anyway).
           MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" ./cargo.sh +${{ matrix.toolchain }} \
             miri test \
             --package ${{ matrix.crate }} \
             --target ${{ matrix.target }} \
-            ${{ matrix.features }} \
-            -- --skip ui
+            ${{ matrix.features }}
         done
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
