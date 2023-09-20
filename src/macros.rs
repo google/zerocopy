@@ -204,11 +204,21 @@ macro_rules! impl_known_layout {
     };
     ($($ty:ty),*) => { $(impl_known_layout!(@inner , => $ty);)* };
     (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?)? => $ty:ty) => {
-        impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> sealed::KnownLayoutSealed for $ty {}
-        // SAFETY: Delegates safety to `DstLayout::for_type`.
-        unsafe impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> KnownLayout for $ty {
-            const LAYOUT: DstLayout = DstLayout::for_type::<$ty>();
-        }
+        const _: () = {
+            use core::ptr::NonNull;
+
+            impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> sealed::KnownLayoutSealed for $ty {}
+            // SAFETY: Delegates safety to `DstLayout::for_type`.
+            unsafe impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> KnownLayout for $ty {
+                const LAYOUT: DstLayout = DstLayout::for_type::<$ty>();
+
+                // SAFETY: `.cast` preserves address and provenance.
+                #[inline(always)]
+                fn raw_from_ptr_len(bytes: NonNull<u8>, _elems: usize) -> NonNull<Self> {
+                    bytes.cast::<Self>()
+                }
+            }
+        };
     };
 }
 
@@ -225,10 +235,25 @@ macro_rules! impl_known_layout {
 ///   and this operation must preserve referent size (ie, `size_of_val_raw`).
 macro_rules! unsafe_impl_known_layout {
     ($($tyvar:ident: ?Sized + KnownLayout =>)? #[repr($repr:ty)] $ty:ty) => {
-        impl<$($tyvar: ?Sized + KnownLayout)?> sealed::KnownLayoutSealed for $ty {}
-        unsafe impl<$($tyvar: ?Sized + KnownLayout)?> KnownLayout for $ty {
-            const LAYOUT: DstLayout = <$repr as KnownLayout>::LAYOUT;
-        }
+        const _: () = {
+            use core::ptr::NonNull;
+
+            impl<$($tyvar: ?Sized + KnownLayout)?> sealed::KnownLayoutSealed for $ty {}
+            unsafe impl<$($tyvar: ?Sized + KnownLayout)?> KnownLayout for $ty {
+                const LAYOUT: DstLayout = <$repr as KnownLayout>::LAYOUT;
+
+                // SAFETY: All operations preserve address and provenance. Caller
+                // has promised that the `as` cast preserves size.
+                #[inline(always)]
+                #[allow(unused_qualifications)] // for `core::ptr::NonNull`
+                fn raw_from_ptr_len(bytes: NonNull<u8>, elems: usize) -> NonNull<Self> {
+                    #[allow(clippy::as_conversions)]
+                    let ptr = <$repr>::raw_from_ptr_len(bytes, elems).as_ptr() as *mut Self;
+                    // SAFETY: `ptr` was converted from `bytes`, which is non-null.
+                    unsafe { NonNull::new_unchecked(ptr) }
+                }
+            }
+        };
     };
 }
 

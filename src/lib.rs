@@ -179,6 +179,7 @@ mod wrappers;
 
 #[cfg(feature = "byteorder")]
 pub use crate::byteorder::*;
+use crate::util::aligned_to;
 pub use crate::wrappers::*;
 #[cfg(any(feature = "derive", test))]
 pub use zerocopy_derive::*;
@@ -195,7 +196,8 @@ use core::{
         NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize, Wrapping,
     },
     ops::{Deref, DerefMut},
-    ptr, slice,
+    ptr::{self, NonNull},
+    slice,
 };
 
 #[cfg(feature = "alloc")]
@@ -203,8 +205,17 @@ extern crate alloc;
 #[cfg(feature = "alloc")]
 use {
     alloc::{boxed::Box, vec::Vec},
-    core::{alloc::Layout, ptr::NonNull},
+    core::alloc::Layout,
 };
+
+// For each polyfill, as soon as the corresponding feature is stable, the
+// polyfill import will be unused because method/function resolution will prefer
+// the inherent method/function over a trait method/function. Thus, we suppress
+// the `unused_imports` warning.
+//
+// See the documentation on `util::polyfills` for more information.
+#[allow(unused_imports)]
+use crate::util::polyfills::{NonNullExt as _, NonNullSliceExt as _};
 
 // This is a hack to allow zerocopy-derive derives to work in this crate. They
 // assume that zerocopy is linked as an extern crate, so they access items from
@@ -300,8 +311,11 @@ impl SizeInfo {
     }
 }
 
-#[cfg_attr(test, derive(Copy, Clone, Debug))]
-enum _CastType {
+#[doc(hidden)]
+#[derive(Copy, Clone)]
+#[cfg_attr(test, derive(Debug))]
+#[allow(missing_debug_implementations)]
+pub enum _CastType {
     _Prefix,
     _Suffix,
 }
@@ -573,12 +587,125 @@ impl DstLayout {
 pub unsafe trait KnownLayout: sealed::KnownLayoutSealed {
     #[doc(hidden)]
     const LAYOUT: DstLayout;
+
+    /// TODO
+    ///
+    /// # Safety
+    ///
+    /// The caller must ensure that:
+    /// - `bytes` must point to a memory region which lives inside a single
+    ///   allocation
+    /// - `bytes.len()` must fit in an `isize`
+    /// - `byetes` must not wrap around the address space (in other words, the
+    ///   base address plus the length must not overflow `usize`)
+    ///
+    /// The caller may assume that, if `try_cast_from` returns `Some((ptr,
+    /// split_at))`:
+    /// - `ptr` is validly-aligned for `Self`
+    /// - `ptr` has a valid size for `Self` (TODO: What does this mean,
+    ///   exactly?)
+    /// - `ptr` has the same provenance as `bytes`
+    /// - `ptr` refers to a region of bytes which is a subset of the region
+    ///   referred to by `bytes`
+    /// - If the region of bytes referred to by `bytes` is split into `[0,
+    ///   split_at)` and `[split_at, bytes.len())`, referred to as `a` and `b`
+    ///   respectively:
+    ///   - If `cast_type` is `Prefix`, then `a` refers to the same byte region
+    ///     as `ptr`
+    ///   - If `cast_type` is `Suffix`, then `b` refers to the same byte region
+    ///     as `ptr`
+    /// - TODO: Others?
+    #[doc(hidden)]
+    #[inline(always)]
+    fn try_cast_from(bytes: NonNull<[u8]>, cast_type: _CastType) -> Option<(NonNull<Self>, usize)> {
+        // TODO: Thread lemmas through in order to prove that postconditions are
+        // upheld.
+        let base = bytes.cast::<u8>();
+        let addr = util::AsAddress::addr(base.as_ptr());
+        // TODO(#67): Remove this allow. See NonNulSlicelExt for more details.
+        #[allow(unstable_name_collisions)]
+        let (elems, split_at) =
+            Self::LAYOUT._validate_cast_and_convert_metadata(addr, bytes.len(), cast_type)?;
+        let slf = match cast_type {
+            _CastType::_Prefix => base,
+            _CastType::_Suffix => {
+                // SAFETY: All of `add`'s preconditions are upheld:
+                // - "Both the starting and resulting pointer must be either in
+                //   bounds or one byte past the end of the same allocated
+                //   object." `validate_cast_and_convert_metadata` promises to
+                //   return `split_at` in bounds of its length argument (in this
+                //   case, `bytes.len()`). The caller has promised that `bytes`
+                //   (and thus `base`) points to a single allocation of at least
+                //   `bytes.len()` bytes.
+                // - "The computed offset, in bytes, cannot overflow an
+                //   `isize`." The caller has promised that `bytes.len()` does
+                //   not overflow `isize`. Thus, `isize::MAX >= bytes.len() >=
+                //   split_at`.
+                // - "The offset being in bounds cannot rely on 'wrapping
+                //   around' the address space. That is, the infinite-precision
+                //   sum must fit in a `usize`." The caller promises this of
+                //   `bytes` and `bytes.len()`. Since `split_at <= bytes.len()`,
+                //   the same is true of this call.
+                let slf = unsafe { base.as_ptr().add(split_at) };
+                // SAFETY: Since `add` is not allowed to wrap around, the
+                // preceding line produces a pointer whose address is greater
+                // than or equal to that of `base`. Since `base` is a `NonNull`,
+                // `slf` is also non-null.
+                unsafe { NonNull::new_unchecked(slf) }
+            }
+        };
+
+        // TODO: Assert alignment here.
+
+        // SAFETY: `raw_from_ptr_len` promises that it preserves provenance.
+        // `slf` was produced only by pointer casts and a use of the raw pointer
+        // `add` method, all of which preserve provenance. Thus, the pointer
+        // produced by this call to `raw_from_ptr_len` has the same provenance
+        // as the argument `bytes`.
+        //
+        // TODO: Other postconditions.
+        Some((Self::raw_from_ptr_len(slf, elems), split_at))
+    }
+
+    /// TODO
+    ///
+    /// # Safety
+    ///
+    /// This function has the same safety preconditions and postconditions as
+    /// [`try_cast_from`].
+    ///
+    /// [`try_cast_from`]: KnownLayout::try_cast_from
+    #[doc(hidden)]
+    #[inline(always)]
+    fn try_cast_from_no_prefix_suffix(bytes: NonNull<[u8]>) -> Option<NonNull<Self>> {
+        // TODO(#67): Remove this allow. See NonNulSlicelExt for more details.
+        #[allow(unstable_name_collisions)]
+        match Self::try_cast_from(bytes, _CastType::_Prefix) {
+            Some((slf, split_at)) if split_at == bytes.len() => Some(slf),
+            Some(_) | None => None,
+        }
+    }
+
+    /// SAFETY: The returned pointer has the same address and provenance as
+    /// `bytes`. If `Self` is a DST, the returned pointer's referent has `elems`
+    /// elements in its trailing slice. If `Self` is sized, `elems` is ignored.
+    #[doc(hidden)]
+    fn raw_from_ptr_len(bytes: NonNull<u8>, elems: usize) -> NonNull<Self>;
 }
 
 impl<T: KnownLayout> sealed::KnownLayoutSealed for [T] {}
 // SAFETY: Delegates safety to `DstLayout::for_slice`.
 unsafe impl<T: KnownLayout> KnownLayout for [T] {
     const LAYOUT: DstLayout = DstLayout::for_slice::<T>();
+
+    // SAFETY: `.cast` preserves address and provenance. The returned pointer
+    // refers to an object with `elems` elements by construction.
+    #[inline(always)]
+    fn raw_from_ptr_len(data: NonNull<u8>, elems: usize) -> NonNull<Self> {
+        // TODO(#67): Remove this allow. See NonNullExt for more details.
+        #[allow(unstable_name_collisions)]
+        NonNull::slice_from_raw_parts(data.cast::<T>(), elems)
+    }
 }
 
 #[rustfmt::skip]
@@ -3707,6 +3834,102 @@ mod tests {
         test!([()], layout(0, 1, Some(0)));
         test!([u8], layout(0, 1, Some(1)));
         test!(str, layout(0, 1, Some(1)));
+    }
+
+    #[test]
+    fn test_known_layout_try_cast_from_soundness() {
+        // This test is designed so that if `KnownLayout::try_cast_from_xxx` are
+        // buggy, it will manifest as unsoundness that Miri can detect.
+
+        // - If `size_of::<T>() == 0`, `N == 4`
+        // - Else, `N == 4 * size_of::<T>()`
+        fn test<const N: usize, T: KnownLayout + FromBytes>() {
+            let mut bytes = [MaybeUninit::<u8>::uninit(); N];
+            let initialized = [MaybeUninit::new(0u8); N];
+            for start in 0..=bytes.len() {
+                for end in start..=bytes.len() {
+                    // Set all bytes to uninitialized other than those in the
+                    // range we're going to pass to `try_cast_from`. This allows
+                    // Miri to detect out-of-bounds reads because they read
+                    // uninitialized memory. Without this, some out-of-bounds
+                    // reads would still be in-bounds of `bytes`, and so might
+                    // spuriously be accepted.
+                    bytes = [MaybeUninit::<u8>::uninit(); N];
+                    let bytes = &mut bytes[start..end];
+                    // Initialize only the byte range we're going to pass to
+                    // `try_cast_from`.
+                    bytes.copy_from_slice(&initialized[start..end]);
+
+                    let bytes = {
+                        let bytes: *const [MaybeUninit<u8>] = bytes;
+                        #[allow(clippy::as_conversions)]
+                        let bytes = bytes as *const [u8];
+                        // SAFETY: We just initialized these bytes to valid
+                        // `u8`s.
+                        unsafe { &*bytes }
+                    };
+
+                    for cast_type in [_CastType::_Prefix, _CastType::_Suffix] {
+                        if let Some((slf, split_at)) =
+                            T::try_cast_from(NonNull::from(bytes), cast_type)
+                        {
+                            // SAFETY: TODO
+                            let t: T = unsafe { ptr::read(slf.as_ptr()) };
+
+                            let bytes = {
+                                let len = mem::size_of_val(&t);
+                                let t: *const T = &t;
+                                // SAFETY:
+                                // - We know `t`'s bytes are all initialized
+                                //   because we just read it from `slf`, which
+                                //   points to an initialized range of bytes. If
+                                //   there's a bug and this doesn't hold, then
+                                //   that's exactly what we're hoping Miri will
+                                //   catch!
+                                // - Since `T: FromBytes`, `T` doesn't contain
+                                //   any `UnsafeCell`s, so it's okay for `t: T`
+                                //   and a `&[u8]` to the same memory to be
+                                //   alive concurrently.
+                                unsafe { core::slice::from_raw_parts(t.cast::<u8>(), len) }
+                            };
+
+                            // This assertion ensures that `t`'s bytes are read
+                            // and compared to another value, which in turn
+                            // ensures that Miri gets a chance to notice if any
+                            // of `t`'s bytes are uninitialized, which they
+                            // shouldn't be (see the comment above).
+                            let type_name = core::any::type_name::<T>();
+                            assert_eq!(bytes, vec![0u8; bytes.len()], "type:{type_name}, start:{start}, end:{end}, cast_type:{cast_type:?}, slf:{slf:?}, split_at:{split_at}");
+                        }
+                    }
+                }
+            }
+        }
+
+        macro_rules! test {
+            ($($ty:ty),*) => {
+                $({
+                    const S: usize = core::mem::size_of::<$ty>();
+                    const N: usize = if S == 0 { 4 } else { S * 4 };
+                    test::<N, $ty>();
+                })*
+            };
+        }
+
+        test!(());
+        test!(u8, u16, u32, u64, u128, usize, AU64);
+        test!(i8, i16, i32, i64, i128, isize);
+        test!(f32, f64);
+
+        // TODO:
+        // - What other conditions should we test for?
+        //   - Arithmetic overflow
+        //   - isize overflow (especially important given that the underlying
+        //     function doesn't operate on isizes)
+        //   - address space wrap-around
+        // - Leave a TODO to test with slice DSTs once we have any that
+        //   implement `FromBytes`
+        // - In `test::<T>`, test with slices of `T` as well as just `T`
     }
 
     #[test]
