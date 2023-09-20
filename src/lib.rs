@@ -84,6 +84,27 @@
 //!   may be removed at any point in the future.
 //!
 //! [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
+//!
+//! # Security Ethos
+//!
+//! Zerocopy is expressly designed for use in security-critical contexts. We
+//! strive to ensure that that zerocopy code is sound under Rust's current
+//! memory model, and *any future memory model*. We ensure this by:
+//! - **...not 'guessing' about Rust's semantics.**   
+//!   We annotate `unsafe` code with a precise rationale for its soundness that
+//!   cites a relevant section of Rust's official documentation. When Rust's
+//!   documented semantics are unclear, we work with the Rust Operational
+//!   Semantics Team to clarify Rust's documentation.
+//! - **...rigorously testing our implementation.**   
+//!   We run tests using [Miri], ensuring that zerocopy is sound across a wide
+//!   array of supported target platforms of varying endianness and pointer
+//!   width, and across both current and experimental memory models of Rust.
+//! - **...formally proving the correctness of our implementation.**   
+//!   We apply formal verification tools like [Kani][kani] to prove zerocopy's
+//!   correctness.
+//!
+//! [Miri]: https://github.com/rust-lang/miri
+//! [Kani]: https://github.com/model-checking/kani
 
 // Sometimes we want to use lints which were added after our MSRV.
 // `unknown_lints` is `warn` by default and we deny warnings in CI, so without
