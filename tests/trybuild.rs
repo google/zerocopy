@@ -2,31 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// UI tests depend on the exact error messages emitted by rustc, but those error
-// messages are not stable, and sometimes change between Rust versions. Thus, we
-// maintain one set of UI tests for each Rust version that we test in CI, and we
-// pin to specific versions in CI (a specific stable version, a specific date of
-// the nightly compiler, and a specific MSRV). Updating those pinned versions
-// may also require updating these tests.
-// - `tests/ui-nightly` - Contains the source of truth for our UI test source
-//   files (`.rs`), and contains `.err` and `.out` files for nightly
-// - `tests/ui-stable` - Contains symlinks to the `.rs` files in
-//   `tests/ui-nightly`, and contains `.err` and `.out` files for stable
-// - `tests/ui-msrv` - Contains symlinks to the `.rs` files in
-//   `tests/ui-nightly`, and contains `.err` and `.out` files for MSRV
-
-#[rustversion::nightly]
-const SOURCE_FILES_DIR: &str = "tests/ui-nightly";
-#[rustversion::stable(1.69.0)]
-const SOURCE_FILES_DIR: &str = "tests/ui-stable";
-#[rustversion::stable(1.61.0)]
-const SOURCE_FILES_DIR: &str = "tests/ui-msrv";
+use testutil::ToolchainVersion;
 
 #[test]
 #[cfg_attr(miri, ignore)]
 fn ui() {
+    let version = ToolchainVersion::extract_from_pwd().unwrap();
+    // See the doc comment on this method for an explanation of what this does
+    // and why we store source files in different directories.
+    let source_files_dirname = version.get_ui_source_files_dirname_and_maybe_print_warning();
+
     let t = trybuild::TestCases::new();
-    t.compile_fail(format!("{SOURCE_FILES_DIR}/*.rs"));
+    t.compile_fail(format!("tests/{source_files_dirname}/*.rs"));
 }
 
 // The file `invalid-impls.rs` directly includes `src/macros.rs` in order to
@@ -40,6 +27,11 @@ fn ui() {
 #[test]
 #[cfg_attr(miri, ignore)]
 fn ui_invalid_impls() {
+    let version = ToolchainVersion::extract_from_pwd().unwrap();
+    // See the doc comment on this method for an explanation of what this does
+    // and why we store source files in different directories.
+    let source_files_dirname = version.get_ui_source_files_dirname_and_maybe_print_warning();
+
     let t = trybuild::TestCases::new();
-    t.compile_fail(format!("{SOURCE_FILES_DIR}/invalid-impls/*.rs"));
+    t.compile_fail(format!("tests/{source_files_dirname}/invalid-impls/*.rs"));
 }
