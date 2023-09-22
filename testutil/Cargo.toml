@@ -1,0 +1,15 @@
+# Copyright 2023 The Fuchsia Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+[package]
+name = "testutil"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+cargo_metadata = "0.18.0"
+rustc_version = "0.4.0"
+# Pin to 0.3.0 because more recent versions require a Rust version more recent
+# than our MSRV.
+time = { version = "=0.3.0", default-features = false, features = ["formatting", "macros", "parsing"] }
