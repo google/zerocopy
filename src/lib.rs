@@ -173,8 +173,8 @@ pub mod byteorder;
 #[cfg(any(feature = "derive", test))]
 #[doc(hidden)]
 pub mod derive_util;
-// TODO(#252): If we make this pub, come up with a better name.
 mod util;
+// TODO(#252): If we make this pub, come up with a better name.
 mod wrappers;
 
 #[cfg(feature = "byteorder")]
