@@ -149,3 +149,53 @@ mod tests {
         }
     }
 }
+
+#[cfg(kani)]
+mod proofs {
+    use super::*;
+
+    #[kani::proof]
+    fn prove_round_down_to_next_multiple_of_alignment() {
+        fn model_impl(n: usize, align: NonZeroUsize) -> usize {
+            assert!(align.get().is_power_of_two());
+            let mul = n / align.get();
+            mul * align.get()
+        }
+
+        let align: NonZeroUsize = kani::any();
+        kani::assume(align.get().is_power_of_two());
+        let n: usize = kani::any();
+
+        let expected = model_impl(n, align);
+        let actual = _round_down_to_next_multiple_of_alignment(n, align);
+        assert_eq!(expected, actual, "round_down_to_next_multiple_of_alignment({n}, {align})");
+    }
+
+    // Restricted to nightly since we use the unstable `usize::next_multiple_of`
+    // in our model implementation.
+    #[cfg(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)]
+    #[kani::proof]
+    fn prove_padding_needed_for() {
+        fn model_impl(len: usize, align: NonZeroUsize) -> usize {
+            let padded = len.next_multiple_of(align.get());
+            let padding = padded - len;
+            padding
+        }
+
+        let align: NonZeroUsize = kani::any();
+        kani::assume(align.get().is_power_of_two());
+        let len: usize = kani::any();
+        // Constrain `len` to valid Rust lengths, since our model implementation
+        // isn't robust to overflow.
+        kani::assume(len <= isize::MAX as usize);
+        kani::assume(align.get() < 1 << 29);
+
+        let expected = model_impl(len, align);
+        let actual = core_layout::_padding_needed_for(len, align);
+        assert_eq!(expected, actual, "padding_needed_for({len}, {align})");
+
+        let padded_len = actual + len;
+        assert_eq!(padded_len % align, 0);
+        assert!(padded_len / align >= len / align);
+    }
+}
