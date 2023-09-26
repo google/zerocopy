@@ -5,7 +5,234 @@
 #[path = "third_party/rust/layout.rs"]
 pub(crate) mod core_layout;
 
-use core::{mem, num::NonZeroUsize};
+use core::{
+    fmt::{Debug, Formatter},
+    marker::PhantomData,
+    mem,
+    num::NonZeroUsize,
+    ptr::{self, NonNull},
+};
+
+use crate::{KnownLayout, _CastType};
+
+/// A raw pointer with more restrictions.
+///
+/// `Ptr<T>` is similar to `NonNull<T>`, but it is more restrictive in the
+/// following ways:
+/// - It must derive from a valid allocation
+/// - It must reference a byte range which is contained inside the allocation
+///   from which it derives
+///   - As a consequence, the byte range it references must have a size which
+///     does not overflow `isize`
+/// - It must satisfy `T`'s alignment requirement
+///
+/// Thanks to these restrictions, it is easier to prove the soundness of some
+/// operations using `Ptr`s.
+pub(crate) struct Ptr<'a, T: 'a + ?Sized> {
+    // INVARIANTS:
+    // - `ptr` is derived from some valid Rust allocation, `A`
+    // - `ptr` has the same provenance as `A`
+    // - `ptr` addresses a byte range which is entirely contained in `A`
+    // - `ptr` addresses a byte range which is not longer than `isize::MAX`
+    // - `ptr` addresses a byte range which does not wrap around the address
+    //   space
+    // - `ptr` is validly-aligned for `T`
+    // - `A` is guaranteed to live for at least `'a`
+    // - `T: 'a`
+    ptr: NonNull<T>,
+    _marker: PhantomData<&'a ()>,
+}
+
+impl<'a, T: ?Sized> Copy for Ptr<'a, T> {}
+impl<'a, T: ?Sized> Clone for Ptr<'a, T> {
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+
+impl<'a, T: ?Sized> Ptr<'a, T> {
+    /// Returns a shared reference to the value.
+    ///
+    /// # Safety
+    ///
+    /// - The referenced memory must contain a validly-initialized `T`.
+    /// - The referenced memory must not also be referenced by any mutable
+    ///   references during the lifetime `'a`.
+    /// - There must not exist any references to the same memory region which
+    ///   contain [`UnsafeCell`]s at byte ranges which are not identical to the
+    ///   byte ranges at which `T` contains `UnsafeCell`s.
+    ///
+    /// [`UnsafeCell`]: core::cell::UnsafeCell
+    pub(crate) unsafe fn _as_ref(&self) -> &'a T {
+        // SAFETY:
+        // - By invariant, `self.ptr` is properly-aligned for `T`.
+        // - By invariant, `self.ptr` is "dereferenceable" in that it points to
+        //   a single allocation
+        // - By invariant, the allocation is live for `'a`
+        // - The caller promises that no mutable references exist to this region
+        //   during `'a`
+        // - The caller promises that `UnsafeCell`s match exactly
+        // - The caller promises that the memory region contains a
+        //   validly-intialized `T`
+        unsafe { self.ptr.as_ref() }
+    }
+}
+
+impl<'a, T: 'a> Ptr<'a, [T]> {
+    pub(crate) fn _len(&self) -> usize {
+        self.ptr.len()
+    }
+}
+
+impl<'a> Ptr<'a, [u8]> {
+    /// TODO
+    ///
+    /// # Safety
+    ///
+    /// TODO: Postconditions
+    pub(crate) fn _try_cast_into<U: 'a + ?Sized + KnownLayout>(
+        &self,
+        cast_type: _CastType,
+    ) -> Option<(Ptr<'a, U>, usize)> {
+        let (elems, split_at) = U::LAYOUT._validate_cast_and_convert_metadata(
+            AsAddress::addr(self.ptr.as_ptr()),
+            self._len(),
+            cast_type,
+        )?;
+        let offset = match cast_type {
+            _CastType::_Prefix => 0,
+            _CastType::_Suffix => split_at,
+        };
+
+        let ptr = self.ptr.cast::<u8>().as_ptr();
+        // SAFETY: `offset` is either `0` or `split_at`.
+        // `validate_cast_and_convert_metadata` promises that `split_at` is in
+        // the range `[0, bytes_len)`, where `bytes_len` is the length argument
+        // to `validate_cast_and_convert_metadata`. Thus, in both cases,
+        // `offset` is in `[0, bytes_len)`. For `bytes_len`, we pass the length
+        // of `self`. Thus:
+        // - The resulting pointer is in or one byte past the end of the same
+        //   byte range as `self.ptr`. Since, by invariant, `self.ptr` addresses
+        //   a byte range entirely contained within a single allocation, the
+        //   pointer resulting from this operation is within or one byte past
+        //   the end of that same allocation.
+        // - By invariant, `bytes_len <= isize::MAX`. Since `offset <=
+        //   bytes_len`, `offset <= isize::MAX`.
+        // - By invariant, `self.ptr` addresses a byte range which does not wrap
+        //   around the address space. This means that the base pointer plus the
+        //   `bytes_len` does not overflow `usize`. Since `offset <= bytes_len`,
+        //   this addition does not overflow `usize`.
+        let base = unsafe { ptr.add(offset) };
+        // SAFETY: Since `add` is not allowed to wrap around, the preceding line
+        // produces a pointer whose address is greater than or equal to that of
+        // `ptr`. Since `ptr` is a `NonNull`, `base` is also non-null.
+        let base = unsafe { NonNull::new_unchecked(base) };
+        let ptr = U::raw_from_ptr_len(base, elems);
+        // SAFETY:
+        // - By invariant, `self.ptr` is derived from some valid Rust
+        //   allocation, `A`, and has the same provenance as `A`. All operations
+        //   performed on `self.ptr` and values derived from it in this method
+        //   preserve provenance, so:
+        //   - `ptr` is derived from a valid Rust allocation, `A`.
+        //   - `ptr` has the same provenance as `A`.
+        // - `validate_cast_and_convert_metadata` promises that the object
+        //   described by `elems` and `split_at` lives at a byte range which is
+        //   a subset of the input byte range. Thus:
+        //   - Since, by invariant, `self.ptr` addresses a byte range entirely
+        //     contained in `A`, so does `ptr`.
+        //   - Since, by invariant, `self.ptr` addresses a range not longer than
+        //     `isize::MAX` bytes, so does `ptr`.
+        //   - Since, by invariant, `self.ptr` addresses a range which does not
+        //     wrap around the address space, so does `ptr`.
+        // - `validate_cast_and_convert_metadata` promises that the object
+        //   described by `split_at` is validly-aligned for `U`.
+        // - By invariant on `self`, `A` is guaranteed to live for at least
+        //   `'a`.
+        // - `U: 'a` by trait bound.
+        Some((Ptr { ptr, _marker: PhantomData }, split_at))
+    }
+
+    /// TODO
+    ///
+    /// # Safety
+    ///
+    /// This function has the same safety postconditions as
+    /// [`try_cast_into`].
+    ///
+    /// [`try_cast_into`]: Ptr::try_cast_into
+    #[doc(hidden)]
+    #[inline(always)]
+    pub(crate) fn _try_cast_into_no_prefix_suffix<U: 'a + ?Sized + KnownLayout>(
+        &self,
+    ) -> Option<Ptr<'a, U>> {
+        // TODO(#67): Remove this allow. See NonNulSlicelExt for more details.
+        #[allow(unstable_name_collisions)]
+        match self._try_cast_into(_CastType::_Prefix) {
+            Some((slf, split_at)) if split_at == self._len() => Some(slf),
+            Some(_) | None => None,
+        }
+    }
+}
+
+impl<'a, T: 'a + ?Sized> From<&'a T> for Ptr<'a, T> {
+    #[inline(always)]
+    fn from(t: &'a T) -> Ptr<'a, T> {
+        // SAFETY: `t` points to a valid Rust allocation, `A`, by construction.
+        // Thus:
+        // - `ptr` is derived from `A`
+        // - Since we use `NonNull::from`, which preserves provenance, `ptr` has
+        //   the same provenance as `A`
+        // - Since `NonNull::from` creates a pointer which addresses the same
+        //   bytes as `t`, `ptr` addresses a byte range entirely contained in
+        //   (in this case, identical to) `A`
+        // - Since `t: &T`, it addresses no more than `isize::MAX` bytes. [1]
+        // - Since `t: &T`, it addresses a byte range which does not wrap around
+        //   the address space. [2]
+        // - Since it is constructed from a valid `&T`, `ptr` is validly-aligned
+        //   for `T`
+        // - Since `t: &'a T`, the allocation `A` is guaranteed to live for at
+        //   least `'a`
+        // - `T: 'a` by trait bound
+        //
+        // TODO:
+        // - Does `NonNull` promise that `from` preserves provenance?
+        // - [1] Where does the reference document that allocations fit in
+        //   `isize`?
+        // - [2] Where does the reference document that allocations don't wrap
+        //   around the address space?
+        Ptr { ptr: NonNull::from(t), _marker: PhantomData }
+    }
+}
+
+impl<'a, T: 'a + ?Sized> Debug for Ptr<'a, T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
+        self.ptr.fmt(f)
+    }
+}
+
+// The caller must ensure that:
+// - `bytes` must point to a memory region which lives inside a single
+//   allocation
+// - `bytes.len()` must fit in an `isize`
+// - `byetes` must not wrap around the address space (in other words, the
+//   base address plus the length must not overflow `usize`)
+//
+// The caller may assume that, if `try_cast_from` returns `Some((ptr,
+// split_at))`:
+// - `ptr` is validly-aligned for `Self`
+// - `ptr` has a valid size for `Self` (TODO: What does this mean,
+//   exactly?)
+// - `ptr` has the same provenance as `bytes`
+// - `ptr` refers to a region of bytes which is a subset of the region
+//   referred to by `bytes`
+// - If the region of bytes referred to by `bytes` is split into `[0,
+//   split_at)` and `[split_at, bytes.len())`, referred to as `a` and `b`
+//   respectively:
+//   - If `cast_type` is `Prefix`, then `a` refers to the same byte region
+//     as `ptr`
+//   - If `cast_type` is `Suffix`, then `b` refers to the same byte region
+//     as `ptr`
+// - TODO: Others?
 
 pub(crate) trait AsAddress {
     fn addr(self) -> usize;
@@ -185,7 +412,134 @@ pub(crate) mod testutil {
 
 #[cfg(test)]
 mod tests {
+    use core::mem::MaybeUninit;
+
     use super::*;
+    use crate::{util::testutil::AU64, FromBytes};
+
+    #[test]
+    fn test_ptr_try_cast_into_soundness() {
+        // This test is designed so that if `Ptr::try_cast_into_xxx` are buggy,
+        // it will manifest as unsoundness that Miri can detect.
+
+        // - If `size_of::<T>() == 0`, `N == 4`
+        // - Else, `N == 4 * size_of::<T>()`
+        fn test<const N: usize, T: ?Sized + KnownLayout + FromBytes>() {
+            let mut bytes = [MaybeUninit::<u8>::uninit(); N];
+            let initialized = [MaybeUninit::new(0u8); N];
+            for start in 0..=bytes.len() {
+                for end in start..=bytes.len() {
+                    // Set all bytes to uninitialized other than those in the
+                    // range we're going to pass to `try_cast_from`. This allows
+                    // Miri to detect out-of-bounds reads because they read
+                    // uninitialized memory. Without this, some out-of-bounds
+                    // reads would still be in-bounds of `bytes`, and so might
+                    // spuriously be accepted.
+                    bytes = [MaybeUninit::<u8>::uninit(); N];
+                    let bytes = &mut bytes[start..end];
+                    // Initialize only the byte range we're going to pass to
+                    // `try_cast_from`.
+                    bytes.copy_from_slice(&initialized[start..end]);
+
+                    let bytes = {
+                        let bytes: *const [MaybeUninit<u8>] = bytes;
+                        #[allow(clippy::as_conversions)]
+                        let bytes = bytes as *const [u8];
+                        // SAFETY: We just initialized these bytes to valid
+                        // `u8`s.
+                        unsafe { &*bytes }
+                    };
+
+                    /// # Safety
+                    ///
+                    /// - `slf` must reference a byte range which is entirely
+                    ///   initialized.
+                    /// - `slf` must reference a byte range which is only
+                    ///   referenced by shared references which do not contain
+                    ///   `UnsafeCell`s during its lifetime.
+                    unsafe fn validate_and_get_len<T: ?Sized + KnownLayout + FromBytes>(
+                        slf: Ptr<'_, T>,
+                    ) -> usize {
+                        // SAFETY:
+                        // - The caller has promised that all bytes referenced
+                        //   by `slf` are initialized. Since `T: FromBytes`,
+                        //   those bytes constitute a valid `T`.
+                        // - The caller has promised that no mutable references
+                        //   exist to the same memory during the duration of
+                        //   this function call.
+                        // - The caller has promised that no `UnsafeCell`
+                        //   references exist to the same memory during the
+                        //   duration of this function call.
+                        let t = unsafe { slf._as_ref() };
+
+                        let bytes = {
+                            let len = mem::size_of_val(t);
+                            let t: *const T = t;
+                            // SAFETY:
+                            // - We know `t`'s bytes are all initialized
+                            //   because we just read it from `slf`, which
+                            //   points to an initialized range of bytes. If
+                            //   there's a bug and this doesn't hold, then
+                            //   that's exactly what we're hoping Miri will
+                            //   catch!
+                            // - Since `T: FromBytes`, `T` doesn't contain
+                            //   any `UnsafeCell`s, so it's okay for `t: T`
+                            //   and a `&[u8]` to the same memory to be
+                            //   alive concurrently.
+                            unsafe { core::slice::from_raw_parts(t.cast::<u8>(), len) }
+                        };
+
+                        // This assertion ensures that `t`'s bytes are read
+                        // and compared to another value, which in turn
+                        // ensures that Miri gets a chance to notice if any
+                        // of `t`'s bytes are uninitialized, which they
+                        // shouldn't be (see the comment above).
+                        assert_eq!(bytes, vec![0u8; bytes.len()]);
+
+                        mem::size_of_val(t)
+                    }
+
+                    for cast_type in [_CastType::_Prefix, _CastType::_Suffix] {
+                        if let Some((slf, split_at)) =
+                            Ptr::from(bytes)._try_cast_into::<T>(cast_type)
+                        {
+                            // SAFETY: All bytes in `bytes` have been
+                            // initialized.
+                            let len = unsafe { validate_and_get_len(slf) };
+                            match cast_type {
+                                _CastType::_Prefix => assert_eq!(split_at, len),
+                                _CastType::_Suffix => assert_eq!(split_at, bytes.len() - len),
+                            }
+                        }
+                    }
+
+                    if let Some(slf) = Ptr::from(bytes)._try_cast_into_no_prefix_suffix::<T>() {
+                        // SAFETY: All bytes in `bytes` have been initialized.
+                        let len = unsafe { validate_and_get_len(slf) };
+                        assert_eq!(len, bytes.len());
+                    }
+                }
+            }
+        }
+
+        macro_rules! test {
+            ($($ty:ty),*) => {
+                $({
+                    const S: usize = core::mem::size_of::<$ty>();
+                    const N: usize = if S == 0 { 4 } else { S * 4 };
+                    test::<N, $ty>();
+                    test::<N, [$ty]>();
+                    // TODO: Test with a slice DST once we have any that
+                    // implement `KnownLayout + FromBytes`.
+                })*
+            };
+        }
+
+        test!(());
+        test!(u8, u16, u32, u64, u128, usize, AU64);
+        test!(i8, i16, i32, i64, i128, isize);
+        test!(f32, f64);
+    }
 
     #[test]
     fn test_round_down_to_next_multiple_of_alignment() {
