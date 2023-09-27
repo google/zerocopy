@@ -1,0 +1,93 @@
+# Once a day, attempt to roll the pinned nightly and stable toolchain versions
+# and update the codebase as necessary (in particular, by regenerating the files
+# which store expected compiler output for UI tests; this output is not stable
+# and may change between compiler versions). On success, submit the changes as a
+# new PR. Note that this does not guarantee that the roll will succeed: PRs go
+# through many tests which are not exercised here, and so the generated PR may
+# still fail CI. In particular, some nightly releases do not support all of the
+# target architectures that we use in CI; attempting to roll to any such release
+# will fail.
+
+name: Roll pinned toolchain versions
+on:
+  schedule:
+    - cron: '29 12 * * *'
+
+permissions: read-all
+
+jobs:
+  roll:
+    name: Roll pinned toolchain versions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Calculate target nightly version
+        # Use yesterday's date (`-d '-1 day'`) so we're sure the nightly for that
+        # date has actually been published yet. This allows us to not worry
+        # about what time of day this job runs.
+        run: echo "ZC_TARGET_NIGHTLY=nightly-$(date -d '-1 day' +%Y-%m-%d)" >> $GITHUB_ENV
+      - name: Install Rust with ${{ env.ZC_TARGET_NIGHTLY }} toolchain
+        uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
+        with:
+            toolchain: ${{ env.ZC_TARGET_NIGHTLY }}
+        # Install whatever the latest stable release is. This has the side
+        # effect of determining the latest stable release so that we can update
+        # `Cargo.toml`.
+      - name: Install Rust with stable toolchain
+        uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
+        with:
+            toolchain: stable
+      - name: Update files
+        run: |
+          set -eo pipefail
+
+          function validate-file {
+            REGEX="$1"
+            FILE="$2"
+            grep "$REGEX" "$FILE" >/dev/null || { echo "Failed to find line matching regex '$REGEX' in $FILE" >&2; exit 1; }
+          }
+
+          function update-pinned-version {
+            VERSION_NAME="$1"
+            VERSION="$2"
+            # For nightly, this is the same as `$VERSION`. For stable, it's
+            # `stable` because `rustup` doesn't recognize that `x.y.z` refers to
+            # the same thing as `stable` even if they're the same toolchain.
+            VERSION_FOR_CARGO="$3"
+            ZEROCOPY_FEATURES="$4"
+
+            # Confirm that `Cargo.toml` lists the pinned version in the expected
+            # format. This is a prerequisite for the subsequent `sed` command.
+            REGEX="^pinned-$VERSION_NAME = \"[a-z0-9\.-]*\"$"
+            validate-file "$REGEX" Cargo.toml
+            sed -i -e "s/$REGEX/pinned-$VERSION_NAME = \"$VERSION\"/" Cargo.toml
+
+            # Confirm that the update didn't bork `Cargo.toml`.
+            validate-file "$REGEX" Cargo.toml
+
+            # Update `.stderr` files as needed for the new version.
+            TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package zerocopy $ZEROCOPY_FEATURES
+            TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package zerocopy-derive
+          }
+
+          STABLE_VERSION="$(cargo +stable version | sed -e 's/^cargo \([0-9\.]*\) .*/\1/')"
+          update-pinned-version stable  "$STABLE_VERSION"    stable               '--features __internal_use_only_features_that_work_on_stable'
+          update-pinned-version nightly "$ZC_TARGET_NIGHTLY" "$ZC_TARGET_NIGHTLY"  --all-features
+
+          # Used as part of the branch name created by the "Submit PR" step.
+          echo "ZC_TARGET_STABLE=$STABLE_VERSION" >> $GITHUB_ENV
+
+      - name: Submit PR
+        uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38 # v5.0.2
+        with:
+          commit-message: "[ci] Roll pinned toolchains"
+          author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
+          committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
+          title: "[ci] Roll pinned toolchains"
+          branch: roll-pinned-toolchain-to-${{ env.ZC_TARGET_STABLE }}-and-${{ env.ZC_TARGET_NIGHTLY }}
+          push-to-fork: google-pr-creation-bot/zerocopy
+          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
