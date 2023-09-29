@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - v0.6.x
+  merge_group:
 
 permissions: read-all
 
