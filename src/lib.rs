@@ -754,13 +754,15 @@ pub unsafe trait FromZeroes {
             return Box::new(Self::new_zeroed());
         }
 
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
+        let ptr = unsafe { alloc::alloc::alloc_zeroed(layout).cast::<Self>() };
+        if ptr.is_null() {
+            alloc::alloc::handle_alloc_error(layout);
+        }
+        // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
         #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe {
-            let ptr = alloc::alloc::alloc_zeroed(layout).cast::<Self>();
-            if ptr.is_null() {
-                alloc::alloc::handle_alloc_error(layout);
-            }
             Box::from_raw(ptr)
         }
     }
@@ -810,21 +812,25 @@ pub unsafe trait FromZeroes {
         let layout =
             Layout::from_size_align(size, align).expect("total allocation size overflows `isize`");
 
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        let ptr = if layout.size() != 0 {
+            // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+            #[allow(clippy::undocumented_unsafe_blocks)]
+            let ptr = unsafe { alloc::alloc::alloc_zeroed(layout).cast::<Self>() };
+            if ptr.is_null() {
+                alloc::alloc::handle_alloc_error(layout);
+            }
+            ptr
+        } else {
+            // `Box<[T]>` does not allocate when `T` is zero-sized or when `len`
+            // is zero, but it does require a non-null dangling pointer for its
+            // allocation.
+            NonNull::<Self>::dangling().as_ptr()
+        };
+
+        // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
         #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe {
-            if layout.size() != 0 {
-                let ptr = alloc::alloc::alloc_zeroed(layout).cast::<Self>();
-                if ptr.is_null() {
-                    alloc::alloc::handle_alloc_error(layout);
-                }
-                Box::from_raw(slice::from_raw_parts_mut(ptr, len))
-            } else {
-                // `Box<[T]>` does not allocate when `T` is zero-sized or when
-                // `len` is zero, but it does require a non-null dangling
-                // pointer for its allocation.
-                Box::from_raw(slice::from_raw_parts_mut(NonNull::<Self>::dangling().as_ptr(), len))
-            }
+            Box::from_raw(slice::from_raw_parts_mut(ptr, len))
         }
     }
 
@@ -2328,7 +2334,7 @@ where
     /// and no mutable references to the same memory may be constructed during
     /// `'a`.
     unsafe fn deref_helper<'a>(&self) -> &'a T {
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
         #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe {
             &*self.0.as_ptr().cast::<T>()
@@ -2353,7 +2359,7 @@ where
     /// and no other references - mutable or immutable - to the same memory may
     /// be constructed during `'a`.
     unsafe fn deref_mut_helper<'a>(&mut self) -> &'a mut T {
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
         #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe {
             &mut *self.0.as_mut_ptr().cast::<T>()
@@ -2382,7 +2388,7 @@ where
             debug_assert_eq!(len % elem_size, 0);
             len / elem_size
         };
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
         #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe {
             slice::from_raw_parts(self.0.as_ptr().cast::<T>(), elems)
@@ -2412,7 +2418,7 @@ where
             debug_assert_eq!(len % elem_size, 0);
             len / elem_size
         };
-        // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+        // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
         #[allow(clippy::undocumented_unsafe_blocks)]
         unsafe {
             slice::from_raw_parts_mut(self.0.as_mut_ptr().cast::<T>(), elems)
@@ -2754,7 +2760,7 @@ pub unsafe trait ByteSliceMut: ByteSlice + DerefMut {
 }
 
 impl<'a> sealed::ByteSliceSealed for &'a [u8] {}
-// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a [u8] {
     #[inline]
@@ -2764,7 +2770,7 @@ unsafe impl<'a> ByteSlice for &'a [u8] {
 }
 
 impl<'a> sealed::ByteSliceSealed for &'a mut [u8] {}
-// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a mut [u8] {
     #[inline]
@@ -2774,7 +2780,7 @@ unsafe impl<'a> ByteSlice for &'a mut [u8] {
 }
 
 impl<'a> sealed::ByteSliceSealed for cell::Ref<'a, [u8]> {}
-// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {
     #[inline]
@@ -2784,7 +2790,7 @@ unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {
 }
 
 impl<'a> sealed::ByteSliceSealed for RefMut<'a, [u8]> {}
-// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
     #[inline]
@@ -2793,11 +2799,11 @@ unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
     }
 }
 
-// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSliceMut for &'a mut [u8] {}
 
-// TODO(#61): Add a "SAFETY" comment and remove this `allow`.
+// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSliceMut for RefMut<'a, [u8]> {}
 
