@@ -660,8 +660,6 @@ mod tests {
             kani::any()
         }
 
-        fn is_nan(self) -> bool;
-
         fn checked_add(self, rhs: Self) -> Option<Self>;
         fn checked_div(self, rhs: Self) -> Option<Self>;
         fn checked_mul(self, rhs: Self) -> Option<Self>;
@@ -669,6 +667,17 @@ mod tests {
         fn checked_sub(self, rhs: Self) -> Option<Self>;
         fn checked_shl(self, rhs: Self) -> Option<Self>;
         fn checked_shr(self, rhs: Self) -> Option<Self>;
+
+        fn is_nan(self) -> bool;
+
+        /// For `f32` and `f64`, NaN values are not considered equal to
+        /// themselves. This method is like `assert_eq!`, but it treats NaN
+        /// values as equal.
+        fn assert_eq_or_nan(self, other: Self) {
+            let slf = (!self.is_nan()).then(|| self);
+            let other = (!other.is_nan()).then(|| other);
+            assert_eq!(slf, other);
+        }
     }
 
     trait ByteArray:
@@ -689,6 +698,15 @@ mod tests {
         fn set(&mut self, native: Self::Native);
         fn from_bytes(bytes: Self::ByteArray) -> Self;
         fn into_bytes(self) -> Self::ByteArray;
+
+        /// For `f32` and `f64`, NaN values are not considered equal to
+        /// themselves. This method is like `assert_eq!`, but it treats NaN
+        /// values as equal.
+        fn assert_eq_or_nan(self, other: Self) {
+            let slf = (!self.get().is_nan()).then(|| self);
+            let other = (!other.get().is_nan()).then(|| other);
+            assert_eq!(slf, other);
+        }
     }
 
     trait ByteOrderTypeUnsigned: ByteOrderType {
@@ -767,7 +785,6 @@ mod tests {
             impl_byte_order_type_unsigned!($name, $sign);
         };
         (@float_dependent_methods) => {
-            fn is_nan(self) -> bool { false }
             fn checked_add(self, rhs: Self) -> Option<Self> { self.checked_add(rhs) }
             fn checked_div(self, rhs: Self) -> Option<Self> { self.checked_div(rhs) }
             fn checked_mul(self, rhs: Self) -> Option<Self> { self.checked_mul(rhs) }
@@ -775,9 +792,9 @@ mod tests {
             fn checked_sub(self, rhs: Self) -> Option<Self> { self.checked_sub(rhs) }
             fn checked_shl(self, rhs: Self) -> Option<Self> { self.checked_shl(rhs.try_into().unwrap_or(u32::MAX)) }
             fn checked_shr(self, rhs: Self) -> Option<Self> { self.checked_shr(rhs.try_into().unwrap_or(u32::MAX)) }
+            fn is_nan(self) -> bool { false }
         };
         (@float_dependent_methods @float) => {
-            fn is_nan(self) -> bool { self.is_nan() }
             fn checked_add(self, rhs: Self) -> Option<Self> { Some(self + rhs) }
             fn checked_div(self, rhs: Self) -> Option<Self> { Some(self / rhs) }
             fn checked_mul(self, rhs: Self) -> Option<Self> { Some(self * rhs) }
@@ -785,6 +802,7 @@ mod tests {
             fn checked_sub(self, rhs: Self) -> Option<Self> { Some(self - rhs) }
             fn checked_shl(self, _rhs: Self) -> Option<Self> { unimplemented!() }
             fn checked_shr(self, _rhs: Self) -> Option<Self> { unimplemented!() }
+            fn is_nan(self) -> bool { self.is_nan() }
         };
     }
 
@@ -891,77 +909,42 @@ mod tests {
 
     #[cfg_attr(test, test)]
     #[cfg_attr(kani, kani::proof)]
-    fn test_native_endian() {
-        fn test_native_endian<T: ByteOrderType>() {
+    fn test_endian() {
+        fn test<T: ByteOrderType>(invert: bool) {
             let mut r = SmallRng::seed_from_u64(RNG_SEED);
             for _ in 0..RAND_ITERS {
                 let native = T::Native::rand(&mut r);
                 let mut bytes = T::ByteArray::default();
                 bytes.as_bytes_mut().copy_from_slice(native.as_bytes());
+                if invert {
+                    bytes = bytes.invert();
+                }
                 let mut from_native = T::new(native);
                 let from_bytes = T::from_bytes(bytes);
 
-                // For `f32` and `f64`, NaN values are not considered equal to
-                // themselves.
-                if !T::Native::is_nan(native) {
-                    assert_eq!(from_native, from_bytes);
-                    assert_eq!(from_native.get(), native);
-                    assert_eq!(from_bytes.get(), native);
-                }
+                from_native.assert_eq_or_nan(from_bytes);
+                from_native.get().assert_eq_or_nan(native);
+                from_bytes.get().assert_eq_or_nan(native);
 
                 assert_eq!(from_native.into_bytes(), bytes);
                 assert_eq!(from_bytes.into_bytes(), bytes);
 
                 let updated = T::Native::rand(&mut r);
                 from_native.set(updated);
-
-                // For `f32` and `f64`, NaN values are not considered equal to
-                // themselves.
-                if !T::Native::is_nan(from_native.get()) {
-                    assert_eq!(from_native.get(), updated);
-                }
+                from_native.get().assert_eq_or_nan(updated);
             }
         }
 
-        call_for_all_types!(test_native_endian, NativeEndian);
-    }
-
-    #[cfg_attr(test, test)]
-    #[cfg_attr(kani, kani::proof)]
-    fn test_non_native_endian() {
-        fn test_non_native_endian<T: ByteOrderType>() {
-            let mut r = SmallRng::seed_from_u64(RNG_SEED);
-            for _ in 0..RAND_ITERS {
-                let native = T::Native::rand(&mut r);
-                let mut bytes = T::ByteArray::default();
-                bytes.as_bytes_mut().copy_from_slice(native.as_bytes());
-                bytes = bytes.invert();
-                let mut from_native = T::new(native);
-                let from_bytes = T::from_bytes(bytes);
-
-                // For `f32` and `f64`, NaN values are not considered equal to
-                // themselves.
-                if !T::Native::is_nan(native) {
-                    assert_eq!(from_native, from_bytes);
-                    assert_eq!(from_native.get(), native);
-                    assert_eq!(from_bytes.get(), native);
-                }
-
-                assert_eq!(from_native.into_bytes(), bytes);
-                assert_eq!(from_bytes.into_bytes(), bytes);
-
-                let updated = T::Native::rand(&mut r);
-                from_native.set(updated);
-
-                // For `f32` and `f64`, NaN values are not considered equal to
-                // themselves.
-                if !T::Native::is_nan(from_native.get()) {
-                    assert_eq!(from_native.get(), updated);
-                }
-            }
+        fn test_native<T: ByteOrderType>() {
+            test::<T>(false);
         }
 
-        call_for_all_types!(test_non_native_endian, NonNativeEndian);
+        fn test_non_native<T: ByteOrderType>() {
+            test::<T>(true);
+        }
+
+        call_for_all_types!(test_native, NativeEndian);
+        call_for_all_types!(test_non_native, NonNativeEndian);
     }
 
     #[cfg_attr(test, test)]
