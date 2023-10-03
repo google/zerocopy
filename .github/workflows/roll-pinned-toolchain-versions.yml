@@ -17,8 +17,11 @@ permissions: read-all
 
 jobs:
   roll:
-    name: Roll pinned toolchain versions
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        toolchain: ["stable", "nightly"]
+    name: Roll pinned toolchain ${{ matrix.toolchain }} version
     steps:
       - name: Checkout code
         uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
@@ -30,10 +33,12 @@ jobs:
         # date has actually been published yet. This allows us to not worry
         # about what time of day this job runs.
         run: echo "ZC_TARGET_NIGHTLY=nightly-$(date -d '-1 day' +%Y-%m-%d)" >> $GITHUB_ENV
+        if: matrix.toolchain == 'nightly'
       - name: Install Rust with ${{ env.ZC_TARGET_NIGHTLY }} toolchain
         uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
         with:
             toolchain: ${{ env.ZC_TARGET_NIGHTLY }}
+        if: matrix.toolchain == 'nightly'
         # Install whatever the latest stable release is. This has the side
         # effect of determining the latest stable release so that we can update
         # `Cargo.toml`.
@@ -41,6 +46,7 @@ jobs:
         uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
         with:
             toolchain: stable
+        if: matrix.toolchain == 'stable'
       - name: Update files
         run: |
           set -eo pipefail
@@ -74,20 +80,24 @@ jobs:
             TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package zerocopy-derive
           }
 
-          STABLE_VERSION="$(cargo +stable version | sed -e 's/^cargo \([0-9\.]*\) .*/\1/')"
-          update-pinned-version stable  "$STABLE_VERSION"    stable               '--features __internal_use_only_features_that_work_on_stable'
-          update-pinned-version nightly "$ZC_TARGET_NIGHTLY" "$ZC_TARGET_NIGHTLY"  --all-features
+          if [ "${{ matrix.toolchain }}" == stable ]; then
+            STABLE_VERSION="$(cargo +stable version | sed -e 's/^cargo \([0-9\.]*\) .*/\1/')"
+            update-pinned-version stable "$STABLE_VERSION" stable '--features __internal_use_only_features_that_work_on_stable'
 
-          # Used as part of the branch name created by the "Submit PR" step.
-          echo "ZC_TARGET_STABLE=$STABLE_VERSION" >> $GITHUB_ENV
+            # Used as part of the branch name created by the "Submit PR" step.
+            echo "ZC_VERSION_FOR_BRANCH_NAME=$STABLE_VERSION" >> $GITHUB_ENV
+          else
+            update-pinned-version nightly "$ZC_TARGET_NIGHTLY" "$ZC_TARGET_NIGHTLY" --all-features
+            echo "ZC_VERSION_FOR_BRANCH_NAME=$ZC_TARGET_NIGHTLY" >> $GITHUB_ENV
+          fi
 
       - name: Submit PR
         uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38 # v5.0.2
         with:
-          commit-message: "[ci] Roll pinned toolchains"
+          commit-message: "[ci] Roll pinned ${{ matrix.toolchain }} toolchain"
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
-          title: "[ci] Roll pinned toolchains"
-          branch: roll-pinned-toolchain-to-${{ env.ZC_TARGET_STABLE }}-and-${{ env.ZC_TARGET_NIGHTLY }}
+          title: "[ci] Roll pinned ${{ matrix.toolchain }} toolchain"
+          branch: roll-pinned-${{ matrix.toolchain }}-toolchain-to-${{ env.ZC_VERSION_FOR_BRANCH_NAME }}
           push-to-fork: google-pr-creation-bot/zerocopy
           token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
