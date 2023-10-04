@@ -162,7 +162,10 @@ jobs:
           --package ${{ matrix.crate }} \
           --target ${{ matrix.target }} \
           ${{ matrix.features }} \
-          --verbose
+          --verbose \
+          -- \
+          ${{ (matrix.features == '--no-default-features' || matrix.features == '') &&  '--skip ui' || '' }} \
+
       # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
       # x86_64, so we can't run tests for any non-x86 target.
       #

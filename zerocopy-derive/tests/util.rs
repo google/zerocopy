@@ -5,7 +5,7 @@
 use zerocopy::{AsBytes, FromBytes, FromZeroes};
 
 /// A type that doesn't implement any zerocopy traits.
-pub struct NotZerocopy(());
+pub struct NotZerocopy<T = ()>(T);
 
 /// A `u16` with alignment 2.
 ///
