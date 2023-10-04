@@ -530,8 +530,8 @@ fn impl_block<D: DataExt>(
         let fields = field_types.iter();
         let validator_macro = check.validator_macro_ident();
         parse_quote!(
-            zerocopy::derive_util::HasPadding<#type_ident, {zerocopy::#validator_macro!(#type_ident, #(#fields),*)}>:
-                zerocopy::derive_util::ShouldBe<false>
+            zerocopy::macro_util::HasPadding<#type_ident, {zerocopy::#validator_macro!(#type_ident, #(#fields),*)}>:
+                zerocopy::macro_util::ShouldBe<false>
         )
     });
 
