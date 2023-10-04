@@ -29,5 +29,5 @@ testutil = { path = "../testutil" }
 # and the version used in CI are guaranteed to be the same. Future versions
 # sometimes change the output format slightly, so a version mismatch can cause
 # CI test failures.
-trybuild = "=1.0.80"
+trybuild = { version = "=1.0.85", features = ["diff"] }
 zerocopy = { path = "../", features = ["default", "derive"] }
