@@ -172,7 +172,7 @@ mod macros;
 pub mod byteorder;
 #[cfg(any(feature = "derive", test))]
 #[doc(hidden)]
-pub mod derive_util;
+pub mod macro_util;
 mod util;
 // TODO(#252): If we make this pub, come up with a better name.
 mod wrappers;
@@ -1628,10 +1628,6 @@ mod simd {
     simd_arch_mod!(arm, int8x4_t, uint8x4_t);
 }
 
-// Used in `transmute!` below.
-#[doc(hidden)]
-pub use core::mem::transmute as __real_transmute;
-
 /// Safely transmutes a value of one type to a value of another type of the same
 /// size.
 ///
@@ -1666,14 +1662,15 @@ macro_rules! transmute {
             // We know this transmute is safe thanks to the `AsBytes` and
             // `FromBytes` bounds enforced by the `false` branch.
             //
-            // We use `$crate::__real_transmute` because we know it will always
-            // be available for crates which are using the 2015 edition of Rust.
-            // By contrast, if we were to use `std::mem::transmute`, this macro
-            // would not work for such crates in `no_std` contexts, and if we
-            // were to use `core::mem::transmute`, this macro would not work in
-            // `std` contexts in which `core` was not manually imported. This is
-            // not a problem for 2018 edition crates.
-            unsafe { $crate::__real_transmute(e) }
+            // We use this reexport of `core::mem::transmute` because we know it
+            // will always be available for crates which are using the 2015
+            // edition of Rust. By contrast, if we were to use
+            // `std::mem::transmute`, this macro would not work for such crates
+            // in `no_std` contexts, and if we were to use
+            // `core::mem::transmute`, this macro would not work in `std`
+            // contexts in which `core` was not manually imported. This is not a
+            // problem for 2018 edition crates.
+            unsafe { $crate::macro_util::core_reexport::mem::transmute(e) }
         }
     }}
 }
