@@ -443,11 +443,10 @@ jobs:
           cargo kani setup                           &> /dev/null || true
 
   # Used to signal to branch protections that all other jobs have succeeded.
-  all-jobs-succeed:
-      name: All checks succeeded
-      if: success()
+  no-jobs-failed:
+      name: No checks failed
       runs-on: ubuntu-latest
       needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_versions, generate_cache]
       steps:
-        - name: Mark the job as successful
-          run: exit 0
+        - name: Mark the job as unsuccessful
+          run: $exit ${{ success() && 0 || 1 }}
