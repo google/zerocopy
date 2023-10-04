@@ -10,6 +10,6 @@ use zerocopy::transmute;
 
 fn main() {}
 
-// Although this is not a soundness requirement, we currently require that the
-// size of the destination type is not larger than the size of the source type.
+// `transmute!` does not support transmuting from a smaller type to a larger
+// one.
 const INCREASE_SIZE: AU16 = transmute!(0u8);
