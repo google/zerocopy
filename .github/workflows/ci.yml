@@ -91,6 +91,10 @@ jobs:
       run: |
         set -eo pipefail
 
+        if [ "${{ github.event_name }}" == "merge_group" ]; then
+          exit 1
+        fi
+
         # We use toolchain descriptors ("msrv", "stable", and "nightly") in the
         # matrix. This step converts the current descriptor to a particular
         # toolchain version by looking up the corresponding key in `Cargo.toml`. It
