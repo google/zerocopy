@@ -1,0 +1,37 @@
+error[E0614]: type `usize` cannot be dereferenced
+  --> tests/ui-msrv/transmute-ref-src-dst-not-references.rs:13:39
+   |
+13 | const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
+   |                                       ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> tests/ui-msrv/transmute-ref-src-dst-not-references.rs:13:39
+   |
+13 | const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
+   |                                       ^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found reference
+   |
+   = note:   expected type `usize`
+           found reference `&_`
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> tests/ui-msrv/transmute-ref-src-dst-not-references.rs:13:39
+   |
+13 | const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
+   |                                       ^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found reference
+   |
+   = note:   expected type `usize`
+           found reference `&_`
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> tests/ui-msrv/transmute-ref-src-dst-not-references.rs:13:39
+   |
+13 | const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
+   |                                       ^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found reference
+   |
+   = note:   expected type `usize`
+           found reference `&_`
+   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)

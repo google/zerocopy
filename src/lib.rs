@@ -1652,7 +1652,7 @@ macro_rules! transmute {
             // `AsBytes` and that the type of this macro invocation expression
             // is `FromBytes`.
             const fn transmute<T: $crate::AsBytes, U: $crate::FromBytes>(_t: T) -> U {
-                unreachable!()
+                loop {}
             }
             transmute(e)
         } else {
@@ -1669,7 +1669,154 @@ macro_rules! transmute {
             // `core::mem::transmute`, this macro would not work in `std`
             // contexts in which `core` was not manually imported. This is not a
             // problem for 2018 edition crates.
-            unsafe { $crate::macro_util::core_reexport::mem::transmute(e) }
+            unsafe {
+                // Clippy: It's okay to transmute a type to itself.
+                #[allow(clippy::useless_transmute)]
+                $crate::macro_util::core_reexport::mem::transmute(e)
+            }
+        }
+    }}
+}
+
+/// Safely transmutes a mutable or immutable reference of one type to an
+/// immutable reference of another type of the same size.
+///
+/// The expression `$e` must have a concrete type, `&T` or `&mut T`, where `T:
+/// Sized + AsBytes`. The `transmute_ref!` expression must also have a concrete
+/// type, `&U` (`U` is inferred from the calling context), where `U: Sized +
+/// FromBytes`. It must be the case that `align_of::<T>() >= align_of::<U>()`.
+///
+/// The lifetime of the input type, `&T` or `&mut T`, must be the same as or
+/// outlive the lifetime of the output type, `&U`.
+///
+/// # Alignment increase error message
+///
+/// Because of limitations on macros, the error message generated when
+/// `transmute_ref!` is used to transmute from a type of lower alignment to a
+/// type of higher alignment is somewhat confusing. For example, the following
+/// code:
+///
+/// ```compile_fail
+/// const INCREASE_ALIGNMENT: &u16 = zerocopy::transmute_ref!(&[0u8; 2]);
+/// ```
+///
+/// ...generates the following error:
+///
+/// ```text
+/// error[E0512]: cannot transmute between types of different sizes, or dependently-sized types
+///  --> src/lib.rs:1524:34
+///   |
+/// 5 | const INCREASE_ALIGNMENT: &u16 = zerocopy::transmute_ref!(&[0u8; 2]);
+///   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+///   |
+///   = note: source type: `AlignOf<[u8; 2]>` (8 bits)
+///   = note: target type: `MaxAlignsOf<[u8; 2], u16>` (16 bits)
+///   = note: this error originates in the macro `zerocopy::transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+/// ```
+///
+/// This is saying that `max(align_of::<T>(), align_of::<U>()) !=
+/// align_of::<T>()`, which is equivalent to `align_of::<T>() <
+/// align_of::<U>()`.
+#[macro_export]
+macro_rules! transmute_ref {
+    ($e:expr) => {{
+        // NOTE: This must be a macro (rather than a function with trait bounds)
+        // because there's no way, in a generic context, to enforce that two
+        // types have the same size or alignment.
+
+        // Reborrow so that mutable references are supported too.
+        //
+        // In the rest of the comments, we refer only to `&T` since this
+        // reborrow ensures that `e` is an immutable reference.
+        let e = &*$e;
+
+        #[allow(unused, clippy::diverging_sub_expression)]
+        if false {
+            // This branch, though never taken, ensures that the type of `e` is
+            // `&T` where `T: 't + Sized + AsBytes`, that the type of this macro
+            // expression is `&U` where `U: 'u + Sized + FromBytes`, and that
+            // `'t` outlives `'u`.
+            const fn transmute<'u, 't: 'u, T: 't + Sized + $crate::AsBytes, U: 'u + Sized + $crate::FromBytes>(_t: &'t T) -> &'u U {
+                loop {}
+            }
+            transmute(e)
+        } else if false {
+            // This branch, though never taken, ensures that `size_of::<T>() ==
+            // size_of::<U>()`.
+
+            // `t` is inferred to have type `T` because it's assigned to `e` (of
+            // type `&T`) as `&t`.
+            let mut t = unreachable!();
+            e = &t;
+
+            // `u` is inferred to have type `U` because it's used as `&u` as the
+            // value returned from this branch.
+            //
+            // SAFETY: This code is never run.
+            let u = unsafe {
+                 // Clippy: It's okay to transmute a type to itself.
+                #[allow(clippy::useless_transmute)]
+                $crate::macro_util::core_reexport::mem::transmute(t)
+            };
+            &u
+        } else if false {
+            // This branch, though never taken, ensures that the alignment of
+            // `T` is greater than or equal to to the alignment of `U`.
+
+            // `t` is inferred to have type `T` because it's assigned to `e` (of
+            // type `&T`) as `&t`.
+            let mut t = unreachable!();
+            e = &t;
+
+            // `u` is inferred to have type `U` because it's used as `&u` as the
+            // value returned from this branch.
+            let mut u = unreachable!();
+
+            // The type wildcard in this bound is inferred to be `T` because
+            // `align_of.into_t()` is assigned to `t` (which has type `T`).
+            let align_of: $crate::macro_util::AlignOf<_> = unreachable!();
+            t = align_of.into_t();
+            // `max_aligns` is inferred to have type `MaxAlignsOf<T, U>` because
+            // of the inferred types of `t` and `u`.
+            let mut max_aligns = $crate::macro_util::MaxAlignsOf::new(t, u);
+
+            // This transmute will only compile successfully if
+            // `align_of::<T>() == max(align_of::<T>(), align_of::<U>())` - in
+            // other words, if `align_of::<T>() >= align_of::<U>()`.
+            //
+            // SAFETY: This code is never run.
+            max_aligns = unsafe { $crate::macro_util::core_reexport::mem::transmute(align_of) };
+
+            &u
+        } else {
+            // SAFETY:
+            // - We know that the input and output types are both `Sized` (ie,
+            //   thin) references thanks to the trait bounds on `transmute`
+            //   above, and thanks to the fact that transmute takes and returns
+            //   references.
+            // - We know that it is sound to view the target type of the input
+            //   reference (`T`) as the target type of the output reference
+            //   (`U`) because `T: AsBytes` and `U: FromBytes` (guaranteed by
+            //   trait bounds on `transmute`) and because `size_of::<T>() ==
+            //   size_of::<U>()` (guaranteed by the first `core::mem::transmute`
+            //   above).
+            // - We know that alignment is not increased thanks to the second
+            //   `core::mem::transmute` above (the one which transmutes
+            //   `MaxAlignsOf` into `AlignOf`).
+            //
+            // We use this reexport of `core::mem::transmute` because we know it
+            // will always be available for crates which are using the 2015
+            // edition of Rust. By contrast, if we were to use
+            // `std::mem::transmute`, this macro would not work for such crates
+            // in `no_std` contexts, and if we were to use
+            // `core::mem::transmute`, this macro would not work in `std`
+            // contexts in which `core` was not manually imported. This is not a
+            // problem for 2018 edition crates.
+            unsafe {
+                // Clippy: It's okay to transmute a type to itself.
+                #[allow(clippy::useless_transmute)]
+                $crate::macro_util::core_reexport::mem::transmute(e)
+            }
         }
     }}
 }
@@ -3808,6 +3955,58 @@ mod tests {
         const ARRAY_OF_ARRAYS: [[u8; 2]; 4] = [[0, 1], [2, 3], [4, 5], [6, 7]];
         const X: [[u8; 2]; 4] = transmute!(ARRAY_OF_U8S);
         assert_eq!(X, ARRAY_OF_ARRAYS);
+    }
+
+    #[test]
+    fn test_transmute_ref() {
+        // Test that memory is transmuted as expected.
+        let array_of_u8s = [0u8, 1, 2, 3, 4, 5, 6, 7];
+        let array_of_arrays = [[0, 1], [2, 3], [4, 5], [6, 7]];
+        let x: &[[u8; 2]; 4] = transmute_ref!(&array_of_u8s);
+        assert_eq!(*x, array_of_arrays);
+        let x: &[u8; 8] = transmute_ref!(&array_of_arrays);
+        assert_eq!(*x, array_of_u8s);
+
+        // Test that `transmute_ref!` is legal in a const context.
+        const ARRAY_OF_U8S: [u8; 8] = [0u8, 1, 2, 3, 4, 5, 6, 7];
+        const ARRAY_OF_ARRAYS: [[u8; 2]; 4] = [[0, 1], [2, 3], [4, 5], [6, 7]];
+        #[allow(clippy::redundant_static_lifetimes)]
+        const X: &'static [[u8; 2]; 4] = transmute_ref!(&ARRAY_OF_U8S);
+        assert_eq!(*X, ARRAY_OF_ARRAYS);
+
+        // Test that it's legal to transmute a reference while shrinking the
+        // lifetime (note that `X` has the lifetime `'static`).
+        let x: &[u8; 8] = transmute_ref!(X);
+        assert_eq!(*x, ARRAY_OF_U8S);
+
+        // Test that `transmute_ref!` supports decreasing alignment.
+        let u = AU64(0);
+        let array = [0, 0, 0, 0, 0, 0, 0, 0];
+        let x: &[u8; 8] = transmute_ref!(&u);
+        assert_eq!(*x, array);
+
+        // Test that a mutable reference can be turned into an immutable one.
+        let mut x = 0u8;
+        #[allow(clippy::useless_transmute)]
+        let y: &u8 = transmute_ref!(&mut x);
+        assert_eq!(*y, 0);
+    }
+
+    #[test]
+    fn test_macros_evaluate_args_once() {
+        let mut ctr = 0;
+        let _: usize = transmute!({
+            ctr += 1;
+            0usize
+        });
+        assert_eq!(ctr, 1);
+
+        let mut ctr = 0;
+        let _: &usize = transmute_ref!({
+            ctr += 1;
+            &0usize
+        });
+        assert_eq!(ctr, 1);
     }
 
     #[test]
