@@ -28,25 +28,28 @@ jobs:
         with:
           ref: main
           persist-credentials: false
-      - name: Calculate target nightly version
-        # Use yesterday's date (`-d '-1 day'`) so we're sure the nightly for that
-        # date has actually been published yet. This allows us to not worry
-        # about what time of day this job runs.
-        run: echo "ZC_TARGET_NIGHTLY=nightly-$(date -d '-1 day' +%Y-%m-%d)" >> $GITHUB_ENV
-        if: matrix.toolchain == 'nightly'
-      - name: Install Rust with ${{ env.ZC_TARGET_NIGHTLY }} toolchain
+      - name: Calculate target version
+        run: |
+          if [ "${{ matrix.toolchain }}" == stable ]; then
+            # Install whatever the latest stable release is. This has the side
+            # effect of determining the latest stable release so that we can
+            # update `Cargo.toml`.
+            echo "ZC_TARGET_TOOLCHAIN=stable" >> $GITHUB_ENV
+          else
+            # Use yesterday's date (`-d '-1 day'`) so we're sure the nightly for
+            # that date has actually been published yet. This allows us to not
+            # worry about what time of day this job runs.
+            echo "ZC_TARGET_TOOLCHAIN=nightly-$(date -d '-1 day' +%Y-%m-%d)" >> $GITHUB_ENV
+          fi
+      - name: Install Rust with ${{ env.ZC_TARGET_TOOLCHAIN }} toolchain
         uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
         with:
-            toolchain: ${{ env.ZC_TARGET_NIGHTLY }}
-        if: matrix.toolchain == 'nightly'
-        # Install whatever the latest stable release is. This has the side
-        # effect of determining the latest stable release so that we can update
-        # `Cargo.toml`.
-      - name: Install Rust with stable toolchain
-        uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
-        with:
-            toolchain: stable
-        if: matrix.toolchain == 'stable'
+            toolchain: ${{ env.ZC_TARGET_TOOLCHAIN }}
+            # We require the `rust-src` component to ensure that the compiler
+            # error output generated during UI tests matches that expected by
+            # CI; see `ci.yml` and
+            # https://github.com/rust-lang/rust/issues/116433.
+            components: rust-src
       - name: Update files
         run: |
           set -eo pipefail
@@ -87,8 +90,8 @@ jobs:
             # Used as part of the branch name created by the "Submit PR" step.
             echo "ZC_VERSION_FOR_BRANCH_NAME=$STABLE_VERSION" >> $GITHUB_ENV
           else
-            update-pinned-version nightly "$ZC_TARGET_NIGHTLY" "$ZC_TARGET_NIGHTLY" --all-features
-            echo "ZC_VERSION_FOR_BRANCH_NAME=$ZC_TARGET_NIGHTLY" >> $GITHUB_ENV
+            update-pinned-version nightly "$ZC_TARGET_TOOLCHAIN" "$ZC_TARGET_TOOLCHAIN" --all-features
+            echo "ZC_VERSION_FOR_BRANCH_NAME=$ZC_TARGET_TOOLCHAIN" >> $GITHUB_ENV
           fi
 
       - name: Submit PR
