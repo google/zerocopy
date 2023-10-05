@@ -38,9 +38,6 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    = help: the trait `Sized` is not implemented for `[u8]`
 note: required by a bound in `std::intrinsics::transmute`
   --> $RUST/core/src/intrinsics.rs
-   |
-   |     pub fn transmute<Src, Dst>(src: Src) -> Dst;
-   |                      ^^^ required by this bound in `transmute`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
@@ -66,6 +63,9 @@ note: required by a bound in `AlignOf::<T>::into_t`
    |
    | impl<T> AlignOf<T> {
    |      ^ required by this bound in `AlignOf::<T>::into_t`
+   |     #[inline(never)] // Make `missing_inline_in_public_items` happy.
+   |     pub fn into_t(self) -> T {
+   |            ------ required by a bound in this associated function
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
@@ -107,6 +107,9 @@ note: required by a bound in `MaxAlignsOf::<T, U>::new`
    |
    | impl<T, U> MaxAlignsOf<T, U> {
    |      ^ required by this bound in `MaxAlignsOf::<T, U>::new`
+   |     #[inline(never)] // Make `missing_inline_in_public_items` happy.
+   |     pub fn new(_t: T, _u: U) -> MaxAlignsOf<T, U> {
+   |            --- required by a bound in this associated function
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
