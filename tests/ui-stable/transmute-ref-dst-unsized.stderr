@@ -77,4 +77,7 @@ note: required by a bound in `MaxAlignsOf::<T, U>::new`
    |
    | impl<T, U> MaxAlignsOf<T, U> {
    |         ^ required by this bound in `MaxAlignsOf::<T, U>::new`
+   |     #[inline(never)] // Make `missing_inline_in_public_items` happy.
+   |     pub fn new(_t: T, _u: U) -> MaxAlignsOf<T, U> {
+   |            --- required by a bound in this associated function
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
