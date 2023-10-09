@@ -241,15 +241,11 @@ jobs:
       if: matrix.crate == 'zerocopy' && matrix.features == '--all-features' && matrix.toolchain == 'nightly'
 
   kani:
-    on:
-      pull_request:
-      push:
+    runs-on: ubuntu-latest        
+    name: 'Run tests under Kani'
     steps:
-      name: 'Run Kani on your code.'
-      run-kani:
-        runs-on: ubuntu-latest        
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0    
-        uses: model-checking/kani-github-action@v1.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0    
+      - uses: model-checking/kani-github-action@v1.0
         with:
           args: "--package zerocopy --all-features --output-format=terse --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
 
