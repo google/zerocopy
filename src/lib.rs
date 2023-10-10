@@ -103,8 +103,11 @@
 //!   We apply formal verification tools like [Kani][kani] to prove zerocopy's
 //!   correctness.
 //!
+//! For more information, see our full [soundness policy].
+//!
 //! [Miri]: https://github.com/rust-lang/miri
 //! [Kani]: https://github.com/model-checking/kani
+//! [soundness policy]: https://github.com/google/zerocopy/blob/main/POLICIES.md#soundness
 //!
 //! # Relationship to Project Safe Transmute
 //!
@@ -128,6 +131,12 @@
 //!
 //! [Project Safe Transmute]: https://rust-lang.github.io/rfcs/2835-project-safe-transmute.html
 //! [mcp-transmutability]: https://github.com/rust-lang/compiler-team/issues/411
+//!
+//! # MSRV
+//!
+//! See our [MSRV policy].
+//!
+//! [MSRV policy]: https://github.com/google/zerocopy/blob/main/POLICIES.md#msrv
 
 // Sometimes we want to use lints which were added after our MSRV.
 // `unknown_lints` is `warn` by default and we deny warnings in CI, so without
