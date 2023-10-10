@@ -107,6 +107,29 @@ memory model, and *any future memory model*. We ensure this by:
 [Miri]: https://github.com/rust-lang/miri
 [Kani]: https://github.com/model-checking/kani
 
+## Relationship to Project Safe Transmute
+
+[Project Safe Transmute] is an official initiative of the Rust Project to
+develop language-level support for safer transmutation. The Project consults
+with crates like zerocopy to identify aspects of safer transmutation that
+would benefit from compiler support, and has developed an [experimental,
+compiler-supported analysis][mcp-transmutability] which determines whether,
+for a given type, any value of that type may be soundly transmuted into
+another type. Once this functionality is sufficiently mature, zerocopy
+intends to replace its internal transmutability analysis (implemented by our
+custom derives) with the compiler-supported one. This change will likely be
+an implementation detail that is invisible to zerocopy's users.
+
+Project Safe Transmute will not replace the need for most of zerocopy's
+higher-level abstractions. The experimental compiler analysis is a tool for
+checking the soundness of `unsafe` code, not a tool to avoid writing
+`unsafe` code altogether. For the foreseeable future, crates like zerocopy
+will still be required in order to provide higher-level abstractions on top
+of the building block provided by Project Safe Transmute.
+
+[Project Safe Transmute]: https://rust-lang.github.io/rfcs/2835-project-safe-transmute.html
+[mcp-transmutability]: https://github.com/rust-lang/compiler-team/issues/411
+
 ## Disclaimer
 
 Disclaimer: Zerocopy is not an officially supported Google product.
