@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - v0.6.x
+  merge_group:
 
 permissions: read-all
 
@@ -68,11 +69,17 @@ jobs:
             features: "--features __internal_use_only_features_that_work_on_stable"
           - crate: "zerocopy-derive"
             features: "--all-features"
+          # Exclude any combination in which the target is unavailable on
+          # the given toolchain.
+          - toolchain: "stable"
+            target: "mips-unknown-linux-gnu"
+          - toolchain: "stable"
+            target: "mips64-unknown-linux-gnuabi64"
 
     name: Build & Test (crate:${{ matrix.crate }}, toolchain:${{ matrix.toolchain }}, target:${{ matrix.target }}, features:${{ matrix.features }})
 
     steps:
-    - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
 
     - uses: actions/cache@v3
       with:
@@ -115,13 +122,17 @@ jobs:
       with:
           toolchain: ${{ env.ZC_TOOLCHAIN }}
           targets: ${{ matrix.target }}
+          # We require the `rust-src` component to ensure that the compiler
+          # error output generated during UI tests matches that generated on
+          # local developer machines; see
+          # https://github.com/rust-lang/rust/issues/116433.
+          #
           # Only nightly has a working Miri, so we skip installing on all other
           # toolchains. This expression is effectively a ternary expression -
           # see [1] for details.
           #
-          # [1]
-          # https://github.com/actions/runner/issues/409#issuecomment-752775072
-          components: clippy ${{ matrix.toolchain == 'nightly' && ', miri' || '' }}
+          # [1] https://github.com/actions/runner/issues/409#issuecomment-752775072
+          components: clippy, rust-src ${{ matrix.toolchain == 'nightly' && ', miri' || '' }}
 
     - name: Rust Cache
       uses: Swatinem/rust-cache@a95ba195448af2da9b00fb742d14ffaaf3c21f43 # v2.7.0
@@ -155,7 +166,10 @@ jobs:
           --package ${{ matrix.crate }} \
           --target ${{ matrix.target }} \
           ${{ matrix.features }} \
-          --verbose
+          --verbose \
+          -- \
+          ${{ (matrix.features == '--no-default-features' || matrix.features == '') &&  '--skip ui' || '' }} \
+
       # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
       # x86_64, so we can't run tests for any non-x86 target.
       #
@@ -231,7 +245,7 @@ jobs:
     name: Run tests under Kani
     needs: generate_cache
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
       - name: Configure ZC_TOOLCHAIN environment variable
         run: |
           set -eo pipefail
@@ -253,7 +267,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check Rust formatting
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
       - name: Check Rust formatting
         run: |
           set -eo pipefail
@@ -268,7 +282,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check README.md
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
 
       - uses: actions/cache@v3
         with:
@@ -293,7 +307,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check MSRVs match
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
 
       - uses: actions/cache@v3
         with:
@@ -336,7 +350,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check crate versions match
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
 
       - uses: actions/cache@v3
         with:
@@ -411,7 +425,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Generate cache
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
 
       - uses: actions/cache@v3
         with:
@@ -440,3 +454,18 @@ jobs:
           cargo install cargo-readme --version 3.2.0 &> /dev/null || true
           cargo install --locked kani-verifier       &> /dev/null || true
           cargo kani setup                           &> /dev/null || true
+
+  # Used to signal to branch protections that all other jobs have succeeded.
+  all-jobs-succeed:
+      name: All checks succeeded
+      # On failure, we run and unconditionally exit with a failing status code.
+      # On success, this job is skipped. Jobs skipped using `if:` are considered
+      # to have succeeded:
+      #
+      # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
+      if: failure()
+      runs-on: ubuntu-latest
+      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_versions, generate_cache]
+      steps:
+        - name: Mark the job as failed
+          run: exit 1

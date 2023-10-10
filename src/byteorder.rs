@@ -93,18 +93,112 @@ macro_rules! impl_fmt_traits {
         impl_fmt_trait!($name, $native, Display);
     };
     ($name:ident, $native:ident, "unsigned integer") => {
-        impl_fmt_traits!($name, $native, @all_traits);
+        impl_fmt_traits!($name, $native, @all_types);
     };
     ($name:ident, $native:ident, "signed integer") => {
-        impl_fmt_traits!($name, $native, @all_traits);
+        impl_fmt_traits!($name, $native, @all_types);
     };
-
-    ($name:ident, $native:ident, @all_traits) => {
+    ($name:ident, $native:ident, @all_types) => {
         impl_fmt_trait!($name, $native, Display);
         impl_fmt_trait!($name, $native, Octal);
         impl_fmt_trait!($name, $native, LowerHex);
         impl_fmt_trait!($name, $native, UpperHex);
         impl_fmt_trait!($name, $native, Binary);
+    };
+}
+
+macro_rules! impl_ops_traits {
+    ($name:ident, $native:ident, "floating point number") => {
+        impl_ops_traits!($name, $native, @all_types);
+        impl_ops_traits!($name, $native, @signed_integer_floating_point);
+    };
+    ($name:ident, $native:ident, "unsigned integer") => {
+        impl_ops_traits!($name, $native, @signed_unsigned_integer);
+        impl_ops_traits!($name, $native, @all_types);
+    };
+    ($name:ident, $native:ident, "signed integer") => {
+        impl_ops_traits!($name, $native, @signed_unsigned_integer);
+        impl_ops_traits!($name, $native, @signed_integer_floating_point);
+        impl_ops_traits!($name, $native, @all_types);
+    };
+    ($name:ident, $native:ident, @signed_unsigned_integer) => {
+        impl_ops_traits!(@without_byteorder_swap $name, $native, BitAnd, bitand, BitAndAssign, bitand_assign);
+        impl_ops_traits!(@without_byteorder_swap $name, $native, BitOr, bitor, BitOrAssign, bitor_assign);
+        impl_ops_traits!(@without_byteorder_swap $name, $native, BitXor, bitxor, BitXorAssign, bitxor_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, Shl, shl, ShlAssign, shl_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, Shr, shr, ShrAssign, shr_assign);
+
+        impl<O> core::ops::Not for $name<O> {
+            type Output = $name<O>;
+
+            #[inline(always)]
+            fn not(self) -> $name<O> {
+                 let self_native = $native::from_ne_bytes(self.0);
+                 $name((!self_native).to_ne_bytes(), PhantomData)
+            }
+        }
+    };
+    ($name:ident, $native:ident, @signed_integer_floating_point) => {
+        impl<O: ByteOrder> core::ops::Neg for $name<O> {
+            type Output = $name<O>;
+
+            #[inline(always)]
+            fn neg(self) -> $name<O> {
+                let self_native: $native = self.get();
+                #[allow(clippy::arithmetic_side_effects)]
+                $name::<O>::new(-self_native)
+            }
+        }
+    };
+    ($name:ident, $native:ident, @all_types) => {
+        impl_ops_traits!(@with_byteorder_swap $name, $native, Add, add, AddAssign, add_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, Div, div, DivAssign, div_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, Mul, mul, MulAssign, mul_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, Rem, rem, RemAssign, rem_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, Sub, sub, SubAssign, sub_assign);
+    };
+    (@with_byteorder_swap $name:ident, $native:ident, $trait:ident, $method:ident, $trait_assign:ident, $method_assign:ident) => {
+        impl<O: ByteOrder> core::ops::$trait for $name<O> {
+            type Output = $name<O>;
+
+            #[inline(always)]
+            fn $method(self, rhs: $name<O>) -> $name<O> {
+                let self_native: $native = self.get();
+                let rhs_native: $native = rhs.get();
+                let result_native = core::ops::$trait::$method(self_native, rhs_native);
+                $name::<O>::new(result_native)
+            }
+        }
+
+        impl<O: ByteOrder> core::ops::$trait_assign for $name<O> {
+            #[inline(always)]
+            fn $method_assign(&mut self, rhs: $name<O>) {
+                *self = core::ops::$trait::$method(*self, rhs);
+            }
+        }
+    };
+    // Implement traits in terms of the same trait on the native type, but
+    // without performing a byte order swap. This only works for bitwise
+    // operations like `&`, `|`, etc.
+    (@without_byteorder_swap $name:ident, $native:ident, $trait:ident, $method:ident, $trait_assign:ident, $method_assign:ident) => {
+        impl<O: ByteOrder> core::ops::$trait for $name<O> {
+            type Output = $name<O>;
+
+            #[inline(always)]
+            fn $method(self, rhs: $name<O>) -> $name<O> {
+                let self_native = $native::from_ne_bytes(self.0);
+                let rhs_native = $native::from_ne_bytes(rhs.0);
+                let result_native = core::ops::$trait::$method(self_native, rhs_native);
+                $name(result_native.to_ne_bytes(), PhantomData)
+            }
+        }
+
+        impl<O: ByteOrder> core::ops::$trait_assign for $name<O> {
+            #[inline(always)]
+            fn $method_assign(&mut self, rhs: $name<O>) {
+                *self = core::ops::$trait::$method(*self, rhs);
+            }
+        }
     };
 }
 
@@ -347,6 +441,7 @@ example of how it can be used for parsing UDP packets.
         }
 
         impl_fmt_traits!($name, $native, $number_kind);
+        impl_ops_traits!($name, $native, $number_kind);
 
         impl<O: ByteOrder> Debug for $name<O> {
             #[inline]
@@ -565,7 +660,24 @@ mod tests {
             kani::any()
         }
 
+        fn checked_add(self, rhs: Self) -> Option<Self>;
+        fn checked_div(self, rhs: Self) -> Option<Self>;
+        fn checked_mul(self, rhs: Self) -> Option<Self>;
+        fn checked_rem(self, rhs: Self) -> Option<Self>;
+        fn checked_sub(self, rhs: Self) -> Option<Self>;
+        fn checked_shl(self, rhs: Self) -> Option<Self>;
+        fn checked_shr(self, rhs: Self) -> Option<Self>;
+
         fn is_nan(self) -> bool;
+
+        /// For `f32` and `f64`, NaN values are not considered equal to
+        /// themselves. This method is like `assert_eq!`, but it treats NaN
+        /// values as equal.
+        fn assert_eq_or_nan(self, other: Self) {
+            let slf = (!self.is_nan()).then(|| self);
+            let other = (!other.is_nan()).then(|| other);
+            assert_eq!(slf, other);
+        }
     }
 
     trait ByteArray:
@@ -586,6 +698,15 @@ mod tests {
         fn set(&mut self, native: Self::Native);
         fn from_bytes(bytes: Self::ByteArray) -> Self;
         fn into_bytes(self) -> Self::ByteArray;
+
+        /// For `f32` and `f64`, NaN values are not considered equal to
+        /// themselves. This method is like `assert_eq!`, but it treats NaN
+        /// values as equal.
+        fn assert_eq_or_nan(self, other: Self) {
+            let slf = (!self.get().is_nan()).then(|| self);
+            let other = (!other.get().is_nan()).then(|| other);
+            assert_eq!(slf, other);
+        }
     }
 
     trait ByteOrderTypeUnsigned: ByteOrderType {
@@ -618,7 +739,7 @@ mod tests {
     }
 
     macro_rules! impl_traits {
-        ($name:ident, $native:ident, $bytes:expr, $sign:ident $(, $is_nan:ident)?) => {
+        ($name:ident, $native:ident, $bytes:expr, $sign:ident $(, @$float:ident)?) => {
             impl Native for $native {
                 // For some types, `0 as $native` is required (for example, when
                 // `$native` is a floating-point type; `0` is an integer), but
@@ -631,9 +752,7 @@ mod tests {
                 type Distribution = Standard;
                 const DIST: Standard = Standard;
 
-                fn is_nan(self) -> bool {
-                    false $(|| self.$is_nan())?
-                }
+                impl_traits!(@float_dependent_methods $(@$float)?);
             }
 
             impl<O: ByteOrder> ByteOrderType for $name<O> {
@@ -665,6 +784,26 @@ mod tests {
 
             impl_byte_order_type_unsigned!($name, $sign);
         };
+        (@float_dependent_methods) => {
+            fn checked_add(self, rhs: Self) -> Option<Self> { self.checked_add(rhs) }
+            fn checked_div(self, rhs: Self) -> Option<Self> { self.checked_div(rhs) }
+            fn checked_mul(self, rhs: Self) -> Option<Self> { self.checked_mul(rhs) }
+            fn checked_rem(self, rhs: Self) -> Option<Self> { self.checked_rem(rhs) }
+            fn checked_sub(self, rhs: Self) -> Option<Self> { self.checked_sub(rhs) }
+            fn checked_shl(self, rhs: Self) -> Option<Self> { self.checked_shl(rhs.try_into().unwrap_or(u32::MAX)) }
+            fn checked_shr(self, rhs: Self) -> Option<Self> { self.checked_shr(rhs.try_into().unwrap_or(u32::MAX)) }
+            fn is_nan(self) -> bool { false }
+        };
+        (@float_dependent_methods @float) => {
+            fn checked_add(self, rhs: Self) -> Option<Self> { Some(self + rhs) }
+            fn checked_div(self, rhs: Self) -> Option<Self> { Some(self / rhs) }
+            fn checked_mul(self, rhs: Self) -> Option<Self> { Some(self * rhs) }
+            fn checked_rem(self, rhs: Self) -> Option<Self> { Some(self % rhs) }
+            fn checked_sub(self, rhs: Self) -> Option<Self> { Some(self - rhs) }
+            fn checked_shl(self, _rhs: Self) -> Option<Self> { unimplemented!() }
+            fn checked_shr(self, _rhs: Self) -> Option<Self> { unimplemented!() }
+            fn is_nan(self) -> bool { self.is_nan() }
+        };
     }
 
     impl_traits!(U16, u16, 2, unsigned);
@@ -675,23 +814,8 @@ mod tests {
     impl_traits!(I32, i32, 4, signed);
     impl_traits!(I64, i64, 8, signed);
     impl_traits!(I128, i128, 16, signed);
-    impl_traits!(F32, f32, 4, signed, is_nan);
-    impl_traits!(F64, f64, 8, signed, is_nan);
-
-    macro_rules! call_for_all_types {
-        ($fn:ident, $byteorder:ident) => {
-            $fn::<U16<$byteorder>>();
-            $fn::<U32<$byteorder>>();
-            $fn::<U64<$byteorder>>();
-            $fn::<U128<$byteorder>>();
-            $fn::<I16<$byteorder>>();
-            $fn::<I32<$byteorder>>();
-            $fn::<I64<$byteorder>>();
-            $fn::<I128<$byteorder>>();
-            $fn::<F32<$byteorder>>();
-            $fn::<F64<$byteorder>>();
-        };
-    }
+    impl_traits!(F32, f32, 4, signed, @float);
+    impl_traits!(F64, f64, 8, signed, @float);
 
     macro_rules! call_for_unsigned_types {
         ($fn:ident, $byteorder:ident) => {
@@ -699,6 +823,30 @@ mod tests {
             $fn::<U32<$byteorder>>();
             $fn::<U64<$byteorder>>();
             $fn::<U128<$byteorder>>();
+        };
+    }
+
+    macro_rules! call_for_signed_types {
+        ($fn:ident, $byteorder:ident) => {
+            $fn::<I16<$byteorder>>();
+            $fn::<I32<$byteorder>>();
+            $fn::<I64<$byteorder>>();
+            $fn::<I128<$byteorder>>();
+        };
+    }
+
+    macro_rules! call_for_float_types {
+        ($fn:ident, $byteorder:ident) => {
+            $fn::<F32<$byteorder>>();
+            $fn::<F64<$byteorder>>();
+        };
+    }
+
+    macro_rules! call_for_all_types {
+        ($fn:ident, $byteorder:ident) => {
+            call_for_unsigned_types!($fn, $byteorder);
+            call_for_signed_types!($fn, $byteorder);
+            call_for_float_types!($fn, $byteorder);
         };
     }
 
@@ -761,77 +909,150 @@ mod tests {
 
     #[cfg_attr(test, test)]
     #[cfg_attr(kani, kani::proof)]
-    fn test_native_endian() {
-        fn test_native_endian<T: ByteOrderType>() {
+    fn test_endian() {
+        fn test<T: ByteOrderType>(invert: bool) {
             let mut r = SmallRng::seed_from_u64(RNG_SEED);
             for _ in 0..RAND_ITERS {
                 let native = T::Native::rand(&mut r);
                 let mut bytes = T::ByteArray::default();
                 bytes.as_bytes_mut().copy_from_slice(native.as_bytes());
+                if invert {
+                    bytes = bytes.invert();
+                }
                 let mut from_native = T::new(native);
                 let from_bytes = T::from_bytes(bytes);
 
-                // For `f32` and `f64`, NaN values are not considered equal to
-                // themselves.
-                if !T::Native::is_nan(native) {
-                    assert_eq!(from_native, from_bytes);
-                    assert_eq!(from_native.get(), native);
-                    assert_eq!(from_bytes.get(), native);
-                }
+                from_native.assert_eq_or_nan(from_bytes);
+                from_native.get().assert_eq_or_nan(native);
+                from_bytes.get().assert_eq_or_nan(native);
 
                 assert_eq!(from_native.into_bytes(), bytes);
                 assert_eq!(from_bytes.into_bytes(), bytes);
 
                 let updated = T::Native::rand(&mut r);
                 from_native.set(updated);
-
-                // For `f32` and `f64`, NaN values are not considered equal to
-                // themselves.
-                if !T::Native::is_nan(from_native.get()) {
-                    assert_eq!(from_native.get(), updated);
-                }
+                from_native.get().assert_eq_or_nan(updated);
             }
         }
 
-        call_for_all_types!(test_native_endian, NativeEndian);
+        fn test_native<T: ByteOrderType>() {
+            test::<T>(false);
+        }
+
+        fn test_non_native<T: ByteOrderType>() {
+            test::<T>(true);
+        }
+
+        call_for_all_types!(test_native, NativeEndian);
+        call_for_all_types!(test_non_native, NonNativeEndian);
     }
 
     #[cfg_attr(test, test)]
-    #[cfg_attr(kani, kani::proof)]
-    fn test_non_native_endian() {
-        fn test_non_native_endian<T: ByteOrderType>() {
+    fn test_ops_impls() {
+        // Test implementations of traits in `core::ops`. Some of these are
+        // fairly banal, but some are optimized to perform the operation without
+        // swapping byte order (namely, bit-wise operations which are identical
+        // regardless of byte order). These are important to test, and while
+        // we're testing those anyway, it's trivial to test all of the impls.
+
+        fn test<T, F, G, H>(op: F, op_native: G, op_native_checked: Option<H>)
+        where
+            T: ByteOrderType,
+            F: Fn(T, T) -> T,
+            G: Fn(T::Native, T::Native) -> T::Native,
+            H: Fn(T::Native, T::Native) -> Option<T::Native>,
+        {
             let mut r = SmallRng::seed_from_u64(RNG_SEED);
             for _ in 0..RAND_ITERS {
-                let native = T::Native::rand(&mut r);
-                let mut bytes = T::ByteArray::default();
-                bytes.as_bytes_mut().copy_from_slice(native.as_bytes());
-                bytes = bytes.invert();
-                let mut from_native = T::new(native);
-                let from_bytes = T::from_bytes(bytes);
+                let n0 = T::Native::rand(&mut r);
+                let n1 = T::Native::rand(&mut r);
+                let t0 = T::new(n0);
+                let t1 = T::new(n1);
 
-                // For `f32` and `f64`, NaN values are not considered equal to
-                // themselves.
-                if !T::Native::is_nan(native) {
-                    assert_eq!(from_native, from_bytes);
-                    assert_eq!(from_native.get(), native);
-                    assert_eq!(from_bytes.get(), native);
+                // If this operation would overflow/underflow, skip it rather
+                // than attempt to catch and recover from panics.
+                if matches!(&op_native_checked, Some(checked) if checked(n0, n1).is_none()) {
+                    continue;
                 }
 
-                assert_eq!(from_native.into_bytes(), bytes);
-                assert_eq!(from_bytes.into_bytes(), bytes);
-
-                let updated = T::Native::rand(&mut r);
-                from_native.set(updated);
+                let n_res = op_native(n0, n1);
+                let t_res = op(t0, t1);
 
                 // For `f32` and `f64`, NaN values are not considered equal to
-                // themselves.
-                if !T::Native::is_nan(from_native.get()) {
-                    assert_eq!(from_native.get(), updated);
-                }
+                // themselves. We store `Option<f32>`/`Option<f64>` and store
+                // NaN as `None` so they can still be compared.
+                let n_res = (!T::Native::is_nan(n_res)).then(|| n_res);
+                let t_res = (!T::Native::is_nan(t_res.get())).then(|| t_res.get());
+                assert_eq!(n_res, t_res);
             }
         }
 
-        call_for_all_types!(test_non_native_endian, NonNativeEndian);
+        macro_rules! test {
+            (@binary $trait:ident, $method:ident $([$checked_method:ident])?, $($call_for_macros:ident),*) => {{
+                test!(
+                    @inner $trait,
+                    core::ops::$trait::$method,
+                    core::ops::$trait::$method,
+                    {
+                        #[allow(unused_mut, unused_assignments)]
+                        let mut op_native_checked = None::<fn(T::Native, T::Native) -> Option<T::Native>>;
+                        $(
+                            op_native_checked = Some(T::Native::$checked_method);
+                        )?
+                        op_native_checked
+                    },
+                    $($call_for_macros),*
+                );
+            }};
+            (@unary $trait:ident, $method:ident $([$checked_method:ident])?, $($call_for_macros:ident),*) => {{
+                test!(
+                    @inner $trait,
+                    |slf, _rhs| core::ops::$trait::$method(slf),
+                    |slf, _rhs| core::ops::$trait::$method(slf),
+                    {
+                        #[allow(unused_mut, unused_assignments)]
+                        let mut op_native_checked = None::<fn(T::Native, T::Native) -> Option<T::Native>>;
+                        $(
+                            op_native_checked = Some(|slf, _rhs| T::Native::$checked_method(slf));
+                        )?
+                        op_native_checked
+                    },
+                    $($call_for_macros),*
+                );
+            }};
+            (@inner $trait:ident, $op:expr, $op_native:expr, $op_native_checked:expr, $($call_for_macros:ident),*) => {{
+                fn t<T: ByteOrderType + core::ops::$trait<Output = T>>()
+                where
+                    T::Native: core::ops::$trait<Output = T::Native>,
+                {
+                    test::<T, _, _, _>(
+                        $op,
+                        $op_native,
+                        $op_native_checked,
+                    );
+                }
+
+                $(
+                    $call_for_macros!(t, NativeEndian);
+                    $call_for_macros!(t, NonNativeEndian);
+                )*
+            }};
+        }
+
+        test!(@binary Add, add[checked_add], call_for_all_types);
+        test!(@binary Div, div[checked_div], call_for_all_types);
+        test!(@binary Mul, mul[checked_mul], call_for_all_types);
+        test!(@binary Rem, rem[checked_rem], call_for_all_types);
+        test!(@binary Sub, sub[checked_sub], call_for_all_types);
+
+        test!(@binary BitAnd, bitand, call_for_unsigned_types, call_for_signed_types);
+        test!(@binary BitOr, bitor, call_for_unsigned_types, call_for_signed_types);
+        test!(@binary BitXor, bitxor, call_for_unsigned_types, call_for_signed_types);
+        test!(@binary Shl, shl[checked_shl], call_for_unsigned_types, call_for_signed_types);
+        test!(@binary Shr, shr[checked_shr], call_for_unsigned_types, call_for_signed_types);
+
+        test!(@unary Not, not, call_for_signed_types, call_for_unsigned_types);
+        test!(@unary Neg, neg, call_for_signed_types, call_for_float_types);
     }
 
     #[test]
