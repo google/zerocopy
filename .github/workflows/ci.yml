@@ -258,7 +258,7 @@ jobs:
           set -eo pipefail
           cargo install --locked kani-verifier
           cargo kani setup
-          RUSTFLAGS="$ZC_NIGHTLY_RUSTFLAGS" ./cargo.sh +nightly kani                   \
+          RUSTFLAGS="$RUSTFLAGS $ZC_NIGHTLY_RUSTFLAGS" ./cargo.sh +nightly kani        \
             --package zerocopy --all-features --output-format terse --randomize-layout \
             --memory-safety-checks --overflow-checks --undefined-function-checks       \
             --unwinding-checks

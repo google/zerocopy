@@ -947,7 +947,7 @@ mod tests {
         call_for_all_types!(test_non_native, NonNativeEndian);
     }
 
-    #[cfg_attr(test, test)]
+    #[test]
     fn test_ops_impls() {
         // Test implementations of traits in `core::ops`. Some of these are
         // fairly banal, but some are optimized to perform the operation without
