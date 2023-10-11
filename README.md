@@ -86,6 +86,59 @@ for network parsing.
 
 [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 
+## Security Ethos
+
+Zerocopy is expressly designed for use in security-critical contexts. We
+strive to ensure that that zerocopy code is sound under Rust's current
+memory model, and *any future memory model*. We ensure this by:
+- **...not 'guessing' about Rust's semantics.**
+  We annotate `unsafe` code with a precise rationale for its soundness that
+  cites a relevant section of Rust's official documentation. When Rust's
+  documented semantics are unclear, we work with the Rust Operational
+  Semantics Team to clarify Rust's documentation.
+- **...rigorously testing our implementation.**
+  We run tests using [Miri], ensuring that zerocopy is sound across a wide
+  array of supported target platforms of varying endianness and pointer
+  width, and across both current and experimental memory models of Rust.
+- **...formally proving the correctness of our implementation.**
+  We apply formal verification tools like [Kani][kani] to prove zerocopy's
+  correctness.
+
+For more information, see our full [soundness policy].
+
+[Miri]: https://github.com/rust-lang/miri
+[Kani]: https://github.com/model-checking/kani
+[soundness policy]: https://github.com/google/zerocopy/blob/main/POLICIES.md#soundness
+
+## Relationship to Project Safe Transmute
+
+[Project Safe Transmute] is an official initiative of the Rust Project to
+develop language-level support for safer transmutation. The Project consults
+with crates like zerocopy to identify aspects of safer transmutation that
+would benefit from compiler support, and has developed an [experimental,
+compiler-supported analysis][mcp-transmutability] which determines whether,
+for a given type, any value of that type may be soundly transmuted into
+another type. Once this functionality is sufficiently mature, zerocopy
+intends to replace its internal transmutability analysis (implemented by our
+custom derives) with the compiler-supported one. This change will likely be
+an implementation detail that is invisible to zerocopy's users.
+
+Project Safe Transmute will not replace the need for most of zerocopy's
+higher-level abstractions. The experimental compiler analysis is a tool for
+checking the soundness of `unsafe` code, not a tool to avoid writing
+`unsafe` code altogether. For the foreseeable future, crates like zerocopy
+will still be required in order to provide higher-level abstractions on top
+of the building block provided by Project Safe Transmute.
+
+[Project Safe Transmute]: https://rust-lang.github.io/rfcs/2835-project-safe-transmute.html
+[mcp-transmutability]: https://github.com/rust-lang/compiler-team/issues/411
+
+## MSRV
+
+See our [MSRV policy].
+
+[MSRV policy]: https://github.com/google/zerocopy/blob/main/POLICIES.md#msrv
+
 ## Disclaimer
 
 Disclaimer: Zerocopy is not an officially supported Google product.
