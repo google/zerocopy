@@ -258,6 +258,15 @@ use {
     core::{alloc::Layout, ptr::NonNull},
 };
 
+// For each polyfill, as soon as the corresponding feature is stable, the
+// polyfill import will be unused because method/function resolution will prefer
+// the inherent method/function over a trait method/function. Thus, we suppress
+// the `unused_imports` warning.
+//
+// See the documentation on `util::polyfills` for more information.
+#[allow(unused_imports)]
+use crate::util::polyfills::NonNullExt as _;
+
 // This is a hack to allow zerocopy-derive derives to work in this crate. They
 // assume that zerocopy is linked as an extern crate, so they access items from
 // it as `zerocopy::Xxx`. This makes that still work.
@@ -352,8 +361,11 @@ impl SizeInfo {
     }
 }
 
-#[cfg_attr(test, derive(Copy, Clone, Debug))]
-enum _CastType {
+#[doc(hidden)]
+#[derive(Copy, Clone)]
+#[cfg_attr(test, derive(Debug))]
+#[allow(missing_debug_implementations)]
+pub enum _CastType {
     _Prefix,
     _Suffix,
 }
@@ -457,6 +469,9 @@ impl DstLayout {
     /// mere fact that this method returned successfully.
     ///
     /// # Panics
+    ///
+    /// `validate_cast_and_convert_metadata` will panic if `self` describes a
+    /// DST whose trailing slice element is zero-sized.
     ///
     /// If `addr + bytes_len` overflows `usize`,
     /// `validate_cast_and_convert_metadata` may panic, or it may return
