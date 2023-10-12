@@ -4836,7 +4836,7 @@ mod tests {
         assert_impls!([u8; 1]: FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!([NotZerocopy; 1]: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
-        #[cfg(feature = "simd")] 
+        #[cfg(feature = "simd")]
         {
             macro_rules! test_simd_arch_mod {
                 ($arch:ident, $($typ:ident),*) => {
@@ -4849,13 +4849,13 @@ mod tests {
             }
             #[cfg(target_arch = "x86")]
             test_simd_arch_mod!(x86, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
-    
+
             #[cfg(target_arch = "x86_64")]
             test_simd_arch_mod!(x86_64, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
-    
+
             #[cfg(target_arch = "wasm32")]
             test_simd_arch_mod!(wasm32, v128);
-    
+
             #[cfg(all(feature = "simd-nightly", target_arch = "powerpc"))]
             test_simd_arch_mod!(
                 powerpc,
@@ -4864,7 +4864,7 @@ mod tests {
                 vector_signed_long,
                 vector_unsigned_long
             );
-    
+
             #[cfg(all(feature = "simd-nightly", target_arch = "powerpc64"))]
             test_simd_arch_mod!(
                 powerpc64,
