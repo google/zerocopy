@@ -4843,7 +4843,7 @@ mod tests {
                     {
                         use core::arch::$arch::{$($typ),*};
                         use crate::*;
-                        $( assert_impls!($ty: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned); )*
+                        $( assert_impls!($typ: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned); )*
                     }
                 };
             }
