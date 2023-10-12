@@ -99,7 +99,7 @@ macro_rules! union_has_padding {
 
 pub mod core_reexport {
     pub mod mem {
-        pub use core::mem::transmute;
+        pub use core::mem::{transmute, ManuallyDrop};
     }
 }
 

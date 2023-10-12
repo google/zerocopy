@@ -2233,14 +2233,34 @@ mod simd {
 /// Safely transmutes a value of one type to a value of another type of the same
 /// size.
 ///
-/// The expression `$e` must have a concrete type, `T`, which implements
-/// `AsBytes`. The `transmute!` expression must also have a concrete type, `U`
+/// The expression, `$e`, must have a concrete type, `T`, which implements
+/// [`AsBytes`]. The `transmute!` expression must also have a concrete type, `U`
 /// (`U` is inferred from the calling context), and `U` must implement
-/// `FromBytes`.
+/// [`FromBytes`]. `T` and `U` must have the same size.
 ///
 /// Note that the `T` produced by the expression `$e` will *not* be dropped.
 /// Semantically, its bits will be copied into a new value of type `U`, the
 /// original `T` will be forgotten, and the value of type `U` will be returned.
+///
+/// # Examples
+///
+/// ```rust
+/// # use zerocopy::transmute;
+/// use core::num::NonZeroU64;
+///
+/// // Why would you want to do this? Who knows ¯\_(ツ)_/¯
+/// let opt: Option<NonZeroU64> = transmute!(0.0f64);
+/// assert_eq!(opt, None);
+/// ```
+///
+/// ```rust,compile_fail
+/// # use zerocopy::try_transmute;
+/// // Fails to compile: `bool` does not implement `FromBytes`
+/// assert_eq!(transmute!(1u8), true);
+///
+/// // Fails to compile: can't transmute between sizes of different types
+/// let _: u8 = try_transmute!(0u16);
+/// ```
 #[macro_export]
 macro_rules! transmute {
     ($e:expr) => {{
@@ -2422,6 +2442,178 @@ macro_rules! transmute_ref {
             }
         }
     }}
+}
+
+/// Safely attempts to transmute a value of one type to a value of another type
+/// of the same size, failing if the transmute would be unsound.
+///
+/// The expression, `$e`, must have a concrete type, `T`, which implements
+/// [`AsBytes`]. The `try_transmute!` expression must also have a concrete type,
+/// `Option<U>` (`U` is inferred from the calling context), and `U` must
+/// implement [`TryFromBytes`]. `T` and `U` must have the same size.
+///
+/// [`TryFromBytes::try_read_from`] is used to attempt to convert `$e` to the
+/// output type `U`. This will fail if the bytes of `$e` do not correspond to a
+/// valid instance of `U`.
+///
+/// Note that the `T` produced by the expression `$e` will *not* be dropped.
+/// Semantically, its bits will be copied into a new value of type `U`, the
+/// original `T` will be forgotten, and the value of type `U` will be returned.
+///
+/// # Examples
+///
+/// ```rust
+/// # use zerocopy::try_transmute;
+/// assert_eq!(try_transmute!(1u8), Some(true));
+/// assert_eq!(try_transmute!(2u8), None::<bool>);
+///
+/// assert_eq!(try_transmute!(108u32), Some('l'));
+/// assert_eq!(try_transmute!(0xD800u32), None::<char>);
+/// ```
+///
+/// ```rust,compile_fail
+/// # use zerocopy::try_transmute;
+/// // Attempting to transmute from 2 to 1 bytes will fail to compile
+/// let _: Option<u8> = try_transmute!(0u16);
+/// ```
+#[macro_export]
+macro_rules! try_transmute {
+    ($e:expr) => {{
+        // NOTE: This must be a macro (rather than a function with trait bounds)
+        // because there's no way, in a generic context, to enforce that two
+        // types have the same size. `core::mem::transmute` uses compiler magic
+        // to enforce this so long as the types are concrete.
+
+        let e = $e;
+        if false {
+            // This branch, though never taken, ensures that the type of `e` is
+            // `AsBytes` and that the type of this macro invocation expression
+            // is `TryFromBytes`.
+            const fn transmute<T: $crate::AsBytes, U: $crate::TryFromBytes>(_t: T) -> U {
+                unreachable!()
+            }
+            Some(transmute(e))
+        } else if false {
+            // Though never executed, this ensures that the source and
+            // destination types have the same size. This isn't strictly
+            // necessary for soundness, but it turns what would otherwise be
+            // runtime errors into compile-time errors.
+            //
+            // SAFETY: This branch never executes.
+            Some(unsafe { $crate::macro_util::core_reexport::mem::transmute(e) })
+        } else {
+            // TODO: What's the correct drop behavior on `None`? Does this just
+            // behave like `mem::forget` in that case?
+            let m = $crate::macro_util::core_reexport::mem::ManuallyDrop::new(e);
+            $crate::TryFromBytes::try_read_from($crate::AsBytes::as_bytes(&m))
+        }
+    }}
+}
+
+/// Safely attempts to transmute a reference of one type to a reference of
+/// another type, failing if the transmute would be unsound.
+///
+/// The expression, `$e`, must have a concrete type, `&T`, where [`T: AsBytes`].
+/// The `try_transmute_ref!` expression must also have a concrete type,
+/// `Option<&U>` (`U` is inferred from the calling context), and `U` must
+/// implement [`TryFromBytes`].
+///
+/// [`TryFromBytes::try_from_ref`] is used to attempt to convert `$e` to the
+/// output reference type `&U`. This will fail if `$e` is not the right size, is
+/// not properly aligned, or if the bytes of `$e` do not correspond to a valid
+/// instance of `U`.
+///
+/// Note that, if `U` is an unsized type, there will be multiple sizes for `$e`
+/// which correspond to valid values of `U`.
+///
+/// [`T: AsBytes`]: AsBytes
+///
+/// # Examples
+///
+/// ```rust
+/// # use zerocopy::try_transmute_ref;
+/// # use zerocopy::AsBytes as _;
+/// let s: Option<&str> = try_transmute_ref!(&[104u8, 101, 108, 108, 111]);
+/// assert_eq!(s, Some("hello"));
+///
+/// // Invalid UTF-8
+/// assert_eq!(try_transmute_ref!(&0xFFFFFFFFu32), None::<&str>);
+///
+/// // Not enough bytes for a `u8`
+/// assert_eq!(try_transmute_ref!(&()), None::<&u8>);
+///
+/// // Valid `&[[u8; 2]]` slices could be 2 or 4 bytes long,
+/// // but not 3.
+/// assert_eq!(try_transmute_ref!(&[0u8, 1, 2]), None::<&[[u8; 2]]>);
+///
+/// // Guaranteed to be invalidly-aligned so long as
+/// // `align_of::<u16>() == 2` and `align_of::<u32>() >= 2`
+/// // (this is true on most targets, but it isn't guaranteed).
+/// assert_eq!(try_transmute_ref!(&0u32.as_bytes()[1..]), None::<&u16>);
+/// ```
+#[macro_export]
+macro_rules! try_transmute_ref {
+    ($e:expr) => {
+        $crate::TryFromBytes::try_from_ref($crate::AsBytes::as_bytes($e))
+    };
+}
+
+/// Safely attempts to transmute a mutable reference of one type to a mutable
+/// reference of another type, failing if the transmute would be unsound.
+///
+/// The expression, `$e`, must have a concrete type, `&mut T`, where `T:
+/// FromBytes + AsBytes`. The `try_transmute_ref!` expression must also have a
+/// concrete type, `Option<&mut U>` (`U` is inferred from the calling context),
+/// and `U` must implement [`TryFromBytes`].
+///
+/// [`TryFromBytes::try_from_mut`] is used to attempt to convert `$e` to the
+/// output reference type, `&mut U`. This will fail if `$e` is not the right
+/// size, is not properly aligned, or if the bytes of `$e` do not correspond to
+/// a valid instance of `U`.
+///
+/// Note that, if `U` is an unsized type, there will be multiple sizes for `$e`
+/// which correspond to valid values of `U`.
+///
+/// [`TryFromBytes`]: TryFromBytes
+///
+/// # Examples
+///
+/// ```rust
+/// # use zerocopy::try_transmute_mut;
+/// # use zerocopy::AsBytes as _;
+/// let bytes = &mut [104u8, 101, 108, 108, 111];
+/// let mut s = try_transmute_mut!(bytes);
+/// assert_eq!(s, Some(String::from("hello").as_mut_str()));
+///
+/// // Mutations to the transmuted reference are reflected
+/// // in the original reference.
+/// s.as_mut().unwrap().make_ascii_uppercase();
+/// assert_eq!(bytes, &[72, 69, 76, 76, 79]);
+///
+/// // Invalid UTF-8
+/// let mut u = 0xFFFFFFFFu32;
+/// assert_eq!(try_transmute_mut!(&mut u), None::<&mut str>);
+///
+/// // Not enough bytes for a `u8`
+/// let mut tuple = ();
+/// assert_eq!(try_transmute_mut!(&mut tuple), None::<&mut u8>);
+///
+/// // Valid `&mut [[u8; 2]]` slices could be 2 or 4 bytes
+/// // long, but not 3.
+/// let bytes = &mut [0u8, 1, 2];
+/// assert_eq!(try_transmute_mut!(bytes), None::<&mut [[u8; 2]]>);
+///
+/// // Guaranteed to be invalidly-aligned so long as
+/// // `align_of::<u16>() == 2` and `align_of::<u32>() >= 2`
+/// // (this is true on most targets, but it isn't guaranteed).
+/// let mut u = 0u32;
+/// assert_eq!(try_transmute_mut!(&mut u.as_bytes_mut()[1..]), None::<&mut u16>);
+/// ```
+#[macro_export]
+macro_rules! try_transmute_mut {
+    ($e:expr) => {
+        $crate::TryFromBytes::try_from_mut($crate::AsBytes::as_bytes_mut($e))
+    };
 }
 
 /// A typed reference derived from a byte slice.
@@ -4536,10 +4728,16 @@ mod tests {
         // Test that memory is transmuted as expected.
         let array_of_u8s = [0u8, 1, 2, 3, 4, 5, 6, 7];
         let array_of_arrays = [[0, 1], [2, 3], [4, 5], [6, 7]];
+
         let x: [[u8; 2]; 4] = transmute!(array_of_u8s);
         assert_eq!(x, array_of_arrays);
+        let x: Option<[[u8; 2]; 4]> = try_transmute!(array_of_u8s);
+        assert_eq!(x, Some(array_of_arrays));
+
         let x: [u8; 8] = transmute!(array_of_arrays);
         assert_eq!(x, array_of_u8s);
+        let x: Option<[u8; 8]> = try_transmute!(array_of_arrays);
+        assert_eq!(x, Some(array_of_u8s));
 
         // Test that the source expression's value is forgotten rather than
         // dropped.
@@ -4552,12 +4750,37 @@ mod tests {
             }
         }
         let _: () = transmute!(PanicOnDrop(()));
+        let _: Option<()> = try_transmute!(PanicOnDrop(()));
 
         // Test that `transmute!` is legal in a const context.
         const ARRAY_OF_U8S: [u8; 8] = [0u8, 1, 2, 3, 4, 5, 6, 7];
         const ARRAY_OF_ARRAYS: [[u8; 2]; 4] = [[0, 1], [2, 3], [4, 5], [6, 7]];
         const X: [[u8; 2]; 4] = transmute!(ARRAY_OF_U8S);
         assert_eq!(X, ARRAY_OF_ARRAYS);
+
+        // Test fallible transmutations with `try_transmute!`.
+        let mut b: Option<bool> = try_transmute!(0u8);
+        assert_eq!(b, Some(false));
+        b = try_transmute!(1u8);
+        assert_eq!(b, Some(true));
+        b = try_transmute!(2u8);
+        assert_eq!(b, None);
+    }
+
+    #[test]
+    fn test_try_transmute_ref_mut() {
+        // These macros are dead-simple thin wrappers which delegate to other
+        // traits. We only have this test to ensure that the macros are uesd
+        // somewhere so our tests will break if the paths to various items
+        // break.
+        let x: Option<&[u8; 2]> = try_transmute_ref!(&0xFFFFu16);
+        assert_eq!(x, Some(&[255, 255]));
+
+        let mut u = 0xFFFFu16;
+        let x: Option<&mut [u8; 2]> = try_transmute_mut!(&mut u);
+        assert_eq!(x, Some(&mut [255, 255]));
+        *x.unwrap() = [0, 0];
+        assert_eq!(u, 0);
     }
 
     #[test]
