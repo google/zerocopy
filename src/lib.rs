@@ -699,44 +699,54 @@ safety_comment! {
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] ManuallyDrop<T>);
 }
 
-/// Types for which a sequence of bytes all set to zero represents a valid
-/// instance of the type.
+/// Analyzes whether a type is [`FromZeroes`].
 ///
-/// WARNING: Do not implement this trait yourself! Instead, use
-/// `#[derive(FromZeroes)]` (requires the `derive` Cargo feature).
+/// This derive analyzes, at compile time, whether the annotated type satisfies
+/// the [safety conditions] of `FromZeroes` and implements `FromZeroes` if it is
+/// sound to do so. This derive can be applied to structs, enums, and unions;
+/// e.g.:
 ///
-/// Any memory region of the appropriate length which is guaranteed to contain
-/// only zero bytes can be viewed as any `FromZeroes` type with no runtime
-/// overhead. This is useful whenever memory is known to be in a zeroed state,
-/// such memory returned from some allocation routines.
+/// ```
+/// # use zerocopy_derive::FromZeroes;
+/// #[derive(FromZeroes)]
+/// struct MyStruct {
+/// # /*
+///     ...
+/// # */
+/// }
 ///
-/// `FromZeroes` is ignorant of byte order. For byte order-aware types, see the
-/// [`byteorder`] module.
+/// #[derive(FromZeroes)]
+/// #[repr(u8)]
+/// enum MyEnum {
+/// #   Variant0,
+/// # /*
+///     ...
+/// # */
+/// }
 ///
-/// # Safety
+/// #[derive(FromZeroes)]
+/// union MyUnion {
+/// #   variant: u8,
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
 ///
-/// *This section describes what is required in order for `T: FromZeroes`, and
-/// what unsafe code may assume of such types. `#[derive(FromZeroes)]` only
-/// permits types which satisfy these requirements. If you don't plan on
-/// implementing `FromZeroes` manually, and you don't plan on writing unsafe
-/// code that operates on `FromZeroes` types, then you don't need to read this
-/// section.*
+/// [safety conditions]: trait@FromZeroes#safety
 ///
-/// If `T: FromZeroes`, then unsafe code may assume that:
-/// - It is sound to treat any initialized sequence of zero bytes of length
-///   `size_of::<T>()` as a `T`.
-/// - Given `b: &[u8]` where `b.len() == size_of::<T>()`, `b` is aligned to
-///   `align_of::<T>()`, and `b` contains only zero bytes, it is sound to
-///   construct a `t: &T` at the same address as `b`, and it is sound for both
-///   `b` and `t` to be live at the same time.
+/// # Analysis
 ///
-/// If a type is marked as `FromZeroes` which violates this contract, it may
-/// cause undefined behavior.
+/// *This section describes, roughly, the analysis performed by this derive to
+/// determine whether it is sound to implement `FromZeroes` for a given type.
+/// Unless you are modifying the implementation of this derive, or attempting to
+/// manually implement `FromZeroes` for a type yourself, you don't need to read
+/// this section.*
 ///
-/// If a type has the following properties, then it is sound to implement
+/// If a type has the following properties, then this derive can implement
 /// `FromZeroes` for that type:
-/// - If the type is a struct, all of its fields must satisfy the requirements
-///   to be `FromZeroes` (they do not actually have to be `FromZeroes`).
+///
+/// - If the type is a struct, all of its fields must be `FromZeroes`.
 /// - If the type is an enum, it must be C-like (meaning that all variants have
 ///   no fields) and it must have a variant with a discriminant of `0`. See [the
 ///   reference] for a description of how discriminant values are chosen.
@@ -747,12 +757,17 @@ safety_comment! {
 ///   (`FromZeroes` is not currently implemented for, e.g.,
 ///   `Option<&UnsafeCell<_>>`, but it could be one day).
 ///
+/// This analysis is subject to change. Unsafe code may *only* rely on the
+/// documented [safety conditions] of `FromZeroes`, and must *not* rely on the
+/// implementation details of this derive.
+///
 /// [the reference]: https://doc.rust-lang.org/reference/items/enumerations.html#custom-discriminant-values-for-fieldless-enumerations
 /// [`UnsafeCell`]: core::cell::UnsafeCell
 ///
-/// # Rationale
-///
 /// ## Why isn't an explicit representation required for structs?
+///
+/// Neither this derive, nor the [safety conditions] of `FromZeroes`, requires
+/// that structs are marked with `#[repr(C)]`.
 ///
 /// Per the [Rust reference](reference),
 ///
@@ -777,6 +792,83 @@ safety_comment! {
 /// its fields are `FromZeroes`.
 // TODO(#146): Document why we don't require an enum to have an explicit `repr`
 // attribute.
+#[cfg(any(feature = "derive", test))]
+pub use zerocopy_derive::FromZeroes;
+
+/// Types for which a sequence of bytes all set to zero represents a valid
+/// instance of the type.
+///
+/// Any memory region of the appropriate length which is guaranteed to contain
+/// only zero bytes can be viewed as any `FromZeroes` type with no runtime
+/// overhead. This is useful whenever memory is known to be in a zeroed state,
+/// such memory returned from some allocation routines.
+///
+/// # Implementation
+///
+/// **Do not implement this trait yourself!** Instead, use
+/// [`#[derive(FromZeroes)]`][derive] (requires the `derive` Cargo feature);
+/// e.g.:
+///
+/// ```
+/// # use zerocopy_derive::FromZeroes;
+/// #[derive(FromZeroes)]
+/// struct MyStruct {
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(FromZeroes)]
+/// #[repr(u8)]
+/// enum MyEnum {
+/// #   Variant0,
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(FromZeroes)]
+/// union MyUnion {
+/// #   variant: u8,
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// This derive performs a sophisticated, compile-time safety analysis to
+/// determine whether a type is `FromZeroes`.
+///
+/// # Safety
+///
+/// *This section describes what is required in order for `T: FromZeroes`, and
+/// what unsafe code may assume of such types. If you don't plan on implementing
+/// `FromZeroes` manually, and you don't plan on writing unsafe code that
+/// operates on `FromZeroes` types, then you don't need to read this section.*
+///
+/// If `T: FromZeroes`, then unsafe code may assume that:
+/// - It is sound to treat any initialized sequence of zero bytes of length
+///   `size_of::<T>()` as a `T`.
+/// - Given `b: &[u8]` where `b.len() == size_of::<T>()`, `b` is aligned to
+///   `align_of::<T>()`, and `b` contains only zero bytes, it is sound to
+///   construct a `t: &T` at the same address as `b`, and it is sound for both
+///   `b` and `t` to be live at the same time.
+///
+/// If a type is marked as `FromZeroes` which violates this contract, it may
+/// cause undefined behavior.
+///
+/// `#[derive(FromZeroes)]` only permits [types which satisfy these requirements][derive-analysis].
+///
+#[cfg_attr(
+    feature = "derive",
+    doc = "[derive]: zerocopy_derive::FromZeroes",
+    doc = "[derive-analysis]: zerocopy_derive::FromZeroes#analysis"
+)]
+#[cfg_attr(
+    not(feature = "derive"),
+    doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.FromZeroes.html"),
+    doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.FromZeroes.html#analysis"),
+)]
 pub unsafe trait FromZeroes {
     // The `Self: Sized` bound makes it so that `FromZeroes` is still object
     // safe.
@@ -791,6 +883,36 @@ pub unsafe trait FromZeroes {
     /// Self::new_zeroed()`, it differs in that `zero` does not semantically
     /// drop the current value and replace it with a new one - it simply
     /// modifies the bytes of the existing value.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use zerocopy::FromZeroes;
+    /// # use zerocopy_derive::*;
+    /// #
+    /// #[derive(FromZeroes)]
+    /// #[repr(C)]
+    /// struct PacketHeader {
+    ///     src_port: [u8; 2],
+    ///     dst_port: [u8; 2],
+    ///     length: [u8; 2],
+    ///     checksum: [u8; 2],
+    /// }
+    ///
+    /// let mut header = PacketHeader {
+    ///     src_port: 100u16.to_be_bytes(),
+    ///     dst_port: 200u16.to_be_bytes(),
+    ///     length: 300u16.to_be_bytes(),
+    ///     checksum: 400u16.to_be_bytes(),
+    /// };
+    ///
+    /// header.zero();
+    ///
+    /// assert_eq!(header.src_port, [0, 0]);
+    /// assert_eq!(header.dst_port, [0, 0]);
+    /// assert_eq!(header.length, [0, 0]);
+    /// assert_eq!(header.checksum, [0, 0]);
+    /// ```
     #[inline(always)]
     fn zero(&mut self) {
         let slf: *mut Self = self;
@@ -806,6 +928,29 @@ pub unsafe trait FromZeroes {
     }
 
     /// Creates an instance of `Self` from zeroed bytes.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use zerocopy::FromZeroes;
+    /// # use zerocopy_derive::*;
+    /// #
+    /// #[derive(FromZeroes)]
+    /// #[repr(C)]
+    /// struct PacketHeader {
+    ///     src_port: [u8; 2],
+    ///     dst_port: [u8; 2],
+    ///     length: [u8; 2],
+    ///     checksum: [u8; 2],
+    /// }
+    ///
+    /// let header: PacketHeader = FromZeroes::new_zeroed();
+    ///
+    /// assert_eq!(header.src_port, [0, 0]);
+    /// assert_eq!(header.dst_port, [0, 0]);
+    /// assert_eq!(header.length, [0, 0]);
+    /// assert_eq!(header.checksum, [0, 0]);
+    /// ```
     #[inline(always)]
     fn new_zeroed() -> Self
     where
