@@ -2051,10 +2051,8 @@ where
             Some(len) => len,
             None => return None,
         };
-        if bytes.len() < expected_len {
-            return None;
-        }
-        let (bytes, suffix) = bytes.split_at(expected_len);
+        let position = bytes.len().checked_sub(expected_len)?;
+        let (bytes, suffix) = bytes.split_at(position);
         Self::new_slice(suffix).map(move |l| (bytes, l))
     }
 }
@@ -4236,8 +4234,9 @@ mod tests {
 
         {
             buf.set_default();
+            buf.t[8..].fill(0xFF);
             let (r, suffix) = Ref::<_, [AU64]>::new_slice_from_prefix(&mut buf.t[..], 1).unwrap();
-            assert_eq!(suffix, [0; 8]);
+            assert_eq!(suffix, [0xFF; 8]);
             test_new_helper_slice(r, 1);
         }
         {
@@ -4249,8 +4248,9 @@ mod tests {
         }
         {
             buf.set_default();
+            buf.t[..8].fill(0xFF);
             let (prefix, r) = Ref::<_, [AU64]>::new_slice_from_suffix(&mut buf.t[..], 1).unwrap();
-            assert_eq!(prefix, [0; 8]);
+            assert_eq!(prefix, [0xFF; 8]);
             test_new_helper_slice(r, 1);
         }
         {
