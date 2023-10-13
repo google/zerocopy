@@ -47,8 +47,6 @@ jobs:
           "powerpc-unknown-linux-gnu",
           "powerpc64-unknown-linux-gnu",
           "riscv64gc-unknown-linux-gnu",
-          "mips-unknown-linux-gnu",
-          "mips64-unknown-linux-gnuabi64",
           "s390x-unknown-linux-gnu",
           "wasm32-wasi"
         ]
@@ -69,12 +67,6 @@ jobs:
             features: "--features __internal_use_only_features_that_work_on_stable"
           - crate: "zerocopy-derive"
             features: "--all-features"
-          # Exclude any combination in which the target is unavailable on
-          # the given toolchain.
-          - toolchain: "stable"
-            target: "mips-unknown-linux-gnu"
-          - toolchain: "stable"
-            target: "mips64-unknown-linux-gnuabi64"
 
     name: Build & Test (crate:${{ matrix.crate }}, toolchain:${{ matrix.toolchain }}, target:${{ matrix.target }}, features:${{ matrix.features }})
 
