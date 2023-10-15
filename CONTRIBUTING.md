@@ -190,6 +190,36 @@ Commit messages should never contain references to any of:
       https://github.com/google/zerocopy/commit/789b3deb)
 1. Other entities which may not make sense to arbitrary future readers
 
+## Using Kani
+
+Kani is a static analysis tool for detecting certain kinds of undefined behavior in Rust code. It can be used to analyze the codebase and identify potential UB, aiding in writing safe and correct Rust programs.
+
+When to use Kani:
+
+1. Use Kani when you want to perform static analysis to identify possible instances of undefined behavior in your Rust code.
+2. Run Kani on your codebase before making significant changes or as part of the code review process to catch potential UB early.
+
+To use Kani:
+
+1. Install Kani according to the provided instructions.
+2. Run Kani on the relevant Rust code files or the entire codebase.
+3. Review the generated reports and address any identified potential UB.
+
+## Writing Tests to Catch Undefined Behavior with Miri
+
+Miri is an interpreter for Rust's mid-level intermediate representation (MIR) that is designed to catch various forms of undefined behavior. Writing tests with Miri helps ensure that the code behaves correctly and adheres to Rust's safety guarantees.
+
+When to write tests for Miri:
+
+1. Write tests for Miri when you want to ensure that your code does not exhibit undefined behavior, especially for critical or performance-sensitive parts of the codebase.
+
+To write tests for Miri:
+
+1. Identify critical code paths or performance-sensitive sections of the code where UB could occur.
+2. Write tests that exercise these code paths and operations, ensuring they are valid and do not result in UB.
+3. Run the tests using Miri to verify that the code behaves as expected and does not trigger any undefined behavior. 
+2. 
+
 ## Community Guidelines
 
 This project follows [Google's Open Source Community
