@@ -215,10 +215,10 @@ When to write tests for Miri:
 
 To write tests for Miri:
 
-1. Identify critical code paths or performance-sensitive sections of the code where UB could occur.
+1. Identify the critical code paths or performance-sensitive sections of the code where UB could occur.
 2. Write tests that exercise these code paths and operations, ensuring they are valid and do not result in UB.
 3. Run the tests using Miri to verify that the code behaves as expected and does not trigger any undefined behavior. 
-2. 
+
 
 ## Community Guidelines
 
