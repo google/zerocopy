@@ -2051,8 +2051,8 @@ where
             Some(len) => len,
             None => return None,
         };
-        let position = bytes.len().checked_sub(expected_len)?;
-        let (bytes, suffix) = bytes.split_at(position);
+        let split_at = bytes.len().checked_sub(expected_len)?;
+        let (bytes, suffix) = bytes.split_at(split_at);
         Self::new_slice(suffix).map(move |l| (bytes, l))
     }
 }
