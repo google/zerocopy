@@ -4196,7 +4196,8 @@ mod tests {
         let mut buf = Align::<[u8; 8], AU64>::default();
         // `buf.t` should be aligned to 8, so this should always succeed.
         test_new_helper(Ref::<_, AU64>::new(&mut buf.t[..]).unwrap());
-        buf.t = [0xFFu8; 8];
+        let ascending: [u8; 8] = (0..8).collect::<Vec<_>>().try_into().unwrap();
+        buf.t = ascending;
         test_new_helper(Ref::<_, AU64>::new_zeroed(&mut buf.t[..]).unwrap());
         {
             // In a block so that `r` and `suffix` don't live too long.
@@ -4206,7 +4207,7 @@ mod tests {
             test_new_helper(r);
         }
         {
-            buf.t = [0xFFu8; 8];
+            buf.t = ascending;
             let (r, suffix) = Ref::<_, AU64>::new_from_prefix_zeroed(&mut buf.t[..]).unwrap();
             assert!(suffix.is_empty());
             test_new_helper(r);
@@ -4218,46 +4219,54 @@ mod tests {
             test_new_helper(r);
         }
         {
-            buf.t = [0xFFu8; 8];
+            buf.t = ascending;
             let (prefix, r) = Ref::<_, AU64>::new_from_suffix_zeroed(&mut buf.t[..]).unwrap();
             assert!(prefix.is_empty());
             test_new_helper(r);
         }
 
-        // A buffer with alignment 8 and length 16.
-        let mut buf = Align::<[u8; 16], AU64>::default();
+        // A buffer with alignment 8 and length 24. We choose this length very
+        // intentionally: if we instead used length 16, then the prefix and
+        // suffix lengths would be identical. In the past, we used length 16,
+        // which resulted in this test failing to discover the bug uncovered in
+        // #506.
+        let mut buf = Align::<[u8; 24], AU64>::default();
         // `buf.t` should be aligned to 8 and have a length which is a multiple
         // of `size_of::<AU64>()`, so this should always succeed.
-        test_new_helper_slice(Ref::<_, [AU64]>::new_slice(&mut buf.t[..]).unwrap(), 2);
-        buf.t = [0xFFu8; 16];
-        test_new_helper_slice(Ref::<_, [AU64]>::new_slice_zeroed(&mut buf.t[..]).unwrap(), 2);
+        test_new_helper_slice(Ref::<_, [AU64]>::new_slice(&mut buf.t[..]).unwrap(), 3);
+        let ascending: [u8; 24] = (0..24).collect::<Vec<_>>().try_into().unwrap();
+        // 16 ascending bytes followed by 8 zeros.
+        let mut ascending_prefix = ascending;
+        ascending_prefix[16..].copy_from_slice(&[0, 0, 0, 0, 0, 0, 0, 0]);
+        // 8 zeros followed by 16 ascending bytes.
+        let mut ascending_suffix = ascending;
+        ascending_suffix[..8].copy_from_slice(&[0, 0, 0, 0, 0, 0, 0, 0]);
+        test_new_helper_slice(Ref::<_, [AU64]>::new_slice_zeroed(&mut buf.t[..]).unwrap(), 3);
 
         {
-            buf.set_default();
-            buf.t[8..].fill(0xFF);
+            buf.t = ascending_suffix;
             let (r, suffix) = Ref::<_, [AU64]>::new_slice_from_prefix(&mut buf.t[..], 1).unwrap();
-            assert_eq!(suffix, [0xFF; 8]);
+            assert_eq!(suffix, &ascending[8..]);
             test_new_helper_slice(r, 1);
         }
         {
-            buf.t = [0xFFu8; 16];
+            buf.t = ascending_suffix;
             let (r, suffix) =
                 Ref::<_, [AU64]>::new_slice_from_prefix_zeroed(&mut buf.t[..], 1).unwrap();
-            assert_eq!(suffix, [0xFF; 8]);
+            assert_eq!(suffix, &ascending[8..]);
             test_new_helper_slice(r, 1);
         }
         {
-            buf.set_default();
-            buf.t[..8].fill(0xFF);
+            buf.t = ascending_prefix;
             let (prefix, r) = Ref::<_, [AU64]>::new_slice_from_suffix(&mut buf.t[..], 1).unwrap();
-            assert_eq!(prefix, [0xFF; 8]);
+            assert_eq!(prefix, &ascending[..16]);
             test_new_helper_slice(r, 1);
         }
         {
-            buf.t = [0xFFu8; 16];
+            buf.t = ascending_prefix;
             let (prefix, r) =
                 Ref::<_, [AU64]>::new_slice_from_suffix_zeroed(&mut buf.t[..], 1).unwrap();
-            assert_eq!(prefix, [0xFF; 8]);
+            assert_eq!(prefix, &ascending[..16]);
             test_new_helper_slice(r, 1);
         }
     }
