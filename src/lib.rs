@@ -4835,5 +4835,58 @@ mod tests {
         assert_impls!([NotZerocopy; 0]: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
         assert_impls!([u8; 1]: FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!([NotZerocopy; 1]: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+
+        #[cfg(feature = "simd")]
+        {
+            macro_rules! test_simd_arch_mod {
+                ($arch:ident, $($typ:ident),*) => {
+                    {
+                        use core::arch::$arch::{$($typ),*};
+                        use crate::*;
+                        $( assert_impls!($typ: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned); )*
+                    }
+                };
+            }
+            #[cfg(target_arch = "x86")]
+            test_simd_arch_mod!(x86, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
+
+            #[cfg(target_arch = "x86_64")]
+            test_simd_arch_mod!(x86_64, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
+
+            #[cfg(target_arch = "wasm32")]
+            test_simd_arch_mod!(wasm32, v128);
+
+            #[cfg(all(feature = "simd-nightly", target_arch = "powerpc"))]
+            test_simd_arch_mod!(
+                powerpc,
+                vector_bool_long,
+                vector_double,
+                vector_signed_long,
+                vector_unsigned_long
+            );
+
+            #[cfg(all(feature = "simd-nightly", target_arch = "powerpc64"))]
+            test_simd_arch_mod!(
+                powerpc64,
+                vector_bool_long,
+                vector_double,
+                vector_signed_long,
+                vector_unsigned_long
+            );
+            #[cfg(target_arch = "aarch64")]
+            #[rustfmt::skip]
+            test_simd_arch_mod!(
+                aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,
+                int8x8x3_t, int8x8x4_t, int8x16_t, int8x16x2_t, int8x16x3_t, int8x16x4_t, int16x4_t,
+                int16x8_t, int32x2_t, int32x4_t, int64x1_t, int64x2_t, poly8x8_t, poly8x8x2_t, poly8x8x3_t,
+                poly8x8x4_t, poly8x16_t, poly8x16x2_t, poly8x16x3_t, poly8x16x4_t, poly16x4_t, poly16x8_t,
+                poly64x1_t, poly64x2_t, uint8x8_t, uint8x8x2_t, uint8x8x3_t, uint8x8x4_t, uint8x16_t,
+                uint8x16x2_t, uint8x16x3_t, uint8x16x4_t, uint16x4_t, uint16x8_t, uint32x2_t, uint32x4_t,
+                uint64x1_t, uint64x2_t
+            );
+            #[cfg(all(feature = "simd-nightly", target_arch = "arm"))]
+            #[rustfmt::skip]
+            test_simd_arch_mod!(arm, int8x4_t, uint8x4_t);
+        }
     }
 }
