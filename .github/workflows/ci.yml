@@ -175,7 +175,7 @@ jobs:
         # borrows model to ensure we're compliant with both.
         for EXTRA_FLAGS in "" "-Zmiri-tree-borrows"; do
           MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" ./cargo.sh +${{ matrix.toolchain }} \
-            miri test \
+            miri test -vvv \
             --package ${{ matrix.crate }} \
             --target ${{ matrix.target }} \
             ${{ matrix.features }}
