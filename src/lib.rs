@@ -2082,10 +2082,8 @@ where
             Some(len) => len,
             None => return None,
         };
-        if bytes.len() < expected_len {
-            return None;
-        }
-        let (bytes, suffix) = bytes.split_at(expected_len);
+        let split_at = bytes.len().checked_sub(expected_len)?;
+        let (bytes, suffix) = bytes.split_at(split_at);
         Self::new_slice(suffix).map(move |l| (bytes, l))
     }
 }
@@ -4229,7 +4227,8 @@ mod tests {
         let mut buf = Align::<[u8; 8], AU64>::default();
         // `buf.t` should be aligned to 8, so this should always succeed.
         test_new_helper(Ref::<_, AU64>::new(&mut buf.t[..]).unwrap());
-        buf.t = [0xFFu8; 8];
+        let ascending: [u8; 8] = (0..8).collect::<Vec<_>>().try_into().unwrap();
+        buf.t = ascending;
         test_new_helper(Ref::<_, AU64>::new_zeroed(&mut buf.t[..]).unwrap());
         {
             // In a block so that `r` and `suffix` don't live too long.
@@ -4239,7 +4238,7 @@ mod tests {
             test_new_helper(r);
         }
         {
-            buf.t = [0xFFu8; 8];
+            buf.t = ascending;
             let (r, suffix) = Ref::<_, AU64>::new_from_prefix_zeroed(&mut buf.t[..]).unwrap();
             assert!(suffix.is_empty());
             test_new_helper(r);
@@ -4251,44 +4250,54 @@ mod tests {
             test_new_helper(r);
         }
         {
-            buf.t = [0xFFu8; 8];
+            buf.t = ascending;
             let (prefix, r) = Ref::<_, AU64>::new_from_suffix_zeroed(&mut buf.t[..]).unwrap();
             assert!(prefix.is_empty());
             test_new_helper(r);
         }
 
-        // A buffer with alignment 8 and length 16.
-        let mut buf = Align::<[u8; 16], AU64>::default();
+        // A buffer with alignment 8 and length 24. We choose this length very
+        // intentionally: if we instead used length 16, then the prefix and
+        // suffix lengths would be identical. In the past, we used length 16,
+        // which resulted in this test failing to discover the bug uncovered in
+        // #506.
+        let mut buf = Align::<[u8; 24], AU64>::default();
         // `buf.t` should be aligned to 8 and have a length which is a multiple
         // of `size_of::<AU64>()`, so this should always succeed.
-        test_new_helper_slice(Ref::<_, [AU64]>::new_slice(&mut buf.t[..]).unwrap(), 2);
-        buf.t = [0xFFu8; 16];
-        test_new_helper_slice(Ref::<_, [AU64]>::new_slice_zeroed(&mut buf.t[..]).unwrap(), 2);
+        test_new_helper_slice(Ref::<_, [AU64]>::new_slice(&mut buf.t[..]).unwrap(), 3);
+        let ascending: [u8; 24] = (0..24).collect::<Vec<_>>().try_into().unwrap();
+        // 16 ascending bytes followed by 8 zeros.
+        let mut ascending_prefix = ascending;
+        ascending_prefix[16..].copy_from_slice(&[0, 0, 0, 0, 0, 0, 0, 0]);
+        // 8 zeros followed by 16 ascending bytes.
+        let mut ascending_suffix = ascending;
+        ascending_suffix[..8].copy_from_slice(&[0, 0, 0, 0, 0, 0, 0, 0]);
+        test_new_helper_slice(Ref::<_, [AU64]>::new_slice_zeroed(&mut buf.t[..]).unwrap(), 3);
 
         {
-            buf.set_default();
+            buf.t = ascending_suffix;
             let (r, suffix) = Ref::<_, [AU64]>::new_slice_from_prefix(&mut buf.t[..], 1).unwrap();
-            assert_eq!(suffix, [0; 8]);
+            assert_eq!(suffix, &ascending[8..]);
             test_new_helper_slice(r, 1);
         }
         {
-            buf.t = [0xFFu8; 16];
+            buf.t = ascending_suffix;
             let (r, suffix) =
                 Ref::<_, [AU64]>::new_slice_from_prefix_zeroed(&mut buf.t[..], 1).unwrap();
-            assert_eq!(suffix, [0xFF; 8]);
+            assert_eq!(suffix, &ascending[8..]);
             test_new_helper_slice(r, 1);
         }
         {
-            buf.set_default();
+            buf.t = ascending_prefix;
             let (prefix, r) = Ref::<_, [AU64]>::new_slice_from_suffix(&mut buf.t[..], 1).unwrap();
-            assert_eq!(prefix, [0; 8]);
+            assert_eq!(prefix, &ascending[..16]);
             test_new_helper_slice(r, 1);
         }
         {
-            buf.t = [0xFFu8; 16];
+            buf.t = ascending_prefix;
             let (prefix, r) =
                 Ref::<_, [AU64]>::new_slice_from_suffix_zeroed(&mut buf.t[..], 1).unwrap();
-            assert_eq!(prefix, [0xFF; 8]);
+            assert_eq!(prefix, &ascending[..16]);
             test_new_helper_slice(r, 1);
         }
     }
@@ -4866,5 +4875,58 @@ mod tests {
         assert_impls!([NotZerocopy; 0]: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
         assert_impls!([u8; 1]: FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!([NotZerocopy; 1]: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+
+        #[cfg(feature = "simd")]
+        {
+            macro_rules! test_simd_arch_mod {
+                ($arch:ident, $($typ:ident),*) => {
+                    {
+                        use core::arch::$arch::{$($typ),*};
+                        use crate::*;
+                        $( assert_impls!($typ: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned); )*
+                    }
+                };
+            }
+            #[cfg(target_arch = "x86")]
+            test_simd_arch_mod!(x86, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
+
+            #[cfg(target_arch = "x86_64")]
+            test_simd_arch_mod!(x86_64, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
+
+            #[cfg(target_arch = "wasm32")]
+            test_simd_arch_mod!(wasm32, v128);
+
+            #[cfg(all(feature = "simd-nightly", target_arch = "powerpc"))]
+            test_simd_arch_mod!(
+                powerpc,
+                vector_bool_long,
+                vector_double,
+                vector_signed_long,
+                vector_unsigned_long
+            );
+
+            #[cfg(all(feature = "simd-nightly", target_arch = "powerpc64"))]
+            test_simd_arch_mod!(
+                powerpc64,
+                vector_bool_long,
+                vector_double,
+                vector_signed_long,
+                vector_unsigned_long
+            );
+            #[cfg(target_arch = "aarch64")]
+            #[rustfmt::skip]
+            test_simd_arch_mod!(
+                aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,
+                int8x8x3_t, int8x8x4_t, int8x16_t, int8x16x2_t, int8x16x3_t, int8x16x4_t, int16x4_t,
+                int16x8_t, int32x2_t, int32x4_t, int64x1_t, int64x2_t, poly8x8_t, poly8x8x2_t, poly8x8x3_t,
+                poly8x8x4_t, poly8x16_t, poly8x16x2_t, poly8x16x3_t, poly8x16x4_t, poly16x4_t, poly16x8_t,
+                poly64x1_t, poly64x2_t, uint8x8_t, uint8x8x2_t, uint8x8x3_t, uint8x8x4_t, uint8x16_t,
+                uint8x16x2_t, uint8x16x3_t, uint8x16x4_t, uint16x4_t, uint16x8_t, uint32x2_t, uint32x4_t,
+                uint64x1_t, uint64x2_t
+            );
+            #[cfg(all(feature = "simd-nightly", target_arch = "arm"))]
+            #[rustfmt::skip]
+            test_simd_arch_mod!(arm, int8x4_t, uint8x4_t);
+        }
     }
 }
