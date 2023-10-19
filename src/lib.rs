@@ -652,9 +652,18 @@ impl_known_layout!(const N: usize, T => [T; N]);
 
 safety_comment! {
     /// SAFETY:
-    /// `str` and `ManuallyDrop<[T]>` have the same representations as `[u8]`
-    /// and `[T]` repsectively. `str` has different bit validity than `[u8]`,
-    /// but that doesn't affect the soundness of this impl.
+    /// `str` and `ManuallyDrop<[T]>` [1] have the same representations as
+    /// `[u8]` and `[T]` repsectively. `str` has different bit validity than
+    /// `[u8]`, but that doesn't affect the soundness of this impl.
+    ///
+    /// [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
+    ///
+    ///   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
+    ///   validity as `T`
+    ///
+    /// TODO(#429): Once this text (added in
+    /// https://github.com/rust-lang/rust/pull/115522) is available on stable,
+    /// quote the stable docs instead of the nightly docs.
     unsafe_impl_known_layout!(#[repr([u8])] str);
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] ManuallyDrop<T>);
 }
@@ -1496,9 +1505,10 @@ safety_comment! {
 }
 safety_comment! {
     /// SAFETY:
-    /// `ManuallyDrop` has the same layout as `T`, and accessing the inner value
-    /// is safe (meaning that it's unsound to leave the inner value
-    /// uninitialized while exposing the `ManuallyDrop` to safe code).
+    /// `ManuallyDrop` has the same layout and bit validity as `T` [1], and
+    /// accessing the inner value is safe (meaning that it's unsound to leave
+    /// the inner value uninitialized while exposing the `ManuallyDrop` to safe
+    /// code).
     /// - `FromZeroes`, `FromBytes`: Since it has the same layout as `T`, any
     ///   valid `T` is a valid `ManuallyDrop<T>`. If `T: FromZeroes`, a sequence
     ///   of zero bytes is a valid `T`, and thus a valid `ManuallyDrop<T>`. If
@@ -1511,6 +1521,15 @@ safety_comment! {
     ///   code can only ever access a `ManuallyDrop` with all initialized bytes.
     /// - `Unaligned`: `ManuallyDrop` has the same layout (and thus alignment)
     ///   as `T`, and `T: Unaligned` guarantees that that alignment is 1.
+    ///
+    /// [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
+    ///
+    ///   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
+    ///   validity as `T`
+    ///
+    /// TODO(#429): Once this text (added in
+    /// https://github.com/rust-lang/rust/pull/115522) is available on stable,
+    /// quote the stable docs instead of the nightly docs.
     unsafe_impl!(T: ?Sized + FromZeroes => FromZeroes for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + AsBytes => AsBytes for ManuallyDrop<T>);
