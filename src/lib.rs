@@ -656,12 +656,14 @@ safety_comment! {
     /// `[u8]` and `[T]` repsectively. `str` has different bit validity than
     /// `[u8]`, but that doesn't affect the soundness of this impl.
     ///
-    /// [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
-    ///
     ///   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
     ///   validity as `T`
     ///
-    /// TODO(#429): Once this text (added in
+    /// [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
+    ///
+    /// TODO(#429):
+    /// -  Add quotes from docs.
+    /// -  Once [1] (added in
     /// https://github.com/rust-lang/rust/pull/115522) is available on stable,
     /// quote the stable docs instead of the nightly docs.
     unsafe_impl_known_layout!(#[repr([u8])] str);
@@ -771,6 +773,8 @@ pub unsafe trait FromZeroes {
         //   as required by `u8`.
         // - Since `Self: FromZeroes`, the all-zeroes instance is a valid
         //   instance of `Self.`
+        //
+        // TODO(#429): Add references to docs and quotes.
         unsafe { ptr::write_bytes(slf.cast::<u8>(), 0, len) };
     }
 
@@ -1170,6 +1174,8 @@ pub unsafe trait AsBytes {
         // - The total size of the resulting slice is no larger than
         //   `isize::MAX` because no allocation produced by safe code can be
         //   larger than `isize::MAX`.
+        //
+        // TODO(#429): Add references to docs and quotes.
         unsafe { slice::from_raw_parts(slf.cast::<u8>(), len) }
     }
 
@@ -1205,6 +1211,8 @@ pub unsafe trait AsBytes {
         // - The total size of the resulting slice is no larger than
         //   `isize::MAX` because no allocation produced by safe code can be
         //   larger than `isize::MAX`.
+        //
+        // TODO(#429): Add references to docs and quotes.
         unsafe { slice::from_raw_parts_mut(slf.cast::<u8>(), len) }
     }
 
@@ -1301,6 +1309,8 @@ safety_comment! {
     ///   - The only value >= 1 for which 1 is an integer multiple is 1
     ///   Therefore, the only possible alignment for `u8` and `i8` is 1.
     ///
+    /// TODO(#429): Add quotes from documentation.
+    ///
     /// [1] TODO(https://github.com/rust-lang/reference/issues/1291): Once the
     ///     reference explicitly guarantees these properties, cite it.
     /// [2] https://doc.rust-lang.org/reference/type-layout.html#primitive-data-layout
@@ -1327,7 +1337,9 @@ safety_comment! {
     /// - `AsBytes`: the `{f32,f64}::to_bits` methods' documentation [4,5]
     ///   states that they are currently equivalent to `transmute`. [3]
     ///
-    /// TODO: Make these arguments more precisely in terms of the documentation.
+    /// TODO(#429):
+    /// - Make these arguments more precisely in terms of the documentation.
+    /// - Add quotes from documentation.
     ///
     /// [1] https://doc.rust-lang.org/nightly/std/primitive.f32.html#method.from_bits
     /// [2] https://doc.rust-lang.org/nightly/std/primitive.f64.html#method.from_bits
@@ -1341,11 +1353,12 @@ safety_comment! {
 
 safety_comment! {
     /// SAFETY:
-    /// - `FromZeroes`: Per the reference [1], 0x00 is a valid bit pattern for
-    ///   `bool`.
-    /// - `AsBytes`: Per the reference [1], `bool` always has a size of 1 with
-    ///   valid bit patterns 0x01 and 0x00, so the only byte of the bool is
-    ///   always initialized
+    /// - `FromZeroes`: Valid since "[t]he value false has the bit pattern
+    ///   0x00" [1].
+    /// - `AsBytes`: Since "the boolean type has a size and alignment of 1 each"
+    ///   and "The value false has the bit pattern 0x00 and the value true has
+    ///   the bit pattern 0x01" [1]. Thus, the only byte of the bool is always
+    ///   initialized.
     /// - `Unaligned`: Per the reference [1], "[a]n object with the boolean type
     ///   has a size and alignment of 1 each."
     ///
@@ -1355,23 +1368,27 @@ safety_comment! {
 }
 safety_comment! {
     /// SAFETY:
-    /// - `FromZeroes`: Per the reference [1], 0x0000 is a valid bit pattern for
-    ///   `char`.
-    /// - `AsBytes`: `char` is represented as a 32-bit unsigned word (`u32`)
-    ///   [1], which is `AsBytes`. Note that unlike `u32`, not all bit patterns
-    ///   are valid for `char`.
+    /// - `FromZeroes`: Per reference [1], "[a] value of type char is a Unicode
+    ///   scalar value (i.e. a code point that is not a surrogate), represented
+    ///   as a 32-bit unsigned word in the 0x0000 to 0xD7FF or 0xE000 to
+    ///   0x10FFFF range" which contains 0x0000.
+    /// - `AsBytes`: `char` is per reference [1] "represented as a 32-bit
+    ///   unsigned word" (`u32`) which is `AsBytes`. Note that unlike `u32`, not
+    ///   all bit patterns are valid for `char`.
     ///
     /// [1] https://doc.rust-lang.org/reference/types/textual.html
     unsafe_impl!(char: FromZeroes, AsBytes);
 }
 safety_comment! {
     /// SAFETY:
-    /// - `FromZeroes`, `AsBytes`, `Unaligned`: Per the reference [1], `str` has
-    ///   the same layout as `[u8]`, and `[u8]` is `FromZeroes`, `AsBytes`, and
-    ///   `Unaligned`.
+    /// - `FromZeroes`, `AsBytes`, `Unaligned`: Per the reference [1], `str`
+    ///   has the same layout as `[u8]`, and `[u8]` is `FromZeroes`, `AsBytes`,
+    ///   and `Unaligned`.
     ///
     /// Note that we don't `assert_unaligned!(str)` because `assert_unaligned!`
     /// uses `align_of`, which only works for `Sized` types.
+    ///
+    /// TODO(#429): Add quotes from documentation.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#str-layout
     unsafe_impl!(str: FromZeroes, AsBytes, Unaligned);
@@ -1394,6 +1411,8 @@ safety_comment! {
     ///   size 1 or 0. `NonZeroX8` can represent multiple states, so they cannot
     ///   be 0 bytes, which means that they must be 1 byte. The only valid
     ///   alignment for a 1-byte type is 1.
+    ///
+    /// TODO(#429): Add quotes from documentation.
     ///
     /// [1] https://doc.rust-lang.org/stable/std/num/struct.NonZeroU8.html
     /// [2] https://doc.rust-lang.org/stable/std/num/struct.NonZeroI8.html
@@ -1425,6 +1444,8 @@ safety_comment! {
     ///   unthinkable that that would ever change. The only valid alignment for
     ///   a 1-byte type is 1.
     ///
+    /// TODO(#429): Add quotes from documentation.
+    ///
     /// [1] https://doc.rust-lang.org/stable/std/num/struct.NonZeroU8.html
     /// [2] https://doc.rust-lang.org/stable/std/num/struct.NonZeroI8.html
     ///
@@ -1447,7 +1468,11 @@ safety_comment! {
 
 safety_comment! {
     /// SAFETY:
-    /// For all `T`, `PhantomData<T>` has size 0 and alignment 1. [1]
+    /// Per reference [1]:
+    /// "For all T, the following are guaranteed:
+    /// size_of::<PhantomData<T>>() == 0
+    /// align_of::<PhantomData<T>>() == 1".
+    /// This gives:
     /// - `FromZeroes`, `FromBytes`: There is only one possible sequence of 0
     ///   bytes, and `PhantomData` is inhabited.
     /// - `AsBytes`: Since `PhantomData` has size 0, it contains no padding
@@ -1469,7 +1494,11 @@ safety_comment! {
     /// field, which is `pub`. Per the reference [2], this means that the
     /// `#[repr(transparent)]` attribute is "considered part of the public ABI".
     ///
-    /// [1] https://doc.rust-lang.org/nightly/core/num/struct.Wrapping.html#layout-1
+    /// TODO(#429): Add quotes from documentation.
+    ///
+    /// [1] TODO(https://doc.rust-lang.org/nightly/core/num/struct.Wrapping.html#layout-1):
+    /// Reference this documentation once it's available on stable.
+    ///
     /// [2] https://doc.rust-lang.org/nomicon/other-reprs.html#reprtransparent
     unsafe_impl!(T: FromZeroes => FromZeroes for Wrapping<T>);
     unsafe_impl!(T: FromBytes => FromBytes for Wrapping<T>);
@@ -1488,11 +1517,10 @@ safety_comment! {
     ///   Thus, we require `T: FromZeroes` and `T: FromBytes` in order to ensure
     ///   that `T` - and thus `MaybeUninit<T>` - contains to `UnsafeCell`s.
     ///   Thus, requiring that `T` implement each of these traits is sufficient
-    /// - `Unaligned`: `MaybeUninit<T>` is guaranteed by its documentation [1]
-    ///   to have the same alignment as `T`.
+    /// - `Unaligned`: "MaybeUninit<T> is guaranteed to have the same size,
+    ///    alignment, and ABI as T" [1]
     ///
-    /// [1]
-    /// https://doc.rust-lang.org/nightly/core/mem/union.MaybeUninit.html#layout-1
+    /// [1] https://doc.rust-lang.org/stable/core/mem/union.MaybeUninit.html#layout-1
     ///
     /// TODO(https://github.com/google/zerocopy/issues/251): If we split
     /// `FromBytes` and `RefFromBytes`, or if we introduce a separate
@@ -1522,12 +1550,14 @@ safety_comment! {
     /// - `Unaligned`: `ManuallyDrop` has the same layout (and thus alignment)
     ///   as `T`, and `T: Unaligned` guarantees that that alignment is 1.
     ///
-    /// [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
-    ///
     ///   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
     ///   validity as `T`
     ///
-    /// TODO(#429): Once this text (added in
+    /// [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
+    ///
+    /// TODO(#429):
+    /// - Add quotes from docs.
+    /// - Once [1] (added in
     /// https://github.com/rust-lang/rust/pull/115522) is available on stable,
     /// quote the stable docs instead of the nightly docs.
     unsafe_impl!(T: ?Sized + FromZeroes => FromZeroes for ManuallyDrop<T>);
