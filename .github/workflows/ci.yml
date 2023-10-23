@@ -47,8 +47,6 @@ jobs:
           "powerpc-unknown-linux-gnu",
           "powerpc64-unknown-linux-gnu",
           "riscv64gc-unknown-linux-gnu",
-          "mips-unknown-linux-gnu",
-          "mips64-unknown-linux-gnuabi64",
           "s390x-unknown-linux-gnu",
           "wasm32-wasi"
         ]
@@ -69,17 +67,11 @@ jobs:
             features: "--features __internal_use_only_features_that_work_on_stable"
           - crate: "zerocopy-derive"
             features: "--all-features"
-          # Exclude any combination in which the target is unavailable on
-          # the given toolchain.
-          - toolchain: "stable"
-            target: "mips-unknown-linux-gnu"
-          - toolchain: "stable"
-            target: "mips64-unknown-linux-gnuabi64"
 
     name: Build & Test (crate:${{ matrix.crate }}, toolchain:${{ matrix.toolchain }}, target:${{ matrix.target }}, features:${{ matrix.features }})
 
     steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
     - uses: actions/cache@v3
       with:
@@ -179,6 +171,9 @@ jobs:
 
     - name: Run tests under Miri
       run: |
+        # Work around https://github.com/rust-lang/miri/issues/3125
+        [ "${{ matrix.target }}" == "aarch64-unknown-linux-gnu" ] && cargo clean
+      
         # Run under both the stacked borrows model (default) and under the tree 
         # borrows model to ensure we're compliant with both.
         for EXTRA_FLAGS in "" "-Zmiri-tree-borrows"; do
@@ -244,7 +239,7 @@ jobs:
     runs-on: ubuntu-latest        
     name: 'Run tests under Kani'
     steps:
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0    
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - uses: model-checking/kani-github-action@v1.0
         with:
           args: "--package zerocopy --all-features --output-format=terse --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
@@ -253,7 +248,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check Rust formatting
     steps:
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Check Rust formatting
         run: |
           set -eo pipefail
@@ -268,7 +263,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check README.md
     steps:
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - uses: actions/cache@v3
         with:
@@ -293,7 +288,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check MSRVs match
     steps:
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - uses: actions/cache@v3
         with:
@@ -336,7 +331,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check crate versions match
     steps:
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - uses: actions/cache@v3
         with:
@@ -411,7 +406,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Generate cache
     steps:
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - uses: actions/cache@v3
         with:
