@@ -1,0 +1,23 @@
+name: Cache Cargo Dependencies
+
+on:
+    pull_request:
+    push:
+      branches:
+        - main
+        - v0.6.x
+    merge_group:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+
+    - name: Cache Cargo Dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cargo/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
