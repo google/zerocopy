@@ -247,7 +247,8 @@ use core::{
         NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize, Wrapping,
     },
     ops::{Deref, DerefMut},
-    ptr, slice,
+    ptr::{self, NonNull},
+    slice,
 };
 
 #[cfg(feature = "alloc")]
@@ -255,8 +256,17 @@ extern crate alloc;
 #[cfg(feature = "alloc")]
 use {
     alloc::{boxed::Box, vec::Vec},
-    core::{alloc::Layout, ptr::NonNull},
+    core::alloc::Layout,
 };
+
+// For each polyfill, as soon as the corresponding feature is stable, the
+// polyfill import will be unused because method/function resolution will prefer
+// the inherent method/function over a trait method/function. Thus, we suppress
+// the `unused_imports` warning.
+//
+// See the documentation on `util::polyfills` for more information.
+#[allow(unused_imports)]
+use crate::util::polyfills::NonNullExt as _;
 
 // This is a hack to allow zerocopy-derive derives to work in this crate. They
 // assume that zerocopy is linked as an extern crate, so they access items from
@@ -352,8 +362,11 @@ impl SizeInfo {
     }
 }
 
-#[cfg_attr(test, derive(Copy, Clone, Debug))]
-enum _CastType {
+#[doc(hidden)]
+#[derive(Copy, Clone)]
+#[cfg_attr(test, derive(Debug))]
+#[allow(missing_debug_implementations)]
+pub enum _CastType {
     _Prefix,
     _Suffix,
 }
@@ -457,6 +470,9 @@ impl DstLayout {
     /// mere fact that this method returned successfully.
     ///
     /// # Panics
+    ///
+    /// `validate_cast_and_convert_metadata` will panic if `self` describes a
+    /// DST whose trailing slice element is zero-sized.
     ///
     /// If `addr + bytes_len` overflows `usize`,
     /// `validate_cast_and_convert_metadata` may panic, or it may return
@@ -625,12 +641,27 @@ impl DstLayout {
 pub unsafe trait KnownLayout: sealed::KnownLayoutSealed {
     #[doc(hidden)]
     const LAYOUT: DstLayout;
+
+    /// SAFETY: The returned pointer has the same address and provenance as
+    /// `bytes`. If `Self` is a DST, the returned pointer's referent has `elems`
+    /// elements in its trailing slice. If `Self` is sized, `elems` is ignored.
+    #[doc(hidden)]
+    fn raw_from_ptr_len(bytes: NonNull<u8>, elems: usize) -> NonNull<Self>;
 }
 
 impl<T: KnownLayout> sealed::KnownLayoutSealed for [T] {}
 // SAFETY: Delegates safety to `DstLayout::for_slice`.
 unsafe impl<T: KnownLayout> KnownLayout for [T] {
     const LAYOUT: DstLayout = DstLayout::for_slice::<T>();
+
+    // SAFETY: `.cast` preserves address and provenance. The returned pointer
+    // refers to an object with `elems` elements by construction.
+    #[inline(always)]
+    fn raw_from_ptr_len(data: NonNull<u8>, elems: usize) -> NonNull<Self> {
+        // TODO(#67): Remove this allow. See NonNullExt for more details.
+        #[allow(unstable_name_collisions)]
+        NonNull::slice_from_raw_parts(data.cast::<T>(), elems)
+    }
 }
 
 #[rustfmt::skip]
