@@ -1,51 +1,51 @@
 error: unsupported on generic structs that are not repr(transparent) or repr(packed)
-  --> tests/ui-msrv/struct.rs:19:10
+  --> tests/ui-msrv/struct.rs:23:10
    |
-19 | #[derive(AsBytes)]
+23 | #[derive(AsBytes)]
    |          ^^^^^^^
    |
    = note: this error originates in the derive macro `AsBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-msrv/struct.rs:35:11
+  --> tests/ui-msrv/struct.rs:39:11
    |
-35 | #[repr(C, align(2))]
+39 | #[repr(C, align(2))]
    |           ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-msrv/struct.rs:39:21
+  --> tests/ui-msrv/struct.rs:43:21
    |
-39 | #[repr(transparent, align(2))]
+43 | #[repr(transparent, align(2))]
    |                     ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-msrv/struct.rs:45:16
+  --> tests/ui-msrv/struct.rs:49:16
    |
-45 | #[repr(packed, align(2))]
+49 | #[repr(packed, align(2))]
    |                ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-msrv/struct.rs:49:18
+  --> tests/ui-msrv/struct.rs:53:18
    |
-49 | #[repr(align(1), align(2))]
+53 | #[repr(align(1), align(2))]
    |                  ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-msrv/struct.rs:53:8
+  --> tests/ui-msrv/struct.rs:57:8
    |
-53 | #[repr(align(2), align(4))]
+57 | #[repr(align(2), align(4))]
    |        ^^^^^^^^
 
 error[E0692]: transparent struct cannot have other repr hints
-  --> tests/ui-msrv/struct.rs:39:8
+  --> tests/ui-msrv/struct.rs:43:8
    |
-39 | #[repr(transparent, align(2))]
+43 | #[repr(transparent, align(2))]
    |        ^^^^^^^^^^^  ^^^^^^^^
 
 error[E0277]: the trait bound `HasPadding<AsBytes2, true>: ShouldBe<false>` is not satisfied
-  --> tests/ui-msrv/struct.rs:23:10
+  --> tests/ui-msrv/struct.rs:27:10
    |
-23 | #[derive(AsBytes)]
+27 | #[derive(AsBytes)]
    |          ^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<AsBytes2, true>`
    |
    = help: the following implementations were found:

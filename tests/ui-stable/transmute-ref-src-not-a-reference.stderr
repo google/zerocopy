@@ -1,7 +1,7 @@
 error[E0614]: type `usize` cannot be dereferenced
-  --> tests/ui-stable/transmute-ref-src-not-a-reference.rs:13:34
+  --> tests/ui-stable/transmute-ref-src-not-a-reference.rs:17:34
    |
-13 | const SRC_NOT_A_REFERENCE: &u8 = transmute_ref!(0usize);
+17 | const SRC_NOT_A_REFERENCE: &u8 = transmute_ref!(0usize);
    |                                  ^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)

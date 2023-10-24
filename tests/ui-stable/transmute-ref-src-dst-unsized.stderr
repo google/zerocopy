@@ -1,7 +1,7 @@
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^
    |                                |
    |                                doesn't have a size known at compile-time
@@ -9,30 +9,30 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    |
    = help: the trait `Sized` is not implemented for `[u8]`
 note: required by a bound in `SRC_DST_UNSIZED::transmute`
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `transmute`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
    = help: the trait `Sized` is not implemented for `[u8]`
 note: required by a bound in `SRC_DST_UNSIZED::transmute`
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `transmute`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
    = help: the trait `Sized` is not implemented for `[u8]`
@@ -41,9 +41,9 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^
    |                                |
    |                                doesn't have a size known at compile-time
@@ -58,9 +58,9 @@ note: required by a bound in `std::intrinsics::transmute`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
    = help: the trait `Sized` is not implemented for `[u8]`
@@ -69,9 +69,9 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
    = help: the trait `Sized` is not implemented for `[u8]`
@@ -83,9 +83,9 @@ note: required by a bound in `std::intrinsics::transmute`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
    = help: the trait `Sized` is not implemented for `[u8]`
@@ -94,9 +94,9 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
    = help: the trait `Sized` is not implemented for `[u8]`
@@ -111,9 +111,9 @@ note: required by a bound in `AlignOf::<T>::into_t`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
    = help: the trait `Sized` is not implemented for `[u8]`
@@ -121,9 +121,9 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
    = help: the trait `Sized` is not implemented for `[u8]`
@@ -135,9 +135,9 @@ note: required by a bound in `AlignOf`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^
    |                                |
    |                                doesn't have a size known at compile-time
@@ -155,9 +155,9 @@ note: required by a bound in `MaxAlignsOf::<T, U>::new`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
    = help: the trait `Sized` is not implemented for `[u8]`
@@ -169,9 +169,9 @@ note: required by a bound in `MaxAlignsOf`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
    = help: the trait `Sized` is not implemented for `[u8]`
@@ -183,9 +183,9 @@ note: required by a bound in `AlignOf`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
    = help: the trait `Sized` is not implemented for `[u8]`
@@ -194,9 +194,9 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:13:32
+  --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
    |
-13 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
+17 | const SRC_DST_UNSIZED: &[u8] = transmute_ref!(&[0u8][..]);
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^
    |                                |
    |                                doesn't have a size known at compile-time
