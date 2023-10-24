@@ -3399,10 +3399,10 @@ pub unsafe trait IntoBytes {
         Self: Immutable,
     {
         let start = bytes.len().checked_sub(mem::size_of_val(self))?;
-        bytes
-            .get_mut(start..)
-            .expect("`start` should be in-bounds of `bytes`")
-            .copy_from_slice(self.as_bytes());
+        // get_mut() should never return None here. We use ? rather than
+        // .unwrap() because in the event the branch is not optimized away,
+        // returning None is generally lighter-weight than panicking.
+        bytes.get_mut(start..)?.copy_from_slice(self.as_bytes());
         Some(())
     }
 
