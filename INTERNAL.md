@@ -18,8 +18,11 @@ have a working Miri, so we need to pin to one that does (see
 https://rust-lang.github.io/rustup-components-history/).
 
 Updating the versions pinned in CI may cause the UI tests to break. In order to
-fix UI tests after a version update, set the environment variable
-`TRYBUILD=overwrite` while running `cargo test`.
+fix UI tests after a version update, run:
+
+```
+$ TRYBUILD=overwrite ./cargo.sh +all test
+```
 
 ## Crate versions
 
