@@ -19,6 +19,11 @@
 
 use core::{marker::PhantomData, mem::ManuallyDrop};
 
+// TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
+// `cfg` when `size_of_val_raw` is stabilized.
+#[cfg(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)]
+use core::ptr::{self, NonNull};
+
 /// A compile-time check that should be one particular value.
 pub trait ShouldBe<const VALUE: bool> {}
 
@@ -59,6 +64,145 @@ impl<T, U> MaxAlignsOf<T, U> {
     pub fn new(_t: T, _u: U) -> MaxAlignsOf<T, U> {
         unreachable!()
     }
+}
+
+const _64K: usize = 1 << 16;
+
+// TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
+// `cfg` when `size_of_val_raw` is stabilized.
+#[cfg(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)]
+#[repr(C, align(65536))]
+struct Aligned64kAllocation([u8; _64K]);
+
+/// A pointer to an aligned allocation of size 2^16.
+///
+/// # Safety
+///
+/// `ALIGNED_64K_ALLOCATION` is guaranteed to point to the entirety of an
+/// allocation with size and alignment 2^16, and to have valid provenance.
+// TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
+// `cfg` when `size_of_val_raw` is stabilized.
+#[cfg(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)]
+pub const ALIGNED_64K_ALLOCATION: NonNull<[u8]> = {
+    const REF: &Aligned64kAllocation = &Aligned64kAllocation([0; _64K]);
+    let ptr: *const Aligned64kAllocation = REF;
+    let ptr: *const [u8] = ptr::slice_from_raw_parts(ptr.cast(), _64K);
+    // SAFETY:
+    // - `ptr` is derived from a Rust reference, which is guaranteed to be
+    //   non-null.
+    // - `ptr` is derived from an `&Aligned64kAllocation`, which has size and
+    //   alignment `_64K` as promised. Its length is initialized to `_64K`,
+    //   which means that it refers to the entire allocation.
+    // - `ptr` is derived from a Rust reference, which is guaranteed to have
+    //   valid provenance.
+    //
+    // TODO(#429): Once `NonNull::new_unchecked` docs document that it preserves
+    // provenance, cite those docs.
+    // TODO: Replace this `as` with `ptr.cast_mut()` once our MSRV >= 1.65
+    #[allow(clippy::as_conversions)]
+    unsafe {
+        NonNull::new_unchecked(ptr as *mut _)
+    }
+};
+
+/// Computes the offset of the base of the field `$trailing_field_name` within
+/// the type `$ty`.
+///
+/// `trailing_field_offset!` produces code which is valid in a `const` context.
+// TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
+// `cfg` when `size_of_val_raw` is stabilized.
+#[cfg(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)]
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! trailing_field_offset {
+    ($ty:ty, $trailing_field_name:tt) => {{
+        let min_size = {
+            let zero_elems: *const [()] =
+                $crate::macro_util::core_reexport::ptr::slice_from_raw_parts(
+                    $crate::macro_util::core_reexport::ptr::NonNull::<()>::dangling()
+                        .as_ptr()
+                        .cast_const(),
+                    0,
+                );
+            // SAFETY:
+            // - If `$ty` is `Sized`, `size_of_val_raw` is always safe to call.
+            // - Otherwise:
+            //   - If `$ty` is not a slice DST, this pointer conversion will
+            //     fail due to "mismatched vtable kinds", and compilation will
+            //     fail.
+            //   - If `$ty` is a slice DST, the safety requirement is that "the
+            //     length of the slice tail must be an initialized integer, and
+            //     the size of the entire value (dynamic tail length +
+            //     statically sized prefix) must fit in isize." The length is
+            //     initialized to 0 above, and Rust guarantees that no type's
+            //     minimum size may overflow `isize`. [1]
+            //
+            // [1] TODO(#429),
+            // TODO(https://github.com/rust-lang/unsafe-code-guidelines/issues/465#issuecomment-1782206516):
+            // Citation for this?
+            unsafe {
+                #[allow(clippy::as_conversions)]
+                $crate::macro_util::core_reexport::mem::size_of_val_raw(zero_elems as *const $ty)
+            }
+        };
+
+        assert!(min_size <= _64K);
+
+        #[allow(clippy::as_conversions)]
+        let ptr = ALIGNED_64K_ALLOCATION.as_ptr() as *const $ty;
+
+        // SAFETY:
+        // - Thanks to the preceding `assert!`, we know that the value with zero
+        //   elements fits in `_64K` bytes, and thus in the allocation addressed
+        //   by `ALIGNED_64K_ALLOCATION`. The offset of the trailing field is
+        //   guaranteed to be no larger than this size, so this field projection
+        //   is guaranteed to remain in-bounds of its allocation.
+        // - Because the minimum size is no larger than `_64K` bytes, and
+        //   because an object's size must always be a multiple of its alignment
+        //   [1], we know that `$ty`'s alignment is no larger than `_64K`. The
+        //   allocation addressed by `ALIGNED_64K_ALLOCATION` is guaranteed to
+        //   be aligned to `_64K`, so `ptr` is guaranteed to satisfy `$ty`'s
+        //   alignment.
+        //
+        //   Note that, as of [2], this requirement is technically unnecessary
+        //   for Rust versions >= 1.75.0, but no harm in guaranteeing it anyway
+        //   until we bump our MSRV.
+        //
+        // [1] Per https://doc.rust-lang.org/reference/type-layout.html:
+        //
+        //   The size of a value is always a multiple of its alignment.
+        //
+        // [2] https://github.com/rust-lang/reference/pull/1387
+        let field = unsafe {
+            $crate::macro_util::core_reexport::ptr::addr_of!((*ptr).$trailing_field_name)
+        };
+        // SAFETY:
+        // - Both `ptr` and `field` are derived from the same allocated object.
+        // - By the preceding safety comment, `field` is in bounds of that
+        //   allocated object.
+        // - The distance, in bytes, between `ptr` and `field` is required to be
+        //   a multiple of the size of `u8`, which is trivially true because
+        //   `u8`'s size is 1.
+        // - The distance, in bytes, cannot overflow `isize`. This is guaranteed
+        //   because no allocated object can have a size larger than can fit in
+        //   `isize`. [1]
+        // - The distance being in-bounds cannot rely on wrapping around the
+        //   address space. This is guaranteed because the same is guaranteed of
+        //   allocated objects. [1]
+        //
+        // [1] TODO(#429), TODO(https://github.com/rust-lang/rust/pull/116675):
+        //     Once these are guaranteed in the Reference, cite it.
+        let offset = unsafe { field.cast::<u8>().offset_from(ptr.cast::<u8>()) };
+        // Guaranteed not to be lossy: `field` comes after `ptr`, so the offset
+        // from `ptr` to `field` is guaranteed to be positive.
+        assert!(offset >= 0);
+        Some(
+            #[allow(clippy::as_conversions)]
+            {
+                offset as usize
+            },
+        )
+    }};
 }
 
 /// Does the struct type `$t` have padding?
@@ -214,8 +358,10 @@ pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
 }
 
 pub mod core_reexport {
+    pub use core::*;
+
     pub mod mem {
-        pub use core::mem::transmute;
+        pub use core::mem::*;
     }
 }
 
@@ -274,6 +420,108 @@ mod tests {
         assert_t_align_gteq_u_align!(AU64, AU64, true);
         assert_t_align_gteq_u_align!(AU64, u8, true);
         assert_t_align_gteq_u_align!(u8, AU64, false);
+    }
+
+    // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove
+    // this `cfg` when `size_of_val_raw` is stabilized.
+    #[allow(clippy::decimal_literal_representation)]
+    #[cfg(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)]
+    #[test]
+    fn test_trailing_field_offset() {
+        assert_eq!(mem::align_of::<Aligned64kAllocation>(), _64K);
+
+        macro_rules! test {
+            (#[$cfg:meta] ($($ts:ty),* ; $trailing_field_ty:ty) => $expect:expr) => {{
+                #[$cfg]
+                struct Test($($ts,)* $trailing_field_ty);
+                assert_eq!(test!(@offset $($ts),* ; $trailing_field_ty), $expect);
+            }};
+            (#[$cfg:meta] $(#[$cfgs:meta])* ($($ts:ty),* ; $trailing_field_ty:ty) => $expect:expr) => {
+                test!(#[$cfg] ($($ts),* ; $trailing_field_ty) => $expect);
+                test!($(#[$cfgs])* ($($ts),* ; $trailing_field_ty) => $expect);
+            };
+            (@offset ; $_trailing:ty) => { trailing_field_offset!(Test, 0) };
+            (@offset $_t:ty ; $_trailing:ty) => { trailing_field_offset!(Test, 1) };
+        }
+
+        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)](; u8) => Some(0));
+        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)](; [u8]) => Some(0));
+        test!(#[repr(C)] #[repr(packed)] (u8; u8) => Some(1));
+        test!(#[repr(C)] (; AU64) => Some(0));
+        test!(#[repr(C)] (; [AU64]) => Some(0));
+        test!(#[repr(C)] (u8; AU64) => Some(8));
+        test!(#[repr(C)] (u8; [AU64]) => Some(8));
+        test!(#[repr(C)] (; Nested<u8, AU64>) => Some(0));
+        test!(#[repr(C)] (; Nested<u8, [AU64]>) => Some(0));
+        test!(#[repr(C)] (u8; Nested<u8, AU64>) => Some(8));
+        test!(#[repr(C)] (u8; Nested<u8, [AU64]>) => Some(8));
+
+        // Test that `packed(N)` limits the offset of the trailing field.
+        test!(#[repr(C, packed(        1))] (u8; elain::Align<        2>) => Some(        1));
+        test!(#[repr(C, packed(        2))] (u8; elain::Align<        4>) => Some(        2));
+        test!(#[repr(C, packed(        4))] (u8; elain::Align<        8>) => Some(        4));
+        test!(#[repr(C, packed(        8))] (u8; elain::Align<       16>) => Some(        8));
+        test!(#[repr(C, packed(       16))] (u8; elain::Align<       32>) => Some(       16));
+        test!(#[repr(C, packed(       32))] (u8; elain::Align<       64>) => Some(       32));
+        test!(#[repr(C, packed(       64))] (u8; elain::Align<      128>) => Some(       64));
+        test!(#[repr(C, packed(      128))] (u8; elain::Align<      256>) => Some(      128));
+        test!(#[repr(C, packed(      256))] (u8; elain::Align<      512>) => Some(      256));
+        test!(#[repr(C, packed(      512))] (u8; elain::Align<     1024>) => Some(      512));
+        test!(#[repr(C, packed(     1024))] (u8; elain::Align<     2048>) => Some(     1024));
+        test!(#[repr(C, packed(     2048))] (u8; elain::Align<     4096>) => Some(     2048));
+        test!(#[repr(C, packed(     4096))] (u8; elain::Align<     8192>) => Some(     4096));
+        test!(#[repr(C, packed(     8192))] (u8; elain::Align<    16384>) => Some(     8192));
+        test!(#[repr(C, packed(    16384))] (u8; elain::Align<    32768>) => Some(    16384));
+        test!(#[repr(C, packed(    32768))] (u8; elain::Align<    65536>) => Some(    32768));
+        test!(#[repr(C, packed(    65536))] (u8; elain::Align<   131072>) => Some(    65536));
+        /* Alignments above 65536 are not yet supported.
+        test!(#[repr(C, packed(   131072))] (u8; elain::Align<   262144>) => Some(   131072));
+        test!(#[repr(C, packed(   262144))] (u8; elain::Align<   524288>) => Some(   262144));
+        test!(#[repr(C, packed(   524288))] (u8; elain::Align<  1048576>) => Some(   524288));
+        test!(#[repr(C, packed(  1048576))] (u8; elain::Align<  2097152>) => Some(  1048576));
+        test!(#[repr(C, packed(  2097152))] (u8; elain::Align<  4194304>) => Some(  2097152));
+        test!(#[repr(C, packed(  4194304))] (u8; elain::Align<  8388608>) => Some(  4194304));
+        test!(#[repr(C, packed(  8388608))] (u8; elain::Align< 16777216>) => Some(  8388608));
+        test!(#[repr(C, packed( 16777216))] (u8; elain::Align< 33554432>) => Some( 16777216));
+        test!(#[repr(C, packed( 33554432))] (u8; elain::Align< 67108864>) => Some( 33554432));
+        test!(#[repr(C, packed( 67108864))] (u8; elain::Align< 33554432>) => Some( 67108864));
+        test!(#[repr(C, packed( 33554432))] (u8; elain::Align<134217728>) => Some( 33554432));
+        test!(#[repr(C, packed(134217728))] (u8; elain::Align<268435456>) => Some(134217728));
+        test!(#[repr(C, packed(268435456))] (u8; elain::Align<268435456>) => Some(268435456));
+        */
+
+        // Test that `align(N)` does not limit the offset of the trailing field.
+        test!(#[repr(C, align(        1))] (u8; elain::Align<        2>) => Some(        2));
+        test!(#[repr(C, align(        2))] (u8; elain::Align<        4>) => Some(        4));
+        test!(#[repr(C, align(        4))] (u8; elain::Align<        8>) => Some(        8));
+        test!(#[repr(C, align(        8))] (u8; elain::Align<       16>) => Some(       16));
+        test!(#[repr(C, align(       16))] (u8; elain::Align<       32>) => Some(       32));
+        test!(#[repr(C, align(       32))] (u8; elain::Align<       64>) => Some(       64));
+        test!(#[repr(C, align(       64))] (u8; elain::Align<      128>) => Some(      128));
+        test!(#[repr(C, align(      128))] (u8; elain::Align<      256>) => Some(      256));
+        test!(#[repr(C, align(      256))] (u8; elain::Align<      512>) => Some(      512));
+        test!(#[repr(C, align(      512))] (u8; elain::Align<     1024>) => Some(     1024));
+        test!(#[repr(C, align(     1024))] (u8; elain::Align<     2048>) => Some(     2048));
+        test!(#[repr(C, align(     2048))] (u8; elain::Align<     4096>) => Some(     4096));
+        test!(#[repr(C, align(     4096))] (u8; elain::Align<     8192>) => Some(     8192));
+        test!(#[repr(C, align(     8192))] (u8; elain::Align<    16384>) => Some(    16384));
+        test!(#[repr(C, align(    16384))] (u8; elain::Align<    32768>) => Some(    32768));
+        test!(#[repr(C, align(    32768))] (u8; elain::Align<    65536>) => Some(    65536));
+        /* Alignments above 65536 are not yet supported.
+        test!(#[repr(C, align(    65536))] (u8; elain::Align<   131072>) => Some(   131072));
+        test!(#[repr(C, align(   131072))] (u8; elain::Align<   262144>) => Some(   262144));
+        test!(#[repr(C, align(   262144))] (u8; elain::Align<   524288>) => Some(   524288));
+        test!(#[repr(C, align(   524288))] (u8; elain::Align<  1048576>) => Some(  1048576));
+        test!(#[repr(C, align(  1048576))] (u8; elain::Align<  2097152>) => Some(  2097152));
+        test!(#[repr(C, align(  2097152))] (u8; elain::Align<  4194304>) => Some(  4194304));
+        test!(#[repr(C, align(  4194304))] (u8; elain::Align<  8388608>) => Some(  8388608));
+        test!(#[repr(C, align(  8388608))] (u8; elain::Align< 16777216>) => Some( 16777216));
+        test!(#[repr(C, align( 16777216))] (u8; elain::Align< 33554432>) => Some( 33554432));
+        test!(#[repr(C, align( 33554432))] (u8; elain::Align< 67108864>) => Some( 67108864));
+        test!(#[repr(C, align( 67108864))] (u8; elain::Align< 33554432>) => Some( 33554432));
+        test!(#[repr(C, align( 33554432))] (u8; elain::Align<134217728>) => Some(134217728));
+        test!(#[repr(C, align(134217728))] (u8; elain::Align<268435456>) => Some(268435456));
+        */
     }
 
     #[test]
