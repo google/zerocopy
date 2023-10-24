@@ -248,7 +248,7 @@ impl Display for Repr {
     }
 }
 
-fn reprs<R: KindRepr>(attrs: &[Attribute]) -> Result<Vec<(Meta, R)>, Vec<Error>> {
+pub(crate) fn reprs<R: KindRepr>(attrs: &[Attribute]) -> Result<Vec<(Meta, R)>, Vec<Error>> {
     let mut reprs = Vec::new();
     let mut errors = Vec::new();
     for attr in attrs {

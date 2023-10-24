@@ -6,12 +6,18 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use syn::{Data, DataEnum, DataStruct, DataUnion, Type};
+use proc_macro2::Span;
+use syn::{Data, DataEnum, DataStruct, DataUnion, Member, Type};
 
 pub trait DataExt {
     /// Extract the types of all fields. For enums, extract the types of fields
     /// from each variant.
     fn field_types(&self) -> Vec<&Type>;
+
+    /// Extract the single trailing field of a struct, if any.
+    fn trailing_field(&self) -> Option<(syn::Member, &Type)> {
+        None
+    }
 }
 
 impl DataExt for Data {
@@ -22,11 +28,29 @@ impl DataExt for Data {
             Data::Union(un) => un.field_types(),
         }
     }
+
+    fn trailing_field(&self) -> Option<(syn::Member, &Type)> {
+        match self {
+            Data::Struct(strc) => strc.trailing_field(),
+            Data::Enum(enm) => enm.trailing_field(),
+            Data::Union(un) => un.trailing_field(),
+        }
+    }
 }
 
 impl DataExt for DataStruct {
     fn field_types(&self) -> Vec<&Type> {
         self.fields.iter().map(|f| &f.ty).collect()
+    }
+
+    fn trailing_field(&self) -> Option<(Member, &Type)> {
+        let (index, trailing_field) = self.fields.iter().enumerate().last()?;
+        let member = if let Some(ident) = &trailing_field.ident {
+            Member::Named(ident.to_owned())
+        } else {
+            Member::Unnamed(syn::Index { index: index as u32, span: Span::call_site() })
+        };
+        Some((member, &trailing_field.ty))
     }
 }
 

@@ -42,6 +42,17 @@ use {
 
 use {crate::ext::*, crate::repr::*};
 
+// Unwraps a `Result<_, Vec<Error>>`, converting any `Err` value into a
+// `TokenStream` and returning it.
+macro_rules! try_or_print {
+    ($e:expr) => {
+        match $e {
+            Ok(x) => x,
+            Err(errors) => return print_all_errors(errors).into(),
+        }
+    };
+}
+
 // TODO(https://github.com/rust-lang/rust/issues/54140): Some errors could be
 // made better if we could add multiple lines of error output like this:
 //
@@ -62,10 +73,72 @@ use {crate::ext::*, crate::repr::*};
 #[proc_macro_derive(KnownLayout)]
 pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let ast = syn::parse_macro_input!(ts as DeriveInput);
+
+    let is_repr_c_struct = match &ast.data {
+        Data::Struct(..) => {
+            let reprs = try_or_print!(repr::reprs::<StructRepr>(&ast.attrs));
+            let is_repr_c = reprs.iter().any(|(_meta, repr)| repr == &StructRepr::C);
+            is_repr_c
+        }
+        Data::Enum(..) | Data::Union(..) => false,
+    };
+
+    let layout = if let (Some((name, ty)), false) = (ast.data.trailing_field(), is_repr_c_struct) {
+        // SAFETY: This call requires that the type is a `repr(C)` struct, which
+        // is ensured by `is_repr_c_struct`.
+        quote!(::zerocopy::repr_c_dst_layout!(
+            Self,
+            #name: #ty
+        ))
+    } else {
+        // For enums, unions, and non-`repr(C)` structs, we require that `Self`
+        // is sized.
+        quote!(::zerocopy::DstLayout::for_type::<Self>())
+    };
+
+    let extras = Some({
+        quote!(
+            const LAYOUT: ::zerocopy::DstLayout = #layout;
+
+            // SAFETY: `.cast` preserves address and provenance.
+            //
+            // TODO(#429): Add documentation to `.cast` that promises that
+            // it preserves provenance.
+            #[inline(always)]
+            fn raw_from_ptr_len(
+                bytes: ::core::ptr::NonNull<u8>,
+                _elems: usize,
+            ) -> ::core::ptr::NonNull<Self> {
+                bytes.cast::<Self>()
+            }
+        )
+    });
+
     match &ast.data {
-        Data::Struct(strct) => impl_block(&ast, strct, Trait::KnownLayout, false, None),
-        Data::Enum(enm) => impl_block(&ast, enm, Trait::KnownLayout, false, None),
-        Data::Union(unn) => impl_block(&ast, unn, Trait::KnownLayout, false, None),
+        Data::Struct(strct) => {
+            // A bound on the trailing field is required, since structs are
+            // unsized if their trailing field is unsized. Reflecting the layout
+            // of an usized trailing field requires that the field is
+            // `KnownLayout`.
+            impl_block(
+                &ast,
+                strct,
+                Trait::KnownLayout,
+                RequireBoundedFields::Trailing,
+                None,
+                extras,
+            )
+        }
+        Data::Enum(enm) => {
+            // A bound on the trailing field is not required, since enums cannot
+            // currently be unsized.
+            impl_block(&ast, enm, Trait::KnownLayout, RequireBoundedFields::No, None, extras)
+        }
+        Data::Union(unn) => {
+            // A bound on the trailing field is not required, since unions
+            // cannot currently be unsized.
+            impl_block(&ast, unn, Trait::KnownLayout, RequireBoundedFields::No, None, extras)
+        }
     }
     .into()
 }
@@ -114,17 +187,6 @@ pub fn derive_unaligned(ts: proc_macro::TokenStream) -> proc_macro::TokenStream 
     .into()
 }
 
-// Unwraps a `Result<_, Vec<Error>>`, converting any `Err` value into a
-// `TokenStream` and returning it.
-macro_rules! try_or_print {
-    ($e:expr) => {
-        match $e {
-            Ok(x) => x,
-            Err(errors) => return print_all_errors(errors),
-        }
-    };
-}
-
 const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[
     &[StructRepr::C],
     &[StructRepr::Transparent],
@@ -136,7 +198,7 @@ const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[
 // - all fields are `FromZeroes`
 
 fn derive_from_zeroes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    impl_block(ast, strct, Trait::FromZeroes, true, None)
+    impl_block(ast, strct, Trait::FromZeroes, RequireBoundedFields::Yes, None, None)
 }
 
 // An enum is `FromZeroes` if:
@@ -170,21 +232,21 @@ fn derive_from_zeroes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::To
         .to_compile_error();
     }
 
-    impl_block(ast, enm, Trait::FromZeroes, true, None)
+    impl_block(ast, enm, Trait::FromZeroes, RequireBoundedFields::Yes, None, None)
 }
 
 // Like structs, unions are `FromZeroes` if
 // - all fields are `FromZeroes`
 
 fn derive_from_zeroes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    impl_block(ast, unn, Trait::FromZeroes, true, None)
+    impl_block(ast, unn, Trait::FromZeroes, RequireBoundedFields::Yes, None, None)
 }
 
 // A struct is `FromBytes` if:
 // - all fields are `FromBytes`
 
 fn derive_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    impl_block(ast, strct, Trait::FromBytes, true, None)
+    impl_block(ast, strct, Trait::FromBytes, RequireBoundedFields::Yes, None, None)
 }
 
 // An enum is `FromBytes` if:
@@ -227,7 +289,7 @@ fn derive_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
         .to_compile_error();
     }
 
-    impl_block(ast, enm, Trait::FromBytes, true, None)
+    impl_block(ast, enm, Trait::FromBytes, RequireBoundedFields::Yes, None, None)
 }
 
 #[rustfmt::skip]
@@ -258,7 +320,7 @@ const ENUM_FROM_BYTES_CFG: Config<EnumRepr> = {
 // - all fields are `FromBytes`
 
 fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    impl_block(ast, unn, Trait::FromBytes, true, None)
+    impl_block(ast, unn, Trait::FromBytes, RequireBoundedFields::Yes, None, None)
 }
 
 // A struct is `AsBytes` if:
@@ -292,7 +354,7 @@ fn derive_as_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2:
     //   any padding bytes would need to come from the fields, all of which
     //   we require to be `AsBytes` (meaning they don't have any padding).
     let padding_check = if is_transparent || is_packed { None } else { Some(PaddingCheck::Struct) };
-    impl_block(ast, strct, Trait::AsBytes, true, padding_check)
+    impl_block(ast, strct, Trait::AsBytes, RequireBoundedFields::Yes, padding_check, None)
 }
 
 const STRUCT_UNION_AS_BYTES_CFG: Config<StructRepr> = Config {
@@ -315,7 +377,7 @@ fn derive_as_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Token
     // We don't care what the repr is; we only care that it is one of the
     // allowed ones.
     let _: Vec<repr::EnumRepr> = try_or_print!(ENUM_AS_BYTES_CFG.validate_reprs(ast));
-    impl_block(ast, enm, Trait::AsBytes, false, None)
+    impl_block(ast, enm, Trait::AsBytes, RequireBoundedFields::No, None, None)
 }
 
 #[rustfmt::skip]
@@ -357,7 +419,7 @@ fn derive_as_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::Tok
 
     try_or_print!(STRUCT_UNION_AS_BYTES_CFG.validate_reprs(ast));
 
-    impl_block(ast, unn, Trait::AsBytes, true, Some(PaddingCheck::Union))
+    impl_block(ast, unn, Trait::AsBytes, RequireBoundedFields::Yes, Some(PaddingCheck::Union), None)
 }
 
 // A struct is `Unaligned` if:
@@ -368,9 +430,9 @@ fn derive_as_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::Tok
 
 fn derive_unaligned_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
     let reprs = try_or_print!(STRUCT_UNION_UNALIGNED_CFG.validate_reprs(ast));
-    let require_trait_bounds_on_field_types = !reprs.contains(&StructRepr::Packed);
+    let require_trait_bounds_on_field_types = (!reprs.contains(&StructRepr::Packed)).into();
 
-    impl_block(ast, strct, Trait::Unaligned, require_trait_bounds_on_field_types, None)
+    impl_block(ast, strct, Trait::Unaligned, require_trait_bounds_on_field_types, None, None)
 }
 
 const STRUCT_UNION_UNALIGNED_CFG: Config<StructRepr> = Config {
@@ -401,7 +463,7 @@ fn derive_unaligned_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Toke
     // for `require_trait_bound_on_field_types` doesn't really do anything. But
     // it's marginally more future-proof in case that restriction is lifted in
     // the future.
-    impl_block(ast, enm, Trait::Unaligned, true, None)
+    impl_block(ast, enm, Trait::Unaligned, RequireBoundedFields::Yes, None, None)
 }
 
 #[rustfmt::skip]
@@ -437,9 +499,9 @@ const ENUM_UNALIGNED_CFG: Config<EnumRepr> = {
 
 fn derive_unaligned_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
     let reprs = try_or_print!(STRUCT_UNION_UNALIGNED_CFG.validate_reprs(ast));
-    let require_trait_bound_on_field_types = !reprs.contains(&StructRepr::Packed);
+    let require_trait_bound_on_field_types = (!reprs.contains(&StructRepr::Packed)).into();
 
-    impl_block(ast, unn, Trait::Unaligned, require_trait_bound_on_field_types, None)
+    impl_block(ast, unn, Trait::Unaligned, require_trait_bound_on_field_types, None, None)
 }
 
 // This enum describes what kind of padding check needs to be generated for the
@@ -479,12 +541,29 @@ impl Trait {
     }
 }
 
+#[derive(Debug, Eq, PartialEq)]
+enum RequireBoundedFields {
+    No,
+    Yes,
+    Trailing,
+}
+
+impl From<bool> for RequireBoundedFields {
+    fn from(do_require: bool) -> Self {
+        match do_require {
+            true => Self::Yes,
+            false => Self::No,
+        }
+    }
+}
+
 fn impl_block<D: DataExt>(
     input: &DeriveInput,
     data: &D,
     trt: Trait,
-    require_trait_bound_on_field_types: bool,
+    require_trait_bound_on_field_types: RequireBoundedFields,
     padding_check: Option<PaddingCheck>,
+    extras: Option<proc_macro2::TokenStream>,
 ) -> proc_macro2::TokenStream {
     // In this documentation, we will refer to this hypothetical struct:
     //
@@ -548,11 +627,12 @@ fn impl_block<D: DataExt>(
     let trait_ident = trt.ident();
     let field_types = data.field_types();
 
-    let field_type_bounds = require_trait_bound_on_field_types
-        .then(|| field_types.iter().map(|ty| parse_quote!(#ty: ::zerocopy::#trait_ident)))
-        .into_iter()
-        .flatten()
-        .collect::<Vec<_>>();
+    let bound_tt = |ty| parse_quote!(#ty: ::zerocopy::#trait_ident);
+    let field_type_bounds: Vec<_> = match (require_trait_bound_on_field_types, &field_types[..]) {
+        (RequireBoundedFields::Yes, _) => field_types.iter().map(bound_tt).collect(),
+        (RequireBoundedFields::No, _) | (RequireBoundedFields::Trailing, []) => vec![],
+        (RequireBoundedFields::Trailing, [.., last]) => vec![bound_tt(last)],
+    };
 
     // Don't bother emitting a padding check if there are no fields.
     #[allow(unstable_name_collisions)] // See `BoolExt` below
@@ -574,28 +654,6 @@ fn impl_block<D: DataExt>(
         .flatten()
         .chain(field_type_bounds.iter())
         .chain(padding_check_bound.iter());
-
-    let layout_extras = if trt == Trait::KnownLayout {
-        // We currently only support deriving for sized types; this code will
-        // fail to compile for unsized types.
-        Some(quote!(
-            const LAYOUT: ::zerocopy::DstLayout = ::zerocopy::DstLayout::for_type::<Self>();
-
-            // SAFETY: `.cast` preserves address and provenance.
-            //
-            // TODO(#429): Add documentation to `.cast` that promises that
-            // it preserves provenance.
-            #[inline(always)]
-            fn raw_from_ptr_len(
-                bytes: ::core::ptr::NonNull<u8>,
-                _elems: usize,
-            ) -> ::core::ptr::NonNull<Self> {
-                bytes.cast::<Self>()
-            }
-        ))
-    } else {
-        None
-    };
 
     // The parameters with trait bounds, but without type defaults.
     let params = input.generics.params.clone().into_iter().map(|mut param| {
@@ -626,7 +684,7 @@ fn impl_block<D: DataExt>(
         {
             fn only_derive_is_allowed_to_implement_this_trait() {}
 
-            #layout_extras
+            #extras
         }
     }
 }

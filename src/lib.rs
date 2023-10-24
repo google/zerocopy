@@ -226,7 +226,7 @@
 #![cfg_attr(doc_cfg, feature(doc_cfg))]
 #![cfg_attr(
     __INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS,
-    feature(layout_for_ptr, strict_provenance)
+    feature(const_size_of_val_raw, layout_for_ptr, strict_provenance)
 )]
 
 // This is a hack to allow zerocopy-derive derives to work in this crate. They
@@ -335,19 +335,22 @@ const _: () = {
 /// [the reference]: https://doc.rust-lang.org/reference/type-layout.html
 #[doc(hidden)]
 #[allow(missing_debug_implementations, missing_copy_implementations)]
-#[cfg_attr(test, derive(Copy, Clone, Debug, PartialEq, Eq))]
+#[cfg_attr(any(test, kani), derive(Copy, Clone, Debug, PartialEq, Eq))]
+#[cfg_attr(kani, derive(kani::Arbitrary))]
 pub struct DstLayout {
     _align: NonZeroUsize,
     _size_info: SizeInfo,
 }
 
-#[cfg_attr(test, derive(Copy, Clone, Debug, PartialEq, Eq))]
+#[cfg_attr(any(test, kani), derive(Copy, Clone, Debug, PartialEq, Eq))]
+#[cfg_attr(kani, derive(kani::Arbitrary))]
 enum SizeInfo<E = usize> {
     Sized { _size: usize },
     SliceDst(TrailingSliceLayout<E>),
 }
 
-#[cfg_attr(test, derive(Copy, Clone, Debug, PartialEq, Eq))]
+#[cfg_attr(any(test, kani), derive(Copy, Clone, Debug, PartialEq, Eq))]
+#[cfg_attr(kani, derive(kani::Arbitrary))]
 struct TrailingSliceLayout<E = usize> {
     // The offset of the first byte of the trailing slice field. Note that this
     // is NOT the same as the minimum size of the type. For example, consider
@@ -437,6 +440,61 @@ impl DstLayout {
                 _elem_size: mem::size_of::<T>(),
             }),
         }
+    }
+
+    /// Constructs a `DstLayout` which describes a dynamically-sized, `repr(C)`
+    /// type with the given properties.
+    ///
+    /// # Safety
+    ///
+    /// Unsafe code may assume that the returned `DstLayout` is the correct
+    /// layout for the described type so long as:
+    /// - The type is `repr(C)`
+    /// - The type has the alignment `align`
+    /// - The type has at least one field
+    /// - The byte offset of the first byte of the trailing field is equal to
+    ///   `trailing_field_offset`
+    /// - The trailing field's layout is correctly described by
+    ///   `trailing_field_layout`
+    #[doc(hidden)]
+    #[inline]
+    pub const fn for_repr_c_dst(
+        align: NonZeroUsize,
+        trailing_field_offset: usize,
+        trailing_field_layout: DstLayout,
+    ) -> Option<DstLayout> {
+        Some(DstLayout {
+            // SAFETY: The caller has promised that this is the correct
+            // alignment.
+            _align: align,
+            _size_info: match trailing_field_layout._size_info {
+                SizeInfo::Sized { _size } => {
+                    let without_padding = match trailing_field_offset.checked_add(_size) {
+                        Some(without_padding) => without_padding,
+                        None => return None,
+                    };
+
+                    let padding = util::core_layout::_padding_needed_for(without_padding, align);
+
+                    let _size = match without_padding.checked_add(padding) {
+                        Some(_size) => _size,
+                        None => return None,
+                    };
+
+                    // SAFETY: TODO
+                    SizeInfo::Sized { _size }
+                }
+                SizeInfo::SliceDst(TrailingSliceLayout { _offset, _elem_size }) => {
+                    let offset = match trailing_field_offset.checked_add(_offset) {
+                        Some(offset) => offset,
+                        None => return None,
+                    };
+
+                    // SAFETY: TODO
+                    SizeInfo::SliceDst(TrailingSliceLayout { _offset: offset, _elem_size })
+                }
+            },
+        })
     }
 
     /// Validates that a cast is sound from a layout perspective.
@@ -3908,6 +3966,82 @@ mod tests {
         }
     }
 
+    mod for_repr_c_dst {
+        use super::*;
+
+        #[test]
+        fn test_sized() {
+            let align = NonZeroUsize::new(8).unwrap();
+            let trailing_field_offset = 7;
+            let trailing_field_layout = DstLayout::for_type::<[u8; 3]>();
+
+            let composite =
+                DstLayout::for_repr_c_dst(align, trailing_field_offset, trailing_field_layout)
+                    .unwrap();
+
+            // The alignment is that of the composite type, not that of its
+            // trailing field.
+            assert_eq!(composite._align, align);
+
+            if let SizeInfo::Sized { _size } = composite._size_info {
+                // The size of the trailing field is 3.
+                assert!(matches!(trailing_field_layout._size_info, SizeInfo::Sized { _size: 3 }));
+
+                // The size of the composite type is 16.
+                assert_eq!(_size, 16);
+
+                // This is true, because the size of the composite type without
+                // padding is 10.
+                let without_padding = trailing_field_offset + 3;
+                assert_eq!(without_padding, 10);
+
+                // And once padding is added, the size is rounded up to 16 (the
+                // next multiple of `align`).
+                let padding = util::core_layout::_padding_needed_for(without_padding, align);
+                assert_eq!(padding, 6);
+
+                assert_eq!(_size, without_padding + padding);
+            } else {
+                panic!("`SizeInfo::Sized` expected");
+            }
+        }
+
+        #[test]
+        fn test_unsized() {
+            let align = NonZeroUsize::new(8).unwrap();
+            let trailing_field_offset = 7;
+            let trailing_field_layout = DstLayout {
+                _align: NonZeroUsize::new(1).unwrap(),
+                _size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                    _offset: 3,
+                    _elem_size: usize::MAX,
+                }),
+            };
+
+            let composite =
+                DstLayout::for_repr_c_dst(align, trailing_field_offset, trailing_field_layout)
+                    .unwrap();
+
+            // The alignment is that of the composite type, not that of its
+            // trailing field.
+            assert_eq!(composite._align, align);
+
+            if let SizeInfo::SliceDst(TrailingSliceLayout { _offset, _elem_size }) =
+                composite._size_info
+            {
+                // The offset of the trailing slice in the composite type is the
+                // sum of the offset of the trailing field, plus the offset of
+                // the slice within that field.
+                assert_eq!(_offset, 10);
+
+                // The elem size is unaffected.
+                assert_eq!(_elem_size, usize::MAX);
+            } else {
+                panic!("`SizeInfo::SliceDst` expected");
+            }
+        }
+    }
+
     // This test takes a long time when running under Miri, so we skip it in
     // that case. This is acceptable because this is a logic test that doesn't
     // attempt to expose UB.
@@ -5600,7 +5734,7 @@ mod tests {
         assert_impls!(Wrapping<NotZerocopy>: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
         assert_impls!(Unalign<u8>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(Unalign<NotZerocopy>: KnownLayout, Unaligned, !FromZeroes, !FromBytes, !AsBytes);
+        assert_impls!(Unalign<NotZerocopy>: Unaligned, !FromZeroes, !FromBytes, !AsBytes);
 
         assert_impls!([u8]: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!([NotZerocopy]: !KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
@@ -5676,4 +5810,92 @@ mod tests {
             test_simd_arch_mod!(arm, int8x4_t, uint8x4_t);
         }
     }
+}
+
+#[cfg(kani)]
+mod proofs {
+    use super::*;
+
+    #[kani::proof]
+    fn prove_for_repr_c_dst() {
+        let align: NonZeroUsize = kani::any();
+        let trailing_field_offset: usize = kani::any();
+        let trailing_field_layout: DstLayout = kani::any();
+
+        kani::assume(align.is_power_of_two());
+
+        let maybe_dst_layout =
+            DstLayout::for_repr_c_dst(align, trailing_field_offset, trailing_field_layout);
+
+        if let Some(dst_layout) = maybe_dst_layout {
+            // The alignment of the `DstLayout` produced by `for_repr_c_dst` depends
+            // only upon the `align` parameter provided to `for_repr_c_dst`.
+            assert_eq!(dst_layout._align, align);
+            match dst_layout._size_info {
+                SizeInfo::Sized { _size: total_size } => {
+                    // If the resulting `DstLayout` is sized, so too must be
+                    // `trailing_field_layout`.
+                    if let SizeInfo::Sized { _size: trailing_size } =
+                        trailing_field_layout._size_info
+                    {
+                        // The total size should equal the offset of the
+                        // trailing field, plus the size of the trailing field,
+                        // plus any trailing padded needed for alignment.
+                        assert_eq!(total_size, {
+                            let without_padding = trailing_field_offset + trailing_size;
+                            let padding =
+                                util::core_layout::_padding_needed_for(without_padding, align);
+                            without_padding + padding
+                        });
+                    } else {
+                        panic!("DstLayout._size_info should describe a SliceDst type");
+                    }
+                }
+                SizeInfo::SliceDst(TrailingSliceLayout {
+                    _offset: total_offset,
+                    _elem_size: outer_elem_size,
+                }) => {
+                    // If the resulting `DstLayout` is unsized, so too must be
+                    // `trailing_field_layout`.
+                    if let SizeInfo::SliceDst(TrailingSliceLayout {
+                        _offset: inner_trailing_offset,
+                        _elem_size: trailing_elem_size,
+                    }) = trailing_field_layout._size_info
+                    {
+                        // The elem_size of the trailing slice component is unchanged.
+                        assert_eq!(outer_elem_size, trailing_elem_size);
+                        // The offset of the trailing slice component within the
+                        // trailing field should be added to the offset of the
+                        // trailing.
+                        assert_eq!(total_offset, trailing_field_offset + inner_trailing_offset);
+                    } else {
+                        panic!("DstLayout._size_info should describe a Sized type");
+                    }
+                }
+            }
+        } else {
+            // If `None` is produced, then, either:
+            match trailing_field_layout._size_info {
+                SizeInfo::Sized { _size: trailing_size } => {
+                    let without_padding = trailing_field_offset.checked_add(trailing_size);
+
+                    let total_size = without_padding.and_then(|without_padding| {
+                        let padding =
+                            util::core_layout::_padding_needed_for(without_padding, align);
+                        without_padding.checked_add(padding)
+                    });
+
+                    // ...some aspect of computing size failed due to overflow.
+                    assert!(without_padding.is_none() || total_size.is_none());
+                }
+                SizeInfo::SliceDst(TrailingSliceLayout { _offset, _elem_size }) => {
+                    // ...computing the trailing offset failed due to overflow.
+                    assert!(trailing_field_offset.checked_add(_offset).is_none());
+                }
+            }
+        }
+    }
+
+    #[kani::proof]
+    fn prove_for_repr_c_dst_rejects_overflow() {}
 }

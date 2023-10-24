@@ -66,7 +66,7 @@ impl<T, U> MaxAlignsOf<T, U> {
     }
 }
 
-const _64K: usize = 1 << 16;
+pub const _64K: usize = 1 << 16;
 
 // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
 // `cfg` when `size_of_val_raw` is stabilized.
@@ -146,10 +146,16 @@ macro_rules! trailing_field_offset {
             }
         };
 
-        assert!(min_size <= _64K);
+        if min_size > $crate::macro_util::_64K {
+            panic!(concat!(
+                "cannot compute layout of `",
+                stringify!($ty),
+                "`; type is larger than zerocopy supports"
+            ))
+        }
 
         #[allow(clippy::as_conversions)]
-        let ptr = ALIGNED_64K_ALLOCATION.as_ptr() as *const $ty;
+        let ptr = $crate::macro_util::ALIGNED_64K_ALLOCATION.as_ptr() as *const $ty;
 
         // SAFETY:
         // - Thanks to the preceding `assert!`, we know that the value with zero
@@ -173,7 +179,7 @@ macro_rules! trailing_field_offset {
         //   The size of a value is always a multiple of its alignment.
         //
         // [2] https://github.com/rust-lang/reference/pull/1387
-        let field = unsafe {
+        let field: *const _ = unsafe {
             $crate::macro_util::core_reexport::ptr::addr_of!((*ptr).$trailing_field_name)
         };
         // SAFETY:
@@ -196,12 +202,10 @@ macro_rules! trailing_field_offset {
         // Guaranteed not to be lossy: `field` comes after `ptr`, so the offset
         // from `ptr` to `field` is guaranteed to be positive.
         assert!(offset >= 0);
-        Some(
-            #[allow(clippy::as_conversions)]
-            {
-                offset as usize
-            },
-        )
+        #[allow(clippy::as_conversions)]
+        {
+            offset as usize
+        }
     }};
 }
 
@@ -236,13 +240,56 @@ macro_rules! align_of {
         // [1]: https://doc.rust-lang.org/nomicon/other-reprs.html#reprc
 
         #[repr(C)]
-        struct OffsetOfTrailingIsAlignment {
+        struct OffsetOfTrailingIsAlignment<T: ?Sized> {
             _byte: u8,
-            _trailing: $ty,
+            _trailing: T,
         }
 
-        trailing_field_offset!(OffsetOfTrailingIsAlignment, _trailing)
+        let trailing_field_offset =
+            $crate::trailing_field_offset!(OffsetOfTrailingIsAlignment<$ty>, _trailing);
+
+        match $crate::macro_util::core_reexport::num::NonZeroUsize::new(trailing_field_offset) {
+            Some(trailing_field_offset) => trailing_field_offset,
+            None => unreachable!(),
+        }
     }};
+}
+
+/// Constructs the `DstLayout` of a given `$ty` that (optionally) has a
+/// `$trailing_field_name`. If `$ty` is a struct and `$trailing_field_name` is
+/// provided, this macro will compile successfully even if `$ty` is unsized
+/// (otherwise it will not). If `$ty` is sized, then `$trailing_field_name` may
+/// be omitted.
+// TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
+// `cfg` and the subsequent fallback when `size_of_val_raw` is stabilized.
+#[cfg(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)]
+#[macro_export]
+macro_rules! repr_c_dst_layout {
+    ($ty:ty) => {
+        $crate::DstLayout::for_type::<$ty>()
+    };
+    ($ty:ty, $trailing_field_name:tt: $trailing_field_ty:ty) => {{
+        let align = $crate::align_of!($ty);
+        let maybe_layout = $crate::DstLayout::for_repr_c_dst(
+            align,
+            $crate::trailing_field_offset!($ty, $trailing_field_name),
+            <$trailing_field_ty as $crate::KnownLayout>::LAYOUT,
+        );
+        match maybe_layout {
+            Some(layout) => layout,
+            None => panic!(concat!("Could not compute layout of `", stringify!($ty), "`.")),
+        }
+    }};
+}
+#[cfg(not(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS))]
+#[macro_export]
+macro_rules! repr_c_dst_layout {
+    ($ty:ty) => {
+        $crate::DstLayout::for_type::<$ty>()
+    };
+    ($ty:ty, $_trailing_field_name:tt: $_trailing_field_ty:ty) => {
+        $crate::repr_c_dst_layout!($ty)
+    };
 }
 
 /// Does the struct type `$t` have padding?
@@ -407,6 +454,18 @@ pub mod core_reexport {
 
     pub mod mem {
         pub use core::mem::*;
+
+        // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
+        // function when `size_of_val_raw` is stabilized.
+        #[cfg(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)]
+        #[inline(always)]
+        pub const unsafe fn size_of_val_raw<T>(val: *const T) -> usize
+        where
+            T: ?Sized,
+        {
+            // SAFETY: See `core::mem::size_of_val_raw` docs.
+            unsafe { core::mem::size_of_val_raw(val) }
+        }
     }
 }
 
@@ -489,83 +548,83 @@ mod tests {
             (@offset $_t:ty ; $_trailing:ty) => { trailing_field_offset!(Test, 1) };
         }
 
-        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)](; u8) => Some(0));
-        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)](; [u8]) => Some(0));
-        test!(#[repr(C)] #[repr(packed)] (u8; u8) => Some(1));
-        test!(#[repr(C)] (; AU64) => Some(0));
-        test!(#[repr(C)] (; [AU64]) => Some(0));
-        test!(#[repr(C)] (u8; AU64) => Some(8));
-        test!(#[repr(C)] (u8; [AU64]) => Some(8));
-        test!(#[repr(C)] (; Nested<u8, AU64>) => Some(0));
-        test!(#[repr(C)] (; Nested<u8, [AU64]>) => Some(0));
-        test!(#[repr(C)] (u8; Nested<u8, AU64>) => Some(8));
-        test!(#[repr(C)] (u8; Nested<u8, [AU64]>) => Some(8));
+        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)](; u8) => 0);
+        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)](; [u8]) => 0);
+        test!(#[repr(C)] #[repr(packed)] (u8; u8) => 1);
+        test!(#[repr(C)] (; AU64) => 0);
+        test!(#[repr(C)] (; [AU64]) => 0);
+        test!(#[repr(C)] (u8; AU64) => 8);
+        test!(#[repr(C)] (u8; [AU64]) => 8);
+        test!(#[repr(C)] (; Nested<u8, AU64>) => 0);
+        test!(#[repr(C)] (; Nested<u8, [AU64]>) =>0);
+        test!(#[repr(C)] (u8; Nested<u8, AU64>) => 8);
+        test!(#[repr(C)] (u8; Nested<u8, [AU64]>) => 8);
 
         // Test that `packed(N)` limits the offset of the trailing field.
-        test!(#[repr(C, packed(        1))] (u8; elain::Align<        2>) => Some(        1));
-        test!(#[repr(C, packed(        2))] (u8; elain::Align<        4>) => Some(        2));
-        test!(#[repr(C, packed(        4))] (u8; elain::Align<        8>) => Some(        4));
-        test!(#[repr(C, packed(        8))] (u8; elain::Align<       16>) => Some(        8));
-        test!(#[repr(C, packed(       16))] (u8; elain::Align<       32>) => Some(       16));
-        test!(#[repr(C, packed(       32))] (u8; elain::Align<       64>) => Some(       32));
-        test!(#[repr(C, packed(       64))] (u8; elain::Align<      128>) => Some(       64));
-        test!(#[repr(C, packed(      128))] (u8; elain::Align<      256>) => Some(      128));
-        test!(#[repr(C, packed(      256))] (u8; elain::Align<      512>) => Some(      256));
-        test!(#[repr(C, packed(      512))] (u8; elain::Align<     1024>) => Some(      512));
-        test!(#[repr(C, packed(     1024))] (u8; elain::Align<     2048>) => Some(     1024));
-        test!(#[repr(C, packed(     2048))] (u8; elain::Align<     4096>) => Some(     2048));
-        test!(#[repr(C, packed(     4096))] (u8; elain::Align<     8192>) => Some(     4096));
-        test!(#[repr(C, packed(     8192))] (u8; elain::Align<    16384>) => Some(     8192));
-        test!(#[repr(C, packed(    16384))] (u8; elain::Align<    32768>) => Some(    16384));
-        test!(#[repr(C, packed(    32768))] (u8; elain::Align<    65536>) => Some(    32768));
-        test!(#[repr(C, packed(    65536))] (u8; elain::Align<   131072>) => Some(    65536));
+        test!(#[repr(C, packed(        1))] (u8; elain::Align<        2>) =>        1);
+        test!(#[repr(C, packed(        2))] (u8; elain::Align<        4>) =>        2);
+        test!(#[repr(C, packed(        4))] (u8; elain::Align<        8>) =>        4);
+        test!(#[repr(C, packed(        8))] (u8; elain::Align<       16>) =>        8);
+        test!(#[repr(C, packed(       16))] (u8; elain::Align<       32>) =>       16);
+        test!(#[repr(C, packed(       32))] (u8; elain::Align<       64>) =>       32);
+        test!(#[repr(C, packed(       64))] (u8; elain::Align<      128>) =>       64);
+        test!(#[repr(C, packed(      128))] (u8; elain::Align<      256>) =>      128);
+        test!(#[repr(C, packed(      256))] (u8; elain::Align<      512>) =>      256);
+        test!(#[repr(C, packed(      512))] (u8; elain::Align<     1024>) =>      512);
+        test!(#[repr(C, packed(     1024))] (u8; elain::Align<     2048>) =>     1024);
+        test!(#[repr(C, packed(     2048))] (u8; elain::Align<     4096>) =>     2048);
+        test!(#[repr(C, packed(     4096))] (u8; elain::Align<     8192>) =>     4096);
+        test!(#[repr(C, packed(     8192))] (u8; elain::Align<    16384>) =>     8192);
+        test!(#[repr(C, packed(    16384))] (u8; elain::Align<    32768>) =>    16384);
+        test!(#[repr(C, packed(    32768))] (u8; elain::Align<    65536>) =>    32768);
+        test!(#[repr(C, packed(    65536))] (u8; elain::Align<   131072>) =>    65536);
         /* Alignments above 65536 are not yet supported.
-        test!(#[repr(C, packed(   131072))] (u8; elain::Align<   262144>) => Some(   131072));
-        test!(#[repr(C, packed(   262144))] (u8; elain::Align<   524288>) => Some(   262144));
-        test!(#[repr(C, packed(   524288))] (u8; elain::Align<  1048576>) => Some(   524288));
-        test!(#[repr(C, packed(  1048576))] (u8; elain::Align<  2097152>) => Some(  1048576));
-        test!(#[repr(C, packed(  2097152))] (u8; elain::Align<  4194304>) => Some(  2097152));
-        test!(#[repr(C, packed(  4194304))] (u8; elain::Align<  8388608>) => Some(  4194304));
-        test!(#[repr(C, packed(  8388608))] (u8; elain::Align< 16777216>) => Some(  8388608));
-        test!(#[repr(C, packed( 16777216))] (u8; elain::Align< 33554432>) => Some( 16777216));
-        test!(#[repr(C, packed( 33554432))] (u8; elain::Align< 67108864>) => Some( 33554432));
-        test!(#[repr(C, packed( 67108864))] (u8; elain::Align< 33554432>) => Some( 67108864));
-        test!(#[repr(C, packed( 33554432))] (u8; elain::Align<134217728>) => Some( 33554432));
-        test!(#[repr(C, packed(134217728))] (u8; elain::Align<268435456>) => Some(134217728));
-        test!(#[repr(C, packed(268435456))] (u8; elain::Align<268435456>) => Some(268435456));
+        test!(#[repr(C, packed(   131072))] (u8; elain::Align<   262144>) =>    131072);
+        test!(#[repr(C, packed(   262144))] (u8; elain::Align<   524288>) =>    262144);
+        test!(#[repr(C, packed(   524288))] (u8; elain::Align<  1048576>) =>    524288);
+        test!(#[repr(C, packed(  1048576))] (u8; elain::Align<  2097152>) =>   1048576);
+        test!(#[repr(C, packed(  2097152))] (u8; elain::Align<  4194304>) =>   2097152);
+        test!(#[repr(C, packed(  4194304))] (u8; elain::Align<  8388608>) =>   4194304);
+        test!(#[repr(C, packed(  8388608))] (u8; elain::Align< 16777216>) =>   8388608);
+        test!(#[repr(C, packed( 16777216))] (u8; elain::Align< 33554432>) =>  16777216);
+        test!(#[repr(C, packed( 33554432))] (u8; elain::Align< 67108864>) =>  33554432);
+        test!(#[repr(C, packed( 67108864))] (u8; elain::Align< 33554432>) =>  67108864);
+        test!(#[repr(C, packed( 33554432))] (u8; elain::Align<134217728>) =>  33554432);
+        test!(#[repr(C, packed(134217728))] (u8; elain::Align<268435456>) => 134217728);
+        test!(#[repr(C, packed(268435456))] (u8; elain::Align<268435456>) => 268435456);
         */
 
         // Test that `align(N)` does not limit the offset of the trailing field.
-        test!(#[repr(C, align(        1))] (u8; elain::Align<        2>) => Some(        2));
-        test!(#[repr(C, align(        2))] (u8; elain::Align<        4>) => Some(        4));
-        test!(#[repr(C, align(        4))] (u8; elain::Align<        8>) => Some(        8));
-        test!(#[repr(C, align(        8))] (u8; elain::Align<       16>) => Some(       16));
-        test!(#[repr(C, align(       16))] (u8; elain::Align<       32>) => Some(       32));
-        test!(#[repr(C, align(       32))] (u8; elain::Align<       64>) => Some(       64));
-        test!(#[repr(C, align(       64))] (u8; elain::Align<      128>) => Some(      128));
-        test!(#[repr(C, align(      128))] (u8; elain::Align<      256>) => Some(      256));
-        test!(#[repr(C, align(      256))] (u8; elain::Align<      512>) => Some(      512));
-        test!(#[repr(C, align(      512))] (u8; elain::Align<     1024>) => Some(     1024));
-        test!(#[repr(C, align(     1024))] (u8; elain::Align<     2048>) => Some(     2048));
-        test!(#[repr(C, align(     2048))] (u8; elain::Align<     4096>) => Some(     4096));
-        test!(#[repr(C, align(     4096))] (u8; elain::Align<     8192>) => Some(     8192));
-        test!(#[repr(C, align(     8192))] (u8; elain::Align<    16384>) => Some(    16384));
-        test!(#[repr(C, align(    16384))] (u8; elain::Align<    32768>) => Some(    32768));
-        test!(#[repr(C, align(    32768))] (u8; elain::Align<    65536>) => Some(    65536));
+        test!(#[repr(C, align(        1))] (u8; elain::Align<        2>) =>         2);
+        test!(#[repr(C, align(        2))] (u8; elain::Align<        4>) =>         4);
+        test!(#[repr(C, align(        4))] (u8; elain::Align<        8>) =>         8);
+        test!(#[repr(C, align(        8))] (u8; elain::Align<       16>) =>        16);
+        test!(#[repr(C, align(       16))] (u8; elain::Align<       32>) =>        32);
+        test!(#[repr(C, align(       32))] (u8; elain::Align<       64>) =>        64);
+        test!(#[repr(C, align(       64))] (u8; elain::Align<      128>) =>       128);
+        test!(#[repr(C, align(      128))] (u8; elain::Align<      256>) =>       256);
+        test!(#[repr(C, align(      256))] (u8; elain::Align<      512>) =>       512);
+        test!(#[repr(C, align(      512))] (u8; elain::Align<     1024>) =>      1024);
+        test!(#[repr(C, align(     1024))] (u8; elain::Align<     2048>) =>      2048);
+        test!(#[repr(C, align(     2048))] (u8; elain::Align<     4096>) =>      4096);
+        test!(#[repr(C, align(     4096))] (u8; elain::Align<     8192>) =>      8192);
+        test!(#[repr(C, align(     8192))] (u8; elain::Align<    16384>) =>     16384);
+        test!(#[repr(C, align(    16384))] (u8; elain::Align<    32768>) =>     32768);
+        test!(#[repr(C, align(    32768))] (u8; elain::Align<    65536>) =>     65536);
         /* Alignments above 65536 are not yet supported.
-        test!(#[repr(C, align(    65536))] (u8; elain::Align<   131072>) => Some(   131072));
-        test!(#[repr(C, align(   131072))] (u8; elain::Align<   262144>) => Some(   262144));
-        test!(#[repr(C, align(   262144))] (u8; elain::Align<   524288>) => Some(   524288));
-        test!(#[repr(C, align(   524288))] (u8; elain::Align<  1048576>) => Some(  1048576));
-        test!(#[repr(C, align(  1048576))] (u8; elain::Align<  2097152>) => Some(  2097152));
-        test!(#[repr(C, align(  2097152))] (u8; elain::Align<  4194304>) => Some(  4194304));
-        test!(#[repr(C, align(  4194304))] (u8; elain::Align<  8388608>) => Some(  8388608));
-        test!(#[repr(C, align(  8388608))] (u8; elain::Align< 16777216>) => Some( 16777216));
-        test!(#[repr(C, align( 16777216))] (u8; elain::Align< 33554432>) => Some( 33554432));
-        test!(#[repr(C, align( 33554432))] (u8; elain::Align< 67108864>) => Some( 67108864));
-        test!(#[repr(C, align( 67108864))] (u8; elain::Align< 33554432>) => Some( 33554432));
-        test!(#[repr(C, align( 33554432))] (u8; elain::Align<134217728>) => Some(134217728));
-        test!(#[repr(C, align(134217728))] (u8; elain::Align<268435456>) => Some(268435456));
+        test!(#[repr(C, align(    65536))] (u8; elain::Align<   131072>) =>    131072);
+        test!(#[repr(C, align(   131072))] (u8; elain::Align<   262144>) =>    262144);
+        test!(#[repr(C, align(   262144))] (u8; elain::Align<   524288>) =>    524288);
+        test!(#[repr(C, align(   524288))] (u8; elain::Align<  1048576>) =>   1048576);
+        test!(#[repr(C, align(  1048576))] (u8; elain::Align<  2097152>) =>   2097152);
+        test!(#[repr(C, align(  2097152))] (u8; elain::Align<  4194304>) =>   4194304);
+        test!(#[repr(C, align(  4194304))] (u8; elain::Align<  8388608>) =>   8388608);
+        test!(#[repr(C, align(  8388608))] (u8; elain::Align< 16777216>) =>  16777216);
+        test!(#[repr(C, align( 16777216))] (u8; elain::Align< 33554432>) =>  33554432);
+        test!(#[repr(C, align( 33554432))] (u8; elain::Align< 67108864>) =>  67108864);
+        test!(#[repr(C, align( 67108864))] (u8; elain::Align< 33554432>) =>  33554432);
+        test!(#[repr(C, align( 33554432))] (u8; elain::Align<134217728>) => 134217728);
+        test!(#[repr(C, align(134217728))] (u8; elain::Align<268435456>) => 268435456);
         */
     }
 
@@ -576,37 +635,37 @@ mod tests {
     #[test]
     fn test_align_of_dst() {
         // Test that `align_of!` correctly computes the alignment of DSTs.
-        assert_eq!(align_of!([elain::Align<1>]), Some(1));
-        assert_eq!(align_of!([elain::Align<2>]), Some(2));
-        assert_eq!(align_of!([elain::Align<4>]), Some(4));
-        assert_eq!(align_of!([elain::Align<8>]), Some(8));
-        assert_eq!(align_of!([elain::Align<16>]), Some(16));
-        assert_eq!(align_of!([elain::Align<32>]), Some(32));
-        assert_eq!(align_of!([elain::Align<64>]), Some(64));
-        assert_eq!(align_of!([elain::Align<128>]), Some(128));
-        assert_eq!(align_of!([elain::Align<256>]), Some(256));
-        assert_eq!(align_of!([elain::Align<512>]), Some(512));
-        assert_eq!(align_of!([elain::Align<1024>]), Some(1024));
-        assert_eq!(align_of!([elain::Align<2048>]), Some(2048));
-        assert_eq!(align_of!([elain::Align<4096>]), Some(4096));
-        assert_eq!(align_of!([elain::Align<8192>]), Some(8192));
-        assert_eq!(align_of!([elain::Align<16384>]), Some(16384));
-        assert_eq!(align_of!([elain::Align<32768>]), Some(32768));
-        assert_eq!(align_of!([elain::Align<65536>]), Some(65536));
+        assert_eq!(align_of!([elain::Align<1>]).get(), 1);
+        assert_eq!(align_of!([elain::Align<2>]).get(), 2);
+        assert_eq!(align_of!([elain::Align<4>]).get(), 4);
+        assert_eq!(align_of!([elain::Align<8>]).get(), 8);
+        assert_eq!(align_of!([elain::Align<16>]).get(), 16);
+        assert_eq!(align_of!([elain::Align<32>]).get(), 32);
+        assert_eq!(align_of!([elain::Align<64>]).get(), 64);
+        assert_eq!(align_of!([elain::Align<128>]).get(), 128);
+        assert_eq!(align_of!([elain::Align<256>]).get(), 256);
+        assert_eq!(align_of!([elain::Align<512>]).get(), 512);
+        assert_eq!(align_of!([elain::Align<1024>]).get(), 1024);
+        assert_eq!(align_of!([elain::Align<2048>]).get(), 2048);
+        assert_eq!(align_of!([elain::Align<4096>]).get(), 4096);
+        assert_eq!(align_of!([elain::Align<8192>]).get(), 8192);
+        assert_eq!(align_of!([elain::Align<16384>]).get(), 16384);
+        assert_eq!(align_of!([elain::Align<32768>]).get(), 32768);
+        assert_eq!(align_of!([elain::Align<65536>]).get(), 65536);
         /* Alignments above 65536 are not yet supported.
-        assert_eq!(align_of!([elain::Align<131072>]), Some(131072));
-        assert_eq!(align_of!([elain::Align<262144>]), Some(262144));
-        assert_eq!(align_of!([elain::Align<524288>]), Some(524288));
-        assert_eq!(align_of!([elain::Align<1048576>]), Some(1048576));
-        assert_eq!(align_of!([elain::Align<2097152>]), Some(2097152));
-        assert_eq!(align_of!([elain::Align<4194304>]), Some(4194304));
-        assert_eq!(align_of!([elain::Align<8388608>]), Some(8388608));
-        assert_eq!(align_of!([elain::Align<16777216>]), Some(16777216));
-        assert_eq!(align_of!([elain::Align<33554432>]), Some(33554432));
-        assert_eq!(align_of!([elain::Align<67108864>]), Some(67108864));
-        assert_eq!(align_of!([elain::Align<33554432>]), Some(33554432));
-        assert_eq!(align_of!([elain::Align<134217728>]), Some(134217728));
-        assert_eq!(align_of!([elain::Align<268435456>]), Some(268435456));
+        assert_eq!(align_of!([elain::Align<131072>]).get(), 131072);
+        assert_eq!(align_of!([elain::Align<262144>]).get(), 262144);
+        assert_eq!(align_of!([elain::Align<524288>]).get(), 524288);
+        assert_eq!(align_of!([elain::Align<1048576>]).get(), 1048576);
+        assert_eq!(align_of!([elain::Align<2097152>]).get(), 2097152);
+        assert_eq!(align_of!([elain::Align<4194304>]).get(), 4194304);
+        assert_eq!(align_of!([elain::Align<8388608>]).get(), 8388608);
+        assert_eq!(align_of!([elain::Align<16777216>]).get(), 16777216);
+        assert_eq!(align_of!([elain::Align<33554432>]).get(), 33554432);
+        assert_eq!(align_of!([elain::Align<67108864>]).get(), 67108864);
+        assert_eq!(align_of!([elain::Align<33554432>]).get(), 33554432);
+        assert_eq!(align_of!([elain::Align<134217728>]).get(), 134217728);
+        assert_eq!(align_of!([elain::Align<268435456>]).get(), 268435456);
         */
     }
 
