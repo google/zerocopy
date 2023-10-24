@@ -73,7 +73,7 @@ jobs:
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
       with:
         path: |
           ~/.cargo/
@@ -223,7 +223,7 @@ jobs:
     # just duplicating work by running this job multiple times, each time
     # targetting the host platform.
     - name: Check semver compatibility
-      uses: obi1kenobi/cargo-semver-checks-action@v2
+      uses: obi1kenobi/cargo-semver-checks-action@e275dda72e250d4df5b564e969e1348d67fefa52 # v2.2
       with:
         # Don't semver check zerocopy-derive; as a proc macro, it doesn't have
         # an API that cargo-semver-checks can understand.
@@ -240,7 +240,7 @@ jobs:
     name: 'Run tests under Kani'
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: model-checking/kani-github-action@v1.0
+      - uses: model-checking/kani-github-action@e621a98d839036c62e96cd5fa33ac5d076729f94 # v1.0
         with:
           args: "--package zerocopy --all-features --output-format=terse --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
 
@@ -265,7 +265,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
         with:
           path: |
             ~/.cargo/
@@ -290,7 +290,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
         with:
           path: |
             ~/.cargo/
@@ -333,7 +333,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
         with:
           path: |
             ~/.cargo/
@@ -408,7 +408,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
         with:
           path: |
             ~/.cargo/
