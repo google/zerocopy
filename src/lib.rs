@@ -2088,13 +2088,13 @@ macro_rules! transmute_ref {
 /// Assume there are two files in the same directory with the following
 /// contents:
 ///
-/// File 'data' (no trailing newline):
+/// File `data` (no trailing newline):
 ///
 /// ```text
 /// abcd
 /// ```
 ///
-/// File 'main.rs':
+/// File `main.rs`:
 ///
 /// ```rust
 /// use zerocopy::include_value;
