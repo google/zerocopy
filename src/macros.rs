@@ -211,9 +211,11 @@ macro_rules! impl_known_layout {
         const _: () = {
             use core::ptr::NonNull;
 
-            impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> sealed::KnownLayoutSealed for $ty {}
             // SAFETY: Delegates safety to `DstLayout::for_type`.
             unsafe impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> KnownLayout for $ty {
+                #[allow(clippy::missing_inline_in_public_items)]
+                fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
+
                 const LAYOUT: DstLayout = DstLayout::for_type::<$ty>();
 
                 // SAFETY: `.cast` preserves address and provenance.
@@ -245,8 +247,10 @@ macro_rules! unsafe_impl_known_layout {
         const _: () = {
             use core::ptr::NonNull;
 
-            impl<$($tyvar: ?Sized + KnownLayout)?> sealed::KnownLayoutSealed for $ty {}
             unsafe impl<$($tyvar: ?Sized + KnownLayout)?> KnownLayout for $ty {
+                #[allow(clippy::missing_inline_in_public_items)]
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+
                 const LAYOUT: DstLayout = <$repr as KnownLayout>::LAYOUT;
 
                 // SAFETY: All operations preserve address and provenance.

@@ -382,7 +382,9 @@ impl DstLayout {
     /// # Safety
     ///
     /// Unsafe code may assume that `DstLayout` is the correct layout for `T`.
-    const fn for_type<T>() -> DstLayout {
+    #[doc(hidden)]
+    #[inline]
+    pub const fn for_type<T>() -> DstLayout {
         // SAFETY: `align` is correct by construction. `T: Sized`, and so it is
         // sound to initialize `size_info` to `SizeInfo::Sized { size }`; the
         // `size` field is also correct by construction.
@@ -643,7 +645,16 @@ impl DstLayout {
 ///
 /// This trait does not convey any safety guarantees to code outside this crate.
 #[doc(hidden)] // TODO: Remove this once KnownLayout is used by other APIs
-pub unsafe trait KnownLayout: sealed::KnownLayoutSealed {
+pub unsafe trait KnownLayout {
+    // The `Self: Sized` bound makes it so that `KnownLayout` can still be
+    // object safe. It's not currently object safe thanks to `const LAYOUT`, and
+    // it likely won't be in the future, but there's no reason not to be
+    // forwards-compatible with object safety.
+    #[doc(hidden)]
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized;
+
     #[doc(hidden)]
     const LAYOUT: DstLayout;
 
@@ -654,9 +665,14 @@ pub unsafe trait KnownLayout: sealed::KnownLayoutSealed {
     fn raw_from_ptr_len(bytes: NonNull<u8>, elems: usize) -> NonNull<Self>;
 }
 
-impl<T: KnownLayout> sealed::KnownLayoutSealed for [T] {}
 // SAFETY: Delegates safety to `DstLayout::for_slice`.
 unsafe impl<T: KnownLayout> KnownLayout for [T] {
+    #[allow(clippy::missing_inline_in_public_items)]
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized,
+    {
+    }
     const LAYOUT: DstLayout = DstLayout::for_slice::<T>();
 
     // SAFETY: `.cast` preserves address and provenance. The returned pointer
@@ -3134,7 +3150,6 @@ where
 
 mod sealed {
     pub trait ByteSliceSealed {}
-    pub trait KnownLayoutSealed {}
 }
 
 // ByteSlice and ByteSliceMut abstract over [u8] references (&[u8], &mut [u8],
@@ -5023,78 +5038,78 @@ mod tests {
             };
         }
 
-        assert_impls!((): FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(u8: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(i8: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(u16: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(i16: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(u32: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(i32: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(u64: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(i64: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(u128: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(i128: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(usize: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(isize: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(f32: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(f64: FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!((): KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(u8: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(i8: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(u16: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i16: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(u32: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i32: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(u64: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i64: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(u128: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i128: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(usize: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(isize: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(f32: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(f64: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
 
-        assert_impls!(bool: FromZeroes, AsBytes, Unaligned, !FromBytes);
-        assert_impls!(char: FromZeroes, AsBytes, !FromBytes, !Unaligned);
-        assert_impls!(str: FromZeroes, AsBytes, Unaligned, !FromBytes);
+        assert_impls!(bool: KnownLayout, FromZeroes, AsBytes, Unaligned, !FromBytes);
+        assert_impls!(char: KnownLayout, FromZeroes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(str: KnownLayout, FromZeroes, AsBytes, Unaligned, !FromBytes);
 
-        assert_impls!(NonZeroU8: AsBytes, Unaligned, !FromZeroes, !FromBytes);
-        assert_impls!(NonZeroI8: AsBytes, Unaligned, !FromZeroes, !FromBytes);
-        assert_impls!(NonZeroU16: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI16: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroU32: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI32: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroU64: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI64: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroU128: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI128: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroUsize: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroIsize: AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU8: KnownLayout, AsBytes, Unaligned, !FromZeroes, !FromBytes);
+        assert_impls!(NonZeroI8: KnownLayout, AsBytes, Unaligned, !FromZeroes, !FromBytes);
+        assert_impls!(NonZeroU16: KnownLayout, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI16: KnownLayout, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU32: KnownLayout, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI32: KnownLayout, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU64: KnownLayout, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI64: KnownLayout, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU128: KnownLayout, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI128: KnownLayout, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroUsize: KnownLayout, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroIsize: KnownLayout, AsBytes, !FromZeroes, !FromBytes, !Unaligned);
 
-        assert_impls!(Option<NonZeroU8>: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(Option<NonZeroI8>: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(Option<NonZeroU16>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI16>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU32>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI32>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU64>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI64>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU128>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI128>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroUsize>: FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroIsize>: FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU8>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(Option<NonZeroI8>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(Option<NonZeroU16>: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI16>: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU32>: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI32>: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU64>: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI64>: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU128>: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI128>: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroUsize>: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroIsize>: KnownLayout, FromZeroes, FromBytes, AsBytes, !Unaligned);
 
         // Implements none of the ZC traits.
         struct NotZerocopy;
 
-        assert_impls!(PhantomData<NotZerocopy>: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(PhantomData<[u8]>: FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(PhantomData<NotZerocopy>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(PhantomData<[u8]>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
 
-        assert_impls!(ManuallyDrop<u8>: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(ManuallyDrop<[u8]>: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(ManuallyDrop<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(ManuallyDrop<[NotZerocopy]>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<u8>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(ManuallyDrop<[u8]>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(ManuallyDrop<NotZerocopy>: !KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<[NotZerocopy]>: !KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(MaybeUninit<u8>: FromZeroes, FromBytes, Unaligned, !AsBytes);
-        assert_impls!(MaybeUninit<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(MaybeUninit<u8>: KnownLayout, FromZeroes, FromBytes, Unaligned, !AsBytes);
+        assert_impls!(MaybeUninit<NotZerocopy>: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(Wrapping<u8>: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(Wrapping<NotZerocopy>: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Wrapping<u8>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(Wrapping<NotZerocopy>: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(Unalign<u8>: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(Unalign<NotZerocopy>: Unaligned, !FromZeroes, !FromBytes, !AsBytes);
+        assert_impls!(Unalign<u8>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(Unalign<NotZerocopy>: KnownLayout, Unaligned, !FromZeroes, !FromBytes, !AsBytes);
 
-        assert_impls!([u8]: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!([NotZerocopy]: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!([u8; 0]: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!([NotZerocopy; 0]: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!([u8; 1]: FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!([NotZerocopy; 1]: !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!([u8]: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!([NotZerocopy]: !KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!([u8; 0]: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!([NotZerocopy; 0]: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!([u8; 1]: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!([NotZerocopy; 1]: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
         #[cfg(feature = "simd")]
         {

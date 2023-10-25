@@ -572,7 +572,18 @@ pub(crate) mod testutil {
     // Though `u64` has alignment 8 on some platforms, it's not guaranteed.
     // By contrast, `AU64` is guaranteed to have alignment 8.
     #[derive(
-        FromZeroes, FromBytes, AsBytes, Eq, PartialEq, Ord, PartialOrd, Default, Debug, Copy, Clone,
+        KnownLayout,
+        FromZeroes,
+        FromBytes,
+        AsBytes,
+        Eq,
+        PartialEq,
+        Ord,
+        PartialOrd,
+        Default,
+        Debug,
+        Copy,
+        Clone,
     )]
     #[repr(C, align(8))]
     pub(crate) struct AU64(pub(crate) u64);
@@ -589,8 +600,6 @@ pub(crate) mod testutil {
             Display::fmt(&self.0, f)
         }
     }
-
-    impl_known_layout!(AU64);
 }
 
 #[cfg(test)]
