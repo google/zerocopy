@@ -248,11 +248,13 @@ macro_rules! define_type {
         [$($larger_byteorder_try:ident),*]) => {
         doc_comment! {
             concat!("A ", stringify!($bits), "-bit ", $number_kind,
-            " stored in `O` byte order.
+            " stored in a given byte order.
 
 `", stringify!($name), "` is like the native `", stringify!($native), "` type with
 two major differences: First, it has no alignment requirement (its alignment is 1).
-Second, the endianness of its memory layout is given by the type parameter `O`.
+Second, the endianness of its memory layout is given by the type parameter `O`,
+which can be any type which implements [`ByteOrder`]. In particular, this refers
+to [`BigEndian`], [`LittleEndian`], [`NativeEndian`], and [`NetworkEndian`].
 
 ", stringify!($article), " `", stringify!($name), "` can be constructed using
 the [`new`] method, and its contained value can be obtained as a native
