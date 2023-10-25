@@ -74,15 +74,14 @@ case "$1" in
     echo "[cargo.sh] warning: running the same command for each toolchain (msrv, stable, nightly)" >&2
     for toolchain in msrv stable nightly; do
       echo "[cargo.sh] running with toolchain: $toolchain" >&2
-      TOOLCHAIN="$(lookup-version $toolchain)"
-      RUSTFLAGS="$(get-rustflags $toolchain)" cargo "+$TOOLCHAIN" ${@:2}
+      $0 "+$toolchain" ${@:2}
     done
     exit 0
     ;;
   # cargo.sh +<toolchain-name> [...]
   +*)
     TOOLCHAIN="$(lookup-version ${1:1})"
-    RUSTFLAGS="$(get-rustflags ${1:1})" cargo "+$TOOLCHAIN" ${@:2}
+    RUSTFLAGS="$(get-rustflags ${1:1}) $RUSTFLAGS" cargo "+$TOOLCHAIN" ${@:2}
     ;;
   *)
     print-usage-and-exit

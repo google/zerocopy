@@ -5098,6 +5098,7 @@ mod tests {
 
         #[cfg(feature = "simd")]
         {
+            #[allow(unused_macros)]
             macro_rules! test_simd_arch_mod {
                 ($arch:ident, $($typ:ident),*) => {
                     {
