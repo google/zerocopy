@@ -1,0 +1,1 @@
+../ui-nightly/transmute-mut-dst-not-a-reference.rs
