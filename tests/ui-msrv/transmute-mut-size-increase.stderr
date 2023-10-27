@@ -16,7 +16,7 @@ error[E0658]: mutable references are not allowed in constants
    |
    = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
 
-error[E0015]: cannot call non-const fn `INCREASE_SIZE::transmute::<u8, [u8; 2]>` in constants
+error[E0015]: cannot call non-const fn `transmute_mut::<u8, [u8; 2]>` in constants
   --> tests/ui-msrv/transmute-mut-size-increase.rs:17:37
    |
 17 | const INCREASE_SIZE: &mut [u8; 2] = transmute_mut!(&mut 0u8);
