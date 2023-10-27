@@ -153,9 +153,7 @@ macro_rules! assert_size_eq {
     }};
 }
 
-pub mod core_reexport {
-    pub use core::*;
-}
+pub use core as core_reexport;
 
 #[cfg(test)]
 mod tests {
