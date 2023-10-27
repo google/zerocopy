@@ -617,6 +617,9 @@ fn impl_block<D: DataExt>(
     });
 
     quote! {
+        // TODO(#553): Add a test that generates a warning when
+        // `#[allow(deprecated)]` isn't present.
+        #[allow(deprecated)]
         unsafe impl < #(#params),* > zerocopy::#trait_ident for #type_ident < #(#param_idents),* >
         where
             #(#bounds,)*
