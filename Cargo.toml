@@ -30,7 +30,7 @@ all-features = true
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.
 pinned-stable = "1.73.0"
-pinned-nightly = "nightly-2023-10-25"
+pinned-nightly = "nightly-2023-10-26"
 
 [features]
 default = ["byteorder"]

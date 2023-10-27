@@ -52,3 +52,25 @@ error[E0277]: the trait bound `HasPadding<AsBytes2, true>: ShouldBe<false>` is n
    = help: see issue #48214
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `AsBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0107]: missing generics for struct `KnownLayout2`
+  --> tests/ui-nightly/struct.rs:34:18
+   |
+34 | assert_impl_all!(KnownLayout2: KnownLayout);
+   |                  ^^^^^^^^^^^^ expected 1 generic argument
+   |
+note: struct defined here, with 1 generic parameter: `T`
+  --> tests/ui-nightly/struct.rs:32:8
+   |
+32 | struct KnownLayout2<T: ?Sized>(T);
+   |        ^^^^^^^^^^^^ -
+help: add missing generic argument
+   |
+34 | assert_impl_all!(KnownLayout2<T>: KnownLayout);
+   |                              +++
+
+error[E0587]: type has conflicting packed and align representation hints
+  --> tests/ui-nightly/struct.rs:67:1
+   |
+67 | struct Unaligned3;
+   | ^^^^^^^^^^^^^^^^^
