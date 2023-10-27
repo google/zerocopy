@@ -101,6 +101,58 @@ macro_rules! union_has_padding {
     };
 }
 
+/// Does `t` have alignment greater than or equal to `u`?  If not, this macro
+/// produces a compile error. It must be invoked in a dead codepath. This is
+/// used in `transmute_ref!` and `transmute_mut!`.
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! assert_align_gt_eq {
+    ($t:ident, $u: ident) => {{
+        // The comments here should be read in the context of this macro's
+        // invocations in `transmute_ref!` and `transmute_mut!`.
+        if false {
+            // The type wildcard in this bound is inferred to be `T` because
+            // `align_of.into_t()` is assigned to `t` (which has type `T`).
+            let align_of: $crate::macro_util::AlignOf<_> = unreachable!();
+            $t = align_of.into_t();
+            // `max_aligns` is inferred to have type `MaxAlignsOf<T, U>` because
+            // of the inferred types of `t` and `u`.
+            let mut max_aligns = $crate::macro_util::MaxAlignsOf::new($t, $u);
+
+            // This transmute will only compile successfully if
+            // `align_of::<T>() == max(align_of::<T>(), align_of::<U>())` - in
+            // other words, if `align_of::<T>() >= align_of::<U>()`.
+            //
+            // SAFETY: This code is never run.
+            max_aligns = unsafe { $crate::macro_util::core_reexport::mem::transmute(align_of) };
+        } else {
+            loop {}
+        }
+    }};
+}
+
+/// Do `t` and `u` have the same size?  If not, this macro produces a compile
+/// error. It must be invoked in a dead codepath. This is used in
+/// `transmute_ref!` and `transmute_mut!`.
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! assert_size_eq {
+    ($t:ident, $u: ident) => {{
+        // The comments here should be read in the context of this macro's
+        // invocations in `transmute_ref!` and `transmute_mut!`.
+        if false {
+            // SAFETY: This code is never run.
+            $u = unsafe {
+                // Clippy: It's okay to transmute a type to itself.
+                #[allow(clippy::useless_transmute)]
+                $crate::macro_util::core_reexport::mem::transmute($t)
+            };
+        } else {
+            loop {}
+        }
+    }};
+}
+
 pub mod core_reexport {
     pub mod mem {
         pub use core::mem::transmute;
@@ -146,8 +198,8 @@ mod tests {
 
     #[test]
     fn test_typed_align_check() {
-        // Test that the type-based alignment check used in `transmute_ref!`
-        // behaves as expected.
+        // Test that the type-based alignment check used in
+        // `assert_align_gt_eq!` behaves as expected.
 
         macro_rules! assert_t_align_gteq_u_align {
             ($t:ty, $u:ty, $gteq:expr) => {

@@ -35,18 +35,7 @@ note: required by a bound in `std::intrinsics::transmute`
    |
    |     pub fn transmute<T, U>(e: T) -> U;
    |                      ^ required by this bound in `std::intrinsics::transmute`
-   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-  --> tests/ui-msrv/transmute-ref-src-unsized.rs:16:31
-   |
-16 | const SRC_UNSIZED: &[u8; 1] = transmute_ref!(&[0u8][..]);
-   |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
-   |
-   = help: the trait `Sized` is not implemented for `[u8]`
-   = note: all local variables must have a statically known size
-   = help: unsized locals are gated as an unstable feature
-   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::assert_size_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-msrv/transmute-ref-src-unsized.rs:16:31
@@ -60,7 +49,7 @@ note: required by a bound in `AlignOf::<T>::into_t`
    |
    | impl<T> AlignOf<T> {
    |      ^ required by this bound in `AlignOf::<T>::into_t`
-   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::assert_align_gt_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-msrv/transmute-ref-src-unsized.rs:16:31
@@ -70,7 +59,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    |
    = help: the trait `Sized` is not implemented for `[u8]`
    = note: the left-hand-side of an assignment must have a statically known size
-   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::assert_align_gt_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-msrv/transmute-ref-src-unsized.rs:16:31
@@ -84,7 +73,7 @@ note: required by a bound in `AlignOf`
    |
    | pub struct AlignOf<T> {
    |                    ^ required by this bound in `AlignOf`
-   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::assert_align_gt_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-msrv/transmute-ref-src-unsized.rs:16:31
@@ -98,7 +87,7 @@ note: required by a bound in `MaxAlignsOf::<T, U>::new`
    |
    | impl<T, U> MaxAlignsOf<T, U> {
    |      ^ required by this bound in `MaxAlignsOf::<T, U>::new`
-   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::assert_align_gt_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-msrv/transmute-ref-src-unsized.rs:16:31
@@ -112,7 +101,7 @@ note: required by a bound in `MaxAlignsOf`
    |
    | pub union MaxAlignsOf<T, U> {
    |                       ^ required by this bound in `MaxAlignsOf`
-   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::assert_align_gt_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-msrv/transmute-ref-src-unsized.rs:16:31
@@ -126,7 +115,7 @@ note: required by a bound in `MaxAlignsOf`
    |
    | pub union MaxAlignsOf<T, U> {
    |                       ^ required by this bound in `MaxAlignsOf`
-   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::assert_align_gt_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-msrv/transmute-ref-src-unsized.rs:16:31
@@ -140,7 +129,7 @@ note: required by a bound in `AlignOf`
    |
    | pub struct AlignOf<T> {
    |                    ^ required by this bound in `AlignOf`
-   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::assert_align_gt_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-msrv/transmute-ref-src-unsized.rs:16:31
@@ -150,4 +139,4 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    |
    = help: the trait `Sized` is not implemented for `[u8]`
    = note: all function arguments must have a statically known size
-   = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::assert_size_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
