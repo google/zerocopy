@@ -1206,6 +1206,94 @@ pub unsafe trait FromBytes: FromZeroes {
     where
         Self: Sized;
 
+    /// Interprets the given `bytes` as a `&Self` without copying.
+    ///
+    /// If `bytes.len() != size_of::<T>()` or `bytes` is not aligned to
+    /// `align_of::<T>()`, this returns `None`.
+    #[inline]
+    fn ref_from(bytes: &[u8]) -> Option<&Self>
+    where
+        Self: Sized,
+    {
+        Ref::<&[u8], Self>::new(bytes).map(Ref::into_ref)
+    }
+
+    /// Interprets the prefix of the given `bytes` as a `&Self` without copying.
+    ///
+    /// `ref_from_prefix` returns a reference to the first `size_of::<Self>()`
+    /// bytes of `bytes`. If `bytes.len() != size_of::<T>()` or `bytes` is not
+    /// aligned to `align_of::<T>()`, this returns `None`.
+    ///
+    /// To also access the prefix bytes, use [`Ref::new_from_prefix`]. Then,
+    /// use [`Ref::into_ref`] to get a `&Self` with the same lifetime.
+    #[inline]
+    fn ref_from_prefix(bytes: &[u8]) -> Option<&Self>
+    where
+        Self: Sized,
+    {
+        Ref::<&[u8], Self>::new_from_prefix(bytes).map(|(r, _)| r.into_ref())
+    }
+
+    /// Interprets the suffix of the given `bytes` as a `&Self` without copying.
+    ///
+    /// `ref_from_suffix` returns a reference to the last `size_of::<Self>()`
+    /// bytes of `bytes`. If `bytes.len() != size_of::<T>()` or the suffix of
+    /// `bytes` is not aligned to `align_of::<T>()`, this returns `None`.
+    ///
+    /// To also access the suffix bytes, use [`Ref::new_from_suffix`]. Then,
+    /// use [`Ref::into_ref`] to get a `&Self` with the same lifetime.
+    #[inline]
+    fn ref_from_suffix(bytes: &[u8]) -> Option<&Self>
+    where
+        Self: Sized,
+    {
+        Ref::<&[u8], Self>::new_from_suffix(bytes).map(|(_, r)| r.into_ref())
+    }
+
+    /// Interprets the given `bytes` as a `&mut Self` without copying.
+    ///
+    /// If `bytes.len() != size_of::<T>()` or `bytes` is not aligned to
+    /// `align_of::<T>()`, this returns `None`.
+    #[inline]
+    fn mut_from(bytes: &mut [u8]) -> Option<&mut Self>
+    where
+        Self: Sized + AsBytes,
+    {
+        Ref::<&mut [u8], Self>::new(bytes).map(Ref::into_mut)
+    }
+
+    /// Interprets the prefix of the given `bytes` as a `&mut Self` without copying.
+    ///
+    /// `mut_from_prefix` returns a reference to the first `size_of::<Self>()`
+    /// bytes of `bytes`. If `bytes.len() != size_of::<T>()` or `bytes` is not
+    /// aligned to `align_of::<T>()`, this returns `None`.
+    ///
+    /// To also access the prefix bytes, use [`Ref::new_from_prefix`]. Then,
+    /// use [`Ref::into_mut`] to get a `&mut Self` with the same lifetime.
+    #[inline]
+    fn mut_from_prefix(bytes: &mut [u8]) -> Option<&mut Self>
+    where
+        Self: Sized + AsBytes,
+    {
+        Ref::<&mut [u8], Self>::new_from_prefix(bytes).map(|(r, _)| r.into_mut())
+    }
+
+    /// Interprets the suffix of the given `bytes` as a `&mut Self` without copying.
+    ///
+    /// `mut_from_suffix` returns a reference to the last `size_of::<Self>()`
+    /// bytes of `bytes`. If `bytes.len() != size_of::<T>()` or the suffix of
+    /// `bytes` is not aligned to `align_of::<T>()`, this returns `None`.
+    ///
+    /// To also access the suffix bytes, use [`Ref::new_from_suffix`]. Then,
+    /// use [`Ref::into_mut`] to get a `&mut Self` with the same lifetime.
+    #[inline]
+    fn mut_from_suffix(bytes: &mut [u8]) -> Option<&mut Self>
+    where
+        Self: Sized + AsBytes,
+    {
+        Ref::<&mut [u8], Self>::new_from_suffix(bytes).map(|(_, r)| r.into_mut())
+    }
+
     /// Reads a copy of `Self` from `bytes`.
     ///
     /// If `bytes.len() != size_of::<Self>()`, `read_from` returns `None`.
@@ -1214,8 +1302,7 @@ pub unsafe trait FromBytes: FromZeroes {
     where
         Self: Sized,
     {
-        let r = Ref::<_, Unalign<Self>>::new_unaligned(bytes)?;
-        Some(r.read().into_inner())
+        Ref::<_, Unalign<Self>>::new_unaligned(bytes).map(|r| r.read().into_inner())
     }
 
     /// Reads a copy of `Self` from the prefix of `bytes`.
@@ -1228,8 +1315,8 @@ pub unsafe trait FromBytes: FromZeroes {
     where
         Self: Sized,
     {
-        let (r, _suffix) = Ref::<_, Unalign<Self>>::new_unaligned_from_prefix(bytes)?;
-        Some(r.read().into_inner())
+        Ref::<_, Unalign<Self>>::new_unaligned_from_prefix(bytes)
+            .map(|(r, _)| r.read().into_inner())
     }
 
     /// Reads a copy of `Self` from the suffix of `bytes`.
@@ -1242,8 +1329,8 @@ pub unsafe trait FromBytes: FromZeroes {
     where
         Self: Sized,
     {
-        let (_prefix, r) = Ref::<_, Unalign<Self>>::new_unaligned_from_suffix(bytes)?;
-        Some(r.read().into_inner())
+        Ref::<_, Unalign<Self>>::new_unaligned_from_suffix(bytes)
+            .map(|(_, r)| r.read().into_inner())
     }
 }
 
@@ -4807,6 +4894,69 @@ mod tests {
             assert_eq!(prefix, &[0xFF; 8]);
             test_new_helper_unaligned(r);
         }
+    }
+
+    #[test]
+    fn test_ref_from_mut_from() {
+        // Test `FromBytes::{ref_from, mut_from}{,_prefix,_suffix}` success cases
+        // Exhaustive coverage for these methods is covered by the `Ref` tests above,
+        // which these helper methods defer to.
+
+        let mut buf =
+            Align::<[u8; 16], AU64>::new([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+
+        assert_eq!(
+            AU64::ref_from(&buf.t[8..]).unwrap().0.to_ne_bytes(),
+            [8, 9, 10, 11, 12, 13, 14, 15]
+        );
+        let suffix = AU64::mut_from(&mut buf.t[8..]).unwrap();
+        suffix.0 = 0x0101010101010101;
+        assert_eq!(<[u8; 9]>::ref_from_suffix(&buf.t[..]).unwrap(), &[7u8, 1, 1, 1, 1, 1, 1, 1, 1]);
+        let suffix = AU64::mut_from_suffix(&mut buf.t[1..]).unwrap();
+        suffix.0 = 0x0202020202020202;
+        <[u8; 10]>::mut_from_suffix(&mut buf.t[..]).unwrap()[0] = 42;
+        assert_eq!(<[u8; 9]>::ref_from_prefix(&buf.t[..]).unwrap(), &[0, 1, 2, 3, 4, 5, 42, 7, 2]);
+        <[u8; 2]>::mut_from_prefix(&mut buf.t[..]).unwrap()[1] = 30;
+        assert_eq!(buf.t, [0, 30, 2, 3, 4, 5, 42, 7, 2, 2, 2, 2, 2, 2, 2, 2]);
+    }
+
+    #[test]
+    fn test_ref_from_mut_from_error() {
+        // Test `FromBytes::{ref_from, mut_from}{,_prefix,_suffix}` error cases.
+
+        // Fail because the buffer is too large.
+        let mut buf = Align::<[u8; 16], AU64>::default();
+        // `buf.t` should be aligned to 8, so only the length check should fail.
+        assert!(AU64::ref_from(&buf.t[..]).is_none());
+        assert!(AU64::mut_from(&mut buf.t[..]).is_none());
+        assert!(<[u8; 8]>::ref_from(&buf.t[..]).is_none());
+        assert!(<[u8; 8]>::mut_from(&mut buf.t[..]).is_none());
+
+        // Fail because the buffer is too small.
+        let mut buf = Align::<[u8; 4], AU64>::default();
+        assert!(AU64::ref_from(&buf.t[..]).is_none());
+        assert!(AU64::mut_from(&mut buf.t[..]).is_none());
+        assert!(<[u8; 8]>::ref_from(&buf.t[..]).is_none());
+        assert!(<[u8; 8]>::mut_from(&mut buf.t[..]).is_none());
+        assert!(AU64::ref_from_prefix(&buf.t[..]).is_none());
+        assert!(AU64::mut_from_prefix(&mut buf.t[..]).is_none());
+        assert!(AU64::ref_from_suffix(&buf.t[..]).is_none());
+        assert!(AU64::mut_from_suffix(&mut buf.t[..]).is_none());
+        assert!(<[u8; 8]>::ref_from_prefix(&buf.t[..]).is_none());
+        assert!(<[u8; 8]>::mut_from_prefix(&mut buf.t[..]).is_none());
+        assert!(<[u8; 8]>::ref_from_suffix(&buf.t[..]).is_none());
+        assert!(<[u8; 8]>::mut_from_suffix(&mut buf.t[..]).is_none());
+
+        // Fail because the alignment is insufficient.
+        let mut buf = Align::<[u8; 13], AU64>::default();
+        assert!(AU64::ref_from(&buf.t[1..]).is_none());
+        assert!(AU64::mut_from(&mut buf.t[1..]).is_none());
+        assert!(AU64::ref_from(&buf.t[1..]).is_none());
+        assert!(AU64::mut_from(&mut buf.t[1..]).is_none());
+        assert!(AU64::ref_from_prefix(&buf.t[1..]).is_none());
+        assert!(AU64::mut_from_prefix(&mut buf.t[1..]).is_none());
+        assert!(AU64::ref_from_suffix(&buf.t[..]).is_none());
+        assert!(AU64::mut_from_suffix(&mut buf.t[..]).is_none());
     }
 
     #[test]
