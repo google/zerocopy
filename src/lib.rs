@@ -1221,7 +1221,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// Interprets the prefix of the given `bytes` as a `&Self` without copying.
     ///
     /// `ref_from_prefix` returns a reference to the first `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() != size_of::<T>()` or `bytes` is not
+    /// bytes of `bytes`. If `bytes.len() < size_of::<T>()` or `bytes` is not
     /// aligned to `align_of::<T>()`, this returns `None`.
     ///
     /// To also access the prefix bytes, use [`Ref::new_from_prefix`]. Then,
@@ -1237,7 +1237,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// Interprets the suffix of the given `bytes` as a `&Self` without copying.
     ///
     /// `ref_from_suffix` returns a reference to the last `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() != size_of::<T>()` or the suffix of
+    /// bytes of `bytes`. If `bytes.len() < size_of::<T>()` or the suffix of
     /// `bytes` is not aligned to `align_of::<T>()`, this returns `None`.
     ///
     /// To also access the suffix bytes, use [`Ref::new_from_suffix`]. Then,
@@ -1265,7 +1265,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// Interprets the prefix of the given `bytes` as a `&mut Self` without copying.
     ///
     /// `mut_from_prefix` returns a reference to the first `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() != size_of::<T>()` or `bytes` is not
+    /// bytes of `bytes`. If `bytes.len() < size_of::<T>()` or `bytes` is not
     /// aligned to `align_of::<T>()`, this returns `None`.
     ///
     /// To also access the prefix bytes, use [`Ref::new_from_prefix`]. Then,
@@ -1281,7 +1281,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// Interprets the suffix of the given `bytes` as a `&mut Self` without copying.
     ///
     /// `mut_from_suffix` returns a reference to the last `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() != size_of::<T>()` or the suffix of
+    /// bytes of `bytes`. If `bytes.len() < size_of::<T>()` or the suffix of
     /// `bytes` is not aligned to `align_of::<T>()`, this returns `None`.
     ///
     /// To also access the suffix bytes, use [`Ref::new_from_suffix`]. Then,
@@ -4911,6 +4911,8 @@ mod tests {
         );
         let suffix = AU64::mut_from(&mut buf.t[8..]).unwrap();
         suffix.0 = 0x0101010101010101;
+        // The `[u8:9]` is a non-half size of the full buffer, which would catch
+        // `from_prefix` having the same implementation as `from_suffix` (issues #506, #511).
         assert_eq!(<[u8; 9]>::ref_from_suffix(&buf.t[..]).unwrap(), &[7u8, 1, 1, 1, 1, 1, 1, 1, 1]);
         let suffix = AU64::mut_from_suffix(&mut buf.t[1..]).unwrap();
         suffix.0 = 0x0202020202020202;
