@@ -154,9 +154,7 @@ macro_rules! assert_size_eq {
 }
 
 pub mod core_reexport {
-    pub mod mem {
-        pub use core::mem::transmute;
-    }
+    pub use core::*;
 }
 
 #[cfg(test)]
