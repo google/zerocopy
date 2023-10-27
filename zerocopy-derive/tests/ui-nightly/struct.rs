@@ -31,7 +31,7 @@ assert_impl_all!(KnownLayout1: KnownLayout);
 #[derive(KnownLayout)]
 struct KnownLayout2<T: ?Sized>(T);
 
-assert_impl_all!(KnownLayout2: KnownLayout);
+assert_impl_all!(KnownLayout2<[u8]>: KnownLayout);
 
 //
 // AsBytes errors
