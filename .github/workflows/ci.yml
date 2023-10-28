@@ -160,7 +160,25 @@ jobs:
           ${{ matrix.features }} \
           --verbose \
           -- \
-          ${{ (matrix.features == '--no-default-features' || matrix.features == '') &&  '--skip ui' || '' }} \
+          --skip ui
+
+        if [ "${{ matrix.features }}" != "--no-default-features" -a "${{ matrix.features }}" != "" ]; then
+          # Run UI tests separately, treating warnings as warnings (rather than
+          # as errors, as we do everywhere else in our CI tests). This allows
+          # our UI tests to more accurately reflect what users will see, and
+          # also ensures that we're not spuriously relying on warnings being
+          # errors to ensure compilation failure (if we were, then our code
+          # would be unsound whenever -Dwarnings is not enabled).
+          #
+          # TODO(#560), TODO(#187): Once we migrate to the ui-test crate, we
+          # likely won't have to special-case the UI tests like this.
+          RUSTFLAGS="$RUSTFLAGS -Wwarnings" ./cargo.sh +${{ matrix.toolchain }} test \
+            --package ${{ matrix.crate }} \
+            --target ${{ matrix.target }} \
+            ${{ matrix.features }} \
+            --verbose \
+            ui
+        fi
 
       # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
       # x86_64, so we can't run tests for any non-x86 target.
