@@ -12,6 +12,7 @@ name: Roll pinned toolchain versions
 on:
   schedule:
     - cron: '29 12 * * *'
+  workflow_dispatch:
 
 permissions: read-all
 
