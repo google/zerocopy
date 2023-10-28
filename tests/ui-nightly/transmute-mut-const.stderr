@@ -1,4 +1,4 @@
-error: taking a mutable reference to a `const` item
+warning: taking a mutable reference to a `const` item
   --> tests/ui-nightly/transmute-mut-const.rs:20:52
    |
 20 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
@@ -11,8 +11,7 @@ note: `const` item defined here
    |
 17 | const ARRAY_OF_U8S: [u8; 2] = [0u8; 2];
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   = note: `-D const-item-mutation` implied by `-D warnings`
-   = help: to override `-D warnings` add `#[allow(const_item_mutation)]`
+   = note: `#[warn(const_item_mutation)]` on by default
 
 error[E0658]: mutable references are not allowed in constants
   --> tests/ui-nightly/transmute-mut-const.rs:20:52
