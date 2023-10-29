@@ -221,7 +221,7 @@
 #![cfg_attr(feature = "simd-nightly", feature(stdsimd))]
 #![cfg_attr(
     __INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS,
-    feature(layout_for_ptr, pointer_byte_offsets, strict_provenance)
+    feature(layout_for_ptr, strict_provenance)
 )]
 #[macro_use]
 mod macros;
