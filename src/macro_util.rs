@@ -153,6 +153,66 @@ macro_rules! assert_size_eq {
     }};
 }
 
+/// Transmutes a reference of one type to a reference of another type.
+///
+/// # Safety
+///
+/// The caller must guarantee that:
+/// - `Src: AsBytes`
+/// - `Dst: FromBytes`
+/// - `size_of::<Src>() == size_of::<Dst>()`
+/// - `align_of::<Src>() >= align_of::<Dst>()`
+#[inline(always)]
+pub const unsafe fn transmute_ref<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
+    src: &'src Src,
+) -> &'dst Dst {
+    let src: *const Src = src;
+    let dst = src.cast::<Dst>();
+    // SAFETY:
+    // - We know that it is sound to view the target type of the input reference
+    //   (`Src`) as the target type of the output reference (`Dst`) because the
+    //   caller has guaranteed that `Src: AsBytes`, `Dst: FromBytes`, and
+    //   `size_of::<Src>() == size_of::<Dst>()`.
+    // - We know that there are no `UnsafeCell`s, and thus we don't have to
+    //   worry about `UnsafeCell` overlap, because `Src: AsBytes` and `Dst:
+    //   FromBytes` both forbid `UnsafeCell`s.
+    // - The caller has guaranteed that alignment is not increased.
+    // - We know that the returned lifetime will not outlive the input lifetime
+    //   thanks to the lifetime bounds on this function.
+    unsafe { &*dst }
+}
+
+/// Transmutes a mutable reference of one type to a mutable reference of another
+/// type.
+///
+/// # Safety
+///
+/// The caller must guarantee that:
+/// - `Src: FromBytes + AsBytes`
+/// - `Dst: FromBytes + AsBytes`
+/// - `size_of::<Src>() == size_of::<Dst>()`
+/// - `align_of::<Src>() >= align_of::<Dst>()`
+#[inline(always)]
+pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
+    src: &'src mut Src,
+) -> &'dst mut Dst {
+    let src: *mut Src = src;
+    let dst = src.cast::<Dst>();
+    // SAFETY:
+    // - We know that it is sound to view the target type of the input reference
+    //   (`Src`) as the target type of the output reference (`Dst`) and
+    //   vice-versa because the caller has guaranteed that `Src: FromBytes +
+    //   AsBytes`, `Dst: FromBytes + AsBytes`, and `size_of::<Src>() ==
+    //   size_of::<Dst>()`.
+    // - We know that there are no `UnsafeCell`s, and thus we don't have to
+    //   worry about `UnsafeCell` overlap, because `Src: FromBytes + AsBytes`
+    //   and `Dst: FromBytes + AsBytes` forbid `UnsafeCell`s.
+    // - The caller has guaranteed that alignment is not increased.
+    // - We know that the returned lifetime will not outlive the input lifetime
+    //   thanks to the lifetime bounds on this function.
+    unsafe { &mut *dst }
+}
+
 pub mod core_reexport {
     pub mod mem {
         pub use core::mem::transmute;

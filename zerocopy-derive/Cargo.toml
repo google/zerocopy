@@ -7,14 +7,14 @@
 # those terms.
 
 [package]
-edition = "2021"
+edition = "2018"
 name = "zerocopy-derive"
-version = "0.7.18"
+version = "0.7.19"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Custom derive for traits from the zerocopy crate"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"
-rust-version = "1.61.0"
+rust-version = "1.60.0"
 
 exclude = [".*"]
 

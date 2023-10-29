@@ -1,30 +1,15 @@
 error[E0308]: mismatched types
-  --> tests/ui-stable/transmute-mut-src-dst-not-references.rs:17:44
+  --> tests/ui-stable/transmute-mut-src-dst-not-references.rs:17:59
    |
 17 | const SRC_DST_NOT_REFERENCES: &mut usize = transmute_mut!(0usize);
-   |                                            ^^^^^^^^^^^^^^^^^^^^^^
-   |                                            |
-   |                                            expected `&mut _`, found `usize`
-   |                                            arguments to this function are incorrect
+   |                                            ---------------^^^^^^-
+   |                                            |              |
+   |                                            |              expected `&mut _`, found `usize`
+   |                                            expected due to this
    |
    = note: expected mutable reference `&mut _`
                            found type `usize`
-note: function defined here
-  --> tests/ui-stable/transmute-mut-src-dst-not-references.rs:17:44
+help: consider mutably borrowing here
    |
-17 | const SRC_DST_NOT_REFERENCES: &mut usize = transmute_mut!(0usize);
-   |                                            ^^^^^^^^^^^^^^^^^^^^^^
-   = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0308]: mismatched types
-  --> tests/ui-stable/transmute-mut-src-dst-not-references.rs:17:44
-   |
-17 | const SRC_DST_NOT_REFERENCES: &mut usize = transmute_mut!(0usize);
-   |                                            ^^^^^^^^^^^^^^^------^
-   |                                            |              |
-   |                                            |              expected due to this value
-   |                                            expected `usize`, found `&mut _`
-   |
-   = note:           expected type `usize`
-           found mutable reference `&mut _`
-   = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+17 | const SRC_DST_NOT_REFERENCES: &mut usize = transmute_mut!(&mut 0usize);
+   |                                                           ++++

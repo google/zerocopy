@@ -2007,10 +2007,14 @@ macro_rules! transmute {
             // This branch, though never taken, ensures that the type of `e` is
             // `AsBytes` and that the type of this macro invocation expression
             // is `FromBytes`.
-            const fn transmute<T: $crate::AsBytes, U: $crate::FromBytes>(_t: T) -> U {
-                loop {}
-            }
-            transmute(e)
+
+            struct AssertIsAsBytes<T: $crate::AsBytes>(T);
+            let _ = AssertIsAsBytes(e);
+
+            struct AssertIsFromBytes<U: $crate::FromBytes>(U);
+            #[allow(unused, unreachable_code)]
+            let u = AssertIsFromBytes(loop {});
+            u.0
         } else {
             // SAFETY: `core::mem::transmute` ensures that the type of `e` and
             // the type of this macro invocation expression have the same size.
@@ -2080,11 +2084,9 @@ macro_rules! transmute_ref {
         // because there's no way, in a generic context, to enforce that two
         // types have the same size or alignment.
 
-        // Reborrow so that mutable references are supported too.
-        //
-        // In the rest of the comments, we refer only to `&T` since this
-        // reborrow ensures that `e` is an immutable reference.
-        let e = &*$e;
+        // Ensure that the source type is a reference or a mutable reference
+        // (note that mutable references are implicitly reborrowed here).
+        let e: &_ = $e;
 
         #[allow(unused, clippy::diverging_sub_expression)]
         if false {
@@ -2092,10 +2094,14 @@ macro_rules! transmute_ref {
             // `&T` where `T: 't + Sized + AsBytes`, that the type of this macro
             // expression is `&U` where `U: 'u + Sized + FromBytes`, and that
             // `'t` outlives `'u`.
-            const fn transmute<'u, 't: 'u, T: 't + Sized + $crate::AsBytes, U: 'u + Sized + $crate::FromBytes>(_t: &'t T) -> &'u U {
-                loop {}
-            }
-            transmute(e)
+
+            struct AssertIsAsBytes<'a, T: ::core::marker::Sized + $crate::AsBytes>(&'a T);
+            let _ = AssertIsAsBytes(e);
+
+            struct AssertIsFromBytes<'a, U: ::core::marker::Sized + $crate::FromBytes>(&'a U);
+            #[allow(unused, unreachable_code)]
+            let u = AssertIsFromBytes(loop {});
+            u.0
         } else if false {
             // This branch, though never taken, ensures that `size_of::<T>() ==
             // size_of::<U>()` and that that `align_of::<T>() >=
@@ -2115,32 +2121,14 @@ macro_rules! transmute_ref {
 
             &u
         } else {
-            // SAFETY:
-            // - We know that the input and output types are both `Sized` (ie,
-            //   thin) references thanks to the trait bounds on `transmute`
-            //   above, and thanks to the fact that transmute takes and returns
-            //   references.
-            // - We know that it is sound to view the target type of the input
-            //   reference (`T`) as the target type of the output reference
-            //   (`U`) because `T: AsBytes` and `U: FromBytes` (guaranteed by
-            //   trait bounds on `transmute`) and because `size_of::<T>() ==
-            //   size_of::<U>()` (guaranteed by the `assert_size_eq` above).
-            // - We know that alignment is not increased thanks to the
-            //   `assert_align_gt_eq` above.
-            //
-            // We use this reexport of `core::mem::transmute` because we know it
-            // will always be available for crates which are using the 2015
-            // edition of Rust. By contrast, if we were to use
-            // `std::mem::transmute`, this macro would not work for such crates
-            // in `no_std` contexts, and if we were to use
-            // `core::mem::transmute`, this macro would not work in `std`
-            // contexts in which `core` was not manually imported. This is not a
-            // problem for 2018 edition crates.
-            unsafe {
-                // Clippy: It's okay to transmute a type to itself.
-                #[allow(clippy::useless_transmute)]
-                $crate::macro_util::core_reexport::mem::transmute(e)
-            }
+            // SAFETY: For source type `Src` and destination type `Dst`:
+            // - We know that `Src: AsBytes` and `Dst: FromBytes` thanks to the
+            //   uses of `AssertIsAsBytes` and `AssertIsFromBytes` above.
+            // - We know that `size_of::<Src>() == size_of::<Dst>()` thanks to
+            //   the use of `assert_size_eq!` above.
+            // - We know that `align_of::<Src>() >= align_of::<Dst>()` thanks to
+            //   the use of `assert_align_gt_eq!` above.
+            unsafe { $crate::macro_util::transmute_ref(e) }
         }
     }}
 }
@@ -2191,22 +2179,41 @@ macro_rules! transmute_mut {
         // because there's no way, in a generic context, to enforce that two
         // types have the same size or alignment.
 
-        let e = $e;
+        // Ensure that the source type is a mutable reference.
+        let e: &mut _ = $e;
 
         #[allow(unused, clippy::diverging_sub_expression)]
         if false {
             // This branch, though never taken, ensures that the type of `e` is
-            // `&mut T` where `T: 't + Sized + AsBytes + FromBytes`, that the
+            // `&mut T` where `T: 't + Sized + FromBytes + AsBytes`, that the
             // type of this macro expression is `&mut U` where `U: 'u + Sized +
-            // AsBytes + FromBytes`.
-            fn transmute<'t, T, U>(_t: &'t mut T) -> &'t mut U
-            where
-                T: 't + Sized + $crate::AsBytes + $crate::FromBytes,
-                U: 't + Sized + $crate::AsBytes + $crate::FromBytes,
-            {
-                loop {}
+            // FromBytes + AsBytes`.
+
+            // We use immutable references here rather than mutable so that, if
+            // this macro is used in a const context (in which, as of this
+            // writing, mutable references are banned), the error message
+            // appears to originate in the user's code rather than in the
+            // internals of this macro.
+            struct AssertSrcIsFromBytes<'a, T: ::core::marker::Sized + $crate::FromBytes>(&'a T);
+            struct AssertSrcIsAsBytes<'a, T: ::core::marker::Sized + $crate::AsBytes>(&'a T);
+            struct AssertDstIsFromBytes<'a, T: ::core::marker::Sized + $crate::FromBytes>(&'a T);
+            struct AssertDstIsAsBytes<'a, T: ::core::marker::Sized + $crate::AsBytes>(&'a T);
+
+            if true {
+                let _ = AssertSrcIsFromBytes(&*e);
+            } else {
+                let _ = AssertSrcIsAsBytes(&*e);
             }
-            transmute(e)
+
+            if true {
+                #[allow(unused, unreachable_code)]
+                let u = AssertDstIsFromBytes(loop {});
+                &mut *u.0
+            } else {
+                #[allow(unused, unreachable_code)]
+                let u = AssertDstIsAsBytes(loop {});
+                &mut *u.0
+            }
         } else if false {
             // This branch, though never taken, ensures that `size_of::<T>() ==
             // size_of::<U>()` and that that `align_of::<T>() >=
@@ -2226,33 +2233,16 @@ macro_rules! transmute_mut {
 
             &mut u
         } else {
-            // SAFETY:
-            // - We know that the input and output types are both `Sized` (ie,
-            //   thin) references thanks to the trait bounds on `transmute`
-            //   above, and thanks to the fact that transmute takes and returns
-            //   references.
-            // - We know that it is sound to view the target type of the input
-            //   reference (`T`) as the target type of the output reference
-            //   (`U`) and visa versa because `T: AsBytes + FromBytes` and `U:
-            //   AsBytes + FromBytes` (guaranteed by trait bounds on
-            //   `transmute`) and because `size_of::<T>() == size_of::<U>()`
-            //   (guaranteed by the `assert_size_eq` above).
-            // - We know that alignment is not increased thanks to the
-            //   `assert_align_gt_eq` above.
-            //
-            // We use this reexport of `core::mem::transmute` because we know it
-            // will always be available for crates which are using the 2015
-            // edition of Rust. By contrast, if we were to use
-            // `std::mem::transmute`, this macro would not work for such crates
-            // in `no_std` contexts, and if we were to use
-            // `core::mem::transmute`, this macro would not work in `std`
-            // contexts in which `core` was not manually imported. This is not a
-            // problem for 2018 edition crates.
-            unsafe {
-                // Clippy: It's okay to transmute a type to itself.
-                #[allow(clippy::useless_transmute)]
-                $crate::macro_util::core_reexport::mem::transmute(e)
-            }
+            // SAFETY: For source type `Src` and destination type `Dst`:
+            // - We know that `Src: FromBytes + AsBytes` and `Dst: FromBytes +
+            //   AsBytes` thanks to the uses of `AssertSrcIsFromBytes`,
+            //   `AssertSrcIsAsBytes`, `AssertDstIsFromBytes`, and
+            //   `AssertDstIsAsBytes` above.
+            // - We know that `size_of::<Src>() == size_of::<Dst>()` thanks to
+            //   the use of `assert_size_eq!` above.
+            // - We know that `align_of::<Src>() >= align_of::<Dst>()` thanks to
+            //   the use of `assert_align_gt_eq!` above.
+            unsafe { $crate::macro_util::transmute_mut(e) }
         }
     }}
 }
@@ -3479,6 +3469,8 @@ mod alloc_support {
 
     #[cfg(test)]
     mod tests {
+        use core::convert::TryFrom as _;
+
         use super::*;
 
         #[test]
@@ -3654,7 +3646,7 @@ pub use alloc_support::*;
 mod tests {
     #![allow(clippy::unreadable_literal)]
 
-    use core::ops::Deref;
+    use core::{convert::TryInto as _, ops::Deref};
 
     use static_assertions::assert_impl_all;
 
@@ -4424,6 +4416,7 @@ mod tests {
                 panic!("PanicOnDrop::drop");
             }
         }
+        #[allow(clippy::let_unit_value)]
         let _: () = transmute!(PanicOnDrop(()));
 
         // Test that `transmute!` is legal in a const context.
