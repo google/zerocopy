@@ -1930,8 +1930,8 @@ mod simd {
                             // target/feature combinations don't emit any impls
                             // and thus don't use this macro.
     macro_rules! simd_arch_mod {
-        ($arch:ident, $($typ:ident),*) => {
-            mod $arch {
+        ($arch:ident, $mod:ident, $($typ:ident),*) => {
+            mod $mod {
                 use core::arch::$arch::{$($typ),*};
 
                 use crate::*;
@@ -1946,13 +1946,18 @@ mod simd {
     }
 
     #[cfg(target_arch = "x86")]
-    simd_arch_mod!(x86, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
+    simd_arch_mod!(x86, x86, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
+    #[cfg(all(feature = "simd-nightly", target_arch = "x86"))]
+    simd_arch_mod!(x86, x86_nightly, __m512bh, __m512, __m512d, __m512i);
     #[cfg(target_arch = "x86_64")]
-    simd_arch_mod!(x86_64, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
+    simd_arch_mod!(x86_64, x86_64, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
+    #[cfg(all(feature = "simd-nightly", target_arch = "x86_64"))]
+    simd_arch_mod!(x86_64, x86_64_nightly, __m512bh, __m512, __m512d, __m512i);
     #[cfg(target_arch = "wasm32")]
-    simd_arch_mod!(wasm32, v128);
+    simd_arch_mod!(wasm32, wasm32, v128);
     #[cfg(all(feature = "simd-nightly", target_arch = "powerpc"))]
     simd_arch_mod!(
+        powerpc,
         powerpc,
         vector_bool_long,
         vector_double,
@@ -1962,6 +1967,7 @@ mod simd {
     #[cfg(all(feature = "simd-nightly", target_arch = "powerpc64"))]
     simd_arch_mod!(
         powerpc64,
+        powerpc64,
         vector_bool_long,
         vector_double,
         vector_signed_long,
@@ -1970,7 +1976,7 @@ mod simd {
     #[cfg(target_arch = "aarch64")]
     #[rustfmt::skip]
     simd_arch_mod!(
-        aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,
+        aarch64, aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,
         int8x8x3_t, int8x8x4_t, int8x16_t, int8x16x2_t, int8x16x3_t, int8x16x4_t, int16x4_t,
         int16x8_t, int32x2_t, int32x4_t, int64x1_t, int64x2_t, poly8x8_t, poly8x8x2_t, poly8x8x3_t,
         poly8x8x4_t, poly8x16_t, poly8x16x2_t, poly8x16x3_t, poly8x16x4_t, poly16x4_t, poly16x8_t,
@@ -1980,7 +1986,7 @@ mod simd {
     );
     #[cfg(all(feature = "simd-nightly", target_arch = "arm"))]
     #[rustfmt::skip]
-    simd_arch_mod!(arm, int8x4_t, uint8x4_t);
+    simd_arch_mod!(arm, arm, int8x4_t, uint8x4_t);
 }
 
 /// Safely transmutes a value of one type to a value of another type of the same
@@ -5380,8 +5386,14 @@ mod tests {
             #[cfg(target_arch = "x86")]
             test_simd_arch_mod!(x86, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
 
+            #[cfg(all(feature = "simd-nightly", target_arch = "x86"))]
+            test_simd_arch_mod!(x86, __m512bh, __m512, __m512d, __m512i);
+
             #[cfg(target_arch = "x86_64")]
             test_simd_arch_mod!(x86_64, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
+
+            #[cfg(all(feature = "simd-nightly", target_arch = "x86_64"))]
+            test_simd_arch_mod!(x86_64, __m512bh, __m512, __m512d, __m512i);
 
             #[cfg(target_arch = "wasm32")]
             test_simd_arch_mod!(wasm32, v128);
