@@ -167,6 +167,10 @@
     unused_qualifications,
     variant_size_differences
 )]
+#![cfg_attr(
+    __INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS,
+    deny(fuzzy_provenance_casts, lossy_provenance_casts)
+)]
 #![deny(
     clippy::all,
     clippy::alloc_instead_of_core,
