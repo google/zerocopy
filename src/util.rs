@@ -464,10 +464,11 @@ impl<'a, T: ?Sized> AsAddress for &'a mut T {
 impl<T: ?Sized> AsAddress for *const T {
     #[inline(always)]
     fn addr(self) -> usize {
-        // TODO(https://github.com/rust-lang/rust/issues/95228): Use `.addr()`
-        // instead of `as usize` once it's stable, and get rid of this `allow`.
-        // Currently, `as usize` is the only way to accomplish this.
+        // TODO(#181), TODO(https://github.com/rust-lang/rust/issues/95228): Use
+        // `.addr()` instead of `as usize` once it's stable, and get rid of this
+        // `allow`. Currently, `as usize` is the only way to accomplish this.
         #[allow(clippy::as_conversions)]
+        #[cfg_attr(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS, allow(lossy_provenance_casts))]
         return self.cast::<()>() as usize;
     }
 }
