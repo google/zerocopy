@@ -601,6 +601,15 @@ pub(crate) mod testutil {
             Display::fmt(&self.0, f)
         }
     }
+
+    #[derive(
+        FromZeroes, FromBytes, Eq, PartialEq, Ord, PartialOrd, Default, Debug, Copy, Clone,
+    )]
+    #[repr(C)]
+    pub(crate) struct Nested<T, U: ?Sized> {
+        _t: T,
+        _u: U,
+    }
 }
 
 #[cfg(test)]
