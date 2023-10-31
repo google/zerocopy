@@ -63,6 +63,19 @@ function get-rustflags {
   [ "$1" == nightly ] && echo "--cfg __INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS"
 }
 
+function prompt {
+  PROMPT="$1"
+  YES="$2"
+  while true; do
+    read -p "$PROMPT " yn
+    case "$yn" in
+      [Yy]) $YES; return $?; ;;
+      [Nn])       return 1;  ;;
+      *)          break;     ;;
+    esac
+  done
+}
+
 case "$1" in
   # cargo.sh --version <toolchain-name>
   --version)
@@ -81,6 +94,17 @@ case "$1" in
   # cargo.sh +<toolchain-name> [...]
   +*)
     TOOLCHAIN="$(lookup-version ${1:1})"
+
+    cargo "+$TOOLCHAIN" version &>/dev/null && \
+    rustup "+$TOOLCHAIN" component list | grep '^rust-src (installed)$' >/dev/null || {
+      echo "[cargo.sh] missing either toolchain '$TOOLCHAIN' or component 'rust-src'" >&2
+      # If we're running in a GitHub action, then it's better to bail than to
+      # hang waiting for input we're never going to get.
+      [ -z ${GITHUB_RUN_ID+x} ] || exit 1
+      prompt "[cargo.sh] would you like to install toolchain '$TOOLCHAIN' and component 'rust-src' via 'rustup'?" \
+        "rustup toolchain install $TOOLCHAIN -c rust-src"
+    } || exit 1
+
     RUSTFLAGS="$(get-rustflags ${1:1}) $RUSTFLAGS" cargo "+$TOOLCHAIN" ${@:2}
     ;;
   *)
