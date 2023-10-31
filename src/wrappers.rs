@@ -471,8 +471,9 @@ mod tests {
             // Make sure that `deref_unchecked` is `const`.
             //
             // SAFETY: The `Align<_, AU64>` guarantees proper alignment.
-            let au64 = unsafe { x.t.deref_unchecked() };
-            match au64 {
+            let _au64 = unsafe { x.t.deref_unchecked() };
+            #[cfg(zerocopy_panic_in_const_fn)]
+            match _au64 {
                 AU64(123) => {}
                 _ => unreachable!(),
             }

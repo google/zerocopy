@@ -393,10 +393,7 @@ impl DstLayout {
         // sound to initialize `size_info` to `SizeInfo::Sized { size }`; the
         // `size` field is also correct by construction.
         DstLayout {
-            _align: match NonZeroUsize::new(mem::align_of::<T>()) {
-                Some(align) => align,
-                None => unreachable!(),
-            },
+            _align: util::_nonzero_align_of::<T>(),
             _size_info: SizeInfo::Sized { _size: mem::size_of::<T>() },
         }
     }
@@ -406,6 +403,8 @@ impl DstLayout {
     /// # Safety
     ///
     /// Unsafe code may assume that `DstLayout` is the correct layout for `[T]`.
+    #[doc(hidden)]
+    #[inline]
     const fn for_slice<T>() -> DstLayout {
         // SAFETY: The alignment of a slice is equal to the alignment of its
         // element type, and so `align` is initialized correctly.
@@ -416,10 +415,7 @@ impl DstLayout {
         // construction. Since `[T]` is a (degenerate case of a) slice DST, it
         // is correct to initialize `size_info` to `SizeInfo::SliceDst`.
         DstLayout {
-            _align: match NonZeroUsize::new(mem::align_of::<T>()) {
-                Some(align) => align,
-                None => unreachable!(),
-            },
+            _align: util::_nonzero_align_of::<T>(),
             _size_info: SizeInfo::SliceDst(TrailingSliceLayout {
                 _offset: 0,
                 _elem_size: mem::size_of::<T>(),
@@ -427,212 +423,222 @@ impl DstLayout {
         }
     }
 
-    /// Validates that a cast is sound from a layout perspective.
-    ///
-    /// Validates that the size and alignment requirements of a type with the
-    /// layout described in `self` would not be violated by performing a
-    /// `cast_type` cast from a pointer with address `addr` which refers to a
-    /// memory region of size `bytes_len`.
-    ///
-    /// If the cast is valid, `validate_cast_and_convert_metadata` returns
-    /// `(elems, split_at)`. If `self` describes a dynamically-sized type, then
-    /// `elems` is the maximum number of trailing slice elements for which a
-    /// cast would be valid (for sized types, `elem` is meaningless and should
-    /// be ignored). `split_at` is the index at which to split the memory region
-    /// in order for the prefix (suffix) to contain the result of the cast, and
-    /// in order for the remaining suffix (prefix) to contain the leftover
-    /// bytes.
-    ///
-    /// There are three conditions under which a cast can fail:
-    /// - The smallest possible value for the type is larger than the provided
-    ///   memory region
-    /// - A prefix cast is requested, and `addr` does not satisfy `self`'s
-    ///   alignment requirement
-    /// - A suffix cast is requested, and `addr + bytes_len` does not satisfy
-    ///   `self`'s alignment requirement (as a consequence, since all instances
-    ///   of the type are a multiple of its alignment, no size for the type will
-    ///   result in a starting address which is properly aligned)
-    ///
-    /// # Safety
-    ///
-    /// The caller may assume that this implementation is correct, and may rely
-    /// on that assumption for the soundness of their code. In particular, the
-    /// caller may assume that, if `validate_cast_and_convert_metadata` returns
-    /// `Some((elems, split_at))`, then:
-    /// - A pointer to the type (for dynamically sized types, this includes
-    ///   `elems` as its pointer metadata) describes an object of size `size <=
-    ///   bytes_len`
-    /// - If this is a prefix cast:
-    ///   - `addr` satisfies `self`'s alignment
-    ///   - `size == split_at`
-    /// - If this is a suffix cast:
-    ///   - `split_at == bytes_len - size`
-    ///   - `addr + split_at` satisfies `self`'s alignment
-    ///
-    /// Note that this method does *not* ensure that a pointer constructed from
-    /// its return values will be a valid pointer. In particular, this method
-    /// does not reason about `isize` overflow, which is a requirement of many
-    /// Rust pointer APIs, and may at some point be determined to be a validity
-    /// invariant of pointer types themselves. This should never be a problem so
-    /// long as the arguments to this method are derived from a known-valid
-    /// pointer (e.g., one derived from a safe Rust reference), but it is
-    /// nonetheless the caller's responsibility to justify that pointer
-    /// arithmetic will not overflow based on a safety argument *other than* the
-    /// mere fact that this method returned successfully.
-    ///
-    /// # Panics
-    ///
-    /// `validate_cast_and_convert_metadata` will panic if `self` describes a
-    /// DST whose trailing slice element is zero-sized.
-    ///
-    /// If `addr + bytes_len` overflows `usize`,
-    /// `validate_cast_and_convert_metadata` may panic, or it may return
-    /// incorrect results. No guarantees are made about when
-    /// `validate_cast_and_convert_metadata` will panic. The caller should not
-    /// rely on `validate_cast_and_convert_metadata` panicking in any particular
-    /// condition, even if `debug_assertions` are enabled.
-    const fn _validate_cast_and_convert_metadata(
-        &self,
-        addr: usize,
-        bytes_len: usize,
-        cast_type: _CastType,
-    ) -> Option<(usize, usize)> {
-        // `debug_assert!`, but with `#[allow(clippy::arithmetic_side_effects)]`.
-        macro_rules! __debug_assert {
-            ($e:expr $(, $msg:expr)?) => {
-                debug_assert!({
-                    #[allow(clippy::arithmetic_side_effects)]
-                    let e = $e;
-                    e
-                } $(, $msg)?);
-            };
-        }
+    maybe_const_panicking_fn! {
+        /// Validates that a cast is sound from a layout perspective.
+        ///
+        /// Validates that the size and alignment requirements of a type with
+        /// the layout described in `self` would not be violated by performing a
+        /// `cast_type` cast from a pointer with address `addr` which refers to
+        /// a memory region of size `bytes_len`.
+        ///
+        /// If the cast is valid, `validate_cast_and_convert_metadata` returns
+        /// `(elems, split_at)`. If `self` describes a dynamically-sized type,
+        /// then `elems` is the maximum number of trailing slice elements for
+        /// which a cast would be valid (for sized types, `elem` is meaningless
+        /// and should be ignored). `split_at` is the index at which to split
+        /// the memory region in order for the prefix (suffix) to contain the
+        /// result of the cast, and in order for the remaining suffix (prefix)
+        /// to contain the leftover bytes.
+        ///
+        /// There are three conditions under which a cast can fail:
+        /// - The smallest possible value for the type is larger than the
+        ///   provided memory region
+        /// - A prefix cast is requested, and `addr` does not satisfy `self`'s
+        ///   alignment requirement
+        /// - A suffix cast is requested, and `addr + bytes_len` does not
+        ///   satisfy `self`'s alignment requirement (as a consequence, since
+        ///   all instances of the type are a multiple of its alignment, no size
+        ///   for the type will result in a starting address which is properly
+        ///   aligned)
+        ///
+        /// # Safety
+        ///
+        /// The caller may assume that this implementation is correct, and may
+        /// rely on that assumption for the soundness of their code. In
+        /// particular, the caller may assume that, if
+        /// `validate_cast_and_convert_metadata` returns `Some((elems,
+        /// split_at))`, then:
+        /// - A pointer to the type (for dynamically sized types, this includes
+        ///   `elems` as its pointer metadata) describes an object of size `size
+        ///   <= bytes_len`
+        /// - If this is a prefix cast:
+        ///   - `addr` satisfies `self`'s alignment
+        ///   - `size == split_at`
+        /// - If this is a suffix cast:
+        ///   - `split_at == bytes_len - size`
+        ///   - `addr + split_at` satisfies `self`'s alignment
+        ///
+        /// Note that this method does *not* ensure that a pointer constructed
+        /// from its return values will be a valid pointer. In particular, this
+        /// method does not reason about `isize` overflow, which is a
+        /// requirement of many Rust pointer APIs, and may at some point be
+        /// determined to be a validity invariant of pointer types themselves.
+        /// This should never be a problem so long as the arguments to this
+        /// method are derived from a known-valid pointer (e.g., one derived
+        /// from a safe Rust reference), but it is nonetheless the caller's
+        /// responsibility to justify that pointer arithmetic will not overflow
+        /// based on a safety argument *other than* the mere fact that this
+        /// method returned successfully.
+        ///
+        /// # Panics
+        ///
+        /// `validate_cast_and_convert_metadata` will panic if `self` describes
+        /// a DST whose trailing slice element is zero-sized.
+        ///
+        /// If `addr + bytes_len` overflows `usize`,
+        /// `validate_cast_and_convert_metadata` may panic, or it may return
+        /// incorrect results. No guarantees are made about when
+        /// `validate_cast_and_convert_metadata` will panic. The caller should
+        /// not rely on `validate_cast_and_convert_metadata` panicking in any
+        /// particular condition, even if `debug_assertions` are enabled.
+        #[doc(hidden)]
+        #[inline]
+        const fn _validate_cast_and_convert_metadata(
+            &self,
+            addr: usize,
+            bytes_len: usize,
+            cast_type: _CastType,
+        ) -> Option<(usize, usize)> {
+            // `debug_assert!`, but with
+            // `#[allow(clippy::arithmetic_side_effects)]`.
+            macro_rules! __debug_assert {
+                ($e:expr $(, $msg:expr)?) => {
+                    debug_assert!({
+                        #[allow(clippy::arithmetic_side_effects)]
+                        let e = $e;
+                        e
+                    } $(, $msg)?);
+                };
+            }
 
-        // Note that, in practice, `self` is always a compile-time constant. We
-        // do this check earlier than needed to ensure that we always panic as a
-        // result of bugs in the program (such as calling this function on an
-        // invalid type) instead of allowing this panic to be hidden if the cast
-        // would have failed anyway for runtime reasons (such as a too-small
-        // memory region).
-        //
-        // TODO(#67): Once our MSRV is 1.65, use let-else:
-        // https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html#let-else-statements
-        let size_info = match self._size_info._try_to_nonzero_elem_size() {
-            Some(size_info) => size_info,
-            None => panic!("attempted to cast to slice type with zero-sized element"),
-        };
-
-        // Precondition
-        __debug_assert!(addr.checked_add(bytes_len).is_some(), "`addr` + `bytes_len` > usize::MAX");
-
-        // Alignment checks go in their own block to avoid introducing variables
-        // into the top-level scope.
-        {
-            // We check alignment for `addr` (for prefix casts) or `addr +
-            // bytes_len` (for suffix casts). For a prefix cast, the correctness
-            // of this check is trivial - `addr` is the address the object will
-            // live at.
+            // Note that, in practice, `self` is always a compile-time constant.
+            // We do this check earlier than needed to ensure that we always
+            // panic as a result of bugs in the program (such as calling this
+            // function on an invalid type) instead of allowing this panic to be
+            // hidden if the cast would have failed anyway for runtime reasons
+            // (such as a too-small memory region).
             //
-            // For a suffix cast, we know that all valid sizes for the type are
-            // a multiple of the alignment (and by safety precondition, we know
-            // `DstLayout` may only describe valid Rust types). Thus, a
-            // validly-sized instance which lives at a validly-aligned address
-            // must also end at a validly-aligned address. Thus, if the end
-            // address for a suffix cast (`addr + bytes_len`) is not aligned,
-            // then no valid start address will be aligned either.
-            let offset = match cast_type {
-                _CastType::_Prefix => 0,
-                _CastType::_Suffix => bytes_len,
+            // TODO(#67): Once our MSRV is 1.65, use let-else:
+            // https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html#let-else-statements
+            let size_info = match self._size_info._try_to_nonzero_elem_size() {
+                Some(size_info) => size_info,
+                None => panic!("attempted to cast to slice type with zero-sized element"),
             };
 
-            // Addition is guaranteed not to overflow because `offset <=
-            // bytes_len`, and `addr + bytes_len <= usize::MAX` is a
-            // precondition of this method. Modulus is guaranteed not to divide
-            // by 0 because `align` is non-zero.
-            #[allow(clippy::arithmetic_side_effects)]
-            if (addr + offset) % self._align.get() != 0 {
-                return None;
-            }
-        }
+            // Precondition
+            __debug_assert!(addr.checked_add(bytes_len).is_some(), "`addr` + `bytes_len` > usize::MAX");
 
-        let (elems, self_bytes) = match size_info {
-            SizeInfo::Sized { _size: size } => {
-                if size > bytes_len {
-                    return None;
-                }
-                (0, size)
-            }
-            SizeInfo::SliceDst(TrailingSliceLayout { _offset: offset, _elem_size: elem_size }) => {
-                // Calculate the maximum number of bytes that could be consumed
-                // - any number of bytes larger than this will either not be a
-                // multiple of the alignment, or will be larger than
-                // `bytes_len`.
-                let max_total_bytes =
-                    util::_round_down_to_next_multiple_of_alignment(bytes_len, self._align);
-                // Calculate the maximum number of bytes that could be consumed
-                // by the trailing slice.
+            // Alignment checks go in their own block to avoid introducing
+            // variables into the top-level scope.
+            {
+                // We check alignment for `addr` (for prefix casts) or `addr +
+                // bytes_len` (for suffix casts). For a prefix cast, the
+                // correctness of this check is trivial - `addr` is the address
+                // the object will live at.
                 //
-                // TODO(#67): Once our MSRV is 1.65, use let-else:
-                // https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html#let-else-statements
-                let max_slice_and_padding_bytes = match max_total_bytes.checked_sub(offset) {
-                    Some(max) => max,
-                    // `bytes_len` too small even for 0 trailing slice elements.
-                    None => return None,
+                // For a suffix cast, we know that all valid sizes for the type
+                // are a multiple of the alignment (and by safety precondition,
+                // we know `DstLayout` may only describe valid Rust types).
+                // Thus, a validly-sized instance which lives at a
+                // validly-aligned address must also end at a validly-aligned
+                // address. Thus, if the end address for a suffix cast (`addr +
+                // bytes_len`) is not aligned, then no valid start address will
+                // be aligned either.
+                let offset = match cast_type {
+                    _CastType::_Prefix => 0,
+                    _CastType::_Suffix => bytes_len,
                 };
 
-                // Calculate the number of elements that fit in
-                // `max_slice_and_padding_bytes`; any remaining bytes will be
-                // considered padding.
-                //
-                // Guaranteed not to divide by zero: `elem_size` is non-zero.
+                // Addition is guaranteed not to overflow because `offset <=
+                // bytes_len`, and `addr + bytes_len <= usize::MAX` is a
+                // precondition of this method. Modulus is guaranteed not to
+                // divide by 0 because `align` is non-zero.
                 #[allow(clippy::arithmetic_side_effects)]
-                let elems = max_slice_and_padding_bytes / elem_size.get();
-                // Guaranteed not to overflow on multiplication: `usize::MAX >=
-                // max_slice_and_padding_bytes >= (max_slice_and_padding_bytes /
-                // elem_size) * elem_size`.
-                //
-                // Guaranteed not to overflow on addition:
-                // - max_slice_and_padding_bytes == max_total_bytes - offset
-                // - elems * elem_size <= max_slice_and_padding_bytes == max_total_bytes - offset
-                // - elems * elem_size + offset <= max_total_bytes <= usize::MAX
-                #[allow(clippy::arithmetic_side_effects)]
-                let without_padding = offset + elems * elem_size.get();
-                // `self_bytes` is equal to the offset bytes plus the bytes
-                // consumed by the trailing slice plus any padding bytes
-                // required to satisfy the alignment. Note that we have computed
-                // the maximum number of trailing slice elements that could fit
-                // in `self_bytes`, so any padding is guaranteed to be less than
-                // the size of an extra element.
-                //
-                // Guaranteed not to overflow:
-                // - By previous comment: without_padding == elems * elem_size +
-                //   offset <= max_total_bytes
-                // - By construction, `max_total_bytes` is a multiple of
-                //   `self._align`.
-                // - At most, adding padding needed to round `without_padding`
-                //   up to the next multiple of the alignment will bring
-                //   `self_bytes` up to `max_total_bytes`.
-                #[allow(clippy::arithmetic_side_effects)]
-                let self_bytes = without_padding
-                    + util::core_layout::_padding_needed_for(without_padding, self._align);
-                (elems, self_bytes)
+                if (addr + offset) % self._align.get() != 0 {
+                    return None;
+                }
             }
-        };
 
-        __debug_assert!(self_bytes <= bytes_len);
+            let (elems, self_bytes) = match size_info {
+                SizeInfo::Sized { _size: size } => {
+                    if size > bytes_len {
+                        return None;
+                    }
+                    (0, size)
+                }
+                SizeInfo::SliceDst(TrailingSliceLayout { _offset: offset, _elem_size: elem_size }) => {
+                    // Calculate the maximum number of bytes that could be
+                    // consumed - any number of bytes larger than this will
+                    // either not be a multiple of the alignment, or will be
+                    // larger than `bytes_len`.
+                    let max_total_bytes =
+                        util::_round_down_to_next_multiple_of_alignment(bytes_len, self._align);
+                    // Calculate the maximum number of bytes that could be
+                    // consumed by the trailing slice.
+                    //
+                    // TODO(#67): Once our MSRV is 1.65, use let-else:
+                    // https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html#let-else-statements
+                    let max_slice_and_padding_bytes = match max_total_bytes.checked_sub(offset) {
+                        Some(max) => max,
+                        // `bytes_len` too small even for 0 trailing slice elements.
+                        None => return None,
+                    };
 
-        let split_at = match cast_type {
-            _CastType::_Prefix => self_bytes,
-            // Guaranteed not to underflow:
-            // - In the `Sized` branch, only returns `size` if `size <=
-            //   bytes_len`.
-            // - In the `SliceDst` branch, calculates `self_bytes <=
-            //   max_toatl_bytes`, which is upper-bounded by `bytes_len`.
-            #[allow(clippy::arithmetic_side_effects)]
-            _CastType::_Suffix => bytes_len - self_bytes,
-        };
+                    // Calculate the number of elements that fit in
+                    // `max_slice_and_padding_bytes`; any remaining bytes will be
+                    // considered padding.
+                    //
+                    // Guaranteed not to divide by zero: `elem_size` is non-zero.
+                    #[allow(clippy::arithmetic_side_effects)]
+                    let elems = max_slice_and_padding_bytes / elem_size.get();
+                    // Guaranteed not to overflow on multiplication: `usize::MAX
+                    // >= max_slice_and_padding_bytes >=
+                    // (max_slice_and_padding_bytes / elem_size) * elem_size`.
+                    //
+                    // Guaranteed not to overflow on addition:
+                    // - max_slice_and_padding_bytes == max_total_bytes - offset
+                    // - elems * elem_size <= max_slice_and_padding_bytes == max_total_bytes - offset
+                    // - elems * elem_size + offset <= max_total_bytes <= usize::MAX
+                    #[allow(clippy::arithmetic_side_effects)]
+                    let without_padding = offset + elems * elem_size.get();
+                    // `self_bytes` is equal to the offset bytes plus the bytes
+                    // consumed by the trailing slice plus any padding bytes
+                    // required to satisfy the alignment. Note that we have
+                    // computed the maximum number of trailing slice elements
+                    // that could fit in `self_bytes`, so any padding is
+                    // guaranteed to be less than the size of an extra element.
+                    //
+                    // Guaranteed not to overflow:
+                    // - By previous comment: without_padding == elems *
+                    //   elem_size + offset <= max_total_bytes
+                    // - By construction, `max_total_bytes` is a multiple of
+                    //   `self._align`.
+                    // - At most, adding padding needed to round
+                    //   `without_padding` up to the next multiple of the
+                    //   alignment will bring `self_bytes` up to
+                    //   `max_total_bytes`.
+                    #[allow(clippy::arithmetic_side_effects)]
+                    let self_bytes = without_padding
+                        + util::core_layout::_padding_needed_for(without_padding, self._align);
+                    (elems, self_bytes)
+                }
+            };
 
-        Some((elems, split_at))
+            __debug_assert!(self_bytes <= bytes_len);
+
+            let split_at = match cast_type {
+                _CastType::_Prefix => self_bytes,
+                // Guaranteed not to underflow:
+                // - In the `Sized` branch, only returns `size` if `size <=
+                //   bytes_len`.
+                // - In the `SliceDst` branch, calculates `self_bytes <=
+                //   max_toatl_bytes`, which is upper-bounded by `bytes_len`.
+                #[allow(clippy::arithmetic_side_effects)]
+                _CastType::_Suffix => bytes_len - self_bytes,
+            };
+
+            Some((elems, split_at))
+        }
     }
 }
 
@@ -3774,7 +3780,8 @@ mod tests {
 
                     assert_matches::assert_matches!(
                         actual, $expect,
-                        "layout({size_info:?}, {align}).validate_cast_and_convert_metadata({addr}, {bytes_len}, {cast_type:?})",
+                        "layout({:?}, {}).validate_cast_and_convert_metadata({}, {}, {:?})",
+                        size_info, align, addr, bytes_len, cast_type
                     );
                 });
             };
@@ -3869,7 +3876,8 @@ mod tests {
             {
                 let (size_info, align) = (layout._size_info, layout._align);
                 let debug_str = format!(
-                    "layout({size_info:?}, {align}).validate_cast_and_convert_metadata({addr}, {bytes_len}, {cast_type:?}) => ({elems}, {split_at})",
+                    "layout({:?}, {}).validate_cast_and_convert_metadata({}, {}, {:?}) => ({}, {})",
+                    size_info, align, addr, bytes_len, cast_type, elems, split_at
                 );
 
                 // If this is a sized type (no trailing slice), then `elems` is
@@ -4450,7 +4458,11 @@ mod tests {
         const ARRAY_OF_U8S: [u8; 8] = [0u8, 1, 2, 3, 4, 5, 6, 7];
         const ARRAY_OF_ARRAYS: [[u8; 2]; 4] = [[0, 1], [2, 3], [4, 5], [6, 7]];
         #[allow(clippy::redundant_static_lifetimes)]
+        #[cfg(zerocopy_panic_in_const_fn)]
         const X: &'static [[u8; 2]; 4] = transmute_ref!(&ARRAY_OF_U8S);
+        #[allow(clippy::redundant_static_lifetimes, non_snake_case)]
+        #[cfg(not(zerocopy_panic_in_const_fn))]
+        let X: &'static [[u8; 2]; 4] = transmute_ref!(&ARRAY_OF_U8S);
         assert_eq!(*X, ARRAY_OF_ARRAYS);
 
         // Test that it's legal to transmute a reference while shrinking the

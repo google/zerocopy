@@ -9,12 +9,12 @@
 [package]
 edition = "2018"
 name = "zerocopy-derive"
-version = "0.7.21"
+version = "0.8.0-alpha"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Custom derive for traits from the zerocopy crate"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"
-rust-version = "1.60.0"
+rust-version = "1.56.0"
 
 exclude = [".*"]
 
@@ -34,4 +34,4 @@ testutil = { path = "../testutil" }
 # sometimes change the output format slightly, so a version mismatch can cause
 # CI test failures.
 trybuild = { version = "=1.0.85", features = ["diff"] }
-zerocopy = { path = "../", features = ["default", "derive"] }
+zerocopy = { path = "../", features = ["derive"] }

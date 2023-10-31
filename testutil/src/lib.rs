@@ -40,10 +40,10 @@ impl PinnedVersions {
             .ok_or("failed to find msrv: no `rust-version` key present")?
             .to_string();
         let extract = |version_name, key| -> Result<String, String> {
-            let value = pkg.metadata.pointer(&format!("/ci/{key}")).ok_or_else(|| {
-                format!("failed to find {version_name}: no `metadata.ci.{key}` key present")
+            let value = pkg.metadata.pointer(&format!("/ci/{}", key)).ok_or_else(|| {
+                format!("failed to find {}: no `metadata.ci.{}` key present", version_name, key)
             })?;
-            value.as_str().map(str::to_string).ok_or_else(|| format!("failed to find {version_name}: key `metadata.ci.{key}` (contents: {value:?}) failed to parse as JSON string"))
+            value.as_str().map(str::to_string).ok_or_else(|| format!("failed to find {}: key `metadata.ci.{}` (contents: {:?}) failed to parse as JSON string", version_name, key, value))
         };
         let stable = extract("stable", "pinned-stable")?;
         let nightly = extract("nightly", "pinned-nightly")?;
@@ -85,7 +85,7 @@ impl ToolchainVersion {
             }
             Channel::Stable => {
                 let Version { major, minor, patch, .. } = current.semver;
-                format!("{major}.{minor}.{patch}")
+                format!("{}.{}.{}", major, minor, patch)
             }
         };
 
@@ -116,7 +116,8 @@ impl ToolchainVersion {
             _ if current.channel == Channel::Nightly => ToolchainVersion::OtherNightly,
             _ => {
                 return Err(format!(
-                    "current toolchain ({current:?}) doesn't match any known version"
+                    "current toolchain ({:?}) doesn't match any known version",
+                    current
                 )
                 .into())
             }

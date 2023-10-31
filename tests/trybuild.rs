@@ -17,7 +17,7 @@ fn ui() {
     let source_files_dirname = version.get_ui_source_files_dirname_and_maybe_print_warning();
 
     let t = trybuild::TestCases::new();
-    t.compile_fail(format!("tests/{source_files_dirname}/*.rs"));
+    t.compile_fail(format!("tests/{}/*.rs", source_files_dirname));
 }
 
 // The file `invalid-impls.rs` directly includes `src/macros.rs` in order to
@@ -37,5 +37,5 @@ fn ui_invalid_impls() {
     let source_files_dirname = version.get_ui_source_files_dirname_and_maybe_print_warning();
 
     let t = trybuild::TestCases::new();
-    t.compile_fail(format!("tests/{source_files_dirname}/invalid-impls/*.rs"));
+    t.compile_fail(format!("tests/{}/invalid-impls/*.rs", source_files_dirname));
 }

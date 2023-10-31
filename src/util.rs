@@ -313,7 +313,7 @@ pub(crate) mod ptr {
 
             // - If `size_of::<T>() == 0`, `N == 4`
             // - Else, `N == 4 * size_of::<T>()`
-            fn test<const N: usize, T: ?Sized + KnownLayout + FromBytes>() {
+            fn test<T: ?Sized + KnownLayout + FromBytes, const N: usize>() {
                 let mut bytes = [MaybeUninit::<u8>::uninit(); N];
                 let initialized = [MaybeUninit::new(0u8); N];
                 for start in 0..=bytes.len() {
@@ -421,11 +421,11 @@ pub(crate) mod ptr {
                 $({
                     const S: usize = core::mem::size_of::<$ty>();
                     const N: usize = if S == 0 { 4 } else { S * 4 };
-                    test::<N, $ty>();
+                    test::<$ty, N>();
                     // We don't support casting into DSTs whose trailing slice
                     // element is a ZST.
                     if S > 0 {
-                        test::<N, [$ty]>();
+                        test::<[$ty], N>();
                     }
                     // TODO: Test with a slice DST once we have any that
                     // implement `KnownLayout + FromBytes`.
@@ -504,12 +504,40 @@ pub(crate) const fn _round_down_to_next_multiple_of_alignment(
     align: NonZeroUsize,
 ) -> usize {
     let align = align.get();
+    #[cfg(zerocopy_panic_in_const_fn)]
     debug_assert!(align.is_power_of_two());
 
     // Subtraction can't underflow because `align.get() >= 1`.
     #[allow(clippy::arithmetic_side_effects)]
     let mask = !(align - 1);
     n & mask
+}
+
+/// Returns the alignment of `T` as a [`NonZeroUsize`].
+#[inline(always)]
+pub(crate) const fn _nonzero_align_of<T>() -> NonZeroUsize {
+    match NonZeroUsize::new(mem::align_of::<T>()) {
+        Some(align) => align,
+        None => {
+            #[cfg(zerocopy_panic_in_const_fn)]
+            unreachable!();
+            // SAFETY: `mem::align_of` returns the alignment of `T`, which is
+            // guaranteed to be non-zero. [1] Since `unaligned_unchecked` is not
+            // const-stable as of our MSRV, we use `mem::transmute(0usize)` as a
+            // stand-in.
+            //
+            // [1] Per
+            // https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
+            //
+            //   Alignment is measured in bytes, and must be at least 1, and
+            //   always a power of 2.
+            #[cfg(not(zerocopy_panic_in_const_fn))]
+            #[allow(invalid_value)]
+            unsafe {
+                mem::transmute(0usize)
+            }
+        }
+    }
 }
 
 /// Since we support multiple versions of Rust, there are often features which
@@ -628,7 +656,7 @@ mod tests {
                 let align = NonZeroUsize::new(align).unwrap();
                 let want = alt_impl(n, align);
                 let got = _round_down_to_next_multiple_of_alignment(n, align);
-                assert_eq!(got, want, "round_down_to_next_multiple_of_alignment({n}, {align})");
+                assert_eq!(got, want, "round_down_to_next_multiple_of_alignment({}, {})", n, align);
             }
         }
     }

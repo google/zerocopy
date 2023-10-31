@@ -95,7 +95,7 @@ macro_rules! unsafe_impl {
         $($tyvar:ident $(: $(? $optbound:ident +)* + $($bound:ident +)* )?,)*
         => $trait:ident for $ty:ty
     ) => {
-        unsafe impl<$(const $constname: $constty,)* $($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> $trait for $ty {
+        unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),* $(, const $constname: $constty,)*> $trait for $ty {
             #[allow(clippy::missing_inline_in_public_items)]
             fn only_derive_is_allowed_to_implement_this_trait() {}
         }
@@ -212,7 +212,7 @@ macro_rules! impl_known_layout {
             use core::ptr::NonNull;
 
             // SAFETY: Delegates safety to `DstLayout::for_type`.
-            unsafe impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> KnownLayout for $ty {
+            unsafe impl<$($tyvar $(: ?$optbound)?)? $(, const $constvar : $constty)?> KnownLayout for $ty {
                 #[allow(clippy::missing_inline_in_public_items)]
                 fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
 
@@ -285,5 +285,15 @@ macro_rules! assert_unaligned {
     };
     ($($ty:ty),*) => {
         $(assert_unaligned!($ty);)*
+    };
+}
+
+macro_rules! maybe_const_panicking_fn {
+    ($(#[$attr:meta])* $vis:vis const fn $name:ident($(&$self:ident)? $(,)? $($args:ident: $arg_tys:ty),* $(,)?) $(-> $ret_ty:ty)? $body:block) => {
+        #[cfg(zerocopy_panic_in_const_fn)]
+        $(#[$attr])* $vis const fn $name($(&$self,)? $($args: $arg_tys),*) $(-> $ret_ty)? $body
+
+        #[cfg(not(zerocopy_panic_in_const_fn))]
+        $(#[$attr])* $vis fn $name($(&$self,)? $($args: $arg_tys),*) $(-> $ret_ty)? $body
     };
 }

@@ -38,6 +38,7 @@ pub(crate) const fn _padding_needed_for(len: usize, align: NonZeroUsize) -> usiz
     // the allocator to yield an error anyway.)
 
     let align = align.get();
+    #[cfg(zerocopy_panic_in_const_fn)]
     debug_assert!(align.is_power_of_two());
     let len_rounded_up = len.wrapping_add(align).wrapping_sub(1) & !align.wrapping_sub(1);
     len_rounded_up.wrapping_sub(len)
