@@ -223,6 +223,7 @@
 ))]
 #![cfg_attr(not(test), no_std)]
 #![cfg_attr(feature = "simd-nightly", feature(stdsimd))]
+#![cfg_attr(doc_cfg, feature(doc_cfg))]
 #![cfg_attr(
     __INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS,
     feature(layout_for_ptr, strict_provenance)
@@ -231,6 +232,7 @@
 mod macros;
 
 #[cfg(feature = "byteorder")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "byteorder")))]
 pub mod byteorder;
 #[doc(hidden)]
 pub mod macro_util;
@@ -239,9 +241,11 @@ mod util;
 mod wrappers;
 
 #[cfg(feature = "byteorder")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "byteorder")))]
 pub use crate::byteorder::*;
 pub use crate::wrappers::*;
 #[cfg(any(feature = "derive", test))]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::*;
 
 use core::{
@@ -818,6 +822,7 @@ safety_comment! {
 // TODO(#146): Document why we don't require an enum to have an explicit `repr`
 // attribute.
 #[cfg(any(feature = "derive", test))]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::FromZeroes;
 
 /// Types for which a sequence of bytes all set to zero represents a valid
@@ -1004,6 +1009,7 @@ pub unsafe trait FromZeroes {
     ///
     /// Panics if allocation of `size_of::<Self>()` bytes fails.
     #[cfg(feature = "alloc")]
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
     #[inline]
     fn new_box_zeroed() -> Box<Self>
     where
@@ -1051,6 +1057,7 @@ pub unsafe trait FromZeroes {
     /// * Panics if `size_of::<Self>() * len` overflows.
     /// * Panics if allocation of `size_of::<Self>() * len` bytes fails.
     #[cfg(feature = "alloc")]
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
     #[inline]
     fn new_box_slice_zeroed(len: usize) -> Box<[Self]>
     where
@@ -1117,6 +1124,7 @@ pub unsafe trait FromZeroes {
     /// * Panics if `size_of::<Self>() * len` overflows.
     /// * Panics if allocation of `size_of::<Self>() * len` bytes fails.
     #[cfg(feature = "alloc")]
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "new_vec_zeroed")))]
     #[inline(always)]
     fn new_vec_zeroed(len: usize) -> Vec<Self>
     where
@@ -3649,6 +3657,7 @@ mod alloc_support {
 }
 
 #[cfg(feature = "alloc")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
 #[doc(inline)]
 pub use alloc_support::*;
 
