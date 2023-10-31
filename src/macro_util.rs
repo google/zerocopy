@@ -205,6 +205,46 @@ macro_rules! trailing_field_offset {
     }};
 }
 
+/// Computes alignment of `$ty: ?Sized`.
+///
+/// `align_of!` produces code which is valid in a `const` context.
+// TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
+// `cfg` when `size_of_val_raw` is stabilized.
+#[cfg(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)]
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! align_of {
+    ($ty:ty) => {{
+        // SAFETY: `OffsetOfTrailingIsAlignment` is `repr(C)`, and its layout is
+        // guaranteed [1] to begin with the single-byte layout for `_byte`,
+        // followed by the padding needed to align `_trailing`, then the layout
+        // for `_trailing`, and finally any trailing padding bytes needed to
+        // correctly-align the entire struct.
+        //
+        // This macro computes the alignment of `$ty` by counting the number of
+        // bytes preceeding `_trailing`. For instance, if the alignment of `$ty`
+        // is `1`, then no padding is required align `_trailing` and it will be
+        // located immediately after `_byte` at offset 1. If the alignment of
+        // `$ty` is 2, then a single padding byte is required before
+        // `_trailing`, and `_trailing` will be located at offset 2.
+
+        // This correspondence between offset and alignment holds for all valid
+        // Rust alignments, and we confirm this exhaustively (or, at least up to
+        // the maximum alignment supported by `trailing_field_offset!`) in
+        // `test_align_of_dst`.
+        //
+        // [1]: https://doc.rust-lang.org/nomicon/other-reprs.html#reprc
+
+        #[repr(C)]
+        struct OffsetOfTrailingIsAlignment {
+            _byte: u8,
+            _trailing: $ty,
+        }
+
+        trailing_field_offset!(OffsetOfTrailingIsAlignment, _trailing)
+    }};
+}
+
 /// Does the struct type `$t` have padding?
 ///
 /// `$ts` is the list of the type of every field in `$t`. `$t` must be a
@@ -521,6 +561,47 @@ mod tests {
         test!(#[repr(C, align( 67108864))] (u8; elain::Align< 33554432>) => Some( 33554432));
         test!(#[repr(C, align( 33554432))] (u8; elain::Align<134217728>) => Some(134217728));
         test!(#[repr(C, align(134217728))] (u8; elain::Align<268435456>) => Some(268435456));
+        */
+    }
+
+    // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove
+    // this `cfg` when `size_of_val_raw` is stabilized.
+    #[allow(clippy::decimal_literal_representation)]
+    #[cfg(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)]
+    #[test]
+    fn test_align_of_dst() {
+        // Test that `align_of!` correctly computes the alignment of DSTs.
+        assert_eq!(align_of!([elain::Align<1>]), Some(1));
+        assert_eq!(align_of!([elain::Align<2>]), Some(2));
+        assert_eq!(align_of!([elain::Align<4>]), Some(4));
+        assert_eq!(align_of!([elain::Align<8>]), Some(8));
+        assert_eq!(align_of!([elain::Align<16>]), Some(16));
+        assert_eq!(align_of!([elain::Align<32>]), Some(32));
+        assert_eq!(align_of!([elain::Align<64>]), Some(64));
+        assert_eq!(align_of!([elain::Align<128>]), Some(128));
+        assert_eq!(align_of!([elain::Align<256>]), Some(256));
+        assert_eq!(align_of!([elain::Align<512>]), Some(512));
+        assert_eq!(align_of!([elain::Align<1024>]), Some(1024));
+        assert_eq!(align_of!([elain::Align<2048>]), Some(2048));
+        assert_eq!(align_of!([elain::Align<4096>]), Some(4096));
+        assert_eq!(align_of!([elain::Align<8192>]), Some(8192));
+        assert_eq!(align_of!([elain::Align<16384>]), Some(16384));
+        assert_eq!(align_of!([elain::Align<32768>]), Some(32768));
+        assert_eq!(align_of!([elain::Align<65536>]), Some(65536));
+        /* Alignments above 65536 are not yet supported.
+        assert_eq!(align_of!([elain::Align<131072>]), Some(131072));
+        assert_eq!(align_of!([elain::Align<262144>]), Some(262144));
+        assert_eq!(align_of!([elain::Align<524288>]), Some(524288));
+        assert_eq!(align_of!([elain::Align<1048576>]), Some(1048576));
+        assert_eq!(align_of!([elain::Align<2097152>]), Some(2097152));
+        assert_eq!(align_of!([elain::Align<4194304>]), Some(4194304));
+        assert_eq!(align_of!([elain::Align<8388608>]), Some(8388608));
+        assert_eq!(align_of!([elain::Align<16777216>]), Some(16777216));
+        assert_eq!(align_of!([elain::Align<33554432>]), Some(33554432));
+        assert_eq!(align_of!([elain::Align<67108864>]), Some(67108864));
+        assert_eq!(align_of!([elain::Align<33554432>]), Some(33554432));
+        assert_eq!(align_of!([elain::Align<134217728>]), Some(134217728));
+        assert_eq!(align_of!([elain::Align<268435456>]), Some(268435456));
         */
     }
 
