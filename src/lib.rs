@@ -244,9 +244,18 @@ mod wrappers;
 #[cfg_attr(doc_cfg, doc(cfg(feature = "byteorder")))]
 pub use crate::byteorder::*;
 pub use crate::wrappers::*;
+
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
-pub use zerocopy_derive::*;
+pub use zerocopy_derive::{AsBytes, FromBytes, Unaligned};
+
+// `pub use` separately here so that we can mark it `#[doc(hidden)]`.
+//
+// TODO(#29): Remove this or add a doc comment.
+#[cfg(any(feature = "derive", test))]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+#[doc(hidden)]
+pub use zerocopy_derive::KnownLayout;
 
 use core::{
     cell::{self, RefMut},
@@ -729,15 +738,6 @@ safety_comment! {
     unsafe_impl_known_layout!(#[repr([u8])] str);
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] ManuallyDrop<T>);
 }
-
-// Explicitly `pub use` here (overriding the preceding `pub use zerocopy_derive::*`)
-// so that we can mark it `#[doc(hidden)]`.
-//
-// TODO(#29): Remove this or add a doc comment.
-#[cfg(any(feature = "derive", test))]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
-#[doc(hidden)]
-pub use zerocopy_derive::KnownLayout;
 
 /// Analyzes whether a type is [`FromZeroes`].
 ///
