@@ -730,6 +730,15 @@ safety_comment! {
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] ManuallyDrop<T>);
 }
 
+// Explicitly `pub use` here (overriding the preceding `pub use zerocopy_derive::*`)
+// so that we can mark it `#[doc(hidden)]`.
+//
+// TODO(#29): Remove this or add a doc comment.
+#[cfg(any(feature = "derive", test))]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+#[doc(hidden)]
+pub use zerocopy_derive::KnownLayout;
+
 /// Analyzes whether a type is [`FromZeroes`].
 ///
 /// This derive analyzes, at compile time, whether the annotated type satisfies
