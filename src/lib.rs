@@ -703,6 +703,8 @@ impl_known_layout!(
     T: ?Sized => PhantomData<T>,
     T         => Wrapping<T>,
     T         => MaybeUninit<T>,
+    T: ?Sized => *const T,
+    T: ?Sized => *mut T,
 );
 impl_known_layout!(const N: usize, T => [T; N]);
 
@@ -1856,6 +1858,22 @@ safety_comment! {
     unsafe_impl!(T: FromBytes => FromBytes for [T]);
     unsafe_impl!(T: AsBytes => AsBytes for [T]);
     unsafe_impl!(T: Unaligned => Unaligned for [T]);
+}
+safety_comment! {
+    /// SAFETY:
+    /// - `FromZeroes`: For thin pointers (note that `T: Sized`), the zero
+    ///   pointer is considered "null". [1] No operations which require
+    ///   provenance are legal on null pointers, so this is not a footgun.
+    ///
+    /// NOTE(#170): Implementing `FromBytes` and `AsBytes` for raw pointers
+    /// would be sound, but carries provenance footguns. We want to support
+    /// `FromBytes` and `AsBytes` for raw pointers eventually, but we are
+    /// holding off until we can figure out how to address those footguns.
+    ///
+    /// [1] TODO(https://github.com/rust-lang/rust/pull/116988): Cite the
+    /// documentation once this PR lands.
+    unsafe_impl!(T => FromZeroes for *const T);
+    unsafe_impl!(T => FromZeroes for *mut T);
 }
 
 // SIMD support
@@ -5374,6 +5392,13 @@ mod tests {
         assert_impls!([NotZerocopy; 0]: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
         assert_impls!([u8; 1]: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!([NotZerocopy; 1]: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+
+        assert_impls!(*const NotZerocopy: KnownLayout, FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*mut NotZerocopy: KnownLayout, FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*const [NotZerocopy]: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*mut [NotZerocopy]: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*const dyn Debug: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*mut dyn Debug: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
         #[cfg(feature = "simd")]
         {
