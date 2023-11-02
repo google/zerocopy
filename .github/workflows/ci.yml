@@ -223,7 +223,11 @@ jobs:
       # --document-hidden-items is unstable; if a future release breaks or removes it,
       # we can just update CI to no longer pass that flag.
       run: |
-        export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items' || '' }} $RUSTDOCFLAGS"
+        # Include arguments passed during docs.rs deployments to make sure those
+        # work properly.
+        METADATA_DOCS_RS_RUSTDOC_ARGS="$(cargo metadata --format-version 1 | \
+          jq -r ".packages[] | select(.name == \"zerocopy\").metadata.docs.rs.\"rustdoc-args\".[]" | tr '\n' ' ')"
+        export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items' || '' }} $RUSTDOCFLAGS $METADATA_DOCS_RS_RUSTDOC_ARGS"
         ./cargo.sh +${{ matrix.toolchain }} doc --document-private-items --package ${{ matrix.crate }} ${{ matrix.features }}
       # When the `byteorder` feature is disabled, `cargo doc` fails because we
       # link to the `byteorder` module in doc comments. This isn't a big deal
