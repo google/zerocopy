@@ -398,7 +398,8 @@ pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
 }
 
 // NOTE: We can't change this to a `pub use core as core_reexport` until [1] is
-// fixed or we release a semver-breaking version (as of this writing, 0.8.0).
+// fixed or we update to a semver-breaking version (as of this writing, 0.8.0)
+// on the `main` branch.
 //
 // [1] https://github.com/obi1kenobi/cargo-semver-checks/issues/573
 pub mod core_reexport {
