@@ -1317,6 +1317,134 @@ pub unsafe trait FromBytes: FromZeroes {
         Ref::<&mut [u8], Self>::new_from_suffix(bytes).map(|(_, r)| r.into_mut())
     }
 
+    /// Interprets the given `bytes` as a `&[Self]` without copying.
+    ///
+    /// If `bytes.len() % size_of::<T>() != 0` or `bytes` is not aligned to
+    /// `align_of::<T>()`, this returns `None`.
+    ///
+    /// If you need to convert a specific number of slice elements, see
+    /// [`slice_from_prefix`](FromBytes::slice_from_prefix) or
+    /// [`slice_from_suffix`](FromBytes::slice_from_suffix).
+    ///
+    /// # Panics
+    ///
+    /// If `T` is a zero-sized type.
+    #[inline]
+    fn slice_from(bytes: &[u8]) -> Option<&[Self]>
+    where
+        Self: Sized,
+    {
+        Ref::<_, [Self]>::new_slice(bytes).map(|r| r.into_slice())
+    }
+
+    /// Interprets the prefix of the given `bytes` as a `&[Self]` with length
+    /// equal to `count` without copying.
+    ///
+    /// This method verifies that `bytes.len() >= size_of::<T>() * count`
+    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the
+    /// first `size_of::<T>() * count` bytes from `bytes` to construct a
+    /// `&[Self]`, and returns the remaining bytes to the caller. It also
+    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`.
+    /// If any of the length, alignment, or overflow checks fail, it returns
+    /// `None`.
+    ///
+    /// # Panics
+    ///
+    /// If `T` is a zero-sized type.
+    #[inline]
+    fn slice_from_prefix(bytes: &[u8], count: usize) -> Option<(&[Self], &[u8])>
+    where
+        Self: Sized,
+    {
+        Ref::<_, [Self]>::new_slice_from_prefix(bytes, count).map(|(r, b)| (r.into_slice(), b))
+    }
+
+    /// Interprets the suffix of the given `bytes` as a `&[Self]` with length
+    /// equal to `count` without copying.
+    ///
+    /// This method verifies that `bytes.len() >= size_of::<T>() * count`
+    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the
+    /// last `size_of::<T>() * count` bytes from `bytes` to construct a
+    /// `&[Self]`, and returns the preceding bytes to the caller. It also
+    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`.
+    /// If any of the length, alignment, or overflow checks fail, it returns
+    /// `None`.
+    ///
+    /// # Panics
+    ///
+    /// If `T` is a zero-sized type.
+    #[inline]
+    fn slice_from_suffix(bytes: &[u8], count: usize) -> Option<(&[u8], &[Self])>
+    where
+        Self: Sized,
+    {
+        Ref::<_, [Self]>::new_slice_from_suffix(bytes, count).map(|(b, r)| (b, r.into_slice()))
+    }
+
+    /// Interprets the given `bytes` as a `&mut [Self]` without copying.
+    ///
+    /// If `bytes.len() % size_of::<T>() != 0` or `bytes` is not aligned to
+    /// `align_of::<T>()`, this returns `None`.
+    ///
+    /// If you need to convert a specific number of slice elements, see
+    /// [`mut_slice_from_prefix`](FromBytes::mut_slice_from_prefix) or
+    /// [`mut_slice_from_suffix`](FromBytes::mut_slice_from_suffix).
+    ///
+    /// # Panics
+    ///
+    /// If `T` is a zero-sized type.
+    #[inline]
+    fn mut_slice_from(bytes: &mut [u8]) -> Option<&mut [Self]>
+    where
+        Self: Sized + AsBytes,
+    {
+        Ref::<_, [Self]>::new_slice(bytes).map(|r| r.into_mut_slice())
+    }
+
+    /// Interprets the prefix of the given `bytes` as a `&mut [Self]` with length
+    /// equal to `count` without copying.
+    ///
+    /// This method verifies that `bytes.len() >= size_of::<T>() * count`
+    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the
+    /// first `size_of::<T>() * count` bytes from `bytes` to construct a
+    /// `&[Self]`, and returns the remaining bytes to the caller. It also
+    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`.
+    /// If any of the length, alignment, or overflow checks fail, it returns
+    /// `None`.
+    ///
+    /// # Panics
+    ///
+    /// If `T` is a zero-sized type.
+    #[inline]
+    fn mut_slice_from_prefix(bytes: &mut [u8], count: usize) -> Option<(&mut [Self], &mut [u8])>
+    where
+        Self: Sized + AsBytes,
+    {
+        Ref::<_, [Self]>::new_slice_from_prefix(bytes, count).map(|(r, b)| (r.into_mut_slice(), b))
+    }
+
+    /// Interprets the suffix of the given `bytes` as a `&mut [Self]` with length
+    /// equal to `count` without copying.
+    ///
+    /// This method verifies that `bytes.len() >= size_of::<T>() * count`
+    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the
+    /// last `size_of::<T>() * count` bytes from `bytes` to construct a
+    /// `&[Self]`, and returns the preceding bytes to the caller. It also
+    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`.
+    /// If any of the length, alignment, or overflow checks fail, it returns
+    /// `None`.
+    ///
+    /// # Panics
+    ///
+    /// If `T` is a zero-sized type.
+    #[inline]
+    fn mut_slice_from_suffix(bytes: &mut [u8], count: usize) -> Option<(&mut [u8], &mut [Self])>
+    where
+        Self: Sized + AsBytes,
+    {
+        Ref::<_, [Self]>::new_slice_from_suffix(bytes, count).map(|(b, r)| (b, r.into_mut_slice()))
+    }
+
     /// Reads a copy of `Self` from `bytes`.
     ///
     /// If `bytes.len() != size_of::<Self>()`, `read_from` returns `None`.
