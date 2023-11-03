@@ -37,7 +37,14 @@ function print-usage-and-exit {
 [[ $# -gt 0 ]] || print-usage-and-exit
 
 function pkg-meta {
-  cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"zerocopy\").$1"
+  # NOTE(#547): We set `CARGO_TARGET_DIR` here because `cargo metadata`
+  # sometimes causes the `cargo-metadata` crate to be rebuilt from source using
+  # the default toolchain. This has the effect of clobbering any existing build
+  # artifacts from whatever toolchain the user has specified (e.g., `+nightly`),
+  # causing the subsequent `cargo` invocation to rebuild unnecessarily. By
+  # specifying a separate build directory here, we ensure that this never
+  # clobbers the build artifacts used by the later `cargo` invocation.
+  CARGO_TARGET_DIR=target/cargo-sh cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"zerocopy\").$1"
 }
 
 function lookup-version {
