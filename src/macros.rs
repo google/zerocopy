@@ -102,6 +102,52 @@ macro_rules! unsafe_impl {
     };
 }
 
+/// Implements a trait for a type, bounding on each memeber of the power set of
+/// a set of type variables. This is useful for implementing traits for tuples
+/// or `fn` types.
+///
+/// The last argument is the name of a macro which will be called in every
+/// `impl` block, and is expected to expand to the name of the type for which to
+/// implement the trait.
+///
+/// For example, the invocation:
+/// ```ignore
+/// unsafe_impl_for_power_set!(A, B => Foo for type!(...))
+/// ```
+/// ...expands to:
+/// ```ignore
+/// unsafe impl       Foo for type!()     { ... }
+/// unsafe impl<B>    Foo for type!(B)    { ... }
+/// unsafe impl<A, B> Foo for type!(A, B) { ... }
+/// ```
+macro_rules! unsafe_impl_for_power_set {
+    ($first:ident $(, $rest:ident)* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)) => {
+        unsafe_impl_for_power_set!($($rest),* $(-> $ret)? => $trait for $macro!(...));
+        unsafe_impl_for_power_set!(@impl $first $(, $rest)* $(-> $ret)? => $trait for $macro!(...));
+    };
+    ($(-> $ret:ident)? => $trait:ident for $macro:ident!(...)) => {
+        unsafe_impl_for_power_set!(@impl $(-> $ret)? => $trait for $macro!(...));
+    };
+    (@impl $($vars:ident),* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)) => {
+        unsafe impl<$($vars,)* $($ret)?> $trait for $macro!($($vars),* $(-> $ret)?) {
+            #[allow(clippy::missing_inline_in_public_items)]
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+    };
+}
+
+/// Expands to an `Option<extern "C" fn>` type with the given argument types and
+/// return type. Designed for use with `unsafe_impl_for_power_set`.
+macro_rules! opt_extern_c_fn {
+    ($($args:ident),* -> $ret:ident) => { Option<extern "C" fn($($args),*) -> $ret> };
+}
+
+/// Expands to a `Option<fn>` type with the given argument types and return
+/// type. Designed for use with `unsafe_impl_for_power_set`.
+macro_rules! opt_fn {
+    ($($args:ident),* -> $ret:ident) => { Option<fn($($args),*) -> $ret> };
+}
+
 /// Implements trait(s) for a type or verifies the given implementation by
 /// referencing an existing (derived) implementation.
 ///
