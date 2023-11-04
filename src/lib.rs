@@ -1882,6 +1882,37 @@ safety_comment! {
 
 safety_comment! {
     /// SAFETY:
+    /// The following types can be transmuted from `[0u8; size_of::<T>()]`. [1]
+    /// None of them contain `UnsafeCell`s, and so they all soundly implement
+    /// `FromZeroes`.
+    ///
+    /// [1] Per
+    /// https://doc.rust-lang.org/nightly/core/option/index.html#representation:
+    ///
+    ///   Rust guarantees to optimize the following types `T` such that
+    ///   [`Option<T>`] has the same size and alignment as `T`. In some of these
+    ///   cases, Rust further guarantees that `transmute::<_, Option<T>>([0u8;
+    ///   size_of::<T>()])` is sound and produces `Option::<T>::None`. These
+    ///   cases are identified by the second column:
+    ///
+    ///   | `T`                 | `transmute::<_, Option<T>>([0u8; size_of::<T>()])` sound? |
+    ///   |---------------------|-----------------------------------------------------------|
+    ///   | [`Box<U>`]          | when `U: Sized`                                           |
+    ///   | `&U`                | when `U: Sized`                                           |
+    ///   | `&mut U`            | when `U: Sized`                                           |
+    ///   | [`ptr::NonNull<U>`] | when `U: Sized`                                           |
+    ///
+    /// TODO(#429), TODO(https://github.com/rust-lang/rust/pull/115333): Cite
+    /// the Stable docs once they're available.
+    #[cfg(feature = "alloc")]
+    unsafe_impl!(T => FromZeroes for Option<Box<T>>);
+    unsafe_impl!(T => FromZeroes for Option<&'_ T>);
+    unsafe_impl!(T => FromZeroes for Option<&'_ mut T>);
+    unsafe_impl!(T => FromZeroes for Option<NonNull<T>>);
+}
+
+safety_comment! {
+    /// SAFETY:
     /// For all `T`, `PhantomData<T>` has size 0 and alignment 1. [1]
     /// - `FromZeroes`, `FromBytes`: There is only one possible sequence of 0
     ///   bytes, and `PhantomData` is inhabited.
@@ -3820,7 +3851,7 @@ pub use alloc_support::*;
 mod tests {
     #![allow(clippy::unreadable_literal)]
 
-    use core::{convert::TryInto as _, ops::Deref};
+    use core::{cell::UnsafeCell, convert::TryInto as _, ops::Deref};
 
     use static_assertions::assert_impl_all;
 
@@ -5514,6 +5545,16 @@ mod tests {
 
         // Implements none of the ZC traits.
         struct NotZerocopy;
+
+        #[cfg(feature = "alloc")]
+        assert_impls!(Option<Box<UnsafeCell<NotZerocopy>>>: KnownLayout, FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<Box<[UnsafeCell<NotZerocopy>]>>: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<&'static UnsafeCell<NotZerocopy>>: KnownLayout, FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<&'static [UnsafeCell<NotZerocopy>]>: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<&'static mut UnsafeCell<NotZerocopy>>: KnownLayout, FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<&'static mut [UnsafeCell<NotZerocopy>]>: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<NonNull<UnsafeCell<NotZerocopy>>>: KnownLayout, FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<NonNull<[UnsafeCell<NotZerocopy>]>>: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
         assert_impls!(PhantomData<NotZerocopy>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!(PhantomData<[u8]>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);

@@ -26,9 +26,9 @@
 /// The macro invocations are emitted, each decorated with the following
 /// attribute: `#[allow(clippy::undocumented_unsafe_blocks)]`.
 macro_rules! safety_comment {
-    (#[doc = r" SAFETY:"] $($(#[doc = $_doc:literal])* $macro:ident!$args:tt;)*) => {
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        const _: () = { $($macro!$args;)* };
+    (#[doc = r" SAFETY:"] $($(#[$attr:meta])* $macro:ident!$args:tt;)*) => {
+        #[allow(clippy::undocumented_unsafe_blocks, unused_attributes)]
+        const _: () = { $($(#[$attr])* $macro!$args;)* };
     }
 }
 
