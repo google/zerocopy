@@ -17,7 +17,7 @@ env:
   # `ZC_NIGHTLY_XXX` are flags that we add to `XXX` only on the nightly
   # toolchain.
   ZC_NIGHTLY_RUSTFLAGS: -Zrandomize-layout
-  ZC_NIGHTLY_MIRIFLAGS: "-Zmiri-symbolic-alignment-check -Zmiri-strict-provenance -Zmiri-backtrace=full"
+  ZC_NIGHTLY_MIRIFLAGS: "-Zmiri-strict-provenance -Zmiri-backtrace=full"
 
 jobs:
   build_test:
@@ -73,7 +73,7 @@ jobs:
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
       with:
         path: |
           ~/.cargo/
@@ -127,7 +127,7 @@ jobs:
           components: clippy, rust-src ${{ matrix.toolchain == 'nightly' && ', miri' || '' }}
 
     - name: Rust Cache
-      uses: Swatinem/rust-cache@a95ba195448af2da9b00fb742d14ffaaf3c21f43 # v2.7.0
+      uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8 # v2.7.1
       with:
         key: "${{ matrix.target }}"
 
@@ -160,7 +160,25 @@ jobs:
           ${{ matrix.features }} \
           --verbose \
           -- \
-          ${{ (matrix.features == '--no-default-features' || matrix.features == '') &&  '--skip ui' || '' }} \
+          --skip ui
+
+        if [ "${{ matrix.features }}" != "--no-default-features" -a "${{ matrix.features }}" != "" ]; then
+          # Run UI tests separately, treating warnings as warnings (rather than
+          # as errors, as we do everywhere else in our CI tests). This allows
+          # our UI tests to more accurately reflect what users will see, and
+          # also ensures that we're not spuriously relying on warnings being
+          # errors to ensure compilation failure (if we were, then our code
+          # would be unsound whenever -Dwarnings is not enabled).
+          #
+          # TODO(#560), TODO(#187): Once we migrate to the ui-test crate, we
+          # likely won't have to special-case the UI tests like this.
+          RUSTFLAGS="$RUSTFLAGS -Wwarnings" ./cargo.sh +${{ matrix.toolchain }} test \
+            --package ${{ matrix.crate }} \
+            --target ${{ matrix.target }} \
+            ${{ matrix.features }} \
+            --verbose \
+            ui
+        fi
 
       # Only run tests when targetting x86 (32- or 64-bit) - we're executing on
       # x86_64, so we can't run tests for any non-x86 target.
@@ -205,7 +223,11 @@ jobs:
       # --document-hidden-items is unstable; if a future release breaks or removes it,
       # we can just update CI to no longer pass that flag.
       run: |
-        export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items' || '' }} $RUSTDOCFLAGS"
+        # Include arguments passed during docs.rs deployments to make sure those
+        # work properly.
+        METADATA_DOCS_RS_RUSTDOC_ARGS="$(cargo metadata --format-version 1 | \
+          jq -r ".packages[] | select(.name == \"zerocopy\").metadata.docs.rs.\"rustdoc-args\".[]" | tr '\n' ' ')"
+        export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items' || '' }} $RUSTDOCFLAGS $METADATA_DOCS_RS_RUSTDOC_ARGS"
         ./cargo.sh +${{ matrix.toolchain }} doc --document-private-items --package ${{ matrix.crate }} ${{ matrix.features }}
       # When the `byteorder` feature is disabled, `cargo doc` fails because we
       # link to the `byteorder` module in doc comments. This isn't a big deal
@@ -223,7 +245,7 @@ jobs:
     # just duplicating work by running this job multiple times, each time
     # targetting the host platform.
     - name: Check semver compatibility
-      uses: obi1kenobi/cargo-semver-checks-action@v2
+      uses: obi1kenobi/cargo-semver-checks-action@e275dda72e250d4df5b564e969e1348d67fefa52 # v2.2
       with:
         # Don't semver check zerocopy-derive; as a proc macro, it doesn't have
         # an API that cargo-semver-checks can understand.
@@ -240,7 +262,7 @@ jobs:
     name: 'Run tests under Kani'
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: model-checking/kani-github-action@v1.0
+      - uses: model-checking/kani-github-action@e621a98d839036c62e96cd5fa33ac5d076729f94 # v1.0
         with:
           args: "--package zerocopy --all-features --output-format=terse --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
 
@@ -265,7 +287,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
         with:
           path: |
             ~/.cargo/
@@ -290,7 +312,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
         with:
           path: |
             ~/.cargo/
@@ -333,7 +355,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
         with:
           path: |
             ~/.cargo/
@@ -354,53 +376,56 @@ jobs:
           ver_zerocopy=$(version zerocopy)
           ver_zerocopy_derive=$(version zerocopy-derive)
 
-          # The non-dev dependency version (`.kind == null` filters out the dev
-          # dependency, and `.target == null` filters out the targeted version).
-          zerocopy_derive_dep_ver=$(cargo metadata --format-version 1 \
-            | jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select((.name == \"zerocopy-derive\") and .kind == null and .target == null).req")
+          # Usage: dependency-version <kind> <target>
+          function dependency-version {
+            KIND="$1"
+            TARGET="$2"
+            cargo metadata --format-version 1 \
+              | jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select((.name == \"zerocopy-derive\") and .kind == $KIND and .target == $TARGET).req"
+          }
 
-          # The non-dev dependency, targeted version.
-          zerocopy_derive_targeted_ver=$(cargo metadata --format-version 1 \
-            | jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select((.name == \"zerocopy-derive\") and .kind == null and .target == \"cfg(any())\").req")
+          # The non-dev dependency version (kind `null` filters out the dev
+          # dependency, and target `null` filters out the targeted version).
+          zerocopy_derive_dep_ver=$(dependency-version null null)
 
-          # The dev dependency version (`.kind == \"dev\"` selects only the dev
+          # The non-dev dependency, targeted version (kind `null` filters out
+          # the dev dependency).
+          zerocopy_derive_targeted_ver=$(dependency-version null '"cfg(any())"')
+
+          # The dev dependency version (kind `"dev"` selects only the dev
           # dependency).
-          zerocopy_derive_dev_dep_ver=$(cargo metadata --format-version 1 \
-            | jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select((.name == \"zerocopy-derive\") and .kind == \"dev\").req")
+          zerocopy_derive_dev_dep_ver=$(dependency-version '"dev"' null)
 
-          if [[ "$ver_zerocopy" == "$ver_zerocopy_derive" ]]; then
-            echo "Same crate version ($ver_zerocopy) found for zerocopy and zerocopy-derive." | tee -a $GITHUB_STEP_SUMMARY
-          else
-            echo "Different crate versions found for zerocopy ($ver_zerocopy) and zerocopy-derive ($ver_zerocopy_derive)." \
-              | tee -a $GITHUB_STEP_SUMMARY >&2
-            exit 1
-          fi
+          function assert-match {
+            VER_A="$1"
+            VER_B="$2"
+            SUCCESS_MSG="$3"
+            FAILURE_MSG="$4"
+            if [[ "$ver_zerocopy" == "$ver_zerocopy_derive" ]]; then
+              echo "$SUCCESS_MSG" | tee -a $GITHUB_STEP_SUMMARY
+            else
+              echo "$FAILURE_MSG" | tee -a $GITHUB_STEP_SUMMARY >&2
+              exit 1
+            fi
+          }
+
+          assert-match "$ver_zerocopy" "$ver_zerocopy_derive" \
+            "Same crate version ($ver_zerocopy) found for zerocopy and zerocopy-derive." \
+            "Different crate versions found for zerocopy ($ver_zerocopy) and zerocopy-derive ($ver_zerocopy_derive)."
 
           # Note the leading `=` sign - the dependency needs to be an exact one.
-          if [[ "=$ver_zerocopy_derive" == "$zerocopy_derive_dep_ver" ]]; then
-            echo "zerocopy depends upon same version of zerocopy-derive in-tree ($zerocopy_derive_dep_ver)." | tee -a $GITHUB_STEP_SUMMARY
-          else
-            echo "zerocopy depends upon different version of zerocopy-derive ($zerocopy_derive_dep_ver) than the one in-tree ($ver_zerocopy_derive)." \
-              | tee -a $GITHUB_STEP_SUMMARY >&2
-            exit 1
-          fi
+          assert-match "=$ver_zerocopy_derive" "$zerocopy_derive_dep_ver" \
+            "zerocopy depends upon same version of zerocopy-derive in-tree ($zerocopy_derive_dep_ver)." \
+            "zerocopy depends upon different version of zerocopy-derive ($zerocopy_derive_dep_ver) than the one in-tree ($ver_zerocopy_derive)."
 
-          if [[ "=$ver_zerocopy_derive" == "$zerocopy_derive_dev_dep_ver" ]]; then
-            echo "In dev mode, zerocopy depends upon same version of zerocopy-derive in-tree ($zerocopy_derive_dev_dep_ver)." | tee -a $GITHUB_STEP_SUMMARY
-          else
-            echo "In dev mode, zerocopy depends upon different version of zerocopy-derive ($zerocopy_derive_dev_dep_ver) than the one in-tree ($ver_zerocopy_derive)." \
-              | tee -a $GITHUB_STEP_SUMMARY >&2
-            exit 1
-          fi
+          # Note the leading `=` sign - the dependency needs to be an exact one.
+          assert-match "=$ver_zerocopy_derive" "$zerocopy_derive_dev_dep_ver" \
+            "In dev mode, zerocopy depends upon same version of zerocopy-derive in-tree ($zerocopy_derive_dev_dep_ver)." \
+            "In dev mode, zerocopy depends upon different version of zerocopy-derive ($zerocopy_derive_dev_dep_ver) than the one in-tree ($ver_zerocopy_derive)."
 
-          if [[ "$zerocopy_derive_dep_ver" == "$zerocopy_derive_targeted_ver" ]]; then
-            echo "Same crate version ($zerocopy_derive_dep_ver) found for optional and targeted zerocopy-derive dependency." \
-              | tee -a $GITHUB_STEP_SUMMARY
-          else
-            echo "Different crate versions found for optional ($zerocopy_derive_dep_ver) and targeted ($zerocopy_derive_targeted_ver) dependency." \
-              | tee -a $GITHUB_STEP_SUMMARY >&2
-            exit 1
-          fi
+          assert-match "$zerocopy_derive_dep_ver" "$zerocopy_derive_targeted_ver" \
+            "Same crate version ($zerocopy_derive_dep_ver) found for optional and targeted zerocopy-derive dependency." \
+            "Different crate versions found for optional ($zerocopy_derive_dep_ver) and targeted ($zerocopy_derive_targeted_ver) dependency."
 
   generate_cache:
     runs-on: ubuntu-latest
@@ -408,7 +433,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
         with:
           path: |
             ~/.cargo/

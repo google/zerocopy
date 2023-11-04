@@ -1,6 +1,10 @@
-// Copyright 2019 The Fuchsia Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// Copyright 2019 The Fuchsia Authors
+//
+// Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+// <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+// license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+// This file may not be copied, modified, or distributed except according to
+// those terms.
 
 //! Byte order-aware numeric primitives.
 //!
@@ -244,11 +248,13 @@ macro_rules! define_type {
         [$($larger_byteorder_try:ident),*]) => {
         doc_comment! {
             concat!("A ", stringify!($bits), "-bit ", $number_kind,
-            " stored in `O` byte order.
+            " stored in a given byte order.
 
 `", stringify!($name), "` is like the native `", stringify!($native), "` type with
 two major differences: First, it has no alignment requirement (its alignment is 1).
-Second, the endianness of its memory layout is given by the type parameter `O`.
+Second, the endianness of its memory layout is given by the type parameter `O`,
+which can be any type which implements [`ByteOrder`]. In particular, this refers
+to [`BigEndian`], [`LittleEndian`], [`NativeEndian`], and [`NetworkEndian`].
 
 ", stringify!($article), " `", stringify!($name), "` can be constructed using
 the [`new`] method, and its contained value can be obtained as a native
@@ -270,10 +276,13 @@ example of how it can be used for parsing UDP packets.
 [`AsBytes`]: crate::AsBytes
 [`Unaligned`]: crate::Unaligned"),
             #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-            #[cfg_attr(any(feature = "derive", test), derive(FromZeroes, FromBytes, AsBytes, Unaligned))]
+            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned))]
             #[repr(transparent)]
             pub struct $name<O>([u8; $bytes], PhantomData<O>);
         }
+
+        #[cfg(not(any(feature = "derive", test)))]
+        impl_known_layout!(O => $name<O>);
 
         safety_comment! {
             /// SAFETY:

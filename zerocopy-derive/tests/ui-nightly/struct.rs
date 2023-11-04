@@ -1,6 +1,10 @@
-// Copyright 2019 The Fuchsia Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// Copyright 2019 The Fuchsia Authors
+//
+// Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+// <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+// license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+// This file may not be copied, modified, or distributed except according to
+// those terms.
 
 #[macro_use]
 extern crate zerocopy;
@@ -8,9 +12,26 @@ extern crate zerocopy;
 #[path = "../util.rs"]
 mod util;
 
+use static_assertions::assert_impl_all;
+use zerocopy::KnownLayout;
+
 use self::util::AU16;
 
 fn main() {}
+
+//
+// KnownLayout errors
+//
+
+#[derive(KnownLayout)]
+struct KnownLayout1([u8]);
+
+assert_impl_all!(KnownLayout1: KnownLayout);
+
+#[derive(KnownLayout)]
+struct KnownLayout2<T: ?Sized>(T);
+
+assert_impl_all!(KnownLayout2<[u8]>: KnownLayout);
 
 //
 // AsBytes errors

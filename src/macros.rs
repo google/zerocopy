@@ -1,6 +1,10 @@
-// Copyright 2023 The Fuchsia Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// Copyright 2023 The Fuchsia Authors
+//
+// Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+// <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+// license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+// This file may not be copied, modified, or distributed except according to
+// those terms.
 
 /// Documents multiple unsafe blocks with a single safety comment.
 ///
@@ -22,9 +26,9 @@
 /// The macro invocations are emitted, each decorated with the following
 /// attribute: `#[allow(clippy::undocumented_unsafe_blocks)]`.
 macro_rules! safety_comment {
-    (#[doc = r" SAFETY:"] $($(#[doc = $_doc:literal])* $macro:ident!$args:tt;)*) => {
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        const _: () = { $($macro!$args;)* };
+    (#[doc = r" SAFETY:"] $($(#[$attr:meta])* $macro:ident!$args:tt;)*) => {
+        #[allow(clippy::undocumented_unsafe_blocks, unused_attributes)]
+        const _: () = { $($(#[$attr])* $macro!$args;)* };
     }
 }
 
@@ -204,11 +208,26 @@ macro_rules! impl_known_layout {
     };
     ($($ty:ty),*) => { $(impl_known_layout!(@inner , => $ty);)* };
     (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?)? => $ty:ty) => {
-        impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> sealed::KnownLayoutSealed for $ty {}
-        // SAFETY: Delegates safety to `DstLayout::for_type`.
-        unsafe impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> KnownLayout for $ty {
-            const LAYOUT: DstLayout = DstLayout::for_type::<$ty>();
-        }
+        const _: () = {
+            use core::ptr::NonNull;
+
+            // SAFETY: Delegates safety to `DstLayout::for_type`.
+            unsafe impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> KnownLayout for $ty {
+                #[allow(clippy::missing_inline_in_public_items)]
+                fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
+
+                const LAYOUT: DstLayout = DstLayout::for_type::<$ty>();
+
+                // SAFETY: `.cast` preserves address and provenance.
+                //
+                // TODO(#429): Add documentation to `.cast` that promises that
+                // it preserves provenance.
+                #[inline(always)]
+                fn raw_from_ptr_len(bytes: NonNull<u8>, _elems: usize) -> NonNull<Self> {
+                    bytes.cast::<Self>()
+                }
+            }
+        };
     };
 }
 
@@ -225,10 +244,30 @@ macro_rules! impl_known_layout {
 ///   and this operation must preserve referent size (ie, `size_of_val_raw`).
 macro_rules! unsafe_impl_known_layout {
     ($($tyvar:ident: ?Sized + KnownLayout =>)? #[repr($repr:ty)] $ty:ty) => {
-        impl<$($tyvar: ?Sized + KnownLayout)?> sealed::KnownLayoutSealed for $ty {}
-        unsafe impl<$($tyvar: ?Sized + KnownLayout)?> KnownLayout for $ty {
-            const LAYOUT: DstLayout = <$repr as KnownLayout>::LAYOUT;
-        }
+        const _: () = {
+            use core::ptr::NonNull;
+
+            unsafe impl<$($tyvar: ?Sized + KnownLayout)?> KnownLayout for $ty {
+                #[allow(clippy::missing_inline_in_public_items)]
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+
+                const LAYOUT: DstLayout = <$repr as KnownLayout>::LAYOUT;
+
+                // SAFETY: All operations preserve address and provenance.
+                // Caller has promised that the `as` cast preserves size.
+                //
+                // TODO(#429): Add documentation to `NonNull::new_unchecked`
+                // that it preserves provenance.
+                #[inline(always)]
+                #[allow(unused_qualifications)] // for `core::ptr::NonNull`
+                fn raw_from_ptr_len(bytes: NonNull<u8>, elems: usize) -> NonNull<Self> {
+                    #[allow(clippy::as_conversions)]
+                    let ptr = <$repr>::raw_from_ptr_len(bytes, elems).as_ptr() as *mut Self;
+                    // SAFETY: `ptr` was converted from `bytes`, which is non-null.
+                    unsafe { NonNull::new_unchecked(ptr) }
+                }
+            }
+        };
     };
 }
 

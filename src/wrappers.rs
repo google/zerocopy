@@ -1,6 +1,10 @@
-// Copyright 2023 The Fuchsia Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// Copyright 2023 The Fuchsia Authors
+//
+// Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+// <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+// license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+// This file may not be copied, modified, or distributed except according to
+// those terms.
 
 use core::{
     cmp::Ordering,
@@ -54,9 +58,15 @@ use super::*;
 // [3] https://github.com/google/zerocopy/issues/209
 #[allow(missing_debug_implementations)]
 #[derive(Default, Copy)]
-#[cfg_attr(any(feature = "derive", test), derive(FromZeroes, FromBytes, AsBytes, Unaligned))]
+#[cfg_attr(
+    any(feature = "derive", test),
+    derive(KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned)
+)]
 #[repr(C, packed)]
 pub struct Unalign<T>(T);
+
+#[cfg(not(any(feature = "derive", test)))]
+impl_known_layout!(T => Unalign<T>);
 
 safety_comment! {
     /// SAFETY:
@@ -268,17 +278,13 @@ impl<T> Unalign<T> {
 
         impl<T> Drop for WriteBackOnDrop<T> {
             fn drop(&mut self) {
-                // SAFETY: See inline comments.
-                unsafe {
-                    // SAFETY: We never use `copy` again as required by
-                    // `ManuallyDrop::take`.
-                    let copy = ManuallyDrop::take(&mut self.copy);
-                    // SAFETY: `slf` is the raw pointer value of `self`. We know
-                    // it is valid for writes and properly aligned because
-                    // `self` is a mutable reference, which guarantees both of
-                    // these properties.
-                    ptr::write(self.slf, Unalign::new(copy));
-                }
+                // SAFETY: We never use `copy` again as required by
+                // `ManuallyDrop::take`.
+                let copy = unsafe { ManuallyDrop::take(&mut self.copy) };
+                // SAFETY: `slf` is the raw pointer value of `self`. We know it
+                // is valid for writes and properly aligned because `self` is a
+                // mutable reference, which guarantees both of these properties.
+                unsafe { ptr::write(self.slf, Unalign::new(copy)) };
             }
         }
 

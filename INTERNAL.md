@@ -1,3 +1,11 @@
+<!-- Copyright 2022 The Fuchsia Authors
+
+Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+<LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+This file may not be copied, modified, or distributed except according to
+those terms. -->
+
 # Internal details
 
 This file documents various internal details of zerocopy and its infrastructure
@@ -18,8 +26,11 @@ have a working Miri, so we need to pin to one that does (see
 https://rust-lang.github.io/rustup-components-history/).
 
 Updating the versions pinned in CI may cause the UI tests to break. In order to
-fix UI tests after a version update, set the environment variable
-`TRYBUILD=overwrite` while running `cargo test`.
+fix UI tests after a version update, run:
+
+```
+$ TRYBUILD=overwrite ./cargo.sh +all test
+```
 
 ## Crate versions
 

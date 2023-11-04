@@ -1,8 +1,12 @@
 #!/bin/bash
 #
-# Copyright 2023 The Fuchsia Authors. All rights reserved.
-# Use of this source code is governed by a BSD-style license that can be
-# found in the LICENSE file.
+# Copyright 2023 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
 
 # This script is a thin wrapper around Cargo that provides human-friendly
 # toolchain names which are automatically translated to the toolchain versions
@@ -33,7 +37,14 @@ function print-usage-and-exit {
 [[ $# -gt 0 ]] || print-usage-and-exit
 
 function pkg-meta {
-  cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"zerocopy\").$1"
+  # NOTE(#547): We set `CARGO_TARGET_DIR` here because `cargo metadata`
+  # sometimes causes the `cargo-metadata` crate to be rebuilt from source using
+  # the default toolchain. This has the effect of clobbering any existing build
+  # artifacts from whatever toolchain the user has specified (e.g., `+nightly`),
+  # causing the subsequent `cargo` invocation to rebuild unnecessarily. By
+  # specifying a separate build directory here, we ensure that this never
+  # clobbers the build artifacts used by the later `cargo` invocation.
+  CARGO_TARGET_DIR=target/cargo-sh cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"zerocopy\").$1"
 }
 
 function lookup-version {
@@ -59,6 +70,19 @@ function get-rustflags {
   [ "$1" == nightly ] && echo "--cfg __INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS"
 }
 
+function prompt {
+  PROMPT="$1"
+  YES="$2"
+  while true; do
+    read -p "$PROMPT " yn
+    case "$yn" in
+      [Yy]) $YES; return $?; ;;
+      [Nn])       return 1;  ;;
+      *)          break;     ;;
+    esac
+  done
+}
+
 case "$1" in
   # cargo.sh --version <toolchain-name>
   --version)
@@ -70,15 +94,25 @@ case "$1" in
     echo "[cargo.sh] warning: running the same command for each toolchain (msrv, stable, nightly)" >&2
     for toolchain in msrv stable nightly; do
       echo "[cargo.sh] running with toolchain: $toolchain" >&2
-      TOOLCHAIN="$(lookup-version $toolchain)"
-      RUSTFLAGS="$(get-rustflags $toolchain)" cargo "+$TOOLCHAIN" ${@:2}
+      $0 "+$toolchain" ${@:2}
     done
     exit 0
     ;;
   # cargo.sh +<toolchain-name> [...]
   +*)
     TOOLCHAIN="$(lookup-version ${1:1})"
-    RUSTFLAGS="$(get-rustflags ${1:1})" cargo "+$TOOLCHAIN" ${@:2}
+
+    cargo "+$TOOLCHAIN" version &>/dev/null && \
+    rustup "+$TOOLCHAIN" component list | grep '^rust-src (installed)$' >/dev/null || {
+      echo "[cargo.sh] missing either toolchain '$TOOLCHAIN' or component 'rust-src'" >&2
+      # If we're running in a GitHub action, then it's better to bail than to
+      # hang waiting for input we're never going to get.
+      [ -z ${GITHUB_RUN_ID+x} ] || exit 1
+      prompt "[cargo.sh] would you like to install toolchain '$TOOLCHAIN' and component 'rust-src' via 'rustup'?" \
+        "rustup toolchain install $TOOLCHAIN -c rust-src"
+    } || exit 1
+
+    RUSTFLAGS="$(get-rustflags ${1:1}) $RUSTFLAGS" cargo "+$TOOLCHAIN" ${@:2}
     ;;
   *)
     print-usage-and-exit
