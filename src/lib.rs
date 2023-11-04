@@ -656,10 +656,10 @@ safety_comment! {
     /// `[u8]` and `[T]` repsectively. `str` has different bit validity than
     /// `[u8]`, but that doesn't affect the soundness of this impl.
     ///
+    /// [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
+    ///
     ///   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
     ///   validity as `T`
-    ///
-    /// [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
     ///
     /// TODO(#429):
     /// -  Add quotes from docs.
