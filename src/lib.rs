@@ -968,7 +968,6 @@ pub unsafe trait FromZeroes {
         // - Since `Self: FromZeroes`, the all-zeroes instance is a valid
         //   instance of `Self.`
         //
-        //
         // TODO(#429): Add references to docs and quotes.
         unsafe { ptr::write_bytes(slf.cast::<u8>(), 0, len) };
     }
