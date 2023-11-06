@@ -549,7 +549,7 @@ fn impl_block<D: DataExt>(
     let field_types = data.field_types();
 
     let field_type_bounds = require_trait_bound_on_field_types
-        .then(|| field_types.iter().map(|ty| parse_quote!(#ty: zerocopy::#trait_ident)))
+        .then(|| field_types.iter().map(|ty| parse_quote!(#ty: ::zerocopy::#trait_ident)))
         .into_iter()
         .flatten()
         .collect::<Vec<_>>();
@@ -560,8 +560,8 @@ fn impl_block<D: DataExt>(
         let fields = field_types.iter();
         let validator_macro = check.validator_macro_ident();
         parse_quote!(
-            zerocopy::macro_util::HasPadding<#type_ident, {zerocopy::#validator_macro!(#type_ident, #(#fields),*)}>:
-                zerocopy::macro_util::ShouldBe<false>
+            ::zerocopy::macro_util::HasPadding<#type_ident, {::zerocopy::#validator_macro!(#type_ident, #(#fields),*)}>:
+                ::zerocopy::macro_util::ShouldBe<false>
         )
     });
 
@@ -579,7 +579,7 @@ fn impl_block<D: DataExt>(
         // We currently only support deriving for sized types; this code will
         // fail to compile for unsized types.
         Some(quote!(
-            const LAYOUT: zerocopy::DstLayout = zerocopy::DstLayout::for_type::<Self>();
+            const LAYOUT: ::zerocopy::DstLayout = ::zerocopy::DstLayout::for_type::<Self>();
 
             // SAFETY: `.cast` preserves address and provenance.
             //
@@ -620,7 +620,7 @@ fn impl_block<D: DataExt>(
         // TODO(#553): Add a test that generates a warning when
         // `#[allow(deprecated)]` isn't present.
         #[allow(deprecated)]
-        unsafe impl < #(#params),* > zerocopy::#trait_ident for #type_ident < #(#param_idents),* >
+        unsafe impl < #(#params),* > ::zerocopy::#trait_ident for #type_ident < #(#param_idents),* >
         where
             #(#bounds,)*
         {
