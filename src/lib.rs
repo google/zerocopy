@@ -228,6 +228,13 @@
     __INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS,
     feature(layout_for_ptr, strict_provenance)
 )]
+
+// This is a hack to allow zerocopy-derive derives to work in this crate. They
+// assume that zerocopy is linked as an extern crate, so they access items from
+// it as `zerocopy::Xxx`. This makes that still work.
+#[cfg(any(feature = "derive", test))]
+extern crate self as zerocopy;
+
 #[macro_use]
 mod macros;
 
@@ -289,14 +296,6 @@ use {
 // See the documentation on `util::polyfills` for more information.
 #[allow(unused_imports)]
 use crate::util::polyfills::NonNullExt as _;
-
-// This is a hack to allow zerocopy-derive derives to work in this crate. They
-// assume that zerocopy is linked as an extern crate, so they access items from
-// it as `zerocopy::Xxx`. This makes that still work.
-#[cfg(any(feature = "derive", test))]
-mod zerocopy {
-    pub(crate) use crate::*;
-}
 
 #[rustversion::nightly]
 #[cfg(all(test, not(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)))]
