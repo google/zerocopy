@@ -35,7 +35,8 @@ macro_rules! safety_comment {
 /// Unsafely implements trait(s) for a type.
 macro_rules! unsafe_impl {
     // Implement `$trait` for `$ty` with no bounds.
-    ($ty:ty: $trait:ty) => {
+    ($(#[$attr:meta])* $ty:ty: $trait:ty) => {
+        $(#[$attr])*
         unsafe impl $trait for $ty { #[allow(clippy::missing_inline_in_public_items)] fn only_derive_is_allowed_to_implement_this_trait() {} }
     };
     // Implement all `$traits` for `$ty` with no bounds.
@@ -68,33 +69,39 @@ macro_rules! unsafe_impl {
     // The following arm has the same behavior with the exception of the lack of
     // support for a leading `const` parameter.
     (
+        $(#[$attr:meta])*
         const $constname:ident : $constty:ident $(,)?
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
         => $trait:ident for $ty:ty
     ) => {
         unsafe_impl!(
             @inner
+            $(#[$attr])*
             @const $constname: $constty,
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
             => $trait for $ty
         );
     };
     (
+        $(#[$attr:meta])*
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
         => $trait:ident for $ty:ty
     ) => {
         unsafe_impl!(
             @inner
+            $(#[$attr])*
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
             => $trait for $ty
         );
     };
     (
         @inner
+        $(#[$attr:meta])*
         $(@const $constname:ident : $constty:ident,)*
         $($tyvar:ident $(: $(? $optbound:ident +)* + $($bound:ident +)* )?,)*
         => $trait:ident for $ty:ty
     ) => {
+        $(#[$attr])*
         unsafe impl<$(const $constname: $constty,)* $($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> $trait for $ty {
             #[allow(clippy::missing_inline_in_public_items)]
             fn only_derive_is_allowed_to_implement_this_trait() {}

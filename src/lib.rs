@@ -1926,7 +1926,10 @@ safety_comment! {
     /// TODO(#429), TODO(https://github.com/rust-lang/rust/pull/115333): Cite
     /// the Stable docs once they're available.
     #[cfg(feature = "alloc")]
-    unsafe_impl!(T => FromZeroes for Option<Box<T>>);
+    unsafe_impl!(
+        #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
+        T => FromZeroes for Option<Box<T>>
+    );
     unsafe_impl!(T => FromZeroes for Option<&'_ T>);
     unsafe_impl!(T => FromZeroes for Option<&'_ mut T>);
     unsafe_impl!(T => FromZeroes for Option<NonNull<T>>);
@@ -2149,6 +2152,7 @@ safety_comment! {
 // [1] https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 // [2] https://github.com/rust-lang/unsafe-code-guidelines/issues/38
 #[cfg(feature = "simd")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "simd")))]
 mod simd {
     /// Defines a module which implements `FromZeroes`, `FromBytes`, and
     /// `AsBytes` for a set of types from a module in `core::arch`.
@@ -2160,7 +2164,9 @@ mod simd {
                             // target/feature combinations don't emit any impls
                             // and thus don't use this macro.
     macro_rules! simd_arch_mod {
-        ($arch:ident, $mod:ident, $($typ:ident),*) => {
+        (#[cfg $cfg:tt] $arch:ident, $mod:ident, $($typ:ident),*) => {
+            #[cfg $cfg]
+            #[cfg_attr(doc_cfg, doc(cfg $cfg))]
             mod $mod {
                 use core::arch::$arch::{$($typ),*};
 
@@ -2175,48 +2181,51 @@ mod simd {
         };
     }
 
-    #[cfg(target_arch = "x86")]
-    simd_arch_mod!(x86, x86, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
-    #[cfg(all(feature = "simd-nightly", target_arch = "x86"))]
-    simd_arch_mod!(x86, x86_nightly, __m512bh, __m512, __m512d, __m512i);
-    #[cfg(target_arch = "x86_64")]
-    simd_arch_mod!(x86_64, x86_64, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
-    #[cfg(all(feature = "simd-nightly", target_arch = "x86_64"))]
-    simd_arch_mod!(x86_64, x86_64_nightly, __m512bh, __m512, __m512d, __m512i);
-    #[cfg(target_arch = "wasm32")]
-    simd_arch_mod!(wasm32, wasm32, v128);
-    #[cfg(all(feature = "simd-nightly", target_arch = "powerpc"))]
-    simd_arch_mod!(
-        powerpc,
-        powerpc,
-        vector_bool_long,
-        vector_double,
-        vector_signed_long,
-        vector_unsigned_long
-    );
-    #[cfg(all(feature = "simd-nightly", target_arch = "powerpc64"))]
-    simd_arch_mod!(
-        powerpc64,
-        powerpc64,
-        vector_bool_long,
-        vector_double,
-        vector_signed_long,
-        vector_unsigned_long
-    );
-    #[cfg(target_arch = "aarch64")]
     #[rustfmt::skip]
-    simd_arch_mod!(
-        aarch64, aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,
-        int8x8x3_t, int8x8x4_t, int8x16_t, int8x16x2_t, int8x16x3_t, int8x16x4_t, int16x4_t,
-        int16x8_t, int32x2_t, int32x4_t, int64x1_t, int64x2_t, poly8x8_t, poly8x8x2_t, poly8x8x3_t,
-        poly8x8x4_t, poly8x16_t, poly8x16x2_t, poly8x16x3_t, poly8x16x4_t, poly16x4_t, poly16x8_t,
-        poly64x1_t, poly64x2_t, uint8x8_t, uint8x8x2_t, uint8x8x3_t, uint8x8x4_t, uint8x16_t,
-        uint8x16x2_t, uint8x16x3_t, uint8x16x4_t, uint16x4_t, uint16x8_t, uint32x2_t, uint32x4_t,
-        uint64x1_t, uint64x2_t
-    );
-    #[cfg(all(feature = "simd-nightly", target_arch = "arm"))]
-    #[rustfmt::skip]
-    simd_arch_mod!(arm, arm, int8x4_t, uint8x4_t);
+    const _: () = {
+        simd_arch_mod!(
+            #[cfg(target_arch = "x86")]
+            x86, x86, __m128, __m128d, __m128i, __m256, __m256d, __m256i
+        );
+        simd_arch_mod!(
+            #[cfg(all(feature = "simd-nightly", target_arch = "x86"))]
+            x86, x86_nightly, __m512bh, __m512, __m512d, __m512i
+        );
+        simd_arch_mod!(
+            #[cfg(target_arch = "x86_64")]
+            x86_64, x86_64, __m128, __m128d, __m128i, __m256, __m256d, __m256i
+        );
+        simd_arch_mod!(
+            #[cfg(all(feature = "simd-nightly", target_arch = "x86_64"))]
+            x86_64, x86_64_nightly, __m512bh, __m512, __m512d, __m512i
+        );
+        simd_arch_mod!(
+            #[cfg(target_arch = "wasm32")]
+            wasm32, wasm32, v128
+        );
+        simd_arch_mod!(
+            #[cfg(all(feature = "simd-nightly", target_arch = "powerpc"))]
+            powerpc, powerpc, vector_bool_long, vector_double, vector_signed_long, vector_unsigned_long
+        );
+        simd_arch_mod!(
+            #[cfg(all(feature = "simd-nightly", target_arch = "powerpc64"))]
+            powerpc64, powerpc64, vector_bool_long, vector_double, vector_signed_long, vector_unsigned_long
+        );
+        simd_arch_mod!(
+            #[cfg(target_arch = "aarch64")]
+            aarch64, aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,
+            int8x8x3_t, int8x8x4_t, int8x16_t, int8x16x2_t, int8x16x3_t, int8x16x4_t, int16x4_t,
+            int16x8_t, int32x2_t, int32x4_t, int64x1_t, int64x2_t, poly8x8_t, poly8x8x2_t, poly8x8x3_t,
+            poly8x8x4_t, poly8x16_t, poly8x16x2_t, poly8x16x3_t, poly8x16x4_t, poly16x4_t, poly16x8_t,
+            poly64x1_t, poly64x2_t, uint8x8_t, uint8x8x2_t, uint8x8x3_t, uint8x8x4_t, uint8x16_t,
+            uint8x16x2_t, uint8x16x3_t, uint8x16x4_t, uint16x4_t, uint16x8_t, uint32x2_t, uint32x4_t,
+            uint64x1_t, uint64x2_t
+        );
+        simd_arch_mod!(
+            #[cfg(all(feature = "simd-nightly", target_arch = "arm"))]
+            arm, arm, int8x4_t, uint8x4_t
+        );
+    };
 }
 
 /// Safely transmutes a value of one type to a value of another type of the same
@@ -3658,6 +3667,7 @@ unsafe impl<'a> ByteSliceMut for &'a mut [u8] {}
 unsafe impl<'a> ByteSliceMut for RefMut<'a, [u8]> {}
 
 #[cfg(feature = "alloc")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
 mod alloc_support {
     use alloc::vec::Vec;
 
@@ -3875,7 +3885,6 @@ mod alloc_support {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
 #[doc(inline)]
 pub use alloc_support::*;
 
