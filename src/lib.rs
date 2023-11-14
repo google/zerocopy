@@ -1915,12 +1915,13 @@ safety_comment! {
     ///   size_of::<T>()])` is sound and produces `Option::<T>::None`. These
     ///   cases are identified by the second column:
     ///
-    ///   | `T`                 | `transmute::<_, Option<T>>([0u8; size_of::<T>()])` sound? |
-    ///   |---------------------|-----------------------------------------------------------|
-    ///   | [`Box<U>`]          | when `U: Sized`                                           |
-    ///   | `&U`                | when `U: Sized`                                           |
-    ///   | `&mut U`            | when `U: Sized`                                           |
-    ///   | [`ptr::NonNull<U>`] | when `U: Sized`                                           |
+    ///   | `T`                   | `transmute::<_, Option<T>>([0u8; size_of::<T>()])` sound? |
+    ///   |-----------------------|-----------------------------------------------------------|
+    ///   | [`Box<U>`]            | when `U: Sized`                                           |
+    ///   | `&U`                  | when `U: Sized`                                           |
+    ///   | `&mut U`              | when `U: Sized`                                           |
+    ///   | [`ptr::NonNull<U>`]   | when `U: Sized`                                           |
+    ///   | `fn`, `extern "C" fn` | always                                                    |
     ///
     /// TODO(#429), TODO(https://github.com/rust-lang/rust/pull/115333): Cite
     /// the Stable docs once they're available.
@@ -1929,6 +1930,8 @@ safety_comment! {
     unsafe_impl!(T => FromZeroes for Option<&'_ T>);
     unsafe_impl!(T => FromZeroes for Option<&'_ mut T>);
     unsafe_impl!(T => FromZeroes for Option<NonNull<T>>);
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeroes for opt_fn!(...));
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeroes for opt_extern_c_fn!(...));
 }
 
 safety_comment! {
@@ -5575,6 +5578,18 @@ mod tests {
         // Implements none of the ZC traits.
         struct NotZerocopy;
 
+        #[rustfmt::skip]
+        type FnManyArgs = fn(
+            NotZerocopy, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8,
+        ) -> (NotZerocopy, NotZerocopy);
+
+        // Allowed, because we're not actually using this type for FFI.
+        #[allow(improper_ctypes_definitions)]
+        #[rustfmt::skip]
+        type ECFnManyArgs = extern "C" fn(
+            NotZerocopy, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8,
+        ) -> (NotZerocopy, NotZerocopy);
+
         #[cfg(feature = "alloc")]
         assert_impls!(Option<Box<UnsafeCell<NotZerocopy>>>: KnownLayout, FromZeroes, !FromBytes, !AsBytes, !Unaligned);
         assert_impls!(Option<Box<[UnsafeCell<NotZerocopy>]>>: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
@@ -5584,6 +5599,10 @@ mod tests {
         assert_impls!(Option<&'static mut [UnsafeCell<NotZerocopy>]>: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
         assert_impls!(Option<NonNull<UnsafeCell<NotZerocopy>>>: KnownLayout, FromZeroes, !FromBytes, !AsBytes, !Unaligned);
         assert_impls!(Option<NonNull<[UnsafeCell<NotZerocopy>]>>: KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<fn()>: KnownLayout, FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<FnManyArgs>: KnownLayout, FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<extern "C" fn()>: KnownLayout, FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<ECFnManyArgs>: KnownLayout, FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
         assert_impls!(PhantomData<NotZerocopy>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!(PhantomData<[u8]>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned);
