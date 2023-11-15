@@ -1832,26 +1832,28 @@ safety_comment! {
     // `NonZeroXxx` is `AsBytes`, but not `FromZeroes` or `FromBytes`.
     //
     /// SAFETY:
-    /// - `AsBytes`: `NonZeroXxx` has the same layout as its associated
-    ///    primitive. Since it is the same size, this guarantees it has no
-    ///    padding - integers have no padding, and there's no room for padding
-    ///    if it can represent all of the same values except 0.
-    /// - `Unaligned`: `NonZeroU8` and `NonZeroI8` document that
-    ///   `Option<NonZeroU8>` and `Option<NonZeroI8>` both have size 1. [1] [2]
-    ///   This is worded in a way that makes it unclear whether it's meant as a
-    ///   guarantee, but given the purpose of those types, it's virtually
-    ///   unthinkable that that would ever change. `Option` cannot be smaller
-    ///   than its contained type, which implies that, and `NonZeroX8` are of
-    ///   size 1 or 0. `NonZeroX8` can represent multiple states, so they cannot
-    ///   be 0 bytes, which means that they must be 1 byte. The only valid
-    ///   alignment for a 1-byte type is 1.
+    /// `NonZeroXxx` has the same layout and bit validity as its associated
+    /// primitive with the exception that 0 is not a valid instance. [1]
+    /// - `AsBytes`: Since none of the associated primitives allow uninitialized
+    ///   bytes, neither do `NonZeroXxx`.
+    /// - `Unaligned`: For `NonZeroU8` and `NonZeroI8`, we know that the `u8`
+    ///   and `i8` types have alignment 1 (this is true because they have size 1
+    ///   [2] and a type's alignment cannot be greater than its size [3]).
     ///
-    /// TODO(#429): Add quotes from documentation.
+    /// [1] Per https://doc.rust-lang.org/beta/core/num/struct.NonZeroU16.html#layout-1:
     ///
-    /// [1] https://doc.rust-lang.org/stable/std/num/struct.NonZeroU8.html
-    /// [2] https://doc.rust-lang.org/stable/std/num/struct.NonZeroI8.html
-    /// TODO(https://github.com/rust-lang/rust/pull/104082): Cite documentation
-    /// that layout is the same as primitive layout.
+    ///   `NonZeroU16` is guaranteed to have the same layout and bit validity as
+    ///   `u16` with the exception that `0` is not a valid instance.
+    ///
+    /// TODO(https://github.com/rust-lang/rust/pull/94786): Once the Stable docs
+    /// include this text, cite those docs instead of the Beta docs.
+    ///
+    /// [2] Per https://doc.rust-lang.org/reference/type-layout.html#primitive-data-layout,
+    ///     `size_of::<Type>()` for `u8` and `i8` is 1.
+    ///
+    /// [3] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
+    ///
+    ///   The size of a value is always a multiple of its alignment.
     unsafe_impl!(NonZeroU8: AsBytes, Unaligned);
     unsafe_impl!(NonZeroI8: AsBytes, Unaligned);
     assert_unaligned!(NonZeroU8, NonZeroI8);
@@ -1868,23 +1870,43 @@ safety_comment! {
 }
 safety_comment! {
     /// SAFETY:
-    /// - `FromZeroes`, `FromBytes`, `AsBytes`: The Rust compiler reuses `0`
-    ///   value to represent `None`, so `size_of::<Option<NonZeroXxx>>() ==
-    ///   size_of::<xxx>()`; see `NonZeroXxx` documentation.
-    /// - `Unaligned`: `NonZeroU8` and `NonZeroI8` document that
-    ///   `Option<NonZeroU8>` and `Option<NonZeroI8>` both have size 1. [1] [2]
-    ///   This is worded in a way that makes it unclear whether it's meant as a
-    ///   guarantee, but given the purpose of those types, it's virtually
-    ///   unthinkable that that would ever change. The only valid alignment for
-    ///   a 1-byte type is 1.
+    /// - `FromZeroes`: For all of these types, `T`, `transmute::<_,
+    ///   Option<T>>([0u8; size_of::<T>()])` is guaranteed to be sound. [1]
+    /// - `FromBytes`, `AsBytes`: We know that transmuting from 0 produces
+    ///   `None`. [1] We further know that `NonZeroXxx` has the same size and
+    ///   alignment as `Option<NonZeroXxx>`. [2] Finally, we know that
+    ///   `NonZeroXxx` has the same bit validity as `Xxx` with the exception of
+    ///   0. [2] Since `Xxx: FromBytes`, in order for `Option<NonZeroXxx>:
+    ///   FromBytes`, it only needs to be the case that 0 is a valid instance of
+    ///   `Option<NonZeroXxx>`, which is guaranteed. Since `Xxx: AsBytes`, it
+    ///   only needs to be the case that `Option::<NonZeroXxx>::None` has all of
+    ///   its bytes initialized. [3]
+    /// - `Unaligned`: `NonZeroU8` and `NonZeroI8` both implement `Unaligned`,
+    ///   and so have alignment 1. Per [2], `Option<NonZeroU8>` and
+    ///   `Option<NonZeroI8>` have the same alignment.
     ///
-    /// TODO(#429): Add quotes from documentation.
+    /// [1] Per https://doc.rust-lang.org/nightly/core/option/#representation,
+    ///     it is always true that, for `T` = `num::NonZero*`, `transmute::<_,
+    ///     Option<T>>([0u8; size_of::<T>()])` and produces `Option::<T>::None`.
     ///
-    /// [1] https://doc.rust-lang.org/stable/std/num/struct.NonZeroU8.html
-    /// [2] https://doc.rust-lang.org/stable/std/num/struct.NonZeroI8.html
+    /// TODO(https://github.com/rust-lang/rust/pull/115333): Once the Stable
+    /// docs include this text, cite those docs instead of the Nightly docs.
     ///
-    /// TODO(https://github.com/rust-lang/rust/pull/104082): Cite documentation
-    /// for layout guarantees.
+    /// [2] Per https://doc.rust-lang.org/beta/core/num/struct.NonZeroU16.html#layout-1:
+    ///
+    ///   `NonZeroU16` is guaranteed to have the same layout and bit validity as
+    ///   `u16` with the exception that `0` is not a valid instance. ...
+    ///
+    ///   Thanks to the null pointer optimization, `NonZeroU16` and
+    ///   `Option<NonZeroU16>` are guaranteed to have the same size and
+    ///   alignment.
+    ///
+    /// TODO(https://github.com/rust-lang/rust/pull/94786): Once the Stable docs
+    /// include this text, cite those docs instead of the Beta docs.
+    ///
+    /// [3] TODO(#429): Cite documentation that guarantees that
+    ///     `Option::<T>::None` has all of its bytes initialized where `T` is a
+    ///     type subject to the null-pointer optimization (NPO).
     unsafe_impl!(Option<NonZeroU8>: FromZeroes, FromBytes, AsBytes, Unaligned);
     unsafe_impl!(Option<NonZeroI8>: FromZeroes, FromBytes, AsBytes, Unaligned);
     assert_unaligned!(Option<NonZeroU8>, Option<NonZeroI8>);
