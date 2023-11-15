@@ -1734,20 +1734,38 @@ safety_comment! {
 
 safety_comment! {
     /// SAFETY:
-    /// - `FromZeroes`, `FromBytes`: all bit patterns are valid for integers [1]
-    /// - `AsBytes`: integers have no padding bytes [1]
+    /// - `FromZeroes`, `FromBytes`: all bit patterns are valid for numeric
+    ///   types [1]
+    /// - `AsBytes`: numeric types have no padding bytes [1]
     /// - `Unaligned` (`u8` and `i8` only): The reference [2] specifies the size
     ///   of `u8` and `i8` as 1 byte. We also know that:
-    ///   - Alignment is >= 1
-    ///   - Size is an integer multiple of alignment
+    ///   - Alignment is >= 1 [3]
+    ///   - Size is an integer multiple of alignment [4]
     ///   - The only value >= 1 for which 1 is an integer multiple is 1
     ///   Therefore, the only possible alignment for `u8` and `i8` is 1.
     ///
-    /// TODO(#429): Add quotes from documentation.
+    /// [1] Per https://doc.rust-lang.org/beta/reference/types/numeric.html#bit-validity:
     ///
-    /// [1] TODO(https://github.com/rust-lang/reference/issues/1291): Once the
-    ///     reference explicitly guarantees these properties, cite it.
+    ///     For every numeric type, `T`, the bit validity of `T` is equivalent to
+    ///     the bit validity of `[u8; size_of::<T>()]`. An uninitialized byte is
+    ///     not a valid `u8`.
+    ///
+    /// TODO(https://github.com/rust-lang/reference/pull/1392): Once this text
+    /// is available on the Stable docs, cite those instead.
+    ///
     /// [2] https://doc.rust-lang.org/reference/type-layout.html#primitive-data-layout
+    ///
+    /// [3] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
+    ///
+    ///     Alignment is measured in bytes, and must be at least 1.
+    ///
+    /// [4] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
+    ///
+    ///     The size of a value is always a multiple of its alignment.
+    ///
+    /// TODO(#278): Once we've updated the trait docs to refer to `u8`s rather
+    /// than bits or bytes, update this comment, especially the reference to
+    /// [1].
     unsafe_impl!(u8: FromZeroes, FromBytes, AsBytes, Unaligned);
     unsafe_impl!(i8: FromZeroes, FromBytes, AsBytes, Unaligned);
     assert_unaligned!(u8, i8);
@@ -1761,26 +1779,6 @@ safety_comment! {
     unsafe_impl!(i128: FromZeroes, FromBytes, AsBytes);
     unsafe_impl!(usize: FromZeroes, FromBytes, AsBytes);
     unsafe_impl!(isize: FromZeroes, FromBytes, AsBytes);
-}
-
-safety_comment! {
-    /// SAFETY:
-    /// - `FromZeroes`, `FromBytes`: the `{f32,f64}::from_bits` constructors'
-    ///   documentation [1,2] states that they are currently equivalent to
-    ///   `transmute`. [3]
-    /// - `AsBytes`: the `{f32,f64}::to_bits` methods' documentation [4,5]
-    ///   states that they are currently equivalent to `transmute`. [3]
-    ///
-    /// TODO(#429):
-    /// - Make these arguments more precisely in terms of the documentation.
-    /// - Add quotes from documentation.
-    ///
-    /// [1] https://doc.rust-lang.org/nightly/std/primitive.f32.html#method.from_bits
-    /// [2] https://doc.rust-lang.org/nightly/std/primitive.f64.html#method.from_bits
-    /// [3] TODO(https://github.com/rust-lang/reference/issues/1291): Once the
-    ///     reference explicitly guarantees these properties, cite it.
-    /// [4] https://doc.rust-lang.org/nightly/std/primitive.f32.html#method.to_bits
-    /// [5] https://doc.rust-lang.org/nightly/std/primitive.f64.html#method.to_bits
     unsafe_impl!(f32: FromZeroes, FromBytes, AsBytes);
     unsafe_impl!(f64: FromZeroes, FromBytes, AsBytes);
 }
