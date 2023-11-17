@@ -30,7 +30,7 @@ rustdoc-args = ["--cfg", "doc_cfg", "--generate-link-to-definition"]
 
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.
-pinned-stable = "1.73.0"
+pinned-stable = "1.74.0"
 pinned-nightly = "nightly-2023-11-16"
 
 [package.metadata.playground]
