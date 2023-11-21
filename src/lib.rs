@@ -283,10 +283,10 @@ use core::{
 #[cfg(feature = "alloc")]
 extern crate alloc;
 #[cfg(feature = "alloc")]
-use {
-    alloc::{boxed::Box, vec::Vec},
-    core::alloc::Layout,
-};
+use alloc::{boxed::Box, vec::Vec};
+
+#[cfg(any(feature = "alloc", kani))]
+use core::alloc::Layout;
 
 // For each polyfill, as soon as the corresponding feature is stable, the
 // polyfill import will be unused because method/function resolution will prefer
@@ -305,6 +305,9 @@ const _: () = {
     #[warn(deprecated)]
     _WARNING
 };
+
+/// The target pointer width, counted in bits.
+const POINTER_WIDTH_BITS: usize = mem::size_of::<usize>() * 8;
 
 /// The layout of a type which might be dynamically-sized.
 ///
@@ -335,19 +338,19 @@ const _: () = {
 /// [the reference]: https://doc.rust-lang.org/reference/type-layout.html
 #[doc(hidden)]
 #[allow(missing_debug_implementations, missing_copy_implementations)]
-#[cfg_attr(test, derive(Copy, Clone, Debug, PartialEq, Eq))]
+#[cfg_attr(any(kani, test), derive(Copy, Clone, Debug, PartialEq, Eq))]
 pub struct DstLayout {
     _align: NonZeroUsize,
     _size_info: SizeInfo,
 }
 
-#[cfg_attr(test, derive(Copy, Clone, Debug, PartialEq, Eq))]
+#[cfg_attr(any(kani, test), derive(Copy, Clone, Debug, PartialEq, Eq))]
 enum SizeInfo<E = usize> {
     Sized { _size: usize },
     SliceDst(TrailingSliceLayout<E>),
 }
 
-#[cfg_attr(test, derive(Copy, Clone, Debug, PartialEq, Eq))]
+#[cfg_attr(any(kani, test), derive(Copy, Clone, Debug, PartialEq, Eq))]
 struct TrailingSliceLayout<E = usize> {
     // The offset of the first byte of the trailing slice field. Note that this
     // is NOT the same as the minimum size of the type. For example, consider
@@ -393,6 +396,29 @@ pub enum _CastType {
 }
 
 impl DstLayout {
+    /// The maximum theoretic possible alignment of a type.
+    ///
+    /// For compatibility with future Rust versions, this is defined as the
+    /// maximum power-of-two that fits into a `usize`. See also
+    /// [`DstLayout::CURRENT_MAX_ALIGN`].
+    const THEORETICAL_MAX_ALIGN: NonZeroUsize =
+        match NonZeroUsize::new(1 << (POINTER_WIDTH_BITS - 1)) {
+            Some(max_align) => max_align,
+            None => unreachable!(),
+        };
+
+    /// The current, documented max alignment of a type \[1\].
+    ///
+    /// \[1\] Per <https://doc.rust-lang.org/reference/type-layout.html#the-alignment-modifiers>:
+    ///
+    ///   The alignment value must be a power of two from 1 up to
+    ///   2<sup>29</sup>.
+    #[cfg(not(kani))]
+    const CURRENT_MAX_ALIGN: NonZeroUsize = match NonZeroUsize::new(1 << 28) {
+        Some(max_align) => max_align,
+        None => unreachable!(),
+    };
+
     /// Constructs a `DstLayout` which describes `T`.
     ///
     /// # Safety
@@ -437,6 +463,145 @@ impl DstLayout {
                 _elem_size: mem::size_of::<T>(),
             }),
         }
+    }
+
+    /// Like `Layout::extend`, this creates a layout that describes a record
+    /// whose layout consists of `self` followed by `next` that includes the
+    /// necessary inter-field padding, but not any trailing padding.
+    ///
+    /// In order to match the layout of a `#[repr(C)]` struct, this method
+    /// should be invoked for each field in declaration order. To add trailing
+    /// padding, call `DstLayout::pad_to_align` after extending the layout for
+    /// all fields. If `self` corresponds to a type marked with
+    /// `repr(packed(N))`, then `repr_packed` should be set to `Some(N)`,
+    /// otherwise `None`.
+    ///
+    /// This method cannot be used to match the layout of a record with the
+    /// default representation, as that representation is mostly unspecified.
+    ///
+    /// # Safety
+    ///
+    /// If a (potentially hypothetical) valid `repr(C)` Rust type begins with
+    /// fields whose layout are `self`, and those fields are immediately
+    /// followed by a field whose layout is `field`, then unsafe code may rely
+    /// on `self.extend(field, repr_packed)` producing a layout that correctly
+    /// encompasses those two components.
+    ///
+    /// We make no guarantees to the behavior of this method if these fragments
+    /// cannot appear in a valid Rust type (e.g., the concatenation of the
+    /// layouts would lead to a size larger than `isize::MAX`).
+    #[allow(dead_code)]
+    pub(crate) const fn extend(self, field: DstLayout, repr_packed: Option<NonZeroUsize>) -> Self {
+        use util::{core_layout::_padding_needed_for, max, min};
+
+        // If `repr_packed` is `None`, there are no alignment constraints, and
+        // the value can be defaulted to `THEORETICAL_MAX_ALIGN`.
+        let max_align = match repr_packed {
+            Some(max_align) => max_align,
+            None => Self::THEORETICAL_MAX_ALIGN,
+        };
+
+        assert!(max_align.is_power_of_two());
+
+        // We use Kani to prove that this method is robust to future increases
+        // in Rust's maximum allowed alignment. However, if such a change ever
+        // actually occurs, we'd like to be notified via assertion failures.
+        #[cfg(not(kani))]
+        {
+            debug_assert!(self._align.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
+            debug_assert!(field._align.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
+            if let Some(repr_packed) = repr_packed {
+                debug_assert!(repr_packed.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
+            }
+        }
+
+        // The field's alignment is clamped by `repr_packed` (i.e., the
+        // `repr(packed(N))` attribute, if any) [1].
+        //
+        // [1] Per https://doc.rust-lang.org/reference/type-layout.html#the-alignment-modifiers:
+        //
+        //   The alignments of each field, for the purpose of positioning
+        //   fields, is the smaller of the specified alignment and the alignment
+        //   of the field's type.
+        let field_align = min(field._align, max_align);
+
+        // The struct's alignment is the maximum of its previous alignment and
+        // `field_align`.
+        let align = max(self._align, field_align);
+
+        let size_info = match self._size_info {
+            // If the layout is already a DST, we panic; DSTs cannot be extended
+            // with additional fields.
+            SizeInfo::SliceDst(..) => panic!("Cannot extend a DST with additional fields."),
+
+            SizeInfo::Sized { _size: preceding_size } => {
+                // Compute the minimum amount of inter-field padding needed to
+                // satisfy the field's alignment, and offset of the trailing
+                // field. [1]
+                //
+                // [1] Per https://doc.rust-lang.org/reference/type-layout.html#the-alignment-modifiers:
+                //
+                //   Inter-field padding is guaranteed to be the minimum
+                //   required in order to satisfy each field's (possibly
+                //   altered) alignment.
+                let padding = _padding_needed_for(preceding_size, field_align);
+
+                // This will not panic (and is proven to not panic, with Kani)
+                // if the layout components can correspond to a leading layout
+                // fragment of a valid Rust type, but may panic otherwise (e.g.,
+                // combining or aligning the components would create a size
+                // exceeding `isize::MAX`).
+                let offset = match preceding_size.checked_add(padding) {
+                    Some(offset) => offset,
+                    None => panic!("Adding padding to `self`'s size overflows `usize`."),
+                };
+
+                match field._size_info {
+                    SizeInfo::Sized { _size: field_size } => {
+                        // If the trailing field is sized, the resulting layout
+                        // will be sized. Its size will be the sum of the
+                        // preceeding layout, the size of the new field, and the
+                        // size of inter-field padding between the two.
+                        //
+                        // This will not panic (and is proven with Kani to not
+                        // panic) if the layout components can correspond to a
+                        // leading layout fragment of a valid Rust type, but may
+                        // panic otherwise (e.g., combining or aligning the
+                        // components would create a size exceeding
+                        // `usize::MAX`).
+                        let size = match offset.checked_add(field_size) {
+                            Some(size) => size,
+                            None => panic!("`field` cannot be appended without the total size overflowing `usize`"),
+                        };
+                        SizeInfo::Sized { _size: size }
+                    }
+                    SizeInfo::SliceDst(TrailingSliceLayout {
+                        _offset: trailing_offset,
+                        _elem_size,
+                    }) => {
+                        // If the trailing field is dynamically sized, so too
+                        // will the resulting layout. The offset of the trailing
+                        // slice component is the sum of the offset of the
+                        // trailing field and the trailing slice offset within
+                        // that field.
+                        //
+                        // This will not panic (and is proven with Kani to not
+                        // panic) if the layout components can correspond to a
+                        // leading layout fragment of a valid Rust type, but may
+                        // panic otherwise (e.g., combining or aligning the
+                        // components would create a size exceeding
+                        // `usize::MAX`).
+                        let offset = match offset.checked_add(trailing_offset) {
+                            Some(offset) => offset,
+                            None => panic!("`field` cannot be appended without the total size overflowing `usize`"),
+                        };
+                        SizeInfo::SliceDst(TrailingSliceLayout { _offset: offset, _elem_size })
+                    }
+                }
+            }
+        };
+
+        DstLayout { _align: align, _size_info: size_info }
     }
 
     /// Validates that a cast is sound from a layout perspective.
@@ -3918,6 +4083,114 @@ mod tests {
         }
     }
 
+    /// Tests of when a sized `DstLayout` is extended with a sized field.
+    #[allow(clippy::decimal_literal_representation)]
+    #[test]
+    fn test_dst_layout_extend_sized_with_sized() {
+        // This macro constructs a layout corresponding to a `u8` and extends it
+        // with a zero-sized trailing field of given alignment `n`. The macro
+        // tests that the resulting layout has both size and alignment `min(n,
+        // P)` for all valid values of `repr(packed(P))`.
+        macro_rules! test_align_is_size {
+            ($n:expr) => {
+                let base = DstLayout::for_type::<u8>();
+                let trailing_field = DstLayout::for_type::<elain::Align<$n>>();
+
+                let packs =
+                    core::iter::once(None).chain((0..29).map(|p| NonZeroUsize::new(2usize.pow(p))));
+
+                for pack in packs {
+                    let composite = base.extend(trailing_field, pack);
+                    let max_align = pack.unwrap_or(DstLayout::CURRENT_MAX_ALIGN);
+                    let align = $n.min(max_align.get());
+                    assert_eq!(
+                        composite,
+                        DstLayout {
+                            _align: NonZeroUsize::new(align).unwrap(),
+                            _size_info: SizeInfo::Sized { _size: align }
+                        }
+                    )
+                }
+            };
+        }
+
+        test_align_is_size!(1);
+        test_align_is_size!(2);
+        test_align_is_size!(4);
+        test_align_is_size!(8);
+        test_align_is_size!(16);
+        test_align_is_size!(32);
+        test_align_is_size!(64);
+        test_align_is_size!(128);
+        test_align_is_size!(256);
+        test_align_is_size!(512);
+        test_align_is_size!(1024);
+        test_align_is_size!(2048);
+        test_align_is_size!(4096);
+        test_align_is_size!(8192);
+        test_align_is_size!(16384);
+        test_align_is_size!(32768);
+        test_align_is_size!(65536);
+        test_align_is_size!(131072);
+        test_align_is_size!(262144);
+        test_align_is_size!(524288);
+        test_align_is_size!(1048576);
+        test_align_is_size!(2097152);
+        test_align_is_size!(4194304);
+        test_align_is_size!(8388608);
+        test_align_is_size!(16777216);
+        test_align_is_size!(33554432);
+        test_align_is_size!(67108864);
+        test_align_is_size!(33554432);
+        test_align_is_size!(134217728);
+        test_align_is_size!(268435456);
+    }
+
+    /// Tests of when a sized `DstLayout` is extended with a DST field.
+    #[test]
+    fn test_dst_layout_extend_sized_with_dst() {
+        // Test that for all combinations of real-world alignments and
+        // `repr_packed` values, that the extension of a sized `DstLayout`` with
+        // a DST field correctly computes the trailing offset in the composite
+        // layout.
+
+        let aligns = (0..29).map(|p| NonZeroUsize::new(2usize.pow(p)).unwrap());
+        let packs = core::iter::once(None).chain(aligns.clone().map(Some));
+
+        for align in aligns {
+            for pack in packs.clone() {
+                let base = DstLayout::for_type::<u8>();
+                let elem_size = 42;
+                let trailing_field_offset = 11;
+
+                let trailing_field = DstLayout {
+                    _align: align,
+                    _size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                        _elem_size: elem_size,
+                        _offset: 11,
+                    }),
+                };
+
+                let composite = base.extend(trailing_field, pack);
+
+                let max_align = pack.unwrap_or(DstLayout::CURRENT_MAX_ALIGN).get();
+
+                let align = align.get().min(max_align);
+
+                assert_eq!(
+                    composite,
+                    DstLayout {
+                        _align: NonZeroUsize::new(align).unwrap(),
+                        _size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                            _elem_size: elem_size,
+                            _offset: align + trailing_field_offset,
+                        }),
+                    }
+                )
+            }
+        }
+    }
+
     // This test takes a long time when running under Miri, so we skip it in
     // that case. This is acceptable because this is a logic test that doesn't
     // attempt to expose UB.
@@ -5701,5 +5974,208 @@ mod tests {
             #[rustfmt::skip]
             test_simd_arch_mod!(arm, int8x4_t, uint8x4_t);
         }
+    }
+}
+
+#[cfg(kani)]
+mod proofs {
+    use super::*;
+
+    impl kani::Arbitrary for DstLayout {
+        fn any() -> Self {
+            let align: NonZeroUsize = kani::any();
+            let size_info: SizeInfo = kani::any();
+
+            kani::assume(align.is_power_of_two());
+            kani::assume(align < DstLayout::THEORETICAL_MAX_ALIGN);
+
+            // For testing purposes, we most care about instantiations of
+            // `DstLayout` that can correspond to actual Rust types. We use
+            // `Layout` to verify that our `DstLayout` satisfies the validity
+            // conditions of Rust layouts.
+            kani::assume(
+                match size_info {
+                    SizeInfo::Sized { _size } => Layout::from_size_align(_size, align.get()),
+                    SizeInfo::SliceDst(TrailingSliceLayout { _offset, _elem_size }) => {
+                        // `SliceDst`` cannot encode an exact size, but we know
+                        // it is at least `_offset` bytes.
+                        Layout::from_size_align(_offset, align.get())
+                    }
+                }
+                .is_ok(),
+            );
+
+            Self { _align: align, _size_info: size_info }
+        }
+    }
+
+    impl kani::Arbitrary for SizeInfo {
+        fn any() -> Self {
+            let is_sized: bool = kani::any();
+
+            match is_sized {
+                true => {
+                    let size: usize = kani::any();
+
+                    kani::assume(size <= isize::MAX as _);
+
+                    SizeInfo::Sized { _size: size }
+                }
+                false => SizeInfo::SliceDst(kani::any()),
+            }
+        }
+    }
+
+    impl kani::Arbitrary for TrailingSliceLayout {
+        fn any() -> Self {
+            let elem_size: usize = kani::any();
+            let offset: usize = kani::any();
+
+            kani::assume(elem_size < isize::MAX as _);
+            kani::assume(offset < isize::MAX as _);
+
+            TrailingSliceLayout { _elem_size: elem_size, _offset: offset }
+        }
+    }
+
+    #[kani::proof]
+    fn prove_dst_layout_extend() {
+        use crate::util::{core_layout::_padding_needed_for, max, min};
+
+        let base: DstLayout = kani::any();
+        let field: DstLayout = kani::any();
+        let packed: Option<NonZeroUsize> = kani::any();
+
+        if let Some(max_align) = packed {
+            kani::assume(max_align.is_power_of_two());
+            kani::assume(base._align <= max_align);
+        }
+
+        // The base can only be extended if it's sized.
+        kani::assume(matches!(base._size_info, SizeInfo::Sized { .. }));
+        let base_size = if let SizeInfo::Sized { _size: size } = base._size_info {
+            size
+        } else {
+            unreachable!();
+        };
+
+        // Under the above conditions, `DstLayout::extend` will not panic.
+        let composite = base.extend(field, packed);
+
+        // The field's alignment is clamped by `max_align` (i.e., the
+        // `packed` attribute, if any) [1].
+        //
+        // [1] Per https://doc.rust-lang.org/reference/type-layout.html#the-alignment-modifiers:
+        //
+        //   The alignments of each field, for the purpose of positioning
+        //   fields, is the smaller of the specified alignment and the
+        //   alignment of the field's type.
+        let field_align = min(field._align, packed.unwrap_or(DstLayout::THEORETICAL_MAX_ALIGN));
+
+        // The struct's alignment is the maximum of its previous alignment and
+        // `field_align`.
+        assert_eq!(composite._align, max(base._align, field_align));
+
+        // Compute the minimum amount of inter-field padding needed to
+        // satisfy the field's alignment, and offset of the trailing field.
+        // [1]
+        //
+        // [1] Per https://doc.rust-lang.org/reference/type-layout.html#the-alignment-modifiers:
+        //
+        //   Inter-field padding is guaranteed to be the minimum required in
+        //   order to satisfy each field's (possibly altered) alignment.
+        let padding = _padding_needed_for(base_size, field_align);
+        let offset = base_size + padding;
+
+        // For testing purposes, we'll also construct `alloc::Layout`
+        // stand-ins for `DstLayout`, and show that `extend` behaves
+        // comparably on both types.
+        let base_analog = Layout::from_size_align(base_size, base._align.get()).unwrap();
+
+        match field._size_info {
+            SizeInfo::Sized { _size: field_size } => {
+                if let SizeInfo::Sized { _size: composite_size } = composite._size_info {
+                    // If the trailing field is sized, the resulting layout
+                    // will be sized. Its size will be the sum of the
+                    // preceeding layout, the size of the new field, and the
+                    // size of inter-field padding between the two.
+                    assert_eq!(composite_size, offset + field_size);
+
+                    let field_analog =
+                        Layout::from_size_align(field_size, field_align.get()).unwrap();
+
+                    if let Ok((actual_composite, actual_offset)) = base_analog.extend(field_analog)
+                    {
+                        assert_eq!(actual_offset, offset);
+                        assert_eq!(actual_composite.size(), composite_size);
+                        assert_eq!(actual_composite.align(), composite._align.get());
+                    } else {
+                        // An error here reflects that composite of `base`
+                        // and `field` cannot correspond to a real Rust type
+                        // fragment, because such a fragment would violate
+                        // the basic invariants of a valid Rust layout. At
+                        // the time of writing, `DstLayout` is a little more
+                        // permissive than `Layout`, so we don't assert
+                        // anything in this branch (e.g., unreachability).
+                    }
+                } else {
+                    panic!("The composite of two sized layouts must be sized.")
+                }
+            }
+            SizeInfo::SliceDst(TrailingSliceLayout {
+                _offset: field_offset,
+                _elem_size: field_elem_size,
+            }) => {
+                if let SizeInfo::SliceDst(TrailingSliceLayout {
+                    _offset: composite_offset,
+                    _elem_size: composite_elem_size,
+                }) = composite._size_info
+                {
+                    // The offset of the trailing slice component is the sum
+                    // of the offset of the trailing field and the trailing
+                    // slice offset within that field.
+                    assert_eq!(composite_offset, offset + field_offset);
+                    // The elem size is unchanged.
+                    assert_eq!(composite_elem_size, field_elem_size);
+
+                    let field_analog =
+                        Layout::from_size_align(field_offset, field_align.get()).unwrap();
+
+                    if let Ok((actual_composite, actual_offset)) = base_analog.extend(field_analog)
+                    {
+                        assert_eq!(actual_offset, offset);
+                        assert_eq!(actual_composite.size(), composite_offset);
+                        assert_eq!(actual_composite.align(), composite._align.get());
+                    } else {
+                        // An error here reflects that composite of `base`
+                        // and `field` cannot correspond to a real Rust type
+                        // fragment, because such a fragment would violate
+                        // the basic invariants of a valid Rust layout. At
+                        // the time of writing, `DstLayout` is a little more
+                        // permissive than `Layout`, so we don't assert
+                        // anything in this branch (e.g., unreachability).
+                    }
+                } else {
+                    panic!("The extension of a layout with a DST must result in a DST.")
+                }
+            }
+        }
+    }
+
+    #[kani::proof]
+    #[kani::should_panic]
+    fn prove_dst_layout_extend_dst_panics() {
+        let base: DstLayout = kani::any();
+        let field: DstLayout = kani::any();
+        let packed: Option<NonZeroUsize> = kani::any();
+
+        if let Some(max_align) = packed {
+            kani::assume(max_align.is_power_of_two());
+            kani::assume(base._align <= max_align);
+        }
+
+        kani::assume(matches!(base._size_info, SizeInfo::SliceDst(..)));
+
+        let _ = base.extend(field, packed);
     }
 }
