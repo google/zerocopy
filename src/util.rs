@@ -512,6 +512,22 @@ pub(crate) const fn _round_down_to_next_multiple_of_alignment(
     n & mask
 }
 
+pub(crate) const fn max(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
+    if a.get() < b.get() {
+        b
+    } else {
+        a
+    }
+}
+
+pub(crate) const fn min(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
+    if a.get() > b.get() {
+        b
+    } else {
+        a
+    }
+}
+
 /// Since we support multiple versions of Rust, there are often features which
 /// have been stabilized in the most recent stable release which do not yet
 /// exist (stably) on our MSRV. This module provides polyfills for those
