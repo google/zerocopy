@@ -604,6 +604,55 @@ impl DstLayout {
         DstLayout { _align: align, _size_info: size_info }
     }
 
+    /// Like `Layout::pad_to_align`, this routine rounds the size of this layout
+    /// up to the nearest multiple of this type's alignment or `repr_packed`
+    /// (whichever is less). This method leaves DST layouts unchanged, since the
+    /// trailing padding of DSTs is computed at runtime.
+    ///
+    /// In order to match the layout of a `#[repr(C)]` struct, this method
+    /// should be invoked after the invocations of [`DstLayout::extend`]. If
+    /// `self` corresponds to a type marked with `repr(packed(N))`, then
+    /// `repr_packed` should be set to `Some(N)`, otherwise `None`.
+    ///
+    /// This method cannot be used to match the layout of a record with the
+    /// default representation, as that representation is mostly unspecified.
+    ///
+    /// # Safety
+    ///
+    /// If a (potentially hypothetical) valid `repr(C)` type begins with fields
+    /// whose layout are `self` followed only by zero or more bytes of trailing
+    /// padding (not included in `self`), then unsafe code may rely on
+    /// `self.pad_to_align(repr_packed)` producing a layout that correctly
+    /// encapsulates the layout of that type.
+    ///
+    /// We make no guarantees to the behavior of this method if `self` cannot
+    /// appear in a valid Rust type (e.g., because the addition of trailing
+    /// padding would lead to a size larger than `isize::MAX`).
+    #[allow(dead_code)]
+    pub(crate) const fn pad_to_align(self) -> Self {
+        use util::core_layout::_padding_needed_for;
+
+        let size_info = match self._size_info {
+            // For sized layouts, we add the minimum amount of trailing padding
+            // needed to satisfy alignment.
+            SizeInfo::Sized { _size: unpadded_size } => {
+                let padding = _padding_needed_for(unpadded_size, self._align);
+                let size = match unpadded_size.checked_add(padding) {
+                    Some(size) => size,
+                    None => panic!("Adding padding caused size to overflow `usize`."),
+                };
+                SizeInfo::Sized { _size: size }
+            }
+            // For DST layouts, trailing padding depends on the length of the
+            // trailing DST and is computed at runtime. This does not alter the
+            // offset or element size of the layout, so we leave `size_info`
+            // unchanged.
+            size_info @ SizeInfo::SliceDst(_) => size_info,
+        };
+
+        DstLayout { _align: self._align, _size_info: size_info }
+    }
+
     /// Validates that a cast is sound from a layout perspective.
     ///
     /// Validates that the size and alignment requirements of a type with the
@@ -4191,6 +4240,82 @@ mod tests {
         }
     }
 
+    /// Tests that calling `pad_to_align` on a sized `DstLayout` adds the
+    /// expected amount of trailing padding.
+    #[test]
+    fn test_dst_layout_pad_to_align_with_sized() {
+        // For all valid alignments `align`, construct a one-byte layout aligned
+        // to `align`, call `pad_to_align`, and assert that the size of the
+        // resulting layout is equal to `align`.
+        for align in (0..29).map(|p| NonZeroUsize::new(2usize.pow(p)).unwrap()) {
+            let layout = DstLayout { _align: align, _size_info: SizeInfo::Sized { _size: 1 } };
+
+            assert_eq!(
+                layout.pad_to_align(),
+                DstLayout { _align: align, _size_info: SizeInfo::Sized { _size: align.get() } }
+            );
+        }
+
+        // Test explicitly-provided combinations of unpadded and padded
+        // counterparts.
+
+        macro_rules! test {
+            (unpadded { size: $unpadded_size:expr, align: $unpadded_align:expr }
+                => padded { size: $padded_size:expr, align: $padded_align:expr }) => {
+                let unpadded = DstLayout {
+                    _align: NonZeroUsize::new($unpadded_align).unwrap(),
+                    _size_info: SizeInfo::Sized { _size: $unpadded_size },
+                };
+                let padded = unpadded.pad_to_align();
+
+                assert_eq!(
+                    padded,
+                    DstLayout {
+                        _align: NonZeroUsize::new($padded_align).unwrap(),
+                        _size_info: SizeInfo::Sized { _size: $padded_size },
+                    }
+                );
+            };
+        }
+
+        test!(unpadded { size: 0, align: 4 } => padded { size: 0, align: 4 });
+        test!(unpadded { size: 1, align: 4 } => padded { size: 4, align: 4 });
+        test!(unpadded { size: 2, align: 4 } => padded { size: 4, align: 4 });
+        test!(unpadded { size: 3, align: 4 } => padded { size: 4, align: 4 });
+        test!(unpadded { size: 4, align: 4 } => padded { size: 4, align: 4 });
+        test!(unpadded { size: 5, align: 4 } => padded { size: 8, align: 4 });
+        test!(unpadded { size: 6, align: 4 } => padded { size: 8, align: 4 });
+        test!(unpadded { size: 7, align: 4 } => padded { size: 8, align: 4 });
+        test!(unpadded { size: 8, align: 4 } => padded { size: 8, align: 4 });
+
+        let current_max_align = DstLayout::CURRENT_MAX_ALIGN.get();
+
+        test!(unpadded { size: 1, align: current_max_align }
+            => padded { size: current_max_align, align: current_max_align });
+
+        test!(unpadded { size: current_max_align + 1, align: current_max_align }
+            => padded { size: current_max_align * 2, align: current_max_align });
+    }
+
+    /// Tests that calling `pad_to_align` on a DST `DstLayout` is a no-op.
+    #[test]
+    fn test_dst_layout_pad_to_align_with_dst() {
+        for align in (0..29).map(|p| NonZeroUsize::new(2usize.pow(p)).unwrap()) {
+            for offset in 0..10 {
+                for elem_size in 0..10 {
+                    let layout = DstLayout {
+                        _align: align,
+                        _size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                            _offset: offset,
+                            _elem_size: elem_size,
+                        }),
+                    };
+                    assert_eq!(layout.pad_to_align(), layout);
+                }
+            }
+        }
+    }
+
     // This test takes a long time when running under Miri, so we skip it in
     // that case. This is acceptable because this is a logic test that doesn't
     // attempt to expose UB.
@@ -6177,5 +6302,41 @@ mod proofs {
         kani::assume(matches!(base._size_info, SizeInfo::SliceDst(..)));
 
         let _ = base.extend(field, packed);
+    }
+
+    #[kani::proof]
+    fn prove_dst_layout_pad_to_align() {
+        use crate::util::core_layout::_padding_needed_for;
+
+        let layout: DstLayout = kani::any();
+
+        let padded: DstLayout = layout.pad_to_align();
+
+        // Calling `pad_to_align` does not alter the `DstLayout`'s alignment.
+        assert_eq!(padded._align, layout._align);
+
+        if let SizeInfo::Sized { _size: unpadded_size } = layout._size_info {
+            if let SizeInfo::Sized { _size: padded_size } = padded._size_info {
+                // If the layout is sized, it will remain sized after padding is
+                // added. Its sum will be its unpadded size and the size of the
+                // trailing padding needed to satisfy its alignment
+                // requirements.
+                let padding = _padding_needed_for(unpadded_size, layout._align);
+                assert_eq!(padded_size, unpadded_size + padding);
+
+                // Prove that calling `DstLayout::pad_to_align` behaves
+                // identically to `Layout::pad_to_align`.
+                let layout_analog =
+                    Layout::from_size_align(unpadded_size, layout._align.get()).unwrap();
+                let padded_analog = layout_analog.pad_to_align();
+                assert_eq!(padded_analog.align(), layout._align.get());
+                assert_eq!(padded_analog.size(), padded_size);
+            } else {
+                panic!("The padding of a sized layout must result in a sized layout.")
+            }
+        } else {
+            // If the layout is a DST, padding cannot be statically added.
+            assert_eq!(padded._size_info, layout._size_info);
+        }
     }
 }
