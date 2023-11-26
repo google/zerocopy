@@ -288,6 +288,10 @@ use alloc::{boxed::Box, vec::Vec};
 #[cfg(any(feature = "alloc", kani))]
 use core::alloc::Layout;
 
+// Used by `TryFromBytes::is_bit_valid`.
+#[doc(hidden)]
+pub use crate::util::ptr::Ptr;
+
 // For each polyfill, as soon as the corresponding feature is stable, the
 // polyfill import will be unused because method/function resolution will prefer
 // the inherent method/function over a trait method/function. Thus, we suppress
@@ -1050,6 +1054,128 @@ safety_comment! {
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::FromZeroes;
+
+/// Types whose validity can be checked at runtime, allowing them to be
+/// conditionally converted from byte slices.
+///
+/// WARNING: Do not implement this trait yourself! Instead, use
+/// `#[derive(TryFromBytes)]`.
+///
+/// `TryFromBytes` types can safely be deserialized from an untrusted sequence
+/// of bytes by performing a runtime check that the byte sequence contains a
+/// valid instance of `Self`.
+///
+/// `TryFromBytes` is ignorant of byte order. For byte order-aware types, see
+/// the [`byteorder`] module.
+///
+/// # What is a "valid instance"?
+///
+/// In Rust, each type has *bit validity*, which refers to the set of bit
+/// patterns which may appear in an instance of that type. It is impossible for
+/// safe Rust code to produce values which violate bit validity (ie, values
+/// outside of the "valid" set of bit patterns). If `unsafe` code produces an
+/// invalid value, this is considered [undefined behavior].
+///
+/// Rust's bit validity rules are currently being decided, which means that some
+/// types have three classes of bit patterns: those which are definitely valid,
+/// and whose validity is documented in the language; those which may or may not
+/// be considered valid at some point in the future; and those which are
+/// definitely invalid.
+///
+/// Zerocopy takes a conservative approach, and only considers a bit pattern to
+/// be valid if its validity is a documenteed guarantee provided by the
+/// language.
+///
+/// For most use cases, Rust's current guarantees align with programmers'
+/// intuitions about what ought to be valid. As a result, zerocopy's
+/// conservatism should not affect most users. One notable exception is unions,
+/// whose bit validity is very up in the air; zerocopy does not permit
+/// implementing `TryFromBytes` for any union type.
+///
+/// If you are negatively affected by lack of support for a particular type,
+/// we encourage you to let us know by [filing an issue][github-repo].
+///
+/// # Safety
+///
+/// On its own, `T: TryFromBytes` does not make any guarantees about the layout
+/// or representation of `T`. It merely provides the ability to perform a
+/// validity check at runtime via methods like [`try_from_ref`].
+///
+/// Currently, it is not possible to stably implement `TryFromBytes` other than
+/// by using `#[derive(TryFromBytes)]`. While there are `#[doc(hidden)]` items
+/// on this trait that provide well-defined safety invariants, no stability
+/// guarantees are made with respect to these items. In particular, future
+/// releases of zerocopy may make backwards-breaking changes to these items,
+/// including changes that only affect soundness, which may cause code which
+/// uses those items to silently become unsound.
+///
+/// [undefined behavior]: https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html
+/// [github-repo]: https://github.com/google/zerocopy
+/// [`try_from_ref`]: #
+// TODO(#5): Update `try_from_ref` doc link once it exists
+#[doc(hidden)]
+pub unsafe trait TryFromBytes {
+    /// Does a given memory range contain a valid instance of `Self`?
+    ///
+    /// # Safety
+    ///
+    /// ## Preconditions
+    ///
+    /// The memory referenced by `candidate` may only be accessed via reads for
+    /// the duration of this method call. This prohibits writes through mutable
+    /// references and through [`UnsafeCell`]s. There may exist immutable
+    /// references to the same memory which contain `UnsafeCell`s so long as:
+    /// - Those `UnsafeCell`s exist at the same byte ranges as `UnsafeCell`s in
+    ///   `Self`. This is a bidirectional property: `Self` may not contain
+    ///   `UnsafeCell`s where other references to the same memory do not, and
+    ///   vice-versa.
+    /// - Those `UnsafeCell`s are never used to perform mutation for the
+    ///   duration of this method call.
+    ///
+    /// `candidate` is not required to refer to a valid `Self`. However, it must
+    /// satisfy the requirement that uninitialized bytes may only be present
+    /// where it is possible for them to be present in `Self`. This is a dynamic
+    /// property: if, at a particular byte offset, a valid enum discriminant is
+    /// set, the subsequent bytes may only have uninitialized bytes as
+    /// specificed by the corresponding enum.
+    ///
+    /// Formally, given `len = size_of_val_raw(candidate)`, at every byte
+    /// offset, `b`, in the range `[0, len)`:
+    /// - If, in all instances `s: Self` of length `len`, the byte at offset `b`
+    ///   in `s` is initialized, then the byte at offset `b` within `*candidate`
+    ///   must be initialized.
+    /// - Let `c` be the contents of the byte range `[0, b)` in `*candidate`.
+    ///   Let `S` be the subset of valid instances of `Self` of length `len`
+    ///   which contain `c` in the offset range `[0, b)`. If, for all instances
+    ///   of `s: Self` in `S`, the byte at offset `b` in `s` is initialized,
+    ///   then the byte at offset `b` in `*candidate` must be initialized.
+    ///
+    ///   Pragmatically, this means that if `*candidate` is guaranteed to
+    ///   contain an enum type at a particular offset, and the enum discriminant
+    ///   stored in `*candidate` corresponds to a valid variant of that enum
+    ///   type, then it is guaranteed that the appropriate bytes of `*candidate`
+    ///   are initialized as defined by that variant's bit validity (although
+    ///   note that the variant may contain another enum type, in which case the
+    ///   same rules apply depending on the state of its discriminant, and so on
+    ///   recursively).
+    ///
+    /// ## Postconditions
+    ///
+    /// Unsafe code may assume that, if `is_bit_valid(candidate)` returns true,
+    /// `*candidate` contains a valid `Self`.
+    ///
+    /// # Panics
+    ///
+    /// `is_bit_valid` may panic. Callers are responsible for ensuring that any
+    /// `unsafe` code remains sound even in the face of `is_bit_valid`
+    /// panicking. (We support user-defined validation routines; so long as
+    /// these routines are not required to be `unsafe`, there is no way to
+    /// ensure that these do not generate panics.)
+    ///
+    /// [`UnsafeCell`]: core::cell::UnsafeCell
+    #[doc(hidden)]
+    unsafe fn is_bit_valid(candidate: Ptr<'_, Self>) -> bool;
+}
 
 /// Types for which a sequence of bytes all set to zero represents a valid
 /// instance of the type.
