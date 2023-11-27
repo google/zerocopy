@@ -38,7 +38,7 @@ pub(crate) mod ptr {
     /// `Ptr<'a, T>` is [covariant] in `'a` and `T`.
     ///
     /// [covariant]: https://doc.rust-lang.org/reference/subtyping.html
-    pub(crate) struct Ptr<'a, T: 'a + ?Sized> {
+    pub struct Ptr<'a, T: 'a + ?Sized> {
         // INVARIANTS:
         // - `ptr` is derived from some valid Rust allocation, `A`
         // - `ptr` has the same provenance as `A`
@@ -72,6 +72,7 @@ pub(crate) mod ptr {
 
     impl<'a, T: ?Sized> Copy for Ptr<'a, T> {}
     impl<'a, T: ?Sized> Clone for Ptr<'a, T> {
+        #[inline]
         fn clone(&self) -> Self {
             *self
         }
@@ -294,6 +295,7 @@ pub(crate) mod ptr {
     }
 
     impl<'a, T: 'a + ?Sized> Debug for Ptr<'a, T> {
+        #[inline]
         fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
             self.ptr.fmt(f)
         }
