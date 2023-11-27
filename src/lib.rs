@@ -1134,6 +1134,10 @@ pub unsafe trait TryFromBytes {
     /// - Those `UnsafeCell`s are never used to perform mutation for the
     ///   duration of this method call.
     ///
+    /// The memory referenced by `candidate` may not be referenced by any
+    /// mutable references even if these references are not used to perform
+    /// mutation.
+    ///
     /// `candidate` is not required to refer to a valid `Self`. However, it must
     /// satisfy the requirement that uninitialized bytes may only be present
     /// where it is possible for them to be present in `Self`. This is a dynamic
@@ -1177,6 +1181,65 @@ pub unsafe trait TryFromBytes {
     /// [`UnsafeCell`]: core::cell::UnsafeCell
     #[doc(hidden)]
     unsafe fn is_bit_valid(candidate: Ptr<'_, Self>) -> bool;
+
+    /// Attempts to interpret a byte slice as a `Self`.
+    ///
+    /// `try_from_ref` validates that `bytes` contains a valid `Self`, and that
+    /// it satisfies `Self`'s alignment requirement. If it does, then `bytes` is
+    /// reinterpreted as a `Self`.
+    ///
+    /// Note that Rust's bit validity rules are still being decided. As such,
+    /// there exist types whose bit validity is ambiguous. See the
+    /// `TryFromBytes` docs for a discussion of how these cases are handled.
+    // TODO(#251): In a future in which we distinguish between `FromBytes` and
+    // `RefFromBytes`, this requires `where Self: RefFromBytes` to disallow
+    // interior mutability.
+    #[inline]
+    #[doc(hidden)] // TODO(#5): Finalize name before remove this attribute.
+    fn try_from_ref(bytes: &[u8]) -> Option<&Self>
+    where
+        Self: KnownLayout,
+    {
+        let maybe_self = Ptr::from(bytes).try_cast_into_no_leftover::<Self>()?;
+
+        // SAFETY:
+        // - Since `bytes` is an immutable reference, we know that no mutable
+        //   references exist to this memory region.
+        // - Since `[u8]` contains no `UnsafeCell`s, we know there are no
+        //   `&UnsafeCell` references to this memory region.
+        // - Since we don't permit implementing `TryFromBytes` for types which
+        //   contain `UnsafeCell`s, there are no `UnsafeCell`s in `Self`, and so
+        //   the requirement that all references contain `UnsafeCell`s at the
+        //   same offsets is trivially satisfied.
+        // - All bytes of `bytes` are initialized.
+        //
+        // This call may panic. If that happens, it doesn't cause any soundness
+        // issues, as we have not generated any invalid state which we need to
+        // fix before returning.
+        if unsafe { !Self::is_bit_valid(maybe_self) } {
+            return None;
+        }
+
+        // SAFETY:
+        // - Preconditions for `as_ref`:
+        //   - `is_bit_valid` guarantees that `*maybe_self` contains a valid
+        //     `Self`. Since `&[u8]` does not permit interior mutation, this
+        //     cannot be invalidated after this method returns.
+        //   - Since the argument and return types are immutable references,
+        //     Rust will prevent the caller from producing any mutable
+        //     references to the same memory region.
+        //   - Since `Self` is not allowed to contain any `UnsafeCell`s and the
+        //     same is true of `[u8]`, interior mutation is not possible. Thus,
+        //     no mutation is possible. For the same reason, there is no
+        //     mismatch between the two types in terms of which byte ranges are
+        //     referenced as `UnsafeCell`s.
+        // - Since interior mutation isn't possible within `Self`, there's no
+        //   way for the returned reference to be used to modify the byte range,
+        //   and thus there's no way for the returned reference to be used to
+        //   write an invalid `[u8]` which would be observable via the original
+        //   `&[u8]`.
+        Some(unsafe { maybe_self.as_ref() })
+    }
 }
 
 /// Types for which a sequence of bytes all set to zero represents a valid
@@ -2139,6 +2202,44 @@ safety_comment! {
     /// [1] https://doc.rust-lang.org/reference/types/boolean.html
     unsafe_impl!(bool: FromZeroes, AsBytes, Unaligned);
     assert_unaligned!(bool);
+    /// SAFETY:
+    /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
+    ///   closure:
+    ///   - Given `t: *mut bool` and `let r = *mut u8`, `r` refers to an object
+    ///     of the same size as that referred to by `t`. This is true because
+    ///     `bool` and `u8` have the same size (1 byte) [1].
+    ///   - Since the closure takes a `&u8` argument, given a `Ptr<'a, bool>`
+    ///     which satisfies the preconditions of
+    ///     `TryFromBytes::<bool>::is_bit_valid`, it must be guaranteed that the
+    ///     memory referenced by that `Ptr` always contains a valid `u8`. Since
+    ///     `bool`'s single byte is always initialized, `is_bit_valid`'s
+    ///     precondition requires that the same is true of its argument. Since
+    ///     `u8`'s only bit validity invariant is that its single byte must be
+    ///     initialized, this memory is guaranteed to contain a valid `u8`.
+    ///   - The alignment of `bool` is equal to the alignment of `u8`. [1] [2]
+    ///   - The impl must only return `true` for its argument if the original
+    ///     `Ptr<bool>` refers to a valid `bool`. We only return true if the
+    ///     `u8` value is 0 or 1, and both of these are valid values for `bool`.
+    ///     [3]
+    ///
+    /// [1] Per https://doc.rust-lang.org/reference/type-layout.html#primitive-data-layout:
+    ///
+    ///   The size of most primitives is given in this table.
+    ///
+    ///   | Type      | `size_of::<Type>() ` |
+    ///   |-----------|----------------------|
+    ///   | `bool`    | 1                    |
+    ///   | `u8`/`i8` | 1                    |
+    ///
+    /// [2] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
+    ///
+    ///   The size of a value is always a multiple of its alignment.
+    ///
+    /// [3] Per https://doc.rust-lang.org/reference/types/boolean.html:
+    ///
+    ///   The value false has the bit pattern 0x00 and the value true has the
+    ///   bit pattern 0x01.
+    unsafe_impl!(bool: TryFromBytes; |byte: &u8| *byte < 2);
 }
 safety_comment! {
     /// SAFETY:
@@ -6044,9 +6145,135 @@ mod tests {
 
     #[test]
     fn test_impls() {
+        use core::borrow::Borrow;
+
+        // A type that can supply test cases for testing
+        // `TryFromBytes::is_bit_valid`. All types passed to `assert_impls!`
+        // must implement this trait; that macro uses it to generate runtime
+        // tests for `TryFromBytes` impls.
+        //
+        // All `T: FromBytes` types are provided with a blanket impl. Other
+        // types must implement `TryFromBytesTestable` directly (ie using
+        // `impl_try_from_bytes_testable!`).
+        trait TryFromBytesTestable {
+            fn with_passing_test_cases<F: Fn(&Self)>(f: F);
+            fn with_failing_test_cases<F: Fn(&[u8])>(f: F);
+        }
+
+        impl<T: FromBytes> TryFromBytesTestable for T {
+            fn with_passing_test_cases<F: Fn(&Self)>(f: F) {
+                // Test with a zeroed value.
+                f(&Self::new_zeroed());
+
+                let ffs = {
+                    let mut t = Self::new_zeroed();
+                    let ptr: *mut T = &mut t;
+                    // SAFETY: `T: FromBytes`
+                    unsafe { ptr::write_bytes(ptr.cast::<u8>(), 0xFF, mem::size_of::<T>()) };
+                    t
+                };
+
+                // Test with a value initialized with 0xFF.
+                f(&ffs);
+            }
+
+            fn with_failing_test_cases<F: Fn(&[u8])>(_f: F) {}
+        }
+
+        // Implements `TryFromBytesTestable`.
+        macro_rules! impl_try_from_bytes_testable {
+            // Base case for recursion (when the list of types has run out).
+            (=> @success $($success_case:expr),* $(, @failure $($failure_case:expr),*)?) => {};
+            // Implements for type(s) with no type parameters.
+            ($ty:ty $(,$tys:ty)* => @success $($success_case:expr),* $(, @failure $($failure_case:expr),*)?) => {
+                impl TryFromBytesTestable for $ty {
+                    impl_try_from_bytes_testable!(
+                        @methods     @success $($success_case),*
+                                 $(, @failure $($failure_case),*)?
+                    );
+                }
+                impl_try_from_bytes_testable!($($tys),* => @success $($success_case),* $(, @failure $($failure_case),*)?);
+            };
+            // Implements for multiple types with no type parameters.
+            ($($($ty:ty),* => @success $($success_case:expr), * $(, @failure $($failure_case:expr),*)?;)*) => {
+                $(
+                    impl_try_from_bytes_testable!($($ty),* => @success $($success_case),* $(, @failure $($failure_case),*)*);
+                )*
+            };
+            // Implements only the methods; caller must invoke this from inside
+            // an impl block.
+            (@methods @success $($success_case:expr),* $(, @failure $($failure_case:expr),*)?) => {
+                fn with_passing_test_cases<F: Fn(&Self)>(_f: F) {
+                    $(
+                        _f($success_case.borrow());
+                    )*
+                }
+
+                fn with_failing_test_cases<F: Fn(&[u8])>(_f: F) {
+                    $($(
+                        // `unused_qualifications` is spuriously triggered on
+                        // `Option::<Self>::None`.
+                        #[allow(unused_qualifications)]
+                        let case = $failure_case.as_bytes();
+                        _f(case.as_bytes());
+                    )*)?
+                }
+            };
+        }
+
+        // Note that these impls are only for types which are not `FromBytes`.
+        // `FromBytes` types are covered by a preceding blanket impl.
+        impl_try_from_bytes_testable!(
+            bool => @success true, false,
+                    @failure 2u8, 3u8, 0xFFu8;
+        );
+
         // Asserts that `$ty` implements any `$trait` and doesn't implement any
         // `!$trait`. Note that all `$trait`s must come before any `!$trait`s.
+        //
+        // For `T: TryFromBytes`, uses `TryFromBytesTestable` to test success
+        // and failure cases for `TryFromBytes::is_bit_valid`.
         macro_rules! assert_impls {
+            ($ty:ty: TryFromBytes) => {
+                <$ty as TryFromBytesTestable>::with_passing_test_cases(|val| {
+                    let c = Ptr::from(val);
+                    // SAFETY:
+                    // - Since `val` is a normal reference, `c` is guranteed to
+                    //   be aligned, to point to a single allocation, and to
+                    //   have a size which doesn't overflow `isize`.
+                    // - Since `val` is a valid `$ty`, `c`'s referent satisfies
+                    //   the bit validity constraints of `is_bit_valid`, which
+                    //   are a superset of the bit validity constraints of
+                    //   `$ty`.
+                    let res = unsafe { <$ty as TryFromBytes>::is_bit_valid(c) };
+                    assert!(res, "{}::is_bit_valid({:?}): got false, expected true", stringify!($ty), val);
+
+                    // TODO(#5): In addition to testing `is_bit_valid`, test the
+                    // methods built on top of it. This would both allow us to
+                    // test their implementations and actually convert the bytes
+                    // to `$ty`, giving Miri a chance to catch if this is
+                    // unsound (ie, if our `is_bit_valid` impl is buggy).
+                    //
+                    // The following code was tried, but it doesn't work because
+                    // a) some types are not `AsBytes` and, b) some types are
+                    // not `Sized`.
+                    //
+                    //   let r = <$ty as TryFromBytes>::try_from_ref(val.as_bytes()).unwrap();
+                    //   assert_eq!(r, &val);
+                    //   let r = <$ty as TryFromBytes>::try_from_mut(val.as_bytes_mut()).unwrap();
+                    //   assert_eq!(r, &mut val);
+                    //   let v = <$ty as TryFromBytes>::try_read_from(val.as_bytes()).unwrap();
+                    //   assert_eq!(v, val);
+                });
+                #[allow(clippy::as_conversions)]
+                <$ty as TryFromBytesTestable>::with_failing_test_cases(|c| {
+                    let res = <$ty as TryFromBytes>::try_from_ref(c);
+                    assert!(res.is_none(), "{}::is_bit_valid({:?}): got true, expected false", stringify!($ty), c);
+                });
+
+                #[allow(dead_code)]
+                const _: () = { static_assertions::assert_impl_all!($ty: TryFromBytes); };
+            };
             ($ty:ty: $trait:ident) => {
                 #[allow(dead_code)]
                 const _: () = { static_assertions::assert_impl_all!($ty: $trait); };
@@ -6088,7 +6315,7 @@ mod tests {
         assert_impls!(f32: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
         assert_impls!(f64: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
 
-        assert_impls!(bool: KnownLayout, FromZeroes, AsBytes, Unaligned, !TryFromBytes, !FromBytes);
+        assert_impls!(bool: KnownLayout, TryFromBytes, FromZeroes, AsBytes, Unaligned, !FromBytes);
         assert_impls!(char: KnownLayout, FromZeroes, AsBytes, !TryFromBytes, !FromBytes, !Unaligned);
         assert_impls!(str: KnownLayout, FromZeroes, AsBytes, Unaligned, !TryFromBytes, !FromBytes);
 

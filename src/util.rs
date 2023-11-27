@@ -65,58 +65,79 @@ pub(crate) mod ptr {
         ///
         /// # Safety
         ///
-        /// TODO(#29), TODO(#429): What is the right way to articulate the
-        /// safety invariant here? I can see two possible approaches:
-        /// - Mimic the invariants on [`NonNull::as_ref`] so that it's easy to
-        ///   write the safety comment on the inner call to `self.ptr.as_ref()`.
-        /// - Simply say that it's the caller's responsibility to ensure that
-        ///   the resulting reference is valid.
-        ///
-        /// These two approaches should in principle be equivalent, but since
-        /// our memory model is undefined, there are some subtleties here. See,
-        /// e.g.:
-        /// <https://github.com/rust-lang/unsafe-code-guidelines/issues/463#issuecomment-1736771593>
-        ///
-        /// # Old draft of Safety section
-        ///
+        /// For the duration of `'a`:
         /// - The referenced memory must contain a validly-initialized `T` for
-        ///   the duration of `'a`. Note that this requires that any interior
-        ///   mutation (i.e. via [`UnsafeCell`]) performed after this method
-        ///   call leave the memory region always containing a valid `T`.
-        /// - The referenced memory must not also by referenced by any mutable
-        ///   references during the lifetime `'a`.
+        ///   the duration of `'a`.
+        /// - The referenced memory must not also be referenced by any mutable
+        ///   references.
+        /// - The referenced memory must not be mutated, even via an
+        ///   [`UnsafeCell`].
         /// - There must not exist any references to the same memory region
         ///   which contain `UnsafeCell`s at byte ranges which are not identical
         ///   to the byte ranges at which `T` contains `UnsafeCell`s.
         ///
-        /// TODO: What about reads/mutation via raw pointers? Presumably these
-        /// can happen under the following conditions:
-        /// - Mutation only occurs inside `UnsafeCell`s
-        /// - Reads only happen using `UnsafeCell`s in places where there are
-        ///   `UnsafeCell`s in `T` (otherwise, those reads could be unsound due
-        ///   to assuming no concurrent mutation)
-        ///
         /// [`UnsafeCell`]: core::cell::UnsafeCell
+        // TODO(#429): The safety requirements are likely overly-restrictive.
+        // Notably, mutation via `UnsafeCell`s is probably fine. Once the rules
+        // are more clearly defined, we should relax the safety requirements.
+        // For an example of why this is subtle, see:
+        // https://github.com/rust-lang/unsafe-code-guidelines/issues/463#issuecomment-1736771593
         #[allow(unused)]
         pub(crate) unsafe fn as_ref(&self) -> &'a T {
-            // TODO(#429): Add a safety comment. This will depend on how we
-            // resolve the question about how to define the safety invariants on
-            // this method.
-            //
-            // Old draft of safety comment:
+            // SAFETY:
             // - By invariant, `self.ptr` is properly-aligned for `T`.
             // - By invariant, `self.ptr` is "dereferenceable" in that it points
-            //   to a single allocation
-            // - By invariant, the allocation is live for `'a`
+            //   to a single allocation.
+            // - By invariant, the allocation is live for `'a`.
             // - The caller promises that no mutable references exist to this
-            //   region during `'a`
-            // - The caller promises that `UnsafeCell`s match exactly
+            //   region during `'a`.
+            // - The caller promises that `UnsafeCell`s match exactly.
+            // - The caller promises that no mutation will happen during `'a`,
+            //   even via `UnsafeCell`s.
             // - The caller promises that the memory region contains a
-            //   validly-intialized `T`
-            #[allow(clippy::undocumented_unsafe_blocks)]
-            unsafe {
-                self.ptr.as_ref()
-            }
+            //   validly-intialized `T`.
+            unsafe { self.ptr.as_ref() }
+        }
+
+        /// Casts to a different (unsized) target type.
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that
+        /// - `cast(p)` is implemented exactly as follows: `|p: *mut T| p as
+        ///   *mut U`.
+        /// - The size of the object referenced by the resulting pointer is less
+        ///   than or equal to the size of the object referenced by `self`.
+        /// - The alignment of `U` is less than or equal to the alignment of
+        ///   `T`.
+        pub(crate) unsafe fn cast_unsized<U: 'a + ?Sized, F: FnOnce(*mut T) -> *mut U>(
+            self,
+            cast: F,
+        ) -> Ptr<'a, U> {
+            let ptr = cast(self.ptr.as_ptr());
+            // SAFETY: Caller promises that `cast` is just an `as` cast. We call
+            // `cast` on `self.ptr.as_ptr()`, which is non-null by construction.
+            let ptr = unsafe { NonNull::new_unchecked(ptr) };
+            // SAFETY:
+            // - By invariant, `self.ptr` is derived from some valid Rust
+            //   allocation, and since `ptr` is just `self.ptr as *mut U`, so is
+            //   `ptr`.
+            // - By invariant, `self.ptr` has the same provenance as `A`, and so
+            //   the same is true of `ptr`.
+            // - By invariant, `self.ptr` addresses a byte range which is
+            //   entirely contained in `A`, and so the same is true of `ptr`.
+            // - By invariant, `self.ptr` addresses a byte range whose length
+            //   fits in an `isize`, and so the same is true of `ptr`.
+            // - By invariant, `self.ptr` addresses a byte range which does not
+            //   wrap around the address space, and so the same is true of
+            //   `ptr`.
+            // - By invariant, `self.ptr` is validly-aligned for `T`. Since
+            //   `ptr` has the same address, and since the caller promises that
+            //   the alignment of `U` is less than or equal to the alignment of
+            //   `T`, `ptr` is validly-aligned for `U`.
+            // - By invariant, `A` is guaranteed to live for at least `'a`.
+            // - `U: 'a`
+            Ptr { ptr, _lifetime: PhantomData }
         }
     }
 
@@ -359,20 +380,15 @@ pub(crate) mod ptr {
                         unsafe fn validate_and_get_len<T: ?Sized + KnownLayout + FromBytes>(
                             slf: Ptr<'_, T>,
                         ) -> usize {
-                            // TODO(#429): Update this safety comment once
-                            // `as_ref`'s safety invariants are well-defined.
-                            //
-                            // Old draft safety comment:
-                            // - The caller has promised that all bytes
-                            //   referenced by `slf` are initialized. Since `T:
-                            //   FromBytes`, those bytes constitute a valid `T`.
-                            // - The caller has promised that no mutable
-                            //   references exist to the same memory during the
-                            //   duration of this function call.
-                            // - The caller has promised that no `UnsafeCell`
-                            //   references exist to the same memory during the
-                            //   duration of this function call.
-                            #[allow(clippy::undocumented_unsafe_blocks)]
+                            // SAFETY:
+                            // - Since all bytes in `slf` are initialized and
+                            //   `T: FromBytes`, `slf` contains a valid `T`.
+                            // - The caller promises that the referenced memory
+                            //   is not also referenced by any mutable
+                            //   references.
+                            // - The caller promises that the referenced memory
+                            //   is not also referenced as a type which contains
+                            //   `UnsafeCell`s.
                             let t = unsafe { slf.as_ref() };
 
                             let bytes = {

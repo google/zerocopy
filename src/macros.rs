@@ -45,19 +45,20 @@ macro_rules! safety_comment {
 ///   instance of `$ty`.
 /// - If an `is_bit_valid` impl is provided, then:
 ///   - Regardless of whether the provided closure takes a `Ptr<$repr>` or
-///     `&$repr` argument, it must be the case that, given `t: *mut $ty`, `let r
-///     = t as *mut $repr` is valid, and `r` refers to an object of equal or
-///     lesser size than the object referred to by `t`.
+///     `&$repr` argument, it must be the case that, given `t: *mut $ty` and
+///     `let r = t as *mut $repr`, `r` refers to an object of equal or lesser
+///     size than the object referred to by `t`.
 ///   - If the provided closure takes a `Ptr<$repr>` argument, then given a
 ///     `Ptr<$ty>` which satisfies the preconditions of
 ///     `TryFromBytes::<$ty>::is_bit_valid`, it must be guaranteed that a
 ///     `Ptr<$repr>` with the same address, provenance, and pointer metadata
 ///     satisfies the preconditions of `TryFromBytes::<$repr>::is_bit_valid`.
-///   - If the provided closure takes a `&$repr` argument, then given a
-///     `Ptr<'a, $ty>` which satisfies the preconditions of
-///     `TryFromBytes::<$ty>::is_bit_valid`, it must be sound to convert it to a
-///     `$repr` pointer with the same address, provenance, and pointer metadata,
-///     and to subsequently dereference that pointer as a `&'a $repr`.
+///   - If the provided closure takes a `&$repr` argument, then given a `Ptr<'a,
+///     $ty>` which satisfies the preconditions of
+///     `TryFromBytes::<$ty>::is_bit_valid`, it must be guaranteed that the
+///     memory referenced by that `Ptr` always contains a valid `$repr`.
+///   - The alignment of `$repr` is less than or equal to the alignment of
+///     `$ty`.
 ///   - The impl of `is_bit_valid` must only return `true` for its argument
 ///     `Ptr<$repr>` if the original `Ptr<$ty>` refers to a valid `$ty`.
 macro_rules! unsafe_impl {
@@ -144,12 +145,22 @@ macro_rules! unsafe_impl {
             //   by that method's safety precondition.
             // - The caller has promised that the cast results in an object of
             //   equal or lesser size.
+            // - The caller has promised that `$repr`'s alignment is less than
+            //   or equal to `Self`'s alignment.
             #[allow(clippy::as_conversions)]
-            let candidate = unsafe { candidate.cast_unsized::<$repr>(|p| p as *mut _) };
-            // SAFETY: The caller has promised that, so long as `candidate`
-            // satisfies the preconditions for `is_bit_valid`, it is valid to
-            // convert it to a reference with the same lifetime as `candidate`.
-            let $candidate: &$repr = unsafe { candidate._as_ref() };
+            let candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
+            // SAFETY:
+            // - The caller has promised that the referenced memory region will
+            //   contain a valid `$repr` for `'a`.
+            // - The memory may not be referenced by any mutable references.
+            //   This is a precondition of `is_bit_valid`.
+            // - The memory may not be mutated even via `UnsafeCell`s. This is a
+            //   precondition of `is_bit_valid`.
+            // - There must not exist any references to the same memory region
+            //   which contain `UnsafeCell`s at byte ranges which are not
+            //   identical to the byte ranges at which `T` contains
+            //   `UnsafeCell`s. This is a precondition of `is_bit_valid`.
+            let $candidate: &$repr = unsafe { candidate.as_ref() };
             $is_bit_valid
         }
     };
@@ -161,6 +172,8 @@ macro_rules! unsafe_impl {
             //   by that method's safety precondition.
             // - The caller has promised that the cast results in an object of
             //   equal or lesser size.
+            // - The caller has promised that `$repr`'s alignment is less than
+            //   or equal to `Self`'s alignment.
             #[allow(clippy::as_conversions)]
             let $candidate = unsafe { candidate.cast_unsized::<$repr>(|p| p as *mut _) };
             $is_bit_valid
