@@ -13,6 +13,7 @@ extern crate zerocopy;
 mod util;
 
 use self::util::{NotZerocopy, AU16};
+use zerocopy::KnownLayout;
 
 fn main() {}
 

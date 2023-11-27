@@ -168,7 +168,7 @@ define_kind_specific_repr!(
 );
 
 // All representations known to Rust.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Repr {
     U8,
     U16,
@@ -183,40 +183,58 @@ pub enum Repr {
     C,
     Transparent,
     Packed,
+    PackedN(u64),
     Align(u64),
 }
 
 impl Repr {
     fn from_meta(meta: &Meta) -> Result<Repr, Error> {
-        match meta {
-            Meta::Path(path) => {
-                let ident = path
-                    .get_ident()
-                    .ok_or_else(|| Error::new_spanned(meta, "unrecognized representation hint"))?;
-                match format!("{}", ident).as_str() {
-                    "u8" => return Ok(Repr::U8),
-                    "u16" => return Ok(Repr::U16),
-                    "u32" => return Ok(Repr::U32),
-                    "u64" => return Ok(Repr::U64),
-                    "usize" => return Ok(Repr::Usize),
-                    "i8" => return Ok(Repr::I8),
-                    "i16" => return Ok(Repr::I16),
-                    "i32" => return Ok(Repr::I32),
-                    "i64" => return Ok(Repr::I64),
-                    "isize" => return Ok(Repr::Isize),
-                    "C" => return Ok(Repr::C),
-                    "transparent" => return Ok(Repr::Transparent),
-                    "packed" => return Ok(Repr::Packed),
-                    _ => {}
-                }
-            }
-            Meta::List(list) => {
-                return Ok(Repr::Align(list.parse_args::<LitInt>()?.base10_parse::<u64>()?))
-            }
-            _ => {}
-        }
+        let (path, list) = match meta {
+            Meta::Path(path) => (path, None),
+            Meta::List(list) => (&list.path, Some(list)),
+            _ => return Err(Error::new_spanned(meta, "unrecognized representation hint")),
+        };
 
-        Err(Error::new_spanned(meta, "unrecognized representation hint"))
+        let ident = path
+            .get_ident()
+            .ok_or_else(|| Error::new_spanned(meta, "unrecognized representation hint"))?;
+
+        Ok(match (ident.to_string().as_str(), list) {
+            ("u8", None) => Repr::U8,
+            ("u16", None) => Repr::U16,
+            ("u32", None) => Repr::U32,
+            ("u64", None) => Repr::U64,
+            ("usize", None) => Repr::Usize,
+            ("i8", None) => Repr::I8,
+            ("i16", None) => Repr::I16,
+            ("i32", None) => Repr::I32,
+            ("i64", None) => Repr::I64,
+            ("isize", None) => Repr::Isize,
+            ("C", None) => Repr::C,
+            ("transparent", None) => Repr::Transparent,
+            ("packed", None) => Repr::Packed,
+            ("packed", Some(list)) => {
+                Repr::PackedN(list.parse_args::<LitInt>()?.base10_parse::<u64>()?)
+            }
+            ("align", Some(list)) => {
+                Repr::Align(list.parse_args::<LitInt>()?.base10_parse::<u64>()?)
+            }
+            _ => return Err(Error::new_spanned(meta, "unrecognized representation hint")),
+        })
+    }
+}
+
+impl KindRepr for Repr {
+    fn is_align(&self) -> bool {
+        false
+    }
+
+    fn is_align_gt_one(&self) -> bool {
+        false
+    }
+
+    fn parse(meta: &Meta) -> syn::Result<Self> {
+        Self::from_meta(meta)
     }
 }
 
@@ -224,6 +242,9 @@ impl Display for Repr {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), fmt::Error> {
         if let Repr::Align(n) = self {
             return write!(f, "repr(align({}))", n);
+        }
+        if let Repr::PackedN(n) = self {
+            return write!(f, "repr(packed({}))", n);
         }
         write!(
             f,
@@ -248,7 +269,7 @@ impl Display for Repr {
     }
 }
 
-fn reprs<R: KindRepr>(attrs: &[Attribute]) -> Result<Vec<(Meta, R)>, Vec<Error>> {
+pub(crate) fn reprs<R: KindRepr>(attrs: &[Attribute]) -> Result<Vec<(Meta, R)>, Vec<Error>> {
     let mut reprs = Vec::new();
     let mut errors = Vec::new();
     for attr in attrs {

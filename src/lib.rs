@@ -401,6 +401,12 @@ pub enum _CastType {
 }
 
 impl DstLayout {
+    /// The minimum possible alignment of a type.
+    const MIN_ALIGN: NonZeroUsize = match NonZeroUsize::new(1) {
+        Some(min_align) => min_align,
+        None => unreachable!(),
+    };
+
     /// The maximum theoretic possible alignment of a type.
     ///
     /// For compatibility with future Rust versions, this is defined as the
@@ -423,6 +429,30 @@ impl DstLayout {
         Some(max_align) => max_align,
         None => unreachable!(),
     };
+
+    /// Constructs a `DstLayout` for a zero-sized type with `repr_align`
+    /// alignment (or 1). If `repr_align` is provided, then it must be a power
+    /// of two.
+    ///
+    /// # Panics
+    ///
+    /// This function panics if the supplied `repr_align` is not a power of two.
+    ///
+    /// # Safety
+    ///
+    /// Unsafe code may assume that the contract of this function is satisfied.
+    #[doc(hidden)]
+    #[inline]
+    pub const fn new_zst(repr_align: Option<NonZeroUsize>) -> DstLayout {
+        let align = match repr_align {
+            Some(align) => align,
+            None => Self::MIN_ALIGN,
+        };
+
+        assert!(align.is_power_of_two());
+
+        DstLayout { align, size_info: SizeInfo::Sized { _size: 0 } }
+    }
 
     /// Constructs a `DstLayout` which describes `T`.
     ///
@@ -495,8 +525,9 @@ impl DstLayout {
     /// We make no guarantees to the behavior of this method if these fragments
     /// cannot appear in a valid Rust type (e.g., the concatenation of the
     /// layouts would lead to a size larger than `isize::MAX`).
-    #[allow(dead_code)]
-    pub(crate) const fn extend(self, field: DstLayout, repr_packed: Option<NonZeroUsize>) -> Self {
+    #[doc(hidden)]
+    #[inline]
+    pub const fn extend(self, field: DstLayout, repr_packed: Option<NonZeroUsize>) -> Self {
         use util::{core_layout::padding_needed_for, max, min};
 
         // If `repr_packed` is `None`, there are no alignment constraints, and
@@ -633,8 +664,9 @@ impl DstLayout {
     /// We make no guarantees to the behavior of this method if `self` cannot
     /// appear in a valid Rust type (e.g., because the addition of trailing
     /// padding would lead to a size larger than `isize::MAX`).
-    #[allow(dead_code)]
-    pub(crate) const fn pad_to_align(self) -> Self {
+    #[doc(hidden)]
+    #[inline]
+    pub const fn pad_to_align(self) -> Self {
         use util::core_layout::padding_needed_for;
 
         let size_info = match self.size_info {
@@ -5342,6 +5374,390 @@ mod tests {
         test!(str, layout(0, 1, Some(1)));
     }
 
+    #[cfg(feature = "derive")]
+    #[test]
+    fn test_known_layout_derive() {
+        // In this and other files (`late_compile_pass.rs`,
+        // `mid_compile_pass.rs`, and `struct.rs`), we test success and failure
+        // modes of `derive(KnownLayout)` for the following combination of
+        // properties:
+        //
+        // +------------+--------------------------------------+-----------+
+        // |            |      trailing field properties       |           |
+        // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+        // |------------+----------+----------------+----------+-----------|
+        // |          N |        N |              N |        N |      KL00 |
+        // |          N |        N |              N |        Y |      KL01 |
+        // |          N |        N |              Y |        N |      KL02 |
+        // |          N |        N |              Y |        Y |      KL03 |
+        // |          N |        Y |              N |        N |      KL04 |
+        // |          N |        Y |              N |        Y |      KL05 |
+        // |          N |        Y |              Y |        N |      KL06 |
+        // |          N |        Y |              Y |        Y |      KL07 |
+        // |          Y |        N |              N |        N |      KL08 |
+        // |          Y |        N |              N |        Y |      KL09 |
+        // |          Y |        N |              Y |        N |      KL10 |
+        // |          Y |        N |              Y |        Y |      KL11 |
+        // |          Y |        Y |              N |        N |      KL12 |
+        // |          Y |        Y |              N |        Y |      KL13 |
+        // |          Y |        Y |              Y |        N |      KL14 |
+        // |          Y |        Y |              Y |        Y |      KL15 |
+        // +------------+----------+----------------+----------+-----------+
+
+        struct NotKnownLayout<T = ()> {
+            _t: T,
+        }
+
+        #[derive(KnownLayout)]
+        #[repr(C)]
+        struct AlignSize<const ALIGN: usize, const SIZE: usize>
+        where
+            elain::Align<ALIGN>: elain::Alignment,
+        {
+            _align: elain::Align<ALIGN>,
+            _size: [u8; SIZE],
+        }
+
+        type AU16 = AlignSize<2, 2>;
+        type AU32 = AlignSize<4, 4>;
+
+        fn _assert_kl<T: ?Sized + KnownLayout>(_: &T) {}
+
+        let sized_layout = |align, size| DstLayout {
+            align: NonZeroUsize::new(align).unwrap(),
+            size_info: SizeInfo::Sized { _size: size },
+        };
+
+        let unsized_layout = |align, elem_size, offset| DstLayout {
+            align: NonZeroUsize::new(align).unwrap(),
+            size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                _offset: offset,
+                _elem_size: elem_size,
+            }),
+        };
+
+        // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+        // |          N |        N |              N |        Y |      KL01 |
+        #[derive(KnownLayout)]
+        struct KL01(NotKnownLayout<AU32>, NotKnownLayout<AU16>);
+
+        let expected = DstLayout::for_type::<KL01>();
+
+        assert_eq!(<KL01 as KnownLayout>::LAYOUT, expected);
+        assert_eq!(<KL01 as KnownLayout>::LAYOUT, sized_layout(4, 8));
+
+        // ...with `align(N)`:
+        #[derive(KnownLayout)]
+        #[repr(align(64))]
+        struct KL01Align(NotKnownLayout<AU32>, NotKnownLayout<AU16>);
+
+        let expected = DstLayout::for_type::<KL01Align>();
+
+        assert_eq!(<KL01Align as KnownLayout>::LAYOUT, expected);
+        assert_eq!(<KL01Align as KnownLayout>::LAYOUT, sized_layout(64, 64));
+
+        // ...with `packed`:
+        #[derive(KnownLayout)]
+        #[repr(packed)]
+        struct KL01Packed(NotKnownLayout<AU32>, NotKnownLayout<AU16>);
+
+        let expected = DstLayout::for_type::<KL01Packed>();
+
+        assert_eq!(<KL01Packed as KnownLayout>::LAYOUT, expected);
+        assert_eq!(<KL01Packed as KnownLayout>::LAYOUT, sized_layout(1, 6));
+
+        // ...with `packed(N)`:
+        #[derive(KnownLayout)]
+        #[repr(packed(2))]
+        struct KL01PackedN(NotKnownLayout<AU32>, NotKnownLayout<AU16>);
+
+        assert_impl_all!(KL01PackedN: KnownLayout);
+
+        let expected = DstLayout::for_type::<KL01PackedN>();
+
+        assert_eq!(<KL01PackedN as KnownLayout>::LAYOUT, expected);
+        assert_eq!(<KL01PackedN as KnownLayout>::LAYOUT, sized_layout(2, 6));
+
+        // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+        // |          N |        N |              Y |        Y |      KL03 |
+        #[derive(KnownLayout)]
+        struct KL03(NotKnownLayout, u8);
+
+        let expected = DstLayout::for_type::<KL03>();
+
+        assert_eq!(<KL03 as KnownLayout>::LAYOUT, expected);
+        assert_eq!(<KL03 as KnownLayout>::LAYOUT, sized_layout(1, 1));
+
+        // ... with `align(N)`
+        #[derive(KnownLayout)]
+        #[repr(align(64))]
+        struct KL03Align(NotKnownLayout<AU32>, u8);
+
+        let expected = DstLayout::for_type::<KL03Align>();
+
+        assert_eq!(<KL03Align as KnownLayout>::LAYOUT, expected);
+        assert_eq!(<KL03Align as KnownLayout>::LAYOUT, sized_layout(64, 64));
+
+        // ... with `packed`:
+        #[derive(KnownLayout)]
+        #[repr(packed)]
+        struct KL03Packed(NotKnownLayout<AU32>, u8);
+
+        let expected = DstLayout::for_type::<KL03Packed>();
+
+        assert_eq!(<KL03Packed as KnownLayout>::LAYOUT, expected);
+        assert_eq!(<KL03Packed as KnownLayout>::LAYOUT, sized_layout(1, 5));
+
+        // ... with `packed(N)`
+        #[derive(KnownLayout)]
+        #[repr(packed(2))]
+        struct KL03PackedN(NotKnownLayout<AU32>, u8);
+
+        assert_impl_all!(KL03PackedN: KnownLayout);
+
+        let expected = DstLayout::for_type::<KL03PackedN>();
+
+        assert_eq!(<KL03PackedN as KnownLayout>::LAYOUT, expected);
+        assert_eq!(<KL03PackedN as KnownLayout>::LAYOUT, sized_layout(2, 6));
+
+        // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+        // |          N |        Y |              N |        Y |      KL05 |
+        #[derive(KnownLayout)]
+        struct KL05<T>(u8, T);
+
+        fn _test_kl05<T>(t: T) -> impl KnownLayout {
+            KL05(0u8, t)
+        }
+
+        // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+        // |          N |        Y |              Y |        Y |      KL07 |
+        #[derive(KnownLayout)]
+        struct KL07<T: KnownLayout>(u8, T);
+
+        fn _test_kl07<T: KnownLayout>(t: T) -> impl KnownLayout {
+            let _ = KL07(0u8, t);
+        }
+
+        // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+        // |          Y |        N |              Y |        N |      KL10 |
+        #[derive(KnownLayout)]
+        #[repr(C)]
+        struct KL10(NotKnownLayout<AU32>, [u8]);
+
+        let expected = DstLayout::new_zst(None)
+            .extend(DstLayout::for_type::<NotKnownLayout<AU32>>(), None)
+            .extend(<[u8] as KnownLayout>::LAYOUT, None)
+            .pad_to_align();
+
+        assert_eq!(<KL10 as KnownLayout>::LAYOUT, expected);
+        assert_eq!(<KL10 as KnownLayout>::LAYOUT, unsized_layout(4, 1, 4));
+
+        // ...with `align(N)`:
+        #[derive(KnownLayout)]
+        #[repr(C, align(64))]
+        struct KL10Align(NotKnownLayout<AU32>, [u8]);
+
+        let repr_align = NonZeroUsize::new(64);
+
+        let expected = DstLayout::new_zst(repr_align)
+            .extend(DstLayout::for_type::<NotKnownLayout<AU32>>(), None)
+            .extend(<[u8] as KnownLayout>::LAYOUT, None)
+            .pad_to_align();
+
+        assert_eq!(<KL10Align as KnownLayout>::LAYOUT, expected);
+        assert_eq!(<KL10Align as KnownLayout>::LAYOUT, unsized_layout(64, 1, 4));
+
+        // ...with `packed`:
+        #[derive(KnownLayout)]
+        #[repr(C, packed)]
+        struct KL10Packed(NotKnownLayout<AU32>, [u8]);
+
+        let repr_packed = NonZeroUsize::new(1);
+
+        let expected = DstLayout::new_zst(None)
+            .extend(DstLayout::for_type::<NotKnownLayout<AU32>>(), repr_packed)
+            .extend(<[u8] as KnownLayout>::LAYOUT, repr_packed)
+            .pad_to_align();
+
+        assert_eq!(<KL10Packed as KnownLayout>::LAYOUT, expected);
+        assert_eq!(<KL10Packed as KnownLayout>::LAYOUT, unsized_layout(1, 1, 4));
+
+        // ...with `packed(N)`:
+        #[derive(KnownLayout)]
+        #[repr(C, packed(2))]
+        struct KL10PackedN(NotKnownLayout<AU32>, [u8]);
+
+        let repr_packed = NonZeroUsize::new(2);
+
+        let expected = DstLayout::new_zst(None)
+            .extend(DstLayout::for_type::<NotKnownLayout<AU32>>(), repr_packed)
+            .extend(<[u8] as KnownLayout>::LAYOUT, repr_packed)
+            .pad_to_align();
+
+        assert_eq!(<KL10PackedN as KnownLayout>::LAYOUT, expected);
+        assert_eq!(<KL10PackedN as KnownLayout>::LAYOUT, unsized_layout(2, 1, 4));
+
+        // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+        // |          Y |        N |              Y |        Y |      KL11 |
+        #[derive(KnownLayout)]
+        #[repr(C)]
+        struct KL11(NotKnownLayout<AU64>, u8);
+
+        let expected = DstLayout::new_zst(None)
+            .extend(DstLayout::for_type::<NotKnownLayout<AU64>>(), None)
+            .extend(<u8 as KnownLayout>::LAYOUT, None)
+            .pad_to_align();
+
+        assert_eq!(<KL11 as KnownLayout>::LAYOUT, expected);
+        assert_eq!(<KL11 as KnownLayout>::LAYOUT, sized_layout(8, 16));
+
+        // ...with `align(N)`:
+        #[derive(KnownLayout)]
+        #[repr(C, align(64))]
+        struct KL11Align(NotKnownLayout<AU64>, u8);
+
+        let repr_align = NonZeroUsize::new(64);
+
+        let expected = DstLayout::new_zst(repr_align)
+            .extend(DstLayout::for_type::<NotKnownLayout<AU64>>(), None)
+            .extend(<u8 as KnownLayout>::LAYOUT, None)
+            .pad_to_align();
+
+        assert_eq!(<KL11Align as KnownLayout>::LAYOUT, expected);
+        assert_eq!(<KL11Align as KnownLayout>::LAYOUT, sized_layout(64, 64));
+
+        // ...with `packed`:
+        #[derive(KnownLayout)]
+        #[repr(C, packed)]
+        struct KL11Packed(NotKnownLayout<AU64>, u8);
+
+        let repr_packed = NonZeroUsize::new(1);
+
+        let expected = DstLayout::new_zst(None)
+            .extend(DstLayout::for_type::<NotKnownLayout<AU64>>(), repr_packed)
+            .extend(<u8 as KnownLayout>::LAYOUT, repr_packed)
+            .pad_to_align();
+
+        assert_eq!(<KL11Packed as KnownLayout>::LAYOUT, expected);
+        assert_eq!(<KL11Packed as KnownLayout>::LAYOUT, sized_layout(1, 9));
+
+        // ...with `packed(N)`:
+        #[derive(KnownLayout)]
+        #[repr(C, packed(2))]
+        struct KL11PackedN(NotKnownLayout<AU64>, u8);
+
+        let repr_packed = NonZeroUsize::new(2);
+
+        let expected = DstLayout::new_zst(None)
+            .extend(DstLayout::for_type::<NotKnownLayout<AU64>>(), repr_packed)
+            .extend(<u8 as KnownLayout>::LAYOUT, repr_packed)
+            .pad_to_align();
+
+        assert_eq!(<KL11PackedN as KnownLayout>::LAYOUT, expected);
+        assert_eq!(<KL11PackedN as KnownLayout>::LAYOUT, sized_layout(2, 10));
+
+        // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+        // |          Y |        Y |              Y |        N |      KL14 |
+        #[derive(KnownLayout)]
+        #[repr(C)]
+        struct KL14<T: ?Sized + KnownLayout>(u8, T);
+
+        fn _test_kl14<T: ?Sized + KnownLayout>(kl: &KL14<T>) {
+            _assert_kl(kl)
+        }
+
+        // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+        // |          Y |        Y |              Y |        Y |      KL15 |
+        #[derive(KnownLayout)]
+        #[repr(C)]
+        struct KL15<T: KnownLayout>(u8, T);
+
+        fn _test_kl15<T: KnownLayout>(t: T) -> impl KnownLayout {
+            let _ = KL15(0u8, t);
+        }
+
+        // Test a variety of combinations of field types:
+        //  - ()
+        //  - u8
+        //  - AU16
+        //  - [()]
+        //  - [u8]
+        //  - [AU16]
+
+        #[allow(clippy::upper_case_acronyms)]
+        #[derive(KnownLayout)]
+        #[repr(C)]
+        struct KLTU<T, U: ?Sized>(T, U);
+
+        assert_eq!(<KLTU<(), ()> as KnownLayout>::LAYOUT, sized_layout(1, 0));
+
+        assert_eq!(<KLTU<(), u8> as KnownLayout>::LAYOUT, sized_layout(1, 1));
+
+        assert_eq!(<KLTU<(), AU16> as KnownLayout>::LAYOUT, sized_layout(2, 2));
+
+        assert_eq!(<KLTU<(), [()]> as KnownLayout>::LAYOUT, unsized_layout(1, 0, 0));
+
+        assert_eq!(<KLTU<(), [u8]> as KnownLayout>::LAYOUT, unsized_layout(1, 1, 0));
+
+        assert_eq!(<KLTU<(), [AU16]> as KnownLayout>::LAYOUT, unsized_layout(2, 2, 0));
+
+        assert_eq!(<KLTU<u8, ()> as KnownLayout>::LAYOUT, sized_layout(1, 1));
+
+        assert_eq!(<KLTU<u8, u8> as KnownLayout>::LAYOUT, sized_layout(1, 2));
+
+        assert_eq!(<KLTU<u8, AU16> as KnownLayout>::LAYOUT, sized_layout(2, 4));
+
+        assert_eq!(<KLTU<u8, [()]> as KnownLayout>::LAYOUT, unsized_layout(1, 0, 1));
+
+        assert_eq!(<KLTU<u8, [u8]> as KnownLayout>::LAYOUT, unsized_layout(1, 1, 1));
+
+        assert_eq!(<KLTU<u8, [AU16]> as KnownLayout>::LAYOUT, unsized_layout(2, 2, 2));
+
+        assert_eq!(<KLTU<AU16, ()> as KnownLayout>::LAYOUT, sized_layout(2, 2));
+
+        assert_eq!(<KLTU<AU16, u8> as KnownLayout>::LAYOUT, sized_layout(2, 4));
+
+        assert_eq!(<KLTU<AU16, AU16> as KnownLayout>::LAYOUT, sized_layout(2, 4));
+
+        assert_eq!(<KLTU<AU16, [()]> as KnownLayout>::LAYOUT, unsized_layout(2, 0, 2));
+
+        assert_eq!(<KLTU<AU16, [u8]> as KnownLayout>::LAYOUT, unsized_layout(2, 1, 2));
+
+        assert_eq!(<KLTU<AU16, [AU16]> as KnownLayout>::LAYOUT, unsized_layout(2, 2, 2));
+
+        // Test a variety of field counts.
+
+        #[derive(KnownLayout)]
+        #[repr(C)]
+        struct KLF0;
+
+        assert_eq!(<KLF0 as KnownLayout>::LAYOUT, sized_layout(1, 0));
+
+        #[derive(KnownLayout)]
+        #[repr(C)]
+        struct KLF1([u8]);
+
+        assert_eq!(<KLF1 as KnownLayout>::LAYOUT, unsized_layout(1, 1, 0));
+
+        #[derive(KnownLayout)]
+        #[repr(C)]
+        struct KLF2(NotKnownLayout<u8>, [u8]);
+
+        assert_eq!(<KLF2 as KnownLayout>::LAYOUT, unsized_layout(1, 1, 1));
+
+        #[derive(KnownLayout)]
+        #[repr(C)]
+        struct KLF3(NotKnownLayout<u8>, NotKnownLayout<AU16>, [u8]);
+
+        assert_eq!(<KLF3 as KnownLayout>::LAYOUT, unsized_layout(2, 1, 4));
+
+        #[derive(KnownLayout)]
+        #[repr(C)]
+        struct KLF4(NotKnownLayout<u8>, NotKnownLayout<AU16>, NotKnownLayout<AU32>, [u8]);
+
+        assert_eq!(<KLF4 as KnownLayout>::LAYOUT, unsized_layout(4, 1, 8));
+    }
+
     #[test]
     fn test_object_safety() {
         fn _takes_from_zeroes(_: &dyn FromZeroes) {}
@@ -6543,7 +6959,7 @@ mod tests {
         assert_impls!(Wrapping<NotZerocopy>: KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
         assert_impls!(Unalign<u8>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
-        assert_impls!(Unalign<NotZerocopy>: KnownLayout, Unaligned, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes);
+        assert_impls!(Unalign<NotZerocopy>: Unaligned, !KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes);
 
         assert_impls!([u8]: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
         assert_impls!([NotZerocopy]: !KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
