@@ -344,8 +344,8 @@ const POINTER_WIDTH_BITS: usize = mem::size_of::<usize>() * 8;
 #[allow(missing_debug_implementations, missing_copy_implementations)]
 #[cfg_attr(any(kani, test), derive(Copy, Clone, Debug, PartialEq, Eq))]
 pub struct DstLayout {
-    _align: NonZeroUsize,
-    _size_info: SizeInfo,
+    align: NonZeroUsize,
+    size_info: SizeInfo,
 }
 
 #[cfg_attr(any(kani, test), derive(Copy, Clone, Debug, PartialEq, Eq))]
@@ -376,7 +376,8 @@ struct TrailingSliceLayout<E = usize> {
 impl SizeInfo {
     /// Attempts to create a `SizeInfo` from `Self` in which `elem_size` is a
     /// `NonZeroUsize`. If `elem_size` is 0, returns `None`.
-    const fn _try_to_nonzero_elem_size(&self) -> Option<SizeInfo<NonZeroUsize>> {
+    #[allow(unused)]
+    const fn try_to_nonzero_elem_size(&self) -> Option<SizeInfo<NonZeroUsize>> {
         Some(match *self {
             SizeInfo::Sized { _size } => SizeInfo::Sized { _size },
             SizeInfo::SliceDst(TrailingSliceLayout { _offset, _elem_size }) => {
@@ -435,11 +436,11 @@ impl DstLayout {
         // sound to initialize `size_info` to `SizeInfo::Sized { size }`; the
         // `size` field is also correct by construction.
         DstLayout {
-            _align: match NonZeroUsize::new(mem::align_of::<T>()) {
+            align: match NonZeroUsize::new(mem::align_of::<T>()) {
                 Some(align) => align,
                 None => unreachable!(),
             },
-            _size_info: SizeInfo::Sized { _size: mem::size_of::<T>() },
+            size_info: SizeInfo::Sized { _size: mem::size_of::<T>() },
         }
     }
 
@@ -458,11 +459,11 @@ impl DstLayout {
         // construction. Since `[T]` is a (degenerate case of a) slice DST, it
         // is correct to initialize `size_info` to `SizeInfo::SliceDst`.
         DstLayout {
-            _align: match NonZeroUsize::new(mem::align_of::<T>()) {
+            align: match NonZeroUsize::new(mem::align_of::<T>()) {
                 Some(align) => align,
                 None => unreachable!(),
             },
-            _size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+            size_info: SizeInfo::SliceDst(TrailingSliceLayout {
                 _offset: 0,
                 _elem_size: mem::size_of::<T>(),
             }),
@@ -496,7 +497,7 @@ impl DstLayout {
     /// layouts would lead to a size larger than `isize::MAX`).
     #[allow(dead_code)]
     pub(crate) const fn extend(self, field: DstLayout, repr_packed: Option<NonZeroUsize>) -> Self {
-        use util::{core_layout::_padding_needed_for, max, min};
+        use util::{core_layout::padding_needed_for, max, min};
 
         // If `repr_packed` is `None`, there are no alignment constraints, and
         // the value can be defaulted to `THEORETICAL_MAX_ALIGN`.
@@ -512,8 +513,8 @@ impl DstLayout {
         // actually occurs, we'd like to be notified via assertion failures.
         #[cfg(not(kani))]
         {
-            debug_assert!(self._align.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
-            debug_assert!(field._align.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
+            debug_assert!(self.align.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
+            debug_assert!(field.align.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
             if let Some(repr_packed) = repr_packed {
                 debug_assert!(repr_packed.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
             }
@@ -527,13 +528,13 @@ impl DstLayout {
         //   The alignments of each field, for the purpose of positioning
         //   fields, is the smaller of the specified alignment and the alignment
         //   of the field's type.
-        let field_align = min(field._align, max_align);
+        let field_align = min(field.align, max_align);
 
         // The struct's alignment is the maximum of its previous alignment and
         // `field_align`.
-        let align = max(self._align, field_align);
+        let align = max(self.align, field_align);
 
-        let size_info = match self._size_info {
+        let size_info = match self.size_info {
             // If the layout is already a DST, we panic; DSTs cannot be extended
             // with additional fields.
             SizeInfo::SliceDst(..) => panic!("Cannot extend a DST with additional fields."),
@@ -548,7 +549,7 @@ impl DstLayout {
                 //   Inter-field padding is guaranteed to be the minimum
                 //   required in order to satisfy each field's (possibly
                 //   altered) alignment.
-                let padding = _padding_needed_for(preceding_size, field_align);
+                let padding = padding_needed_for(preceding_size, field_align);
 
                 // This will not panic (and is proven to not panic, with Kani)
                 // if the layout components can correspond to a leading layout
@@ -560,7 +561,7 @@ impl DstLayout {
                     None => panic!("Adding padding to `self`'s size overflows `usize`."),
                 };
 
-                match field._size_info {
+                match field.size_info {
                     SizeInfo::Sized { _size: field_size } => {
                         // If the trailing field is sized, the resulting layout
                         // will be sized. Its size will be the sum of the
@@ -605,7 +606,7 @@ impl DstLayout {
             }
         };
 
-        DstLayout { _align: align, _size_info: size_info }
+        DstLayout { align, size_info }
     }
 
     /// Like `Layout::pad_to_align`, this routine rounds the size of this layout
@@ -634,13 +635,13 @@ impl DstLayout {
     /// padding would lead to a size larger than `isize::MAX`).
     #[allow(dead_code)]
     pub(crate) const fn pad_to_align(self) -> Self {
-        use util::core_layout::_padding_needed_for;
+        use util::core_layout::padding_needed_for;
 
-        let size_info = match self._size_info {
+        let size_info = match self.size_info {
             // For sized layouts, we add the minimum amount of trailing padding
             // needed to satisfy alignment.
             SizeInfo::Sized { _size: unpadded_size } => {
-                let padding = _padding_needed_for(unpadded_size, self._align);
+                let padding = padding_needed_for(unpadded_size, self.align);
                 let size = match unpadded_size.checked_add(padding) {
                     Some(size) => size,
                     None => panic!("Adding padding caused size to overflow `usize`."),
@@ -654,7 +655,7 @@ impl DstLayout {
             size_info @ SizeInfo::SliceDst(_) => size_info,
         };
 
-        DstLayout { _align: self._align, _size_info: size_info }
+        DstLayout { align: self.align, size_info }
     }
 
     /// Validates that a cast is sound from a layout perspective.
@@ -721,7 +722,8 @@ impl DstLayout {
     /// `validate_cast_and_convert_metadata` will panic. The caller should not
     /// rely on `validate_cast_and_convert_metadata` panicking in any particular
     /// condition, even if `debug_assertions` are enabled.
-    const fn _validate_cast_and_convert_metadata(
+    #[allow(unused)]
+    const fn validate_cast_and_convert_metadata(
         &self,
         addr: usize,
         bytes_len: usize,
@@ -747,7 +749,7 @@ impl DstLayout {
         //
         // TODO(#67): Once our MSRV is 1.65, use let-else:
         // https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html#let-else-statements
-        let size_info = match self._size_info._try_to_nonzero_elem_size() {
+        let size_info = match self.size_info.try_to_nonzero_elem_size() {
             Some(size_info) => size_info,
             None => panic!("attempted to cast to slice type with zero-sized element"),
         };
@@ -780,7 +782,7 @@ impl DstLayout {
             // precondition of this method. Modulus is guaranteed not to divide
             // by 0 because `align` is non-zero.
             #[allow(clippy::arithmetic_side_effects)]
-            if (addr + offset) % self._align.get() != 0 {
+            if (addr + offset) % self.align.get() != 0 {
                 return None;
             }
         }
@@ -798,7 +800,7 @@ impl DstLayout {
                 // multiple of the alignment, or will be larger than
                 // `bytes_len`.
                 let max_total_bytes =
-                    util::_round_down_to_next_multiple_of_alignment(bytes_len, self._align);
+                    util::round_down_to_next_multiple_of_alignment(bytes_len, self.align);
                 // Calculate the maximum number of bytes that could be consumed
                 // by the trailing slice.
                 //
@@ -838,13 +840,13 @@ impl DstLayout {
                 // - By previous comment: without_padding == elems * elem_size +
                 //   offset <= max_total_bytes
                 // - By construction, `max_total_bytes` is a multiple of
-                //   `self._align`.
+                //   `self.align`.
                 // - At most, adding padding needed to round `without_padding`
                 //   up to the next multiple of the alignment will bring
                 //   `self_bytes` up to `max_total_bytes`.
                 #[allow(clippy::arithmetic_side_effects)]
                 let self_bytes = without_padding
-                    + util::core_layout::_padding_needed_for(without_padding, self._align);
+                    + util::core_layout::padding_needed_for(without_padding, self.align);
                 (elems, self_bytes)
             }
         };
@@ -4285,8 +4287,8 @@ mod tests {
                     assert_eq!(
                         composite,
                         DstLayout {
-                            _align: NonZeroUsize::new(align).unwrap(),
-                            _size_info: SizeInfo::Sized { _size: align }
+                            align: NonZeroUsize::new(align).unwrap(),
+                            size_info: SizeInfo::Sized { _size: align }
                         }
                     )
                 }
@@ -4343,8 +4345,8 @@ mod tests {
                 let trailing_field_offset = 11;
 
                 let trailing_field = DstLayout {
-                    _align: align,
-                    _size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                    align,
+                    size_info: SizeInfo::SliceDst(TrailingSliceLayout {
                         _elem_size: elem_size,
                         _offset: 11,
                     }),
@@ -4359,8 +4361,8 @@ mod tests {
                 assert_eq!(
                     composite,
                     DstLayout {
-                        _align: NonZeroUsize::new(align).unwrap(),
-                        _size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                        align: NonZeroUsize::new(align).unwrap(),
+                        size_info: SizeInfo::SliceDst(TrailingSliceLayout {
                             _elem_size: elem_size,
                             _offset: align + trailing_field_offset,
                         }),
@@ -4378,11 +4380,11 @@ mod tests {
         // to `align`, call `pad_to_align`, and assert that the size of the
         // resulting layout is equal to `align`.
         for align in (0..29).map(|p| NonZeroUsize::new(2usize.pow(p)).unwrap()) {
-            let layout = DstLayout { _align: align, _size_info: SizeInfo::Sized { _size: 1 } };
+            let layout = DstLayout { align, size_info: SizeInfo::Sized { _size: 1 } };
 
             assert_eq!(
                 layout.pad_to_align(),
-                DstLayout { _align: align, _size_info: SizeInfo::Sized { _size: align.get() } }
+                DstLayout { align, size_info: SizeInfo::Sized { _size: align.get() } }
             );
         }
 
@@ -4393,16 +4395,16 @@ mod tests {
             (unpadded { size: $unpadded_size:expr, align: $unpadded_align:expr }
                 => padded { size: $padded_size:expr, align: $padded_align:expr }) => {
                 let unpadded = DstLayout {
-                    _align: NonZeroUsize::new($unpadded_align).unwrap(),
-                    _size_info: SizeInfo::Sized { _size: $unpadded_size },
+                    align: NonZeroUsize::new($unpadded_align).unwrap(),
+                    size_info: SizeInfo::Sized { _size: $unpadded_size },
                 };
                 let padded = unpadded.pad_to_align();
 
                 assert_eq!(
                     padded,
                     DstLayout {
-                        _align: NonZeroUsize::new($padded_align).unwrap(),
-                        _size_info: SizeInfo::Sized { _size: $padded_size },
+                        align: NonZeroUsize::new($padded_align).unwrap(),
+                        size_info: SizeInfo::Sized { _size: $padded_size },
                     }
                 );
             };
@@ -4434,8 +4436,8 @@ mod tests {
             for offset in 0..10 {
                 for elem_size in 0..10 {
                     let layout = DstLayout {
-                        _align: align,
-                        _size_info: SizeInfo::SliceDst(TrailingSliceLayout {
+                        align,
+                        size_info: SizeInfo::SliceDst(TrailingSliceLayout {
                             _offset: offset,
                             _elem_size: elem_size,
                         }),
@@ -4451,7 +4453,7 @@ mod tests {
     // attempt to expose UB.
     #[test]
     #[cfg_attr(miri, ignore)]
-    fn test_validate_cast_and_convert_metadata() {
+    fn testvalidate_cast_and_convert_metadata() {
         impl From<usize> for SizeInfo {
             fn from(_size: usize) -> SizeInfo {
                 SizeInfo::Sized { _size }
@@ -4465,7 +4467,7 @@ mod tests {
         }
 
         fn layout<S: Into<SizeInfo>>(s: S, align: usize) -> DstLayout {
-            DstLayout { _size_info: s.into(), _align: NonZeroUsize::new(align).unwrap() }
+            DstLayout { size_info: s.into(), align: NonZeroUsize::new(align).unwrap() }
         }
 
         /// This macro accepts arguments in the form of:
@@ -4528,7 +4530,7 @@ mod tests {
                     // addition to the previous line.
                     std::panic::set_hook(Box::new(|_| {}));
                     let actual = std::panic::catch_unwind(|| {
-                        layout(size_info, align)._validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
+                        layout(size_info, align).validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
                     }).map_err(|d| {
                         *d.downcast::<&'static str>().expect("expected string panic message").as_ref()
                     });
@@ -4627,9 +4629,9 @@ mod tests {
             (layout, addr, bytes_len, cast_type): (DstLayout, usize, usize, _CastType),
         ) {
             if let Some((elems, split_at)) =
-                layout._validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
+                layout.validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
             {
-                let (size_info, align) = (layout._size_info, layout._align);
+                let (size_info, align) = (layout.size_info, layout.align);
                 let debug_str = format!(
                     "layout({size_info:?}, {align}).validate_cast_and_convert_metadata({addr}, {bytes_len}, {cast_type:?}) => ({elems}, {split_at})",
                 );
@@ -4638,10 +4640,10 @@ mod tests {
                 // meaningless, but in practice we set it to 0. Callers are not
                 // allowed to rely on this, but a lot of math is nicer if
                 // they're able to, and some callers might accidentally do that.
-                let sized = matches!(layout._size_info, SizeInfo::Sized { .. });
+                let sized = matches!(layout.size_info, SizeInfo::Sized { .. });
                 assert!(!(sized && elems != 0), "{}", debug_str);
 
-                let resulting_size = match layout._size_info {
+                let resulting_size = match layout.size_info {
                     SizeInfo::Sized { _size } => _size,
                     SizeInfo::SliceDst(TrailingSliceLayout {
                         _offset: offset,
@@ -4650,7 +4652,7 @@ mod tests {
                         let padded_size = |elems| {
                             let without_padding = offset + elems * elem_size;
                             without_padding
-                                + util::core_layout::_padding_needed_for(without_padding, align)
+                                + util::core_layout::padding_needed_for(without_padding, align)
                         };
 
                         let resulting_size = padded_size(elems);
@@ -4676,10 +4678,10 @@ mod tests {
                     }
                 }
             } else {
-                let min_size = match layout._size_info {
+                let min_size = match layout.size_info {
                     SizeInfo::Sized { _size } => _size,
                     SizeInfo::SliceDst(TrailingSliceLayout { _offset, .. }) => {
-                        _offset + util::core_layout::_padding_needed_for(_offset, layout._align)
+                        _offset + util::core_layout::padding_needed_for(_offset, layout.align)
                     }
                 };
 
@@ -4691,7 +4693,7 @@ mod tests {
                     _CastType::_Prefix => 0,
                     _CastType::_Suffix => bytes_len,
                 };
-                let misaligned = (base + addr) % layout._align != 0;
+                let misaligned = (base + addr) % layout.align != 0;
 
                 assert!(insufficient_bytes || misaligned);
             }
@@ -4757,10 +4759,10 @@ mod tests {
                         // ...then Rust will automatically round the type's size
                         // up to 2.
                         _size: args.offset
-                            + util::core_layout::_padding_needed_for(args.offset, args.align),
+                            + util::core_layout::padding_needed_for(args.offset, args.align),
                     },
                 };
-                DstLayout { _size_info: size_info, _align: args.align }
+                DstLayout { size_info, align: args.align }
             };
 
             for elems in 0..128 {
@@ -4806,7 +4808,7 @@ mod tests {
                 //   `offset + elem_size * elems` rounded up to the next
                 //   alignment.
                 let expected_size = without_padding
-                    + util::core_layout::_padding_needed_for(without_padding, args.align);
+                    + util::core_layout::padding_needed_for(without_padding, args.align);
                 assert_eq!(expected_size, size, "{}", assert_msg);
 
                 // For zero-sized element types,
@@ -4815,7 +4817,7 @@ mod tests {
                 if args.elem_size.map(|elem_size| elem_size > 0).unwrap_or(true) {
                     let addr = ptr.addr().get();
                     let (got_elems, got_split_at) = layout
-                        ._validate_cast_and_convert_metadata(addr, size, _CastType::_Prefix)
+                        .validate_cast_and_convert_metadata(addr, size, _CastType::_Prefix)
                         .unwrap();
                     // Avoid expensive allocation when running under Miri.
                     let assert_msg = if !cfg!(miri) {
@@ -5074,8 +5076,8 @@ mod tests {
         }
 
         let layout = |offset, align, _trailing_slice_elem_size| DstLayout {
-            _align: NonZeroUsize::new(align).unwrap(),
-            _size_info: match _trailing_slice_elem_size {
+            align: NonZeroUsize::new(align).unwrap(),
+            size_info: match _trailing_slice_elem_size {
                 None => SizeInfo::Sized { _size: offset },
                 Some(elem_size) => SizeInfo::SliceDst(TrailingSliceLayout {
                     _offset: offset,
@@ -6266,7 +6268,7 @@ mod proofs {
                 .is_ok(),
             );
 
-            Self { _align: align, _size_info: size_info }
+            Self { align: align, size_info: size_info }
         }
     }
 
@@ -6301,7 +6303,7 @@ mod proofs {
 
     #[kani::proof]
     fn prove_dst_layout_extend() {
-        use crate::util::{core_layout::_padding_needed_for, max, min};
+        use crate::util::{core_layout::padding_needed_for, max, min};
 
         let base: DstLayout = kani::any();
         let field: DstLayout = kani::any();
@@ -6309,12 +6311,12 @@ mod proofs {
 
         if let Some(max_align) = packed {
             kani::assume(max_align.is_power_of_two());
-            kani::assume(base._align <= max_align);
+            kani::assume(base.align <= max_align);
         }
 
         // The base can only be extended if it's sized.
-        kani::assume(matches!(base._size_info, SizeInfo::Sized { .. }));
-        let base_size = if let SizeInfo::Sized { _size: size } = base._size_info {
+        kani::assume(matches!(base.size_info, SizeInfo::Sized { .. }));
+        let base_size = if let SizeInfo::Sized { _size: size } = base.size_info {
             size
         } else {
             unreachable!();
@@ -6331,11 +6333,11 @@ mod proofs {
         //   The alignments of each field, for the purpose of positioning
         //   fields, is the smaller of the specified alignment and the
         //   alignment of the field's type.
-        let field_align = min(field._align, packed.unwrap_or(DstLayout::THEORETICAL_MAX_ALIGN));
+        let field_align = min(field.align, packed.unwrap_or(DstLayout::THEORETICAL_MAX_ALIGN));
 
         // The struct's alignment is the maximum of its previous alignment and
         // `field_align`.
-        assert_eq!(composite._align, max(base._align, field_align));
+        assert_eq!(composite.align, max(base.align, field_align));
 
         // Compute the minimum amount of inter-field padding needed to
         // satisfy the field's alignment, and offset of the trailing field.
@@ -6345,17 +6347,17 @@ mod proofs {
         //
         //   Inter-field padding is guaranteed to be the minimum required in
         //   order to satisfy each field's (possibly altered) alignment.
-        let padding = _padding_needed_for(base_size, field_align);
+        let padding = padding_needed_for(base_size, field_align);
         let offset = base_size + padding;
 
         // For testing purposes, we'll also construct `alloc::Layout`
         // stand-ins for `DstLayout`, and show that `extend` behaves
         // comparably on both types.
-        let base_analog = Layout::from_size_align(base_size, base._align.get()).unwrap();
+        let base_analog = Layout::from_size_align(base_size, base.align.get()).unwrap();
 
-        match field._size_info {
+        match field.size_info {
             SizeInfo::Sized { _size: field_size } => {
-                if let SizeInfo::Sized { _size: composite_size } = composite._size_info {
+                if let SizeInfo::Sized { _size: composite_size } = composite.size_info {
                     // If the trailing field is sized, the resulting layout
                     // will be sized. Its size will be the sum of the
                     // preceeding layout, the size of the new field, and the
@@ -6369,7 +6371,7 @@ mod proofs {
                     {
                         assert_eq!(actual_offset, offset);
                         assert_eq!(actual_composite.size(), composite_size);
-                        assert_eq!(actual_composite.align(), composite._align.get());
+                        assert_eq!(actual_composite.align(), composite.align.get());
                     } else {
                         // An error here reflects that composite of `base`
                         // and `field` cannot correspond to a real Rust type
@@ -6390,7 +6392,7 @@ mod proofs {
                 if let SizeInfo::SliceDst(TrailingSliceLayout {
                     _offset: composite_offset,
                     _elem_size: composite_elem_size,
-                }) = composite._size_info
+                }) = composite.size_info
                 {
                     // The offset of the trailing slice component is the sum
                     // of the offset of the trailing field and the trailing
@@ -6406,7 +6408,7 @@ mod proofs {
                     {
                         assert_eq!(actual_offset, offset);
                         assert_eq!(actual_composite.size(), composite_offset);
-                        assert_eq!(actual_composite.align(), composite._align.get());
+                        assert_eq!(actual_composite.align(), composite.align.get());
                     } else {
                         // An error here reflects that composite of `base`
                         // and `field` cannot correspond to a real Rust type
@@ -6432,47 +6434,47 @@ mod proofs {
 
         if let Some(max_align) = packed {
             kani::assume(max_align.is_power_of_two());
-            kani::assume(base._align <= max_align);
+            kani::assume(base.align <= max_align);
         }
 
-        kani::assume(matches!(base._size_info, SizeInfo::SliceDst(..)));
+        kani::assume(matches!(base.size_info, SizeInfo::SliceDst(..)));
 
         let _ = base.extend(field, packed);
     }
 
     #[kani::proof]
     fn prove_dst_layout_pad_to_align() {
-        use crate::util::core_layout::_padding_needed_for;
+        use crate::util::core_layout::padding_needed_for;
 
         let layout: DstLayout = kani::any();
 
         let padded: DstLayout = layout.pad_to_align();
 
         // Calling `pad_to_align` does not alter the `DstLayout`'s alignment.
-        assert_eq!(padded._align, layout._align);
+        assert_eq!(padded.align, layout.align);
 
-        if let SizeInfo::Sized { _size: unpadded_size } = layout._size_info {
-            if let SizeInfo::Sized { _size: padded_size } = padded._size_info {
+        if let SizeInfo::Sized { _size: unpadded_size } = layout.size_info {
+            if let SizeInfo::Sized { _size: padded_size } = padded.size_info {
                 // If the layout is sized, it will remain sized after padding is
                 // added. Its sum will be its unpadded size and the size of the
                 // trailing padding needed to satisfy its alignment
                 // requirements.
-                let padding = _padding_needed_for(unpadded_size, layout._align);
+                let padding = padding_needed_for(unpadded_size, layout.align);
                 assert_eq!(padded_size, unpadded_size + padding);
 
                 // Prove that calling `DstLayout::pad_to_align` behaves
                 // identically to `Layout::pad_to_align`.
                 let layout_analog =
-                    Layout::from_size_align(unpadded_size, layout._align.get()).unwrap();
+                    Layout::from_size_align(unpadded_size, layout.align.get()).unwrap();
                 let padded_analog = layout_analog.pad_to_align();
-                assert_eq!(padded_analog.align(), layout._align.get());
+                assert_eq!(padded_analog.align(), layout.align.get());
                 assert_eq!(padded_analog.size(), padded_size);
             } else {
                 panic!("The padding of a sized layout must result in a sized layout.")
             }
         } else {
             // If the layout is a DST, padding cannot be statically added.
-            assert_eq!(padded._size_info, layout._size_info);
+            assert_eq!(padded.size_info, layout.size_info);
         }
     }
 }

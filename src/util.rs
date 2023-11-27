@@ -97,7 +97,8 @@ pub(crate) mod ptr {
         ///   to assuming no concurrent mutation)
         ///
         /// [`UnsafeCell`]: core::cell::UnsafeCell
-        pub(crate) unsafe fn _as_ref(&self) -> &'a T {
+        #[allow(unused)]
+        pub(crate) unsafe fn as_ref(&self) -> &'a T {
             // TODO(#429): Add a safety comment. This will depend on how we
             // resolve the question about how to define the safety invariants on
             // this method.
@@ -140,7 +141,7 @@ pub(crate) mod ptr {
         /// # Panics
         ///
         /// Panics if `U` is a DST whose trailing slice element is zero-sized.
-        pub(crate) fn _try_cast_into<U: 'a + ?Sized + KnownLayout>(
+        pub(crate) fn try_cast_into<U: 'a + ?Sized + KnownLayout>(
             &self,
             cast_type: _CastType,
         ) -> Option<(Ptr<'a, U>, usize)> {
@@ -150,9 +151,9 @@ pub(crate) mod ptr {
             // `usize`, as required by `validate_cast_and_convert_metadata`.
             // Thus, this call to `validate_cast_and_convert_metadata` won't
             // panic.
-            let (elems, split_at) = U::LAYOUT._validate_cast_and_convert_metadata(
+            let (elems, split_at) = U::LAYOUT.validate_cast_and_convert_metadata(
                 AsAddress::addr(self.ptr.as_ptr()),
-                self._len(),
+                self.len(),
                 cast_type,
             )?;
             let offset = match cast_type {
@@ -216,16 +217,16 @@ pub(crate) mod ptr {
         ///
         /// On success, the caller may assume that the returned pointer
         /// references the same byte range as `self`.
-        #[doc(hidden)]
+        #[allow(unused)]
         #[inline(always)]
-        pub(crate) fn _try_cast_into_no_leftover<U: 'a + ?Sized + KnownLayout>(
+        pub(crate) fn try_cast_into_no_leftover<U: 'a + ?Sized + KnownLayout>(
             &self,
         ) -> Option<Ptr<'a, U>> {
             // TODO(#67): Remove this allow. See NonNulSlicelExt for more
             // details.
             #[allow(unstable_name_collisions)]
-            match self._try_cast_into(_CastType::_Prefix) {
-                Some((slf, split_at)) if split_at == self._len() => Some(slf),
+            match self.try_cast_into(_CastType::_Prefix) {
+                Some((slf, split_at)) if split_at == self.len() => Some(slf),
                 Some(_) | None => None,
             }
         }
@@ -233,7 +234,7 @@ pub(crate) mod ptr {
 
     impl<'a, T> Ptr<'a, [T]> {
         /// The number of slice elements referenced by `self`.
-        fn _len(&self) -> usize {
+        fn len(&self) -> usize {
             #[allow(clippy::as_conversions)]
             let slc = self.ptr.as_ptr() as *const [()];
             // SAFETY:
@@ -316,7 +317,7 @@ pub(crate) mod ptr {
         use crate::{util::testutil::AU64, FromBytes};
 
         #[test]
-        fn test_ptr_try_cast_into_soundness() {
+        fn test_ptrtry_cast_into_soundness() {
             // This test is designed so that if `Ptr::try_cast_into_xxx` are
             // buggy, it will manifest as unsoundness that Miri can detect.
 
@@ -372,7 +373,7 @@ pub(crate) mod ptr {
                             //   references exist to the same memory during the
                             //   duration of this function call.
                             #[allow(clippy::undocumented_unsafe_blocks)]
-                            let t = unsafe { slf._as_ref() };
+                            let t = unsafe { slf.as_ref() };
 
                             let bytes = {
                                 let len = mem::size_of_val(t);
@@ -403,7 +404,7 @@ pub(crate) mod ptr {
 
                         for cast_type in [_CastType::_Prefix, _CastType::_Suffix] {
                             if let Some((slf, split_at)) =
-                                Ptr::from(bytes)._try_cast_into::<T>(cast_type)
+                                Ptr::from(bytes).try_cast_into::<T>(cast_type)
                             {
                                 // SAFETY: All bytes in `bytes` have been
                                 // initialized.
@@ -415,7 +416,7 @@ pub(crate) mod ptr {
                             }
                         }
 
-                        if let Some(slf) = Ptr::from(bytes)._try_cast_into_no_leftover::<T>() {
+                        if let Some(slf) = Ptr::from(bytes).try_cast_into_no_leftover::<T>() {
                             // SAFETY: All bytes in `bytes` have been
                             // initialized.
                             let len = unsafe { validate_and_get_len(slf) };
@@ -508,7 +509,7 @@ pub(crate) fn aligned_to<T: AsAddress, U>(t: T) -> bool {
 /// May panic if `align` is not a power of two. Even if it doesn't panic in this
 /// case, it will produce nonsense results.
 #[inline(always)]
-pub(crate) const fn _round_down_to_next_multiple_of_alignment(
+pub(crate) const fn round_down_to_next_multiple_of_alignment(
     n: usize,
     align: NonZeroUsize,
 ) -> usize {
@@ -652,7 +653,7 @@ mod tests {
             for n in 0..256 {
                 let align = NonZeroUsize::new(align).unwrap();
                 let want = alt_impl(n, align);
-                let got = _round_down_to_next_multiple_of_alignment(n, align);
+                let got = round_down_to_next_multiple_of_alignment(n, align);
                 assert_eq!(got, want, "round_down_to_next_multiple_of_alignment({n}, {align})");
             }
         }
@@ -676,7 +677,7 @@ mod proofs {
         let n: usize = kani::any();
 
         let expected = model_impl(n, align);
-        let actual = _round_down_to_next_multiple_of_alignment(n, align);
+        let actual = round_down_to_next_multiple_of_alignment(n, align);
         assert_eq!(expected, actual, "round_down_to_next_multiple_of_alignment({n}, {align})");
     }
 
@@ -700,7 +701,7 @@ mod proofs {
         kani::assume(align.get() < 1 << 29);
 
         let expected = model_impl(len, align);
-        let actual = core_layout::_padding_needed_for(len, align);
+        let actual = core_layout::padding_needed_for(len, align);
         assert_eq!(expected, actual, "padding_needed_for({len}, {align})");
 
         let padded_len = actual + len;
