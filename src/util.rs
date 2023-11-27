@@ -15,7 +15,6 @@ pub(crate) mod ptr {
     use core::{
         fmt::{Debug, Formatter},
         marker::PhantomData,
-        mem,
         ptr::NonNull,
     };
 
@@ -42,31 +41,14 @@ pub(crate) mod ptr {
         // INVARIANTS:
         // - `ptr` is derived from some valid Rust allocation, `A`
         // - `ptr` has the same provenance as `A`
-        // - `ptr` addresses a byte range of length `bytes_len` which is
-        //   entirely contained in `A`
-        // - `bytes_len <= isize::MAX`
+        // - `ptr` addresses a byte range which is entirely contained in `A`
+        // - `ptr` addresses a byte range whose length fits in an `isize`
         // - `ptr` addresses a byte range which does not wrap around the address
         //   space
         // - `ptr` is validly-aligned for `T`
         // - `A` is guaranteed to live for at least `'a`
         // - `T: 'a`
         ptr: NonNull<T>,
-        // TODO(https://github.com/rust-lang/reference/pull/1417): Once the
-        // behavior of slice DST-to-slice DST raw pointer casts is guaranteed,
-        // we can use it to calculate the length of the memory region from
-        // `ptr`, and we don't need to store in separately. We can do it like
-        // this:
-        //
-        //   let slc = ptr.as_ptr() as *const [()];
-        //   // SAFETY:
-        //   // - `()` has alignment 1, so `slc` is trivially aligned
-        //   // - `slc` was derived from a non-null pointer
-        //   // - the size is 0 regardless of the length, so it is sound to
-        //   //   materialize a reference regardless of location
-        //   // - pointer provenance may be an issue, but we never dereference
-        //   let slc = unsafe { &*slc };
-        //   slc.len()
-        _bytes_len: usize,
         _lifetime: PhantomData<&'a ()>,
     }
 
@@ -170,34 +152,30 @@ pub(crate) mod ptr {
             // panic.
             let (elems, split_at) = U::LAYOUT._validate_cast_and_convert_metadata(
                 AsAddress::addr(self.ptr.as_ptr()),
-                self._bytes_len,
+                self._len(),
                 cast_type,
             )?;
-            let (offset, ret_len) = match cast_type {
-                _CastType::_Prefix => (0, split_at),
-                // Guaranteed not to underflow:
-                // `validate_cast_and_convert_metadata` promises that `split_at`
-                // is in the range `[0, bytes_len]`.
-                #[allow(clippy::arithmetic_side_effects)]
-                _CastType::_Suffix => (split_at, self._bytes_len - split_at),
+            let offset = match cast_type {
+                _CastType::_Prefix => 0,
+                _CastType::_Suffix => split_at,
             };
 
             let ptr = self.ptr.cast::<u8>().as_ptr();
             // SAFETY: `offset` is either `0` or `split_at`.
             // `validate_cast_and_convert_metadata` promises that `split_at` is
-            // in the range `[0, bytes_len]`. Thus, in both cases, `offset` is
-            // in `[0, bytes_len]`. Thus:
+            // in the range `[0, self.len()]`. Thus, in both cases, `offset` is
+            // in `[0, self.len()]`. Thus:
             // - The resulting pointer is in or one byte past the end of the
             //   same byte range as `self.ptr`. Since, by invariant, `self.ptr`
             //   addresses a byte range entirely contained within a single
             //   allocation, the pointer resulting from this operation is within
             //   or one byte past the end of that same allocation.
-            // - By invariant, `bytes_len <= isize::MAX`. Since `offset <=
-            //   bytes_len`, `offset <= isize::MAX`.
+            // - By invariant, `self.len() <= isize::MAX`. Since `offset <=
+            //   self.len()`, `offset <= isize::MAX`.
             // - By invariant, `self.ptr` addresses a byte range which does not
             //   wrap around the address space. This means that the base pointer
-            //   plus the `bytes_len` does not overflow `usize`. Since `offset
-            //   <= bytes_len`, this addition does not overflow `usize`.
+            //   plus the `self.len()` does not overflow `usize`. Since `offset
+            //   <= self.len()`, this addition does not overflow `usize`.
             let base = unsafe { ptr.add(offset) };
             // SAFETY: Since `add` is not allowed to wrap around, the preceding line
             // produces a pointer whose address is greater than or equal to that of
@@ -216,13 +194,8 @@ pub(crate) mod ptr {
             //   is a subset of the input byte range. Thus:
             //   - Since, by invariant, `self.ptr` addresses a byte range
             //     entirely contained in `A`, so does `ptr`.
-            //   - Since, by invariant, `self.ptr` addresses a range of length
-            //     `self.bytes_len`, which is not longer than `isize::MAX`
-            //     bytes, so does `ptr`.
-            //   - `ret_len` is either `split_at` or `self.bytes_len -
-            //     split_at`. `validate_cast_and_convert_metadata` promises that
-            //     `split_at` is in the range `[0, self.bytes_len]`. Thus, in
-            //     both cases, `ret_len <= self.bytes_len <= isize::MAX`.
+            //   - Since, by invariant, `self.ptr` addresses a range whose
+            //     length is not longer than `isize::MAX` bytes, so does `ptr`.
             //   - Since, by invariant, `self.ptr` addresses a range which does
             //     not wrap around the address space, so does `ptr`.
             // - `validate_cast_and_convert_metadata` promises that the object
@@ -230,7 +203,7 @@ pub(crate) mod ptr {
             // - By invariant on `self`, `A` is guaranteed to live for at least
             //   `'a`.
             // - `U: 'a` by trait bound.
-            Some((Ptr { ptr, _bytes_len: ret_len, _lifetime: PhantomData }, split_at))
+            Some((Ptr { ptr, _lifetime: PhantomData }, split_at))
         }
 
         /// Attempts to cast `self` into a `U`, failing if all of the bytes of
@@ -252,9 +225,44 @@ pub(crate) mod ptr {
             // details.
             #[allow(unstable_name_collisions)]
             match self._try_cast_into(_CastType::_Prefix) {
-                Some((slf, split_at)) if split_at == self._bytes_len => Some(slf),
+                Some((slf, split_at)) if split_at == self._len() => Some(slf),
                 Some(_) | None => None,
             }
+        }
+    }
+
+    impl<'a, T> Ptr<'a, [T]> {
+        /// The number of slice elements referenced by `self`.
+        fn _len(&self) -> usize {
+            #[allow(clippy::as_conversions)]
+            let slc = self.ptr.as_ptr() as *const [()];
+            // SAFETY:
+            // - `()` has alignment 1, so `slc` is trivially aligned.
+            // - `slc` was derived from a non-null pointer.
+            // - The size is 0 regardless of the length, so it is sound to
+            //   materialize a reference regardless of location.
+            // - By invariant, `self.ptr` has valid provenance.
+            let slc = unsafe { &*slc };
+            // This is correct because the preceding `as` cast preserves the
+            // number of slice elements. Per
+            // https://doc.rust-lang.org/nightly/reference/expressions/operator-expr.html#slice-dst-pointer-to-pointer-cast:
+            //
+            //   For slice types like `[T]` and `[U]`, the raw pointer types
+            //   `*const [T]`, `*mut [T]`, `*const [U]`, and `*mut [U]` encode
+            //   the number of elements in this slice. Casts between these raw
+            //   pointer types preserve the number of elements. Note that, as a
+            //   consequence, such casts do *not* necessarily preserve the size
+            //   of the pointer's referent (e.g., casting `*const [u16]` to
+            //   `*const [u8]` will result in a raw pointer which refers to an
+            //   object of half the size of the original). The same holds for
+            //   `str` and any compound type whose unsized tail is a slice type,
+            //   such as struct `Foo(i32, [u8])` or `(u64, Foo)`.
+            //
+            // TODO(#429),
+            // TODO(https://github.com/rust-lang/reference/pull/1417): Once this
+            // text is available on the Stable docs, cite those instead of the
+            // Nightly docs.
+            slc.len()
         }
     }
 
@@ -268,8 +276,7 @@ pub(crate) mod ptr {
             //   has the same provenance as `A`
             // - Since `NonNull::from` creates a pointer which addresses the
             //   same bytes as `t`, `ptr` addresses a byte range entirely
-            //   contained in (in this case, identical to) `A` of length
-            //   `mem::size_of_val(t)`
+            //   contained in (in this case, identical to) `A`
             // - Since `t: &T`, it addresses no more than `isize::MAX` bytes [1]
             // - Since `t: &T`, it addresses a byte range which does not wrap
             //   around the address space [2]
@@ -290,7 +297,7 @@ pub(crate) mod ptr {
             //   `isize`?
             // - [2] Where does the reference document that allocations don't
             //   wrap around the address space?
-            Ptr { ptr: NonNull::from(t), _bytes_len: mem::size_of_val(t), _lifetime: PhantomData }
+            Ptr { ptr: NonNull::from(t), _lifetime: PhantomData }
         }
     }
 
@@ -303,7 +310,7 @@ pub(crate) mod ptr {
 
     #[cfg(test)]
     mod tests {
-        use core::mem::MaybeUninit;
+        use core::mem::{self, MaybeUninit};
 
         use super::*;
         use crate::{util::testutil::AU64, FromBytes};
