@@ -16,8 +16,9 @@ use core::num::NonZeroUsize;
 /// May panic if `align` is not a power of two.
 //
 // TODO(#419): Replace `len` with a witness type for region size.
+#[allow(unused)]
 #[inline(always)]
-pub(crate) const fn _padding_needed_for(len: usize, align: NonZeroUsize) -> usize {
+pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize {
     // Rounded up value is:
     //   len_rounded_up = (len + align - 1) & !(align - 1);
     // and then we return the padding difference: `len_rounded_up - len`.
