@@ -48,11 +48,6 @@ macro_rules! safety_comment {
 ///     `&$repr` argument, it must be the case that, given `t: *mut $ty` and
 ///     `let r = t as *mut $repr`, `r` refers to an object of equal or lesser
 ///     size than the object referred to by `t`.
-///   - If the provided closure takes a `Ptr<$repr>` argument, then given a
-///     `Ptr<$ty>` which satisfies the preconditions of
-///     `TryFromBytes::<$ty>::is_bit_valid`, it must be guaranteed that a
-///     `Ptr<$repr>` with the same address, provenance, and pointer metadata
-///     satisfies the preconditions of `TryFromBytes::<$repr>::is_bit_valid`.
 ///   - If the provided closure takes a `&$repr` argument, then given a `Ptr<'a,
 ///     $ty>` which satisfies the preconditions of
 ///     `TryFromBytes::<$ty>::is_bit_valid`, it must be guaranteed that the
@@ -175,7 +170,7 @@ macro_rules! unsafe_impl {
             // - The caller has promised that `$repr`'s alignment is less than
             //   or equal to `Self`'s alignment.
             #[allow(clippy::as_conversions)]
-            let $candidate = unsafe { candidate.cast_unsized::<$repr>(|p| p as *mut _) };
+            let $candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
             $is_bit_valid
         }
     };

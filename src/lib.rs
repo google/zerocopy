@@ -2253,6 +2253,39 @@ safety_comment! {
     ///
     /// [1] https://doc.rust-lang.org/reference/types/textual.html
     unsafe_impl!(char: FromZeroes, AsBytes);
+    /// SAFETY:
+    /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
+    ///   closure:
+    ///   - Given `t: *mut char` and `let r = *mut u32`, `r` refers to an object
+    ///     of the same size as that referred to by `t`. This is true because
+    ///     `char` and `u32` have the same size [1].
+    ///   - Since the closure takes a `&u32` argument, given a `Ptr<'a, char>`
+    ///     which satisfies the preconditions of
+    ///     `TryFromBytes::<char>::is_bit_valid`, it must be guaranteed that the
+    ///     memory referenced by that `Ptr` always contains a valid `u32`. Since
+    ///     `char`'s bytes are always initialized [2], `is_bit_valid`'s
+    ///     precondition requires that the same is true of its argument. Since
+    ///     `u32`'s only bit validity invariant is that its bytes must be
+    ///     initialized, this memory is guaranteed to contain a valid `u32`.
+    ///   - The alignment of `char` is equal to the alignment of `u32`. [1]
+    ///   - The impl must only return `true` for its argument if the original
+    ///     `Ptr<char>` refers to a valid `char`. `char::from_u32` guarantees
+    ///     that it returns `None` if its input is not a valid `char`. [3]
+    ///
+    /// [1] Per https://doc.rust-lang.org/nightly/reference/types/textual.html#layout-and-bit-validity:
+    ///
+    ///   `char` is guaranteed to have the same size and alignment as `u32` on
+    ///   all platforms.
+    ///
+    /// [2] Per https://doc.rust-lang.org/core/primitive.char.html#method.from_u32:
+    ///
+    ///   Every byte of a `char` is guaranteed to be initialized.
+    ///
+    /// [3] Per https://doc.rust-lang.org/core/primitive.char.html#method.from_u32:
+    ///
+    ///   `from_u32()` will return `None` if the input is not a valid value for
+    ///   a `char`.
+    unsafe_impl!(char: TryFromBytes; |candidate: &u32| char::from_u32(*candidate).is_some());
 }
 safety_comment! {
     /// SAFETY:
@@ -2267,6 +2300,33 @@ safety_comment! {
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#str-layout
     unsafe_impl!(str: FromZeroes, AsBytes, Unaligned);
+    /// SAFETY:
+    /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
+    ///   closure:
+    ///   - Given `t: *mut str` and `let r = *mut [u8]`, `r` refers to an object
+    ///     of the same size as that referred to by `t`. This is true because
+    ///     `str` and `[u8]` have the same representation. [1]
+    ///   - Since the closure takes a `&[u8]` argument, given a `Ptr<'a, str>`
+    ///     which satisfies the preconditions of
+    ///     `TryFromBytes::<str>::is_bit_valid`, it must be guaranteed that the
+    ///     memory referenced by that `Ptr` always contains a valid `[u8]`.
+    ///     Since `str`'s bytes are always initialized [1], `is_bit_valid`'s
+    ///     precondition requires that the same is true of its argument. Since
+    ///     `[u8]`'s only bit validity invariant is that its bytes must be
+    ///     initialized, this memory is guaranteed to contain a valid `[u8]`.
+    ///   - The alignment of `str` is equal to the alignment of `[u8]`. [1]
+    ///   - The impl must only return `true` for its argument if the original
+    ///     `Ptr<str>` refers to a valid `str`. `str::from_utf8` guarantees that
+    ///     it returns `Err` if its input is not a valid `str`. [2]
+    ///
+    /// [1] Per https://doc.rust-lang.org/reference/types/textual.html:
+    ///
+    ///   A value of type `str` is represented the same was as `[u8]`.
+    ///
+    /// [2] Per https://doc.rust-lang.org/core/str/fn.from_utf8.html#errors:
+    ///
+    ///   Returns `Err` if the slice is not UTF-8.
+    unsafe_impl!(str: TryFromBytes; |candidate: &[u8]| core::str::from_utf8(candidate).is_ok());
 }
 
 safety_comment! {
@@ -2306,6 +2366,43 @@ safety_comment! {
     unsafe_impl!(NonZeroI128: AsBytes);
     unsafe_impl!(NonZeroUsize: AsBytes);
     unsafe_impl!(NonZeroIsize: AsBytes);
+    /// SAFETY:
+    /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
+    ///   closure:
+    ///   - Given `t: *mut NonZeroXxx` and `let r = *mut xxx`, `r` refers to an
+    ///     object of the same size as that referred to by `t`. This is true
+    ///     because `NonZeroXxx` and `xxx` have the same size. [1]
+    ///   - Since the closure takes a `&xxx` argument, given a `Ptr<'a,
+    ///     NonZeroXxx>` which satisfies the preconditions of
+    ///     `TryFromBytes::<NonZeroXxx>::is_bit_valid`, it must be guaranteed
+    ///     that the memory referenced by that `Ptr` always contains a valid
+    ///     `xxx`. Since `NonZeroXxx`'s bytes are always initialized [1],
+    ///     `is_bit_valid`'s precondition requires that the same is true of its
+    ///     argument. Since `xxx`'s only bit validity invariant is that its
+    ///     bytes must be initialized, this memory is guaranteed to contain a
+    ///     valid `xxx`.
+    ///   - The alignment of `NonZeroXxx` is equal to the alignment of `xxx`.
+    ///     [1]
+    ///   - The impl must only return `true` for its argument if the original
+    ///     `Ptr<NonZeroXxx>` refers to a valid `NonZeroXxx`. The only `xxx`
+    ///     which is not also a valid `NonZeroXxx` is 0. [1]
+    ///
+    /// [1] Per https://doc.rust-lang.org/core/num/struct.NonZeroU16.html:
+    ///
+    ///   `NonZeroU16` is guaranteed to have the same layout and bit validity as
+    ///   `u16` with the exception that `0` is not a valid instance.
+    unsafe_impl!(NonZeroU8: TryFromBytes; |n: &u8| *n != 0);
+    unsafe_impl!(NonZeroI8: TryFromBytes; |n: &i8| *n != 0);
+    unsafe_impl!(NonZeroU16: TryFromBytes; |n: &u16| *n != 0);
+    unsafe_impl!(NonZeroI16: TryFromBytes; |n: &i16| *n != 0);
+    unsafe_impl!(NonZeroU32: TryFromBytes; |n: &u32| *n != 0);
+    unsafe_impl!(NonZeroI32: TryFromBytes; |n: &i32| *n != 0);
+    unsafe_impl!(NonZeroU64: TryFromBytes; |n: &u64| *n != 0);
+    unsafe_impl!(NonZeroI64: TryFromBytes; |n: &i64| *n != 0);
+    unsafe_impl!(NonZeroU128: TryFromBytes; |n: &u128| *n != 0);
+    unsafe_impl!(NonZeroI128: TryFromBytes; |n: &i128| *n != 0);
+    unsafe_impl!(NonZeroUsize: TryFromBytes; |n: &usize| *n != 0);
+    unsafe_impl!(NonZeroIsize: TryFromBytes; |n: &isize| *n != 0);
 }
 safety_comment! {
     /// SAFETY:
@@ -2404,10 +2501,40 @@ safety_comment! {
 }
 safety_comment! {
     /// SAFETY:
-    /// `Wrapping<T>` is guaranteed by its docs [1] to have the same layout as
-    /// `T`. Also, `Wrapping<T>` is `#[repr(transparent)]`, and has a single
-    /// field, which is `pub`. Per the reference [2], this means that the
-    /// `#[repr(transparent)]` attribute is "considered part of the public ABI".
+    /// `Wrapping<T>` is guaranteed by its docs [1] to have the same layout and
+    /// bit validity as `T`. Also, `Wrapping<T>` is `#[repr(transparent)]`, and
+    /// has a single field, which is `pub`. Per the reference [2], this means
+    /// that the `#[repr(transparent)]` attribute is "considered part of the
+    /// public ABI".
+    ///
+    /// - `TryFromBytes`: The safety requirements for `unsafe_impl!` with an
+    ///   `is_bit_valid` closure:
+    ///   - Given `t: *mut Wrapping<T>` and `let r = *mut T`, `r` refers to an
+    ///     object of the same size as that referred to by `t`. This is true
+    ///     because `Wrapping<T>` and `T` have the same layout
+    ///   - The alignment of `Wrapping<T>` is equal to the alignment of `T`.
+    ///   - The impl must only return `true` for its argument if the original
+    ///     `Ptr<Wrapping<T>>` refers to a valid `Wrapping<T>`. Since
+    ///     `Wrapping<T>` has the same bit validity as `T`, and since our impl
+    ///     just calls `T::is_bit_valid`, our impl returns `true` exactly when
+    ///     its argument contains a valid `Wrapping<T>`.
+    /// - `FromBytes`: Since `Wrapping<T>` has the same bit validity as `T`, if
+    ///   `T: FromBytes`, then all initialized byte sequences are valid
+    ///   instances of `Wrapping<T>`. Similarly, if `T: FromBytes`, then
+    ///   `Wrapping<T>` doesn't contain any `UnsafeCell`s. Thus, `impl FromBytes
+    ///   for Wrapping<T> where T: FromBytes` is a sound impl.
+    /// - `AsBytes`: Since `Wrapping<T>` has the same bit validity as `T`, if
+    ///   `T: AsBytes`, then all valid instances of `Wrapping<T>` have all of
+    ///   their bytes initialized. Similarly, if `T: AsBytes`, then
+    ///   `Wrapping<T>` doesn't contain any `UnsafeCell`s. Thus, `impl AsBytes
+    ///   for Wrapping<T> where T: AsBytes` is a valid impl.
+    /// - `Unaligned`: Since `Wrapping<T>` has the same layout as `T`,
+    ///   `Wrapping<T>` has alignment 1 exactly when `T` does.
+    ///
+    /// [1] Per https://doc.rust-lang.org/core/num/struct.NonZeroU16.html:
+    ///
+    ///   `NonZeroU16` is guaranteed to have the same layout and bit validity as
+    ///   `u16` with the exception that `0` is not a valid instance.
     ///
     /// TODO(#429): Add quotes from documentation.
     ///
@@ -2415,6 +2542,18 @@ safety_comment! {
     /// Reference this documentation once it's available on stable.
     ///
     /// [2] https://doc.rust-lang.org/nomicon/other-reprs.html#reprtransparent
+    unsafe_impl!(T: TryFromBytes => TryFromBytes for Wrapping<T>; |candidate: Ptr<T>| {
+        // SAFETY:
+        // - Since `T` and `Wrapping<T>` have the same layout and bit validity
+        //   and contain the same fields, `T` contains `UnsafeCell`s exactly
+        //   where `Wrapping<T>` does. Thus, all memory and `UnsafeCell`
+        //   preconditions of `T::is_bit_valid` hold exactly when the same
+        //   preconditions for `Wrapping<T>::is_bit_valid` hold.
+        // - By the same token, since `candidate` is guaranteed to have its
+        //   bytes initialized where there are always initialized bytes in
+        //   `Wrapping<T>`, the same is true for `T`.
+        unsafe { T::is_bit_valid(candidate) }
+    });
     unsafe_impl!(T: FromZeroes => FromZeroes for Wrapping<T>);
     unsafe_impl!(T: FromBytes => FromBytes for Wrapping<T>);
     unsafe_impl!(T: AsBytes => AsBytes for Wrapping<T>);
@@ -2426,12 +2565,13 @@ safety_comment! {
     // since it may contain uninitialized bytes.
     //
     /// SAFETY:
-    /// - `FromZeroes`, `FromBytes`: `MaybeUninit<T>` has no restrictions on its
-    ///   contents. Unfortunately, in addition to bit validity, `FromZeroes` and
+    /// - `TryFromBytes` (with no validator), `FromZeroes`, `FromBytes`:
+    ///   `MaybeUninit<T>` has no restrictions on its contents. Unfortunately,
+    ///   in addition to bit validity, `TryFromBytes`, `FromZeroes` and
     ///   `FromBytes` also require that implementers contain no `UnsafeCell`s.
-    ///   Thus, we require `T: FromZeroes` and `T: FromBytes` in order to ensure
-    ///   that `T` - and thus `MaybeUninit<T>` - contains to `UnsafeCell`s.
-    ///   Thus, requiring that `T` implement each of these traits is sufficient
+    ///   Thus, we require `T: Trait` in order to ensure that `T` - and thus
+    ///   `MaybeUninit<T>` - contains to `UnsafeCell`s. Thus, requiring that `T`
+    ///   implement each of these traits is sufficient.
     /// - `Unaligned`: "MaybeUninit<T> is guaranteed to have the same size,
     ///    alignment, and ABI as T" [1]
     ///
@@ -2441,6 +2581,7 @@ safety_comment! {
     /// `FromBytes` and `RefFromBytes`, or if we introduce a separate
     /// `NoCell`/`Freeze` trait, we can relax the trait bounds for `FromZeroes`
     /// and `FromBytes`.
+    unsafe_impl!(T: TryFromBytes => TryFromBytes for MaybeUninit<T>);
     unsafe_impl!(T: FromZeroes => FromZeroes for MaybeUninit<T>);
     unsafe_impl!(T: FromBytes => FromBytes for MaybeUninit<T>);
     unsafe_impl!(T: Unaligned => Unaligned for MaybeUninit<T>);
@@ -6226,6 +6367,19 @@ mod tests {
         impl_try_from_bytes_testable!(
             bool => @success true, false,
                     @failure 2u8, 3u8, 0xFFu8;
+            char => @success '\u{0}', '\u{D7FF}', '\u{E000}', '\u{10FFFF}',
+                    @failure 0xD800u32, 0xDFFFu32, 0x110000u32;
+            str  => @success "", "hello", "❤️🧡💛💚💙💜",
+                    @failure [0, 159, 146, 150];
+            NonZeroU8, NonZeroI8, NonZeroU16, NonZeroI16, NonZeroU32,
+            NonZeroI32, NonZeroU64, NonZeroI64, NonZeroU128, NonZeroI128,
+            NonZeroUsize, NonZeroIsize
+                 => @success Self::new(1).unwrap(),
+                    // Doing this instead of `0` ensures that we always satisfy
+                    // the size and alignment requirements of `Self` (whereas
+                    // `0` may be any integer type with a different size or
+                    // alignment than some `NonZeroXxx` types).
+                    @failure Option::<Self>::None;
         );
 
         // Asserts that `$ty` implements any `$trait` and doesn't implement any
@@ -6316,21 +6470,21 @@ mod tests {
         assert_impls!(f64: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
 
         assert_impls!(bool: KnownLayout, TryFromBytes, FromZeroes, AsBytes, Unaligned, !FromBytes);
-        assert_impls!(char: KnownLayout, FromZeroes, AsBytes, !TryFromBytes, !FromBytes, !Unaligned);
-        assert_impls!(str: KnownLayout, FromZeroes, AsBytes, Unaligned, !TryFromBytes, !FromBytes);
+        assert_impls!(char: KnownLayout, TryFromBytes, FromZeroes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(str: KnownLayout, TryFromBytes, FromZeroes, AsBytes, Unaligned, !FromBytes);
 
-        assert_impls!(NonZeroU8: KnownLayout, AsBytes, Unaligned, !TryFromBytes, !FromZeroes, !FromBytes);
-        assert_impls!(NonZeroI8: KnownLayout, AsBytes, Unaligned, !TryFromBytes, !FromZeroes, !FromBytes);
-        assert_impls!(NonZeroU16: KnownLayout, AsBytes, !TryFromBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI16: KnownLayout, AsBytes, !TryFromBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroU32: KnownLayout, AsBytes, !TryFromBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI32: KnownLayout, AsBytes, !TryFromBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroU64: KnownLayout, AsBytes, !TryFromBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI64: KnownLayout, AsBytes, !TryFromBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroU128: KnownLayout, AsBytes, !TryFromBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI128: KnownLayout, AsBytes, !TryFromBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroUsize: KnownLayout, AsBytes, !TryFromBytes, !FromZeroes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroIsize: KnownLayout, AsBytes, !TryFromBytes, !FromZeroes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU8: KnownLayout, TryFromBytes, AsBytes, Unaligned, !FromZeroes, !FromBytes);
+        assert_impls!(NonZeroI8: KnownLayout, TryFromBytes, AsBytes, Unaligned, !FromZeroes, !FromBytes);
+        assert_impls!(NonZeroU16: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI16: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU32: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI32: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU64: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI64: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU128: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI128: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroUsize: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroIsize: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
 
         assert_impls!(Option<NonZeroU8>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!(Option<NonZeroI8>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
@@ -6382,10 +6536,10 @@ mod tests {
         assert_impls!(ManuallyDrop<NotZerocopy>: !TryFromBytes, !KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
         assert_impls!(ManuallyDrop<[NotZerocopy]>: !TryFromBytes, !KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(MaybeUninit<u8>: KnownLayout, FromZeroes, FromBytes, Unaligned, !TryFromBytes, !AsBytes);
+        assert_impls!(MaybeUninit<u8>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, Unaligned, !AsBytes);
         assert_impls!(MaybeUninit<NotZerocopy>: KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(Wrapping<u8>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
+        assert_impls!(Wrapping<u8>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
         assert_impls!(Wrapping<NotZerocopy>: KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
         assert_impls!(Unalign<u8>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
