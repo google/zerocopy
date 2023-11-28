@@ -606,14 +606,21 @@ fn impl_block<D: DataExt>(
         }
         quote!(#param)
     });
+
     // The identifiers of the parameters without trait bounds or type defaults.
     let param_idents = input.generics.params.iter().map(|param| match param {
         GenericParam::Type(ty) => {
             let ident = &ty.ident;
             quote!(#ident)
         }
-        GenericParam::Lifetime(l) => quote!(#l),
-        GenericParam::Const(cnst) => quote!(#cnst),
+        GenericParam::Lifetime(l) => {
+            let ident = &l.lifetime;
+            quote!(#ident)
+        }
+        GenericParam::Const(cnst) => {
+            let ident = &cnst.ident;
+            quote!({#ident})
+        }
     });
 
     quote! {

@@ -83,3 +83,18 @@ struct TypeParams<'a, T: ?Sized, I: Iterator> {
 assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: Unaligned);
 assert_impl_all!(TypeParams<'static, u8, IntoIter<()>>: Unaligned);
 assert_impl_all!(TypeParams<'static, [u8], IntoIter<()>>: Unaligned);
+
+// Deriving `Unaligned` should work if the struct has bounded parameters.
+
+#[derive(Unaligned)]
+#[repr(transparent)]
+struct WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + Unaligned>(
+    [T; N],
+    PhantomData<&'a &'b ()>,
+)
+where
+    'a: 'b,
+    'b: 'a,
+    T: 'a + 'b + Unaligned;
+
+assert_impl_all!(WithParams<'static, 'static, 42, u8>: Unaligned);

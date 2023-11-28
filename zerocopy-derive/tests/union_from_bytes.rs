@@ -54,3 +54,19 @@ where
 }
 
 assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: FromBytes);
+
+// Deriving `FromBytes` should work if the union has bounded parameters.
+
+#[derive(FromZeroes, FromBytes)]
+#[repr(C)]
+union WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + FromBytes>
+where
+    'a: 'b,
+    'b: 'a,
+    T: 'a + 'b + Copy + FromBytes,
+{
+    a: [T; N],
+    b: PhantomData<&'a &'b ()>,
+}
+
+assert_impl_all!(WithParams<'static, 'static, 42, u8>: FromBytes);

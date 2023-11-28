@@ -6,7 +6,7 @@
 
 mod util;
 
-use {static_assertions::assert_impl_all, zerocopy::KnownLayout};
+use {core::marker::PhantomData, static_assertions::assert_impl_all, zerocopy::KnownLayout};
 
 #[derive(KnownLayout)]
 enum Foo {
@@ -29,3 +29,18 @@ enum Baz {
 }
 
 assert_impl_all!(Baz: KnownLayout);
+
+// Deriving `KnownLayout` should work if the enum has bounded parameters.
+
+#[derive(KnownLayout)]
+#[repr(C)]
+enum WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + KnownLayout>
+where
+    'a: 'b,
+    'b: 'a,
+    T: 'a + 'b + KnownLayout,
+{
+    Variant([T; N], PhantomData<&'a &'b ()>),
+}
+
+assert_impl_all!(WithParams<'static, 'static, 42, u8>: KnownLayout);
