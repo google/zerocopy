@@ -217,11 +217,15 @@ jobs:
       if: matrix.toolchain == 'nightly'
 
     - name: Cargo doc
-      # We pass --document-private-items and --document-hidden items to ensure that 
-      # documentation always builds even for these items. This makes future changes to 
-      # make those items public/non-hidden more painless. Note that 
-      # --document-hidden-items is unstable; if a future release breaks or removes it,
-      # we can just update CI to no longer pass that flag.
+      # We pass --document-private-items and --document-hidden items to ensure
+      # that documentation always builds even for these items. This makes future
+      # changes to make those items public/non-hidden more painless. It also
+      # allows us to use intra-doc links as part of our proofs (see the
+      # `proof_utils` module for an example of this), which helps prevent our
+      # proofs from bit-rotting.
+      #
+      # Note that --document-hidden-items is unstable; if a future release
+      # breaks or removes it, we can just update CI to no longer pass that flag.
       run: |
         # Include arguments passed during docs.rs deployments to make sure those
         # work properly.

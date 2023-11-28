@@ -6,6 +6,8 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+pub(crate) trait SafetyComment {}
+
 /// Documents multiple unsafe blocks with a single safety comment.
 ///
 /// Invoked as:
@@ -27,8 +29,19 @@
 /// attribute: `#[allow(clippy::undocumented_unsafe_blocks)]`.
 macro_rules! safety_comment {
     (#[doc = r" SAFETY:"] $($(#[$attr:meta])* $macro:ident!$args:tt;)*) => {
-        #[allow(clippy::undocumented_unsafe_blocks, unused_attributes)]
-        const _: () = { $($(#[$attr])* $macro!$args;)* };
+        $(
+            #[allow(clippy::undocumented_unsafe_blocks, unused_attributes)]
+            const _: () = {
+                #[doc(hidden)]
+                pub(crate) struct SafetyComment;
+                // This impl allows `rustdoc` to detect broken intra-doc links,
+                // which we use to prevent our safety comments from bit-rotting.
+                $(#[$attr])*
+                impl crate::macros::SafetyComment for SafetyComment {}
+
+                $(#[$attr])* $macro!$args;
+            };
+        )*
     }
 }
 

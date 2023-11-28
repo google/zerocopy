@@ -2510,7 +2510,7 @@ safety_comment! {
     ///   transparent-layout-validity(T)` satisfies `unsafe_impl!`'s safety
     ///   preconditions.
     /// - `FromZeroes`, `FromBytes`, `AsBytes`, `Unaligned`: Per
-    ///   lemma-repr-transparent-zerocopy-traits, since `Wrapping<T>:
+    ///   [`LEMMA_REPR_TRANSPARENT_ZEROCOPY_TRAITS_FOO`], since `Wrapping<T>:
     ///   transparent-layout-validity(T)`, if `T` satisfies the safety
     ///   preconditions of `FromZeroes`, `FromBytes`, `AsBytes`, or `Unaligned`,
     ///   then `Wrapping<T>` does too (respectively).
