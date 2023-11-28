@@ -243,6 +243,7 @@ mod macros;
 pub mod byteorder;
 #[doc(hidden)]
 pub mod macro_util;
+mod proof_utils;
 mod util;
 // TODO(#252): If we make this pub, come up with a better name.
 mod wrappers;
@@ -2501,47 +2502,24 @@ safety_comment! {
 }
 safety_comment! {
     /// SAFETY:
-    /// `Wrapping<T>` is guaranteed by its docs [1] to have the same layout and
-    /// bit validity as `T`. Also, `Wrapping<T>` is `#[repr(transparent)]`, and
-    /// has a single field, which is `pub`. Per the reference [2], this means
-    /// that the `#[repr(transparent)]` attribute is "considered part of the
-    /// public ABI".
+    /// `Wrapping<T>` is `#[repr(transparent)]` and has a single `T` field,
+    /// which is `pub`. [1] Per axiom-repr-transparent-layout-validity, we may
+    /// take this to imply that `Wrapping<T>: transparent-layout-validity(T)`.
+    /// This is bolstered by [2].
+    /// - `TryFromBytes`: Since the closure takes `Ptr<T>`, `Wrapping<T>:
+    ///   transparent-layout-validity(T)` satisfies `unsafe_impl!`'s safety
+    ///   preconditions.
+    /// - `FromZeroes`, `FromBytes`, `AsBytes`, `Unaligned`: Per
+    ///   lemma-repr-transparent-zerocopy-traits, since `Wrapping<T>:
+    ///   transparent-layout-validity(T)`, if `T` satisfies the safety
+    ///   preconditions of `FromZeroes`, `FromBytes`, `AsBytes`, or `Unaligned`,
+    ///   then `Wrapping<T>` does too (respectively).
     ///
-    /// - `TryFromBytes`: The safety requirements for `unsafe_impl!` with an
-    ///   `is_bit_valid` closure:
-    ///   - Given `t: *mut Wrapping<T>` and `let r = *mut T`, `r` refers to an
-    ///     object of the same size as that referred to by `t`. This is true
-    ///     because `Wrapping<T>` and `T` have the same layout
-    ///   - The alignment of `Wrapping<T>` is equal to the alignment of `T`.
-    ///   - The impl must only return `true` for its argument if the original
-    ///     `Ptr<Wrapping<T>>` refers to a valid `Wrapping<T>`. Since
-    ///     `Wrapping<T>` has the same bit validity as `T`, and since our impl
-    ///     just calls `T::is_bit_valid`, our impl returns `true` exactly when
-    ///     its argument contains a valid `Wrapping<T>`.
-    /// - `FromBytes`: Since `Wrapping<T>` has the same bit validity as `T`, if
-    ///   `T: FromBytes`, then all initialized byte sequences are valid
-    ///   instances of `Wrapping<T>`. Similarly, if `T: FromBytes`, then
-    ///   `Wrapping<T>` doesn't contain any `UnsafeCell`s. Thus, `impl FromBytes
-    ///   for Wrapping<T> where T: FromBytes` is a sound impl.
-    /// - `AsBytes`: Since `Wrapping<T>` has the same bit validity as `T`, if
-    ///   `T: AsBytes`, then all valid instances of `Wrapping<T>` have all of
-    ///   their bytes initialized. Similarly, if `T: AsBytes`, then
-    ///   `Wrapping<T>` doesn't contain any `UnsafeCell`s. Thus, `impl AsBytes
-    ///   for Wrapping<T> where T: AsBytes` is a valid impl.
-    /// - `Unaligned`: Since `Wrapping<T>` has the same layout as `T`,
-    ///   `Wrapping<T>` has alignment 1 exactly when `T` does.
+    /// [1] https://doc.rust-lang.org/core/num/struct.Wrapping.html
     ///
-    /// [1] Per https://doc.rust-lang.org/core/num/struct.NonZeroU16.html:
+    /// [2] Per https://doc.rust-lang.org/nightly/core/num/struct.Wrapping.html:
     ///
-    ///   `NonZeroU16` is guaranteed to have the same layout and bit validity as
-    ///   `u16` with the exception that `0` is not a valid instance.
-    ///
-    /// TODO(#429): Add quotes from documentation.
-    ///
-    /// [1] TODO(https://doc.rust-lang.org/nightly/core/num/struct.Wrapping.html#layout-1):
-    /// Reference this documentation once it's available on stable.
-    ///
-    /// [2] https://doc.rust-lang.org/nomicon/other-reprs.html#reprtransparent
+    ///   `Wrapping<T>` is guaranteed to have the same layout and ABI as `T`.
     unsafe_impl!(T: TryFromBytes => TryFromBytes for Wrapping<T>; |candidate: Ptr<T>| {
         // SAFETY:
         // - Since `T` and `Wrapping<T>` have the same layout and bit validity
@@ -2589,31 +2567,19 @@ safety_comment! {
 }
 safety_comment! {
     /// SAFETY:
-    /// `ManuallyDrop` has the same layout and bit validity as `T` [1], and
-    /// accessing the inner value is safe (meaning that it's unsound to leave
-    /// the inner value uninitialized while exposing the `ManuallyDrop` to safe
-    /// code).
-    /// - `FromZeroes`, `FromBytes`: Since it has the same layout as `T`, any
-    ///   valid `T` is a valid `ManuallyDrop<T>`. If `T: FromZeroes`, a sequence
-    ///   of zero bytes is a valid `T`, and thus a valid `ManuallyDrop<T>`. If
-    ///   `T: FromBytes`, any sequence of bytes is a valid `T`, and thus a valid
-    ///   `ManuallyDrop<T>`.
-    /// - `AsBytes`: Since it has the same layout as `T`, and since it's unsound
-    ///   to let safe code access a `ManuallyDrop` whose inner value is
-    ///   uninitialized, safe code can only ever access a `ManuallyDrop` whose
-    ///   contents are a valid `T`. Since `T: AsBytes`, this means that safe
-    ///   code can only ever access a `ManuallyDrop` with all initialized bytes.
-    /// - `Unaligned`: `ManuallyDrop` has the same layout (and thus alignment)
-    ///   as `T`, and `T: Unaligned` guarantees that that alignment is 1.
-    ///
-    ///   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
-    ///   validity as `T`
+    /// `ManuallyDrop<T>` has the same layout and bit validity as `T` [1]. Per
+    /// axiom-transparent-layout-validity, we may use this to assume that
+    /// `ManuallyDrop<T>: transparent-layout-validity(T)`. Per
+    /// lemma-repr-transparent-zerocopy-traits, if `T` satisfies the safety
+    /// preconditions of `FromZeroes`, `FromBytes`, `AsBytes`, or `Unaligned`,
+    /// then `ManuallyDrop<T>` does too (respectively).
     ///
     /// [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
     ///
-    /// TODO(#429):
-    /// - Add quotes from docs.
-    /// - Once [1] (added in
+    ///   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
+    ///   validity as `T`.
+    ///
+    /// TODO(#429): Once [1] (added in
     /// https://github.com/rust-lang/rust/pull/115522) is available on stable,
     /// quote the stable docs instead of the nightly docs.
     unsafe_impl!(T: ?Sized + FromZeroes => FromZeroes for ManuallyDrop<T>);
