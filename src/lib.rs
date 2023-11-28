@@ -1089,6 +1089,42 @@ safety_comment! {
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::FromZeroes;
 
+/// Types which do not contain any [`UnsafeCell`]s.
+///
+/// WARNING: Do not implement this trait yourself! Instead, use
+/// `#[derive(NoCell)]`.
+///
+/// `T: NoCell` indicates that `T` does not contain any `UnsafeCell`s in its
+/// fields. `T` may still refer to types which contain `UnsafeCell`s: for
+/// example, `&UnsafeCell<T>` implements `NoCell`.
+///
+/// # Safety
+///
+/// If `T: NoCell`, unsafe code *inside of this crate* may assume that, given
+/// `t: &T`, `t` does not contain any [`UnsafeCell`]s at any byte location
+/// within the byte range addressed by `t`. This includes ranges of length 0
+/// (e.g., `UnsafeCell<()>` and `[UnsafeCell<u8>; 0]`). If a type implements
+/// `NoCell` which violates this assumptions, it may cause this crate to exhibit
+/// [undefined behavior].
+///
+/// Unsafe code outside of this crate must not make any assumptions about `T`
+/// based on `T: NoCell`. We reserve the right to relax the requirements for
+/// `NoCell` in the future, and if unsafe code outside of this crate makes
+/// assumptions based on `T: NoCell`, future relaxations may cause that code to
+/// become unsound.
+///
+/// [`UnsafeCell`]: core::cell::UnsafeCell
+/// [undefined behavior]: https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html
+#[doc(hidden)]
+pub unsafe trait NoCell {
+    // The `Self: Sized` bound makes it so that `NoCell` is still object
+    // safe.
+    #[doc(hidden)]
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized;
+}
+
 /// Types whose validity can be checked at runtime, allowing them to be
 /// conditionally converted from byte slices.
 ///
@@ -3001,18 +3037,20 @@ safety_comment! {
     /// SAFETY:
     /// Per the reference [1], "the unit tuple (`()`) ... is guaranteed as a
     /// zero-sized type to have a size of 0 and an alignment of 1."
+    /// - `NoCell`: `()` self-evidently does not contain any `UnsafeCell`s.
     /// - `TryFromBytes` (with no validator), `FromZeroes`, `FromBytes`: There
     ///   is only one possible sequence of 0 bytes, and `()` is inhabited.
     /// - `AsBytes`: Since `()` has size 0, it contains no padding bytes.
     /// - `Unaligned`: `()` has alignment 1.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#tuple-layout
-    unsafe_impl!((): TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!((): NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
     assert_unaligned!(());
 }
 
 safety_comment! {
     /// SAFETY:
+    /// - `NoCell`: These types self-evidently do not contain any `UnsafeCell`s.
     /// - `TryFromBytes` (with no validator), `FromZeroes`, `FromBytes`: all bit
     ///   patterns are valid for numeric types [1]
     /// - `AsBytes`: numeric types have no padding bytes [1]
@@ -3045,25 +3083,26 @@ safety_comment! {
     /// TODO(#278): Once we've updated the trait docs to refer to `u8`s rather
     /// than bits or bytes, update this comment, especially the reference to
     /// [1].
-    unsafe_impl!(u8: TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-    unsafe_impl!(i8: TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(u8: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(i8: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
     assert_unaligned!(u8, i8);
-    unsafe_impl!(u16: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(i16: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(u32: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(i32: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(u64: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(i64: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(u128: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(i128: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(usize: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(isize: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(f32: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(f64: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(u16: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(i16: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(u32: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(i32: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(u64: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(i64: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(u128: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(i128: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(usize: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(isize: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(f32: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(f64: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
 }
 
 safety_comment! {
     /// SAFETY:
+    /// - `NoCell`: `bool` self-evidently does not contain any `UnsafeCell`s.
     /// - `FromZeroes`: Valid since "[t]he value false has the bit pattern
     ///   0x00" [1].
     /// - `AsBytes`: Since "the boolean type has a size and alignment of 1 each"
@@ -3074,7 +3113,7 @@ safety_comment! {
     ///   has a size and alignment of 1 each."
     ///
     /// [1] https://doc.rust-lang.org/reference/types/boolean.html
-    unsafe_impl!(bool: FromZeroes, AsBytes, Unaligned);
+    unsafe_impl!(bool: NoCell, FromZeroes, AsBytes, Unaligned);
     assert_unaligned!(bool);
     /// SAFETY:
     /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
@@ -3117,6 +3156,7 @@ safety_comment! {
 }
 safety_comment! {
     /// SAFETY:
+    /// - `NoCell`: `char` self-evidently does not contain any `UnsafeCell`s.
     /// - `FromZeroes`: Per reference [1], "[a] value of type char is a Unicode
     ///   scalar value (i.e. a code point that is not a surrogate), represented
     ///   as a 32-bit unsigned word in the 0x0000 to 0xD7FF or 0xE000 to
@@ -3126,7 +3166,7 @@ safety_comment! {
     ///   all bit patterns are valid for `char`.
     ///
     /// [1] https://doc.rust-lang.org/reference/types/textual.html
-    unsafe_impl!(char: FromZeroes, AsBytes);
+    unsafe_impl!(char: NoCell, FromZeroes, AsBytes);
     /// SAFETY:
     /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
     ///   closure:
@@ -3163,17 +3203,21 @@ safety_comment! {
 }
 safety_comment! {
     /// SAFETY:
-    /// - `FromZeroes`, `AsBytes`, `Unaligned`: Per the reference [1], `str`
-    ///   has the same layout as `[u8]`, and `[u8]` is `FromZeroes`, `AsBytes`,
-    ///   and `Unaligned`.
+    /// Per the Reference [1], `str` has the same layout as `[u8]`.
+    /// - `NoCell`: `[u8]` does not contain any `UnsafeCell`s.
+    /// - `FromZeroes`, `AsBytes`, `Unaligned`: `[u8]` is `FromZeroes`,
+    ///   `AsBytes`, and `Unaligned`.
     ///
     /// Note that we don't `assert_unaligned!(str)` because `assert_unaligned!`
     /// uses `align_of`, which only works for `Sized` types.
     ///
-    /// TODO(#429): Add quotes from documentation.
+    /// TODO(#429):
+    /// - Add quotes from documentation.
+    /// - Improve safety proof for `FromZeroes` and `AsBytes`; having the same
+    ///   layout as `[u8]` isn't sufficient.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#str-layout
-    unsafe_impl!(str: FromZeroes, AsBytes, Unaligned);
+    unsafe_impl!(str: NoCell, FromZeroes, AsBytes, Unaligned);
     /// SAFETY:
     /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
     ///   closure:
@@ -3221,25 +3265,30 @@ safety_comment! {
     ///   be 0 bytes, which means that they must be 1 byte. The only valid
     ///   alignment for a 1-byte type is 1.
     ///
-    /// TODO(#429): Add quotes from documentation.
+    /// TODO(#429):
+    /// - Add quotes from documentation.
+    /// - Add safety comment for `NoCell`. How can we prove that `NonZeroXxx`
+    ///   doesn't contain any `UnsafeCell`s? It's obviously true, but it's not
+    ///   clear how we'd prove it short of adding text to the stdlib docs that
+    ///   says so explicitly, which likely wouldn't be accepted.
     ///
     /// [1] https://doc.rust-lang.org/stable/std/num/struct.NonZeroU8.html
     /// [2] https://doc.rust-lang.org/stable/std/num/struct.NonZeroI8.html
     /// TODO(https://github.com/rust-lang/rust/pull/104082): Cite documentation
     /// that layout is the same as primitive layout.
-    unsafe_impl!(NonZeroU8: AsBytes, Unaligned);
-    unsafe_impl!(NonZeroI8: AsBytes, Unaligned);
+    unsafe_impl!(NonZeroU8: NoCell, AsBytes, Unaligned);
+    unsafe_impl!(NonZeroI8: NoCell, AsBytes, Unaligned);
     assert_unaligned!(NonZeroU8, NonZeroI8);
-    unsafe_impl!(NonZeroU16: AsBytes);
-    unsafe_impl!(NonZeroI16: AsBytes);
-    unsafe_impl!(NonZeroU32: AsBytes);
-    unsafe_impl!(NonZeroI32: AsBytes);
-    unsafe_impl!(NonZeroU64: AsBytes);
-    unsafe_impl!(NonZeroI64: AsBytes);
-    unsafe_impl!(NonZeroU128: AsBytes);
-    unsafe_impl!(NonZeroI128: AsBytes);
-    unsafe_impl!(NonZeroUsize: AsBytes);
-    unsafe_impl!(NonZeroIsize: AsBytes);
+    unsafe_impl!(NonZeroU16: NoCell, AsBytes);
+    unsafe_impl!(NonZeroI16: NoCell, AsBytes);
+    unsafe_impl!(NonZeroU32: NoCell, AsBytes);
+    unsafe_impl!(NonZeroI32: NoCell, AsBytes);
+    unsafe_impl!(NonZeroU64: NoCell, AsBytes);
+    unsafe_impl!(NonZeroI64: NoCell, AsBytes);
+    unsafe_impl!(NonZeroU128: NoCell, AsBytes);
+    unsafe_impl!(NonZeroI128: NoCell, AsBytes);
+    unsafe_impl!(NonZeroUsize: NoCell, AsBytes);
+    unsafe_impl!(NonZeroIsize: NoCell, AsBytes);
     /// SAFETY:
     /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
     ///   closure:
@@ -3357,6 +3406,7 @@ safety_comment! {
     /// size_of::<PhantomData<T>>() == 0
     /// align_of::<PhantomData<T>>() == 1".
     /// This gives:
+    /// - `NoCell`: `PhantomData` has no fields.
     /// - `TryFromBytes` (with no validator), `FromZeroes`, `FromBytes`: There
     ///   is only one possible sequence of 0 bytes, and `PhantomData` is
     ///   inhabited.
@@ -3366,6 +3416,7 @@ safety_comment! {
     ///   1.
     ///
     /// [1] https://doc.rust-lang.org/std/marker/struct.PhantomData.html#layout-1
+    unsafe_impl!(T: ?Sized => NoCell for PhantomData<T>);
     unsafe_impl!(T: ?Sized => TryFromBytes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => FromZeroes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => FromBytes for PhantomData<T>);
@@ -3381,6 +3432,8 @@ safety_comment! {
     /// that the `#[repr(transparent)]` attribute is "considered part of the
     /// public ABI".
     ///
+    /// - `NoCell`: `Wrapping<T>` has `UnsafeCell`s exactly when `T` does, so
+    ///   `T: NoCell` guarantees that `Wrapping<T>` has no `UnsafeCell`s.
     /// - `TryFromBytes`: The safety requirements for `unsafe_impl!` with an
     ///   `is_bit_valid` closure:
     ///   - Given `t: *mut Wrapping<T>` and `let r = *mut T`, `r` refers to an
@@ -3416,6 +3469,7 @@ safety_comment! {
     /// Reference this documentation once it's available on stable.
     ///
     /// [2] https://doc.rust-lang.org/nomicon/other-reprs.html#reprtransparent
+    unsafe_impl!(T: NoCell => NoCell for Wrapping<T>);
     unsafe_impl!(T: TryFromBytes => TryFromBytes for Wrapping<T>; |candidate: Ptr<T>| {
         // SAFETY:
         // - Since `T` and `Wrapping<T>` have the same layout and bit validity
@@ -3439,6 +3493,8 @@ safety_comment! {
     // since it may contain uninitialized bytes.
     //
     /// SAFETY:
+    /// - `NoCell`: `MaybeUninit<T>` has `UnsafeCell`s exactly when `T` does, so
+    ///   `T: NoCell` guarantees that `MaybeUninit<T>` has no `UnsafeCell`s.
     /// - `TryFromBytes` (with no validator), `FromZeroes`, `FromBytes`:
     ///   `MaybeUninit<T>` has no restrictions on its contents. Unfortunately,
     ///   in addition to bit validity, `TryFromBytes`, `FromZeroes` and
@@ -3455,6 +3511,7 @@ safety_comment! {
     /// `FromBytes` and `RefFromBytes`, or if we introduce a separate
     /// `NoCell`/`Freeze` trait, we can relax the trait bounds for `FromZeroes`
     /// and `FromBytes`.
+    unsafe_impl!(T: NoCell => NoCell for MaybeUninit<T>);
     unsafe_impl!(T: TryFromBytes => TryFromBytes for MaybeUninit<T>);
     unsafe_impl!(T: FromZeroes => FromZeroes for MaybeUninit<T>);
     unsafe_impl!(T: FromBytes => FromBytes for MaybeUninit<T>);
@@ -3467,6 +3524,8 @@ safety_comment! {
     /// accessing the inner value is safe (meaning that it's unsound to leave
     /// the inner value uninitialized while exposing the `ManuallyDrop` to safe
     /// code).
+    /// - `NoCell`: `ManuallyDrop<T>` has `UnsafeCell`s exactly when `T` does,
+    ///   so `T: NoCell` guarantees that `ManuallyDrop<T>` has no `UnsafeCell`s.
     /// - `FromZeroes`, `FromBytes`: Since it has the same layout as `T`, any
     ///   valid `T` is a valid `ManuallyDrop<T>`. If `T: FromZeroes`, a sequence
     ///   of zero bytes is a valid `T`, and thus a valid `ManuallyDrop<T>`. If
@@ -3490,6 +3549,7 @@ safety_comment! {
     /// - Once [1] (added in
     /// https://github.com/rust-lang/rust/pull/115522) is available on stable,
     /// quote the stable docs instead of the nightly docs.
+    unsafe_impl!(T: ?Sized + NoCell => NoCell for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + FromZeroes => FromZeroes for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + AsBytes => AsBytes for ManuallyDrop<T>);
@@ -3511,19 +3571,22 @@ safety_comment! {
     ///
     /// In other words, the layout of a `[T]` or `[T; N]` is a sequence of `T`s
     /// laid out back-to-back with no bytes in between. Therefore, `[T]` or `[T;
-    /// N]` are `TryFromBytes`, `FromZeroes`, `FromBytes`, and `AsBytes` if `T`
-    /// is (respectively). Furthermore, since an array/slice has "the same
-    /// alignment of `T`", `[T]` and `[T; N]` are `Unaligned` if `T` is.
+    /// N]` are `NoCell`, `TryFromBytes`, `FromZeroes`, `FromBytes`, and
+    /// `AsBytes` if `T` is (respectively). Furthermore, since an array/slice
+    /// has "the same alignment of `T`", `[T]` and `[T; N]` are `Unaligned` if
+    /// `T` is.
     ///
     /// Note that we don't `assert_unaligned!` for slice types because
     /// `assert_unaligned!` uses `align_of`, which only works for `Sized` types.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#array-layout
+    unsafe_impl!(const N: usize, T: NoCell => NoCell for [T; N]);
     unsafe_impl!(const N: usize, T: FromZeroes => FromZeroes for [T; N]);
     unsafe_impl!(const N: usize, T: FromBytes => FromBytes for [T; N]);
     unsafe_impl!(const N: usize, T: AsBytes => AsBytes for [T; N]);
     unsafe_impl!(const N: usize, T: Unaligned => Unaligned for [T; N]);
     assert_unaligned!([(); 0], [(); 1], [u8; 0], [u8; 1]);
+    unsafe_impl!(T: NoCell => NoCell for [T]);
     unsafe_impl!(T: TryFromBytes => TryFromBytes for [T]; |c: Ptr<[T]>| {
         // SAFETY: Assuming the preconditions of `is_bit_valid` are satisfied,
         // so too will the postcondition: that, if `is_bit_valid(candidate)`
@@ -3567,6 +3630,7 @@ safety_comment! {
 }
 safety_comment! {
     /// SAFETY:
+    /// - `NoCell`: Raw pointers do not contain any `UnsafeCell`s.
     /// - `FromZeroes`: For thin pointers (note that `T: Sized`), the zero
     ///   pointer is considered "null". [1] No operations which require
     ///   provenance are legal on null pointers, so this is not a footgun.
@@ -3578,8 +3642,26 @@ safety_comment! {
     ///
     /// [1] TODO(https://github.com/rust-lang/rust/pull/116988): Cite the
     /// documentation once this PR lands.
+    unsafe_impl!(T: ?Sized => NoCell for *const T);
+    unsafe_impl!(T: ?Sized => NoCell for *mut T);
     unsafe_impl!(T => FromZeroes for *const T);
     unsafe_impl!(T => FromZeroes for *mut T);
+}
+safety_comment! {
+    /// SAFETY:
+    /// Reference types do not contain any `UnsafeCell`s.
+    unsafe_impl!(T: ?Sized => NoCell for &'_ T);
+    unsafe_impl!(T: ?Sized => NoCell for &'_ mut T);
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// `Option` is not `#[non_exhaustive]` [1], which means that the types in
+    /// its variants cannot change, and no new variants can be added.
+    /// `Option<T>` does not contain any `UnsafeCell`s outside of `T`. [1]
+    ///
+    /// [1] https://doc.rust-lang.org/core/option/enum.Option.html
+    unsafe_impl!(T: NoCell => NoCell for Option<T>);
 }
 
 // SIMD support
@@ -3627,8 +3709,9 @@ safety_comment! {
 // Given this background, we can observe that:
 // - The size and bit pattern requirements of a SIMD type are equivalent to the
 //   equivalent array type. Thus, for any SIMD type whose primitive `T` is
-//   `TryFromBytes`, `FromZeroes`, `FromBytes`, or `AsBytes`, that SIMD type is
-//   also `TryFromBytes`, `FromZeroes`, `FromBytes`, or `AsBytes` respectively.
+//   `NoCell`, `TryFromBytes`, `FromZeroes`, `FromBytes`, or `AsBytes`, that
+//   SIMD type is also `NoCell`, `TryFromBytes`, `FromZeroes`, `FromBytes`, or
+//   `AsBytes` respectively.
 // - Since no upper bound is placed on the alignment, no SIMD type can be
 //   guaranteed to be `Unaligned`.
 //
@@ -3671,7 +3754,7 @@ mod simd {
                 safety_comment! {
                     /// SAFETY:
                     /// See comment on module definition for justification.
-                    $( unsafe_impl!($typ: TryFromBytes, FromZeroes, FromBytes, AsBytes); )*
+                    $( unsafe_impl!($typ: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes); )*
                 }
             }
         };
@@ -6675,6 +6758,7 @@ mod tests {
 
     #[test]
     fn test_object_safety() {
+        fn _takes_no_cell(_: &dyn NoCell) {}
         fn _takes_from_zeroes(_: &dyn FromZeroes) {}
         fn _takes_from_bytes(_: &dyn FromBytes) {}
         fn _takes_unaligned(_: &dyn Unaligned) {}
@@ -7788,51 +7872,51 @@ mod tests {
         // change. Of course, some impls would be invalid (e.g., `bool:
         // FromBytes`), and so this change detection is very important.
 
-        assert_impls!((): KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(u8: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(i8: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(u16: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(i16: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(u32: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(i32: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(u64: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(i64: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(u128: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(i128: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(usize: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(isize: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(f32: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(f64: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!((): KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(u8: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(i8: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(u16: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i16: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(u32: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i32: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(u64: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i64: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(u128: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i128: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(usize: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(isize: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(f32: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(f64: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
 
-        assert_impls!(bool: KnownLayout, TryFromBytes, FromZeroes, AsBytes, Unaligned, !FromBytes);
-        assert_impls!(char: KnownLayout, TryFromBytes, FromZeroes, AsBytes, !FromBytes, !Unaligned);
-        assert_impls!(str: KnownLayout, TryFromBytes, FromZeroes, AsBytes, Unaligned, !FromBytes);
+        assert_impls!(bool: KnownLayout, NoCell, TryFromBytes, FromZeroes, AsBytes, Unaligned, !FromBytes);
+        assert_impls!(char: KnownLayout, NoCell, TryFromBytes, FromZeroes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(str: KnownLayout, NoCell, TryFromBytes, FromZeroes, AsBytes, Unaligned, !FromBytes);
 
-        assert_impls!(NonZeroU8: KnownLayout, TryFromBytes, AsBytes, Unaligned, !FromZeroes, !FromBytes);
-        assert_impls!(NonZeroI8: KnownLayout, TryFromBytes, AsBytes, Unaligned, !FromZeroes, !FromBytes);
-        assert_impls!(NonZeroU16: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI16: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroU32: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI32: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroU64: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI64: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroU128: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI128: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroUsize: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroIsize: KnownLayout, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU8: KnownLayout, NoCell, TryFromBytes, AsBytes, Unaligned, !FromZeroes, !FromBytes);
+        assert_impls!(NonZeroI8: KnownLayout, NoCell, TryFromBytes, AsBytes, Unaligned, !FromZeroes, !FromBytes);
+        assert_impls!(NonZeroU16: KnownLayout, NoCell, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI16: KnownLayout, NoCell, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU32: KnownLayout, NoCell, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI32: KnownLayout, NoCell, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU64: KnownLayout, NoCell, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI64: KnownLayout, NoCell, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroU128: KnownLayout, NoCell, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroI128: KnownLayout, NoCell, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroUsize: KnownLayout, NoCell, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(NonZeroIsize: KnownLayout, NoCell, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
 
-        assert_impls!(Option<NonZeroU8>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(Option<NonZeroI8>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(Option<NonZeroU16>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI16>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU32>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI32>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU64>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI64>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU128>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI128>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroUsize>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroIsize>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU8>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(Option<NonZeroI8>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(Option<NonZeroU16>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI16>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU32>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI32>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU64>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI64>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU128>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI128>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroUsize>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroIsize>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
 
         // Implements none of the ZC traits.
         struct NotZerocopy;
@@ -7850,50 +7934,55 @@ mod tests {
         ) -> (NotZerocopy, NotZerocopy);
 
         #[cfg(feature = "alloc")]
-        assert_impls!(Option<Box<UnsafeCell<NotZerocopy>>>: KnownLayout, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<Box<[UnsafeCell<NotZerocopy>]>>: KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<&'static UnsafeCell<NotZerocopy>>: KnownLayout, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<&'static [UnsafeCell<NotZerocopy>]>: KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<&'static mut UnsafeCell<NotZerocopy>>: KnownLayout, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<&'static mut [UnsafeCell<NotZerocopy>]>: KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<NonNull<UnsafeCell<NotZerocopy>>>: KnownLayout, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<NonNull<[UnsafeCell<NotZerocopy>]>>: KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<fn()>: KnownLayout, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<FnManyArgs>: KnownLayout, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<extern "C" fn()>: KnownLayout, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<ECFnManyArgs>: KnownLayout, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<Box<UnsafeCell<NotZerocopy>>>: KnownLayout, FromZeroes, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<Box<[UnsafeCell<NotZerocopy>]>>: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<&'static UnsafeCell<NotZerocopy>>: KnownLayout, NoCell, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<&'static [UnsafeCell<NotZerocopy>]>: KnownLayout, NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<&'static mut UnsafeCell<NotZerocopy>>: KnownLayout, NoCell, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<&'static mut [UnsafeCell<NotZerocopy>]>: KnownLayout, NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<NonNull<UnsafeCell<NotZerocopy>>>: KnownLayout, FromZeroes, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<NonNull<[UnsafeCell<NotZerocopy>]>>: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<fn()>: KnownLayout, FromZeroes, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<FnManyArgs>: KnownLayout, FromZeroes, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<extern "C" fn()>: KnownLayout, FromZeroes, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<ECFnManyArgs>: KnownLayout, FromZeroes, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(PhantomData<NotZerocopy>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(PhantomData<[u8]>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(PhantomData<NotZerocopy>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(PhantomData<UnsafeCell<()>>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(PhantomData<[u8]>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
 
-        assert_impls!(ManuallyDrop<u8>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
-        assert_impls!(ManuallyDrop<[u8]>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
-        assert_impls!(ManuallyDrop<NotZerocopy>: !TryFromBytes, !KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(ManuallyDrop<[NotZerocopy]>: !TryFromBytes, !KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<u8>: KnownLayout, NoCell, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
+        assert_impls!(ManuallyDrop<[u8]>: KnownLayout, NoCell, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
+        assert_impls!(ManuallyDrop<NotZerocopy>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<[NotZerocopy]>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<UnsafeCell<()>>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<[UnsafeCell<()>]>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(MaybeUninit<u8>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, Unaligned, !AsBytes);
-        assert_impls!(MaybeUninit<NotZerocopy>: KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(MaybeUninit<u8>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, Unaligned, !AsBytes);
+        assert_impls!(MaybeUninit<NotZerocopy>: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(MaybeUninit<UnsafeCell<()>>: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(Wrapping<u8>: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(Wrapping<NotZerocopy>: KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Wrapping<u8>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(Wrapping<NotZerocopy>: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Wrapping<UnsafeCell<()>>: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(Unalign<u8>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
-        assert_impls!(Unalign<NotZerocopy>: Unaligned, !KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes);
+        assert_impls!(Unalign<u8>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned, !NoCell, !TryFromBytes);
+        assert_impls!(Unalign<NotZerocopy>: Unaligned, !NoCell, !KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes);
 
-        assert_impls!([u8]: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!([bool]: KnownLayout, TryFromBytes, FromZeroes, AsBytes, Unaligned, !FromBytes);
-        assert_impls!([NotZerocopy]: !KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!([u8; 0]: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
-        assert_impls!([NotZerocopy; 0]: KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!([u8; 1]: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
-        assert_impls!([NotZerocopy; 1]: KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!([u8]: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!([bool]: KnownLayout, NoCell, TryFromBytes, FromZeroes, AsBytes, Unaligned, !FromBytes);
+        assert_impls!([NotZerocopy]: !KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!([u8; 0]: KnownLayout, NoCell, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
+        assert_impls!([NotZerocopy; 0]: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!([u8; 1]: KnownLayout, NoCell, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
+        assert_impls!([NotZerocopy; 1]: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(*const NotZerocopy: KnownLayout, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(*mut NotZerocopy: KnownLayout, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(*const [NotZerocopy]: KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(*mut [NotZerocopy]: KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(*const dyn Debug: KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(*mut dyn Debug: KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*const NotZerocopy: KnownLayout, NoCell, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*mut NotZerocopy: KnownLayout, NoCell, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*const [NotZerocopy]: KnownLayout, NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*mut [NotZerocopy]: KnownLayout, NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*const dyn Debug: KnownLayout, NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*mut dyn Debug: KnownLayout, NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
         #[cfg(feature = "simd")]
         {
@@ -7903,7 +7992,7 @@ mod tests {
                     {
                         use core::arch::$arch::{$($typ),*};
                         use crate::*;
-                        $( assert_impls!($typ: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned); )*
+                        $( assert_impls!($typ: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned); )*
                     }
                 };
             }
