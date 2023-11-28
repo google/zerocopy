@@ -1113,7 +1113,7 @@ pub use zerocopy_derive::FromZeroes;
 ///
 /// [undefined behavior]: https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html
 /// [github-repo]: https://github.com/google/zerocopy
-/// [`try_from_ref`]: #
+/// [`try_from_ref`]: TryFromBytes::try_from_ref
 // TODO(#5): Update `try_from_ref` doc link once it exists
 #[doc(hidden)]
 pub unsafe trait TryFromBytes {
