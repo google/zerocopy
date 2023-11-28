@@ -47,3 +47,19 @@ where
 }
 
 assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: KnownLayout);
+
+// Deriving `KnownLayout` should work if the union has bounded parameters.
+
+#[derive(KnownLayout)]
+#[repr(C)]
+union WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + KnownLayout>
+where
+    'a: 'b,
+    'b: 'a,
+    T: 'a + 'b + Copy + KnownLayout,
+{
+    a: [T; N],
+    b: PhantomData<&'a &'b ()>,
+}
+
+assert_impl_all!(WithParams<'static, 'static, 42, u8>: KnownLayout);

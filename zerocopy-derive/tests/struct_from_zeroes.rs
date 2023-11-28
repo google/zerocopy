@@ -60,3 +60,18 @@ struct TypeParams<'a, T: ?Sized, I: Iterator> {
 assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: FromZeroes);
 assert_impl_all!(TypeParams<'static, AU16, IntoIter<()>>: FromZeroes);
 assert_impl_all!(TypeParams<'static, [AU16], IntoIter<()>>: FromZeroes);
+
+// Deriving `FromZeroes` should work if the struct has bounded parameters.
+
+#[derive(FromZeroes)]
+#[repr(transparent)]
+struct WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + FromZeroes>(
+    [T; N],
+    PhantomData<&'a &'b ()>,
+)
+where
+    'a: 'b,
+    'b: 'a,
+    T: 'a + 'b + FromZeroes;
+
+assert_impl_all!(WithParams<'static, 'static, 42, u8>: FromZeroes);
