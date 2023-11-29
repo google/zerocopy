@@ -9,7 +9,10 @@ mod util;
 
 use std::{marker::PhantomData, option::IntoIter};
 
-use {static_assertions::assert_impl_all, zerocopy::KnownLayout};
+use {
+    static_assertions::assert_impl_all,
+    zerocopy::{DstLayout, KnownLayout},
+};
 
 use crate::util::AU16;
 
