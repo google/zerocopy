@@ -254,7 +254,7 @@ pub use crate::wrappers::*;
 
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
-pub use zerocopy_derive::{AsBytes, FromBytes, Unaligned};
+pub use zerocopy_derive::{AsBytes, Unaligned};
 
 // `pub use` separately here so that we can mark it `#[doc(hidden)]`.
 //
@@ -1336,7 +1336,8 @@ pub unsafe trait TryFromBytes {
 /// If a type is marked as `FromZeroes` which violates this contract, it may
 /// cause undefined behavior.
 ///
-/// `#[derive(FromZeroes)]` only permits [types which satisfy these requirements][derive-analysis].
+/// `#[derive(FromZeroes)]` only permits [types which satisfy these
+/// requirements][derive-analysis].
 ///
 #[cfg_attr(
     feature = "derive",
@@ -1585,40 +1586,71 @@ pub unsafe trait FromZeroes {
     }
 }
 
-/// Types for which any byte pattern is valid.
+/// Analyzes whether a type is [`FromBytes`].
 ///
-/// WARNING: Do not implement this trait yourself! Instead, use
-/// `#[derive(FromBytes)]` (requires the `derive` Cargo feature).
+/// This derive analyzes, at compile time, whether the annotated type satisfies
+/// the [safety conditions] of `FromBytes` and implements `FromBytes` if it is
+/// sound to do so. This derive can be applied to structs, enums, and unions;
+/// e.g.:
 ///
-/// `FromBytes` types can safely be deserialized from an untrusted sequence of
-/// bytes because any byte sequence corresponds to a valid instance of the type.
+/// ```
+/// # use zerocopy_derive::{FromBytes, FromZeroes};
+/// #[derive(FromZeroes, FromBytes)]
+/// struct MyStruct {
+/// # /*
+///     ...
+/// # */
+/// }
 ///
-/// `FromBytes` is ignorant of byte order. For byte order-aware types, see the
-/// [`byteorder`] module.
+/// #[derive(FromZeroes, FromBytes)]
+/// #[repr(u8)]
+/// enum MyEnum {
+/// #   V00, V01, V02, V03, V04, V05, V06, V07, V08, V09, V0A, V0B, V0C, V0D, V0E,
+/// #   V0F, V10, V11, V12, V13, V14, V15, V16, V17, V18, V19, V1A, V1B, V1C, V1D,
+/// #   V1E, V1F, V20, V21, V22, V23, V24, V25, V26, V27, V28, V29, V2A, V2B, V2C,
+/// #   V2D, V2E, V2F, V30, V31, V32, V33, V34, V35, V36, V37, V38, V39, V3A, V3B,
+/// #   V3C, V3D, V3E, V3F, V40, V41, V42, V43, V44, V45, V46, V47, V48, V49, V4A,
+/// #   V4B, V4C, V4D, V4E, V4F, V50, V51, V52, V53, V54, V55, V56, V57, V58, V59,
+/// #   V5A, V5B, V5C, V5D, V5E, V5F, V60, V61, V62, V63, V64, V65, V66, V67, V68,
+/// #   V69, V6A, V6B, V6C, V6D, V6E, V6F, V70, V71, V72, V73, V74, V75, V76, V77,
+/// #   V78, V79, V7A, V7B, V7C, V7D, V7E, V7F, V80, V81, V82, V83, V84, V85, V86,
+/// #   V87, V88, V89, V8A, V8B, V8C, V8D, V8E, V8F, V90, V91, V92, V93, V94, V95,
+/// #   V96, V97, V98, V99, V9A, V9B, V9C, V9D, V9E, V9F, VA0, VA1, VA2, VA3, VA4,
+/// #   VA5, VA6, VA7, VA8, VA9, VAA, VAB, VAC, VAD, VAE, VAF, VB0, VB1, VB2, VB3,
+/// #   VB4, VB5, VB6, VB7, VB8, VB9, VBA, VBB, VBC, VBD, VBE, VBF, VC0, VC1, VC2,
+/// #   VC3, VC4, VC5, VC6, VC7, VC8, VC9, VCA, VCB, VCC, VCD, VCE, VCF, VD0, VD1,
+/// #   VD2, VD3, VD4, VD5, VD6, VD7, VD8, VD9, VDA, VDB, VDC, VDD, VDE, VDF, VE0,
+/// #   VE1, VE2, VE3, VE4, VE5, VE6, VE7, VE8, VE9, VEA, VEB, VEC, VED, VEE, VEF,
+/// #   VF0, VF1, VF2, VF3, VF4, VF5, VF6, VF7, VF8, VF9, VFA, VFB, VFC, VFD, VFE,
+/// #   VFF,
+/// # /*
+///     ...
+/// # */
+/// }
 ///
-/// # Safety
+/// #[derive(FromZeroes, FromBytes)]
+/// union MyUnion {
+/// #   variant: u8,
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
 ///
-/// *This section describes what is required in order for `T: FromBytes`, and
-/// what unsafe code may assume of such types. `#[derive(FromBytes)]` only
-/// permits types which satisfy these requirements. If you don't plan on
-/// implementing `FromBytes` manually, and you don't plan on writing unsafe code
-/// that operates on `FromBytes` types, then you don't need to read this
-/// section.*
+/// [safety conditions]: trait@FromBytes#safety
 ///
-/// If `T: FromBytes`, then unsafe code may assume that:
-/// - It is sound to treat any initialized sequence of bytes of length
-///   `size_of::<T>()` as a `T`.
-/// - Given `b: &[u8]` where `b.len() == size_of::<T>()` and `b` is aligned to
-///   `align_of::<T>()`, it is sound to construct a `t: &T` at the same address
-///   as `b`, and it is sound for both `b` and `t` to be live at the same time.
+/// # Analysis
 ///
-/// If a type is marked as `FromBytes` which violates this contract, it may
-/// cause undefined behavior.
+/// *This section describes, roughly, the analysis performed by this derive to
+/// determine whether it is sound to implement `FromBytes` for a given type.
+/// Unless you are modifying the implementation of this derive, or attempting to
+/// manually implement `FromBytes` for a type yourself, you don't need to read
+/// this section.*
 ///
-/// If a type has the following properties, then it is sound to implement
+/// If a type has the following properties, then this derive can implement
 /// `FromBytes` for that type:
-/// - If the type is a struct, all of its fields must satisfy the requirements
-///   to be `FromBytes` (they do not actually have to be `FromBytes`)
+///
+/// - If the type is a struct, all of its fields must be `FromBytes`.
 /// - If the type is an enum:
 ///   - It must be a C-like enum (meaning that all variants have no fields).
 ///   - It must have a defined representation (`repr`s `C`, `u8`, `u16`, `u32`,
@@ -1636,9 +1668,14 @@ pub unsafe trait FromZeroes {
 ///
 /// [`UnsafeCell`]: core::cell::UnsafeCell
 ///
-/// # Rationale
+/// This analysis is subject to change. Unsafe code may *only* rely on the
+/// documented [safety conditions] of `FromBytes`, and must *not* rely on the
+/// implementation details of this derive.
 ///
 /// ## Why isn't an explicit representation required for structs?
+///
+/// Neither this derive, nor the [safety conditions] of `FromBytes`, requires
+/// that structs are marked with `#[repr(C)]`.
 ///
 /// Per the [Rust reference](reference),
 ///
@@ -1661,6 +1698,101 @@ pub unsafe trait FromZeroes {
 ///
 /// Whether a struct is soundly `FromBytes` therefore solely depends on whether
 /// its fields are `FromBytes`.
+// TODO(#146): Document why we don't require an enum to have an explicit `repr`
+// attribute.
+#[cfg(any(feature = "derive", test))]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+pub use zerocopy_derive::FromBytes;
+
+/// Types for which any bit pattern is valid.
+///
+/// Any memory region of the appropriate length which contains initialized bytes
+/// can be viewed as any `FromBytes` type with no runtime overhead. This is
+/// useful for efficiently parsing bytes as structured data.
+///
+/// # Implementation
+///
+/// **Do not implement this trait yourself!** Instead, use
+/// [`#[derive(FromBytes)]`][derive] (requires the `derive` Cargo feature);
+/// e.g.:
+///
+/// ```
+/// # use zerocopy_derive::{FromBytes, FromZeroes};
+/// #[derive(FromZeroes, FromBytes)]
+/// struct MyStruct {
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(FromZeroes, FromBytes)]
+/// #[repr(u8)]
+/// enum MyEnum {
+/// #   V00, V01, V02, V03, V04, V05, V06, V07, V08, V09, V0A, V0B, V0C, V0D, V0E,
+/// #   V0F, V10, V11, V12, V13, V14, V15, V16, V17, V18, V19, V1A, V1B, V1C, V1D,
+/// #   V1E, V1F, V20, V21, V22, V23, V24, V25, V26, V27, V28, V29, V2A, V2B, V2C,
+/// #   V2D, V2E, V2F, V30, V31, V32, V33, V34, V35, V36, V37, V38, V39, V3A, V3B,
+/// #   V3C, V3D, V3E, V3F, V40, V41, V42, V43, V44, V45, V46, V47, V48, V49, V4A,
+/// #   V4B, V4C, V4D, V4E, V4F, V50, V51, V52, V53, V54, V55, V56, V57, V58, V59,
+/// #   V5A, V5B, V5C, V5D, V5E, V5F, V60, V61, V62, V63, V64, V65, V66, V67, V68,
+/// #   V69, V6A, V6B, V6C, V6D, V6E, V6F, V70, V71, V72, V73, V74, V75, V76, V77,
+/// #   V78, V79, V7A, V7B, V7C, V7D, V7E, V7F, V80, V81, V82, V83, V84, V85, V86,
+/// #   V87, V88, V89, V8A, V8B, V8C, V8D, V8E, V8F, V90, V91, V92, V93, V94, V95,
+/// #   V96, V97, V98, V99, V9A, V9B, V9C, V9D, V9E, V9F, VA0, VA1, VA2, VA3, VA4,
+/// #   VA5, VA6, VA7, VA8, VA9, VAA, VAB, VAC, VAD, VAE, VAF, VB0, VB1, VB2, VB3,
+/// #   VB4, VB5, VB6, VB7, VB8, VB9, VBA, VBB, VBC, VBD, VBE, VBF, VC0, VC1, VC2,
+/// #   VC3, VC4, VC5, VC6, VC7, VC8, VC9, VCA, VCB, VCC, VCD, VCE, VCF, VD0, VD1,
+/// #   VD2, VD3, VD4, VD5, VD6, VD7, VD8, VD9, VDA, VDB, VDC, VDD, VDE, VDF, VE0,
+/// #   VE1, VE2, VE3, VE4, VE5, VE6, VE7, VE8, VE9, VEA, VEB, VEC, VED, VEE, VEF,
+/// #   VF0, VF1, VF2, VF3, VF4, VF5, VF6, VF7, VF8, VF9, VFA, VFB, VFC, VFD, VFE,
+/// #   VFF,
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(FromZeroes, FromBytes)]
+/// union MyUnion {
+/// #   variant: u8,
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// This derive performs a sophisticated, compile-time safety analysis to
+/// determine whether a type is `FromBytes`.
+///
+/// # Safety
+///
+/// *This section describes what is required in order for `T: FromBytes`, and
+/// what unsafe code may assume of such types. If you don't plan on implementing
+/// `FromBytes` manually, and you don't plan on writing unsafe code that
+/// operates on `FromBytes` types, then you don't need to read this section.*
+///
+/// If `T: FromBytes`, then unsafe code may assume that:
+/// - It is sound to treat any initialized sequence of bytes of length
+///   `size_of::<T>()` as a `T`.
+/// - Given `b: &[u8]` where `b.len() == size_of::<T>()`, `b` is aligned to
+///   `align_of::<T>()` it is sound to construct a `t: &T` at the same address
+///   as `b`, and it is sound for both `b` and `t` to be live at the same time.
+///
+/// If a type is marked as `FromBytes` which violates this contract, it may
+/// cause undefined behavior.
+///
+/// `#[derive(FromBytes)]` only permits [types which satisfy these
+/// requirements][derive-analysis].
+///
+#[cfg_attr(
+    feature = "derive",
+    doc = "[derive]: zerocopy_derive::FromBytes",
+    doc = "[derive-analysis]: zerocopy_derive::FromBytes#analysis"
+)]
+#[cfg_attr(
+    not(feature = "derive"),
+    doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.FromBytes.html"),
+    doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.FromBytes.html#analysis"),
+)]
 pub unsafe trait FromBytes: FromZeroes {
     // The `Self: Sized` bound makes it so that `FromBytes` is still object
     // safe.
@@ -1671,8 +1803,34 @@ pub unsafe trait FromBytes: FromZeroes {
 
     /// Interprets the given `bytes` as a `&Self` without copying.
     ///
-    /// If `bytes.len() != size_of::<T>()` or `bytes` is not aligned to
-    /// `align_of::<T>()`, this returns `None`.
+    /// If `bytes.len() != size_of::<Self>()` or `bytes` is not aligned to
+    /// `align_of::<Self>()`, this returns `None`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromZeroes, FromBytes)]
+    /// #[repr(C)]
+    /// struct PacketHeader {
+    ///     src_port: [u8; 2],
+    ///     dst_port: [u8; 2],
+    ///     length: [u8; 2],
+    ///     checksum: [u8; 2],
+    /// }
+    ///
+    /// // These bytes encode a `PacketHeader`.
+    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7].as_slice();
+    ///
+    /// let header = PacketHeader::ref_from(bytes).unwrap();
+    ///
+    /// assert_eq!(header.src_port, [0, 1]);
+    /// assert_eq!(header.dst_port, [2, 3]);
+    /// assert_eq!(header.length, [4, 5]);
+    /// assert_eq!(header.checksum, [6, 7]);
+    /// ```
     #[inline]
     fn ref_from(bytes: &[u8]) -> Option<&Self>
     where
@@ -1684,11 +1842,37 @@ pub unsafe trait FromBytes: FromZeroes {
     /// Interprets the prefix of the given `bytes` as a `&Self` without copying.
     ///
     /// `ref_from_prefix` returns a reference to the first `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() < size_of::<T>()` or `bytes` is not
-    /// aligned to `align_of::<T>()`, this returns `None`.
+    /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()` or `bytes` is not
+    /// aligned to `align_of::<Self>()`, this returns `None`.
     ///
-    /// To also access the prefix bytes, use [`Ref::new_from_prefix`]. Then,
-    /// use [`Ref::into_ref`] to get a `&Self` with the same lifetime.
+    /// To also access the prefix bytes, use [`Ref::new_from_prefix`]. Then, use
+    /// [`Ref::into_ref`] to get a `&Self` with the same lifetime.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromZeroes, FromBytes)]
+    /// #[repr(C)]
+    /// struct PacketHeader {
+    ///     src_port: [u8; 2],
+    ///     dst_port: [u8; 2],
+    ///     length: [u8; 2],
+    ///     checksum: [u8; 2],
+    /// }
+    ///
+    /// // These are more bytes than are needed to encode a `PacketHeader`.
+    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].as_slice();
+    ///
+    /// let header = PacketHeader::ref_from_prefix(bytes).unwrap();
+    ///
+    /// assert_eq!(header.src_port, [0, 1]);
+    /// assert_eq!(header.dst_port, [2, 3]);
+    /// assert_eq!(header.length, [4, 5]);
+    /// assert_eq!(header.checksum, [6, 7]);
+    /// ```
     #[inline]
     fn ref_from_prefix(bytes: &[u8]) -> Option<&Self>
     where
@@ -1700,11 +1884,31 @@ pub unsafe trait FromBytes: FromZeroes {
     /// Interprets the suffix of the given `bytes` as a `&Self` without copying.
     ///
     /// `ref_from_suffix` returns a reference to the last `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() < size_of::<T>()` or the suffix of
-    /// `bytes` is not aligned to `align_of::<T>()`, this returns `None`.
+    /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()` or the suffix of
+    /// `bytes` is not aligned to `align_of::<Self>()`, this returns `None`.
     ///
-    /// To also access the suffix bytes, use [`Ref::new_from_suffix`]. Then,
-    /// use [`Ref::into_ref`] to get a `&Self` with the same lifetime.
+    /// To also access the suffix bytes, use [`Ref::new_from_suffix`]. Then, use
+    /// [`Ref::into_ref`] to get a `&Self` with the same lifetime.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromZeroes, FromBytes)]
+    /// #[repr(C)]
+    /// struct PacketTrailer {
+    ///     frame_check_sequence: [u8; 4],
+    /// }
+    ///
+    /// // These are more bytes than are needed to encode a `PacketTrailer`.
+    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].as_slice();
+    ///
+    /// let trailer = PacketTrailer::ref_from_suffix(bytes).unwrap();
+    ///
+    /// assert_eq!(trailer.frame_check_sequence, [6, 7, 8, 9]);
+    /// ```
     #[inline]
     fn ref_from_suffix(bytes: &[u8]) -> Option<&Self>
     where
@@ -1715,8 +1919,38 @@ pub unsafe trait FromBytes: FromZeroes {
 
     /// Interprets the given `bytes` as a `&mut Self` without copying.
     ///
-    /// If `bytes.len() != size_of::<T>()` or `bytes` is not aligned to
-    /// `align_of::<T>()`, this returns `None`.
+    /// If `bytes.len() != size_of::<Self>()` or `bytes` is not aligned to
+    /// `align_of::<Self>()`, this returns `None`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(AsBytes, FromZeroes, FromBytes)]
+    /// #[repr(C)]
+    /// struct PacketHeader {
+    ///     src_port: [u8; 2],
+    ///     dst_port: [u8; 2],
+    ///     length: [u8; 2],
+    ///     checksum: [u8; 2],
+    /// }
+    ///
+    /// // These bytes encode a `PacketHeader`.
+    /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7][..];
+    ///
+    /// let header = PacketHeader::mut_from(bytes).unwrap();
+    ///
+    /// assert_eq!(header.src_port, [0, 1]);
+    /// assert_eq!(header.dst_port, [2, 3]);
+    /// assert_eq!(header.length, [4, 5]);
+    /// assert_eq!(header.checksum, [6, 7]);
+    ///
+    /// header.checksum = [0, 0];
+    ///
+    /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 0, 0]);
+    /// ```
     #[inline]
     fn mut_from(bytes: &mut [u8]) -> Option<&mut Self>
     where
@@ -1725,14 +1959,45 @@ pub unsafe trait FromBytes: FromZeroes {
         Ref::<&mut [u8], Self>::new(bytes).map(Ref::into_mut)
     }
 
-    /// Interprets the prefix of the given `bytes` as a `&mut Self` without copying.
+    /// Interprets the prefix of the given `bytes` as a `&mut Self` without
+    /// copying.
     ///
     /// `mut_from_prefix` returns a reference to the first `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() < size_of::<T>()` or `bytes` is not
-    /// aligned to `align_of::<T>()`, this returns `None`.
+    /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()` or `bytes` is not
+    /// aligned to `align_of::<Self>()`, this returns `None`.
     ///
-    /// To also access the prefix bytes, use [`Ref::new_from_prefix`]. Then,
-    /// use [`Ref::into_mut`] to get a `&mut Self` with the same lifetime.
+    /// To also access the prefix bytes, use [`Ref::new_from_prefix`]. Then, use
+    /// [`Ref::into_mut`] to get a `&mut Self` with the same lifetime.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(AsBytes, FromZeroes, FromBytes)]
+    /// #[repr(C)]
+    /// struct PacketHeader {
+    ///     src_port: [u8; 2],
+    ///     dst_port: [u8; 2],
+    ///     length: [u8; 2],
+    ///     checksum: [u8; 2],
+    /// }
+    ///
+    /// // These are more bytes than are needed to encode a `PacketHeader`.
+    /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
+    ///
+    /// let header = PacketHeader::mut_from_prefix(bytes).unwrap();
+    ///
+    /// assert_eq!(header.src_port, [0, 1]);
+    /// assert_eq!(header.dst_port, [2, 3]);
+    /// assert_eq!(header.length, [4, 5]);
+    /// assert_eq!(header.checksum, [6, 7]);
+    ///
+    /// header.checksum = [0, 0];
+    ///
+    /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 0, 0, 8, 9]);
+    /// ```
     #[inline]
     fn mut_from_prefix(bytes: &mut [u8]) -> Option<&mut Self>
     where
@@ -1744,11 +2009,35 @@ pub unsafe trait FromBytes: FromZeroes {
     /// Interprets the suffix of the given `bytes` as a `&mut Self` without copying.
     ///
     /// `mut_from_suffix` returns a reference to the last `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() < size_of::<T>()` or the suffix of
-    /// `bytes` is not aligned to `align_of::<T>()`, this returns `None`.
+    /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()` or the suffix of
+    /// `bytes` is not aligned to `align_of::<Self>()`, this returns `None`.
     ///
     /// To also access the suffix bytes, use [`Ref::new_from_suffix`]. Then,
     /// use [`Ref::into_mut`] to get a `&mut Self` with the same lifetime.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(AsBytes, FromZeroes, FromBytes)]
+    /// #[repr(C)]
+    /// struct PacketTrailer {
+    ///     frame_check_sequence: [u8; 4],
+    /// }
+    ///
+    /// // These are more bytes than are needed to encode a `PacketTrailer`.
+    /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
+    ///
+    /// let trailer = PacketTrailer::mut_from_suffix(bytes).unwrap();
+    ///
+    /// assert_eq!(trailer.frame_check_sequence, [6, 7, 8, 9]);
+    ///
+    /// trailer.frame_check_sequence = [0, 0, 0, 0];
+    ///
+    /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 0, 0, 0, 0]);
+    /// ```
     #[inline]
     fn mut_from_suffix(bytes: &mut [u8]) -> Option<&mut Self>
     where
@@ -1759,8 +2048,8 @@ pub unsafe trait FromBytes: FromZeroes {
 
     /// Interprets the given `bytes` as a `&[Self]` without copying.
     ///
-    /// If `bytes.len() % size_of::<T>() != 0` or `bytes` is not aligned to
-    /// `align_of::<T>()`, this returns `None`.
+    /// If `bytes.len() % size_of::<Self>() != 0` or `bytes` is not aligned to
+    /// `align_of::<Self>()`, this returns `None`.
     ///
     /// If you need to convert a specific number of slice elements, see
     /// [`slice_from_prefix`](FromBytes::slice_from_prefix) or
@@ -1768,7 +2057,34 @@ pub unsafe trait FromBytes: FromZeroes {
     ///
     /// # Panics
     ///
-    /// If `T` is a zero-sized type.
+    /// If `Self` is a zero-sized type.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// # #[derive(Debug, PartialEq, Eq)]
+    /// #[derive(FromZeroes, FromBytes)]
+    /// #[repr(C)]
+    /// struct Pixel {
+    ///     r: u8,
+    ///     g: u8,
+    ///     b: u8,
+    ///     a: u8,
+    /// }
+    ///
+    /// // These bytes encode two `Pixel`s.
+    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7].as_slice();
+    ///
+    /// let pixels = Pixel::slice_from(bytes).unwrap();
+    ///
+    /// assert_eq!(pixels, &[
+    ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
+    ///     Pixel { r: 4, g: 5, b: 6, a: 7 },
+    /// ]);
+    /// ```
     #[inline]
     fn slice_from(bytes: &[u8]) -> Option<&[Self]>
     where
@@ -1791,6 +2107,35 @@ pub unsafe trait FromBytes: FromZeroes {
     /// # Panics
     ///
     /// If `T` is a zero-sized type.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// # #[derive(Debug, PartialEq, Eq)]
+    /// #[derive(FromZeroes, FromBytes)]
+    /// #[repr(C)]
+    /// struct Pixel {
+    ///     r: u8,
+    ///     g: u8,
+    ///     b: u8,
+    ///     a: u8,
+    /// }
+    ///
+    /// // These are more bytes than are needed to encode two `Pixel`s.
+    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].as_slice();
+    ///
+    /// let (pixels, rest) = Pixel::slice_from_prefix(bytes, 2).unwrap();
+    ///
+    /// assert_eq!(pixels, &[
+    ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
+    ///     Pixel { r: 4, g: 5, b: 6, a: 7 },
+    /// ]);
+    ///
+    /// assert_eq!(rest, &[8, 9]);
+    /// ```
     #[inline]
     fn slice_from_prefix(bytes: &[u8], count: usize) -> Option<(&[Self], &[u8])>
     where
@@ -1813,6 +2158,35 @@ pub unsafe trait FromBytes: FromZeroes {
     /// # Panics
     ///
     /// If `T` is a zero-sized type.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// # #[derive(Debug, PartialEq, Eq)]
+    /// #[derive(FromZeroes, FromBytes)]
+    /// #[repr(C)]
+    /// struct Pixel {
+    ///     r: u8,
+    ///     g: u8,
+    ///     b: u8,
+    ///     a: u8,
+    /// }
+    ///
+    /// // These are more bytes than are needed to encode two `Pixel`s.
+    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].as_slice();
+    ///
+    /// let (rest, pixels) = Pixel::slice_from_suffix(bytes, 2).unwrap();
+    ///
+    /// assert_eq!(rest, &[0, 1]);
+    ///
+    /// assert_eq!(pixels, &[
+    ///     Pixel { r: 2, g: 3, b: 4, a: 5 },
+    ///     Pixel { r: 6, g: 7, b: 8, a: 9 },
+    /// ]);
+    /// ```
     #[inline]
     fn slice_from_suffix(bytes: &[u8], count: usize) -> Option<(&[u8], &[Self])>
     where
@@ -1833,6 +2207,37 @@ pub unsafe trait FromBytes: FromZeroes {
     /// # Panics
     ///
     /// If `T` is a zero-sized type.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// # #[derive(Debug, PartialEq, Eq)]
+    /// #[derive(AsBytes, FromZeroes, FromBytes)]
+    /// #[repr(C)]
+    /// struct Pixel {
+    ///     r: u8,
+    ///     g: u8,
+    ///     b: u8,
+    ///     a: u8,
+    /// }
+    ///
+    /// // These bytes encode two `Pixel`s.
+    /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7][..];
+    ///
+    /// let pixels = Pixel::mut_slice_from(bytes).unwrap();
+    ///
+    /// assert_eq!(pixels, &[
+    ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
+    ///     Pixel { r: 4, g: 5, b: 6, a: 7 },
+    /// ]);
+    ///
+    /// pixels[1] = Pixel { r: 0, g: 0, b: 0, a: 0 };
+    ///
+    /// assert_eq!(bytes, [0, 1, 2, 3, 0, 0, 0, 0]);
+    /// ```
     #[inline]
     fn mut_slice_from(bytes: &mut [u8]) -> Option<&mut [Self]>
     where
@@ -1855,6 +2260,39 @@ pub unsafe trait FromBytes: FromZeroes {
     /// # Panics
     ///
     /// If `T` is a zero-sized type.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// # #[derive(Debug, PartialEq, Eq)]
+    /// #[derive(AsBytes, FromZeroes, FromBytes)]
+    /// #[repr(C)]
+    /// struct Pixel {
+    ///     r: u8,
+    ///     g: u8,
+    ///     b: u8,
+    ///     a: u8,
+    /// }
+    ///
+    /// // These are more bytes than are needed to encode two `Pixel`s.
+    /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
+    ///
+    /// let (pixels, rest) = Pixel::mut_slice_from_prefix(bytes, 2).unwrap();
+    ///
+    /// assert_eq!(pixels, &[
+    ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
+    ///     Pixel { r: 4, g: 5, b: 6, a: 7 },
+    /// ]);
+    ///
+    /// assert_eq!(rest, &[8, 9]);
+    ///
+    /// pixels[1] = Pixel { r: 0, g: 0, b: 0, a: 0 };
+    ///
+    /// assert_eq!(bytes, [0, 1, 2, 3, 0, 0, 0, 0, 8, 9]);
+    /// ```
     #[inline]
     fn mut_slice_from_prefix(bytes: &mut [u8], count: usize) -> Option<(&mut [Self], &mut [u8])>
     where
@@ -1877,6 +2315,39 @@ pub unsafe trait FromBytes: FromZeroes {
     /// # Panics
     ///
     /// If `T` is a zero-sized type.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// # #[derive(Debug, PartialEq, Eq)]
+    /// #[derive(AsBytes, FromZeroes, FromBytes)]
+    /// #[repr(C)]
+    /// struct Pixel {
+    ///     r: u8,
+    ///     g: u8,
+    ///     b: u8,
+    ///     a: u8,
+    /// }
+    ///
+    /// // These are more bytes than are needed to encode two `Pixel`s.
+    /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
+    ///
+    /// let (rest, pixels) = Pixel::mut_slice_from_suffix(bytes, 2).unwrap();
+    ///
+    /// assert_eq!(rest, &[0, 1]);
+    ///
+    /// assert_eq!(pixels, &[
+    ///     Pixel { r: 2, g: 3, b: 4, a: 5 },
+    ///     Pixel { r: 6, g: 7, b: 8, a: 9 },
+    /// ]);
+    ///
+    /// pixels[1] = Pixel { r: 0, g: 0, b: 0, a: 0 };
+    ///
+    /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 0, 0, 0, 0]);
+    /// ```
     #[inline]
     fn mut_slice_from_suffix(bytes: &mut [u8], count: usize) -> Option<(&mut [u8], &mut [Self])>
     where
@@ -1888,6 +2359,32 @@ pub unsafe trait FromBytes: FromZeroes {
     /// Reads a copy of `Self` from `bytes`.
     ///
     /// If `bytes.len() != size_of::<Self>()`, `read_from` returns `None`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromZeroes, FromBytes)]
+    /// #[repr(C)]
+    /// struct PacketHeader {
+    ///     src_port: [u8; 2],
+    ///     dst_port: [u8; 2],
+    ///     length: [u8; 2],
+    ///     checksum: [u8; 2],
+    /// }
+    ///
+    /// // These bytes encode a `PacketHeader`.
+    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7].as_slice();
+    ///
+    /// let header = PacketHeader::read_from(bytes).unwrap();
+    ///
+    /// assert_eq!(header.src_port, [0, 1]);
+    /// assert_eq!(header.dst_port, [2, 3]);
+    /// assert_eq!(header.length, [4, 5]);
+    /// assert_eq!(header.checksum, [6, 7]);
+    /// ```
     #[inline]
     fn read_from(bytes: &[u8]) -> Option<Self>
     where
@@ -1901,6 +2398,32 @@ pub unsafe trait FromBytes: FromZeroes {
     /// `read_from_prefix` reads a `Self` from the first `size_of::<Self>()`
     /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()`, it returns
     /// `None`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromZeroes, FromBytes)]
+    /// #[repr(C)]
+    /// struct PacketHeader {
+    ///     src_port: [u8; 2],
+    ///     dst_port: [u8; 2],
+    ///     length: [u8; 2],
+    ///     checksum: [u8; 2],
+    /// }
+    ///
+    /// // These are more bytes than are needed to encode a `PacketHeader`.
+    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].as_slice();
+    ///
+    /// let header = PacketHeader::read_from_prefix(bytes).unwrap();
+    ///
+    /// assert_eq!(header.src_port, [0, 1]);
+    /// assert_eq!(header.dst_port, [2, 3]);
+    /// assert_eq!(header.length, [4, 5]);
+    /// assert_eq!(header.checksum, [6, 7]);
+    /// ```
     #[inline]
     fn read_from_prefix(bytes: &[u8]) -> Option<Self>
     where
@@ -1915,6 +2438,26 @@ pub unsafe trait FromBytes: FromZeroes {
     /// `read_from_suffix` reads a `Self` from the last `size_of::<Self>()`
     /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()`, it returns
     /// `None`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromZeroes, FromBytes)]
+    /// #[repr(C)]
+    /// struct PacketTrailer {
+    ///     frame_check_sequence: [u8; 4],
+    /// }
+    ///
+    /// // These are more bytes than are needed to encode a `PacketTrailer`.
+    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].as_slice();
+    ///
+    /// let trailer = PacketTrailer::read_from_suffix(bytes).unwrap();
+    ///
+    /// assert_eq!(trailer.frame_check_sequence, [6, 7, 8, 9]);
+    /// ```
     #[inline]
     fn read_from_suffix(bytes: &[u8]) -> Option<Self>
     where
