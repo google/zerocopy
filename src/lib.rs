@@ -3701,7 +3701,7 @@ macro_rules! transmute_mut {
 /// compile time. So, for instance, an invocation with a Windows path containing
 /// backslashes `\` would not compile correctly on Unix.
 ///
-/// `include_bytes!` is ignorant of byte order. For byte order-aware types, see
+/// `include_value!` is ignorant of byte order. For byte order-aware types, see
 /// the [`byteorder`] module.
 ///
 /// # Examples
