@@ -3400,6 +3400,17 @@ mod simd {
 /// Note that the `T` produced by the expression `$e` will *not* be dropped.
 /// Semantically, its bits will be copied into a new value of type `U`, the
 /// original `T` will be forgotten, and the value of type `U` will be returned.
+///
+/// # Examples
+///
+/// ```
+/// # use zerocopy::transmute;
+/// let one_dimensional: [u8; 8] = [0, 1, 2, 3, 4, 5, 6, 7];
+///
+/// let two_dimensional: [[u8; 4]; 2] = transmute!(one_dimensional);
+///
+/// assert_eq!(two_dimensional, [[0, 1, 2, 3], [4, 5, 6, 7]]);
+/// ```
 #[macro_export]
 macro_rules! transmute {
     ($e:expr) => {{
@@ -3454,6 +3465,17 @@ macro_rules! transmute {
 ///
 /// The lifetime of the input type, `&T` or `&mut T`, must be the same as or
 /// outlive the lifetime of the output type, `&U`.
+///
+/// # Examples
+///
+/// ```
+/// # use zerocopy::transmute_ref;
+/// let one_dimensional: [u8; 8] = [0, 1, 2, 3, 4, 5, 6, 7];
+///
+/// let two_dimensional: &[[u8; 4]; 2] = transmute_ref!(&one_dimensional);
+///
+/// assert_eq!(two_dimensional, &[[0, 1, 2, 3], [4, 5, 6, 7]]);
+/// ```
 ///
 /// # Alignment increase error message
 ///
@@ -3549,6 +3571,21 @@ macro_rules! transmute_ref {
 ///
 /// The lifetime of the input type, `&mut T`, must be the same as or outlive the
 /// lifetime of the output type, `&mut U`.
+///
+/// # Examples
+///
+/// ```
+/// # use zerocopy::transmute_mut;
+/// let mut one_dimensional: [u8; 8] = [0, 1, 2, 3, 4, 5, 6, 7];
+///
+/// let two_dimensional: &mut [[u8; 4]; 2] = transmute_mut!(&mut one_dimensional);
+///
+/// assert_eq!(two_dimensional, &[[0, 1, 2, 3], [4, 5, 6, 7]]);
+///
+/// two_dimensional.reverse();
+///
+/// assert_eq!(one_dimensional, [4, 5, 6, 7, 0, 1, 2, 3]);
+/// ```
 ///
 /// # Alignment increase error message
 ///
