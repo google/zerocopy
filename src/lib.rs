@@ -254,7 +254,7 @@ pub use crate::wrappers::*;
 
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
-pub use zerocopy_derive::{AsBytes, Unaligned};
+pub use zerocopy_derive::Unaligned;
 
 // `pub use` separately here so that we can mark it `#[doc(hidden)]`.
 //
@@ -2468,21 +2468,45 @@ pub unsafe trait FromBytes: FromZeroes {
     }
 }
 
-/// Types which are safe to treat as an immutable byte slice.
+/// Analyzes whether a type is [`AsBytes`].
 ///
-/// WARNING: Do not implement this trait yourself! Instead, use
-/// `#[derive(AsBytes)]` (requires the `derive` Cargo feature).
+/// This derive analyzes, at compile time, whether the annotated type satisfies
+/// the [safety conditions] of `AsBytes` and implements `AsBytes` if it is
+/// sound to do so. This derive can be applied to structs, enums, and unions;
+/// e.g.:
 ///
-/// `AsBytes` types can be safely viewed as a slice of bytes. In particular,
-/// this means that, in any valid instance of the type, none of the bytes of the
-/// instance are uninitialized. This precludes the following types:
-/// - Structs with internal padding
-/// - Unions in which not all variants have the same length
+/// ```
+/// # use zerocopy_derive::{AsBytes};
+/// #[derive(AsBytes)]
+/// #[repr(C)]
+/// struct MyStruct {
+/// # /*
+///     ...
+/// # */
+/// }
 ///
-/// `AsBytes` is ignorant of byte order. For byte order-aware types, see the
-/// [`byteorder`] module.
+/// #[derive(AsBytes)]
+/// #[repr(u8)]
+/// enum MyEnum {
+/// #   Variant,
+/// # /*
+///     ...
+/// # */
+/// }
 ///
-/// # Custom Derive Errors
+/// #[derive(AsBytes)]
+/// #[repr(C)]
+/// union MyUnion {
+/// #   variant: u8,
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// [safety conditions]: trait@AsBytes#safety
+///
+/// # Error Messages
 ///
 /// Due to the way that the custom derive for `AsBytes` is implemented, you may
 /// get an error like this:
@@ -2504,31 +2528,23 @@ pub unsafe trait FromBytes: FromZeroes {
 /// the Rust Reference's page on [type layout] for more information
 /// about type layout and padding.
 ///
-/// # Safety
+/// [type layout]: https://doc.rust-lang.org/reference/type-layout.html
 ///
-/// *This section describes what is required in order for `T: AsBytes`, and what
-/// unsafe code may assume of such types. `#[derive(AsBytes)]` only permits
-/// types which satisfy these requirements. If you don't plan on implementing
-/// `AsBytes` manually, and you don't plan on writing unsafe code that operates
-/// on `AsBytes` types, then you don't need to read this section.*
+/// # Analysis
 ///
-/// If `T: AsBytes`, then unsafe code may assume that:
-/// - It is sound to treat any `t: T` as an immutable `[u8]` of length
-///   `size_of_val(t)`.
-/// - Given `t: &T`, it is sound to construct a `b: &[u8]` where `b.len() ==
-///   size_of_val(t)` at the same address as `t`, and it is sound for both `b`
-///   and `t` to be live at the same time.
+/// *This section describes, roughly, the analysis performed by this derive to
+/// determine whether it is sound to implement `AsBytes` for a given type.
+/// Unless you are modifying the implementation of this derive, or attempting to
+/// manually implement `AsBytes` for a type yourself, you don't need to read
+/// this section.*
 ///
-/// If a type is marked as `AsBytes` which violates this contract, it may cause
-/// undefined behavior.
-///
-/// If a type has the following properties, then it is sound to implement
+/// If a type has the following properties, then this derive can implement
 /// `AsBytes` for that type:
+///
 /// - If the type is a struct:
 ///   - It must have a defined representation (`repr(C)`, `repr(transparent)`,
 ///     or `repr(packed)`).
-///   - All of its fields must satisfy the requirements to be `AsBytes` (they do
-///     not actually have to be `AsBytes`).
+///   - All of its fields must be `AsBytes`.
 ///   - Its layout must have no padding. This is always true for
 ///     `repr(transparent)` and `repr(packed)`. For `repr(C)`, see the layout
 ///     algorithm described in the [Rust Reference].
@@ -2543,9 +2559,92 @@ pub unsafe trait FromBytes: FromZeroes {
 ///   is not currently implemented for, e.g., `Option<&UnsafeCell<_>>`, but it
 ///   could be one day).
 ///
-/// [type layout]: https://doc.rust-lang.org/reference/type-layout.html
-/// [Rust Reference]: https://doc.rust-lang.org/reference/type-layout.html
 /// [`UnsafeCell`]: core::cell::UnsafeCell
+///
+/// This analysis is subject to change. Unsafe code may *only* rely on the
+/// documented [safety conditions] of `FromBytes`, and must *not* rely on the
+/// implementation details of this derive.
+///
+/// [Rust Reference]: https://doc.rust-lang.org/reference/type-layout.html
+#[cfg(any(feature = "derive", test))]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+pub use zerocopy_derive::AsBytes;
+
+/// Types that can be viewed as an immutable slice of initialized bytes.
+///
+/// Any `AsBytes` type can be viewed as a slice of initialized bytes of the same
+/// size. This is useful for efficiently serializing structured data as raw
+/// bytes.
+///
+/// # Implementation
+///
+/// **Do not implement this trait yourself!** Instead, use
+/// [`#[derive(AsBytes)]`][derive] (requires the `derive` Cargo feature); e.g.:
+///
+/// ```
+/// # use zerocopy_derive::AsBytes;
+/// #[derive(AsBytes)]
+/// #[repr(C)]
+/// struct MyStruct {
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(AsBytes)]
+/// #[repr(u8)]
+/// enum MyEnum {
+/// #   Variant0,
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(AsBytes)]
+/// #[repr(C)]
+/// union MyUnion {
+/// #   variant: u8,
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// This derive performs a sophisticated, compile-time safety analysis to
+/// determine whether a type is `AsBytes`. See the [derive
+/// documentation][derive] for guidance on how to interpret error messages
+/// produced by the derive's analysis.
+///
+/// # Safety
+///
+/// *This section describes what is required in order for `T: AsBytes`, and
+/// what unsafe code may assume of such types. If you don't plan on implementing
+/// `AsBytes` manually, and you don't plan on writing unsafe code that
+/// operates on `AsBytes` types, then you don't need to read this section.*
+///
+/// If `T: AsBytes`, then unsafe code may assume that:
+/// - It is sound to treat any `t: T` as an immutable `[u8]` of length
+///   `size_of_val(t)`.
+/// - Given `t: &T`, it is sound to construct a `b: &[u8]` where `b.len() ==
+///   size_of_val(t)` at the same address as `t`, and it is sound for both `b`
+///   and `t` to be live at the same time.
+///
+/// If a type is marked as `AsBytes` which violates this contract, it may cause
+/// undefined behavior.
+///
+/// `#[derive(AsBytes)]` only permits [types which satisfy these
+/// requirements][derive-analysis].
+///
+#[cfg_attr(
+    feature = "derive",
+    doc = "[derive]: zerocopy_derive::AsBytes",
+    doc = "[derive-analysis]: zerocopy_derive::AsBytes#analysis"
+)]
+#[cfg_attr(
+    not(feature = "derive"),
+    doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.AsBytes.html"),
+    doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.AsBytes.html#analysis"),
+)]
 pub unsafe trait AsBytes {
     // The `Self: Sized` bound makes it so that this function doesn't prevent
     // `AsBytes` from being object safe. Note that other `AsBytes` methods
@@ -2562,6 +2661,33 @@ pub unsafe trait AsBytes {
     ///
     /// `as_bytes` provides access to the bytes of this value as an immutable
     /// byte slice.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::AsBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(AsBytes)]
+    /// #[repr(C)]
+    /// struct PacketHeader {
+    ///     src_port: [u8; 2],
+    ///     dst_port: [u8; 2],
+    ///     length: [u8; 2],
+    ///     checksum: [u8; 2],
+    /// }
+    ///
+    /// let header = PacketHeader {
+    ///     src_port: [0, 1],
+    ///     dst_port: [2, 3],
+    ///     length: [4, 5],
+    ///     checksum: [6, 7],
+    /// };
+    ///
+    /// let bytes = header.as_bytes();
+    ///
+    /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 6, 7]);
+    /// ```
     #[inline(always)]
     fn as_bytes(&self) -> &[u8] {
         // Note that this method does not have a `Self: Sized` bound;
@@ -2597,6 +2723,43 @@ pub unsafe trait AsBytes {
     ///
     /// `as_bytes_mut` provides access to the bytes of this value as a mutable
     /// byte slice.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::AsBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// # #[derive(Eq, PartialEq, Debug)]
+    /// #[derive(AsBytes, FromZeroes, FromBytes)]
+    /// #[repr(C)]
+    /// struct PacketHeader {
+    ///     src_port: [u8; 2],
+    ///     dst_port: [u8; 2],
+    ///     length: [u8; 2],
+    ///     checksum: [u8; 2],
+    /// }
+    ///
+    /// let mut header = PacketHeader {
+    ///     src_port: [0, 1],
+    ///     dst_port: [2, 3],
+    ///     length: [4, 5],
+    ///     checksum: [6, 7],
+    /// };
+    ///
+    /// let bytes = header.as_bytes_mut();
+    ///
+    /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 6, 7]);
+    ///
+    /// bytes.reverse();
+    ///
+    /// assert_eq!(header, PacketHeader {
+    ///     src_port: [7, 6],
+    ///     dst_port: [5, 4],
+    ///     length: [3, 2],
+    ///     checksum: [1, 0],
+    /// });
+    /// ```
     #[inline(always)]
     fn as_bytes_mut(&mut self) -> &mut [u8]
     where
@@ -2633,6 +2796,49 @@ pub unsafe trait AsBytes {
     /// Writes a copy of `self` to `bytes`.
     ///
     /// If `bytes.len() != size_of_val(self)`, `write_to` returns `None`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::AsBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(AsBytes)]
+    /// #[repr(C)]
+    /// struct PacketHeader {
+    ///     src_port: [u8; 2],
+    ///     dst_port: [u8; 2],
+    ///     length: [u8; 2],
+    ///     checksum: [u8; 2],
+    /// }
+    ///
+    /// let header = PacketHeader {
+    ///     src_port: [0, 1],
+    ///     dst_port: [2, 3],
+    ///     length: [4, 5],
+    ///     checksum: [6, 7],
+    /// };
+    ///
+    /// let mut bytes = [0, 0, 0, 0, 0, 0, 0, 0];
+    ///
+    /// header.write_to(&mut bytes[..]);
+    ///
+    /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 6, 7]);
+    /// ```
+    ///
+    /// If too many or too few target bytes are provided, `write_to` returns
+    /// `None` and leaves the target bytes unmodified:
+    ///
+    /// ```
+    /// # use zerocopy::AsBytes;
+    /// # let header = u128::MAX;
+    /// let mut excessive_bytes = &mut [0u8; 128][..];
+    ///
+    /// let write_result = header.write_to(excessive_bytes);
+    ///
+    /// assert!(write_result.is_none());
+    /// assert_eq!(excessive_bytes, [0u8; 128]);
+    /// ```
     #[inline]
     fn write_to(&self, bytes: &mut [u8]) -> Option<()> {
         if bytes.len() != mem::size_of_val(self) {
@@ -2647,6 +2853,49 @@ pub unsafe trait AsBytes {
     ///
     /// `write_to_prefix` writes `self` to the first `size_of_val(self)` bytes
     /// of `bytes`. If `bytes.len() < size_of_val(self)`, it returns `None`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::AsBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(AsBytes)]
+    /// #[repr(C)]
+    /// struct PacketHeader {
+    ///     src_port: [u8; 2],
+    ///     dst_port: [u8; 2],
+    ///     length: [u8; 2],
+    ///     checksum: [u8; 2],
+    /// }
+    ///
+    /// let header = PacketHeader {
+    ///     src_port: [0, 1],
+    ///     dst_port: [2, 3],
+    ///     length: [4, 5],
+    ///     checksum: [6, 7],
+    /// };
+    ///
+    /// let mut bytes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    ///
+    /// header.write_to_prefix(&mut bytes[..]);
+    ///
+    /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 6, 7, 0, 0]);
+    /// ```
+    ///
+    /// If insufficient target bytes are provided, `write_to_prefix` returns
+    /// `None` and leaves the target bytes unmodified:
+    ///
+    /// ```
+    /// # use zerocopy::AsBytes;
+    /// # let header = u128::MAX;
+    /// let mut insufficent_bytes = &mut [0, 0][..];
+    ///
+    /// let write_result = header.write_to_suffix(insufficent_bytes);
+    ///
+    /// assert!(write_result.is_none());
+    /// assert_eq!(insufficent_bytes, [0, 0]);
+    /// ```
     #[inline]
     fn write_to_prefix(&self, bytes: &mut [u8]) -> Option<()> {
         let size = mem::size_of_val(self);
@@ -2658,6 +2907,56 @@ pub unsafe trait AsBytes {
     ///
     /// `write_to_suffix` writes `self` to the last `size_of_val(self)` bytes of
     /// `bytes`. If `bytes.len() < size_of_val(self)`, it returns `None`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::AsBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(AsBytes)]
+    /// #[repr(C)]
+    /// struct PacketHeader {
+    ///     src_port: [u8; 2],
+    ///     dst_port: [u8; 2],
+    ///     length: [u8; 2],
+    ///     checksum: [u8; 2],
+    /// }
+    ///
+    /// let header = PacketHeader {
+    ///     src_port: [0, 1],
+    ///     dst_port: [2, 3],
+    ///     length: [4, 5],
+    ///     checksum: [6, 7],
+    /// };
+    ///
+    /// let mut bytes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    ///
+    /// header.write_to_suffix(&mut bytes[..]);
+    ///
+    /// assert_eq!(bytes, [0, 0, 0, 1, 2, 3, 4, 5, 6, 7]);
+    ///
+    /// let mut insufficent_bytes = &mut [0, 0][..];
+    ///
+    /// let write_result = header.write_to_suffix(insufficent_bytes);
+    ///
+    /// assert!(write_result.is_none());
+    /// assert_eq!(insufficent_bytes, [0, 0]);
+    /// ```
+    ///
+    /// If insufficient target bytes are provided, `write_to_suffix` returns
+    /// `None` and leaves the target bytes unmodified:
+    ///
+    /// ```
+    /// # use zerocopy::AsBytes;
+    /// # let header = u128::MAX;
+    /// let mut insufficent_bytes = &mut [0, 0][..];
+    ///
+    /// let write_result = header.write_to_suffix(insufficent_bytes);
+    ///
+    /// assert!(write_result.is_none());
+    /// assert_eq!(insufficent_bytes, [0, 0]);
+    /// ```
     #[inline]
     fn write_to_suffix(&self, bytes: &mut [u8]) -> Option<()> {
         let start = bytes.len().checked_sub(mem::size_of_val(self))?;
