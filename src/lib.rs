@@ -254,7 +254,7 @@ pub use crate::wrappers::*;
 
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
-pub use zerocopy_derive::Unaligned;
+pub use zerocopy_derive::{TryFromBytes, Unaligned};
 
 // `pub use` separately here so that we can mark it `#[doc(hidden)]`.
 //
@@ -1193,6 +1193,13 @@ pub unsafe trait NoCell {
 // TODO(#5): Update `try_from_ref` doc link once it exists
 #[doc(hidden)]
 pub unsafe trait TryFromBytes {
+    // The `Self: Sized` bound makes it so that `TryFromBytes` is still object
+    // safe.
+    #[doc(hidden)]
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized;
+
     /// Does a given memory range contain a valid instance of `Self`?
     ///
     /// # Safety

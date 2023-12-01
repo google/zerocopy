@@ -15,31 +15,31 @@ fn main() {}
 // Generic errors
 //
 
-#[derive(FromZeros, FromBytes)]
+#[derive(TryFromBytes, FromZeros, FromBytes)]
 #[repr("foo")]
 enum Generic1 {
     A,
 }
 
-#[derive(FromZeros, FromBytes)]
+#[derive(TryFromBytes, FromZeros, FromBytes)]
 #[repr(foo)]
 enum Generic2 {
     A,
 }
 
-#[derive(FromZeros, FromBytes)]
+#[derive(TryFromBytes, FromZeros, FromBytes)]
 #[repr(transparent)]
 enum Generic3 {
     A,
 }
 
-#[derive(FromZeros, FromBytes)]
+#[derive(TryFromBytes, FromZeros, FromBytes)]
 #[repr(u8, u16)]
 enum Generic4 {
     A,
 }
 
-#[derive(FromZeros, FromBytes)]
+#[derive(TryFromBytes, FromZeros, FromBytes)]
 enum Generic5 {
     A,
 }
@@ -66,18 +66,18 @@ enum NoCell2 {
 // FromZeros errors
 //
 
-#[derive(FromZeros)]
+#[derive(TryFromBytes, FromZeros)]
 enum FromZeros1 {
     A(u8),
 }
 
-#[derive(FromZeros)]
+#[derive(TryFromBytes, FromZeros)]
 enum FromZeros2 {
     A,
     B(u8),
 }
 
-#[derive(FromZeros)]
+#[derive(TryFromBytes, FromZeros)]
 enum FromZeros3 {
     A = 1,
     B,
@@ -87,43 +87,43 @@ enum FromZeros3 {
 // FromBytes errors
 //
 
-#[derive(FromZeros, FromBytes)]
+#[derive(TryFromBytes, FromZeros, FromBytes)]
 #[repr(C)]
 enum FromBytes1 {
     A,
 }
 
-#[derive(FromZeros, FromBytes)]
+#[derive(TryFromBytes, FromZeros, FromBytes)]
 #[repr(usize)]
 enum FromBytes2 {
     A,
 }
 
-#[derive(FromZeros, FromBytes)]
+#[derive(TryFromBytes, FromZeros, FromBytes)]
 #[repr(isize)]
 enum FromBytes3 {
     A,
 }
 
-#[derive(FromZeros, FromBytes)]
+#[derive(TryFromBytes, FromZeros, FromBytes)]
 #[repr(u32)]
 enum FromBytes4 {
     A,
 }
 
-#[derive(FromZeros, FromBytes)]
+#[derive(TryFromBytes, FromZeros, FromBytes)]
 #[repr(i32)]
 enum FromBytes5 {
     A,
 }
 
-#[derive(FromZeros, FromBytes)]
+#[derive(TryFromBytes, FromZeros, FromBytes)]
 #[repr(u64)]
 enum FromBytes6 {
     A,
 }
 
-#[derive(FromZeros, FromBytes)]
+#[derive(TryFromBytes, FromZeros, FromBytes)]
 #[repr(i64)]
 enum FromBytes7 {
     A,

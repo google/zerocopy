@@ -24,7 +24,7 @@ fn main() {}
 
 // Test generic transparent structs
 
-#[derive(AsBytes, FromZeros, FromBytes, Unaligned)]
+#[derive(AsBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
 #[repr(transparent)]
 struct TransparentStruct<T> {
     inner: T,
@@ -34,6 +34,7 @@ struct TransparentStruct<T> {
 // It should be legal to derive these traits on a transparent struct, but it
 // must also ensure the traits are only implemented when the inner type
 // implements them.
+assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
 assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
 assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
 assert_impl_all!(TransparentStruct<NotZerocopy>: AsBytes);
