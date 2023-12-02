@@ -45,6 +45,24 @@ enum Generic5 {
 }
 
 //
+// NoCell errors
+//
+
+#[derive(NoCell)]
+enum NoCell1 {
+    A(core::cell::UnsafeCell<()>),
+}
+
+#[derive(NoCell)]
+enum Never {}
+
+#[derive(NoCell)]
+enum NoCell2 {
+    Uninhabited(Never, core::cell::UnsafeCell<u8>),
+    Inhabited(u8),
+}
+
+//
 // FromZeroes errors
 //
 

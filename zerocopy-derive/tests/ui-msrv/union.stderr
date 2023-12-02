@@ -1,39 +1,49 @@
 error: unsupported on types with type parameters
-  --> tests/ui-msrv/union.rs:24:10
+  --> tests/ui-msrv/union.rs:33:10
    |
-24 | #[derive(AsBytes)]
+33 | #[derive(AsBytes)]
    |          ^^^^^^^
    |
    = note: this error originates in the derive macro `AsBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-msrv/union.rs:42:11
+  --> tests/ui-msrv/union.rs:51:11
    |
-42 | #[repr(C, align(2))]
+51 | #[repr(C, align(2))]
    |           ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-msrv/union.rs:58:16
+  --> tests/ui-msrv/union.rs:67:16
    |
-58 | #[repr(packed, align(2))]
+67 | #[repr(packed, align(2))]
    |                ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-msrv/union.rs:64:18
+  --> tests/ui-msrv/union.rs:73:18
    |
-64 | #[repr(align(1), align(2))]
+73 | #[repr(align(1), align(2))]
    |                  ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-msrv/union.rs:70:8
+  --> tests/ui-msrv/union.rs:79:8
    |
-70 | #[repr(align(2), align(4))]
+79 | #[repr(align(2), align(4))]
    |        ^^^^^^^^
 
-error[E0277]: the trait bound `HasPadding<AsBytes2, true>: ShouldBe<false>` is not satisfied
-  --> tests/ui-msrv/union.rs:30:10
+error[E0277]: the trait bound `UnsafeCell<()>: NoCell` is not satisfied
+  --> tests/ui-msrv/union.rs:24:10
    |
-30 | #[derive(AsBytes)]
+24 | #[derive(NoCell)]
+   |          ^^^^^^ the trait `NoCell` is not implemented for `UnsafeCell<()>`
+   |
+   = note: required because of the requirements on the impl of `NoCell` for `ManuallyDrop<UnsafeCell<()>>`
+   = help: see issue #48214
+   = note: this error originates in the derive macro `NoCell` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `HasPadding<AsBytes2, true>: ShouldBe<false>` is not satisfied
+  --> tests/ui-msrv/union.rs:39:10
+   |
+39 | #[derive(AsBytes)]
    |          ^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<AsBytes2, true>`
    |
    = help: the following implementations were found:

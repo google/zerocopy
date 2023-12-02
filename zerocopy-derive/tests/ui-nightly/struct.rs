@@ -49,6 +49,20 @@ struct KL08(u8, NotKnownLayoutDst);
 struct KL09(NotKnownLayout, NotKnownLayout);
 
 //
+// NoCell errors
+//
+
+#[derive(NoCell)]
+struct NoCell1 {
+    a: core::cell::UnsafeCell<()>,
+}
+
+#[derive(NoCell)]
+struct NoCell2 {
+    a: [core::cell::UnsafeCell<u8>; 0],
+}
+
+//
 // AsBytes errors
 //
 

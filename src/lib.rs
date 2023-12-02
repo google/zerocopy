@@ -264,6 +264,14 @@ pub use zerocopy_derive::Unaligned;
 #[doc(hidden)]
 pub use zerocopy_derive::KnownLayout;
 
+// `pub use` separately here so that we can mark it `#[doc(hidden)]`.
+//
+// TODO(#251): Remove this or add a doc comment.
+#[cfg(any(feature = "derive", test))]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+#[doc(hidden)]
+pub use zerocopy_derive::NoCell;
+
 use core::{
     cell::{self, RefMut},
     cmp::Ordering,
@@ -7966,7 +7974,7 @@ mod tests {
         assert_impls!(Wrapping<NotZerocopy>: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
         assert_impls!(Wrapping<UnsafeCell<()>>: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(Unalign<u8>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned, !NoCell, !TryFromBytes);
+        assert_impls!(Unalign<u8>: KnownLayout, NoCell, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
         assert_impls!(Unalign<NotZerocopy>: Unaligned, !NoCell, !KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes);
 
         assert_impls!([u8]: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
