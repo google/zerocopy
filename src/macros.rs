@@ -44,18 +44,22 @@ macro_rules! safety_comment {
 ///   be the case that any initialized sequence of bytes constitutes a valid
 ///   instance of `$ty`.
 /// - If an `is_bit_valid` impl is provided, then:
-///   - Regardless of whether the provided closure takes a `Ptr<$repr>` or
-///     `&$repr` argument, it must be the case that, given `t: *mut $ty` and
-///     `let r = t as *mut $repr`, `r` refers to an object of equal or lesser
-///     size than the object referred to by `t`.
-///   - If the provided closure takes a `&$repr` argument, then given a `Ptr<'a,
-///     $ty>` which satisfies the preconditions of
+///   - If `$ty: !transparent-layout-validity($repr)`, all of the following must
+///     hold:
+///     - Given `t: *mut $ty` and `let r = t as *mut $repr`, `r` refers to an
+///       object of equal or lesser size than the object referred to by `t`.
+///     - The alignment of `$repr` is less than or equal to the alignment of
+///       `$ty`.
+///   - If the provided closure takes a `&$repr` argument, then given a
+///     `Ptr<'a, $ty>` which satisfies the preconditions of
 ///     `TryFromBytes::<$ty>::is_bit_valid`, it must be guaranteed that the
 ///     memory referenced by that `Ptr` always contains a valid `$repr`.
-///   - The alignment of `$repr` is less than or equal to the alignment of
-///     `$ty`.
-///   - The impl of `is_bit_valid` must only return `true` for its argument
-///     `Ptr<$repr>` if the original `Ptr<$ty>` refers to a valid `$ty`.
+///   - At least one of the following must hold:
+///     - The impl of `is_bit_valid` must only return `true` for its argument
+///       `Ptr<$repr>` if the original `Ptr<$ty>` refers to a valid `$ty`.
+///     - `$ty: transparent-layout-validity($repr)`, the provided closure takes
+///       a `Ptr<'a, $repr>`, and the body of the closure is equal to
+///       `TryFromBytes::<$repr>::is_bit_valid`.
 macro_rules! unsafe_impl {
     // Implement `$trait` for `$ty` with no bounds.
     ($(#[$attr:meta])* $ty:ty: $trait:ident $(; |$candidate:ident: &$repr:ty| $is_bit_valid:expr)?) => {
@@ -133,15 +137,20 @@ macro_rules! unsafe_impl {
     };
 
     (@method TryFromBytes ; |$candidate:ident: &$repr:ty| $is_bit_valid:expr) => {
+        // SAFETY: The caller has promised that this implementation is correct.
         #[inline]
         unsafe fn is_bit_valid(candidate: Ptr<'_, Self>) -> bool {
             // SAFETY:
             // - The argument to `cast_unsized` is `|p| p as *mut _` as required
             //   by that method's safety precondition.
-            // - The caller has promised that the cast results in an object of
-            //   equal or lesser size.
-            // - The caller has promised that `$repr`'s alignment is less than
-            //   or equal to `Self`'s alignment.
+            // - Either the caller has promised that the cast results in an
+            //   object of equal or lesser size, or `$ty:
+            //   transparent-layout-validity($repr)`, which guarantees that the
+            //   cast results in an object of equal size.
+            // - Either the caller has promised that `$repr`'s alignment is less
+            //   than or equal to `Self`'s alignment, or `$ty:
+            //   transparent-layout-validity($repr)`, which guarantees that
+            //   `$repr` and `$ty` have the same alignment.
             #[allow(clippy::as_conversions)]
             let candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
             // SAFETY:
@@ -160,15 +169,26 @@ macro_rules! unsafe_impl {
         }
     };
     (@method TryFromBytes ; |$candidate:ident: Ptr<$repr:ty>| $is_bit_valid:expr) => {
+        // SAFETY: At least one of the following holds:
+        // - The caller has promised that this implementation is correct.
+        // - `$ty: transparent-layout-validity($repr)` and the body is equal to
+        //   `TryFromBytes::<$repr>::is_bit_valid`. In this case, the bit
+        //   validity of `$ty` and `$repr` are equivalent, and so
+        //   `TryFromBytes::<$repr>::is_bit_valid` is a valid implementation of
+        //   `TryFromBytes::<$ty>::is_bit_valid`.
         #[inline]
         unsafe fn is_bit_valid(candidate: Ptr<'_, Self>) -> bool {
             // SAFETY:
             // - The argument to `cast_unsized` is `|p| p as *mut _` as required
             //   by that method's safety precondition.
-            // - The caller has promised that the cast results in an object of
-            //   equal or lesser size.
-            // - The caller has promised that `$repr`'s alignment is less than
-            //   or equal to `Self`'s alignment.
+            // - Either the caller has promised that the cast results in an
+            //   object of equal or lesser size, or `$ty:
+            //   transparent-layout-validity($repr)`, which guarantees that the
+            //   cast results in an object of equal size.
+            // - Either the caller has promised that `$repr`'s alignment is less
+            //   than or equal to `Self`'s alignment, or `$ty:
+            //   transparent-layout-validity($repr)`, which guarantees that
+            //   `$repr` and `$ty` have the same alignment.
             #[allow(clippy::as_conversions)]
             let $candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
             $is_bit_valid
