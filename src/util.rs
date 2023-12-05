@@ -39,15 +39,15 @@ pub(crate) mod ptr {
     /// [covariant]: https://doc.rust-lang.org/reference/subtyping.html
     pub struct Ptr<'a, T: 'a + ?Sized> {
         // INVARIANTS:
-        // - `ptr` is derived from some valid Rust allocation, `A`
-        // - `ptr` has the same provenance as `A`
-        // - `ptr` addresses a byte range which is entirely contained in `A`
-        // - `ptr` addresses a byte range whose length fits in an `isize`
-        // - `ptr` addresses a byte range which does not wrap around the address
-        //   space
-        // - `ptr` is validly-aligned for `T`
-        // - `A` is guaranteed to live for at least `'a`
-        // - `T: 'a`
+        // 1. `ptr` is derived from some valid Rust allocation, `A`
+        // 2. `ptr` has the same provenance as `A`
+        // 3. `ptr` addresses a byte range which is entirely contained in `A`
+        // 4. `ptr` addresses a byte range whose length fits in an `isize`
+        // 5. `ptr` addresses a byte range which does not wrap around the address
+        //     space
+        // 6. `ptr` is validly-aligned for `T`
+        // 7. `A` is guaranteed to live for at least `'a`
+        // 8. `T: 'a`
         ptr: NonNull<T>,
         _lifetime: PhantomData<&'a ()>,
     }
@@ -255,6 +255,10 @@ pub(crate) mod ptr {
 
     impl<'a, T> Ptr<'a, [T]> {
         /// The number of slice elements referenced by `self`.
+        ///
+        /// # Safety
+        ///
+        /// Unsafe code my rely on `len` satisfying the above contract.
         fn len(&self) -> usize {
             #[allow(clippy::as_conversions)]
             let slc = self.ptr.as_ptr() as *const [()];
@@ -285,6 +289,83 @@ pub(crate) mod ptr {
             // text is available on the Stable docs, cite those instead of the
             // Nightly docs.
             slc.len()
+        }
+
+        pub(crate) fn iter(&self) -> impl Iterator<Item = Ptr<'a, T>> {
+            // TODO(#429): Once `NonNull::cast` documents that it preserves
+            // provenance, cite those docs.
+            let base = self.ptr.cast::<T>().as_ptr();
+            (0..self.len()).map(move |i| {
+                // TODO(https://github.com/rust-lang/rust/issues/74265): Use
+                // `NonNull::get_unchecked_mut`.
+
+                // SAFETY: If the following conditions are not satisfied
+                // `pointer::cast` may induce Undefined Behavior [1]:
+                // > 1. Both the starting and resulting pointer must be either
+                // >    in bounds or one byte past the end of the same allocated
+                // >    object.
+                // > 2. The computed offset, in bytes, cannot overflow an
+                // >    `isize`.
+                // > 3. The offset being in bounds cannot rely on “wrapping
+                // >    around” the address space. That is, the
+                // >    infinite-precision sum must fit in a `usize`.
+                //
+                // [1] https://doc.rust-lang.org/std/primitive.pointer.html#method.add
+                //
+                // We satisfy all three of these conditions here:
+                // 1. `base` (by invariant on `self`) points to an allocated
+                //    object. By contract, `self.len()` accurately reflects the
+                //    number of elements in the slice. `i` is in bounds of
+                //   `c.len()` by construction, and so the result of this
+                //   addition cannot overflow past the end of the allocation
+                //   referred to by `c`.
+                // 2. By invariant on `Ptr`, `self` addresses a byte range whose
+                //    length fits in an `isize`. Since `elem` is contained in
+                //    `self`, the computed offset of `elem` must fit within
+                //    `isize.`
+                // 3. By invariant on `Ptr`, `self` addresses a byte range which
+                //    does not wrap around the address space. Since `elem` is
+                //    contained in `self`, the computed offset of `elem` must
+                //    wrap around the address space.
+                //
+                // TODO(#429): Once `pointer::add` documents that it preserves
+                // provenance, cite those docs.
+                let elem = unsafe { base.add(i) };
+
+                // SAFETY:
+                //  - `elem` must not be null. `base` is constructed from a
+                //    `NonNull` pointer, and the addition that produces `elem`
+                //    must not overflow or wrap around, so `elem >= base > 0`.
+                //
+                // TODO(#429): Once `NonNull::new_unchecked` documents that it
+                // preserves provenance, cite those docs.
+                let elem = unsafe { NonNull::new_unchecked(elem) };
+
+                // SAFETY: The safety invariants of `Ptr` (see definition) are
+                // satisfied:
+                // 1. `elem` is derived from a valid Rust allocation, because
+                //    `self` is derived from a valid Rust allocation, by
+                //    invariant on `Ptr`
+                // 2. `elem` has the same provenance as `self`, because it
+                //    derived from `self` using a series of
+                //    provenance-preserving operations
+                // 3. `elem` is entirely contained in the allocation of `self`
+                //    (see above)
+                // 4. `elem` addresses a byte range whose length fits in an
+                //    `isize` (see above)
+                // 5. `elem` addresses a byte range which does not wrap around
+                //    the address space (see above)
+                // 6. `elem` is validly-aligned for `T`. `self`, which
+                //    represents a `[T]` is validly aligned for `T`, and `elem`
+                //    is an element within that `[T]`
+                // 7. The allocation of `elem` is guaranteed to live for at
+                //    least `'a`, because `elem` is entirely contained in
+                //    `self`, which lives for at least `'a` by invariant on
+                //    `Ptr`.
+                // 8. `T: 'a`, because `elem` is an element within `[T]`, and
+                //    `[T]: 'a` by invariant on `Ptr`
+                Ptr { ptr: elem, _lifetime: PhantomData }
+            })
         }
     }
 
