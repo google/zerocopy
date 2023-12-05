@@ -3511,8 +3511,8 @@ safety_comment! {
     ///
     /// In other words, the layout of a `[T]` or `[T; N]` is a sequence of `T`s
     /// laid out back-to-back with no bytes in between. Therefore, `[T]` or `[T;
-    /// N]` are `FromZeroes`, `FromBytes`, and `AsBytes` if `T` is
-    /// (respectively). Furthermore, since an array/slice has "the same
+    /// N]` are `TryFromBytes`, `FromZeroes`, `FromBytes`, and `AsBytes` if `T`
+    /// is (respectively). Furthermore, since an array/slice has "the same
     /// alignment of `T`", `[T]` and `[T; N]` are `Unaligned` if `T` is.
     ///
     /// Note that we don't `assert_unaligned!` for slice types because
@@ -3524,6 +3524,42 @@ safety_comment! {
     unsafe_impl!(const N: usize, T: AsBytes => AsBytes for [T; N]);
     unsafe_impl!(const N: usize, T: Unaligned => Unaligned for [T; N]);
     assert_unaligned!([(); 0], [(); 1], [u8; 0], [u8; 1]);
+    unsafe_impl!(T: TryFromBytes => TryFromBytes for [T]; |c: Ptr<[T]>| {
+        // SAFETY: Assuming the preconditions of `is_bit_valid` are satisfied,
+        // so too will the postcondition: that, if `is_bit_valid(candidate)`
+        // returns true, `*candidate` contains a valid `Self`. Per the reference
+        // [1]:
+        //
+        //   An array of `[T; N]` has a size of `size_of::<T>() * N` and the
+        //   same alignment of `T`. Arrays are laid out so that the zero-based
+        //   `nth` element of the array is offset from the start of the array by
+        //   `n * size_of::<T>()` bytes.
+        //
+        //   ...
+        //
+        //   Slices have the same layout as the section of the array they slice.
+        //
+        // In other words, the layout of a `[T] is a sequence of `T`s laid out
+        // back-to-back with no bytes in between. If all elements in `candidate`
+        // are `is_bit_valid`, so too is `candidate`.
+        //
+        // Note that any of the below calls may panic, but it would still be
+        // sound even if it did. `is_bit_valid` does not promise that it will
+        // not panic (in fact, it explicitly warns that it's a possibility), and
+        // we have not violated any safety invariants that we must fix before
+        // returning.
+        c.iter().all(|elem|
+            // SAFETY: We uphold the safety contract of `is_bit_valid(elem)`, by
+            // precondition on the surrounding call to `is_bit_valid`. The
+            // memory referenced by `elem` is contained entirely within `c`, and
+            // satisfies the preconditions satisfied by `c`. By axiom, we assume
+            // that `Iterator:all` does not invalidate these preconditions
+            // (e.g., by writing to `elem`.) Since `elem` is derived from `c`,
+            // it is only possible for uninitialized bytes to occur in `elem` at
+            // the same bytes they occur within `c`.
+            unsafe { <T as TryFromBytes>::is_bit_valid(elem) }
+        )
+    });
     unsafe_impl!(T: FromZeroes => FromZeroes for [T]);
     unsafe_impl!(T: FromBytes => FromBytes for [T]);
     unsafe_impl!(T: AsBytes => AsBytes for [T]);
@@ -7666,6 +7702,7 @@ mod tests {
                     @failure 0xD800u32, 0xDFFFu32, 0x110000u32;
             str  => @success "", "hello", "❤️🧡💛💚💙💜",
                     @failure [0, 159, 146, 150];
+            [u8] => @success [], [0, 1, 2];
             NonZeroU8, NonZeroI8, NonZeroU16, NonZeroI16, NonZeroU32,
             NonZeroI32, NonZeroU64, NonZeroI64, NonZeroU128, NonZeroI128,
             NonZeroUsize, NonZeroIsize
@@ -7675,6 +7712,9 @@ mod tests {
                     // `0` may be any integer type with a different size or
                     // alignment than some `NonZeroXxx` types).
                     @failure Option::<Self>::None;
+            [bool]
+                => @success [true, false], [false, true],
+                    @failure [2u8], [3u8], [0xFFu8], [0u8, 1u8, 2u8];
         );
 
         // Asserts that `$ty` implements any `$trait` and doesn't implement any
@@ -7840,7 +7880,8 @@ mod tests {
         assert_impls!(Unalign<u8>: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
         assert_impls!(Unalign<NotZerocopy>: Unaligned, !KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes);
 
-        assert_impls!([u8]: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
+        assert_impls!([u8]: KnownLayout, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!([bool]: KnownLayout, TryFromBytes, FromZeroes, AsBytes, Unaligned, !FromBytes);
         assert_impls!([NotZerocopy]: !KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
         assert_impls!([u8; 0]: KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
         assert_impls!([NotZerocopy; 0]: KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
