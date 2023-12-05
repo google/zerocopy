@@ -106,23 +106,24 @@ pub trait KindRepr: 'static + Sized + Ord {
 // etc), and provide implementations of `KindRepr`, `Ord`, and `Display`, and
 // those traits' super-traits.
 macro_rules! define_kind_specific_repr {
-    ($type_name:expr, $repr_name:ident, $($repr_variant:ident),*) => {
+    ($type_name:expr, $repr_name:ident, [ $($repr_variant:ident),* ] , [ $($repr_variant_aligned:ident),* ]) => {
         #[derive(Copy, Clone, Debug, Eq, PartialEq)]
         pub enum $repr_name {
             $($repr_variant,)*
-            Align(u64),
+            $($repr_variant_aligned(u64),)*
         }
 
         impl KindRepr for $repr_name {
             fn is_align(&self) -> bool {
                 match self {
-                    $repr_name::Align(_) => true,
+                    $($repr_name::$repr_variant_aligned(_) => true,)*
                     _ => false,
                 }
             }
 
             fn is_align_gt_one(&self) -> bool {
                 match self {
+                    // `packed(n)` only lowers alignment
                     $repr_name::Align(n) => n > &1,
                     _ => false,
                 }
@@ -131,7 +132,7 @@ macro_rules! define_kind_specific_repr {
             fn parse(meta: &Meta) -> syn::Result<$repr_name> {
                 match Repr::from_meta(meta)? {
                     $(Repr::$repr_variant => Ok($repr_name::$repr_variant),)*
-                    Repr::Align(u) => Ok($repr_name::Align(u)),
+                    $(Repr::$repr_variant_aligned(u) => Ok($repr_name::$repr_variant_aligned(u)),)*
                     _ => Err(Error::new_spanned(meta, concat!("unsupported representation for deriving FromBytes, AsBytes, or Unaligned on ", $type_name)))
                 }
             }
@@ -155,16 +156,19 @@ macro_rules! define_kind_specific_repr {
             fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
                 match self {
                     $($repr_name::$repr_variant => Repr::$repr_variant,)*
-                    $repr_name::Align(u) => Repr::Align(*u),
+                    $($repr_name::$repr_variant_aligned(u) => Repr::$repr_variant_aligned(*u),)*
                 }.fmt(f)
             }
         }
     }
 }
 
-define_kind_specific_repr!("a struct", StructRepr, C, Transparent, Packed);
+define_kind_specific_repr!("a struct", StructRepr, [C, Transparent, Packed], [Align, PackedN]);
 define_kind_specific_repr!(
-    "an enum", EnumRepr, C, U8, U16, U32, U64, Usize, I8, I16, I32, I64, Isize
+    "an enum",
+    EnumRepr,
+    [C, U8, U16, U32, U64, Usize, I8, I16, I32, I64, Isize],
+    [Align]
 );
 
 // All representations known to Rust.

@@ -63,6 +63,15 @@ struct AsBytes2 {
     bar: AU16,
 }
 
+#[derive(AsBytes)]
+#[repr(C, packed(2))]
+struct AsBytes3 {
+    foo: u8,
+    // We'd prefer to use AU64 here, but you can't use aligned types in
+    // packed structs.
+    bar: u64,
+}
+
 //
 // Unaligned errors
 //
