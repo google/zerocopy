@@ -93,3 +93,11 @@ Our minimum supported Rust version (MSRV) is encoded in our `Cargo.toml` file.
 We consider an increase in MSRV to be a semver-breaking change, and will only
 increase our MSRV during semver-breaking version changes (e.g., 0.1 -> 0.2, 1.0
 -> 2.0, etc).
+
+## Yanking
+
+Whenever a bug or regression is identified, we will yank any affected versions
+which are part of the current version train. For example, if the most recent
+version is 0.10.20 and a bug is uncovered, we will release a fix in 0.10.21 and
+yank all 0.10.X versions which are affected. We *may* also yank versions in previous
+version trains on a case-by-case basis, but we don't guarantee it.
