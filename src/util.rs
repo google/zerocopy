@@ -56,6 +56,7 @@ pub(crate) mod ptr {
     impl<'a, T: ?Sized> Clone for Ptr<'a, T> {
         #[inline]
         fn clone(&self) -> Self {
+            // SAFETY: TODO (why are invariants maintained when cloning?)
             *self
         }
     }

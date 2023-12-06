@@ -4247,11 +4247,8 @@ macro_rules! include_value {
 /// }
 /// # }
 /// ```
-pub struct Ref<B, T: ?Sized>(
-    // INVARIANTS: The referent byte slice is aligned to `T`'s alignment and its
-    // size corresponds to a valid size for `T`
-    B,
-    PhantomData<T>,
+pub struct Ref<'a, B: 'a + ByteSlice, T: 'a + ?Sized>(
+    B::RefInner<'a, T>,
 );
 
 /// Deprecated: prefer [`Ref`] instead.
@@ -4259,17 +4256,23 @@ pub struct Ref<B, T: ?Sized>(
 #[doc(hidden)]
 pub use Ref as LayoutVerified;
 
-impl<B, T> Ref<B, T>
+impl<'a, B, T> Ref<'a, B, T>
 where
-    B: ByteSlice,
-    T: ?Sized + KnownLayout,
+    B: 'a + ByteSlice,
+    T: 'a + ?Sized + KnownLayout,
 {
-    fn new_known_layout_name_to_be_bikeshedded(bytes: B) -> Option<Ref<B, T>> {
-        let _ = Ptr::from(bytes.deref()).try_cast_into_no_leftover::<T>()?;
+    fn new_known_layout_name_to_be_bikeshedded(bytes: B) -> Option<Ref<'a, B, T>> {
+        let ptr = Ptr::from(bytes.deref()).try_cast_into_no_leftover::<T>()?;
+        // TODO: Maybe we can have a method on `ByteSlice` which takes a `self`,
+        // a `T: ?Sized + KnownLayout` type type parameter, and a `CastType`? It
+        // could perform the cast and do any splitting internally, and that'd
+        // allow it to be safe.
+        Some(Ref(B::into_ref_inner(bytes, ptr)))
+
         // INVARIANTS: `Ptr::try_cast_into_no_leftover` returns `None` if
         // `bytes.deref()` is not properly aligned for `T` or doesn't have a
         // valid size for `T`.
-        Some(Ref(bytes, PhantomData))
+        // Some(Ref(bytes, PhantomData))
     }
 }
 
@@ -5332,6 +5335,33 @@ mod sealed {
 pub unsafe trait ByteSlice:
     Deref<Target = [u8]> + Sized + self::sealed::ByteSliceSealed
 {
+    /// The type stored inside [`Ref<B, T>`].
+    ///
+    /// [`Ref<B, T>`]: Ref
+    #[doc(hidden)]
+    type RefInner<'a, T: 'a + ?Sized>
+    where
+        Self: 'a;
+
+    /// TODO
+    #[doc(hidden)]
+    unsafe fn into_ref_inner<'a, T: 'a + ?Sized>(self, ptr: Ptr<'a, T>) -> Self::RefInner<'a, T>
+    where
+        Self: 'a;
+
+    /// TODO
+    ///
+    /// # Panics
+    ///
+    /// TODO: May panic if `inner` wasn't originally produced by
+    /// `into_ref_inner`.
+    // TODO: Put this safety condition on `ByteSlice` itself: this method must
+    // be implemented correctly so unsafe callers can rely on it.
+    #[doc(hidden)]
+    fn ref_inner_as_ptr<'a, T: 'a + ?Sized + KnownLayout>(
+        inner: &'a Self::RefInner<'a, T>,
+    ) -> Ptr<'a, T>;
+
     /// Gets a raw pointer to the first byte in the slice.
     #[inline]
     fn as_ptr(&self) -> *const u8 {
@@ -5366,6 +5396,21 @@ impl<'a> sealed::ByteSliceSealed for &'a [u8] {}
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a [u8] {
+    type RefInner<'b, T: 'b + ?Sized> = Ptr<'b, T> where Self: 'b;
+
+    #[inline]
+    unsafe fn into_ref_inner<'b, T: 'b + ?Sized>(self, ptr: Ptr<'b, T>) -> Ptr<'b, T>
+    where
+        Self: 'b,
+    {
+        ptr
+    }
+
+    #[inline]
+    fn ref_inner_as_ptr<'b, T: 'b + ?Sized + KnownLayout>(ptr: &'b Ptr<'b, T>) -> Ptr<'b, T> {
+        *ptr
+    }
+
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at(self, mid)
@@ -5376,6 +5421,21 @@ impl<'a> sealed::ByteSliceSealed for &'a mut [u8] {}
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a mut [u8] {
+    type RefInner<'b, T: 'b + ?Sized> = Ptr<'b, T> where Self: 'b;
+
+    #[inline]
+    unsafe fn into_ref_inner<'b, T: 'b + ?Sized>(self, ptr: Ptr<'b, T>) -> Ptr<'b, T>
+    where
+        Self: 'b,
+    {
+        ptr
+    }
+
+    #[inline]
+    fn ref_inner_as_ptr<'b, T: 'b + ?Sized + KnownLayout>(ptr: &'b Ptr<'b, T>) -> Ptr<'b, T> {
+        *ptr
+    }
+
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at_mut(self, mid)
@@ -5386,6 +5446,26 @@ impl<'a> sealed::ByteSliceSealed for cell::Ref<'a, [u8]> {}
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {
+    type RefInner<'b, T: 'b + ?Sized> = cell::Ref<'b, [u8]> where Self: 'b;
+
+    #[inline]
+    unsafe fn into_ref_inner<'b, T: 'b + ?Sized>(self, _ptr: Ptr<'b, T>) -> cell::Ref<'b, [u8]>
+    where
+        Self: 'b,
+    {
+        self
+    }
+
+    #[inline]
+    fn ref_inner_as_ptr<'b, T: 'b + ?Sized + KnownLayout>(
+        inner: &'b cell::Ref<'b, [u8]>,
+    ) -> Ptr<'b, T> {
+        // PANICS: TODO
+        Ptr::from(inner.deref()).try_cast_into_no_leftover::<T>().expect(
+            "<Ref as ByteSlice>::ref_inner_as_ptr: internal error (pointer cast should never fail)",
+        )
+    }
+
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         cell::Ref::map_split(self, |slice| <[u8]>::split_at(slice, mid))
@@ -5396,6 +5476,26 @@ impl<'a> sealed::ByteSliceSealed for RefMut<'a, [u8]> {}
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
+    type RefInner<'b, T: 'b + ?Sized> = RefMut<'b, [u8]> where Self: 'b;
+
+    #[inline]
+    unsafe fn into_ref_inner<'b, T: 'b + ?Sized>(self, _ptr: Ptr<'b, T>) -> RefMut<'b, [u8]>
+    where
+        Self: 'b,
+    {
+        self
+    }
+
+    #[inline]
+    fn ref_inner_as_ptr<'b, T: 'b + ?Sized + KnownLayout>(
+        inner: &'b RefMut<'b, [u8]>,
+    ) -> Ptr<'b, T> {
+        // PANICS: TODO
+        Ptr::from(inner.deref()).try_cast_into_no_leftover::<T>().expect(
+            "<Ref as ByteSlice>::ref_inner_as_ptr: internal error (pointer cast should never fail)",
+        )
+    }
+
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         RefMut::map_split(self, |slice| <[u8]>::split_at_mut(slice, mid))
