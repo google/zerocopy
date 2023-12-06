@@ -697,6 +697,7 @@ pub(crate) mod testutil {
     // By contrast, `AU64` is guaranteed to have alignment 8.
     #[derive(
         KnownLayout,
+        NoCell,
         FromZeroes,
         FromBytes,
         AsBytes,
@@ -726,7 +727,7 @@ pub(crate) mod testutil {
     }
 
     #[derive(
-        FromZeroes, FromBytes, Eq, PartialEq, Ord, PartialOrd, Default, Debug, Copy, Clone,
+        NoCell, FromZeroes, FromBytes, Eq, PartialEq, Ord, PartialOrd, Default, Debug, Copy, Clone,
     )]
     #[repr(C)]
     pub(crate) struct Nested<T, U: ?Sized> {

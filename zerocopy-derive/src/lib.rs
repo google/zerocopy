@@ -243,6 +243,23 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
     .into()
 }
 
+#[proc_macro_derive(NoCell)]
+pub fn derive_no_cell(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let ast = syn::parse_macro_input!(ts as DeriveInput);
+    match &ast.data {
+        Data::Struct(strct) => {
+            impl_block(&ast, strct, Trait::NoCell, RequireBoundedFields::Yes, false, None, None)
+        }
+        Data::Enum(enm) => {
+            impl_block(&ast, enm, Trait::NoCell, RequireBoundedFields::Yes, false, None, None)
+        }
+        Data::Union(unn) => {
+            impl_block(&ast, unn, Trait::NoCell, RequireBoundedFields::Yes, false, None, None)
+        }
+    }
+    .into()
+}
+
 #[proc_macro_derive(FromZeroes)]
 pub fn derive_from_zeroes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let ast = syn::parse_macro_input!(ts as DeriveInput);
@@ -637,6 +654,7 @@ impl PaddingCheck {
 #[derive(Debug, Eq, PartialEq)]
 enum Trait {
     KnownLayout,
+    NoCell,
     FromZeroes,
     FromBytes,
     AsBytes,

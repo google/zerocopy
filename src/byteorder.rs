@@ -276,7 +276,7 @@ example of how it can be used for parsing UDP packets.
 [`AsBytes`]: crate::AsBytes
 [`Unaligned`]: crate::Unaligned"),
             #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, FromZeroes, FromBytes, AsBytes, Unaligned))]
+            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, NoCell, FromZeroes, FromBytes, AsBytes, Unaligned))]
             #[repr(transparent)]
             pub struct $name<O>([u8; $bytes], PhantomData<O>);
         }
@@ -288,7 +288,9 @@ example of how it can be used for parsing UDP packets.
             /// SAFETY:
             /// `$name<O>` is `repr(transparent)`, and so it has the same layout
             /// as its only non-zero field, which is a `u8` array. `u8` arrays
-            /// are `FromZeroes`, `FromBytes`, `AsBytes`, and `Unaligned`.
+            /// are `NoCell`, `FromZeroes`, `FromBytes`, `AsBytes`, and
+            /// `Unaligned`.
+            impl_or_verify!(O => NoCell for $name<O>);
             impl_or_verify!(O => FromZeroes for $name<O>);
             impl_or_verify!(O => FromBytes for $name<O>);
             impl_or_verify!(O => AsBytes for $name<O>);

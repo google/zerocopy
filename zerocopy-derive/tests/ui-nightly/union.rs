@@ -18,6 +18,15 @@ use std::mem::ManuallyDrop;
 fn main() {}
 
 //
+// NoCell errors
+//
+
+#[derive(NoCell)]
+union NoCell1 {
+    a: ManuallyDrop<core::cell::UnsafeCell<()>>,
+}
+
+//
 // AsBytes errors
 //
 
