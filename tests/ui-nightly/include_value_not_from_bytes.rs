@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+include!("../../zerocopy-derive/tests/util.rs");
+
 #[macro_use]
 extern crate zerocopy;
 
 fn main() {}
 
-// Should fail because `UnsafeCell<u32>: !FromBytes`.
-const NOT_FROM_BYTES: core::cell::UnsafeCell<u32> =
-    include_value!("../../testdata/include_value/data");
+// Should fail because `NotZerocopy<u32>: !FromBytes`.
+const NOT_FROM_BYTES: NotZerocopy<u32> = include_value!("../../testdata/include_value/data");

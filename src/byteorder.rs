@@ -35,10 +35,10 @@
 //!
 //! ```rust,edition2021
 //! # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
-//! use zerocopy::{AsBytes, ByteSlice, FromBytes, FromZeros, Ref, Unaligned};
+//! use zerocopy::{AsBytes, ByteSlice, FromBytes, FromZeros, NoCell, Ref, Unaligned};
 //! use zerocopy::byteorder::network_endian::U16;
 //!
-//! #[derive(FromZeros, FromBytes, AsBytes, Unaligned)]
+//! #[derive(FromZeros, FromBytes, AsBytes, NoCell, Unaligned)]
 //! #[repr(C)]
 //! struct UdpHeader {
 //!     src_port: U16,
@@ -655,7 +655,7 @@ mod tests {
     use compatibility::*;
 
     // A native integer type (u16, i32, etc).
-    trait Native: Arbitrary + FromBytes + AsBytes + Copy + PartialEq + Debug {
+    trait Native: Arbitrary + FromBytes + AsBytes + NoCell + Copy + PartialEq + Debug {
         const ZERO: Self;
         const MAX_VALUE: Self;
 
@@ -692,7 +692,7 @@ mod tests {
     }
 
     trait ByteArray:
-        FromBytes + AsBytes + Copy + AsRef<[u8]> + AsMut<[u8]> + Debug + Default + Eq
+        FromBytes + AsBytes + NoCell + Copy + AsRef<[u8]> + AsMut<[u8]> + Debug + Default + Eq
     {
         /// Invert the order of the bytes in the array.
         fn invert(self) -> Self;

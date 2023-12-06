@@ -12,11 +12,11 @@ use zerocopy::transmute_mut;
 
 fn main() {}
 
-#[derive(zerocopy::FromZeros, zerocopy::FromBytes, zerocopy::AsBytes)]
+#[derive(zerocopy::FromZeros, zerocopy::FromBytes, zerocopy::AsBytes, zerocopy::NoCell)]
 #[repr(C)]
 struct Src;
 
-#[derive(zerocopy::AsBytes)]
+#[derive(zerocopy::AsBytes, zerocopy::NoCell)]
 #[repr(C)]
 struct Dst;
 
