@@ -1232,7 +1232,7 @@ pub unsafe trait TryFromBytes {
     where
         Self: KnownLayout,
     {
-        let maybe_self = Ptr::from(bytes).try_cast_into_no_leftover::<Self>()?;
+        let maybe_self = Ref::<_, Self>::new_known_layout_name_to_be_bikeshedded(bytes)?;
 
         // SAFETY:
         // - Since `bytes` is an immutable reference, we know that no mutable
@@ -1248,29 +1248,16 @@ pub unsafe trait TryFromBytes {
         // This call may panic. If that happens, it doesn't cause any soundness
         // issues, as we have not generated any invalid state which we need to
         // fix before returning.
-        if unsafe { !Self::is_bit_valid(maybe_self) } {
+        if unsafe { !Self::is_bit_valid(maybe_self.as_ptr()) } {
             return None;
         }
 
         // SAFETY:
-        // - Preconditions for `as_ref`:
-        //   - `is_bit_valid` guarantees that `*maybe_self` contains a valid
-        //     `Self`. Since `&[u8]` does not permit interior mutation, this
-        //     cannot be invalidated after this method returns.
-        //   - Since the argument and return types are immutable references,
-        //     Rust will prevent the caller from producing any mutable
-        //     references to the same memory region.
-        //   - Since `Self` is not allowed to contain any `UnsafeCell`s and the
-        //     same is true of `[u8]`, interior mutation is not possible. Thus,
-        //     no mutation is possible. For the same reason, there is no
-        //     mismatch between the two types in terms of which byte ranges are
-        //     referenced as `UnsafeCell`s.
-        // - Since interior mutation isn't possible within `Self`, there's no
-        //   way for the returned reference to be used to modify the byte range,
-        //   and thus there's no way for the returned reference to be used to
-        //   write an invalid `[u8]` which would be observable via the original
-        //   `&[u8]`.
-        Some(unsafe { maybe_self.as_ref() })
+        // - `is_bit_valid` guarantees that `*maybe_self` contains a valid
+        //   `Self`.
+        // - `TryFromBytes` may only be implemented for types which do not
+        //   contain any `UnsafeCell`s.
+        Some(unsafe { maybe_self.into_ref_unchecked() })
     }
 }
 
@@ -4121,12 +4108,31 @@ macro_rules! include_value {
 /// }
 /// # }
 /// ```
-pub struct Ref<B, T: ?Sized>(B, PhantomData<T>);
+pub struct Ref<B, T: ?Sized>(
+    // INVARIANTS: The referent byte slice is aligned to `T`'s alignment and its
+    // size corresponds to a valid size for `T`
+    B,
+    PhantomData<T>,
+);
 
 /// Deprecated: prefer [`Ref`] instead.
 #[deprecated(since = "0.7.0", note = "LayoutVerified has been renamed to Ref")]
 #[doc(hidden)]
 pub type LayoutVerified<B, T> = Ref<B, T>;
+
+impl<B, T> Ref<B, T>
+where
+    B: ByteSlice,
+    T: ?Sized + KnownLayout,
+{
+    fn new_known_layout_name_to_be_bikeshedded(bytes: B) -> Option<Ref<B, T>> {
+        let _ = Ptr::from(bytes.deref()).try_cast_into_no_leftover::<T>()?;
+        // INVARIANTS: `Ptr::try_cast_into_no_leftover` returns `None` if
+        // `bytes.deref()` is not properly aligned for `T` or doesn't have a
+        // valid size for `T`.
+        Some(Ref(bytes, PhantomData))
+    }
+}
 
 impl<B, T> Ref<B, T>
 where
@@ -4142,6 +4148,7 @@ where
         if bytes.len() != mem::size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
             return None;
         }
+        // INVARIANTS: We just validated size and alignment.
         Some(Ref(bytes, PhantomData))
     }
 
@@ -4158,6 +4165,9 @@ where
             return None;
         }
         let (bytes, suffix) = bytes.split_at(mem::size_of::<T>());
+        // INVARIANTS: We just validated alignment and that `bytes` is at least
+        // as large as `T`. `bytes.split_at(mem::size_of::<T>())` ensures that
+        // the new `bytes` is exactly the size of `T`.
         Some((Ref(bytes, PhantomData), suffix))
     }
 
@@ -4177,6 +4187,10 @@ where
         if !util::aligned_to::<_, T>(bytes.deref()) {
             return None;
         }
+        // INVARIANTS: Since `split_at` is defined as `bytes_len -
+        // size_of::<T>()`, the `bytes` which results from `let (prefix, bytes)
+        // = bytes.split_at(split_at)` has length `size_of::<T>()`. After
+        // constructing `bytes`, we validate that it has the proper alignment.
         Some((prefix, Ref(bytes, PhantomData)))
     }
 }
@@ -4204,6 +4218,9 @@ where
         if remainder != 0 || !util::aligned_to::<_, T>(bytes.deref()) {
             return None;
         }
+        // INVARIANTS: `remainder != 0` ensures that `bytes`'s length is a
+        // multiple of the size of `T`, which means that it is a valid size for
+        // `[T]`. We also validate that `T`'s alignment is satisfied.
         Some(Ref(bytes, PhantomData))
     }
 
@@ -4707,6 +4724,61 @@ where
         // `deref_mut_slice_helper` for what invariants we are required to
         // uphold.
         unsafe { self.deref_mut_slice_helper() }
+    }
+}
+
+impl<'a, T> Ref<&'a [u8], T>
+where
+    T: 'a + ?Sized + KnownLayout,
+{
+    fn as_ptr(&self) -> Ptr<'a, T> {
+        // PANICS: By invariant, `self.0` satisfies `T`'s alignment and is a
+        // valid size for `T`, which ensures that `try_cast_into_no_leftover`
+        // will not panic.
+        Ptr::from(self.0)
+            .try_cast_into_no_leftover::<T>()
+            .expect("Ref::deref_unchecked: internal error (pointer cast should never fail)")
+    }
+
+    /// Converts `self` into an immutable `T` reference without validating bit
+    /// validity.
+    ///
+    /// # Safety
+    ///
+    /// The caller must ensure that the referent contains a valid `T` before
+    /// calling this method.
+    ///
+    /// The caller must also ensure that `T` does not contain any
+    /// [`UnsafeCell`]s.
+    ///
+    /// [`UnsafeCell`]: core::cell::UnsafeCell
+    // TODO(#251): Once `NoCell` is stabilized, require `T: NoCell` and remove
+    // the "no `UnsafeCell`" safety precondition.
+    unsafe fn into_ref_unchecked(self) -> &'a T {
+        // SAFETY:
+        // - Preconditions for `as_ref`:
+        //   - Caller has promised that `*ptr` contains a valid `T`. Since the
+        //     only other references to this memory may be typed as `&T` or
+        //     `&[u8]`, we know that, during `'a`, `*ptr` will never be updated
+        //     to contain an invalid `T`: The `&T` cannot be used to store an
+        //     invalid `T` and, since `&[u8]` does not permit interior
+        //     mutability, the `&[u8]` cannot be used to update the contents at
+        //     all.
+        //   - Since the `self` and the returned `&T` both have the lifetime
+        //     `'a`, Rust will prevent any `&mut Ref<B, T>`s from being produced
+        //     which refer to `self` during `'a`. The only APIs that permit
+        //     constructing a mutable reference to the same memory as the
+        //     returned `&T` operate on `&mut Ref<B, T>`, so no mutable
+        //     references can be constructed to this memory during `'a`.
+        //   - The caller has promised that `T` contains no `UnsafeCell`s. We
+        //     know that `[u8]` cannot contain any `UnsafeCell`s. Thus, there is
+        //     no mismatch in which byte ranges can be viewed as `UnsafeCell`s.
+        // - Since the caller has promised that `T` contains no `UnsafeCell`s,
+        //   there's no way for the returned reference to be used to modify the
+        //   byte range, and thus there's no way for the returned reference to
+        //   be used to write an invalid `[u8]` which would be observable via
+        //   the original `&[u8]`.
+        unsafe { self.as_ptr().as_ref() }
     }
 }
 
