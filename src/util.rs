@@ -11,6 +11,8 @@ pub(crate) mod core_layout;
 
 use core::{mem, num::NonZeroUsize};
 
+use super::*;
+
 pub(crate) mod ptr {
     use core::{
         fmt::{Debug, Formatter},
@@ -97,6 +99,29 @@ pub(crate) mod ptr {
             // - The caller promises that the memory region contains a
             //   validly-intialized `T`.
             unsafe { self.ptr.as_ref() }
+        }
+
+        /// Returns a mutable reference to the value.
+        ///
+        /// # Safety
+        ///
+        /// For the duration of `'a`:
+        /// - The referenced memory must contain a validly-initialized `T` for
+        ///   the duration of `'a`.
+        /// - The referenced memory must not be referenced by any other
+        ///   references.
+        #[allow(unused)]
+        pub(crate) unsafe fn as_mut(&mut self) -> &'a mut T {
+            // SAFETY:
+            // - By invariant, `self.ptr` is properly-aligned for `T`.
+            // - By invariant, `self.ptr` is "dereferenceable" in that it points
+            //   to a single allocation.
+            // - By invariant, the allocation is live for `'a`.
+            // - The caller promises that no other references exist to this
+            //   region during `'a`.
+            // - The caller promises that the memory region contains a
+            //   validly-intialized `T`.
+            unsafe { self.ptr.as_mut() }
         }
 
         /// Casts to a different (unsized) target type.
@@ -632,6 +657,33 @@ pub(crate) const fn min(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
         b
     } else {
         a
+    }
+}
+
+#[cfg_attr(
+    any(feature = "derive", test),
+    derive(NoCell, FromZeroes, FromBytes, AsBytes, Unaligned)
+)]
+#[repr(transparent)]
+pub(crate) struct SizedKnownLayout<T>(T);
+
+impl_known_layout!(T => SizedKnownLayout<T>);
+
+safety_comment! {
+    /// SAFETY:
+    /// `SizedKnownLayout<T>` is `repr(transparent)`, so it has the same layout
+    /// and bit validity as `T`. Thus, it is `NoCell`, `FromZeroes`,
+    /// `FromBytes`, `AsBytes`, and `Unaligned` exactly when `T`is.
+    impl_or_verify!(T: NoCell => NoCell for SizedKnownLayout<T>);
+    impl_or_verify!(T: FromZeroes => FromZeroes for SizedKnownLayout<T>);
+    impl_or_verify!(T: FromBytes => FromBytes for SizedKnownLayout<T>);
+    impl_or_verify!(T: AsBytes => AsBytes for SizedKnownLayout<T>);
+    impl_or_verify!(T: Unaligned => Unaligned for SizedKnownLayout<T>);
+}
+
+impl<T> SizedKnownLayout<T> {
+    pub(crate) fn into_inner(self) -> T {
+        self.0
     }
 }
 

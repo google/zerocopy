@@ -288,6 +288,8 @@ use core::{
     slice,
 };
 
+use crate::util::SizedKnownLayout;
+
 #[cfg(feature = "alloc")]
 extern crate alloc;
 #[cfg(feature = "alloc")]
@@ -942,7 +944,7 @@ pub unsafe trait KnownLayout {
 }
 
 // SAFETY: Delegates safety to `DstLayout::for_slice`.
-unsafe impl<T: KnownLayout> KnownLayout for [T] {
+unsafe impl<T> KnownLayout for [T] {
     #[allow(clippy::missing_inline_in_public_items)]
     fn only_derive_is_allowed_to_implement_this_trait()
     where
@@ -1301,7 +1303,7 @@ pub unsafe trait TryFromBytes {
         //   `Self`.
         // - `TryFromBytes` may only be implemented for types which do not
         //   contain any `UnsafeCell`s.
-        Some(unsafe { maybe_self.into_ref_unchecked() })
+        Some(unsafe { maybe_self.deref_unchecked() })
     }
 }
 
@@ -1839,8 +1841,8 @@ pub unsafe trait FromBytes: FromZeros {
 
     /// Interprets the given `bytes` as a `&Self` without copying.
     ///
-    /// If `bytes.len() != size_of::<Self>()` or `bytes` is not aligned to
-    /// `align_of::<Self>()`, this returns `None`.
+    /// If `bytes.len()` is not a valid length for `Self` or `bytes` is not
+    /// aligned to `Self`'s alignment, this returns `None`.
     ///
     /// # Examples
     ///
@@ -1870,16 +1872,17 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn ref_from(bytes: &[u8]) -> Option<&Self>
     where
-        Self: Sized,
+        Self: KnownLayout,
     {
         Ref::<&[u8], Self>::new(bytes).map(Ref::into_ref)
     }
 
     /// Interprets the prefix of the given `bytes` as a `&Self` without copying.
     ///
-    /// `ref_from_prefix` returns a reference to the first `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()` or `bytes` is not
-    /// aligned to `align_of::<Self>()`, this returns `None`.
+    /// `ref_from_prefix` returns a reference to the largest instance of `Self`
+    /// which fits in the leading bytes of `bytes`. If no instance of `Self`
+    /// fits or if `bytes` does not satisfy `Self`'s alignment requirement, this
+    /// returns `None`.
     ///
     /// To also access the prefix bytes, use [`Ref::new_from_prefix`]. Then, use
     /// [`Ref::into_ref`] to get a `&Self` with the same lifetime.
@@ -1912,16 +1915,17 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn ref_from_prefix(bytes: &[u8]) -> Option<&Self>
     where
-        Self: Sized,
+        Self: KnownLayout,
     {
         Ref::<&[u8], Self>::new_from_prefix(bytes).map(|(r, _)| r.into_ref())
     }
 
     /// Interprets the suffix of the given `bytes` as a `&Self` without copying.
     ///
-    /// `ref_from_suffix` returns a reference to the last `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()` or the suffix of
-    /// `bytes` is not aligned to `align_of::<Self>()`, this returns `None`.
+    /// `ref_from_suffix` returns a reference to the largest instance of `Self`
+    /// which fits in the trailing bytes of `bytes`. If no instance of `Self`
+    /// fits or if the trailing bytes do not satisfy `Self`'s alignment
+    /// requirement, this returns `None`.
     ///
     /// To also access the suffix bytes, use [`Ref::new_from_suffix`]. Then, use
     /// [`Ref::into_ref`] to get a `&Self` with the same lifetime.
@@ -1948,15 +1952,15 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn ref_from_suffix(bytes: &[u8]) -> Option<&Self>
     where
-        Self: Sized,
+        Self: KnownLayout,
     {
         Ref::<&[u8], Self>::new_from_suffix(bytes).map(|(_, r)| r.into_ref())
     }
 
     /// Interprets the given `bytes` as a `&mut Self` without copying.
     ///
-    /// If `bytes.len() != size_of::<Self>()` or `bytes` is not aligned to
-    /// `align_of::<Self>()`, this returns `None`.
+    /// If `bytes.len()` is not a valid length for `Self` or `bytes` is not
+    /// aligned to `Self`'s alignment, this returns `None`.
     ///
     /// # Examples
     ///
@@ -1990,7 +1994,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn mut_from(bytes: &mut [u8]) -> Option<&mut Self>
     where
-        Self: Sized + AsBytes,
+        Self: AsBytes + KnownLayout,
     {
         Ref::<&mut [u8], Self>::new(bytes).map(Ref::into_mut)
     }
@@ -1998,9 +2002,10 @@ pub unsafe trait FromBytes: FromZeros {
     /// Interprets the prefix of the given `bytes` as a `&mut Self` without
     /// copying.
     ///
-    /// `mut_from_prefix` returns a reference to the first `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()` or `bytes` is not
-    /// aligned to `align_of::<Self>()`, this returns `None`.
+    /// `mut_from_prefix` returns a reference to the largest instance of `Self`
+    /// which fits in the leading bytes of `bytes`. If no instance of `Self`
+    /// fits or if `bytes` does not satisfy `Self`'s alignment requirement, this
+    /// returns `None`.
     ///
     /// To also access the prefix bytes, use [`Ref::new_from_prefix`]. Then, use
     /// [`Ref::into_mut`] to get a `&mut Self` with the same lifetime.
@@ -2037,16 +2042,17 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn mut_from_prefix(bytes: &mut [u8]) -> Option<&mut Self>
     where
-        Self: Sized + AsBytes,
+        Self: AsBytes + KnownLayout,
     {
         Ref::<&mut [u8], Self>::new_from_prefix(bytes).map(|(r, _)| r.into_mut())
     }
 
     /// Interprets the suffix of the given `bytes` as a `&mut Self` without copying.
     ///
-    /// `mut_from_suffix` returns a reference to the last `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()` or the suffix of
-    /// `bytes` is not aligned to `align_of::<Self>()`, this returns `None`.
+    /// `mut_from_suffix` returns a reference to the largest instance of `Self`
+    /// which fits in the trailing bytes of `bytes`. If no instance of `Self`
+    /// fits or if the trailing bytes do not satisfy `Self`'s alignment
+    /// requirement, this returns `None`.
     ///
     /// To also access the suffix bytes, use [`Ref::new_from_suffix`]. Then,
     /// use [`Ref::into_mut`] to get a `&mut Self` with the same lifetime.
@@ -2077,7 +2083,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn mut_from_suffix(bytes: &mut [u8]) -> Option<&mut Self>
     where
-        Self: Sized + AsBytes,
+        Self: AsBytes + KnownLayout,
     {
         Ref::<&mut [u8], Self>::new_from_suffix(bytes).map(|(_, r)| r.into_mut())
     }
@@ -2121,12 +2127,19 @@ pub unsafe trait FromBytes: FromZeros {
     ///     Pixel { r: 4, g: 5, b: 6, a: 7 },
     /// ]);
     /// ```
+    #[deprecated(
+        since = "0.8.0",
+        note = "prefer FromBytes::ref_from, which is strictly more powerful than FromBytes::slice_from"
+    )]
+    #[doc(hidden)]
     #[inline]
     fn slice_from(bytes: &[u8]) -> Option<&[Self]>
     where
         Self: Sized,
     {
-        Ref::<_, [Self]>::new_slice(bytes).map(|r| r.into_slice())
+        // We use `FromBytes::ref_from` to ensure that it is at least as
+        // powerful as this method, as promised in the deprecation note.
+        <[Self] as FromBytes>::ref_from(bytes)
     }
 
     /// Interprets the prefix of the given `bytes` as a `&[Self]` with length
@@ -2274,12 +2287,19 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// assert_eq!(bytes, [0, 1, 2, 3, 0, 0, 0, 0]);
     /// ```
+    #[deprecated(
+        since = "0.8.0",
+        note = "prefer FromBytes::mut_from, which is strictly more powerful than FromBytes::mut_slice_from"
+    )]
+    #[doc(hidden)]
     #[inline]
     fn mut_slice_from(bytes: &mut [u8]) -> Option<&mut [Self]>
     where
         Self: Sized + AsBytes,
     {
-        Ref::<_, [Self]>::new_slice(bytes).map(|r| r.into_mut_slice())
+        // We use `FromBytes::mut_from` to ensure that it is at least as
+        // powerful as this method, as promised in the deprecation note.
+        <[Self] as FromBytes>::mut_from(bytes)
     }
 
     /// Interprets the prefix of the given `bytes` as a `&mut [Self]` with length
@@ -2426,7 +2446,8 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized,
     {
-        Ref::<_, Unalign<Self>>::new_unaligned(bytes).map(|r| r.read().into_inner())
+        Ref::<_, SizedKnownLayout<Unalign<Self>>>::new_unaligned(bytes)
+            .map(|r| r.read().into_inner().into_inner())
     }
 
     /// Reads a copy of `Self` from the prefix of `bytes`.
@@ -2465,8 +2486,8 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized,
     {
-        Ref::<_, Unalign<Self>>::new_unaligned_from_prefix(bytes)
-            .map(|(r, _)| r.read().into_inner())
+        Ref::<_, SizedKnownLayout<Unalign<Self>>>::new_unaligned_from_prefix(bytes)
+            .map(|(r, _)| r.read().into_inner().into_inner())
     }
 
     /// Reads a copy of `Self` from the suffix of `bytes`.
@@ -2499,8 +2520,8 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized,
     {
-        Ref::<_, Unalign<Self>>::new_unaligned_from_suffix(bytes)
-            .map(|(_, r)| r.read().into_inner())
+        Ref::<_, SizedKnownLayout<Unalign<Self>>>::new_unaligned_from_suffix(bytes)
+            .map(|(_, r)| r.read().into_inner().into_inner())
     }
 }
 
@@ -4204,11 +4225,27 @@ macro_rules! include_value {
 /// # }
 /// ```
 pub struct Ref<B, T: ?Sized>(
-    // INVARIANTS: The referent byte slice is aligned to `T`'s alignment and its
-    // size corresponds to a valid size for `T`
+    // INVARIANTS: So long as `B: ByteSlice`, the referent byte slice is aligned
+    // to `T`'s alignment and its size corresponds to a valid size for `T`
     B,
     PhantomData<T>,
 );
+
+// TODO: Make sure that all uses of these invariants are okay given the new `B:
+// ByteSlice` conditional.
+
+impl<B: Clone, T: ?Sized> Clone for Ref<B, T> {
+    fn clone(&self) -> Ref<B, T> {
+        // INVARIANTS: By invariant, `self.0` is aligned to `T`'s alignment and
+        // its size corresponds to a valid size for `T`. `ByteSlice` promises
+        // that its `Clone` impl doesn't modify the size or alignment of the
+        // referent byte slice. The field invariant doesn't require that
+        // alignment and size are valid, but rather that they're valid *so long
+        // as `B: ByteSlice`*. Thus, it's okay that `B: ?ByteSlice` in this
+        // impl.
+        Ref(self.0.clone(), PhantomData)
+    }
+}
 
 /// Deprecated: prefer [`Ref`] instead.
 #[deprecated(since = "0.7.0", note = "`LayoutVerified` was renamed to `Ref`")]
@@ -4232,60 +4269,63 @@ where
 impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
+    T: ?Sized + KnownLayout,
 {
     /// Constructs a new `Ref`.
     ///
-    /// `new` verifies that `bytes.len() == size_of::<T>()` and that `bytes` is
-    /// aligned to `align_of::<T>()`, and constructs a new `Ref`. If either of
-    /// these checks fail, it returns `None`.
+    /// `new` verifies that `bytes` is a valid length for `T` and satisfies
+    /// `T`'s alignment requirement. If both conditions are satisfied, it
+    /// constructs and returns a new `Ref`, and otherwise returns `None`.
+    // TODO(#29): Document (here or elsewhere) what "valid length for `T`"
+    // means.
     #[inline]
     pub fn new(bytes: B) -> Option<Ref<B, T>> {
-        if bytes.len() != mem::size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
-            return None;
-        }
-        // INVARIANTS: We just validated size and alignment.
+        let _ = Ptr::from(bytes.deref()).try_cast_into_no_leftover::<T>()?;
+        // INVARIANTS: `Ptr::try_cast_into_no_leftover` returns `None` if
+        // `bytes.deref()` is not properly aligned for `T` or doesn't have a
+        // valid size for `T`.
         Some(Ref(bytes, PhantomData))
     }
 
     /// Constructs a new `Ref` from the prefix of a byte slice.
     ///
-    /// `new_from_prefix` verifies that `bytes.len() >= size_of::<T>()` and that
-    /// `bytes` is aligned to `align_of::<T>()`. It consumes the first
-    /// `size_of::<T>()` bytes from `bytes` to construct a `Ref`, and returns
-    /// the remaining bytes to the caller. If either the length or alignment
-    /// checks fail, it returns `None`.
+    /// `new_from_prefix` verifies that `bytes` satisfies `T`'s alignment
+    /// requirement, and computes the largest possible instance of `T` which
+    /// fits in `bytes.len()` bytes. It consumes the appropriate number of bytes
+    /// from `bytes` and uses them to construct a new `Ref`, returning the
+    /// remaining bytes to the caller. If the alignment is not satisfied or if
+    /// there is no `T` which fits, `new_from_prefix` returns `None`.
+    // TODO(#29): Document (here or elsewhere) what "largest possible instance
+    // of `T`" means.
     #[inline]
     pub fn new_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
-        if bytes.len() < mem::size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
-            return None;
-        }
-        let (bytes, suffix) = bytes.split_at(mem::size_of::<T>());
-        // INVARIANTS: We just validated alignment and that `bytes` is at least
-        // as large as `T`. `bytes.split_at(mem::size_of::<T>())` ensures that
-        // the new `bytes` is exactly the size of `T`.
+        let (_, split_at) = Ptr::from(bytes.deref()).try_cast_into::<T>(_CastType::_Prefix)?;
+        let (bytes, suffix) = bytes.split_at(split_at);
+        // INVARIANTS: `try_cast_into` promises that if it returns `Some((_,
+        // split_at))`, `split_at` will correspond to a valid length for `T` and
+        // that `bytes` satisfies `T`'s alignment.
         Some((Ref(bytes, PhantomData), suffix))
     }
 
     /// Constructs a new `Ref` from the suffix of a byte slice.
     ///
-    /// `new_from_suffix` verifies that `bytes.len() >= size_of::<T>()` and that
-    /// the last `size_of::<T>()` bytes of `bytes` are aligned to
-    /// `align_of::<T>()`. It consumes the last `size_of::<T>()` bytes from
-    /// `bytes` to construct a `Ref`, and returns the preceding bytes to the
-    /// caller. If either the length or alignment checks fail, it returns
-    /// `None`.
+    /// `new_from_suffix` computes the largest possible instance of `T` which
+    /// fits in `bytes.len()` bytes, and verifies that a `T` of this length
+    /// which lives at the suffix of `bytes` would satisfy `T`'s alignment
+    /// requirement. It consumes the appropriate number of bytes from the end of
+    /// `bytes` and uses them to construct a new `Ref`, returning the preceding
+    /// bytes to the caller. If the alignment is not satisfied or if there is no
+    /// `T` which fits, `new_from_suffix` returns `None`.
+    // TODO(#29): Document (here or elsewhere) what "largest possible instance
+    // of `T`" means.
     #[inline]
     pub fn new_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
-        let bytes_len = bytes.len();
-        let split_at = bytes_len.checked_sub(mem::size_of::<T>())?;
+        let (_, split_at) = Ptr::from(bytes.deref()).try_cast_into::<T>(_CastType::_Suffix)?;
         let (prefix, bytes) = bytes.split_at(split_at);
-        if !util::aligned_to::<_, T>(bytes.deref()) {
-            return None;
-        }
-        // INVARIANTS: Since `split_at` is defined as `bytes_len -
-        // size_of::<T>()`, the `bytes` which results from `let (prefix, bytes)
-        // = bytes.split_at(split_at)` has length `size_of::<T>()`. After
-        // constructing `bytes`, we validate that it has the proper alignment.
+        // INVARIANTS: `try_cast_into` promises that if it returns `Some((_,
+        // split_at))`, `bytes.len() - split_at` will correspond to a valid
+        // length for `T` and that the trailing `bytes.len() - split_at` bytes
+        // of `bytes` satisfy `T`'s alignment.
         Some((prefix, Ref(bytes, PhantomData)))
     }
 }
@@ -4304,6 +4344,11 @@ where
     /// # Panics
     ///
     /// `new_slice` panics if `T` is a zero-sized type.
+    #[deprecated(
+        since = "0.8.0",
+        note = "prefer Ref::new, which is strictly more powerful than Ref::new_slice"
+    )]
+    #[doc(hidden)]
     #[inline]
     pub fn new_slice(bytes: B) -> Option<Ref<B, [T]>> {
         let remainder = bytes
@@ -4341,7 +4386,7 @@ where
             return None;
         }
         let (prefix, bytes) = bytes.split_at(expected_len);
-        Self::new_slice(prefix).map(move |l| (l, bytes))
+        Self::new(prefix).map(move |l| (l, bytes))
     }
 
     /// Constructs a new `Ref` of a slice type from the suffix of a byte slice.
@@ -4364,7 +4409,7 @@ where
         };
         let split_at = bytes.len().checked_sub(expected_len)?;
         let (bytes, suffix) = bytes.split_at(split_at);
-        Self::new_slice(suffix).map(move |l| (bytes, l))
+        Self::new(suffix).map(move |l| (bytes, l))
     }
 }
 
@@ -4399,16 +4444,14 @@ fn map_suffix_tuple_zeroed<B: ByteSliceMut, T: ?Sized>(
 impl<B, T> Ref<B, T>
 where
     B: ByteSliceMut,
+    T: ?Sized + KnownLayout,
 {
     /// Constructs a new `Ref` after zeroing the bytes.
     ///
-    /// `new_zeroed` verifies that `bytes.len() == size_of::<T>()` and that
-    /// `bytes` is aligned to `align_of::<T>()`, and constructs a new `Ref`. If
-    /// either of these checks fail, it returns `None`.
-    ///
-    /// If the checks succeed, then `bytes` will be initialized to zero. This
-    /// can be useful when re-using buffers to ensure that sensitive data
-    /// previously stored in the buffer is not leaked.
+    /// `new_zeroed` is identical to [`new`] except that, on success, the
+    /// contents of `bytes` are initialized to zero. This can be useful when
+    /// re-using buffers to ensure that sensitive data previously stored in the
+    /// buffer is not leaked.
     #[inline(always)]
     pub fn new_zeroed(bytes: B) -> Option<Ref<B, T>> {
         map_zeroed(Self::new(bytes))
@@ -4417,15 +4460,10 @@ where
     /// Constructs a new `Ref` from the prefix of a byte slice, zeroing the
     /// prefix.
     ///
-    /// `new_from_prefix_zeroed` verifies that `bytes.len() >= size_of::<T>()`
-    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the first
-    /// `size_of::<T>()` bytes from `bytes` to construct a `Ref`, and returns
-    /// the remaining bytes to the caller. If either the length or alignment
-    /// checks fail, it returns `None`.
-    ///
-    /// If the checks succeed, then the prefix which is consumed will be
-    /// initialized to zero. This can be useful when re-using buffers to ensure
-    /// that sensitive data previously stored in the buffer is not leaked.
+    /// `new_from_prefix_zeroed` is identical to [`new_from_prefix`] except
+    /// that, on success, the contents of `bytes` are initialized to zero. This
+    /// can be useful when re-using buffers to ensure that sensitive data
+    /// previously stored in the buffer is not leaked.
     #[inline(always)]
     pub fn new_from_prefix_zeroed(bytes: B) -> Option<(Ref<B, T>, B)> {
         map_prefix_tuple_zeroed(Self::new_from_prefix(bytes))
@@ -4434,16 +4472,10 @@ where
     /// Constructs a new `Ref` from the suffix of a byte slice, zeroing the
     /// suffix.
     ///
-    /// `new_from_suffix_zeroed` verifies that `bytes.len() >= size_of::<T>()`
-    /// and that the last `size_of::<T>()` bytes of `bytes` are aligned to
-    /// `align_of::<T>()`. It consumes the last `size_of::<T>()` bytes from
-    /// `bytes` to construct a `Ref`, and returns the preceding bytes to the
-    /// caller. If either the length or alignment checks fail, it returns
-    /// `None`.
-    ///
-    /// If the checks succeed, then the suffix which is consumed will be
-    /// initialized to zero. This can be useful when re-using buffers to ensure
-    /// that sensitive data previously stored in the buffer is not leaked.
+    /// `new_from_suffix_zeroed` is identical to [`new_from_suffix`] except
+    /// that, on success, the contents of `bytes` are initialized to zero. This
+    /// can be useful when re-using buffers to ensure that sensitive data
+    /// previously stored in the buffer is not leaked.
     #[inline(always)]
     pub fn new_from_suffix_zeroed(bytes: B) -> Option<(B, Ref<B, T>)> {
         map_suffix_tuple_zeroed(Self::new_from_suffix(bytes))
@@ -4468,9 +4500,16 @@ where
     /// # Panics
     ///
     /// `new_slice` panics if `T` is a zero-sized type.
+    #[deprecated(
+        since = "0.8.0",
+        note = "prefer Ref::new_zeroed, which is strictly more powerful than Ref::new_slice_zeroed"
+    )]
+    #[doc(hidden)]
     #[inline(always)]
     pub fn new_slice_zeroed(bytes: B) -> Option<Ref<B, [T]>> {
-        map_zeroed(Self::new_slice(bytes))
+        // We use `new_zeroed` to ensure that it is at least as powerful as
+        // `new_slice_zeroed`, as promised by our deprecation note.
+        Self::new_zeroed(bytes)
     }
 
     /// Constructs a new `Ref` of a slice type from the prefix of a byte slice,
@@ -4521,12 +4560,14 @@ where
 impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
-    T: Unaligned,
+    T: ?Sized + Unaligned + KnownLayout,
 {
     /// Constructs a new `Ref` for a type with no alignment requirement.
     ///
-    /// `new_unaligned` verifies that `bytes.len() == size_of::<T>()` and
+    /// `new_unaligned` verifies that `bytes` is a valid length for `T` and
     /// constructs a new `Ref`. If the check fails, it returns `None`.
+    // TODO(#29): Document (here or elsewhere) what "valid length for `T`"
+    // means.
     #[inline(always)]
     pub fn new_unaligned(bytes: B) -> Option<Ref<B, T>> {
         Ref::new(bytes)
@@ -4535,10 +4576,13 @@ where
     /// Constructs a new `Ref` from the prefix of a byte slice for a type with
     /// no alignment requirement.
     ///
-    /// `new_unaligned_from_prefix` verifies that `bytes.len() >=
-    /// size_of::<T>()`. It consumes the first `size_of::<T>()` bytes from
-    /// `bytes` to construct a `Ref`, and returns the remaining bytes to the
-    /// caller. If the length check fails, it returns `None`.
+    /// `new_unaligned_from_prefix` computes the largest possible instance of
+    /// `T` which fits in `bytes.len()` bytes. It consumes the appropriate
+    /// number of bytes from `bytes` and uses them to construct a new `Ref`,
+    /// returning the remaining bytes to the caller. If there is no `T` which
+    /// fits, `new_unaligned_from_prefix` returns `None`.
+    // TODO(#29): Document (here or elsewhere) what "largest possible instance
+    // of `T`" means.
     #[inline(always)]
     pub fn new_unaligned_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
         Ref::new_from_prefix(bytes)
@@ -4547,10 +4591,13 @@ where
     /// Constructs a new `Ref` from the suffix of a byte slice for a type with
     /// no alignment requirement.
     ///
-    /// `new_unaligned_from_suffix` verifies that `bytes.len() >=
-    /// size_of::<T>()`. It consumes the last `size_of::<T>()` bytes from
-    /// `bytes` to construct a `Ref`, and returns the preceding bytes to the
-    /// caller. If the length check fails, it returns `None`.
+    /// `new_unaligned_from_suffix` computes the largest possible instance of
+    /// `T` which fits in `bytes.len()` bytes. It consumes the appropriate
+    /// number of bytes from the end of `bytes` and uses them to construct a new
+    /// `Ref`, returning the preceding bytes to the caller. If there is no `T`
+    /// which fits, `new_unaligned_from_suffix` returns `None`.
+    // TODO(#29): Document (here or elsewhere) what "largest possible instance
+    // of `T`" means.
     #[inline(always)]
     pub fn new_unaligned_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
         Ref::new_from_suffix(bytes)
@@ -4571,9 +4618,17 @@ where
     /// # Panics
     ///
     /// `new_slice` panics if `T` is a zero-sized type.
+    #[deprecated(
+        since = "0.8.0",
+        note = "prefer Ref::new_unaligned, which is strictly more powerful than Ref::new_slice_unaligned"
+    )]
+    #[doc(hidden)]
     #[inline(always)]
     pub fn new_slice_unaligned(bytes: B) -> Option<Ref<B, [T]>> {
-        Ref::new_slice(bytes)
+        // We call `new_unaligned` here instead of `new_slice` to confirm that
+        // the deprecation note is accurate: namely, that `new_unaligned` is at
+        // least as powerful as `new_slice_unaligne`.
+        Ref::<_, [T]>::new_unaligned(bytes)
     }
 
     /// Constructs a new `Ref` of a slice type with no alignment requirement
@@ -4615,7 +4670,7 @@ where
 impl<B, T> Ref<B, T>
 where
     B: ByteSliceMut,
-    T: Unaligned,
+    T: ?Sized + Unaligned + KnownLayout,
 {
     /// Constructs a new `Ref` for a type with no alignment requirement, zeroing
     /// the bytes.
@@ -4683,9 +4738,17 @@ where
     /// # Panics
     ///
     /// `new_slice` panics if `T` is a zero-sized type.
+    #[deprecated(
+        since = "0.8.0",
+        note = "prefer Ref::new_unaligned_zeroed, which is strictly more powerful than Ref::new_slice_unaligned_zeroed"
+    )]
+    #[doc(hidden)]
     #[inline(always)]
     pub fn new_slice_unaligned_zeroed(bytes: B) -> Option<Ref<B, [T]>> {
-        map_zeroed(Self::new_slice_unaligned(bytes))
+        // We use `new_unaligned_zeroed` to ensure that it is at least as
+        // powerful as `new_slice_unaligned_zeroed`, as promised by our
+        // deprecation note.
+        Self::new_unaligned_zeroed(bytes)
     }
 
     /// Constructs a new `Ref` of a slice type with no alignment requirement
@@ -4743,40 +4806,37 @@ where
 impl<'a, B, T> Ref<B, T>
 where
     B: 'a + ByteSlice,
-    T: FromBytes,
+    T: ?Sized + FromBytes + KnownLayout,
 {
     /// Converts this `Ref` into a reference.
     ///
     /// `into_ref` consumes the `Ref`, and returns a reference to `T`.
     #[inline(always)]
     pub fn into_ref(self) -> &'a T {
-        // SAFETY: This is sound because `B` is guaranteed to live for the
-        // lifetime `'a`, meaning that a) the returned reference cannot outlive
-        // the `B` from which `self` was constructed and, b) no mutable methods
-        // on that `B` can be called during the lifetime of the returned
-        // reference. See the documentation on `deref_helper` for what
-        // invariants we are required to uphold.
-        unsafe { self.deref_helper() }
+        // SAFETY:
+        // - Since `T: FromBytes`, any sequence of initialized bytes constitutes
+        //   a valid `T`.
+        // - Since `T: FromBytes`, `T` contains no `UnsafeCell`s.
+        unsafe { self.deref_unchecked() }
     }
 }
 
 impl<'a, B, T> Ref<B, T>
 where
     B: 'a + ByteSliceMut,
-    T: FromBytes + AsBytes,
+    T: ?Sized + FromBytes + AsBytes + KnownLayout,
 {
     /// Converts this `Ref` into a mutable reference.
     ///
     /// `into_mut` consumes the `Ref`, and returns a mutable reference to `T`.
     #[inline(always)]
     pub fn into_mut(mut self) -> &'a mut T {
-        // SAFETY: This is sound because `B` is guaranteed to live for the
-        // lifetime `'a`, meaning that a) the returned reference cannot outlive
-        // the `B` from which `self` was constructed and, b) no other methods -
-        // mutable or immutable - on that `B` can be called during the lifetime
-        // of the returned reference. See the documentation on
-        // `deref_mut_helper` for what invariants we are required to uphold.
-        unsafe { self.deref_mut_helper() }
+        // SAFETY:
+        // - Since `T: FromBytes`, any sequence of initialized bytes constitutes
+        //   a valid `T`.
+        // - Since `T: AsBytes`, the returned `&mut T` cannot be used to write
+        //   uninitialized bytes.
+        unsafe { self.deref_mut_unchecked() }
     }
 }
 
@@ -4826,16 +4886,72 @@ impl<'a, T> Ref<&'a [u8], T>
 where
     T: 'a + ?Sized + KnownLayout,
 {
+    // fn as_ptr(&self) -> Ptr<'a, T> {
+    //     // PANICS: By invariant, `self.0` satisfies `T`'s alignment and is a
+    //     // valid size for `T`, which ensures that `try_cast_into_no_leftover`
+    //     // will not panic.
+    //     Ptr::from(self.0)
+    //         .try_cast_into_no_leftover::<T>()
+    //         .expect("Ref::deref_unchecked: internal error (pointer cast should never fail)")
+    // }
+
+    // /// Converts `self` into an immutable `T` reference without validating bit
+    // /// validity.
+    // ///
+    // /// # Safety
+    // ///
+    // /// The caller must ensure that the referent contains a valid `T` before
+    // /// calling this method.
+    // ///
+    // /// The caller must also ensure that `T` does not contain any
+    // /// [`UnsafeCell`]s.
+    // ///
+    // /// [`UnsafeCell`]: core::cell::UnsafeCell
+    // // TODO(#251): Once `NoCell` is stabilized, require `T: NoCell` and remove
+    // // the "no `UnsafeCell`" safety precondition.
+    // unsafe fn into_ref_unchecked(self) -> &'a T {
+    //     // SAFETY:
+    //     // - Preconditions for `as_ref`:
+    //     //   - Caller has promised that `*ptr` contains a valid `T`. Since the
+    //     //     only other references to this memory may be typed as `&T` or
+    //     //     `&[u8]`, we know that, during `'a`, `*ptr` will never be updated
+    //     //     to contain an invalid `T`: The `&T` cannot be used to store an
+    //     //     invalid `T` and, since `&[u8]` does not permit interior
+    //     //     mutability, the `&[u8]` cannot be used to update the contents at
+    //     //     all.
+    //     //   - Since the `self` and the returned `&T` both have the lifetime
+    //     //     `'a`, Rust will prevent any `&mut Ref<B, T>`s from being produced
+    //     //     which refer to `self` during `'a`. The only APIs that permit
+    //     //     constructing a mutable reference to the same memory as the
+    //     //     returned `&T` operate on `&mut Ref<B, T>`, so no mutable
+    //     //     references can be constructed to this memory during `'a`.
+    //     //   - The caller has promised that `T` contains no `UnsafeCell`s. We
+    //     //     know that `[u8]` cannot contain any `UnsafeCell`s. Thus, there is
+    //     //     no mismatch in which byte ranges can be viewed as `UnsafeCell`s.
+    //     // - Since the caller has promised that `T` contains no `UnsafeCell`s,
+    //     //   there's no way for the returned reference to be used to modify the
+    //     //   byte range, and thus there's no way for the returned reference to
+    //     //   be used to write an invalid `[u8]` which would be observable via
+    //     //   the original `&[u8]`.
+    //     unsafe { self.as_ptr().as_ref() }
+    // }
+}
+
+impl<'a, B, T> Ref<B, T>
+where
+    B: 'a + ByteSlice,
+    T: 'a + ?Sized + KnownLayout,
+{
     fn as_ptr(&self) -> Ptr<'a, T> {
         // PANICS: By invariant, `self.0` satisfies `T`'s alignment and is a
         // valid size for `T`, which ensures that `try_cast_into_no_leftover`
         // will not panic.
-        Ptr::from(self.0)
+        Ptr::from(self.0.deref())
             .try_cast_into_no_leftover::<T>()
             .expect("Ref::deref_unchecked: internal error (pointer cast should never fail)")
     }
 
-    /// Converts `self` into an immutable `T` reference without validating bit
+    /// Dereferences `self` as an immutable `T` reference without validating bit
     /// validity.
     ///
     /// # Safety
@@ -4849,7 +4965,7 @@ where
     /// [`UnsafeCell`]: core::cell::UnsafeCell
     // TODO(#251): Once `NoCell` is stabilized, require `T: NoCell` and remove
     // the "no `UnsafeCell`" safety precondition.
-    unsafe fn into_ref_unchecked(self) -> &'a T {
+    unsafe fn deref_unchecked(&self) -> &'a T {
         // SAFETY:
         // - Preconditions for `as_ref`:
         //   - Caller has promised that `*ptr` contains a valid `T`. Since the
@@ -4875,6 +4991,80 @@ where
         //   the original `&[u8]`.
         unsafe { self.as_ptr().as_ref() }
     }
+
+    /// Dereferences `self` as a mutable `T` reference without validating bit
+    /// validity.
+    ///
+    /// # Safety
+    ///
+    /// The caller must ensure that the referent contains a valid `T` before
+    /// calling this method.
+    ///
+    /// The caller must also ensure that no uninitialized bytes will be written
+    /// via the returned reference.
+    unsafe fn deref_mut_unchecked(&mut self) -> &'a mut T {
+        // SAFETY:
+        // - Preconditions for `as_mut`:
+        //   - Caller has promised that `*ptr` contains a valid `T`. Since the
+        //     referenced bytes are borrowed mutably, we no that no other code
+        //     can mutate the bytes (and thus potentially invalidate `T`) for
+        //     the lifetime `'a`.
+        //   - Since the `self` and the returned `&mut T` both have the lifetime
+        //     `'a`, Rust will prevent any `&Ref<B, T>`s or `&mut Ref<B, T>`s
+        //     from being produced which refer to `self` during `'a`. The only
+        //     APIs which would permit constructing another reference to the
+        //     same memory during `'a` operate on `Ref` references - so long as
+        //     no other references can be produced, none of these APIs can be
+        //     called, and so no other mutable references to the same memory
+        //     region can be constructed.
+        // - The caller has promised that no uninitialized bytes will be written
+        //   via the returned reference. Since all initialized bytes are valid
+        //   `u8`s, this precondition is enough to satisfy that the caller will
+        //   not violate the bit validity of the underlying byte slice - ie, it
+        //   is sound for it to be later viewed as a `[u8]` after `'a`.
+        unsafe { self.as_ptr().as_mut() }
+    }
+
+    // /// Converts `self` into an immutable `T` reference without validating bit
+    // /// validity.
+    // ///
+    // /// # Safety
+    // ///
+    // /// The caller must ensure that the referent contains a valid `T` before
+    // /// calling this method.
+    // ///
+    // /// The caller must also ensure that `T` does not contain any
+    // /// [`UnsafeCell`]s.
+    // ///
+    // /// [`UnsafeCell`]: core::cell::UnsafeCell
+    // // TODO(#251): Once `NoCell` is stabilized, require `T: NoCell` and remove
+    // // the "no `UnsafeCell`" safety precondition.
+    // unsafe fn into_ref_unchecked(self) -> &'a T {
+    //     // SAFETY:
+    //     // - Preconditions for `as_ref`:
+    //     //   - Caller has promised that `*ptr` contains a valid `T`. Since the
+    //     //     only other references to this memory may be typed as `&T` or
+    //     //     `&[u8]`, we know that, during `'a`, `*ptr` will never be updated
+    //     //     to contain an invalid `T`: The `&T` cannot be used to store an
+    //     //     invalid `T` and, since `&[u8]` does not permit interior
+    //     //     mutability, the `&[u8]` cannot be used to update the contents at
+    //     //     all.
+    //     //   - Since the `self` and the returned `&T` both have the lifetime
+    //     //     `'a`, Rust will prevent any `&mut Ref<B, T>`s from being produced
+    //     //     which refer to `self` during `'a`. The only APIs that permit
+    //     //     constructing a mutable reference to the same memory as the
+    //     //     returned `&T` operate on `&mut Ref<B, T>`, so no mutable
+    //     //     references can be constructed to this memory during `'a`.
+    //     //   - The caller has promised that `T` contains no `UnsafeCell`s. We
+    //     //     know that `[u8]` cannot contain any `UnsafeCell`s. Thus, there is
+    //     //     no mismatch in which byte ranges can be viewed as `UnsafeCell`s.
+    //     // - Since the caller has promised that `T` contains no `UnsafeCell`s,
+    //     //   there's no way for the returned reference to be used to modify the
+    //     //   byte range, and thus there's no way for the returned reference to
+    //     //   be used to write an invalid `[u8]` which would be observable via
+    //     //   the original `&[u8]`.
+    //     unsafe { self.as_ptr().as_ref() }
+    // }
 }
 
 impl<B, T> Ref<B, T>
@@ -5043,97 +5233,46 @@ where
     }
 }
 
-impl<B, T> Deref for Ref<B, T>
+impl<'a, B, T> Deref for Ref<B, T>
 where
-    B: ByteSlice,
-    T: FromBytes,
+    B: 'a + ByteSlice,
+    T: 'a + ?Sized + FromBytes + KnownLayout,
 {
     type Target = T;
     #[inline]
     fn deref(&self) -> &T {
-        // SAFETY: This is sound because the lifetime of `self` is the same as
-        // the lifetime of the return value, meaning that a) the returned
-        // reference cannot outlive `self` and, b) no mutable methods on `self`
-        // can be called during the lifetime of the returned reference. See the
-        // documentation on `deref_helper` for what invariants we are required
-        // to uphold.
-        unsafe { self.deref_helper() }
+        // SAFETY:
+        // - `T: FromBytes` ensures that the referenced bytes contain a valid
+        //   `T` since they're all guaranteed to be initialized.
+        // - `T: FromBytes` ensures that `T` contains to `UnsafeCell`s.
+        unsafe { self.deref_unchecked() }
     }
 }
 
-impl<B, T> DerefMut for Ref<B, T>
+impl<'a, B, T> DerefMut for Ref<B, T>
 where
-    B: ByteSliceMut,
-    T: FromBytes + AsBytes,
+    B: 'a + ByteSliceMut,
+    T: 'a + ?Sized + FromBytes + AsBytes + KnownLayout,
 {
     #[inline]
     fn deref_mut(&mut self) -> &mut T {
-        // SAFETY: This is sound because the lifetime of `self` is the same as
-        // the lifetime of the return value, meaning that a) the returned
-        // reference cannot outlive `self` and, b) no other methods on `self`
-        // can be called during the lifetime of the returned reference. See the
-        // documentation on `deref_mut_helper` for what invariants we are
-        // required to uphold.
-        unsafe { self.deref_mut_helper() }
-    }
-}
-
-impl<B, T> Deref for Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes,
-{
-    type Target = [T];
-    #[inline]
-    fn deref(&self) -> &[T] {
-        // SAFETY: This is sound because the lifetime of `self` is the same as
-        // the lifetime of the return value, meaning that a) the returned
-        // reference cannot outlive `self` and, b) no mutable methods on `self`
-        // can be called during the lifetime of the returned reference. See the
-        // documentation on `deref_slice_helper` for what invariants we are
-        // required to uphold.
-        unsafe { self.deref_slice_helper() }
-    }
-}
-
-impl<B, T> DerefMut for Ref<B, [T]>
-where
-    B: ByteSliceMut,
-    T: FromBytes + AsBytes,
-{
-    #[inline]
-    fn deref_mut(&mut self) -> &mut [T] {
-        // SAFETY: This is sound because the lifetime of `self` is the same as
-        // the lifetime of the return value, meaning that a) the returned
-        // reference cannot outlive `self` and, b) no other methods on `self`
-        // can be called during the lifetime of the returned reference. See the
-        // documentation on `deref_mut_slice_helper` for what invariants we are
-        // required to uphold.
-        unsafe { self.deref_mut_slice_helper() }
+        // SAFETY:
+        // - `T: FromBytes` ensures that the referenced bytes contain a valid
+        //   `T` since they're all guaranteed to be initialized.
+        // - `T: AsBytes` ensures that no uninitialized bytes can be written via
+        //   the returned `&mut T`.
+        unsafe { self.deref_mut_unchecked() }
     }
 }
 
 impl<T, B> Display for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + Display,
+    T: ?Sized + FromBytes + KnownLayout + Display,
 {
     #[inline]
     fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
         let inner: &T = self;
-        inner.fmt(fmt)
-    }
-}
-
-impl<T, B> Display for Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes,
-    [T]: Display,
-{
-    #[inline]
-    fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
-        let inner: &[T] = self;
         inner.fmt(fmt)
     }
 }
@@ -5141,7 +5280,7 @@ where
 impl<T, B> Debug for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + Debug,
+    T: ?Sized + FromBytes + KnownLayout + Debug,
 {
     #[inline]
     fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
@@ -5150,47 +5289,17 @@ where
     }
 }
 
-impl<T, B> Debug for Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes + Debug,
-{
-    #[inline]
-    fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
-        let inner: &[T] = self;
-        fmt.debug_tuple("Ref").field(&inner).finish()
-    }
-}
-
 impl<T, B> Eq for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + Eq,
-{
-}
-
-impl<T, B> Eq for Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes + Eq,
+    T: ?Sized + FromBytes + KnownLayout + Eq,
 {
 }
 
 impl<T, B> PartialEq for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + PartialEq,
-{
-    #[inline]
-    fn eq(&self, other: &Self) -> bool {
-        self.deref().eq(other.deref())
-    }
-}
-
-impl<T, B> PartialEq for Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes + PartialEq,
+    T: ?Sized + FromBytes + KnownLayout + PartialEq,
 {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -5201,25 +5310,12 @@ where
 impl<T, B> Ord for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + Ord,
+    T: ?Sized + FromBytes + KnownLayout + Ord,
 {
     #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
         let inner: &T = self;
         let other_inner: &T = other;
-        inner.cmp(other_inner)
-    }
-}
-
-impl<T, B> Ord for Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes + Ord,
-{
-    #[inline]
-    fn cmp(&self, other: &Self) -> Ordering {
-        let inner: &[T] = self;
-        let other_inner: &[T] = other;
         inner.cmp(other_inner)
     }
 }
@@ -5227,25 +5323,12 @@ where
 impl<T, B> PartialOrd for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + PartialOrd,
+    T: ?Sized + FromBytes + KnownLayout + PartialOrd,
 {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         let inner: &T = self;
         let other_inner: &T = other;
-        inner.partial_cmp(other_inner)
-    }
-}
-
-impl<T, B> PartialOrd for Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes + PartialOrd,
-{
-    #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        let inner: &[T] = self;
-        let other_inner: &[T] = other;
         inner.partial_cmp(other_inner)
     }
 }
@@ -5276,6 +5359,14 @@ mod sealed {
 /// operation in order for the utilities in this crate to perform as designed.
 ///
 /// [`split_at`]: crate::ByteSlice::split_at
+///
+/// # Safety
+///
+/// If `T: ByteSlice + Clone`, its `Clone` impl must preserve the size and
+/// alignment of the `[u8]` dereferenced via its `Deref` impl.
+///
+/// `ByteSlice` is a sealed trait, and has other safety preconditions which are
+/// not documented.
 // It may seem overkill to go to this length to ensure that this doc link never
 // breaks. We do this because it simplifies CI - it means that generating docs
 // always succeeds, so we don't need special logic to only generate docs under
@@ -6844,7 +6935,6 @@ mod tests {
     fn test_object_safety() {
         fn _takes_no_cell(_: &dyn NoCell) {}
         fn _takes_from_zeros(_: &dyn FromZeros) {}
-        fn _takes_from_bytes(_: &dyn FromBytes) {}
         fn _takes_unaligned(_: &dyn Unaligned) {}
     }
 
@@ -8038,9 +8128,9 @@ mod tests {
         assert_impls!(ManuallyDrop<u8>: KnownLayout, NoCell, FromZeros, FromBytes, AsBytes, Unaligned, !TryFromBytes);
         assert_impls!(ManuallyDrop<[u8]>: KnownLayout, NoCell, FromZeros, FromBytes, AsBytes, Unaligned, !TryFromBytes);
         assert_impls!(ManuallyDrop<NotZerocopy>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(ManuallyDrop<[NotZerocopy]>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<[NotZerocopy]>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
         assert_impls!(ManuallyDrop<UnsafeCell<()>>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(ManuallyDrop<[UnsafeCell<()>]>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<[UnsafeCell<()>]>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
 
         assert_impls!(MaybeUninit<u8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, Unaligned, !AsBytes);
         assert_impls!(MaybeUninit<NotZerocopy>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
@@ -8055,7 +8145,7 @@ mod tests {
 
         assert_impls!([u8]: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, Unaligned);
         assert_impls!([bool]: KnownLayout, NoCell, TryFromBytes, FromZeros, AsBytes, Unaligned, !FromBytes);
-        assert_impls!([NotZerocopy]: !KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!([NotZerocopy]: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
         assert_impls!([u8; 0]: KnownLayout, NoCell, FromZeros, FromBytes, AsBytes, Unaligned, !TryFromBytes);
         assert_impls!([NotZerocopy; 0]: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
         assert_impls!([u8; 1]: KnownLayout, NoCell, FromZeros, FromBytes, AsBytes, Unaligned, !TryFromBytes);
