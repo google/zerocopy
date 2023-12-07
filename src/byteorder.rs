@@ -35,10 +35,10 @@
 //!
 //! ```rust,edition2021
 //! # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
-//! use zerocopy::{AsBytes, ByteSlice, FromBytes, FromZeroes, Ref, Unaligned};
+//! use zerocopy::{AsBytes, ByteSlice, FromBytes, FromZeros, Ref, Unaligned};
 //! use zerocopy::byteorder::network_endian::U16;
 //!
-//! #[derive(FromZeroes, FromBytes, AsBytes, Unaligned)]
+//! #[derive(FromZeros, FromBytes, AsBytes, Unaligned)]
 //! #[repr(C)]
 //! struct UdpHeader {
 //!     src_port: U16,
@@ -276,7 +276,7 @@ example of how it can be used for parsing UDP packets.
 [`AsBytes`]: crate::AsBytes
 [`Unaligned`]: crate::Unaligned"),
             #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, NoCell, FromZeroes, FromBytes, AsBytes, Unaligned))]
+            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, NoCell, FromZeros, FromBytes, AsBytes, Unaligned))]
             #[repr(transparent)]
             pub struct $name<O>([u8; $bytes], PhantomData<O>);
         }
@@ -288,10 +288,10 @@ example of how it can be used for parsing UDP packets.
             /// SAFETY:
             /// `$name<O>` is `repr(transparent)`, and so it has the same layout
             /// as its only non-zero field, which is a `u8` array. `u8` arrays
-            /// are `NoCell`, `FromZeroes`, `FromBytes`, `AsBytes`, and
+            /// are `NoCell`, `FromZeros`, `FromBytes`, `AsBytes`, and
             /// `Unaligned`.
             impl_or_verify!(O => NoCell for $name<O>);
-            impl_or_verify!(O => FromZeroes for $name<O>);
+            impl_or_verify!(O => FromZeros for $name<O>);
             impl_or_verify!(O => FromBytes for $name<O>);
             impl_or_verify!(O => AsBytes for $name<O>);
             impl_or_verify!(O => Unaligned for $name<O>);

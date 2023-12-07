@@ -262,7 +262,7 @@ macro_rules! opt_fn {
 ///
 /// ```rust,ignore
 /// // Note that these derives are gated by `feature = "derive"`
-/// #[cfg_attr(any(feature = "derive", test), derive(FromZeroes, FromBytes, AsBytes, Unaligned))]
+/// #[cfg_attr(any(feature = "derive", test), derive(FromZeros, FromBytes, AsBytes, Unaligned))]
 /// #[repr(transparent)]
 /// struct Wrapper<T>(T);
 ///
@@ -270,7 +270,7 @@ macro_rules! opt_fn {
 ///     /// SAFETY:
 ///     /// `Wrapper<T>` is `repr(transparent)`, so it is sound to implement any
 ///     /// zerocopy trait if `T` implements that trait.
-///     impl_or_verify!(T: FromZeroes => FromZeroes for Wrapper<T>);
+///     impl_or_verify!(T: FromZeros => FromZeros for Wrapper<T>);
 ///     impl_or_verify!(T: FromBytes => FromBytes for Wrapper<T>);
 ///     impl_or_verify!(T: AsBytes => AsBytes for Wrapper<T>);
 ///     impl_or_verify!(T: Unaligned => Unaligned for Wrapper<T>);

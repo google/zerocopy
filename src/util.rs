@@ -698,7 +698,7 @@ pub(crate) mod testutil {
     #[derive(
         KnownLayout,
         NoCell,
-        FromZeroes,
+        FromZeros,
         FromBytes,
         AsBytes,
         Eq,
@@ -727,7 +727,7 @@ pub(crate) mod testutil {
     }
 
     #[derive(
-        NoCell, FromZeroes, FromBytes, Eq, PartialEq, Ord, PartialOrd, Default, Debug, Copy, Clone,
+        NoCell, FromZeros, FromBytes, Eq, PartialEq, Ord, PartialOrd, Default, Debug, Copy, Clone,
     )]
     #[repr(C)]
     pub(crate) struct Nested<T, U: ?Sized> {

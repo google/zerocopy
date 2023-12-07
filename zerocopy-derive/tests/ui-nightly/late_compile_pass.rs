@@ -22,11 +22,11 @@ fn main() {}
 // the compiler will never get to that pass, and so we won't get the errors.
 
 //
-// FromZeroes errors
+// FromZeros errors
 //
 
-#[derive(FromZeroes)]
-struct FromZeroes1 {
+#[derive(FromZeros)]
+struct FromZeros1 {
     value: NotZerocopy,
 }
 

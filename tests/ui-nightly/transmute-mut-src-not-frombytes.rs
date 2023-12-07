@@ -16,7 +16,7 @@ fn main() {}
 #[repr(C)]
 struct Src;
 
-#[derive(zerocopy::FromZeroes, zerocopy::FromBytes, zerocopy::AsBytes)]
+#[derive(zerocopy::FromZeros, zerocopy::FromBytes, zerocopy::AsBytes)]
 #[repr(C)]
 struct Dst;
 

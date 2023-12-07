@@ -12,27 +12,27 @@ use std::{marker::PhantomData, option::IntoIter};
 
 use {
     static_assertions::assert_impl_all,
-    zerocopy::{FromBytes, FromZeroes},
+    zerocopy::{FromBytes, FromZeros},
 };
 
 // A union is `FromBytes` if:
 // - all fields are `FromBytes`
 
-#[derive(Clone, Copy, FromZeroes, FromBytes)]
+#[derive(Clone, Copy, FromZeros, FromBytes)]
 union Zst {
     a: (),
 }
 
 assert_impl_all!(Zst: FromBytes);
 
-#[derive(FromZeroes, FromBytes)]
+#[derive(FromZeros, FromBytes)]
 union One {
     a: u8,
 }
 
 assert_impl_all!(One: FromBytes);
 
-#[derive(FromZeroes, FromBytes)]
+#[derive(FromZeros, FromBytes)]
 union Two {
     a: u8,
     b: Zst,
@@ -40,7 +40,7 @@ union Two {
 
 assert_impl_all!(Two: FromBytes);
 
-#[derive(FromZeroes, FromBytes)]
+#[derive(FromZeros, FromBytes)]
 union TypeParams<'a, T: Copy, I: Iterator>
 where
     I::Item: Copy,
@@ -57,7 +57,7 @@ assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: FromBytes);
 
 // Deriving `FromBytes` should work if the union has bounded parameters.
 
-#[derive(FromZeroes, FromBytes)]
+#[derive(FromZeros, FromBytes)]
 #[repr(C)]
 union WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + FromBytes>
 where

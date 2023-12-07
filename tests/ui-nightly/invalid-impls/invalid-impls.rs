@@ -19,11 +19,11 @@ use zerocopy_derive::*;
 
 fn main() {}
 
-#[derive(FromZeroes, FromBytes, AsBytes, Unaligned)]
+#[derive(FromZeros, FromBytes, AsBytes, Unaligned)]
 #[repr(transparent)]
 struct Foo<T>(T);
 
-impl_or_verify!(T => FromZeroes for Foo<T>);
+impl_or_verify!(T => FromZeros for Foo<T>);
 impl_or_verify!(T => FromBytes for Foo<T>);
 impl_or_verify!(T => AsBytes for Foo<T>);
 impl_or_verify!(T => Unaligned for Foo<T>);

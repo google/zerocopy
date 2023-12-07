@@ -24,8 +24,8 @@
 //! # Overview
 //!
 //! Zerocopy provides four core marker traits, each of which can be derived
-//! (e.g., `#[derive(FromZeroes)]`):
-//! - [`FromZeroes`] indicates that a sequence of zero bytes represents a valid
+//! (e.g., `#[derive(FromZeros)]`):
+//! - [`FromZeros`] indicates that a sequence of zero bytes represents a valid
 //!   instance of a type
 //! - [`FromBytes`] indicates that a type may safely be converted from an
 //!   arbitrary byte sequence
@@ -76,7 +76,7 @@
 //!   ```
 //!
 //! - **`simd`**   
-//!   When the `simd` feature is enabled, `FromZeroes`, `FromBytes`, and
+//!   When the `simd` feature is enabled, `FromZeros`, `FromBytes`, and
 //!   `AsBytes` impls are emitted for all stable SIMD types which exist on the
 //!   target platform. Note that the layout of SIMD types is not yet stabilized,
 //!   so these impls may be removed in the future if layout changes make them
@@ -1000,23 +1000,23 @@ safety_comment! {
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] ManuallyDrop<T>);
 }
 
-/// Analyzes whether a type is [`FromZeroes`].
+/// Analyzes whether a type is [`FromZeros`].
 ///
 /// This derive analyzes, at compile time, whether the annotated type satisfies
-/// the [safety conditions] of `FromZeroes` and implements `FromZeroes` if it is
+/// the [safety conditions] of `FromZeros` and implements `FromZeros` if it is
 /// sound to do so. This derive can be applied to structs, enums, and unions;
 /// e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::FromZeroes;
-/// #[derive(FromZeroes)]
+/// # use zerocopy_derive::FromZeros;
+/// #[derive(FromZeros)]
 /// struct MyStruct {
 /// # /*
 ///     ...
 /// # */
 /// }
 ///
-/// #[derive(FromZeroes)]
+/// #[derive(FromZeros)]
 /// #[repr(u8)]
 /// enum MyEnum {
 /// #   Variant0,
@@ -1025,7 +1025,7 @@ safety_comment! {
 /// # */
 /// }
 ///
-/// #[derive(FromZeroes)]
+/// #[derive(FromZeros)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
@@ -1034,32 +1034,32 @@ safety_comment! {
 /// }
 /// ```
 ///
-/// [safety conditions]: trait@FromZeroes#safety
+/// [safety conditions]: trait@FromZeros#safety
 ///
 /// # Analysis
 ///
 /// *This section describes, roughly, the analysis performed by this derive to
-/// determine whether it is sound to implement `FromZeroes` for a given type.
+/// determine whether it is sound to implement `FromZeros` for a given type.
 /// Unless you are modifying the implementation of this derive, or attempting to
-/// manually implement `FromZeroes` for a type yourself, you don't need to read
+/// manually implement `FromZeros` for a type yourself, you don't need to read
 /// this section.*
 ///
 /// If a type has the following properties, then this derive can implement
-/// `FromZeroes` for that type:
+/// `FromZeros` for that type:
 ///
-/// - If the type is a struct, all of its fields must be `FromZeroes`.
+/// - If the type is a struct, all of its fields must be `FromZeros`.
 /// - If the type is an enum, it must be C-like (meaning that all variants have
 ///   no fields) and it must have a variant with a discriminant of `0`. See [the
 ///   reference] for a description of how discriminant values are chosen.
 /// - The type must not contain any [`UnsafeCell`]s (this is required in order
 ///   for it to be sound to construct a `&[u8]` and a `&T` to the same region of
 ///   memory). The type may contain references or pointers to `UnsafeCell`s so
-///   long as those values can themselves be initialized from zeroes
-///   (`FromZeroes` is not currently implemented for, e.g.,
-///   `Option<&UnsafeCell<_>>`, but it could be one day).
+///   long as those values can themselves be initialized from zeros (`FromZeros`
+///   is not currently implemented for, e.g., `Option<&UnsafeCell<_>>`, but it
+///   could be one day).
 ///
 /// This analysis is subject to change. Unsafe code may *only* rely on the
-/// documented [safety conditions] of `FromZeroes`, and must *not* rely on the
+/// documented [safety conditions] of `FromZeros`, and must *not* rely on the
 /// implementation details of this derive.
 ///
 /// [the reference]: https://doc.rust-lang.org/reference/items/enumerations.html#custom-discriminant-values-for-fieldless-enumerations
@@ -1067,7 +1067,7 @@ safety_comment! {
 ///
 /// ## Why isn't an explicit representation required for structs?
 ///
-/// Neither this derive, nor the [safety conditions] of `FromZeroes`, requires
+/// Neither this derive, nor the [safety conditions] of `FromZeros`, requires
 /// that structs are marked with `#[repr(C)]`.
 ///
 /// Per the [Rust reference](reference),
@@ -1078,9 +1078,9 @@ safety_comment! {
 /// [reference]: https://doc.rust-lang.org/reference/type-layout.html#representations
 ///
 /// Since the layout of structs only consists of padding bytes and field bytes,
-/// a struct is soundly `FromZeroes` if:
-/// 1. its padding is soundly `FromZeroes`, and
-/// 2. its fields are soundly `FromZeroes`.
+/// a struct is soundly `FromZeros` if:
+/// 1. its padding is soundly `FromZeros`, and
+/// 2. its fields are soundly `FromZeros`.
 ///
 /// The answer to the first question is always yes: padding bytes do not have
 /// any validity constraints. A [discussion] of this question in the Unsafe Code
@@ -1089,13 +1089,13 @@ safety_comment! {
 ///
 /// [discussion]: https://github.com/rust-lang/unsafe-code-guidelines/issues/174
 ///
-/// Whether a struct is soundly `FromZeroes` therefore solely depends on whether
-/// its fields are `FromZeroes`.
+/// Whether a struct is soundly `FromZeros` therefore solely depends on whether
+/// its fields are `FromZeros`.
 // TODO(#146): Document why we don't require an enum to have an explicit `repr`
 // attribute.
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
-pub use zerocopy_derive::FromZeroes;
+pub use zerocopy_derive::FromZeros;
 
 /// Types which do not contain any [`UnsafeCell`]s.
 ///
@@ -1309,26 +1309,26 @@ pub unsafe trait TryFromBytes {
 /// instance of the type.
 ///
 /// Any memory region of the appropriate length which is guaranteed to contain
-/// only zero bytes can be viewed as any `FromZeroes` type with no runtime
+/// only zero bytes can be viewed as any `FromZeros` type with no runtime
 /// overhead. This is useful whenever memory is known to be in a zeroed state,
 /// such memory returned from some allocation routines.
 ///
 /// # Implementation
 ///
 /// **Do not implement this trait yourself!** Instead, use
-/// [`#[derive(FromZeroes)]`][derive] (requires the `derive` Cargo feature);
+/// [`#[derive(FromZeros)]`][derive] (requires the `derive` Cargo feature);
 /// e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::FromZeroes;
-/// #[derive(FromZeroes)]
+/// # use zerocopy_derive::FromZeros;
+/// #[derive(FromZeros)]
 /// struct MyStruct {
 /// # /*
 ///     ...
 /// # */
 /// }
 ///
-/// #[derive(FromZeroes)]
+/// #[derive(FromZeros)]
 /// #[repr(u8)]
 /// enum MyEnum {
 /// #   Variant0,
@@ -1337,7 +1337,7 @@ pub unsafe trait TryFromBytes {
 /// # */
 /// }
 ///
-/// #[derive(FromZeroes)]
+/// #[derive(FromZeros)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
@@ -1347,16 +1347,16 @@ pub unsafe trait TryFromBytes {
 /// ```
 ///
 /// This derive performs a sophisticated, compile-time safety analysis to
-/// determine whether a type is `FromZeroes`.
+/// determine whether a type is `FromZeros`.
 ///
 /// # Safety
 ///
-/// *This section describes what is required in order for `T: FromZeroes`, and
+/// *This section describes what is required in order for `T: FromZeros`, and
 /// what unsafe code may assume of such types. If you don't plan on implementing
-/// `FromZeroes` manually, and you don't plan on writing unsafe code that
-/// operates on `FromZeroes` types, then you don't need to read this section.*
+/// `FromZeros` manually, and you don't plan on writing unsafe code that
+/// operates on `FromZeros` types, then you don't need to read this section.*
 ///
-/// If `T: FromZeroes`, then unsafe code may assume that:
+/// If `T: FromZeros`, then unsafe code may assume that:
 /// - It is sound to treat any initialized sequence of zero bytes of length
 ///   `size_of::<T>()` as a `T`.
 /// - Given `b: &[u8]` where `b.len() == size_of::<T>()`, `b` is aligned to
@@ -1364,31 +1364,31 @@ pub unsafe trait TryFromBytes {
 ///   construct a `t: &T` at the same address as `b`, and it is sound for both
 ///   `b` and `t` to be live at the same time.
 ///
-/// If a type is marked as `FromZeroes` which violates this contract, it may
+/// If a type is marked as `FromZeros` which violates this contract, it may
 /// cause undefined behavior.
 ///
-/// `#[derive(FromZeroes)]` only permits [types which satisfy these
+/// `#[derive(FromZeros)]` only permits [types which satisfy these
 /// requirements][derive-analysis].
 ///
 #[cfg_attr(
     feature = "derive",
-    doc = "[derive]: zerocopy_derive::FromZeroes",
-    doc = "[derive-analysis]: zerocopy_derive::FromZeroes#analysis"
+    doc = "[derive]: zerocopy_derive::FromZeros",
+    doc = "[derive-analysis]: zerocopy_derive::FromZeros#analysis"
 )]
 #[cfg_attr(
     not(feature = "derive"),
-    doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.FromZeroes.html"),
-    doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.FromZeroes.html#analysis"),
+    doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.FromZeros.html"),
+    doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.FromZeros.html#analysis"),
 )]
-pub unsafe trait FromZeroes {
-    // The `Self: Sized` bound makes it so that `FromZeroes` is still object
+pub unsafe trait FromZeros {
+    // The `Self: Sized` bound makes it so that `FromZeros` is still object
     // safe.
     #[doc(hidden)]
     fn only_derive_is_allowed_to_implement_this_trait()
     where
         Self: Sized;
 
-    /// Overwrites `self` with zeroes.
+    /// Overwrites `self` with zeros.
     ///
     /// Sets every byte in `self` to 0. While this is similar to doing `*self =
     /// Self::new_zeroed()`, it differs in that `zero` does not semantically
@@ -1398,10 +1398,10 @@ pub unsafe trait FromZeroes {
     /// # Examples
     ///
     /// ```
-    /// # use zerocopy::FromZeroes;
+    /// # use zerocopy::FromZeros;
     /// # use zerocopy_derive::*;
     /// #
-    /// #[derive(FromZeroes)]
+    /// #[derive(FromZeros)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -1433,8 +1433,8 @@ pub unsafe trait FromZeroes {
         //   size `size_of_val(self)`.
         // - `u8`'s alignment is 1, and thus `self` is guaranteed to be aligned
         //   as required by `u8`.
-        // - Since `Self: FromZeroes`, the all-zeroes instance is a valid
-        //   instance of `Self.`
+        // - Since `Self: FromZeros`, the all-zeros instance is a valid instance
+        //   of `Self.`
         //
         // TODO(#429): Add references to docs and quotes.
         unsafe { ptr::write_bytes(slf.cast::<u8>(), 0, len) };
@@ -1445,10 +1445,10 @@ pub unsafe trait FromZeroes {
     /// # Examples
     ///
     /// ```
-    /// # use zerocopy::FromZeroes;
+    /// # use zerocopy::FromZeros;
     /// # use zerocopy_derive::*;
     /// #
-    /// #[derive(FromZeroes)]
+    /// #[derive(FromZeros)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -1457,7 +1457,7 @@ pub unsafe trait FromZeroes {
     ///     checksum: [u8; 2],
     /// }
     ///
-    /// let header: PacketHeader = FromZeroes::new_zeroed();
+    /// let header: PacketHeader = FromZeros::new_zeroed();
     ///
     /// assert_eq!(header.src_port, [0, 0]);
     /// assert_eq!(header.dst_port, [0, 0]);
@@ -1469,7 +1469,7 @@ pub unsafe trait FromZeroes {
     where
         Self: Sized,
     {
-        // SAFETY: `FromZeroes` says that the all-zeroes bit pattern is legal.
+        // SAFETY: `FromZeros` says that the all-zeros bit pattern is legal.
         unsafe { mem::zeroed() }
     }
 
@@ -1617,6 +1617,11 @@ pub unsafe trait FromZeroes {
     }
 }
 
+/// Deprecated: prefer [`FromZeros`] instead.
+#[deprecated(since = "0.8.0", note = "`FromZeroes` was renamed to `FromZeros`")]
+#[doc(hidden)]
+pub use FromZeros as FromZeroes;
+
 /// Analyzes whether a type is [`FromBytes`].
 ///
 /// This derive analyzes, at compile time, whether the annotated type satisfies
@@ -1625,15 +1630,15 @@ pub unsafe trait FromZeroes {
 /// e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::{FromBytes, FromZeroes};
-/// #[derive(FromZeroes, FromBytes)]
+/// # use zerocopy_derive::{FromBytes, FromZeros};
+/// #[derive(FromZeros, FromBytes)]
 /// struct MyStruct {
 /// # /*
 ///     ...
 /// # */
 /// }
 ///
-/// #[derive(FromZeroes, FromBytes)]
+/// #[derive(FromZeros, FromBytes)]
 /// #[repr(u8)]
 /// enum MyEnum {
 /// #   V00, V01, V02, V03, V04, V05, V06, V07, V08, V09, V0A, V0B, V0C, V0D, V0E,
@@ -1659,7 +1664,7 @@ pub unsafe trait FromZeroes {
 /// # */
 /// }
 ///
-/// #[derive(FromZeroes, FromBytes)]
+/// #[derive(FromZeros, FromBytes)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
@@ -1693,9 +1698,9 @@ pub unsafe trait FromZeroes {
 /// - The type must not contain any [`UnsafeCell`]s (this is required in order
 ///   for it to be sound to construct a `&[u8]` and a `&T` to the same region of
 ///   memory). The type may contain references or pointers to `UnsafeCell`s so
-///   long as those values can themselves be initialized from zeroes
-///   (`FromBytes` is not currently implemented for, e.g., `Option<*const
-///   UnsafeCell<_>>`, but it could be one day).
+///   long as those values can themselves be initialized from zeros (`FromBytes`
+///   is not currently implemented for, e.g., `Option<*const UnsafeCell<_>>`,
+///   but it could be one day).
 ///
 /// [`UnsafeCell`]: core::cell::UnsafeCell
 ///
@@ -1748,15 +1753,15 @@ pub use zerocopy_derive::FromBytes;
 /// e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::{FromBytes, FromZeroes};
-/// #[derive(FromZeroes, FromBytes)]
+/// # use zerocopy_derive::{FromBytes, FromZeros};
+/// #[derive(FromZeros, FromBytes)]
 /// struct MyStruct {
 /// # /*
 ///     ...
 /// # */
 /// }
 ///
-/// #[derive(FromZeroes, FromBytes)]
+/// #[derive(FromZeros, FromBytes)]
 /// #[repr(u8)]
 /// enum MyEnum {
 /// #   V00, V01, V02, V03, V04, V05, V06, V07, V08, V09, V0A, V0B, V0C, V0D, V0E,
@@ -1782,7 +1787,7 @@ pub use zerocopy_derive::FromBytes;
 /// # */
 /// }
 ///
-/// #[derive(FromZeroes, FromBytes)]
+/// #[derive(FromZeros, FromBytes)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
@@ -1824,7 +1829,7 @@ pub use zerocopy_derive::FromBytes;
     doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.FromBytes.html"),
     doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.FromBytes.html#analysis"),
 )]
-pub unsafe trait FromBytes: FromZeroes {
+pub unsafe trait FromBytes: FromZeros {
     // The `Self: Sized` bound makes it so that `FromBytes` is still object
     // safe.
     #[doc(hidden)]
@@ -1843,7 +1848,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromZeroes, FromBytes)]
+    /// #[derive(FromZeros, FromBytes)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -1885,7 +1890,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromZeroes, FromBytes)]
+    /// #[derive(FromZeros, FromBytes)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -1927,7 +1932,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromZeroes, FromBytes)]
+    /// #[derive(FromZeros, FromBytes)]
     /// #[repr(C)]
     /// struct PacketTrailer {
     ///     frame_check_sequence: [u8; 4],
@@ -1959,7 +1964,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(AsBytes, FromZeroes, FromBytes)]
+    /// #[derive(AsBytes, FromZeros, FromBytes)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -2006,7 +2011,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(AsBytes, FromZeroes, FromBytes)]
+    /// #[derive(AsBytes, FromZeros, FromBytes)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -2052,7 +2057,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(AsBytes, FromZeroes, FromBytes)]
+    /// #[derive(AsBytes, FromZeros, FromBytes)]
     /// #[repr(C)]
     /// struct PacketTrailer {
     ///     frame_check_sequence: [u8; 4],
@@ -2097,7 +2102,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromZeroes, FromBytes)]
+    /// #[derive(FromZeros, FromBytes)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2146,7 +2151,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromZeroes, FromBytes)]
+    /// #[derive(FromZeros, FromBytes)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2197,7 +2202,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromZeroes, FromBytes)]
+    /// #[derive(FromZeros, FromBytes)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2246,7 +2251,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(AsBytes, FromZeroes, FromBytes)]
+    /// #[derive(AsBytes, FromZeros, FromBytes)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2299,7 +2304,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(AsBytes, FromZeroes, FromBytes)]
+    /// #[derive(AsBytes, FromZeros, FromBytes)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2354,7 +2359,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(AsBytes, FromZeroes, FromBytes)]
+    /// #[derive(AsBytes, FromZeros, FromBytes)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2397,7 +2402,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromZeroes, FromBytes)]
+    /// #[derive(FromZeros, FromBytes)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -2436,7 +2441,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromZeroes, FromBytes)]
+    /// #[derive(FromZeros, FromBytes)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -2476,7 +2481,7 @@ pub unsafe trait FromBytes: FromZeroes {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromZeroes, FromBytes)]
+    /// #[derive(FromZeros, FromBytes)]
     /// #[repr(C)]
     /// struct PacketTrailer {
     ///     frame_check_sequence: [u8; 4],
@@ -2586,7 +2591,7 @@ pub unsafe trait FromBytes: FromZeroes {
 /// - The type must not contain any [`UnsafeCell`]s (this is required in order
 ///   for it to be sound to construct a `&[u8]` and a `&T` to the same region of
 ///   memory). The type may contain references or pointers to `UnsafeCell`s so
-///   long as those values can themselves be initialized from zeroes (`AsBytes`
+///   long as those values can themselves be initialized from zeros (`AsBytes`
 ///   is not currently implemented for, e.g., `Option<&UnsafeCell<_>>`, but it
 ///   could be one day).
 ///
@@ -2762,7 +2767,7 @@ pub unsafe trait AsBytes {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Eq, PartialEq, Debug)]
-    /// #[derive(AsBytes, FromZeroes, FromBytes)]
+    /// #[derive(AsBytes, FromZeros, FromBytes)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -3033,20 +3038,20 @@ safety_comment! {
     /// Per the reference [1], "the unit tuple (`()`) ... is guaranteed as a
     /// zero-sized type to have a size of 0 and an alignment of 1."
     /// - `NoCell`: `()` self-evidently does not contain any `UnsafeCell`s.
-    /// - `TryFromBytes` (with no validator), `FromZeroes`, `FromBytes`: There
-    ///   is only one possible sequence of 0 bytes, and `()` is inhabited.
+    /// - `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`: There is
+    ///   only one possible sequence of 0 bytes, and `()` is inhabited.
     /// - `AsBytes`: Since `()` has size 0, it contains no padding bytes.
     /// - `Unaligned`: `()` has alignment 1.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#tuple-layout
-    unsafe_impl!((): NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!((): NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, Unaligned);
     assert_unaligned!(());
 }
 
 safety_comment! {
     /// SAFETY:
     /// - `NoCell`: These types self-evidently do not contain any `UnsafeCell`s.
-    /// - `TryFromBytes` (with no validator), `FromZeroes`, `FromBytes`: all bit
+    /// - `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`: all bit
     ///   patterns are valid for numeric types [1]
     /// - `AsBytes`: numeric types have no padding bytes [1]
     /// - `Unaligned` (`u8` and `i8` only): The reference [2] specifies the size
@@ -3078,28 +3083,28 @@ safety_comment! {
     /// TODO(#278): Once we've updated the trait docs to refer to `u8`s rather
     /// than bits or bytes, update this comment, especially the reference to
     /// [1].
-    unsafe_impl!(u8: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-    unsafe_impl!(i8: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(u8: NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(i8: NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, Unaligned);
     assert_unaligned!(u8, i8);
-    unsafe_impl!(u16: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(i16: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(u32: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(i32: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(u64: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(i64: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(u128: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(i128: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(usize: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(isize: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(f32: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(f64: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(u16: NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(i16: NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(u32: NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(i32: NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(u64: NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(i64: NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(u128: NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(i128: NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(usize: NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(isize: NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(f32: NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(f64: NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes);
 }
 
 safety_comment! {
     /// SAFETY:
     /// - `NoCell`: `bool` self-evidently does not contain any `UnsafeCell`s.
-    /// - `FromZeroes`: Valid since "[t]he value false has the bit pattern
-    ///   0x00" [1].
+    /// - `FromZeros`: Valid since "[t]he value false has the bit pattern 0x00"
+    ///   [1].
     /// - `AsBytes`: Since "the boolean type has a size and alignment of 1 each"
     ///   and "The value false has the bit pattern 0x00 and the value true has
     ///   the bit pattern 0x01" [1]. Thus, the only byte of the bool is always
@@ -3108,7 +3113,7 @@ safety_comment! {
     ///   has a size and alignment of 1 each."
     ///
     /// [1] https://doc.rust-lang.org/reference/types/boolean.html
-    unsafe_impl!(bool: NoCell, FromZeroes, AsBytes, Unaligned);
+    unsafe_impl!(bool: NoCell, FromZeros, AsBytes, Unaligned);
     assert_unaligned!(bool);
     /// SAFETY:
     /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
@@ -3152,7 +3157,7 @@ safety_comment! {
 safety_comment! {
     /// SAFETY:
     /// - `NoCell`: `char` self-evidently does not contain any `UnsafeCell`s.
-    /// - `FromZeroes`: Per reference [1], "[a] value of type char is a Unicode
+    /// - `FromZeros`: Per reference [1], "[a] value of type char is a Unicode
     ///   scalar value (i.e. a code point that is not a surrogate), represented
     ///   as a 32-bit unsigned word in the 0x0000 to 0xD7FF or 0xE000 to
     ///   0x10FFFF range" which contains 0x0000.
@@ -3161,7 +3166,7 @@ safety_comment! {
     ///   all bit patterns are valid for `char`.
     ///
     /// [1] https://doc.rust-lang.org/reference/types/textual.html
-    unsafe_impl!(char: NoCell, FromZeroes, AsBytes);
+    unsafe_impl!(char: NoCell, FromZeros, AsBytes);
     /// SAFETY:
     /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
     ///   closure:
@@ -3200,19 +3205,19 @@ safety_comment! {
     /// SAFETY:
     /// Per the Reference [1], `str` has the same layout as `[u8]`.
     /// - `NoCell`: `[u8]` does not contain any `UnsafeCell`s.
-    /// - `FromZeroes`, `AsBytes`, `Unaligned`: `[u8]` is `FromZeroes`,
-    ///   `AsBytes`, and `Unaligned`.
+    /// - `FromZeros`, `AsBytes`, `Unaligned`: `[u8]` is `FromZeros`, `AsBytes`,
+    ///   and `Unaligned`.
     ///
     /// Note that we don't `assert_unaligned!(str)` because `assert_unaligned!`
     /// uses `align_of`, which only works for `Sized` types.
     ///
     /// TODO(#429):
     /// - Add quotes from documentation.
-    /// - Improve safety proof for `FromZeroes` and `AsBytes`; having the same
+    /// - Improve safety proof for `FromZeros` and `AsBytes`; having the same
     ///   layout as `[u8]` isn't sufficient.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#str-layout
-    unsafe_impl!(str: NoCell, FromZeroes, AsBytes, Unaligned);
+    unsafe_impl!(str: NoCell, FromZeros, AsBytes, Unaligned);
     /// SAFETY:
     /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
     ///   closure:
@@ -3243,7 +3248,7 @@ safety_comment! {
 }
 
 safety_comment! {
-    // `NonZeroXxx` is `AsBytes`, but not `FromZeroes` or `FromBytes`.
+    // `NonZeroXxx` is `AsBytes`, but not `FromZeros` or `FromBytes`.
     //
     /// SAFETY:
     /// - `AsBytes`: `NonZeroXxx` has the same layout as its associated
@@ -3324,7 +3329,7 @@ safety_comment! {
 }
 safety_comment! {
     /// SAFETY:
-    /// - `TryFromBytes` (with no validator), `FromZeroes`, `FromBytes`,
+    /// - `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`,
     ///   `AsBytes`: The Rust compiler reuses `0` value to represent `None`, so
     ///   `size_of::<Option<NonZeroXxx>>() == size_of::<xxx>()`; see
     ///   `NonZeroXxx` documentation.
@@ -3342,26 +3347,26 @@ safety_comment! {
     ///
     /// TODO(https://github.com/rust-lang/rust/pull/104082): Cite documentation
     /// for layout guarantees.
-    unsafe_impl!(Option<NonZeroU8>: TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-    unsafe_impl!(Option<NonZeroI8>: TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(Option<NonZeroU8>: TryFromBytes, FromZeros, FromBytes, AsBytes, Unaligned);
+    unsafe_impl!(Option<NonZeroI8>: TryFromBytes, FromZeros, FromBytes, AsBytes, Unaligned);
     assert_unaligned!(Option<NonZeroU8>, Option<NonZeroI8>);
-    unsafe_impl!(Option<NonZeroU16>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroI16>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroU32>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroI32>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroU64>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroI64>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroU128>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroI128>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroUsize>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
-    unsafe_impl!(Option<NonZeroIsize>: TryFromBytes, FromZeroes, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU16>: TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI16>: TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU32>: TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI32>: TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU64>: TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI64>: TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroU128>: TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroI128>: TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroUsize>: TryFromBytes, FromZeros, FromBytes, AsBytes);
+    unsafe_impl!(Option<NonZeroIsize>: TryFromBytes, FromZeros, FromBytes, AsBytes);
 }
 
 safety_comment! {
     /// SAFETY:
     /// The following types can be transmuted from `[0u8; size_of::<T>()]`. [1]
     /// None of them contain `UnsafeCell`s, and so they all soundly implement
-    /// `FromZeroes`.
+    /// `FromZeros`.
     ///
     /// [1] Per
     /// https://doc.rust-lang.org/nightly/core/option/index.html#representation:
@@ -3385,13 +3390,13 @@ safety_comment! {
     #[cfg(feature = "alloc")]
     unsafe_impl!(
         #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
-        T => FromZeroes for Option<Box<T>>
+        T => FromZeros for Option<Box<T>>
     );
-    unsafe_impl!(T => FromZeroes for Option<&'_ T>);
-    unsafe_impl!(T => FromZeroes for Option<&'_ mut T>);
-    unsafe_impl!(T => FromZeroes for Option<NonNull<T>>);
-    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeroes for opt_fn!(...));
-    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeroes for opt_extern_c_fn!(...));
+    unsafe_impl!(T => FromZeros for Option<&'_ T>);
+    unsafe_impl!(T => FromZeros for Option<&'_ mut T>);
+    unsafe_impl!(T => FromZeros for Option<NonNull<T>>);
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_fn!(...));
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_extern_c_fn!(...));
 }
 
 safety_comment! {
@@ -3402,9 +3407,8 @@ safety_comment! {
     /// align_of::<PhantomData<T>>() == 1".
     /// This gives:
     /// - `NoCell`: `PhantomData` has no fields.
-    /// - `TryFromBytes` (with no validator), `FromZeroes`, `FromBytes`: There
-    ///   is only one possible sequence of 0 bytes, and `PhantomData` is
-    ///   inhabited.
+    /// - `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`: There is
+    ///   only one possible sequence of 0 bytes, and `PhantomData` is inhabited.
     /// - `AsBytes`: Since `PhantomData` has size 0, it contains no padding
     ///   bytes.
     /// - `Unaligned`: Per the preceding reference, `PhantomData` has alignment
@@ -3413,7 +3417,7 @@ safety_comment! {
     /// [1] https://doc.rust-lang.org/std/marker/struct.PhantomData.html#layout-1
     unsafe_impl!(T: ?Sized => NoCell for PhantomData<T>);
     unsafe_impl!(T: ?Sized => TryFromBytes for PhantomData<T>);
-    unsafe_impl!(T: ?Sized => FromZeroes for PhantomData<T>);
+    unsafe_impl!(T: ?Sized => FromZeros for PhantomData<T>);
     unsafe_impl!(T: ?Sized => FromBytes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => AsBytes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => Unaligned for PhantomData<T>);
@@ -3477,22 +3481,22 @@ safety_comment! {
         //   `Wrapping<T>`, the same is true for `T`.
         unsafe { T::is_bit_valid(candidate) }
     });
-    unsafe_impl!(T: FromZeroes => FromZeroes for Wrapping<T>);
+    unsafe_impl!(T: FromZeros => FromZeros for Wrapping<T>);
     unsafe_impl!(T: FromBytes => FromBytes for Wrapping<T>);
     unsafe_impl!(T: AsBytes => AsBytes for Wrapping<T>);
     unsafe_impl!(T: Unaligned => Unaligned for Wrapping<T>);
     assert_unaligned!(Wrapping<()>, Wrapping<u8>);
 }
 safety_comment! {
-    // `MaybeUninit<T>` is `FromZeroes` and `FromBytes`, but never `AsBytes`
+    // `MaybeUninit<T>` is `FromZeros` and `FromBytes`, but never `AsBytes`
     // since it may contain uninitialized bytes.
     //
     /// SAFETY:
     /// - `NoCell`: `MaybeUninit<T>` has `UnsafeCell`s exactly when `T` does, so
     ///   `T: NoCell` guarantees that `MaybeUninit<T>` has no `UnsafeCell`s.
-    /// - `TryFromBytes` (with no validator), `FromZeroes`, `FromBytes`:
+    /// - `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`:
     ///   `MaybeUninit<T>` has no restrictions on its contents. Unfortunately,
-    ///   in addition to bit validity, `TryFromBytes`, `FromZeroes` and
+    ///   in addition to bit validity, `TryFromBytes`, `FromZeros` and
     ///   `FromBytes` also require that implementers contain no `UnsafeCell`s.
     ///   Thus, we require `T: Trait` in order to ensure that `T` - and thus
     ///   `MaybeUninit<T>` - contains to `UnsafeCell`s. Thus, requiring that `T`
@@ -3504,11 +3508,11 @@ safety_comment! {
     ///
     /// TODO(https://github.com/google/zerocopy/issues/251): If we split
     /// `FromBytes` and `RefFromBytes`, or if we introduce a separate
-    /// `NoCell`/`Freeze` trait, we can relax the trait bounds for `FromZeroes`
+    /// `NoCell`/`Freeze` trait, we can relax the trait bounds for `FromZeros`
     /// and `FromBytes`.
     unsafe_impl!(T: NoCell => NoCell for MaybeUninit<T>);
     unsafe_impl!(T: TryFromBytes => TryFromBytes for MaybeUninit<T>);
-    unsafe_impl!(T: FromZeroes => FromZeroes for MaybeUninit<T>);
+    unsafe_impl!(T: FromZeros => FromZeros for MaybeUninit<T>);
     unsafe_impl!(T: FromBytes => FromBytes for MaybeUninit<T>);
     unsafe_impl!(T: Unaligned => Unaligned for MaybeUninit<T>);
     assert_unaligned!(MaybeUninit<()>, MaybeUninit<u8>);
@@ -3521,8 +3525,8 @@ safety_comment! {
     /// code).
     /// - `NoCell`: `ManuallyDrop<T>` has `UnsafeCell`s exactly when `T` does,
     ///   so `T: NoCell` guarantees that `ManuallyDrop<T>` has no `UnsafeCell`s.
-    /// - `FromZeroes`, `FromBytes`: Since it has the same layout as `T`, any
-    ///   valid `T` is a valid `ManuallyDrop<T>`. If `T: FromZeroes`, a sequence
+    /// - `FromZeros`, `FromBytes`: Since it has the same layout as `T`, any
+    ///   valid `T` is a valid `ManuallyDrop<T>`. If `T: FromZeros`, a sequence
     ///   of zero bytes is a valid `T`, and thus a valid `ManuallyDrop<T>`. If
     ///   `T: FromBytes`, any sequence of bytes is a valid `T`, and thus a valid
     ///   `ManuallyDrop<T>`.
@@ -3545,7 +3549,7 @@ safety_comment! {
     /// https://github.com/rust-lang/rust/pull/115522) is available on stable,
     /// quote the stable docs instead of the nightly docs.
     unsafe_impl!(T: ?Sized + NoCell => NoCell for ManuallyDrop<T>);
-    unsafe_impl!(T: ?Sized + FromZeroes => FromZeroes for ManuallyDrop<T>);
+    unsafe_impl!(T: ?Sized + FromZeros => FromZeros for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + AsBytes => AsBytes for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + Unaligned => Unaligned for ManuallyDrop<T>);
@@ -3566,7 +3570,7 @@ safety_comment! {
     ///
     /// In other words, the layout of a `[T]` or `[T; N]` is a sequence of `T`s
     /// laid out back-to-back with no bytes in between. Therefore, `[T]` or `[T;
-    /// N]` are `NoCell`, `TryFromBytes`, `FromZeroes`, `FromBytes`, and
+    /// N]` are `NoCell`, `TryFromBytes`, `FromZeros`, `FromBytes`, and
     /// `AsBytes` if `T` is (respectively). Furthermore, since an array/slice
     /// has "the same alignment of `T`", `[T]` and `[T; N]` are `Unaligned` if
     /// `T` is.
@@ -3576,7 +3580,7 @@ safety_comment! {
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#array-layout
     unsafe_impl!(const N: usize, T: NoCell => NoCell for [T; N]);
-    unsafe_impl!(const N: usize, T: FromZeroes => FromZeroes for [T; N]);
+    unsafe_impl!(const N: usize, T: FromZeros => FromZeros for [T; N]);
     unsafe_impl!(const N: usize, T: FromBytes => FromBytes for [T; N]);
     unsafe_impl!(const N: usize, T: AsBytes => AsBytes for [T; N]);
     unsafe_impl!(const N: usize, T: Unaligned => Unaligned for [T; N]);
@@ -3618,7 +3622,7 @@ safety_comment! {
             unsafe { <T as TryFromBytes>::is_bit_valid(elem) }
         )
     });
-    unsafe_impl!(T: FromZeroes => FromZeroes for [T]);
+    unsafe_impl!(T: FromZeros => FromZeros for [T]);
     unsafe_impl!(T: FromBytes => FromBytes for [T]);
     unsafe_impl!(T: AsBytes => AsBytes for [T]);
     unsafe_impl!(T: Unaligned => Unaligned for [T]);
@@ -3626,7 +3630,7 @@ safety_comment! {
 safety_comment! {
     /// SAFETY:
     /// - `NoCell`: Raw pointers do not contain any `UnsafeCell`s.
-    /// - `FromZeroes`: For thin pointers (note that `T: Sized`), the zero
+    /// - `FromZeros`: For thin pointers (note that `T: Sized`), the zero
     ///   pointer is considered "null". [1] No operations which require
     ///   provenance are legal on null pointers, so this is not a footgun.
     ///
@@ -3639,8 +3643,8 @@ safety_comment! {
     /// documentation once this PR lands.
     unsafe_impl!(T: ?Sized => NoCell for *const T);
     unsafe_impl!(T: ?Sized => NoCell for *mut T);
-    unsafe_impl!(T => FromZeroes for *const T);
-    unsafe_impl!(T => FromZeroes for *mut T);
+    unsafe_impl!(T => FromZeros for *const T);
+    unsafe_impl!(T => FromZeros for *mut T);
 }
 safety_comment! {
     /// SAFETY:
@@ -3704,8 +3708,8 @@ safety_comment! {
 // Given this background, we can observe that:
 // - The size and bit pattern requirements of a SIMD type are equivalent to the
 //   equivalent array type. Thus, for any SIMD type whose primitive `T` is
-//   `NoCell`, `TryFromBytes`, `FromZeroes`, `FromBytes`, or `AsBytes`, that
-//   SIMD type is also `NoCell`, `TryFromBytes`, `FromZeroes`, `FromBytes`, or
+//   `NoCell`, `TryFromBytes`, `FromZeros`, `FromBytes`, or `AsBytes`, that SIMD
+//   type is also `NoCell`, `TryFromBytes`, `FromZeros`, `FromBytes`, or
 //   `AsBytes` respectively.
 // - Since no upper bound is placed on the alignment, no SIMD type can be
 //   guaranteed to be `Unaligned`.
@@ -3717,7 +3721,7 @@ safety_comment! {
 //
 // See issue #38 [2]. While this behavior is not technically guaranteed, the
 // likelihood that the behavior will change such that SIMD types are no longer
-// `TryFromBytes`, `FromZeroes`, `FromBytes`, or `AsBytes` is next to zero, as
+// `TryFromBytes`, `FromZeros`, `FromBytes`, or `AsBytes` is next to zero, as
 // that would defeat the entire purpose of SIMD types. Nonetheless, we put this
 // behavior behind the `simd` Cargo feature, which requires consumers to opt
 // into this stability hazard.
@@ -3727,13 +3731,13 @@ safety_comment! {
 #[cfg(feature = "simd")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "simd")))]
 mod simd {
-    /// Defines a module which implements `TryFromBytes`, `FromZeroes`,
+    /// Defines a module which implements `TryFromBytes`, `FromZeros`,
     /// `FromBytes`, and `AsBytes` for a set of types from a module in
     /// `core::arch`.
     ///
     /// `$arch` is both the name of the defined module and the name of the
     /// module in `core::arch`, and `$typ` is the list of items from that module
-    /// to implement `FromZeroes`, `FromBytes`, and `AsBytes` for.
+    /// to implement `FromZeros`, `FromBytes`, and `AsBytes` for.
     #[allow(unused_macros)] // `allow(unused_macros)` is needed because some
                             // target/feature combinations don't emit any impls
                             // and thus don't use this macro.
@@ -3749,7 +3753,7 @@ mod simd {
                 safety_comment! {
                     /// SAFETY:
                     /// See comment on module definition for justification.
-                    $( unsafe_impl!($typ: NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes); )*
+                    $( unsafe_impl!($typ: NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes); )*
                 }
             }
         };
@@ -4165,9 +4169,9 @@ macro_rules! include_value {
 ///
 /// ```rust
 /// # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
-/// use zerocopy::{AsBytes, ByteSlice, ByteSliceMut, FromBytes, FromZeroes, Ref, Unaligned};
+/// use zerocopy::{AsBytes, ByteSlice, ByteSliceMut, FromBytes, FromZeros, Ref, Unaligned};
 ///
-/// #[derive(FromZeroes, FromBytes, AsBytes, Unaligned)]
+/// #[derive(FromZeros, FromBytes, AsBytes, Unaligned)]
 /// #[repr(C)]
 /// struct UdpHeader {
 ///     src_port: [u8; 2],
@@ -4207,9 +4211,9 @@ pub struct Ref<B, T: ?Sized>(
 );
 
 /// Deprecated: prefer [`Ref`] instead.
-#[deprecated(since = "0.7.0", note = "LayoutVerified has been renamed to Ref")]
+#[deprecated(since = "0.7.0", note = "`LayoutVerified` was renamed to `Ref`")]
 #[doc(hidden)]
-pub type LayoutVerified<B, T> = Ref<B, T>;
+pub use Ref as LayoutVerified;
 
 impl<B, T> Ref<B, T>
 where
@@ -5370,25 +5374,25 @@ mod alloc_support {
     use super::*;
 
     /// Extends a `Vec<T>` by pushing `additional` new items onto the end of the
-    /// vector. The new items are initialized with zeroes.
+    /// vector. The new items are initialized with zeros.
     ///
     /// # Panics
     ///
     /// Panics if `Vec::reserve(additional)` fails to reserve enough memory.
     #[inline(always)]
-    pub fn extend_vec_zeroed<T: FromZeroes>(v: &mut Vec<T>, additional: usize) {
+    pub fn extend_vec_zeroed<T: FromZeros>(v: &mut Vec<T>, additional: usize) {
         insert_vec_zeroed(v, v.len(), additional);
     }
 
     /// Inserts `additional` new items into `Vec<T>` at `position`.
-    /// The new items are initialized with zeroes.
+    /// The new items are initialized with zeros.
     ///
     /// # Panics
     ///
     /// * Panics if `position > v.len()`.
     /// * Panics if `Vec::reserve(additional)` fails to reserve enough memory.
     #[inline]
-    pub fn insert_vec_zeroed<T: FromZeroes>(v: &mut Vec<T>, position: usize, additional: usize) {
+    pub fn insert_vec_zeroed<T: FromZeros>(v: &mut Vec<T>, position: usize, additional: usize) {
         assert!(position <= v.len());
         v.reserve(additional);
         // SAFETY: The `reserve` call guarantees that these cannot overflow:
@@ -5599,7 +5603,7 @@ mod tests {
     //
     // This is used to test the custom derives of our traits. The `[u8]` type
     // gets a hand-rolled impl, so it doesn't exercise our custom derives.
-    #[derive(Debug, Eq, PartialEq, FromZeroes, FromBytes, AsBytes, Unaligned)]
+    #[derive(Debug, Eq, PartialEq, FromZeros, FromBytes, AsBytes, Unaligned)]
     #[repr(transparent)]
     struct Unsized([u8]);
 
@@ -6839,14 +6843,14 @@ mod tests {
     #[test]
     fn test_object_safety() {
         fn _takes_no_cell(_: &dyn NoCell) {}
-        fn _takes_from_zeroes(_: &dyn FromZeroes) {}
+        fn _takes_from_zeros(_: &dyn FromZeros) {}
         fn _takes_from_bytes(_: &dyn FromBytes) {}
         fn _takes_unaligned(_: &dyn Unaligned) {}
     }
 
     #[test]
-    fn test_from_zeroes_only() {
-        // Test types that implement `FromZeroes` but not `FromBytes`.
+    fn test_from_zeros_only() {
+        // Test types that implement `FromZeros` but not `FromBytes`.
 
         assert!(!bool::new_zeroed());
         assert_eq!(char::new_zeroed(), '\0');
@@ -6882,11 +6886,11 @@ mod tests {
 
         assert_eq!(u64::read_from(&VAL_BYTES[..]), Some(VAL));
         // The first 8 bytes are from `VAL_BYTES` and the second 8 bytes are all
-        // zeroes.
+        // zeros.
         let bytes_with_prefix: [u8; 16] = transmute!([VAL_BYTES, [0; 8]]);
         assert_eq!(u64::read_from_prefix(&bytes_with_prefix[..]), Some(VAL));
         assert_eq!(u64::read_from_suffix(&bytes_with_prefix[..]), Some(0));
-        // The first 8 bytes are all zeroes and the second 8 bytes are from
+        // The first 8 bytes are all zeros and the second 8 bytes are from
         // `VAL_BYTES`
         let bytes_with_suffix: [u8; 16] = transmute!([[0; 8], VAL_BYTES]);
         assert_eq!(u64::read_from_prefix(&bytes_with_suffix[..]), Some(0));
@@ -7666,7 +7670,7 @@ mod tests {
             assert_eq!(too_many_bytes[0], 123);
         }
 
-        #[derive(Debug, Eq, PartialEq, FromZeroes, FromBytes, AsBytes)]
+        #[derive(Debug, Eq, PartialEq, FromZeros, FromBytes, AsBytes)]
         #[repr(C)]
         struct Foo {
             a: u32,
@@ -7695,7 +7699,7 @@ mod tests {
 
     #[test]
     fn test_array() {
-        #[derive(FromZeroes, FromBytes, AsBytes)]
+        #[derive(FromZeros, FromBytes, AsBytes)]
         #[repr(C)]
         struct Foo {
             a: [u16; 33],
@@ -7759,24 +7763,24 @@ mod tests {
 
     #[test]
     fn test_transparent_packed_generic_struct() {
-        #[derive(AsBytes, FromZeroes, FromBytes, Unaligned)]
+        #[derive(AsBytes, FromZeros, FromBytes, Unaligned)]
         #[repr(transparent)]
         struct Foo<T> {
             _t: T,
             _phantom: PhantomData<()>,
         }
 
-        assert_impl_all!(Foo<u32>: FromZeroes, FromBytes, AsBytes);
+        assert_impl_all!(Foo<u32>: FromZeros, FromBytes, AsBytes);
         assert_impl_all!(Foo<u8>: Unaligned);
 
-        #[derive(AsBytes, FromZeroes, FromBytes, Unaligned)]
+        #[derive(AsBytes, FromZeros, FromBytes, Unaligned)]
         #[repr(packed)]
         struct Bar<T, U> {
             _t: T,
             _u: U,
         }
 
-        assert_impl_all!(Bar<u8, AU64>: FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impl_all!(Bar<u8, AU64>: FromZeros, FromBytes, AsBytes, Unaligned);
     }
 
     #[test]
@@ -7952,28 +7956,28 @@ mod tests {
         // change. Of course, some impls would be invalid (e.g., `bool:
         // FromBytes`), and so this change detection is very important.
 
-        assert_impls!((): KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(u8: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(i8: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(u16: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(i16: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(u32: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(i32: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(u64: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(i64: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(u128: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(i128: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(usize: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(isize: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(f32: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(f64: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!((): KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, Unaligned);
+        assert_impls!(u8: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, Unaligned);
+        assert_impls!(i8: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, Unaligned);
+        assert_impls!(u16: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i16: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(u32: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i32: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(u64: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i64: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(u128: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(i128: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(usize: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(isize: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(f32: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(f64: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
 
-        assert_impls!(bool: KnownLayout, NoCell, TryFromBytes, FromZeroes, AsBytes, Unaligned, !FromBytes);
-        assert_impls!(char: KnownLayout, NoCell, TryFromBytes, FromZeroes, AsBytes, !FromBytes, !Unaligned);
-        assert_impls!(str: KnownLayout, NoCell, TryFromBytes, FromZeroes, AsBytes, Unaligned, !FromBytes);
+        assert_impls!(bool: KnownLayout, NoCell, TryFromBytes, FromZeros, AsBytes, Unaligned, !FromBytes);
+        assert_impls!(char: KnownLayout, NoCell, TryFromBytes, FromZeros, AsBytes, !FromBytes, !Unaligned);
+        assert_impls!(str: KnownLayout, NoCell, TryFromBytes, FromZeros, AsBytes, Unaligned, !FromBytes);
 
-        assert_impls!(NonZeroU8: KnownLayout, NoCell, TryFromBytes, AsBytes, Unaligned, !FromZeroes, !FromBytes);
-        assert_impls!(NonZeroI8: KnownLayout, NoCell, TryFromBytes, AsBytes, Unaligned, !FromZeroes, !FromBytes);
+        assert_impls!(NonZeroU8: KnownLayout, NoCell, TryFromBytes, AsBytes, Unaligned, !FromZeros, !FromBytes);
+        assert_impls!(NonZeroI8: KnownLayout, NoCell, TryFromBytes, AsBytes, Unaligned, !FromZeros, !FromBytes);
         assert_impls!(NonZeroU16: KnownLayout, NoCell, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
         assert_impls!(NonZeroI16: KnownLayout, NoCell, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
         assert_impls!(NonZeroU32: KnownLayout, NoCell, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
@@ -7985,18 +7989,18 @@ mod tests {
         assert_impls!(NonZeroUsize: KnownLayout, NoCell, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
         assert_impls!(NonZeroIsize: KnownLayout, NoCell, TryFromBytes, AsBytes, !FromBytes, !Unaligned);
 
-        assert_impls!(Option<NonZeroU8>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(Option<NonZeroI8>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(Option<NonZeroU16>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI16>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU32>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI32>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU64>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI64>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU128>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI128>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroUsize>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
-        assert_impls!(Option<NonZeroIsize>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, Unaligned);
+        assert_impls!(Option<NonZeroI8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, Unaligned);
+        assert_impls!(Option<NonZeroU16>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI16>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU32>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI32>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU64>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI64>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU128>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI128>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroUsize>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
+        assert_impls!(Option<NonZeroIsize>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned);
 
         // Implements none of the ZC traits.
         struct NotZerocopy;
@@ -8014,55 +8018,55 @@ mod tests {
         ) -> (NotZerocopy, NotZerocopy);
 
         #[cfg(feature = "alloc")]
-        assert_impls!(Option<Box<UnsafeCell<NotZerocopy>>>: KnownLayout, FromZeroes, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<Box<[UnsafeCell<NotZerocopy>]>>: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<&'static UnsafeCell<NotZerocopy>>: KnownLayout, NoCell, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<&'static [UnsafeCell<NotZerocopy>]>: KnownLayout, NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<&'static mut UnsafeCell<NotZerocopy>>: KnownLayout, NoCell, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<&'static mut [UnsafeCell<NotZerocopy>]>: KnownLayout, NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<NonNull<UnsafeCell<NotZerocopy>>>: KnownLayout, FromZeroes, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<NonNull<[UnsafeCell<NotZerocopy>]>>: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<fn()>: KnownLayout, FromZeroes, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<FnManyArgs>: KnownLayout, FromZeroes, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<extern "C" fn()>: KnownLayout, FromZeroes, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Option<ECFnManyArgs>: KnownLayout, FromZeroes, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<Box<UnsafeCell<NotZerocopy>>>: KnownLayout, FromZeros, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<Box<[UnsafeCell<NotZerocopy>]>>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<&'static UnsafeCell<NotZerocopy>>: KnownLayout, NoCell, FromZeros, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<&'static [UnsafeCell<NotZerocopy>]>: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<&'static mut UnsafeCell<NotZerocopy>>: KnownLayout, NoCell, FromZeros, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<&'static mut [UnsafeCell<NotZerocopy>]>: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<NonNull<UnsafeCell<NotZerocopy>>>: KnownLayout, FromZeros, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<NonNull<[UnsafeCell<NotZerocopy>]>>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<fn()>: KnownLayout, FromZeros, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<FnManyArgs>: KnownLayout, FromZeros, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<extern "C" fn()>: KnownLayout, FromZeros, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Option<ECFnManyArgs>: KnownLayout, FromZeros, !NoCell, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(PhantomData<NotZerocopy>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(PhantomData<UnsafeCell<()>>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(PhantomData<[u8]>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
+        assert_impls!(PhantomData<NotZerocopy>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, Unaligned);
+        assert_impls!(PhantomData<UnsafeCell<()>>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, Unaligned);
+        assert_impls!(PhantomData<[u8]>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, Unaligned);
 
-        assert_impls!(ManuallyDrop<u8>: KnownLayout, NoCell, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
-        assert_impls!(ManuallyDrop<[u8]>: KnownLayout, NoCell, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
-        assert_impls!(ManuallyDrop<NotZerocopy>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(ManuallyDrop<[NotZerocopy]>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(ManuallyDrop<UnsafeCell<()>>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(ManuallyDrop<[UnsafeCell<()>]>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<u8>: KnownLayout, NoCell, FromZeros, FromBytes, AsBytes, Unaligned, !TryFromBytes);
+        assert_impls!(ManuallyDrop<[u8]>: KnownLayout, NoCell, FromZeros, FromBytes, AsBytes, Unaligned, !TryFromBytes);
+        assert_impls!(ManuallyDrop<NotZerocopy>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<[NotZerocopy]>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<UnsafeCell<()>>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<[UnsafeCell<()>]>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(MaybeUninit<u8>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, Unaligned, !AsBytes);
-        assert_impls!(MaybeUninit<NotZerocopy>: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(MaybeUninit<UnsafeCell<()>>: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(MaybeUninit<u8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, Unaligned, !AsBytes);
+        assert_impls!(MaybeUninit<NotZerocopy>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(MaybeUninit<UnsafeCell<()>>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(Wrapping<u8>: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!(Wrapping<NotZerocopy>: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(Wrapping<UnsafeCell<()>>: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Wrapping<u8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, Unaligned);
+        assert_impls!(Wrapping<NotZerocopy>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(Wrapping<UnsafeCell<()>>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(Unalign<u8>: KnownLayout, NoCell, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
-        assert_impls!(Unalign<NotZerocopy>: Unaligned, !NoCell, !KnownLayout, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes);
+        assert_impls!(Unalign<u8>: KnownLayout, NoCell, FromZeros, FromBytes, AsBytes, Unaligned, !TryFromBytes);
+        assert_impls!(Unalign<NotZerocopy>: Unaligned, !NoCell, !KnownLayout, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes);
 
-        assert_impls!([u8]: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, Unaligned);
-        assert_impls!([bool]: KnownLayout, NoCell, TryFromBytes, FromZeroes, AsBytes, Unaligned, !FromBytes);
-        assert_impls!([NotZerocopy]: !KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!([u8; 0]: KnownLayout, NoCell, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
-        assert_impls!([NotZerocopy; 0]: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!([u8; 1]: KnownLayout, NoCell, FromZeroes, FromBytes, AsBytes, Unaligned, !TryFromBytes);
-        assert_impls!([NotZerocopy; 1]: KnownLayout, !NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!([u8]: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, Unaligned);
+        assert_impls!([bool]: KnownLayout, NoCell, TryFromBytes, FromZeros, AsBytes, Unaligned, !FromBytes);
+        assert_impls!([NotZerocopy]: !KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!([u8; 0]: KnownLayout, NoCell, FromZeros, FromBytes, AsBytes, Unaligned, !TryFromBytes);
+        assert_impls!([NotZerocopy; 0]: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!([u8; 1]: KnownLayout, NoCell, FromZeros, FromBytes, AsBytes, Unaligned, !TryFromBytes);
+        assert_impls!([NotZerocopy; 1]: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
 
-        assert_impls!(*const NotZerocopy: KnownLayout, NoCell, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(*mut NotZerocopy: KnownLayout, NoCell, FromZeroes, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(*const [NotZerocopy]: KnownLayout, NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(*mut [NotZerocopy]: KnownLayout, NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(*const dyn Debug: KnownLayout, NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
-        assert_impls!(*mut dyn Debug: KnownLayout, NoCell, !TryFromBytes, !FromZeroes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*const NotZerocopy: KnownLayout, NoCell, FromZeros, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*mut NotZerocopy: KnownLayout, NoCell, FromZeros, !TryFromBytes, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*const [NotZerocopy]: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*mut [NotZerocopy]: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*const dyn Debug: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
+        assert_impls!(*mut dyn Debug: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !AsBytes, !Unaligned);
 
         #[cfg(feature = "simd")]
         {
@@ -8072,7 +8076,7 @@ mod tests {
                     {
                         use core::arch::$arch::{$($typ),*};
                         use crate::*;
-                        $( assert_impls!($typ: KnownLayout, NoCell, TryFromBytes, FromZeroes, FromBytes, AsBytes, !Unaligned); )*
+                        $( assert_impls!($typ: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, AsBytes, !Unaligned); )*
                     }
                 };
             }
