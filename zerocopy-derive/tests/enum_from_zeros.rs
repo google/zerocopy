@@ -10,26 +10,26 @@
 
 mod util;
 
-use {static_assertions::assert_impl_all, zerocopy::FromZeroes};
+use {static_assertions::assert_impl_all, zerocopy::FromZeros};
 
-#[derive(FromZeroes)]
+#[derive(FromZeros)]
 enum Foo {
     A,
 }
 
-assert_impl_all!(Foo: FromZeroes);
+assert_impl_all!(Foo: FromZeros);
 
-#[derive(FromZeroes)]
+#[derive(FromZeros)]
 enum Bar {
     A = 0,
 }
 
-assert_impl_all!(Bar: FromZeroes);
+assert_impl_all!(Bar: FromZeros);
 
-#[derive(FromZeroes)]
+#[derive(FromZeros)]
 enum Baz {
     A = 1,
     B = 0,
 }
 
-assert_impl_all!(Baz: FromZeroes);
+assert_impl_all!(Baz: FromZeros);

@@ -64,7 +64,7 @@ macro_rules! try_or_print {
 // help: required by the derive of FromBytes
 //
 // Instead, we have more verbose error messages like "unsupported representation
-// for deriving FromZeroes, FromBytes, AsBytes, or Unaligned on an enum"
+// for deriving FromZeros, FromBytes, AsBytes, or Unaligned on an enum"
 //
 // This will probably require Span::error
 // (https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.error),
@@ -260,15 +260,23 @@ pub fn derive_no_cell(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     .into()
 }
 
-#[proc_macro_derive(FromZeroes)]
-pub fn derive_from_zeroes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+#[proc_macro_derive(FromZeros)]
+pub fn derive_from_zeros(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let ast = syn::parse_macro_input!(ts as DeriveInput);
     match &ast.data {
-        Data::Struct(strct) => derive_from_zeroes_struct(&ast, strct),
-        Data::Enum(enm) => derive_from_zeroes_enum(&ast, enm),
-        Data::Union(unn) => derive_from_zeroes_union(&ast, unn),
+        Data::Struct(strct) => derive_from_zeros_struct(&ast, strct),
+        Data::Enum(enm) => derive_from_zeros_enum(&ast, enm),
+        Data::Union(unn) => derive_from_zeros_union(&ast, unn),
     }
     .into()
+}
+
+/// Deprecated: prefer [`FromZeros`] instead.
+#[deprecated(since = "0.8.0", note = "`FromZeroes` was renamed to `FromZeros`")]
+#[doc(hidden)]
+#[proc_macro_derive(FromZeroes)]
+pub fn derive_from_zeroes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    derive_from_zeros(ts)
 }
 
 #[proc_macro_derive(FromBytes)]
@@ -311,20 +319,20 @@ const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[
     &[StructRepr::C, StructRepr::Packed],
 ];
 
-// A struct is `FromZeroes` if:
-// - all fields are `FromZeroes`
+// A struct is `FromZeros` if:
+// - all fields are `FromZeros`
 
-fn derive_from_zeroes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    impl_block(ast, strct, Trait::FromZeroes, RequireBoundedFields::Yes, false, None, None)
+fn derive_from_zeros_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
+    impl_block(ast, strct, Trait::FromZeros, RequireBoundedFields::Yes, false, None, None)
 }
 
-// An enum is `FromZeroes` if:
+// An enum is `FromZeros` if:
 // - all of its variants are fieldless
 // - one of the variants has a discriminant of `0`
 
-fn derive_from_zeroes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
+fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
     if !enm.is_c_like() {
-        return Error::new_spanned(ast, "only C-like enums can implement FromZeroes")
+        return Error::new_spanned(ast, "only C-like enums can implement FromZeros")
             .to_compile_error();
     }
 
@@ -344,19 +352,19 @@ fn derive_from_zeroes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::To
     if !has_explicit_zero_discriminant && !has_implicit_zero_discriminant {
         return Error::new_spanned(
             ast,
-            "FromZeroes only supported on enums with a variant that has a discriminant of `0`",
+            "FromZeros only supported on enums with a variant that has a discriminant of `0`",
         )
         .to_compile_error();
     }
 
-    impl_block(ast, enm, Trait::FromZeroes, RequireBoundedFields::Yes, false, None, None)
+    impl_block(ast, enm, Trait::FromZeros, RequireBoundedFields::Yes, false, None, None)
 }
 
-// Like structs, unions are `FromZeroes` if
-// - all fields are `FromZeroes`
+// Like structs, unions are `FromZeros` if
+// - all fields are `FromZeros`
 
-fn derive_from_zeroes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    impl_block(ast, unn, Trait::FromZeroes, RequireBoundedFields::Yes, false, None, None)
+fn derive_from_zeros_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
+    impl_block(ast, unn, Trait::FromZeros, RequireBoundedFields::Yes, false, None, None)
 }
 
 // A struct is `FromBytes` if:
@@ -655,7 +663,7 @@ impl PaddingCheck {
 enum Trait {
     KnownLayout,
     NoCell,
-    FromZeroes,
+    FromZeros,
     FromBytes,
     AsBytes,
     Unaligned,

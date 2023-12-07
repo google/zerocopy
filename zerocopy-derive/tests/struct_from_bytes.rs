@@ -14,7 +14,7 @@ use std::{marker::PhantomData, option::IntoIter};
 
 use {
     static_assertions::assert_impl_all,
-    zerocopy::{FromBytes, FromZeroes},
+    zerocopy::{FromBytes, FromZeros},
 };
 
 use crate::util::AU16;
@@ -22,19 +22,19 @@ use crate::util::AU16;
 // A struct is `FromBytes` if:
 // - all fields are `FromBytes`
 
-#[derive(FromZeroes, FromBytes)]
+#[derive(FromZeros, FromBytes)]
 struct Zst;
 
 assert_impl_all!(Zst: FromBytes);
 
-#[derive(FromZeroes, FromBytes)]
+#[derive(FromZeros, FromBytes)]
 struct One {
     a: u8,
 }
 
 assert_impl_all!(One: FromBytes);
 
-#[derive(FromZeroes, FromBytes)]
+#[derive(FromZeros, FromBytes)]
 struct Two {
     a: u8,
     b: Zst,
@@ -42,14 +42,14 @@ struct Two {
 
 assert_impl_all!(Two: FromBytes);
 
-#[derive(FromZeroes, FromBytes)]
+#[derive(FromZeros, FromBytes)]
 struct Unsized {
     a: [u8],
 }
 
 assert_impl_all!(Unsized: FromBytes);
 
-#[derive(FromZeroes, FromBytes)]
+#[derive(FromZeros, FromBytes)]
 struct TypeParams<'a, T: ?Sized, I: Iterator> {
     a: I::Item,
     b: u8,
@@ -65,7 +65,7 @@ assert_impl_all!(TypeParams<'static, [AU16], IntoIter<()>>: FromBytes);
 
 // Deriving `FromBytes` should work if the struct has bounded parameters.
 
-#[derive(FromZeroes, FromBytes)]
+#[derive(FromZeros, FromBytes)]
 #[repr(transparent)]
 struct WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + FromBytes>(
     [T; N],

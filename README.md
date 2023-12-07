@@ -24,8 +24,8 @@ so you don't have to.
 ## Overview
 
 Zerocopy provides four core marker traits, each of which can be derived
-(e.g., `#[derive(FromZeroes)]`):
-- `FromZeroes` indicates that a sequence of zero bytes represents a valid
+(e.g., `#[derive(FromZeros)]`):
+- `FromZeros` indicates that a sequence of zero bytes represents a valid
   instance of a type
 - `FromBytes` indicates that a type may safely be converted from an
   arbitrary byte sequence
@@ -76,7 +76,7 @@ for network parsing.
   ```
 
 - **`simd`**
-  When the `simd` feature is enabled, `FromZeroes`, `FromBytes`, and
+  When the `simd` feature is enabled, `FromZeros`, `FromBytes`, and
   `AsBytes` impls are emitted for all stable SIMD types which exist on the
   target platform. Note that the layout of SIMD types is not yet stabilized,
   so these impls may be removed in the future if layout changes make them

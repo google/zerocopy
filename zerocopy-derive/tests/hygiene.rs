@@ -22,7 +22,7 @@ use std::{marker::PhantomData, option::IntoIter};
 use static_assertions::assert_impl_all;
 
 #[derive(
-    _zerocopy::KnownLayout, _zerocopy::FromZeroes, _zerocopy::FromBytes, _zerocopy::Unaligned,
+    _zerocopy::KnownLayout, _zerocopy::FromZeros, _zerocopy::FromBytes, _zerocopy::Unaligned,
 )]
 #[repr(C)]
 struct TypeParams<'a, T, I: Iterator> {
@@ -37,7 +37,7 @@ struct TypeParams<'a, T, I: Iterator> {
 assert_impl_all!(
     TypeParams<'static, (), IntoIter<()>>:
         _zerocopy::KnownLayout,
-        _zerocopy::FromZeroes,
+        _zerocopy::FromZeros,
         _zerocopy::FromBytes,
         _zerocopy::Unaligned
 );

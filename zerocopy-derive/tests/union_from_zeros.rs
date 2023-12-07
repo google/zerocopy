@@ -13,34 +13,34 @@ mod util;
 
 use std::{marker::PhantomData, option::IntoIter};
 
-use {static_assertions::assert_impl_all, zerocopy::FromZeroes};
+use {static_assertions::assert_impl_all, zerocopy::FromZeros};
 
-// A union is `FromZeroes` if:
-// - all fields are `FromZeroes`
+// A union is `FromZeros` if:
+// - all fields are `FromZeros`
 
-#[derive(Clone, Copy, FromZeroes)]
+#[derive(Clone, Copy, FromZeros)]
 union Zst {
     a: (),
 }
 
-assert_impl_all!(Zst: FromZeroes);
+assert_impl_all!(Zst: FromZeros);
 
-#[derive(FromZeroes)]
+#[derive(FromZeros)]
 union One {
     a: bool,
 }
 
-assert_impl_all!(One: FromZeroes);
+assert_impl_all!(One: FromZeros);
 
-#[derive(FromZeroes)]
+#[derive(FromZeros)]
 union Two {
     a: bool,
     b: Zst,
 }
 
-assert_impl_all!(Two: FromZeroes);
+assert_impl_all!(Two: FromZeros);
 
-#[derive(FromZeroes)]
+#[derive(FromZeros)]
 union TypeParams<'a, T: Copy, I: Iterator>
 where
     I::Item: Copy,
@@ -53,20 +53,20 @@ where
     g: PhantomData<String>,
 }
 
-assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: FromZeroes);
+assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: FromZeros);
 
-// Deriving `FromZeroes` should work if the union has bounded parameters.
+// Deriving `FromZeros` should work if the union has bounded parameters.
 
-#[derive(FromZeroes)]
+#[derive(FromZeros)]
 #[repr(C)]
-union WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + FromZeroes>
+union WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + FromZeros>
 where
     'a: 'b,
     'b: 'a,
-    T: 'a + 'b + Copy + FromZeroes,
+    T: 'a + 'b + Copy + FromZeros,
 {
     a: [T; N],
     b: PhantomData<&'a &'b ()>,
 }
 
-assert_impl_all!(WithParams<'static, 'static, 42, u8>: FromZeroes);
+assert_impl_all!(WithParams<'static, 'static, 42, u8>: FromZeros);

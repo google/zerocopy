@@ -13,41 +13,41 @@ mod util;
 
 use std::{marker::PhantomData, option::IntoIter};
 
-use {static_assertions::assert_impl_all, zerocopy::FromZeroes};
+use {static_assertions::assert_impl_all, zerocopy::FromZeros};
 
 use crate::util::AU16;
 
-// A struct is `FromZeroes` if:
-// - all fields are `FromZeroes`
+// A struct is `FromZeros` if:
+// - all fields are `FromZeros`
 
-#[derive(FromZeroes)]
+#[derive(FromZeros)]
 struct Zst;
 
-assert_impl_all!(Zst: FromZeroes);
+assert_impl_all!(Zst: FromZeros);
 
-#[derive(FromZeroes)]
+#[derive(FromZeros)]
 struct One {
     a: bool,
 }
 
-assert_impl_all!(One: FromZeroes);
+assert_impl_all!(One: FromZeros);
 
-#[derive(FromZeroes)]
+#[derive(FromZeros)]
 struct Two {
     a: bool,
     b: Zst,
 }
 
-assert_impl_all!(Two: FromZeroes);
+assert_impl_all!(Two: FromZeros);
 
-#[derive(FromZeroes)]
+#[derive(FromZeros)]
 struct Unsized {
     a: [u8],
 }
 
-assert_impl_all!(Unsized: FromZeroes);
+assert_impl_all!(Unsized: FromZeros);
 
-#[derive(FromZeroes)]
+#[derive(FromZeros)]
 struct TypeParams<'a, T: ?Sized, I: Iterator> {
     a: I::Item,
     b: u8,
@@ -57,21 +57,21 @@ struct TypeParams<'a, T: ?Sized, I: Iterator> {
     f: T,
 }
 
-assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: FromZeroes);
-assert_impl_all!(TypeParams<'static, AU16, IntoIter<()>>: FromZeroes);
-assert_impl_all!(TypeParams<'static, [AU16], IntoIter<()>>: FromZeroes);
+assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: FromZeros);
+assert_impl_all!(TypeParams<'static, AU16, IntoIter<()>>: FromZeros);
+assert_impl_all!(TypeParams<'static, [AU16], IntoIter<()>>: FromZeros);
 
-// Deriving `FromZeroes` should work if the struct has bounded parameters.
+// Deriving `FromZeros` should work if the struct has bounded parameters.
 
-#[derive(FromZeroes)]
+#[derive(FromZeros)]
 #[repr(transparent)]
-struct WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + FromZeroes>(
+struct WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + FromZeros>(
     [T; N],
     PhantomData<&'a &'b ()>,
 )
 where
     'a: 'b,
     'b: 'a,
-    T: 'a + 'b + FromZeroes;
+    T: 'a + 'b + FromZeros;
 
-assert_impl_all!(WithParams<'static, 'static, 42, u8>: FromZeroes);
+assert_impl_all!(WithParams<'static, 'static, 42, u8>: FromZeros);

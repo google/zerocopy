@@ -15,7 +15,7 @@ use core::marker::PhantomData;
 
 use {
     static_assertions::assert_impl_all,
-    zerocopy::{AsBytes, FromBytes, FromZeroes, Unaligned},
+    zerocopy::{AsBytes, FromBytes, FromZeros, Unaligned},
 };
 
 use self::util::NotZerocopy;
@@ -24,7 +24,7 @@ fn main() {}
 
 // Test generic transparent structs
 
-#[derive(AsBytes, FromZeroes, FromBytes, Unaligned)]
+#[derive(AsBytes, FromZeros, FromBytes, Unaligned)]
 #[repr(transparent)]
 struct TransparentStruct<T> {
     inner: T,
@@ -34,7 +34,7 @@ struct TransparentStruct<T> {
 // It should be legal to derive these traits on a transparent struct, but it
 // must also ensure the traits are only implemented when the inner type
 // implements them.
-assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeroes);
+assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
 assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
 assert_impl_all!(TransparentStruct<NotZerocopy>: AsBytes);
 assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);

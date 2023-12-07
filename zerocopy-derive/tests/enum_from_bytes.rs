@@ -12,7 +12,7 @@ mod util;
 
 use {
     static_assertions::assert_impl_all,
-    zerocopy::{FromBytes, FromZeroes},
+    zerocopy::{FromBytes, FromZeros},
 };
 
 // An enum is `FromBytes` if:
@@ -32,7 +32,7 @@ use {
 // `Variant128` has a discriminant of -128) since Rust won't automatically wrap
 // a signed discriminant around without you explicitly telling it to.
 
-#[derive(FromZeroes, FromBytes)]
+#[derive(FromZeros, FromBytes)]
 #[repr(u8)]
 enum FooU8 {
     Variant0,
@@ -295,7 +295,7 @@ enum FooU8 {
 
 assert_impl_all!(FooU8: FromBytes);
 
-#[derive(FromZeroes, FromBytes)]
+#[derive(FromZeros, FromBytes)]
 #[repr(i8)]
 enum FooI8 {
     Variant0,
@@ -558,7 +558,7 @@ enum FooI8 {
 
 assert_impl_all!(FooI8: FromBytes);
 
-#[derive(FromZeroes, FromBytes)]
+#[derive(FromZeros, FromBytes)]
 #[repr(u8, align(2))]
 enum FooU8Align {
     Variant0,
@@ -821,7 +821,7 @@ enum FooU8Align {
 
 assert_impl_all!(FooU8Align: FromBytes);
 
-#[derive(FromZeroes, FromBytes)]
+#[derive(FromZeros, FromBytes)]
 #[repr(i8, align(2))]
 enum FooI8Align {
     Variant0,
@@ -1084,7 +1084,7 @@ enum FooI8Align {
 
 assert_impl_all!(FooI8Align: FromBytes);
 
-#[derive(FromZeroes, FromBytes)]
+#[derive(FromZeros, FromBytes)]
 #[repr(u16)]
 enum FooU16 {
     Variant0,
@@ -66627,7 +66627,7 @@ enum FooU16 {
 
 assert_impl_all!(FooU16: FromBytes);
 
-#[derive(FromZeroes, FromBytes)]
+#[derive(FromZeros, FromBytes)]
 #[repr(i16)]
 enum FooI16 {
     Variant0,
