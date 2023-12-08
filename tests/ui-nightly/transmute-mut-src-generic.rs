@@ -8,11 +8,11 @@
 
 extern crate zerocopy;
 
-use zerocopy::{transmute_mut, AsBytes};
+use zerocopy::{transmute_mut, AsBytes, NoCell};
 
 fn main() {}
 
-fn transmute_mut<T: AsBytes + FromBytes>(t: &mut T) -> &mut u8 {
+fn transmute_mut<T: AsBytes + FromBytes + NoCell>(t: &mut T) -> &mut u8 {
     // `transmute_mut!` requires the source type to be concrete.
     transmute_mut!(t)
 }

@@ -14,5 +14,9 @@ use zerocopy::transmute_ref;
 
 fn main() {}
 
+#[derive(zerocopy::NoCell)]
+#[repr(transparent)]
+struct Dst(AU16);
+
 // `transmute_ref` requires that the destination type implements `FromBytes`
-const DST_NOT_FROM_BYTES: &NotZerocopy = transmute_ref!(&AU16(0));
+const DST_NOT_FROM_BYTES: &Dst = transmute_ref!(&AU16(0));
