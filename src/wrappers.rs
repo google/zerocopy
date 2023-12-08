@@ -60,7 +60,7 @@ use super::*;
 #[derive(Default, Copy)]
 #[cfg_attr(
     any(feature = "derive", test),
-    derive(NoCell, KnownLayout, FromZeros, FromBytes, AsBytes, Unaligned)
+    derive(NoCell, KnownLayout, FromZeros, FromBytes, IntoBytes, Unaligned)
 )]
 #[repr(C, packed)]
 pub struct Unalign<T>(T);
@@ -73,14 +73,14 @@ safety_comment! {
     /// - `Unalign<T>` is `repr(packed)`, so it is unaligned regardless of the
     ///   alignment of `T`, and so we don't require that `T: Unaligned`
     /// - `Unalign<T>` has the same bit validity as `T`, and so it is
-    ///   `FromZeros`, `FromBytes`, or `AsBytes` exactly when `T` is as well.
+    ///   `FromZeros`, `FromBytes`, or `IntoBytes` exactly when `T` is as well.
     /// - `NoCell`: `Unalign<T>` has the same fields as `T`, so it contains
     ///   `UnsafeCell`s exactly when `T` does.
     impl_or_verify!(T => Unaligned for Unalign<T>);
     impl_or_verify!(T: NoCell => NoCell for Unalign<T>);
     impl_or_verify!(T: FromZeros => FromZeros for Unalign<T>);
     impl_or_verify!(T: FromBytes => FromBytes for Unalign<T>);
-    impl_or_verify!(T: AsBytes => AsBytes for Unalign<T>);
+    impl_or_verify!(T: IntoBytes => IntoBytes for Unalign<T>);
 }
 
 // Note that `Unalign: Clone` only if `T: Copy`. Since the inner `T` may not be

@@ -12,23 +12,23 @@ mod util;
 
 use std::{marker::PhantomData, mem::ManuallyDrop, option::IntoIter};
 
-use {static_assertions::assert_impl_all, zerocopy::AsBytes};
+use {static_assertions::assert_impl_all, zerocopy::IntoBytes};
 
 use self::util::AU16;
 
-// A struct is `AsBytes` if:
-// - all fields are `AsBytes`
+// A struct is `IntoBytes` if:
+// - all fields are `IntoBytes`
 // - `repr(C)` or `repr(transparent)` and
 //   - no padding (size of struct equals sum of size of field types)
 // - `repr(packed)`
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(C)]
 struct CZst;
 
-assert_impl_all!(CZst: AsBytes);
+assert_impl_all!(CZst: IntoBytes);
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(C)]
 struct C {
     a: u8,
@@ -36,34 +36,34 @@ struct C {
     c: AU16,
 }
 
-assert_impl_all!(C: AsBytes);
+assert_impl_all!(C: IntoBytes);
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(transparent)]
 struct Transparent {
     a: u8,
     b: CZst,
 }
 
-assert_impl_all!(Transparent: AsBytes);
+assert_impl_all!(Transparent: IntoBytes);
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(transparent)]
 struct TransparentGeneric<T: ?Sized> {
     a: CZst,
     b: T,
 }
 
-assert_impl_all!(TransparentGeneric<u64>: AsBytes);
-assert_impl_all!(TransparentGeneric<[u64]>: AsBytes);
+assert_impl_all!(TransparentGeneric<u64>: IntoBytes);
+assert_impl_all!(TransparentGeneric<[u64]>: IntoBytes);
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(C, packed)]
 struct CZstPacked;
 
-assert_impl_all!(CZstPacked: AsBytes);
+assert_impl_all!(CZstPacked: IntoBytes);
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(C, packed)]
 struct CPacked {
     a: u8,
@@ -77,9 +77,9 @@ struct CPacked {
     b: u16,
 }
 
-assert_impl_all!(CPacked: AsBytes);
+assert_impl_all!(CPacked: IntoBytes);
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(C, packed(2))]
 // The same caveats as for CPacked apply - we're assuming u64 is at least
 // 4-byte aligned by default. Without packed(2), this should fail, as there
@@ -89,9 +89,9 @@ struct CPacked2 {
     b: u64,
 }
 
-assert_impl_all!(CPacked2: AsBytes);
+assert_impl_all!(CPacked2: IntoBytes);
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(C, packed)]
 struct CPackedGeneric<T, U: ?Sized> {
     t: T,
@@ -103,10 +103,10 @@ struct CPackedGeneric<T, U: ?Sized> {
     u: ManuallyDrop<U>,
 }
 
-assert_impl_all!(CPackedGeneric<u8, AU16>: AsBytes);
-assert_impl_all!(CPackedGeneric<u8, [AU16]>: AsBytes);
+assert_impl_all!(CPackedGeneric<u8, AU16>: IntoBytes);
+assert_impl_all!(CPackedGeneric<u8, [AU16]>: IntoBytes);
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(packed)]
 struct Packed {
     a: u8,
@@ -120,9 +120,9 @@ struct Packed {
     b: u16,
 }
 
-assert_impl_all!(Packed: AsBytes);
+assert_impl_all!(Packed: IntoBytes);
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(packed)]
 struct PackedGeneric<T, U: ?Sized> {
     t: T,
@@ -134,28 +134,28 @@ struct PackedGeneric<T, U: ?Sized> {
     u: ManuallyDrop<U>,
 }
 
-assert_impl_all!(PackedGeneric<u8, AU16>: AsBytes);
-assert_impl_all!(PackedGeneric<u8, [AU16]>: AsBytes);
+assert_impl_all!(PackedGeneric<u8, AU16>: IntoBytes);
+assert_impl_all!(PackedGeneric<u8, [AU16]>: IntoBytes);
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(transparent)]
 struct Unsized {
     a: [u8],
 }
 
-assert_impl_all!(Unsized: AsBytes);
+assert_impl_all!(Unsized: IntoBytes);
 
-// Deriving `AsBytes` should work if the struct has bounded parameters.
+// Deriving `IntoBytes` should work if the struct has bounded parameters.
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(transparent)]
-struct WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + AsBytes>(
+struct WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + IntoBytes>(
     [T; N],
     PhantomData<&'a &'b ()>,
 )
 where
     'a: 'b,
     'b: 'a,
-    T: 'a + 'b + AsBytes;
+    T: 'a + 'b + IntoBytes;
 
-assert_impl_all!(WithParams<'static, 'static, 42, u8>: AsBytes);
+assert_impl_all!(WithParams<'static, 'static, 42, u8>: IntoBytes);

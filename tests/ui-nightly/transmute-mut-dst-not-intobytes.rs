@@ -12,7 +12,7 @@ use zerocopy::transmute_mut;
 
 fn main() {}
 
-#[derive(zerocopy::FromZeros, zerocopy::FromBytes, zerocopy::AsBytes, zerocopy::NoCell)]
+#[derive(zerocopy::FromZeros, zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::NoCell)]
 #[repr(C)]
 struct Src;
 
@@ -20,5 +20,5 @@ struct Src;
 #[repr(C)]
 struct Dst;
 
-// `transmute_mut` requires that the destination type implements `AsBytes`
+// `transmute_mut` requires that the destination type implements `IntoBytes`
 const DST_NOT_AS_BYTES: &mut Dst = transmute_mut!(&mut Src);

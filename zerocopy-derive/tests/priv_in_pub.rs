@@ -6,7 +6,7 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use zerocopy::{AsBytes, FromBytes, FromZeros, KnownLayout, Unaligned};
+use zerocopy::{FromBytes, FromZeros, IntoBytes, KnownLayout, Unaligned};
 
 // These derives do not result in E0446 as of Rust 1.59.0, because of
 // https://github.com/rust-lang/rust/pull/90586.
@@ -15,10 +15,10 @@ use zerocopy::{AsBytes, FromBytes, FromZeros, KnownLayout, Unaligned};
 // bounds for field types (i.e., the emission of E0446 for private field
 // types).
 
-#[derive(KnownLayout, AsBytes, FromZeros, FromBytes, Unaligned)]
+#[derive(KnownLayout, IntoBytes, FromZeros, FromBytes, Unaligned)]
 #[repr(C)]
 pub struct Public(Private);
 
-#[derive(KnownLayout, AsBytes, FromZeros, FromBytes, Unaligned)]
+#[derive(KnownLayout, IntoBytes, FromZeros, FromBytes, Unaligned)]
 #[repr(C)]
 struct Private(());

@@ -768,7 +768,7 @@ pub(crate) mod testutil {
         NoCell,
         FromZeros,
         FromBytes,
-        AsBytes,
+        IntoBytes,
         Eq,
         PartialEq,
         Ord,

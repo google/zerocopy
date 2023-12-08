@@ -10,35 +10,35 @@
 
 use std::{marker::PhantomData, option::IntoIter};
 
-use {static_assertions::assert_impl_all, zerocopy::AsBytes};
+use {static_assertions::assert_impl_all, zerocopy::IntoBytes};
 
-// A union is `AsBytes` if:
-// - all fields are `AsBytes`
+// A union is `IntoBytes` if:
+// - all fields are `IntoBytes`
 // - `repr(C)` or `repr(transparent)` and
 //   - no padding (size of union equals size of each field type)
 // - `repr(packed)`
 
-#[derive(AsBytes, Clone, Copy)]
+#[derive(IntoBytes, Clone, Copy)]
 #[repr(C)]
 union CZst {
     a: (),
 }
 
-assert_impl_all!(CZst: AsBytes);
+assert_impl_all!(CZst: IntoBytes);
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(C)]
 union C {
     a: u8,
     b: u8,
 }
 
-assert_impl_all!(C: AsBytes);
+assert_impl_all!(C: IntoBytes);
 
 // Transparent unions are unstable; see issue #60405
 // <https://github.com/rust-lang/rust/issues/60405> for more information.
 
-// #[derive(AsBytes)]
+// #[derive(IntoBytes)]
 // #[repr(transparent)]
 // union Transparent {
 //     a: u8,
@@ -47,24 +47,24 @@ assert_impl_all!(C: AsBytes);
 
 // is_as_bytes!(Transparent);
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(C, packed)]
 union CZstPacked {
     a: (),
 }
 
-assert_impl_all!(CZstPacked: AsBytes);
+assert_impl_all!(CZstPacked: IntoBytes);
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(C, packed)]
 union CPacked {
     a: u8,
     b: i8,
 }
 
-assert_impl_all!(CPacked: AsBytes);
+assert_impl_all!(CPacked: IntoBytes);
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(C, packed)]
 union CMultibytePacked {
     a: i32,
@@ -72,4 +72,4 @@ union CMultibytePacked {
     c: f32,
 }
 
-assert_impl_all!(CMultibytePacked: AsBytes);
+assert_impl_all!(CMultibytePacked: IntoBytes);

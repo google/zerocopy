@@ -133,7 +133,7 @@ macro_rules! define_kind_specific_repr {
                 match Repr::from_meta(meta)? {
                     $(Repr::$repr_variant => Ok($repr_name::$repr_variant),)*
                     $(Repr::$repr_variant_aligned(u) => Ok($repr_name::$repr_variant_aligned(u)),)*
-                    _ => Err(Error::new_spanned(meta, concat!("unsupported representation for deriving FromBytes, AsBytes, or Unaligned on ", $type_name)))
+                    _ => Err(Error::new_spanned(meta, concat!("unsupported representation for deriving zerocopy trait(s) on ", $type_name)))
                 }
             }
         }

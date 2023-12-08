@@ -14,5 +14,5 @@ use zerocopy::transmute;
 
 fn main() {}
 
-// `transmute` requires that the source type implements `AsBytes`
+// `transmute` requires that the source type implements `IntoBytes`
 const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));

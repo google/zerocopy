@@ -91,23 +91,23 @@ struct TryFromBytesCPackedN {
 }
 
 //
-// AsBytes errors
+// IntoBytes errors
 //
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(C)]
-struct AsBytes1<T>(T);
+struct IntoBytes1<T>(T);
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(C)]
-struct AsBytes2 {
+struct IntoBytes2 {
     foo: u8,
     bar: AU16,
 }
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(C, packed(2))]
-struct AsBytes3 {
+struct IntoBytes3 {
     foo: u8,
     // We'd prefer to use AU64 here, but you can't use aligned types in
     // packed structs.

@@ -64,7 +64,7 @@ macro_rules! try_or_print {
 // help: required by the derive of FromBytes
 //
 // Instead, we have more verbose error messages like "unsupported representation
-// for deriving FromZeros, FromBytes, AsBytes, or Unaligned on an enum"
+// for deriving FromZeros, FromBytes, IntoBytes, or Unaligned on an enum"
 //
 // This will probably require Span::error
 // (https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.error),
@@ -308,7 +308,7 @@ pub fn derive_from_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream
     .into()
 }
 
-#[proc_macro_derive(AsBytes)]
+#[proc_macro_derive(IntoBytes)]
 pub fn derive_as_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let ast = syn::parse_macro_input!(ts as DeriveInput);
     match &ast.data {
@@ -529,8 +529,8 @@ fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::T
     impl_block(ast, unn, Trait::FromBytes, RequireBoundedFields::Yes, false, None, None)
 }
 
-// A struct is `AsBytes` if:
-// - all fields are `AsBytes`
+// A struct is `IntoBytes` if:
+// - all fields are `IntoBytes`
 // - `repr(C)` or `repr(transparent)` and
 //   - no padding (size of struct equals sum of size of field types)
 // - `repr(packed)`
@@ -554,36 +554,36 @@ fn derive_as_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2:
     // repr(packed).
     // - repr(transparent): The layout and ABI of the whole struct is the same
     //   as its only non-ZST field (meaning there's no padding outside of that
-    //   field) and we require that field to be `AsBytes` (meaning there's no
+    //   field) and we require that field to be `IntoBytes` (meaning there's no
     //   padding in that field).
     // - repr(packed): Any inter-field padding bytes are removed, meaning that
     //   any padding bytes would need to come from the fields, all of which
-    //   we require to be `AsBytes` (meaning they don't have any padding).
+    //   we require to be `IntoBytes` (meaning they don't have any padding).
     let padding_check = if is_transparent || is_packed { None } else { Some(PaddingCheck::Struct) };
-    impl_block(ast, strct, Trait::AsBytes, RequireBoundedFields::Yes, false, padding_check, None)
+    impl_block(ast, strct, Trait::IntoBytes, RequireBoundedFields::Yes, false, padding_check, None)
 }
 
 const STRUCT_UNION_AS_BYTES_CFG: Config<StructRepr> = Config {
     // Since `disallowed_but_legal_combinations` is empty, this message will
     // never actually be emitted.
-    allowed_combinations_message: r#"AsBytes requires either a) repr "C" or "transparent" with all fields implementing AsBytes or, b) repr "packed""#,
+    allowed_combinations_message: r#"IntoBytes requires either a) repr "C" or "transparent" with all fields implementing IntoBytes or, b) repr "packed""#,
     derive_unaligned: false,
     allowed_combinations: STRUCT_UNION_ALLOWED_REPR_COMBINATIONS,
     disallowed_but_legal_combinations: &[],
 };
 
-// An enum is `AsBytes` if it is C-like and has a defined repr.
+// An enum is `IntoBytes` if it is C-like and has a defined repr.
 
 fn derive_as_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
     if !enm.is_c_like() {
-        return Error::new_spanned(ast, "only C-like enums can implement AsBytes")
+        return Error::new_spanned(ast, "only C-like enums can implement IntoBytes")
             .to_compile_error();
     }
 
     // We don't care what the repr is; we only care that it is one of the
     // allowed ones.
     let _: Vec<repr::EnumRepr> = try_or_print!(ENUM_AS_BYTES_CFG.validate_reprs(ast));
-    impl_block(ast, enm, Trait::AsBytes, RequireBoundedFields::No, false, None, None)
+    impl_block(ast, enm, Trait::IntoBytes, RequireBoundedFields::No, false, None, None)
 }
 
 #[rustfmt::skip]
@@ -592,7 +592,7 @@ const ENUM_AS_BYTES_CFG: Config<EnumRepr> = {
     Config {
         // Since `disallowed_but_legal_combinations` is empty, this message will
         // never actually be emitted.
-        allowed_combinations_message: r#"AsBytes requires repr of "C", "u8", "u16", "u32", "u64", "usize", "i8", "i16", "i32", "i64", or "isize""#,
+        allowed_combinations_message: r#"IntoBytes requires repr of "C", "u8", "u16", "u32", "u64", "usize", "i8", "i16", "i32", "i64", or "isize""#,
         derive_unaligned: false,
         allowed_combinations: &[
             &[C],
@@ -611,8 +611,8 @@ const ENUM_AS_BYTES_CFG: Config<EnumRepr> = {
     }
 };
 
-// A union is `AsBytes` if:
-// - all fields are `AsBytes`
+// A union is `IntoBytes` if:
+// - all fields are `IntoBytes`
 // - `repr(C)`, `repr(transparent)`, or `repr(packed)`
 // - no padding (size of union equals size of each field type)
 
@@ -628,7 +628,7 @@ fn derive_as_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::Tok
     impl_block(
         ast,
         unn,
-        Trait::AsBytes,
+        Trait::IntoBytes,
         RequireBoundedFields::Yes,
         false,
         Some(PaddingCheck::Union),
@@ -747,7 +747,7 @@ enum Trait {
     TryFromBytes,
     FromZeros,
     FromBytes,
-    AsBytes,
+    IntoBytes,
     Unaligned,
 }
 
