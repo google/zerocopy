@@ -142,6 +142,12 @@
 //! See our [MSRV policy].
 //!
 //! [MSRV policy]: https://github.com/google/zerocopy/blob/main/POLICIES.md#msrv
+//!
+//! # Changelog
+//!
+//! Zerocopy uses [GitHub Releases].
+//!
+//! [GitHub Releases]: https://github.com/google/zerocopy/releases
 
 // Sometimes we want to use lints which were added after our MSRV.
 // `unknown_lints` is `warn` by default and we deny warnings in CI, so without

@@ -143,6 +143,12 @@ See our [MSRV policy].
 
 [MSRV policy]: https://github.com/google/zerocopy/blob/main/POLICIES.md#msrv
 
+## Changelog
+
+Zerocopy uses [GitHub Releases].
+
+[GitHub Releases]: https://github.com/google/zerocopy/releases
+
 ## Disclaimer
 
 Disclaimer: Zerocopy is not an officially supported Google product.
