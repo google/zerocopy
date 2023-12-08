@@ -1,8 +1,26 @@
+error: TryFromBytes not supported on enum types
+  --> tests/ui-stable/enum.rs:19:1
+   |
+19 | / #[repr("foo")]
+20 | | enum Generic1 {
+21 | |     A,
+22 | | }
+   | |_^
+
 error: unrecognized representation hint
   --> tests/ui-stable/enum.rs:19:8
    |
 19 | #[repr("foo")]
    |        ^^^^^
+
+error: TryFromBytes not supported on enum types
+  --> tests/ui-stable/enum.rs:25:1
+   |
+25 | / #[repr(foo)]
+26 | | enum Generic2 {
+27 | |     A,
+28 | | }
+   | |_^
 
 error: unrecognized representation hint
   --> tests/ui-stable/enum.rs:25:8
@@ -10,11 +28,29 @@ error: unrecognized representation hint
 25 | #[repr(foo)]
    |        ^^^
 
+error: TryFromBytes not supported on enum types
+  --> tests/ui-stable/enum.rs:31:1
+   |
+31 | / #[repr(transparent)]
+32 | | enum Generic3 {
+33 | |     A,
+34 | | }
+   | |_^
+
 error: unsupported representation for deriving FromBytes, AsBytes, or Unaligned on an enum
   --> tests/ui-stable/enum.rs:31:8
    |
 31 | #[repr(transparent)]
    |        ^^^^^^^^^^^
+
+error: TryFromBytes not supported on enum types
+  --> tests/ui-stable/enum.rs:37:1
+   |
+37 | / #[repr(u8, u16)]
+38 | | enum Generic4 {
+39 | |     A,
+40 | | }
+   | |_^
 
 error: conflicting representation hints
   --> tests/ui-stable/enum.rs:37:1
@@ -22,7 +58,16 @@ error: conflicting representation hints
 37 | #[repr(u8, u16)]
    | ^
 
+error: TryFromBytes not supported on enum types
+  --> tests/ui-stable/enum.rs:43:1
+   |
+43 | / enum Generic5 {
+44 | |     A,
+45 | | }
+   | |_^
+
 error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+<<<<<<< HEAD
   --> tests/ui-stable/enum.rs:42:21
    |
 42 | #[derive(FromZeros, FromBytes)]
@@ -31,6 +76,24 @@ error: must have a non-align #[repr(...)] attribute in order to guarantee this t
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: only C-like enums can implement FromZeros
+=======
+  --> tests/ui-stable/enum.rs:42:36
+   |
+42 | #[derive(TryFromBytes, FromZeroes, FromBytes)]
+   |                                    ^^^^^^^^^
+   |
+   = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: TryFromBytes not supported on enum types
+  --> tests/ui-stable/enum.rs:70:1
+   |
+70 | / enum FromZeroes1 {
+71 | |     A(u8),
+72 | | }
+   | |_^
+
+error: only C-like enums can implement FromZeroes
+>>>>>>> [derive] Support `derive(TryFromBytes)` for structs
   --> tests/ui-stable/enum.rs:70:1
    |
 70 | / enum FromZeros1 {
@@ -38,7 +101,20 @@ error: only C-like enums can implement FromZeros
 72 | | }
    | |_^
 
+<<<<<<< HEAD
 error: only C-like enums can implement FromZeros
+=======
+error: TryFromBytes not supported on enum types
+  --> tests/ui-stable/enum.rs:75:1
+   |
+75 | / enum FromZeroes2 {
+76 | |     A,
+77 | |     B(u8),
+78 | | }
+   | |_^
+
+error: only C-like enums can implement FromZeroes
+>>>>>>> [derive] Support `derive(TryFromBytes)` for structs
   --> tests/ui-stable/enum.rs:75:1
    |
 75 | / enum FromZeros2 {
@@ -47,7 +123,20 @@ error: only C-like enums can implement FromZeros
 78 | | }
    | |_^
 
+<<<<<<< HEAD
 error: FromZeros only supported on enums with a variant that has a discriminant of `0`
+=======
+error: TryFromBytes not supported on enum types
+  --> tests/ui-stable/enum.rs:81:1
+   |
+81 | / enum FromZeroes3 {
+82 | |     A = 1,
+83 | |     B,
+84 | | }
+   | |_^
+
+error: FromZeroes only supported on enums with a variant that has a discriminant of `0`
+>>>>>>> [derive] Support `derive(TryFromBytes)` for structs
   --> tests/ui-stable/enum.rs:81:1
    |
 81 | / enum FromZeros3 {
@@ -56,11 +145,29 @@ error: FromZeros only supported on enums with a variant that has a discriminant 
 84 | | }
    | |_^
 
+error: TryFromBytes not supported on enum types
+  --> tests/ui-stable/enum.rs:91:1
+   |
+91 | / #[repr(C)]
+92 | | enum FromBytes1 {
+93 | |     A,
+94 | | }
+   | |_^
+
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
   --> tests/ui-stable/enum.rs:91:8
    |
 91 | #[repr(C)]
    |        ^
+
+error: TryFromBytes not supported on enum types
+   --> tests/ui-stable/enum.rs:97:1
+    |
+97  | / #[repr(usize)]
+98  | | enum FromBytes2 {
+99  | |     A,
+100 | | }
+    | |_^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
   --> tests/ui-stable/enum.rs:97:8
@@ -68,11 +175,29 @@ error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
 97 | #[repr(usize)]
    |        ^^^^^
 
+error: TryFromBytes not supported on enum types
+   --> tests/ui-stable/enum.rs:103:1
+    |
+103 | / #[repr(isize)]
+104 | | enum FromBytes3 {
+105 | |     A,
+106 | | }
+    | |_^
+
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
    --> tests/ui-stable/enum.rs:103:8
     |
 103 | #[repr(isize)]
     |        ^^^^^
+
+error: TryFromBytes not supported on enum types
+   --> tests/ui-stable/enum.rs:109:1
+    |
+109 | / #[repr(u32)]
+110 | | enum FromBytes4 {
+111 | |     A,
+112 | | }
+    | |_^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
    --> tests/ui-stable/enum.rs:109:8
@@ -80,17 +205,44 @@ error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
 109 | #[repr(u32)]
     |        ^^^
 
+error: TryFromBytes not supported on enum types
+   --> tests/ui-stable/enum.rs:115:1
+    |
+115 | / #[repr(i32)]
+116 | | enum FromBytes5 {
+117 | |     A,
+118 | | }
+    | |_^
+
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
    --> tests/ui-stable/enum.rs:115:8
     |
 115 | #[repr(i32)]
     |        ^^^
 
+error: TryFromBytes not supported on enum types
+   --> tests/ui-stable/enum.rs:121:1
+    |
+121 | / #[repr(u64)]
+122 | | enum FromBytes6 {
+123 | |     A,
+124 | | }
+    | |_^
+
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
    --> tests/ui-stable/enum.rs:121:8
     |
 121 | #[repr(u64)]
     |        ^^^
+
+error: TryFromBytes not supported on enum types
+   --> tests/ui-stable/enum.rs:127:1
+    |
+127 | / #[repr(i64)]
+128 | | enum FromBytes7 {
+129 | |     A,
+130 | | }
+    | |_^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
    --> tests/ui-stable/enum.rs:127:8

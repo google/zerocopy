@@ -63,6 +63,34 @@ struct NoCell2 {
 }
 
 //
+// TryFromBytes errors
+//
+
+#[derive(TryFromBytes)]
+#[repr(packed)]
+struct TryFromBytesPacked {
+    foo: AU16,
+}
+
+#[derive(TryFromBytes)]
+#[repr(packed(1))]
+struct TryFromBytesPackedN {
+    foo: AU16,
+}
+
+#[derive(TryFromBytes)]
+#[repr(C, packed)]
+struct TryFromBytesCPacked {
+    foo: AU16,
+}
+
+#[derive(TryFromBytes)]
+#[repr(C, packed(1))]
+struct TryFromBytesCPackedN {
+    foo: AU16,
+}
+
+//
 // AsBytes errors
 //
 

@@ -22,6 +22,15 @@ fn main() {}
 // the compiler will never get to that pass, and so we won't get the errors.
 
 //
+// TryFromBytes errors
+//
+
+#[derive(TryFromBytes)]
+struct TryFromBytes1 {
+    value: NotZerocopy,
+}
+
+//
 // FromZeros errors
 //
 

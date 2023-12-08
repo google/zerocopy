@@ -110,7 +110,9 @@ pub(crate) mod ptr {
         ///   than or equal to the size of the object referenced by `self`.
         /// - The alignment of `U` is less than or equal to the alignment of
         ///   `T`.
-        pub(crate) unsafe fn cast_unsized<U: 'a + ?Sized, F: FnOnce(*mut T) -> *mut U>(
+        #[doc(hidden)]
+        #[inline]
+        pub unsafe fn cast_unsized<U: 'a + ?Sized, F: FnOnce(*mut T) -> *mut U>(
             self,
             cast: F,
         ) -> Ptr<'a, U> {
@@ -138,6 +140,72 @@ pub(crate) mod ptr {
             // - By invariant, `A` is guaranteed to live for at least `'a`.
             // - `U: 'a`
             Ptr { ptr, _lifetime: PhantomData }
+        }
+
+        /// Projects a field from `self`.
+        ///
+        /// # Safety
+        ///
+        /// ## Preconditions
+        ///
+        /// The caller promises that `projector` projects a well-aligned field
+        /// of its argument. Its argument will be `self` casted to a raw
+        /// pointer.
+        ///
+        /// ## Postconditions
+        ///
+        /// If the preconditions of this function are met, this function will
+        /// return a `Ptr` to the field projected from `self` by `projector`.
+        #[doc(hidden)]
+        #[inline]
+        pub unsafe fn project<U: 'a + ?Sized>(
+            self,
+            projector: impl FnOnce(*mut T) -> *mut U,
+        ) -> Ptr<'a, U> {
+            // SAFETY: `projector` is provided with `self` casted to a raw
+            // pointer.
+            let field = projector(self.ptr.as_ptr());
+
+            // SAFETY: We promise that `projector` is provided with `self`
+            // casted to a raw pointer, and the caller promises that `projector`
+            // is a field projection of its argument. By invariant on `Ptr`,
+            // `self` is non-null, and by contract on `projector`, so too will
+            // its return value.
+            //
+            // Note that field projection cannot wrap around the address space
+            // to null.
+            //
+            // TODO(https://github.com/rust-lang/rust/pull/116675): Cite
+            // documentation that allocated objects do not wrap around the
+            // address space.
+            let field = unsafe { NonNull::new_unchecked(field) };
+
+            // SAFETY: The safety invariants of `Ptr` (see definition) are
+            // satisfied:
+            // 1. `field` is derived from a valid Rust allocation, because
+            //    `self` is derived from a valid Rust allocation, by invariant
+            //    on `Ptr`, and `projector` (by contract) is a field projection
+            //    through `self`.
+            // 2. `field` has the same provenance as `self`, because it derived
+            //    from `self` using a series of provenance-preserving
+            //    operations.
+            // 3. `field` is entirely contained in the allocation of `self`,
+            //    because it is derived by `projector`, which is (by contract) a
+            //    field projection through `self`.
+            // 4. `field` addresses a byte range whose length fits in an
+            //    `isize`, because it is a field projection through `self` and
+            //    thus is entirely contained by `self`, which satisfies this
+            //    invariant.
+            // 5. `field` addresses a byte range which does not wrap around the
+            //    address space (see above).
+            // 6. `field` is validly-aligned for `U`, by contract on
+            //    `projector`.
+            // 7. The allocation of `field` is guaranteed to live for at least
+            //    `'a`, because `field` is entirely contained in `self`, which
+            //    lives for at least `'a` by invariant on `Ptr`.
+            // 8. `U: 'a`, because `field` is an element within `T`, and `T: 'a`
+            //    by invariant on `Ptr`.
+            Ptr { ptr: field, _lifetime: PhantomData }
         }
     }
 

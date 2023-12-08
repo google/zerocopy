@@ -133,6 +133,9 @@ macro_rules! unsafe_impl {
     };
 
     (@method TryFromBytes ; |$candidate:ident: &$repr:ty| $is_bit_valid:expr) => {
+        #[allow(clippy::missing_inline_in_public_items)]
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+
         #[inline]
         unsafe fn is_bit_valid(candidate: Ptr<'_, Self>) -> bool {
             // SAFETY:
@@ -160,6 +163,9 @@ macro_rules! unsafe_impl {
         }
     };
     (@method TryFromBytes ; |$candidate:ident: Ptr<$repr:ty>| $is_bit_valid:expr) => {
+        #[allow(clippy::missing_inline_in_public_items)]
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+
         #[inline]
         unsafe fn is_bit_valid(candidate: Ptr<'_, Self>) -> bool {
             // SAFETY:
@@ -174,7 +180,11 @@ macro_rules! unsafe_impl {
             $is_bit_valid
         }
     };
-    (@method TryFromBytes) => { #[inline(always)] unsafe fn is_bit_valid(_: Ptr<'_, Self>) -> bool { true } };
+    (@method TryFromBytes) => {
+        #[allow(clippy::missing_inline_in_public_items)]
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+        #[inline(always)] unsafe fn is_bit_valid(_: Ptr<'_, Self>) -> bool { true }
+    };
     (@method $trait:ident) => {
         #[allow(clippy::missing_inline_in_public_items)]
         fn only_derive_is_allowed_to_implement_this_trait() {}

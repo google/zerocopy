@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 error[E0277]: the trait bound `NotZerocopy: FromZeroes` is not satisfied
   --> tests/ui-stable/derive_transparent.rs:37:18
    |
@@ -28,10 +29,20 @@ note: required by a bound in `_::{closure#0}::assert_impl_all`
 
 error[E0277]: the trait bound `NotZerocopy: FromBytes` is not satisfied
   --> tests/ui-stable/derive_transparent.rs:38:18
+=======
+error: cannot find derive macro `TryFromBytes` in this scope
+  --> tests/ui-stable/derive_transparent.rs:27:19
    |
-38 | assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
-   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `NotZerocopy`
+27 | #[derive(AsBytes, TryFromBytes, FromZeroes, FromBytes, Unaligned)]
+   |                   ^^^^^^^^^^^^
    |
+  ::: src/lib.rs
+>>>>>>> [derive] Support `derive(TryFromBytes)` for structs
+   |
+   | pub fn derive_from_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+   | -------------------------------------------------------------------------------- similarly named derive macro `FromBytes` defined here
+   |
+<<<<<<< HEAD
    = help: the following other types implement trait `FromBytes`:
              isize
              i8
@@ -49,17 +60,26 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `FromBytes`
    |                              ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `_::{closure#0}::assert_impl_all`
   --> tests/ui-stable/derive_transparent.rs:38:1
+=======
+help: a derive macro with a similar name exists
    |
-38 | assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
-   = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
+27 | #[derive(AsBytes, FromBytes, FromZeroes, FromBytes, Unaligned)]
+   |                   ~~~~~~~~~
+help: consider importing one of these items
+>>>>>>> [derive] Support `derive(TryFromBytes)` for structs
+   |
+14  + use zerocopy::TryFromBytes;
+    |
+14  + use zerocopy_derive::TryFromBytes;
+    |
 
-error[E0277]: the trait bound `NotZerocopy: AsBytes` is not satisfied
-  --> tests/ui-stable/derive_transparent.rs:39:18
+error[E0405]: cannot find trait `TryFromBytes` in this scope
+  --> tests/ui-stable/derive_transparent.rs:37:50
    |
-39 | assert_impl_all!(TransparentStruct<NotZerocopy>: AsBytes);
-   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `AsBytes` is not implemented for `NotZerocopy`
+37 | assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
+   |                                                  ^^^^^^^^^^^^
    |
+<<<<<<< HEAD
    = help: the following other types implement trait `AsBytes`:
              bool
              char
@@ -84,10 +104,14 @@ note: required by a bound in `_::{closure#0}::assert_impl_all`
 
 error[E0277]: the trait bound `NotZerocopy: Unaligned` is not satisfied
   --> tests/ui-stable/derive_transparent.rs:40:18
+=======
+  ::: $WORKSPACE/src/lib.rs
+>>>>>>> [derive] Support `derive(TryFromBytes)` for structs
    |
-40 | assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
-   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Unaligned` is not implemented for `NotZerocopy`
+   | pub unsafe trait FromBytes: FromZeroes {
+   | -------------------------------------- similarly named trait `FromBytes` defined here
    |
+<<<<<<< HEAD
    = help: the following other types implement trait `Unaligned`:
              bool
              i8
@@ -105,7 +129,13 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `Unaligned`
    |                                         ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `_::{closure#0}::assert_impl_all`
   --> tests/ui-stable/derive_transparent.rs:40:1
+=======
+help: a trait with a similar name exists
    |
-40 | assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
-   = note: this error originates in the derive macro `Unaligned` which comes from the expansion of the macro `assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
+37 | assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
+   |                                                  ~~~~~~~~~
+help: consider importing this trait
+>>>>>>> [derive] Support `derive(TryFromBytes)` for structs
+   |
+14   + use zerocopy::TryFromBytes;
+     |

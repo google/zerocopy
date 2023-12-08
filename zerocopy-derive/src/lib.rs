@@ -86,13 +86,16 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
         Data::Enum(..) | Data::Union(..) => None,
     };
 
-    let fields = ast.data.field_types();
+    let fields = ast.data.fields();
 
     let (require_self_sized, extras) = if let (
         Some(reprs),
         Some((trailing_field, leading_fields)),
     ) = (is_repr_c_struct, fields.split_last())
     {
+        let (_name, trailing_field_ty) = trailing_field;
+        let leading_fields_tys = leading_fields.iter().map(|(_name, ty)| ty);
+
         let repr_align = reprs
             .iter()
             .find_map(
@@ -142,8 +145,8 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
                     let repr_packed = #repr_packed;
 
                     DstLayout::new_zst(repr_align)
-                        #(.extend(DstLayout::for_type::<#leading_fields>(), repr_packed))*
-                        .extend(<#trailing_field as KnownLayout>::LAYOUT, repr_packed)
+                        #(.extend(DstLayout::for_type::<#leading_fields_tys>(), repr_packed))*
+                        .extend(<#trailing_field_ty as KnownLayout>::LAYOUT, repr_packed)
                         .pad_to_align()
                 };
 
@@ -157,7 +160,7 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
                     elems: usize,
                 ) -> ::zerocopy::macro_util::core_reexport::ptr::NonNull<Self> {
                     use ::zerocopy::{KnownLayout};
-                    let trailing = <#trailing_field as KnownLayout>::raw_from_ptr_len(bytes, elems);
+                    let trailing = <#trailing_field_ty as KnownLayout>::raw_from_ptr_len(bytes, elems);
                     let slf = trailing.as_ptr() as *mut Self;
                     // SAFETY: Constructed from `trailing`, which is non-null.
                     unsafe { ::zerocopy::macro_util::core_reexport::ptr::NonNull::new_unchecked(slf) }
@@ -260,6 +263,21 @@ pub fn derive_no_cell(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     .into()
 }
 
+#[proc_macro_derive(TryFromBytes)]
+pub fn derive_try_from_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let ast = syn::parse_macro_input!(ts as DeriveInput);
+    match &ast.data {
+        Data::Struct(strct) => derive_try_from_bytes_struct(&ast, strct),
+        Data::Enum(_) => {
+            Error::new_spanned(&ast, "TryFromBytes not supported on enum types").to_compile_error()
+        }
+        Data::Union(_) => {
+            Error::new_spanned(&ast, "TryFromBytes not supported on union types").to_compile_error()
+        }
+    }
+    .into()
+}
+
 #[proc_macro_derive(FromZeros)]
 pub fn derive_from_zeros(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let ast = syn::parse_macro_input!(ts as DeriveInput);
@@ -310,6 +328,69 @@ pub fn derive_unaligned(ts: proc_macro::TokenStream) -> proc_macro::TokenStream 
         Data::Union(unn) => derive_unaligned_union(&ast, unn),
     }
     .into()
+}
+
+// A struct is `TryFromBytes` if:
+// - all fields are `TryFromBytes`
+// - the struct is NOT `repr(packed)` or `repr(packed(N))`
+
+fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
+    let reprs = try_or_print!(repr::reprs::<Repr>(&ast.attrs));
+
+    for (meta, repr) in reprs {
+        if matches!(repr, Repr::Packed | Repr::PackedN(_)) {
+            try_or_print!(Err(vec![Error::new_spanned(
+                meta,
+                "cannot derive TryFromBytes with repr(packed)",
+            )]));
+        }
+    }
+
+    let extras = Some({
+        let fields = strct.fields();
+        let field_names = fields.iter().map(|(name, _ty)| name);
+        let field_tys = fields.iter().map(|(_name, ty)| ty);
+        quote!(
+            // SAFETY: We use `is_bit_valid` to validate that each field is
+            // bit-valid, and only return `true` if all of them are. The bit
+            // validity of a struct is just the composition of the bit
+            // validities of its fields, so this is a sound implementation of
+            // `is_bit_valid`.
+            unsafe fn is_bit_valid(candidate: zerocopy::Ptr<Self>) -> bool {
+                true #(&& {
+                    let project = |slf: *mut Self| ::core::ptr::addr_of_mut!((*slf).#field_names);
+
+                    // SAFETY: `project` is a field projection of `candidate`.
+                    // The projected field will be well-aligned because this
+                    // derive rejects packed types.
+                    let field_candidate = unsafe { candidate.project(project) };
+
+                    // SAFETY: The below invocation of `is_bit_valid` satisfies
+                    // the safety preconditions of `is_bit_valid`:
+                    // - The memory referenced by `field_candidate` is only
+                    //   accessed via reads for the duration of this method
+                    //   call. This is ensured by contract on the caller of the
+                    //   surrounding `is_bit_valid`.
+                    // - `field_candidate` may not refer to a valid instance of
+                    //   its corresponding field type, but it will only have
+                    //   `UnsafeCell`s at the offsets at which they may occur in
+                    //   that field type. This is ensured both by contract on
+                    //   the caller of the surrounding `is_bit_valid`, and by
+                    //   the construction of `field_candidiate`, i.e., via
+                    //   projection through `candidate`.
+                    //
+                    // Note that it's possible that this call will panic -
+                    // `is_bit_valid` does not promise that it doesn't panic,
+                    // and in practice, we support user-defined validators,
+                    // which could panic. This is sound because we haven't
+                    // violated any safety invariants which we would need to fix
+                    // before returning.
+                    <#field_tys as zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                })*
+            }
+        )
+    });
+    impl_block(ast, strct, Trait::TryFromBytes, RequireBoundedFields::Yes, false, None, extras)
 }
 
 const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[
@@ -663,6 +744,7 @@ impl PaddingCheck {
 enum Trait {
     KnownLayout,
     NoCell,
+    TryFromBytes,
     FromZeros,
     FromBytes,
     AsBytes,
@@ -760,19 +842,19 @@ fn impl_block<D: DataExt>(
 
     let type_ident = &input.ident;
     let trait_ident = trt.ident();
-    let field_types = data.field_types();
+    let fields = data.fields();
 
     let bound_tt = |ty| parse_quote!(#ty: ::zerocopy::#trait_ident);
-    let field_type_bounds: Vec<_> = match (require_trait_bound_on_field_types, &field_types[..]) {
-        (RequireBoundedFields::Yes, _) => field_types.iter().map(bound_tt).collect(),
+    let field_type_bounds: Vec<_> = match (require_trait_bound_on_field_types, &fields[..]) {
+        (RequireBoundedFields::Yes, _) => fields.iter().map(|(_name, ty)| bound_tt(ty)).collect(),
         (RequireBoundedFields::No, _) | (RequireBoundedFields::Trailing, []) => vec![],
-        (RequireBoundedFields::Trailing, [.., last]) => vec![bound_tt(last)],
+        (RequireBoundedFields::Trailing, [.., last]) => vec![bound_tt(&last.1)],
     };
 
     // Don't bother emitting a padding check if there are no fields.
     #[allow(unstable_name_collisions)] // See `BoolExt` below
-    let padding_check_bound = padding_check.and_then(|check| (!field_types.is_empty()).then_some(check)).map(|check| {
-        let fields = field_types.iter();
+    let padding_check_bound = padding_check.and_then(|check| (!fields.is_empty()).then_some(check)).map(|check| {
+        let fields = fields.iter().map(|(_name, ty)| ty);
         let validator_macro = check.validator_macro_ident();
         parse_quote!(
             ::zerocopy::macro_util::HasPadding<#type_ident, {::zerocopy::#validator_macro!(#type_ident, #(#fields),*)}>:
