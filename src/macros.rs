@@ -52,16 +52,14 @@ macro_rules! safety_comment {
 ///     $ty>` which satisfies the preconditions of
 ///     `TryFromBytes::<$ty>::is_bit_valid`, it must be guaranteed that the
 ///     memory referenced by that `Ptr` always contains a valid `$repr`.
-///   - The alignment of `$repr` is less than or equal to the alignment of
-///     `$ty`.
 ///   - The impl of `is_bit_valid` must only return `true` for its argument
 ///     `Ptr<$repr>` if the original `Ptr<$ty>` refers to a valid `$ty`.
 macro_rules! unsafe_impl {
     // Implement `$trait` for `$ty` with no bounds.
-    ($(#[$attr:meta])* $ty:ty: $trait:ident $(; |$candidate:ident: &$repr:ty| $is_bit_valid:expr)?) => {
+    ($(#[$attr:meta])* $ty:ty: $trait:ident $(; |$candidate:ident: MaybeAligned<$repr:ty>| $is_bit_valid:expr)?) => {
         $(#[$attr])*
         unsafe impl $trait for $ty {
-            unsafe_impl!(@method $trait $(; |$candidate: &$repr| $is_bit_valid)?);
+            unsafe_impl!(@method $trait $(; |$candidate: MaybeAligned<$repr>| $is_bit_valid)?);
         }
     };
     // Implement all `$traits` for `$ty` with no bounds.
@@ -97,26 +95,26 @@ macro_rules! unsafe_impl {
         $(#[$attr:meta])*
         const $constname:ident : $constty:ident $(,)?
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty $(; |$candidate:ident $(: &$ref_repr:ty)? $(: Ptr<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         unsafe_impl!(
             @inner
             $(#[$attr])*
             @const $constname: $constty,
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
-            => $trait for $ty $(; |$candidate $(: &$ref_repr)? $(: Ptr<$ptr_repr>)?| $is_bit_valid)?
+            => $trait for $ty $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
         );
     };
     (
         $(#[$attr:meta])*
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty $(; |$candidate:ident $(: &$ref_repr:ty)? $(: Ptr<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         unsafe_impl!(
             @inner
             $(#[$attr])*
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
-            => $trait for $ty $(; |$candidate $(: &$ref_repr)? $(: Ptr<$ptr_repr>)?| $is_bit_valid)?
+            => $trait for $ty $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
         );
     };
     (
@@ -124,66 +122,59 @@ macro_rules! unsafe_impl {
         $(#[$attr:meta])*
         $(@const $constname:ident : $constty:ident,)*
         $($tyvar:ident $(: $(? $optbound:ident +)* + $($bound:ident +)* )?,)*
-        => $trait:ident for $ty:ty $(; |$candidate:ident $(: &$ref_repr:ty)? $(: Ptr<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         $(#[$attr])*
         unsafe impl<$(const $constname: $constty,)* $($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> $trait for $ty {
-            unsafe_impl!(@method $trait $(; |$candidate: $(&$ref_repr)? $(Ptr<$ptr_repr>)?| $is_bit_valid)?);
+            unsafe_impl!(@method $trait $(; |$candidate: $(MaybeAligned<$ref_repr>)? $(Maybe<$ptr_repr>)?| $is_bit_valid)?);
         }
     };
 
-    (@method TryFromBytes ; |$candidate:ident: &$repr:ty| $is_bit_valid:expr) => {
+    (@method TryFromBytes ; |$candidate:ident: MaybeAligned<$repr:ty>| $is_bit_valid:expr) => {
         #[allow(clippy::missing_inline_in_public_items)]
         fn only_derive_is_allowed_to_implement_this_trait() {}
 
         #[inline]
-        unsafe fn is_bit_valid(candidate: Ptr<'_, Self>) -> bool {
+        fn is_bit_valid(candidate: Maybe<'_, Self>) -> bool {
             // SAFETY:
             // - The argument to `cast_unsized` is `|p| p as *mut _` as required
             //   by that method's safety precondition.
             // - The caller has promised that the cast results in an object of
             //   equal or lesser size.
-            // - The caller has promised that `$repr`'s alignment is less than
-            //   or equal to `Self`'s alignment.
             #[allow(clippy::as_conversions)]
             let candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
-            // SAFETY:
-            // - The caller has promised that the referenced memory region will
-            //   contain a valid `$repr` for `'a`.
-            // - The memory may not be referenced by any mutable references.
-            //   This is a precondition of `is_bit_valid`.
-            // - The memory may not be mutated even via `UnsafeCell`s. This is a
-            //   precondition of `is_bit_valid`.
-            // - There must not exist any references to the same memory region
-            //   which contain `UnsafeCell`s at byte ranges which are not
-            //   identical to the byte ranges at which `T` contains
-            //   `UnsafeCell`s. This is a precondition of `is_bit_valid`.
-            let $candidate: &$repr = unsafe { candidate.as_ref() };
+
+            // SAFETY: The caller has promised that the referenced memory region
+            // will contain a valid `$repr`.
+            let $candidate = unsafe { candidate.assume_valid() };
             $is_bit_valid
         }
     };
-    (@method TryFromBytes ; |$candidate:ident: Ptr<$repr:ty>| $is_bit_valid:expr) => {
+    (@method TryFromBytes ; |$candidate:ident: Maybe<$repr:ty>| $is_bit_valid:expr) => {
         #[allow(clippy::missing_inline_in_public_items)]
         fn only_derive_is_allowed_to_implement_this_trait() {}
 
         #[inline]
-        unsafe fn is_bit_valid(candidate: Ptr<'_, Self>) -> bool {
+        fn is_bit_valid(candidate: Maybe<'_, Self>) -> bool {
             // SAFETY:
             // - The argument to `cast_unsized` is `|p| p as *mut _` as required
             //   by that method's safety precondition.
             // - The caller has promised that the cast results in an object of
             //   equal or lesser size.
-            // - The caller has promised that `$repr`'s alignment is less than
-            //   or equal to `Self`'s alignment.
             #[allow(clippy::as_conversions)]
             let $candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
+
+            // SAFETY: The caller has promised that `$repr` is as-initialized as
+            // `Self`.
+            let $candidate = unsafe { $candidate.assume_as_initialized() };
+
             $is_bit_valid
         }
     };
     (@method TryFromBytes) => {
         #[allow(clippy::missing_inline_in_public_items)]
         fn only_derive_is_allowed_to_implement_this_trait() {}
-        #[inline(always)] unsafe fn is_bit_valid(_: Ptr<'_, Self>) -> bool { true }
+        #[inline(always)] fn is_bit_valid(_: Maybe<'_, Self>) -> bool { true }
     };
     (@method $trait:ident) => {
         #[allow(clippy::missing_inline_in_public_items)]

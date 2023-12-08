@@ -30,10 +30,9 @@ assert_impl_all!(Zst: TryFromBytes);
 #[test]
 fn zst() {
     // TODO(#5): Use `try_transmute` in this test once it's available.
-    let candidate = zerocopy::Ptr::from(&Zst);
-    // SAFETY: `candidate` is derived from the tested type, so it will contain
-    // `UnsafeCell`s at the same offsets as the tested type.
-    let is_bit_valid = unsafe { Zst::is_bit_valid(candidate) };
+    let candidate = zerocopy::Ptr::from_ref(&Zst);
+    let candidate = candidate.forget_aligned().forget_valid();
+    let is_bit_valid = Zst::is_bit_valid(candidate);
     assert!(is_bit_valid);
 }
 
@@ -47,10 +46,9 @@ assert_impl_all!(One: TryFromBytes);
 #[test]
 fn one() {
     // TODO(#5): Use `try_transmute` in this test once it's available.
-    let candidate = zerocopy::Ptr::from(&One { a: 42 });
-    // SAFETY: `candidate` is derived from the tested type, so it will contain
-    // `UnsafeCell`s at the same offsets as the tested type.
-    let is_bit_valid = unsafe { One::is_bit_valid(candidate) };
+    let candidate = zerocopy::Ptr::from_ref(&One { a: 42 });
+    let candidate = candidate.forget_aligned().forget_valid();
+    let is_bit_valid = One::is_bit_valid(candidate);
     assert!(is_bit_valid);
 }
 
@@ -65,17 +63,18 @@ assert_impl_all!(Two: TryFromBytes);
 #[test]
 fn two() {
     // TODO(#5): Use `try_transmute` in this test once it's available.
-    let candidate = zerocopy::Ptr::from(&Two { a: false, b: Zst });
-    // SAFETY: `candidate` is derived from the tested type, so it will contain
-    // `UnsafeCell`s at the same offsets as the tested type.
-    let is_bit_valid = unsafe { Two::is_bit_valid(candidate) };
+    let candidate = zerocopy::Ptr::from_ref(&Two { a: false, b: Zst });
+    let candidate = candidate.forget_aligned().forget_valid();
+    let is_bit_valid = Two::is_bit_valid(candidate);
     assert!(is_bit_valid);
 }
 
 #[test]
 fn two_bad() {
     // TODO(#5): Use `try_transmute` in this test once it's available.
-    let candidate = zerocopy::Ptr::from(&[2u8][..]);
+    let candidate = zerocopy::Ptr::from_ref(&[2u8][..]);
+    let candidate = candidate.forget_aligned().forget_valid();
+
     // SAFETY:
     // - The cast `cast(p)` is implemented exactly as follows: `|p: *mut T| p as
     //   *mut U`.
@@ -83,9 +82,11 @@ fn two_bad() {
     //   the size of the object referenced by `self`.
     // - The alignment of `Unsized` is equal to the alignment of `[u8]`.
     let candidate = unsafe { candidate.cast_unsized(|p| p as *mut Two) };
-    // SAFETY: `candidate` is derived from the tested type, so it will contain
-    // `UnsafeCell`s at the same offsets as the tested type.
-    let is_bit_valid = unsafe { Two::is_bit_valid(candidate) };
+
+    // SAFETY: `candidate`'s referent is as-initialized as `Two`.
+    let candidate = unsafe { candidate.assume_as_initialized() };
+
+    let is_bit_valid = Two::is_bit_valid(candidate);
     assert!(!is_bit_valid);
 }
 
@@ -99,7 +100,9 @@ assert_impl_all!(Unsized: TryFromBytes);
 #[test]
 fn un_sized() {
     // TODO(#5): Use `try_transmute` in this test once it's available.
-    let candidate = zerocopy::Ptr::from(&[16, 12, 42][..]);
+    let candidate = zerocopy::Ptr::from_ref(&[16, 12, 42][..]);
+    let candidate = candidate.forget_aligned().forget_valid();
+
     // SAFETY:
     // - The cast `cast(p)` is implemented exactly as follows: `|p: *mut T| p as
     //   *mut U`.
@@ -107,9 +110,10 @@ fn un_sized() {
     //   the size of the object referenced by `self`.
     // - The alignment of `Unsized` is equal to the alignment of `[u8]`.
     let candidate = unsafe { candidate.cast_unsized(|p| p as *mut Unsized) };
-    // SAFETY: `candidate` is derived from the tested type, so it will contain
-    // `UnsafeCell`s at the same offsets as the tested type.
-    let is_bit_valid = unsafe { Unsized::is_bit_valid(candidate) };
+
+    // SAFETY: `candidate`'s referent is as-initialized as `Two`.
+    let candidate = unsafe { candidate.assume_as_initialized() };
+    let is_bit_valid = Unsized::is_bit_valid(candidate);
     assert!(is_bit_valid);
 }
 
