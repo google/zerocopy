@@ -9,10 +9,6 @@ warning: unused import: `zerocopy::KnownLayout`
 error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
   --> tests/ui-stable/late_compile_pass.rs:28:10
    |
-<<<<<<< HEAD
-28 | #[derive(FromZeros)]
-   |          ^^^^^^^^^ the trait `FromZeroes` is not implemented for `NotZerocopy`
-=======
 28 | #[derive(TryFromBytes)]
    |          ^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
    |
@@ -32,9 +28,8 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
 error[E0277]: the trait bound `NotZerocopy: FromZeroes` is not satisfied
   --> tests/ui-stable/late_compile_pass.rs:37:10
    |
-37 | #[derive(FromZeroes)]
-   |          ^^^^^^^^^^ the trait `FromZeroes` is not implemented for `NotZerocopy`
->>>>>>> [derive] Support `derive(TryFromBytes)` for structs
+37 | #[derive(FromZeros)]
+   |          ^^^^^^^^^ the trait `FromZeroes` is not implemented for `NotZerocopy`
    |
    = help: the following other types implement trait `FromZeroes`:
              bool

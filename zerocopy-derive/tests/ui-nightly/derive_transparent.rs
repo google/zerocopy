@@ -15,7 +15,7 @@ use core::marker::PhantomData;
 
 use {
     static_assertions::assert_impl_all,
-    zerocopy::{AsBytes, FromBytes, FromZeros, Unaligned},
+    zerocopy::{AsBytes, FromBytes, FromZeros, TryFromBytes, Unaligned},
 };
 
 use self::util::NotZerocopy;

@@ -8,7 +8,7 @@
 
 extern crate zerocopy;
 
-use zerocopy::{transmute_mut, AsBytes, NoCell};
+use zerocopy::{transmute_mut, AsBytes, FromBytes, NoCell};
 
 fn main() {}
 
