@@ -482,7 +482,7 @@ jobs:
                   <(yq -r '.jobs.all-jobs-succeed.needs[]' "$i" | sort | uniq)
               fi
 
-            # The sed call here excludes all-jobs-succeed from the list of jobs that
+            # The grep call here excludes all-jobs-succeed from the list of jobs that
             # all-jobs-succeed does not depend on.  If all-jobs-succeed does
             # not depend on itself, we do not care about it.
             done | sort | uniq | grep -v '^all-jobs-succeed$' || true
