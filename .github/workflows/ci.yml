@@ -461,6 +461,38 @@ jobs:
           cargo install --locked kani-verifier       &> /dev/null || true
           cargo kani setup                           &> /dev/null || true
 
+  check-job-dependencies:
+    runs-on: ubuntu-latest
+    name: Check all-jobs-succeeded depends on all jobs
+    steps:
+      - name: Install yq (for YAML parsing)
+        run: go install github.com/mikefarah/yq/v4@latest
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Run dependency check
+        run: |
+          set -eo pipefail
+          jobs=$(for i in $(find .github -iname '*.yaml' -or -iname '*.yml')
+            do
+              # Select jobs that are triggered by pull request.
+              if yq -e '.on | has("pull_request")' "$i" 2>/dev/null >/dev/null
+              then
+                # This gets the list of jobs that are not in
+                # all-jobs-succeed.needs .
+                comm -23 \
+                  <(yq -r '.jobs | keys | .[]' "$i" | sort | uniq) \
+                  <(yq -r '.jobs.all-jobs-succeed.needs[]' "$i" | sort | uniq)
+              fi
+            done | sort | uniq
+          )
+          # Effectively, this checks that all-jobs-succeed does not depend on
+          # itself. Checking for the existence of a job that we don't want
+          # all-jobs-succeed to depend on acts as a crude test that the
+          # building of the dependency list is working as expected.
+          if [ "$jobs" != "all-jobs-succeed" ]
+          then
+            exit 1
+          fi
+
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
       name: All checks succeeded
@@ -471,7 +503,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_versions, generate_cache]
+      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_versions, generate_cache, check-job-dependencies]
       steps:
         - name: Mark the job as failed
           run: exit 1
