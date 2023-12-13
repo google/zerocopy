@@ -490,10 +490,8 @@ jobs:
 
           if [ -n "$jobs" ]
           then
-            echo 'There are jobs triggered by pull requests that'
-            echo 'are not listed in all-jobs-succeed.needs:'
-
-            echo $jobs
+            missing_jobs="$(echo "$jobs" | tr ' ' '\n')"
+            echo "all-jobs-succeed missing dependencies on some jobs: $missing_jobs" | tee -a $GITHUB_STEP_SUMMARY
             exit 1
           fi
 
