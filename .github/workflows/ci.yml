@@ -476,20 +476,24 @@ jobs:
               # Select jobs that are triggered by pull request.
               if yq -e '.on | has("pull_request")' "$i" 2>/dev/null >/dev/null
               then
-                # This gets the list of jobs that are not in
-                # all-jobs-succeed.needs .
+                # This gets the list of jobs that all-jobs-succeed does not depend on.
                 comm -23 \
                   <(yq -r '.jobs | keys | .[]' "$i" | sort | uniq) \
                   <(yq -r '.jobs.all-jobs-succeed.needs[]' "$i" | sort | uniq)
               fi
-            done | sort | uniq
+
+            # The sed call here excludes all-jobs-succeed from the list of jobs that
+            # all-jobs-succeed does not depend on.  If all-jobs-succeed does
+            # not depend on itself, we do not care about it.
+            done | sort | uniq | sed '/^all-jobs-succeed$/d'
           )
-          # Effectively, this checks that all-jobs-succeed does not depend on
-          # itself. Checking for the existence of a job that we don't want
-          # all-jobs-succeed to depend on acts as a crude test that the
-          # building of the dependency list is working as expected.
-          if [ "$jobs" != "all-jobs-succeed" ]
+
+          if [ -n "$jobs" ]
           then
+            echo 'There are jobs triggered by pull requests that'
+            echo 'are not listed in all-jobs-succeed.needs:'
+
+            echo $jobs
             exit 1
           fi
 
