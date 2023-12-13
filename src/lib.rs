@@ -26,6 +26,7 @@
 #![recursion_limit = "2048"]
 
 pub mod byteorder;
+mod post_monomorphization_compile_fail_tests;
 
 pub use crate::byteorder::*;
 pub use zerocopy_derive::*;
@@ -928,12 +929,12 @@ where
     /// `into_ref` consumes the `LayoutVerified`, and returns a reference to
     /// `T`.
     pub fn into_ref(self) -> &'a T {
-        // NOTE: This is safe because `B` is guaranteed to live for the lifetime
-        // `'a`, meaning that a) the returned reference cannot outlive the `B`
-        // from which `self` was constructed and, b) no mutable methods on that
-        // `B` can be called during the lifetime of the returned reference. See
-        // the documentation on `deref_helper` for what invariants we are
-        // required to uphold.
+        assert!(B::INTO_REF_INTO_MUT_ARE_SOUND);
+
+        // SAFETY: According to the safety preconditions on
+        // `ByteSlice::INTO_REF_INTO_MUT_ARE_SOUND`, the preceding assert
+        // ensures that, given `B: 'a`, it is sound to drop `self` and still
+        // access the underlying memory using reads for `'a`.
         unsafe { self.deref_helper() }
     }
 }
@@ -948,12 +949,13 @@ where
     /// `into_mut` consumes the `LayoutVerified`, and returns a mutable
     /// reference to `T`.
     pub fn into_mut(mut self) -> &'a mut T {
-        // NOTE: This is safe because `B` is guaranteed to live for the lifetime
-        // `'a`, meaning that a) the returned reference cannot outlive the `B`
-        // from which `self` was constructed and, b) no other methods - mutable
-        // or immutable - on that `B` can be called during the lifetime of the
-        // returned reference. See the documentation on `deref_mut_helper` for
-        // what invariants we are required to uphold.
+        assert!(B::INTO_REF_INTO_MUT_ARE_SOUND);
+
+        // SAFETY: According to the safety preconditions on
+        // `ByteSlice::INTO_REF_INTO_MUT_ARE_SOUND`, the preceding assert
+        // ensures that, given `B: 'a + ByteSliceMut`, it is sound to drop
+        // `self` and still access the underlying memory using both reads and
+        // writes for `'a`.
         unsafe { self.deref_mut_helper() }
     }
 }
@@ -968,12 +970,12 @@ where
     /// `into_slice` consumes the `LayoutVerified`, and returns a reference to
     /// `[T]`.
     pub fn into_slice(self) -> &'a [T] {
-        // NOTE: This is safe because `B` is guaranteed to live for the lifetime
-        // `'a`, meaning that a) the returned reference cannot outlive the `B`
-        // from which `self` was constructed and, b) no mutable methods on that
-        // `B` can be called during the lifetime of the returned reference. See
-        // the documentation on `deref_slice_helper` for what invariants we are
-        // required to uphold.
+        assert!(B::INTO_REF_INTO_MUT_ARE_SOUND);
+
+        // SAFETY: According to the safety preconditions on
+        // `ByteSlice::INTO_REF_INTO_MUT_ARE_SOUND`, the preceding assert
+        // ensures that, given `B: 'a`, it is sound to drop `self` and still
+        // access the underlying memory using reads for `'a`.
         unsafe { self.deref_slice_helper() }
     }
 }
@@ -988,12 +990,13 @@ where
     /// `into_mut_slice` consumes the `LayoutVerified`, and returns a mutable reference to
     /// `[T]`.
     pub fn into_mut_slice(mut self) -> &'a mut [T] {
-        // NOTE: This is safe because `B` is guaranteed to live for the lifetime
-        // `'a`, meaning that a) the returned reference cannot outlive the `B`
-        // from which `self` was constructed and, b) no other methods - mutable
-        // or immutable - on that `B` can be called during the lifetime of the
-        // returned reference. See the documentation on `deref_mut_slice_helper`
-        // for what invariants we are required to uphold.
+        assert!(B::INTO_REF_INTO_MUT_ARE_SOUND);
+
+        // SAFETY: According to the safety preconditions on
+        // `ByteSlice::INTO_REF_INTO_MUT_ARE_SOUND`, the preceding assert
+        // ensures that, given `B: 'a + ByteSliceMut`, it is sound to drop
+        // `self` and still access the underlying memory using both reads and
+        // writes for `'a`.
         unsafe { self.deref_mut_slice_helper() }
     }
 }
@@ -1249,6 +1252,29 @@ mod sealed {
 /// [`Vec<u8>`]: std::vec::Vec
 /// [`split_at`]: crate::ByteSlice::split_at
 pub unsafe trait ByteSlice: Deref<Target = [u8]> + Sized + self::sealed::Sealed {
+    /// Are the [`Ref::into_ref`] and [`Ref::into_mut`] methods sound when used
+    /// with `Self`? If not, evaluating this constant must panic at compile
+    /// time.
+    ///
+    /// This exists to work around #716 on versions of zerocopy prior to 0.8.
+    ///
+    /// # Safety
+    ///
+    /// This may only be set to true if the following holds: Given the
+    /// following:
+    /// - `Self: 'a`
+    /// - `bytes: Self`
+    /// - `let ptr = bytes.as_ptr()`
+    ///
+    /// ...then:
+    /// - Using `ptr` to read the memory previously addressed by `bytes` is
+    ///   sound for `'a` even after `bytes` has been dropped.
+    /// - If `Self: ByteSliceMut`, using `ptr` to write the memory previously
+    ///   addressed by `bytes` is sound for `'a` even after `bytes` has been
+    ///   dropped.
+    #[doc(hidden)]
+    const INTO_REF_INTO_MUT_ARE_SOUND: bool;
+
     fn as_ptr(&self) -> *const u8;
     fn split_at(self, mid: usize) -> (Self, Self);
 }
@@ -1263,33 +1289,73 @@ pub unsafe trait ByteSliceMut: ByteSlice + DerefMut {
 }
 
 unsafe impl<'a> ByteSlice for &'a [u8] {
+    // SAFETY: If `&'b [u8]: 'a`, then the underlying memory is treated as
+    // borrowed immutably for `'a` even if the slice itself is dropped.
+    const INTO_REF_INTO_MUT_ARE_SOUND: bool = true;
+
+    #[inline]
     fn as_ptr(&self) -> *const u8 {
         <[u8]>::as_ptr(self)
     }
+
+    #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at(self, mid)
     }
 }
 unsafe impl<'a> ByteSlice for &'a mut [u8] {
+    // SAFETY: If `&'b mut [u8]: 'a`, then the underlying memory is treated as
+    // borrowed mutably for `'a` even if the slice itself is dropped.
+    const INTO_REF_INTO_MUT_ARE_SOUND: bool = true;
+
+    #[inline]
     fn as_ptr(&self) -> *const u8 {
         <[u8]>::as_ptr(self)
     }
+
+    #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at_mut(self, mid)
     }
 }
 unsafe impl<'a> ByteSlice for Ref<'a, [u8]> {
+    const INTO_REF_INTO_MUT_ARE_SOUND: bool = if !cfg!(doc) {
+        panic!("Ref::into_ref and Ref::into_mut are unsound when used with core::cell::Ref; see https://github.com/google/zerocopy/issues/716")
+    } else {
+        // When compiling documentation, allow the evaluation of this constant
+        // to succeed. This doesn't represent a soundness hole - it just delays
+        // any error to runtime. The reason we need this is that, otherwise,
+        // `rustdoc` will fail when trying to document this item.
+        false
+    };
+
+    #[inline]
     fn as_ptr(&self) -> *const u8 {
         <[u8]>::as_ptr(self)
     }
+
+    #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         Ref::map_split(self, |slice| <[u8]>::split_at(slice, mid))
     }
 }
 unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
+    const INTO_REF_INTO_MUT_ARE_SOUND: bool = if !cfg!(doc) {
+        panic!("Ref::into_ref and Ref::into_mut are unsound when used with core::cell::RefMut; see https://github.com/google/zerocopy/issues/716")
+    } else {
+        // When compiling documentation, allow the evaluation of this constant
+        // to succeed. This doesn't represent a soundness hole - it just delays
+        // any error to runtime. The reason we need this is that, otherwise,
+        // `rustdoc` will fail when trying to document this item.
+        false
+    };
+
+    #[inline]
     fn as_ptr(&self) -> *const u8 {
         <[u8]>::as_ptr(self)
     }
+
+    #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         RefMut::map_split(self, |slice| <[u8]>::split_at_mut(slice, mid))
     }
@@ -1394,7 +1460,8 @@ mod tests {
         // assert that values written to the byte slice are reflected in the
         // typed value
         const VAL2: u64 = !VAL1; // different from VAL1
-        lv.bytes_mut().copy_from_slice(&VAL2.to_ne_bytes().repeat(typed_len));
+        lv.bytes_mut()
+            .copy_from_slice(&VAL2.to_ne_bytes().repeat(typed_len));
         assert!(lv.iter().copied().all(|x| x == VAL2));
     }
 
@@ -1430,7 +1497,12 @@ mod tests {
 
         // assert that values written to the typed value are reflected in the
         // byte slice
-        let mut expected_bytes = [0xFF, 0x00].iter().copied().cycle().take(len).collect::<Vec<_>>();
+        let mut expected_bytes = [0xFF, 0x00]
+            .iter()
+            .copied()
+            .cycle()
+            .take(len)
+            .collect::<Vec<_>>();
         lv.copy_from_slice(&expected_bytes);
         assert_eq!(lv.bytes(), expected_bytes.as_slice());
 
@@ -1490,7 +1562,10 @@ mod tests {
         let mut buf = AlignedBuffer::<u64, [u8; 16]>::default();
         // buf.buf should be aligned to 8 and have a length which is a multiple
         // of size_of::<u64>(), so this should always succeed
-        test_new_helper_slice(LayoutVerified::<_, [u64]>::new_slice(&mut buf.buf[..]).unwrap(), 2);
+        test_new_helper_slice(
+            LayoutVerified::<_, [u64]>::new_slice(&mut buf.buf[..]).unwrap(),
+            2,
+        );
         buf.buf = [0xFFu8; 16];
         test_new_helper_slice(
             LayoutVerified::<_, [u64]>::new_slice_zeroed(&mut buf.buf[..]).unwrap(),
@@ -1737,11 +1812,15 @@ mod tests {
         assert!(LayoutVerified::<_, u64>::new_from_suffix(&buf.buf[..]).is_none());
         assert!(LayoutVerified::<_, u64>::new_from_suffix_zeroed(&mut buf.buf[..]).is_none());
         assert!(LayoutVerified::<_, [u8; 8]>::new_unaligned_from_prefix(&buf.buf[..]).is_none());
-        assert!(LayoutVerified::<_, [u8; 8]>::new_unaligned_from_prefix_zeroed(&mut buf.buf[..])
-            .is_none());
+        assert!(
+            LayoutVerified::<_, [u8; 8]>::new_unaligned_from_prefix_zeroed(&mut buf.buf[..])
+                .is_none()
+        );
         assert!(LayoutVerified::<_, [u8; 8]>::new_unaligned_from_suffix(&buf.buf[..]).is_none());
-        assert!(LayoutVerified::<_, [u8; 8]>::new_unaligned_from_suffix_zeroed(&mut buf.buf[..])
-            .is_none());
+        assert!(
+            LayoutVerified::<_, [u8; 8]>::new_unaligned_from_suffix_zeroed(&mut buf.buf[..])
+                .is_none()
+        );
 
         // fail because the length is not a multiple of the element size
 
@@ -1765,20 +1844,28 @@ mod tests {
         assert!(
             LayoutVerified::<_, [u64]>::new_slice_from_suffix_zeroed(&mut buf.buf[..], 2).is_none()
         );
-        assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_prefix(&buf.buf[..], 2)
-            .is_none());
-        assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_prefix_zeroed(
-            &mut buf.buf[..],
-            2
-        )
-        .is_none());
-        assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_suffix(&buf.buf[..], 2)
-            .is_none());
-        assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_suffix_zeroed(
-            &mut buf.buf[..],
-            2
-        )
-        .is_none());
+        assert!(
+            LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_prefix(&buf.buf[..], 2)
+                .is_none()
+        );
+        assert!(
+            LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_prefix_zeroed(
+                &mut buf.buf[..],
+                2
+            )
+            .is_none()
+        );
+        assert!(
+            LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_suffix(&buf.buf[..], 2)
+                .is_none()
+        );
+        assert!(
+            LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_suffix_zeroed(
+                &mut buf.buf[..],
+                2
+            )
+            .is_none()
+        );
 
         // fail because the alignment is insufficient
 
@@ -1793,11 +1880,15 @@ mod tests {
         assert!(LayoutVerified::<_, [u64]>::new_slice(&buf.buf[4..]).is_none());
         assert!(LayoutVerified::<_, [u64]>::new_slice_zeroed(&mut buf.buf[4..]).is_none());
         assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix(&buf.buf[4..], 1).is_none());
-        assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix_zeroed(&mut buf.buf[4..], 1)
-            .is_none());
+        assert!(
+            LayoutVerified::<_, [u64]>::new_slice_from_prefix_zeroed(&mut buf.buf[4..], 1)
+                .is_none()
+        );
         assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix(&buf.buf[4..], 1).is_none());
-        assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix_zeroed(&mut buf.buf[4..], 1)
-            .is_none());
+        assert!(
+            LayoutVerified::<_, [u64]>::new_slice_from_suffix_zeroed(&mut buf.buf[4..], 1)
+                .is_none()
+        );
         // slicing from 4 should be unnecessary because new_from_suffix[_zeroed]
         // use the suffix of the slice
         assert!(LayoutVerified::<_, u64>::new_from_suffix(&buf.buf[..]).is_none());
@@ -1807,40 +1898,52 @@ mod tests {
 
         let mut buf = AlignedBuffer::<u64, [u8; 16]>::default();
         let unreasonable_len = std::usize::MAX / mem::size_of::<u64>() + 1;
-        assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix(&buf.buf[..], unreasonable_len)
-            .is_none());
+        assert!(
+            LayoutVerified::<_, [u64]>::new_slice_from_prefix(&buf.buf[..], unreasonable_len)
+                .is_none()
+        );
         assert!(LayoutVerified::<_, [u64]>::new_slice_from_prefix_zeroed(
             &mut buf.buf[..],
             unreasonable_len
         )
         .is_none());
-        assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix(&buf.buf[..], unreasonable_len)
-            .is_none());
+        assert!(
+            LayoutVerified::<_, [u64]>::new_slice_from_suffix(&buf.buf[..], unreasonable_len)
+                .is_none()
+        );
         assert!(LayoutVerified::<_, [u64]>::new_slice_from_suffix_zeroed(
             &mut buf.buf[..],
             unreasonable_len
         )
         .is_none());
-        assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_prefix(
-            &buf.buf[..],
-            unreasonable_len
-        )
-        .is_none());
-        assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_prefix_zeroed(
-            &mut buf.buf[..],
-            unreasonable_len
-        )
-        .is_none());
-        assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_suffix(
-            &buf.buf[..],
-            unreasonable_len
-        )
-        .is_none());
-        assert!(LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_suffix_zeroed(
-            &mut buf.buf[..],
-            unreasonable_len
-        )
-        .is_none());
+        assert!(
+            LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_prefix(
+                &buf.buf[..],
+                unreasonable_len
+            )
+            .is_none()
+        );
+        assert!(
+            LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_prefix_zeroed(
+                &mut buf.buf[..],
+                unreasonable_len
+            )
+            .is_none()
+        );
+        assert!(
+            LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_suffix(
+                &buf.buf[..],
+                unreasonable_len
+            )
+            .is_none()
+        );
+        assert!(
+            LayoutVerified::<_, [[u8; 8]]>::new_slice_unaligned_from_suffix_zeroed(
+                &mut buf.buf[..],
+                unreasonable_len
+            )
+            .is_none()
+        );
     }
 
     // Tests for ensuring that, if a ZST is passed into a slice-like function, we always
@@ -1893,7 +1996,10 @@ mod tests {
         // Do the same tests for a slice, which ensures that this logic works
         // for unsized types as well.
         let foo = &mut [Foo { a: 1, b: 2 }, Foo { a: 3, b: 4 }];
-        assert_eq!(foo.as_bytes(), [1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0]);
+        assert_eq!(
+            foo.as_bytes(),
+            [1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0]
+        );
         foo.as_bytes_mut()[8] = 5;
         assert_eq!(foo, &mut [Foo { a: 1, b: 2 }, Foo { a: 5, b: 4 }]);
     }
