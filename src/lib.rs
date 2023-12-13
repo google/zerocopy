@@ -128,6 +128,7 @@
 pub mod byteorder;
 #[doc(hidden)]
 pub mod derive_util;
+mod post_monomorphization_compile_fail_tests;
 
 pub use crate::byteorder::*;
 pub use zerocopy_derive::*;
@@ -2081,12 +2082,12 @@ where
     /// `into_ref` consumes the `LayoutVerified`, and returns a reference to
     /// `T`.
     pub fn into_ref(self) -> &'a T {
-        // SAFETY: This is sound because `B` is guaranteed to live for the
-        // lifetime `'a`, meaning that a) the returned reference cannot outlive
-        // the `B` from which `self` was constructed and, b) no mutable methods
-        // on that `B` can be called during the lifetime of the returned
-        // reference. See the documentation on `deref_helper` for what
-        // invariants we are required to uphold.
+        assert!(B::INTO_REF_INTO_MUT_ARE_SOUND);
+
+        // SAFETY: According to the safety preconditions on
+        // `ByteSlice::INTO_REF_INTO_MUT_ARE_SOUND`, the preceding assert
+        // ensures that, given `B: 'a`, it is sound to drop `self` and still
+        // access the underlying memory using reads for `'a`.
         unsafe { self.deref_helper() }
     }
 }
@@ -2101,12 +2102,13 @@ where
     /// `into_mut` consumes the `LayoutVerified`, and returns a mutable
     /// reference to `T`.
     pub fn into_mut(mut self) -> &'a mut T {
-        // SAFETY: This is sound because `B` is guaranteed to live for the
-        // lifetime `'a`, meaning that a) the returned reference cannot outlive
-        // the `B` from which `self` was constructed and, b) no other methods -
-        // mutable or immutable - on that `B` can be called during the lifetime
-        // of the returned reference. See the documentation on
-        // `deref_mut_helper` for what invariants we are required to uphold.
+        assert!(B::INTO_REF_INTO_MUT_ARE_SOUND);
+
+        // SAFETY: According to the safety preconditions on
+        // `ByteSlice::INTO_REF_INTO_MUT_ARE_SOUND`, the preceding assert
+        // ensures that, given `B: 'a + ByteSliceMut`, it is sound to drop
+        // `self` and still access the underlying memory using both reads and
+        // writes for `'a`.
         unsafe { self.deref_mut_helper() }
     }
 }
@@ -2121,12 +2123,12 @@ where
     /// `into_slice` consumes the `LayoutVerified`, and returns a reference to
     /// `[T]`.
     pub fn into_slice(self) -> &'a [T] {
-        // SAFETY: This is sound because `B` is guaranteed to live for the
-        // lifetime `'a`, meaning that a) the returned reference cannot outlive
-        // the `B` from which `self` was constructed and, b) no mutable methods
-        // on that `B` can be called during the lifetime of the returned
-        // reference. See the documentation on `deref_slice_helper` for what
-        // invariants we are required to uphold.
+        assert!(B::INTO_REF_INTO_MUT_ARE_SOUND);
+
+        // SAFETY: According to the safety preconditions on
+        // `ByteSlice::INTO_REF_INTO_MUT_ARE_SOUND`, the preceding assert
+        // ensures that, given `B: 'a`, it is sound to drop `self` and still
+        // access the underlying memory using reads for `'a`.
         unsafe { self.deref_slice_helper() }
     }
 }
@@ -2141,13 +2143,13 @@ where
     /// `into_mut_slice` consumes the `LayoutVerified`, and returns a mutable
     /// reference to `[T]`.
     pub fn into_mut_slice(mut self) -> &'a mut [T] {
-        // SAFETY: This is sound because `B` is guaranteed to live for the
-        // lifetime `'a`, meaning that a) the returned reference cannot outlive
-        // the `B` from which `self` was constructed and, b) no other methods -
-        // mutable or immutable - on that `B` can be called during the lifetime
-        // of the returned reference. See the documentation on
-        // `deref_mut_slice_helper` for what invariants we are required to
-        // uphold.
+        assert!(B::INTO_REF_INTO_MUT_ARE_SOUND);
+
+        // SAFETY: According to the safety preconditions on
+        // `ByteSlice::INTO_REF_INTO_MUT_ARE_SOUND`, the preceding assert
+        // ensures that, given `B: 'a + ByteSliceMut`, it is sound to drop
+        // `self` and still access the underlying memory using both reads and
+        // writes for `'a`.
         unsafe { self.deref_mut_slice_helper() }
     }
 }
@@ -2627,6 +2629,29 @@ mod sealed {
 /// [`Vec<u8>`]: alloc::vec::Vec
 /// [`split_at`]: crate::ByteSlice::split_at
 pub unsafe trait ByteSlice: Deref<Target = [u8]> + Sized + self::sealed::Sealed {
+    /// Are the [`Ref::into_ref`] and [`Ref::into_mut`] methods sound when used
+    /// with `Self`? If not, evaluating this constant must panic at compile
+    /// time.
+    ///
+    /// This exists to work around #716 on versions of zerocopy prior to 0.8.
+    ///
+    /// # Safety
+    ///
+    /// This may only be set to true if the following holds: Given the
+    /// following:
+    /// - `Self: 'a`
+    /// - `bytes: Self`
+    /// - `let ptr = bytes.as_ptr()`
+    ///
+    /// ...then:
+    /// - Using `ptr` to read the memory previously addressed by `bytes` is
+    ///   sound for `'a` even after `bytes` has been dropped.
+    /// - If `Self: ByteSliceMut`, using `ptr` to write the memory previously
+    ///   addressed by `bytes` is sound for `'a` even after `bytes` has been
+    ///   dropped.
+    #[doc(hidden)]
+    const INTO_REF_INTO_MUT_ARE_SOUND: bool;
+
     /// Gets a raw pointer to the first byte in the slice.
     #[inline]
     fn as_ptr(&self) -> *const u8 {
@@ -2660,6 +2685,10 @@ pub unsafe trait ByteSliceMut: ByteSlice + DerefMut {
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a [u8] {
+    // SAFETY: If `&'b [u8]: 'a`, then the underlying memory is treated as
+    // borrowed immutably for `'a` even if the slice itself is dropped.
+    const INTO_REF_INTO_MUT_ARE_SOUND: bool = true;
+
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at(self, mid)
@@ -2669,6 +2698,10 @@ unsafe impl<'a> ByteSlice for &'a [u8] {
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a mut [u8] {
+    // SAFETY: If `&'b mut [u8]: 'a`, then the underlying memory is treated as
+    // borrowed mutably for `'a` even if the slice itself is dropped.
+    const INTO_REF_INTO_MUT_ARE_SOUND: bool = true;
+
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at_mut(self, mid)
@@ -2678,6 +2711,16 @@ unsafe impl<'a> ByteSlice for &'a mut [u8] {
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for Ref<'a, [u8]> {
+    const INTO_REF_INTO_MUT_ARE_SOUND: bool = if !cfg!(doc) {
+        panic!("Ref::into_ref and Ref::into_mut are unsound when used with core::cell::Ref; see https://github.com/google/zerocopy/issues/716")
+    } else {
+        // When compiling documentation, allow the evaluation of this constant
+        // to succeed. This doesn't represent a soundness hole - it just delays
+        // any error to runtime. The reason we need this is that, otherwise,
+        // `rustdoc` will fail when trying to document this item.
+        false
+    };
+
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         Ref::map_split(self, |slice| <[u8]>::split_at(slice, mid))
@@ -2687,6 +2730,16 @@ unsafe impl<'a> ByteSlice for Ref<'a, [u8]> {
 // TODO(#61): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
+    const INTO_REF_INTO_MUT_ARE_SOUND: bool = if !cfg!(doc) {
+        panic!("Ref::into_ref and Ref::into_mut are unsound when used with core::cell::RefMut; see https://github.com/google/zerocopy/issues/716")
+    } else {
+        // When compiling documentation, allow the evaluation of this constant
+        // to succeed. This doesn't represent a soundness hole - it just delays
+        // any error to runtime. The reason we need this is that, otherwise,
+        // `rustdoc` will fail when trying to document this item.
+        false
+    };
+
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         RefMut::map_split(self, |slice| <[u8]>::split_at_mut(slice, mid))
