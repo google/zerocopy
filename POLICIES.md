@@ -99,5 +99,10 @@ increase our MSRV during semver-breaking version changes (e.g., 0.1 -> 0.2, 1.0
 Whenever a bug or regression is identified, we will yank any affected versions
 which are part of the current version train. For example, if the most recent
 version is 0.10.20 and a bug is uncovered, we will release a fix in 0.10.21 and
-yank all 0.10.X versions which are affected. We *may* also yank versions in previous
-version trains on a case-by-case basis, but we don't guarantee it.
+yank all 0.10.X versions which are affected. We *may* also yank versions in
+previous version trains on a case-by-case basis, but we don't guarantee it.
+
+For information about a particular yanked or un-yanked version, see our [yank
+log][yank-log].
+
+[yank-log]: https://github.com/google/zerocopy/blob/main/CHANGELOG.md#yanks-and-regressions
