@@ -27,18 +27,18 @@ union NoCell1 {
 }
 
 //
-// AsBytes errors
+// IntoBytes errors
 //
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(C)]
-union AsBytes1<T> {
+union IntoBytes1<T> {
     foo: ManuallyDrop<T>,
 }
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(C)]
-union AsBytes2 {
+union IntoBytes2 {
     foo: u8,
     bar: [u8; 2],
 }

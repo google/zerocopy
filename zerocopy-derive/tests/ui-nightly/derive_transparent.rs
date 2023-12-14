@@ -15,7 +15,7 @@ use core::marker::PhantomData;
 
 use {
     static_assertions::assert_impl_all,
-    zerocopy::{AsBytes, FromBytes, FromZeros, TryFromBytes, Unaligned},
+    zerocopy::{FromBytes, FromZeros, IntoBytes, TryFromBytes, Unaligned},
 };
 
 use self::util::NotZerocopy;
@@ -24,7 +24,7 @@ fn main() {}
 
 // Test generic transparent structs
 
-#[derive(AsBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
+#[derive(IntoBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
 #[repr(transparent)]
 struct TransparentStruct<T> {
     inner: T,
@@ -37,5 +37,5 @@ struct TransparentStruct<T> {
 assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
 assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
 assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
-assert_impl_all!(TransparentStruct<NotZerocopy>: AsBytes);
+assert_impl_all!(TransparentStruct<NotZerocopy>: IntoBytes);
 assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);

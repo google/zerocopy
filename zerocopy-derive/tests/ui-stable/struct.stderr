@@ -25,10 +25,10 @@ error: cannot derive TryFromBytes with repr(packed)
 error: unsupported on generic structs that are not repr(transparent) or repr(packed)
   --> tests/ui-stable/struct.rs:97:10
    |
-97 | #[derive(AsBytes)]
-   |          ^^^^^^^
+97 | #[derive(IntoBytes)]
+   |          ^^^^^^^^^
    |
-   = note: this error originates in the derive macro `AsBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: cannot derive Unaligned with repr(align(N > 1))
    --> tests/ui-stable/struct.rs:122:11
@@ -173,22 +173,22 @@ error[E0277]: the trait bound `UnsafeCell<u8>: NoCell` is not satisfied
    = help: see issue #48214
    = note: this error originates in the derive macro `NoCell` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `HasPadding<AsBytes2, true>: ShouldBe<false>` is not satisfied
+error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is not satisfied
    --> tests/ui-stable/struct.rs:101:10
     |
-101 | #[derive(AsBytes)]
-    |          ^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<AsBytes2, true>`
+101 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes2, true>`
     |
     = help: the trait `ShouldBe<VALUE>` is implemented for `HasPadding<T, VALUE>`
     = help: see issue #48214
-    = note: this error originates in the derive macro `AsBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `HasPadding<AsBytes3, true>: ShouldBe<false>` is not satisfied
+error[E0277]: the trait bound `HasPadding<IntoBytes3, true>: ShouldBe<false>` is not satisfied
    --> tests/ui-stable/struct.rs:108:10
     |
-108 | #[derive(AsBytes)]
-    |          ^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<AsBytes3, true>`
+108 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes3, true>`
     |
     = help: the trait `ShouldBe<VALUE>` is implemented for `HasPadding<T, VALUE>`
     = help: see issue #48214
-    = note: this error originates in the derive macro `AsBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)

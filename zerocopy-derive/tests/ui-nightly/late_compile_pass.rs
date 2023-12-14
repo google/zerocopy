@@ -49,12 +49,12 @@ struct FromBytes1 {
 }
 
 //
-// AsBytes errors
+// IntoBytes errors
 //
 
-#[derive(AsBytes)]
+#[derive(IntoBytes)]
 #[repr(C)]
-struct AsBytes1 {
+struct IntoBytes1 {
     value: NotZerocopy,
 }
 

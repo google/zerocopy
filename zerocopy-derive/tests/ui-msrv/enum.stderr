@@ -37,7 +37,7 @@ error: TryFromBytes not supported on enum types
 34 | | }
    | |_^
 
-error: unsupported representation for deriving FromBytes, AsBytes, or Unaligned on an enum
+error: unsupported representation for deriving zerocopy trait(s) on an enum
   --> tests/ui-msrv/enum.rs:31:8
    |
 31 | #[repr(transparent)]

@@ -16,7 +16,7 @@
 //! this module - [`U16`], [`I16`], [`U32`], [`F64`], etc. Unlike their native
 //! counterparts, these types have alignment 1, and take a type parameter
 //! specifying the byte order in which the bytes are stored in memory. Each type
-//! implements the [`FromBytes`], [`AsBytes`], and [`Unaligned`] traits.
+//! implements the [`FromBytes`], [`IntoBytes`], and [`Unaligned`] traits.
 //!
 //! These two properties, taken together, make these types useful for defining
 //! data structures whose memory layout matches a wire format such as that of a
@@ -35,10 +35,10 @@
 //!
 //! ```rust,edition2021
 //! # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
-//! use zerocopy::{AsBytes, ByteSlice, FromBytes, FromZeros, NoCell, Ref, Unaligned};
+//! use zerocopy::{IntoBytes, ByteSlice, FromBytes, FromZeros, NoCell, Ref, Unaligned};
 //! use zerocopy::byteorder::network_endian::U16;
 //!
-//! #[derive(FromZeros, FromBytes, AsBytes, NoCell, Unaligned)]
+//! #[derive(FromZeros, FromBytes, IntoBytes, NoCell, Unaligned)]
 //! #[repr(C)]
 //! struct UdpHeader {
 //!     src_port: U16,
@@ -265,7 +265,7 @@ order to uphold the invariants that a) the layout of `", stringify!($name), "`
 has endianness `O` and that, b) the layout of `", stringify!($native), "` has
 the platform's native endianness.
 
-`", stringify!($name), "` implements [`FromBytes`], [`AsBytes`], and [`Unaligned`],
+`", stringify!($name), "` implements [`FromBytes`], [`IntoBytes`], and [`Unaligned`],
 making it useful for parsing and serialization. See the module documentation for an
 example of how it can be used for parsing UDP packets.
 
@@ -273,10 +273,10 @@ example of how it can be used for parsing UDP packets.
 [`get`]: crate::byteorder::", stringify!($name), "::get
 [`set`]: crate::byteorder::", stringify!($name), "::set
 [`FromBytes`]: crate::FromBytes
-[`AsBytes`]: crate::AsBytes
+[`IntoBytes`]: crate::IntoBytes
 [`Unaligned`]: crate::Unaligned"),
             #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, NoCell, FromZeros, FromBytes, AsBytes, Unaligned))]
+            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, NoCell, FromZeros, FromBytes, IntoBytes, Unaligned))]
             #[repr(transparent)]
             pub struct $name<O>([u8; $bytes], PhantomData<O>);
         }
@@ -288,12 +288,12 @@ example of how it can be used for parsing UDP packets.
             /// SAFETY:
             /// `$name<O>` is `repr(transparent)`, and so it has the same layout
             /// as its only non-zero field, which is a `u8` array. `u8` arrays
-            /// are `NoCell`, `FromZeros`, `FromBytes`, `AsBytes`, and
+            /// are `NoCell`, `FromZeros`, `FromBytes`, `IntoBytes`, and
             /// `Unaligned`.
             impl_or_verify!(O => NoCell for $name<O>);
             impl_or_verify!(O => FromZeros for $name<O>);
             impl_or_verify!(O => FromBytes for $name<O>);
-            impl_or_verify!(O => AsBytes for $name<O>);
+            impl_or_verify!(O => IntoBytes for $name<O>);
             impl_or_verify!(O => Unaligned for $name<O>);
         }
 
@@ -607,7 +607,7 @@ mod tests {
 
     use {
         super::*,
-        crate::{AsBytes, FromBytes, Unaligned},
+        crate::{FromBytes, IntoBytes, Unaligned},
     };
 
     #[cfg(not(kani))]
@@ -655,7 +655,7 @@ mod tests {
     use compatibility::*;
 
     // A native integer type (u16, i32, etc).
-    trait Native: Arbitrary + FromBytes + AsBytes + NoCell + Copy + PartialEq + Debug {
+    trait Native: Arbitrary + FromBytes + IntoBytes + NoCell + Copy + PartialEq + Debug {
         const ZERO: Self;
         const MAX_VALUE: Self;
 
@@ -692,13 +692,13 @@ mod tests {
     }
 
     trait ByteArray:
-        FromBytes + AsBytes + NoCell + Copy + AsRef<[u8]> + AsMut<[u8]> + Debug + Default + Eq
+        FromBytes + IntoBytes + NoCell + Copy + AsRef<[u8]> + AsMut<[u8]> + Debug + Default + Eq
     {
         /// Invert the order of the bytes in the array.
         fn invert(self) -> Self;
     }
 
-    trait ByteOrderType: FromBytes + AsBytes + Unaligned + Copy + Eq + Debug {
+    trait ByteOrderType: FromBytes + IntoBytes + Unaligned + Copy + Eq + Debug {
         type Native: Native;
         type ByteArray: ByteArray;
 

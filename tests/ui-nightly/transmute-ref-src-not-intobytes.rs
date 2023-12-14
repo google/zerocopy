@@ -6,19 +6,17 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+include!("../../zerocopy-derive/tests/util.rs");
+
 extern crate zerocopy;
 
-use zerocopy::transmute_mut;
+use zerocopy::transmute_ref;
 
 fn main() {}
 
-#[derive(zerocopy::FromZeros, zerocopy::FromBytes, zerocopy::NoCell)]
-#[repr(C)]
-struct Src;
+#[derive(zerocopy::NoCell)]
+#[repr(transparent)]
+struct Src(AU16);
 
-#[derive(zerocopy::FromZeros, zerocopy::FromBytes, zerocopy::AsBytes, zerocopy::NoCell)]
-#[repr(C)]
-struct Dst;
-
-// `transmute_mut` requires that the source type implements `AsBytes`
-const SRC_NOT_AS_BYTES: &mut Dst = transmute_mut!(&mut Src);
+// `transmute_ref` requires that the source type implements `IntoBytes`
+const SRC_NOT_AS_BYTES: &AU16 = transmute_ref!(&Src(AU16(0)));

@@ -29,7 +29,7 @@ Zerocopy provides four core marker traits, each of which can be derived
   instance of a type
 - `FromBytes` indicates that a type may safely be converted from an
   arbitrary byte sequence
-- `AsBytes` indicates that a type may safely be converted *to* a byte
+- `IntoBytes` indicates that a type may safely be converted *to* a byte
   sequence
 - `Unaligned` indicates that a type's alignment requirement is 1
 
@@ -77,7 +77,7 @@ for network parsing.
 
 - **`simd`**
   When the `simd` feature is enabled, `FromZeros`, `FromBytes`, and
-  `AsBytes` impls are emitted for all stable SIMD types which exist on the
+  `IntoBytes` impls are emitted for all stable SIMD types which exist on the
   target platform. Note that the layout of SIMD types is not yet stabilized,
   so these impls may be removed in the future if layout changes make them
   invalid. For more information, see the Unsafe Code Guidelines Reference

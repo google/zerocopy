@@ -157,7 +157,7 @@ name of that subsystem in square brackets, omitting any "zerocopy" prefix
 zerocopy-derive crate:
 
 ```text
-[derive] Support AsBytes on types with parameters
+[derive] Support IntoBytes on types with parameters
 ```
 
 The body may be omitted if the subject is self-explanatory; e.g. when fixing a

@@ -14,7 +14,7 @@ use zerocopy::transmute_ref;
 
 fn main() {}
 
-#[derive(zerocopy::AsBytes)]
+#[derive(zerocopy::IntoBytes)]
 #[repr(transparent)]
 struct Src(AU16);
 
