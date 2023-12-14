@@ -1,5 +1,6 @@
 #!/bin/bash
 set -eo pipefail
+which yq > /dev/null
 jobs=$(for i in $(find .github -iname '*.yaml' -or -iname '*.yml')
   do
     # Select jobs that are triggered by pull request.
