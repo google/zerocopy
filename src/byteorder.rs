@@ -307,9 +307,42 @@ define_type!(
     [u32, u64, u128, usize],
     [U32, U64, U128]
 );
-define_type!(A, U32, u32, 32, 4, read_u32, write_u32, unsigned, [u64, u128], [U64, U128]);
-define_type!(A, U64, u64, 64, 8, read_u64, write_u64, unsigned, [u128], [U128]);
-define_type!(A, U128, u128, 128, 16, read_u128, write_u128, unsigned, [], []);
+define_type!(
+    A,
+    U32,
+    u32,
+    32,
+    4,
+    read_u32,
+    write_u32,
+    unsigned,
+    [u64, u128],
+    [U64, U128]
+);
+define_type!(
+    A,
+    U64,
+    u64,
+    64,
+    8,
+    read_u64,
+    write_u64,
+    unsigned,
+    [u128],
+    [U128]
+);
+define_type!(
+    A,
+    U128,
+    u128,
+    128,
+    16,
+    read_u128,
+    write_u128,
+    unsigned,
+    [],
+    []
+);
 define_type!(
     An,
     I16,
@@ -322,9 +355,42 @@ define_type!(
     [i32, i64, i128, isize],
     [I32, I64, I128]
 );
-define_type!(An, I32, i32, 32, 4, read_i32, write_i32, signed, [i64, i128], [I64, I128]);
-define_type!(An, I64, i64, 64, 8, read_i64, write_i64, signed, [i128], [I128]);
-define_type!(An, I128, i128, 128, 16, read_i128, write_i128, signed, [], []);
+define_type!(
+    An,
+    I32,
+    i32,
+    32,
+    4,
+    read_i32,
+    write_i32,
+    signed,
+    [i64, i128],
+    [I64, I128]
+);
+define_type!(
+    An,
+    I64,
+    i64,
+    64,
+    8,
+    read_i64,
+    write_i64,
+    signed,
+    [i128],
+    [I128]
+);
+define_type!(
+    An,
+    I128,
+    i128,
+    128,
+    16,
+    read_i128,
+    write_i128,
+    signed,
+    [],
+    []
+);
 
 #[cfg(test)]
 mod tests {
