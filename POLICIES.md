@@ -96,8 +96,27 @@ increase our MSRV during semver-breaking version changes (e.g., 0.1 -> 0.2, 1.0
 
 ## Yanking
 
-Whenever a bug or regression is identified, we will yank any affected versions
-which are part of the current version train. For example, if the most recent
-version is 0.10.20 and a bug is uncovered, we will release a fix in 0.10.21 and
-yank all 0.10.X versions which are affected. We *may* also yank versions in previous
+Whenever a bug or regression is identified, we will yank according to the following
+rules:
+- If the bug causes compilation to fail, we will not yank
+- Otherwise, we will yank if any of the following conditions hold:
+  - The bug affects soundness
+  - The bug contradicts documented behavior
+  - The bug contradics widely assumed behavior
+  - The bug is a regression (code exists which would succeed on a version X and
+    would fail on a version Y > X)
+
+When these rules instruct us to yank, we will yank any affected versions which
+are part of the current version train. For example, if the most recent version
+is 0.10.20 and a bug is uncovered, we will release a fix in 0.10.21 and yank all
+0.10.X versions which are affected. We *may* also yank versions in previous
 version trains on a case-by-case basis, but we don't guarantee it.
+
+In addition to yanking, we will do the following:
+- Submit a [RustSec Advisory][rustsec]
+- Submit a [GitHub Security Advisory][github-advisories]
+- Add an entry in our [yank log][yank-log]
+
+[rustsec]: https://rustsec.org/
+[github-advisories]: https://github.com/advisories
+[yank-log]: https://github.com/google/zerocopy/blob/main/CHANGELOG.md#yanks-and-regressions
