@@ -12,8 +12,8 @@
 //
 //   ./generate-readme.sh > README.md
 
-//! *<span style="font-size: 100%; color:grey;">Want to help improve zerocopy?
-//! Fill out our [user survey][user-survey]!</span>*
+//! *<span style="font-size: 100%; color:grey;">Need more out of zerocopy?
+//! Submit a [customer request issue][customer-request-issue]!</span>*
 //!
 //! ***<span style="font-size: 140%">Fast, safe, <span
 //! style="color:red;">compile error</span>. Pick two.</span>***
@@ -40,7 +40,7 @@
 //! conversions; see the [`byteorder`] module. These types are especially useful
 //! for network parsing.
 //!
-//! [user-survey]: https://docs.google.com/forms/d/e/1FAIpQLSdzBNTN9tzwsmtyZxRFNL02K36IWCdHWW2ZBckyQS2xiO3i8Q/viewform?usp=published_options
+//! [customer-request-issue]: https://github.com/google/zerocopy/issues/new/choose
 //!
 //! # Cargo Features
 //!
