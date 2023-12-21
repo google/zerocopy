@@ -9,14 +9,19 @@
 [package]
 edition = "2018"
 name = "zerocopy-derive"
-version = "0.7.31"
+version = "0.7.32"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Custom derive for traits from the zerocopy crate"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"
 rust-version = "1.60.0"
 
-exclude = [".*"]
+# We prefer to include tests when publishing to crates.io so that Crater [1] can
+# detect regressions in our test suite. These two tests are excessively large,
+# so we exclude them to keep the published crate file small.
+#
+# [1] https://github.com/rust-lang/crater
+exclude = [".*", "tests/enum_from_bytes.rs", "tests/ui-nightly/enum_from_bytes_u16_too_few.rs.disabled"]
 
 [lib]
 proc-macro = true
