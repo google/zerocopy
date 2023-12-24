@@ -1616,7 +1616,7 @@ pub unsafe trait FromZeros {
     /// * Panics if `size_of::<Self>() * len` overflows.
     /// * Panics if allocation of `size_of::<Self>() * len` bytes fails.
     #[cfg(feature = "alloc")]
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "new_vec_zeroed")))]
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
     #[inline(always)]
     fn new_vec_zeroed(len: usize) -> Vec<Self>
     where
