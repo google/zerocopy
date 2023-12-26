@@ -251,10 +251,7 @@ jobs:
         # an API that cargo-semver-checks can understand.
         package: zerocopy
         feature-group: all-features
-        # TODO: Set this to the specific nightly we have pinned in CI. Not a big
-        # deal since this isn't affected by the trybuild stderr files, which is
-        # the reason we need to pin to a specific nightly.
-        rust-toolchain: nightly
+        rust-toolchain: ${{ env.ZC_TOOLCHAIN }}
       if: matrix.crate == 'zerocopy' && matrix.features == '--all-features' && matrix.toolchain == 'nightly'
 
   kani:
