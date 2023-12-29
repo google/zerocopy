@@ -179,7 +179,7 @@ error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is
 101 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes2, true>`
     |
-    = help: the trait `ShouldBe<VALUE>` is implemented for `HasPadding<T, VALUE>`
+    = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes2, true>`
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -189,6 +189,60 @@ error[E0277]: the trait bound `HasPadding<IntoBytes3, true>: ShouldBe<false>` is
 108 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes3, true>`
     |
-    = help: the trait `ShouldBe<VALUE>` is implemented for `HasPadding<T, VALUE>`
+    = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes3, true>`
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
+  --> tests/ui-stable/struct.rs:71:1
+   |
+71 | struct TryFromBytesPacked {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+note: `AU16` has a `#[repr(align)]` attribute
+  --> tests/ui-stable/../util.rs
+   |
+   | pub struct AU16(u16);
+   | ^^^^^^^^^^^^^^^
+
+error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
+  --> tests/ui-stable/struct.rs:77:1
+   |
+77 | struct TryFromBytesPackedN {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+note: `AU16` has a `#[repr(align)]` attribute
+  --> tests/ui-stable/../util.rs
+   |
+   | pub struct AU16(u16);
+   | ^^^^^^^^^^^^^^^
+
+error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
+  --> tests/ui-stable/struct.rs:83:1
+   |
+83 | struct TryFromBytesCPacked {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+note: `AU16` has a `#[repr(align)]` attribute
+  --> tests/ui-stable/../util.rs
+   |
+   | pub struct AU16(u16);
+   | ^^^^^^^^^^^^^^^
+
+error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
+  --> tests/ui-stable/struct.rs:89:1
+   |
+89 | struct TryFromBytesCPackedN {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+note: `AU16` has a `#[repr(align)]` attribute
+  --> tests/ui-stable/../util.rs
+   |
+   | pub struct AU16(u16);
+   | ^^^^^^^^^^^^^^^
+
+error[E0587]: type has conflicting packed and align representation hints
+   --> tests/ui-stable/struct.rs:133:1
+    |
+133 | struct Unaligned3;
+    | ^^^^^^^^^^^^^^^^^
