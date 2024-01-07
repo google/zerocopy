@@ -179,28 +179,6 @@ error[E0277]: the trait bound `UnsafeCell<u8>: NoCell` is not satisfied
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `NoCell` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is not satisfied
-   --> tests/ui-nightly/struct.rs:101:10
-    |
-101 | #[derive(IntoBytes)]
-    |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes2, true>`
-    |
-    = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes2, true>`
-    = help: see issue #48214
-    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
-    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0277]: the trait bound `HasPadding<IntoBytes3, true>: ShouldBe<false>` is not satisfied
-   --> tests/ui-nightly/struct.rs:108:10
-    |
-108 | #[derive(IntoBytes)]
-    |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes3, true>`
-    |
-    = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes3, true>`
-    = help: see issue #48214
-    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
-    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
-
 error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
   --> tests/ui-nightly/struct.rs:71:1
    |
@@ -248,6 +226,28 @@ note: `AU16` has a `#[repr(align)]` attribute
    |
    | pub struct AU16(u16);
    | ^^^^^^^^^^^^^^^
+
+error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is not satisfied
+   --> tests/ui-nightly/struct.rs:101:10
+    |
+101 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes2, true>`
+    |
+    = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes2, true>`
+    = help: see issue #48214
+    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `HasPadding<IntoBytes3, true>: ShouldBe<false>` is not satisfied
+   --> tests/ui-nightly/struct.rs:108:10
+    |
+108 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes3, true>`
+    |
+    = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes3, true>`
+    = help: see issue #48214
+    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0587]: type has conflicting packed and align representation hints
    --> tests/ui-nightly/struct.rs:133:1
