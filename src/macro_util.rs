@@ -479,7 +479,7 @@ mod tests {
         macro_rules! test {
             (#[$cfg:meta] ($($ts:ty),* ; $trailing_field_ty:ty) => $expect:expr) => {{
                 #[$cfg]
-                struct Test($($ts,)* $trailing_field_ty);
+                struct Test($(#[allow(dead_code)] $ts,)* #[allow(dead_code)] $trailing_field_ty);
                 assert_eq!(test!(@offset $($ts),* ; $trailing_field_ty), $expect);
             }};
             (#[$cfg:meta] $(#[$cfgs:meta])* ($($ts:ty),* ; $trailing_field_ty:ty) => $expect:expr) => {
@@ -618,7 +618,7 @@ mod tests {
         macro_rules! test {
             (#[$cfg:meta] ($($ts:ty),*) => $expect:expr) => {{
                 #[$cfg]
-                struct Test($($ts),*);
+                struct Test($(#[allow(dead_code)] $ts),*);
                 assert_eq!(struct_has_padding!(Test, $($ts),*), $expect);
             }};
             (#[$cfg:meta] $(#[$cfgs:meta])* ($($ts:ty),*) => $expect:expr) => {

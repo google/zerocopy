@@ -6624,6 +6624,7 @@ mod tests {
 
         // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
         // |          N |        N |              N |        Y |      KL01 |
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         struct KL01(NotKnownLayout<AU32>, NotKnownLayout<AU16>);
 
@@ -6633,6 +6634,7 @@ mod tests {
         assert_eq!(<KL01 as KnownLayout>::LAYOUT, sized_layout(4, 8));
 
         // ...with `align(N)`:
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         #[repr(align(64))]
         struct KL01Align(NotKnownLayout<AU32>, NotKnownLayout<AU16>);
@@ -6643,6 +6645,7 @@ mod tests {
         assert_eq!(<KL01Align as KnownLayout>::LAYOUT, sized_layout(64, 64));
 
         // ...with `packed`:
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         #[repr(packed)]
         struct KL01Packed(NotKnownLayout<AU32>, NotKnownLayout<AU16>);
@@ -6653,6 +6656,7 @@ mod tests {
         assert_eq!(<KL01Packed as KnownLayout>::LAYOUT, sized_layout(1, 6));
 
         // ...with `packed(N)`:
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         #[repr(packed(2))]
         struct KL01PackedN(NotKnownLayout<AU32>, NotKnownLayout<AU16>);
@@ -6666,6 +6670,7 @@ mod tests {
 
         // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
         // |          N |        N |              Y |        Y |      KL03 |
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         struct KL03(NotKnownLayout, u8);
 
@@ -6675,6 +6680,7 @@ mod tests {
         assert_eq!(<KL03 as KnownLayout>::LAYOUT, sized_layout(1, 1));
 
         // ... with `align(N)`
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         #[repr(align(64))]
         struct KL03Align(NotKnownLayout<AU32>, u8);
@@ -6685,6 +6691,7 @@ mod tests {
         assert_eq!(<KL03Align as KnownLayout>::LAYOUT, sized_layout(64, 64));
 
         // ... with `packed`:
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         #[repr(packed)]
         struct KL03Packed(NotKnownLayout<AU32>, u8);
@@ -6695,6 +6702,7 @@ mod tests {
         assert_eq!(<KL03Packed as KnownLayout>::LAYOUT, sized_layout(1, 5));
 
         // ... with `packed(N)`
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         #[repr(packed(2))]
         struct KL03PackedN(NotKnownLayout<AU32>, u8);
@@ -6708,6 +6716,7 @@ mod tests {
 
         // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
         // |          N |        Y |              N |        Y |      KL05 |
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         struct KL05<T>(u8, T);
 
@@ -6717,6 +6726,7 @@ mod tests {
 
         // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
         // |          N |        Y |              Y |        Y |      KL07 |
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         struct KL07<T: KnownLayout>(u8, T);
 
@@ -6726,6 +6736,7 @@ mod tests {
 
         // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
         // |          Y |        N |              Y |        N |      KL10 |
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         #[repr(C)]
         struct KL10(NotKnownLayout<AU32>, [u8]);
@@ -6739,6 +6750,7 @@ mod tests {
         assert_eq!(<KL10 as KnownLayout>::LAYOUT, unsized_layout(4, 1, 4));
 
         // ...with `align(N)`:
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         #[repr(C, align(64))]
         struct KL10Align(NotKnownLayout<AU32>, [u8]);
@@ -6754,6 +6766,7 @@ mod tests {
         assert_eq!(<KL10Align as KnownLayout>::LAYOUT, unsized_layout(64, 1, 4));
 
         // ...with `packed`:
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         #[repr(C, packed)]
         struct KL10Packed(NotKnownLayout<AU32>, [u8]);
@@ -6769,6 +6782,7 @@ mod tests {
         assert_eq!(<KL10Packed as KnownLayout>::LAYOUT, unsized_layout(1, 1, 4));
 
         // ...with `packed(N)`:
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         #[repr(C, packed(2))]
         struct KL10PackedN(NotKnownLayout<AU32>, [u8]);
@@ -6785,6 +6799,7 @@ mod tests {
 
         // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
         // |          Y |        N |              Y |        Y |      KL11 |
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         #[repr(C)]
         struct KL11(NotKnownLayout<AU64>, u8);
@@ -6798,6 +6813,7 @@ mod tests {
         assert_eq!(<KL11 as KnownLayout>::LAYOUT, sized_layout(8, 16));
 
         // ...with `align(N)`:
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         #[repr(C, align(64))]
         struct KL11Align(NotKnownLayout<AU64>, u8);
@@ -6813,6 +6829,7 @@ mod tests {
         assert_eq!(<KL11Align as KnownLayout>::LAYOUT, sized_layout(64, 64));
 
         // ...with `packed`:
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         #[repr(C, packed)]
         struct KL11Packed(NotKnownLayout<AU64>, u8);
@@ -6828,6 +6845,7 @@ mod tests {
         assert_eq!(<KL11Packed as KnownLayout>::LAYOUT, sized_layout(1, 9));
 
         // ...with `packed(N)`:
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         #[repr(C, packed(2))]
         struct KL11PackedN(NotKnownLayout<AU64>, u8);
@@ -6844,6 +6862,7 @@ mod tests {
 
         // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
         // |          Y |        Y |              Y |        N |      KL14 |
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         #[repr(C)]
         struct KL14<T: ?Sized + KnownLayout>(u8, T);
@@ -6854,6 +6873,7 @@ mod tests {
 
         // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
         // |          Y |        Y |              Y |        Y |      KL15 |
+        #[allow(dead_code)]
         #[derive(KnownLayout)]
         #[repr(C)]
         struct KL15<T: KnownLayout>(u8, T);
@@ -6870,7 +6890,7 @@ mod tests {
         //  - [u8]
         //  - [AU16]
 
-        #[allow(clippy::upper_case_acronyms)]
+        #[allow(clippy::upper_case_acronyms, dead_code)]
         #[derive(KnownLayout)]
         #[repr(C)]
         struct KLTU<T, U: ?Sized>(T, U);
