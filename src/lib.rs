@@ -254,6 +254,12 @@ mod util;
 // TODO(#252): If we make this pub, come up with a better name.
 mod wrappers;
 
+// TODO(#196): Once we figure out how to make the `project!` macro safe
+// (specifically, by statically rejecting projection through `deref`), remove
+// this `#[doc(hidden)]` and make `project` part of our public API.
+#[doc(hidden)]
+pub mod project;
+
 #[cfg(feature = "byteorder")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "byteorder")))]
 pub use crate::byteorder::*;
