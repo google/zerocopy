@@ -259,7 +259,7 @@ jobs:
     name: 'Run tests under Kani'
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: model-checking/kani-github-action@e621a98d839036c62e96cd5fa33ac5d076729f94 # v1.0
+      - uses: model-checking/kani-github-action@f838096619a707b0f6b2118cf435eaccfa33e51f # v1.1
         with:
           args: "--package zerocopy --all-features --output-format=terse --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
 
