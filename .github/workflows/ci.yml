@@ -127,7 +127,7 @@ jobs:
           components: clippy, rust-src ${{ matrix.toolchain == 'nightly' && ', miri' || '' }}
 
     - name: Rust Cache
-      uses: Swatinem/rust-cache@a22603398250b864f7190077025cf752307154dc # v2.7.2
+      uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84 # v2.7.3
       with:
         key: "${{ matrix.target }}"
 
