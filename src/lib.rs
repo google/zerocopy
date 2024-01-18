@@ -454,7 +454,7 @@ impl DstLayout {
             None => Self::MIN_ALIGN,
         };
 
-        assert!(align.is_power_of_two());
+        assert!(align.get().is_power_of_two());
 
         DstLayout { align, size_info: SizeInfo::Sized { _size: 0 } }
     }
@@ -542,7 +542,7 @@ impl DstLayout {
             None => Self::THEORETICAL_MAX_ALIGN,
         };
 
-        assert!(max_align.is_power_of_two());
+        assert!(max_align.get().is_power_of_two());
 
         // We use Kani to prove that this method is robust to future increases
         // in Rust's maximum allowed alignment. However, if such a change ever

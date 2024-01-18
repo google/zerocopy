@@ -125,7 +125,7 @@ macro_rules! unsafe_impl {
         => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         $(#[$attr])*
-        unsafe impl<$(const $constname: $constty,)* $($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> $trait for $ty {
+        unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),* $(, const $constname: $constty,)*> $trait for $ty {
             unsafe_impl!(@method $trait $(; |$candidate: $(MaybeAligned<$ref_repr>)? $(Maybe<$ptr_repr>)?| $is_bit_valid)?);
         }
     };
@@ -341,7 +341,7 @@ macro_rules! impl_known_layout {
             use core::ptr::NonNull;
 
             // SAFETY: Delegates safety to `DstLayout::for_type`.
-            unsafe impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> KnownLayout for $ty {
+            unsafe impl<$($tyvar $(: ?$optbound)?)? $(, const $constvar : $constty)?> KnownLayout for $ty {
                 #[allow(clippy::missing_inline_in_public_items)]
                 fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
 
