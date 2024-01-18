@@ -356,14 +356,17 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
             // validity of a struct is just the composition of the bit
             // validities of its fields, so this is a sound implementation of
             // `is_bit_valid`.
-            unsafe fn is_bit_valid(candidate: zerocopy::Ptr<Self>) -> bool {
+            fn is_bit_valid(candidate: zerocopy::Maybe<Self>) -> bool {
                 true #(&& {
-                    let project = |slf: *mut Self| ::core::ptr::addr_of_mut!((*slf).#field_names);
-
                     // SAFETY: `project` is a field projection of `candidate`.
                     // The projected field will be well-aligned because this
                     // derive rejects packed types.
-                    let field_candidate = unsafe { candidate.project(project) };
+                    let field_candidate = unsafe {
+                        let project = |slf: *mut Self|
+                            ::core::ptr::addr_of_mut!((*slf).#field_names);
+
+                        candidate.project(project)
+                    };
 
                     // SAFETY: The below invocation of `is_bit_valid` satisfies
                     // the safety preconditions of `is_bit_valid`:

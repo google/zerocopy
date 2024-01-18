@@ -204,6 +204,7 @@
     clippy::unwrap_used,
     clippy::use_debug
 )]
+#![allow(clippy::type_complexity)]
 #![deny(
     rustdoc::bare_urls,
     rustdoc::broken_intra_doc_links,
@@ -249,6 +250,8 @@ mod macros;
 pub mod byteorder;
 #[doc(hidden)]
 pub mod macro_util;
+#[doc(hidden)]
+pub mod pointer;
 mod post_monomorphization_compile_fail_tests;
 mod util;
 // TODO(#252): If we make this pub, come up with a better name.
@@ -305,7 +308,7 @@ use core::alloc::Layout;
 
 // Used by `TryFromBytes::is_bit_valid`.
 #[doc(hidden)]
-pub use crate::util::ptr::Ptr;
+pub use crate::pointer::{Maybe, MaybeAligned, Ptr};
 
 // For each polyfill, as soon as the corresponding feature is stable, the
 // polyfill import will be unused because method/function resolution will prefer
@@ -1217,52 +1220,6 @@ pub unsafe trait TryFromBytes {
     ///
     /// # Safety
     ///
-    /// ## Preconditions
-    ///
-    /// The memory referenced by `candidate` may only be accessed via reads for
-    /// the duration of this method call. This prohibits writes through mutable
-    /// references and through [`UnsafeCell`]s. There may exist immutable
-    /// references to the same memory which contain `UnsafeCell`s so long as:
-    /// - Those `UnsafeCell`s exist at the same byte ranges as `UnsafeCell`s in
-    ///   `Self`. This is a bidirectional property: `Self` may not contain
-    ///   `UnsafeCell`s where other references to the same memory do not, and
-    ///   vice-versa.
-    /// - Those `UnsafeCell`s are never used to perform mutation for the
-    ///   duration of this method call.
-    ///
-    /// The memory referenced by `candidate` may not be referenced by any
-    /// mutable references even if these references are not used to perform
-    /// mutation.
-    ///
-    /// `candidate` is not required to refer to a valid `Self`. However, it must
-    /// satisfy the requirement that uninitialized bytes may only be present
-    /// where it is possible for them to be present in `Self`. This is a dynamic
-    /// property: if, at a particular byte offset, a valid enum discriminant is
-    /// set, the subsequent bytes may only have uninitialized bytes as
-    /// specificed by the corresponding enum.
-    ///
-    /// Formally, given `len = size_of_val_raw(candidate)`, at every byte
-    /// offset, `b`, in the range `[0, len)`:
-    /// - If, in all instances `s: Self` of length `len`, the byte at offset `b`
-    ///   in `s` is initialized, then the byte at offset `b` within `*candidate`
-    ///   must be initialized.
-    /// - Let `c` be the contents of the byte range `[0, b)` in `*candidate`.
-    ///   Let `S` be the subset of valid instances of `Self` of length `len`
-    ///   which contain `c` in the offset range `[0, b)`. If, for all instances
-    ///   of `s: Self` in `S`, the byte at offset `b` in `s` is initialized,
-    ///   then the byte at offset `b` in `*candidate` must be initialized.
-    ///
-    ///   Pragmatically, this means that if `*candidate` is guaranteed to
-    ///   contain an enum type at a particular offset, and the enum discriminant
-    ///   stored in `*candidate` corresponds to a valid variant of that enum
-    ///   type, then it is guaranteed that the appropriate bytes of `*candidate`
-    ///   are initialized as defined by that variant's bit validity (although
-    ///   note that the variant may contain another enum type, in which case the
-    ///   same rules apply depending on the state of its discriminant, and so on
-    ///   recursively).
-    ///
-    /// ## Postconditions
-    ///
     /// Unsafe code may assume that, if `is_bit_valid(candidate)` returns true,
     /// `*candidate` contains a valid `Self`.
     ///
@@ -1276,7 +1233,7 @@ pub unsafe trait TryFromBytes {
     ///
     /// [`UnsafeCell`]: core::cell::UnsafeCell
     #[doc(hidden)]
-    unsafe fn is_bit_valid(candidate: Ptr<'_, Self>) -> bool;
+    fn is_bit_valid(candidate: Maybe<'_, Self>) -> bool;
 
     /// Attempts to interpret a byte slice as a `Self`.
     ///
@@ -1295,30 +1252,19 @@ pub unsafe trait TryFromBytes {
     where
         Self: KnownLayout,
     {
-        let maybe_self = Ref::<_, Self>::new_known_layout_name_to_be_bikeshedded(bytes)?;
+        let candidate = Ptr::from_ref(bytes).try_cast_into_no_leftover::<Self>()?;
 
-        // SAFETY:
-        // - Since `bytes` is an immutable reference, we know that no mutable
-        //   references exist to this memory region.
-        // - Since `[u8]` contains no `UnsafeCell`s, we know there are no
-        //   `&UnsafeCell` references to this memory region.
-        // - Since `TryFromBytes` types may not contain any `UnsafeCell`s, the
-        //   requirement that all references contain `UnsafeCell`s at the same
-        //   offsets is trivially satisfied.
-        // - All bytes of `bytes` are initialized.
-        //
+        // SAFETY: `candidate` has no uninitialized sub-ranges because it
+        // derived from `bytes: &[u8]`, and is therefore at least as-initialized
+        // as `Self`.
+        let candidate = unsafe { candidate.assume_as_initialized() };
+
         // This call may panic. If that happens, it doesn't cause any soundness
         // issues, as we have not generated any invalid state which we need to
         // fix before returning.
-        if unsafe { !Self::is_bit_valid(maybe_self.as_ptr()) } {
-            return None;
-        }
+        let candidate = candidate.check_valid();
 
-        // SAFETY:
-        // - `is_bit_valid` guarantees that `*maybe_self` contains a valid
-        //   `Self`.
-        // - `TryFromBytes` types may not contain any `UnsafeCell`s.
-        Some(unsafe { maybe_self.into_ref_unchecked() })
+        candidate.map(MaybeAligned::as_ref)
     }
 }
 
@@ -3124,19 +3070,18 @@ safety_comment! {
     ///   - Given `t: *mut bool` and `let r = *mut u8`, `r` refers to an object
     ///     of the same size as that referred to by `t`. This is true because
     ///     `bool` and `u8` have the same size (1 byte) [1].
-    ///   - Since the closure takes a `&u8` argument, given a `Ptr<'a, bool>`
-    ///     which satisfies the preconditions of
+    ///   - Since the closure takes a `&u8` argument, given a `Maybe<'a,
+    ///     bool>` which satisfies the preconditions of
     ///     `TryFromBytes::<bool>::is_bit_valid`, it must be guaranteed that the
-    ///     memory referenced by that `Ptr` always contains a valid `u8`. Since
-    ///     `bool`'s single byte is always initialized, `is_bit_valid`'s
+    ///     memory referenced by that `MaybeValid` always contains a valid `u8`.
+    ///     Since `bool`'s single byte is always initialized, `is_bit_valid`'s
     ///     precondition requires that the same is true of its argument. Since
     ///     `u8`'s only bit validity invariant is that its single byte must be
     ///     initialized, this memory is guaranteed to contain a valid `u8`.
-    ///   - The alignment of `bool` is equal to the alignment of `u8`. [1] [2]
     ///   - The impl must only return `true` for its argument if the original
-    ///     `Ptr<bool>` refers to a valid `bool`. We only return true if the
-    ///     `u8` value is 0 or 1, and both of these are valid values for `bool`.
-    ///     [3]
+    ///     `Maybe<bool>` refers to a valid `bool`. We only return true if
+    ///     the `u8` value is 0 or 1, and both of these are valid values for
+    ///     `bool`. [3]
     ///
     /// [1] Per https://doc.rust-lang.org/reference/type-layout.html#primitive-data-layout:
     ///
@@ -3155,7 +3100,7 @@ safety_comment! {
     ///
     ///   The value false has the bit pattern 0x00 and the value true has the
     ///   bit pattern 0x01.
-    unsafe_impl!(bool: TryFromBytes; |byte: &u8| *byte < 2);
+    unsafe_impl!(bool: TryFromBytes; |byte: MaybeAligned<u8>| *byte.unaligned_as_ref() < 2);
 }
 safety_comment! {
     /// SAFETY:
@@ -3176,18 +3121,19 @@ safety_comment! {
     ///   - Given `t: *mut char` and `let r = *mut u32`, `r` refers to an object
     ///     of the same size as that referred to by `t`. This is true because
     ///     `char` and `u32` have the same size [1].
-    ///   - Since the closure takes a `&u32` argument, given a `Ptr<'a, char>`
-    ///     which satisfies the preconditions of
+    ///   - Since the closure takes a `&u32` argument, given a `Maybe<'a,
+    ///     char>` which satisfies the preconditions of
     ///     `TryFromBytes::<char>::is_bit_valid`, it must be guaranteed that the
-    ///     memory referenced by that `Ptr` always contains a valid `u32`. Since
-    ///     `char`'s bytes are always initialized [2], `is_bit_valid`'s
-    ///     precondition requires that the same is true of its argument. Since
-    ///     `u32`'s only bit validity invariant is that its bytes must be
-    ///     initialized, this memory is guaranteed to contain a valid `u32`.
-    ///   - The alignment of `char` is equal to the alignment of `u32`. [1]
+    ///     memory referenced by that `MaybeValid` always contains a valid
+    ///     `u32`. Since `char`'s bytes are always initialized [2],
+    ///     `is_bit_valid`'s precondition requires that the same is true of its
+    ///     argument. Since `u32`'s only bit validity invariant is that its
+    ///     bytes must be initialized, this memory is guaranteed to contain a
+    ///     valid `u32`.
     ///   - The impl must only return `true` for its argument if the original
-    ///     `Ptr<char>` refers to a valid `char`. `char::from_u32` guarantees
-    ///     that it returns `None` if its input is not a valid `char`. [3]
+    ///     `Maybe<char>` refers to a valid `char`. `char::from_u32`
+    ///     guarantees that it returns `None` if its input is not a valid
+    ///     `char`. [3]
     ///
     /// [1] Per https://doc.rust-lang.org/nightly/reference/types/textual.html#layout-and-bit-validity:
     ///
@@ -3202,7 +3148,10 @@ safety_comment! {
     ///
     ///   `from_u32()` will return `None` if the input is not a valid value for
     ///   a `char`.
-    unsafe_impl!(char: TryFromBytes; |candidate: &u32| char::from_u32(*candidate).is_some());
+    unsafe_impl!(char: TryFromBytes; |candidate: MaybeAligned<u32>| {
+        let candidate = candidate.read_unaligned();
+        char::from_u32(candidate).is_some()
+    });
 }
 safety_comment! {
     /// SAFETY:
@@ -3227,18 +3176,19 @@ safety_comment! {
     ///   - Given `t: *mut str` and `let r = *mut [u8]`, `r` refers to an object
     ///     of the same size as that referred to by `t`. This is true because
     ///     `str` and `[u8]` have the same representation. [1]
-    ///   - Since the closure takes a `&[u8]` argument, given a `Ptr<'a, str>`
-    ///     which satisfies the preconditions of
+    ///   - Since the closure takes a `&[u8]` argument, given a `Maybe<'a,
+    ///     str>` which satisfies the preconditions of
     ///     `TryFromBytes::<str>::is_bit_valid`, it must be guaranteed that the
-    ///     memory referenced by that `Ptr` always contains a valid `[u8]`.
-    ///     Since `str`'s bytes are always initialized [1], `is_bit_valid`'s
-    ///     precondition requires that the same is true of its argument. Since
-    ///     `[u8]`'s only bit validity invariant is that its bytes must be
-    ///     initialized, this memory is guaranteed to contain a valid `[u8]`.
-    ///   - The alignment of `str` is equal to the alignment of `[u8]`. [1]
+    ///     memory referenced by that `MaybeValid` always contains a valid
+    ///     `[u8]`. Since `str`'s bytes are always initialized [1],
+    ///     `is_bit_valid`'s precondition requires that the same is true of its
+    ///     argument. Since `[u8]`'s only bit validity invariant is that its
+    ///     bytes must be initialized, this memory is guaranteed to contain a
+    ///     valid `[u8]`.
     ///   - The impl must only return `true` for its argument if the original
-    ///     `Ptr<str>` refers to a valid `str`. `str::from_utf8` guarantees that
-    ///     it returns `Err` if its input is not a valid `str`. [2]
+    ///     `Maybe<str>` refers to a valid `str`. `str::from_utf8`
+    ///     guarantees that it returns `Err` if its input is not a valid `str`.
+    ///     [2]
     ///
     /// [1] Per https://doc.rust-lang.org/reference/types/textual.html:
     ///
@@ -3247,7 +3197,10 @@ safety_comment! {
     /// [2] Per https://doc.rust-lang.org/core/str/fn.from_utf8.html#errors:
     ///
     ///   Returns `Err` if the slice is not UTF-8.
-    unsafe_impl!(str: TryFromBytes; |candidate: &[u8]| core::str::from_utf8(candidate).is_ok());
+    unsafe_impl!(str: TryFromBytes; |candidate: MaybeAligned<[u8]>| {
+        let candidate = candidate.unaligned_as_ref();
+        core::str::from_utf8(candidate).is_ok()
+    });
 }
 
 safety_comment! {
@@ -3298,37 +3251,35 @@ safety_comment! {
     ///   - Given `t: *mut NonZeroXxx` and `let r = *mut xxx`, `r` refers to an
     ///     object of the same size as that referred to by `t`. This is true
     ///     because `NonZeroXxx` and `xxx` have the same size. [1]
-    ///   - Since the closure takes a `&xxx` argument, given a `Ptr<'a,
+    ///   - Since the closure takes a `&xxx` argument, given a `Maybe<'a,
     ///     NonZeroXxx>` which satisfies the preconditions of
     ///     `TryFromBytes::<NonZeroXxx>::is_bit_valid`, it must be guaranteed
-    ///     that the memory referenced by that `Ptr` always contains a valid
-    ///     `xxx`. Since `NonZeroXxx`'s bytes are always initialized [1],
+    ///     that the memory referenced by that `MabyeValid` always contains a
+    ///     valid `xxx`. Since `NonZeroXxx`'s bytes are always initialized [1],
     ///     `is_bit_valid`'s precondition requires that the same is true of its
     ///     argument. Since `xxx`'s only bit validity invariant is that its
     ///     bytes must be initialized, this memory is guaranteed to contain a
     ///     valid `xxx`.
-    ///   - The alignment of `NonZeroXxx` is equal to the alignment of `xxx`.
-    ///     [1]
     ///   - The impl must only return `true` for its argument if the original
-    ///     `Ptr<NonZeroXxx>` refers to a valid `NonZeroXxx`. The only `xxx`
-    ///     which is not also a valid `NonZeroXxx` is 0. [1]
+    ///     `Maybe<NonZeroXxx>` refers to a valid `NonZeroXxx`. The only
+    ///     `xxx` which is not also a valid `NonZeroXxx` is 0. [1]
     ///
     /// [1] Per https://doc.rust-lang.org/core/num/struct.NonZeroU16.html:
     ///
     ///   `NonZeroU16` is guaranteed to have the same layout and bit validity as
     ///   `u16` with the exception that `0` is not a valid instance.
-    unsafe_impl!(NonZeroU8: TryFromBytes; |n: &u8| *n != 0);
-    unsafe_impl!(NonZeroI8: TryFromBytes; |n: &i8| *n != 0);
-    unsafe_impl!(NonZeroU16: TryFromBytes; |n: &u16| *n != 0);
-    unsafe_impl!(NonZeroI16: TryFromBytes; |n: &i16| *n != 0);
-    unsafe_impl!(NonZeroU32: TryFromBytes; |n: &u32| *n != 0);
-    unsafe_impl!(NonZeroI32: TryFromBytes; |n: &i32| *n != 0);
-    unsafe_impl!(NonZeroU64: TryFromBytes; |n: &u64| *n != 0);
-    unsafe_impl!(NonZeroI64: TryFromBytes; |n: &i64| *n != 0);
-    unsafe_impl!(NonZeroU128: TryFromBytes; |n: &u128| *n != 0);
-    unsafe_impl!(NonZeroI128: TryFromBytes; |n: &i128| *n != 0);
-    unsafe_impl!(NonZeroUsize: TryFromBytes; |n: &usize| *n != 0);
-    unsafe_impl!(NonZeroIsize: TryFromBytes; |n: &isize| *n != 0);
+    unsafe_impl!(NonZeroU8: TryFromBytes; |n: MaybeAligned<u8>| NonZeroU8::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroI8: TryFromBytes; |n: MaybeAligned<i8>| NonZeroI8::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroU16: TryFromBytes; |n: MaybeAligned<u16>| NonZeroU16::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroI16: TryFromBytes; |n: MaybeAligned<i16>| NonZeroI16::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroU32: TryFromBytes; |n: MaybeAligned<u32>| NonZeroU32::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroI32: TryFromBytes; |n: MaybeAligned<i32>| NonZeroI32::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroU64: TryFromBytes; |n: MaybeAligned<u64>| NonZeroU64::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroI64: TryFromBytes; |n: MaybeAligned<i64>| NonZeroI64::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroU128: TryFromBytes; |n: MaybeAligned<u128>| NonZeroU128::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroI128: TryFromBytes; |n: MaybeAligned<i128>| NonZeroI128::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroUsize: TryFromBytes; |n: MaybeAligned<usize>| NonZeroUsize::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroIsize: TryFromBytes; |n: MaybeAligned<isize>| NonZeroIsize::new(n.read_unaligned()).is_some());
 }
 safety_comment! {
     /// SAFETY:
@@ -3447,7 +3398,7 @@ safety_comment! {
     ///     because `Wrapping<T>` and `T` have the same layout
     ///   - The alignment of `Wrapping<T>` is equal to the alignment of `T`.
     ///   - The impl must only return `true` for its argument if the original
-    ///     `Ptr<Wrapping<T>>` refers to a valid `Wrapping<T>`. Since
+    ///     `Maybe<Wrapping<T>>` refers to a valid `Maybe<T>`. Since
     ///     `Wrapping<T>` has the same bit validity as `T`, and since our impl
     ///     just calls `T::is_bit_valid`, our impl returns `true` exactly when
     ///     its argument contains a valid `Wrapping<T>`.
@@ -3474,17 +3425,8 @@ safety_comment! {
     ///
     /// [2] https://doc.rust-lang.org/nomicon/other-reprs.html#reprtransparent
     unsafe_impl!(T: NoCell => NoCell for Wrapping<T>);
-    unsafe_impl!(T: TryFromBytes => TryFromBytes for Wrapping<T>; |candidate: Ptr<T>| {
-        // SAFETY:
-        // - Since `T` and `Wrapping<T>` have the same layout and bit validity
-        //   and contain the same fields, `T` contains `UnsafeCell`s exactly
-        //   where `Wrapping<T>` does. Thus, all memory and `UnsafeCell`
-        //   preconditions of `T::is_bit_valid` hold exactly when the same
-        //   preconditions for `Wrapping<T>::is_bit_valid` hold.
-        // - By the same token, since `candidate` is guaranteed to have its
-        //   bytes initialized where there are always initialized bytes in
-        //   `Wrapping<T>`, the same is true for `T`.
-        unsafe { T::is_bit_valid(candidate) }
+    unsafe_impl!(T: TryFromBytes => TryFromBytes for Wrapping<T>; |candidate: Maybe<T>| {
+        T::is_bit_valid(candidate)
     });
     unsafe_impl!(T: FromZeros => FromZeros for Wrapping<T>);
     unsafe_impl!(T: FromBytes => FromBytes for Wrapping<T>);
@@ -3601,11 +3543,8 @@ safety_comment! {
     unsafe_impl!(const N: usize, T: Unaligned => Unaligned for [T; N]);
     assert_unaligned!([(); 0], [(); 1], [u8; 0], [u8; 1]);
     unsafe_impl!(T: NoCell => NoCell for [T]);
-    unsafe_impl!(T: TryFromBytes => TryFromBytes for [T]; |c: Ptr<[T]>| {
-        // SAFETY: Assuming the preconditions of `is_bit_valid` are satisfied,
-        // so too will the postcondition: that, if `is_bit_valid(candidate)`
-        // returns true, `*candidate` contains a valid `Self`. Per the reference
-        // [1]:
+    unsafe_impl!(T: TryFromBytes => TryFromBytes for [T]; |c: Maybe<[T]>| {
+        // SAFETY: Per the reference [1]:
         //
         //   An array of `[T; N]` has a size of `size_of::<T>() * N` and the
         //   same alignment of `T`. Arrays are laid out so that the zero-based
@@ -3625,17 +3564,7 @@ safety_comment! {
         // not panic (in fact, it explicitly warns that it's a possibility), and
         // we have not violated any safety invariants that we must fix before
         // returning.
-        c.iter().all(|elem|
-            // SAFETY: We uphold the safety contract of `is_bit_valid(elem)`, by
-            // precondition on the surrounding call to `is_bit_valid`. The
-            // memory referenced by `elem` is contained entirely within `c`, and
-            // satisfies the preconditions satisfied by `c`. By axiom, we assume
-            // that `Iterator:all` does not invalidate these preconditions
-            // (e.g., by writing to `elem`.) Since `elem` is derived from `c`,
-            // it is only possible for uninitialized bytes to occur in `elem` at
-            // the same bytes they occur within `c`.
-            unsafe { <T as TryFromBytes>::is_bit_valid(elem) }
-        )
+        c.iter().all(<T as TryFromBytes>::is_bit_valid)
     });
     unsafe_impl!(T: FromZeros => FromZeros for [T]);
     unsafe_impl!(T: FromBytes => FromBytes for [T]);
@@ -4270,20 +4199,6 @@ pub use Ref as LayoutVerified;
 impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
-    T: ?Sized + KnownLayout,
-{
-    fn new_known_layout_name_to_be_bikeshedded(bytes: B) -> Option<Ref<B, T>> {
-        let _ = Ptr::from(bytes.deref()).try_cast_into_no_leftover::<T>()?;
-        // INVARIANTS: `Ptr::try_cast_into_no_leftover` returns `None` if
-        // `bytes.deref()` is not properly aligned for `T` or doesn't have a
-        // valid size for `T`.
-        Some(Ref(bytes, PhantomData))
-    }
-}
-
-impl<B, T> Ref<B, T>
-where
-    B: ByteSlice,
 {
     /// Constructs a new `Ref`.
     ///
@@ -4872,61 +4787,6 @@ where
         // `self` and still access the underlying memory using both reads and
         // writes for `'a`.
         unsafe { self.deref_mut_slice_helper() }
-    }
-}
-
-impl<'a, T> Ref<&'a [u8], T>
-where
-    T: 'a + ?Sized + KnownLayout,
-{
-    fn as_ptr(&self) -> Ptr<'a, T> {
-        // PANICS: By invariant, `self.0` satisfies `T`'s alignment and is a
-        // valid size for `T`, which ensures that `try_cast_into_no_leftover`
-        // will not panic.
-        Ptr::from(self.0)
-            .try_cast_into_no_leftover::<T>()
-            .expect("Ref::deref_unchecked: internal error (pointer cast should never fail)")
-    }
-
-    /// Converts `self` into an immutable `T` reference without validating bit
-    /// validity.
-    ///
-    /// # Safety
-    ///
-    /// The caller must ensure that the referent contains a valid `T` before
-    /// calling this method.
-    ///
-    /// The caller must also ensure that `T` does not contain any
-    /// [`UnsafeCell`]s.
-    ///
-    /// [`UnsafeCell`]: core::cell::UnsafeCell
-    // TODO(#251): Once `NoCell` is stabilized, require `T: NoCell` and remove
-    // the "no `UnsafeCell`" safety precondition.
-    unsafe fn into_ref_unchecked(self) -> &'a T {
-        // SAFETY:
-        // - Preconditions for `as_ref`:
-        //   - Caller has promised that `*ptr` contains a valid `T`. Since the
-        //     only other references to this memory may be typed as `&T` or
-        //     `&[u8]`, we know that, during `'a`, `*ptr` will never be updated
-        //     to contain an invalid `T`: The `&T` cannot be used to store an
-        //     invalid `T` and, since `&[u8]` does not permit interior
-        //     mutability, the `&[u8]` cannot be used to update the contents at
-        //     all.
-        //   - Since the `self` and the returned `&T` both have the lifetime
-        //     `'a`, Rust will prevent any `&mut Ref<B, T>`s from being produced
-        //     which refer to `self` during `'a`. The only APIs that permit
-        //     constructing a mutable reference to the same memory as the
-        //     returned `&T` operate on `&mut Ref<B, T>`, so no mutable
-        //     references can be constructed to this memory during `'a`.
-        //   - The caller has promised that `T` contains no `UnsafeCell`s. We
-        //     know that `[u8]` cannot contain any `UnsafeCell`s. Thus, there is
-        //     no mismatch in which byte ranges can be viewed as `UnsafeCell`s.
-        // - Since the caller has promised that `T` contains no `UnsafeCell`s,
-        //   there's no way for the returned reference to be used to modify the
-        //   byte range, and thus there's no way for the returned reference to
-        //   be used to write an invalid `[u8]` which would be observable via
-        //   the original `&[u8]`.
-        unsafe { self.as_ptr().as_ref() }
     }
 }
 
@@ -8025,16 +7885,8 @@ mod tests {
         macro_rules! assert_impls {
             ($ty:ty: TryFromBytes) => {
                 <$ty as TryFromBytesTestable>::with_passing_test_cases(|val| {
-                    let c = Ptr::from(val);
-                    // SAFETY:
-                    // - Since `val` is a normal reference, `c` is guranteed to
-                    //   be aligned, to point to a single allocation, and to
-                    //   have a size which doesn't overflow `isize`.
-                    // - Since `val` is a valid `$ty`, `c`'s referent satisfies
-                    //   the bit validity constraints of `is_bit_valid`, which
-                    //   are a superset of the bit validity constraints of
-                    //   `$ty`.
-                    let res = unsafe { <$ty as TryFromBytes>::is_bit_valid(c) };
+                    let c = Ptr::from_ref(val).forget_valid().forget_aligned();
+                    let res = <$ty as TryFromBytes>::is_bit_valid(c);
                     assert!(res, "{}::is_bit_valid({:?}): got false, expected true", stringify!($ty), val);
 
                     // TODO(#5): In addition to testing `is_bit_valid`, test the
@@ -8088,38 +7940,268 @@ mod tests {
         // change. Of course, some impls would be invalid (e.g., `bool:
         // FromBytes`), and so this change detection is very important.
 
-        assert_impls!((): KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-        assert_impls!(u8: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-        assert_impls!(i8: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-        assert_impls!(u16: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(i16: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(u32: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(i32: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(u64: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(i64: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(u128: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(i128: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(usize: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(isize: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(f32: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(f64: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
+        assert_impls!(
+            (): KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            Unaligned
+        );
+        assert_impls!(
+            u8: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            Unaligned
+        );
+        assert_impls!(
+            i8: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            Unaligned
+        );
+        assert_impls!(
+            u16: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            i16: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            u32: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            i32: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            u64: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            i64: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            u128: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            i128: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            usize: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            isize: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            f32: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            f64: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            !Unaligned
+        );
 
-        assert_impls!(bool: KnownLayout, NoCell, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
-        assert_impls!(char: KnownLayout, NoCell, TryFromBytes, FromZeros, IntoBytes, !FromBytes, !Unaligned);
-        assert_impls!(str: KnownLayout, NoCell, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
+        assert_impls!(
+            bool: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            IntoBytes,
+            Unaligned,
+            !FromBytes
+        );
+        assert_impls!(
+            char: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            IntoBytes,
+            !FromBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            str: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            IntoBytes,
+            Unaligned,
+            !FromBytes
+        );
 
-        assert_impls!(NonZeroU8: KnownLayout, NoCell, TryFromBytes, IntoBytes, Unaligned, !FromZeros, !FromBytes);
-        assert_impls!(NonZeroI8: KnownLayout, NoCell, TryFromBytes, IntoBytes, Unaligned, !FromZeros, !FromBytes);
-        assert_impls!(NonZeroU16: KnownLayout, NoCell, TryFromBytes, IntoBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI16: KnownLayout, NoCell, TryFromBytes, IntoBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroU32: KnownLayout, NoCell, TryFromBytes, IntoBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI32: KnownLayout, NoCell, TryFromBytes, IntoBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroU64: KnownLayout, NoCell, TryFromBytes, IntoBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI64: KnownLayout, NoCell, TryFromBytes, IntoBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroU128: KnownLayout, NoCell, TryFromBytes, IntoBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroI128: KnownLayout, NoCell, TryFromBytes, IntoBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroUsize: KnownLayout, NoCell, TryFromBytes, IntoBytes, !FromBytes, !Unaligned);
-        assert_impls!(NonZeroIsize: KnownLayout, NoCell, TryFromBytes, IntoBytes, !FromBytes, !Unaligned);
+        assert_impls!(
+            NonZeroU8: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            IntoBytes,
+            Unaligned,
+            !FromZeros,
+            !FromBytes
+        );
+        assert_impls!(
+            NonZeroI8: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            IntoBytes,
+            Unaligned,
+            !FromZeros,
+            !FromBytes
+        );
+        assert_impls!(
+            NonZeroU16: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            IntoBytes,
+            !FromBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            NonZeroI16: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            IntoBytes,
+            !FromBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            NonZeroU32: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            IntoBytes,
+            !FromBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            NonZeroI32: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            IntoBytes,
+            !FromBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            NonZeroU64: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            IntoBytes,
+            !FromBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            NonZeroI64: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            IntoBytes,
+            !FromBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            NonZeroU128: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            IntoBytes,
+            !FromBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            NonZeroI128: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            IntoBytes,
+            !FromBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            NonZeroUsize: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            IntoBytes,
+            !FromBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            NonZeroIsize: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            IntoBytes,
+            !FromBytes,
+            !Unaligned
+        );
 
         assert_impls!(Option<NonZeroU8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
         assert_impls!(Option<NonZeroI8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
@@ -8185,13 +8267,61 @@ mod tests {
         assert_impls!(Unalign<u8>: KnownLayout, NoCell, FromZeros, FromBytes, IntoBytes, Unaligned, !TryFromBytes);
         assert_impls!(Unalign<NotZerocopy>: Unaligned, !NoCell, !KnownLayout, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes);
 
-        assert_impls!([u8]: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-        assert_impls!([bool]: KnownLayout, NoCell, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
+        assert_impls!(
+            [u8]: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            Unaligned
+        );
+        assert_impls!(
+            [bool]: KnownLayout,
+            NoCell,
+            TryFromBytes,
+            FromZeros,
+            IntoBytes,
+            Unaligned,
+            !FromBytes
+        );
         assert_impls!([NotZerocopy]: !KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!([u8; 0]: KnownLayout, NoCell, FromZeros, FromBytes, IntoBytes, Unaligned, !TryFromBytes);
-        assert_impls!([NotZerocopy; 0]: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!([u8; 1]: KnownLayout, NoCell, FromZeros, FromBytes, IntoBytes, Unaligned, !TryFromBytes);
-        assert_impls!([NotZerocopy; 1]: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(
+            [u8; 0]: KnownLayout,
+            NoCell,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            Unaligned,
+            !TryFromBytes
+        );
+        assert_impls!(
+            [NotZerocopy; 0]: KnownLayout,
+            !NoCell,
+            !TryFromBytes,
+            !FromZeros,
+            !FromBytes,
+            !IntoBytes,
+            !Unaligned
+        );
+        assert_impls!(
+            [u8; 1]: KnownLayout,
+            NoCell,
+            FromZeros,
+            FromBytes,
+            IntoBytes,
+            Unaligned,
+            !TryFromBytes
+        );
+        assert_impls!(
+            [NotZerocopy; 1]: KnownLayout,
+            !NoCell,
+            !TryFromBytes,
+            !FromZeros,
+            !FromBytes,
+            !IntoBytes,
+            !Unaligned
+        );
 
         assert_impls!(*const NotZerocopy: KnownLayout, NoCell, FromZeros, !TryFromBytes, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(*mut NotZerocopy: KnownLayout, NoCell, FromZeros, !TryFromBytes, !FromBytes, !IntoBytes, !Unaligned);
