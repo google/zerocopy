@@ -133,7 +133,7 @@ assert_impl_all!(TypeParams<'static, [AU16], IntoIter<()>>: TryFromBytes);
 
 #[derive(TryFromBytes, FromZeros, FromBytes)]
 #[repr(transparent)]
-struct WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + TryFromBytes>(
+struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + TryFromBytes, const N: usize>(
     PhantomData<&'a &'b ()>,
     [T],
 )
@@ -142,7 +142,7 @@ where
     'b: 'a,
     T: 'a + 'b + TryFromBytes;
 
-assert_impl_all!(WithParams<'static, 'static, 42, u8>: TryFromBytes);
+assert_impl_all!(WithParams<'static, 'static, u8, 42>: TryFromBytes);
 
 #[derive(Debug, PartialEq, Eq, TryFromBytes, KnownLayout)]
 #[repr(C, packed)]

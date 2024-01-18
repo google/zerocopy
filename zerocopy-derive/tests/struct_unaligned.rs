@@ -88,7 +88,7 @@ assert_impl_all!(TypeParams<'static, [u8], IntoIter<()>>: Unaligned);
 
 #[derive(Unaligned)]
 #[repr(transparent)]
-struct WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + Unaligned>(
+struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + Unaligned, const N: usize>(
     [T; N],
     PhantomData<&'a &'b ()>,
 )
@@ -97,4 +97,4 @@ where
     'b: 'a,
     T: 'a + 'b + Unaligned;
 
-assert_impl_all!(WithParams<'static, 'static, 42, u8>: Unaligned);
+assert_impl_all!(WithParams<'static, 'static, u8, 42>: Unaligned);

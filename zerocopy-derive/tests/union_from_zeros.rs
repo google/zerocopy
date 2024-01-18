@@ -59,7 +59,7 @@ assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: FromZeros);
 
 #[derive(FromZeros)]
 #[repr(C)]
-union WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + FromZeros>
+union WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + FromZeros, const N: usize>
 where
     'a: 'b,
     'b: 'a,
@@ -69,4 +69,4 @@ where
     b: PhantomData<&'a &'b ()>,
 }
 
-assert_impl_all!(WithParams<'static, 'static, 42, u8>: FromZeros);
+assert_impl_all!(WithParams<'static, 'static, u8, 42>: FromZeros);

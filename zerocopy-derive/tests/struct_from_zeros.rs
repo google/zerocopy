@@ -65,7 +65,7 @@ assert_impl_all!(TypeParams<'static, [AU16], IntoIter<()>>: FromZeros);
 
 #[derive(FromZeros)]
 #[repr(transparent)]
-struct WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + FromZeros>(
+struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + FromZeros, const N: usize>(
     [T; N],
     PhantomData<&'a &'b ()>,
 )
@@ -74,4 +74,4 @@ where
     'b: 'a,
     T: 'a + 'b + FromZeros;
 
-assert_impl_all!(WithParams<'static, 'static, 42, u8>: FromZeros);
+assert_impl_all!(WithParams<'static, 'static, u8, 42>: FromZeros);
