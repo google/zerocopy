@@ -49,15 +49,6 @@ for network parsing.
   the `alloc` crate is added as a dependency, and some allocation-related
   functionality is added.
 
-- **`byteorder`** (enabled by default)
-  Adds the `byteorder` module and a dependency on the `byteorder` crate.
-  The `byteorder` module provides byte order-aware equivalents of the
-  multi-byte primitive numerical types. Unlike their primitive equivalents,
-  the types in this module have no alignment requirement and support byte
-  order conversions. This can be useful in handling file formats, network
-  packet layouts, etc which don't provide alignment guarantees and which may
-  use a byte order different from that of the execution platform.
-
 - **`derive`**
   Provides derives for the core marker traits via the `zerocopy-derive`
   crate. These derives are re-exported from `zerocopy`, so it is not

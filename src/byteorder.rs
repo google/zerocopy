@@ -71,15 +71,94 @@ use core::{
     convert::{TryFrom, TryInto},
     fmt::{self, Binary, Debug, Display, Formatter, LowerHex, Octal, UpperHex},
     marker::PhantomData,
+    mem,
     num::TryFromIntError,
 };
 
-// We don't reexport `WriteBytesExt` or `ReadBytesExt` because those are only
-// available with the `std` feature enabled, and zerocopy is `no_std` by
-// default.
-pub use ::byteorder::{BigEndian, ByteOrder, LittleEndian, NativeEndian, NetworkEndian, BE, LE};
-
 use super::*;
+
+/// A type-level representation of byte order.
+///
+/// This type is implemented by [`BigEndian`] and [`LittleEndian`], which
+/// represent big-endian and little-endian byte order respectively. This module
+/// also provides a number of useful aliases for those types: [`NativeEndian`],
+/// [`NetworkEndian`], [`BE`], and [`LE`].
+///
+/// `ByteOrder` types can be used to specify the byte order of the types in this
+/// module - for example, [`U32<BigEndian>`] is a 32-bit integer stored in
+/// big-endian byte order.
+///
+/// [`U32<BigEndian>`]: U32
+pub trait ByteOrder: Copy + Clone + Debug + Display + Eq + PartialEq + Ord + PartialOrd {
+    #[doc(hidden)]
+    const ORDER: Order;
+}
+
+#[allow(missing_copy_implementations, missing_debug_implementations)]
+#[doc(hidden)]
+pub enum Order {
+    BigEndian,
+    LittleEndian,
+}
+
+/// Big-endian byte order.
+///
+/// See [`ByteOrder`] for more details.
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+pub enum BigEndian {}
+
+impl ByteOrder for BigEndian {
+    const ORDER: Order = Order::BigEndian;
+}
+
+impl Display for BigEndian {
+    #[inline]
+    fn fmt(&self, _: &mut Formatter<'_>) -> fmt::Result {
+        match *self {}
+    }
+}
+
+/// Little-endian byte order.
+///
+/// See [`ByteOrder`] for more details.
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+pub enum LittleEndian {}
+
+impl ByteOrder for LittleEndian {
+    const ORDER: Order = Order::LittleEndian;
+}
+
+impl Display for LittleEndian {
+    #[inline]
+    fn fmt(&self, _: &mut Formatter<'_>) -> fmt::Result {
+        match *self {}
+    }
+}
+
+/// The endianness used by this platform.
+///
+/// This is a type alias for [`BigEndian`] or [`LittleEndian`] depending on the
+/// endianness of the target platform.
+#[cfg(target_endian = "big")]
+pub type NativeEndian = BigEndian;
+
+/// The endianness used by this platform.
+///
+/// This is a type alias for [`BigEndian`] or [`LittleEndian`] depending on the
+/// endianness of the target platform.
+#[cfg(target_endian = "little")]
+pub type NativeEndian = LittleEndian;
+
+/// The endianness used in many network protocols.
+///
+/// This is a type alias for [`BigEndian`].
+pub type NetworkEndian = BigEndian;
+
+/// A type alias for [`BigEndian`].
+pub type BE = BigEndian;
+
+/// A type alias for [`LittleEndian`].
+pub type LE = LittleEndian;
 
 macro_rules! impl_fmt_trait {
     ($name:ident, $native:ident, $trait:ident) => {
@@ -234,21 +313,25 @@ macro_rules! define_max_value_constant {
 }
 
 macro_rules! define_type {
-    ($article:ident,
+    (
+        $article:ident,
+        $description:expr,
         $name:ident,
         $native:ident,
         $bits:expr,
         $bytes:expr,
-        $read_method:ident,
-        $write_method:ident,
+        $from_be_fn:path,
+        $to_be_fn:path,
+        $from_le_fn:path,
+        $to_le_fn:path,
         $number_kind:tt,
         [$($larger_native:ty),*],
         [$($larger_native_try:ty),*],
         [$($larger_byteorder:ident),*],
-        [$($larger_byteorder_try:ident),*]) => {
+        [$($larger_byteorder_try:ident),*]
+    ) => {
         doc_comment! {
-            concat!("A ", stringify!($bits), "-bit ", $number_kind,
-            " stored in a given byte order.
+            concat!($description, " stored in a given byte order.
 
 `", stringify!($name), "` is like the native `", stringify!($native), "` type with
 two major differences: First, it has no alignment requirement (its alignment is 1).
@@ -314,25 +397,33 @@ example of how it can be used for parsing UDP packets.
 
             define_max_value_constant!($name, $bytes, $number_kind);
 
-            /// Constructs a new value from bytes which are already in the
-            /// endianness `O`.
+            /// Constructs a new value from bytes which are already in `O` byte
+            /// order.
             #[inline(always)]
-            pub const fn from_bytes(bytes: [u8; $bytes]) -> $name<O> {
+            pub fn from_bytes(bytes: [u8; $bytes]) -> $name<O> {
                 $name(bytes, PhantomData)
+            }
+
+            /// Extracts the bytes of `self` without swapping the byte order.
+            ///
+            /// The returned bytes will be in `O` byte order.
+            #[inline(always)]
+            pub fn to_bytes(self) -> [u8; $bytes] {
+                self.0
             }
         }
 
         impl<O: ByteOrder> $name<O> {
-            // TODO(joshlf): Make these const fns if the `ByteOrder` methods
-            // ever become const fns.
-
             /// Constructs a new value, possibly performing an endianness swap
             /// to guarantee that the returned value has endianness `O`.
             #[inline(always)]
             pub fn new(n: $native) -> $name<O> {
-                let mut out = $name::default();
-                O::$write_method(&mut out.0[..], n);
-                out
+                let bytes = match O::ORDER {
+                    Order::BigEndian => $to_be_fn(n),
+                    Order::LittleEndian => $to_le_fn(n),
+                };
+
+                $name(bytes, PhantomData)
             }
 
             /// Returns the value as a primitive type, possibly performing an
@@ -340,7 +431,10 @@ example of how it can be used for parsing UDP packets.
             /// endianness of the native platform.
             #[inline(always)]
             pub fn get(self) -> $native {
-                O::$read_method(&self.0[..])
+                match O::ORDER {
+                    Order::BigEndian => $from_be_fn(self.0),
+                    Order::LittleEndian => $from_le_fn(self.0),
+                }
             }
 
             /// Updates the value in place as a primitive type, possibly
@@ -348,7 +442,7 @@ example of how it can be used for parsing UDP packets.
             /// has the endianness `O`.
             #[inline(always)]
             pub fn set(&mut self, n: $native) {
-                O::$write_method(&mut self.0[..], n);
+                *self = Self::new(n);
             }
         }
 
@@ -466,26 +560,32 @@ example of how it can be used for parsing UDP packets.
 
 define_type!(
     A,
+    "A 16-bit unsigned integer",
     U16,
     u16,
     16,
     2,
-    read_u16,
-    write_u16,
+    u16::from_be_bytes,
+    u16::to_be_bytes,
+    u16::from_le_bytes,
+    u16::to_le_bytes,
     "unsigned integer",
     [u32, u64, u128, usize],
     [u32, u64, u128, usize],
-    [U32, U64, U128],
-    [U32, U64, U128]
+    [U32, U64, U128, Usize],
+    [U32, U64, U128, Usize]
 );
 define_type!(
     A,
+    "A 32-bit unsigned integer",
     U32,
     u32,
     32,
     4,
-    read_u32,
-    write_u32,
+    u32::from_be_bytes,
+    u32::to_be_bytes,
+    u32::from_le_bytes,
+    u32::to_le_bytes,
     "unsigned integer",
     [u64, u128],
     [u64, u128],
@@ -494,41 +594,83 @@ define_type!(
 );
 define_type!(
     A,
+    "A 64-bit unsigned integer",
     U64,
     u64,
     64,
     8,
-    read_u64,
-    write_u64,
+    u64::from_be_bytes,
+    u64::to_be_bytes,
+    u64::from_le_bytes,
+    u64::to_le_bytes,
     "unsigned integer",
     [u128],
     [u128],
     [U128],
     [U128]
 );
-define_type!(A, U128, u128, 128, 16, read_u128, write_u128, "unsigned integer", [], [], [], []);
+define_type!(
+    A,
+    "A 128-bit unsigned integer",
+    U128,
+    u128,
+    128,
+    16,
+    u128::from_be_bytes,
+    u128::to_be_bytes,
+    u128::from_le_bytes,
+    u128::to_le_bytes,
+    "unsigned integer",
+    [],
+    [],
+    [],
+    []
+);
+define_type!(
+    A,
+    "A word-sized unsigned integer",
+    Usize,
+    usize,
+    mem::size_of::<usize>() * 8,
+    mem::size_of::<usize>(),
+    usize::from_be_bytes,
+    usize::to_be_bytes,
+    usize::from_le_bytes,
+    usize::to_le_bytes,
+    "unsigned integer",
+    [],
+    [],
+    [],
+    []
+);
 define_type!(
     An,
+    "A 16-bit signed integer",
     I16,
     i16,
     16,
     2,
-    read_i16,
-    write_i16,
+    i16::from_be_bytes,
+    i16::to_be_bytes,
+    i16::from_le_bytes,
+    i16::to_le_bytes,
     "signed integer",
     [i32, i64, i128, isize],
     [i32, i64, i128, isize],
-    [I32, I64, I128],
-    [I32, I64, I128]
+    [I32, I64, I128, Isize],
+    [I32, I64, I128, Isize]
 );
 define_type!(
     An,
+    "A 32-bit signed integer",
     I32,
     i32,
     32,
     4,
-    read_i32,
-    write_i32,
+    i32::from_be_bytes,
+    i32::to_be_bytes,
+    i32::from_le_bytes,
+    i32::to_le_bytes,
     "signed integer",
     [i64, i128],
     [i64, i128],
@@ -537,34 +679,116 @@ define_type!(
 );
 define_type!(
     An,
+    "A 64-bit signed integer",
     I64,
     i64,
     64,
     8,
-    read_i64,
-    write_i64,
+    i64::from_be_bytes,
+    i64::to_be_bytes,
+    i64::from_le_bytes,
+    i64::to_le_bytes,
     "signed integer",
     [i128],
     [i128],
     [I128],
     [I128]
 );
-define_type!(An, I128, i128, 128, 16, read_i128, write_i128, "signed integer", [], [], [], []);
 define_type!(
     An,
+    "A 128-bit signed integer",
+    I128,
+    i128,
+    128,
+    16,
+    i128::from_be_bytes,
+    i128::to_be_bytes,
+    i128::from_le_bytes,
+    i128::to_le_bytes,
+    "signed integer",
+    [],
+    [],
+    [],
+    []
+);
+define_type!(
+    An,
+    "A word-sized signed integer",
+    Isize,
+    isize,
+    mem::size_of::<isize>() * 8,
+    mem::size_of::<isize>(),
+    isize::from_be_bytes,
+    isize::to_be_bytes,
+    isize::from_le_bytes,
+    isize::to_le_bytes,
+    "signed integer",
+    [],
+    [],
+    [],
+    []
+);
+
+// TODO(https://github.com/rust-lang/rust/issues/72447): Use the endianness
+// conversion methods directly once those are const-stable.
+macro_rules! define_float_conversion {
+    ($ty:ty, $bits:ident, $bytes:expr, $mod:ident) => {
+        mod $mod {
+            use super::*;
+
+            define_float_conversion!($ty, $bits, $bytes, from_be_bytes, to_be_bytes);
+            define_float_conversion!($ty, $bits, $bytes, from_le_bytes, to_le_bytes);
+        }
+    };
+    ($ty:ty, $bits:ident, $bytes:expr, $from:ident, $to:ident) => {
+        pub(crate) const fn $from(bytes: [u8; $bytes]) -> $ty {
+            transmute!($bits::$from(bytes))
+        }
+
+        pub(crate) const fn $to(f: $ty) -> [u8; $bytes] {
+            let bits: $bits = transmute!(f);
+            bits.$to()
+        }
+    };
+}
+
+define_float_conversion!(f32, u32, 4, f32_ext);
+define_float_conversion!(f64, u64, 8, f64_ext);
+
+define_type!(
+    An,
+    "A 32-bit floating point number",
     F32,
     f32,
     32,
     4,
-    read_f32,
-    write_f32,
+    f32_ext::from_be_bytes,
+    f32_ext::to_be_bytes,
+    f32_ext::from_le_bytes,
+    f32_ext::to_le_bytes,
     "floating point number",
     [f64],
     [],
     [F64],
     []
 );
-define_type!(An, F64, f64, 64, 8, read_f64, write_f64, "floating point number", [], [], [], []);
+define_type!(
+    An,
+    "A 64-bit floating point number",
+    F64,
+    f64,
+    64,
+    8,
+    f64_ext::from_be_bytes,
+    f64_ext::to_be_bytes,
+    f64_ext::from_le_bytes,
+    f64_ext::to_le_bytes,
+    "floating point number",
+    [],
+    [],
+    [],
+    []
+);
 
 macro_rules! module {
     ($name:ident, $trait:ident, $endianness_str:expr) => {
@@ -572,7 +796,7 @@ macro_rules! module {
         #[doc = $endianness_str]
         /// byte order.
         pub mod $name {
-            use byteorder::$trait;
+            use super::$trait;
 
             module!(@ty U16,  $trait, "16-bit unsigned integer", $endianness_str);
             module!(@ty U32,  $trait, "32-bit unsigned integer", $endianness_str);
@@ -603,8 +827,6 @@ module!(native_endian, NativeEndian, "native-endian");
 
 #[cfg(any(test, kani))]
 mod tests {
-    use ::byteorder::NativeEndian;
-
     use {
         super::*,
         crate::{FromBytes, IntoBytes, Unaligned},
@@ -750,7 +972,7 @@ mod tests {
     }
 
     macro_rules! impl_traits {
-        ($name:ident, $native:ident, $bytes:expr, $sign:ident $(, @$float:ident)?) => {
+        ($name:ident, $native:ident, $sign:ident $(, @$float:ident)?) => {
             impl Native for $native {
                 // For some types, `0 as $native` is required (for example, when
                 // `$native` is a floating-point type; `0` is an integer), but
@@ -768,7 +990,7 @@ mod tests {
 
             impl<O: ByteOrder> ByteOrderType for $name<O> {
                 type Native = $native;
-                type ByteArray = [u8; $bytes];
+                type ByteArray = [u8; mem::size_of::<$native>()];
 
                 const ZERO: $name<O> = $name::ZERO;
 
@@ -784,12 +1006,12 @@ mod tests {
                     $name::set(self, native)
                 }
 
-                fn from_bytes(bytes: [u8; $bytes]) -> $name<O> {
+                fn from_bytes(bytes: [u8; mem::size_of::<$native>()]) -> $name<O> {
                     $name::from(bytes)
                 }
 
-                fn into_bytes(self) -> [u8; $bytes] {
-                    <[u8; $bytes]>::from(self)
+                fn into_bytes(self) -> [u8; mem::size_of::<$native>()] {
+                    <[u8; mem::size_of::<$native>()]>::from(self)
                 }
             }
 
@@ -817,16 +1039,18 @@ mod tests {
         };
     }
 
-    impl_traits!(U16, u16, 2, unsigned);
-    impl_traits!(U32, u32, 4, unsigned);
-    impl_traits!(U64, u64, 8, unsigned);
-    impl_traits!(U128, u128, 16, unsigned);
-    impl_traits!(I16, i16, 2, signed);
-    impl_traits!(I32, i32, 4, signed);
-    impl_traits!(I64, i64, 8, signed);
-    impl_traits!(I128, i128, 16, signed);
-    impl_traits!(F32, f32, 4, signed, @float);
-    impl_traits!(F64, f64, 8, signed, @float);
+    impl_traits!(U16, u16, unsigned);
+    impl_traits!(U32, u32, unsigned);
+    impl_traits!(U64, u64, unsigned);
+    impl_traits!(U128, u128, unsigned);
+    impl_traits!(Usize, usize, unsigned);
+    impl_traits!(I16, i16, signed);
+    impl_traits!(I32, i32, signed);
+    impl_traits!(I64, i64, signed);
+    impl_traits!(I128, i128, signed);
+    impl_traits!(Isize, isize, unsigned);
+    impl_traits!(F32, f32, signed, @float);
+    impl_traits!(F64, f64, signed, @float);
 
     macro_rules! call_for_unsigned_types {
         ($fn:ident, $byteorder:ident) => {
@@ -834,6 +1058,7 @@ mod tests {
             $fn::<U32<$byteorder>>();
             $fn::<U64<$byteorder>>();
             $fn::<U128<$byteorder>>();
+            $fn::<Usize<$byteorder>>();
         };
     }
 
@@ -843,6 +1068,7 @@ mod tests {
             $fn::<I32<$byteorder>>();
             $fn::<I64<$byteorder>>();
             $fn::<I128<$byteorder>>();
+            $fn::<Isize<$byteorder>>();
         };
     }
 
