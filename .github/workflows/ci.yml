@@ -229,11 +229,6 @@ jobs:
           jq -r ".packages[] | select(.name == \"zerocopy\").metadata.docs.rs.\"rustdoc-args\".[]" | tr '\n' ' ')"
         export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items' || '' }} $RUSTDOCFLAGS $METADATA_DOCS_RS_RUSTDOC_ARGS"
         ./cargo.sh +${{ matrix.toolchain }} doc --document-private-items --package ${{ matrix.crate }} ${{ matrix.features }}
-      # When the `byteorder` feature is disabled, `cargo doc` fails because we
-      # link to the `byteorder` module in doc comments. This isn't a big deal
-      # because we primarily care about `cargo doc` working for `docs.rs`, which
-      # enables the `byteorder` feature.
-      if: matrix.features != '--no-default-features'
 
     # Check semver compatibility with the most recently-published version on
     # crates.io. We do this in the matrix rather than in its own job so that it
