@@ -332,20 +332,8 @@ pub fn derive_unaligned(ts: proc_macro::TokenStream) -> proc_macro::TokenStream 
 
 // A struct is `TryFromBytes` if:
 // - all fields are `TryFromBytes`
-// - the struct is NOT `repr(packed)` or `repr(packed(N))`
 
 fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    let reprs = try_or_print!(repr::reprs::<Repr>(&ast.attrs));
-
-    for (meta, repr) in reprs {
-        if matches!(repr, Repr::Packed | Repr::PackedN(_)) {
-            try_or_print!(Err(vec![Error::new_spanned(
-                meta,
-                "cannot derive TryFromBytes with repr(packed)",
-            )]));
-        }
-    }
-
     let extras = Some({
         let fields = strct.fields();
         let field_names = fields.iter().map(|(name, _ty)| name);

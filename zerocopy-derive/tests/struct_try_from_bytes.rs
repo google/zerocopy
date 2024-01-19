@@ -14,7 +14,7 @@ use std::{marker::PhantomData, option::IntoIter};
 
 use {
     static_assertions::assert_impl_all,
-    zerocopy::{FromBytes, FromZeros, TryFromBytes},
+    zerocopy::{FromBytes, FromZeros, KnownLayout, TryFromBytes},
 };
 
 use crate::util::AU16;
@@ -145,3 +145,74 @@ where
     T: 'a + 'b + TryFromBytes;
 
 assert_impl_all!(WithParams<'static, 'static, 42, u8>: TryFromBytes);
+
+#[derive(Debug, PartialEq, Eq, TryFromBytes, KnownLayout)]
+#[repr(C, packed)]
+struct CPacked {
+    a: u8,
+    // NOTE: The `u32` type is not guaranteed to have alignment 4, although it
+    // does on many platforms. However, to fix this would require a custom type
+    // with a `#[repr(align(4))]` attribute, and `#[repr(packed)]` types are not
+    // allowed to transitively contain `#[repr(align(...))]` types. Thus, we
+    // have no choice but to use `u32` here. Luckily, these tests run in CI on
+    // platforms on which `u32` has alignment 4, so this isn't that big of a
+    // deal.
+    b: u32,
+}
+
+#[test]
+fn c_packed() {
+    let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF];
+    let converted = CPacked::try_from_ref(candidate);
+    assert_eq!(converted, Some(&CPacked { a: 42, b: u32::MAX }));
+}
+
+#[derive(TryFromBytes, KnownLayout)]
+#[repr(C, packed)]
+struct CPackedUnsized {
+    a: u8,
+    // NOTE: The `u32` type is not guaranteed to have alignment 4, although it
+    // does on many platforms. However, to fix this would require a custom type
+    // with a `#[repr(align(4))]` attribute, and `#[repr(packed)]` types are not
+    // allowed to transitively contain `#[repr(align(...))]` types. Thus, we
+    // have no choice but to use `u32` here. Luckily, these tests run in CI on
+    // platforms on which `u32` has alignment 4, so this isn't that big of a
+    // deal.
+    b: [u32],
+}
+
+#[test]
+fn c_packed_unsized() {
+    let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF];
+    let converted = CPackedUnsized::try_from_ref(candidate);
+    assert!(converted.is_some());
+}
+
+#[derive(TryFromBytes)]
+#[repr(packed)]
+struct PackedUnsized {
+    a: u8,
+    // NOTE: The `u32` type is not guaranteed to have alignment 4, although it
+    // does on many platforms. However, to fix this would require a custom type
+    // with a `#[repr(align(4))]` attribute, and `#[repr(packed)]` types are not
+    // allowed to transitively contain `#[repr(align(...))]` types. Thus, we
+    // have no choice but to use `u32` here. Luckily, these tests run in CI on
+    // platforms on which `u32` has alignment 4, so this isn't that big of a
+    // deal.
+    b: [u32],
+}
+
+#[test]
+fn packed_unsized() {
+    let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF];
+    let converted = CPackedUnsized::try_from_ref(candidate);
+    assert!(converted.is_some());
+
+    let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF];
+    let converted = CPackedUnsized::try_from_ref(candidate);
+    assert!(converted.is_none());
+
+    let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF];
+    let converted = CPackedUnsized::try_from_ref(candidate);
+    assert!(converted.is_some());
+}
