@@ -1,27 +1,3 @@
-error: cannot derive TryFromBytes with repr(packed)
-  --> tests/ui-nightly/struct.rs:70:8
-   |
-70 | #[repr(packed)]
-   |        ^^^^^^
-
-error: cannot derive TryFromBytes with repr(packed)
-  --> tests/ui-nightly/struct.rs:76:8
-   |
-76 | #[repr(packed(1))]
-   |        ^^^^^^^^^
-
-error: cannot derive TryFromBytes with repr(packed)
-  --> tests/ui-nightly/struct.rs:82:11
-   |
-82 | #[repr(C, packed)]
-   |           ^^^^^^
-
-error: cannot derive TryFromBytes with repr(packed)
-  --> tests/ui-nightly/struct.rs:88:11
-   |
-88 | #[repr(C, packed(1))]
-   |           ^^^^^^^^^
-
 error: unsupported on generic structs that are not repr(transparent) or repr(packed)
   --> tests/ui-nightly/struct.rs:97:10
    |
