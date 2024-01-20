@@ -160,6 +160,21 @@ macro_rules! define_system {
         }
 
         $(#[$system_attr])*
+        ///
+        #[doc = concat!(
+            stringify!($system),
+            " are encoded as tuples of (",
+        )]
+        $(#[doc = concat!(
+            "[`",
+            stringify!($set),
+            "`],"
+        )])*
+        #[doc = concat!(
+            ").",
+        )]
+        /// This trait is implemented for such tuples, and can be used to
+        /// project out the components of these tuples via its associated types.
         pub trait $system: sealed::Sealed {
             $(
                 $(#[$set_attr])*
@@ -167,13 +182,9 @@ macro_rules! define_system {
             )*
         }
 
-        mod here {
-            pub(super) use super::*;
-        }
-
         impl<$($set,)*> $system for ($($set,)*)
         where
-            $($set: here::$set,)*
+            $($set: self::$set,)*
         {
             $(type $set = $set;)*
         }
@@ -191,10 +202,43 @@ macro_rules! define_system {
                 impl $set for $elem {}
             )*
         )*
+
+        /// Groupings of invariants at least as strict as the given invariant.
+        pub mod at_least {
+            $(define_system!(@at_least $set, $($elem,)*);)*
+        }
     };
+
+    (@at_least $set:ident, $first:ident, $($rest:ident,)*) => {
+        define_system!(@at_least_helper $set, $($rest,)*);
+    };
+    (@at_least_helper $set:ident, $($first:ident,)?) => {};
+    (@at_least_helper $set:ident, $first:ident, $($rest:ident,)+) => {
+        #[doc = concat!(
+            "[",
+            stringify!($set),
+            "][super::",
+            stringify!($set),
+            "] at least as strict as [`",
+            stringify!($first),
+            "`][super::",
+            stringify!($first),
+            "]."
+        )]
+        pub trait $first: super::$set {}
+        impl $first for super::$first {}
+        $(impl $first for super::$rest {})*
+        define_system!(@at_least_helper $set, $($rest,)*);
+    };
+
+
 }
 
 /// The parameterized invariants of a [`Ptr`].
+///
+/// Invariants are encoded as ([`Aliasing`][invariant::Aliasing],
+/// [`Alignment`][invariant::Alignment], [`Validity`][invariant::Validity])
+/// triples implementing the [`Invariants`] trait.
 pub mod invariant {
     define_system! {
         /// The invariants of a [`Ptr`][super::Ptr].
