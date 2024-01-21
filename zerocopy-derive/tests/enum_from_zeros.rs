@@ -13,6 +13,7 @@ mod util;
 use {static_assertions::assert_impl_all, zerocopy::FromZeros};
 
 #[derive(FromZeros)]
+#[repr(C)]
 enum Foo {
     A,
 }
@@ -20,6 +21,7 @@ enum Foo {
 assert_impl_all!(Foo: FromZeros);
 
 #[derive(FromZeros)]
+#[repr(C)]
 enum Bar {
     A = 0,
 }
@@ -27,6 +29,7 @@ enum Bar {
 assert_impl_all!(Bar: FromZeros);
 
 #[derive(FromZeros)]
+#[repr(C)]
 enum Baz {
     A = 1,
     B = 0,

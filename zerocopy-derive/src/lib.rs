@@ -418,6 +418,10 @@ fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
             .to_compile_error();
     }
 
+    // We don't actually care what the repr is; we just care that it's one of
+    // the allowed ones.
+    try_or_print!(ENUM_FROM_ZEROS_AS_BYTES_CFG.validate_reprs(ast));
+
     let has_explicit_zero_discriminant =
         enm.variants.iter().filter_map(|v| v.discriminant.as_ref()).any(|(_, e)| {
             if let Expr::Lit(ExprLit { lit: Lit::Int(i), .. }) = e {
@@ -583,17 +587,17 @@ fn derive_as_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Token
 
     // We don't care what the repr is; we only care that it is one of the
     // allowed ones.
-    let _: Vec<repr::EnumRepr> = try_or_print!(ENUM_AS_BYTES_CFG.validate_reprs(ast));
+    try_or_print!(ENUM_FROM_ZEROS_AS_BYTES_CFG.validate_reprs(ast));
     impl_block(ast, enm, Trait::IntoBytes, RequireBoundedFields::No, false, None, None)
 }
 
 #[rustfmt::skip]
-const ENUM_AS_BYTES_CFG: Config<EnumRepr> = {
+const ENUM_FROM_ZEROS_AS_BYTES_CFG: Config<EnumRepr> = {
     use EnumRepr::*;
     Config {
         // Since `disallowed_but_legal_combinations` is empty, this message will
         // never actually be emitted.
-        allowed_combinations_message: r#"IntoBytes requires repr of "C", "u8", "u16", "u32", "u64", "usize", "i8", "i16", "i32", "i64", or "isize""#,
+        allowed_combinations_message: r#"Deriving this trait requires repr of "C", "u8", "u16", "u32", "u64", "usize", "i8", "i16", "i32", "i64", or "isize""#,
         derive_unaligned: false,
         allowed_combinations: &[
             &[C],
