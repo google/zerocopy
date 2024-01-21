@@ -271,9 +271,7 @@ pub fn derive_try_from_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenSt
         Data::Enum(_) => {
             Error::new_spanned(&ast, "TryFromBytes not supported on enum types").to_compile_error()
         }
-        Data::Union(_) => {
-            Error::new_spanned(&ast, "TryFromBytes not supported on union types").to_compile_error()
-        }
+        Data::Union(unn) => derive_try_from_bytes_union(&ast, unn),
     }
     .into()
 }
@@ -346,9 +344,8 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
             // `is_bit_valid`.
             fn is_bit_valid(candidate: zerocopy::Maybe<Self>) -> bool {
                 true #(&& {
-                    // SAFETY: `project` is a field projection of `candidate`.
-                    // The projected field will be well-aligned because this
-                    // derive rejects packed types.
+                    // SAFETY: `project` is a field projection of `candidate`,
+                    // and `Self` is a struct type.
                     let field_candidate = unsafe {
                         let project = |slf: *mut Self|
                             ::core::ptr::addr_of_mut!((*slf).#field_names);
@@ -356,32 +353,45 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
                         candidate.project(project)
                     };
 
-                    // SAFETY: The below invocation of `is_bit_valid` satisfies
-                    // the safety preconditions of `is_bit_valid`:
-                    // - The memory referenced by `field_candidate` is only
-                    //   accessed via reads for the duration of this method
-                    //   call. This is ensured by contract on the caller of the
-                    //   surrounding `is_bit_valid`.
-                    // - `field_candidate` may not refer to a valid instance of
-                    //   its corresponding field type, but it will only have
-                    //   `UnsafeCell`s at the offsets at which they may occur in
-                    //   that field type. This is ensured both by contract on
-                    //   the caller of the surrounding `is_bit_valid`, and by
-                    //   the construction of `field_candidiate`, i.e., via
-                    //   projection through `candidate`.
-                    //
-                    // Note that it's possible that this call will panic -
-                    // `is_bit_valid` does not promise that it doesn't panic,
-                    // and in practice, we support user-defined validators,
-                    // which could panic. This is sound because we haven't
-                    // violated any safety invariants which we would need to fix
-                    // before returning.
                     <#field_tys as zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                 })*
             }
         )
     });
     impl_block(ast, strct, Trait::TryFromBytes, RequireBoundedFields::Yes, false, None, extras)
+}
+
+// A union is `TryFromBytes` if:
+// - any of its fields are `TryFromBytes`
+
+fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
+    let extras = Some({
+        let fields = unn.fields();
+        let field_names = fields.iter().map(|(name, _ty)| name);
+        let field_tys = fields.iter().map(|(_name, ty)| ty);
+        quote!(
+            // SAFETY: We use `is_bit_valid` to validate that any field is
+            // bit-valid; we only return `true` if at least one of them is. The
+            // bit validity of a union is not yet well defined in Rust, but it
+            // is guaranteed to be no more strict than this definition. See #696
+            // for a more in-depth discussion.
+            fn is_bit_valid(candidate: zerocopy::Maybe<Self>) -> bool {
+                false #(|| {
+                    // SAFETY: `project` is a field projection of `candidate`,
+                    // and `Self` is a union type.
+                    let field_candidate = unsafe {
+                        let project = |slf: *mut Self|
+                            ::core::ptr::addr_of_mut!((*slf).#field_names);
+
+                        candidate.project(project)
+                    };
+
+                    <#field_tys as zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                })*
+            }
+        )
+    });
+    impl_block(ast, unn, Trait::TryFromBytes, RequireBoundedFields::Yes, false, None, extras)
 }
 
 const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[

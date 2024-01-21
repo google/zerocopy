@@ -285,37 +285,37 @@ pub mod invariant {
                 /// The referent is not necessarily initialized.
                 AnyValidity,
 
-                /// The byte ranges initialized in `T` are also initialized in the
-                /// referent.
+                /// The byte ranges initialized in `T` are also initialized in
+                /// the referent.
                 ///
-                /// Formally: uninitialized bytes may only be present in `Ptr<T>`'s
-                /// referent where it is possible for them to be present in `T`.
-                /// This is a dynamic property: if, at a particular byte offset, a
-                /// valid enum discriminant is set, the subsequent bytes may only
-                /// have uninitialized bytes as specificed by the corresponding
-                /// enum.
+                /// Formally: uninitialized bytes may only be present in
+                /// `Ptr<T>`'s referent where they are guaranteed to be present
+                /// in `T`. This is a dynamic property: if, at a particular byte
+                /// offset, a valid enum discriminant is set, the subsequent
+                /// bytes may only have uninitialized bytes as specificed by the
+                /// corresponding enum.
                 ///
                 /// Formally, given `len = size_of_val_raw(ptr)`, at every byte
                 /// offset, `b`, in the range `[0, len)`:
-                /// - If, in all instances `t: T` of length `len`, the byte at
-                ///   offset `b` in `t` is initialized, then the byte at offset `b`
-                ///   within `*ptr` must be initialized.
-                /// - Let `c` be the contents of the byte range `[0, b)` in `*ptr`.
-                ///   Let `S` be the subset of valid instances of `T` of length
-                ///   `len` which contain `c` in the offset range `[0, b)`. If, for
-                ///   all instances of `t: T` in `S`, the byte at offset `b` in `t`
-                ///   is initialized, then the byte at offset `b` in `*ptr` must be
-                ///   initialized.
+                /// - If, in any instance `t: T` of length `len`, the byte at
+                ///   offset `b` in `t` is initialized, then the byte at offset
+                ///   `b` within `*ptr` must be initialized.
+                /// - Let `c` be the contents of the byte range `[0, b)` in
+                ///   `*ptr`. Let `S` be the subset of valid instances of `T` of
+                ///   length `len` which contain `c` in the offset range `[0,
+                ///   b)`. If, in any instance of `t: T` in `S`, the byte at
+                ///   offset `b` in `t` is initialized, then the byte at offset
+                ///   `b` in `*ptr` must be initialized.
                 ///
                 ///   Pragmatically, this means that if `*ptr` is guaranteed to
                 ///   contain an enum type at a particular offset, and the enum
-                ///   discriminant stored in `*ptr` corresponds to a valid variant
-                ///   of that enum type, then it is guaranteed that the appropriate
-                ///   bytes of `*ptr` are initialized as defined by that variant's
-                ///   bit validity (although note that the variant may contain
-                ///   another enum type, in which case the same rules apply
-                ///   depending on the state of its discriminant, and so on
-                ///   recursively).
+                ///   discriminant stored in `*ptr` corresponds to a valid
+                ///   variant of that enum type, then it is guaranteed that the
+                ///   appropriate bytes of `*ptr` are initialized as defined by
+                ///   that variant's bit validity (although note that the
+                ///   variant may contain another enum type, in which case the
+                ///   same rules apply depending on the state of its
+                ///   discriminant, and so on recursively).
                 AsInitialized,
 
                 /// The referent is bit-valid for `T`.
@@ -785,6 +785,7 @@ mod _project {
     where
         T: 'a + ?Sized,
         I: Invariants,
+        I::Validity: invariant::at_least::AsInitialized,
     {
         /// Projects a field from `self`.
         ///
@@ -796,6 +797,8 @@ mod _project {
         /// argument. Its argument will be `self` casted to a raw pointer. The
         /// pointer it returns must reference only a subset of `self`'s bytes.
         ///
+        /// The caller also promises that `T` is a struct or union type.
+        ///
         /// ## Postconditions
         ///
         /// If the preconditions of this function are met, this function will
@@ -805,7 +808,7 @@ mod _project {
         pub unsafe fn project<U: 'a + ?Sized>(
             self,
             projector: impl FnOnce(*mut T) -> *mut U,
-        ) -> Ptr<'a, U, (I::Aliasing, invariant::AnyAlignment, I::Validity)> {
+        ) -> Ptr<'a, U, (I::Aliasing, invariant::AnyAlignment, invariant::AsInitialized)> {
             // SAFETY: `projector` is provided with `self` casted to a raw
             // pointer.
             let field = projector(self.as_non_null().as_ptr());
@@ -849,10 +852,17 @@ mod _project {
             //    `ALIASING_INVARIANT` because projection does not impact the
             //    aliasing invariant.
             // 7. `field`, trivially, conforms to the alignment invariant of
-            //   `AnyAlignment`.
-            // 8. `field`, conditionally, conforms to the validity invariant of
-            //    `VALIDITY_INVARIANT`. If `field` is projected from data valid
-            //    for `T`, `field` will be valid for `U`.
+            //    `AnyAlignment`.
+            // 8. By type bound on `I::Validity`, `self` satisfies the
+            //    "as-initialized" property relative to `T`. The returned `Ptr`
+            //    has the validity `AsInitialized`. The caller promises that `T`
+            //    is either a struct type or a union type. Returning a `Ptr`
+            //    with the validity `AsInitialized` is valid in both cases. The
+            //    struct case is self-explanatory, but the union case bears
+            //    explanation. The "as-initialized" property says that a byte
+            //    must be initialized if it is initialized in *any* instance of
+            //    the type. Thus, if `self`'s referent is as-initialized as `T`,
+            //    then it is at least as-initialized as each of its fields.
             unsafe { Ptr::new(field) }
         }
     }
