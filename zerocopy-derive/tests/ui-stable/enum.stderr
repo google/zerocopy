@@ -1,26 +1,8 @@
-error: TryFromBytes not supported on enum types
-  --> tests/ui-stable/enum.rs:19:1
-   |
-19 | / #[repr("foo")]
-20 | | enum Generic1 {
-21 | |     A,
-22 | | }
-   | |_^
-
 error: unrecognized representation hint
   --> tests/ui-stable/enum.rs:19:8
    |
 19 | #[repr("foo")]
    |        ^^^^^
-
-error: TryFromBytes not supported on enum types
-  --> tests/ui-stable/enum.rs:25:1
-   |
-25 | / #[repr(foo)]
-26 | | enum Generic2 {
-27 | |     A,
-28 | | }
-   | |_^
 
 error: unrecognized representation hint
   --> tests/ui-stable/enum.rs:25:8
@@ -28,29 +10,11 @@ error: unrecognized representation hint
 25 | #[repr(foo)]
    |        ^^^
 
-error: TryFromBytes not supported on enum types
-  --> tests/ui-stable/enum.rs:31:1
-   |
-31 | / #[repr(transparent)]
-32 | | enum Generic3 {
-33 | |     A,
-34 | | }
-   | |_^
-
 error: unsupported representation for deriving zerocopy trait(s) on an enum
   --> tests/ui-stable/enum.rs:31:8
    |
 31 | #[repr(transparent)]
    |        ^^^^^^^^^^^
-
-error: TryFromBytes not supported on enum types
-  --> tests/ui-stable/enum.rs:37:1
-   |
-37 | / #[repr(u8, u16)]
-38 | | enum Generic4 {
-39 | |     A,
-40 | | }
-   | |_^
 
 error: conflicting representation hints
   --> tests/ui-stable/enum.rs:37:1
@@ -58,13 +22,13 @@ error: conflicting representation hints
 37 | #[repr(u8, u16)]
    | ^
 
-error: TryFromBytes not supported on enum types
-  --> tests/ui-stable/enum.rs:43:1
+error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+  --> tests/ui-stable/enum.rs:42:10
    |
-43 | / enum Generic5 {
-44 | |     A,
-45 | | }
-   | |_^
+42 | #[derive(TryFromBytes, FromZeros, FromBytes)]
+   |          ^^^^^^^^^^^^
+   |
+   = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
   --> tests/ui-stable/enum.rs:42:24
@@ -82,238 +46,203 @@ error: must have a non-align #[repr(...)] attribute in order to guarantee this t
    |
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: TryFromBytes not supported on enum types
-  --> tests/ui-stable/enum.rs:70:1
+error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+  --> tests/ui-stable/enum.rs:69:10
    |
-70 | / enum FromZeros1 {
-71 | |     A(u8),
-72 | | }
-   | |_^
-
-error: only field-less enums can implement FromZeros
-  --> tests/ui-stable/enum.rs:70:1
+69 | #[derive(TryFromBytes)]
+   |          ^^^^^^^^^^^^
    |
-70 | / enum FromZeros1 {
-71 | |     A(u8),
-72 | | }
-   | |_^
+   = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: TryFromBytes not supported on enum types
-  --> tests/ui-stable/enum.rs:75:1
+error: TryFromBytes requires repr of "u8", "u16", "u32", "u64", "usize", "i8", or "i16", "i32", "i64", or "isize"
+  --> tests/ui-stable/enum.rs:75:8
    |
-75 | / enum FromZeros2 {
-76 | |     A,
-77 | |     B(u8),
-78 | | }
-   | |_^
+75 | #[repr(C)]
+   |        ^
 
-error: only field-less enums can implement FromZeros
-  --> tests/ui-stable/enum.rs:75:1
-   |
-75 | / enum FromZeros2 {
-76 | |     A,
-77 | |     B(u8),
-78 | | }
-   | |_^
-
-error: TryFromBytes not supported on enum types
+error: only field-less enums can implement TryFromBytes
   --> tests/ui-stable/enum.rs:81:1
    |
-81 | / enum FromZeros3 {
-82 | |     A = 1,
-83 | |     B,
+81 | / #[repr(u8)]
+82 | | enum TryFromBytes3 {
+83 | |     A(u8),
 84 | | }
    | |_^
 
-error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
-  --> tests/ui-stable/enum.rs:80:24
-   |
-80 | #[derive(TryFromBytes, FromZeros)]
-   |                        ^^^^^^^^^
-   |
-   = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: TryFromBytes not supported on enum types
+error: only field-less enums can implement TryFromBytes
   --> tests/ui-stable/enum.rs:91:1
    |
-91 | / #[repr(C)]
-92 | | enum FromBytes1 {
-93 | |     A,
-94 | | }
+91 | / enum FromZeros1 {
+92 | |     A(u8),
+93 | | }
    | |_^
 
-error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-  --> tests/ui-stable/enum.rs:91:8
+error: only field-less enums can implement FromZeros
+  --> tests/ui-stable/enum.rs:91:1
    |
-91 | #[repr(C)]
-   |        ^
+91 | / enum FromZeros1 {
+92 | |     A(u8),
+93 | | }
+   | |_^
 
-error: TryFromBytes not supported on enum types
-   --> tests/ui-stable/enum.rs:97:1
-    |
-97  | / #[repr(usize)]
-98  | | enum FromBytes2 {
-99  | |     A,
-100 | | }
-    | |_^
-
-error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-  --> tests/ui-stable/enum.rs:97:8
+error: only field-less enums can implement TryFromBytes
+  --> tests/ui-stable/enum.rs:96:1
    |
-97 | #[repr(usize)]
-   |        ^^^^^
+96 | / enum FromZeros2 {
+97 | |     A,
+98 | |     B(u8),
+99 | | }
+   | |_^
 
-error: TryFromBytes not supported on enum types
-   --> tests/ui-stable/enum.rs:103:1
+error: only field-less enums can implement FromZeros
+  --> tests/ui-stable/enum.rs:96:1
+   |
+96 | / enum FromZeros2 {
+97 | |     A,
+98 | |     B(u8),
+99 | | }
+   | |_^
+
+error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+   --> tests/ui-stable/enum.rs:101:10
     |
-103 | / #[repr(isize)]
-104 | | enum FromBytes3 {
-105 | |     A,
-106 | | }
-    | |_^
+101 | #[derive(TryFromBytes, FromZeros)]
+    |          ^^^^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+   --> tests/ui-stable/enum.rs:101:24
+    |
+101 | #[derive(TryFromBytes, FromZeros)]
+    |                        ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: TryFromBytes requires repr of "u8", "u16", "u32", "u64", "usize", "i8", or "i16", "i32", "i64", or "isize"
+   --> tests/ui-stable/enum.rs:112:8
+    |
+112 | #[repr(C)]
+    |        ^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-   --> tests/ui-stable/enum.rs:103:8
+   --> tests/ui-stable/enum.rs:112:8
     |
-103 | #[repr(isize)]
+112 | #[repr(C)]
+    |        ^
+
+error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
+   --> tests/ui-stable/enum.rs:118:8
+    |
+118 | #[repr(usize)]
     |        ^^^^^
 
-error: TryFromBytes not supported on enum types
-   --> tests/ui-stable/enum.rs:109:1
+error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
+   --> tests/ui-stable/enum.rs:124:8
     |
-109 | / #[repr(u32)]
-110 | | enum FromBytes4 {
-111 | |     A,
-112 | | }
-    | |_^
+124 | #[repr(isize)]
+    |        ^^^^^
 
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-   --> tests/ui-stable/enum.rs:109:8
+   --> tests/ui-stable/enum.rs:130:8
     |
-109 | #[repr(u32)]
+130 | #[repr(u32)]
     |        ^^^
 
-error: TryFromBytes not supported on enum types
-   --> tests/ui-stable/enum.rs:115:1
-    |
-115 | / #[repr(i32)]
-116 | | enum FromBytes5 {
-117 | |     A,
-118 | | }
-    | |_^
-
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-   --> tests/ui-stable/enum.rs:115:8
+   --> tests/ui-stable/enum.rs:136:8
     |
-115 | #[repr(i32)]
+136 | #[repr(i32)]
     |        ^^^
 
-error: TryFromBytes not supported on enum types
-   --> tests/ui-stable/enum.rs:121:1
-    |
-121 | / #[repr(u64)]
-122 | | enum FromBytes6 {
-123 | |     A,
-124 | | }
-    | |_^
-
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-   --> tests/ui-stable/enum.rs:121:8
+   --> tests/ui-stable/enum.rs:142:8
     |
-121 | #[repr(u64)]
+142 | #[repr(u64)]
     |        ^^^
 
-error: TryFromBytes not supported on enum types
-   --> tests/ui-stable/enum.rs:127:1
-    |
-127 | / #[repr(i64)]
-128 | | enum FromBytes7 {
-129 | |     A,
-130 | | }
-    | |_^
-
 error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-   --> tests/ui-stable/enum.rs:127:8
+   --> tests/ui-stable/enum.rs:148:8
     |
-127 | #[repr(i64)]
+148 | #[repr(i64)]
     |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-stable/enum.rs:137:8
+   --> tests/ui-stable/enum.rs:158:8
     |
-137 | #[repr(C)]
+158 | #[repr(C)]
     |        ^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-stable/enum.rs:143:8
+   --> tests/ui-stable/enum.rs:164:8
     |
-143 | #[repr(u16)]
+164 | #[repr(u16)]
     |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-stable/enum.rs:149:8
+   --> tests/ui-stable/enum.rs:170:8
     |
-149 | #[repr(i16)]
+170 | #[repr(i16)]
     |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-stable/enum.rs:155:8
+   --> tests/ui-stable/enum.rs:176:8
     |
-155 | #[repr(u32)]
+176 | #[repr(u32)]
     |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-stable/enum.rs:161:8
+   --> tests/ui-stable/enum.rs:182:8
     |
-161 | #[repr(i32)]
+182 | #[repr(i32)]
     |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-stable/enum.rs:167:8
+   --> tests/ui-stable/enum.rs:188:8
     |
-167 | #[repr(u64)]
+188 | #[repr(u64)]
     |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-stable/enum.rs:173:8
+   --> tests/ui-stable/enum.rs:194:8
     |
-173 | #[repr(i64)]
+194 | #[repr(i64)]
     |        ^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-stable/enum.rs:179:8
+   --> tests/ui-stable/enum.rs:200:8
     |
-179 | #[repr(usize)]
+200 | #[repr(usize)]
     |        ^^^^^
 
 error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-stable/enum.rs:185:8
+   --> tests/ui-stable/enum.rs:206:8
     |
-185 | #[repr(isize)]
+206 | #[repr(isize)]
     |        ^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-stable/enum.rs:191:12
+   --> tests/ui-stable/enum.rs:212:12
     |
-191 | #[repr(u8, align(2))]
+212 | #[repr(u8, align(2))]
     |            ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-stable/enum.rs:197:12
+   --> tests/ui-stable/enum.rs:218:12
     |
-197 | #[repr(i8, align(2))]
+218 | #[repr(i8, align(2))]
     |            ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-stable/enum.rs:203:18
+   --> tests/ui-stable/enum.rs:224:18
     |
-203 | #[repr(align(1), align(2))]
+224 | #[repr(align(1), align(2))]
     |                  ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-stable/enum.rs:209:8
+   --> tests/ui-stable/enum.rs:230:8
     |
-209 | #[repr(align(2), align(4))]
+230 | #[repr(align(2), align(4))]
     |        ^^^^^^^^
 
 error[E0565]: meta item in `repr` must be an identifier

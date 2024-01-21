@@ -1244,7 +1244,8 @@ pub unsafe trait TryFromBytes {
         // SAFETY: `candidate` has no uninitialized sub-ranges because it
         // derived from `bytes: &[u8]`, and is therefore at least as-initialized
         // as `Self`.
-        let candidate = unsafe { candidate.assume_as_initialized() };
+        let candidate =
+            unsafe { candidate.assume_validity::<crate::pointer::invariant::AsInitialized>() };
 
         // This call may panic. If that happens, it doesn't cause any soundness
         // issues, as we have not generated any invalid state which we need to
