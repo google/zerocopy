@@ -591,6 +591,58 @@ mod _casts {
         }
     }
 
+    impl<'a, const N: usize, T, I> Ptr<'a, [T; N], I>
+    where
+        T: 'a,
+        I: Invariants,
+    {
+        /// Casts this pointer-to-array into a slice.
+        #[allow(clippy::wrong_self_convention)]
+        pub(crate) fn as_slice(self) -> Ptr<'a, [T], I> {
+            let start = self.as_non_null().cast::<T>().as_ptr();
+            let slice = core::ptr::slice_from_raw_parts_mut(start, N);
+            // SAFETY: `slice` is not null, because it is derived from `start`
+            // which is non-null.
+            let slice = unsafe { NonNull::new_unchecked(slice) };
+            // SAFETY: Lemma: In the following safety arguments, note that
+            // `slice` is derived from `self` in two steps: first, by casting
+            // `self: [T; N]` to `start: T`, then by constructing a pointer to a
+            // slice starting at `start` of length `N`. As a result, `slice`
+            // references exactly the same allocation as `self.`
+            //
+            // 0. By the above lemma, `slice` is derived from the same
+            //    allocation as `self`, which, by invariant on `Ptr`, is valid.
+            // 1. By the above lemma, `slice` has valid provenance for `A`,
+            //    since it is derived from the pointer `self`, which, by
+            //    invariant on `Ptr`, has valid provenance for `A`.
+            // 2. By the above lemma, `slice` addresses a byte range which is
+            //    entirely contained in `A`, because it references exactly the
+            //    same byte range as `self`, which, by invariant on `Ptr`, is
+            //    entirely contained in `A`.
+            // 3. By the above lemma, `slice` addresses a byte range whose
+            //    length fits in an `isize`, since it addresses exactly the same
+            //    byte range as `self`, which, by invariant on `Ptr`, has a
+            //    length that fits in an `isize`.
+            // 4. By the above lemma, `slice` addresses a byte range which does
+            //    not wrap around the address space, since it addresses exactly
+            //    the same byte range as `self`, which, by invariant on `Ptr`,
+            //    does not wrap around the address space.
+            // 5. By the above lemma, `A` is guaranteed to live for at least
+            //    `'a`, because it is derived from the same allocation as
+            //    `self`, which, by invariant on `Ptr`, lives for at least `'a`.
+            // 6. By the above lemma, `slice` conforms to the aliasing invariant
+            //    of `I::Aliasing`, because the operations that produced `slice`
+            //    from `self` do not impact aliasing.
+            // 7. By the above lemma, `slice` conforms to the alignment
+            //    invariant of `I::Alignment`, because the operations that
+            //    produced `slice` from `self` do not impact alignment.
+            // 8. By the above lemma, `slice` conforms to the validity invariant
+            //    of `I::Validity`, because the operations that produced `slice`
+            //    from `self` do not impact validity.
+            unsafe { Ptr::new(slice) }
+        }
+    }
+
     /// For caller convenience, these methods are generic over alignment
     /// invariant. In practice, the referent is always well-aligned, because the
     /// alignment of `[u8]` is 1.

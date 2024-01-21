@@ -3524,6 +3524,13 @@ safety_comment! {
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#array-layout
     unsafe_impl!(const N: usize, T: NoCell => NoCell for [T; N]);
+    unsafe_impl!(const N: usize, T: TryFromBytes => TryFromBytes for [T; N]; |c: Maybe<[T; N]>| {
+        // Note that this call may panic, but it would still be sound even if it
+        // did. `is_bit_valid` does not promise that it will not panic (in fact,
+        // it explicitly warns that it's a possibility), and we have not
+        // violated any safety invariants that we must fix before returning.
+        <[T] as TryFromBytes>::is_bit_valid(c.as_slice())
+    });
     unsafe_impl!(const N: usize, T: FromZeros => FromZeros for [T; N]);
     unsafe_impl!(const N: usize, T: FromBytes => FromBytes for [T; N]);
     unsafe_impl!(const N: usize, T: IntoBytes => IntoBytes for [T; N]);
@@ -7859,8 +7866,12 @@ mod tests {
                     // `0` may be any integer type with a different size or
                     // alignment than some `NonZeroXxx` types).
                     @failure Option::<Self>::None;
+            [bool; 0] => @success [];
+            [bool; 1]
+                    => @success [true], [false],
+                    @failure [2u8], [3u8], [0xFFu8];
             [bool]
-                => @success [true, false], [false, true],
+                 => @success [true, false], [false, true],
                     @failure [2u8], [3u8], [0xFFu8], [0u8, 1u8, 2u8];
         );
 
@@ -8276,11 +8287,11 @@ mod tests {
         assert_impls!(
             [u8; 0]: KnownLayout,
             NoCell,
+            TryFromBytes,
             FromZeros,
             FromBytes,
             IntoBytes,
             Unaligned,
-            !TryFromBytes
         );
         assert_impls!(
             [NotZerocopy; 0]: KnownLayout,
@@ -8294,11 +8305,11 @@ mod tests {
         assert_impls!(
             [u8; 1]: KnownLayout,
             NoCell,
+            TryFromBytes,
             FromZeros,
             FromBytes,
             IntoBytes,
             Unaligned,
-            !TryFromBytes
         );
         assert_impls!(
             [NotZerocopy; 1]: KnownLayout,
