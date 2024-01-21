@@ -90,7 +90,7 @@ error: TryFromBytes not supported on enum types
 72 | | }
    | |_^
 
-error: only C-like enums can implement FromZeros
+error: only field-less enums can implement FromZeros
   --> tests/ui-nightly/enum.rs:70:1
    |
 70 | / enum FromZeros1 {
@@ -107,7 +107,7 @@ error: TryFromBytes not supported on enum types
 78 | | }
    | |_^
 
-error: only C-like enums can implement FromZeros
+error: only field-less enums can implement FromZeros
   --> tests/ui-nightly/enum.rs:75:1
    |
 75 | / enum FromZeros2 {

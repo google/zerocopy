@@ -69,11 +69,11 @@ fn map_fields<'a>(
 }
 
 pub trait EnumExt {
-    fn is_c_like(&self) -> bool;
+    fn is_fieldless(&self) -> bool;
 }
 
 impl EnumExt for DataEnum {
-    fn is_c_like(&self) -> bool {
+    fn is_fieldless(&self) -> bool {
         self.fields().is_empty()
     }
 }

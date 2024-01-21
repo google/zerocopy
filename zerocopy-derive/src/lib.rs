@@ -413,8 +413,8 @@ fn derive_from_zeros_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro
 // - one of the variants has a discriminant of `0`
 
 fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
-    if !enm.is_c_like() {
-        return Error::new_spanned(ast, "only C-like enums can implement FromZeros")
+    if !enm.is_fieldless() {
+        return Error::new_spanned(ast, "only field-less enums can implement FromZeros")
             .to_compile_error();
     }
 
@@ -475,8 +475,8 @@ fn derive_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro
 //   this would require ~4 billion enum variants, which obviously isn't a thing.
 
 fn derive_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
-    if !enm.is_c_like() {
-        return Error::new_spanned(ast, "only C-like enums can implement FromBytes")
+    if !enm.is_fieldless() {
+        return Error::new_spanned(ast, "only field-less enums can implement FromBytes")
             .to_compile_error();
     }
 
@@ -577,11 +577,11 @@ const STRUCT_UNION_AS_BYTES_CFG: Config<StructRepr> = Config {
     disallowed_but_legal_combinations: &[],
 };
 
-// An enum is `IntoBytes` if it is C-like and has a defined repr.
+// An enum is `IntoBytes` if it is field-less and has a defined repr.
 
 fn derive_as_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
-    if !enm.is_c_like() {
-        return Error::new_spanned(ast, "only C-like enums can implement IntoBytes")
+    if !enm.is_fieldless() {
+        return Error::new_spanned(ast, "only field-less enums can implement IntoBytes")
             .to_compile_error();
     }
 
@@ -668,8 +668,8 @@ const STRUCT_UNION_UNALIGNED_CFG: Config<StructRepr> = Config {
 // - `repr(u8)` or `repr(i8)`
 
 fn derive_unaligned_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
-    if !enm.is_c_like() {
-        return Error::new_spanned(ast, "only C-like enums can implement Unaligned")
+    if !enm.is_fieldless() {
+        return Error::new_spanned(ast, "only field-less enums can implement Unaligned")
             .to_compile_error();
     }
 
@@ -678,10 +678,10 @@ fn derive_unaligned_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Toke
     // requirement.
     let _: Vec<repr::EnumRepr> = try_or_print!(ENUM_UNALIGNED_CFG.validate_reprs(ast));
 
-    // C-like enums cannot currently have type parameters, so this value of true
-    // for `require_trait_bound_on_field_types` doesn't really do anything. But
-    // it's marginally more future-proof in case that restriction is lifted in
-    // the future.
+    // field-less enums cannot currently have type parameters, so this value of
+    // true for `require_trait_bound_on_field_types` doesn't really do anything.
+    // But it's marginally more future-proof in case that restriction is lifted
+    // in the future.
     impl_block(ast, enm, Trait::Unaligned, RequireBoundedFields::Yes, false, None, None)
 }
 
