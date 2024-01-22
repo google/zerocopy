@@ -72,14 +72,8 @@ enum TryFromBytes1 {
 }
 
 #[derive(TryFromBytes)]
-#[repr(C)]
-enum TryFromBytes2 {
-    A,
-}
-
-#[derive(TryFromBytes)]
 #[repr(u8)]
-enum TryFromBytes3 {
+enum TryFromBytes2 {
     A(u8),
 }
 
