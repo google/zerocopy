@@ -40,7 +40,7 @@ where
         if T::is_bit_valid(self.forget_aligned()) {
             // SAFETY: If `T::is_bit_valid`, code may assume that `self`
             // contains a bit-valid instance of `Self`.
-            Some(unsafe { self.assume_valid() })
+            Some(unsafe { self.assume_validity::<invariant::Valid>() })
         } else {
             None
         }
@@ -82,7 +82,7 @@ where
     {
         // SAFETY: The alignment of `T` is 1 and thus is always aligned
         // because `T: Unaligned`.
-        let ptr = unsafe { self.assume_aligned() };
+        let ptr = unsafe { self.assume_alignment::<invariant::Aligned>() };
         ptr.as_ref()
     }
 }

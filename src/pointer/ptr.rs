@@ -458,51 +458,69 @@ mod _transitions {
         T: 'a + ?Sized,
         I: Invariants,
     {
-        /// Assumes that `Ptr`'s referent is validly-aligned for `T`.
+        /// Assumes that `Ptr`'s referent is validly-aligned for `T` if required
+        /// by `A`.
         ///
         /// # Safety
         ///
         /// The caller promises that `Ptr`'s referent conforms to the alignment
-        /// invariant of `T`.
+        /// invariant of `T` if required by `A`.
         #[inline]
-        pub(crate) unsafe fn assume_aligned(
+        pub(crate) unsafe fn assume_alignment<A: invariant::Alignment>(
             self,
-        ) -> Ptr<'a, T, (I::Aliasing, invariant::Aligned, I::Validity)> {
+        ) -> Ptr<'a, T, (I::Aliasing, A, I::Validity)> {
             // SAFETY: The caller promises that `self`'s referent is
-            // well-aligned for `T`.
+            // well-aligned for `T` if required by `A` .
             unsafe { Ptr::from_ptr(self) }
         }
 
-        /// Assumes that `Ptr`'s referent is as-initialized as `T`.
+        /// Assumes that `Ptr`'s referent conforms to the validity requirement
+        /// of `V`.
         ///
         /// # Safety
         ///
-        /// The caller promises that `Ptr`'s referent conforms to the
-        /// [`invariant::AsInitialized`] invariant (see documentation there).
+        /// The caller promises that `Ptr`'s referent conforms to the validity
+        /// requirement of `V`.
+        #[doc(hidden)]
+        #[inline]
+        pub unsafe fn assume_validity<V: invariant::Validity>(
+            self,
+        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, V)> {
+            // SAFETY: The caller promises that `self`'s referent conforms to
+            // the validity requirement of `V`.
+            unsafe { Ptr::from_ptr(self) }
+        }
+
+        /// A shorthand for `self.assume_validity<invariant::AsInitialized>()`.
+        ///
+        /// # Safety
+        ///
+        /// The caller promises to uphold the safety preconditions of
+        /// `self.assume_validity<invariant::AsInitialized>()`.
         #[doc(hidden)]
         #[inline]
         pub unsafe fn assume_as_initialized(
             self,
         ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, invariant::AsInitialized)> {
-            // SAFETY: The caller promises that `self`'s referent only contains
-            // uninitialized bytes in a subset of the uninitialized ranges in
-            // `T`. for `T`.
-            unsafe { Ptr::from_ptr(self) }
+            // SAFETY: The caller has promised to uphold the safety
+            // preconditions.
+            unsafe { self.assume_validity::<invariant::AsInitialized>() }
         }
 
-        /// Assumes that `Ptr`'s referent is validly initialized for `T`.
+        /// A shorthand for `self.assume_validity<invariant::Valid>()`.
         ///
         /// # Safety
         ///
-        /// The caller promises that `Ptr`'s referent conforms to the
-        /// bit validity invariants on `T`.
+        /// The caller promises to uphold the safety preconditions of
+        /// `self.assume_validity<invariant::Valid>()`.
+        #[doc(hidden)]
         #[inline]
-        pub(crate) unsafe fn assume_valid(
+        pub unsafe fn assume_valid(
             self,
         ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, invariant::Valid)> {
-            // SAFETY: The caller promises that `self`'s referent is bit-valid
-            // for `T`.
-            unsafe { Ptr::from_ptr(self) }
+            // SAFETY: The caller has promised to uphold the safety
+            // preconditions.
+            unsafe { self.assume_validity::<invariant::Valid>() }
         }
 
         /// Forgets that `Ptr`'s referent is validly-aligned for `T`.

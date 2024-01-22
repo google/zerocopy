@@ -146,7 +146,7 @@ macro_rules! unsafe_impl {
 
             // SAFETY: The caller has promised that the referenced memory region
             // will contain a valid `$repr`.
-            let $candidate = unsafe { candidate.assume_valid() };
+            let $candidate = unsafe { candidate.assume_validity::<crate::pointer::invariant::Valid>() };
             $is_bit_valid
         }
     };
@@ -166,7 +166,7 @@ macro_rules! unsafe_impl {
 
             // SAFETY: The caller has promised that `$repr` is as-initialized as
             // `Self`.
-            let $candidate = unsafe { $candidate.assume_as_initialized() };
+            let $candidate = unsafe { $candidate.assume_validity::<crate::pointer::invariant::AsInitialized>() };
 
             $is_bit_valid
         }

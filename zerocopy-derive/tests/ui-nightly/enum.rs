@@ -63,6 +63,27 @@ enum NoCell2 {
 }
 
 //
+// TryFromBytes errors
+//
+
+#[derive(TryFromBytes)]
+enum TryFromBytes1 {
+    A,
+}
+
+#[derive(TryFromBytes)]
+#[repr(C)]
+enum TryFromBytes2 {
+    A,
+}
+
+#[derive(TryFromBytes)]
+#[repr(u8)]
+enum TryFromBytes3 {
+    A(u8),
+}
+
+//
 // FromZeros errors
 //
 
