@@ -38,7 +38,7 @@ jobs:
       matrix:
         # See `INTERNAL.md` for an explanation of these pinned toolchain
         # versions.
-        toolchain: [ "msrv", "stable", "nightly",  "zerocopy-generic-bounds-in-const-fn", "zerocopy-aarch64-simd", "zerocopy-panic-in-const", ]
+        toolchain: [ "mwrv", "stable", "nightly",  "zerocopy-generic-bounds-in-const-fn", "zerocopy-aarch64-simd", "zerocopy-panic-in-const", ]
         target: [
           "i686-unknown-linux-gnu",
           "x86_64-unknown-linux-gnu",
@@ -55,7 +55,7 @@ jobs:
         exclude:
           # Exclude any combination which uses a non-nightly toolchain but
           # enables nightly features.
-          - toolchain: "msrv"
+          - toolchain: "mwrv"
             features: "--all-features"
           - toolchain: "stable"
             features: "--all-features"
@@ -75,7 +75,7 @@ jobs:
           - crate: "zerocopy-derive"
             features: "--all-features"
           # Exclue any combination of zerocopy-derive and any toolchain version
-          # other than "msrv", "stable", and "nightly". These other versions
+          # other than "mwrv", "stable", and "nightly". These other versions
           # exist to exercise zerocopy behavior which differs by toolchain;
           # zerocopy-derive doesn't behave different on these toolchains.
           - crate: "zerocopy-derive"
@@ -100,7 +100,7 @@ jobs:
       run: |
         set -eo pipefail
 
-        # We use toolchain descriptors ("msrv", "stable", "nightly", and values
+        # We use toolchain descriptors ("mwrv", "stable", "nightly", and values
         # from the "metadata.build-rs" key in Cargo.toml) in the matrix. This
         # step converts the current descriptor to a particular toolchain version
         # by looking up the corresponding key in `Cargo.toml`. It sets the
@@ -127,8 +127,8 @@ jobs:
           echo "Using non-nightly toolchain; not modifying RUSTFLAGS='$RUSTFLAGS' or MIRIFLAGS='$MIRIFLAGS'" | tee -a $GITHUB_STEP_SUMMARY
         fi
 
-    # On our MSRV, `cargo` does not know about the `rust-version` field. As a
-    # result, in `cargo.sh`, if we use our MSRV toolchain in order to run `cargo
+    # On our MWRV, `cargo` does not know about the `rust-version` field. As a
+    # result, in `cargo.sh`, if we use our MWRV toolchain in order to run `cargo
     # metadata`, we will not be able to extract the `rust-version` field. Thus,
     # in `cargo.sh`, we explicitly do `cargo +stable metadata`. This requires a
     # (more recent) stable toolchain to be installed. As of this writing, this
@@ -225,7 +225,7 @@ jobs:
       # Only run UI tests for zerocopy-derive, or for zerocopy with the derive
       # feature.
       #
-      # Only run UI tests for the 'msrv', 'stable', and 'nightly' toolchains.
+      # Only run UI tests for the 'mwrv', 'stable', and 'nightly' toolchains.
       # Other toolchains are tested only because zerocopy has behavior which
       # differs on those toolchains, but at present, none of that behavior
       # affects UI tests. If we were to run UI tests on these toolchains, we
@@ -235,7 +235,7 @@ jobs:
         (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) &&
           (matrix.crate == 'zerocopy-derive' ||
             (matrix.features != '' && matrix.features != '--no-default-features')) &&
-          (matrix.toolchain == 'msrv' || matrix.toolchain == 'stable' || matrix.toolchain == 'nightly')
+          (matrix.toolchain == 'mwrv' || matrix.toolchain == 'stable' || matrix.toolchain == 'nightly')
 
     - name: Run tests under Miri
       run: |
@@ -364,6 +364,70 @@ jobs:
           diff <(./generate-readme.sh) README.md
           exit $?
 
+  check_mwrv:
+    needs: generate_cache
+    runs-on: ubuntu-latest
+    name: Check MWRV <= MSRV
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
+        with:
+          path: |
+            ~/.cargo/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
+
+      # Make sure that the rust-version key in zerocopy's `Cargo.toml` file
+      # (MSRV) is at least as high as the
+      # `metadata.ci."minimum-working-rust-version"` key. This latter key (known
+      # as the MWRV) is the one we actually test with in CI; if MSRV < MWRV,
+      # then our CI wouldn't actually be verifying that our code works correctly
+      # on the published MSRV.
+      #
+      # Note that we also verify the same inequality for zerocopy-derive's MSRV.
+      # This is technically unnecessary since, in a separate CI job, we check to
+      # make sure that zerocopy's and zerocopy-derive's MSRVs are the same.
+      # However, it's trivial to support this as well, and it is more robust
+      # against a future in which we remove that other CI job.
+      - name: Check MWRV <= MSRV
+        run: |
+          set -eo pipefail
+
+          # Usage: mwrv <crate-name>
+          function mwrv {
+            cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").metadata.ci.\"minimum-working-rust-version\""
+          }
+
+          # Usage: msrv <crate-name>
+          function msrv {
+            cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").rust_version"
+          }
+
+          mwrv=$(mwrv zerocopy)
+          msrv_zerocopy=$(msrv zerocopy)
+          msrv_zerocopy_derive=$(msrv zerocopy-derive)
+
+          # Usage: semver_lteq <a> <b>
+          function semver_lteq {
+            [  "$1" = "`echo -e "$1\n$2" | sort -V | head -n1`" ]
+          }
+
+          if semver_lteq "$mwrv" "$msrv_zerocopy"; then
+            echo "MWRV ($mwrv) <= zerocopy MSRV ($msrv_zerocopy)." | tee -a $GITHUB_STEP_SUMMARY
+            exit 0
+          else
+            echo "MWRV ($mwrv) > zerocopy MSRV ($msrv_zerocopy)." | tee -a $GITHUB_STEP_SUMMARY >&2
+            exit 1
+          fi
+
+          if semver_lteq "$mwrv" "$msrv_zerocopy_derive"; then
+            echo "MWRV ($mwrv) <= zerocopy-derive MSRV ($msrv_zerocopy_derive)." | tee -a $GITHUB_STEP_SUMMARY
+            exit 0
+          else
+            echo "MWRV ($mwrv) > zerocopy-derive MSRV ($msrv_zerocopy_derive)." | tee -a $GITHUB_STEP_SUMMARY >&2
+            exit 1
+          fi
+
   check_msrv:
     needs: generate_cache
     runs-on: ubuntu-latest
@@ -378,14 +442,13 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
 
       # Make sure that the MSRV in zerocopy's and zerocopy-derive's `Cargo.toml`
-      # files are the same. In CI, we test with a single MSRV (the one indicated
-      # in zerocopy's `Cargo.toml`), so it's important that:
-      # - zerocopy-derive's MSRV is not lower than zerocopy's (we don't test with
-      #   a lower MSRV in CI, so we couldn't guarantee that zerocopy-derive
-      #   actually built and ran on a lower MSRV)
-      # - zerocopy-derive's MSRV is not higher than zerocopy's (this would mean
-      #   that compiling zerocopy with the `derive` feature enabled would fail
-      #   on its own published MSRV)
+      # files are the same. In CI, we test with a single minimum working Rust
+      # version (MWRV), and validate that it is at least as low as both MSRVs,
+      # so technically this check is unnecessary. However, we logically treat
+      # zerocopy and zerocopy-derive as part of a single monolith, so they
+      # should have equal MSRVs. To do otherwise would be surprising to users
+      # (and, if zerocopy-derive's MSRV were higher, it would mean that
+      # zerocopy's `derive` feature would not respect its own MSRV).
       - name: Check MSRVs match
         run: |
           set -eo pipefail
@@ -532,7 +595,7 @@ jobs:
           set -eo pipefail
 
           # Check whether the set of toolchains tested in this file (other than
-          # 'msrv', 'stable', and 'nightly') is equal to the set of toolchains
+          # 'mwrv', 'stable', and 'nightly') is equal to the set of toolchains
           # listed in the 'package.metadata.build-rs' section of Cargo.toml.
           #
           # If the inputs to `diff` are not identical, `diff` exits with a
@@ -540,7 +603,7 @@ jobs:
           # `set -e`).
           diff \
             <(cat .github/workflows/ci.yml | yq '.jobs.build_test.strategy.matrix.toolchain | .[]' | \
-              sort -u | grep -v '^\(msrv\|stable\|nightly\)$') \
+              sort -u | grep -v '^\(mwrv\|stable\|nightly\)$') \
             <(cargo metadata --format-version 1 | \
               jq -r ".packages[] | select(.name == \"zerocopy\").metadata.\"build-rs\" | keys | .[]" | \
               sort -u)
@@ -589,7 +652,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_versions, generate_cache, check-all-toolchains-tested, check-job-dependencies]
+      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_mwrv, check_versions, generate_cache, check-all-toolchains-tested, check-job-dependencies]
       steps:
         - name: Mark the job as failed
           run: exit 1
