@@ -10,6 +10,8 @@
 
 use std::convert::TryFrom;
 
+use syn::Field;
+
 mod util;
 
 use {
@@ -27,10 +29,10 @@ assert_impl_all!(Foo: TryFromBytes);
 
 #[test]
 fn test_foo() {
-    assert_eq!(Foo::try_from_ref(&[0]), Some(&Foo::A));
-    assert_eq!(Foo::try_from_ref(&[]), None);
-    assert_eq!(Foo::try_from_ref(&[1]), None);
-    assert_eq!(Foo::try_from_ref(&[0, 0]), None);
+    assert_eq!(Foo::try_read_from(&[0]), Some(Foo::A));
+    assert_eq!(Foo::try_read_from(&[]), None);
+    assert_eq!(Foo::try_read_from(&[1]), None);
+    assert_eq!(Foo::try_read_from(&[0, 0]), None);
 }
 
 #[derive(Eq, PartialEq, Debug, KnownLayout, TryFromBytes)]
@@ -43,11 +45,11 @@ assert_impl_all!(Bar: TryFromBytes);
 
 #[test]
 fn test_bar() {
-    assert_eq!(Bar::try_from_ref(&[0, 0]), Some(&Bar::A));
-    assert_eq!(Bar::try_from_ref(&[]), None);
-    assert_eq!(Bar::try_from_ref(&[0]), None);
-    assert_eq!(Bar::try_from_ref(&[0, 1]), None);
-    assert_eq!(Bar::try_from_ref(&[0, 0, 0]), None);
+    assert_eq!(Bar::try_read_from(&[0, 0]), Some(Bar::A));
+    assert_eq!(Bar::try_read_from(&[]), None);
+    assert_eq!(Bar::try_read_from(&[0]), None);
+    assert_eq!(Bar::try_read_from(&[0, 1]), None);
+    assert_eq!(Bar::try_read_from(&[0, 0, 0]), None);
 }
 
 #[derive(Eq, PartialEq, Debug, KnownLayout, TryFromBytes)]
@@ -61,13 +63,13 @@ assert_impl_all!(Baz: TryFromBytes);
 
 #[test]
 fn test_baz() {
-    assert_eq!(Baz::try_from_ref(1u32.as_bytes()), Some(&Baz::A));
-    assert_eq!(Baz::try_from_ref(0u32.as_bytes()), Some(&Baz::B));
-    assert_eq!(Baz::try_from_ref(&[]), None);
-    assert_eq!(Baz::try_from_ref(&[0]), None);
-    assert_eq!(Baz::try_from_ref(&[0, 0]), None);
-    assert_eq!(Baz::try_from_ref(&[0, 0, 0]), None);
-    assert_eq!(Baz::try_from_ref(&[0, 0, 0, 0, 0]), None);
+    assert_eq!(Baz::try_read_from(1u32.as_bytes()), Some(Baz::A));
+    assert_eq!(Baz::try_read_from(0u32.as_bytes()), Some(Baz::B));
+    assert_eq!(Baz::try_read_from(&[]), None);
+    assert_eq!(Baz::try_read_from(&[0]), None);
+    assert_eq!(Baz::try_read_from(&[0, 0]), None);
+    assert_eq!(Baz::try_read_from(&[0, 0, 0]), None);
+    assert_eq!(Baz::try_read_from(&[0, 0, 0, 0, 0]), None);
 }
 
 // Test hygiene - make sure that `i8` being shadowed doesn't cause problems for
@@ -89,17 +91,17 @@ assert_impl_all!(Blah: TryFromBytes);
 
 #[test]
 fn test_blah() {
-    assert_eq!(Blah::try_from_ref(1i8.as_bytes()), Some(&Blah::A));
-    assert_eq!(Blah::try_from_ref(0i8.as_bytes()), Some(&Blah::B));
-    assert_eq!(Blah::try_from_ref(3i8.as_bytes()), Some(&Blah::C));
-    assert_eq!(Blah::try_from_ref(6i8.as_bytes()), Some(&Blah::D));
-    assert_eq!(Blah::try_from_ref(&[]), None);
-    assert_eq!(Blah::try_from_ref(&[4]), None);
-    assert_eq!(Blah::try_from_ref(&[0, 0]), None);
+    assert_eq!(Blah::try_read_from(1i8.as_bytes()), Some(Blah::A));
+    assert_eq!(Blah::try_read_from(0i8.as_bytes()), Some(Blah::B));
+    assert_eq!(Blah::try_read_from(3i8.as_bytes()), Some(Blah::C));
+    assert_eq!(Blah::try_read_from(6i8.as_bytes()), Some(Blah::D));
+    assert_eq!(Blah::try_read_from(&[]), None);
+    assert_eq!(Blah::try_read_from(&[4]), None);
+    assert_eq!(Blah::try_read_from(&[0, 0]), None);
 }
 
-#[derive(Eq, PartialEq, Debug, KnownLayout, TryFromBytes)]
-#[repr(u8)]
+#[derive(Eq, PartialEq, Debug, KnownLayout, TryFromBytes, IntoBytes)]
+#[repr(C)]
 enum FieldlessButNotUnitOnly {
     A,
     B(),
@@ -108,19 +110,38 @@ enum FieldlessButNotUnitOnly {
 
 #[test]
 fn test_fieldless_but_not_unit_only() {
+    const SIZE: usize = core::mem::size_of::<FieldlessButNotUnitOnly>();
+    let disc: [u8; SIZE] = zerocopy::transmute!(FieldlessButNotUnitOnly::A);
+    assert_eq!(FieldlessButNotUnitOnly::try_read_from(&disc[..]), Some(FieldlessButNotUnitOnly::A));
+    let disc: [u8; SIZE] = zerocopy::transmute!(FieldlessButNotUnitOnly::B());
     assert_eq!(
-        FieldlessButNotUnitOnly::try_from_ref(0u8.as_bytes()),
-        Some(&FieldlessButNotUnitOnly::A)
+        FieldlessButNotUnitOnly::try_read_from(&disc[..]),
+        Some(FieldlessButNotUnitOnly::B())
     );
+    let disc: [u8; SIZE] = zerocopy::transmute!(FieldlessButNotUnitOnly::C {});
     assert_eq!(
-        FieldlessButNotUnitOnly::try_from_ref(1u8.as_bytes()),
-        Some(&FieldlessButNotUnitOnly::B())
+        FieldlessButNotUnitOnly::try_read_from(&disc[..]),
+        Some(FieldlessButNotUnitOnly::C {})
     );
-    assert_eq!(
-        FieldlessButNotUnitOnly::try_from_ref(2u8.as_bytes()),
-        Some(&FieldlessButNotUnitOnly::C {})
-    );
-    assert_eq!(FieldlessButNotUnitOnly::try_from_ref(&[]), None);
-    assert_eq!(FieldlessButNotUnitOnly::try_from_ref(&[3]), None);
-    assert_eq!(FieldlessButNotUnitOnly::try_from_ref(&[0, 0]), None);
+    assert_eq!(FieldlessButNotUnitOnly::try_read_from(&[0xFF; SIZE][..]), None);
+}
+
+#[derive(Eq, PartialEq, Debug, KnownLayout, TryFromBytes, IntoBytes)]
+#[repr(C)]
+enum WeirdDiscriminants {
+    A = -7,
+    B,
+    C = 33,
+}
+
+#[test]
+fn test_weird_discriminants() {
+    const SIZE: usize = core::mem::size_of::<WeirdDiscriminants>();
+    let disc: [u8; SIZE] = zerocopy::transmute!(WeirdDiscriminants::A);
+    assert_eq!(WeirdDiscriminants::try_read_from(&disc[..]), Some(WeirdDiscriminants::A));
+    let disc: [u8; SIZE] = zerocopy::transmute!(WeirdDiscriminants::B);
+    assert_eq!(WeirdDiscriminants::try_read_from(&disc[..]), Some(WeirdDiscriminants::B));
+    let disc: [u8; SIZE] = zerocopy::transmute!(WeirdDiscriminants::C);
+    assert_eq!(WeirdDiscriminants::try_read_from(&disc[..]), Some(WeirdDiscriminants::C));
+    assert_eq!(WeirdDiscriminants::try_read_from(&[0xFF; SIZE][..]), None);
 }
