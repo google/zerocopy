@@ -161,6 +161,7 @@ pub(crate) mod testutil {
     #[derive(
         KnownLayout,
         NoCell,
+        TryFromBytes,
         FromZeros,
         FromBytes,
         IntoBytes,
