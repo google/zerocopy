@@ -1229,8 +1229,9 @@ pub unsafe trait TryFromBytes {
     /// reinterpreted as a `Self`.
     ///
     /// Note that Rust's bit validity rules are still being decided. As such,
-    /// there exist types whose bit validity is ambiguous. See the
-    /// `TryFromBytes` docs for a discussion of how these cases are handled.
+    /// there exist types whose bit validity is ambiguous. See
+    /// [here][TryFromBytes#what-is-a-valid-instance] for a discussion of how
+    /// these cases are handled.
     // TODO(#251): Require `Self: NoCell` and allow `TryFromBytes` types to
     // contain `UnsafeCell`s.
     #[inline]
@@ -1253,6 +1254,36 @@ pub unsafe trait TryFromBytes {
         let candidate = candidate.check_valid();
 
         candidate.map(MaybeAligned::as_ref)
+    }
+
+    /// Attempts to read a `Self` from a byte slice.
+    ///
+    /// `try_read_from` validates that `bytes` contains a valid `Self`. If it
+    /// does, those bytes are read out of `bytes` and reinterpreted as a `Self`.
+    ///
+    /// Note that Rust's bit validity rules are still being decided. As such,
+    /// there exist types whose bit validity is ambiguous. See
+    /// [here][TryFromBytes#what-is-a-valid-instance] for a discussion of how
+    /// these cases are handled.
+    #[inline]
+    #[doc(hidden)] // TODO(#5): Finalize name before remove this attribute.
+    fn try_read_from(bytes: &[u8]) -> Option<Self>
+    where
+        Self: Sized,
+    {
+        let candidate = MaybeUninit::<Self>::read_from(bytes)?;
+        let c_ptr = Ptr::from_maybe_uninit_ref(&candidate);
+        // SAFETY: `c_ptr` has no uninitialized sub-ranges because it derived
+        // from `candidate`, which in turn derives from `bytes: &[u8]`, and is
+        // therefore at least as-initialized as `Self`.
+        let c_ptr = unsafe { c_ptr.assume_as_initialized() };
+
+        if !Self::is_bit_valid(c_ptr.forget_aligned()) {
+            return None;
+        }
+
+        // SAFETY: We just validated that `candidate` contains a valid `Self`.
+        Some(unsafe { candidate.assume_init() })
     }
 }
 
@@ -6888,6 +6919,29 @@ mod tests {
         assert_eq!(VAL.write_to_suffix(&mut bytes[..]), Some(()));
         let want: [u8; 16] = transmute!([[0; 8], VAL_BYTES]);
         assert_eq!(bytes, want);
+    }
+
+    #[test]
+    fn test_try_from_bytes_try_read_from() {
+        assert_eq!(<bool as TryFromBytes>::try_read_from(&[0]), Some(false));
+        assert_eq!(<bool as TryFromBytes>::try_read_from(&[1]), Some(true));
+
+        // If we don't pass enough bytes, it fails.
+        assert_eq!(<u8 as TryFromBytes>::try_read_from(&[]), None);
+
+        // If we pass too many bytes, it fails.
+        assert_eq!(<u8 as TryFromBytes>::try_read_from(&[0, 0]), None);
+
+        // If we pass an invalid value, it fails.
+        assert_eq!(<bool as TryFromBytes>::try_read_from(&[2]), None);
+
+        // Reading from a misaligned buffer should still succeed. Since `AU64`'s
+        // alignment is 8, and since we read from two adjacent addresses one
+        // byte apart, it is guaranteed that at least one of them (though
+        // possibly both) will be misaligned.
+        let bytes: [u8; 9] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        assert_eq!(<AU64 as TryFromBytes>::try_read_from(&bytes[..8]), Some(AU64(0)));
+        assert_eq!(<AU64 as TryFromBytes>::try_read_from(&bytes[1..9]), Some(AU64(0)));
     }
 
     #[test]

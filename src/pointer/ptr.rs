@@ -372,6 +372,8 @@ mod _external {
 
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
+    use core::mem::MaybeUninit;
+
     use super::*;
 
     /// `&'a T` → `Ptr<'a, T>`
@@ -445,6 +447,65 @@ mod _conversions {
             // [1]: https://doc.rust-lang.org/std/ptr/struct.NonNull.html#method.as_ref
             // [2]: https://doc.rust-lang.org/std/ptr/index.html#safety
             unsafe { raw.as_ref() }
+        }
+    }
+
+    /// `&'a MaybeUninit<T>` → `Ptr<'a, T>`
+    impl<'a, T> Ptr<'a, T, (invariant::Shared, invariant::Aligned, invariant::AnyValidity)>
+    where
+        T: 'a,
+    {
+        /// Constructs a `Ptr` from a shared reference to a [`MaybeUninit<T>`].
+        ///
+        /// [`MaybeUninit<T>`]: MaybeUninit
+        #[doc(hidden)]
+        #[inline]
+        pub fn from_maybe_uninit_ref(ptr: &'a MaybeUninit<T>) -> Self {
+            let mu_ptr = core::ptr::NonNull::from(ptr);
+            let t_ptr = mu_ptr.cast::<T>();
+            // SAFETY:
+            // 0. `mu_ptr`, by invariant on `&'a T`, is derived from some valid
+            //    Rust allocation, `A`. `t_ptr` is as well because `.cast()`
+            //    conserves this property.
+            // 1. `mu_ptr`, by invariant on `&'a T`, has valid provenance for
+            //    `A`. `t_ptr` does as well because `.cast()` conserves this
+            //    property.
+            // 2. `mu_ptr`, by invariant on `&'a T`, addresses a byte range
+            //    which is entirely contained in `A`. `t_ptr` does as well
+            //    because `.cast()` conserves this property. This relies on the
+            //    fact that `t_ptr` addresses the same number of bytes as
+            //    `mu_ptr`, which is guaranteed because `MaybeUninit<T>` has the
+            //    same size as `T` [1].
+            // 3. `mu_ptr`, by invariant on `&'a T`, addresses a byte range
+            //    whose length fits in an `isize`. `t_ptr` does as well because
+            //    `.cast()` conserves this property. This relies on the fact
+            //    that `t_ptr` addresses the same number of bytes as `mu_ptr`,
+            //    which is guaranteed because `MaybeUninit<T>` has the same size
+            //    as `T` [1].
+            // 4. `mu_ptr`, by invariant on `&'a T`, addresses a byte range
+            //     which does not wrap around the address space. `t_ptr` does as
+            //    well because `.cast()` conserves this property. This relies on
+            //    the fact that `t_ptr` addresses the same number of bytes as
+            //    `mu_ptr`, which is guaranteed because `MaybeUninit<T>` has the
+            //    same size as `T` [1].
+            // 5. `A`, by invariant on `&'a T`, is guaranteed to live for at
+            //    least `'a`.
+            // 6. `mu_ptr`, by invariant on `&'a T`, conforms to the aliasing
+            //    invariant of `invariant::Shared`. `t_ptr` does as well because
+            //    `.cast()` conserves this property.
+            // 7. `mu_ptr`, by invariant on `&'a T`, conforms to the alignment
+            //    invariant of `invariant::Aligned`. `t_ptr` does as well
+            //    because `.cast()` conserves alignment, and `MaybeUninit<T>`
+            //    has the same alignment as `T` [1].
+            // 8. The returned `Ptr` has validity `invariant::AnyValidity`,
+            //    which is always upheld regardless of the contents of its
+            //    referent.
+            //
+            // [1] Per https://doc.rust-lang.org/std/mem/union.MaybeUninit.html#layout-1:
+            //
+            //   `MaybeUninit<T>` is guaranteed to have the same size,
+            //   alignment, and ABI as `T`
+            unsafe { Self::new(t_ptr) }
         }
     }
 }
