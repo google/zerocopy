@@ -32,7 +32,6 @@ rustdoc-args = ["--cfg", "doc_cfg", "--generate-link-to-definition"]
 # The versions of the stable and nightly compiler toolchains to use in CI.
 pinned-stable = "1.75.0"
 pinned-nightly = "nightly-2024-01-11"
-minimum-working-rust-version = "1.60.0"
 
 [package.metadata.playground]
 features = ["__internal_use_only_features_that_work_on_stable"]

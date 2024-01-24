@@ -50,8 +50,8 @@ function pkg-meta {
 function lookup-version {
   VERSION="$1"
   case "$VERSION" in
-    mwrv)
-      pkg-meta 'metadata.ci."minimum-working-rust-version"'
+    msrv)
+      pkg-meta rust_version
       ;;
     stable)
       pkg-meta 'metadata.ci."pinned-stable"'
@@ -60,7 +60,7 @@ function lookup-version {
       pkg-meta 'metadata.ci."pinned-nightly"'
       ;;
     *)
-      echo "Unrecognized toolchain name: '$VERSION' (options are 'mwrv', 'stable', 'nightly')" >&2
+      echo "Unrecognized toolchain name: '$VERSION' (options are 'msrv', 'stable', 'nightly')" >&2
       return 1
       ;;
   esac
@@ -91,8 +91,8 @@ case "$1" in
     ;;
   # cargo.sh +all [...]
   +all)
-    echo "[cargo.sh] warning: running the same command for each toolchain (mwrv, stable, nightly)" >&2
-    for toolchain in mwrv stable nightly; do
+    echo "[cargo.sh] warning: running the same command for each toolchain (msrv, stable, nightly)" >&2
+    for toolchain in msrv stable nightly; do
       echo "[cargo.sh] running with toolchain: $toolchain" >&2
       $0 "+$toolchain" ${@:2}
     done
