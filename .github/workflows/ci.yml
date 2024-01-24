@@ -38,7 +38,7 @@ jobs:
       matrix:
         # See `INTERNAL.md` for an explanation of these pinned toolchain
         # versions.
-        toolchain: [ "mwrv", "stable", "nightly" ]
+        toolchain: [ "msrv", "stable", "nightly" ]
         target: [
           "i686-unknown-linux-gnu",
           "x86_64-unknown-linux-gnu",
@@ -55,7 +55,7 @@ jobs:
         exclude:
           # Exclude any combination which uses a non-nightly toolchain but
           # enables nightly features.
-          - toolchain: "mwrv"
+          - toolchain: "msrv"
             features: "--all-features"
           - toolchain: "stable"
             features: "--all-features"
@@ -83,7 +83,7 @@ jobs:
       run: |
         set -eo pipefail
 
-        # We use toolchain descriptors ("mwrv", "stable", and "nightly") in the
+        # We use toolchain descriptors ("msrv", "stable", and "nightly") in the
         # matrix. This step converts the current descriptor to a particular
         # toolchain version by looking up the corresponding key in `Cargo.toml`. It
         # sets the `ZC_TOOLCHAIN` environment variable for use in the next step
@@ -310,70 +310,6 @@ jobs:
           diff <(./generate-readme.sh) README.md
           exit $?
 
-  check_mwrv:
-    needs: generate_cache
-    runs-on: ubuntu-latest
-    name: Check MWRV <= MSRV
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-
-      - uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
-        with:
-          path: |
-            ~/.cargo/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
-
-      # Make sure that the rust-version key in zerocopy's `Cargo.toml` file
-      # (MSRV) is at least as high as the
-      # `metadata.ci."minimum-working-rust-version"` key. This latter key (known
-      # as the MWRV) is the one we actually test with in CI; if MSRV < MWRV,
-      # then our CI wouldn't actually be verifying that our code works correctly
-      # on the published MSRV.
-      #
-      # Note that we also verify the same inequality for zerocopy-derive's MSRV.
-      # This is technically unnecessary since, in a separate CI job, we check to
-      # make sure that zerocopy's and zerocopy-derive's MSRVs are the same.
-      # However, it's trivial to support this as well, and it is more robust
-      # against a future in which we remove that other CI job.
-      - name: Check MWRV <= MSRV
-        run: |
-          set -eo pipefail
-
-          # Usage: mwrv <crate-name>
-          function mwrv {
-            cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").metadata.ci.\"minimum-working-rust-version\""
-          }
-
-          # Usage: msrv <crate-name>
-          function msrv {
-            cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").rust_version"
-          }
-
-          mwrv=$(mwrv zerocopy)
-          msrv_zerocopy=$(msrv zerocopy)
-          msrv_zerocopy_derive=$(msrv zerocopy-derive)
-
-          # Usage: semver_lteq <a> <b>
-          function semver_lteq {
-            [  "$1" = "`echo -e "$1\n$2" | sort -V | head -n1`" ]
-          }
-
-          if semver_lteq "$mwrv" "$msrv_zerocopy"; then
-            echo "MWRV ($mwrv) <= zerocopy MSRV ($msrv_zerocopy)." | tee -a $GITHUB_STEP_SUMMARY
-            exit 0
-          else
-            echo "MWRV ($mwrv) > zerocopy MSRV ($msrv_zerocopy)." | tee -a $GITHUB_STEP_SUMMARY >&2
-            exit 1
-          fi
-
-          if semver_lteq "$mwrv" "$msrv_zerocopy_derive"; then
-            echo "MWRV ($mwrv) <= zerocopy-derive MSRV ($msrv_zerocopy_derive)." | tee -a $GITHUB_STEP_SUMMARY
-            exit 0
-          else
-            echo "MWRV ($mwrv) > zerocopy-derive MSRV ($msrv_zerocopy_derive)." | tee -a $GITHUB_STEP_SUMMARY >&2
-            exit 1
-          fi
-
   check_msrv:
     needs: generate_cache
     runs-on: ubuntu-latest
@@ -388,13 +324,14 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
 
       # Make sure that the MSRV in zerocopy's and zerocopy-derive's `Cargo.toml`
-      # files are the same. In CI, we test with a single minimum working Rust
-      # version (MWRV), and validate that it is at least as low as both MSRVs,
-      # so technically this check is unnecessary. However, we logically treat
-      # zerocopy and zerocopy-derive as part of a single monolith, so they
-      # should have equal MSRVs. To do otherwise would be surprising to users
-      # (and, if zerocopy-derive's MSRV were higher, it would mean that
-      # zerocopy's `derive` feature would not respect its own MSRV).
+      # files are the same. In CI, we test with a single MSRV (the one indicated
+      # in zerocopy's `Cargo.toml`), so it's important that:
+      # - zerocopy-derive's MSRV is not lower than zerocopy's (we don't test with
+      #   a lower MSRV in CI, so we couldn't guarantee that zerocopy-derive
+      #   actually built and ran on a lower MSRV)
+      # - zerocopy-derive's MSRV is not higher than zerocopy's (this would mean
+      #   that compiling zerocopy with the `derive` feature enabled would fail
+      #   on its own published MSRV)
       - name: Check MSRVs match
         run: |
           set -eo pipefail
@@ -573,7 +510,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_mwrv, check_versions, generate_cache, check-job-dependencies]
+      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_versions, generate_cache, check-job-dependencies]
       steps:
         - name: Mark the job as failed
           run: exit 1
