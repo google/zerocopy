@@ -2464,6 +2464,40 @@ pub unsafe trait FromBytes: FromZeros {
         Ref::<_, Unalign<Self>>::new_unaligned_from_suffix(bytes)
             .map(|(_, r)| r.read().into_inner())
     }
+
+    /// Generate random value of `Self` using OS randomness source
+    /// (see the table in the [`getrandom`] crate docs for more information).
+    ///
+    /// # Examples
+    /// ```
+    /// # fn main() -> Result<(), getrandom::Error> {
+    /// use zerocopy::FromBytes;
+    ///
+    /// let seed = u32::getrandom()?;
+    /// let key: [u8; 16] = FromBytes::getrandom()?;
+    /// # Ok(()) }
+    /// ```
+    #[cfg(feature = "getrandom")]
+    #[inline]
+    fn getrandom() -> Result<Self, getrandom::Error>
+    where
+        Self: Sized,
+    {
+        let mut value = MaybeUninit::<Self>::uninit();
+        // SAFETY: it's safe to cast `&mut MaybeUninit<T>` to `&mut [MaybeUninit<u8>]`
+        // with slice length equal to `size_of::<T>()`. The compiler will ensure that
+        // `T` isn't too large.
+        unsafe {
+            let ptr: *mut MaybeUninit<u8> = value.as_mut_ptr().cast();
+            let size = core::mem::size_of::<Self>();
+            let uninit_bytes = core::slice::from_raw_parts_mut(ptr, size);
+            getrandom::getrandom_uninit(uninit_bytes)?;
+        };
+        // SAFETY: when `getrandom_uninit` returns `Ok` all bytes in `uninit_bytes`
+        // (and thus in `value`) are properly initialized. Any bit-sequence is valid
+        // for `T: FromBytes`, so we can safely execute `assume_init` on `value`.
+        Ok(unsafe { value.assume_init() })
+    }
 }
 
 /// Analyzes whether a type is [`IntoBytes`].

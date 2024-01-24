@@ -49,6 +49,7 @@ __internal_use_only_features_that_work_on_stable = ["alloc", "derive", "simd"]
 
 [dependencies]
 zerocopy-derive = { version = "=0.8.0-alpha.2", path = "zerocopy-derive", optional = true }
+getrandom = { version = "0.2", optional = true }
 
 # The "associated proc macro pattern" ensures that the versions of zerocopy and
 # zerocopy-derive remain equal, even if the 'derive' feature isn't used.
