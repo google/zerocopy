@@ -52,7 +52,7 @@ assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: NoCell);
 
 #[derive(NoCell)]
 #[repr(C)]
-union WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + NoCell>
+union WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + NoCell, const N: usize>
 where
     'a: 'b,
     'b: 'a,
@@ -64,4 +64,4 @@ where
     d: &'a UnsafeCell<()>,
 }
 
-assert_impl_all!(WithParams<'static, 'static, 42, u8>: NoCell);
+assert_impl_all!(WithParams<'static, 'static, u8, 42>: NoCell);

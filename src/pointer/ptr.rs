@@ -137,6 +137,7 @@ mod def {
     }
 }
 
+#[allow(unreachable_pub)] // This is a false positive on our MSRV toolchain.
 pub use def::Ptr;
 
 /// Used to define the system of [invariants][invariant] of `Ptr`.
@@ -1088,7 +1089,7 @@ mod tests {
 
         // - If `size_of::<T>() == 0`, `N == 4`
         // - Else, `N == 4 * size_of::<T>()`
-        fn test<const N: usize, T: ?Sized + KnownLayout + FromBytes>() {
+        fn test<T: ?Sized + KnownLayout + FromBytes, const N: usize>() {
             let mut bytes = [MaybeUninit::<u8>::uninit(); N];
             let initialized = [MaybeUninit::new(0u8); N];
             for start in 0..=bytes.len() {
@@ -1183,11 +1184,11 @@ mod tests {
             $({
                 const S: usize = core::mem::size_of::<$ty>();
                 const N: usize = if S == 0 { 4 } else { S * 4 };
-                test::<N, $ty>();
+                test::<$ty, N>();
                 // We don't support casting into DSTs whose trailing slice
                 // element is a ZST.
                 if S > 0 {
-                    test::<N, [$ty]>();
+                    test::<[$ty], N>();
                 }
                 // TODO: Test with a slice DST once we have any that
                 // implement `KnownLayout + FromBytes`.

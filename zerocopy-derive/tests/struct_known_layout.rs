@@ -53,7 +53,7 @@ assert_impl_all!(TypeParams<'static, AU16, IntoIter<()>>: KnownLayout);
 
 #[derive(KnownLayout)]
 #[repr(C)]
-struct WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + KnownLayout>(
+struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + KnownLayout, const N: usize>(
     [T; N],
     PhantomData<&'a &'b ()>,
 )
@@ -62,4 +62,4 @@ where
     'b: 'a,
     T: 'a + 'b + KnownLayout;
 
-assert_impl_all!(WithParams<'static, 'static, 42, u8>: KnownLayout);
+assert_impl_all!(WithParams<'static, 'static, u8, 42>: KnownLayout);
