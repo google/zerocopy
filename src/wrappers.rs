@@ -60,7 +60,7 @@ use super::*;
 #[derive(Default, Copy)]
 #[cfg_attr(
     any(feature = "derive", test),
-    derive(NoCell, KnownLayout, FromZeros, FromBytes, IntoBytes, Unaligned)
+    derive(NoCell, KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned)
 )]
 #[repr(C, packed)]
 pub struct Unalign<T>(T);
@@ -78,6 +78,7 @@ safety_comment! {
     ///   `UnsafeCell`s exactly when `T` does.
     impl_or_verify!(T => Unaligned for Unalign<T>);
     impl_or_verify!(T: NoCell => NoCell for Unalign<T>);
+    impl_or_verify!(T: TryFromBytes => TryFromBytes for Unalign<T>);
     impl_or_verify!(T: FromZeros => FromZeros for Unalign<T>);
     impl_or_verify!(T: FromBytes => FromBytes for Unalign<T>);
     impl_or_verify!(T: IntoBytes => IntoBytes for Unalign<T>);
