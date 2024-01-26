@@ -130,7 +130,7 @@ assert_impl_all!(TypeParams<'static, [AU16; 2], IntoIter<()>>: TryFromBytes);
 
 #[derive(TryFromBytes, FromZeros, FromBytes)]
 #[repr(C)]
-union WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + TryFromBytes>
+union WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + TryFromBytes, const N: usize>
 where
     'a: 'b,
     'b: 'a,
@@ -140,4 +140,4 @@ where
     b: T,
 }
 
-assert_impl_all!(WithParams<'static, 'static, 42, u8>: TryFromBytes);
+assert_impl_all!(WithParams<'static, 'static, u8, 42>: TryFromBytes);
