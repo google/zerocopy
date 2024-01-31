@@ -121,10 +121,10 @@ error[E0277]: the trait bound `NotZerocopy: Unaligned` is not satisfied
              i8
              u8
              TransparentStruct<T>
+             NonZero<i8>
+             NonZero<u8>
              U16<O>
              U32<O>
-             U64<O>
-             U128<O>
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `Unaligned`
   --> tests/ui-nightly/derive_transparent.rs:27:57
