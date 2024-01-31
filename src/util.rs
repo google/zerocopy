@@ -61,6 +61,65 @@ pub(crate) fn aligned_to<T: AsAddress, U>(t: T) -> bool {
     remainder == 0
 }
 
+/// Return the bytes needed to pad `len` to the next multiple of `align`.
+///
+/// This function assumes that align is a power of two, there are no guarantees
+/// on the answer it gives if this is not the case.
+#[allow(unused)]
+pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize {
+    // Abstractly, we want to compute:
+    //   align - (len % align).
+    // Handling the case where len%align is 0.
+    // Because align is a power of two, len % align = len & (align-1).
+    // Guaranteed not to underflow as align is nonzero.
+    #[allow(clippy::arithmetic_side_effects)]
+    let mask = align.get() - 1;
+    //
+    // To efficiently subtract this value from align, we can use the bitwise complement.
+    // Note that ((!len) & (align-1)) gives us a number that with (len &
+    // (align-1)) sums to align-1. So subtracting 1 from x before taking the
+    // complement subtracts `len` from `align`. Some quick inspection of
+    // cases shows that this also handles the case where `len % align = 0`
+    // correctly too: len-1 % align then equals align-1, so the complement mod
+    // align will be 0, as desired.
+    //
+    // The following reasoning can be verified quickly by an SMT solver
+    // supporting the theory of bitvectors:
+    // ```smtlib
+    // ; Naive implementation of padding
+    // (define-fun padding1 (
+    //     (len (_ BitVec 32))
+    //     (align (_ BitVec 32))) (_ BitVec 32)
+    //    (ite
+    //      (= (_ bv0 32) (bvand len (bvsub align (_ bv1 32))))
+    //      (_ bv0 32)
+    //      (bvsub align (bvand len (bvsub align (_ bv1 32))))))
+    //
+    // ; The implementation below
+    // (define-fun padding2 (
+    //     (len (_ BitVec 32))
+    //     (align (_ BitVec 32))) (_ BitVec 32)
+    // (bvand (bvnot (bvsub len (_ bv1 32))) (bvsub align (_ bv1 32))))
+    //
+    // (define-fun is-power-of-two ((x (_ BitVec 32))) Bool
+    //   (= (_ bv0 32) (bvand x (bvsub x (_ bv1 32)))))
+    //
+    // (declare-const len (_ BitVec 32))
+    // (declare-const align (_ BitVec 32))
+    // ; Search for a case where align is a power of two and padding2 disagrees with padding1
+    // (assert (and (is-power-of-two align)
+    //              (not (= (padding1 len align) (padding2 len align)))))
+    // (simplify (padding1 (_ bv300 32) (_ bv32 32))) ; 20
+    // (simplify (padding2 (_ bv300 32) (_ bv32 32))) ; 20
+    // (simplify (padding1 (_ bv322 32) (_ bv32 32))) ; 30
+    // (simplify (padding2 (_ bv322 32) (_ bv32 32))) ; 30
+    // (simplify (padding1 (_ bv8 32) (_ bv8 32)))    ; 0
+    // (simplify (padding2 (_ bv8 32) (_ bv8 32)))    ; 0
+    // (check-sat) ; unsat, also works for 64-bit bitvectors
+    // ```
+    !(len.wrapping_sub(1)) & mask
+}
+
 /// Round `n` down to the largest value `m` such that `m <= n` and `m % align ==
 /// 0`.
 ///
@@ -219,6 +278,59 @@ mod tests {
                 assert_eq!(got, want, "round_down_to_next_multiple_of_alignment({n}, {align})");
             }
         }
+    }
+    #[cfg(not(miri))]
+    fn oracle(len: usize, align: NonZeroUsize) -> usize {
+        let rem = len % align.get();
+        let guess = if rem == 0 { 0 } else { align.get() - rem };
+        #[allow(clippy::as_conversions)]
+        {
+            // These as conversions are safe so long as `usize` is at most 64
+            // bits, which is true of all supported targets.
+            //
+            // Furthermore, this is test code.
+            assert_eq!((len as u128 + guess as u128) % align.get() as u128, 0);
+        }
+        assert!(guess < align.get());
+        assert_eq!(guess, (align.get() - rem) % align.get());
+        guess
+    }
+
+    #[test]
+    #[cfg(not(miri))]
+    // Miri takes a long time to execute this one.
+    fn padding_oracle_matches() {
+        const N: usize = 1 << 12;
+        // Generate random values and check that the result of the
+        // padding_needed_for function matches the result of the oracle.
+        for align_log in 0..64 {
+            let align = if let Some(x) = 1usize.checked_shl(align_log) {
+                x
+            } else {
+                // shift is too far left for the current platform
+                continue;
+            };
+            let align = NonZeroUsize::new(align).unwrap();
+            for _ in 0..N {
+                let len = rand::random::<usize>();
+                assert_eq!(
+                    padding_needed_for(len, align),
+                    oracle(len, align),
+                    "len: {}, align: {}",
+                    len,
+                    align.get()
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn padding_basic_vals() {
+        assert_eq!(padding_needed_for(16, NonZeroUsize::new(4).unwrap()), 0);
+        assert_eq!(padding_needed_for(16, NonZeroUsize::new(16).unwrap()), 0);
+        assert_eq!(padding_needed_for(17, NonZeroUsize::new(16).unwrap()), 15);
+        assert_eq!(padding_needed_for(300, NonZeroUsize::new(32).unwrap()), 20);
+        assert_eq!(padding_needed_for(0, NonZeroUsize::new(1).unwrap()), 0);
     }
 }
 
