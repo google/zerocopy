@@ -71,6 +71,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+    - uses: actions/checkout@v2
 
     - name: Populate cache
       uses: ./.github/workflows/cache
@@ -286,7 +287,8 @@ jobs:
     name: Check README.md
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-
+      - uses: actions/checkout@v2
+      
       - name: Populate cache
         uses: ./.github/workflows/cache
       
@@ -307,6 +309,7 @@ jobs:
     name: Check MSRVs match
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@v2
 
       - name: Populate cache
         uses: ./.github/workflows/cache
@@ -346,6 +349,7 @@ jobs:
     name: Check crate versions match
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@v2
 
       - name: Populate cache
         uses: ./.github/workflows/cache
