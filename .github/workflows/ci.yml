@@ -326,7 +326,7 @@ jobs:
 
           # Usage: msrv <crate-name>
           function msrv {
-            cargo metadata --format-ver3sion 1 | jq -r ".packages[] | select(.name == \"$1\").rust_version"
+            cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").rust_version"
           }
 
           ver_zerocopy=$(msrv zerocopy)
