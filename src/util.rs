@@ -6,9 +6,6 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-#[path = "third_party/rust/layout.rs"]
-pub(crate) mod core_layout;
-
 use core::{mem, num::NonZeroUsize};
 
 pub(crate) trait AsAddress {
@@ -61,11 +58,10 @@ pub(crate) fn aligned_to<T: AsAddress, U>(t: T) -> bool {
     remainder == 0
 }
 
-/// Return the bytes needed to pad `len` to the next multiple of `align`.
+/// Returns the bytes needed to pad `len` to the next multiple of `align`.
 ///
-/// This function assumes that align is a power of two, there are no guarantees
+/// This function assumes that align is a power of two; there are no guarantees
 /// on the answer it gives if this is not the case.
-#[allow(unused)]
 pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize {
     // Abstractly, we want to compute:
     //   align - (len % align).
@@ -74,7 +70,7 @@ pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize
     // Guaranteed not to underflow as align is nonzero.
     #[allow(clippy::arithmetic_side_effects)]
     let mask = align.get() - 1;
-    //
+
     // To efficiently subtract this value from align, we can use the bitwise complement.
     // Note that ((!len) & (align-1)) gives us a number that with (len &
     // (align-1)) sums to align-1. So subtracting 1 from x before taking the
@@ -120,8 +116,8 @@ pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize
     !(len.wrapping_sub(1)) & mask
 }
 
-/// Round `n` down to the largest value `m` such that `m <= n` and `m % align ==
-/// 0`.
+/// Rounds `n` down to the largest value `m` such that `m <= n` and `m % align
+/// == 0`.
 ///
 /// # Panics
 ///
@@ -279,59 +275,6 @@ mod tests {
             }
         }
     }
-    #[cfg(not(miri))]
-    fn oracle(len: usize, align: NonZeroUsize) -> usize {
-        let rem = len % align.get();
-        let guess = if rem == 0 { 0 } else { align.get() - rem };
-        #[allow(clippy::as_conversions)]
-        {
-            // These as conversions are safe so long as `usize` is at most 64
-            // bits, which is true of all supported targets.
-            //
-            // Furthermore, this is test code.
-            assert_eq!((len as u128 + guess as u128) % align.get() as u128, 0);
-        }
-        assert!(guess < align.get());
-        assert_eq!(guess, (align.get() - rem) % align.get());
-        guess
-    }
-
-    #[test]
-    #[cfg(not(miri))]
-    // Miri takes a long time to execute this one.
-    fn padding_oracle_matches() {
-        const N: usize = 1 << 12;
-        // Generate random values and check that the result of the
-        // padding_needed_for function matches the result of the oracle.
-        for align_log in 0..64 {
-            let align = if let Some(x) = 1usize.checked_shl(align_log) {
-                x
-            } else {
-                // shift is too far left for the current platform
-                continue;
-            };
-            let align = NonZeroUsize::new(align).unwrap();
-            for _ in 0..N {
-                let len = rand::random::<usize>();
-                assert_eq!(
-                    padding_needed_for(len, align),
-                    oracle(len, align),
-                    "len: {}, align: {}",
-                    len,
-                    align.get()
-                );
-            }
-        }
-    }
-
-    #[test]
-    fn padding_basic_vals() {
-        assert_eq!(padding_needed_for(16, NonZeroUsize::new(4).unwrap()), 0);
-        assert_eq!(padding_needed_for(16, NonZeroUsize::new(16).unwrap()), 0);
-        assert_eq!(padding_needed_for(17, NonZeroUsize::new(16).unwrap()), 15);
-        assert_eq!(padding_needed_for(300, NonZeroUsize::new(32).unwrap()), 20);
-        assert_eq!(padding_needed_for(0, NonZeroUsize::new(1).unwrap()), 0);
-    }
 }
 
 #[cfg(kani)]
@@ -375,7 +318,7 @@ mod proofs {
         kani::assume(align.get() < 1 << 29);
 
         let expected = model_impl(len, align);
-        let actual = core_layout::padding_needed_for(len, align);
+        let actual = padding_needed_for(len, align);
         assert_eq!(expected, actual, "padding_needed_for({len}, {align})");
 
         let padded_len = actual + len;
