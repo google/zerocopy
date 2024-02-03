@@ -73,7 +73,7 @@ jobs:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
     - name: Populate cache
-      uses: ./cache.yml
+      uses: ./.github/actions/cache
     
     - name: Configure environment variables
       run: |
@@ -288,7 +288,7 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - name: Populate cache
-        uses: ./cache.yml
+        uses: ./.github/actions/cache
       
       - name: Check README.md
         run: |
@@ -309,7 +309,7 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - name: Populate cache
-        uses: ./cache.yml
+        uses: ./.github/actions/cache
       
       # Make sure that the MSRV in zerocopy's and zerocopy-derive's `Cargo.toml`
       # files are the same. In CI, we test with a single MSRV (the one indicated
@@ -348,7 +348,7 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - name: Populate cache
-        uses: ./cache.yml
+        uses: ./.github/actions/cache
 
       # Make sure that both crates are at the same version, and that zerocopy
       # depends exactly upon the current version of zerocopy-derive. See
