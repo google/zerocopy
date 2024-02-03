@@ -533,7 +533,7 @@ impl DstLayout {
     #[doc(hidden)]
     #[inline]
     pub const fn extend(self, field: DstLayout, repr_packed: Option<NonZeroUsize>) -> Self {
-        use util::{core_layout::padding_needed_for, max, min};
+        use util::{max, min, padding_needed_for};
 
         // If `repr_packed` is `None`, there are no alignment constraints, and
         // the value can be defaulted to `THEORETICAL_MAX_ALIGN`.
@@ -672,7 +672,7 @@ impl DstLayout {
     #[doc(hidden)]
     #[inline]
     pub const fn pad_to_align(self) -> Self {
-        use util::core_layout::padding_needed_for;
+        use util::padding_needed_for;
 
         let size_info = match self.size_info {
             // For sized layouts, we add the minimum amount of trailing padding
@@ -882,8 +882,8 @@ impl DstLayout {
                 //   up to the next multiple of the alignment will bring
                 //   `self_bytes` up to `max_total_bytes`.
                 #[allow(clippy::arithmetic_side_effects)]
-                let self_bytes = without_padding
-                    + util::core_layout::padding_needed_for(without_padding, self.align);
+                let self_bytes =
+                    without_padding + util::padding_needed_for(without_padding, self.align);
                 (elems, self_bytes)
             }
         };
@@ -5997,8 +5997,7 @@ mod tests {
                     }) => {
                         let padded_size = |elems| {
                             let without_padding = offset + elems * elem_size;
-                            without_padding
-                                + util::core_layout::padding_needed_for(without_padding, align)
+                            without_padding + util::padding_needed_for(without_padding, align)
                         };
 
                         let resulting_size = padded_size(elems);
@@ -6027,7 +6026,7 @@ mod tests {
                 let min_size = match layout.size_info {
                     SizeInfo::Sized { _size } => _size,
                     SizeInfo::SliceDst(TrailingSliceLayout { _offset, .. }) => {
-                        _offset + util::core_layout::padding_needed_for(_offset, layout.align)
+                        _offset + util::padding_needed_for(_offset, layout.align)
                     }
                 };
 
@@ -6104,8 +6103,7 @@ mod tests {
                         //
                         // ...then Rust will automatically round the type's size
                         // up to 2.
-                        _size: args.offset
-                            + util::core_layout::padding_needed_for(args.offset, args.align),
+                        _size: args.offset + util::padding_needed_for(args.offset, args.align),
                     },
                 };
                 DstLayout { size_info, align: args.align }
@@ -6153,8 +6151,8 @@ mod tests {
                 //   count. We expect that the size of the object should be
                 //   `offset + elem_size * elems` rounded up to the next
                 //   alignment.
-                let expected_size = without_padding
-                    + util::core_layout::padding_needed_for(without_padding, args.align);
+                let expected_size =
+                    without_padding + util::padding_needed_for(without_padding, args.align);
                 assert_eq!(expected_size, size, "{}", assert_msg);
 
                 // For zero-sized element types,
@@ -8508,7 +8506,7 @@ mod proofs {
 
     #[kani::proof]
     fn prove_dst_layout_extend() {
-        use crate::util::{core_layout::padding_needed_for, max, min};
+        use crate::util::{max, min, padding_needed_for};
 
         let base: DstLayout = kani::any();
         let field: DstLayout = kani::any();
@@ -8649,7 +8647,7 @@ mod proofs {
 
     #[kani::proof]
     fn prove_dst_layout_pad_to_align() {
-        use crate::util::core_layout::padding_needed_for;
+        use crate::util::padding_needed_for;
 
         let layout: DstLayout = kani::any();
 
