@@ -8,7 +8,8 @@ runs:
         path: | 
           ~/.cargo/ 
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
-
+        
+    - name: Download dependencies
       run: |
           # Ensure all dependencies are downloaded - both for our crates and for
           # tools we use in CI. We don't care about these tools succeeding for
@@ -29,3 +30,4 @@ runs:
           cargo install cargo-readme --version 3.2.0 &> /dev/null || true
           cargo install --locked kani-verifier       &> /dev/null || true
           cargo kani setup                           &> /dev/null || true
+      shell: bash
