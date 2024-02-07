@@ -671,7 +671,7 @@ mod _casts {
         }
     }
 
-    impl<'a, const N: usize, T, I> Ptr<'a, [T; N], I>
+    impl<'a, T, I, const N: usize> Ptr<'a, [T; N], I>
     where
         T: 'a,
         I: Invariants,

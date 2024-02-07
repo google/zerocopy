@@ -38,7 +38,7 @@ jobs:
       matrix:
         # See `INTERNAL.md` for an explanation of these pinned toolchain
         # versions.
-        toolchain: [ "msrv", "stable", "nightly" ]
+        toolchain: [ "msrv", "stable", "nightly", "zerocopy-aarch64-simd" ]
         target: [
           "i686-unknown-linux-gnu",
           "x86_64-unknown-linux-gnu",
@@ -59,6 +59,8 @@ jobs:
             features: "--all-features"
           - toolchain: "stable"
             features: "--all-features"
+          - toolchain: "zerocopy-aarch64-simd"
+            features: "--all-features"
           # Exclude any combination for the zerocopy-derive crate which
           # uses zerocopy features.
           - crate: "zerocopy-derive"
@@ -67,6 +69,12 @@ jobs:
             features: "--features __internal_use_only_features_that_work_on_stable"
           - crate: "zerocopy-derive"
             features: "--all-features"
+          # Exclue any combination of zerocopy-derive and any toolchain version
+          # other than "msrv", "stable", and "nightly". These other versions
+          # exist to exercise zerocopy behavior which differs by toolchain;
+          # zerocopy-derive doesn't behave different on these toolchains.
+          - crate: "zerocopy-derive"
+            toolchain: "zerocopy-aarch64-simd"
 
     name: Build & Test (crate:${{ matrix.crate }}, toolchain:${{ matrix.toolchain }}, target:${{ matrix.target }}, features:${{ matrix.features }})
 
@@ -83,10 +91,11 @@ jobs:
       run: |
         set -eo pipefail
 
-        # We use toolchain descriptors ("msrv", "stable", and "nightly") in the
-        # matrix. This step converts the current descriptor to a particular
-        # toolchain version by looking up the corresponding key in `Cargo.toml`. It
-        # sets the `ZC_TOOLCHAIN` environment variable for use in the next step
+        # We use toolchain descriptors ("msrv", "stable", "nightly", and values
+        # from the "metadata.build-rs" key in Cargo.toml) in the matrix. This
+        # step converts the current descriptor to a particular toolchain version
+        # by looking up the corresponding key in `Cargo.toml`. It sets the
+        # `ZC_TOOLCHAIN` environment variable for use in the next step
         # (toolchain installation) because GitHub variable interpolation doesn't
         # support running arbitrary commands. In other words, we can't rewrite:
         #
@@ -195,10 +204,18 @@ jobs:
       #
       # Only run UI tests for zerocopy-derive, or for zerocopy with the derive
       # feature.
+      #
+      # Only run UI tests for the 'msrv', 'stable', and 'nightly' toolchains.
+      # Other toolchains are tested only because zerocopy has behavior which
+      # differs on those toolchains, but at present, none of that behavior
+      # affects UI tests. If we were to run UI tests on these toolchains, we
+      # would need a new set of UI test files per toolchain, which would be a
+      # maintenance burden not worth the (at present, zero) benefit.
       if: |
         (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) &&
           (matrix.crate == 'zerocopy-derive' ||
-            (matrix.features != '' && matrix.features != '--no-default-features'))
+            (matrix.features != '' && matrix.features != '--no-default-features')) &&
+          (matrix.toolchain == 'msrv' || matrix.toolchain == 'stable' || matrix.toolchain == 'nightly')
 
     - name: Run tests under Miri
       run: |
@@ -466,6 +483,31 @@ jobs:
           cargo install --locked kani-verifier       &> /dev/null || true
           cargo kani setup                           &> /dev/null || true
 
+  check-all-toolchains-tested:
+    runs-on: ubuntu-latest
+    name: Check that all toolchains listed in Cargo.toml are tested in CI
+    steps:
+      - name: Install yq (for YAML parsing)
+        run: go install github.com/mikefarah/yq/v4@latest
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Run check
+        run: |
+          set -eo pipefail
+
+          # Check whether the set of toolchains tested in this file (other than
+          # 'msrv', 'stable', and 'nightly') is equal to the set of toolchains
+          # listed in the 'package.metadata.build-rs' section of Cargo.toml.
+          #
+          # If the inputs to `diff` are not identical, `diff` exits with a
+          # non-zero error code, which causes this script to fail (thanks to
+          # `set -e`).
+          diff \
+            <(cat .github/workflows/ci.yml | yq '.jobs.build_test.strategy.matrix.toolchain | .[]' | \
+              sort -u | grep -v '^\(msrv\|stable\|nightly\)$') \
+            <(cargo metadata --format-version 1 | \
+              jq -r ".packages[] | select(.name == \"zerocopy\").metadata.\"build-rs\" | keys | .[]" | \
+              sort -u)
+
   check-job-dependencies:
     runs-on: ubuntu-latest
     name: Check all-jobs-succeeded depends on all jobs
@@ -510,7 +552,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_versions, generate_cache, check-job-dependencies]
+      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_versions, generate_cache, check-all-toolchains-tested, check-job-dependencies]
       steps:
         - name: Mark the job as failed
           run: exit 1
