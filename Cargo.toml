@@ -20,18 +20,29 @@ authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Utilities for zero-copy parsing and serialization"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"
-rust-version = "1.59.0"
+rust-version = "1.58.0"
 
 exclude = [".*"]
 
-[package.metadata.docs.rs]
-all-features = true
-rustdoc-args = ["--cfg", "doc_cfg", "--generate-link-to-definition"]
+[package.metadata.build-rs]
+# These key/value pairs are parsed by `build.rs`. Each entry names a `--cfg`
+# which will be emitted if zerocopy is built with a toolchain version at least
+# as high as the specified version. In the emitted `--cfg`, dashes are replaced
+# by underscores.
+
+# When the "simd" feature is enabled, include SIMD types from the
+# `core::arch::aarch64` module, which was stabilized in 1.59.0. On earlier Rust
+# versions, these types require the "simd-nightly" feature.
+zerocopy-aarch64-simd = "1.59.0"
 
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.
 pinned-stable = "1.75.0"
 pinned-nightly = "nightly-2024-02-01"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg", "--generate-link-to-definition"]
 
 [package.metadata.playground]
 features = ["__internal_use_only_features_that_work_on_stable"]

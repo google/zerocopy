@@ -17,7 +17,9 @@
 #   cargo.sh +all [...]                 # runs cargo commands with each toolchain
 #
 # The meta-toolchain "all" instructs this script to run the provided command
-# once for each toolchain (msrv, stable, nightly).
+# once for each "major" toolchain (msrv, stable, nightly). This does not include
+# any toolchain which is listed in the `package.metadata.build-rs` Cargo.toml
+# section.
 #
 # A common task that is especially annoying to perform by hand is to update
 # trybuild's stderr files. Using this script:
@@ -60,8 +62,13 @@ function lookup-version {
       pkg-meta 'metadata.ci."pinned-nightly"'
       ;;
     *)
-      echo "Unrecognized toolchain name: '$VERSION' (options are 'msrv', 'stable', 'nightly')" >&2
-      return 1
+      TOOLCHAIN=$(pkg-meta "metadata.\"build-rs\".\"${VERSION}\"")
+      if [ "$TOOLCHAIN" != "null" ]; then
+        echo "$TOOLCHAIN"
+      else
+        echo "Unrecognized toolchain name: '$VERSION' (options are 'msrv', 'stable', 'nightly', and any value in Cargo.toml's 'metadata.build-rs' table)" >&2
+        return 1
+      fi
       ;;
   esac
 }

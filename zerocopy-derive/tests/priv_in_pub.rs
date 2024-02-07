@@ -6,19 +6,23 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use zerocopy::{FromBytes, FromZeros, IntoBytes, KnownLayout, Unaligned};
+// TODO(#847): Make this test succeed on earlier Rust versions.
+#[rustversion::stable(1.59)]
+mod test {
+    use zerocopy::{FromBytes, FromZeros, IntoBytes, KnownLayout, Unaligned};
 
-// These derives do not result in E0446 as of Rust 1.59.0, because of
-// https://github.com/rust-lang/rust/pull/90586.
-//
-// This change eliminates one of the major downsides of emitting `where`
-// bounds for field types (i.e., the emission of E0446 for private field
-// types).
+    // These derives do not result in E0446 as of Rust 1.59.0, because of
+    // https://github.com/rust-lang/rust/pull/90586.
+    //
+    // This change eliminates one of the major downsides of emitting `where`
+    // bounds for field types (i.e., the emission of E0446 for private field
+    // types).
 
-#[derive(KnownLayout, IntoBytes, FromZeros, FromBytes, Unaligned)]
-#[repr(C)]
-pub struct Public(Private);
+    #[derive(KnownLayout, IntoBytes, FromZeros, FromBytes, Unaligned)]
+    #[repr(C)]
+    pub struct Public(Private);
 
-#[derive(KnownLayout, IntoBytes, FromZeros, FromBytes, Unaligned)]
-#[repr(C)]
-struct Private(());
+    #[derive(KnownLayout, IntoBytes, FromZeros, FromBytes, Unaligned)]
+    #[repr(C)]
+    struct Private(());
+}
