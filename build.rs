@@ -7,6 +7,56 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+// Sometimes we want to use lints which were added after our MSRV.
+// `unknown_lints` is `warn` by default and we deny warnings in CI, so without
+// this attribute, any unknown lint would cause a CI failure when testing with
+// our MSRV.
+#![allow(unknown_lints)]
+#![deny(renamed_and_removed_lints)]
+#![deny(
+    anonymous_parameters,
+    deprecated_in_future,
+    late_bound_lifetime_arguments,
+    missing_copy_implementations,
+    missing_debug_implementations,
+    path_statements,
+    patterns_in_fns_without_body,
+    rust_2018_idioms,
+    trivial_numeric_casts,
+    unreachable_pub,
+    unsafe_op_in_unsafe_fn,
+    unused_extern_crates,
+    unused_qualifications,
+    variant_size_differences
+)]
+#![deny(
+    clippy::all,
+    clippy::alloc_instead_of_core,
+    clippy::arithmetic_side_effects,
+    clippy::as_underscore,
+    clippy::assertions_on_result_states,
+    clippy::as_conversions,
+    clippy::correctness,
+    clippy::dbg_macro,
+    clippy::decimal_literal_representation,
+    clippy::get_unwrap,
+    clippy::indexing_slicing,
+    clippy::missing_inline_in_public_items,
+    clippy::missing_safety_doc,
+    clippy::obfuscated_if_else,
+    clippy::perf,
+    clippy::print_stdout,
+    clippy::std_instead_of_core,
+    clippy::style,
+    clippy::suspicious,
+    clippy::todo,
+    clippy::undocumented_unsafe_blocks,
+    clippy::unimplemented,
+    clippy::unnested_or_patterns,
+    clippy::unwrap_used,
+    clippy::use_debug
+)]
+
 use std::{env, fs, process::Command, str};
 
 fn main() {
@@ -96,7 +146,7 @@ fn parse_version_cfgs_from_cargo_toml() -> Vec<VersionCfg> {
             // comment (which can happen if it's inside a string) since we authored
             // `Cargo.toml` and, in this section, we only put Rust version numbers
             // in strings.
-            let before_comment = line.split("#").next().expect(ITER_FIRST_NEXT_EXPECT_MSG);
+            let before_comment = line.split('#').next().expect(ITER_FIRST_NEXT_EXPECT_MSG);
             let before_comment_without_whitespace = before_comment.trim_start();
             if before_comment_without_whitespace.is_empty() {
                 return None;
@@ -121,7 +171,7 @@ fn parse_version_cfgs_from_cargo_toml() -> Vec<VersionCfg> {
             assert_eq!(equals_sign, "=", "{}", EXPECT_MSG);
 
             // Replace dashes with underscores.
-            let name = name.replace("-", "_");
+            let name = name.replace('-', "_");
 
             // Strip the quotation marks.
             let value = value.trim_start_matches('"').trim_end_matches('"');

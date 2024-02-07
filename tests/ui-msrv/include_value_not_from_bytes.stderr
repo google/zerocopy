@@ -4,9 +4,9 @@ error[E0277]: the trait bound `NotZerocopy<u32>: FromBytes` is not satisfied
 13 | const NOT_FROM_BYTES: NotZerocopy<u32> = include_value!("../../testdata/include_value/data");
    |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `NotZerocopy<u32>`
    |
-note: required by a bound in `AssertIsFromBytes`
+note: required by `AssertIsFromBytes`
   --> tests/ui-msrv/include_value_not_from_bytes.rs:13:42
    |
 13 | const NOT_FROM_BYTES: NotZerocopy<u32> = include_value!("../../testdata/include_value/data");
-   |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertIsFromBytes`
+   |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: this error originates in the macro `$crate::transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
