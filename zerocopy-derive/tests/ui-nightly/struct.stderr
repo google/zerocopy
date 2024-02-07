@@ -48,7 +48,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
 31 | #[derive(KnownLayout)]
    |          ^^^^^^^^^^^ doesn't have a size known at compile-time
    |
-   = help: within `KL00`, the trait `Sized` is not implemented for `[u8]`
+   = help: within `KL00`, the trait `Sized` is not implemented for `[u8]`, which is required by `KL00: Sized`
 note: required because it appears within the type `KL00`
   --> tests/ui-nightly/struct.rs:32:8
    |
@@ -64,7 +64,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
 36 | #[derive(KnownLayout)]
    |          ^^^^^^^^^^^ doesn't have a size known at compile-time
    |
-   = help: within `KL02`, the trait `Sized` is not implemented for `[u8]`
+   = help: within `KL02`, the trait `Sized` is not implemented for `[u8]`, which is required by `KL02: Sized`
 note: required because it appears within the type `KL02`
   --> tests/ui-nightly/struct.rs:37:8
    |
@@ -138,7 +138,7 @@ error[E0277]: the trait bound `UnsafeCell<u8>: NoCell` is not satisfied
   --> tests/ui-nightly/struct.rs:60:10
    |
 60 | #[derive(NoCell)]
-   |          ^^^^^^ the trait `NoCell` is not implemented for `UnsafeCell<u8>`
+   |          ^^^^^^ the trait `NoCell` is not implemented for `UnsafeCell<u8>`, which is required by `[UnsafeCell<u8>; 0]: NoCell`
    |
    = help: the following other types implement trait `NoCell`:
              bool

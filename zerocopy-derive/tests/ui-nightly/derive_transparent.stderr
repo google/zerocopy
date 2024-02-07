@@ -2,7 +2,7 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
   --> tests/ui-nightly/derive_transparent.rs:37:18
    |
 37 | assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
-   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`, which is required by `TransparentStruct<NotZerocopy>: TryFromBytes`
    |
    = help: the following other types implement trait `TryFromBytes`:
              bool
@@ -30,7 +30,7 @@ error[E0277]: the trait bound `NotZerocopy: FromZeroes` is not satisfied
   --> tests/ui-nightly/derive_transparent.rs:38:18
    |
 38 | assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
-   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromZeroes` is not implemented for `NotZerocopy`
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromZeroes` is not implemented for `NotZerocopy`, which is required by `TransparentStruct<NotZerocopy>: FromZeroes`
    |
    = help: the following other types implement trait `FromZeroes`:
              bool
@@ -58,7 +58,7 @@ error[E0277]: the trait bound `NotZerocopy: FromBytes` is not satisfied
   --> tests/ui-nightly/derive_transparent.rs:39:18
    |
 39 | assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
-   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `NotZerocopy`
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `NotZerocopy`, which is required by `TransparentStruct<NotZerocopy>: FromBytes`
    |
    = help: the following other types implement trait `FromBytes`:
              isize
@@ -86,7 +86,7 @@ error[E0277]: the trait bound `NotZerocopy: AsBytes` is not satisfied
   --> tests/ui-nightly/derive_transparent.rs:40:18
    |
 40 | assert_impl_all!(TransparentStruct<NotZerocopy>: IntoBytes);
-   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `AsBytes` is not implemented for `NotZerocopy`
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `AsBytes` is not implemented for `NotZerocopy`, which is required by `TransparentStruct<NotZerocopy>: AsBytes`
    |
    = help: the following other types implement trait `AsBytes`:
              bool
@@ -114,17 +114,17 @@ error[E0277]: the trait bound `NotZerocopy: Unaligned` is not satisfied
   --> tests/ui-nightly/derive_transparent.rs:41:18
    |
 41 | assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
-   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Unaligned` is not implemented for `NotZerocopy`
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Unaligned` is not implemented for `NotZerocopy`, which is required by `TransparentStruct<NotZerocopy>: Unaligned`
    |
    = help: the following other types implement trait `Unaligned`:
              bool
              i8
              u8
              TransparentStruct<T>
+             NonZero<i8>
+             NonZero<u8>
              U16<O>
              U32<O>
-             U64<O>
-             U128<O>
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `Unaligned`
   --> tests/ui-nightly/derive_transparent.rs:27:57

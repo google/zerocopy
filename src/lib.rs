@@ -149,7 +149,6 @@
 #![deny(
     anonymous_parameters,
     deprecated_in_future,
-    illegal_floating_point_literal_pattern,
     late_bound_lifetime_arguments,
     missing_copy_implementations,
     missing_debug_implementations,
@@ -5121,6 +5120,7 @@ where
     T: FromBytes + PartialEq + NoCell,
 {
     #[inline]
+    #[allow(clippy::unconditional_recursion)] // Work around false positive: https://github.com/rust-lang/rust-clippy/issues/12154
     fn eq(&self, other: &Self) -> bool {
         self.deref().eq(other.deref())
     }
@@ -5132,6 +5132,7 @@ where
     T: FromBytes + PartialEq + NoCell,
 {
     #[inline]
+    #[allow(clippy::unconditional_recursion)] // Work around false positive: https://github.com/rust-lang/rust-clippy/issues/12154
     fn eq(&self, other: &Self) -> bool {
         self.deref().eq(other.deref())
     }

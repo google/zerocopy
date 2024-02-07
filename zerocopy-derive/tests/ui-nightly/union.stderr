@@ -34,7 +34,7 @@ error[E0277]: the trait bound `UnsafeCell<()>: NoCell` is not satisfied
   --> tests/ui-nightly/union.rs:24:10
    |
 24 | #[derive(NoCell)]
-   |          ^^^^^^ the trait `NoCell` is not implemented for `UnsafeCell<()>`
+   |          ^^^^^^ the trait `NoCell` is not implemented for `UnsafeCell<()>`, which is required by `ManuallyDrop<UnsafeCell<()>>: NoCell`
    |
    = help: the following other types implement trait `NoCell`:
              bool
