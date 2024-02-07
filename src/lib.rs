@@ -219,7 +219,18 @@
     clippy::indexing_slicing,
 ))]
 #![cfg_attr(not(test), no_std)]
-#![cfg_attr(feature = "simd-nightly", feature(stdsimd))]
+#![cfg_attr(
+    all(feature = "simd-nightly", any(target_arch = "x86", target_arch = "x86_64")),
+    feature(stdarch_x86_avx512)
+)]
+#![cfg_attr(
+    all(feature = "simd-nightly", target_arch = "arm"),
+    feature(stdarch_arm_dsp, stdarch_arm_neon_intrinsics)
+)]
+#![cfg_attr(
+    all(feature = "simd-nightly", any(target_arch = "powerpc", target_arch = "powerpc64")),
+    feature(stdarch_powerpc)
+)]
 #![cfg_attr(doc_cfg, feature(doc_cfg))]
 #![cfg_attr(
     __INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS,
