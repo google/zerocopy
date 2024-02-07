@@ -122,8 +122,8 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
              Unaligned1
              Unaligned2
              Unaligned3
-             U16<O>
-             U32<O>
+             NonZero<i8>
+             NonZero<u8>
            and $N others
    = help: see issue #48214
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
@@ -142,8 +142,8 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
              Unaligned1
              Unaligned2
              Unaligned3
-             U16<O>
-             U32<O>
+             NonZero<i8>
+             NonZero<u8>
            and $N others
    = help: see issue #48214
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
@@ -162,8 +162,8 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
              Unaligned1
              Unaligned2
              Unaligned3
-             U16<O>
-             U32<O>
+             NonZero<i8>
+             NonZero<u8>
            and $N others
    = help: see issue #48214
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
