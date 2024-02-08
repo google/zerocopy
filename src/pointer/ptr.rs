@@ -539,6 +539,21 @@ mod _transitions {
             unsafe { Ptr::from_ptr(self) }
         }
 
+        /// Recalls that `Ptr`'s referent is validly-aligned for `T`.
+        #[inline]
+        // TODO(#859): Reconsider the name of this method before making it
+        // public.
+        pub(crate) fn bikeshed_recall_aligned(
+            self,
+        ) -> Ptr<'a, T, (I::Aliasing, invariant::Aligned, I::Validity)>
+        where
+            T: crate::Unaligned,
+        {
+            // SAFETY: The bound `T: Unaligned` ensures that `T` has no
+            // non-trivial alignment requirement.
+            unsafe { self.assume_alignment::<invariant::Aligned>() }
+        }
+
         /// Assumes that `Ptr`'s referent conforms to the validity requirement
         /// of `V`.
         ///
@@ -623,11 +638,30 @@ mod _casts {
         ///
         /// # Safety
         ///
-        /// The caller promises that
-        /// - `cast(p)` is implemented exactly as follows: `|p: *mut T| p as
-        ///   *mut U`.
-        /// - The size of the object referenced by the resulting pointer is less
-        ///   than or equal to the size of the object referenced by `self`.
+        /// The caller promises that `cast(p)` is a pointer cast that does not
+        /// increase the referent's size. A 'cast', here, means a
+        /// provenance-preserving transformation of a pointer-like value into
+        /// another pointer-like value to the same allocation.
+        ///
+        /// For all kinds of casts, the caller must promise that the the size of
+        /// the object referenced by the resulting pointer is less than or equal
+        /// to the size of the object referenced by `self`.
+        ///
+        /// For pointer-to-pointer casts, it suffices for the caller to
+        /// additionally promise that `cast(p)` is implemented as:
+        /// ```ignore
+        /// |p: *mut T| p as *mut U
+        /// ```
+        ///
+        /// For pointer-to-slice casts, it sufficies for the caller to
+        /// additionally promise that `cast` is implemented as:
+        /// ```ignore
+        ///   |p: *mut T|
+        ///       core::ptr::slice_from_raw_parts_mut(
+        ///           p as *mut U,
+        ///           len,
+        ///       )
+        /// ```
         #[doc(hidden)]
         #[inline]
         pub unsafe fn cast_unsized<U: 'a + ?Sized, F: FnOnce(*mut T) -> *mut U>(
@@ -639,7 +673,7 @@ mod _casts {
         {
             let ptr = cast(self.as_non_null().as_ptr());
 
-            // SAFETY: Caller promises that `cast` is just an `as` cast. We call
+            // SAFETY: Caller promises that `cast` is just a cast. We call
             // `cast` on `self.ptr.as_non_null().as_ptr()`, which is non-null by
             // construction.
             let ptr = unsafe { NonNull::new_unchecked(ptr) };
@@ -671,6 +705,39 @@ mod _casts {
             // 8. `ptr`, trivially, conforms to the validity invariant of
             //   `AnyValidity`.
             unsafe { Ptr::new(ptr) }
+        }
+    }
+
+    impl<'a, T, I> Ptr<'a, T, I>
+    where
+        T: 'a,
+        I: Invariants<Validity = invariant::Initialized>,
+    {
+        /// Casts this pointer-to-initialized into a pointer-to-bytes.
+        #[allow(clippy::wrong_self_convention)]
+        pub(crate) fn as_bytes(
+            self,
+        ) -> Ptr<'a, [u8], (I::Aliasing, invariant::Aligned, invariant::Valid)> {
+            // SAFETY: We ensure that:
+            // - `cast(p)` is implemented as an invocation to
+            //   `slice_from_raw_parts_mut`.
+            // - The size of the object referenced by the resulting pointer is
+            //   exactly equal to the size of the object referenced by `self`.
+            let ptr: Ptr<'a, [u8], _> = unsafe {
+                self.cast_unsized(|p: *mut T| {
+                    #[allow(clippy::as_conversions)]
+                    core::ptr::slice_from_raw_parts_mut(p as *mut u8, core::mem::size_of::<T>())
+                })
+            };
+
+            let ptr = ptr.bikeshed_recall_aligned();
+
+            // SAFETY: `ptr`'s referent begins as `Initialized`, denoting that
+            // all bytes of the referent are initialized bytes. The referent
+            // type is then casted to `[u8]`, whose only validity invariant is
+            // that its bytes are initialized. This validity invariant is
+            // satisfied by the `Initialized` invariant on the starting `ptr`.
+            unsafe { ptr.assume_validity::<invariant::Valid>() }
         }
     }
 

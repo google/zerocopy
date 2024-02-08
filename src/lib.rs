@@ -3368,10 +3368,28 @@ safety_comment! {
     #[cfg(feature = "alloc")]
     unsafe_impl!(
         #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
+        T => TryFromBytes for Option<Box<T>>;
+        |c: Maybe<Option<Box<T>>>| pointer::is_zeroed(c)
+    );
+    #[cfg(feature = "alloc")]
+    unsafe_impl!(
+        #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
         T => FromZeros for Option<Box<T>>
     );
+    unsafe_impl!(
+        T => TryFromBytes for Option<&'_ T>;
+        |c: Maybe<Option<&'_ T>>| pointer::is_zeroed(c)
+    );
     unsafe_impl!(T => FromZeros for Option<&'_ T>);
+    unsafe_impl!(
+            T => TryFromBytes for Option<&'_ mut T>;
+            |c: Maybe<Option<&'_ mut T>>| pointer::is_zeroed(c)
+    );
     unsafe_impl!(T => FromZeros for Option<&'_ mut T>);
+    unsafe_impl!(
+        T => TryFromBytes for Option<NonNull<T>>;
+        |c: Maybe<Option<NonNull<T>>>| pointer::is_zeroed(c)
+    );
     unsafe_impl!(T => FromZeros for Option<NonNull<T>>);
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_fn!(...));
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_extern_c_fn!(...));
@@ -3611,6 +3629,9 @@ safety_comment! {
     /// - `FromZeros`: For thin pointers (note that `T: Sized`), the zero
     ///   pointer is considered "null". [1] No operations which require
     ///   provenance are legal on null pointers, so this is not a footgun.
+    /// - `TryFromBytes`: By the same reasoning as for `FromZeroes`, we can
+    ///   implement `TryFromBytes` for thin pointers provided that
+    ///   [`TryFromByte::is_bit_valid`] only produces `true` for zeroed bytes.
     ///
     /// NOTE(#170): Implementing `FromBytes` and `IntoBytes` for raw pointers
     /// would be sound, but carries provenance footguns. We want to support
@@ -3621,7 +3642,13 @@ safety_comment! {
     /// documentation once this PR lands.
     unsafe_impl!(T: ?Sized => NoCell for *const T);
     unsafe_impl!(T: ?Sized => NoCell for *mut T);
+    unsafe_impl!(T => TryFromBytes for *const T; |c: Maybe<*const T>| {
+        pointer::is_zeroed(c)
+    });
     unsafe_impl!(T => FromZeros for *const T);
+    unsafe_impl!(T => TryFromBytes for *mut T; |c: Maybe<*const T>| {
+        pointer::is_zeroed(c)
+    });
     unsafe_impl!(T => FromZeros for *mut T);
 }
 safety_comment! {
@@ -7938,6 +7965,24 @@ mod tests {
             [bool]
                  => @success [true, false], [false, true],
                     @failure [2u8], [3u8], [0xFFu8], [0u8, 1u8, 2u8];
+            Option<Box<UnsafeCell<NotZerocopy>>>
+                => @success None,
+                   @failure [0x1; mem::size_of::<Option<Box<UnsafeCell<NotZerocopy>>>>()];
+            Option<&'static UnsafeCell<NotZerocopy>>
+                => @success None,
+                   @failure [0x1; mem::size_of::<Option<&'static UnsafeCell<NotZerocopy>>>()];
+            Option<&'static mut UnsafeCell<NotZerocopy>>
+                => @success None,
+                   @failure [0x1; mem::size_of::<Option<&'static mut UnsafeCell<NotZerocopy>>>()];
+            Option<NonNull<UnsafeCell<NotZerocopy>>>
+                => @success None,
+                   @failure [0x1; mem::size_of::<Option<NonNull<UnsafeCell<NotZerocopy>>>>()];
+            *const NotZerocopy
+                => @success ptr::null::<NotZerocopy>(),
+                   @failure [0x1; mem::size_of::<*const NotZerocopy>()];
+            *mut NotZerocopy
+                => @success ptr::null_mut::<NotZerocopy>(),
+                   @failure [0x1; mem::size_of::<*mut NotZerocopy>()];
         );
 
         // Asserts that `$ty` implements any `$trait` and doesn't implement any
@@ -8295,13 +8340,13 @@ mod tests {
         ) -> (NotZerocopy, NotZerocopy);
 
         #[cfg(feature = "alloc")]
-        assert_impls!(Option<Box<UnsafeCell<NotZerocopy>>>: KnownLayout, FromZeros, !NoCell, !TryFromBytes, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<Box<UnsafeCell<NotZerocopy>>>: KnownLayout, TryFromBytes, FromZeros, !NoCell, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(Option<Box<[UnsafeCell<NotZerocopy>]>>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<&'static UnsafeCell<NotZerocopy>>: KnownLayout, NoCell, FromZeros, !TryFromBytes, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<&'static UnsafeCell<NotZerocopy>>: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(Option<&'static [UnsafeCell<NotZerocopy>]>: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<&'static mut UnsafeCell<NotZerocopy>>: KnownLayout, NoCell, FromZeros, !TryFromBytes, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<&'static mut UnsafeCell<NotZerocopy>>: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(Option<&'static mut [UnsafeCell<NotZerocopy>]>: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<NonNull<UnsafeCell<NotZerocopy>>>: KnownLayout, FromZeros, !NoCell, !TryFromBytes, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<NonNull<UnsafeCell<NotZerocopy>>>: KnownLayout, TryFromBytes, FromZeros, !NoCell, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(Option<NonNull<[UnsafeCell<NotZerocopy>]>>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(Option<fn()>: KnownLayout, NoCell, FromZeros, !TryFromBytes, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(Option<FnManyArgs>: KnownLayout, NoCell, FromZeros, !TryFromBytes, !FromBytes, !IntoBytes, !Unaligned);
@@ -8386,8 +8431,8 @@ mod tests {
             !Unaligned
         );
 
-        assert_impls!(*const NotZerocopy: KnownLayout, NoCell, FromZeros, !TryFromBytes, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(*mut NotZerocopy: KnownLayout, NoCell, FromZeros, !TryFromBytes, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(*const NotZerocopy: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(*mut NotZerocopy: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(*const [NotZerocopy]: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(*mut [NotZerocopy]: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(*const dyn Debug: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
