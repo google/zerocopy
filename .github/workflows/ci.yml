@@ -118,6 +118,17 @@ jobs:
           echo "Using non-nightly toolchain; not modifying RUSTFLAGS='$RUSTFLAGS' or MIRIFLAGS='$MIRIFLAGS'" | tee -a $GITHUB_STEP_SUMMARY
         fi
 
+    # On our MSRV, `cargo` does not know about the `rust-version` field. As a
+    # result, in `cargo.sh`, if we use our MSRV toolchain in order to run `cargo
+    # metadata`, we will not be able to extract the `rust-version` field. Thus,
+    # in `cargo.sh`, we explicitly do `cargo +stable metadata`. This requires a
+    # (more recent) stable toolchain to be installed. As of this writing, this
+    # toolchain is not used for anything else.
+    - name: Install stable Rust for use in 'cargo.sh'
+      uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
+      with:
+        toolchain: stable
+
     - name: Install Rust with ${{ matrix.toolchain }} toolchain (${{ env.ZC_TOOLCHAIN }}) and target ${{ matrix.target }}
       uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
       with:

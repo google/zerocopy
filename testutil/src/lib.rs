@@ -6,9 +6,8 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use cargo_metadata::MetadataCommand;
 use rustc_version::{Channel, Version};
-use std::error::Error;
+use std::{env, error::Error, fs};
 
 struct PinnedVersions {
     msrv: String,
@@ -24,29 +23,35 @@ impl PinnedVersions {
     /// child of a Cargo workspace. It extracts the pinned versions from the
     /// metadata of the root package.
     fn extract_from_pwd() -> Result<PinnedVersions, Box<dyn Error>> {
-        let meta = MetadataCommand::new().exec()?;
-        // NOTE(joshlf): In theory `meta.root_package()` should work instead of
-        // this manual search, but for some reason it breaks when called from
-        // zerocopy-derive's tests. This works as a workaround, and it's just
-        // test code, so I didn't bother investigating.
-        let pkg = meta
-            .workspace_packages()
-            .into_iter()
-            .find(|pkg| pkg.name == "zerocopy")
-            .ok_or("no `zerocopy` package found; are we in a workspace?")?;
-        let msrv = pkg
-            .rust_version
-            .as_ref()
-            .ok_or("failed to find msrv: no `rust-version` key present")?
-            .to_string();
-        let extract = |version_name, key| -> Result<String, String> {
-            let value = pkg.metadata.pointer(&format!("/ci/{key}")).ok_or_else(|| {
-                format!("failed to find {version_name}: no `metadata.ci.{key}` key present")
-            })?;
-            value.as_str().map(str::to_string).ok_or_else(|| format!("failed to find {version_name}: key `metadata.ci.{key}` (contents: {value:?}) failed to parse as JSON string"))
+        let manifest_dir = env::var_os("CARGO_MANIFEST_DIR")
+            .ok_or("CARGO_MANIFEST_DIR environment variable not set")?
+            .into_string()
+            .map_err(|_| "could not parse $CARGO_MANIFEST_DIR as UTF-8")?;
+        let manifest_path = if manifest_dir.ends_with("zerocopy-derive") {
+            manifest_dir + "/../Cargo.toml"
+        } else {
+            manifest_dir + "/Cargo.toml"
         };
-        let stable = extract("stable", "pinned-stable")?;
-        let nightly = extract("nightly", "pinned-nightly")?;
+        let manifest = fs::read_to_string(manifest_path)?;
+        let manifest: toml::map::Map<String, toml::Value> = toml::from_str(&manifest)?;
+        let manifest = toml::Value::Table(manifest);
+
+        let extract = |keys: &[&str]| -> Result<String, String> {
+            let mut val = &manifest;
+            for k in keys {
+                val = val
+                    .get(k)
+                    .ok_or(format!("failed to look up path in Cargo.toml: {:?}", keys))?;
+            }
+
+            val.as_str()
+                .map(|s| s.to_string())
+                .ok_or(format!("expected string value for path in Cargo.toml: {:?}", keys))
+        };
+
+        let msrv = extract(&["package", "rust-version"])?;
+        let stable = extract(&["package", "metadata", "ci", "pinned-stable"])?;
+        let nightly = extract(&["package", "metadata", "ci", "pinned-nightly"])?;
         Ok(PinnedVersions { msrv, stable, nightly })
     }
 }
@@ -85,7 +90,7 @@ impl ToolchainVersion {
             }
             Channel::Stable => {
                 let Version { major, minor, patch, .. } = current.semver;
-                format!("{major}.{minor}.{patch}")
+                format!("{}.{}.{}", major, minor, patch)
             }
         };
 
@@ -116,7 +121,8 @@ impl ToolchainVersion {
             _ if current.channel == Channel::Nightly => ToolchainVersion::OtherNightly,
             _ => {
                 return Err(format!(
-                    "current toolchain ({current:?}) doesn't match any known version"
+                    "current toolchain ({:?}) doesn't match any known version",
+                    current
                 )
                 .into())
             }

@@ -46,7 +46,15 @@ function pkg-meta {
   # causing the subsequent `cargo` invocation to rebuild unnecessarily. By
   # specifying a separate build directory here, we ensure that this never
   # clobbers the build artifacts used by the later `cargo` invocation.
-  CARGO_TARGET_DIR=target/cargo-sh cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"zerocopy\").$1"
+  #
+  # In CI, make sure to use the default stable toolchain. If we're testing on
+  # our MSRV, then we also have our MSRV toolchain installed. As of this
+  # writing, our MSRV is low enough that the correspoding Rust toolchain's Cargo
+  # doesn't know about the `rust-version` field, and so if we were to use Cargo
+  # with that toolchain, `pkg-meta` would return `null` when asked to retrieve
+  # the `rust-version` field. This also requires `RUSTFLAGS=''` to override any
+  # unstable `RUSTFLAGS` set by the caller.
+  RUSTFLAGS='' CARGO_TARGET_DIR=target/cargo-sh cargo +stable metadata --format-version 1 | jq -r ".packages[] | select(.name == \"zerocopy\").$1"
 }
 
 function lookup-version {

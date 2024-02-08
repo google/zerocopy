@@ -5897,7 +5897,7 @@ mod tests {
 
                     assert_matches::assert_matches!(
                         actual, $expect,
-                        "layout({size_info:?}, {align}).validate_cast_and_convert_metadata({addr}, {bytes_len}, {cast_type:?})",
+                        "layout({:?}, {}).validate_cast_and_convert_metadata({}, {}, {:?})" ,size_info, align, addr, bytes_len, cast_type
                     );
                 });
             };
@@ -5992,7 +5992,8 @@ mod tests {
             {
                 let (size_info, align) = (layout.size_info, layout.align);
                 let debug_str = format!(
-                    "layout({size_info:?}, {align}).validate_cast_and_convert_metadata({addr}, {bytes_len}, {cast_type:?}) => ({elems}, {split_at})",
+                    "layout({:?}, {}).validate_cast_and_convert_metadata({}, {}, {:?}) => ({}, {})",
+                    size_info, align, addr, bytes_len, cast_type, elems, split_at
                 );
 
                 // If this is a sized type (no trailing slice), then `elems` is
@@ -6141,7 +6142,7 @@ mod tests {
 
                 // Avoid expensive allocation when running under Miri.
                 let assert_msg = if !cfg!(miri) {
-                    format!("\n{args:?}\nsize:{size}, align:{align}")
+                    format!("\n{:?}\nsize:{}, align:{}", args, size, align)
                 } else {
                     String::new()
                 };
@@ -6179,8 +6180,8 @@ mod tests {
                     // Avoid expensive allocation when running under Miri.
                     let assert_msg = if !cfg!(miri) {
                         format!(
-                            "{}\nvalidate_cast_and_convert_metadata({addr}, {size})",
-                            assert_msg
+                            "{}\nvalidate_cast_and_convert_metadata({}, {})",
+                            assert_msg, addr, size,
                         )
                     } else {
                         String::new()

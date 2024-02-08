@@ -271,7 +271,7 @@ mod tests {
                 let align = NonZeroUsize::new(align).unwrap();
                 let want = alt_impl(n, align);
                 let got = round_down_to_next_multiple_of_alignment(n, align);
-                assert_eq!(got, want, "round_down_to_next_multiple_of_alignment({n}, {align})");
+                assert_eq!(got, want, "round_down_to_next_multiple_of_alignment({}, {})", n, align);
             }
         }
     }
@@ -295,7 +295,7 @@ mod proofs {
 
         let expected = model_impl(n, align);
         let actual = round_down_to_next_multiple_of_alignment(n, align);
-        assert_eq!(expected, actual, "round_down_to_next_multiple_of_alignment({n}, {align})");
+        assert_eq!(expected, actual, "round_down_to_next_multiple_of_alignment({}, {})", n, align);
     }
 
     // Restricted to nightly since we use the unstable `usize::next_multiple_of`
@@ -319,7 +319,7 @@ mod proofs {
 
         let expected = model_impl(len, align);
         let actual = padding_needed_for(len, align);
-        assert_eq!(expected, actual, "padding_needed_for({len}, {align})");
+        assert_eq!(expected, actual, "padding_needed_for({}, {})", len, align);
 
         let padded_len = actual + len;
         assert_eq!(padded_len % align, 0);
