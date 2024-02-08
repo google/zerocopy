@@ -2,10 +2,7 @@ error[E0277]: the trait bound `Src: NoCell` is not satisfied
   --> tests/ui-msrv/transmute-mut-src-not-nocell.rs:24:35
    |
 24 | const SRC_NOT_NO_CELL: &mut Dst = transmute_mut!(&mut Src);
-   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^
-   |                                   |
-   |                                   the trait `NoCell` is not implemented for `Src`
-   |                                   required by a bound introduced by this call
+   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `NoCell` is not implemented for `Src`
    |
 note: required by `AssertSrcIsNoCell`
   --> tests/ui-msrv/transmute-mut-src-not-nocell.rs:24:35

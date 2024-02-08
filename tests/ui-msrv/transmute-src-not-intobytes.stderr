@@ -2,10 +2,7 @@ error[E0277]: the trait bound `NotZerocopy<AU16>: AsBytes` is not satisfied
   --> tests/ui-msrv/transmute-src-not-intobytes.rs:18:32
    |
 18 | const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
-   |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   |                                |
-   |                                the trait `AsBytes` is not implemented for `NotZerocopy<AU16>`
-   |                                required by a bound introduced by this call
+   |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `AsBytes` is not implemented for `NotZerocopy<AU16>`
    |
 note: required by `AssertIsIntoBytes`
   --> tests/ui-msrv/transmute-src-not-intobytes.rs:18:32
