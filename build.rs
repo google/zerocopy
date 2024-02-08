@@ -73,13 +73,14 @@ fn main() {
     }
 }
 
-#[derive(Ord, PartialEq, PartialOrd, Eq)]
+#[derive(Debug, Ord, PartialEq, PartialOrd, Eq)]
 struct Version {
     major: usize,
     minor: usize,
     patch: usize,
 }
 
+#[derive(Debug)]
 struct VersionCfg {
     version: Version,
     cfg_name: String,

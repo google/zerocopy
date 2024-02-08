@@ -35,6 +35,9 @@ exclude = [".*"]
 # versions, these types require the "simd-nightly" feature.
 zerocopy-aarch64-simd = "1.59.0"
 
+# From 1.61.0, Rust supports generic types with trait bounds in `const fn`.
+zerocopy-generic-bounds-in-const-fn = "1.61.0"
+
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.
 pinned-stable = "1.75.0"
