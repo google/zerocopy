@@ -401,7 +401,7 @@ example of how it can be used for parsing UDP packets.
             /// Constructs a new value from bytes which are already in `O` byte
             /// order.
             #[inline(always)]
-            pub fn from_bytes(bytes: [u8; $bytes]) -> $name<O> {
+            pub const fn from_bytes(bytes: [u8; $bytes]) -> $name<O> {
                 $name(bytes, PhantomData)
             }
 
@@ -409,32 +409,37 @@ example of how it can be used for parsing UDP packets.
             ///
             /// The returned bytes will be in `O` byte order.
             #[inline(always)]
-            pub fn to_bytes(self) -> [u8; $bytes] {
+            pub const fn to_bytes(self) -> [u8; $bytes] {
                 self.0
             }
         }
 
         impl<O: ByteOrder> $name<O> {
-            /// Constructs a new value, possibly performing an endianness swap
-            /// to guarantee that the returned value has endianness `O`.
-            #[inline(always)]
-            pub fn new(n: $native) -> $name<O> {
-                let bytes = match O::ORDER {
-                    Order::BigEndian => $to_be_fn(n),
-                    Order::LittleEndian => $to_le_fn(n),
-                };
+            maybe_const_trait_bounded_fn! {
+                /// Constructs a new value, possibly performing an endianness
+                /// swap to guarantee that the returned value has endianness
+                /// `O`.
+                #[inline(always)]
+                pub const fn new(n: $native) -> $name<O> {
+                    let bytes = match O::ORDER {
+                        Order::BigEndian => $to_be_fn(n),
+                        Order::LittleEndian => $to_le_fn(n),
+                    };
 
-                $name(bytes, PhantomData)
+                    $name(bytes, PhantomData)
+                }
             }
 
-            /// Returns the value as a primitive type, possibly performing an
-            /// endianness swap to guarantee that the return value has the
-            /// endianness of the native platform.
-            #[inline(always)]
-            pub fn get(self) -> $native {
-                match O::ORDER {
-                    Order::BigEndian => $from_be_fn(self.0),
-                    Order::LittleEndian => $from_le_fn(self.0),
+            maybe_const_trait_bounded_fn! {
+                /// Returns the value as a primitive type, possibly performing
+                /// an endianness swap to guarantee that the return value has
+                /// the endianness of the native platform.
+                #[inline(always)]
+                pub const fn get(self) -> $native {
+                    match O::ORDER {
+                        Order::BigEndian => $from_be_fn(self.0),
+                        Order::LittleEndian => $from_le_fn(self.0),
+                    }
                 }
             }
 
@@ -1122,6 +1127,18 @@ mod tests {
     } else {
         1024
     };
+
+    #[test]
+    fn test_const_methods() {
+        use big_endian::*;
+
+        #[rustversion::since(1.61.0)]
+        const _U: U16 = U16::new(0);
+        #[rustversion::since(1.61.0)]
+        const _NATIVE: u16 = _U.get();
+        const _FROM_BYTES: U16 = U16::from_bytes([0, 1]);
+        const _BYTES: [u8; 2] = _FROM_BYTES.to_bytes();
+    }
 
     #[cfg_attr(test, test)]
     #[cfg_attr(kani, kani::proof)]

@@ -416,3 +416,19 @@ macro_rules! assert_unaligned {
         $(assert_unaligned!($ty);)*
     };
 }
+
+/// Emits a function definition as either `const fn` or `fn` depending on
+/// whether the current toolchain version supports `const fn` with generic trait
+/// bounds.
+macro_rules! maybe_const_trait_bounded_fn {
+    // This case handles both `self` methods (where `self` is by value) and
+    // non-method functions. Each `$args` may optionally be followed by `:
+    // $arg_tys:ty`, which can be omitted for `self`.
+    ($(#[$attr:meta])* $vis:vis const fn $name:ident($($args:ident $(: $arg_tys:ty)?),* $(,)?) $(-> $ret_ty:ty)? $body:block) => {
+        #[cfg(zerocopy_generic_bounds_in_const_fn)]
+        $(#[$attr])* $vis const fn $name($($args $(: $arg_tys)?),*) $(-> $ret_ty)? $body
+
+        #[cfg(not(zerocopy_generic_bounds_in_const_fn))]
+        $(#[$attr])* $vis fn $name($($args $(: $arg_tys)?),*) $(-> $ret_ty)? $body
+    };
+}
