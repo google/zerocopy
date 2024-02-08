@@ -17,7 +17,7 @@ use crate::{TryFromBytes, Unaligned};
 /// A shorthand for a maybe-valid, maybe-aligned reference. Used as the argument
 /// to [`TryFromBytes::is_bit_valid`].
 pub type Maybe<'a, T, Alignment = invariant::AnyAlignment> =
-    Ptr<'a, T, (invariant::Shared, Alignment, invariant::AsInitialized)>;
+    Ptr<'a, T, (invariant::Shared, Alignment, invariant::Initialized)>;
 
 // These methods are defined on the type alias, `Maybe`, so as to bring them to
 // the forefront of the rendered rustdoc.

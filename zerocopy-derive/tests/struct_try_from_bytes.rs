@@ -80,7 +80,7 @@ fn two_bad() {
     let candidate = unsafe { candidate.cast_unsized(|p| p as *mut Two) };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
-    let candidate = unsafe { candidate.assume_as_initialized() };
+    let candidate = unsafe { candidate.assume_initialized() };
 
     let is_bit_valid = Two::is_bit_valid(candidate);
     assert!(!is_bit_valid);
@@ -109,7 +109,7 @@ fn un_sized() {
     let candidate = unsafe { candidate.cast_unsized(|p| p as *mut Unsized) };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
-    let candidate = unsafe { candidate.assume_as_initialized() };
+    let candidate = unsafe { candidate.assume_initialized() };
     let is_bit_valid = Unsized::is_bit_valid(candidate);
     assert!(is_bit_valid);
 }

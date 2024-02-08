@@ -1253,10 +1253,9 @@ pub unsafe trait TryFromBytes {
         let candidate = Ptr::from_ref(bytes).try_cast_into_no_leftover::<Self>()?;
 
         // SAFETY: `candidate` has no uninitialized sub-ranges because it
-        // derived from `bytes: &[u8]`, and is therefore at least as-initialized
-        // as `Self`.
+        // derived from `bytes: &[u8]`.
         let candidate =
-            unsafe { candidate.assume_validity::<crate::pointer::invariant::AsInitialized>() };
+            unsafe { candidate.assume_validity::<crate::pointer::invariant::Initialized>() };
 
         // This call may panic. If that happens, it doesn't cause any soundness
         // issues, as we have not generated any invalid state which we need to
@@ -1284,9 +1283,8 @@ pub unsafe trait TryFromBytes {
         let candidate = MaybeUninit::<Self>::read_from(bytes)?;
         let c_ptr = Ptr::from_maybe_uninit_ref(&candidate);
         // SAFETY: `c_ptr` has no uninitialized sub-ranges because it derived
-        // from `candidate`, which in turn derives from `bytes: &[u8]`, and is
-        // therefore at least as-initialized as `Self`.
-        let c_ptr = unsafe { c_ptr.assume_as_initialized() };
+        // from `candidate`, which in turn derives from `bytes: &[u8]`.
+        let c_ptr = unsafe { c_ptr.assume_validity::<crate::pointer::invariant::Initialized>() };
 
         if !Self::is_bit_valid(c_ptr.forget_aligned()) {
             return None;
