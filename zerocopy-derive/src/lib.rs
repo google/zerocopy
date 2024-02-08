@@ -420,7 +420,7 @@ fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2:
                 (
                     ::zerocopy::pointer::invariant::Shared,
                     ::zerocopy::pointer::invariant::AnyAlignment,
-                    ::zerocopy::pointer::invariant::AsInitialized,
+                    ::zerocopy::pointer::invariant::Initialized,
                 ),
             >,
         ) -> ::zerocopy::macro_util::core_reexport::primitive::bool {
@@ -430,14 +430,14 @@ fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2:
             // - By definition, `*mut Self` and `*mut [u8; size_of::<Self>()]`
             //   are types of the same size.
             let discriminant = unsafe { candidate.cast_unsized(|p: *mut Self| p as *mut [core_reexport::primitive::u8; core_reexport::mem::size_of::<Self>()]) };
-            // SAFETY: Since `candidate` has the invariant `AsInitialized`, we
+            // SAFETY: Since `candidate` has the invariant `Initialized`, we
             // know that `candidate`'s referent (and thus `discriminant`'s
-            // referent) is as-initialized as `Self`. Since all of the allowed
-            // `repr`s are types for which all bytes are always initialized, we
-            // know that `discriminant`'s referent has all of its bytes
-            // initialized. Since `[u8; N]`'s validity invariant is just that
-            // all of its bytes are initialized, we know that `discriminant`'s
-            // referent is bit-valid.
+            // referent) are fully initialized. Since all of the allowed `repr`s
+            // are types for which all bytes are always initialized, we know
+            // that `discriminant`'s referent has all of its bytes initialized.
+            // Since `[u8; N]`'s validity invariant is just that all of its
+            // bytes are initialized, we know that `discriminant`'s referent is
+            // bit-valid.
             let discriminant = unsafe { discriminant.assume_valid() };
             let discriminant = discriminant.read_unaligned();
 

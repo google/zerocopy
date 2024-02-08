@@ -164,9 +164,10 @@ macro_rules! unsafe_impl {
             #[allow(clippy::as_conversions)]
             let $candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
 
-            // SAFETY: The caller has promised that `$repr` is as-initialized as
-            // `Self`.
-            let $candidate = unsafe { $candidate.assume_validity::<crate::pointer::invariant::AsInitialized>() };
+            // Restore the invariant that the referent bytes are initialized.
+            // SAFETY: The above cast does not uninitialize any referent bytes;
+            // they remain initialized.
+            let $candidate = unsafe { $candidate.assume_validity::<crate::pointer::invariant::Initialized>() };
 
             $is_bit_valid
         }

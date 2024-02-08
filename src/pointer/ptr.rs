@@ -319,6 +319,9 @@ pub mod invariant {
                 ///   discriminant, and so on recursively).
                 AsInitialized,
 
+                /// The byte ranges in the referent are fully initialized.
+                Initialized,
+
                 /// The referent is bit-valid for `T`.
                 Valid,
             }
@@ -553,20 +556,20 @@ mod _transitions {
             unsafe { Ptr::from_ptr(self) }
         }
 
-        /// A shorthand for `self.assume_validity<invariant::AsInitialized>()`.
+        /// A shorthand for `self.assume_validity<invariant::Initialized>()`.
         ///
         /// # Safety
         ///
         /// The caller promises to uphold the safety preconditions of
-        /// `self.assume_validity<invariant::AsInitialized>()`.
+        /// `self.assume_validity<invariant::Initialized>()`.
         #[doc(hidden)]
         #[inline]
-        pub unsafe fn assume_as_initialized(
+        pub unsafe fn assume_initialized(
             self,
-        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, invariant::AsInitialized)> {
+        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, invariant::Initialized)> {
             // SAFETY: The caller has promised to uphold the safety
             // preconditions.
-            unsafe { self.assume_validity::<invariant::AsInitialized>() }
+            unsafe { self.assume_validity::<invariant::Initialized>() }
         }
 
         /// A shorthand for `self.assume_validity<invariant::Valid>()`.
@@ -600,7 +603,7 @@ mod _transitions {
         #[inline]
         pub fn forget_valid(
             self,
-        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, invariant::AsInitialized)> {
+        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, invariant::Initialized)> {
             // SAFETY: `AnyValidity` is less restrictive than `Valid`.
             unsafe { Ptr::from_ptr(self) }
         }
@@ -864,8 +867,7 @@ mod _project {
     impl<'a, T, I> Ptr<'a, T, I>
     where
         T: 'a + ?Sized,
-        I: Invariants,
-        I::Validity: invariant::at_least::AsInitialized,
+        I: Invariants<Validity = invariant::Initialized>,
     {
         /// Projects a field from `self`.
         ///
@@ -888,7 +890,7 @@ mod _project {
         pub unsafe fn project<U: 'a + ?Sized>(
             self,
             projector: impl FnOnce(*mut T) -> *mut U,
-        ) -> Ptr<'a, U, (I::Aliasing, invariant::AnyAlignment, invariant::AsInitialized)> {
+        ) -> Ptr<'a, U, (I::Aliasing, invariant::AnyAlignment, invariant::Initialized)> {
             // SAFETY: `projector` is provided with `self` casted to a raw
             // pointer.
             let field = projector(self.as_non_null().as_ptr());
