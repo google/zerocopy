@@ -41,7 +41,7 @@ zerocopy-generic-bounds-in-const-fn = "1.61.0"
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.
 pinned-stable = "1.75.0"
-pinned-nightly = "nightly-2024-02-07"
+pinned-nightly = "nightly-2024-02-08"
 
 [package.metadata.docs.rs]
 all-features = true
