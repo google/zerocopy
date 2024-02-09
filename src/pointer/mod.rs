@@ -80,9 +80,14 @@ where
     where
         T: Unaligned,
     {
-        // SAFETY: The alignment of `T` is 1 and thus is always aligned
-        // because `T: Unaligned`.
-        let ptr = unsafe { self.assume_alignment::<invariant::Aligned>() };
-        ptr.as_ref()
+        self.bikeshed_recall_aligned().as_ref()
     }
+}
+
+/// Checks if the referent is zeroed.
+pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
+where
+    I: invariant::Invariants<Aliasing = invariant::Shared, Validity = invariant::Initialized>,
+{
+    ptr.as_bytes().as_ref().iter().all(|&byte| byte == 0)
 }
