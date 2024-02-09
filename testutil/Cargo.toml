@@ -9,7 +9,7 @@
 [package]
 name = "testutil"
 version = "0.0.0"
-edition = "2021"
+edition = "2018"
 
 [dependencies]
 cargo_metadata = "0.18.0"
