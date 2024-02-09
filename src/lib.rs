@@ -279,6 +279,7 @@ pub use zerocopy_derive::KnownLayout;
 #[doc(hidden)]
 pub use zerocopy_derive::NoCell;
 
+use crate::pointer::invariant;
 use core::{
     cell::{self, RefMut, UnsafeCell},
     cmp::Ordering,
@@ -1254,8 +1255,7 @@ pub unsafe trait TryFromBytes {
 
         // SAFETY: `candidate` has no uninitialized sub-ranges because it
         // derived from `bytes: &[u8]`.
-        let candidate =
-            unsafe { candidate.assume_validity::<crate::pointer::invariant::Initialized>() };
+        let candidate = unsafe { candidate.assume_validity::<invariant::Initialized>() };
 
         // This call may panic. If that happens, it doesn't cause any soundness
         // issues, as we have not generated any invalid state which we need to
@@ -1284,7 +1284,7 @@ pub unsafe trait TryFromBytes {
         let c_ptr = Ptr::from_maybe_uninit_ref(&candidate);
         // SAFETY: `c_ptr` has no uninitialized sub-ranges because it derived
         // from `candidate`, which in turn derives from `bytes: &[u8]`.
-        let c_ptr = unsafe { c_ptr.assume_validity::<crate::pointer::invariant::Initialized>() };
+        let c_ptr = unsafe { c_ptr.assume_validity::<invariant::Initialized>() };
 
         if !Self::is_bit_valid(c_ptr.forget_aligned()) {
             return None;
@@ -3531,6 +3531,42 @@ safety_comment! {
     /// https://github.com/rust-lang/rust/pull/115522) is available on stable,
     /// quote the stable docs instead of the nightly docs.
     unsafe_impl!(T: ?Sized + NoCell => NoCell for ManuallyDrop<T>);
+    unsafe_impl!(
+        T: ?Sized + TryFromBytes => TryFromBytes for ManuallyDrop<T>;
+        |candidate: Maybe<ManuallyDrop<T>>| {
+            // SAFETY:
+            // - Since `ManuallyDrop<T>` has the same layout as `T` [1], this
+            //   cast preserves size.
+            // - This is implemented as a raw pointer cast as required by
+            //   `cast_unsized`.
+            //
+            // [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
+            //
+            //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
+            //   validity as `T`.
+            #[allow(clippy::as_conversions)]
+            let c = unsafe { candidate.cast_unsized(|p: *mut ManuallyDrop<T>| p as *mut T) };
+
+            // SAFETY: Since the original `candidate` had the validity
+            // `Initialized`, and since `c` refers to the same bytes, `c` does
+            // too.
+            let c = unsafe { c.assume_validity::<invariant::Initialized>() };
+            // Confirm that `Maybe` is a type alias for `Ptr` with the validity
+            // invariant `Initialized`. Our safety proof depends upon this
+            // invariant, and it might change at some point. If that happens, we
+            // want this function to stop compiling.
+            let _: Ptr<'_, ManuallyDrop<T>, (invariant::Shared, invariant::AnyAlignment, invariant::Initialized)> = candidate;
+
+            // SAFETY: Since `ManuallyDrop<T>` has the same bit validity as `T`
+            // [1], it is bit-valid exactly if its bytes are a bit-valid `T`.
+            //
+            // [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
+            //
+            //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
+            //   validity as `T`.
+            T::is_bit_valid(c)
+        }
+    );
     unsafe_impl!(T: ?Sized + FromZeros => FromZeros for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>);
     unsafe_impl!(T: ?Sized + IntoBytes => IntoBytes for ManuallyDrop<T>);
@@ -5631,7 +5667,9 @@ mod tests {
     //
     // This is used to test the custom derives of our traits. The `[u8]` type
     // gets a hand-rolled impl, so it doesn't exercise our custom derives.
-    #[derive(Debug, Eq, PartialEq, FromZeros, FromBytes, IntoBytes, Unaligned, NoCell)]
+    #[derive(
+        Debug, Eq, PartialEq, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, NoCell,
+    )]
     #[repr(transparent)]
     struct Unsized([u8]);
 
@@ -7748,7 +7786,7 @@ mod tests {
             assert_eq!(too_many_bytes[0], 123);
         }
 
-        #[derive(Debug, Eq, PartialEq, FromZeros, FromBytes, IntoBytes, NoCell)]
+        #[derive(Debug, Eq, PartialEq, TryFromBytes, FromZeros, FromBytes, IntoBytes, NoCell)]
         #[repr(C)]
         struct Foo {
             a: u32,
@@ -7777,7 +7815,7 @@ mod tests {
 
     #[test]
     fn test_array() {
-        #[derive(FromZeros, FromBytes, IntoBytes, NoCell)]
+        #[derive(TryFromBytes, FromZeros, FromBytes, IntoBytes, NoCell)]
         #[repr(C)]
         struct Foo {
             a: [u16; 33],
@@ -7841,7 +7879,7 @@ mod tests {
 
     #[test]
     fn test_transparent_packed_generic_struct() {
-        #[derive(IntoBytes, FromZeros, FromBytes, Unaligned)]
+        #[derive(IntoBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
         #[repr(transparent)]
         struct Foo<T> {
             _t: T,
@@ -7851,7 +7889,7 @@ mod tests {
         assert_impl_all!(Foo<u32>: FromZeros, FromBytes, IntoBytes);
         assert_impl_all!(Foo<u8>: Unaligned);
 
-        #[derive(IntoBytes, FromZeros, FromBytes, Unaligned)]
+        #[derive(IntoBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
         #[repr(packed)]
         struct Bar<T, U> {
             _t: T,
@@ -7965,6 +8003,8 @@ mod tests {
             [bool]
                  => @success [true, false], [false, true],
                     @failure [2u8], [3u8], [0xFFu8], [0u8, 1u8, 2u8];
+            ManuallyDrop<[u8]>
+                => @success ManuallyDrop::new([]), ManuallyDrop::new([0u8]), ManuallyDrop::new([0u8, 1u8]);
             Option<Box<UnsafeCell<NotZerocopy>>>
                 => @success None,
                    @failure [0x1; mem::size_of::<Option<Box<UnsafeCell<NotZerocopy>>>>()];
@@ -8357,8 +8397,8 @@ mod tests {
         assert_impls!(PhantomData<UnsafeCell<()>>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
         assert_impls!(PhantomData<[u8]>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
 
-        assert_impls!(ManuallyDrop<u8>: KnownLayout, NoCell, FromZeros, FromBytes, IntoBytes, Unaligned, !TryFromBytes);
-        assert_impls!(ManuallyDrop<[u8]>: KnownLayout, NoCell, FromZeros, FromBytes, IntoBytes, Unaligned, !TryFromBytes);
+        assert_impls!(ManuallyDrop<u8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        assert_impls!(ManuallyDrop<[u8]>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
         assert_impls!(ManuallyDrop<NotZerocopy>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(ManuallyDrop<[NotZerocopy]>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(ManuallyDrop<UnsafeCell<()>>: KnownLayout, FromZeros, FromBytes, IntoBytes, Unaligned, !NoCell, !TryFromBytes);
@@ -8372,7 +8412,7 @@ mod tests {
         assert_impls!(Wrapping<NotZerocopy>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(Wrapping<UnsafeCell<()>>: KnownLayout, FromZeros, FromBytes, IntoBytes, Unaligned, !NoCell, !TryFromBytes);
 
-        assert_impls!(Unalign<u8>: KnownLayout, NoCell, FromZeros, FromBytes, IntoBytes, Unaligned, !TryFromBytes);
+        assert_impls!(Unalign<u8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, TryFromBytes);
         assert_impls!(Unalign<NotZerocopy>: Unaligned, !NoCell, !KnownLayout, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes);
 
         assert_impls!(
