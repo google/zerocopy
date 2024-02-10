@@ -20,7 +20,7 @@ authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Utilities for zero-copy parsing and serialization"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"
-rust-version = "1.57.0"
+rust-version = "1.56.0"
 
 exclude = [".*"]
 
@@ -30,13 +30,16 @@ exclude = [".*"]
 # as high as the specified version. In the emitted `--cfg`, dashes are replaced
 # by underscores.
 
+# From 1.61.0, Rust supports generic types with trait bounds in `const fn`.
+zerocopy-generic-bounds-in-const-fn = "1.61.0"
+
 # When the "simd" feature is enabled, include SIMD types from the
 # `core::arch::aarch64` module, which was stabilized in 1.59.0. On earlier Rust
 # versions, these types require the "simd-nightly" feature.
 zerocopy-aarch64-simd = "1.59.0"
 
-# From 1.61.0, Rust supports generic types with trait bounds in `const fn`.
-zerocopy-generic-bounds-in-const-fn = "1.61.0"
+# Permit panicking in `const fn`s.
+zerocopy-panic-in-const = "1.57.0"
 
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.

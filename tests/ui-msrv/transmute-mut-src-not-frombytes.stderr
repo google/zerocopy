@@ -2,10 +2,7 @@ error[E0277]: the trait bound `Src: FromBytes` is not satisfied
   --> tests/ui-msrv/transmute-mut-src-not-frombytes.rs:24:38
    |
 24 | const SRC_NOT_FROM_BYTES: &mut Dst = transmute_mut!(&mut Src);
-   |                                      ^^^^^^^^^^^^^^^^^^^^^^^^
-   |                                      |
-   |                                      the trait `FromBytes` is not implemented for `Src`
-   |                                      required by a bound introduced by this call
+   |                                      ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `Src`
    |
 note: required by `AssertSrcIsFromBytes`
   --> tests/ui-msrv/transmute-mut-src-not-frombytes.rs:24:38

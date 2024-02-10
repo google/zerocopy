@@ -364,13 +364,15 @@ pub struct DstLayout {
     size_info: SizeInfo,
 }
 
-#[cfg_attr(any(kani, test), derive(Copy, Clone, Debug, PartialEq, Eq))]
+#[cfg_attr(any(kani, test), derive(Debug, PartialEq, Eq))]
+#[derive(Copy, Clone)]
 enum SizeInfo<E = usize> {
     Sized { _size: usize },
     SliceDst(TrailingSliceLayout<E>),
 }
 
-#[cfg_attr(any(kani, test), derive(Copy, Clone, Debug, PartialEq, Eq))]
+#[cfg_attr(any(kani, test), derive(Debug, PartialEq, Eq))]
+#[derive(Copy, Clone)]
 struct TrailingSliceLayout<E = usize> {
     // The offset of the first byte of the trailing slice field. Note that this
     // is NOT the same as the minimum size of the type. For example, consider
@@ -420,7 +422,7 @@ impl DstLayout {
     /// The minimum possible alignment of a type.
     const MIN_ALIGN: NonZeroUsize = match NonZeroUsize::new(1) {
         Some(min_align) => min_align,
-        None => unreachable!(),
+        None => const_unreachable!(),
     };
 
     /// The maximum theoretic possible alignment of a type.
@@ -431,7 +433,7 @@ impl DstLayout {
     const THEORETICAL_MAX_ALIGN: NonZeroUsize =
         match NonZeroUsize::new(1 << (POINTER_WIDTH_BITS - 1)) {
             Some(max_align) => max_align,
-            None => unreachable!(),
+            None => const_unreachable!(),
         };
 
     /// The current, documented max alignment of a type \[1\].
@@ -443,7 +445,7 @@ impl DstLayout {
     #[cfg(not(kani))]
     const CURRENT_MAX_ALIGN: NonZeroUsize = match NonZeroUsize::new(1 << 28) {
         Some(max_align) => max_align,
-        None => unreachable!(),
+        None => const_unreachable!(),
     };
 
     /// Constructs a `DstLayout` for a zero-sized type with `repr_align`
@@ -465,7 +467,7 @@ impl DstLayout {
             None => Self::MIN_ALIGN,
         };
 
-        assert!(align.get().is_power_of_two());
+        const_assert!(align.get().is_power_of_two());
 
         DstLayout { align, size_info: SizeInfo::Sized { _size: 0 } }
     }
@@ -484,7 +486,7 @@ impl DstLayout {
         DstLayout {
             align: match NonZeroUsize::new(mem::align_of::<T>()) {
                 Some(align) => align,
-                None => unreachable!(),
+                None => const_unreachable!(),
             },
             size_info: SizeInfo::Sized { _size: mem::size_of::<T>() },
         }
@@ -507,7 +509,7 @@ impl DstLayout {
         DstLayout {
             align: match NonZeroUsize::new(mem::align_of::<T>()) {
                 Some(align) => align,
-                None => unreachable!(),
+                None => const_unreachable!(),
             },
             size_info: SizeInfo::SliceDst(TrailingSliceLayout {
                 _offset: 0,
@@ -553,17 +555,17 @@ impl DstLayout {
             None => Self::THEORETICAL_MAX_ALIGN,
         };
 
-        assert!(max_align.get().is_power_of_two());
+        const_assert!(max_align.get().is_power_of_two());
 
         // We use Kani to prove that this method is robust to future increases
         // in Rust's maximum allowed alignment. However, if such a change ever
         // actually occurs, we'd like to be notified via assertion failures.
         #[cfg(not(kani))]
         {
-            debug_assert!(self.align.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
-            debug_assert!(field.align.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
+            const_debug_assert!(self.align.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
+            const_debug_assert!(field.align.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
             if let Some(repr_packed) = repr_packed {
-                debug_assert!(repr_packed.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
+                const_debug_assert!(repr_packed.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
             }
         }
 
@@ -584,7 +586,7 @@ impl DstLayout {
         let size_info = match self.size_info {
             // If the layout is already a DST, we panic; DSTs cannot be extended
             // with additional fields.
-            SizeInfo::SliceDst(..) => panic!("Cannot extend a DST with additional fields."),
+            SizeInfo::SliceDst(..) => const_panic!("Cannot extend a DST with additional fields."),
 
             SizeInfo::Sized { _size: preceding_size } => {
                 // Compute the minimum amount of inter-field padding needed to
@@ -605,7 +607,7 @@ impl DstLayout {
                 // exceeding `isize::MAX`).
                 let offset = match preceding_size.checked_add(padding) {
                     Some(offset) => offset,
-                    None => panic!("Adding padding to `self`'s size overflows `usize`."),
+                    None => const_panic!("Adding padding to `self`'s size overflows `usize`."),
                 };
 
                 match field.size_info {
@@ -623,7 +625,7 @@ impl DstLayout {
                         // `usize::MAX`).
                         let size = match offset.checked_add(field_size) {
                             Some(size) => size,
-                            None => panic!("`field` cannot be appended without the total size overflowing `usize`"),
+                            None => const_panic!("`field` cannot be appended without the total size overflowing `usize`"),
                         };
                         SizeInfo::Sized { _size: size }
                     }
@@ -645,7 +647,7 @@ impl DstLayout {
                         // `usize::MAX`).
                         let offset = match offset.checked_add(trailing_offset) {
                             Some(offset) => offset,
-                            None => panic!("`field` cannot be appended without the total size overflowing `usize`"),
+                            None => const_panic!("`field` cannot be appended without the total size overflowing `usize`"),
                         };
                         SizeInfo::SliceDst(TrailingSliceLayout { _offset: offset, _elem_size })
                     }
@@ -692,7 +694,7 @@ impl DstLayout {
                 let padding = padding_needed_for(unpadded_size, self.align);
                 let size = match unpadded_size.checked_add(padding) {
                     Some(size) => size,
-                    None => panic!("Adding padding caused size to overflow `usize`."),
+                    None => const_panic!("Adding padding caused size to overflow `usize`."),
                 };
                 SizeInfo::Sized { _size: size }
             }
@@ -778,9 +780,9 @@ impl DstLayout {
         cast_type: _CastType,
     ) -> Option<(usize, usize)> {
         // `debug_assert!`, but with `#[allow(clippy::arithmetic_side_effects)]`.
-        macro_rules! __debug_assert {
+        macro_rules! __const_debug_assert {
             ($e:expr $(, $msg:expr)?) => {
-                debug_assert!({
+                const_debug_assert!({
                     #[allow(clippy::arithmetic_side_effects)]
                     let e = $e;
                     e
@@ -799,11 +801,14 @@ impl DstLayout {
         // https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html#let-else-statements
         let size_info = match self.size_info.try_to_nonzero_elem_size() {
             Some(size_info) => size_info,
-            None => panic!("attempted to cast to slice type with zero-sized element"),
+            None => const_panic!("attempted to cast to slice type with zero-sized element"),
         };
 
         // Precondition
-        __debug_assert!(addr.checked_add(bytes_len).is_some(), "`addr` + `bytes_len` > usize::MAX");
+        __const_debug_assert!(
+            addr.checked_add(bytes_len).is_some(),
+            "`addr` + `bytes_len` > usize::MAX"
+        );
 
         // Alignment checks go in their own block to avoid introducing variables
         // into the top-level scope.
@@ -899,7 +904,7 @@ impl DstLayout {
             }
         };
 
-        __debug_assert!(self_bytes <= bytes_len);
+        __const_debug_assert!(self_bytes <= bytes_len);
 
         let split_at = match cast_type {
             _CastType::_Prefix => self_bytes,
@@ -1828,7 +1833,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// // These bytes encode a `PacketHeader`.
-    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7].as_slice();
+    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7][..];
     ///
     /// let header = PacketHeader::ref_from(bytes).unwrap();
     ///
@@ -1870,7 +1875,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// // These are more bytes than are needed to encode a `PacketHeader`.
-    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].as_slice();
+    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
     /// let header = PacketHeader::ref_from_prefix(bytes).unwrap();
     ///
@@ -1909,7 +1914,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// // These are more bytes than are needed to encode a `PacketTrailer`.
-    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].as_slice();
+    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
     /// let trailer = PacketTrailer::ref_from_suffix(bytes).unwrap();
     ///
@@ -2082,7 +2087,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// // These bytes encode two `Pixel`s.
-    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7].as_slice();
+    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7][..];
     ///
     /// let pixels = Pixel::slice_from(bytes).unwrap();
     ///
@@ -2131,7 +2136,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// // These are more bytes than are needed to encode two `Pixel`s.
-    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].as_slice();
+    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
     /// let (pixels, rest) = Pixel::slice_from_prefix(bytes, 2).unwrap();
     ///
@@ -2182,7 +2187,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// // These are more bytes than are needed to encode two `Pixel`s.
-    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].as_slice();
+    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
     /// let (rest, pixels) = Pixel::slice_from_suffix(bytes, 2).unwrap();
     ///
@@ -2382,7 +2387,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// // These bytes encode a `PacketHeader`.
-    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7].as_slice();
+    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7][..];
     ///
     /// let header = PacketHeader::read_from(bytes).unwrap();
     ///
@@ -2421,7 +2426,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// // These are more bytes than are needed to encode a `PacketHeader`.
-    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].as_slice();
+    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
     /// let header = PacketHeader::read_from_prefix(bytes).unwrap();
     ///
@@ -2458,7 +2463,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// // These are more bytes than are needed to encode a `PacketTrailer`.
-    /// let bytes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].as_slice();
+    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
     /// let trailer = PacketTrailer::read_from_suffix(bytes).unwrap();
     ///
@@ -4014,7 +4019,7 @@ macro_rules! transmute_ref {
 
             // `t` is inferred to have type `T` because it's assigned to `e` (of
             // type `&T`) as `&t`.
-            let mut t = unreachable!();
+            let mut t = loop {};
             e = &t;
 
             // `u` is inferred to have type `U` because it's used as `&u` as the
@@ -4159,7 +4164,7 @@ macro_rules! transmute_mut {
 
             // `t` is inferred to have type `T` because it's assigned to `e` (of
             // type `&mut T`) as `&mut t`.
-            let mut t = unreachable!();
+            let mut t = loop {};
             e = &mut t;
 
             // `u` is inferred to have type `U` because it's used as `&mut u` as
@@ -5387,7 +5392,7 @@ impl<'a> sealed::ByteSliceSealed for cell::Ref<'a, [u8]> {}
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {
     const INTO_REF_INTO_MUT_ARE_SOUND: bool = if !cfg!(doc) {
-        panic!("Ref::into_ref and Ref::into_mut are unsound when used with core::cell::Ref; see https://github.com/google/zerocopy/issues/716")
+        const_panic!("Ref::into_ref and Ref::into_mut are unsound when used with core::cell::Ref; see https://github.com/google/zerocopy/issues/716")
     } else {
         // When compiling documentation, allow the evaluation of this constant
         // to succeed. This doesn't represent a soundness hole - it just delays
@@ -5407,7 +5412,7 @@ impl<'a> sealed::ByteSliceSealed for RefMut<'a, [u8]> {}
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
     const INTO_REF_INTO_MUT_ARE_SOUND: bool = if !cfg!(doc) {
-        panic!("Ref::into_ref and Ref::into_mut are unsound when used with core::cell::RefMut; see https://github.com/google/zerocopy/issues/716")
+        const_panic!("Ref::into_ref and Ref::into_mut are unsound when used with core::cell::RefMut; see https://github.com/google/zerocopy/issues/716")
     } else {
         // When compiling documentation, allow the evaluation of this constant
         // to succeed. This doesn't represent a soundness hole - it just delays
@@ -5875,7 +5880,7 @@ mod tests {
     // attempt to expose UB.
     #[test]
     #[cfg_attr(miri, ignore)]
-    fn testvalidate_cast_and_convert_metadata() {
+    fn test_validate_cast_and_convert_metadata() {
         impl From<usize> for SizeInfo {
             fn from(_size: usize) -> SizeInfo {
                 SizeInfo::Sized { _size }
@@ -5920,9 +5925,16 @@ mod tests {
         /// - If it is `Ok(pat)`, then the pattern `pat` is supplied to
         ///   `assert_matches!` to validate the computed result for each
         ///   combination of input values.
-        /// - If it is `Err(msg)`, then `test!` validates that the call to
-        ///   `validate_cast_and_convert_metadata` panics with the given panic
-        ///   message.
+        /// - If it is `Err(Some(msg) | None)`, then `test!` validates that the
+        ///   call to `validate_cast_and_convert_metadata` panics with the given
+        ///   panic message or, if the current Rust toolchain version is too
+        ///   early to support panicking in `const fn`s, panics with *some*
+        ///   message. In the latter case, the `const_panic!` macro is used,
+        ///   which emits code which causes a non-panicking error at const eval
+        ///   time, but which does panic when invoked at runtime. Thus, it is
+        ///   merely difficult to predict the *value* of this panic. We deem
+        ///   that testing against the real panic strings on stable and nightly
+        ///   toolchains is enough to ensure correctness.
         ///
         /// Note that the meta-variables that match these variables have the
         /// `tt` type, and some valid expressions are not valid `tt`s (such as
@@ -5954,7 +5966,9 @@ mod tests {
                     let actual = std::panic::catch_unwind(|| {
                         layout(size_info, align).validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
                     }).map_err(|d| {
-                        *d.downcast::<&'static str>().expect("expected string panic message").as_ref()
+                        let msg = d.downcast::<&'static str>().ok().map(|s| *s.as_ref());
+                        assert!(msg.is_some() || cfg!(not(zerocopy_panic_in_const)), "non-string panic messages are not permitted when `--cfg zerocopy_panic_in_const` is set");
+                        msg
                     });
                     std::panic::set_hook(previous_hook);
 
@@ -6030,18 +6044,18 @@ mod tests {
         }
 
         // casts with ZST trailing element types are unsupported
-        test!(layout((_, [0]), _).validate(_, _, _), Err(msgs::TRAILING),);
+        test!(layout((_, [0]), _).validate(_, _, _), Err(Some(msgs::TRAILING) | None),);
 
         // addr + bytes_len must not overflow usize
-        test!(layout(_, _).validate([usize::MAX], (1..100), _), Err(msgs::OVERFLOW));
-        test!(layout(_, _).validate((1..100), [usize::MAX], _), Err(msgs::OVERFLOW));
+        test!(layout(_, _).validate([usize::MAX], (1..100), _), Err(Some(msgs::OVERFLOW) | None));
+        test!(layout(_, _).validate((1..100), [usize::MAX], _), Err(Some(msgs::OVERFLOW) | None));
         test!(
             layout(_, _).validate(
                 [usize::MAX / 2 + 1, usize::MAX],
                 [usize::MAX / 2 + 1, usize::MAX],
                 _
             ),
-            Err(msgs::OVERFLOW)
+            Err(Some(msgs::OVERFLOW) | None)
         );
 
         // Validates that `validate_cast_and_convert_metadata` satisfies its own

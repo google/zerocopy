@@ -2,10 +2,7 @@ error[E0277]: the trait bound `Src: NoCell` is not satisfied
   --> tests/ui-msrv/transmute-ref-src-not-nocell.rs:22:32
    |
 22 | const SRC_NOT_NO_CELL: &AU16 = transmute_ref!(&Src(AU16(0)));
-   |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   |                                |
-   |                                expected an implementor of trait `NoCell`
-   |                                required by a bound introduced by this call
+   |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected an implementor of trait `NoCell`
    |
 note: required by `AssertSrcIsNoCell`
   --> tests/ui-msrv/transmute-ref-src-not-nocell.rs:22:32

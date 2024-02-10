@@ -2,10 +2,7 @@ error[E0277]: the trait bound `*const usize: AsBytes` is not satisfied
   --> tests/ui-msrv/transmute-ptr-to-usize.rs:20:30
    |
 20 | const POINTER_VALUE: usize = transmute!(&0usize as *const usize);
-   |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   |                              |
-   |                              the trait `AsBytes` is not implemented for `*const usize`
-   |                              required by a bound introduced by this call
+   |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `AsBytes` is not implemented for `*const usize`
    |
 note: required by `AssertIsIntoBytes`
   --> tests/ui-msrv/transmute-ptr-to-usize.rs:20:30

@@ -2,10 +2,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
   --> tests/ui-msrv/transmute-ref-src-unsized.rs:16:31
    |
 16 | const SRC_UNSIZED: &[u8; 1] = transmute_ref!(&[0u8][..]);
-   |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
-   |                               |
-   |                               doesn't have a size known at compile-time
-   |                               required by a bound introduced by this call
+   |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
    = help: the trait `Sized` is not implemented for `[u8]`
 note: required by `AssertSrcIsSized`
@@ -44,10 +41,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
   --> tests/ui-msrv/transmute-ref-src-unsized.rs:16:31
    |
 16 | const SRC_UNSIZED: &[u8; 1] = transmute_ref!(&[0u8][..]);
-   |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
-   |                               |
-   |                               doesn't have a size known at compile-time
-   |                               required by a bound introduced by this call
+   |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
    = help: the trait `Sized` is not implemented for `[u8]`
 note: required by a bound in `transmute`
@@ -136,10 +130,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
   --> tests/ui-msrv/transmute-ref-src-unsized.rs:16:31
    |
 16 | const SRC_UNSIZED: &[u8; 1] = transmute_ref!(&[0u8][..]);
-   |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
-   |                               |
-   |                               doesn't have a size known at compile-time
-   |                               required by a bound introduced by this call
+   |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
    = help: the trait `Sized` is not implemented for `[u8]`
 note: required by a bound in `AlignOf`
@@ -167,10 +158,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
   --> tests/ui-msrv/transmute-ref-src-unsized.rs:16:31
    |
 16 | const SRC_UNSIZED: &[u8; 1] = transmute_ref!(&[0u8][..]);
-   |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
-   |                               |
-   |                               doesn't have a size known at compile-time
-   |                               required by a bound introduced by this call
+   |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
    = help: the trait `Sized` is not implemented for `[u8]`
 note: required by a bound in `transmute_ref`
@@ -179,3 +167,13 @@ note: required by a bound in `transmute_ref`
    | pub const unsafe fn transmute_ref<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
    |                                                     ^^^ required by this bound in `transmute_ref`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
+  --> tests/ui-msrv/transmute-ref-src-unsized.rs:16:31
+   |
+16 | const SRC_UNSIZED: &[u8; 1] = transmute_ref!(&[0u8][..]);
+   |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
+   |
+   = help: the trait `Sized` is not implemented for `[u8]`
+   = note: all function arguments must have a statically known size
+   = note: this error originates in the macro `$crate::assert_size_eq` (in Nightly builds, run with -Z macro-backtrace for more info)

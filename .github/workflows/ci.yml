@@ -38,7 +38,7 @@ jobs:
       matrix:
         # See `INTERNAL.md` for an explanation of these pinned toolchain
         # versions.
-        toolchain: [ "msrv", "stable", "nightly", "zerocopy-aarch64-simd", "zerocopy-generic-bounds-in-const-fn" ]
+        toolchain: [ "msrv", "stable", "nightly",  "zerocopy-generic-bounds-in-const-fn", "zerocopy-aarch64-simd", "zerocopy-panic-in-const", ]
         target: [
           "i686-unknown-linux-gnu",
           "x86_64-unknown-linux-gnu",
@@ -59,10 +59,13 @@ jobs:
             features: "--all-features"
           - toolchain: "stable"
             features: "--all-features"
-          - toolchain: "zerocopy-aarch64-simd"
-            features: "--all-features"
           - toolchain: "zerocopy-generic-bounds-in-const-fn"
             features: "--all-features"
+          - toolchain: "zerocopy-aarch64-simd"
+            features: "--all-features"
+          - toolchain: "zerocopy-panic-in-const"
+            features: "--all-features"
+
           # Exclude any combination for the zerocopy-derive crate which
           # uses zerocopy features.
           - crate: "zerocopy-derive"
@@ -76,9 +79,11 @@ jobs:
           # exist to exercise zerocopy behavior which differs by toolchain;
           # zerocopy-derive doesn't behave different on these toolchains.
           - crate: "zerocopy-derive"
+            toolchain: "zerocopy-generic-bounds-in-const-fn"
+          - crate: "zerocopy-derive"
             toolchain: "zerocopy-aarch64-simd"
           - crate: "zerocopy-derive"
-            toolchain: "zerocopy-generic-bounds-in-const-fn"
+            toolchain: "zerocopy-panic-in-const"
 
     name: Build & Test (crate:${{ matrix.crate }}, toolchain:${{ matrix.toolchain }}, target:${{ matrix.target }}, features:${{ matrix.features }})
 
