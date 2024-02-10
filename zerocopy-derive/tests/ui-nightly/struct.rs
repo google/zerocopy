@@ -94,9 +94,15 @@ struct TryFromBytesCPackedN {
 // IntoBytes errors
 //
 
+// Since `IntoBytes1` has at least one generic parameter, an `IntoBytes` impl is
+// emitted in which each field type is given an `Unaligned` bound. Since `foo`'s
+// type doesn't implement `Unaligned`, this should fail.
 #[derive(IntoBytes)]
 #[repr(C)]
-struct IntoBytes1<T>(T);
+struct IntoBytes1<T> {
+    foo: AU16,
+    bar: T,
+}
 
 #[derive(IntoBytes)]
 #[repr(C)]
