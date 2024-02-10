@@ -1,45 +1,37 @@
-error: unsupported on generic structs that are not repr(transparent) or repr(packed)
-  --> tests/ui-nightly/struct.rs:55:10
-   |
-55 | #[derive(AsBytes)]
-   |          ^^^^^^^
-   |
-   = note: this error originates in the derive macro `AsBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
-
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-nightly/struct.rs:80:11
+  --> tests/ui-nightly/struct.rs:86:11
    |
-80 | #[repr(C, align(2))]
+86 | #[repr(C, align(2))]
    |           ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-nightly/struct.rs:84:21
+  --> tests/ui-nightly/struct.rs:90:21
    |
-84 | #[repr(transparent, align(2))]
+90 | #[repr(transparent, align(2))]
    |                     ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-nightly/struct.rs:90:16
+  --> tests/ui-nightly/struct.rs:96:16
    |
-90 | #[repr(packed, align(2))]
+96 | #[repr(packed, align(2))]
    |                ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-nightly/struct.rs:94:18
-   |
-94 | #[repr(align(1), align(2))]
-   |                  ^^^^^^^^
+   --> tests/ui-nightly/struct.rs:100:18
+    |
+100 | #[repr(align(1), align(2))]
+    |                  ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-nightly/struct.rs:98:8
-   |
-98 | #[repr(align(2), align(4))]
-   |        ^^^^^^^^
+   --> tests/ui-nightly/struct.rs:104:8
+    |
+104 | #[repr(align(2), align(4))]
+    |        ^^^^^^^^
 
 error[E0692]: transparent struct cannot have other repr hints
-  --> tests/ui-nightly/struct.rs:84:8
+  --> tests/ui-nightly/struct.rs:90:8
    |
-84 | #[repr(transparent, align(2))]
+90 | #[repr(transparent, align(2))]
    |        ^^^^^^^^^^^  ^^^^^^^^
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
@@ -114,10 +106,30 @@ error[E0277]: the trait bound `NotKnownLayout: KnownLayout` is not satisfied
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `HasPadding<AsBytes2, true>: ShouldBe<false>` is not satisfied
-  --> tests/ui-nightly/struct.rs:59:10
+error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
+  --> tests/ui-nightly/struct.rs:58:10
    |
-59 | #[derive(AsBytes)]
+58 | #[derive(AsBytes)]
+   |          ^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
+   |
+   = help: the following other types implement trait `Unaligned`:
+             bool
+             i8
+             u8
+             U16<O>
+             U32<O>
+             U64<O>
+             U128<O>
+             I16<O>
+           and $N others
+   = help: see issue #48214
+   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   = note: this error originates in the derive macro `AsBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `HasPadding<AsBytes2, true>: ShouldBe<false>` is not satisfied
+  --> tests/ui-nightly/struct.rs:65:10
+   |
+65 | #[derive(AsBytes)]
    |          ^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<AsBytes2, true>`
    |
    = help: the trait `ShouldBe<true>` is implemented for `HasPadding<AsBytes2, true>`
@@ -126,9 +138,9 @@ error[E0277]: the trait bound `HasPadding<AsBytes2, true>: ShouldBe<false>` is n
    = note: this error originates in the derive macro `AsBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `HasPadding<AsBytes3, true>: ShouldBe<false>` is not satisfied
-  --> tests/ui-nightly/struct.rs:66:10
+  --> tests/ui-nightly/struct.rs:72:10
    |
-66 | #[derive(AsBytes)]
+72 | #[derive(AsBytes)]
    |          ^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<AsBytes3, true>`
    |
    = help: the trait `ShouldBe<true>` is implemented for `HasPadding<AsBytes3, true>`
@@ -137,7 +149,7 @@ error[E0277]: the trait bound `HasPadding<AsBytes3, true>: ShouldBe<false>` is n
    = note: this error originates in the derive macro `AsBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0587]: type has conflicting packed and align representation hints
-  --> tests/ui-nightly/struct.rs:91:1
+  --> tests/ui-nightly/struct.rs:97:1
    |
-91 | struct Unaligned3;
+97 | struct Unaligned3;
    | ^^^^^^^^^^^^^^^^^

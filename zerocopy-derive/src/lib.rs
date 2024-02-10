@@ -194,9 +194,9 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
     match &ast.data {
         Data::Struct(strct) => {
             let require_trait_bound_on_field_types = if require_self_sized {
-                RequireBoundedFields::No
+                FieldBounds::None
             } else {
-                RequireBoundedFields::Trailing
+                FieldBounds::Trailing(&[Trait::KnownLayout])
             };
 
             // A bound on the trailing field is required, since structs are
@@ -216,28 +216,12 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
         Data::Enum(enm) => {
             // A bound on the trailing field is not required, since enums cannot
             // currently be unsized.
-            impl_block(
-                &ast,
-                enm,
-                Trait::KnownLayout,
-                RequireBoundedFields::No,
-                true,
-                None,
-                Some(extras),
-            )
+            impl_block(&ast, enm, Trait::KnownLayout, FieldBounds::None, true, None, Some(extras))
         }
         Data::Union(unn) => {
             // A bound on the trailing field is not required, since unions
             // cannot currently be unsized.
-            impl_block(
-                &ast,
-                unn,
-                Trait::KnownLayout,
-                RequireBoundedFields::No,
-                true,
-                None,
-                Some(extras),
-            )
+            impl_block(&ast, unn, Trait::KnownLayout, FieldBounds::None, true, None, Some(extras))
         }
     }
     .into()
@@ -298,7 +282,15 @@ const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[
 // - all fields are `FromZeroes`
 
 fn derive_from_zeroes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    impl_block(ast, strct, Trait::FromZeroes, RequireBoundedFields::Yes, false, None, None)
+    impl_block(
+        ast,
+        strct,
+        Trait::FromZeroes,
+        FieldBounds::All(&[Trait::FromZeroes]),
+        false,
+        None,
+        None,
+    )
 }
 
 // An enum is `FromZeroes` if:
@@ -332,21 +324,45 @@ fn derive_from_zeroes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::To
         .to_compile_error();
     }
 
-    impl_block(ast, enm, Trait::FromZeroes, RequireBoundedFields::Yes, false, None, None)
+    impl_block(
+        ast,
+        enm,
+        Trait::FromZeroes,
+        FieldBounds::All(&[Trait::FromZeroes]),
+        false,
+        None,
+        None,
+    )
 }
 
 // Like structs, unions are `FromZeroes` if
 // - all fields are `FromZeroes`
 
 fn derive_from_zeroes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    impl_block(ast, unn, Trait::FromZeroes, RequireBoundedFields::Yes, false, None, None)
+    impl_block(
+        ast,
+        unn,
+        Trait::FromZeroes,
+        FieldBounds::All(&[Trait::FromZeroes]),
+        false,
+        None,
+        None,
+    )
 }
 
 // A struct is `FromBytes` if:
 // - all fields are `FromBytes`
 
 fn derive_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    impl_block(ast, strct, Trait::FromBytes, RequireBoundedFields::Yes, false, None, None)
+    impl_block(
+        ast,
+        strct,
+        Trait::FromBytes,
+        FieldBounds::All(&[Trait::FromBytes]),
+        false,
+        None,
+        None,
+    )
 }
 
 // An enum is `FromBytes` if:
@@ -389,7 +405,7 @@ fn derive_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
         .to_compile_error();
     }
 
-    impl_block(ast, enm, Trait::FromBytes, RequireBoundedFields::Yes, false, None, None)
+    impl_block(ast, enm, Trait::FromBytes, FieldBounds::All(&[Trait::FromBytes]), false, None, None)
 }
 
 #[rustfmt::skip]
@@ -420,41 +436,57 @@ const ENUM_FROM_BYTES_CFG: Config<EnumRepr> = {
 // - all fields are `FromBytes`
 
 fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    impl_block(ast, unn, Trait::FromBytes, RequireBoundedFields::Yes, false, None, None)
+    impl_block(ast, unn, Trait::FromBytes, FieldBounds::All(&[Trait::FromBytes]), false, None, None)
 }
-
-// A struct is `AsBytes` if:
-// - all fields are `AsBytes`
-// - `repr(C)` or `repr(transparent)` and
-//   - no padding (size of struct equals sum of size of field types)
-// - `repr(packed)`
 
 fn derive_as_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
     let reprs = try_or_print!(STRUCT_UNION_AS_BYTES_CFG.validate_reprs(ast));
     let is_transparent = reprs.contains(&StructRepr::Transparent);
     let is_packed = reprs.contains(&StructRepr::Packed);
+    let num_fields = strct.field_types().len();
 
-    // TODO(#10): Support type parameters for non-transparent, non-packed
-    // structs.
-    if !ast.generics.params.is_empty() && !is_transparent && !is_packed {
-        return Error::new(
-            Span::call_site(),
-            "unsupported on generic structs that are not repr(transparent) or repr(packed)",
-        )
-        .to_compile_error();
-    }
+    let (padding_check, require_unaligned_fields) = if is_transparent || is_packed {
+        // No padding check needed.
+        // - repr(transparent): The layout and ABI of the whole struct is the
+        //   same as its only non-ZST field (meaning there's no padding outside
+        //   of that field) and we require that field to be `AsBytes` (meaning
+        //   there's no padding in that field).
+        // - repr(packed): Any inter-field padding bytes are removed, meaning
+        //   that any padding bytes would need to come from the fields, all of
+        //   which we require to be `AsBytes` (meaning they don't have any
+        //   padding).
+        (None, false)
+    } else if reprs.contains(&StructRepr::C) && num_fields <= 1 {
+        // No padding check needed. A repr(C) struct with zero or one field has
+        // no padding.
+        (None, false)
+    } else if ast.generics.params.is_empty() {
+        // Since there are no generics, we can emit a padding check. This is
+        // more permissive than the next case, which requires that all field
+        // types implement `Unaligned`.
+        (Some(PaddingCheck::Struct), false)
+    } else {
+        // Based on the allowed reprs, we know that this type must be repr(C) by
+        // the time we get here, but the soundness of this impl relies on it, so
+        // let's double-check.
+        assert!(reprs.contains(&StructRepr::C));
+        // We can't use a padding check since there are generic type arguments.
+        // Instead, we require all field types to implement `Unaligned`. This
+        // ensures that the `repr(C)` layout algorithm will not insert any
+        // padding.
+        //
+        // TODO(#10): Support type parameters for non-transparent, non-packed
+        // structs without requiring `Unaligned`.
+        (None, true)
+    };
 
-    // We don't need a padding check if the struct is repr(transparent) or
-    // repr(packed).
-    // - repr(transparent): The layout and ABI of the whole struct is the same
-    //   as its only non-ZST field (meaning there's no padding outside of that
-    //   field) and we require that field to be `AsBytes` (meaning there's no
-    //   padding in that field).
-    // - repr(packed): Any inter-field padding bytes are removed, meaning that
-    //   any padding bytes would need to come from the fields, all of which
-    //   we require to be `AsBytes` (meaning they don't have any padding).
-    let padding_check = if is_transparent || is_packed { None } else { Some(PaddingCheck::Struct) };
-    impl_block(ast, strct, Trait::AsBytes, RequireBoundedFields::Yes, false, padding_check, None)
+    let field_bounds = if require_unaligned_fields {
+        FieldBounds::All(&[Trait::AsBytes, Trait::Unaligned])
+    } else {
+        FieldBounds::All(&[Trait::AsBytes])
+    };
+
+    impl_block(ast, strct, Trait::AsBytes, field_bounds, false, padding_check, None)
 }
 
 const STRUCT_UNION_AS_BYTES_CFG: Config<StructRepr> = Config {
@@ -477,7 +509,7 @@ fn derive_as_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Token
     // We don't care what the repr is; we only care that it is one of the
     // allowed ones.
     let _: Vec<repr::EnumRepr> = try_or_print!(ENUM_AS_BYTES_CFG.validate_reprs(ast));
-    impl_block(ast, enm, Trait::AsBytes, RequireBoundedFields::No, false, None, None)
+    impl_block(ast, enm, Trait::AsBytes, FieldBounds::None, false, None, None)
 }
 
 #[rustfmt::skip]
@@ -523,7 +555,7 @@ fn derive_as_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::Tok
         ast,
         unn,
         Trait::AsBytes,
-        RequireBoundedFields::Yes,
+        FieldBounds::All(&[Trait::AsBytes]),
         false,
         Some(PaddingCheck::Union),
         None,
@@ -538,9 +570,13 @@ fn derive_as_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::Tok
 
 fn derive_unaligned_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
     let reprs = try_or_print!(STRUCT_UNION_UNALIGNED_CFG.validate_reprs(ast));
-    let require_trait_bounds_on_field_types = (!reprs.contains(&StructRepr::Packed)).into();
+    let field_bounds = if !reprs.contains(&StructRepr::Packed) {
+        FieldBounds::All(&[Trait::Unaligned])
+    } else {
+        FieldBounds::None
+    };
 
-    impl_block(ast, strct, Trait::Unaligned, require_trait_bounds_on_field_types, false, None, None)
+    impl_block(ast, strct, Trait::Unaligned, field_bounds, false, None, None)
 }
 
 const STRUCT_UNION_UNALIGNED_CFG: Config<StructRepr> = Config {
@@ -571,7 +607,7 @@ fn derive_unaligned_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Toke
     // for `require_trait_bound_on_field_types` doesn't really do anything. But
     // it's marginally more future-proof in case that restriction is lifted in
     // the future.
-    impl_block(ast, enm, Trait::Unaligned, RequireBoundedFields::Yes, false, None, None)
+    impl_block(ast, enm, Trait::Unaligned, FieldBounds::All(&[Trait::Unaligned]), false, None, None)
 }
 
 #[rustfmt::skip]
@@ -607,9 +643,13 @@ const ENUM_UNALIGNED_CFG: Config<EnumRepr> = {
 
 fn derive_unaligned_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
     let reprs = try_or_print!(STRUCT_UNION_UNALIGNED_CFG.validate_reprs(ast));
-    let require_trait_bound_on_field_types = (!reprs.contains(&StructRepr::Packed)).into();
+    let field_type_trait_bounds = if !reprs.contains(&StructRepr::Packed) {
+        FieldBounds::All(&[Trait::Unaligned])
+    } else {
+        FieldBounds::None
+    };
 
-    impl_block(ast, unn, Trait::Unaligned, require_trait_bound_on_field_types, false, None, None)
+    impl_block(ast, unn, Trait::Unaligned, field_type_trait_bounds, false, None, None)
 }
 
 // This enum describes what kind of padding check needs to be generated for the
@@ -650,26 +690,17 @@ impl Trait {
 }
 
 #[derive(Debug, Eq, PartialEq)]
-enum RequireBoundedFields {
-    No,
-    Yes,
-    Trailing,
-}
-
-impl From<bool> for RequireBoundedFields {
-    fn from(do_require: bool) -> Self {
-        match do_require {
-            true => Self::Yes,
-            false => Self::No,
-        }
-    }
+enum FieldBounds<'a> {
+    None,
+    All(&'a [Trait]),
+    Trailing(&'a [Trait]),
 }
 
 fn impl_block<D: DataExt>(
     input: &DeriveInput,
     data: &D,
     trt: Trait,
-    require_trait_bound_on_field_types: RequireBoundedFields,
+    field_type_trait_bounds: FieldBounds,
     require_self_sized: bool,
     padding_check: Option<PaddingCheck>,
     extras: Option<proc_macro2::TokenStream>,
@@ -736,11 +767,16 @@ fn impl_block<D: DataExt>(
     let trait_ident = trt.ident();
     let field_types = data.field_types();
 
-    let bound_tt = |ty| parse_quote!(#ty: ::zerocopy::#trait_ident);
-    let field_type_bounds: Vec<_> = match (require_trait_bound_on_field_types, &field_types[..]) {
-        (RequireBoundedFields::Yes, _) => field_types.iter().map(bound_tt).collect(),
-        (RequireBoundedFields::No, _) | (RequireBoundedFields::Trailing, []) => vec![],
-        (RequireBoundedFields::Trailing, [.., last]) => vec![bound_tt(last)],
+    let bound_tt = |ty, traits: &[Trait]| {
+        let traits = traits.iter().map(|t| t.ident());
+        parse_quote!(#ty: #(::zerocopy::#traits)+*)
+    };
+    let field_type_bounds: Vec<_> = match (field_type_trait_bounds, &field_types[..]) {
+        (FieldBounds::All(traits), _) => {
+            field_types.iter().map(|ty| bound_tt(ty, traits)).collect()
+        }
+        (FieldBounds::None, _) | (FieldBounds::Trailing(..), []) => vec![],
+        (FieldBounds::Trailing(traits), [.., last]) => vec![bound_tt(last, traits)],
     };
 
     // Don't bother emitting a padding check if there are no fields.

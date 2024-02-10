@@ -12,7 +12,10 @@ mod util;
 
 use std::{marker::PhantomData, mem::ManuallyDrop, option::IntoIter};
 
-use {static_assertions::assert_impl_all, zerocopy::AsBytes};
+use {
+    static_assertions::{assert_impl_all, assert_not_impl_any},
+    zerocopy::AsBytes,
+};
 
 use self::util::AU16;
 
@@ -136,6 +139,31 @@ struct PackedGeneric<T, U: ?Sized> {
 
 assert_impl_all!(PackedGeneric<u8, AU16>: AsBytes);
 assert_impl_all!(PackedGeneric<u8, [AU16]>: AsBytes);
+
+#[derive(AsBytes)]
+#[repr(C)]
+struct ReprCGenericOneField<T: ?Sized> {
+    t: T,
+}
+
+// Even though `ReprCGenericOneField` has generic type arguments, since it only
+// has one field, we don't require that its field types implement `Unaligned`.
+assert_impl_all!(ReprCGenericOneField<AU16>: AsBytes);
+assert_impl_all!(ReprCGenericOneField<[AU16]>: AsBytes);
+
+#[derive(AsBytes)]
+#[repr(C)]
+struct ReprCGenericMultipleFields<T, U: ?Sized> {
+    t: T,
+    u: U,
+}
+
+// Since `ReprCGenericMultipleFields` is generic and has more than one field,
+// all field types must implement `Unaligned`.
+assert_impl_all!(ReprCGenericMultipleFields<u8, [u8; 2]>: AsBytes);
+assert_impl_all!(ReprCGenericMultipleFields<u8, [[u8; 2]]>: AsBytes);
+assert_not_impl_any!(ReprCGenericMultipleFields<u8, AU16>: AsBytes);
+assert_not_impl_any!(ReprCGenericMultipleFields<u8, [AU16]>: AsBytes);
 
 #[derive(AsBytes)]
 #[repr(transparent)]

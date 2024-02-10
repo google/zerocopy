@@ -52,9 +52,15 @@ struct KL09(NotKnownLayout, NotKnownLayout);
 // AsBytes errors
 //
 
+// Since `AsBytes1` has at least one generic parameter, an `AsBytes` impl is
+// emitted in which each field type is given an `Unaligned` bound. Since `foo`'s
+// type doesn't implement `Unaligned`, this should fail.
 #[derive(AsBytes)]
 #[repr(C)]
-struct AsBytes1<T>(T);
+struct AsBytes1<T> {
+    foo: AU16,
+    bar: T,
+}
 
 #[derive(AsBytes)]
 #[repr(C)]
