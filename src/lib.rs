@@ -5198,7 +5198,6 @@ where
     T: FromBytes + PartialEq + NoCell,
 {
     #[inline]
-    #[allow(clippy::unconditional_recursion)] // Work around false positive: https://github.com/rust-lang/rust-clippy/issues/12154
     fn eq(&self, other: &Self) -> bool {
         self.deref().eq(other.deref())
     }
@@ -5210,7 +5209,6 @@ where
     T: FromBytes + PartialEq + NoCell,
 {
     #[inline]
-    #[allow(clippy::unconditional_recursion)] // Work around false positive: https://github.com/rust-lang/rust-clippy/issues/12154
     fn eq(&self, other: &Self) -> bool {
         self.deref().eq(other.deref())
     }
@@ -6207,6 +6205,8 @@ mod tests {
                     let slc_field_ptr = addr_of_slice_field(ptr).as_ptr();
                     // SAFETY: Both `slc_field_ptr` and `ptr` are pointers to
                     // the same valid Rust object.
+                    #[allow(clippy::incompatible_msrv)]
+                    // Work around https://github.com/rust-lang/rust-clippy/issues/12280
                     let offset: usize =
                         unsafe { slc_field_ptr.byte_offset_from(ptr.as_ptr()).try_into().unwrap() };
                     assert_eq!(offset, args.offset);

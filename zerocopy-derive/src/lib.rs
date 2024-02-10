@@ -940,6 +940,7 @@ fn impl_block<D: DataExt>(
 
     // Don't bother emitting a padding check if there are no fields.
     #[allow(unstable_name_collisions)] // See `BoolExt` below
+    #[allow(clippy::incompatible_msrv)] // Work around https://github.com/rust-lang/rust-clippy/issues/12280
     let padding_check_bound = padding_check.and_then(|check| (!fields.is_empty()).then_some(check)).map(|check| {
         let fields = fields.iter().map(|(_name, ty)| ty);
         let validator_macro = check.validator_macro_ident();
@@ -1009,7 +1010,12 @@ fn print_all_errors(errors: Vec<Error>) -> proc_macro2::TokenStream {
 
 // A polyfill for `Option::then_some`, which was added after our MSRV.
 //
+// The `#[allow(unused)]` is necessary because, on sufficiently recent toolchain
+// versions, `b.then_some(...)` resolves to the inherent method rather than to
+// this trait, and so this trait is considered unused.
+//
 // TODO(#67): Remove this once our MSRV is >= 1.62.
+#[allow(unused)]
 trait BoolExt {
     fn then_some<T>(self, t: T) -> Option<T>;
 }
