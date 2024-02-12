@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -eo pipefail
 ./ci/check_fmt.sh
 ./ci/check_job_dependencies.sh
