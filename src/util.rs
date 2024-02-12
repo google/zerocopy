@@ -170,7 +170,12 @@ pub(crate) mod polyfills {
     // A polyfill for `NonNull::slice_from_raw_parts` that we can use before our
     // MSRV is 1.70, when that function was stabilized.
     //
+    // The `#[allow(unused)]` is necessary because, on sufficiently recent
+    // toolchain versions, `ptr.slice_from_raw_parts()` resolves to the inherent
+    // method rather than to this trait, and so this trait is considered unused.
+    //
     // TODO(#67): Once our MSRV is 1.70, remove this.
+    #[allow(unused)]
     pub(crate) trait NonNullExt<T> {
         fn slice_from_raw_parts(data: Self, len: usize) -> NonNull<[T]>;
     }
