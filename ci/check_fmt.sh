@@ -2,7 +2,6 @@
 set -eo pipefail
 cargo fmt --check -p zerocopy
 cargo fmt --check -p zerocopy-derive
-shopt -s globstar
-rustfmt --check tests/**/*.rs
-rustfmt --check zerocopy-derive/tests/**/*.rs
+rustfmt --check $(find tests -iname '*.rs' -type f)
+rustfmt --check $(find zerocopy-derive/tests -iname '*.rs' -type f)
 
