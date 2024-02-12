@@ -429,7 +429,7 @@ jobs:
         run: go install github.com/mikefarah/yq/v4@latest
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Run dependency check
-        run: ./ci/check-job-dependencies.sh
+        run: ./ci/check_job_dependencies.sh
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
