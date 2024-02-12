@@ -1186,6 +1186,16 @@ pub unsafe trait NoCell {
 /// If you are negatively affected by lack of support for a particular type,
 /// we encourage you to let us know by [filing an issue][github-repo].
 ///
+/// # `TryFromBytes` is not symmetrical with [`IntoBytes`]
+///
+/// There are some types which implement both `TryFromBytes` and [`IntoBytes`],
+/// but for which `TryFromBytes` is not guaranteed to accept all byte sequences
+/// produced by `IntoBytes`. In other words, for some `T: TryFromBytes +
+/// IntoBytes`, there exist values of `t: T` such that
+/// `TryFromBytes::try_from_ref(t.as_bytes()) == None`. Code should not
+/// generally assume that values produced by `IntoBytes` will necessarily be
+/// accepted as valid by `TryFromBytes`.
+///
 /// # Safety
 ///
 /// On its own, `T: TryFromBytes` does not make any guarantees about the layout
