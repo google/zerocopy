@@ -1,45 +1,37 @@
-error: unsupported on generic structs that are not repr(transparent) or repr(packed)
-  --> tests/ui-nightly/struct.rs:97:10
-   |
-97 | #[derive(IntoBytes)]
-   |          ^^^^^^^^^
-   |
-   = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
-
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/struct.rs:122:11
+   --> tests/ui-nightly/struct.rs:128:11
     |
-122 | #[repr(C, align(2))]
+128 | #[repr(C, align(2))]
     |           ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/struct.rs:126:21
+   --> tests/ui-nightly/struct.rs:132:21
     |
-126 | #[repr(transparent, align(2))]
+132 | #[repr(transparent, align(2))]
     |                     ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/struct.rs:132:16
+   --> tests/ui-nightly/struct.rs:138:16
     |
-132 | #[repr(packed, align(2))]
+138 | #[repr(packed, align(2))]
     |                ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/struct.rs:136:18
+   --> tests/ui-nightly/struct.rs:142:18
     |
-136 | #[repr(align(1), align(2))]
+142 | #[repr(align(1), align(2))]
     |                  ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/struct.rs:140:8
+   --> tests/ui-nightly/struct.rs:146:8
     |
-140 | #[repr(align(2), align(4))]
+146 | #[repr(align(2), align(4))]
     |        ^^^^^^^^
 
 error[E0692]: transparent struct cannot have other repr hints
-   --> tests/ui-nightly/struct.rs:126:8
+   --> tests/ui-nightly/struct.rs:132:8
     |
-126 | #[repr(transparent, align(2))]
+132 | #[repr(transparent, align(2))]
     |        ^^^^^^^^^^^  ^^^^^^^^
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
@@ -203,10 +195,30 @@ note: `AU16` has a `#[repr(align)]` attribute
    | pub struct AU16(u16);
    | ^^^^^^^^^^^^^^^
 
-error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is not satisfied
-   --> tests/ui-nightly/struct.rs:101:10
+error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
+   --> tests/ui-nightly/struct.rs:100:10
     |
-101 | #[derive(IntoBytes)]
+100 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
+    |
+    = help: the following other types implement trait `Unaligned`:
+              bool
+              i8
+              u8
+              NonZero<i8>
+              NonZero<u8>
+              U16<O>
+              U32<O>
+              U64<O>
+            and $N others
+    = help: see issue #48214
+    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is not satisfied
+   --> tests/ui-nightly/struct.rs:107:10
+    |
+107 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes2, true>`
     |
     = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes2, true>`
@@ -215,9 +227,9 @@ error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `HasPadding<IntoBytes3, true>: ShouldBe<false>` is not satisfied
-   --> tests/ui-nightly/struct.rs:108:10
+   --> tests/ui-nightly/struct.rs:114:10
     |
-108 | #[derive(IntoBytes)]
+114 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes3, true>`
     |
     = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes3, true>`
@@ -226,7 +238,7 @@ error[E0277]: the trait bound `HasPadding<IntoBytes3, true>: ShouldBe<false>` is
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0587]: type has conflicting packed and align representation hints
-   --> tests/ui-nightly/struct.rs:133:1
+   --> tests/ui-nightly/struct.rs:139:1
     |
-133 | struct Unaligned3;
+139 | struct Unaligned3;
     | ^^^^^^^^^^^^^^^^^
