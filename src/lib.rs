@@ -2734,7 +2734,7 @@ pub unsafe trait IntoBytes {
 
     /// Gets the bytes of this value mutably.
     ///
-    /// `as_bytes_mut` provides access to the bytes of this value as a mutable
+    /// `as_mut_bytes` provides access to the bytes of this value as a mutable
     /// byte slice.
     ///
     /// # Examples
@@ -2760,7 +2760,7 @@ pub unsafe trait IntoBytes {
     ///     checksum: [6, 7],
     /// };
     ///
-    /// let bytes = header.as_bytes_mut();
+    /// let bytes = header.as_mut_bytes();
     ///
     /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 6, 7]);
     ///
@@ -2774,7 +2774,7 @@ pub unsafe trait IntoBytes {
     /// });
     /// ```
     #[inline(always)]
-    fn as_bytes_mut(&mut self) -> &mut [u8]
+    fn as_mut_bytes(&mut self) -> &mut [u8]
     where
         Self: FromBytes + NoCell,
     {
@@ -7749,7 +7749,7 @@ mod tests {
         ///
         /// `bytes` is the expected byte sequence returned from `t.as_bytes()`
         /// before `t` has been modified. `post_mutation` is the expected
-        /// sequence returned from `t.as_bytes()` after `t.as_bytes_mut()[0]`
+        /// sequence returned from `t.as_bytes()` after `t.as_mut_bytes()[0]`
         /// has had its bits flipped (by applying `^= 0xFF`).
         ///
         /// `N` is the size of `t` in bytes.
@@ -7764,9 +7764,9 @@ mod tests {
 
             // Test that changes to the underlying byte slices are reflected in
             // the original object.
-            t.as_bytes_mut()[0] ^= 0xFF;
+            t.as_mut_bytes()[0] ^= 0xFF;
             assert_eq!(t, post_mutation);
-            t.as_bytes_mut()[0] ^= 0xFF;
+            t.as_mut_bytes()[0] ^= 0xFF;
 
             // `write_to` rejects slices that are too small or too large.
             assert_eq!(t.write_to(&mut vec![0; N - 1][..]), None);
@@ -8073,7 +8073,7 @@ mod tests {
                     //
                     //   let r = <$ty as TryFromBytes>::try_from_ref(val.as_bytes()).unwrap();
                     //   assert_eq!(r, &val);
-                    //   let r = <$ty as TryFromBytes>::try_from_mut(val.as_bytes_mut()).unwrap();
+                    //   let r = <$ty as TryFromBytes>::try_from_mut(val.as_mut_bytes()).unwrap();
                     //   assert_eq!(r, &mut val);
                     //   let v = <$ty as TryFromBytes>::try_read_from(val.as_bytes()).unwrap();
                     //   assert_eq!(v, val);
