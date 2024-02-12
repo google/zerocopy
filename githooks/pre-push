@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -eo pipefail
+echo "Running pre-push git hook: $0"
 ./ci/check_fmt.sh
 ./ci/check_job_dependencies.sh
 ./ci/check_msrv.sh > /dev/null
