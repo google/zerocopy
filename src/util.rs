@@ -129,6 +129,7 @@ pub(crate) const fn round_down_to_next_multiple_of_alignment(
     align: NonZeroUsize,
 ) -> usize {
     let align = align.get();
+    #[cfg(zerocopy_panic_in_const)]
     debug_assert!(align.is_power_of_two());
 
     // Subtraction can't underflow because `align.get() >= 1`.
@@ -169,7 +170,12 @@ pub(crate) mod polyfills {
     // A polyfill for `NonNull::slice_from_raw_parts` that we can use before our
     // MSRV is 1.70, when that function was stabilized.
     //
+    // The `#[allow(unused)]` is necessary because, on sufficiently recent
+    // toolchain versions, `ptr.slice_from_raw_parts()` resolves to the inherent
+    // method rather than to this trait, and so this trait is considered unused.
+    //
     // TODO(#67): Once our MSRV is 1.70, remove this.
+    #[allow(unused)]
     pub(crate) trait NonNullExt<T> {
         fn slice_from_raw_parts(data: Self, len: usize) -> NonNull<[T]>;
     }
@@ -271,9 +277,16 @@ mod tests {
                 let align = NonZeroUsize::new(align).unwrap();
                 let want = alt_impl(n, align);
                 let got = round_down_to_next_multiple_of_alignment(n, align);
-                assert_eq!(got, want, "round_down_to_next_multiple_of_alignment({n}, {align})");
+                assert_eq!(got, want, "round_down_to_next_multiple_of_alignment({}, {})", n, align);
             }
         }
+    }
+
+    #[rustversion::since(1.57.0)]
+    #[test]
+    #[should_panic]
+    fn test_round_down_to_next_multiple_of_alignment_panic_in_const() {
+        round_down_to_next_multiple_of_alignment(0, NonZeroUsize::new(3).unwrap());
     }
 }
 
@@ -295,7 +308,7 @@ mod proofs {
 
         let expected = model_impl(n, align);
         let actual = round_down_to_next_multiple_of_alignment(n, align);
-        assert_eq!(expected, actual, "round_down_to_next_multiple_of_alignment({n}, {align})");
+        assert_eq!(expected, actual, "round_down_to_next_multiple_of_alignment({}, {})", n, align);
     }
 
     // Restricted to nightly since we use the unstable `usize::next_multiple_of`
@@ -319,7 +332,7 @@ mod proofs {
 
         let expected = model_impl(len, align);
         let actual = padding_needed_for(len, align);
-        assert_eq!(expected, actual, "padding_needed_for({len}, {align})");
+        assert_eq!(expected, actual, "padding_needed_for({}, {})", len, align);
 
         let padded_len = actual + len;
         assert_eq!(padded_len % align, 0);

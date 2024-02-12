@@ -15,5 +15,5 @@ fn ui() {
     let source_files_dirname = version.get_ui_source_files_dirname_and_maybe_print_warning();
 
     let t = trybuild::TestCases::new();
-    t.compile_fail(format!("tests/{source_files_dirname}/*.rs"));
+    t.compile_fail(format!("tests/{}/*.rs", source_files_dirname));
 }

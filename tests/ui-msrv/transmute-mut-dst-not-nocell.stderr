@@ -4,9 +4,9 @@ error[E0277]: the trait bound `Dst: NoCell` is not satisfied
 24 | const DST_NOT_NO_CELL: &mut Dst = transmute_mut!(&mut Src);
    |                                   ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `NoCell` is not implemented for `Dst`
    |
-note: required by a bound in `AssertDstIsNoCell`
+note: required by `AssertDstIsNoCell`
   --> tests/ui-msrv/transmute-mut-dst-not-nocell.rs:24:35
    |
 24 | const DST_NOT_NO_CELL: &mut Dst = transmute_mut!(&mut Src);
-   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertDstIsNoCell`
+   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^
    = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)

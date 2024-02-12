@@ -164,9 +164,10 @@ macro_rules! unsafe_impl {
             #[allow(clippy::as_conversions)]
             let $candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
 
-            // SAFETY: The caller has promised that `$repr` is as-initialized as
-            // `Self`.
-            let $candidate = unsafe { $candidate.assume_validity::<crate::pointer::invariant::AsInitialized>() };
+            // Restore the invariant that the referent bytes are initialized.
+            // SAFETY: The above cast does not uninitialize any referent bytes;
+            // they remain initialized.
+            let $candidate = unsafe { $candidate.assume_validity::<crate::pointer::invariant::Initialized>() };
 
             $is_bit_valid
         }
@@ -415,4 +416,92 @@ macro_rules! assert_unaligned {
     ($($ty:ty),*) => {
         $(assert_unaligned!($ty);)*
     };
+}
+
+/// Emits a function definition as either `const fn` or `fn` depending on
+/// whether the current toolchain version supports `const fn` with generic trait
+/// bounds.
+macro_rules! maybe_const_trait_bounded_fn {
+    // This case handles both `self` methods (where `self` is by value) and
+    // non-method functions. Each `$args` may optionally be followed by `:
+    // $arg_tys:ty`, which can be omitted for `self`.
+    ($(#[$attr:meta])* $vis:vis const fn $name:ident($($args:ident $(: $arg_tys:ty)?),* $(,)?) $(-> $ret_ty:ty)? $body:block) => {
+        #[cfg(zerocopy_generic_bounds_in_const_fn)]
+        $(#[$attr])* $vis const fn $name($($args $(: $arg_tys)?),*) $(-> $ret_ty)? $body
+
+        #[cfg(not(zerocopy_generic_bounds_in_const_fn))]
+        $(#[$attr])* $vis fn $name($($args $(: $arg_tys)?),*) $(-> $ret_ty)? $body
+    };
+}
+
+/// Either panic (if the current Rust toolchain supports panicking in `const
+/// fn`) or evaluate a constant that will cause an array indexing error whose
+/// error message will include the format string.
+///
+/// The type that this expression evaluates to must be `Copy`, or else the
+/// non-panicking desugaring will fail to compile.
+macro_rules! const_panic {
+    ($fmt:literal) => {{
+        #[cfg(zerocopy_panic_in_const)]
+        panic!($fmt);
+        #[cfg(not(zerocopy_panic_in_const))]
+        const_panic!(@non_panic $fmt)
+    }};
+    (@non_panic $fmt:expr) => {{
+        // This will type check to whatever type is expected based on the call
+        // site.
+        let panic: [_; 0] = [];
+        // This will always fail (since we're indexing into an array of size 0.
+        #[allow(unconditional_panic)]
+        panic[0]
+    }}
+}
+
+/// Either assert (if the current Rust toolchain supports panicking in `const
+/// fn`) or evaluate the expression and, if it evaluates to `false`, call
+/// `const_panic!`.
+macro_rules! const_assert {
+    ($e:expr) => {{
+        #[cfg(zerocopy_panic_in_const)]
+        assert!($e);
+        #[cfg(not(zerocopy_panic_in_const))]
+        {
+            let e = $e;
+            if !e {
+                let _: () = const_panic!(@non_panic concat!("assertion failed: ", stringify!($e)));
+            }
+        }
+    }}
+}
+
+/// Like `const_assert!`, but relative to `debug_assert!`.
+macro_rules! const_debug_assert {
+    ($e:expr $(, $msg:expr)?) => {{
+        #[cfg(zerocopy_panic_in_const)]
+        debug_assert!($e $(, $msg)?);
+        #[cfg(not(zerocopy_panic_in_const))]
+        {
+            // Use this (rather than `#[cfg(debug_assertions)]`) to ensure that
+            // `$e` is always compiled even if it will never be evaluated at
+            // runtime.
+            if cfg!(debug_assertions) {
+                let e = $e;
+                if !e {
+                    let _: () = const_panic!(@non_panic concat!("assertion failed: ", stringify!($e) $(, ": ", $msg)?));
+                }
+            }
+        }
+    }}
+}
+
+/// Either invoke `unreachable!()` or `loop {}` depending on whether the Rust
+/// toolchain supports panicking in `const fn`.
+macro_rules! const_unreachable {
+    () => {{
+        #[cfg(zerocopy_panic_in_const)]
+        unreachable!();
+
+        #[cfg(not(zerocopy_panic_in_const))]
+        loop {}
+    }};
 }

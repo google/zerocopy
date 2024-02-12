@@ -17,7 +17,7 @@ use crate::{TryFromBytes, Unaligned};
 /// A shorthand for a maybe-valid, maybe-aligned reference. Used as the argument
 /// to [`TryFromBytes::is_bit_valid`].
 pub type Maybe<'a, T, Alignment = invariant::AnyAlignment> =
-    Ptr<'a, T, (invariant::Shared, Alignment, invariant::AsInitialized)>;
+    Ptr<'a, T, (invariant::Shared, Alignment, invariant::Initialized)>;
 
 // These methods are defined on the type alias, `Maybe`, so as to bring them to
 // the forefront of the rendered rustdoc.
@@ -80,9 +80,14 @@ where
     where
         T: Unaligned,
     {
-        // SAFETY: The alignment of `T` is 1 and thus is always aligned
-        // because `T: Unaligned`.
-        let ptr = unsafe { self.assume_alignment::<invariant::Aligned>() };
-        ptr.as_ref()
+        self.bikeshed_recall_aligned().as_ref()
     }
+}
+
+/// Checks if the referent is zeroed.
+pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
+where
+    I: invariant::Invariants<Aliasing = invariant::Shared, Validity = invariant::Initialized>,
+{
+    ptr.as_bytes().as_ref().iter().all(|&byte| byte == 0)
 }

@@ -38,7 +38,7 @@ jobs:
       matrix:
         # See `INTERNAL.md` for an explanation of these pinned toolchain
         # versions.
-        toolchain: [ "msrv", "stable", "nightly" ]
+        toolchain: [ "msrv", "stable", "nightly",  "zerocopy-generic-bounds-in-const-fn", "zerocopy-aarch64-simd", "zerocopy-panic-in-const", ]
         target: [
           "i686-unknown-linux-gnu",
           "x86_64-unknown-linux-gnu",
@@ -59,6 +59,13 @@ jobs:
             features: "--all-features"
           - toolchain: "stable"
             features: "--all-features"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+            features: "--all-features"
+          - toolchain: "zerocopy-aarch64-simd"
+            features: "--all-features"
+          - toolchain: "zerocopy-panic-in-const"
+            features: "--all-features"
+
           # Exclude any combination for the zerocopy-derive crate which
           # uses zerocopy features.
           - crate: "zerocopy-derive"
@@ -67,6 +74,16 @@ jobs:
             features: "--features __internal_use_only_features_that_work_on_stable"
           - crate: "zerocopy-derive"
             features: "--all-features"
+          # Exclue any combination of zerocopy-derive and any toolchain version
+          # other than "msrv", "stable", and "nightly". These other versions
+          # exist to exercise zerocopy behavior which differs by toolchain;
+          # zerocopy-derive doesn't behave different on these toolchains.
+          - crate: "zerocopy-derive"
+            toolchain: "zerocopy-generic-bounds-in-const-fn"
+          - crate: "zerocopy-derive"
+            toolchain: "zerocopy-aarch64-simd"
+          - crate: "zerocopy-derive"
+            toolchain: "zerocopy-panic-in-const"
 
     name: Build & Test (crate:${{ matrix.crate }}, toolchain:${{ matrix.toolchain }}, target:${{ matrix.target }}, features:${{ matrix.features }})
 
@@ -80,10 +97,11 @@ jobs:
       run: |
         set -eo pipefail
 
-        # We use toolchain descriptors ("msrv", "stable", and "nightly") in the
-        # matrix. This step converts the current descriptor to a particular
-        # toolchain version by looking up the corresponding key in `Cargo.toml`. It
-        # sets the `ZC_TOOLCHAIN` environment variable for use in the next step
+        # We use toolchain descriptors ("msrv", "stable", "nightly", and values
+        # from the "metadata.build-rs" key in Cargo.toml) in the matrix. This
+        # step converts the current descriptor to a particular toolchain version
+        # by looking up the corresponding key in `Cargo.toml`. It sets the
+        # `ZC_TOOLCHAIN` environment variable for use in the next step
         # (toolchain installation) because GitHub variable interpolation doesn't
         # support running arbitrary commands. In other words, we can't rewrite:
         #
@@ -105,6 +123,17 @@ jobs:
         else
           echo "Using non-nightly toolchain; not modifying RUSTFLAGS='$RUSTFLAGS' or MIRIFLAGS='$MIRIFLAGS'" | tee -a $GITHUB_STEP_SUMMARY
         fi
+
+    # On our MSRV, `cargo` does not know about the `rust-version` field. As a
+    # result, in `cargo.sh`, if we use our MSRV toolchain in order to run `cargo
+    # metadata`, we will not be able to extract the `rust-version` field. Thus,
+    # in `cargo.sh`, we explicitly do `cargo +stable metadata`. This requires a
+    # (more recent) stable toolchain to be installed. As of this writing, this
+    # toolchain is not used for anything else.
+    - name: Install stable Rust for use in 'cargo.sh'
+      uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
+      with:
+        toolchain: stable
 
     - name: Install Rust with ${{ matrix.toolchain }} toolchain (${{ env.ZC_TOOLCHAIN }}) and target ${{ matrix.target }}
       uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
@@ -128,8 +157,8 @@ jobs:
       with:
         key: "${{ matrix.target }}"
 
-    - name: Check
-      run: ./cargo.sh +${{ matrix.toolchain }} check --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+    - name: Check tests
+      run: ./cargo.sh +${{ matrix.toolchain }} check --tests --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
 
     - name: Build
       run: ./cargo.sh +${{ matrix.toolchain }} build --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
@@ -192,10 +221,18 @@ jobs:
       #
       # Only run UI tests for zerocopy-derive, or for zerocopy with the derive
       # feature.
+      #
+      # Only run UI tests for the 'msrv', 'stable', and 'nightly' toolchains.
+      # Other toolchains are tested only because zerocopy has behavior which
+      # differs on those toolchains, but at present, none of that behavior
+      # affects UI tests. If we were to run UI tests on these toolchains, we
+      # would need a new set of UI test files per toolchain, which would be a
+      # maintenance burden not worth the (at present, zero) benefit.
       if: |
         (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) &&
           (matrix.crate == 'zerocopy-derive' ||
-            (matrix.features != '' && matrix.features != '--no-default-features'))
+            (matrix.features != '' && matrix.features != '--no-default-features')) &&
+          (matrix.toolchain == 'msrv' || matrix.toolchain == 'stable' || matrix.toolchain == 'nightly')
 
     - name: Run tests under Miri
       run: |
@@ -255,9 +292,16 @@ jobs:
         # Don't semver check zerocopy-derive; as a proc macro, it doesn't have
         # an API that cargo-semver-checks can understand.
         package: zerocopy
-        feature-group: all-features
+        # Don't test nightly features. The reason this doesn't work is that
+        # cargo-semver-checks works relative to the most recently-published
+        # stable release on crates.io. The pinned nightly toolchain may be
+        # incompatible with the unstable features on that published release, as
+        # nightly features may have changed since it was released. Luckily, we
+        # don't care about the API stability of these features anyway.
+        feature-group: only-explicit-features
+        features: __internal_use_only_features_that_work_on_stable
         rust-toolchain: ${{ env.ZC_TOOLCHAIN }}
-      if: matrix.crate == 'zerocopy' && matrix.features == '--all-features' && matrix.toolchain == 'nightly'
+      if: matrix.crate == 'zerocopy' && matrix.features == '--features __internal_use_only_features_that_work_on_stable' && matrix.toolchain == 'nightly'
 
   kani:
     runs-on: ubuntu-latest        
@@ -266,7 +310,17 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - uses: model-checking/kani-github-action@f838096619a707b0f6b2118cf435eaccfa33e51f # v1.1
         with:
-          args: "--package zerocopy --all-features --output-format=terse --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
+          # Use `--features __internal_use_only_features_that_work_on_stable`
+          # because the Kani GitHub Action uses its own pinned nightly
+          # toolchain. Sometimes, we make changes to our nightly features for
+          # more recent toolchains, and so our nightly features become
+          # incompatible with the toolchain that Kani uses. By only testing
+          # stable features, we ensure that this doesn't cause problems in CI.
+          #
+          # TODO(https://github.com/model-checking/kani-github-action/issues/56):
+          # Go back to testing all features once the Kani GitHub Action supports
+          # specifying a particular toolchain.
+          args: "--package zerocopy --features __internal_use_only_features_that_work_on_stable --output-format=terse --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
 
   check_fmt:
     runs-on: ubuntu-latest
@@ -450,7 +504,32 @@ jobs:
           cargo install cargo-readme --version 3.2.0 &> /dev/null || true
           cargo install --locked kani-verifier       &> /dev/null || true
           cargo kani setup                           &> /dev/null || true
-        
+          
+  check-all-toolchains-tested:
+    runs-on: ubuntu-latest
+    name: Check that all toolchains listed in Cargo.toml are tested in CI
+    steps:
+      - name: Install yq (for YAML parsing)
+        run: go install github.com/mikefarah/yq/v4@latest
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Run check
+        run: |
+          set -eo pipefail
+
+          # Check whether the set of toolchains tested in this file (other than
+          # 'msrv', 'stable', and 'nightly') is equal to the set of toolchains
+          # listed in the 'package.metadata.build-rs' section of Cargo.toml.
+          #
+          # If the inputs to `diff` are not identical, `diff` exits with a
+          # non-zero error code, which causes this script to fail (thanks to
+          # `set -e`).
+          diff \
+            <(cat .github/workflows/ci.yml | yq '.jobs.build_test.strategy.matrix.toolchain | .[]' | \
+              sort -u | grep -v '^\(msrv\|stable\|nightly\)$') \
+            <(cargo metadata --format-version 1 | \
+              jq -r ".packages[] | select(.name == \"zerocopy\").metadata.\"build-rs\" | keys | .[]" | \
+              sort -u)
+              
   check-job-dependencies:
     runs-on: ubuntu-latest
     name: Check all-jobs-succeeded depends on all jobs
@@ -495,7 +574,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_versions, generate_cache,check-job-dependencies]
+      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_versions, generate_cache, check-all-toolchains-tested, check-job-dependencies]
       steps:
         - name: Mark the job as failed
           run: exit 1

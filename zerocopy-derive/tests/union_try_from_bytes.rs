@@ -75,7 +75,7 @@ fn two_bad() {
     let candidate = unsafe { candidate.cast_unsized(|p| p as *mut Two) };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
-    let candidate = unsafe { candidate.assume_as_initialized() };
+    let candidate = unsafe { candidate.assume_initialized() };
 
     let is_bit_valid = Two::is_bit_valid(candidate);
     assert!(!is_bit_valid);
@@ -101,8 +101,8 @@ fn bool_and_zst() {
     //   the size of the object referenced by `self`.
     let candidate = unsafe { candidate.cast_unsized(|p| p as *mut BoolAndZst) };
 
-    // SAFETY: `candidate`'s referent is as-initialized as `BoolAndZst`.
-    let candidate = unsafe { candidate.assume_as_initialized() };
+    // SAFETY: `candidate`'s referent is fully initialized.
+    let candidate = unsafe { candidate.assume_initialized() };
 
     let is_bit_valid = BoolAndZst::is_bit_valid(candidate);
     assert!(is_bit_valid);
@@ -130,7 +130,7 @@ assert_impl_all!(TypeParams<'static, [AU16; 2], IntoIter<()>>: TryFromBytes);
 
 #[derive(TryFromBytes, FromZeros, FromBytes)]
 #[repr(C)]
-union WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + TryFromBytes>
+union WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + TryFromBytes, const N: usize>
 where
     'a: 'b,
     'b: 'a,
@@ -140,4 +140,4 @@ where
     b: T,
 }
 
-assert_impl_all!(WithParams<'static, 'static, 42, u8>: TryFromBytes);
+assert_impl_all!(WithParams<'static, 'static, u8, 42>: TryFromBytes);
