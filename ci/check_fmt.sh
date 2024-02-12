@@ -1,3 +1,9 @@
 #!/usr/bin/env bash
 set -eo pipefail
-rustfmt --check $(find . -iname '*.rs' -type f -not -path './target/*')
+files=$(find . -iname '*.rs' -type f -not -path './target/*')
+# check that find succeeded
+if [[ -z $files ]]
+then
+	exit 1
+fi
+rustfmt --check $files
