@@ -2,6 +2,6 @@
 set -eo pipefail
 ./ci/check_fmt.sh
 ./ci/check_job_dependencies.sh
-./ci/check_msrv.sh
+./ci/check_msrv.sh > /dev/null
 ./ci/check_readme.sh
-./ci/check_versions.sh
+./ci/check_versions.sh > /dev/null
