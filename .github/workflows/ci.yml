@@ -504,7 +504,6 @@ jobs:
           cargo install cargo-readme --version 3.2.0 &> /dev/null || true
           cargo install --locked kani-verifier       &> /dev/null || true
           cargo kani setup                           &> /dev/null || true
-          
   check-all-toolchains-tested:
     runs-on: ubuntu-latest
     name: Check that all toolchains listed in Cargo.toml are tested in CI
