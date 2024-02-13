@@ -473,7 +473,6 @@ jobs:
           assert-match "$zerocopy_derive_dep_ver" "$zerocopy_derive_targeted_ver" \
             "Same crate version ($zerocopy_derive_dep_ver) found for optional and targeted zerocopy-derive dependency." \
             "Different crate versions found for optional ($zerocopy_derive_dep_ver) and targeted ($zerocopy_derive_targeted_ver) dependency."
-  
   generate_cache:
     runs-on: ubuntu-latest
     name: Generate cache
