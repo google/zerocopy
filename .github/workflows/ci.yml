@@ -254,9 +254,8 @@ jobs:
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
       #
-      # TODO(#22): Re-enable testing on riscv64gc-unknown-linux-gnu and/or
-      # wasm32-wasi once those work.
-      if: matrix.toolchain == 'nightly' && matrix.target != 'riscv64gc-unknown-linux-gnu' && matrix.target != 'wasm32-wasi'
+      # TODO(#22): Re-enable testing on riscv64gc-unknown-linux-gnu once it works.
+      if: matrix.toolchain == 'nightly' && matrix.target != 'riscv64gc-unknown-linux-gnu'
 
     - name: Clippy check
       run: ./cargo.sh +${{ matrix.toolchain }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --tests --verbose
