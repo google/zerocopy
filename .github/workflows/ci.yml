@@ -528,7 +528,6 @@ jobs:
             <(cargo metadata --format-version 1 | \
               jq -r ".packages[] | select(.name == \"zerocopy\").metadata.\"build-rs\" | keys | .[]" | \
               sort -u)
-              
   check-job-dependencies:
     runs-on: ubuntu-latest
     name: Check all-jobs-succeeded depends on all jobs
