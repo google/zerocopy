@@ -196,13 +196,13 @@ Commit messages should never contain references to any of:
 
 ### Git hooks
 
-There is a pre-push git hook available at ./githooks/pre-push .  This hook runs
+There is a pre-push git hook available at `./githooks/pre-push`. This hook runs
 some quick checks locally before pushing so that these same checks won't later
-fail during CI.  The intention is to minimise needing to fix trivial breakages
+fail during CI. The intention is to minimise needing to fix trivial breakages
 after having already just pushed (which can be annoying).
 
-Git won't use this hook automatically.  If you would like to use it, set
-repository config `core.hooksPath` to `githooks`.  This can be done by running
+Git won't use this hook automatically. If you would like to use it, set
+repository config `core.hooksPath` to `githooks`. This can be done by running
 (at repository root):
 
 ```sh
