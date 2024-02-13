@@ -1170,7 +1170,7 @@ mod tests {
             for _ in 0..RAND_ITERS {
                 let native = T::Native::rand(&mut r);
                 let mut bytes = T::ByteArray::default();
-                bytes.as_bytes_mut().copy_from_slice(native.as_bytes());
+                bytes.as_mut_bytes().copy_from_slice(native.as_bytes());
                 if invert {
                     bytes = bytes.invert();
                 }
