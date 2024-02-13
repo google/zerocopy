@@ -34,7 +34,7 @@ function assert-match {
   VER_B="$2"
   SUCCESS_MSG="$3"
   FAILURE_MSG="$4"
-  if [[ "$ver_zerocopy" == "$ver_zerocopy_derive" ]]; then
+  if [[ "$VER_A" == "$VER_B" ]]; then
     echo "$SUCCESS_MSG" | tee -a $GITHUB_STEP_SUMMARY
   else
     echo "$FAILURE_MSG" | tee -a $GITHUB_STEP_SUMMARY >&2
