@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eo pipefail
 echo "Running pre-push git hook: $0"
-./ci/check_fmt.sh > /dev/null
+./ci/check_fmt.sh
 ./ci/check_job_dependencies.sh > /dev/null
 ./ci/check_msrv.sh > /dev/null
 ./ci/check_readme.sh > /dev/null
