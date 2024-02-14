@@ -259,6 +259,32 @@ macro_rules! align_of {
     }};
 }
 
+mod size_to_tag {
+    pub trait SizeToTag<const SIZE: usize> {
+        type Tag;
+    }
+
+    impl SizeToTag<1> for () {
+        type Tag = u8;
+    }
+    impl SizeToTag<2> for () {
+        type Tag = u16;
+    }
+    impl SizeToTag<4> for () {
+        type Tag = u32;
+    }
+    impl SizeToTag<8> for () {
+        type Tag = u64;
+    }
+    impl SizeToTag<16> for () {
+        type Tag = u128;
+    }
+}
+
+/// An alias for the unsigned integer of the given size in bytes.
+#[doc(hidden)]
+pub type SizeToTag<const SIZE: usize> = <() as size_to_tag::SizeToTag<SIZE>>::Tag;
+
 /// Does the struct type `$t` have padding?
 ///
 /// `$ts` is the list of the type of every field in `$t`. `$t` must be a
@@ -274,7 +300,7 @@ macro_rules! align_of {
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
 macro_rules! struct_has_padding {
-    ($t:ty, $($ts:ty),*) => {
+    ($t:ty, [$($ts:ty),*]) => {
         ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$t>() > 0 $(+ ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$ts>())*
     };
 }
@@ -294,9 +320,39 @@ macro_rules! struct_has_padding {
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
 macro_rules! union_has_padding {
-    ($t:ty, $($ts:ty),*) => {
+    ($t:ty, [$($ts:ty),*]) => {
         false $(|| ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$t>() != ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$ts>())*
     };
+}
+
+/// Does the enum type `$t` have padding?
+///
+/// `$disc` is the type of the enum tag, and `$ts` is a list of fields in each
+/// square-bracket-delimited variant. `$t` must be an enum, or else
+/// `enum_has_padding!`'s result may be meaningless. An enum has padding if any
+/// of its variant structs [1][2] contain padding, and so all of the variants of
+/// an enum must be "full" in order for the enum to not have padding.
+///
+/// The results of `enum_has_padding!` require that the enum is not
+/// `repr(Rust)`, as `repr(Rust)` enums may niche the enum's tag and reduce the
+/// total number of bytes required to represent the enum as a result. As long as
+/// the enum is `repr(C)`, `repr(int)`, or `repr(C, int)`, this will
+/// consistently return whether the enum contains any padding bytes.
+///
+/// [1]: https://doc.rust-lang.org/1.81.0/reference/type-layout.html#reprc-enums-with-fields
+/// [2]: https://doc.rust-lang.org/1.81.0/reference/type-layout.html#primitive-representation-of-enums-with-fields
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! enum_has_padding {
+    ($t:ty, $disc:ty, $([$($ts:ty),*]),*) => {
+        false $(
+            || ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$t>()
+                != (
+                    ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$disc>()
+                    $(+ ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$ts>())*
+                )
+        )*
+    }
 }
 
 /// Does `t` have alignment greater than or equal to `u`?  If not, this macro
@@ -811,6 +867,36 @@ mod tests {
     }
 
     #[test]
+    fn test_enum_casts() {
+        // Test that casting the variants of enums with signed integer reprs to
+        // unsigned integers obeys expected signed -> unsigned casting rules.
+
+        #[repr(i8)]
+        enum ReprI8 {
+            MinusOne = -1,
+            Zero = 0,
+            Min = i8::MIN,
+            Max = i8::MAX,
+        }
+
+        #[allow(clippy::as_conversions)]
+        let x = ReprI8::MinusOne as u8;
+        assert_eq!(x, u8::MAX);
+
+        #[allow(clippy::as_conversions)]
+        let x = ReprI8::Zero as u8;
+        assert_eq!(x, 0);
+
+        #[allow(clippy::as_conversions)]
+        let x = ReprI8::Min as u8;
+        assert_eq!(x, 128);
+
+        #[allow(clippy::as_conversions)]
+        let x = ReprI8::Max as u8;
+        assert_eq!(x, 127);
+    }
+
+    #[test]
     fn test_struct_has_padding() {
         // Test that, for each provided repr, `struct_has_padding!` reports the
         // expected value.
@@ -818,7 +904,7 @@ mod tests {
             (#[$cfg:meta] ($($ts:ty),*) => $expect:expr) => {{
                 #[$cfg]
                 struct Test($(#[allow(dead_code)] $ts),*);
-                assert_eq!(struct_has_padding!(Test, $($ts),*), $expect);
+                assert_eq!(struct_has_padding!(Test, [$($ts),*]), $expect);
             }};
             (#[$cfg:meta] $(#[$cfgs:meta])* ($($ts:ty),*) => $expect:expr) => {
                 test!(#[$cfg] ($($ts),*) => $expect);
@@ -849,7 +935,7 @@ mod tests {
                 #[$cfg]
                 #[allow(unused)] // fields are never read
                 union Test{ $($fs: $ts),* }
-                assert_eq!(union_has_padding!(Test, $($ts),*), $expect);
+                assert_eq!(union_has_padding!(Test, [$($ts),*]), $expect);
             }};
             (#[$cfg:meta] $(#[$cfgs:meta])* {$($fs:ident: $ts:ty),*} => $expect:expr) => {
                 test!(#[$cfg] {$($fs: $ts),*} => $expect);
@@ -866,5 +952,79 @@ mod tests {
         // targets, and this isn't a particularly complex macro we're testing
         // anyway.
         test!(#[repr(C)] #[repr(packed)] {a: u8, b: u64} => true);
+    }
+
+    #[test]
+    fn test_enum_has_padding() {
+        // Test that, for each provided repr, `enum_has_padding!` reports the
+        // expected value.
+        macro_rules! test {
+            (#[repr($disc:ident $(, $c:ident)?)] { $($vs:ident ($($ts:ty),*),)* } => $expect:expr) => {
+                test!(@case #[repr($disc $(, $c)?)] { $($vs ($($ts),*),)* } => $expect);
+            };
+            (#[repr($disc:ident $(, $c:ident)?)] #[$cfg:meta] $(#[$cfgs:meta])* { $($vs:ident ($($ts:ty),*),)* } => $expect:expr) => {
+                test!(@case #[repr($disc $(, $c)?)] #[$cfg] { $($vs ($($ts),*),)* } => $expect);
+                test!(#[repr($disc $(, $c)?)] $(#[$cfgs])* { $($vs ($($ts),*),)* } => $expect);
+            };
+            (@case #[repr($disc:ident $(, $c:ident)?)] $(#[$cfg:meta])? { $($vs:ident ($($ts:ty),*),)* } => $expect:expr) => {{
+                #[repr($disc $(, $c)?)]
+                $(#[$cfg])?
+                #[allow(unused)] // variants and fields are never used
+                enum Test {
+                    $($vs ($($ts),*),)*
+                }
+                assert_eq!(
+                    enum_has_padding!(Test, $disc, $([$($ts),*]),*),
+                    $expect
+                );
+            }};
+        }
+
+        #[allow(unused)]
+        #[repr(align(2))]
+        struct U16(u16);
+
+        #[allow(unused)]
+        #[repr(align(4))]
+        struct U32(u32);
+
+        test!(#[repr(u8)] #[repr(C)] {
+            A(u8),
+        } => false);
+        test!(#[repr(u16)] #[repr(C)] {
+            A(u8, u8),
+            B(U16),
+        } => false);
+        test!(#[repr(u32)] #[repr(C)] {
+            A(u8, u8, u8, u8),
+            B(U16, u8, u8),
+            C(u8, u8, U16),
+            D(U16, U16),
+            E(U32),
+        } => false);
+
+        // `repr(int)` can pack the discriminant more efficiently
+        test!(#[repr(u8)] {
+            A(u8, U16),
+        } => false);
+        test!(#[repr(u8)] {
+            A(u8, U16, U32),
+        } => false);
+
+        // `repr(C)` cannot
+        test!(#[repr(u8, C)] {
+            A(u8, U16),
+        } => true);
+        test!(#[repr(u8, C)] {
+            A(u8, u8, u8, U32),
+        } => true);
+
+        // And field ordering can always cause problems
+        test!(#[repr(u8)] #[repr(C)] {
+            A(U16, u8),
+        } => true);
+        test!(#[repr(u8)] #[repr(C)] {
+            A(U32, u8, u8, u8),
+        } => true);
     }
 }
