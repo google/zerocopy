@@ -328,13 +328,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Check Rust formatting
-        run: |
-          set -eo pipefail
-          cargo fmt --check -p zerocopy
-          cargo fmt --check -p zerocopy-derive
-          shopt -s globstar
-          rustfmt --check tests/**/*.rs
-          rustfmt --check zerocopy-derive/tests/**/*.rs
+        run: ./ci/check_fmt.sh
 
   check_readme:
     needs: generate_cache
@@ -347,16 +341,7 @@ jobs:
         uses: ./.github/actions/cache
       
       - name: Check README.md
-        run: |
-          set -eo pipefail
-
-          # Install again in case the installation failed during the
-          # `generate_cache` step. We treat that step as best-effort and
-          # suppress all errors from it.
-          cargo install cargo-readme --version 3.2.0
-
-          diff <(./generate-readme.sh) README.md
-          exit $?
+        run: ./ci/check_readme.sh
 
   check_msrv:
     needs: generate_cache
@@ -378,25 +363,7 @@ jobs:
       #   that compiling zerocopy with the `derive` feature enabled would fail
       #   on its own published MSRV)
       - name: Check MSRVs match
-        run: |
-          set -eo pipefail
-
-          # Usage: msrv <crate-name>
-          function msrv {
-            cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").rust_version"
-          }
-
-          ver_zerocopy=$(msrv zerocopy)
-          ver_zerocopy_derive=$(msrv zerocopy-derive)
-
-          if [[ "$ver_zerocopy" == "$ver_zerocopy_derive" ]]; then
-            echo "Same MSRV ($ver_zerocopy) found for zerocopy and zerocopy-derive." | tee -a $GITHUB_STEP_SUMMARY
-            exit 0
-          else
-            echo "Different MSRVs found for zerocopy ($ver_zerocopy) and zerocopy-derive ($ver_zerocopy_derive)." \
-              | tee -a $GITHUB_STEP_SUMMARY >&2
-            exit 1
-          fi
+        run: ./ci/check_msrv.sh
 
   check_versions:
     needs: generate_cache
@@ -412,67 +379,8 @@ jobs:
       # depends exactly upon the current version of zerocopy-derive. See
       # `INTERNAL.md` for an explanation of why we do this.
       - name: Check crate versions match
-        run: |
-          set -eo pipefail
+        run: ./ci/check_versions.sh
 
-          # Usage: version <crate-name>
-          function version {
-            cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").version"
-          }
-
-          ver_zerocopy=$(version zerocopy)
-          ver_zerocopy_derive=$(version zerocopy-derive)
-
-          # Usage: dependency-version <kind> <target>
-          function dependency-version {
-            KIND="$1"
-            TARGET="$2"
-            cargo metadata --format-version 1 \
-              | jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select((.name == \"zerocopy-derive\") and .kind == $KIND and .target == $TARGET).req"
-          }
-
-          # The non-dev dependency version (kind `null` filters out the dev
-          # dependency, and target `null` filters out the targeted version).
-          zerocopy_derive_dep_ver=$(dependency-version null null)
-
-          # The non-dev dependency, targeted version (kind `null` filters out
-          # the dev dependency).
-          zerocopy_derive_targeted_ver=$(dependency-version null '"cfg(any())"')
-
-          # The dev dependency version (kind `"dev"` selects only the dev
-          # dependency).
-          zerocopy_derive_dev_dep_ver=$(dependency-version '"dev"' null)
-
-          function assert-match {
-            VER_A="$1"
-            VER_B="$2"
-            SUCCESS_MSG="$3"
-            FAILURE_MSG="$4"
-            if [[ "$ver_zerocopy" == "$ver_zerocopy_derive" ]]; then
-              echo "$SUCCESS_MSG" | tee -a $GITHUB_STEP_SUMMARY
-            else
-              echo "$FAILURE_MSG" | tee -a $GITHUB_STEP_SUMMARY >&2
-              exit 1
-            fi
-          }
-
-          assert-match "$ver_zerocopy" "$ver_zerocopy_derive" \
-            "Same crate version ($ver_zerocopy) found for zerocopy and zerocopy-derive." \
-            "Different crate versions found for zerocopy ($ver_zerocopy) and zerocopy-derive ($ver_zerocopy_derive)."
-
-          # Note the leading `=` sign - the dependency needs to be an exact one.
-          assert-match "=$ver_zerocopy_derive" "$zerocopy_derive_dep_ver" \
-            "zerocopy depends upon same version of zerocopy-derive in-tree ($zerocopy_derive_dep_ver)." \
-            "zerocopy depends upon different version of zerocopy-derive ($zerocopy_derive_dep_ver) than the one in-tree ($ver_zerocopy_derive)."
-
-          # Note the leading `=` sign - the dependency needs to be an exact one.
-          assert-match "=$ver_zerocopy_derive" "$zerocopy_derive_dev_dep_ver" \
-            "In dev mode, zerocopy depends upon same version of zerocopy-derive in-tree ($zerocopy_derive_dev_dep_ver)." \
-            "In dev mode, zerocopy depends upon different version of zerocopy-derive ($zerocopy_derive_dev_dep_ver) than the one in-tree ($ver_zerocopy_derive)."
-
-          assert-match "$zerocopy_derive_dep_ver" "$zerocopy_derive_targeted_ver" \
-            "Same crate version ($zerocopy_derive_dep_ver) found for optional and targeted zerocopy-derive dependency." \
-            "Different crate versions found for optional ($zerocopy_derive_dep_ver) and targeted ($zerocopy_derive_targeted_ver) dependency."
   generate_cache:
     runs-on: ubuntu-latest
     name: Generate cache
@@ -511,22 +419,8 @@ jobs:
         run: go install github.com/mikefarah/yq/v4@latest
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Run check
-        run: |
-          set -eo pipefail
+        run: ./ci/check_all_toolchains_tested.sh
 
-          # Check whether the set of toolchains tested in this file (other than
-          # 'msrv', 'stable', and 'nightly') is equal to the set of toolchains
-          # listed in the 'package.metadata.build-rs' section of Cargo.toml.
-          #
-          # If the inputs to `diff` are not identical, `diff` exits with a
-          # non-zero error code, which causes this script to fail (thanks to
-          # `set -e`).
-          diff \
-            <(cat .github/workflows/ci.yml | yq '.jobs.build_test.strategy.matrix.toolchain | .[]' | \
-              sort -u | grep -v '^\(msrv\|stable\|nightly\)$') \
-            <(cargo metadata --format-version 1 | \
-              jq -r ".packages[] | select(.name == \"zerocopy\").metadata.\"build-rs\" | keys | .[]" | \
-              sort -u)
   check-job-dependencies:
     runs-on: ubuntu-latest
     name: Check all-jobs-succeeded depends on all jobs
@@ -535,31 +429,7 @@ jobs:
         run: go install github.com/mikefarah/yq/v4@latest
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Run dependency check
-        run: |
-          set -eo pipefail
-          jobs=$(for i in $(find .github -iname '*.yaml' -or -iname '*.yml')
-            do
-              # Select jobs that are triggered by pull request.
-              if yq -e '.on | has("pull_request")' "$i" 2>/dev/null >/dev/null
-              then
-                # This gets the list of jobs that all-jobs-succeed does not depend on.
-                comm -23 \
-                  <(yq -r '.jobs | keys | .[]' "$i" | sort | uniq) \
-                  <(yq -r '.jobs.all-jobs-succeed.needs[]' "$i" | sort | uniq)
-              fi
-
-            # The grep call here excludes all-jobs-succeed from the list of jobs that
-            # all-jobs-succeed does not depend on.  If all-jobs-succeed does
-            # not depend on itself, we do not care about it.
-            done | sort | uniq | (grep -v '^all-jobs-succeed$' || true)
-          )
-
-          if [ -n "$jobs" ]
-          then
-            missing_jobs="$(echo "$jobs" | tr ' ' '\n')"
-            echo "all-jobs-succeed missing dependencies on some jobs: $missing_jobs" | tee -a $GITHUB_STEP_SUMMARY
-            exit 1
-          fi
+        run: ./ci/check_job_dependencies.sh
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
