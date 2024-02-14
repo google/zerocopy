@@ -177,3 +177,94 @@ fn test_weird_discriminants() {
         <WeirdDiscriminants as imp::TryFromBytes>::try_read_from_bytes(&[0xFF; SIZE][..]).is_err()
     );
 }
+
+#[derive(
+    Eq, PartialEq, Debug, imp::KnownLayout, imp::Immutable, imp::TryFromBytes, imp::IntoBytes,
+)]
+#[repr(C)]
+enum HasFields {
+    A(u32),
+    B { foo: ::core::num::NonZeroU32 },
+}
+
+#[test]
+fn test_has_fields() {
+    const SIZE: usize = ::core::mem::size_of::<HasFields>();
+
+    let bytes: [u8; SIZE] = ::zerocopy::transmute!(HasFields::A(10));
+    imp::assert_eq!(
+        <HasFields as imp::TryFromBytes>::try_read_from_bytes(&bytes[..]),
+        imp::Ok(HasFields::A(10)),
+    );
+
+    let bytes: [u8; SIZE] =
+        ::zerocopy::transmute!(HasFields::B { foo: ::core::num::NonZeroU32::new(123456).unwrap() });
+    imp::assert_eq!(
+        <HasFields as imp::TryFromBytes>::try_read_from_bytes(&bytes[..]),
+        imp::Ok(HasFields::B { foo: ::core::num::NonZeroU32::new(123456).unwrap() }),
+    );
+}
+
+#[derive(
+    Eq, PartialEq, Debug, imp::KnownLayout, imp::Immutable, imp::TryFromBytes, imp::IntoBytes,
+)]
+#[repr(u32)]
+enum HasFieldsPrimitive {
+    A(u32),
+    B { foo: ::core::num::NonZeroU32 },
+}
+
+#[test]
+fn test_has_fields_primitive() {
+    const SIZE: usize = ::core::mem::size_of::<HasFieldsPrimitive>();
+
+    let bytes: [u8; SIZE] = ::zerocopy::transmute!(HasFieldsPrimitive::A(10));
+    imp::assert_eq!(
+        <HasFieldsPrimitive as imp::TryFromBytes>::try_read_from_bytes(&bytes[..]),
+        imp::Ok(HasFieldsPrimitive::A(10)),
+    );
+
+    let bytes: [u8; SIZE] = ::zerocopy::transmute!(HasFieldsPrimitive::B {
+        foo: ::core::num::NonZeroU32::new(123456).unwrap(),
+    });
+    imp::assert_eq!(
+        <HasFieldsPrimitive as imp::TryFromBytes>::try_read_from_bytes(&bytes[..]),
+        imp::Ok(HasFieldsPrimitive::B { foo: ::core::num::NonZeroU32::new(123456).unwrap() }),
+    );
+}
+
+#[derive(imp::TryFromBytes)]
+#[repr(align(4), u32)]
+enum HasReprAlignFirst {
+    A,
+    B,
+}
+
+util_assert_impl_all!(HasReprAlignFirst: imp::TryFromBytes);
+
+#[derive(imp::KnownLayout, imp::TryFromBytes, imp::Immutable)]
+#[repr(u8)]
+enum Complex {
+    UnitLike,
+    StructLike { a: u8, b: u16 },
+    TupleLike(bool, char),
+}
+
+util_assert_impl_all!(Complex: imp::TryFromBytes);
+
+#[derive(imp::KnownLayout, imp::TryFromBytes, imp::Immutable)]
+#[repr(u8)]
+enum ComplexWithGenerics<X, Y> {
+    UnitLike,
+    StructLike { a: u8, b: X },
+    TupleLike(bool, Y),
+}
+
+util_assert_impl_all!(ComplexWithGenerics<u16, char>: imp::TryFromBytes);
+
+#[derive(imp::KnownLayout, imp::TryFromBytes, imp::Immutable)]
+#[repr(C)]
+enum GenericWithLifetimes<'a, 'b, X: 'a, Y: 'b> {
+    Foo(::core::marker::PhantomData<&'a X>),
+    Bar(::core::marker::PhantomData<&'b Y>),
+}
