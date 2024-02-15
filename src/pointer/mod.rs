@@ -87,6 +87,7 @@ where
 /// Checks if the referent is zeroed.
 pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
 where
+    T: crate::NoCell,
     I: invariant::Invariants<Aliasing = invariant::Shared, Validity = invariant::Initialized>,
 {
     ptr.as_bytes().as_ref().iter().all(|&byte| byte == 0)

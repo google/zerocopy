@@ -45,9 +45,13 @@ macro_rules! safety_comment {
 ///   instance of `$ty`.
 /// - If an `is_bit_valid` impl is provided, then:
 ///   - Regardless of whether the provided closure takes a `Ptr<$repr>` or
-///     `&$repr` argument, it must be the case that, given `t: *mut $ty` and
-///     `let r = t as *mut $repr`, `r` refers to an object of equal or lesser
-///     size than the object referred to by `t`.
+///     `&$repr` argument, if `$ty` and `$repr` are different types, then it
+///     must be the case that, given `t: *mut $ty` and `let r = t as *mut
+///     $repr`:
+///     - `r` refers to an object of equal or lesser size than the object
+///       referred to by `t`.
+///     - `r` refers to an object with `UnsafeCell`s at the same byte ranges as
+///       the object referred to by `t`.
 ///   - If the provided closure takes a `&$repr` argument, then given a `Ptr<'a,
 ///     $ty>` which satisfies the preconditions of
 ///     `TryFromBytes::<$ty>::is_bit_valid`, it must be guaranteed that the
@@ -141,6 +145,8 @@ macro_rules! unsafe_impl {
             //   by that method's safety precondition.
             // - The caller has promised that the cast results in an object of
             //   equal or lesser size.
+            // - The caller has promised that the destination type has
+            //   `UnsafeCell`s at the same byte ranges as the source type.
             #[allow(clippy::as_conversions)]
             let candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
 
@@ -161,6 +167,8 @@ macro_rules! unsafe_impl {
             //   by that method's safety precondition.
             // - The caller has promised that the cast results in an object of
             //   equal or lesser size.
+            // - The caller has promised that the destination type has
+            //   `UnsafeCell`s at the same byte ranges as the source type.
             #[allow(clippy::as_conversions)]
             let $candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
 

@@ -362,7 +362,10 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
             fn is_bit_valid(candidate: ::zerocopy::Maybe<Self>) -> bool {
                 true #(&& {
                     // SAFETY: `project` is a field projection of `candidate`,
-                    // and `Self` is a struct type.
+                    // and `Self` is a struct type. The candidate will have
+                    // `UnsafeCell`s at exactly the same ranges as its
+                    // projection, because the projection is a field of the
+                    // candidate struct.
                     let field_candidate = unsafe {
                         let project = |slf: *mut Self|
                             ::zerocopy::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
@@ -390,6 +393,7 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
 // - any of its fields are `TryFromBytes`
 
 fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
+    let self_type_trait_bounds = SelfBounds::All(&[Trait::NoCell]);
     let extras = Some({
         let fields = unn.fields();
         let field_names = fields.iter().map(|(name, _ty)| name);
@@ -403,7 +407,10 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
             fn is_bit_valid(candidate: ::zerocopy::Maybe<Self>) -> bool {
                 false #(|| {
                     // SAFETY: `project` is a field projection of `candidate`,
-                    // and `Self` is a union type.
+                    // and `Self` is a union type. The candidate and projection
+                    // agree exactly on where their `UnsafeCell` ranges are,
+                    // because `Self: NoCell` is enforced by
+                    // `self_type_trait_bounds`.
                     let field_candidate = unsafe {
                         let project = |slf: *mut Self|
                             ::zerocopy::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
@@ -416,7 +423,15 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
             }
         )
     });
-    impl_block(ast, unn, Trait::TryFromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, extras)
+    impl_block(
+        ast,
+        unn,
+        Trait::TryFromBytes,
+        FieldBounds::ALL_SELF,
+        self_type_trait_bounds,
+        None,
+        extras,
+    )
 }
 
 const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[
@@ -456,6 +471,8 @@ fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2:
             // - `cast` is implemented as required.
             // - By definition, `*mut Self` and `*mut [u8; size_of::<Self>()]`
             //   are types of the same size.
+            // - Since we validate that this type is a field-less enum, it
+            //   cannot contain any `UnsafeCell`s. Neither does `[u8; N]`.
             let discriminant = unsafe { candidate.cast_unsized(|p: *mut Self| p as *mut [core_reexport::primitive::u8; core_reexport::mem::size_of::<Self>()]) };
             // SAFETY: Since `candidate` has the invariant `Initialized`, we
             // know that `candidate`'s referent (and thus `discriminant`'s

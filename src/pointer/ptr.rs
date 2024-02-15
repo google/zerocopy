@@ -8,7 +8,7 @@
 
 use core::ptr::NonNull;
 
-use crate::{util::AsAddress, KnownLayout, _CastType};
+use crate::{util::AsAddress, KnownLayout, NoCell, _CastType};
 
 /// Module used to gate access to [`Ptr`]'s fields.
 mod def {
@@ -70,6 +70,12 @@ mod def {
         ///      initialized (but not necessarily validly so) in all of the
         ///      initialized ranges of `T`.
         ///    - If [`invariant::Valid`], the pointer's referent is bit-valid.
+        /// 10. During the lifetime 'a, no code will load or store this memory
+        ///     region treating `UnsafeCell`s as existing at different ranges
+        ///     than they exist in `T`.
+        /// 11. During the lifetime 'a, no reference will exist to this memory
+        ///     which treats `UnsafeCell`s as existing at different ranges than
+        ///     they exist in `T`.
         // SAFETY: `NonNull<T>` is covariant over `T` [1].
         //
         // [1]: https://doc.rust-lang.org/std/ptr/struct.NonNull.html
@@ -104,6 +110,12 @@ mod def {
         ///   [`ALIGNMENT_INVARIANT`](invariant::Alignment).
         /// 8. `ptr` conforms to the validity invariant of
         ///   [`VALIDITY_INVARIANT`](invariant::Validity).
+        /// 9. During the lifetime 'a, no code will load or store this memory
+        ///    region treating `UnsafeCell`s as existing at different ranges
+        ///    than they exist in `T`.
+        /// 10. During the lifetime 'a, no reference will exist to this memory
+        ///     which treats `UnsafeCell`s as existing at different ranges than
+        ///     they exist in `T`.
         pub(super) unsafe fn new(ptr: NonNull<T>) -> Ptr<'a, T, I> {
             // SAFETY: The caller has promised to satisfy all safety invariants
             // of `Ptr`.
@@ -402,12 +414,17 @@ mod _conversions {
             //     does not wrap around the address space.
             // 5. `A`, by invariant on `&'a T`, is guaranteed to live for at
             //    least `'a`.
-            // 6. `ptr`, by invariant on `&'a T`, conforms to the aliasing
+            // 6. `T: 'a`.
+            // 7. `ptr`, by invariant on `&'a T`, conforms to the aliasing
             //    invariant of `invariant::Shared`.
-            // 7. `ptr`, by invariant on `&'a T`, conforms to the alignment
+            // 8. `ptr`, by invariant on `&'a T`, conforms to the alignment
             //    invariant of `invariant::Aligned`.
-            // 8. `ptr`, by invariant on `&'a T`, conforms to the validity
+            // 9. `ptr`, by invariant on `&'a T`, conforms to the validity
             //    invariant of `invariant::Valid`.
+            // 10. The referents of `Ptr<T>` and `&T` have `UnsafeCell`s at
+            //    identical ranges. Both `Ptr<T>` and `&T` prevent loads and
+            //    stores which treat other byte ranges as having `UnsafeCell`s.
+            // 11. See 10.
             unsafe { Self::new(ptr) }
         }
     }
@@ -455,7 +472,7 @@ mod _conversions {
     }
 
     /// `&'a MaybeUninit<T>` → `Ptr<'a, T>`
-    impl<'a, T> Ptr<'a, T, (invariant::Shared, invariant::Aligned, invariant::AnyValidity)>
+    impl<'a, T> Ptr<'a, T, (invariant::Shared, invariant::Aligned, invariant::Valid)>
     where
         T: 'a,
     {
@@ -464,52 +481,37 @@ mod _conversions {
         /// [`MaybeUninit<T>`]: MaybeUninit
         #[doc(hidden)]
         #[inline]
-        pub fn from_maybe_uninit_ref(ptr: &'a MaybeUninit<T>) -> Self {
-            let mu_ptr = core::ptr::NonNull::from(ptr);
-            let t_ptr = mu_ptr.cast::<T>();
+        pub fn from_maybe_uninit_ref(mu: &'a MaybeUninit<T>) -> Self {
+            let ptr = Ptr::from_ref(mu);
+
             // SAFETY:
-            // 0. `mu_ptr`, by invariant on `&'a T`, is derived from some valid
-            //    Rust allocation, `A`. `t_ptr` is as well because `.cast()`
-            //    conserves this property.
-            // 1. `mu_ptr`, by invariant on `&'a T`, has valid provenance for
-            //    `A`. `t_ptr` does as well because `.cast()` conserves this
-            //    property.
-            // 2. `mu_ptr`, by invariant on `&'a T`, addresses a byte range
-            //    which is entirely contained in `A`. `t_ptr` does as well
-            //    because `.cast()` conserves this property. This relies on the
-            //    fact that `t_ptr` addresses the same number of bytes as
-            //    `mu_ptr`, which is guaranteed because `MaybeUninit<T>` has the
-            //    same size as `T` [1].
-            // 3. `mu_ptr`, by invariant on `&'a T`, addresses a byte range
-            //    whose length fits in an `isize`. `t_ptr` does as well because
-            //    `.cast()` conserves this property. This relies on the fact
-            //    that `t_ptr` addresses the same number of bytes as `mu_ptr`,
-            //    which is guaranteed because `MaybeUninit<T>` has the same size
-            //    as `T` [1].
-            // 4. `mu_ptr`, by invariant on `&'a T`, addresses a byte range
-            //     which does not wrap around the address space. `t_ptr` does as
-            //    well because `.cast()` conserves this property. This relies on
-            //    the fact that `t_ptr` addresses the same number of bytes as
-            //    `mu_ptr`, which is guaranteed because `MaybeUninit<T>` has the
-            //    same size as `T` [1].
-            // 5. `A`, by invariant on `&'a T`, is guaranteed to live for at
-            //    least `'a`.
-            // 6. `mu_ptr`, by invariant on `&'a T`, conforms to the aliasing
-            //    invariant of `invariant::Shared`. `t_ptr` does as well because
-            //    `.cast()` conserves this property.
-            // 7. `mu_ptr`, by invariant on `&'a T`, conforms to the alignment
-            //    invariant of `invariant::Aligned`. `t_ptr` does as well
-            //    because `.cast()` conserves alignment, and `MaybeUninit<T>`
-            //    has the same alignment as `T` [1].
-            // 8. The returned `Ptr` has validity `invariant::AnyValidity`,
-            //    which is always upheld regardless of the contents of its
-            //    referent.
+            // - Since `MaybeUninit<T>` has the same size as `T` [1],
+            //   this cast does not increase the referent's size.
+            // - Since `MaybeUninit<T>` has the same layout as `T` [2], `T` has
+            //   `UnsafeCell`s at exactly the same ranges as `MaybeUninit<T>`.
             //
             // [1] Per https://doc.rust-lang.org/std/mem/union.MaybeUninit.html#layout-1:
             //
             //   `MaybeUninit<T>` is guaranteed to have the same size,
             //   alignment, and ABI as `T`
-            unsafe { Self::new(t_ptr) }
+            //
+            // [2] TODO(https://github.com/rust-lang/rust/pull/121215)
+            //
+            // TODO(#896): Finish this safety proof (namely, [2]) before the
+            // next stable release.
+            #[allow(clippy::as_conversions)]
+            let ptr = unsafe { ptr.cast_unsized(|p| p as *mut T) };
+            // SAFETY: Since `MaybeUninit<T>` has the same alignment as `T` [1],
+            // the fact that `mu` is aligned to `MaybeUninit<T>` means that it
+            // is aligned to `T`.
+            //
+            // [1] Per https://doc.rust-lang.org/std/mem/union.MaybeUninit.html#layout-1:
+            //
+            //   `MaybeUninit<T>` is guaranteed to have the same size,
+            //   alignment, and ABI as `T`
+            let ptr = unsafe { ptr.assume_alignment::<invariant::Aligned>() };
+            // SAFETY: `MaybeUninit` has no validity invariants.
+            unsafe { ptr.assume_valid() }
         }
     }
 }
@@ -643,9 +645,11 @@ mod _casts {
         /// provenance-preserving transformation of a pointer-like value into
         /// another pointer-like value to the same allocation.
         ///
-        /// For all kinds of casts, the caller must promise that the the size of
-        /// the object referenced by the resulting pointer is less than or equal
-        /// to the size of the object referenced by `self`.
+        /// For all kinds of casts, the caller must promise that:
+        /// - the the size of the object referenced by the resulting pointer is
+        /// less than or equal to the size of the object referenced by `self`.
+        /// - `UnsafeCell`s in `U` exist at ranges identical to those at which
+        ///   `UnsafeCell`s exist in `T`.
         ///
         /// For pointer-to-pointer casts, it suffices for the caller to
         /// additionally promise that `cast(p)` is implemented as:
@@ -704,6 +708,12 @@ mod _casts {
             //    `AnyAlignment`.
             // 8. `ptr`, trivially, conforms to the validity invariant of
             //   `AnyValidity`.
+            // 9. During the lifetime 'a, no code will reference or load or
+            //    store this memory region treating `UnsafeCell`s as existing at
+            //    different ranges than they exist in `U`. This is true by
+            //    invariant on Ptr<'a, T, I>, and preserved through the cast to
+            //    `U` by contract on the caller.
+            // 10. See 9.
             unsafe { Ptr::new(ptr) }
         }
     }
@@ -712,6 +722,7 @@ mod _casts {
     where
         T: 'a,
         I: Invariants<Validity = invariant::Initialized>,
+        T: NoCell,
     {
         /// Casts this pointer-to-initialized into a pointer-to-bytes.
         #[allow(clippy::wrong_self_convention)]
@@ -723,6 +734,8 @@ mod _casts {
             //   `slice_from_raw_parts_mut`.
             // - The size of the object referenced by the resulting pointer is
             //   exactly equal to the size of the object referenced by `self`.
+            // - `T` and `[u8]` trivially contain `UnsafeCell`s at identical
+            //   ranges [u8]`, because both are `NoCell`.
             let ptr: Ptr<'a, [u8], _> = unsafe {
                 self.cast_unsized(|p: *mut T| {
                     #[allow(clippy::as_conversions)]
@@ -789,6 +802,13 @@ mod _casts {
             // 8. By the above lemma, `slice` conforms to the validity invariant
             //    of `I::Validity`, because the operations that produced `slice`
             //    from `self` do not impact validity.
+            // 9. During the lifetime 'a, no code will reference or load or
+            //    store this memory region treating `UnsafeCell`s as existing at
+            //    different ranges than they exist in `[T]`. This is true by
+            //    invariant on Ptr<'a, [T; N], I>, and preserved through the
+            //    cast to `[T]` because `[T]` has `UnsafeCell`s at exactly the
+            //    same ranges as `[T; N]`.
+            // 10. See 9.
             unsafe { Ptr::new(slice) }
         }
     }
@@ -824,6 +844,8 @@ mod _casts {
             &self,
             cast_type: _CastType,
         ) -> Option<(Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::AnyValidity)>, usize)>
+        where
+            U: NoCell,
         {
             // PANICS: By invariant, the byte range addressed by `self.ptr` does
             // not wrap around the address space. This implies that the sum of
@@ -898,6 +920,12 @@ mod _casts {
             //    aligned for `U`.
             // 8. `ptr`, trivially, conforms to the validity invariant of
             //    `AnyValidity`.
+            // 9. During the lifetime 'a, no code will reference or load or
+            //    store this memory region treating `UnsafeCell`s as existing at
+            //    different ranges than they exist in `U`. This is true by
+            //    invariant on Ptr<'a, T, I>, preserved through the cast by the
+            //    bound `U: NoCell`.
+            // 10. See 9.
             Some((unsafe { Ptr::new(ptr) }, split_at))
         }
 
@@ -915,7 +943,10 @@ mod _casts {
         #[inline(always)]
         pub(crate) fn try_cast_into_no_leftover<U: 'a + ?Sized + KnownLayout>(
             &self,
-        ) -> Option<Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::AnyValidity)>> {
+        ) -> Option<Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::AnyValidity)>>
+        where
+            U: NoCell,
+        {
             // TODO(#67): Remove this allow. See NonNulSlicelExt for more
             // details.
             #[allow(unstable_name_collisions)]
@@ -942,11 +973,15 @@ mod _project {
         ///
         /// ## Preconditions
         ///
-        /// The caller promises that `projector` projects a field of its
-        /// argument. Its argument will be `self` casted to a raw pointer. The
-        /// pointer it returns must reference only a subset of `self`'s bytes.
-        ///
-        /// The caller also promises that `T` is a struct or union type.
+        /// The caller promises that:
+        /// - `projector` projects a field of its argument. Its argument will be
+        ///   `self` casted to a raw pointer. The pointer it returns must
+        ///   reference only a subset of `self`'s bytes.
+        /// - `T` is a struct or union type.
+        /// - The projected pointer contains `UnsafeCell`s at exactly the same
+        ///   ranges at which `UnsafeCell`s appear in the projected-from type.
+        ///   This is necessarily true for projections of struct fields, but not
+        ///   for all projections of union fields.
         ///
         /// ## Postconditions
         ///
@@ -1012,6 +1047,14 @@ mod _project {
             //    must be initialized if it is initialized in *any* instance of
             //    the type. Thus, if `self`'s referent is as-initialized as `T`,
             //    then it is at least as-initialized as each of its fields.
+            // 9. During the lifetime 'a, no code will reference or load or
+            //    store this memory region treating `UnsafeCell`s as existing at
+            //    different ranges than they exist in `U`. This is true by
+            //    invariant on Ptr<'a, T, I>, preserved by precondition on
+            //    `cast`. The field type cannot contain `UnsafeCell`s at ranges
+            //    that are not `UnsafeCell` in its parent struct/enum type,
+            //    because the field type is contained in the struct/enum type.
+            // 10. See 9.
             unsafe { Ptr::new(field) }
         }
     }
@@ -1138,6 +1181,13 @@ mod _project {
                 // 8. `elem`, conditionally, conforms to the validity invariant of
                 //    `VALIDITY_INVARIANT`. If `elem` is projected from data valid
                 //    for `[T]`, `elem` will be valid for `T`.
+                // 9. During the lifetime 'a, no code will reference or load or
+                //    store this memory region treating `UnsafeCell`s as
+                //    existing at different ranges than they exist in `T`. This
+                //    property holds by invariant on `Ptr<'a, [T], I>`, and is
+                //    preserved because `Ptr<'a, T, I>` is an element within
+                //    `Ptr<'a, [T], I>`.
+                // 10. See 9.
                 unsafe { Ptr::new(elem) }
             })
         }
@@ -1158,7 +1208,7 @@ mod tests {
 
         // - If `size_of::<T>() == 0`, `N == 4`
         // - Else, `N == 4 * size_of::<T>()`
-        fn test<T: ?Sized + KnownLayout + FromBytes, const N: usize>() {
+        fn test<T: ?Sized + KnownLayout + NoCell + FromBytes, const N: usize>() {
             let mut bytes = [MaybeUninit::<u8>::uninit(); N];
             let initialized = [MaybeUninit::new(0u8); N];
             for start in 0..=bytes.len() {
