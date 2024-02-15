@@ -261,7 +261,7 @@ macro_rules! align_of {
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
 macro_rules! struct_has_padding {
-    ($t:ty, $($ts:ty),*) => {
+    ($t:ty, [$($ts:ty),*]) => {
         core::mem::size_of::<$t>() > 0 $(+ core::mem::size_of::<$ts>())*
     };
 }
@@ -281,9 +281,17 @@ macro_rules! struct_has_padding {
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
 macro_rules! union_has_padding {
-    ($t:ty, $($ts:ty),*) => {
+    ($t:ty, [$($ts:ty),*]) => {
         false $(|| core::mem::size_of::<$t>() != core::mem::size_of::<$ts>())*
     };
+}
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! enum_has_padding {
+    ($t:ty, $disc:ty, $([$($ts:ty),*]),*) => {
+        false $(|| core::mem::size_of::<$t>() != (core::mem::size_of::<$disc>() $(+ core::mem::size_of::<$ts>())*))*
+    }
 }
 
 /// Does `t` have alignment greater than or equal to `u`?  If not, this macro
@@ -625,7 +633,7 @@ mod tests {
             (#[$cfg:meta] ($($ts:ty),*) => $expect:expr) => {{
                 #[$cfg]
                 struct Test($(#[allow(dead_code)] $ts),*);
-                assert_eq!(struct_has_padding!(Test, $($ts),*), $expect);
+                assert_eq!(struct_has_padding!(Test, [$($ts),*]), $expect);
             }};
             (#[$cfg:meta] $(#[$cfgs:meta])* ($($ts:ty),*) => $expect:expr) => {
                 test!(#[$cfg] ($($ts),*) => $expect);
@@ -656,7 +664,7 @@ mod tests {
                 #[$cfg]
                 #[allow(unused)] // fields are never read
                 union Test{ $($fs: $ts),* }
-                assert_eq!(union_has_padding!(Test, $($ts),*), $expect);
+                assert_eq!(union_has_padding!(Test, [$($ts),*]), $expect);
             }};
             (#[$cfg:meta] $(#[$cfgs:meta])* {$($fs:ident: $ts:ty),*} => $expect:expr) => {
                 test!(#[$cfg] {$($fs: $ts),*} => $expect);

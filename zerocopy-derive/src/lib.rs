@@ -28,6 +28,7 @@
 )]
 #![recursion_limit = "128"]
 
+mod enums;
 mod ext;
 mod repr;
 
@@ -381,74 +382,21 @@ const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[
 ];
 
 fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
-    if !enm.is_fieldless() {
-        return Error::new_spanned(ast, "only field-less enums can implement TryFromBytes")
-            .to_compile_error();
-    }
+    let reprs = try_or_print!(ENUM_TRY_FROM_BYTES_CFG.validate_reprs(ast));
 
-    // We don't actually care what the repr is; we just care that it's one of
-    // the allowed ones.
-    try_or_print!(ENUM_TRY_FROM_BYTES_CFG.validate_reprs(ast));
-    let variant_names = enm.variants.iter().map(|v| &v.ident);
-    let extras = Some(quote!(
-        // SAFETY: We use `is_bit_valid` to validate that the bit pattern
-        // corresponds to one of the field-less enum's variant discriminants.
-        // Thus, this is a sound implementation of `is_bit_valid`.
-        fn is_bit_valid(
-            candidate: ::zerocopy::Ptr<
-                '_,
-                Self,
-                (
-                    ::zerocopy::pointer::invariant::Shared,
-                    ::zerocopy::pointer::invariant::AnyAlignment,
-                    ::zerocopy::pointer::invariant::Initialized,
-                ),
-            >,
-        ) -> ::zerocopy::macro_util::core_reexport::primitive::bool {
-            use ::zerocopy::macro_util::core_reexport;
-            // SAFETY:
-            // - `cast` is implemented as required.
-            // - By definition, `*mut Self` and `*mut [u8; size_of::<Self>()]`
-            //   are types of the same size.
-            let discriminant = unsafe { candidate.cast_unsized(|p: *mut Self| p as *mut [core_reexport::primitive::u8; core_reexport::mem::size_of::<Self>()]) };
-            // SAFETY: Since `candidate` has the invariant `Initialized`, we
-            // know that `candidate`'s referent (and thus `discriminant`'s
-            // referent) are fully initialized. Since all of the allowed `repr`s
-            // are types for which all bytes are always initialized, we know
-            // that `discriminant`'s referent has all of its bytes initialized.
-            // Since `[u8; N]`'s validity invariant is just that all of its
-            // bytes are initialized, we know that `discriminant`'s referent is
-            // bit-valid.
-            let discriminant = unsafe { discriminant.assume_valid() };
-            let discriminant = discriminant.read_unaligned();
+    // Generate the equivalent enum in terms of just structs and unions
+    let extra = Some(enums::derive_is_bit_valid(&reprs, &ast.ident, &ast.generics, enm));
 
-            false #(|| {
-                let v = Self::#variant_names{};
-                // SAFETY: All of the allowed `repr`s for `Self` guarantee that
-                // `Self`'s discriminant bytes are all initialized. Since we
-                // validate that `Self` has no fields, it has no bytes other
-                // than the discriminant. Thus, it is sound to transmute any
-                // instance of `Self` to `[u8; size_of::<Self>()]`.
-                let d: [core_reexport::primitive::u8; core_reexport::mem::size_of::<Self>()] = unsafe { core_reexport::mem::transmute(v) };
-                // SAFETY: Here we check that the bits of the argument
-                // `candidate` are equal to the bits of a `Self` constructed
-                // using safe code. If this condition passes, then we know that
-                // `candidate` refers to a bit-valid `Self`.
-                discriminant == d
-            })*
-        }
-    ));
-    impl_block(ast, enm, Trait::TryFromBytes, FieldBounds::ALL_SELF, false, None, extras)
+    impl_block(ast, enm, Trait::TryFromBytes, FieldBounds::ALL_SELF, false, None, extra)
 }
 
 #[rustfmt::skip]
 const ENUM_TRY_FROM_BYTES_CFG: Config<EnumRepr> = {
     use EnumRepr::*;
     Config {
-        allowed_combinations_message: r#"TryFromBytes requires repr of "C", "u8", "u16", "u32", "u64", "usize", "i8", or "i16", "i32", "i64", or "isize""#,
+        allowed_combinations_message: r#"TryFromBytes requires an enum repr of a primitive, "C", or "C" with a primitive"#,
         derive_unaligned: false,
         allowed_combinations: &[
-            &[C],
             &[U8],
             &[U16],
             &[U32],
@@ -459,6 +407,17 @@ const ENUM_TRY_FROM_BYTES_CFG: Config<EnumRepr> = {
             &[I32],
             &[I64],
             &[Isize],
+            &[C],
+            &[C, U8],
+            &[C, U16],
+            &[C, U32],
+            &[C, U64],
+            &[C, Usize],
+            &[C, I8],
+            &[C, I16],
+            &[C, I32],
+            &[C, I64],
+            &[C, Isize],
         ],
         disallowed_but_legal_combinations: &[],
     }
@@ -472,33 +431,28 @@ fn derive_from_zeros_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro
 }
 
 // An enum is `FromZeros` if:
-// - all of its variants are fieldless
 // - one of the variants has a discriminant of `0`
+// - that discriminant's fields all implement `FromZeros`
 
 fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
-    if !enm.is_fieldless() {
-        return Error::new_spanned(ast, "only field-less enums can implement FromZeros")
-            .to_compile_error();
-    }
-
     // We don't actually care what the repr is; we just care that it's one of
     // the allowed ones.
     try_or_print!(ENUM_FROM_ZEROS_AS_BYTES_CFG.validate_reprs(ast));
 
-    let has_explicit_zero_discriminant =
-        enm.variants.iter().filter_map(|v| v.discriminant.as_ref()).any(|(_, e)| {
-            if let Expr::Lit(ExprLit { lit: Lit::Int(i), .. }) = e {
-                i.base10_parse::<usize>().ok() == Some(0)
-            } else {
-                false
+    let explicit_zero_variant = enm.variants.iter().position(|v| {
+        if let Some((_, Expr::Lit(ExprLit { lit: Lit::Int(i), .. }))) = v.discriminant.as_ref() {
+            if i.base10_parse::<usize>().ok() == Some(0) {
+                return true;
             }
-        });
+        }
+        false
+    });
     // If the first variant of an enum does not specify its discriminant, it is set to zero:
-    // https://doc.rust-lang.org/reference/items/enumerations.html#custom-discriminant-values-for-fieldless-enumerations
+    // https://doc.rust-lang.org/reference/items/enumerations.html#implicit-discriminants
     let has_implicit_zero_discriminant =
         enm.variants.iter().next().map(|v| v.discriminant.is_none()) == Some(true);
 
-    if !has_explicit_zero_discriminant && !has_implicit_zero_discriminant {
+    if !explicit_zero_variant.is_some() && !has_implicit_zero_discriminant {
         return Error::new_spanned(
             ast,
             "FromZeros only supported on enums with a variant that has a discriminant of `0`",
@@ -506,7 +460,25 @@ fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
         .to_compile_error();
     }
 
-    impl_block(ast, enm, Trait::FromZeros, FieldBounds::ALL_SELF, false, None, None)
+    let zero_variant = enm.variants.iter().nth(explicit_zero_variant.unwrap_or(0)).unwrap();
+    let explicit_bounds = zero_variant
+        .fields
+        .iter()
+        .map(|field| {
+            let ty = &field.ty;
+            parse_quote! { #ty: ::zerocopy::FromZeros }
+        })
+        .collect::<Vec<WherePredicate>>();
+
+    impl_block(
+        ast,
+        enm,
+        Trait::FromZeros,
+        FieldBounds::Explicit(explicit_bounds),
+        false,
+        None,
+        None,
+    )
 }
 
 // Like structs, unions are `FromZeros` if
@@ -538,11 +510,6 @@ fn derive_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro
 //   this would require ~4 billion enum variants, which obviously isn't a thing.
 
 fn derive_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
-    if !enm.is_fieldless() {
-        return Error::new_spanned(ast, "only field-less enums can implement FromBytes")
-            .to_compile_error();
-    }
-
     let reprs = try_or_print!(ENUM_FROM_BYTES_CFG.validate_reprs(ast));
 
     let variants_required = match reprs.as_slice() {
@@ -659,15 +626,23 @@ const STRUCT_UNION_AS_BYTES_CFG: Config<StructRepr> = Config {
 // An enum is `IntoBytes` if it is field-less and has a defined repr.
 
 fn derive_as_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
-    if !enm.is_fieldless() {
-        return Error::new_spanned(ast, "only field-less enums can implement IntoBytes")
-            .to_compile_error();
-    }
-
     // We don't care what the repr is; we only care that it is one of the
     // allowed ones.
-    try_or_print!(ENUM_FROM_ZEROS_AS_BYTES_CFG.validate_reprs(ast));
-    impl_block(ast, enm, Trait::IntoBytes, FieldBounds::None, false, None, None)
+    let reprs = try_or_print!(ENUM_FROM_ZEROS_AS_BYTES_CFG.validate_reprs(ast));
+
+    let discriminant = Ident::new("Discriminant", Span::call_site());
+    let context =
+        enums::generate_discriminant_type(enm, enums::discriminant_repr(&reprs), &discriminant);
+    impl_block_with_context(
+        ast,
+        enm,
+        Trait::IntoBytes,
+        FieldBounds::ALL_SELF,
+        false,
+        Some(PaddingCheck::Enum),
+        None,
+        Some(context),
+    )
 }
 
 #[rustfmt::skip]
@@ -676,20 +651,30 @@ const ENUM_FROM_ZEROS_AS_BYTES_CFG: Config<EnumRepr> = {
     Config {
         // Since `disallowed_but_legal_combinations` is empty, this message will
         // never actually be emitted.
-        allowed_combinations_message: r#"Deriving this trait requires repr of "C", "u8", "u16", "u32", "u64", "usize", "i8", "i16", "i32", "i64", or "isize""#,
+        allowed_combinations_message: r#"FromZeros requires an enum repr of a primitive, "C", or "C" with a primitive"#,
         derive_unaligned: false,
         allowed_combinations: &[
-            &[C],
             &[U8],
             &[U16],
+            &[U32],
+            &[U64],
+            &[Usize],
             &[I8],
             &[I16],
-            &[U32],
             &[I32],
-            &[U64],
             &[I64],
-            &[Usize],
             &[Isize],
+            &[C],
+            &[C, U8],
+            &[C, U16],
+            &[C, U32],
+            &[C, U64],
+            &[C, Usize],
+            &[C, I8],
+            &[C, I16],
+            &[C, I32],
+            &[C, I64],
+            &[C, Isize],
         ],
         disallowed_but_legal_combinations: &[],
     }
@@ -751,11 +736,6 @@ const STRUCT_UNION_UNALIGNED_CFG: Config<StructRepr> = Config {
 // - `repr(u8)` or `repr(i8)`
 
 fn derive_unaligned_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
-    if !enm.is_fieldless() {
-        return Error::new_spanned(ast, "only field-less enums can implement Unaligned")
-            .to_compile_error();
-    }
-
     // The only valid reprs are `u8` and `i8`, and optionally `align(1)`. We
     // don't actually care what the reprs are so long as they satisfy that
     // requirement.
@@ -778,9 +758,10 @@ const ENUM_UNALIGNED_CFG: Config<EnumRepr> = {
         allowed_combinations: &[
             &[U8],
             &[I8],
+            &[C, U8],
+            &[C, I8],
         ],
         disallowed_but_legal_combinations: &[
-            &[C],
             &[U16],
             &[U32],
             &[U64],
@@ -789,6 +770,15 @@ const ENUM_UNALIGNED_CFG: Config<EnumRepr> = {
             &[I32],
             &[I64],
             &[Isize],
+            &[C],
+            &[C, U16],
+            &[C, U32],
+            &[C, U64],
+            &[C, Usize],
+            &[C, I16],
+            &[C, I32],
+            &[C, I64],
+            &[C, Isize],
         ],
     }
 };
@@ -817,6 +807,8 @@ enum PaddingCheck {
     Struct,
     // Check that the size of each field exactly equals the union's size.
     Union,
+    // Check that every variant of the enum contains no padding.
+    Enum,
 }
 
 impl PaddingCheck {
@@ -826,6 +818,7 @@ impl PaddingCheck {
         let s = match self {
             PaddingCheck::Struct => "struct_has_padding",
             PaddingCheck::Union => "union_has_padding",
+            PaddingCheck::Enum => "enum_has_padding",
         };
 
         Ident::new(s, Span::call_site())
@@ -855,11 +848,11 @@ enum TraitBound {
     Other(Trait),
 }
 
-#[derive(Debug, Eq, PartialEq)]
 enum FieldBounds<'a> {
     None,
     All(&'a [TraitBound]),
     Trailing(&'a [TraitBound]),
+    Explicit(Vec<WherePredicate>),
 }
 
 impl<'a> FieldBounds<'a> {
@@ -883,6 +876,28 @@ fn impl_block<D: DataExt>(
     require_self_sized: bool,
     padding_check: Option<PaddingCheck>,
     extras: Option<proc_macro2::TokenStream>,
+) -> proc_macro2::TokenStream {
+    impl_block_with_context(
+        input,
+        data,
+        trt,
+        field_type_trait_bounds,
+        require_self_sized,
+        padding_check,
+        extras,
+        None,
+    )
+}
+
+fn impl_block_with_context<D: DataExt>(
+    input: &DeriveInput,
+    data: &D,
+    trt: Trait,
+    field_type_trait_bounds: FieldBounds,
+    require_self_sized: bool,
+    padding_check: Option<PaddingCheck>,
+    extras: Option<proc_macro2::TokenStream>,
+    context: Option<proc_macro2::TokenStream>,
 ) -> proc_macro2::TokenStream {
     // In this documentation, we will refer to this hypothetical struct:
     //
@@ -945,6 +960,8 @@ fn impl_block<D: DataExt>(
     let type_ident = &input.ident;
     let trait_ident = trt.ident();
     let fields = data.fields();
+    let variants = data.variants();
+    let discriminant = data.discriminant();
 
     fn bound_tt(ty: &Type, traits: impl Iterator<Item = Trait>) -> WherePredicate {
         let traits = traits.map(|t| t.ident());
@@ -958,16 +975,21 @@ fn impl_block<D: DataExt>(
         (FieldBounds::Trailing(traits), [.., last]) => {
             vec![bound_tt(last.1, normalize_bounds(trt, traits))]
         }
+        (FieldBounds::Explicit(bounds), _) => bounds,
     };
 
     // Don't bother emitting a padding check if there are no fields.
     #[allow(unstable_name_collisions)] // See `BoolExt` below
     #[allow(clippy::incompatible_msrv)] // Work around https://github.com/rust-lang/rust-clippy/issues/12280
     let padding_check_bound = padding_check.and_then(|check| (!fields.is_empty()).then_some(check)).map(|check| {
-        let fields = fields.iter().map(|(_name, ty)| ty);
+        let variant_types = variants.iter().map(|var| {
+            let types = var.iter().map(|(_name, ty)| ty);
+            quote!([#(#types),*])
+        });
         let validator_macro = check.validator_macro_ident();
+        let d = discriminant.iter();
         parse_quote!(
-            ::zerocopy::macro_util::HasPadding<#type_ident, {::zerocopy::#validator_macro!(#type_ident, #(#fields),*)}>:
+            ::zerocopy::macro_util::HasPadding<#type_ident, {::zerocopy::#validator_macro!(#type_ident, #(#d,)* #(#variant_types),*)}>:
                 ::zerocopy::macro_util::ShouldBe<false>
         )
     });
@@ -1012,17 +1034,21 @@ fn impl_block<D: DataExt>(
     });
 
     quote! {
-        // TODO(#553): Add a test that generates a warning when
-        // `#[allow(deprecated)]` isn't present.
-        #[allow(deprecated)]
-        unsafe impl < #(#params),* > ::zerocopy::#trait_ident for #type_ident < #(#param_idents),* >
-        where
-            #(#bounds,)*
-        {
-            fn only_derive_is_allowed_to_implement_this_trait() {}
+        const _: () = {
+            #context
 
-            #extras
-        }
+            // TODO(#553): Add a test that generates a warning when
+            // `#[allow(deprecated)]` isn't present.
+            #[allow(deprecated)]
+            unsafe impl < #(#params),* > ::zerocopy::#trait_ident for #type_ident < #(#param_idents),* >
+            where
+                #(#bounds,)*
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+
+                #extras
+            }
+        };
     }
 }
 

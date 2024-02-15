@@ -145,3 +145,19 @@ fn test_weird_discriminants() {
     assert_eq!(WeirdDiscriminants::try_read_from(&disc[..]), Some(WeirdDiscriminants::C));
     assert_eq!(WeirdDiscriminants::try_read_from(&[0xFF; SIZE][..]), None);
 }
+
+#[derive(Eq, PartialEq, Debug, KnownLayout, TryFromBytes, IntoBytes)]
+#[repr(C)]
+enum HasFields {
+    B(u32),
+    C { foo: u32 },
+}
+
+#[test]
+fn test_has_fields() {
+    const SIZE: usize = core::mem::size_of::<HasFields>();
+    let bytes: [u8; SIZE] = zerocopy::transmute!(HasFields::B(10));
+    assert_eq!(HasFields::try_read_from(&bytes[..]), Some(HasFields::B(10)));
+    let bytes: [u8; SIZE] = zerocopy::transmute!(HasFields::C { foo: 10 });
+    assert_eq!(HasFields::try_read_from(&bytes[..]), Some(HasFields::C { foo: 10 }));
+}

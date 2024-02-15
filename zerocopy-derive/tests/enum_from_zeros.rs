@@ -36,3 +36,12 @@ enum Baz {
 }
 
 assert_impl_all!(Baz: FromZeros);
+
+#[derive(FromZeros)]
+#[repr(C)]
+enum Bat {
+    A(u32),
+    B { foo: u32 },
+}
+
+assert_impl_all!(Bat: FromZeros);
