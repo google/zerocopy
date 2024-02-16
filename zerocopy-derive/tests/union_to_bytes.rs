@@ -6,39 +6,39 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+// See comment in `include.rs` for why we disable the prelude.
+#![no_implicit_prelude]
 #![allow(warnings)]
 
-use std::{marker::PhantomData, option::IntoIter};
+include!("include.rs");
 
-use {static_assertions::assert_impl_all, zerocopy::IntoBytes};
-
-// A union is `IntoBytes` if:
-// - all fields are `IntoBytes`
+// A union is `imp::IntoBytes` if:
+// - all fields are `imp::IntoBytes`
 // - `repr(C)` or `repr(transparent)` and
 //   - no padding (size of union equals size of each field type)
 // - `repr(packed)`
 
-#[derive(IntoBytes, Clone, Copy)]
+#[derive(imp::IntoBytes, Clone, Copy)]
 #[repr(C)]
 union CZst {
     a: (),
 }
 
-assert_impl_all!(CZst: IntoBytes);
+util_assert_impl_all!(CZst: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(C)]
 union C {
     a: u8,
     b: u8,
 }
 
-assert_impl_all!(C: IntoBytes);
+util_assert_impl_all!(C: imp::IntoBytes);
 
 // Transparent unions are unstable; see issue #60405
 // <https://github.com/rust-lang/rust/issues/60405> for more information.
 
-// #[derive(IntoBytes)]
+// #[derive(imp::IntoBytes)]
 // #[repr(transparent)]
 // union Transparent {
 //     a: u8,
@@ -47,24 +47,24 @@ assert_impl_all!(C: IntoBytes);
 
 // is_as_bytes!(Transparent);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(C, packed)]
 union CZstPacked {
     a: (),
 }
 
-assert_impl_all!(CZstPacked: IntoBytes);
+util_assert_impl_all!(CZstPacked: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(C, packed)]
 union CPacked {
     a: u8,
     b: i8,
 }
 
-assert_impl_all!(CPacked: IntoBytes);
+util_assert_impl_all!(CPacked: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(C, packed)]
 union CMultibytePacked {
     a: i32,
@@ -72,4 +72,4 @@ union CMultibytePacked {
     c: f32,
 }
 
-assert_impl_all!(CMultibytePacked: IntoBytes);
+util_assert_impl_all!(CMultibytePacked: imp::IntoBytes);

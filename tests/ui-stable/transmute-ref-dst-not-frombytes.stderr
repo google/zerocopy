@@ -1,13 +1,13 @@
-error[E0277]: the trait bound `Dst: FromBytes` is not satisfied
-  --> tests/ui-stable/transmute-ref-dst-not-frombytes.rs:22:34
+error[E0277]: the trait bound `Dst: zerocopy::FromBytes` is not satisfied
+  --> tests/ui-stable/transmute-ref-dst-not-frombytes.rs:23:34
    |
-22 | const DST_NOT_FROM_BYTES: &Dst = transmute_ref!(&AU16(0));
+23 | const DST_NOT_FROM_BYTES: &Dst = transmute_ref!(&AU16(0));
    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^
    |                                  |
-   |                                  the trait `FromBytes` is not implemented for `Dst`
+   |                                  the trait `zerocopy::FromBytes` is not implemented for `Dst`
    |                                  required by a bound introduced by this call
    |
-   = help: the following other types implement trait `FromBytes`:
+   = help: the following other types implement trait `zerocopy::FromBytes`:
              isize
              i8
              i16
@@ -18,8 +18,8 @@ error[E0277]: the trait bound `Dst: FromBytes` is not satisfied
              u8
            and $N others
 note: required by a bound in `AssertDstIsFromBytes`
-  --> tests/ui-stable/transmute-ref-dst-not-frombytes.rs:22:34
+  --> tests/ui-stable/transmute-ref-dst-not-frombytes.rs:23:34
    |
-22 | const DST_NOT_FROM_BYTES: &Dst = transmute_ref!(&AU16(0));
+23 | const DST_NOT_FROM_BYTES: &Dst = transmute_ref!(&AU16(0));
    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertDstIsFromBytes`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)

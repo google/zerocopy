@@ -6,10 +6,16 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+// See comment in `include.rs` for why we disable the prelude.
+#![no_implicit_prelude]
+#![allow(warnings)]
+
+include!("include.rs");
+
 // TODO(#847): Make this test succeed on earlier Rust versions.
-#[rustversion::stable(1.59)]
+#[::rustversion::stable(1.59)]
 mod test {
-    use zerocopy::{FromBytes, FromZeros, IntoBytes, KnownLayout, Unaligned};
+    use super::*;
 
     // These derives do not result in E0446 as of Rust 1.59.0, because of
     // https://github.com/rust-lang/rust/pull/90586.
@@ -18,11 +24,11 @@ mod test {
     // bounds for field types (i.e., the emission of E0446 for private field
     // types).
 
-    #[derive(KnownLayout, IntoBytes, FromZeros, FromBytes, Unaligned)]
+    #[derive(imp::KnownLayout, imp::IntoBytes, imp::FromZeros, imp::FromBytes, imp::Unaligned)]
     #[repr(C)]
     pub struct Public(Private);
 
-    #[derive(KnownLayout, IntoBytes, FromZeros, FromBytes, Unaligned)]
+    #[derive(imp::KnownLayout, imp::IntoBytes, imp::FromZeros, imp::FromBytes, imp::Unaligned)]
     #[repr(C)]
     struct Private(());
 }

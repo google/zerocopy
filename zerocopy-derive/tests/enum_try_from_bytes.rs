@@ -6,79 +6,78 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+// See comment in `include.rs` for why we disable the prelude.
+#![no_implicit_prelude]
 #![allow(warnings)]
 
-use std::convert::TryFrom;
+include!("include.rs");
 
-use syn::Field;
-
-mod util;
-
-use {
-    static_assertions::assert_impl_all,
-    zerocopy::{IntoBytes, KnownLayout, TryFromBytes},
-};
-
-#[derive(Eq, PartialEq, Debug, KnownLayout, TryFromBytes)]
+#[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::TryFromBytes)]
 #[repr(u8)]
 enum Foo {
     A,
 }
 
-assert_impl_all!(Foo: TryFromBytes);
+util_assert_impl_all!(Foo: imp::TryFromBytes);
 
 #[test]
 fn test_foo() {
-    assert_eq!(Foo::try_read_from(&[0]), Some(Foo::A));
-    assert_eq!(Foo::try_read_from(&[]), None);
-    assert_eq!(Foo::try_read_from(&[1]), None);
-    assert_eq!(Foo::try_read_from(&[0, 0]), None);
+    imp::assert_eq!(<Foo as imp::TryFromBytes>::try_read_from(&[0]), imp::Some(Foo::A));
+    imp::assert_eq!(<Foo as imp::TryFromBytes>::try_read_from(&[]), imp::None);
+    imp::assert_eq!(<Foo as imp::TryFromBytes>::try_read_from(&[1]), imp::None);
+    imp::assert_eq!(<Foo as imp::TryFromBytes>::try_read_from(&[0, 0]), imp::None);
 }
 
-#[derive(Eq, PartialEq, Debug, KnownLayout, TryFromBytes)]
+#[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::TryFromBytes)]
 #[repr(u16)]
 enum Bar {
     A = 0,
 }
 
-assert_impl_all!(Bar: TryFromBytes);
+util_assert_impl_all!(Bar: imp::TryFromBytes);
 
 #[test]
 fn test_bar() {
-    assert_eq!(Bar::try_read_from(&[0, 0]), Some(Bar::A));
-    assert_eq!(Bar::try_read_from(&[]), None);
-    assert_eq!(Bar::try_read_from(&[0]), None);
-    assert_eq!(Bar::try_read_from(&[0, 1]), None);
-    assert_eq!(Bar::try_read_from(&[0, 0, 0]), None);
+    imp::assert_eq!(<Bar as imp::TryFromBytes>::try_read_from(&[0, 0]), imp::Some(Bar::A));
+    imp::assert_eq!(<Bar as imp::TryFromBytes>::try_read_from(&[]), imp::None);
+    imp::assert_eq!(<Bar as imp::TryFromBytes>::try_read_from(&[0]), imp::None);
+    imp::assert_eq!(<Bar as imp::TryFromBytes>::try_read_from(&[0, 1]), imp::None);
+    imp::assert_eq!(<Bar as imp::TryFromBytes>::try_read_from(&[0, 0, 0]), imp::None);
 }
 
-#[derive(Eq, PartialEq, Debug, KnownLayout, TryFromBytes)]
+#[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::TryFromBytes)]
 #[repr(u32)]
 enum Baz {
     A = 1,
     B = 0,
 }
 
-assert_impl_all!(Baz: TryFromBytes);
+util_assert_impl_all!(Baz: imp::TryFromBytes);
 
 #[test]
 fn test_baz() {
-    assert_eq!(Baz::try_read_from(1u32.as_bytes()), Some(Baz::A));
-    assert_eq!(Baz::try_read_from(0u32.as_bytes()), Some(Baz::B));
-    assert_eq!(Baz::try_read_from(&[]), None);
-    assert_eq!(Baz::try_read_from(&[0]), None);
-    assert_eq!(Baz::try_read_from(&[0, 0]), None);
-    assert_eq!(Baz::try_read_from(&[0, 0, 0]), None);
-    assert_eq!(Baz::try_read_from(&[0, 0, 0, 0, 0]), None);
+    imp::assert_eq!(
+        <Baz as imp::TryFromBytes>::try_read_from(imp::AsBytes::as_bytes(&1u32)),
+        imp::Some(Baz::A)
+    );
+    imp::assert_eq!(
+        <Baz as imp::TryFromBytes>::try_read_from(imp::AsBytes::as_bytes(&0u32)),
+        imp::Some(Baz::B)
+    );
+    imp::assert_eq!(<Baz as imp::TryFromBytes>::try_read_from(&[]), imp::None);
+    imp::assert_eq!(<Baz as imp::TryFromBytes>::try_read_from(&[0]), imp::None);
+    imp::assert_eq!(<Baz as imp::TryFromBytes>::try_read_from(&[0, 0]), imp::None);
+    imp::assert_eq!(<Baz as imp::TryFromBytes>::try_read_from(&[0, 0, 0]), imp::None);
+    imp::assert_eq!(<Baz as imp::TryFromBytes>::try_read_from(&[0, 0, 0, 0, 0]), imp::None);
 }
 
 // Test hygiene - make sure that `i8` being shadowed doesn't cause problems for
 // the code emitted by the derive.
 type i8 = bool;
 
-const THREE: core::primitive::i8 = 3;
+const THREE: ::core::primitive::i8 = 3;
 
-#[derive(Eq, PartialEq, Debug, KnownLayout, TryFromBytes)]
+#[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::TryFromBytes)]
 #[repr(i8)]
 enum Blah {
     A = 1,
@@ -87,20 +86,32 @@ enum Blah {
     D = 3 + THREE,
 }
 
-assert_impl_all!(Blah: TryFromBytes);
+util_assert_impl_all!(Blah: imp::TryFromBytes);
 
 #[test]
 fn test_blah() {
-    assert_eq!(Blah::try_read_from(1i8.as_bytes()), Some(Blah::A));
-    assert_eq!(Blah::try_read_from(0i8.as_bytes()), Some(Blah::B));
-    assert_eq!(Blah::try_read_from(3i8.as_bytes()), Some(Blah::C));
-    assert_eq!(Blah::try_read_from(6i8.as_bytes()), Some(Blah::D));
-    assert_eq!(Blah::try_read_from(&[]), None);
-    assert_eq!(Blah::try_read_from(&[4]), None);
-    assert_eq!(Blah::try_read_from(&[0, 0]), None);
+    imp::assert_eq!(
+        <Blah as imp::TryFromBytes>::try_read_from(imp::AsBytes::as_bytes(&1i8)),
+        imp::Some(Blah::A)
+    );
+    imp::assert_eq!(
+        <Blah as imp::TryFromBytes>::try_read_from(imp::AsBytes::as_bytes(&0i8)),
+        imp::Some(Blah::B)
+    );
+    imp::assert_eq!(
+        <Blah as imp::TryFromBytes>::try_read_from(imp::AsBytes::as_bytes(&3i8)),
+        imp::Some(Blah::C)
+    );
+    imp::assert_eq!(
+        <Blah as imp::TryFromBytes>::try_read_from(imp::AsBytes::as_bytes(&6i8)),
+        imp::Some(Blah::D)
+    );
+    imp::assert_eq!(<Blah as imp::TryFromBytes>::try_read_from(&[]), imp::None);
+    imp::assert_eq!(<Blah as imp::TryFromBytes>::try_read_from(&[4]), imp::None);
+    imp::assert_eq!(<Blah as imp::TryFromBytes>::try_read_from(&[0, 0]), imp::None);
 }
 
-#[derive(Eq, PartialEq, Debug, KnownLayout, TryFromBytes, IntoBytes)]
+#[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp:: TryFromBytes, imp::IntoBytes)]
 #[repr(C)]
 enum FieldlessButNotUnitOnly {
     A,
@@ -110,23 +121,29 @@ enum FieldlessButNotUnitOnly {
 
 #[test]
 fn test_fieldless_but_not_unit_only() {
-    const SIZE: usize = core::mem::size_of::<FieldlessButNotUnitOnly>();
-    let disc: [u8; SIZE] = zerocopy::transmute!(FieldlessButNotUnitOnly::A);
-    assert_eq!(FieldlessButNotUnitOnly::try_read_from(&disc[..]), Some(FieldlessButNotUnitOnly::A));
-    let disc: [u8; SIZE] = zerocopy::transmute!(FieldlessButNotUnitOnly::B());
-    assert_eq!(
-        FieldlessButNotUnitOnly::try_read_from(&disc[..]),
-        Some(FieldlessButNotUnitOnly::B())
+    const SIZE: usize = ::core::mem::size_of::<FieldlessButNotUnitOnly>();
+    let disc: [u8; SIZE] = ::zerocopy::transmute!(FieldlessButNotUnitOnly::A);
+    imp::assert_eq!(
+        <FieldlessButNotUnitOnly as imp::TryFromBytes>::try_read_from(&disc[..]),
+        imp::Some(FieldlessButNotUnitOnly::A)
     );
-    let disc: [u8; SIZE] = zerocopy::transmute!(FieldlessButNotUnitOnly::C {});
-    assert_eq!(
-        FieldlessButNotUnitOnly::try_read_from(&disc[..]),
-        Some(FieldlessButNotUnitOnly::C {})
+    let disc: [u8; SIZE] = ::zerocopy::transmute!(FieldlessButNotUnitOnly::B());
+    imp::assert_eq!(
+        <FieldlessButNotUnitOnly as imp::TryFromBytes>::try_read_from(&disc[..]),
+        imp::Some(FieldlessButNotUnitOnly::B())
     );
-    assert_eq!(FieldlessButNotUnitOnly::try_read_from(&[0xFF; SIZE][..]), None);
+    let disc: [u8; SIZE] = ::zerocopy::transmute!(FieldlessButNotUnitOnly::C {});
+    imp::assert_eq!(
+        <FieldlessButNotUnitOnly as imp::TryFromBytes>::try_read_from(&disc[..]),
+        imp::Some(FieldlessButNotUnitOnly::C {})
+    );
+    imp::assert_eq!(
+        <FieldlessButNotUnitOnly as imp::TryFromBytes>::try_read_from(&[0xFF; SIZE][..]),
+        imp::None
+    );
 }
 
-#[derive(Eq, PartialEq, Debug, KnownLayout, TryFromBytes, IntoBytes)]
+#[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::TryFromBytes, imp::IntoBytes)]
 #[repr(C)]
 enum WeirdDiscriminants {
     A = -7,
@@ -136,12 +153,24 @@ enum WeirdDiscriminants {
 
 #[test]
 fn test_weird_discriminants() {
-    const SIZE: usize = core::mem::size_of::<WeirdDiscriminants>();
-    let disc: [u8; SIZE] = zerocopy::transmute!(WeirdDiscriminants::A);
-    assert_eq!(WeirdDiscriminants::try_read_from(&disc[..]), Some(WeirdDiscriminants::A));
-    let disc: [u8; SIZE] = zerocopy::transmute!(WeirdDiscriminants::B);
-    assert_eq!(WeirdDiscriminants::try_read_from(&disc[..]), Some(WeirdDiscriminants::B));
-    let disc: [u8; SIZE] = zerocopy::transmute!(WeirdDiscriminants::C);
-    assert_eq!(WeirdDiscriminants::try_read_from(&disc[..]), Some(WeirdDiscriminants::C));
-    assert_eq!(WeirdDiscriminants::try_read_from(&[0xFF; SIZE][..]), None);
+    const SIZE: usize = ::core::mem::size_of::<WeirdDiscriminants>();
+    let disc: [u8; SIZE] = ::zerocopy::transmute!(WeirdDiscriminants::A);
+    imp::assert_eq!(
+        <WeirdDiscriminants as imp::TryFromBytes>::try_read_from(&disc[..]),
+        imp::Some(WeirdDiscriminants::A)
+    );
+    let disc: [u8; SIZE] = ::zerocopy::transmute!(WeirdDiscriminants::B);
+    imp::assert_eq!(
+        <WeirdDiscriminants as imp::TryFromBytes>::try_read_from(&disc[..]),
+        imp::Some(WeirdDiscriminants::B)
+    );
+    let disc: [u8; SIZE] = ::zerocopy::transmute!(WeirdDiscriminants::C);
+    imp::assert_eq!(
+        <WeirdDiscriminants as imp::TryFromBytes>::try_read_from(&disc[..]),
+        imp::Some(WeirdDiscriminants::C)
+    );
+    imp::assert_eq!(
+        <WeirdDiscriminants as imp::TryFromBytes>::try_read_from(&[0xFF; SIZE][..]),
+        imp::None
+    );
 }

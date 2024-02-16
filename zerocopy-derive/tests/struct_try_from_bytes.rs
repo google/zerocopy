@@ -6,70 +6,63 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+// See comment in `include.rs` for why we disable the prelude.
+#![no_implicit_prelude]
 #![allow(warnings)]
 
-mod util;
+include!("include.rs");
 
-use std::{marker::PhantomData, option::IntoIter};
-
-use {
-    static_assertions::assert_impl_all,
-    zerocopy::{FromBytes, FromZeros, KnownLayout, TryFromBytes},
-};
-
-use crate::util::AU16;
-
-// A struct is `TryFromBytes` if:
-// - all fields are `TryFromBytes`
+// A struct is `imp::TryFromBytes` if:
+// - all fields are `imp::TryFromBytes`
 
 #[test]
 fn zst() {
     // TODO(#5): Use `try_transmute` in this test once it's available.
-    let candidate = zerocopy::Ptr::from_ref(&());
+    let candidate = ::zerocopy::Ptr::from_ref(&());
     let candidate = candidate.forget_aligned().forget_valid();
-    let is_bit_valid = <()>::is_bit_valid(candidate);
-    assert!(is_bit_valid);
+    let is_bit_valid = <() as imp::TryFromBytes>::is_bit_valid(candidate);
+    imp::assert!(is_bit_valid);
 }
 
-#[derive(TryFromBytes, FromZeros, FromBytes)]
+#[derive(imp::TryFromBytes, imp::FromZeros, imp::FromBytes)]
 #[repr(C)]
 struct One {
     a: u8,
 }
 
-assert_impl_all!(One: TryFromBytes);
+util_assert_impl_all!(One: imp::TryFromBytes);
 
 #[test]
 fn one() {
     // TODO(#5): Use `try_transmute` in this test once it's available.
-    let candidate = zerocopy::Ptr::from_ref(&One { a: 42 });
+    let candidate = ::zerocopy::Ptr::from_ref(&One { a: 42 });
     let candidate = candidate.forget_aligned().forget_valid();
-    let is_bit_valid = One::is_bit_valid(candidate);
-    assert!(is_bit_valid);
+    let is_bit_valid = <One as imp::TryFromBytes>::is_bit_valid(candidate);
+    imp::assert!(is_bit_valid);
 }
 
-#[derive(TryFromBytes, FromZeros)]
+#[derive(imp::TryFromBytes, imp::FromZeros)]
 #[repr(C)]
 struct Two {
     a: bool,
     b: (),
 }
 
-assert_impl_all!(Two: TryFromBytes);
+util_assert_impl_all!(Two: imp::TryFromBytes);
 
 #[test]
 fn two() {
     // TODO(#5): Use `try_transmute` in this test once it's available.
-    let candidate = zerocopy::Ptr::from_ref(&Two { a: false, b: () });
+    let candidate = ::zerocopy::Ptr::from_ref(&Two { a: false, b: () });
     let candidate = candidate.forget_aligned().forget_valid();
-    let is_bit_valid = Two::is_bit_valid(candidate);
-    assert!(is_bit_valid);
+    let is_bit_valid = <Two as imp::TryFromBytes>::is_bit_valid(candidate);
+    imp::assert!(is_bit_valid);
 }
 
 #[test]
 fn two_bad() {
     // TODO(#5): Use `try_transmute` in this test once it's available.
-    let candidate = zerocopy::Ptr::from_ref(&[2u8][..]);
+    let candidate = ::zerocopy::Ptr::from_ref(&[2u8][..]);
     let candidate = candidate.forget_aligned().forget_valid();
 
     // SAFETY:
@@ -82,22 +75,22 @@ fn two_bad() {
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
     let candidate = unsafe { candidate.assume_initialized() };
 
-    let is_bit_valid = Two::is_bit_valid(candidate);
-    assert!(!is_bit_valid);
+    let is_bit_valid = <Two as imp::TryFromBytes>::is_bit_valid(candidate);
+    imp::assert!(!is_bit_valid);
 }
 
-#[derive(TryFromBytes, FromZeros, FromBytes)]
+#[derive(imp::TryFromBytes, imp::FromZeros, imp::FromBytes)]
 #[repr(C)]
 struct Unsized {
     a: [u8],
 }
 
-assert_impl_all!(Unsized: TryFromBytes);
+util_assert_impl_all!(Unsized: imp::TryFromBytes);
 
 #[test]
 fn un_sized() {
     // TODO(#5): Use `try_transmute` in this test once it's available.
-    let candidate = zerocopy::Ptr::from_ref(&[16, 12, 42][..]);
+    let candidate = ::zerocopy::Ptr::from_ref(&[16, 12, 42][..]);
     let candidate = candidate.forget_aligned().forget_valid();
 
     // SAFETY:
@@ -110,41 +103,41 @@ fn un_sized() {
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
     let candidate = unsafe { candidate.assume_initialized() };
-    let is_bit_valid = Unsized::is_bit_valid(candidate);
-    assert!(is_bit_valid);
+    let is_bit_valid = <Unsized as imp::TryFromBytes>::is_bit_valid(candidate);
+    imp::assert!(is_bit_valid);
 }
 
-#[derive(TryFromBytes, FromZeros, FromBytes)]
+#[derive(imp::TryFromBytes, imp::FromZeros, imp::FromBytes)]
 #[repr(C)]
-struct TypeParams<'a, T: ?Sized, I: Iterator> {
+struct TypeParams<'a, T: ?imp::Sized, I: imp::Iterator> {
     a: I::Item,
     b: u8,
-    c: PhantomData<&'a [u8]>,
-    d: PhantomData<&'static str>,
-    e: PhantomData<String>,
+    c: imp::PhantomData<&'a [u8]>,
+    d: imp::PhantomData<&'static str>,
+    e: imp::PhantomData<imp::String>,
     f: T,
 }
 
-assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: TryFromBytes);
-assert_impl_all!(TypeParams<'static, AU16, IntoIter<()>>: TryFromBytes);
-assert_impl_all!(TypeParams<'static, [AU16], IntoIter<()>>: TryFromBytes);
+util_assert_impl_all!(TypeParams<'static, (), imp::IntoIter<()>>: imp::TryFromBytes);
+util_assert_impl_all!(TypeParams<'static, util::AU16, imp::IntoIter<()>>: imp::TryFromBytes);
+util_assert_impl_all!(TypeParams<'static, [util::AU16], imp::IntoIter<()>>: imp::TryFromBytes);
 
-// Deriving `TryFromBytes` should work if the struct has bounded parameters.
+// Deriving `imp::TryFromBytes` should work if the struct has bounded parameters.
 
-#[derive(TryFromBytes, FromZeros, FromBytes)]
+#[derive(imp::TryFromBytes, imp::FromZeros, imp::FromBytes)]
 #[repr(transparent)]
-struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + TryFromBytes, const N: usize>(
-    PhantomData<&'a &'b ()>,
+struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::TryFromBytes, const N: usize>(
+    imp::PhantomData<&'a &'b ()>,
     [T],
 )
 where
     'a: 'b,
     'b: 'a,
-    T: 'a + 'b + TryFromBytes;
+    T: 'a + 'b + imp::TryFromBytes;
 
-assert_impl_all!(WithParams<'static, 'static, u8, 42>: TryFromBytes);
+util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::TryFromBytes);
 
-#[derive(Debug, PartialEq, Eq, TryFromBytes, KnownLayout)]
+#[derive(Debug, PartialEq, Eq, imp::TryFromBytes, imp::KnownLayout)]
 #[repr(C, packed)]
 struct CPacked {
     a: u8,
@@ -161,11 +154,11 @@ struct CPacked {
 #[test]
 fn c_packed() {
     let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF];
-    let converted = CPacked::try_from_ref(candidate);
-    assert_eq!(converted, Some(&CPacked { a: 42, b: u32::MAX }));
+    let converted = <CPacked as imp::TryFromBytes>::try_from_ref(candidate);
+    imp::assert_eq!(converted, imp::Some(&CPacked { a: 42, b: u32::MAX }));
 }
 
-#[derive(TryFromBytes, KnownLayout)]
+#[derive(imp::TryFromBytes, imp::KnownLayout)]
 #[repr(C, packed)]
 struct CPackedUnsized {
     a: u8,
@@ -182,11 +175,11 @@ struct CPackedUnsized {
 #[test]
 fn c_packed_unsized() {
     let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF];
-    let converted = CPackedUnsized::try_from_ref(candidate);
-    assert!(converted.is_some());
+    let converted = <CPackedUnsized as imp::TryFromBytes>::try_from_ref(candidate);
+    imp::assert!(converted.is_some());
 }
 
-#[derive(TryFromBytes)]
+#[derive(imp::TryFromBytes)]
 #[repr(packed)]
 struct PackedUnsized {
     a: u8,
@@ -203,14 +196,14 @@ struct PackedUnsized {
 #[test]
 fn packed_unsized() {
     let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF];
-    let converted = CPackedUnsized::try_from_ref(candidate);
-    assert!(converted.is_some());
+    let converted = <CPackedUnsized as imp::TryFromBytes>::try_from_ref(candidate);
+    imp::assert!(converted.is_some());
 
     let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF];
-    let converted = CPackedUnsized::try_from_ref(candidate);
-    assert!(converted.is_none());
+    let converted = <CPackedUnsized as imp::TryFromBytes>::try_from_ref(candidate);
+    imp::assert!(converted.is_none());
 
     let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF];
-    let converted = CPackedUnsized::try_from_ref(candidate);
-    assert!(converted.is_some());
+    let converted = <CPackedUnsized as imp::TryFromBytes>::try_from_ref(candidate);
+    imp::assert!(converted.is_some());
 }
