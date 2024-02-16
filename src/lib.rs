@@ -3502,13 +3502,15 @@ safety_comment! {
     /// - `NoCell`: `MaybeUninit<T>` has `UnsafeCell`s exactly when `T` does, so
     ///   `T: NoCell` guarantees that `MaybeUninit<T>` has no `UnsafeCell`s.
     /// - `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`:
-    ///   `MaybeUninit<T>` has no restrictions on its contents.
+    ///   `MaybeUninit<T>` has no restrictions on its contents. `TryFromBytes`
+    ///   may not be implemented for types which contain `UnsafeCell`, which we
+    ///   satisfy thanks to the `T: NoCell` bound.
     /// - `Unaligned`: "MaybeUninit<T> is guaranteed to have the same size,
     ///    alignment, and ABI as T" [1]
     ///
     /// [1] https://doc.rust-lang.org/stable/core/mem/union.MaybeUninit.html#layout-1
     unsafe_impl!(T: NoCell => NoCell for MaybeUninit<T>);
-    unsafe_impl!(T => TryFromBytes for MaybeUninit<T>);
+    unsafe_impl!(T: NoCell => TryFromBytes for MaybeUninit<T>);
     unsafe_impl!(T => FromZeros for MaybeUninit<T>);
     unsafe_impl!(T => FromBytes for MaybeUninit<T>);
     unsafe_impl!(T: Unaligned => Unaligned for MaybeUninit<T>);
@@ -8429,8 +8431,8 @@ mod tests {
         assert_impls!(ManuallyDrop<[UnsafeCell<()>]>: KnownLayout, FromZeros, FromBytes, IntoBytes, Unaligned, !NoCell, !TryFromBytes);
 
         assert_impls!(MaybeUninit<u8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, Unaligned, !IntoBytes);
-        assert_impls!(MaybeUninit<NotZerocopy>: KnownLayout, TryFromBytes, FromZeros, FromBytes, !NoCell, !IntoBytes, !Unaligned);
-        assert_impls!(MaybeUninit<UnsafeCell<()>>: KnownLayout, TryFromBytes, FromZeros, FromBytes, Unaligned, !NoCell, !IntoBytes);
+        assert_impls!(MaybeUninit<NotZerocopy>: KnownLayout, FromZeros, FromBytes, !NoCell, !TryFromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(MaybeUninit<UnsafeCell<()>>: KnownLayout, FromZeros, FromBytes, Unaligned, !TryFromBytes, !NoCell, !IntoBytes);
 
         assert_impls!(Wrapping<u8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
         assert_impls!(Wrapping<NotZerocopy>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
