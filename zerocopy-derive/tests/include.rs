@@ -1,0 +1,85 @@
+// Copyright 2019 The Fuchsia Authors
+//
+// Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+// <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+// license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+// This file may not be copied, modified, or distributed except according to
+// those terms.
+
+// ON THE PRELUDE: All of the tests in this directory (excepting UI tests)
+// disable the prelude via `#![no_implicit_prelude]`. This ensures that all code
+// emitted by our derives doesn't accidentally assume that the prelude is
+// included, which helps ensure that items are referred to by absolute path,
+// which in turn ensures that these items can't accidentally refer to names
+// which have been shadowed. For example, the code `x == None` could behave
+// incorrectly if, in the scope in which the derive is invoked, `None` has been
+// shadowed by `CONST None: Option<usize> = Some(1)`.
+//
+// `mod imp` allows us to import items and refer to them in this module without
+// introducing the risk that this hides bugs in which derive-emitted code uses
+// names which are not fully-qualified. For such a bug to manifest, it would
+// need to be of the form `imp::Foo`, which is unlikely to happen by accident.
+mod imp {
+    // Since this file is included in every test file, and since not every test
+    // file uses every item here, we allow unused imports to avoid generating
+    // warnings.
+    #[allow(unused)]
+    pub use {
+        ::core::{
+            assert_eq, cell::UnsafeCell, convert::TryFrom, marker::PhantomData, mem::ManuallyDrop,
+            option::IntoIter, prelude::v1::*, primitive::*,
+        },
+        ::std::prelude::v1::*,
+        ::zerocopy::*,
+    };
+}
+
+// These items go in their own module (rather than the top level) for the same
+// reason that we use `mod imp` above. See its comment for more details.
+pub mod util {
+    /// A type that doesn't implement any zerocopy traits.
+    pub struct NotZerocopy<T = ()>(pub T);
+
+    /// A `u16` with alignment 2.
+    ///
+    /// Though `u16` has alignment 2 on some platforms, it's not guaranteed. By
+    /// contrast, `util::AU16` is guaranteed to have alignment 2.
+    #[derive(
+        super::imp::KnownLayout,
+        super::imp::NoCell,
+        super::imp::TryFromBytes,
+        super::imp::FromZeros,
+        super::imp::FromBytes,
+        super::imp::IntoBytes,
+        Copy,
+        Clone,
+    )]
+    #[repr(C, align(2))]
+    pub struct AU16(pub u16);
+
+    // Since we can't import these by path (ie, `util::assert_impl_all!`), use a
+    // name prefix to ensure our derive-emitted code isn't accidentally relying
+    // on `assert_impl_all!` being in scope.
+    #[macro_export]
+    macro_rules! util_assert_impl_all {
+        ($type:ty: $($trait:path),+ $(,)?) => {
+            const _: fn() = || {
+                use ::core::prelude::v1::*;
+                ::static_assertions::assert_impl_all!($type: $($trait),+);
+            };
+        };
+    }
+
+    // Since we can't import these by path (ie, `util::assert_not_impl_any!`),
+    // use a name prefix to ensure our derive-emitted code isn't accidentally
+    // relying on `assert_not_impl_any!` being in scope.
+    #[macro_export]
+    macro_rules! util_assert_not_impl_any {
+        ($x:ty: $($t:path),+ $(,)?) => {
+            const _: fn() = || {
+                use ::core::prelude::v1::*;
+                ::static_assertions::assert_not_impl_any!($x: $($t),+);
+            };
+        };
+    }
+}

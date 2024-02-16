@@ -6,72 +6,67 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+// See comment in `include.rs` for why we disable the prelude.
+#![no_implicit_prelude]
 #![allow(warnings)]
 
-#[macro_use]
-mod util;
-
-use std::{marker::PhantomData, option::IntoIter};
-
-use {static_assertions::assert_impl_all, zerocopy::FromZeros};
-
-use crate::util::AU16;
+include!("include.rs");
 
 // A struct is `FromZeros` if:
 // - all fields are `FromZeros`
 
-#[derive(FromZeros)]
+#[derive(imp::FromZeros)]
 struct Zst;
 
-assert_impl_all!(Zst: FromZeros);
+util_assert_impl_all!(Zst: imp::FromZeros);
 
-#[derive(FromZeros)]
+#[derive(imp::FromZeros)]
 struct One {
     a: bool,
 }
 
-assert_impl_all!(One: FromZeros);
+util_assert_impl_all!(One: imp::FromZeros);
 
-#[derive(FromZeros)]
+#[derive(imp::FromZeros)]
 struct Two {
     a: bool,
     b: Zst,
 }
 
-assert_impl_all!(Two: FromZeros);
+util_assert_impl_all!(Two: imp::FromZeros);
 
-#[derive(FromZeros)]
+#[derive(imp::FromZeros)]
 struct Unsized {
     a: [u8],
 }
 
-assert_impl_all!(Unsized: FromZeros);
+util_assert_impl_all!(Unsized: imp::FromZeros);
 
-#[derive(FromZeros)]
-struct TypeParams<'a, T: ?Sized, I: Iterator> {
+#[derive(imp::FromZeros)]
+struct TypeParams<'a, T: ?imp::Sized, I: imp::Iterator> {
     a: I::Item,
     b: u8,
-    c: PhantomData<&'a [u8]>,
-    d: PhantomData<&'static str>,
-    e: PhantomData<String>,
+    c: imp::PhantomData<&'a [u8]>,
+    d: imp::PhantomData<&'static str>,
+    e: imp::PhantomData<imp::String>,
     f: T,
 }
 
-assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: FromZeros);
-assert_impl_all!(TypeParams<'static, AU16, IntoIter<()>>: FromZeros);
-assert_impl_all!(TypeParams<'static, [AU16], IntoIter<()>>: FromZeros);
+util_assert_impl_all!(TypeParams<'static, (), imp::IntoIter<()>>: imp::FromZeros);
+util_assert_impl_all!(TypeParams<'static, util::AU16, imp::IntoIter<()>>: imp::FromZeros);
+util_assert_impl_all!(TypeParams<'static, [util::AU16], imp::IntoIter<()>>: imp::FromZeros);
 
 // Deriving `FromZeros` should work if the struct has bounded parameters.
 
-#[derive(FromZeros)]
+#[derive(imp::FromZeros)]
 #[repr(transparent)]
-struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + FromZeros, const N: usize>(
+struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::FromZeros, const N: usize>(
     [T; N],
-    PhantomData<&'a &'b ()>,
+    imp::PhantomData<&'a &'b ()>,
 )
 where
     'a: 'b,
     'b: 'a,
-    T: 'a + 'b + FromZeros;
+    T: 'a + 'b + imp::FromZeros;
 
-assert_impl_all!(WithParams<'static, 'static, u8, 42>: FromZeros);
+util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::FromZeros);

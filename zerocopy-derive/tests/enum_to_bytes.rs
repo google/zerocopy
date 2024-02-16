@@ -6,96 +6,98 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+// See comment in `include.rs` for why we disable the prelude.
+#![no_implicit_prelude]
 #![allow(warnings)]
 
-use {static_assertions::assert_impl_all, zerocopy::IntoBytes};
+include!("include.rs");
 
 // An enum is `IntoBytes` if if has a defined repr.
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(C)]
 enum C {
     A,
 }
 
-assert_impl_all!(C: IntoBytes);
+util_assert_impl_all!(C: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(u8)]
 enum U8 {
     A,
 }
 
-assert_impl_all!(U8: IntoBytes);
+util_assert_impl_all!(U8: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(u16)]
 enum U16 {
     A,
 }
 
-assert_impl_all!(U16: IntoBytes);
+util_assert_impl_all!(U16: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(u32)]
 enum U32 {
     A,
 }
 
-assert_impl_all!(U32: IntoBytes);
+util_assert_impl_all!(U32: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(u64)]
 enum U64 {
     A,
 }
 
-assert_impl_all!(U64: IntoBytes);
+util_assert_impl_all!(U64: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(usize)]
 enum Usize {
     A,
 }
 
-assert_impl_all!(Usize: IntoBytes);
+util_assert_impl_all!(Usize: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(i8)]
 enum I8 {
     A,
 }
 
-assert_impl_all!(I8: IntoBytes);
+util_assert_impl_all!(I8: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(i16)]
 enum I16 {
     A,
 }
 
-assert_impl_all!(I16: IntoBytes);
+util_assert_impl_all!(I16: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(i32)]
 enum I32 {
     A,
 }
 
-assert_impl_all!(I32: IntoBytes);
+util_assert_impl_all!(I32: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(i64)]
 enum I64 {
     A,
 }
 
-assert_impl_all!(I64: IntoBytes);
+util_assert_impl_all!(I64: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(isize)]
 enum Isize {
     A,
 }
 
-assert_impl_all!(Isize: IntoBytes);
+util_assert_impl_all!(Isize: imp::IntoBytes);

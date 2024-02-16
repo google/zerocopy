@@ -9,10 +9,10 @@
 #[macro_use]
 extern crate zerocopy;
 
-#[path = "../util.rs"]
+#[path = "../include.rs"]
 mod util;
 
-use self::util::{NotZerocopy, AU16};
+use self::util::{util::NotZerocopy, util::AU16};
 use zerocopy::KnownLayout;
 
 fn main() {}
