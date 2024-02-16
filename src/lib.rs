@@ -10,7 +10,7 @@
 // After updating the following doc comment, make sure to run the following
 // command to update `README.md` based on its contents:
 //
-//   ./generate-readme.sh > README.md
+//   cargo -q run --manifest-path tools/Cargo.toml -p generate-readme > README.md
 
 //! *<span style="font-size: 100%; color:grey;">Need more out of zerocopy?
 //! Submit a [customer request issue][customer-request-issue]!</span>*
@@ -164,7 +164,7 @@
     variant_size_differences
 )]
 #![cfg_attr(
-    __INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS,
+    __INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS,
     deny(fuzzy_provenance_casts, lossy_provenance_casts)
 )]
 #![deny(
@@ -233,7 +233,7 @@
 )]
 #![cfg_attr(doc_cfg, feature(doc_cfg))]
 #![cfg_attr(
-    __INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS,
+    __INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS,
     feature(layout_for_ptr, strict_provenance)
 )]
 
@@ -318,9 +318,9 @@ pub use crate::pointer::{Maybe, MaybeAligned, Ptr};
 use crate::util::polyfills::NonNullExt as _;
 
 #[rustversion::nightly]
-#[cfg(all(test, not(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)))]
+#[cfg(all(test, not(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)))]
 const _: () = {
-    #[deprecated = "some tests may be skipped due to missing RUSTFLAGS=\"--cfg __INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS\""]
+    #[deprecated = "some tests may be skipped due to missing RUSTFLAGS=\"--cfg __INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS\""]
     const _WARNING: () = ();
     #[warn(deprecated)]
     _WARNING
@@ -6243,7 +6243,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)]
+    #[cfg(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
     fn test_validate_rust_layout() {
         use core::ptr::NonNull;
 
