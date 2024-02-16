@@ -6,14 +6,11 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+// See comment in `include.rs` for why we disable the prelude.
+#![no_implicit_prelude]
 #![allow(warnings)]
 
-mod util;
-
-use {
-    static_assertions::assert_impl_all,
-    zerocopy::{FromBytes, FromZeros},
-};
+include!("include.rs");
 
 // An enum is `FromBytes` if:
 // - `repr(uN)` or `repr(iN)`
@@ -32,7 +29,7 @@ use {
 // `Variant128` has a discriminant of -128) since Rust won't automatically wrap
 // a signed discriminant around without you explicitly telling it to.
 
-#[derive(FromZeros, FromBytes)]
+#[derive(imp::FromZeros, imp::FromBytes)]
 #[repr(u8)]
 enum FooU8 {
     Variant0,
@@ -293,9 +290,9 @@ enum FooU8 {
     Variant255,
 }
 
-assert_impl_all!(FooU8: FromBytes);
+util_assert_impl_all!(FooU8: imp::FromBytes);
 
-#[derive(FromZeros, FromBytes)]
+#[derive(imp::FromZeros, imp::FromBytes)]
 #[repr(i8)]
 enum FooI8 {
     Variant0,
@@ -556,9 +553,9 @@ enum FooI8 {
     Variant255,
 }
 
-assert_impl_all!(FooI8: FromBytes);
+util_assert_impl_all!(FooI8: imp::FromBytes);
 
-#[derive(FromZeros, FromBytes)]
+#[derive(imp::FromZeros, imp::FromBytes)]
 #[repr(u8, align(2))]
 enum FooU8Align {
     Variant0,
@@ -819,9 +816,9 @@ enum FooU8Align {
     Variant255,
 }
 
-assert_impl_all!(FooU8Align: FromBytes);
+util_assert_impl_all!(FooU8Align: imp::FromBytes);
 
-#[derive(FromZeros, FromBytes)]
+#[derive(imp::FromZeros, imp::FromBytes)]
 #[repr(i8, align(2))]
 enum FooI8Align {
     Variant0,
@@ -1082,9 +1079,9 @@ enum FooI8Align {
     Variant255,
 }
 
-assert_impl_all!(FooI8Align: FromBytes);
+util_assert_impl_all!(FooI8Align: imp::FromBytes);
 
-#[derive(FromZeros, FromBytes)]
+#[derive(imp::FromZeros, imp::FromBytes)]
 #[repr(u16)]
 enum FooU16 {
     Variant0,
@@ -66625,9 +66622,9 @@ enum FooU16 {
     Variant65535,
 }
 
-assert_impl_all!(FooU16: FromBytes);
+util_assert_impl_all!(FooU16: imp::FromBytes);
 
-#[derive(FromZeros, FromBytes)]
+#[derive(imp::FromZeros, imp::FromBytes)]
 #[repr(i16)]
 enum FooI16 {
     Variant0,
@@ -132168,4 +132165,4 @@ enum FooI16 {
     Variant65535,
 }
 
-assert_impl_all!(FooI16: FromBytes);
+util_assert_impl_all!(FooI16: imp::FromBytes);

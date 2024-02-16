@@ -96,6 +96,7 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
         let (_name, trailing_field_ty) = trailing_field;
         let leading_fields_tys = leading_fields.iter().map(|(_name, ty)| ty);
 
+        let core_path = quote!(::zerocopy::macro_util::core_reexport);
         let repr_align = reprs
             .iter()
             .find_map(
@@ -107,8 +108,8 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
                     }
                 },
             )
-            .map(|repr_align| quote!(NonZeroUsize::new(#repr_align as usize)))
-            .unwrap_or(quote!(None));
+            .map(|repr_align| quote!(#core_path::num::NonZeroUsize::new(#repr_align as usize)))
+            .unwrap_or(quote!(#core_path::option::Option::None));
 
         let repr_packed = reprs
             .iter()
@@ -117,8 +118,8 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
                 Repr::PackedN(repr_packed) => Some(*repr_packed),
                 _ => None,
             })
-            .map(|repr_packed| quote!(NonZeroUsize::new(#repr_packed as usize)))
-            .unwrap_or(quote!(None));
+            .map(|repr_packed| quote!(#core_path::num::NonZeroUsize::new(#repr_packed as usize)))
+            .unwrap_or(quote!(#core_path::option::Option::None));
 
         (
             SelfBounds::None,
@@ -358,18 +359,18 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
             // validity of a struct is just the composition of the bit
             // validities of its fields, so this is a sound implementation of
             // `is_bit_valid`.
-            fn is_bit_valid(candidate: zerocopy::Maybe<Self>) -> bool {
+            fn is_bit_valid(candidate: ::zerocopy::Maybe<Self>) -> bool {
                 true #(&& {
                     // SAFETY: `project` is a field projection of `candidate`,
                     // and `Self` is a struct type.
                     let field_candidate = unsafe {
                         let project = |slf: *mut Self|
-                            ::core::ptr::addr_of_mut!((*slf).#field_names);
+                            ::zerocopy::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
 
                         candidate.project(project)
                     };
 
-                    <#field_tys as zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                    <#field_tys as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                 })*
             }
         )
@@ -399,18 +400,18 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
             // bit validity of a union is not yet well defined in Rust, but it
             // is guaranteed to be no more strict than this definition. See #696
             // for a more in-depth discussion.
-            fn is_bit_valid(candidate: zerocopy::Maybe<Self>) -> bool {
+            fn is_bit_valid(candidate: ::zerocopy::Maybe<Self>) -> bool {
                 false #(|| {
                     // SAFETY: `project` is a field projection of `candidate`,
                     // and `Self` is a union type.
                     let field_candidate = unsafe {
                         let project = |slf: *mut Self|
-                            ::core::ptr::addr_of_mut!((*slf).#field_names);
+                            ::zerocopy::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
 
                         candidate.project(project)
                     };
 
-                    <#field_tys as zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                    <#field_tys as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                 })*
             }
         )

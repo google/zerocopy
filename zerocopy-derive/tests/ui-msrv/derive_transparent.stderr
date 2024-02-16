@@ -1,89 +1,89 @@
-error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
-  --> tests/ui-msrv/derive_transparent.rs:37:1
+error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
+  --> tests/ui-msrv/derive_transparent.rs:34:1
    |
-37 | assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
+34 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
    |
-note: required because of the requirements on the impl of `TryFromBytes` for `TransparentStruct<NotZerocopy>`
-  --> tests/ui-msrv/derive_transparent.rs:27:21
+note: required because of the requirements on the impl of `zerocopy::TryFromBytes` for `TransparentStruct<NotZerocopy>`
+  --> tests/ui-msrv/derive_transparent.rs:24:21
    |
-27 | #[derive(IntoBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
+24 | #[derive(IntoBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
    |                     ^^^^^^^^^^^^
-note: required by a bound in `_::{closure#0}::assert_impl_all`
-  --> tests/ui-msrv/derive_transparent.rs:37:1
+note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
+  --> tests/ui-msrv/derive_transparent.rs:34:1
    |
-37 | assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `_::{closure#0}::assert_impl_all`
-   = note: this error originates in the macro `assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
+34 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
+   = note: this error originates in the macro `::static_assertions::assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: FromZeroes` is not satisfied
-  --> tests/ui-msrv/derive_transparent.rs:38:1
+  --> tests/ui-msrv/derive_transparent.rs:35:1
    |
-38 | assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromZeroes` is not implemented for `NotZerocopy`
+35 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromZeroes` is not implemented for `NotZerocopy`
    |
 note: required because of the requirements on the impl of `FromZeroes` for `TransparentStruct<NotZerocopy>`
-  --> tests/ui-msrv/derive_transparent.rs:27:35
+  --> tests/ui-msrv/derive_transparent.rs:24:35
    |
-27 | #[derive(IntoBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
+24 | #[derive(IntoBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
    |                                   ^^^^^^^^^
-note: required by a bound in `_::{closure#0}::assert_impl_all`
-  --> tests/ui-msrv/derive_transparent.rs:38:1
+note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
+  --> tests/ui-msrv/derive_transparent.rs:35:1
    |
-38 | assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `_::{closure#0}::assert_impl_all`
-   = note: this error originates in the macro `assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
+35 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
+   = note: this error originates in the macro `::static_assertions::assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotZerocopy: FromBytes` is not satisfied
-  --> tests/ui-msrv/derive_transparent.rs:39:1
+error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfied
+  --> tests/ui-msrv/derive_transparent.rs:36:1
    |
-39 | assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `NotZerocopy`
+36 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
    |
-note: required because of the requirements on the impl of `FromBytes` for `TransparentStruct<NotZerocopy>`
-  --> tests/ui-msrv/derive_transparent.rs:27:46
+note: required because of the requirements on the impl of `zerocopy::FromBytes` for `TransparentStruct<NotZerocopy>`
+  --> tests/ui-msrv/derive_transparent.rs:24:46
    |
-27 | #[derive(IntoBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
+24 | #[derive(IntoBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
    |                                              ^^^^^^^^^
-note: required by a bound in `_::{closure#0}::assert_impl_all`
-  --> tests/ui-msrv/derive_transparent.rs:39:1
+note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
+  --> tests/ui-msrv/derive_transparent.rs:36:1
    |
-39 | assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `_::{closure#0}::assert_impl_all`
-   = note: this error originates in the macro `assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
+36 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
+   = note: this error originates in the macro `::static_assertions::assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: AsBytes` is not satisfied
-  --> tests/ui-msrv/derive_transparent.rs:40:1
+  --> tests/ui-msrv/derive_transparent.rs:37:1
    |
-40 | assert_impl_all!(TransparentStruct<NotZerocopy>: IntoBytes);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `AsBytes` is not implemented for `NotZerocopy`
+37 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: IntoBytes);
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `AsBytes` is not implemented for `NotZerocopy`
    |
 note: required because of the requirements on the impl of `AsBytes` for `TransparentStruct<NotZerocopy>`
-  --> tests/ui-msrv/derive_transparent.rs:27:10
+  --> tests/ui-msrv/derive_transparent.rs:24:10
    |
-27 | #[derive(IntoBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
+24 | #[derive(IntoBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
    |          ^^^^^^^^^
-note: required by a bound in `_::{closure#0}::assert_impl_all`
-  --> tests/ui-msrv/derive_transparent.rs:40:1
+note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
+  --> tests/ui-msrv/derive_transparent.rs:37:1
    |
-40 | assert_impl_all!(TransparentStruct<NotZerocopy>: IntoBytes);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `_::{closure#0}::assert_impl_all`
-   = note: this error originates in the macro `assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
+37 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: IntoBytes);
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
+   = note: this error originates in the macro `::static_assertions::assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: Unaligned` is not satisfied
-  --> tests/ui-msrv/derive_transparent.rs:41:1
+  --> tests/ui-msrv/derive_transparent.rs:38:1
    |
-41 | assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Unaligned` is not implemented for `NotZerocopy`
+38 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Unaligned` is not implemented for `NotZerocopy`
    |
 note: required because of the requirements on the impl of `Unaligned` for `TransparentStruct<NotZerocopy>`
-  --> tests/ui-msrv/derive_transparent.rs:27:57
+  --> tests/ui-msrv/derive_transparent.rs:24:57
    |
-27 | #[derive(IntoBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
+24 | #[derive(IntoBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
    |                                                         ^^^^^^^^^
-note: required by a bound in `_::{closure#0}::assert_impl_all`
-  --> tests/ui-msrv/derive_transparent.rs:41:1
+note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
+  --> tests/ui-msrv/derive_transparent.rs:38:1
    |
-41 | assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `_::{closure#0}::assert_impl_all`
-   = note: this error originates in the macro `assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
+38 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
+   = note: this error originates in the macro `::static_assertions::assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)

@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-include!("../../zerocopy-derive/tests/util.rs");
+include!("../../zerocopy-derive/tests/include.rs");
 
 #[macro_use]
 extern crate zerocopy;
+
+use util::NotZerocopy;
 
 fn main() {}
 
