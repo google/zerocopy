@@ -19,7 +19,9 @@ include!("include.rs");
 fn zst() {
     // TODO(#5): Use `try_transmute` in this test once it's available.
     let candidate = ::zerocopy::Ptr::from_ref(&());
-    let candidate = candidate.forget_aligned().forget_valid();
+    let candidate = candidate.forget_aligned();
+    // SAFETY: `&()` trivially consists entirely of initialized bytes.
+    let candidate = unsafe { candidate.assume_initialized() };
     let is_bit_valid = <() as imp::TryFromBytes>::is_bit_valid(candidate);
     imp::assert!(is_bit_valid);
 }
@@ -36,7 +38,9 @@ util_assert_impl_all!(One: imp::TryFromBytes);
 fn one() {
     // TODO(#5): Use `try_transmute` in this test once it's available.
     let candidate = ::zerocopy::Ptr::from_ref(&One { a: 42 });
-    let candidate = candidate.forget_aligned().forget_valid();
+    let candidate = candidate.forget_aligned();
+    // SAFETY: `&One` consists entirely of initialized bytes.
+    let candidate = unsafe { candidate.assume_initialized() };
     let is_bit_valid = <One as imp::TryFromBytes>::is_bit_valid(candidate);
     imp::assert!(is_bit_valid);
 }
@@ -54,7 +58,9 @@ util_assert_impl_all!(Two: imp::TryFromBytes);
 fn two() {
     // TODO(#5): Use `try_transmute` in this test once it's available.
     let candidate = ::zerocopy::Ptr::from_ref(&Two { a: false, b: () });
-    let candidate = candidate.forget_aligned().forget_valid();
+    let candidate = candidate.forget_aligned();
+    // SAFETY: `&Two` consists entirely of initialized bytes.
+    let candidate = unsafe { candidate.assume_initialized() };
     let is_bit_valid = <Two as imp::TryFromBytes>::is_bit_valid(candidate);
     imp::assert!(is_bit_valid);
 }
@@ -63,7 +69,9 @@ fn two() {
 fn two_bad() {
     // TODO(#5): Use `try_transmute` in this test once it's available.
     let candidate = ::zerocopy::Ptr::from_ref(&[2u8][..]);
-    let candidate = candidate.forget_aligned().forget_valid();
+    let candidate = candidate.forget_aligned();
+    // SAFETY: `&Two` consists entirely of initialized bytes.
+    let candidate = unsafe { candidate.assume_initialized() };
 
     // SAFETY:
     // - The cast `cast(p)` is implemented exactly as follows: `|p: *mut T| p as
@@ -91,7 +99,9 @@ util_assert_impl_all!(Unsized: imp::TryFromBytes);
 fn un_sized() {
     // TODO(#5): Use `try_transmute` in this test once it's available.
     let candidate = ::zerocopy::Ptr::from_ref(&[16, 12, 42][..]);
-    let candidate = candidate.forget_aligned().forget_valid();
+    let candidate = candidate.forget_aligned();
+    // SAFETY: `&Unsized` consists entirely of initialized bytes.
+    let candidate = unsafe { candidate.assume_initialized() };
 
     // SAFETY:
     // - The cast `cast(p)` is implemented exactly as follows: `|p: *mut T| p as
