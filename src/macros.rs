@@ -268,6 +268,9 @@ macro_rules! opt_fn {
 /// impl in this case, and also provides useful documentation for readers of the
 /// code.
 ///
+/// Finally, if a `TryFromBytes::is_bit_valid` impl is provided, it must adhere
+/// to the safety preconditions of [`unsafe_impl!`].
+///
 /// ## Example
 ///
 /// ```rust,ignore
@@ -304,24 +307,15 @@ macro_rules! impl_or_verify {
     };
     (
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty
+        => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         impl_or_verify!(@impl { unsafe_impl!(
             $($tyvar $(: $(? $optbound +)* $($bound +)*)?),* => $trait for $ty
+            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
         ); });
         impl_or_verify!(@verify $trait, {
             impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> Subtrait for $ty {}
         });
-    };
-    (
-        $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty
-    ) => {
-        unsafe_impl!(
-            @inner
-            $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
-            => $trait for $ty
-        );
     };
     (@impl $impl_block:tt) => {
         #[cfg(not(any(feature = "derive", test)))]
