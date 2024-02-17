@@ -213,18 +213,36 @@ macro_rules! unsafe_impl {
 /// unsafe impl<A, B> Foo for type!(A, B) { ... }
 /// ```
 macro_rules! unsafe_impl_for_power_set {
-    ($first:ident $(, $rest:ident)* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)) => {
-        unsafe_impl_for_power_set!($($rest),* $(-> $ret)? => $trait for $macro!(...));
-        unsafe_impl_for_power_set!(@impl $first $(, $rest)* $(-> $ret)? => $trait for $macro!(...));
+    (
+        $first:ident $(, $rest:ident)* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+    ) => {
+        unsafe_impl_for_power_set!(
+            $($rest),* $(-> $ret)? => $trait for $macro!(...)
+            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+        );
+        unsafe_impl_for_power_set!(
+            @impl $first $(, $rest)* $(-> $ret)? => $trait for $macro!(...)
+            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+        );
     };
-    ($(-> $ret:ident)? => $trait:ident for $macro:ident!(...)) => {
-        unsafe_impl_for_power_set!(@impl $(-> $ret)? => $trait for $macro!(...));
+    (
+        $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+    ) => {
+        unsafe_impl_for_power_set!(
+            @impl $(-> $ret)? => $trait for $macro!(...)
+            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+        );
     };
-    (@impl $($vars:ident),* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)) => {
-        unsafe impl<$($vars,)* $($ret)?> $trait for $macro!($($vars),* $(-> $ret)?) {
-            #[allow(clippy::missing_inline_in_public_items)]
-            fn only_derive_is_allowed_to_implement_this_trait() {}
-        }
+    (
+        @impl $($vars:ident),* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+    ) => {
+        unsafe_impl!(
+            $($vars,)* $($ret)? => $trait for $macro!($($vars),* $(-> $ret)?)
+            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+        );
     };
 }
 
