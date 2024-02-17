@@ -8094,39 +8094,51 @@ mod tests {
             NonZeroU8, NonZeroI8, NonZeroU16, NonZeroI16, NonZeroU32,
             NonZeroI32, NonZeroU64, NonZeroI64, NonZeroU128, NonZeroI128,
             NonZeroUsize, NonZeroIsize
-                 => @success Self::new(1).unwrap(),
-                    // Doing this instead of `0` ensures that we always satisfy
-                    // the size and alignment requirements of `Self` (whereas
-                    // `0` may be any integer type with a different size or
-                    // alignment than some `NonZeroXxx` types).
-                    @failure Option::<Self>::None;
+                => @success Self::new(1).unwrap(),
+                   // Doing this instead of `0` ensures that we always satisfy
+                   // the size and alignment requirements of `Self` (whereas `0`
+                   // may be any integer type with a different size or alignment
+                   // than some `NonZeroXxx` types).
+                   @failure Option::<Self>::None;
             [bool; 0] => @success [];
             [bool; 1]
-                    => @success [true], [false],
-                    @failure [2u8], [3u8], [0xFFu8];
+                => @success [true], [false],
+                   @failure [2u8], [3u8], [0xFFu8];
             [bool]
-                 => @success [true, false], [false, true],
+                => @success [true, false], [false, true],
                     @failure [2u8], [3u8], [0xFFu8], [0u8, 1u8, 2u8];
+            Unalign<bool>
+                => @success Unalign::new(false), Unalign::new(true),
+                   @failure 2u8, 0xFFu8;
+            ManuallyDrop<bool>
+                => @success ManuallyDrop::new(false), ManuallyDrop::new(true),
+                   @failure 2u8, 0xFFu8;
             ManuallyDrop<[u8]>
                 => @success ManuallyDrop::new([]), ManuallyDrop::new([0u8]), ManuallyDrop::new([0u8, 1u8]);
+            ManuallyDrop<[bool]>
+                => @success ManuallyDrop::new([]), ManuallyDrop::new([false]), ManuallyDrop::new([false, true]),
+                   @failure [2u8], [3u8], [0xFFu8], [0u8, 1u8, 2u8];
+            Wrapping<bool>
+                => @success Wrapping(false), Wrapping(true),
+                    @failure 2u8, 0xFFu8;
             Option<Box<UnsafeCell<NotZerocopy>>>
                 => @success None,
-                   @failure [0x1; mem::size_of::<Option<Box<UnsafeCell<NotZerocopy>>>>()];
+                   @failure [0x01; mem::size_of::<Option<Box<UnsafeCell<NotZerocopy>>>>()];
             Option<&'static UnsafeCell<NotZerocopy>>
                 => @success None,
-                   @failure [0x1; mem::size_of::<Option<&'static UnsafeCell<NotZerocopy>>>()];
+                   @failure [0x01; mem::size_of::<Option<&'static UnsafeCell<NotZerocopy>>>()];
             Option<&'static mut UnsafeCell<NotZerocopy>>
                 => @success None,
-                   @failure [0x1; mem::size_of::<Option<&'static mut UnsafeCell<NotZerocopy>>>()];
+                   @failure [0x01; mem::size_of::<Option<&'static mut UnsafeCell<NotZerocopy>>>()];
             Option<NonNull<UnsafeCell<NotZerocopy>>>
                 => @success None,
-                   @failure [0x1; mem::size_of::<Option<NonNull<UnsafeCell<NotZerocopy>>>>()];
+                   @failure [0x01; mem::size_of::<Option<NonNull<UnsafeCell<NotZerocopy>>>>()];
             *const NotZerocopy
                 => @success ptr::null::<NotZerocopy>(),
-                   @failure [0x1; mem::size_of::<*const NotZerocopy>()];
+                   @failure [0x01; mem::size_of::<*const NotZerocopy>()];
             *mut NotZerocopy
                 => @success ptr::null_mut::<NotZerocopy>(),
-                   @failure [0x1; mem::size_of::<*mut NotZerocopy>()];
+                   @failure [0x01; mem::size_of::<*mut NotZerocopy>()];
         );
 
         // Asserts that `$ty` implements any `$trait` and doesn't implement any
@@ -8510,7 +8522,13 @@ mod tests {
         assert_impls!(PhantomData<[u8]>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
 
         assert_impls!(ManuallyDrop<u8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        // This test is important because it allows us to test our hand-rolled
+        // implementation of `<ManuallyDrop<T> as TryFromBytes>::is_bit_valid`.
+        assert_impls!(ManuallyDrop<bool>: KnownLayout, NoCell, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
         assert_impls!(ManuallyDrop<[u8]>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        // This test is important because it allows us to test our hand-rolled
+        // implementation of `<ManuallyDrop<T> as TryFromBytes>::is_bit_valid`.
+        assert_impls!(ManuallyDrop<[bool]>: KnownLayout, NoCell, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
         assert_impls!(ManuallyDrop<NotZerocopy>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(ManuallyDrop<[NotZerocopy]>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(ManuallyDrop<UnsafeCell<()>>: KnownLayout, FromZeros, FromBytes, IntoBytes, Unaligned, !NoCell, !TryFromBytes);
@@ -8521,10 +8539,16 @@ mod tests {
         assert_impls!(MaybeUninit<UnsafeCell<()>>: KnownLayout, FromZeros, FromBytes, Unaligned, !TryFromBytes, !NoCell, !IntoBytes);
 
         assert_impls!(Wrapping<u8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        // This test is important because it allows us to test our hand-rolled
+        // implementation of `<Wrapping<T> as TryFromBytes>::is_bit_valid`.
+        assert_impls!(Wrapping<bool>: KnownLayout, NoCell, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
         assert_impls!(Wrapping<NotZerocopy>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(Wrapping<UnsafeCell<()>>: KnownLayout, FromZeros, FromBytes, IntoBytes, Unaligned, !NoCell, !TryFromBytes);
 
         assert_impls!(Unalign<u8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, TryFromBytes);
+        // This test is important because it allows us to test our hand-rolled
+        // implementation of `<Unalign<T> as TryFromBytes>::is_bit_valid`.
+        assert_impls!(Unalign<bool>: KnownLayout, NoCell, TryFromBytes, FromZeros, IntoBytes, Unaligned, TryFromBytes, !FromBytes);
         assert_impls!(Unalign<NotZerocopy>: Unaligned, !NoCell, !KnownLayout, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes);
 
         assert_impls!(
