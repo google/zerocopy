@@ -78,6 +78,7 @@ fn two_bad() {
     //   *mut U`.
     // - The size of the object referenced by the resulting pointer is equal to
     //   the size of the object referenced by `self`.
+    // - `Two` does not contain any `UnsafeCell`s.
     let candidate = unsafe { candidate.cast_unsized(|p| p as *mut Two) };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
@@ -109,6 +110,7 @@ fn un_sized() {
     // - The size of the object referenced by the resulting pointer is equal to
     //   the size of the object referenced by `self`.
     // - The alignment of `Unsized` is equal to the alignment of `[u8]`.
+    // - `Unsized` does not contain any `UnsafeCell`s.
     let candidate = unsafe { candidate.cast_unsized(|p| p as *mut Unsized) };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
@@ -147,7 +149,7 @@ where
 
 util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::TryFromBytes);
 
-#[derive(Debug, PartialEq, Eq, imp::TryFromBytes, imp::KnownLayout)]
+#[derive(Debug, PartialEq, Eq, imp::TryFromBytes, imp::NoCell, imp::KnownLayout)]
 #[repr(C, packed)]
 struct CPacked {
     a: u8,
@@ -168,7 +170,7 @@ fn c_packed() {
     imp::assert_eq!(converted, imp::Some(&CPacked { a: 42, b: u32::MAX }));
 }
 
-#[derive(imp::TryFromBytes, imp::KnownLayout)]
+#[derive(imp::TryFromBytes, imp::KnownLayout, imp::NoCell)]
 #[repr(C, packed)]
 struct CPackedUnsized {
     a: u8,
