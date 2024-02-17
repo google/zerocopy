@@ -1269,9 +1269,41 @@ pub unsafe trait TryFromBytes {
         // This call may panic. If that happens, it doesn't cause any soundness
         // issues, as we have not generated any invalid state which we need to
         // fix before returning.
-        let candidate = candidate.check_valid();
+        let candidate = candidate.try_into_valid();
 
         candidate.map(MaybeAligned::as_ref)
+    }
+
+    /// Attempts to interpret a mutable byte slice as a `Self`.
+    ///
+    /// `try_from_mut` validates that `bytes` contains a valid `Self`, and that
+    /// it satisfies `Self`'s alignment requirement. If it does, then `bytes` is
+    /// reinterpreted as a `Self`.
+    ///
+    /// Note that Rust's bit validity rules are still being decided. As such,
+    /// there exist types whose bit validity is ambiguous. See
+    /// [here][TryFromBytes#what-is-a-valid-instance] for a discussion of how
+    /// these cases are handled.
+    // TODO(#251): Require `Self: NoCell` and allow `TryFromBytes` types to
+    // contain `UnsafeCell`s.
+    #[inline]
+    #[doc(hidden)] // TODO(#5): Finalize name before remove this attribute.
+    fn try_from_mut(bytes: &mut [u8]) -> Option<&mut Self>
+    where
+        Self: KnownLayout + NoCell, // TODO(#251): Remove the `NoCell` bound.
+    {
+        let candidate = Ptr::from_mut(bytes).try_cast_into_no_leftover::<Self>()?;
+
+        // SAFETY: `candidate` has no uninitialized sub-ranges because it
+        // derived from `bytes: &mut [u8]`.
+        let candidate = unsafe { candidate.assume_validity::<invariant::Initialized>() };
+
+        // This call may panic. If that happens, it doesn't cause any soundness
+        // issues, as we have not generated any invalid state which we need to
+        // fix before returning.
+        let candidate = candidate.try_into_valid();
+
+        candidate.map(Ptr::as_mut)
     }
 
     /// Attempts to read a `Self` from a byte slice.
@@ -7985,7 +8017,7 @@ mod tests {
         // `impl_try_from_bytes_testable!`).
         trait TryFromBytesTestable {
             fn with_passing_test_cases<F: Fn(&Self)>(f: F);
-            fn with_failing_test_cases<F: Fn(&[u8])>(f: F);
+            fn with_failing_test_cases<F: Fn(&mut [u8])>(f: F);
         }
 
         impl<T: FromBytes> TryFromBytesTestable for T {
@@ -8005,7 +8037,7 @@ mod tests {
                 f(&ffs);
             }
 
-            fn with_failing_test_cases<F: Fn(&[u8])>(_f: F) {}
+            fn with_failing_test_cases<F: Fn(&mut [u8])>(_f: F) {}
         }
 
         // Implements `TryFromBytesTestable`.
@@ -8037,13 +8069,13 @@ mod tests {
                     )*
                 }
 
-                fn with_failing_test_cases<F: Fn(&[u8])>(_f: F) {
+                fn with_failing_test_cases<F: Fn(&mut [u8])>(_f: F) {
                     $($(
                         // `unused_qualifications` is spuriously triggered on
                         // `Option::<Self>::None`.
                         #[allow(unused_qualifications)]
-                        let case = $failure_case.as_bytes();
-                        _f(case.as_bytes());
+                        let mut case = $failure_case;//.as_mut_bytes();
+                        _f(case.as_mut_bytes());
                     )*)?
                 }
             };
@@ -8135,7 +8167,9 @@ mod tests {
                 #[allow(clippy::as_conversions)]
                 <$ty as TryFromBytesTestable>::with_failing_test_cases(|c| {
                     let res = <$ty as TryFromBytes>::try_from_ref(c);
-                    assert!(res.is_none(), "{}::is_bit_valid({:?}): got true, expected false", stringify!($ty), c);
+                    assert!(res.is_none(), "{}::try_from_ref({:?}): got Some, expected None", stringify!($ty), c);
+                    let res = <$ty as TryFromBytes>::try_from_mut(c);
+                    assert!(res.is_none(), "{}::try_from_mut({:?}): got Some, expected None", stringify!($ty), c);
                 });
 
                 #[allow(dead_code)]
