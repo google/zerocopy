@@ -472,7 +472,7 @@ mod _conversions {
     }
 
     /// `&'a MaybeUninit<T>` → `Ptr<'a, T>`
-    impl<'a, T> Ptr<'a, T, (invariant::Shared, invariant::Aligned, invariant::Valid)>
+    impl<'a, T> Ptr<'a, T, (invariant::Shared, invariant::Aligned, invariant::AnyValidity)>
     where
         T: 'a,
     {
@@ -509,9 +509,7 @@ mod _conversions {
             //
             //   `MaybeUninit<T>` is guaranteed to have the same size,
             //   alignment, and ABI as `T`
-            let ptr = unsafe { ptr.assume_alignment::<invariant::Aligned>() };
-            // SAFETY: `MaybeUninit` has no validity invariants.
-            unsafe { ptr.assume_valid() }
+            unsafe { ptr.assume_alignment::<invariant::Aligned>() }
         }
     }
 }
