@@ -419,6 +419,38 @@ mod _conversions {
         }
     }
 
+    /// `&'a mut T` → `Ptr<'a, T>`
+    impl<'a, T> Ptr<'a, T, (invariant::Exclusive, invariant::Aligned, invariant::Valid)>
+    where
+        T: 'a + ?Sized,
+    {
+        /// Constructs a `Ptr` from an exclusive reference.
+        #[inline]
+        pub(crate) fn from_mut(ptr: &'a mut T) -> Self {
+            let ptr = core::ptr::NonNull::from(ptr);
+            // SAFETY:
+            // 0. `ptr`, by invariant on `&'a mut T`, is derived from some valid
+            //    Rust allocation, `A`.
+            // 1. `ptr`, by invariant on `&'a mut T`, has valid provenance for
+            //    `A`.
+            // 2. `ptr`, by invariant on `&'a mut T`, addresses a byte range
+            //    which is entirely contained in `A`.
+            // 3. `ptr`, by invariant on `&'a mut T`, addresses a byte range
+            //    whose length fits in an `isize`.
+            // 4. `ptr`, by invariant on `&'a mut T`, addresses a byte range
+            //     which does not wrap around the address space.
+            // 5. `A`, by invariant on `&'a mut T`, is guaranteed to live for at
+            //    least `'a`.
+            // 6. `ptr`, by invariant on `&'a mut T`, conforms to the aliasing
+            //    invariant of `invariant::Exclusive`.
+            // 7. `ptr`, by invariant on `&'a mut T`, conforms to the alignment
+            //    invariant of `invariant::Aligned`.
+            // 8. `ptr`, by invariant on `&'a mut T`, conforms to the validity
+            //    invariant of `invariant::Valid`.
+            unsafe { Self::new(ptr) }
+        }
+    }
+
     /// `Ptr<'a, T>` → `&'a T`
     impl<'a, T> Ptr<'a, T, (invariant::Shared, invariant::Aligned, invariant::Valid)>
     where
@@ -457,6 +489,104 @@ mod _conversions {
             // [1]: https://doc.rust-lang.org/std/ptr/struct.NonNull.html#method.as_ref
             // [2]: https://doc.rust-lang.org/std/ptr/index.html#safety
             unsafe { raw.as_ref() }
+        }
+    }
+
+    impl<'a, T, I> Ptr<'a, T, I>
+    where
+        T: 'a + ?Sized,
+        I: Invariants,
+        I::Aliasing: invariant::at_least::Shared,
+    {
+        /// Reborrows this `Ptr`, producing another `Ptr`.
+        ///
+        /// Since `self` is borrowed immutably, this prevents any mutable
+        /// methods from being called on `self` as long as the returned `Ptr`
+        /// exists.
+        #[allow(clippy::needless_lifetimes)] // Allows us to name the lifetime in the safety comment below.
+        pub(crate) fn reborrow<'b>(&'b mut self) -> Ptr<'b, T, I>
+        where
+            'a: 'b,
+        {
+            // SAFETY: The following all hold by invariant on `self`, and thus
+            // hold of `ptr = self.as_non_null()`:
+            // 0. `ptr` is derived from some valid Rust allocation, `A`.
+            // 1. `ptr` has valid provenance for `A`.
+            // 2. `ptr` addresses a byte range which is entirely contained in
+            //    `A`.
+            // 3. `ptr` addresses a byte range whose length fits in an `isize`.
+            // 4. `ptr` addresses a byte range which does not wrap around the
+            //    address space.
+            // 5. `A` is guaranteed to live for at least `'a`.
+            // 6. SEE BELOW.
+            // 7. `ptr` conforms to the alignment invariant of
+            //   [`I::Alignment`](invariant::Alignment).
+            // 8. `ptr` conforms to the validity invariant of
+            //   [`I::Validity`](invariant::Validity).
+            // 9. During the lifetime 'a, no code will load or store this memory
+            //    region treating `UnsafeCell`s as existing at different ranges
+            //    than they exist in `T`.
+            // 10. During the lifetime 'a, no reference will exist to this
+            //     memory which treats `UnsafeCell`s as existing at different
+            //     ranges than they exist in `T`.
+            //
+            // For aliasing (6 above), since `I::Aliasing:
+            // invariant::at_least::Shared`, there are two cases for
+            // `I::Aliasing`:
+            // - For `invariant::Shared`: `'a` outlives `'b`, and so the
+            //   returned `Ptr` does not permit accessing the referent any
+            //   longer than is possible via `self`. For shared aliasing, it is
+            //   sound for multiple `Ptr`s to exist simultaneously which
+            //   reference the same memory, so creating a new one is not
+            //   problematic.
+            // - For `invariant::Exclusive`: Since `self` is `&'b mut` and we
+            //   return a `Ptr` with lifetime `'b`, `self` is inaccessible to
+            //   the caller for the lifetime `'b` - in other words, `self` is
+            //   inaccessible to the caller as long as the returned `Ptr`
+            //   exists. Since `self` is an exclusive `Ptr`, no other live
+            //   references or `Ptr`s may exist which refer to the same memory
+            //   while `self` is live. Thus, as long as the returned `Ptr`
+            //   exists, no other references or `Ptr`s which refer to the same
+            //   memory may be live.
+            unsafe { Ptr::new(self.as_non_null()) }
+        }
+    }
+
+    /// `Ptr<'a, T>` → `&'a mut T`
+    impl<'a, T> Ptr<'a, T, (invariant::Exclusive, invariant::Aligned, invariant::Valid)>
+    where
+        T: 'a + ?Sized,
+    {
+        /// Converts the `Ptr` to a mutable reference.
+        #[allow(clippy::wrong_self_convention)]
+        pub(crate) fn as_mut(self) -> &'a mut T {
+            let mut raw = self.as_non_null();
+            // SAFETY: This invocation of `NonNull::as_mut` satisfies its
+            // documented safety preconditions:
+            //
+            // 1. The pointer is properly aligned. This is ensured by-contract
+            //    on `Ptr`, because the `ALIGNMENT_INVARIANT` is `Aligned`.
+            //
+            // 2. It must be “dereferenceable” in the sense defined in the
+            //    module documentation; i.e.:
+            //
+            //    > The memory range of the given size starting at the pointer
+            //    > must all be within the bounds of a single allocated object.
+            //    > [2]
+            //
+            //   This is ensured by contract on all `Ptr`s.
+            //
+            // 3. The pointer must point to an initialized instance of `T`. This
+            //    is ensured by-contract on `Ptr`, because the
+            //    `VALIDITY_INVARIANT` is `Valid`.
+            //
+            // 4. You must enforce Rust’s aliasing rules. This is ensured by
+            //    contract on `Ptr`, because the `ALIASING_INVARIANT` is
+            //    `Exclusive`.
+            //
+            // [1]: https://doc.rust-lang.org/std/ptr/struct.NonNull.html#method.as_mut
+            // [2]: https://doc.rust-lang.org/std/ptr/index.html#safety
+            unsafe { raw.as_mut() }
         }
     }
 
@@ -506,6 +636,7 @@ mod _conversions {
 /// State transitions between invariants.
 mod _transitions {
     use super::*;
+    use crate::TryFromBytes;
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
@@ -590,6 +721,46 @@ mod _transitions {
             // SAFETY: The caller has promised to uphold the safety
             // preconditions.
             unsafe { self.assume_validity::<invariant::Valid>() }
+        }
+
+        /// Checks that `Ptr`'s referent is validly initialized for `T`,
+        /// returning a `Ptr` with `invariant::Valid` on success.
+        ///
+        /// # Panics
+        ///
+        /// This method will panic if
+        /// [`T::is_bit_valid`][TryFromBytes::is_bit_valid] panics.
+        #[inline]
+        pub(crate) fn try_into_valid(
+            mut self,
+        ) -> Option<Ptr<'a, T, (I::Aliasing, I::Alignment, invariant::Valid)>>
+        where
+            T: TryFromBytes,
+            I::Aliasing: invariant::at_least::Shared,
+            I: Invariants<Validity = invariant::Initialized>,
+        {
+            // This call may panic. If that happens, it doesn't cause any soundness
+            // issues, as we have not generated any invalid state which we need to
+            // fix before returning.
+            if T::is_bit_valid(self.reborrow().forget_exclusive().forget_aligned()) {
+                // SAFETY: If `T::is_bit_valid`, code may assume that `self`
+                // contains a bit-valid instance of `Self`.
+                Some(unsafe { self.assume_validity::<invariant::Valid>() })
+            } else {
+                None
+            }
+        }
+
+        /// Forgets that `Ptr`'s referent exclusively references `T`,
+        /// downgrading to a shared reference.
+        #[doc(hidden)]
+        #[inline]
+        pub fn forget_exclusive(self) -> Ptr<'a, T, (invariant::Shared, I::Alignment, I::Validity)>
+        where
+            I::Aliasing: invariant::at_least::Shared,
+        {
+            // SAFETY: `I::Aliasing` is at least as restrictive as `Shared`.
+            unsafe { Ptr::from_ptr(self) }
         }
 
         /// Forgets that `Ptr`'s referent is validly-aligned for `T`.
