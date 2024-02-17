@@ -3462,12 +3462,20 @@ safety_comment! {
     );
     unsafe_impl!(T => FromZeros for Option<NonNull<T>>);
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_fn!(...));
+    unsafe_impl_for_power_set!(
+        A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_fn!(...);
+        |c: Maybe<Self>| pointer::is_zeroed(c)
+    );
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_extern_c_fn!(...));
+    unsafe_impl_for_power_set!(
+        A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_extern_c_fn!(...);
+        |c: Maybe<Self>| pointer::is_zeroed(c)
+    );
 }
 
 safety_comment! {
     /// SAFETY:
-    /// TODO
+    /// TODO(#896): Write this safety proof before the next stable release.
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => NoCell for opt_fn!(...));
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => NoCell for opt_extern_c_fn!(...));
 }
@@ -8040,6 +8048,27 @@ mod tests {
             fn with_failing_test_cases<F: Fn(&mut [u8])>(_f: F) {}
         }
 
+        macro_rules! impl_try_from_bytes_testable_for_null_pointer_optimization {
+            ($($tys:ty),*) => {
+                $(
+                    impl TryFromBytesTestable for Option<$tys> {
+                        fn with_passing_test_cases<F: Fn(&Self)>(f: F) {
+                            // Test with a zeroed value.
+                            f(&None);
+                        }
+
+                        fn with_failing_test_cases<F: Fn(&mut [u8])>(f: F) {
+                            for pos in 0..mem::size_of::<Self>() {
+                                let mut bytes = [0u8; mem::size_of::<Self>()];
+                                bytes[pos] = 0x01;
+                                f(&mut bytes[..]);
+                            }
+                        }
+                    }
+                )*
+            };
+        }
+
         // Implements `TryFromBytesTestable`.
         macro_rules! impl_try_from_bytes_testable {
             // Base case for recursion (when the list of types has run out).
@@ -8081,6 +8110,17 @@ mod tests {
             };
         }
 
+        impl_try_from_bytes_testable_for_null_pointer_optimization!(
+            Box<UnsafeCell<NotZerocopy>>,
+            &'static UnsafeCell<NotZerocopy>,
+            &'static mut UnsafeCell<NotZerocopy>,
+            NonNull<UnsafeCell<NotZerocopy>>,
+            fn(),
+            FnManyArgs,
+            extern "C" fn(),
+            ECFnManyArgs
+        );
+
         // Note that these impls are only for types which are not `FromBytes`.
         // `FromBytes` types are covered by a preceding blanket impl.
         impl_try_from_bytes_testable!(
@@ -8121,18 +8161,6 @@ mod tests {
             Wrapping<bool>
                 => @success Wrapping(false), Wrapping(true),
                     @failure 2u8, 0xFFu8;
-            Option<Box<UnsafeCell<NotZerocopy>>>
-                => @success None,
-                   @failure [0x01; mem::size_of::<Option<Box<UnsafeCell<NotZerocopy>>>>()];
-            Option<&'static UnsafeCell<NotZerocopy>>
-                => @success None,
-                   @failure [0x01; mem::size_of::<Option<&'static UnsafeCell<NotZerocopy>>>()];
-            Option<&'static mut UnsafeCell<NotZerocopy>>
-                => @success None,
-                   @failure [0x01; mem::size_of::<Option<&'static mut UnsafeCell<NotZerocopy>>>()];
-            Option<NonNull<UnsafeCell<NotZerocopy>>>
-                => @success None,
-                   @failure [0x01; mem::size_of::<Option<NonNull<UnsafeCell<NotZerocopy>>>>()];
             *const NotZerocopy
                 => @success ptr::null::<NotZerocopy>(),
                    @failure [0x01; mem::size_of::<*const NotZerocopy>()];
@@ -8512,10 +8540,10 @@ mod tests {
         assert_impls!(Option<&'static mut [UnsafeCell<NotZerocopy>]>: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(Option<NonNull<UnsafeCell<NotZerocopy>>>: KnownLayout, TryFromBytes, FromZeros, NoCell, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(Option<NonNull<[UnsafeCell<NotZerocopy>]>>: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<fn()>: KnownLayout, NoCell, FromZeros, !TryFromBytes, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<FnManyArgs>: KnownLayout, NoCell, FromZeros, !TryFromBytes, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<extern "C" fn()>: KnownLayout, NoCell, FromZeros, !TryFromBytes, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<ECFnManyArgs>: KnownLayout, NoCell, FromZeros, !TryFromBytes, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<fn()>: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<FnManyArgs>: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<extern "C" fn()>: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<ECFnManyArgs>: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
 
         assert_impls!(PhantomData<NotZerocopy>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
         assert_impls!(PhantomData<UnsafeCell<()>>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
