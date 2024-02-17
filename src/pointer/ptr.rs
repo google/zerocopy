@@ -30,11 +30,11 @@ mod def {
     /// Depending on how `Ptr` is parameterized, it may have additional
     /// invariants:
     /// - `ptr` conforms to the aliasing invariant of
-    ///   [`ALIASING_INVARIANT`](invariant::Aliasing).
+    ///   [`I::Aliasing`](invariant::Aliasing).
     /// - `ptr` conforms to the alignment invariant of
-    ///   [`ALIGNMENT_INVARIANT`](invariant::Alignment).
+    ///   [`I::Alignment`](invariant::Alignment).
     /// - `ptr` conforms to the validity invariant of
-    ///   [`VALIDITY_INVARIANT`](invariant::Validity).
+    ///   [`I::Validity`](invariant::Validity).
     ///
     /// `Ptr<'a, T>` is [covariant] in `'a` and `T`.
     ///
@@ -55,21 +55,11 @@ mod def {
         /// 5. `A` is guaranteed to live for at least `'a`.
         /// 6. `T: 'a`.
         /// 7. `ptr` conforms to the aliasing invariant of
-        ///    [`ALIASING_INVARIANT`](invariant::Aliasing); namely:
-        ///    - If [`invariant::Shared`], the pointer confoms to the aliasing
-        ///      rules of a shared reference.
-        ///    - If [`invariant::Exclusive`], the pointer conforms to the
-        ///      aliasing rules of an exclusive reference.
+        ///    [`I::Aliasing`](invariant::Aliasing).
         /// 8. `ptr` conforms to the alignment invariant of
-        ///    [`ALIGNMENT_INVARIANT`](invariant::Alignment); namely:
-        ///    - If [`invariant::Aligned`], the pointer's referent is
-        ///      well-aligned.
+        ///    [`I::Alignment`](invariant::Alignment).
         /// 9. `ptr` conforms to the validity invariant of
-        ///    [`VALIDITY_INVARIANT`](invariant::Validity); namely:
-        ///    - If [`invariant::AsInitialized`], the pointer's referent is
-        ///      initialized (but not necessarily validly so) in all of the
-        ///      initialized ranges of `T`.
-        ///    - If [`invariant::Valid`], the pointer's referent is bit-valid.
+        ///    [`I::Validity`](invariant::Validity).
         /// 10. During the lifetime 'a, no code will load or store this memory
         ///     region treating `UnsafeCell`s as existing at different ranges
         ///     than they exist in `T`.
@@ -105,11 +95,11 @@ mod def {
         ///    address space.
         /// 5. `A` is guaranteed to live for at least `'a`.
         /// 6. `ptr` conforms to the aliasing invariant of
-        ///   [`ALIASING_INVARIANT`](invariant::Aliasing).
+        ///   [`I::Aliasing`](invariant::Aliasing).
         /// 7. `ptr` conforms to the alignment invariant of
-        ///   [`ALIGNMENT_INVARIANT`](invariant::Alignment).
+        ///   [`I::Alignment`](invariant::Alignment).
         /// 8. `ptr` conforms to the validity invariant of
-        ///   [`VALIDITY_INVARIANT`](invariant::Validity).
+        ///   [`I::Validity`](invariant::Validity).
         /// 9. During the lifetime 'a, no code will load or store this memory
         ///    region treating `UnsafeCell`s as existing at different ranges
         ///    than they exist in `T`.
@@ -266,22 +256,19 @@ pub mod invariant {
                 /// The referent of a shared-aliased `Ptr` may be concurrently
                 /// referenced by any number of shared-aliased `Ptr` or `&T`
                 /// references, and may not be concurrently referenced by any
-                /// exclusively-aliased `Ptr`s or `&mut T` references.
-                ///
-                /// Unsafe code must assume that safe code will assume that the
-                /// referent of such a `Ptr` will not be mutated, except through
-                /// interior [`UnsafeCell`]s (if any).
+                /// exclusively-aliased `Ptr`s or `&mut T` references. The
+                /// referent must not be mutated, except via [`UnsafeCell`]s.
                 ///
                 /// [`UnsafeCell`]: core::cell::UnsafeCell
                 Shared,
 
-                /// The `Ptr<'a, T>` adheres to the aliasing rules of a `&'a mut T`.
+                /// The `Ptr<'a, T>` adheres to the aliasing rules of a `&'a mut
+                /// T`.
                 ///
                 /// The referent of an exclusively-aliased `Ptr` may not be
-                /// concurrently referenced by any other `Ptr`s or references.
-                /// Owners of an exclusively-aliased `Ptr` may safely (contigent on
-                /// upholding the referent's original validity invariants) mutate
-                /// its referent.
+                /// concurrently referenced by any other `Ptr`s or references,
+                /// and may not be accessed (read or written) other than via
+                /// this `Ptr`.
                 Exclusive,
             }
 
@@ -289,7 +276,8 @@ pub mod invariant {
             Alignment {
                 /// The referent is not necessarily aligned.
                 AnyAlignment,
-                /// The referent is aligned.
+                /// The referent is aligned: for `Ptr<T>`, the referent's
+                /// address is a multiple of the `T`'s alignment.
                 Aligned,
             }
 
@@ -331,7 +319,9 @@ pub mod invariant {
                 ///   discriminant, and so on recursively).
                 AsInitialized,
 
-                /// The byte ranges in the referent are fully initialized.
+                /// The byte ranges in the referent are fully initialized. In
+                /// other words, if the referent is `N` bytes long, then it
+                /// contains a bit-valid `[u8; N]`.
                 Initialized,
 
                 /// The referent is bit-valid for `T`.
@@ -446,7 +436,7 @@ mod _conversions {
             // documented safety preconditions:
             //
             // 1. The pointer is properly aligned. This is ensured by-contract
-            //    on `Ptr`, because the `ALIGNMENT_INVARIANT` is `Aligned`.
+            //    on `Ptr`, because the `I::Alignment` is `Aligned`.
             //
             // 2. It must be “dereferenceable” in the sense defined in the
             //    module documentation; i.e.:
@@ -458,12 +448,11 @@ mod _conversions {
             //   This is ensured by contract on all `Ptr`s.
             //
             // 3. The pointer must point to an initialized instance of `T`. This
-            //    is ensured by-contract on `Ptr`, because the
-            //    `VALIDITY_INVARIANT` is `Valid`.
+            //    is ensured by-contract on `Ptr`, because the `I::Validity` is
+            //    `Valid`.
             //
             // 4. You must enforce Rust’s aliasing rules. This is ensured by
-            //    contract on `Ptr`, because the `ALIASING_INVARIANT` is
-            //    `Shared`.
+            //    contract on `Ptr`, because the `I::Aliasing` is `Shared`.
             //
             // [1]: https://doc.rust-lang.org/std/ptr/struct.NonNull.html#method.as_ref
             // [2]: https://doc.rust-lang.org/std/ptr/index.html#safety
@@ -670,11 +659,11 @@ mod _casts {
             // construction.
             let ptr = unsafe { NonNull::new_unchecked(ptr) };
 
-            // SAFETY: Lemma: In the following safety arguments, note that
-            // the caller promises that `cast` produces a pointer which
-            // addresses no more bytes than those addressed by its input
-            // pointer. As a result, the bytes addressed by `ptr` are a subset
-            // of the bytes addressed by `self`.
+            // SAFETY: Lemma: In the following safety arguments, note that the
+            // caller promises that `cast` produces a pointer which addresses no
+            // more bytes than those addressed by its input pointer. As a
+            // result, the bytes addressed by `ptr` are a subset of the bytes
+            // addressed by `self`.
             //
             // 0. By invariant on `self` and contract on `cast`, `ptr` is
             //    derived from some valid Rust allocation, `A`.
@@ -683,15 +672,14 @@ mod _casts {
             //    provenance for `A`.
             // 2. By the above lemma, `ptr` addresses a byte range which is
             //    entirely contained in `A`.
-            // 3. By the above lemma, `ptr` addresses a byte range whose
-            //    length fits in an `isize`.
-            // 4. By the above lemma, `ptr` addresses a byte range which
-            //    does not wrap around the address space.
+            // 3. By the above lemma, `ptr` addresses a byte range whose length
+            //    fits in an `isize`.
+            // 4. By the above lemma, `ptr` addresses a byte range which does
+            //    not wrap around the address space.
             // 5. By invariant on `self` and contract on `cast`, `A` is
             //    guaranteed to live for at least `'a`.
-            // 6. `ptr` conforms to the aliasing invariant of
-            //    `ALIASING_INVARIANT` because casting does not impact the
-            //    aliasing invariant.
+            // 6. `ptr` conforms to the aliasing invariant of `I::Aliasing`
+            //    because casting does not impact the aliasing invariant.
             // 7. `ptr`, trivially, conforms to the alignment invariant of
             //    `AnyAlignment`.
             // 8. `ptr`, trivially, conforms to the validity invariant of
@@ -899,9 +887,8 @@ mod _casts {
             //       `ptr`.
             //    5. Since, by invariant, `self.ptr` addresses a range which
             //       does not wrap around the address space, so does `ptr`.
-            // 6. `ptr` conforms to the aliasing invariant of
-            //    `ALIASING_INVARIANT` because casting does not impact the
-            //    aliasing invariant.
+            // 6. `ptr` conforms to the aliasing invariant of `I::Aliasing`
+            //    because casting does not impact the aliasing invariant.
             // 7. `ptr` conforms to the alignment invariant of `Aligned` because
             //    it is derived from `validate_cast_and_convert_metadata`
             //    promises that the object described by `split_at` is validly
@@ -1020,9 +1007,8 @@ mod _project {
             // 5. The allocation of `field` is guaranteed to live for at least
             //    `'a`, because `field` is entirely contained in `self`, which
             //    lives for at least `'a` by invariant on `Ptr`.
-            // 6. `field` conforms to the aliasing invariant of
-            //    `ALIASING_INVARIANT` because projection does not impact the
-            //    aliasing invariant.
+            // 6. `field` conforms to the aliasing invariant of `I::Aliasing`
+            //    because projection does not impact the aliasing invariant.
             // 7. `field`, trivially, conforms to the alignment invariant of
             //    `AnyAlignment`.
             // 8. By type bound on `I::Validity`, `self` satisfies the
@@ -1147,9 +1133,9 @@ mod _project {
                 // 0. `elem` is derived from a valid Rust allocation, because
                 //    `self` is derived from a valid Rust allocation, by
                 //    invariant on `Ptr`.
-                // 1. `elem` has valid provenance for `self`, because it
-                //    derived from `self` using a series of
-                //    provenance-preserving operations.
+                // 1. `elem` has valid provenance for `self`, because it derived
+                //    from `self` using a series of provenance-preserving
+                //    operations.
                 // 2. `elem` is entirely contained in the allocation of `self`
                 //    (see above).
                 // 3. `elem` addresses a byte range whose length fits in an
@@ -1160,14 +1146,13 @@ mod _project {
                 //    least `'a`, because `elem` is entirely contained in
                 //    `self`, which lives for at least `'a` by invariant on
                 //    `Ptr`.
-                // 6. `elem` conforms to the aliasing invariant of
-                //    `ALIASING_INVARIANT` because projection does not impact
-                //    the aliasing invariant.
+                // 6. `elem` conforms to the aliasing invariant of `I::Aliasing`
+                //    because projection does not impact the aliasing invariant.
                 // 7. `elem`, conditionally, conforms to the validity invariant
-                //    of `ALIGNMENT_INVARIANT`. If `elem` is projected from data
+                //    of `I::Alignment`. If `elem` is projected from data
                 //    well-aligned for `[T]`, `elem` will be valid for `T`.
-                // 8. `elem`, conditionally, conforms to the validity invariant of
-                //    `VALIDITY_INVARIANT`. If `elem` is projected from data valid
+                // 8. `elem`, conditionally, conforms to the validity invariant
+                //    of `I::Validity`. If `elem` is projected from data valid
                 //    for `[T]`, `elem` will be valid for `T`.
                 // 9. During the lifetime 'a, no code will reference or load or
                 //    store this memory region treating `UnsafeCell`s as
