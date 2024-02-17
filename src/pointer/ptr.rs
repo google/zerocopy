@@ -612,16 +612,6 @@ mod _transitions {
             // SAFETY: `AnyAlignment` is less restrictive than `Aligned`.
             unsafe { Ptr::from_ptr(self) }
         }
-
-        /// Forgets that `Ptr`'s referent is bit-valid for `T`.
-        #[doc(hidden)]
-        #[inline]
-        pub fn forget_valid(
-            self,
-        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, invariant::Initialized)> {
-            // SAFETY: `AnyValidity` is less restrictive than `Valid`.
-            unsafe { Ptr::from_ptr(self) }
-        }
     }
 }
 

@@ -8059,7 +8059,13 @@ mod tests {
         macro_rules! assert_impls {
             ($ty:ty: TryFromBytes) => {
                 <$ty as TryFromBytesTestable>::with_passing_test_cases(|val| {
-                    let c = Ptr::from_ref(val).forget_valid().forget_aligned();
+                    let c = Ptr::from_ref(val).forget_aligned();
+                    let c = c.forget_aligned();
+                    // SAFETY:
+                    // TODO(#899): This is unsound. `$ty` is not necessarily
+                    // `IntoBytes`, but that's the corner we've backed ourselves
+                    // into by using `Ptr::from_ref`.
+                    let c = unsafe { c.assume_initialized() };
                     let res = <$ty as TryFromBytes>::is_bit_valid(c);
                     assert!(res, "{}::is_bit_valid({:?}): got false, expected true", stringify!($ty), val);
 
