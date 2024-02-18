@@ -2148,21 +2148,20 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode two `Pixel`s.
     /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let (pixels, rest) = Pixel::slice_from_prefix(bytes, 2).unwrap();
+    /// let pixels = Pixel::slice_from_prefix(bytes, 2).unwrap();
     ///
     /// assert_eq!(pixels, &[
     ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
     ///     Pixel { r: 4, g: 5, b: 6, a: 7 },
     /// ]);
     ///
-    /// assert_eq!(rest, &[8, 9]);
     /// ```
     #[inline]
-    fn slice_from_prefix(bytes: &[u8], count: usize) -> Option<(&[Self], &[u8])>
+    fn slice_from_prefix(bytes: &[u8], count: usize) -> Option<&[Self]>
     where
         Self: Sized + NoCell,
     {
-        Ref::<_, [Self]>::new_slice_from_prefix(bytes, count).map(|(r, b)| (r.into_slice(), b))
+        Ref::<_, [Self]>::new_slice_from_prefix(bytes, count).map(|(r, _b)| r.into_slice())
     }
 
     /// Interprets the suffix of the given `bytes` as a `&[Self]` with length
@@ -2199,9 +2198,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode two `Pixel`s.
     /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let (rest, pixels) = Pixel::slice_from_suffix(bytes, 2).unwrap();
-    ///
-    /// assert_eq!(rest, &[0, 1]);
+    /// let pixels = Pixel::slice_from_suffix(bytes, 2).unwrap();
     ///
     /// assert_eq!(pixels, &[
     ///     Pixel { r: 2, g: 3, b: 4, a: 5 },
@@ -2209,11 +2206,11 @@ pub unsafe trait FromBytes: FromZeros {
     /// ]);
     /// ```
     #[inline]
-    fn slice_from_suffix(bytes: &[u8], count: usize) -> Option<(&[u8], &[Self])>
+    fn slice_from_suffix(bytes: &[u8], count: usize) -> Option<&[Self]>
     where
         Self: Sized + NoCell,
     {
-        Ref::<_, [Self]>::new_slice_from_suffix(bytes, count).map(|(b, r)| (b, r.into_slice()))
+        Ref::<_, [Self]>::new_slice_from_suffix(bytes, count).map(|(_b, r)| r.into_slice())
     }
 
     /// Interprets the given `bytes` as a `&mut [Self]` without copying.
@@ -2301,25 +2298,23 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode two `Pixel`s.
     /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let (pixels, rest) = Pixel::mut_slice_from_prefix(bytes, 2).unwrap();
+    /// let pixels = Pixel::mut_slice_from_prefix(bytes, 2).unwrap();
     ///
     /// assert_eq!(pixels, &[
     ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
     ///     Pixel { r: 4, g: 5, b: 6, a: 7 },
     /// ]);
     ///
-    /// assert_eq!(rest, &[8, 9]);
-    ///
     /// pixels[1] = Pixel { r: 0, g: 0, b: 0, a: 0 };
     ///
     /// assert_eq!(bytes, [0, 1, 2, 3, 0, 0, 0, 0, 8, 9]);
     /// ```
     #[inline]
-    fn mut_slice_from_prefix(bytes: &mut [u8], count: usize) -> Option<(&mut [Self], &mut [u8])>
+    fn mut_slice_from_prefix(bytes: &mut [u8], count: usize) -> Option<&mut [Self]>
     where
         Self: Sized + IntoBytes + NoCell,
     {
-        Ref::<_, [Self]>::new_slice_from_prefix(bytes, count).map(|(r, b)| (r.into_mut_slice(), b))
+        Ref::<_, [Self]>::new_slice_from_prefix(bytes, count).map(|(r, _b)| r.into_mut_slice())
     }
 
     /// Interprets the suffix of the given `bytes` as a `&mut [Self]` with length
@@ -2356,9 +2351,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode two `Pixel`s.
     /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let (rest, pixels) = Pixel::mut_slice_from_suffix(bytes, 2).unwrap();
-    ///
-    /// assert_eq!(rest, &[0, 1]);
+    /// let pixels = Pixel::mut_slice_from_suffix(bytes, 2).unwrap();
     ///
     /// assert_eq!(pixels, &[
     ///     Pixel { r: 2, g: 3, b: 4, a: 5 },
@@ -2370,11 +2363,11 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 0, 0, 0, 0]);
     /// ```
     #[inline]
-    fn mut_slice_from_suffix(bytes: &mut [u8], count: usize) -> Option<(&mut [u8], &mut [Self])>
+    fn mut_slice_from_suffix(bytes: &mut [u8], count: usize) -> Option<&mut [Self]>
     where
         Self: Sized + IntoBytes + NoCell,
     {
-        Ref::<_, [Self]>::new_slice_from_suffix(bytes, count).map(|(b, r)| (b, r.into_mut_slice()))
+        Ref::<_, [Self]>::new_slice_from_suffix(bytes, count).map(|(_b, r)| r.into_mut_slice())
     }
 
     /// Reads a copy of `Self` from `bytes`.
