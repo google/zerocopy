@@ -146,7 +146,7 @@ pub use def::Ptr;
 macro_rules! define_system {
     ($(#[$system_attr:meta])* $system:ident {
         $($(#[$set_attr:meta])* $set:ident {
-            $( $(#[$elem_attr:meta])* $elem:ident,)*
+            $( $(#[$elem_attr:meta])* $elem:ident $(< $($stronger_elem:ident)|*)?,)*
         })*
     }) => {
         mod sealed {
@@ -208,33 +208,33 @@ macro_rules! define_system {
 
         /// Groupings of invariants at least as strict as the given invariant.
         pub mod at_least {
-            $(define_system!(@at_least $set, $($elem,)*);)*
+            $($(
+                // This `$()?` corresponds to `$(< $($stronger_elem:ident)|*)?`
+                // from the match rule. By having it wrap the entire block
+                // (instead of just the trailing, repeating impl block), we
+                // ensure that we don't define `at_least` traits that only have
+                // a trivial implementation (e.g., `at_least::Exclusive for
+                // Exclusive`, `at_least::AnyValidity for AnyValidity`, etc).
+                $(
+                    #[doc = concat!(
+                        "[",
+                        stringify!($set),
+                        "][super::",
+                        stringify!($set),
+                        "] at least as strict as [`",
+                        stringify!($elem),
+                        "`][super::",
+                        stringify!($elem),
+                        "]."
+                    )]
+                    pub trait $elem: super::$set {}
+                    impl $elem for super::$elem {}
+
+                    $(impl $elem for super::$stronger_elem {})*
+                )?
+            )*)*
         }
     };
-
-    (@at_least $set:ident, $first:ident, $($rest:ident,)*) => {
-        define_system!(@at_least_helper $set, $($rest,)*);
-    };
-    (@at_least_helper $set:ident, $($first:ident,)?) => {};
-    (@at_least_helper $set:ident, $first:ident, $($rest:ident,)+) => {
-        #[doc = concat!(
-            "[",
-            stringify!($set),
-            "][super::",
-            stringify!($set),
-            "] at least as strict as [`",
-            stringify!($first),
-            "`][super::",
-            stringify!($first),
-            "]."
-        )]
-        pub trait $first: super::$set {}
-        impl $first for super::$first {}
-        $(impl $first for super::$rest {})*
-        define_system!(@at_least_helper $set, $($rest,)*);
-    };
-
-
 }
 
 /// The parameterized invariants of a [`Ptr`].
@@ -260,7 +260,7 @@ pub mod invariant {
                 /// referent must not be mutated, except via [`UnsafeCell`]s.
                 ///
                 /// [`UnsafeCell`]: core::cell::UnsafeCell
-                Shared,
+                Shared < Exclusive,
 
                 /// The `Ptr<'a, T>` adheres to the aliasing rules of a `&'a mut
                 /// T`.
@@ -317,7 +317,7 @@ pub mod invariant {
                 ///   variant may contain another enum type, in which case the
                 ///   same rules apply depending on the state of its
                 ///   discriminant, and so on recursively).
-                AsInitialized,
+                AsInitialized < Initialized | Valid,
 
                 /// The byte ranges in the referent are fully initialized. In
                 /// other words, if the referent is `N` bytes long, then it
@@ -1342,6 +1342,8 @@ mod _project {
 mod tests {
     use core::mem::{self, MaybeUninit};
 
+    use static_assertions::{assert_impl_all, assert_not_impl_any};
+
     use super::*;
     use crate::{util::testutil::AU64, FromBytes};
 
@@ -1463,5 +1465,20 @@ mod tests {
         test!(u8, u16, u32, u64, u128, usize, AU64);
         test!(i8, i16, i32, i64, i128, isize);
         test!(f32, f64);
+    }
+
+    #[test]
+    fn test_invariants() {
+        // Test that the correct invariant relationships hold.
+        use super::invariant::*;
+
+        assert_not_impl_any!(AnyAliasing: at_least::Shared);
+        assert_impl_all!(Shared: at_least::Shared);
+        assert_impl_all!(Exclusive: at_least::Shared);
+
+        assert_not_impl_any!(AnyValidity: at_least::AsInitialized);
+        assert_impl_all!(AsInitialized: at_least::AsInitialized);
+        assert_impl_all!(Initialized: at_least::AsInitialized);
+        assert_impl_all!(Valid: at_least::AsInitialized);
     }
 }
