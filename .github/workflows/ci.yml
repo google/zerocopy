@@ -579,6 +579,25 @@ jobs:
             exit 1
           fi
 
+  test-packing:
+    runs-on: ubuntu-latest
+    name: Checks Packing 
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Testing Packing
+        run: |
+          set -eo pipefail
+          cargo package --target-dir test-pack
+
+          # Check that Licenses exist
+          cd test-pack/package
+          cd "$(ls -d */ | head -n 1)"
+
+          if [ ! -f LICENSE-APACHE ] || [ ! -f LICENSE-BSD ] || [ ! -f LICENSE-MIT ]; then
+            echo "One or more LICENSE files do not exist"
+            exit 1
+          fi
+
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
       name: All checks succeeded
@@ -589,7 +608,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_versions, generate_cache, check-all-toolchains-tested, check-job-dependencies]
+      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_versions, generate_cache, check-all-toolchains-tested, check-job-dependencies, test-packing]
       steps:
         - name: Mark the job as failed
           run: exit 1
