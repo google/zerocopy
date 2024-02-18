@@ -139,7 +139,7 @@ macro_rules! unsafe_impl {
         fn only_derive_is_allowed_to_implement_this_trait() {}
 
         #[inline]
-        fn is_bit_valid(candidate: Maybe<'_, Self>) -> bool {
+        fn is_bit_valid<AA: invariant::at_least::Shared>(candidate: Maybe<'_, Self, AA>) -> bool {
             // SAFETY:
             // - The argument to `cast_unsized` is `|p| p as *mut _` as required
             //   by that method's safety precondition.
@@ -161,7 +161,7 @@ macro_rules! unsafe_impl {
         fn only_derive_is_allowed_to_implement_this_trait() {}
 
         #[inline]
-        fn is_bit_valid(candidate: Maybe<'_, Self>) -> bool {
+        fn is_bit_valid<AA: invariant::at_least::Shared>(candidate: Maybe<'_, Self, AA>) -> bool {
             // SAFETY:
             // - The argument to `cast_unsized` is `|p| p as *mut _` as required
             //   by that method's safety precondition.
@@ -183,7 +183,7 @@ macro_rules! unsafe_impl {
     (@method TryFromBytes) => {
         #[allow(clippy::missing_inline_in_public_items)]
         fn only_derive_is_allowed_to_implement_this_trait() {}
-        #[inline(always)] fn is_bit_valid(_: Maybe<'_, Self>) -> bool { true }
+        #[inline(always)] fn is_bit_valid<A: invariant::at_least::Shared>(_: Maybe<'_, Self, A>) -> bool { true }
     };
     (@method $trait:ident) => {
         #[allow(clippy::missing_inline_in_public_items)]
