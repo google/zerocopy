@@ -6,13 +6,13 @@ warning: unused import: `zerocopy::KnownLayout`
    |
    = note: `#[warn(unused_imports)]` on by default
 
-error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:28:10
    |
 28 | #[derive(TryFromBytes)]
-   |          ^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
+   |          ^^^^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
    |
-   = help: the following other types implement trait `TryFromBytes`:
+   = help: the following other types implement trait `zerocopy::TryFromBytes`:
              bool
              char
              isize
@@ -46,13 +46,13 @@ error[E0277]: the trait bound `NotZerocopy: FromZeroes` is not satisfied
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotZerocopy: FromBytes` is not satisfied
+error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:46:10
    |
 46 | #[derive(FromBytes)]
-   |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `NotZerocopy`
+   |          ^^^^^^^^^ the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
    |
-   = help: the following other types implement trait `FromBytes`:
+   = help: the following other types implement trait `zerocopy::FromBytes`:
              isize
              i8
              i16
@@ -82,7 +82,7 @@ error[E0277]: the trait bound `FromBytes1: FromZeroes` is not satisfied
              i64
              i128
            and $N others
-note: required by a bound in `FromBytes`
+note: required by a bound in `zerocopy::FromBytes`
   --> $WORKSPACE/src/lib.rs
    |
    | pub unsafe trait FromBytes: FromZeros {
@@ -122,8 +122,8 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
              Unaligned1
              Unaligned2
              Unaligned3
-             U16<O>
-             U32<O>
+             NonZero<i8>
+             NonZero<u8>
            and $N others
    = help: see issue #48214
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
@@ -142,8 +142,8 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
              Unaligned1
              Unaligned2
              Unaligned3
-             U16<O>
-             U32<O>
+             NonZero<i8>
+             NonZero<u8>
            and $N others
    = help: see issue #48214
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
@@ -162,8 +162,8 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
              Unaligned1
              Unaligned2
              Unaligned3
-             U16<O>
-             U32<O>
+             NonZero<i8>
+             NonZero<u8>
            and $N others
    = help: see issue #48214
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable

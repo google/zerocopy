@@ -9,7 +9,7 @@
 [package]
 name = "testutil"
 version = "0.0.0"
-edition = "2021"
+edition = "2018"
 
 [dependencies]
 cargo_metadata = "0.18.0"
@@ -20,3 +20,4 @@ rustc_version = "0.4.0"
 # Pin to 0.3.0 because more recent versions require a Rust version more recent
 # than our MSRV.
 time = { version = "=0.3.0", default-features = false, features = ["formatting", "macros", "parsing"] }
+toml = "0.5.11"

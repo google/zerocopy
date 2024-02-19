@@ -119,6 +119,7 @@ macro_rules! trailing_field_offset {
         let min_size = {
             let zero_elems: *const [()] =
                 $crate::macro_util::core_reexport::ptr::slice_from_raw_parts(
+                    #[allow(clippy::incompatible_msrv)] // Work around https://github.com/rust-lang/rust-clippy/issues/12280
                     $crate::macro_util::core_reexport::ptr::NonNull::<()>::dangling()
                         .as_ptr()
                         .cast_const(),
@@ -261,7 +262,7 @@ macro_rules! align_of {
 #[macro_export]
 macro_rules! struct_has_padding {
     ($t:ty, $($ts:ty),*) => {
-        core::mem::size_of::<$t>() > 0 $(+ core::mem::size_of::<$ts>())*
+        ::zerocopy::macro_util::core_reexport::mem::size_of::<$t>() > 0 $(+ ::zerocopy::macro_util::core_reexport::mem::size_of::<$ts>())*
     };
 }
 
@@ -281,7 +282,7 @@ macro_rules! struct_has_padding {
 #[macro_export]
 macro_rules! union_has_padding {
     ($t:ty, $($ts:ty),*) => {
-        false $(|| core::mem::size_of::<$t>() != core::mem::size_of::<$ts>())*
+        false $(|| ::zerocopy::macro_util::core_reexport::mem::size_of::<$t>() != ::zerocopy::macro_util::core_reexport::mem::size_of::<$ts>())*
     };
 }
 
@@ -363,7 +364,12 @@ pub const unsafe fn transmute_ref<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
     // - The caller has guaranteed that alignment is not increased.
     // - We know that the returned lifetime will not outlive the input lifetime
     //   thanks to the lifetime bounds on this function.
-    unsafe { &*dst }
+    //
+    // TODO(#67): Once our MSRV is 1.58, replace this `transmute` with `&*dst`.
+    #[allow(clippy::transmute_ptr_to_ref)]
+    unsafe {
+        core::mem::transmute(dst)
+    }
 }
 
 /// Transmutes a mutable reference of one type to a mutable reference of another

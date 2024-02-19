@@ -359,7 +359,7 @@ example of how it can be used for parsing UDP packets.
 [`IntoBytes`]: crate::IntoBytes
 [`Unaligned`]: crate::Unaligned"),
             #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, NoCell, FromZeros, FromBytes, IntoBytes, Unaligned))]
+            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned))]
             #[repr(transparent)]
             pub struct $name<O>([u8; $bytes], PhantomData<O>);
         }
@@ -371,9 +371,10 @@ example of how it can be used for parsing UDP packets.
             /// SAFETY:
             /// `$name<O>` is `repr(transparent)`, and so it has the same layout
             /// as its only non-zero field, which is a `u8` array. `u8` arrays
-            /// are `NoCell`, `FromZeros`, `FromBytes`, `IntoBytes`, and
-            /// `Unaligned`.
+            /// are `NoCell`, `TryFromBytes`, `FromZeros`, `FromBytes`,
+            /// `IntoBytes`, and `Unaligned`.
             impl_or_verify!(O => NoCell for $name<O>);
+            impl_or_verify!(O => TryFromBytes for $name<O>);
             impl_or_verify!(O => FromZeros for $name<O>);
             impl_or_verify!(O => FromBytes for $name<O>);
             impl_or_verify!(O => IntoBytes for $name<O>);
@@ -400,7 +401,7 @@ example of how it can be used for parsing UDP packets.
             /// Constructs a new value from bytes which are already in `O` byte
             /// order.
             #[inline(always)]
-            pub fn from_bytes(bytes: [u8; $bytes]) -> $name<O> {
+            pub const fn from_bytes(bytes: [u8; $bytes]) -> $name<O> {
                 $name(bytes, PhantomData)
             }
 
@@ -408,32 +409,37 @@ example of how it can be used for parsing UDP packets.
             ///
             /// The returned bytes will be in `O` byte order.
             #[inline(always)]
-            pub fn to_bytes(self) -> [u8; $bytes] {
+            pub const fn to_bytes(self) -> [u8; $bytes] {
                 self.0
             }
         }
 
         impl<O: ByteOrder> $name<O> {
-            /// Constructs a new value, possibly performing an endianness swap
-            /// to guarantee that the returned value has endianness `O`.
-            #[inline(always)]
-            pub fn new(n: $native) -> $name<O> {
-                let bytes = match O::ORDER {
-                    Order::BigEndian => $to_be_fn(n),
-                    Order::LittleEndian => $to_le_fn(n),
-                };
+            maybe_const_trait_bounded_fn! {
+                /// Constructs a new value, possibly performing an endianness
+                /// swap to guarantee that the returned value has endianness
+                /// `O`.
+                #[inline(always)]
+                pub const fn new(n: $native) -> $name<O> {
+                    let bytes = match O::ORDER {
+                        Order::BigEndian => $to_be_fn(n),
+                        Order::LittleEndian => $to_le_fn(n),
+                    };
 
-                $name(bytes, PhantomData)
+                    $name(bytes, PhantomData)
+                }
             }
 
-            /// Returns the value as a primitive type, possibly performing an
-            /// endianness swap to guarantee that the return value has the
-            /// endianness of the native platform.
-            #[inline(always)]
-            pub fn get(self) -> $native {
-                match O::ORDER {
-                    Order::BigEndian => $from_be_fn(self.0),
-                    Order::LittleEndian => $from_le_fn(self.0),
+            maybe_const_trait_bounded_fn! {
+                /// Returns the value as a primitive type, possibly performing
+                /// an endianness swap to guarantee that the return value has
+                /// the endianness of the native platform.
+                #[inline(always)]
+                pub const fn get(self) -> $native {
+                    match O::ORDER {
+                        Order::BigEndian => $from_be_fn(self.0),
+                        Order::LittleEndian => $from_le_fn(self.0),
+                    }
                 }
             }
 
@@ -1122,6 +1128,18 @@ mod tests {
         1024
     };
 
+    #[test]
+    fn test_const_methods() {
+        use big_endian::*;
+
+        #[rustversion::since(1.61.0)]
+        const _U: U16 = U16::new(0);
+        #[rustversion::since(1.61.0)]
+        const _NATIVE: u16 = _U.get();
+        const _FROM_BYTES: U16 = U16::from_bytes([0, 1]);
+        const _BYTES: [u8; 2] = _FROM_BYTES.to_bytes();
+    }
+
     #[cfg_attr(test, test)]
     #[cfg_attr(kani, kani::proof)]
     fn test_zero() {
@@ -1152,7 +1170,7 @@ mod tests {
             for _ in 0..RAND_ITERS {
                 let native = T::Native::rand(&mut r);
                 let mut bytes = T::ByteArray::default();
-                bytes.as_bytes_mut().copy_from_slice(native.as_bytes());
+                bytes.as_mut_bytes().copy_from_slice(native.as_bytes());
                 if invert {
                     bytes = bytes.invert();
                 }

@@ -6,9 +6,6 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-#[path = "third_party/rust/layout.rs"]
-pub(crate) mod core_layout;
-
 use core::{mem, num::NonZeroUsize};
 
 pub(crate) trait AsAddress {
@@ -61,8 +58,66 @@ pub(crate) fn aligned_to<T: AsAddress, U>(t: T) -> bool {
     remainder == 0
 }
 
-/// Round `n` down to the largest value `m` such that `m <= n` and `m % align ==
-/// 0`.
+/// Returns the bytes needed to pad `len` to the next multiple of `align`.
+///
+/// This function assumes that align is a power of two; there are no guarantees
+/// on the answer it gives if this is not the case.
+pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize {
+    // Abstractly, we want to compute:
+    //   align - (len % align).
+    // Handling the case where len%align is 0.
+    // Because align is a power of two, len % align = len & (align-1).
+    // Guaranteed not to underflow as align is nonzero.
+    #[allow(clippy::arithmetic_side_effects)]
+    let mask = align.get() - 1;
+
+    // To efficiently subtract this value from align, we can use the bitwise complement.
+    // Note that ((!len) & (align-1)) gives us a number that with (len &
+    // (align-1)) sums to align-1. So subtracting 1 from x before taking the
+    // complement subtracts `len` from `align`. Some quick inspection of
+    // cases shows that this also handles the case where `len % align = 0`
+    // correctly too: len-1 % align then equals align-1, so the complement mod
+    // align will be 0, as desired.
+    //
+    // The following reasoning can be verified quickly by an SMT solver
+    // supporting the theory of bitvectors:
+    // ```smtlib
+    // ; Naive implementation of padding
+    // (define-fun padding1 (
+    //     (len (_ BitVec 32))
+    //     (align (_ BitVec 32))) (_ BitVec 32)
+    //    (ite
+    //      (= (_ bv0 32) (bvand len (bvsub align (_ bv1 32))))
+    //      (_ bv0 32)
+    //      (bvsub align (bvand len (bvsub align (_ bv1 32))))))
+    //
+    // ; The implementation below
+    // (define-fun padding2 (
+    //     (len (_ BitVec 32))
+    //     (align (_ BitVec 32))) (_ BitVec 32)
+    // (bvand (bvnot (bvsub len (_ bv1 32))) (bvsub align (_ bv1 32))))
+    //
+    // (define-fun is-power-of-two ((x (_ BitVec 32))) Bool
+    //   (= (_ bv0 32) (bvand x (bvsub x (_ bv1 32)))))
+    //
+    // (declare-const len (_ BitVec 32))
+    // (declare-const align (_ BitVec 32))
+    // ; Search for a case where align is a power of two and padding2 disagrees with padding1
+    // (assert (and (is-power-of-two align)
+    //              (not (= (padding1 len align) (padding2 len align)))))
+    // (simplify (padding1 (_ bv300 32) (_ bv32 32))) ; 20
+    // (simplify (padding2 (_ bv300 32) (_ bv32 32))) ; 20
+    // (simplify (padding1 (_ bv322 32) (_ bv32 32))) ; 30
+    // (simplify (padding2 (_ bv322 32) (_ bv32 32))) ; 30
+    // (simplify (padding1 (_ bv8 32) (_ bv8 32)))    ; 0
+    // (simplify (padding2 (_ bv8 32) (_ bv8 32)))    ; 0
+    // (check-sat) ; unsat, also works for 64-bit bitvectors
+    // ```
+    !(len.wrapping_sub(1)) & mask
+}
+
+/// Rounds `n` down to the largest value `m` such that `m <= n` and `m % align
+/// == 0`.
 ///
 /// # Panics
 ///
@@ -74,6 +129,7 @@ pub(crate) const fn round_down_to_next_multiple_of_alignment(
     align: NonZeroUsize,
 ) -> usize {
     let align = align.get();
+    #[cfg(zerocopy_panic_in_const)]
     debug_assert!(align.is_power_of_two());
 
     // Subtraction can't underflow because `align.get() >= 1`.
@@ -114,7 +170,12 @@ pub(crate) mod polyfills {
     // A polyfill for `NonNull::slice_from_raw_parts` that we can use before our
     // MSRV is 1.70, when that function was stabilized.
     //
+    // The `#[allow(unused)]` is necessary because, on sufficiently recent
+    // toolchain versions, `ptr.slice_from_raw_parts()` resolves to the inherent
+    // method rather than to this trait, and so this trait is considered unused.
+    //
     // TODO(#67): Once our MSRV is 1.70, remove this.
+    #[allow(unused)]
     pub(crate) trait NonNullExt<T> {
         fn slice_from_raw_parts(data: Self, len: usize) -> NonNull<[T]>;
     }
@@ -216,9 +277,16 @@ mod tests {
                 let align = NonZeroUsize::new(align).unwrap();
                 let want = alt_impl(n, align);
                 let got = round_down_to_next_multiple_of_alignment(n, align);
-                assert_eq!(got, want, "round_down_to_next_multiple_of_alignment({n}, {align})");
+                assert_eq!(got, want, "round_down_to_next_multiple_of_alignment({}, {})", n, align);
             }
         }
+    }
+
+    #[rustversion::since(1.57.0)]
+    #[test]
+    #[should_panic]
+    fn test_round_down_to_next_multiple_of_alignment_panic_in_const() {
+        round_down_to_next_multiple_of_alignment(0, NonZeroUsize::new(3).unwrap());
     }
 }
 
@@ -240,7 +308,7 @@ mod proofs {
 
         let expected = model_impl(n, align);
         let actual = round_down_to_next_multiple_of_alignment(n, align);
-        assert_eq!(expected, actual, "round_down_to_next_multiple_of_alignment({n}, {align})");
+        assert_eq!(expected, actual, "round_down_to_next_multiple_of_alignment({}, {})", n, align);
     }
 
     // Restricted to nightly since we use the unstable `usize::next_multiple_of`
@@ -263,8 +331,8 @@ mod proofs {
         kani::assume(align.get() < 1 << 29);
 
         let expected = model_impl(len, align);
-        let actual = core_layout::padding_needed_for(len, align);
-        assert_eq!(expected, actual, "padding_needed_for({len}, {align})");
+        let actual = padding_needed_for(len, align);
+        assert_eq!(expected, actual, "padding_needed_for({}, {})", len, align);
 
         let padded_len = actual + len;
         assert_eq!(padded_len % align, 0);

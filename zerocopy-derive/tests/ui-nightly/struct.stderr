@@ -1,45 +1,37 @@
-error: unsupported on generic structs that are not repr(transparent) or repr(packed)
-  --> tests/ui-nightly/struct.rs:97:10
-   |
-97 | #[derive(IntoBytes)]
-   |          ^^^^^^^^^
-   |
-   = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
-
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/struct.rs:122:11
+   --> tests/ui-nightly/struct.rs:128:11
     |
-122 | #[repr(C, align(2))]
+128 | #[repr(C, align(2))]
     |           ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/struct.rs:126:21
+   --> tests/ui-nightly/struct.rs:132:21
     |
-126 | #[repr(transparent, align(2))]
+132 | #[repr(transparent, align(2))]
     |                     ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/struct.rs:132:16
+   --> tests/ui-nightly/struct.rs:138:16
     |
-132 | #[repr(packed, align(2))]
+138 | #[repr(packed, align(2))]
     |                ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/struct.rs:136:18
+   --> tests/ui-nightly/struct.rs:142:18
     |
-136 | #[repr(align(1), align(2))]
+142 | #[repr(align(1), align(2))]
     |                  ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/struct.rs:140:8
+   --> tests/ui-nightly/struct.rs:146:8
     |
-140 | #[repr(align(2), align(4))]
+146 | #[repr(align(2), align(4))]
     |        ^^^^^^^^
 
 error[E0692]: transparent struct cannot have other repr hints
-   --> tests/ui-nightly/struct.rs:126:8
+   --> tests/ui-nightly/struct.rs:132:8
     |
-126 | #[repr(transparent, align(2))]
+132 | #[repr(transparent, align(2))]
     |        ^^^^^^^^^^^  ^^^^^^^^
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
@@ -48,7 +40,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
 31 | #[derive(KnownLayout)]
    |          ^^^^^^^^^^^ doesn't have a size known at compile-time
    |
-   = help: within `KL00`, the trait `Sized` is not implemented for `[u8]`
+   = help: within `KL00`, the trait `Sized` is not implemented for `[u8]`, which is required by `KL00: Sized`
 note: required because it appears within the type `KL00`
   --> tests/ui-nightly/struct.rs:32:8
    |
@@ -64,7 +56,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
 36 | #[derive(KnownLayout)]
    |          ^^^^^^^^^^^ doesn't have a size known at compile-time
    |
-   = help: within `KL02`, the trait `Sized` is not implemented for `[u8]`
+   = help: within `KL02`, the trait `Sized` is not implemented for `[u8]`, which is required by `KL02: Sized`
 note: required because it appears within the type `KL02`
   --> tests/ui-nightly/struct.rs:37:8
    |
@@ -74,13 +66,13 @@ note: required because it appears within the type `KL02`
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotKnownLayoutDst: KnownLayout` is not satisfied
+error[E0277]: the trait bound `NotKnownLayoutDst: zerocopy::KnownLayout` is not satisfied
   --> tests/ui-nightly/struct.rs:41:10
    |
 41 | #[derive(KnownLayout)]
-   |          ^^^^^^^^^^^ the trait `KnownLayout` is not implemented for `NotKnownLayoutDst`
+   |          ^^^^^^^^^^^ the trait `zerocopy::KnownLayout` is not implemented for `NotKnownLayoutDst`
    |
-   = help: the following other types implement trait `KnownLayout`:
+   = help: the following other types implement trait `zerocopy::KnownLayout`:
              bool
              char
              isize
@@ -94,13 +86,13 @@ error[E0277]: the trait bound `NotKnownLayoutDst: KnownLayout` is not satisfied
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotKnownLayout: KnownLayout` is not satisfied
+error[E0277]: the trait bound `NotKnownLayout: zerocopy::KnownLayout` is not satisfied
   --> tests/ui-nightly/struct.rs:47:10
    |
 47 | #[derive(KnownLayout)]
-   |          ^^^^^^^^^^^ the trait `KnownLayout` is not implemented for `NotKnownLayout`
+   |          ^^^^^^^^^^^ the trait `zerocopy::KnownLayout` is not implemented for `NotKnownLayout`
    |
-   = help: the following other types implement trait `KnownLayout`:
+   = help: the following other types implement trait `zerocopy::KnownLayout`:
              bool
              char
              isize
@@ -114,13 +106,13 @@ error[E0277]: the trait bound `NotKnownLayout: KnownLayout` is not satisfied
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `UnsafeCell<()>: NoCell` is not satisfied
+error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::NoCell` is not satisfied
   --> tests/ui-nightly/struct.rs:55:10
    |
 55 | #[derive(NoCell)]
-   |          ^^^^^^ the trait `NoCell` is not implemented for `UnsafeCell<()>`
+   |          ^^^^^^ the trait `zerocopy::NoCell` is not implemented for `UnsafeCell<()>`
    |
-   = help: the following other types implement trait `NoCell`:
+   = help: the following other types implement trait `zerocopy::NoCell`:
              bool
              char
              isize
@@ -134,13 +126,13 @@ error[E0277]: the trait bound `UnsafeCell<()>: NoCell` is not satisfied
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `NoCell` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `UnsafeCell<u8>: NoCell` is not satisfied
+error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy::NoCell` is not satisfied
   --> tests/ui-nightly/struct.rs:60:10
    |
 60 | #[derive(NoCell)]
-   |          ^^^^^^ the trait `NoCell` is not implemented for `UnsafeCell<u8>`
+   |          ^^^^^^ the trait `zerocopy::NoCell` is not implemented for `UnsafeCell<u8>`, which is required by `[UnsafeCell<u8>; 0]: zerocopy::NoCell`
    |
-   = help: the following other types implement trait `NoCell`:
+   = help: the following other types implement trait `zerocopy::NoCell`:
              bool
              char
              isize
@@ -150,7 +142,7 @@ error[E0277]: the trait bound `UnsafeCell<u8>: NoCell` is not satisfied
              i64
              i128
            and $N others
-   = note: required for `[UnsafeCell<u8>; 0]` to implement `NoCell`
+   = note: required for `[UnsafeCell<u8>; 0]` to implement `zerocopy::NoCell`
    = help: see issue #48214
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `NoCell` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -162,10 +154,10 @@ error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
    | ^^^^^^^^^^^^^^^^^^^^^^^^^
    |
 note: `AU16` has a `#[repr(align)]` attribute
-  --> tests/ui-nightly/../util.rs
+  --> tests/ui-nightly/../include.rs
    |
-   | pub struct AU16(u16);
-   | ^^^^^^^^^^^^^^^
+   |     pub struct AU16(pub u16);
+   |     ^^^^^^^^^^^^^^^
 
 error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
   --> tests/ui-nightly/struct.rs:77:1
@@ -174,10 +166,10 @@ error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
 note: `AU16` has a `#[repr(align)]` attribute
-  --> tests/ui-nightly/../util.rs
+  --> tests/ui-nightly/../include.rs
    |
-   | pub struct AU16(u16);
-   | ^^^^^^^^^^^^^^^
+   |     pub struct AU16(pub u16);
+   |     ^^^^^^^^^^^^^^^
 
 error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
   --> tests/ui-nightly/struct.rs:83:1
@@ -186,10 +178,10 @@ error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
 note: `AU16` has a `#[repr(align)]` attribute
-  --> tests/ui-nightly/../util.rs
+  --> tests/ui-nightly/../include.rs
    |
-   | pub struct AU16(u16);
-   | ^^^^^^^^^^^^^^^
+   |     pub struct AU16(pub u16);
+   |     ^^^^^^^^^^^^^^^
 
 error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
   --> tests/ui-nightly/struct.rs:89:1
@@ -198,15 +190,35 @@ error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
 note: `AU16` has a `#[repr(align)]` attribute
-  --> tests/ui-nightly/../util.rs
+  --> tests/ui-nightly/../include.rs
    |
-   | pub struct AU16(u16);
-   | ^^^^^^^^^^^^^^^
+   |     pub struct AU16(pub u16);
+   |     ^^^^^^^^^^^^^^^
+
+error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
+   --> tests/ui-nightly/struct.rs:100:10
+    |
+100 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
+    |
+    = help: the following other types implement trait `Unaligned`:
+              bool
+              i8
+              u8
+              NonZero<i8>
+              NonZero<u8>
+              U16<O>
+              U32<O>
+              U64<O>
+            and $N others
+    = help: see issue #48214
+    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is not satisfied
-   --> tests/ui-nightly/struct.rs:101:10
+   --> tests/ui-nightly/struct.rs:107:10
     |
-101 | #[derive(IntoBytes)]
+107 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes2, true>`
     |
     = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes2, true>`
@@ -215,9 +227,9 @@ error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `HasPadding<IntoBytes3, true>: ShouldBe<false>` is not satisfied
-   --> tests/ui-nightly/struct.rs:108:10
+   --> tests/ui-nightly/struct.rs:114:10
     |
-108 | #[derive(IntoBytes)]
+114 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes3, true>`
     |
     = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes3, true>`
@@ -226,7 +238,7 @@ error[E0277]: the trait bound `HasPadding<IntoBytes3, true>: ShouldBe<false>` is
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0587]: type has conflicting packed and align representation hints
-   --> tests/ui-nightly/struct.rs:133:1
+   --> tests/ui-nightly/struct.rs:139:1
     |
-133 | struct Unaligned3;
+139 | struct Unaligned3;
     | ^^^^^^^^^^^^^^^^^

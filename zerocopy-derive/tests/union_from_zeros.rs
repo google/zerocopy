@@ -6,67 +6,64 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+// See comment in `include.rs` for why we disable the prelude.
+#![no_implicit_prelude]
 #![allow(warnings)]
 
-#[macro_use]
-mod util;
+include!("include.rs");
 
-use std::{marker::PhantomData, option::IntoIter};
+// A union is `imp::FromZeros` if:
+// - all fields are `imp::FromZeros`
 
-use {static_assertions::assert_impl_all, zerocopy::FromZeros};
-
-// A union is `FromZeros` if:
-// - all fields are `FromZeros`
-
-#[derive(Clone, Copy, FromZeros)]
+#[derive(Clone, Copy, imp::FromZeros)]
 union Zst {
     a: (),
 }
 
-assert_impl_all!(Zst: FromZeros);
+util_assert_impl_all!(Zst: imp::FromZeros);
 
-#[derive(FromZeros)]
+#[derive(imp::FromZeros)]
 union One {
     a: bool,
 }
 
-assert_impl_all!(One: FromZeros);
+util_assert_impl_all!(One: imp::FromZeros);
 
-#[derive(FromZeros)]
+#[derive(imp::FromZeros)]
 union Two {
     a: bool,
     b: Zst,
 }
 
-assert_impl_all!(Two: FromZeros);
+util_assert_impl_all!(Two: imp::FromZeros);
 
-#[derive(FromZeros)]
-union TypeParams<'a, T: Copy, I: Iterator>
+#[derive(imp::FromZeros)]
+union TypeParams<'a, T: imp::Copy, I: imp::Iterator>
 where
-    I::Item: Copy,
+    I::Item: imp::Copy,
 {
     a: T,
     c: I::Item,
     d: u8,
-    e: PhantomData<&'a [u8]>,
-    f: PhantomData<&'static str>,
-    g: PhantomData<String>,
+    e: imp::PhantomData<&'a [u8]>,
+    f: imp::PhantomData<&'static str>,
+    g: imp::PhantomData<imp::String>,
 }
 
-assert_impl_all!(TypeParams<'static, (), IntoIter<()>>: FromZeros);
+util_assert_impl_all!(TypeParams<'static, (), imp::IntoIter<()>>: imp::FromZeros);
 
-// Deriving `FromZeros` should work if the union has bounded parameters.
+// Deriving `imp::FromZeros` should work if the union has bounded parameters.
 
-#[derive(FromZeros)]
+#[derive(imp::FromZeros)]
 #[repr(C)]
-union WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + FromZeros>
+union WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::FromZeros, const N: usize>
 where
     'a: 'b,
     'b: 'a,
-    T: 'a + 'b + Copy + FromZeros,
+    T: 'a + 'b + imp::Copy + imp::FromZeros,
 {
     a: [T; N],
-    b: PhantomData<&'a &'b ()>,
+    b: imp::PhantomData<&'a &'b ()>,
 }
 
-assert_impl_all!(WithParams<'static, 'static, 42, u8>: FromZeros);
+util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::FromZeros);

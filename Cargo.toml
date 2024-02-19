@@ -15,24 +15,40 @@
 [package]
 edition = "2018"
 name = "zerocopy"
-version = "0.8.0-alpha.2"
+version = "0.8.0-alpha.5"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Utilities for zero-copy parsing and serialization"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"
-rust-version = "1.60.0"
+rust-version = "1.56.0"
 
 exclude = [".*"]
+
+[package.metadata.build-rs]
+# These key/value pairs are parsed by `build.rs`. Each entry names a `--cfg`
+# which will be emitted if zerocopy is built with a toolchain version at least
+# as high as the specified version. In the emitted `--cfg`, dashes are replaced
+# by underscores.
+
+# From 1.61.0, Rust supports generic types with trait bounds in `const fn`.
+zerocopy-generic-bounds-in-const-fn = "1.61.0"
+
+# When the "simd" feature is enabled, include SIMD types from the
+# `core::arch::aarch64` module, which was stabilized in 1.59.0. On earlier Rust
+# versions, these types require the "simd-nightly" feature.
+zerocopy-aarch64-simd = "1.59.0"
+
+# Permit panicking in `const fn`s.
+zerocopy-panic-in-const = "1.57.0"
+
+[package.metadata.ci]
+# The versions of the stable and nightly compiler toolchains to use in CI.
+pinned-stable = "1.76.0"
+pinned-nightly = "nightly-2024-02-17"
 
 [package.metadata.docs.rs]
 all-features = true
 rustdoc-args = ["--cfg", "doc_cfg", "--generate-link-to-definition"]
-
-[package.metadata.ci]
-# The versions of the stable and nightly compiler toolchains to use in CI.
-pinned-stable = "1.75.0"
-pinned-nightly = "nightly-2024-01-11"
-minimum-working-rust-version = "1.60.0"
 
 [package.metadata.playground]
 features = ["__internal_use_only_features_that_work_on_stable"]
@@ -48,18 +64,22 @@ simd-nightly = ["simd"]
 __internal_use_only_features_that_work_on_stable = ["alloc", "derive", "simd"]
 
 [dependencies]
-zerocopy-derive = { version = "=0.8.0-alpha.2", path = "zerocopy-derive", optional = true }
+zerocopy-derive = { version = "=0.8.0-alpha.5", path = "zerocopy-derive", optional = true }
 getrandom = { version = "0.2", optional = true }
 
 # The "associated proc macro pattern" ensures that the versions of zerocopy and
 # zerocopy-derive remain equal, even if the 'derive' feature isn't used.
 # See: https://github.com/matklad/macro-dep-test
 [target.'cfg(any())'.dependencies]
-zerocopy-derive = { version = "=0.8.0-alpha.2", path = "zerocopy-derive" }
+zerocopy-derive = { version = "=0.8.0-alpha.5", path = "zerocopy-derive" }
 
 [dev-dependencies]
 assert_matches = "1.5"
 itertools = "0.11"
+# We don't use this directly, but trybuild does. On the MSRV toolchain, the
+# version resolver fails to select any version for once_cell unless we
+# depend on it directly.
+once_cell = "=1.9"
 rand = { version = "0.8.5", features = ["small_rng"] }
 rustversion = "1.0"
 static_assertions = "1.1"
@@ -68,8 +88,8 @@ testutil = { path = "testutil" }
 # and the version used in CI are guaranteed to be the same. Future versions
 # sometimes change the output format slightly, so a version mismatch can cause
 # CI test failures.
-trybuild = { version = "=1.0.85", features = ["diff"] }
+trybuild = { version = "=1.0.89", features = ["diff"] }
 # In tests, unlike in production, zerocopy-derive is not optional
-zerocopy-derive = { version = "=0.8.0-alpha.2", path = "zerocopy-derive" }
+zerocopy-derive = { version = "=0.8.0-alpha.5", path = "zerocopy-derive" }
 # TODO(#381) Remove this dependency once we have our own layout gadgets.
 elain = "0.3.0"

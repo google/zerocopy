@@ -38,7 +38,7 @@ jobs:
       matrix:
         # See `INTERNAL.md` for an explanation of these pinned toolchain
         # versions.
-        toolchain: [ "mwrv", "stable", "nightly" ]
+        toolchain: [ "msrv", "stable", "nightly",  "zerocopy-generic-bounds-in-const-fn", "zerocopy-aarch64-simd", "zerocopy-panic-in-const", ]
         target: [
           "i686-unknown-linux-gnu",
           "x86_64-unknown-linux-gnu",
@@ -55,10 +55,17 @@ jobs:
         exclude:
           # Exclude any combination which uses a non-nightly toolchain but
           # enables nightly features.
-          - toolchain: "mwrv"
+          - toolchain: "msrv"
             features: "--all-features"
           - toolchain: "stable"
             features: "--all-features"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+            features: "--all-features"
+          - toolchain: "zerocopy-aarch64-simd"
+            features: "--all-features"
+          - toolchain: "zerocopy-panic-in-const"
+            features: "--all-features"
+
           # Exclude any combination for the zerocopy-derive crate which
           # uses zerocopy features.
           - crate: "zerocopy-derive"
@@ -67,26 +74,34 @@ jobs:
             features: "--features __internal_use_only_features_that_work_on_stable"
           - crate: "zerocopy-derive"
             features: "--all-features"
+          # Exclue any combination of zerocopy-derive and any toolchain version
+          # other than "msrv", "stable", and "nightly". These other versions
+          # exist to exercise zerocopy behavior which differs by toolchain;
+          # zerocopy-derive doesn't behave different on these toolchains.
+          - crate: "zerocopy-derive"
+            toolchain: "zerocopy-generic-bounds-in-const-fn"
+          - crate: "zerocopy-derive"
+            toolchain: "zerocopy-aarch64-simd"
+          - crate: "zerocopy-derive"
+            toolchain: "zerocopy-panic-in-const"
 
     name: Build & Test (crate:${{ matrix.crate }}, toolchain:${{ matrix.toolchain }}, target:${{ matrix.target }}, features:${{ matrix.features }})
 
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-    - uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
-      with:
-        path: |
-          ~/.cargo/
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
-
+    - name: Populate cache
+      uses: ./.github/actions/cache
+    
     - name: Configure environment variables
       run: |
         set -eo pipefail
 
-        # We use toolchain descriptors ("mwrv", "stable", and "nightly") in the
-        # matrix. This step converts the current descriptor to a particular
-        # toolchain version by looking up the corresponding key in `Cargo.toml`. It
-        # sets the `ZC_TOOLCHAIN` environment variable for use in the next step
+        # We use toolchain descriptors ("msrv", "stable", "nightly", and values
+        # from the "metadata.build-rs" key in Cargo.toml) in the matrix. This
+        # step converts the current descriptor to a particular toolchain version
+        # by looking up the corresponding key in `Cargo.toml`. It sets the
+        # `ZC_TOOLCHAIN` environment variable for use in the next step
         # (toolchain installation) because GitHub variable interpolation doesn't
         # support running arbitrary commands. In other words, we can't rewrite:
         #
@@ -108,6 +123,17 @@ jobs:
         else
           echo "Using non-nightly toolchain; not modifying RUSTFLAGS='$RUSTFLAGS' or MIRIFLAGS='$MIRIFLAGS'" | tee -a $GITHUB_STEP_SUMMARY
         fi
+
+    # On our MSRV, `cargo` does not know about the `rust-version` field. As a
+    # result, in `cargo.sh`, if we use our MSRV toolchain in order to run `cargo
+    # metadata`, we will not be able to extract the `rust-version` field. Thus,
+    # in `cargo.sh`, we explicitly do `cargo +stable metadata`. This requires a
+    # (more recent) stable toolchain to be installed. As of this writing, this
+    # toolchain is not used for anything else.
+    - name: Install stable Rust for use in 'cargo.sh'
+      uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
+      with:
+        toolchain: stable
 
     - name: Install Rust with ${{ matrix.toolchain }} toolchain (${{ env.ZC_TOOLCHAIN }}) and target ${{ matrix.target }}
       uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
@@ -131,8 +157,8 @@ jobs:
       with:
         key: "${{ matrix.target }}"
 
-    - name: Check
-      run: ./cargo.sh +${{ matrix.toolchain }} check --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+    - name: Check tests
+      run: ./cargo.sh +${{ matrix.toolchain }} check --tests --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
 
     - name: Build
       run: ./cargo.sh +${{ matrix.toolchain }} build --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
@@ -195,10 +221,18 @@ jobs:
       #
       # Only run UI tests for zerocopy-derive, or for zerocopy with the derive
       # feature.
+      #
+      # Only run UI tests for the 'msrv', 'stable', and 'nightly' toolchains.
+      # Other toolchains are tested only because zerocopy has behavior which
+      # differs on those toolchains, but at present, none of that behavior
+      # affects UI tests. If we were to run UI tests on these toolchains, we
+      # would need a new set of UI test files per toolchain, which would be a
+      # maintenance burden not worth the (at present, zero) benefit.
       if: |
         (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686')) &&
           (matrix.crate == 'zerocopy-derive' ||
-            (matrix.features != '' && matrix.features != '--no-default-features'))
+            (matrix.features != '' && matrix.features != '--no-default-features')) &&
+          (matrix.toolchain == 'msrv' || matrix.toolchain == 'stable' || matrix.toolchain == 'nightly')
 
     - name: Run tests under Miri
       run: |
@@ -253,14 +287,21 @@ jobs:
     # just duplicating work by running this job multiple times, each time
     # targetting the host platform.
     - name: Check semver compatibility
-      uses: obi1kenobi/cargo-semver-checks-action@e275dda72e250d4df5b564e969e1348d67fefa52 # v2.2
+      uses: obi1kenobi/cargo-semver-checks-action@48f4ef7da6d907d69d18249e0ba79aa98c61b9db # v2.3
       with:
         # Don't semver check zerocopy-derive; as a proc macro, it doesn't have
         # an API that cargo-semver-checks can understand.
         package: zerocopy
-        feature-group: all-features
+        # Don't test nightly features. The reason this doesn't work is that
+        # cargo-semver-checks works relative to the most recently-published
+        # stable release on crates.io. The pinned nightly toolchain may be
+        # incompatible with the unstable features on that published release, as
+        # nightly features may have changed since it was released. Luckily, we
+        # don't care about the API stability of these features anyway.
+        feature-group: only-explicit-features
+        features: __internal_use_only_features_that_work_on_stable
         rust-toolchain: ${{ env.ZC_TOOLCHAIN }}
-      if: matrix.crate == 'zerocopy' && matrix.features == '--all-features' && matrix.toolchain == 'nightly'
+      if: matrix.crate == 'zerocopy' && matrix.features == '--features __internal_use_only_features_that_work_on_stable' && matrix.toolchain == 'nightly'
 
   kani:
     runs-on: ubuntu-latest        
@@ -269,7 +310,17 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - uses: model-checking/kani-github-action@f838096619a707b0f6b2118cf435eaccfa33e51f # v1.1
         with:
-          args: "--package zerocopy --all-features --output-format=terse --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
+          # Use `--features __internal_use_only_features_that_work_on_stable`
+          # because the Kani GitHub Action uses its own pinned nightly
+          # toolchain. Sometimes, we make changes to our nightly features for
+          # more recent toolchains, and so our nightly features become
+          # incompatible with the toolchain that Kani uses. By only testing
+          # stable features, we ensure that this doesn't cause problems in CI.
+          #
+          # TODO(https://github.com/model-checking/kani-github-action/issues/56):
+          # Go back to testing all features once the Kani GitHub Action supports
+          # specifying a particular toolchain.
+          args: "--package zerocopy --features __internal_use_only_features_that_work_on_stable --output-format=terse --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
 
   check_fmt:
     runs-on: ubuntu-latest
@@ -277,13 +328,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Check Rust formatting
-        run: |
-          set -eo pipefail
-          cargo fmt --check -p zerocopy
-          cargo fmt --check -p zerocopy-derive
-          shopt -s globstar
-          rustfmt --check tests/**/*.rs
-          rustfmt --check zerocopy-derive/tests/**/*.rs
+        run: ./ci/check_fmt.sh
 
   check_readme:
     needs: generate_cache
@@ -292,87 +337,11 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
-        with:
-          path: |
-            ~/.cargo/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
-
+      - name: Populate cache
+        uses: ./.github/actions/cache
+      
       - name: Check README.md
-        run: |
-          set -eo pipefail
-
-          # Install again in case the installation failed during the
-          # `generate_cache` step. We treat that step as best-effort and
-          # suppress all errors from it.
-          cargo install cargo-readme --version 3.2.0
-
-          diff <(./generate-readme.sh) README.md
-          exit $?
-
-  check_mwrv:
-    needs: generate_cache
-    runs-on: ubuntu-latest
-    name: Check MWRV <= MSRV
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-
-      - uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
-        with:
-          path: |
-            ~/.cargo/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
-
-      # Make sure that the rust-version key in zerocopy's `Cargo.toml` file
-      # (MSRV) is at least as high as the
-      # `metadata.ci."minimum-working-rust-version"` key. This latter key (known
-      # as the MWRV) is the one we actually test with in CI; if MSRV < MWRV,
-      # then our CI wouldn't actually be verifying that our code works correctly
-      # on the published MSRV.
-      #
-      # Note that we also verify the same inequality for zerocopy-derive's MSRV.
-      # This is technically unnecessary since, in a separate CI job, we check to
-      # make sure that zerocopy's and zerocopy-derive's MSRVs are the same.
-      # However, it's trivial to support this as well, and it is more robust
-      # against a future in which we remove that other CI job.
-      - name: Check MWRV <= MSRV
-        run: |
-          set -eo pipefail
-
-          # Usage: mwrv <crate-name>
-          function mwrv {
-            cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").metadata.ci.\"minimum-working-rust-version\""
-          }
-
-          # Usage: msrv <crate-name>
-          function msrv {
-            cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").rust_version"
-          }
-
-          mwrv=$(mwrv zerocopy)
-          msrv_zerocopy=$(msrv zerocopy)
-          msrv_zerocopy_derive=$(msrv zerocopy-derive)
-
-          # Usage: semver_lteq <a> <b>
-          function semver_lteq {
-            [  "$1" = "`echo -e "$1\n$2" | sort -V | head -n1`" ]
-          }
-
-          if semver_lteq "$mwrv" "$msrv_zerocopy"; then
-            echo "MWRV ($mwrv) <= zerocopy MSRV ($msrv_zerocopy)." | tee -a $GITHUB_STEP_SUMMARY
-            exit 0
-          else
-            echo "MWRV ($mwrv) > zerocopy MSRV ($msrv_zerocopy)." | tee -a $GITHUB_STEP_SUMMARY >&2
-            exit 1
-          fi
-
-          if semver_lteq "$mwrv" "$msrv_zerocopy_derive"; then
-            echo "MWRV ($mwrv) <= zerocopy-derive MSRV ($msrv_zerocopy_derive)." | tee -a $GITHUB_STEP_SUMMARY
-            exit 0
-          else
-            echo "MWRV ($mwrv) > zerocopy-derive MSRV ($msrv_zerocopy_derive)." | tee -a $GITHUB_STEP_SUMMARY >&2
-            exit 1
-          fi
+        run: ./ci/check_readme.sh
 
   check_msrv:
     needs: generate_cache
@@ -380,41 +349,21 @@ jobs:
     name: Check MSRVs match
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-
-      - uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
-        with:
-          path: |
-            ~/.cargo/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
-
+      
+      - name: Populate cache
+        uses: ./.github/actions/cache
+      
       # Make sure that the MSRV in zerocopy's and zerocopy-derive's `Cargo.toml`
-      # files are the same. In CI, we test with a single minimum working Rust
-      # version (MWRV), and validate that it is at least as low as both MSRVs,
-      # so technically this check is unnecessary. However, we logically treat
-      # zerocopy and zerocopy-derive as part of a single monolith, so they
-      # should have equal MSRVs. To do otherwise would be surprising to users
-      # (and, if zerocopy-derive's MSRV were higher, it would mean that
-      # zerocopy's `derive` feature would not respect its own MSRV).
+      # files are the same. In CI, we test with a single MSRV (the one indicated
+      # in zerocopy's `Cargo.toml`), so it's important that:
+      # - zerocopy-derive's MSRV is not lower than zerocopy's (we don't test with
+      #   a lower MSRV in CI, so we couldn't guarantee that zerocopy-derive
+      #   actually built and ran on a lower MSRV)
+      # - zerocopy-derive's MSRV is not higher than zerocopy's (this would mean
+      #   that compiling zerocopy with the `derive` feature enabled would fail
+      #   on its own published MSRV)
       - name: Check MSRVs match
-        run: |
-          set -eo pipefail
-
-          # Usage: msrv <crate-name>
-          function msrv {
-            cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").rust_version"
-          }
-
-          ver_zerocopy=$(msrv zerocopy)
-          ver_zerocopy_derive=$(msrv zerocopy-derive)
-
-          if [[ "$ver_zerocopy" == "$ver_zerocopy_derive" ]]; then
-            echo "Same MSRV ($ver_zerocopy) found for zerocopy and zerocopy-derive." | tee -a $GITHUB_STEP_SUMMARY
-            exit 0
-          else
-            echo "Different MSRVs found for zerocopy ($ver_zerocopy) and zerocopy-derive ($ver_zerocopy_derive)." \
-              | tee -a $GITHUB_STEP_SUMMARY >&2
-            exit 1
-          fi
+        run: ./ci/check_msrv.sh
 
   check_versions:
     needs: generate_cache
@@ -423,77 +372,14 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
-        with:
-          path: |
-            ~/.cargo/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
+      - name: Populate cache
+        uses: ./.github/actions/cache
 
       # Make sure that both crates are at the same version, and that zerocopy
       # depends exactly upon the current version of zerocopy-derive. See
       # `INTERNAL.md` for an explanation of why we do this.
       - name: Check crate versions match
-        run: |
-          set -eo pipefail
-
-          # Usage: version <crate-name>
-          function version {
-            cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").version"
-          }
-
-          ver_zerocopy=$(version zerocopy)
-          ver_zerocopy_derive=$(version zerocopy-derive)
-
-          # Usage: dependency-version <kind> <target>
-          function dependency-version {
-            KIND="$1"
-            TARGET="$2"
-            cargo metadata --format-version 1 \
-              | jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select((.name == \"zerocopy-derive\") and .kind == $KIND and .target == $TARGET).req"
-          }
-
-          # The non-dev dependency version (kind `null` filters out the dev
-          # dependency, and target `null` filters out the targeted version).
-          zerocopy_derive_dep_ver=$(dependency-version null null)
-
-          # The non-dev dependency, targeted version (kind `null` filters out
-          # the dev dependency).
-          zerocopy_derive_targeted_ver=$(dependency-version null '"cfg(any())"')
-
-          # The dev dependency version (kind `"dev"` selects only the dev
-          # dependency).
-          zerocopy_derive_dev_dep_ver=$(dependency-version '"dev"' null)
-
-          function assert-match {
-            VER_A="$1"
-            VER_B="$2"
-            SUCCESS_MSG="$3"
-            FAILURE_MSG="$4"
-            if [[ "$ver_zerocopy" == "$ver_zerocopy_derive" ]]; then
-              echo "$SUCCESS_MSG" | tee -a $GITHUB_STEP_SUMMARY
-            else
-              echo "$FAILURE_MSG" | tee -a $GITHUB_STEP_SUMMARY >&2
-              exit 1
-            fi
-          }
-
-          assert-match "$ver_zerocopy" "$ver_zerocopy_derive" \
-            "Same crate version ($ver_zerocopy) found for zerocopy and zerocopy-derive." \
-            "Different crate versions found for zerocopy ($ver_zerocopy) and zerocopy-derive ($ver_zerocopy_derive)."
-
-          # Note the leading `=` sign - the dependency needs to be an exact one.
-          assert-match "=$ver_zerocopy_derive" "$zerocopy_derive_dep_ver" \
-            "zerocopy depends upon same version of zerocopy-derive in-tree ($zerocopy_derive_dep_ver)." \
-            "zerocopy depends upon different version of zerocopy-derive ($zerocopy_derive_dep_ver) than the one in-tree ($ver_zerocopy_derive)."
-
-          # Note the leading `=` sign - the dependency needs to be an exact one.
-          assert-match "=$ver_zerocopy_derive" "$zerocopy_derive_dev_dep_ver" \
-            "In dev mode, zerocopy depends upon same version of zerocopy-derive in-tree ($zerocopy_derive_dev_dep_ver)." \
-            "In dev mode, zerocopy depends upon different version of zerocopy-derive ($zerocopy_derive_dev_dep_ver) than the one in-tree ($ver_zerocopy_derive)."
-
-          assert-match "$zerocopy_derive_dep_ver" "$zerocopy_derive_targeted_ver" \
-            "Same crate version ($zerocopy_derive_dep_ver) found for optional and targeted zerocopy-derive dependency." \
-            "Different crate versions found for optional ($zerocopy_derive_dep_ver) and targeted ($zerocopy_derive_targeted_ver) dependency."
+        run: ./ci/check_versions.sh
 
   generate_cache:
     runs-on: ubuntu-latest
@@ -501,13 +387,10 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
-        with:
-          path: |
-            ~/.cargo/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
-
       - name: Populate cache
+        uses: ./.github/actions/cache
+
+      - name: Download dependencies
         run: |
           # Ensure all dependencies are downloaded - both for our crates and for
           # tools we use in CI. We don't care about these tools succeeding for
@@ -528,6 +411,15 @@ jobs:
           cargo install cargo-readme --version 3.2.0 &> /dev/null || true
           cargo install --locked kani-verifier       &> /dev/null || true
           cargo kani setup                           &> /dev/null || true
+  check-all-toolchains-tested:
+    runs-on: ubuntu-latest
+    name: Check that all toolchains listed in Cargo.toml are tested in CI
+    steps:
+      - name: Install yq (for YAML parsing)
+        run: go install github.com/mikefarah/yq/v4@latest
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Run check
+        run: ./ci/check_all_toolchains_tested.sh
 
   check-job-dependencies:
     runs-on: ubuntu-latest
@@ -537,31 +429,7 @@ jobs:
         run: go install github.com/mikefarah/yq/v4@latest
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Run dependency check
-        run: |
-          set -eo pipefail
-          jobs=$(for i in $(find .github -iname '*.yaml' -or -iname '*.yml')
-            do
-              # Select jobs that are triggered by pull request.
-              if yq -e '.on | has("pull_request")' "$i" 2>/dev/null >/dev/null
-              then
-                # This gets the list of jobs that all-jobs-succeed does not depend on.
-                comm -23 \
-                  <(yq -r '.jobs | keys | .[]' "$i" | sort | uniq) \
-                  <(yq -r '.jobs.all-jobs-succeed.needs[]' "$i" | sort | uniq)
-              fi
-
-            # The grep call here excludes all-jobs-succeed from the list of jobs that
-            # all-jobs-succeed does not depend on.  If all-jobs-succeed does
-            # not depend on itself, we do not care about it.
-            done | sort | uniq | (grep -v '^all-jobs-succeed$' || true)
-          )
-
-          if [ -n "$jobs" ]
-          then
-            missing_jobs="$(echo "$jobs" | tr ' ' '\n')"
-            echo "all-jobs-succeed missing dependencies on some jobs: $missing_jobs" | tee -a $GITHUB_STEP_SUMMARY
-            exit 1
-          fi
+        run: ./ci/check_job_dependencies.sh
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
@@ -573,7 +441,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_mwrv, check_versions, generate_cache, check-job-dependencies]
+      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_versions, generate_cache, check-all-toolchains-tested, check-job-dependencies]
       steps:
         - name: Mark the job as failed
           run: exit 1

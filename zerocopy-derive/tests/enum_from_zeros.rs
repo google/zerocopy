@@ -6,33 +6,33 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+// See comment in `include.rs` for why we disable the prelude.
+#![no_implicit_prelude]
 #![allow(warnings)]
 
-mod util;
+include!("include.rs");
 
-use {static_assertions::assert_impl_all, zerocopy::FromZeros};
-
-#[derive(FromZeros)]
+#[derive(imp::FromZeros)]
 #[repr(C)]
 enum Foo {
     A,
 }
 
-assert_impl_all!(Foo: FromZeros);
+util_assert_impl_all!(Foo: imp::FromZeros);
 
-#[derive(FromZeros)]
+#[derive(imp::FromZeros)]
 #[repr(C)]
 enum Bar {
     A = 0,
 }
 
-assert_impl_all!(Bar: FromZeros);
+util_assert_impl_all!(Bar: imp::FromZeros);
 
-#[derive(FromZeros)]
+#[derive(imp::FromZeros)]
 #[repr(C)]
 enum Baz {
     A = 1,
     B = 0,
 }
 
-assert_impl_all!(Baz: FromZeros);
+util_assert_impl_all!(Baz: imp::FromZeros);

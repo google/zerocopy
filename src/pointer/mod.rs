@@ -12,43 +12,19 @@ mod ptr;
 
 pub use ptr::{invariant, Ptr};
 
-use crate::{TryFromBytes, Unaligned};
+use crate::Unaligned;
 
 /// A shorthand for a maybe-valid, maybe-aligned reference. Used as the argument
 /// to [`TryFromBytes::is_bit_valid`].
+///
+/// [`TryFromBytes::is_bit_valid`]: crate::TryFromBytes::is_bit_valid
 pub type Maybe<'a, T, Alignment = invariant::AnyAlignment> =
-    Ptr<'a, T, (invariant::Shared, Alignment, invariant::AsInitialized)>;
-
-// These methods are defined on the type alias, `Maybe`, so as to bring them to
-// the forefront of the rendered rustdoc.
-impl<'a, T, Alignment> Maybe<'a, T, Alignment>
-where
-    T: 'a + ?Sized + TryFromBytes,
-    Alignment: invariant::Alignment,
-{
-    /// Checks that `Ptr`'s referent is validly initialized for `T`.
-    ///
-    /// # Panics
-    ///
-    /// This method will panic if
-    /// [`T::is_bit_valid`][TryFromBytes::is_bit_valid] panics.
-    #[inline]
-    pub(crate) fn check_valid(self) -> Option<MaybeAligned<'a, T, Alignment>> {
-        // This call may panic. If that happens, it doesn't cause any soundness
-        // issues, as we have not generated any invalid state which we need to
-        // fix before returning.
-        if T::is_bit_valid(self.forget_aligned()) {
-            // SAFETY: If `T::is_bit_valid`, code may assume that `self`
-            // contains a bit-valid instance of `Self`.
-            Some(unsafe { self.assume_validity::<invariant::Valid>() })
-        } else {
-            None
-        }
-    }
-}
+    Ptr<'a, T, (invariant::Shared, Alignment, invariant::Initialized)>;
 
 /// A semi-user-facing wrapper type representing a maybe-aligned reference, for
 /// use in [`TryFromBytes::is_bit_valid`].
+///
+/// [`TryFromBytes::is_bit_valid`]: crate::TryFromBytes::is_bit_valid
 pub type MaybeAligned<'a, T, Alignment = invariant::AnyAlignment> =
     Ptr<'a, T, (invariant::Shared, Alignment, invariant::Valid)>;
 
@@ -80,9 +56,15 @@ where
     where
         T: Unaligned,
     {
-        // SAFETY: The alignment of `T` is 1 and thus is always aligned
-        // because `T: Unaligned`.
-        let ptr = unsafe { self.assume_alignment::<invariant::Aligned>() };
-        ptr.as_ref()
+        self.bikeshed_recall_aligned().as_ref()
     }
+}
+
+/// Checks if the referent is zeroed.
+pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
+where
+    T: crate::NoCell,
+    I: invariant::Invariants<Aliasing = invariant::Shared, Validity = invariant::Initialized>,
+{
+    ptr.as_bytes().as_ref().iter().all(|&byte| byte == 0)
 }

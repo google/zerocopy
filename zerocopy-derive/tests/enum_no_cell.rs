@@ -2,49 +2,46 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// See comment in `include.rs` for why we disable the prelude.
+#![no_implicit_prelude]
 #![allow(warnings)]
 
-mod util;
+include!("include.rs");
 
-use {
-    core::cell::UnsafeCell, core::marker::PhantomData, static_assertions::assert_impl_all,
-    zerocopy::NoCell,
-};
-
-#[derive(NoCell)]
+#[derive(imp::NoCell)]
 enum Foo {
     A,
 }
 
-assert_impl_all!(Foo: NoCell);
+util_assert_impl_all!(Foo: imp::NoCell);
 
-#[derive(NoCell)]
+#[derive(imp::NoCell)]
 enum Bar {
     A = 0,
 }
 
-assert_impl_all!(Bar: NoCell);
+util_assert_impl_all!(Bar: imp::NoCell);
 
-#[derive(NoCell)]
+#[derive(imp::NoCell)]
 enum Baz {
     A = 1,
     B = 0,
 }
 
-assert_impl_all!(Baz: NoCell);
+util_assert_impl_all!(Baz: imp::NoCell);
 
 // Deriving `NoCell` should work if the enum has bounded parameters.
 
-#[derive(NoCell)]
+#[derive(imp::NoCell)]
 #[repr(C)]
-enum WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + NoCell>
+enum WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::NoCell, const N: ::core::primitive::usize>
 where
     'a: 'b,
     'b: 'a,
-    T: 'a + 'b + NoCell,
+    T: 'a + 'b + imp::NoCell,
 {
-    Variant([T; N], PhantomData<&'a &'b ()>),
-    UnsafeCell(PhantomData<UnsafeCell<()>>, &'a UnsafeCell<()>),
+    Variant([T; N], imp::PhantomData<&'a &'b ()>),
+    UnsafeCell(imp::PhantomData<imp::UnsafeCell<()>>, &'a imp::UnsafeCell<()>),
 }
 
-assert_impl_all!(WithParams<'static, 'static, 42, u8>: NoCell);
+util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::NoCell);

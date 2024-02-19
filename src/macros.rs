@@ -45,9 +45,13 @@ macro_rules! safety_comment {
 ///   instance of `$ty`.
 /// - If an `is_bit_valid` impl is provided, then:
 ///   - Regardless of whether the provided closure takes a `Ptr<$repr>` or
-///     `&$repr` argument, it must be the case that, given `t: *mut $ty` and
-///     `let r = t as *mut $repr`, `r` refers to an object of equal or lesser
-///     size than the object referred to by `t`.
+///     `&$repr` argument, if `$ty` and `$repr` are different types, then it
+///     must be the case that, given `t: *mut $ty` and `let r = t as *mut
+///     $repr`:
+///     - `r` refers to an object of equal or lesser size than the object
+///       referred to by `t`.
+///     - `r` refers to an object with `UnsafeCell`s at the same byte ranges as
+///       the object referred to by `t`.
 ///   - If the provided closure takes a `&$repr` argument, then given a `Ptr<'a,
 ///     $ty>` which satisfies the preconditions of
 ///     `TryFromBytes::<$ty>::is_bit_valid`, it must be guaranteed that the
@@ -125,7 +129,7 @@ macro_rules! unsafe_impl {
         => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         $(#[$attr])*
-        unsafe impl<$(const $constname: $constty,)* $($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> $trait for $ty {
+        unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),* $(, const $constname: $constty,)*> $trait for $ty {
             unsafe_impl!(@method $trait $(; |$candidate: $(MaybeAligned<$ref_repr>)? $(Maybe<$ptr_repr>)?| $is_bit_valid)?);
         }
     };
@@ -141,6 +145,8 @@ macro_rules! unsafe_impl {
             //   by that method's safety precondition.
             // - The caller has promised that the cast results in an object of
             //   equal or lesser size.
+            // - The caller has promised that the destination type has
+            //   `UnsafeCell`s at the same byte ranges as the source type.
             #[allow(clippy::as_conversions)]
             let candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
 
@@ -161,12 +167,15 @@ macro_rules! unsafe_impl {
             //   by that method's safety precondition.
             // - The caller has promised that the cast results in an object of
             //   equal or lesser size.
+            // - The caller has promised that the destination type has
+            //   `UnsafeCell`s at the same byte ranges as the source type.
             #[allow(clippy::as_conversions)]
             let $candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
 
-            // SAFETY: The caller has promised that `$repr` is as-initialized as
-            // `Self`.
-            let $candidate = unsafe { $candidate.assume_validity::<crate::pointer::invariant::AsInitialized>() };
+            // Restore the invariant that the referent bytes are initialized.
+            // SAFETY: The above cast does not uninitialize any referent bytes;
+            // they remain initialized.
+            let $candidate = unsafe { $candidate.assume_validity::<crate::pointer::invariant::Initialized>() };
 
             $is_bit_valid
         }
@@ -204,18 +213,36 @@ macro_rules! unsafe_impl {
 /// unsafe impl<A, B> Foo for type!(A, B) { ... }
 /// ```
 macro_rules! unsafe_impl_for_power_set {
-    ($first:ident $(, $rest:ident)* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)) => {
-        unsafe_impl_for_power_set!($($rest),* $(-> $ret)? => $trait for $macro!(...));
-        unsafe_impl_for_power_set!(@impl $first $(, $rest)* $(-> $ret)? => $trait for $macro!(...));
+    (
+        $first:ident $(, $rest:ident)* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+    ) => {
+        unsafe_impl_for_power_set!(
+            $($rest),* $(-> $ret)? => $trait for $macro!(...)
+            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+        );
+        unsafe_impl_for_power_set!(
+            @impl $first $(, $rest)* $(-> $ret)? => $trait for $macro!(...)
+            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+        );
     };
-    ($(-> $ret:ident)? => $trait:ident for $macro:ident!(...)) => {
-        unsafe_impl_for_power_set!(@impl $(-> $ret)? => $trait for $macro!(...));
+    (
+        $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+    ) => {
+        unsafe_impl_for_power_set!(
+            @impl $(-> $ret)? => $trait for $macro!(...)
+            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+        );
     };
-    (@impl $($vars:ident),* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)) => {
-        unsafe impl<$($vars,)* $($ret)?> $trait for $macro!($($vars),* $(-> $ret)?) {
-            #[allow(clippy::missing_inline_in_public_items)]
-            fn only_derive_is_allowed_to_implement_this_trait() {}
-        }
+    (
+        @impl $($vars:ident),* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+    ) => {
+        unsafe_impl!(
+            $($vars,)* $($ret)? => $trait for $macro!($($vars),* $(-> $ret)?)
+            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+        );
     };
 }
 
@@ -259,6 +286,9 @@ macro_rules! opt_fn {
 /// impl in this case, and also provides useful documentation for readers of the
 /// code.
 ///
+/// Finally, if a `TryFromBytes::is_bit_valid` impl is provided, it must adhere
+/// to the safety preconditions of [`unsafe_impl!`].
+///
 /// ## Example
 ///
 /// ```rust,ignore
@@ -295,24 +325,15 @@ macro_rules! impl_or_verify {
     };
     (
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty
+        => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         impl_or_verify!(@impl { unsafe_impl!(
             $($tyvar $(: $(? $optbound +)* $($bound +)*)?),* => $trait for $ty
+            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
         ); });
         impl_or_verify!(@verify $trait, {
             impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> Subtrait for $ty {}
         });
-    };
-    (
-        $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty
-    ) => {
-        unsafe_impl!(
-            @inner
-            $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
-            => $trait for $ty
-        );
     };
     (@impl $impl_block:tt) => {
         #[cfg(not(any(feature = "derive", test)))]
@@ -341,7 +362,7 @@ macro_rules! impl_known_layout {
             use core::ptr::NonNull;
 
             // SAFETY: Delegates safety to `DstLayout::for_type`.
-            unsafe impl<$(const $constvar : $constty,)? $($tyvar $(: ?$optbound)?)?> KnownLayout for $ty {
+            unsafe impl<$($tyvar $(: ?$optbound)?)? $(, const $constvar : $constty)?> KnownLayout for $ty {
                 #[allow(clippy::missing_inline_in_public_items)]
                 fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
 
@@ -415,4 +436,92 @@ macro_rules! assert_unaligned {
     ($($ty:ty),*) => {
         $(assert_unaligned!($ty);)*
     };
+}
+
+/// Emits a function definition as either `const fn` or `fn` depending on
+/// whether the current toolchain version supports `const fn` with generic trait
+/// bounds.
+macro_rules! maybe_const_trait_bounded_fn {
+    // This case handles both `self` methods (where `self` is by value) and
+    // non-method functions. Each `$args` may optionally be followed by `:
+    // $arg_tys:ty`, which can be omitted for `self`.
+    ($(#[$attr:meta])* $vis:vis const fn $name:ident($($args:ident $(: $arg_tys:ty)?),* $(,)?) $(-> $ret_ty:ty)? $body:block) => {
+        #[cfg(zerocopy_generic_bounds_in_const_fn)]
+        $(#[$attr])* $vis const fn $name($($args $(: $arg_tys)?),*) $(-> $ret_ty)? $body
+
+        #[cfg(not(zerocopy_generic_bounds_in_const_fn))]
+        $(#[$attr])* $vis fn $name($($args $(: $arg_tys)?),*) $(-> $ret_ty)? $body
+    };
+}
+
+/// Either panic (if the current Rust toolchain supports panicking in `const
+/// fn`) or evaluate a constant that will cause an array indexing error whose
+/// error message will include the format string.
+///
+/// The type that this expression evaluates to must be `Copy`, or else the
+/// non-panicking desugaring will fail to compile.
+macro_rules! const_panic {
+    ($fmt:literal) => {{
+        #[cfg(zerocopy_panic_in_const)]
+        panic!($fmt);
+        #[cfg(not(zerocopy_panic_in_const))]
+        const_panic!(@non_panic $fmt)
+    }};
+    (@non_panic $fmt:expr) => {{
+        // This will type check to whatever type is expected based on the call
+        // site.
+        let panic: [_; 0] = [];
+        // This will always fail (since we're indexing into an array of size 0.
+        #[allow(unconditional_panic)]
+        panic[0]
+    }}
+}
+
+/// Either assert (if the current Rust toolchain supports panicking in `const
+/// fn`) or evaluate the expression and, if it evaluates to `false`, call
+/// `const_panic!`.
+macro_rules! const_assert {
+    ($e:expr) => {{
+        #[cfg(zerocopy_panic_in_const)]
+        assert!($e);
+        #[cfg(not(zerocopy_panic_in_const))]
+        {
+            let e = $e;
+            if !e {
+                let _: () = const_panic!(@non_panic concat!("assertion failed: ", stringify!($e)));
+            }
+        }
+    }}
+}
+
+/// Like `const_assert!`, but relative to `debug_assert!`.
+macro_rules! const_debug_assert {
+    ($e:expr $(, $msg:expr)?) => {{
+        #[cfg(zerocopy_panic_in_const)]
+        debug_assert!($e $(, $msg)?);
+        #[cfg(not(zerocopy_panic_in_const))]
+        {
+            // Use this (rather than `#[cfg(debug_assertions)]`) to ensure that
+            // `$e` is always compiled even if it will never be evaluated at
+            // runtime.
+            if cfg!(debug_assertions) {
+                let e = $e;
+                if !e {
+                    let _: () = const_panic!(@non_panic concat!("assertion failed: ", stringify!($e) $(, ": ", $msg)?));
+                }
+            }
+        }
+    }}
+}
+
+/// Either invoke `unreachable!()` or `loop {}` depending on whether the Rust
+/// toolchain supports panicking in `const fn`.
+macro_rules! const_unreachable {
+    () => {{
+        #[cfg(zerocopy_panic_in_const)]
+        unreachable!();
+
+        #[cfg(not(zerocopy_panic_in_const))]
+        loop {}
+    }};
 }

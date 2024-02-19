@@ -17,7 +17,9 @@
 #   cargo.sh +all [...]                 # runs cargo commands with each toolchain
 #
 # The meta-toolchain "all" instructs this script to run the provided command
-# once for each toolchain (msrv, stable, nightly).
+# once for each "major" toolchain (msrv, stable, nightly). This does not include
+# any toolchain which is listed in the `package.metadata.build-rs` Cargo.toml
+# section.
 #
 # A common task that is especially annoying to perform by hand is to update
 # trybuild's stderr files. Using this script:
@@ -44,14 +46,22 @@ function pkg-meta {
   # causing the subsequent `cargo` invocation to rebuild unnecessarily. By
   # specifying a separate build directory here, we ensure that this never
   # clobbers the build artifacts used by the later `cargo` invocation.
-  CARGO_TARGET_DIR=target/cargo-sh cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"zerocopy\").$1"
+  #
+  # In CI, make sure to use the default stable toolchain. If we're testing on
+  # our MSRV, then we also have our MSRV toolchain installed. As of this
+  # writing, our MSRV is low enough that the correspoding Rust toolchain's Cargo
+  # doesn't know about the `rust-version` field, and so if we were to use Cargo
+  # with that toolchain, `pkg-meta` would return `null` when asked to retrieve
+  # the `rust-version` field. This also requires `RUSTFLAGS=''` to override any
+  # unstable `RUSTFLAGS` set by the caller.
+  RUSTFLAGS='' CARGO_TARGET_DIR=target/cargo-sh cargo +stable metadata --format-version 1 | jq -r ".packages[] | select(.name == \"zerocopy\").$1"
 }
 
 function lookup-version {
   VERSION="$1"
   case "$VERSION" in
-    mwrv)
-      pkg-meta 'metadata.ci."minimum-working-rust-version"'
+    msrv)
+      pkg-meta rust_version
       ;;
     stable)
       pkg-meta 'metadata.ci."pinned-stable"'
@@ -60,8 +70,13 @@ function lookup-version {
       pkg-meta 'metadata.ci."pinned-nightly"'
       ;;
     *)
-      echo "Unrecognized toolchain name: '$VERSION' (options are 'mwrv', 'stable', 'nightly')" >&2
-      return 1
+      TOOLCHAIN=$(pkg-meta "metadata.\"build-rs\".\"${VERSION}\"")
+      if [ "$TOOLCHAIN" != "null" ]; then
+        echo "$TOOLCHAIN"
+      else
+        echo "Unrecognized toolchain name: '$VERSION' (options are 'msrv', 'stable', 'nightly', and any value in Cargo.toml's 'metadata.build-rs' table)" >&2
+        return 1
+      fi
       ;;
   esac
 }
@@ -91,8 +106,8 @@ case "$1" in
     ;;
   # cargo.sh +all [...]
   +all)
-    echo "[cargo.sh] warning: running the same command for each toolchain (mwrv, stable, nightly)" >&2
-    for toolchain in mwrv stable nightly; do
+    echo "[cargo.sh] warning: running the same command for each toolchain (msrv, stable, nightly)" >&2
+    for toolchain in msrv stable nightly; do
       echo "[cargo.sh] running with toolchain: $toolchain" >&2
       $0 "+$toolchain" ${@:2}
     done

@@ -6,15 +6,11 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+// See comment in `include.rs` for why we disable the prelude.
+#![no_implicit_prelude]
 #![allow(warnings)]
 
-mod util;
-
-use std::{marker::PhantomData, mem::ManuallyDrop, option::IntoIter};
-
-use {static_assertions::assert_impl_all, zerocopy::IntoBytes};
-
-use self::util::AU16;
+include!("include.rs");
 
 // A struct is `IntoBytes` if:
 // - all fields are `IntoBytes`
@@ -22,48 +18,48 @@ use self::util::AU16;
 //   - no padding (size of struct equals sum of size of field types)
 // - `repr(packed)`
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(C)]
 struct CZst;
 
-assert_impl_all!(CZst: IntoBytes);
+util_assert_impl_all!(CZst: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(C)]
 struct C {
     a: u8,
     b: u8,
-    c: AU16,
+    c: util::AU16,
 }
 
-assert_impl_all!(C: IntoBytes);
+util_assert_impl_all!(C: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(transparent)]
 struct Transparent {
     a: u8,
     b: CZst,
 }
 
-assert_impl_all!(Transparent: IntoBytes);
+util_assert_impl_all!(Transparent: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(transparent)]
-struct TransparentGeneric<T: ?Sized> {
+struct TransparentGeneric<T: ?imp::Sized> {
     a: CZst,
     b: T,
 }
 
-assert_impl_all!(TransparentGeneric<u64>: IntoBytes);
-assert_impl_all!(TransparentGeneric<[u64]>: IntoBytes);
+util_assert_impl_all!(TransparentGeneric<u64>: imp::IntoBytes);
+util_assert_impl_all!(TransparentGeneric<[u64]>: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(C, packed)]
 struct CZstPacked;
 
-assert_impl_all!(CZstPacked: IntoBytes);
+util_assert_impl_all!(CZstPacked: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(C, packed)]
 struct CPacked {
     a: u8,
@@ -77,9 +73,9 @@ struct CPacked {
     b: u16,
 }
 
-assert_impl_all!(CPacked: IntoBytes);
+util_assert_impl_all!(CPacked: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(C, packed(2))]
 // The same caveats as for CPacked apply - we're assuming u64 is at least
 // 4-byte aligned by default. Without packed(2), this should fail, as there
@@ -89,24 +85,24 @@ struct CPacked2 {
     b: u64,
 }
 
-assert_impl_all!(CPacked2: IntoBytes);
+util_assert_impl_all!(CPacked2: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(C, packed)]
-struct CPackedGeneric<T, U: ?Sized> {
+struct CPackedGeneric<T, U: ?imp::Sized> {
     t: T,
     // Unsized types stored in `repr(packed)` structs must not be dropped
     // because dropping them in-place might be unsound depending on the
     // alignment of the outer struct. Sized types can be dropped by first being
     // moved to an aligned stack variable, but this isn't possible with unsized
     // types.
-    u: ManuallyDrop<U>,
+    u: imp::ManuallyDrop<U>,
 }
 
-assert_impl_all!(CPackedGeneric<u8, AU16>: IntoBytes);
-assert_impl_all!(CPackedGeneric<u8, [AU16]>: IntoBytes);
+util_assert_impl_all!(CPackedGeneric<u8, util::AU16>: imp::IntoBytes);
+util_assert_impl_all!(CPackedGeneric<u8, [util::AU16]>: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(packed)]
 struct Packed {
     a: u8,
@@ -120,42 +116,67 @@ struct Packed {
     b: u16,
 }
 
-assert_impl_all!(Packed: IntoBytes);
+util_assert_impl_all!(Packed: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(packed)]
-struct PackedGeneric<T, U: ?Sized> {
+struct PackedGeneric<T, U: ?imp::Sized> {
     t: T,
     // Unsized types stored in `repr(packed)` structs must not be dropped
     // because dropping them in-place might be unsound depending on the
     // alignment of the outer struct. Sized types can be dropped by first being
     // moved to an aligned stack variable, but this isn't possible with unsized
     // types.
-    u: ManuallyDrop<U>,
+    u: imp::ManuallyDrop<U>,
 }
 
-assert_impl_all!(PackedGeneric<u8, AU16>: IntoBytes);
-assert_impl_all!(PackedGeneric<u8, [AU16]>: IntoBytes);
+util_assert_impl_all!(PackedGeneric<u8, util::AU16>: imp::IntoBytes);
+util_assert_impl_all!(PackedGeneric<u8, [util::AU16]>: imp::IntoBytes);
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
+#[repr(C)]
+struct ReprCGenericOneField<T: ?imp::Sized> {
+    t: T,
+}
+
+// Even though `ReprCGenericOneField` has generic type arguments, since it only
+// has one field, we don't require that its field types implement `Unaligned`.
+util_assert_impl_all!(ReprCGenericOneField<util::AU16>: imp::IntoBytes);
+util_assert_impl_all!(ReprCGenericOneField<[util::AU16]>: imp::IntoBytes);
+
+#[derive(imp::IntoBytes)]
+#[repr(C)]
+struct ReprCGenericMultipleFields<T, U: ?imp::Sized> {
+    t: T,
+    u: U,
+}
+
+// Since `ReprCGenericMultipleFields` is generic and has more than one field,
+// all field types must implement `Unaligned`.
+util_assert_impl_all!(ReprCGenericMultipleFields<u8, [u8; 2]>: imp::IntoBytes);
+util_assert_impl_all!(ReprCGenericMultipleFields<u8, [[u8; 2]]>: imp::IntoBytes);
+util_assert_not_impl_any!(ReprCGenericMultipleFields<u8, util::AU16>: imp::IntoBytes);
+util_assert_not_impl_any!(ReprCGenericMultipleFields<u8, [util::AU16]>: imp::IntoBytes);
+
+#[derive(imp::IntoBytes)]
 #[repr(transparent)]
 struct Unsized {
     a: [u8],
 }
 
-assert_impl_all!(Unsized: IntoBytes);
+util_assert_impl_all!(Unsized: imp::IntoBytes);
 
 // Deriving `IntoBytes` should work if the struct has bounded parameters.
 
-#[derive(IntoBytes)]
+#[derive(imp::IntoBytes)]
 #[repr(transparent)]
-struct WithParams<'a: 'b, 'b: 'a, const N: usize, T: 'a + 'b + IntoBytes>(
+struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::IntoBytes, const N: usize>(
     [T; N],
-    PhantomData<&'a &'b ()>,
+    imp::PhantomData<&'a &'b ()>,
 )
 where
     'a: 'b,
     'b: 'a,
-    T: 'a + 'b + IntoBytes;
+    T: 'a + 'b + imp::IntoBytes;
 
-assert_impl_all!(WithParams<'static, 'static, 42, u8>: IntoBytes);
+util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::IntoBytes);
