@@ -45,9 +45,13 @@ macro_rules! safety_comment {
 ///   instance of `$ty`.
 /// - If an `is_bit_valid` impl is provided, then:
 ///   - Regardless of whether the provided closure takes a `Ptr<$repr>` or
-///     `&$repr` argument, it must be the case that, given `t: *mut $ty` and
-///     `let r = t as *mut $repr`, `r` refers to an object of equal or lesser
-///     size than the object referred to by `t`.
+///     `&$repr` argument, if `$ty` and `$repr` are different types, then it
+///     must be the case that, given `t: *mut $ty` and `let r = t as *mut
+///     $repr`:
+///     - `r` refers to an object of equal or lesser size than the object
+///       referred to by `t`.
+///     - `r` refers to an object with `UnsafeCell`s at the same byte ranges as
+///       the object referred to by `t`.
 ///   - If the provided closure takes a `&$repr` argument, then given a `Ptr<'a,
 ///     $ty>` which satisfies the preconditions of
 ///     `TryFromBytes::<$ty>::is_bit_valid`, it must be guaranteed that the
@@ -141,6 +145,8 @@ macro_rules! unsafe_impl {
             //   by that method's safety precondition.
             // - The caller has promised that the cast results in an object of
             //   equal or lesser size.
+            // - The caller has promised that the destination type has
+            //   `UnsafeCell`s at the same byte ranges as the source type.
             #[allow(clippy::as_conversions)]
             let candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
 
@@ -161,6 +167,8 @@ macro_rules! unsafe_impl {
             //   by that method's safety precondition.
             // - The caller has promised that the cast results in an object of
             //   equal or lesser size.
+            // - The caller has promised that the destination type has
+            //   `UnsafeCell`s at the same byte ranges as the source type.
             #[allow(clippy::as_conversions)]
             let $candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
 
@@ -205,18 +213,36 @@ macro_rules! unsafe_impl {
 /// unsafe impl<A, B> Foo for type!(A, B) { ... }
 /// ```
 macro_rules! unsafe_impl_for_power_set {
-    ($first:ident $(, $rest:ident)* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)) => {
-        unsafe_impl_for_power_set!($($rest),* $(-> $ret)? => $trait for $macro!(...));
-        unsafe_impl_for_power_set!(@impl $first $(, $rest)* $(-> $ret)? => $trait for $macro!(...));
+    (
+        $first:ident $(, $rest:ident)* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+    ) => {
+        unsafe_impl_for_power_set!(
+            $($rest),* $(-> $ret)? => $trait for $macro!(...)
+            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+        );
+        unsafe_impl_for_power_set!(
+            @impl $first $(, $rest)* $(-> $ret)? => $trait for $macro!(...)
+            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+        );
     };
-    ($(-> $ret:ident)? => $trait:ident for $macro:ident!(...)) => {
-        unsafe_impl_for_power_set!(@impl $(-> $ret)? => $trait for $macro!(...));
+    (
+        $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+    ) => {
+        unsafe_impl_for_power_set!(
+            @impl $(-> $ret)? => $trait for $macro!(...)
+            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+        );
     };
-    (@impl $($vars:ident),* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)) => {
-        unsafe impl<$($vars,)* $($ret)?> $trait for $macro!($($vars),* $(-> $ret)?) {
-            #[allow(clippy::missing_inline_in_public_items)]
-            fn only_derive_is_allowed_to_implement_this_trait() {}
-        }
+    (
+        @impl $($vars:ident),* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+    ) => {
+        unsafe_impl!(
+            $($vars,)* $($ret)? => $trait for $macro!($($vars),* $(-> $ret)?)
+            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+        );
     };
 }
 
@@ -260,6 +286,9 @@ macro_rules! opt_fn {
 /// impl in this case, and also provides useful documentation for readers of the
 /// code.
 ///
+/// Finally, if a `TryFromBytes::is_bit_valid` impl is provided, it must adhere
+/// to the safety preconditions of [`unsafe_impl!`].
+///
 /// ## Example
 ///
 /// ```rust,ignore
@@ -296,24 +325,15 @@ macro_rules! impl_or_verify {
     };
     (
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty
+        => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         impl_or_verify!(@impl { unsafe_impl!(
             $($tyvar $(: $(? $optbound +)* $($bound +)*)?),* => $trait for $ty
+            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
         ); });
         impl_or_verify!(@verify $trait, {
             impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> Subtrait for $ty {}
         });
-    };
-    (
-        $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty
-    ) => {
-        unsafe_impl!(
-            @inner
-            $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
-            => $trait for $ty
-        );
     };
     (@impl $impl_block:tt) => {
         #[cfg(not(any(feature = "derive", test)))]

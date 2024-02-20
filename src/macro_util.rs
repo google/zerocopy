@@ -262,7 +262,7 @@ macro_rules! align_of {
 #[macro_export]
 macro_rules! struct_has_padding {
     ($t:ty, $($ts:ty),*) => {
-        core::mem::size_of::<$t>() > 0 $(+ core::mem::size_of::<$ts>())*
+        ::zerocopy::macro_util::core_reexport::mem::size_of::<$t>() > 0 $(+ ::zerocopy::macro_util::core_reexport::mem::size_of::<$ts>())*
     };
 }
 
@@ -282,7 +282,7 @@ macro_rules! struct_has_padding {
 #[macro_export]
 macro_rules! union_has_padding {
     ($t:ty, $($ts:ty),*) => {
-        false $(|| core::mem::size_of::<$t>() != core::mem::size_of::<$ts>())*
+        false $(|| ::zerocopy::macro_util::core_reexport::mem::size_of::<$t>() != ::zerocopy::macro_util::core_reexport::mem::size_of::<$ts>())*
     };
 }
 

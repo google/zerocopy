@@ -30,13 +30,13 @@ error: cannot derive Unaligned with repr(align(N > 1))
 79 | #[repr(align(2), align(4))]
    |        ^^^^^^^^
 
-error[E0277]: the trait bound `UnsafeCell<()>: NoCell` is not satisfied
+error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::NoCell` is not satisfied
   --> tests/ui-msrv/union.rs:24:10
    |
 24 | #[derive(NoCell)]
-   |          ^^^^^^ the trait `NoCell` is not implemented for `UnsafeCell<()>`
+   |          ^^^^^^ the trait `zerocopy::NoCell` is not implemented for `UnsafeCell<()>`
    |
-   = note: required because of the requirements on the impl of `NoCell` for `ManuallyDrop<UnsafeCell<()>>`
+   = note: required because of the requirements on the impl of `zerocopy::NoCell` for `ManuallyDrop<UnsafeCell<()>>`
    = help: see issue #48214
    = note: this error originates in the derive macro `NoCell` (in Nightly builds, run with -Z macro-backtrace for more info)
 
