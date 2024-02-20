@@ -6,14 +6,7 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use core::{
-    cmp::Ordering,
-    fmt::{self, Debug, Display, Formatter},
-    hash::Hash,
-    mem::{self, ManuallyDrop},
-    ops::{Deref, DerefMut},
-    ptr,
-};
+use core::hash::Hash;
 
 use super::*;
 

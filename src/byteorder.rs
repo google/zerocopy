@@ -69,9 +69,7 @@
 
 use core::{
     convert::{TryFrom, TryInto},
-    fmt::{self, Binary, Debug, Display, Formatter, LowerHex, Octal, UpperHex},
-    marker::PhantomData,
-    mem,
+    fmt::{Binary, Debug, LowerHex, Octal, UpperHex},
     num::TryFromIntError,
 };
 
@@ -833,10 +831,7 @@ module!(native_endian, NativeEndian, "native-endian");
 
 #[cfg(any(test, kani))]
 mod tests {
-    use {
-        super::*,
-        crate::{FromBytes, IntoBytes, Unaligned},
-    };
+    use super::*;
 
     #[cfg(not(kani))]
     mod compatibility {
