@@ -5568,8 +5568,6 @@ unsafe impl<'a> ByteSliceMut for RefMut<'a, [u8]> {}
 #[cfg(feature = "alloc")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
 mod alloc_support {
-    use alloc::vec::Vec;
-
     use super::*;
 
     /// Extends a `Vec<T>` by pushing `additional` new items onto the end of the
@@ -5791,7 +5789,7 @@ pub use alloc_support::*;
 mod tests {
     #![allow(clippy::unreadable_literal)]
 
-    use core::{cell::UnsafeCell, convert::TryInto as _, ops::Deref};
+    use core::convert::TryInto as _;
 
     use static_assertions::assert_impl_all;
 
@@ -8211,8 +8209,9 @@ mod tests {
         macro_rules! assert_impls {
             ($ty:ty: TryFromBytes) => {
                 <$ty as TryFromBytesTestable>::with_passing_test_cases(|val| {
-                    let c = Ptr::from_ref(val).forget_aligned();
+                    let c = Ptr::from_ref(val);
                     let c = c.forget_aligned();
+
                     // SAFETY:
                     // TODO(#899): This is unsound. `$ty` is not necessarily
                     // `IntoBytes`, but that's the corner we've backed ourselves

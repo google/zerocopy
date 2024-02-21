@@ -452,15 +452,17 @@ mod _conversions {
     }
 
     /// `Ptr<'a, T>` → `&'a T`
-    impl<'a, T> Ptr<'a, T, (invariant::Shared, invariant::Aligned, invariant::Valid)>
+    impl<'a, T, I> Ptr<'a, T, I>
     where
         T: 'a + ?Sized,
+        I: Invariants<Alignment = invariant::Aligned, Validity = invariant::Valid>,
+        I::Aliasing: invariant::at_least::Shared,
     {
         /// Converts the `Ptr` to a shared reference.
         // This consumes `self`, not `&self`, because `self` is, logically, a
-        // pointer. Since this method is only available for `invariant::Shared`,
-        // `Self: Copy`, and so this doesn't prevent the caller from still
-        // using the pointer after calling `as_ref`.
+        // pointer. For `I::Aliasing = invariant::Shared`, `Self: Copy`, and so
+        // this doesn't prevent the caller from still using the pointer after
+        // calling `as_ref`.
         #[allow(clippy::wrong_self_convention)]
         pub(crate) fn as_ref(self) -> &'a T {
             let raw = self.as_non_null();
@@ -484,7 +486,10 @@ mod _conversions {
             //    `Valid`.
             //
             // 4. You must enforce Rust’s aliasing rules. This is ensured by
-            //    contract on `Ptr`, because the `I::Aliasing` is `Shared`.
+            //    contract on `Ptr`, because the `I::Aliasing` is
+            //    `at_least::Shared`. Either it is `Shared` or `Exclusive`. In
+            //    both cases, other references may not mutate the referent
+            //    outside of `UnsafeCell`s.
             //
             // [1]: https://doc.rust-lang.org/std/ptr/struct.NonNull.html#method.as_ref
             // [2]: https://doc.rust-lang.org/std/ptr/index.html#safety
@@ -745,7 +750,7 @@ mod _transitions {
             if T::is_bit_valid(self.reborrow().forget_exclusive().forget_aligned()) {
                 // SAFETY: If `T::is_bit_valid`, code may assume that `self`
                 // contains a bit-valid instance of `Self`.
-                Some(unsafe { self.assume_validity::<invariant::Valid>() })
+                Some(unsafe { self.assume_valid() })
             } else {
                 None
             }

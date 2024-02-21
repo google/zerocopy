@@ -192,8 +192,6 @@ pub(crate) mod polyfills {
 
 #[cfg(test)]
 pub(crate) mod testutil {
-    use core::fmt::{self, Display, Formatter};
-
     use crate::*;
 
     /// A `T` which is aligned to at least `align_of::<A>()`.
