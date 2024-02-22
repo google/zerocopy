@@ -6,5 +6,5 @@ set -eo pipefail
 # suppress all errors from it.
 cargo install cargo-readme --version 3.2.0 -q
 
-diff <(./generate-readme.sh) README.md
+diff <(cargo -q run --manifest-path tools/Cargo.toml -p generate-readme) README.md
 exit $?

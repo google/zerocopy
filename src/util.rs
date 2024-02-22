@@ -35,7 +35,7 @@ impl<T: ?Sized> AsAddress for *const T {
         // `.addr()` instead of `as usize` once it's stable, and get rid of this
         // `allow`. Currently, `as usize` is the only way to accomplish this.
         #[allow(clippy::as_conversions)]
-        #[cfg_attr(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS, allow(lossy_provenance_casts))]
+        #[cfg_attr(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS, allow(lossy_provenance_casts))]
         return self.cast::<()>() as usize;
     }
 }
@@ -311,7 +311,7 @@ mod proofs {
 
     // Restricted to nightly since we use the unstable `usize::next_multiple_of`
     // in our model implementation.
-    #[cfg(__INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS)]
+    #[cfg(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
     #[kani::proof]
     fn prove_padding_needed_for() {
         fn model_impl(len: usize, align: NonZeroUsize) -> usize {
