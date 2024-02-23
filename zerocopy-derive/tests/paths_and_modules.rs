@@ -17,13 +17,13 @@ include!("include.rs");
 mod foo {
     use super::*;
 
-    #[derive(imp::FromZeros, imp::FromBytes, imp::IntoBytes, imp::Unaligned)]
+    #[derive(imp::FromBytes, imp::IntoBytes, imp::Unaligned)]
     #[repr(C)]
     pub struct Foo {
         foo: u8,
     }
 
-    #[derive(imp::FromZeros, imp::FromBytes, imp::IntoBytes, imp::Unaligned)]
+    #[derive(imp::FromBytes, imp::IntoBytes, imp::Unaligned)]
     #[repr(C)]
     pub struct Bar {
         bar: u8,
@@ -32,7 +32,7 @@ mod foo {
 
 use foo::Foo;
 
-#[derive(imp::FromZeros, imp::FromBytes, imp::IntoBytes, imp::Unaligned)]
+#[derive(imp::FromBytes, imp::IntoBytes, imp::Unaligned)]
 #[repr(C)]
 struct Baz {
     foo: Foo,

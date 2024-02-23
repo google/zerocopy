@@ -29,7 +29,7 @@ include!("include.rs");
 // `Variant128` has a discriminant of -128) since Rust won't automatically wrap
 // a signed discriminant around without you explicitly telling it to.
 
-#[derive(imp::FromZeros, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 #[repr(u8)]
 enum FooU8 {
     Variant0,
@@ -292,7 +292,7 @@ enum FooU8 {
 
 util_assert_impl_all!(FooU8: imp::FromBytes);
 
-#[derive(imp::FromZeros, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 #[repr(i8)]
 enum FooI8 {
     Variant0,
@@ -555,7 +555,7 @@ enum FooI8 {
 
 util_assert_impl_all!(FooI8: imp::FromBytes);
 
-#[derive(imp::FromZeros, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 #[repr(u8, align(2))]
 enum FooU8Align {
     Variant0,
@@ -818,7 +818,7 @@ enum FooU8Align {
 
 util_assert_impl_all!(FooU8Align: imp::FromBytes);
 
-#[derive(imp::FromZeros, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 #[repr(i8, align(2))]
 enum FooI8Align {
     Variant0,
@@ -1081,7 +1081,7 @@ enum FooI8Align {
 
 util_assert_impl_all!(FooI8Align: imp::FromBytes);
 
-#[derive(imp::FromZeros, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 #[repr(u16)]
 enum FooU16 {
     Variant0,
@@ -66624,7 +66624,7 @@ enum FooU16 {
 
 util_assert_impl_all!(FooU16: imp::FromBytes);
 
-#[derive(imp::FromZeros, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 #[repr(i16)]
 enum FooI16 {
     Variant0,

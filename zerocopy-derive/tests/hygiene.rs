@@ -18,14 +18,7 @@ include!("include.rs");
 
 extern crate zerocopy as _zerocopy;
 
-// #[macro_use]
-// mod util;
-
-// use std::{marker::PhantomData, option::IntoIter};
-
-#[derive(
-    _zerocopy::KnownLayout, _zerocopy::FromZeros, _zerocopy::FromBytes, _zerocopy::Unaligned,
-)]
+#[derive(_zerocopy::KnownLayout, _zerocopy::FromBytes, _zerocopy::Unaligned)]
 #[repr(C)]
 struct TypeParams<'a, T, I: imp::Iterator> {
     a: T,

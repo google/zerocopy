@@ -5766,9 +5766,7 @@ mod tests {
     //
     // This is used to test the custom derives of our traits. The `[u8]` type
     // gets a hand-rolled impl, so it doesn't exercise our custom derives.
-    #[derive(
-        Debug, Eq, PartialEq, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, NoCell,
-    )]
+    #[derive(Debug, Eq, PartialEq, FromBytes, IntoBytes, Unaligned, NoCell)]
     #[repr(transparent)]
     struct Unsized([u8]);
 
@@ -7896,7 +7894,7 @@ mod tests {
             assert_eq!(too_many_bytes[0], 123);
         }
 
-        #[derive(Debug, Eq, PartialEq, TryFromBytes, FromZeros, FromBytes, IntoBytes, NoCell)]
+        #[derive(Debug, Eq, PartialEq, FromBytes, IntoBytes, NoCell)]
         #[repr(C)]
         struct Foo {
             a: u32,
@@ -7925,7 +7923,7 @@ mod tests {
 
     #[test]
     fn test_array() {
-        #[derive(TryFromBytes, FromZeros, FromBytes, IntoBytes, NoCell)]
+        #[derive(FromBytes, IntoBytes, NoCell)]
         #[repr(C)]
         struct Foo {
             a: [u16; 33],
@@ -7989,7 +7987,7 @@ mod tests {
 
     #[test]
     fn test_transparent_packed_generic_struct() {
-        #[derive(IntoBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
+        #[derive(IntoBytes, FromBytes, Unaligned)]
         #[repr(transparent)]
         struct Foo<T> {
             _t: T,
@@ -7999,7 +7997,7 @@ mod tests {
         assert_impl_all!(Foo<u32>: FromZeros, FromBytes, IntoBytes);
         assert_impl_all!(Foo<u8>: Unaligned);
 
-        #[derive(IntoBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
+        #[derive(IntoBytes, FromBytes, Unaligned)]
         #[repr(packed)]
         struct Bar<T, U> {
             _t: T,

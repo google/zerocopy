@@ -53,7 +53,7 @@ use super::*;
 #[derive(Default, Copy)]
 #[cfg_attr(
     any(feature = "derive", test),
-    derive(NoCell, KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned)
+    derive(NoCell, KnownLayout, FromBytes, IntoBytes, Unaligned)
 )]
 #[repr(C, packed)]
 pub struct Unalign<T>(T);
