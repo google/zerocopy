@@ -93,7 +93,7 @@ derive!(NoCell => derive_no_cell => derive_no_cell_inner);
 derive!(TryFromBytes => derive_try_from_bytes => derive_try_from_bytes_inner);
 derive!(FromZeros => derive_from_zeros => derive_from_zeros_inner);
 derive!(FromBytes => derive_from_bytes => derive_from_bytes_inner);
-derive!(IntoBytes => derive_as_bytes => derive_as_bytes_inner);
+derive!(IntoBytes => derive_into_bytes => derive_into_bytes_inner);
 derive!(Unaligned => derive_unaligned => derive_unaligned_inner);
 
 /// Deprecated: prefer [`FromZeros`] instead.
@@ -102,6 +102,14 @@ derive!(Unaligned => derive_unaligned => derive_unaligned_inner);
 #[proc_macro_derive(FromZeroes)]
 pub fn derive_from_zeroes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     derive_from_zeros(ts)
+}
+
+/// Deprecated: prefer [`IntoBytes`] instead.
+#[deprecated(since = "0.8.0", note = "`AsBytes` was renamed to `IntoBytes`")]
+#[doc(hidden)]
+#[proc_macro_derive(AsBytes)]
+pub fn derive_as_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    derive_into_bytes(ts)
 }
 
 fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
@@ -324,11 +332,11 @@ fn derive_from_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     IntoIterator::into_iter([from_zeros, from_bytes]).collect()
 }
 
-fn derive_as_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
+fn derive_into_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     match &ast.data {
-        Data::Struct(strct) => derive_as_bytes_struct(ast, strct),
-        Data::Enum(enm) => derive_as_bytes_enum(ast, enm),
-        Data::Union(unn) => derive_as_bytes_union(ast, unn),
+        Data::Struct(strct) => derive_into_bytes_struct(ast, strct),
+        Data::Enum(enm) => derive_into_bytes_enum(ast, enm),
+        Data::Union(unn) => derive_into_bytes_union(ast, unn),
     }
 }
 
@@ -568,7 +576,7 @@ fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
 
     // We don't actually care what the repr is; we just care that it's one of
     // the allowed ones.
-    try_or_print!(ENUM_FROM_ZEROS_AS_BYTES_CFG.validate_reprs(ast));
+    try_or_print!(ENUM_FROM_ZEROS_INTO_BYTES_CFG.validate_reprs(ast));
 
     let has_explicit_zero_discriminant =
         enm.variants.iter().filter_map(|v| v.discriminant.as_ref()).any(|(_, e)| {
@@ -687,8 +695,8 @@ fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::T
     impl_block(ast, unn, Trait::FromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
 }
 
-fn derive_as_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    let reprs = try_or_print!(STRUCT_UNION_AS_BYTES_CFG.validate_reprs(ast));
+fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
+    let reprs = try_or_print!(STRUCT_UNION_INTO_BYTES_CFG.validate_reprs(ast));
     let is_transparent = reprs.contains(&StructRepr::Transparent);
     let is_packed = reprs.contains(&StructRepr::Packed);
     let num_fields = strct.fields().len();
@@ -737,7 +745,7 @@ fn derive_as_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2:
     impl_block(ast, strct, Trait::IntoBytes, field_bounds, SelfBounds::None, padding_check, None)
 }
 
-const STRUCT_UNION_AS_BYTES_CFG: Config<StructRepr> = Config {
+const STRUCT_UNION_INTO_BYTES_CFG: Config<StructRepr> = Config {
     // Since `disallowed_but_legal_combinations` is empty, this message will
     // never actually be emitted.
     allowed_combinations_message: r#"IntoBytes requires either a) repr "C" or "transparent" with all fields implementing IntoBytes or, b) repr "packed""#,
@@ -748,7 +756,7 @@ const STRUCT_UNION_AS_BYTES_CFG: Config<StructRepr> = Config {
 
 // An enum is `IntoBytes` if it is field-less and has a defined repr.
 
-fn derive_as_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
+fn derive_into_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
     if !enm.is_fieldless() {
         return Error::new_spanned(ast, "only field-less enums can implement IntoBytes")
             .to_compile_error();
@@ -756,12 +764,12 @@ fn derive_as_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Token
 
     // We don't care what the repr is; we only care that it is one of the
     // allowed ones.
-    try_or_print!(ENUM_FROM_ZEROS_AS_BYTES_CFG.validate_reprs(ast));
+    try_or_print!(ENUM_FROM_ZEROS_INTO_BYTES_CFG.validate_reprs(ast));
     impl_block(ast, enm, Trait::IntoBytes, FieldBounds::None, SelfBounds::None, None, None)
 }
 
 #[rustfmt::skip]
-const ENUM_FROM_ZEROS_AS_BYTES_CFG: Config<EnumRepr> = {
+const ENUM_FROM_ZEROS_INTO_BYTES_CFG: Config<EnumRepr> = {
     use EnumRepr::*;
     Config {
         // Since `disallowed_but_legal_combinations` is empty, this message will
@@ -790,14 +798,14 @@ const ENUM_FROM_ZEROS_AS_BYTES_CFG: Config<EnumRepr> = {
 // - `repr(C)`, `repr(transparent)`, or `repr(packed)`
 // - no padding (size of union equals size of each field type)
 
-fn derive_as_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
+fn derive_into_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
     // TODO(#10): Support type parameters.
     if !ast.generics.params.is_empty() {
         return Error::new(Span::call_site(), "unsupported on types with type parameters")
             .to_compile_error();
     }
 
-    try_or_print!(STRUCT_UNION_AS_BYTES_CFG.validate_reprs(ast));
+    try_or_print!(STRUCT_UNION_INTO_BYTES_CFG.validate_reprs(ast));
 
     impl_block(
         ast,
