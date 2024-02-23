@@ -889,17 +889,25 @@ mod tests {
             rng.sample(Self::DIST)
         }
 
-        #[cfg(kani)]
-        fn any() -> Self {
-            kani::any()
-        }
-
+        #[cfg_attr(kani, allow(unused))]
         fn checked_add(self, rhs: Self) -> Option<Self>;
+
+        #[cfg_attr(kani, allow(unused))]
         fn checked_div(self, rhs: Self) -> Option<Self>;
+
+        #[cfg_attr(kani, allow(unused))]
         fn checked_mul(self, rhs: Self) -> Option<Self>;
+
+        #[cfg_attr(kani, allow(unused))]
         fn checked_rem(self, rhs: Self) -> Option<Self>;
+
+        #[cfg_attr(kani, allow(unused))]
         fn checked_sub(self, rhs: Self) -> Option<Self>;
+
+        #[cfg_attr(kani, allow(unused))]
         fn checked_shl(self, rhs: Self) -> Option<Self>;
+
+        #[cfg_attr(kani, allow(unused))]
         fn checked_shr(self, rhs: Self) -> Option<Self>;
 
         fn is_nan(self) -> bool;
