@@ -322,7 +322,7 @@ jobs:
           # specifying a particular toolchain.
           args: "--package zerocopy --features __internal_use_only_features_that_work_on_stable --output-format=terse --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
           # TODO(#929): Either roll this automatically or don't pin.
-          kani-version: 0.46
+          kani-version: 0.46.0
 
   check_fmt:
     runs-on: ubuntu-latest
