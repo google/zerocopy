@@ -8371,8 +8371,24 @@ mod tests {
                     }
 
                     if let Some(bytes) = bytes {
-                        let mut bytes = bytes.to_vec();
-                        let res = ww.test_try_from_mut(bytes.as_mut_slice());
+                        // We need to get a mutable byte slice, and so we clone
+                        // into a `Vec`. However, we also need these bytes to
+                        // satisfy `$ty`'s alignment requirement, which isn't
+                        // guaranteed for `Vec<u8>`. In order to get around
+                        // this, we create a `Vec` which is twice as long as we
+                        // need. There is guaranteed to be an aligned byte range
+                        // of size `size_of_val(val)` within that range.
+                        let size = mem::size_of_val(val);
+                        let align = mem::align_of_val(val);
+
+                        let mut vec = bytes.to_vec();
+                        vec.extend(bytes);
+                        let slc = vec.as_slice();
+                        let offset = slc.as_ptr().align_offset(align);
+                        let bytes_mut = &mut vec.as_mut_slice()[offset..offset+size];
+                        bytes_mut.copy_from_slice(bytes);
+
+                        let res = ww.test_try_from_mut(bytes_mut);
                         if let Some(res) = res {
                             assert!(res.is_some(), "{}::try_from_mut({:?}): got `None`, expected `Some`", stringify!($ty), val);
                         }
