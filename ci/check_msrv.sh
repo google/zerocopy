@@ -3,7 +3,7 @@ set -eo pipefail
 
 # Usage: msrv <crate-name>
 function msrv {
-  cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").rust_version"
+  cargo metadata -q --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").rust_version"
 }
 
 ver_zerocopy=$(msrv zerocopy)
