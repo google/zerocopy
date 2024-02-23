@@ -72,10 +72,39 @@ macro_rules! try_or_print {
 // (https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.error),
 // which is currently unstable. Revisit this once it's stable.
 
-#[proc_macro_derive(KnownLayout)]
-pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse_macro_input!(ts as DeriveInput);
+/// Defines a derive function named `$outer` which parses its input
+/// `TokenStream` as a `DeriveInput` and then invokes the `$inner` function.
+///
+/// Note that the separate `$outer` parameter is required - proc macro functions
+/// are currently required to live at the crate root, and so the caller must
+/// specify the name in order to avoid name collisions.
+macro_rules! derive {
+    ($trait:ident => $outer:ident => $inner:ident) => {
+        #[proc_macro_derive($trait)]
+        pub fn $outer(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+            let ast = syn::parse_macro_input!(ts as DeriveInput);
+            $inner(&ast).into()
+        }
+    };
+}
 
+derive!(KnownLayout => derive_known_layout => derive_known_layout_inner);
+derive!(NoCell => derive_no_cell => derive_no_cell_inner);
+derive!(TryFromBytes => derive_try_from_bytes => derive_try_from_bytes_inner);
+derive!(FromZeros => derive_from_zeros => derive_from_zeros_inner);
+derive!(FromBytes => derive_from_bytes => derive_from_bytes_inner);
+derive!(IntoBytes => derive_as_bytes => derive_as_bytes_inner);
+derive!(Unaligned => derive_unaligned => derive_unaligned_inner);
+
+/// Deprecated: prefer [`FromZeros`] instead.
+#[deprecated(since = "0.8.0", note = "`FromZeroes` was renamed to `FromZeros`")]
+#[doc(hidden)]
+#[proc_macro_derive(FromZeroes)]
+pub fn derive_from_zeroes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    derive_from_zeros(ts)
+}
+
+fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     let is_repr_c_struct = match &ast.data {
         Data::Struct(..) => {
             let reprs = try_or_print!(repr::reprs::<Repr>(&ast.attrs));
@@ -208,7 +237,7 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
             // of an usized trailing field requires that the field is
             // `KnownLayout`.
             impl_block(
-                &ast,
+                ast,
                 strct,
                 Trait::KnownLayout,
                 require_trait_bound_on_field_types,
@@ -221,7 +250,7 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
             // A bound on the trailing field is not required, since enums cannot
             // currently be unsized.
             impl_block(
-                &ast,
+                ast,
                 enm,
                 Trait::KnownLayout,
                 FieldBounds::None,
@@ -234,7 +263,7 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
             // A bound on the trailing field is not required, since unions
             // cannot currently be unsized.
             impl_block(
-                &ast,
+                ast,
                 unn,
                 Trait::KnownLayout,
                 FieldBounds::None,
@@ -244,15 +273,12 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
             )
         }
     }
-    .into()
 }
 
-#[proc_macro_derive(NoCell)]
-pub fn derive_no_cell(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse_macro_input!(ts as DeriveInput);
+fn derive_no_cell_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     match &ast.data {
         Data::Struct(strct) => impl_block(
-            &ast,
+            ast,
             strct,
             Trait::NoCell,
             FieldBounds::ALL_SELF,
@@ -260,96 +286,58 @@ pub fn derive_no_cell(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
             None,
             None,
         ),
-        Data::Enum(enm) => impl_block(
-            &ast,
-            enm,
-            Trait::NoCell,
-            FieldBounds::ALL_SELF,
-            SelfBounds::None,
-            None,
-            None,
-        ),
-        Data::Union(unn) => impl_block(
-            &ast,
-            unn,
-            Trait::NoCell,
-            FieldBounds::ALL_SELF,
-            SelfBounds::None,
-            None,
-            None,
-        ),
+        Data::Enum(enm) => {
+            impl_block(ast, enm, Trait::NoCell, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
+        }
+        Data::Union(unn) => {
+            impl_block(ast, unn, Trait::NoCell, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
+        }
     }
-    .into()
 }
 
-#[proc_macro_derive(TryFromBytes)]
-pub fn derive_try_from_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse_macro_input!(ts as DeriveInput);
+fn derive_try_from_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     match &ast.data {
-        Data::Struct(strct) => derive_try_from_bytes_struct(&ast, strct),
-        Data::Enum(enm) => derive_try_from_bytes_enum(&ast, enm),
-        Data::Union(unn) => derive_try_from_bytes_union(&ast, unn),
+        Data::Struct(strct) => derive_try_from_bytes_struct(ast, strct),
+        Data::Enum(enm) => derive_try_from_bytes_enum(ast, enm),
+        Data::Union(unn) => derive_try_from_bytes_union(ast, unn),
     }
-    .into()
 }
 
-#[proc_macro_derive(FromZeros)]
-pub fn derive_from_zeros(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let try_from_bytes = derive_try_from_bytes(ts.clone());
-
-    let ast = syn::parse_macro_input!(ts as DeriveInput);
+fn derive_from_zeros_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
+    let try_from_bytes = derive_try_from_bytes_inner(ast);
     let from_zeros = match &ast.data {
-        Data::Struct(strct) => derive_from_zeros_struct(&ast, strct),
-        Data::Enum(enm) => derive_from_zeros_enum(&ast, enm),
-        Data::Union(unn) => derive_from_zeros_union(&ast, unn),
-    }
-    .into();
+        Data::Struct(strct) => derive_from_zeros_struct(ast, strct),
+        Data::Enum(enm) => derive_from_zeros_enum(ast, enm),
+        Data::Union(unn) => derive_from_zeros_union(ast, unn),
+    };
     IntoIterator::into_iter([try_from_bytes, from_zeros]).collect()
 }
 
-/// Deprecated: prefer [`FromZeros`] instead.
-#[deprecated(since = "0.8.0", note = "`FromZeroes` was renamed to `FromZeros`")]
-#[doc(hidden)]
-#[proc_macro_derive(FromZeroes)]
-pub fn derive_from_zeroes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    derive_from_zeros(ts)
-}
-
-#[proc_macro_derive(FromBytes)]
-pub fn derive_from_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let from_zeros = derive_from_zeros(ts.clone());
-
-    let ast = syn::parse_macro_input!(ts as DeriveInput);
+fn derive_from_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
+    let from_zeros = derive_from_zeros_inner(ast);
     let from_bytes = match &ast.data {
-        Data::Struct(strct) => derive_from_bytes_struct(&ast, strct),
-        Data::Enum(enm) => derive_from_bytes_enum(&ast, enm),
-        Data::Union(unn) => derive_from_bytes_union(&ast, unn),
-    }
-    .into();
+        Data::Struct(strct) => derive_from_bytes_struct(ast, strct),
+        Data::Enum(enm) => derive_from_bytes_enum(ast, enm),
+        Data::Union(unn) => derive_from_bytes_union(ast, unn),
+    };
 
     IntoIterator::into_iter([from_zeros, from_bytes]).collect()
 }
 
-#[proc_macro_derive(IntoBytes)]
-pub fn derive_as_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse_macro_input!(ts as DeriveInput);
+fn derive_as_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     match &ast.data {
-        Data::Struct(strct) => derive_as_bytes_struct(&ast, strct),
-        Data::Enum(enm) => derive_as_bytes_enum(&ast, enm),
-        Data::Union(unn) => derive_as_bytes_union(&ast, unn),
+        Data::Struct(strct) => derive_as_bytes_struct(ast, strct),
+        Data::Enum(enm) => derive_as_bytes_enum(ast, enm),
+        Data::Union(unn) => derive_as_bytes_union(ast, unn),
     }
-    .into()
 }
 
-#[proc_macro_derive(Unaligned)]
-pub fn derive_unaligned(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse_macro_input!(ts as DeriveInput);
+fn derive_unaligned_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     match &ast.data {
-        Data::Struct(strct) => derive_unaligned_struct(&ast, strct),
-        Data::Enum(enm) => derive_unaligned_enum(&ast, enm),
-        Data::Union(unn) => derive_unaligned_union(&ast, unn),
+        Data::Struct(strct) => derive_unaligned_struct(ast, strct),
+        Data::Enum(enm) => derive_unaligned_enum(ast, enm),
+        Data::Union(unn) => derive_unaligned_union(ast, unn),
     }
-    .into()
 }
 
 // A struct is `TryFromBytes` if:
