@@ -15,21 +15,21 @@ include!("include.rs");
 // A union is `imp::FromBytes` if:
 // - all fields are `imp::FromBytes`
 
-#[derive(Clone, Copy, imp::FromZeros, imp::FromBytes)]
+#[derive(Clone, Copy, imp::NoCell, imp::FromBytes)]
 union Zst {
     a: (),
 }
 
 util_assert_impl_all!(Zst: imp::FromBytes);
 
-#[derive(imp::FromZeros, imp::FromBytes)]
+#[derive(imp::NoCell, imp::FromBytes)]
 union One {
     a: u8,
 }
 
 util_assert_impl_all!(One: imp::FromBytes);
 
-#[derive(imp::FromZeros, imp::FromBytes)]
+#[derive(imp::NoCell, imp::FromBytes)]
 union Two {
     a: u8,
     b: Zst,
@@ -37,7 +37,7 @@ union Two {
 
 util_assert_impl_all!(Two: imp::FromBytes);
 
-#[derive(imp::FromZeros, imp::FromBytes)]
+#[derive(imp::NoCell, imp::FromBytes)]
 union TypeParams<'a, T: imp::Copy, I: imp::Iterator>
 where
     I::Item: imp::Copy,
@@ -54,7 +54,7 @@ util_assert_impl_all!(TypeParams<'static, (), imp::IntoIter<()>>: imp::FromBytes
 
 // Deriving `imp::FromBytes` should work if the union has bounded parameters.
 
-#[derive(imp::FromZeros, imp::FromBytes)]
+#[derive(imp::NoCell, imp::FromBytes)]
 #[repr(C)]
 union WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::FromBytes, const N: usize>
 where

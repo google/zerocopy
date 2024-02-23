@@ -72,10 +72,39 @@ macro_rules! try_or_print {
 // (https://doc.rust-lang.org/nightly/proc_macro/struct.Span.html#method.error),
 // which is currently unstable. Revisit this once it's stable.
 
-#[proc_macro_derive(KnownLayout)]
-pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse_macro_input!(ts as DeriveInput);
+/// Defines a derive function named `$outer` which parses its input
+/// `TokenStream` as a `DeriveInput` and then invokes the `$inner` function.
+///
+/// Note that the separate `$outer` parameter is required - proc macro functions
+/// are currently required to live at the crate root, and so the caller must
+/// specify the name in order to avoid name collisions.
+macro_rules! derive {
+    ($trait:ident => $outer:ident => $inner:ident) => {
+        #[proc_macro_derive($trait)]
+        pub fn $outer(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+            let ast = syn::parse_macro_input!(ts as DeriveInput);
+            $inner(&ast).into()
+        }
+    };
+}
 
+derive!(KnownLayout => derive_known_layout => derive_known_layout_inner);
+derive!(NoCell => derive_no_cell => derive_no_cell_inner);
+derive!(TryFromBytes => derive_try_from_bytes => derive_try_from_bytes_inner);
+derive!(FromZeros => derive_from_zeros => derive_from_zeros_inner);
+derive!(FromBytes => derive_from_bytes => derive_from_bytes_inner);
+derive!(IntoBytes => derive_as_bytes => derive_as_bytes_inner);
+derive!(Unaligned => derive_unaligned => derive_unaligned_inner);
+
+/// Deprecated: prefer [`FromZeros`] instead.
+#[deprecated(since = "0.8.0", note = "`FromZeroes` was renamed to `FromZeros`")]
+#[doc(hidden)]
+#[proc_macro_derive(FromZeroes)]
+pub fn derive_from_zeroes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    derive_from_zeros(ts)
+}
+
+fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     let is_repr_c_struct = match &ast.data {
         Data::Struct(..) => {
             let reprs = try_or_print!(repr::reprs::<Repr>(&ast.attrs));
@@ -208,7 +237,7 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
             // of an usized trailing field requires that the field is
             // `KnownLayout`.
             impl_block(
-                &ast,
+                ast,
                 strct,
                 Trait::KnownLayout,
                 require_trait_bound_on_field_types,
@@ -221,7 +250,7 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
             // A bound on the trailing field is not required, since enums cannot
             // currently be unsized.
             impl_block(
-                &ast,
+                ast,
                 enm,
                 Trait::KnownLayout,
                 FieldBounds::None,
@@ -234,7 +263,7 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
             // A bound on the trailing field is not required, since unions
             // cannot currently be unsized.
             impl_block(
-                &ast,
+                ast,
                 unn,
                 Trait::KnownLayout,
                 FieldBounds::None,
@@ -244,15 +273,12 @@ pub fn derive_known_layout(ts: proc_macro::TokenStream) -> proc_macro::TokenStre
             )
         }
     }
-    .into()
 }
 
-#[proc_macro_derive(NoCell)]
-pub fn derive_no_cell(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse_macro_input!(ts as DeriveInput);
+fn derive_no_cell_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     match &ast.data {
         Data::Struct(strct) => impl_block(
-            &ast,
+            ast,
             strct,
             Trait::NoCell,
             FieldBounds::ALL_SELF,
@@ -260,89 +286,58 @@ pub fn derive_no_cell(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
             None,
             None,
         ),
-        Data::Enum(enm) => impl_block(
-            &ast,
-            enm,
-            Trait::NoCell,
-            FieldBounds::ALL_SELF,
-            SelfBounds::None,
-            None,
-            None,
-        ),
-        Data::Union(unn) => impl_block(
-            &ast,
-            unn,
-            Trait::NoCell,
-            FieldBounds::ALL_SELF,
-            SelfBounds::None,
-            None,
-            None,
-        ),
+        Data::Enum(enm) => {
+            impl_block(ast, enm, Trait::NoCell, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
+        }
+        Data::Union(unn) => {
+            impl_block(ast, unn, Trait::NoCell, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
+        }
     }
-    .into()
 }
 
-#[proc_macro_derive(TryFromBytes)]
-pub fn derive_try_from_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse_macro_input!(ts as DeriveInput);
+fn derive_try_from_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     match &ast.data {
-        Data::Struct(strct) => derive_try_from_bytes_struct(&ast, strct),
-        Data::Enum(enm) => derive_try_from_bytes_enum(&ast, enm),
-        Data::Union(unn) => derive_try_from_bytes_union(&ast, unn),
+        Data::Struct(strct) => derive_try_from_bytes_struct(ast, strct),
+        Data::Enum(enm) => derive_try_from_bytes_enum(ast, enm),
+        Data::Union(unn) => derive_try_from_bytes_union(ast, unn),
     }
-    .into()
 }
 
-#[proc_macro_derive(FromZeros)]
-pub fn derive_from_zeros(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse_macro_input!(ts as DeriveInput);
+fn derive_from_zeros_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
+    let try_from_bytes = derive_try_from_bytes_inner(ast);
+    let from_zeros = match &ast.data {
+        Data::Struct(strct) => derive_from_zeros_struct(ast, strct),
+        Data::Enum(enm) => derive_from_zeros_enum(ast, enm),
+        Data::Union(unn) => derive_from_zeros_union(ast, unn),
+    };
+    IntoIterator::into_iter([try_from_bytes, from_zeros]).collect()
+}
+
+fn derive_from_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
+    let from_zeros = derive_from_zeros_inner(ast);
+    let from_bytes = match &ast.data {
+        Data::Struct(strct) => derive_from_bytes_struct(ast, strct),
+        Data::Enum(enm) => derive_from_bytes_enum(ast, enm),
+        Data::Union(unn) => derive_from_bytes_union(ast, unn),
+    };
+
+    IntoIterator::into_iter([from_zeros, from_bytes]).collect()
+}
+
+fn derive_as_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     match &ast.data {
-        Data::Struct(strct) => derive_from_zeros_struct(&ast, strct),
-        Data::Enum(enm) => derive_from_zeros_enum(&ast, enm),
-        Data::Union(unn) => derive_from_zeros_union(&ast, unn),
+        Data::Struct(strct) => derive_as_bytes_struct(ast, strct),
+        Data::Enum(enm) => derive_as_bytes_enum(ast, enm),
+        Data::Union(unn) => derive_as_bytes_union(ast, unn),
     }
-    .into()
 }
 
-/// Deprecated: prefer [`FromZeros`] instead.
-#[deprecated(since = "0.8.0", note = "`FromZeroes` was renamed to `FromZeros`")]
-#[doc(hidden)]
-#[proc_macro_derive(FromZeroes)]
-pub fn derive_from_zeroes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    derive_from_zeros(ts)
-}
-
-#[proc_macro_derive(FromBytes)]
-pub fn derive_from_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse_macro_input!(ts as DeriveInput);
+fn derive_unaligned_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     match &ast.data {
-        Data::Struct(strct) => derive_from_bytes_struct(&ast, strct),
-        Data::Enum(enm) => derive_from_bytes_enum(&ast, enm),
-        Data::Union(unn) => derive_from_bytes_union(&ast, unn),
+        Data::Struct(strct) => derive_unaligned_struct(ast, strct),
+        Data::Enum(enm) => derive_unaligned_enum(ast, enm),
+        Data::Union(unn) => derive_unaligned_union(ast, unn),
     }
-    .into()
-}
-
-#[proc_macro_derive(IntoBytes)]
-pub fn derive_as_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse_macro_input!(ts as DeriveInput);
-    match &ast.data {
-        Data::Struct(strct) => derive_as_bytes_struct(&ast, strct),
-        Data::Enum(enm) => derive_as_bytes_enum(&ast, enm),
-        Data::Union(unn) => derive_as_bytes_union(&ast, unn),
-    }
-    .into()
-}
-
-#[proc_macro_derive(Unaligned)]
-pub fn derive_unaligned(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ast = syn::parse_macro_input!(ts as DeriveInput);
-    match &ast.data {
-        Data::Struct(strct) => derive_unaligned_struct(&ast, strct),
-        Data::Enum(enm) => derive_unaligned_enum(&ast, enm),
-        Data::Union(unn) => derive_unaligned_union(&ast, unn),
-    }
-    .into()
 }
 
 // A struct is `TryFromBytes` if:
@@ -447,25 +442,33 @@ fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2:
             .to_compile_error();
     }
 
-    // We don't actually care what the repr is; we just care that it's one of
-    // the allowed ones.
-    try_or_print!(ENUM_TRY_FROM_BYTES_CFG.validate_reprs(ast));
+    let reprs = try_or_print!(ENUM_TRY_FROM_BYTES_CFG.validate_reprs(ast));
+
+    // Figure out whether the enum could in theory implement `FromBytes`.
+    let from_bytes = enum_size_from_repr(reprs.as_slice())
+        .map(|size| {
+            // As of this writing, `enm.is_fieldless()` is redundant since we've
+            // already checked for it and returned if the check failed. However, if
+            // we ever remove that check, then without a similar check here, this
+            // code would become unsound.
+            enm.is_fieldless() && enm.variants.len() == 1usize << size
+        })
+        .unwrap_or(false);
+
     let variant_names = enm.variants.iter().map(|v| &v.ident);
-    let extras = Some(quote!(
-        // SAFETY: We use `is_bit_valid` to validate that the bit pattern
-        // corresponds to one of the field-less enum's variant discriminants.
-        // Thus, this is a sound implementation of `is_bit_valid`.
-        fn is_bit_valid(
-            candidate: ::zerocopy::Ptr<
-                '_,
-                Self,
-                (
-                    ::zerocopy::pointer::invariant::Shared,
-                    ::zerocopy::pointer::invariant::AnyAlignment,
-                    ::zerocopy::pointer::invariant::Initialized,
-                ),
-            >,
-        ) -> ::zerocopy::macro_util::core_reexport::primitive::bool {
+    let is_bit_valid_body = if from_bytes {
+        // If the enum could implement `FromBytes`, we can avoid emitting a
+        // match statement. This is faster to compile, and generates code which
+        // performs better.
+        quote!({
+            // Prevent an "unused" warning.
+            let _ = candidate;
+            // SAFETY: If the enum could implement `FromBytes`, then all bit
+            // patterns are valid. Thus, this is a sound implementation.
+            true
+        })
+    } else {
+        quote!(
             use ::zerocopy::macro_util::core_reexport;
             // SAFETY:
             // - `cast` is implemented as required.
@@ -499,6 +502,25 @@ fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2:
                 // `candidate` refers to a bit-valid `Self`.
                 discriminant == d
             })*
+        )
+    };
+
+    let extras = Some(quote!(
+        // SAFETY: We use `is_bit_valid` to validate that the bit pattern
+        // corresponds to one of the field-less enum's variant discriminants.
+        // Thus, this is a sound implementation of `is_bit_valid`.
+        fn is_bit_valid(
+            candidate: ::zerocopy::Ptr<
+                '_,
+                Self,
+                (
+                    ::zerocopy::pointer::invariant::Shared,
+                    ::zerocopy::pointer::invariant::AnyAlignment,
+                    ::zerocopy::pointer::invariant::Initialized,
+                ),
+            >,
+        ) -> ::zerocopy::macro_util::core_reexport::primitive::bool {
+            #is_bit_valid_body
         }
     ));
     impl_block(ast, enm, Trait::TryFromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, extras)
@@ -608,13 +630,9 @@ fn derive_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
 
     let reprs = try_or_print!(ENUM_FROM_BYTES_CFG.validate_reprs(ast));
 
-    let variants_required = match reprs.as_slice() {
-        [EnumRepr::U8] | [EnumRepr::I8] => 1usize << 8,
-        [EnumRepr::U16] | [EnumRepr::I16] => 1usize << 16,
-        // `validate_reprs` has already validated that it's one of the preceding
-        // patterns.
-        _ => unreachable!(),
-    };
+    let variants_required = 1usize
+        << enum_size_from_repr(reprs.as_slice())
+            .expect("internal error: `validate_reprs` has already validated that the reprs guarantee the enum's size");
     if enm.variants.len() != variants_required {
         return Error::new_spanned(
             ast,
@@ -627,6 +645,15 @@ fn derive_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
     }
 
     impl_block(ast, enm, Trait::FromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
+}
+
+// Returns `None` if the enum's size is not guaranteed by the repr.
+fn enum_size_from_repr(reprs: &[EnumRepr]) -> Option<usize> {
+    match reprs {
+        [EnumRepr::U8] | [EnumRepr::I8] => Some(8),
+        [EnumRepr::U16] | [EnumRepr::I16] => Some(16),
+        _ => None,
+    }
 }
 
 #[rustfmt::skip]

@@ -26,7 +26,7 @@ fn zst() {
     imp::assert!(is_bit_valid);
 }
 
-#[derive(imp::TryFromBytes, imp::FromZeros, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 #[repr(C)]
 struct One {
     a: u8,
@@ -45,7 +45,7 @@ fn one() {
     imp::assert!(is_bit_valid);
 }
 
-#[derive(imp::TryFromBytes, imp::FromZeros)]
+#[derive(imp::FromZeros)]
 #[repr(C)]
 struct Two {
     a: bool,
@@ -88,7 +88,7 @@ fn two_bad() {
     imp::assert!(!is_bit_valid);
 }
 
-#[derive(imp::TryFromBytes, imp::FromZeros, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 #[repr(C)]
 struct Unsized {
     a: [u8],
@@ -119,7 +119,7 @@ fn un_sized() {
     imp::assert!(is_bit_valid);
 }
 
-#[derive(imp::TryFromBytes, imp::FromZeros, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 #[repr(C)]
 struct TypeParams<'a, T: ?imp::Sized, I: imp::Iterator> {
     a: I::Item,
@@ -136,7 +136,7 @@ util_assert_impl_all!(TypeParams<'static, [util::AU16], imp::IntoIter<()>>: imp:
 
 // Deriving `imp::TryFromBytes` should work if the struct has bounded parameters.
 
-#[derive(imp::TryFromBytes, imp::FromZeros, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 #[repr(transparent)]
 struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::TryFromBytes, const N: usize>(
     imp::PhantomData<&'a &'b ()>,

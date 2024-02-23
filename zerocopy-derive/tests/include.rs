@@ -47,8 +47,6 @@ pub mod util {
     #[derive(
         super::imp::KnownLayout,
         super::imp::NoCell,
-        super::imp::TryFromBytes,
-        super::imp::FromZeros,
         super::imp::FromBytes,
         super::imp::IntoBytes,
         Copy,
