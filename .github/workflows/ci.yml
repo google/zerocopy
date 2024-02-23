@@ -21,7 +21,7 @@ env:
 
 jobs:
   build_test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04-64core
     # Generate and populate the global Cargo registry and cache first. Each
     # job in the matrix runs in parallel, so without populating the cache
     # first, most jobs would duplicate the work of downloading crates from
@@ -304,7 +304,7 @@ jobs:
       if: matrix.crate == 'zerocopy' && matrix.features == '--features __internal_use_only_features_that_work_on_stable' && matrix.toolchain == 'nightly'
 
   kani:
-    runs-on: ubuntu-latest        
+    runs-on: ubuntu-22.04-64core        
     name: 'Run tests under Kani'
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -325,7 +325,7 @@ jobs:
           kani-version: 0.46.0
 
   check_fmt:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04-64core
     name: Check Rust formatting
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -334,7 +334,7 @@ jobs:
 
   check_readme:
     needs: generate_cache
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04-64core
     name: Check README.md
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -347,7 +347,7 @@ jobs:
 
   check_msrv:
     needs: generate_cache
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04-64core
     name: Check MSRVs match
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -369,7 +369,7 @@ jobs:
 
   check_versions:
     needs: generate_cache
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04-64core
     name: Check crate versions match
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -384,7 +384,7 @@ jobs:
         run: ./ci/check_versions.sh
 
   generate_cache:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04-64core
     name: Generate cache
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -415,7 +415,7 @@ jobs:
           cargo kani setup                           &> /dev/null || true
 
   check-all-toolchains-tested:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04-64core
     name: Check that all toolchains listed in Cargo.toml are tested in CI
     steps:
       - name: Install yq (for YAML parsing)
@@ -425,7 +425,7 @@ jobs:
         run: ./ci/check_all_toolchains_tested.sh
 
   check-job-dependencies:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04-64core
     name: Check all-jobs-succeeded depends on all jobs
     steps:
       - name: Install yq (for YAML parsing)
@@ -435,7 +435,7 @@ jobs:
         run: ./ci/check_job_dependencies.sh
 
   run-git-hooks:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04-64core
     name: Run Git hooks
     steps:
       - name: Install yq (for YAML parsing)
@@ -459,7 +459,7 @@ jobs:
       #
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
-      runs-on: ubuntu-latest
+      runs-on: ubuntu-22.04-64core
       needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_versions, generate_cache, check-all-toolchains-tested, check-job-dependencies, run-git-hooks]
       steps:
         - name: Mark the job as failed
