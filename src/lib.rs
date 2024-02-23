@@ -296,12 +296,12 @@ use core::{
     slice,
 };
 
-#[cfg(feature = "alloc")]
+#[cfg(any(feature = "alloc", test))]
 extern crate alloc;
-#[cfg(feature = "alloc")]
+#[cfg(any(feature = "alloc", test))]
 use alloc::{boxed::Box, vec::Vec};
 
-#[cfg(any(feature = "alloc", kani))]
+#[cfg(any(feature = "alloc", test, kani))]
 use core::alloc::Layout;
 
 // Used by `TryFromBytes::is_bit_valid`.
@@ -1515,7 +1515,7 @@ pub unsafe trait FromZeros {
     /// # Panics
     ///
     /// Panics if allocation of `size_of::<Self>()` bytes fails.
-    #[cfg(feature = "alloc")]
+    #[cfg(any(feature = "alloc", test))]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
     #[inline]
     fn new_box_zeroed() -> Box<Self>
@@ -8009,8 +8009,6 @@ mod tests {
 
     #[test]
     fn test_impls() {
-        use core::borrow::Borrow;
-
         // A type that can supply test cases for testing
         // `TryFromBytes::is_bit_valid`. All types passed to `assert_impls!`
         // must implement this trait; that macro uses it to generate runtime
@@ -8020,14 +8018,14 @@ mod tests {
         // types must implement `TryFromBytesTestable` directly (ie using
         // `impl_try_from_bytes_testable!`).
         trait TryFromBytesTestable {
-            fn with_passing_test_cases<F: Fn(&Self)>(f: F);
+            fn with_passing_test_cases<F: Fn(Box<Self>)>(f: F);
             fn with_failing_test_cases<F: Fn(&mut [u8])>(f: F);
         }
 
         impl<T: FromBytes> TryFromBytesTestable for T {
-            fn with_passing_test_cases<F: Fn(&Self)>(f: F) {
+            fn with_passing_test_cases<F: Fn(Box<Self>)>(f: F) {
                 // Test with a zeroed value.
-                f(&Self::new_zeroed());
+                f(Self::new_box_zeroed());
 
                 let ffs = {
                     let mut t = Self::new_zeroed();
@@ -8038,7 +8036,7 @@ mod tests {
                 };
 
                 // Test with a value initialized with 0xFF.
-                f(&ffs);
+                f(Box::new(ffs));
             }
 
             fn with_failing_test_cases<F: Fn(&mut [u8])>(_f: F) {}
@@ -8048,9 +8046,9 @@ mod tests {
             ($($tys:ty),*) => {
                 $(
                     impl TryFromBytesTestable for Option<$tys> {
-                        fn with_passing_test_cases<F: Fn(&Self)>(f: F) {
+                        fn with_passing_test_cases<F: Fn(Box<Self>)>(f: F) {
                             // Test with a zeroed value.
-                            f(&None);
+                            f(Box::new(None));
                         }
 
                         fn with_failing_test_cases<F: Fn(&mut [u8])>(f: F) {
@@ -8088,9 +8086,9 @@ mod tests {
             // Implements only the methods; caller must invoke this from inside
             // an impl block.
             (@methods @success $($success_case:expr),* $(, @failure $($failure_case:expr),*)?) => {
-                fn with_passing_test_cases<F: Fn(&Self)>(_f: F) {
+                fn with_passing_test_cases<F: Fn(Box<Self>)>(_f: F) {
                     $(
-                        _f($success_case.borrow());
+                        _f(Box::<Self>::from($success_case));//.borrow());
                     )*
                 }
 
@@ -8126,7 +8124,7 @@ mod tests {
                     @failure 0xD800u32, 0xDFFFu32, 0x110000u32;
             str  => @success "", "hello", "❤️🧡💛💚💙💜",
                     @failure [0, 159, 146, 150];
-            [u8] => @success [], [0, 1, 2];
+            [u8] => @success vec![].into_boxed_slice(), vec![0, 1, 2].into_boxed_slice();
             NonZeroU8, NonZeroI8, NonZeroU16, NonZeroI16, NonZeroU32,
             NonZeroI32, NonZeroU64, NonZeroI64, NonZeroU128, NonZeroI128,
             NonZeroUsize, NonZeroIsize
@@ -8141,7 +8139,7 @@ mod tests {
                 => @success [true], [false],
                    @failure [2u8], [3u8], [0xFFu8];
             [bool]
-                => @success [true, false], [false, true],
+                => @success vec![true, false].into_boxed_slice(), vec![false, true].into_boxed_slice(),
                     @failure [2u8], [3u8], [0xFFu8], [0u8, 1u8, 2u8];
             Unalign<bool>
                 => @success Unalign::new(false), Unalign::new(true),
@@ -8150,9 +8148,9 @@ mod tests {
                 => @success ManuallyDrop::new(false), ManuallyDrop::new(true),
                    @failure 2u8, 0xFFu8;
             ManuallyDrop<[u8]>
-                => @success ManuallyDrop::new([]), ManuallyDrop::new([0u8]), ManuallyDrop::new([0u8, 1u8]);
+                => @success Box::new(ManuallyDrop::new([])), Box::new(ManuallyDrop::new([0u8])), Box::new(ManuallyDrop::new([0u8, 1u8]));
             ManuallyDrop<[bool]>
-                => @success ManuallyDrop::new([]), ManuallyDrop::new([false]), ManuallyDrop::new([false, true]),
+                => @success Box::new(ManuallyDrop::new([])), Box::new(ManuallyDrop::new([false])), Box::new(ManuallyDrop::new([false, true])),
                    @failure [2u8], [3u8], [0xFFu8], [0u8, 1u8, 2u8];
             Wrapping<bool>
                 => @success Wrapping(false), Wrapping(true),
@@ -8319,7 +8317,7 @@ mod tests {
                 }
 
                 <$ty as TryFromBytesTestable>::with_passing_test_cases(|val| {
-                    let c = Ptr::from_ref(val);
+                    let c = Ptr::from_ref(val.deref());
                     let c = c.forget_aligned();
 
                     // Test `is_bit_valid` directly. NOTE: It's very important
@@ -8360,7 +8358,7 @@ mod tests {
 
                     // `bytes` is `Some(val.as_bytes())` if `$ty: IntoBytes +
                     // NoCell` and `None` otherwise.
-                    let bytes = w.test_as_bytes(val);
+                    let bytes = w.test_as_bytes(val.deref());
 
                     // The inner closure returns
                     // `Some($ty::try_from_ref(bytes))` if `$ty: NoCell` and
@@ -8378,6 +8376,7 @@ mod tests {
                         // this, we create a `Vec` which is twice as long as we
                         // need. There is guaranteed to be an aligned byte range
                         // of size `size_of_val(val)` within that range.
+                        let val = val.deref();
                         let size = mem::size_of_val(val);
                         let align = mem::align_of_val(val);
 
