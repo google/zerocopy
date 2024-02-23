@@ -35,10 +35,10 @@
 //!
 //! ```rust,edition2021
 //! # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
-//! use zerocopy::{IntoBytes, ByteSlice, FromBytes, FromZeros, NoCell, Ref, Unaligned};
+//! use zerocopy::{IntoBytes, ByteSlice, FromBytes, NoCell, Ref, Unaligned};
 //! use zerocopy::byteorder::network_endian::U16;
 //!
-//! #[derive(FromZeros, FromBytes, IntoBytes, NoCell, Unaligned)]
+//! #[derive(FromBytes, IntoBytes, NoCell, Unaligned)]
 //! #[repr(C)]
 //! struct UdpHeader {
 //!     src_port: U16,
@@ -357,7 +357,7 @@ example of how it can be used for parsing UDP packets.
 [`IntoBytes`]: crate::IntoBytes
 [`Unaligned`]: crate::Unaligned"),
             #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned))]
+            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, NoCell, FromBytes, IntoBytes, Unaligned))]
             #[repr(transparent)]
             pub struct $name<O>([u8; $bytes], PhantomData<O>);
         }
