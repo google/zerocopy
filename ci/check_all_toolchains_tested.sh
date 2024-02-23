@@ -11,6 +11,6 @@ set -eo pipefail
 diff \
   <(cat .github/workflows/ci.yml | yq '.jobs.build_test.strategy.matrix.toolchain | .[]' | \
     sort -u | grep -v '^\(msrv\|stable\|nightly\)$') \
-  <(cargo metadata --format-version 1 | \
+  <(cargo metadata -q --format-version 1 | \
     jq -r ".packages[] | select(.name == \"zerocopy\").metadata.\"build-rs\" | keys | .[]" | \
     sort -u)

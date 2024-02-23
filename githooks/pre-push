@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 set -eo pipefail
 echo "Running pre-push git hook: $0"
-# forego redirecting stdout to /dev/null on check_fmt.sh because the output
-# from cargofmt is useful (and the good stuff is not delivered by stderr)
-./ci/check_fmt.sh
-./ci/check_job_dependencies.sh > /dev/null
-./ci/check_msrv.sh > /dev/null
-./ci/check_readme.sh > /dev/null
-./ci/check_versions.sh > /dev/null
+# Forego redirecting stdout to /dev/null on check_fmt.sh because the output from
+# `cargo fmt` is useful (and the good stuff is not delivered by stderr).
+#
+# Background all jobs and wait for them so they can run in parallel.
+./ci/check_fmt.sh                         &
+./ci/check_job_dependencies.sh >/dev/null &
+./ci/check_msrv.sh             >/dev/null &
+./ci/check_readme.sh           >/dev/null &
+./ci/check_versions.sh         >/dev/null &
+
+wait
