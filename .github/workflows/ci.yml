@@ -408,12 +408,17 @@ jobs:
           # there is no support for doing this directly [1], so we just check
           # all crates using --tests.
           #
+          # We background all jobs and then wait for them so that they can run
+          # in parallel.
+          #
           # [1]  https://stackoverflow.com/a/42139535/836390
-          cargo check --workspace --tests            &> /dev/null || true
-          cargo metadata                             &> /dev/null || true
-          cargo install cargo-readme --version 3.2.0 &> /dev/null || true
-          cargo install --locked kani-verifier       &> /dev/null || true
-          cargo kani setup                           &> /dev/null || true
+          cargo check --workspace --tests            &> /dev/null &
+          cargo metadata                             &> /dev/null &
+          cargo install cargo-readme --version 3.2.0 &> /dev/null &
+          cargo install --locked kani-verifier       &> /dev/null &
+          cargo kani setup                           &> /dev/null &
+
+          wait
 
   check-all-toolchains-tested:
     runs-on: ubuntu-latest
