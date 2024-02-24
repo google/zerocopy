@@ -6,14 +6,7 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use core::{
-    cmp::Ordering,
-    fmt::{self, Debug, Display, Formatter},
-    hash::Hash,
-    mem::{self, ManuallyDrop},
-    ops::{Deref, DerefMut},
-    ptr,
-};
+use core::hash::Hash;
 
 use super::*;
 
@@ -60,7 +53,7 @@ use super::*;
 #[derive(Default, Copy)]
 #[cfg_attr(
     any(feature = "derive", test),
-    derive(NoCell, KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned)
+    derive(NoCell, KnownLayout, FromBytes, IntoBytes, Unaligned)
 )]
 #[repr(C, packed)]
 pub struct Unalign<T>(T);

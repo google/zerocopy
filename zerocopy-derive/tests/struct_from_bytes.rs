@@ -15,19 +15,19 @@ include!("include.rs");
 // A struct is `FromBytes` if:
 // - all fields are `FromBytes`
 
-#[derive(imp::FromZeros, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 struct Zst;
 
 util_assert_impl_all!(Zst: imp::FromBytes);
 
-#[derive(imp::FromZeros, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 struct One {
     a: u8,
 }
 
 util_assert_impl_all!(One: imp::FromBytes);
 
-#[derive(imp::FromZeros, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 struct Two {
     a: u8,
     b: Zst,
@@ -35,14 +35,14 @@ struct Two {
 
 util_assert_impl_all!(Two: imp::FromBytes);
 
-#[derive(imp::FromZeros, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 struct Unsized {
     a: [u8],
 }
 
 util_assert_impl_all!(Unsized: imp::FromBytes);
 
-#[derive(imp::FromZeros, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 struct TypeParams<'a, T: ?imp::Sized, I: imp::Iterator> {
     a: I::Item,
     b: u8,
@@ -58,7 +58,7 @@ util_assert_impl_all!(TypeParams<'static, [util::AU16], imp::IntoIter<()>>: imp:
 
 // Deriving `FromBytes` should work if the struct has bounded parameters.
 
-#[derive(imp::FromZeros, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 #[repr(transparent)]
 struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::FromBytes, const N: usize>(
     [T; N],

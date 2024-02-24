@@ -3,7 +3,7 @@ set -eo pipefail
 
 # Usage: version <crate-name>
 function version {
-  cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").version"
+  cargo metadata -q --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").version"
 }
 
 ver_zerocopy=$(version zerocopy)
@@ -13,7 +13,7 @@ ver_zerocopy_derive=$(version zerocopy-derive)
 function dependency-version {
   KIND="$1"
   TARGET="$2"
-  cargo metadata --format-version 1 \
+  cargo metadata -q --format-version 1 \
     | jq -r ".packages[] | select(.name == \"zerocopy\").dependencies[] | select((.name == \"zerocopy-derive\") and .kind == $KIND and .target == $TARGET).req"
 }
 

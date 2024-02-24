@@ -35,10 +35,10 @@
 //!
 //! ```rust,edition2021
 //! # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
-//! use zerocopy::{IntoBytes, ByteSlice, FromBytes, FromZeros, NoCell, Ref, Unaligned};
+//! use zerocopy::{IntoBytes, ByteSlice, FromBytes, NoCell, Ref, Unaligned};
 //! use zerocopy::byteorder::network_endian::U16;
 //!
-//! #[derive(FromZeros, FromBytes, IntoBytes, NoCell, Unaligned)]
+//! #[derive(FromBytes, IntoBytes, NoCell, Unaligned)]
 //! #[repr(C)]
 //! struct UdpHeader {
 //!     src_port: U16,
@@ -69,9 +69,7 @@
 
 use core::{
     convert::{TryFrom, TryInto},
-    fmt::{self, Binary, Debug, Display, Formatter, LowerHex, Octal, UpperHex},
-    marker::PhantomData,
-    mem,
+    fmt::{Binary, Debug, LowerHex, Octal, UpperHex},
     num::TryFromIntError,
 };
 
@@ -359,7 +357,7 @@ example of how it can be used for parsing UDP packets.
 [`IntoBytes`]: crate::IntoBytes
 [`Unaligned`]: crate::Unaligned"),
             #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned))]
+            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, NoCell, FromBytes, IntoBytes, Unaligned))]
             #[repr(transparent)]
             pub struct $name<O>([u8; $bytes], PhantomData<O>);
         }
@@ -833,10 +831,7 @@ module!(native_endian, NativeEndian, "native-endian");
 
 #[cfg(any(test, kani))]
 mod tests {
-    use {
-        super::*,
-        crate::{FromBytes, IntoBytes, Unaligned},
-    };
+    use super::*;
 
     #[cfg(not(kani))]
     mod compatibility {
@@ -894,17 +889,25 @@ mod tests {
             rng.sample(Self::DIST)
         }
 
-        #[cfg(kani)]
-        fn any() -> Self {
-            kani::any()
-        }
-
+        #[cfg_attr(kani, allow(unused))]
         fn checked_add(self, rhs: Self) -> Option<Self>;
+
+        #[cfg_attr(kani, allow(unused))]
         fn checked_div(self, rhs: Self) -> Option<Self>;
+
+        #[cfg_attr(kani, allow(unused))]
         fn checked_mul(self, rhs: Self) -> Option<Self>;
+
+        #[cfg_attr(kani, allow(unused))]
         fn checked_rem(self, rhs: Self) -> Option<Self>;
+
+        #[cfg_attr(kani, allow(unused))]
         fn checked_sub(self, rhs: Self) -> Option<Self>;
+
+        #[cfg_attr(kani, allow(unused))]
         fn checked_shl(self, rhs: Self) -> Option<Self>;
+
+        #[cfg_attr(kani, allow(unused))]
         fn checked_shr(self, rhs: Self) -> Option<Self>;
 
         fn is_nan(self) -> bool;

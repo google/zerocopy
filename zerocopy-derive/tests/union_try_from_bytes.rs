@@ -15,7 +15,7 @@ include!("include.rs");
 // A struct is `imp::TryFromBytes` if:
 // - any of its fields are `imp::TryFromBytes`
 
-#[derive(imp::NoCell, imp::TryFromBytes, imp::FromZeros, imp::FromBytes)]
+#[derive(imp::NoCell, imp::FromBytes)]
 union One {
     a: u8,
 }
@@ -33,7 +33,7 @@ fn one() {
     assert!(is_bit_valid);
 }
 
-#[derive(imp::NoCell, imp::TryFromBytes, imp::FromZeros)]
+#[derive(imp::NoCell, imp::FromZeros)]
 #[repr(C)]
 union Two {
     a: bool,
@@ -83,7 +83,7 @@ fn two_bad() {
     assert!(!is_bit_valid);
 }
 
-#[derive(imp::NoCell, imp::TryFromBytes, imp::FromZeros)]
+#[derive(imp::NoCell, imp::FromZeros)]
 #[repr(C)]
 union BoolAndZst {
     a: bool,
@@ -113,7 +113,7 @@ fn bool_and_zst() {
     assert!(is_bit_valid);
 }
 
-#[derive(imp::NoCell, imp::TryFromBytes, imp::FromZeros, imp::FromBytes)]
+#[derive(imp::NoCell, imp::FromBytes)]
 #[repr(C)]
 union TypeParams<'a, T: imp::Copy, I: imp::Iterator>
 where
@@ -133,7 +133,7 @@ util_assert_impl_all!(TypeParams<'static, [util::AU16; 2], imp::IntoIter<()>>: i
 
 // Deriving `imp::TryFromBytes` should work if the union has bounded parameters.
 
-#[derive(imp::NoCell, imp::TryFromBytes, imp::FromZeros, imp::FromBytes)]
+#[derive(imp::NoCell, imp::FromBytes)]
 #[repr(C)]
 union WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::TryFromBytes, const N: usize>
 where
