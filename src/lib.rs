@@ -6084,12 +6084,14 @@ mod tests {
     #[test]
     #[cfg_attr(miri, ignore)]
     fn test_validate_cast_and_convert_metadata() {
+        #[allow(non_local_definitions)]
         impl From<usize> for SizeInfo {
             fn from(_size: usize) -> SizeInfo {
                 SizeInfo::Sized { _size }
             }
         }
 
+        #[allow(non_local_definitions)]
         impl From<(usize, usize)> for SizeInfo {
             fn from((_offset, _elem_size): (usize, usize)) -> SizeInfo {
                 SizeInfo::SliceDst(TrailingSliceLayout { _offset, _elem_size })
@@ -8413,7 +8415,7 @@ mod tests {
             ($ty:ty: TryFromBytes) => {
                 // "Default" implementations that match the "real"
                 // implementations defined in the `autoref_trick` module above.
-                #[allow(unused)]
+                #[allow(unused, non_local_definitions)]
                 impl AutorefWrapper<$ty> {
                     #[allow(clippy::needless_lifetimes)]
                     fn test_is_bit_valid_shared<'ptr, A: invariant::at_least::Shared>(
