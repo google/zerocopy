@@ -194,7 +194,12 @@ macro_rules! define_system {
 
         $(
             $(#[$set_attr])*
-            pub trait $set: sealed::Sealed {}
+            pub trait $set: 'static + sealed::Sealed {
+                // This only exists for use in
+                // `into_exclusive_or_post_monomorphization_error`.
+                #[doc(hidden)]
+                const NAME: &'static str;
+            }
 
             $(
                 $(#[$elem_attr])*
@@ -202,7 +207,9 @@ macro_rules! define_system {
                 pub enum $elem {}
 
                 $(#[$elem_attr])*
-                impl $set for $elem {}
+                impl $set for $elem {
+                    const NAME: &'static str = stringify!($elem);
+                }
             )*
         )*
 
@@ -624,7 +631,7 @@ mod _conversions {
             // TODO(#896): Finish this safety proof (namely, [2]) before the
             // next stable release.
             #[allow(clippy::as_conversions)]
-            let ptr = unsafe { ptr.cast_unsized(|p| p as *mut T) };
+            let ptr = unsafe { ptr.cast_unsized(|p| p.cast::<T>()) };
             // SAFETY: Since `MaybeUninit<T>` has the same alignment as `T` [1],
             // the fact that `mu` is aligned to `MaybeUninit<T>` means that it
             // is aligned to `T`.
@@ -648,6 +655,94 @@ mod _transitions {
         T: 'a + ?Sized,
         I: Invariants,
     {
+        /// Returns a `Ptr` with [`Exclusive`] aliasing if `self` already has
+        /// `Exclusive` aliasing.
+        ///
+        /// This allows code which is generic over aliasing to down-cast to a
+        /// concrete aliasing.
+        ///
+        /// [`Exclusive`]: invariant::Exclusive
+        #[inline]
+        pub(crate) fn into_exclusive_or_post_monomorphization_error(
+            self,
+        ) -> Ptr<'a, T, (invariant::Exclusive, I::Alignment, I::Validity)> {
+            trait AliasingExt: invariant::Aliasing {
+                const IS_EXCLUSIVE: bool;
+            }
+
+            impl<A: invariant::Aliasing> AliasingExt for A {
+                const IS_EXCLUSIVE: bool = {
+                    let is_exclusive = strs_are_equal(
+                        <Self as invariant::Aliasing>::NAME,
+                        <invariant::Exclusive as invariant::Aliasing>::NAME,
+                    );
+                    const_assert!(is_exclusive);
+                    true
+                };
+            }
+
+            const fn strs_are_equal(s: &str, t: &str) -> bool {
+                if s.len() != t.len() {
+                    return false;
+                }
+
+                let s = s.as_bytes();
+                let t = t.as_bytes();
+
+                let mut i = 0;
+                while i < s.len() {
+                    if s[i] != t[i] {
+                        return false;
+                    }
+
+                    i += 1;
+                }
+
+                return true;
+            }
+
+            assert!(I::Aliasing::IS_EXCLUSIVE);
+
+            // SAFETY: We've confirmed that `self` already has the aliasing
+            // `Exclusive`. If it didn't, either the preceding assert would fail
+            // or evaluating `I::Aliasing::IS_EXCLUSIVE` would fail. We're
+            // *pretty* sure that it's guaranteed to fail const eval, but the
+            // `assert!` provides a backstop in case that doesn't work.
+            unsafe { self.assume_exclusive() }
+        }
+
+        /// Assumes that `Ptr` satisfies the aliasing requirement of `A`.
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that `Ptr` satisfies the aliasing requirement of
+        /// `A`.
+        #[inline]
+        pub(crate) unsafe fn assume_aliasing<A: invariant::Aliasing>(
+            self,
+        ) -> Ptr<'a, T, (A, I::Alignment, I::Validity)> {
+            // SAFETY: The caller promises that `self` satisfies the aliasing
+            // requirements of `A`.
+            unsafe { Ptr::from_ptr(self) }
+        }
+
+        /// Assumes that `Ptr` satisfies the aliasing requirement of [`Exclusive`].
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that `Ptr` satisfies the aliasing requirement of
+        /// `Exclusive`.
+        ///
+        /// [`Exclusive`]: invariant::Exclusive
+        #[inline]
+        pub(crate) unsafe fn assume_exclusive(
+            self,
+        ) -> Ptr<'a, T, (invariant::Exclusive, I::Alignment, I::Validity)> {
+            // SAFETY: The caller promises that `self` satisfies the aliasing
+            // requirements of `Exclusive`.
+            unsafe { self.assume_aliasing::<invariant::Exclusive>() }
+        }
+
         /// Assumes that `Ptr`'s referent is validly-aligned for `T` if required
         /// by `A`.
         ///
@@ -783,6 +878,7 @@ mod _transitions {
 /// Casts of the referent type.
 mod _casts {
     use super::*;
+    use crate::Unalign;
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
@@ -800,7 +896,7 @@ mod _casts {
         ///
         /// For all kinds of casts, the caller must promise that:
         /// - the the size of the object referenced by the resulting pointer is
-        /// less than or equal to the size of the object referenced by `self`.
+        ///   less than or equal to the size of the object referenced by `self`.
         /// - `UnsafeCell`s in `U` exist at ranges identical to those at which
         ///   `UnsafeCell`s exist in `T`.
         ///
@@ -810,12 +906,17 @@ mod _casts {
         /// |p: *mut T| p as *mut U
         /// ```
         ///
+        /// ...or as:
+        /// ```ignore
+        /// |p: *mut T| p.cast::<U>()
+        /// ```
+        ///
         /// For pointer-to-slice casts, it sufficies for the caller to
         /// additionally promise that `cast` is implemented as:
         /// ```ignore
         ///   |p: *mut T|
         ///       core::ptr::slice_from_raw_parts_mut(
-        ///           p as *mut U,
+        ///           p.cast::<U>(),
         ///           len,
         ///       )
         /// ```
@@ -891,7 +992,7 @@ mod _casts {
             let ptr: Ptr<'a, [u8], _> = unsafe {
                 self.cast_unsized(|p: *mut T| {
                     #[allow(clippy::as_conversions)]
-                    core::ptr::slice_from_raw_parts_mut(p as *mut u8, core::mem::size_of::<T>())
+                    core::ptr::slice_from_raw_parts_mut(p.cast::<u8>(), core::mem::size_of::<T>())
                 })
             };
 
@@ -1105,6 +1206,30 @@ mod _casts {
                 Some((slf, split_at)) if split_at == self.len() => Some(slf),
                 Some(_) | None => None,
             }
+        }
+    }
+
+    impl<'a, T, I> Ptr<'a, Unalign<T>, I>
+    where
+        T: 'a,
+        I: Invariants,
+    {
+        /// Converts a possibly-aligned pointer to [`Unalign<T>`] to an
+        /// unaligned pointer to `T`.
+        ///
+        /// [`Unalign<T>`]: crate::Unalign
+        #[inline]
+        pub(crate) fn into_inner(
+            self,
+        ) -> Ptr<'a, T, (I::Aliasing, invariant::AnyAlignment, I::Validity)> {
+            // SAFETY: `Unalign<T>` has the same size as `T`, and so this cast
+            // preserves size. It also has the same layout as `T` (not including
+            // alignment), and so `UnsafeCell`s exist at the same byte ranges in
+            // `Unalign<T>` and `T`.
+            let ptr = unsafe { self.cast_unsized(|p: *mut Unalign<T>| p.cast::<T>()) };
+            // SAFETY: `Unalign<T>` has the same validity as `T`, and so the
+            // preceding cast preserved validity.
+            unsafe { ptr.assume_validity::<I::Validity>() }
         }
     }
 }
