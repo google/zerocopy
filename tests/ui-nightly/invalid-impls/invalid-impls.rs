@@ -19,7 +19,7 @@ use zerocopy_derive::*;
 
 fn main() {}
 
-#[derive(TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned)]
+#[derive(FromBytes, IntoBytes, Unaligned)]
 #[repr(transparent)]
 struct Foo<T>(T);
 

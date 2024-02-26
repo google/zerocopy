@@ -12,7 +12,7 @@ use zerocopy::transmute_mut;
 
 fn main() {}
 
-#[derive(zerocopy::FromZeros, zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::NoCell)]
+#[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::NoCell)]
 #[repr(C)]
 struct Src;
 
