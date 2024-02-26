@@ -1374,7 +1374,7 @@ pub unsafe trait TryFromBytes {
 /// e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::FromZeros;
+/// # use zerocopy_derive::{FromZeros, NoCell};
 /// #[derive(FromZeros)]
 /// struct MyStruct {
 /// # /*
@@ -1391,7 +1391,7 @@ pub unsafe trait TryFromBytes {
 /// # */
 /// }
 ///
-/// #[derive(FromZeros)]
+/// #[derive(FromZeros, NoCell)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
@@ -1678,14 +1678,14 @@ pub use FromZeros as FromZeroes;
 ///
 /// ```
 /// # use zerocopy_derive::{FromBytes, FromZeros};
-/// #[derive(FromZeros, FromBytes)]
+/// #[derive(FromBytes)]
 /// struct MyStruct {
 /// # /*
 ///     ...
 /// # */
 /// }
 ///
-/// #[derive(FromZeros, FromBytes)]
+/// #[derive(FromBytes)]
 /// #[repr(u8)]
 /// enum MyEnum {
 /// #   V00, V01, V02, V03, V04, V05, V06, V07, V08, V09, V0A, V0B, V0C, V0D, V0E,
@@ -1711,7 +1711,7 @@ pub use FromZeros as FromZeroes;
 /// # */
 /// }
 ///
-/// #[derive(FromZeros, FromBytes)]
+/// #[derive(FromBytes)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
@@ -1792,15 +1792,15 @@ pub use zerocopy_derive::FromBytes;
 /// e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::{FromBytes, FromZeros};
-/// #[derive(FromZeros, FromBytes)]
+/// # use zerocopy_derive::{FromBytes, NoCell};
+/// #[derive(FromBytes)]
 /// struct MyStruct {
 /// # /*
 ///     ...
 /// # */
 /// }
 ///
-/// #[derive(FromZeros, FromBytes)]
+/// #[derive(FromBytes)]
 /// #[repr(u8)]
 /// enum MyEnum {
 /// #   V00, V01, V02, V03, V04, V05, V06, V07, V08, V09, V0A, V0B, V0C, V0D, V0E,
@@ -1826,7 +1826,7 @@ pub use zerocopy_derive::FromBytes;
 /// # */
 /// }
 ///
-/// #[derive(FromZeros, FromBytes)]
+/// #[derive(FromBytes, NoCell)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
@@ -1882,7 +1882,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromZeros, FromBytes, NoCell)]
+    /// #[derive(FromBytes, NoCell)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -1924,7 +1924,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromZeros, FromBytes, NoCell)]
+    /// #[derive(FromBytes, NoCell)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -1966,7 +1966,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromZeros, FromBytes, NoCell)]
+    /// #[derive(FromBytes, NoCell)]
     /// #[repr(C)]
     /// struct PacketTrailer {
     ///     frame_check_sequence: [u8; 4],
@@ -1998,7 +1998,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromZeros, FromBytes, IntoBytes, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, NoCell)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -2045,7 +2045,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromZeros, FromBytes, IntoBytes, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, NoCell)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -2091,7 +2091,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromZeros, FromBytes, IntoBytes, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, NoCell)]
     /// #[repr(C)]
     /// struct PacketTrailer {
     ///     frame_check_sequence: [u8; 4],
@@ -2136,7 +2136,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromZeros, FromBytes, NoCell)]
+    /// #[derive(FromBytes, NoCell)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2185,7 +2185,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromZeros, FromBytes, NoCell)]
+    /// #[derive(FromBytes, NoCell)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2236,7 +2236,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromZeros, FromBytes, NoCell)]
+    /// #[derive(FromBytes, NoCell)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2285,7 +2285,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromZeros, FromBytes, IntoBytes, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, NoCell)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2338,7 +2338,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromZeros, FromBytes, IntoBytes, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, NoCell)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2393,7 +2393,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromZeros, FromBytes, IntoBytes, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, NoCell)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2436,7 +2436,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromZeros, FromBytes)]
+    /// #[derive(FromBytes)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -2475,7 +2475,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromZeros, FromBytes)]
+    /// #[derive(FromBytes)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -2515,7 +2515,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromZeros, FromBytes)]
+    /// #[derive(FromBytes)]
     /// #[repr(C)]
     /// struct PacketTrailer {
     ///     frame_check_sequence: [u8; 4],
@@ -2793,7 +2793,7 @@ pub unsafe trait IntoBytes {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Eq, PartialEq, Debug)]
-    /// #[derive(FromZeros, FromBytes, IntoBytes, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, NoCell)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -4464,7 +4464,7 @@ macro_rules! include_value {
 /// # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
 /// use zerocopy::{IntoBytes, ByteSlice, ByteSliceMut, FromBytes, FromZeros, NoCell, Ref, Unaligned};
 ///
-/// #[derive(FromZeros, FromBytes, IntoBytes, NoCell, Unaligned)]
+/// #[derive(FromBytes, IntoBytes, NoCell, Unaligned)]
 /// #[repr(C)]
 /// struct UdpHeader {
 ///     src_port: [u8; 2],
