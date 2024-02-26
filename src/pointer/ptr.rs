@@ -515,8 +515,9 @@ mod _conversions {
         /// Since `self` is borrowed immutably, this prevents any mutable
         /// methods from being called on `self` as long as the returned `Ptr`
         /// exists.
+        #[doc(hidden)]
         #[allow(clippy::needless_lifetimes)] // Allows us to name the lifetime in the safety comment below.
-        pub(crate) fn reborrow<'b>(&'b mut self) -> Ptr<'b, T, I>
+        pub fn reborrow<'b>(&'b mut self) -> Ptr<'b, T, I>
         where
             'a: 'b,
         {
