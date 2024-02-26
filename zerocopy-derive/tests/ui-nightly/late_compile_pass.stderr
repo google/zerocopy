@@ -6,13 +6,13 @@ warning: unused import: `zerocopy::KnownLayout`
    |
    = note: `#[warn(unused_imports)]` on by default
 
-error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
+error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:28:10
    |
 28 | #[derive(TryFromBytes)]
-   |          ^^^^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+   |          ^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
    |
-   = help: the following other types implement trait `zerocopy::TryFromBytes`:
+   = help: the following other types implement trait `TryFromBytes`:
              bool
              char
              isize
@@ -25,6 +25,26 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satis
    = help: see issue #48214
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+  --> tests/ui-nightly/late_compile_pass.rs:37:10
+   |
+37 | #[derive(FromZeros)]
+   |          ^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
+   |
+   = help: the following other types implement trait `TryFromBytes`:
+             bool
+             char
+             isize
+             i8
+             i16
+             i32
+             i64
+             i128
+           and $N others
+   = help: see issue #48214
+   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: FromZeroes` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:37:10
@@ -46,6 +66,46 @@ error[E0277]: the trait bound `NotZerocopy: FromZeroes` is not satisfied
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 
+error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+  --> tests/ui-nightly/late_compile_pass.rs:46:10
+   |
+46 | #[derive(FromBytes)]
+   |          ^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
+   |
+   = help: the following other types implement trait `TryFromBytes`:
+             bool
+             char
+             isize
+             i8
+             i16
+             i32
+             i64
+             i128
+           and $N others
+   = help: see issue #48214
+   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `NotZerocopy: FromZeroes` is not satisfied
+  --> tests/ui-nightly/late_compile_pass.rs:46:10
+   |
+46 | #[derive(FromBytes)]
+   |          ^^^^^^^^^ the trait `FromZeroes` is not implemented for `NotZerocopy`
+   |
+   = help: the following other types implement trait `FromZeroes`:
+             bool
+             char
+             isize
+             i8
+             i16
+             i32
+             i64
+             i128
+           and $N others
+   = help: see issue #48214
+   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
 error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:46:10
    |
@@ -64,29 +124,6 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfie
            and $N others
    = help: see issue #48214
    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
-   = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0277]: the trait bound `FromBytes1: FromZeroes` is not satisfied
-  --> tests/ui-nightly/late_compile_pass.rs:46:10
-   |
-46 | #[derive(FromBytes)]
-   |          ^^^^^^^^^ the trait `FromZeroes` is not implemented for `FromBytes1`
-   |
-   = help: the following other types implement trait `FromZeroes`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
-           and $N others
-note: required by a bound in `zerocopy::FromBytes`
-  --> $WORKSPACE/src/lib.rs
-   |
-   | pub unsafe trait FromBytes: FromZeros {
-   |                             ^^^^^^^^^ required by this bound in `FromBytes`
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: AsBytes` is not satisfied
