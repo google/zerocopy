@@ -516,6 +516,7 @@ mod _conversions {
         /// methods from being called on `self` as long as the returned `Ptr`
         /// exists.
         #[doc(hidden)]
+        #[inline]
         #[allow(clippy::needless_lifetimes)] // Allows us to name the lifetime in the safety comment below.
         pub fn reborrow<'b>(&'b mut self) -> Ptr<'b, T, I>
         where
@@ -691,7 +692,9 @@ mod _transitions {
                 let t = t.as_bytes();
 
                 let mut i = 0;
+                #[allow(clippy::arithmetic_side_effects)]
                 while i < s.len() {
+                    #[allow(clippy::indexing_slicing)]
                     if s[i] != t[i] {
                         return false;
                     }
@@ -699,7 +702,7 @@ mod _transitions {
                     i += 1;
                 }
 
-                return true;
+                true
             }
 
             assert!(I::Aliasing::IS_EXCLUSIVE);

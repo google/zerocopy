@@ -8301,6 +8301,7 @@ mod tests {
             pub(super) struct AutorefWrapper<T: ?Sized>(pub(super) PhantomData<T>);
 
             pub(super) trait TestIsBitValidShared<T: ?Sized> {
+                #[allow(clippy::needless_lifetimes)]
                 fn test_is_bit_valid_shared<'ptr, A: invariant::at_least::Shared>(
                     &self,
                     candidate: Maybe<'ptr, T, A>,
@@ -8308,6 +8309,7 @@ mod tests {
             }
 
             impl<T: TryFromBytes + NoCell + ?Sized> TestIsBitValidShared<T> for AutorefWrapper<T> {
+                #[allow(clippy::needless_lifetimes)]
                 fn test_is_bit_valid_shared<'ptr, A: invariant::at_least::Shared>(
                     &self,
                     candidate: Maybe<'ptr, T, A>,
@@ -8317,11 +8319,13 @@ mod tests {
             }
 
             pub(super) trait TestTryFromRef<T: ?Sized> {
+                #[allow(clippy::needless_lifetimes)]
                 fn test_try_from_ref<'bytes>(
                     &self,
                     bytes: &'bytes [u8],
                 ) -> Option<Option<&'bytes T>>;
 
+                #[allow(clippy::needless_lifetimes)]
                 fn test_try_from_mut<'bytes>(
                     &self,
                     bytes: &'bytes mut [u8],
@@ -8329,6 +8333,7 @@ mod tests {
             }
 
             impl<T: TryFromBytes + NoCell + KnownLayout + ?Sized> TestTryFromRef<T> for AutorefWrapper<T> {
+                #[allow(clippy::needless_lifetimes)]
                 fn test_try_from_ref<'bytes>(
                     &self,
                     bytes: &'bytes [u8],
@@ -8336,6 +8341,7 @@ mod tests {
                     Some(T::try_from_ref(bytes))
                 }
 
+                #[allow(clippy::needless_lifetimes)]
                 fn test_try_from_mut<'bytes>(
                     &self,
                     bytes: &'bytes mut [u8],
@@ -8357,10 +8363,12 @@ mod tests {
             }
 
             pub(super) trait TestAsBytes<T: ?Sized> {
+                #[allow(clippy::needless_lifetimes)]
                 fn test_as_bytes<'slf, 't>(&'slf self, t: &'t T) -> Option<&'t [u8]>;
             }
 
             impl<T: IntoBytes + NoCell + ?Sized> TestAsBytes<T> for AutorefWrapper<T> {
+                #[allow(clippy::needless_lifetimes)]
                 fn test_as_bytes<'slf, 't>(&'slf self, t: &'t T) -> Option<&'t [u8]> {
                     Some(t.as_bytes())
                 }
@@ -8407,6 +8415,7 @@ mod tests {
                 // implementations defined in the `autoref_trick` module above.
                 #[allow(unused)]
                 impl AutorefWrapper<$ty> {
+                    #[allow(clippy::needless_lifetimes)]
                     fn test_is_bit_valid_shared<'ptr, A: invariant::at_least::Shared>(
                         &mut self,
                         candidate: Maybe<'ptr, $ty, A>,
@@ -8424,6 +8433,7 @@ mod tests {
                         None
                     }
 
+                    #[allow(clippy::needless_lifetimes)]
                     fn test_try_from_ref<'bytes>(&mut self, _bytes: &'bytes [u8]) -> Option<Option<&'bytes $ty>> {
                         assert_on_allowlist!(
                             test_try_from_ref($ty):
@@ -8433,6 +8443,7 @@ mod tests {
                         None
                     }
 
+                    #[allow(clippy::needless_lifetimes)]
                     fn test_try_from_mut<'bytes>(&mut self, _bytes: &'bytes mut [u8]) -> Option<Option<&'bytes mut $ty>> {
                         assert_on_allowlist!(
                             test_try_from_mut($ty):
