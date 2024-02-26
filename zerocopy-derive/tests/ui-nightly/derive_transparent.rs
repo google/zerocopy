@@ -21,7 +21,7 @@ fn main() {}
 
 // Test generic transparent structs
 
-#[derive(IntoBytes, TryFromBytes, FromZeros, FromBytes, Unaligned)]
+#[derive(IntoBytes, FromBytes, Unaligned)]
 #[repr(transparent)]
 struct TransparentStruct<T> {
     inner: T,
