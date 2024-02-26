@@ -1028,7 +1028,7 @@ safety_comment! {
 /// e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::FromZeros;
+/// # use zerocopy_derive::{FromZeros, NoCell};
 /// #[derive(FromZeros)]
 /// struct MyStruct {
 /// # /*
@@ -1045,7 +1045,7 @@ safety_comment! {
 /// # */
 /// }
 ///
-/// #[derive(FromZeros)]
+/// #[derive(FromZeros, NoCell)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
@@ -1677,7 +1677,7 @@ pub use FromZeros as FromZeroes;
 /// e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::{FromBytes, FromZeros};
+/// # use zerocopy_derive::{FromBytes, FromZeros, NoCell};
 /// #[derive(FromBytes)]
 /// struct MyStruct {
 /// # /*
@@ -1711,7 +1711,7 @@ pub use FromZeros as FromZeroes;
 /// # */
 /// }
 ///
-/// #[derive(FromBytes)]
+/// #[derive(FromBytes, NoCell)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
