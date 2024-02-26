@@ -1430,7 +1430,7 @@ pub unsafe trait TryFromBytes {
     doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.FromZeros.html"),
     doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.FromZeros.html#analysis"),
 )]
-pub unsafe trait FromZeros {
+pub unsafe trait FromZeros: TryFromBytes {
     // The `Self: Sized` bound makes it so that `FromZeros` is still object
     // safe.
     #[doc(hidden)]
@@ -3701,8 +3701,10 @@ safety_comment! {
     ///
     ///   `UnsafeCell<T>`` has the same in-memory representation as its inner
     ///   type `T`.
-    unsafe_impl!(T: ?Sized + FromZeros => FromZeros for UnsafeCell<T>);
-    unsafe_impl!(T: ?Sized + FromBytes => FromBytes for UnsafeCell<T>);
+    ///
+    /// TODO(#5): Implement `FromZeros` and `FromBytes` when `T: ?Sized`.
+    unsafe_impl!(T: FromZeros => FromZeros for UnsafeCell<T>);
+    unsafe_impl!(T: FromBytes => FromBytes for UnsafeCell<T>);
     unsafe_impl!(T: ?Sized + IntoBytes => IntoBytes for UnsafeCell<T>);
     unsafe_impl!(T: ?Sized + Unaligned => Unaligned for UnsafeCell<T>);
     assert_unaligned!(UnsafeCell<()>, UnsafeCell<u8>);
@@ -6928,7 +6930,6 @@ mod tests {
     #[test]
     fn test_object_safety() {
         fn _takes_no_cell(_: &dyn NoCell) {}
-        fn _takes_from_zeros(_: &dyn FromZeros) {}
         fn _takes_unaligned(_: &dyn Unaligned) {}
     }
 

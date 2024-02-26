@@ -395,10 +395,12 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
 }
 
 // A union is `TryFromBytes` if:
-// - any of its fields are `TryFromBytes`
+// - all of its fields are `TryFromBytes` and `NoCell`
 
 fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    let self_type_trait_bounds = SelfBounds::All(&[Trait::NoCell]);
+    // TODO(#5): Remove the `NoCell` bound.
+    let field_type_trait_bounds =
+        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::NoCell)]);
     let extras = Some({
         let fields = unn.fields();
         let field_names = fields.iter().map(|(name, _ty)| name);
@@ -434,8 +436,8 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
         ast,
         unn,
         Trait::TryFromBytes,
-        FieldBounds::ALL_SELF,
-        self_type_trait_bounds,
+        field_type_trait_bounds,
+        SelfBounds::None,
         None,
         extras,
     )
@@ -606,11 +608,15 @@ fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
     impl_block(ast, enm, Trait::FromZeros, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
 }
 
-// Like structs, unions are `FromZeros` if
-// - all fields are `FromZeros`
+// Unions are `FromZeros` if
+// - all fields are `FromZeros` and `NoCell`
 
 fn derive_from_zeros_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    impl_block(ast, unn, Trait::FromZeros, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
+    // TODO(#5): Remove the `NoCell` bound. It's only necessary for
+    // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
+    let field_type_trait_bounds =
+        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::NoCell)]);
+    impl_block(ast, unn, Trait::FromZeros, field_type_trait_bounds, SelfBounds::None, None, None)
 }
 
 // A struct is `FromBytes` if:
@@ -692,11 +698,15 @@ const ENUM_FROM_BYTES_CFG: Config<EnumRepr> = {
     }
 };
 
-// Like structs, unions are `FromBytes` if
-// - all fields are `FromBytes`
+// Unions are `FromBytes` if
+// - all fields are `FromBytes` and `NoCell`
 
 fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    impl_block(ast, unn, Trait::FromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
+    // TODO(#5): Remove the `NoCell` bound. It's only necessary for
+    // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
+    let field_type_trait_bounds =
+        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::NoCell)]);
+    impl_block(ast, unn, Trait::FromBytes, field_type_trait_bounds, SelfBounds::None, None, None)
 }
 
 fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
