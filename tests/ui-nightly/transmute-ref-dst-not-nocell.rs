@@ -15,7 +15,7 @@ use zerocopy::transmute_ref;
 
 fn main() {}
 
-#[derive(zerocopy::FromZeros, zerocopy::FromBytes)]
+#[derive(zerocopy::FromBytes)]
 #[repr(transparent)]
 struct Dst(AU16);
 

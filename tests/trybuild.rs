@@ -31,6 +31,8 @@ fn ui() {
 #[test]
 #[cfg_attr(miri, ignore)]
 fn ui_invalid_impls() {
+    assert!(cfg!(feature = "derive"), "ui tests cannot be run without the `derive` feature");
+
     let version = ToolchainVersion::extract_from_pwd().unwrap();
     // See the doc comment on this method for an explanation of what this does
     // and why we store source files in different directories.
