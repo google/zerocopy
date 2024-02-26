@@ -386,6 +386,26 @@ mod _external {
     }
 }
 
+/// Calls `$ptr.cast_unsized` with the appropriate `cast` callback.
+///
+/// # Safety
+///
+/// The caller promises to uphold all safety preconditions of
+/// [`Ptr::cast_unsized`] other than those which relate to the `cast`
+/// callback argument.
+// This is placed here (rather than in one of the modules below) so that it's
+// accessible to all of the implementations, some of which call this macro.
+macro_rules! ptr_cast_unsized {
+    ($ptr:expr => $u:ty) => {
+        // SAFETY:
+        // - The `cast` argument is implemented exactly as required by
+        //   `cast_unsized`.
+        // - The caller has promised to uphold all other preconditions.
+        #[allow(clippy::as_conversions)]
+        $ptr.cast_unsized::<$u, _>(|t: *mut _| t as *mut $u)
+    };
+}
+
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
     use super::*;

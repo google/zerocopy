@@ -282,6 +282,7 @@ pub mod byteorder;
 #[doc(hidden)]
 pub mod macro_util;
 #[doc(hidden)]
+#[macro_use]
 pub mod pointer;
 mod util;
 // TODO(#252): If we make this pub, come up with a better name.
@@ -3553,23 +3554,10 @@ safety_comment! {
     assert_unaligned!(bool);
     /// SAFETY:
     /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
-    ///   closure:
-    ///   - Given `t: *mut bool` and `let r = *mut u8`, `r` refers to an object
-    ///     of the same size as that referred to by `t`. This is true because
-    ///     `bool` and `u8` have the same size (1 byte) [1]. Neither `r` nor `t`
-    ///     contain `UnsafeCell`s because neither `bool` nor `u8` do [4].
-    ///   - Since the closure takes a `&u8` argument, given a `Maybe<'a,
-    ///     bool>` which satisfies the preconditions of
-    ///     `TryFromBytes::<bool>::is_bit_valid`, it must be guaranteed that the
-    ///     memory referenced by that `MaybeValid` always contains a valid `u8`.
-    ///     Since `bool`'s single byte is always initialized, `is_bit_valid`'s
-    ///     precondition requires that the same is true of its argument. Since
-    ///     `u8`'s only bit validity invariant is that its single byte must be
-    ///     initialized, this memory is guaranteed to contain a valid `u8`.
-    ///   - The impl must only return `true` for its argument if the original
-    ///     `Maybe<bool>` refers to a valid `bool`. We only return true if
-    ///     the `u8` value is 0 or 1, and both of these are valid values for
-    ///     `bool`. [3]
+    ///   closure The impl must only return `true` for its argument if the
+    ///   original `Maybe<bool>` refers to a valid `bool`. We only return true
+    ///   if the `u8` value is 0 or 1, and both of these are valid values for
+    ///   `bool`. [3]
     ///
     /// [1] Per https://doc.rust-lang.org/reference/type-layout.html#primitive-data-layout:
     ///
@@ -3590,7 +3578,12 @@ safety_comment! {
     ///   bit pattern 0x01.
     ///
     /// [4] TODO(#429): Justify this claim.
-    unsafe_impl!(bool: TryFromBytes; |byte: MaybeAligned<u8>| *byte.unaligned_as_ref() < 2);
+    unsafe_impl!(bool: TryFromBytes; |b| {
+        let b = b.transparent_wrapper_into_inner();
+        // SAFETY: TODO
+        let b = unsafe { b.assume_valid() };
+        *b.unaligned_as_ref() < 2
+    });
 }
 safety_comment! {
     /// SAFETY:
@@ -3607,24 +3600,10 @@ safety_comment! {
     unsafe_impl!(char: NoCell, FromZeros, IntoBytes);
     /// SAFETY:
     /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
-    ///   closure:
-    ///   - Given `t: *mut char` and `let r = *mut u32`, `r` refers to an object
-    ///     of the same size as that referred to by `t`. This is true because
-    ///     `char` and `u32` have the same size [1]. Neither `r` nor `t` contain
-    ///     `UnsafeCell`s because neither `char` nor `u32` do [4].
-    ///   - Since the closure takes a `&u32` argument, given a `Maybe<'a,
-    ///     char>` which satisfies the preconditions of
-    ///     `TryFromBytes::<char>::is_bit_valid`, it must be guaranteed that the
-    ///     memory referenced by that `MaybeValid` always contains a valid
-    ///     `u32`. Since `char`'s bytes are always initialized [2],
-    ///     `is_bit_valid`'s precondition requires that the same is true of its
-    ///     argument. Since `u32`'s only bit validity invariant is that its
-    ///     bytes must be initialized, this memory is guaranteed to contain a
-    ///     valid `u32`.
-    ///   - The impl must only return `true` for its argument if the original
-    ///     `Maybe<char>` refers to a valid `char`. `char::from_u32`
-    ///     guarantees that it returns `None` if its input is not a valid
-    ///     `char`. [3]
+    ///   closure: The impl must only return `true` for its argument if the
+    ///   original `Maybe<char>` refers to a valid `char`. `char::from_u32`
+    ///   guarantees that it returns `None` if its input is not a valid `char`.
+    ///   [3]
     ///
     /// [1] Per https://doc.rust-lang.org/nightly/reference/types/textual.html#layout-and-bit-validity:
     ///
@@ -3641,9 +3620,12 @@ safety_comment! {
     ///   a `char`.
     ///
     /// [4] TODO(#429): Justify this claim.
-    unsafe_impl!(char: TryFromBytes; |candidate: MaybeAligned<u32>| {
-        let candidate = candidate.read_unaligned();
-        char::from_u32(candidate).is_some()
+    unsafe_impl!(char: TryFromBytes; |c| {
+        let c = c.transparent_wrapper_into_inner();
+        // SAFETY: TODO
+        let c = unsafe { c.assume_valid() };
+        let c = c.read_unaligned();
+        char::from_u32(c).is_some()
     });
 }
 safety_comment! {
@@ -3665,25 +3647,10 @@ safety_comment! {
     unsafe_impl!(str: NoCell, FromZeros, IntoBytes, Unaligned);
     /// SAFETY:
     /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
-    ///   closure:
-    ///   - Given `t: *mut str` and `let r = *mut [u8]`, `r` refers to an object
-    ///     of the same size as that referred to by `t`. This is true because
-    ///     `str` and `[u8]` have the same representation. [1] Neither `t` nor
-    ///     `r` contain `UnsafeCell`s because `[u8]` doesn't, and both `t` and
-    ///     `r` have that representation.
-    ///   - Since the closure takes a `&[u8]` argument, given a `Maybe<'a,
-    ///     str>` which satisfies the preconditions of
-    ///     `TryFromBytes::<str>::is_bit_valid`, it must be guaranteed that the
-    ///     memory referenced by that `MaybeValid` always contains a valid
-    ///     `[u8]`. Since `str`'s bytes are always initialized [1],
-    ///     `is_bit_valid`'s precondition requires that the same is true of its
-    ///     argument. Since `[u8]`'s only bit validity invariant is that its
-    ///     bytes must be initialized, this memory is guaranteed to contain a
-    ///     valid `[u8]`.
-    ///   - The impl must only return `true` for its argument if the original
-    ///     `Maybe<str>` refers to a valid `str`. `str::from_utf8`
-    ///     guarantees that it returns `Err` if its input is not a valid `str`.
-    ///     [2]
+    ///   closure: The impl must only return `true` for its argument if the
+    ///   original `Maybe<str>` refers to a valid `str`. `str::from_utf8`
+    ///   guarantees that it returns `Err` if its input is not a valid `str`.
+    ///   [2]
     ///
     /// [1] Per https://doc.rust-lang.org/reference/types/textual.html:
     ///
@@ -3692,9 +3659,12 @@ safety_comment! {
     /// [2] Per https://doc.rust-lang.org/core/str/fn.from_utf8.html#errors:
     ///
     ///   Returns `Err` if the slice is not UTF-8.
-    unsafe_impl!(str: TryFromBytes; |candidate: MaybeAligned<[u8]>| {
-        let candidate = candidate.unaligned_as_ref();
-        core::str::from_utf8(candidate).is_ok()
+    unsafe_impl!(str: TryFromBytes; |c| {
+        let c = c.transparent_wrapper_into_inner();
+        // SAFETY: TODO
+        let c = unsafe { c.assume_valid() };
+        let c = c.unaligned_as_ref();
+        core::str::from_utf8(c).is_ok()
     });
 }
 
@@ -3715,7 +3685,7 @@ macro_rules! impl_traits_for_nonzeros {
             unsafe_impl!($nonzeros: IntoBytes);
             impl_for_transparent_wrapper!(NoCell for $nonzeros [$natives]);
             // SAFETY: TODO
-            unsafe_impl!($nonzeros: TryFromBytes; |n: MaybeAligned<Self>| {
+            unsafe_impl!($nonzeros: TryFromBytes; |n| {
                 let n = n.transparent_wrapper_into_inner();
                 // SAFETY: TODO
                 let n = unsafe { n.assume_valid() };
@@ -3815,7 +3785,7 @@ safety_comment! {
     unsafe_impl!(
         #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
         T => TryFromBytes for Option<Box<T>>;
-        |c: Maybe<Option<Box<T>>>| pointer::is_zeroed(c)
+        |c| pointer::is_zeroed(c)
     );
     #[cfg(feature = "alloc")]
     unsafe_impl!(
@@ -3824,28 +3794,28 @@ safety_comment! {
     );
     unsafe_impl!(
         T => TryFromBytes for Option<&'_ T>;
-        |c: Maybe<Option<&'_ T>>| pointer::is_zeroed(c)
+        |c| pointer::is_zeroed(c)
     );
     unsafe_impl!(T => FromZeros for Option<&'_ T>);
     unsafe_impl!(
             T => TryFromBytes for Option<&'_ mut T>;
-            |c: Maybe<Option<&'_ mut T>>| pointer::is_zeroed(c)
+            |c| pointer::is_zeroed(c)
     );
     unsafe_impl!(T => FromZeros for Option<&'_ mut T>);
     unsafe_impl!(
         T => TryFromBytes for Option<NonNull<T>>;
-        |c: Maybe<Option<NonNull<T>>>| pointer::is_zeroed(c)
+        |c| pointer::is_zeroed(c)
     );
     unsafe_impl!(T => FromZeros for Option<NonNull<T>>);
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_fn!(...));
     unsafe_impl_for_power_set!(
         A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_fn!(...);
-        |c: Maybe<Self>| pointer::is_zeroed(c)
+        |c| pointer::is_zeroed(c)
     );
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_extern_c_fn!(...));
     unsafe_impl_for_power_set!(
         A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_extern_c_fn!(...);
-        |c: Maybe<Self>| pointer::is_zeroed(c)
+        |c| pointer::is_zeroed(c)
     );
 }
 
@@ -4003,9 +3973,7 @@ unsafe impl<T: TryFromBytes> TryFromBytes for UnsafeCell<T> {
         //
         //   MaybeUninit<T> is guaranteed to have the same size, alignment, and
         //   ABI as T.
-        let c = unsafe {
-            c.cast_unsized(|c: *mut UnsafeCell<T>| c.cast::<UnsafeCell<Unalign<MaybeUninit<T>>>>())
-        };
+        let c = unsafe { ptr_cast_unsized!(c => UnsafeCell<Unalign<MaybeUninit<T>>>) };
         // SAFETY: `MaybeUninit` has no validity requirements.
         let c = unsafe { c.assume_valid() };
         let c = c.bikeshed_recall_aligned();
@@ -4062,7 +4030,7 @@ safety_comment! {
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#array-layout
     unsafe_impl!(const N: usize, T: NoCell => NoCell for [T; N]);
-    unsafe_impl!(const N: usize, T: TryFromBytes => TryFromBytes for [T; N]; |c: Maybe<[T; N]>| {
+    unsafe_impl!(const N: usize, T: TryFromBytes => TryFromBytes for [T; N]; |c| {
         // Note that this call may panic, but it would still be sound even if it
         // did. `is_bit_valid` does not promise that it will not panic (in fact,
         // it explicitly warns that it's a possibility), and we have not
@@ -4075,7 +4043,7 @@ safety_comment! {
     unsafe_impl!(const N: usize, T: Unaligned => Unaligned for [T; N]);
     assert_unaligned!([(); 0], [(); 1], [u8; 0], [u8; 1]);
     unsafe_impl!(T: NoCell => NoCell for [T]);
-    unsafe_impl!(T: TryFromBytes => TryFromBytes for [T]; |c: Maybe<[T]>| {
+    unsafe_impl!(T: TryFromBytes => TryFromBytes for [T]; |c| {
         // SAFETY: Per the reference [1]:
         //
         //   An array of `[T; N]` has a size of `size_of::<T>() * N` and the
@@ -4122,11 +4090,11 @@ safety_comment! {
     /// documentation once this PR lands.
     unsafe_impl!(T: ?Sized => NoCell for *const T);
     unsafe_impl!(T: ?Sized => NoCell for *mut T);
-    unsafe_impl!(T => TryFromBytes for *const T; |c: Maybe<*const T>| {
+    unsafe_impl!(T => TryFromBytes for *const T; |c| {
         pointer::is_zeroed(c)
     });
     unsafe_impl!(T => FromZeros for *const T);
-    unsafe_impl!(T => TryFromBytes for *mut T; |c: Maybe<*const T>| {
+    unsafe_impl!(T => TryFromBytes for *mut T; |c| {
         pointer::is_zeroed(c)
     });
     unsafe_impl!(T => FromZeros for *mut T);

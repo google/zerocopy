@@ -8,6 +8,7 @@
 
 //! Abstractions over raw pointers.
 
+#[macro_use]
 mod ptr;
 
 pub use ptr::{invariant, Ptr};
