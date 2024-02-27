@@ -192,6 +192,13 @@ macro_rules! impl_ops_traits {
     ($name:ident, $native:ident, "floating point number") => {
         impl_ops_traits!($name, $native, @all_types);
         impl_ops_traits!($name, $native, @signed_integer_floating_point);
+
+        impl<O: ByteOrder> PartialOrd for $name<O> {
+            #[inline(always)]
+            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+                self.get().partial_cmp(&other.get())
+            }
+        }
     };
     ($name:ident, $native:ident, "unsigned integer") => {
         impl_ops_traits!($name, $native, @signed_unsigned_integer);
@@ -216,6 +223,20 @@ macro_rules! impl_ops_traits {
             fn not(self) -> $name<O> {
                  let self_native = $native::from_ne_bytes(self.0);
                  $name((!self_native).to_ne_bytes(), PhantomData)
+            }
+        }
+
+        impl<O: ByteOrder> PartialOrd for $name<O> {
+            #[inline(always)]
+            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+                Some(self.cmp(other))
+            }
+        }
+
+        impl<O: ByteOrder> Ord for $name<O> {
+            #[inline(always)]
+            fn cmp(&self, other: &Self) -> Ordering {
+                self.get().cmp(&other.get())
             }
         }
     };
