@@ -1667,6 +1667,8 @@ pub unsafe trait FromZeros {
 /// Deprecated: prefer [`FromZeros`] instead.
 #[deprecated(since = "0.8.0", note = "`FromZeroes` was renamed to `FromZeros`")]
 #[doc(hidden)]
+// See #960 for why we do this.
+#[cfg(not(__INTERNAL_USE_ONLY_DISABLE_DEPRECATED_TRAIT_ALIASES))]
 pub use FromZeros as FromZeroes;
 
 /// Analyzes whether a type is [`FromBytes`].
@@ -3042,6 +3044,8 @@ pub unsafe trait IntoBytes {
 /// Deprecated: prefer [`IntoBytes`] instead.
 #[deprecated(since = "0.8.0", note = "`AsBytes` was renamed to `IntoBytes`")]
 #[doc(hidden)]
+// See #960 for why we do this.
+#[cfg(not(__INTERNAL_USE_ONLY_DISABLE_DEPRECATED_TRAIT_ALIASES))]
 pub use IntoBytes as AsBytes;
 
 /// Types with no alignment requirement.

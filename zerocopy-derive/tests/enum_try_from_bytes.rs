@@ -57,11 +57,11 @@ util_assert_impl_all!(Baz: imp::TryFromBytes);
 #[test]
 fn test_baz() {
     imp::assert_eq!(
-        <Baz as imp::TryFromBytes>::try_read_from(imp::AsBytes::as_bytes(&1u32)),
+        <Baz as imp::TryFromBytes>::try_read_from(imp::IntoBytes::as_bytes(&1u32)),
         imp::Some(Baz::A)
     );
     imp::assert_eq!(
-        <Baz as imp::TryFromBytes>::try_read_from(imp::AsBytes::as_bytes(&0u32)),
+        <Baz as imp::TryFromBytes>::try_read_from(imp::IntoBytes::as_bytes(&0u32)),
         imp::Some(Baz::B)
     );
     imp::assert_eq!(<Baz as imp::TryFromBytes>::try_read_from(&[]), imp::None);
@@ -91,19 +91,19 @@ util_assert_impl_all!(Blah: imp::TryFromBytes);
 #[test]
 fn test_blah() {
     imp::assert_eq!(
-        <Blah as imp::TryFromBytes>::try_read_from(imp::AsBytes::as_bytes(&1i8)),
+        <Blah as imp::TryFromBytes>::try_read_from(imp::IntoBytes::as_bytes(&1i8)),
         imp::Some(Blah::A)
     );
     imp::assert_eq!(
-        <Blah as imp::TryFromBytes>::try_read_from(imp::AsBytes::as_bytes(&0i8)),
+        <Blah as imp::TryFromBytes>::try_read_from(imp::IntoBytes::as_bytes(&0i8)),
         imp::Some(Blah::B)
     );
     imp::assert_eq!(
-        <Blah as imp::TryFromBytes>::try_read_from(imp::AsBytes::as_bytes(&3i8)),
+        <Blah as imp::TryFromBytes>::try_read_from(imp::IntoBytes::as_bytes(&3i8)),
         imp::Some(Blah::C)
     );
     imp::assert_eq!(
-        <Blah as imp::TryFromBytes>::try_read_from(imp::AsBytes::as_bytes(&6i8)),
+        <Blah as imp::TryFromBytes>::try_read_from(imp::IntoBytes::as_bytes(&6i8)),
         imp::Some(Blah::D)
     );
     imp::assert_eq!(<Blah as imp::TryFromBytes>::try_read_from(&[]), imp::None);

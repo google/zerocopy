@@ -26,13 +26,13 @@ note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotZerocopy: FromZeroes` is not satisfied
+error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
   --> tests/ui-stable/derive_transparent.rs:35:23
    |
 35 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
-   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromZeroes` is not implemented for `NotZerocopy`
+   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromZeros` is not implemented for `NotZerocopy`
    |
-   = help: the following other types implement trait `FromZeroes`:
+   = help: the following other types implement trait `FromZeros`:
              bool
              char
              isize
@@ -42,7 +42,7 @@ error[E0277]: the trait bound `NotZerocopy: FromZeroes` is not satisfied
              i64
              i128
            and $N others
-note: required for `TransparentStruct<NotZerocopy>` to implement `FromZeroes`
+note: required for `TransparentStruct<NotZerocopy>` to implement `FromZeros`
   --> tests/ui-stable/derive_transparent.rs:24:21
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
@@ -82,13 +82,13 @@ note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotZerocopy: AsBytes` is not satisfied
+error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfied
   --> tests/ui-stable/derive_transparent.rs:37:23
    |
 37 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: IntoBytes);
-   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `AsBytes` is not implemented for `NotZerocopy`
+   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy`
    |
-   = help: the following other types implement trait `AsBytes`:
+   = help: the following other types implement trait `zerocopy::IntoBytes`:
              bool
              char
              isize
@@ -98,7 +98,7 @@ error[E0277]: the trait bound `NotZerocopy: AsBytes` is not satisfied
              i64
              i128
            and $N others
-note: required for `TransparentStruct<NotZerocopy>` to implement `AsBytes`
+note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::IntoBytes`
   --> tests/ui-stable/derive_transparent.rs:24:10
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
