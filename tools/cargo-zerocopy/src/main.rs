@@ -201,10 +201,12 @@ fn install_toolchain_or_exit(versions: &Versions, name: &str) -> Result<(), Erro
 }
 
 fn get_rustflags(name: &str) -> &'static str {
+    // See #960 for an explanation of why we emit --cfg
+    // __INTERNAL_USE_ONLY_DISABLE_DEPRECATED_TRAIT_ALIASES.
     if name == "nightly" {
-        "--cfg __INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS "
+        "--cfg __INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS --cfg __INTERNAL_USE_ONLY_DISABLE_DEPRECATED_TRAIT_ALIASES "
     } else {
-        ""
+        "--cfg __INTERNAL_USE_ONLY_DISABLE_DEPRECATED_TRAIT_ALIASES "
     }
 }
 
