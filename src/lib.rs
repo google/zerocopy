@@ -1337,7 +1337,8 @@ pub unsafe trait TryFromBytes {
         Self: Sized + NoCell, // TODO(#251): Remove the `NoCell` bound.
     {
         let candidate = MaybeUninit::<Self>::read_from(bytes)?;
-        let c_ptr = Ptr::from_maybe_uninit_ref(&candidate);
+        let c_ptr = Ptr::from_ref(&candidate);
+        let c_ptr = c_ptr.transparent_wrapper_into_inner();
         // SAFETY: `c_ptr` has no uninitialized sub-ranges because it derived
         // from `candidate`, which in turn derives from `bytes: &[u8]`.
         let c_ptr = unsafe { c_ptr.assume_validity::<invariant::Initialized>() };
@@ -3649,33 +3650,7 @@ safety_comment! {
     unsafe_impl!(
         T: ?Sized + TryFromBytes => TryFromBytes for ManuallyDrop<T>;
         |candidate: Maybe<ManuallyDrop<T>>| {
-            // SAFETY:
-            // - Since `ManuallyDrop<T>` has the same layout as `T` [1], this
-            //   cast preserves size.
-            // - This is implemented as a raw pointer cast as required by
-            //   `cast_unsized`.
-            // - `T` and `ManuallyDrop<T>` have `UnsafeCell`s at the same byte
-            //   ranges [2].
-            //
-            //
-            // [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
-            //
-            //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
-            //   validity as `T`.
-            //
-            // [2] TODO(#896): Write safety proof before next stable release.
-            #[allow(clippy::as_conversions)]
-            let c = unsafe { candidate.cast_unsized(|p: *mut ManuallyDrop<T>| p as *mut T) };
-
-            // SAFETY: Since the original `candidate` had the validity
-            // `Initialized`, and since `c` refers to the same bytes, `c` does
-            // too.
-            let c = unsafe { c.assume_validity::<invariant::Initialized>() };
-            // Confirm that `Maybe` is a type alias for `Ptr` with the validity
-            // invariant `Initialized`. Our safety proof depends upon this
-            // invariant, and it might change at some point. If that happens, we
-            // want this function to stop compiling.
-            let _: Ptr<'_, ManuallyDrop<T>, (_, _, invariant::Initialized)> = candidate;
+            let c = candidate.transparent_wrapper_into_inner();
 
             // SAFETY: Since `ManuallyDrop<T>` has the same bit validity as `T`
             // [1], it is bit-valid exactly if its bytes are a bit-valid `T`.
@@ -3771,19 +3746,8 @@ unsafe impl<T: TryFromBytes> TryFromBytes for UnsafeCell<T> {
         let c: &mut Unalign<MaybeUninit<T>> = c.as_mut().get_mut();
         // This converts from an aligned `Unalign<MaybeUninit<T>>` pointer to an
         // unaligned `MaybeUninit<T>` pointer.
-        let c: Ptr<'_, MaybeUninit<T>, _> = Ptr::from_mut(c).into_inner();
-
-        // SAFETY: `MaybeUninit<T>` has the same size as `T` [1]. Thus, this
-        // cast will preserve the size of the pointer. `MaybeUninit<T>` has
-        // `UnsafeCell`s at the same byte ranges as `T` [2].
-        //
-        // [1] Per https://doc.rust-lang.org/stable/core/mem/union.MaybeUninit.html#layout-1:
-        //
-        //   MaybeUninit<T> is guaranteed to have the same size, alignment, and
-        //   ABI as T.
-        //
-        // [2] TODO(#896): Write safety proof before next stable release.
-        let c: Ptr<'_, T, _> = unsafe { c.cast_unsized(|c: *mut MaybeUninit<T>| c.cast::<T>()) };
+        let c: Ptr<'_, MaybeUninit<T>, _> = Ptr::from_mut(c).transparent_wrapper_into_inner();
+        let c: Ptr<'_, T, _> = c.transparent_wrapper_into_inner();
 
         // SAFETY: The original `candidate` argument has `Initialized` validity.
         // None of the subsequent operations modify the memory itself, and so

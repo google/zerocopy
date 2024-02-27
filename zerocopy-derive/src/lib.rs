@@ -527,7 +527,7 @@ fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2:
                 Self,
                 (
                     A,
-                    ::zerocopy::pointer::invariant::AnyAlignment,
+                    ::zerocopy::pointer::invariant::Any,
                     ::zerocopy::pointer::invariant::Initialized,
                 ),
             >,

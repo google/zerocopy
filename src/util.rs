@@ -6,7 +6,259 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use core::{mem, num::NonZeroUsize};
+use core::{
+    mem::{self, ManuallyDrop, MaybeUninit},
+    num::{NonZeroUsize, Wrapping},
+};
+
+use crate::{
+    pointer::invariant::{self, Invariants},
+    Unalign,
+};
+
+/// A type which has the same layout as the type it wraps.
+///
+/// # Safety
+///
+/// `T: TransparentWrapper` implies that `T` has the same size and field offsets
+/// as [`T::Inner`]. Note that this implies that `T` has [`UnsafeCell`]s
+/// covering the same byte ranges as `T::Inner`.
+///
+/// Further, `T: TransparentWrapper<I>` implies that:
+/// - If a `T` pointer satisfies the alignment invariant `I::Alignment`, then
+///   that same pointer, cast to `T::Inner`, satisfies the alignment invariant
+///   `<T::AlignmentVariance as AlignmentVariance<I::Alignment>>::Applied`.
+/// - If a `T` pointer satisfies the validity invariant `I::Validity`, then that
+///   same pointer, cast to `T::Inner`, satisfies the validity invariant
+///   `<T::ValidityVariance as ValidityVariance<I::Validity>>::Applied`.
+///
+/// [`T::Inner`]: TransparentWrapper::Inner
+/// [`UnsafeCell`]: core::cell::UnsafeCell
+/// [`T::AlignmentVariance`]: TransparentWrapper::AlignmentVariance
+/// [`T::ValidityVariance`]: TransparentWrapper::ValidityVariance
+#[doc(hidden)]
+pub unsafe trait TransparentWrapper<I: Invariants> {
+    type Inner: ?Sized;
+
+    type AlignmentVariance: AlignmentVariance<I::Alignment>;
+    type ValidityVariance: ValidityVariance<I::Validity>;
+
+    /// Casts a wrapper pointer to an inner pointer.
+    ///
+    /// # Safety
+    ///
+    /// The resulting pointer has the same address and provenance as `ptr`, and
+    /// addresses the same number of bytes.
+    fn cast_into_inner(ptr: *mut Self) -> *mut Self::Inner;
+
+    /// Casts an inner pointer to a wrapper pointer.
+    ///
+    /// # Safety
+    ///
+    /// The resulting pointer has the same address and provenance as `ptr`, and
+    /// addresses the same number of bytes.
+    fn cast_from_inner(ptr: *mut Self::Inner) -> *mut Self;
+}
+
+#[allow(unreachable_pub)]
+#[doc(hidden)]
+pub trait AlignmentVariance<I: invariant::Alignment> {
+    type Applied: invariant::Alignment;
+}
+
+#[allow(unreachable_pub)]
+#[doc(hidden)]
+pub trait ValidityVariance<I: invariant::Validity> {
+    type Applied: invariant::Validity;
+}
+
+#[doc(hidden)]
+#[allow(missing_copy_implementations, missing_debug_implementations)]
+pub enum Covariant {}
+
+impl<I: invariant::Alignment> AlignmentVariance<I> for Covariant {
+    type Applied = I;
+}
+
+impl<I: invariant::Validity> ValidityVariance<I> for Covariant {
+    type Applied = I;
+}
+
+#[doc(hidden)]
+#[allow(missing_copy_implementations, missing_debug_implementations)]
+pub enum Invariant {}
+
+impl<I: invariant::Alignment> AlignmentVariance<I> for Invariant {
+    type Applied = invariant::Any;
+}
+
+impl<I: invariant::Validity> ValidityVariance<I> for Invariant {
+    type Applied = invariant::Any;
+}
+
+// SAFETY:
+// - Per [1], `MaybeUninit<T>` has the same layout as `Inner = T`.
+// - Per [2], `MaybeUninit<T>` has `UnsafeCell`s at the same byte ranges as
+//   `Inner = T`.
+// - See inline comments for other safety justifications.
+//
+// [1] Per https://doc.rust-lang.org/std/mem/union.MaybeUninit.html#layout-1:
+//
+//   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and ABI as
+//   `T`.
+//
+// [2] TODO(#896): Write a safety proof before the next stable release.
+unsafe impl<T, I: Invariants> TransparentWrapper<I> for MaybeUninit<T> {
+    type Inner = T;
+
+    // SAFETY: Per [1] (from comment above), `MaybeUninit<T>` has the same
+    // layout as `T`, and thus has the same alignment as `T`.
+    type AlignmentVariance = Covariant;
+    // SAFETY: `MaybeUninit` has no validity invariants. Thus, a valid
+    // `MaybeUninit<T>` is not necessarily a valid `T`.
+    type ValidityVariance = Invariant;
+
+    fn cast_into_inner(ptr: *mut MaybeUninit<T>) -> *mut T {
+        // SAFETY: Per [1] (from comment above), `MaybeUninit<T>` has the same
+        // layout as `T`. Thus, this cast preserves size.
+        //
+        // This cast trivially preserves provenance.
+        ptr.cast::<T>()
+    }
+
+    fn cast_from_inner(ptr: *mut T) -> *mut MaybeUninit<T> {
+        // SAFETY: Per [1] (from comment above), `MaybeUninit<T>` has the same
+        // layout as `T`. Thus, this cast preserves size.
+        //
+        // This cast trivially preserves provenance.
+        ptr.cast::<MaybeUninit<T>>()
+    }
+}
+
+// SAFETY:
+// - Per [1], `ManuallyDrop<T>` has the same layout as `Inner = T`.
+// - Per [2], `ManuallyDrop<T>` has `UnsafeCell`s at the same byte ranges as
+//   `Inner = T`.
+// - See inline comments for other safety justifications.
+//
+// [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
+//
+//   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
+//   `T`
+//
+// [2] TODO(#896): Write a safety proof before the next stable release.
+unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for ManuallyDrop<T> {
+    type Inner = T;
+
+    // SAFETY: Per [1] (from comment above), `ManuallyDrop<T>` has the same
+    // layout as `T`, and thus has the same alignment as `T`.
+    type AlignmentVariance = Covariant;
+
+    // SAFETY: Per [1] (from comment above), `ManuallyDrop<T>` has the same bit
+    // validity as `T`.
+    type ValidityVariance = Covariant;
+
+    fn cast_into_inner(ptr: *mut ManuallyDrop<T>) -> *mut T {
+        // SAFETY: Per [1] (from comment above), `ManuallyDrop<T>` has the same
+        // layout as `T`. Thus, this cast preserves size even if `T` is unsized.
+        //
+        // This cast trivially preserves provenance.
+        #[allow(clippy::as_conversions)]
+        return ptr as *mut T;
+    }
+
+    fn cast_from_inner(ptr: *mut T) -> *mut ManuallyDrop<T> {
+        // SAFETY: Per [1] (from comment above), `ManuallyDrop<T>` has the same
+        // layout as `T`. Thus, this cast preserves size even if `T` is unsized.
+        //
+        // This cast trivially preserves provenance.
+        #[allow(clippy::as_conversions)]
+        return ptr as *mut ManuallyDrop<T>;
+    }
+}
+
+// SAFETY:
+// - Per [1], `Wrapping<T>` has the same layout as `Inner = T`.
+// - Per [2], `Wrapping<T>` has `UnsafeCell`s at the same byte ranges as `Inner
+//   = T`.
+// - See inline comments for other safety justifications.
+//
+// [1] Per https://doc.rust-lang.org/core/num/struct.Wrapping.html#layout-1:
+//
+//   `Wrapping<T>` is guaranteed to have the same layout and ABI as `T`.
+//
+// [2] TODO(#896): Write a safety proof before the next stable release.
+unsafe impl<T, I: Invariants> TransparentWrapper<I> for Wrapping<T> {
+    type Inner = T;
+
+    // SAFETY: Per [1] (from comment above), `Wrapping<T>` has the same layout
+    // as `T`, and thus has the same alignment as `T`.
+    type AlignmentVariance = Covariant;
+
+    // SAFETY: `Wrapping<T>` has only one field, which is `pub` [2]. We are also
+    // guaranteed per [1] (from the comment above) that `Wrapping<T>` has the
+    // same layout as `T`. The only way for both of these to be true
+    // simultaneously is for `Wrapping<T>` to have the same bit validity as `T`.
+    // In particular, in order to change the bit validity, one of the following
+    // would need to happen:
+    // - `Wrapping` could change its `repr`, but this would violate the layout
+    //   guarantee.
+    // - `Wrapping` could add or change its fields, but this would be a
+    //   stability-breaking change.
+    //
+    // [2] https://doc.rust-lang.org/core/num/struct.Wrapping.html
+    type ValidityVariance = Covariant;
+
+    fn cast_into_inner(ptr: *mut Wrapping<T>) -> *mut T {
+        // SAFETY: Per [1] (from comment above), `Wrapping<T>` has the same
+        // layout as `T`. Thus, this cast preserves size.
+        //
+        // This cast trivially preserves provenance.
+        ptr.cast::<T>()
+    }
+
+    fn cast_from_inner(ptr: *mut T) -> *mut Wrapping<T> {
+        // SAFETY: Per [1] (from comment above), `Wrapping<T>` has the same
+        // layout as `T`. Thus, this cast preserves size.
+        //
+        // This cast trivially preserves provenance.
+        ptr.cast::<Wrapping<T>>()
+    }
+}
+
+// SAFETY: We define `Unalign<T>` to be a `#[repr(C, packed)]` type wrapping a
+// single `T` field. Thus, `Unalign<T>` has the same size and field offsets as
+// `T`, and has `UnsafeCell`s at the same byte ranges as `T`.
+//
+// See inline comments for other safety justifications.
+unsafe impl<T, I: Invariants> TransparentWrapper<I> for Unalign<T> {
+    type Inner = T;
+
+    // SAFETY: Since `Unalign<T>` is `repr(packed)`, it has the alignment 1
+    // regardless of `T`'s alignment. Thus, an aligned pointer to `Unalign<T>`
+    // is not necessarily an aligned pointer to `T`.
+    type AlignmentVariance = Invariant;
+
+    // SAFETY: `Unalign<T>` is a `#[repr(C, packed)]` type wrapping a single `T`
+    // field, and so has the same validity as `T`.
+    type ValidityVariance = Covariant;
+
+    fn cast_into_inner(ptr: *mut Unalign<T>) -> *mut T {
+        // SAFETY: Per the comment above, `Unalign<T>` has the same layout as
+        // `T`. Thus, this cast preserves size.
+        //
+        // This cast trivially preserves provenance.
+        ptr.cast::<T>()
+    }
+
+    fn cast_from_inner(ptr: *mut T) -> *mut Unalign<T> {
+        // SAFETY: Per the comment above, `Unalign<T>` has the same layout as
+        // `T`. Thus, this cast preserves size.
+        //
+        // This cast trivially preserves provenance.
+        ptr.cast::<Unalign<T>>()
+    }
+}
 
 pub(crate) trait AsAddress {
     fn addr(self) -> usize;
