@@ -129,6 +129,7 @@ macro_rules! unsafe_impl {
         => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         $(#[$attr])*
+        #[allow(non_local_definitions)]
         unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),* $(, const $constname: $constty,)*> $trait for $ty {
             unsafe_impl!(@method $trait $(; |$candidate: $(MaybeAligned<$ref_repr>)? $(Maybe<$ptr_repr>)?| $is_bit_valid)?);
         }
@@ -397,6 +398,7 @@ macro_rules! unsafe_impl_known_layout {
         const _: () = {
             use core::ptr::NonNull;
 
+            #[allow(non_local_definitions)]
             unsafe impl<$($tyvar: ?Sized + KnownLayout)?> KnownLayout for $ty {
                 #[allow(clippy::missing_inline_in_public_items)]
                 fn only_derive_is_allowed_to_implement_this_trait() {}

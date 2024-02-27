@@ -6,6 +6,8 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
+set -eo pipefail
+
 # Build `cargo-zerocopy` without any RUSTFLAGS set in the environment
 env -u RUSTFLAGS cargo +stable build --manifest-path tools/Cargo.toml -p cargo-zerocopy -q
 # Thin wrapper around the `cargo-zerocopy` binary in `tools/cargo-zerocopy`

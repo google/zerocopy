@@ -27,7 +27,7 @@
 use std::{
     env, fmt,
     io::{self, Read as _},
-    process::{self, Command},
+    process::{self, Command, Output},
 };
 
 use serde_json::{Map, Value};
@@ -52,6 +52,45 @@ impl fmt::Display for Error {
 }
 
 impl std::error::Error for Error {}
+
+trait CommandExt {
+    fn output_or_exit(&mut self) -> Output;
+    fn execute(&mut self);
+}
+
+impl CommandExt for Command {
+    fn output_or_exit(&mut self) -> Output {
+        if let Ok(output) = self.output() {
+            if !output.status.success() {
+                eprintln!(
+                    "[cargo-zerocopy] failed while capturing output from command: {:?}",
+                    self
+                );
+                let stdout = std::str::from_utf8(&output.stdout).unwrap();
+                let stderr = std::str::from_utf8(&output.stderr).unwrap();
+                eprintln!("[cargo-zerocopy] stdout: {stdout}");
+                eprintln!("[cargo-zerocopy] stderr: {stderr}");
+                process::exit(output.status.code().unwrap_or(1));
+            }
+            output
+        } else {
+            eprintln!("[cargo-zerocopy] failed to run command: {:?}", self);
+            process::exit(1);
+        }
+    }
+
+    fn execute(&mut self) {
+        if let Ok(status) = self.status() {
+            if !status.success() {
+                eprintln!("[cargo-zerocopy] failed while executing command: {:?}", self);
+                process::exit(status.code().unwrap_or(1));
+            }
+        } else {
+            eprintln!("[cargo-zerocopy] failed to run command: {:?}", self);
+            process::exit(1);
+        }
+    }
+}
 
 struct Versions {
     msrv: String,
@@ -97,8 +136,7 @@ fn get_toolchain_versions() -> Versions {
         Some(("CARGO_TARGET_DIR", "target/cargo-zerocopy")),
     )
     .env_remove("RUSTFLAGS")
-    .output()
-    .unwrap();
+    .output_or_exit();
 
     let json = serde_json::from_slice::<Value>(&output.stdout).unwrap();
     let packages = json.as_object().unwrap().get("packages").unwrap();
@@ -129,7 +167,7 @@ fn is_toolchain_installed(versions: &Versions, name: &str) -> Result<bool, Error
     let version = versions.get(name)?;
     let output = rustup(["run", version, "cargo", "version"], None).output().unwrap();
     if output.status.success() {
-        let output = rustup([&format!("+{version}"), "component", "list"], None).output().unwrap();
+        let output = rustup([&format!("+{version}"), "component", "list"], None).output_or_exit();
         let stdout = String::from_utf8(output.stdout).unwrap();
         Ok(stdout.contains("rust-src (installed)"))
     } else {
@@ -157,7 +195,7 @@ fn install_toolchain_or_exit(versions: &Versions, name: &str) -> Result<(), Erro
     }
 
     let version = versions.get(name)?;
-    rustup(["toolchain", "install", &version, "-c", "rust-src"], None).status().unwrap();
+    rustup(["toolchain", "install", &version, "-c", "rust-src"], None).execute();
 
     Ok(())
 }
@@ -203,8 +241,7 @@ fn delegate_cargo() -> Result<(), Error> {
                 Command::new(this.clone())
                     .arg(format!("+{toolchain}"))
                     .args(args.clone())
-                    .status()
-                    .unwrap();
+                    .execute();
             }
             Ok(())
         }
@@ -224,8 +261,7 @@ fn delegate_cargo() -> Result<(), Error> {
                 let rustflags = format!("{}{}", get_rustflags(name), env_rustflags);
                 rustup(["run", &version, "cargo"], Some(("RUSTFLAGS", &rustflags)))
                     .args(args)
-                    .status()
-                    .unwrap();
+                    .execute();
 
                 Ok(())
             } else {
