@@ -25,13 +25,13 @@ help: consider restricting type parameter `T`
 26 | impl_or_verify!(T: zerocopy::TryFromBytes => TryFromBytes for Foo<T>);
    |                  ++++++++++++++++++++++++
 
-error[E0277]: the trait bound `T: zerocopy::FromZeros` is not satisfied
+error[E0277]: the trait bound `T: FromZeroes` is not satisfied
   --> tests/ui-nightly/invalid-impls/invalid-impls.rs:27:36
    |
 27 | impl_or_verify!(T => FromZeros for Foo<T>);
-   |                                    ^^^^^^ the trait `zerocopy::FromZeros` is not implemented for `T`, which is required by `Foo<T>: zerocopy::FromZeros`
+   |                                    ^^^^^^ the trait `FromZeroes` is not implemented for `T`, which is required by `Foo<T>: FromZeroes`
    |
-note: required for `Foo<T>` to implement `zerocopy::FromZeros`
+note: required for `Foo<T>` to implement `FromZeroes`
   --> tests/ui-nightly/invalid-impls/invalid-impls.rs:22:10
    |
 22 | #[derive(FromBytes, IntoBytes, Unaligned)]
@@ -79,13 +79,13 @@ help: consider restricting type parameter `T`
 28 | impl_or_verify!(T: zerocopy::FromBytes => FromBytes for Foo<T>);
    |                  +++++++++++++++++++++
 
-error[E0277]: the trait bound `T: zerocopy::IntoBytes` is not satisfied
+error[E0277]: the trait bound `T: AsBytes` is not satisfied
   --> tests/ui-nightly/invalid-impls/invalid-impls.rs:29:36
    |
 29 | impl_or_verify!(T => IntoBytes for Foo<T>);
-   |                                    ^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `T`, which is required by `Foo<T>: zerocopy::IntoBytes`
+   |                                    ^^^^^^ the trait `AsBytes` is not implemented for `T`, which is required by `Foo<T>: AsBytes`
    |
-note: required for `Foo<T>` to implement `zerocopy::IntoBytes`
+note: required for `Foo<T>` to implement `AsBytes`
   --> tests/ui-nightly/invalid-impls/invalid-impls.rs:22:21
    |
 22 | #[derive(FromBytes, IntoBytes, Unaligned)]

@@ -1,13 +1,13 @@
-error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::IntoBytes` is not satisfied
+error[E0277]: the trait bound `NotZerocopy<AU16>: AsBytes` is not satisfied
   --> tests/ui-nightly/transmute-src-not-intobytes.rs:19:32
    |
 19 | const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |                                |
-   |                                the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy<AU16>`
+   |                                the trait `AsBytes` is not implemented for `NotZerocopy<AU16>`
    |                                required by a bound introduced by this call
    |
-   = help: the following other types implement trait `zerocopy::IntoBytes`:
+   = help: the following other types implement trait `AsBytes`:
              bool
              char
              isize
@@ -24,13 +24,13 @@ note: required by a bound in `AssertIsIntoBytes`
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertIsIntoBytes`
    = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::IntoBytes` is not satisfied
+error[E0277]: the trait bound `NotZerocopy<AU16>: AsBytes` is not satisfied
   --> tests/ui-nightly/transmute-src-not-intobytes.rs:19:32
    |
 19 | const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
-   |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy<AU16>`
+   |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `AsBytes` is not implemented for `NotZerocopy<AU16>`
    |
-   = help: the following other types implement trait `zerocopy::IntoBytes`:
+   = help: the following other types implement trait `AsBytes`:
              bool
              char
              isize
