@@ -275,7 +275,6 @@ pub use zerocopy_derive::KnownLayout;
 #[doc(hidden)]
 pub use zerocopy_derive::NoCell;
 
-use crate::pointer::invariant;
 use core::{
     cell::{self, RefMut, UnsafeCell},
     cmp::Ordering,
@@ -291,6 +290,8 @@ use core::{
     ptr::{self, NonNull},
     slice,
 };
+
+use crate::pointer::invariant;
 
 #[cfg(any(feature = "alloc", test))]
 extern crate alloc;
@@ -1330,10 +1331,15 @@ pub unsafe trait TryFromBytes {
     #[doc(hidden)] // TODO(#5): Finalize name before remove this attribute.
     fn try_read_from(bytes: &[u8]) -> Option<Self>
     where
-        Self: Sized + NoCell, // TODO(#251): Remove the `NoCell` bound.
+        Self: Sized,
     {
-        let candidate = MaybeUninit::<Self>::read_from(bytes)?;
-        let c_ptr = Ptr::from_ref(&candidate);
+        // Note that we have to call `is_bit_valid` on an exclusive-aliased
+        // pointer since we don't require `Self: NoCell`. That's why we do `let
+        // mut` and `Ptr::from_mut` here. See the doc comment on `is_bit_valid`
+        // and the implementation of `TryFromBytes` for `UnsafeCell` for more
+        // details.
+        let mut candidate = MaybeUninit::<Self>::read_from(bytes)?;
+        let c_ptr = Ptr::from_mut(&mut candidate);
         let c_ptr = c_ptr.transparent_wrapper_into_inner();
         // SAFETY: `c_ptr` has no uninitialized sub-ranges because it derived
         // from `candidate`, which in turn derives from `bytes: &[u8]`.
@@ -2478,7 +2484,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized,
     {
-        Ref::<_, Unalign<Self>>::new_unaligned(bytes).map(|r| r.read().into_inner())
+        Ref::<_, Unalign<Self>>::new_sized(bytes).map(|r| r.read().into_inner())
     }
 
     /// Reads a copy of `Self` from the prefix of `bytes`.
@@ -2517,8 +2523,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized,
     {
-        Ref::<_, Unalign<Self>>::new_unaligned_from_prefix(bytes)
-            .map(|(r, _)| r.read().into_inner())
+        Ref::<_, Unalign<Self>>::new_sized_from_prefix(bytes).map(|(r, _)| r.read().into_inner())
     }
 
     /// Reads a copy of `Self` from the suffix of `bytes`.
@@ -2551,8 +2556,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized,
     {
-        Ref::<_, Unalign<Self>>::new_unaligned_from_suffix(bytes)
-            .map(|(_, r)| r.read().into_inner())
+        Ref::<_, Unalign<Self>>::new_sized_from_suffix(bytes).map(|(_, r)| r.read().into_inner())
     }
 }
 
@@ -4445,9 +4449,9 @@ macro_rules! include_value {
 ///
 /// ```rust
 /// # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
-/// use zerocopy::{IntoBytes, ByteSlice, ByteSliceMut, FromBytes, FromZeros, NoCell, Ref, Unaligned};
+/// use zerocopy::{IntoBytes, ByteSlice, ByteSliceMut, FromBytes, FromZeros, KnownLayout, NoCell, Ref, Unaligned};
 ///
-/// #[derive(FromBytes, IntoBytes, NoCell, Unaligned)]
+/// #[derive(FromBytes, IntoBytes, KnownLayout, NoCell, Unaligned)]
 /// #[repr(C)]
 /// struct UdpHeader {
 ///     src_port: [u8; 2],
@@ -4525,6 +4529,45 @@ impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
 {
+    fn new_sized(bytes: B) -> Option<Ref<B, T>> {
+        if bytes.len() != mem::size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
+            return None;
+        }
+        // INVARIANTS: We just validated size and alignment.
+        Some(Ref(bytes, PhantomData))
+    }
+
+    fn new_sized_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
+        if bytes.len() < mem::size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
+            return None;
+        }
+        let (bytes, suffix) = bytes.split_at(mem::size_of::<T>());
+        // INVARIANTS: We just validated alignment and that `bytes` is at least
+        // as large as `T`. `bytes.split_at(mem::size_of::<T>())` ensures that
+        // the new `bytes` is exactly the size of `T`.
+        Some((Ref(bytes, PhantomData), suffix))
+    }
+
+    fn new_sized_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
+        let bytes_len = bytes.len();
+        let split_at = bytes_len.checked_sub(mem::size_of::<T>())?;
+        let (prefix, bytes) = bytes.split_at(split_at);
+        if !util::aligned_to::<_, T>(bytes.deref()) {
+            return None;
+        }
+        // INVARIANTS: Since `split_at` is defined as `bytes_len -
+        // size_of::<T>()`, the `bytes` which results from `let (prefix, bytes)
+        // = bytes.split_at(split_at)` has length `size_of::<T>()`. After
+        // constructing `bytes`, we validate that it has the proper alignment.
+        Some((prefix, Ref(bytes, PhantomData)))
+    }
+}
+
+impl<B, T> Ref<B, T>
+where
+    B: ByteSlice,
+    T: KnownLayout + NoCell + ?Sized,
+{
     /// Constructs a new `Ref`.
     ///
     /// `new` verifies that `bytes.len() == size_of::<T>()` and that `bytes` is
@@ -4532,10 +4575,8 @@ where
     /// these checks fail, it returns `None`.
     #[inline]
     pub fn new(bytes: B) -> Option<Ref<B, T>> {
-        if bytes.len() != mem::size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
-            return None;
-        }
-        // INVARIANTS: We just validated size and alignment.
+        let _ = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T>()?;
+        // INVARIANTS: `try_cast_into_no_leftover` validates size and alignment.
         Some(Ref(bytes, PhantomData))
     }
 
@@ -4548,13 +4589,11 @@ where
     /// checks fail, it returns `None`.
     #[inline]
     pub fn new_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
-        if bytes.len() < mem::size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
-            return None;
-        }
-        let (bytes, suffix) = bytes.split_at(mem::size_of::<T>());
-        // INVARIANTS: We just validated alignment and that `bytes` is at least
-        // as large as `T`. `bytes.split_at(mem::size_of::<T>())` ensures that
-        // the new `bytes` is exactly the size of `T`.
+        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
+        let (bytes, suffix) = bytes.split_at(split_at);
+        // INVARIANTS: `try_cast_into` validates size and alignment, and returns
+        // a `split_at` that indicates how many bytes of `bytes` correspond to a
+        // valid `T`.
         Some((Ref(bytes, PhantomData), suffix))
     }
 
@@ -4568,16 +4607,11 @@ where
     /// `None`.
     #[inline]
     pub fn new_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
-        let bytes_len = bytes.len();
-        let split_at = bytes_len.checked_sub(mem::size_of::<T>())?;
+        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
         let (prefix, bytes) = bytes.split_at(split_at);
-        if !util::aligned_to::<_, T>(bytes.deref()) {
-            return None;
-        }
-        // INVARIANTS: Since `split_at` is defined as `bytes_len -
-        // size_of::<T>()`, the `bytes` which results from `let (prefix, bytes)
-        // = bytes.split_at(split_at)` has length `size_of::<T>()`. After
-        // constructing `bytes`, we validate that it has the proper alignment.
+        // INVARIANTS: `try_cast_into` validates size and alignment, and returns
+        // a `split_at` that indicates how many bytes of `bytes` correspond to a
+        // valid `T`.
         Some((prefix, Ref(bytes, PhantomData)))
     }
 }
@@ -4682,6 +4716,7 @@ fn map_suffix_tuple_zeroed<B: ByteSliceMut, T: ?Sized>(
 impl<B, T> Ref<B, T>
 where
     B: ByteSliceMut,
+    T: KnownLayout + NoCell + ?Sized,
 {
     /// Constructs a new `Ref` after zeroing the bytes.
     ///
@@ -4805,7 +4840,7 @@ where
 impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
-    T: Unaligned,
+    T: Unaligned + KnownLayout + NoCell + ?Sized,
 {
     /// Constructs a new `Ref` for a type with no alignment requirement.
     ///
@@ -4899,7 +4934,7 @@ where
 impl<B, T> Ref<B, T>
 where
     B: ByteSliceMut,
-    T: Unaligned,
+    T: Unaligned + KnownLayout + NoCell + ?Sized,
 {
     /// Constructs a new `Ref` for a type with no alignment requirement, zeroing
     /// the bytes.
@@ -8335,9 +8370,7 @@ mod tests {
                 fn test_try_read_from(&self, bytes: &[u8]) -> Option<Option<T>>;
             }
 
-            // TODO(#5): Remove the `NoCell` bound once `try_read_from` no
-            // longer requires that bound.
-            impl<T: TryFromBytes + NoCell> TestTryReadFrom<T> for AutorefWrapper<T> {
+            impl<T: TryFromBytes> TestTryReadFrom<T> for AutorefWrapper<T> {
                 fn test_try_read_from(&self, bytes: &[u8]) -> Option<Option<T>> {
                     Some(T::try_read_from(bytes))
                 }
