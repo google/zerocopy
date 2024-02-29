@@ -86,9 +86,12 @@ jobs:
             cargo "+$VERSION_FOR_CARGO" fix --allow-dirty --tests --package zerocopy $ZEROCOPY_FEATURES || true
             cargo "+$VERSION_FOR_CARGO" fix --allow-dirty --tests --package zerocopy-derive             || true
 
+            # See #960 for an explanation of this `--cfg`.
+            RUSTFLAGS="--cfg __INTERNAL_USE_ONLY_DISABLE_DEPRECATED_TRAIT_ALIASES"
+
             # Update `.stderr` files as needed for the new version.
-            TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package zerocopy $ZEROCOPY_FEATURES
-            TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package zerocopy-derive
+            RUSTFLAGS="$RUSTFLAGS" TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package zerocopy $ZEROCOPY_FEATURES
+            RUSTFLAGS="$RUSTFLAGS" TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package zerocopy-derive
           }
 
           if [ "${{ matrix.toolchain }}" == stable ]; then
