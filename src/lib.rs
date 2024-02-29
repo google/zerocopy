@@ -955,7 +955,7 @@ pub unsafe trait KnownLayout {
 }
 
 // SAFETY: Delegates safety to `DstLayout::for_slice`.
-unsafe impl<T: KnownLayout> KnownLayout for [T] {
+unsafe impl<T> KnownLayout for [T] {
     #[allow(clippy::missing_inline_in_public_items)]
     fn only_derive_is_allowed_to_implement_this_trait()
     where
@@ -4989,7 +4989,7 @@ where
 
 impl<'a, B, T> Ref<B, T>
 where
-    B: 'a + ByteSlice,
+    B: 'a + IntoByteSlice<'a>,
     T: FromBytes + NoCell,
 {
     /// Converts this `Ref` into a reference.
@@ -4997,40 +4997,51 @@ where
     /// `into_ref` consumes the `Ref`, and returns a reference to `T`.
     #[inline(always)]
     pub fn into_ref(self) -> &'a T {
-        assert!(B::INTO_REF_INTO_MUT_ARE_SOUND);
-
-        // SAFETY: According to the safety preconditions on
-        // `ByteSlice::INTO_REF_INTO_MUT_ARE_SOUND`, the preceding assert
-        // ensures that, given `B: 'a`, it is sound to drop `self` and still
-        // access the underlying memory using reads for `'a`.
-        unsafe { self.deref_helper() }
+        let ptr = Ptr::from_ref(self.0.into());
+        // SAFETY: By invariant on `Ref`, `self.0`'s size is equal to
+        // `size_of::<T>()`.
+        let ptr = unsafe { ptr.cast::<T>() };
+        // SAFETY: By invariant on `Ref`, `self.0` is aligned to `T`'s
+        // alignment.
+        let ptr = unsafe { ptr.assume_aligned() };
+        // SAFETY: `ptr` is derived from `self.0.into()`, which is of type
+        // `[u8]`, whose bit validity requires that all of its bytes are
+        // initialized.
+        let ptr = unsafe { ptr.assume_initialized() };
+        let ptr = ptr.bikeshed_recall_valid();
+        ptr.as_ref()
     }
 }
 
 impl<'a, B, T> Ref<B, T>
 where
-    B: 'a + ByteSliceMut,
+    B: 'a + IntoByteSliceMut<'a>,
     T: FromBytes + IntoBytes + NoCell,
 {
     /// Converts this `Ref` into a mutable reference.
     ///
     /// `into_mut` consumes the `Ref`, and returns a mutable reference to `T`.
     #[inline(always)]
-    pub fn into_mut(mut self) -> &'a mut T {
-        assert!(B::INTO_REF_INTO_MUT_ARE_SOUND);
-
-        // SAFETY: According to the safety preconditions on
-        // `ByteSlice::INTO_REF_INTO_MUT_ARE_SOUND`, the preceding assert
-        // ensures that, given `B: 'a + ByteSliceMut`, it is sound to drop
-        // `self` and still access the underlying memory using both reads and
-        // writes for `'a`.
-        unsafe { self.deref_mut_helper() }
+    pub fn into_mut(self) -> &'a mut T {
+        let ptr = Ptr::from_mut(self.0.into());
+        // SAFETY: By invariant on `Ref`, `self.0`'s size is equal to
+        // `size_of::<T>()`.
+        let ptr = unsafe { ptr.cast::<T>() };
+        // SAFETY: By invariant on `Ref`, `self.0` is aligned to `T`'s
+        // alignment.
+        let ptr = unsafe { ptr.assume_aligned() };
+        // SAFETY: `ptr` is derived from `self.0.into()`, which is of type
+        // `[u8]`, whose bit validity requires that all of its bytes are
+        // initialized.
+        let ptr = unsafe { ptr.assume_initialized() };
+        let ptr = ptr.bikeshed_recall_valid();
+        ptr.as_mut()
     }
 }
 
 impl<'a, B, T> Ref<B, [T]>
 where
-    B: 'a + ByteSlice,
+    B: 'a + IntoByteSlice<'a>,
     T: FromBytes + NoCell,
 {
     /// Converts this `Ref` into a slice reference.
@@ -5038,19 +5049,19 @@ where
     /// `into_slice` consumes the `Ref`, and returns a reference to `[T]`.
     #[inline(always)]
     pub fn into_slice(self) -> &'a [T] {
-        assert!(B::INTO_REF_INTO_MUT_ARE_SOUND);
-
-        // SAFETY: According to the safety preconditions on
-        // `ByteSlice::INTO_REF_INTO_MUT_ARE_SOUND`, the preceding assert
-        // ensures that, given `B: 'a`, it is sound to drop `self` and still
-        // access the underlying memory using reads for `'a`.
-        unsafe { self.deref_slice_helper() }
+        // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
+        // valid for `[T]`, and so this `unwrap` will not panic.
+        let ptr = Ptr::from_ref(self.0.into())
+            .try_cast_into_no_leftover::<[T]>()
+            .expect("zerocopy internal error: into_slice should be infallible");
+        let ptr = ptr.bikeshed_recall_valid();
+        ptr.as_ref()
     }
 }
 
 impl<'a, B, T> Ref<B, [T]>
 where
-    B: 'a + ByteSliceMut,
+    B: 'a + IntoByteSliceMut<'a>,
     T: FromBytes + IntoBytes + NoCell,
 {
     /// Converts this `Ref` into a mutable slice reference.
@@ -5058,15 +5069,14 @@ where
     /// `into_mut_slice` consumes the `Ref`, and returns a mutable reference to
     /// `[T]`.
     #[inline(always)]
-    pub fn into_mut_slice(mut self) -> &'a mut [T] {
-        assert!(B::INTO_REF_INTO_MUT_ARE_SOUND);
-
-        // SAFETY: According to the safety preconditions on
-        // `ByteSlice::INTO_REF_INTO_MUT_ARE_SOUND`, the preceding assert
-        // ensures that, given `B: 'a + ByteSliceMut`, it is sound to drop
-        // `self` and still access the underlying memory using both reads and
-        // writes for `'a`.
-        unsafe { self.deref_mut_slice_helper() }
+    pub fn into_mut_slice(self) -> &'a mut [T] {
+        // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
+        // valid for `[T]`, and so this `unwrap` will not panic.
+        let ptr = Ptr::from_mut(self.0.into())
+            .try_cast_into_no_leftover::<[T]>()
+            .expect("zerocopy internal error: into_mut_slice should be infallible");
+        let ptr = ptr.bikeshed_recall_valid();
+        ptr.as_mut()
     }
 }
 
@@ -5481,29 +5491,6 @@ mod sealed {
 pub unsafe trait ByteSlice:
     Deref<Target = [u8]> + Sized + self::sealed::ByteSliceSealed
 {
-    /// Are the [`Ref::into_ref`] and [`Ref::into_mut`] methods sound when used
-    /// with `Self`? If not, evaluating this constant must panic at compile
-    /// time.
-    ///
-    /// This exists to work around #716 on versions of zerocopy prior to 0.8.
-    ///
-    /// # Safety
-    ///
-    /// This may only be set to true if the following holds: Given the
-    /// following:
-    /// - `Self: 'a`
-    /// - `bytes: Self`
-    /// - `let ptr = bytes.as_ptr()`
-    ///
-    /// ...then:
-    /// - Using `ptr` to read the memory previously addressed by `bytes` is
-    ///   sound for `'a` even after `bytes` has been dropped.
-    /// - If `Self: ByteSliceMut`, using `ptr` to write the memory previously
-    ///   addressed by `bytes` is sound for `'a` even after `bytes` has been
-    ///   dropped.
-    #[doc(hidden)]
-    const INTO_REF_INTO_MUT_ARE_SOUND: bool;
-
     /// Gets a raw pointer to the first byte in the slice.
     #[inline]
     fn as_ptr(&self) -> *const u8 {
@@ -5534,48 +5521,58 @@ pub unsafe trait ByteSliceMut: ByteSlice + DerefMut {
     }
 }
 
+/// A [`ByteSlice`] that conveys no ownership, and so can be converted into a
+/// byte slice.
+///
+/// Some `ByteSlice` types (notably, the standard library's [`Ref`] type) convey
+/// ownership, and so they cannot soundly be moved by-value into a byte slice
+/// type (`&[u8]`). Some methods in this crate's API (such as [`Ref::into_ref`])
+/// are only compatible with `ByteSlice` types without these ownership
+/// semantics.
+///
+/// [`Ref`]: core::cell::Ref
+pub trait IntoByteSlice<'a>: ByteSlice + Into<&'a [u8]> {}
+
+/// A [`ByteSliceMut`] that conveys no ownership, and so can be converted into a
+/// mutable byte slice.
+///
+/// Some `ByteSliceMut` types (notably, the standard library's [`RefMut`] type)
+/// convey ownership, and so they cannot soundly be moved by-value into a byte
+/// slice type (`&mut [u8]`). Some methods in this crate's API (such as
+/// [`Ref::into_mut`]) are only compatible with `ByteSliceMut` types without
+/// these ownership semantics.
+///
+/// [`RefMut`]: core::cell::RefMut
+pub trait IntoByteSliceMut<'a>: ByteSliceMut + Into<&'a mut [u8]> {}
+
 impl<'a> sealed::ByteSliceSealed for &'a [u8] {}
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a [u8] {
-    // SAFETY: If `&'b [u8]: 'a`, then the underlying memory is treated as
-    // borrowed immutably for `'a` even if the slice itself is dropped.
-    const INTO_REF_INTO_MUT_ARE_SOUND: bool = true;
-
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at(self, mid)
     }
 }
 
+impl<'a> IntoByteSlice<'a> for &'a [u8] {}
+
 impl<'a> sealed::ByteSliceSealed for &'a mut [u8] {}
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a mut [u8] {
-    // SAFETY: If `&'b mut [u8]: 'a`, then the underlying memory is treated as
-    // borrowed mutably for `'a` even if the slice itself is dropped.
-    const INTO_REF_INTO_MUT_ARE_SOUND: bool = true;
-
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at_mut(self, mid)
     }
 }
 
+impl<'a> IntoByteSliceMut<'a> for &'a mut [u8] {}
+
 impl<'a> sealed::ByteSliceSealed for cell::Ref<'a, [u8]> {}
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {
-    const INTO_REF_INTO_MUT_ARE_SOUND: bool = if !cfg!(doc) {
-        const_panic!("Ref::into_ref and Ref::into_mut are unsound when used with core::cell::Ref; see https://github.com/google/zerocopy/issues/716")
-    } else {
-        // When compiling documentation, allow the evaluation of this constant
-        // to succeed. This doesn't represent a soundness hole - it just delays
-        // any error to runtime. The reason we need this is that, otherwise,
-        // `rustdoc` will fail when trying to document this item.
-        false
-    };
-
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         cell::Ref::map_split(self, |slice| <[u8]>::split_at(slice, mid))
@@ -5586,16 +5583,6 @@ impl<'a> sealed::ByteSliceSealed for RefMut<'a, [u8]> {}
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
-    const INTO_REF_INTO_MUT_ARE_SOUND: bool = if !cfg!(doc) {
-        const_panic!("Ref::into_ref and Ref::into_mut are unsound when used with core::cell::RefMut; see https://github.com/google/zerocopy/issues/716")
-    } else {
-        // When compiling documentation, allow the evaluation of this constant
-        // to succeed. This doesn't represent a soundness hole - it just delays
-        // any error to runtime. The reason we need this is that, otherwise,
-        // `rustdoc` will fail when trying to document this item.
-        false
-    };
-
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         RefMut::map_split(self, |slice| <[u8]>::split_at_mut(slice, mid))
@@ -8911,7 +8898,7 @@ mod tests {
         // implementation of `<ManuallyDrop<T> as TryFromBytes>::is_bit_valid`.
         assert_impls!(ManuallyDrop<[bool]>: KnownLayout, NoCell, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
         assert_impls!(ManuallyDrop<NotZerocopy>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(ManuallyDrop<[NotZerocopy]>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<[NotZerocopy]>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(ManuallyDrop<UnsafeCell<()>>: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, !NoCell);
         assert_impls!(ManuallyDrop<[UnsafeCell<u8>]>: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, !NoCell);
         assert_impls!(ManuallyDrop<[UnsafeCell<bool>]>: KnownLayout, TryFromBytes, FromZeros, IntoBytes, Unaligned, !NoCell, !FromBytes);
@@ -8951,7 +8938,7 @@ mod tests {
             Unaligned,
             !FromBytes
         );
-        assert_impls!([NotZerocopy]: !KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!([NotZerocopy]: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(
             [u8; 0]: KnownLayout,
             NoCell,
