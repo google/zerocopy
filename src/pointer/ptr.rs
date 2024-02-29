@@ -765,6 +765,21 @@ mod _transitions {
             unsafe { Ptr::from_ptr(self) }
         }
 
+        /// Assumes that `Ptr`'s referent is validly-aligned for `T`.
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that `Ptr`'s referent satisfies the alignment
+        /// requirement of `T`.
+        #[inline]
+        pub(crate) unsafe fn assume_aligned(
+            self,
+        ) -> Ptr<'a, T, (I::Aliasing, invariant::Aligned, I::Validity)> {
+            // SAFETY: The caller promises that `self`'s referent is
+            // validly-aligned for `T`.
+            unsafe { self.assume_alignment::<invariant::Aligned>() }
+        }
+
         /// Recalls that `Ptr`'s referent is validly-aligned for `T`.
         #[inline]
         // TODO(#859): Reconsider the name of this method before making it
@@ -827,6 +842,24 @@ mod _transitions {
             // SAFETY: The caller has promised to uphold the safety
             // preconditions.
             unsafe { self.assume_validity::<invariant::Valid>() }
+        }
+
+        /// Recalls that `Ptr`'s referent is bit-valid for `T`.
+        #[inline]
+        // TODO(#859): Reconsider the name of this method before making it
+        // public.
+        pub(crate) fn bikeshed_recall_valid(
+            self,
+        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, invariant::Valid)>
+        where
+            T: crate::FromBytes,
+            I: Invariants<Validity = invariant::Initialized>,
+        {
+            // SAFETY: The bound `T: FromBytes` ensures that any initialized
+            // sequence of bytes is bit-valid for `T`. `I: Invariants<Validity =
+            // invariant::Initialized>` ensures that all of the referent bytes
+            // are initialized.
+            unsafe { self.assume_valid() }
         }
 
         /// Checks that `Ptr`'s referent is validly initialized for `T`,
@@ -972,6 +1005,21 @@ mod _casts {
             // 10. See 9.
             unsafe { Ptr::new(ptr) }
         }
+
+        /// Casts to a different target type.
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that `size_of::<U>()` is not larger than the
+        /// referent of `self`.
+        pub(crate) unsafe fn cast<U: 'a>(
+            self,
+        ) -> Ptr<'a, U, (I::Aliasing, invariant::Any, invariant::Any)> {
+            // SAFETY: The cast is implemented as required by `cast_unsized`.
+            // The caller promises that the cast will not result in a larger
+            // referent.
+            unsafe { self.cast_unsized(|p| p.cast::<U>()) }
+        }
     }
 
     impl<'a, T, I> Ptr<'a, T, I>
@@ -1074,7 +1122,7 @@ mod _casts {
     /// alignment of `[u8]` is 1.
     impl<'a, I> Ptr<'a, [u8], I>
     where
-        I: Invariants,
+        I: Invariants<Validity = invariant::Valid>,
     {
         /// Attempts to cast `self` to a `U` using the given cast type.
         ///
@@ -1099,7 +1147,7 @@ mod _casts {
         pub(crate) fn try_cast_into<U: 'a + ?Sized + KnownLayout>(
             &self,
             cast_type: _CastType,
-        ) -> Option<(Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::Any)>, usize)>
+        ) -> Option<(Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::Initialized)>, usize)>
         where
             U: NoCell,
         {
@@ -1173,8 +1221,9 @@ mod _casts {
             //    it is derived from `validate_cast_and_convert_metadata`
             //    promises that the object described by `split_at` is validly
             //    aligned for `U`.
-            // 8. `ptr`, trivially, conforms to the validity invariant of
-            //    `Any`.
+            // 8. By trait bound, `self` is a bit-valid `[u8]`. All bit-valid
+            //    `[u8]`s have all of their bytes initialized, so `ptr` conforms
+            //    to the validity invariant of `Initialized`.
             // 9. During the lifetime 'a, no code will reference or load or
             //    store this memory region treating `UnsafeCell`s as existing at
             //    different ranges than they exist in `U`. This is true by
@@ -1198,7 +1247,7 @@ mod _casts {
         #[inline(always)]
         pub(crate) fn try_cast_into_no_leftover<U: 'a + ?Sized + KnownLayout>(
             &self,
-        ) -> Option<Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::Any)>>
+        ) -> Option<Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::Initialized)>>
         where
             U: NoCell,
         {
@@ -1491,12 +1540,13 @@ mod tests {
 
                     // SAFETY: The bytes in `slf` must be initialized.
                     unsafe fn validate_and_get_len<T: ?Sized + KnownLayout + FromBytes>(
-                        slf: Ptr<'_, T, (invariant::Shared, invariant::Aligned, invariant::Any)>,
+                        slf: Ptr<
+                            '_,
+                            T,
+                            (invariant::Shared, invariant::Aligned, invariant::Initialized),
+                        >,
                     ) -> usize {
-                        // SAFETY:
-                        // - Since all bytes in `slf` are initialized and
-                        //   `T: FromBytes`, `slf` contains a valid `T`.
-                        let t = unsafe { slf.as_non_null().as_ref() };
+                        let t = slf.bikeshed_recall_valid().as_ref();
 
                         let bytes = {
                             let len = mem::size_of_val(t);
