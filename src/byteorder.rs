@@ -35,10 +35,10 @@
 //!
 //! ```rust,edition2021
 //! # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
-//! use zerocopy::{IntoBytes, ByteSlice, FromBytes, NoCell, Ref, Unaligned};
+//! use zerocopy::{IntoBytes, ByteSlice, FromBytes, KnownLayout, NoCell, Ref, Unaligned};
 //! use zerocopy::byteorder::network_endian::U16;
 //!
-//! #[derive(FromBytes, IntoBytes, NoCell, Unaligned)]
+//! #[derive(FromBytes, IntoBytes, KnownLayout, NoCell, Unaligned)]
 //! #[repr(C)]
 //! struct UdpHeader {
 //!     src_port: U16,

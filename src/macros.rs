@@ -367,7 +367,8 @@ macro_rules! impl_known_layout {
                 #[allow(clippy::missing_inline_in_public_items)]
                 fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
 
-                const LAYOUT: DstLayout = DstLayout::for_type::<$ty>();
+                #[allow(unused_qualifications)]
+                const LAYOUT: crate::DstLayout = crate::DstLayout::for_type::<$ty>();
 
                 // SAFETY: `.cast` preserves address and provenance.
                 //
