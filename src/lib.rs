@@ -263,12 +263,8 @@ pub use crate::wrappers::*;
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::{TryFromBytes, Unaligned};
 
-// `pub use` separately here so that we can mark it `#[doc(hidden)]`.
-//
-// TODO(#29): Remove this or add a doc comment.
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
-#[doc(hidden)]
 pub use zerocopy_derive::KnownLayout;
 
 // `pub use` separately here so that we can mark it `#[doc(hidden)]`.
@@ -413,9 +409,9 @@ impl SizeInfo {
 #[derive(Copy, Clone)]
 #[cfg_attr(test, derive(Debug))]
 #[allow(missing_debug_implementations)]
-pub enum _CastType {
-    _Prefix,
-    _Suffix,
+pub enum CastType {
+    Prefix,
+    Suffix,
 }
 
 impl DstLayout {
@@ -777,7 +773,7 @@ impl DstLayout {
         &self,
         addr: usize,
         bytes_len: usize,
-        cast_type: _CastType,
+        cast_type: CastType,
     ) -> Option<(usize, usize)> {
         // `debug_assert!`, but with `#[allow(clippy::arithmetic_side_effects)]`.
         macro_rules! __const_debug_assert {
@@ -826,8 +822,8 @@ impl DstLayout {
             // address for a suffix cast (`addr + bytes_len`) is not aligned,
             // then no valid start address will be aligned either.
             let offset = match cast_type {
-                _CastType::_Prefix => 0,
-                _CastType::_Suffix => bytes_len,
+                CastType::Prefix => 0,
+                CastType::Suffix => bytes_len,
             };
 
             // Addition is guaranteed not to overflow because `offset <=
@@ -907,14 +903,14 @@ impl DstLayout {
         __const_debug_assert!(self_bytes <= bytes_len);
 
         let split_at = match cast_type {
-            _CastType::_Prefix => self_bytes,
+            CastType::Prefix => self_bytes,
             // Guaranteed not to underflow:
             // - In the `Sized` branch, only returns `size` if `size <=
             //   bytes_len`.
             // - In the `SliceDst` branch, calculates `self_bytes <=
             //   max_toatl_bytes`, which is upper-bounded by `bytes_len`.
             #[allow(clippy::arithmetic_side_effects)]
-            _CastType::_Suffix => bytes_len - self_bytes,
+            CastType::Suffix => bytes_len - self_bytes,
         };
 
         Some((elems, split_at))
@@ -927,13 +923,13 @@ impl DstLayout {
 /// This trait is not meant for consumption by code outside of this crate. While
 /// the normal semver stability guarantees apply with respect to which types
 /// implement this trait and which trait implementations are implied by this
-/// trait, no semver stability guarantees are made regarding its internals; they
-/// may change at any time, and code which makes use of them may break.
+/// trait, no semver stability guarantees are made regarding its internals
+/// (which are `#[doc(hidden)]`); they may change at any time, and code which
+/// makes use of them may break.
 ///
 /// # Safety
 ///
 /// This trait does not convey any safety guarantees to code outside this crate.
-#[doc(hidden)] // TODO: Remove this once KnownLayout is used by other APIs
 pub unsafe trait KnownLayout {
     // The `Self: Sized` bound makes it so that `KnownLayout` can still be
     // object safe. It's not currently object safe thanks to `const LAYOUT`, and
@@ -1876,8 +1872,9 @@ pub unsafe trait FromBytes: FromZeros {
 
     /// Interprets the given `bytes` as a `&Self` without copying.
     ///
-    /// If `bytes.len() != size_of::<Self>()` or `bytes` is not aligned to
-    /// `align_of::<Self>()`, this returns `None`.
+    /// If `bytes.len()` does not correspond to a valid length for `Self`, or if
+    /// `bytes` is not aligned to `Self`'s alignment requirement, this returns
+    /// `None`.
     ///
     /// # Examples
     ///
@@ -1885,7 +1882,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromBytes, NoCell)]
+    /// #[derive(FromBytes, KnownLayout, NoCell)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -1894,22 +1891,30 @@ pub unsafe trait FromBytes: FromZeros {
     ///     checksum: [u8; 2],
     /// }
     ///
-    /// // These bytes encode a `PacketHeader`.
-    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7][..];
+    /// #[derive(FromBytes, KnownLayout, NoCell)]
+    /// #[repr(C)]
+    /// struct Packet {
+    ///     header: PacketHeader,
+    ///     body: [u8],
+    /// }
     ///
-    /// let header = PacketHeader::ref_from(bytes).unwrap();
+    /// // These bytes encode a `Packet`.
+    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11][..];
     ///
-    /// assert_eq!(header.src_port, [0, 1]);
-    /// assert_eq!(header.dst_port, [2, 3]);
-    /// assert_eq!(header.length, [4, 5]);
-    /// assert_eq!(header.checksum, [6, 7]);
+    /// let packet = Packet::ref_from(bytes).unwrap();
+    ///
+    /// assert_eq!(packet.header.src_port, [0, 1]);
+    /// assert_eq!(packet.header.dst_port, [2, 3]);
+    /// assert_eq!(packet.header.length, [4, 5]);
+    /// assert_eq!(packet.header.checksum, [6, 7]);
+    /// assert_eq!(packet.body, [8, 9, 10, 11]);
     /// ```
     #[inline]
     fn ref_from(bytes: &[u8]) -> Option<&Self>
     where
-        Self: NoCell + Sized,
+        Self: KnownLayout + NoCell,
     {
-        Ref::<&[u8], Self>::new(bytes).map(Ref::into_ref)
+        Ref::<&[u8], Self>::bikeshed_new_known_layout(bytes).map(Ref::into_ref)
     }
 
     /// Interprets the prefix of the given `bytes` as a `&Self` without copying.
@@ -1927,7 +1932,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromBytes, NoCell)]
+    /// #[derive(FromBytes, KnownLayout, NoCell)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -1936,22 +1941,30 @@ pub unsafe trait FromBytes: FromZeros {
     ///     checksum: [u8; 2],
     /// }
     ///
-    /// // These are more bytes than are needed to encode a `PacketHeader`.
-    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
+    /// #[derive(FromBytes, KnownLayout, NoCell)]
+    /// #[repr(C)]
+    /// struct Packet {
+    ///     header: PacketHeader,
+    ///     body: [[u8; 2]],
+    /// }
     ///
-    /// let header = PacketHeader::ref_from_prefix(bytes).unwrap();
+    /// // These are more bytes than are needed to encode a `Packet`.
+    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14][..];
     ///
-    /// assert_eq!(header.src_port, [0, 1]);
-    /// assert_eq!(header.dst_port, [2, 3]);
-    /// assert_eq!(header.length, [4, 5]);
-    /// assert_eq!(header.checksum, [6, 7]);
+    /// let packet = Packet::ref_from_prefix(bytes).unwrap();
+    ///
+    /// assert_eq!(packet.header.src_port, [0, 1]);
+    /// assert_eq!(packet.header.dst_port, [2, 3]);
+    /// assert_eq!(packet.header.length, [4, 5]);
+    /// assert_eq!(packet.header.checksum, [6, 7]);
+    /// assert_eq!(packet.body, [[8, 9], [10, 11], [12, 13]]);
     /// ```
     #[inline]
     fn ref_from_prefix(bytes: &[u8]) -> Option<&Self>
     where
-        Self: Sized + NoCell,
+        Self: KnownLayout + NoCell,
     {
-        Ref::<&[u8], Self>::new_from_prefix(bytes).map(|(r, _)| r.into_ref())
+        Ref::<&[u8], Self>::bikeshed_new_from_prefix_known_layout(bytes).map(|(r, _)| r.into_ref())
     }
 
     /// Interprets the suffix of the given `bytes` as a `&Self` without copying.
@@ -1969,7 +1982,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromBytes, NoCell)]
+    /// #[derive(FromBytes, NoCell, KnownLayout)]
     /// #[repr(C)]
     /// struct PacketTrailer {
     ///     frame_check_sequence: [u8; 4],
@@ -1985,9 +1998,9 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn ref_from_suffix(bytes: &[u8]) -> Option<&Self>
     where
-        Self: Sized + NoCell,
+        Self: NoCell + KnownLayout,
     {
-        Ref::<&[u8], Self>::new_from_suffix(bytes).map(|(_, r)| r.into_ref())
+        Ref::<&[u8], Self>::bikeshed_new_from_suffix_known_layout(bytes).map(|(_, r)| r.into_ref())
     }
 
     /// Interprets the given `bytes` as a `&mut Self` without copying.
@@ -2001,7 +2014,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromBytes, IntoBytes, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, KnownLayout, NoCell)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -2027,9 +2040,9 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn mut_from(bytes: &mut [u8]) -> Option<&mut Self>
     where
-        Self: Sized + IntoBytes + NoCell,
+        Self: IntoBytes + KnownLayout + NoCell,
     {
-        Ref::<&mut [u8], Self>::new(bytes).map(Ref::into_mut)
+        Ref::<&mut [u8], Self>::bikeshed_new_known_layout(bytes).map(Ref::into_mut)
     }
 
     /// Interprets the prefix of the given `bytes` as a `&mut Self` without
@@ -2048,7 +2061,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromBytes, IntoBytes, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, KnownLayout, NoCell)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -2074,9 +2087,10 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn mut_from_prefix(bytes: &mut [u8]) -> Option<&mut Self>
     where
-        Self: Sized + IntoBytes + NoCell,
+        Self: IntoBytes + KnownLayout + NoCell,
     {
-        Ref::<&mut [u8], Self>::new_from_prefix(bytes).map(|(r, _)| r.into_mut())
+        Ref::<&mut [u8], Self>::bikeshed_new_from_prefix_known_layout(bytes)
+            .map(|(r, _)| r.into_mut())
     }
 
     /// Interprets the suffix of the given `bytes` as a `&mut Self` without copying.
@@ -2094,7 +2108,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromBytes, IntoBytes, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, KnownLayout, NoCell)]
     /// #[repr(C)]
     /// struct PacketTrailer {
     ///     frame_check_sequence: [u8; 4],
@@ -2114,9 +2128,10 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn mut_from_suffix(bytes: &mut [u8]) -> Option<&mut Self>
     where
-        Self: Sized + IntoBytes + NoCell,
+        Self: IntoBytes + KnownLayout + NoCell,
     {
-        Ref::<&mut [u8], Self>::new_from_suffix(bytes).map(|(_, r)| r.into_mut())
+        Ref::<&mut [u8], Self>::bikeshed_new_from_suffix_known_layout(bytes)
+            .map(|(_, r)| r.into_mut())
     }
 
     /// Interprets the given `bytes` as a `&[Self]` without copying.
@@ -4479,6 +4494,36 @@ pub use Ref as LayoutVerified;
 impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
+    T: KnownLayout + NoCell + ?Sized,
+{
+    fn bikeshed_new_known_layout(bytes: B) -> Option<Ref<B, T>> {
+        let _ = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T>()?;
+        // INVARIANTS: `try_cast_into_no_leftover` validates size and alignment.
+        Some(Ref(bytes, PhantomData))
+    }
+
+    fn bikeshed_new_from_prefix_known_layout(bytes: B) -> Option<(Ref<B, T>, B)> {
+        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
+        let (bytes, suffix) = bytes.split_at(split_at);
+        // INVARIANTS: `try_cast_into` validates size and alignment, and returns
+        // a `split_at` that indicates how many bytes of `bytes` correspond to a
+        // valid `T`.
+        Some((Ref(bytes, PhantomData), suffix))
+    }
+
+    fn bikeshed_new_from_suffix_known_layout(bytes: B) -> Option<(B, Ref<B, T>)> {
+        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
+        let (prefix, bytes) = bytes.split_at(split_at);
+        // INVARIANTS: `try_cast_into` validates size and alignment, and returns
+        // a `split_at` that indicates how many bytes of `bytes` correspond to a
+        // valid `T`.
+        Some((prefix, Ref(bytes, PhantomData)))
+    }
+}
+
+impl<B, T> Ref<B, T>
+where
+    B: ByteSlice,
 {
     /// Constructs a new `Ref`.
     ///
@@ -4540,6 +4585,7 @@ where
 impl<B, T> Ref<B, [T]>
 where
     B: ByteSlice,
+    T: NoCell,
 {
     /// Constructs a new `Ref` of a slice type.
     ///
@@ -4553,17 +4599,7 @@ where
     /// `new_slice` panics if `T` is a zero-sized type.
     #[inline]
     pub fn new_slice(bytes: B) -> Option<Ref<B, [T]>> {
-        let remainder = bytes
-            .len()
-            .checked_rem(mem::size_of::<T>())
-            .expect("Ref::new_slice called on a zero-sized type");
-        if remainder != 0 || !util::aligned_to::<_, T>(bytes.deref()) {
-            return None;
-        }
-        // INVARIANTS: `remainder != 0` ensures that `bytes`'s length is a
-        // multiple of the size of `T`, which means that it is a valid size for
-        // `[T]`. We also validate that `T`'s alignment is satisfied.
-        Some(Ref(bytes, PhantomData))
+        Self::bikeshed_new_known_layout(bytes)
     }
 
     /// Constructs a new `Ref` of a slice type from the prefix of a byte slice.
@@ -4700,6 +4736,7 @@ where
 impl<B, T> Ref<B, [T]>
 where
     B: ByteSliceMut,
+    T: NoCell,
 {
     /// Constructs a new `Ref` of a slice type after zeroing the bytes.
     ///
@@ -4807,7 +4844,7 @@ where
 impl<B, T> Ref<B, [T]>
 where
     B: ByteSlice,
-    T: Unaligned,
+    T: Unaligned + NoCell,
 {
     /// Constructs a new `Ref` of a slice type with no alignment requirement.
     ///
@@ -4914,7 +4951,7 @@ where
 impl<B, T> Ref<B, [T]>
 where
     B: ByteSliceMut,
-    T: Unaligned,
+    T: Unaligned + NoCell,
 {
     /// Constructs a new `Ref` for a slice type with no alignment requirement,
     /// zeroing the bytes.
@@ -4990,24 +5027,18 @@ where
 impl<'a, B, T> Ref<B, T>
 where
     B: 'a + IntoByteSlice<'a>,
-    T: FromBytes + NoCell,
+    T: FromBytes + KnownLayout + NoCell + ?Sized,
 {
     /// Converts this `Ref` into a reference.
     ///
     /// `into_ref` consumes the `Ref`, and returns a reference to `T`.
     #[inline(always)]
     pub fn into_ref(self) -> &'a T {
-        let ptr = Ptr::from_ref(self.0.into());
-        // SAFETY: By invariant on `Ref`, `self.0`'s size is equal to
-        // `size_of::<T>()`.
-        let ptr = unsafe { ptr.cast::<T>() };
-        // SAFETY: By invariant on `Ref`, `self.0` is aligned to `T`'s
-        // alignment.
-        let ptr = unsafe { ptr.assume_aligned() };
-        // SAFETY: `ptr` is derived from `self.0.into()`, which is of type
-        // `[u8]`, whose bit validity requires that all of its bytes are
-        // initialized.
-        let ptr = unsafe { ptr.assume_initialized() };
+        // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
+        // valid for `T`, and so this `unwrap` will not panic.
+        let ptr = Ptr::from_ref(self.0.into())
+            .try_cast_into_no_leftover::<T>()
+            .expect("zerocopy internal error: into_ref should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
         ptr.as_ref()
     }
@@ -5016,24 +5047,18 @@ where
 impl<'a, B, T> Ref<B, T>
 where
     B: 'a + IntoByteSliceMut<'a>,
-    T: FromBytes + IntoBytes + NoCell,
+    T: FromBytes + IntoBytes + KnownLayout + NoCell + ?Sized,
 {
     /// Converts this `Ref` into a mutable reference.
     ///
     /// `into_mut` consumes the `Ref`, and returns a mutable reference to `T`.
     #[inline(always)]
     pub fn into_mut(self) -> &'a mut T {
-        let ptr = Ptr::from_mut(self.0.into());
-        // SAFETY: By invariant on `Ref`, `self.0`'s size is equal to
-        // `size_of::<T>()`.
-        let ptr = unsafe { ptr.cast::<T>() };
-        // SAFETY: By invariant on `Ref`, `self.0` is aligned to `T`'s
-        // alignment.
-        let ptr = unsafe { ptr.assume_aligned() };
-        // SAFETY: `ptr` is derived from `self.0.into()`, which is of type
-        // `[u8]`, whose bit validity requires that all of its bytes are
-        // initialized.
-        let ptr = unsafe { ptr.assume_initialized() };
+        // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
+        // valid for `T`, and so this `unwrap` will not panic.
+        let ptr = Ptr::from_mut(self.0.into())
+            .try_cast_into_no_leftover::<T>()
+            .expect("zerocopy internal error: into_ref should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
         ptr.as_mut()
     }
@@ -6163,8 +6188,8 @@ mod tests {
             (@generate_elem_size _) => { 1..8 };
             (@generate_align _) => { [1, 2, 4, 8, 16] };
             (@generate_opt_usize _) => { [None].into_iter().chain((0..8).map(Some).into_iter()) };
-            (@generate_cast_type _) => { [_CastType::_Prefix, _CastType::_Suffix] };
-            (@generate_cast_type $variant:ident) => { [_CastType::$variant] };
+            (@generate_cast_type _) => { [CastType::Prefix, CastType::Suffix] };
+            (@generate_cast_type $variant:ident) => { [CastType::$variant] };
             // Some expressions need to be wrapped in parentheses in order to be
             // valid `tt`s (required by the top match pattern). See the comment
             // below for more details. This arm removes these parentheses to
@@ -6181,12 +6206,12 @@ mod tests {
         test!(layout(((2..8) | ((2..8), (2..8))), _).validate(_, [1], _), Ok(None));
 
         // addr is unaligned for prefix cast
-        test!(layout(_, [2]).validate(ODDS, _, _Prefix), Ok(None));
-        test!(layout(_, [2]).validate(ODDS, _, _Prefix), Ok(None));
+        test!(layout(_, [2]).validate(ODDS, _, Prefix), Ok(None));
+        test!(layout(_, [2]).validate(ODDS, _, Prefix), Ok(None));
 
         // addr is aligned, but end of buffer is unaligned for suffix cast
-        test!(layout(_, [2]).validate(EVENS, ODDS, _Suffix), Ok(None));
-        test!(layout(_, [2]).validate(EVENS, ODDS, _Suffix), Ok(None));
+        test!(layout(_, [2]).validate(EVENS, ODDS, Suffix), Ok(None));
+        test!(layout(_, [2]).validate(EVENS, ODDS, Suffix), Ok(None));
 
         // Unfortunately, these constants cannot easily be used in the
         // implementation of `validate_cast_and_convert_metadata`, since
@@ -6222,7 +6247,7 @@ mod tests {
         // documented safety postconditions, and also a few other properties
         // that aren't documented but we want to guarantee anyway.
         fn validate_behavior(
-            (layout, addr, bytes_len, cast_type): (DstLayout, usize, usize, _CastType),
+            (layout, addr, bytes_len, cast_type): (DstLayout, usize, usize, CastType),
         ) {
             if let Some((elems, split_at)) =
                 layout.validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
@@ -6264,11 +6289,11 @@ mod tests {
                 // `validate_cast_and_convert_metadata`.
                 assert!(resulting_size <= bytes_len, "{}", debug_str);
                 match cast_type {
-                    _CastType::_Prefix => {
+                    CastType::Prefix => {
                         assert_eq!(addr % align, 0, "{}", debug_str);
                         assert_eq!(resulting_size, split_at, "{}", debug_str);
                     }
-                    _CastType::_Suffix => {
+                    CastType::Suffix => {
                         assert_eq!(split_at, bytes_len - resulting_size, "{}", debug_str);
                         assert_eq!((addr + split_at) % align, 0, "{}", debug_str);
                     }
@@ -6286,8 +6311,8 @@ mod tests {
                 let insufficient_bytes = bytes_len < min_size;
                 // 2. performing the cast would misalign type:
                 let base = match cast_type {
-                    _CastType::_Prefix => 0,
-                    _CastType::_Suffix => bytes_len,
+                    CastType::Prefix => 0,
+                    CastType::Suffix => bytes_len,
                 };
                 let misaligned = (base + addr) % layout.align != 0;
 
@@ -6304,7 +6329,7 @@ mod tests {
         let layouts = itertools::iproduct!(size_infos, [1, 2, 4, 8, 16, 32])
             .filter(|(size_info, align)| !matches!(size_info, SizeInfo::Sized { _size } if _size % align != 0))
             .map(|(size_info, align)| layout(size_info, align));
-        itertools::iproduct!(layouts, 0..8, 0..8, [_CastType::_Prefix, _CastType::_Suffix])
+        itertools::iproduct!(layouts, 0..8, 0..8, [CastType::Prefix, CastType::Suffix])
             .for_each(validate_behavior);
     }
 
@@ -6414,7 +6439,7 @@ mod tests {
                 if args.elem_size.map(|elem_size| elem_size > 0).unwrap_or(true) {
                     let addr = ptr.addr().get();
                     let (got_elems, got_split_at) = layout
-                        .validate_cast_and_convert_metadata(addr, size, _CastType::_Prefix)
+                        .validate_cast_and_convert_metadata(addr, size, CastType::Prefix)
                         .unwrap();
                     // Avoid expensive allocation when running under Miri.
                     let assert_msg = if !cfg!(miri) {
@@ -7105,7 +7130,6 @@ mod tests {
     fn test_object_safety() {
         fn _takes_no_cell(_: &dyn NoCell) {}
         fn _takes_from_zeros(_: &dyn FromZeros) {}
-        fn _takes_from_bytes(_: &dyn FromBytes) {}
         fn _takes_unaligned(_: &dyn Unaligned) {}
     }
 
@@ -7698,7 +7722,7 @@ mod tests {
 
     #[test]
     fn test_ref_from_mut_from() {
-        // Test `FromBytes::{ref_from, mut_from}{,_prefix,_suffix}` success cases
+        // Test `FromBytes::{ref_from, mut_from}{,_prefix,Suffix}` success cases
         // Exhaustive coverage for these methods is covered by the `Ref` tests above,
         // which these helper methods defer to.
 
@@ -7724,7 +7748,7 @@ mod tests {
 
     #[test]
     fn test_ref_from_mut_from_error() {
-        // Test `FromBytes::{ref_from, mut_from}{,_prefix,_suffix}` error cases.
+        // Test `FromBytes::{ref_from, mut_from}{,_prefix,Suffix}` error cases.
 
         // Fail because the buffer is too large.
         let mut buf = Align::<[u8; 16], AU64>::default();
