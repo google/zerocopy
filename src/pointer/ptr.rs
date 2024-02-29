@@ -946,10 +946,7 @@ mod _casts {
         pub unsafe fn cast_unsized<U: 'a + ?Sized, F: FnOnce(*mut T) -> *mut U>(
             self,
             cast: F,
-        ) -> Ptr<'a, U, (I::Aliasing, invariant::Any, invariant::Any)>
-        where
-            U: 'a,
-        {
+        ) -> Ptr<'a, U, (I::Aliasing, invariant::Any, invariant::Any)> {
             let ptr = cast(self.as_non_null().as_ptr());
 
             // SAFETY: Caller promises that `cast` is just a cast. We call
@@ -1114,12 +1111,10 @@ mod _casts {
         /// # Panics
         ///
         /// Panics if `U` is a DST whose trailing slice element is zero-sized.
-        pub(crate) fn try_cast_into<U: 'a + ?Sized + KnownLayout>(
+        pub(crate) fn try_cast_into<U: 'a + ?Sized + KnownLayout + NoCell>(
             &self,
             cast_type: CastType,
         ) -> Option<(Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::Initialized)>, usize)>
-        where
-            U: NoCell,
         {
             // PANICS: By invariant, the byte range addressed by `self.ptr` does
             // not wrap around the address space. This implies that the sum of
@@ -1215,12 +1210,9 @@ mod _casts {
         /// references the same byte range as `self`.
         #[allow(unused)]
         #[inline(always)]
-        pub(crate) fn try_cast_into_no_leftover<U: 'a + ?Sized + KnownLayout>(
+        pub(crate) fn try_cast_into_no_leftover<U: 'a + ?Sized + KnownLayout + NoCell>(
             &self,
-        ) -> Option<Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::Initialized)>>
-        where
-            U: NoCell,
-        {
+        ) -> Option<Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::Initialized)>> {
             // TODO(#67): Remove this allow. See NonNulSlicelExt for more
             // details.
             #[allow(unstable_name_collisions)]
