@@ -5,10 +5,20 @@ echo "Running pre-push git hook: $0"
 # `cargo fmt` is useful (and the good stuff is not delivered by stderr).
 #
 # Background all jobs and wait for them so they can run in parallel.
-./ci/check_fmt.sh                         &
-./ci/check_job_dependencies.sh >/dev/null &
-./ci/check_msrv.sh             >/dev/null &
-./ci/check_readme.sh           >/dev/null &
-./ci/check_versions.sh         >/dev/null &
+./ci/check_fmt.sh                         & FMT_PID=$!
+./ci/check_job_dependencies.sh >/dev/null & JOB_DEPS_PID=$!
+./ci/check_msrv.sh             >/dev/null & MSRV_PID=$!
+./ci/check_readme.sh           >/dev/null & README_PID=$!
+./ci/check_versions.sh         >/dev/null & VERSIONS_PID=$!
 
-wait
+# `wait <pid>` exits with the same status code as the job it's waiting for.
+# Since we `set -e` above, this will have the effect of causing the entire
+# script to exit with a non-zero status code if any of these jobs does the same.
+# Note that, while `wait` (with no PID argument) waits for all backgrounded
+# jobs, it exits with code 0 even if one of the backgrounded jobs does not, so
+# we can't use it here.
+wait $FMT_PID
+wait $JOB_DEPS_PID
+wait $MSRV_PID
+wait $README_PID
+wait $VERSIONS_PID
