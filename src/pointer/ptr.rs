@@ -8,7 +8,7 @@
 
 use core::ptr::NonNull;
 
-use crate::{util::AsAddress, KnownLayout, NoCell, _CastType};
+use crate::{util::AsAddress, CastType, KnownLayout, NoCell};
 
 /// Module used to gate access to [`Ptr`]'s fields.
 mod def {
@@ -765,21 +765,6 @@ mod _transitions {
             unsafe { Ptr::from_ptr(self) }
         }
 
-        /// Assumes that `Ptr`'s referent is validly-aligned for `T`.
-        ///
-        /// # Safety
-        ///
-        /// The caller promises that `Ptr`'s referent satisfies the alignment
-        /// requirement of `T`.
-        #[inline]
-        pub(crate) unsafe fn assume_aligned(
-            self,
-        ) -> Ptr<'a, T, (I::Aliasing, invariant::Aligned, I::Validity)> {
-            // SAFETY: The caller promises that `self`'s referent is
-            // validly-aligned for `T`.
-            unsafe { self.assume_alignment::<invariant::Aligned>() }
-        }
-
         /// Recalls that `Ptr`'s referent is validly-aligned for `T`.
         #[inline]
         // TODO(#859): Reconsider the name of this method before making it
@@ -1005,21 +990,6 @@ mod _casts {
             // 10. See 9.
             unsafe { Ptr::new(ptr) }
         }
-
-        /// Casts to a different target type.
-        ///
-        /// # Safety
-        ///
-        /// The caller promises that `size_of::<U>()` is not larger than the
-        /// referent of `self`.
-        pub(crate) unsafe fn cast<U: 'a>(
-            self,
-        ) -> Ptr<'a, U, (I::Aliasing, invariant::Any, invariant::Any)> {
-            // SAFETY: The cast is implemented as required by `cast_unsized`.
-            // The caller promises that the cast will not result in a larger
-            // referent.
-            unsafe { self.cast_unsized(|p| p.cast::<U>()) }
-        }
     }
 
     impl<'a, T, I> Ptr<'a, T, I>
@@ -1146,7 +1116,7 @@ mod _casts {
         /// Panics if `U` is a DST whose trailing slice element is zero-sized.
         pub(crate) fn try_cast_into<U: 'a + ?Sized + KnownLayout>(
             &self,
-            cast_type: _CastType,
+            cast_type: CastType,
         ) -> Option<(Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::Initialized)>, usize)>
         where
             U: NoCell,
@@ -1164,8 +1134,8 @@ mod _casts {
             )?;
 
             let offset = match cast_type {
-                _CastType::_Prefix => 0,
-                _CastType::_Suffix => split_at,
+                CastType::Prefix => 0,
+                CastType::Suffix => split_at,
             };
 
             let ptr = self.as_non_null().cast::<u8>().as_ptr();
@@ -1254,7 +1224,7 @@ mod _casts {
             // TODO(#67): Remove this allow. See NonNulSlicelExt for more
             // details.
             #[allow(unstable_name_collisions)]
-            match self.try_cast_into(_CastType::_Prefix) {
+            match self.try_cast_into(CastType::Prefix) {
                 Some((slf, split_at)) if split_at == self.len() => Some(slf),
                 Some(_) | None => None,
             }
@@ -1575,7 +1545,7 @@ mod tests {
                         mem::size_of_val(t)
                     }
 
-                    for cast_type in [_CastType::_Prefix, _CastType::_Suffix] {
+                    for cast_type in [CastType::Prefix, CastType::Suffix] {
                         if let Some((slf, split_at)) =
                             Ptr::from_ref(bytes).try_cast_into::<T>(cast_type)
                         {
@@ -1583,8 +1553,8 @@ mod tests {
                             // initialized.
                             let len = unsafe { validate_and_get_len(slf) };
                             match cast_type {
-                                _CastType::_Prefix => assert_eq!(split_at, len),
-                                _CastType::_Suffix => assert_eq!(split_at, bytes.len() - len),
+                                CastType::Prefix => assert_eq!(split_at, len),
+                                CastType::Suffix => assert_eq!(split_at, bytes.len() - len),
                             }
                         }
                     }
