@@ -25,6 +25,8 @@
 //!
 //! Zerocopy provides four core marker traits, each of which can be derived
 //! (e.g., `#[derive(FromZeros)]`):
+//! - [`TryFromBytes`] indicates that a type may safely be converted from certain
+//!   byte sequences (conditional on runtime checks)
 //! - [`FromZeros`] indicates that a sequence of zero bytes represents a valid
 //!   instance of a type
 //! - [`FromBytes`] indicates that a type may safely be converted from an
@@ -261,7 +263,7 @@ pub use crate::wrappers::*;
 
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
-pub use zerocopy_derive::{TryFromBytes, Unaligned};
+pub use zerocopy_derive::Unaligned;
 
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
@@ -1143,18 +1145,87 @@ pub unsafe trait NoCell {
         Self: Sized;
 }
 
-/// Types whose validity can be checked at runtime, allowing them to be
-/// conditionally converted from byte slices.
+/// Implements [`TryFromBytes`].
 ///
-/// WARNING: Do not implement this trait yourself! Instead, use
-/// `#[derive(TryFromBytes)]`.
+/// This derive synthesizes the runtime checks required to check whether a
+/// sequence of initialized bytes corresponds to a valid instance of a type.
+/// This derive can be applied to structs, enums, and unions; e.g.:
 ///
-/// `TryFromBytes` types can safely be deserialized from an untrusted sequence
-/// of bytes by performing a runtime check that the byte sequence contains a
-/// valid instance of `Self`.
+/// ```
+/// # use zerocopy_derive::{TryFromBytes, NoCell};
+/// #[derive(TryFromBytes)]
+/// struct MyStruct {
+/// # /*
+///     ...
+/// # */
+/// }
 ///
-/// `TryFromBytes` is ignorant of byte order. For byte order-aware types, see
-/// the [`byteorder`] module.
+/// #[derive(TryFromBytes)]
+/// #[repr(u8)]
+/// enum MyEnum {
+/// #   V00,
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(TryFromBytes, NoCell)]
+/// union MyUnion {
+/// #   variant: u8,
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// [safety conditions]: trait@TryFromBytes#safety
+#[cfg(any(feature = "derive", test))]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+pub use zerocopy_derive::TryFromBytes;
+
+/// Types for which some bit patterns are valid.
+///
+/// A memory region of the appropriate length which contains initialized bytes
+/// can be viewed as a `TryFromBytes` type so long as the runtime value of those
+/// bytes corresponds to a [*valid instance*] of that type. For example,
+/// [`bool`] is `TryFromBytes`; zerocopy can transmute a `[u8]` into a [`bool`]
+/// so long as it first checks that the value of the `[u8]` is `[0]` or `[1]`.
+///
+/// # Implementation
+///
+/// **Do not implement this trait yourself!** Instead, use
+/// [`#[derive(TryFromBytes)]`][derive] (requires the `derive` Cargo feature);
+/// e.g.:
+///
+/// ```
+/// # use zerocopy_derive::{TryFromBytes, NoCell};
+/// #[derive(TryFromBytes)]
+/// struct MyStruct {
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(TryFromBytes)]
+/// #[repr(u8)]
+/// enum MyEnum {
+/// #   V00,
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(TryFromBytes, NoCell)]
+/// union MyUnion {
+/// #   variant: u8,
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// This derive ensures that the runtime check of whether bytes correspond to a
+/// valid instance is sound. You **must** implement this trait via the derive.
 ///
 /// # What is a "valid instance"?
 ///
@@ -1199,19 +1270,21 @@ pub unsafe trait NoCell {
 /// or representation of `T`. It merely provides the ability to perform a
 /// validity check at runtime via methods like [`try_from_ref`].
 ///
-/// Currently, it is not possible to stably implement `TryFromBytes` other than
-/// by using `#[derive(TryFromBytes)]`. While there are `#[doc(hidden)]` items
-/// on this trait that provide well-defined safety invariants, no stability
-/// guarantees are made with respect to these items. In particular, future
-/// releases of zerocopy may make backwards-breaking changes to these items,
-/// including changes that only affect soundness, which may cause code which
-/// uses those items to silently become unsound.
+/// You must not rely on the `#[doc(hidden)]` internals of `TryFromBytes`.
+/// Future releases of zerocopy may make backwards-breaking changes to these
+/// items, including changes that only affect soundness, which may cause code
+/// which uses those items to silently become unsound.
 ///
 /// [undefined behavior]: https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html
 /// [github-repo]: https://github.com/google/zerocopy
 /// [`try_from_ref`]: TryFromBytes::try_from_ref
+/// [*valid instance*]: #what-is-a-valid-instance
+#[cfg_attr(feature = "derive", doc = "[derive]: zerocopy_derive::TryFromBytes")]
+#[cfg_attr(
+    not(feature = "derive"),
+    doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.TryFromBytes.html"),
+)]
 // TODO(#5): Update `try_from_ref` doc link once it exists
-#[doc(hidden)]
 pub unsafe trait TryFromBytes {
     // The `Self: Sized` bound makes it so that `TryFromBytes` is still object
     // safe.

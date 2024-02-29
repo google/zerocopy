@@ -25,6 +25,8 @@ so you don't have to.
 
 Zerocopy provides four core marker traits, each of which can be derived
 (e.g., `#[derive(FromZeros)]`):
+- `TryFromBytes` indicates that a type may safely be converted from certain
+  byte sequences (conditional on runtime checks)
 - `FromZeros` indicates that a sequence of zero bytes represents a valid
   instance of a type
 - `FromBytes` indicates that a type may safely be converted from an
