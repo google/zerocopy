@@ -269,14 +269,6 @@ pub use zerocopy_derive::Unaligned;
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::KnownLayout;
 
-// `pub use` separately here so that we can mark it `#[doc(hidden)]`.
-//
-// TODO(#251): Remove this or add a doc comment.
-#[cfg(any(feature = "derive", test))]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
-#[doc(hidden)]
-pub use zerocopy_derive::NoCell;
-
 use core::{
     cell::{self, RefMut, UnsafeCell},
     cmp::Ordering,
@@ -1109,14 +1101,99 @@ safety_comment! {
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::FromZeros;
 
-/// Types which do not contain any [`UnsafeCell`]s.
+/// Analyzes whether a type is [`NoCell`].
 ///
-/// WARNING: Do not implement this trait yourself! Instead, use
-/// `#[derive(NoCell)]`.
+/// This derive analyzes, at compile time, whether the annotated type satisfies
+/// the [safety conditions] of `NoCell` and implements `NoCell` if it is sound
+/// to do so. This derive can be applied to structs, enums, and unions; e.g.:
+///
+/// ```
+/// # use zerocopy_derive::NoCell;
+/// #[derive(NoCell)]
+/// struct MyStruct {
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(NoCell)]
+/// enum MyEnum {
+/// #   Variant0,
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(NoCell)]
+/// union MyUnion {
+/// #   variant: u8,
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// # Analysis
+///
+/// *This section describes, roughly, the analysis performed by this derive to
+/// determine whether it is sound to implement `NoCell` for a given type.
+/// Unless you are modifying the implementation of this derive, or attempting to
+/// manually implement `NoCell` for a type yourself, you don't need to read
+/// this section.*
+///
+/// If a type has the following properties, then this derive can implement
+/// `NoCell` for that type:
+///
+/// - All fields must be `NoCell`.
+///
+/// This analysis is subject to change. Unsafe code may *only* rely on the
+/// documented [safety conditions] of `NoCell`, and must *not* rely on the
+/// implementation details of this derive.
+///
+/// [safety conditions]: trait@NoCell#safety
+#[cfg(any(feature = "derive", test))]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+pub use zerocopy_derive::NoCell;
+
+/// Types which do not contain any [`UnsafeCell`]s.
 ///
 /// `T: NoCell` indicates that `T` does not contain any `UnsafeCell`s in its
 /// fields. `T` may still refer to types which contain `UnsafeCell`s: for
 /// example, `&UnsafeCell<T>` implements `NoCell`.
+///
+/// /// # Implementation
+///
+/// **Do not implement this trait yourself!** Instead, use
+/// [`#[derive(NoCell)]`][derive] (requires the `derive` Cargo feature);
+/// e.g.:
+///
+/// ```
+/// # use zerocopy_derive::NoCell;
+/// #[derive(NoCell)]
+/// struct MyStruct {
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(NoCell)]
+/// enum MyEnum {
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(NoCell)]
+/// union MyUnion {
+/// #   variant: u8,
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// This derive performs a sophisticated, compile-time safety analysis to
+/// determine whether a type is `NoCell`.
 ///
 /// # Safety
 ///
@@ -1135,7 +1212,16 @@ pub use zerocopy_derive::FromZeros;
 ///
 /// [`UnsafeCell`]: core::cell::UnsafeCell
 /// [undefined behavior]: https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html
-#[doc(hidden)]
+#[cfg_attr(
+    feature = "derive",
+    doc = "[derive]: zerocopy_derive::NoCell",
+    doc = "[derive-analysis]: zerocopy_derive::NoCell#analysis"
+)]
+#[cfg_attr(
+    not(feature = "derive"),
+    doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.NoCell.html"),
+    doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.NoCell.html#analysis"),
+)]
 pub unsafe trait NoCell {
     // The `Self: Sized` bound makes it so that `NoCell` is still object
     // safe.
