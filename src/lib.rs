@@ -2184,7 +2184,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + NoCell,
     {
-        Ref::<_, [Self]>::new_slice(bytes).map(|r| r.into_slice())
+        Ref::<_, [Self]>::new(bytes).map(|r| r.into_ref())
     }
 
     /// Interprets the prefix of the given `bytes` as a `&[Self]` with length
@@ -2235,7 +2235,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + NoCell,
     {
-        Ref::<_, [Self]>::new_slice_from_prefix(bytes, count).map(|(r, b)| (r.into_slice(), b))
+        Ref::<_, [Self]>::new_slice_from_prefix(bytes, count).map(|(r, b)| (r.into_ref(), b))
     }
 
     /// Interprets the suffix of the given `bytes` as a `&[Self]` with length
@@ -2286,7 +2286,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + NoCell,
     {
-        Ref::<_, [Self]>::new_slice_from_suffix(bytes, count).map(|(b, r)| (b, r.into_slice()))
+        Ref::<_, [Self]>::new_slice_from_suffix(bytes, count).map(|(b, r)| (b, r.into_ref()))
     }
 
     /// Interprets the given `bytes` as a `&mut [Self]` without copying.
@@ -2337,7 +2337,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + IntoBytes + NoCell,
     {
-        Ref::<_, [Self]>::new_slice(bytes).map(|r| r.into_mut_slice())
+        Ref::<_, [Self]>::new(bytes).map(|r| r.into_mut())
     }
 
     /// Interprets the prefix of the given `bytes` as a `&mut [Self]` with length
@@ -2392,7 +2392,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + IntoBytes + NoCell,
     {
-        Ref::<_, [Self]>::new_slice_from_prefix(bytes, count).map(|(r, b)| (r.into_mut_slice(), b))
+        Ref::<_, [Self]>::new_slice_from_prefix(bytes, count).map(|(r, b)| (r.into_mut(), b))
     }
 
     /// Interprets the suffix of the given `bytes` as a `&mut [Self]` with length
@@ -2447,7 +2447,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + IntoBytes + NoCell,
     {
-        Ref::<_, [Self]>::new_slice_from_suffix(bytes, count).map(|(b, r)| (b, r.into_mut_slice()))
+        Ref::<_, [Self]>::new_slice_from_suffix(bytes, count).map(|(b, r)| (b, r.into_mut()))
     }
 
     /// Reads a copy of `Self` from `bytes`.
@@ -4621,19 +4621,11 @@ where
     B: ByteSlice,
     T: NoCell,
 {
-    /// Constructs a new `Ref` of a slice type.
-    ///
-    /// `new_slice` verifies that `bytes.len()` is a multiple of
-    /// `size_of::<T>()` and that `bytes` is aligned to `align_of::<T>()`, and
-    /// constructs a new `Ref`. If either of these checks fail, it returns
-    /// `None`.
-    ///
-    /// # Panics
-    ///
-    /// `new_slice` panics if `T` is a zero-sized type.
+    #[deprecated(since = "0.8.0", note = "`Ref::new` now supports slices")]
+    #[doc(hidden)]
     #[inline]
     pub fn new_slice(bytes: B) -> Option<Ref<B, [T]>> {
-        Self::bikeshed_new_known_layout(bytes)
+        Self::new(bytes)
     }
 
     /// Constructs a new `Ref` of a slice type from the prefix of a byte slice.
@@ -4658,7 +4650,7 @@ where
             return None;
         }
         let (prefix, bytes) = bytes.split_at(expected_len);
-        Self::new_slice(prefix).map(move |l| (l, bytes))
+        Self::new(prefix).map(move |l| (l, bytes))
     }
 
     /// Constructs a new `Ref` of a slice type from the suffix of a byte slice.
@@ -4681,7 +4673,7 @@ where
         };
         let split_at = bytes.len().checked_sub(expected_len)?;
         let (bytes, suffix) = bytes.split_at(split_at);
-        Self::new_slice(suffix).map(move |l| (bytes, l))
+        Self::new(suffix).map(move |l| (bytes, l))
     }
 }
 
@@ -4789,7 +4781,7 @@ where
     /// `new_slice` panics if `T` is a zero-sized type.
     #[inline(always)]
     pub fn new_slice_zeroed(bytes: B) -> Option<Ref<B, [T]>> {
-        map_zeroed(Self::new_slice(bytes))
+        map_zeroed(Self::new(bytes))
     }
 
     /// Constructs a new `Ref` of a slice type from the prefix of a byte slice,
@@ -4892,7 +4884,7 @@ where
     /// `new_slice` panics if `T` is a zero-sized type.
     #[inline(always)]
     pub fn new_slice_unaligned(bytes: B) -> Option<Ref<B, [T]>> {
-        Ref::new_slice(bytes)
+        Ref::new(bytes)
     }
 
     /// Constructs a new `Ref` of a slice type with no alignment requirement
@@ -5104,18 +5096,11 @@ where
     B: 'a + IntoByteSlice<'a>,
     T: FromBytes + NoCell,
 {
-    /// Converts this `Ref` into a slice reference.
-    ///
-    /// `into_slice` consumes the `Ref`, and returns a reference to `[T]`.
+    #[deprecated(since = "0.8.0", note = "`Ref::into_ref` now supports slices")]
+    #[doc(hidden)]
     #[inline(always)]
     pub fn into_slice(self) -> &'a [T] {
-        // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
-        // valid for `[T]`, and so this `unwrap` will not panic.
-        let ptr = Ptr::from_ref(self.0.into())
-            .try_cast_into_no_leftover::<[T]>()
-            .expect("zerocopy internal error: into_slice should be infallible");
-        let ptr = ptr.bikeshed_recall_valid();
-        ptr.as_ref()
+        self.into_ref()
     }
 }
 
@@ -5124,128 +5109,11 @@ where
     B: 'a + IntoByteSliceMut<'a>,
     T: FromBytes + IntoBytes + NoCell,
 {
-    /// Converts this `Ref` into a mutable slice reference.
-    ///
-    /// `into_mut_slice` consumes the `Ref`, and returns a mutable reference to
-    /// `[T]`.
+    #[deprecated(since = "0.8.0", note = "`Ref::into_mut` now supports slices")]
+    #[doc(hidden)]
     #[inline(always)]
     pub fn into_mut_slice(self) -> &'a mut [T] {
-        // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
-        // valid for `[T]`, and so this `unwrap` will not panic.
-        let ptr = Ptr::from_mut(self.0.into())
-            .try_cast_into_no_leftover::<[T]>()
-            .expect("zerocopy internal error: into_mut_slice should be infallible");
-        let ptr = ptr.bikeshed_recall_valid();
-        ptr.as_mut()
-    }
-}
-
-impl<B, T> Ref<B, T>
-where
-    B: ByteSlice,
-    T: FromBytes + NoCell,
-{
-    /// Creates an immutable reference to `T` with a specific lifetime.
-    ///
-    /// # Safety
-    ///
-    /// The type bounds on this method guarantee that it is safe to create an
-    /// immutable reference to `T` from `self`. However, since the lifetime `'a`
-    /// is not required to be shorter than the lifetime of the reference to
-    /// `self`, the caller must guarantee that the lifetime `'a` is valid for
-    /// this reference. In particular, the referent must exist for all of `'a`,
-    /// and no mutable references to the same memory may be constructed during
-    /// `'a`.
-    unsafe fn deref_helper<'a>(&self) -> &'a T {
-        // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe {
-            &*self.0.as_ptr().cast::<T>()
-        }
-    }
-}
-
-impl<B, T> Ref<B, T>
-where
-    B: ByteSliceMut,
-    T: FromBytes + IntoBytes + NoCell,
-{
-    /// Creates a mutable reference to `T` with a specific lifetime.
-    ///
-    /// # Safety
-    ///
-    /// The type bounds on this method guarantee that it is safe to create a
-    /// mutable reference to `T` from `self`. However, since the lifetime `'a`
-    /// is not required to be shorter than the lifetime of the reference to
-    /// `self`, the caller must guarantee that the lifetime `'a` is valid for
-    /// this reference. In particular, the referent must exist for all of `'a`,
-    /// and no other references - mutable or immutable - to the same memory may
-    /// be constructed during `'a`.
-    unsafe fn deref_mut_helper<'a>(&mut self) -> &'a mut T {
-        // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe {
-            &mut *self.0.as_mut_ptr().cast::<T>()
-        }
-    }
-}
-
-impl<B, T> Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes + NoCell,
-{
-    /// Creates an immutable reference to `[T]` with a specific lifetime.
-    ///
-    /// # Safety
-    ///
-    /// `deref_slice_helper` has the same safety requirements as `deref_helper`.
-    unsafe fn deref_slice_helper<'a>(&self) -> &'a [T] {
-        let len = self.0.len();
-        let elem_size = mem::size_of::<T>();
-        debug_assert_ne!(elem_size, 0);
-        // `Ref<_, [T]>` maintains the invariant that `size_of::<T>() > 0`.
-        // Thus, neither the mod nor division operations here can panic.
-        #[allow(clippy::arithmetic_side_effects)]
-        let elems = {
-            debug_assert_eq!(len % elem_size, 0);
-            len / elem_size
-        };
-        // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe {
-            slice::from_raw_parts(self.0.as_ptr().cast::<T>(), elems)
-        }
-    }
-}
-
-impl<B, T> Ref<B, [T]>
-where
-    B: ByteSliceMut,
-    T: FromBytes + IntoBytes + NoCell,
-{
-    /// Creates a mutable reference to `[T]` with a specific lifetime.
-    ///
-    /// # Safety
-    ///
-    /// `deref_mut_slice_helper` has the same safety requirements as
-    /// `deref_mut_helper`.
-    unsafe fn deref_mut_slice_helper<'a>(&mut self) -> &'a mut [T] {
-        let len = self.0.len();
-        let elem_size = mem::size_of::<T>();
-        debug_assert_ne!(elem_size, 0);
-        // `Ref<_, [T]>` maintains the invariant that `size_of::<T>() > 0`.
-        // Thus, neither the mod nor division operations here can panic.
-        #[allow(clippy::arithmetic_side_effects)]
-        let elems = {
-            debug_assert_eq!(len % elem_size, 0);
-            len / elem_size
-        };
-        // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe {
-            slice::from_raw_parts_mut(self.0.as_mut_ptr().cast::<T>(), elems)
-        }
+        self.into_mut()
     }
 }
 
@@ -5309,94 +5177,46 @@ where
 impl<B, T> Deref for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + NoCell,
+    T: FromBytes + KnownLayout + NoCell + ?Sized,
 {
     type Target = T;
     #[inline]
     fn deref(&self) -> &T {
-        // SAFETY: This is sound because the lifetime of `self` is the same as
-        // the lifetime of the return value, meaning that a) the returned
-        // reference cannot outlive `self` and, b) no mutable methods on `self`
-        // can be called during the lifetime of the returned reference. See the
-        // documentation on `deref_helper` for what invariants we are required
-        // to uphold.
-        unsafe { self.deref_helper() }
+        // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
+        // valid for `T`, and so this `unwrap` will not panic.
+        let ptr = Ptr::from_ref(self.0.deref())
+            .try_cast_into_no_leftover::<T>()
+            .expect("zerocopy internal error: Deref::deref should be infallible");
+        let ptr = ptr.bikeshed_recall_valid();
+        ptr.as_ref()
     }
 }
 
 impl<B, T> DerefMut for Ref<B, T>
 where
     B: ByteSliceMut,
-    T: FromBytes + IntoBytes + NoCell,
+    T: FromBytes + IntoBytes + KnownLayout + NoCell + ?Sized,
 {
     #[inline]
     fn deref_mut(&mut self) -> &mut T {
-        // SAFETY: This is sound because the lifetime of `self` is the same as
-        // the lifetime of the return value, meaning that a) the returned
-        // reference cannot outlive `self` and, b) no other methods on `self`
-        // can be called during the lifetime of the returned reference. See the
-        // documentation on `deref_mut_helper` for what invariants we are
-        // required to uphold.
-        unsafe { self.deref_mut_helper() }
-    }
-}
-
-impl<B, T> Deref for Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes + NoCell,
-{
-    type Target = [T];
-    #[inline]
-    fn deref(&self) -> &[T] {
-        // SAFETY: This is sound because the lifetime of `self` is the same as
-        // the lifetime of the return value, meaning that a) the returned
-        // reference cannot outlive `self` and, b) no mutable methods on `self`
-        // can be called during the lifetime of the returned reference. See the
-        // documentation on `deref_slice_helper` for what invariants we are
-        // required to uphold.
-        unsafe { self.deref_slice_helper() }
-    }
-}
-
-impl<B, T> DerefMut for Ref<B, [T]>
-where
-    B: ByteSliceMut,
-    T: FromBytes + IntoBytes + NoCell,
-{
-    #[inline]
-    fn deref_mut(&mut self) -> &mut [T] {
-        // SAFETY: This is sound because the lifetime of `self` is the same as
-        // the lifetime of the return value, meaning that a) the returned
-        // reference cannot outlive `self` and, b) no other methods on `self`
-        // can be called during the lifetime of the returned reference. See the
-        // documentation on `deref_mut_slice_helper` for what invariants we are
-        // required to uphold.
-        unsafe { self.deref_mut_slice_helper() }
+        // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
+        // valid for `T`, and so this `unwrap` will not panic.
+        let ptr = Ptr::from_mut(self.0.deref_mut())
+            .try_cast_into_no_leftover::<T>()
+            .expect("zerocopy internal error: DerefMut::deref_mut should be infallible");
+        let ptr = ptr.bikeshed_recall_valid();
+        ptr.as_mut()
     }
 }
 
 impl<T, B> Display for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + Display + NoCell,
+    T: FromBytes + Display + KnownLayout + NoCell + ?Sized,
 {
     #[inline]
     fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
         let inner: &T = self;
-        inner.fmt(fmt)
-    }
-}
-
-impl<T, B> Display for Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes + NoCell,
-    [T]: Display,
-{
-    #[inline]
-    fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
-        let inner: &[T] = self;
         inner.fmt(fmt)
     }
 }
@@ -5404,7 +5224,7 @@ where
 impl<T, B> Debug for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + Debug + NoCell,
+    T: FromBytes + Debug + KnownLayout + NoCell + ?Sized,
 {
     #[inline]
     fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
@@ -5413,47 +5233,17 @@ where
     }
 }
 
-impl<T, B> Debug for Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes + Debug + NoCell,
-{
-    #[inline]
-    fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
-        let inner: &[T] = self;
-        fmt.debug_tuple("Ref").field(&inner).finish()
-    }
-}
-
 impl<T, B> Eq for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + Eq + NoCell,
-{
-}
-
-impl<T, B> Eq for Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes + Eq + NoCell,
+    T: FromBytes + Eq + KnownLayout + NoCell + ?Sized,
 {
 }
 
 impl<T, B> PartialEq for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + PartialEq + NoCell,
-{
-    #[inline]
-    fn eq(&self, other: &Self) -> bool {
-        self.deref().eq(other.deref())
-    }
-}
-
-impl<T, B> PartialEq for Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes + PartialEq + NoCell,
+    T: FromBytes + PartialEq + KnownLayout + NoCell + ?Sized,
 {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -5464,25 +5254,12 @@ where
 impl<T, B> Ord for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + Ord + NoCell,
+    T: FromBytes + Ord + KnownLayout + NoCell + ?Sized,
 {
     #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
         let inner: &T = self;
         let other_inner: &T = other;
-        inner.cmp(other_inner)
-    }
-}
-
-impl<T, B> Ord for Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes + Ord + NoCell,
-{
-    #[inline]
-    fn cmp(&self, other: &Self) -> Ordering {
-        let inner: &[T] = self;
-        let other_inner: &[T] = other;
         inner.cmp(other_inner)
     }
 }
@@ -5490,25 +5267,12 @@ where
 impl<T, B> PartialOrd for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + PartialOrd + NoCell,
+    T: FromBytes + PartialOrd + KnownLayout + NoCell + ?Sized,
 {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         let inner: &T = self;
         let other_inner: &T = other;
-        inner.partial_cmp(other_inner)
-    }
-}
-
-impl<T, B> PartialOrd for Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: FromBytes + PartialOrd + NoCell,
-{
-    #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        let inner: &[T] = self;
-        let other_inner: &[T] = other;
         inner.partial_cmp(other_inner)
     }
 }
@@ -7393,7 +7157,7 @@ mod tests {
         assert_eq!(buf_ptr, deref_ptr);
 
         let buf = [0];
-        let r = Ref::<_, [u8]>::new_slice(&buf[..]).unwrap();
+        let r = Ref::<_, [u8]>::new(&buf[..]).unwrap();
         let buf_ptr = buf.as_ptr();
         let deref_ptr = r.deref().as_ptr();
         assert_eq!(buf_ptr, deref_ptr);
@@ -7554,7 +7318,7 @@ mod tests {
         let mut buf = Align::<[u8; 24], AU64>::default();
         // `buf.t` should be aligned to 8 and have a length which is a multiple
         // of `size_of::<AU64>()`, so this should always succeed.
-        test_new_helper_slice(Ref::<_, [AU64]>::new_slice(&mut buf.t[..]).unwrap(), 3);
+        test_new_helper_slice(Ref::<_, [AU64]>::new(&mut buf.t[..]).unwrap(), 3);
         let ascending: [u8; 24] = (0..24).collect::<Vec<_>>().try_into().unwrap();
         // 16 ascending bytes followed by 8 zeros.
         let mut ascending_prefix = ascending;
@@ -7855,7 +7619,7 @@ mod tests {
 
         let mut buf = Align::<[u8; 12], AU64>::default();
         // `buf.t` has length 12, but element size is 8.
-        assert!(Ref::<_, [AU64]>::new_slice(&buf.t[..]).is_none());
+        assert!(Ref::<_, [AU64]>::new(&buf.t[..]).is_none());
         assert!(Ref::<_, [AU64]>::new_slice_zeroed(&mut buf.t[..]).is_none());
         assert!(Ref::<_, [[u8; 8]]>::new_slice_unaligned(&buf.t[..]).is_none());
         assert!(Ref::<_, [[u8; 8]]>::new_slice_unaligned_zeroed(&mut buf.t[..]).is_none());
@@ -7886,7 +7650,7 @@ mod tests {
         assert!(Ref::<_, AU64>::new_zeroed(&mut buf.t[1..]).is_none());
         assert!(Ref::<_, AU64>::new_from_prefix(&buf.t[1..]).is_none());
         assert!(Ref::<_, AU64>::new_from_prefix_zeroed(&mut buf.t[1..]).is_none());
-        assert!(Ref::<_, [AU64]>::new_slice(&buf.t[1..]).is_none());
+        assert!(Ref::<_, [AU64]>::new(&buf.t[1..]).is_none());
         assert!(Ref::<_, [AU64]>::new_slice_zeroed(&mut buf.t[1..]).is_none());
         assert!(Ref::<_, [AU64]>::new_slice_from_prefix(&buf.t[1..], 1).is_none());
         assert!(Ref::<_, [AU64]>::new_slice_from_prefix_zeroed(&mut buf.t[1..], 1).is_none());
@@ -7940,7 +7704,7 @@ mod tests {
                 }
             }
         }
-        zst_test!(new_slice(), "new_slice");
+        zst_test!(new(), "new");
         zst_test!(new_slice_zeroed(), "new_slice");
         zst_test!(new_slice_from_prefix(1), "new_slice");
         zst_test!(new_slice_from_prefix_zeroed(1), "new_slice");
@@ -8069,7 +7833,7 @@ mod tests {
         assert_eq!(format!("{:?}", r), "Ref(0)");
 
         let buf = Align::<[u8; 8], u64>::default();
-        let r = Ref::<_, [u64]>::new_slice(&buf.t[..]).unwrap();
+        let r = Ref::<_, [u64]>::new(&buf.t[..]).unwrap();
         assert_eq!(format!("{:?}", r), "Ref([0])");
     }
 
