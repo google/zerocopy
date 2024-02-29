@@ -1330,7 +1330,6 @@ pub unsafe trait TryFromBytes {
     // TODO(#251): Require `Self: NoCell` and allow `TryFromBytes` types to
     // contain `UnsafeCell`s.
     #[inline]
-    #[doc(hidden)] // TODO(#5): Finalize name before remove this attribute.
     fn try_from_ref(bytes: &[u8]) -> Option<&Self>
     where
         Self: KnownLayout + NoCell,
@@ -1367,7 +1366,6 @@ pub unsafe trait TryFromBytes {
     // TODO(#251): Require `Self: NoCell` and allow `TryFromBytes` types to
     // contain `UnsafeCell`s.
     #[inline]
-    #[doc(hidden)] // TODO(#5): Finalize name before remove this attribute.
     fn try_from_mut(bytes: &mut [u8]) -> Option<&mut Self>
     where
         Self: KnownLayout + NoCell, // TODO(#251): Remove the `NoCell` bound.
@@ -1401,7 +1399,6 @@ pub unsafe trait TryFromBytes {
     /// [here][TryFromBytes#what-is-a-valid-instance] for a discussion of how
     /// these cases are handled.
     #[inline]
-    #[doc(hidden)] // TODO(#5): Finalize name before remove this attribute.
     fn try_read_from(bytes: &[u8]) -> Option<Self>
     where
         Self: Sized,
