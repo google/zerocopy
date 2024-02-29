@@ -2296,51 +2296,14 @@ pub unsafe trait FromBytes: FromZeros {
             .map(|(_, r)| r.into_mut())
     }
 
-    /// Interprets the given `bytes` as a `&[Self]` without copying.
-    ///
-    /// If `bytes.len() % size_of::<Self>() != 0` or `bytes` is not aligned to
-    /// `align_of::<Self>()`, this returns `None`.
-    ///
-    /// If you need to convert a specific number of slice elements, see
-    /// [`slice_from_prefix`](FromBytes::slice_from_prefix) or
-    /// [`slice_from_suffix`](FromBytes::slice_from_suffix).
-    ///
-    /// # Panics
-    ///
-    /// If `Self` is a zero-sized type.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use zerocopy::FromBytes;
-    /// # use zerocopy_derive::*;
-    ///
-    /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromBytes, NoCell)]
-    /// #[repr(C)]
-    /// struct Pixel {
-    ///     r: u8,
-    ///     g: u8,
-    ///     b: u8,
-    ///     a: u8,
-    /// }
-    ///
-    /// // These bytes encode two `Pixel`s.
-    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7][..];
-    ///
-    /// let pixels = Pixel::slice_from(bytes).unwrap();
-    ///
-    /// assert_eq!(pixels, &[
-    ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
-    ///     Pixel { r: 4, g: 5, b: 6, a: 7 },
-    /// ]);
-    /// ```
+    #[deprecated(since = "0.8.0", note = "`FromBytes::ref_from` now supports slices")]
+    #[doc(hidden)]
     #[inline]
     fn slice_from(bytes: &[u8]) -> Option<&[Self]>
     where
         Self: Sized + NoCell,
     {
-        Ref::<_, [Self]>::new(bytes).map(|r| r.into_ref())
+        <[Self]>::ref_from(bytes)
     }
 
     /// Interprets the prefix of the given `bytes` as a `&[Self]` with length
