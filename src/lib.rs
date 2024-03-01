@@ -21,28 +21,54 @@
 //! Zerocopy makes zero-cost memory manipulation effortless. We write `unsafe`
 //! so you don't have to.
 //!
+//! [customer-request-issue]: https://github.com/google/zerocopy/issues/new/choose
+//!
 //! # Overview
 //!
-//! Zerocopy provides four core marker traits, each of which can be derived
-//! (e.g., `#[derive(FromZeros)]`):
-//! - [`TryFromBytes`] indicates that a type may safely be converted from certain
-//!   byte sequences (conditional on runtime checks)
+//! ###### Conversion Traits
+//!
+//! Zerocopy provides four derivable traits for zero-cost conversions:
+//! - [`TryFromBytes`] indicates that a type may safely be converted from
+//!   certain byte sequences (conditional on runtime checks)
 //! - [`FromZeros`] indicates that a sequence of zero bytes represents a valid
 //!   instance of a type
 //! - [`FromBytes`] indicates that a type may safely be converted from an
 //!   arbitrary byte sequence
 //! - [`IntoBytes`] indicates that a type may safely be converted *to* a byte
 //!   sequence
+//!
+//! ###### Marker Traits
+//!
+//! Zerocopy provides three derivable marker traits that do not provide any
+//! functionality themselves, but are required to call certain methods provided
+//! by the conversion traits:
+//! - [`KnownLayout`] indicates that zerocopy can reason about certain layout
+//!   qualities of a type
+//! - [`NoCell`] indicates that a type does not contain any [`UnsafeCell`]s
 //! - [`Unaligned`] indicates that a type's alignment requirement is 1
 //!
-//! Types which implement a subset of these traits can then be converted to/from
-//! byte sequences with little to no runtime overhead.
+//! You should generally derive these marker traits whenever possible.
 //!
-//! Zerocopy also provides byte-order aware integer types that support these
+//! ###### Conversion Macros
+//!
+//! Zerocopy provides three macros for safe, zero-cost casting between types:
+//!
+//! - [`transmute`] converts a value of one type to a value of another type of
+//!   the same size
+//! - [`transmute_mut`] converts a mutable reference of one type to a mutable
+//!   reference of another type of the same size
+//! - [`transmute_ref`] converts transmutes a mutable or immutable reference
+//!   of one type to an immutable reference of another type of the same size
+//!
+//! These macros perform *compile-time* alignment and size checks, but cannot be
+//! used in generic contexts. For generic conversions, use the methods defined
+//! by the [conversion traits](#conversion-traits).
+//!
+//! ###### Byteorder-Aware Numerics
+//!
+//! Zerocopy provides byte-order aware integer types that support these
 //! conversions; see the [`byteorder`] module. These types are especially useful
 //! for network parsing.
-//!
-//! [customer-request-issue]: https://github.com/google/zerocopy/issues/new/choose
 //!
 //! # Cargo Features
 //!
@@ -4394,7 +4420,7 @@ macro_rules! transmute_ref {
     }}
 }
 
-/// Safely transmutes a mutable reference of one type to an mutable reference of
+/// Safely transmutes a mutable reference of one type to a mutable reference of
 /// another type of the same size.
 ///
 /// The expression `$e` must have a concrete type, `&mut T`, where `T: Sized +
