@@ -339,6 +339,27 @@ const _: () = {
     _WARNING
 };
 
+// These exist so that code which was written against the old names will get
+// less confusing error messages when they upgrade to a more recent version of
+// zerocopy. On our MSRV toolchain, the error messages read, for example:
+//
+//   error[E0603]: trait `FromZeroes` is private
+//       --> examples/deprecated.rs:1:15
+//        |
+//   1    | use zerocopy::FromZeroes;
+//        |               ^^^^^^^^^^ private trait
+//        |
+//   note: the trait `FromZeroes` is defined here
+//       --> /Users/josh/workspace/zerocopy/src/lib.rs:1845:5
+//        |
+//   1845 | use FromZeros as FromZeroes;
+//        |     ^^^^^^^^^^^^^^^^^^^^^^^
+//
+// The "note" provides enough context to make it easy to figure out how to fix
+// the error.
+#[allow(unused)]
+use {FromZeros as FromZeroes, IntoBytes as AsBytes, Ref as LayoutVerified};
+
 /// The target pointer width, counted in bits.
 const POINTER_WIDTH_BITS: usize = mem::size_of::<usize>() * 8;
 
@@ -1845,29 +1866,6 @@ pub unsafe trait FromZeros: TryFromBytes {
     }
 }
 
-// This exists so that code which was written against the old name will get a
-// less confusing error message when they upgrade to a more recent version of
-// zerocopy. On our MSRV toolchain, the error message reads:
-//
-//   error[E0603]: trait `FromZeroes` is private
-//       --> examples/deprecated.rs:1:15
-//        |
-//   1    | use zerocopy::FromZeroes;
-//        |               ^^^^^^^^^^ private trait
-//        |
-//   note: the trait `FromZeroes` is defined here
-//       --> /Users/josh/workspace/zerocopy/src/lib.rs:1845:5
-//        |
-//   1845 | use FromZeros as FromZeroes;
-//        |     ^^^^^^^^^^^^^^^^^^^^^^^
-//
-// The "note" provides enough context to make it easy to figure out how to fix
-// the error.
-#[allow(unused)]
-// See #960 for why we do this.
-#[cfg(not(__INTERNAL_USE_ONLY_DISABLE_DEPRECATED_TRAIT_ALIASES))]
-use FromZeros as FromZeroes;
-
 /// Analyzes whether a type is [`FromBytes`].
 ///
 /// This derive analyzes, at compile time, whether the annotated type satisfies
@@ -3227,29 +3225,6 @@ pub unsafe trait IntoBytes {
         Some(())
     }
 }
-
-// This exists so that code which was written against the old name will get a
-// less confusing error message when they upgrade to a more recent version of
-// zerocopy. On our MSRV toolchain, the error message reads:
-//
-//   error[E0603]: trait `AsBytes` is private
-//       --> examples/deprecated.rs:1:15
-//        |
-//   1    | use zerocopy::AsBytes;
-//        |               ^^^^^^^ private trait
-//        |
-//   note: the trait `AsBytes` is defined here
-//       --> /Users/josh/workspace/zerocopy/src/lib.rs:3216:5
-//        |
-//   3216 | use IntoBytes as AsBytes;
-//        |     ^^^^^^^^^^^^^^^^^^^^
-//
-// The "note" provides enough context to make it easy to figure out how to fix
-// the error.
-#[allow(unused)]
-// See #960 for why we do this.
-#[cfg(not(__INTERNAL_USE_ONLY_DISABLE_DEPRECATED_TRAIT_ALIASES))]
-pub use IntoBytes as AsBytes;
 
 /// Analyzes whether a type is [`Unaligned`].
 ///
@@ -4784,11 +4759,6 @@ pub struct Ref<B, T: ?Sized>(
     B,
     PhantomData<T>,
 );
-
-/// Deprecated: prefer [`Ref`] instead.
-#[deprecated(since = "0.7.0", note = "`LayoutVerified` was renamed to `Ref`")]
-#[doc(hidden)]
-pub use Ref as LayoutVerified;
 
 impl<B, T> Ref<B, T>
 where
