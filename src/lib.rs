@@ -263,10 +263,6 @@ pub use crate::wrappers::*;
 
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
-pub use zerocopy_derive::Unaligned;
-
-#[cfg(any(feature = "derive", test))]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::KnownLayout;
 
 use core::{
@@ -1161,7 +1157,7 @@ pub use zerocopy_derive::NoCell;
 /// fields. `T` may still refer to types which contain `UnsafeCell`s: for
 /// example, `&UnsafeCell<T>` implements `NoCell`.
 ///
-/// /// # Implementation
+/// # Implementation
 ///
 /// **Do not implement this trait yourself!** Instead, use
 /// [`#[derive(NoCell)]`][derive] (requires the `derive` Cargo feature);
@@ -3219,26 +3215,136 @@ pub unsafe trait IntoBytes {
 #[cfg(not(__INTERNAL_USE_ONLY_DISABLE_DEPRECATED_TRAIT_ALIASES))]
 pub use IntoBytes as AsBytes;
 
+/// Analyzes whether a type is [`Unaligned`].
+///
+/// This derive analyzes, at compile time, whether the annotated type satisfies
+/// the [safety conditions] of `Unaligned` and implements `Unaligned` if it is
+/// sound to do so. This derive can be applied to structs, enums, and unions;
+/// e.g.:
+///
+/// ```
+/// # use zerocopy_derive::Unaligned;
+/// #[derive(Unaligned)]
+/// #[repr(C)]
+/// struct MyStruct {
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(Unaligned)]
+/// #[repr(u8)]
+/// enum MyEnum {
+/// #   Variant0,
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(Unaligned)]
+/// #[repr(packed)]
+/// union MyUnion {
+/// #   variant: u8,
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// # Analysis
+///
+/// *This section describes, roughly, the analysis performed by this derive to
+/// determine whether it is sound to implement `Unaligned` for a given type.
+/// Unless you are modifying the implementation of this derive, or attempting to
+/// manually implement `Unaligned` for a type yourself, you don't need to read
+/// this section.*
+///
+/// If a type has the following properties, then this derive can implement
+/// `Unaligned` for that type:
+///
+/// - If the type is a struct or union:
+///   - If `repr(align(N))` is provided, `N` must equal 1.
+///   - If the type is `repr(C)` or `repr(transparent)`, all fields must be
+///     [`Unaligned`].
+///   - If the type is not `repr(C)` or `repr(transparent)`, it must be
+///     `repr(packed)` or `repr(packed(1))`.
+/// - If the type is an enum:
+///   - If `repr(align(N))` is provided, `N` must equal 1.
+///   - It must be a C-like enum (meaning that all variants have no fields).
+///   - It must be `repr(i8)` or `repr(u8)`.
+///
+/// [safety conditions]: trait@Unaligned#safety
+#[cfg(any(feature = "derive", test))]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+pub use zerocopy_derive::Unaligned;
+
 /// Types with no alignment requirement.
 ///
-/// WARNING: Do not implement this trait yourself! Instead, use
-/// `#[derive(Unaligned)]` (requires the `derive` Cargo feature).
-///
 /// If `T: Unaligned`, then `align_of::<T>() == 1`.
+///
+/// # Implementation
+///
+/// **Do not implement this trait yourself!** Instead, use
+/// [`#[derive(Unaligned)]`][derive] (requires the `derive` Cargo feature);
+/// e.g.:
+///
+/// ```
+/// # use zerocopy_derive::Unaligned;
+/// #[derive(Unaligned)]
+/// #[repr(C)]
+/// struct MyStruct {
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(Unaligned)]
+/// #[repr(u8)]
+/// enum MyEnum {
+/// #   Variant0,
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(Unaligned)]
+/// #[repr(packed)]
+/// union MyUnion {
+/// #   variant: u8,
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// This derive performs a sophisticated, compile-time safety analysis to
+/// determine whether a type is `Unaligned`.
 ///
 /// # Safety
 ///
 /// *This section describes what is required in order for `T: Unaligned`, and
-/// what unsafe code may assume of such types. `#[derive(Unaligned)]` only
-/// permits types which satisfy these requirements. If you don't plan on
-/// implementing `Unaligned` manually, and you don't plan on writing unsafe code
-/// that operates on `Unaligned` types, then you don't need to read this
-/// section.*
+/// what unsafe code may assume of such types. If you don't plan on implementing
+/// `Unaligned` manually, and you don't plan on writing unsafe code that
+/// operates on `Unaligned` types, then you don't need to read this section.*
 ///
 /// If `T: Unaligned`, then unsafe code may assume that it is sound to produce a
 /// reference to `T` at any memory location regardless of alignment. If a type
 /// is marked as `Unaligned` which violates this contract, it may cause
 /// undefined behavior.
+///
+/// `#[derive(Unaligned)]` only permits [types which satisfy these
+/// requirements][derive-analysis].
+///
+#[cfg_attr(
+    feature = "derive",
+    doc = "[derive]: zerocopy_derive::Unaligned",
+    doc = "[derive-analysis]: zerocopy_derive::Unaligned#analysis"
+)]
+#[cfg_attr(
+    not(feature = "derive"),
+    doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.Unaligned.html"),
+    doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.Unaligned.html#analysis"),
+)]
 pub unsafe trait Unaligned {
     // The `Self: Sized` bound makes it so that `Unaligned` is still object
     // safe.
