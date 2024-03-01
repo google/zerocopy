@@ -4794,7 +4794,7 @@ macro_rules! include_value {
 ///
 /// ```rust
 /// # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
-/// use zerocopy::{IntoBytes, ByteSlice, ByteSliceMut, FromBytes, FromZeros, KnownLayout, NoCell, Ref, Unaligned};
+/// use zerocopy::{IntoBytes, ByteSliceMut, FromBytes, FromZeros, KnownLayout, NoCell, Ref, SplitByteSlice, Unaligned};
 ///
 /// #[derive(FromBytes, IntoBytes, KnownLayout, NoCell, Unaligned)]
 /// #[repr(C)]
@@ -4810,7 +4810,7 @@ macro_rules! include_value {
 ///     body: B,
 /// }
 ///
-/// impl<B: ByteSlice> UdpPacket<B> {
+/// impl<B: SplitByteSlice> UdpPacket<B> {
 ///     pub fn parse(bytes: B) -> Option<UdpPacket<B>> {
 ///         let (header, body) = Ref::new_unaligned_from_prefix(bytes)?;
 ///         Some(UdpPacket { header, body })
@@ -4860,13 +4860,21 @@ where
         // INVARIANTS: `try_cast_into_no_leftover` validates size and alignment.
         Some(Ref(bytes, PhantomData))
     }
+}
 
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSlice,
+    T: KnownLayout + NoCell + ?Sized,
+{
     fn bikeshed_new_from_prefix_known_layout(bytes: B) -> Option<(Ref<B, T>, B)> {
         let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
         let (bytes, suffix) = bytes.split_at(split_at);
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
-        // valid `T`.
+        // valid `T`. By safety invariant on `SplitByteSlice`, `split_at` is
+        // implemented correctly, and so we can rely on it to produce the
+        // correct `bytes` and `suffix`.
         Some((Ref(bytes, PhantomData), suffix))
     }
 
@@ -4875,7 +4883,9 @@ where
         let (prefix, bytes) = bytes.split_at(split_at);
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
-        // valid `T`.
+        // valid `T`. By safety invariant on `SplitByteSlice`, `split_at` is
+        // implemented correctly, and so we can rely on it to produce the
+        // correct `prefix` and `bytes`.
         Some((prefix, Ref(bytes, PhantomData)))
     }
 }
@@ -4891,7 +4901,12 @@ where
         // INVARIANTS: We just validated size and alignment.
         Some(Ref(bytes, PhantomData))
     }
+}
 
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSlice,
+{
     fn new_sized_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
         if bytes.len() < mem::size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
             return None;
@@ -4899,7 +4914,9 @@ where
         let (bytes, suffix) = bytes.split_at(mem::size_of::<T>());
         // INVARIANTS: We just validated alignment and that `bytes` is at least
         // as large as `T`. `bytes.split_at(mem::size_of::<T>())` ensures that
-        // the new `bytes` is exactly the size of `T`.
+        // the new `bytes` is exactly the size of `T`. By safety invariant on
+        // `SplitByteSlice`, `split_at` is implemented correctly, and so we can
+        // rely on it to produce the correct `bytes` and `suffix`.
         Some((Ref(bytes, PhantomData), suffix))
     }
 
@@ -4914,6 +4931,9 @@ where
         // size_of::<T>()`, the `bytes` which results from `let (prefix, bytes)
         // = bytes.split_at(split_at)` has length `size_of::<T>()`. After
         // constructing `bytes`, we validate that it has the proper alignment.
+        // By safety invariant on `SplitByteSlice`, `split_at` is implemented
+        // correctly, and so we can rely on it to produce the correct `prefix`
+        // and `bytes`.
         Some((prefix, Ref(bytes, PhantomData)))
     }
 }
@@ -4934,7 +4954,13 @@ where
         // INVARIANTS: `try_cast_into_no_leftover` validates size and alignment.
         Some(Ref(bytes, PhantomData))
     }
+}
 
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSlice,
+    T: KnownLayout + NoCell + ?Sized,
+{
     /// Constructs a new `Ref` from the prefix of a byte slice.
     ///
     /// `new_from_prefix` verifies that `bytes.len() >= size_of::<T>()` and that
@@ -4948,7 +4974,9 @@ where
         let (bytes, suffix) = bytes.split_at(split_at);
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
-        // valid `T`.
+        // valid `T`. By safety invariant on `SplitByteSlice`, `split_at` is
+        // implemented correctly, and so we can rely on it to produce the
+        // correct `bytes` and `suffix`.
         Some((Ref(bytes, PhantomData), suffix))
     }
 
@@ -4966,7 +4994,9 @@ where
         let (prefix, bytes) = bytes.split_at(split_at);
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
-        // valid `T`.
+        // valid `T`. By safety invariant on `SplitByteSlice`, `split_at` is
+        // implemented correctly, and so we can rely on it to produce the
+        // correct `prefix` and `bytes`.
         Some((prefix, Ref(bytes, PhantomData)))
     }
 }
@@ -4982,7 +5012,13 @@ where
     pub fn new_slice(bytes: B) -> Option<Ref<B, [T]>> {
         Self::new(bytes)
     }
+}
 
+impl<B, T> Ref<B, [T]>
+where
+    B: SplitByteSlice,
+    T: NoCell,
+{
     /// Constructs a new `Ref` of a slice type from the prefix of a byte slice.
     ///
     /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() *
@@ -5078,7 +5114,13 @@ where
     pub fn new_zeroed(bytes: B) -> Option<Ref<B, T>> {
         map_zeroed(Self::new(bytes))
     }
+}
 
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSliceMut,
+    T: KnownLayout + NoCell + ?Sized,
+{
     /// Constructs a new `Ref` from the prefix of a byte slice, zeroing the
     /// prefix.
     ///
@@ -5138,7 +5180,13 @@ where
     pub fn new_slice_zeroed(bytes: B) -> Option<Ref<B, [T]>> {
         map_zeroed(Self::new(bytes))
     }
+}
 
+impl<B, T> Ref<B, [T]>
+where
+    B: SplitByteSliceMut,
+    T: NoCell,
+{
     /// Constructs a new `Ref` of a slice type from the prefix of a byte slice,
     /// after zeroing the bytes.
     ///
@@ -5197,7 +5245,13 @@ where
     pub fn new_unaligned(bytes: B) -> Option<Ref<B, T>> {
         Ref::new(bytes)
     }
+}
 
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSlice,
+    T: Unaligned + KnownLayout + NoCell + ?Sized,
+{
     /// Constructs a new `Ref` from the prefix of a byte slice for a type with
     /// no alignment requirement.
     ///
@@ -5241,7 +5295,13 @@ where
     pub fn new_slice_unaligned(bytes: B) -> Option<Ref<B, [T]>> {
         Ref::new(bytes)
     }
+}
 
+impl<B, T> Ref<B, [T]>
+where
+    B: SplitByteSlice,
+    T: Unaligned + NoCell,
+{
     /// Constructs a new `Ref` of a slice type with no alignment requirement
     /// from the prefix of a byte slice.
     ///
@@ -5296,7 +5356,13 @@ where
     pub fn new_unaligned_zeroed(bytes: B) -> Option<Ref<B, T>> {
         map_zeroed(Self::new_unaligned(bytes))
     }
+}
 
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSliceMut,
+    T: Unaligned + KnownLayout + NoCell + ?Sized,
+{
     /// Constructs a new `Ref` from the prefix of a byte slice for a type with
     /// no alignment requirement, zeroing the prefix.
     ///
@@ -5353,7 +5419,13 @@ where
     pub fn new_slice_unaligned_zeroed(bytes: B) -> Option<Ref<B, [T]>> {
         map_zeroed(Self::new_slice_unaligned(bytes))
     }
+}
 
+impl<B, T> Ref<B, [T]>
+where
+    B: SplitByteSliceMut,
+    T: Unaligned + NoCell,
+{
     /// Constructs a new `Ref` of a slice type with no alignment requirement
     /// from the prefix of a byte slice, after zeroing the bytes.
     ///
@@ -5480,7 +5552,7 @@ where
     /// Gets the underlying bytes.
     #[inline]
     pub fn bytes(&self) -> &[u8] {
-        &self.0
+        self.0.deref()
     }
 }
 
@@ -5492,7 +5564,7 @@ where
     /// Gets the underlying bytes mutably.
     #[inline]
     pub fn bytes_mut(&mut self) -> &mut [u8] {
-        &mut self.0
+        self.0.deref_mut()
     }
 }
 
@@ -5504,11 +5576,13 @@ where
     /// Reads a copy of `T`.
     #[inline]
     pub fn read(&self) -> T {
-        // SAFETY: Because of the invariants on `Ref`, we know that `self.0` is
-        // at least `size_of::<T>()` bytes long, and that it is at least as
-        // aligned as `align_of::<T>()`. Because `T: FromBytes`, it is sound to
+        // SAFETY: Because of the invariants on `Ref`, we know that `self.0` was
+        // at least `size_of::<T>()` bytes long when it was validated, and that
+        // it was at least as aligned as `align_of::<T>()`. Because of the
+        // safety invariant on `ByteSlice`, we know that these must still hold
+        // when we dereference here. Because `T: FromBytes`, it is sound to
         // interpret these bytes as a `T`.
-        unsafe { ptr::read(self.0.as_ptr().cast::<T>()) }
+        unsafe { ptr::read(self.0.deref().as_ptr().cast::<T>()) }
     }
 }
 
@@ -5520,12 +5594,14 @@ where
     /// Writes the bytes of `t` and then forgets `t`.
     #[inline]
     pub fn write(&mut self, t: T) {
-        // SAFETY: Because of the invariants on `Ref`, we know that `self.0` is
-        // at least `size_of::<T>()` bytes long, and that it is at least as
-        // aligned as `align_of::<T>()`. Writing `t` to the buffer will allow
-        // all of the bytes of `t` to be accessed as a `[u8]`, but because `T:
-        // IntoBytes`, we know this is sound.
-        unsafe { ptr::write(self.0.as_mut_ptr().cast::<T>(), t) }
+        // SAFETY: Because of the invariants on `Ref`, we know that `self.0` was
+        // at least `size_of::<T>()` bytes long when it was validated, and that
+        // it was at least as aligned as `align_of::<T>()`. Because of the
+        // safety invariant on `ByteSlice`, we know that these must still hold
+        // when we dereference here. Writing `t` to the buffer will allow all of
+        // the bytes of `t` to be accessed as a `[u8]`, but because `T:
+        // IntoBytes`, we know that this is sound.
+        unsafe { ptr::write(self.0.deref_mut().as_mut_ptr().cast::<T>(), t) }
     }
 }
 
@@ -5632,68 +5708,25 @@ where
     }
 }
 
-mod sealed {
-    pub trait ByteSliceSealed {}
-}
-
-// ByteSlice and ByteSliceMut abstract over [u8] references (&[u8], &mut [u8],
-// Ref<[u8]>, RefMut<[u8]>, etc). We rely on various behaviors of these
-// references such as that a given reference will never changes its length
-// between calls to deref() or deref_mut(), and that split_at() works as
-// expected. If ByteSlice or ByteSliceMut were not sealed, consumers could
-// implement them in a way that violated these behaviors, and would break our
-// unsafe code. Thus, we seal them and implement it only for known-good
-// reference types. For the same reason, they're unsafe traits.
-
-#[allow(clippy::missing_safety_doc)] // TODO(fxbug.dev/99068)
 /// A mutable or immutable reference to a byte slice.
 ///
 /// `ByteSlice` abstracts over the mutability of a byte slice reference, and is
-/// implemented for various special reference types such as `Ref<[u8]>` and
-/// `RefMut<[u8]>`.
+/// implemented for various special reference types such as [`Ref<[u8]>`] and
+/// [`RefMut<[u8]>`].
 ///
-/// Note that, while it would be technically possible, `ByteSlice` is not
-/// implemented for [`Vec<u8>`], as the only way to implement the [`split_at`]
-/// method would involve reallocation, and `split_at` must be a very cheap
-/// operation in order for the utilities in this crate to perform as designed.
-///
-/// [`split_at`]: crate::ByteSlice::split_at
+/// [`Ref<[u8]>`]: core::cell::Ref
+/// [`RefMut<[u8]>`]: core::cell::RefMut
 ///
 /// # Safety
 ///
-/// If `Self: Clone` or `Self: Copy`, these implementations must be "stable" in
-/// the sense that, given `bytes: Self`, if `bytes.deref()` produces a byte
-/// slice of a given address and length, any copy or clone of `bytes`,
-/// `bytes_new`, must also produce a byte slice of the same address and length
-/// from `bytes_new.deref()`.
-///
-// It may seem overkill to go to this length to ensure that this doc link never
-// breaks. We do this because it simplifies CI - it means that generating docs
-// always succeeds, so we don't need special logic to only generate docs under
-// certain features.
-#[cfg_attr(feature = "alloc", doc = "[`Vec<u8>`]: alloc::vec::Vec")]
-#[cfg_attr(
-    not(feature = "alloc"),
-    doc = "[`Vec<u8>`]: https://doc.rust-lang.org/std/vec/struct.Vec.html"
-)]
-pub unsafe trait ByteSlice:
-    Deref<Target = [u8]> + Sized + self::sealed::ByteSliceSealed
-{
-    /// Gets a raw pointer to the first byte in the slice.
-    #[inline]
-    fn as_ptr(&self) -> *const u8 {
-        <[u8]>::as_ptr(self)
-    }
-
-    /// Splits the slice at the midpoint.
-    ///
-    /// `x.split_at(mid)` returns `x[..mid]` and `x[mid..]`.
-    ///
-    /// # Panics
-    ///
-    /// `x.split_at(mid)` panics if `mid > x.len()`.
-    fn split_at(self, mid: usize) -> (Self, Self);
-}
+/// Implementations of `ByteSlice` must promise that their implementations of
+/// [`Deref`] and [`DerefMut`] are "stable". In particular, given `B: ByteSlice`
+/// and `b: B`, `b` must always dereference to a byte slice with the same
+/// address and length. This is true for both `b.deref()` and `b.deref_mut()`.
+/// If `B: Copy` or `B: Clone`, then the same is also true of copies or clones
+/// of `b`. For example, `b.deref_mut()` must return a byte slice with the same
+/// address and length as `b.clone().deref()`.
+pub unsafe trait ByteSlice: Deref<Target = [u8]> + Sized {}
 
 #[allow(clippy::missing_safety_doc)] // TODO(fxbug.dev/99068)
 /// A mutable reference to a byte slice.
@@ -5701,13 +5734,33 @@ pub unsafe trait ByteSlice:
 /// `ByteSliceMut` abstracts over various ways of storing a mutable reference to
 /// a byte slice, and is implemented for various special reference types such as
 /// `RefMut<[u8]>`.
-pub unsafe trait ByteSliceMut: ByteSlice + DerefMut {
-    /// Gets a mutable raw pointer to the first byte in the slice.
-    #[inline]
-    fn as_mut_ptr(&mut self) -> *mut u8 {
-        <[u8]>::as_mut_ptr(self)
-    }
+pub unsafe trait ByteSliceMut: ByteSlice + DerefMut {}
+
+/// A [`ByteSlice`] that can be split in two.
+///
+/// # Safety
+///
+/// Unsafe code may depend for its soundness on the assumption that `split_at`
+/// is implemented correctly. In particular, given `B: SplitByteSlice` and `b:
+/// B`, if `b.deref()` returns a byte slice with address `addr` and length
+/// `len`, then if `split <= len`, `b.split_at(split)` will return `(first,
+/// second)` such that:
+/// - `first`'s address is `addr` and its length is `split`
+/// - `second`'s address is `addr + split` and its length is `len - split`
+pub unsafe trait SplitByteSlice: ByteSlice {
+    /// Splits the slice at the midpoint.
+    ///
+    /// `x.split_at(mid)` returns `x[..mid]` and `x[mid..]`.
+    ///
+    /// # Panics
+    ///
+    /// `x.split_at(mid)` panics if `mid > x.deref().len()`.
+    fn split_at(self, mid: usize) -> (Self, Self);
 }
+
+/// A shorthand for [`SplitByteSlice`] and [`ByteSliceMut`].
+pub trait SplitByteSliceMut: SplitByteSlice + ByteSliceMut {}
+impl<B: SplitByteSlice + ByteSliceMut> SplitByteSliceMut for B {}
 
 /// A [`ByteSlice`] that conveys no ownership, and so can be converted into a
 /// byte slice.
@@ -5733,10 +5786,13 @@ pub trait IntoByteSlice<'a>: ByteSlice + Into<&'a [u8]> {}
 /// [`RefMut`]: core::cell::RefMut
 pub trait IntoByteSliceMut<'a>: ByteSliceMut + Into<&'a mut [u8]> {}
 
-impl<'a> sealed::ByteSliceSealed for &'a [u8] {}
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
-unsafe impl<'a> ByteSlice for &'a [u8] {
+unsafe impl<'a> ByteSlice for &'a [u8] {}
+
+// SAFETY: This delegates to the stdlib implementation, which is assumed to be
+// correct.
+unsafe impl<'a> SplitByteSlice for &'a [u8] {
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at(self, mid)
@@ -5745,10 +5801,13 @@ unsafe impl<'a> ByteSlice for &'a [u8] {
 
 impl<'a> IntoByteSlice<'a> for &'a [u8] {}
 
-impl<'a> sealed::ByteSliceSealed for &'a mut [u8] {}
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
-unsafe impl<'a> ByteSlice for &'a mut [u8] {
+unsafe impl<'a> ByteSlice for &'a mut [u8] {}
+
+// SAFETY: This delegates to the stdlib implementation, which is assumed to be
+// correct.
+unsafe impl<'a> SplitByteSlice for &'a mut [u8] {
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         <[u8]>::split_at_mut(self, mid)
@@ -5757,20 +5816,26 @@ unsafe impl<'a> ByteSlice for &'a mut [u8] {
 
 impl<'a> IntoByteSliceMut<'a> for &'a mut [u8] {}
 
-impl<'a> sealed::ByteSliceSealed for cell::Ref<'a, [u8]> {}
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
-unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {
+unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {}
+
+// SAFETY: This delegates to stdlib implementations, which are assumed to be
+// correct.
+unsafe impl<'a> SplitByteSlice for cell::Ref<'a, [u8]> {
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         cell::Ref::map_split(self, |slice| <[u8]>::split_at(slice, mid))
     }
 }
 
-impl<'a> sealed::ByteSliceSealed for RefMut<'a, [u8]> {}
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
-unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {
+unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {}
+
+// SAFETY: This delegates to stdlib implementations, which are assumed to be
+// correct.
+unsafe impl<'a> SplitByteSlice for RefMut<'a, [u8]> {
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
         RefMut::map_split(self, |slice| <[u8]>::split_at_mut(slice, mid))

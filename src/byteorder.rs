@@ -35,7 +35,7 @@
 //!
 //! ```rust,edition2021
 //! # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
-//! use zerocopy::{IntoBytes, ByteSlice, FromBytes, KnownLayout, NoCell, Ref, Unaligned};
+//! use zerocopy::{IntoBytes, FromBytes, KnownLayout, NoCell, Ref, SplitByteSlice, Unaligned};
 //! use zerocopy::byteorder::network_endian::U16;
 //!
 //! #[derive(FromBytes, IntoBytes, KnownLayout, NoCell, Unaligned)]
@@ -47,12 +47,12 @@
 //!     checksum: U16,
 //! }
 //!
-//! struct UdpPacket<B: ByteSlice> {
+//! struct UdpPacket<B> {
 //!     header: Ref<B, UdpHeader>,
 //!     body: B,
 //! }
 //!
-//! impl<B: ByteSlice> UdpPacket<B> {
+//! impl<B: SplitByteSlice> UdpPacket<B> {
 //!     fn parse(bytes: B) -> Option<UdpPacket<B>> {
 //!         let (header, body) = Ref::new_from_prefix(bytes)?;
 //!         Some(UdpPacket { header, body })
