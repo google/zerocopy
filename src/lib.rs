@@ -1823,12 +1823,28 @@ pub unsafe trait FromZeros: TryFromBytes {
     }
 }
 
-/// Deprecated: prefer [`FromZeros`] instead.
-#[deprecated(since = "0.8.0", note = "`FromZeroes` was renamed to `FromZeros`")]
-#[doc(hidden)]
+// This exists so that code which was written against the old name will get a
+// less confusing error message when they upgrade to a more recent version of
+// zerocopy. On our MSRV toolchain, the error message reads:
+//
+//   error[E0603]: trait `FromZeroes` is private
+//       --> examples/deprecated.rs:1:15
+//        |
+//   1    | use zerocopy::FromZeroes;
+//        |               ^^^^^^^^^^ private trait
+//        |
+//   note: the trait `FromZeroes` is defined here
+//       --> /Users/josh/workspace/zerocopy/src/lib.rs:1845:5
+//        |
+//   1845 | use FromZeros as FromZeroes;
+//        |     ^^^^^^^^^^^^^^^^^^^^^^^
+//
+// The "note" provides enough context to make it easy to figure out how to fix
+// the error.
+#[allow(unused)]
 // See #960 for why we do this.
 #[cfg(not(__INTERNAL_USE_ONLY_DISABLE_DEPRECATED_TRAIT_ALIASES))]
-pub use FromZeros as FromZeroes;
+use FromZeros as FromZeroes;
 
 /// Analyzes whether a type is [`FromBytes`].
 ///
@@ -3180,9 +3196,25 @@ pub unsafe trait IntoBytes {
     }
 }
 
-/// Deprecated: prefer [`IntoBytes`] instead.
-#[deprecated(since = "0.8.0", note = "`AsBytes` was renamed to `IntoBytes`")]
-#[doc(hidden)]
+// This exists so that code which was written against the old name will get a
+// less confusing error message when they upgrade to a more recent version of
+// zerocopy. On our MSRV toolchain, the error message reads:
+//
+//   error[E0603]: trait `AsBytes` is private
+//       --> examples/deprecated.rs:1:15
+//        |
+//   1    | use zerocopy::AsBytes;
+//        |               ^^^^^^^ private trait
+//        |
+//   note: the trait `AsBytes` is defined here
+//       --> /Users/josh/workspace/zerocopy/src/lib.rs:3216:5
+//        |
+//   3216 | use IntoBytes as AsBytes;
+//        |     ^^^^^^^^^^^^^^^^^^^^
+//
+// The "note" provides enough context to make it easy to figure out how to fix
+// the error.
+#[allow(unused)]
 // See #960 for why we do this.
 #[cfg(not(__INTERNAL_USE_ONLY_DISABLE_DEPRECATED_TRAIT_ALIASES))]
 pub use IntoBytes as AsBytes;
