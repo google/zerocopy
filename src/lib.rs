@@ -4760,6 +4760,21 @@ pub struct Ref<B, T: ?Sized>(
     PhantomData<T>,
 );
 
+impl<B: ByteSlice + Clone, T: ?Sized> Clone for Ref<B, T> {
+    #[inline]
+    fn clone(&self) -> Ref<B, T> {
+        // INVARIANTS: By invariant on `self.0`, it is aligned to `T`'s
+        // alignment and its size corresponds to a valid size for `T`. By safety
+        // invariant on `ByteSlice`, these properties are preserved by `clone`.
+        Ref(self.0.clone(), PhantomData)
+    }
+}
+
+// INVARIANTS: By invariant on `Ref`'s `.0` field, it is aligned to `T`'s
+// alignment and its size corresponds to a valid size for `T`. By safety
+// invariant on `ByteSlice`, these properties are preserved by `Copy`.
+impl<B: ByteSlice + Copy, T: ?Sized> Copy for Ref<B, T> {}
+
 impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
@@ -5568,6 +5583,15 @@ mod sealed {
 /// operation in order for the utilities in this crate to perform as designed.
 ///
 /// [`split_at`]: crate::ByteSlice::split_at
+///
+/// # Safety
+///
+/// If `Self: Clone` or `Self: Copy`, these implementations must be "stable" in
+/// the sense that, given `bytes: Self`, if `bytes.deref()` produces a byte
+/// slice of a given address and length, any copy or clone of `bytes`,
+/// `bytes_new`, must also produce a byte slice of the same address and length
+/// from `bytes_new.deref()`.
+///
 // It may seem overkill to go to this length to ensure that this doc link never
 // breaks. We do this because it simplifies CI - it means that generating docs
 // always succeeds, so we don't need special logic to only generate docs under
