@@ -3034,6 +3034,16 @@ pub unsafe trait IntoBytes {
         unsafe { slice::from_raw_parts_mut(slf.cast::<u8>(), len) }
     }
 
+    #[deprecated(since = "0.8.0", note = "`IntoBytes::as_bytes_mut` was renamed to `as_mut_bytes`")]
+    #[doc(hidden)]
+    #[inline]
+    fn as_bytes_mut(&mut self) -> &mut [u8]
+    where
+        Self: FromBytes + NoCell,
+    {
+        self.as_mut_bytes()
+    }
+
     /// Writes a copy of `self` to `bytes`.
     ///
     /// If `bytes.len() != size_of_val(self)`, `write_to` returns `None`.
