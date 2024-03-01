@@ -287,10 +287,6 @@ mod wrappers;
 pub use crate::byteorder::*;
 pub use crate::wrappers::*;
 
-#[cfg(any(feature = "derive", test))]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
-pub use zerocopy_derive::KnownLayout;
-
 use core::{
     cell::{self, RefMut, UnsafeCell},
     cmp::Ordering,
@@ -955,19 +951,98 @@ impl DstLayout {
     }
 }
 
-/// A trait which carries information about a type's layout that is used by the
-/// internals of this crate.
+/// Implements [`KnownLayout`].
 ///
-/// This trait is not meant for consumption by code outside of this crate. While
-/// the normal semver stability guarantees apply with respect to which types
-/// implement this trait and which trait implementations are implied by this
-/// trait, no semver stability guarantees are made regarding its internals
-/// (which are `#[doc(hidden)]`); they may change at any time, and code which
-/// makes use of them may break.
+/// This derive analyzes various aspects of a type's layout that are needed for
+/// some of zerocopy's APIs. It can be applied to structs, enums, and unions;
+/// e.g.:
+///
+/// ```
+/// # use zerocopy_derive::KnownLayout;
+/// #[derive(KnownLayout)]
+/// struct MyStruct {
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(KnownLayout)]
+/// enum MyEnum {
+/// #   V00,
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(KnownLayout)]
+/// union MyUnion {
+/// #   variant: u8,
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// # Limitations
+///
+/// This derive cannot currently be applied to unsized structs without an
+/// explicit `repr` attribute.
+#[cfg(any(feature = "derive", test))]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+pub use zerocopy_derive::KnownLayout;
+
+/// Indicates that zerocopy can reason about certain aspects of a type's layout.
+///
+/// This trait is required by many of zerocopy's APIs.
+///
+/// # Implementation
+///
+/// **Do not implement this trait yourself!** Instead, use
+/// [`#[derive(KnownLayout)]`][derive] (requires the `derive` Cargo feature);
+/// e.g.:
+///
+/// ```
+/// # use zerocopy_derive::KnownLayout;
+/// #[derive(KnownLayout)]
+/// struct MyStruct {
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(KnownLayout)]
+/// enum MyEnum {
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(KnownLayout)]
+/// union MyUnion {
+/// #   variant: u8,
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// This derive performs a sophisticated analysis to deduce the layout
+/// characteristics of types. You **must** implement this trait via the derive.
 ///
 /// # Safety
 ///
 /// This trait does not convey any safety guarantees to code outside this crate.
+///
+/// You must not rely on the `#[doc(hidden)]` internals of `KnownLayout`. Future
+/// releases of zerocopy may make backwards-breaking changes to these items,
+/// including changes that only affect soundness, which may cause code which
+/// uses those items to silently become unsound.
+///
+#[cfg_attr(feature = "derive", doc = "[derive]: zerocopy_derive::KnownLayout")]
+#[cfg_attr(
+    not(feature = "derive"),
+    doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.KnownLayout.html"),
+)]
 pub unsafe trait KnownLayout {
     // The `Self: Sized` bound makes it so that `KnownLayout` can still be
     // object safe. It's not currently object safe thanks to `const LAYOUT`, and
