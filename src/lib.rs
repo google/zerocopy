@@ -1540,10 +1540,6 @@ pub unsafe trait TryFromBytes {
     {
         let candidate = Ptr::from_ref(bytes).try_cast_into_no_leftover::<Self>()?;
 
-        // SAFETY: `candidate` has no uninitialized sub-ranges because it
-        // derived from `bytes: &[u8]`.
-        let candidate = unsafe { candidate.assume_validity::<invariant::Initialized>() };
-
         // This call may panic. If that happens, it doesn't cause any soundness
         // issues, as we have not generated any invalid state which we need to
         // fix before returning.
@@ -1575,10 +1571,6 @@ pub unsafe trait TryFromBytes {
         Self: KnownLayout + NoCell, // TODO(#251): Remove the `NoCell` bound.
     {
         let candidate = Ptr::from_mut(bytes).try_cast_into_no_leftover::<Self>()?;
-
-        // SAFETY: `candidate` has no uninitialized sub-ranges because it
-        // derived from `bytes: &mut [u8]`.
-        let candidate = unsafe { candidate.assume_validity::<invariant::Initialized>() };
 
         // This call may panic. If that happens, it doesn't cause any soundness
         // issues, as we have not generated any invalid state which we need to
