@@ -23,7 +23,9 @@ use crate::{
 ///
 /// `T: TransparentWrapper` implies that `T` has the same size and field offsets
 /// as [`T::Inner`]. Note that this implies that `T` has [`UnsafeCell`]s
-/// covering the same byte ranges as `T::Inner`.
+/// covering the same byte ranges as `T::Inner`. This further implies that `T`
+/// has zero-sized `UnsafeCell`s (e.g., `UnsafeCell<()>`, `[UnsafeCell<u8>; 0]`,
+/// etc) at the same byte offsets as `T::Inner`.
 ///
 /// Further, `T: TransparentWrapper<I>` implies that:
 /// - If a `T` pointer satisfies the alignment invariant `I::Alignment`, then
@@ -100,7 +102,7 @@ impl<I: invariant::Validity> ValidityVariance<I> for Invariant {
 // SAFETY:
 // - Per [1], `MaybeUninit<T>` has the same layout as `Inner = T`.
 // - Per [2], `MaybeUninit<T>` has `UnsafeCell`s at the same byte ranges as
-//   `Inner = T`.
+//   `Inner = T`, and `UnsafeCell`s at the same byte offsets as `T`.
 // - See inline comments for other safety justifications.
 //
 // [1] Per https://doc.rust-lang.org/std/mem/union.MaybeUninit.html#layout-1:
@@ -139,7 +141,7 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for MaybeUninit<T> {
 // SAFETY:
 // - Per [1], `ManuallyDrop<T>` has the same layout as `Inner = T`.
 // - Per [2], `ManuallyDrop<T>` has `UnsafeCell`s at the same byte ranges as
-//   `Inner = T`.
+//   `Inner = T`, and `UnsafeCell`s at the same byte offsets as `T`.
 // - See inline comments for other safety justifications.
 //
 // [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
@@ -181,7 +183,7 @@ unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for ManuallyDrop<T> 
 // SAFETY:
 // - Per [1], `Wrapping<T>` has the same layout as `Inner = T`.
 // - Per [2], `Wrapping<T>` has `UnsafeCell`s at the same byte ranges as `Inner
-//   = T`.
+//   = T`, and `UnsafeCell`s at the same byte offsets as `T`.
 // - See inline comments for other safety justifications.
 //
 // [1] Per https://doc.rust-lang.org/core/num/struct.Wrapping.html#layout-1:
@@ -229,7 +231,8 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Wrapping<T> {
 
 // SAFETY: We define `Unalign<T>` to be a `#[repr(C, packed)]` type wrapping a
 // single `T` field. Thus, `Unalign<T>` has the same size and field offsets as
-// `T`, and has `UnsafeCell`s at the same byte ranges as `T`.
+// `T`, has `UnsafeCell`s at the same byte ranges as `T`, and has `UnsafeCell`s
+// at the same byte offsets as `T`.
 //
 // See inline comments for other safety justifications.
 unsafe impl<T, I: Invariants> TransparentWrapper<I> for Unalign<T> {
