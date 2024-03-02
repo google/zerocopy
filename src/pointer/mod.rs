@@ -37,6 +37,7 @@ where
     Alignment: invariant::Alignment,
 {
     /// Reads the value from `MaybeAligned`.
+    #[must_use]
     #[inline]
     pub fn read_unaligned(self) -> T
     where
@@ -52,6 +53,7 @@ where
     /// Views the value as an aligned reference.
     ///
     /// This is only available if `T` is [`Unaligned`].
+    #[must_use]
     #[inline]
     pub fn unaligned_as_ref(self) -> &'a T
     where

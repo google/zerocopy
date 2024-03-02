@@ -419,6 +419,7 @@ example of how it can be used for parsing UDP packets.
 
             /// Constructs a new value from bytes which are already in `O` byte
             /// order.
+            #[must_use = "has no side effects"]
             #[inline(always)]
             pub const fn from_bytes(bytes: [u8; $bytes]) -> $name<O> {
                 $name(bytes, PhantomData)
@@ -427,6 +428,7 @@ example of how it can be used for parsing UDP packets.
             /// Extracts the bytes of `self` without swapping the byte order.
             ///
             /// The returned bytes will be in `O` byte order.
+            #[must_use = "has no side effects"]
             #[inline(always)]
             pub const fn to_bytes(self) -> [u8; $bytes] {
                 self.0
@@ -438,6 +440,7 @@ example of how it can be used for parsing UDP packets.
                 /// Constructs a new value, possibly performing an endianness
                 /// swap to guarantee that the returned value has endianness
                 /// `O`.
+                #[must_use = "has no side effects"]
                 #[inline(always)]
                 pub const fn new(n: $native) -> $name<O> {
                     let bytes = match O::ORDER {
@@ -453,6 +456,7 @@ example of how it can be used for parsing UDP packets.
                 /// Returns the value as a primitive type, possibly performing
                 /// an endianness swap to guarantee that the return value has
                 /// the endianness of the native platform.
+                #[must_use = "has no side effects"]
                 #[inline(always)]
                 pub const fn get(self) -> $native {
                     match O::ORDER {

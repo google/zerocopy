@@ -788,6 +788,7 @@ mod _transitions {
         /// The caller promises that `Ptr`'s referent conforms to the validity
         /// requirement of `V`.
         #[doc(hidden)]
+        #[must_use]
         #[inline]
         pub unsafe fn assume_validity<V: invariant::Validity>(
             self,
@@ -804,6 +805,7 @@ mod _transitions {
         /// The caller promises to uphold the safety preconditions of
         /// `self.assume_validity<invariant::Initialized>()`.
         #[doc(hidden)]
+        #[must_use]
         #[inline]
         pub unsafe fn assume_initialized(
             self,
@@ -820,6 +822,7 @@ mod _transitions {
         /// The caller promises to uphold the safety preconditions of
         /// `self.assume_validity<invariant::Valid>()`.
         #[doc(hidden)]
+        #[must_use]
         #[inline]
         pub unsafe fn assume_valid(
             self,
@@ -878,6 +881,7 @@ mod _transitions {
         /// Forgets that `Ptr`'s referent exclusively references `T`,
         /// downgrading to a shared reference.
         #[doc(hidden)]
+        #[must_use]
         #[inline]
         pub fn forget_exclusive(self) -> Ptr<'a, T, (invariant::Shared, I::Alignment, I::Validity)>
         where
@@ -889,6 +893,7 @@ mod _transitions {
 
         /// Forgets that `Ptr`'s referent is validly-aligned for `T`.
         #[doc(hidden)]
+        #[must_use]
         #[inline]
         pub fn forget_aligned(self) -> Ptr<'a, T, (I::Aliasing, invariant::Any, I::Validity)> {
             // SAFETY: `Any` is less restrictive than `Aligned`.

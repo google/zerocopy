@@ -205,13 +205,17 @@
     clippy::correctness,
     clippy::dbg_macro,
     clippy::decimal_literal_representation,
+    clippy::double_must_use,
     clippy::get_unwrap,
     clippy::indexing_slicing,
     clippy::missing_inline_in_public_items,
     clippy::missing_safety_doc,
+    clippy::must_use_candidate,
+    clippy::must_use_unit,
     clippy::obfuscated_if_else,
     clippy::perf,
     clippy::print_stdout,
+    clippy::return_self_not_must_use,
     clippy::std_instead_of_core,
     clippy::style,
     clippy::suspicious,
@@ -490,6 +494,7 @@ impl DstLayout {
     ///
     /// Unsafe code may assume that the contract of this function is satisfied.
     #[doc(hidden)]
+    #[must_use]
     #[inline]
     pub const fn new_zst(repr_align: Option<NonZeroUsize>) -> DstLayout {
         let align = match repr_align {
@@ -508,6 +513,7 @@ impl DstLayout {
     ///
     /// Unsafe code may assume that `DstLayout` is the correct layout for `T`.
     #[doc(hidden)]
+    #[must_use]
     #[inline]
     pub const fn for_type<T>() -> DstLayout {
         // SAFETY: `align` is correct by construction. `T: Sized`, and so it is
@@ -574,6 +580,7 @@ impl DstLayout {
     /// cannot appear in a valid Rust type (e.g., the concatenation of the
     /// layouts would lead to a size larger than `isize::MAX`).
     #[doc(hidden)]
+    #[must_use]
     #[inline]
     pub const fn extend(self, field: DstLayout, repr_packed: Option<NonZeroUsize>) -> Self {
         use util::{max, min, padding_needed_for};
@@ -713,6 +720,7 @@ impl DstLayout {
     /// appear in a valid Rust type (e.g., because the addition of trailing
     /// padding would lead to a size larger than `isize::MAX`).
     #[doc(hidden)]
+    #[must_use]
     #[inline]
     pub const fn pad_to_align(self) -> Self {
         use util::padding_needed_for;
@@ -1531,8 +1539,7 @@ pub unsafe trait TryFromBytes {
     /// there exist types whose bit validity is ambiguous. See
     /// [here][TryFromBytes#what-is-a-valid-instance] for a discussion of how
     /// these cases are handled.
-    // TODO(#251): Require `Self: NoCell` and allow `TryFromBytes` types to
-    // contain `UnsafeCell`s.
+    #[must_use = "has no side effects"]
     #[inline]
     fn try_from_ref(bytes: &[u8]) -> Option<&Self>
     where
@@ -1567,8 +1574,7 @@ pub unsafe trait TryFromBytes {
     /// there exist types whose bit validity is ambiguous. See
     /// [here][TryFromBytes#what-is-a-valid-instance] for a discussion of how
     /// these cases are handled.
-    // TODO(#251): Require `Self: NoCell` and allow `TryFromBytes` types to
-    // contain `UnsafeCell`s.
+    #[must_use = "has no side effects"]
     #[inline]
     fn try_from_mut(bytes: &mut [u8]) -> Option<&mut Self>
     where
@@ -1602,6 +1608,7 @@ pub unsafe trait TryFromBytes {
     /// there exist types whose bit validity is ambiguous. See
     /// [here][TryFromBytes#what-is-a-valid-instance] for a discussion of how
     /// these cases are handled.
+    #[must_use = "has no side effects"]
     #[inline]
     fn try_read_from(bytes: &[u8]) -> Option<Self>
     where
@@ -1788,6 +1795,7 @@ pub unsafe trait FromZeros: TryFromBytes {
     /// assert_eq!(header.length, [0, 0]);
     /// assert_eq!(header.checksum, [0, 0]);
     /// ```
+    #[must_use = "has no side effects"]
     #[inline(always)]
     fn new_zeroed() -> Self
     where
@@ -1815,6 +1823,7 @@ pub unsafe trait FromZeros: TryFromBytes {
     /// # Panics
     ///
     /// Panics if allocation of `size_of::<Self>()` bytes fails.
+    #[must_use = "has no side effects (other than allocation)"]
     #[cfg(any(feature = "alloc", test))]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
     #[inline]
@@ -1863,6 +1872,7 @@ pub unsafe trait FromZeros: TryFromBytes {
     ///
     /// * Panics if `size_of::<Self>() * len` overflows.
     /// * Panics if allocation of `size_of::<Self>() * len` bytes fails.
+    #[must_use = "has no side effects (other than allocation)"]
     #[cfg(feature = "alloc")]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
     #[inline]
@@ -1930,6 +1940,7 @@ pub unsafe trait FromZeros: TryFromBytes {
     ///
     /// * Panics if `size_of::<Self>() * len` overflows.
     /// * Panics if allocation of `size_of::<Self>() * len` bytes fails.
+    #[must_use = "has no side effects (other than allocation)"]
     #[cfg(feature = "alloc")]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
     #[inline(always)]
@@ -2182,6 +2193,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(packet.header.checksum, [6, 7]);
     /// assert_eq!(packet.body, [8, 9, 10, 11]);
     /// ```
+    #[must_use = "has no side effects"]
     #[inline]
     fn ref_from(bytes: &[u8]) -> Option<&Self>
     where
@@ -2232,6 +2244,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(packet.header.checksum, [6, 7]);
     /// assert_eq!(packet.body, [[8, 9], [10, 11], [12, 13]]);
     /// ```
+    #[must_use = "has no side effects"]
     #[inline]
     fn ref_from_prefix(bytes: &[u8]) -> Option<&Self>
     where
@@ -2268,6 +2281,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// assert_eq!(trailer.frame_check_sequence, [6, 7, 8, 9]);
     /// ```
+    #[must_use = "has no side effects"]
     #[inline]
     fn ref_from_suffix(bytes: &[u8]) -> Option<&Self>
     where
@@ -2310,6 +2324,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 0, 0]);
     /// ```
+    #[must_use = "has no side effects"]
     #[inline]
     fn mut_from(bytes: &mut [u8]) -> Option<&mut Self>
     where
@@ -2357,6 +2372,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 0, 0, 8, 9]);
     /// ```
+    #[must_use = "has no side effects"]
     #[inline]
     fn mut_from_prefix(bytes: &mut [u8]) -> Option<&mut Self>
     where
@@ -2398,6 +2414,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 0, 0, 0, 0]);
     /// ```
+    #[must_use = "has no side effects"]
     #[inline]
     fn mut_from_suffix(bytes: &mut [u8]) -> Option<&mut Self>
     where
@@ -2408,6 +2425,7 @@ pub unsafe trait FromBytes: FromZeros {
     }
 
     #[deprecated(since = "0.8.0", note = "`FromBytes::ref_from` now supports slices")]
+    #[allow(clippy::must_use_candidate)]
     #[doc(hidden)]
     #[inline]
     fn slice_from(bytes: &[u8]) -> Option<&[Self]>
@@ -2460,6 +2478,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// assert_eq!(rest, &[8, 9]);
     /// ```
+    #[must_use = "has no side effects"]
     #[inline]
     fn slice_from_prefix(bytes: &[u8], count: usize) -> Option<(&[Self], &[u8])>
     where
@@ -2511,6 +2530,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///     Pixel { r: 6, g: 7, b: 8, a: 9 },
     /// ]);
     /// ```
+    #[must_use = "has no side effects"]
     #[inline]
     fn slice_from_suffix(bytes: &[u8], count: usize) -> Option<(&[u8], &[Self])>
     where
@@ -2562,6 +2582,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// assert_eq!(bytes, [0, 1, 2, 3, 0, 0, 0, 0]);
     /// ```
+    #[must_use = "has no side effects"]
     #[inline]
     fn mut_slice_from(bytes: &mut [u8]) -> Option<&mut [Self]>
     where
@@ -2617,6 +2638,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// assert_eq!(bytes, [0, 1, 2, 3, 0, 0, 0, 0, 8, 9]);
     /// ```
+    #[must_use = "has no side effects"]
     #[inline]
     fn mut_slice_from_prefix(bytes: &mut [u8], count: usize) -> Option<(&mut [Self], &mut [u8])>
     where
@@ -2672,6 +2694,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 0, 0, 0, 0]);
     /// ```
+    #[must_use = "has no side effects"]
     #[inline]
     fn mut_slice_from_suffix(bytes: &mut [u8], count: usize) -> Option<(&mut [u8], &mut [Self])>
     where
@@ -2709,6 +2732,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(header.length, [4, 5]);
     /// assert_eq!(header.checksum, [6, 7]);
     /// ```
+    #[must_use = "has no side effects"]
     #[inline]
     fn read_from(bytes: &[u8]) -> Option<Self>
     where
@@ -2748,6 +2772,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(header.length, [4, 5]);
     /// assert_eq!(header.checksum, [6, 7]);
     /// ```
+    #[must_use = "has no side effects"]
     #[inline]
     fn read_from_prefix(bytes: &[u8]) -> Option<Self>
     where
@@ -2781,6 +2806,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// assert_eq!(trailer.frame_check_sequence, [6, 7, 8, 9]);
     /// ```
+    #[must_use = "has no side effects"]
     #[inline]
     fn read_from_suffix(bytes: &[u8]) -> Option<Self>
     where
@@ -2998,6 +3024,7 @@ pub unsafe trait IntoBytes {
     ///
     /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 6, 7]);
     /// ```
+    #[must_use = "has no side effects"]
     #[inline(always)]
     fn as_bytes(&self) -> &[u8]
     where
@@ -3074,6 +3101,7 @@ pub unsafe trait IntoBytes {
     ///     checksum: [1, 0],
     /// });
     /// ```
+    #[must_use = "has no side effects"]
     #[inline(always)]
     fn as_mut_bytes(&mut self) -> &mut [u8]
     where
@@ -3163,6 +3191,7 @@ pub unsafe trait IntoBytes {
     /// assert!(write_result.is_none());
     /// assert_eq!(excessive_bytes, [0u8; 128]);
     /// ```
+    #[must_use = "callers should check the return value to see if the operation succeeded"]
     #[inline]
     fn write_to(&self, bytes: &mut [u8]) -> Option<()>
     where
@@ -3223,6 +3252,7 @@ pub unsafe trait IntoBytes {
     /// assert!(write_result.is_none());
     /// assert_eq!(insufficent_bytes, [0, 0]);
     /// ```
+    #[must_use = "callers should check the return value to see if the operation succeeded"]
     #[inline]
     fn write_to_prefix(&self, bytes: &mut [u8]) -> Option<()>
     where
@@ -3287,6 +3317,7 @@ pub unsafe trait IntoBytes {
     /// assert!(write_result.is_none());
     /// assert_eq!(insufficent_bytes, [0, 0]);
     /// ```
+    #[must_use = "callers should check the return value to see if the operation succeeded"]
     #[inline]
     fn write_to_suffix(&self, bytes: &mut [u8]) -> Option<()>
     where
@@ -4451,11 +4482,12 @@ macro_rules! transmute {
             // `core::mem::transmute`, this macro would not work in `std`
             // contexts in which `core` was not manually imported. This is not a
             // problem for 2018 edition crates.
-            unsafe {
+            let u = unsafe {
                 // Clippy: It's okay to transmute a type to itself.
                 #[allow(clippy::useless_transmute)]
                 $crate::macro_util::core_reexport::mem::transmute(e)
-            }
+            };
+            $crate::macro_util::must_use(u)
         }
     }}
 }
@@ -4581,7 +4613,8 @@ macro_rules! transmute_ref {
             //   the use of `assert_size_eq!` above.
             // - We know that `align_of::<Src>() >= align_of::<Dst>()` thanks to
             //   the use of `assert_align_gt_eq!` above.
-            unsafe { $crate::macro_util::transmute_ref(e) }
+            let u = unsafe { $crate::macro_util::transmute_ref(e) };
+            $crate::macro_util::must_use(u)
         }
     }}
 }
@@ -4727,7 +4760,8 @@ macro_rules! transmute_mut {
             //   the use of `assert_size_eq!` above.
             // - We know that `align_of::<Src>() >= align_of::<Dst>()` thanks to
             //   the use of `assert_align_gt_eq!` above.
-            unsafe { $crate::macro_util::transmute_mut(e) }
+            let u = unsafe { $crate::macro_util::transmute_mut(e) };
+            $crate::macro_util::must_use(u)
         }
     }}
 }
@@ -4855,6 +4889,7 @@ where
     B: ByteSlice,
     T: KnownLayout + NoCell + ?Sized,
 {
+    #[must_use = "has no side effects"]
     fn bikeshed_new_known_layout(bytes: B) -> Option<Ref<B, T>> {
         let _ = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T>()?;
         // INVARIANTS: `try_cast_into_no_leftover` validates size and alignment.
@@ -4867,6 +4902,7 @@ where
     B: SplitByteSlice,
     T: KnownLayout + NoCell + ?Sized,
 {
+    #[must_use = "has no side effects"]
     fn bikeshed_new_from_prefix_known_layout(bytes: B) -> Option<(Ref<B, T>, B)> {
         let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
         let (bytes, suffix) = bytes.split_at(split_at);
@@ -4878,6 +4914,7 @@ where
         Some((Ref(bytes, PhantomData), suffix))
     }
 
+    #[must_use = "has no side effects"]
     fn bikeshed_new_from_suffix_known_layout(bytes: B) -> Option<(B, Ref<B, T>)> {
         let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
         let (prefix, bytes) = bytes.split_at(split_at);
@@ -4894,6 +4931,7 @@ impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
 {
+    #[must_use = "has no side effects"]
     fn new_sized(bytes: B) -> Option<Ref<B, T>> {
         if bytes.len() != mem::size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
             return None;
@@ -4907,6 +4945,7 @@ impl<B, T> Ref<B, T>
 where
     B: SplitByteSlice,
 {
+    #[must_use = "has no side effects"]
     fn new_sized_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
         if bytes.len() < mem::size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
             return None;
@@ -4920,6 +4959,7 @@ where
         Some((Ref(bytes, PhantomData), suffix))
     }
 
+    #[must_use = "has no side effects"]
     fn new_sized_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
         let bytes_len = bytes.len();
         let split_at = bytes_len.checked_sub(mem::size_of::<T>())?;
@@ -4948,6 +4988,7 @@ where
     /// `new` verifies that `bytes.len() == size_of::<T>()` and that `bytes` is
     /// aligned to `align_of::<T>()`, and constructs a new `Ref`. If either of
     /// these checks fail, it returns `None`.
+    #[must_use = "has no side effects"]
     #[inline]
     pub fn new(bytes: B) -> Option<Ref<B, T>> {
         let _ = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T>()?;
@@ -4968,6 +5009,7 @@ where
     /// `size_of::<T>()` bytes from `bytes` to construct a `Ref`, and returns
     /// the remaining bytes to the caller. If either the length or alignment
     /// checks fail, it returns `None`.
+    #[must_use = "has no side effects"]
     #[inline]
     pub fn new_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
         let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
@@ -4988,6 +5030,7 @@ where
     /// `bytes` to construct a `Ref`, and returns the preceding bytes to the
     /// caller. If either the length or alignment checks fail, it returns
     /// `None`.
+    #[must_use = "has no side effects"]
     #[inline]
     pub fn new_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
         let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
@@ -5031,6 +5074,7 @@ where
     /// # Panics
     ///
     /// `new_slice_from_prefix` panics if `T` is a zero-sized type.
+    #[must_use = "has no side effects"]
     #[inline]
     pub fn new_slice_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, [T]>, B)> {
         let expected_len = match mem::size_of::<T>().checked_mul(count) {
@@ -5056,6 +5100,7 @@ where
     /// # Panics
     ///
     /// `new_slice_from_suffix` panics if `T` is a zero-sized type.
+    #[must_use = "has no side effects"]
     #[inline]
     pub fn new_slice_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, [T]>)> {
         let expected_len = match mem::size_of::<T>().checked_mul(count) {
@@ -5110,6 +5155,7 @@ where
     /// If the checks succeed, then `bytes` will be initialized to zero. This
     /// can be useful when re-using buffers to ensure that sensitive data
     /// previously stored in the buffer is not leaked.
+    #[must_use]
     #[inline(always)]
     pub fn new_zeroed(bytes: B) -> Option<Ref<B, T>> {
         map_zeroed(Self::new(bytes))
@@ -5133,6 +5179,7 @@ where
     /// If the checks succeed, then the prefix which is consumed will be
     /// initialized to zero. This can be useful when re-using buffers to ensure
     /// that sensitive data previously stored in the buffer is not leaked.
+    #[must_use]
     #[inline(always)]
     pub fn new_from_prefix_zeroed(bytes: B) -> Option<(Ref<B, T>, B)> {
         map_prefix_tuple_zeroed(Self::new_from_prefix(bytes))
@@ -5192,6 +5239,7 @@ where
     /// # Panics
     ///
     /// `new_slice_from_prefix_zeroed` panics if `T` is a zero-sized type.
+    #[must_use]
     #[inline(always)]
     pub fn new_slice_from_prefix_zeroed(bytes: B, count: usize) -> Option<(Ref<B, [T]>, B)> {
         map_prefix_tuple_zeroed(Self::new_slice_from_prefix(bytes, count))
@@ -5214,6 +5262,7 @@ where
     /// # Panics
     ///
     /// `new_slice_from_suffix_zeroed` panics if `T` is a zero-sized type.
+    #[must_use]
     #[inline(always)]
     pub fn new_slice_from_suffix_zeroed(bytes: B, count: usize) -> Option<(B, Ref<B, [T]>)> {
         map_suffix_tuple_zeroed(Self::new_slice_from_suffix(bytes, count))
@@ -5229,6 +5278,7 @@ where
     ///
     /// `new_unaligned` verifies that `bytes.len() == size_of::<T>()` and
     /// constructs a new `Ref`. If the check fails, it returns `None`.
+    #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn new_unaligned(bytes: B) -> Option<Ref<B, T>> {
         Ref::new(bytes)
@@ -5247,6 +5297,7 @@ where
     /// size_of::<T>()`. It consumes the first `size_of::<T>()` bytes from
     /// `bytes` to construct a `Ref`, and returns the remaining bytes to the
     /// caller. If the length check fails, it returns `None`.
+    #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn new_unaligned_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
         Ref::new_from_prefix(bytes)
@@ -5259,6 +5310,7 @@ where
     /// size_of::<T>()`. It consumes the last `size_of::<T>()` bytes from
     /// `bytes` to construct a `Ref`, and returns the preceding bytes to the
     /// caller. If the length check fails, it returns `None`.
+    #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn new_unaligned_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
         Ref::new_from_suffix(bytes)
@@ -5296,6 +5348,7 @@ where
     /// # Panics
     ///
     /// `new_slice_unaligned_from_prefix` panics if `T` is a zero-sized type.
+    #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn new_slice_unaligned_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, [T]>, B)> {
         Ref::new_slice_from_prefix(bytes, count)
@@ -5313,6 +5366,7 @@ where
     /// # Panics
     ///
     /// `new_slice_unaligned_from_suffix` panics if `T` is a zero-sized type.
+    #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn new_slice_unaligned_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, [T]>)> {
         Ref::new_slice_from_suffix(bytes, count)
@@ -5333,6 +5387,7 @@ where
     /// If the check succeeds, then `bytes` will be initialized to zero. This
     /// can be useful when re-using buffers to ensure that sensitive data
     /// previously stored in the buffer is not leaked.
+    #[must_use]
     #[inline(always)]
     pub fn new_unaligned_zeroed(bytes: B) -> Option<Ref<B, T>> {
         map_zeroed(Self::new_unaligned(bytes))
@@ -5355,6 +5410,7 @@ where
     /// If the check succeeds, then the prefix which is consumed will be
     /// initialized to zero. This can be useful when re-using buffers to ensure
     /// that sensitive data previously stored in the buffer is not leaked.
+    #[must_use]
     #[inline(always)]
     pub fn new_unaligned_from_prefix_zeroed(bytes: B) -> Option<(Ref<B, T>, B)> {
         map_prefix_tuple_zeroed(Self::new_unaligned_from_prefix(bytes))
@@ -5371,6 +5427,7 @@ where
     /// If the check succeeds, then the suffix which is consumed will be
     /// initialized to zero. This can be useful when re-using buffers to ensure
     /// that sensitive data previously stored in the buffer is not leaked.
+    #[must_use]
     #[inline(always)]
     pub fn new_unaligned_from_suffix_zeroed(bytes: B) -> Option<(B, Ref<B, T>)> {
         map_suffix_tuple_zeroed(Self::new_unaligned_from_suffix(bytes))
@@ -5413,6 +5470,7 @@ where
     ///
     /// `new_slice_unaligned_from_prefix_zeroed` panics if `T` is a zero-sized
     /// type.
+    #[must_use]
     #[inline(always)]
     pub fn new_slice_unaligned_from_prefix_zeroed(
         bytes: B,
@@ -5438,6 +5496,7 @@ where
     ///
     /// `new_slice_unaligned_from_suffix_zeroed` panics if `T` is a zero-sized
     /// type.
+    #[must_use]
     #[inline(always)]
     pub fn new_slice_unaligned_from_suffix_zeroed(
         bytes: B,
@@ -5455,6 +5514,7 @@ where
     /// Converts this `Ref` into a reference.
     ///
     /// `into_ref` consumes the `Ref`, and returns a reference to `T`.
+    #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn into_ref(self) -> &'a T {
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
@@ -5475,6 +5535,7 @@ where
     /// Converts this `Ref` into a mutable reference.
     ///
     /// `into_mut` consumes the `Ref`, and returns a mutable reference to `T`.
+    #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn into_mut(self) -> &'a mut T {
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
@@ -5543,6 +5604,7 @@ where
     T: FromBytes,
 {
     /// Reads a copy of `T`.
+    #[must_use = "has no side effects"]
     #[inline]
     pub fn read(&self) -> T {
         // SAFETY: Because of the invariants on `Ref`, we know that `self.0` was
@@ -5724,6 +5786,7 @@ pub unsafe trait SplitByteSlice: ByteSlice {
     /// # Panics
     ///
     /// `x.split_at(mid)` panics if `mid > x.deref().len()`.
+    #[must_use]
     fn split_at(self, mid: usize) -> (Self, Self);
 }
 

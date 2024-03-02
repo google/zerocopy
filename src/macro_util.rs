@@ -404,6 +404,13 @@ pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
     unsafe { &mut *dst }
 }
 
+/// A function which emits a warning if its return value is not used.
+#[must_use]
+#[inline(always)]
+pub const fn must_use<T>(t: T) -> T {
+    t
+}
+
 // NOTE: We can't change this to a `pub use core as core_reexport` until [1] is
 // fixed or we update to a semver-breaking version (as of this writing, 0.8.0)
 // on the `main` branch.
