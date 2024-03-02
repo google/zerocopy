@@ -25,7 +25,7 @@ so you don't have to.
 
 ## Overview
 
-####### Conversion Traits
+###### Conversion Traits
 
 Zerocopy provides four derivable traits for zero-cost conversions:
 - `TryFromBytes` indicates that a type may safely be converted from
@@ -37,7 +37,7 @@ Zerocopy provides four derivable traits for zero-cost conversions:
 - `IntoBytes` indicates that a type may safely be converted *to* a byte
   sequence
 
-####### Marker Traits
+###### Marker Traits
 
 Zerocopy provides three derivable marker traits that do not provide any
 functionality themselves, but are required to call certain methods provided
@@ -49,7 +49,7 @@ by the conversion traits:
 
 You should generally derive these marker traits whenever possible.
 
-####### Conversion Macros
+###### Conversion Macros
 
 Zerocopy provides three macros for safe, zero-cost casting between types:
 
@@ -64,7 +64,7 @@ These macros perform *compile-time* alignment and size checks, but cannot be
 used in generic contexts. For generic conversions, use the methods defined
 by the [conversion traits](#conversion-traits).
 
-####### Byteorder-Aware Numerics
+###### Byteorder-Aware Numerics
 
 Zerocopy provides byte-order aware integer types that support these
 conversions; see the `byteorder` module. These types are especially useful
