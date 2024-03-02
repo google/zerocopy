@@ -2521,11 +2521,25 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(rest, &[8, 9]);
     /// ```
     #[inline]
+    fn from_prefix_with_trailing_elements(bytes: &[u8], count: usize) -> Option<(&Self, &[u8])>
+    where
+        Self: KnownLayout<PointerMetadata = usize> + NoCell,
+    {
+        Ref::<_, Self>::with_trailing_elements_from_prefix(bytes, count)
+            .map(|(r, b)| (r.into_ref(), b))
+    }
+
+    #[deprecated(
+        since = "0.8.0",
+        note = "renamed to `FromBytes::from_prefix_with_trailing_elements`"
+    )]
+    #[doc(hidden)]
+    #[inline]
     fn slice_from_prefix(bytes: &[u8], count: usize) -> Option<(&[Self], &[u8])>
     where
         Self: Sized + NoCell,
     {
-        Ref::<_, [Self]>::new_slice_from_prefix(bytes, count).map(|(r, b)| (r.into_ref(), b))
+        <[Self]>::from_prefix_with_trailing_elements(bytes, count)
     }
 
     /// Interprets the suffix of the given `bytes` as a `&[Self]` with length
@@ -2572,62 +2586,35 @@ pub unsafe trait FromBytes: FromZeros {
     /// ]);
     /// ```
     #[inline]
+    fn from_suffix_with_trailing_elements(bytes: &[u8], count: usize) -> Option<(&[u8], &Self)>
+    where
+        Self: KnownLayout<PointerMetadata = usize> + NoCell,
+    {
+        Ref::<_, Self>::with_trailing_elements_from_suffix(bytes, count)
+            .map(|(b, r)| (b, r.into_ref()))
+    }
+
+    #[deprecated(
+        since = "0.8.0",
+        note = "renamed to `FromBytes::from_prefix_with_trailing_elements`"
+    )]
+    #[doc(hidden)]
+    #[inline]
     fn slice_from_suffix(bytes: &[u8], count: usize) -> Option<(&[u8], &[Self])>
     where
         Self: Sized + NoCell,
     {
-        Ref::<_, [Self]>::new_slice_from_suffix(bytes, count).map(|(b, r)| (b, r.into_ref()))
+        <[Self]>::from_suffix_with_trailing_elements(bytes, count)
     }
 
-    /// Interprets the given `bytes` as a `&mut [Self]` without copying.
-    ///
-    /// If `bytes.len() % size_of::<T>() != 0` or `bytes` is not aligned to
-    /// `align_of::<T>()`, this returns `None`.
-    ///
-    /// If you need to convert a specific number of slice elements, see
-    /// [`mut_slice_from_prefix`](FromBytes::mut_slice_from_prefix) or
-    /// [`mut_slice_from_suffix`](FromBytes::mut_slice_from_suffix).
-    ///
-    /// # Panics
-    ///
-    /// If `T` is a zero-sized type.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use zerocopy::FromBytes;
-    /// # use zerocopy_derive::*;
-    ///
-    /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromBytes, IntoBytes, NoCell)]
-    /// #[repr(C)]
-    /// struct Pixel {
-    ///     r: u8,
-    ///     g: u8,
-    ///     b: u8,
-    ///     a: u8,
-    /// }
-    ///
-    /// // These bytes encode two `Pixel`s.
-    /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7][..];
-    ///
-    /// let pixels = Pixel::mut_slice_from(bytes).unwrap();
-    ///
-    /// assert_eq!(pixels, &[
-    ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
-    ///     Pixel { r: 4, g: 5, b: 6, a: 7 },
-    /// ]);
-    ///
-    /// pixels[1] = Pixel { r: 0, g: 0, b: 0, a: 0 };
-    ///
-    /// assert_eq!(bytes, [0, 1, 2, 3, 0, 0, 0, 0]);
-    /// ```
+    #[deprecated(since = "0.8.0", note = "`FromBytes::mut_from` now supports slices")]
+    #[doc(hidden)]
     #[inline]
     fn mut_slice_from(bytes: &mut [u8]) -> Option<&mut [Self]>
     where
         Self: Sized + IntoBytes + NoCell,
     {
-        Ref::<_, [Self]>::new(bytes).map(|r| r.into_mut())
+        <[Self]>::mut_from(bytes)
     }
 
     /// Interprets the prefix of the given `bytes` as a `&mut [Self]` with length
@@ -2678,11 +2665,28 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(bytes, [0, 1, 2, 3, 0, 0, 0, 0, 8, 9]);
     /// ```
     #[inline]
-    fn mut_slice_from_prefix(bytes: &mut [u8], count: usize) -> Option<(&mut [Self], &mut [u8])>
+    fn mut_from_prefix_with_trailing_elements(
+        bytes: &mut [u8],
+        count: usize,
+    ) -> Option<(&mut Self, &mut [u8])>
     where
-        Self: Sized + IntoBytes + NoCell,
+        Self: IntoBytes + KnownLayout<PointerMetadata = usize> + NoCell,
     {
-        Ref::<_, [Self]>::new_slice_from_prefix(bytes, count).map(|(r, b)| (r.into_mut(), b))
+        Ref::<_, Self>::with_trailing_elements_from_prefix(bytes, count)
+            .map(|(r, b)| (r.into_mut(), b))
+    }
+
+    #[deprecated(
+        since = "0.8.0",
+        note = "renamed to `FromBytes::mut_from_prefix_with_trailing_elements`"
+    )]
+    #[doc(hidden)]
+    #[inline]
+    fn mut_slice_from_prefix(bytes: &[u8], count: usize) -> Option<(&[Self], &[u8])>
+    where
+        Self: Sized + NoCell,
+    {
+        <[Self]>::from_prefix_with_trailing_elements(bytes, count)
     }
 
     /// Interprets the suffix of the given `bytes` as a `&mut [Self]` with length
@@ -2733,11 +2737,28 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 0, 0, 0, 0]);
     /// ```
     #[inline]
+    fn mut_from_suffix_with_trailing_elements(
+        bytes: &mut [u8],
+        count: usize,
+    ) -> Option<(&mut [u8], &mut Self)>
+    where
+        Self: IntoBytes + KnownLayout<PointerMetadata = usize> + NoCell,
+    {
+        Ref::<_, Self>::with_trailing_elements_from_suffix(bytes, count)
+            .map(|(b, r)| (b, r.into_mut()))
+    }
+
+    #[deprecated(
+        since = "0.8.0",
+        note = "renamed to `FromBytes::mut_from_suffix_with_trailing_elements`"
+    )]
+    #[doc(hidden)]
+    #[inline]
     fn mut_slice_from_suffix(bytes: &mut [u8], count: usize) -> Option<(&mut [u8], &mut [Self])>
     where
         Self: Sized + IntoBytes + NoCell,
     {
-        Ref::<_, [Self]>::new_slice_from_suffix(bytes, count).map(|(b, r)| (b, r.into_mut()))
+        <[Self]>::mut_from_suffix_with_trailing_elements(bytes, count)
     }
 
     /// Reads a copy of `Self` from `bytes`.
@@ -5061,6 +5082,63 @@ where
     }
 }
 
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSlice,
+    T: KnownLayout<PointerMetadata = usize> + NoCell + ?Sized,
+{
+    #[doc(hidden)]
+    #[inline]
+    pub fn with_trailing_elements(bytes: B, count: usize) -> Option<Ref<B, T>> {
+        let expected_len = match count.size_for_metadata(T::LAYOUT) {
+            Some(len) => len,
+            None => return None,
+        };
+        if bytes.len() != expected_len {
+            return None;
+        }
+        Self::new(bytes)
+    }
+}
+
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSlice,
+    T: KnownLayout<PointerMetadata = usize> + NoCell + ?Sized,
+{
+    #[doc(hidden)]
+    #[inline]
+    pub fn with_trailing_elements_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, T>, B)> {
+        let expected_len = match count.size_for_metadata(T::LAYOUT) {
+            Some(len) => len,
+            None => return None,
+        };
+        if bytes.len() < expected_len {
+            return None;
+        }
+        let (prefix, bytes) = bytes.split_at(expected_len);
+        Self::new(prefix).map(move |l| (l, bytes))
+    }
+}
+
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSlice,
+    T: KnownLayout<PointerMetadata = usize> + NoCell + ?Sized,
+{
+    #[doc(hidden)]
+    #[inline]
+    pub fn with_trailing_elements_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, T>)> {
+        let expected_len = match count.size_for_metadata(T::LAYOUT) {
+            Some(len) => len,
+            None => return None,
+        };
+        let split_at = bytes.len().checked_sub(expected_len)?;
+        let (bytes, suffix) = bytes.split_at(split_at);
+        Self::new(suffix).map(move |l| (bytes, l))
+    }
+}
+
 impl<B, T> Ref<B, [T]>
 where
     B: ByteSlice,
@@ -5079,52 +5157,18 @@ where
     B: SplitByteSlice,
     T: NoCell,
 {
-    /// Constructs a new `Ref` of a slice type from the prefix of a byte slice.
-    ///
-    /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() *
-    /// count` and that `bytes` is aligned to `align_of::<T>()`. It consumes the
-    /// first `size_of::<T>() * count` bytes from `bytes` to construct a `Ref`,
-    /// and returns the remaining bytes to the caller. It also ensures that
-    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
-    /// length, alignment, or overflow checks fail, it returns `None`.
-    ///
-    /// # Panics
-    ///
-    /// `new_slice_from_prefix` panics if `T` is a zero-sized type.
+    #[deprecated(since = "0.8.0", note = "replaced by `Ref::with_trailing_elements_from_prefix`")]
+    #[doc(hidden)]
     #[inline]
     pub fn new_slice_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, [T]>, B)> {
-        let expected_len = match mem::size_of::<T>().checked_mul(count) {
-            Some(len) => len,
-            None => return None,
-        };
-        if bytes.len() < expected_len {
-            return None;
-        }
-        let (prefix, bytes) = bytes.split_at(expected_len);
-        Self::new(prefix).map(move |l| (l, bytes))
+        Ref::with_trailing_elements_from_prefix(bytes, count)
     }
 
-    /// Constructs a new `Ref` of a slice type from the suffix of a byte slice.
-    ///
-    /// `new_slice_from_suffix` verifies that `bytes.len() >= size_of::<T>() *
-    /// count` and that `bytes` is aligned to `align_of::<T>()`. It consumes the
-    /// last `size_of::<T>() * count` bytes from `bytes` to construct a `Ref`,
-    /// and returns the preceding bytes to the caller. It also ensures that
-    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
-    /// length, alignment, or overflow checks fail, it returns `None`.
-    ///
-    /// # Panics
-    ///
-    /// `new_slice_from_suffix` panics if `T` is a zero-sized type.
+    #[deprecated(since = "0.8.0", note = "replaced by `Ref::with_trailing_elements_from_suffix`")]
+    #[doc(hidden)]
     #[inline]
     pub fn new_slice_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, [T]>)> {
-        let expected_len = match mem::size_of::<T>().checked_mul(count) {
-            Some(len) => len,
-            None => return None,
-        };
-        let split_at = bytes.len().checked_sub(expected_len)?;
-        let (bytes, suffix) = bytes.split_at(split_at);
-        Self::new(suffix).map(move |l| (bytes, l))
+        Ref::with_trailing_elements_from_suffix(bytes, count)
     }
 }
 
@@ -5230,53 +5274,59 @@ where
     }
 }
 
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSliceMut,
+    T: KnownLayout<PointerMetadata = usize> + NoCell + ?Sized,
+{
+    #[doc(hidden)]
+    #[inline(always)]
+    pub fn with_trailing_elements_zeroed(bytes: B, count: usize) -> Option<Ref<B, T>> {
+        map_zeroed(Self::with_trailing_elements(bytes, count))
+    }
+
+    #[doc(hidden)]
+    #[inline(always)]
+    pub fn with_trailing_elements_from_prefix_zeroed(
+        bytes: B,
+        count: usize,
+    ) -> Option<(Ref<B, T>, B)> {
+        map_prefix_tuple_zeroed(Self::with_trailing_elements_from_prefix(bytes, count))
+    }
+
+    #[doc(hidden)]
+    #[inline(always)]
+    pub fn with_trailing_elements_from_suffix_zeroed(
+        bytes: B,
+        count: usize,
+    ) -> Option<(B, Ref<B, T>)> {
+        map_suffix_tuple_zeroed(Self::with_trailing_elements_from_suffix(bytes, count))
+    }
+}
+
 impl<B, T> Ref<B, [T]>
 where
     B: SplitByteSliceMut,
     T: NoCell,
 {
-    /// Constructs a new `Ref` of a slice type from the prefix of a byte slice,
-    /// after zeroing the bytes.
-    ///
-    /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() *
-    /// count` and that `bytes` is aligned to `align_of::<T>()`. It consumes the
-    /// first `size_of::<T>() * count` bytes from `bytes` to construct a `Ref`,
-    /// and returns the remaining bytes to the caller. It also ensures that
-    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
-    /// length, alignment, or overflow checks fail, it returns `None`.
-    ///
-    /// If the checks succeed, then the suffix which is consumed will be
-    /// initialized to zero. This can be useful when re-using buffers to ensure
-    /// that sensitive data previously stored in the buffer is not leaked.
-    ///
-    /// # Panics
-    ///
-    /// `new_slice_from_prefix_zeroed` panics if `T` is a zero-sized type.
+    #[deprecated(
+        since = "0.8.0",
+        note = "replaced by `Ref::with_trailing_elements_from_prefix_zeroed`"
+    )]
+    #[doc(hidden)]
     #[inline(always)]
     pub fn new_slice_from_prefix_zeroed(bytes: B, count: usize) -> Option<(Ref<B, [T]>, B)> {
-        map_prefix_tuple_zeroed(Self::new_slice_from_prefix(bytes, count))
+        Self::with_trailing_elements_from_prefix_zeroed(bytes, count)
     }
 
-    /// Constructs a new `Ref` of a slice type from the prefix of a byte slice,
-    /// after zeroing the bytes.
-    ///
-    /// `new_slice_from_suffix` verifies that `bytes.len() >= size_of::<T>() *
-    /// count` and that `bytes` is aligned to `align_of::<T>()`. It consumes the
-    /// last `size_of::<T>() * count` bytes from `bytes` to construct a `Ref`,
-    /// and returns the preceding bytes to the caller. It also ensures that
-    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
-    /// length, alignment, or overflow checks fail, it returns `None`.
-    ///
-    /// If the checks succeed, then the consumed suffix will be initialized to
-    /// zero. This can be useful when re-using buffers to ensure that sensitive
-    /// data previously stored in the buffer is not leaked.
-    ///
-    /// # Panics
-    ///
-    /// `new_slice_from_suffix_zeroed` panics if `T` is a zero-sized type.
+    #[deprecated(
+        since = "0.8.0",
+        note = "replaced by `Ref::with_trailing_elements_from_suffix_zeroed`"
+    )]
+    #[doc(hidden)]
     #[inline(always)]
     pub fn new_slice_from_suffix_zeroed(bytes: B, count: usize) -> Option<(B, Ref<B, [T]>)> {
-        map_suffix_tuple_zeroed(Self::new_slice_from_suffix(bytes, count))
+        Self::with_trailing_elements_from_suffix_zeroed(bytes, count)
     }
 }
 
