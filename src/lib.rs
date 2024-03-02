@@ -1065,8 +1065,9 @@ pub unsafe trait KnownLayout {
     where
         Self: Sized;
 
-    /// `()` for sized types and `usize` for slice DSTs.
-    #[doc(hidden)]
+    /// The type of metadata stored in a pointer to `Self`.
+    ///
+    /// This is `()` for sized types and `usize` for slice DSTs.
     type PointerMetadata: PointerMetadata;
 
     #[doc(hidden)]
@@ -2530,11 +2531,26 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
+    fn from_prefix_with_trailing_elements(bytes: &[u8], count: usize) -> Option<(&Self, &[u8])>
+    where
+        Self: KnownLayout<PointerMetadata = usize> + Immutable,
+    {
+        Ref::<_, Self>::with_trailing_elements_from_prefix(bytes, count)
+            .map(|(r, b)| (r.into_ref(), b))
+    }
+
+    #[deprecated(
+        since = "0.8.0",
+        note = "renamed to `FromBytes::from_prefix_with_trailing_elements`"
+    )]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline]
     fn slice_from_prefix(bytes: &[u8], count: usize) -> Option<(&[Self], &[u8])>
     where
         Self: Sized + Immutable,
     {
-        Ref::<_, [Self]>::new_slice_from_prefix(bytes, count).map(|(r, b)| (r.into_ref(), b))
+        <[Self]>::from_prefix_with_trailing_elements(bytes, count)
     }
 
     /// Interprets the suffix of the given `bytes` as a `&[Self]` with length
@@ -2581,63 +2597,37 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
+    fn from_suffix_with_trailing_elements(bytes: &[u8], count: usize) -> Option<(&[u8], &Self)>
+    where
+        Self: KnownLayout<PointerMetadata = usize> + Immutable,
+    {
+        Ref::<_, Self>::with_trailing_elements_from_suffix(bytes, count)
+            .map(|(b, r)| (b, r.into_ref()))
+    }
+
+    #[deprecated(
+        since = "0.8.0",
+        note = "renamed to `FromBytes::from_prefix_with_trailing_elements`"
+    )]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline]
     fn slice_from_suffix(bytes: &[u8], count: usize) -> Option<(&[u8], &[Self])>
     where
         Self: Sized + Immutable,
     {
-        Ref::<_, [Self]>::new_slice_from_suffix(bytes, count).map(|(b, r)| (b, r.into_ref()))
+        <[Self]>::from_suffix_with_trailing_elements(bytes, count)
     }
 
-    /// Interprets the given `bytes` as a `&mut [Self]` without copying.
-    ///
-    /// If `bytes.len() % size_of::<T>() != 0` or `bytes` is not aligned to
-    /// `align_of::<T>()`, this returns `None`.
-    ///
-    /// If you need to convert a specific number of slice elements, see
-    /// [`mut_slice_from_prefix`](FromBytes::mut_slice_from_prefix) or
-    /// [`mut_slice_from_suffix`](FromBytes::mut_slice_from_suffix).
-    ///
-    /// # Panics
-    ///
-    /// If `T` is a zero-sized type.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use zerocopy::FromBytes;
-    /// # use zerocopy_derive::*;
-    ///
-    /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromBytes, IntoBytes, Immutable)]
-    /// #[repr(C)]
-    /// struct Pixel {
-    ///     r: u8,
-    ///     g: u8,
-    ///     b: u8,
-    ///     a: u8,
-    /// }
-    ///
-    /// // These bytes encode two `Pixel`s.
-    /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7][..];
-    ///
-    /// let pixels = Pixel::mut_slice_from(bytes).unwrap();
-    ///
-    /// assert_eq!(pixels, &[
-    ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
-    ///     Pixel { r: 4, g: 5, b: 6, a: 7 },
-    /// ]);
-    ///
-    /// pixels[1] = Pixel { r: 0, g: 0, b: 0, a: 0 };
-    ///
-    /// assert_eq!(bytes, [0, 1, 2, 3, 0, 0, 0, 0]);
-    /// ```
+    #[deprecated(since = "0.8.0", note = "`FromBytes::mut_from` now supports slices")]
     #[must_use = "has no side effects"]
+    #[doc(hidden)]
     #[inline]
     fn mut_slice_from(bytes: &mut [u8]) -> Option<&mut [Self]>
     where
         Self: Sized + IntoBytes + Immutable,
     {
-        Ref::<_, [Self]>::new(bytes).map(|r| r.into_mut())
+        <[Self]>::mut_from(bytes)
     }
 
     /// Interprets the prefix of the given `bytes` as a `&mut [Self]` with
@@ -2661,7 +2651,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromBytes, IntoBytes, Immutable)]
+    /// #[derive(KnownLayout, FromBytes, IntoBytes, Immutable)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2673,7 +2663,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode two `Pixel`s.
     /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let (pixels, rest) = Pixel::mut_slice_from_prefix(bytes, 2).unwrap();
+    /// let (pixels, rest) = <[Pixel]>::mut_from_prefix_with_trailing_elements(bytes, 2).unwrap();
     ///
     /// assert_eq!(pixels, &[
     ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
@@ -2689,11 +2679,29 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn mut_slice_from_prefix(bytes: &mut [u8], count: usize) -> Option<(&mut [Self], &mut [u8])>
+    fn mut_from_prefix_with_trailing_elements(
+        bytes: &mut [u8],
+        count: usize,
+    ) -> Option<(&mut Self, &mut [u8])>
     where
-        Self: Sized + IntoBytes + Immutable,
+        Self: IntoBytes + KnownLayout<PointerMetadata = usize> + Immutable,
     {
-        Ref::<_, [Self]>::new_slice_from_prefix(bytes, count).map(|(r, b)| (r.into_mut(), b))
+        Ref::<_, Self>::with_trailing_elements_from_prefix(bytes, count)
+            .map(|(r, b)| (r.into_mut(), b))
+    }
+
+    #[deprecated(
+        since = "0.8.0",
+        note = "renamed to `FromBytes::mut_from_prefix_with_trailing_elements`"
+    )]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline]
+    fn mut_slice_from_prefix(bytes: &[u8], count: usize) -> Option<(&[Self], &[u8])>
+    where
+        Self: Sized + Immutable,
+    {
+        <[Self]>::from_prefix_with_trailing_elements(bytes, count)
     }
 
     /// Interprets the suffix of the given `bytes` as a `&mut [Self]` with length
@@ -2745,11 +2753,28 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
+    fn mut_from_suffix_with_trailing_elements(
+        bytes: &mut [u8],
+        count: usize,
+    ) -> Option<(&mut [u8], &mut Self)>
+    where
+        Self: IntoBytes + KnownLayout<PointerMetadata = usize> + Immutable,
+    {
+        Ref::<_, Self>::with_trailing_elements_from_suffix(bytes, count)
+            .map(|(b, r)| (b, r.into_mut()))
+    }
+
+    #[deprecated(
+        since = "0.8.0",
+        note = "renamed to `FromBytes::mut_from_suffix_with_trailing_elements`"
+    )]
+    #[doc(hidden)]
+    #[inline]
     fn mut_slice_from_suffix(bytes: &mut [u8], count: usize) -> Option<(&mut [u8], &mut [Self])>
     where
         Self: Sized + IntoBytes + Immutable,
     {
-        Ref::<_, [Self]>::new_slice_from_suffix(bytes, count).map(|(b, r)| (b, r.into_mut()))
+        <[Self]>::mut_from_suffix_with_trailing_elements(bytes, count)
     }
 
     /// Reads a copy of `Self` from `bytes`.
@@ -5086,58 +5111,44 @@ where
     }
 }
 
-impl<B, T> Ref<B, [T]>
+impl<B, T> Ref<B, T>
 where
     B: SplitByteSlice,
-    T: Immutable,
+    T: KnownLayout<PointerMetadata = usize> + Immutable + ?Sized,
 {
-    /// Constructs a new `Ref` of a slice type from the prefix of a byte slice.
-    ///
-    /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() *
-    /// count` and that `bytes` is aligned to `align_of::<T>()`. It consumes the
-    /// first `size_of::<T>() * count` bytes from `bytes` to construct a `Ref`,
-    /// and returns the remaining bytes to the caller. It also ensures that
-    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
-    /// length, alignment, or overflow checks fail, it returns `None`.
-    ///
-    /// # Panics
-    ///
-    /// `new_slice_from_prefix` panics if `T` is a zero-sized type.
-    #[must_use = "has no side effects"]
+    // TODO(#29), TODO(#871): Pick a name and make this public. Make sure to
+    // update references to this name in `#[deprecated]` attributes elsewhere.
+    #[doc(hidden)]
     #[inline]
-    pub fn new_slice_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, [T]>, B)> {
-        let expected_len = match mem::size_of::<T>().checked_mul(count) {
+    pub fn with_trailing_elements_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, T>, B)> {
+        let expected_len = match count.size_for_metadata(T::LAYOUT) {
             Some(len) => len,
             None => return None,
         };
         if bytes.len() < expected_len {
             return None;
         }
-        let (prefix, bytes) = try_split_at(bytes, expected_len)?;
+        let (prefix, bytes) = bytes.split_at(expected_len);
         Self::new(prefix).map(move |l| (l, bytes))
     }
+}
 
-    /// Constructs a new `Ref` of a slice type from the suffix of a byte slice.
-    ///
-    /// `new_slice_from_suffix` verifies that `bytes.len() >= size_of::<T>() *
-    /// count` and that `bytes` is aligned to `align_of::<T>()`. It consumes the
-    /// last `size_of::<T>() * count` bytes from `bytes` to construct a `Ref`,
-    /// and returns the preceding bytes to the caller. It also ensures that
-    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
-    /// length, alignment, or overflow checks fail, it returns `None`.
-    ///
-    /// # Panics
-    ///
-    /// `new_slice_from_suffix` panics if `T` is a zero-sized type.
-    #[must_use = "has no side effects"]
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSlice,
+    T: KnownLayout<PointerMetadata = usize> + Immutable + ?Sized,
+{
+    // TODO(#29), TODO(#871): Pick a name and make this public. Make sure to
+    // update references to this name in `#[deprecated]` attributes elsewhere.
+    #[doc(hidden)]
     #[inline]
-    pub fn new_slice_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, [T]>)> {
-        let expected_len = match mem::size_of::<T>().checked_mul(count) {
+    pub fn with_trailing_elements_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, T>)> {
+        let expected_len = match count.size_for_metadata(T::LAYOUT) {
             Some(len) => len,
             None => return None,
         };
         let split_at = bytes.len().checked_sub(expected_len)?;
-        let (bytes, suffix) = try_split_at(bytes, split_at)?;
+        let (bytes, suffix) = bytes.split_at(split_at);
         Self::new(suffix).map(move |l| (bytes, l))
     }
 }
@@ -5190,46 +5201,37 @@ where
     }
 }
 
-impl<B, T> Ref<B, [T]>
+impl<B, T> Ref<B, T>
 where
     B: SplitByteSlice,
-    T: Unaligned + Immutable,
+    T: KnownLayout<PointerMetadata = usize> + Unaligned + Immutable + ?Sized,
 {
-    /// Constructs a new `Ref` of a slice type with no alignment requirement
-    /// from the prefix of a byte slice.
-    ///
-    /// `new_slice_from_prefix` verifies that `bytes.len() >= size_of::<T>() *
-    /// count`. It consumes the first `size_of::<T>() * count` bytes from
-    /// `bytes` to construct a `Ref`, and returns the remaining bytes to the
-    /// caller. It also ensures that `sizeof::<T>() * count` does not overflow a
-    /// `usize`. If either the length, or overflow checks fail, it returns
-    /// `None`.
-    ///
-    /// # Panics
-    ///
-    /// `new_slice_unaligned_from_prefix` panics if `T` is a zero-sized type.
-    #[must_use = "has no side effects"]
-    #[inline(always)]
-    pub fn new_slice_unaligned_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, [T]>, B)> {
-        Ref::new_slice_from_prefix(bytes, count)
+    // TODO(#29), TODO(#871): Pick a name and make this public. Make sure to
+    // update references to this name in `#[deprecated]` attributes elsewhere.
+    #[doc(hidden)]
+    #[inline]
+    pub fn with_trailing_elements_unaligned_from_prefix(
+        bytes: B,
+        count: usize,
+    ) -> Option<(Ref<B, T>, B)> {
+        Self::with_trailing_elements_from_prefix(bytes, count)
     }
+}
 
-    /// Constructs a new `Ref` of a slice type with no alignment requirement
-    /// from the suffix of a byte slice.
-    ///
-    /// `new_slice_from_suffix` verifies that `bytes.len() >= size_of::<T>() *
-    /// count`. It consumes the last `size_of::<T>() * count` bytes from `bytes`
-    /// to construct a `Ref`, and returns the remaining bytes to the caller. It
-    /// also ensures that `sizeof::<T>() * count` does not overflow a `usize`.
-    /// If either the length, or overflow checks fail, it returns `None`.
-    ///
-    /// # Panics
-    ///
-    /// `new_slice_unaligned_from_suffix` panics if `T` is a zero-sized type.
-    #[must_use = "has no side effects"]
-    #[inline(always)]
-    pub fn new_slice_unaligned_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, [T]>)> {
-        Ref::new_slice_from_suffix(bytes, count)
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSlice,
+    T: KnownLayout<PointerMetadata = usize> + Unaligned + Immutable + ?Sized,
+{
+    // TODO(#29), TODO(#871): Pick a name and make this public. Make sure to
+    // update references to this name in `#[deprecated]` attributes elsewhere.
+    #[doc(hidden)]
+    #[inline]
+    pub fn with_trailing_elements_unaligned_from_suffix(
+        bytes: B,
+        count: usize,
+    ) -> Option<(B, Ref<B, T>)> {
+        Self::with_trailing_elements_from_suffix(bytes, count)
     }
 }
 
@@ -7572,13 +7574,15 @@ mod tests {
 
         {
             buf.t = ascending_suffix;
-            let (r, suffix) = Ref::<_, [AU64]>::new_slice_from_prefix(&mut buf.t[..], 1).unwrap();
+            let (r, suffix) =
+                Ref::<_, [AU64]>::with_trailing_elements_from_prefix(&mut buf.t[..], 1).unwrap();
             assert_eq!(suffix, &ascending[8..]);
             test_new_helper_slice(r, 1);
         }
         {
             buf.t = ascending_prefix;
-            let (prefix, r) = Ref::<_, [AU64]>::new_slice_from_suffix(&mut buf.t[..], 1).unwrap();
+            let (prefix, r) =
+                Ref::<_, [AU64]>::with_trailing_elements_from_suffix(&mut buf.t[..], 1).unwrap();
             assert_eq!(prefix, &ascending[..16]);
             test_new_helper_slice(r, 1);
         }
@@ -7617,14 +7621,16 @@ mod tests {
         {
             buf = [0u8; 16];
             let (r, suffix) =
-                Ref::<_, [u8]>::new_slice_unaligned_from_prefix(&mut buf[..], 8).unwrap();
+                Ref::<_, [u8]>::with_trailing_elements_unaligned_from_prefix(&mut buf[..], 8)
+                    .unwrap();
             assert_eq!(suffix, [0; 8]);
             test_new_helper_slice_unaligned(r, 8);
         }
         {
             buf = [0u8; 16];
             let (prefix, r) =
-                Ref::<_, [u8]>::new_slice_unaligned_from_suffix(&mut buf[..], 8).unwrap();
+                Ref::<_, [u8]>::with_trailing_elements_unaligned_from_suffix(&mut buf[..], 8)
+                    .unwrap();
             assert_eq!(prefix, [0; 8]);
             test_new_helper_slice_unaligned(r, 8);
         }
@@ -7782,10 +7788,12 @@ mod tests {
         let buf = Align::<[u8; 12], AU64>::default();
         // `buf.t` has length 12, but the element size is 8 (and we're expecting
         // two of them).
-        assert!(Ref::<_, [AU64]>::new_slice_from_prefix(&buf.t[..], 2).is_none());
-        assert!(Ref::<_, [AU64]>::new_slice_from_suffix(&buf.t[..], 2).is_none());
-        assert!(Ref::<_, [[u8; 8]]>::new_slice_unaligned_from_prefix(&buf.t[..], 2).is_none());
-        assert!(Ref::<_, [[u8; 8]]>::new_slice_unaligned_from_suffix(&buf.t[..], 2).is_none());
+        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_prefix(&buf.t[..], 2).is_none());
+        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_suffix(&buf.t[..], 2).is_none());
+        assert!(Ref::<_, [[u8; 8]]>::with_trailing_elements_unaligned_from_prefix(&buf.t[..], 2)
+            .is_none());
+        assert!(Ref::<_, [[u8; 8]]>::with_trailing_elements_unaligned_from_suffix(&buf.t[..], 2)
+            .is_none());
 
         // Fail because the alignment is insufficient.
 
@@ -7797,8 +7805,8 @@ mod tests {
         assert!(Ref::<_, AU64>::new(&buf.t[1..]).is_none());
         assert!(Ref::<_, AU64>::new_from_prefix(&buf.t[1..]).is_none());
         assert!(Ref::<_, [AU64]>::new(&buf.t[1..]).is_none());
-        assert!(Ref::<_, [AU64]>::new_slice_from_prefix(&buf.t[1..], 1).is_none());
-        assert!(Ref::<_, [AU64]>::new_slice_from_suffix(&buf.t[1..], 1).is_none());
+        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_prefix(&buf.t[1..], 1).is_none());
+        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_suffix(&buf.t[1..], 1).is_none());
         // Slicing is unnecessary here because `new_from_suffix` uses the suffix
         // of the slice, which has odd alignment.
         assert!(Ref::<_, AU64>::new_from_suffix(&buf.t[..]).is_none());
@@ -7807,12 +7815,20 @@ mod tests {
 
         let buf = Align::<[u8; 16], AU64>::default();
         let unreasonable_len = usize::MAX / mem::size_of::<AU64>() + 1;
-        assert!(Ref::<_, [AU64]>::new_slice_from_prefix(&buf.t[..], unreasonable_len).is_none());
-        assert!(Ref::<_, [AU64]>::new_slice_from_suffix(&buf.t[..], unreasonable_len).is_none());
-        assert!(Ref::<_, [[u8; 8]]>::new_slice_unaligned_from_prefix(&buf.t[..], unreasonable_len)
+        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_prefix(&buf.t[..], unreasonable_len)
             .is_none());
-        assert!(Ref::<_, [[u8; 8]]>::new_slice_unaligned_from_suffix(&buf.t[..], unreasonable_len)
+        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_suffix(&buf.t[..], unreasonable_len)
             .is_none());
+        assert!(Ref::<_, [[u8; 8]]>::with_trailing_elements_unaligned_from_prefix(
+            &buf.t[..],
+            unreasonable_len
+        )
+        .is_none());
+        assert!(Ref::<_, [[u8; 8]]>::with_trailing_elements_unaligned_from_suffix(
+            &buf.t[..],
+            unreasonable_len
+        )
+        .is_none());
     }
 
     // Tests for ensuring that, if a ZST is passed into a slice-like function,
@@ -7833,11 +7849,11 @@ mod tests {
             }
         }
         zst_test!(new(), "new");
-        zst_test!(new_slice_from_prefix(1), "new_slice");
-        zst_test!(new_slice_from_suffix(1), "new_slice");
+        zst_test!(with_trailing_elements_from_prefix(1), "new_slice");
+        zst_test!(with_trailing_elements_from_suffix(1), "new_slice");
         zst_test!(new_unaligned(), "new_slice_unaligned");
-        zst_test!(new_slice_unaligned_from_prefix(1), "new_slice_unaligned");
-        zst_test!(new_slice_unaligned_from_suffix(1), "new_slice_unaligned");
+        zst_test!(with_trailing_elements_unaligned_from_prefix(1), "new_slice_unaligned");
+        zst_test!(with_trailing_elements_unaligned_from_suffix(1), "new_slice_unaligned");
     }
 
     #[test]
