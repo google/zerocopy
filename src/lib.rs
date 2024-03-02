@@ -397,7 +397,7 @@ pub struct DstLayout {
 #[cfg_attr(any(kani, test), derive(Debug, PartialEq, Eq))]
 #[derive(Copy, Clone)]
 enum SizeInfo<E = usize> {
-    Sized { _size: usize },
+    Sized { size: usize },
     SliceDst(TrailingSliceLayout<E>),
 }
 
@@ -416,9 +416,9 @@ struct TrailingSliceLayout<E = usize> {
     //
     // In `Foo`, `c` is at byte offset 3. When `c.len() == 0`, `c` is followed
     // by a padding byte.
-    _offset: usize,
+    offset: usize,
     // The size of the element type of the trailing slice field.
-    _elem_size: E,
+    elem_size: E,
 }
 
 impl SizeInfo {
@@ -427,10 +427,10 @@ impl SizeInfo {
     #[allow(unused)]
     const fn try_to_nonzero_elem_size(&self) -> Option<SizeInfo<NonZeroUsize>> {
         Some(match *self {
-            SizeInfo::Sized { _size } => SizeInfo::Sized { _size },
-            SizeInfo::SliceDst(TrailingSliceLayout { _offset, _elem_size }) => {
-                if let Some(_elem_size) = NonZeroUsize::new(_elem_size) {
-                    SizeInfo::SliceDst(TrailingSliceLayout { _offset, _elem_size })
+            SizeInfo::Sized { size } => SizeInfo::Sized { size },
+            SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
+                if let Some(elem_size) = NonZeroUsize::new(elem_size) {
+                    SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size })
                 } else {
                     return None;
                 }
@@ -499,7 +499,7 @@ impl DstLayout {
 
         const_assert!(align.get().is_power_of_two());
 
-        DstLayout { align, size_info: SizeInfo::Sized { _size: 0 } }
+        DstLayout { align, size_info: SizeInfo::Sized { size: 0 } }
     }
 
     /// Constructs a `DstLayout` which describes `T`.
@@ -518,7 +518,7 @@ impl DstLayout {
                 Some(align) => align,
                 None => const_unreachable!(),
             },
-            size_info: SizeInfo::Sized { _size: mem::size_of::<T>() },
+            size_info: SizeInfo::Sized { size: mem::size_of::<T>() },
         }
     }
 
@@ -542,8 +542,8 @@ impl DstLayout {
                 None => const_unreachable!(),
             },
             size_info: SizeInfo::SliceDst(TrailingSliceLayout {
-                _offset: 0,
-                _elem_size: mem::size_of::<T>(),
+                offset: 0,
+                elem_size: mem::size_of::<T>(),
             }),
         }
     }
@@ -618,7 +618,7 @@ impl DstLayout {
             // with additional fields.
             SizeInfo::SliceDst(..) => const_panic!("Cannot extend a DST with additional fields."),
 
-            SizeInfo::Sized { _size: preceding_size } => {
+            SizeInfo::Sized { size: preceding_size } => {
                 // Compute the minimum amount of inter-field padding needed to
                 // satisfy the field's alignment, and offset of the trailing
                 // field. [1]
@@ -641,7 +641,7 @@ impl DstLayout {
                 };
 
                 match field.size_info {
-                    SizeInfo::Sized { _size: field_size } => {
+                    SizeInfo::Sized { size: field_size } => {
                         // If the trailing field is sized, the resulting layout
                         // will be sized. Its size will be the sum of the
                         // preceeding layout, the size of the new field, and the
@@ -657,11 +657,11 @@ impl DstLayout {
                             Some(size) => size,
                             None => const_panic!("`field` cannot be appended without the total size overflowing `usize`"),
                         };
-                        SizeInfo::Sized { _size: size }
+                        SizeInfo::Sized { size }
                     }
                     SizeInfo::SliceDst(TrailingSliceLayout {
-                        _offset: trailing_offset,
-                        _elem_size,
+                        offset: trailing_offset,
+                        elem_size,
                     }) => {
                         // If the trailing field is dynamically sized, so too
                         // will the resulting layout. The offset of the trailing
@@ -679,7 +679,7 @@ impl DstLayout {
                             Some(offset) => offset,
                             None => const_panic!("`field` cannot be appended without the total size overflowing `usize`"),
                         };
-                        SizeInfo::SliceDst(TrailingSliceLayout { _offset: offset, _elem_size })
+                        SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size })
                     }
                 }
             }
@@ -720,13 +720,13 @@ impl DstLayout {
         let size_info = match self.size_info {
             // For sized layouts, we add the minimum amount of trailing padding
             // needed to satisfy alignment.
-            SizeInfo::Sized { _size: unpadded_size } => {
+            SizeInfo::Sized { size: unpadded_size } => {
                 let padding = padding_needed_for(unpadded_size, self.align);
                 let size = match unpadded_size.checked_add(padding) {
                     Some(size) => size,
                     None => const_panic!("Adding padding caused size to overflow `usize`."),
                 };
-                SizeInfo::Sized { _size: size }
+                SizeInfo::Sized { size }
             }
             // For DST layouts, trailing padding depends on the length of the
             // trailing DST and is computed at runtime. This does not alter the
@@ -871,13 +871,13 @@ impl DstLayout {
         }
 
         let (elems, self_bytes) = match size_info {
-            SizeInfo::Sized { _size: size } => {
+            SizeInfo::Sized { size } => {
                 if size > bytes_len {
                     return None;
                 }
                 (0, size)
             }
-            SizeInfo::SliceDst(TrailingSliceLayout { _offset: offset, _elem_size: elem_size }) => {
+            SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
                 // Calculate the maximum number of bytes that could be consumed
                 // - any number of bytes larger than this will either not be a
                 // multiple of the alignment, or will be larger than
@@ -6095,7 +6095,7 @@ mod tests {
                         composite,
                         DstLayout {
                             align: NonZeroUsize::new(align).unwrap(),
-                            size_info: SizeInfo::Sized { _size: align }
+                            size_info: SizeInfo::Sized { size: align }
                         }
                     )
                 }
@@ -6153,10 +6153,7 @@ mod tests {
 
                 let trailing_field = DstLayout {
                     align,
-                    size_info: SizeInfo::SliceDst(TrailingSliceLayout {
-                        _elem_size: elem_size,
-                        _offset: 11,
-                    }),
+                    size_info: SizeInfo::SliceDst(TrailingSliceLayout { elem_size, offset: 11 }),
                 };
 
                 let composite = base.extend(trailing_field, pack);
@@ -6170,8 +6167,8 @@ mod tests {
                     DstLayout {
                         align: NonZeroUsize::new(align).unwrap(),
                         size_info: SizeInfo::SliceDst(TrailingSliceLayout {
-                            _elem_size: elem_size,
-                            _offset: align + trailing_field_offset,
+                            elem_size,
+                            offset: align + trailing_field_offset,
                         }),
                     }
                 )
@@ -6187,11 +6184,11 @@ mod tests {
         // to `align`, call `pad_to_align`, and assert that the size of the
         // resulting layout is equal to `align`.
         for align in (0..29).map(|p| NonZeroUsize::new(2usize.pow(p)).unwrap()) {
-            let layout = DstLayout { align, size_info: SizeInfo::Sized { _size: 1 } };
+            let layout = DstLayout { align, size_info: SizeInfo::Sized { size: 1 } };
 
             assert_eq!(
                 layout.pad_to_align(),
-                DstLayout { align, size_info: SizeInfo::Sized { _size: align.get() } }
+                DstLayout { align, size_info: SizeInfo::Sized { size: align.get() } }
             );
         }
 
@@ -6203,7 +6200,7 @@ mod tests {
                 => padded { size: $padded_size:expr, align: $padded_align:expr }) => {
                 let unpadded = DstLayout {
                     align: NonZeroUsize::new($unpadded_align).unwrap(),
-                    size_info: SizeInfo::Sized { _size: $unpadded_size },
+                    size_info: SizeInfo::Sized { size: $unpadded_size },
                 };
                 let padded = unpadded.pad_to_align();
 
@@ -6211,7 +6208,7 @@ mod tests {
                     padded,
                     DstLayout {
                         align: NonZeroUsize::new($padded_align).unwrap(),
-                        size_info: SizeInfo::Sized { _size: $padded_size },
+                        size_info: SizeInfo::Sized { size: $padded_size },
                     }
                 );
             };
@@ -6244,10 +6241,7 @@ mod tests {
                 for elem_size in 0..10 {
                     let layout = DstLayout {
                         align,
-                        size_info: SizeInfo::SliceDst(TrailingSliceLayout {
-                            _offset: offset,
-                            _elem_size: elem_size,
-                        }),
+                        size_info: SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }),
                     };
                     assert_eq!(layout.pad_to_align(), layout);
                 }
@@ -6263,15 +6257,15 @@ mod tests {
     fn test_validate_cast_and_convert_metadata() {
         #[allow(non_local_definitions)]
         impl From<usize> for SizeInfo {
-            fn from(_size: usize) -> SizeInfo {
-                SizeInfo::Sized { _size }
+            fn from(size: usize) -> SizeInfo {
+                SizeInfo::Sized { size }
             }
         }
 
         #[allow(non_local_definitions)]
         impl From<(usize, usize)> for SizeInfo {
-            fn from((_offset, _elem_size): (usize, usize)) -> SizeInfo {
-                SizeInfo::SliceDst(TrailingSliceLayout { _offset, _elem_size })
+            fn from((offset, elem_size): (usize, usize)) -> SizeInfo {
+                SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size })
             }
         }
 
@@ -6463,11 +6457,8 @@ mod tests {
                 assert!(!(sized && elems != 0), "{}", debug_str);
 
                 let resulting_size = match layout.size_info {
-                    SizeInfo::Sized { _size } => _size,
-                    SizeInfo::SliceDst(TrailingSliceLayout {
-                        _offset: offset,
-                        _elem_size: elem_size,
-                    }) => {
+                    SizeInfo::Sized { size } => size,
+                    SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
                         let padded_size = |elems| {
                             let without_padding = offset + elems * elem_size;
                             without_padding + util::padding_needed_for(without_padding, align)
@@ -6497,9 +6488,9 @@ mod tests {
                 }
             } else {
                 let min_size = match layout.size_info {
-                    SizeInfo::Sized { _size } => _size,
-                    SizeInfo::SliceDst(TrailingSliceLayout { _offset, .. }) => {
-                        _offset + util::padding_needed_for(_offset, layout.align)
+                    SizeInfo::Sized { size } => size,
+                    SizeInfo::SliceDst(TrailingSliceLayout { offset, .. }) => {
+                        offset + util::padding_needed_for(offset, layout.align)
                     }
                 };
 
@@ -6524,7 +6515,7 @@ mod tests {
             .map(Into::<SizeInfo>::into)
             .chain(itertools::iproduct!(sizes, elem_sizes).map(Into::<SizeInfo>::into));
         let layouts = itertools::iproduct!(size_infos, [1, 2, 4, 8, 16, 32])
-            .filter(|(size_info, align)| !matches!(size_info, SizeInfo::Sized { _size } if _size % align != 0))
+            .filter(|(size_info, align)| !matches!(size_info, SizeInfo::Sized { size } if size % align != 0))
             .map(|(size_info, align)| layout(size_info, align));
         itertools::iproduct!(layouts, 0..8, 0..8, [CastType::Prefix, CastType::Suffix])
             .for_each(validate_behavior);
@@ -6562,10 +6553,9 @@ mod tests {
             let dst = args.elem_size.is_some();
             let layout = {
                 let size_info = match args.elem_size {
-                    Some(elem_size) => SizeInfo::SliceDst(TrailingSliceLayout {
-                        _offset: args.offset,
-                        _elem_size: elem_size,
-                    }),
+                    Some(elem_size) => {
+                        SizeInfo::SliceDst(TrailingSliceLayout { offset: args.offset, elem_size })
+                    }
                     None => SizeInfo::Sized {
                         // Rust only supports types whose sizes are a multiple
                         // of their alignment. If the macro created a type like
@@ -6576,7 +6566,7 @@ mod tests {
                         //
                         // ...then Rust will automatically round the type's size
                         // up to 2.
-                        _size: args.offset + util::padding_needed_for(args.offset, args.align),
+                        size: args.offset + util::padding_needed_for(args.offset, args.align),
                     },
                 };
                 DstLayout { size_info, align: args.align }
@@ -6897,11 +6887,8 @@ mod tests {
         let layout = |offset, align, _trailing_slice_elem_size| DstLayout {
             align: NonZeroUsize::new(align).unwrap(),
             size_info: match _trailing_slice_elem_size {
-                None => SizeInfo::Sized { _size: offset },
-                Some(elem_size) => SizeInfo::SliceDst(TrailingSliceLayout {
-                    _offset: offset,
-                    _elem_size: elem_size,
-                }),
+                None => SizeInfo::Sized { size: offset },
+                Some(elem_size) => SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }),
             },
         };
 
@@ -6960,7 +6947,7 @@ mod tests {
             elain::Align<ALIGN>: elain::Alignment,
         {
             _align: elain::Align<ALIGN>,
-            _size: [u8; SIZE],
+            size: [u8; SIZE],
         }
 
         type AU16 = AlignSize<2, 2>;
@@ -6970,15 +6957,12 @@ mod tests {
 
         let sized_layout = |align, size| DstLayout {
             align: NonZeroUsize::new(align).unwrap(),
-            size_info: SizeInfo::Sized { _size: size },
+            size_info: SizeInfo::Sized { size },
         };
 
         let unsized_layout = |align, elem_size, offset| DstLayout {
             align: NonZeroUsize::new(align).unwrap(),
-            size_info: SizeInfo::SliceDst(TrailingSliceLayout {
-                _offset: offset,
-                _elem_size: elem_size,
-            }),
+            size_info: SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }),
         };
 
         // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
@@ -9278,11 +9262,11 @@ mod proofs {
             // conditions of Rust layouts.
             kani::assume(
                 match size_info {
-                    SizeInfo::Sized { _size } => Layout::from_size_align(_size, align.get()),
-                    SizeInfo::SliceDst(TrailingSliceLayout { _offset, _elem_size }) => {
+                    SizeInfo::Sized { size } => Layout::from_size_align(size, align.get()),
+                    SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size: _ }) => {
                         // `SliceDst`` cannot encode an exact size, but we know
-                        // it is at least `_offset` bytes.
-                        Layout::from_size_align(_offset, align.get())
+                        // it is at least `offset` bytes.
+                        Layout::from_size_align(offset, align.get())
                     }
                 }
                 .is_ok(),
@@ -9302,7 +9286,7 @@ mod proofs {
 
                     kani::assume(size <= isize::MAX as _);
 
-                    SizeInfo::Sized { _size: size }
+                    SizeInfo::Sized { size }
                 }
                 false => SizeInfo::SliceDst(kani::any()),
             }
@@ -9317,7 +9301,7 @@ mod proofs {
             kani::assume(elem_size < isize::MAX as _);
             kani::assume(offset < isize::MAX as _);
 
-            TrailingSliceLayout { _elem_size: elem_size, _offset: offset }
+            TrailingSliceLayout { elem_size, offset }
         }
     }
 
@@ -9336,7 +9320,7 @@ mod proofs {
 
         // The base can only be extended if it's sized.
         kani::assume(matches!(base.size_info, SizeInfo::Sized { .. }));
-        let base_size = if let SizeInfo::Sized { _size: size } = base.size_info {
+        let base_size = if let SizeInfo::Sized { size } = base.size_info {
             size
         } else {
             unreachable!();
@@ -9376,8 +9360,8 @@ mod proofs {
         let base_analog = Layout::from_size_align(base_size, base.align.get()).unwrap();
 
         match field.size_info {
-            SizeInfo::Sized { _size: field_size } => {
-                if let SizeInfo::Sized { _size: composite_size } = composite.size_info {
+            SizeInfo::Sized { size: field_size } => {
+                if let SizeInfo::Sized { size: composite_size } = composite.size_info {
                     // If the trailing field is sized, the resulting layout
                     // will be sized. Its size will be the sum of the
                     // preceeding layout, the size of the new field, and the
@@ -9406,12 +9390,12 @@ mod proofs {
                 }
             }
             SizeInfo::SliceDst(TrailingSliceLayout {
-                _offset: field_offset,
-                _elem_size: field_elem_size,
+                offset: field_offset,
+                elem_size: field_elem_size,
             }) => {
                 if let SizeInfo::SliceDst(TrailingSliceLayout {
-                    _offset: composite_offset,
-                    _elem_size: composite_elem_size,
+                    offset: composite_offset,
+                    elem_size: composite_elem_size,
                 }) = composite.size_info
                 {
                     // The offset of the trailing slice component is the sum
@@ -9473,8 +9457,8 @@ mod proofs {
         // Calling `pad_to_align` does not alter the `DstLayout`'s alignment.
         assert_eq!(padded.align, layout.align);
 
-        if let SizeInfo::Sized { _size: unpadded_size } = layout.size_info {
-            if let SizeInfo::Sized { _size: padded_size } = padded.size_info {
+        if let SizeInfo::Sized { size: unpadded_size } = layout.size_info {
+            if let SizeInfo::Sized { size: padded_size } = padded.size_info {
                 // If the layout is sized, it will remain sized after padding is
                 // added. Its sum will be its unpadded size and the size of the
                 // trailing padding needed to satisfy its alignment
