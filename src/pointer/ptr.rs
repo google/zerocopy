@@ -63,9 +63,9 @@ mod def {
         /// 10. During the lifetime 'a, no code will load or store this memory
         ///     region treating `UnsafeCell`s as existing at different ranges
         ///     than they exist in `T`.
-        /// 11. During the lifetime 'a, no reference will exist to this memory
-        ///     which treats `UnsafeCell`s as existing at different ranges than
-        ///     they exist in `T`.
+        /// 11. During the lifetime 'a, no live reference or live `Ptr` will
+        ///     exist to this memory which treats `UnsafeCell`s as existing at
+        ///     different ranges than they exist in `T`.
         // SAFETY: `NonNull<T>` is covariant over `T` [1].
         //
         // [1]: https://doc.rust-lang.org/std/ptr/struct.NonNull.html
@@ -918,8 +918,9 @@ mod _casts {
         /// For all kinds of casts, the caller must promise that:
         /// - the the size of the object referenced by the resulting pointer is
         ///   less than or equal to the size of the object referenced by `self`.
-        /// - `UnsafeCell`s in `U` exist at ranges identical to those at which
-        ///   `UnsafeCell`s exist in `T`.
+        /// - if the aliasing of `self` is not `Exclusive`, that `UnsafeCell`s
+        ///   in `U` exist at ranges identical to those at which `UnsafeCell`s
+        ///   exist in `T`.
         ///
         /// For pointer-to-pointer casts, it suffices for the caller to
         /// additionally promise that `cast(p)` is implemented as:
@@ -983,7 +984,11 @@ mod _casts {
             //    store this memory region treating `UnsafeCell`s as existing at
             //    different ranges than they exist in `U`. This is true by
             //    invariant on Ptr<'a, T, I>, and preserved through the cast to
-            //    `U` by contract on the caller.
+            //    `U` by contract on the caller:
+            //     - If `ptr` is exclusively aliased, no other live references
+            //       exist.
+            //     - If `ptr` has shared aliasing, the caller has promised that
+            //       `T` and `U` have `UnsafeCell`s at exactly the same ranges.
             // 10. See 9.
             unsafe { Ptr::new(ptr) }
         }
@@ -1244,10 +1249,11 @@ mod _project {
         ///   `self` casted to a raw pointer. The pointer it returns must
         ///   reference only a subset of `self`'s bytes.
         /// - `T` is a struct or union type.
-        /// - The projected pointer contains `UnsafeCell`s at exactly the same
-        ///   ranges at which `UnsafeCell`s appear in the projected-from type.
-        ///   This is necessarily true for projections of struct fields, but not
-        ///   for all projections of union fields.
+        /// - If the aliasing of `self` is not `Exclusive`, projected pointer
+        ///   must contain `UnsafeCell`s at exactly the same ranges at which
+        ///   `UnsafeCell`s appear in the projected-from type. This is
+        ///   necessarily true for projections of struct fields, but not for all
+        ///   projections of union fields.
         ///
         /// ## Postconditions
         ///
