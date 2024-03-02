@@ -279,7 +279,6 @@ pub mod byteorder;
 pub mod macro_util;
 #[doc(hidden)]
 pub mod pointer;
-mod post_monomorphization_compile_fail_tests;
 mod util;
 // TODO(#252): If we make this pub, come up with a better name.
 mod wrappers;
