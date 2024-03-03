@@ -765,6 +765,22 @@ mod _transitions {
             unsafe { Ptr::from_ptr(self) }
         }
 
+        /// Checks the `Ptr`'s alignment at runtime, returning an aligned `Ptr`
+        /// on success.
+        pub(crate) fn bikeshed_try_into_aligned(
+            self,
+        ) -> Option<Ptr<'a, T, (I::Aliasing, invariant::Aligned, I::Validity)>>
+        where
+            T: Sized,
+        {
+            if !crate::util::aligned_to::<_, T>(self.as_non_null()) {
+                return None;
+            }
+
+            // SAFETY: We just checked the alignment.
+            Some(unsafe { self.assume_alignment::<invariant::Aligned>() })
+        }
+
         /// Recalls that `Ptr`'s referent is validly-aligned for `T`.
         #[inline]
         // TODO(#859): Reconsider the name of this method before making it
