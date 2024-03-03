@@ -304,6 +304,10 @@ use core::{
     ops::{Deref, DerefMut},
     ptr::{self, NonNull},
     slice,
+    sync::atomic::{
+        AtomicBool, AtomicI16, AtomicI32, AtomicI64, AtomicI8, AtomicIsize, AtomicPtr, AtomicU16,
+        AtomicU32, AtomicU64, AtomicU8, AtomicUsize,
+    },
 };
 
 use crate::pointer::invariant;
@@ -1096,10 +1100,13 @@ impl_known_layout!(
     u8, i8, u16, i16, u32, i32, u64, i64, u128, i128, usize, isize, f32, f64,
     bool, char,
     NonZeroU8, NonZeroI8, NonZeroU16, NonZeroI16, NonZeroU32, NonZeroI32,
-    NonZeroU64, NonZeroI64, NonZeroU128, NonZeroI128, NonZeroUsize, NonZeroIsize
+    NonZeroU64, NonZeroI64, NonZeroU128, NonZeroI128, NonZeroUsize, NonZeroIsize,
+    AtomicBool, AtomicI16, AtomicI32, AtomicI64, AtomicI8, AtomicIsize, AtomicU16,
+    AtomicU32, AtomicU64, AtomicU8, AtomicUsize
 );
 #[rustfmt::skip]
 impl_known_layout!(
+    T         => AtomicPtr<T>,
     T         => Option<T>,
     T: ?Sized => PhantomData<T>,
     T         => Wrapping<T>,
@@ -3807,6 +3814,55 @@ safety_comment! {
     unsafe_impl!(Option<NonZeroI128>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
     unsafe_impl!(Option<NonZeroUsize>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
     unsafe_impl!(Option<NonZeroIsize>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// Per [1], `AtomicBool` has the same size, alignment, and bit validity as
+    /// `bool`. `bool` implements `IntoBytes` and `Unaligned`.
+    ///
+    /// [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
+    ///     Cite docs once they've landed.
+    unsafe_impl!(AtomicBool: IntoBytes, Unaligned);
+    /// SAFETY: Per [1], `AtomicU8` and `AtomicI8` have the same size and bit
+    /// validity as `u8` and `i8` respectively. `u8` and `i8` both implement
+    /// `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`, and
+    /// `IntoBytes`.
+    ///
+    /// While alignment is not documented, we know that `AtomicU8` and
+    /// `AtomicI8` are each 1 byte in size (since they have the same size as
+    /// `u8` and `i8`). Since size must be a multiple of alignment [2], this
+    /// means that their alignments cannot be greater than 1, and since
+    /// alignment cannot be less than 1 [3], their alignments must be exactly 1.
+    /// Thus, they can soundly implement `Unaligned`.
+    ///
+    /// [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
+    ///     Cite docs once they've landed.
+    ///
+    /// [3] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
+    ///
+    ///     The size of a value is always a multiple of its alignment.
+    ///
+    /// [2] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
+    ///
+    ///     Alignment is measured in bytes, and must be at least 1.
+    unsafe_impl!(AtomicU8: TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+    unsafe_impl!(AtomicI8: TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+    /// SAFETY: Per [1], these types have the same size and bit validity as
+    /// their respective primitive types. All of these primitive types implement
+    /// `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`, and
+    /// `IntoBytes`.
+    ///
+    /// [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
+    ///     Cite docs once they've landed.
+    unsafe_impl!(AtomicU16: TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(AtomicU32: TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(AtomicU64: TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(AtomicUsize: TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(AtomicI16: TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(AtomicI32: TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(AtomicI64: TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(AtomicIsize: TryFromBytes, FromZeros, FromBytes, IntoBytes);
 }
 
 safety_comment! {
@@ -9108,6 +9164,19 @@ mod tests {
         assert_impls!(Option<NonZeroI128>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
         assert_impls!(Option<NonZeroUsize>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
         assert_impls!(Option<NonZeroIsize>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
+
+        assert_impls!(AtomicBool: KnownLayout, IntoBytes, Unaligned, !TryFromBytes, !FromZeros, !FromBytes, !NoCell);
+        assert_impls!(AtomicU8: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, !NoCell);
+        assert_impls!(AtomicI8: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, !NoCell);
+        assert_impls!(AtomicU16: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, !NoCell, !Unaligned);
+        assert_impls!(AtomicU32: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, !NoCell, !Unaligned);
+        assert_impls!(AtomicU64: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, !NoCell, !Unaligned);
+        assert_impls!(AtomicUsize: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, !NoCell, !Unaligned);
+        assert_impls!(AtomicI16: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, !NoCell, !Unaligned);
+        assert_impls!(AtomicI32: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, !NoCell, !Unaligned);
+        assert_impls!(AtomicI64: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, !NoCell, !Unaligned);
+        assert_impls!(AtomicIsize: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, !NoCell, !Unaligned);
+        assert_impls!(AtomicPtr<NotZerocopy>: KnownLayout, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !NoCell, !Unaligned);
 
         // Implements none of the ZC traits.
         struct NotZerocopy;
