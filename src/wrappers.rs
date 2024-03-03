@@ -142,13 +142,8 @@ impl<T> Unalign<T> {
     /// may prefer [`Deref::deref`], which is infallible.
     #[inline(always)]
     pub fn try_deref(&self) -> Option<&T> {
-        if !crate::util::aligned_to::<_, T>(self) {
-            return None;
-        }
-
-        // SAFETY: `deref_unchecked`'s safety requirement is that `self` is
-        // aligned to `align_of::<T>()`, which we just checked.
-        unsafe { Some(self.deref_unchecked()) }
+        let inner = Ptr::from_ref(self).transparent_wrapper_into_inner();
+        inner.bikeshed_try_into_aligned().map(Ptr::as_ref)
     }
 
     /// Attempts to return a mutable reference to the wrapped `T`, failing if
@@ -162,13 +157,8 @@ impl<T> Unalign<T> {
     /// callers may prefer [`DerefMut::deref_mut`], which is infallible.
     #[inline(always)]
     pub fn try_deref_mut(&mut self) -> Option<&mut T> {
-        if !crate::util::aligned_to::<_, T>(&*self) {
-            return None;
-        }
-
-        // SAFETY: `deref_mut_unchecked`'s safety requirement is that `self` is
-        // aligned to `align_of::<T>()`, which we just checked.
-        unsafe { Some(self.deref_mut_unchecked()) }
+        let inner = Ptr::from_mut(self).transparent_wrapper_into_inner();
+        inner.bikeshed_try_into_aligned().map(Ptr::as_mut)
     }
 
     /// Returns a reference to the wrapped `T` without checking alignment.
@@ -334,22 +324,14 @@ impl<T: Unaligned> Deref for Unalign<T> {
 
     #[inline(always)]
     fn deref(&self) -> &T {
-        // SAFETY: `deref_unchecked`'s safety requirement is that `self` is
-        // aligned to `align_of::<T>()`. `T: Unaligned` guarantees that
-        // `align_of::<T>() == 1`, and all pointers are one-aligned because all
-        // addresses are divisible by 1.
-        unsafe { self.deref_unchecked() }
+        Ptr::from_ref(self).transparent_wrapper_into_inner().bikeshed_recall_aligned().as_ref()
     }
 }
 
 impl<T: Unaligned> DerefMut for Unalign<T> {
     #[inline(always)]
     fn deref_mut(&mut self) -> &mut T {
-        // SAFETY: `deref_mut_unchecked`'s safety requirement is that `self` is
-        // aligned to `align_of::<T>()`. `T: Unaligned` guarantees that
-        // `align_of::<T>() == 1`, and all pointers are one-aligned because all
-        // addresses are divisible by 1.
-        unsafe { self.deref_mut_unchecked() }
+        Ptr::from_mut(self).transparent_wrapper_into_inner().bikeshed_recall_aligned().as_mut()
     }
 }
 

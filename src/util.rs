@@ -9,6 +9,7 @@
 use core::{
     mem::{self, ManuallyDrop, MaybeUninit},
     num::{NonZeroUsize, Wrapping},
+    ptr::NonNull,
 };
 
 use crate::{
@@ -277,6 +278,13 @@ impl<'a, T: ?Sized> AsAddress for &'a mut T {
     fn addr(self) -> usize {
         let ptr: *const T = self;
         AsAddress::addr(ptr)
+    }
+}
+
+impl<T: ?Sized> AsAddress for NonNull<T> {
+    #[inline(always)]
+    fn addr(self) -> usize {
+        AsAddress::addr(self.as_ptr())
     }
 }
 
