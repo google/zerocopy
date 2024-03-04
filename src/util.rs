@@ -607,6 +607,23 @@ where
     const_assert!(<T as ConstAssert>::DST_IS_NOT_ZST);
 }
 
+/// Assert at compile time that the size of `Dst` <= the size of `Src`.
+pub(crate) const fn assert_dst_not_bigger_than_src<Src, Dst>() {
+    trait ConstAssert {
+        const DST_NOT_BIGGER_THAN_SRC: bool;
+    }
+
+    impl<Src, Dst> ConstAssert for (Src, Dst) {
+        const DST_NOT_BIGGER_THAN_SRC: bool = {
+            let dst_bigger_than_src = mem::size_of::<Dst>() > mem::size_of::<Src>();
+            const_assert!(!dst_bigger_than_src);
+            !dst_bigger_than_src
+        };
+    }
+
+    const_assert!(<(Src, Dst) as ConstAssert>::DST_NOT_BIGGER_THAN_SRC);
+}
+
 /// Since we support multiple versions of Rust, there are often features which
 /// have been stabilized in the most recent stable release which do not yet
 /// exist (stably) on our MSRV. This module provides polyfills for those

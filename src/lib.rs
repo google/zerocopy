@@ -58,7 +58,7 @@
 //!   the same size
 //! - [`transmute_mut`] converts a mutable reference of one type to a mutable
 //!   reference of another type of the same size
-//! - [`transmute_ref`] converts transmutes a mutable or immutable reference
+//! - [`transmute_ref`] converts a mutable or immutable reference
 //!   of one type to an immutable reference of another type of the same size
 //!
 //! These macros perform *compile-time* alignment and size checks, but cannot be
@@ -4409,6 +4409,70 @@ macro_rules! transmute_mut {
     }}
 }
 
+/// Conditionally transmutes a value of one type to a value of another type of
+/// the same size.
+///
+/// This macro behaves like an invocation of this function:
+///
+/// ```ignore
+/// const fn try_transmute<Src, Dst>(src: Src) -> Result<Dst, ValidityError<Src, Dst>>
+/// where
+///     Src: IntoBytes,
+///     Dst: TryFromBytes,
+///     size_of::<Src>() == size_of::<Dst>(),
+/// {
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// However, unlike a function, this macro can only be invoked when the types of
+/// `Src` and `Dst` are completely concrete. The types `Src` and `Dst` are
+/// inferred from the calling context; they cannot be explicitly specified in
+/// the macro invocation.
+///
+/// Note that the `Src` produced by the expression `$e` will *not* be dropped.
+/// Semantically, its bits will be copied into a new value of type `Dst`, the
+/// original `Src` will be forgotten, and the value of type `Dst` will be
+/// returned.
+///
+/// # Examples
+///
+/// ```
+/// # use zerocopy::try_transmute;
+/// assert_eq!(try_transmute!(0u8), Ok(false));
+/// assert_eq!(try_transmute!(1u8), Ok(true));
+///
+/// let maybe_bool: Result<bool, _> = try_transmute!(255u8);
+/// assert_eq!(maybe_bool.unwrap_err().into_src(), 255u8);
+///
+/// ```
+#[macro_export]
+macro_rules! try_transmute {
+    ($e:expr) => {{
+        // NOTE: This must be a macro (rather than a function with trait bounds)
+        // because there's no way, in a generic context, to enforce that two
+        // types have the same size. `core::mem::transmute` uses compiler magic
+        // to enforce this so long as the types are concrete.
+
+        let e = $e;
+        if false {
+            // Check that the sizes of the source and destination types are
+            // equal.
+
+            // SAFETY: This code is never executed.
+            Ok(unsafe {
+                // Clippy: It's okay to transmute a type to itself.
+                #[allow(clippy::useless_transmute, clippy::missing_transmute_annotations)]
+                $crate::macro_util::core_reexport::mem::transmute(e)
+            })
+        } else {
+            $crate::macro_util::try_transmute::<_, _>(e)
+        }
+    }}
+}
+
 /// Includes a file and safely transmutes it to a value of an arbitrary type.
 ///
 /// The file will be included as a byte array, `[u8; N]`, which will be
@@ -5605,6 +5669,50 @@ mod tests {
         #[allow(clippy::useless_transmute)]
         let y: &u8 = transmute_ref!(&mut x);
         assert_eq!(*y, 0);
+    }
+
+    #[test]
+    fn test_try_transmute() {
+        // Test that memory is transmuted with `try_transmute` as expected.
+        let array_of_bools = [false, true, false, true, false, true, false, true];
+        let array_of_arrays = [[0, 1], [0, 1], [0, 1], [0, 1]];
+        let x: Result<[[u8; 2]; 4], _> = try_transmute!(array_of_bools);
+        assert_eq!(x, Ok(array_of_arrays));
+        let x: Result<[bool; 8], _> = try_transmute!(array_of_arrays);
+        assert_eq!(x, Ok(array_of_bools));
+
+        // Test that `try_transmute!` works with `!Immutable` types.
+        let x: Result<usize, _> = try_transmute!(UnsafeCell::new(1usize));
+        assert_eq!(x.unwrap(), 1);
+        let x: Result<UnsafeCell<usize>, _> = try_transmute!(1usize);
+        assert_eq!(x.unwrap().into_inner(), 1);
+        let x: Result<UnsafeCell<isize>, _> = try_transmute!(UnsafeCell::new(1usize));
+        assert_eq!(x.unwrap().into_inner(), 1);
+
+        #[derive(FromBytes, IntoBytes, Debug, PartialEq)]
+        #[repr(transparent)]
+        struct PanicOnDrop<T>(T);
+
+        impl<T> Drop for PanicOnDrop<T> {
+            fn drop(&mut self) {
+                panic!("PanicOnDrop dropped");
+            }
+        }
+
+        // Since `try_transmute!` semantically moves its argument on failure,
+        // the `PanicOnDrop` is not dropped, and thus this shouldn't panic.
+        let x: Result<usize, _> = try_transmute!(PanicOnDrop(1usize));
+        assert_eq!(x, Ok(1));
+
+        // Since `try_transmute!` semantically returns ownership of its argument
+        // on failure, the `PanicOnDrop` is returned rather than dropped, and
+        // thus this shouldn't panic.
+        let y: Result<bool, _> = try_transmute!(PanicOnDrop(2u8));
+        // We have to use `map_err` instead of comparing against
+        // `Err(PanicOnDrop(2u8))` because the latter would create and then drop
+        // its `PanicOnDrop` temporary, which would cause a panic.
+        assert_eq!(y.as_ref().map_err(|p| &p.src.0), Err::<&bool, _>(&2u8));
+        mem::forget(y);
     }
 
     #[test]
