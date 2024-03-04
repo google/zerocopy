@@ -395,12 +395,9 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
 }
 
 // A union is `TryFromBytes` if:
-// - all of its fields are `TryFromBytes` and `NoCell`
+// - all of its fields are `TryFromBytes`
 
 fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    // TODO(#5): Remove the `NoCell` bound.
-    let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::NoCell)]);
     let extras = Some({
         let fields = unn.fields();
         let field_names = fields.iter().map(|(name, _ty)| name);
@@ -414,12 +411,31 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
             fn is_bit_valid<A: ::zerocopy::pointer::invariant::at_least::Shared>(
                 mut candidate: ::zerocopy::Maybe<Self, A>
             ) -> bool {
+                // As with `UnsafeCell::is_bit_valid`, the only way to implement
+                // this function is using an exclusive-aliased pointer. We
+                // cannot safely create shared-aliased projections into unions
+                // because union fields do not necessarily contain `UnsafeCell`s
+                // at exactly the same ranges of their containing union.
+                //
+                // `is_bit_valid` is documented as panicking or failing to
+                // monomorphize if called with a shared-aliased pointer on a
+                // type containing a `union`. In practice, it will always be a
+                // monorphization error. Since `is_bit_valid` is
+                // `#[doc(hidden)]` and only called directly from this crate, we
+                // only need to worry about our own code incorrectly calling
+                // `<union>::is_bit_valid`. The post-monomorphization error
+                // makes it easier to test that this is truly the case, and also
+                // means that if we make a mistake, it will cause downstream
+                // code to fail to compile, which will immediately surface the
+                // mistake and give us a chance to fix it quickly.
+                let mut candidate = candidate.into_exclusive_or_post_monomorphization_error();
+
                 false #(|| {
                     // SAFETY: `project` is a field projection of `candidate`,
                     // and `Self` is a union type. The candidate and projection
-                    // agree exactly on where their `UnsafeCell` ranges are,
-                    // because `Self: NoCell` is enforced by
-                    // `self_type_trait_bounds`.
+                    // do not need to agree on exactly on where their
+                    // `UnsafeCell` ranges are, because `candidate` is
+                    // exclusively aliased.
                     let field_candidate = unsafe {
                         let project = |slf: *mut Self|
                             ::zerocopy::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
@@ -432,15 +448,7 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
             }
         )
     });
-    impl_block(
-        ast,
-        unn,
-        Trait::TryFromBytes,
-        field_type_trait_bounds,
-        SelfBounds::None,
-        None,
-        extras,
-    )
+    impl_block(ast, unn, Trait::TryFromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, extras)
 }
 
 const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[
@@ -609,14 +617,10 @@ fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
 }
 
 // Unions are `FromZeros` if
-// - all fields are `FromZeros` and `NoCell`
+// - all fields are `FromZeros`
 
 fn derive_from_zeros_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    // TODO(#5): Remove the `NoCell` bound. It's only necessary for
-    // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
-    let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::NoCell)]);
-    impl_block(ast, unn, Trait::FromZeros, field_type_trait_bounds, SelfBounds::None, None, None)
+    impl_block(ast, unn, Trait::FromZeros, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
 }
 
 // A struct is `FromBytes` if:
@@ -699,14 +703,10 @@ const ENUM_FROM_BYTES_CFG: Config<EnumRepr> = {
 };
 
 // Unions are `FromBytes` if
-// - all fields are `FromBytes` and `NoCell`
+// - all fields are `FromBytes`
 
 fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    // TODO(#5): Remove the `NoCell` bound. It's only necessary for
-    // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
-    let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::NoCell)]);
-    impl_block(ast, unn, Trait::FromBytes, field_type_trait_bounds, SelfBounds::None, None, None)
+    impl_block(ast, unn, Trait::FromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
 }
 
 fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {

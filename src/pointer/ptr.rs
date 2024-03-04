@@ -434,8 +434,9 @@ mod _conversions {
         T: 'a + ?Sized,
     {
         /// Constructs a `Ptr` from an exclusive reference.
+        #[doc(hidden)]
         #[inline]
-        pub(crate) fn from_mut(ptr: &'a mut T) -> Self {
+        pub fn from_mut(ptr: &'a mut T) -> Self {
             let ptr = core::ptr::NonNull::from(ptr);
             // SAFETY:
             // 0. `ptr`, by invariant on `&'a mut T`, is derived from some valid
@@ -666,8 +667,9 @@ mod _transitions {
         /// concrete aliasing.
         ///
         /// [`Exclusive`]: invariant::Exclusive
+        #[doc(hidden)]
         #[inline]
-        pub(crate) fn into_exclusive_or_post_monomorphization_error(
+        pub fn into_exclusive_or_post_monomorphization_error(
             self,
         ) -> Ptr<'a, T, (invariant::Exclusive, I::Alignment, I::Validity)> {
             trait AliasingExt: invariant::Aliasing {
