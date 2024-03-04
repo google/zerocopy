@@ -8,8 +8,10 @@
 
 //! Abstractions over raw pointers.
 
+mod cell_safe;
 mod ptr;
 
+pub use cell_safe::{BecauseExclusive, BecauseNoCell, CellSafe, CellSafeReason};
 pub use ptr::{invariant, Ptr};
 
 use crate::Unaligned;
