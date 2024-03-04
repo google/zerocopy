@@ -3916,142 +3916,36 @@ safety_comment! {
     unsafe_impl!(T: ?Sized => Unaligned for PhantomData<T>);
     assert_unaligned!(PhantomData<()>, PhantomData<u8>, PhantomData<u64>);
 }
+
+impl_for_transparent_wrapper!(T: NoCell => NoCell for Wrapping<T>);
+impl_for_transparent_wrapper!(T: TryFromBytes => TryFromBytes for Wrapping<T>);
+impl_for_transparent_wrapper!(T: FromZeros => FromZeros for Wrapping<T>);
+impl_for_transparent_wrapper!(T: FromBytes => FromBytes for Wrapping<T>);
+impl_for_transparent_wrapper!(T: IntoBytes => IntoBytes for Wrapping<T>);
+impl_for_transparent_wrapper!(T: Unaligned => Unaligned for Wrapping<T>);
+assert_unaligned!(Wrapping<()>, Wrapping<u8>);
+
 safety_comment! {
     /// SAFETY:
-    /// `Wrapping<T>` is guaranteed by its docs [1] to have the same layout and
-    /// bit validity as `T`. Also, `Wrapping<T>` is `#[repr(transparent)]`, and
-    /// has a single field, which is `pub`. Per the reference [2], this means
-    /// that the `#[repr(transparent)]` attribute is "considered part of the
-    /// public ABI".
-    ///
-    /// - `NoCell`: `Wrapping<T>` has `UnsafeCell`s exactly when `T` does, so
-    ///   `T: NoCell` guarantees that `Wrapping<T>` has no `UnsafeCell`s.
-    /// - `TryFromBytes`: The safety requirements for `unsafe_impl!` with an
-    ///   `is_bit_valid` closure:
-    ///   - Given `t: *mut Wrapping<T>` and `let r = *mut T`, `r` refers to an
-    ///     object of the same size as that referred to by `t`. This is true
-    ///     because `Wrapping<T>` and `T` have the same layout. `T` and
-    ///     `Wrapping<T>` have `UnsafeCell`s at the same byte ranges. [3]
-    ///   - The alignment of `Wrapping<T>` is equal to the alignment of `T`.
-    ///   - The impl must only return `true` for its argument if the original
-    ///     `Maybe<Wrapping<T>>` refers to a valid `Maybe<T>`. Since
-    ///     `Wrapping<T>` has the same bit validity as `T`, and since our impl
-    ///     just calls `T::is_bit_valid`, our impl returns `true` exactly when
-    ///     its argument contains a valid `Wrapping<T>`.
-    /// - `FromBytes`: Since `Wrapping<T>` has the same bit validity as `T`, if
-    ///   `T: FromBytes`, then all initialized byte sequences are valid
-    ///   instances of `Wrapping<T>`. Thus, `impl FromBytes for Wrapping<T>
-    ///   where T: FromBytes` is a sound impl.
-    /// - `IntoBytes`: Since `Wrapping<T>` has the same bit validity as `T`, if
-    ///   `T: IntoBytes`, then all valid instances of `Wrapping<T>` have all of
-    ///   their bytes initialized. Thus, `impl IntoBytes for Wrapping<T> where
-    ///   T: IntoBytes` is a valid impl.
-    /// - `Unaligned`: Since `Wrapping<T>` has the same layout as `T`,
-    ///   `Wrapping<T>` has alignment 1 exactly when `T` does.
-    ///
-    /// [1] Per https://doc.rust-lang.org/core/num/struct.NonZeroU16.html:
-    ///
-    ///   `NonZeroU16` is guaranteed to have the same layout and bit validity as
-    ///   `u16` with the exception that `0` is not a valid instance.
-    ///
-    /// TODO(#429): Add quotes from documentation.
-    ///
-    /// [1] TODO(https://doc.rust-lang.org/nightly/core/num/struct.Wrapping.html#layout-1):
-    /// Reference this documentation once it's available on stable.
-    ///
-    /// [2] https://doc.rust-lang.org/nomicon/other-reprs.html#reprtransparent
-    ///
-    /// [3] TODO(#896): Write a safety proof before the next stable release.
-    unsafe_impl!(T: NoCell => NoCell for Wrapping<T>);
-    unsafe_impl!(T: TryFromBytes => TryFromBytes for Wrapping<T>; |candidate: Maybe<T>| {
-        T::is_bit_valid(candidate)
-    });
-    unsafe_impl!(T: FromZeros => FromZeros for Wrapping<T>);
-    unsafe_impl!(T: FromBytes => FromBytes for Wrapping<T>);
-    unsafe_impl!(T: IntoBytes => IntoBytes for Wrapping<T>);
-    unsafe_impl!(T: Unaligned => Unaligned for Wrapping<T>);
-    assert_unaligned!(Wrapping<()>, Wrapping<u8>);
-}
-safety_comment! {
-    // `MaybeUninit<T>` is `FromZeros` and `FromBytes`, but never `IntoBytes`
-    // since it may contain uninitialized bytes.
-    //
-    /// SAFETY:
-    /// - `NoCell`: `MaybeUninit<T>` has `UnsafeCell`s exactly when `T` does, so
-    ///   `T: NoCell` guarantees that `MaybeUninit<T>` has no `UnsafeCell`s [1].
-    /// - `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`:
-    ///   `MaybeUninit<T>` has no restrictions on its contents.
-    /// - `Unaligned`: "MaybeUninit<T> is guaranteed to have the same size,
-    ///    alignment, and ABI as T" [2].
-    ///
-    /// [1] TODO(https://github.com/rust-lang/rust/pull/121215)
-    /// [2] https://doc.rust-lang.org/stable/core/mem/union.MaybeUninit.html#layout-1
-    unsafe_impl!(T: NoCell => NoCell for MaybeUninit<T>);
+    /// `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`:
+    /// `MaybeUninit<T>` has no restrictions on its contents.
     unsafe_impl!(T => TryFromBytes for MaybeUninit<T>);
     unsafe_impl!(T => FromZeros for MaybeUninit<T>);
     unsafe_impl!(T => FromBytes for MaybeUninit<T>);
-    unsafe_impl!(T: Unaligned => Unaligned for MaybeUninit<T>);
-    assert_unaligned!(MaybeUninit<()>, MaybeUninit<u8>);
 }
-safety_comment! {
-    /// SAFETY:
-    /// `ManuallyDrop` has the same layout and bit validity as `T` [1], and
-    /// accessing the inner value is safe (meaning that it's unsound to leave
-    /// the inner value uninitialized while exposing the `ManuallyDrop` to safe
-    /// code).
-    /// - `NoCell`: `ManuallyDrop<T>` has `UnsafeCell`s exactly when `T` does,
-    ///   so `T: NoCell` guarantees that `ManuallyDrop<T>` has no `UnsafeCell`s.
-    /// - `TryFromBytes`:
-    ///   - Given `t: *mut ManuallyDrop<T>` and `let r = t as *mut T`:
-    ///     - `t` and `r` refer to an object of the same size [1].
-    ///     - `t` and `r` refer to `UnsafeCell`s at the same byte ranges [2].
-    ///   - See inline safety comment for justification that `is_bit_valid`
-    ///     satisfies its safety post-conditions.
-    /// - `FromZeros`, `FromBytes`: Since it has the same layout as `T`, any
-    ///   valid `T` is a valid `ManuallyDrop<T>`. If `T: FromZeros`, a sequence
-    ///   of zero bytes is a valid `T`, and thus a valid `ManuallyDrop<T>`. If
-    ///   `T: FromBytes`, any sequence of bytes is a valid `T`, and thus a valid
-    ///   `ManuallyDrop<T>`.
-    /// - `IntoBytes`: Since it has the same layout as `T`, and since it's
-    ///   unsound to let safe code access a `ManuallyDrop` whose inner value is
-    ///   uninitialized, safe code can only ever access a `ManuallyDrop` whose
-    ///   contents are a valid `T`. Since `T: IntoBytes`, this means that safe
-    ///   code can only ever access a `ManuallyDrop` with all initialized bytes.
-    /// - `Unaligned`: `ManuallyDrop` has the same layout (and thus alignment)
-    ///   as `T`, and `T: Unaligned` guarantees that that alignment is 1.
-    ///
-    /// [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
-    ///
-    ///   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
-    ///   validity as `T`
-    ///
-    /// TODO(#429):
-    /// - Add quotes from docs.
-    /// - Once [1] (added in
-    /// https://github.com/rust-lang/rust/pull/115522) is available on stable,
-    /// quote the stable docs instead of the nightly docs.
-    unsafe_impl!(T: ?Sized + NoCell => NoCell for ManuallyDrop<T>);
-    unsafe_impl!(
-        T: ?Sized + TryFromBytes => TryFromBytes for ManuallyDrop<T>;
-        |candidate: Maybe<ManuallyDrop<T>>| {
-            let c = candidate.transparent_wrapper_into_inner();
 
-            // SAFETY: Since `ManuallyDrop<T>` has the same bit validity as `T`
-            // [1], it is bit-valid exactly if its bytes are a bit-valid `T`.
-            //
-            // [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
-            //
-            //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
-            //   validity as `T`.
-            T::is_bit_valid(c)
-        }
-    );
-    unsafe_impl!(T: ?Sized + FromZeros => FromZeros for ManuallyDrop<T>);
-    unsafe_impl!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>);
-    unsafe_impl!(T: ?Sized + IntoBytes => IntoBytes for ManuallyDrop<T>);
-    unsafe_impl!(T: ?Sized + Unaligned => Unaligned for ManuallyDrop<T>);
-    assert_unaligned!(ManuallyDrop<()>, ManuallyDrop<u8>);
-}
+impl_for_transparent_wrapper!(T: NoCell => NoCell for MaybeUninit<T>);
+impl_for_transparent_wrapper!(T: Unaligned => Unaligned for MaybeUninit<T>);
+assert_unaligned!(MaybeUninit<()>, MaybeUninit<u8>);
+
+impl_for_transparent_wrapper!(T: ?Sized + NoCell => NoCell for ManuallyDrop<T>);
+impl_for_transparent_wrapper!(T: ?Sized + TryFromBytes => TryFromBytes for ManuallyDrop<T>);
+impl_for_transparent_wrapper!(T: ?Sized + FromZeros => FromZeros for ManuallyDrop<T>);
+impl_for_transparent_wrapper!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>);
+impl_for_transparent_wrapper!(T: ?Sized + IntoBytes => IntoBytes for ManuallyDrop<T>);
+impl_for_transparent_wrapper!(T: ?Sized + Unaligned => Unaligned for ManuallyDrop<T>);
+assert_unaligned!(ManuallyDrop<()>, ManuallyDrop<u8>);
+
 safety_comment! {
     /// SAFETY:
     /// - `FromZeros`, `FromBytes`, `IntoBytes`: `UnsafeCell<T>` has the same
