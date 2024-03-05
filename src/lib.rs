@@ -4332,6 +4332,10 @@ mod simd {
 ///
 /// assert_eq!(two_dimensional, [[0, 1, 2, 3], [4, 5, 6, 7]]);
 /// ```
+///
+/// # Use in `const` contexts
+///
+/// This macro can be invoked in `const` contexts.
 #[macro_export]
 macro_rules! transmute {
     ($e:expr) => {{
@@ -4399,6 +4403,10 @@ macro_rules! transmute {
 ///
 /// assert_eq!(two_dimensional, &[[0, 1, 2, 3], [4, 5, 6, 7]]);
 /// ```
+///
+/// # Use in `const` contexts
+///
+/// This macro can be invoked in `const` contexts.
 ///
 /// # Alignment increase error message
 ///
@@ -4529,6 +4537,10 @@ macro_rules! transmute_ref {
 ///
 /// assert_eq!(one_dimensional, [4, 5, 6, 7, 0, 1, 2, 3]);
 /// ```
+///
+/// # Use in `const` contexts
+///
+/// This macro can be invoked in `const` contexts.
 ///
 /// # Alignment increase error message
 ///
@@ -4691,6 +4703,10 @@ macro_rules! transmute_mut {
 ///     assert_eq!(as_i32, i32::from_ne_bytes([b'a', b'b', b'c', b'd']));
 /// }
 /// ```
+///
+/// # Use in `const` contexts
+///
+/// This macro can be invoked in `const` contexts.
 #[doc(alias("include_bytes", "include_data", "include_type"))]
 #[macro_export]
 macro_rules! include_value {
