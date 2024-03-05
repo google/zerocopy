@@ -3473,8 +3473,34 @@ safety_comment! {
     /// - `Unaligned`: `()` has alignment 1.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#tuple-layout
-    unsafe_impl!((): NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+    unsafe_impl!((): IntoBytes, Unaligned);
     assert_unaligned!(());
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// TODO
+    unsafe_impl_for_power_set!(
+        A: NoCell, B: NoCell, C: NoCell, D: NoCell,
+        E: NoCell, F: NoCell, G: NoCell, H: NoCell,
+        I: NoCell, J: NoCell, K: NoCell, L: NoCell => NoCell for (...)
+    );
+    unsafe_impl_for_power_set!(
+        A: TryFromBytes, B: TryFromBytes, C: TryFromBytes, D: TryFromBytes,
+        E: TryFromBytes, F: TryFromBytes, G: TryFromBytes, H: TryFromBytes,
+        I: TryFromBytes, J: TryFromBytes, K: TryFromBytes, L: TryFromBytes => TryFromBytes for (...);
+        |_c: Maybe<Self>| todo!()
+    );
+    unsafe_impl_for_power_set!(
+        A: FromZeros, B: FromZeros, C: FromZeros, D: FromZeros,
+        E: FromZeros, F: FromZeros, G: FromZeros, H: FromZeros,
+        I: FromZeros, J: FromZeros, K: FromZeros, L: FromZeros => FromZeros for (...)
+    );
+    unsafe_impl_for_power_set!(
+        A: FromBytes, B: FromBytes, C: FromBytes, D: FromBytes,
+        E: FromBytes, F: FromBytes, G: FromBytes, H: FromBytes,
+        I: FromBytes, J: FromBytes, K: FromBytes, L: FromBytes => FromBytes for (...)
+    );
 }
 
 safety_comment! {

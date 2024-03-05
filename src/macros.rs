@@ -111,7 +111,7 @@ macro_rules! unsafe_impl {
     };
     (
         $(#[$attr:meta])*
-        $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
+        $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),* $(,)?
         => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         unsafe_impl!(
@@ -184,7 +184,7 @@ macro_rules! unsafe_impl {
     (@method TryFromBytes) => {
         #[allow(clippy::missing_inline_in_public_items)]
         fn only_derive_is_allowed_to_implement_this_trait() {}
-        #[inline(always)] fn is_bit_valid<A: invariant::at_least::Shared>(_: Maybe<'_, Self, A>) -> bool { true }
+        #[inline(always)] fn is_bit_valid<AA: invariant::at_least::Shared>(_: Maybe<'_, Self, AA>) -> bool { true }
     };
     (@method $trait:ident) => {
         #[allow(clippy::missing_inline_in_public_items)]
@@ -318,13 +318,14 @@ macro_rules! impl_for_transparent_wrapper {
     };
 }
 
-/// Implements a trait for a type, bounding on each memeber of the power set of
-/// a set of type variables. This is useful for implementing traits for tuples
-/// or `fn` types.
+/// Implements a trait for a type, bounding on each member of the power set of a
+/// set of type variables. This is useful for implementing traits for tuples or
+/// `fn` types.
 ///
-/// The last argument is the name of a macro which will be called in every
-/// `impl` block, and is expected to expand to the name of the type for which to
-/// implement the trait.
+/// The last, optional argument is the name of a macro which will be called in
+/// every `impl` block, and is expected to expand to the name of the type for
+/// which to implement the trait. If no macro name is given, then the trait is
+/// implemented for tuple types.
 ///
 /// For example, the invocation:
 /// ```ignore
@@ -336,35 +337,51 @@ macro_rules! impl_for_transparent_wrapper {
 /// unsafe impl<B>    Foo for type!(B)    { ... }
 /// unsafe impl<A, B> Foo for type!(A, B) { ... }
 /// ```
+///
+/// ...and the invocation:
+/// ```ignore
+/// unsafe_impl_for_power_set!(A, B => Foo for (...))
+/// ```
+/// ...expands to:
+/// ```ignore
+/// unsafe impl       Foo for ()      { ... }
+/// unsafe impl<B>    Foo for (B,)    { ... }
+/// unsafe impl<A, B> Foo for (A, B,) { ... }
+/// ```
 macro_rules! unsafe_impl_for_power_set {
     (
-        $first:ident $(, $rest:ident)* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        $first:ident $(: $firstbound:ident)? $(, $rest:ident $(: $restbound:ident)?)* $(-> $ret:ident $(: $retbound:ident)?)? => $trait:ident for $($macro:ident!)?(...)
         $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         unsafe_impl_for_power_set!(
-            $($rest),* $(-> $ret)? => $trait for $macro!(...)
+            $($rest $(: $restbound)?),* $(-> $ret $(: $retbound)?)? => $trait for $($macro!)?(...)
             $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
         );
         unsafe_impl_for_power_set!(
-            @impl $first $(, $rest)* $(-> $ret)? => $trait for $macro!(...)
+            @impl $first $(: $firstbound)? $(, $rest $(: $restbound)?)* $(-> $ret $(: $retbound)?)? => $trait for $($macro!)?(...)
             $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
         );
     };
     (
-        $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        $(-> $ret:ident $(: $retbound:ident)?)? => $trait:ident for $($macro:ident!)?(...)
         $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         unsafe_impl_for_power_set!(
-            @impl $(-> $ret)? => $trait for $macro!(...)
+            @impl $(-> $ret $(: $retbound)?)? => $trait for $($macro!)?(...)
             $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
         );
     };
     (
-        @impl $($vars:ident),* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
+        @impl $($vars:ident $(: $varbounds:ident)?),* $(-> $ret:ident $(: $retbound:ident)?)? => $trait:ident for $($macro:ident!)?(...)
         $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         unsafe_impl!(
-            $($vars,)* $($ret)? => $trait for $macro!($($vars),* $(-> $ret)?)
+            // NOTE: The fact that we expand as `$($vars,)*` (comma inside)
+            // rather than `$($vars),*` comma outside is very important! When
+            // this macro is invoked for a tuple type, that means the difference
+            // between `(T)` (which is just `T`) and `(T,)` (which is a tuple
+            // containing a single `T` field).
+            $($vars $(: $varbounds)?,)* $($ret $(: $retbound)?)? => $trait for $($macro!)?($($vars,)* $(-> $ret)?)
             $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
         );
     };
@@ -373,13 +390,13 @@ macro_rules! unsafe_impl_for_power_set {
 /// Expands to an `Option<extern "C" fn>` type with the given argument types and
 /// return type. Designed for use with `unsafe_impl_for_power_set`.
 macro_rules! opt_extern_c_fn {
-    ($($args:ident),* -> $ret:ident) => { Option<extern "C" fn($($args),*) -> $ret> };
+    ($($args:ident),* $(,)? -> $ret:ident) => { Option<extern "C" fn($($args),*) -> $ret> };
 }
 
 /// Expands to a `Option<fn>` type with the given argument types and return
 /// type. Designed for use with `unsafe_impl_for_power_set`.
 macro_rules! opt_fn {
-    ($($args:ident),* -> $ret:ident) => { Option<fn($($args),*) -> $ret> };
+    ($($args:ident),* $(,)? -> $ret:ident) => { Option<fn($($args),*) -> $ret> };
 }
 
 /// Implements trait(s) for a type or verifies the given implementation by
