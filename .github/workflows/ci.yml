@@ -277,6 +277,17 @@ jobs:
         export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items' || '' }} $RUSTDOCFLAGS $METADATA_DOCS_RS_RUSTDOC_ARGS"
         ./cargo.sh +${{ matrix.toolchain }} doc --document-private-items --package ${{ matrix.crate }} ${{ matrix.features }}
 
+    - name: Check dead links
+      run: |
+        cargo install -q cargo-deadlinks --version 0.8.1
+        METADATA_DOCS_RS_RUSTDOC_ARGS="$(cargo metadata --format-version 1 | \
+          jq -r ".packages[] | select(.name == \"zerocopy\").metadata.docs.rs.\"rustdoc-args\".[]" | tr '\n' ' ')"
+        # Nearly identical to the above `cargo doc` invocation, but invoking
+        # `cargo deadlinks` instead.
+        export RUSTDOCFLAGS="$RUSTDOCFLAGS $METADATA_DOCS_RS_RUSTDOC_ARGS"
+        ./cargo.sh +${{ matrix.toolchain }} deadlinks --check-intra-doc-links -- --document-private-items --package ${{ matrix.crate }} ${{ matrix.features }}
+      if: matrix.toolchain == 'nightly'
+
     # Check semver compatibility with the most recently-published version on
     # crates.io. We do this in the matrix rather than in its own job so that it
     # gets run on different targets. Some of our API is target-specific (e.g.,
@@ -412,11 +423,12 @@ jobs:
           # in parallel.
           #
           # [1]  https://stackoverflow.com/a/42139535/836390
-          cargo check --workspace --tests            &> /dev/null &
-          cargo metadata                             &> /dev/null &
-          cargo install cargo-readme --version 3.2.0 &> /dev/null &
-          cargo install --locked kani-verifier       &> /dev/null &
-          cargo kani setup                           &> /dev/null &
+          cargo check --workspace --tests               &> /dev/null &
+          cargo metadata                                &> /dev/null &
+          cargo install cargo-readme --version 3.2.0    &> /dev/null &
+          cargo install cargo-deadlinks --version 0.8.1 &> /dev/null &
+          cargo install --locked kani-verifier          &> /dev/null &
+          cargo kani setup                              &> /dev/null &
 
           wait
 
