@@ -855,7 +855,7 @@ mod _transitions {
         /// This method will panic if
         /// [`T::is_bit_valid`][TryFromBytes::is_bit_valid] panics.
         #[inline]
-        pub(crate) fn try_into_valid(
+        pub(crate) fn try_into_valid<R: CellSafeReason>(
             mut self,
         ) -> Option<Ptr<'a, T, (I::Aliasing, I::Alignment, invariant::Valid)>>
         where
@@ -866,7 +866,7 @@ mod _transitions {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
             // fix before returning.
-            if T::is_bit_valid(self.reborrow().forget_aligned()) {
+            if T::is_bit_valid::<_, R>(self.reborrow().forget_aligned()) {
                 // SAFETY: If `T::is_bit_valid`, code may assume that `self`
                 // contains a bit-valid instance of `Self`.
                 Some(unsafe { self.assume_valid() })
@@ -1266,10 +1266,14 @@ mod _project {
         /// return a `Ptr` to the field projected from `self` by `projector`.
         #[doc(hidden)]
         #[inline]
-        pub unsafe fn project<U: 'a + ?Sized>(
+        pub unsafe fn project<U, R>(
             self,
             projector: impl FnOnce(*mut T) -> *mut U,
-        ) -> Ptr<'a, U, (I::Aliasing, invariant::Any, invariant::Initialized)> {
+        ) -> Ptr<'a, U, (I::Aliasing, invariant::Any, invariant::Initialized)>
+        where
+            U: 'a + ?Sized + CellSafe<I::Aliasing, R>,
+            R: CellSafeReason,
+        {
             // SAFETY: `projector` is provided with `self` casted to a raw
             // pointer.
             let field = projector(self.as_non_null().as_ptr());

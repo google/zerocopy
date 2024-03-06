@@ -81,7 +81,7 @@ safety_comment! {
     impl_or_verify!(T: NoCell => NoCell for Unalign<T>);
     impl_or_verify!(
         T: TryFromBytes => TryFromBytes for Unalign<T>;
-        |c: Maybe<T>| T::is_bit_valid(c)
+        <R>|c: Maybe<T>| T::is_bit_valid::<_, R>(c)
     );
     impl_or_verify!(T: FromZeros => FromZeros for Unalign<T>);
     impl_or_verify!(T: FromBytes => FromBytes for Unalign<T>);

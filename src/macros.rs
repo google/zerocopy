@@ -60,10 +60,10 @@ macro_rules! safety_comment {
 ///     `Ptr<$repr>` if the original `Ptr<$ty>` refers to a valid `$ty`.
 macro_rules! unsafe_impl {
     // Implement `$trait` for `$ty` with no bounds.
-    ($(#[$attr:meta])* $ty:ty: $trait:ident $(; |$candidate:ident: MaybeAligned<$repr:ty>| $is_bit_valid:expr)?) => {
+    ($(#[$attr:meta])* $ty:ty: $trait:ident $(; <$R:ident>|$candidate:ident: MaybeAligned<$repr:ty>| $is_bit_valid:expr)?) => {
         $(#[$attr])*
         unsafe impl $trait for $ty {
-            unsafe_impl!(@method $trait $(; |$candidate: MaybeAligned<$repr>| $is_bit_valid)?);
+            unsafe_impl!(@method $trait $(; <$R>|$candidate: MaybeAligned<$repr>| $is_bit_valid)?);
         }
     };
     // Implement all `$traits` for `$ty` with no bounds.
@@ -99,26 +99,26 @@ macro_rules! unsafe_impl {
         $(#[$attr:meta])*
         const $constname:ident : $constty:ident $(,)?
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        => $trait:ident for $ty:ty $(; <$R:ident>|$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         unsafe_impl!(
             @inner
             $(#[$attr])*
             @const $constname: $constty,
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
-            => $trait for $ty $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+            => $trait for $ty $(; <$R>|$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
         );
     };
     (
         $(#[$attr:meta])*
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        => $trait:ident for $ty:ty $(; <$R:ident>|$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         unsafe_impl!(
             @inner
             $(#[$attr])*
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
-            => $trait for $ty $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+            => $trait for $ty $(; <$R>|$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
         );
     };
     (
@@ -126,21 +126,25 @@ macro_rules! unsafe_impl {
         $(#[$attr:meta])*
         $(@const $constname:ident : $constty:ident,)*
         $($tyvar:ident $(: $(? $optbound:ident +)* + $($bound:ident +)* )?,)*
-        => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        => $trait:ident for $ty:ty $(; <$R:ident>|$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         $(#[$attr])*
         #[allow(non_local_definitions)]
         unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),* $(, const $constname: $constty,)*> $trait for $ty {
-            unsafe_impl!(@method $trait $(; |$candidate: $(MaybeAligned<$ref_repr>)? $(Maybe<$ptr_repr>)?| $is_bit_valid)?);
+            unsafe_impl!(@method $trait $(; <$R>|$candidate: $(MaybeAligned<$ref_repr>)? $(Maybe<$ptr_repr>)?| $is_bit_valid)?);
         }
     };
 
-    (@method TryFromBytes ; |$candidate:ident: MaybeAligned<$repr:ty>| $is_bit_valid:expr) => {
+    (@method TryFromBytes ; <$R:ident>|$candidate:ident: MaybeAligned<$repr:ty>| $is_bit_valid:expr) => {
         #[allow(clippy::missing_inline_in_public_items)]
         fn only_derive_is_allowed_to_implement_this_trait() {}
 
         #[inline]
-        fn is_bit_valid<AA: invariant::at_least::Shared>(candidate: Maybe<'_, Self, AA>) -> bool {
+        fn is_bit_valid<A, $R>(candidate: Maybe<'_, Self, A>) -> bool
+        where
+            A: invariant::at_least::Shared,
+            $R: CellSafeReason,
+        {
             // SAFETY:
             // - The argument to `cast_unsized` is `|p| p as *mut _` as required
             //   by that method's safety precondition.
@@ -157,12 +161,16 @@ macro_rules! unsafe_impl {
             $is_bit_valid
         }
     };
-    (@method TryFromBytes ; |$candidate:ident: Maybe<$repr:ty>| $is_bit_valid:expr) => {
+    (@method TryFromBytes ; <$R:ident>|$candidate:ident: Maybe<$repr:ty>| $is_bit_valid:expr) => {
         #[allow(clippy::missing_inline_in_public_items)]
         fn only_derive_is_allowed_to_implement_this_trait() {}
 
         #[inline]
-        fn is_bit_valid<AA: invariant::at_least::Shared>(candidate: Maybe<'_, Self, AA>) -> bool {
+        fn is_bit_valid<AA, $R>(candidate: Maybe<'_, Self, AA>) -> bool
+        where
+            AA: invariant::at_least::Shared,
+            $R: CellSafeReason,
+        {
             // SAFETY:
             // - The argument to `cast_unsized` is `|p| p as *mut _` as required
             //   by that method's safety precondition.
@@ -184,7 +192,13 @@ macro_rules! unsafe_impl {
     (@method TryFromBytes) => {
         #[allow(clippy::missing_inline_in_public_items)]
         fn only_derive_is_allowed_to_implement_this_trait() {}
-        #[inline(always)] fn is_bit_valid<A: invariant::at_least::Shared>(_: Maybe<'_, Self, A>) -> bool { true }
+        #[inline(always)] fn is_bit_valid<A, R>(_: Maybe<'_, Self, A>) -> bool
+        where
+            A: invariant::at_least::Shared,
+            R: CellSafeReason,
+        {
+            true
+        }
     };
     (@method $trait:ident) => {
         #[allow(clippy::missing_inline_in_public_items)]
@@ -216,33 +230,33 @@ macro_rules! unsafe_impl {
 macro_rules! unsafe_impl_for_power_set {
     (
         $first:ident $(, $rest:ident)* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
-        $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        $(; <$R:ident>|$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         unsafe_impl_for_power_set!(
             $($rest),* $(-> $ret)? => $trait for $macro!(...)
-            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+            $(; <$R>|$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
         );
         unsafe_impl_for_power_set!(
             @impl $first $(, $rest)* $(-> $ret)? => $trait for $macro!(...)
-            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+            $(; <$R>|$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
         );
     };
     (
         $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
-        $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        $(; <$R:ident>|$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         unsafe_impl_for_power_set!(
             @impl $(-> $ret)? => $trait for $macro!(...)
-            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+            $(; <$R>|$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
         );
     };
     (
         @impl $($vars:ident),* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
-        $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        $(; <$R:ident>|$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         unsafe_impl!(
             $($vars,)* $($ret)? => $trait for $macro!($($vars),* $(-> $ret)?)
-            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+            $(; <$R>|$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
         );
     };
 }
@@ -326,11 +340,11 @@ macro_rules! impl_or_verify {
     };
     (
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        => $trait:ident for $ty:ty $(; <$R:ident>|$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         impl_or_verify!(@impl { unsafe_impl!(
             $($tyvar $(: $(? $optbound +)* $($bound +)*)?),* => $trait for $ty
-            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+            $(; <$R>|$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
         ); });
         impl_or_verify!(@verify $trait, {
             impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> Subtrait for $ty {}
