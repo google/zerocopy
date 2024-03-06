@@ -434,8 +434,9 @@ mod _conversions {
         T: 'a + ?Sized,
     {
         /// Constructs a `Ptr` from an exclusive reference.
+        #[doc(hidden)]
         #[inline]
-        pub(crate) fn from_mut(ptr: &'a mut T) -> Self {
+        pub fn from_mut(ptr: &'a mut T) -> Self {
             let ptr = core::ptr::NonNull::from(ptr);
             // SAFETY:
             // 0. `ptr`, by invariant on `&'a mut T`, is derived from some valid
@@ -666,8 +667,9 @@ mod _transitions {
         /// concrete aliasing.
         ///
         /// [`Exclusive`]: invariant::Exclusive
+        #[doc(hidden)]
         #[inline]
-        pub(crate) fn into_exclusive_or_post_monomorphization_error(
+        pub fn into_exclusive_or_post_monomorphization_error(
             self,
         ) -> Ptr<'a, T, (invariant::Exclusive, I::Alignment, I::Validity)> {
             trait AliasingExt: invariant::Aliasing {
@@ -1467,6 +1469,45 @@ mod _project {
             })
         }
     }
+}
+
+/// Implemented if `Ptr<T>` can be casted to `Ptr<U>` without violating the
+/// `UnsafeCell`-related invariants of [`Ptr`].
+///
+/// # Safety
+///
+/// `Ptr` requires that:
+///
+/// > During the lifetime 'a, no live reference will exist to this
+/// > memory which treats `UnsafeCell`s as existing at different
+/// > ranges than they exist in `T`.
+///
+/// Implementations of this trait must prove that for an aliasing `A`, a cast of
+/// `Ptr<T, Aliasing = A>` to `Ptr<U, Aliasing = A>` does not introduce a live
+/// reference to `U` with `UnsafeCell`s at different ranges than a live
+/// reference to `T`.
+pub(crate) unsafe trait NoCellSafe<U: ?Sized, A: invariant::Aliasing> {}
+
+/// SAFETY: Under [Shared][invariant::Shared] aliasing, other active references
+/// might exist to this memory. By invariant on `Ptr`, `T` will have
+/// `UnsafeCell`s at exactly the same ranges they appear in other references to
+/// the same memory. To preserve this invariant through casting, we can require
+/// that `T` and `U` are both [`NoCell`].
+unsafe impl<T, U> NoCellSafe<U, invariant::Shared> for T
+where
+    T: ?Sized + NoCell,
+    U: ?Sized + NoCell,
+{
+}
+
+/// SAFETY: Under [Exclusive][invariant::Exclusive] aliasing, there are no other
+/// active references besides the `Ptr`, so we do not need to prove that `T` and
+/// `U` agree on the ranges of `UnsafeCell`s.
+unsafe impl<T, U> NoCellSafe<U, invariant::Exclusive> for T
+where
+    T: ?Sized,
+    U: ?Sized,
+{
 }
 
 #[cfg(test)]

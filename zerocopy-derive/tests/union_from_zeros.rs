@@ -15,21 +15,21 @@ include!("include.rs");
 // A union is `imp::FromZeros` if:
 // - all fields are `imp::FromZeros`
 
-#[derive(Clone, Copy, imp::NoCell, imp::FromZeros)]
+#[derive(Clone, Copy, imp::FromZeros)]
 union Zst {
     a: (),
 }
 
 util_assert_impl_all!(Zst: imp::FromZeros);
 
-#[derive(imp::NoCell, imp::FromZeros)]
+#[derive(imp::FromZeros)]
 union One {
     a: bool,
 }
 
 util_assert_impl_all!(One: imp::FromZeros);
 
-#[derive(imp::NoCell, imp::FromZeros)]
+#[derive(imp::FromZeros)]
 union Two {
     a: bool,
     b: Zst,
@@ -37,7 +37,7 @@ union Two {
 
 util_assert_impl_all!(Two: imp::FromZeros);
 
-#[derive(imp::NoCell, imp::FromZeros)]
+#[derive(imp::FromZeros)]
 union TypeParams<'a, T: imp::Copy, I: imp::Iterator>
 where
     I::Item: imp::Copy,
@@ -54,7 +54,7 @@ util_assert_impl_all!(TypeParams<'static, (), imp::IntoIter<()>>: imp::FromZeros
 
 // Deriving `imp::FromZeros` should work if the union has bounded parameters.
 
-#[derive(imp::NoCell, imp::FromZeros)]
+#[derive(imp::FromZeros)]
 #[repr(C)]
 union WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::FromZeros, const N: usize>
 where
