@@ -1521,7 +1521,10 @@ pub unsafe trait TryFromBytes {
     /// [`UnsafeCell`]: core::cell::UnsafeCell
     /// [`Shared`]: invariant::Shared
     #[doc(hidden)]
-    fn is_bit_valid<A: invariant::at_least::Shared>(candidate: Maybe<'_, Self, A>) -> bool;
+    fn is_bit_valid<A, R>(candidate: Maybe<'_, Self, A>) -> bool
+    where
+        A: invariant::at_least::Shared,
+        R: CellSafeReason;
 
     /// Attempts to interpret a byte slice as a `Self`.
     ///
@@ -1554,7 +1557,7 @@ pub unsafe trait TryFromBytes {
         // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
         // pointer when `Self: !NoCell`. Since `Self: NoCell`, this panic
         // condition will not happen.
-        let candidate = candidate.try_into_valid();
+        let candidate = candidate.try_into_valid::<BecauseNoCell>();
 
         candidate.map(MaybeAligned::as_ref)
     }
@@ -1591,7 +1594,7 @@ pub unsafe trait TryFromBytes {
         // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
         // pointer when `Self: !NoCell`. Since `Self: NoCell`, this panic
         // condition will not happen.
-        let candidate = candidate.try_into_valid();
+        let candidate = candidate.try_into_valid::<BecauseExclusive>();
 
         candidate.map(Ptr::as_mut)
     }
@@ -1630,7 +1633,7 @@ pub unsafe trait TryFromBytes {
         // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
         // pointer when `Self: !NoCell`. Since `Self: NoCell`, this panic
         // condition will not happen.
-        if !Self::is_bit_valid(c_ptr.forget_aligned()) {
+        if !Self::is_bit_valid::<_, BecauseExclusive>(c_ptr.forget_aligned()) {
             return None;
         }
 
@@ -3564,7 +3567,7 @@ safety_comment! {
     ///   bit pattern 0x01.
     ///
     /// [4] TODO(#429): Justify this claim.
-    unsafe_impl!(bool: TryFromBytes; |byte: MaybeAligned<u8>| *byte.unaligned_as_ref() < 2);
+    unsafe_impl!(bool: TryFromBytes; <R>|byte: MaybeAligned<u8>| *byte.unaligned_as_ref() < 2);
 }
 safety_comment! {
     /// SAFETY:
@@ -3615,7 +3618,7 @@ safety_comment! {
     ///   a `char`.
     ///
     /// [4] TODO(#429): Justify this claim.
-    unsafe_impl!(char: TryFromBytes; |candidate: MaybeAligned<u32>| {
+    unsafe_impl!(char: TryFromBytes; <R>|candidate: MaybeAligned<u32>| {
         let candidate = candidate.read_unaligned();
         char::from_u32(candidate).is_some()
     });
@@ -3666,7 +3669,7 @@ safety_comment! {
     /// [2] Per https://doc.rust-lang.org/core/str/fn.from_utf8.html#errors:
     ///
     ///   Returns `Err` if the slice is not UTF-8.
-    unsafe_impl!(str: TryFromBytes; |candidate: MaybeAligned<[u8]>| {
+    unsafe_impl!(str: TryFromBytes; <R>|candidate: MaybeAligned<[u8]>| {
         let candidate = candidate.unaligned_as_ref();
         core::str::from_utf8(candidate).is_ok()
     });
@@ -3742,18 +3745,18 @@ safety_comment! {
     ///
     /// [2] TODO(#896): Write a safety proof for this before the next stable
     ///     release.
-    unsafe_impl!(NonZeroU8: TryFromBytes; |n: MaybeAligned<u8>| NonZeroU8::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroI8: TryFromBytes; |n: MaybeAligned<i8>| NonZeroI8::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroU16: TryFromBytes; |n: MaybeAligned<u16>| NonZeroU16::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroI16: TryFromBytes; |n: MaybeAligned<i16>| NonZeroI16::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroU32: TryFromBytes; |n: MaybeAligned<u32>| NonZeroU32::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroI32: TryFromBytes; |n: MaybeAligned<i32>| NonZeroI32::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroU64: TryFromBytes; |n: MaybeAligned<u64>| NonZeroU64::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroI64: TryFromBytes; |n: MaybeAligned<i64>| NonZeroI64::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroU128: TryFromBytes; |n: MaybeAligned<u128>| NonZeroU128::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroI128: TryFromBytes; |n: MaybeAligned<i128>| NonZeroI128::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroUsize: TryFromBytes; |n: MaybeAligned<usize>| NonZeroUsize::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroIsize: TryFromBytes; |n: MaybeAligned<isize>| NonZeroIsize::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroU8: TryFromBytes; <R>|n: MaybeAligned<u8>| NonZeroU8::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroI8: TryFromBytes; <R>|n: MaybeAligned<i8>| NonZeroI8::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroU16: TryFromBytes; <R>|n: MaybeAligned<u16>| NonZeroU16::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroI16: TryFromBytes; <R>|n: MaybeAligned<i16>| NonZeroI16::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroU32: TryFromBytes; <R>|n: MaybeAligned<u32>| NonZeroU32::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroI32: TryFromBytes; <R>|n: MaybeAligned<i32>| NonZeroI32::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroU64: TryFromBytes; <R>|n: MaybeAligned<u64>| NonZeroU64::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroI64: TryFromBytes; <R>|n: MaybeAligned<i64>| NonZeroI64::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroU128: TryFromBytes; <R>|n: MaybeAligned<u128>| NonZeroU128::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroI128: TryFromBytes; <R>|n: MaybeAligned<i128>| NonZeroI128::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroUsize: TryFromBytes; <R>|n: MaybeAligned<usize>| NonZeroUsize::new(n.read_unaligned()).is_some());
+    unsafe_impl!(NonZeroIsize: TryFromBytes; <R>|n: MaybeAligned<isize>| NonZeroIsize::new(n.read_unaligned()).is_some());
 }
 safety_comment! {
     /// SAFETY:
@@ -3832,7 +3835,7 @@ safety_comment! {
     unsafe_impl!(
         #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
         T => TryFromBytes for Option<Box<T>>;
-        |c: Maybe<Option<Box<T>>>| pointer::is_zeroed(c)
+        <R>|c: Maybe<Option<Box<T>>>| pointer::is_zeroed(c)
     );
     #[cfg(feature = "alloc")]
     unsafe_impl!(
@@ -3841,28 +3844,28 @@ safety_comment! {
     );
     unsafe_impl!(
         T => TryFromBytes for Option<&'_ T>;
-        |c: Maybe<Option<&'_ T>>| pointer::is_zeroed(c)
+        <R>|c: Maybe<Option<&'_ T>>| pointer::is_zeroed(c)
     );
     unsafe_impl!(T => FromZeros for Option<&'_ T>);
     unsafe_impl!(
             T => TryFromBytes for Option<&'_ mut T>;
-            |c: Maybe<Option<&'_ mut T>>| pointer::is_zeroed(c)
+            <R>|c: Maybe<Option<&'_ mut T>>| pointer::is_zeroed(c)
     );
     unsafe_impl!(T => FromZeros for Option<&'_ mut T>);
     unsafe_impl!(
         T => TryFromBytes for Option<NonNull<T>>;
-        |c: Maybe<Option<NonNull<T>>>| pointer::is_zeroed(c)
+        <R>|c: Maybe<Option<NonNull<T>>>| pointer::is_zeroed(c)
     );
     unsafe_impl!(T => FromZeros for Option<NonNull<T>>);
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_fn!(...));
     unsafe_impl_for_power_set!(
         A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_fn!(...);
-        |c: Maybe<Self>| pointer::is_zeroed(c)
+        <R>|c: Maybe<Self>| pointer::is_zeroed(c)
     );
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_extern_c_fn!(...));
     unsafe_impl_for_power_set!(
         A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_extern_c_fn!(...);
-        |c: Maybe<Self>| pointer::is_zeroed(c)
+        <R>|c: Maybe<Self>| pointer::is_zeroed(c)
     );
 }
 
@@ -3944,8 +3947,8 @@ safety_comment! {
     ///
     /// [3] TODO(#896): Write a safety proof before the next stable release.
     unsafe_impl!(T: NoCell => NoCell for Wrapping<T>);
-    unsafe_impl!(T: TryFromBytes => TryFromBytes for Wrapping<T>; |candidate: Maybe<T>| {
-        T::is_bit_valid(candidate)
+    unsafe_impl!(T: TryFromBytes => TryFromBytes for Wrapping<T>; <R>|candidate: Maybe<T>| {
+        T::is_bit_valid::<_, R>(candidate)
     });
     unsafe_impl!(T: FromZeros => FromZeros for Wrapping<T>);
     unsafe_impl!(T: FromBytes => FromBytes for Wrapping<T>);
@@ -4014,7 +4017,7 @@ safety_comment! {
     unsafe_impl!(T: ?Sized + NoCell => NoCell for ManuallyDrop<T>);
     unsafe_impl!(
         T: ?Sized + TryFromBytes => TryFromBytes for ManuallyDrop<T>;
-        |candidate: Maybe<ManuallyDrop<T>>| {
+        <R>|candidate: Maybe<ManuallyDrop<T>>| {
             let c = candidate.transparent_wrapper_into_inner();
 
             // SAFETY: Since `ManuallyDrop<T>` has the same bit validity as `T`
@@ -4024,7 +4027,7 @@ safety_comment! {
             //
             //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
             //   validity as `T`.
-            T::is_bit_valid(c)
+            T::is_bit_valid::<_, R>(c)
         }
     );
     unsafe_impl!(T: ?Sized + FromZeros => FromZeros for ManuallyDrop<T>);
@@ -4068,7 +4071,11 @@ unsafe impl<T: TryFromBytes> TryFromBytes for UnsafeCell<T> {
     }
 
     #[inline]
-    fn is_bit_valid<A: invariant::at_least::Shared>(candidate: Maybe<'_, Self, A>) -> bool {
+    fn is_bit_valid<A, R>(candidate: Maybe<'_, Self, A>) -> bool
+    where
+        A: invariant::at_least::Shared,
+        R: CellSafeReason,
+    {
         // The only way to implement this function is using an exclusive-aliased
         // pointer. `UnsafeCell`s cannot be read via shared-aliased pointers
         // (other than by using `unsafe` code, which we can't use since we can't
@@ -4130,7 +4137,7 @@ unsafe impl<T: TryFromBytes> TryFromBytes for UnsafeCell<T> {
         // validity, `UnsafeCell<T>` is bit-valid exactly when its wrapped `T`
         // is. Thus, this is a sound implementation of
         // `UnsafeCell::is_bit_valid`.
-        T::is_bit_valid(c.forget_exclusive())
+        T::is_bit_valid::<_, R>(c.forget_exclusive())
     }
 }
 
@@ -4159,12 +4166,12 @@ safety_comment! {
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#array-layout
     unsafe_impl!(const N: usize, T: NoCell => NoCell for [T; N]);
-    unsafe_impl!(const N: usize, T: TryFromBytes => TryFromBytes for [T; N]; |c: Maybe<[T; N]>| {
+    unsafe_impl!(const N: usize, T: TryFromBytes => TryFromBytes for [T; N]; <R>|c: Maybe<[T; N]>| {
         // Note that this call may panic, but it would still be sound even if it
         // did. `is_bit_valid` does not promise that it will not panic (in fact,
         // it explicitly warns that it's a possibility), and we have not
         // violated any safety invariants that we must fix before returning.
-        <[T] as TryFromBytes>::is_bit_valid(c.as_slice())
+        <[T] as TryFromBytes>::is_bit_valid::<_, R>(c.as_slice())
     });
     unsafe_impl!(const N: usize, T: FromZeros => FromZeros for [T; N]);
     unsafe_impl!(const N: usize, T: FromBytes => FromBytes for [T; N]);
@@ -4172,7 +4179,7 @@ safety_comment! {
     unsafe_impl!(const N: usize, T: Unaligned => Unaligned for [T; N]);
     assert_unaligned!([(); 0], [(); 1], [u8; 0], [u8; 1]);
     unsafe_impl!(T: NoCell => NoCell for [T]);
-    unsafe_impl!(T: TryFromBytes => TryFromBytes for [T]; |c: Maybe<[T]>| {
+    unsafe_impl!(T: TryFromBytes => TryFromBytes for [T]; <R>|c: Maybe<[T]>| {
         // SAFETY: Per the reference [1]:
         //
         //   An array of `[T; N]` has a size of `size_of::<T>() * N` and the
@@ -4193,7 +4200,7 @@ safety_comment! {
         // not panic (in fact, it explicitly warns that it's a possibility), and
         // we have not violated any safety invariants that we must fix before
         // returning.
-        c.iter().all(<T as TryFromBytes>::is_bit_valid)
+        c.iter().all(<T as TryFromBytes>::is_bit_valid::<_, R>)
     });
     unsafe_impl!(T: FromZeros => FromZeros for [T]);
     unsafe_impl!(T: FromBytes => FromBytes for [T]);
@@ -4219,11 +4226,11 @@ safety_comment! {
     /// documentation once this PR lands.
     unsafe_impl!(T: ?Sized => NoCell for *const T);
     unsafe_impl!(T: ?Sized => NoCell for *mut T);
-    unsafe_impl!(T => TryFromBytes for *const T; |c: Maybe<*const T>| {
+    unsafe_impl!(T => TryFromBytes for *const T; <R>|c: Maybe<*const T>| {
         pointer::is_zeroed(c)
     });
     unsafe_impl!(T => FromZeros for *const T);
-    unsafe_impl!(T => TryFromBytes for *mut T; |c: Maybe<*const T>| {
+    unsafe_impl!(T => TryFromBytes for *mut T; <R>|c: Maybe<*const T>| {
         pointer::is_zeroed(c)
     });
     unsafe_impl!(T => FromZeros for *mut T);

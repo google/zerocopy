@@ -362,9 +362,13 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
             // validity of a struct is just the composition of the bit
             // validities of its fields, so this is a sound implementation of
             // `is_bit_valid`.
-            fn is_bit_valid<A: ::zerocopy::pointer::invariant::at_least::Shared>(
+            fn is_bit_valid<A, R>(
                 mut candidate: ::zerocopy::Maybe<Self, A>
-            ) -> bool {
+            ) -> bool
+            where
+                A: ::zerocopy::pointer::invariant::at_least::Shared,
+                R: ::zerocopy::CellSafeReason,
+            {
                 true #(&& {
                     // SAFETY: `project` is a field projection of `candidate`,
                     // and `Self` is a struct type. The candidate will have
@@ -375,10 +379,10 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
                         let project = |slf: *mut Self|
                             ::zerocopy::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
 
-                        candidate.reborrow().project(project)
+                        candidate.reborrow().project::<_, R>(project)
                     };
 
-                    <#field_tys as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                    <#field_tys as ::zerocopy::TryFromBytes>::is_bit_valid::<_, R>(field_candidate)
                 })*
             }
         )
@@ -411,9 +415,13 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
             // bit validity of a union is not yet well defined in Rust, but it
             // is guaranteed to be no more strict than this definition. See #696
             // for a more in-depth discussion.
-            fn is_bit_valid<A: ::zerocopy::pointer::invariant::at_least::Shared>(
+            fn is_bit_valid<A, R>(
                 mut candidate: ::zerocopy::Maybe<Self, A>
-            ) -> bool {
+            ) -> bool
+            where
+                A: ::zerocopy::pointer::invariant::at_least::Shared,
+                R: ::zerocopy::CellSafeReason,
+            {
                 false #(|| {
                     // SAFETY: `project` is a field projection of `candidate`,
                     // and `Self` is a union type. The candidate and projection
@@ -427,7 +435,7 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
                         candidate.reborrow().project(project)
                     };
 
-                    <#field_tys as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                    <#field_tys as ::zerocopy::TryFromBytes>::is_bit_valid::<_, R>(field_candidate)
                 })*
             }
         )
@@ -523,7 +531,7 @@ fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2:
         // SAFETY: We use `is_bit_valid` to validate that the bit pattern
         // corresponds to one of the field-less enum's variant discriminants.
         // Thus, this is a sound implementation of `is_bit_valid`.
-        fn is_bit_valid<A: ::zerocopy::pointer::invariant::at_least::Shared>(
+        fn is_bit_valid<A, R>(
             candidate: ::zerocopy::Ptr<
                 '_,
                 Self,
@@ -533,7 +541,11 @@ fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2:
                     ::zerocopy::pointer::invariant::Initialized,
                 ),
             >,
-        ) -> ::zerocopy::macro_util::core_reexport::primitive::bool {
+        ) -> ::zerocopy::macro_util::core_reexport::primitive::bool
+        where
+            A: ::zerocopy::pointer::invariant::at_least::Shared,
+            R: ::zerocopy::CellSafeReason,
+        {
             #is_bit_valid_body
         }
     ));
