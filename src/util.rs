@@ -26,13 +26,12 @@ use crate::{
 ///
 /// # Safety
 ///
-/// `T: TransparentWrapper` implies that:
-/// - `T` has the same size as [`T::Inner`]
-/// - `T` has `UnsafeCell`s covering the same byte ranges as `T::Inner`
-/// - `T` has zero-sized `UnsafeCell`s (e.g., `UnsafeCell<()>`,
-///   `[UnsafeCell<u8>; 0]`, etc) at the same byte offsets as `T::Inner`
-///
+/// `T: TransparentWrapper` implies that `T` has the same size as [`T::Inner`].
 /// Further, `T: TransparentWrapper<I>` implies that:
+/// - If `T::UnsafeCellVariance = Covariant`, then:
+///   - `T` has `UnsafeCell`s covering the same byte ranges as `T::Inner`
+///   - `T` has zero-sized `UnsafeCell`s (e.g., `UnsafeCell<()>`,
+///     `[UnsafeCell<u8>; 0]`, etc) at the same byte offsets as `T::Inner`
 /// - If a `T` pointer satisfies the alignment invariant `I::Alignment`, then
 ///   that same pointer, cast to `T::Inner`, satisfies the alignment invariant
 ///   `<T::AlignmentVariance as AlignmentVariance<I::Alignment>>::Applied`.
@@ -48,6 +47,7 @@ use crate::{
 pub unsafe trait TransparentWrapper<I: Invariants> {
     type Inner: ?Sized;
 
+    type UnsafeCellVariance;
     type AlignmentVariance: AlignmentVariance<I::Alignment>;
     type ValidityVariance: ValidityVariance<I::Validity>;
 
@@ -106,14 +106,17 @@ impl<I: invariant::Validity> ValidityVariance<I> for Invariant {
 
 // SAFETY:
 // - Per [1], `MaybeUninit<T>` has the same size as `T`.
-// - Per [1], `MaybeUninit<T>` has `UnsafeCell`s at the same byte ranges as
-//   `Inner = T`, and `UnsafeCell`s at the same byte offsets as `T`.
 // - See inline comments for other safety justifications.
 //
 // [1] TODO(#896): Write a safety proof before the next stable release.
 unsafe impl<T, I: Invariants> TransparentWrapper<I> for MaybeUninit<T> {
     type Inner = T;
 
+    // SAFETY: Per [1], `MaybeUninit<T>` has `UnsafeCell`s at the same byte
+    // ranges as `Inner = T`, and `UnsafeCell`s at the same byte offsets as `T`.
+    //
+    // [1] TODO(#896): Write a safety proof before the next stable release.
+    type UnsafeCellVariance = Covariant;
     // SAFETY: Per [1], `MaybeUninit<T>` has the same layout as `T`, and thus
     // has the same alignment as `T`.
     //
@@ -145,14 +148,17 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for MaybeUninit<T> {
 
 // SAFETY:
 // - Per [1], `ManuallyDrop<T>` has the same size as `T`.
-// - Per [1], `ManuallyDrop<T>` has `UnsafeCell`s at the same byte ranges as
-//   `Inner = T`, and `UnsafeCell`s at the same byte offsets as `T`.
 // - See inline comments for other safety justifications.
 //
 // [1] TODO(#896): Write a safety proof before the next stable release.
 unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for ManuallyDrop<T> {
     type Inner = T;
 
+    // SAFETY: Per [1], `ManuallyDrop<T>` has `UnsafeCell`s at the same byte
+    // ranges as `Inner = T`, and `UnsafeCell`s at the same byte offsets as `T`.
+    //
+    // [1] TODO(#896): Write a safety proof before the next stable release.
+    type UnsafeCellVariance = Covariant;
     // SAFETY: Per [1], `ManuallyDrop<T>` has the same layout as `T`, and thus
     // has the same alignment as `T`.
     //
@@ -187,14 +193,17 @@ unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for ManuallyDrop<T> 
 
 // SAFETY:
 // - Per [1], `Wrapping<T>` has the same size as `T`.
-// - Per [1], `Wrapping<T>` has `UnsafeCell`s at the same byte ranges as `Inner
-//   = T`, and `UnsafeCell`s at the same byte offsets as `T`.
 // - See inline comments for other safety justifications.
 //
 // [1] TODO(#896): Write a safety proof before the next stable release.
 unsafe impl<T, I: Invariants> TransparentWrapper<I> for Wrapping<T> {
     type Inner = T;
 
+    // SAFETY: Per [1], `Wrapping<T>` has `UnsafeCell`s at the same byte ranges
+    // as `Inner = T`, and `UnsafeCell`s at the same byte offsets as `T`.
+    //
+    // [1] TODO(#896): Write a safety proof before the next stable release.
+    type UnsafeCellVariance = Covariant;
     // SAFETY: Per [1], `Wrapping<T>` has the same layout as `T`, and thus has
     // the same alignment as `T`.
     //
@@ -235,13 +244,16 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Wrapping<T> {
 }
 
 // SAFETY: We define `Unalign<T>` to be a `#[repr(C, packed)]` type wrapping a
-// single `T` field. Thus, `Unalign<T>` has the same size as `T`, has
-// `UnsafeCell`s at the same byte ranges as `T`, and has `UnsafeCell`s at the
-// same byte offsets as `T`.
+// single `T` field. Thus, `Unalign<T>` has the same size as `T`.
 //
 // See inline comments for other safety justifications.
 unsafe impl<T, I: Invariants> TransparentWrapper<I> for Unalign<T> {
     type Inner = T;
+
+    // SAFETY: `Unalign<T>` is a `#[repr(C, packed)]` type wrapping a single `T`
+    // field, and so has `UnsafeCell`s at the same byte ranges as `Inner = T`,
+    // and `UnsafeCell`s at the same byte offsets as `T`.
+    type UnsafeCellVariance = Covariant;
 
     // SAFETY: Since `Unalign<T>` is `repr(packed)`, it has the alignment 1
     // regardless of `T`'s alignment. Thus, an aligned pointer to `Unalign<T>`
@@ -291,8 +303,19 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
         // native counterpart, respectively. Per [1], `$atomic` and `$native`
         // have the same size.
         //
-        // It is "obvious" that each atomic type contains a single `UnsafeCell`
-        // that covers all bytes of the type, but we can also prove it:
+        // [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
+        //     Cite docs once they've landed.
+        $(#[$attr])*
+        unsafe impl<$tyvar, I: Invariants> TransparentWrapper<I> for $atomic {
+            unsafe_impl_transparent_wrapper_for_atomic!(@inner $atomic [$native]);
+        }
+    };
+    (@inner $atomic:ty [$native:ty]) => {
+        type Inner = UnsafeCell<$native>;
+
+        // SAFETY: It is "obvious" that each atomic type contains a single
+        // `UnsafeCell` that covers all bytes of the type, but we can also prove
+        // it:
         // - Since `$atomic` provides an API which permits loading and storing
         //   values of type `$native` via a `&self` (shared) reference, *some*
         //   interior mutation must be happening, and interior mutation can only
@@ -311,18 +334,9 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
         // set `type Inner = UnsafeCell<$native>`. Thus, `Self` and
         // `Self::Inner` have `UnsafeCell`s covering the same byte ranges.
         //
-        // See inline comments for safety requirements regarding invariant
-        // variance.
-        //
         // [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
         //     Cite docs once they've landed.
-        $(#[$attr])*
-        unsafe impl<$tyvar, I: Invariants> TransparentWrapper<I> for $atomic {
-            unsafe_impl_transparent_wrapper_for_atomic!(@inner $atomic [$native]);
-        }
-    };
-    (@inner $atomic:ty [$native:ty]) => {
-        type Inner = UnsafeCell<$native>;
+        type UnsafeCellVariance = Covariant;
 
         // SAFETY: No safety justification is required for an invariant
         // variance.
