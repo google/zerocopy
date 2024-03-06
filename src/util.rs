@@ -243,6 +243,55 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Wrapping<T> {
     }
 }
 
+// SAFETY:
+// - Per [1], `UnsafeCell<T>` has the same size as `T`.
+// - See inline comments for other safety justifications.
+//
+// [1] Per https://doc.rust-lang.org/core/cell/struct.UnsafeCell.html#memory-layout:
+//
+//   `UnsafeCell<T>`` has the same in-memory representation as its inner
+//   type `T`.
+unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for UnsafeCell<T> {
+    type Inner = T;
+
+    // SAFETY: Since we set this to `Invariant`, we make no safety claims.
+    type UnsafeCellVariance = Invariant;
+
+    // SAFETY: Per [1] (from comment on impl), `Unalign<T>` has the same
+    // representation as `T`, and thus has the same alignment as `T`.
+    type AlignmentVariance = Covariant;
+
+    // SAFETY: Per [1], `Unalign<T>` has the same bit validity as `T`.
+    // Technically the term "representation" doesn't guarantee this, but the
+    // subsequent sentence in the documentation makes it clear that this is the
+    // intention.
+    //
+    // [1] Per https://doc.rust-lang.org/std/cell/struct.UnsafeCell.html#memory-layout:
+    //
+    //   `UnsafeCell<T>`` has the same in-memory representation as its inner
+    //   type `T`. A consequence of this guarantee is that it is possible to
+    //   convert between `T` and `UnsafeCell<T>`.
+    type ValidityVariance = Covariant;
+
+    fn cast_into_inner(ptr: *mut UnsafeCell<T>) -> *mut T {
+        // SAFETY: Per [1] (from comment above), `UnsafeCell<T>` has the same
+        // representation as `T`. Thus, this cast preserves size.
+        //
+        // This cast trivially preserves provenance.
+        #[allow(clippy::as_conversions)]
+        return ptr as *mut T;
+    }
+
+    fn cast_from_inner(ptr: *mut T) -> *mut UnsafeCell<T> {
+        // SAFETY: Per [1] (from comment above), `UnsafeCell<T>` has the same
+        // representation as `T`. Thus, this cast preserves size.
+        //
+        // This cast trivially preserves provenance.
+        #[allow(clippy::as_conversions)]
+        return ptr as *mut UnsafeCell<T>;
+    }
+}
+
 // SAFETY: We define `Unalign<T>` to be a `#[repr(C, packed)]` type wrapping a
 // single `T` field. Thus, `Unalign<T>` has the same size as `T`.
 //
