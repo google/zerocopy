@@ -3946,28 +3946,12 @@ impl_for_transparent_wrapper!(T: ?Sized + IntoBytes => IntoBytes for ManuallyDro
 impl_for_transparent_wrapper!(T: ?Sized + Unaligned => Unaligned for ManuallyDrop<T>);
 assert_unaligned!(ManuallyDrop<()>, ManuallyDrop<u8>);
 
-safety_comment! {
-    /// SAFETY:
-    /// - `FromZeros`, `FromBytes`, `IntoBytes`: `UnsafeCell<T>` has the same
-    ///   bit validity as `T` [1], and so implements these traits exactly when
-    ///   `T` does.
-    /// - `Unaligned`: `UnsafeCell<T>` has the same representation as `T`, and
-    ///   so has alignment 1 exactly when `T` does. [2]
-    ///
-    /// [1] TODO(#429): Justify this claim.
-    ///
-    /// [2] Per https://doc.rust-lang.org/core/cell/struct.UnsafeCell.html#memory-layout:
-    ///
-    ///   `UnsafeCell<T>`` has the same in-memory representation as its inner
-    ///   type `T`.
-    ///
-    /// TODO(#5): Implement `FromZeros` and `FromBytes` when `T: ?Sized`.
-    unsafe_impl!(T: FromZeros => FromZeros for UnsafeCell<T>);
-    unsafe_impl!(T: FromBytes => FromBytes for UnsafeCell<T>);
-    unsafe_impl!(T: ?Sized + IntoBytes => IntoBytes for UnsafeCell<T>);
-    unsafe_impl!(T: ?Sized + Unaligned => Unaligned for UnsafeCell<T>);
-    assert_unaligned!(UnsafeCell<()>, UnsafeCell<u8>);
-}
+// TODO(#5): Implement `FromZeros` and `FromBytes` when `T: ?Sized`.
+impl_for_transparent_wrapper!(T: FromZeros => FromZeros for UnsafeCell<T>);
+impl_for_transparent_wrapper!(T: FromBytes => FromBytes for UnsafeCell<T>);
+impl_for_transparent_wrapper!(T: ?Sized + IntoBytes => IntoBytes for UnsafeCell<T>);
+impl_for_transparent_wrapper!(T: ?Sized + Unaligned => Unaligned for UnsafeCell<T>);
+assert_unaligned!(UnsafeCell<()>, UnsafeCell<u8>);
 
 // SAFETY: See safety comment in `is_bit_valid` impl.
 //
