@@ -400,7 +400,7 @@ mod _conversions {
         #[doc(hidden)]
         #[inline]
         pub fn from_ref(ptr: &'a T) -> Self {
-            let ptr = core::ptr::NonNull::from(ptr);
+            let ptr = NonNull::from(ptr);
             // SAFETY:
             // 0. `ptr`, by invariant on `&'a T`, is derived from some valid
             //    Rust allocation, `A`.
@@ -436,7 +436,7 @@ mod _conversions {
         /// Constructs a `Ptr` from an exclusive reference.
         #[inline]
         pub(crate) fn from_mut(ptr: &'a mut T) -> Self {
-            let ptr = core::ptr::NonNull::from(ptr);
+            let ptr = NonNull::from(ptr);
             // SAFETY:
             // 0. `ptr`, by invariant on `&'a mut T`, is derived from some valid
             //    Rust allocation, `A`.
