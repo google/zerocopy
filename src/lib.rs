@@ -315,7 +315,9 @@ use core::alloc::Layout;
 
 // Used by `TryFromBytes::is_bit_valid`.
 #[doc(hidden)]
-pub use crate::pointer::{Maybe, MaybeAligned, Ptr};
+pub use crate::pointer::{
+    BecauseExclusive, BecauseNoCell, CellSafe, CellSafeReason, Maybe, MaybeAligned, Ptr,
+};
 
 // For each polyfill, as soon as the corresponding feature is stable, the
 // polyfill import will be unused because method/function resolution will prefer
@@ -1538,7 +1540,7 @@ pub unsafe trait TryFromBytes {
     where
         Self: KnownLayout + NoCell,
     {
-        let candidate = Ptr::from_ref(bytes).try_cast_into_no_leftover::<Self>()?;
+        let candidate = Ptr::from_ref(bytes).try_cast_into_no_leftover::<Self, BecauseNoCell>()?;
 
         // SAFETY: `candidate` has no uninitialized sub-ranges because it
         // derived from `bytes: &[u8]`.
@@ -1572,9 +1574,10 @@ pub unsafe trait TryFromBytes {
     #[inline]
     fn try_from_mut(bytes: &mut [u8]) -> Option<&mut Self>
     where
-        Self: KnownLayout + NoCell, // TODO(#251): Remove the `NoCell` bound.
+        Self: KnownLayout,
     {
-        let candidate = Ptr::from_mut(bytes).try_cast_into_no_leftover::<Self>()?;
+        let candidate =
+            Ptr::from_mut(bytes).try_cast_into_no_leftover::<Self, BecauseExclusive>()?;
 
         // SAFETY: `candidate` has no uninitialized sub-ranges because it
         // derived from `bytes: &mut [u8]`.
@@ -4856,7 +4859,7 @@ where
     T: KnownLayout + NoCell + ?Sized,
 {
     fn bikeshed_new_known_layout(bytes: B) -> Option<Ref<B, T>> {
-        let _ = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T>()?;
+        let _ = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T, BecauseNoCell>()?;
         // INVARIANTS: `try_cast_into_no_leftover` validates size and alignment.
         Some(Ref(bytes, PhantomData))
     }
@@ -4868,7 +4871,8 @@ where
     T: KnownLayout + NoCell + ?Sized,
 {
     fn bikeshed_new_from_prefix_known_layout(bytes: B) -> Option<(Ref<B, T>, B)> {
-        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
+        let (_, split_at) =
+            Ptr::from_ref(bytes.deref()).try_cast_into::<T, BecauseNoCell>(CastType::Prefix)?;
         let (bytes, suffix) = bytes.split_at(split_at);
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
@@ -4879,7 +4883,8 @@ where
     }
 
     fn bikeshed_new_from_suffix_known_layout(bytes: B) -> Option<(B, Ref<B, T>)> {
-        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
+        let (_, split_at) =
+            Ptr::from_ref(bytes.deref()).try_cast_into::<T, BecauseNoCell>(CastType::Suffix)?;
         let (prefix, bytes) = bytes.split_at(split_at);
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
@@ -4950,7 +4955,7 @@ where
     /// these checks fail, it returns `None`.
     #[inline]
     pub fn new(bytes: B) -> Option<Ref<B, T>> {
-        let _ = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T>()?;
+        let _ = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T, BecauseNoCell>()?;
         // INVARIANTS: `try_cast_into_no_leftover` validates size and alignment.
         Some(Ref(bytes, PhantomData))
     }
@@ -4970,7 +4975,8 @@ where
     /// checks fail, it returns `None`.
     #[inline]
     pub fn new_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
-        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
+        let (_, split_at) =
+            Ptr::from_ref(bytes.deref()).try_cast_into::<T, BecauseNoCell>(CastType::Prefix)?;
         let (bytes, suffix) = bytes.split_at(split_at);
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
@@ -4990,7 +4996,8 @@ where
     /// `None`.
     #[inline]
     pub fn new_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
-        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
+        let (_, split_at) =
+            Ptr::from_ref(bytes.deref()).try_cast_into::<T, BecauseNoCell>(CastType::Suffix)?;
         let (prefix, bytes) = bytes.split_at(split_at);
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
@@ -5491,7 +5498,7 @@ where
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
         // valid for `T`, and so this `unwrap` will not panic.
         let ptr = Ptr::from_ref(self.0.into())
-            .try_cast_into_no_leftover::<T>()
+            .try_cast_into_no_leftover::<T, BecauseNoCell>()
             .expect("zerocopy internal error: into_ref should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
         ptr.as_ref()
@@ -5511,7 +5518,7 @@ where
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
         // valid for `T`, and so this `unwrap` will not panic.
         let ptr = Ptr::from_mut(self.0.into())
-            .try_cast_into_no_leftover::<T>()
+            .try_cast_into_no_leftover::<T, BecauseNoCell>()
             .expect("zerocopy internal error: into_ref should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
         ptr.as_mut()
@@ -5616,7 +5623,7 @@ where
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
         // valid for `T`, and so this `unwrap` will not panic.
         let ptr = Ptr::from_ref(self.0.deref())
-            .try_cast_into_no_leftover::<T>()
+            .try_cast_into_no_leftover::<T, BecauseNoCell>()
             .expect("zerocopy internal error: Deref::deref should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
         ptr.as_ref()
@@ -5633,7 +5640,7 @@ where
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
         // valid for `T`, and so this `unwrap` will not panic.
         let ptr = Ptr::from_mut(self.0.deref_mut())
-            .try_cast_into_no_leftover::<T>()
+            .try_cast_into_no_leftover::<T, BecauseNoCell>()
             .expect("zerocopy internal error: DerefMut::deref_mut should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
         ptr.as_mut()

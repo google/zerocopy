@@ -8,7 +8,7 @@
 
 use core::ptr::NonNull;
 
-use crate::{util::AsAddress, CastType, KnownLayout, NoCell};
+use crate::{util::AsAddress, CastType, CellSafe, CellSafeReason, KnownLayout, NoCell};
 
 /// Module used to gate access to [`Ptr`]'s fields.
 mod def {
@@ -866,7 +866,7 @@ mod _transitions {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
             // fix before returning.
-            if T::is_bit_valid(self.reborrow().forget_exclusive().forget_aligned()) {
+            if T::is_bit_valid(self.reborrow().forget_aligned()) {
                 // SAFETY: If `T::is_bit_valid`, code may assume that `self`
                 // contains a bit-valid instance of `Self`.
                 Some(unsafe { self.assume_valid() })
@@ -1116,10 +1116,12 @@ mod _casts {
         /// # Panics
         ///
         /// Panics if `U` is a DST whose trailing slice element is zero-sized.
-        pub(crate) fn try_cast_into<U: 'a + ?Sized + KnownLayout + NoCell>(
+        pub(crate) fn try_cast_into<U: 'a + ?Sized + KnownLayout, R: CellSafeReason>(
             &self,
             cast_type: CastType,
         ) -> Option<(Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::Initialized)>, usize)>
+        where
+            U: CellSafe<I::Aliasing, R>,
         {
             // PANICS: By invariant, the byte range addressed by `self.ptr` does
             // not wrap around the address space. This implies that the sum of
@@ -1197,8 +1199,8 @@ mod _casts {
             // 9. During the lifetime 'a, no code will reference or load or
             //    store this memory region treating `UnsafeCell`s as existing at
             //    different ranges than they exist in `U`. This is true by
-            //    invariant on Ptr<'a, T, I>, preserved through the cast by the
-            //    bound `U: NoCell`.
+            //    invariant on Ptr<'a, [u8], I>, preserved through the cast by
+            //    the bound `U: CellSafe<I::Aliasing, R>`.
             // 10. See 9.
             Some((unsafe { Ptr::new(ptr) }, split_at))
         }
@@ -1215,9 +1217,12 @@ mod _casts {
         /// references the same byte range as `self`.
         #[allow(unused)]
         #[inline(always)]
-        pub(crate) fn try_cast_into_no_leftover<U: 'a + ?Sized + KnownLayout + NoCell>(
+        pub(crate) fn try_cast_into_no_leftover<U: 'a + ?Sized + KnownLayout, R: CellSafeReason>(
             &self,
-        ) -> Option<Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::Initialized)>> {
+        ) -> Option<Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::Initialized)>>
+        where
+            U: CellSafe<I::Aliasing, R>,
+        {
             // TODO(#67): Remove this allow. See NonNulSlicelExt for more
             // details.
             #[allow(unstable_name_collisions)]
@@ -1451,8 +1456,8 @@ mod _project {
                 // 8. `elem`, conditionally, conforms to the validity invariant
                 //    of `I::Validity`. If `elem` is projected from data valid
                 //    for `[T]`, `elem` will be valid for `T`.
-                // 9. During the lifetime 'a, no code will reference or load or
-                //    store this memory region treating `UnsafeCell`s as
+                // 9. During the lifetime `'a`, no code will reference or load
+                //    or store this memory region treating `UnsafeCell`s as
                 //    existing at different ranges than they exist in `T`. This
                 //    property holds by invariant on `Ptr<'a, [T], I>`, and is
                 //    preserved because `Ptr<'a, T, I>` is an element within
