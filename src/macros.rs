@@ -247,11 +247,12 @@ macro_rules! impl_for_transparent_wrapper {
         }
     };
     (@is_transparent_wrapper NoCell) => {
-        // SAFETY: `W: TransparentWrapper` requires that `W` has `UnsafeCell`s
-        // at the same byte offsets as `W::Inner = T`. `T: NoCell` implies that
-        // `T` does not contain any `UnsafeCell`s, and so `W` does not contain
-        // any `UnsafeCell`s. Thus, `W` can soundly implement `NoCell`.
-        fn is_transparent_wrapper<I: Invariants, T: ?Sized, W: TransparentWrapper<I, Inner=T> + ?Sized>() {}
+        // SAFETY: `W: TransparentWrapper<UnsafeCellVariance=Covariant>`
+        // requires that `W` has `UnsafeCell`s at the same byte offsets as
+        // `W::Inner = T`. `T: NoCell` implies that `T` does not contain any
+        // `UnsafeCell`s, and so `W` does not contain any `UnsafeCell`s. Thus,
+        // `W` can soundly implement `NoCell`.
+        fn is_transparent_wrapper<I: Invariants, T: ?Sized, W: TransparentWrapper<I, Inner=T, UnsafeCellVariance=Covariant> + ?Sized>() {}
     };
     (@is_transparent_wrapper FromZeros) => {
         // SAFETY: `W: TransparentWrapper<ValidityVariance=Covariant>` requires

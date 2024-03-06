@@ -389,7 +389,7 @@ mod _external {
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
     use super::*;
-    use crate::util::{AlignmentVariance, TransparentWrapper, ValidityVariance};
+    use crate::util::{AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance};
 
     /// `&'a T` → `Ptr<'a, T>`
     impl<'a, T> Ptr<'a, T, (invariant::Shared, invariant::Aligned, invariant::Valid)>
@@ -609,7 +609,7 @@ mod _conversions {
     /// `Ptr<'a, T = Wrapper<U>>` → `Ptr<'a, U>`
     impl<'a, T, I> Ptr<'a, T, I>
     where
-        T: 'a + TransparentWrapper<I> + ?Sized,
+        T: 'a + TransparentWrapper<I, UnsafeCellVariance = Covariant> + ?Sized,
         I: Invariants,
     {
         /// Converts the `Ptr` to a transparent wrapper type into a `Ptr` to the
@@ -629,8 +629,9 @@ mod _conversions {
             // - By invariant on `TransparentWrapper::cast_into_inner`:
             //   - This cast preserves the referent's size.
             //   - This cast preserves provenance.
-            // - By invariant on `TransparentWrapper`, `T` and `T::Inner` have
-            //   `UnsafeCell`s at the same byte ranges.
+            // - By invariant on `TransparentWrapper<UnsafeCellVariance =
+            //   Covariant>`, `T` and `T::Inner` have `UnsafeCell`s at the same
+            //   byte ranges.
             let c = unsafe { self.cast_unsized(|p| T::cast_into_inner(p)) };
             // SAFETY: By invariant on `TransparentWrapper`, since `self`
             // satisfies the alignment invariant `I::Alignment`, `c` (of type
