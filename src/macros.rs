@@ -43,27 +43,15 @@ macro_rules! safety_comment {
 ///   `is_bit_valid` to unconditionally return `true`. In other words, it must
 ///   be the case that any initialized sequence of bytes constitutes a valid
 ///   instance of `$ty`.
-/// - If an `is_bit_valid` impl is provided, then:
-///   - Regardless of whether the provided closure takes a `Ptr<$repr>` or
-///     `&$repr` argument, if `$ty` and `$repr` are different types, then it
-///     must be the case that, given `t: *mut $ty` and `let r = t as *mut
-///     $repr`:
-///     - `r` refers to an object of equal or lesser size than the object
-///       referred to by `t`.
-///     - `r` refers to an object with `UnsafeCell`s at the same byte ranges as
-///       the object referred to by `t`.
-///   - If the provided closure takes a `&$repr` argument, then given a `Ptr<'a,
-///     $ty>` which satisfies the preconditions of
-///     `TryFromBytes::<$ty>::is_bit_valid`, it must be guaranteed that the
-///     memory referenced by that `Ptr` always contains a valid `$repr`.
-///   - The impl of `is_bit_valid` must only return `true` for its argument
-///     `Ptr<$repr>` if the original `Ptr<$ty>` refers to a valid `$ty`.
+/// - If an `is_bit_valid` impl is provided, then the impl of `is_bit_valid`
+///   must only return `true` for its argument `Ptr<$repr>` if the original
+///   `Ptr<$ty>` refers to a valid `$ty`.
 macro_rules! unsafe_impl {
     // Implement `$trait` for `$ty` with no bounds.
-    ($(#[$attr:meta])* $ty:ty: $trait:ident $(; |$candidate:ident: MaybeAligned<$repr:ty>| $is_bit_valid:expr)?) => {
+    ($(#[$attr:meta])* $ty:ty: $trait:ident $(; |$candidate:ident| $is_bit_valid:expr)?) => {
         $(#[$attr])*
         unsafe impl $trait for $ty {
-            unsafe_impl!(@method $trait $(; |$candidate: MaybeAligned<$repr>| $is_bit_valid)?);
+            unsafe_impl!(@method $trait $(; |$candidate| $is_bit_valid)?);
         }
     };
     // Implement all `$traits` for `$ty` with no bounds.
@@ -99,26 +87,26 @@ macro_rules! unsafe_impl {
         $(#[$attr:meta])*
         const $constname:ident : $constty:ident $(,)?
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        => $trait:ident for $ty:ty $(; |$candidate:ident| $is_bit_valid:expr)?
     ) => {
         unsafe_impl!(
             @inner
             $(#[$attr])*
             @const $constname: $constty,
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
-            => $trait for $ty $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+            => $trait for $ty $(; |$candidate| $is_bit_valid)?
         );
     };
     (
         $(#[$attr:meta])*
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        => $trait:ident for $ty:ty $(; |$candidate:ident| $is_bit_valid:expr)?
     ) => {
         unsafe_impl!(
             @inner
             $(#[$attr])*
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
-            => $trait for $ty $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+            => $trait for $ty $(; |$candidate| $is_bit_valid)?
         );
     };
     (
@@ -126,58 +114,21 @@ macro_rules! unsafe_impl {
         $(#[$attr:meta])*
         $(@const $constname:ident : $constty:ident,)*
         $($tyvar:ident $(: $(? $optbound:ident +)* + $($bound:ident +)* )?,)*
-        => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        => $trait:ident for $ty:ty $(; |$candidate:ident| $is_bit_valid:expr)?
     ) => {
         $(#[$attr])*
         #[allow(non_local_definitions)]
         unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),* $(, const $constname: $constty,)*> $trait for $ty {
-            unsafe_impl!(@method $trait $(; |$candidate: $(MaybeAligned<$ref_repr>)? $(Maybe<$ptr_repr>)?| $is_bit_valid)?);
+            unsafe_impl!(@method $trait $(; |$candidate| $is_bit_valid)?);
         }
     };
 
-    (@method TryFromBytes ; |$candidate:ident: MaybeAligned<$repr:ty>| $is_bit_valid:expr) => {
+    (@method TryFromBytes ; |$candidate:ident| $is_bit_valid:expr) => {
         #[allow(clippy::missing_inline_in_public_items)]
         fn only_derive_is_allowed_to_implement_this_trait() {}
 
         #[inline]
-        fn is_bit_valid<AA: invariant::at_least::Shared>(candidate: Maybe<'_, Self, AA>) -> bool {
-            // SAFETY:
-            // - The argument to `cast_unsized` is `|p| p as *mut _` as required
-            //   by that method's safety precondition.
-            // - The caller has promised that the cast results in an object of
-            //   equal or lesser size.
-            // - The caller has promised that the destination type has
-            //   `UnsafeCell`s at the same byte ranges as the source type.
-            #[allow(clippy::as_conversions)]
-            let candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
-
-            // SAFETY: The caller has promised that the referenced memory region
-            // will contain a valid `$repr`.
-            let $candidate = unsafe { candidate.assume_validity::<crate::pointer::invariant::Valid>() };
-            $is_bit_valid
-        }
-    };
-    (@method TryFromBytes ; |$candidate:ident: Maybe<$repr:ty>| $is_bit_valid:expr) => {
-        #[allow(clippy::missing_inline_in_public_items)]
-        fn only_derive_is_allowed_to_implement_this_trait() {}
-
-        #[inline]
-        fn is_bit_valid<AA: invariant::at_least::Shared>(candidate: Maybe<'_, Self, AA>) -> bool {
-            // SAFETY:
-            // - The argument to `cast_unsized` is `|p| p as *mut _` as required
-            //   by that method's safety precondition.
-            // - The caller has promised that the cast results in an object of
-            //   equal or lesser size.
-            // - The caller has promised that the destination type has
-            //   `UnsafeCell`s at the same byte ranges as the source type.
-            #[allow(clippy::as_conversions)]
-            let $candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
-
-            // Restore the invariant that the referent bytes are initialized.
-            // SAFETY: The above cast does not uninitialize any referent bytes;
-            // they remain initialized.
-            let $candidate = unsafe { $candidate.assume_validity::<crate::pointer::invariant::Initialized>() };
-
+        fn is_bit_valid<AA: invariant::at_least::Shared>($candidate: Maybe<'_, Self, AA>) -> bool {
             $is_bit_valid
         }
     };
@@ -190,7 +141,7 @@ macro_rules! unsafe_impl {
         #[allow(clippy::missing_inline_in_public_items)]
         fn only_derive_is_allowed_to_implement_this_trait() {}
     };
-    (@method $trait:ident; |$_candidate:ident $(: &$_ref_repr:ty)? $(: NonNull<$_ptr_repr:ty>)?| $_is_bit_valid:expr) => {
+    (@method $trait:ident; |$_candidate:ident| $_is_bit_valid:expr) => {
         compile_error!("Can't provide `is_bit_valid` impl for trait other than `TryFromBytes`");
     };
 }
@@ -203,7 +154,7 @@ macro_rules! impl_for_transparent_wrapper {
     (
         $(#[$attr:meta])*
         $tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?
-        => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        => $trait:ident for $ty:ty $(; |$candidate:ident| $is_bit_valid:expr)?
     ) => {
         $(#[$attr])*
         #[allow(non_local_definitions)]
@@ -249,15 +200,15 @@ macro_rules! impl_for_transparent_wrapper {
     };
     (
         $(#[$attr:meta])*
-        for $ty:ty [$inner:ty] $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        for $ty:ty [$inner:ty] $(; |$candidate:ident| $is_bit_valid:expr)?
     ) => {};
     (
         $(#[$attr:meta])*
-        $trait:ident $(, $traits:ident)* for $ty:ty [$inner:ty] $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        $trait:ident $(, $traits:ident)* for $ty:ty [$inner:ty] $(; |$candidate:ident| $is_bit_valid:expr)?
     ) => {
         impl_for_transparent_wrapper!(
             $(#[$attr])*
-            $($traits),* for $ty [$inner] $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid:expr)?
+            $($traits),* for $ty [$inner] $(; |$candidate| $is_bit_valid:expr)?
         );
 
         $(#[$attr])*
@@ -391,33 +342,33 @@ macro_rules! impl_for_transparent_wrapper {
 macro_rules! unsafe_impl_for_power_set {
     (
         $first:ident $(, $rest:ident)* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
-        $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        $(; |$candidate:ident| $is_bit_valid:expr)?
     ) => {
         unsafe_impl_for_power_set!(
             $($rest),* $(-> $ret)? => $trait for $macro!(...)
-            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+            $(; |$candidate| $is_bit_valid)?
         );
         unsafe_impl_for_power_set!(
             @impl $first $(, $rest)* $(-> $ret)? => $trait for $macro!(...)
-            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+            $(; |$candidate| $is_bit_valid)?
         );
     };
     (
         $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
-        $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        $(; |$candidate:ident| $is_bit_valid:expr)?
     ) => {
         unsafe_impl_for_power_set!(
             @impl $(-> $ret)? => $trait for $macro!(...)
-            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+            $(; |$candidate| $is_bit_valid)?
         );
     };
     (
         @impl $($vars:ident),* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
-        $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        $(; |$candidate:ident| $is_bit_valid:expr)?
     ) => {
         unsafe_impl!(
             $($vars,)* $($ret)? => $trait for $macro!($($vars),* $(-> $ret)?)
-            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+            $(; |$candidate| $is_bit_valid)?
         );
     };
 }
@@ -501,11 +452,11 @@ macro_rules! impl_or_verify {
     };
     (
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        => $trait:ident for $ty:ty $(; |$candidate:ident| $is_bit_valid:expr)?
     ) => {
         impl_or_verify!(@impl { unsafe_impl!(
             $($tyvar $(: $(? $optbound +)* $($bound +)*)?),* => $trait for $ty
-            $(; |$candidate $(: MaybeAligned<$ref_repr>)? $(: Maybe<$ptr_repr>)?| $is_bit_valid)?
+            $(; |$candidate| $is_bit_valid)?
         ); });
         impl_or_verify!(@verify $trait, {
             impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),*> Subtrait for $ty {}

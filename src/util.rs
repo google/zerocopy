@@ -333,6 +333,94 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Unalign<T> {
     }
 }
 
+// SAFETY: TODO
+unsafe impl<I: Invariants> TransparentWrapper<I> for bool {
+    type Inner = u8;
+
+    // SAFETY: TODO
+    type UnsafeCellVariance = Covariant;
+
+    // SAFETY: TODO
+    type AlignmentVariance = Covariant;
+
+    // SAFETY: TODO
+    type ValidityVariance = Invariant;
+
+    fn cast_into_inner(ptr: *mut bool) -> *mut u8 {
+        // SAFETY: Per the safety comment on the impl block, `bool` has the size
+        // as `u8`. Thus, this cast preserves size.
+        //
+        // This cast trivially preserves provenance.
+        ptr.cast::<u8>()
+    }
+
+    fn cast_from_inner(ptr: *mut u8) -> *mut bool {
+        // SAFETY: Per the safety comment on the impl block, `bool` has the size
+        // as `u8`. Thus, this cast preserves size.
+        //
+        // This cast trivially preserves provenance.
+        ptr.cast::<bool>()
+    }
+}
+
+// SAFETY: TODO
+unsafe impl<I: Invariants> TransparentWrapper<I> for char {
+    type Inner = u32;
+
+    // SAFETY: TODO
+    type UnsafeCellVariance = Covariant;
+
+    // SAFETY: TODO
+    type AlignmentVariance = Covariant;
+
+    // SAFETY: TODO
+    type ValidityVariance = Invariant;
+
+    fn cast_into_inner(ptr: *mut char) -> *mut u32 {
+        // SAFETY: Per the safety comment on the impl block, `char` has the size
+        // as `u32`. Thus, this cast preserves size.
+        //
+        // This cast trivially preserves provenance.
+        ptr.cast::<u32>()
+    }
+
+    fn cast_from_inner(ptr: *mut u32) -> *mut char {
+        // SAFETY: Per the safety comment on the impl block, `char` has the size
+        // as `u32`. Thus, this cast preserves size.
+        //
+        // This cast trivially preserves provenance.
+        ptr.cast::<char>()
+    }
+}
+
+// SAFETY: TODO
+unsafe impl<I: Invariants> TransparentWrapper<I> for str {
+    type Inner = [u8];
+
+    // SAFETY: TODO
+    type UnsafeCellVariance = Covariant;
+
+    // SAFETY: TODO
+    type AlignmentVariance = Covariant;
+
+    // SAFETY: TODO
+    type ValidityVariance = Invariant;
+
+    fn cast_into_inner(ptr: *mut str) -> *mut [u8] {
+        // SAFETY: TODO
+        //
+        // This cast trivially preserves provenance.
+        ptr as *mut [u8]
+    }
+
+    fn cast_from_inner(ptr: *mut [u8]) -> *mut str {
+        // SAFETY: TODO
+        //
+        // This cast trivially preserves provenance.
+        ptr as *mut str
+    }
+}
+
 /// Implements `TransparentWrapper` for a `NonZeroXxx` type.
 ///
 /// # Safety
