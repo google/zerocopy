@@ -9,7 +9,10 @@
 use core::{
     cell::UnsafeCell,
     mem::{self, ManuallyDrop, MaybeUninit},
-    num::{NonZeroUsize, Wrapping},
+    num::{
+        NonZeroI128, NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8, NonZeroIsize, NonZeroU128,
+        NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize, Wrapping,
+    },
     ptr::NonNull,
     sync::atomic::{
         AtomicBool, AtomicI16, AtomicI32, AtomicI8, AtomicIsize, AtomicPtr, AtomicU16, AtomicU32,
@@ -330,6 +333,87 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Unalign<T> {
     }
 }
 
+/// Implements `TransparentWrapper` for a `NonZeroXxx` type.
+///
+/// # Safety
+///
+/// The caller promises that `$nonzero` is a type in `core::num::NonZeroXxx`
+/// type whose natie equivalent is `$native`.
+macro_rules! unsafe_impl_transparent_wrapper_for_nonzero {
+    ($($nonzeros:ty[$natives:ty]),* $(,)?) => {
+        $(
+            // SAFETY: We implement for `$nonzero` and set `Inner = $native`.
+            // The caller has promised that `$nonzero` and `$native` are a
+            // `core::num::NonZeroXxx` type and its native counterpart,
+            // respectively. Per [1], `$nonzero` and `$native` have the same
+            // layout. Thus, they have the same alignment.
+            //
+            // [1] Per https://doc.rust-lang.org/std/num/struct.NonZeroUsize.html#layout-1
+            //     (similar text exists for other `NonZeroXxx` types):
+            //
+            //   `NonZeroUsize` is guaranteed to have the same layout and bit
+            //   validity as `usize` with the exception that 0 is not a valid
+            //   instance.
+            unsafe impl<I: Invariants> TransparentWrapper<I> for $nonzeros {
+                unsafe_impl_transparent_wrapper_for_nonzero!(@inner $nonzeros [$natives]);
+            }
+        )*
+    };
+    (@inner $nonzero:ty [$native:ty]) => {
+        type Inner = $native;
+
+        // SAFETY: TODO
+        //
+        // TODO(#896): Write a safety proof before the next stable release.
+        type UnsafeCellVariance = Covariant;
+
+        // SAFETY: Per [1], `$nonzero` and `$native` have the same layout. Thus,
+        // they have the same alignment.
+        //
+        // [1] Per https://doc.rust-lang.org/std/num/struct.NonZeroUsize.html#layout-1
+        //     (similar text exists for other `NonZeroXxx` types):
+        //
+        //   `NonZeroUsize` is guaranteed to have the same layout and bit
+        //   validity as `usize` with the exception that 0 is not a valid
+        //   instance.
+        type AlignmentVariance = Covariant;
+
+        // SAFETY: No safety justification is required for an invariant
+        // variance.
+        type ValidityVariance = Invariant;
+
+        fn cast_into_inner(ptr: *mut $nonzero) -> *mut $native {
+            // SAFETY: Per [1] (from comment on impl block), `$nonzero` has the
+            // same size as `$native`. Thus, this cast preserves size.
+            //
+            // This cast trivially preserves provenance.
+            ptr.cast::<$native>()
+        }
+
+        fn cast_from_inner(ptr: *mut $native) -> *mut $nonzero {
+            // SAFETY: Per [1] (from comment on impl block), `$nonzero` has the
+            // same size as `$native`. Thus, this cast preserves size.
+            //
+            // This cast trivially preserves provenance.
+            ptr.cast::<$nonzero>()
+        }
+    };
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// All of these pass a `core::num::NonZeroXxx` type and that type's native
+    /// equivalent, as required by the macro's safety preconditions.
+    unsafe_impl_transparent_wrapper_for_nonzero!(
+        NonZeroU8 [u8], NonZeroU16 [u16], NonZeroU32 [u32], NonZeroU64 [u64],
+        NonZeroU128 [u128], NonZeroUsize [usize],
+        NonZeroI8 [i8], NonZeroI16 [i16], NonZeroI32 [i32], NonZeroI64 [i64],
+        NonZeroI128 [i128], NonZeroIsize [isize]
+    );
+}
+
+assert_unaligned!(NonZeroU8, NonZeroI8);
+
 /// Implements `TransparentWrapper` for an atomic type.
 ///
 /// # Safety
@@ -421,7 +505,7 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
 safety_comment! {
     /// SAFETY:
     /// All of these pass an atomic type and that type's native equivalent, as
-    /// required by the macro safety preconditions.
+    /// required by the macro's safety preconditions.
     unsafe_impl_transparent_wrapper_for_atomic!(T => AtomicPtr<T> [*mut T]);
     unsafe_impl_transparent_wrapper_for_atomic!(
         AtomicBool [bool],

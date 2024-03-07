@@ -3698,89 +3698,46 @@ safety_comment! {
     });
 }
 
-safety_comment! {
-    // `NonZeroXxx` is `IntoBytes`, but not `FromZeros` or `FromBytes`.
-    //
-    /// SAFETY:
-    /// - `IntoBytes`: `NonZeroXxx` has the same layout as its associated
-    ///    primitive. Since it is the same size, this guarantees it has no
-    ///    padding - integers have no padding, and there's no room for padding
-    ///    if it can represent all of the same values except 0.
-    /// - `Unaligned`: `NonZeroU8` and `NonZeroI8` document that
-    ///   `Option<NonZeroU8>` and `Option<NonZeroI8>` both have size 1. [1] [2]
-    ///   This is worded in a way that makes it unclear whether it's meant as a
-    ///   guarantee, but given the purpose of those types, it's virtually
-    ///   unthinkable that that would ever change. `Option` cannot be smaller
-    ///   than its contained type, which implies that, and `NonZeroX8` are of
-    ///   size 1 or 0. `NonZeroX8` can represent multiple states, so they cannot
-    ///   be 0 bytes, which means that they must be 1 byte. The only valid
-    ///   alignment for a 1-byte type is 1.
-    ///
-    /// TODO(#429):
-    /// - Add quotes from documentation.
-    /// - Add safety comment for `NoCell`. How can we prove that `NonZeroXxx`
-    ///   doesn't contain any `UnsafeCell`s? It's obviously true, but it's not
-    ///   clear how we'd prove it short of adding text to the stdlib docs that
-    ///   says so explicitly, which likely wouldn't be accepted.
-    ///
-    /// [1] https://doc.rust-lang.org/stable/std/num/struct.NonZeroU8.html
-    /// [2] https://doc.rust-lang.org/stable/std/num/struct.NonZeroI8.html
-    /// TODO(https://github.com/rust-lang/rust/pull/104082): Cite documentation
-    /// that layout is the same as primitive layout.
-    unsafe_impl!(NonZeroU8: NoCell, IntoBytes, Unaligned);
-    unsafe_impl!(NonZeroI8: NoCell, IntoBytes, Unaligned);
-    assert_unaligned!(NonZeroU8, NonZeroI8);
-    unsafe_impl!(NonZeroU16: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroI16: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroU32: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroI32: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroU64: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroI64: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroU128: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroI128: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroUsize: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroIsize: NoCell, IntoBytes);
-    /// SAFETY:
-    /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
-    ///   closure:
-    ///   - Given `t: *mut NonZeroXxx` and `let r = *mut xxx`, `r` refers to an
-    ///     object of the same size as that referred to by `t`. This is true
-    ///     because `NonZeroXxx` and `xxx` have the same size. [1] Neither `r`
-    ///     nor `t` refer to any `UnsafeCell`s because neither `NonZeroXxx` [2]
-    ///     nor `xxx` do.
-    ///   - Since the closure takes a `&xxx` argument, given a `Maybe<'a,
-    ///     NonZeroXxx>` which satisfies the preconditions of
-    ///     `TryFromBytes::<NonZeroXxx>::is_bit_valid`, it must be guaranteed
-    ///     that the memory referenced by that `MabyeValid` always contains a
-    ///     valid `xxx`. Since `NonZeroXxx`'s bytes are always initialized [1],
-    ///     `is_bit_valid`'s precondition requires that the same is true of its
-    ///     argument. Since `xxx`'s only bit validity invariant is that its
-    ///     bytes must be initialized, this memory is guaranteed to contain a
-    ///     valid `xxx`.
-    ///   - The impl must only return `true` for its argument if the original
-    ///     `Maybe<NonZeroXxx>` refers to a valid `NonZeroXxx`. The only
-    ///     `xxx` which is not also a valid `NonZeroXxx` is 0. [1]
-    ///
-    /// [1] Per https://doc.rust-lang.org/core/num/struct.NonZeroU16.html:
-    ///
-    ///   `NonZeroU16` is guaranteed to have the same layout and bit validity as
-    ///   `u16` with the exception that `0` is not a valid instance.
-    ///
-    /// [2] TODO(#896): Write a safety proof for this before the next stable
-    ///     release.
-    unsafe_impl!(NonZeroU8: TryFromBytes; |n: MaybeAligned<u8>| NonZeroU8::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroI8: TryFromBytes; |n: MaybeAligned<i8>| NonZeroI8::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroU16: TryFromBytes; |n: MaybeAligned<u16>| NonZeroU16::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroI16: TryFromBytes; |n: MaybeAligned<i16>| NonZeroI16::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroU32: TryFromBytes; |n: MaybeAligned<u32>| NonZeroU32::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroI32: TryFromBytes; |n: MaybeAligned<i32>| NonZeroI32::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroU64: TryFromBytes; |n: MaybeAligned<u64>| NonZeroU64::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroI64: TryFromBytes; |n: MaybeAligned<i64>| NonZeroI64::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroU128: TryFromBytes; |n: MaybeAligned<u128>| NonZeroU128::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroI128: TryFromBytes; |n: MaybeAligned<i128>| NonZeroI128::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroUsize: TryFromBytes; |n: MaybeAligned<usize>| NonZeroUsize::new(n.read_unaligned()).is_some());
-    unsafe_impl!(NonZeroIsize: TryFromBytes; |n: MaybeAligned<isize>| NonZeroIsize::new(n.read_unaligned()).is_some());
+macro_rules! impl_traits_for_nonzeros {
+    ($($nonzeros:ident [$natives:ident]),* $(,)?) => {
+        $(
+            // SAFETY: Per [1], `$nonzeros` and `$natives` have the same bit
+            // validity except for 0. `$natives` implements `IntoBytes`, and 0
+            // being a valid instance does not introduce padding bytes, so
+            // therefore `$nonzeros` can soundly implement `IntoBytes` too.
+            //
+            // [1] Per https://doc.rust-lang.org/std/num/struct.NonZeroUsize.html#layout-1
+            //     (similar text exists for other `NonZeroXxx` types):
+            //
+            //   `NonZeroUsize` is guaranteed to have the same layout and bit
+            //   validity as `usize` with the exception that 0 is not a valid
+            //   instance.
+            unsafe_impl!($nonzeros: IntoBytes);
+            impl_for_transparent_wrapper!(NoCell for $nonzeros [$natives]);
+            // SAFETY: TODO
+            unsafe_impl!($nonzeros: TryFromBytes; |n: MaybeAligned<Self>| {
+                let n = n.transparent_wrapper_into_inner();
+                // SAFETY: TODO
+                let n = unsafe { n.assume_valid() };
+                // SAFETY: TODO (why is this a valid `is_bit_valid` impl?)
+                Self::new(n.read_unaligned()).is_some()
+            });
+        )*
+    };
 }
+
+#[rustfmt::skip]
+impl_traits_for_nonzeros!(
+    NonZeroU8 [u8], NonZeroU16 [u16], NonZeroU32 [u32], NonZeroU64 [u64],
+    NonZeroU128 [u128], NonZeroUsize [usize],
+    NonZeroI8 [i8], NonZeroI16 [i16], NonZeroI32 [i32], NonZeroI64 [i64],
+    NonZeroI128 [i128], NonZeroIsize [isize]
+);
+
+impl_for_transparent_wrapper!(Unaligned for NonZeroU8 [u8]);
+impl_for_transparent_wrapper!(Unaligned for NonZeroI8 [i8]);
+assert_unaligned!(NonZeroU8, NonZeroI8);
+
 safety_comment! {
     /// SAFETY:
     /// - `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`,
