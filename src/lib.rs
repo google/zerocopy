@@ -304,6 +304,10 @@ use core::{
     ops::{Deref, DerefMut},
     ptr::{self, NonNull},
     slice,
+    sync::atomic::{
+        AtomicBool, AtomicI16, AtomicI32, AtomicI8, AtomicIsize, AtomicPtr, AtomicU16, AtomicU32,
+        AtomicU8, AtomicUsize,
+    },
 };
 
 use crate::pointer::invariant;
@@ -1096,7 +1100,9 @@ impl_known_layout!(
     u8, i8, u16, i16, u32, i32, u64, i64, u128, i128, usize, isize, f32, f64,
     bool, char,
     NonZeroU8, NonZeroI8, NonZeroU16, NonZeroI16, NonZeroU32, NonZeroI32,
-    NonZeroU64, NonZeroI64, NonZeroU128, NonZeroI128, NonZeroUsize, NonZeroIsize
+    NonZeroU64, NonZeroI64, NonZeroU128, NonZeroI128, NonZeroUsize, NonZeroIsize,
+    AtomicBool, AtomicI16, AtomicI32, AtomicI8, AtomicIsize, AtomicU16, AtomicU32,
+    AtomicU8, AtomicUsize
 );
 #[rustfmt::skip]
 impl_known_layout!(
@@ -1106,6 +1112,7 @@ impl_known_layout!(
     T         => MaybeUninit<T>,
     T: ?Sized => *const T,
     T: ?Sized => *mut T,
+    T         => AtomicPtr<T>
 );
 impl_known_layout!(const N: usize, T => [T; N]);
 
@@ -3890,6 +3897,48 @@ safety_comment! {
     /// TODO(#896): Write this safety proof before the next stable release.
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => NoCell for opt_fn!(...));
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => NoCell for opt_extern_c_fn!(...));
+}
+
+macro_rules! impl_traits_for_atomics {
+    ($($atomics:ident [$inners:ident]),* $(,)?) => {
+        $(
+            impl_for_transparent_wrapper!(TryFromBytes for $atomics [UnsafeCell<$inners>]);
+            impl_for_transparent_wrapper!(FromZeros for $atomics [UnsafeCell<$inners>]);
+            impl_for_transparent_wrapper!(FromBytes for $atomics [UnsafeCell<$inners>]);
+            impl_for_transparent_wrapper!(IntoBytes for $atomics [UnsafeCell<$inners>]);
+        )*
+    };
+}
+
+#[rustfmt::skip]
+impl_traits_for_atomics!(
+    AtomicBool [bool],
+    AtomicI16 [i16], AtomicI32 [i32], AtomicI8 [i8], AtomicIsize [isize],
+    AtomicU16 [u16], AtomicU32 [u32], AtomicU8 [u8], AtomicUsize [usize],
+);
+
+safety_comment! {
+    /// SAFETY:
+    /// Per [1], `AtomicBool`, `AtomicU8`, and `AtomicI8` have the same size as
+    /// `bool`, `u8`, and `i8` respectively. Since a type's alignment cannot be
+    /// smaller than 1 [2], and since its alignment cannot be greater than its
+    /// size [3], the only possible value for the alignment is 1. Thus, it is
+    /// sound to implement `Unaligned`.
+    ///
+    /// [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
+    ///     Cite docs once they've landed.
+    ///
+    /// [2] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
+    ///
+    ///     Alignment is measured in bytes, and must be at least 1.
+    ///
+    /// [3] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
+    ///
+    ///     The size of a value is always a multiple of its alignment.
+    unsafe_impl!(AtomicBool: Unaligned);
+    unsafe_impl!(AtomicU8: Unaligned);
+    unsafe_impl!(AtomicI8: Unaligned);
+    assert_unaligned!(AtomicBool, AtomicU8, AtomicI8);
 }
 
 safety_comment! {
