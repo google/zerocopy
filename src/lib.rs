@@ -6037,9 +6037,8 @@ mod alloc_support {
 pub use alloc_support::*;
 
 #[cfg(test)]
+#[allow(clippy::unreadable_literal)]
 mod tests {
-    #![allow(clippy::unreadable_literal)]
-
     use core::convert::TryInto as _;
 
     use static_assertions::assert_impl_all;
