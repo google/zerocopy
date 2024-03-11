@@ -279,6 +279,7 @@ extern crate self as zerocopy;
 mod macros;
 
 pub mod byteorder;
+mod deprecated;
 #[doc(hidden)]
 pub mod macro_util;
 #[doc(hidden)]
@@ -2422,17 +2423,6 @@ pub unsafe trait FromBytes: FromZeros {
             .map(|(_, r)| r.into_mut())
     }
 
-    #[deprecated(since = "0.8.0", note = "`FromBytes::ref_from` now supports slices")]
-    #[allow(clippy::must_use_candidate)]
-    #[doc(hidden)]
-    #[inline]
-    fn slice_from(bytes: &[u8]) -> Option<&[Self]>
-    where
-        Self: Sized + NoCell,
-    {
-        <[Self]>::ref_from(bytes)
-    }
-
     /// Interprets the prefix of the given `bytes` as a `&[Self]` with length
     /// equal to `count` without copying.
     ///
@@ -2812,6 +2802,17 @@ pub unsafe trait FromBytes: FromZeros {
     {
         Ref::<_, Unalign<Self>>::new_sized_from_suffix(bytes).map(|(_, r)| r.read().into_inner())
     }
+
+    #[deprecated(since = "0.8.0", note = "`FromBytes::ref_from` now supports slices")]
+    #[allow(clippy::must_use_candidate)]
+    #[doc(hidden)]
+    #[inline]
+    fn slice_from(bytes: &[u8]) -> Option<&[Self]>
+    where
+        Self: Sized + NoCell,
+    {
+        <[Self]>::ref_from(bytes)
+    }
 }
 
 /// Analyzes whether a type is [`IntoBytes`].
@@ -3133,16 +3134,6 @@ pub unsafe trait IntoBytes {
         unsafe { slice::from_raw_parts_mut(slf.cast::<u8>(), len) }
     }
 
-    #[deprecated(since = "0.8.0", note = "`IntoBytes::as_bytes_mut` was renamed to `as_mut_bytes`")]
-    #[doc(hidden)]
-    #[inline]
-    fn as_bytes_mut(&mut self) -> &mut [u8]
-    where
-        Self: FromBytes + NoCell,
-    {
-        self.as_mut_bytes()
-    }
-
     /// Writes a copy of `self` to `bytes`.
     ///
     /// If `bytes.len() != size_of_val(self)`, `write_to` returns `None`.
@@ -3327,6 +3318,16 @@ pub unsafe trait IntoBytes {
             .expect("`start` should be in-bounds of `bytes`")
             .copy_from_slice(self.as_bytes());
         Some(())
+    }
+
+    #[deprecated(since = "0.8.0", note = "`IntoBytes::as_bytes_mut` was renamed to `as_mut_bytes`")]
+    #[doc(hidden)]
+    #[inline]
+    fn as_bytes_mut(&mut self) -> &mut [u8]
+    where
+        Self: FromBytes + NoCell,
+    {
+        self.as_mut_bytes()
     }
 }
 
@@ -4980,19 +4981,6 @@ where
 
 impl<B, T> Ref<B, [T]>
 where
-    B: ByteSlice,
-    T: NoCell,
-{
-    #[deprecated(since = "0.8.0", note = "`Ref::new` now supports slices")]
-    #[doc(hidden)]
-    #[inline]
-    pub fn new_slice(bytes: B) -> Option<Ref<B, [T]>> {
-        Self::new(bytes)
-    }
-}
-
-impl<B, T> Ref<B, [T]>
-where
     B: SplitByteSlice,
     T: NoCell,
 {
@@ -5140,19 +5128,6 @@ where
 
 impl<B, T> Ref<B, [T]>
 where
-    B: ByteSliceMut,
-    T: NoCell,
-{
-    #[deprecated(since = "0.8.0", note = "`Ref::new_zeroed` now supports slices")]
-    #[doc(hidden)]
-    #[inline(always)]
-    pub fn new_slice_zeroed(bytes: B) -> Option<Ref<B, [T]>> {
-        Self::new_zeroed(bytes)
-    }
-}
-
-impl<B, T> Ref<B, [T]>
-where
     B: SplitByteSliceMut,
     T: NoCell,
 {
@@ -5248,19 +5223,6 @@ where
     #[inline(always)]
     pub fn new_unaligned_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
         Ref::new_from_suffix(bytes)
-    }
-}
-
-impl<B, T> Ref<B, [T]>
-where
-    B: ByteSlice,
-    T: Unaligned + NoCell,
-{
-    #[deprecated(since = "0.8.0", note = "`Ref::new_unaligned` now supports slices")]
-    #[doc(hidden)]
-    #[inline(always)]
-    pub fn new_slice_unaligned(bytes: B) -> Option<Ref<B, [T]>> {
-        Ref::new_unaligned(bytes)
     }
 }
 
@@ -5370,19 +5332,6 @@ where
 
 impl<B, T> Ref<B, [T]>
 where
-    B: ByteSliceMut,
-    T: Unaligned + NoCell,
-{
-    #[deprecated(since = "0.8.0", note = "`Ref::new_unaligned_zeroed` now supports slices")]
-    #[doc(hidden)]
-    #[inline(always)]
-    pub fn new_slice_unaligned_zeroed(bytes: B) -> Option<Ref<B, [T]>> {
-        Self::new_unaligned_zeroed(bytes)
-    }
-}
-
-impl<B, T> Ref<B, [T]>
-where
     B: SplitByteSliceMut,
     T: Unaligned + NoCell,
 {
@@ -5479,32 +5428,6 @@ where
             .expect("zerocopy internal error: into_ref should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
         ptr.as_mut()
-    }
-}
-
-impl<'a, B, T> Ref<B, [T]>
-where
-    B: 'a + IntoByteSlice<'a>,
-    T: FromBytes + NoCell,
-{
-    #[deprecated(since = "0.8.0", note = "`Ref::into_ref` now supports slices")]
-    #[doc(hidden)]
-    #[inline(always)]
-    pub fn into_slice(self) -> &'a [T] {
-        self.into_ref()
-    }
-}
-
-impl<'a, B, T> Ref<B, [T]>
-where
-    B: 'a + IntoByteSliceMut<'a>,
-    T: FromBytes + IntoBytes + NoCell,
-{
-    #[deprecated(since = "0.8.0", note = "`Ref::into_mut` now supports slices")]
-    #[doc(hidden)]
-    #[inline(always)]
-    pub fn into_mut_slice(self) -> &'a mut [T] {
-        self.into_mut()
     }
 }
 
