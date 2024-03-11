@@ -46,7 +46,6 @@
     clippy::obfuscated_if_else,
     clippy::perf,
     clippy::print_stdout,
-    clippy::std_instead_of_core,
     clippy::style,
     clippy::suspicious,
     clippy::todo,
