@@ -161,6 +161,8 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
         (
             SelfBounds::None,
             quote!(
+                type PointerMetadata = <#trailing_field_ty as ::zerocopy::KnownLayout>::PointerMetadata;
+
                 // SAFETY: `LAYOUT` accurately describes the layout of `Self`.
                 // The layout of `Self` is reflected using a sequence of
                 // invocations of `DstLayout::{new_zst,extend,pad_to_align}`.
@@ -195,10 +197,10 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
                 #[inline(always)]
                 fn raw_from_ptr_len(
                     bytes: ::zerocopy::macro_util::core_reexport::ptr::NonNull<u8>,
-                    elems: usize,
+                    meta: <#trailing_field_ty as ::zerocopy::KnownLayout>::PointerMetadata,
                 ) -> ::zerocopy::macro_util::core_reexport::ptr::NonNull<Self> {
                     use ::zerocopy::{KnownLayout};
-                    let trailing = <#trailing_field_ty as KnownLayout>::raw_from_ptr_len(bytes, elems);
+                    let trailing = <#trailing_field_ty as KnownLayout>::raw_from_ptr_len(bytes, meta);
                     let slf = trailing.as_ptr() as *mut Self;
                     // SAFETY: Constructed from `trailing`, which is non-null.
                     unsafe { ::zerocopy::macro_util::core_reexport::ptr::NonNull::new_unchecked(slf) }
@@ -212,6 +214,8 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
         (
             SelfBounds::SIZED,
             quote!(
+                type PointerMetadata = ();
+
                 // SAFETY: `LAYOUT` is guaranteed to accurately describe the
                 // layout of `Self`, because that is the documented safety
                 // contract of `DstLayout::for_type`.
@@ -224,7 +228,7 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
                 #[inline(always)]
                 fn raw_from_ptr_len(
                     bytes: ::zerocopy::macro_util::core_reexport::ptr::NonNull<u8>,
-                    _elems: usize,
+                    _meta: (),
                 ) -> ::zerocopy::macro_util::core_reexport::ptr::NonNull<Self> {
                     bytes.cast::<Self>()
                 }

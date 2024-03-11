@@ -1064,14 +1064,71 @@ pub unsafe trait KnownLayout {
     where
         Self: Sized;
 
+    /// `()` for sized types and `usize` for slice DSTs.
+    #[doc(hidden)]
+    type PointerMetadata: PointerMetadata;
+
     #[doc(hidden)]
     const LAYOUT: DstLayout;
 
     /// SAFETY: The returned pointer has the same address and provenance as
     /// `bytes`. If `Self` is a DST, the returned pointer's referent has `elems`
-    /// elements in its trailing slice. If `Self` is sized, `elems` is ignored.
+    /// elements in its trailing slice.
     #[doc(hidden)]
-    fn raw_from_ptr_len(bytes: NonNull<u8>, elems: usize) -> NonNull<Self>;
+    fn raw_from_ptr_len(bytes: NonNull<u8>, meta: Self::PointerMetadata) -> NonNull<Self>;
+}
+
+/// The metadata associated with a [`KnownLayout`] type.
+#[doc(hidden)]
+pub trait PointerMetadata {
+    /// Constructs a `Self` from an element count.
+    ///
+    /// If `Self = ()`, this returns `()`. If `Self = usize`, this returns
+    /// `elems`. No other types are currently supported.
+    fn from_elem_count(elems: usize) -> Self;
+
+    /// What is the size of the object with the given layout and pointer
+    /// metadata?
+    ///
+    /// # Panics
+    ///
+    /// If `Self = ()`, `layout` must describe a sized type. If `Self = usize`,
+    /// `layout` must describe a slice DST. Otherwise, `size_for_metadata` will
+    /// panic.
+    fn size_for_metadata(&self, layout: DstLayout) -> Option<usize>;
+}
+
+impl PointerMetadata for () {
+    #[inline]
+    #[allow(clippy::unused_unit)]
+    fn from_elem_count(_elems: usize) -> () {}
+
+    #[inline]
+    fn size_for_metadata(&self, layout: DstLayout) -> Option<usize> {
+        match layout.size_info {
+            SizeInfo::Sized { _size } => Some(_size),
+            SizeInfo::SliceDst(_) => unreachable!(),
+        }
+    }
+}
+
+impl PointerMetadata for usize {
+    #[inline]
+    fn from_elem_count(elems: usize) -> usize {
+        elems
+    }
+
+    #[inline]
+    fn size_for_metadata(&self, layout: DstLayout) -> Option<usize> {
+        match layout.size_info {
+            SizeInfo::SliceDst(TrailingSliceLayout { _offset, _elem_size }) => {
+                let slice_len = _elem_size.checked_mul(*self)?;
+                let without_padding = _offset.checked_add(slice_len)?;
+                without_padding.checked_add(util::padding_needed_for(without_padding, layout.align))
+            }
+            SizeInfo::Sized { .. } => unreachable!(),
+        }
+    }
 }
 
 // SAFETY: Delegates safety to `DstLayout::for_slice`.
@@ -1082,6 +1139,9 @@ unsafe impl<T> KnownLayout for [T] {
         Self: Sized,
     {
     }
+
+    type PointerMetadata = usize;
+
     const LAYOUT: DstLayout = DstLayout::for_slice::<T>();
 
     // SAFETY: `.cast` preserves address and provenance. The returned pointer
