@@ -404,6 +404,25 @@ pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
     unsafe { &mut *dst }
 }
 
+/// A helper for `try_transmute!`.
+#[inline(always)]
+pub fn try_transmute<Src, Dst>(mut src: Src) -> Result<Dst, Src>
+where
+    Src: crate::IntoBytes,
+    Dst: crate::TryFromBytes,
+{
+    if !Dst::is_src_valid(&mut src) {
+        return Err(src);
+    }
+
+    let src = ManuallyDrop::new(src);
+
+    // SAFETY:
+    // - `is_src_valid` validates that `src` is a bit-valid instance of `Dst`
+    // - `src` is `ManuallyDrop`
+    Ok(unsafe { core::mem::transmute_copy(&*src) })
+}
+
 // NOTE: We can't change this to a `pub use core as core_reexport` until [1] is
 // fixed or we update to a semver-breaking version (as of this writing, 0.8.0)
 // on the `main` branch.

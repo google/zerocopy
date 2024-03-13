@@ -1521,6 +1521,47 @@ pub unsafe trait TryFromBytes {
     #[doc(hidden)]
     fn is_bit_valid<A: invariant::at_least::Shared>(candidate: Maybe<'_, Self, A>) -> bool;
 
+    /// Is a given source value a valid instance of `Self`?
+    ///
+    /// # Safety
+    ///
+    /// Unsafe code may assume that, if `is_src_valid(src)` returns true, `*src`
+    /// is a bit-valid instance of `Self`.
+    ///
+    /// # Panics
+    ///
+    /// `is_src_valid` panics under exactly the same circumstances as
+    /// [`is_bit_valid`].
+    ///
+    /// [`is_bit_valid`]: TryFromBytes::is_bit_valid
+    #[doc(hidden)]
+    #[inline]
+    fn is_src_valid<Src>(src: &mut Src) -> bool
+    where
+        Src: IntoBytes,
+        Self: Sized,
+    {
+        let c_ptr = crate::Ptr::from_mut(src);
+
+        if mem::size_of::<Src>() > mem::size_of::<Self>() {
+            return false;
+        }
+
+        // SAFETY:
+        // - We just validated that `size_of::<Src>()` <= `size_of::<Self>()`
+        // - `c_ptr` is exclusively aliased, so we do not need to reason about
+        //   `UnsafeCell`
+        #[allow(clippy::as_conversions)]
+        let c_ptr = unsafe { c_ptr.cast_unsized(|p| p as *mut Self) };
+
+        // SAFETY: `c_ptr` is derived from `src` which is `IntoBytes`. By
+        // invariant on `IntoByte`s, `c_ptr`'s referent consists entirely of
+        // initialized bytes.
+        let c_ptr = unsafe { c_ptr.assume_validity::<crate::invariant::Initialized>() };
+
+        Self::is_bit_valid(c_ptr)
+    }
+
     /// Attempts to interpret a byte slice as a `Self`.
     ///
     /// `try_from_ref` validates that `bytes` contains a valid `Self`, and that
@@ -4732,6 +4773,67 @@ macro_rules! transmute_mut {
     }}
 }
 
+/// Conditionally transmutes a value of one type to a value of another type of
+/// the same size.
+///
+/// This macro consumes an expression of type `Src` and produces a `Result<Dst,
+/// Src>`. It produces `Ok(dst)` if `src` is a bit-valid instance of `Dst`;
+/// otherwise it produces `Err(src)`.
+///
+/// The expression `$e` must have a concrete type, `T`, which implements
+/// [`IntoBytes`]. The `try_transmute!` expression must also have a concrete
+/// type, `U` (`U` is inferred from the calling context), and `U` must implement
+/// [`TryFromBytes`].
+///
+/// Note that the `T` produced by the expression `$e` will *not* be dropped.
+/// Semantically, its bits will be copied into a new value of type `U`, the
+/// original `T` will be forgotten, and the value of type `U` will be returned.
+///
+/// # Examples
+///
+/// ```
+/// # use zerocopy::try_transmute;
+/// assert_eq!(try_transmute!(0u8), Ok(false));
+/// assert_eq!(try_transmute!(1u8), Ok(true));
+/// assert_eq!(try_transmute!(255u8), Result::<bool, _>::Err(255));
+/// ```
+#[macro_export]
+macro_rules! try_transmute {
+    ($e:expr) => {{
+        // NOTE: This must be a macro (rather than a function with trait bounds)
+        // because there's no way, in a generic context, to enforce that two
+        // types have the same size. `core::mem::transmute` uses compiler magic
+        // to enforce this so long as the types are concrete.
+
+        let e = $e;
+        if false {
+            // This branch, though never taken, ensures that the type of `e` is
+            // `IntoBytes` and that the type of this macro invocation expression
+            // is `TryFromBytes`.
+
+            struct AssertIsIntoBytes<T: $crate::IntoBytes>(T);
+            let _ = AssertIsIntoBytes(e);
+
+            struct AssertIsTryFromBytes<U: $crate::TryFromBytes>(U);
+            #[allow(unused, unreachable_code)]
+            let u = AssertIsTryFromBytes(loop {});
+            Ok(u.0)
+        } else if false {
+            // Check that the sizes of the source and destination types are
+            // equal.
+
+            // SAFETY: This code is never executed.
+            Ok(unsafe {
+                // Clippy: It's okay to transmute a type to itself.
+                #[allow(clippy::useless_transmute)]
+                $crate::macro_util::core_reexport::mem::transmute(e)
+            })
+        } else {
+            $crate::macro_util::try_transmute::<_, _>(e)
+        }
+    }}
+}
+
 /// Includes a file and safely transmutes it to a value of an arbitrary type.
 ///
 /// The file will be included as a byte array, `[u8; N]`, which will be
@@ -7546,6 +7648,50 @@ mod tests {
         #[allow(clippy::useless_transmute)]
         let y: &u8 = transmute_mut!(&mut x);
         assert_eq!(*y, 0);
+    }
+
+    #[test]
+    fn test_try_transmute() {
+        // Test that memory is transmuted with transmuted as expected.
+        let array_of_bools = [false, true, false, true, false, true, false, true];
+        let array_of_arrays = [[0, 1], [0, 1], [0, 1], [0, 1]];
+        let x: Result<[[u8; 2]; 4], _> = try_transmute!(array_of_bools);
+        assert_eq!(x, Ok(array_of_arrays));
+        let x: Result<[bool; 8], _> = try_transmute!(array_of_arrays);
+        assert_eq!(x, Ok(array_of_bools));
+
+        // Test that `transmute!` works with `!NoCell` types.
+        let x: usize = transmute!(UnsafeCell::new(1usize));
+        assert_eq!(x, 1);
+        let x: UnsafeCell<usize> = transmute!(1usize);
+        assert_eq!(x.into_inner(), 1);
+        let x: UnsafeCell<isize> = transmute!(UnsafeCell::new(1usize));
+        assert_eq!(x.into_inner(), 1);
+
+        #[derive(FromBytes, IntoBytes, Debug, PartialEq)]
+        #[repr(transparent)]
+        struct PanicOnDrop<T>(T);
+
+        impl<T> Drop for PanicOnDrop<T> {
+            fn drop(&mut self) {
+                panic!("PanicOnDrop dropped");
+            }
+        }
+
+        // Since `try_transmute!` semantically moves its argument on failure,
+        // the `PanicOnDrop` is not dropped, and thus this shouldn't panic.
+        let x: Result<usize, _> = try_transmute!(PanicOnDrop(1usize));
+        assert_eq!(x, Ok(1));
+
+        // Since `try_transmute!` semantically returns ownership of its argument
+        // on failure, the `PanicOnDrop` is returned rather than dropped, and
+        // thus this shouldn't panic.
+        let y: Result<bool, _> = try_transmute!(PanicOnDrop(2u8));
+        // We have to use `map_err` instead of comparing against
+        // `Err(PanicOnDrop(2u8))` because the latter would create and then drop
+        // its `PanicOnDrop` temporary, which would cause a panic.
+        assert_eq!(y.as_ref().map_err(|p| &p.0), Err::<&bool, _>(&2u8));
+        mem::forget(y);
     }
 
     #[test]
