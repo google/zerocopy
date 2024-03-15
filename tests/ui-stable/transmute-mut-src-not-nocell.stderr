@@ -1,48 +1,26 @@
-error[E0277]: the trait bound `Src: NoCell` is not satisfied
+error[E0658]: mutable references are not allowed in constants
+  --> tests/ui-stable/transmute-mut-src-not-nocell.rs:24:50
+   |
+24 | const SRC_NOT_NO_CELL: &mut Dst = transmute_mut!(&mut Src);
+   |                                                  ^^^^^^^^
+   |
+   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+
+error[E0015]: cannot call non-const fn `transmute_mut::<'_, '_, Src, Dst>` in constants
   --> tests/ui-stable/transmute-mut-src-not-nocell.rs:24:35
    |
 24 | const SRC_NOT_NO_CELL: &mut Dst = transmute_mut!(&mut Src);
    |                                   ^^^^^^^^^^^^^^^^^^^^^^^^
-   |                                   |
-   |                                   the trait `NoCell` is not implemented for `Src`
-   |                                   required by a bound introduced by this call
    |
-   = help: the following other types implement trait `NoCell`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
-           and $N others
-note: required by a bound in `AssertSrcIsNoCell`
-  --> tests/ui-stable/transmute-mut-src-not-nocell.rs:24:35
-   |
-24 | const SRC_NOT_NO_CELL: &mut Dst = transmute_mut!(&mut Src);
-   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertSrcIsNoCell`
+   = note: calls in constants are limited to constant functions, tuple structs and tuple variants
    = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `Src: NoCell` is not satisfied
-  --> tests/ui-stable/transmute-mut-src-not-nocell.rs:24:35
+error[E0716]: temporary value dropped while borrowed
+  --> tests/ui-stable/transmute-mut-src-not-nocell.rs:24:55
    |
 24 | const SRC_NOT_NO_CELL: &mut Dst = transmute_mut!(&mut Src);
-   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `NoCell` is not implemented for `Src`
-   |
-   = help: the following other types implement trait `NoCell`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
-           and $N others
-note: required by a bound in `AssertSrcIsNoCell`
-  --> tests/ui-stable/transmute-mut-src-not-nocell.rs:24:35
-   |
-24 | const SRC_NOT_NO_CELL: &mut Dst = transmute_mut!(&mut Src);
-   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertSrcIsNoCell`
-   = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |                                   --------------------^^^-
+   |                                   |                   |
+   |                                   |                   creates a temporary value which is freed while still in use
+   |                                   temporary value is freed at the end of this statement
+   |                                   using this value as a constant requires that borrow lasts for `'static`

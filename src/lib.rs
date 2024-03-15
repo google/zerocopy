@@ -4550,9 +4550,10 @@ macro_rules! transmute_ref {
 /// another type of the same size.
 ///
 /// The expression `$e` must have a concrete type, `&mut T`, where `T: Sized +
-/// IntoBytes`. The `transmute_mut!` expression must also have a concrete type,
-/// `&mut U` (`U` is inferred from the calling context), where `U: Sized +
-/// FromBytes`. It must be the case that `align_of::<T>() >= align_of::<U>()`.
+/// FromBytes + IntoBytes`. The `transmute_mut!` expression must also have a
+/// concrete type, `&mut U` (`U` is inferred from the calling context), where
+/// `U: Sized + FromBytes + IntoBytes`. It must be the case that
+/// `align_of::<T>() >= align_of::<U>()`.
 ///
 /// The lifetime of the input type, `&mut T`, must be the same as or outlive the
 /// lifetime of the output type, `&mut U`.
@@ -4617,9 +4618,9 @@ macro_rules! transmute_mut {
         #[allow(unused, clippy::diverging_sub_expression)]
         if false {
             // This branch, though never taken, ensures that the type of `e` is
-            // `&mut T` where `T: 't + Sized + FromBytes + IntoBytes + NoCell`
-            // and that the type of this macro expression is `&mut U` where `U:
-            // 'u + Sized + FromBytes + IntoBytes + NoCell`.
+            // `&mut T` where `T: 't + Sized + FromBytes + IntoBytes` and that
+            // the type of this macro expression is `&mut U` where `U: 'u +
+            // Sized + FromBytes + IntoBytes`.
 
             // We use immutable references here rather than mutable so that, if
             // this macro is used in a const context (in which, as of this
@@ -4629,20 +4630,16 @@ macro_rules! transmute_mut {
             struct AssertSrcIsSized<'a, T: ::core::marker::Sized>(&'a T);
             struct AssertSrcIsFromBytes<'a, T: ?::core::marker::Sized + $crate::FromBytes>(&'a T);
             struct AssertSrcIsIntoBytes<'a, T: ?::core::marker::Sized + $crate::IntoBytes>(&'a T);
-            struct AssertSrcIsNoCell<'a, T: ?::core::marker::Sized + $crate::NoCell>(&'a T);
             struct AssertDstIsSized<'a, T: ::core::marker::Sized>(&'a T);
             struct AssertDstIsFromBytes<'a, T: ?::core::marker::Sized + $crate::FromBytes>(&'a T);
             struct AssertDstIsIntoBytes<'a, T: ?::core::marker::Sized + $crate::IntoBytes>(&'a T);
-            struct AssertDstIsNoCell<'a, T: ?::core::marker::Sized + $crate::NoCell>(&'a T);
 
             if true {
                 let _ = AssertSrcIsSized(&*e);
             } else if true {
                 let _ = AssertSrcIsFromBytes(&*e);
-            } else if true {
-                let _ = AssertSrcIsIntoBytes(&*e);
             } else {
-                let _ = AssertSrcIsNoCell(&*e);
+                let _ = AssertSrcIsIntoBytes(&*e);
             }
 
             if true {
@@ -4653,13 +4650,9 @@ macro_rules! transmute_mut {
                 #[allow(unused, unreachable_code)]
                 let u = AssertDstIsFromBytes(loop {});
                 &mut *u.0
-            } else if true {
-                #[allow(unused, unreachable_code)]
-                let u = AssertDstIsIntoBytes(loop {});
-                &mut *u.0
             } else {
                 #[allow(unused, unreachable_code)]
-                let u = AssertDstIsNoCell(loop {});
+                let u = AssertDstIsIntoBytes(loop {});
                 &mut *u.0
             }
         } else if false {
@@ -4682,11 +4675,10 @@ macro_rules! transmute_mut {
             &mut u
         } else {
             // SAFETY: For source type `Src` and destination type `Dst`:
-            // - We know that `Src: FromBytes + IntoBytes + NoCell` and `Dst:
-            //   FromBytes + IntoBytes + NoCell` thanks to the uses of
-            //   `AssertSrcIsFromBytes`, `AssertSrcIsIntoBytes`,
-            //   `AssertSrcIsNoCell`, `AssertDstIsFromBytes`,
-            //   `AssertDstIsIntoBytes`, and `AssertDstIsNoCell` above.
+            // - We know that `Src: FromBytes + IntoBytes` and `Dst: FromBytes +
+            //   IntoBytes` thanks to the uses of `AssertSrcIsFromBytes`,
+            //   `AssertSrcIsIntoBytes`, `AssertDstIsFromBytes`, and
+            //   `AssertDstIsIntoBytes` above.
             // - We know that `size_of::<Src>() == size_of::<Dst>()` thanks to
             //   the use of `assert_size_eq!` above.
             // - We know that `align_of::<Src>() >= align_of::<Dst>()` thanks to
@@ -7418,6 +7410,14 @@ mod tests {
         #[allow(clippy::useless_transmute)]
         let y: &u8 = transmute_mut!(&mut x);
         assert_eq!(*y, 0);
+
+        // Test that the referents can contain `UnsafeCell`s.
+        let mut src = AtomicU8::new(42);
+        {
+            let dst: &mut AtomicI8 = transmute_mut!(&mut src);
+            *dst.get_mut() += 1;
+        }
+        assert_eq!(src.into_inner(), 43);
     }
 
     #[test]

@@ -1,25 +1,25 @@
-error[E0277]: the trait bound `Src: NoCell` is not satisfied
-  --> tests/ui-msrv/transmute-mut-src-not-nocell.rs:24:35
+error[E0658]: mutable references are not allowed in constants
+  --> tests/ui-msrv/transmute-mut-src-not-nocell.rs:24:50
    |
 24 | const SRC_NOT_NO_CELL: &mut Dst = transmute_mut!(&mut Src);
-   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `NoCell` is not implemented for `Src`
+   |                                                  ^^^^^^^^
    |
-note: required by `AssertSrcIsNoCell`
+   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+
+error[E0015]: calls in constants are limited to constant functions, tuple structs and tuple variants
   --> tests/ui-msrv/transmute-mut-src-not-nocell.rs:24:35
    |
 24 | const SRC_NOT_NO_CELL: &mut Dst = transmute_mut!(&mut Src);
    |                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+   |
    = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `Src: NoCell` is not satisfied
-  --> tests/ui-msrv/transmute-mut-src-not-nocell.rs:24:35
+error[E0716]: temporary value dropped while borrowed
+  --> tests/ui-msrv/transmute-mut-src-not-nocell.rs:24:55
    |
 24 | const SRC_NOT_NO_CELL: &mut Dst = transmute_mut!(&mut Src);
-   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `NoCell` is not implemented for `Src`
-   |
-note: required by a bound in `AssertSrcIsNoCell`
-  --> tests/ui-msrv/transmute-mut-src-not-nocell.rs:24:35
-   |
-24 | const SRC_NOT_NO_CELL: &mut Dst = transmute_mut!(&mut Src);
-   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertSrcIsNoCell`
-   = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |                                   --------------------^^^-
+   |                                   |                   |
+   |                                   |                   creates a temporary which is freed while still in use
+   |                                   temporary value is freed at the end of this statement
+   |                                   using this value as a constant requires that borrow lasts for `'static`
