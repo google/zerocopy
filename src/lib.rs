@@ -5776,11 +5776,21 @@ unsafe impl<'a> SplitByteSlice for RefMut<'a, [u8]> {
 
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
+#[cfg(any(feature = "alloc", test))]
+unsafe impl ByteSlice for Vec<u8> {}
+
+// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+#[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSliceMut for &'a mut [u8] {}
 
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSliceMut for RefMut<'a, [u8]> {}
+
+// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+#[allow(clippy::undocumented_unsafe_blocks)]
+#[cfg(any(feature = "alloc", test))]
+unsafe impl ByteSliceMut for Vec<u8> {}
 
 #[cfg(feature = "alloc")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
