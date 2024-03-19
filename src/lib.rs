@@ -4347,14 +4347,30 @@ mod simd {
 /// Safely transmutes a value of one type to a value of another type of the same
 /// size.
 ///
-/// The expression `$e` must have a concrete type, `T`, which implements
-/// `IntoBytes`. The `transmute!` expression must also have a concrete type, `U`
-/// (`U` is inferred from the calling context), and `U` must implement
-/// `FromBytes`.
+/// This macro behaves like an invocation of this function:
 ///
-/// Note that the `T` produced by the expression `$e` will *not* be dropped.
-/// Semantically, its bits will be copied into a new value of type `U`, the
-/// original `T` will be forgotten, and the value of type `U` will be returned.
+/// ```ignore
+/// const fn transmute<Src, Dst>(src: Src) -> Dst
+/// where
+///     Src: IntoBytes,
+///     Dst: FromBytes,
+///     size_of::<Src>() == size_of::<Dst>(),
+/// {
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// However, unlike a function, this macro can only be invoked when the types of
+/// `Src` and `Dst` are completely concrete. The types `Src` and `Dst` are
+/// inferred from the calling context; they cannot be explicitly specified in
+/// the macro invocation.
+///
+/// Note that the `Src` produced by the expression `$e` will *not* be dropped.
+/// Semantically, its bits will be copied into a new value of type `Dst`, the
+/// original `Src` will be forgotten, and the value of type `Dst` will be
+/// returned.
 ///
 /// # Examples
 ///
@@ -4562,13 +4578,27 @@ macro_rules! transmute_ref {
 /// Safely transmutes a mutable reference of one type to a mutable reference of
 /// another type of the same size.
 ///
-/// The expression `$e` must have a concrete type, `&mut T`, where `T: Sized +
-/// IntoBytes`. The `transmute_mut!` expression must also have a concrete type,
-/// `&mut U` (`U` is inferred from the calling context), where `U: Sized +
-/// FromBytes`. It must be the case that `align_of::<T>() >= align_of::<U>()`.
+/// This macro behaves like an invocation of this function:
 ///
-/// The lifetime of the input type, `&mut T`, must be the same as or outlive the
-/// lifetime of the output type, `&mut U`.
+/// ```ignore
+/// const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst
+/// where
+///     'src: 'dst,
+///     Src: FromBytes + IntoBytes + NoCell,
+///     Dst: FromBytes + IntoBytes + NoCell,
+///     size_of::<Src>() == size_of::<Dst>(),
+///     align_of::<Src>() >= align_of::<Dst>(),
+/// {
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// However, unlike a function, this macro can only be invoked when the types of
+/// `Src` and `Dst` are completely concrete. The types `Src` and `Dst` are
+/// inferred from the calling context; they cannot be explicitly specified in
+/// the macro invocation.
 ///
 /// # Examples
 ///
