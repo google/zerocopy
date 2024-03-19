@@ -4418,14 +4418,27 @@ macro_rules! transmute {
 /// Safely transmutes a mutable or immutable reference of one type to an
 /// immutable reference of another type of the same size.
 ///
-/// The expression `$e` must have a concrete type, `&T` or `&mut T`, where `T:
-/// Sized + IntoBytes`. The `transmute_ref!` expression must also have a
-/// concrete type, `&U` (`U` is inferred from the calling context), where `U:
-/// Sized + FromBytes`. It must be the case that `align_of::<T>() >=
-/// align_of::<U>()`.
+/// This macro behaves like an invocation of this function:
 ///
-/// The lifetime of the input type, `&T` or `&mut T`, must be the same as or
-/// outlive the lifetime of the output type, `&U`.
+/// ```ignore
+/// const fn transmute_ref<'src, 'dst, Src, Dst>(src: &'src Src) -> &'dst Dst
+/// where
+///     'src: 'dst,
+///     Src: IntoBytes + NoCell,
+///     Dst: FromBytes + NoCell,
+///     size_of::<Src>() == size_of::<Dst>(),
+///     align_of::<Src>() >= align_of::<Dst>(),
+/// {
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// However, unlike a function, this macro can only be invoked when the types of
+/// `Src` and `Dst` are completely concrete. The types `Src` and `Dst` are
+/// inferred from the calling context; they cannot be explicitly specified in
+/// the macro invocation.
 ///
 /// # Examples
 ///
