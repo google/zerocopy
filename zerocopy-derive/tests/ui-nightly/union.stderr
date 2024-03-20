@@ -48,8 +48,11 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::NoCell` is not satisfie
            and $N others
    = note: required for `ManuallyDrop<UnsafeCell<()>>` to implement `zerocopy::NoCell`
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `NoCell` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is not satisfied
   --> tests/ui-nightly/union.rs:39:10
@@ -59,8 +62,11 @@ error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is
    |
    = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes2, true>`
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0587]: type has conflicting packed and align representation hints
   --> tests/ui-nightly/union.rs:68:1
