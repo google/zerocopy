@@ -23,8 +23,11 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
              i128
            and $N others
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:37:10
@@ -43,8 +46,11 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
              i128
            and $N others
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:37:10
@@ -63,8 +69,11 @@ error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
              i128
            and $N others
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:46:10
@@ -83,8 +92,11 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
              i128
            and $N others
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:46:10
@@ -103,8 +115,11 @@ error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
              i128
            and $N others
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:46:10
@@ -123,8 +138,11 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfie
              u8
            and $N others
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:55:10
@@ -143,8 +161,11 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfie
              i128
            and $N others
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:65:10
@@ -163,8 +184,11 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
              NonZero<u8>
            and $N others
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:73:10
@@ -183,8 +207,11 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
              NonZero<u8>
            and $N others
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:80:10
@@ -203,5 +230,8 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
              NonZero<u8>
            and $N others
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |

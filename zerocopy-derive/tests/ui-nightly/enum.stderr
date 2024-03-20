@@ -250,8 +250,11 @@ error[E0277]: the trait bound `UnsafeCell<()>: NoCell` is not satisfied
              i128
            and $N others
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `NoCell` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0277]: the trait bound `UnsafeCell<u8>: NoCell` is not satisfied
   --> tests/ui-nightly/enum.rs:59:10
@@ -270,5 +273,8 @@ error[E0277]: the trait bound `UnsafeCell<u8>: NoCell` is not satisfied
              i128
            and $N others
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `NoCell` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
