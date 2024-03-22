@@ -34,7 +34,7 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::NoCell` is not satisfie
   --> tests/ui-stable/union.rs:24:10
    |
 24 | #[derive(NoCell)]
-   |          ^^^^^^ the trait `zerocopy::NoCell` is not implemented for `UnsafeCell<()>`
+   |          ^^^^^^ the trait `zerocopy::NoCell` is not implemented for `UnsafeCell<()>`, which is required by `ManuallyDrop<UnsafeCell<()>>: zerocopy::NoCell`
    |
    = help: the following other types implement trait `zerocopy::NoCell`:
              bool

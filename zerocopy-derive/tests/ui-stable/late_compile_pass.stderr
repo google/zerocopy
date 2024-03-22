@@ -152,8 +152,8 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
              Unaligned1
              Unaligned2
              Unaligned3
-             U16<O>
-             U32<O>
+             NonZero<i8>
+             NonZero<u8>
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -171,8 +171,8 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
              Unaligned1
              Unaligned2
              Unaligned3
-             U16<O>
-             U32<O>
+             NonZero<i8>
+             NonZero<u8>
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -190,8 +190,8 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
              Unaligned1
              Unaligned2
              Unaligned3
-             U16<O>
-             U32<O>
+             NonZero<i8>
+             NonZero<u8>
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
