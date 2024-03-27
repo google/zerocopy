@@ -623,6 +623,45 @@ pub(crate) mod polyfills {
             unsafe { NonNull::new_unchecked(ptr) }
         }
     }
+
+    /// Splits `bytes` at `mid` with minimal runtime checks.
+    ///
+    /// # Safety
+    ///
+    /// `mid` must not be greater than `bytes.len()`.
+    // TODO(#67): Once `slice::split_at_unchecked` is stabilized and available
+    // on our MSRV, remove this.
+    pub(crate) unsafe fn split_at_unchecked(bytes: &[u8], mid: usize) -> (&[u8], &[u8]) {
+        // SAFETY: By contract on caller, `mid` is not greater than
+        // `bytes.len()`.
+        unsafe { (<[u8]>::get_unchecked(bytes, ..mid), <[u8]>::get_unchecked(bytes, mid..)) }
+    }
+
+    /// Splits `bytes` at `mid` with minimal runtime checks.
+    ///
+    /// # Safety
+    ///
+    /// `mid` must not be greater than `bytes.len()`.
+    // TODO(#67): Once `slice::split_at_mut_unchecked` is stabilized and
+    // available on our MSRV, remove this.
+    pub(crate) unsafe fn split_at_mut_unchecked(
+        bytes: &mut [u8],
+        mid: usize,
+    ) -> (&mut [u8], &mut [u8]) {
+        use core::slice::from_raw_parts_mut;
+
+        let l_ptr = bytes.as_mut_ptr();
+        // SAFETY: By contract on caller, `mid` is not greater than
+        // `bytes.len()`.
+        let r_ptr = unsafe { l_ptr.add(mid) };
+
+        let l_len = mid;
+        #[allow(clippy::arithmetic_side_effects)]
+        let r_len = bytes.len() - mid;
+
+        // SAFETY: TODO.
+        unsafe { (from_raw_parts_mut(l_ptr, l_len), from_raw_parts_mut(r_ptr, r_len)) }
+    }
 }
 
 #[cfg(test)]
