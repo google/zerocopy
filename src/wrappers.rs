@@ -55,8 +55,12 @@ use super::*;
     any(feature = "derive", test),
     derive(NoCell, KnownLayout, FromBytes, IntoBytes, Unaligned)
 )]
+#[non_exhaustive]
 #[repr(C, packed)]
-pub struct Unalign<T>(T);
+pub struct Unalign<T> {
+    /// A possibly-unaligned value.
+    pub unaligned: T,
+}
 
 #[cfg(not(any(feature = "derive", test)))]
 impl_known_layout!(T => Unalign<T>);
@@ -102,7 +106,7 @@ impl<T> Unalign<T> {
     /// Constructs a new `Unalign`.
     #[inline(always)]
     pub const fn new(val: T) -> Unalign<T> {
-        Unalign(val)
+        Unalign { unaligned: val }
     }
 
     /// Consumes `self`, returning the inner `T`.
@@ -220,7 +224,7 @@ impl<T> Unalign<T> {
     /// [`read_unaligned`]: core::ptr::read_unaligned
     #[inline(always)]
     pub const fn get_ptr(&self) -> *const T {
-        ptr::addr_of!(self.0)
+        ptr::addr_of!(self.unaligned)
     }
 
     /// Gets an unaligned mutable raw pointer to the inner `T`.
@@ -240,7 +244,7 @@ impl<T> Unalign<T> {
     // TODO(https://github.com/rust-lang/rust/issues/57349): Make this `const`.
     #[inline(always)]
     pub fn get_mut_ptr(&mut self) -> *mut T {
-        ptr::addr_of_mut!(self.0)
+        ptr::addr_of_mut!(self.unaligned)
     }
 
     /// Sets the inner `T`, dropping the previous value.
@@ -314,8 +318,7 @@ impl<T: Copy> Unalign<T> {
     // TODO(https://github.com/rust-lang/rust/issues/57349): Make this `const`.
     #[inline(always)]
     pub fn get(&self) -> T {
-        let Unalign(val) = *self;
-        val
+        self.unaligned
     }
 }
 

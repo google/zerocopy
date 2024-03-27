@@ -9099,7 +9099,15 @@ mod tests {
             Unaligned,
             !FromBytes
         );
-        assert_impls!([NotZerocopy]: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(
+            [NotZerocopy]: KnownLayout,
+            !NoCell,
+            !TryFromBytes,
+            !FromZeros,
+            !FromBytes,
+            !IntoBytes,
+            !Unaligned
+        );
         assert_impls!(
             [u8; 0]: KnownLayout,
             NoCell,
