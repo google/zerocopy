@@ -1567,6 +1567,54 @@ pub unsafe trait TryFromBytes {
         candidate.map(MaybeAligned::as_ref)
     }
 
+    /// Attempts to interpret the prefix of the given `bytes` as a `&Self`
+    /// without copying.
+    #[must_use = "has no side effects"]
+    #[inline]
+    fn try_from_ref_prefix(bytes: &[u8]) -> Option<(&Self, &[u8])>
+    where
+        Self: KnownLayout + NoCell,
+    {
+        let (candidate, remainder) =
+            Ptr::from_ref(bytes).try_cast_into::<Self>(CastType::Prefix)?;
+
+        // This call may panic. If that happens, it doesn't cause any soundness
+        // issues, as we have not generated any invalid state which we need to
+        // fix before returning.
+        //
+        // Note that one panic or post-monomorphization error condition is
+        // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
+        // pointer when `Self: !NoCell`. Since `Self: NoCell`, this panic
+        // condition will not happen.
+        candidate
+            .try_into_valid()
+            .map(|candidate| (candidate.as_ref(), remainder.unaligned_as_ref()))
+    }
+
+    /// Attempts to interpret the suffix of the given `bytes` as a `&Self`
+    /// without copying.
+    #[must_use = "has no side effects"]
+    #[inline]
+    fn try_from_ref_suffix(bytes: &[u8]) -> Option<(&[u8], &Self)>
+    where
+        Self: KnownLayout + NoCell,
+    {
+        let (candidate, remainder) =
+            Ptr::from_ref(bytes).try_cast_into::<Self>(CastType::Suffix)?;
+
+        // This call may panic. If that happens, it doesn't cause any soundness
+        // issues, as we have not generated any invalid state which we need to
+        // fix before returning.
+        //
+        // Note that one panic or post-monomorphization error condition is
+        // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
+        // pointer when `Self: !NoCell`. Since `Self: NoCell`, this panic
+        // condition will not happen.
+        candidate
+            .try_into_valid()
+            .map(|candidate| (remainder.unaligned_as_ref(), candidate.as_ref()))
+    }
+
     /// Attempts to interpret a mutable byte slice as a `Self`.
     ///
     /// `try_from_mut` validates that `bytes` contains a valid `Self`, and that
@@ -1596,6 +1644,54 @@ pub unsafe trait TryFromBytes {
         let candidate = candidate.try_into_valid();
 
         candidate.map(Ptr::as_mut)
+    }
+
+    /// Attempts to interpret the prefix of the given `bytes` as a `&Self`
+    /// without copying.
+    #[must_use = "has no side effects"]
+    #[inline]
+    fn try_from_mut_prefix(bytes: &mut [u8]) -> Option<(&mut Self, &mut [u8])>
+    where
+        Self: KnownLayout + NoCell, // TODO(#251): Remove the `NoCell` bound.
+    {
+        let (candidate, remainder) =
+            Ptr::from_mut(bytes).try_cast_into::<Self>(CastType::Prefix)?;
+
+        // This call may panic. If that happens, it doesn't cause any soundness
+        // issues, as we have not generated any invalid state which we need to
+        // fix before returning.
+        //
+        // Note that one panic or post-monomorphization error condition is
+        // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
+        // pointer when `Self: !NoCell`. Since `Self: NoCell`, this panic
+        // condition will not happen.
+        candidate
+            .try_into_valid()
+            .map(|candidate| (candidate.as_mut(), remainder.unaligned_as_mut()))
+    }
+
+    /// Attempts to interpret the suffix of the given `bytes` as a `&mut Self`
+    /// without copying.
+    #[must_use = "has no side effects"]
+    #[inline]
+    fn try_from_mut_suffix(bytes: &mut [u8]) -> Option<(&mut [u8], &mut Self)>
+    where
+        Self: KnownLayout + NoCell,
+    {
+        let (candidate, remainder) =
+            Ptr::from_mut(bytes).try_cast_into::<Self>(CastType::Suffix)?;
+
+        // This call may panic. If that happens, it doesn't cause any soundness
+        // issues, as we have not generated any invalid state which we need to
+        // fix before returning.
+        //
+        // Note that one panic or post-monomorphization error condition is
+        // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
+        // pointer when `Self: !NoCell`. Since `Self: NoCell`, this panic
+        // condition will not happen.
+        candidate
+            .try_into_valid()
+            .map(|candidate| (remainder.unaligned_as_mut(), candidate.as_mut()))
     }
 
     /// Attempts to read a `Self` from a byte slice.
@@ -4882,7 +4978,9 @@ where
 {
     #[must_use = "has no side effects"]
     fn bikeshed_new_from_prefix_known_layout(bytes: B) -> Option<(Ref<B, T>, B)> {
-        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
+        let (_, remainder) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
+        #[allow(clippy::arithmetic_side_effects)]
+        let split_at = bytes.len() - remainder.len();
         let (bytes, suffix) = bytes.split_at(split_at);
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
@@ -4894,7 +4992,9 @@ where
 
     #[must_use = "has no side effects"]
     fn bikeshed_new_from_suffix_known_layout(bytes: B) -> Option<(B, Ref<B, T>)> {
-        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
+        let (_, remainder) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
+        #[allow(clippy::arithmetic_side_effects)]
+        let split_at = bytes.len() - remainder.len();
         let (prefix, bytes) = bytes.split_at(split_at);
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
@@ -4990,7 +5090,9 @@ where
     #[must_use = "has no side effects"]
     #[inline]
     pub fn new_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
-        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
+        let (_, remainder) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
+        #[allow(clippy::arithmetic_side_effects)]
+        let split_at = bytes.len() - remainder.len();
         let (bytes, suffix) = bytes.split_at(split_at);
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
@@ -5011,7 +5113,9 @@ where
     #[must_use = "has no side effects"]
     #[inline]
     pub fn new_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
-        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
+        let (_, remainder) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
+        #[allow(clippy::arithmetic_side_effects)]
+        let split_at = bytes.len() - remainder.len();
         let (prefix, bytes) = bytes.split_at(split_at);
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a

@@ -63,6 +63,24 @@ where
     }
 }
 
+impl<'a, T, Alignment> MaybeAligned<'a, T, invariant::Exclusive, Alignment>
+where
+    T: 'a + ?Sized,
+    Alignment: invariant::Alignment,
+{
+    /// Views the value as an aligned mut reference.
+    ///
+    /// This is only available if `T` is [`Unaligned`].
+    #[must_use]
+    #[inline]
+    pub fn unaligned_as_mut(self) -> &'a mut T
+    where
+        T: Unaligned,
+    {
+        self.bikeshed_recall_aligned().as_mut()
+    }
+}
+
 /// Checks if the referent is zeroed.
 pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
 where
