@@ -206,6 +206,7 @@
     clippy::dbg_macro,
     clippy::decimal_literal_representation,
     clippy::double_must_use,
+    clippy::expect_used,
     clippy::get_unwrap,
     clippy::indexing_slicing,
     clippy::missing_inline_in_public_items,
@@ -248,6 +249,7 @@
     // production code introduce the possibly of code panicking unexpectedly "in
     // the field".
     clippy::arithmetic_side_effects,
+    clippy::expect_used,
     clippy::indexing_slicing,
 ))]
 #![cfg_attr(not(test), no_std)]
@@ -1874,6 +1876,7 @@ pub unsafe trait FromZeros: TryFromBytes {
     #[must_use = "has no side effects (other than allocation)"]
     #[cfg(feature = "alloc")]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
+    #[allow(clippy::expect_used)]
     #[inline]
     fn new_box_slice_zeroed(len: usize) -> Box<[Self]>
     where
@@ -3313,10 +3316,10 @@ pub unsafe trait IntoBytes {
         Self: NoCell,
     {
         let start = bytes.len().checked_sub(mem::size_of_val(self))?;
-        bytes
-            .get_mut(start..)
-            .expect("`start` should be in-bounds of `bytes`")
-            .copy_from_slice(self.as_bytes());
+        // get_mut() should never return None here. We use ? rather than
+        // .unwrap() because in the event the branch is not optimized away,
+        // returning None is generally lighter-weight than panicing.
+        bytes.get_mut(start..)?.copy_from_slice(self.as_bytes());
         Some(())
     }
 
@@ -5445,6 +5448,7 @@ where
     pub fn into_ref(self) -> &'a T {
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
         // valid for `T`, and so this `unwrap` will not panic.
+        #[allow(clippy::expect_used)]
         let ptr = Ptr::from_ref(self.0.into())
             .try_cast_into_no_leftover::<T>()
             .expect("zerocopy internal error: into_ref should be infallible");
@@ -5466,6 +5470,7 @@ where
     pub fn into_mut(self) -> &'a mut T {
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
         // valid for `T`, and so this `unwrap` will not panic.
+        #[allow(clippy::expect_used)]
         let ptr = Ptr::from_mut(self.0.into())
             .try_cast_into_no_leftover::<T>()
             .expect("zerocopy internal error: into_ref should be infallible");
@@ -5546,6 +5551,7 @@ where
     fn deref(&self) -> &T {
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
         // valid for `T`, and so this `unwrap` will not panic.
+        #[allow(clippy::expect_used)]
         let ptr = Ptr::from_ref(self.0.deref())
             .try_cast_into_no_leftover::<T>()
             .expect("zerocopy internal error: Deref::deref should be infallible");
@@ -5563,6 +5569,7 @@ where
     fn deref_mut(&mut self) -> &mut T {
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
         // valid for `T`, and so this `unwrap` will not panic.
+        #[allow(clippy::expect_used)]
         let ptr = Ptr::from_mut(self.0.deref_mut())
             .try_cast_into_no_leftover::<T>()
             .expect("zerocopy internal error: DerefMut::deref_mut should be infallible");
