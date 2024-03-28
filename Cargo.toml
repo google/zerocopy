@@ -46,7 +46,7 @@ zerocopy-panic-in-const = "1.57.0"
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.
 pinned-stable = "1.77.1"
-pinned-nightly = "nightly-2024-03-26"
+pinned-nightly = "nightly-2024-03-27"
 
 [package.metadata.docs.rs]
 all-features = true
