@@ -79,14 +79,14 @@ error[E0277]: the trait bound `NotKnownLayoutDst: zerocopy::KnownLayout` is not 
    |          ^^^^^^^^^^^ the trait `zerocopy::KnownLayout` is not implemented for `NotKnownLayoutDst`
    |
    = help: the following other types implement trait `zerocopy::KnownLayout`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
+             ()
+             *const T
+             *mut T
+             AU16
+             AtomicBool
+             AtomicI16
+             AtomicI32
+             AtomicI8
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -102,14 +102,14 @@ error[E0277]: the trait bound `NotKnownLayout: zerocopy::KnownLayout` is not sat
    |          ^^^^^^^^^^^ the trait `zerocopy::KnownLayout` is not implemented for `NotKnownLayout`
    |
    = help: the following other types implement trait `zerocopy::KnownLayout`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
+             ()
+             *const T
+             *mut T
+             AU16
+             AtomicBool
+             AtomicI16
+             AtomicI32
+             AtomicI8
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -125,14 +125,14 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::NoCell` is not satisfie
    |          ^^^^^^ the trait `zerocopy::NoCell` is not implemented for `UnsafeCell<()>`
    |
    = help: the following other types implement trait `zerocopy::NoCell`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
+             &T
+             &mut T
+             ()
+             *const T
+             *mut T
+             AU16
+             F32<O>
+             F64<O>
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `NoCell` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -148,14 +148,14 @@ error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy::NoCell` is not satisfie
    |          ^^^^^^ the trait `zerocopy::NoCell` is not implemented for `UnsafeCell<u8>`, which is required by `[UnsafeCell<u8>; 0]: zerocopy::NoCell`
    |
    = help: the following other types implement trait `zerocopy::NoCell`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
+             &T
+             &mut T
+             ()
+             *const T
+             *mut T
+             AU16
+             F32<O>
+             F64<O>
            and $N others
    = note: required for `[UnsafeCell<u8>; 0]` to implement `zerocopy::NoCell`
    = help: see issue #48214
@@ -220,14 +220,14 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
     |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
     |
     = help: the following other types implement trait `Unaligned`:
-              bool
-              i8
-              u8
-              NonZero<i8>
-              NonZero<u8>
-              U16<O>
-              U32<O>
-              U64<O>
+              ()
+              AtomicBool
+              AtomicI8
+              AtomicU8
+              F32<O>
+              F64<O>
+              I128<O>
+              I16<O>
             and $N others
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
