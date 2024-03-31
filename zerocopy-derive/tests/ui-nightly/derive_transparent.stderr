@@ -5,14 +5,14 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`, which is required by `TransparentStruct<NotZerocopy>: TryFromBytes`
    |
    = help: the following other types implement trait `TryFromBytes`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
+             ()
+             *const T
+             *mut T
+             AU16
+             AtomicBool
+             AtomicI16
+             AtomicI32
+             AtomicI8
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `TryFromBytes`
   --> tests/ui-nightly/derive_transparent.rs:24:21
@@ -33,14 +33,14 @@ error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromZeros` is not implemented for `NotZerocopy`, which is required by `TransparentStruct<NotZerocopy>: FromZeros`
    |
    = help: the following other types implement trait `FromZeros`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
+             ()
+             *const T
+             *mut T
+             AU16
+             AtomicBool
+             AtomicI16
+             AtomicI32
+             AtomicI8
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `FromZeros`
   --> tests/ui-nightly/derive_transparent.rs:24:21
@@ -61,14 +61,14 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfie
    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`, which is required by `TransparentStruct<NotZerocopy>: zerocopy::FromBytes`
    |
    = help: the following other types implement trait `zerocopy::FromBytes`:
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
-             usize
-             u8
+             ()
+             AU16
+             AtomicBool
+             AtomicI16
+             AtomicI32
+             AtomicI8
+             AtomicIsize
+             AtomicU16
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::FromBytes`
   --> tests/ui-nightly/derive_transparent.rs:24:21
@@ -89,14 +89,14 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfie
    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy`, which is required by `TransparentStruct<NotZerocopy>: zerocopy::IntoBytes`
    |
    = help: the following other types implement trait `zerocopy::IntoBytes`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
+             ()
+             AU16
+             AtomicBool
+             AtomicI16
+             AtomicI32
+             AtomicI8
+             AtomicIsize
+             AtomicU16
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::IntoBytes`
   --> tests/ui-nightly/derive_transparent.rs:24:10
@@ -117,14 +117,14 @@ error[E0277]: the trait bound `NotZerocopy: Unaligned` is not satisfied
    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Unaligned` is not implemented for `NotZerocopy`, which is required by `TransparentStruct<NotZerocopy>: Unaligned`
    |
    = help: the following other types implement trait `Unaligned`:
-             bool
-             i8
-             u8
-             TransparentStruct<T>
-             NonZero<i8>
-             NonZero<u8>
-             U16<O>
-             U32<O>
+             ()
+             AtomicBool
+             AtomicI8
+             AtomicU8
+             F32<O>
+             F64<O>
+             I128<O>
+             I16<O>
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `Unaligned`
   --> tests/ui-nightly/derive_transparent.rs:24:32
