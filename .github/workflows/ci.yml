@@ -48,6 +48,7 @@ jobs:
           "powerpc64-unknown-linux-gnu",
           "riscv64gc-unknown-linux-gnu",
           "s390x-unknown-linux-gnu",
+          "thumbv6m-none-eabi",
           "wasm32-wasi"
         ]
         features: [ "--no-default-features", "", "--features __internal_use_only_features_that_work_on_stable", "--all-features" ]
