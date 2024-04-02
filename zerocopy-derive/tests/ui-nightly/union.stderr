@@ -37,14 +37,14 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::NoCell` is not satisfie
    |          ^^^^^^ the trait `zerocopy::NoCell` is not implemented for `UnsafeCell<()>`, which is required by `ManuallyDrop<UnsafeCell<()>>: zerocopy::NoCell`
    |
    = help: the following other types implement trait `zerocopy::NoCell`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
+             &T
+             &mut T
+             ()
+             *const T
+             *mut T
+             AU16
+             F32<O>
+             F64<O>
            and $N others
    = note: required for `ManuallyDrop<UnsafeCell<()>>` to implement `zerocopy::NoCell`
    = help: see issue #48214
