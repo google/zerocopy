@@ -4422,8 +4422,11 @@ macro_rules! transmute {
             // contexts in which `core` was not manually imported. This is not a
             // problem for 2018 edition crates.
             let u = unsafe {
-                // Clippy: It's okay to transmute a type to itself.
-                #[allow(clippy::useless_transmute)]
+                // Clippy:
+                // - It's okay to transmute a type to itself.
+                // - We can't annotate the types; this macro is designed to
+                //   infer the types from the calling context.
+                #[allow(clippy::useless_transmute, clippy::missing_transmute_annotations)]
                 $crate::macro_util::core_reexport::mem::transmute(e)
             };
             $crate::macro_util::must_use(u)
