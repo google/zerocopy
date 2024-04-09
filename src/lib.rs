@@ -9191,7 +9191,8 @@ mod tests {
                 vector_signed_long,
                 vector_unsigned_long
             );
-            #[cfg(all(target_arch = "aarch64", zerocopy_aarch_simd))]
+            #[rustversion::since(1.59.0)]
+            #[cfg(target_arch = "aarch64")]
             #[rustfmt::skip]
             test_simd_arch_mod!(
                 aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,
