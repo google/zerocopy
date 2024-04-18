@@ -325,14 +325,14 @@ use core::alloc::Layout;
 #[doc(hidden)]
 pub use crate::pointer::{Maybe, MaybeAligned, Ptr};
 
-// For each polyfill, as soon as the corresponding feature is stable, the
+// For each trait polyfill, as soon as the corresponding feature is stable, the
 // polyfill import will be unused because method/function resolution will prefer
 // the inherent method/function over a trait method/function. Thus, we suppress
 // the `unused_imports` warning.
 //
 // See the documentation on `util::polyfills` for more information.
 #[allow(unused_imports)]
-use crate::util::polyfills::NonNullExt as _;
+use crate::util::polyfills::{self, NonNullExt as _};
 
 #[rustversion::nightly]
 #[cfg(all(test, not(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)))]
@@ -4886,24 +4886,24 @@ where
     #[must_use = "has no side effects"]
     fn bikeshed_new_from_prefix_known_layout(bytes: B) -> Option<(Ref<B, T>, B)> {
         let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
-        let (bytes, suffix) = bytes.split_at(split_at);
+        let (bytes, suffix) = try_split_at(bytes, split_at)?;
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
-        // valid `T`. By safety invariant on `SplitByteSlice`, `split_at` is
-        // implemented correctly, and so we can rely on it to produce the
-        // correct `bytes` and `suffix`.
+        // valid `T`. By safety postcondition on `SplitByteSlice::try_split_at`
+        // we can rely `try_split_at` to produce the correct `bytes` and
+        // `suffix`.
         Some((Ref(bytes, PhantomData), suffix))
     }
 
     #[must_use = "has no side effects"]
     fn bikeshed_new_from_suffix_known_layout(bytes: B) -> Option<(B, Ref<B, T>)> {
         let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
-        let (prefix, bytes) = bytes.split_at(split_at);
+        let (prefix, bytes) = try_split_at(bytes, split_at)?;
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
-        // valid `T`. By safety invariant on `SplitByteSlice`, `split_at` is
-        // implemented correctly, and so we can rely on it to produce the
-        // correct `prefix` and `bytes`.
+        // valid `T`. By safety postcondition on `SplitByteSlice::try_split_at`
+        // we can rely on `try_split_at` to produce the correct `prefix` and
+        // `bytes`.
         Some((prefix, Ref(bytes, PhantomData)))
     }
 }
@@ -4931,12 +4931,12 @@ where
         if bytes.len() < mem::size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
             return None;
         }
-        let (bytes, suffix) = bytes.split_at(mem::size_of::<T>());
+        let (bytes, suffix) = try_split_at(bytes, mem::size_of::<T>())?;
         // INVARIANTS: We just validated alignment and that `bytes` is at least
-        // as large as `T`. `bytes.split_at(mem::size_of::<T>())` ensures that
-        // the new `bytes` is exactly the size of `T`. By safety invariant on
-        // `SplitByteSlice`, `split_at` is implemented correctly, and so we can
-        // rely on it to produce the correct `bytes` and `suffix`.
+        // as large as `T`. `try_split_at(bytes, mem::size_of::<T>())?` ensures
+        // that the new `bytes` is exactly the size of `T`. By safety
+        // postcondition on `SplitByteSlice::try_split_at` we can rely on
+        // `try_split_at` to produce the correct `bytes` and `suffix`.
         Some((Ref(bytes, PhantomData), suffix))
     }
 
@@ -4944,17 +4944,16 @@ where
     fn new_sized_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
         let bytes_len = bytes.len();
         let split_at = bytes_len.checked_sub(mem::size_of::<T>())?;
-        let (prefix, bytes) = bytes.split_at(split_at);
+        let (prefix, bytes) = try_split_at(bytes, split_at)?;
         if !util::aligned_to::<_, T>(bytes.deref()) {
             return None;
         }
         // INVARIANTS: Since `split_at` is defined as `bytes_len -
         // size_of::<T>()`, the `bytes` which results from `let (prefix, bytes)
-        // = bytes.split_at(split_at)` has length `size_of::<T>()`. After
+        // = try_split_at(bytes, split_at)?` has length `size_of::<T>()`. After
         // constructing `bytes`, we validate that it has the proper alignment.
-        // By safety invariant on `SplitByteSlice`, `split_at` is implemented
-        // correctly, and so we can rely on it to produce the correct `prefix`
-        // and `bytes`.
+        // By safety postcondition on `SplitByteSlice::try_split_at` we can rely
+        // on `try_split_at` to produce the correct `prefix` and `bytes`.
         Some((prefix, Ref(bytes, PhantomData)))
     }
 }
@@ -4994,12 +4993,12 @@ where
     #[inline]
     pub fn new_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
         let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
-        let (bytes, suffix) = bytes.split_at(split_at);
+        let (bytes, suffix) = try_split_at(bytes, split_at)?;
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
-        // valid `T`. By safety invariant on `SplitByteSlice`, `split_at` is
-        // implemented correctly, and so we can rely on it to produce the
-        // correct `bytes` and `suffix`.
+        // valid `T`. By safety postcondition on `SplitByteSlice::try_split_at`
+        // we can rely on `try_split_at` to produce the correct `bytes` and
+        // `suffix`.
         Some((Ref(bytes, PhantomData), suffix))
     }
 
@@ -5015,12 +5014,12 @@ where
     #[inline]
     pub fn new_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
         let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
-        let (prefix, bytes) = bytes.split_at(split_at);
+        let (prefix, bytes) = try_split_at(bytes, split_at)?;
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
-        // a `split_at` that indicates how many bytes of `bytes` correspond to a
-        // valid `T`. By safety invariant on `SplitByteSlice`, `split_at` is
-        // implemented correctly, and so we can rely on it to produce the
-        // correct `prefix` and `bytes`.
+        // a `try_split_at` that indicates how many bytes of `bytes` correspond
+        // to a valid `T`. By safety postcondition on
+        // `SplitByteSlice::try_split_at` we can rely on `try_split_at` to
+        // produce the correct `prefix` and `bytes`.
         Some((prefix, Ref(bytes, PhantomData)))
     }
 }
@@ -5052,7 +5051,7 @@ where
         if bytes.len() < expected_len {
             return None;
         }
-        let (prefix, bytes) = bytes.split_at(expected_len);
+        let (prefix, bytes) = try_split_at(bytes, expected_len)?;
         Self::new(prefix).map(move |l| (l, bytes))
     }
 
@@ -5076,7 +5075,7 @@ where
             None => return None,
         };
         let split_at = bytes.len().checked_sub(expected_len)?;
-        let (bytes, suffix) = bytes.split_at(split_at);
+        let (bytes, suffix) = try_split_at(bytes, split_at)?;
         Self::new(suffix).map(move |l| (bytes, l))
     }
 }
@@ -5675,10 +5674,14 @@ pub unsafe trait ByteSliceMut: ByteSlice + DerefMut {}
 /// # Safety
 ///
 /// Unsafe code may depend for its soundness on the assumption that `split_at`
-/// is implemented correctly. In particular, given `B: SplitByteSlice` and `b:
-/// B`, if `b.deref()` returns a byte slice with address `addr` and length
-/// `len`, then if `split <= len`, `b.split_at(split)` will return `(first,
-/// second)` such that:
+/// and `split_at_unchecked` are implemented correctly. In particular, given `B:
+/// SplitByteSlice` and `b: B`, if `b.deref()` returns a byte slice with address
+/// `addr` and length `len`, then if `split <= len`, both of these
+/// invocations:
+/// - `b.split_at(split)`
+/// - `b.split_at_unchecked(split)`
+///
+/// ...will return `(first, second)` such that:
 /// - `first`'s address is `addr` and its length is `split`
 /// - `second`'s address is `addr + split` and its length is `len - split`
 pub unsafe trait SplitByteSlice: ByteSlice {
@@ -5690,7 +5693,52 @@ pub unsafe trait SplitByteSlice: ByteSlice {
     ///
     /// `x.split_at(mid)` panics if `mid > x.deref().len()`.
     #[must_use]
-    fn split_at(self, mid: usize) -> (Self, Self);
+    #[inline]
+    fn split_at(self, mid: usize) -> (Self, Self) {
+        if let Some(splits) = try_split_at(self, mid) {
+            splits
+        } else {
+            panic!("mid > len")
+        }
+    }
+
+    /// Splits the slice at the midpoint, possibly omitting bounds checks.
+    ///
+    /// `x.split_at_unchecked(mid)` returns `x[..mid]` and `x[mid..]`.
+    ///
+    /// # Safety
+    ///
+    /// `mid` must not be greater than `x.deref().len()`.
+    #[must_use]
+    unsafe fn split_at_unchecked(self, mid: usize) -> (Self, Self);
+}
+
+/// Attempts to split the slice at the midpoint.
+///
+/// `x.try_split_at(mid)` returns `Some((x[..mid], x[mid..]))` if `mid <=
+/// x.deref().len()` and otherwise returns `None`.
+///
+/// # Safety
+///
+/// Unsafe code may rely on this function correctly implementing the above
+/// functionality.
+#[must_use]
+#[inline]
+fn try_split_at<S>(slice: S, mid: usize) -> Option<(S, S)>
+where
+    S: SplitByteSlice,
+{
+    if mid <= slice.deref().len() {
+        // SAFETY: Above, we ensure that `mid <= self.deref().len()`. By
+        // invariant on `ByteSlice`, a supertrait of `SplitByteSlice`,
+        // `.deref()` is guranteed to be "stable"; i.e., it will always
+        // dereference to a byte slice of the same address and length. Thus, we
+        // can be sure that the above precondition remains satisfied through the
+        // call to `split_at_unchecked`.
+        unsafe { Some(slice.split_at_unchecked(mid)) }
+    } else {
+        None
+    }
 }
 
 /// A shorthand for [`SplitByteSlice`] and [`ByteSliceMut`].
@@ -5725,12 +5773,14 @@ pub trait IntoByteSliceMut<'a>: ByteSliceMut + Into<&'a mut [u8]> {}
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a [u8] {}
 
-// SAFETY: This delegates to the stdlib implementation, which is assumed to be
-// correct.
+// SAFETY: This delegates to `polyfills:split_at_unchecked`, which is documented
+// to correctly split `self` into two slices at the given `mid` point.
 unsafe impl<'a> SplitByteSlice for &'a [u8] {
     #[inline]
-    fn split_at(self, mid: usize) -> (Self, Self) {
-        <[u8]>::split_at(self, mid)
+    unsafe fn split_at_unchecked(self, mid: usize) -> (Self, Self) {
+        // SAFETY: By contract on caller, `mid` is not greater than
+        // `bytes.len()`.
+        unsafe { (<[u8]>::get_unchecked(self, ..mid), <[u8]>::get_unchecked(self, mid..)) }
     }
 }
 
@@ -5740,12 +5790,62 @@ impl<'a> IntoByteSlice<'a> for &'a [u8] {}
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a mut [u8] {}
 
-// SAFETY: This delegates to the stdlib implementation, which is assumed to be
-// correct.
+// SAFETY: This delegates to `polyfills:split_at_mut_unchecked`, which is
+// documented to correctly split `self` into two slices at the given `mid`
+// point.
 unsafe impl<'a> SplitByteSlice for &'a mut [u8] {
     #[inline]
-    fn split_at(self, mid: usize) -> (Self, Self) {
-        <[u8]>::split_at_mut(self, mid)
+    unsafe fn split_at_unchecked(self, mid: usize) -> (Self, Self) {
+        use core::slice::from_raw_parts_mut;
+
+        // `l_ptr` is non-null, because `self` is non-null, by invariant on
+        // `&mut [u8]`.
+        let l_ptr = self.as_mut_ptr();
+
+        // SAFETY: By contract on caller, `mid` is not greater than
+        // `self.len()`.
+        let r_ptr = unsafe { l_ptr.add(mid) };
+
+        let l_len = mid;
+
+        let r_len = match self.len().checked_sub(mid) {
+            Some(r_len) => r_len,
+            None => {
+                // SAFETY: By contract on caller, `mid` is not greater than
+                // `self.len()`.
+                unsafe { core::hint::unreachable_unchecked() }
+            }
+        };
+
+        // SAFETY: These invocations of `from_raw_parts_mut` satisfy its
+        // documented safety preconditions [1]:
+        // - The data `l_ptr` and `r_ptr` are valid for both reads and writes of
+        //   `l_len` and `r_len` bytes, respectively, and they are trivially
+        //   aligned. In particular:
+        //   - The entire memory range of each slice is contained within a
+        //     single allocated object, since `l_ptr` and `r_ptr` are both
+        //     derived from within the address range of `self`.
+        //   - Both `l_ptr` and `r_ptr` are non-null and trivially aligned.
+        //     `self` is non-null by invariant on `&mut [u8]`, and the
+        //     operations that derive `l_ptr` and `r_ptr` from `self` do not
+        //     nullify either pointer.
+        // - The data `l_ptr` and `r_ptr` point to `l_len` and `r_len`,
+        //   respectively, consecutive properly initialized values of type `u8`.
+        //   This is true for `self` by invariant on `&mut [u8]`, and remains
+        //   true for these two sub-slices of `self`.
+        // - The memory referenced by the returned slice cannot be accessed
+        //   through any other pointer (not derived from the return value) for
+        //   the duration of lifetime `'a``, because:
+        //   - `split_at_unchecked` consumes `self` (which is not `Copy`),
+        //   - `split_at_unchecked` does not exfiltrate any references to this
+        //     memory, besides those references returned below,
+        //   - the returned slices are non-overlapping.
+        // - The individual sizes of the sub-slices of `self` are no larger than
+        //   `isize::MAX`, because their combined sizes are no larger than
+        //   `isize::MAX`, by invariant on `self`.
+        //
+        // [1] https://doc.rust-lang.org/std/slice/fn.from_raw_parts_mut.html#safety
+        unsafe { (from_raw_parts_mut(l_ptr, l_len), from_raw_parts_mut(r_ptr, r_len)) }
     }
 }
 
@@ -5755,12 +5855,19 @@ impl<'a> IntoByteSliceMut<'a> for &'a mut [u8] {}
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {}
 
-// SAFETY: This delegates to stdlib implementations, which are assumed to be
-// correct.
+// SAFETY: This delegates to stdlib implementation of `Ref::map_split`, which is
+// assumed to be correct, and `SplitByteSlice::split_at_unchecked`, which is
+// documented to correctly split `self` into two slices at the given `mid`
+// point.
 unsafe impl<'a> SplitByteSlice for cell::Ref<'a, [u8]> {
     #[inline]
-    fn split_at(self, mid: usize) -> (Self, Self) {
-        cell::Ref::map_split(self, |slice| <[u8]>::split_at(slice, mid))
+    unsafe fn split_at_unchecked(self, mid: usize) -> (Self, Self) {
+        cell::Ref::map_split(self, |slice|
+            // SAFETY: By precondition on caller, `mid` is not greater than
+            // `slice.len()`.
+            unsafe {
+                SplitByteSlice::split_at_unchecked(slice, mid)
+            })
     }
 }
 
@@ -5768,12 +5875,19 @@ unsafe impl<'a> SplitByteSlice for cell::Ref<'a, [u8]> {
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for RefMut<'a, [u8]> {}
 
-// SAFETY: This delegates to stdlib implementations, which are assumed to be
-// correct.
+// SAFETY: This delegates to stdlib implementation of `RefMut::map_split`, which
+// is assumed to be correct, and `SplitByteSlice::split_at_unchecked`, which is
+// documented to correctly split `self` into two slices at the given `mid`
+// point.
 unsafe impl<'a> SplitByteSlice for RefMut<'a, [u8]> {
     #[inline]
-    fn split_at(self, mid: usize) -> (Self, Self) {
-        RefMut::map_split(self, |slice| <[u8]>::split_at_mut(slice, mid))
+    unsafe fn split_at_unchecked(self, mid: usize) -> (Self, Self) {
+        RefMut::map_split(self, |slice|
+            // SAFETY: By precondition on caller, `mid` is not greater than
+            // `slice.len()`
+            unsafe {
+                SplitByteSlice::split_at_unchecked(slice, mid)
+            })
     }
 }
 
