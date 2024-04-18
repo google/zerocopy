@@ -323,7 +323,7 @@ jobs:
           args: "--package zerocopy --features __internal_use_only_features_that_work_on_stable --output-format=terse --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
           # This version is automatically rolled by
           # `roll-pinned-toolchain-versions.yml`.
-          kani-version: 0.49.0
+          kani-version: 0.50.0
 
   check_fmt:
     runs-on: ubuntu-latest
