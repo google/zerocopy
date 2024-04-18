@@ -309,7 +309,12 @@ macro_rules! assert_align_gt_eq {
             // other words, if `align_of::<T>() >= align_of::<U>()`.
             //
             // SAFETY: This code is never run.
-            max_aligns = unsafe { $crate::macro_util::core_reexport::mem::transmute(align_of) };
+            max_aligns = unsafe {
+                // Clippy: We can't annotate the types; this macro is designed
+                // to infer the types from the calling context.
+                #[allow(clippy::missing_transmute_annotations)]
+                $crate::macro_util::core_reexport::mem::transmute(align_of)
+            };
         } else {
             loop {}
         }
@@ -328,8 +333,11 @@ macro_rules! assert_size_eq {
         if false {
             // SAFETY: This code is never run.
             $u = unsafe {
-                // Clippy: It's okay to transmute a type to itself.
-                #[allow(clippy::useless_transmute)]
+                // Clippy:
+                // - It's okay to transmute a type to itself.
+                // - We can't annotate the types; this macro is designed to
+                //   infer the types from the calling context.
+                #[allow(clippy::useless_transmute, clippy::missing_transmute_annotations)]
                 $crate::macro_util::core_reexport::mem::transmute($t)
             };
         } else {
