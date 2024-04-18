@@ -1479,7 +1479,7 @@ pub use zerocopy_derive::TryFromBytes;
 /// but for which `TryFromBytes` is not guaranteed to accept all byte sequences
 /// produced by `IntoBytes`. In other words, for some `T: TryFromBytes +
 /// IntoBytes`, there exist values of `t: T` such that
-/// `TryFromBytes::try_from_ref(t.as_bytes()) == None`. Code should not
+/// `TryFromBytes::try_ref_from(t.as_bytes()) == None`. Code should not
 /// generally assume that values produced by `IntoBytes` will necessarily be
 /// accepted as valid by `TryFromBytes`.
 ///
@@ -1487,7 +1487,7 @@ pub use zerocopy_derive::TryFromBytes;
 ///
 /// On its own, `T: TryFromBytes` does not make any guarantees about the layout
 /// or representation of `T`. It merely provides the ability to perform a
-/// validity check at runtime via methods like [`try_from_ref`].
+/// validity check at runtime via methods like [`try_ref_from`].
 ///
 /// You must not rely on the `#[doc(hidden)]` internals of `TryFromBytes`.
 /// Future releases of zerocopy may make backwards-breaking changes to these
@@ -1496,14 +1496,13 @@ pub use zerocopy_derive::TryFromBytes;
 ///
 /// [undefined behavior]: https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html
 /// [github-repo]: https://github.com/google/zerocopy
-/// [`try_from_ref`]: TryFromBytes::try_from_ref
+/// [`try_ref_from`]: TryFromBytes::try_ref_from
 /// [*valid instance*]: #what-is-a-valid-instance
 #[cfg_attr(feature = "derive", doc = "[derive]: zerocopy_derive::TryFromBytes")]
 #[cfg_attr(
     not(feature = "derive"),
     doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.TryFromBytes.html"),
 )]
-// TODO(#5): Update `try_from_ref` doc link once it exists
 pub unsafe trait TryFromBytes {
     // The `Self: Sized` bound makes it so that `TryFromBytes` is still object
     // safe.
@@ -1538,7 +1537,7 @@ pub unsafe trait TryFromBytes {
 
     /// Attempts to interpret a byte slice as a `Self`.
     ///
-    /// `try_from_ref` validates that `bytes` contains a valid `Self`, and that
+    /// `try_ref_from` validates that `bytes` contains a valid `Self`, and that
     /// it satisfies `Self`'s alignment requirement. If it does, then `bytes` is
     /// reinterpreted as a `Self`.
     ///
@@ -1548,7 +1547,7 @@ pub unsafe trait TryFromBytes {
     /// these cases are handled.
     #[must_use = "has no side effects"]
     #[inline]
-    fn try_from_ref(bytes: &[u8]) -> Option<&Self>
+    fn try_ref_from(bytes: &[u8]) -> Option<&Self>
     where
         Self: KnownLayout + NoCell,
     {
@@ -1569,7 +1568,7 @@ pub unsafe trait TryFromBytes {
 
     /// Attempts to interpret a mutable byte slice as a `Self`.
     ///
-    /// `try_from_mut` validates that `bytes` contains a valid `Self`, and that
+    /// `try_mut_from` validates that `bytes` contains a valid `Self`, and that
     /// it satisfies `Self`'s alignment requirement. If it does, then `bytes` is
     /// reinterpreted as a `Self`.
     ///
@@ -1579,7 +1578,7 @@ pub unsafe trait TryFromBytes {
     /// these cases are handled.
     #[must_use = "has no side effects"]
     #[inline]
-    fn try_from_mut(bytes: &mut [u8]) -> Option<&mut Self>
+    fn try_mut_from(bytes: &mut [u8]) -> Option<&mut Self>
     where
         Self: KnownLayout + NoCell, // TODO(#251): Remove the `NoCell` bound.
     {
@@ -8575,7 +8574,7 @@ mod tests {
                     &self,
                     bytes: &'bytes [u8],
                 ) -> Option<Option<&'bytes T>> {
-                    Some(T::try_from_ref(bytes))
+                    Some(T::try_ref_from(bytes))
                 }
 
                 #[allow(clippy::needless_lifetimes)]
@@ -8583,7 +8582,7 @@ mod tests {
                     &self,
                     bytes: &'bytes mut [u8],
                 ) -> Option<Option<&'bytes mut T>> {
-                    Some(T::try_from_mut(bytes))
+                    Some(T::try_mut_from(bytes))
                 }
             }
 
@@ -8770,11 +8769,11 @@ mod tests {
                     let bytes = w.test_as_bytes(&*val);
 
                     // The inner closure returns
-                    // `Some($ty::try_from_ref(bytes))` if `$ty: NoCell` and
+                    // `Some($ty::try_ref_from(bytes))` if `$ty: NoCell` and
                     // `None` otherwise.
                     let res = bytes.and_then(|bytes| ww.test_try_from_ref(bytes));
                     if let Some(res) = res {
-                        assert!(res.is_some(), "{}::try_from_ref({:?}): got `None`, expected `Some`", stringify!($ty), val);
+                        assert!(res.is_some(), "{}::try_ref_from({:?}): got `None`, expected `Some`", stringify!($ty), val);
                     }
 
                     if let Some(bytes) = bytes {
@@ -8798,7 +8797,7 @@ mod tests {
 
                         let res = ww.test_try_from_mut(bytes_mut);
                         if let Some(res) = res {
-                            assert!(res.is_some(), "{}::try_from_mut({:?}): got `None`, expected `Some`", stringify!($ty), val);
+                            assert!(res.is_some(), "{}::try_mut_from({:?}): got `None`, expected `Some`", stringify!($ty), val);
                         }
                     }
 
@@ -8812,16 +8811,16 @@ mod tests {
                     #[allow(unused_mut)] // For cases where the "real" impls are used, which take `&self`.
                     let mut w = AutorefWrapper::<$ty>(PhantomData);
 
-                    // This is `Some($ty::try_from_ref(c))` if `$ty: NoCell` and
+                    // This is `Some($ty::try_ref_from(c))` if `$ty: NoCell` and
                     // `None` otherwise.
                     let res = w.test_try_from_ref(c);
                     if let Some(res) = res {
-                        assert!(res.is_none(), "{}::try_from_ref({:?}): got Some, expected None", stringify!($ty), c);
+                        assert!(res.is_none(), "{}::try_ref_from({:?}): got Some, expected None", stringify!($ty), c);
                     }
 
                     let res = w.test_try_from_mut(c);
                     if let Some(res) = res {
-                        assert!(res.is_none(), "{}::try_from_mut({:?}): got Some, expected None", stringify!($ty), c);
+                        assert!(res.is_none(), "{}::try_mut_from({:?}): got Some, expected None", stringify!($ty), c);
                     }
 
                     let res = w.test_try_read_from(c);
