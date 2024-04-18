@@ -166,7 +166,7 @@ struct CPacked {
 #[test]
 fn c_packed() {
     let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF];
-    let converted = <CPacked as imp::TryFromBytes>::try_from_ref(candidate);
+    let converted = <CPacked as imp::TryFromBytes>::try_ref_from(candidate);
     imp::assert_eq!(converted, imp::Some(&CPacked { a: 42, b: u32::MAX }));
 }
 
@@ -187,7 +187,7 @@ struct CPackedUnsized {
 #[test]
 fn c_packed_unsized() {
     let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF];
-    let converted = <CPackedUnsized as imp::TryFromBytes>::try_from_ref(candidate);
+    let converted = <CPackedUnsized as imp::TryFromBytes>::try_ref_from(candidate);
     imp::assert!(converted.is_some());
 }
 
@@ -208,14 +208,14 @@ struct PackedUnsized {
 #[test]
 fn packed_unsized() {
     let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF];
-    let converted = <CPackedUnsized as imp::TryFromBytes>::try_from_ref(candidate);
+    let converted = <CPackedUnsized as imp::TryFromBytes>::try_ref_from(candidate);
     imp::assert!(converted.is_some());
 
     let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF];
-    let converted = <CPackedUnsized as imp::TryFromBytes>::try_from_ref(candidate);
+    let converted = <CPackedUnsized as imp::TryFromBytes>::try_ref_from(candidate);
     imp::assert!(converted.is_none());
 
     let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF];
-    let converted = <CPackedUnsized as imp::TryFromBytes>::try_from_ref(candidate);
+    let converted = <CPackedUnsized as imp::TryFromBytes>::try_ref_from(candidate);
     imp::assert!(converted.is_some());
 }
