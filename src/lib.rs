@@ -2202,12 +2202,10 @@ pub unsafe trait FromBytes: FromZeros {
 
     /// Interprets the prefix of the given `bytes` as a `&Self` without copying.
     ///
-    /// `ref_from_prefix` returns a reference to the first `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()` or `bytes` is not
-    /// aligned to `align_of::<Self>()`, this returns `None`.
-    ///
-    /// To also access the prefix bytes, use [`Ref::new_from_prefix`]. Then, use
-    /// [`Ref::into_ref`] to get a `&Self` with the same lifetime.
+    /// This method returns both a reference to the first `size_of::<Self>()`
+    /// bytes of `bytes` interpreted as `Self`, and a reference to the remaining
+    /// bytes. If `bytes.len() < size_of::<Self>()` or `bytes` is not aligned to
+    /// `align_of::<Self>()`, this returns `None`.
     ///
     /// # Examples
     ///
@@ -2234,31 +2232,31 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode a `Packet`.
     /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14][..];
     ///
-    /// let packet = Packet::ref_from_prefix(bytes).unwrap();
+    /// let (packet, excess) = Packet::ref_from_prefix(bytes).unwrap();
     ///
     /// assert_eq!(packet.header.src_port, [0, 1]);
     /// assert_eq!(packet.header.dst_port, [2, 3]);
     /// assert_eq!(packet.header.length, [4, 5]);
     /// assert_eq!(packet.header.checksum, [6, 7]);
     /// assert_eq!(packet.body, [[8, 9], [10, 11], [12, 13]]);
+    /// assert_eq!(excess, &[14u8][..]);
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn ref_from_prefix(bytes: &[u8]) -> Option<&Self>
+    fn ref_from_prefix(bytes: &[u8]) -> Option<(&Self, &[u8])>
     where
         Self: KnownLayout + NoCell,
     {
-        Ref::<&[u8], Self>::bikeshed_new_from_prefix_known_layout(bytes).map(|(r, _)| r.into_ref())
+        Ref::<&[u8], Self>::bikeshed_new_from_prefix_known_layout(bytes)
+            .map(|(r, s)| (r.into_ref(), s))
     }
 
     /// Interprets the suffix of the given `bytes` as a `&Self` without copying.
     ///
-    /// `ref_from_suffix` returns a reference to the last `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()` or the suffix of
-    /// `bytes` is not aligned to `align_of::<Self>()`, this returns `None`.
-    ///
-    /// To also access the suffix bytes, use [`Ref::new_from_suffix`]. Then, use
-    /// [`Ref::into_ref`] to get a `&Self` with the same lifetime.
+    /// This method returns both a reference to the last `size_of::<Self>()`
+    /// bytes of `bytes` interpreted as `Self`, and a reference to the preceding
+    /// bytes. If `bytes.len() < size_of::<Self>()` or the suffix of `bytes` is
+    /// not aligned to `align_of::<Self>()`, this returns `None`.
     ///
     /// # Examples
     ///
@@ -2275,17 +2273,19 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode a `PacketTrailer`.
     /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let trailer = PacketTrailer::ref_from_suffix(bytes).unwrap();
+    /// let (prefix, trailer) = PacketTrailer::ref_from_suffix(bytes).unwrap();
     ///
+    /// assert_eq!(prefix, &[0, 1, 2, 3, 4, 5][..]);
     /// assert_eq!(trailer.frame_check_sequence, [6, 7, 8, 9]);
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn ref_from_suffix(bytes: &[u8]) -> Option<&Self>
+    fn ref_from_suffix(bytes: &[u8]) -> Option<(&[u8], &Self)>
     where
         Self: NoCell + KnownLayout,
     {
-        Ref::<&[u8], Self>::bikeshed_new_from_suffix_known_layout(bytes).map(|(_, r)| r.into_ref())
+        Ref::<&[u8], Self>::bikeshed_new_from_suffix_known_layout(bytes)
+            .map(|(p, r)| (p, r.into_ref()))
     }
 
     /// Interprets the given `bytes` as a `&mut Self` without copying.
@@ -2334,12 +2334,10 @@ pub unsafe trait FromBytes: FromZeros {
     /// Interprets the prefix of the given `bytes` as a `&mut Self` without
     /// copying.
     ///
-    /// `mut_from_prefix` returns a reference to the first `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()` or `bytes` is not
-    /// aligned to `align_of::<Self>()`, this returns `None`.
-    ///
-    /// To also access the prefix bytes, use [`Ref::new_from_prefix`]. Then, use
-    /// [`Ref::into_mut`] to get a `&mut Self` with the same lifetime.
+    /// This method returns both a reference to the first `size_of::<Self>()`
+    /// bytes of `bytes` interpreted as `Self`, and a reference to the remaining
+    /// bytes. If `bytes.len() < size_of::<Self>()` or `bytes` is not aligned to
+    /// `align_of::<Self>()`, this returns `None`.
     ///
     /// # Examples
     ///
@@ -2359,35 +2357,36 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode a `PacketHeader`.
     /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let header = PacketHeader::mut_from_prefix(bytes).unwrap();
+    /// let (header, body) = PacketHeader::mut_from_prefix(bytes).unwrap();
     ///
     /// assert_eq!(header.src_port, [0, 1]);
     /// assert_eq!(header.dst_port, [2, 3]);
     /// assert_eq!(header.length, [4, 5]);
     /// assert_eq!(header.checksum, [6, 7]);
+    /// assert_eq!(body, &[8, 9][..]);
     ///
     /// header.checksum = [0, 0];
+    /// body.fill(1);
     ///
-    /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 0, 0, 8, 9]);
+    /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 0, 0, 1, 1]);
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn mut_from_prefix(bytes: &mut [u8]) -> Option<&mut Self>
+    fn mut_from_prefix(bytes: &mut [u8]) -> Option<(&mut Self, &mut [u8])>
     where
         Self: IntoBytes + KnownLayout + NoCell,
     {
         Ref::<&mut [u8], Self>::bikeshed_new_from_prefix_known_layout(bytes)
-            .map(|(r, _)| r.into_mut())
+            .map(|(r, s)| (r.into_mut(), s))
     }
 
-    /// Interprets the suffix of the given `bytes` as a `&mut Self` without copying.
+    /// Interprets the suffix of the given `bytes` as a `&mut Self` without
+    /// copying.
     ///
-    /// `mut_from_suffix` returns a reference to the last `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()` or the suffix of
-    /// `bytes` is not aligned to `align_of::<Self>()`, this returns `None`.
-    ///
-    /// To also access the suffix bytes, use [`Ref::new_from_suffix`]. Then,
-    /// use [`Ref::into_mut`] to get a `&mut Self` with the same lifetime.
+    /// This method returns both a reference to the last `size_of::<Self>()`
+    /// bytes of `bytes` interpreted as `Self`, and a reference to the preceding
+    /// bytes. If `bytes.len() < size_of::<Self>()` or the suffix of `bytes` is
+    /// not aligned to `align_of::<Self>()`, this returns `None`.
     ///
     /// # Examples
     ///
@@ -2404,34 +2403,35 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode a `PacketTrailer`.
     /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let trailer = PacketTrailer::mut_from_suffix(bytes).unwrap();
+    /// let (prefix, trailer) = PacketTrailer::mut_from_suffix(bytes).unwrap();
     ///
+    /// assert_eq!(prefix, &[0u8, 1, 2, 3, 4, 5][..]);
     /// assert_eq!(trailer.frame_check_sequence, [6, 7, 8, 9]);
     ///
-    /// trailer.frame_check_sequence = [0, 0, 0, 0];
+    /// prefix.fill(0);
+    /// trailer.frame_check_sequence.fill(1);
     ///
-    /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 0, 0, 0, 0]);
+    /// assert_eq!(bytes, [0, 0, 0, 0, 0, 0, 1, 1, 1, 1]);
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn mut_from_suffix(bytes: &mut [u8]) -> Option<&mut Self>
+    fn mut_from_suffix(bytes: &mut [u8]) -> Option<(&mut [u8], &mut Self)>
     where
         Self: IntoBytes + KnownLayout + NoCell,
     {
         Ref::<&mut [u8], Self>::bikeshed_new_from_suffix_known_layout(bytes)
-            .map(|(_, r)| r.into_mut())
+            .map(|(p, r)| (p, r.into_mut()))
     }
 
     /// Interprets the prefix of the given `bytes` as a `&[Self]` with length
     /// equal to `count` without copying.
     ///
-    /// This method verifies that `bytes.len() >= size_of::<T>() * count`
-    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the
-    /// first `size_of::<T>() * count` bytes from `bytes` to construct a
-    /// `&[Self]`, and returns the remaining bytes to the caller. It also
-    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`.
-    /// If any of the length, alignment, or overflow checks fail, it returns
-    /// `None`.
+    /// This method verifies that `bytes.len() >= size_of::<T>() * count` and
+    /// that `bytes` is aligned to `align_of::<T>()`. It reinterprets the first
+    /// `size_of::<T>() * count` bytes from `bytes` to construct a `&[Self]`,
+    /// and returns the remaining bytes to the caller. It also ensures that
+    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
+    /// length, alignment, or overflow checks fail, it returns `None`.
     ///
     /// # Panics
     ///
@@ -2477,13 +2477,12 @@ pub unsafe trait FromBytes: FromZeros {
     /// Interprets the suffix of the given `bytes` as a `&[Self]` with length
     /// equal to `count` without copying.
     ///
-    /// This method verifies that `bytes.len() >= size_of::<T>() * count`
-    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the
-    /// last `size_of::<T>() * count` bytes from `bytes` to construct a
-    /// `&[Self]`, and returns the preceding bytes to the caller. It also
-    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`.
-    /// If any of the length, alignment, or overflow checks fail, it returns
-    /// `None`.
+    /// This method verifies that `bytes.len() >= size_of::<T>() * count` and
+    /// that `bytes` is aligned to `align_of::<T>()`. It reinterprets the last
+    /// `size_of::<T>() * count` bytes from `bytes` to construct a `&[Self]`,
+    /// and returns the preceding bytes to the caller. It also ensures that
+    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
+    /// length, alignment, or overflow checks fail, it returns `None`.
     ///
     /// # Panics
     ///
@@ -2578,16 +2577,15 @@ pub unsafe trait FromBytes: FromZeros {
         Ref::<_, [Self]>::new(bytes).map(|r| r.into_mut())
     }
 
-    /// Interprets the prefix of the given `bytes` as a `&mut [Self]` with length
-    /// equal to `count` without copying.
+    /// Interprets the prefix of the given `bytes` as a `&mut [Self]` with
+    /// length equal to `count` without copying.
     ///
-    /// This method verifies that `bytes.len() >= size_of::<T>() * count`
-    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the
-    /// first `size_of::<T>() * count` bytes from `bytes` to construct a
-    /// `&[Self]`, and returns the remaining bytes to the caller. It also
-    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`.
-    /// If any of the length, alignment, or overflow checks fail, it returns
-    /// `None`.
+    /// This method verifies that `bytes.len() >= size_of::<T>() * count` and
+    /// that `bytes` is aligned to `align_of::<T>()`. It reinterprets the first
+    /// `size_of::<T>() * count` bytes from `bytes` to construct a `&[Self]`,
+    /// and returns the remaining bytes to the caller. It also ensures that
+    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
+    /// length, alignment, or overflow checks fail, it returns `None`.
     ///
     /// # Panics
     ///
@@ -2622,8 +2620,9 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(rest, &[8, 9]);
     ///
     /// pixels[1] = Pixel { r: 0, g: 0, b: 0, a: 0 };
+    /// rest.fill(1);
     ///
-    /// assert_eq!(bytes, [0, 1, 2, 3, 0, 0, 0, 0, 8, 9]);
+    /// assert_eq!(bytes, [0, 1, 2, 3, 0, 0, 0, 0, 1, 1]);
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
@@ -2637,13 +2636,12 @@ pub unsafe trait FromBytes: FromZeros {
     /// Interprets the suffix of the given `bytes` as a `&mut [Self]` with length
     /// equal to `count` without copying.
     ///
-    /// This method verifies that `bytes.len() >= size_of::<T>() * count`
-    /// and that `bytes` is aligned to `align_of::<T>()`. It consumes the
-    /// last `size_of::<T>() * count` bytes from `bytes` to construct a
-    /// `&[Self]`, and returns the preceding bytes to the caller. It also
-    /// ensures that `sizeof::<T>() * count` does not overflow a `usize`.
-    /// If any of the length, alignment, or overflow checks fail, it returns
-    /// `None`.
+    /// This method verifies that `bytes.len() >= size_of::<T>() * count` and
+    /// that `bytes` is aligned to `align_of::<T>()`. It reinterprets the last
+    /// `size_of::<T>() * count` bytes from `bytes` to construct a `&[Self]`,
+    /// and returns the preceding bytes to the caller. It also ensures that
+    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
+    /// length, alignment, or overflow checks fail, it returns `None`.
     ///
     /// # Panics
     ///
@@ -2677,9 +2675,10 @@ pub unsafe trait FromBytes: FromZeros {
     ///     Pixel { r: 6, g: 7, b: 8, a: 9 },
     /// ]);
     ///
+    /// rest.fill(9);
     /// pixels[1] = Pixel { r: 0, g: 0, b: 0, a: 0 };
     ///
-    /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 0, 0, 0, 0]);
+    /// assert_eq!(bytes, [9, 9, 2, 3, 4, 5, 0, 0, 0, 0]);
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
@@ -7992,12 +7991,21 @@ mod tests {
         suffix.0 = 0x0101010101010101;
         // The `[u8:9]` is a non-half size of the full buffer, which would catch
         // `from_prefix` having the same implementation as `from_suffix` (issues #506, #511).
-        assert_eq!(<[u8; 9]>::ref_from_suffix(&buf.t[..]).unwrap(), &[7u8, 1, 1, 1, 1, 1, 1, 1, 1]);
-        let suffix = AU64::mut_from_suffix(&mut buf.t[1..]).unwrap();
+        assert_eq!(
+            <[u8; 9]>::ref_from_suffix(&buf.t[..]).unwrap(),
+            (&[0, 1, 2, 3, 4, 5, 6][..], &[7u8, 1, 1, 1, 1, 1, 1, 1, 1])
+        );
+        let (prefix, suffix) = AU64::mut_from_suffix(&mut buf.t[1..]).unwrap();
+        assert_eq!(prefix, &mut [1u8, 2, 3, 4, 5, 6, 7][..]);
         suffix.0 = 0x0202020202020202;
-        <[u8; 10]>::mut_from_suffix(&mut buf.t[..]).unwrap()[0] = 42;
-        assert_eq!(<[u8; 9]>::ref_from_prefix(&buf.t[..]).unwrap(), &[0, 1, 2, 3, 4, 5, 42, 7, 2]);
-        <[u8; 2]>::mut_from_prefix(&mut buf.t[..]).unwrap()[1] = 30;
+        let (prefix, suffix) = <[u8; 10]>::mut_from_suffix(&mut buf.t[..]).unwrap();
+        assert_eq!(prefix, &mut [0u8, 1, 2, 3, 4, 5][..]);
+        suffix[0] = 42;
+        assert_eq!(
+            <[u8; 9]>::ref_from_prefix(&buf.t[..]).unwrap(),
+            (&[0u8, 1, 2, 3, 4, 5, 42, 7, 2], &[2u8, 2, 2, 2, 2, 2, 2][..])
+        );
+        <[u8; 2]>::mut_from_prefix(&mut buf.t[..]).unwrap().0[1] = 30;
         assert_eq!(buf.t, [0, 30, 2, 3, 4, 5, 42, 7, 2, 2, 2, 2, 2, 2, 2, 2]);
     }
 
