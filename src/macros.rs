@@ -542,6 +542,8 @@ macro_rules! impl_known_layout {
                 #[allow(clippy::missing_inline_in_public_items)]
                 fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
 
+                type PointerMetadata = ();
+
                 #[allow(unused_qualifications)]
                 const LAYOUT: crate::DstLayout = crate::DstLayout::for_type::<$ty>();
 
@@ -550,7 +552,7 @@ macro_rules! impl_known_layout {
                 // TODO(#429): Add documentation to `.cast` that promises that
                 // it preserves provenance.
                 #[inline(always)]
-                fn raw_from_ptr_len(bytes: NonNull<u8>, _elems: usize) -> NonNull<Self> {
+                fn raw_from_ptr_len(bytes: NonNull<u8>, _meta: ()) -> NonNull<Self> {
                     bytes.cast::<Self>()
                 }
             }
@@ -579,6 +581,8 @@ macro_rules! unsafe_impl_known_layout {
                 #[allow(clippy::missing_inline_in_public_items)]
                 fn only_derive_is_allowed_to_implement_this_trait() {}
 
+                type PointerMetadata = <$repr as KnownLayout>::PointerMetadata;
+
                 const LAYOUT: DstLayout = <$repr as KnownLayout>::LAYOUT;
 
                 // SAFETY: All operations preserve address and provenance.
@@ -588,9 +592,9 @@ macro_rules! unsafe_impl_known_layout {
                 // that it preserves provenance.
                 #[inline(always)]
                 #[allow(unused_qualifications)] // for `core::ptr::NonNull`
-                fn raw_from_ptr_len(bytes: NonNull<u8>, elems: usize) -> NonNull<Self> {
+                fn raw_from_ptr_len(bytes: NonNull<u8>, meta: <$repr as KnownLayout>::PointerMetadata) -> NonNull<Self> {
                     #[allow(clippy::as_conversions)]
-                    let ptr = <$repr>::raw_from_ptr_len(bytes, elems).as_ptr() as *mut Self;
+                    let ptr = <$repr>::raw_from_ptr_len(bytes, meta).as_ptr() as *mut Self;
                     // SAFETY: `ptr` was converted from `bytes`, which is non-null.
                     unsafe { NonNull::new_unchecked(ptr) }
                 }
