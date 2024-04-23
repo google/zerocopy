@@ -589,6 +589,13 @@ pub(crate) const fn min(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
     }
 }
 
+/// A safe alternative to [`core::hint::unreachable_unchecked`].
+pub(crate) const fn unreachable_infallible<T>(_: core::convert::Infallible) -> T {
+    // SAFETY: Since the argument type `Infallible` is uninhabited, this
+    // function cannot be executed with a value of it.
+    unsafe { core::hint::unreachable_unchecked() }
+}
+
 /// Since we support multiple versions of Rust, there are often features which
 /// have been stabilized in the most recent stable release which do not yet
 /// exist (stably) on our MSRV. This module provides polyfills for those

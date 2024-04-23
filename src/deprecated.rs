@@ -21,7 +21,7 @@ where
     #[doc(hidden)]
     #[inline]
     pub fn new_slice(bytes: B) -> Option<Ref<B, [T]>> {
-        Self::new(bytes)
+        Self::new(bytes).ok()
     }
 }
 
@@ -34,7 +34,7 @@ where
     #[doc(hidden)]
     #[inline(always)]
     pub fn new_slice_unaligned(bytes: B) -> Option<Ref<B, [T]>> {
-        Ref::new_unaligned(bytes)
+        Ref::new_unaligned(bytes).ok()
     }
 }
 
@@ -74,7 +74,7 @@ where
     #[doc(hidden)]
     #[inline]
     pub fn new_slice_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, [T]>, B)> {
-        Ref::with_trailing_elements_from_prefix(bytes, count)
+        Ref::with_trailing_elements_from_prefix(bytes, count).ok()
     }
 
     #[deprecated(since = "0.8.0", note = "replaced by `Ref::with_trailing_elements_from_suffix`")]
@@ -82,7 +82,7 @@ where
     #[doc(hidden)]
     #[inline]
     pub fn new_slice_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, [T]>)> {
-        Ref::with_trailing_elements_from_suffix(bytes, count)
+        Ref::with_trailing_elements_from_suffix(bytes, count).ok()
     }
 }
 
@@ -99,7 +99,7 @@ where
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn new_slice_unaligned_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, [T]>, B)> {
-        Ref::with_trailing_elements_unaligned_from_prefix(bytes, count)
+        Ref::with_trailing_elements_unaligned_from_prefix(bytes, count).ok()
     }
 
     #[deprecated(
@@ -110,6 +110,6 @@ where
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn new_slice_unaligned_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, [T]>)> {
-        Ref::with_trailing_elements_unaligned_from_suffix(bytes, count)
+        Ref::with_trailing_elements_unaligned_from_suffix(bytes, count).ok()
     }
 }

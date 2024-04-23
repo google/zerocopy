@@ -280,6 +280,11 @@ mod macros;
 
 pub mod byteorder;
 mod deprecated;
+// Thid module is `pub` so that zerocopy's error types and error handling
+// documentation is grouped together in a cohesive module. In practice, we
+// expect most users to use the re-export of `error`'s items to avoid identifier
+// stuttering.
+pub mod error;
 #[doc(hidden)]
 pub mod macro_util;
 #[doc(hidden)]
@@ -289,6 +294,10 @@ mod util;
 mod wrappers;
 
 pub use crate::byteorder::*;
+pub use crate::error::{
+    AlignmentError, CastError, ConvertError, Error, SizeError, TryCastError, TryReadError,
+    ValidityError,
+};
 pub use crate::wrappers::*;
 
 use core::{
@@ -317,6 +326,7 @@ use crate::pointer::invariant;
 extern crate alloc;
 #[cfg(any(feature = "alloc", test))]
 use alloc::{boxed::Box, vec::Vec};
+use util::unreachable_infallible;
 
 #[cfg(any(feature = "alloc", test, kani))]
 use core::alloc::Layout;
@@ -454,6 +464,12 @@ impl SizeInfo {
 pub enum CastType {
     Prefix,
     Suffix,
+}
+
+#[cfg_attr(test, derive(Debug))]
+enum MetadataCastError {
+    Alignment,
+    Size,
 }
 
 impl DstLayout {
@@ -820,7 +836,7 @@ impl DstLayout {
         addr: usize,
         bytes_len: usize,
         cast_type: CastType,
-    ) -> Option<(usize, usize)> {
+    ) -> Result<(usize, usize), MetadataCastError> {
         // `debug_assert!`, but with `#[allow(clippy::arithmetic_side_effects)]`.
         macro_rules! __const_debug_assert {
             ($e:expr $(, $msg:expr)?) => {
@@ -878,14 +894,14 @@ impl DstLayout {
             // by 0 because `align` is non-zero.
             #[allow(clippy::arithmetic_side_effects)]
             if (addr + offset) % self.align.get() != 0 {
-                return None;
+                return Err(MetadataCastError::Alignment);
             }
         }
 
         let (elems, self_bytes) = match size_info {
             SizeInfo::Sized { size } => {
                 if size > bytes_len {
-                    return None;
+                    return Err(MetadataCastError::Size);
                 }
                 (0, size)
             }
@@ -904,7 +920,7 @@ impl DstLayout {
                 let max_slice_and_padding_bytes = match max_total_bytes.checked_sub(offset) {
                     Some(max) => max,
                     // `bytes_len` too small even for 0 trailing slice elements.
-                    None => return None,
+                    None => return Err(MetadataCastError::Size),
                 };
 
                 // Calculate the number of elements that fit in
@@ -959,7 +975,7 @@ impl DstLayout {
             CastType::Suffix => bytes_len - self_bytes,
         };
 
-        Some((elems, split_at))
+        Ok((elems, split_at))
     }
 }
 
@@ -1611,11 +1627,13 @@ pub unsafe trait TryFromBytes {
     /// these cases are handled.
     #[must_use = "has no side effects"]
     #[inline]
-    fn try_ref_from(bytes: &[u8]) -> Option<&Self>
+    fn try_ref_from(bytes: &[u8]) -> Result<&Self, TryCastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
     {
-        let candidate = Ptr::from_ref(bytes).try_cast_into_no_leftover::<Self>()?;
+        let candidate = Ptr::from_ref(bytes)
+            .try_cast_into_no_leftover::<Self>()
+            .map_err(|e| e.map_src(|src| src.as_ref()).into())?;
 
         // This call may panic. If that happens, it doesn't cause any soundness
         // issues, as we have not generated any invalid state which we need to
@@ -1625,7 +1643,7 @@ pub unsafe trait TryFromBytes {
         // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
         // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
         // condition will not happen.
-        let candidate = candidate.try_into_valid();
+        let candidate = candidate.try_into_valid().map_err(|e| e.with_src(bytes).into());
 
         candidate.map(MaybeAligned::as_ref)
     }
@@ -1642,23 +1660,39 @@ pub unsafe trait TryFromBytes {
     /// these cases are handled.
     #[must_use = "has no side effects"]
     #[inline]
-    fn try_mut_from(bytes: &mut [u8]) -> Option<&mut Self>
+    fn try_mut_from(bytes: &mut [u8]) -> Result<&mut Self, TryCastError<&mut [u8], Self>>
     where
         Self: KnownLayout + Immutable, // TODO(#251): Remove the `Immutable` bound.
     {
-        let candidate = Ptr::from_mut(bytes).try_cast_into_no_leftover::<Self>()?;
-
-        // This call may panic. If that happens, it doesn't cause any soundness
-        // issues, as we have not generated any invalid state which we need to
-        // fix before returning.
-        //
-        // Note that one panic or post-monomorphization error condition is
-        // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
-        // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
-        // condition will not happen.
-        let candidate = candidate.try_into_valid();
-
-        candidate.map(Ptr::as_mut)
+        let size = bytes.len();
+        match Ptr::from_mut(bytes).try_cast_into_no_leftover::<Self>() {
+            Ok(candidate) => {
+                // This call may panic. If that happens, it doesn't cause any soundness
+                // issues, as we have not generated any invalid state which we need to
+                // fix before returning.
+                //
+                // Note that one panic or post-monomorphization error condition is
+                // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
+                // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
+                // condition will not happen.
+                match candidate.try_into_valid() {
+                    Ok(candidate) => Ok(candidate.as_mut()),
+                    Err(e) => Err(e
+                        .map_src(|src| {
+                            // SAFETY: The provided `size`, below, is computed from
+                            // `bytes.len()`. By contract on `try_into_valid` we can
+                            // count on `src` being equal to `candidate`. Since
+                            // `candidate` was derived from the entire extent of
+                            // `bytes`, the size of `bytes` is exactly equal to the
+                            // size of `src`.
+                            let bytes = unsafe { src.as_bytes_with_size(size) };
+                            bytes.as_mut()
+                        })
+                        .into()),
+                }
+            }
+            Err(e) => Err(e.map_src(Ptr::as_mut).into()),
+        }
     }
 
     /// Attempts to read a `Self` from a byte slice.
@@ -1672,7 +1706,7 @@ pub unsafe trait TryFromBytes {
     /// these cases are handled.
     #[must_use = "has no side effects"]
     #[inline]
-    fn try_read_from(bytes: &[u8]) -> Option<Self>
+    fn try_read_from(bytes: &[u8]) -> Result<Self, TryReadError<&[u8], Self>>
     where
         Self: Sized,
     {
@@ -1681,7 +1715,13 @@ pub unsafe trait TryFromBytes {
         // mut` and `Ptr::from_mut` here. See the doc comment on `is_bit_valid`
         // and the implementation of `TryFromBytes` for `UnsafeCell` for more
         // details.
-        let mut candidate = MaybeUninit::<Self>::read_from(bytes)?;
+        let mut candidate = match MaybeUninit::<Self>::read_from(bytes) {
+            Ok(candidate) => candidate,
+            Err(e) => {
+                return Err(TryReadError::with_error(bytes, e.error));
+                // return Err(TryReadError::Size(e.with_dst()));
+            }
+        };
         let c_ptr = Ptr::from_mut(&mut candidate);
         let c_ptr = c_ptr.transparent_wrapper_into_inner();
         // SAFETY: `c_ptr` has no uninitialized sub-ranges because it derived
@@ -1697,11 +1737,11 @@ pub unsafe trait TryFromBytes {
         // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
         // condition will not happen.
         if !Self::is_bit_valid(c_ptr.forget_aligned()) {
-            return None;
+            return Err(ValidityError::new(bytes).into());
         }
 
         // SAFETY: We just validated that `candidate` contains a valid `Self`.
-        Some(unsafe { candidate.assume_init() })
+        Ok(unsafe { candidate.assume_init() })
     }
 }
 
@@ -2257,7 +2297,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn ref_from(bytes: &[u8]) -> Option<&Self>
+    fn ref_from(bytes: &[u8]) -> Result<&Self, CastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
     {
@@ -2307,7 +2347,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn ref_from_prefix(bytes: &[u8]) -> Option<(&Self, &[u8])>
+    fn ref_from_prefix(bytes: &[u8]) -> Result<(&Self, &[u8]), CastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
     {
@@ -2344,7 +2384,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn ref_from_suffix(bytes: &[u8]) -> Option<(&[u8], &Self)>
+    fn ref_from_suffix(bytes: &[u8]) -> Result<(&[u8], &Self), CastError<&[u8], Self>>
     where
         Self: Immutable + KnownLayout,
     {
@@ -2388,7 +2428,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn mut_from(bytes: &mut [u8]) -> Option<&mut Self>
+    fn mut_from(bytes: &mut [u8]) -> Result<&mut Self, CastError<&mut [u8], Self>>
     where
         Self: IntoBytes + KnownLayout + Immutable,
     {
@@ -2436,7 +2476,9 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn mut_from_prefix(bytes: &mut [u8]) -> Option<(&mut Self, &mut [u8])>
+    fn mut_from_prefix(
+        bytes: &mut [u8],
+    ) -> Result<(&mut Self, &mut [u8]), CastError<&mut [u8], Self>>
     where
         Self: IntoBytes + KnownLayout + Immutable,
     {
@@ -2479,7 +2521,9 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn mut_from_suffix(bytes: &mut [u8]) -> Option<(&mut [u8], &mut Self)>
+    fn mut_from_suffix(
+        bytes: &mut [u8],
+    ) -> Result<(&mut [u8], &mut Self), CastError<&mut [u8], Self>>
     where
         Self: IntoBytes + KnownLayout + Immutable,
     {
@@ -2531,7 +2575,10 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn from_prefix_with_trailing_elements(bytes: &[u8], count: usize) -> Option<(&Self, &[u8])>
+    fn from_prefix_with_trailing_elements(
+        bytes: &[u8],
+        count: usize,
+    ) -> Result<(&Self, &[u8]), CastError<&[u8], Self>>
     where
         Self: KnownLayout<PointerMetadata = usize> + Immutable,
     {
@@ -2550,7 +2597,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + Immutable,
     {
-        <[Self]>::from_prefix_with_trailing_elements(bytes, count)
+        <[Self]>::from_prefix_with_trailing_elements(bytes, count).ok()
     }
 
     /// Interprets the suffix of the given `bytes` as a `&[Self]` with length
@@ -2597,7 +2644,10 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn from_suffix_with_trailing_elements(bytes: &[u8], count: usize) -> Option<(&[u8], &Self)>
+    fn from_suffix_with_trailing_elements(
+        bytes: &[u8],
+        count: usize,
+    ) -> Result<(&[u8], &Self), CastError<&[u8], Self>>
     where
         Self: KnownLayout<PointerMetadata = usize> + Immutable,
     {
@@ -2616,7 +2666,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + Immutable,
     {
-        <[Self]>::from_suffix_with_trailing_elements(bytes, count)
+        <[Self]>::from_suffix_with_trailing_elements(bytes, count).ok()
     }
 
     #[deprecated(since = "0.8.0", note = "`FromBytes::mut_from` now supports slices")]
@@ -2627,7 +2677,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + IntoBytes + Immutable,
     {
-        <[Self]>::mut_from(bytes)
+        <[Self]>::mut_from(bytes).ok()
     }
 
     /// Interprets the prefix of the given `bytes` as a `&mut [Self]` with
@@ -2682,7 +2732,7 @@ pub unsafe trait FromBytes: FromZeros {
     fn mut_from_prefix_with_trailing_elements(
         bytes: &mut [u8],
         count: usize,
-    ) -> Option<(&mut Self, &mut [u8])>
+    ) -> Result<(&mut Self, &mut [u8]), CastError<&mut [u8], Self>>
     where
         Self: IntoBytes + KnownLayout<PointerMetadata = usize> + Immutable,
     {
@@ -2701,7 +2751,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + Immutable,
     {
-        <[Self]>::from_prefix_with_trailing_elements(bytes, count)
+        <[Self]>::from_prefix_with_trailing_elements(bytes, count).ok()
     }
 
     /// Interprets the suffix of the given `bytes` as a `&mut [Self]` with length
@@ -2756,7 +2806,7 @@ pub unsafe trait FromBytes: FromZeros {
     fn mut_from_suffix_with_trailing_elements(
         bytes: &mut [u8],
         count: usize,
-    ) -> Option<(&mut [u8], &mut Self)>
+    ) -> Result<(&mut [u8], &mut Self), CastError<&mut [u8], Self>>
     where
         Self: IntoBytes + KnownLayout<PointerMetadata = usize> + Immutable,
     {
@@ -2774,7 +2824,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + IntoBytes + Immutable,
     {
-        <[Self]>::mut_from_suffix_with_trailing_elements(bytes, count)
+        <[Self]>::mut_from_suffix_with_trailing_elements(bytes, count).ok()
     }
 
     /// Reads a copy of `Self` from `bytes`.
@@ -2808,11 +2858,16 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn read_from(bytes: &[u8]) -> Option<Self>
+    fn read_from(bytes: &[u8]) -> Result<Self, SizeError<&[u8], Self>>
     where
         Self: Sized,
     {
-        Ref::<_, Unalign<Self>>::new_sized(bytes).map(|r| r.read().into_inner())
+        match Ref::<_, Unalign<Self>>::new_sized(bytes) {
+            Ok(r) => Ok(r.read().into_inner()),
+            Err(CastError::Size(e)) => Err(e.with_dst()),
+            Err(CastError::Alignment(_)) => unreachable!(),
+            Err(CastError::Validity(i)) => unreachable_infallible(i),
+        }
     }
 
     /// Reads a copy of `Self` from the prefix of `bytes`.
@@ -2848,11 +2903,19 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn read_from_prefix(bytes: &[u8]) -> Option<Self>
+    fn read_from_prefix(bytes: &[u8]) -> Result<Self, SizeError<&[u8], Self>>
     where
         Self: Sized,
     {
-        Ref::<_, Unalign<Self>>::new_sized_from_prefix(bytes).map(|(r, _)| r.read().into_inner())
+        Ref::<_, Unalign<Self>>::new_sized_from_prefix(bytes)
+            .map(|(r, _)| r.read().into_inner())
+            .map_err(|e| {
+                e.map_err(|e| match e {
+                    ConvertError::Size(e) => e,
+                    ConvertError::Alignment(_) => unreachable!(),
+                    ConvertError::Validity(i) => unreachable_infallible(i),
+                })
+            })
     }
 
     /// Reads a copy of `Self` from the suffix of `bytes`.
@@ -2882,11 +2945,16 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn read_from_suffix(bytes: &[u8]) -> Option<Self>
+    fn read_from_suffix(bytes: &[u8]) -> Result<Self, CastError<&[u8], Self>>
     where
         Self: Sized,
     {
-        Ref::<_, Unalign<Self>>::new_sized_from_suffix(bytes).map(|(_, r)| r.read().into_inner())
+        match Ref::<_, Unalign<Self>>::new_sized_from_suffix(bytes) {
+            Ok((_, r)) => Ok(r.read().into_inner()),
+            Err(CastError::Size(e)) => Err(CastError::Size(e.with_dst())),
+            Err(CastError::Alignment(_)) => unreachable!(),
+            Err(CastError::Validity(i)) => unreachable_infallible(i),
+        }
     }
 
     #[deprecated(since = "0.8.0", note = "`FromBytes::ref_from` now supports slices")]
@@ -2897,7 +2965,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + Immutable,
     {
-        <[Self]>::ref_from(bytes)
+        <[Self]>::ref_from(bytes).ok()
     }
 }
 
@@ -3268,16 +3336,15 @@ pub unsafe trait IntoBytes {
     /// ```
     #[must_use = "callers should check the return value to see if the operation succeeded"]
     #[inline]
-    fn write_to(&self, bytes: &mut [u8]) -> Option<()>
+    fn write_to(&self, bytes: &mut [u8]) -> Result<(), SizeError<&Self, &mut [u8]>>
     where
         Self: Immutable,
     {
         if bytes.len() != mem::size_of_val(self) {
-            return None;
+            return Err(SizeError::new(self));
         }
-
         bytes.copy_from_slice(self.as_bytes());
-        Some(())
+        Ok(())
     }
 
     /// Writes a copy of `self` to the prefix of `bytes`.
@@ -3329,13 +3396,18 @@ pub unsafe trait IntoBytes {
     /// ```
     #[must_use = "callers should check the return value to see if the operation succeeded"]
     #[inline]
-    fn write_to_prefix(&self, bytes: &mut [u8]) -> Option<()>
+    fn write_to_prefix(&self, bytes: &mut [u8]) -> Result<(), SizeError<&Self, &mut [u8]>>
     where
         Self: Immutable,
     {
         let size = mem::size_of_val(self);
-        bytes.get_mut(..size)?.copy_from_slice(self.as_bytes());
-        Some(())
+        match bytes.get_mut(..size) {
+            Some(bytes) => {
+                bytes.copy_from_slice(self.as_bytes());
+                Ok(())
+            }
+            None => Err(SizeError::new(self)),
+        }
     }
 
     /// Writes a copy of `self` to the suffix of `bytes`.
@@ -3394,16 +3466,26 @@ pub unsafe trait IntoBytes {
     /// ```
     #[must_use = "callers should check the return value to see if the operation succeeded"]
     #[inline]
-    fn write_to_suffix(&self, bytes: &mut [u8]) -> Option<()>
+    fn write_to_suffix(&self, bytes: &mut [u8]) -> Result<(), SizeError<&Self, &mut [u8]>>
     where
         Self: Immutable,
     {
-        let start = bytes.len().checked_sub(mem::size_of_val(self))?;
-        // get_mut() should never return None here. We use ? rather than
-        // .unwrap() because in the event the branch is not optimized away,
-        // returning None is generally lighter-weight than panicking.
-        bytes.get_mut(start..)?.copy_from_slice(self.as_bytes());
-        Some(())
+        let start = if let Some(start) = bytes.len().checked_sub(mem::size_of_val(self)) {
+            start
+        } else {
+            return Err(SizeError::new(self));
+        };
+        let bytes = if let Some(bytes) = bytes.get_mut(start..) {
+            bytes
+        } else {
+            // get_mut() should never return None here. We return a `SizeError`
+            // rather than .unwrap() because in the event the branch is not
+            // optimized away, returning a value is generally lighter-weight
+            // than panicking.
+            return Err(SizeError::new(self));
+        };
+        bytes.copy_from_slice(self.as_bytes());
+        Ok(())
     }
 
     #[deprecated(since = "0.8.0", note = "`IntoBytes::as_bytes_mut` was renamed to `as_mut_bytes`")]
@@ -4924,7 +5006,7 @@ macro_rules! include_value {
 /// }
 ///
 /// impl<B: ByteSliceMut> UdpPacket<B> {
-///     pub fn set_src_port(&mut self, src_port: [u8; 2]) {
+///     pub fn with_src_port(&mut self, src_port: [u8; 2]) {
 ///         self.header.src_port = src_port;
 ///     }
 /// }
@@ -4958,10 +5040,13 @@ where
     T: KnownLayout + Immutable + ?Sized,
 {
     #[must_use = "has no side effects"]
-    fn bikeshed_new_known_layout(bytes: B) -> Option<Ref<B, T>> {
-        let _ = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T>()?;
+    fn bikeshed_new_known_layout(bytes: B) -> Result<Ref<B, T>, CastError<B, T>> {
+        if let Err(e) = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T>() {
+
+            // return Err(e.with_src(()).with_src(bytes).with_dst());
+        };
         // INVARIANTS: `try_cast_into_no_leftover` validates size and alignment.
-        Some(Ref(bytes, PhantomData))
+        Ok(Ref(bytes, PhantomData))
     }
 }
 
@@ -4971,27 +5056,41 @@ where
     T: KnownLayout + Immutable + ?Sized,
 {
     #[must_use = "has no side effects"]
-    fn bikeshed_new_from_prefix_known_layout(bytes: B) -> Option<(Ref<B, T>, B)> {
-        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
-        let (bytes, suffix) = try_split_at(bytes, split_at)?;
+    fn bikeshed_new_from_prefix_known_layout(bytes: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
+        let split_at = match Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix) {
+            Ok((_, split_at)) => split_at,
+            Err(e) => {
+                return Err(CastError::with_error(bytes, e.error));
+                // return Err(e.with_src(()).with_src(bytes));
+            }
+        };
+        let (bytes, suffix) =
+            try_split_at(bytes, split_at).map_err(|b| CastError::with_error(b, error::Size))?;
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
         // valid `T`. By safety postcondition on `SplitByteSlice::try_split_at`
         // we can rely `try_split_at` to produce the correct `bytes` and
         // `suffix`.
-        Some((Ref(bytes, PhantomData), suffix))
+        Ok((Ref(bytes, PhantomData), suffix))
     }
 
     #[must_use = "has no side effects"]
-    fn bikeshed_new_from_suffix_known_layout(bytes: B) -> Option<(B, Ref<B, T>)> {
-        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
-        let (prefix, bytes) = try_split_at(bytes, split_at)?;
+    fn bikeshed_new_from_suffix_known_layout(bytes: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
+        let split_at = match Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix) {
+            Ok((_, split_at)) => split_at,
+            Err(e) => {
+                return Err(CastError::with_error(bytes, e.error));
+                // return Err(e.with_src(()).with_src(bytes));
+            }
+        };
+        let (prefix, bytes) =
+            try_split_at(bytes, split_at).map_err(|b| CastError::with_error(b, error::Size))?;
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
         // valid `T`. By safety postcondition on `SplitByteSlice::try_split_at`
         // we can rely on `try_split_at` to produce the correct `prefix` and
         // `bytes`.
-        Some((prefix, Ref(bytes, PhantomData)))
+        Ok((prefix, Ref(bytes, PhantomData)))
     }
 }
 
@@ -5000,12 +5099,17 @@ where
     B: ByteSlice,
 {
     #[must_use = "has no side effects"]
-    fn new_sized(bytes: B) -> Option<Ref<B, T>> {
-        if bytes.len() != mem::size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
-            return None;
+    fn new_sized(bytes: B) -> Result<Ref<B, T>, CastError<B, T>> {
+        if bytes.len() != mem::size_of::<T>() {
+            return Err(CastError::with_error(bytes, error::Size));
+            // return Err(SizeError::new(bytes).into());
+        }
+        if !util::aligned_to::<_, T>(bytes.deref()) {
+            return Err(CastError::with_error(bytes, error::Alignment));
+            // return Err(AlignmentError::new(bytes).into());
         }
         // INVARIANTS: We just validated size and alignment.
-        Some(Ref(bytes, PhantomData))
+        Ok(Ref(bytes, PhantomData))
     }
 }
 
@@ -5014,26 +5118,39 @@ where
     B: SplitByteSlice,
 {
     #[must_use = "has no side effects"]
-    fn new_sized_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
-        if bytes.len() < mem::size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
-            return None;
+    fn new_sized_from_prefix(bytes: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
+        if bytes.len() < mem::size_of::<T>() {
+            return Err(CastError::with_error(bytes, error::Size));
+            // return Err(SizeError::new(bytes).into());
         }
-        let (bytes, suffix) = try_split_at(bytes, mem::size_of::<T>())?;
+        if !util::aligned_to::<_, T>(bytes.deref()) {
+            return Err(CastError::with_error(bytes, error::Alignment));
+            // return Err(AlignmentError::new(bytes).into());
+        }
+        let (bytes, suffix) = try_split_at(bytes, mem::size_of::<T>())
+            .map_err(|b| CastError::with_error(b, error::Size))?;
         // INVARIANTS: We just validated alignment and that `bytes` is at least
         // as large as `T`. `try_split_at(bytes, mem::size_of::<T>())?` ensures
         // that the new `bytes` is exactly the size of `T`. By safety
         // postcondition on `SplitByteSlice::try_split_at` we can rely on
         // `try_split_at` to produce the correct `bytes` and `suffix`.
-        Some((Ref(bytes, PhantomData), suffix))
+        Ok((Ref(bytes, PhantomData), suffix))
     }
 
     #[must_use = "has no side effects"]
-    fn new_sized_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
+    fn new_sized_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
         let bytes_len = bytes.len();
-        let split_at = bytes_len.checked_sub(mem::size_of::<T>())?;
-        let (prefix, bytes) = try_split_at(bytes, split_at)?;
+        let split_at = if let Some(split_at) = bytes_len.checked_sub(mem::size_of::<T>()) {
+            split_at
+        } else {
+            return Err(CastError::with_error(bytes, error::Size));
+            // return Err(SizeError::new(bytes).into());
+        };
+        let (prefix, bytes) =
+            try_split_at(bytes, split_at).map_err(|b| CastError::with_error(b, error::Size))?;
         if !util::aligned_to::<_, T>(bytes.deref()) {
-            return None;
+            return Err(CastError::with_error(bytes, error::Alignment));
+            // AlignmentError::new(bytes).into());
         }
         // INVARIANTS: Since `split_at` is defined as `bytes_len -
         // size_of::<T>()`, the `bytes` which results from `let (prefix, bytes)
@@ -5041,7 +5158,7 @@ where
         // constructing `bytes`, we validate that it has the proper alignment.
         // By safety postcondition on `SplitByteSlice::try_split_at` we can rely
         // on `try_split_at` to produce the correct `prefix` and `bytes`.
-        Some((prefix, Ref(bytes, PhantomData)))
+        Ok((prefix, Ref(bytes, PhantomData)))
     }
 }
 
@@ -5057,10 +5174,13 @@ where
     /// these checks fail, it returns `None`.
     #[must_use = "has no side effects"]
     #[inline]
-    pub fn new(bytes: B) -> Option<Ref<B, T>> {
-        let _ = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T>()?;
+    pub fn new(bytes: B) -> Result<Ref<B, T>, CastError<B, T>> {
+        if let Err(e) = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T>() {
+            return Err(CastError::with_error(bytes, e.error));
+            // return Err(e.with_src(()).with_src(bytes));
+        }
         // INVARIANTS: `try_cast_into_no_leftover` validates size and alignment.
-        Some(Ref(bytes, PhantomData))
+        Ok(Ref(bytes, PhantomData))
     }
 }
 
@@ -5078,15 +5198,23 @@ where
     /// checks fail, it returns `None`.
     #[must_use = "has no side effects"]
     #[inline]
-    pub fn new_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
-        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
-        let (bytes, suffix) = try_split_at(bytes, split_at)?;
+    pub fn new_from_prefix(bytes: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
+        let split_at = match Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix) {
+            Ok((_, split_at)) => split_at,
+            Err(e) => {
+                return Err(CastError::with_error(bytes, e.error));
+                // return Err(e.with_src(()).with_src(bytes));
+            }
+        };
+
+        let (bytes, suffix) =
+            try_split_at(bytes, split_at).map_err(|b| CastError::with_error(b, error::Size))?;
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `split_at` that indicates how many bytes of `bytes` correspond to a
         // valid `T`. By safety postcondition on `SplitByteSlice::try_split_at`
         // we can rely on `try_split_at` to produce the correct `bytes` and
         // `suffix`.
-        Some((Ref(bytes, PhantomData), suffix))
+        Ok((Ref(bytes, PhantomData), suffix))
     }
 
     /// Constructs a new `Ref` from the suffix of a byte slice.
@@ -5099,15 +5227,24 @@ where
     /// `None`.
     #[must_use = "has no side effects"]
     #[inline]
-    pub fn new_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
-        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
-        let (prefix, bytes) = try_split_at(bytes, split_at)?;
+    pub fn new_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
+        let split_at = match Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix) {
+            Ok((_, split_at)) => split_at,
+            Err(e) => {
+                return Err(CastError::with_error(bytes, e.error));
+                // let e = e.with_src(());
+                // return Err(e.with_src(bytes));
+            }
+        };
+
+        let (prefix, bytes) =
+            try_split_at(bytes, split_at).map_err(|b| CastError::with_error(b, error::Size))?;
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
         // a `try_split_at` that indicates how many bytes of `bytes` correspond
         // to a valid `T`. By safety postcondition on
         // `SplitByteSlice::try_split_at` we can rely on `try_split_at` to
         // produce the correct `prefix` and `bytes`.
-        Some((prefix, Ref(bytes, PhantomData)))
+        Ok((prefix, Ref(bytes, PhantomData)))
     }
 }
 
@@ -5120,13 +5257,18 @@ where
     // update references to this name in `#[deprecated]` attributes elsewhere.
     #[doc(hidden)]
     #[inline]
-    pub fn with_trailing_elements_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, T>, B)> {
+    pub fn with_trailing_elements_from_prefix(
+        bytes: B,
+        count: usize,
+    ) -> Result<(Ref<B, T>, B), CastError<B, T>> {
         let expected_len = match count.size_for_metadata(T::LAYOUT) {
             Some(len) => len,
-            None => return None,
+            None => return Err(CastError::with_error(bytes, error::Size)),
+            // return Err(SizeError::new(bytes).into()),
         };
         if bytes.len() < expected_len {
-            return None;
+            return Err(CastError::with_error(bytes, error::Size));
+            // return Err(SizeError::new(bytes).into());
         }
         let (prefix, bytes) = bytes.split_at(expected_len);
         Self::new(prefix).map(move |l| (l, bytes))
@@ -5142,12 +5284,21 @@ where
     // update references to this name in `#[deprecated]` attributes elsewhere.
     #[doc(hidden)]
     #[inline]
-    pub fn with_trailing_elements_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, T>)> {
+    pub fn with_trailing_elements_from_suffix(
+        bytes: B,
+        count: usize,
+    ) -> Result<(B, Ref<B, T>), CastError<B, T>> {
         let expected_len = match count.size_for_metadata(T::LAYOUT) {
             Some(len) => len,
-            None => return None,
+            None => return Err(CastError::with_error(bytes, error::Size)),
+            // return Err(SizeError::new(bytes).into()),
         };
-        let split_at = bytes.len().checked_sub(expected_len)?;
+        let split_at = if let Some(split_at) = bytes.len().checked_sub(expected_len) {
+            split_at
+        } else {
+            return Err(CastError::with_error(bytes, error::Size));
+            // return Err(SizeError::new(bytes).into());
+        };
         let (bytes, suffix) = bytes.split_at(split_at);
         Self::new(suffix).map(move |l| (bytes, l))
     }
@@ -5164,8 +5315,14 @@ where
     /// constructs a new `Ref`. If the check fails, it returns `None`.
     #[must_use = "has no side effects"]
     #[inline(always)]
-    pub fn new_unaligned(bytes: B) -> Option<Ref<B, T>> {
-        Ref::new(bytes)
+    pub fn new_unaligned(bytes: B) -> Result<Ref<B, T>, SizeError<B, T>> {
+        Ref::new(bytes).map_err(|e| {
+            e.map_err(|e| match e {
+                ConvertError::Size(e) => e,
+                ConvertError::Alignment(_) => unreachable!(),
+                ConvertError::Validity(i) => unreachable_infallible(i),
+            })
+        })
     }
 }
 
@@ -5183,8 +5340,14 @@ where
     /// caller. If the length check fails, it returns `None`.
     #[must_use = "has no side effects"]
     #[inline(always)]
-    pub fn new_unaligned_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
-        Ref::new_from_prefix(bytes)
+    pub fn new_unaligned_from_prefix(bytes: B) -> Result<(Ref<B, T>, B), SizeError<B, T>> {
+        Ref::new_from_prefix(bytes).map_err(|e| {
+            e.map_err(|e| match e {
+                ConvertError::Size(e) => e,
+                ConvertError::Alignment(_) => unreachable!(),
+                ConvertError::Validity(i) => unreachable_infallible(i),
+            })
+        })
     }
 
     /// Constructs a new `Ref` from the suffix of a byte slice for a type with
@@ -5196,8 +5359,14 @@ where
     /// caller. If the length check fails, it returns `None`.
     #[must_use = "has no side effects"]
     #[inline(always)]
-    pub fn new_unaligned_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
-        Ref::new_from_suffix(bytes)
+    pub fn new_unaligned_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), SizeError<B, T>> {
+        Ref::new_from_suffix(bytes).map_err(|e| {
+            e.map_err(|e| match e {
+                ConvertError::Size(e) => e,
+                ConvertError::Alignment(_) => unreachable!(),
+                ConvertError::Validity(i) => unreachable_infallible(i),
+            })
+        })
     }
 }
 
@@ -5213,7 +5382,7 @@ where
     pub fn with_trailing_elements_unaligned_from_prefix(
         bytes: B,
         count: usize,
-    ) -> Option<(Ref<B, T>, B)> {
+    ) -> Result<(Ref<B, T>, B), CastError<B, T>> {
         Self::with_trailing_elements_from_prefix(bytes, count)
     }
 }
@@ -5230,7 +5399,7 @@ where
     pub fn with_trailing_elements_unaligned_from_suffix(
         bytes: B,
         count: usize,
-    ) -> Option<(B, Ref<B, T>)> {
+    ) -> Result<(B, Ref<B, T>), CastError<B, T>> {
         Self::with_trailing_elements_from_suffix(bytes, count)
     }
 }
@@ -5496,7 +5665,7 @@ pub unsafe trait SplitByteSlice: ByteSlice {
     #[must_use]
     #[inline]
     fn split_at(self, mid: usize) -> (Self, Self) {
-        if let Some(splits) = try_split_at(self, mid) {
+        if let Ok(splits) = try_split_at(self, mid) {
             splits
         } else {
             panic!("mid > len")
@@ -5516,16 +5685,15 @@ pub unsafe trait SplitByteSlice: ByteSlice {
 
 /// Attempts to split the slice at the midpoint.
 ///
-/// `x.try_split_at(mid)` returns `Some((x[..mid], x[mid..]))` if `mid <=
-/// x.deref().len()` and otherwise returns `None`.
+/// `x.try_split_at(mid)` returns `Ok((x[..mid], x[mid..]))` if `mid <=
+/// x.deref().len()` and otherwise returns `Err(x)`.
 ///
 /// # Safety
 ///
 /// Unsafe code may rely on this function correctly implementing the above
 /// functionality.
-#[must_use]
 #[inline]
-fn try_split_at<S>(slice: S, mid: usize) -> Option<(S, S)>
+fn try_split_at<S>(slice: S, mid: usize) -> Result<(S, S), S>
 where
     S: SplitByteSlice,
 {
@@ -5536,9 +5704,9 @@ where
         // dereference to a byte slice of the same address and length. Thus, we
         // can be sure that the above precondition remains satisfied through the
         // call to `split_at_unchecked`.
-        unsafe { Some(slice.split_at_unchecked(mid)) }
+        unsafe { Ok(slice.split_at_unchecked(mid)) }
     } else {
-        None
+        Err(slice)
     }
 }
 
@@ -6273,16 +6441,22 @@ mod tests {
         const ODDS: [usize; 8] = [1, 3, 5, 7, 9, 11, 13, 15];
 
         // base_size is too big for the memory region.
-        test!(layout(((1..8) | ((1..8), (1..8))), _).validate(_, [0], _), Ok(None));
-        test!(layout(((2..8) | ((2..8), (2..8))), _).validate(_, [1], _), Ok(None));
+        test!(
+            layout(((1..8) | ((1..8), (1..8))), _).validate(_, [0], _),
+            Ok(Err(MetadataCastError::Size))
+        );
+        test!(
+            layout(((2..8) | ((2..8), (2..8))), _).validate(_, [1], _),
+            Ok(Err(MetadataCastError::Size))
+        );
 
         // addr is unaligned for prefix cast
-        test!(layout(_, [2]).validate(ODDS, _, Prefix), Ok(None));
-        test!(layout(_, [2]).validate(ODDS, _, Prefix), Ok(None));
+        test!(layout(_, [2]).validate(ODDS, _, Prefix), Ok(Err(MetadataCastError::Alignment)));
+        test!(layout(_, [2]).validate(ODDS, _, Prefix), Ok(Err(MetadataCastError::Alignment)));
 
         // addr is aligned, but end of buffer is unaligned for suffix cast
-        test!(layout(_, [2]).validate(EVENS, ODDS, Suffix), Ok(None));
-        test!(layout(_, [2]).validate(EVENS, ODDS, Suffix), Ok(None));
+        test!(layout(_, [2]).validate(EVENS, ODDS, Suffix), Ok(Err(MetadataCastError::Alignment)));
+        test!(layout(_, [2]).validate(EVENS, ODDS, Suffix), Ok(Err(MetadataCastError::Alignment)));
 
         // Unfortunately, these constants cannot easily be used in the
         // implementation of `validate_cast_and_convert_metadata`, since
@@ -6320,7 +6494,7 @@ mod tests {
         fn validate_behavior(
             (layout, addr, bytes_len, cast_type): (DstLayout, usize, usize, CastType),
         ) {
-            if let Some((elems, split_at)) =
+            if let Ok((elems, split_at)) =
                 layout.validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
             {
                 let (size_info, align) = (layout.size_info, layout.align);
@@ -7229,54 +7403,63 @@ mod tests {
 
         // Test `FromBytes::{read_from, read_from_prefix, read_from_suffix}`.
 
-        assert_eq!(u64::read_from(&VAL_BYTES[..]), Some(VAL));
+        assert_eq!(u64::read_from(&VAL_BYTES[..]), Ok(VAL));
         // The first 8 bytes are from `VAL_BYTES` and the second 8 bytes are all
         // zeros.
         let bytes_with_prefix: [u8; 16] = transmute!([VAL_BYTES, [0; 8]]);
-        assert_eq!(u64::read_from_prefix(&bytes_with_prefix[..]), Some(VAL));
-        assert_eq!(u64::read_from_suffix(&bytes_with_prefix[..]), Some(0));
+        assert_eq!(u64::read_from_prefix(&bytes_with_prefix[..]), Ok(VAL));
+        assert_eq!(u64::read_from_suffix(&bytes_with_prefix[..]), Ok(0));
         // The first 8 bytes are all zeros and the second 8 bytes are from
         // `VAL_BYTES`
         let bytes_with_suffix: [u8; 16] = transmute!([[0; 8], VAL_BYTES]);
-        assert_eq!(u64::read_from_prefix(&bytes_with_suffix[..]), Some(0));
-        assert_eq!(u64::read_from_suffix(&bytes_with_suffix[..]), Some(VAL));
+        assert_eq!(u64::read_from_prefix(&bytes_with_suffix[..]), Ok(0));
+        assert_eq!(u64::read_from_suffix(&bytes_with_suffix[..]), Ok(VAL));
 
         // Test `IntoBytes::{write_to, write_to_prefix, write_to_suffix}`.
 
         let mut bytes = [0u8; 8];
-        assert_eq!(VAL.write_to(&mut bytes[..]), Some(()));
+        assert_eq!(VAL.write_to(&mut bytes[..]), Ok(()));
         assert_eq!(bytes, VAL_BYTES);
         let mut bytes = [0u8; 16];
-        assert_eq!(VAL.write_to_prefix(&mut bytes[..]), Some(()));
+        assert_eq!(VAL.write_to_prefix(&mut bytes[..]), Ok(()));
         let want: [u8; 16] = transmute!([VAL_BYTES, [0; 8]]);
         assert_eq!(bytes, want);
         let mut bytes = [0u8; 16];
-        assert_eq!(VAL.write_to_suffix(&mut bytes[..]), Some(()));
+        assert_eq!(VAL.write_to_suffix(&mut bytes[..]), Ok(()));
         let want: [u8; 16] = transmute!([[0; 8], VAL_BYTES]);
         assert_eq!(bytes, want);
     }
 
     #[test]
     fn test_try_from_bytes_try_read_from() {
-        assert_eq!(<bool as TryFromBytes>::try_read_from(&[0]), Some(false));
-        assert_eq!(<bool as TryFromBytes>::try_read_from(&[1]), Some(true));
+        assert_eq!(<bool as TryFromBytes>::try_read_from(&[0]), Ok(false));
+        assert_eq!(<bool as TryFromBytes>::try_read_from(&[1]), Ok(true));
 
         // If we don't pass enough bytes, it fails.
-        assert_eq!(<u8 as TryFromBytes>::try_read_from(&[]), None);
+        assert!(matches!(
+            <u8 as TryFromBytes>::try_read_from(&[]),
+            Err(Error { error: ConvertError::Size(_), .. })
+        ));
 
         // If we pass too many bytes, it fails.
-        assert_eq!(<u8 as TryFromBytes>::try_read_from(&[0, 0]), None);
+        assert!(matches!(
+            <u8 as TryFromBytes>::try_read_from(&[0, 0]),
+            Err(Error { error: ConvertError::Size(_), .. })
+        ));
 
         // If we pass an invalid value, it fails.
-        assert_eq!(<bool as TryFromBytes>::try_read_from(&[2]), None);
+        assert!(matches!(
+            <bool as TryFromBytes>::try_read_from(&[2]),
+            Err(Error { error: ConvertError::Validity(_), .. })
+        ));
 
         // Reading from a misaligned buffer should still succeed. Since `AU64`'s
         // alignment is 8, and since we read from two adjacent addresses one
         // byte apart, it is guaranteed that at least one of them (though
         // possibly both) will be misaligned.
         let bytes: [u8; 9] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-        assert_eq!(<AU64 as TryFromBytes>::try_read_from(&bytes[..8]), Some(AU64(0)));
-        assert_eq!(<AU64 as TryFromBytes>::try_read_from(&bytes[1..9]), Some(AU64(0)));
+        assert_eq!(<AU64 as TryFromBytes>::try_read_from(&bytes[..8]), Ok(AU64(0)));
+        assert_eq!(<AU64 as TryFromBytes>::try_read_from(&bytes[1..9]), Ok(AU64(0)));
     }
 
     #[test]
@@ -7722,36 +7905,36 @@ mod tests {
         // Fail because the buffer is too large.
         let mut buf = Align::<[u8; 16], AU64>::default();
         // `buf.t` should be aligned to 8, so only the length check should fail.
-        assert!(AU64::ref_from(&buf.t[..]).is_none());
-        assert!(AU64::mut_from(&mut buf.t[..]).is_none());
-        assert!(<[u8; 8]>::ref_from(&buf.t[..]).is_none());
-        assert!(<[u8; 8]>::mut_from(&mut buf.t[..]).is_none());
+        assert!(AU64::ref_from(&buf.t[..]).is_err());
+        assert!(AU64::mut_from(&mut buf.t[..]).is_err());
+        assert!(<[u8; 8]>::ref_from(&buf.t[..]).is_err());
+        assert!(<[u8; 8]>::mut_from(&mut buf.t[..]).is_err());
 
         // Fail because the buffer is too small.
         let mut buf = Align::<[u8; 4], AU64>::default();
-        assert!(AU64::ref_from(&buf.t[..]).is_none());
-        assert!(AU64::mut_from(&mut buf.t[..]).is_none());
-        assert!(<[u8; 8]>::ref_from(&buf.t[..]).is_none());
-        assert!(<[u8; 8]>::mut_from(&mut buf.t[..]).is_none());
-        assert!(AU64::ref_from_prefix(&buf.t[..]).is_none());
-        assert!(AU64::mut_from_prefix(&mut buf.t[..]).is_none());
-        assert!(AU64::ref_from_suffix(&buf.t[..]).is_none());
-        assert!(AU64::mut_from_suffix(&mut buf.t[..]).is_none());
-        assert!(<[u8; 8]>::ref_from_prefix(&buf.t[..]).is_none());
-        assert!(<[u8; 8]>::mut_from_prefix(&mut buf.t[..]).is_none());
-        assert!(<[u8; 8]>::ref_from_suffix(&buf.t[..]).is_none());
-        assert!(<[u8; 8]>::mut_from_suffix(&mut buf.t[..]).is_none());
+        assert!(AU64::ref_from(&buf.t[..]).is_err());
+        assert!(AU64::mut_from(&mut buf.t[..]).is_err());
+        assert!(<[u8; 8]>::ref_from(&buf.t[..]).is_err());
+        assert!(<[u8; 8]>::mut_from(&mut buf.t[..]).is_err());
+        assert!(AU64::ref_from_prefix(&buf.t[..]).is_err());
+        assert!(AU64::mut_from_prefix(&mut buf.t[..]).is_err());
+        assert!(AU64::ref_from_suffix(&buf.t[..]).is_err());
+        assert!(AU64::mut_from_suffix(&mut buf.t[..]).is_err());
+        assert!(<[u8; 8]>::ref_from_prefix(&buf.t[..]).is_err());
+        assert!(<[u8; 8]>::mut_from_prefix(&mut buf.t[..]).is_err());
+        assert!(<[u8; 8]>::ref_from_suffix(&buf.t[..]).is_err());
+        assert!(<[u8; 8]>::mut_from_suffix(&mut buf.t[..]).is_err());
 
         // Fail because the alignment is insufficient.
         let mut buf = Align::<[u8; 13], AU64>::default();
-        assert!(AU64::ref_from(&buf.t[1..]).is_none());
-        assert!(AU64::mut_from(&mut buf.t[1..]).is_none());
-        assert!(AU64::ref_from(&buf.t[1..]).is_none());
-        assert!(AU64::mut_from(&mut buf.t[1..]).is_none());
-        assert!(AU64::ref_from_prefix(&buf.t[1..]).is_none());
-        assert!(AU64::mut_from_prefix(&mut buf.t[1..]).is_none());
-        assert!(AU64::ref_from_suffix(&buf.t[..]).is_none());
-        assert!(AU64::mut_from_suffix(&mut buf.t[..]).is_none());
+        assert!(AU64::ref_from(&buf.t[1..]).is_err());
+        assert!(AU64::mut_from(&mut buf.t[1..]).is_err());
+        assert!(AU64::ref_from(&buf.t[1..]).is_err());
+        assert!(AU64::mut_from(&mut buf.t[1..]).is_err());
+        assert!(AU64::ref_from_prefix(&buf.t[1..]).is_err());
+        assert!(AU64::mut_from_prefix(&mut buf.t[1..]).is_err());
+        assert!(AU64::ref_from_suffix(&buf.t[..]).is_err());
+        assert!(AU64::mut_from_suffix(&mut buf.t[..]).is_err());
     }
 
     #[test]
@@ -7762,38 +7945,38 @@ mod tests {
         // A buffer with an alignment of 8.
         let buf = Align::<[u8; 16], AU64>::default();
         // `buf.t` should be aligned to 8, so only the length check should fail.
-        assert!(Ref::<_, AU64>::new(&buf.t[..]).is_none());
-        assert!(Ref::<_, [u8; 8]>::new_unaligned(&buf.t[..]).is_none());
+        assert!(Ref::<_, AU64>::new(&buf.t[..]).is_err());
+        assert!(Ref::<_, [u8; 8]>::new_unaligned(&buf.t[..]).is_err());
 
         // Fail because the buffer is too small.
 
         // A buffer with an alignment of 8.
         let buf = Align::<[u8; 4], AU64>::default();
         // `buf.t` should be aligned to 8, so only the length check should fail.
-        assert!(Ref::<_, AU64>::new(&buf.t[..]).is_none());
-        assert!(Ref::<_, [u8; 8]>::new_unaligned(&buf.t[..]).is_none());
-        assert!(Ref::<_, AU64>::new_from_prefix(&buf.t[..]).is_none());
-        assert!(Ref::<_, AU64>::new_from_suffix(&buf.t[..]).is_none());
-        assert!(Ref::<_, [u8; 8]>::new_unaligned_from_prefix(&buf.t[..]).is_none());
-        assert!(Ref::<_, [u8; 8]>::new_unaligned_from_suffix(&buf.t[..]).is_none());
+        assert!(Ref::<_, AU64>::new(&buf.t[..]).is_err());
+        assert!(Ref::<_, [u8; 8]>::new_unaligned(&buf.t[..]).is_err());
+        assert!(Ref::<_, AU64>::new_from_prefix(&buf.t[..]).is_err());
+        assert!(Ref::<_, AU64>::new_from_suffix(&buf.t[..]).is_err());
+        assert!(Ref::<_, [u8; 8]>::new_unaligned_from_prefix(&buf.t[..]).is_err());
+        assert!(Ref::<_, [u8; 8]>::new_unaligned_from_suffix(&buf.t[..]).is_err());
 
         // Fail because the length is not a multiple of the element size.
 
         let buf = Align::<[u8; 12], AU64>::default();
         // `buf.t` has length 12, but element size is 8.
-        assert!(Ref::<_, [AU64]>::new(&buf.t[..]).is_none());
-        assert!(Ref::<_, [[u8; 8]]>::new_unaligned(&buf.t[..]).is_none());
+        assert!(Ref::<_, [AU64]>::new(&buf.t[..]).is_err());
+        assert!(Ref::<_, [[u8; 8]]>::new_unaligned(&buf.t[..]).is_err());
 
         // Fail because the buffer is too short.
         let buf = Align::<[u8; 12], AU64>::default();
         // `buf.t` has length 12, but the element size is 8 (and we're expecting
         // two of them).
-        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_prefix(&buf.t[..], 2).is_none());
-        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_suffix(&buf.t[..], 2).is_none());
+        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_prefix(&buf.t[..], 2).is_err());
+        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_suffix(&buf.t[..], 2).is_err());
         assert!(Ref::<_, [[u8; 8]]>::with_trailing_elements_unaligned_from_prefix(&buf.t[..], 2)
-            .is_none());
+            .is_err());
         assert!(Ref::<_, [[u8; 8]]>::with_trailing_elements_unaligned_from_suffix(&buf.t[..], 2)
-            .is_none());
+            .is_err());
 
         // Fail because the alignment is insufficient.
 
@@ -7802,33 +7985,33 @@ mod tests {
         let buf = Align::<[u8; 13], AU64>::default();
         // Slicing from 1, we get a buffer with size 12 (so the length check
         // should succeed) but an alignment of only 1, which is insufficient.
-        assert!(Ref::<_, AU64>::new(&buf.t[1..]).is_none());
-        assert!(Ref::<_, AU64>::new_from_prefix(&buf.t[1..]).is_none());
-        assert!(Ref::<_, [AU64]>::new(&buf.t[1..]).is_none());
-        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_prefix(&buf.t[1..], 1).is_none());
-        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_suffix(&buf.t[1..], 1).is_none());
+        assert!(Ref::<_, AU64>::new(&buf.t[1..]).is_err());
+        assert!(Ref::<_, AU64>::new_from_prefix(&buf.t[1..]).is_err());
+        assert!(Ref::<_, [AU64]>::new(&buf.t[1..]).is_err());
+        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_prefix(&buf.t[1..], 1).is_err());
+        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_suffix(&buf.t[1..], 1).is_err());
         // Slicing is unnecessary here because `new_from_suffix` uses the suffix
         // of the slice, which has odd alignment.
-        assert!(Ref::<_, AU64>::new_from_suffix(&buf.t[..]).is_none());
+        assert!(Ref::<_, AU64>::new_from_suffix(&buf.t[..]).is_err());
 
         // Fail due to arithmetic overflow.
 
         let buf = Align::<[u8; 16], AU64>::default();
         let unreasonable_len = usize::MAX / mem::size_of::<AU64>() + 1;
         assert!(Ref::<_, [AU64]>::with_trailing_elements_from_prefix(&buf.t[..], unreasonable_len)
-            .is_none());
+            .is_err());
         assert!(Ref::<_, [AU64]>::with_trailing_elements_from_suffix(&buf.t[..], unreasonable_len)
-            .is_none());
+            .is_err());
         assert!(Ref::<_, [[u8; 8]]>::with_trailing_elements_unaligned_from_prefix(
             &buf.t[..],
             unreasonable_len
         )
-        .is_none());
+        .is_err());
         assert!(Ref::<_, [[u8; 8]]>::with_trailing_elements_unaligned_from_suffix(
             &buf.t[..],
             unreasonable_len
         )
-        .is_none());
+        .is_err());
     }
 
     // Tests for ensuring that, if a ZST is passed into a slice-like function,
@@ -7882,43 +8065,43 @@ mod tests {
             t.as_mut_bytes()[0] ^= 0xFF;
 
             // `write_to` rejects slices that are too small or too large.
-            assert_eq!(t.write_to(&mut vec![0; N - 1][..]), None);
-            assert_eq!(t.write_to(&mut vec![0; N + 1][..]), None);
+            assert!(t.write_to(&mut vec![0; N - 1][..]).is_err());
+            assert!(t.write_to(&mut vec![0; N + 1][..]).is_err());
 
             // `write_to` works as expected.
             let mut bytes = [0; N];
-            assert_eq!(t.write_to(&mut bytes[..]), Some(()));
+            assert_eq!(t.write_to(&mut bytes[..]), Ok(()));
             assert_eq!(bytes, t.as_bytes());
 
             // `write_to_prefix` rejects slices that are too small.
-            assert_eq!(t.write_to_prefix(&mut vec![0; N - 1][..]), None);
+            assert!(t.write_to_prefix(&mut vec![0; N - 1][..]).is_err());
 
             // `write_to_prefix` works with exact-sized slices.
             let mut bytes = [0; N];
-            assert_eq!(t.write_to_prefix(&mut bytes[..]), Some(()));
+            assert_eq!(t.write_to_prefix(&mut bytes[..]), Ok(()));
             assert_eq!(bytes, t.as_bytes());
 
             // `write_to_prefix` works with too-large slices, and any bytes past
             // the prefix aren't modified.
             let mut too_many_bytes = vec![0; N + 1];
             too_many_bytes[N] = 123;
-            assert_eq!(t.write_to_prefix(&mut too_many_bytes[..]), Some(()));
+            assert_eq!(t.write_to_prefix(&mut too_many_bytes[..]), Ok(()));
             assert_eq!(&too_many_bytes[..N], t.as_bytes());
             assert_eq!(too_many_bytes[N], 123);
 
             // `write_to_suffix` rejects slices that are too small.
-            assert_eq!(t.write_to_suffix(&mut vec![0; N - 1][..]), None);
+            assert!(t.write_to_suffix(&mut vec![0; N - 1][..]).is_err());
 
             // `write_to_suffix` works with exact-sized slices.
             let mut bytes = [0; N];
-            assert_eq!(t.write_to_suffix(&mut bytes[..]), Some(()));
+            assert_eq!(t.write_to_suffix(&mut bytes[..]), Ok(()));
             assert_eq!(bytes, t.as_bytes());
 
             // `write_to_suffix` works with too-large slices, and any bytes
             // before the suffix aren't modified.
             let mut too_many_bytes = vec![0; N + 1];
             too_many_bytes[0] = 123;
-            assert_eq!(t.write_to_suffix(&mut too_many_bytes[..]), Some(()));
+            assert_eq!(t.write_to_suffix(&mut too_many_bytes[..]), Ok(()));
             assert_eq!(&too_many_bytes[1..], t.as_bytes());
             assert_eq!(too_many_bytes[0], 123);
         }
@@ -8256,7 +8439,7 @@ mod tests {
                     &self,
                     bytes: &'bytes [u8],
                 ) -> Option<Option<&'bytes T>> {
-                    Some(T::try_ref_from(bytes))
+                    Some(T::try_ref_from(bytes).ok())
                 }
 
                 #[allow(clippy::needless_lifetimes)]
@@ -8264,7 +8447,7 @@ mod tests {
                     &self,
                     bytes: &'bytes mut [u8],
                 ) -> Option<Option<&'bytes mut T>> {
-                    Some(T::try_mut_from(bytes))
+                    Some(T::try_mut_from(bytes).ok())
                 }
             }
 
@@ -8274,7 +8457,7 @@ mod tests {
 
             impl<T: TryFromBytes> TestTryReadFrom<T> for AutorefWrapper<T> {
                 fn test_try_read_from(&self, bytes: &[u8]) -> Option<Option<T>> {
-                    Some(T::try_read_from(bytes))
+                    Some(T::try_read_from(bytes).ok())
                 }
             }
 
