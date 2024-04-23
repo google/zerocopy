@@ -27,19 +27,6 @@ where
 
 impl<B, T> Ref<B, [T]>
 where
-    B: ByteSliceMut,
-    T: NoCell,
-{
-    #[deprecated(since = "0.8.0", note = "`Ref::new_zeroed` now supports slices")]
-    #[doc(hidden)]
-    #[inline(always)]
-    pub fn new_slice_zeroed(bytes: B) -> Option<Ref<B, [T]>> {
-        Self::new_zeroed(bytes)
-    }
-}
-
-impl<B, T> Ref<B, [T]>
-where
     B: ByteSlice,
     T: Unaligned + NoCell,
 {
@@ -48,19 +35,6 @@ where
     #[inline(always)]
     pub fn new_slice_unaligned(bytes: B) -> Option<Ref<B, [T]>> {
         Ref::new_unaligned(bytes)
-    }
-}
-
-impl<B, T> Ref<B, [T]>
-where
-    B: ByteSliceMut,
-    T: Unaligned + NoCell,
-{
-    #[deprecated(since = "0.8.0", note = "`Ref::new_unaligned_zeroed` now supports slices")]
-    #[doc(hidden)]
-    #[inline(always)]
-    pub fn new_slice_unaligned_zeroed(bytes: B) -> Option<Ref<B, [T]>> {
-        Self::new_unaligned_zeroed(bytes)
     }
 }
 
