@@ -22,10 +22,10 @@ util_assert_impl_all!(Foo: imp::TryFromBytes);
 
 #[test]
 fn test_foo() {
-    imp::assert_eq!(<Foo as imp::TryFromBytes>::try_read_from(&[0]), imp::Some(Foo::A));
-    imp::assert_eq!(<Foo as imp::TryFromBytes>::try_read_from(&[]), imp::None);
-    imp::assert_eq!(<Foo as imp::TryFromBytes>::try_read_from(&[1]), imp::None);
-    imp::assert_eq!(<Foo as imp::TryFromBytes>::try_read_from(&[0, 0]), imp::None);
+    imp::assert_eq!(<Foo as imp::TryFromBytes>::try_read_from(&[0]), imp::Ok(Foo::A));
+    imp::assert!(<Foo as imp::TryFromBytes>::try_read_from(&[]).is_err());
+    imp::assert!(<Foo as imp::TryFromBytes>::try_read_from(&[1]).is_err());
+    imp::assert!(<Foo as imp::TryFromBytes>::try_read_from(&[0, 0]).is_err());
 }
 
 #[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::Immutable, imp::TryFromBytes)]
@@ -38,11 +38,11 @@ util_assert_impl_all!(Bar: imp::TryFromBytes);
 
 #[test]
 fn test_bar() {
-    imp::assert_eq!(<Bar as imp::TryFromBytes>::try_read_from(&[0, 0]), imp::Some(Bar::A));
-    imp::assert_eq!(<Bar as imp::TryFromBytes>::try_read_from(&[]), imp::None);
-    imp::assert_eq!(<Bar as imp::TryFromBytes>::try_read_from(&[0]), imp::None);
-    imp::assert_eq!(<Bar as imp::TryFromBytes>::try_read_from(&[0, 1]), imp::None);
-    imp::assert_eq!(<Bar as imp::TryFromBytes>::try_read_from(&[0, 0, 0]), imp::None);
+    imp::assert_eq!(<Bar as imp::TryFromBytes>::try_read_from(&[0, 0]), imp::Ok(Bar::A));
+    imp::assert!(<Bar as imp::TryFromBytes>::try_read_from(&[]).is_err());
+    imp::assert!(<Bar as imp::TryFromBytes>::try_read_from(&[0]).is_err());
+    imp::assert!(<Bar as imp::TryFromBytes>::try_read_from(&[0, 1]).is_err());
+    imp::assert!(<Bar as imp::TryFromBytes>::try_read_from(&[0, 0, 0]).is_err());
 }
 
 #[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::Immutable, imp::TryFromBytes)]
@@ -58,17 +58,17 @@ util_assert_impl_all!(Baz: imp::TryFromBytes);
 fn test_baz() {
     imp::assert_eq!(
         <Baz as imp::TryFromBytes>::try_read_from(imp::IntoBytes::as_bytes(&1u32)),
-        imp::Some(Baz::A)
+        imp::Ok(Baz::A)
     );
     imp::assert_eq!(
         <Baz as imp::TryFromBytes>::try_read_from(imp::IntoBytes::as_bytes(&0u32)),
-        imp::Some(Baz::B)
+        imp::Ok(Baz::B)
     );
-    imp::assert_eq!(<Baz as imp::TryFromBytes>::try_read_from(&[]), imp::None);
-    imp::assert_eq!(<Baz as imp::TryFromBytes>::try_read_from(&[0]), imp::None);
-    imp::assert_eq!(<Baz as imp::TryFromBytes>::try_read_from(&[0, 0]), imp::None);
-    imp::assert_eq!(<Baz as imp::TryFromBytes>::try_read_from(&[0, 0, 0]), imp::None);
-    imp::assert_eq!(<Baz as imp::TryFromBytes>::try_read_from(&[0, 0, 0, 0, 0]), imp::None);
+    imp::assert!(<Baz as imp::TryFromBytes>::try_read_from(&[]).is_err());
+    imp::assert!(<Baz as imp::TryFromBytes>::try_read_from(&[0]).is_err());
+    imp::assert!(<Baz as imp::TryFromBytes>::try_read_from(&[0, 0]).is_err());
+    imp::assert!(<Baz as imp::TryFromBytes>::try_read_from(&[0, 0, 0]).is_err());
+    imp::assert!(<Baz as imp::TryFromBytes>::try_read_from(&[0, 0, 0, 0, 0]).is_err());
 }
 
 // Test hygiene - make sure that `i8` being shadowed doesn't cause problems for
@@ -92,23 +92,23 @@ util_assert_impl_all!(Blah: imp::TryFromBytes);
 fn test_blah() {
     imp::assert_eq!(
         <Blah as imp::TryFromBytes>::try_read_from(imp::IntoBytes::as_bytes(&1i8)),
-        imp::Some(Blah::A)
+        imp::Ok(Blah::A)
     );
     imp::assert_eq!(
         <Blah as imp::TryFromBytes>::try_read_from(imp::IntoBytes::as_bytes(&0i8)),
-        imp::Some(Blah::B)
+        imp::Ok(Blah::B)
     );
     imp::assert_eq!(
         <Blah as imp::TryFromBytes>::try_read_from(imp::IntoBytes::as_bytes(&3i8)),
-        imp::Some(Blah::C)
+        imp::Ok(Blah::C)
     );
     imp::assert_eq!(
         <Blah as imp::TryFromBytes>::try_read_from(imp::IntoBytes::as_bytes(&6i8)),
-        imp::Some(Blah::D)
+        imp::Ok(Blah::D)
     );
-    imp::assert_eq!(<Blah as imp::TryFromBytes>::try_read_from(&[]), imp::None);
-    imp::assert_eq!(<Blah as imp::TryFromBytes>::try_read_from(&[4]), imp::None);
-    imp::assert_eq!(<Blah as imp::TryFromBytes>::try_read_from(&[0, 0]), imp::None);
+    imp::assert!(<Blah as imp::TryFromBytes>::try_read_from(&[]).is_err());
+    imp::assert!(<Blah as imp::TryFromBytes>::try_read_from(&[4]).is_err());
+    imp::assert!(<Blah as imp::TryFromBytes>::try_read_from(&[0, 0]).is_err());
 }
 
 #[derive(
@@ -127,21 +127,20 @@ fn test_fieldless_but_not_unit_only() {
     let disc: [u8; SIZE] = ::zerocopy::transmute!(FieldlessButNotUnitOnly::A);
     imp::assert_eq!(
         <FieldlessButNotUnitOnly as imp::TryFromBytes>::try_read_from(&disc[..]),
-        imp::Some(FieldlessButNotUnitOnly::A)
+        imp::Ok(FieldlessButNotUnitOnly::A)
     );
     let disc: [u8; SIZE] = ::zerocopy::transmute!(FieldlessButNotUnitOnly::B());
     imp::assert_eq!(
         <FieldlessButNotUnitOnly as imp::TryFromBytes>::try_read_from(&disc[..]),
-        imp::Some(FieldlessButNotUnitOnly::B())
+        imp::Ok(FieldlessButNotUnitOnly::B())
     );
     let disc: [u8; SIZE] = ::zerocopy::transmute!(FieldlessButNotUnitOnly::C {});
     imp::assert_eq!(
         <FieldlessButNotUnitOnly as imp::TryFromBytes>::try_read_from(&disc[..]),
-        imp::Some(FieldlessButNotUnitOnly::C {})
+        imp::Ok(FieldlessButNotUnitOnly::C {})
     );
-    imp::assert_eq!(
-        <FieldlessButNotUnitOnly as imp::TryFromBytes>::try_read_from(&[0xFF; SIZE][..]),
-        imp::None
+    imp::assert!(
+        <FieldlessButNotUnitOnly as imp::TryFromBytes>::try_read_from(&[0xFF; SIZE][..]).is_err()
     );
 }
 
@@ -161,20 +160,19 @@ fn test_weird_discriminants() {
     let disc: [u8; SIZE] = ::zerocopy::transmute!(WeirdDiscriminants::A);
     imp::assert_eq!(
         <WeirdDiscriminants as imp::TryFromBytes>::try_read_from(&disc[..]),
-        imp::Some(WeirdDiscriminants::A)
+        imp::Ok(WeirdDiscriminants::A)
     );
     let disc: [u8; SIZE] = ::zerocopy::transmute!(WeirdDiscriminants::B);
     imp::assert_eq!(
         <WeirdDiscriminants as imp::TryFromBytes>::try_read_from(&disc[..]),
-        imp::Some(WeirdDiscriminants::B)
+        imp::Ok(WeirdDiscriminants::B)
     );
     let disc: [u8; SIZE] = ::zerocopy::transmute!(WeirdDiscriminants::C);
     imp::assert_eq!(
         <WeirdDiscriminants as imp::TryFromBytes>::try_read_from(&disc[..]),
-        imp::Some(WeirdDiscriminants::C)
+        imp::Ok(WeirdDiscriminants::C)
     );
-    imp::assert_eq!(
-        <WeirdDiscriminants as imp::TryFromBytes>::try_read_from(&[0xFF; SIZE][..]),
-        imp::None
+    imp::assert!(
+        <WeirdDiscriminants as imp::TryFromBytes>::try_read_from(&[0xFF; SIZE][..]).is_err()
     );
 }

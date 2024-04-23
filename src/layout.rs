@@ -84,6 +84,12 @@ pub enum CastType {
     Suffix,
 }
 
+#[cfg_attr(test, derive(Debug))]
+pub(crate) enum MetadataCastError {
+    Alignment,
+    Size,
+}
+
 impl DstLayout {
     /// The minimum possible alignment of a type.
     const MIN_ALIGN: NonZeroUsize = match NonZeroUsize::new(1) {
@@ -448,7 +454,7 @@ impl DstLayout {
         addr: usize,
         bytes_len: usize,
         cast_type: CastType,
-    ) -> Option<(usize, usize)> {
+    ) -> Result<(usize, usize), MetadataCastError> {
         // `debug_assert!`, but with `#[allow(clippy::arithmetic_side_effects)]`.
         macro_rules! __const_debug_assert {
             ($e:expr $(, $msg:expr)?) => {
@@ -506,14 +512,14 @@ impl DstLayout {
             // by 0 because `align` is non-zero.
             #[allow(clippy::arithmetic_side_effects)]
             if (addr + offset) % self.align.get() != 0 {
-                return None;
+                return Err(MetadataCastError::Alignment);
             }
         }
 
         let (elems, self_bytes) = match size_info {
             SizeInfo::Sized { size } => {
                 if size > bytes_len {
-                    return None;
+                    return Err(MetadataCastError::Size);
                 }
                 (0, size)
             }
@@ -532,7 +538,7 @@ impl DstLayout {
                 let max_slice_and_padding_bytes = match max_total_bytes.checked_sub(offset) {
                     Some(max) => max,
                     // `bytes_len` too small even for 0 trailing slice elements.
-                    None => return None,
+                    None => return Err(MetadataCastError::Size),
                 };
 
                 // Calculate the number of elements that fit in
@@ -587,6 +593,6 @@ impl DstLayout {
             CastType::Suffix => bytes_len - self_bytes,
         };
 
-        Some((elems, split_at))
+        Ok((elems, split_at))
     }
 }
