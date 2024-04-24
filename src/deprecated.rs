@@ -63,3 +63,53 @@ where
         self.into_mut()
     }
 }
+
+impl<B, T> Ref<B, [T]>
+where
+    B: SplitByteSlice,
+    T: Immutable,
+{
+    #[deprecated(since = "0.8.0", note = "replaced by `Ref::with_trailing_elements_from_prefix`")]
+    #[must_use = "has no side effects"]
+    #[doc(hidden)]
+    #[inline]
+    pub fn new_slice_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, [T]>, B)> {
+        Ref::with_trailing_elements_from_prefix(bytes, count)
+    }
+
+    #[deprecated(since = "0.8.0", note = "replaced by `Ref::with_trailing_elements_from_suffix`")]
+    #[must_use = "has no side effects"]
+    #[doc(hidden)]
+    #[inline]
+    pub fn new_slice_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, [T]>)> {
+        Ref::with_trailing_elements_from_suffix(bytes, count)
+    }
+}
+
+impl<B, T> Ref<B, [T]>
+where
+    B: SplitByteSlice,
+    T: Unaligned + Immutable,
+{
+    #[deprecated(
+        since = "0.8.0",
+        note = "replaced by `Ref::with_trailing_elements_unaligned_from_prefix`"
+    )]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn new_slice_unaligned_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, [T]>, B)> {
+        Ref::with_trailing_elements_unaligned_from_prefix(bytes, count)
+    }
+
+    #[deprecated(
+        since = "0.8.0",
+        note = "replaced by `Ref::with_trailing_elements_unaligned_from_suffix`"
+    )]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn new_slice_unaligned_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, [T]>)> {
+        Ref::with_trailing_elements_unaligned_from_suffix(bytes, count)
+    }
+}
