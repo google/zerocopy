@@ -45,19 +45,19 @@ enum Generic5 {
 }
 
 //
-// NoCell errors
+// Immutable errors
 //
 
-#[derive(NoCell)]
-enum NoCell1 {
+#[derive(Immutable)]
+enum Immutable1 {
     A(core::cell::UnsafeCell<()>),
 }
 
-#[derive(NoCell)]
+#[derive(Immutable)]
 enum Never {}
 
-#[derive(NoCell)]
-enum NoCell2 {
+#[derive(Immutable)]
+enum Immutable2 {
     Uninhabited(Never, core::cell::UnsafeCell<u8>),
     Inhabited(u8),
 }

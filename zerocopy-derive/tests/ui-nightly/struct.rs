@@ -49,16 +49,16 @@ struct KL08(u8, NotKnownLayoutDst);
 struct KL09(NotKnownLayout, NotKnownLayout);
 
 //
-// NoCell errors
+// Immutable errors
 //
 
-#[derive(NoCell)]
-struct NoCell1 {
+#[derive(Immutable)]
+struct Immutable1 {
     a: core::cell::UnsafeCell<()>,
 }
 
-#[derive(NoCell)]
-struct NoCell2 {
+#[derive(Immutable)]
+struct Immutable2 {
     a: [core::cell::UnsafeCell<u8>; 0],
 }
 

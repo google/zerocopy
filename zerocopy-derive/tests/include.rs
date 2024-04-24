@@ -46,7 +46,7 @@ pub mod util {
     /// contrast, `util::AU16` is guaranteed to have alignment 2.
     #[derive(
         super::imp::KnownLayout,
-        super::imp::NoCell,
+        super::imp::Immutable,
         super::imp::FromBytes,
         super::imp::IntoBytes,
         Copy,

@@ -297,12 +297,12 @@ macro_rules! impl_for_transparent_wrapper {
             impl_for_transparent_wrapper!(@is_bit_valid $trait for $ty);
         }
     };
-    (@is_transparent_wrapper NoCell) => {
+    (@is_transparent_wrapper Immutable) => {
         // SAFETY: `W: TransparentWrapper<UnsafeCellVariance=Covariant>`
         // requires that `W` has `UnsafeCell`s at the same byte offsets as
-        // `W::Inner = T`. `T: NoCell` implies that `T` does not contain any
+        // `W::Inner = T`. `T: Immutable` implies that `T` does not contain any
         // `UnsafeCell`s, and so `W` does not contain any `UnsafeCell`s. Thus,
-        // `W` can soundly implement `NoCell`.
+        // `W` can soundly implement `Immutable`.
         fn is_transparent_wrapper<I: Invariants, T: ?Sized, W: TransparentWrapper<I, Inner=T, UnsafeCellVariance=Covariant> + ?Sized>() {}
     };
     (@is_transparent_wrapper FromZeros) => {

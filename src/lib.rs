@@ -44,7 +44,7 @@
 //! by the conversion traits:
 //! - [`KnownLayout`] indicates that zerocopy can reason about certain layout
 //!   qualities of a type
-//! - [`NoCell`] indicates that a type does not contain any [`UnsafeCell`]s
+//! - [`Immutable`] indicates that a type does not contain any [`UnsafeCell`]s
 //! - [`Unaligned`] indicates that a type's alignment requirement is 1
 //!
 //! You should generally derive these marker traits whenever possible.
@@ -1214,7 +1214,7 @@ safety_comment! {
 /// e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::{FromZeros, NoCell};
+/// # use zerocopy_derive::{FromZeros, Immutable};
 /// #[derive(FromZeros)]
 /// struct MyStruct {
 /// # /*
@@ -1231,7 +1231,7 @@ safety_comment! {
 /// # */
 /// }
 ///
-/// #[derive(FromZeros, NoCell)]
+/// #[derive(FromZeros, Immutable)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
@@ -1296,22 +1296,23 @@ safety_comment! {
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::FromZeros;
 
-/// Analyzes whether a type is [`NoCell`].
+/// Analyzes whether a type is [`Immutable`].
 ///
 /// This derive analyzes, at compile time, whether the annotated type satisfies
-/// the [safety conditions] of `NoCell` and implements `NoCell` if it is sound
-/// to do so. This derive can be applied to structs, enums, and unions; e.g.:
+/// the [safety conditions] of `Immutable` and implements `Immutable` if it is
+/// sound to do so. This derive can be applied to structs, enums, and unions;
+/// e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::NoCell;
-/// #[derive(NoCell)]
+/// # use zerocopy_derive::Immutable;
+/// #[derive(Immutable)]
 /// struct MyStruct {
 /// # /*
 ///     ...
 /// # */
 /// }
 ///
-/// #[derive(NoCell)]
+/// #[derive(Immutable)]
 /// enum MyEnum {
 /// #   Variant0,
 /// # /*
@@ -1319,7 +1320,7 @@ pub use zerocopy_derive::FromZeros;
 /// # */
 /// }
 ///
-/// #[derive(NoCell)]
+/// #[derive(Immutable)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
@@ -1331,54 +1332,54 @@ pub use zerocopy_derive::FromZeros;
 /// # Analysis
 ///
 /// *This section describes, roughly, the analysis performed by this derive to
-/// determine whether it is sound to implement `NoCell` for a given type.
+/// determine whether it is sound to implement `Immutable` for a given type.
 /// Unless you are modifying the implementation of this derive, or attempting to
-/// manually implement `NoCell` for a type yourself, you don't need to read
+/// manually implement `Immutable` for a type yourself, you don't need to read
 /// this section.*
 ///
 /// If a type has the following properties, then this derive can implement
-/// `NoCell` for that type:
+/// `Immutable` for that type:
 ///
-/// - All fields must be `NoCell`.
+/// - All fields must be `Immutable`.
 ///
 /// This analysis is subject to change. Unsafe code may *only* rely on the
-/// documented [safety conditions] of `NoCell`, and must *not* rely on the
+/// documented [safety conditions] of `Immutable`, and must *not* rely on the
 /// implementation details of this derive.
 ///
-/// [safety conditions]: trait@NoCell#safety
+/// [safety conditions]: trait@Immutable#safety
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
-pub use zerocopy_derive::NoCell;
+pub use zerocopy_derive::Immutable;
 
-/// Types which do not contain any [`UnsafeCell`]s.
+/// Types which do not directly contain any [`UnsafeCell`]s.
 ///
-/// `T: NoCell` indicates that `T` does not contain any `UnsafeCell`s in its
+/// `T: Immutable` indicates that `T` does not contain any `UnsafeCell`s in its
 /// fields. `T` may still refer to types which contain `UnsafeCell`s: for
-/// example, `&UnsafeCell<T>` implements `NoCell`.
+/// example, `&UnsafeCell<T>` implements `Immutable`.
 ///
 /// # Implementation
 ///
 /// **Do not implement this trait yourself!** Instead, use
-/// [`#[derive(NoCell)]`][derive] (requires the `derive` Cargo feature);
+/// [`#[derive(Immutable)]`][derive] (requires the `derive` Cargo feature);
 /// e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::NoCell;
-/// #[derive(NoCell)]
+/// # use zerocopy_derive::Immutable;
+/// #[derive(Immutable)]
 /// struct MyStruct {
 /// # /*
 ///     ...
 /// # */
 /// }
 ///
-/// #[derive(NoCell)]
+/// #[derive(Immutable)]
 /// enum MyEnum {
 /// # /*
 ///     ...
 /// # */
 /// }
 ///
-/// #[derive(NoCell)]
+/// #[derive(Immutable)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
@@ -1388,37 +1389,37 @@ pub use zerocopy_derive::NoCell;
 /// ```
 ///
 /// This derive performs a sophisticated, compile-time safety analysis to
-/// determine whether a type is `NoCell`.
+/// determine whether a type is `Immutable`.
 ///
 /// # Safety
 ///
-/// If `T: NoCell`, unsafe code *inside of this crate* may assume that, given
+/// If `T: Immutable`, unsafe code *inside of this crate* may assume that, given
 /// `t: &T`, `t` does not contain any [`UnsafeCell`]s at any byte location
 /// within the byte range addressed by `t`. This includes ranges of length 0
 /// (e.g., `UnsafeCell<()>` and `[UnsafeCell<u8>; 0]`). If a type implements
-/// `NoCell` which violates this assumptions, it may cause this crate to exhibit
-/// [undefined behavior].
+/// `Immutable` which violates this assumptions, it may cause this crate to
+/// exhibit [undefined behavior].
 ///
 /// Unsafe code outside of this crate must not make any assumptions about `T`
-/// based on `T: NoCell`. We reserve the right to relax the requirements for
-/// `NoCell` in the future, and if unsafe code outside of this crate makes
-/// assumptions based on `T: NoCell`, future relaxations may cause that code to
-/// become unsound.
+/// based on `T: Immutable`. We reserve the right to relax the requirements for
+/// `Immutable` in the future, and if unsafe code outside of this crate makes
+/// assumptions based on `T: Immutable`, future relaxations may cause that code
+/// to become unsound.
 ///
 /// [`UnsafeCell`]: core::cell::UnsafeCell
 /// [undefined behavior]: https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html
 #[cfg_attr(
     feature = "derive",
-    doc = "[derive]: zerocopy_derive::NoCell",
-    doc = "[derive-analysis]: zerocopy_derive::NoCell#analysis"
+    doc = "[derive]: zerocopy_derive::Immutable",
+    doc = "[derive-analysis]: zerocopy_derive::Immutable#analysis"
 )]
 #[cfg_attr(
     not(feature = "derive"),
-    doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.NoCell.html"),
-    doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.NoCell.html#analysis"),
+    doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.Immutable.html"),
+    doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.Immutable.html#analysis"),
 )]
-pub unsafe trait NoCell {
-    // The `Self: Sized` bound makes it so that `NoCell` is still object
+pub unsafe trait Immutable {
+    // The `Self: Sized` bound makes it so that `Immutable` is still object
     // safe.
     #[doc(hidden)]
     fn only_derive_is_allowed_to_implement_this_trait()
@@ -1433,7 +1434,7 @@ pub unsafe trait NoCell {
 /// This derive can be applied to structs, enums, and unions; e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::{TryFromBytes, NoCell};
+/// # use zerocopy_derive::{TryFromBytes, Immutable};
 /// #[derive(TryFromBytes)]
 /// struct MyStruct {
 /// # /*
@@ -1450,7 +1451,7 @@ pub unsafe trait NoCell {
 /// # */
 /// }
 ///
-/// #[derive(TryFromBytes, NoCell)]
+/// #[derive(TryFromBytes, Immutable)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
@@ -1479,7 +1480,7 @@ pub use zerocopy_derive::TryFromBytes;
 /// e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::{TryFromBytes, NoCell};
+/// # use zerocopy_derive::{TryFromBytes, Immutable};
 /// #[derive(TryFromBytes)]
 /// struct MyStruct {
 /// # /*
@@ -1496,7 +1497,7 @@ pub use zerocopy_derive::TryFromBytes;
 /// # */
 /// }
 ///
-/// #[derive(TryFromBytes, NoCell)]
+/// #[derive(TryFromBytes, Immutable)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
@@ -1590,7 +1591,7 @@ pub unsafe trait TryFromBytes {
     ///
     /// Besides user-defined validation routines panicking, `is_bit_valid` will
     /// either panic or fail to compile if called on a pointer with [`Shared`]
-    /// aliasing when `Self: !NoCell`.
+    /// aliasing when `Self: !Immutable`.
     ///
     /// [`UnsafeCell`]: core::cell::UnsafeCell
     /// [`Shared`]: invariant::Shared
@@ -1611,7 +1612,7 @@ pub unsafe trait TryFromBytes {
     #[inline]
     fn try_ref_from(bytes: &[u8]) -> Option<&Self>
     where
-        Self: KnownLayout + NoCell,
+        Self: KnownLayout + Immutable,
     {
         let candidate = Ptr::from_ref(bytes).try_cast_into_no_leftover::<Self>()?;
 
@@ -1621,7 +1622,7 @@ pub unsafe trait TryFromBytes {
         //
         // Note that one panic or post-monomorphization error condition is
         // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
-        // pointer when `Self: !NoCell`. Since `Self: NoCell`, this panic
+        // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
         // condition will not happen.
         let candidate = candidate.try_into_valid();
 
@@ -1642,7 +1643,7 @@ pub unsafe trait TryFromBytes {
     #[inline]
     fn try_mut_from(bytes: &mut [u8]) -> Option<&mut Self>
     where
-        Self: KnownLayout + NoCell, // TODO(#251): Remove the `NoCell` bound.
+        Self: KnownLayout + Immutable, // TODO(#251): Remove the `Immutable` bound.
     {
         let candidate = Ptr::from_mut(bytes).try_cast_into_no_leftover::<Self>()?;
 
@@ -1652,7 +1653,7 @@ pub unsafe trait TryFromBytes {
         //
         // Note that one panic or post-monomorphization error condition is
         // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
-        // pointer when `Self: !NoCell`. Since `Self: NoCell`, this panic
+        // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
         // condition will not happen.
         let candidate = candidate.try_into_valid();
 
@@ -1675,7 +1676,7 @@ pub unsafe trait TryFromBytes {
         Self: Sized,
     {
         // Note that we have to call `is_bit_valid` on an exclusive-aliased
-        // pointer since we don't require `Self: NoCell`. That's why we do `let
+        // pointer since we don't require `Self: Immutable`. That's why we do `let
         // mut` and `Ptr::from_mut` here. See the doc comment on `is_bit_valid`
         // and the implementation of `TryFromBytes` for `UnsafeCell` for more
         // details.
@@ -1692,7 +1693,7 @@ pub unsafe trait TryFromBytes {
         //
         // Note that one panic or post-monomorphization error condition is
         // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
-        // pointer when `Self: !NoCell`. Since `Self: NoCell`, this panic
+        // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
         // condition will not happen.
         if !Self::is_bit_valid(c_ptr.forget_aligned()) {
             return None;
@@ -1718,7 +1719,7 @@ pub unsafe trait TryFromBytes {
 /// e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::{FromZeros, NoCell};
+/// # use zerocopy_derive::{FromZeros, Immutable};
 /// #[derive(FromZeros)]
 /// struct MyStruct {
 /// # /*
@@ -1735,7 +1736,7 @@ pub unsafe trait TryFromBytes {
 /// # */
 /// }
 ///
-/// #[derive(FromZeros, NoCell)]
+/// #[derive(FromZeros, Immutable)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
@@ -2020,7 +2021,7 @@ pub unsafe trait FromZeros: TryFromBytes {
 /// e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::{FromBytes, FromZeros, NoCell};
+/// # use zerocopy_derive::{FromBytes, FromZeros, Immutable};
 /// #[derive(FromBytes)]
 /// struct MyStruct {
 /// # /*
@@ -2054,7 +2055,7 @@ pub unsafe trait FromZeros: TryFromBytes {
 /// # */
 /// }
 ///
-/// #[derive(FromBytes, NoCell)]
+/// #[derive(FromBytes, Immutable)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
@@ -2135,7 +2136,7 @@ pub use zerocopy_derive::FromBytes;
 /// e.g.:
 ///
 /// ```
-/// # use zerocopy_derive::{FromBytes, NoCell};
+/// # use zerocopy_derive::{FromBytes, Immutable};
 /// #[derive(FromBytes)]
 /// struct MyStruct {
 /// # /*
@@ -2169,7 +2170,7 @@ pub use zerocopy_derive::FromBytes;
 /// # */
 /// }
 ///
-/// #[derive(FromBytes, NoCell)]
+/// #[derive(FromBytes, Immutable)]
 /// union MyUnion {
 /// #   variant: u8,
 /// # /*
@@ -2226,7 +2227,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromBytes, KnownLayout, NoCell)]
+    /// #[derive(FromBytes, KnownLayout, Immutable)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -2235,7 +2236,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///     checksum: [u8; 2],
     /// }
     ///
-    /// #[derive(FromBytes, KnownLayout, NoCell)]
+    /// #[derive(FromBytes, KnownLayout, Immutable)]
     /// #[repr(C)]
     /// struct Packet {
     ///     header: PacketHeader,
@@ -2257,7 +2258,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn ref_from(bytes: &[u8]) -> Option<&Self>
     where
-        Self: KnownLayout + NoCell,
+        Self: KnownLayout + Immutable,
     {
         Ref::<&[u8], Self>::bikeshed_new_known_layout(bytes).map(Ref::into_ref)
     }
@@ -2275,7 +2276,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromBytes, KnownLayout, NoCell)]
+    /// #[derive(FromBytes, KnownLayout, Immutable)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -2284,7 +2285,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///     checksum: [u8; 2],
     /// }
     ///
-    /// #[derive(FromBytes, KnownLayout, NoCell)]
+    /// #[derive(FromBytes, KnownLayout, Immutable)]
     /// #[repr(C)]
     /// struct Packet {
     ///     header: PacketHeader,
@@ -2307,7 +2308,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn ref_from_prefix(bytes: &[u8]) -> Option<(&Self, &[u8])>
     where
-        Self: KnownLayout + NoCell,
+        Self: KnownLayout + Immutable,
     {
         Ref::<&[u8], Self>::bikeshed_new_from_prefix_known_layout(bytes)
             .map(|(r, s)| (r.into_ref(), s))
@@ -2326,7 +2327,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromBytes, NoCell, KnownLayout)]
+    /// #[derive(FromBytes, Immutable, KnownLayout)]
     /// #[repr(C)]
     /// struct PacketTrailer {
     ///     frame_check_sequence: [u8; 4],
@@ -2344,7 +2345,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn ref_from_suffix(bytes: &[u8]) -> Option<(&[u8], &Self)>
     where
-        Self: NoCell + KnownLayout,
+        Self: Immutable + KnownLayout,
     {
         Ref::<&[u8], Self>::bikeshed_new_from_suffix_known_layout(bytes)
             .map(|(p, r)| (p, r.into_ref()))
@@ -2361,7 +2362,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromBytes, IntoBytes, KnownLayout, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, KnownLayout, Immutable)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -2388,7 +2389,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn mut_from(bytes: &mut [u8]) -> Option<&mut Self>
     where
-        Self: IntoBytes + KnownLayout + NoCell,
+        Self: IntoBytes + KnownLayout + Immutable,
     {
         Ref::<&mut [u8], Self>::bikeshed_new_known_layout(bytes).map(Ref::into_mut)
     }
@@ -2407,7 +2408,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromBytes, IntoBytes, KnownLayout, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, KnownLayout, Immutable)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -2436,7 +2437,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn mut_from_prefix(bytes: &mut [u8]) -> Option<(&mut Self, &mut [u8])>
     where
-        Self: IntoBytes + KnownLayout + NoCell,
+        Self: IntoBytes + KnownLayout + Immutable,
     {
         Ref::<&mut [u8], Self>::bikeshed_new_from_prefix_known_layout(bytes)
             .map(|(r, s)| (r.into_mut(), s))
@@ -2456,7 +2457,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// use zerocopy::FromBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(FromBytes, IntoBytes, KnownLayout, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, KnownLayout, Immutable)]
     /// #[repr(C)]
     /// struct PacketTrailer {
     ///     frame_check_sequence: [u8; 4],
@@ -2479,7 +2480,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn mut_from_suffix(bytes: &mut [u8]) -> Option<(&mut [u8], &mut Self)>
     where
-        Self: IntoBytes + KnownLayout + NoCell,
+        Self: IntoBytes + KnownLayout + Immutable,
     {
         Ref::<&mut [u8], Self>::bikeshed_new_from_suffix_known_layout(bytes)
             .map(|(p, r)| (p, r.into_mut()))
@@ -2506,7 +2507,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromBytes, NoCell)]
+    /// #[derive(FromBytes, Immutable)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2531,7 +2532,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn slice_from_prefix(bytes: &[u8], count: usize) -> Option<(&[Self], &[u8])>
     where
-        Self: Sized + NoCell,
+        Self: Sized + Immutable,
     {
         Ref::<_, [Self]>::new_slice_from_prefix(bytes, count).map(|(r, b)| (r.into_ref(), b))
     }
@@ -2557,7 +2558,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromBytes, NoCell)]
+    /// #[derive(FromBytes, Immutable)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2582,7 +2583,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn slice_from_suffix(bytes: &[u8], count: usize) -> Option<(&[u8], &[Self])>
     where
-        Self: Sized + NoCell,
+        Self: Sized + Immutable,
     {
         Ref::<_, [Self]>::new_slice_from_suffix(bytes, count).map(|(b, r)| (b, r.into_ref()))
     }
@@ -2607,7 +2608,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromBytes, IntoBytes, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, Immutable)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2634,7 +2635,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn mut_slice_from(bytes: &mut [u8]) -> Option<&mut [Self]>
     where
-        Self: Sized + IntoBytes + NoCell,
+        Self: Sized + IntoBytes + Immutable,
     {
         Ref::<_, [Self]>::new(bytes).map(|r| r.into_mut())
     }
@@ -2660,7 +2661,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromBytes, IntoBytes, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, Immutable)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2690,7 +2691,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn mut_slice_from_prefix(bytes: &mut [u8], count: usize) -> Option<(&mut [Self], &mut [u8])>
     where
-        Self: Sized + IntoBytes + NoCell,
+        Self: Sized + IntoBytes + Immutable,
     {
         Ref::<_, [Self]>::new_slice_from_prefix(bytes, count).map(|(r, b)| (r.into_mut(), b))
     }
@@ -2716,7 +2717,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Debug, PartialEq, Eq)]
-    /// #[derive(FromBytes, IntoBytes, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, Immutable)]
     /// #[repr(C)]
     /// struct Pixel {
     ///     r: u8,
@@ -2746,7 +2747,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn mut_slice_from_suffix(bytes: &mut [u8], count: usize) -> Option<(&mut [u8], &mut [Self])>
     where
-        Self: Sized + IntoBytes + NoCell,
+        Self: Sized + IntoBytes + Immutable,
     {
         Ref::<_, [Self]>::new_slice_from_suffix(bytes, count).map(|(b, r)| (b, r.into_mut()))
     }
@@ -2869,7 +2870,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn slice_from(bytes: &[u8]) -> Option<&[Self]>
     where
-        Self: Sized + NoCell,
+        Self: Sized + Immutable,
     {
         <[Self]>::ref_from(bytes)
     }
@@ -3063,7 +3064,7 @@ pub unsafe trait IntoBytes {
     /// use zerocopy::IntoBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(IntoBytes, NoCell)]
+    /// #[derive(IntoBytes, Immutable)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -3087,7 +3088,7 @@ pub unsafe trait IntoBytes {
     #[inline(always)]
     fn as_bytes(&self) -> &[u8]
     where
-        Self: NoCell,
+        Self: Immutable,
     {
         // Note that this method does not have a `Self: Sized` bound;
         // `size_of_val` works for unsized values too.
@@ -3108,7 +3109,7 @@ pub unsafe trait IntoBytes {
         // - Since `slf` is derived from `self`, and `self` is an immutable
         //   reference, the only other references to this memory region that
         //   could exist are other immutable references, and those don't allow
-        //   mutation. `Self: NoCell` prohibits types which contain
+        //   mutation. `Self: Immutable` prohibits types which contain
         //   `UnsafeCell`s, which are the only types for which this rule
         //   wouldn't be sufficient.
         // - The total size of the resulting slice is no larger than
@@ -3131,7 +3132,7 @@ pub unsafe trait IntoBytes {
     /// # use zerocopy_derive::*;
     ///
     /// # #[derive(Eq, PartialEq, Debug)]
-    /// #[derive(FromBytes, IntoBytes, NoCell)]
+    /// #[derive(FromBytes, IntoBytes, Immutable)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -3164,7 +3165,7 @@ pub unsafe trait IntoBytes {
     #[inline(always)]
     fn as_mut_bytes(&mut self) -> &mut [u8]
     where
-        Self: FromBytes + NoCell,
+        Self: FromBytes + Immutable,
     {
         // Note that this method does not have a `Self: Sized` bound;
         // `size_of_val` works for unsized values too.
@@ -3204,7 +3205,7 @@ pub unsafe trait IntoBytes {
     /// use zerocopy::IntoBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(IntoBytes, NoCell)]
+    /// #[derive(IntoBytes, Immutable)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -3244,7 +3245,7 @@ pub unsafe trait IntoBytes {
     #[inline]
     fn write_to(&self, bytes: &mut [u8]) -> Option<()>
     where
-        Self: NoCell,
+        Self: Immutable,
     {
         if bytes.len() != mem::size_of_val(self) {
             return None;
@@ -3265,7 +3266,7 @@ pub unsafe trait IntoBytes {
     /// use zerocopy::IntoBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(IntoBytes, NoCell)]
+    /// #[derive(IntoBytes, Immutable)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -3305,7 +3306,7 @@ pub unsafe trait IntoBytes {
     #[inline]
     fn write_to_prefix(&self, bytes: &mut [u8]) -> Option<()>
     where
-        Self: NoCell,
+        Self: Immutable,
     {
         let size = mem::size_of_val(self);
         bytes.get_mut(..size)?.copy_from_slice(self.as_bytes());
@@ -3323,7 +3324,7 @@ pub unsafe trait IntoBytes {
     /// use zerocopy::IntoBytes;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(IntoBytes, NoCell)]
+    /// #[derive(IntoBytes, Immutable)]
     /// #[repr(C)]
     /// struct PacketHeader {
     ///     src_port: [u8; 2],
@@ -3370,7 +3371,7 @@ pub unsafe trait IntoBytes {
     #[inline]
     fn write_to_suffix(&self, bytes: &mut [u8]) -> Option<()>
     where
-        Self: NoCell,
+        Self: Immutable,
     {
         let start = bytes.len().checked_sub(mem::size_of_val(self))?;
         bytes
@@ -3385,7 +3386,7 @@ pub unsafe trait IntoBytes {
     #[inline]
     fn as_bytes_mut(&mut self) -> &mut [u8]
     where
-        Self: FromBytes + NoCell,
+        Self: FromBytes + Immutable,
     {
         self.as_mut_bytes()
     }
@@ -3534,20 +3535,21 @@ safety_comment! {
     /// SAFETY:
     /// Per the reference [1], "the unit tuple (`()`) ... is guaranteed as a
     /// zero-sized type to have a size of 0 and an alignment of 1."
-    /// - `NoCell`: `()` self-evidently does not contain any `UnsafeCell`s.
+    /// - `Immutable`: `()` self-evidently does not contain any `UnsafeCell`s.
     /// - `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`: There is
     ///   only one possible sequence of 0 bytes, and `()` is inhabited.
     /// - `IntoBytes`: Since `()` has size 0, it contains no padding bytes.
     /// - `Unaligned`: `()` has alignment 1.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#tuple-layout
-    unsafe_impl!((): NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+    unsafe_impl!((): Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
     assert_unaligned!(());
 }
 
 safety_comment! {
     /// SAFETY:
-    /// - `NoCell`: These types self-evidently do not contain any `UnsafeCell`s.
+    /// - `Immutable`: These types self-evidently do not contain any
+    ///   `UnsafeCell`s.
     /// - `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`: all bit
     ///   patterns are valid for numeric types [1]
     /// - `IntoBytes`: numeric types have no padding bytes [1]
@@ -3580,26 +3582,26 @@ safety_comment! {
     /// TODO(#278): Once we've updated the trait docs to refer to `u8`s rather
     /// than bits or bytes, update this comment, especially the reference to
     /// [1].
-    unsafe_impl!(u8: NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-    unsafe_impl!(i8: NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+    unsafe_impl!(u8: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+    unsafe_impl!(i8: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
     assert_unaligned!(u8, i8);
-    unsafe_impl!(u16: NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(i16: NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(u32: NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(i32: NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(u64: NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(i64: NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(u128: NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(i128: NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(usize: NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(isize: NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(f32: NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(f64: NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(u16: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(i16: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(u32: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(i32: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(u64: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(i64: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(u128: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(i128: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(usize: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(isize: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(f32: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(f64: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
 }
 
 safety_comment! {
     /// SAFETY:
-    /// - `NoCell`: `bool` self-evidently does not contain any `UnsafeCell`s.
+    /// - `Immutable`: `bool` self-evidently does not contain any `UnsafeCell`s.
     /// - `FromZeros`: Valid since "[t]he value false has the bit pattern 0x00"
     ///   [1].
     /// - `IntoBytes`: Since "the boolean type has a size and alignment of 1
@@ -3610,7 +3612,7 @@ safety_comment! {
     ///   has a size and alignment of 1 each."
     ///
     /// [1] https://doc.rust-lang.org/reference/types/boolean.html
-    unsafe_impl!(bool: NoCell, FromZeros, IntoBytes, Unaligned);
+    unsafe_impl!(bool: Immutable, FromZeros, IntoBytes, Unaligned);
     assert_unaligned!(bool);
     /// SAFETY:
     /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
@@ -3655,7 +3657,7 @@ safety_comment! {
 }
 safety_comment! {
     /// SAFETY:
-    /// - `NoCell`: `char` self-evidently does not contain any `UnsafeCell`s.
+    /// - `Immutable`: `char` self-evidently does not contain any `UnsafeCell`s.
     /// - `FromZeros`: Per reference [1], "[a] value of type char is a Unicode
     ///   scalar value (i.e. a code point that is not a surrogate), represented
     ///   as a 32-bit unsigned word in the 0x0000 to 0xD7FF or 0xE000 to
@@ -3665,7 +3667,7 @@ safety_comment! {
     ///   not all bit patterns are valid for `char`.
     ///
     /// [1] https://doc.rust-lang.org/reference/types/textual.html
-    unsafe_impl!(char: NoCell, FromZeros, IntoBytes);
+    unsafe_impl!(char: Immutable, FromZeros, IntoBytes);
     /// SAFETY:
     /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
     ///   closure:
@@ -3710,7 +3712,7 @@ safety_comment! {
 safety_comment! {
     /// SAFETY:
     /// Per the Reference [1], `str` has the same layout as `[u8]`.
-    /// - `NoCell`: `[u8]` does not contain any `UnsafeCell`s.
+    /// - `Immutable`: `[u8]` does not contain any `UnsafeCell`s.
     /// - `FromZeros`, `IntoBytes`, `Unaligned`: `[u8]` is `FromZeros`,
     ///   `IntoBytes`, and `Unaligned`.
     ///
@@ -3723,7 +3725,7 @@ safety_comment! {
     ///   layout as `[u8]` isn't sufficient.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#str-layout
-    unsafe_impl!(str: NoCell, FromZeros, IntoBytes, Unaligned);
+    unsafe_impl!(str: Immutable, FromZeros, IntoBytes, Unaligned);
     /// SAFETY:
     /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
     ///   closure:
@@ -3779,7 +3781,7 @@ safety_comment! {
     ///
     /// TODO(#429):
     /// - Add quotes from documentation.
-    /// - Add safety comment for `NoCell`. How can we prove that `NonZeroXxx`
+    /// - Add safety comment for `Immutable`. How can we prove that `NonZeroXxx`
     ///   doesn't contain any `UnsafeCell`s? It's obviously true, but it's not
     ///   clear how we'd prove it short of adding text to the stdlib docs that
     ///   says so explicitly, which likely wouldn't be accepted.
@@ -3788,19 +3790,19 @@ safety_comment! {
     /// [2] https://doc.rust-lang.org/stable/std/num/struct.NonZeroI8.html
     /// TODO(https://github.com/rust-lang/rust/pull/104082): Cite documentation
     /// that layout is the same as primitive layout.
-    unsafe_impl!(NonZeroU8: NoCell, IntoBytes, Unaligned);
-    unsafe_impl!(NonZeroI8: NoCell, IntoBytes, Unaligned);
+    unsafe_impl!(NonZeroU8: Immutable, IntoBytes, Unaligned);
+    unsafe_impl!(NonZeroI8: Immutable, IntoBytes, Unaligned);
     assert_unaligned!(NonZeroU8, NonZeroI8);
-    unsafe_impl!(NonZeroU16: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroI16: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroU32: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroI32: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroU64: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroI64: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroU128: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroI128: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroUsize: NoCell, IntoBytes);
-    unsafe_impl!(NonZeroIsize: NoCell, IntoBytes);
+    unsafe_impl!(NonZeroU16: Immutable, IntoBytes);
+    unsafe_impl!(NonZeroI16: Immutable, IntoBytes);
+    unsafe_impl!(NonZeroU32: Immutable, IntoBytes);
+    unsafe_impl!(NonZeroI32: Immutable, IntoBytes);
+    unsafe_impl!(NonZeroU64: Immutable, IntoBytes);
+    unsafe_impl!(NonZeroI64: Immutable, IntoBytes);
+    unsafe_impl!(NonZeroU128: Immutable, IntoBytes);
+    unsafe_impl!(NonZeroI128: Immutable, IntoBytes);
+    unsafe_impl!(NonZeroUsize: Immutable, IntoBytes);
+    unsafe_impl!(NonZeroIsize: Immutable, IntoBytes);
     /// SAFETY:
     /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
     ///   closure:
@@ -3889,7 +3891,7 @@ safety_comment! {
     #[cfg(feature = "alloc")]
     unsafe_impl!(
         #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
-        T: Sized => NoCell for Box<T>
+        T: Sized => Immutable for Box<T>
     );
 }
 
@@ -3956,8 +3958,8 @@ safety_comment! {
 safety_comment! {
     /// SAFETY:
     /// TODO(#896): Write this safety proof before the next stable release.
-    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => NoCell for opt_fn!(...));
-    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => NoCell for opt_extern_c_fn!(...));
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => Immutable for opt_fn!(...));
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => Immutable for opt_extern_c_fn!(...));
 }
 
 macro_rules! impl_traits_for_atomics {
@@ -4009,7 +4011,7 @@ safety_comment! {
     /// size_of::<PhantomData<T>>() == 0
     /// align_of::<PhantomData<T>>() == 1".
     /// This gives:
-    /// - `NoCell`: `PhantomData` has no fields.
+    /// - `Immutable`: `PhantomData` has no fields.
     /// - `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`: There is
     ///   only one possible sequence of 0 bytes, and `PhantomData` is inhabited.
     /// - `IntoBytes`: Since `PhantomData` has size 0, it contains no padding
@@ -4018,7 +4020,7 @@ safety_comment! {
     ///   1.
     ///
     /// [1] https://doc.rust-lang.org/std/marker/struct.PhantomData.html#layout-1
-    unsafe_impl!(T: ?Sized => NoCell for PhantomData<T>);
+    unsafe_impl!(T: ?Sized => Immutable for PhantomData<T>);
     unsafe_impl!(T: ?Sized => TryFromBytes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => FromZeros for PhantomData<T>);
     unsafe_impl!(T: ?Sized => FromBytes for PhantomData<T>);
@@ -4027,7 +4029,7 @@ safety_comment! {
     assert_unaligned!(PhantomData<()>, PhantomData<u8>, PhantomData<u64>);
 }
 
-impl_for_transparent_wrapper!(T: NoCell => NoCell for Wrapping<T>);
+impl_for_transparent_wrapper!(T: Immutable => Immutable for Wrapping<T>);
 impl_for_transparent_wrapper!(T: TryFromBytes => TryFromBytes for Wrapping<T>);
 impl_for_transparent_wrapper!(T: FromZeros => FromZeros for Wrapping<T>);
 impl_for_transparent_wrapper!(T: FromBytes => FromBytes for Wrapping<T>);
@@ -4044,11 +4046,11 @@ safety_comment! {
     unsafe_impl!(T => FromBytes for MaybeUninit<T>);
 }
 
-impl_for_transparent_wrapper!(T: NoCell => NoCell for MaybeUninit<T>);
+impl_for_transparent_wrapper!(T: Immutable => Immutable for MaybeUninit<T>);
 impl_for_transparent_wrapper!(T: Unaligned => Unaligned for MaybeUninit<T>);
 assert_unaligned!(MaybeUninit<()>, MaybeUninit<u8>);
 
-impl_for_transparent_wrapper!(T: ?Sized + NoCell => NoCell for ManuallyDrop<T>);
+impl_for_transparent_wrapper!(T: ?Sized + Immutable => Immutable for ManuallyDrop<T>);
 impl_for_transparent_wrapper!(T: ?Sized + TryFromBytes => TryFromBytes for ManuallyDrop<T>);
 impl_for_transparent_wrapper!(T: ?Sized + FromZeros => FromZeros for ManuallyDrop<T>);
 impl_for_transparent_wrapper!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>);
@@ -4156,7 +4158,7 @@ safety_comment! {
     ///
     /// In other words, the layout of a `[T]` or `[T; N]` is a sequence of `T`s
     /// laid out back-to-back with no bytes in between. Therefore, `[T]` or `[T;
-    /// N]` are `NoCell`, `TryFromBytes`, `FromZeros`, `FromBytes`, and
+    /// N]` are `Immutable`, `TryFromBytes`, `FromZeros`, `FromBytes`, and
     /// `IntoBytes` if `T` is (respectively). Furthermore, since an array/slice
     /// has "the same alignment of `T`", `[T]` and `[T; N]` are `Unaligned` if
     /// `T` is.
@@ -4165,7 +4167,7 @@ safety_comment! {
     /// `assert_unaligned!` uses `align_of`, which only works for `Sized` types.
     ///
     /// [1] https://doc.rust-lang.org/reference/type-layout.html#array-layout
-    unsafe_impl!(const N: usize, T: NoCell => NoCell for [T; N]);
+    unsafe_impl!(const N: usize, T: Immutable => Immutable for [T; N]);
     unsafe_impl!(const N: usize, T: TryFromBytes => TryFromBytes for [T; N]; |c: Maybe<[T; N]>| {
         // Note that this call may panic, but it would still be sound even if it
         // did. `is_bit_valid` does not promise that it will not panic (in fact,
@@ -4178,7 +4180,7 @@ safety_comment! {
     unsafe_impl!(const N: usize, T: IntoBytes => IntoBytes for [T; N]);
     unsafe_impl!(const N: usize, T: Unaligned => Unaligned for [T; N]);
     assert_unaligned!([(); 0], [(); 1], [u8; 0], [u8; 1]);
-    unsafe_impl!(T: NoCell => NoCell for [T]);
+    unsafe_impl!(T: Immutable => Immutable for [T]);
     unsafe_impl!(T: TryFromBytes => TryFromBytes for [T]; |c: Maybe<[T]>| {
         // SAFETY: Per the reference [1]:
         //
@@ -4209,7 +4211,7 @@ safety_comment! {
 }
 safety_comment! {
     /// SAFETY:
-    /// - `NoCell`: Raw pointers do not contain any `UnsafeCell`s.
+    /// - `Immutable`: Raw pointers do not contain any `UnsafeCell`s.
     /// - `FromZeros`: For thin pointers (note that `T: Sized`), the zero
     ///   pointer is considered "null". [1] No operations which require
     ///   provenance are legal on null pointers, so this is not a footgun.
@@ -4224,8 +4226,8 @@ safety_comment! {
     ///
     /// [1] TODO(https://github.com/rust-lang/rust/pull/116988): Cite the
     /// documentation once this PR lands.
-    unsafe_impl!(T: ?Sized => NoCell for *const T);
-    unsafe_impl!(T: ?Sized => NoCell for *mut T);
+    unsafe_impl!(T: ?Sized => Immutable for *const T);
+    unsafe_impl!(T: ?Sized => Immutable for *mut T);
     unsafe_impl!(T => TryFromBytes for *const T; |c: Maybe<*const T>| {
         pointer::is_zeroed(c)
     });
@@ -4240,14 +4242,14 @@ safety_comment! {
     /// SAFETY:
     ///
     /// TODO(#896): Write this safety proof before the next stable release.
-    unsafe_impl!(T: ?Sized => NoCell for NonNull<T>);
+    unsafe_impl!(T: ?Sized => Immutable for NonNull<T>);
 }
 
 safety_comment! {
     /// SAFETY:
     /// Reference types do not contain any `UnsafeCell`s.
-    unsafe_impl!(T: ?Sized => NoCell for &'_ T);
-    unsafe_impl!(T: ?Sized => NoCell for &'_ mut T);
+    unsafe_impl!(T: ?Sized => Immutable for &'_ T);
+    unsafe_impl!(T: ?Sized => Immutable for &'_ mut T);
 }
 
 safety_comment! {
@@ -4257,7 +4259,7 @@ safety_comment! {
     /// `Option<T>` does not contain any `UnsafeCell`s outside of `T`. [1]
     ///
     /// [1] https://doc.rust-lang.org/core/option/enum.Option.html
-    unsafe_impl!(T: NoCell => NoCell for Option<T>);
+    unsafe_impl!(T: Immutable => Immutable for Option<T>);
 }
 
 // SIMD support
@@ -4305,8 +4307,8 @@ safety_comment! {
 // Given this background, we can observe that:
 // - The size and bit pattern requirements of a SIMD type are equivalent to the
 //   equivalent array type. Thus, for any SIMD type whose primitive `T` is
-//   `NoCell`, `TryFromBytes`, `FromZeros`, `FromBytes`, or `IntoBytes`, that
-//   SIMD type is also `NoCell`, `TryFromBytes`, `FromZeros`, `FromBytes`, or
+//   `Immutable`, `TryFromBytes`, `FromZeros`, `FromBytes`, or `IntoBytes`, that
+//   SIMD type is also `Immutable`, `TryFromBytes`, `FromZeros`, `FromBytes`, or
 //   `IntoBytes` respectively.
 // - Since no upper bound is placed on the alignment, no SIMD type can be
 //   guaranteed to be `Unaligned`.
@@ -4350,7 +4352,7 @@ mod simd {
                 safety_comment! {
                     /// SAFETY:
                     /// See comment on module definition for justification.
-                    $( unsafe_impl!($typ: NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes); )*
+                    $( unsafe_impl!($typ: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes); )*
                 }
             }
         };
@@ -4503,8 +4505,8 @@ macro_rules! transmute {
 /// const fn transmute_ref<'src, 'dst, Src, Dst>(src: &'src Src) -> &'dst Dst
 /// where
 ///     'src: 'dst,
-///     Src: IntoBytes + NoCell,
-///     Dst: FromBytes + NoCell,
+///     Src: IntoBytes + Immutable,
+///     Dst: FromBytes + Immutable,
 ///     size_of::<Src>() == size_of::<Dst>(),
 ///     align_of::<Src>() >= align_of::<Dst>(),
 /// {
@@ -4576,20 +4578,20 @@ macro_rules! transmute_ref {
         #[allow(unused, clippy::diverging_sub_expression)]
         if false {
             // This branch, though never taken, ensures that the type of `e` is
-            // `&T` where `T: 't + Sized + IntoBytes + NoCell`, that the type of
+            // `&T` where `T: 't + Sized + IntoBytes + Immutable`, that the type of
             // this macro expression is `&U` where `U: 'u + Sized + FromBytes +
-            // NoCell`, and that `'t` outlives `'u`.
+            // Immutable`, and that `'t` outlives `'u`.
 
             struct AssertSrcIsSized<'a, T: ::core::marker::Sized>(&'a T);
             struct AssertSrcIsIntoBytes<'a, T: ?::core::marker::Sized + $crate::IntoBytes>(&'a T);
-            struct AssertSrcIsNoCell<'a, T: ?::core::marker::Sized + $crate::NoCell>(&'a T);
+            struct AssertSrcIsImmutable<'a, T: ?::core::marker::Sized + $crate::Immutable>(&'a T);
             struct AssertDstIsSized<'a, T: ::core::marker::Sized>(&'a T);
             struct AssertDstIsFromBytes<'a, U: ?::core::marker::Sized + $crate::FromBytes>(&'a U);
-            struct AssertDstIsNoCell<'a, T: ?::core::marker::Sized + $crate::NoCell>(&'a T);
+            struct AssertDstIsImmutable<'a, T: ?::core::marker::Sized + $crate::Immutable>(&'a T);
 
             let _ = AssertSrcIsSized(e);
             let _ = AssertSrcIsIntoBytes(e);
-            let _ = AssertSrcIsNoCell(e);
+            let _ = AssertSrcIsImmutable(e);
 
             if true {
                 #[allow(unused, unreachable_code)]
@@ -4601,7 +4603,7 @@ macro_rules! transmute_ref {
                 u.0
             } else {
                 #[allow(unused, unreachable_code)]
-                let u = AssertDstIsNoCell(loop {});
+                let u = AssertDstIsImmutable(loop {});
                 u.0
             }
         } else if false {
@@ -4624,10 +4626,10 @@ macro_rules! transmute_ref {
             &u
         } else {
             // SAFETY: For source type `Src` and destination type `Dst`:
-            // - We know that `Src: IntoBytes + NoCell` and `Dst: FromBytes +
-            //   NoCell` thanks to the uses of `AssertSrcIsIntoBytes`,
-            //   `AssertSrcIsNoCell`, `AssertDstIsFromBytes`, and
-            //   `AssertDstIsNoCell`` above.
+            // - We know that `Src: IntoBytes + Immutable` and `Dst: FromBytes +
+            //   Immutable` thanks to the uses of `AssertSrcIsIntoBytes`,
+            //   `AssertSrcIsImmutable`, `AssertDstIsFromBytes`, and
+            //   `AssertDstIsImmutable` above.
             // - We know that `size_of::<Src>() == size_of::<Dst>()` thanks to
             //   the use of `assert_size_eq!` above.
             // - We know that `align_of::<Src>() >= align_of::<Dst>()` thanks to
@@ -4647,8 +4649,8 @@ macro_rules! transmute_ref {
 /// const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst
 /// where
 ///     'src: 'dst,
-///     Src: FromBytes + IntoBytes + NoCell,
-///     Dst: FromBytes + IntoBytes + NoCell,
+///     Src: FromBytes + IntoBytes + Immutable,
+///     Dst: FromBytes + IntoBytes + Immutable,
 ///     size_of::<Src>() == size_of::<Dst>(),
 ///     align_of::<Src>() >= align_of::<Dst>(),
 /// {
@@ -4723,9 +4725,9 @@ macro_rules! transmute_mut {
         #[allow(unused, clippy::diverging_sub_expression)]
         if false {
             // This branch, though never taken, ensures that the type of `e` is
-            // `&mut T` where `T: 't + Sized + FromBytes + IntoBytes + NoCell`
+            // `&mut T` where `T: 't + Sized + FromBytes + IntoBytes + Immutable`
             // and that the type of this macro expression is `&mut U` where `U:
-            // 'u + Sized + FromBytes + IntoBytes + NoCell`.
+            // 'u + Sized + FromBytes + IntoBytes + Immutable`.
 
             // We use immutable references here rather than mutable so that, if
             // this macro is used in a const context (in which, as of this
@@ -4735,11 +4737,11 @@ macro_rules! transmute_mut {
             struct AssertSrcIsSized<'a, T: ::core::marker::Sized>(&'a T);
             struct AssertSrcIsFromBytes<'a, T: ?::core::marker::Sized + $crate::FromBytes>(&'a T);
             struct AssertSrcIsIntoBytes<'a, T: ?::core::marker::Sized + $crate::IntoBytes>(&'a T);
-            struct AssertSrcIsNoCell<'a, T: ?::core::marker::Sized + $crate::NoCell>(&'a T);
+            struct AssertSrcIsImmutable<'a, T: ?::core::marker::Sized + $crate::Immutable>(&'a T);
             struct AssertDstIsSized<'a, T: ::core::marker::Sized>(&'a T);
             struct AssertDstIsFromBytes<'a, T: ?::core::marker::Sized + $crate::FromBytes>(&'a T);
             struct AssertDstIsIntoBytes<'a, T: ?::core::marker::Sized + $crate::IntoBytes>(&'a T);
-            struct AssertDstIsNoCell<'a, T: ?::core::marker::Sized + $crate::NoCell>(&'a T);
+            struct AssertDstIsImmutable<'a, T: ?::core::marker::Sized + $crate::Immutable>(&'a T);
 
             if true {
                 let _ = AssertSrcIsSized(&*e);
@@ -4748,7 +4750,7 @@ macro_rules! transmute_mut {
             } else if true {
                 let _ = AssertSrcIsIntoBytes(&*e);
             } else {
-                let _ = AssertSrcIsNoCell(&*e);
+                let _ = AssertSrcIsImmutable(&*e);
             }
 
             if true {
@@ -4765,7 +4767,7 @@ macro_rules! transmute_mut {
                 &mut *u.0
             } else {
                 #[allow(unused, unreachable_code)]
-                let u = AssertDstIsNoCell(loop {});
+                let u = AssertDstIsImmutable(loop {});
                 &mut *u.0
             }
         } else if false {
@@ -4788,11 +4790,11 @@ macro_rules! transmute_mut {
             &mut u
         } else {
             // SAFETY: For source type `Src` and destination type `Dst`:
-            // - We know that `Src: FromBytes + IntoBytes + NoCell` and `Dst:
-            //   FromBytes + IntoBytes + NoCell` thanks to the uses of
+            // - We know that `Src: FromBytes + IntoBytes + Immutable` and `Dst:
+            //   FromBytes + IntoBytes + Immutable` thanks to the uses of
             //   `AssertSrcIsFromBytes`, `AssertSrcIsIntoBytes`,
-            //   `AssertSrcIsNoCell`, `AssertDstIsFromBytes`,
-            //   `AssertDstIsIntoBytes`, and `AssertDstIsNoCell` above.
+            //   `AssertSrcIsImmutable`, `AssertDstIsFromBytes`,
+            //   `AssertDstIsIntoBytes`, and `AssertDstIsImmutable` above.
             // - We know that `size_of::<Src>() == size_of::<Dst>()` thanks to
             //   the use of `assert_size_eq!` above.
             // - We know that `align_of::<Src>() >= align_of::<Dst>()` thanks to
@@ -4869,9 +4871,9 @@ macro_rules! include_value {
 ///
 /// ```rust
 /// # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
-/// use zerocopy::{IntoBytes, ByteSliceMut, FromBytes, FromZeros, KnownLayout, NoCell, Ref, SplitByteSlice, Unaligned};
+/// use zerocopy::{IntoBytes, ByteSliceMut, FromBytes, FromZeros, KnownLayout, Immutable, Ref, SplitByteSlice, Unaligned};
 ///
-/// #[derive(FromBytes, IntoBytes, KnownLayout, NoCell, Unaligned)]
+/// #[derive(FromBytes, IntoBytes, KnownLayout, Immutable, Unaligned)]
 /// #[repr(C)]
 /// struct UdpHeader {
 ///     src_port: [u8; 2],
@@ -4928,7 +4930,7 @@ impl<B: ByteSlice + Copy, T: ?Sized> Copy for Ref<B, T> {}
 impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
-    T: KnownLayout + NoCell + ?Sized,
+    T: KnownLayout + Immutable + ?Sized,
 {
     #[must_use = "has no side effects"]
     fn bikeshed_new_known_layout(bytes: B) -> Option<Ref<B, T>> {
@@ -4941,7 +4943,7 @@ where
 impl<B, T> Ref<B, T>
 where
     B: SplitByteSlice,
-    T: KnownLayout + NoCell + ?Sized,
+    T: KnownLayout + Immutable + ?Sized,
 {
     #[must_use = "has no side effects"]
     fn bikeshed_new_from_prefix_known_layout(bytes: B) -> Option<(Ref<B, T>, B)> {
@@ -5021,7 +5023,7 @@ where
 impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
-    T: KnownLayout + NoCell + ?Sized,
+    T: KnownLayout + Immutable + ?Sized,
 {
     /// Constructs a new `Ref`.
     ///
@@ -5040,7 +5042,7 @@ where
 impl<B, T> Ref<B, T>
 where
     B: SplitByteSlice,
-    T: KnownLayout + NoCell + ?Sized,
+    T: KnownLayout + Immutable + ?Sized,
 {
     /// Constructs a new `Ref` from the prefix of a byte slice.
     ///
@@ -5087,7 +5089,7 @@ where
 impl<B, T> Ref<B, [T]>
 where
     B: SplitByteSlice,
-    T: NoCell,
+    T: Immutable,
 {
     /// Constructs a new `Ref` of a slice type from the prefix of a byte slice.
     ///
@@ -5143,7 +5145,7 @@ where
 impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
-    T: Unaligned + KnownLayout + NoCell + ?Sized,
+    T: Unaligned + KnownLayout + Immutable + ?Sized,
 {
     /// Constructs a new `Ref` for a type with no alignment requirement.
     ///
@@ -5159,7 +5161,7 @@ where
 impl<B, T> Ref<B, T>
 where
     B: SplitByteSlice,
-    T: Unaligned + KnownLayout + NoCell + ?Sized,
+    T: Unaligned + KnownLayout + Immutable + ?Sized,
 {
     /// Constructs a new `Ref` from the prefix of a byte slice for a type with
     /// no alignment requirement.
@@ -5191,7 +5193,7 @@ where
 impl<B, T> Ref<B, [T]>
 where
     B: SplitByteSlice,
-    T: Unaligned + NoCell,
+    T: Unaligned + Immutable,
 {
     /// Constructs a new `Ref` of a slice type with no alignment requirement
     /// from the prefix of a byte slice.
@@ -5234,7 +5236,7 @@ where
 impl<'a, B, T> Ref<B, T>
 where
     B: 'a + IntoByteSlice<'a>,
-    T: FromBytes + KnownLayout + NoCell + ?Sized,
+    T: FromBytes + KnownLayout + Immutable + ?Sized,
 {
     /// Converts this `Ref` into a reference.
     ///
@@ -5255,7 +5257,7 @@ where
 impl<'a, B, T> Ref<B, T>
 where
     B: 'a + IntoByteSliceMut<'a>,
-    T: FromBytes + IntoBytes + KnownLayout + NoCell + ?Sized,
+    T: FromBytes + IntoBytes + KnownLayout + Immutable + ?Sized,
 {
     /// Converts this `Ref` into a mutable reference.
     ///
@@ -5338,7 +5340,7 @@ where
 impl<B, T> Deref for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + KnownLayout + NoCell + ?Sized,
+    T: FromBytes + KnownLayout + Immutable + ?Sized,
 {
     type Target = T;
     #[inline]
@@ -5356,7 +5358,7 @@ where
 impl<B, T> DerefMut for Ref<B, T>
 where
     B: ByteSliceMut,
-    T: FromBytes + IntoBytes + KnownLayout + NoCell + ?Sized,
+    T: FromBytes + IntoBytes + KnownLayout + Immutable + ?Sized,
 {
     #[inline]
     fn deref_mut(&mut self) -> &mut T {
@@ -5373,7 +5375,7 @@ where
 impl<T, B> Display for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + Display + KnownLayout + NoCell + ?Sized,
+    T: FromBytes + Display + KnownLayout + Immutable + ?Sized,
 {
     #[inline]
     fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
@@ -5385,7 +5387,7 @@ where
 impl<T, B> Debug for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + Debug + KnownLayout + NoCell + ?Sized,
+    T: FromBytes + Debug + KnownLayout + Immutable + ?Sized,
 {
     #[inline]
     fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
@@ -5397,14 +5399,14 @@ where
 impl<T, B> Eq for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + Eq + KnownLayout + NoCell + ?Sized,
+    T: FromBytes + Eq + KnownLayout + Immutable + ?Sized,
 {
 }
 
 impl<T, B> PartialEq for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + PartialEq + KnownLayout + NoCell + ?Sized,
+    T: FromBytes + PartialEq + KnownLayout + Immutable + ?Sized,
 {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -5415,7 +5417,7 @@ where
 impl<T, B> Ord for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + Ord + KnownLayout + NoCell + ?Sized,
+    T: FromBytes + Ord + KnownLayout + Immutable + ?Sized,
 {
     #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
@@ -5428,7 +5430,7 @@ where
 impl<T, B> PartialOrd for Ref<B, T>
 where
     B: ByteSlice,
-    T: FromBytes + PartialOrd + KnownLayout + NoCell + ?Sized,
+    T: FromBytes + PartialOrd + KnownLayout + Immutable + ?Sized,
 {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
@@ -5930,7 +5932,7 @@ mod tests {
     //
     // This is used to test the custom derives of our traits. The `[u8]` type
     // gets a hand-rolled impl, so it doesn't exercise our custom derives.
-    #[derive(Debug, Eq, PartialEq, FromBytes, IntoBytes, Unaligned, NoCell)]
+    #[derive(Debug, Eq, PartialEq, FromBytes, IntoBytes, Unaligned, Immutable)]
     #[repr(transparent)]
     struct Unsized([u8]);
 
@@ -7185,7 +7187,7 @@ mod tests {
 
     #[test]
     fn test_object_safety() {
-        fn _takes_no_cell(_: &dyn NoCell) {}
+        fn _takes_no_cell(_: &dyn Immutable) {}
         fn _takes_unaligned(_: &dyn Unaligned) {}
     }
 
@@ -7304,7 +7306,7 @@ mod tests {
         const X: [[u8; 2]; 4] = transmute!(ARRAY_OF_U8S);
         assert_eq!(X, ARRAY_OF_ARRAYS);
 
-        // Test that `transmute!` works with `!NoCell` types.
+        // Test that `transmute!` works with `!Immutable` types.
         let x: usize = transmute!(UnsafeCell::new(1usize));
         assert_eq!(x, 1);
         let x: UnsafeCell<usize> = transmute!(1usize);
@@ -7848,7 +7850,7 @@ mod tests {
         /// has had its bits flipped (by applying `^= 0xFF`).
         ///
         /// `N` is the size of `t` in bytes.
-        fn test<T: FromBytes + IntoBytes + NoCell + Debug + Eq + ?Sized, const N: usize>(
+        fn test<T: FromBytes + IntoBytes + Immutable + Debug + Eq + ?Sized, const N: usize>(
             t: &mut T,
             bytes: &[u8],
             post_mutation: &T,
@@ -7905,7 +7907,7 @@ mod tests {
             assert_eq!(too_many_bytes[0], 123);
         }
 
-        #[derive(Debug, Eq, PartialEq, FromBytes, IntoBytes, NoCell)]
+        #[derive(Debug, Eq, PartialEq, FromBytes, IntoBytes, Immutable)]
         #[repr(C)]
         struct Foo {
             a: u32,
@@ -7934,7 +7936,7 @@ mod tests {
 
     #[test]
     fn test_array() {
-        #[derive(FromBytes, IntoBytes, NoCell)]
+        #[derive(FromBytes, IntoBytes, Immutable)]
         #[repr(C)]
         struct Foo {
             a: [u16; 33],
@@ -8208,7 +8210,7 @@ mod tests {
                 ) -> Option<bool>;
             }
 
-            impl<T: TryFromBytes + NoCell + ?Sized> TestIsBitValidShared<T> for AutorefWrapper<T> {
+            impl<T: TryFromBytes + Immutable + ?Sized> TestIsBitValidShared<T> for AutorefWrapper<T> {
                 #[allow(clippy::needless_lifetimes)]
                 fn test_is_bit_valid_shared<'ptr, A: invariant::at_least::Shared>(
                     &self,
@@ -8232,7 +8234,7 @@ mod tests {
                 ) -> Option<Option<&'bytes mut T>>;
             }
 
-            impl<T: TryFromBytes + NoCell + KnownLayout + ?Sized> TestTryFromRef<T> for AutorefWrapper<T> {
+            impl<T: TryFromBytes + Immutable + KnownLayout + ?Sized> TestTryFromRef<T> for AutorefWrapper<T> {
                 #[allow(clippy::needless_lifetimes)]
                 fn test_try_from_ref<'bytes>(
                     &self,
@@ -8265,7 +8267,7 @@ mod tests {
                 fn test_as_bytes<'slf, 't>(&'slf self, t: &'t T) -> Option<&'t [u8]>;
             }
 
-            impl<T: IntoBytes + NoCell + ?Sized> TestAsBytes<T> for AutorefWrapper<T> {
+            impl<T: IntoBytes + Immutable + ?Sized> TestAsBytes<T> for AutorefWrapper<T> {
                 #[allow(clippy::needless_lifetimes)]
                 fn test_as_bytes<'slf, 't>(&'slf self, t: &'t T) -> Option<&'t [u8]> {
                     Some(t.as_bytes())
@@ -8429,11 +8431,11 @@ mod tests {
                     assert!(res, "{}::is_bit_valid({:?}) (exclusive `Ptr`): got false, expected true", stringify!($ty), val);
 
                     // `bytes` is `Some(val.as_bytes())` if `$ty: IntoBytes +
-                    // NoCell` and `None` otherwise.
+                    // Immutable` and `None` otherwise.
                     let bytes = w.test_as_bytes(&*val);
 
                     // The inner closure returns
-                    // `Some($ty::try_ref_from(bytes))` if `$ty: NoCell` and
+                    // `Some($ty::try_ref_from(bytes))` if `$ty: Immutable` and
                     // `None` otherwise.
                     let res = bytes.and_then(|bytes| ww.test_try_from_ref(bytes));
                     if let Some(res) = res {
@@ -8475,7 +8477,7 @@ mod tests {
                     #[allow(unused_mut)] // For cases where the "real" impls are used, which take `&self`.
                     let mut w = AutorefWrapper::<$ty>(PhantomData);
 
-                    // This is `Some($ty::try_ref_from(c))` if `$ty: NoCell` and
+                    // This is `Some($ty::try_ref_from(c))` if `$ty: Immutable` and
                     // `None` otherwise.
                     let res = w.test_try_from_ref(c);
                     if let Some(res) = res {
@@ -8523,7 +8525,7 @@ mod tests {
 
         assert_impls!(
             (): KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8532,7 +8534,7 @@ mod tests {
         );
         assert_impls!(
             u8: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8541,7 +8543,7 @@ mod tests {
         );
         assert_impls!(
             i8: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8550,7 +8552,7 @@ mod tests {
         );
         assert_impls!(
             u16: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8559,7 +8561,7 @@ mod tests {
         );
         assert_impls!(
             i16: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8568,7 +8570,7 @@ mod tests {
         );
         assert_impls!(
             u32: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8577,7 +8579,7 @@ mod tests {
         );
         assert_impls!(
             i32: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8586,7 +8588,7 @@ mod tests {
         );
         assert_impls!(
             u64: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8595,7 +8597,7 @@ mod tests {
         );
         assert_impls!(
             i64: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8604,7 +8606,7 @@ mod tests {
         );
         assert_impls!(
             u128: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8613,7 +8615,7 @@ mod tests {
         );
         assert_impls!(
             i128: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8622,7 +8624,7 @@ mod tests {
         );
         assert_impls!(
             usize: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8631,7 +8633,7 @@ mod tests {
         );
         assert_impls!(
             isize: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8640,7 +8642,7 @@ mod tests {
         );
         assert_impls!(
             f32: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8649,7 +8651,7 @@ mod tests {
         );
         assert_impls!(
             f64: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8659,7 +8661,7 @@ mod tests {
 
         assert_impls!(
             bool: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             IntoBytes,
@@ -8668,7 +8670,7 @@ mod tests {
         );
         assert_impls!(
             char: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             IntoBytes,
@@ -8677,7 +8679,7 @@ mod tests {
         );
         assert_impls!(
             str: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             IntoBytes,
@@ -8687,7 +8689,7 @@ mod tests {
 
         assert_impls!(
             NonZeroU8: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             IntoBytes,
             Unaligned,
@@ -8696,7 +8698,7 @@ mod tests {
         );
         assert_impls!(
             NonZeroI8: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             IntoBytes,
             Unaligned,
@@ -8705,7 +8707,7 @@ mod tests {
         );
         assert_impls!(
             NonZeroU16: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             IntoBytes,
             !FromBytes,
@@ -8713,7 +8715,7 @@ mod tests {
         );
         assert_impls!(
             NonZeroI16: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             IntoBytes,
             !FromBytes,
@@ -8721,7 +8723,7 @@ mod tests {
         );
         assert_impls!(
             NonZeroU32: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             IntoBytes,
             !FromBytes,
@@ -8729,7 +8731,7 @@ mod tests {
         );
         assert_impls!(
             NonZeroI32: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             IntoBytes,
             !FromBytes,
@@ -8737,7 +8739,7 @@ mod tests {
         );
         assert_impls!(
             NonZeroU64: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             IntoBytes,
             !FromBytes,
@@ -8745,7 +8747,7 @@ mod tests {
         );
         assert_impls!(
             NonZeroI64: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             IntoBytes,
             !FromBytes,
@@ -8753,7 +8755,7 @@ mod tests {
         );
         assert_impls!(
             NonZeroU128: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             IntoBytes,
             !FromBytes,
@@ -8761,7 +8763,7 @@ mod tests {
         );
         assert_impls!(
             NonZeroI128: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             IntoBytes,
             !FromBytes,
@@ -8769,7 +8771,7 @@ mod tests {
         );
         assert_impls!(
             NonZeroUsize: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             IntoBytes,
             !FromBytes,
@@ -8777,25 +8779,25 @@ mod tests {
         );
         assert_impls!(
             NonZeroIsize: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             IntoBytes,
             !FromBytes,
             !Unaligned
         );
 
-        assert_impls!(Option<NonZeroU8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-        assert_impls!(Option<NonZeroI8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-        assert_impls!(Option<NonZeroU16>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI16>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU32>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI32>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU64>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI64>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroU128>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroI128>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroUsize>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
-        assert_impls!(Option<NonZeroIsize>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        assert_impls!(Option<NonZeroI8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        assert_impls!(Option<NonZeroU16>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI16>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU32>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI32>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU64>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI64>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroU128>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroI128>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroUsize>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NonZeroIsize>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
 
         // Implements none of the ZC traits.
         struct NotZerocopy;
@@ -8813,57 +8815,57 @@ mod tests {
         ) -> (NotZerocopy, NotZerocopy);
 
         #[cfg(feature = "alloc")]
-        assert_impls!(Option<Box<UnsafeCell<NotZerocopy>>>: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<Box<[UnsafeCell<NotZerocopy>]>>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<&'static UnsafeCell<NotZerocopy>>: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<&'static [UnsafeCell<NotZerocopy>]>: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<&'static mut UnsafeCell<NotZerocopy>>: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<&'static mut [UnsafeCell<NotZerocopy>]>: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<NonNull<UnsafeCell<NotZerocopy>>>: KnownLayout, TryFromBytes, FromZeros, NoCell, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<NonNull<[UnsafeCell<NotZerocopy>]>>: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<fn()>: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<FnManyArgs>: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<extern "C" fn()>: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Option<ECFnManyArgs>: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<Box<UnsafeCell<NotZerocopy>>>: KnownLayout, Immutable, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<Box<[UnsafeCell<NotZerocopy>]>>: KnownLayout, !Immutable, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<&'static UnsafeCell<NotZerocopy>>: KnownLayout, Immutable, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<&'static [UnsafeCell<NotZerocopy>]>: KnownLayout, Immutable, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<&'static mut UnsafeCell<NotZerocopy>>: KnownLayout, Immutable, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<&'static mut [UnsafeCell<NotZerocopy>]>: KnownLayout, Immutable, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<NonNull<UnsafeCell<NotZerocopy>>>: KnownLayout, TryFromBytes, FromZeros, Immutable, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<NonNull<[UnsafeCell<NotZerocopy>]>>: KnownLayout, Immutable, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<fn()>: KnownLayout, Immutable, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<FnManyArgs>: KnownLayout, Immutable, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<extern "C" fn()>: KnownLayout, Immutable, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Option<ECFnManyArgs>: KnownLayout, Immutable, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
 
-        assert_impls!(PhantomData<NotZerocopy>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-        assert_impls!(PhantomData<UnsafeCell<()>>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-        assert_impls!(PhantomData<[u8]>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        assert_impls!(PhantomData<NotZerocopy>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        assert_impls!(PhantomData<UnsafeCell<()>>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        assert_impls!(PhantomData<[u8]>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
 
-        assert_impls!(ManuallyDrop<u8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        assert_impls!(ManuallyDrop<u8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
         // This test is important because it allows us to test our hand-rolled
         // implementation of `<ManuallyDrop<T> as TryFromBytes>::is_bit_valid`.
-        assert_impls!(ManuallyDrop<bool>: KnownLayout, NoCell, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
-        assert_impls!(ManuallyDrop<[u8]>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        assert_impls!(ManuallyDrop<bool>: KnownLayout, Immutable, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
+        assert_impls!(ManuallyDrop<[u8]>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
         // This test is important because it allows us to test our hand-rolled
         // implementation of `<ManuallyDrop<T> as TryFromBytes>::is_bit_valid`.
-        assert_impls!(ManuallyDrop<[bool]>: KnownLayout, NoCell, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
-        assert_impls!(ManuallyDrop<NotZerocopy>: !NoCell, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(ManuallyDrop<[NotZerocopy]>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(ManuallyDrop<UnsafeCell<()>>: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, !NoCell);
-        assert_impls!(ManuallyDrop<[UnsafeCell<u8>]>: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, !NoCell);
-        assert_impls!(ManuallyDrop<[UnsafeCell<bool>]>: KnownLayout, TryFromBytes, FromZeros, IntoBytes, Unaligned, !NoCell, !FromBytes);
+        assert_impls!(ManuallyDrop<[bool]>: KnownLayout, Immutable, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
+        assert_impls!(ManuallyDrop<NotZerocopy>: !Immutable, !TryFromBytes, !KnownLayout, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<[NotZerocopy]>: KnownLayout, !Immutable, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(ManuallyDrop<UnsafeCell<()>>: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, !Immutable);
+        assert_impls!(ManuallyDrop<[UnsafeCell<u8>]>: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, !Immutable);
+        assert_impls!(ManuallyDrop<[UnsafeCell<bool>]>: KnownLayout, TryFromBytes, FromZeros, IntoBytes, Unaligned, !Immutable, !FromBytes);
 
-        assert_impls!(MaybeUninit<u8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, Unaligned, !IntoBytes);
-        assert_impls!(MaybeUninit<NotZerocopy>: KnownLayout, TryFromBytes, FromZeros, FromBytes, !NoCell, !IntoBytes, !Unaligned);
-        assert_impls!(MaybeUninit<UnsafeCell<()>>: KnownLayout, TryFromBytes, FromZeros, FromBytes, Unaligned, !NoCell, !IntoBytes);
+        assert_impls!(MaybeUninit<u8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, Unaligned, !IntoBytes);
+        assert_impls!(MaybeUninit<NotZerocopy>: KnownLayout, TryFromBytes, FromZeros, FromBytes, !Immutable, !IntoBytes, !Unaligned);
+        assert_impls!(MaybeUninit<UnsafeCell<()>>: KnownLayout, TryFromBytes, FromZeros, FromBytes, Unaligned, !Immutable, !IntoBytes);
 
-        assert_impls!(Wrapping<u8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        assert_impls!(Wrapping<u8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
         // This test is important because it allows us to test our hand-rolled
         // implementation of `<Wrapping<T> as TryFromBytes>::is_bit_valid`.
-        assert_impls!(Wrapping<bool>: KnownLayout, NoCell, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
-        assert_impls!(Wrapping<NotZerocopy>: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(Wrapping<UnsafeCell<()>>: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, !NoCell);
+        assert_impls!(Wrapping<bool>: KnownLayout, Immutable, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
+        assert_impls!(Wrapping<NotZerocopy>: KnownLayout, !Immutable, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(Wrapping<UnsafeCell<()>>: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, !Immutable);
 
-        assert_impls!(Unalign<u8>: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        assert_impls!(Unalign<u8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
         // This test is important because it allows us to test our hand-rolled
         // implementation of `<Unalign<T> as TryFromBytes>::is_bit_valid`.
-        assert_impls!(Unalign<bool>: KnownLayout, NoCell, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
-        assert_impls!(Unalign<NotZerocopy>: Unaligned, !NoCell, !KnownLayout, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes);
+        assert_impls!(Unalign<bool>: KnownLayout, Immutable, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
+        assert_impls!(Unalign<NotZerocopy>: Unaligned, !Immutable, !KnownLayout, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes);
 
         assert_impls!(
             [u8]: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8872,17 +8874,17 @@ mod tests {
         );
         assert_impls!(
             [bool]: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             IntoBytes,
             Unaligned,
             !FromBytes
         );
-        assert_impls!([NotZerocopy]: KnownLayout, !NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!([NotZerocopy]: KnownLayout, !Immutable, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(
             [u8; 0]: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8891,7 +8893,7 @@ mod tests {
         );
         assert_impls!(
             [NotZerocopy; 0]: KnownLayout,
-            !NoCell,
+            !Immutable,
             !TryFromBytes,
             !FromZeros,
             !FromBytes,
@@ -8900,7 +8902,7 @@ mod tests {
         );
         assert_impls!(
             [u8; 1]: KnownLayout,
-            NoCell,
+            Immutable,
             TryFromBytes,
             FromZeros,
             FromBytes,
@@ -8909,7 +8911,7 @@ mod tests {
         );
         assert_impls!(
             [NotZerocopy; 1]: KnownLayout,
-            !NoCell,
+            !Immutable,
             !TryFromBytes,
             !FromZeros,
             !FromBytes,
@@ -8917,12 +8919,12 @@ mod tests {
             !Unaligned
         );
 
-        assert_impls!(*const NotZerocopy: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(*mut NotZerocopy: KnownLayout, NoCell, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(*const [NotZerocopy]: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(*mut [NotZerocopy]: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(*const dyn Debug: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
-        assert_impls!(*mut dyn Debug: KnownLayout, NoCell, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(*const NotZerocopy: KnownLayout, Immutable, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(*mut NotZerocopy: KnownLayout, Immutable, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(*const [NotZerocopy]: KnownLayout, Immutable, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(*mut [NotZerocopy]: KnownLayout, Immutable, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(*const dyn Debug: KnownLayout, Immutable, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(*mut dyn Debug: KnownLayout, Immutable, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
 
         #[cfg(feature = "simd")]
         {
@@ -8932,7 +8934,7 @@ mod tests {
                     {
                         use core::arch::$arch::{$($typ),*};
                         use crate::*;
-                        $( assert_impls!($typ: KnownLayout, NoCell, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned); )*
+                        $( assert_impls!($typ: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned); )*
                     }
                 };
             }

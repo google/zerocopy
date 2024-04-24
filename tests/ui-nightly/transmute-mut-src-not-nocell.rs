@@ -16,9 +16,9 @@ fn main() {}
 #[repr(C)]
 struct Src;
 
-#[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::NoCell)]
+#[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
 #[repr(C)]
 struct Dst;
 
-// `transmute_mut` requires that the source type implements `NoCell`
-const SRC_NOT_NO_CELL: &mut Dst = transmute_mut!(&mut Src);
+// `transmute_mut` requires that the source type implements `Immutable`
+const SRC_NOT_IMMUTABLE: &mut Dst = transmute_mut!(&mut Src);

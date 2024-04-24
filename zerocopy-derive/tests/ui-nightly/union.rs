@@ -18,11 +18,11 @@ use std::mem::ManuallyDrop;
 fn main() {}
 
 //
-// NoCell errors
+// Immutable errors
 //
 
-#[derive(NoCell)]
-union NoCell1 {
+#[derive(Immutable)]
+union Immutable1 {
     a: ManuallyDrop<core::cell::UnsafeCell<()>>,
 }
 

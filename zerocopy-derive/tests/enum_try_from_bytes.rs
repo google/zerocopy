@@ -12,7 +12,7 @@
 
 include!("include.rs");
 
-#[derive(Eq, PartialEq, Debug, imp::NoCell, imp::KnownLayout, imp::TryFromBytes)]
+#[derive(Eq, PartialEq, Debug, imp::Immutable, imp::KnownLayout, imp::TryFromBytes)]
 #[repr(u8)]
 enum Foo {
     A,
@@ -28,7 +28,7 @@ fn test_foo() {
     imp::assert_eq!(<Foo as imp::TryFromBytes>::try_read_from(&[0, 0]), imp::None);
 }
 
-#[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::NoCell, imp::TryFromBytes)]
+#[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::Immutable, imp::TryFromBytes)]
 #[repr(u16)]
 enum Bar {
     A = 0,
@@ -45,7 +45,7 @@ fn test_bar() {
     imp::assert_eq!(<Bar as imp::TryFromBytes>::try_read_from(&[0, 0, 0]), imp::None);
 }
 
-#[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::NoCell, imp::TryFromBytes)]
+#[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::Immutable, imp::TryFromBytes)]
 #[repr(u32)]
 enum Baz {
     A = 1,
@@ -77,7 +77,7 @@ type i8 = bool;
 
 const THREE: ::core::primitive::i8 = 3;
 
-#[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::NoCell, imp::TryFromBytes)]
+#[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::Immutable, imp::TryFromBytes)]
 #[repr(i8)]
 enum Blah {
     A = 1,
@@ -112,7 +112,7 @@ fn test_blah() {
 }
 
 #[derive(
-    Eq, PartialEq, Debug, imp::KnownLayout, imp::NoCell, imp::TryFromBytes, imp::IntoBytes,
+    Eq, PartialEq, Debug, imp::KnownLayout, imp::Immutable, imp::TryFromBytes, imp::IntoBytes,
 )]
 #[repr(C)]
 enum FieldlessButNotUnitOnly {
@@ -146,7 +146,7 @@ fn test_fieldless_but_not_unit_only() {
 }
 
 #[derive(
-    Eq, PartialEq, Debug, imp::KnownLayout, imp::NoCell, imp::TryFromBytes, imp::IntoBytes,
+    Eq, PartialEq, Debug, imp::KnownLayout, imp::Immutable, imp::TryFromBytes, imp::IntoBytes,
 )]
 #[repr(C)]
 enum WeirdDiscriminants {

@@ -15,7 +15,7 @@ use super::*;
 impl<B, T> Ref<B, [T]>
 where
     B: ByteSlice,
-    T: NoCell,
+    T: Immutable,
 {
     #[deprecated(since = "0.8.0", note = "`Ref::new` now supports slices")]
     #[doc(hidden)]
@@ -28,7 +28,7 @@ where
 impl<B, T> Ref<B, [T]>
 where
     B: ByteSlice,
-    T: Unaligned + NoCell,
+    T: Unaligned + Immutable,
 {
     #[deprecated(since = "0.8.0", note = "`Ref::new_unaligned` now supports slices")]
     #[doc(hidden)]
@@ -41,7 +41,7 @@ where
 impl<'a, B, T> Ref<B, [T]>
 where
     B: 'a + IntoByteSlice<'a>,
-    T: FromBytes + NoCell,
+    T: FromBytes + Immutable,
 {
     #[deprecated(since = "0.8.0", note = "`Ref::into_ref` now supports slices")]
     #[doc(hidden)]
@@ -54,7 +54,7 @@ where
 impl<'a, B, T> Ref<B, [T]>
 where
     B: 'a + IntoByteSliceMut<'a>,
-    T: FromBytes + IntoBytes + NoCell,
+    T: FromBytes + IntoBytes + Immutable,
 {
     #[deprecated(since = "0.8.0", note = "`Ref::into_mut` now supports slices")]
     #[doc(hidden)]

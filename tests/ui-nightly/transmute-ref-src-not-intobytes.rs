@@ -15,7 +15,7 @@ use zerocopy::transmute_ref;
 
 fn main() {}
 
-#[derive(zerocopy::NoCell)]
+#[derive(zerocopy::Immutable)]
 #[repr(transparent)]
 struct Src(AU16);
 

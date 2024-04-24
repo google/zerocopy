@@ -8,7 +8,7 @@
 
 use core::ptr::NonNull;
 
-use crate::{util::AsAddress, CastType, KnownLayout, NoCell};
+use crate::{util::AsAddress, CastType, Immutable, KnownLayout};
 
 /// Module used to gate access to [`Ptr`]'s fields.
 mod def {
@@ -1016,7 +1016,7 @@ mod _casts {
     where
         T: 'a,
         I: Invariants<Validity = invariant::Initialized>,
-        T: NoCell,
+        T: Immutable,
     {
         /// Casts this pointer-to-initialized into a pointer-to-bytes.
         #[allow(clippy::wrong_self_convention)]
@@ -1029,7 +1029,7 @@ mod _casts {
             // - The size of the object referenced by the resulting pointer is
             //   exactly equal to the size of the object referenced by `self`.
             // - `T` and `[u8]` trivially contain `UnsafeCell`s at identical
-            //   ranges [u8]`, because both are `NoCell`.
+            //   ranges [u8]`, because both are `Immutable`.
             let ptr: Ptr<'a, [u8], _> = unsafe {
                 self.cast_unsized(|p: *mut T| {
                     #[allow(clippy::as_conversions)]
@@ -1134,7 +1134,7 @@ mod _casts {
         /// # Panics
         ///
         /// Panics if `U` is a DST whose trailing slice element is zero-sized.
-        pub(crate) fn try_cast_into<U: 'a + ?Sized + KnownLayout + NoCell>(
+        pub(crate) fn try_cast_into<U: 'a + ?Sized + KnownLayout + Immutable>(
             &self,
             cast_type: CastType,
         ) -> Option<(Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::Initialized)>, usize)>
@@ -1217,7 +1217,7 @@ mod _casts {
             //    store this memory region treating `UnsafeCell`s as existing at
             //    different ranges than they exist in `U`. This is true by
             //    invariant on Ptr<'a, T, I>, preserved through the cast by the
-            //    bound `U: NoCell`.
+            //    bound `U: Immutable`.
             // 10. See 9.
             Some((unsafe { Ptr::new(ptr) }, split_at))
         }
@@ -1234,7 +1234,7 @@ mod _casts {
         /// references the same byte range as `self`.
         #[allow(unused)]
         #[inline(always)]
-        pub(crate) fn try_cast_into_no_leftover<U: 'a + ?Sized + KnownLayout + NoCell>(
+        pub(crate) fn try_cast_into_no_leftover<U: 'a + ?Sized + KnownLayout + Immutable>(
             &self,
         ) -> Option<Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::Initialized)>> {
             // TODO(#67): Remove this allow. See NonNulSlicelExt for more
@@ -1498,7 +1498,7 @@ mod tests {
 
         // - If `size_of::<T>() == 0`, `N == 4`
         // - Else, `N == 4 * size_of::<T>()`
-        fn test<T: ?Sized + KnownLayout + NoCell + FromBytes, const N: usize>() {
+        fn test<T: ?Sized + KnownLayout + Immutable + FromBytes, const N: usize>() {
             let mut bytes = [MaybeUninit::<u8>::uninit(); N];
             let initialized = [MaybeUninit::new(0u8); N];
             for start in 0..=bytes.len() {
