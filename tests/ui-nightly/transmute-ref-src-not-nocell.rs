@@ -19,5 +19,5 @@ fn main() {}
 #[repr(transparent)]
 struct Src(AU16);
 
-// `transmute_ref` requires that the source type implements `NoCell`
-const SRC_NOT_NO_CELL: &AU16 = transmute_ref!(&Src(AU16(0)));
+// `transmute_ref` requires that the source type implements `Immutable`
+const SRC_NOT_IMMUTABLE: &AU16 = transmute_ref!(&Src(AU16(0)));

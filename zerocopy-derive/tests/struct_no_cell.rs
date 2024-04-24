@@ -8,41 +8,41 @@
 
 include!("include.rs");
 
-#[derive(imp::NoCell)]
+#[derive(imp::Immutable)]
 struct Zst;
 
-util_assert_impl_all!(Zst: imp::NoCell);
+util_assert_impl_all!(Zst: imp::Immutable);
 
-#[derive(imp::NoCell)]
+#[derive(imp::Immutable)]
 struct One {
     a: bool,
 }
 
-util_assert_impl_all!(One: imp::NoCell);
+util_assert_impl_all!(One: imp::Immutable);
 
-#[derive(imp::NoCell)]
+#[derive(imp::Immutable)]
 struct Two {
     a: bool,
     b: Zst,
 }
 
-util_assert_impl_all!(Two: imp::NoCell);
+util_assert_impl_all!(Two: imp::Immutable);
 
-#[derive(imp::NoCell)]
+#[derive(imp::Immutable)]
 struct Three {
     a: [u8],
 }
 
-util_assert_impl_all!(Three: imp::NoCell);
+util_assert_impl_all!(Three: imp::Immutable);
 
-#[derive(imp::NoCell)]
+#[derive(imp::Immutable)]
 struct Four<'a> {
     field: &'a imp::UnsafeCell<u8>,
 }
 
-util_assert_impl_all!(Four<'static>: imp::NoCell);
+util_assert_impl_all!(Four<'static>: imp::Immutable);
 
-#[derive(imp::NoCell)]
+#[derive(imp::Immutable)]
 struct TypeParams<'a, T, U, I: imp::Iterator> {
     a: I::Item,
     b: u8,
@@ -53,12 +53,12 @@ struct TypeParams<'a, T, U, I: imp::Iterator> {
     g: T,
 }
 
-util_assert_impl_all!(TypeParams<'static, (), (), imp::IntoIter<()>>: imp::NoCell);
-util_assert_impl_all!(TypeParams<'static, util::AU16, util::AU16, imp::IntoIter<()>>: imp::NoCell);
-util_assert_impl_all!(TypeParams<'static, util::AU16, imp::UnsafeCell<u8>, imp::IntoIter<()>>: imp::NoCell);
-util_assert_not_impl_any!(TypeParams<'static, imp::UnsafeCell<()>, (), imp::IntoIter<()>>: imp::NoCell);
-util_assert_not_impl_any!(TypeParams<'static, [imp::UnsafeCell<u8>; 0], (), imp::IntoIter<()>>: imp::NoCell);
-util_assert_not_impl_any!(TypeParams<'static, (), (), imp::IntoIter<imp::UnsafeCell<()>>>: imp::NoCell);
+util_assert_impl_all!(TypeParams<'static, (), (), imp::IntoIter<()>>: imp::Immutable);
+util_assert_impl_all!(TypeParams<'static, util::AU16, util::AU16, imp::IntoIter<()>>: imp::Immutable);
+util_assert_impl_all!(TypeParams<'static, util::AU16, imp::UnsafeCell<u8>, imp::IntoIter<()>>: imp::Immutable);
+util_assert_not_impl_any!(TypeParams<'static, imp::UnsafeCell<()>, (), imp::IntoIter<()>>: imp::Immutable);
+util_assert_not_impl_any!(TypeParams<'static, [imp::UnsafeCell<u8>; 0], (), imp::IntoIter<()>>: imp::Immutable);
+util_assert_not_impl_any!(TypeParams<'static, (), (), imp::IntoIter<imp::UnsafeCell<()>>>: imp::Immutable);
 
 trait Trait {
     type Assoc;
@@ -68,18 +68,18 @@ impl<T> Trait for imp::UnsafeCell<T> {
     type Assoc = T;
 }
 
-#[derive(imp::NoCell)]
+#[derive(imp::Immutable)]
 struct WithAssocType<T: Trait> {
     field: <T as Trait>::Assoc,
 }
 
-util_assert_impl_all!(WithAssocType<imp::UnsafeCell<u8>>: imp::NoCell);
+util_assert_impl_all!(WithAssocType<imp::UnsafeCell<u8>>: imp::Immutable);
 
-// Deriving `NoCell` should work if the struct has bounded parameters.
+// Deriving `Immutable` should work if the struct has bounded parameters.
 
-#[derive(imp::NoCell)]
+#[derive(imp::Immutable)]
 #[repr(C)]
-struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::NoCell, const N: usize>(
+struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::Immutable, const N: usize>(
     [T; N],
     imp::PhantomData<&'a &'b ()>,
     imp::PhantomData<imp::UnsafeCell<()>>,
@@ -88,6 +88,6 @@ struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::NoCell, const N: usize>(
 where
     'a: 'b,
     'b: 'a,
-    T: 'a + 'b + imp::NoCell;
+    T: 'a + 'b + imp::Immutable;
 
-util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::NoCell);
+util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::Immutable);

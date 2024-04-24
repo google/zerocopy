@@ -53,7 +53,7 @@ use super::*;
 #[derive(Default, Copy)]
 #[cfg_attr(
     any(feature = "derive", test),
-    derive(NoCell, KnownLayout, FromBytes, IntoBytes, Unaligned)
+    derive(Immutable, KnownLayout, FromBytes, IntoBytes, Unaligned)
 )]
 #[repr(C, packed)]
 pub struct Unalign<T>(T);
@@ -67,7 +67,7 @@ safety_comment! {
     ///   alignment of `T`, and so we don't require that `T: Unaligned`
     /// - `Unalign<T>` has the same bit validity as `T`, and so it is
     ///   `FromZeros`, `FromBytes`, or `IntoBytes` exactly when `T` is as well.
-    /// - `NoCell`: `Unalign<T>` has the same fields as `T`, so it contains
+    /// - `Immutable`: `Unalign<T>` has the same fields as `T`, so it contains
     ///   `UnsafeCell`s exactly when `T` does.
     /// - `TryFromBytes`: `Unalign<T>` has the same the same bit validity as
     ///   `T`, so `T::is_bit_valid` is a sound implementation of `is_bit_valid`.
@@ -78,7 +78,7 @@ safety_comment! {
     ///     `UnsafeCell`s at the same byte ranges (as required by
     ///     `unsafe_impl!`).
     impl_or_verify!(T => Unaligned for Unalign<T>);
-    impl_or_verify!(T: NoCell => NoCell for Unalign<T>);
+    impl_or_verify!(T: Immutable => Immutable for Unalign<T>);
     impl_or_verify!(
         T: TryFromBytes => TryFromBytes for Unalign<T>;
         |c: Maybe<T>| T::is_bit_valid(c)

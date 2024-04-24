@@ -44,7 +44,7 @@ functionality themselves, but are required to call certain methods provided
 by the conversion traits:
 - `KnownLayout` indicates that zerocopy can reason about certain layout
   qualities of a type
-- `NoCell` indicates that a type does not contain any `UnsafeCell`s
+- `Immutable` indicates that a type does not contain any `UnsafeCell`s
 - `Unaligned` indicates that a type's alignment requirement is 1
 
 You should generally derive these marker traits whenever possible.

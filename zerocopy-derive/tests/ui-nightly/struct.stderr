@@ -118,13 +118,13 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
 9  + #![feature(trivial_bounds)]
    |
 
-error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::NoCell` is not satisfied
+error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::Immutable` is not satisfied
   --> tests/ui-nightly/struct.rs:55:10
    |
-55 | #[derive(NoCell)]
-   |          ^^^^^^ the trait `zerocopy::NoCell` is not implemented for `UnsafeCell<()>`
+55 | #[derive(Immutable)]
+   |          ^^^^^^^^^ the trait `zerocopy::Immutable` is not implemented for `UnsafeCell<()>`
    |
-   = help: the following other types implement trait `zerocopy::NoCell`:
+   = help: the following other types implement trait `zerocopy::Immutable`:
              &T
              &mut T
              ()
@@ -135,19 +135,19 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::NoCell` is not satisfie
              F64<O>
            and $N others
    = help: see issue #48214
-   = note: this error originates in the derive macro `NoCell` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 9  + #![feature(trivial_bounds)]
    |
 
-error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy::NoCell` is not satisfied
+error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy::Immutable` is not satisfied
   --> tests/ui-nightly/struct.rs:60:10
    |
-60 | #[derive(NoCell)]
-   |          ^^^^^^ the trait `zerocopy::NoCell` is not implemented for `UnsafeCell<u8>`, which is required by `[UnsafeCell<u8>; 0]: zerocopy::NoCell`
+60 | #[derive(Immutable)]
+   |          ^^^^^^^^^ the trait `zerocopy::Immutable` is not implemented for `UnsafeCell<u8>`, which is required by `[UnsafeCell<u8>; 0]: zerocopy::Immutable`
    |
-   = help: the following other types implement trait `zerocopy::NoCell`:
+   = help: the following other types implement trait `zerocopy::Immutable`:
              &T
              &mut T
              ()
@@ -157,9 +157,9 @@ error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy::NoCell` is not satisfie
              F32<O>
              F64<O>
            and $N others
-   = note: required for `[UnsafeCell<u8>; 0]` to implement `zerocopy::NoCell`
+   = note: required for `[UnsafeCell<u8>; 0]` to implement `zerocopy::Immutable`
    = help: see issue #48214
-   = note: this error originates in the derive macro `NoCell` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 9  + #![feature(trivial_bounds)]

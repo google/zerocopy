@@ -35,10 +35,10 @@
 //!
 //! ```rust,edition2021
 //! # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
-//! use zerocopy::{IntoBytes, FromBytes, KnownLayout, NoCell, Ref, SplitByteSlice, Unaligned};
+//! use zerocopy::{IntoBytes, FromBytes, KnownLayout, Immutable, Ref, SplitByteSlice, Unaligned};
 //! use zerocopy::byteorder::network_endian::U16;
 //!
-//! #[derive(FromBytes, IntoBytes, KnownLayout, NoCell, Unaligned)]
+//! #[derive(FromBytes, IntoBytes, KnownLayout, Immutable, Unaligned)]
 //! #[repr(C)]
 //! struct UdpHeader {
 //!     src_port: U16,
@@ -378,7 +378,7 @@ example of how it can be used for parsing UDP packets.
 [`IntoBytes`]: crate::IntoBytes
 [`Unaligned`]: crate::Unaligned"),
             #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, NoCell, FromBytes, IntoBytes, Unaligned))]
+            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, Immutable, FromBytes, IntoBytes, Unaligned))]
             #[repr(transparent)]
             pub struct $name<O>([u8; $bytes], PhantomData<O>);
         }
@@ -390,9 +390,9 @@ example of how it can be used for parsing UDP packets.
             /// SAFETY:
             /// `$name<O>` is `repr(transparent)`, and so it has the same layout
             /// as its only non-zero field, which is a `u8` array. `u8` arrays
-            /// are `NoCell`, `TryFromBytes`, `FromZeros`, `FromBytes`,
+            /// are `Immutable`, `TryFromBytes`, `FromZeros`, `FromBytes`,
             /// `IntoBytes`, and `Unaligned`.
-            impl_or_verify!(O => NoCell for $name<O>);
+            impl_or_verify!(O => Immutable for $name<O>);
             impl_or_verify!(O => TryFromBytes for $name<O>);
             impl_or_verify!(O => FromZeros for $name<O>);
             impl_or_verify!(O => FromBytes for $name<O>);
@@ -903,7 +903,7 @@ mod tests {
     use compatibility::*;
 
     // A native integer type (u16, i32, etc).
-    trait Native: Arbitrary + FromBytes + IntoBytes + NoCell + Copy + PartialEq + Debug {
+    trait Native: Arbitrary + FromBytes + IntoBytes + Immutable + Copy + PartialEq + Debug {
         const ZERO: Self;
         const MAX_VALUE: Self;
 
@@ -948,7 +948,7 @@ mod tests {
     }
 
     trait ByteArray:
-        FromBytes + IntoBytes + NoCell + Copy + AsRef<[u8]> + AsMut<[u8]> + Debug + Default + Eq
+        FromBytes + IntoBytes + Immutable + Copy + AsRef<[u8]> + AsMut<[u8]> + Debug + Default + Eq
     {
         /// Invert the order of the bytes in the array.
         fn invert(self) -> Self;

@@ -8,11 +8,11 @@
 
 extern crate zerocopy;
 
-use zerocopy::{transmute_ref, IntoBytes, NoCell};
+use zerocopy::{transmute_ref, Immutable, IntoBytes};
 
 fn main() {}
 
-fn transmute_ref<T: IntoBytes + NoCell>(t: &T) -> &u8 {
+fn transmute_ref<T: IntoBytes + Immutable>(t: &T) -> &u8 {
     // `transmute_ref!` requires the source type to be concrete.
     transmute_ref!(t)
 }

@@ -149,7 +149,7 @@ where
 
 util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::TryFromBytes);
 
-#[derive(Debug, PartialEq, Eq, imp::TryFromBytes, imp::NoCell, imp::KnownLayout)]
+#[derive(Debug, PartialEq, Eq, imp::TryFromBytes, imp::Immutable, imp::KnownLayout)]
 #[repr(C, packed)]
 struct CPacked {
     a: u8,
@@ -170,7 +170,7 @@ fn c_packed() {
     imp::assert_eq!(converted, imp::Some(&CPacked { a: 42, b: u32::MAX }));
 }
 
-#[derive(imp::TryFromBytes, imp::KnownLayout, imp::NoCell)]
+#[derive(imp::TryFromBytes, imp::KnownLayout, imp::Immutable)]
 #[repr(C, packed)]
 struct CPackedUnsized {
     a: u8,

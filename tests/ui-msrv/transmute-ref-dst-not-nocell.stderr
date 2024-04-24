@@ -1,12 +1,12 @@
-error[E0277]: the trait bound `Dst: zerocopy::NoCell` is not satisfied
-  --> tests/ui-msrv/transmute-ref-dst-not-nocell.rs:23:31
+error[E0277]: the trait bound `Dst: zerocopy::Immutable` is not satisfied
+  --> tests/ui-msrv/transmute-ref-dst-not-nocell.rs:23:33
    |
-23 | const DST_NOT_NO_CELL: &Dst = transmute_ref!(&AU16(0));
-   |                               ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::NoCell` is not implemented for `Dst`
+23 | const DST_NOT_IMMUTABLE: &Dst = transmute_ref!(&AU16(0));
+   |                                 ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::Immutable` is not implemented for `Dst`
    |
-note: required by `AssertDstIsNoCell`
-  --> tests/ui-msrv/transmute-ref-dst-not-nocell.rs:23:31
+note: required by `AssertDstIsImmutable`
+  --> tests/ui-msrv/transmute-ref-dst-not-nocell.rs:23:33
    |
-23 | const DST_NOT_NO_CELL: &Dst = transmute_ref!(&AU16(0));
-   |                               ^^^^^^^^^^^^^^^^^^^^^^^^
+23 | const DST_NOT_IMMUTABLE: &Dst = transmute_ref!(&AU16(0));
+   |                                 ^^^^^^^^^^^^^^^^^^^^^^^^
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)

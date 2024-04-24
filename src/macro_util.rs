@@ -351,8 +351,8 @@ macro_rules! assert_size_eq {
 /// # Safety
 ///
 /// The caller must guarantee that:
-/// - `Src: IntoBytes + NoCell`
-/// - `Dst: FromBytes + NoCell`
+/// - `Src: IntoBytes + Immutable`
+/// - `Dst: FromBytes + Immutable`
 /// - `size_of::<Src>() == size_of::<Dst>()`
 /// - `align_of::<Src>() >= align_of::<Dst>()`
 #[inline(always)]
@@ -367,8 +367,8 @@ pub const unsafe fn transmute_ref<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
     //   caller has guaranteed that `Src: IntoBytes`, `Dst: FromBytes`, and
     //   `size_of::<Src>() == size_of::<Dst>()`.
     // - We know that there are no `UnsafeCell`s, and thus we don't have to
-    //   worry about `UnsafeCell` overlap, because `Src: NoCell` and `Dst:
-    //   NoCell`.
+    //   worry about `UnsafeCell` overlap, because `Src: Immutable` and `Dst:
+    //   Immutable`.
     // - The caller has guaranteed that alignment is not increased.
     // - We know that the returned lifetime will not outlive the input lifetime
     //   thanks to the lifetime bounds on this function.
@@ -386,11 +386,11 @@ pub const unsafe fn transmute_ref<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
 /// # Safety
 ///
 /// The caller must guarantee that:
-/// - `Src: FromBytes + IntoBytes + NoCell`
-/// - `Dst: FromBytes + IntoBytes + NoCell`
+/// - `Src: FromBytes + IntoBytes + Immutable`
+/// - `Dst: FromBytes + IntoBytes + Immutable`
 /// - `size_of::<Src>() == size_of::<Dst>()`
 /// - `align_of::<Src>() >= align_of::<Dst>()`
-// TODO(#686): Consider removing the `NoCell` requirement.
+// TODO(#686): Consider removing the `Immutable` requirement.
 #[inline(always)]
 pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
     src: &'src mut Src,
@@ -404,8 +404,8 @@ pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
     //   IntoBytes`, `Dst: FromBytes + IntoBytes`, and `size_of::<Src>() ==
     //   size_of::<Dst>()`.
     // - We know that there are no `UnsafeCell`s, and thus we don't have to
-    //   worry about `UnsafeCell` overlap, because `Src: NoCell`
-    //   and `Dst: NoCell`.
+    //   worry about `UnsafeCell` overlap, because `Src: Immutable`
+    //   and `Dst: Immutable`.
     // - The caller has guaranteed that alignment is not increased.
     // - We know that the returned lifetime will not outlive the input lifetime
     //   thanks to the lifetime bounds on this function.

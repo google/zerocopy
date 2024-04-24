@@ -89,7 +89,7 @@ macro_rules! derive {
 }
 
 derive!(KnownLayout => derive_known_layout => derive_known_layout_inner);
-derive!(NoCell => derive_no_cell => derive_no_cell_inner);
+derive!(Immutable => derive_no_cell => derive_no_cell_inner);
 derive!(TryFromBytes => derive_try_from_bytes => derive_try_from_bytes_inner);
 derive!(FromZeros => derive_from_zeros => derive_from_zeros_inner);
 derive!(FromBytes => derive_from_bytes => derive_from_bytes_inner);
@@ -292,18 +292,30 @@ fn derive_no_cell_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
         Data::Struct(strct) => impl_block(
             ast,
             strct,
-            Trait::NoCell,
+            Trait::Immutable,
             FieldBounds::ALL_SELF,
             SelfBounds::None,
             None,
             None,
         ),
-        Data::Enum(enm) => {
-            impl_block(ast, enm, Trait::NoCell, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
-        }
-        Data::Union(unn) => {
-            impl_block(ast, unn, Trait::NoCell, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
-        }
+        Data::Enum(enm) => impl_block(
+            ast,
+            enm,
+            Trait::Immutable,
+            FieldBounds::ALL_SELF,
+            SelfBounds::None,
+            None,
+            None,
+        ),
+        Data::Union(unn) => impl_block(
+            ast,
+            unn,
+            Trait::Immutable,
+            FieldBounds::ALL_SELF,
+            SelfBounds::None,
+            None,
+            None,
+        ),
     }
 }
 
@@ -399,12 +411,12 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
 }
 
 // A union is `TryFromBytes` if:
-// - all of its fields are `TryFromBytes` and `NoCell`
+// - all of its fields are `TryFromBytes` and `Immutable`
 
 fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    // TODO(#5): Remove the `NoCell` bound.
+    // TODO(#5): Remove the `Immutable` bound.
     let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::NoCell)]);
+        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
     let extras = Some({
         let fields = unn.fields();
         let field_names = fields.iter().map(|(name, _ty)| name);
@@ -422,7 +434,7 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
                     // SAFETY: `project` is a field projection of `candidate`,
                     // and `Self` is a union type. The candidate and projection
                     // agree exactly on where their `UnsafeCell` ranges are,
-                    // because `Self: NoCell` is enforced by
+                    // because `Self: Immutable` is enforced by
                     // `self_type_trait_bounds`.
                     let field_candidate = unsafe {
                         let project = |slf: *mut Self|
@@ -613,13 +625,13 @@ fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
 }
 
 // Unions are `FromZeros` if
-// - all fields are `FromZeros` and `NoCell`
+// - all fields are `FromZeros` and `Immutable`
 
 fn derive_from_zeros_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    // TODO(#5): Remove the `NoCell` bound. It's only necessary for
+    // TODO(#5): Remove the `Immutable` bound. It's only necessary for
     // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
     let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::NoCell)]);
+        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
     impl_block(ast, unn, Trait::FromZeros, field_type_trait_bounds, SelfBounds::None, None, None)
 }
 
@@ -703,13 +715,13 @@ const ENUM_FROM_BYTES_CFG: Config<EnumRepr> = {
 };
 
 // Unions are `FromBytes` if
-// - all fields are `FromBytes` and `NoCell`
+// - all fields are `FromBytes` and `Immutable`
 
 fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    // TODO(#5): Remove the `NoCell` bound. It's only necessary for
+    // TODO(#5): Remove the `Immutable` bound. It's only necessary for
     // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
     let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::NoCell)]);
+        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
     impl_block(ast, unn, Trait::FromBytes, field_type_trait_bounds, SelfBounds::None, None, None)
 }
 
@@ -951,7 +963,7 @@ impl PaddingCheck {
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum Trait {
     KnownLayout,
-    NoCell,
+    Immutable,
     TryFromBytes,
     FromZeros,
     FromBytes,
