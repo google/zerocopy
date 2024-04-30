@@ -1130,15 +1130,13 @@ mod _casts {
         ///   split_at)` in `self`.
         /// - If this is a suffix cast, `ptr` refers to the byte range
         ///   `[split_at, self.len())` in `self`.
-        ///
-        /// # Panics
-        ///
-        /// Panics if `U` is a DST whose trailing slice element is zero-sized.
         pub(crate) fn try_cast_into<U: 'a + ?Sized + KnownLayout + Immutable>(
             &self,
             cast_type: CastType,
         ) -> Option<(Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::Initialized)>, usize)>
         {
+            crate::util::assert_dst_is_not_zst::<U>();
+
             // PANICS: By invariant, the byte range addressed by `self.ptr` does
             // not wrap around the address space. This implies that the sum of
             // the address (represented as a `usize`) and length do not overflow
@@ -1585,24 +1583,31 @@ mod tests {
             }
         }
 
-        macro_rules! test {
-        ($($ty:ty),*) => {
-            $({
-                const S: usize = core::mem::size_of::<$ty>();
-                const N: usize = if S == 0 { 4 } else { S * 4 };
-                test::<$ty, N>();
-                // We don't support casting into DSTs whose trailing slice
-                // element is a ZST.
-                if S > 0 {
-                    test::<[$ty], N>();
-                }
-                // TODO: Test with a slice DST once we have any that
-                // implement `KnownLayout + FromBytes`.
-            })*
-        };
-    }
+        #[derive(FromBytes, KnownLayout, Immutable)]
+        #[repr(C)]
+        struct SliceDst<T> {
+            a: u8,
+            trailing: [T],
+        }
 
-        test!(());
+        macro_rules! test {
+            ($($ty:ty),*) => {
+                $({
+                    const S: usize = core::mem::size_of::<$ty>();
+                    const N: usize = if S == 0 { 4 } else { S * 4 };
+                    test::<$ty, N>();
+                    test::<[$ty], N>();
+                    test::<SliceDst<$ty>, N>();
+                })*
+            };
+        }
+
+        // NOTE: We call this directly instead of using `test!` because that
+        // macro would also test using `[()]`, which would trigger the
+        // post-monomorphization error in `assert_dst_is_not_zst`, which is
+        // called from `try_cast_into`.
+        test::<(), 4>();
+
         test!(u8, u16, u32, u64, u128, usize, AU64);
         test!(i8, i16, i32, i64, i128, isize);
         test!(f32, f64);
