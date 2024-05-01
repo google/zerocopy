@@ -1609,12 +1609,33 @@ pub unsafe trait TryFromBytes {
     /// there exist types whose bit validity is ambiguous. See
     /// [here][TryFromBytes#what-is-a-valid-instance] for a discussion of how
     /// these cases are handled.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout, TryFromBytes)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = ZSTy::try_ref_from(0u16.as_bytes()); // ⚠ Compile Error!
+    /// ```
     #[must_use = "has no side effects"]
     #[inline]
     fn try_ref_from(bytes: &[u8]) -> Option<&Self>
     where
         Self: KnownLayout + Immutable,
     {
+        util::assert_dst_is_not_zst::<Self>();
         let candidate = Ptr::from_ref(bytes).try_cast_into_no_leftover::<Self>()?;
 
         // This call may panic. If that happens, it doesn't cause any soundness
@@ -1640,12 +1661,34 @@ pub unsafe trait TryFromBytes {
     /// there exist types whose bit validity is ambiguous. See
     /// [here][TryFromBytes#what-is-a-valid-instance] for a discussion of how
     /// these cases are handled.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout, TryFromBytes)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let mut source = [85, 85];
+    /// let _ = ZSTy::try_mut_from(&mut source[..]); // ⚠ Compile Error!
+    /// ```
     #[must_use = "has no side effects"]
     #[inline]
     fn try_mut_from(bytes: &mut [u8]) -> Option<&mut Self>
     where
         Self: KnownLayout + Immutable, // TODO(#251): Remove the `Immutable` bound.
     {
+        util::assert_dst_is_not_zst::<Self>();
         let candidate = Ptr::from_mut(bytes).try_cast_into_no_leftover::<Self>()?;
 
         // This call may panic. If that happens, it doesn't cause any soundness
@@ -2222,6 +2265,26 @@ pub unsafe trait FromBytes: FromZeros {
     /// `bytes` is not aligned to `Self`'s alignment requirement, this returns
     /// `None`.
     ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = ZSTy::ref_from(0u16.as_bytes()); // ⚠ Compile Error!
+    /// ```
+    ///
     /// # Examples
     ///
     /// ```
@@ -2261,6 +2324,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: KnownLayout + Immutable,
     {
+        util::assert_dst_is_not_zst::<Self>();
         Ref::<&[u8], Self>::bikeshed_new_known_layout(bytes).map(Ref::into_ref)
     }
 
@@ -2270,6 +2334,26 @@ pub unsafe trait FromBytes: FromZeros {
     /// bytes of `bytes` interpreted as `Self`, and a reference to the remaining
     /// bytes. If `bytes.len() < size_of::<Self>()` or `bytes` is not aligned to
     /// `align_of::<Self>()`, this returns `None`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = ZSTy::ref_from_prefix(0u16.as_bytes()); // ⚠ Compile Error!
+    /// ```
     ///
     /// # Examples
     ///
@@ -2311,6 +2395,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: KnownLayout + Immutable,
     {
+        util::assert_dst_is_not_zst::<Self>();
         Ref::<&[u8], Self>::bikeshed_new_from_prefix_known_layout(bytes)
             .map(|(r, s)| (r.into_ref(), s))
     }
@@ -2321,6 +2406,26 @@ pub unsafe trait FromBytes: FromZeros {
     /// bytes of `bytes` interpreted as `Self`, and a reference to the preceding
     /// bytes. If `bytes.len() < size_of::<Self>()` or the suffix of `bytes` is
     /// not aligned to `align_of::<Self>()`, this returns `None`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = ZSTy::ref_from_suffix(0u16.as_bytes()); // ⚠ Compile Error!
+    /// ```
     ///
     /// # Examples
     ///
@@ -2348,6 +2453,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Immutable + KnownLayout,
     {
+        util::assert_dst_is_not_zst::<Self>();
         Ref::<&[u8], Self>::bikeshed_new_from_suffix_known_layout(bytes)
             .map(|(p, r)| (p, r.into_ref()))
     }
@@ -2356,6 +2462,27 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// If `bytes.len() != size_of::<Self>()` or `bytes` is not aligned to
     /// `align_of::<Self>()`, this returns `None`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, Immutable, IntoBytes, KnownLayout)]
+    /// #[repr(C, packed)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let mut source = [85, 85];
+    /// let _ = ZSTy::mut_from(&mut source[..]); // ⚠ Compile Error!
+    /// ```
     ///
     /// # Examples
     ///
@@ -2392,6 +2519,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: IntoBytes + KnownLayout + Immutable,
     {
+        util::assert_dst_is_not_zst::<Self>();
         Ref::<&mut [u8], Self>::bikeshed_new_known_layout(bytes).map(Ref::into_mut)
     }
 
@@ -2402,6 +2530,27 @@ pub unsafe trait FromBytes: FromZeros {
     /// bytes of `bytes` interpreted as `Self`, and a reference to the remaining
     /// bytes. If `bytes.len() < size_of::<Self>()` or `bytes` is not aligned to
     /// `align_of::<Self>()`, this returns `None`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, Immutable, IntoBytes, KnownLayout)]
+    /// #[repr(C, packed)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let mut source = [85, 85];
+    /// let _ = ZSTy::mut_from_prefix(&mut source[..]); // ⚠ Compile Error!
+    /// ```
     ///
     /// # Examples
     ///
@@ -2440,6 +2589,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: IntoBytes + KnownLayout + Immutable,
     {
+        util::assert_dst_is_not_zst::<Self>();
         Ref::<&mut [u8], Self>::bikeshed_new_from_prefix_known_layout(bytes)
             .map(|(r, s)| (r.into_mut(), s))
     }
@@ -2451,6 +2601,27 @@ pub unsafe trait FromBytes: FromZeros {
     /// bytes of `bytes` interpreted as `Self`, and a reference to the preceding
     /// bytes. If `bytes.len() < size_of::<Self>()` or the suffix of `bytes` is
     /// not aligned to `align_of::<Self>()`, this returns `None`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, Immutable, IntoBytes, KnownLayout)]
+    /// #[repr(C, packed)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let mut source = [85, 85];
+    /// let _ = ZSTy::mut_from_suffix(&mut source[..]); // ⚠ Compile Error!
+    /// ```
     ///
     /// # Examples
     ///
@@ -2483,6 +2654,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: IntoBytes + KnownLayout + Immutable,
     {
+        util::assert_dst_is_not_zst::<Self>();
         Ref::<&mut [u8], Self>::bikeshed_new_from_suffix_known_layout(bytes)
             .map(|(p, r)| (p, r.into_mut()))
     }
@@ -2497,9 +2669,25 @@ pub unsafe trait FromBytes: FromZeros {
     /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
     /// length, alignment, or overflow checks fail, it returns `None`.
     ///
-    /// # Panics
+    /// # Compile-Time Assertions
     ///
-    /// If `T` is a zero-sized type.
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = ZSTy::from_prefix_with_trailing_elements(b"UU", 0); // ⚠ Compile Error!
+    /// ```
     ///
     /// # Examples
     ///
@@ -2535,6 +2723,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: KnownLayout<PointerMetadata = usize> + Immutable,
     {
+        util::assert_dst_is_not_zst::<Self>();
         Ref::<_, Self>::with_trailing_elements_from_prefix(bytes, count)
             .map(|(r, b)| (r.into_ref(), b))
     }
@@ -2563,9 +2752,25 @@ pub unsafe trait FromBytes: FromZeros {
     /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
     /// length, alignment, or overflow checks fail, it returns `None`.
     ///
-    /// # Panics
+    /// # Compile-Time Assertions
     ///
-    /// If `T` is a zero-sized type.
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = ZSTy::from_suffix_with_trailing_elements(b"UU", 0); // ⚠ Compile Error!
+    /// ```
     ///
     /// # Examples
     ///
@@ -2601,6 +2806,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: KnownLayout<PointerMetadata = usize> + Immutable,
     {
+        util::assert_dst_is_not_zst::<Self>();
         Ref::<_, Self>::with_trailing_elements_from_suffix(bytes, count)
             .map(|(b, r)| (b, r.into_ref()))
     }
@@ -2640,9 +2846,26 @@ pub unsafe trait FromBytes: FromZeros {
     /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
     /// length, alignment, or overflow checks fail, it returns `None`.
     ///
-    /// # Panics
+    /// # Compile-Time Assertions
     ///
-    /// If `T` is a zero-sized type.
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, Immutable, IntoBytes, KnownLayout)]
+    /// #[repr(C, packed)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let mut source = [85, 85];
+    /// let _ = ZSTy::mut_from_prefix_with_trailing_elements(&mut source[..], 0); // ⚠ Compile Error!
+    /// ```
     ///
     /// # Examples
     ///
@@ -2686,6 +2909,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: IntoBytes + KnownLayout<PointerMetadata = usize> + Immutable,
     {
+        util::assert_dst_is_not_zst::<Self>();
         Ref::<_, Self>::with_trailing_elements_from_prefix(bytes, count)
             .map(|(r, b)| (r.into_mut(), b))
     }
@@ -2714,9 +2938,27 @@ pub unsafe trait FromBytes: FromZeros {
     /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
     /// length, alignment, or overflow checks fail, it returns `None`.
     ///
-    /// # Panics
     ///
-    /// If `T` is a zero-sized type.
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, Immutable, IntoBytes, KnownLayout)]
+    /// #[repr(C, packed)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let mut source = [85, 85];
+    /// let _ = ZSTy::mut_from_suffix_with_trailing_elements(&mut source[..], 0); // ⚠ Compile Error!
+    /// ```
     ///
     /// # Examples
     ///
@@ -2760,6 +3002,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: IntoBytes + KnownLayout<PointerMetadata = usize> + Immutable,
     {
+        util::assert_dst_is_not_zst::<Self>();
         Ref::<_, Self>::with_trailing_elements_from_suffix(bytes, count)
             .map(|(b, r)| (b, r.into_mut()))
     }
@@ -4959,6 +5202,7 @@ where
 {
     #[must_use = "has no side effects"]
     fn bikeshed_new_known_layout(bytes: B) -> Option<Ref<B, T>> {
+        util::assert_dst_is_not_zst::<T>();
         let _ = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T>()?;
         // INVARIANTS: `try_cast_into_no_leftover` validates size and alignment.
         Some(Ref(bytes, PhantomData))
@@ -4972,6 +5216,7 @@ where
 {
     #[must_use = "has no side effects"]
     fn bikeshed_new_from_prefix_known_layout(bytes: B) -> Option<(Ref<B, T>, B)> {
+        util::assert_dst_is_not_zst::<T>();
         let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
         let (bytes, suffix) = try_split_at(bytes, split_at)?;
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
@@ -4984,6 +5229,7 @@ where
 
     #[must_use = "has no side effects"]
     fn bikeshed_new_from_suffix_known_layout(bytes: B) -> Option<(B, Ref<B, T>)> {
+        util::assert_dst_is_not_zst::<T>();
         let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
         let (prefix, bytes) = try_split_at(bytes, split_at)?;
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
@@ -5055,9 +5301,30 @@ where
     /// `new` verifies that `bytes.len() == size_of::<T>()` and that `bytes` is
     /// aligned to `align_of::<T>()`, and constructs a new `Ref`. If either of
     /// these checks fail, it returns `None`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = Ref::<_, ZSTy>::new(&b"UU"[..]); // ⚠ Compile Error!
+    /// ```
     #[must_use = "has no side effects"]
     #[inline]
     pub fn new(bytes: B) -> Option<Ref<B, T>> {
+        util::assert_dst_is_not_zst::<T>();
         let _ = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T>()?;
         // INVARIANTS: `try_cast_into_no_leftover` validates size and alignment.
         Some(Ref(bytes, PhantomData))
@@ -5076,9 +5343,30 @@ where
     /// `size_of::<T>()` bytes from `bytes` to construct a `Ref`, and returns
     /// the remaining bytes to the caller. If either the length or alignment
     /// checks fail, it returns `None`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = Ref::<_, ZSTy>::new_from_prefix(&b"UU"[..]); // ⚠ Compile Error!
+    /// ```
     #[must_use = "has no side effects"]
     #[inline]
     pub fn new_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
+        util::assert_dst_is_not_zst::<T>();
         let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
         let (bytes, suffix) = try_split_at(bytes, split_at)?;
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
@@ -5097,9 +5385,30 @@ where
     /// `bytes` to construct a `Ref`, and returns the preceding bytes to the
     /// caller. If either the length or alignment checks fail, it returns
     /// `None`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = Ref::<_, ZSTy>::new_from_suffix(&b"UU"[..]); // ⚠ Compile Error!
+    /// ```
     #[must_use = "has no side effects"]
     #[inline]
     pub fn new_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
+        util::assert_dst_is_not_zst::<T>();
         let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
         let (prefix, bytes) = try_split_at(bytes, split_at)?;
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
@@ -5121,6 +5430,7 @@ where
     #[doc(hidden)]
     #[inline]
     pub fn with_trailing_elements_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, T>, B)> {
+        util::assert_dst_is_not_zst::<T>();
         let expected_len = match count.size_for_metadata(T::LAYOUT) {
             Some(len) => len,
             None => return None,
@@ -5143,6 +5453,7 @@ where
     #[doc(hidden)]
     #[inline]
     pub fn with_trailing_elements_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, T>)> {
+        util::assert_dst_is_not_zst::<T>();
         let expected_len = match count.size_for_metadata(T::LAYOUT) {
             Some(len) => len,
             None => return None,
@@ -5162,9 +5473,30 @@ where
     ///
     /// `new_unaligned` verifies that `bytes.len() == size_of::<T>()` and
     /// constructs a new `Ref`. If the check fails, it returns `None`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout, Unaligned)]
+    /// #[repr(C, packed)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let f = Ref::<&[u8], ZSTy>::new_unaligned(&b"UU"[..]); // ⚠ Compile Error!
+    /// ```
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn new_unaligned(bytes: B) -> Option<Ref<B, T>> {
+        util::assert_dst_is_not_zst::<T>();
         Ref::new(bytes)
     }
 }
@@ -5181,9 +5513,30 @@ where
     /// size_of::<T>()`. It consumes the first `size_of::<T>()` bytes from
     /// `bytes` to construct a `Ref`, and returns the remaining bytes to the
     /// caller. If the length check fails, it returns `None`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout, Unaligned)]
+    /// #[repr(C, packed)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = Ref::<_, ZSTy>::new_unaligned_from_prefix(&b"UU"[..]); // ⚠ Compile Error!
+    /// ```
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn new_unaligned_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
+        util::assert_dst_is_not_zst::<T>();
         Ref::new_from_prefix(bytes)
     }
 
@@ -5194,9 +5547,30 @@ where
     /// size_of::<T>()`. It consumes the last `size_of::<T>()` bytes from
     /// `bytes` to construct a `Ref`, and returns the preceding bytes to the
     /// caller. If the length check fails, it returns `None`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout, Unaligned)]
+    /// #[repr(C, packed)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = Ref::<_, ZSTy>::new_unaligned_from_suffix(&b"UU"[..]); // ⚠ Compile Error!
+    /// ```
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn new_unaligned_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
+        util::assert_dst_is_not_zst::<T>();
         Ref::new_from_suffix(bytes)
     }
 }
@@ -5214,6 +5588,7 @@ where
         bytes: B,
         count: usize,
     ) -> Option<(Ref<B, T>, B)> {
+        util::assert_dst_is_not_zst::<T>();
         Self::with_trailing_elements_from_prefix(bytes, count)
     }
 }
@@ -5231,6 +5606,7 @@ where
         bytes: B,
         count: usize,
     ) -> Option<(B, Ref<B, T>)> {
+        util::assert_dst_is_not_zst::<T>();
         Self::with_trailing_elements_from_suffix(bytes, count)
     }
 }
@@ -5246,6 +5622,8 @@ where
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn into_ref(self) -> &'a T {
+        // Presumably unreachable, since we've guarded each constructor of `Ref`.
+        util::assert_dst_is_not_zst::<T>();
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
         // valid for `T`, and so this `unwrap` will not panic.
         let ptr = Ptr::from_ref(self.0.into())
@@ -5267,6 +5645,8 @@ where
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn into_mut(self) -> &'a mut T {
+        // Presumably unreachable, since we've guarded each constructor of `Ref`.
+        util::assert_dst_is_not_zst::<T>();
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
         // valid for `T`, and so this `unwrap` will not panic.
         let ptr = Ptr::from_mut(self.0.into())
@@ -5347,6 +5727,7 @@ where
     type Target = T;
     #[inline]
     fn deref(&self) -> &T {
+        util::assert_dst_is_not_zst::<T>();
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
         // valid for `T`, and so this `unwrap` will not panic.
         let ptr = Ptr::from_ref(self.0.deref())
@@ -5364,6 +5745,7 @@ where
 {
     #[inline]
     fn deref_mut(&mut self) -> &mut T {
+        util::assert_dst_is_not_zst::<T>();
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
         // valid for `T`, and so this `unwrap` will not panic.
         let ptr = Ptr::from_mut(self.0.deref_mut())
@@ -7829,31 +8211,6 @@ mod tests {
             unreasonable_len
         )
         .is_none());
-    }
-
-    // Tests for ensuring that, if a ZST is passed into a slice-like function,
-    // we always panic. Since these tests need to be separate per-function, and
-    // they tend to take up a lot of space, we generate them using a macro in a
-    // submodule instead. The submodule ensures that we can just re-use the name
-    // of the function under test for the name of the test itself.
-    mod test_zst_panics {
-        macro_rules! zst_test {
-            ($name:ident($($tt:tt)*), $constructor_in_panic_msg:tt) => {
-                #[test]
-                #[should_panic = concat!("Ref::", $constructor_in_panic_msg, " called on a zero-sized type")]
-                fn $name() {
-                    let mut buffer = [0u8];
-                    let r = $crate::Ref::<_, [()]>::$name(&mut buffer[..], $($tt)*);
-                    unreachable!("should have panicked, got {:?}", r);
-                }
-            }
-        }
-        zst_test!(new(), "new");
-        zst_test!(with_trailing_elements_from_prefix(1), "new_slice");
-        zst_test!(with_trailing_elements_from_suffix(1), "new_slice");
-        zst_test!(new_unaligned(), "new_slice_unaligned");
-        zst_test!(with_trailing_elements_unaligned_from_prefix(1), "new_slice_unaligned");
-        zst_test!(with_trailing_elements_unaligned_from_suffix(1), "new_slice_unaligned");
     }
 
     #[test]
