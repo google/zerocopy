@@ -378,7 +378,7 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
             // validity of a struct is just the composition of the bit
             // validities of its fields, so this is a sound implementation of
             // `is_bit_valid`.
-            fn is_bit_valid<A: ::zerocopy::pointer::invariant::at_least::Shared>(
+            fn is_bit_valid<A: ::zerocopy::pointer::invariant::Aliasing + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>>(
                 mut candidate: ::zerocopy::Maybe<Self, A>
             ) -> bool {
                 true #(&& {
@@ -427,7 +427,7 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
             // bit validity of a union is not yet well defined in Rust, but it
             // is guaranteed to be no more strict than this definition. See #696
             // for a more in-depth discussion.
-            fn is_bit_valid<A: ::zerocopy::pointer::invariant::at_least::Shared>(
+            fn is_bit_valid<A: ::zerocopy::pointer::invariant::Aliasing + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>>(
                 mut candidate: ::zerocopy::Maybe<Self, A>
             ) -> bool {
                 false #(|| {
@@ -539,7 +539,7 @@ fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2:
         // SAFETY: We use `is_bit_valid` to validate that the bit pattern
         // corresponds to one of the field-less enum's variant discriminants.
         // Thus, this is a sound implementation of `is_bit_valid`.
-        fn is_bit_valid<A: ::zerocopy::pointer::invariant::at_least::Shared>(
+        fn is_bit_valid<A: ::zerocopy::pointer::invariant::Aliasing + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>>(
             candidate: ::zerocopy::Ptr<
                 '_,
                 Self,
