@@ -1749,7 +1749,8 @@ pub unsafe trait FromBytes: FromZeros {
         Self: KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        Ref::<&[u8], Self>::bikeshed_new_known_layout(bytes).map(Ref::into_ref)
+        let ptr = Ptr::from_ref(bytes).try_cast_into_no_leftover()?;
+        Some(ptr.bikeshed_recall_valid().as_ref())
     }
 
     /// Interprets the prefix of the given `bytes` as a `&Self` without copying.
@@ -1820,8 +1821,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        Ref::<&[u8], Self>::bikeshed_new_from_prefix_known_layout(bytes)
-            .map(|(r, s)| (r.into_ref(), s))
+        Ref::<&[u8], Self>::new_from_prefix(bytes).map(|(r, s)| (r.into_ref(), s))
     }
 
     /// Interprets the suffix of the given `bytes` as a `&Self` without copying.
@@ -1878,8 +1878,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: Immutable + KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
-        Ref::<&[u8], Self>::bikeshed_new_from_suffix_known_layout(bytes)
-            .map(|(p, r)| (p, r.into_ref()))
+        Ref::<&[u8], Self>::new_from_suffix(bytes).map(|(p, r)| (p, r.into_ref()))
     }
 
     /// Interprets the given `bytes` as a `&mut Self` without copying.
@@ -1944,7 +1943,8 @@ pub unsafe trait FromBytes: FromZeros {
         Self: IntoBytes + KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        Ref::<&mut [u8], Self>::bikeshed_new_known_layout(bytes).map(Ref::into_mut)
+        let ptr = Ptr::from_mut(bytes).try_cast_into_no_leftover()?;
+        Some(ptr.bikeshed_recall_valid().as_mut())
     }
 
     /// Interprets the prefix of the given `bytes` as a `&mut Self` without
@@ -2014,8 +2014,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: IntoBytes + KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        Ref::<&mut [u8], Self>::bikeshed_new_from_prefix_known_layout(bytes)
-            .map(|(r, s)| (r.into_mut(), s))
+        Ref::<&mut [u8], Self>::new_from_prefix(bytes).map(|(r, s)| (r.into_mut(), s))
     }
 
     /// Interprets the suffix of the given `bytes` as a `&mut Self` without
@@ -2079,8 +2078,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: IntoBytes + KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        Ref::<&mut [u8], Self>::bikeshed_new_from_suffix_known_layout(bytes)
-            .map(|(p, r)| (p, r.into_mut()))
+        Ref::<&mut [u8], Self>::new_from_suffix(bytes).map(|(p, r)| (p, r.into_mut()))
     }
 
     /// Interprets the prefix of the given `bytes` as a `&[Self]` with length
@@ -4618,52 +4616,6 @@ impl<B: ByteSlice + Clone, T: ?Sized> Clone for Ref<B, T> {
 // alignment and its size corresponds to a valid size for `T`. By safety
 // invariant on `ByteSlice`, these properties are preserved by `Copy`.
 impl<B: ByteSlice + Copy, T: ?Sized> Copy for Ref<B, T> {}
-
-impl<B, T> Ref<B, T>
-where
-    B: ByteSlice,
-    T: KnownLayout + Immutable + ?Sized,
-{
-    #[must_use = "has no side effects"]
-    fn bikeshed_new_known_layout(bytes: B) -> Option<Ref<B, T>> {
-        util::assert_dst_is_not_zst::<T>();
-        let _ = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T>()?;
-        // INVARIANTS: `try_cast_into_no_leftover` validates size and alignment.
-        Some(Ref(bytes, PhantomData))
-    }
-}
-
-impl<B, T> Ref<B, T>
-where
-    B: SplitByteSlice,
-    T: KnownLayout + Immutable + ?Sized,
-{
-    #[must_use = "has no side effects"]
-    fn bikeshed_new_from_prefix_known_layout(bytes: B) -> Option<(Ref<B, T>, B)> {
-        util::assert_dst_is_not_zst::<T>();
-        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix)?;
-        let (bytes, suffix) = try_split_at(bytes, split_at)?;
-        // INVARIANTS: `try_cast_into` validates size and alignment, and returns
-        // a `split_at` that indicates how many bytes of `bytes` correspond to a
-        // valid `T`. By safety postcondition on `SplitByteSlice::try_split_at`
-        // we can rely `try_split_at` to produce the correct `bytes` and
-        // `suffix`.
-        Some((Ref(bytes, PhantomData), suffix))
-    }
-
-    #[must_use = "has no side effects"]
-    fn bikeshed_new_from_suffix_known_layout(bytes: B) -> Option<(B, Ref<B, T>)> {
-        util::assert_dst_is_not_zst::<T>();
-        let (_, split_at) = Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix)?;
-        let (prefix, bytes) = try_split_at(bytes, split_at)?;
-        // INVARIANTS: `try_cast_into` validates size and alignment, and returns
-        // a `split_at` that indicates how many bytes of `bytes` correspond to a
-        // valid `T`. By safety postcondition on `SplitByteSlice::try_split_at`
-        // we can rely on `try_split_at` to produce the correct `prefix` and
-        // `bytes`.
-        Some((prefix, Ref(bytes, PhantomData)))
-    }
-}
 
 impl<B, T> Ref<B, T>
 where
