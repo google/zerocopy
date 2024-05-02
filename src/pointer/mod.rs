@@ -33,7 +33,7 @@ pub type MaybeAligned<'a, T, Aliasing = invariant::Shared, Alignment = invariant
 impl<'a, T, Aliasing, Alignment> MaybeAligned<'a, T, Aliasing, Alignment>
 where
     T: 'a + ?Sized,
-    Aliasing: invariant::at_least::Shared,
+    Aliasing: invariant::Aliasing + invariant::AtLeast<invariant::Shared>,
     Alignment: invariant::Alignment,
 {
     /// Reads the value from `MaybeAligned`.
@@ -68,7 +68,7 @@ pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
 where
     T: crate::Immutable,
     I: invariant::Invariants<Validity = invariant::Initialized>,
-    I::Aliasing: invariant::at_least::Shared,
+    I::Aliasing: invariant::AtLeast<invariant::Shared>,
 {
     ptr.as_bytes().as_ref().iter().all(|&byte| byte == 0)
 }
