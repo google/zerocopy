@@ -1141,16 +1141,19 @@ mod _casts {
         /// The caller may assume that this implementation is correct, and may
         /// rely on that assumption for the soundness of their code. In
         /// particular, the caller may assume that, if `try_cast_into` returns
-        /// `Some((ptr, split_at))`, then:
-        /// - If this is a prefix cast, `ptr` refers to the byte range `[0,
-        ///   split_at)` in `self`.
-        /// - If this is a suffix cast, `ptr` refers to the byte range
-        ///   `[split_at, self.len())` in `self`.
+        /// `Some((ptr, remainder))`, then `ptr` and `remainder` refer to
+        /// non-overlapping byte ranges within `self`, and that `ptr` and
+        /// `remainder` entirely cover `self`. Finally:
+        /// - If this is a prefix cast, `ptr` has the same address as `self`.
+        /// - If this is a suffix cast, `remainder` has the same address as
+        ///   `self`.
         pub(crate) fn try_cast_into<U: 'a + ?Sized + KnownLayout + Immutable>(
             self,
             cast_type: CastType,
-        ) -> Result<(Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, usize), CastError<Self, U>>
-        {
+        ) -> Result<
+            (Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, Ptr<'a, [u8], I>),
+            CastError<Self, U>,
+        > {
             crate::util::assert_dst_is_not_zst::<U>();
             // PANICS: By invariant, the byte range addressed by `self.ptr` does
             // not wrap around the address space. This implies that the sum of
@@ -1172,75 +1175,57 @@ mod _casts {
                 Err(MetadataCastError::Size) => return Err(CastError::Size(SizeError::new(self))),
             };
 
-            let offset = match cast_type {
-                CastType::Prefix => 0,
-                CastType::Suffix => split_at,
+            // SAFETY: `validate_cast_and_convert_metadata` promises to return
+            // `split_at <= self.len()`.
+            let (l_slice, r_slice) = unsafe { self.split_at(split_at) };
+
+            let (target, remainder) = match cast_type {
+                CastType::Prefix => (l_slice, r_slice),
+                CastType::Suffix => (r_slice, l_slice),
             };
 
-            let ptr = self.as_non_null().cast::<u8>().as_ptr();
-
-            // SAFETY: `offset` is either `0` or `split_at`.
-            // `validate_cast_and_convert_metadata` promises that `split_at` is
-            // in the range `[0, self.len()]`. Thus, in both cases, `offset` is
-            // in `[0, self.len()]`. Thus:
-            // - The resulting pointer is in or one byte past the end of the
-            //   same byte range as `self.ptr`. Since, by invariant, `self.ptr`
-            //   addresses a byte range entirely contained within a single
-            //   allocation, the pointer resulting from this operation is within
-            //   or one byte past the end of that same allocation.
-            // - By invariant, `self.len() <= isize::MAX`. Since `offset <=
-            //   self.len()`, `offset <= isize::MAX`.
-            // - By invariant, `self.ptr` addresses a byte range which does not
-            //   wrap around the address space. This means that the base pointer
-            //   plus the `self.len()` does not overflow `usize`. Since `offset
-            //   <= self.len()`, this addition does not overflow `usize`.
-            let base = unsafe { ptr.add(offset) };
-
-            // SAFETY: Since `add` is not allowed to wrap around, the preceding line
-            // produces a pointer whose address is greater than or equal to that of
-            // `ptr`. Since `ptr` is a `NonNull`, `base` is also non-null.
-            let base = unsafe { NonNull::new_unchecked(base) };
+            let base = target.as_non_null().cast::<u8>();
             let elems = <U as KnownLayout>::PointerMetadata::from_elem_count(elems);
             let ptr = U::raw_from_ptr_len(base, elems);
 
             // SAFETY:
-            // 0. By invariant, `self.ptr` is derived from some valid Rust
+            // 0. By invariant, `target` is derived from some valid Rust
             //    allocation, `A`. By contract on `cast`, `ptr` is derived from
             //    `self`, and thus from the same valid Rust allocation, `A`.
-            // 1. By invariant, `self.ptr` has provenance valid for some Rust
-            //    allocation, `A`. By contract on `cast`, and because `ptr` is
-            //    derived from `self` via provenance-preserving operations,
-            //    `ptr` will also have provenance valid for `A`.
-            // 2. By invariant, `self.ptr` addresses a byte range which is
-            //    entirely contained in `A`. By contract on `cast`, `ptr`
-            //    addresses a subset of the bytes referenced by `self.ptr`,
-            //    which is itself entirely contained by `A`.
+            // 1. By invariant, `target` has provenance valid for some Rust
+            //    allocation, `A`. Because `ptr` is derived from `target` via
+            //    provenance-preserving operations, `ptr` will also have
+            //    provenance valid for `A`.
             // -  `validate_cast_and_convert_metadata` promises that the object
             //    described by `elems` and `split_at` lives at a byte range
             //    which is a subset of the input byte range. Thus:
-            //    3. Since, by invariant, `self.ptr` addresses a byte range
-            //       entirely contained in `A`, so does `ptr`.
-            //    4. Since, by invariant, `self.ptr` addresses a range whose
-            //       length is not longer than `isize::MAX` bytes, so does
-            //       `ptr`.
-            //    5. Since, by invariant, `self.ptr` addresses a range which
+            //    2. Since, by invariant, `target` addresses a byte range which
+            //       is entirely contained in `A`, so does `ptr`.
+            //    3. Since, by invariant, `target` addresses a byte range whose
+            //       length fits in an `isize`, so does `ptr`.
+            //    4. Since, by invariant, `target` addresses a byte range which
             //       does not wrap around the address space, so does `ptr`.
-            // 6. `ptr` conforms to the aliasing invariant of `I::Aliasing`
-            //    because casting does not impact the aliasing invariant.
+            //    5. Since, by invariant, `target` refers to an allocation which
+            //       is guaranteed to live for at least `'a`, so does `ptr`.
+            //    6. Since, by invariant, `target` conforms to the aliasing
+            //       invariant of `I::Aliasing` with regards to its referent
+            //       bytes, so does `ptr`.
             // 7. `ptr` conforms to the alignment invariant of `Aligned` because
-            //    it is derived from `validate_cast_and_convert_metadata`
-            //    promises that the object described by `split_at` is validly
+            //    it is derived from `validate_cast_and_convert_metadata`, which
+            //    promises that the object described by `target` is validly
             //    aligned for `U`.
-            // 8. By trait bound, `self` is a bit-valid `[u8]`. All bit-valid
-            //    `[u8]`s have all of their bytes initialized, so `ptr` conforms
-            //    to the validity invariant of `Initialized`.
-            // 9. During the lifetime 'a, no code will reference or load or
-            //    store this memory region treating `UnsafeCell`s as existing at
-            //    different ranges than they exist in `U`. This is true by
-            //    invariant on Ptr<'a, T, I>, preserved through the cast by the
-            //    bound `U: Immutable`.
+            // 8. By trait bound, `self` - and thus `target` - is a bit-valid
+            //    `[u8]`. All bit-valid `[u8]`s have all of their bytes
+            //    initialized, so `ptr` conforms to the validity invariant of
+            //    `Initialized`.
+            // 9. During the lifetime 'a, no code will reference or load from or
+            //    store to `target`'s referent memory region treating
+            //    `UnsafeCell`s as existing at different ranges than they exist
+            //    in `U`. This is true because neither the source type (`[u8]`)
+            //    nor the destination type (`U: Immutable`) contain any
+            //    `UnsafeCell`s.
             // 10. See 9.
-            Ok((unsafe { Ptr::new(ptr) }, split_at))
+            Ok((unsafe { Ptr::new(ptr) }, remainder))
         }
 
         /// Attempts to cast `self` into a `U`, failing if all of the bytes of
@@ -1258,13 +1243,12 @@ mod _casts {
         pub(crate) fn try_cast_into_no_leftover<U: 'a + ?Sized + KnownLayout + Immutable>(
             self,
         ) -> Result<Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, CastError<Self, U>> {
-            let len = self.len();
             // TODO(#67): Remove this allow. See NonNulSlicelExt for more
             // details.
             #[allow(unstable_name_collisions)]
             match self.try_cast_into(CastType::Prefix) {
-                Ok((slf, split_at)) => {
-                    if split_at == len {
+                Ok((slf, remainder)) => {
+                    if remainder.len() == 0 {
                         Ok(slf)
                     } else {
                         // Undo the cast so we can return the original bytes.
@@ -1289,6 +1273,11 @@ mod _casts {
 
 /// Projections through the referent.
 mod _project {
+    use core::ops::Range;
+
+    #[allow(unused_imports)]
+    use crate::util::polyfills::NumExt as _;
+
     use super::*;
 
     impl<'a, T, I> Ptr<'a, T, I>
@@ -1414,8 +1403,77 @@ mod _project {
         /// # Safety
         ///
         /// Unsafe code my rely on `len` satisfying the above contract.
-        pub(super) fn len(&self) -> usize {
+        pub(crate) fn len(&self) -> usize {
             self.trailing_slice_len()
+        }
+
+        /// Creates a pointer which addresses the given `range` of self.
+        ///
+        /// # Safety
+        ///
+        /// `range` is a valid range (`start <= end`) and `end <= self.len()`.
+        pub(crate) unsafe fn slice_unchecked(self, range: Range<usize>) -> Self {
+            let base = self.as_non_null().cast::<T>().as_ptr();
+
+            // SAFETY: The caller promises that `start <= end <= self.len()`. By
+            // invariant, `self` refers to a byte range which is contained
+            // within a single allocation, which is no more than `isize::MAX`
+            // bytes long, and which does not wrap around the address space.
+            // Thus, this pointer arithmetic remains in-bounds of the same
+            // allocation, and does not wrap around the address space. The
+            // offset (in bytes) does not overflow `isize`.
+            let base = unsafe { base.add(range.start) };
+
+            // SAFETY: The caller promises that `start <= end`, and so this will
+            // not underflow.
+            #[allow(unstable_name_collisions, clippy::incompatible_msrv)]
+            let len = unsafe { range.end.unchecked_sub(range.start) };
+
+            let ptr = core::ptr::slice_from_raw_parts_mut(base, len);
+
+            // SAFETY: By invariant, `self`'s address is non-null and its range
+            // does not wrap around the address space. Since, by the preceding
+            // lemma, `ptr` addresses a range within that addressed by `self`,
+            // `ptr` is non-null.
+            let ptr = unsafe { NonNull::new_unchecked(ptr) };
+
+            // SAFETY: TODO(#896)
+            unsafe { Ptr::new(ptr) }
+        }
+
+        /// Splits the slice in two.
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that `l_len <= self.len()`.
+        pub(crate) unsafe fn split_at(self, l_len: usize) -> (Self, Self) {
+            // SAFETY: `Any` imposes no invariants, and so this is always sound.
+            let slf = unsafe { self.assume_aliasing::<Any>() };
+
+            // SAFETY: The caller promises that `l_len <= self.len()`.
+            // Trivially, `0 <= l_len`.
+            let left = unsafe { slf.slice_unchecked(0..l_len) };
+
+            // SAFETY: The caller promises that `l_len <= self.len() =
+            // slf.len()`. Trivially, `slf.len() <= slf.len()`.
+            let right = unsafe { slf.slice_unchecked(l_len..slf.len()) };
+
+            // LEMMA: `left` and `right` are non-overlapping. Proof: `left` is
+            // constructed from `slf` with `l_len` as its (exclusive) upper
+            // bound, while `right` is constructed from `slf` with `l_len` as
+            // its (inclusive) lower bound. Thus, no index is a member of both
+            // ranges.
+
+            // SAFETY: We never change invariants other than aliasing.
+            //
+            // By the preceding lemma, `left` and `right` do not alias. We do
+            // not construct any other `Ptr`s or references which alias `left`
+            // or `right`. Thus, the only `Ptr`s or references which alias
+            // `left` or `right` are outside of this method. By invariant,
+            // `self` obeys the aliasing invariant `I::Aliasing` with respect to
+            // those other `Ptr`s or references, and so `left` and `right` do as
+            // well.
+            unsafe { (left.assume_invariants::<I>(), right.assume_invariants::<I>()) }
         }
 
         /// Iteratively projects the elements `Ptr<T>` from `Ptr<[T]>`.
@@ -1518,6 +1576,23 @@ mod tests {
     use crate::{util::testutil::AU64, FromBytes};
 
     #[test]
+    fn test_split_at() {
+        const N: usize = 16;
+        let mut arr = [1; N];
+        let mut ptr = Ptr::from_mut(&mut arr).as_slice();
+        for i in 0..=N {
+            assert_eq!(ptr.len(), N);
+            // SAFETY: `i` is in bounds by construction.
+            let (l, r) = unsafe { ptr.reborrow().split_at(i) };
+            let l_sum: usize = l.iter().map(Ptr::read_unaligned).sum();
+            let r_sum: usize = r.iter().map(Ptr::read_unaligned).sum();
+            assert_eq!(l_sum, i);
+            assert_eq!(r_sum, N - i);
+            assert_eq!(l_sum + r_sum, N);
+        }
+    }
+
+    #[test]
     fn test_ptr_try_cast_into_soundness() {
         // This test is designed so that if `Ptr::try_cast_into_xxx` are
         // buggy, it will manifest as unsoundness that Miri can detect.
@@ -1584,15 +1659,20 @@ mod tests {
                     }
 
                     for cast_type in [CastType::Prefix, CastType::Suffix] {
-                        if let Ok((slf, split_at)) =
+                        if let Ok((slf, remaining)) =
                             Ptr::from_ref(bytes).try_cast_into::<T>(cast_type)
                         {
                             // SAFETY: All bytes in `bytes` have been
                             // initialized.
                             let len = unsafe { validate_and_get_len(slf) };
+                            assert_eq!(remaining.len(), bytes.len() - len);
+                            #[allow(unstable_name_collisions)]
+                            let bytes_addr = bytes.as_ptr().addr();
+                            #[allow(unstable_name_collisions)]
+                            let remaining_addr = remaining.as_non_null().as_ptr().addr();
                             match cast_type {
-                                CastType::Prefix => assert_eq!(split_at, len),
-                                CastType::Suffix => assert_eq!(split_at, bytes.len() - len),
+                                CastType::Prefix => assert_eq!(remaining_addr, bytes_addr + len),
+                                CastType::Suffix => assert_eq!(remaining_addr, bytes_addr),
                             }
                         }
                     }
