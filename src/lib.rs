@@ -44,7 +44,8 @@
 //! by the conversion traits:
 //! - [`KnownLayout`] indicates that zerocopy can reason about certain layout
 //!   qualities of a type
-//! - [`Immutable`] indicates that a type does not contain any [`UnsafeCell`]s
+//! - [`Immutable`] indicates that a type is free from interior mutability,
+//!   except by ownership or an exclusive (`&mut`) borrow
 //! - [`Unaligned`] indicates that a type's alignment requirement is 1
 //!
 //! You should generally derive these marker traits whenever possible.
@@ -758,9 +759,8 @@ pub use zerocopy_derive::FromZeros;
 ///
 /// *This section describes, roughly, the analysis performed by this derive to
 /// determine whether it is sound to implement `Immutable` for a given type.
-/// Unless you are modifying the implementation of this derive, or attempting to
-/// manually implement `Immutable` for a type yourself, you don't need to read
-/// this section.*
+/// Unless you are modifying the implementation of this derive, you don't need
+/// to read this section.*
 ///
 /// If a type has the following properties, then this derive can implement
 /// `Immutable` for that type:
@@ -776,11 +776,10 @@ pub use zerocopy_derive::FromZeros;
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::Immutable;
 
-/// Types which do not directly contain any [`UnsafeCell`]s.
+/// Types which are free from interior mutability.
 ///
-/// `T: Immutable` indicates that `T` does not contain any `UnsafeCell`s in its
-/// fields. `T` may still refer to types which contain `UnsafeCell`s: for
-/// example, `&UnsafeCell<T>` implements `Immutable`.
+/// `T: Immutable` indicates that `T` does not permit interior mutability, except
+/// by ownership or an exclusive (`&mut`) borrow.
 ///
 /// # Implementation
 ///
@@ -818,21 +817,23 @@ pub use zerocopy_derive::Immutable;
 ///
 /// # Safety
 ///
-/// If `T: Immutable`, unsafe code *inside of this crate* may assume that, given
-/// `t: &T`, `t` does not contain any [`UnsafeCell`]s at any byte location
-/// within the byte range addressed by `t`. This includes ranges of length 0
-/// (e.g., `UnsafeCell<()>` and `[UnsafeCell<u8>; 0]`). If a type implements
-/// `Immutable` which violates this assumptions, it may cause this crate to
-/// exhibit [undefined behavior].
-///
 /// Unsafe code outside of this crate must not make any assumptions about `T`
 /// based on `T: Immutable`. We reserve the right to relax the requirements for
 /// `Immutable` in the future, and if unsafe code outside of this crate makes
 /// assumptions based on `T: Immutable`, future relaxations may cause that code
 /// to become unsound.
 ///
-/// [`UnsafeCell`]: core::cell::UnsafeCell
-/// [undefined behavior]: https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html
+// # Safety (Internal)
+//
+// If `T: Immutable`, unsafe code *inside of this crate* may assume that, given
+// `t: &T`, `t` does not contain any [`UnsafeCell`]s at any byte location
+// within the byte range addressed by `t`. This includes ranges of length 0
+// (e.g., `UnsafeCell<()>` and `[UnsafeCell<u8>; 0]`). If a type implements
+// `Immutable` which violates this assumptions, it may cause this crate to
+// exhibit [undefined behavior].
+//
+// [`UnsafeCell`]: core::cell::UnsafeCell
+// [undefined behavior]: https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html
 #[cfg_attr(
     feature = "derive",
     doc = "[derive]: zerocopy_derive::Immutable",
