@@ -985,24 +985,35 @@ mod _casts {
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
-        T: 'a,
+        T: 'a + KnownLayout + ?Sized,
         I: Invariants<Validity = Initialized>,
         T: Immutable,
     {
         /// Casts this pointer-to-initialized into a pointer-to-bytes.
         #[allow(clippy::wrong_self_convention)]
         pub(crate) fn as_bytes(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Valid)> {
+            let bytes = match T::size_of_val_raw(self.as_non_null()) {
+                Some(bytes) => bytes,
+                // SAFETY: `KnownLayout::size_of_val_raw` promises to always
+                // return `Some` so long as the resulting size fits in a
+                // `usize`. By invariant on `Ptr`, `self` refers to a range of
+                // bytes whose size fits in an `isize`, which implies that it
+                // also fits in a `usize`.
+                None => unsafe { core::hint::unreachable_unchecked() },
+            };
+
             // SAFETY: We ensure that:
             // - `cast(p)` is implemented as an invocation to
             //   `slice_from_raw_parts_mut`.
             // - The size of the object referenced by the resulting pointer is
-            //   exactly equal to the size of the object referenced by `self`.
+            //   exactly equal to the size of the object referenced by `self` as
+            //   guaranteed by `KnownLayout::size_of_val_raw`
             // - `T` and `[u8]` trivially contain `UnsafeCell`s at identical
             //   ranges [u8]`, because both are `Immutable`.
             let ptr: Ptr<'a, [u8], _> = unsafe {
                 self.cast_unsized(|p: *mut T| {
                     #[allow(clippy::as_conversions)]
-                    core::ptr::slice_from_raw_parts_mut(p.cast::<u8>(), core::mem::size_of::<T>())
+                    core::ptr::slice_from_raw_parts_mut(p.cast::<u8>(), bytes)
                 })
             };
 
@@ -1314,48 +1325,35 @@ mod _project {
         }
     }
 
+    impl<'a, T, I> Ptr<'a, T, I>
+    where
+        T: 'a + KnownLayout<PointerMetadata = usize> + ?Sized,
+        I: Invariants,
+    {
+        /// The number of trailing slice elements in the object referenced by
+        /// `self`.
+        ///
+        /// # Safety
+        ///
+        /// Unsafe code my rely on `trailing_slice_len` satisfying the above
+        /// contract.
+        pub(super) fn trailing_slice_len(&self) -> usize {
+            T::pointer_to_metadata(self.as_non_null())
+        }
+    }
+
     impl<'a, T, I> Ptr<'a, [T], I>
     where
         T: 'a,
         I: Invariants,
     {
-        /// The number of slice elements referenced by `self`.
+        /// The number of slice elements in the object referenced by `self`.
         ///
         /// # Safety
         ///
         /// Unsafe code my rely on `len` satisfying the above contract.
         pub(super) fn len(&self) -> usize {
-            #[allow(clippy::as_conversions)]
-            let slc = self.as_non_null().as_ptr() as *const [()];
-
-            // SAFETY:
-            // - `()` has alignment 1, so `slc` is trivially aligned.
-            // - `slc` was derived from a non-null pointer.
-            // - The size is 0 regardless of the length, so it is sound to
-            //   materialize a reference regardless of location.
-            // - By invariant, `self.ptr` has valid provenance.
-            let slc = unsafe { &*slc };
-
-            // This is correct because the preceding `as` cast preserves the
-            // number of slice elements. Per
-            // https://doc.rust-lang.org/nightly/reference/expressions/operator-expr.html#slice-dst-pointer-to-pointer-cast:
-            //
-            //   For slice types like `[T]` and `[U]`, the raw pointer types
-            //   `*const [T]`, `*mut [T]`, `*const [U]`, and `*mut [U]` encode
-            //   the number of elements in this slice. Casts between these raw
-            //   pointer types preserve the number of elements. Note that, as a
-            //   consequence, such casts do *not* necessarily preserve the size
-            //   of the pointer's referent (e.g., casting `*const [u16]` to
-            //   `*const [u8]` will result in a raw pointer which refers to an
-            //   object of half the size of the original). The same holds for
-            //   `str` and any compound type whose unsized tail is a slice type,
-            //   such as struct `Foo(i32, [u8])` or `(u64, Foo)`.
-            //
-            // TODO(#429),
-            // TODO(https://github.com/rust-lang/reference/pull/1417): Once this
-            // text is available on the Stable docs, cite those instead of the
-            // Nightly docs.
-            slc.len()
+            self.trailing_slice_len()
         }
 
         /// Iteratively projects the elements `Ptr<T>` from `Ptr<[T]>`.

@@ -555,6 +555,10 @@ macro_rules! impl_known_layout {
                 fn raw_from_ptr_len(bytes: NonNull<u8>, _meta: ()) -> NonNull<Self> {
                     bytes.cast::<Self>()
                 }
+
+                #[inline(always)]
+                fn pointer_to_metadata(_ptr: NonNull<Self>) -> () {
+                }
             }
         };
     };
@@ -597,6 +601,14 @@ macro_rules! unsafe_impl_known_layout {
                     let ptr = <$repr>::raw_from_ptr_len(bytes, meta).as_ptr() as *mut Self;
                     // SAFETY: `ptr` was converted from `bytes`, which is non-null.
                     unsafe { NonNull::new_unchecked(ptr) }
+                }
+
+                #[inline(always)]
+                fn pointer_to_metadata(ptr: NonNull<Self>) -> Self::PointerMetadata {
+                    // SAFETY: `ptr` is non-null.
+                    #[allow(clippy::as_conversions)]
+                    let ptr = unsafe { NonNull::new_unchecked(ptr.as_ptr() as *mut $repr) };
+                    <$repr>::pointer_to_metadata(ptr)
                 }
             }
         };

@@ -197,13 +197,20 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
                 #[inline(always)]
                 fn raw_from_ptr_len(
                     bytes: ::zerocopy::macro_util::core_reexport::ptr::NonNull<u8>,
-                    meta: <#trailing_field_ty as ::zerocopy::KnownLayout>::PointerMetadata,
+                    meta: Self::PointerMetadata,
                 ) -> ::zerocopy::macro_util::core_reexport::ptr::NonNull<Self> {
-                    use ::zerocopy::{KnownLayout};
+                    use ::zerocopy::KnownLayout;
                     let trailing = <#trailing_field_ty as KnownLayout>::raw_from_ptr_len(bytes, meta);
                     let slf = trailing.as_ptr() as *mut Self;
                     // SAFETY: Constructed from `trailing`, which is non-null.
                     unsafe { ::zerocopy::macro_util::core_reexport::ptr::NonNull::new_unchecked(slf) }
+                }
+
+                #[inline(always)]
+                fn pointer_to_metadata(ptr: ::zerocopy::macro_util::core_reexport::ptr::NonNull<Self>) -> Self::PointerMetadata {
+                    // SAFETY: `ptr` is non-null.
+                    let ptr = unsafe { ::zerocopy::macro_util::core_reexport::ptr::NonNull::new_unchecked(ptr.as_ptr() as *mut _) };
+                    <#trailing_field_ty>::pointer_to_metadata(ptr)
                 }
             ),
         )
@@ -231,6 +238,12 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
                     _meta: (),
                 ) -> ::zerocopy::macro_util::core_reexport::ptr::NonNull<Self> {
                     bytes.cast::<Self>()
+                }
+
+                #[inline(always)]
+                fn pointer_to_metadata(
+                    _ptr: ::zerocopy::macro_util::core_reexport::ptr::NonNull<Self>,
+                ) -> () {
                 }
             ),
         )

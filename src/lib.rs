@@ -503,6 +503,36 @@ pub unsafe trait KnownLayout {
     /// elements in its trailing slice.
     #[doc(hidden)]
     fn raw_from_ptr_len(bytes: NonNull<u8>, meta: Self::PointerMetadata) -> NonNull<Self>;
+
+    /// Extracts the metadata from a pointer to `Self`.
+    ///
+    /// # Safety
+    ///
+    /// `pointer_to_metadata` always returns the correct metadata stored in
+    /// `ptr`.
+    #[doc(hidden)]
+    fn pointer_to_metadata(ptr: NonNull<Self>) -> Self::PointerMetadata;
+
+    /// Computes the length of the byte range addressed by `ptr`.
+    ///
+    /// Returns `None` if the resulting length would not fit in an `usize`.
+    ///
+    /// # Safety
+    ///
+    /// Callers may assume that `size_of_val_raw` always returns the correct
+    /// size.
+    ///
+    /// Callers may assume that, if `ptr` addresses a byte range whose length
+    /// fits in an `usize`, this will return `Some`.
+    #[doc(hidden)]
+    #[must_use]
+    #[inline(always)]
+    fn size_of_val_raw(ptr: NonNull<Self>) -> Option<usize> {
+        let meta = Self::pointer_to_metadata(ptr);
+        // SAFETY: `size_for_metadata` promises to only return `None` if the
+        // resulting size would not fit in a `usize`.
+        meta.size_for_metadata(Self::LAYOUT)
+    }
 }
 
 /// The metadata associated with a [`KnownLayout`] type.
@@ -522,6 +552,11 @@ pub trait PointerMetadata {
     /// If `Self = ()`, `layout` must describe a sized type. If `Self = usize`,
     /// `layout` must describe a slice DST. Otherwise, `size_for_metadata` may
     /// panic.
+    ///
+    /// # Safety
+    ///
+    /// `size_for_metadata` promises to only return `None` if the resulting size
+    /// would not fit in a `usize`.
     fn size_for_metadata(&self, layout: DstLayout) -> Option<usize>;
 }
 
@@ -580,6 +615,41 @@ unsafe impl<T> KnownLayout for [T] {
         // TODO(#67): Remove this allow. See NonNullExt for more details.
         #[allow(unstable_name_collisions)]
         NonNull::slice_from_raw_parts(data.cast::<T>(), elems)
+    }
+
+    #[inline(always)]
+    fn pointer_to_metadata(ptr: NonNull<[T]>) -> usize {
+        #[allow(clippy::as_conversions)]
+        let slc = ptr.as_ptr() as *const [()];
+
+        // SAFETY:
+        // - `()` has alignment 1, so `slc` is trivially aligned.
+        // - `slc` was derived from a non-null pointer.
+        // - The size is 0 regardless of the length, so it is sound to
+        //   materialize a reference regardless of location.
+        // - By invariant, `self.ptr` has valid provenance.
+        let slc = unsafe { &*slc };
+
+        // This is correct because the preceding `as` cast preserves the number
+        // of slice elements. Per
+        // https://doc.rust-lang.org/nightly/reference/expressions/operator-expr.html#slice-dst-pointer-to-pointer-cast:
+        //
+        //   For slice types like `[T]` and `[U]`, the raw pointer types `*const
+        //   [T]`, `*mut [T]`, `*const [U]`, and `*mut [U]` encode the number of
+        //   elements in this slice. Casts between these raw pointer types
+        //   preserve the number of elements. Note that, as a consequence, such
+        //   casts do *not* necessarily preserve the size of the pointer's
+        //   referent (e.g., casting `*const [u16]` to `*const [u8]` will result
+        //   in a raw pointer which refers to an object of half the size of the
+        //   original). The same holds for `str` and any compound type whose
+        //   unsized tail is a slice type, such as struct `Foo(i32, [u8])` or
+        //   `(u64, Foo)`.
+        //
+        // TODO(#429),
+        // TODO(https://github.com/rust-lang/reference/pull/1417): Once this
+        // text is available on the Stable docs, cite those instead of the
+        // Nightly docs.
+        slc.len()
     }
 }
 
