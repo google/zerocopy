@@ -18,11 +18,6 @@
 // once for each "major" toolchain (msrv, stable, nightly). This does not
 // include any toolchain which is listed in the `package.metadata.build-rs`
 // Cargo.toml section.
-//
-// A common task that is especially annoying to perform by hand is to update
-// trybuild's stderr files. Using this script:
-//
-//   TRYBUILD=overwrite ./cargo-zerocopy +all test --workspace
 
 use std::{
     env, fmt,
