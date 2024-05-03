@@ -9,7 +9,7 @@
 [package]
 edition = "2018"
 name = "zerocopy-derive"
-version = "0.8.0-alpha.5"
+version = "0.8.0-alpha.8"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Custom derive for traits from the zerocopy crate"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
@@ -29,7 +29,10 @@ proc-macro = true
 [dependencies]
 proc-macro2 = "1.0.1"
 quote = "1.0.10"
-syn = "2.0.31"
+# This pinned dependency is a temporary work-around for #1085. Per #1088, we
+# will not ship 0.8 until we've removed this work-around and replaced it with a
+# more permanent solution.
+syn = "=2.0.55"
 
 [dev-dependencies]
 # We don't use this directly, but trybuild does. On the MSRV toolchain, the

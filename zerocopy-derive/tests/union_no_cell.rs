@@ -8,29 +8,29 @@
 
 include!("include.rs");
 
-#[derive(Clone, Copy, imp::NoCell)]
+#[derive(Clone, Copy, imp::Immutable)]
 union Zst {
     a: (),
 }
 
-util_assert_impl_all!(Zst: imp::NoCell);
+util_assert_impl_all!(Zst: imp::Immutable);
 
-#[derive(imp::NoCell)]
+#[derive(imp::Immutable)]
 union One {
     a: bool,
 }
 
-util_assert_impl_all!(One: imp::NoCell);
+util_assert_impl_all!(One: imp::Immutable);
 
-#[derive(imp::NoCell)]
+#[derive(imp::Immutable)]
 union Two {
     a: bool,
     b: Zst,
 }
 
-util_assert_impl_all!(Two: imp::NoCell);
+util_assert_impl_all!(Two: imp::Immutable);
 
-#[derive(imp::NoCell)]
+#[derive(imp::Immutable)]
 union TypeParams<'a, T: imp::Copy, I: imp::Iterator>
 where
     I::Item: imp::Copy,
@@ -43,17 +43,17 @@ where
     g: imp::PhantomData<imp::String>,
 }
 
-util_assert_impl_all!(TypeParams<'static, (), imp::IntoIter<()>>: imp::NoCell);
+util_assert_impl_all!(TypeParams<'static, (), imp::IntoIter<()>>: imp::Immutable);
 
-// Deriving `imp::NoCell` should work if the union has bounded parameters.
+// Deriving `imp::Immutable` should work if the union has bounded parameters.
 
-#[derive(imp::NoCell)]
+#[derive(imp::Immutable)]
 #[repr(C)]
-union WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::NoCell, const N: usize>
+union WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::Immutable, const N: usize>
 where
     'a: 'b,
     'b: 'a,
-    T: 'a + 'b + imp::Copy + imp::NoCell,
+    T: 'a + 'b + imp::Copy + imp::Immutable,
 {
     a: [T; N],
     b: imp::PhantomData<&'a &'b ()>,
@@ -61,4 +61,4 @@ where
     d: &'a imp::UnsafeCell<()>,
 }
 
-util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::NoCell);
+util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::Immutable);

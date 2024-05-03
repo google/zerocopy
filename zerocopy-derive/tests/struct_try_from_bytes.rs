@@ -149,7 +149,7 @@ where
 
 util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::TryFromBytes);
 
-#[derive(Debug, PartialEq, Eq, imp::TryFromBytes, imp::NoCell, imp::KnownLayout)]
+#[derive(Debug, PartialEq, Eq, imp::TryFromBytes, imp::Immutable, imp::KnownLayout)]
 #[repr(C, packed)]
 struct CPacked {
     a: u8,
@@ -166,11 +166,11 @@ struct CPacked {
 #[test]
 fn c_packed() {
     let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF];
-    let converted = <CPacked as imp::TryFromBytes>::try_from_ref(candidate);
+    let converted = <CPacked as imp::TryFromBytes>::try_ref_from(candidate);
     imp::assert_eq!(converted, imp::Some(&CPacked { a: 42, b: u32::MAX }));
 }
 
-#[derive(imp::TryFromBytes, imp::KnownLayout, imp::NoCell)]
+#[derive(imp::TryFromBytes, imp::KnownLayout, imp::Immutable)]
 #[repr(C, packed)]
 struct CPackedUnsized {
     a: u8,
@@ -187,7 +187,7 @@ struct CPackedUnsized {
 #[test]
 fn c_packed_unsized() {
     let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF];
-    let converted = <CPackedUnsized as imp::TryFromBytes>::try_from_ref(candidate);
+    let converted = <CPackedUnsized as imp::TryFromBytes>::try_ref_from(candidate);
     imp::assert!(converted.is_some());
 }
 
@@ -208,14 +208,14 @@ struct PackedUnsized {
 #[test]
 fn packed_unsized() {
     let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF];
-    let converted = <CPackedUnsized as imp::TryFromBytes>::try_from_ref(candidate);
+    let converted = <CPackedUnsized as imp::TryFromBytes>::try_ref_from(candidate);
     imp::assert!(converted.is_some());
 
     let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF];
-    let converted = <CPackedUnsized as imp::TryFromBytes>::try_from_ref(candidate);
+    let converted = <CPackedUnsized as imp::TryFromBytes>::try_ref_from(candidate);
     imp::assert!(converted.is_none());
 
     let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF];
-    let converted = <CPackedUnsized as imp::TryFromBytes>::try_from_ref(candidate);
+    let converted = <CPackedUnsized as imp::TryFromBytes>::try_ref_from(candidate);
     imp::assert!(converted.is_some());
 }

@@ -35,10 +35,10 @@
 //!
 //! ```rust,edition2021
 //! # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
-//! use zerocopy::{IntoBytes, ByteSlice, FromBytes, NoCell, Ref, Unaligned};
+//! use zerocopy::{IntoBytes, FromBytes, KnownLayout, Immutable, Ref, SplitByteSlice, Unaligned};
 //! use zerocopy::byteorder::network_endian::U16;
 //!
-//! #[derive(FromBytes, IntoBytes, NoCell, Unaligned)]
+//! #[derive(FromBytes, IntoBytes, KnownLayout, Immutable, Unaligned)]
 //! #[repr(C)]
 //! struct UdpHeader {
 //!     src_port: U16,
@@ -47,12 +47,12 @@
 //!     checksum: U16,
 //! }
 //!
-//! struct UdpPacket<B: ByteSlice> {
+//! struct UdpPacket<B> {
 //!     header: Ref<B, UdpHeader>,
 //!     body: B,
 //! }
 //!
-//! impl<B: ByteSlice> UdpPacket<B> {
+//! impl<B: SplitByteSlice> UdpPacket<B> {
 //!     fn parse(bytes: B) -> Option<UdpPacket<B>> {
 //!         let (header, body) = Ref::new_from_prefix(bytes)?;
 //!         Some(UdpPacket { header, body })
@@ -192,6 +192,13 @@ macro_rules! impl_ops_traits {
     ($name:ident, $native:ident, "floating point number") => {
         impl_ops_traits!($name, $native, @all_types);
         impl_ops_traits!($name, $native, @signed_integer_floating_point);
+
+        impl<O: ByteOrder> PartialOrd for $name<O> {
+            #[inline(always)]
+            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+                self.get().partial_cmp(&other.get())
+            }
+        }
     };
     ($name:ident, $native:ident, "unsigned integer") => {
         impl_ops_traits!($name, $native, @signed_unsigned_integer);
@@ -216,6 +223,20 @@ macro_rules! impl_ops_traits {
             fn not(self) -> $name<O> {
                  let self_native = $native::from_ne_bytes(self.0);
                  $name((!self_native).to_ne_bytes(), PhantomData)
+            }
+        }
+
+        impl<O: ByteOrder> PartialOrd for $name<O> {
+            #[inline(always)]
+            fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+                Some(self.cmp(other))
+            }
+        }
+
+        impl<O: ByteOrder> Ord for $name<O> {
+            #[inline(always)]
+            fn cmp(&self, other: &Self) -> Ordering {
+                self.get().cmp(&other.get())
             }
         }
     };
@@ -357,7 +378,7 @@ example of how it can be used for parsing UDP packets.
 [`IntoBytes`]: crate::IntoBytes
 [`Unaligned`]: crate::Unaligned"),
             #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, NoCell, FromBytes, IntoBytes, Unaligned))]
+            #[cfg_attr(any(feature = "derive", test), derive(KnownLayout, Immutable, FromBytes, IntoBytes, Unaligned))]
             #[repr(transparent)]
             pub struct $name<O>([u8; $bytes], PhantomData<O>);
         }
@@ -369,9 +390,9 @@ example of how it can be used for parsing UDP packets.
             /// SAFETY:
             /// `$name<O>` is `repr(transparent)`, and so it has the same layout
             /// as its only non-zero field, which is a `u8` array. `u8` arrays
-            /// are `NoCell`, `TryFromBytes`, `FromZeros`, `FromBytes`,
+            /// are `Immutable`, `TryFromBytes`, `FromZeros`, `FromBytes`,
             /// `IntoBytes`, and `Unaligned`.
-            impl_or_verify!(O => NoCell for $name<O>);
+            impl_or_verify!(O => Immutable for $name<O>);
             impl_or_verify!(O => TryFromBytes for $name<O>);
             impl_or_verify!(O => FromZeros for $name<O>);
             impl_or_verify!(O => FromBytes for $name<O>);
@@ -398,6 +419,7 @@ example of how it can be used for parsing UDP packets.
 
             /// Constructs a new value from bytes which are already in `O` byte
             /// order.
+            #[must_use = "has no side effects"]
             #[inline(always)]
             pub const fn from_bytes(bytes: [u8; $bytes]) -> $name<O> {
                 $name(bytes, PhantomData)
@@ -406,6 +428,7 @@ example of how it can be used for parsing UDP packets.
             /// Extracts the bytes of `self` without swapping the byte order.
             ///
             /// The returned bytes will be in `O` byte order.
+            #[must_use = "has no side effects"]
             #[inline(always)]
             pub const fn to_bytes(self) -> [u8; $bytes] {
                 self.0
@@ -417,6 +440,7 @@ example of how it can be used for parsing UDP packets.
                 /// Constructs a new value, possibly performing an endianness
                 /// swap to guarantee that the returned value has endianness
                 /// `O`.
+                #[must_use = "has no side effects"]
                 #[inline(always)]
                 pub const fn new(n: $native) -> $name<O> {
                     let bytes = match O::ORDER {
@@ -432,6 +456,7 @@ example of how it can be used for parsing UDP packets.
                 /// Returns the value as a primitive type, possibly performing
                 /// an endianness swap to guarantee that the return value has
                 /// the endianness of the native platform.
+                #[must_use = "has no side effects"]
                 #[inline(always)]
                 pub const fn get(self) -> $native {
                     match O::ORDER {
@@ -878,7 +903,7 @@ mod tests {
     use compatibility::*;
 
     // A native integer type (u16, i32, etc).
-    trait Native: Arbitrary + FromBytes + IntoBytes + NoCell + Copy + PartialEq + Debug {
+    trait Native: Arbitrary + FromBytes + IntoBytes + Immutable + Copy + PartialEq + Debug {
         const ZERO: Self;
         const MAX_VALUE: Self;
 
@@ -923,7 +948,7 @@ mod tests {
     }
 
     trait ByteArray:
-        FromBytes + IntoBytes + NoCell + Copy + AsRef<[u8]> + AsMut<[u8]> + Debug + Default + Eq
+        FromBytes + IntoBytes + Immutable + Copy + AsRef<[u8]> + AsMut<[u8]> + Debug + Default + Eq
     {
         /// Invert the order of the bytes in the array.
         fn invert(self) -> Self;

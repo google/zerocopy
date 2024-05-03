@@ -12,13 +12,13 @@ use zerocopy::transmute_mut;
 
 fn main() {}
 
-#[derive(zerocopy::FromZeros, zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::NoCell)]
+#[derive(zerocopy::FromBytes, zerocopy::IntoBytes, zerocopy::Immutable)]
 #[repr(C)]
 struct Src;
 
-#[derive(zerocopy::FromZeros, zerocopy::FromBytes, zerocopy::IntoBytes)]
+#[derive(zerocopy::FromBytes, zerocopy::IntoBytes)]
 #[repr(C)]
 struct Dst;
 
-// `transmute_mut` requires that the destination type implements `NoCell`
-const DST_NOT_NO_CELL: &mut Dst = transmute_mut!(&mut Src);
+// `transmute_mut` requires that the destination type implements `Immutable`
+const DST_NOT_IMMUTABLE: &mut Dst = transmute_mut!(&mut Src);

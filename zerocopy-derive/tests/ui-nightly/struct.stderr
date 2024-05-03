@@ -47,8 +47,11 @@ note: required because it appears within the type `KL00`
 32 | struct KL00(u8, NotKnownLayoutDst);
    |        ^^^^
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-nightly/struct.rs:36:10
@@ -63,8 +66,11 @@ note: required because it appears within the type `KL02`
 37 | struct KL02(u8, [u8]);
    |        ^^^^
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0277]: the trait bound `NotKnownLayoutDst: zerocopy::KnownLayout` is not satisfied
   --> tests/ui-nightly/struct.rs:41:10
@@ -73,18 +79,21 @@ error[E0277]: the trait bound `NotKnownLayoutDst: zerocopy::KnownLayout` is not 
    |          ^^^^^^^^^^^ the trait `zerocopy::KnownLayout` is not implemented for `NotKnownLayoutDst`
    |
    = help: the following other types implement trait `zerocopy::KnownLayout`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
+             ()
+             *const T
+             *mut T
+             AU16
+             AtomicBool
+             AtomicI16
+             AtomicI32
+             AtomicI8
            and $N others
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0277]: the trait bound `NotKnownLayout: zerocopy::KnownLayout` is not satisfied
   --> tests/ui-nightly/struct.rs:47:10
@@ -93,59 +102,68 @@ error[E0277]: the trait bound `NotKnownLayout: zerocopy::KnownLayout` is not sat
    |          ^^^^^^^^^^^ the trait `zerocopy::KnownLayout` is not implemented for `NotKnownLayout`
    |
    = help: the following other types implement trait `zerocopy::KnownLayout`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
+             ()
+             *const T
+             *mut T
+             AU16
+             AtomicBool
+             AtomicI16
+             AtomicI32
+             AtomicI8
            and $N others
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
-error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::NoCell` is not satisfied
+error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::Immutable` is not satisfied
   --> tests/ui-nightly/struct.rs:55:10
    |
-55 | #[derive(NoCell)]
-   |          ^^^^^^ the trait `zerocopy::NoCell` is not implemented for `UnsafeCell<()>`
+55 | #[derive(Immutable)]
+   |          ^^^^^^^^^ the trait `zerocopy::Immutable` is not implemented for `UnsafeCell<()>`
    |
-   = help: the following other types implement trait `zerocopy::NoCell`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
+   = help: the following other types implement trait `zerocopy::Immutable`:
+             &T
+             &mut T
+             ()
+             *const T
+             *mut T
+             AU16
+             F32<O>
+             F64<O>
            and $N others
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
-   = note: this error originates in the derive macro `NoCell` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
-error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy::NoCell` is not satisfied
+error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy::Immutable` is not satisfied
   --> tests/ui-nightly/struct.rs:60:10
    |
-60 | #[derive(NoCell)]
-   |          ^^^^^^ the trait `zerocopy::NoCell` is not implemented for `UnsafeCell<u8>`, which is required by `[UnsafeCell<u8>; 0]: zerocopy::NoCell`
+60 | #[derive(Immutable)]
+   |          ^^^^^^^^^ the trait `zerocopy::Immutable` is not implemented for `UnsafeCell<u8>`, which is required by `[UnsafeCell<u8>; 0]: zerocopy::Immutable`
    |
-   = help: the following other types implement trait `zerocopy::NoCell`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
+   = help: the following other types implement trait `zerocopy::Immutable`:
+             &T
+             &mut T
+             ()
+             *const T
+             *mut T
+             AU16
+             F32<O>
+             F64<O>
            and $N others
-   = note: required for `[UnsafeCell<u8>; 0]` to implement `zerocopy::NoCell`
+   = note: required for `[UnsafeCell<u8>; 0]` to implement `zerocopy::Immutable`
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
-   = note: this error originates in the derive macro `NoCell` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
   --> tests/ui-nightly/struct.rs:71:1
@@ -202,18 +220,21 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
     |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
     |
     = help: the following other types implement trait `Unaligned`:
-              bool
-              i8
-              u8
-              NonZero<i8>
-              NonZero<u8>
-              U16<O>
-              U32<O>
-              U64<O>
+              ()
+              AtomicBool
+              AtomicI8
+              AtomicU8
+              F32<O>
+              F64<O>
+              I128<O>
+              I16<O>
             and $N others
     = help: see issue #48214
-    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+    |
+9   + #![feature(trivial_bounds)]
+    |
 
 error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is not satisfied
    --> tests/ui-nightly/struct.rs:107:10
@@ -223,8 +244,11 @@ error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is
     |
     = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes2, true>`
     = help: see issue #48214
-    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+    |
+9   + #![feature(trivial_bounds)]
+    |
 
 error[E0277]: the trait bound `HasPadding<IntoBytes3, true>: ShouldBe<false>` is not satisfied
    --> tests/ui-nightly/struct.rs:114:10
@@ -234,8 +258,11 @@ error[E0277]: the trait bound `HasPadding<IntoBytes3, true>: ShouldBe<false>` is
     |
     = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes3, true>`
     = help: see issue #48214
-    = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+    |
+9   + #![feature(trivial_bounds)]
+    |
 
 error[E0587]: type has conflicting packed and align representation hints
    --> tests/ui-nightly/struct.rs:139:1

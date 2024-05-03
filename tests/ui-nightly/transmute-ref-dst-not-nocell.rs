@@ -15,9 +15,9 @@ use zerocopy::transmute_ref;
 
 fn main() {}
 
-#[derive(zerocopy::FromZeros, zerocopy::FromBytes)]
+#[derive(zerocopy::FromBytes)]
 #[repr(transparent)]
 struct Dst(AU16);
 
-// `transmute_ref` requires that the destination type implements `NoCell`
-const DST_NOT_NO_CELL: &Dst = transmute_ref!(&AU16(0));
+// `transmute_ref` requires that the destination type implements `Immutable`
+const DST_NOT_IMMUTABLE: &Dst = transmute_ref!(&AU16(0));

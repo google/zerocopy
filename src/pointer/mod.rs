@@ -18,24 +18,26 @@ use crate::Unaligned;
 /// to [`TryFromBytes::is_bit_valid`].
 ///
 /// [`TryFromBytes::is_bit_valid`]: crate::TryFromBytes::is_bit_valid
-pub type Maybe<'a, T, Alignment = invariant::AnyAlignment> =
-    Ptr<'a, T, (invariant::Shared, Alignment, invariant::Initialized)>;
+pub type Maybe<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Any> =
+    Ptr<'a, T, (Aliasing, Alignment, invariant::Initialized)>;
 
 /// A semi-user-facing wrapper type representing a maybe-aligned reference, for
 /// use in [`TryFromBytes::is_bit_valid`].
 ///
 /// [`TryFromBytes::is_bit_valid`]: crate::TryFromBytes::is_bit_valid
-pub type MaybeAligned<'a, T, Alignment = invariant::AnyAlignment> =
-    Ptr<'a, T, (invariant::Shared, Alignment, invariant::Valid)>;
+pub type MaybeAligned<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Any> =
+    Ptr<'a, T, (Aliasing, Alignment, invariant::Valid)>;
 
 // These methods are defined on the type alias, `MaybeAligned`, so as to bring
 // them to the forefront of the rendered rustdoc for that type alias.
-impl<'a, T, Alignment> MaybeAligned<'a, T, Alignment>
+impl<'a, T, Aliasing, Alignment> MaybeAligned<'a, T, Aliasing, Alignment>
 where
     T: 'a + ?Sized,
+    Aliasing: invariant::Aliasing + invariant::AtLeast<invariant::Shared>,
     Alignment: invariant::Alignment,
 {
     /// Reads the value from `MaybeAligned`.
+    #[must_use]
     #[inline]
     pub fn read_unaligned(self) -> T
     where
@@ -51,6 +53,7 @@ where
     /// Views the value as an aligned reference.
     ///
     /// This is only available if `T` is [`Unaligned`].
+    #[must_use]
     #[inline]
     pub fn unaligned_as_ref(self) -> &'a T
     where
@@ -63,8 +66,9 @@ where
 /// Checks if the referent is zeroed.
 pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
 where
-    T: crate::NoCell,
-    I: invariant::Invariants<Aliasing = invariant::Shared, Validity = invariant::Initialized>,
+    T: crate::Immutable,
+    I: invariant::Invariants<Validity = invariant::Initialized>,
+    I::Aliasing: invariant::AtLeast<invariant::Shared>,
 {
     ptr.as_bytes().as_ref().iter().all(|&byte| byte == 0)
 }

@@ -8,7 +8,7 @@
 
 use core::ptr::NonNull;
 
-use crate::{util::AsAddress, KnownLayout, NoCell, _CastType};
+use crate::{util::AsAddress, CastType, Immutable, KnownLayout};
 
 /// Module used to gate access to [`Ptr`]'s fields.
 mod def {
@@ -112,22 +112,6 @@ mod def {
             Self { ptr, _invariants: PhantomData }
         }
 
-        /// Constructs a `Ptr` from another `Ptr`, possibly with different
-        /// parameterized safety invariants.
-        ///
-        /// # Safety
-        ///
-        /// The caller promises that `ptr` conforms to the invariants of `I`.
-        pub(super) unsafe fn from_ptr<H>(ptr: Ptr<'a, T, H>) -> Self
-        where
-            H: Invariants,
-        {
-            // SAFETY: The caller has promised to satisfy all parameterized
-            // invariants of `Ptr`. `Ptr`'s other invariants are satisfied
-            // by-contract by the source `Ptr`.
-            unsafe { Self::new(ptr.as_non_null()) }
-        }
-
         /// Converts this `Ptr<T>` to a [`NonNull<T>`].
         ///
         /// Note that this method does not consume `self`. The caller should
@@ -149,6 +133,13 @@ macro_rules! define_system {
             $( $(#[$elem_attr:meta])* $elem:ident $(< $($stronger_elem:ident)|*)?,)*
         })*
     }) => {
+        /// No requirement - any invariant is allowed.
+        #[allow(missing_copy_implementations, missing_debug_implementations)]
+        pub enum Any {}
+
+        /// `Self` imposes a requirement at least as strict as `I`.
+        pub trait AtLeast<I> {}
+
         mod sealed {
             pub trait Sealed {}
 
@@ -156,6 +147,8 @@ macro_rules! define_system {
             where
                 $($set: super::$set,)*
             {}
+
+            impl Sealed for super::Any {}
 
             $($(
                 impl Sealed for super::$elem {}
@@ -194,7 +187,16 @@ macro_rules! define_system {
 
         $(
             $(#[$set_attr])*
-            pub trait $set: sealed::Sealed {}
+            pub trait $set: 'static + sealed::Sealed {
+                // This only exists for use in
+                // `into_exclusive_or_post_monomorphization_error`.
+                #[doc(hidden)]
+                const NAME: &'static str;
+            }
+
+            impl $set for Any {
+                const NAME: &'static str = stringify!(Any);
+            }
 
             $(
                 $(#[$elem_attr])*
@@ -202,55 +204,32 @@ macro_rules! define_system {
                 pub enum $elem {}
 
                 $(#[$elem_attr])*
-                impl $set for $elem {}
+                impl $set for $elem {
+                    const NAME: &'static str = stringify!($elem);
+                }
             )*
         )*
 
-        /// Groupings of invariants at least as strict as the given invariant.
-        pub mod at_least {
-            $($(
-                // This `$()?` corresponds to `$(< $($stronger_elem:ident)|*)?`
-                // from the match rule. By having it wrap the entire block
-                // (instead of just the trailing, repeating impl block), we
-                // ensure that we don't define `at_least` traits that only have
-                // a trivial implementation (e.g., `at_least::Exclusive for
-                // Exclusive`, `at_least::AnyValidity for AnyValidity`, etc).
-                $(
-                    #[doc = concat!(
-                        "[",
-                        stringify!($set),
-                        "][super::",
-                        stringify!($set),
-                        "] at least as strict as [`",
-                        stringify!($elem),
-                        "`][super::",
-                        stringify!($elem),
-                        "]."
-                    )]
-                    pub trait $elem: super::$set {}
-                    impl $elem for super::$elem {}
+        $($(
+            impl AtLeast<Any> for $elem {}
+            impl AtLeast<$elem> for $elem {}
 
-                    $(impl $elem for super::$stronger_elem {})*
-                )?
-            )*)*
-        }
+            $($(impl AtLeast<$elem> for $stronger_elem {})*)?
+        )*)*
     };
 }
 
 /// The parameterized invariants of a [`Ptr`].
 ///
-/// Invariants are encoded as ([`Aliasing`][invariant::Aliasing],
-/// [`Alignment`][invariant::Alignment], [`Validity`][invariant::Validity])
+/// Invariants are encoded as ([`Aliasing`], [`Alignment`], [`Validity`])
 /// triples implementing the [`Invariants`] trait.
+#[doc(hidden)]
 pub mod invariant {
     define_system! {
         /// The invariants of a [`Ptr`][super::Ptr].
         Invariants {
             /// The aliasing invariant of a [`Ptr`][super::Ptr].
             Aliasing {
-                /// No aliasing invariant.
-                AnyAliasing,
-
                 /// The `Ptr<'a, T>` adheres to the aliasing rules of a `&'a T`.
                 ///
                 /// The referent of a shared-aliased `Ptr` may be concurrently
@@ -274,8 +253,6 @@ pub mod invariant {
 
             /// The alignment invariant of a [`Ptr`][super::Ptr].
             Alignment {
-                /// The referent is not necessarily aligned.
-                AnyAlignment,
                 /// The referent is aligned: for `Ptr<T>`, the referent's
                 /// address is a multiple of the `T`'s alignment.
                 Aligned,
@@ -283,9 +260,6 @@ pub mod invariant {
 
             /// The validity invariant of a [`Ptr`][super::Ptr].
             Validity {
-                /// The referent is not necessarily initialized.
-                AnyValidity,
-
                 /// The byte ranges initialized in `T` are also initialized in
                 /// the referent.
                 ///
@@ -331,7 +305,7 @@ pub mod invariant {
     }
 }
 
-pub(crate) use invariant::Invariants;
+pub(crate) use invariant::*;
 
 /// External trait implementations on [`Ptr`].
 mod _external {
@@ -345,7 +319,8 @@ mod _external {
     impl<'a, T, I> Copy for Ptr<'a, T, I>
     where
         T: 'a + ?Sized,
-        I: Invariants<Aliasing = invariant::Shared>,
+        I: Invariants,
+        Shared: AtLeast<I::Aliasing>,
     {
     }
 
@@ -356,7 +331,8 @@ mod _external {
     impl<'a, T, I> Clone for Ptr<'a, T, I>
     where
         T: 'a + ?Sized,
-        I: Invariants<Aliasing = invariant::Shared>,
+        I: Invariants,
+        Shared: AtLeast<I::Aliasing>,
     {
         #[inline]
         fn clone(&self) -> Self {
@@ -378,12 +354,11 @@ mod _external {
 
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
-    use core::mem::MaybeUninit;
-
     use super::*;
+    use crate::util::{AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance};
 
     /// `&'a T` → `Ptr<'a, T>`
-    impl<'a, T> Ptr<'a, T, (invariant::Shared, invariant::Aligned, invariant::Valid)>
+    impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
     where
         T: 'a + ?Sized,
     {
@@ -391,7 +366,7 @@ mod _conversions {
         #[doc(hidden)]
         #[inline]
         pub fn from_ref(ptr: &'a T) -> Self {
-            let ptr = core::ptr::NonNull::from(ptr);
+            let ptr = NonNull::from(ptr);
             // SAFETY:
             // 0. `ptr`, by invariant on `&'a T`, is derived from some valid
             //    Rust allocation, `A`.
@@ -406,11 +381,11 @@ mod _conversions {
             //    least `'a`.
             // 6. `T: 'a`.
             // 7. `ptr`, by invariant on `&'a T`, conforms to the aliasing
-            //    invariant of `invariant::Shared`.
+            //    invariant of `Shared`.
             // 8. `ptr`, by invariant on `&'a T`, conforms to the alignment
-            //    invariant of `invariant::Aligned`.
+            //    invariant of `Aligned`.
             // 9. `ptr`, by invariant on `&'a T`, conforms to the validity
-            //    invariant of `invariant::Valid`.
+            //    invariant of `Valid`.
             // 10. The referents of `Ptr<T>` and `&T` have `UnsafeCell`s at
             //    identical ranges. Both `Ptr<T>` and `&T` prevent loads and
             //    stores which treat other byte ranges as having `UnsafeCell`s.
@@ -420,14 +395,14 @@ mod _conversions {
     }
 
     /// `&'a mut T` → `Ptr<'a, T>`
-    impl<'a, T> Ptr<'a, T, (invariant::Exclusive, invariant::Aligned, invariant::Valid)>
+    impl<'a, T> Ptr<'a, T, (Exclusive, Aligned, Valid)>
     where
         T: 'a + ?Sized,
     {
         /// Constructs a `Ptr` from an exclusive reference.
         #[inline]
         pub(crate) fn from_mut(ptr: &'a mut T) -> Self {
-            let ptr = core::ptr::NonNull::from(ptr);
+            let ptr = NonNull::from(ptr);
             // SAFETY:
             // 0. `ptr`, by invariant on `&'a mut T`, is derived from some valid
             //    Rust allocation, `A`.
@@ -442,11 +417,11 @@ mod _conversions {
             // 5. `A`, by invariant on `&'a mut T`, is guaranteed to live for at
             //    least `'a`.
             // 6. `ptr`, by invariant on `&'a mut T`, conforms to the aliasing
-            //    invariant of `invariant::Exclusive`.
+            //    invariant of `Exclusive`.
             // 7. `ptr`, by invariant on `&'a mut T`, conforms to the alignment
-            //    invariant of `invariant::Aligned`.
+            //    invariant of `Aligned`.
             // 8. `ptr`, by invariant on `&'a mut T`, conforms to the validity
-            //    invariant of `invariant::Valid`.
+            //    invariant of `Valid`.
             unsafe { Self::new(ptr) }
         }
     }
@@ -455,10 +430,10 @@ mod _conversions {
     impl<'a, T, I> Ptr<'a, T, I>
     where
         T: 'a + ?Sized,
-        I: Invariants<Alignment = invariant::Aligned, Validity = invariant::Valid>,
-        I::Aliasing: invariant::at_least::Shared,
+        I: Invariants<Alignment = Aligned, Validity = Valid>,
+        I::Aliasing: AtLeast<Shared>,
     {
-        /// Converts the `Ptr` to a shared reference.
+        /// Converts `self` to a shared reference.
         // This consumes `self`, not `&self`, because `self` is, logically, a
         // pointer. For `I::Aliasing = invariant::Shared`, `Self: Copy`, and so
         // this doesn't prevent the caller from still using the pointer after
@@ -487,7 +462,7 @@ mod _conversions {
             //
             // 4. You must enforce Rust’s aliasing rules. This is ensured by
             //    contract on `Ptr`, because the `I::Aliasing` is
-            //    `at_least::Shared`. Either it is `Shared` or `Exclusive`. In
+            //    `AtLeast<Shared>`. Either it is `Shared` or `Exclusive`. In
             //    both cases, other references may not mutate the referent
             //    outside of `UnsafeCell`s.
             //
@@ -501,15 +476,17 @@ mod _conversions {
     where
         T: 'a + ?Sized,
         I: Invariants,
-        I::Aliasing: invariant::at_least::Shared,
+        I::Aliasing: AtLeast<Shared>,
     {
-        /// Reborrows this `Ptr`, producing another `Ptr`.
+        /// Reborrows `self`, producing another `Ptr`.
         ///
         /// Since `self` is borrowed immutably, this prevents any mutable
         /// methods from being called on `self` as long as the returned `Ptr`
         /// exists.
+        #[doc(hidden)]
+        #[inline]
         #[allow(clippy::needless_lifetimes)] // Allows us to name the lifetime in the safety comment below.
-        pub(crate) fn reborrow<'b>(&'b mut self) -> Ptr<'b, T, I>
+        pub fn reborrow<'b>(&'b mut self) -> Ptr<'b, T, I>
         where
             'a: 'b,
         {
@@ -535,9 +512,8 @@ mod _conversions {
             //     memory which treats `UnsafeCell`s as existing at different
             //     ranges than they exist in `T`.
             //
-            // For aliasing (6 above), since `I::Aliasing:
-            // invariant::at_least::Shared`, there are two cases for
-            // `I::Aliasing`:
+            // For aliasing (6 above), since `I::Aliasing: AtLeast<Shared>`,
+            // there are two cases for `I::Aliasing`:
             // - For `invariant::Shared`: `'a` outlives `'b`, and so the
             //   returned `Ptr` does not permit accessing the referent any
             //   longer than is possible via `self`. For shared aliasing, it is
@@ -558,11 +534,11 @@ mod _conversions {
     }
 
     /// `Ptr<'a, T>` → `&'a mut T`
-    impl<'a, T> Ptr<'a, T, (invariant::Exclusive, invariant::Aligned, invariant::Valid)>
+    impl<'a, T> Ptr<'a, T, (Exclusive, Aligned, Valid)>
     where
         T: 'a + ?Sized,
     {
-        /// Converts the `Ptr` to a mutable reference.
+        /// Converts `self` to a mutable reference.
         #[allow(clippy::wrong_self_convention)]
         pub(crate) fn as_mut(self) -> &'a mut T {
             let mut raw = self.as_non_null();
@@ -595,45 +571,46 @@ mod _conversions {
         }
     }
 
-    /// `&'a MaybeUninit<T>` → `Ptr<'a, T>`
-    impl<'a, T> Ptr<'a, T, (invariant::Shared, invariant::Aligned, invariant::AnyValidity)>
+    /// `Ptr<'a, T = Wrapper<U>>` → `Ptr<'a, U>`
+    impl<'a, T, I> Ptr<'a, T, I>
     where
-        T: 'a,
+        T: 'a + TransparentWrapper<I, UnsafeCellVariance = Covariant> + ?Sized,
+        I: Invariants,
     {
-        /// Constructs a `Ptr` from a shared reference to a [`MaybeUninit<T>`].
-        ///
-        /// [`MaybeUninit<T>`]: MaybeUninit
-        #[doc(hidden)]
-        #[inline]
-        pub fn from_maybe_uninit_ref(mu: &'a MaybeUninit<T>) -> Self {
-            let ptr = Ptr::from_ref(mu);
-
+        /// Converts `self` to a transparent wrapper type into a `Ptr` to the
+        /// wrapped inner type.
+        pub(crate) fn transparent_wrapper_into_inner(
+            self,
+        ) -> Ptr<
+            'a,
+            T::Inner,
+            (
+                I::Aliasing,
+                <T::AlignmentVariance as AlignmentVariance<I::Alignment>>::Applied,
+                <T::ValidityVariance as ValidityVariance<I::Validity>>::Applied,
+            ),
+        > {
             // SAFETY:
-            // - Since `MaybeUninit<T>` has the same size as `T` [1],
-            //   this cast does not increase the referent's size.
-            // - Since `MaybeUninit<T>` has the same layout as `T` [2], `T` has
-            //   `UnsafeCell`s at exactly the same ranges as `MaybeUninit<T>`.
-            //
-            // [1] Per https://doc.rust-lang.org/std/mem/union.MaybeUninit.html#layout-1:
-            //
-            //   `MaybeUninit<T>` is guaranteed to have the same size,
-            //   alignment, and ABI as `T`
-            //
-            // [2] TODO(https://github.com/rust-lang/rust/pull/121215)
-            //
-            // TODO(#896): Finish this safety proof (namely, [2]) before the
-            // next stable release.
-            #[allow(clippy::as_conversions)]
-            let ptr = unsafe { ptr.cast_unsized(|p| p as *mut T) };
-            // SAFETY: Since `MaybeUninit<T>` has the same alignment as `T` [1],
-            // the fact that `mu` is aligned to `MaybeUninit<T>` means that it
-            // is aligned to `T`.
-            //
-            // [1] Per https://doc.rust-lang.org/std/mem/union.MaybeUninit.html#layout-1:
-            //
-            //   `MaybeUninit<T>` is guaranteed to have the same size,
-            //   alignment, and ABI as `T`
-            unsafe { ptr.assume_alignment::<invariant::Aligned>() }
+            // - By invariant on `TransparentWrapper::cast_into_inner`:
+            //   - This cast preserves the referent's size.
+            //   - This cast preserves provenance.
+            // - By invariant on `TransparentWrapper<UnsafeCellVariance =
+            //   Covariant>`, `T` and `T::Inner` have `UnsafeCell`s at the same
+            //   byte ranges.
+            let c = unsafe { self.cast_unsized(|p| T::cast_into_inner(p)) };
+            // SAFETY: By invariant on `TransparentWrapper`, since `self`
+            // satisfies the alignment invariant `I::Alignment`, `c` (of type
+            // `T::Inner`) satisfies the given "applied" alignment invariant.
+            let c = unsafe {
+                c.assume_alignment::<<T::AlignmentVariance as AlignmentVariance<I::Alignment>>::Applied>()
+            };
+            // SAFETY: By invariant on `TransparentWrapper`, since `self`
+            // satisfies the validity invariant `I::Validity`, `c` (of type
+            // `T::Inner`) satisfies the given "applied" validity invariant.
+            let c = unsafe {
+                c.assume_validity::<<T::ValidityVariance as ValidityVariance<I::Validity>>::Applied>()
+            };
+            c
         }
     }
 }
@@ -648,52 +625,169 @@ mod _transitions {
         T: 'a + ?Sized,
         I: Invariants,
     {
-        /// Assumes that `Ptr`'s referent is validly-aligned for `T` if required
-        /// by `A`.
+        /// Returns a `Ptr` with [`Exclusive`] aliasing if `self` already has
+        /// `Exclusive` aliasing.
+        ///
+        /// This allows code which is generic over aliasing to down-cast to a
+        /// concrete aliasing.
+        ///
+        /// [`Exclusive`]: invariant::Exclusive
+        #[inline]
+        pub(crate) fn into_exclusive_or_post_monomorphization_error(
+            self,
+        ) -> Ptr<'a, T, (Exclusive, I::Alignment, I::Validity)> {
+            trait AliasingExt: Aliasing {
+                const IS_EXCLUSIVE: bool;
+            }
+
+            impl<A: Aliasing> AliasingExt for A {
+                const IS_EXCLUSIVE: bool = {
+                    let is_exclusive =
+                        strs_are_equal(<Self as Aliasing>::NAME, <Exclusive as Aliasing>::NAME);
+                    const_assert!(is_exclusive);
+                    true
+                };
+            }
+
+            const fn strs_are_equal(s: &str, t: &str) -> bool {
+                if s.len() != t.len() {
+                    return false;
+                }
+
+                let s = s.as_bytes();
+                let t = t.as_bytes();
+
+                let mut i = 0;
+                #[allow(clippy::arithmetic_side_effects)]
+                while i < s.len() {
+                    #[allow(clippy::indexing_slicing)]
+                    if s[i] != t[i] {
+                        return false;
+                    }
+
+                    i += 1;
+                }
+
+                true
+            }
+
+            assert!(I::Aliasing::IS_EXCLUSIVE);
+
+            // SAFETY: We've confirmed that `self` already has the aliasing
+            // `Exclusive`. If it didn't, either the preceding assert would fail
+            // or evaluating `I::Aliasing::IS_EXCLUSIVE` would fail. We're
+            // *pretty* sure that it's guaranteed to fail const eval, but the
+            // `assert!` provides a backstop in case that doesn't work.
+            unsafe { self.assume_exclusive() }
+        }
+
+        /// Assumes that `self` satisfies the invariants `H`.
         ///
         /// # Safety
         ///
-        /// The caller promises that `Ptr`'s referent conforms to the alignment
+        /// The caller promises that `self` satisfies the invariants `H`.
+        pub(super) unsafe fn assume_invariants<H: Invariants>(self) -> Ptr<'a, T, H> {
+            // SAFETY: The caller has promised to satisfy all parameterized
+            // invariants of `Ptr`. `Ptr`'s other invariants are satisfied
+            // by-contract by the source `Ptr`.
+            unsafe { Ptr::new(self.as_non_null()) }
+        }
+
+        /// Assumes that `self` satisfies the aliasing requirement of `A`.
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that `self` satisfies the aliasing requirement
+        /// of `A`.
+        #[inline]
+        pub(crate) unsafe fn assume_aliasing<A: Aliasing>(
+            self,
+        ) -> Ptr<'a, T, (A, I::Alignment, I::Validity)> {
+            // SAFETY: The caller promises that `self` satisfies the aliasing
+            // requirements of `A`.
+            unsafe { self.assume_invariants() }
+        }
+
+        /// Assumes `self` satisfies the aliasing requirement of [`Exclusive`].
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that `self` satisfies the aliasing requirement
+        /// of `Exclusive`.
+        ///
+        /// [`Exclusive`]: invariant::Exclusive
+        #[inline]
+        pub(crate) unsafe fn assume_exclusive(
+            self,
+        ) -> Ptr<'a, T, (Exclusive, I::Alignment, I::Validity)> {
+            // SAFETY: The caller promises that `self` satisfies the aliasing
+            // requirements of `Exclusive`.
+            unsafe { self.assume_aliasing::<Exclusive>() }
+        }
+
+        /// Assumes that `self`'s referent is validly-aligned for `T` if
+        /// required by `A`.
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that `self`'s referent conforms to the alignment
         /// invariant of `T` if required by `A`.
         #[inline]
-        pub(crate) unsafe fn assume_alignment<A: invariant::Alignment>(
+        pub(crate) unsafe fn assume_alignment<A: Alignment>(
             self,
         ) -> Ptr<'a, T, (I::Aliasing, A, I::Validity)> {
             // SAFETY: The caller promises that `self`'s referent is
             // well-aligned for `T` if required by `A` .
-            unsafe { Ptr::from_ptr(self) }
+            unsafe { self.assume_invariants() }
         }
 
-        /// Recalls that `Ptr`'s referent is validly-aligned for `T`.
+        /// Checks the `self`'s alignment at runtime, returning an aligned `Ptr`
+        /// on success.
+        pub(crate) fn bikeshed_try_into_aligned(
+            self,
+        ) -> Option<Ptr<'a, T, (I::Aliasing, Aligned, I::Validity)>>
+        where
+            T: Sized,
+        {
+            if !crate::util::aligned_to::<_, T>(self.as_non_null()) {
+                return None;
+            }
+
+            // SAFETY: We just checked the alignment.
+            Some(unsafe { self.assume_alignment::<Aligned>() })
+        }
+
+        /// Recalls that `self`'s referent is validly-aligned for `T`.
         #[inline]
         // TODO(#859): Reconsider the name of this method before making it
         // public.
         pub(crate) fn bikeshed_recall_aligned(
             self,
-        ) -> Ptr<'a, T, (I::Aliasing, invariant::Aligned, I::Validity)>
+        ) -> Ptr<'a, T, (I::Aliasing, Aligned, I::Validity)>
         where
             T: crate::Unaligned,
         {
             // SAFETY: The bound `T: Unaligned` ensures that `T` has no
             // non-trivial alignment requirement.
-            unsafe { self.assume_alignment::<invariant::Aligned>() }
+            unsafe { self.assume_alignment::<Aligned>() }
         }
 
-        /// Assumes that `Ptr`'s referent conforms to the validity requirement
+        /// Assumes that `self`'s referent conforms to the validity requirement
         /// of `V`.
         ///
         /// # Safety
         ///
-        /// The caller promises that `Ptr`'s referent conforms to the validity
+        /// The caller promises that `self`'s referent conforms to the validity
         /// requirement of `V`.
         #[doc(hidden)]
+        #[must_use]
         #[inline]
-        pub unsafe fn assume_validity<V: invariant::Validity>(
+        pub unsafe fn assume_validity<V: Validity>(
             self,
         ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, V)> {
             // SAFETY: The caller promises that `self`'s referent conforms to
             // the validity requirement of `V`.
-            unsafe { Ptr::from_ptr(self) }
+            unsafe { self.assume_invariants() }
         }
 
         /// A shorthand for `self.assume_validity<invariant::Initialized>()`.
@@ -703,33 +797,49 @@ mod _transitions {
         /// The caller promises to uphold the safety preconditions of
         /// `self.assume_validity<invariant::Initialized>()`.
         #[doc(hidden)]
+        #[must_use]
         #[inline]
         pub unsafe fn assume_initialized(
             self,
-        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, invariant::Initialized)> {
+        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Initialized)> {
             // SAFETY: The caller has promised to uphold the safety
             // preconditions.
-            unsafe { self.assume_validity::<invariant::Initialized>() }
+            unsafe { self.assume_validity::<Initialized>() }
         }
 
-        /// A shorthand for `self.assume_validity<invariant::Valid>()`.
+        /// A shorthand for `self.assume_validity<Valid>()`.
         ///
         /// # Safety
         ///
         /// The caller promises to uphold the safety preconditions of
-        /// `self.assume_validity<invariant::Valid>()`.
+        /// `self.assume_validity<Valid>()`.
         #[doc(hidden)]
+        #[must_use]
         #[inline]
-        pub unsafe fn assume_valid(
-            self,
-        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, invariant::Valid)> {
+        pub unsafe fn assume_valid(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)> {
             // SAFETY: The caller has promised to uphold the safety
             // preconditions.
-            unsafe { self.assume_validity::<invariant::Valid>() }
+            unsafe { self.assume_validity::<Valid>() }
         }
 
-        /// Checks that `Ptr`'s referent is validly initialized for `T`,
-        /// returning a `Ptr` with `invariant::Valid` on success.
+        /// Recalls that `self`'s referent is bit-valid for `T`.
+        #[inline]
+        // TODO(#859): Reconsider the name of this method before making it
+        // public.
+        pub(crate) fn bikeshed_recall_valid(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>
+        where
+            T: crate::FromBytes,
+            I: Invariants<Validity = Initialized>,
+        {
+            // SAFETY: The bound `T: FromBytes` ensures that any initialized
+            // sequence of bytes is bit-valid for `T`. `I: Invariants<Validity =
+            // invariant::Initialized>` ensures that all of the referent bytes
+            // are initialized.
+            unsafe { self.assume_valid() }
+        }
+
+        /// Checks that `self`'s referent is validly initialized for `T`,
+        /// returning a `Ptr` with `Valid` on success.
         ///
         /// # Panics
         ///
@@ -738,11 +848,11 @@ mod _transitions {
         #[inline]
         pub(crate) fn try_into_valid(
             mut self,
-        ) -> Option<Ptr<'a, T, (I::Aliasing, I::Alignment, invariant::Valid)>>
+        ) -> Option<Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>>
         where
             T: TryFromBytes,
-            I::Aliasing: invariant::at_least::Shared,
-            I: Invariants<Validity = invariant::Initialized>,
+            I::Aliasing: AtLeast<Shared>,
+            I: Invariants<Validity = Initialized>,
         {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
@@ -756,26 +866,26 @@ mod _transitions {
             }
         }
 
-        /// Forgets that `Ptr`'s referent exclusively references `T`,
+        /// Forgets that `self`'s referent exclusively references `T`,
         /// downgrading to a shared reference.
         #[doc(hidden)]
+        #[must_use]
         #[inline]
-        pub fn forget_exclusive(self) -> Ptr<'a, T, (invariant::Shared, I::Alignment, I::Validity)>
+        pub fn forget_exclusive(self) -> Ptr<'a, T, (Shared, I::Alignment, I::Validity)>
         where
-            I::Aliasing: invariant::at_least::Shared,
+            I::Aliasing: AtLeast<Shared>,
         {
             // SAFETY: `I::Aliasing` is at least as restrictive as `Shared`.
-            unsafe { Ptr::from_ptr(self) }
+            unsafe { self.assume_invariants() }
         }
 
-        /// Forgets that `Ptr`'s referent is validly-aligned for `T`.
+        /// Forgets that `self`'s referent is validly-aligned for `T`.
         #[doc(hidden)]
+        #[must_use]
         #[inline]
-        pub fn forget_aligned(
-            self,
-        ) -> Ptr<'a, T, (I::Aliasing, invariant::AnyAlignment, I::Validity)> {
-            // SAFETY: `AnyAlignment` is less restrictive than `Aligned`.
-            unsafe { Ptr::from_ptr(self) }
+        pub fn forget_aligned(self) -> Ptr<'a, T, (I::Aliasing, Any, I::Validity)> {
+            // SAFETY: `Any` is less restrictive than `Aligned`.
+            unsafe { self.assume_invariants() }
         }
     }
 }
@@ -783,6 +893,7 @@ mod _transitions {
 /// Casts of the referent type.
 mod _casts {
     use super::*;
+    use crate::PointerMetadata;
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
@@ -800,7 +911,7 @@ mod _casts {
         ///
         /// For all kinds of casts, the caller must promise that:
         /// - the the size of the object referenced by the resulting pointer is
-        /// less than or equal to the size of the object referenced by `self`.
+        ///   less than or equal to the size of the object referenced by `self`.
         /// - `UnsafeCell`s in `U` exist at ranges identical to those at which
         ///   `UnsafeCell`s exist in `T`.
         ///
@@ -810,12 +921,17 @@ mod _casts {
         /// |p: *mut T| p as *mut U
         /// ```
         ///
+        /// ...or as:
+        /// ```ignore
+        /// |p: *mut T| p.cast::<U>()
+        /// ```
+        ///
         /// For pointer-to-slice casts, it sufficies for the caller to
         /// additionally promise that `cast` is implemented as:
         /// ```ignore
         ///   |p: *mut T|
         ///       core::ptr::slice_from_raw_parts_mut(
-        ///           p as *mut U,
+        ///           p.cast::<U>(),
         ///           len,
         ///       )
         /// ```
@@ -824,10 +940,7 @@ mod _casts {
         pub unsafe fn cast_unsized<U: 'a + ?Sized, F: FnOnce(*mut T) -> *mut U>(
             self,
             cast: F,
-        ) -> Ptr<'a, U, (I::Aliasing, invariant::AnyAlignment, invariant::AnyValidity)>
-        where
-            U: 'a,
-        {
+        ) -> Ptr<'a, U, (I::Aliasing, Any, Any)> {
             let ptr = cast(self.as_non_null().as_ptr());
 
             // SAFETY: Caller promises that `cast` is just a cast. We call
@@ -857,9 +970,9 @@ mod _casts {
             // 6. `ptr` conforms to the aliasing invariant of `I::Aliasing`
             //    because casting does not impact the aliasing invariant.
             // 7. `ptr`, trivially, conforms to the alignment invariant of
-            //    `AnyAlignment`.
+            //    `Any`.
             // 8. `ptr`, trivially, conforms to the validity invariant of
-            //   `AnyValidity`.
+            //   `Any`.
             // 9. During the lifetime 'a, no code will reference or load or
             //    store this memory region treating `UnsafeCell`s as existing at
             //    different ranges than they exist in `U`. This is true by
@@ -873,25 +986,23 @@ mod _casts {
     impl<'a, T, I> Ptr<'a, T, I>
     where
         T: 'a,
-        I: Invariants<Validity = invariant::Initialized>,
-        T: NoCell,
+        I: Invariants<Validity = Initialized>,
+        T: Immutable,
     {
         /// Casts this pointer-to-initialized into a pointer-to-bytes.
         #[allow(clippy::wrong_self_convention)]
-        pub(crate) fn as_bytes(
-            self,
-        ) -> Ptr<'a, [u8], (I::Aliasing, invariant::Aligned, invariant::Valid)> {
+        pub(crate) fn as_bytes(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Valid)> {
             // SAFETY: We ensure that:
             // - `cast(p)` is implemented as an invocation to
             //   `slice_from_raw_parts_mut`.
             // - The size of the object referenced by the resulting pointer is
             //   exactly equal to the size of the object referenced by `self`.
             // - `T` and `[u8]` trivially contain `UnsafeCell`s at identical
-            //   ranges [u8]`, because both are `NoCell`.
+            //   ranges [u8]`, because both are `Immutable`.
             let ptr: Ptr<'a, [u8], _> = unsafe {
                 self.cast_unsized(|p: *mut T| {
                     #[allow(clippy::as_conversions)]
-                    core::ptr::slice_from_raw_parts_mut(p as *mut u8, core::mem::size_of::<T>())
+                    core::ptr::slice_from_raw_parts_mut(p.cast::<u8>(), core::mem::size_of::<T>())
                 })
             };
 
@@ -902,7 +1013,7 @@ mod _casts {
             // type is then casted to `[u8]`, whose only validity invariant is
             // that its bytes are initialized. This validity invariant is
             // satisfied by the `Initialized` invariant on the starting `ptr`.
-            unsafe { ptr.assume_validity::<invariant::Valid>() }
+            unsafe { ptr.assume_validity::<Valid>() }
         }
     }
 
@@ -970,7 +1081,7 @@ mod _casts {
     /// alignment of `[u8]` is 1.
     impl<'a, I> Ptr<'a, [u8], I>
     where
-        I: Invariants,
+        I: Invariants<Validity = Valid>,
     {
         /// Attempts to cast `self` to a `U` using the given cast type.
         ///
@@ -988,17 +1099,12 @@ mod _casts {
         ///   split_at)` in `self`.
         /// - If this is a suffix cast, `ptr` refers to the byte range
         ///   `[split_at, self.len())` in `self`.
-        ///
-        /// # Panics
-        ///
-        /// Panics if `U` is a DST whose trailing slice element is zero-sized.
-        pub(crate) fn try_cast_into<U: 'a + ?Sized + KnownLayout>(
+        pub(crate) fn try_cast_into<U: 'a + ?Sized + KnownLayout + Immutable>(
             &self,
-            cast_type: _CastType,
-        ) -> Option<(Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::AnyValidity)>, usize)>
-        where
-            U: NoCell,
-        {
+            cast_type: CastType,
+        ) -> Option<(Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, usize)> {
+            crate::util::assert_dst_is_not_zst::<U>();
+
             // PANICS: By invariant, the byte range addressed by `self.ptr` does
             // not wrap around the address space. This implies that the sum of
             // the address (represented as a `usize`) and length do not overflow
@@ -1012,8 +1118,8 @@ mod _casts {
             )?;
 
             let offset = match cast_type {
-                _CastType::_Prefix => 0,
-                _CastType::_Suffix => split_at,
+                CastType::Prefix => 0,
+                CastType::Suffix => split_at,
             };
 
             let ptr = self.as_non_null().cast::<u8>().as_ptr();
@@ -1039,6 +1145,7 @@ mod _casts {
             // produces a pointer whose address is greater than or equal to that of
             // `ptr`. Since `ptr` is a `NonNull`, `base` is also non-null.
             let base = unsafe { NonNull::new_unchecked(base) };
+            let elems = <U as KnownLayout>::PointerMetadata::from_elem_count(elems);
             let ptr = U::raw_from_ptr_len(base, elems);
 
             // SAFETY:
@@ -1069,13 +1176,14 @@ mod _casts {
             //    it is derived from `validate_cast_and_convert_metadata`
             //    promises that the object described by `split_at` is validly
             //    aligned for `U`.
-            // 8. `ptr`, trivially, conforms to the validity invariant of
-            //    `AnyValidity`.
+            // 8. By trait bound, `self` is a bit-valid `[u8]`. All bit-valid
+            //    `[u8]`s have all of their bytes initialized, so `ptr` conforms
+            //    to the validity invariant of `Initialized`.
             // 9. During the lifetime 'a, no code will reference or load or
             //    store this memory region treating `UnsafeCell`s as existing at
             //    different ranges than they exist in `U`. This is true by
             //    invariant on Ptr<'a, T, I>, preserved through the cast by the
-            //    bound `U: NoCell`.
+            //    bound `U: Immutable`.
             // 10. See 9.
             Some((unsafe { Ptr::new(ptr) }, split_at))
         }
@@ -1092,16 +1200,13 @@ mod _casts {
         /// references the same byte range as `self`.
         #[allow(unused)]
         #[inline(always)]
-        pub(crate) fn try_cast_into_no_leftover<U: 'a + ?Sized + KnownLayout>(
+        pub(crate) fn try_cast_into_no_leftover<U: 'a + ?Sized + KnownLayout + Immutable>(
             &self,
-        ) -> Option<Ptr<'a, U, (I::Aliasing, invariant::Aligned, invariant::AnyValidity)>>
-        where
-            U: NoCell,
-        {
+        ) -> Option<Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>> {
             // TODO(#67): Remove this allow. See NonNulSlicelExt for more
             // details.
             #[allow(unstable_name_collisions)]
-            match self.try_cast_into(_CastType::_Prefix) {
+            match self.try_cast_into(CastType::Prefix) {
                 Some((slf, split_at)) if split_at == self.len() => Some(slf),
                 Some(_) | None => None,
             }
@@ -1116,7 +1221,7 @@ mod _project {
     impl<'a, T, I> Ptr<'a, T, I>
     where
         T: 'a + ?Sized,
-        I: Invariants<Validity = invariant::Initialized>,
+        I: Invariants<Validity = Initialized>,
     {
         /// Projects a field from `self`.
         ///
@@ -1143,7 +1248,7 @@ mod _project {
         pub unsafe fn project<U: 'a + ?Sized>(
             self,
             projector: impl FnOnce(*mut T) -> *mut U,
-        ) -> Ptr<'a, U, (I::Aliasing, invariant::AnyAlignment, invariant::Initialized)> {
+        ) -> Ptr<'a, U, (I::Aliasing, Any, Initialized)> {
             // SAFETY: `projector` is provided with `self` casted to a raw
             // pointer.
             let field = projector(self.as_non_null().as_ptr());
@@ -1186,7 +1291,7 @@ mod _project {
             // 6. `field` conforms to the aliasing invariant of `I::Aliasing`
             //    because projection does not impact the aliasing invariant.
             // 7. `field`, trivially, conforms to the alignment invariant of
-            //    `AnyAlignment`.
+            //    `Any`.
             // 8. By type bound on `I::Validity`, `self` satisfies the
             //    "as-initialized" property relative to `T`. The returned `Ptr`
             //    has the validity `AsInitialized`. The caller promises that `T`
@@ -1359,7 +1464,7 @@ mod tests {
 
         // - If `size_of::<T>() == 0`, `N == 4`
         // - Else, `N == 4 * size_of::<T>()`
-        fn test<T: ?Sized + KnownLayout + NoCell + FromBytes, const N: usize>() {
+        fn test<T: ?Sized + KnownLayout + Immutable + FromBytes, const N: usize>() {
             let mut bytes = [MaybeUninit::<u8>::uninit(); N];
             let initialized = [MaybeUninit::new(0u8); N];
             for start in 0..=bytes.len() {
@@ -1387,16 +1492,9 @@ mod tests {
 
                     // SAFETY: The bytes in `slf` must be initialized.
                     unsafe fn validate_and_get_len<T: ?Sized + KnownLayout + FromBytes>(
-                        slf: Ptr<
-                            '_,
-                            T,
-                            (invariant::Shared, invariant::Aligned, invariant::AnyValidity),
-                        >,
+                        slf: Ptr<'_, T, (Shared, Aligned, Initialized)>,
                     ) -> usize {
-                        // SAFETY:
-                        // - Since all bytes in `slf` are initialized and
-                        //   `T: FromBytes`, `slf` contains a valid `T`.
-                        let t = unsafe { slf.as_non_null().as_ref() };
+                        let t = slf.bikeshed_recall_valid().as_ref();
 
                         let bytes = {
                             let len = mem::size_of_val(t);
@@ -1425,7 +1523,7 @@ mod tests {
                         mem::size_of_val(t)
                     }
 
-                    for cast_type in [_CastType::_Prefix, _CastType::_Suffix] {
+                    for cast_type in [CastType::Prefix, CastType::Suffix] {
                         if let Some((slf, split_at)) =
                             Ptr::from_ref(bytes).try_cast_into::<T>(cast_type)
                         {
@@ -1433,8 +1531,8 @@ mod tests {
                             // initialized.
                             let len = unsafe { validate_and_get_len(slf) };
                             match cast_type {
-                                _CastType::_Prefix => assert_eq!(split_at, len),
-                                _CastType::_Suffix => assert_eq!(split_at, bytes.len() - len),
+                                CastType::Prefix => assert_eq!(split_at, len),
+                                CastType::Suffix => assert_eq!(split_at, bytes.len() - len),
                             }
                         }
                     }
@@ -1449,24 +1547,31 @@ mod tests {
             }
         }
 
-        macro_rules! test {
-        ($($ty:ty),*) => {
-            $({
-                const S: usize = core::mem::size_of::<$ty>();
-                const N: usize = if S == 0 { 4 } else { S * 4 };
-                test::<$ty, N>();
-                // We don't support casting into DSTs whose trailing slice
-                // element is a ZST.
-                if S > 0 {
-                    test::<[$ty], N>();
-                }
-                // TODO: Test with a slice DST once we have any that
-                // implement `KnownLayout + FromBytes`.
-            })*
-        };
-    }
+        #[derive(FromBytes, KnownLayout, Immutable)]
+        #[repr(C)]
+        struct SliceDst<T> {
+            a: u8,
+            trailing: [T],
+        }
 
-        test!(());
+        macro_rules! test {
+            ($($ty:ty),*) => {
+                $({
+                    const S: usize = core::mem::size_of::<$ty>();
+                    const N: usize = if S == 0 { 4 } else { S * 4 };
+                    test::<$ty, N>();
+                    test::<[$ty], N>();
+                    test::<SliceDst<$ty>, N>();
+                })*
+            };
+        }
+
+        // NOTE: We call this directly instead of using `test!` because that
+        // macro would also test using `[()]`, which would trigger the
+        // post-monomorphization error in `assert_dst_is_not_zst`, which is
+        // called from `try_cast_into`.
+        test::<(), 4>();
+
         test!(u8, u16, u32, u64, u128, usize, AU64);
         test!(i8, i16, i32, i64, i128, isize);
         test!(f32, f64);
@@ -1477,13 +1582,13 @@ mod tests {
         // Test that the correct invariant relationships hold.
         use super::invariant::*;
 
-        assert_not_impl_any!(AnyAliasing: at_least::Shared);
-        assert_impl_all!(Shared: at_least::Shared);
-        assert_impl_all!(Exclusive: at_least::Shared);
+        assert_not_impl_any!(Any: AtLeast<Shared>);
+        assert_impl_all!(Shared: AtLeast<Shared>);
+        assert_impl_all!(Exclusive: AtLeast<Shared>);
 
-        assert_not_impl_any!(AnyValidity: at_least::AsInitialized);
-        assert_impl_all!(AsInitialized: at_least::AsInitialized);
-        assert_impl_all!(Initialized: at_least::AsInitialized);
-        assert_impl_all!(Valid: at_least::AsInitialized);
+        assert_not_impl_any!(Any: AtLeast<AsInitialized>);
+        assert_impl_all!(AsInitialized: AtLeast<AsInitialized>);
+        assert_impl_all!(Initialized: AtLeast<AsInitialized>);
+        assert_impl_all!(Valid: AtLeast<AsInitialized>);
     }
 }

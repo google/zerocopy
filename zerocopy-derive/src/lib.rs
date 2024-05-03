@@ -89,7 +89,7 @@ macro_rules! derive {
 }
 
 derive!(KnownLayout => derive_known_layout => derive_known_layout_inner);
-derive!(NoCell => derive_no_cell => derive_no_cell_inner);
+derive!(Immutable => derive_no_cell => derive_no_cell_inner);
 derive!(TryFromBytes => derive_try_from_bytes => derive_try_from_bytes_inner);
 derive!(FromZeros => derive_from_zeros => derive_from_zeros_inner);
 derive!(FromBytes => derive_from_bytes => derive_from_bytes_inner);
@@ -161,6 +161,8 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
         (
             SelfBounds::None,
             quote!(
+                type PointerMetadata = <#trailing_field_ty as ::zerocopy::KnownLayout>::PointerMetadata;
+
                 // SAFETY: `LAYOUT` accurately describes the layout of `Self`.
                 // The layout of `Self` is reflected using a sequence of
                 // invocations of `DstLayout::{new_zst,extend,pad_to_align}`.
@@ -195,10 +197,10 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
                 #[inline(always)]
                 fn raw_from_ptr_len(
                     bytes: ::zerocopy::macro_util::core_reexport::ptr::NonNull<u8>,
-                    elems: usize,
+                    meta: <#trailing_field_ty as ::zerocopy::KnownLayout>::PointerMetadata,
                 ) -> ::zerocopy::macro_util::core_reexport::ptr::NonNull<Self> {
                     use ::zerocopy::{KnownLayout};
-                    let trailing = <#trailing_field_ty as KnownLayout>::raw_from_ptr_len(bytes, elems);
+                    let trailing = <#trailing_field_ty as KnownLayout>::raw_from_ptr_len(bytes, meta);
                     let slf = trailing.as_ptr() as *mut Self;
                     // SAFETY: Constructed from `trailing`, which is non-null.
                     unsafe { ::zerocopy::macro_util::core_reexport::ptr::NonNull::new_unchecked(slf) }
@@ -212,6 +214,8 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
         (
             SelfBounds::SIZED,
             quote!(
+                type PointerMetadata = ();
+
                 // SAFETY: `LAYOUT` is guaranteed to accurately describe the
                 // layout of `Self`, because that is the documented safety
                 // contract of `DstLayout::for_type`.
@@ -224,7 +228,7 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
                 #[inline(always)]
                 fn raw_from_ptr_len(
                     bytes: ::zerocopy::macro_util::core_reexport::ptr::NonNull<u8>,
-                    _elems: usize,
+                    _meta: (),
                 ) -> ::zerocopy::macro_util::core_reexport::ptr::NonNull<Self> {
                     bytes.cast::<Self>()
                 }
@@ -288,18 +292,30 @@ fn derive_no_cell_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
         Data::Struct(strct) => impl_block(
             ast,
             strct,
-            Trait::NoCell,
+            Trait::Immutable,
             FieldBounds::ALL_SELF,
             SelfBounds::None,
             None,
             None,
         ),
-        Data::Enum(enm) => {
-            impl_block(ast, enm, Trait::NoCell, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
-        }
-        Data::Union(unn) => {
-            impl_block(ast, unn, Trait::NoCell, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
-        }
+        Data::Enum(enm) => impl_block(
+            ast,
+            enm,
+            Trait::Immutable,
+            FieldBounds::ALL_SELF,
+            SelfBounds::None,
+            None,
+            None,
+        ),
+        Data::Union(unn) => impl_block(
+            ast,
+            unn,
+            Trait::Immutable,
+            FieldBounds::ALL_SELF,
+            SelfBounds::None,
+            None,
+            None,
+        ),
     }
 }
 
@@ -362,7 +378,9 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
             // validity of a struct is just the composition of the bit
             // validities of its fields, so this is a sound implementation of
             // `is_bit_valid`.
-            fn is_bit_valid(candidate: ::zerocopy::Maybe<Self>) -> bool {
+            fn is_bit_valid<A: ::zerocopy::pointer::invariant::Aliasing + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>>(
+                mut candidate: ::zerocopy::Maybe<Self, A>
+            ) -> bool {
                 true #(&& {
                     // SAFETY: `project` is a field projection of `candidate`,
                     // and `Self` is a struct type. The candidate will have
@@ -373,7 +391,7 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
                         let project = |slf: *mut Self|
                             ::zerocopy::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
 
-                        candidate.project(project)
+                        candidate.reborrow().project(project)
                     };
 
                     <#field_tys as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
@@ -393,10 +411,12 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
 }
 
 // A union is `TryFromBytes` if:
-// - any of its fields are `TryFromBytes`
+// - all of its fields are `TryFromBytes` and `Immutable`
 
 fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    let self_type_trait_bounds = SelfBounds::All(&[Trait::NoCell]);
+    // TODO(#5): Remove the `Immutable` bound.
+    let field_type_trait_bounds =
+        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
     let extras = Some({
         let fields = unn.fields();
         let field_names = fields.iter().map(|(name, _ty)| name);
@@ -407,18 +427,20 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
             // bit validity of a union is not yet well defined in Rust, but it
             // is guaranteed to be no more strict than this definition. See #696
             // for a more in-depth discussion.
-            fn is_bit_valid(candidate: ::zerocopy::Maybe<Self>) -> bool {
+            fn is_bit_valid<A: ::zerocopy::pointer::invariant::Aliasing + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>>(
+                mut candidate: ::zerocopy::Maybe<Self, A>
+            ) -> bool {
                 false #(|| {
                     // SAFETY: `project` is a field projection of `candidate`,
                     // and `Self` is a union type. The candidate and projection
                     // agree exactly on where their `UnsafeCell` ranges are,
-                    // because `Self: NoCell` is enforced by
+                    // because `Self: Immutable` is enforced by
                     // `self_type_trait_bounds`.
                     let field_candidate = unsafe {
                         let project = |slf: *mut Self|
                             ::zerocopy::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
 
-                        candidate.project(project)
+                        candidate.reborrow().project(project)
                     };
 
                     <#field_tys as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
@@ -430,8 +452,8 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
         ast,
         unn,
         Trait::TryFromBytes,
-        FieldBounds::ALL_SELF,
-        self_type_trait_bounds,
+        field_type_trait_bounds,
+        SelfBounds::None,
         None,
         extras,
     )
@@ -517,13 +539,13 @@ fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2:
         // SAFETY: We use `is_bit_valid` to validate that the bit pattern
         // corresponds to one of the field-less enum's variant discriminants.
         // Thus, this is a sound implementation of `is_bit_valid`.
-        fn is_bit_valid(
+        fn is_bit_valid<A: ::zerocopy::pointer::invariant::Aliasing + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>>(
             candidate: ::zerocopy::Ptr<
                 '_,
                 Self,
                 (
-                    ::zerocopy::pointer::invariant::Shared,
-                    ::zerocopy::pointer::invariant::AnyAlignment,
+                    A,
+                    ::zerocopy::pointer::invariant::Any,
                     ::zerocopy::pointer::invariant::Initialized,
                 ),
             >,
@@ -602,11 +624,15 @@ fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
     impl_block(ast, enm, Trait::FromZeros, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
 }
 
-// Like structs, unions are `FromZeros` if
-// - all fields are `FromZeros`
+// Unions are `FromZeros` if
+// - all fields are `FromZeros` and `Immutable`
 
 fn derive_from_zeros_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    impl_block(ast, unn, Trait::FromZeros, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
+    // TODO(#5): Remove the `Immutable` bound. It's only necessary for
+    // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
+    let field_type_trait_bounds =
+        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
+    impl_block(ast, unn, Trait::FromZeros, field_type_trait_bounds, SelfBounds::None, None, None)
 }
 
 // A struct is `FromBytes` if:
@@ -688,11 +714,15 @@ const ENUM_FROM_BYTES_CFG: Config<EnumRepr> = {
     }
 };
 
-// Like structs, unions are `FromBytes` if
-// - all fields are `FromBytes`
+// Unions are `FromBytes` if
+// - all fields are `FromBytes` and `Immutable`
 
 fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    impl_block(ast, unn, Trait::FromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
+    // TODO(#5): Remove the `Immutable` bound. It's only necessary for
+    // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
+    let field_type_trait_bounds =
+        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
+    impl_block(ast, unn, Trait::FromBytes, field_type_trait_bounds, SelfBounds::None, None, None)
 }
 
 fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
@@ -933,7 +963,7 @@ impl PaddingCheck {
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum Trait {
     KnownLayout,
-    NoCell,
+    Immutable,
     TryFromBytes,
     FromZeros,
     FromBytes,

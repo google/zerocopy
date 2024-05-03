@@ -30,26 +30,29 @@ error: cannot derive Unaligned with repr(align(N > 1))
 79 | #[repr(align(2), align(4))]
    |        ^^^^^^^^
 
-error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::NoCell` is not satisfied
+error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::Immutable` is not satisfied
   --> tests/ui-nightly/union.rs:24:10
    |
-24 | #[derive(NoCell)]
-   |          ^^^^^^ the trait `zerocopy::NoCell` is not implemented for `UnsafeCell<()>`, which is required by `ManuallyDrop<UnsafeCell<()>>: zerocopy::NoCell`
+24 | #[derive(Immutable)]
+   |          ^^^^^^^^^ the trait `zerocopy::Immutable` is not implemented for `UnsafeCell<()>`, which is required by `ManuallyDrop<UnsafeCell<()>>: zerocopy::Immutable`
    |
-   = help: the following other types implement trait `zerocopy::NoCell`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
+   = help: the following other types implement trait `zerocopy::Immutable`:
+             &T
+             &mut T
+             ()
+             *const T
+             *mut T
+             AU16
+             F32<O>
+             F64<O>
            and $N others
-   = note: required for `ManuallyDrop<UnsafeCell<()>>` to implement `zerocopy::NoCell`
+   = note: required for `ManuallyDrop<UnsafeCell<()>>` to implement `zerocopy::Immutable`
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
-   = note: this error originates in the derive macro `NoCell` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is not satisfied
   --> tests/ui-nightly/union.rs:39:10
@@ -59,8 +62,11 @@ error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is
    |
    = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes2, true>`
    = help: see issue #48214
-   = help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+   |
+9  + #![feature(trivial_bounds)]
+   |
 
 error[E0587]: type has conflicting packed and align representation hints
   --> tests/ui-nightly/union.rs:68:1

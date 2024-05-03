@@ -30,15 +30,15 @@ error: cannot derive Unaligned with repr(align(N > 1))
 79 | #[repr(align(2), align(4))]
    |        ^^^^^^^^
 
-error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::NoCell` is not satisfied
+error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::Immutable` is not satisfied
   --> tests/ui-msrv/union.rs:24:10
    |
-24 | #[derive(NoCell)]
-   |          ^^^^^^ the trait `zerocopy::NoCell` is not implemented for `UnsafeCell<()>`
+24 | #[derive(Immutable)]
+   |          ^^^^^^^^^ the trait `zerocopy::Immutable` is not implemented for `UnsafeCell<()>`
    |
-   = note: required because of the requirements on the impl of `zerocopy::NoCell` for `ManuallyDrop<UnsafeCell<()>>`
+   = note: required because of the requirements on the impl of `zerocopy::Immutable` for `ManuallyDrop<UnsafeCell<()>>`
    = help: see issue #48214
-   = note: this error originates in the derive macro `NoCell` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is not satisfied
   --> tests/ui-msrv/union.rs:39:10
