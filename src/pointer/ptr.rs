@@ -618,7 +618,7 @@ mod _conversions {
 /// State transitions between invariants.
 mod _transitions {
     use super::*;
-    use crate::TryFromBytes;
+    use crate::{TryFromBytes, ValidityError};
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
@@ -845,10 +845,15 @@ mod _transitions {
         ///
         /// This method will panic if
         /// [`T::is_bit_valid`][TryFromBytes::is_bit_valid] panics.
+        ///
+        /// # Safety
+        ///
+        /// On error, unsafe code may rely on this method's returned
+        /// `ValidityError` containing `self`.
         #[inline]
         pub(crate) fn try_into_valid(
             mut self,
-        ) -> Option<Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>>
+        ) -> Result<Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>, ValidityError<Self, T>>
         where
             T: TryFromBytes,
             I::Aliasing: AtLeast<Shared>,
@@ -860,9 +865,9 @@ mod _transitions {
             if T::is_bit_valid(self.reborrow().forget_exclusive().forget_aligned()) {
                 // SAFETY: If `T::is_bit_valid`, code may assume that `self`
                 // contains a bit-valid instance of `Self`.
-                Some(unsafe { self.assume_valid() })
+                Ok(unsafe { self.assume_valid() })
             } else {
-                None
+                Err(ValidityError::new(self))
             }
         }
 
@@ -893,7 +898,7 @@ mod _transitions {
 /// Casts of the referent type.
 mod _casts {
     use super::*;
-    use crate::PointerMetadata;
+    use crate::{layout::MetadataCastError, AlignmentError, CastError, PointerMetadata, SizeError};
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
@@ -1111,22 +1116,30 @@ mod _casts {
         /// - If this is a suffix cast, `ptr` refers to the byte range
         ///   `[split_at, self.len())` in `self`.
         pub(crate) fn try_cast_into<U: 'a + ?Sized + KnownLayout + Immutable>(
-            &self,
+            self,
             cast_type: CastType,
-        ) -> Option<(Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, usize)> {
+        ) -> Result<(Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, usize), CastError<Self, U>>
+        {
             crate::util::assert_dst_is_not_zst::<U>();
-
             // PANICS: By invariant, the byte range addressed by `self.ptr` does
             // not wrap around the address space. This implies that the sum of
             // the address (represented as a `usize`) and length do not overflow
             // `usize`, as required by `validate_cast_and_convert_metadata`.
             // Thus, this call to `validate_cast_and_convert_metadata` will only
             // panic if `U` is a DST whose trailing slice element is zero-sized.
-            let (elems, split_at) = U::LAYOUT.validate_cast_and_convert_metadata(
+            let maybe_metadata = U::LAYOUT.validate_cast_and_convert_metadata(
                 AsAddress::addr(self.as_non_null().as_ptr()),
                 self.len(),
                 cast_type,
-            )?;
+            );
+
+            let (elems, split_at) = match maybe_metadata {
+                Ok((elems, split_at)) => (elems, split_at),
+                Err(MetadataCastError::Alignment) => {
+                    return Err(CastError::Alignment(AlignmentError::new(self)))
+                }
+                Err(MetadataCastError::Size) => return Err(CastError::Size(SizeError::new(self))),
+            };
 
             let offset = match cast_type {
                 CastType::Prefix => 0,
@@ -1196,7 +1209,7 @@ mod _casts {
             //    invariant on Ptr<'a, T, I>, preserved through the cast by the
             //    bound `U: Immutable`.
             // 10. See 9.
-            Some((unsafe { Ptr::new(ptr) }, split_at))
+            Ok((unsafe { Ptr::new(ptr) }, split_at))
         }
 
         /// Attempts to cast `self` into a `U`, failing if all of the bytes of
@@ -1212,14 +1225,32 @@ mod _casts {
         #[allow(unused)]
         #[inline(always)]
         pub(crate) fn try_cast_into_no_leftover<U: 'a + ?Sized + KnownLayout + Immutable>(
-            &self,
-        ) -> Option<Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>> {
+            self,
+        ) -> Result<Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, CastError<Self, U>> {
+            let len = self.len();
             // TODO(#67): Remove this allow. See NonNulSlicelExt for more
             // details.
             #[allow(unstable_name_collisions)]
             match self.try_cast_into(CastType::Prefix) {
-                Some((slf, split_at)) if split_at == self.len() => Some(slf),
-                Some(_) | None => None,
+                Ok((slf, split_at)) => {
+                    if split_at == len {
+                        Ok(slf)
+                    } else {
+                        // Undo the cast so we can return the original bytes.
+                        let slf = slf.as_bytes();
+                        // Restore the initial invariants of `self`.
+                        //
+                        // SAFETY: The referent type of `slf` is now equal to
+                        // that of `self`, but the invariants nominally differ.
+                        // Since `slf` and `self` refer to the same memory and
+                        // no actions have been taken that would violate the
+                        // original invariants on `self`, it is sound to apply
+                        // the invariants of `self` onto `slf`.
+                        let slf = unsafe { slf.assume_invariants() };
+                        Err(CastError::Size(SizeError::<_, U>::new(slf)))
+                    }
+                }
+                Err(err) => Err(err),
             }
         }
     }
@@ -1522,7 +1553,7 @@ mod tests {
                     }
 
                     for cast_type in [CastType::Prefix, CastType::Suffix] {
-                        if let Some((slf, split_at)) =
+                        if let Ok((slf, split_at)) =
                             Ptr::from_ref(bytes).try_cast_into::<T>(cast_type)
                         {
                             // SAFETY: All bytes in `bytes` have been
@@ -1535,7 +1566,7 @@ mod tests {
                         }
                     }
 
-                    if let Some(slf) = Ptr::from_ref(bytes).try_cast_into_no_leftover::<T>() {
+                    if let Ok(slf) = Ptr::from_ref(bytes).try_cast_into_no_leftover::<T>() {
                         // SAFETY: All bytes in `bytes` have been
                         // initialized.
                         let len = unsafe { validate_and_get_len(slf) };
