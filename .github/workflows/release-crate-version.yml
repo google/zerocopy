@@ -5,7 +5,10 @@ on:
       version:
         description: 'Crate version'
         required: true
-        default: "0.8.COOL"
+      branch:
+        description: 'Branch to update'
+        required: true
+        default: 'main'
 
 permissions: read-all
 
@@ -17,7 +20,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
         with:
-          ref: main
+          ref: ${{ github.event.inputs.branch }}
           persist-credentials: false
       - name: Overwrite Cargo.toml files
         run: |
