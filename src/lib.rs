@@ -1756,6 +1756,14 @@ pub unsafe trait FromBytes: FromZeros {
         Some(ptr.bikeshed_recall_valid().as_ref())
     }
 
+    fn ref_from_foo<'a, B: 'a + pointer::Pointer<'a, [u8]>>(bytes: B) -> Option<B::Pointer<Self>>
+    where
+        Self: KnownLayout + Immutable,
+    {
+        let ptr = Ptr::from_foo(bytes).try_cast_into_no_leftover()?;
+        Some(pointer::Pointer::from_ptr(ptr.bikeshed_recall_valid()))
+    }
+
     /// Interprets the prefix of the given `bytes` as a `&Self` without copying.
     ///
     /// This method returns both a reference to the first `size_of::<Self>()`
