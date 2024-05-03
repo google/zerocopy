@@ -15,7 +15,7 @@
 [package]
 edition = "2018"
 name = "zerocopy"
-version = "0.8.0-alpha.8"
+version = ""
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Utilities for zero-copy parsing and serialization"
 categories = ["embedded", "encoding", "no-std::no-alloc", "parsing", "rust-patterns"]
@@ -66,13 +66,13 @@ simd-nightly = ["simd"]
 __internal_use_only_features_that_work_on_stable = ["alloc", "derive", "simd"]
 
 [dependencies]
-zerocopy-derive = { version = "=0.8.0-alpha.8", path = "zerocopy-derive", optional = true }
+zerocopy-derive = { version = "=", path = "zerocopy-derive", optional = true }
 
 # The "associated proc macro pattern" ensures that the versions of zerocopy and
 # zerocopy-derive remain equal, even if the 'derive' feature isn't used.
 # See: https://github.com/matklad/macro-dep-test
 [target.'cfg(any())'.dependencies]
-zerocopy-derive = { version = "=0.8.0-alpha.8", path = "zerocopy-derive" }
+zerocopy-derive = { version = "=", path = "zerocopy-derive" }
 
 [dev-dependencies]
 assert_matches = "1.5"
@@ -91,6 +91,6 @@ testutil = { path = "testutil" }
 # CI test failures.
 trybuild = { version = "=1.0.89", features = ["diff"] }
 # In tests, unlike in production, zerocopy-derive is not optional
-zerocopy-derive = { version = "=0.8.0-alpha.8", path = "zerocopy-derive" }
+zerocopy-derive = { version = "=", path = "zerocopy-derive" }
 # TODO(#381) Remove this dependency once we have our own layout gadgets.
 elain = "0.3.0"
