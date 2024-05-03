@@ -29,7 +29,7 @@ Updating the versions pinned in CI may cause the UI tests to break. In order to
 fix UI tests after a version update, run:
 
 ```
-$ TRYBUILD=overwrite ./cargo.sh +all test
+$ ./tools/update-ui-test-files.sh
 ```
 
 ## Crate versions
