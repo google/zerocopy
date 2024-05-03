@@ -66,7 +66,7 @@ where
 /// Checks if the referent is zeroed.
 pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
 where
-    T: crate::Immutable,
+    T: crate::Immutable + crate::KnownLayout,
     I: invariant::Invariants<Validity = invariant::Initialized>,
     I::Aliasing: invariant::AtLeast<invariant::Shared>,
 {
