@@ -180,3 +180,20 @@ where
     T: 'a + 'b + imp::IntoBytes;
 
 util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::IntoBytes);
+
+// Test for the failure reported in #1182.
+
+#[derive(imp::IntoBytes)]
+#[repr(packed)]
+pub struct IndexEntryFlags(u8);
+
+#[derive(imp::IntoBytes)]
+#[repr(packed)]
+pub struct IndexEntry<const SIZE_BLOCK_ID: usize> {
+    block_number: imp::native_endian::U64,
+    flags: IndexEntryFlags,
+    block_id: [u8; SIZE_BLOCK_ID],
+}
+
+util_assert_impl_all!(IndexEntry<0>: imp::IntoBytes);
+util_assert_impl_all!(IndexEntry<1>: imp::IntoBytes);
