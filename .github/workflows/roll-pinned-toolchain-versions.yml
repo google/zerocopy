@@ -10,7 +10,6 @@
 
 name: Roll pinned toolchain versions
 on:
-  pull_request:
   schedule:
     - cron: '29 12 * * *'
   workflow_dispatch:
