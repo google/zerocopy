@@ -23,7 +23,7 @@ jobs:
       matrix:
         toolchain: ["stable", "nightly"]
         branch: ["main", "v0.7.x"]
-    name: Roll pinned toolchain ${{ matrix.toolchain }} version
+    name: Roll pinned toolchain ${{ matrix.toolchain }} version on ${{ matrix.branch }}
     steps:
       - name: Checkout code
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
@@ -110,7 +110,7 @@ jobs:
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           title: "[ci] Roll pinned ${{ matrix.toolchain }} toolchain"
-          branch: roll-pinned-${{ matrix.toolchain }}-toolchain-to-${{ env.ZC_VERSION_FOR_BRANCH_NAME }}
+          branch: roll-pinned-${{ matrix.toolchain }}-toolchain-to-${{ env.ZC_VERSION_FOR_BRANCH_NAME }}-for-${{ matrix.branch }}
           push-to-fork: google-pr-creation-bot/zerocopy
           token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
   roll_kani:
@@ -140,6 +140,6 @@ jobs:
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           title: "[ci] Roll pinned Kani version"
-          branch: roll-pinned-kani-to-${{ env.ZC_KANI_LATEST }}
+          branch: roll-pinned-kani-to-${{ env.ZC_KANI_LATEST }}-for-${{ matrix.branch }}
           push-to-fork: google-pr-creation-bot/zerocopy
           token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
