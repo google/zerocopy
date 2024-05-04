@@ -653,6 +653,7 @@ mod tests {
     use compatibility::*;
 
     // A native integer type (u16, i32, etc).
+    #[cfg_attr(kani, allow(dead_code))]
     trait Native: Arbitrary + FromBytes + AsBytes + Copy + PartialEq + Debug {
         const ZERO: Self;
         const MAX_VALUE: Self;
@@ -662,11 +663,6 @@ mod tests {
 
         fn rand<R: Rng>(rng: &mut R) -> Self {
             rng.sample(Self::DIST)
-        }
-
-        #[cfg(kani)]
-        fn any() -> Self {
-            kani::any()
         }
 
         fn checked_add(self, rhs: Self) -> Option<Self>;

@@ -652,10 +652,12 @@ pub(crate) mod polyfills {
     // MSRV is 1.70, when that function was stabilized.
     //
     // TODO(#67): Once our MSRV is 1.70, remove this.
+    #[allow(unused)]
     pub(crate) trait NonNullExt<T> {
         fn slice_from_raw_parts(data: Self, len: usize) -> NonNull<[T]>;
     }
 
+    #[allow(unused)]
     impl<T> NonNullExt<T> for NonNull<T> {
         #[inline(always)]
         fn slice_from_raw_parts(data: Self, len: usize) -> NonNull<[T]> {

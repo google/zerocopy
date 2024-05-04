@@ -134,7 +134,7 @@ impl<T> Unalign<T> {
     /// may prefer [`Deref::deref`], which is infallible.
     #[inline(always)]
     pub fn try_deref(&self) -> Option<&T> {
-        if !crate::util::aligned_to::<_, T>(self) {
+        if !util::aligned_to::<_, T>(self) {
             return None;
         }
 
@@ -154,7 +154,7 @@ impl<T> Unalign<T> {
     /// callers may prefer [`DerefMut::deref_mut`], which is infallible.
     #[inline(always)]
     pub fn try_deref_mut(&mut self) -> Option<&mut T> {
-        if !crate::util::aligned_to::<_, T>(&*self) {
+        if !util::aligned_to::<_, T>(&*self) {
             return None;
         }
 
