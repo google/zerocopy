@@ -10,6 +10,7 @@
 
 name: Roll pinned toolchain versions
 on:
+  pull_request:
   schedule:
     - cron: '29 12 * * *'
   workflow_dispatch:
@@ -22,12 +23,13 @@ jobs:
     strategy:
       matrix:
         toolchain: ["stable", "nightly"]
+        branch: ["main", "v0.7.x"]
     name: Roll pinned toolchain ${{ matrix.toolchain }} version
     steps:
       - name: Checkout code
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
         with:
-          ref: main
+          ref: ${{ matrix.branch }}
           persist-credentials: false
       - name: Calculate target version
         run: |
@@ -119,7 +121,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
         with:
-          ref: main
+          ref: ${{ matrix.branch }}
           persist-credentials: false
       - run: |
           set -eo pipefail
