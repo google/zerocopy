@@ -294,6 +294,7 @@ macro_rules! assert_align_gt_eq {
     ($t:ident, $u: ident) => {{
         // The comments here should be read in the context of this macro's
         // invocations in `transmute_ref!` and `transmute_mut!`.
+        #[allow(clippy::missing_transmute_annotations)]
         if false {
             // The type wildcard in this bound is inferred to be `T` because
             // `align_of.into_t()` is assigned to `t` (which has type `T`).
@@ -328,7 +329,7 @@ macro_rules! assert_size_eq {
             // SAFETY: This code is never run.
             $u = unsafe {
                 // Clippy: It's okay to transmute a type to itself.
-                #[allow(clippy::useless_transmute)]
+                #[allow(clippy::useless_transmute, clippy::missing_transmute_annotations)]
                 $crate::macro_util::core_reexport::mem::transmute($t)
             };
         } else {
@@ -478,6 +479,7 @@ mod tests {
         macro_rules! test {
             (#[$cfg:meta] ($($ts:ty),* ; $trailing_field_ty:ty) => $expect:expr) => {{
                 #[$cfg]
+                #[allow(dead_code)] // fields are never read
                 struct Test($($ts,)* $trailing_field_ty);
                 assert_eq!(test!(@offset $($ts),* ; $trailing_field_ty), $expect);
             }};
@@ -617,6 +619,7 @@ mod tests {
         macro_rules! test {
             (#[$cfg:meta] ($($ts:ty),*) => $expect:expr) => {{
                 #[$cfg]
+                #[allow(dead_code)] // fields are never read
                 struct Test($($ts),*);
                 assert_eq!(struct_has_padding!(Test, $($ts),*), $expect);
             }};

@@ -153,12 +153,11 @@
 // `unknown_lints` is `warn` by default and we deny warnings in CI, so without
 // this attribute, any unknown lint would cause a CI failure when testing with
 // our MSRV.
-#![allow(unknown_lints)]
+#![allow(unknown_lints, non_local_definitions)]
 #![deny(renamed_and_removed_lints)]
 #![deny(
     anonymous_parameters,
     deprecated_in_future,
-    illegal_floating_point_literal_pattern,
     late_bound_lifetime_arguments,
     missing_copy_implementations,
     missing_debug_implementations,
@@ -228,7 +227,18 @@
     clippy::indexing_slicing,
 ))]
 #![cfg_attr(not(test), no_std)]
-#![cfg_attr(feature = "simd-nightly", feature(stdsimd))]
+#![cfg_attr(
+    all(feature = "simd-nightly", any(target_arch = "x86", target_arch = "x86_64")),
+    feature(stdarch_x86_avx512)
+)]
+#![cfg_attr(
+    all(feature = "simd-nightly", target_arch = "arm"),
+    feature(stdarch_arm_dsp, stdarch_arm_neon_intrinsics)
+)]
+#![cfg_attr(
+    all(feature = "simd-nightly", any(target_arch = "powerpc", target_arch = "powerpc64")),
+    feature(stdarch_powerpc)
+)]
 #![cfg_attr(doc_cfg, feature(doc_cfg))]
 #![cfg_attr(
     __INTERNAL_USE_ONLY_NIGHLTY_FEATURES_IN_TESTS,
@@ -3790,7 +3800,7 @@ macro_rules! transmute {
             // problem for 2018 edition crates.
             unsafe {
                 // Clippy: It's okay to transmute a type to itself.
-                #[allow(clippy::useless_transmute)]
+                #[allow(clippy::useless_transmute, clippy::missing_transmute_annotations)]
                 $crate::macro_util::core_reexport::mem::transmute(e)
             }
         }
@@ -5126,9 +5136,7 @@ mod sealed {
     not(feature = "alloc"),
     doc = "[`Vec<u8>`]: https://doc.rust-lang.org/std/vec/struct.Vec.html"
 )]
-pub unsafe trait ByteSlice:
-    Deref<Target = [u8]> + Sized + self::sealed::ByteSliceSealed
-{
+pub unsafe trait ByteSlice: Deref<Target = [u8]> + Sized + sealed::ByteSliceSealed {
     /// Are the [`Ref::into_ref`] and [`Ref::into_mut`] methods sound when used
     /// with `Self`? If not, evaluating this constant must panic at compile
     /// time.
@@ -6413,6 +6421,7 @@ mod tests {
         // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
         // |          N |        N |              N |        Y |      KL01 |
         #[derive(KnownLayout)]
+        #[allow(dead_code)] // fields are never read
         struct KL01(NotKnownLayout<AU32>, NotKnownLayout<AU16>);
 
         let expected = DstLayout::for_type::<KL01>();
@@ -6423,6 +6432,7 @@ mod tests {
         // ...with `align(N)`:
         #[derive(KnownLayout)]
         #[repr(align(64))]
+        #[allow(dead_code)] // fields are never read
         struct KL01Align(NotKnownLayout<AU32>, NotKnownLayout<AU16>);
 
         let expected = DstLayout::for_type::<KL01Align>();
@@ -6433,6 +6443,7 @@ mod tests {
         // ...with `packed`:
         #[derive(KnownLayout)]
         #[repr(packed)]
+        #[allow(dead_code)] // fields are never read
         struct KL01Packed(NotKnownLayout<AU32>, NotKnownLayout<AU16>);
 
         let expected = DstLayout::for_type::<KL01Packed>();
@@ -6443,6 +6454,7 @@ mod tests {
         // ...with `packed(N)`:
         #[derive(KnownLayout)]
         #[repr(packed(2))]
+        #[allow(dead_code)] // fields are never read
         struct KL01PackedN(NotKnownLayout<AU32>, NotKnownLayout<AU16>);
 
         assert_impl_all!(KL01PackedN: KnownLayout);
@@ -6455,6 +6467,7 @@ mod tests {
         // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
         // |          N |        N |              Y |        Y |      KL03 |
         #[derive(KnownLayout)]
+        #[allow(dead_code)] // fields are never read
         struct KL03(NotKnownLayout, u8);
 
         let expected = DstLayout::for_type::<KL03>();
@@ -6465,6 +6478,7 @@ mod tests {
         // ... with `align(N)`
         #[derive(KnownLayout)]
         #[repr(align(64))]
+        #[allow(dead_code)] // fields are never read
         struct KL03Align(NotKnownLayout<AU32>, u8);
 
         let expected = DstLayout::for_type::<KL03Align>();
@@ -6475,6 +6489,7 @@ mod tests {
         // ... with `packed`:
         #[derive(KnownLayout)]
         #[repr(packed)]
+        #[allow(dead_code)] // fields are never read
         struct KL03Packed(NotKnownLayout<AU32>, u8);
 
         let expected = DstLayout::for_type::<KL03Packed>();
@@ -6485,6 +6500,7 @@ mod tests {
         // ... with `packed(N)`
         #[derive(KnownLayout)]
         #[repr(packed(2))]
+        #[allow(dead_code)] // fields are never read
         struct KL03PackedN(NotKnownLayout<AU32>, u8);
 
         assert_impl_all!(KL03PackedN: KnownLayout);
@@ -6497,6 +6513,7 @@ mod tests {
         // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
         // |          N |        Y |              N |        Y |      KL05 |
         #[derive(KnownLayout)]
+        #[allow(dead_code)] // fields are never read
         struct KL05<T>(u8, T);
 
         fn _test_kl05<T>(t: T) -> impl KnownLayout {
@@ -6506,6 +6523,7 @@ mod tests {
         // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
         // |          N |        Y |              Y |        Y |      KL07 |
         #[derive(KnownLayout)]
+        #[allow(dead_code)] // fields are never read
         struct KL07<T: KnownLayout>(u8, T);
 
         fn _test_kl07<T: KnownLayout>(t: T) -> impl KnownLayout {
@@ -7656,6 +7674,7 @@ mod tests {
     fn test_transparent_packed_generic_struct() {
         #[derive(AsBytes, FromZeroes, FromBytes, Unaligned)]
         #[repr(transparent)]
+        #[allow(dead_code)] // for the unused fields
         struct Foo<T> {
             _t: T,
             _phantom: PhantomData<()>,
@@ -7666,6 +7685,7 @@ mod tests {
 
         #[derive(AsBytes, FromZeroes, FromBytes, Unaligned)]
         #[repr(packed)]
+        #[allow(dead_code)] // for the unused fields
         struct Bar<T, U> {
             _t: T,
             _u: U,
