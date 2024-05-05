@@ -115,6 +115,9 @@ jobs:
           token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
   roll_kani:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        branch: ["main", "v0.7.x"]
     name: Roll pinned Kani version
     steps:
       - name: Checkout code
