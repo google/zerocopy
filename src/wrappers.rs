@@ -136,14 +136,17 @@ impl<T> Unalign<T> {
     /// not properly aligned.
     ///
     /// If `self` does not satisfy `mem::align_of::<T>()`, then it is unsound to
-    /// return a reference to the wrapped `T`, and `try_deref` returns `None`.
+    /// return a reference to the wrapped `T`, and `try_deref` returns `Err`.
     ///
     /// If `T: Unaligned`, then `Unalign<T>` implements [`Deref`], and callers
     /// may prefer [`Deref::deref`], which is infallible.
     #[inline(always)]
-    pub fn try_deref(&self) -> Option<&T> {
+    pub fn try_deref(&self) -> Result<&T, AlignmentError<&Self, T>> {
         let inner = Ptr::from_ref(self).transparent_wrapper_into_inner();
-        inner.bikeshed_try_into_aligned().map(Ptr::as_ref)
+        match inner.bikeshed_try_into_aligned() {
+            Ok(aligned) => Ok(aligned.as_ref()),
+            Err(err) => Err(err.map_src(|src| src.into_unalign().as_ref())),
+        }
     }
 
     /// Attempts to return a mutable reference to the wrapped `T`, failing if
@@ -151,14 +154,17 @@ impl<T> Unalign<T> {
     ///
     /// If `self` does not satisfy `mem::align_of::<T>()`, then it is unsound to
     /// return a reference to the wrapped `T`, and `try_deref_mut` returns
-    /// `None`.
+    /// `Err`.
     ///
     /// If `T: Unaligned`, then `Unalign<T>` implements [`DerefMut`], and
     /// callers may prefer [`DerefMut::deref_mut`], which is infallible.
     #[inline(always)]
-    pub fn try_deref_mut(&mut self) -> Option<&mut T> {
+    pub fn try_deref_mut(&mut self) -> Result<&mut T, AlignmentError<&mut Self, T>> {
         let inner = Ptr::from_mut(self).transparent_wrapper_into_inner();
-        inner.bikeshed_try_into_aligned().map(Ptr::as_mut)
+        match inner.bikeshed_try_into_aligned() {
+            Ok(aligned) => Ok(aligned.as_mut()),
+            Err(err) => Err(err.map_src(|src| src.into_unalign().as_mut())),
+        }
     }
 
     /// Returns a reference to the wrapped `T` without checking alignment.
@@ -423,8 +429,8 @@ mod tests {
 
         // Test methods that depend on alignment (when alignment is satisfied).
         let mut u: Align<_, AU64> = Align::new(Unalign::new(AU64(123)));
-        assert_eq!(u.t.try_deref(), Some(&AU64(123)));
-        assert_eq!(u.t.try_deref_mut(), Some(&mut AU64(123)));
+        assert_eq!(u.t.try_deref().unwrap(), &AU64(123));
+        assert_eq!(u.t.try_deref_mut().unwrap(), &mut AU64(123));
         // SAFETY: The `Align<_, AU64>` guarantees proper alignment.
         assert_eq!(unsafe { u.t.deref_unchecked() }, &AU64(123));
         // SAFETY: The `Align<_, AU64>` guarantees proper alignment.
@@ -435,13 +441,13 @@ mod tests {
         // Test methods that depend on alignment (when alignment is not
         // satisfied).
         let mut u: ForceUnalign<_, AU64> = ForceUnalign::new(Unalign::new(AU64(123)));
-        assert_eq!(u.t.try_deref(), None);
-        assert_eq!(u.t.try_deref_mut(), None);
+        assert!(matches!(u.t.try_deref(), Err(AlignmentError { .. })));
+        assert!(matches!(u.t.try_deref_mut(), Err(AlignmentError { .. })));
 
         // Test methods that depend on `T: Unaligned`.
         let mut u = Unalign::new(123u8);
-        assert_eq!(u.try_deref(), Some(&123));
-        assert_eq!(u.try_deref_mut(), Some(&mut 123));
+        assert_eq!(u.try_deref(), Ok(&123));
+        assert_eq!(u.try_deref_mut(), Ok(&mut 123));
         assert_eq!(u.deref(), &123);
         assert_eq!(u.deref_mut(), &mut 123);
         *u = 21;

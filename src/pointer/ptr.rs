@@ -613,12 +613,43 @@ mod _conversions {
             c
         }
     }
+
+    /// `Ptr<'a, T, (_, _, _)>` → `Ptr<'a, Unalign<T>, (_, Aligned, _)>`
+    impl<'a, T, I> Ptr<'a, T, I>
+    where
+        I: Invariants,
+    {
+        /// Converts a `Ptr` an unaligned `T` into a `Ptr` to an aligned
+        /// `Unalign<T>`.
+        pub(crate) fn into_unalign(
+            self,
+        ) -> Ptr<'a, crate::Unalign<T>, (I::Aliasing, Aligned, I::Validity)> {
+            // SAFETY: We define `Unalign<T>` to be a `#[repr(C, packed)]` type
+            // wrapping a single `T` field. Thus, `Unalign<T>` has the same size
+            // as `T` and contains `UnsafeCell`s at the same locations as `T`.
+            // The cast is implemented in the form `|p: *mut T| p as *mut U`,
+            // where `U` is `Unalign<T>`.
+            let ptr = unsafe {
+                #[allow(clippy::as_conversions)]
+                self.cast_unsized(|p: *mut T| p as *mut crate::Unalign<T>)
+            };
+            // SAFETY: We define `Unalign<T>` to be a `#[repr(C, packed)]` type
+            // wrapping a single `T` field, thus `Unalign<T>` has exactly the
+            // same validity as `T`.
+            let ptr = unsafe { ptr.assume_validity::<I::Validity>() };
+            // SAFETY: We define `Unalign<T>` to be a `#[repr(C, packed)]` type
+            // wrapping a single `T` field, thus `Unalign<T>` is always
+            // trivially aligned.
+            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+            ptr
+        }
+    }
 }
 
 /// State transitions between invariants.
 mod _transitions {
     use super::*;
-    use crate::{TryFromBytes, ValidityError};
+    use crate::{AlignmentError, TryFromBytes, ValidityError};
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
@@ -745,16 +776,16 @@ mod _transitions {
         /// on success.
         pub(crate) fn bikeshed_try_into_aligned(
             self,
-        ) -> Option<Ptr<'a, T, (I::Aliasing, Aligned, I::Validity)>>
+        ) -> Result<Ptr<'a, T, (I::Aliasing, Aligned, I::Validity)>, AlignmentError<Self, T>>
         where
             T: Sized,
         {
             if !crate::util::aligned_to::<_, T>(self.as_non_null()) {
-                return None;
+                return Err(AlignmentError::new(self));
             }
 
             // SAFETY: We just checked the alignment.
-            Some(unsafe { self.assume_alignment::<Aligned>() })
+            Ok(unsafe { self.assume_alignment::<Aligned>() })
         }
 
         /// Recalls that `self`'s referent is validly-aligned for `T`.
