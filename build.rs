@@ -65,6 +65,15 @@ fn main() {
     let version_cfgs = parse_version_cfgs_from_cargo_toml();
     let rustc_version = rustc_version();
 
+    if rustc_version >= (Version { major: 1, minor: 77, patch: 0 }) {
+        // This tells the `unexpected_cfgs` lint to expect to see all of these
+        // `cfg`s. The `cargo::` syntax was only added in 1.77, so we don't emit
+        // these on earlier toolchain versions.
+        for version_cfg in &version_cfgs {
+            println!("cargo::rustc-check-cfg=cfg({})", version_cfg.cfg_name);
+        }
+    }
+
     for version_cfg in version_cfgs {
         if rustc_version >= version_cfg.version {
             println!("cargo:rustc-cfg={}", version_cfg.cfg_name);
