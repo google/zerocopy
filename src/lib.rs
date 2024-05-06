@@ -173,7 +173,9 @@
 // `unknown_lints` is `warn` by default and we deny warnings in CI, so without
 // this attribute, any unknown lint would cause a CI failure when testing with
 // our MSRV.
-#![allow(unknown_lints)]
+//
+// TODO(#1201): Remove `unexpected_cfgs`
+#![allow(unknown_lints, unexpected_cfgs)]
 #![deny(renamed_and_removed_lints)]
 #![deny(
     anonymous_parameters,
