@@ -8,6 +8,8 @@
 
 use core::{
     cell::UnsafeCell,
+    convert::Infallible,
+    marker::PhantomData,
     mem::{self, ManuallyDrop, MaybeUninit},
     num::{NonZeroUsize, Wrapping},
     ptr::NonNull,
@@ -28,7 +30,7 @@ use crate::{
 ///
 /// `T: TransparentWrapper` implies that `T` has the same size as [`T::Inner`].
 /// Further, `T: TransparentWrapper<I>` implies that:
-/// - If `T::UnsafeCellVariance = Covariant`, then:
+/// - If `T::WrapUnsafeCellVariance = Covariant`, then:
 ///   - `T` has `UnsafeCell`s covering the same byte ranges as `T::Inner`
 ///   - `T` has zero-sized `UnsafeCell`s (e.g., `UnsafeCell<()>`,
 ///     `[UnsafeCell<u8>; 0]`, etc) at the same byte offsets as `T::Inner`
@@ -47,8 +49,12 @@ use crate::{
 pub unsafe trait TransparentWrapper<I: Invariants> {
     type Inner: ?Sized;
 
+    type WrapAlignmentVariance: AlignmentVariance<I::Alignment>;
+    type UnwrapAlignmentVariance: AlignmentVariance<I::Alignment>;
+
     type UnsafeCellVariance;
-    type AlignmentVariance: AlignmentVariance<I::Alignment>;
+
+    // TODO: Document why this isn't separated by wrap vs unwrap.
     type ValidityVariance: ValidityVariance<I::Validity>;
 
     /// Casts a wrapper pointer to an inner pointer.
@@ -94,14 +100,14 @@ impl<I: invariant::Validity> ValidityVariance<I> for Covariant {
 
 #[doc(hidden)]
 #[allow(missing_copy_implementations, missing_debug_implementations)]
-pub enum Invariant {}
+pub struct Invariant<I = invariant::Any>(PhantomData<I>, Infallible);
 
-impl<I: invariant::Alignment> AlignmentVariance<I> for Invariant {
-    type Applied = invariant::Any;
+impl<I: invariant::Alignment, II: invariant::Alignment> AlignmentVariance<I> for Invariant<II> {
+    type Applied = II;
 }
 
-impl<I: invariant::Validity> ValidityVariance<I> for Invariant {
-    type Applied = invariant::Any;
+impl<I: invariant::Validity, II: invariant::Validity> ValidityVariance<I> for Invariant<II> {
+    type Applied = II;
 }
 
 // SAFETY:
@@ -124,9 +130,15 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for MaybeUninit<T> {
     //
     //   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and
     //   ABI as `T`.
-    type AlignmentVariance = Covariant;
+    type WrapAlignmentVariance = Covariant;
+
+    // SAFETY: TODO
+    type UnwrapAlignmentVariance = Covariant;
+
     // SAFETY: `MaybeUninit` has no validity invariants. Thus, a valid
     // `MaybeUninit<T>` is not necessarily a valid `T`.
+    //
+    // TODO: Document both directions.
     type ValidityVariance = Invariant;
 
     fn cast_into_inner(ptr: *mut MaybeUninit<T>) -> *mut T {
@@ -166,7 +178,10 @@ unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for ManuallyDrop<T> 
     //
     //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
     //   validity as `T`
-    type AlignmentVariance = Covariant;
+    type WrapAlignmentVariance = Covariant;
+
+    // SAFETY: TODO
+    type UnwrapAlignmentVariance = Covariant;
 
     // SAFETY: Per [1] (from comment above), `ManuallyDrop<T>` has the same bit
     // validity as `T`.
@@ -210,7 +225,10 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Wrapping<T> {
     // [1] Per https://doc.rust-lang.org/core/num/struct.Wrapping.html#layout-1:
     //
     //   `Wrapping<T>` is guaranteed to have the same layout and ABI as `T`.
-    type AlignmentVariance = Covariant;
+    type WrapAlignmentVariance = Covariant;
+
+    // SAFETY: TODO
+    type UnwrapAlignmentVariance = Covariant;
 
     // SAFETY: `Wrapping<T>` has only one field, which is `pub` [2]. We are also
     // guaranteed per [1] (from the comment above) that `Wrapping<T>` has the
@@ -259,7 +277,10 @@ unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for UnsafeCell<T> {
 
     // SAFETY: Per [1] (from comment on impl), `Unalign<T>` has the same
     // representation as `T`, and thus has the same alignment as `T`.
-    type AlignmentVariance = Covariant;
+    type WrapAlignmentVariance = Covariant;
+
+    // SAFETY: TODO
+    type UnwrapAlignmentVariance = Covariant;
 
     // SAFETY: Per [1], `Unalign<T>` has the same bit validity as `T`.
     // Technically the term "representation" doesn't guarantee this, but the
@@ -304,10 +325,13 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Unalign<T> {
     // and `UnsafeCell`s at the same byte offsets as `T`.
     type UnsafeCellVariance = Covariant;
 
+    // SAFETY: TODO
+    type WrapAlignmentVariance = Invariant<invariant::Aligned>;
+
     // SAFETY: Since `Unalign<T>` is `repr(packed)`, it has the alignment 1
     // regardless of `T`'s alignment. Thus, an aligned pointer to `Unalign<T>`
     // is not necessarily an aligned pointer to `T`.
-    type AlignmentVariance = Invariant;
+    type UnwrapAlignmentVariance = Invariant;
 
     // SAFETY: `Unalign<T>` is a `#[repr(C, packed)]` type wrapping a single `T`
     // field, and so has the same validity as `T`.
@@ -389,7 +413,12 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
 
         // SAFETY: No safety justification is required for an invariant
         // variance.
-        type AlignmentVariance = Invariant;
+        type WrapAlignmentVariance = Invariant;
+
+        // SAFETY: TODO
+        //
+        // TODO: Is this the right invariance? What about for Wrap?
+        type UnwrapAlignmentVariance = Invariant;
 
         // SAFETY: Per [1], all atomic types have the same bit validity as their
         // native counterparts. The caller has promised that `$atomic` and

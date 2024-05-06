@@ -145,7 +145,7 @@ impl<T> Unalign<T> {
         let inner = Ptr::from_ref(self).transparent_wrapper_into_inner();
         match inner.bikeshed_try_into_aligned() {
             Ok(aligned) => Ok(aligned.as_ref()),
-            Err(err) => Err(err.map_src(|src| src.into_unalign().as_ref())),
+            Err(err) => Err(err.map_src(|src| src.into_transparent_wrapper().as_ref())),
         }
     }
 
@@ -163,7 +163,7 @@ impl<T> Unalign<T> {
         let inner = Ptr::from_mut(self).transparent_wrapper_into_inner();
         match inner.bikeshed_try_into_aligned() {
             Ok(aligned) => Ok(aligned.as_mut()),
-            Err(err) => Err(err.map_src(|src| src.into_unalign().as_mut())),
+            Err(err) => Err(err.map_src(|src| src.into_transparent_wrapper().as_mut())),
         }
     }
 

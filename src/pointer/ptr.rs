@@ -586,7 +586,7 @@ mod _conversions {
             T::Inner,
             (
                 I::Aliasing,
-                <T::AlignmentVariance as AlignmentVariance<I::Alignment>>::Applied,
+                <T::UnwrapAlignmentVariance as AlignmentVariance<I::Alignment>>::Applied,
                 <T::ValidityVariance as ValidityVariance<I::Validity>>::Applied,
             ),
         > {
@@ -602,7 +602,7 @@ mod _conversions {
             // satisfies the alignment invariant `I::Alignment`, `c` (of type
             // `T::Inner`) satisfies the given "applied" alignment invariant.
             let c = unsafe {
-                c.assume_alignment::<<T::AlignmentVariance as AlignmentVariance<I::Alignment>>::Applied>()
+                c.assume_alignment::<<T::UnwrapAlignmentVariance as AlignmentVariance<I::Alignment>>::Applied>()
             };
             // SAFETY: By invariant on `TransparentWrapper`, since `self`
             // satisfies the validity invariant `I::Validity`, `c` (of type
@@ -614,34 +614,23 @@ mod _conversions {
         }
     }
 
-    /// `Ptr<'a, T, (_, _, _)>` → `Ptr<'a, Unalign<T>, (_, Aligned, _)>`
     impl<'a, T, I> Ptr<'a, T, I>
     where
+        T: 'a + ?Sized,
         I: Invariants,
     {
-        /// Converts a `Ptr` an unaligned `T` into a `Ptr` to an aligned
-        /// `Unalign<T>`.
-        pub(crate) fn into_unalign(
+        pub(crate) fn into_transparent_wrapper<W: TransparentWrapper<I, Inner = T>>(
             self,
-        ) -> Ptr<'a, crate::Unalign<T>, (I::Aliasing, Aligned, I::Validity)> {
-            // SAFETY: We define `Unalign<T>` to be a `#[repr(C, packed)]` type
-            // wrapping a single `T` field. Thus, `Unalign<T>` has the same size
-            // as `T` and contains `UnsafeCell`s at the same locations as `T`.
-            // The cast is implemented in the form `|p: *mut T| p as *mut U`,
-            // where `U` is `Unalign<T>`.
-            let ptr = unsafe {
-                #[allow(clippy::as_conversions)]
-                self.cast_unsized(|p: *mut T| p as *mut crate::Unalign<T>)
-            };
-            // SAFETY: We define `Unalign<T>` to be a `#[repr(C, packed)]` type
-            // wrapping a single `T` field, thus `Unalign<T>` has exactly the
-            // same validity as `T`.
-            let ptr = unsafe { ptr.assume_validity::<I::Validity>() };
-            // SAFETY: We define `Unalign<T>` to be a `#[repr(C, packed)]` type
-            // wrapping a single `T` field, thus `Unalign<T>` is always
-            // trivially aligned.
-            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
-            ptr
+        ) -> Ptr<
+            'a,
+            W,
+            (
+                I::Aliasing,
+                <W::WrapAlignmentVariance as AlignmentVariance<I::Alignment>>::Applied,
+                <W::ValidityVariance as ValidityVariance<I::Validity>>::Applied,
+            ),
+        > {
+            todo!()
         }
     }
 }
