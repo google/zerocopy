@@ -173,9 +173,7 @@
 // `unknown_lints` is `warn` by default and we deny warnings in CI, so without
 // this attribute, any unknown lint would cause a CI failure when testing with
 // our MSRV.
-//
-// TODO(#1201): Remove `unexpected_cfgs`
-#![allow(unknown_lints, unexpected_cfgs)]
+#![allow(unknown_lints)]
 #![deny(renamed_and_removed_lints)]
 #![deny(
     anonymous_parameters,
@@ -8926,7 +8924,7 @@ mod tests {
                 vector_signed_long,
                 vector_unsigned_long
             );
-            #[cfg(all(target_arch = "aarch64", zerocopy_aarch_simd))]
+            #[cfg(all(target_arch = "aarch64", zerocopy_aarch64_simd))]
             #[rustfmt::skip]
             test_simd_arch_mod!(
                 aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,
