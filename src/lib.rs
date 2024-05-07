@@ -2218,7 +2218,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let _ = ZSTy::from_prefix_with_trailing_elements(b"UU", 0); // ⚠ Compile Error!
+    /// let _ = ZSTy::ref_from_prefix_with_trailing_elements(b"UU", 0); // ⚠ Compile Error!
     /// ```
     ///
     /// # Examples
@@ -2240,7 +2240,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode two `Pixel`s.
     /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let (pixels, rest) = Pixel::slice_from_prefix(bytes, 2).unwrap();
+    /// let (pixels, rest) = <[Pixel]>::ref_from_prefix_with_trailing_elements(bytes, 2).unwrap();
     ///
     /// assert_eq!(pixels, &[
     ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
@@ -2251,7 +2251,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn from_prefix_with_trailing_elements(
+    fn ref_from_prefix_with_trailing_elements(
         bytes: &[u8],
         count: usize,
     ) -> Result<(&Self, &[u8]), CastError<&[u8], Self>>
@@ -2274,7 +2274,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + Immutable,
     {
-        <[Self]>::from_prefix_with_trailing_elements(bytes, count).ok()
+        <[Self]>::ref_from_prefix_with_trailing_elements(bytes, count).ok()
     }
 
     /// Interprets the suffix of the given `bytes` as a `&[Self]` with length
@@ -2304,7 +2304,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let _ = ZSTy::from_suffix_with_trailing_elements(b"UU", 0); // ⚠ Compile Error!
+    /// let _ = ZSTy::ref_from_suffix_with_trailing_elements(b"UU", 0); // ⚠ Compile Error!
     /// ```
     ///
     /// # Examples
@@ -2326,7 +2326,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode two `Pixel`s.
     /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let (rest, pixels) = Pixel::slice_from_suffix(bytes, 2).unwrap();
+    /// let (rest, pixels) = <[Pixel]>::ref_from_suffix_with_trailing_elements(bytes, 2).unwrap();
     ///
     /// assert_eq!(rest, &[0, 1]);
     ///
@@ -2337,7 +2337,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn from_suffix_with_trailing_elements(
+    fn ref_from_suffix_with_trailing_elements(
         bytes: &[u8],
         count: usize,
     ) -> Result<(&[u8], &Self), CastError<&[u8], Self>>
@@ -2360,7 +2360,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + Immutable,
     {
-        <[Self]>::from_suffix_with_trailing_elements(bytes, count).ok()
+        <[Self]>::ref_from_suffix_with_trailing_elements(bytes, count).ok()
     }
 
     #[deprecated(since = "0.8.0", note = "`FromBytes::mut_from` now supports slices")]
@@ -2459,11 +2459,11 @@ pub unsafe trait FromBytes: FromZeros {
     #[doc(hidden)]
     #[must_use = "has no side effects"]
     #[inline]
-    fn mut_slice_from_prefix(bytes: &[u8], count: usize) -> Option<(&[Self], &[u8])>
+    fn mut_slice_from_prefix(bytes: &mut [u8], count: usize) -> Option<(&mut [Self], &mut [u8])>
     where
-        Self: Sized + Immutable,
+        Self: Sized + IntoBytes + Immutable,
     {
-        <[Self]>::from_prefix_with_trailing_elements(bytes, count).ok()
+        <[Self]>::mut_from_prefix_with_trailing_elements(bytes, count).ok()
     }
 
     /// Interprets the suffix of the given `bytes` as a `&mut [Self]` with length
@@ -2517,7 +2517,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode two `Pixel`s.
     /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let (rest, pixels) = Pixel::mut_slice_from_suffix(bytes, 2).unwrap();
+    /// let (rest, pixels) = <[Pixel]>::mut_from_suffix_with_trailing_elements(bytes, 2).unwrap();
     ///
     /// assert_eq!(rest, &[0, 1]);
     ///
