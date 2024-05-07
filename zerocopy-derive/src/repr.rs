@@ -16,20 +16,20 @@ use {
     syn::{Attribute, DeriveInput, Error, LitInt, Meta},
 };
 
-pub struct Config<Repr: KindRepr> {
+pub(crate) struct Config<Repr: KindRepr> {
     // A human-readable message describing what combinations of representations
     // are allowed. This will be printed to the user if they use an invalid
     // combination.
-    pub allowed_combinations_message: &'static str,
+    pub(crate) allowed_combinations_message: &'static str,
     // Whether we're checking as part of `derive(Unaligned)`. If not, we can
     // ignore `repr(align)`, which makes the code (and the list of valid repr
     // combinations we have to enumerate) somewhat simpler. If we're checking
     // for `Unaligned`, then in addition to checking against illegal
     // combinations, we also check to see if there exists a `repr(align(N > 1))`
     // attribute.
-    pub derive_unaligned: bool,
+    pub(crate) derive_unaligned: bool,
     // Combinations which are valid for the trait.
-    pub allowed_combinations: &'static [&'static [Repr]],
+    pub(crate) allowed_combinations: &'static [&'static [Repr]],
     // Combinations which are not valid for the trait, but are legal according
     // to Rust. Any combination not in this or `allowed_combinations` is either
     // illegal according to Rust or the behavior is unspecified. If the behavior
@@ -37,7 +37,7 @@ pub struct Config<Repr: KindRepr> {
     // specification might not play nicely with our requirements. Thus, we
     // reject combinations with unspecified behavior in addition to illegal
     // combinations.
-    pub disallowed_but_legal_combinations: &'static [&'static [Repr]],
+    pub(crate) disallowed_but_legal_combinations: &'static [&'static [Repr]],
 }
 
 impl<R: KindRepr> Config<R> {
@@ -48,7 +48,7 @@ impl<R: KindRepr> Config<R> {
     /// conform to the requirements of `self`, and returns them. Regardless of
     /// whether `align` attributes are considered during validation, they are
     /// stripped out of the returned value since no callers care about them.
-    pub fn validate_reprs(&self, input: &DeriveInput) -> Result<Vec<R>, Vec<Error>> {
+    pub(crate) fn validate_reprs(&self, input: &DeriveInput) -> Result<Vec<R>, Vec<Error>> {
         let mut metas_reprs = reprs(&input.attrs)?;
         metas_reprs.sort_by(|a: &(_, R), b| a.1.partial_cmp(&b.1).unwrap());
 
@@ -96,7 +96,7 @@ impl<R: KindRepr> Config<R> {
 }
 
 // The type of valid reprs for a particular kind (enum, struct, union).
-pub trait KindRepr: 'static + Sized + Ord {
+pub(crate) trait KindRepr: 'static + Sized + Ord {
     fn is_align(&self) -> bool;
     fn is_align_gt_one(&self) -> bool;
     fn parse(meta: &Meta) -> syn::Result<Self>;
@@ -108,7 +108,7 @@ pub trait KindRepr: 'static + Sized + Ord {
 macro_rules! define_kind_specific_repr {
     ($type_name:expr, $repr_name:ident, [ $($repr_variant:ident),* ] , [ $($repr_variant_aligned:ident),* ]) => {
         #[derive(Copy, Clone, Debug, Eq, PartialEq)]
-        pub enum $repr_name {
+        pub(crate) enum $repr_name {
             $($repr_variant,)*
             $($repr_variant_aligned(u64),)*
         }
@@ -173,7 +173,7 @@ define_kind_specific_repr!(
 
 // All representations known to Rust.
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
-pub enum Repr {
+pub(crate) enum Repr {
     U8,
     U16,
     U32,
