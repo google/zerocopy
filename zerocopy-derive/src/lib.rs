@@ -395,11 +395,13 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
                 mut candidate: ::zerocopy::Maybe<Self, A>
             ) -> bool {
                 true #(&& {
-                    // SAFETY: `project` is a field projection of `candidate`,
-                    // and `Self` is a struct type. The candidate will have
-                    // `UnsafeCell`s at exactly the same ranges as its
-                    // projection, because the projection is a field of the
-                    // candidate struct.
+                    // SAFETY:
+                    // - `project` is a field projection, and so it addresses a
+                    //   subset of the bytes addressed by `slf`
+                    // - ..., and so it preserves provenance
+                    // - ..., and `*slf` is a struct, so `UnsafeCell`s exist at
+                    //   the same byte ranges in the returned pointer's referent
+                    //   as they do in `*slf`
                     let field_candidate = unsafe {
                         let project = |slf: *mut Self|
                             ::zerocopy::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
@@ -444,11 +446,13 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
                 mut candidate: ::zerocopy::Maybe<Self, A>
             ) -> bool {
                 false #(|| {
-                    // SAFETY: `project` is a field projection of `candidate`,
-                    // and `Self` is a union type. The candidate and projection
-                    // agree exactly on where their `UnsafeCell` ranges are,
-                    // because `Self: Immutable` is enforced by
-                    // `self_type_trait_bounds`.
+                    // SAFETY:
+                    // - `project` is a field projection, and so it addresses a
+                    //   subset of the bytes addressed by `slf`
+                    // - ..., and so it preserves provenance
+                    // - Since `Self: Immutable` is enforced by
+                    //   `self_type_trait_bounds`, neither `*slf` nor the
+                    //   returned pointer's referent contain any `UnsafeCell`s
                     let field_candidate = unsafe {
                         let project = |slf: *mut Self|
                             ::zerocopy::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
@@ -514,9 +518,11 @@ fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2:
         quote!(
             use ::zerocopy::macro_util::core_reexport;
             // SAFETY:
-            // - `cast` is implemented as required.
-            // - By definition, `*mut Self` and `*mut [u8; size_of::<Self>()]`
-            //   are types of the same size.
+            // - The closure is a pointer cast, and `Self` and `[u8;
+            //   size_of::<Self>()]` have the same size, so the returned pointer
+            //   addresses the same bytes as `p` subset of the bytes addressed
+            //   by `slf`
+            // - ..., and so it preserves provenance
             // - Since we validate that this type is a field-less enum, it
             //   cannot contain any `UnsafeCell`s. Neither does `[u8; N]`.
             let discriminant = unsafe { candidate.cast_unsized(|p: *mut Self| p as *mut [core_reexport::primitive::u8; core_reexport::mem::size_of::<Self>()]) };

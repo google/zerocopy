@@ -142,10 +142,11 @@ macro_rules! unsafe_impl {
         #[inline]
         fn is_bit_valid<AA: invariant::Aliasing + invariant::AtLeast<invariant::Shared>>(candidate: Maybe<'_, Self, AA>) -> bool {
             // SAFETY:
-            // - The argument to `cast_unsized` is `|p| p as *mut _` as required
-            //   by that method's safety precondition.
-            // - The caller has promised that the cast results in an object of
-            //   equal or lesser size.
+            // - The cast preserves address. The caller has promised that the
+            //   cast results in an object of equal or lesser size, and so the
+            //   cast returns a pointer which references a subset of the bytes
+            //   of `p`.
+            // - The cast preserves provenance.
             // - The caller has promised that the destination type has
             //   `UnsafeCell`s at the same byte ranges as the source type.
             #[allow(clippy::as_conversions)]
@@ -164,10 +165,11 @@ macro_rules! unsafe_impl {
         #[inline]
         fn is_bit_valid<AA: invariant::Aliasing + invariant::AtLeast<invariant::Shared>>(candidate: Maybe<'_, Self, AA>) -> bool {
             // SAFETY:
-            // - The argument to `cast_unsized` is `|p| p as *mut _` as required
-            //   by that method's safety precondition.
-            // - The caller has promised that the cast results in an object of
-            //   equal or lesser size.
+            // - The cast preserves address. The caller has promised that the
+            //   cast results in an object of equal or lesser size, and so the
+            //   cast returns a pointer which references a subset of the bytes
+            //   of `p`.
+            // - The cast preserves provenance.
             // - The caller has promised that the destination type has
             //   `UnsafeCell`s at the same byte ranges as the source type.
             #[allow(clippy::as_conversions)]

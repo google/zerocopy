@@ -39,6 +39,12 @@ use super::*;
 /// [`try_deref_mut`]: Unalign::try_deref_mut
 /// [`deref_unchecked`]: Unalign::deref_unchecked
 /// [`deref_mut_unchecked`]: Unalign::deref_mut_unchecked
+///
+/// # Safety
+///
+/// `Unalign<T>` is guaranteed to have the same size and bit validity as `T`,
+/// and to have [`UnsafeCell`]s covering the same byte ranges as `T`.
+/// `Unalign<T>` is guaranteed to have alignment 1.
 // NOTE: This type is sound to use with types that need to be dropped. The
 // reason is that the compiler-generated drop code automatically moves all
 // values to aligned memory slots before dropping them in-place. This is not
@@ -63,8 +69,8 @@ impl_known_layout!(T => Unalign<T>);
 
 safety_comment! {
     /// SAFETY:
-    /// - `Unalign<T>` is `repr(packed)`, so it is unaligned regardless of the
-    ///   alignment of `T`, and so we don't require that `T: Unaligned`
+    /// - `Unalign<T>` promises to have alignment 1, and so we don't require
+    ///   that `T: Unaligned`.
     /// - `Unalign<T>` has the same bit validity as `T`, and so it is
     ///   `FromZeros`, `FromBytes`, or `IntoBytes` exactly when `T` is as well.
     /// - `Immutable`: `Unalign<T>` has the same fields as `T`, so it contains

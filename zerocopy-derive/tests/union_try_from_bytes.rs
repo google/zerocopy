@@ -69,11 +69,10 @@ fn two_bad() {
     let candidate = unsafe { candidate.assume_initialized() };
 
     // SAFETY:
-    // - The cast `cast(p)` is implemented exactly as follows: `|p: *mut T| p as
-    //   *mut U`.
-    // - The size of the object referenced by the resulting pointer is equal to
-    //   the size of the object referenced by `self`.
-    // - `Two` does not contain any `UnsafeCell`s.
+    // - The cast preserves address and size. As a result, the cast will address
+    //   the same bytes as `c`.
+    // - The cast preserves provenance.
+    // - Neither the input nor output types contain any `UnsafeCell`s.
     let candidate = unsafe { candidate.cast_unsized(|p| p as *mut Two) };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
@@ -99,11 +98,10 @@ fn bool_and_zst() {
     let candidate = unsafe { candidate.assume_initialized() };
 
     // SAFETY:
-    // - The cast `cast(p)` is implemented exactly as follows: `|p: *mut T| p as
-    //   *mut U`.
-    // - The size of the object referenced by the resulting pointer is equal to
-    //   the size of the object referenced by `self`.
-    // - `BoolAndZst` does not contain any `UnsafeCell`s.
+    // - The cast preserves address and size. As a result, the cast will address
+    //   the same bytes as `c`.
+    // - The cast preserves provenance.
+    // - Neither the input nor output types contain any `UnsafeCell`s.
     let candidate = unsafe { candidate.cast_unsized(|p| p as *mut BoolAndZst) };
 
     // SAFETY: `candidate`'s referent is fully initialized.
