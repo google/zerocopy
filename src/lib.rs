@@ -320,7 +320,7 @@ use core::{
     },
 };
 
-use crate::pointer::invariant;
+use crate::pointer::{invariant, Pointer};
 
 #[cfg(any(feature = "alloc", test))]
 extern crate alloc;
@@ -1912,11 +1912,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: KnownLayout + Immutable,
     {
-        util::assert_dst_is_not_zst::<Self>();
-        let (slf, suffix) = Ptr::from_ref(bytes)
-            .try_cast_into(CastType::Prefix)
-            .map_err(|err| err.map_src(|s| s.as_ref()))?;
-        Ok((slf.bikeshed_recall_valid().as_ref(), suffix.as_ref()))
+        ref_mut_from_prefix_suffix(bytes, CastType::Prefix)
     }
 
     /// Interprets the suffix of the given `bytes` as a `&Self` without copying.
@@ -1972,11 +1968,8 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Immutable + KnownLayout,
     {
-        util::assert_dst_is_not_zst::<Self>();
-        let (slf, prefix) = Ptr::from_ref(bytes)
-            .try_cast_into(CastType::Suffix)
-            .map_err(|err| err.map_src(|s| s.as_ref()))?;
-        Ok((prefix.as_ref(), slf.bikeshed_recall_valid().as_ref()))
+        let (slf, prefix) = ref_mut_from_prefix_suffix(bytes, CastType::Suffix)?;
+        Ok((prefix, slf))
     }
 
     /// Interprets the given `bytes` as a `&mut Self` without copying.
@@ -2115,11 +2108,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: IntoBytes + KnownLayout + Immutable,
     {
-        util::assert_dst_is_not_zst::<Self>();
-        let (slf, suffix) = Ptr::from_mut(bytes)
-            .try_cast_into(CastType::Prefix)
-            .map_err(|err| err.map_src(|s| s.as_mut()))?;
-        Ok((slf.bikeshed_recall_valid().as_mut(), suffix.as_mut()))
+        ref_mut_from_prefix_suffix(bytes, CastType::Suffix)
     }
 
     /// Interprets the suffix of the given `bytes` as a `&mut Self` without
@@ -2184,11 +2173,8 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: IntoBytes + KnownLayout + Immutable,
     {
-        util::assert_dst_is_not_zst::<Self>();
-        let (slf, prefix) = Ptr::from_mut(bytes)
-            .try_cast_into(CastType::Suffix)
-            .map_err(|err| err.map_src(|s| s.as_mut()))?;
-        Ok((prefix.as_mut(), slf.bikeshed_recall_valid().as_mut()))
+        let (slf, prefix) = ref_mut_from_prefix_suffix(bytes, CastType::Suffix)?;
+        Ok((prefix, slf))
     }
 
     /// Interprets the prefix of the given `bytes` as a `&[Self]` with length
@@ -2695,6 +2681,21 @@ pub unsafe trait FromBytes: FromZeros {
     {
         <[Self]>::ref_from(bytes).ok()
     }
+}
+
+fn ref_mut_from_prefix_suffix<
+    'a,
+    T: ?Sized + FromBytes + KnownLayout + Immutable,
+    P: Pointer<'a, [u8]>,
+>(
+    bytes: P,
+    cast_type: CastType,
+) -> Result<(P::Pointer<T>, P), CastError<P, T>> {
+    util::assert_dst_is_not_zst::<T>();
+    let (slf, suffix) = Pointer::into_ptr(bytes)
+        .try_cast_into(cast_type)
+        .map_err(|err| err.map_src(|s| Pointer::from_ptr(s)))?;
+    Ok((Pointer::from_ptr(slf.bikeshed_recall_valid()), Pointer::from_ptr(suffix)))
 }
 
 /// Analyzes whether a type is [`IntoBytes`].
@@ -5196,6 +5197,27 @@ where
 
 impl<'a, B, T> Ref<B, T>
 where
+    B: 'a,
+    T: 'a + FromBytes + KnownLayout + Immutable + ?Sized,
+{
+    fn into_ref_mut<P: Pointer<'a, T>>(self) -> P
+    where
+        B: Into<P::Pointer<[u8]>>,
+    {
+        // Presumably unreachable, since we've guarded each constructor of `Ref`.
+        util::assert_dst_is_not_zst::<T>();
+        // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
+        // valid for `T`, and so this `unwrap` will not panic.
+        let ptr = Pointer::into_ptr(self.0.into())
+            .try_cast_into_no_leftover::<T>()
+            .expect("zerocopy internal error: into_ref should be infallible");
+        let ptr = ptr.bikeshed_recall_valid();
+        Pointer::from_ptr(ptr)
+    }
+}
+
+impl<'a, B, T> Ref<B, T>
+where
     B: 'a + IntoByteSlice<'a>,
     T: FromBytes + KnownLayout + Immutable + ?Sized,
 {
@@ -5205,15 +5227,7 @@ where
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn into_ref(self) -> &'a T {
-        // Presumably unreachable, since we've guarded each constructor of `Ref`.
-        util::assert_dst_is_not_zst::<T>();
-        // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
-        // valid for `T`, and so this `unwrap` will not panic.
-        let ptr = Ptr::from_ref(self.0.into())
-            .try_cast_into_no_leftover::<T>()
-            .expect("zerocopy internal error: into_ref should be infallible");
-        let ptr = ptr.bikeshed_recall_valid();
-        ptr.as_ref()
+        self.into_ref_mut()
     }
 }
 
@@ -5228,15 +5242,7 @@ where
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn into_mut(self) -> &'a mut T {
-        // Presumably unreachable, since we've guarded each constructor of `Ref`.
-        util::assert_dst_is_not_zst::<T>();
-        // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
-        // valid for `T`, and so this `unwrap` will not panic.
-        let ptr = Ptr::from_mut(self.0.into())
-            .try_cast_into_no_leftover::<T>()
-            .expect("zerocopy internal error: into_ref should be infallible");
-        let ptr = ptr.bikeshed_recall_valid();
-        ptr.as_mut()
+        self.into_ref_mut()
     }
 }
 
@@ -5302,6 +5308,26 @@ where
     }
 }
 
+impl<B, T> Ref<B, T>
+where
+    B: ByteSlice,
+    T: FromBytes + KnownLayout + Immutable + ?Sized,
+{
+    /// Dereferences a `Ref` mutably or immutably.
+    ///
+    /// # Panics
+    ///
+    /// Panics if either `buf`'s size or aignment are not valid for `T`.
+    fn deref_inner<'a, P: Pointer<'a, [u8]>>(buf: P) -> P::Pointer<T> {
+        util::assert_dst_is_not_zst::<T>();
+        let ptr = Pointer::into_ptr(buf)
+            .try_cast_into_no_leftover::<T>()
+            .expect("zerocopy internal error: dereferencing a `Ref` should be infallible");
+        let ptr = ptr.bikeshed_recall_valid();
+        Pointer::from_ptr(ptr)
+    }
+}
+
 impl<B, T> Deref for Ref<B, T>
 where
     B: ByteSlice,
@@ -5310,14 +5336,9 @@ where
     type Target = T;
     #[inline]
     fn deref(&self) -> &T {
-        util::assert_dst_is_not_zst::<T>();
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
-        // valid for `T`, and so this `unwrap` will not panic.
-        let ptr = Ptr::from_ref(self.0.deref())
-            .try_cast_into_no_leftover::<T>()
-            .expect("zerocopy internal error: Deref::deref should be infallible");
-        let ptr = ptr.bikeshed_recall_valid();
-        ptr.as_ref()
+        // valid for `T`, so this will not panic.
+        Self::deref_inner(self.0.deref())
     }
 }
 
@@ -5328,14 +5349,9 @@ where
 {
     #[inline]
     fn deref_mut(&mut self) -> &mut T {
-        util::assert_dst_is_not_zst::<T>();
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
-        // valid for `T`, and so this `unwrap` will not panic.
-        let ptr = Ptr::from_mut(self.0.deref_mut())
-            .try_cast_into_no_leftover::<T>()
-            .expect("zerocopy internal error: DerefMut::deref_mut should be infallible");
-        let ptr = ptr.bikeshed_recall_valid();
-        ptr.as_mut()
+        // valid for `T`, so this will not panic.
+        Self::deref_inner(self.0.deref_mut())
     }
 }
 
