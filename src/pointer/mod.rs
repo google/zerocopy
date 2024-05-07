@@ -12,6 +12,8 @@ mod ptr;
 
 pub use ptr::{invariant, Ptr};
 
+use core::ptr::NonNull;
+
 use crate::Unaligned;
 
 /// A shorthand for a maybe-valid, maybe-aligned reference. Used as the argument
@@ -71,4 +73,104 @@ where
     I::Aliasing: invariant::AtLeast<invariant::Shared>,
 {
     ptr.as_bytes().as_ref().iter().all(|&byte| byte == 0)
+}
+
+/// TODO
+///
+/// # Safety
+///
+/// TODO
+///
+/// TODO: All methods' safety post-conditions must be upheld.
+pub(crate) unsafe trait Pointer<'a, T: ?Sized> {
+    /// TODO
+    type Pointer<U: 'a + ?Sized>: Pointer<'a, U, Aliasing = Self::Aliasing>;
+
+    /// TODO
+    type Aliasing: invariant::Aliasing;
+
+    /// TODO
+    ///
+    /// # Safety
+    ///
+    /// It is guaranteed to be sound to call `Ptr::new(Pointer::into_raw(...))`,
+    /// producing a `Ptr<'a, T, (Self::Aliasing, invariant::Aligned,
+    /// invariant::Valid)>`. In particular, all of the safety preconditions of
+    /// `Ptr::new` are satisfied. Given `ptr = Pointer::into_raw(...)`:
+    /// 0. `ptr` is derived from some valid Rust allocation, `A`.
+    /// 1. `ptr` has valid provenance for `A`.
+    /// 2. `ptr` addresses a byte range which is entirely contained in `A`.
+    /// 3. `ptr` addresses a byte range whose length fits in an `isize`.
+    /// 4. `ptr` addresses a byte range which does not wrap around the address
+    ///    space.
+    /// 5. `A` is guaranteed to live for at least `'a`.
+    /// 6. `ptr` conforms to the aliasing invariant of `Self::Aliasing`.
+    /// 7. `ptr` is validly-aligned for `T`.
+    /// 8. `ptr`'s referent is a bit-valid `T`.
+    /// 9. During the lifetime 'a, no code will load or store this memory region
+    ///    treating `UnsafeCell`s as existing at different ranges than they
+    ///    exist in `T`.
+    /// 10. During the lifetime 'a, no reference will exist to this memory which
+    ///     treats `UnsafeCell`s as existing at different ranges than they exist
+    ///     in `T`.
+    fn into_raw(s: Self) -> NonNull<T>;
+
+    fn into_ptr(ptr: Self) -> Ptr<'a, T, (Self::Aliasing, invariant::Aligned, invariant::Valid)>
+    where
+        Self: Sized,
+    {
+        let ptr = Self::into_raw(ptr);
+        // SAFETY: `Self::into_raw` promises to uphold the safety preconditions
+        // of `Ptr::new`.
+        unsafe { Ptr::new(ptr) }
+    }
+
+    /// TODO
+    fn from_ptr<I>(ptr: Ptr<'a, T, I>) -> Self
+    where
+        I: invariant::Invariants<
+            Aliasing = Self::Aliasing,
+            Alignment = invariant::Aligned,
+            Validity = invariant::Valid,
+        >;
+}
+
+unsafe impl<'a, T: ?Sized> Pointer<'a, T> for &'a T {
+    type Pointer<U: 'a + ?Sized> = &'a U;
+    type Aliasing = invariant::Shared;
+
+    fn into_raw(ptr: Self) -> NonNull<T> {
+        NonNull::from(ptr)
+    }
+
+    fn from_ptr<I>(ptr: Ptr<'a, T, I>) -> Self
+    where
+        I: invariant::Invariants<
+            Aliasing = invariant::Shared,
+            Alignment = invariant::Aligned,
+            Validity = invariant::Valid,
+        >,
+    {
+        ptr.as_ref()
+    }
+}
+
+unsafe impl<'a, T: ?Sized> Pointer<'a, T> for &'a mut T {
+    type Pointer<U: 'a + ?Sized> = &'a mut U;
+    type Aliasing = invariant::Exclusive;
+
+    fn into_raw(ptr: Self) -> NonNull<T> {
+        NonNull::from(ptr)
+    }
+
+    fn from_ptr<I>(ptr: Ptr<'a, T, I>) -> Self
+    where
+        I: invariant::Invariants<
+            Aliasing = invariant::Exclusive,
+            Alignment = invariant::Aligned,
+            Validity = invariant::Valid,
+        >,
+    {
+        ptr.as_mut()
+    }
 }

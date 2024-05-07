@@ -106,7 +106,7 @@ mod def {
         /// 10. During the lifetime 'a, no reference will exist to this memory
         ///     which treats `UnsafeCell`s as existing at different ranges than
         ///     they exist in `T`.
-        pub(super) unsafe fn new(ptr: NonNull<T>) -> Ptr<'a, T, I> {
+        pub(crate) unsafe fn new(ptr: NonNull<T>) -> Ptr<'a, T, I> {
             // SAFETY: The caller has promised to satisfy all safety invariants
             // of `Ptr`.
             Self { ptr, _invariants: PhantomData }
@@ -355,7 +355,10 @@ mod _external {
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
     use super::*;
-    use crate::util::{AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance};
+    use crate::{
+        pointer::Pointer,
+        util::{AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance},
+    };
 
     /// `&'a T` → `Ptr<'a, T>`
     impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
@@ -366,31 +369,7 @@ mod _conversions {
         #[doc(hidden)]
         #[inline]
         pub fn from_ref(ptr: &'a T) -> Self {
-            let ptr = NonNull::from(ptr);
-            // SAFETY:
-            // 0. `ptr`, by invariant on `&'a T`, is derived from some valid
-            //    Rust allocation, `A`.
-            // 1. `ptr`, by invariant on `&'a T`, has valid provenance for `A`.
-            // 2. `ptr`, by invariant on `&'a T`, addresses a byte range which
-            //    is entirely contained in `A`.
-            // 3. `ptr`, by invariant on `&'a T`, addresses a byte range whose
-            //    length fits in an `isize`.
-            // 4. `ptr`, by invariant on `&'a T`, addresses a byte range which
-            //     does not wrap around the address space.
-            // 5. `A`, by invariant on `&'a T`, is guaranteed to live for at
-            //    least `'a`.
-            // 6. `T: 'a`.
-            // 7. `ptr`, by invariant on `&'a T`, conforms to the aliasing
-            //    invariant of `Shared`.
-            // 8. `ptr`, by invariant on `&'a T`, conforms to the alignment
-            //    invariant of `Aligned`.
-            // 9. `ptr`, by invariant on `&'a T`, conforms to the validity
-            //    invariant of `Valid`.
-            // 10. The referents of `Ptr<T>` and `&T` have `UnsafeCell`s at
-            //    identical ranges. Both `Ptr<T>` and `&T` prevent loads and
-            //    stores which treat other byte ranges as having `UnsafeCell`s.
-            // 11. See 10.
-            unsafe { Self::new(ptr) }
+            Pointer::into_ptr(ptr)
         }
     }
 
@@ -402,27 +381,7 @@ mod _conversions {
         /// Constructs a `Ptr` from an exclusive reference.
         #[inline]
         pub(crate) fn from_mut(ptr: &'a mut T) -> Self {
-            let ptr = NonNull::from(ptr);
-            // SAFETY:
-            // 0. `ptr`, by invariant on `&'a mut T`, is derived from some valid
-            //    Rust allocation, `A`.
-            // 1. `ptr`, by invariant on `&'a mut T`, has valid provenance for
-            //    `A`.
-            // 2. `ptr`, by invariant on `&'a mut T`, addresses a byte range
-            //    which is entirely contained in `A`.
-            // 3. `ptr`, by invariant on `&'a mut T`, addresses a byte range
-            //    whose length fits in an `isize`.
-            // 4. `ptr`, by invariant on `&'a mut T`, addresses a byte range
-            //     which does not wrap around the address space.
-            // 5. `A`, by invariant on `&'a mut T`, is guaranteed to live for at
-            //    least `'a`.
-            // 6. `ptr`, by invariant on `&'a mut T`, conforms to the aliasing
-            //    invariant of `Exclusive`.
-            // 7. `ptr`, by invariant on `&'a mut T`, conforms to the alignment
-            //    invariant of `Aligned`.
-            // 8. `ptr`, by invariant on `&'a mut T`, conforms to the validity
-            //    invariant of `Valid`.
-            unsafe { Self::new(ptr) }
+            Pointer::into_ptr(ptr)
         }
     }
 
@@ -534,9 +493,10 @@ mod _conversions {
     }
 
     /// `Ptr<'a, T>` → `&'a mut T`
-    impl<'a, T> Ptr<'a, T, (Exclusive, Aligned, Valid)>
+    impl<'a, T, I> Ptr<'a, T, I>
     where
         T: 'a + ?Sized,
+        I: Invariants<Aliasing = Exclusive, Alignment = Aligned, Validity = Valid>,
     {
         /// Converts `self` to a mutable reference.
         #[allow(clippy::wrong_self_convention)]
