@@ -10,7 +10,7 @@ use proc_macro2::TokenStream;
 use quote::ToTokens;
 use syn::{Data, DataEnum, DataStruct, DataUnion, Field, Index, Type};
 
-pub trait DataExt {
+pub(crate) trait DataExt {
     /// Extracts the names and types of all fields. For enums, extracts the names
     /// and types of fields from each variant. For tuple structs, the names are
     /// the indices used to index into the struct (ie, `0`, `1`, etc).
@@ -68,7 +68,7 @@ fn map_fields<'a>(
         .collect()
 }
 
-pub trait EnumExt {
+pub(crate) trait EnumExt {
     fn is_fieldless(&self) -> bool;
 }
 
