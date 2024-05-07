@@ -344,7 +344,7 @@ pub use crate::layout::*;
 //
 // See the documentation on `util::polyfills` for more information.
 #[allow(unused_imports)]
-use crate::util::polyfills::{self, NonNullExt as _};
+use crate::util::polyfills::{self, NonNullExt as _, NumExt as _};
 
 #[rustversion::nightly]
 #[cfg(all(test, not(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)))]
@@ -1913,7 +1913,10 @@ pub unsafe trait FromBytes: FromZeros {
         Self: KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        Ref::<&[u8], Self>::new_from_prefix(bytes).map(|(r, s)| (r.into_ref(), s))
+        let (slf, suffix) = Ptr::from_ref(bytes)
+            .try_cast_into(CastType::Prefix)
+            .map_err(|err| err.map_src(|s| s.as_ref()))?;
+        Ok((slf.bikeshed_recall_valid().as_ref(), suffix.as_ref()))
     }
 
     /// Interprets the suffix of the given `bytes` as a `&Self` without copying.
@@ -1970,7 +1973,10 @@ pub unsafe trait FromBytes: FromZeros {
         Self: Immutable + KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
-        Ref::<&[u8], Self>::new_from_suffix(bytes).map(|(p, r)| (p, r.into_ref()))
+        let (slf, prefix) = Ptr::from_ref(bytes)
+            .try_cast_into(CastType::Suffix)
+            .map_err(|err| err.map_src(|s| s.as_ref()))?;
+        Ok((prefix.as_ref(), slf.bikeshed_recall_valid().as_ref()))
     }
 
     /// Interprets the given `bytes` as a `&mut Self` without copying.
@@ -2110,7 +2116,10 @@ pub unsafe trait FromBytes: FromZeros {
         Self: IntoBytes + KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        Ref::<&mut [u8], Self>::new_from_prefix(bytes).map(|(r, s)| (r.into_mut(), s))
+        let (slf, suffix) = Ptr::from_mut(bytes)
+            .try_cast_into(CastType::Prefix)
+            .map_err(|err| err.map_src(|s| s.as_mut()))?;
+        Ok((slf.bikeshed_recall_valid().as_mut(), suffix.as_mut()))
     }
 
     /// Interprets the suffix of the given `bytes` as a `&mut Self` without
@@ -2176,7 +2185,10 @@ pub unsafe trait FromBytes: FromZeros {
         Self: IntoBytes + KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        Ref::<&mut [u8], Self>::new_from_suffix(bytes).map(|(p, r)| (p, r.into_mut()))
+        let (slf, prefix) = Ptr::from_mut(bytes)
+            .try_cast_into(CastType::Suffix)
+            .map_err(|err| err.map_src(|s| s.as_mut()))?;
+        Ok((prefix.as_mut(), slf.bikeshed_recall_valid().as_mut()))
     }
 
     /// Interprets the prefix of the given `bytes` as a `&[Self]` with length
@@ -4892,13 +4904,20 @@ where
     #[inline]
     pub fn new_from_prefix(bytes: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        let split_at = match Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix) {
-            Ok((_, split_at)) => split_at,
+        let remainder = match Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix) {
+            Ok((_, remainder)) => remainder,
             Err(e) => {
                 return Err(e.with_src(()).with_src(bytes));
             }
         };
 
+        // SAFETY: `remainder` is constructed as a subset of `bytes`, and so it
+        // cannot have a larger size than `bytes`. Both of their `len` methods
+        // measure bytes (`bytes` deref's to `[u8]`, and `remainder` is a
+        // `Ptr<[u8]>`), so `bytes.len() >= remainder.len()`. Thus, this cannot
+        // underflow.
+        #[allow(unstable_name_collisions, clippy::incompatible_msrv)]
+        let split_at = unsafe { bytes.len().unchecked_sub(remainder.len()) };
         let (bytes, suffix) =
             try_split_at(bytes, split_at).map_err(|b| SizeError::new(b).into())?;
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
@@ -4941,14 +4960,15 @@ where
     #[inline]
     pub fn new_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        let split_at = match Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix) {
-            Ok((_, split_at)) => split_at,
+        let remainder = match Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix) {
+            Ok((_, remainder)) => remainder,
             Err(e) => {
                 let e = e.with_src(());
                 return Err(e.with_src(bytes));
             }
         };
 
+        let split_at = remainder.len();
         let (prefix, bytes) =
             try_split_at(bytes, split_at).map_err(|b| SizeError::new(b).into())?;
         // INVARIANTS: `try_cast_into` validates size and alignment, and returns
@@ -5553,14 +5573,12 @@ unsafe impl<'a> SplitByteSlice for &'a mut [u8] {
 
         let l_len = mid;
 
-        let r_len = match self.len().checked_sub(mid) {
-            Some(r_len) => r_len,
-            None => {
-                // SAFETY: By contract on caller, `mid` is not greater than
-                // `self.len()`.
-                unsafe { core::hint::unreachable_unchecked() }
-            }
-        };
+        // SAFETY: By contract on caller, `mid` is not greater than
+        // `self.len()`.
+        //
+        // TODO(#67): Remove this allow. See NumExt for more details.
+        #[allow(unstable_name_collisions, clippy::incompatible_msrv)]
+        let r_len = unsafe { self.len().unchecked_sub(mid) };
 
         // SAFETY: These invocations of `from_raw_parts_mut` satisfy its
         // documented safety preconditions [1]:

@@ -646,6 +646,37 @@ pub(crate) mod polyfills {
             unsafe { NonNull::new_unchecked(ptr) }
         }
     }
+
+    // A polyfill for `Self::unchecked_sub` that we can use until methods like
+    // `usize::unchecked_sub` is stabilized.
+    //
+    // The `#[allow(unused)]` is necessary because, on sufficiently recent
+    // toolchain versions, `ptr.slice_from_raw_parts()` resolves to the inherent
+    // method rather than to this trait, and so this trait is considered unused.
+    //
+    // TODO(#67): Once our MSRV is high enough, remove this.
+    #[allow(unused)]
+    pub(crate) trait NumExt {
+        /// Subtract without checking for underflow.
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that the subtraction will not underflow.
+        unsafe fn unchecked_sub(self, rhs: Self) -> Self;
+    }
+
+    impl NumExt for usize {
+        unsafe fn unchecked_sub(self, rhs: usize) -> usize {
+            match self.checked_sub(rhs) {
+                Some(x) => x,
+                None => {
+                    // SAFETY: The caller promises that the subtraction will not
+                    // underflow.
+                    unsafe { core::hint::unreachable_unchecked() }
+                }
+            }
+        }
+    }
 }
 
 #[cfg(test)]
