@@ -334,7 +334,7 @@ macro_rules! impl_for_transparent_wrapper {
         // that `W` has the same alignment as `W::Inner = T`. `T: Unaligned`
         // implies `T`'s alignment is 1, and so `W`'s alignment is 1. Thus, `W`
         // can soundly implement `Unaligned`.
-        fn is_transparent_wrapper<I: Invariants, T: ?Sized, W: TransparentWrapper<I, Inner=T, AlignmentVariance=Covariant> + ?Sized>() {}
+        fn is_transparent_wrapper<I: Invariants, T: ?Sized, W: TransparentWrapper<I, Inner=T, WrapAlignmentVariance=Covariant> + ?Sized>() {}
     };
     (@is_transparent_wrapper TryFromBytes) => {
         // SAFETY: `W: TransparentWrapper<ValidityVariance=Covariant>` requires
