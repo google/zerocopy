@@ -1102,16 +1102,14 @@ pub unsafe trait TryFromBytes {
         candidate: Maybe<'_, Self, A>,
     ) -> bool;
 
-    /// Attempts to interpret a byte slice as a `Self`.
+    /// Attempts to interpret the given `candidate` as a `&Self` without
+    /// copying.
     ///
-    /// `try_ref_from` validates that `bytes` contains a valid `Self`, and that
-    /// it satisfies `Self`'s alignment requirement. If it does, then `bytes` is
-    /// reinterpreted as a `Self`.
-    ///
-    /// Note that Rust's bit validity rules are still being decided. As such,
-    /// there exist types whose bit validity is ambiguous. See
-    /// [here][TryFromBytes#what-is-a-valid-instance] for a discussion of how
-    /// these cases are handled.
+    /// If the bytes of `candidate` are a valid instance of `Self`, this method
+    /// returns a reference to those bytes interpreted as a `Self`. If
+    /// `candidate.len() < size_of::<Self>()` or `candidate` is not aligned to
+    /// `align_of::<Self>()` or the bytes are not a valid instance of `Self`,
+    /// this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -1123,7 +1121,7 @@ pub unsafe trait TryFromBytes {
     /// use zerocopy::*;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(Immutable, KnownLayout, TryFromBytes)]
+    /// #[derive(TryFromBytes, Immutable, KnownLayout)]
     /// #[repr(C)]
     /// struct ZSTy {
     ///     leading_sized: u16,
@@ -1132,40 +1130,79 @@ pub unsafe trait TryFromBytes {
     ///
     /// let _ = ZSTy::try_ref_from(0u16.as_bytes()); // ⚠ Compile Error!
     /// ```
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::TryFromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// // The only valid value of this type is the byte `0xC0`
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(u8)]
+    /// enum C0 { xC0 = 0xC0 }
+    ///
+    /// // The only valid value of this type is the byte sequence `0xC0C0`.
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct C0C0(C0, C0);
+    ///
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct Packet {
+    ///     magic_number: C0C0,
+    ///     mug_size: u8,
+    ///     temperature: u8,
+    ///     marshmallows: [[u8; 2]],
+    /// }
+    ///
+    /// let bytes = &[0xC0, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
+    ///
+    /// let packet = Packet::try_ref_from(bytes).unwrap();
+    ///
+    /// assert_eq!(packet.mug_size, 240);
+    /// assert_eq!(packet.temperature, 77);
+    /// assert_eq!(packet.marshmallows, [[0, 1], [2, 3], [4, 5]]);
+    ///
+    /// // These bytes are not valid instance of `Packet`.
+    /// let bytes = &[0x70, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
+    /// assert!(Packet::try_ref_from_prefix(bytes).is_err());
+    /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn try_ref_from(bytes: &[u8]) -> Result<&Self, TryCastError<&[u8], Self>>
+    fn try_ref_from(candidate: &[u8]) -> Result<&Self, TryCastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        let candidate = Ptr::from_ref(bytes)
-            .try_cast_into_no_leftover::<Self>()
-            .map_err(|e| e.map_src(|src| src.as_ref()).into())?;
-
-        // This call may panic. If that happens, it doesn't cause any soundness
-        // issues, as we have not generated any invalid state which we need to
-        // fix before returning.
-        //
-        // Note that one panic or post-monomorphization error condition is
-        // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
-        // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
-        // condition will not happen.
-        let candidate = candidate.try_into_valid().map_err(|e| e.with_src(bytes).into());
-
-        candidate.map(MaybeAligned::as_ref)
+        match Ptr::from_ref(candidate).try_cast_into_no_leftover::<Self>() {
+            Ok(candidate) => {
+                // This call may panic. If that happens, it doesn't cause any soundness
+                // issues, as we have not generated any invalid state which we need to
+                // fix before returning.
+                //
+                // Note that one panic or post-monomorphization error condition is
+                // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
+                // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
+                // condition will not happen.
+                match candidate.try_into_valid() {
+                    Ok(valid) => Ok(valid.as_ref()),
+                    Err(e) => Err(e.map_src(|src| src.as_bytes().as_ref()).into()),
+                }
+            }
+            Err(e) => Err(e.map_src(Ptr::as_ref).into()),
+        }
     }
 
-    /// Attempts to interpret a mutable byte slice as a `Self`.
+    /// Attempts to interpret the prefix of the given `candidate` as a `&Self`
+    /// without copying.
     ///
-    /// `try_mut_from` validates that `bytes` contains a valid `Self`, and that
-    /// it satisfies `Self`'s alignment requirement. If it does, then `bytes` is
-    /// reinterpreted as a `Self`.
-    ///
-    /// Note that Rust's bit validity rules are still being decided. As such,
-    /// there exist types whose bit validity is ambiguous. See
-    /// [here][TryFromBytes#what-is-a-valid-instance] for a discussion of how
-    /// these cases are handled.
+    /// If the first `size_of::<Self>()` bytes of `candidate` are a valid
+    /// instance of `Self`, this method returns both a reference to those bytes
+    /// interpreted as a `Self`, and a reference to the remaining bytes. If
+    /// `candidate.len() < size_of::<Self>()` or `candidate` is not aligned to
+    /// `align_of::<Self>()` or the bytes are not a valid instance of `Self`,
+    /// this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -1177,7 +1214,164 @@ pub unsafe trait TryFromBytes {
     /// use zerocopy::*;
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(Immutable, KnownLayout, TryFromBytes)]
+    /// #[derive(TryFromBytes, Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = ZSTy::try_ref_from_prefix(0u16.as_bytes()); // ⚠ Compile Error!
+    /// ```
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::TryFromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// // The only valid value of this type is the byte `0xC0`
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(u8)]
+    /// enum C0 { xC0 = 0xC0 }
+    ///
+    /// // The only valid value of this type is the bytes `0xC0C0`.
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct C0C0(C0, C0);
+    ///
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct Packet {
+    ///     magic_number: C0C0,
+    ///     mug_size: u8,
+    ///     temperature: u8,
+    ///     marshmallows: [[u8; 2]],
+    /// }
+    ///
+    /// // These are more bytes than are needed to encode a `Packet`.
+    /// let bytes = &[0xC0, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5, 6][..];
+    ///
+    /// let (packet, excess) = Packet::try_ref_from_prefix(bytes).unwrap();
+    ///
+    /// assert_eq!(packet.mug_size, 240);
+    /// assert_eq!(packet.temperature, 77);
+    /// assert_eq!(packet.marshmallows, [[0, 1], [2, 3], [4, 5]]);
+    /// assert_eq!(excess, &[6u8][..]);
+    ///
+    /// // These bytes are not valid instance of `Packet`.
+    /// let bytes = &[0x70, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5, 6][..];
+    /// assert!(Packet::try_ref_from_prefix(bytes).is_err());
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline]
+    fn try_ref_from_prefix(candidate: &[u8]) -> Result<(&Self, &[u8]), TryCastError<&[u8], Self>>
+    where
+        Self: KnownLayout + Immutable,
+    {
+        util::assert_dst_is_not_zst::<Self>();
+        try_ref_from_prefix_suffix(candidate, CastType::Prefix)
+    }
+
+    /// Attempts to interpret the suffix of the given `candidate` as a `&Self`
+    /// without copying.
+    ///
+    /// If the last `size_of::<Self>()` bytes of `candidate` are a valid
+    /// instance of `Self`, this method returns both a reference to those bytes
+    /// interpreted as a `Self`, and a reference to the preceding bytes. If
+    /// `candidate.len() < size_of::<Self>()` or the suffix of `candidate` is
+    /// not aligned to `align_of::<Self>()` or the suffix of `candidate` is not
+    /// a valid instance of `Self`, this returns `Err`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(TryFromBytes, Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = ZSTy::try_ref_from_suffix(0u16.as_bytes()); // ⚠ Compile Error!
+    /// ```
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::TryFromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// // The only valid value of this type is the byte `0xC0`
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(u8)]
+    /// enum C0 { xC0 = 0xC0 }
+    ///
+    /// // The only valid value of this type is the bytes `0xC0C0`.
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct C0C0(C0, C0);
+    ///
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct Packet {
+    ///     magic_number: C0C0,
+    ///     mug_size: u8,
+    ///     temperature: u8,
+    ///     marshmallows: [[u8; 2]],
+    /// }
+    ///
+    /// // These are more bytes than are needed to encode a `Packet`.
+    /// let bytes = &[0, 0xC0, 0xC0, 240, 77, 2, 3, 4, 5, 6, 7][..];
+    ///
+    /// let (excess, packet) = Packet::try_ref_from_suffix(bytes).unwrap();
+    ///
+    /// assert_eq!(packet.mug_size, 240);
+    /// assert_eq!(packet.temperature, 77);
+    /// assert_eq!(packet.marshmallows, [[2, 3], [4, 5], [6, 7]]);
+    /// assert_eq!(excess, &[0u8][..]);
+    ///
+    /// // These bytes are not valid instance of `Packet`.
+    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 77, 240, 0xC0, 0x70][..];
+    /// assert!(Packet::try_ref_from_prefix(bytes).is_err());
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline]
+    fn try_ref_from_suffix(candidate: &[u8]) -> Result<(&[u8], &Self), TryCastError<&[u8], Self>>
+    where
+        Self: KnownLayout + Immutable,
+    {
+        util::assert_dst_is_not_zst::<Self>();
+        try_ref_from_prefix_suffix(candidate, CastType::Suffix).map(swap)
+    }
+
+    /// Attempts to interpret the given `candidate` as a `&mut Self` without
+    /// copying.
+    ///
+    /// If the bytes of `candidate` are a valid instance of `Self`, this method
+    /// returns a reference to those bytes interpreted as a `Self`. If
+    /// `candidate.len() < size_of::<Self>()` or `candidate` is not aligned to
+    /// `align_of::<Self>()` or the bytes are not a valid instance of `Self`,
+    /// this returns `Err`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(TryFromBytes, Immutable, KnownLayout)]
     /// #[repr(C)]
     /// struct ZSTy {
     ///     leading_sized: u16,
@@ -1186,6 +1380,44 @@ pub unsafe trait TryFromBytes {
     ///
     /// let mut source = [85, 85];
     /// let _ = ZSTy::try_mut_from(&mut source[..]); // ⚠ Compile Error!
+    /// ```
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::TryFromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// // The only valid value of this type is the byte `0xC0`
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(u8)]
+    /// enum C0 { xC0 = 0xC0 }
+    ///
+    /// // The only valid value of this type is the bytes `0xC0C0`.
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct C0C0(C0, C0);
+    ///
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct Packet {
+    ///     magic_number: C0C0,
+    ///     mug_size: u8,
+    ///     temperature: u8,
+    ///     marshmallows: [[u8; 2]],
+    /// }
+    ///
+    /// let bytes = &mut [0xC0, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
+    ///
+    /// let packet = Packet::try_mut_from(bytes).unwrap();
+    ///
+    /// assert_eq!(packet.mug_size, 240);
+    /// assert_eq!(packet.temperature, 77);
+    /// assert_eq!(packet.marshmallows, [[0, 1], [2, 3], [4, 5]]);
+    ///
+    /// // These bytes are not valid instance of `Packet`.
+    /// let bytes = &mut [0x70, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5, 6][..];
+    /// assert!(Packet::try_mut_from(bytes).is_err());
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
@@ -1213,15 +1445,221 @@ pub unsafe trait TryFromBytes {
         }
     }
 
-    /// Attempts to read a `Self` from a byte slice.
+    /// Attempts to interpret the prefix of the given `candidate` as a `&mut
+    /// Self` without copying.
     ///
-    /// `try_read_from` validates that `bytes` contains a valid `Self`. If it
-    /// does, those bytes are read out of `bytes` and reinterpreted as a `Self`.
+    /// If the first `size_of::<Self>()` bytes of `candidate` are a valid
+    /// instance of `Self`, this method returns both a reference to those bytes
+    /// interpreted as a `Self`, and a reference to the remaining bytes. If
+    /// `candidate.len() < size_of::<Self>()` or `candidate` is not aligned to
+    /// `align_of::<Self>()` or the bytes are not a valid instance of `Self`,
+    /// this returns `Err`.
     ///
-    /// Note that Rust's bit validity rules are still being decided. As such,
-    /// there exist types whose bit validity is ambiguous. See
-    /// [here][TryFromBytes#what-is-a-valid-instance] for a discussion of how
-    /// these cases are handled.
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(TryFromBytes, Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let mut source = [85, 85];
+    /// let _ = ZSTy::try_mut_from_prefix(&mut source[..]); // ⚠ Compile Error!
+    /// ```
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::TryFromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// // The only valid value of this type is the byte `0xC0`
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(u8)]
+    /// enum C0 { xC0 = 0xC0 }
+    ///
+    /// // The only valid value of this type is the bytes `0xC0C0`.
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct C0C0(C0, C0);
+    ///
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct Packet {
+    ///     magic_number: C0C0,
+    ///     mug_size: u8,
+    ///     temperature: u8,
+    ///     marshmallows: [[u8; 2]],
+    /// }
+    ///
+    /// // These are more bytes than are needed to encode a `Packet`.
+    /// let bytes = &mut [0xC0, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5, 6][..];
+    ///
+    /// let (packet, excess) = Packet::try_mut_from_prefix(bytes).unwrap();
+    ///
+    /// assert_eq!(packet.mug_size, 240);
+    /// assert_eq!(packet.temperature, 77);
+    /// assert_eq!(packet.marshmallows, [[0, 1], [2, 3], [4, 5]]);
+    /// assert_eq!(excess, &[6u8][..]);
+    ///
+    /// packet.temperature = 111;
+    /// excess[0] = 222;
+    ///
+    /// assert_eq!(bytes, [0xC0, 0xC0, 240, 111, 0, 1, 2, 3, 4, 5, 222]);
+    ///
+    /// // These bytes are not valid instance of `Packet`.
+    /// let bytes = &mut [0x70, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5, 6][..];
+    /// assert!(Packet::try_mut_from_prefix(bytes).is_err());
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline]
+    fn try_mut_from_prefix(
+        candidate: &mut [u8],
+    ) -> Result<(&mut Self, &mut [u8]), TryCastError<&mut [u8], Self>>
+    where
+        Self: KnownLayout + Immutable,
+    {
+        util::assert_dst_is_not_zst::<Self>();
+        try_mut_from_prefix_suffix(candidate, CastType::Prefix)
+    }
+
+    /// Attempts to interpret the suffix of the given `candidate` as a `&mut
+    /// Self` without copying.
+    ///
+    /// If the last `size_of::<Self>()` bytes of `candidate` are a valid
+    /// instance of `Self`, this method returns both a reference to those bytes
+    /// interpreted as a `Self`, and a reference to the preceding bytes. If
+    /// `candidate.len() < size_of::<Self>()` or the suffix of `candidate` is
+    /// not aligned to `align_of::<Self>()` or the suffix of `candidate` is not
+    /// a valid instance of `Self`, this returns `Err`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(TryFromBytes, Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let mut source = [85, 85];
+    /// let _ = ZSTy::try_mut_from_suffix(&mut source[..]); // ⚠ Compile Error!
+    /// ```
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::TryFromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// // The only valid value of this type is the byte `0xC0`
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(u8)]
+    /// enum C0 { xC0 = 0xC0 }
+    ///
+    /// // The only valid value of this type is the bytes `0xC0C0`.
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct C0C0(C0, C0);
+    ///
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct Packet {
+    ///     magic_number: C0C0,
+    ///     mug_size: u8,
+    ///     temperature: u8,
+    ///     marshmallows: [[u8; 2]],
+    /// }
+    ///
+    /// // These are more bytes than are needed to encode a `Packet`.
+    /// let bytes = &mut [0, 0xC0, 0xC0, 240, 77, 2, 3, 4, 5, 6, 7][..];
+    ///
+    /// let (excess, packet) = Packet::try_mut_from_suffix(bytes).unwrap();
+    ///
+    /// assert_eq!(packet.mug_size, 240);
+    /// assert_eq!(packet.temperature, 77);
+    /// assert_eq!(packet.marshmallows, [[2, 3], [4, 5], [6, 7]]);
+    /// assert_eq!(excess, &[0u8][..]);
+    ///
+    /// excess[0] = 111;
+    /// packet.temperature = 222;
+    ///
+    /// assert_eq!(bytes, [111, 0xC0, 0xC0, 240, 222, 2, 3, 4, 5, 6, 7]);
+    ///
+    /// // These bytes are not valid instance of `Packet`.
+    /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 77, 240, 0xC0, 0x70][..];
+    /// assert!(Packet::try_mut_from_prefix(bytes).is_err());
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline]
+    fn try_mut_from_suffix(
+        candidate: &mut [u8],
+    ) -> Result<(&mut [u8], &mut Self), TryCastError<&mut [u8], Self>>
+    where
+        Self: KnownLayout + Immutable,
+    {
+        util::assert_dst_is_not_zst::<Self>();
+        try_mut_from_prefix_suffix(candidate, CastType::Suffix).map(swap)
+    }
+
+    /// Attempts to read the given `candidate` as a `Self`.
+    ///
+    /// If the bytes of `candidate` are a valid instance of `Self`, reads those
+    /// bytes as `Self`. If `candidate.len() < size_of::<Self>()` or the bytes
+    /// are not a valid instance of `Self`, this returns `Err`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::TryFromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// // The only valid value of this type is the byte `0xC0`
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(u8)]
+    /// enum C0 { xC0 = 0xC0 }
+    ///
+    /// // The only valid value of this type is the bytes `0xC0C0`.
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct C0C0(C0, C0);
+    ///
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct Packet {
+    ///     magic_number: C0C0,
+    ///     mug_size: u8,
+    ///     temperature: u8,
+    /// }
+    ///
+    /// let bytes = &[0xC0, 0xC0, 240, 77][..];
+    ///
+    /// let packet = Packet::try_read_from(bytes).unwrap();
+    ///
+    /// assert_eq!(packet.mug_size, 240);
+    /// assert_eq!(packet.temperature, 77);
+    ///
+    /// // These bytes are not valid instance of `Packet`.
+    /// let bytes = &mut [0x70, 0xC0, 240, 77][..];
+    /// assert!(Packet::try_read_from(bytes).is_err());
+    /// ```
     #[must_use = "has no side effects"]
     #[inline]
     fn try_read_from(bytes: &[u8]) -> Result<Self, TryReadError<&[u8], Self>>
@@ -1260,6 +1698,59 @@ pub unsafe trait TryFromBytes {
         // SAFETY: We just validated that `candidate` contains a valid `Self`.
         Ok(unsafe { candidate.assume_init() })
     }
+}
+
+#[inline(always)]
+fn try_ref_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized>(
+    candidate: &[u8],
+    cast_type: CastType,
+) -> Result<(&T, &[u8]), TryCastError<&[u8], T>> {
+    match Ptr::from_ref(candidate).try_cast_into::<T>(cast_type) {
+        Ok((candidate, prefix_suffix)) => {
+            // This call may panic. If that happens, it doesn't cause any soundness
+            // issues, as we have not generated any invalid state which we need to
+            // fix before returning.
+            //
+            // Note that one panic or post-monomorphization error condition is
+            // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
+            // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
+            // condition will not happen.
+            match candidate.try_into_valid() {
+                Ok(valid) => Ok((valid.as_ref(), prefix_suffix.as_ref())),
+                Err(e) => Err(e.map_src(|src| src.as_bytes().as_ref()).into()),
+            }
+        }
+        Err(e) => Err(e.map_src(Ptr::as_ref).into()),
+    }
+}
+
+#[inline(always)]
+fn try_mut_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized>(
+    candidate: &mut [u8],
+    cast_type: CastType,
+) -> Result<(&mut T, &mut [u8]), TryCastError<&mut [u8], T>> {
+    match Ptr::from_mut(candidate).try_cast_into::<T>(cast_type) {
+        Ok((candidate, prefix_suffix)) => {
+            // This call may panic. If that happens, it doesn't cause any soundness
+            // issues, as we have not generated any invalid state which we need to
+            // fix before returning.
+            //
+            // Note that one panic or post-monomorphization error condition is
+            // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
+            // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
+            // condition will not happen.
+            match candidate.try_into_valid() {
+                Ok(valid) => Ok((valid.as_mut(), prefix_suffix.as_mut())),
+                Err(e) => Err(e.map_src(|src| src.as_bytes().as_mut()).into()),
+            }
+        }
+        Err(e) => Err(e.map_src(Ptr::as_mut).into()),
+    }
+}
+
+#[inline(always)]
+fn swap<T, U>((t, u): (T, U)) -> (U, T) {
+    (u, t)
 }
 
 /// Types for which a sequence of bytes all set to zero represents a valid
@@ -1848,7 +2339,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// Interprets the prefix of the given `bytes` as a `&Self` without copying.
     ///
     /// This method returns both a reference to the first `size_of::<Self>()`
-    /// bytes of `bytes` interpreted as `Self`, and a reference to the remaining
+    /// bytes of `bytes` interpreted as a `Self`, and a reference to the remaining
     /// bytes. If `bytes.len() < size_of::<Self>()` or `bytes` is not aligned to
     /// `align_of::<Self>()`, this returns `Err`.
     ///
@@ -1922,7 +2413,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// Interprets the suffix of the given `bytes` as a `&Self` without copying.
     ///
     /// This method returns both a reference to the last `size_of::<Self>()`
-    /// bytes of `bytes` interpreted as `Self`, and a reference to the preceding
+    /// bytes of `bytes` interpreted as a `Self`, and a reference to the preceding
     /// bytes. If `bytes.len() < size_of::<Self>()` or the suffix of `bytes` is
     /// not aligned to `align_of::<Self>()`, this returns `Err`.
     ///
@@ -2051,7 +2542,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// copying.
     ///
     /// This method returns both a reference to the first `size_of::<Self>()`
-    /// bytes of `bytes` interpreted as `Self`, and a reference to the remaining
+    /// bytes of `bytes` interpreted as a `Self`, and a reference to the remaining
     /// bytes. If `bytes.len() < size_of::<Self>()` or `bytes` is not aligned to
     /// `align_of::<Self>()`, this returns `Err`.
     ///
@@ -2126,7 +2617,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// copying.
     ///
     /// This method returns both a reference to the last `size_of::<Self>()`
-    /// bytes of `bytes` interpreted as `Self`, and a reference to the preceding
+    /// bytes of `bytes` interpreted as a `Self`, and a reference to the preceding
     /// bytes. If `bytes.len() < size_of::<Self>()` or the suffix of `bytes` is
     /// not aligned to `align_of::<Self>()`, this returns `Err`.
     ///

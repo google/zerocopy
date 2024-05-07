@@ -255,11 +255,6 @@ impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
         self.src
     }
 
-    /// Sets the source value associated with the conversion error.
-    pub(crate) fn with_src<NewSrc>(self, new_src: NewSrc) -> ValidityError<NewSrc, Dst> {
-        ValidityError { src: new_src, dst: PhantomData }
-    }
-
     /// Maps the source value associated with the conversion error.
     pub(crate) fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> ValidityError<NewSrc, Dst> {
         ValidityError { src: f(self.src), dst: PhantomData }
