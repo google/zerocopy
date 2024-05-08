@@ -4743,8 +4743,9 @@ macro_rules! include_value {
 /// # }
 /// ```
 pub struct Ref<B, T: ?Sized>(
-    // INVARIANTS: The referent byte slice is aligned to `T`'s alignment and its
-    // size corresponds to a valid size for `T`
+    // INVARIANTS: The referent (via `.deref`, `.deref_mut`, `.into`) byte slice
+    // is aligned to `T`'s alignment and its size corresponds to a valid size
+    // for `T`.
     B,
     PhantomData<T>,
 );
@@ -5207,8 +5208,10 @@ where
     pub fn into_ref(self) -> &'a T {
         // Presumably unreachable, since we've guarded each constructor of `Ref`.
         util::assert_dst_is_not_zst::<T>();
-        // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
-        // valid for `T`, and so this `unwrap` will not panic.
+        // PANICS: By invariant on `Ref`, `self.0.deref()`'s size and alignment
+        // are valid for `T`. By invariant on `IntoByteSlice`, `self.into()`
+        // produces a byte slice with identical address and length to that
+        // produced by `self.0.deref()`.
         let ptr = Ptr::from_ref(self.0.into())
             .try_cast_into_no_leftover::<T>()
             .expect("zerocopy internal error: into_ref should be infallible");
@@ -5230,8 +5233,10 @@ where
     pub fn into_mut(self) -> &'a mut T {
         // Presumably unreachable, since we've guarded each constructor of `Ref`.
         util::assert_dst_is_not_zst::<T>();
-        // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
-        // valid for `T`, and so this `unwrap` will not panic.
+        // PANICS: By invariant on `Ref`, `self.0.deref_mut()`'s size and
+        // alignment are valid for `T`. By invariant on `IntoByteSlice`,
+        // `self.into()` produces a byte slice with identical address and length
+        // to that produced by `self.0.deref_mut()`.
         let ptr = Ptr::from_mut(self.0.into())
             .try_cast_into_no_leftover::<T>()
             .expect("zerocopy internal error: into_ref should be infallible");
@@ -5518,6 +5523,13 @@ impl<B: SplitByteSlice + ByteSliceMut> SplitByteSliceMut for B {}
 /// type (`&[u8]`). Some methods in this crate's API (such as [`Ref::into_ref`])
 /// are only compatible with `ByteSlice` types without these ownership
 /// semantics.
+///
+/// # Safety
+///
+/// Invoking `self.into()` produces a `&[u8]` with identical address and length
+/// as the slice produced by `self.deref()`. Note that this implies that the
+/// slice produced by `self.into()` is "stable" in the same sense as defined by
+/// [`ByteSlice`]'s safety invariant.
 ///
 /// [`Ref`]: core::cell::Ref
 pub trait IntoByteSlice<'a>: ByteSlice + Into<&'a [u8]> {}
