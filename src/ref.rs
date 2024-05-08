@@ -9,76 +9,145 @@
 
 use super::*;
 
-/// A typed reference derived from a byte slice.
-///
-/// A `Ref<B, T>` is a reference to a `T` which is stored in a byte slice, `B`.
-/// Unlike a native reference (`&T` or `&mut T`), `Ref<B, T>` has the same
-/// mutability as the byte slice it was constructed from (`B`).
-///
-/// # Examples
-///
-/// `Ref` can be used to treat a sequence of bytes as a structured type, and to
-/// read and write the fields of that type as if the byte slice reference were
-/// simply a reference to that type.
-///
-/// ```rust
-/// # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
-/// use zerocopy::{IntoBytes, ByteSliceMut, FromBytes, FromZeros, KnownLayout, Immutable, Ref, SplitByteSlice, Unaligned};
-///
-/// #[derive(FromBytes, IntoBytes, KnownLayout, Immutable, Unaligned)]
-/// #[repr(C)]
-/// struct UdpHeader {
-///     src_port: [u8; 2],
-///     dst_port: [u8; 2],
-///     length: [u8; 2],
-///     checksum: [u8; 2],
-/// }
-///
-/// struct UdpPacket<B> {
-///     header: Ref<B, UdpHeader>,
-///     body: B,
-/// }
-///
-/// impl<B: SplitByteSlice> UdpPacket<B> {
-///     pub fn parse(bytes: B) -> Option<UdpPacket<B>> {
-///         let (header, body) = Ref::new_unaligned_from_prefix(bytes).ok()?;
-///         Some(UdpPacket { header, body })
-///     }
-///
-///     pub fn get_src_port(&self) -> [u8; 2] {
-///         self.header.src_port
-///     }
-/// }
-///
-/// impl<B: ByteSliceMut> UdpPacket<B> {
-///     pub fn with_src_port(&mut self, src_port: [u8; 2]) {
-///         self.header.src_port = src_port;
-///     }
-/// }
-/// # }
-/// ```
-pub struct Ref<B, T: ?Sized>(
-    // INVARIANTS: The referent (via `.deref`, `.deref_mut`, `.into`) byte slice
-    // is aligned to `T`'s alignment and its size corresponds to a valid size
-    // for `T`.
-    B,
-    PhantomData<T>,
-);
+mod def {
+    use core::marker::PhantomData;
 
-impl<B: ByteSlice + Clone, T: ?Sized> Clone for Ref<B, T> {
-    #[inline]
-    fn clone(&self) -> Ref<B, T> {
-        // INVARIANTS: By invariant on `self.0`, it is aligned to `T`'s
-        // alignment and its size corresponds to a valid size for `T`. By safety
-        // invariant on `ByteSlice`, these properties are preserved by `clone`.
-        Ref(self.0.clone(), PhantomData)
+    use crate::{ByteSlice, ByteSliceMut, IntoByteSlice, IntoByteSliceMut};
+
+    /// A typed reference derived from a byte slice.
+    ///
+    /// A `Ref<B, T>` is a reference to a `T` which is stored in a byte slice, `B`.
+    /// Unlike a native reference (`&T` or `&mut T`), `Ref<B, T>` has the same
+    /// mutability as the byte slice it was constructed from (`B`).
+    ///
+    /// # Examples
+    ///
+    /// `Ref` can be used to treat a sequence of bytes as a structured type, and to
+    /// read and write the fields of that type as if the byte slice reference were
+    /// simply a reference to that type.
+    ///
+    /// ```rust
+    /// # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
+    /// use zerocopy::{IntoBytes, ByteSliceMut, FromBytes, FromZeros, KnownLayout, Immutable, Ref, SplitByteSlice, Unaligned};
+    ///
+    /// #[derive(FromBytes, IntoBytes, KnownLayout, Immutable, Unaligned)]
+    /// #[repr(C)]
+    /// struct UdpHeader {
+    ///     src_port: [u8; 2],
+    ///     dst_port: [u8; 2],
+    ///     length: [u8; 2],
+    ///     checksum: [u8; 2],
+    /// }
+    ///
+    /// struct UdpPacket<B> {
+    ///     header: Ref<B, UdpHeader>,
+    ///     body: B,
+    /// }
+    ///
+    /// impl<B: SplitByteSlice> UdpPacket<B> {
+    ///     pub fn parse(bytes: B) -> Option<UdpPacket<B>> {
+    ///         let (header, body) = Ref::new_unaligned_from_prefix(bytes).ok()?;
+    ///         Some(UdpPacket { header, body })
+    ///     }
+    ///
+    ///     pub fn get_src_port(&self) -> [u8; 2] {
+    ///         self.header.src_port
+    ///     }
+    /// }
+    ///
+    /// impl<B: ByteSliceMut> UdpPacket<B> {
+    ///     pub fn with_src_port(&mut self, src_port: [u8; 2]) {
+    ///         self.header.src_port = src_port;
+    ///     }
+    /// }
+    /// # }
+    /// ```
+    pub struct Ref<B, T: ?Sized>(
+        // INVARIANTS: The referent (via `.deref`, `.deref_mut`, `.into`) byte slice
+        // is aligned to `T`'s alignment and its size corresponds to a valid size
+        // for `T`.
+        //
+        // TODO: Something about not calling other methods.
+        B,
+        PhantomData<T>,
+    );
+
+    impl<B, T: ?Sized> Ref<B, T> {
+        /// TODO
+        ///
+        /// # Safety
+        ///
+        /// TODO
+        pub(crate) unsafe fn new_unchecked(bytes: B) -> Ref<B, T> {
+            // INVARIANTS: TODO
+            Ref(bytes, PhantomData)
+        }
+    }
+
+    impl<B: ByteSlice, T: ?Sized> Ref<B, T> {
+        /// TODO
+        ///
+        /// # Safety
+        ///
+        /// TODO
+        pub(crate) unsafe fn as_byte_slice(&self) -> &impl ByteSlice {
+            &self.0
+        }
+    }
+
+    impl<B: ByteSliceMut, T: ?Sized> Ref<B, T> {
+        /// TODO
+        ///
+        /// # Safety
+        ///
+        /// TODO
+        pub(crate) unsafe fn as_byte_slice_mut(&mut self) -> &mut impl ByteSliceMut {
+            &mut self.0
+        }
+    }
+
+    impl<'a, B: IntoByteSlice<'a>, T: ?Sized> Ref<B, T> {
+        /// TODO
+        ///
+        /// # Safety
+        ///
+        /// TODO
+        pub(crate) unsafe fn into_byte_slice(self) -> impl IntoByteSlice<'a> {
+            self.0
+        }
+    }
+
+    impl<'a, B: IntoByteSliceMut<'a>, T: ?Sized> Ref<B, T> {
+        /// TODO
+        ///
+        /// # Safety
+        ///
+        /// TODO
+        pub(crate) unsafe fn into_byte_slice_mut(self) -> impl IntoByteSliceMut<'a> {
+            self.0
+        }
     }
 }
 
-// INVARIANTS: By invariant on `Ref`'s `.0` field, it is aligned to `T`'s
-// alignment and its size corresponds to a valid size for `T`. By safety
-// invariant on `ByteSlice`, these properties are preserved by `Copy`.
-impl<B: ByteSlice + Copy, T: ?Sized> Copy for Ref<B, T> {}
+#[allow(unreachable_pub)] // This is a false positive on our MSRV toolchain.
+pub use def::Ref;
+
+// TODO: What to do about Copy + Clone?
+
+// impl<B: ByteSlice + Clone, T: ?Sized> Clone for Ref<B, T> {
+//     #[inline]
+//     fn clone(&self) -> Ref<B, T> {
+//         // INVARIANTS: By invariant on `self.0`, it is aligned to `T`'s
+//         // alignment and its size corresponds to a valid size for `T`. By safety
+//         // invariant on `ByteSlice`, these properties are preserved by `clone`.
+//         Ref(self.0.clone(), PhantomData)
+//     }
+// }
+
+// // INVARIANTS: By invariant on `Ref`'s `.0` field, it is aligned to `T`'s
+// // alignment and its size corresponds to a valid size for `T`. By safety
+// // invariant on `ByteSlice`, these properties are preserved by `Copy`.
+// impl<B: ByteSlice + Copy, T: ?Sized> Copy for Ref<B, T> {}
 
 impl<B, T> Ref<B, T>
 where
@@ -92,8 +161,9 @@ where
         if !util::aligned_to::<_, T>(bytes.deref()) {
             return Err(AlignmentError::new(bytes).into());
         }
-        // INVARIANTS: We just validated size and alignment.
-        Ok(Ref(bytes, PhantomData))
+
+        // SAFETY: We just validated size and alignment.
+        Ok(unsafe { Ref::new_unchecked(bytes) })
     }
 }
 
@@ -111,12 +181,13 @@ where
         }
         let (bytes, suffix) =
             try_split_at(bytes, mem::size_of::<T>()).map_err(|b| SizeError::new(b).into())?;
-        // INVARIANTS: We just validated alignment and that `bytes` is at least
-        // as large as `T`. `try_split_at(bytes, mem::size_of::<T>())?` ensures
+        // SAFETY: We just validated alignment and that `bytes` is at least as
+        // large as `T`. `try_split_at(bytes, mem::size_of::<T>())?` ensures
         // that the new `bytes` is exactly the size of `T`. By safety
         // postcondition on `SplitByteSlice::try_split_at` we can rely on
         // `try_split_at` to produce the correct `bytes` and `suffix`.
-        Ok((Ref(bytes, PhantomData), suffix))
+        let r = unsafe { Ref::new_unchecked(bytes) };
+        Ok((r, suffix))
     }
 
     #[must_use = "has no side effects"]
@@ -138,7 +209,8 @@ where
         // constructing `bytes`, we validate that it has the proper alignment.
         // By safety postcondition on `SplitByteSlice::try_split_at` we can rely
         // on `try_split_at` to produce the correct `prefix` and `bytes`.
-        Ok((prefix, Ref(bytes, PhantomData)))
+        let r = unsafe { Ref::new_unchecked(bytes) };
+        Ok((prefix, r))
     }
 }
 
@@ -179,8 +251,8 @@ where
         if let Err(e) = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T>() {
             return Err(e.with_src(()).with_src(bytes));
         }
-        // INVARIANTS: `try_cast_into_no_leftover` validates size and alignment.
-        Ok(Ref(bytes, PhantomData))
+        // SAFETY: `try_cast_into_no_leftover` validates size and alignment.
+        Ok(unsafe { Ref::new_unchecked(bytes) })
     }
 }
 
@@ -236,12 +308,13 @@ where
         let split_at = unsafe { bytes.len().unchecked_sub(remainder.len()) };
         let (bytes, suffix) =
             try_split_at(bytes, split_at).map_err(|b| SizeError::new(b).into())?;
-        // INVARIANTS: `try_cast_into` validates size and alignment, and returns
-        // a `split_at` that indicates how many bytes of `bytes` correspond to a
+        // SAFETY: `try_cast_into` validates size and alignment, and returns a
+        // `split_at` that indicates how many bytes of `bytes` correspond to a
         // valid `T`. By safety postcondition on `SplitByteSlice::try_split_at`
         // we can rely on `try_split_at` to produce the correct `bytes` and
         // `suffix`.
-        Ok((Ref(bytes, PhantomData), suffix))
+        let r = unsafe { Ref::new_unchecked(bytes) };
+        Ok((r, suffix))
     }
 
     /// Constructs a new `Ref` from the suffix of a byte slice.
@@ -287,12 +360,13 @@ where
         let split_at = remainder.len();
         let (prefix, bytes) =
             try_split_at(bytes, split_at).map_err(|b| SizeError::new(b).into())?;
-        // INVARIANTS: `try_cast_into` validates size and alignment, and returns
-        // a `try_split_at` that indicates how many bytes of `bytes` correspond
-        // to a valid `T`. By safety postcondition on
+        // SAFETY: `try_cast_into` validates size and alignment, and returns a
+        // `try_split_at` that indicates how many bytes of `bytes` correspond to
+        // a valid `T`. By safety postcondition on
         // `SplitByteSlice::try_split_at` we can rely on `try_split_at` to
         // produce the correct `prefix` and `bytes`.
-        Ok((prefix, Ref(bytes, PhantomData)))
+        let r = unsafe { Ref::new_unchecked(bytes) };
+        Ok((prefix, r))
     }
 }
 
@@ -523,11 +597,15 @@ where
     pub fn into_ref(self) -> &'a T {
         // Presumably unreachable, since we've guarded each constructor of `Ref`.
         util::assert_dst_is_not_zst::<T>();
+
+        // SAFETY: TODO
+        let b = unsafe { self.into_byte_slice() };
+
         // PANICS: By invariant on `Ref`, `self.0.deref()`'s size and alignment
         // are valid for `T`. By invariant on `IntoByteSlice`, `self.into()`
         // produces a byte slice with identical address and length to that
         // produced by `self.0.deref()`.
-        let ptr = Ptr::from_ref(self.0.into())
+        let ptr = Ptr::from_ref(b.into())
             .try_cast_into_no_leftover::<T>()
             .expect("zerocopy internal error: into_ref should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
@@ -548,11 +626,15 @@ where
     pub fn into_mut(self) -> &'a mut T {
         // Presumably unreachable, since we've guarded each constructor of `Ref`.
         util::assert_dst_is_not_zst::<T>();
+
+        // SAFETY: TODO
+        let b = unsafe { self.into_byte_slice_mut() };
+
         // PANICS: By invariant on `Ref`, `self.0.deref_mut()`'s size and
         // alignment are valid for `T`. By invariant on `IntoByteSlice`,
         // `self.into()` produces a byte slice with identical address and length
         // to that produced by `self.0.deref_mut()`.
-        let ptr = Ptr::from_mut(self.0.into())
+        let ptr = Ptr::from_mut(b.into())
             .try_cast_into_no_leftover::<T>()
             .expect("zerocopy internal error: into_ref should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
@@ -568,7 +650,8 @@ where
     /// Gets the underlying bytes.
     #[inline]
     pub fn bytes(&self) -> &[u8] {
-        self.0.deref()
+        // SAFETY: TODO
+        unsafe { self.as_byte_slice().deref() }
     }
 }
 
@@ -580,7 +663,8 @@ where
     /// Gets the underlying bytes mutably.
     #[inline]
     pub fn bytes_mut(&mut self) -> &mut [u8] {
-        self.0.deref_mut()
+        // SAFETY: TODO
+        unsafe { self.as_byte_slice_mut().deref_mut() }
     }
 }
 
@@ -593,13 +677,16 @@ where
     #[must_use = "has no side effects"]
     #[inline]
     pub fn read(&self) -> T {
+        // SAFETY: TODO
+        let b = unsafe { self.as_byte_slice() };
+
         // SAFETY: Because of the invariants on `Ref`, we know that `self.0` was
         // at least `size_of::<T>()` bytes long when it was validated, and that
         // it was at least as aligned as `align_of::<T>()`. Because of the
         // safety invariant on `ByteSlice`, we know that these must still hold
         // when we dereference here. Because `T: FromBytes`, it is sound to
         // interpret these bytes as a `T`.
-        unsafe { ptr::read(self.0.deref().as_ptr().cast::<T>()) }
+        unsafe { ptr::read(b.deref().as_ptr().cast::<T>()) }
     }
 }
 
@@ -611,6 +698,9 @@ where
     /// Writes the bytes of `t` and then forgets `t`.
     #[inline]
     pub fn write(&mut self, t: T) {
+        // SAFETY: TODO
+        let b = unsafe { self.as_byte_slice_mut() };
+
         // SAFETY: Because of the invariants on `Ref`, we know that `self.0` was
         // at least `size_of::<T>()` bytes long when it was validated, and that
         // it was at least as aligned as `align_of::<T>()`. Because of the
@@ -618,7 +708,7 @@ where
         // when we dereference here. Writing `t` to the buffer will allow all of
         // the bytes of `t` to be accessed as a `[u8]`, but because `T:
         // IntoBytes`, we know that this is sound.
-        unsafe { ptr::write(self.0.deref_mut().as_mut_ptr().cast::<T>(), t) }
+        unsafe { ptr::write(b.deref_mut().as_mut_ptr().cast::<T>(), t) }
     }
 }
 
@@ -631,9 +721,13 @@ where
     #[inline]
     fn deref(&self) -> &T {
         util::assert_dst_is_not_zst::<T>();
+
+        // SAFETY: TODO
+        let b = unsafe { self.as_byte_slice() };
+
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
         // valid for `T`, and so this `unwrap` will not panic.
-        let ptr = Ptr::from_ref(self.0.deref())
+        let ptr = Ptr::from_ref(b.deref())
             .try_cast_into_no_leftover::<T>()
             .expect("zerocopy internal error: Deref::deref should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
@@ -649,9 +743,13 @@ where
     #[inline]
     fn deref_mut(&mut self) -> &mut T {
         util::assert_dst_is_not_zst::<T>();
+
+        // SAFETY: TODO
+        let b = unsafe { self.as_byte_slice_mut() };
+
         // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
         // valid for `T`, and so this `unwrap` will not panic.
-        let ptr = Ptr::from_mut(self.0.deref_mut())
+        let ptr = Ptr::from_mut(b.deref_mut())
             .try_cast_into_no_leftover::<T>()
             .expect("zerocopy internal error: DerefMut::deref_mut should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
