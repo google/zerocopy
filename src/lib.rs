@@ -5194,49 +5194,364 @@ where
     }
 }
 
+impl<B, T> Ref<B, T>
+where
+    B: ByteSlice,
+    T: KnownLayout + ?Sized,
+{
+    /// Attempts to dereference this `Ref<_, T>` into a `&T` without copying.
+    ///
+    /// If the bytes of `self` are a valid instance of `T`, this method returns
+    /// a reference to those bytes interpreted as `T`. If those bytes are not a
+    /// valid instance of `T`, this returns `Err`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::Ref;
+    /// # use zerocopy_derive::*;
+    ///
+    /// // The only valid value of this type is the byte `0xC0`
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(u8)]
+    /// enum C0 { xC0 = 0xC0 }
+    ///
+    /// // The only valid value of this type is the bytes `0xC0C0`.
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C, packed)]
+    /// struct C0C0(C0, C0);
+    ///
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct Packet {
+    ///     magic_number: C0C0,
+    ///     mug_size: u8,
+    ///     temperature: u8,
+    ///     marshmallows: [[u8; 2]],
+    /// }
+    ///
+    /// let bytes = &[0xC0, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
+    ///
+    /// let r = Ref::<_, Packet>::new(bytes).unwrap();
+    /// let packet = r.try_as_ref().unwrap();
+    ///
+    /// assert_eq!(packet.mug_size, 240);
+    /// assert_eq!(packet.temperature, 77);
+    /// assert_eq!(packet.marshmallows, [[0, 1], [2, 3], [4, 5]]);
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn try_as_ref(&self) -> Result<&T, ValidityError<&Self, T>>
+    where
+        T: TryFromBytes + Immutable,
+    {
+        // Presumably unreachable, since we've guarded each constructor of `Ref`.
+        util::assert_dst_is_not_zst::<T>();
+        match Ptr::from_ref(&*self.0).try_cast_into_no_leftover::<T>() {
+            Ok(candidate) => match candidate.try_into_valid() {
+                Ok(valid) => Ok(valid.as_ref()),
+                Err(e) => Err(e.map_src(|_| self)),
+            },
+            Err(CastError::Validity(i)) => match i {},
+            Err(CastError::Alignment(_) | CastError::Size(_)) => {
+                // SAFETY: By invariant on `Ref::0`, the referenced byte slice
+                // is aligned to `T`'s alignment and its size corresponds to a
+                // valid size for `T`. Since properties are checked upon
+                // constructing `Ref`, these failures are unreachable.
+                unsafe { core::hint::unreachable_unchecked() }
+            }
+        }
+    }
+
+    /// Attempts to convert this `Ref<_, T>` into a `&mut T` without copying.
+    ///
+    /// If the bytes of `self` are a valid instance of `T`, this method returns
+    /// a reference to those bytes interpreted as `T`. If those bytes are not a
+    /// valid instance of `T`, this returns `Err`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::Ref;
+    /// # use zerocopy_derive::*;
+    ///
+    /// // The only valid value of this type is the byte `0xC0`
+    /// #[derive(TryFromBytes, IntoBytes, KnownLayout, Immutable)]
+    /// #[repr(u8)]
+    /// enum C0 { xC0 = 0xC0 }
+    ///
+    /// // The only valid value of this type is the bytes `0xC0C0`.
+    /// #[derive(TryFromBytes, IntoBytes, KnownLayout, Immutable)]
+    /// #[repr(C, packed)]
+    /// struct C0C0(C0, C0);
+    ///
+    /// #[derive(TryFromBytes, IntoBytes, KnownLayout, Immutable)]
+    /// #[repr(C, packed)]
+    /// struct Packet {
+    ///     magic_number: C0C0,
+    ///     mug_size: u8,
+    ///     temperature: u8,
+    ///     marshmallows: [[u8; 2]],
+    /// }
+    ///
+    /// let bytes = &mut [0xC0, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
+    ///
+    /// let mut r = Ref::<_, Packet>::new(bytes).unwrap();
+    /// let packet = r.try_as_mut().unwrap();
+    ///
+    /// assert_eq!(packet.mug_size, 240);
+    /// assert_eq!(packet.temperature, 77);
+    /// assert_eq!(packet.marshmallows, [[0, 1], [2, 3], [4, 5]]);
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn try_as_mut(&mut self) -> Result<&mut T, ValidityError<&mut Self, T>>
+    where
+        B: ByteSliceMut,
+        T: TryFromBytes + Immutable,
+    {
+        // Presumably unreachable, since we've guarded each constructor of `Ref`.
+        util::assert_dst_is_not_zst::<T>();
+        match Ptr::from_mut(&mut *self.0).try_cast_into_no_leftover::<T>() {
+            Ok(candidate) => match candidate.try_into_valid() {
+                Ok(valid) => Ok(valid.as_mut()),
+                Err(e) => {
+                    // TODO: Borrow checker puzzle. Polonius accepts this.
+                    Err(e.with_src(()).with_src(self))
+                }
+            },
+            Err(CastError::Validity(i)) => match i {},
+            Err(CastError::Alignment(_) | CastError::Size(_)) => {
+                // SAFETY: By invariant on `Ref::0`, the referenced byte slice
+                // is aligned to `T`'s alignment and its size corresponds to a
+                // valid size for `T`. Since properties are checked upon
+                // constructing `Ref`, these failures are unreachable.
+                unsafe { core::hint::unreachable_unchecked() }
+            }
+        }
+    }
+}
+
 impl<'a, B, T> Ref<B, T>
 where
     B: 'a + IntoByteSlice<'a>,
-    T: FromBytes + KnownLayout + Immutable + ?Sized,
+    T: TryFromBytes + KnownLayout + Immutable + ?Sized,
 {
     /// Converts this `Ref` into a reference.
     ///
     /// `into_ref` consumes the `Ref`, and returns a reference to `T`.
     #[must_use = "has no side effects"]
     #[inline(always)]
-    pub fn into_ref(self) -> &'a T {
+    pub fn into_ref(self) -> &'a T
+    where
+        T: FromBytes,
+    {
         // Presumably unreachable, since we've guarded each constructor of `Ref`.
         util::assert_dst_is_not_zst::<T>();
-        // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
-        // valid for `T`, and so this `unwrap` will not panic.
-        let ptr = Ptr::from_ref(self.0.into())
-            .try_cast_into_no_leftover::<T>()
-            .expect("zerocopy internal error: into_ref should be infallible");
-        let ptr = ptr.bikeshed_recall_valid();
-        ptr.as_ref()
+        match Ptr::from_ref(self.0.into()).try_cast_into_no_leftover::<T>() {
+            Ok(ptr) => ptr.bikeshed_recall_valid().as_ref(),
+            Err(CastError::Validity(i)) => match i {},
+            Err(CastError::Alignment(_) | CastError::Size(_)) => {
+                // SAFETY: By invariant on `Ref::0`, the referenced byte slice
+                // is aligned to `T`'s alignment and its size corresponds to a
+                // valid size for `T`. Since properties are checked upon
+                // constructing `Ref`, these failures are unreachable.
+                unsafe { core::hint::unreachable_unchecked() }
+            }
+        }
+    }
+
+    /// Attempts to convert this `Ref<_, T>` into a `&T` without copying.
+    ///
+    /// If the bytes of `self` are a valid instance of `T`, this method returns
+    /// a reference to those bytes interpreted as `T`. If those bytes are not a
+    /// valid instance of `T`, this returns `Err`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::Ref;
+    /// # use zerocopy_derive::*;
+    ///
+    /// // The only valid value of this type is the byte `0xC0`
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(u8)]
+    /// enum C0 { xC0 = 0xC0 }
+    ///
+    /// // The only valid value of this type is the bytes `0xC0C0`.
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C, packed)]
+    /// struct C0C0(C0, C0);
+    ///
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct Packet {
+    ///     magic_number: C0C0,
+    ///     mug_size: u8,
+    ///     temperature: u8,
+    ///     marshmallows: [[u8; 2]],
+    /// }
+    ///
+    /// let bytes = &[0xC0, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
+    ///
+    /// let r = Ref::<_, Packet>::new(bytes).unwrap();
+    /// let packet = r.try_into_ref().unwrap();
+    ///
+    /// assert_eq!(packet.mug_size, 240);
+    /// assert_eq!(packet.temperature, 77);
+    /// assert_eq!(packet.marshmallows, [[0, 1], [2, 3], [4, 5]]);
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn try_into_ref(self) -> Result<&'a T, ValidityError<Self, T>> {
+        util::assert_dst_is_not_zst::<T>();
+        let is_bit_valid = match Ptr::from_ref(&*self.0).try_cast_into_no_leftover::<T>() {
+            Ok(candidate) => TryFromBytes::is_bit_valid(candidate.forget_aligned()),
+            Err(CastError::Validity(i)) => match i {},
+            Err(CastError::Alignment(_) | CastError::Size(_)) => {
+                // SAFETY: By invariant on `Ref::0`, the referenced byte slice
+                // is aligned to `T`'s alignment and its size corresponds to a
+                // valid size for `T`. Since properties are checked upon
+                // constructing `Ref`, these failures are unreachable.
+                unsafe { core::hint::unreachable_unchecked() }
+            }
+        };
+        if !is_bit_valid {
+            Err(ValidityError::new(self))
+        } else {
+            match Ptr::from_ref(self.0.into()).try_cast_into_no_leftover::<T>() {
+                Ok(candidate) => {
+                    // SAFETY: We have checked that a `Ptr` derived from
+                    // `self.0` is a bit-valid instance of `T`. By invariant on
+                    // `B: ByteSlice`, `self.0` dereferences stably; i.e., the
+                    // referenced bytes will not have changed between the above
+                    // validity check and now, because we have not explicitly
+                    // changed them.
+                    let candidate = unsafe { candidate.assume_valid() };
+                    Ok(candidate.as_ref())
+                }
+                Err(CastError::Validity(i)) => match i {},
+                Err(CastError::Alignment(_) | CastError::Size(_)) => {
+                    // SAFETY: By invariant on `Ref::0`, the referenced byte slice
+                    // is aligned to `T`'s alignment and its size corresponds to a
+                    // valid size for `T`. Since properties are checked upon
+                    // constructing `Ref`, these failures are unreachable.
+                    unsafe { core::hint::unreachable_unchecked() }
+                }
+            }
+        }
     }
 }
 
 impl<'a, B, T> Ref<B, T>
 where
     B: 'a + IntoByteSliceMut<'a>,
-    T: FromBytes + IntoBytes + KnownLayout + Immutable + ?Sized,
+    T: TryFromBytes + IntoBytes + KnownLayout + Immutable + ?Sized,
 {
     /// Converts this `Ref` into a mutable reference.
     ///
     /// `into_mut` consumes the `Ref`, and returns a mutable reference to `T`.
     #[must_use = "has no side effects"]
     #[inline(always)]
-    pub fn into_mut(self) -> &'a mut T {
+    pub fn into_mut(self) -> &'a mut T
+    where
+        T: FromBytes,
+    {
         // Presumably unreachable, since we've guarded each constructor of `Ref`.
         util::assert_dst_is_not_zst::<T>();
-        // PANICS: By invariant on `Ref`, `self.0`'s size and alignment are
-        // valid for `T`, and so this `unwrap` will not panic.
-        let ptr = Ptr::from_mut(self.0.into())
-            .try_cast_into_no_leftover::<T>()
-            .expect("zerocopy internal error: into_ref should be infallible");
-        let ptr = ptr.bikeshed_recall_valid();
-        ptr.as_mut()
+        match Ptr::from_mut(self.0.into()).try_cast_into_no_leftover::<T>() {
+            Ok(ptr) => ptr.bikeshed_recall_valid().as_mut(),
+            Err(CastError::Validity(i)) => match i {},
+            Err(CastError::Alignment(_) | CastError::Size(_)) => {
+                // SAFETY: By invariant on `Ref::0`, the referenced byte slice
+                // is aligned to `T`'s alignment and its size corresponds to a
+                // valid size for `T`. Since properties are checked upon
+                // constructing `Ref`, these failures are unreachable.
+                unsafe { core::hint::unreachable_unchecked() }
+            }
+        }
+    }
+
+    /// Attempts to convert this `Ref<_, T>` into a `&mut T` without copying.
+    ///
+    /// If the bytes of `self` are a valid instance of `T`, this method returns
+    /// a reference to those bytes interpreted as `T`. If those bytes are not a
+    /// valid instance of `T`, this returns `Err`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::Ref;
+    /// # use zerocopy_derive::*;
+    ///
+    /// // The only valid value of this type is the byte `0xC0`
+    /// #[derive(TryFromBytes, IntoBytes, KnownLayout, Immutable)]
+    /// #[repr(u8)]
+    /// enum C0 { xC0 = 0xC0 }
+    ///
+    /// // The only valid value of this type is the bytes `0xC0C0`.
+    /// #[derive(TryFromBytes, IntoBytes, KnownLayout, Immutable)]
+    /// #[repr(C, packed)]
+    /// struct C0C0(C0, C0);
+    ///
+    /// #[derive(TryFromBytes, IntoBytes, KnownLayout, Immutable)]
+    /// #[repr(C, packed)]
+    /// struct Packet {
+    ///     magic_number: C0C0,
+    ///     mug_size: u8,
+    ///     temperature: u8,
+    ///     marshmallows: [[u8; 2]],
+    /// }
+    ///
+    /// let bytes = &mut [0xC0, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
+    ///
+    /// let r = Ref::<_, Packet>::new(bytes).unwrap();
+    /// let packet = r.try_into_mut().unwrap();
+    ///
+    /// assert_eq!(packet.mug_size, 240);
+    /// assert_eq!(packet.temperature, 77);
+    /// assert_eq!(packet.marshmallows, [[0, 1], [2, 3], [4, 5]]);
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn try_into_mut(mut self) -> Result<&'a mut T, ValidityError<Self, T>> {
+        util::assert_dst_is_not_zst::<T>();
+        let is_bit_valid = match Ptr::from_mut(&mut *self.0).try_cast_into_no_leftover::<T>() {
+            Ok(candidate) => TryFromBytes::is_bit_valid(candidate.forget_aligned()),
+            Err(CastError::Validity(i)) => match i {},
+            Err(CastError::Alignment(_) | CastError::Size(_)) => {
+                // SAFETY: By invariant on `Ref::0`, the referenced byte slice
+                // is aligned to `T`'s alignment and its size corresponds to a
+                // valid size for `T`. Since properties are checked upon
+                // constructing `Ref`, these failures are unreachable.
+                unsafe { core::hint::unreachable_unchecked() }
+            }
+        };
+        if !is_bit_valid {
+            Err(ValidityError::new(self))
+        } else {
+            match Ptr::from_mut(self.0.into()).try_cast_into_no_leftover::<T>() {
+                Ok(candidate) => {
+                    // SAFETY: We have checked that a `Ptr` derived from
+                    // `self.0` is a bit-valid instance of `T`. By invariant on
+                    // `B: ByteSlice`, `self.0` dereferences stably; i.e., the
+                    // referenced bytes will not have changed between the above
+                    // validity check and now, because we have not explicitly
+                    // changed them.
+                    let candidate = unsafe { candidate.assume_valid() };
+                    Ok(candidate.as_mut())
+                }
+                Err(CastError::Validity(i)) => match i {},
+                Err(CastError::Alignment(_) | CastError::Size(_)) => {
+                    // SAFETY: By invariant on `Ref::0`, the referenced byte
+                    // slice is aligned to `T`'s alignment and its size
+                    // corresponds to a valid size for `T`. Since properties are
+                    // checked upon constructing `Ref`, these failures are
+                    // unreachable.
+                    unsafe { core::hint::unreachable_unchecked() }
+                }
+            }
+        }
     }
 }
 
