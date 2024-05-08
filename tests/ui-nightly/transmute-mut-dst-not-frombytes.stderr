@@ -9,9 +9,9 @@ error[E0277]: the trait bound `Dst: FromBytes` is not satisfied
    |
    = help: the following other types implement trait `FromBytes`:
              ()
-             AtomicBool
              AtomicI16
              AtomicI32
+             AtomicI64
              AtomicI8
              AtomicIsize
              AtomicU16

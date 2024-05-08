@@ -323,10 +323,6 @@ use core::{
     ops::{Deref, DerefMut},
     ptr::{self, NonNull},
     slice,
-    sync::atomic::{
-        AtomicBool, AtomicI16, AtomicI32, AtomicI8, AtomicIsize, AtomicPtr, AtomicU16, AtomicU32,
-        AtomicU8, AtomicUsize,
-    },
 };
 
 use crate::pointer::{invariant, BecauseExclusive, BecauseImmutable};
@@ -805,9 +801,7 @@ impl_known_layout!(
     u8, i8, u16, i16, u32, i32, u64, i64, u128, i128, usize, isize, f32, f64,
     bool, char,
     NonZeroU8, NonZeroI8, NonZeroU16, NonZeroI16, NonZeroU32, NonZeroI32,
-    NonZeroU64, NonZeroI64, NonZeroU128, NonZeroI128, NonZeroUsize, NonZeroIsize,
-    AtomicBool, AtomicI16, AtomicI32, AtomicI8, AtomicIsize, AtomicU16, AtomicU32,
-    AtomicU8, AtomicUsize
+    NonZeroU64, NonZeroI64, NonZeroU128, NonZeroI128, NonZeroUsize, NonZeroIsize
 );
 #[rustfmt::skip]
 impl_known_layout!(
@@ -816,8 +810,7 @@ impl_known_layout!(
     T         => Wrapping<T>,
     T         => MaybeUninit<T>,
     T: ?Sized => *const T,
-    T: ?Sized => *mut T,
-    T         => AtomicPtr<T>
+    T: ?Sized => *mut T
 );
 impl_known_layout!(const N: usize, T => [T; N]);
 

@@ -11,10 +11,6 @@ use core::{
     mem::{self, ManuallyDrop, MaybeUninit},
     num::{NonZeroUsize, Wrapping},
     ptr::NonNull,
-    sync::atomic::{
-        AtomicBool, AtomicI16, AtomicI32, AtomicI8, AtomicIsize, AtomicPtr, AtomicU16, AtomicU32,
-        AtomicU8, AtomicUsize,
-    },
 };
 
 use crate::{
@@ -325,110 +321,66 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Unalign<T> {
     }
 }
 
-/// Implements `TransparentWrapper` for an atomic type.
+/// Trait implemented by all `core::sync::atomic::Atomic*` types.
 ///
 /// # Safety
 ///
-/// The caller promises that `$atomic` is an atomic type whose natie equivalent
-/// is `$native`.
-macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
-    ($(#[$attr:meta])* $(,)?) => {};
-    ($(#[$attr:meta])* $atomic:ty [$native:ty], $($atomics:ty [$natives:ty]),* $(,)?) => {
-        $(#[$attr])*
-        // SAFETY: See safety comment in next match arm.
-        unsafe impl<I: Invariants> TransparentWrapper<I> for $atomic {
-            unsafe_impl_transparent_wrapper_for_atomic!(@inner $atomic [$native]);
-        }
-        unsafe_impl_transparent_wrapper_for_atomic!($(#[$attr])* $($atomics [$natives],)*);
-    };
-    ($(#[$attr:meta])* $tyvar:ident => $atomic:ty [$native:ty]) => {
-        // We implement for `$atomic` and set `Inner = $native`. The caller has
-        // promised that `$atomic` and `$native` are an atomic type and its
-        // native counterpart, respectively. Per [1], `$atomic` and `$native`
-        // have the same size.
-        //
-        // [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
-        //     Cite docs once they've landed.
-        $(#[$attr])*
-        unsafe impl<$tyvar, I: Invariants> TransparentWrapper<I> for $atomic {
-            unsafe_impl_transparent_wrapper_for_atomic!(@inner $atomic [$native]);
-        }
-    };
-    (@inner $atomic:ty [$native:ty]) => {
-        type Inner = UnsafeCell<$native>;
-
-        // SAFETY: It is "obvious" that each atomic type contains a single
-        // `UnsafeCell` that covers all bytes of the type, but we can also prove
-        // it:
-        // - Since `$atomic` provides an API which permits loading and storing
-        //   values of type `$native` via a `&self` (shared) reference, *some*
-        //   interior mutation must be happening, and interior mutation can only
-        //   happen via `UnsafeCell`. Further, there must be enough bytes in
-        //   `$atomic` covered by an `UnsafeCell` to hold every possible value
-        //   of `$native`.
-        // - Per [1], `$atomic` has the same size as `$native`. This on its own
-        //   isn't enough: it would still be possible for `$atomic` to store
-        //   `$native` using a compact representation (for `$native` types for
-        //   which some bit patterns are illegal). However, this is ruled out by
-        //   the fact that `$atomic` has the same bit validity as `$native` [1].
-        //   Thus, we can conclude that every byte of `$atomic` must be covered
-        //   by an `UnsafeCell`.
-        //
-        // Thus, every byte of `$atomic` is covered by an `UnsafeCell`, and we
-        // set `type Inner = UnsafeCell<$native>`. Thus, `Self` and
-        // `Self::Inner` have `UnsafeCell`s covering the same byte ranges.
-        //
-        // [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
-        //     Cite docs once they've landed.
-        type UnsafeCellVariance = Covariant;
-
-        // SAFETY: No safety justification is required for an invariant
-        // variance.
-        type AlignmentVariance = Invariant;
-
-        // SAFETY: Per [1], all atomic types have the same bit validity as their
-        // native counterparts. The caller has promised that `$atomic` and
-        // `$native` are an atomic type and its native counterpart,
-        // respectively.
-        //
-        // [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
-        //     Cite docs once they've landed.
-        type ValidityVariance = Covariant;
-
-        fn cast_into_inner(ptr: *mut $atomic) -> *mut UnsafeCell<$native> {
-            // SAFETY: Per [1] (from comment on impl block), `$atomic` has the
-            // same size as `$native`. Thus, this cast preserves size.
-            //
-            // This cast trivially preserves provenance.
-            ptr.cast::<UnsafeCell<$native>>()
-        }
-
-        fn cast_from_inner(ptr: *mut UnsafeCell<$native>) -> *mut $atomic {
-            // SAFETY: Per [1] (from comment on impl block), `$atomic` has the
-            // same size as `$native`. Thus, this cast preserves size.
-            //
-            // This cast trivially preserves provenance.
-            ptr.cast::<$atomic>()
-        }
-    };
+/// `Self` must be an atomic type whose native equivalent is `Self::Native`.
+pub unsafe trait Atomic {
+    type Native;
 }
 
-safety_comment! {
-    /// SAFETY:
-    /// All of these pass an atomic type and that type's native equivalent, as
-    /// required by the macro safety preconditions.
-    unsafe_impl_transparent_wrapper_for_atomic!(T => AtomicPtr<T> [*mut T]);
-    unsafe_impl_transparent_wrapper_for_atomic!(
-        AtomicBool [bool],
-        AtomicI16 [i16], AtomicI32 [i32], AtomicI8 [i8], AtomicIsize [isize],
-        AtomicU16 [u16], AtomicU32 [u32], AtomicU8 [u8], AtomicUsize [usize],
-    );
-    #[cfg(not(target_arch = "powerpc"))]
-    unsafe_impl_transparent_wrapper_for_atomic!(
-        #[cfg_attr(doc_cfg, doc(cfg(not(target_arch = "powerpc"))))]
-        core::sync::atomic::AtomicI64 [i64],
-        core::sync::atomic::AtomicU64 [u64],
-    );
+// SAFETY: the implementation of `Atomic` promises that `A` is atomic type and
+// `A::Native` is its native counterpart. Per [1], `A` and `A::Native` have the
+// same size and bit validatity (but `A::Native` might have greater alignment).
+//
+// [1] https://doc.rust-lang.org/nightly/core/sync/atomic/struct.AtomicU32.html
+unsafe impl<A: Atomic, I: Invariants> TransparentWrapper<I> for A {
+    type Inner = UnsafeCell<A::Native>;
+
+    // SAFETY: It is "obvious" that each atomic type contains a single
+    // `UnsafeCell` that covers all bytes of the type, but we can also prove
+    // it:
+    // - Since `A` provides an API which permits loading and storing values of
+    //   type `A::Native` via a `&self` (shared) reference, *some* interior
+    //   mutation must be happening, and interior mutation can only happen via
+    //   `UnsafeCell`. Further, there must be enough bytes in `A` covered by an
+    //   `UnsafeCell` to hold every possible value of `A::Native`.
+    // - Per the above libcore docs, `A` has the same size as `A::Native`. This
+    //   on its own isn't enough: it would still be possible for `A` to store
+    //   `A::Native` using a compact representation (for `A::Native` types for
+    //   which some bit patterns are illegal). However, this is ruled out by
+    //   the fact that `A` has the same bit validity as `A::Native`. Thus, we
+    //   conclude that every byte of `A` must be covered by an `UnsafeCell`.
+    //
+    // Thus, every byte of `A` is covered by an `UnsafeCell`, and we
+    // set `type Inner = UnsafeCell<A::Native>`. Thus, `Self` and
+    // `Self::Inner` have `UnsafeCell`s covering the same byte ranges.
+    type UnsafeCellVariance = Covariant;
+
+    // SAFETY: No safety justification is required for an invariant
+    // variance.
+    type AlignmentVariance = Invariant;
+
+    // SAFETY: Per the above libcore docs, all atomic types (`A`) have the same
+    // bit validity as their native counterparts (`A::Native`).
+    type ValidityVariance = Covariant;
+
+    fn cast_into_inner(ptr: *mut A) -> *mut Self::Inner {
+        // SAFETY: Per [1] (from comment on impl block), `A` has the
+        // same size as `Self::Inner`. Thus, this cast preserves size.
+        //
+        // This cast trivially preserves provenance.
+        ptr.cast::<Self::Inner>()
+    }
+
+    fn cast_from_inner(ptr: *mut Self::Inner) -> *mut A {
+        // SAFETY: Per [1] (from comment on impl block), `A` has the
+        // same size as `Self::Inner`. Thus, this cast preserves size.
+        //
+        // This cast trivially preserves provenance.
+        ptr.cast::<A>()
+    }
 }
 
 pub(crate) trait AsAddress {

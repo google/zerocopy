@@ -46,7 +46,7 @@ jobs:
       matrix:
         # See `INTERNAL.md` for an explanation of these pinned toolchain
         # versions.
-        toolchain: [ "msrv", "stable", "nightly",  "zerocopy-generic-bounds-in-const-fn", "zerocopy-aarch64-simd", "zerocopy-panic-in-const", ]
+        toolchain: [ "msrv", "stable", "nightly",  "zerocopy-generic-bounds-in-const-fn", "zerocopy-atomics", "zerocopy-aarch64-simd", "zerocopy-panic-in-const", ]
         target: [
           "i686-unknown-linux-gnu",
           "x86_64-unknown-linux-gnu",
@@ -70,6 +70,8 @@ jobs:
             features: "--all-features"
           - toolchain: "zerocopy-generic-bounds-in-const-fn"
             features: "--all-features"
+          - toolchain: "zerocopy-atomics"
+            features: "--all-features"
           - toolchain: "zerocopy-aarch64-simd"
             features: "--all-features"
           - toolchain: "zerocopy-panic-in-const"
@@ -88,6 +90,8 @@ jobs:
           # zerocopy-derive doesn't behave different on these toolchains.
           - crate: "zerocopy-derive"
             toolchain: "zerocopy-generic-bounds-in-const-fn"
+          - crate: "zerocopy-derive"
+            toolchain: "zerocopy-atomics"
           - crate: "zerocopy-derive"
             toolchain: "zerocopy-aarch64-simd"
           - crate: "zerocopy-derive"
