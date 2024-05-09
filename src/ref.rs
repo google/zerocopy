@@ -302,7 +302,9 @@ where
     #[inline]
     pub fn new(bytes: B) -> Result<Ref<B, T>, CastError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        if let Err(e) = Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T>() {
+        if let Err(e) =
+            Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T, BecauseImmutable>()
+        {
             return Err(e.with_src(()).with_src(bytes));
         }
         // SAFETY: `try_cast_into_no_leftover` validates size and alignment.
@@ -346,7 +348,9 @@ where
     #[inline]
     pub fn new_from_prefix(bytes: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        let remainder = match Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Prefix) {
+        let remainder = match Ptr::from_ref(bytes.deref())
+            .try_cast_into::<T, BecauseImmutable>(CastType::Prefix)
+        {
             Ok((_, remainder)) => remainder,
             Err(e) => {
                 return Err(e.with_src(()).with_src(bytes));
@@ -403,7 +407,9 @@ where
     #[inline]
     pub fn new_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        let remainder = match Ptr::from_ref(bytes.deref()).try_cast_into::<T>(CastType::Suffix) {
+        let remainder = match Ptr::from_ref(bytes.deref())
+            .try_cast_into::<T, BecauseImmutable>(CastType::Suffix)
+        {
             Ok((_, remainder)) => remainder,
             Err(e) => {
                 let e = e.with_src(());
@@ -661,7 +667,7 @@ where
         // `b.into()` produces a byte slice with identical address and length to
         // that produced by `b.deref()`.
         let ptr = Ptr::from_ref(b.into())
-            .try_cast_into_no_leftover::<T>()
+            .try_cast_into_no_leftover::<T, BecauseImmutable>()
             .expect("zerocopy internal error: into_ref should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
         ptr.as_ref()
@@ -691,7 +697,7 @@ where
         // `b.into()` produces a byte slice with identical address and length to
         // that produced by `b.deref_mut()`.
         let ptr = Ptr::from_mut(b.into())
-            .try_cast_into_no_leftover::<T>()
+            .try_cast_into_no_leftover::<T, BecauseExclusive>()
             .expect("zerocopy internal error: into_ref should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
         ptr.as_mut()
@@ -786,7 +792,7 @@ where
         // are valid for `T`, and by invariant on `ByteSlice`, these are
         // preserved through `.deref()`, so this `unwrap` will not panic.
         let ptr = Ptr::from_ref(b.deref())
-            .try_cast_into_no_leftover::<T>()
+            .try_cast_into_no_leftover::<T, BecauseImmutable>()
             .expect("zerocopy internal error: Deref::deref should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
         ptr.as_ref()
@@ -811,7 +817,7 @@ where
         // are preserved through `.deref_mut()`, so this `unwrap` will not
         // panic.
         let ptr = Ptr::from_mut(b.deref_mut())
-            .try_cast_into_no_leftover::<T>()
+            .try_cast_into_no_leftover::<T, BecauseExclusive>()
             .expect("zerocopy internal error: DerefMut::deref_mut should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
         ptr.as_mut()

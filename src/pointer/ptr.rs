@@ -8,7 +8,7 @@
 
 use core::ptr::NonNull;
 
-use crate::{util::AsAddress, CastType, Immutable, KnownLayout};
+use crate::{util::AsAddress, CastType, KnownLayout};
 
 /// Module used to gate access to [`Ptr`]'s fields.
 mod def {
@@ -910,7 +910,10 @@ mod _transitions {
 /// Casts of the referent type.
 mod _casts {
     use super::*;
-    use crate::{layout::MetadataCastError, AlignmentError, CastError, PointerMetadata, SizeError};
+    use crate::{
+        layout::MetadataCastError, pointer::aliasing_safety::*, AlignmentError, CastError,
+        PointerMetadata, SizeError,
+    };
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
@@ -996,11 +999,14 @@ mod _casts {
     where
         T: 'a + KnownLayout + ?Sized,
         I: Invariants<Validity = Initialized>,
-        T: Immutable,
     {
         /// Casts this pointer-to-initialized into a pointer-to-bytes.
         #[allow(clippy::wrong_self_convention)]
-        pub(crate) fn as_bytes(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Valid)> {
+        pub(crate) fn as_bytes<R>(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Valid)>
+        where
+            [u8]: AliasingSafe<T, I::Aliasing, R>,
+            R: AliasingSafeReason,
+        {
             let bytes = match T::size_of_val_raw(self.as_non_null()) {
                 Some(bytes) => bytes,
                 // SAFETY: `KnownLayout::size_of_val_raw` promises to always
@@ -1016,8 +1022,10 @@ mod _casts {
             //   pointer's address, and `bytes` is the length of `p`, so the
             //   returned pointer addresses the same bytes as `p`
             // - `slice_from_raw_parts_mut` and `.cast` both preserve provenance
-            // - `T` and `[u8]` trivially contain `UnsafeCell`s at identical
-            //   ranges [u8]`, because both are `Immutable`.
+            // - Because `[u8]: AliasingSafe<T, I::Aliasing, _>`, either:
+            //   - `I::Aliasing` is `Exclusive`
+            //   - `T` and `[u8]` are both `Immutable`, in which case they
+            //     trivially contain `UnsafeCell`s at identical locations
             let ptr: Ptr<'a, [u8], _> = unsafe {
                 self.cast_unsized(|p: *mut T| {
                     #[allow(clippy::as_conversions)]
@@ -1112,13 +1120,17 @@ mod _casts {
         /// - If this is a prefix cast, `ptr` has the same address as `self`.
         /// - If this is a suffix cast, `remainder` has the same address as
         ///   `self`.
-        pub(crate) fn try_cast_into<U: 'a + ?Sized + KnownLayout + Immutable>(
+        pub(crate) fn try_cast_into<U, R>(
             self,
             cast_type: CastType,
         ) -> Result<
             (Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, Ptr<'a, [u8], I>),
             CastError<Self, U>,
-        > {
+        >
+        where
+            R: AliasingSafeReason,
+            U: 'a + ?Sized + KnownLayout + AliasingSafe<[u8], I::Aliasing, R>,
+        {
             crate::util::assert_dst_is_not_zst::<U>();
             // PANICS: By invariant, the byte range addressed by `self.ptr` does
             // not wrap around the address space. This implies that the sum of
@@ -1172,9 +1184,12 @@ mod _casts {
             //       does not wrap around the address space, so does `ptr`.
             //    5. Since, by invariant, `target` refers to an allocation which
             //       is guaranteed to live for at least `'a`, so does `ptr`.
-            //    6. Since, by invariant, `target` conforms to the aliasing
-            //       invariant of `I::Aliasing` with regards to its referent
-            //       bytes, so does `ptr`.
+            //    6. Since `U: AliasingSafe<[u8], I::Aliasing, _>`, either:
+            //       - `I::Aliasing` is `Exclusive`, in which case both `src`
+            //         and `ptr` conform to `Exclusive`
+            //       - `I::Aliasing` is `Shared` or `Any` and both `U` and
+            //         `[u8]` are `Immutable`. In this case, neither pointer
+            //         permits mutation, and so `Shared` aliasing is satisfied.
             // 7. `ptr` conforms to the alignment invariant of `Aligned` because
             //    it is derived from `validate_cast_and_convert_metadata`, which
             //    promises that the object described by `target` is validly
@@ -1198,9 +1213,13 @@ mod _casts {
         /// references the same byte range as `self`.
         #[allow(unused)]
         #[inline(always)]
-        pub(crate) fn try_cast_into_no_leftover<U: 'a + ?Sized + KnownLayout + Immutable>(
+        pub(crate) fn try_cast_into_no_leftover<U, R>(
             self,
-        ) -> Result<Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, CastError<Self, U>> {
+        ) -> Result<Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, CastError<Self, U>>
+        where
+            U: 'a + ?Sized + KnownLayout + AliasingSafe<[u8], I::Aliasing, R>,
+            R: AliasingSafeReason,
+        {
             // TODO(#67): Remove this allow. See NonNulSlicelExt for more
             // details.
             #[allow(unstable_name_collisions)]
@@ -1459,7 +1478,7 @@ mod tests {
     use static_assertions::{assert_impl_all, assert_not_impl_any};
 
     use super::*;
-    use crate::{util::testutil::AU64, FromBytes};
+    use crate::{pointer::BecauseImmutable, util::testutil::AU64, FromBytes, Immutable};
 
     #[test]
     fn test_split_at() {
@@ -1546,7 +1565,7 @@ mod tests {
 
                     for cast_type in [CastType::Prefix, CastType::Suffix] {
                         if let Ok((slf, remaining)) =
-                            Ptr::from_ref(bytes).try_cast_into::<T>(cast_type)
+                            Ptr::from_ref(bytes).try_cast_into::<T, BecauseImmutable>(cast_type)
                         {
                             // SAFETY: All bytes in `bytes` have been
                             // initialized.
@@ -1563,7 +1582,9 @@ mod tests {
                         }
                     }
 
-                    if let Ok(slf) = Ptr::from_ref(bytes).try_cast_into_no_leftover::<T>() {
+                    if let Ok(slf) =
+                        Ptr::from_ref(bytes).try_cast_into_no_leftover::<T, BecauseImmutable>()
+                    {
                         // SAFETY: All bytes in `bytes` have been
                         // initialized.
                         let len = unsafe { validate_and_get_len(slf) };
