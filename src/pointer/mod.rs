@@ -11,7 +11,9 @@
 mod aliasing_safety;
 mod ptr;
 
-pub use aliasing_safety::{AliasingSafe, BecauseExclusive, BecauseImmutable};
+pub use aliasing_safety::{
+    AliasingSafe, BecauseExclusive, BecauseImmutable, BecauseUnsafeCellsAgree,
+};
 pub use ptr::{invariant, Ptr};
 
 use crate::Unaligned;

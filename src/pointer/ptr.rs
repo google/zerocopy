@@ -343,7 +343,10 @@ mod _external {
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
     use super::*;
-    use crate::util::{AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance};
+    use crate::{
+        pointer::BecauseUnsafeCellsAgree,
+        util::{AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance},
+    };
 
     /// `&'a T` → `Ptr<'a, T>`
     impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
@@ -578,7 +581,11 @@ mod _conversions {
             //   byte ranges. Since `p` and the returned pointer address the
             //   same byte range, they refer to `UnsafeCell`s at the same byte
             //   ranges.
-            let c = unsafe { self.cast_unsized(|p| T::cast_into_inner(p)) };
+            let c = unsafe {
+                self.cast_unsized::<T::Inner, (BecauseUnsafeCellsAgree, I), _>(|p| {
+                    T::cast_into_inner(p)
+                })
+            };
             // SAFETY: By invariant on `TransparentWrapper`, since `self`
             // satisfies the alignment invariant `I::Alignment`, `c` (of type
             // `T::Inner`) satisfies the given "applied" alignment invariant.
@@ -933,10 +940,14 @@ mod _casts {
         ///   exist in `*p`
         #[doc(hidden)]
         #[inline]
-        pub unsafe fn cast_unsized<U: 'a + ?Sized, F: FnOnce(*mut T) -> *mut U>(
+        pub unsafe fn cast_unsized<U: 'a + ?Sized, R, F: FnOnce(*mut T) -> *mut U>(
             self,
             cast: F,
-        ) -> Ptr<'a, U, (I::Aliasing, Any, Any)> {
+        ) -> Ptr<'a, U, (I::Aliasing, Any, Any)>
+        where
+            R: AliasingSafeReason,
+            U: AliasingSafe<T, I::Aliasing, R>,
+        {
             let ptr = cast(self.as_non_null().as_ptr());
 
             // SAFETY: Caller promises that `cast` returns a pointer whose
@@ -1252,6 +1263,7 @@ mod _casts {
 mod _project {
     use core::ops::Range;
 
+    use crate::pointer::{aliasing_safety::AliasingSafeReason, AliasingSafe};
     #[allow(unused_imports)]
     use crate::util::polyfills::NumExt as _;
 
@@ -1267,12 +1279,18 @@ mod _project {
         /// # Safety
         ///
         /// `project` has the same safety preconditions as `cast_unsized`.
+        ///
+        /// TODO: UPDATE ME!
         #[doc(hidden)]
         #[inline]
-        pub unsafe fn project<U: 'a + ?Sized>(
+        pub unsafe fn project<U: 'a + ?Sized, R>(
             self,
             projector: impl FnOnce(*mut T) -> *mut U,
-        ) -> Ptr<'a, U, (I::Aliasing, Any, Initialized)> {
+        ) -> Ptr<'a, U, (I::Aliasing, Any, Initialized)>
+        where
+            R: AliasingSafeReason,
+            U: AliasingSafe<T, I::Aliasing, R>,
+        {
             // TODO(#1122): If `cast_unsized` were able to reason that, when
             // casting from an `Initialized` pointer, the result is another
             // `Initialized` pointer, we could remove this method entirely.

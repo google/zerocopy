@@ -8,7 +8,11 @@
 
 //! Machinery for statically proving the "aliasing-safety" of a `Ptr`.
 
-use crate::{invariant, Immutable};
+use crate::{
+    invariant,
+    util::{Covariant, TransparentWrapper},
+    Immutable,
+};
 
 /// Pointer conversions which do not violate aliasing.
 ///
@@ -20,9 +24,10 @@ use crate::{invariant, Immutable};
 ///
 /// `U: AliasingSafe<T, A, R>` if either of the following conditions holds:
 /// - `A` is [`Exclusive`]
-/// - `T` and `U` both implement [`Immutable`]
+/// - `T` and `U` contain [`UnsafeCell`]s at the same locations
 ///
 /// [`Exclusive`]: crate::pointer::invariant::Exclusive
+/// [`UnsafeCell`]: core::cell::UnsafeCell
 #[doc(hidden)]
 pub unsafe trait AliasingSafe<T: ?Sized, A: invariant::Aliasing, R: AliasingSafeReason> {}
 
@@ -32,6 +37,8 @@ mod sealed {
 
     impl Sealed for super::BecauseExclusive {}
     impl Sealed for super::BecauseImmutable {}
+    impl Sealed for super::BecauseUnsafeCellsAgree {}
+    impl<I> Sealed for (super::BecauseUnsafeCellsAgree, I) {}
     impl<S: Sealed> Sealed for (S,) {}
 }
 
@@ -52,6 +59,16 @@ impl AliasingSafeReason for BecauseExclusive {}
 pub enum BecauseImmutable {}
 impl AliasingSafeReason for BecauseImmutable {}
 
+/// The conversion is safe because the source and destination types contain
+/// [`UnsafeCell`]s at the same locations.
+///
+/// [`UnsafeCell`]: core::cell::UnsafeCell
+#[derive(Copy, Clone, Debug)]
+#[doc(hidden)]
+pub enum BecauseUnsafeCellsAgree {}
+impl AliasingSafeReason for BecauseUnsafeCellsAgree {}
+impl<I> AliasingSafeReason for (BecauseUnsafeCellsAgree, I) {}
+
 /// SAFETY: `T: AliasingSafe<Exclusive, BecauseExclusive>` because for all
 /// `Ptr<'a, T, I>` such that `I::Aliasing = Exclusive`, there cannot exist
 /// other live references to the memory referenced by `Ptr`.
@@ -67,6 +84,15 @@ where
     A: invariant::Aliasing,
     T: Immutable,
     U: Immutable,
+{
+}
+
+// TODO: Rejigger TransparentWrapper to not have to mention other invariants.
+unsafe impl<I, T: ?Sized, W: ?Sized> AliasingSafe<T, I::Aliasing, (BecauseUnsafeCellsAgree, I)>
+    for W
+where
+    I: invariant::Invariants,
+    W: TransparentWrapper<I, Inner = T, UnsafeCellVariance = Covariant>,
 {
 }
 
