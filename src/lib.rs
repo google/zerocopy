@@ -1427,7 +1427,7 @@ pub unsafe trait TryFromBytes {
     #[inline]
     fn try_mut_from(bytes: &mut [u8]) -> Result<&mut Self, TryCastError<&mut [u8], Self>>
     where
-        Self: KnownLayout + Immutable, // TODO(#251): Remove the `Immutable` bound.
+        Self: KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
         match Ptr::from_mut(bytes).try_cast_into_no_leftover::<Self, BecauseExclusive>() {
@@ -1532,7 +1532,7 @@ pub unsafe trait TryFromBytes {
         candidate: &mut [u8],
     ) -> Result<(&mut Self, &mut [u8]), TryCastError<&mut [u8], Self>>
     where
-        Self: KnownLayout + Immutable,
+        Self: KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
         try_mut_from_prefix_suffix(candidate, CastType::Prefix)
@@ -1619,7 +1619,7 @@ pub unsafe trait TryFromBytes {
         candidate: &mut [u8],
     ) -> Result<(&mut [u8], &mut Self), TryCastError<&mut [u8], Self>>
     where
-        Self: KnownLayout + Immutable,
+        Self: KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
         try_mut_from_prefix_suffix(candidate, CastType::Suffix).map(swap)
@@ -2535,7 +2535,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn mut_from(bytes: &mut [u8]) -> Result<&mut Self, CastError<&mut [u8], Self>>
     where
-        Self: IntoBytes + KnownLayout + Immutable,
+        Self: IntoBytes + KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
         match Ptr::from_mut(bytes).try_cast_into_no_leftover::<_, BecauseExclusive>() {
@@ -2610,7 +2610,7 @@ pub unsafe trait FromBytes: FromZeros {
         bytes: &mut [u8],
     ) -> Result<(&mut Self, &mut [u8]), CastError<&mut [u8], Self>>
     where
-        Self: IntoBytes + KnownLayout + Immutable,
+        Self: IntoBytes + KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
         let (slf, suffix) = Ptr::from_mut(bytes)
@@ -2679,7 +2679,7 @@ pub unsafe trait FromBytes: FromZeros {
         bytes: &mut [u8],
     ) -> Result<(&mut [u8], &mut Self), CastError<&mut [u8], Self>>
     where
-        Self: IntoBytes + KnownLayout + Immutable,
+        Self: IntoBytes + KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
         let (slf, prefix) = Ptr::from_mut(bytes)
@@ -3483,7 +3483,7 @@ pub unsafe trait IntoBytes {
     #[inline(always)]
     fn as_mut_bytes(&mut self) -> &mut [u8]
     where
-        Self: FromBytes + Immutable,
+        Self: FromBytes,
     {
         // Note that this method does not have a `Self: Sized` bound;
         // `size_of_val` works for unsized values too.
@@ -3718,7 +3718,7 @@ pub unsafe trait IntoBytes {
     #[inline]
     fn as_bytes_mut(&mut self) -> &mut [u8]
     where
-        Self: FromBytes + Immutable,
+        Self: FromBytes,
     {
         self.as_mut_bytes()
     }
@@ -5076,20 +5076,16 @@ macro_rules! transmute_mut {
             struct AssertSrcIsSized<'a, T: ::core::marker::Sized>(&'a T);
             struct AssertSrcIsFromBytes<'a, T: ?::core::marker::Sized + $crate::FromBytes>(&'a T);
             struct AssertSrcIsIntoBytes<'a, T: ?::core::marker::Sized + $crate::IntoBytes>(&'a T);
-            struct AssertSrcIsImmutable<'a, T: ?::core::marker::Sized + $crate::Immutable>(&'a T);
             struct AssertDstIsSized<'a, T: ::core::marker::Sized>(&'a T);
             struct AssertDstIsFromBytes<'a, T: ?::core::marker::Sized + $crate::FromBytes>(&'a T);
             struct AssertDstIsIntoBytes<'a, T: ?::core::marker::Sized + $crate::IntoBytes>(&'a T);
-            struct AssertDstIsImmutable<'a, T: ?::core::marker::Sized + $crate::Immutable>(&'a T);
 
             if true {
                 let _ = AssertSrcIsSized(&*e);
             } else if true {
                 let _ = AssertSrcIsFromBytes(&*e);
-            } else if true {
-                let _ = AssertSrcIsIntoBytes(&*e);
             } else {
-                let _ = AssertSrcIsImmutable(&*e);
+                let _ = AssertSrcIsIntoBytes(&*e);
             }
 
             if true {
@@ -5100,13 +5096,9 @@ macro_rules! transmute_mut {
                 #[allow(unused, unreachable_code)]
                 let u = AssertDstIsFromBytes(loop {});
                 &mut *u.0
-            } else if true {
-                #[allow(unused, unreachable_code)]
-                let u = AssertDstIsIntoBytes(loop {});
-                &mut *u.0
             } else {
                 #[allow(unused, unreachable_code)]
-                let u = AssertDstIsImmutable(loop {});
+                let u = AssertDstIsIntoBytes(loop {});
                 &mut *u.0
             }
         } else if false {
@@ -5129,11 +5121,6 @@ macro_rules! transmute_mut {
             &mut u
         } else {
             // SAFETY: For source type `Src` and destination type `Dst`:
-            // - We know that `Src: FromBytes + IntoBytes + Immutable` and `Dst:
-            //   FromBytes + IntoBytes + Immutable` thanks to the uses of
-            //   `AssertSrcIsFromBytes`, `AssertSrcIsIntoBytes`,
-            //   `AssertSrcIsImmutable`, `AssertDstIsFromBytes`,
-            //   `AssertDstIsIntoBytes`, and `AssertDstIsImmutable` above.
             // - We know that `size_of::<Src>() == size_of::<Dst>()` thanks to
             //   the use of `assert_size_eq!` above.
             // - We know that `align_of::<Src>() >= align_of::<Dst>()` thanks to
