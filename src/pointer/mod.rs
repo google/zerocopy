@@ -8,8 +8,10 @@
 
 //! Abstractions over raw pointers.
 
+mod aliasing_safety;
 mod ptr;
 
+pub use aliasing_safety::{AliasingSafe, BecauseExclusive, BecauseImmutable};
 pub use ptr::{invariant, Ptr};
 
 use crate::Unaligned;
@@ -70,5 +72,5 @@ where
     I: invariant::Invariants<Validity = invariant::Initialized>,
     I::Aliasing: invariant::AtLeast<invariant::Shared>,
 {
-    ptr.as_bytes().as_ref().iter().all(|&byte| byte == 0)
+    ptr.as_bytes::<BecauseImmutable>().as_ref().iter().all(|&byte| byte == 0)
 }

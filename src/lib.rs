@@ -322,7 +322,7 @@ use core::{
     },
 };
 
-use crate::pointer::invariant;
+use crate::pointer::{invariant, BecauseExclusive, BecauseImmutable};
 
 #[cfg(any(feature = "alloc", test))]
 extern crate alloc;
@@ -1177,7 +1177,7 @@ pub unsafe trait TryFromBytes {
         Self: KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        match Ptr::from_ref(candidate).try_cast_into_no_leftover::<Self>() {
+        match Ptr::from_ref(candidate).try_cast_into_no_leftover::<Self, BecauseImmutable>() {
             Ok(candidate) => {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
@@ -1189,7 +1189,9 @@ pub unsafe trait TryFromBytes {
                 // condition will not happen.
                 match candidate.try_into_valid() {
                     Ok(valid) => Ok(valid.as_ref()),
-                    Err(e) => Err(e.map_src(|src| src.as_bytes().as_ref()).into()),
+                    Err(e) => {
+                        Err(e.map_src(|src| src.as_bytes::<BecauseImmutable>().as_ref()).into())
+                    }
                 }
             }
             Err(e) => Err(e.map_src(Ptr::as_ref).into()),
@@ -1428,7 +1430,7 @@ pub unsafe trait TryFromBytes {
         Self: KnownLayout + Immutable, // TODO(#251): Remove the `Immutable` bound.
     {
         util::assert_dst_is_not_zst::<Self>();
-        match Ptr::from_mut(bytes).try_cast_into_no_leftover::<Self>() {
+        match Ptr::from_mut(bytes).try_cast_into_no_leftover::<Self, BecauseExclusive>() {
             Ok(candidate) => {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
@@ -1440,7 +1442,9 @@ pub unsafe trait TryFromBytes {
                 // condition will not happen.
                 match candidate.try_into_valid() {
                     Ok(candidate) => Ok(candidate.as_mut()),
-                    Err(e) => Err(e.map_src(|src| src.as_bytes().as_mut()).into()),
+                    Err(e) => {
+                        Err(e.map_src(|src| src.as_bytes::<BecauseExclusive>().as_mut()).into())
+                    }
                 }
             }
             Err(e) => Err(e.map_src(Ptr::as_mut).into()),
@@ -1707,7 +1711,7 @@ fn try_ref_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized
     candidate: &[u8],
     cast_type: CastType,
 ) -> Result<(&T, &[u8]), TryCastError<&[u8], T>> {
-    match Ptr::from_ref(candidate).try_cast_into::<T>(cast_type) {
+    match Ptr::from_ref(candidate).try_cast_into::<T, BecauseImmutable>(cast_type) {
         Ok((candidate, prefix_suffix)) => {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
@@ -1719,7 +1723,7 @@ fn try_ref_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized
             // condition will not happen.
             match candidate.try_into_valid() {
                 Ok(valid) => Ok((valid.as_ref(), prefix_suffix.as_ref())),
-                Err(e) => Err(e.map_src(|src| src.as_bytes().as_ref()).into()),
+                Err(e) => Err(e.map_src(|src| src.as_bytes::<BecauseImmutable>().as_ref()).into()),
             }
         }
         Err(e) => Err(e.map_src(Ptr::as_ref).into()),
@@ -1727,11 +1731,11 @@ fn try_ref_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized
 }
 
 #[inline(always)]
-fn try_mut_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized>(
+fn try_mut_from_prefix_suffix<T: TryFromBytes + KnownLayout + ?Sized>(
     candidate: &mut [u8],
     cast_type: CastType,
 ) -> Result<(&mut T, &mut [u8]), TryCastError<&mut [u8], T>> {
-    match Ptr::from_mut(candidate).try_cast_into::<T>(cast_type) {
+    match Ptr::from_mut(candidate).try_cast_into::<T, BecauseExclusive>(cast_type) {
         Ok((candidate, prefix_suffix)) => {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
@@ -1743,7 +1747,7 @@ fn try_mut_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized
             // condition will not happen.
             match candidate.try_into_valid() {
                 Ok(valid) => Ok((valid.as_mut(), prefix_suffix.as_mut())),
-                Err(e) => Err(e.map_src(|src| src.as_bytes().as_mut()).into()),
+                Err(e) => Err(e.map_src(|src| src.as_bytes::<BecauseExclusive>().as_mut()).into()),
             }
         }
         Err(e) => Err(e.map_src(Ptr::as_mut).into()),
@@ -2332,7 +2336,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        match Ptr::from_ref(bytes).try_cast_into_no_leftover() {
+        match Ptr::from_ref(bytes).try_cast_into_no_leftover::<_, BecauseImmutable>() {
             Ok(ptr) => Ok(ptr.bikeshed_recall_valid().as_ref()),
             Err(err) => Err(err.map_src(|src| src.as_ref())),
         }
@@ -2407,7 +2411,7 @@ pub unsafe trait FromBytes: FromZeros {
     {
         util::assert_dst_is_not_zst::<Self>();
         let (slf, suffix) = Ptr::from_ref(bytes)
-            .try_cast_into(CastType::Prefix)
+            .try_cast_into::<_, BecauseImmutable>(CastType::Prefix)
             .map_err(|err| err.map_src(|s| s.as_ref()))?;
         Ok((slf.bikeshed_recall_valid().as_ref(), suffix.as_ref()))
     }
@@ -2467,7 +2471,7 @@ pub unsafe trait FromBytes: FromZeros {
     {
         util::assert_dst_is_not_zst::<Self>();
         let (slf, prefix) = Ptr::from_ref(bytes)
-            .try_cast_into(CastType::Suffix)
+            .try_cast_into::<_, BecauseImmutable>(CastType::Suffix)
             .map_err(|err| err.map_src(|s| s.as_ref()))?;
         Ok((prefix.as_ref(), slf.bikeshed_recall_valid().as_ref()))
     }
@@ -2534,7 +2538,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: IntoBytes + KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        match Ptr::from_mut(bytes).try_cast_into_no_leftover() {
+        match Ptr::from_mut(bytes).try_cast_into_no_leftover::<_, BecauseExclusive>() {
             Ok(ptr) => Ok(ptr.bikeshed_recall_valid().as_mut()),
             Err(err) => Err(err.map_src(|src| src.as_mut())),
         }
@@ -2610,7 +2614,7 @@ pub unsafe trait FromBytes: FromZeros {
     {
         util::assert_dst_is_not_zst::<Self>();
         let (slf, suffix) = Ptr::from_mut(bytes)
-            .try_cast_into(CastType::Prefix)
+            .try_cast_into::<_, BecauseExclusive>(CastType::Prefix)
             .map_err(|err| err.map_src(|s| s.as_mut()))?;
         Ok((slf.bikeshed_recall_valid().as_mut(), suffix.as_mut()))
     }
@@ -2679,7 +2683,7 @@ pub unsafe trait FromBytes: FromZeros {
     {
         util::assert_dst_is_not_zst::<Self>();
         let (slf, prefix) = Ptr::from_mut(bytes)
-            .try_cast_into(CastType::Suffix)
+            .try_cast_into::<_, BecauseExclusive>(CastType::Suffix)
             .map_err(|err| err.map_src(|s| s.as_mut()))?;
         Ok((prefix.as_mut(), slf.bikeshed_recall_valid().as_mut()))
     }
