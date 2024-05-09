@@ -4709,20 +4709,50 @@ macro_rules! include_value {
 ///
 /// Implementations of `ByteSlice` must promise that their implementations of
 /// [`Deref`] and [`DerefMut`] are "stable". In particular, given `B: ByteSlice`
-/// and `b: B`, `b` must always dereference to a byte slice with the same
-/// address and length. This is true for both `b.deref()` and `b.deref_mut()`.
-/// If `B: Copy` or `B: Clone`, then the same is also true of copies or clones
-/// of `b`. For example, `b.deref_mut()` must return a byte slice with the same
-/// address and length as `b.clone().deref()`.
+/// and `b: B`, two calls, each to either `b.deref()` or `b.deref_mut()`, must
+/// return a byte slice with the same address and length. This must hold even if
+/// the two calls are separated by an arbitrary sequence of calls to methods on
+/// `ByteSlice`, [`ByteSliceMut`], [`IntoByteSlice`], or [`IntoByteSliceMut`],
+/// or on their super-traits. This does *not* need to hold if the two calls are
+/// separated by any method calls, field accesses, or field modifications *other
+/// than* those from these traits.
+///
+/// Note that this also implies that, given `b: B`, the address and length
+/// cannot be modified via objects other than `b`, either on the same thread or
+/// on another thread.
 pub unsafe trait ByteSlice: Deref<Target = [u8]> + Sized {}
 
-#[allow(clippy::missing_safety_doc)] // TODO(fxbug.dev/99068)
 /// A mutable reference to a byte slice.
 ///
 /// `ByteSliceMut` abstracts over various ways of storing a mutable reference to
 /// a byte slice, and is implemented for various special reference types such as
 /// `RefMut<[u8]>`.
-pub unsafe trait ByteSliceMut: ByteSlice + DerefMut {}
+///
+/// `ByteSliceMut` is a shorthand for [`ByteSlice`] and [`DerefMut`].
+pub trait ByteSliceMut: ByteSlice + DerefMut {}
+impl<B: ByteSlice + DerefMut> ByteSliceMut for B {}
+
+/// A [`ByteSlice`] which can be copied without violating dereference stability.
+///
+/// # Safety
+///
+/// If `B: CopyableByteSlice`, then the dereference stability properties
+/// required by `ByteSlice` (see that trait's safety documentation) do not only
+/// hold regarding two calls to `b.deref()` or `b.deref_mut()`, but also hold
+/// regarding `c.deref()` or `c.deref_mut()`, where `c` is produced by copying
+/// `b`.
+pub unsafe trait CopyableByteSlice: ByteSlice + Copy + CloneableByteSlice {}
+
+/// A [`ByteSlice`] which can be cloned without violating dereference stability.
+///
+/// # Safety
+///
+/// If `B: CloneableByteSlice`, then the dereference stability properties
+/// required by `ByteSlice` (see that trait's safety documentation) do not only
+/// hold regarding two calls to `b.deref()` or `b.deref_mut()`, but also hold
+/// regarding `c.deref()` or `c.deref_mut()`, where `c` is produced by
+/// `b.clone()`, `b.clone().clone()`, etc.
+pub unsafe trait CloneableByteSlice: ByteSlice + Clone {}
 
 /// A [`ByteSlice`] that can be split in two.
 ///
@@ -4833,6 +4863,14 @@ pub trait IntoByteSliceMut<'a>: ByteSliceMut + Into<&'a mut [u8]> {}
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl<'a> ByteSlice for &'a [u8] {}
+
+// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+#[allow(clippy::undocumented_unsafe_blocks)]
+unsafe impl<'a> CopyableByteSlice for &'a [u8] {}
+
+// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+#[allow(clippy::undocumented_unsafe_blocks)]
+unsafe impl<'a> CloneableByteSlice for &'a [u8] {}
 
 // SAFETY: This delegates to `polyfills:split_at_unchecked`, which is documented
 // to correctly split `self` into two slices at the given `mid` point.
@@ -4949,14 +4987,6 @@ unsafe impl<'a> SplitByteSlice for RefMut<'a, [u8]> {
             })
     }
 }
-
-// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
-#[allow(clippy::undocumented_unsafe_blocks)]
-unsafe impl<'a> ByteSliceMut for &'a mut [u8] {}
-
-// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
-#[allow(clippy::undocumented_unsafe_blocks)]
-unsafe impl<'a> ByteSliceMut for RefMut<'a, [u8]> {}
 
 #[cfg(feature = "alloc")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
