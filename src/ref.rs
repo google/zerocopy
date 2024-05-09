@@ -677,7 +677,7 @@ where
 impl<'a, B, T> Ref<B, T>
 where
     B: 'a + IntoByteSliceMut<'a>,
-    T: FromBytes + IntoBytes + KnownLayout + Immutable + ?Sized,
+    T: FromBytes + IntoBytes + KnownLayout + ?Sized,
 {
     /// Converts this `Ref` into a mutable reference.
     ///
@@ -802,6 +802,9 @@ where
 impl<B, T> DerefMut for Ref<B, T>
 where
     B: ByteSliceMut,
+    // TODO(#251): We can't remove `Immutable` here because it's required by
+    // the impl of `Deref`, which is a super-trait of `DerefMut`. Maybe we can
+    // add a separate inherent method for this?
     T: FromBytes + IntoBytes + KnownLayout + Immutable + ?Sized,
 {
     #[inline]

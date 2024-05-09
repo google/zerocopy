@@ -386,8 +386,8 @@ pub const unsafe fn transmute_ref<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
 /// # Safety
 ///
 /// The caller must guarantee that:
-/// - `Src: FromBytes + IntoBytes + Immutable`
-/// - `Dst: FromBytes + IntoBytes + Immutable`
+/// - `Src: FromBytes + IntoBytes`
+/// - `Dst: FromBytes + IntoBytes`
 /// - `size_of::<Src>() == size_of::<Dst>()`
 /// - `align_of::<Src>() >= align_of::<Dst>()`
 // TODO(#686): Consider removing the `Immutable` requirement.
@@ -403,9 +403,6 @@ pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
     //   vice-versa because the caller has guaranteed that `Src: FromBytes +
     //   IntoBytes`, `Dst: FromBytes + IntoBytes`, and `size_of::<Src>() ==
     //   size_of::<Dst>()`.
-    // - We know that there are no `UnsafeCell`s, and thus we don't have to
-    //   worry about `UnsafeCell` overlap, because `Src: Immutable`
-    //   and `Dst: Immutable`.
     // - The caller has guaranteed that alignment is not increased.
     // - We know that the returned lifetime will not outlive the input lifetime
     //   thanks to the lifetime bounds on this function.
