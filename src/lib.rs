@@ -4428,12 +4428,17 @@ unsafe impl<T: TryFromBytes> TryFromBytes for UnsafeCell<T> {
         // We wrap in `Unalign` here so that we can get a vanilla Rust reference
         // below, which in turn allows us to call `UnsafeCell::get_mut`.
         //
-        // SAFETY: `Unalign` and `MaybeUninit` both have the same size as the
-        // types they wrap [1]. Thus, this cast will preserve the size of the
-        // pointer. Since both the source and destination types are wrapped in
-        // `UnsafeCell`, all bytes of both types are inside of `UnsafeCell`s,
-        // and so the byte ranges covered by `UnsafeCell`s are identical in both
-        // types.
+        // SAFETY:
+        // - `.cast` preserves address. `Unalign` and `MaybeUninit` both have
+        //   the same size as the types they wrap [1]. Thus, this cast will
+        //   preserve the size of the pointer. As a result, the cast will
+        //   address the same bytes as `c`.
+        // - `.cast` preserves provenance.
+        // - Since both the source and destination types are wrapped in
+        //   `UnsafeCell`, all bytes of both types are inside of `UnsafeCell`s,
+        //   and so the byte ranges covered by `UnsafeCell`s are identical in
+        //   both types. Since the pointers refer to the same byte ranges,
+        //   the same is true of the pointers' referents as well.
         //
         // [1] Per https://doc.rust-lang.org/stable/core/mem/union.MaybeUninit.html#layout-1:
         //
