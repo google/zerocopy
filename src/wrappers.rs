@@ -59,7 +59,7 @@ use super::*;
 pub struct Unalign<T>(T);
 
 #[cfg(not(any(feature = "derive", test)))]
-impl_known_layout!(T => Unalign<T>);
+impl_known_layout!(T: KnownLayout => Unalign<T>);
 
 safety_comment! {
     /// SAFETY:

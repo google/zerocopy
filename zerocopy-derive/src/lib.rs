@@ -159,7 +159,7 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
             .unwrap_or(quote!(#core_path::option::Option::None));
 
         (
-            SelfBounds::None,
+            SelfBounds::All(&[Trait::KnownLayout]),
             quote!(
                 type PointerMetadata = <#trailing_field_ty as ::zerocopy::KnownLayout>::PointerMetadata;
 
@@ -219,7 +219,7 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
         // `Self` is sized, and as a result don't need to reason about the
         // internals of the type.
         (
-            SelfBounds::SIZED,
+            SelfBounds::All(&[Trait::KnownLayout, Trait::Sized][..]),
             quote!(
                 type PointerMetadata = ();
 

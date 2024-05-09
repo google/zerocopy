@@ -673,15 +673,15 @@ impl_known_layout!(
 );
 #[rustfmt::skip]
 impl_known_layout!(
-    T         => Option<T>,
-    T: ?Sized => PhantomData<T>,
-    T         => Wrapping<T>,
-    T         => MaybeUninit<T>,
-    T: ?Sized => *const T,
-    T: ?Sized => *mut T,
-    T         => AtomicPtr<T>
+    T: KnownLayout => Option<T>,
+    T: ?Sized      => PhantomData<T>,
+    T: KnownLayout => Wrapping<T>,
+    T: KnownLayout => MaybeUninit<T>,
+    T: ?Sized      => *const T,
+    T: ?Sized      => *mut T,
+    T: KnownLayout => AtomicPtr<T>
 );
-impl_known_layout!(const N: usize, T => [T; N]);
+impl_known_layout!(const N: usize, T: KnownLayout => [T; N]);
 
 safety_comment! {
     /// SAFETY:

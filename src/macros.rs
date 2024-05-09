@@ -526,19 +526,19 @@ macro_rules! impl_or_verify {
 
 /// Implements `KnownLayout` for a sized type.
 macro_rules! impl_known_layout {
-    ($(const $constvar:ident : $constty:ty, $tyvar:ident $(: ?$optbound:ident)? => $ty:ty),* $(,)?) => {
-        $(impl_known_layout!(@inner const $constvar: $constty, $tyvar $(: ?$optbound)? => $ty);)*
+    ($(const $constvar:ident : $constty:ty, $tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )? => $ty:ty),* $(,)?) => {
+        $(impl_known_layout!(@inner const $constvar: $constty, $tyvar $(: $(? $optbound +)* $($bound +)*)? => $ty);)*
     };
-    ($($tyvar:ident $(: ?$optbound:ident)? => $ty:ty),* $(,)?) => {
-        $(impl_known_layout!(@inner , $tyvar $(: ?$optbound)? => $ty);)*
+    ($($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )? => $ty:ty),* $(,)?) => {
+        $(impl_known_layout!(@inner , $tyvar $(: $(? $optbound +)* $($bound +)*)? => $ty);)*
     };
     ($($ty:ty),*) => { $(impl_known_layout!(@inner , => $ty);)* };
-    (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?)? => $ty:ty) => {
+    (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?)? => $ty:ty) => {
         const _: () = {
             use core::ptr::NonNull;
 
             // SAFETY: Delegates safety to `DstLayout::for_type`.
-            unsafe impl<$($tyvar $(: ?$optbound)?)? $(, const $constvar : $constty)?> KnownLayout for $ty {
+            unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)? $(, const $constvar : $constty)?> KnownLayout for $ty {
                 #[allow(clippy::missing_inline_in_public_items)]
                 fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
 
