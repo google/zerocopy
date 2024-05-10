@@ -54,7 +54,7 @@
 //!
 //! impl<B: SplitByteSlice> UdpPacket<B> {
 //!     fn parse(bytes: B) -> Option<UdpPacket<B>> {
-//!         let (header, body) = Ref::new_from_prefix(bytes).ok()?;
+//!         let (header, body) = Ref::from_prefix(bytes).ok()?;
 //!         Some(UdpPacket { header, body })
 //!     }
 //!

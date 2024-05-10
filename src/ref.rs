@@ -49,7 +49,7 @@ mod def {
     ///
     /// impl<B: SplitByteSlice> UdpPacket<B> {
     ///     pub fn parse(bytes: B) -> Option<UdpPacket<B>> {
-    ///         let (header, body) = Ref::new_unaligned_from_prefix(bytes).ok()?;
+    ///         let (header, body) = Ref::unaligned_from_prefix(bytes).ok()?;
     ///         Some(UdpPacket { header, body })
     ///     }
     ///
@@ -208,7 +208,7 @@ where
     B: ByteSlice,
 {
     #[must_use = "has no side effects"]
-    pub(crate) fn new_sized(bytes: B) -> Result<Ref<B, T>, CastError<B, T>> {
+    pub(crate) fn sized_from(bytes: B) -> Result<Ref<B, T>, CastError<B, T>> {
         if bytes.len() != mem::size_of::<T>() {
             return Err(SizeError::new(bytes).into());
         }
@@ -226,7 +226,7 @@ where
     B: SplitByteSlice,
 {
     #[must_use = "has no side effects"]
-    pub(crate) fn new_sized_from_prefix(bytes: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
+    pub(crate) fn sized_from_prefix(bytes: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
         if bytes.len() < mem::size_of::<T>() {
             return Err(SizeError::new(bytes).into());
         }
@@ -245,7 +245,7 @@ where
     }
 
     #[must_use = "has no side effects"]
-    pub(crate) fn new_sized_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
+    pub(crate) fn sized_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
         let bytes_len = bytes.len();
         let split_at = if let Some(split_at) = bytes_len.checked_sub(mem::size_of::<T>()) {
             split_at
@@ -273,9 +273,9 @@ where
     B: ByteSlice,
     T: KnownLayout + Immutable + ?Sized,
 {
-    /// Constructs a new `Ref`.
+    /// Constructs a new `Ref` from a byte slice.
     ///
-    /// `new` verifies that `bytes.len() == size_of::<T>()` and that `bytes` is
+    /// `from` verifies that `bytes.len() == size_of::<T>()` and that `bytes` is
     /// aligned to `align_of::<T>()`, and constructs a new `Ref`. If either of
     /// these checks fail, it returns `None`.
     ///
@@ -296,11 +296,11 @@ where
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let _ = Ref::<_, ZSTy>::new(&b"UU"[..]); // ⚠ Compile Error!
+    /// let _ = Ref::<_, ZSTy>::from(&b"UU"[..]); // ⚠ Compile Error!
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    pub fn new(bytes: B) -> Result<Ref<B, T>, CastError<B, T>> {
+    pub fn from(bytes: B) -> Result<Ref<B, T>, CastError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
         if let Err(e) =
             Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T, BecauseImmutable>(None)
@@ -319,7 +319,7 @@ where
 {
     /// Constructs a new `Ref` from the prefix of a byte slice.
     ///
-    /// `new_from_prefix` verifies that `bytes.len() >= size_of::<T>()` and that
+    /// `from_prefix` verifies that `bytes.len() >= size_of::<T>()` and that
     /// `bytes` is aligned to `align_of::<T>()`. It consumes the first
     /// `size_of::<T>()` bytes from `bytes` to construct a `Ref`, and returns
     /// the remaining bytes to the caller. If either the length or alignment
@@ -342,11 +342,11 @@ where
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let _ = Ref::<_, ZSTy>::new_from_prefix(&b"UU"[..]); // ⚠ Compile Error!
+    /// let _ = Ref::<_, ZSTy>::from_prefix(&b"UU"[..]); // ⚠ Compile Error!
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    pub fn new_from_prefix(bytes: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
+    pub fn from_prefix(bytes: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
         let remainder = match Ptr::from_ref(bytes.deref())
             .try_cast_into::<T, BecauseImmutable>(CastType::Prefix, None)
@@ -377,12 +377,11 @@ where
 
     /// Constructs a new `Ref` from the suffix of a byte slice.
     ///
-    /// `new_from_suffix` verifies that `bytes.len() >= size_of::<T>()` and that
-    /// the last `size_of::<T>()` bytes of `bytes` are aligned to
-    /// `align_of::<T>()`. It consumes the last `size_of::<T>()` bytes from
-    /// `bytes` to construct a `Ref`, and returns the preceding bytes to the
-    /// caller. If either the length or alignment checks fail, it returns
-    /// `None`.
+    /// `from_suffix` verifies that `bytes.len() >= size_of::<T>()` and that the
+    /// last `size_of::<T>()` bytes of `bytes` are aligned to `align_of::<T>()`.
+    /// It consumes the last `size_of::<T>()` bytes from `bytes` to construct a
+    /// `Ref`, and returns the preceding bytes to the caller. If either the
+    /// length or alignment checks fail, it returns `None`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -401,11 +400,11 @@ where
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let _ = Ref::<_, ZSTy>::new_from_suffix(&b"UU"[..]); // ⚠ Compile Error!
+    /// let _ = Ref::<_, ZSTy>::from_suffix(&b"UU"[..]); // ⚠ Compile Error!
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    pub fn new_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
+    pub fn from_suffix(bytes: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
         let remainder = match Ptr::from_ref(bytes.deref())
             .try_cast_into::<T, BecauseImmutable>(CastType::Suffix, None)
@@ -439,7 +438,7 @@ where
     // update references to this name in `#[deprecated]` attributes elsewhere.
     #[doc(hidden)]
     #[inline]
-    pub fn with_trailing_elements_from_prefix(
+    pub fn from_prefix_with_elems(
         bytes: B,
         count: usize,
     ) -> Result<(Ref<B, T>, B), CastError<B, T>> {
@@ -452,7 +451,7 @@ where
             return Err(SizeError::new(bytes).into());
         }
         let (prefix, bytes) = bytes.split_at(expected_len);
-        Self::new(prefix).map(move |l| (l, bytes))
+        Self::from(prefix).map(move |l| (l, bytes))
     }
 }
 
@@ -465,7 +464,7 @@ where
     // update references to this name in `#[deprecated]` attributes elsewhere.
     #[doc(hidden)]
     #[inline]
-    pub fn with_trailing_elements_from_suffix(
+    pub fn from_suffix_with_elems(
         bytes: B,
         count: usize,
     ) -> Result<(B, Ref<B, T>), CastError<B, T>> {
@@ -480,7 +479,7 @@ where
             return Err(SizeError::new(bytes).into());
         };
         let (bytes, suffix) = bytes.split_at(split_at);
-        Self::new(suffix).map(move |l| (bytes, l))
+        Self::from(suffix).map(move |l| (bytes, l))
     }
 }
 
@@ -489,9 +488,10 @@ where
     B: ByteSlice,
     T: Unaligned + KnownLayout + Immutable + ?Sized,
 {
-    /// Constructs a new `Ref` for a type with no alignment requirement.
+    /// Constructs a new `Ref` for a type with no alignment requirement from a
+    /// byte slice.
     ///
-    /// `new_unaligned` verifies that `bytes.len() == size_of::<T>()` and
+    /// `unaligned_from` verifies that `bytes.len() == size_of::<T>()` and
     /// constructs a new `Ref`. If the check fails, it returns `None`.
     ///
     /// # Compile-Time Assertions
@@ -511,13 +511,13 @@ where
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let f = Ref::<&[u8], ZSTy>::new_unaligned(&b"UU"[..]); // ⚠ Compile Error!
+    /// let f = Ref::<&[u8], ZSTy>::unaligned_from(&b"UU"[..]); // ⚠ Compile Error!
     /// ```
     #[must_use = "has no side effects"]
     #[inline(always)]
-    pub fn new_unaligned(bytes: B) -> Result<Ref<B, T>, SizeError<B, T>> {
+    pub fn unaligned_from(bytes: B) -> Result<Ref<B, T>, SizeError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        match Ref::new(bytes) {
+        match Ref::from(bytes) {
             Ok(dst) => Ok(dst),
             Err(CastError::Size(e)) => Err(e),
             Err(CastError::Alignment(_)) => unreachable!(),
@@ -531,51 +531,13 @@ where
     B: SplitByteSlice,
     T: Unaligned + KnownLayout + Immutable + ?Sized,
 {
-    /// Constructs a new `Ref` from the prefix of a byte slice for a type with
-    /// no alignment requirement.
+    /// Constructs a new `Ref` for a type with no alignment requirement from the
+    /// prefix of a byte slice.
     ///
-    /// `new_unaligned_from_prefix` verifies that `bytes.len() >=
-    /// size_of::<T>()`. It consumes the first `size_of::<T>()` bytes from
-    /// `bytes` to construct a `Ref`, and returns the remaining bytes to the
-    /// caller. If the length check fails, it returns `None`.
-    ///
-    /// # Compile-Time Assertions
-    ///
-    /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. Attempting to use this method on such types
-    /// results in a compile-time assertion error; e.g.:
-    ///
-    /// ```compile_fail,E0080
-    /// use zerocopy::*;
-    /// # use zerocopy_derive::*;
-    ///
-    /// #[derive(Immutable, KnownLayout, Unaligned)]
-    /// #[repr(C, packed)]
-    /// struct ZSTy {
-    ///     leading_sized: u16,
-    ///     trailing_dst: [()],
-    /// }
-    ///
-    /// let _ = Ref::<_, ZSTy>::new_unaligned_from_prefix(&b"UU"[..]); // ⚠ Compile Error!
-    /// ```
-    #[must_use = "has no side effects"]
-    #[inline(always)]
-    pub fn new_unaligned_from_prefix(bytes: B) -> Result<(Ref<B, T>, B), SizeError<B, T>> {
-        util::assert_dst_is_not_zst::<T>();
-        Ref::new_from_prefix(bytes).map_err(|e| match e {
-            CastError::Size(e) => e,
-            CastError::Alignment(_) => unreachable!(),
-            CastError::Validity(i) => match i {},
-        })
-    }
-
-    /// Constructs a new `Ref` from the suffix of a byte slice for a type with
-    /// no alignment requirement.
-    ///
-    /// `new_unaligned_from_suffix` verifies that `bytes.len() >=
-    /// size_of::<T>()`. It consumes the last `size_of::<T>()` bytes from
-    /// `bytes` to construct a `Ref`, and returns the preceding bytes to the
-    /// caller. If the length check fails, it returns `None`.
+    /// `unaligned_from_prefix` verifies that `bytes.len() >= size_of::<T>()`.
+    /// It consumes the first `size_of::<T>()` bytes from `bytes` to construct a
+    /// `Ref`, and returns the remaining bytes to the caller. If the length
+    /// check fails, it returns `None`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -594,13 +556,51 @@ where
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let _ = Ref::<_, ZSTy>::new_unaligned_from_suffix(&b"UU"[..]); // ⚠ Compile Error!
+    /// let _ = Ref::<_, ZSTy>::unaligned_from_prefix(&b"UU"[..]); // ⚠ Compile Error!
     /// ```
     #[must_use = "has no side effects"]
     #[inline(always)]
-    pub fn new_unaligned_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), SizeError<B, T>> {
+    pub fn unaligned_from_prefix(bytes: B) -> Result<(Ref<B, T>, B), SizeError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        Ref::new_from_suffix(bytes).map_err(|e| match e {
+        Ref::from_prefix(bytes).map_err(|e| match e {
+            CastError::Size(e) => e,
+            CastError::Alignment(_) => unreachable!(),
+            CastError::Validity(i) => match i {},
+        })
+    }
+
+    /// Constructs a new `Ref` for a type with no alignment requirement from the
+    /// suffix of a byte slice.
+    ///
+    /// `unaligned_from_suffix` verifies that `bytes.len() >= size_of::<T>()`.
+    /// It consumes the last `size_of::<T>()` bytes from `bytes` to construct a
+    /// `Ref`, and returns the preceding bytes to the caller. If the length
+    /// check fails, it returns `None`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout, Unaligned)]
+    /// #[repr(C, packed)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = Ref::<_, ZSTy>::unaligned_from_suffix(&b"UU"[..]); // ⚠ Compile Error!
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn unaligned_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), SizeError<B, T>> {
+        util::assert_dst_is_not_zst::<T>();
+        Ref::from_suffix(bytes).map_err(|e| match e {
             CastError::Size(e) => e,
             CastError::Alignment(_) => unreachable!(),
             CastError::Validity(i) => match i {},
@@ -617,12 +617,16 @@ where
     // update references to this name in `#[deprecated]` attributes elsewhere.
     #[doc(hidden)]
     #[inline]
-    pub fn with_trailing_elements_unaligned_from_prefix(
+    pub fn unaligned_from_prefix_with_elems(
         bytes: B,
         count: usize,
-    ) -> Result<(Ref<B, T>, B), CastError<B, T>> {
+    ) -> Result<(Ref<B, T>, B), SizeError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        Self::with_trailing_elements_from_prefix(bytes, count)
+        Self::from_prefix_with_elems(bytes, count).map_err(|e| match e {
+            CastError::Size(e) => e,
+            CastError::Alignment(_) => unreachable!(),
+            CastError::Validity(i) => match i {},
+        })
     }
 }
 
@@ -635,12 +639,16 @@ where
     // update references to this name in `#[deprecated]` attributes elsewhere.
     #[doc(hidden)]
     #[inline]
-    pub fn with_trailing_elements_unaligned_from_suffix(
+    pub fn unaligned_from_suffix_with_elems(
         bytes: B,
         count: usize,
-    ) -> Result<(B, Ref<B, T>), CastError<B, T>> {
+    ) -> Result<(B, Ref<B, T>), SizeError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        Self::with_trailing_elements_from_suffix(bytes, count)
+        Self::from_suffix_with_elems(bytes, count).map_err(|e| match e {
+            CastError::Size(e) => e,
+            CastError::Alignment(_) => unreachable!(),
+            CastError::Validity(i) => match i {},
+        })
     }
 }
 

@@ -7,8 +7,8 @@
 //! - [`SizeError`]: the conversion source was of incorrect size
 //! - [`ValidityError`]: the conversion source contained invalid data
 //!
-//! Methods that only have one failure mode, like [`Ref::new_unaligned`], return
-//! that mode's corresponding error type directly.
+//! Methods that only have one failure mode, like [`Ref::unaligned_from`],
+//! return that mode's corresponding error type directly.
 //!
 //! ## Compound errors
 //!
