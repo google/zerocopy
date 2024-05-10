@@ -545,7 +545,7 @@ pub unsafe trait KnownLayout {
 
 /// The metadata associated with a [`KnownLayout`] type.
 #[doc(hidden)]
-pub trait PointerMetadata {
+pub trait PointerMetadata: Copy + Eq + Debug {
     /// Constructs a `Self` from an element count.
     ///
     /// If `Self = ()`, this returns `()`. If `Self = usize`, this returns
@@ -598,7 +598,9 @@ impl PointerMetadata for usize {
                 let without_padding = offset.checked_add(slice_len)?;
                 without_padding.checked_add(util::padding_needed_for(without_padding, layout.align))
             }
-            SizeInfo::Sized { .. } => unreachable!(),
+            // NOTE: This branch is unreachable, but we return `None` rather
+            // than `unreachable!()` to avoid generating panic paths.
+            SizeInfo::Sized { .. } => None,
         }
     }
 }
@@ -1177,7 +1179,7 @@ pub unsafe trait TryFromBytes {
         Self: KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        match Ptr::from_ref(candidate).try_cast_into_no_leftover::<Self, BecauseImmutable>() {
+        match Ptr::from_ref(candidate).try_cast_into_no_leftover::<Self, BecauseImmutable>(None) {
             Ok(candidate) => {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
@@ -1274,7 +1276,7 @@ pub unsafe trait TryFromBytes {
         Self: KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        try_ref_from_prefix_suffix(candidate, CastType::Prefix)
+        try_ref_from_prefix_suffix(candidate, CastType::Prefix, None)
     }
 
     /// Attempts to interpret the suffix of the given `candidate` as a `&Self`
@@ -1353,7 +1355,7 @@ pub unsafe trait TryFromBytes {
         Self: KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        try_ref_from_prefix_suffix(candidate, CastType::Suffix).map(swap)
+        try_ref_from_prefix_suffix(candidate, CastType::Suffix, None).map(swap)
     }
 
     /// Attempts to interpret the given `candidate` as a `&mut Self` without
@@ -1430,7 +1432,7 @@ pub unsafe trait TryFromBytes {
         Self: KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
-        match Ptr::from_mut(bytes).try_cast_into_no_leftover::<Self, BecauseExclusive>() {
+        match Ptr::from_mut(bytes).try_cast_into_no_leftover::<Self, BecauseExclusive>(None) {
             Ok(candidate) => {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
@@ -1535,7 +1537,7 @@ pub unsafe trait TryFromBytes {
         Self: KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
-        try_mut_from_prefix_suffix(candidate, CastType::Prefix)
+        try_mut_from_prefix_suffix(candidate, CastType::Prefix, None)
     }
 
     /// Attempts to interpret the suffix of the given `candidate` as a `&mut
@@ -1622,7 +1624,7 @@ pub unsafe trait TryFromBytes {
         Self: KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
-        try_mut_from_prefix_suffix(candidate, CastType::Suffix).map(swap)
+        try_mut_from_prefix_suffix(candidate, CastType::Suffix, None).map(swap)
     }
 
     /// Attempts to read the given `candidate` as a `Self`.
@@ -1710,8 +1712,9 @@ pub unsafe trait TryFromBytes {
 fn try_ref_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized>(
     candidate: &[u8],
     cast_type: CastType,
+    meta: Option<T::PointerMetadata>,
 ) -> Result<(&T, &[u8]), TryCastError<&[u8], T>> {
-    match Ptr::from_ref(candidate).try_cast_into::<T, BecauseImmutable>(cast_type) {
+    match Ptr::from_ref(candidate).try_cast_into::<T, BecauseImmutable>(cast_type, meta) {
         Ok((candidate, prefix_suffix)) => {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
@@ -1734,8 +1737,9 @@ fn try_ref_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized
 fn try_mut_from_prefix_suffix<T: TryFromBytes + KnownLayout + ?Sized>(
     candidate: &mut [u8],
     cast_type: CastType,
+    meta: Option<T::PointerMetadata>,
 ) -> Result<(&mut T, &mut [u8]), TryCastError<&mut [u8], T>> {
-    match Ptr::from_mut(candidate).try_cast_into::<T, BecauseExclusive>(cast_type) {
+    match Ptr::from_mut(candidate).try_cast_into::<T, BecauseExclusive>(cast_type, meta) {
         Ok((candidate, prefix_suffix)) => {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
@@ -2336,7 +2340,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        match Ptr::from_ref(bytes).try_cast_into_no_leftover::<_, BecauseImmutable>() {
+        match Ptr::from_ref(bytes).try_cast_into_no_leftover::<_, BecauseImmutable>(None) {
             Ok(ptr) => Ok(ptr.bikeshed_recall_valid().as_ref()),
             Err(err) => Err(err.map_src(|src| src.as_ref())),
         }
@@ -2352,8 +2356,9 @@ pub unsafe trait FromBytes: FromZeros {
     /// # Compile-Time Assertions
     ///
     /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. Attempting to use this method on such types
-    /// results in a compile-time assertion error; e.g.:
+    /// component is zero-sized. See [`ref_from_prefix_with_trailing_elements`],
+    /// which does support such types. Attempting to use this method on such
+    /// types results in a compile-time assertion error; e.g.:
     ///
     /// ```compile_fail,E0080
     /// use zerocopy::*;
@@ -2368,6 +2373,8 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// let _ = ZSTy::ref_from_prefix(0u16.as_bytes()); // ⚠ Compile Error!
     /// ```
+    ///
+    /// [`ref_from_prefix_with_trailing_elements`]: FromBytes::ref_from_prefix_with_trailing_elements
     ///
     /// # Examples
     ///
@@ -2410,7 +2417,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        ref_from_prefix_suffix(bytes, CastType::Prefix)
+        ref_from_prefix_suffix(bytes, None, CastType::Prefix)
     }
 
     /// Interprets the suffix of the given `bytes` as a `&Self` without copying.
@@ -2423,8 +2430,9 @@ pub unsafe trait FromBytes: FromZeros {
     /// # Compile-Time Assertions
     ///
     /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. Attempting to use this method on such types
-    /// results in a compile-time assertion error; e.g.:
+    /// component is zero-sized. See [`ref_from_suffix_with_trailing_elements`],
+    /// which does support such types. Attempting to use this method on such
+    /// types results in a compile-time assertion error; e.g.:
     ///
     /// ```compile_fail,E0080
     /// use zerocopy::*;
@@ -2439,6 +2447,8 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// let _ = ZSTy::ref_from_suffix(0u16.as_bytes()); // ⚠ Compile Error!
     /// ```
+    ///
+    /// [`ref_from_suffix_with_trailing_elements`]: FromBytes::ref_from_suffix_with_trailing_elements
     ///
     /// # Examples
     ///
@@ -2467,7 +2477,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: Immutable + KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
-        ref_from_prefix_suffix(bytes, CastType::Suffix).map(swap)
+        ref_from_prefix_suffix(bytes, None, CastType::Suffix).map(swap)
     }
 
     /// Interprets the given `bytes` as a `&mut Self` without copying.
@@ -2478,8 +2488,9 @@ pub unsafe trait FromBytes: FromZeros {
     /// # Compile-Time Assertions
     ///
     /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. Attempting to use this method on such types
-    /// results in a compile-time assertion error; e.g.:
+    /// component is zero-sized. See [`mut_from_prefix_with_trailing_elements`],
+    /// which does support such types. Attempting to use this method on such
+    /// types results in a compile-time assertion error; e.g.:
     ///
     /// ```compile_fail,E0080
     /// use zerocopy::*;
@@ -2495,6 +2506,8 @@ pub unsafe trait FromBytes: FromZeros {
     /// let mut source = [85, 85];
     /// let _ = ZSTy::mut_from(&mut source[..]); // ⚠ Compile Error!
     /// ```
+    ///
+    /// [`mut_from_prefix_with_trailing_elements`]: FromBytes::mut_from_prefix_with_trailing_elements
     ///
     /// # Examples
     ///
@@ -2532,7 +2545,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: IntoBytes + KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
-        match Ptr::from_mut(bytes).try_cast_into_no_leftover::<_, BecauseExclusive>() {
+        match Ptr::from_mut(bytes).try_cast_into_no_leftover::<_, BecauseExclusive>(None) {
             Ok(ptr) => Ok(ptr.bikeshed_recall_valid().as_mut()),
             Err(err) => Err(err.map_src(|src| src.as_mut())),
         }
@@ -2549,8 +2562,9 @@ pub unsafe trait FromBytes: FromZeros {
     /// # Compile-Time Assertions
     ///
     /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. Attempting to use this method on such types
-    /// results in a compile-time assertion error; e.g.:
+    /// component is zero-sized. See [`mut_from_suffix_with_trailing_elements`],
+    /// which does support such types. Attempting to use this method on such
+    /// types results in a compile-time assertion error; e.g.:
     ///
     /// ```compile_fail,E0080
     /// use zerocopy::*;
@@ -2566,6 +2580,8 @@ pub unsafe trait FromBytes: FromZeros {
     /// let mut source = [85, 85];
     /// let _ = ZSTy::mut_from_prefix(&mut source[..]); // ⚠ Compile Error!
     /// ```
+    ///
+    /// [`mut_from_suffix_with_trailing_elements`]: FromBytes::mut_from_suffix_with_trailing_elements
     ///
     /// # Examples
     ///
@@ -2607,7 +2623,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: IntoBytes + KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
-        mut_from_prefix_suffix(bytes, CastType::Prefix)
+        mut_from_prefix_suffix(bytes, None, CastType::Prefix)
     }
 
     /// Interprets the suffix of the given `bytes` as a `&mut Self` without
@@ -2673,7 +2689,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: IntoBytes + KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
-        mut_from_prefix_suffix(bytes, CastType::Suffix).map(swap)
+        mut_from_prefix_suffix(bytes, None, CastType::Suffix).map(swap)
     }
 
     /// Interprets the prefix of the given `bytes` as a `&[Self]` with length
@@ -2685,26 +2701,6 @@ pub unsafe trait FromBytes: FromZeros {
     /// and returns the remaining bytes to the caller. It also ensures that
     /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
     /// length, alignment, or overflow checks fail, it returns `Err`.
-    ///
-    /// # Compile-Time Assertions
-    ///
-    /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. Attempting to use this method on such types
-    /// results in a compile-time assertion error; e.g.:
-    ///
-    /// ```compile_fail,E0080
-    /// use zerocopy::*;
-    /// # use zerocopy_derive::*;
-    ///
-    /// #[derive(FromBytes, Immutable, KnownLayout)]
-    /// #[repr(C)]
-    /// struct ZSTy {
-    ///     leading_sized: u16,
-    ///     trailing_dst: [()],
-    /// }
-    ///
-    /// let _ = ZSTy::ref_from_prefix_with_trailing_elements(b"UU", 0); // ⚠ Compile Error!
-    /// ```
     ///
     /// # Examples
     ///
@@ -2734,6 +2730,28 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// assert_eq!(rest, &[8, 9]);
     /// ```
+    ///
+    /// Since an explicit `count` is provided, this method supports types with
+    /// zero-sided trailing slice elements. Methods such as [`ref_from_prefix`]
+    /// which do not take an explicit count do not support such types.
+    ///
+    /// ```
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let src = &[85, 85][..];
+    /// let (zsty, _) = ZSTy::ref_from_prefix_with_trailing_elements(src, 42).unwrap();
+    /// assert_eq!(zsty.trailing_dst.len(), 42);
+    /// ```
+    ///
+    /// [`ref_from_prefix`]: FromBytes::ref_from_prefix
     #[must_use = "has no side effects"]
     #[inline]
     fn ref_from_prefix_with_trailing_elements(
@@ -2743,9 +2761,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: KnownLayout<PointerMetadata = usize> + Immutable,
     {
-        util::assert_dst_is_not_zst::<Self>();
-        Ref::<_, Self>::with_trailing_elements_from_prefix(bytes, count)
-            .map(|(r, b)| (r.into_ref(), b))
+        ref_from_prefix_suffix(bytes, Some(count), CastType::Prefix)
     }
 
     #[deprecated(
@@ -2771,26 +2787,6 @@ pub unsafe trait FromBytes: FromZeros {
     /// and returns the preceding bytes to the caller. It also ensures that
     /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
     /// length, alignment, or overflow checks fail, it returns `Err`.
-    ///
-    /// # Compile-Time Assertions
-    ///
-    /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. Attempting to use this method on such types
-    /// results in a compile-time assertion error; e.g.:
-    ///
-    /// ```compile_fail,E0080
-    /// use zerocopy::*;
-    /// # use zerocopy_derive::*;
-    ///
-    /// #[derive(FromBytes, Immutable, KnownLayout)]
-    /// #[repr(C)]
-    /// struct ZSTy {
-    ///     leading_sized: u16,
-    ///     trailing_dst: [()],
-    /// }
-    ///
-    /// let _ = ZSTy::ref_from_suffix_with_trailing_elements(b"UU", 0); // ⚠ Compile Error!
-    /// ```
     ///
     /// # Examples
     ///
@@ -2820,6 +2816,28 @@ pub unsafe trait FromBytes: FromZeros {
     ///     Pixel { r: 6, g: 7, b: 8, a: 9 },
     /// ]);
     /// ```
+    ///
+    /// Since an explicit `count` is provided, this method supports types with
+    /// zero-sided trailing slice elements. Methods such as [`ref_from_suffix`]
+    /// which do not take an explicit count do not support such types.
+    ///
+    /// ```
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let src = &[85, 85][..];
+    /// let (_, zsty) = ZSTy::ref_from_suffix_with_trailing_elements(src, 42).unwrap();
+    /// assert_eq!(zsty.trailing_dst.len(), 42);
+    /// ```
+    ///
+    /// [`ref_from_suffix`]: FromBytes::ref_from_suffix
     #[must_use = "has no side effects"]
     #[inline]
     fn ref_from_suffix_with_trailing_elements(
@@ -2829,9 +2847,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: KnownLayout<PointerMetadata = usize> + Immutable,
     {
-        util::assert_dst_is_not_zst::<Self>();
-        Ref::<_, Self>::with_trailing_elements_from_suffix(bytes, count)
-            .map(|(b, r)| (b, r.into_ref()))
+        ref_from_prefix_suffix(bytes, Some(count), CastType::Suffix).map(swap)
     }
 
     #[deprecated(
@@ -2869,27 +2885,6 @@ pub unsafe trait FromBytes: FromZeros {
     /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
     /// length, alignment, or overflow checks fail, it returns `Err`.
     ///
-    /// # Compile-Time Assertions
-    ///
-    /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. Attempting to use this method on such types
-    /// results in a compile-time assertion error; e.g.:
-    ///
-    /// ```compile_fail,E0080
-    /// use zerocopy::*;
-    /// # use zerocopy_derive::*;
-    ///
-    /// #[derive(FromBytes, Immutable, IntoBytes, KnownLayout)]
-    /// #[repr(C, packed)]
-    /// struct ZSTy {
-    ///     leading_sized: u16,
-    ///     trailing_dst: [()],
-    /// }
-    ///
-    /// let mut source = [85, 85];
-    /// let _ = ZSTy::mut_from_prefix_with_trailing_elements(&mut source[..], 0); // ⚠ Compile Error!
-    /// ```
-    ///
     /// # Examples
     ///
     /// ```
@@ -2923,6 +2918,28 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// assert_eq!(bytes, [0, 1, 2, 3, 0, 0, 0, 0, 1, 1]);
     /// ```
+    ///
+    /// Since an explicit `count` is provided, this method supports types with
+    /// zero-sided trailing slice elements. Methods such as [`mut_from_prefix`]
+    /// which do not take an explicit count do not support such types.
+    ///
+    /// ```
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, IntoBytes, Immutable, KnownLayout)]
+    /// #[repr(C, packed)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let src = &mut [85, 85][..];
+    /// let (zsty, _) = ZSTy::mut_from_prefix_with_trailing_elements(src, 42).unwrap();
+    /// assert_eq!(zsty.trailing_dst.len(), 42);
+    /// ```
+    ///
+    /// [`mut_from_prefix`]: FromBytes::mut_from_prefix
     #[must_use = "has no side effects"]
     #[inline]
     fn mut_from_prefix_with_trailing_elements(
@@ -2932,9 +2949,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: IntoBytes + KnownLayout<PointerMetadata = usize> + Immutable,
     {
-        util::assert_dst_is_not_zst::<Self>();
-        Ref::<_, Self>::with_trailing_elements_from_prefix(bytes, count)
-            .map(|(r, b)| (r.into_mut(), b))
+        mut_from_prefix_suffix(bytes, Some(count), CastType::Prefix)
     }
 
     #[deprecated(
@@ -2960,28 +2975,6 @@ pub unsafe trait FromBytes: FromZeros {
     /// and returns the preceding bytes to the caller. It also ensures that
     /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
     /// length, alignment, or overflow checks fail, it returns `Err`.
-    ///
-    ///
-    /// # Compile-Time Assertions
-    ///
-    /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. Attempting to use this method on such types
-    /// results in a compile-time assertion error; e.g.:
-    ///
-    /// ```compile_fail,E0080
-    /// use zerocopy::*;
-    /// # use zerocopy_derive::*;
-    ///
-    /// #[derive(FromBytes, Immutable, IntoBytes, KnownLayout)]
-    /// #[repr(C, packed)]
-    /// struct ZSTy {
-    ///     leading_sized: u16,
-    ///     trailing_dst: [()],
-    /// }
-    ///
-    /// let mut source = [85, 85];
-    /// let _ = ZSTy::mut_from_suffix_with_trailing_elements(&mut source[..], 0); // ⚠ Compile Error!
-    /// ```
     ///
     /// # Examples
     ///
@@ -3016,6 +3009,28 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// assert_eq!(bytes, [9, 9, 2, 3, 4, 5, 0, 0, 0, 0]);
     /// ```
+    ///
+    /// Since an explicit `count` is provided, this method supports types with
+    /// zero-sided trailing slice elements. Methods such as [`mut_from_suffix`]
+    /// which do not take an explicit count do not support such types.
+    ///
+    /// ```
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, IntoBytes, Immutable, KnownLayout)]
+    /// #[repr(C, packed)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let src = &mut [85, 85][..];
+    /// let (_, zsty) = ZSTy::mut_from_suffix_with_trailing_elements(src, 42).unwrap();
+    /// assert_eq!(zsty.trailing_dst.len(), 42);
+    /// ```
+    ///
+    /// [`mut_from_suffix`]: FromBytes::mut_from_suffix
     #[must_use = "has no side effects"]
     #[inline]
     fn mut_from_suffix_with_trailing_elements(
@@ -3025,9 +3040,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: IntoBytes + KnownLayout<PointerMetadata = usize> + Immutable,
     {
-        util::assert_dst_is_not_zst::<Self>();
-        Ref::<_, Self>::with_trailing_elements_from_suffix(bytes, count)
-            .map(|(b, r)| (b, r.into_mut()))
+        mut_from_prefix_suffix(bytes, Some(count), CastType::Suffix).map(swap)
     }
 
     #[deprecated(
@@ -3183,31 +3196,27 @@ pub unsafe trait FromBytes: FromZeros {
 }
 
 #[inline(always)]
-fn ref_from_prefix_suffix<T>(
+fn ref_from_prefix_suffix<T: FromBytes + KnownLayout + Immutable + ?Sized>(
     bytes: &[u8],
+    meta: Option<T::PointerMetadata>,
     cast_type: CastType,
-) -> Result<(&T, &[u8]), CastError<&[u8], T>>
-where
-    T: ?Sized + FromBytes + KnownLayout + Immutable,
-{
-    let (slf, suffix) = Ptr::from_ref(bytes)
-        .try_cast_into::<_, BecauseImmutable>(cast_type)
+) -> Result<(&T, &[u8]), CastError<&[u8], T>> {
+    let (slf, prefix_suffix) = Ptr::from_ref(bytes)
+        .try_cast_into::<_, BecauseImmutable>(cast_type, meta)
         .map_err(|err| err.map_src(|s| s.as_ref()))?;
-    Ok((slf.bikeshed_recall_valid().as_ref(), suffix.as_ref()))
+    Ok((slf.bikeshed_recall_valid().as_ref(), prefix_suffix.as_ref()))
 }
 
 #[inline(always)]
-fn mut_from_prefix_suffix<T>(
+fn mut_from_prefix_suffix<T: FromBytes + KnownLayout + ?Sized>(
     bytes: &mut [u8],
+    meta: Option<T::PointerMetadata>,
     cast_type: CastType,
-) -> Result<(&mut T, &mut [u8]), CastError<&mut [u8], T>>
-where
-    T: ?Sized + FromBytes + KnownLayout,
-{
-    let (slf, suffix) = Ptr::from_mut(bytes)
-        .try_cast_into::<_, BecauseExclusive>(cast_type)
+) -> Result<(&mut T, &mut [u8]), CastError<&mut [u8], T>> {
+    let (slf, prefix_suffix) = Ptr::from_mut(bytes)
+        .try_cast_into::<_, BecauseExclusive>(cast_type, meta)
         .map_err(|err| err.map_src(|s| s.as_mut()))?;
-    Ok((slf.bikeshed_recall_valid().as_mut(), suffix.as_mut()))
+    Ok((slf.bikeshed_recall_valid().as_mut(), prefix_suffix.as_mut()))
 }
 
 /// Analyzes whether a type is [`IntoBytes`].

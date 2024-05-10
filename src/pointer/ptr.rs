@@ -911,8 +911,9 @@ mod _transitions {
 mod _casts {
     use super::*;
     use crate::{
-        layout::MetadataCastError, pointer::aliasing_safety::*, AlignmentError, CastError,
-        PointerMetadata, SizeError,
+        layout::{DstLayout, MetadataCastError},
+        pointer::aliasing_safety::*,
+        AlignmentError, CastError, PointerMetadata, SizeError,
     };
 
     impl<'a, T, I> Ptr<'a, T, I>
@@ -1105,9 +1106,14 @@ mod _casts {
     {
         /// Attempts to cast `self` to a `U` using the given cast type.
         ///
-        /// Returns `None` if the resulting `U` would be invalidly-aligned or if
-        /// no `U` can fit in `self`. On success, returns a pointer to the
-        /// largest-possible `U` which fits in `self`.
+        /// If `U` is a slice DST and pointer metadata (`meta`) is provided,
+        /// then the cast will only succeed if it would produce an object with
+        /// the given metadata.
+        ///
+        /// Returns `None` if the resulting `U` would be invalidly-aligned, if
+        /// no `U` can fit in `self`, or if the provided pointer metadata
+        /// describes an invalid instance of `U`. On success, returns a pointer
+        /// to the largest-possible `U` which fits in `self`.
         ///
         /// # Safety
         ///
@@ -1123,6 +1129,7 @@ mod _casts {
         pub(crate) fn try_cast_into<U, R>(
             self,
             cast_type: CastType,
+            meta: Option<U::PointerMetadata>,
         ) -> Result<
             (Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, Ptr<'a, [u8], I>),
             CastError<Self, U>,
@@ -1131,14 +1138,25 @@ mod _casts {
             R: AliasingSafeReason,
             U: 'a + ?Sized + KnownLayout + AliasingSafe<[u8], I::Aliasing, R>,
         {
-            crate::util::assert_dst_is_not_zst::<U>();
+            let layout = match meta {
+                None => U::LAYOUT,
+                // This can return `None` if the metadata describes an object
+                // which can't fit in an `isize`.
+                Some(meta) => {
+                    let size = match meta.size_for_metadata(U::LAYOUT) {
+                        Some(size) => size,
+                        None => return Err(CastError::Size(SizeError::new(self))),
+                    };
+                    DstLayout { align: U::LAYOUT.align, size_info: crate::SizeInfo::Sized { size } }
+                }
+            };
             // PANICS: By invariant, the byte range addressed by `self.ptr` does
             // not wrap around the address space. This implies that the sum of
             // the address (represented as a `usize`) and length do not overflow
             // `usize`, as required by `validate_cast_and_convert_metadata`.
             // Thus, this call to `validate_cast_and_convert_metadata` will only
             // panic if `U` is a DST whose trailing slice element is zero-sized.
-            let maybe_metadata = U::LAYOUT.validate_cast_and_convert_metadata(
+            let maybe_metadata = layout.validate_cast_and_convert_metadata(
                 AsAddress::addr(self.as_non_null().as_ptr()),
                 self.len(),
                 cast_type,
@@ -1162,7 +1180,17 @@ mod _casts {
             };
 
             let base = target.as_non_null().cast::<u8>();
+
             let elems = <U as KnownLayout>::PointerMetadata::from_elem_count(elems);
+            // For a slice DST type, if `meta` is `Some(elems)`, then we
+            // synthesize `layout` to describe a sized type whose size is equal
+            // to the size of the instance that we are asked to cast. For sized
+            // types, `validate_cast_and_convert_metadata` returns `elems == 0`.
+            // Thus, in this case, we need to use the `elems` passed by the
+            // caller, not the one returned by
+            // `validate_cast_and_convert_metadata`.
+            let elems = meta.unwrap_or(elems);
+
             let ptr = U::raw_from_ptr_len(base, elems);
 
             // SAFETY:
@@ -1215,6 +1243,7 @@ mod _casts {
         #[inline(always)]
         pub(crate) fn try_cast_into_no_leftover<U, R>(
             self,
+            meta: Option<U::PointerMetadata>,
         ) -> Result<Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, CastError<Self, U>>
         where
             U: 'a + ?Sized + KnownLayout + AliasingSafe<[u8], I::Aliasing, R>,
@@ -1223,7 +1252,7 @@ mod _casts {
             // TODO(#67): Remove this allow. See NonNulSlicelExt for more
             // details.
             #[allow(unstable_name_collisions)]
-            match self.try_cast_into(CastType::Prefix) {
+            match self.try_cast_into(CastType::Prefix, meta) {
                 Ok((slf, remainder)) => {
                     if remainder.len() == 0 {
                         Ok(slf)
@@ -1504,7 +1533,13 @@ mod tests {
 
         // - If `size_of::<T>() == 0`, `N == 4`
         // - Else, `N == 4 * size_of::<T>()`
-        fn test<T: ?Sized + KnownLayout + Immutable + FromBytes, const N: usize>() {
+        //
+        // Each test will be run for each metadata in `metas`.
+        fn test<T, I, const N: usize>(metas: I)
+        where
+            T: ?Sized + KnownLayout + Immutable + FromBytes,
+            I: IntoIterator<Item = Option<T::PointerMetadata>> + Clone,
+        {
             let mut bytes = [MaybeUninit::<u8>::uninit(); N];
             let initialized = [MaybeUninit::new(0u8); N];
             for start in 0..=bytes.len() {
@@ -1563,32 +1598,46 @@ mod tests {
                         mem::size_of_val(t)
                     }
 
-                    for cast_type in [CastType::Prefix, CastType::Suffix] {
-                        if let Ok((slf, remaining)) =
-                            Ptr::from_ref(bytes).try_cast_into::<T, BecauseImmutable>(cast_type)
+                    for meta in metas.clone().into_iter() {
+                        for cast_type in [CastType::Prefix, CastType::Suffix] {
+                            if let Ok((slf, remaining)) = Ptr::from_ref(bytes)
+                                .try_cast_into::<T, BecauseImmutable>(cast_type, meta)
+                            {
+                                // SAFETY: All bytes in `bytes` have been
+                                // initialized.
+                                let len = unsafe { validate_and_get_len(slf) };
+                                assert_eq!(remaining.len(), bytes.len() - len);
+                                #[allow(unstable_name_collisions)]
+                                let bytes_addr = bytes.as_ptr().addr();
+                                #[allow(unstable_name_collisions)]
+                                let remaining_addr = remaining.as_non_null().as_ptr().addr();
+                                match cast_type {
+                                    CastType::Prefix => {
+                                        assert_eq!(remaining_addr, bytes_addr + len)
+                                    }
+                                    CastType::Suffix => assert_eq!(remaining_addr, bytes_addr),
+                                }
+
+                                if let Some(want) = meta {
+                                    let got = KnownLayout::pointer_to_metadata(slf.as_non_null());
+                                    assert_eq!(got, want);
+                                }
+                            }
+                        }
+
+                        if let Ok(slf) = Ptr::from_ref(bytes)
+                            .try_cast_into_no_leftover::<T, BecauseImmutable>(meta)
                         {
                             // SAFETY: All bytes in `bytes` have been
                             // initialized.
                             let len = unsafe { validate_and_get_len(slf) };
-                            assert_eq!(remaining.len(), bytes.len() - len);
-                            #[allow(unstable_name_collisions)]
-                            let bytes_addr = bytes.as_ptr().addr();
-                            #[allow(unstable_name_collisions)]
-                            let remaining_addr = remaining.as_non_null().as_ptr().addr();
-                            match cast_type {
-                                CastType::Prefix => assert_eq!(remaining_addr, bytes_addr + len),
-                                CastType::Suffix => assert_eq!(remaining_addr, bytes_addr),
+                            assert_eq!(len, bytes.len());
+
+                            if let Some(want) = meta {
+                                let got = KnownLayout::pointer_to_metadata(slf.as_non_null());
+                                assert_eq!(got, want);
                             }
                         }
-                    }
-
-                    if let Ok(slf) =
-                        Ptr::from_ref(bytes).try_cast_into_no_leftover::<T, BecauseImmutable>()
-                    {
-                        // SAFETY: All bytes in `bytes` have been
-                        // initialized.
-                        let len = unsafe { validate_and_get_len(slf) };
-                        assert_eq!(len, bytes.len());
                     }
                 }
             }
@@ -1606,19 +1655,23 @@ mod tests {
                 $({
                     const S: usize = core::mem::size_of::<$ty>();
                     const N: usize = if S == 0 { 4 } else { S * 4 };
-                    test::<$ty, N>();
-                    test::<[$ty], N>();
-                    test::<SliceDst<$ty>, N>();
+                    test::<$ty, _, N>([None]);
+
+                    // If `$ty` is a ZST, then we can't pass `None` as the
+                    // pointer metadata, or else computing the correct trailing
+                    // slice length will panic.
+                    if S == 0 {
+                        test::<[$ty], _, N>([Some(0), Some(1), Some(2), Some(3)]);
+                        test::<SliceDst<$ty>, _, N>([Some(0), Some(1), Some(2), Some(3)]);
+                    } else {
+                        test::<[$ty], _, N>([None, Some(0), Some(1), Some(2), Some(3)]);
+                        test::<SliceDst<$ty>, _, N>([None, Some(0), Some(1), Some(2), Some(3)]);
+                    }
                 })*
             };
         }
 
-        // NOTE: We call this directly instead of using `test!` because that
-        // macro would also test using `[()]`, which would trigger the
-        // post-monomorphization error in `assert_dst_is_not_zst`, which is
-        // called from `try_cast_into`.
-        test::<(), 4>();
-
+        test!(());
         test!(u8, u16, u32, u64, u128, usize, AU64);
         test!(i8, i16, i32, i64, i128, isize);
         test!(f32, f64);
@@ -1637,5 +1690,54 @@ mod tests {
         assert_impl_all!(AsInitialized: AtLeast<AsInitialized>);
         assert_impl_all!(Initialized: AtLeast<AsInitialized>);
         assert_impl_all!(Valid: AtLeast<AsInitialized>);
+    }
+
+    #[test]
+    fn test_try_cast_into_explicit_count() {
+        macro_rules! test {
+            ($ty:ty, $bytes:expr, $elems:expr, $expect:expr) => {{
+                let bytes = [0u8; $bytes];
+                let ptr = Ptr::from_ref(&bytes[..]);
+                let res =
+                    ptr.try_cast_into::<$ty, BecauseImmutable>(CastType::Prefix, Some($elems));
+                if let Some(expect) = $expect {
+                    let (ptr, _) = res.unwrap();
+                    assert_eq!(KnownLayout::pointer_to_metadata(ptr.as_non_null()), expect);
+                } else {
+                    let _ = res.unwrap_err();
+                }
+            }};
+        }
+
+        #[derive(KnownLayout, Immutable)]
+        #[repr(C)]
+        struct ZstDst {
+            u: [u8; 8],
+            slc: [()],
+        }
+
+        test!(ZstDst, 8, 0, Some(0));
+        test!(ZstDst, 7, 0, None);
+
+        test!(ZstDst, 8, usize::MAX, Some(usize::MAX));
+        test!(ZstDst, 7, usize::MAX, None);
+
+        #[derive(KnownLayout, Immutable)]
+        #[repr(C)]
+        struct Dst {
+            u: [u8; 8],
+            slc: [u8],
+        }
+
+        test!(Dst, 8, 0, Some(0));
+        test!(Dst, 7, 0, None);
+
+        test!(Dst, 9, 1, Some(1));
+        test!(Dst, 8, 1, None);
+
+        // If we didn't properly check for overflow, this would cause the
+        // metadata to overflow to 0, and thus the cast would spuriously
+        // succeed.
+        test!(Dst, 8, usize::MAX - 8 + 1, None);
     }
 }
