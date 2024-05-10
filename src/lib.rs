@@ -3091,7 +3091,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized,
     {
-        match Ref::<_, Unalign<Self>>::new_sized(bytes) {
+        match Ref::<_, Unalign<Self>>::sized_from(bytes) {
             Ok(r) => Ok(r.read().into_inner()),
             Err(CastError::Size(e)) => Err(e.with_dst()),
             Err(CastError::Alignment(_)) => unreachable!(),
@@ -3136,7 +3136,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized,
     {
-        match Ref::<_, Unalign<Self>>::new_sized_from_prefix(bytes) {
+        match Ref::<_, Unalign<Self>>::sized_from_prefix(bytes) {
             Ok((r, _)) => Ok(r.read().into_inner()),
             Err(CastError::Size(e)) => Err(e.with_dst()),
             Err(CastError::Alignment(_)) => unreachable!(),
@@ -3175,7 +3175,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized,
     {
-        match Ref::<_, Unalign<Self>>::new_sized_from_suffix(bytes) {
+        match Ref::<_, Unalign<Self>>::sized_from_suffix(bytes) {
             Ok((_, r)) => Ok(r.read().into_inner()),
             Err(CastError::Size(e)) => Err(CastError::Size(e.with_dst())),
             Err(CastError::Alignment(_)) => unreachable!(),
@@ -7225,13 +7225,13 @@ mod tests {
         // reference which points to the right region of memory.
 
         let buf = [0];
-        let r = Ref::<_, u8>::new(&buf[..]).unwrap();
+        let r = Ref::<_, u8>::from(&buf[..]).unwrap();
         let buf_ptr = buf.as_ptr();
         let deref_ptr: *const u8 = r.deref();
         assert_eq!(buf_ptr, deref_ptr);
 
         let buf = [0];
-        let r = Ref::<_, [u8]>::new(&buf[..]).unwrap();
+        let r = Ref::<_, [u8]>::from(&buf[..]).unwrap();
         let buf_ptr = buf.as_ptr();
         let deref_ptr = r.deref().as_ptr();
         assert_eq!(buf_ptr, deref_ptr);
@@ -7353,17 +7353,17 @@ mod tests {
         // A buffer with an alignment of 8.
         let mut buf = Align::<[u8; 8], AU64>::default();
         // `buf.t` should be aligned to 8, so this should always succeed.
-        test_new_helper(Ref::<_, AU64>::new(&mut buf.t[..]).unwrap());
+        test_new_helper(Ref::<_, AU64>::from(&mut buf.t[..]).unwrap());
         {
             // In a block so that `r` and `suffix` don't live too long.
             buf.set_default();
-            let (r, suffix) = Ref::<_, AU64>::new_from_prefix(&mut buf.t[..]).unwrap();
+            let (r, suffix) = Ref::<_, AU64>::from_prefix(&mut buf.t[..]).unwrap();
             assert!(suffix.is_empty());
             test_new_helper(r);
         }
         {
             buf.set_default();
-            let (prefix, r) = Ref::<_, AU64>::new_from_suffix(&mut buf.t[..]).unwrap();
+            let (prefix, r) = Ref::<_, AU64>::from_suffix(&mut buf.t[..]).unwrap();
             assert!(prefix.is_empty());
             test_new_helper(r);
         }
@@ -7376,7 +7376,7 @@ mod tests {
         let mut buf = Align::<[u8; 24], AU64>::default();
         // `buf.t` should be aligned to 8 and have a length which is a multiple
         // of `size_of::<AU64>()`, so this should always succeed.
-        test_new_helper_slice(Ref::<_, [AU64]>::new(&mut buf.t[..]).unwrap(), 3);
+        test_new_helper_slice(Ref::<_, [AU64]>::from(&mut buf.t[..]).unwrap(), 3);
         let ascending: [u8; 24] = (0..24).collect::<Vec<_>>().try_into().unwrap();
         // 16 ascending bytes followed by 8 zeros.
         let mut ascending_prefix = ascending;
@@ -7387,15 +7387,13 @@ mod tests {
 
         {
             buf.t = ascending_suffix;
-            let (r, suffix) =
-                Ref::<_, [AU64]>::with_trailing_elements_from_prefix(&mut buf.t[..], 1).unwrap();
+            let (r, suffix) = Ref::<_, [AU64]>::from_prefix_with_elems(&mut buf.t[..], 1).unwrap();
             assert_eq!(suffix, &ascending[8..]);
             test_new_helper_slice(r, 1);
         }
         {
             buf.t = ascending_prefix;
-            let (prefix, r) =
-                Ref::<_, [AU64]>::with_trailing_elements_from_suffix(&mut buf.t[..], 1).unwrap();
+            let (prefix, r) = Ref::<_, [AU64]>::from_suffix_with_elems(&mut buf.t[..], 1).unwrap();
             assert_eq!(prefix, &ascending[..16]);
             test_new_helper_slice(r, 1);
         }
@@ -7411,17 +7409,17 @@ mod tests {
         // for `new_slice`.
 
         let mut buf = [0u8; 8];
-        test_new_helper_unaligned(Ref::<_, [u8; 8]>::new_unaligned(&mut buf[..]).unwrap());
+        test_new_helper_unaligned(Ref::<_, [u8; 8]>::unaligned_from(&mut buf[..]).unwrap());
         {
             // In a block so that `r` and `suffix` don't live too long.
             buf = [0u8; 8];
-            let (r, suffix) = Ref::<_, [u8; 8]>::new_unaligned_from_prefix(&mut buf[..]).unwrap();
+            let (r, suffix) = Ref::<_, [u8; 8]>::unaligned_from_prefix(&mut buf[..]).unwrap();
             assert!(suffix.is_empty());
             test_new_helper_unaligned(r);
         }
         {
             buf = [0u8; 8];
-            let (prefix, r) = Ref::<_, [u8; 8]>::new_unaligned_from_suffix(&mut buf[..]).unwrap();
+            let (prefix, r) = Ref::<_, [u8; 8]>::unaligned_from_suffix(&mut buf[..]).unwrap();
             assert!(prefix.is_empty());
             test_new_helper_unaligned(r);
         }
@@ -7429,21 +7427,19 @@ mod tests {
         let mut buf = [0u8; 16];
         // `buf.t` should be aligned to 8 and have a length which is a multiple
         // of `size_of::AU64>()`, so this should always succeed.
-        test_new_helper_slice_unaligned(Ref::<_, [u8]>::new_unaligned(&mut buf[..]).unwrap(), 16);
+        test_new_helper_slice_unaligned(Ref::<_, [u8]>::unaligned_from(&mut buf[..]).unwrap(), 16);
 
         {
             buf = [0u8; 16];
             let (r, suffix) =
-                Ref::<_, [u8]>::with_trailing_elements_unaligned_from_prefix(&mut buf[..], 8)
-                    .unwrap();
+                Ref::<_, [u8]>::unaligned_from_prefix_with_elems(&mut buf[..], 8).unwrap();
             assert_eq!(suffix, [0; 8]);
             test_new_helper_slice_unaligned(r, 8);
         }
         {
             buf = [0u8; 16];
             let (prefix, r) =
-                Ref::<_, [u8]>::with_trailing_elements_unaligned_from_suffix(&mut buf[..], 8)
-                    .unwrap();
+                Ref::<_, [u8]>::unaligned_from_suffix_with_elems(&mut buf[..], 8).unwrap();
             assert_eq!(prefix, [0; 8]);
             test_new_helper_slice_unaligned(r, 8);
         }
@@ -7459,14 +7455,14 @@ mod tests {
         {
             // In a block so that `r` and `suffix` don't live too long. `buf.t`
             // should be aligned to 8, so this should always succeed.
-            let (r, suffix) = Ref::<_, AU64>::new_from_prefix(&mut buf.t[..]).unwrap();
+            let (r, suffix) = Ref::<_, AU64>::from_prefix(&mut buf.t[..]).unwrap();
             assert_eq!(suffix.len(), 8);
             test_new_helper(r);
         }
         {
             buf.set_default();
             // `buf.t` should be aligned to 8, so this should always succeed.
-            let (prefix, r) = Ref::<_, AU64>::new_from_suffix(&mut buf.t[..]).unwrap();
+            let (prefix, r) = Ref::<_, AU64>::from_suffix(&mut buf.t[..]).unwrap();
             assert_eq!(prefix.len(), 8);
             test_new_helper(r);
         }
@@ -7481,13 +7477,13 @@ mod tests {
         let mut buf = [0u8; 16];
         {
             // In a block so that `r` and `suffix` don't live too long.
-            let (r, suffix) = Ref::<_, [u8; 8]>::new_unaligned_from_prefix(&mut buf[..]).unwrap();
+            let (r, suffix) = Ref::<_, [u8; 8]>::unaligned_from_prefix(&mut buf[..]).unwrap();
             assert_eq!(suffix.len(), 8);
             test_new_helper_unaligned(r);
         }
         {
             buf = [0u8; 16];
-            let (prefix, r) = Ref::<_, [u8; 8]>::new_unaligned_from_suffix(&mut buf[..]).unwrap();
+            let (prefix, r) = Ref::<_, [u8; 8]>::unaligned_from_suffix(&mut buf[..]).unwrap();
             assert_eq!(prefix.len(), 8);
             test_new_helper_unaligned(r);
         }
@@ -7575,38 +7571,36 @@ mod tests {
         // A buffer with an alignment of 8.
         let buf = Align::<[u8; 16], AU64>::default();
         // `buf.t` should be aligned to 8, so only the length check should fail.
-        assert!(Ref::<_, AU64>::new(&buf.t[..]).is_err());
-        assert!(Ref::<_, [u8; 8]>::new_unaligned(&buf.t[..]).is_err());
+        assert!(Ref::<_, AU64>::from(&buf.t[..]).is_err());
+        assert!(Ref::<_, [u8; 8]>::unaligned_from(&buf.t[..]).is_err());
 
         // Fail because the buffer is too small.
 
         // A buffer with an alignment of 8.
         let buf = Align::<[u8; 4], AU64>::default();
         // `buf.t` should be aligned to 8, so only the length check should fail.
-        assert!(Ref::<_, AU64>::new(&buf.t[..]).is_err());
-        assert!(Ref::<_, [u8; 8]>::new_unaligned(&buf.t[..]).is_err());
-        assert!(Ref::<_, AU64>::new_from_prefix(&buf.t[..]).is_err());
-        assert!(Ref::<_, AU64>::new_from_suffix(&buf.t[..]).is_err());
-        assert!(Ref::<_, [u8; 8]>::new_unaligned_from_prefix(&buf.t[..]).is_err());
-        assert!(Ref::<_, [u8; 8]>::new_unaligned_from_suffix(&buf.t[..]).is_err());
+        assert!(Ref::<_, AU64>::from(&buf.t[..]).is_err());
+        assert!(Ref::<_, [u8; 8]>::unaligned_from(&buf.t[..]).is_err());
+        assert!(Ref::<_, AU64>::from_prefix(&buf.t[..]).is_err());
+        assert!(Ref::<_, AU64>::from_suffix(&buf.t[..]).is_err());
+        assert!(Ref::<_, [u8; 8]>::unaligned_from_prefix(&buf.t[..]).is_err());
+        assert!(Ref::<_, [u8; 8]>::unaligned_from_suffix(&buf.t[..]).is_err());
 
         // Fail because the length is not a multiple of the element size.
 
         let buf = Align::<[u8; 12], AU64>::default();
         // `buf.t` has length 12, but element size is 8.
-        assert!(Ref::<_, [AU64]>::new(&buf.t[..]).is_err());
-        assert!(Ref::<_, [[u8; 8]]>::new_unaligned(&buf.t[..]).is_err());
+        assert!(Ref::<_, [AU64]>::from(&buf.t[..]).is_err());
+        assert!(Ref::<_, [[u8; 8]]>::unaligned_from(&buf.t[..]).is_err());
 
         // Fail because the buffer is too short.
         let buf = Align::<[u8; 12], AU64>::default();
         // `buf.t` has length 12, but the element size is 8 (and we're expecting
         // two of them).
-        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_prefix(&buf.t[..], 2).is_err());
-        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_suffix(&buf.t[..], 2).is_err());
-        assert!(Ref::<_, [[u8; 8]]>::with_trailing_elements_unaligned_from_prefix(&buf.t[..], 2)
-            .is_err());
-        assert!(Ref::<_, [[u8; 8]]>::with_trailing_elements_unaligned_from_suffix(&buf.t[..], 2)
-            .is_err());
+        assert!(Ref::<_, [AU64]>::from_prefix_with_elems(&buf.t[..], 2).is_err());
+        assert!(Ref::<_, [AU64]>::from_suffix_with_elems(&buf.t[..], 2).is_err());
+        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_prefix_with_elems(&buf.t[..], 2).is_err());
+        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_suffix_with_elems(&buf.t[..], 2).is_err());
 
         // Fail because the alignment is insufficient.
 
@@ -7615,29 +7609,27 @@ mod tests {
         let buf = Align::<[u8; 13], AU64>::default();
         // Slicing from 1, we get a buffer with size 12 (so the length check
         // should succeed) but an alignment of only 1, which is insufficient.
-        assert!(Ref::<_, AU64>::new(&buf.t[1..]).is_err());
-        assert!(Ref::<_, AU64>::new_from_prefix(&buf.t[1..]).is_err());
-        assert!(Ref::<_, [AU64]>::new(&buf.t[1..]).is_err());
-        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_prefix(&buf.t[1..], 1).is_err());
-        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_suffix(&buf.t[1..], 1).is_err());
+        assert!(Ref::<_, AU64>::from(&buf.t[1..]).is_err());
+        assert!(Ref::<_, AU64>::from_prefix(&buf.t[1..]).is_err());
+        assert!(Ref::<_, [AU64]>::from(&buf.t[1..]).is_err());
+        assert!(Ref::<_, [AU64]>::from_prefix_with_elems(&buf.t[1..], 1).is_err());
+        assert!(Ref::<_, [AU64]>::from_suffix_with_elems(&buf.t[1..], 1).is_err());
         // Slicing is unnecessary here because `new_from_suffix` uses the suffix
         // of the slice, which has odd alignment.
-        assert!(Ref::<_, AU64>::new_from_suffix(&buf.t[..]).is_err());
+        assert!(Ref::<_, AU64>::from_suffix(&buf.t[..]).is_err());
 
         // Fail due to arithmetic overflow.
 
         let buf = Align::<[u8; 16], AU64>::default();
         let unreasonable_len = usize::MAX / mem::size_of::<AU64>() + 1;
-        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_prefix(&buf.t[..], unreasonable_len)
-            .is_err());
-        assert!(Ref::<_, [AU64]>::with_trailing_elements_from_suffix(&buf.t[..], unreasonable_len)
-            .is_err());
-        assert!(Ref::<_, [[u8; 8]]>::with_trailing_elements_unaligned_from_prefix(
+        assert!(Ref::<_, [AU64]>::from_prefix_with_elems(&buf.t[..], unreasonable_len).is_err());
+        assert!(Ref::<_, [AU64]>::from_suffix_with_elems(&buf.t[..], unreasonable_len).is_err());
+        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_prefix_with_elems(
             &buf.t[..],
             unreasonable_len
         )
         .is_err());
-        assert!(Ref::<_, [[u8; 8]]>::with_trailing_elements_unaligned_from_suffix(
+        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_suffix_with_elems(
             &buf.t[..],
             unreasonable_len
         )
@@ -7754,39 +7746,39 @@ mod tests {
     #[test]
     fn test_display_debug() {
         let buf = Align::<[u8; 8], u64>::default();
-        let r = Ref::<_, u64>::new(&buf.t[..]).unwrap();
+        let r = Ref::<_, u64>::from(&buf.t[..]).unwrap();
         assert_eq!(format!("{}", r), "0");
         assert_eq!(format!("{:?}", r), "Ref(0)");
 
         let buf = Align::<[u8; 8], u64>::default();
-        let r = Ref::<_, [u64]>::new(&buf.t[..]).unwrap();
+        let r = Ref::<_, [u64]>::from(&buf.t[..]).unwrap();
         assert_eq!(format!("{:?}", r), "Ref([0])");
     }
 
     #[test]
     fn test_eq() {
         let buf1 = 0_u64;
-        let r1 = Ref::<_, u64>::new(buf1.as_bytes()).unwrap();
+        let r1 = Ref::<_, u64>::from(buf1.as_bytes()).unwrap();
         let buf2 = 0_u64;
-        let r2 = Ref::<_, u64>::new(buf2.as_bytes()).unwrap();
+        let r2 = Ref::<_, u64>::from(buf2.as_bytes()).unwrap();
         assert_eq!(r1, r2);
     }
 
     #[test]
     fn test_ne() {
         let buf1 = 0_u64;
-        let r1 = Ref::<_, u64>::new(buf1.as_bytes()).unwrap();
+        let r1 = Ref::<_, u64>::from(buf1.as_bytes()).unwrap();
         let buf2 = 1_u64;
-        let r2 = Ref::<_, u64>::new(buf2.as_bytes()).unwrap();
+        let r2 = Ref::<_, u64>::from(buf2.as_bytes()).unwrap();
         assert_ne!(r1, r2);
     }
 
     #[test]
     fn test_ord() {
         let buf1 = 0_u64;
-        let r1 = Ref::<_, u64>::new(buf1.as_bytes()).unwrap();
+        let r1 = Ref::<_, u64>::from(buf1.as_bytes()).unwrap();
         let buf2 = 1_u64;
-        let r2 = Ref::<_, u64>::new(buf2.as_bytes()).unwrap();
+        let r2 = Ref::<_, u64>::from(buf2.as_bytes()).unwrap();
         assert!(r1 < r2);
     }
 
