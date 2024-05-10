@@ -1380,7 +1380,7 @@ pub unsafe trait TryFromBytes {
     /// #[derive(TryFromBytes, Immutable, KnownLayout)]
     /// #[repr(C)]
     /// struct ZSTy {
-    ///     leading_sized: u16,
+    ///     leading_sized: [u8; 2],
     ///     trailing_dst: [()],
     /// }
     ///
@@ -1476,7 +1476,7 @@ pub unsafe trait TryFromBytes {
     /// #[derive(TryFromBytes, Immutable, KnownLayout)]
     /// #[repr(C)]
     /// struct ZSTy {
-    ///     leading_sized: u16,
+    ///     leading_sized: [u8; 2],
     ///     trailing_dst: [()],
     /// }
     ///
@@ -2499,7 +2499,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// #[derive(FromBytes, Immutable, IntoBytes, KnownLayout)]
     /// #[repr(C, packed)]
     /// struct ZSTy {
-    ///     leading_sized: u16,
+    ///     leading_sized: [u8; 2],
     ///     trailing_dst: [()],
     /// }
     ///
@@ -2573,7 +2573,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// #[derive(FromBytes, Immutable, IntoBytes, KnownLayout)]
     /// #[repr(C, packed)]
     /// struct ZSTy {
-    ///     leading_sized: u16,
+    ///     leading_sized: [u8; 2],
     ///     trailing_dst: [()],
     /// }
     ///
@@ -2647,7 +2647,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// #[derive(FromBytes, Immutable, IntoBytes, KnownLayout)]
     /// #[repr(C, packed)]
     /// struct ZSTy {
-    ///     leading_sized: u16,
+    ///     leading_sized: [u8; 2],
     ///     trailing_dst: [()],
     /// }
     ///
@@ -2692,6 +2692,79 @@ pub unsafe trait FromBytes: FromZeros {
         mut_from_prefix_suffix(bytes, None, CastType::Suffix).map(swap)
     }
 
+    /// Interprets the given `bytes` as a `&Self` with a DST length equal to
+    /// `count`.
+    ///
+    /// This method verifies that `bytes.len() == size_of::<T>() * count` and
+    /// that `bytes` is aligned to `align_of::<T>()`. It also ensures that
+    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
+    /// length, alignment, or overflow checks fail, it returns `Err`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// # #[derive(Debug, PartialEq, Eq)]
+    /// #[derive(FromBytes, Immutable)]
+    /// #[repr(C)]
+    /// struct Pixel {
+    ///     r: u8,
+    ///     g: u8,
+    ///     b: u8,
+    ///     a: u8,
+    /// }
+    ///
+    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7][..];
+    ///
+    /// let pixels = <[Pixel]>::ref_from_with_trailing_elements(bytes, 2).unwrap();
+    ///
+    /// assert_eq!(pixels, &[
+    ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
+    ///     Pixel { r: 4, g: 5, b: 6, a: 7 },
+    /// ]);
+    ///
+    /// ```
+    ///
+    /// Since an explicit `count` is provided, this method supports types with
+    /// zero-sized trailing slice elements. Methods such as [`ref_from`]
+    /// which do not take an explicit count do not support such types.
+    ///
+    /// ```
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: [u8; 2],
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let src = &[85, 85][..];
+    /// let zsty = ZSTy::ref_from_with_trailing_elements(src, 42).unwrap();
+    /// assert_eq!(zsty.trailing_dst.len(), 42);
+    /// ```
+    ///
+    /// [`ref_from`]: FromBytes::ref_from
+    #[must_use = "has no side effects"]
+    #[inline]
+    fn ref_from_with_trailing_elements(
+        bytes: &[u8],
+        count: usize,
+    ) -> Result<&Self, CastError<&[u8], Self>>
+    where
+        Self: KnownLayout<PointerMetadata = usize> + Immutable,
+    {
+        let bytes = Ptr::from_ref(bytes);
+        let maybe_slf = bytes.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
+        match maybe_slf {
+            Ok(slf) => Ok(slf.bikeshed_recall_valid().as_ref()),
+            Err(err) => Err(err.map_src(|s| s.as_ref())),
+        }
+    }
+
     /// Interprets the prefix of the given `bytes` as a `&[Self]` with length
     /// equal to `count` without copying.
     ///
@@ -2732,7 +2805,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     ///
     /// Since an explicit `count` is provided, this method supports types with
-    /// zero-sided trailing slice elements. Methods such as [`ref_from_prefix`]
+    /// zero-sized trailing slice elements. Methods such as [`ref_from_prefix`]
     /// which do not take an explicit count do not support such types.
     ///
     /// ```
@@ -2742,7 +2815,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// #[derive(FromBytes, Immutable, KnownLayout)]
     /// #[repr(C)]
     /// struct ZSTy {
-    ///     leading_sized: u16,
+    ///     leading_sized: [u8; 2],
     ///     trailing_dst: [()],
     /// }
     ///
@@ -2818,7 +2891,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     ///
     /// Since an explicit `count` is provided, this method supports types with
-    /// zero-sided trailing slice elements. Methods such as [`ref_from_suffix`]
+    /// zero-sized trailing slice elements. Methods such as [`ref_from_suffix`]
     /// which do not take an explicit count do not support such types.
     ///
     /// ```
@@ -2828,7 +2901,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// #[derive(FromBytes, Immutable, KnownLayout)]
     /// #[repr(C)]
     /// struct ZSTy {
-    ///     leading_sized: u16,
+    ///     leading_sized: [u8; 2],
     ///     trailing_dst: [()],
     /// }
     ///
@@ -2873,6 +2946,82 @@ pub unsafe trait FromBytes: FromZeros {
         Self: Sized + IntoBytes + Immutable,
     {
         <[Self]>::mut_from(bytes).ok()
+    }
+
+    /// Interprets the given `bytes` as a `&mut Self` with a DST length equal to
+    /// `count`.
+    ///
+    /// This method verifies that `bytes.len() == size_of::<T>() * count` and
+    /// that `bytes` is aligned to `align_of::<T>()`. It also ensures that
+    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
+    /// length, alignment, or overflow checks fail, it returns `Err`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::FromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// # #[derive(Debug, PartialEq, Eq)]
+    /// #[derive(KnownLayout, FromBytes, IntoBytes, Immutable)]
+    /// #[repr(C)]
+    /// struct Pixel {
+    ///     r: u8,
+    ///     g: u8,
+    ///     b: u8,
+    ///     a: u8,
+    /// }
+    ///
+    /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7][..];
+    ///
+    /// let pixels = <[Pixel]>::mut_from_with_trailing_elements(bytes, 2).unwrap();
+    ///
+    /// assert_eq!(pixels, &[
+    ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
+    ///     Pixel { r: 4, g: 5, b: 6, a: 7 },
+    /// ]);
+    ///
+    /// pixels[1] = Pixel { r: 0, g: 0, b: 0, a: 0 };
+    ///
+    /// assert_eq!(bytes, [0, 1, 2, 3, 0, 0, 0, 0]);
+    /// ```
+    ///
+    /// Since an explicit `count` is provided, this method supports types with
+    /// zero-sized trailing slice elements. Methods such as [`mut_from`] which
+    /// do not take an explicit count do not support such types.
+    ///
+    /// ```
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, IntoBytes, Immutable, KnownLayout)]
+    /// #[repr(C, packed)]
+    /// struct ZSTy {
+    ///     leading_sized: [u8; 2],
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let src = &mut [85, 85][..];
+    /// let zsty = ZSTy::mut_from_with_trailing_elements(src, 42).unwrap();
+    /// assert_eq!(zsty.trailing_dst.len(), 42);
+    /// ```
+    ///
+    /// [`mut_from`]: FromBytes::mut_from
+    #[must_use = "has no side effects"]
+    #[inline]
+    fn mut_from_with_trailing_elements(
+        bytes: &mut [u8],
+        count: usize,
+    ) -> Result<&mut Self, CastError<&mut [u8], Self>>
+    where
+        Self: IntoBytes + KnownLayout<PointerMetadata = usize> + Immutable,
+    {
+        let bytes = Ptr::from_mut(bytes);
+        let maybe_slf = bytes.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
+        match maybe_slf {
+            Ok(slf) => Ok(slf.bikeshed_recall_valid().as_mut()),
+            Err(err) => Err(err.map_src(|s| s.as_mut())),
+        }
     }
 
     /// Interprets the prefix of the given `bytes` as a `&mut [Self]` with
@@ -2920,7 +3069,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     ///
     /// Since an explicit `count` is provided, this method supports types with
-    /// zero-sided trailing slice elements. Methods such as [`mut_from_prefix`]
+    /// zero-sized trailing slice elements. Methods such as [`mut_from_prefix`]
     /// which do not take an explicit count do not support such types.
     ///
     /// ```
@@ -2930,7 +3079,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// #[derive(FromBytes, IntoBytes, Immutable, KnownLayout)]
     /// #[repr(C, packed)]
     /// struct ZSTy {
-    ///     leading_sized: u16,
+    ///     leading_sized: [u8; 2],
     ///     trailing_dst: [()],
     /// }
     ///
@@ -3011,7 +3160,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     ///
     /// Since an explicit `count` is provided, this method supports types with
-    /// zero-sided trailing slice elements. Methods such as [`mut_from_suffix`]
+    /// zero-sized trailing slice elements. Methods such as [`mut_from_suffix`]
     /// which do not take an explicit count do not support such types.
     ///
     /// ```
@@ -3021,7 +3170,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// #[derive(FromBytes, IntoBytes, Immutable, KnownLayout)]
     /// #[repr(C, packed)]
     /// struct ZSTy {
-    ///     leading_sized: u16,
+    ///     leading_sized: [u8; 2],
     ///     trailing_dst: [()],
     /// }
     ///
