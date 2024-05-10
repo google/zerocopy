@@ -2870,7 +2870,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn mut_slice_from(bytes: &mut [u8]) -> Option<&mut [Self]>
     where
-        Self: Sized + IntoBytes + Immutable,
+        Self: Sized + IntoBytes,
     {
         <[Self]>::mut_from(bytes).ok()
     }
@@ -2947,7 +2947,7 @@ pub unsafe trait FromBytes: FromZeros {
         count: usize,
     ) -> Result<(&mut Self, &mut [u8]), CastError<&mut [u8], Self>>
     where
-        Self: IntoBytes + KnownLayout<PointerMetadata = usize> + Immutable,
+        Self: IntoBytes + KnownLayout<PointerMetadata = usize>,
     {
         mut_from_prefix_suffix(bytes, Some(count), CastType::Prefix)
     }
@@ -2961,7 +2961,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn mut_slice_from_prefix(bytes: &mut [u8], count: usize) -> Option<(&mut [Self], &mut [u8])>
     where
-        Self: Sized + IntoBytes + Immutable,
+        Self: Sized + IntoBytes,
     {
         <[Self]>::mut_from_prefix_with_trailing_elements(bytes, count).ok()
     }
@@ -3038,7 +3038,7 @@ pub unsafe trait FromBytes: FromZeros {
         count: usize,
     ) -> Result<(&mut [u8], &mut Self), CastError<&mut [u8], Self>>
     where
-        Self: IntoBytes + KnownLayout<PointerMetadata = usize> + Immutable,
+        Self: IntoBytes + KnownLayout<PointerMetadata = usize>,
     {
         mut_from_prefix_suffix(bytes, Some(count), CastType::Suffix).map(swap)
     }
@@ -3051,7 +3051,7 @@ pub unsafe trait FromBytes: FromZeros {
     #[inline]
     fn mut_slice_from_suffix(bytes: &mut [u8], count: usize) -> Option<(&mut [u8], &mut [Self])>
     where
-        Self: Sized + IntoBytes + Immutable,
+        Self: Sized + IntoBytes,
     {
         <[Self]>::mut_from_suffix_with_trailing_elements(bytes, count).ok()
     }
