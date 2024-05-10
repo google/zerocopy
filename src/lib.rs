@@ -2410,10 +2410,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        let (slf, suffix) = Ptr::from_ref(bytes)
-            .try_cast_into::<_, BecauseImmutable>(CastType::Prefix)
-            .map_err(|err| err.map_src(|s| s.as_ref()))?;
-        Ok((slf.bikeshed_recall_valid().as_ref(), suffix.as_ref()))
+        ref_from_prefix_suffix(bytes, CastType::Prefix)
     }
 
     /// Interprets the suffix of the given `bytes` as a `&Self` without copying.
@@ -2470,10 +2467,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: Immutable + KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
-        let (slf, prefix) = Ptr::from_ref(bytes)
-            .try_cast_into::<_, BecauseImmutable>(CastType::Suffix)
-            .map_err(|err| err.map_src(|s| s.as_ref()))?;
-        Ok((prefix.as_ref(), slf.bikeshed_recall_valid().as_ref()))
+        ref_from_prefix_suffix(bytes, CastType::Suffix).map(swap)
     }
 
     /// Interprets the given `bytes` as a `&mut Self` without copying.
@@ -2613,10 +2607,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: IntoBytes + KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
-        let (slf, suffix) = Ptr::from_mut(bytes)
-            .try_cast_into::<_, BecauseExclusive>(CastType::Prefix)
-            .map_err(|err| err.map_src(|s| s.as_mut()))?;
-        Ok((slf.bikeshed_recall_valid().as_mut(), suffix.as_mut()))
+        mut_from_prefix_suffix(bytes, CastType::Prefix)
     }
 
     /// Interprets the suffix of the given `bytes` as a `&mut Self` without
@@ -2682,10 +2673,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: IntoBytes + KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
-        let (slf, prefix) = Ptr::from_mut(bytes)
-            .try_cast_into::<_, BecauseExclusive>(CastType::Suffix)
-            .map_err(|err| err.map_src(|s| s.as_mut()))?;
-        Ok((prefix.as_mut(), slf.bikeshed_recall_valid().as_mut()))
+        mut_from_prefix_suffix(bytes, CastType::Suffix).map(swap)
     }
 
     /// Interprets the prefix of the given `bytes` as a `&[Self]` with length
@@ -3192,6 +3180,34 @@ pub unsafe trait FromBytes: FromZeros {
     {
         <[Self]>::ref_from(bytes).ok()
     }
+}
+
+#[inline(always)]
+fn ref_from_prefix_suffix<T>(
+    bytes: &[u8],
+    cast_type: CastType,
+) -> Result<(&T, &[u8]), CastError<&[u8], T>>
+where
+    T: ?Sized + FromBytes + KnownLayout + Immutable,
+{
+    let (slf, suffix) = Ptr::from_ref(bytes)
+        .try_cast_into::<_, BecauseImmutable>(cast_type)
+        .map_err(|err| err.map_src(|s| s.as_ref()))?;
+    Ok((slf.bikeshed_recall_valid().as_ref(), suffix.as_ref()))
+}
+
+#[inline(always)]
+fn mut_from_prefix_suffix<T>(
+    bytes: &mut [u8],
+    cast_type: CastType,
+) -> Result<(&mut T, &mut [u8]), CastError<&mut [u8], T>>
+where
+    T: ?Sized + FromBytes + KnownLayout,
+{
+    let (slf, suffix) = Ptr::from_mut(bytes)
+        .try_cast_into::<_, BecauseExclusive>(cast_type)
+        .map_err(|err| err.map_src(|s| s.as_mut()))?;
+    Ok((slf.bikeshed_recall_valid().as_mut(), suffix.as_mut()))
 }
 
 /// Analyzes whether a type is [`IntoBytes`].
