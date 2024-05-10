@@ -73,7 +73,7 @@ jobs:
 
       - name: Configure GitHub pages
         id: pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: Cargo doc
         # We pass --document-private-items and --document-hidden items to ensure
