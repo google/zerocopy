@@ -902,3 +902,429 @@ where
         inner.partial_cmp(other_inner)
     }
 }
+
+#[cfg(test)]
+#[allow(clippy::assertions_on_result_states)]
+mod tests {
+    use core::convert::TryInto as _;
+
+    use super::*;
+    use crate::util::testutil::*;
+
+    #[test]
+    fn test_address() {
+        // Test that the `Deref` and `DerefMut` implementations return a
+        // reference which points to the right region of memory.
+
+        let buf = [0];
+        let r = Ref::<_, u8>::from(&buf[..]).unwrap();
+        let buf_ptr = buf.as_ptr();
+        let deref_ptr: *const u8 = r.deref();
+        assert_eq!(buf_ptr, deref_ptr);
+
+        let buf = [0];
+        let r = Ref::<_, [u8]>::from(&buf[..]).unwrap();
+        let buf_ptr = buf.as_ptr();
+        let deref_ptr = r.deref().as_ptr();
+        assert_eq!(buf_ptr, deref_ptr);
+    }
+
+    // Verify that values written to a `Ref` are properly shared between the
+    // typed and untyped representations, that reads via `deref` and `read`
+    // behave the same, and that writes via `deref_mut` and `write` behave the
+    // same.
+    fn test_new_helper(mut r: Ref<&mut [u8], AU64>) {
+        // assert that the value starts at 0
+        assert_eq!(*r, AU64(0));
+        assert_eq!(r.read(), AU64(0));
+
+        // Assert that values written to the typed value are reflected in the
+        // byte slice.
+        const VAL1: AU64 = AU64(0xFF00FF00FF00FF00);
+        *r = VAL1;
+        assert_eq!(r.bytes(), &VAL1.to_bytes());
+        *r = AU64(0);
+        r.write(VAL1);
+        assert_eq!(r.bytes(), &VAL1.to_bytes());
+
+        // Assert that values written to the byte slice are reflected in the
+        // typed value.
+        const VAL2: AU64 = AU64(!VAL1.0); // different from `VAL1`
+        r.bytes_mut().copy_from_slice(&VAL2.to_bytes()[..]);
+        assert_eq!(*r, VAL2);
+        assert_eq!(r.read(), VAL2);
+    }
+
+    // Verify that values written to a `Ref` are properly shared between the
+    // typed and untyped representations; pass a value with `typed_len` `AU64`s
+    // backed by an array of `typed_len * 8` bytes.
+    fn test_new_helper_slice(mut r: Ref<&mut [u8], [AU64]>, typed_len: usize) {
+        // Assert that the value starts out zeroed.
+        assert_eq!(&*r, vec![AU64(0); typed_len].as_slice());
+
+        // Check the backing storage is the exact same slice.
+        let untyped_len = typed_len * 8;
+        assert_eq!(r.bytes().len(), untyped_len);
+        assert_eq!(r.bytes().as_ptr(), r.as_ptr().cast::<u8>());
+
+        // Assert that values written to the typed value are reflected in the
+        // byte slice.
+        const VAL1: AU64 = AU64(0xFF00FF00FF00FF00);
+        for typed in &mut *r {
+            *typed = VAL1;
+        }
+        assert_eq!(r.bytes(), VAL1.0.to_ne_bytes().repeat(typed_len).as_slice());
+
+        // Assert that values written to the byte slice are reflected in the
+        // typed value.
+        const VAL2: AU64 = AU64(!VAL1.0); // different from VAL1
+        r.bytes_mut().copy_from_slice(&VAL2.0.to_ne_bytes().repeat(typed_len));
+        assert!(r.iter().copied().all(|x| x == VAL2));
+    }
+
+    // Verify that values written to a `Ref` are properly shared between the
+    // typed and untyped representations, that reads via `deref` and `read`
+    // behave the same, and that writes via `deref_mut` and `write` behave the
+    // same.
+    fn test_new_helper_unaligned(mut r: Ref<&mut [u8], [u8; 8]>) {
+        // assert that the value starts at 0
+        assert_eq!(*r, [0; 8]);
+        assert_eq!(r.read(), [0; 8]);
+
+        // Assert that values written to the typed value are reflected in the
+        // byte slice.
+        const VAL1: [u8; 8] = [0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00];
+        *r = VAL1;
+        assert_eq!(r.bytes(), &VAL1);
+        *r = [0; 8];
+        r.write(VAL1);
+        assert_eq!(r.bytes(), &VAL1);
+
+        // Assert that values written to the byte slice are reflected in the
+        // typed value.
+        const VAL2: [u8; 8] = [0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF]; // different from VAL1
+        r.bytes_mut().copy_from_slice(&VAL2[..]);
+        assert_eq!(*r, VAL2);
+        assert_eq!(r.read(), VAL2);
+    }
+
+    // Verify that values written to a `Ref` are properly shared between the
+    // typed and untyped representations; pass a value with `len` `u8`s backed
+    // by an array of `len` bytes.
+    fn test_new_helper_slice_unaligned(mut r: Ref<&mut [u8], [u8]>, len: usize) {
+        // Assert that the value starts out zeroed.
+        assert_eq!(&*r, vec![0u8; len].as_slice());
+
+        // Check the backing storage is the exact same slice.
+        assert_eq!(r.bytes().len(), len);
+        assert_eq!(r.bytes().as_ptr(), r.as_ptr());
+
+        // Assert that values written to the typed value are reflected in the
+        // byte slice.
+        let mut expected_bytes = [0xFF, 0x00].iter().copied().cycle().take(len).collect::<Vec<_>>();
+        r.copy_from_slice(&expected_bytes);
+        assert_eq!(r.bytes(), expected_bytes.as_slice());
+
+        // Assert that values written to the byte slice are reflected in the
+        // typed value.
+        for byte in &mut expected_bytes {
+            *byte = !*byte; // different from `expected_len`
+        }
+        r.bytes_mut().copy_from_slice(&expected_bytes);
+        assert_eq!(&*r, expected_bytes.as_slice());
+    }
+
+    #[test]
+    fn test_new_aligned_sized() {
+        // Test that a properly-aligned, properly-sized buffer works for new,
+        // new_from_prefix, and new_from_suffix, and that new_from_prefix and
+        // new_from_suffix return empty slices. Test that a properly-aligned
+        // buffer whose length is a multiple of the element size works for
+        // new_slice.
+
+        // A buffer with an alignment of 8.
+        let mut buf = Align::<[u8; 8], AU64>::default();
+        // `buf.t` should be aligned to 8, so this should always succeed.
+        test_new_helper(Ref::<_, AU64>::from(&mut buf.t[..]).unwrap());
+        {
+            // In a block so that `r` and `suffix` don't live too long.
+            buf.set_default();
+            let (r, suffix) = Ref::<_, AU64>::from_prefix(&mut buf.t[..]).unwrap();
+            assert!(suffix.is_empty());
+            test_new_helper(r);
+        }
+        {
+            buf.set_default();
+            let (prefix, r) = Ref::<_, AU64>::from_suffix(&mut buf.t[..]).unwrap();
+            assert!(prefix.is_empty());
+            test_new_helper(r);
+        }
+
+        // A buffer with alignment 8 and length 24. We choose this length very
+        // intentionally: if we instead used length 16, then the prefix and
+        // suffix lengths would be identical. In the past, we used length 16,
+        // which resulted in this test failing to discover the bug uncovered in
+        // #506.
+        let mut buf = Align::<[u8; 24], AU64>::default();
+        // `buf.t` should be aligned to 8 and have a length which is a multiple
+        // of `size_of::<AU64>()`, so this should always succeed.
+        test_new_helper_slice(Ref::<_, [AU64]>::from(&mut buf.t[..]).unwrap(), 3);
+        let ascending: [u8; 24] = (0..24).collect::<Vec<_>>().try_into().unwrap();
+        // 16 ascending bytes followed by 8 zeros.
+        let mut ascending_prefix = ascending;
+        ascending_prefix[16..].copy_from_slice(&[0, 0, 0, 0, 0, 0, 0, 0]);
+        // 8 zeros followed by 16 ascending bytes.
+        let mut ascending_suffix = ascending;
+        ascending_suffix[..8].copy_from_slice(&[0, 0, 0, 0, 0, 0, 0, 0]);
+
+        {
+            buf.t = ascending_suffix;
+            let (r, suffix) = Ref::<_, [AU64]>::from_prefix_with_elems(&mut buf.t[..], 1).unwrap();
+            assert_eq!(suffix, &ascending[8..]);
+            test_new_helper_slice(r, 1);
+        }
+        {
+            buf.t = ascending_prefix;
+            let (prefix, r) = Ref::<_, [AU64]>::from_suffix_with_elems(&mut buf.t[..], 1).unwrap();
+            assert_eq!(prefix, &ascending[..16]);
+            test_new_helper_slice(r, 1);
+        }
+    }
+
+    #[test]
+    fn test_new_unaligned_sized() {
+        // Test that an unaligned, properly-sized buffer works for
+        // `new_unaligned`, `new_unaligned_from_prefix`, and
+        // `new_unaligned_from_suffix`, and that `new_unaligned_from_prefix`
+        // `new_unaligned_from_suffix` return empty slices. Test that an
+        // unaligned buffer whose length is a multiple of the element size works
+        // for `new_slice`.
+
+        let mut buf = [0u8; 8];
+        test_new_helper_unaligned(Ref::<_, [u8; 8]>::unaligned_from(&mut buf[..]).unwrap());
+        {
+            // In a block so that `r` and `suffix` don't live too long.
+            buf = [0u8; 8];
+            let (r, suffix) = Ref::<_, [u8; 8]>::unaligned_from_prefix(&mut buf[..]).unwrap();
+            assert!(suffix.is_empty());
+            test_new_helper_unaligned(r);
+        }
+        {
+            buf = [0u8; 8];
+            let (prefix, r) = Ref::<_, [u8; 8]>::unaligned_from_suffix(&mut buf[..]).unwrap();
+            assert!(prefix.is_empty());
+            test_new_helper_unaligned(r);
+        }
+
+        let mut buf = [0u8; 16];
+        // `buf.t` should be aligned to 8 and have a length which is a multiple
+        // of `size_of::AU64>()`, so this should always succeed.
+        test_new_helper_slice_unaligned(Ref::<_, [u8]>::unaligned_from(&mut buf[..]).unwrap(), 16);
+
+        {
+            buf = [0u8; 16];
+            let (r, suffix) =
+                Ref::<_, [u8]>::unaligned_from_prefix_with_elems(&mut buf[..], 8).unwrap();
+            assert_eq!(suffix, [0; 8]);
+            test_new_helper_slice_unaligned(r, 8);
+        }
+        {
+            buf = [0u8; 16];
+            let (prefix, r) =
+                Ref::<_, [u8]>::unaligned_from_suffix_with_elems(&mut buf[..], 8).unwrap();
+            assert_eq!(prefix, [0; 8]);
+            test_new_helper_slice_unaligned(r, 8);
+        }
+    }
+
+    #[test]
+    fn test_new_oversized() {
+        // Test that a properly-aligned, overly-sized buffer works for
+        // `new_from_prefix` and `new_from_suffix`, and that they return the
+        // remainder and prefix of the slice respectively.
+
+        let mut buf = Align::<[u8; 16], AU64>::default();
+        {
+            // In a block so that `r` and `suffix` don't live too long. `buf.t`
+            // should be aligned to 8, so this should always succeed.
+            let (r, suffix) = Ref::<_, AU64>::from_prefix(&mut buf.t[..]).unwrap();
+            assert_eq!(suffix.len(), 8);
+            test_new_helper(r);
+        }
+        {
+            buf.set_default();
+            // `buf.t` should be aligned to 8, so this should always succeed.
+            let (prefix, r) = Ref::<_, AU64>::from_suffix(&mut buf.t[..]).unwrap();
+            assert_eq!(prefix.len(), 8);
+            test_new_helper(r);
+        }
+    }
+
+    #[test]
+    fn test_new_unaligned_oversized() {
+        // Test than an unaligned, overly-sized buffer works for
+        // `new_unaligned_from_prefix` and `new_unaligned_from_suffix`, and that
+        // they return the remainder and prefix of the slice respectively.
+
+        let mut buf = [0u8; 16];
+        {
+            // In a block so that `r` and `suffix` don't live too long.
+            let (r, suffix) = Ref::<_, [u8; 8]>::unaligned_from_prefix(&mut buf[..]).unwrap();
+            assert_eq!(suffix.len(), 8);
+            test_new_helper_unaligned(r);
+        }
+        {
+            buf = [0u8; 16];
+            let (prefix, r) = Ref::<_, [u8; 8]>::unaligned_from_suffix(&mut buf[..]).unwrap();
+            assert_eq!(prefix.len(), 8);
+            test_new_helper_unaligned(r);
+        }
+    }
+
+    #[test]
+    fn test_ref_from_mut_from() {
+        // Test `FromBytes::{ref_from, mut_from}{,_prefix,Suffix}` success cases
+        // Exhaustive coverage for these methods is covered by the `Ref` tests above,
+        // which these helper methods defer to.
+
+        let mut buf =
+            Align::<[u8; 16], AU64>::new([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+
+        assert_eq!(
+            AU64::ref_from(&buf.t[8..]).unwrap().0.to_ne_bytes(),
+            [8, 9, 10, 11, 12, 13, 14, 15]
+        );
+        let suffix = AU64::mut_from(&mut buf.t[8..]).unwrap();
+        suffix.0 = 0x0101010101010101;
+        // The `[u8:9]` is a non-half size of the full buffer, which would catch
+        // `from_prefix` having the same implementation as `from_suffix` (issues #506, #511).
+        assert_eq!(
+            <[u8; 9]>::ref_from_suffix(&buf.t[..]).unwrap(),
+            (&[0, 1, 2, 3, 4, 5, 6][..], &[7u8, 1, 1, 1, 1, 1, 1, 1, 1])
+        );
+        let (prefix, suffix) = AU64::mut_from_suffix(&mut buf.t[1..]).unwrap();
+        assert_eq!(prefix, &mut [1u8, 2, 3, 4, 5, 6, 7][..]);
+        suffix.0 = 0x0202020202020202;
+        let (prefix, suffix) = <[u8; 10]>::mut_from_suffix(&mut buf.t[..]).unwrap();
+        assert_eq!(prefix, &mut [0u8, 1, 2, 3, 4, 5][..]);
+        suffix[0] = 42;
+        assert_eq!(
+            <[u8; 9]>::ref_from_prefix(&buf.t[..]).unwrap(),
+            (&[0u8, 1, 2, 3, 4, 5, 42, 7, 2], &[2u8, 2, 2, 2, 2, 2, 2][..])
+        );
+        <[u8; 2]>::mut_from_prefix(&mut buf.t[..]).unwrap().0[1] = 30;
+        assert_eq!(buf.t, [0, 30, 2, 3, 4, 5, 42, 7, 2, 2, 2, 2, 2, 2, 2, 2]);
+    }
+
+    #[test]
+    #[allow(clippy::cognitive_complexity)]
+    fn test_new_error() {
+        // Fail because the buffer is too large.
+
+        // A buffer with an alignment of 8.
+        let buf = Align::<[u8; 16], AU64>::default();
+        // `buf.t` should be aligned to 8, so only the length check should fail.
+        assert!(Ref::<_, AU64>::from(&buf.t[..]).is_err());
+        assert!(Ref::<_, [u8; 8]>::unaligned_from(&buf.t[..]).is_err());
+
+        // Fail because the buffer is too small.
+
+        // A buffer with an alignment of 8.
+        let buf = Align::<[u8; 4], AU64>::default();
+        // `buf.t` should be aligned to 8, so only the length check should fail.
+        assert!(Ref::<_, AU64>::from(&buf.t[..]).is_err());
+        assert!(Ref::<_, [u8; 8]>::unaligned_from(&buf.t[..]).is_err());
+        assert!(Ref::<_, AU64>::from_prefix(&buf.t[..]).is_err());
+        assert!(Ref::<_, AU64>::from_suffix(&buf.t[..]).is_err());
+        assert!(Ref::<_, [u8; 8]>::unaligned_from_prefix(&buf.t[..]).is_err());
+        assert!(Ref::<_, [u8; 8]>::unaligned_from_suffix(&buf.t[..]).is_err());
+
+        // Fail because the length is not a multiple of the element size.
+
+        let buf = Align::<[u8; 12], AU64>::default();
+        // `buf.t` has length 12, but element size is 8.
+        assert!(Ref::<_, [AU64]>::from(&buf.t[..]).is_err());
+        assert!(Ref::<_, [[u8; 8]]>::unaligned_from(&buf.t[..]).is_err());
+
+        // Fail because the buffer is too short.
+        let buf = Align::<[u8; 12], AU64>::default();
+        // `buf.t` has length 12, but the element size is 8 (and we're expecting
+        // two of them).
+        assert!(Ref::<_, [AU64]>::from_prefix_with_elems(&buf.t[..], 2).is_err());
+        assert!(Ref::<_, [AU64]>::from_suffix_with_elems(&buf.t[..], 2).is_err());
+        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_prefix_with_elems(&buf.t[..], 2).is_err());
+        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_suffix_with_elems(&buf.t[..], 2).is_err());
+
+        // Fail because the alignment is insufficient.
+
+        // A buffer with an alignment of 8. An odd buffer size is chosen so that
+        // the last byte of the buffer has odd alignment.
+        let buf = Align::<[u8; 13], AU64>::default();
+        // Slicing from 1, we get a buffer with size 12 (so the length check
+        // should succeed) but an alignment of only 1, which is insufficient.
+        assert!(Ref::<_, AU64>::from(&buf.t[1..]).is_err());
+        assert!(Ref::<_, AU64>::from_prefix(&buf.t[1..]).is_err());
+        assert!(Ref::<_, [AU64]>::from(&buf.t[1..]).is_err());
+        assert!(Ref::<_, [AU64]>::from_prefix_with_elems(&buf.t[1..], 1).is_err());
+        assert!(Ref::<_, [AU64]>::from_suffix_with_elems(&buf.t[1..], 1).is_err());
+        // Slicing is unnecessary here because `new_from_suffix` uses the suffix
+        // of the slice, which has odd alignment.
+        assert!(Ref::<_, AU64>::from_suffix(&buf.t[..]).is_err());
+
+        // Fail due to arithmetic overflow.
+
+        let buf = Align::<[u8; 16], AU64>::default();
+        let unreasonable_len = usize::MAX / mem::size_of::<AU64>() + 1;
+        assert!(Ref::<_, [AU64]>::from_prefix_with_elems(&buf.t[..], unreasonable_len).is_err());
+        assert!(Ref::<_, [AU64]>::from_suffix_with_elems(&buf.t[..], unreasonable_len).is_err());
+        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_prefix_with_elems(
+            &buf.t[..],
+            unreasonable_len
+        )
+        .is_err());
+        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_suffix_with_elems(
+            &buf.t[..],
+            unreasonable_len
+        )
+        .is_err());
+    }
+
+    #[test]
+    fn test_display_debug() {
+        let buf = Align::<[u8; 8], u64>::default();
+        let r = Ref::<_, u64>::from(&buf.t[..]).unwrap();
+        assert_eq!(format!("{}", r), "0");
+        assert_eq!(format!("{:?}", r), "Ref(0)");
+
+        let buf = Align::<[u8; 8], u64>::default();
+        let r = Ref::<_, [u64]>::from(&buf.t[..]).unwrap();
+        assert_eq!(format!("{:?}", r), "Ref([0])");
+    }
+
+    #[test]
+    fn test_eq() {
+        let buf1 = 0_u64;
+        let r1 = Ref::<_, u64>::from(buf1.as_bytes()).unwrap();
+        let buf2 = 0_u64;
+        let r2 = Ref::<_, u64>::from(buf2.as_bytes()).unwrap();
+        assert_eq!(r1, r2);
+    }
+
+    #[test]
+    fn test_ne() {
+        let buf1 = 0_u64;
+        let r1 = Ref::<_, u64>::from(buf1.as_bytes()).unwrap();
+        let buf2 = 1_u64;
+        let r2 = Ref::<_, u64>::from(buf2.as_bytes()).unwrap();
+        assert_ne!(r1, r2);
+    }
+
+    #[test]
+    fn test_ord() {
+        let buf1 = 0_u64;
+        let r1 = Ref::<_, u64>::from(buf1.as_bytes()).unwrap();
+        let buf2 = 1_u64;
+        let r2 = Ref::<_, u64>::from(buf2.as_bytes()).unwrap();
+        assert!(r1 < r2);
+    }
+}
