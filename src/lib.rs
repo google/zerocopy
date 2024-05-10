@@ -1170,7 +1170,7 @@ pub unsafe trait TryFromBytes {
     ///
     /// // These bytes are not valid instance of `Packet`.
     /// let bytes = &[0x70, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
-    /// assert!(Packet::try_ref_from_prefix(bytes).is_err());
+    /// assert!(Packet::try_ref_from(bytes).is_err());
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
@@ -1625,6 +1625,178 @@ pub unsafe trait TryFromBytes {
     {
         util::assert_dst_is_not_zst::<Self>();
         try_mut_from_prefix_suffix(candidate, CastType::Suffix, None).map(swap)
+    }
+
+    /// Attempts to interpret the given `candidate` as a `&Self` with a DST
+    /// length equal to `count`.
+    ///
+    /// If the bytes of `candidate` are a valid instance of `Self`, this method
+    /// returns a reference to those bytes interpreted as a `Self`. If
+    /// `candidate.len() != size_of::<Self>()` or `candidate` is not aligned to
+    /// `align_of::<Self>()` or the bytes are not a valid instance of `Self`,
+    /// this returns `Err`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(TryFromBytes, Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = ZSTy::try_ref_from_with_trailing_elements(0u16.as_bytes(), 0); // ⚠ Compile Error!
+    /// ```
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::TryFromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// // The only valid value of this type is the byte `0xC0`
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(u8)]
+    /// enum C0 { xC0 = 0xC0 }
+    ///
+    /// // The only valid value of this type is the byte sequence `0xC0C0`.
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct C0C0(C0, C0);
+    ///
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct Packet {
+    ///     magic_number: C0C0,
+    ///     mug_size: u8,
+    ///     temperature: u8,
+    ///     marshmallows: [[u8; 2]],
+    /// }
+    ///
+    /// let bytes = &[0xC0, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
+    ///
+    /// let packet = Packet::try_ref_from_with_trailing_elements(bytes, 3).unwrap();
+    ///
+    /// assert_eq!(packet.mug_size, 240);
+    /// assert_eq!(packet.temperature, 77);
+    /// assert_eq!(packet.marshmallows, [[0, 1], [2, 3], [4, 5]]);
+    ///
+    /// // These bytes are not valid instance of `Packet`.
+    /// let bytes = &[0x70, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
+    /// assert!(Packet::try_ref_from_with_trailing_elements(bytes, 3).is_err());
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline]
+    fn try_ref_from_with_trailing_elements(
+        candidate: &[u8],
+        count: usize,
+    ) -> Result<&Self, TryCastError<&[u8], Self>>
+    where
+        Self: KnownLayout<PointerMetadata = usize> + Immutable,
+    {
+        match Ptr::from_ref(candidate)
+            .try_cast_into_no_leftover::<Self, BecauseImmutable>(Some(count))
+        {
+            Ok(candidate) => match candidate.try_into_valid() {
+                Ok(valid) => Ok(valid.as_ref()),
+                Err(e) => Err(e.map_src(|src| src.as_bytes::<BecauseImmutable>().as_ref()).into()),
+            },
+            Err(e) => Err(e.map_src(Ptr::as_ref).into()),
+        }
+    }
+
+    /// Attempts to interpret the given `candidate` as a `&mut Self` with a DST
+    /// length equal to `count`.
+    ///
+    /// If the bytes of `candidate` are a valid instance of `Self`, this method
+    /// returns a reference to those bytes interpreted as a `Self`. If
+    /// `candidate.len() != size_of::<Self>()` or `candidate` is not aligned to
+    /// `align_of::<Self>()` or the bytes are not a valid instance of `Self`,
+    /// this returns `Err`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(TryFromBytes, Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = ZSTy::try_mut_from_with_trailing_elements(0u16.as_bytes(), 0); // ⚠ Compile Error!
+    /// ```
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::TryFromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// // The only valid value of this type is the byte `0xC0`
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(u8)]
+    /// enum C0 { xC0 = 0xC0 }
+    ///
+    /// // The only valid value of this type is the byte sequence `0xC0C0`.
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct C0C0(C0, C0);
+    ///
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct Packet {
+    ///     magic_number: C0C0,
+    ///     mug_size: u8,
+    ///     temperature: u8,
+    ///     marshmallows: [[u8; 2]],
+    /// }
+    ///
+    /// let bytes = &[0xC0, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
+    ///
+    /// let packet = Packet::try_mut_from_with_trailing_elements(bytes, 3).unwrap();
+    ///
+    /// assert_eq!(packet.mug_size, 240);
+    /// assert_eq!(packet.temperature, 77);
+    /// assert_eq!(packet.marshmallows, [[0, 1], [2, 3], [4, 5]]);
+    ///
+    /// // These bytes are not valid instance of `Packet`.
+    /// let bytes = &[0x70, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
+    /// assert!(Packet::try_mut_from_with_trailing_elements(bytes, 3).is_err());
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline]
+    fn try_mut_from_with_trailing_elements(
+        candidate: &mut [u8],
+        count: usize,
+    ) -> Result<&mut Self, TryCastError<&mut [u8], Self>>
+    where
+        Self: KnownLayout<PointerMetadata = usize> + Immutable,
+    {
+        match Ptr::from_mut(candidate)
+            .try_cast_into_no_leftover::<Self, BecauseExclusive>(Some(count))
+        {
+            Ok(candidate) => match candidate.try_into_valid() {
+                Ok(valid) => Ok(valid.as_mut()),
+                Err(e) => Err(e.map_src(|src| src.as_bytes::<BecauseExclusive>().as_mut()).into()),
+            },
+            Err(e) => Err(e.map_src(Ptr::as_mut).into()),
+        }
     }
 
     /// Attempts to read the given `candidate` as a `Self`.
