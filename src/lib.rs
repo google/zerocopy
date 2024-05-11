@@ -2357,9 +2357,9 @@ pub unsafe trait FromBytes: FromZeros {
     /// # Compile-Time Assertions
     ///
     /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. See [`ref_from_prefix_with_trailing_elements`],
-    /// which does support such types. Attempting to use this method on such
-    /// types results in a compile-time assertion error; e.g.:
+    /// component is zero-sized. See [`ref_from_prefix_with_elems`], which does
+    /// support such types. Attempting to use this method on such types results
+    /// in a compile-time assertion error; e.g.:
     ///
     /// ```compile_fail,E0080
     /// use zerocopy::*;
@@ -2375,7 +2375,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// let _ = ZSTy::ref_from_prefix(0u16.as_bytes()); // ⚠ Compile Error!
     /// ```
     ///
-    /// [`ref_from_prefix_with_trailing_elements`]: FromBytes::ref_from_prefix_with_trailing_elements
+    /// [`ref_from_prefix_with_elems`]: FromBytes::ref_from_prefix_with_elems
     ///
     /// # Examples
     ///
@@ -2431,9 +2431,9 @@ pub unsafe trait FromBytes: FromZeros {
     /// # Compile-Time Assertions
     ///
     /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. See [`ref_from_suffix_with_trailing_elements`],
-    /// which does support such types. Attempting to use this method on such
-    /// types results in a compile-time assertion error; e.g.:
+    /// component is zero-sized. See [`ref_from_suffix_with_elems`], which does
+    /// support such types. Attempting to use this method on such types results
+    /// in a compile-time assertion error; e.g.:
     ///
     /// ```compile_fail,E0080
     /// use zerocopy::*;
@@ -2449,7 +2449,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// let _ = ZSTy::ref_from_suffix(0u16.as_bytes()); // ⚠ Compile Error!
     /// ```
     ///
-    /// [`ref_from_suffix_with_trailing_elements`]: FromBytes::ref_from_suffix_with_trailing_elements
+    /// [`ref_from_suffix_with_elems`]: FromBytes::ref_from_suffix_with_elems
     ///
     /// # Examples
     ///
@@ -2489,9 +2489,9 @@ pub unsafe trait FromBytes: FromZeros {
     /// # Compile-Time Assertions
     ///
     /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. See [`mut_from_prefix_with_trailing_elements`],
-    /// which does support such types. Attempting to use this method on such
-    /// types results in a compile-time assertion error; e.g.:
+    /// component is zero-sized. See [`mut_from_prefix_with_elems`], which does
+    /// support such types. Attempting to use this method on such types results
+    /// in a compile-time assertion error; e.g.:
     ///
     /// ```compile_fail,E0080
     /// use zerocopy::*;
@@ -2508,7 +2508,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// let _ = ZSTy::mut_from(&mut source[..]); // ⚠ Compile Error!
     /// ```
     ///
-    /// [`mut_from_prefix_with_trailing_elements`]: FromBytes::mut_from_prefix_with_trailing_elements
+    /// [`mut_from_prefix_with_elems`]: FromBytes::mut_from_prefix_with_elems
     ///
     /// # Examples
     ///
@@ -2563,9 +2563,9 @@ pub unsafe trait FromBytes: FromZeros {
     /// # Compile-Time Assertions
     ///
     /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. See [`mut_from_suffix_with_trailing_elements`],
-    /// which does support such types. Attempting to use this method on such
-    /// types results in a compile-time assertion error; e.g.:
+    /// component is zero-sized. See [`mut_from_suffix_with_elems`], which does
+    /// support such types. Attempting to use this method on such types results
+    /// in a compile-time assertion error; e.g.:
     ///
     /// ```compile_fail,E0080
     /// use zerocopy::*;
@@ -2582,7 +2582,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// let _ = ZSTy::mut_from_prefix(&mut source[..]); // ⚠ Compile Error!
     /// ```
     ///
-    /// [`mut_from_suffix_with_trailing_elements`]: FromBytes::mut_from_suffix_with_trailing_elements
+    /// [`mut_from_suffix_with_elems`]: FromBytes::mut_from_suffix_with_elems
     ///
     /// # Examples
     ///
@@ -2719,7 +2719,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7][..];
     ///
-    /// let pixels = <[Pixel]>::ref_from_with_trailing_elements(bytes, 2).unwrap();
+    /// let pixels = <[Pixel]>::ref_from_with_elems(bytes, 2).unwrap();
     ///
     /// assert_eq!(pixels, &[
     ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
@@ -2744,17 +2744,14 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// let src = &[85, 85][..];
-    /// let zsty = ZSTy::ref_from_with_trailing_elements(src, 42).unwrap();
+    /// let zsty = ZSTy::ref_from_with_elems(src, 42).unwrap();
     /// assert_eq!(zsty.trailing_dst.len(), 42);
     /// ```
     ///
     /// [`ref_from`]: FromBytes::ref_from
     #[must_use = "has no side effects"]
     #[inline]
-    fn ref_from_with_trailing_elements(
-        bytes: &[u8],
-        count: usize,
-    ) -> Result<&Self, CastError<&[u8], Self>>
+    fn ref_from_with_elems(bytes: &[u8], count: usize) -> Result<&Self, CastError<&[u8], Self>>
     where
         Self: KnownLayout<PointerMetadata = usize> + Immutable,
     {
@@ -2795,7 +2792,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode two `Pixel`s.
     /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let (pixels, rest) = <[Pixel]>::ref_from_prefix_with_trailing_elements(bytes, 2).unwrap();
+    /// let (pixels, rest) = <[Pixel]>::ref_from_prefix_with_elems(bytes, 2).unwrap();
     ///
     /// assert_eq!(pixels, &[
     ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
@@ -2821,14 +2818,14 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// let src = &[85, 85][..];
-    /// let (zsty, _) = ZSTy::ref_from_prefix_with_trailing_elements(src, 42).unwrap();
+    /// let (zsty, _) = ZSTy::ref_from_prefix_with_elems(src, 42).unwrap();
     /// assert_eq!(zsty.trailing_dst.len(), 42);
     /// ```
     ///
     /// [`ref_from_prefix`]: FromBytes::ref_from_prefix
     #[must_use = "has no side effects"]
     #[inline]
-    fn ref_from_prefix_with_trailing_elements(
+    fn ref_from_prefix_with_elems(
         bytes: &[u8],
         count: usize,
     ) -> Result<(&Self, &[u8]), CastError<&[u8], Self>>
@@ -2838,10 +2835,7 @@ pub unsafe trait FromBytes: FromZeros {
         ref_from_prefix_suffix(bytes, Some(count), CastType::Prefix)
     }
 
-    #[deprecated(
-        since = "0.8.0",
-        note = "renamed to `FromBytes::from_prefix_with_trailing_elements`"
-    )]
+    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::from_prefix_with_elems`")]
     #[doc(hidden)]
     #[must_use = "has no side effects"]
     #[inline]
@@ -2849,7 +2843,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + Immutable,
     {
-        <[Self]>::ref_from_prefix_with_trailing_elements(bytes, count).ok()
+        <[Self]>::ref_from_prefix_with_elems(bytes, count).ok()
     }
 
     /// Interprets the suffix of the given `bytes` as a `&[Self]` with length
@@ -2881,7 +2875,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode two `Pixel`s.
     /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let (rest, pixels) = <[Pixel]>::ref_from_suffix_with_trailing_elements(bytes, 2).unwrap();
+    /// let (rest, pixels) = <[Pixel]>::ref_from_suffix_with_elems(bytes, 2).unwrap();
     ///
     /// assert_eq!(rest, &[0, 1]);
     ///
@@ -2907,14 +2901,14 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// let src = &[85, 85][..];
-    /// let (_, zsty) = ZSTy::ref_from_suffix_with_trailing_elements(src, 42).unwrap();
+    /// let (_, zsty) = ZSTy::ref_from_suffix_with_elems(src, 42).unwrap();
     /// assert_eq!(zsty.trailing_dst.len(), 42);
     /// ```
     ///
     /// [`ref_from_suffix`]: FromBytes::ref_from_suffix
     #[must_use = "has no side effects"]
     #[inline]
-    fn ref_from_suffix_with_trailing_elements(
+    fn ref_from_suffix_with_elems(
         bytes: &[u8],
         count: usize,
     ) -> Result<(&[u8], &Self), CastError<&[u8], Self>>
@@ -2924,10 +2918,7 @@ pub unsafe trait FromBytes: FromZeros {
         ref_from_prefix_suffix(bytes, Some(count), CastType::Suffix).map(swap)
     }
 
-    #[deprecated(
-        since = "0.8.0",
-        note = "renamed to `FromBytes::from_prefix_with_trailing_elements`"
-    )]
+    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::from_prefix_with_elems`")]
     #[doc(hidden)]
     #[must_use = "has no side effects"]
     #[inline]
@@ -2935,7 +2926,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + Immutable,
     {
-        <[Self]>::ref_from_suffix_with_trailing_elements(bytes, count).ok()
+        <[Self]>::ref_from_suffix_with_elems(bytes, count).ok()
     }
 
     #[deprecated(since = "0.8.0", note = "`FromBytes::mut_from` now supports slices")]
@@ -2975,7 +2966,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7][..];
     ///
-    /// let pixels = <[Pixel]>::mut_from_with_trailing_elements(bytes, 2).unwrap();
+    /// let pixels = <[Pixel]>::mut_from_with_elems(bytes, 2).unwrap();
     ///
     /// assert_eq!(pixels, &[
     ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
@@ -3003,14 +2994,14 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// let src = &mut [85, 85][..];
-    /// let zsty = ZSTy::mut_from_with_trailing_elements(src, 42).unwrap();
+    /// let zsty = ZSTy::mut_from_with_elems(src, 42).unwrap();
     /// assert_eq!(zsty.trailing_dst.len(), 42);
     /// ```
     ///
     /// [`mut_from`]: FromBytes::mut_from
     #[must_use = "has no side effects"]
     #[inline]
-    fn mut_from_with_trailing_elements(
+    fn mut_from_with_elems(
         bytes: &mut [u8],
         count: usize,
     ) -> Result<&mut Self, CastError<&mut [u8], Self>>
@@ -3054,7 +3045,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode two `Pixel`s.
     /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let (pixels, rest) = <[Pixel]>::mut_from_prefix_with_trailing_elements(bytes, 2).unwrap();
+    /// let (pixels, rest) = <[Pixel]>::mut_from_prefix_with_elems(bytes, 2).unwrap();
     ///
     /// assert_eq!(pixels, &[
     ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
@@ -3085,14 +3076,14 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// let src = &mut [85, 85][..];
-    /// let (zsty, _) = ZSTy::mut_from_prefix_with_trailing_elements(src, 42).unwrap();
+    /// let (zsty, _) = ZSTy::mut_from_prefix_with_elems(src, 42).unwrap();
     /// assert_eq!(zsty.trailing_dst.len(), 42);
     /// ```
     ///
     /// [`mut_from_prefix`]: FromBytes::mut_from_prefix
     #[must_use = "has no side effects"]
     #[inline]
-    fn mut_from_prefix_with_trailing_elements(
+    fn mut_from_prefix_with_elems(
         bytes: &mut [u8],
         count: usize,
     ) -> Result<(&mut Self, &mut [u8]), CastError<&mut [u8], Self>>
@@ -3102,10 +3093,7 @@ pub unsafe trait FromBytes: FromZeros {
         mut_from_prefix_suffix(bytes, Some(count), CastType::Prefix)
     }
 
-    #[deprecated(
-        since = "0.8.0",
-        note = "renamed to `FromBytes::mut_from_prefix_with_trailing_elements`"
-    )]
+    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::mut_from_prefix_with_elems`")]
     #[doc(hidden)]
     #[must_use = "has no side effects"]
     #[inline]
@@ -3113,7 +3101,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + IntoBytes,
     {
-        <[Self]>::mut_from_prefix_with_trailing_elements(bytes, count).ok()
+        <[Self]>::mut_from_prefix_with_elems(bytes, count).ok()
     }
 
     /// Interprets the suffix of the given `bytes` as a `&mut [Self]` with length
@@ -3145,7 +3133,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode two `Pixel`s.
     /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let (rest, pixels) = <[Pixel]>::mut_from_suffix_with_trailing_elements(bytes, 2).unwrap();
+    /// let (rest, pixels) = <[Pixel]>::mut_from_suffix_with_elems(bytes, 2).unwrap();
     ///
     /// assert_eq!(rest, &[0, 1]);
     ///
@@ -3176,14 +3164,14 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// let src = &mut [85, 85][..];
-    /// let (_, zsty) = ZSTy::mut_from_suffix_with_trailing_elements(src, 42).unwrap();
+    /// let (_, zsty) = ZSTy::mut_from_suffix_with_elems(src, 42).unwrap();
     /// assert_eq!(zsty.trailing_dst.len(), 42);
     /// ```
     ///
     /// [`mut_from_suffix`]: FromBytes::mut_from_suffix
     #[must_use = "has no side effects"]
     #[inline]
-    fn mut_from_suffix_with_trailing_elements(
+    fn mut_from_suffix_with_elems(
         bytes: &mut [u8],
         count: usize,
     ) -> Result<(&mut [u8], &mut Self), CastError<&mut [u8], Self>>
@@ -3193,17 +3181,14 @@ pub unsafe trait FromBytes: FromZeros {
         mut_from_prefix_suffix(bytes, Some(count), CastType::Suffix).map(swap)
     }
 
-    #[deprecated(
-        since = "0.8.0",
-        note = "renamed to `FromBytes::mut_from_suffix_with_trailing_elements`"
-    )]
+    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::mut_from_suffix_with_elems`")]
     #[doc(hidden)]
     #[inline]
     fn mut_slice_from_suffix(bytes: &mut [u8], count: usize) -> Option<(&mut [u8], &mut [Self])>
     where
         Self: Sized + IntoBytes,
     {
-        <[Self]>::mut_from_suffix_with_trailing_elements(bytes, count).ok()
+        <[Self]>::mut_from_suffix_with_elems(bytes, count).ok()
     }
 
     /// Reads a copy of `Self` from `bytes`.
