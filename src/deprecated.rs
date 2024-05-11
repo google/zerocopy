@@ -12,12 +12,54 @@
 
 use super::*;
 
+impl<B, T> Ref<B, T>
+where
+    B: ByteSlice,
+    T: KnownLayout + Immutable + ?Sized,
+{
+    #[deprecated(since = "0.8.0", note = "renamed to `Ref::from`")]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline]
+    pub fn new(bytes: B) -> Result<Ref<B, T>, CastError<B, T>> {
+        Self::from(bytes)
+    }
+}
+
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSlice,
+    T: KnownLayout + Immutable + ?Sized,
+{
+    #[deprecated(since = "0.8.0", note = "renamed to `Ref::from_prefix`")]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline]
+    pub fn new_from_prefix(bytes: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
+        Self::from_prefix(bytes)
+    }
+}
+
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSlice,
+    T: KnownLayout + Immutable + ?Sized,
+{
+    #[deprecated(since = "0.8.0", note = "renamed to `Ref::from_suffix`")]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline]
+    pub fn new_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
+        Self::from_suffix(bytes)
+    }
+}
+
 impl<B, T> Ref<B, [T]>
 where
     B: ByteSlice,
     T: Immutable,
 {
-    #[deprecated(since = "0.8.0", note = "`Ref::new` now supports slices")]
+    #[deprecated(since = "0.8.0", note = "`Ref::from` now supports slices")]
     #[doc(hidden)]
     #[inline]
     pub fn new_slice(bytes: B) -> Option<Ref<B, [T]>> {
@@ -30,7 +72,7 @@ where
     B: ByteSlice,
     T: Unaligned + Immutable,
 {
-    #[deprecated(since = "0.8.0", note = "`Ref::new_unaligned` now supports slices")]
+    #[deprecated(since = "0.8.0", note = "`Ref::unaligned_from` now supports slices")]
     #[doc(hidden)]
     #[inline(always)]
     pub fn new_slice_unaligned(bytes: B) -> Option<Ref<B, [T]>> {
