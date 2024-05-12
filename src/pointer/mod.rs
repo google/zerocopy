@@ -14,6 +14,8 @@ mod ptr;
 pub use aliasing_safety::{AliasingSafe, BecauseExclusive, BecauseImmutable};
 pub use ptr::{invariant, Ptr};
 
+use core::ptr::NonNull;
+
 use crate::Unaligned;
 
 /// A shorthand for a maybe-valid, maybe-aligned reference. Used as the argument
@@ -73,4 +75,82 @@ where
     I::Aliasing: invariant::AtLeast<invariant::Shared>,
 {
     ptr.as_bytes::<BecauseImmutable>().as_ref().iter().all(|&byte| byte == 0)
+}
+
+pub unsafe trait Pointer<'a, T: ?Sized> {
+    type Pointer<U: 'a + ?Sized>: Pointer<'a, U, Aliasing = Self::Aliasing>;
+    type Aliasing: invariant::Aliasing;
+
+    fn into_raw(self) -> NonNull<T>;
+
+    fn from_ptr<I>(ptr: Ptr<'a, T, I>) -> Self
+    where
+        I: invariant::Invariants<
+            Aliasing = Self::Aliasing,
+            Alignment = invariant::Aligned,
+            Validity = invariant::Valid,
+        >;
+}
+
+unsafe impl<'a, T: ?Sized> Pointer<'a, T> for &'a T {
+    type Pointer<U: 'a + ?Sized> = &'a U;
+    type Aliasing = invariant::Shared;
+
+    fn into_raw(self) -> NonNull<T> {
+        NonNull::from(self)
+    }
+
+    fn from_ptr<I>(ptr: Ptr<'a, T, I>) -> Self
+    where
+        I: invariant::Invariants<
+            Aliasing = invariant::Shared,
+            Alignment = invariant::Aligned,
+            Validity = invariant::Valid,
+        >,
+    {
+        ptr.as_ref()
+    }
+}
+
+unsafe impl<'a, T: ?Sized> Pointer<'a, T> for &'a mut T {
+    type Pointer<U: 'a + ?Sized> = &'a mut U;
+    type Aliasing = invariant::Exclusive;
+
+    fn into_raw(self) -> NonNull<T> {
+        NonNull::from(self)
+    }
+
+    fn from_ptr<I>(ptr: Ptr<'a, T, I>) -> Self
+    where
+        I: invariant::Invariants<
+            Aliasing = invariant::Exclusive,
+            Alignment = invariant::Aligned,
+            Validity = invariant::Valid,
+        >,
+    {
+        ptr.as_mut()
+    }
+}
+
+#[cfg(feature = "alloc")]
+unsafe impl<T: ?Sized> Pointer<'static, T> for alloc::boxed::Box<T> {
+    type Pointer<U: 'static + ?Sized> = alloc::boxed::Box<U>;
+    type Aliasing = invariant::Owned;
+
+    fn into_raw(self) -> NonNull<T> {
+        let ptr = alloc::boxed::Box::into_raw(self);
+        // SAFETY: TODO
+        unsafe { NonNull::new_unchecked(ptr) }
+    }
+
+    fn from_ptr<I>(ptr: Ptr<'static, T, I>) -> Self
+    where
+        I: invariant::Invariants<
+            Aliasing = invariant::Owned,
+            Alignment = invariant::Aligned,
+            Validity = invariant::Valid,
+        >,
+    {
+        ptr.into_box()
+    }
 }

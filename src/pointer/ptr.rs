@@ -236,7 +236,9 @@ pub mod invariant {
                 /// concurrently referenced by any other `Ptr`s or references,
                 /// and may not be accessed (read or written) other than via
                 /// this `Ptr`.
-                Exclusive,
+                Exclusive < Owned,
+
+                Owned,
             }
 
             /// The alignment invariant of a [`Ptr`][super::Ptr].
@@ -344,6 +346,18 @@ mod _external {
 mod _conversions {
     use super::*;
     use crate::util::{AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance};
+
+    impl<'a, T, Aliasing> Ptr<'a, T, (Aliasing, Aligned, Valid)>
+    where
+        T: 'a + ?Sized,
+        Aliasing: invariant::Aliasing,
+    {
+        pub fn from_foo<R: super::super::Pointer<'a, T, Aliasing = Aliasing>>(r: R) -> Self {
+            let ptr = r.into_raw();
+            // SAFETY: TODO
+            unsafe { Ptr::new(ptr) }
+        }
+    }
 
     /// `&'a T` → `Ptr<'a, T>`
     impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
@@ -512,9 +526,10 @@ mod _conversions {
     }
 
     /// `Ptr<'a, T>` → `&'a mut T`
-    impl<'a, T> Ptr<'a, T, (Exclusive, Aligned, Valid)>
+    impl<'a, T, I> Ptr<'a, T, I>
     where
         T: 'a + ?Sized,
+        I: Invariants<Aliasing = Exclusive, Alignment = Aligned, Validity = Valid>,
     {
         /// Converts `self` to a mutable reference.
         #[allow(clippy::wrong_self_convention)]
@@ -546,6 +561,22 @@ mod _conversions {
             // [1]: https://doc.rust-lang.org/std/ptr/struct.NonNull.html#method.as_mut
             // [2]: https://doc.rust-lang.org/std/ptr/index.html#safety
             unsafe { raw.as_mut() }
+        }
+    }
+
+    /// `Ptr<'a, T>` → `Box<T>`
+    #[cfg(feature = "alloc")]
+    impl<'a, T, I> Ptr<'a, T, I>
+    where
+        T: 'a + ?Sized,
+        I: Invariants<Aliasing = Owned, Alignment = Aligned, Validity = Valid>,
+    {
+        /// Converts `self` to a box.
+        #[allow(clippy::wrong_self_convention)]
+        pub(crate) fn into_box(self) -> alloc::boxed::Box<T> {
+            let raw = self.as_non_null().as_ptr();
+            // SAFETY: TODO
+            unsafe { alloc::boxed::Box::from_raw(raw) }
         }
     }
 
