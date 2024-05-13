@@ -19,7 +19,7 @@ use core::{
 
 use crate::{
     pointer::invariant::{self, Invariants},
-    Unalign,
+    Unalign, *,
 };
 
 /// A type which has the same layout as the type it wraps.
@@ -431,6 +431,48 @@ safety_comment! {
     );
 }
 
+/// A type which is always [`KnownLayout`] regardless of whether its wrapped
+/// type is.
+///
+/// NOTE(#29), NOTE(#494), NOTE(#1162): This type cannot be made public until we
+/// resolve the question of whether the `KnownLayout` requirement applies
+/// recursively. If we decide that `KnownLayout` is indeed recursive in order to
+/// be forwards-compatible with #494, then we will need to remove this type and
+/// replace its uses with other implementations.
+#[derive(Default, Copy, Clone)]
+#[cfg_attr(any(feature = "derive", test), derive(Immutable, FromBytes, IntoBytes, Unaligned))]
+#[repr(transparent)]
+pub(crate) struct SizedKnownLayout<T>(T);
+
+impl_known_layout!(T => SizedKnownLayout<T>);
+
+safety_comment! {
+    /// SAFETY:
+    /// - `SizedKnownLayout<T>` is `repr(transparent)`, so it is unaligned
+    ///   exactly when `T` is.
+    /// - `SizedKnownLayout<T>` has the same bit validity as `T`, and so it is
+    ///   `FromZeros`, `FromBytes`, or `IntoBytes` exactly when `T` is as well.
+    /// - `Immutable`: `SizedKnownLayout<T>` has the same fields as `T`, so it
+    ///   contains `UnsafeCell`s exactly when `T` does.
+    /// - `TryFromBytes`: `SizedKnownLayout<T>` has the same the same bit
+    ///   validity as `T`, so `T::is_bit_valid` is a sound implementation of
+    ///   `is_bit_valid`. Furthermore:
+    ///   - Since `T` and `SizedKnownLayout<T>` have the same layout, they have
+    ///     the same size (as required by `unsafe_impl!`).
+    ///   - Since `T` and `SizedKnownLayout<T>` have the same fields, they have
+    ///     `UnsafeCell`s at the same byte ranges (as required by
+    ///     `unsafe_impl!`).
+    impl_or_verify!(T: Unaligned => Unaligned for SizedKnownLayout<T>);
+    impl_or_verify!(T: Immutable => Immutable for SizedKnownLayout<T>);
+    impl_or_verify!(
+        T: TryFromBytes => TryFromBytes for SizedKnownLayout<T>;
+        |c: Maybe<T>| T::is_bit_valid(c)
+    );
+    impl_or_verify!(T: FromZeros => FromZeros for SizedKnownLayout<T>);
+    impl_or_verify!(T: FromBytes => FromBytes for SizedKnownLayout<T>);
+    impl_or_verify!(T: IntoBytes => IntoBytes for SizedKnownLayout<T>);
+}
+
 pub(crate) trait AsAddress {
     fn addr(self) -> usize;
 }
@@ -587,22 +629,20 @@ pub(crate) const fn min(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
 /// Assert at compile time that `T` does not have a zero-sized DST component.
 pub(crate) fn assert_dst_is_not_zst<T>()
 where
-    T: crate::KnownLayout + ?Sized,
+    T: KnownLayout + ?Sized,
 {
-    trait ConstAssert: crate::KnownLayout {
+    trait ConstAssert: KnownLayout {
         const DST_IS_NOT_ZST: bool = {
             let dst_is_zst = match Self::LAYOUT.size_info {
-                crate::SizeInfo::Sized { .. } => false,
-                crate::SizeInfo::SliceDst(crate::TrailingSliceLayout { elem_size, .. }) => {
-                    elem_size == 0
-                }
+                SizeInfo::Sized { .. } => false,
+                SizeInfo::SliceDst(TrailingSliceLayout { elem_size, .. }) => elem_size == 0,
             };
             const_assert!(!dst_is_zst);
             !dst_is_zst
         };
     }
 
-    impl<T: crate::KnownLayout + ?Sized> ConstAssert for T {}
+    impl<T: KnownLayout + ?Sized> ConstAssert for T {}
 
     const_assert!(<T as ConstAssert>::DST_IS_NOT_ZST);
 }
