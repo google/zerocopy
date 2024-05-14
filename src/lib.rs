@@ -1036,9 +1036,7 @@ pub use zerocopy_derive::TryFromBytes;
 ///
 /// For most use cases, Rust's current guarantees align with programmers'
 /// intuitions about what ought to be valid. As a result, zerocopy's
-/// conservatism should not affect most users. One notable exception is unions,
-/// whose bit validity is very up in the air; zerocopy does not permit
-/// implementing `TryFromBytes` for any union type.
+/// conservatism should not affect most users.
 ///
 /// If you are negatively affected by lack of support for a particular type,
 /// we encourage you to let us know by [filing an issue][github-repo].
