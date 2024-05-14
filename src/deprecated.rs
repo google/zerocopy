@@ -22,7 +22,7 @@ where
     #[must_use = "has no side effects"]
     #[inline]
     pub fn new(bytes: B) -> Result<Ref<B, T>, CastError<B, T>> {
-        Self::from(bytes)
+        Self::from_bytes(bytes)
     }
 }
 
@@ -63,7 +63,7 @@ where
     #[doc(hidden)]
     #[inline]
     pub fn new_slice(bytes: B) -> Option<Ref<B, [T]>> {
-        Self::from(bytes).ok()
+        Self::from_bytes(bytes).ok()
     }
 }
 
