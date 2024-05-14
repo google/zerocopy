@@ -4672,8 +4672,11 @@ impl<B: SplitByteSlice + ByteSliceMut> SplitByteSliceMut for B {}
 /// slice produced by `self.into()` is "stable" in the same sense as defined by
 /// [`ByteSlice`]'s safety invariant.
 ///
+/// If `Self: Into<&mut [u8]>`, then the same stability requirement holds of
+/// `<Self as Into<&mut [u8]>>::into`.
+///
 /// [`Ref`]: core::cell::Ref
-pub trait IntoByteSlice<'a>: ByteSlice + Into<&'a [u8]> {}
+pub unsafe trait IntoByteSlice<'a>: ByteSlice + Into<&'a [u8]> {}
 
 /// A [`ByteSliceMut`] that conveys no ownership, and so can be converted into a
 /// mutable byte slice.
@@ -4686,6 +4689,7 @@ pub trait IntoByteSlice<'a>: ByteSlice + Into<&'a [u8]> {}
 ///
 /// [`RefMut`]: core::cell::RefMut
 pub trait IntoByteSliceMut<'a>: ByteSliceMut + Into<&'a mut [u8]> {}
+impl<'a, B: ByteSliceMut + Into<&'a mut [u8]>> IntoByteSliceMut<'a> for B {}
 
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
@@ -4710,7 +4714,16 @@ unsafe impl<'a> SplitByteSlice for &'a [u8] {
     }
 }
 
-impl<'a> IntoByteSlice<'a> for &'a [u8] {}
+// SAFETY: The standard library impl of `From<T> for T` [1] cannot be removed
+// without being a backwards-breaking change. Thus, we can rely on it continuing
+// to exist. So long as that is the impl backing `Into<&[u8]> for &[u8]`, we
+// know (barring a truly ridiculous stdlib implementation) that this impl is
+// simply implemented as `fn into(bytes: &[u8]) -> &[u8] { bytes }` (or
+// something semantically equivalent to it). Thus, `ByteSlice`'s stability
+// guarantees are not violated by the `Into<&[u8]>` impl.
+//
+// [1] https://doc.rust-lang.org/std/convert/trait.From.html#impl-From%3CT%3E-for-T
+unsafe impl<'a> IntoByteSlice<'a> for &'a [u8] {}
 
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
@@ -4772,8 +4785,6 @@ unsafe impl<'a> SplitByteSlice for &'a mut [u8] {
         unsafe { (from_raw_parts_mut(l_ptr, l_len), from_raw_parts_mut(r_ptr, r_len)) }
     }
 }
-
-impl<'a> IntoByteSliceMut<'a> for &'a mut [u8] {}
 
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
