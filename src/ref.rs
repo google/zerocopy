@@ -275,9 +275,9 @@ where
 {
     /// Constructs a new `Ref` from a byte slice.
     ///
-    /// `from` verifies that `bytes.len() == size_of::<T>()` and that `bytes` is
-    /// aligned to `align_of::<T>()`, and constructs a new `Ref`. If either of
-    /// these checks fail, it returns `None`.
+    /// `from_bytes` verifies that `bytes.len() == size_of::<T>()` and that
+    /// `bytes` is aligned to `align_of::<T>()`, and constructs a new `Ref`. If
+    /// either of these checks fail, it returns `None`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -296,11 +296,11 @@ where
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let _ = Ref::<_, ZSTy>::from(&b"UU"[..]); // ⚠ Compile Error!
+    /// let _ = Ref::<_, ZSTy>::from_bytes(&b"UU"[..]); // ⚠ Compile Error!
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    pub fn from(bytes: B) -> Result<Ref<B, T>, CastError<B, T>> {
+    pub fn from_bytes(bytes: B) -> Result<Ref<B, T>, CastError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
         if let Err(e) =
             Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T, BecauseImmutable>(None)
@@ -431,6 +431,28 @@ where
 
 impl<B, T> Ref<B, T>
 where
+    B: ByteSlice,
+    T: KnownLayout<PointerMetadata = usize> + Immutable + ?Sized,
+{
+    // TODO(#29), TODO(#871): Pick a name and make this public. Make sure to
+    // update references to this name in `#[deprecated]` attributes elsewhere.
+    #[doc(hidden)]
+    #[inline]
+    pub fn from_bytes_with_elems(bytes: B, count: usize) -> Result<Ref<B, T>, CastError<B, T>> {
+        util::assert_dst_is_not_zst::<T>();
+        let expected_len = match count.size_for_metadata(T::LAYOUT) {
+            Some(len) => len,
+            None => return Err(SizeError::new(bytes).into()),
+        };
+        if bytes.len() != expected_len {
+            return Err(SizeError::new(bytes).into());
+        }
+        Self::from_bytes(bytes)
+    }
+}
+
+impl<B, T> Ref<B, T>
+where
     B: SplitByteSlice,
     T: KnownLayout<PointerMetadata = usize> + Immutable + ?Sized,
 {
@@ -451,7 +473,7 @@ where
             return Err(SizeError::new(bytes).into());
         }
         let (prefix, bytes) = bytes.split_at(expected_len);
-        Self::from(prefix).map(move |l| (l, bytes))
+        Self::from_bytes(prefix).map(move |l| (l, bytes))
     }
 }
 
@@ -479,7 +501,7 @@ where
             return Err(SizeError::new(bytes).into());
         };
         let (bytes, suffix) = bytes.split_at(split_at);
-        Self::from(suffix).map(move |l| (bytes, l))
+        Self::from_bytes(suffix).map(move |l| (bytes, l))
     }
 }
 
@@ -517,7 +539,7 @@ where
     #[inline(always)]
     pub fn unaligned_from(bytes: B) -> Result<Ref<B, T>, SizeError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        match Ref::from(bytes) {
+        match Ref::from_bytes(bytes) {
             Ok(dst) => Ok(dst),
             Err(CastError::Size(e)) => Err(e),
             Err(CastError::Alignment(_)) => unreachable!(),
@@ -601,6 +623,28 @@ where
     pub fn unaligned_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), SizeError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
         Ref::from_suffix(bytes).map_err(|e| match e {
+            CastError::Size(e) => e,
+            CastError::Alignment(_) => unreachable!(),
+            CastError::Validity(i) => match i {},
+        })
+    }
+}
+
+impl<B, T> Ref<B, T>
+where
+    B: ByteSlice,
+    T: KnownLayout<PointerMetadata = usize> + Unaligned + Immutable + ?Sized,
+{
+    // TODO(#29), TODO(#871): Pick a name and make this public. Make sure to
+    // update references to this name in `#[deprecated]` attributes elsewhere.
+    #[doc(hidden)]
+    #[inline]
+    pub fn unaligned_from_bytes_with_elems(
+        bytes: B,
+        count: usize,
+    ) -> Result<Ref<B, T>, SizeError<B, T>> {
+        util::assert_dst_is_not_zst::<T>();
+        Self::from_bytes_with_elems(bytes, count).map_err(|e| match e {
             CastError::Size(e) => e,
             CastError::Alignment(_) => unreachable!(),
             CastError::Validity(i) => match i {},
@@ -917,13 +961,13 @@ mod tests {
         // reference which points to the right region of memory.
 
         let buf = [0];
-        let r = Ref::<_, u8>::from(&buf[..]).unwrap();
+        let r = Ref::<_, u8>::from_bytes(&buf[..]).unwrap();
         let buf_ptr = buf.as_ptr();
         let deref_ptr: *const u8 = r.deref();
         assert_eq!(buf_ptr, deref_ptr);
 
         let buf = [0];
-        let r = Ref::<_, [u8]>::from(&buf[..]).unwrap();
+        let r = Ref::<_, [u8]>::from_bytes(&buf[..]).unwrap();
         let buf_ptr = buf.as_ptr();
         let deref_ptr = r.deref().as_ptr();
         assert_eq!(buf_ptr, deref_ptr);
@@ -1045,7 +1089,7 @@ mod tests {
         // A buffer with an alignment of 8.
         let mut buf = Align::<[u8; 8], AU64>::default();
         // `buf.t` should be aligned to 8, so this should always succeed.
-        test_new_helper(Ref::<_, AU64>::from(&mut buf.t[..]).unwrap());
+        test_new_helper(Ref::<_, AU64>::from_bytes(&mut buf.t[..]).unwrap());
         {
             // In a block so that `r` and `suffix` don't live too long.
             buf.set_default();
@@ -1068,7 +1112,7 @@ mod tests {
         let mut buf = Align::<[u8; 24], AU64>::default();
         // `buf.t` should be aligned to 8 and have a length which is a multiple
         // of `size_of::<AU64>()`, so this should always succeed.
-        test_new_helper_slice(Ref::<_, [AU64]>::from(&mut buf.t[..]).unwrap(), 3);
+        test_new_helper_slice(Ref::<_, [AU64]>::from_bytes(&mut buf.t[..]).unwrap(), 3);
         let ascending: [u8; 24] = (0..24).collect::<Vec<_>>().try_into().unwrap();
         // 16 ascending bytes followed by 8 zeros.
         let mut ascending_prefix = ascending;
@@ -1224,7 +1268,7 @@ mod tests {
         // A buffer with an alignment of 8.
         let buf = Align::<[u8; 16], AU64>::default();
         // `buf.t` should be aligned to 8, so only the length check should fail.
-        assert!(Ref::<_, AU64>::from(&buf.t[..]).is_err());
+        assert!(Ref::<_, AU64>::from_bytes(&buf.t[..]).is_err());
         assert!(Ref::<_, [u8; 8]>::unaligned_from(&buf.t[..]).is_err());
 
         // Fail because the buffer is too small.
@@ -1232,7 +1276,7 @@ mod tests {
         // A buffer with an alignment of 8.
         let buf = Align::<[u8; 4], AU64>::default();
         // `buf.t` should be aligned to 8, so only the length check should fail.
-        assert!(Ref::<_, AU64>::from(&buf.t[..]).is_err());
+        assert!(Ref::<_, AU64>::from_bytes(&buf.t[..]).is_err());
         assert!(Ref::<_, [u8; 8]>::unaligned_from(&buf.t[..]).is_err());
         assert!(Ref::<_, AU64>::from_prefix(&buf.t[..]).is_err());
         assert!(Ref::<_, AU64>::from_suffix(&buf.t[..]).is_err());
@@ -1243,7 +1287,7 @@ mod tests {
 
         let buf = Align::<[u8; 12], AU64>::default();
         // `buf.t` has length 12, but element size is 8.
-        assert!(Ref::<_, [AU64]>::from(&buf.t[..]).is_err());
+        assert!(Ref::<_, [AU64]>::from_bytes(&buf.t[..]).is_err());
         assert!(Ref::<_, [[u8; 8]]>::unaligned_from(&buf.t[..]).is_err());
 
         // Fail because the buffer is too short.
@@ -1262,9 +1306,9 @@ mod tests {
         let buf = Align::<[u8; 13], AU64>::default();
         // Slicing from 1, we get a buffer with size 12 (so the length check
         // should succeed) but an alignment of only 1, which is insufficient.
-        assert!(Ref::<_, AU64>::from(&buf.t[1..]).is_err());
+        assert!(Ref::<_, AU64>::from_bytes(&buf.t[1..]).is_err());
         assert!(Ref::<_, AU64>::from_prefix(&buf.t[1..]).is_err());
-        assert!(Ref::<_, [AU64]>::from(&buf.t[1..]).is_err());
+        assert!(Ref::<_, [AU64]>::from_bytes(&buf.t[1..]).is_err());
         assert!(Ref::<_, [AU64]>::from_prefix_with_elems(&buf.t[1..], 1).is_err());
         assert!(Ref::<_, [AU64]>::from_suffix_with_elems(&buf.t[1..], 1).is_err());
         // Slicing is unnecessary here because `new_from_suffix` uses the suffix
@@ -1292,39 +1336,39 @@ mod tests {
     #[test]
     fn test_display_debug() {
         let buf = Align::<[u8; 8], u64>::default();
-        let r = Ref::<_, u64>::from(&buf.t[..]).unwrap();
+        let r = Ref::<_, u64>::from_bytes(&buf.t[..]).unwrap();
         assert_eq!(format!("{}", r), "0");
         assert_eq!(format!("{:?}", r), "Ref(0)");
 
         let buf = Align::<[u8; 8], u64>::default();
-        let r = Ref::<_, [u64]>::from(&buf.t[..]).unwrap();
+        let r = Ref::<_, [u64]>::from_bytes(&buf.t[..]).unwrap();
         assert_eq!(format!("{:?}", r), "Ref([0])");
     }
 
     #[test]
     fn test_eq() {
         let buf1 = 0_u64;
-        let r1 = Ref::<_, u64>::from(buf1.as_bytes()).unwrap();
+        let r1 = Ref::<_, u64>::from_bytes(buf1.as_bytes()).unwrap();
         let buf2 = 0_u64;
-        let r2 = Ref::<_, u64>::from(buf2.as_bytes()).unwrap();
+        let r2 = Ref::<_, u64>::from_bytes(buf2.as_bytes()).unwrap();
         assert_eq!(r1, r2);
     }
 
     #[test]
     fn test_ne() {
         let buf1 = 0_u64;
-        let r1 = Ref::<_, u64>::from(buf1.as_bytes()).unwrap();
+        let r1 = Ref::<_, u64>::from_bytes(buf1.as_bytes()).unwrap();
         let buf2 = 1_u64;
-        let r2 = Ref::<_, u64>::from(buf2.as_bytes()).unwrap();
+        let r2 = Ref::<_, u64>::from_bytes(buf2.as_bytes()).unwrap();
         assert_ne!(r1, r2);
     }
 
     #[test]
     fn test_ord() {
         let buf1 = 0_u64;
-        let r1 = Ref::<_, u64>::from(buf1.as_bytes()).unwrap();
+        let r1 = Ref::<_, u64>::from_bytes(buf1.as_bytes()).unwrap();
         let buf2 = 1_u64;
-        let r2 = Ref::<_, u64>::from(buf2.as_bytes()).unwrap();
+        let r2 = Ref::<_, u64>::from_bytes(buf2.as_bytes()).unwrap();
         assert!(r1 < r2);
     }
 }
