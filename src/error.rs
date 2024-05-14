@@ -239,7 +239,7 @@ impl<Src, Dst, A, V> From<SizeError<Src, Dst>> for ConvertError<A, SizeError<Src
 #[derive(PartialEq, Eq)]
 pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
     /// The source value involved in the conversion.
-    src: Src,
+    pub(crate) src: Src,
     /// The inner destination type inolved in the conversion.
     dst: PhantomData<Dst>,
 }

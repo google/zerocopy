@@ -24,6 +24,14 @@ use core::{marker::PhantomData, mem::ManuallyDrop};
 #[cfg(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 use core::ptr::{self, NonNull};
 
+use crate::{
+    pointer::{
+        invariant::{self, AtLeast, Invariants},
+        AliasingSafe, AliasingSafeReason, BecauseExclusive,
+    },
+    IntoBytes, Ptr, TryFromBytes, ValidityError,
+};
+
 /// A compile-time check that should be one particular value.
 pub trait ShouldBe<const VALUE: bool> {}
 
@@ -407,6 +415,86 @@ pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
     // - We know that the returned lifetime will not outlive the input lifetime
     //   thanks to the lifetime bounds on this function.
     unsafe { &mut *dst }
+}
+
+/// Is a given source a valid instance of `Self`?
+///
+/// # Safety
+///
+/// Unsafe code may assume that, if `is_mut_src_valid(src)` returns true, `*src`
+/// is a bit-valid instance of `Dst`, and that the size of `Src` is greater than
+/// or equal to the size of `Dst`.
+///
+/// # Panics
+///
+/// `is_src_valid` may either produce a post-monomorphization error or a panic
+/// if `Dst` is bigger than `Src`. Otherwise, `is_src_valid` panics under the
+/// same circumstances as [`is_bit_valid`].
+///
+/// [`is_bit_valid`]: TryFromBytes::is_bit_valid
+#[doc(hidden)]
+#[inline]
+fn is_src_valid<Src, Dst, I, R>(src: Ptr<'_, Src, I>) -> bool
+where
+    Src: IntoBytes,
+    Dst: TryFromBytes + AliasingSafe<Src, I::Aliasing, R>,
+    I: Invariants<Validity = invariant::Valid>,
+    I::Aliasing: AtLeast<invariant::Shared>,
+    R: AliasingSafeReason,
+{
+    crate::util::assert_dst_not_bigger_than_src::<Src, Dst>();
+
+    // SAFETY: This is a pointer cast, satisfying the following properties:
+    // - `p as *mut Dst` addresses a subset of the `bytes` addressed by `src`,
+    //   because we assert above that the size of `Dst` is less than or equal to
+    //   the size of `Src`.
+    // - `p as *mut Dst` is a provenance-preserving cast
+    // - Because `Dst: AliasingSafe<Src, I::Aliasing, _>`, either:
+    //   - `I::Aliasing` is `Exclusive`
+    //   - `Src` and `Dst` are both `Immutable`, in which case they
+    //     trivially contain `UnsafeCell`s at identical locations
+    #[allow(clippy::as_conversions)]
+    let c_ptr = unsafe { src.cast_unsized(|p| p as *mut Dst) };
+
+    // SAFETY: `c_ptr` is derived from `src` which is `IntoBytes`. By
+    // invariant on `IntoByte`s, `c_ptr`'s referent consists entirely of
+    // initialized bytes.
+    let c_ptr = unsafe { c_ptr.assume_initialized() };
+
+    Dst::is_bit_valid(c_ptr)
+}
+
+/// Attempts to transmute `Src` into `Dst`.
+///
+/// A helper for `try_transmute!`.
+///
+/// # Panics
+///
+/// `try_transmute` may either produce a post-monomorphization error or a panic
+/// if `Dst` is bigger than `Src`. Otherwise, `try_transmute` panics under the
+/// same circumstances as [`is_bit_valid`].
+///
+/// [`is_bit_valid`]: TryFromBytes::is_bit_valid
+#[inline(always)]
+pub fn try_transmute<Src, Dst>(mut src: Src) -> Result<Dst, ValidityError<Src, Dst>>
+where
+    Src: IntoBytes,
+    Dst: TryFromBytes,
+{
+    if !is_src_valid::<Src, Dst, _, BecauseExclusive>(Ptr::from_mut(&mut src)) {
+        return Err(ValidityError::new(src));
+    }
+
+    let src = ManuallyDrop::new(src);
+
+    // SAFETY: By contract on `is_src_valid`, we have confirmed both that `Dst`
+    // is no larger than `Src`, and that `src` is a bit-valid instance of `Dst`.
+    // These conditions are preserved through the `ManuallyDrop<T>` wrapper,
+    // which is documented to have identical and layout bit validity to its
+    // inner value [1].
+    //
+    // [1]: https://doc.rust-lang.org/std/mem/struct.ManuallyDrop.html
+    Ok(unsafe { core::mem::transmute_copy(&*src) })
 }
 
 /// A function which emits a warning if its return value is not used.
