@@ -874,7 +874,7 @@ mod _transitions {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
             // fix before returning.
-            if T::is_bit_valid(self.reborrow().forget_exclusive().forget_aligned()) {
+            if T::is_bit_valid(self.reborrow().forget_aligned()) {
                 // SAFETY: If `T::is_bit_valid`, code may assume that `self`
                 // contains a bit-valid instance of `Self`.
                 Ok(unsafe { self.assume_valid() })

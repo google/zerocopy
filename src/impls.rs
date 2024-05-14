@@ -1107,12 +1107,6 @@ mod tests {
                     &self,
                     bytes: &'bytes [u8],
                 ) -> Option<Option<&'bytes T>>;
-
-                #[allow(clippy::needless_lifetimes)]
-                fn test_try_from_mut<'bytes>(
-                    &self,
-                    bytes: &'bytes mut [u8],
-                ) -> Option<Option<&'bytes mut T>>;
             }
 
             impl<T: TryFromBytes + Immutable + KnownLayout + ?Sized> TestTryFromRef<T> for AutorefWrapper<T> {
@@ -1122,14 +1116,6 @@ mod tests {
                     bytes: &'bytes [u8],
                 ) -> Option<Option<&'bytes T>> {
                     Some(T::try_ref_from(bytes).ok())
-                }
-
-                #[allow(clippy::needless_lifetimes)]
-                fn test_try_from_mut<'bytes>(
-                    &self,
-                    bytes: &'bytes mut [u8],
-                ) -> Option<Option<&'bytes mut T>> {
-                    Some(T::try_mut_from(bytes).ok())
                 }
             }
 
@@ -1218,16 +1204,6 @@ mod tests {
                     fn test_try_from_ref<'bytes>(&mut self, _bytes: &'bytes [u8]) -> Option<Option<&'bytes $ty>> {
                         assert_on_allowlist!(
                             test_try_from_ref($ty):
-                            ManuallyDrop<[UnsafeCell<bool>]>
-                        );
-
-                        None
-                    }
-
-                    #[allow(clippy::needless_lifetimes)]
-                    fn test_try_from_mut<'bytes>(&mut self, _bytes: &'bytes mut [u8]) -> Option<Option<&'bytes mut $ty>> {
-                        assert_on_allowlist!(
-                            test_try_from_mut($ty):
                             ManuallyDrop<[UnsafeCell<bool>]>
                         );
 
@@ -1342,10 +1318,8 @@ mod tests {
                         let bytes_mut = &mut vec.as_mut_slice()[offset..offset+size];
                         bytes_mut.copy_from_slice(bytes);
 
-                        let res = ww.test_try_from_mut(bytes_mut);
-                        if let Some(res) = res {
-                            assert!(res.is_some(), "{}::try_mut_from({:?}): got `None`, expected `Some`", stringify!($ty), val);
-                        }
+                        let res = <$ty as TryFromBytes>::try_mut_from(bytes_mut);
+                        assert!(res.is_ok(), "{}::try_mut_from({:?}): got `Err`, expected `Ok`", stringify!($ty), val);
                     }
 
                     let res = bytes.and_then(|bytes| ww.test_try_read_from(bytes));
@@ -1365,10 +1339,8 @@ mod tests {
                         assert!(res.is_none(), "{}::try_ref_from({:?}): got Some, expected None", stringify!($ty), c);
                     }
 
-                    let res = w.test_try_from_mut(c);
-                    if let Some(res) = res {
-                        assert!(res.is_none(), "{}::try_mut_from({:?}): got Some, expected None", stringify!($ty), c);
-                    }
+                    let res = <$ty as TryFromBytes>::try_mut_from(c);
+                    assert!(res.is_err(), "{}::try_mut_from({:?}): got Ok, expected Err", stringify!($ty), c);
 
                     let res = w.test_try_read_from(c);
                     if let Some(res) = res {
