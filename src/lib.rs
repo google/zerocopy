@@ -3235,8 +3235,8 @@ pub unsafe trait FromBytes: FromZeros {
     /// Reads a copy of `Self` from the prefix of `bytes`.
     ///
     /// `read_from_prefix` reads a `Self` from the first `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()`, it returns
-    /// `Err`.
+    /// bytes of `bytes`, returning that `Self` and any remaining bytes. If
+    /// `bytes.len() < size_of::<Self>()`, it returns `Err`.
     ///
     /// # Examples
     ///
@@ -3256,21 +3256,22 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode a `PacketHeader`.
     /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let header = PacketHeader::read_from_prefix(bytes).unwrap();
+    /// let (header, suffix) = PacketHeader::read_from_prefix(bytes).unwrap();
     ///
     /// assert_eq!(header.src_port, [0, 1]);
     /// assert_eq!(header.dst_port, [2, 3]);
     /// assert_eq!(header.length, [4, 5]);
     /// assert_eq!(header.checksum, [6, 7]);
+    /// assert_eq!(suffix, [8, 9]);
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn read_from_prefix(bytes: &[u8]) -> Result<Self, SizeError<&[u8], Self>>
+    fn read_from_prefix(bytes: &[u8]) -> Result<(Self, &[u8]), SizeError<&[u8], Self>>
     where
         Self: Sized,
     {
         match Ref::<_, Unalign<Self>>::sized_from_prefix(bytes) {
-            Ok((r, _)) => Ok(r.read().into_inner()),
+            Ok((r, suffix)) => Ok((r.read().into_inner(), suffix)),
             Err(CastError::Size(e)) => Err(e.with_dst()),
             Err(CastError::Alignment(_)) => unreachable!(),
             Err(CastError::Validity(i)) => match i {},
@@ -3280,8 +3281,8 @@ pub unsafe trait FromBytes: FromZeros {
     /// Reads a copy of `Self` from the suffix of `bytes`.
     ///
     /// `read_from_suffix` reads a `Self` from the last `size_of::<Self>()`
-    /// bytes of `bytes`. If `bytes.len() < size_of::<Self>()`, it returns
-    /// `Err`.
+    /// bytes of `bytes`, returning that `Self` and any preceding bytes. If
+    /// `bytes.len() < size_of::<Self>()`, it returns `Err`.
     ///
     /// # Examples
     ///
@@ -3298,18 +3299,19 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These are more bytes than are needed to encode a `PacketTrailer`.
     /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
     ///
-    /// let trailer = PacketTrailer::read_from_suffix(bytes).unwrap();
+    /// let (prefix, trailer) = PacketTrailer::read_from_suffix(bytes).unwrap();
     ///
+    /// assert_eq!(prefix, [0, 1, 2, 3, 4, 5]);
     /// assert_eq!(trailer.frame_check_sequence, [6, 7, 8, 9]);
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn read_from_suffix(bytes: &[u8]) -> Result<Self, CastError<&[u8], Self>>
+    fn read_from_suffix(bytes: &[u8]) -> Result<(&[u8], Self), CastError<&[u8], Self>>
     where
         Self: Sized,
     {
         match Ref::<_, Unalign<Self>>::sized_from_suffix(bytes) {
-            Ok((_, r)) => Ok(r.read().into_inner()),
+            Ok((prefix, r)) => Ok((prefix, r.read().into_inner())),
             Err(CastError::Size(e)) => Err(CastError::Size(e.with_dst())),
             Err(CastError::Alignment(_)) => unreachable!(),
             Err(CastError::Validity(i)) => match i {},
@@ -5551,6 +5553,7 @@ mod tests {
         const VAL_BYTES: [u8; 8] = VAL.to_be_bytes();
         #[cfg(target_endian = "little")]
         const VAL_BYTES: [u8; 8] = VAL.to_le_bytes();
+        const ZEROS: [u8; 8] = [0u8; 8];
 
         // Test `FromBytes::{read_from, read_from_prefix, read_from_suffix}`.
 
@@ -5558,13 +5561,13 @@ mod tests {
         // The first 8 bytes are from `VAL_BYTES` and the second 8 bytes are all
         // zeros.
         let bytes_with_prefix: [u8; 16] = transmute!([VAL_BYTES, [0; 8]]);
-        assert_eq!(u64::read_from_prefix(&bytes_with_prefix[..]), Ok(VAL));
-        assert_eq!(u64::read_from_suffix(&bytes_with_prefix[..]), Ok(0));
+        assert_eq!(u64::read_from_prefix(&bytes_with_prefix[..]), Ok((VAL, &ZEROS[..])));
+        assert_eq!(u64::read_from_suffix(&bytes_with_prefix[..]), Ok((&VAL_BYTES[..], 0)));
         // The first 8 bytes are all zeros and the second 8 bytes are from
         // `VAL_BYTES`
         let bytes_with_suffix: [u8; 16] = transmute!([[0; 8], VAL_BYTES]);
-        assert_eq!(u64::read_from_prefix(&bytes_with_suffix[..]), Ok(0));
-        assert_eq!(u64::read_from_suffix(&bytes_with_suffix[..]), Ok(VAL));
+        assert_eq!(u64::read_from_prefix(&bytes_with_suffix[..]), Ok((0, &VAL_BYTES[..])));
+        assert_eq!(u64::read_from_suffix(&bytes_with_suffix[..]), Ok((&ZEROS[..], VAL)));
 
         // Test `IntoBytes::{write_to, write_to_prefix, write_to_suffix}`.
 
