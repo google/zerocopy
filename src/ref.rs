@@ -273,11 +273,10 @@ where
     B: ByteSlice,
     T: KnownLayout + Immutable + ?Sized,
 {
-    /// Constructs a new `Ref` from a byte slice.
+    /// Constructs a `Ref` from a byte slice.
     ///
-    /// `from_bytes` verifies that `bytes.len() == size_of::<T>()` and that
-    /// `bytes` is aligned to `align_of::<T>()`, and constructs a new `Ref`. If
-    /// either of these checks fail, it returns `None`.
+    /// If the length of `source` is not a valid size of `T`, or if `source` is
+    /// not appropriately aligned for `T`, this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -300,15 +299,15 @@ where
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    pub fn from_bytes(bytes: B) -> Result<Ref<B, T>, CastError<B, T>> {
+    pub fn from_bytes(source: B) -> Result<Ref<B, T>, CastError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
         if let Err(e) =
-            Ptr::from_ref(bytes.deref()).try_cast_into_no_leftover::<T, BecauseImmutable>(None)
+            Ptr::from_ref(source.deref()).try_cast_into_no_leftover::<T, BecauseImmutable>(None)
         {
-            return Err(e.with_src(()).with_src(bytes));
+            return Err(e.with_src(()).with_src(source));
         }
         // SAFETY: `try_cast_into_no_leftover` validates size and alignment.
-        Ok(unsafe { Ref::new_unchecked(bytes) })
+        Ok(unsafe { Ref::new_unchecked(source) })
     }
 }
 
@@ -317,13 +316,13 @@ where
     B: SplitByteSlice,
     T: KnownLayout + Immutable + ?Sized,
 {
-    /// Constructs a new `Ref` from the prefix of a byte slice.
+    /// Constructs a `Ref` from the prefix of a byte slice.
     ///
-    /// `from_prefix` verifies that `bytes.len() >= size_of::<T>()` and that
-    /// `bytes` is aligned to `align_of::<T>()`. It consumes the first
-    /// `size_of::<T>()` bytes from `bytes` to construct a `Ref`, and returns
-    /// the remaining bytes to the caller. If either the length or alignment
-    /// checks fail, it returns `None`.
+    /// This method computes the largest possible size of `T` that can fit in
+    /// the leading bytes of `source`, then attempts to return both a `Ref` to
+    /// those bytes, and a reference to the remaining bytes. If there are
+    /// insufficient bytes, or if `source` is not appropriately aligned, this
+    /// returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -346,42 +345,42 @@ where
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    pub fn from_prefix(bytes: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
+    pub fn from_prefix(source: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        let remainder = match Ptr::from_ref(bytes.deref())
+        let remainder = match Ptr::from_ref(source.deref())
             .try_cast_into::<T, BecauseImmutable>(CastType::Prefix, None)
         {
             Ok((_, remainder)) => remainder,
             Err(e) => {
-                return Err(e.with_src(()).with_src(bytes));
+                return Err(e.with_src(()).with_src(source));
             }
         };
 
-        // SAFETY: `remainder` is constructed as a subset of `bytes`, and so it
-        // cannot have a larger size than `bytes`. Both of their `len` methods
-        // measure bytes (`bytes` deref's to `[u8]`, and `remainder` is a
-        // `Ptr<[u8]>`), so `bytes.len() >= remainder.len()`. Thus, this cannot
+        // SAFETY: `remainder` is constructed as a subset of `source`, and so it
+        // cannot have a larger size than `source`. Both of their `len` methods
+        // measure bytes (`source` deref's to `[u8]`, and `remainder` is a
+        // `Ptr<[u8]>`), so `source.len() >= remainder.len()`. Thus, this cannot
         // underflow.
         #[allow(unstable_name_collisions, clippy::incompatible_msrv)]
-        let split_at = unsafe { bytes.len().unchecked_sub(remainder.len()) };
+        let split_at = unsafe { source.len().unchecked_sub(remainder.len()) };
         let (bytes, suffix) =
-            try_split_at(bytes, split_at).map_err(|b| SizeError::new(b).into())?;
+            try_split_at(source, split_at).map_err(|b| SizeError::new(b).into())?;
         // SAFETY: `try_cast_into` validates size and alignment, and returns a
-        // `split_at` that indicates how many bytes of `bytes` correspond to a
+        // `split_at` that indicates how many bytes of `source` correspond to a
         // valid `T`. By safety postcondition on `SplitByteSlice::try_split_at`
-        // we can rely on `try_split_at` to produce the correct `bytes` and
+        // we can rely on `try_split_at` to produce the correct `source` and
         // `suffix`.
         let r = unsafe { Ref::new_unchecked(bytes) };
         Ok((r, suffix))
     }
 
-    /// Constructs a new `Ref` from the suffix of a byte slice.
+    /// Constructs a `Ref` from the suffix of a byte slice.
     ///
-    /// `from_suffix` verifies that `bytes.len() >= size_of::<T>()` and that the
-    /// last `size_of::<T>()` bytes of `bytes` are aligned to `align_of::<T>()`.
-    /// It consumes the last `size_of::<T>()` bytes from `bytes` to construct a
-    /// `Ref`, and returns the preceding bytes to the caller. If either the
-    /// length or alignment checks fail, it returns `None`.
+    /// This method computes the largest possible size of `T` that can fit in
+    /// the trailing bytes of `source`, then attempts to return both a `Ref` to
+    /// those bytes, and a reference to the preceding bytes. If there are
+    /// insufficient bytes, or if that suffix of `source` is not appropriately
+    /// aligned, this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -404,23 +403,23 @@ where
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    pub fn from_suffix(bytes: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
+    pub fn from_suffix(source: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        let remainder = match Ptr::from_ref(bytes.deref())
+        let remainder = match Ptr::from_ref(source.deref())
             .try_cast_into::<T, BecauseImmutable>(CastType::Suffix, None)
         {
             Ok((_, remainder)) => remainder,
             Err(e) => {
                 let e = e.with_src(());
-                return Err(e.with_src(bytes));
+                return Err(e.with_src(source));
             }
         };
 
         let split_at = remainder.len();
         let (prefix, bytes) =
-            try_split_at(bytes, split_at).map_err(|b| SizeError::new(b).into())?;
+            try_split_at(source, split_at).map_err(|b| SizeError::new(b).into())?;
         // SAFETY: `try_cast_into` validates size and alignment, and returns a
-        // `try_split_at` that indicates how many bytes of `bytes` correspond to
+        // `try_split_at` that indicates how many bytes of `source` correspond to
         // a valid `T`. By safety postcondition on
         // `SplitByteSlice::try_split_at` we can rely on `try_split_at` to
         // produce the correct `prefix` and `bytes`.
@@ -434,20 +433,25 @@ where
     B: ByteSlice,
     T: KnownLayout<PointerMetadata = usize> + Immutable + ?Sized,
 {
-    // TODO(#29), TODO(#871): Pick a name and make this public. Make sure to
-    // update references to this name in `#[deprecated]` attributes elsewhere.
-    #[doc(hidden)]
+    /// Constructs a `Ref` from the given bytes with DST length equal to `count`
+    /// without copying.
+    ///
+    /// This method attempts to return a `Ref` to the prefix of `source`
+    /// interpreted as a `T` with `count` trailing elements, and a reference to
+    /// the remaining bytes. If the length of `source` is not equal to the size
+    /// of `Self` with `count` elements, or if `source` is not appropriately
+    /// aligned, this returns `Err`.
     #[inline]
-    pub fn from_bytes_with_elems(bytes: B, count: usize) -> Result<Ref<B, T>, CastError<B, T>> {
+    pub fn from_bytes_with_elems(source: B, count: usize) -> Result<Ref<B, T>, CastError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
         let expected_len = match count.size_for_metadata(T::LAYOUT) {
             Some(len) => len,
-            None => return Err(SizeError::new(bytes).into()),
+            None => return Err(SizeError::new(source).into()),
         };
-        if bytes.len() != expected_len {
-            return Err(SizeError::new(bytes).into());
+        if source.len() != expected_len {
+            return Err(SizeError::new(source).into());
         }
-        Self::from_bytes(bytes)
+        Self::from_bytes(source)
     }
 }
 
@@ -456,51 +460,53 @@ where
     B: SplitByteSlice,
     T: KnownLayout<PointerMetadata = usize> + Immutable + ?Sized,
 {
-    // TODO(#29), TODO(#871): Pick a name and make this public. Make sure to
-    // update references to this name in `#[deprecated]` attributes elsewhere.
-    #[doc(hidden)]
+    /// Constructs a `Ref` from the prefix of the given bytes with DST
+    /// length equal to `count` without copying.
+    ///
+    /// This method attempts to return a `Ref` to the prefix of `source`
+    /// interpreted as a `T` with `count` trailing elements, and a reference to
+    /// the remaining bytes. If there are insufficient bytes, or if `source` is
+    /// not appropriately aligned, this returns `Err`.
     #[inline]
     pub fn from_prefix_with_elems(
-        bytes: B,
+        source: B,
         count: usize,
     ) -> Result<(Ref<B, T>, B), CastError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
         let expected_len = match count.size_for_metadata(T::LAYOUT) {
             Some(len) => len,
-            None => return Err(SizeError::new(bytes).into()),
+            None => return Err(SizeError::new(source).into()),
         };
-        if bytes.len() < expected_len {
-            return Err(SizeError::new(bytes).into());
+        if source.len() < expected_len {
+            return Err(SizeError::new(source).into());
         }
-        let (prefix, bytes) = bytes.split_at(expected_len);
+        let (prefix, bytes) = source.split_at(expected_len);
         Self::from_bytes(prefix).map(move |l| (l, bytes))
     }
-}
 
-impl<B, T> Ref<B, T>
-where
-    B: SplitByteSlice,
-    T: KnownLayout<PointerMetadata = usize> + Immutable + ?Sized,
-{
-    // TODO(#29), TODO(#871): Pick a name and make this public. Make sure to
-    // update references to this name in `#[deprecated]` attributes elsewhere.
-    #[doc(hidden)]
+    /// Constructs a `Ref` from the suffix of the given bytes with DST length
+    /// equal to `count` without copying.
+    ///
+    /// This method attempts to return a `Ref` to the suffix of `source`
+    /// interpreted as a `T` with `count` trailing elements, and a reference to
+    /// the preceding bytes. If there are insufficient bytes, or if that suffix
+    /// of `source` is not appropriately aligned, this returns `Err`.
     #[inline]
     pub fn from_suffix_with_elems(
-        bytes: B,
+        source: B,
         count: usize,
     ) -> Result<(B, Ref<B, T>), CastError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
         let expected_len = match count.size_for_metadata(T::LAYOUT) {
             Some(len) => len,
-            None => return Err(SizeError::new(bytes).into()),
+            None => return Err(SizeError::new(source).into()),
         };
-        let split_at = if let Some(split_at) = bytes.len().checked_sub(expected_len) {
+        let split_at = if let Some(split_at) = source.len().checked_sub(expected_len) {
             split_at
         } else {
-            return Err(SizeError::new(bytes).into());
+            return Err(SizeError::new(source).into());
         };
-        let (bytes, suffix) = bytes.split_at(split_at);
+        let (bytes, suffix) = source.split_at(split_at);
         Self::from_bytes(suffix).map(move |l| (bytes, l))
     }
 }
@@ -510,11 +516,11 @@ where
     B: ByteSlice,
     T: Unaligned + KnownLayout + Immutable + ?Sized,
 {
-    /// Constructs a new `Ref` for a type with no alignment requirement from a
-    /// byte slice.
+    /// Constructs a `Ref` for a type with no alignment requirement from a byte
+    /// slice.
     ///
-    /// `unaligned_from` verifies that `bytes.len() == size_of::<T>()` and
-    /// constructs a new `Ref`. If the check fails, it returns `None`.
+    /// If the length of `source` is not a valid size of `T`, this returns
+    /// `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -537,9 +543,9 @@ where
     /// ```
     #[must_use = "has no side effects"]
     #[inline(always)]
-    pub fn unaligned_from(bytes: B) -> Result<Ref<B, T>, SizeError<B, T>> {
+    pub fn unaligned_from(source: B) -> Result<Ref<B, T>, SizeError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        match Ref::from_bytes(bytes) {
+        match Ref::from_bytes(source) {
             Ok(dst) => Ok(dst),
             Err(CastError::Size(e)) => Err(e),
             Err(CastError::Alignment(_)) => unreachable!(),
@@ -553,13 +559,13 @@ where
     B: SplitByteSlice,
     T: Unaligned + KnownLayout + Immutable + ?Sized,
 {
-    /// Constructs a new `Ref` for a type with no alignment requirement from the
+    /// Constructs a `Ref` for a type with no alignment requirement from the
     /// prefix of a byte slice.
     ///
-    /// `unaligned_from_prefix` verifies that `bytes.len() >= size_of::<T>()`.
-    /// It consumes the first `size_of::<T>()` bytes from `bytes` to construct a
-    /// `Ref`, and returns the remaining bytes to the caller. If the length
-    /// check fails, it returns `None`.
+    /// This method computes the largest possible size of `T` that can fit in
+    /// the leading bytes of `source`, then attempts to return both a `Ref` to
+    /// those bytes, and a reference to the remaining bytes. If there are
+    /// insufficient bytes, this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -582,22 +588,22 @@ where
     /// ```
     #[must_use = "has no side effects"]
     #[inline(always)]
-    pub fn unaligned_from_prefix(bytes: B) -> Result<(Ref<B, T>, B), SizeError<B, T>> {
+    pub fn unaligned_from_prefix(source: B) -> Result<(Ref<B, T>, B), SizeError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        Ref::from_prefix(bytes).map_err(|e| match e {
+        Ref::from_prefix(source).map_err(|e| match e {
             CastError::Size(e) => e,
             CastError::Alignment(_) => unreachable!(),
             CastError::Validity(i) => match i {},
         })
     }
 
-    /// Constructs a new `Ref` for a type with no alignment requirement from the
+    /// Constructs a `Ref` for a type with no alignment requirement from the
     /// suffix of a byte slice.
     ///
-    /// `unaligned_from_suffix` verifies that `bytes.len() >= size_of::<T>()`.
-    /// It consumes the last `size_of::<T>()` bytes from `bytes` to construct a
-    /// `Ref`, and returns the preceding bytes to the caller. If the length
-    /// check fails, it returns `None`.
+    /// This method computes the largest possible size of `T` that can fit in
+    /// the trailing bytes of `source`, then attempts to return both a `Ref` to
+    /// those bytes, and a reference to the preceding bytes. If there are
+    /// insufficient bytes, this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -620,9 +626,9 @@ where
     /// ```
     #[must_use = "has no side effects"]
     #[inline(always)]
-    pub fn unaligned_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), SizeError<B, T>> {
+    pub fn unaligned_from_suffix(source: B) -> Result<(B, Ref<B, T>), SizeError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        Ref::from_suffix(bytes).map_err(|e| match e {
+        Ref::from_suffix(source).map_err(|e| match e {
             CastError::Size(e) => e,
             CastError::Alignment(_) => unreachable!(),
             CastError::Validity(i) => match i {},
@@ -635,16 +641,20 @@ where
     B: ByteSlice,
     T: KnownLayout<PointerMetadata = usize> + Unaligned + Immutable + ?Sized,
 {
-    // TODO(#29), TODO(#871): Pick a name and make this public. Make sure to
-    // update references to this name in `#[deprecated]` attributes elsewhere.
-    #[doc(hidden)]
+    /// Constructs a `Ref` from the given bytes with DST length equal to `count`
+    /// without copying.
+    ///
+    /// This method attempts to return a `Ref` to the prefix of `source`
+    /// interpreted as a `T` with `count` trailing elements, and a reference to
+    /// the remaining bytes. If the length of `source` is not equal to the size
+    /// of `Self` with `count` elements, this returns `Err`.
     #[inline]
     pub fn unaligned_from_bytes_with_elems(
-        bytes: B,
+        source: B,
         count: usize,
     ) -> Result<Ref<B, T>, SizeError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        Self::from_bytes_with_elems(bytes, count).map_err(|e| match e {
+        Self::from_bytes_with_elems(source, count).map_err(|e| match e {
             CastError::Size(e) => e,
             CastError::Alignment(_) => unreachable!(),
             CastError::Validity(i) => match i {},
@@ -657,38 +667,40 @@ where
     B: SplitByteSlice,
     T: KnownLayout<PointerMetadata = usize> + Unaligned + Immutable + ?Sized,
 {
-    // TODO(#29), TODO(#871): Pick a name and make this public. Make sure to
-    // update references to this name in `#[deprecated]` attributes elsewhere.
-    #[doc(hidden)]
+    /// Constructs a `Ref` from the prefix of the given bytes with DST
+    /// length equal to `count` without copying.
+    ///
+    /// This method attempts to return a `Ref` to the prefix of `source`
+    /// interpreted as a `T` with `count` trailing elements, and a reference to
+    /// the remaining bytes. If there are insufficient bytes, this returns
+    /// `Err`.
     #[inline]
     pub fn unaligned_from_prefix_with_elems(
-        bytes: B,
+        source: B,
         count: usize,
     ) -> Result<(Ref<B, T>, B), SizeError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        Self::from_prefix_with_elems(bytes, count).map_err(|e| match e {
+        Self::from_prefix_with_elems(source, count).map_err(|e| match e {
             CastError::Size(e) => e,
             CastError::Alignment(_) => unreachable!(),
             CastError::Validity(i) => match i {},
         })
     }
-}
 
-impl<B, T> Ref<B, T>
-where
-    B: SplitByteSlice,
-    T: KnownLayout<PointerMetadata = usize> + Unaligned + Immutable + ?Sized,
-{
-    // TODO(#29), TODO(#871): Pick a name and make this public. Make sure to
-    // update references to this name in `#[deprecated]` attributes elsewhere.
-    #[doc(hidden)]
+    /// Constructs a `Ref` from the suffix of the given bytes with DST length
+    /// equal to `count` without copying.
+    ///
+    /// This method attempts to return a `Ref` to the suffix of `source`
+    /// interpreted as a `T` with `count` trailing elements, and a reference to
+    /// the preceding bytes. If there are insufficient bytes, this returns
+    /// `Err`.
     #[inline]
     pub fn unaligned_from_suffix_with_elems(
-        bytes: B,
+        source: B,
         count: usize,
     ) -> Result<(B, Ref<B, T>), SizeError<B, T>> {
         util::assert_dst_is_not_zst::<T>();
-        Self::from_suffix_with_elems(bytes, count).map_err(|e| match e {
+        Self::from_suffix_with_elems(source, count).map_err(|e| match e {
             CastError::Size(e) => e,
             CastError::Alignment(_) => unreachable!(),
             CastError::Validity(i) => match i {},
