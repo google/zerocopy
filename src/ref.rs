@@ -300,7 +300,7 @@ where
     #[must_use = "has no side effects"]
     #[inline]
     pub fn from_bytes(source: B) -> Result<Ref<B, T>, CastError<B, T>> {
-        util::assert_dst_is_not_zst::<T>();
+        static_assert_dst_is_not_zst!(T);
         if let Err(e) =
             Ptr::from_ref(source.deref()).try_cast_into_no_leftover::<T, BecauseImmutable>(None)
         {
@@ -346,7 +346,7 @@ where
     #[must_use = "has no side effects"]
     #[inline]
     pub fn from_prefix(source: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
-        util::assert_dst_is_not_zst::<T>();
+        static_assert_dst_is_not_zst!(T);
         let remainder = match Ptr::from_ref(source.deref())
             .try_cast_into::<T, BecauseImmutable>(CastType::Prefix, None)
         {
@@ -404,7 +404,7 @@ where
     #[must_use = "has no side effects"]
     #[inline]
     pub fn from_suffix(source: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
-        util::assert_dst_is_not_zst::<T>();
+        static_assert_dst_is_not_zst!(T);
         let remainder = match Ptr::from_ref(source.deref())
             .try_cast_into::<T, BecauseImmutable>(CastType::Suffix, None)
         {
@@ -443,7 +443,7 @@ where
     /// aligned, this returns `Err`.
     #[inline]
     pub fn from_bytes_with_elems(source: B, count: usize) -> Result<Ref<B, T>, CastError<B, T>> {
-        util::assert_dst_is_not_zst::<T>();
+        static_assert_dst_is_not_zst!(T);
         let expected_len = match count.size_for_metadata(T::LAYOUT) {
             Some(len) => len,
             None => return Err(SizeError::new(source).into()),
@@ -472,7 +472,7 @@ where
         source: B,
         count: usize,
     ) -> Result<(Ref<B, T>, B), CastError<B, T>> {
-        util::assert_dst_is_not_zst::<T>();
+        static_assert_dst_is_not_zst!(T);
         let expected_len = match count.size_for_metadata(T::LAYOUT) {
             Some(len) => len,
             None => return Err(SizeError::new(source).into()),
@@ -496,7 +496,7 @@ where
         source: B,
         count: usize,
     ) -> Result<(B, Ref<B, T>), CastError<B, T>> {
-        util::assert_dst_is_not_zst::<T>();
+        static_assert_dst_is_not_zst!(T);
         let expected_len = match count.size_for_metadata(T::LAYOUT) {
             Some(len) => len,
             None => return Err(SizeError::new(source).into()),
@@ -544,7 +544,7 @@ where
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn unaligned_from(source: B) -> Result<Ref<B, T>, SizeError<B, T>> {
-        util::assert_dst_is_not_zst::<T>();
+        static_assert_dst_is_not_zst!(T);
         match Ref::from_bytes(source) {
             Ok(dst) => Ok(dst),
             Err(CastError::Size(e)) => Err(e),
@@ -589,7 +589,7 @@ where
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn unaligned_from_prefix(source: B) -> Result<(Ref<B, T>, B), SizeError<B, T>> {
-        util::assert_dst_is_not_zst::<T>();
+        static_assert_dst_is_not_zst!(T);
         Ref::from_prefix(source).map_err(|e| match e {
             CastError::Size(e) => e,
             CastError::Alignment(_) => unreachable!(),
@@ -627,7 +627,7 @@ where
     #[must_use = "has no side effects"]
     #[inline(always)]
     pub fn unaligned_from_suffix(source: B) -> Result<(B, Ref<B, T>), SizeError<B, T>> {
-        util::assert_dst_is_not_zst::<T>();
+        static_assert_dst_is_not_zst!(T);
         Ref::from_suffix(source).map_err(|e| match e {
             CastError::Size(e) => e,
             CastError::Alignment(_) => unreachable!(),
@@ -653,7 +653,7 @@ where
         source: B,
         count: usize,
     ) -> Result<Ref<B, T>, SizeError<B, T>> {
-        util::assert_dst_is_not_zst::<T>();
+        static_assert_dst_is_not_zst!(T);
         Self::from_bytes_with_elems(source, count).map_err(|e| match e {
             CastError::Size(e) => e,
             CastError::Alignment(_) => unreachable!(),
@@ -679,7 +679,7 @@ where
         source: B,
         count: usize,
     ) -> Result<(Ref<B, T>, B), SizeError<B, T>> {
-        util::assert_dst_is_not_zst::<T>();
+        static_assert_dst_is_not_zst!(T);
         Self::from_prefix_with_elems(source, count).map_err(|e| match e {
             CastError::Size(e) => e,
             CastError::Alignment(_) => unreachable!(),
@@ -699,7 +699,7 @@ where
         source: B,
         count: usize,
     ) -> Result<(B, Ref<B, T>), SizeError<B, T>> {
-        util::assert_dst_is_not_zst::<T>();
+        static_assert_dst_is_not_zst!(T);
         Self::from_suffix_with_elems(source, count).map_err(|e| match e {
             CastError::Size(e) => e,
             CastError::Alignment(_) => unreachable!(),
@@ -720,7 +720,7 @@ where
     #[inline(always)]
     pub fn into_ref(self) -> &'a T {
         // Presumably unreachable, since we've guarded each constructor of `Ref`.
-        util::assert_dst_is_not_zst::<T>();
+        static_assert_dst_is_not_zst!(T);
 
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `IntoByteSlice`.
@@ -750,7 +750,7 @@ where
     #[inline(always)]
     pub fn into_mut(self) -> &'a mut T {
         // Presumably unreachable, since we've guarded each constructor of `Ref`.
-        util::assert_dst_is_not_zst::<T>();
+        static_assert_dst_is_not_zst!(T);
 
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `IntoByteSliceMut`.
@@ -846,7 +846,7 @@ where
     type Target = T;
     #[inline]
     fn deref(&self) -> &T {
-        util::assert_dst_is_not_zst::<T>();
+        static_assert_dst_is_not_zst!(T);
 
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `ByteSlice`.
@@ -873,7 +873,7 @@ where
 {
     #[inline]
     fn deref_mut(&mut self) -> &mut T {
-        util::assert_dst_is_not_zst::<T>();
+        static_assert_dst_is_not_zst!(T);
 
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `ByteSliceMut`.

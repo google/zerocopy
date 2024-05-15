@@ -1177,7 +1177,7 @@ pub unsafe trait TryFromBytes {
     where
         Self: KnownLayout + Immutable,
     {
-        util::assert_dst_is_not_zst::<Self>();
+        static_assert_dst_is_not_zst!(Self);
         match Ptr::from_ref(candidate).try_cast_into_no_leftover::<Self, BecauseImmutable>(None) {
             Ok(candidate) => {
                 // This call may panic. If that happens, it doesn't cause any soundness
@@ -1274,7 +1274,7 @@ pub unsafe trait TryFromBytes {
     where
         Self: KnownLayout + Immutable,
     {
-        util::assert_dst_is_not_zst::<Self>();
+        static_assert_dst_is_not_zst!(Self);
         try_ref_from_prefix_suffix(candidate, CastType::Prefix, None)
     }
 
@@ -1354,7 +1354,7 @@ pub unsafe trait TryFromBytes {
     where
         Self: KnownLayout + Immutable,
     {
-        util::assert_dst_is_not_zst::<Self>();
+        static_assert_dst_is_not_zst!(Self);
         try_ref_from_prefix_suffix(candidate, CastType::Suffix, None).map(swap)
     }
 
@@ -1431,7 +1431,7 @@ pub unsafe trait TryFromBytes {
     where
         Self: KnownLayout,
     {
-        util::assert_dst_is_not_zst::<Self>();
+        static_assert_dst_is_not_zst!(Self);
         match Ptr::from_mut(bytes).try_cast_into_no_leftover::<Self, BecauseExclusive>(None) {
             Ok(candidate) => {
                 // This call may panic. If that happens, it doesn't cause any soundness
@@ -1536,7 +1536,7 @@ pub unsafe trait TryFromBytes {
     where
         Self: KnownLayout,
     {
-        util::assert_dst_is_not_zst::<Self>();
+        static_assert_dst_is_not_zst!(Self);
         try_mut_from_prefix_suffix(candidate, CastType::Prefix, None)
     }
 
@@ -1624,7 +1624,7 @@ pub unsafe trait TryFromBytes {
     where
         Self: KnownLayout,
     {
-        util::assert_dst_is_not_zst::<Self>();
+        static_assert_dst_is_not_zst!(Self);
         try_mut_from_prefix_suffix(candidate, CastType::Suffix, None).map(swap)
     }
 
@@ -2339,7 +2339,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: KnownLayout + Immutable,
     {
-        util::assert_dst_is_not_zst::<Self>();
+        static_assert_dst_is_not_zst!(Self);
         match Ptr::from_ref(source).try_cast_into_no_leftover::<_, BecauseImmutable>(None) {
             Ok(ptr) => Ok(ptr.bikeshed_recall_valid().as_ref()),
             Err(err) => Err(err.map_src(|src| src.as_ref())),
@@ -2417,7 +2417,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: KnownLayout + Immutable,
     {
-        util::assert_dst_is_not_zst::<Self>();
+        static_assert_dst_is_not_zst!(Self);
         ref_from_prefix_suffix(source, None, CastType::Prefix)
     }
 
@@ -2478,7 +2478,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Immutable + KnownLayout,
     {
-        util::assert_dst_is_not_zst::<Self>();
+        static_assert_dst_is_not_zst!(Self);
         ref_from_prefix_suffix(source, None, CastType::Suffix).map(swap)
     }
 
@@ -2547,7 +2547,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: IntoBytes + KnownLayout,
     {
-        util::assert_dst_is_not_zst::<Self>();
+        static_assert_dst_is_not_zst!(Self);
         match Ptr::from_mut(source).try_cast_into_no_leftover::<_, BecauseExclusive>(None) {
             Ok(ptr) => Ok(ptr.bikeshed_recall_valid().as_mut()),
             Err(err) => Err(err.map_src(|src| src.as_mut())),
@@ -2626,7 +2626,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: IntoBytes + KnownLayout,
     {
-        util::assert_dst_is_not_zst::<Self>();
+        static_assert_dst_is_not_zst!(Self);
         mut_from_prefix_suffix(source, None, CastType::Prefix)
     }
 
@@ -2693,7 +2693,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: IntoBytes + KnownLayout,
     {
-        util::assert_dst_is_not_zst::<Self>();
+        static_assert_dst_is_not_zst!(Self);
         mut_from_prefix_suffix(source, None, CastType::Suffix).map(swap)
     }
 
