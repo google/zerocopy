@@ -52,10 +52,10 @@
 //!
 //! ##### Conversion Macros
 //!
-//! Zerocopy provides three macros for safe, zero-cost casting between types:
+//! Zerocopy provides four macros for safe, zero-cost casting between types:
 //!
-//! - [`transmute`] converts a value of one type to a value of another type of
-//!   the same size
+//! - ([`try_`][try_transmute])[`transmute`] (conditionally) converts a value of
+//!   one type to a value of another type of the same size
 //! - [`transmute_mut`] converts a mutable reference of one type to a mutable
 //!   reference of another type of the same size
 //! - [`transmute_ref`] converts a mutable or immutable reference
@@ -4438,12 +4438,18 @@ macro_rules! transmute_mut {
 /// # Examples
 ///
 /// ```
-/// # use zerocopy::try_transmute;
+/// # use zerocopy::*;
+/// // 0u8 → bool = false
 /// assert_eq!(try_transmute!(0u8), Ok(false));
-/// assert_eq!(try_transmute!(1u8), Ok(true));
 ///
-/// let maybe_bool: Result<bool, _> = try_transmute!(255u8);
-/// assert_eq!(maybe_bool.unwrap_err().into_src(), 255u8);
+/// // 1u8 → bool = true
+///  assert_eq!(try_transmute!(1u8), Ok(true));
+///
+/// // 2u8 → bool = error
+/// assert!(matches!(
+///     try_transmute!(3u8),
+///     Result::<bool, _>::Err(ValidityError { .. })
+/// ));
 ///
 /// ```
 #[macro_export]

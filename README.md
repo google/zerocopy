@@ -52,10 +52,10 @@ You should generally derive these marker traits whenever possible.
 
 ###### Conversion Macros
 
-Zerocopy provides three macros for safe, zero-cost casting between types:
+Zerocopy provides four macros for safe, zero-cost casting between types:
 
-- `transmute` converts a value of one type to a value of another type of
-  the same size
+- (`try_`[try_transmute])`transmute` (conditionally) converts a value of
+  one type to a value of another type of the same size
 - `transmute_mut` converts a mutable reference of one type to a mutable
   reference of another type of the same size
 - `transmute_ref` converts a mutable or immutable reference
