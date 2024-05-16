@@ -674,7 +674,8 @@ macro_rules! const_panic {
 
 /// Either assert (if the current Rust toolchain supports panicking in `const
 /// fn`) or evaluate the expression and, if it evaluates to `false`, call
-/// `const_panic!`.
+/// `const_panic!`. This is used in place of `assert!` in const contexts to
+/// accommodate old toolchains.
 macro_rules! const_assert {
     ($e:expr) => {{
         #[cfg(zerocopy_panic_in_const)]
@@ -719,4 +720,56 @@ macro_rules! const_unreachable {
         #[cfg(not(zerocopy_panic_in_const))]
         loop {}
     }};
+}
+
+/// Asserts at compile time that `$condition` is true for `Self` or the given
+/// `$tyvar`s. Unlike `const_assert`, this is *strictly* a compile-time check;
+/// it cannot be evaluated in a runtime context. The condition is checked after
+/// monomorphization and, upon failure, emits a compile error.
+macro_rules! static_assert {
+    (Self $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )? => $condition:expr) => {{
+        trait StaticAssert {
+            const ASSERT: bool;
+        }
+
+        impl<T $(: $(? $optbound +)* $($bound +)*)?> StaticAssert for T {
+            const ASSERT: bool = {
+                const_assert!($condition);
+                $condition
+            };
+        }
+
+        const_assert!(<Self as StaticAssert>::ASSERT);
+    }};
+    ($($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),* => $condition:expr) => {{
+        trait StaticAssert {
+            const ASSERT: bool;
+        }
+
+        impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?,)*> StaticAssert for ($($tyvar,)*) {
+            const ASSERT: bool = {
+                const_assert!($condition);
+                $condition
+            };
+        }
+
+        const_assert!(<($($tyvar,)*) as StaticAssert>::ASSERT);
+    }};
+}
+
+/// Assert at compile time that `tyvar` does not have a zero-sized DST
+/// component.
+macro_rules! static_assert_dst_is_not_zst {
+    ($tyvar:ident) => {{
+        use crate::KnownLayout;
+        static_assert!($tyvar: ?Sized + KnownLayout => {
+            let dst_is_zst = match $tyvar::LAYOUT.size_info {
+                crate::SizeInfo::Sized { .. } => false,
+                crate::SizeInfo::SliceDst(TrailingSliceLayout { elem_size, .. }) => {
+                    elem_size == 0
+                }
+            };
+            !dst_is_zst
+        });
+    }}
 }

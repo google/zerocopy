@@ -17,7 +17,10 @@
 
 #![allow(missing_debug_implementations)]
 
-use core::{marker::PhantomData, mem::ManuallyDrop};
+use core::{
+    marker::PhantomData,
+    mem::{self, ManuallyDrop},
+};
 
 // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
 // `cfg` when `size_of_val_raw` is stabilized.
@@ -384,7 +387,7 @@ pub const unsafe fn transmute_ref<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
     // TODO(#67): Once our MSRV is 1.58, replace this `transmute` with `&*dst`.
     #[allow(clippy::transmute_ptr_to_ref)]
     unsafe {
-        core::mem::transmute(dst)
+        mem::transmute(dst)
     }
 }
 
@@ -442,7 +445,7 @@ where
     I::Aliasing: AtLeast<invariant::Shared>,
     R: AliasingSafeReason,
 {
-    crate::util::assert_dst_not_bigger_than_src::<Src, Dst>();
+    static_assert!(Src, Dst => mem::size_of::<Dst>() >= mem::size_of::<Src>());
 
     // SAFETY: This is a pointer cast, satisfying the following properties:
     // - `p as *mut Dst` addresses a subset of the `bytes` addressed by `src`,
@@ -494,7 +497,7 @@ where
     // inner value [1].
     //
     // [1]: https://doc.rust-lang.org/std/mem/struct.ManuallyDrop.html
-    Ok(unsafe { core::mem::transmute_copy(&*src) })
+    Ok(unsafe { mem::transmute_copy(&*src) })
 }
 
 /// A function which emits a warning if its return value is not used.
@@ -519,8 +522,6 @@ pub mod core_reexport {
 
 #[cfg(test)]
 mod tests {
-    use core::mem;
-
     use super::*;
     use crate::util::testutil::*;
 
