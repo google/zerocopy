@@ -37,6 +37,10 @@ Zerocopy provides four derivable traits for zero-cost conversions:
 - `IntoBytes` indicates that a type may safely be converted *to* a byte
   sequence
 
+This traits support sized types, slices, and [slice DSTs][slice-dsts].
+
+[slice-dsts]: KnownLayout#dynamically-sized-types
+
 ###### Marker Traits
 
 Zerocopy provides three derivable marker traits that do not provide any

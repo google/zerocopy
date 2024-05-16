@@ -275,8 +275,13 @@ where
 {
     /// Constructs a `Ref` from a byte slice.
     ///
-    /// If the length of `source` is not a valid size of `T`, or if `source` is
-    /// not appropriately aligned for `T`, this returns `Err`.
+    /// If the length of `source` is not a [valid size of `T`][valid-size], or
+    /// if `source` is not appropriately aligned for `T`, this returns `Err`.
+    ///
+    /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
@@ -318,11 +323,16 @@ where
 {
     /// Constructs a `Ref` from the prefix of a byte slice.
     ///
-    /// This method computes the largest possible size of `T` that can fit in
-    /// the leading bytes of `source`, then attempts to return both a `Ref` to
-    /// those bytes, and a reference to the remaining bytes. If there are
-    /// insufficient bytes, or if `source` is not appropriately aligned, this
-    /// returns `Err`.
+    /// This method computes the [largest possible size of `T`][valid-size] that
+    /// can fit in the leading bytes of `source`, then attempts to return both a
+    /// `Ref` to those bytes, and a reference to the remaining bytes. If there
+    /// are insufficient bytes, or if `source` is not appropriately aligned,
+    /// this returns `Err`.
+    ///
+    /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
@@ -376,11 +386,16 @@ where
 
     /// Constructs a `Ref` from the suffix of a byte slice.
     ///
-    /// This method computes the largest possible size of `T` that can fit in
-    /// the trailing bytes of `source`, then attempts to return both a `Ref` to
-    /// those bytes, and a reference to the preceding bytes. If there are
-    /// insufficient bytes, or if that suffix of `source` is not appropriately
-    /// aligned, this returns `Err`.
+    /// This method computes the [largest possible size of `T`][valid-size] that
+    /// can fit in the trailing bytes of `source`, then attempts to return both
+    /// a `Ref` to those bytes, and a reference to the preceding bytes. If there
+    /// are insufficient bytes, or if that suffix of `source` is not
+    /// appropriately aligned, this returns `Err`.
+    ///
+    /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
@@ -519,8 +534,13 @@ where
     /// Constructs a `Ref` for a type with no alignment requirement from a byte
     /// slice.
     ///
-    /// If the length of `source` is not a valid size of `T`, this returns
-    /// `Err`.
+    /// If the length of `source` is not a [valid size of `T`][valid-size], this
+    /// returns `Err`.
+    ///
+    /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
@@ -562,10 +582,15 @@ where
     /// Constructs a `Ref` for a type with no alignment requirement from the
     /// prefix of a byte slice.
     ///
-    /// This method computes the largest possible size of `T` that can fit in
-    /// the leading bytes of `source`, then attempts to return both a `Ref` to
-    /// those bytes, and a reference to the remaining bytes. If there are
-    /// insufficient bytes, this returns `Err`.
+    /// This method computes the [largest possible size of `T`][valid-size] that
+    /// can fit in the leading bytes of `source`, then attempts to return both a
+    /// `Ref` to those bytes, and a reference to the remaining bytes. If there
+    /// are insufficient bytes, this returns `Err`.
+    ///
+    /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
@@ -600,10 +625,15 @@ where
     /// Constructs a `Ref` for a type with no alignment requirement from the
     /// suffix of a byte slice.
     ///
-    /// This method computes the largest possible size of `T` that can fit in
-    /// the trailing bytes of `source`, then attempts to return both a `Ref` to
-    /// those bytes, and a reference to the preceding bytes. If there are
-    /// insufficient bytes, this returns `Err`.
+    /// This method computes the [largest possible size of `T`][valid-size] that
+    /// can fit in the trailing bytes of `source`, then attempts to return both
+    /// a `Ref` to those bytes, and a reference to the preceding bytes. If there
+    /// are insufficient bytes, this returns `Err`.
+    ///
+    /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
