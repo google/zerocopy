@@ -1109,10 +1109,10 @@ pub unsafe trait TryFromBytes {
     /// copying.
     ///
     /// If the bytes of `candidate` are a valid instance of `Self`, this method
-    /// returns a reference to those bytes interpreted as a `Self`. If
-    /// `candidate.len() < size_of::<Self>()` or `candidate` is not aligned to
-    /// `align_of::<Self>()` or the bytes are not a valid instance of `Self`,
-    /// this returns `Err`.
+    /// returns a reference to those bytes interpreted as a `Self`. If the
+    /// length of `candidate` is not a valid size of `Self`, or if `candidate`
+    /// is not appropriately aligned, or if the bytes are not a valid instance
+    /// of `Self`, this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -1202,12 +1202,12 @@ pub unsafe trait TryFromBytes {
     /// Attempts to interpret the prefix of the given `candidate` as a `&Self`
     /// without copying.
     ///
-    /// If the first `size_of::<Self>()` bytes of `candidate` are a valid
-    /// instance of `Self`, this method returns both a reference to those bytes
-    /// interpreted as a `Self`, and a reference to the remaining bytes. If
-    /// `candidate.len() < size_of::<Self>()` or `candidate` is not aligned to
-    /// `align_of::<Self>()` or the bytes are not a valid instance of `Self`,
-    /// this returns `Err`.
+    /// This method computes the largest possible size of `Self` that can fit in
+    /// the leading bytes of `candidate`. If that prefix is a valid instance of
+    /// `Self`, this method returns a reference to those bytes interpreted as
+    /// `Self`, and a reference to the remaining bytes. If there are
+    /// insufficient bytes, or if `candidate` is not appropriately aligned, or
+    /// if the bytes are not a valid instance of `Self`, this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -1281,12 +1281,13 @@ pub unsafe trait TryFromBytes {
     /// Attempts to interpret the suffix of the given `candidate` as a `&Self`
     /// without copying.
     ///
-    /// If the last `size_of::<Self>()` bytes of `candidate` are a valid
-    /// instance of `Self`, this method returns both a reference to those bytes
-    /// interpreted as a `Self`, and a reference to the preceding bytes. If
-    /// `candidate.len() < size_of::<Self>()` or the suffix of `candidate` is
-    /// not aligned to `align_of::<Self>()` or the suffix of `candidate` is not
-    /// a valid instance of `Self`, this returns `Err`.
+    /// This method computes the largest possible size of `Self` that can fit in
+    /// the trailing bytes of `candidate`. If that suffix is a valid instance of
+    /// `Self`, this method returns a reference to those bytes interpreted as
+    /// `Self`, and a reference to the preceding bytes. If there are
+    /// insufficient bytes, or if the suffix of `candidate` would not be
+    /// appropriately aligned, or if the suffix is not a valid instance of
+    /// `Self`, this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -1361,10 +1362,10 @@ pub unsafe trait TryFromBytes {
     /// copying.
     ///
     /// If the bytes of `candidate` are a valid instance of `Self`, this method
-    /// returns a reference to those bytes interpreted as a `Self`. If
-    /// `candidate.len() < size_of::<Self>()` or `candidate` is not aligned to
-    /// `align_of::<Self>()` or the bytes are not a valid instance of `Self`,
-    /// this returns `Err`.
+    /// returns a reference to those bytes interpreted as a `Self`. If the
+    /// length of `candidate` is not a valid size of `Self`, or if `candidate`
+    /// is not appropriately aligned, or if the bytes are not a valid instance
+    /// of `Self`, this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -1455,12 +1456,12 @@ pub unsafe trait TryFromBytes {
     /// Attempts to interpret the prefix of the given `candidate` as a `&mut
     /// Self` without copying.
     ///
-    /// If the first `size_of::<Self>()` bytes of `candidate` are a valid
-    /// instance of `Self`, this method returns both a reference to those bytes
-    /// interpreted as a `Self`, and a reference to the remaining bytes. If
-    /// `candidate.len() < size_of::<Self>()` or `candidate` is not aligned to
-    /// `align_of::<Self>()` or the bytes are not a valid instance of `Self`,
-    /// this returns `Err`.
+    /// This method computes the largest possible size of `Self` that can fit in
+    /// the leading bytes of `candidate`. If that prefix is a valid instance of
+    /// `Self`, this method returns a reference to those bytes interpreted as
+    /// `Self`, and a reference to the remaining bytes. If there are
+    /// insufficient bytes, or if `candidate` is not appropriately aligned, or
+    /// if the bytes are not a valid instance of `Self`, this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -1542,12 +1543,13 @@ pub unsafe trait TryFromBytes {
     /// Attempts to interpret the suffix of the given `candidate` as a `&mut
     /// Self` without copying.
     ///
-    /// If the last `size_of::<Self>()` bytes of `candidate` are a valid
-    /// instance of `Self`, this method returns both a reference to those bytes
-    /// interpreted as a `Self`, and a reference to the preceding bytes. If
-    /// `candidate.len() < size_of::<Self>()` or the suffix of `candidate` is
-    /// not aligned to `align_of::<Self>()` or the suffix of `candidate` is not
-    /// a valid instance of `Self`, this returns `Err`.
+    /// This method computes the largest possible size of `Self` that can fit in
+    /// the trailing bytes of `candidate`. If that suffix is a valid instance of
+    /// `Self`, this method returns a reference to those bytes interpreted as
+    /// `Self`, and a reference to the preceding bytes. If there are
+    /// insufficient bytes, or if the suffix of `candidate` would not be
+    /// appropriately aligned, or if the suffix is not a valid instance of
+    /// `Self`, this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -1628,9 +1630,8 @@ pub unsafe trait TryFromBytes {
 
     /// Attempts to read the given `candidate` as a `Self`.
     ///
-    /// If the bytes of `candidate` are a valid instance of `Self`, reads those
-    /// bytes as `Self`. If `candidate.len() < size_of::<Self>()` or the bytes
-    /// are not a valid instance of `Self`, this returns `Err`.
+    /// If `candidate.len() != size_of::<Self>()` or the bytes are not a valid
+    /// instance of `Self`, this returns `Err`.
     ///
     /// # Examples
     ///
@@ -2273,11 +2274,11 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized;
 
-    /// Interprets the given `bytes` as a `&Self` without copying.
+    /// Interprets the given bytes as a `&Self` without copying.
     ///
-    /// If `bytes.len()` does not correspond to a valid length for `Self`, or if
-    /// `bytes` is not aligned to `Self`'s alignment requirement, this returns
-    /// `Err`.
+    /// This method attempts to return a reference to `source` interpreted as a
+    /// `Self`. If the length of `source` is not a valid size of `Self`, or if
+    /// `source` is not appropriately aligned, this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -2334,23 +2335,24 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn ref_from(bytes: &[u8]) -> Result<&Self, CastError<&[u8], Self>>
+    fn ref_from(source: &[u8]) -> Result<&Self, CastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        match Ptr::from_ref(bytes).try_cast_into_no_leftover::<_, BecauseImmutable>(None) {
+        match Ptr::from_ref(source).try_cast_into_no_leftover::<_, BecauseImmutable>(None) {
             Ok(ptr) => Ok(ptr.bikeshed_recall_valid().as_ref()),
             Err(err) => Err(err.map_src(|src| src.as_ref())),
         }
     }
 
-    /// Interprets the prefix of the given `bytes` as a `&Self` without copying.
+    /// Interprets the prefix of the given bytes as a `&Self` without copying.
     ///
-    /// This method returns both a reference to the first `size_of::<Self>()`
-    /// bytes of `bytes` interpreted as a `Self`, and a reference to the remaining
-    /// bytes. If `bytes.len() < size_of::<Self>()` or `bytes` is not aligned to
-    /// `align_of::<Self>()`, this returns `Err`.
+    /// This method computes the largest possible size of `Self` that can fit in
+    /// the leading bytes of `source`, then attempts to return both a reference
+    /// to those bytes interpreted as a `Self`, and a reference to the remaining
+    /// bytes. If there are insufficient bytes, or if `source` is not
+    /// appropriately aligned, this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -2411,20 +2413,21 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn ref_from_prefix(bytes: &[u8]) -> Result<(&Self, &[u8]), CastError<&[u8], Self>>
+    fn ref_from_prefix(source: &[u8]) -> Result<(&Self, &[u8]), CastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
     {
         util::assert_dst_is_not_zst::<Self>();
-        ref_from_prefix_suffix(bytes, None, CastType::Prefix)
+        ref_from_prefix_suffix(source, None, CastType::Prefix)
     }
 
-    /// Interprets the suffix of the given `bytes` as a `&Self` without copying.
+    /// Interprets the suffix of the given bytes as a `&Self` without copying.
     ///
-    /// This method returns both a reference to the last `size_of::<Self>()`
-    /// bytes of `bytes` interpreted as a `Self`, and a reference to the preceding
-    /// bytes. If `bytes.len() < size_of::<Self>()` or the suffix of `bytes` is
-    /// not aligned to `align_of::<Self>()`, this returns `Err`.
+    /// This method computes the largest possible size of `Self` that can fit in
+    /// the trailing bytes of `source`, then attempts to return both a reference
+    /// to those bytes interpreted as a `Self`, and a reference to the preceding
+    /// bytes. If there are insufficient bytes, or if that suffix of `source` is
+    /// not appropriately aligned, this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -2471,18 +2474,19 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn ref_from_suffix(bytes: &[u8]) -> Result<(&[u8], &Self), CastError<&[u8], Self>>
+    fn ref_from_suffix(source: &[u8]) -> Result<(&[u8], &Self), CastError<&[u8], Self>>
     where
         Self: Immutable + KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
-        ref_from_prefix_suffix(bytes, None, CastType::Suffix).map(swap)
+        ref_from_prefix_suffix(source, None, CastType::Suffix).map(swap)
     }
 
-    /// Interprets the given `bytes` as a `&mut Self` without copying.
+    /// Interprets the given bytes as a `&mut Self` without copying.
     ///
-    /// If `bytes.len() != size_of::<Self>()` or `bytes` is not aligned to
-    /// `align_of::<Self>()`, this returns `Err`.
+    /// This method attempts to return a reference to `source` interpreted as a
+    /// `Self`. If the length of `source` is not a valid size of `Self`, or if
+    /// `source` is not appropriately aligned, this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -2539,24 +2543,25 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn mut_from(bytes: &mut [u8]) -> Result<&mut Self, CastError<&mut [u8], Self>>
+    fn mut_from(source: &mut [u8]) -> Result<&mut Self, CastError<&mut [u8], Self>>
     where
         Self: IntoBytes + KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
-        match Ptr::from_mut(bytes).try_cast_into_no_leftover::<_, BecauseExclusive>(None) {
+        match Ptr::from_mut(source).try_cast_into_no_leftover::<_, BecauseExclusive>(None) {
             Ok(ptr) => Ok(ptr.bikeshed_recall_valid().as_mut()),
             Err(err) => Err(err.map_src(|src| src.as_mut())),
         }
     }
 
-    /// Interprets the prefix of the given `bytes` as a `&mut Self` without
+    /// Interprets the prefix of the given bytes as a `&mut Self` without
     /// copying.
     ///
-    /// This method returns both a reference to the first `size_of::<Self>()`
-    /// bytes of `bytes` interpreted as a `Self`, and a reference to the remaining
-    /// bytes. If `bytes.len() < size_of::<Self>()` or `bytes` is not aligned to
-    /// `align_of::<Self>()`, this returns `Err`.
+    /// This method computes the largest possible size of `Self` that can fit in
+    /// the leading bytes of `source`, then attempts to return both a reference
+    /// to those bytes interpreted as a `Self`, and a reference to the remaining
+    /// bytes. If there are insufficient bytes, or if `source` is not
+    /// appropriately aligned, this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -2616,22 +2621,23 @@ pub unsafe trait FromBytes: FromZeros {
     #[must_use = "has no side effects"]
     #[inline]
     fn mut_from_prefix(
-        bytes: &mut [u8],
+        source: &mut [u8],
     ) -> Result<(&mut Self, &mut [u8]), CastError<&mut [u8], Self>>
     where
         Self: IntoBytes + KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
-        mut_from_prefix_suffix(bytes, None, CastType::Prefix)
+        mut_from_prefix_suffix(source, None, CastType::Prefix)
     }
 
-    /// Interprets the suffix of the given `bytes` as a `&mut Self` without
+    /// Interprets the suffix of the given bytes as a `&mut Self` without
     /// copying.
     ///
-    /// This method returns both a reference to the last `size_of::<Self>()`
-    /// bytes of `bytes` interpreted as a `Self`, and a reference to the preceding
-    /// bytes. If `bytes.len() < size_of::<Self>()` or the suffix of `bytes` is
-    /// not aligned to `align_of::<Self>()`, this returns `Err`.
+    /// This method computes the largest possible size of `Self` that can fit in
+    /// the trailing bytes of `source`, then attempts to return both a reference
+    /// to those bytes interpreted as a `Self`, and a reference to the preceding
+    /// bytes. If there are insufficient bytes, or if that suffix of `source` is
+    /// not appropriately aligned, this returns `Err`.
     ///
     /// # Compile-Time Assertions
     ///
@@ -2682,22 +2688,22 @@ pub unsafe trait FromBytes: FromZeros {
     #[must_use = "has no side effects"]
     #[inline]
     fn mut_from_suffix(
-        bytes: &mut [u8],
+        source: &mut [u8],
     ) -> Result<(&mut [u8], &mut Self), CastError<&mut [u8], Self>>
     where
         Self: IntoBytes + KnownLayout,
     {
         util::assert_dst_is_not_zst::<Self>();
-        mut_from_prefix_suffix(bytes, None, CastType::Suffix).map(swap)
+        mut_from_prefix_suffix(source, None, CastType::Suffix).map(swap)
     }
 
-    /// Interprets the given `bytes` as a `&Self` with a DST length equal to
+    /// Interprets the given bytes as a `&Self` with a DST length equal to
     /// `count`.
     ///
-    /// This method verifies that `bytes.len() == size_of::<T>() * count` and
-    /// that `bytes` is aligned to `align_of::<T>()`. It also ensures that
-    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
-    /// length, alignment, or overflow checks fail, it returns `Err`.
+    /// This method attempts to return a reference to `source` interpreted as a
+    /// `Self` with `count` trailing elements. If the length of `source` is not
+    /// equal to the size of `Self` with `count` elements, or if `source` is not
+    /// appropriately aligned, this returns `Err`.
     ///
     /// # Examples
     ///
@@ -2749,27 +2755,25 @@ pub unsafe trait FromBytes: FromZeros {
     /// [`ref_from`]: FromBytes::ref_from
     #[must_use = "has no side effects"]
     #[inline]
-    fn ref_from_with_elems(bytes: &[u8], count: usize) -> Result<&Self, CastError<&[u8], Self>>
+    fn ref_from_with_elems(source: &[u8], count: usize) -> Result<&Self, CastError<&[u8], Self>>
     where
         Self: KnownLayout<PointerMetadata = usize> + Immutable,
     {
-        let bytes = Ptr::from_ref(bytes);
-        let maybe_slf = bytes.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
+        let source = Ptr::from_ref(source);
+        let maybe_slf = source.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
         match maybe_slf {
             Ok(slf) => Ok(slf.bikeshed_recall_valid().as_ref()),
             Err(err) => Err(err.map_src(|s| s.as_ref())),
         }
     }
 
-    /// Interprets the prefix of the given `bytes` as a `&[Self]` with length
+    /// Interprets the prefix of the given bytes as a DST `&Self` with length
     /// equal to `count` without copying.
     ///
-    /// This method verifies that `bytes.len() >= size_of::<T>() * count` and
-    /// that `bytes` is aligned to `align_of::<T>()`. It reinterprets the first
-    /// `size_of::<T>() * count` bytes from `bytes` to construct a `&[Self]`,
-    /// and returns the remaining bytes to the caller. It also ensures that
-    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
-    /// length, alignment, or overflow checks fail, it returns `Err`.
+    /// This method attempts to return a reference to the prefix of `source`
+    /// interpreted as a `Self` with `count` trailing elements, and a reference
+    /// to the remaining bytes. If there are insufficient bytes, or if `source`
+    /// is not appropriately aligned, this returns `Err`.
     ///
     /// # Examples
     ///
@@ -2824,35 +2828,33 @@ pub unsafe trait FromBytes: FromZeros {
     #[must_use = "has no side effects"]
     #[inline]
     fn ref_from_prefix_with_elems(
-        bytes: &[u8],
+        source: &[u8],
         count: usize,
     ) -> Result<(&Self, &[u8]), CastError<&[u8], Self>>
     where
         Self: KnownLayout<PointerMetadata = usize> + Immutable,
     {
-        ref_from_prefix_suffix(bytes, Some(count), CastType::Prefix)
+        ref_from_prefix_suffix(source, Some(count), CastType::Prefix)
     }
 
     #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::from_prefix_with_elems`")]
     #[doc(hidden)]
     #[must_use = "has no side effects"]
     #[inline]
-    fn slice_from_prefix(bytes: &[u8], count: usize) -> Option<(&[Self], &[u8])>
+    fn slice_from_prefix(source: &[u8], count: usize) -> Option<(&[Self], &[u8])>
     where
         Self: Sized + Immutable,
     {
-        <[Self]>::ref_from_prefix_with_elems(bytes, count).ok()
+        <[Self]>::ref_from_prefix_with_elems(source, count).ok()
     }
 
-    /// Interprets the suffix of the given `bytes` as a `&[Self]` with length
+    /// Interprets the suffix of the given bytes as a DST `&Self` with length
     /// equal to `count` without copying.
     ///
-    /// This method verifies that `bytes.len() >= size_of::<T>() * count` and
-    /// that `bytes` is aligned to `align_of::<T>()`. It reinterprets the last
-    /// `size_of::<T>() * count` bytes from `bytes` to construct a `&[Self]`,
-    /// and returns the preceding bytes to the caller. It also ensures that
-    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
-    /// length, alignment, or overflow checks fail, it returns `Err`.
+    /// This method attempts to return a reference to the suffix of `source`
+    /// interpreted as a `Self` with `count` trailing elements, and a reference
+    /// to the preceding bytes. If there are insufficient bytes, or if that
+    /// suffix of `source` is not appropriately aligned, this returns `Err`.
     ///
     /// # Examples
     ///
@@ -2907,44 +2909,44 @@ pub unsafe trait FromBytes: FromZeros {
     #[must_use = "has no side effects"]
     #[inline]
     fn ref_from_suffix_with_elems(
-        bytes: &[u8],
+        source: &[u8],
         count: usize,
     ) -> Result<(&[u8], &Self), CastError<&[u8], Self>>
     where
         Self: KnownLayout<PointerMetadata = usize> + Immutable,
     {
-        ref_from_prefix_suffix(bytes, Some(count), CastType::Suffix).map(swap)
+        ref_from_prefix_suffix(source, Some(count), CastType::Suffix).map(swap)
     }
 
     #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::from_prefix_with_elems`")]
     #[doc(hidden)]
     #[must_use = "has no side effects"]
     #[inline]
-    fn slice_from_suffix(bytes: &[u8], count: usize) -> Option<(&[u8], &[Self])>
+    fn slice_from_suffix(source: &[u8], count: usize) -> Option<(&[u8], &[Self])>
     where
         Self: Sized + Immutable,
     {
-        <[Self]>::ref_from_suffix_with_elems(bytes, count).ok()
+        <[Self]>::ref_from_suffix_with_elems(source, count).ok()
     }
 
     #[deprecated(since = "0.8.0", note = "`FromBytes::mut_from` now supports slices")]
     #[must_use = "has no side effects"]
     #[doc(hidden)]
     #[inline]
-    fn mut_slice_from(bytes: &mut [u8]) -> Option<&mut [Self]>
+    fn mut_slice_from(source: &mut [u8]) -> Option<&mut [Self]>
     where
         Self: Sized + IntoBytes,
     {
-        <[Self]>::mut_from(bytes).ok()
+        <[Self]>::mut_from(source).ok()
     }
 
-    /// Interprets the given `bytes` as a `&mut Self` with a DST length equal to
+    /// Interprets the given bytes as a `&mut Self` with a DST length equal to
     /// `count`.
     ///
-    /// This method verifies that `bytes.len() == size_of::<T>() * count` and
-    /// that `bytes` is aligned to `align_of::<T>()`. It also ensures that
-    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
-    /// length, alignment, or overflow checks fail, it returns `Err`.
+    /// This method attempts to return a reference to `source` interpreted as a
+    /// `Self` with `count` trailing elements. If the length of `source` is not
+    /// equal to the size of `Self` with `count` elements, or if `source` is not
+    /// appropriately aligned, this returns `Err`.
     ///
     /// # Examples
     ///
@@ -3000,29 +3002,27 @@ pub unsafe trait FromBytes: FromZeros {
     #[must_use = "has no side effects"]
     #[inline]
     fn mut_from_with_elems(
-        bytes: &mut [u8],
+        source: &mut [u8],
         count: usize,
     ) -> Result<&mut Self, CastError<&mut [u8], Self>>
     where
         Self: IntoBytes + KnownLayout<PointerMetadata = usize> + Immutable,
     {
-        let bytes = Ptr::from_mut(bytes);
-        let maybe_slf = bytes.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
+        let source = Ptr::from_mut(source);
+        let maybe_slf = source.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
         match maybe_slf {
             Ok(slf) => Ok(slf.bikeshed_recall_valid().as_mut()),
             Err(err) => Err(err.map_src(|s| s.as_mut())),
         }
     }
 
-    /// Interprets the prefix of the given `bytes` as a `&mut [Self]` with
-    /// length equal to `count` without copying.
+    /// Interprets the prefix of the given bytes as a `&mut [Self]` with length
+    /// equal to `count` without copying.
     ///
-    /// This method verifies that `bytes.len() >= size_of::<T>() * count` and
-    /// that `bytes` is aligned to `align_of::<T>()`. It reinterprets the first
-    /// `size_of::<T>() * count` bytes from `bytes` to construct a `&[Self]`,
-    /// and returns the remaining bytes to the caller. It also ensures that
-    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
-    /// length, alignment, or overflow checks fail, it returns `Err`.
+    /// This method attempts to return a reference to the prefix of `source`
+    /// interpreted as a `Self` with `count` trailing elements, and a reference
+    /// to the preceding bytes. If there are insufficient bytes, or if `source`
+    /// is not appropriately aligned, this returns `Err`.
     ///
     /// # Examples
     ///
@@ -3082,35 +3082,33 @@ pub unsafe trait FromBytes: FromZeros {
     #[must_use = "has no side effects"]
     #[inline]
     fn mut_from_prefix_with_elems(
-        bytes: &mut [u8],
+        source: &mut [u8],
         count: usize,
     ) -> Result<(&mut Self, &mut [u8]), CastError<&mut [u8], Self>>
     where
         Self: IntoBytes + KnownLayout<PointerMetadata = usize>,
     {
-        mut_from_prefix_suffix(bytes, Some(count), CastType::Prefix)
+        mut_from_prefix_suffix(source, Some(count), CastType::Prefix)
     }
 
     #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::mut_from_prefix_with_elems`")]
     #[doc(hidden)]
     #[must_use = "has no side effects"]
     #[inline]
-    fn mut_slice_from_prefix(bytes: &mut [u8], count: usize) -> Option<(&mut [Self], &mut [u8])>
+    fn mut_slice_from_prefix(source: &mut [u8], count: usize) -> Option<(&mut [Self], &mut [u8])>
     where
         Self: Sized + IntoBytes,
     {
-        <[Self]>::mut_from_prefix_with_elems(bytes, count).ok()
+        <[Self]>::mut_from_prefix_with_elems(source, count).ok()
     }
 
-    /// Interprets the suffix of the given `bytes` as a `&mut [Self]` with length
+    /// Interprets the suffix of the given bytes as a `&mut [Self]` with length
     /// equal to `count` without copying.
     ///
-    /// This method verifies that `bytes.len() >= size_of::<T>() * count` and
-    /// that `bytes` is aligned to `align_of::<T>()`. It reinterprets the last
-    /// `size_of::<T>() * count` bytes from `bytes` to construct a `&[Self]`,
-    /// and returns the preceding bytes to the caller. It also ensures that
-    /// `sizeof::<T>() * count` does not overflow a `usize`. If any of the
-    /// length, alignment, or overflow checks fail, it returns `Err`.
+    /// This method attempts to return a reference to the suffix of `source`
+    /// interpreted as a `Self` with `count` trailing elements, and a reference
+    /// to the remaining bytes. If there are insufficient bytes, or if that
+    /// suffix of `source` is not appropriately aligned, this returns `Err`.
     ///
     /// # Examples
     ///
@@ -3170,28 +3168,28 @@ pub unsafe trait FromBytes: FromZeros {
     #[must_use = "has no side effects"]
     #[inline]
     fn mut_from_suffix_with_elems(
-        bytes: &mut [u8],
+        source: &mut [u8],
         count: usize,
     ) -> Result<(&mut [u8], &mut Self), CastError<&mut [u8], Self>>
     where
         Self: IntoBytes + KnownLayout<PointerMetadata = usize>,
     {
-        mut_from_prefix_suffix(bytes, Some(count), CastType::Suffix).map(swap)
+        mut_from_prefix_suffix(source, Some(count), CastType::Suffix).map(swap)
     }
 
     #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::mut_from_suffix_with_elems`")]
     #[doc(hidden)]
     #[inline]
-    fn mut_slice_from_suffix(bytes: &mut [u8], count: usize) -> Option<(&mut [u8], &mut [Self])>
+    fn mut_slice_from_suffix(source: &mut [u8], count: usize) -> Option<(&mut [u8], &mut [Self])>
     where
         Self: Sized + IntoBytes,
     {
-        <[Self]>::mut_from_suffix_with_elems(bytes, count).ok()
+        <[Self]>::mut_from_suffix_with_elems(source, count).ok()
     }
 
-    /// Reads a copy of `Self` from `bytes`.
+    /// Reads a copy of `Self` from the given bytes.
     ///
-    /// If `bytes.len() != size_of::<Self>()`, `read_from` returns `Err`.
+    /// If `source.len() != size_of::<Self>()`, `read_from` returns `Err`.
     ///
     /// # Examples
     ///
@@ -3220,11 +3218,11 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn read_from(bytes: &[u8]) -> Result<Self, SizeError<&[u8], Self>>
+    fn read_from(source: &[u8]) -> Result<Self, SizeError<&[u8], Self>>
     where
         Self: Sized,
     {
-        match Ref::<_, Unalign<Self>>::sized_from(bytes) {
+        match Ref::<_, Unalign<Self>>::sized_from(source) {
             Ok(r) => Ok(r.read().into_inner()),
             Err(CastError::Size(e)) => Err(e.with_dst()),
             Err(CastError::Alignment(_)) => unreachable!(),
@@ -3232,11 +3230,11 @@ pub unsafe trait FromBytes: FromZeros {
         }
     }
 
-    /// Reads a copy of `Self` from the prefix of `bytes`.
+    /// Reads a copy of `Self` from the prefix of the given bytes.
     ///
-    /// `read_from_prefix` reads a `Self` from the first `size_of::<Self>()`
-    /// bytes of `bytes`, returning that `Self` and any remaining bytes. If
-    /// `bytes.len() < size_of::<Self>()`, it returns `Err`.
+    /// This attempts to read a `Self` from the first `size_of::<Self>()` bytes
+    /// of `source`, returning that `Self` and any remaining bytes. If
+    /// `source.len() < size_of::<Self>()`, it returns `Err`.
     ///
     /// # Examples
     ///
@@ -3266,11 +3264,11 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn read_from_prefix(bytes: &[u8]) -> Result<(Self, &[u8]), SizeError<&[u8], Self>>
+    fn read_from_prefix(source: &[u8]) -> Result<(Self, &[u8]), SizeError<&[u8], Self>>
     where
         Self: Sized,
     {
-        match Ref::<_, Unalign<Self>>::sized_from_prefix(bytes) {
+        match Ref::<_, Unalign<Self>>::sized_from_prefix(source) {
             Ok((r, suffix)) => Ok((r.read().into_inner(), suffix)),
             Err(CastError::Size(e)) => Err(e.with_dst()),
             Err(CastError::Alignment(_)) => unreachable!(),
@@ -3278,11 +3276,11 @@ pub unsafe trait FromBytes: FromZeros {
         }
     }
 
-    /// Reads a copy of `Self` from the suffix of `bytes`.
+    /// Reads a copy of `Self` from the suffix of the given bytes.
     ///
-    /// `read_from_suffix` reads a `Self` from the last `size_of::<Self>()`
-    /// bytes of `bytes`, returning that `Self` and any preceding bytes. If
-    /// `bytes.len() < size_of::<Self>()`, it returns `Err`.
+    /// This attempts to read a `Self` from the last `size_of::<Self>()` bytes
+    /// of `source`, returning that `Self` and any preceding bytes. If
+    /// `source.len() < size_of::<Self>()`, it returns `Err`.
     ///
     /// # Examples
     ///
@@ -3306,11 +3304,11 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn read_from_suffix(bytes: &[u8]) -> Result<(&[u8], Self), CastError<&[u8], Self>>
+    fn read_from_suffix(source: &[u8]) -> Result<(&[u8], Self), CastError<&[u8], Self>>
     where
         Self: Sized,
     {
-        match Ref::<_, Unalign<Self>>::sized_from_suffix(bytes) {
+        match Ref::<_, Unalign<Self>>::sized_from_suffix(source) {
             Ok((prefix, r)) => Ok((prefix, r.read().into_inner())),
             Err(CastError::Size(e)) => Err(CastError::Size(e.with_dst())),
             Err(CastError::Alignment(_)) => unreachable!(),
@@ -3322,33 +3320,48 @@ pub unsafe trait FromBytes: FromZeros {
     #[allow(clippy::must_use_candidate)]
     #[doc(hidden)]
     #[inline]
-    fn slice_from(bytes: &[u8]) -> Option<&[Self]>
+    fn slice_from(source: &[u8]) -> Option<&[Self]>
     where
         Self: Sized + Immutable,
     {
-        <[Self]>::ref_from(bytes).ok()
+        <[Self]>::ref_from(source).ok()
     }
 }
 
+/// Interprets the given affix of the given bytes as a `&Self` without copying.
+///
+/// This method computes the largest possible size of `Self` that can fit in the
+/// prefix or suffix bytes of `source`, then attempts to return both a reference
+/// to those bytes interpreted as a `Self`, and a reference to the excess bytes.
+/// If there are insufficient bytes, or if that affix of `source` is not
+/// appropriately aligned, this returns `Err`.
 #[inline(always)]
 fn ref_from_prefix_suffix<T: FromBytes + KnownLayout + Immutable + ?Sized>(
-    bytes: &[u8],
+    source: &[u8],
     meta: Option<T::PointerMetadata>,
     cast_type: CastType,
 ) -> Result<(&T, &[u8]), CastError<&[u8], T>> {
-    let (slf, prefix_suffix) = Ptr::from_ref(bytes)
+    let (slf, prefix_suffix) = Ptr::from_ref(source)
         .try_cast_into::<_, BecauseImmutable>(cast_type, meta)
         .map_err(|err| err.map_src(|s| s.as_ref()))?;
     Ok((slf.bikeshed_recall_valid().as_ref(), prefix_suffix.as_ref()))
 }
 
+/// Interprets the given affix of the given bytes as a `&mut Self` without
+/// copying.
+///
+/// This method computes the largest possible size of `Self` that can fit in the
+/// prefix or suffix bytes of `source`, then attempts to return both a reference
+/// to those bytes interpreted as a `Self`, and a reference to the excess bytes.
+/// If there are insufficient bytes, or if that affix of `source` is not
+/// appropriately aligned, this returns `Err`.
 #[inline(always)]
 fn mut_from_prefix_suffix<T: FromBytes + KnownLayout + ?Sized>(
-    bytes: &mut [u8],
+    source: &mut [u8],
     meta: Option<T::PointerMetadata>,
     cast_type: CastType,
 ) -> Result<(&mut T, &mut [u8]), CastError<&mut [u8], T>> {
-    let (slf, prefix_suffix) = Ptr::from_mut(bytes)
+    let (slf, prefix_suffix) = Ptr::from_mut(source)
         .try_cast_into::<_, BecauseExclusive>(cast_type, meta)
         .map_err(|err| err.map_src(|s| s.as_mut()))?;
     Ok((slf.bikeshed_recall_valid().as_mut(), prefix_suffix.as_mut()))
@@ -6086,10 +6099,10 @@ mod proofs {
         match field.size_info {
             SizeInfo::Sized { size: field_size } => {
                 if let SizeInfo::Sized { size: composite_size } = composite.size_info {
-                    // If the trailing field is sized, the resulting layout
-                    // will be sized. Its size will be the sum of the
-                    // preceeding layout, the size of the new field, and the
-                    // size of inter-field padding between the two.
+                    // If the trailing field is sized, the resulting layout will
+                    // be sized. Its size will be the sum of the preceding
+                    // layout, the size of the new field, and the size of
+                    // inter-field padding between the two.
                     assert_eq!(composite_size, offset + field_size);
 
                     let field_analog =
