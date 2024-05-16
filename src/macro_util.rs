@@ -436,7 +436,10 @@ pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
 #[inline]
 fn try_transmute_ptr<Src, Dst, I, R>(
     mut src: Ptr<'_, Src, I>,
-) -> Result<Ptr<'_, Dst, (I::Aliasing, invariant::Any, invariant::Valid)>, Ptr<'_, Src, I>>
+) -> Result<
+    Ptr<'_, Dst, (I::Aliasing, invariant::Any, invariant::Valid)>,
+    ValidityError<Ptr<'_, Src, I>, Dst>,
+>
 where
     Src: IntoBytes,
     Dst: TryFromBytes + AliasingSafe<Src, I::Aliasing, R>,
@@ -463,14 +466,28 @@ where
     // initialized bytes.
     let mut c_ptr = unsafe { c_ptr.assume_initialized() };
 
-    if Dst::is_bit_valid(c_ptr) {
-        // SAFETY: TODO
-        let ptr = unsafe { c_ptr.assume_valid() };
+    c_ptr.try_into_valid().map_err(|err| {
+        err.map_src(|src| {
+            // SAFETY: TODO
+            let src = unsafe { src.cast_unsized(|p| p as *mut Src) };
+            // SAFETY: `src` is the same pointer that was passed to this method,
+            // which had validity `invariant::Valid`. `try_into_valid` promises not
+            // to modify its receiver's referent, so `src`'s referent is still a
+            // valid `Src`.
+            let src = unsafe { src.assume_valid() };
 
-        Ok(ptr)
-    } else {
-        Err(src)
-    }
+            src.foobar()
+        })
+    })
+
+    // if Dst::is_bit_valid(c_ptr.reborrow()) {
+    //     // SAFETY: TODO
+    //     let ptr = unsafe { c_ptr.assume_valid() };
+
+    //     Ok(ptr)
+    // } else {
+    //     Err(src)
+    // }
 }
 
 /// Attempts to transmute `Src` into `Dst`.
