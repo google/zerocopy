@@ -105,23 +105,6 @@ jobs:
       run: |
         set -eo pipefail
 
-        # We use toolchain descriptors ("msrv", "stable", "nightly", and values
-        # from the "metadata.build-rs" key in Cargo.toml) in the matrix. This
-        # step converts the current descriptor to a particular toolchain version
-        # by looking up the corresponding key in `Cargo.toml`. It sets the
-        # `ZC_TOOLCHAIN` environment variable for use in the next step
-        # (toolchain installation) because GitHub variable interpolation doesn't
-        # support running arbitrary commands. In other words, we can't rewrite:
-        #
-        #   toolchain: $ {{ env.ZC_TOOLCHAIN }}
-        #
-        # ...to:
-        #
-        #   toolchain: $ {{ ./cargo.sh --version matrix.toolchain }} # hypothetical syntax
-        ZC_TOOLCHAIN="$(./cargo.sh --version ${{ matrix.toolchain }})"
-        echo "Found that the '${{ matrix.toolchain }}' toolchain is $ZC_TOOLCHAIN" | tee -a $GITHUB_STEP_SUMMARY
-        echo "ZC_TOOLCHAIN=$ZC_TOOLCHAIN" >> $GITHUB_ENV
-
         if [[ '${{ matrix.toolchain }}' == 'nightly' ]]; then
           RUSTFLAGS="$RUSTFLAGS $ZC_NIGHTLY_RUSTFLAGS"
           MIRIFLAGS="$MIRIFLAGS $ZC_NIGHTLY_MIRIFLAGS"
@@ -143,10 +126,16 @@ jobs:
       with:
         toolchain: stable
 
-    - name: Install Rust with ${{ matrix.toolchain }} toolchain (${{ env.ZC_TOOLCHAIN }}) and target ${{ matrix.target }}
+    - name: Resolve toolchain name
+      id: toolchain
+      uses: ./.github/actions/zerocopy_toolchain_version
+      with:
+        toolchain: ${{ matrix.toolchain }}
+
+    - name: Install Rust with ${{ matrix.toolchain }} toolchain (${{ steps.toolchain.outputs.toolchain }}) and target ${{ matrix.target }}
       uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
       with:
-          toolchain: ${{ env.ZC_TOOLCHAIN }}
+          toolchain: ${{ steps.toolchain.outputs.toolchain }}
           targets: ${{ matrix.target }}
           # We require the `rust-src` component to ensure that the compiler
           # error output generated during UI tests matches that generated on
@@ -308,7 +297,7 @@ jobs:
         # don't care about the API stability of these features anyway.
         feature-group: only-explicit-features
         features: __internal_use_only_features_that_work_on_stable
-        rust-toolchain: ${{ env.ZC_TOOLCHAIN }}
+        rust-toolchain: ${{ steps.toolchain.outputs.toolchain }}
       if: matrix.crate == 'zerocopy' && matrix.features == '--features __internal_use_only_features_that_work_on_stable' && matrix.toolchain == 'nightly'
 
   kani:
