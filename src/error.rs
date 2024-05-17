@@ -29,47 +29,35 @@ use crate::TryFromBytes;
 #[cfg(doc)]
 use crate::{FromBytes, Ref};
 
-// This is private to remove `ConvertError` from our SemVer obligations for the
-// time being.
-// TODO(#1139): Remove this wrapping `private` module.
-mod private {
-    #[cfg(doc)]
-    use super::*;
-
-    /// Zerocopy's generic error type.
-    ///
-    /// Generally speaking, zerocopy's conversions may fail for one of up to three reasons:
-    /// - [`AlignmentError`]: the conversion source was improperly aligned
-    /// - [`SizeError`]: the conversion source was of incorrect size
-    /// - [`ValidityError`]: the conversion source contained invalid data
-    ///
-    /// However, not all conversions produce all errors. For instance,
-    /// [`FromBytes::ref_from_bytes`] may fail due to alignment or size issues,
-    /// but not validity issues. This generic error type captures these
-    /// (im)possibilities via parameterization: `A` is parameterized with
-    /// [`AlignmentError`], `S` is parameterized with [`SizeError`], and `V` is
-    /// parameterized with [`Infallible`].
-    ///
-    /// Zerocopy never uses this type directly in its API. Rather, we provide three
-    /// pre-parameterized aliases:
-    /// - [`CastError`]: the error type of reference conversions
-    /// - [`TryCastError`]: the error type of fallible reference conversions
-    /// - [`TryReadError`]: the error type of fallible read conversions
-    #[derive(PartialEq, Eq)]
-    pub enum ConvertError<A, S, V> {
-        /// The conversion source was improperly aligned.
-        #[doc(hidden)]
-        Alignment(A),
-        /// The conversion source was of incorrect size.
-        #[doc(hidden)]
-        Size(S),
-        /// The conversion source contained invalid data.
-        #[doc(hidden)]
-        Validity(V),
-    }
+/// Zerocopy's generic error type.
+///
+/// Generally speaking, zerocopy's conversions may fail for one of up to three
+/// reasons:
+/// - [`AlignmentError`]: the conversion source was improperly aligned
+/// - [`SizeError`]: the conversion source was of incorrect size
+/// - [`ValidityError`]: the conversion source contained invalid data
+///
+/// However, not all conversions produce all errors. For instance,
+/// [`FromBytes::ref_from_bytes`] may fail due to alignment or size issues, but
+/// not validity issues. This generic error type captures these
+/// (im)possibilities via parameterization: `A` is parameterized with
+/// [`AlignmentError`], `S` is parameterized with [`SizeError`], and `V` is
+/// parameterized with [`Infallible`].
+///
+/// Zerocopy never uses this type directly in its API. Rather, we provide three
+/// pre-parameterized aliases:
+/// - [`CastError`]: the error type of reference conversions
+/// - [`TryCastError`]: the error type of fallible reference conversions
+/// - [`TryReadError`]: the error type of fallible read conversions
+#[derive(PartialEq, Eq)]
+pub enum ConvertError<A, S, V> {
+    /// The conversion source was improperly aligned.
+    Alignment(A),
+    /// The conversion source was of incorrect size.
+    Size(S),
+    /// The conversion source contained invalid data.
+    Validity(V),
 }
-
-use private::ConvertError;
 
 impl<A: fmt::Debug, S: fmt::Debug, V: fmt::Debug> fmt::Debug for ConvertError<A, S, V> {
     #[inline]
