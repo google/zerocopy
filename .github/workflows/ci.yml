@@ -311,6 +311,46 @@ jobs:
         rust-toolchain: ${{ env.ZC_TOOLCHAIN }}
       if: matrix.crate == 'zerocopy' && matrix.features == '--features __internal_use_only_features_that_work_on_stable' && matrix.toolchain == 'nightly'
 
+    # TODO(#453): Doing this as a matrix step is a hack that allows us to depend
+    # on the fact that toolchains have already been installed. We currently only
+    # run this on a single matrix combination, but doing it outside of the
+    # matrix would require us to replicate the toolchain resolution and
+    # installation logic. We should either:
+    # - Figure out how to factor out the toolchain resolution and installation
+    #   logic (see #1275) for an attempt
+    # - Support multiple matrix combinations (which we intend to do as part of
+    #   #453 eventually anyway) so that this location is justified
+    - name: Generate code coverage
+      run: |
+        set -eo pipefail
+        ./cargo.sh +nightly install cargo-llvm-cov
+
+        ./cargo.sh +${{ matrix.toolchain }} llvm-cov \
+          --package ${{ matrix.crate }}              \
+          --target ${{ matrix.target }}              \
+          ${{ matrix.features }}                     \
+          --lcov                                     \
+          --output-path lcov.info                    \
+          --verbose                                  \
+          --                                         \
+          --skip ui
+      if: |
+        matrix.crate == 'zerocopy'          &&
+        matrix.features == '--all-features' &&
+        matrix.toolchain == 'nightly'       &&
+        matrix.target == 'x86_64-unknown-linux-gnu'
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: lcov.info
+      if: |
+        matrix.crate == 'zerocopy'          &&
+        matrix.features == '--all-features' &&
+        matrix.toolchain == 'nightly'       &&
+        matrix.target == 'x86_64-unknown-linux-gnu'
+
   kani:
     runs-on: ubuntu-latest        
     name: 'Run tests under Kani'
