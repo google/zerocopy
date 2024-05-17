@@ -37,6 +37,10 @@
 //! - [`IntoBytes`] indicates that a type may safely be converted *to* a byte
 //!   sequence
 //!
+//! This traits support sized types, slices, and [slice DSTs][slice-dsts].
+//!
+//! [slice-dsts]: KnownLayout#dynamically-sized-types
+//!
 //! ##### Marker Traits
 //!
 //! Zerocopy provides three derivable marker traits that do not provide any
@@ -421,7 +425,8 @@ pub use zerocopy_derive::KnownLayout;
 
 /// Indicates that zerocopy can reason about certain aspects of a type's layout.
 ///
-/// This trait is required by many of zerocopy's APIs.
+/// This trait is required by many of zerocopy's APIs. It supports sized types,
+/// slices, and [slice DSTs](#dynamically-sized-types).
 ///
 /// # Implementation
 ///
@@ -456,6 +461,141 @@ pub use zerocopy_derive::KnownLayout;
 ///
 /// This derive performs a sophisticated analysis to deduce the layout
 /// characteristics of types. You **must** implement this trait via the derive.
+///
+/// # Dynamically-sized types
+///
+/// `KnownLayout` supports slice-based dynamically sized types ("slice DSTs").
+///
+/// A slice DST is a type whose trailing field is either a slice or another
+/// slice DST, rather than a type with fixed size. For example:
+///
+/// ```
+/// #[repr(C)]
+/// struct PacketHeader {
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[repr(C)]
+/// struct Packet {
+///     header: PacketHeader,
+///     body: [u8],
+/// }
+/// ```
+///
+/// It can be useful to think of slice DSTs as a generalization of slices - in
+/// other words, a normal slice is just the special case of a slice DST with
+/// zero leading fields. In particular:
+/// - Like slices, slice DSTs can have different lengths at runtime
+/// - Like slices, slice DSTs cannot be passed by-value, but only by reference
+///   or via other indirection such as `Box`
+/// - Like slices, a reference (or `Box`, or other pointer type) to a slice DST
+///   encodes the number of elements in the trailing slice field
+///
+/// ## Slice DST layout
+///
+/// Just like other composite Rust types, the layout of a slice DST is not
+/// well-defined unless it is specified using an explicit `#[repr(...)]`
+/// attribute such as `#[repr(C)]`. [Other representations are
+/// supported][reprs], but in this section, we'll use `#[repr(C)]` as our
+/// example.
+///
+/// A `#[repr(C)]` slice DST is laid out [just like sized `#[repr(C)]`
+/// types][repr-c-structs], but the presenence of a variable-length field
+/// introduces the possibility of *dynamic padding*. In particular, it may be
+/// necessary to add trailing padding *after* the trailing slice field in order
+/// to satisfy the outer type's alignment, and the amount of padding required
+/// may be a function of the length of the trailing slice field. This is just a
+/// natural consequence of the normal `#[repr(C)]` rules applied to slice DSTs,
+/// but it can result in surprising behavior. For example, consider the
+/// following type:
+///
+/// ```
+/// #[repr(C)]
+/// struct Foo {
+///     a: u32,
+///     b: u8,
+///     z: [u16],
+/// }
+/// ```
+///
+/// Assuming that `u32` has alignment 4 (this is not true on all platforms),
+/// then `Foo` has alignment 4 as well. Here is the smallest possible value for
+/// `Foo`:
+///
+/// ```text
+/// byte offset | 01234567
+///       field | aaaab---
+///                    ><
+/// ```
+///
+/// In this value, `z` has length 0. Abiding by `#[repr(C)]`, the lowest offset
+/// that we can place `z` at is 5, but since `z` has alignment 2, we need to
+/// round up to offset 6. This means that there is one byte of padding between
+/// `b` and `z`, then 0 bytes of `z` itself (denoted `><` in this diagram), and
+/// then two bytes of padding after `z` in order to satisfy the overall
+/// alignment of `Foo`. The size of this instance is 8 bytes.
+///
+/// What about if `z` has length 1?
+///
+/// ```text
+/// byte offset | 01234567
+///       field | aaaab-zz
+/// ```
+///
+/// In this instance, `z` has length 1, and thus takes up 2 bytes. That means
+/// that we no longer need padding after `z` in order to satisfy `Foo`'s
+/// alignment. We've now seen two different values of `Foo` with two different
+/// lengths of `z`, but they both have the same size - 8 bytes.
+///
+/// What about if `z` has length 2?
+///
+/// ```text
+/// byte offset | 012345678901
+///       field | aaaab-zzzz--
+/// ```
+///
+/// Now `z` has length 2, and thus takes up 4 bytes. This brings our un-padded
+/// size to 10, and so we now need another 2 bytes of padding after `z` to
+/// satisfy `Foo`'s alignment.
+///
+/// Again, all of this is just a logical consequence of the `#[repr(C)]` rules
+/// applied to slice DSTs, but it can be surprising that the amount of trailing
+/// padding becomes a function of the trailing slice field's length, and thus
+/// can only be computed at runtime.
+///
+/// [reprs]: https://doc.rust-lang.org/reference/type-layout.html#representations
+/// [repr-c-structs]: https://doc.rust-lang.org/reference/type-layout.html#reprc-structs
+///
+/// ## What is a valid size?
+///
+/// There are two places in zerocopy's API that we refer to "a valid size" of a
+/// type. In normal casts or conversions, where the source is a byte slice, we
+/// need to know whether the source byte slice is a valid size of the
+/// destination type. In prefix or suffix casts, we need to know whether *there
+/// exists* a valid size of the destination type which fits in the source byte
+/// slice and, if so, what the largest such size is.
+///
+/// As outlined above, a slice DST's size is defined by the number of elements
+/// in its trailing slice field. However, there is not necessarily a 1-to-1
+/// mapping between trailing slice field length and overall size. As we saw in
+/// the previous section with the type `Foo`, instances with both 0 and 1
+/// elements in the trailing `z` field result in a `Foo` whose size is 8 bytes.
+///
+/// When we say "x is a valid size of `T`", we mean one of two things:
+/// - If `T: Sized`, then we mean that `x == size_of::<T>()`
+/// - If `T` is a slice DST, then we mean that there exists a `len` such that the instance of
+///   `T` with `len` trailing slice elements has size `x`
+///
+/// When we say "largest possible size of `T` that fits in a byte slice", we
+/// mean one of two things:
+/// - If `T: Sized`, then we mean `size_of::<T>()` if the byte slice is at least
+///   `size_of::<T>()` bytes long
+/// - If `T` is a slice DST, then we mean to consider all values, `len`, such
+///   that the instance of `T` with `len` trailing slice elements fits in the
+///   byte slice, and to choose the largest such `len`, if any
+///
 ///
 /// # Safety
 ///
@@ -1111,9 +1251,14 @@ pub unsafe trait TryFromBytes {
     ///
     /// If the bytes of `candidate` are a valid instance of `Self`, this method
     /// returns a reference to those bytes interpreted as a `Self`. If the
-    /// length of `candidate` is not a valid size of `Self`, or if `candidate`
-    /// is not appropriately aligned, or if the bytes are not a valid instance
-    /// of `Self`, this returns `Err`.
+    /// length of `candidate` is not a [valid size of `Self`][valid-size], or if
+    /// `candidate` is not appropriately aligned, or if the bytes are not a
+    /// valid instance of `Self`, this returns `Err`.
+    ///
+    /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
@@ -1203,12 +1348,17 @@ pub unsafe trait TryFromBytes {
     /// Attempts to interpret the prefix of the given `candidate` as a `&Self`
     /// without copying.
     ///
-    /// This method computes the largest possible size of `Self` that can fit in
-    /// the leading bytes of `candidate`. If that prefix is a valid instance of
-    /// `Self`, this method returns a reference to those bytes interpreted as
-    /// `Self`, and a reference to the remaining bytes. If there are
-    /// insufficient bytes, or if `candidate` is not appropriately aligned, or
-    /// if the bytes are not a valid instance of `Self`, this returns `Err`.
+    /// This method computes the [largest possible size of `Self`][valid-size]
+    /// that can fit in the leading bytes of `candidate`. If that prefix is a
+    /// valid instance of `Self`, this method returns a reference to those bytes
+    /// interpreted as `Self`, and a reference to the remaining bytes. If there
+    /// are insufficient bytes, or if `candidate` is not appropriately aligned,
+    /// or if the bytes are not a valid instance of `Self`, this returns `Err`.
+    ///
+    /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
@@ -1282,13 +1432,18 @@ pub unsafe trait TryFromBytes {
     /// Attempts to interpret the suffix of the given `candidate` as a `&Self`
     /// without copying.
     ///
-    /// This method computes the largest possible size of `Self` that can fit in
-    /// the trailing bytes of `candidate`. If that suffix is a valid instance of
-    /// `Self`, this method returns a reference to those bytes interpreted as
-    /// `Self`, and a reference to the preceding bytes. If there are
-    /// insufficient bytes, or if the suffix of `candidate` would not be
+    /// This method computes the [largest possible size of `Self`][valid-size]
+    /// that can fit in the trailing bytes of `candidate`. If that suffix is a
+    /// valid instance of `Self`, this method returns a reference to those bytes
+    /// interpreted as `Self`, and a reference to the preceding bytes. If there
+    /// are insufficient bytes, or if the suffix of `candidate` would not be
     /// appropriately aligned, or if the suffix is not a valid instance of
     /// `Self`, this returns `Err`.
+    ///
+    /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
@@ -1364,9 +1519,14 @@ pub unsafe trait TryFromBytes {
     ///
     /// If the bytes of `candidate` are a valid instance of `Self`, this method
     /// returns a reference to those bytes interpreted as a `Self`. If the
-    /// length of `candidate` is not a valid size of `Self`, or if `candidate`
-    /// is not appropriately aligned, or if the bytes are not a valid instance
-    /// of `Self`, this returns `Err`.
+    /// length of `candidate` is not a [valid size of `Self`][valid-size], or if
+    /// `candidate` is not appropriately aligned, or if the bytes are not a
+    /// valid instance of `Self`, this returns `Err`.
+    ///
+    /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
@@ -1457,12 +1617,17 @@ pub unsafe trait TryFromBytes {
     /// Attempts to interpret the prefix of the given `candidate` as a `&mut
     /// Self` without copying.
     ///
-    /// This method computes the largest possible size of `Self` that can fit in
-    /// the leading bytes of `candidate`. If that prefix is a valid instance of
-    /// `Self`, this method returns a reference to those bytes interpreted as
-    /// `Self`, and a reference to the remaining bytes. If there are
-    /// insufficient bytes, or if `candidate` is not appropriately aligned, or
-    /// if the bytes are not a valid instance of `Self`, this returns `Err`.
+    /// This method computes the [largest possible size of `Self`][valid-size]
+    /// that can fit in the leading bytes of `candidate`. If that prefix is a
+    /// valid instance of `Self`, this method returns a reference to those bytes
+    /// interpreted as `Self`, and a reference to the remaining bytes. If there
+    /// are insufficient bytes, or if `candidate` is not appropriately aligned,
+    /// or if the bytes are not a valid instance of `Self`, this returns `Err`.
+    ///
+    /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
@@ -1544,13 +1709,18 @@ pub unsafe trait TryFromBytes {
     /// Attempts to interpret the suffix of the given `candidate` as a `&mut
     /// Self` without copying.
     ///
-    /// This method computes the largest possible size of `Self` that can fit in
-    /// the trailing bytes of `candidate`. If that suffix is a valid instance of
-    /// `Self`, this method returns a reference to those bytes interpreted as
-    /// `Self`, and a reference to the preceding bytes. If there are
-    /// insufficient bytes, or if the suffix of `candidate` would not be
+    /// This method computes the [largest possible size of `Self`][valid-size]
+    /// that can fit in the trailing bytes of `candidate`. If that suffix is a
+    /// valid instance of `Self`, this method returns a reference to those bytes
+    /// interpreted as `Self`, and a reference to the preceding bytes. If there
+    /// are insufficient bytes, or if the suffix of `candidate` would not be
     /// appropriately aligned, or if the suffix is not a valid instance of
     /// `Self`, this returns `Err`.
+    ///
+    /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
@@ -2278,8 +2448,14 @@ pub unsafe trait FromBytes: FromZeros {
     /// Interprets the given bytes as a `&Self` without copying.
     ///
     /// This method attempts to return a reference to `source` interpreted as a
-    /// `Self`. If the length of `source` is not a valid size of `Self`, or if
-    /// `source` is not appropriately aligned, this returns `Err`.
+    /// `Self`. If the length of `source` is not a [valid size of
+    /// `Self`][valid-size], or if `source` is not appropriately aligned, this
+    /// returns `Err`.
+    ///
+    /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
@@ -2349,11 +2525,16 @@ pub unsafe trait FromBytes: FromZeros {
 
     /// Interprets the prefix of the given bytes as a `&Self` without copying.
     ///
-    /// This method computes the largest possible size of `Self` that can fit in
-    /// the leading bytes of `source`, then attempts to return both a reference
-    /// to those bytes interpreted as a `Self`, and a reference to the remaining
-    /// bytes. If there are insufficient bytes, or if `source` is not
-    /// appropriately aligned, this returns `Err`.
+    /// This method computes the [largest possible size of `Self`][valid-size]
+    /// that can fit in the leading bytes of `source`, then attempts to return
+    /// both a reference to those bytes interpreted as a `Self`, and a reference
+    /// to the remaining bytes. If there are insufficient bytes, or if `source`
+    /// is not appropriately aligned, this returns `Err`.
+    ///
+    /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
@@ -2424,11 +2605,16 @@ pub unsafe trait FromBytes: FromZeros {
 
     /// Interprets the suffix of the given bytes as a `&Self` without copying.
     ///
-    /// This method computes the largest possible size of `Self` that can fit in
-    /// the trailing bytes of `source`, then attempts to return both a reference
-    /// to those bytes interpreted as a `Self`, and a reference to the preceding
-    /// bytes. If there are insufficient bytes, or if that suffix of `source` is
-    /// not appropriately aligned, this returns `Err`.
+    /// This method computes the [largest possible size of `Self`][valid-size]
+    /// that can fit in the trailing bytes of `source`, then attempts to return
+    /// both a reference to those bytes interpreted as a `Self`, and a reference
+    /// to the preceding bytes. If there are insufficient bytes, or if that
+    /// suffix of `source` is not appropriately aligned, this returns `Err`.
+    ///
+    /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
@@ -2486,8 +2672,14 @@ pub unsafe trait FromBytes: FromZeros {
     /// Interprets the given bytes as a `&mut Self` without copying.
     ///
     /// This method attempts to return a reference to `source` interpreted as a
-    /// `Self`. If the length of `source` is not a valid size of `Self`, or if
-    /// `source` is not appropriately aligned, this returns `Err`.
+    /// `Self`. If the length of `source` is not a [valid size of
+    /// `Self`][valid-size], or if `source` is not appropriately aligned, this
+    /// returns `Err`.
+    ///
+    /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
@@ -2558,11 +2750,16 @@ pub unsafe trait FromBytes: FromZeros {
     /// Interprets the prefix of the given bytes as a `&mut Self` without
     /// copying.
     ///
-    /// This method computes the largest possible size of `Self` that can fit in
-    /// the leading bytes of `source`, then attempts to return both a reference
-    /// to those bytes interpreted as a `Self`, and a reference to the remaining
-    /// bytes. If there are insufficient bytes, or if `source` is not
-    /// appropriately aligned, this returns `Err`.
+    /// This method computes the [largest possible size of `Self`][valid-size]
+    /// that can fit in the leading bytes of `source`, then attempts to return
+    /// both a reference to those bytes interpreted as a `Self`, and a reference
+    /// to the remaining bytes. If there are insufficient bytes, or if `source`
+    /// is not appropriately aligned, this returns `Err`.
+    ///
+    /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
@@ -2634,11 +2831,16 @@ pub unsafe trait FromBytes: FromZeros {
     /// Interprets the suffix of the given bytes as a `&mut Self` without
     /// copying.
     ///
-    /// This method computes the largest possible size of `Self` that can fit in
-    /// the trailing bytes of `source`, then attempts to return both a reference
-    /// to those bytes interpreted as a `Self`, and a reference to the preceding
-    /// bytes. If there are insufficient bytes, or if that suffix of `source` is
-    /// not appropriately aligned, this returns `Err`.
+    /// This method computes the [largest possible size of `Self`][valid-size]
+    /// that can fit in the trailing bytes of `source`, then attempts to return
+    /// both a reference to those bytes interpreted as a `Self`, and a reference
+    /// to the preceding bytes. If there are insufficient bytes, or if that
+    /// suffix of `source` is not appropriately aligned, this returns `Err`.
+    ///
+    /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate#what-is-a-valid-size
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
     ///
