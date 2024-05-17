@@ -6030,6 +6030,21 @@ mod tests {
             &0usize
         });
         assert_eq!(ctr, 1);
+
+        let mut ctr: usize = 0;
+        let _: &mut usize = transmute_mut!({
+            ctr += 1;
+            &mut ctr
+        });
+        assert_eq!(ctr, 1);
+
+        let mut ctr = 0;
+        let _: usize = try_transmute!({
+            ctr += 1;
+            0usize
+        })
+        .unwrap();
+        assert_eq!(ctr, 1);
     }
 
     #[test]
