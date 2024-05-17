@@ -17,12 +17,12 @@ where
     B: ByteSlice,
     T: KnownLayout + Immutable + ?Sized,
 {
-    #[deprecated(since = "0.8.0", note = "renamed to `Ref::from`")]
+    #[deprecated(since = "0.8.0", note = "renamed to `Ref::from_bytes`")]
     #[doc(hidden)]
     #[must_use = "has no side effects"]
-    #[inline]
-    pub fn new(bytes: B) -> Result<Ref<B, T>, CastError<B, T>> {
-        Self::from_bytes(bytes)
+    #[inline(always)]
+    pub fn new(bytes: B) -> Option<Ref<B, T>> {
+        Self::from_bytes(bytes).ok()
     }
 }
 
@@ -34,9 +34,9 @@ where
     #[deprecated(since = "0.8.0", note = "renamed to `Ref::from_prefix`")]
     #[doc(hidden)]
     #[must_use = "has no side effects"]
-    #[inline]
-    pub fn new_from_prefix(bytes: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
-        Self::from_prefix(bytes)
+    #[inline(always)]
+    pub fn new_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
+        Self::from_prefix(bytes).ok()
     }
 }
 
@@ -48,9 +48,51 @@ where
     #[deprecated(since = "0.8.0", note = "renamed to `Ref::from_suffix`")]
     #[doc(hidden)]
     #[must_use = "has no side effects"]
-    #[inline]
-    pub fn new_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
-        Self::from_suffix(bytes)
+    #[inline(always)]
+    pub fn new_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
+        Self::from_suffix(bytes).ok()
+    }
+}
+
+impl<B, T> Ref<B, T>
+where
+    B: ByteSlice,
+    T: Unaligned + KnownLayout + Immutable + ?Sized,
+{
+    #[deprecated(since = "0.8.0", note = "renamed to `Ref::unaligned_from_bytes`")]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn new_unaligned(bytes: B) -> Option<Ref<B, T>> {
+        Self::unaligned_from_bytes(bytes).ok()
+    }
+}
+
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSlice,
+    T: Unaligned + KnownLayout + Immutable + ?Sized,
+{
+    #[deprecated(since = "0.8.0", note = "renamed to `Ref::unaligned_from_prefix`")]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn new_unaligned_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
+        Self::unaligned_from_prefix(bytes).ok()
+    }
+}
+
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSlice,
+    T: Unaligned + KnownLayout + Immutable + ?Sized,
+{
+    #[deprecated(since = "0.8.0", note = "renamed to `Ref::unaligned_from_suffix`")]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn new_unaligned_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
+        Self::unaligned_from_suffix(bytes).ok()
     }
 }
 
@@ -59,9 +101,9 @@ where
     B: ByteSlice,
     T: Immutable,
 {
-    #[deprecated(since = "0.8.0", note = "`Ref::from` now supports slices")]
+    #[deprecated(since = "0.8.0", note = "`Ref::from_bytes` now supports slices")]
     #[doc(hidden)]
-    #[inline]
+    #[inline(always)]
     pub fn new_slice(bytes: B) -> Option<Ref<B, [T]>> {
         Self::from_bytes(bytes).ok()
     }
@@ -72,7 +114,7 @@ where
     B: ByteSlice,
     T: Unaligned + Immutable,
 {
-    #[deprecated(since = "0.8.0", note = "`Ref::unaligned_from` now supports slices")]
+    #[deprecated(since = "0.8.0", note = "`Ref::unaligned_from_bytes` now supports slices")]
     #[doc(hidden)]
     #[inline(always)]
     pub fn new_slice_unaligned(bytes: B) -> Option<Ref<B, [T]>> {
@@ -111,18 +153,18 @@ where
     B: SplitByteSlice,
     T: Immutable,
 {
-    #[deprecated(since = "0.8.0", note = "replaced by `Ref::with_trailing_elements_from_prefix`")]
+    #[deprecated(since = "0.8.0", note = "replaced by `Ref::from_prefix_with_elems`")]
     #[must_use = "has no side effects"]
     #[doc(hidden)]
-    #[inline]
+    #[inline(always)]
     pub fn new_slice_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, [T]>, B)> {
         Ref::from_prefix_with_elems(bytes, count).ok()
     }
 
-    #[deprecated(since = "0.8.0", note = "replaced by `Ref::with_trailing_elements_from_suffix`")]
+    #[deprecated(since = "0.8.0", note = "replaced by `Ref::from_suffix_with_elems`")]
     #[must_use = "has no side effects"]
     #[doc(hidden)]
-    #[inline]
+    #[inline(always)]
     pub fn new_slice_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, [T]>)> {
         Ref::from_suffix_with_elems(bytes, count).ok()
     }
@@ -133,10 +175,7 @@ where
     B: SplitByteSlice,
     T: Unaligned + Immutable,
 {
-    #[deprecated(
-        since = "0.8.0",
-        note = "replaced by `Ref::with_trailing_elements_unaligned_from_prefix`"
-    )]
+    #[deprecated(since = "0.8.0", note = "replaced by `Ref::unaligned_from_prefix_with_elems`")]
     #[doc(hidden)]
     #[must_use = "has no side effects"]
     #[inline(always)]
@@ -144,10 +183,7 @@ where
         Ref::unaligned_from_prefix_with_elems(bytes, count).ok()
     }
 
-    #[deprecated(
-        since = "0.8.0",
-        note = "replaced by `Ref::with_trailing_elements_unaligned_from_suffix`"
-    )]
+    #[deprecated(since = "0.8.0", note = "replaced by `Ref::unaligned_from_suffix_with_elems`")]
     #[doc(hidden)]
     #[must_use = "has no side effects"]
     #[inline(always)]
