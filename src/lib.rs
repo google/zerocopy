@@ -2298,7 +2298,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let _ = ZSTy::ref_from(0u16.as_bytes()); // ⚠ Compile Error!
+    /// let _ = ZSTy::ref_from_bytes(0u16.as_bytes()); // ⚠ Compile Error!
     /// ```
     ///
     /// # Examples
@@ -2326,7 +2326,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These bytes encode a `Packet`.
     /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11][..];
     ///
-    /// let packet = Packet::ref_from(bytes).unwrap();
+    /// let packet = Packet::ref_from_bytes(bytes).unwrap();
     ///
     /// assert_eq!(packet.header.src_port, [0, 1]);
     /// assert_eq!(packet.header.dst_port, [2, 3]);
@@ -2336,7 +2336,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn ref_from(source: &[u8]) -> Result<&Self, CastError<&[u8], Self>>
+    fn ref_from_bytes(source: &[u8]) -> Result<&Self, CastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
     {
@@ -2724,7 +2724,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7][..];
     ///
-    /// let pixels = <[Pixel]>::ref_from_with_elems(bytes, 2).unwrap();
+    /// let pixels = <[Pixel]>::ref_from_bytes_with_elems(bytes, 2).unwrap();
     ///
     /// assert_eq!(pixels, &[
     ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
@@ -2734,7 +2734,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     ///
     /// Since an explicit `count` is provided, this method supports types with
-    /// zero-sized trailing slice elements. Methods such as [`ref_from`]
+    /// zero-sized trailing slice elements. Methods such as [`ref_from_bytes`]
     /// which do not take an explicit count do not support such types.
     ///
     /// ```
@@ -2749,14 +2749,17 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// let src = &[85, 85][..];
-    /// let zsty = ZSTy::ref_from_with_elems(src, 42).unwrap();
+    /// let zsty = ZSTy::ref_from_bytes_with_elems(src, 42).unwrap();
     /// assert_eq!(zsty.trailing_dst.len(), 42);
     /// ```
     ///
-    /// [`ref_from`]: FromBytes::ref_from
+    /// [`ref_from_bytes`]: FromBytes::ref_from_bytes
     #[must_use = "has no side effects"]
     #[inline]
-    fn ref_from_with_elems(source: &[u8], count: usize) -> Result<&Self, CastError<&[u8], Self>>
+    fn ref_from_bytes_with_elems(
+        source: &[u8],
+        count: usize,
+    ) -> Result<&Self, CastError<&[u8], Self>>
     where
         Self: KnownLayout<PointerMetadata = usize> + Immutable,
     {
@@ -3325,7 +3328,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized + Immutable,
     {
-        <[Self]>::ref_from(source).ok()
+        <[Self]>::ref_from_bytes(source).ok()
     }
 }
 
@@ -5811,7 +5814,7 @@ mod tests {
             Align::<[u8; 16], AU64>::new([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
 
         assert_eq!(
-            AU64::ref_from(&buf.t[8..]).unwrap().0.to_ne_bytes(),
+            AU64::ref_from_bytes(&buf.t[8..]).unwrap().0.to_ne_bytes(),
             [8, 9, 10, 11, 12, 13, 14, 15]
         );
         let suffix = AU64::mut_from(&mut buf.t[8..]).unwrap();
@@ -5843,16 +5846,16 @@ mod tests {
         // Fail because the buffer is too large.
         let mut buf = Align::<[u8; 16], AU64>::default();
         // `buf.t` should be aligned to 8, so only the length check should fail.
-        assert!(AU64::ref_from(&buf.t[..]).is_err());
+        assert!(AU64::ref_from_bytes(&buf.t[..]).is_err());
         assert!(AU64::mut_from(&mut buf.t[..]).is_err());
-        assert!(<[u8; 8]>::ref_from(&buf.t[..]).is_err());
+        assert!(<[u8; 8]>::ref_from_bytes(&buf.t[..]).is_err());
         assert!(<[u8; 8]>::mut_from(&mut buf.t[..]).is_err());
 
         // Fail because the buffer is too small.
         let mut buf = Align::<[u8; 4], AU64>::default();
-        assert!(AU64::ref_from(&buf.t[..]).is_err());
+        assert!(AU64::ref_from_bytes(&buf.t[..]).is_err());
         assert!(AU64::mut_from(&mut buf.t[..]).is_err());
-        assert!(<[u8; 8]>::ref_from(&buf.t[..]).is_err());
+        assert!(<[u8; 8]>::ref_from_bytes(&buf.t[..]).is_err());
         assert!(<[u8; 8]>::mut_from(&mut buf.t[..]).is_err());
         assert!(AU64::ref_from_prefix(&buf.t[..]).is_err());
         assert!(AU64::mut_from_prefix(&mut buf.t[..]).is_err());
@@ -5865,9 +5868,9 @@ mod tests {
 
         // Fail because the alignment is insufficient.
         let mut buf = Align::<[u8; 13], AU64>::default();
-        assert!(AU64::ref_from(&buf.t[1..]).is_err());
+        assert!(AU64::ref_from_bytes(&buf.t[1..]).is_err());
         assert!(AU64::mut_from(&mut buf.t[1..]).is_err());
-        assert!(AU64::ref_from(&buf.t[1..]).is_err());
+        assert!(AU64::ref_from_bytes(&buf.t[1..]).is_err());
         assert!(AU64::mut_from(&mut buf.t[1..]).is_err());
         assert!(AU64::ref_from_prefix(&buf.t[1..]).is_err());
         assert!(AU64::mut_from_prefix(&mut buf.t[1..]).is_err());

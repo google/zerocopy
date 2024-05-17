@@ -7,7 +7,7 @@
 //! - [`SizeError`]: the conversion source was of incorrect size
 //! - [`ValidityError`]: the conversion source contained invalid data
 //!
-//! Methods that only have one failure mode, like [`Ref::unaligned_from`],
+//! Methods that only have one failure mode, like [`Ref::unaligned_from_bytes`],
 //! return that mode's corresponding error type directly.
 //!
 //! ## Compound errors
@@ -44,11 +44,11 @@ mod private {
     /// - [`ValidityError`]: the conversion source contained invalid data
     ///
     /// However, not all conversions produce all errors. For instance,
-    /// [`FromBytes::ref_from`] may fail due to alignment or size issues, but not
-    /// validity issues. This generic error type captures these (im)possibilities
-    /// via parameterization: `A` is parameterized with [`AlignmentError`], `S` is
-    /// parameterized with [`SizeError`], and `V` is parameterized with
-    /// [`Infallible`].
+    /// [`FromBytes::ref_from_bytes`] may fail due to alignment or size issues,
+    /// but not validity issues. This generic error type captures these
+    /// (im)possibilities via parameterization: `A` is parameterized with
+    /// [`AlignmentError`], `S` is parameterized with [`SizeError`], and `V` is
+    /// parameterized with [`Infallible`].
     ///
     /// Zerocopy never uses this type directly in its API. Rather, we provide three
     /// pre-parameterized aliases:
@@ -297,7 +297,7 @@ impl<Src, Dst: ?Sized + TryFromBytes, A, S> From<ValidityError<Src, Dst>>
 
 /// The error type of reference conversions.
 ///
-/// Reference conversions, like [`FromBytes::ref_from`] may emit
+/// Reference conversions, like [`FromBytes::ref_from_bytes`] may emit
 /// [alignment](AlignmentError) and [size](SizeError) errors.
 // Bounds on generic parameters are not enforced in type aliases, but they do
 // appear in rustdoc.

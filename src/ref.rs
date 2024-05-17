@@ -539,11 +539,11 @@ where
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let f = Ref::<&[u8], ZSTy>::unaligned_from(&b"UU"[..]); // ⚠ Compile Error!
+    /// let f = Ref::<&[u8], ZSTy>::unaligned_from_bytes(&b"UU"[..]); // ⚠ Compile Error!
     /// ```
     #[must_use = "has no side effects"]
     #[inline(always)]
-    pub fn unaligned_from(source: B) -> Result<Ref<B, T>, SizeError<B, T>> {
+    pub fn unaligned_from_bytes(source: B) -> Result<Ref<B, T>, SizeError<B, T>> {
         static_assert_dst_is_not_zst!(T);
         match Ref::from_bytes(source) {
             Ok(dst) => Ok(dst),
@@ -1160,7 +1160,7 @@ mod tests {
         // for `new_slice`.
 
         let mut buf = [0u8; 8];
-        test_new_helper_unaligned(Ref::<_, [u8; 8]>::unaligned_from(&mut buf[..]).unwrap());
+        test_new_helper_unaligned(Ref::<_, [u8; 8]>::unaligned_from_bytes(&mut buf[..]).unwrap());
         {
             // In a block so that `r` and `suffix` don't live too long.
             buf = [0u8; 8];
@@ -1178,7 +1178,10 @@ mod tests {
         let mut buf = [0u8; 16];
         // `buf.t` should be aligned to 8 and have a length which is a multiple
         // of `size_of::AU64>()`, so this should always succeed.
-        test_new_helper_slice_unaligned(Ref::<_, [u8]>::unaligned_from(&mut buf[..]).unwrap(), 16);
+        test_new_helper_slice_unaligned(
+            Ref::<_, [u8]>::unaligned_from_bytes(&mut buf[..]).unwrap(),
+            16,
+        );
 
         buf = [0u8; 16];
         let r = Ref::<_, [u8]>::unaligned_from_bytes_with_elems(&mut buf[..], 16).unwrap();
@@ -1253,7 +1256,7 @@ mod tests {
         let buf = Align::<[u8; 16], AU64>::default();
         // `buf.t` should be aligned to 8, so only the length check should fail.
         assert!(Ref::<_, AU64>::from_bytes(&buf.t[..]).is_err());
-        assert!(Ref::<_, [u8; 8]>::unaligned_from(&buf.t[..]).is_err());
+        assert!(Ref::<_, [u8; 8]>::unaligned_from_bytes(&buf.t[..]).is_err());
 
         // Fail because the buffer is too small.
 
@@ -1261,7 +1264,7 @@ mod tests {
         let buf = Align::<[u8; 4], AU64>::default();
         // `buf.t` should be aligned to 8, so only the length check should fail.
         assert!(Ref::<_, AU64>::from_bytes(&buf.t[..]).is_err());
-        assert!(Ref::<_, [u8; 8]>::unaligned_from(&buf.t[..]).is_err());
+        assert!(Ref::<_, [u8; 8]>::unaligned_from_bytes(&buf.t[..]).is_err());
         assert!(Ref::<_, AU64>::from_prefix(&buf.t[..]).is_err());
         assert!(Ref::<_, AU64>::from_suffix(&buf.t[..]).is_err());
         assert!(Ref::<_, [u8; 8]>::unaligned_from_prefix(&buf.t[..]).is_err());
@@ -1272,7 +1275,7 @@ mod tests {
         let buf = Align::<[u8; 12], AU64>::default();
         // `buf.t` has length 12, but element size is 8.
         assert!(Ref::<_, [AU64]>::from_bytes(&buf.t[..]).is_err());
-        assert!(Ref::<_, [[u8; 8]]>::unaligned_from(&buf.t[..]).is_err());
+        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_bytes(&buf.t[..]).is_err());
 
         // Fail because the buffer is too short.
         let buf = Align::<[u8; 12], AU64>::default();
