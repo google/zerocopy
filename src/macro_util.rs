@@ -58,6 +58,7 @@ pub struct AlignOf<T> {
 
 impl<T> AlignOf<T> {
     #[inline(never)] // Make `missing_inline_in_public_items` happy.
+    #[cfg_attr(coverage_nightly, coverage(off))]
     pub fn into_t(self) -> T {
         unreachable!()
     }
@@ -72,6 +73,7 @@ pub union MaxAlignsOf<T, U> {
 
 impl<T, U> MaxAlignsOf<T, U> {
     #[inline(never)] // Make `missing_inline_in_public_items` happy.
+    #[cfg_attr(coverage_nightly, coverage(off))]
     pub fn new(_t: T, _u: U) -> MaxAlignsOf<T, U> {
         unreachable!()
     }
