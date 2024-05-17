@@ -76,7 +76,7 @@ where
     #[doc(hidden)]
     #[inline(always)]
     pub fn new_slice_unaligned(bytes: B) -> Option<Ref<B, [T]>> {
-        Ref::unaligned_from(bytes).ok()
+        Ref::unaligned_from_bytes(bytes).ok()
     }
 }
 
