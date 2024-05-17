@@ -267,7 +267,7 @@
 #![cfg_attr(doc_cfg, feature(doc_cfg))]
 #![cfg_attr(
     __INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS,
-    feature(layout_for_ptr, strict_provenance)
+    feature(layout_for_ptr, strict_provenance, coverage_attribute)
 )]
 
 // This is a hack to allow zerocopy-derive derives to work in this crate. They
@@ -609,6 +609,7 @@ impl PointerMetadata for usize {
 // SAFETY: Delegates safety to `DstLayout::for_slice`.
 unsafe impl<T> KnownLayout for [T] {
     #[allow(clippy::missing_inline_in_public_items)]
+    #[cfg_attr(coverage_nightly, coverage(off))]
     fn only_derive_is_allowed_to_implement_this_trait()
     where
         Self: Sized,
@@ -5798,6 +5799,41 @@ mod tests {
         assert_eq!(AS_U32, u32::from_ne_bytes([b'a', b'b', b'c', b'd']));
         const AS_I32: i32 = include_value!("../testdata/include_value/data");
         assert_eq!(AS_I32, i32::from_ne_bytes([b'a', b'b', b'c', b'd']));
+    }
+
+    #[test]
+    fn test_ref_from_mut_from() {
+        // Test `FromBytes::{ref_from, mut_from}{,_prefix,Suffix}` success cases
+        // Exhaustive coverage for these methods is covered by the `Ref` tests above,
+        // which these helper methods defer to.
+
+        let mut buf =
+            Align::<[u8; 16], AU64>::new([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+
+        assert_eq!(
+            AU64::ref_from(&buf.t[8..]).unwrap().0.to_ne_bytes(),
+            [8, 9, 10, 11, 12, 13, 14, 15]
+        );
+        let suffix = AU64::mut_from(&mut buf.t[8..]).unwrap();
+        suffix.0 = 0x0101010101010101;
+        // The `[u8:9]` is a non-half size of the full buffer, which would catch
+        // `from_prefix` having the same implementation as `from_suffix` (issues #506, #511).
+        assert_eq!(
+            <[u8; 9]>::ref_from_suffix(&buf.t[..]).unwrap(),
+            (&[0, 1, 2, 3, 4, 5, 6][..], &[7u8, 1, 1, 1, 1, 1, 1, 1, 1])
+        );
+        let (prefix, suffix) = AU64::mut_from_suffix(&mut buf.t[1..]).unwrap();
+        assert_eq!(prefix, &mut [1u8, 2, 3, 4, 5, 6, 7][..]);
+        suffix.0 = 0x0202020202020202;
+        let (prefix, suffix) = <[u8; 10]>::mut_from_suffix(&mut buf.t[..]).unwrap();
+        assert_eq!(prefix, &mut [0u8, 1, 2, 3, 4, 5][..]);
+        suffix[0] = 42;
+        assert_eq!(
+            <[u8; 9]>::ref_from_prefix(&buf.t[..]).unwrap(),
+            (&[0u8, 1, 2, 3, 4, 5, 42, 7, 2], &[2u8, 2, 2, 2, 2, 2, 2][..])
+        );
+        <[u8; 2]>::mut_from_prefix(&mut buf.t[..]).unwrap().0[1] = 30;
+        assert_eq!(buf.t, [0, 30, 2, 3, 4, 5, 42, 7, 2, 2, 2, 2, 2, 2, 2, 2]);
     }
 
     #[test]

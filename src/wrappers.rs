@@ -401,27 +401,6 @@ mod tests {
     use super::*;
     use crate::util::testutil::*;
 
-    /// A `T` which is guaranteed not to satisfy `align_of::<A>()`.
-    ///
-    /// It must be the case that `align_of::<T>() < align_of::<A>()` in order
-    /// fot this type to work properly.
-    #[repr(C)]
-    struct ForceUnalign<T, A> {
-        // The outer struct is aligned to `A`, and, thanks to `repr(C)`, `t` is
-        // placed at the minimum offset that guarantees its alignment. If
-        // `align_of::<T>() < align_of::<A>()`, then that offset will be
-        // guaranteed *not* to satisfy `align_of::<A>()`.
-        _u: u8,
-        t: T,
-        _a: [A; 0],
-    }
-
-    impl<T, A> ForceUnalign<T, A> {
-        const fn new(t: T) -> ForceUnalign<T, A> {
-            ForceUnalign { _u: 0, t, _a: [] }
-        }
-    }
-
     #[test]
     fn test_unalign() {
         // Test methods that don't depend on alignment.
@@ -501,5 +480,49 @@ mod tests {
         }));
         assert!(res.is_err());
         assert_eq!(u.into_inner(), Box::new(AU64(124)));
+    }
+
+    #[test]
+    fn test_copy_clone() {
+        // Test that `Copy` and `Clone` do not cause soundness issues. This test
+        // is mainly meant to exercise UB that would be caught by Miri.
+
+        // `u.t` is definitely not validly-aligned for `AU64`'s alignment of 8.
+        let u = ForceUnalign::<_, AU64>::new(Unalign::new(AU64(123)));
+        #[allow(clippy::clone_on_copy)]
+        let v = u.t.clone();
+        let w = u.t;
+        assert_eq!(u.t.get(), v.get());
+        assert_eq!(u.t.get(), w.get());
+        assert_eq!(v.get(), w.get());
+    }
+
+    #[test]
+    fn test_trait_impls() {
+        let zero = Unalign::new(0u8);
+        let one = Unalign::new(1u8);
+
+        assert!(zero < one);
+        assert_eq!(PartialOrd::partial_cmp(&zero, &one), Some(Ordering::Less));
+        assert_eq!(Ord::cmp(&zero, &one), Ordering::Less);
+
+        assert_ne!(zero, one);
+        assert_eq!(zero, zero);
+        assert!(!PartialEq::eq(&zero, &one));
+        assert!(PartialEq::eq(&zero, &zero));
+
+        fn hash<T: Hash>(t: &T) -> u64 {
+            let mut h = std::collections::hash_map::DefaultHasher::new();
+            t.hash(&mut h);
+            h.finish()
+        }
+
+        assert_eq!(hash(&zero), hash(&0u8));
+        assert_eq!(hash(&one), hash(&1u8));
+
+        assert_eq!(format!("{:?}", zero), format!("{:?}", 0u8));
+        assert_eq!(format!("{:?}", one), format!("{:?}", 1u8));
+        assert_eq!(format!("{}", zero), format!("{}", 0u8));
+        assert_eq!(format!("{}", one), format!("{}", 1u8));
     }
 }

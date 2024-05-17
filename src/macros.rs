@@ -137,6 +137,7 @@ macro_rules! unsafe_impl {
 
     (@method TryFromBytes ; |$candidate:ident: MaybeAligned<$repr:ty>| $is_bit_valid:expr) => {
         #[allow(clippy::missing_inline_in_public_items)]
+        #[cfg_attr(coverage_nightly, coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
 
         #[inline]
@@ -160,6 +161,7 @@ macro_rules! unsafe_impl {
     };
     (@method TryFromBytes ; |$candidate:ident: Maybe<$repr:ty>| $is_bit_valid:expr) => {
         #[allow(clippy::missing_inline_in_public_items)]
+        #[cfg_attr(coverage_nightly, coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
 
         #[inline]
@@ -185,11 +187,13 @@ macro_rules! unsafe_impl {
     };
     (@method TryFromBytes) => {
         #[allow(clippy::missing_inline_in_public_items)]
+        #[cfg_attr(coverage_nightly, coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
         #[inline(always)] fn is_bit_valid<A: invariant::Aliasing + invariant::AtLeast<invariant::Shared>>(_: Maybe<'_, Self, A>) -> bool { true }
     };
     (@method $trait:ident) => {
         #[allow(clippy::missing_inline_in_public_items)]
+        #[cfg_attr(coverage_nightly, coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
     };
     (@method $trait:ident; |$_candidate:ident $(: &$_ref_repr:ty)? $(: NonNull<$_ptr_repr:ty>)?| $_is_bit_valid:expr) => {
@@ -232,11 +236,13 @@ macro_rules! impl_for_transparent_wrapper {
         // which explains why its bounds are sound.
         unsafe impl<$tyvar: $($(? $optbound +)* $($bound +)*)? $trait> $trait for $ty {
             #[allow(dead_code, clippy::missing_inline_in_public_items)]
+            #[cfg_attr(coverage_nightly, coverage(off))]
             fn only_derive_is_allowed_to_implement_this_trait() {
                 use crate::{pointer::invariant::Invariants, util::*};
 
                 impl_for_transparent_wrapper!(@is_transparent_wrapper $trait);
 
+                #[cfg_attr(coverage_nightly, coverage(off))]
                 fn f<I: Invariants, $tyvar $(: $(? $optbound +)* $($bound +)*)?>() {
                     is_transparent_wrapper::<I, $tyvar, $ty>();
                 }
@@ -286,11 +292,13 @@ macro_rules! impl_for_transparent_wrapper {
         // which explains why its bounds are sound.
         unsafe impl $trait for $ty {
             #[allow(dead_code, clippy::missing_inline_in_public_items)]
+            #[cfg_attr(coverage_nightly, coverage(off))]
             fn only_derive_is_allowed_to_implement_this_trait() {
                 use crate::{pointer::invariant::Invariants, util::*};
 
                 impl_for_transparent_wrapper!(@is_transparent_wrapper $trait);
 
+                #[cfg_attr(coverage_nightly, coverage(off))]
                 fn f<I: Invariants>() {
                     is_transparent_wrapper::<I, $inner, $ty>();
                 }
@@ -305,6 +313,7 @@ macro_rules! impl_for_transparent_wrapper {
         // `W::Inner = T`. `T: Immutable` implies that `T` does not contain any
         // `UnsafeCell`s, and so `W` does not contain any `UnsafeCell`s. Thus,
         // `W` can soundly implement `Immutable`.
+        #[cfg_attr(coverage_nightly, coverage(off))]
         fn is_transparent_wrapper<I: Invariants, T: ?Sized, W: TransparentWrapper<I, Inner=T, UnsafeCellVariance=Covariant> + ?Sized>() {}
     };
     (@is_transparent_wrapper FromZeros) => {
@@ -313,6 +322,7 @@ macro_rules! impl_for_transparent_wrapper {
         // implies that the all-zeros bit pattern is a bit-valid instance of
         // `T`, and so the all-zeros bit pattern is a bit-valid instance of `W`.
         // Thus, `W` can soundly implement `FromZeros`.
+        #[cfg_attr(coverage_nightly, coverage(off))]
         fn is_transparent_wrapper<I: Invariants, T: ?Sized, W: TransparentWrapper<I, Inner=T, ValidityVariance=Covariant> + ?Sized>() {}
     };
     (@is_transparent_wrapper FromBytes) => {
@@ -321,6 +331,7 @@ macro_rules! impl_for_transparent_wrapper {
         // implies that any initialized bit pattern is a bit-valid instance of
         // `T`, and so any initialized bit pattern is a bit-valid instance of
         // `W`. Thus, `W` can soundly implement `FromBytes`.
+        #[cfg_attr(coverage_nightly, coverage(off))]
         fn is_transparent_wrapper<I: Invariants, T: ?Sized, W: TransparentWrapper<I, Inner=T, ValidityVariance=Covariant> + ?Sized>() {}
     };
     (@is_transparent_wrapper IntoBytes) => {
@@ -329,6 +340,7 @@ macro_rules! impl_for_transparent_wrapper {
         // implies that no bit-valid instance of `T` contains uninitialized
         // bytes, and so no bit-valid instance of `W` contains uninitialized
         // bytes. Thus, `W` can soundly implement `IntoBytes`.
+        #[cfg_attr(coverage_nightly, coverage(off))]
         fn is_transparent_wrapper<I: Invariants, T: ?Sized, W: TransparentWrapper<I, Inner=T, ValidityVariance=Covariant> + ?Sized>() {}
     };
     (@is_transparent_wrapper Unaligned) => {
@@ -336,6 +348,7 @@ macro_rules! impl_for_transparent_wrapper {
         // that `W` has the same alignment as `W::Inner = T`. `T: Unaligned`
         // implies `T`'s alignment is 1, and so `W`'s alignment is 1. Thus, `W`
         // can soundly implement `Unaligned`.
+        #[cfg_attr(coverage_nightly, coverage(off))]
         fn is_transparent_wrapper<I: Invariants, T: ?Sized, W: TransparentWrapper<I, Inner=T, AlignmentVariance=Covariant> + ?Sized>() {}
     };
     (@is_transparent_wrapper TryFromBytes) => {
@@ -348,6 +361,7 @@ macro_rules! impl_for_transparent_wrapper {
         // as TryFromBytes>::is_bit_valid` by deferring to `<T as
         // TryFromBytes>::is_bit_valid`. Thus, it is sound for `W` to implement
         // `TryFromBytes` with this implementation of `is_bit_valid`.
+        #[cfg_attr(coverage_nightly, coverage(off))]
         fn is_transparent_wrapper<I: Invariants, T: ?Sized, W: TransparentWrapper<I, Inner=T, ValidityVariance=Covariant> + ?Sized>() {}
     };
     (
@@ -542,6 +556,7 @@ macro_rules! impl_known_layout {
             // SAFETY: Delegates safety to `DstLayout::for_type`.
             unsafe impl<$($tyvar $(: ?$optbound)?)? $(, const $constvar : $constty)?> KnownLayout for $ty {
                 #[allow(clippy::missing_inline_in_public_items)]
+                #[cfg_attr(coverage_nightly, coverage(off))]
                 fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
 
                 type PointerMetadata = ();
@@ -585,6 +600,7 @@ macro_rules! unsafe_impl_known_layout {
             #[allow(non_local_definitions)]
             unsafe impl<$($tyvar: ?Sized + KnownLayout)?> KnownLayout for $ty {
                 #[allow(clippy::missing_inline_in_public_items)]
+                #[cfg_attr(coverage_nightly, coverage(off))]
                 fn only_derive_is_allowed_to_implement_this_trait() {}
 
                 type PointerMetadata = <$repr as KnownLayout>::PointerMetadata;

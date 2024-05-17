@@ -611,6 +611,10 @@ pub(crate) mod polyfills {
     }
 
     impl<T> NonNullExt<T> for NonNull<T> {
+        // NOTE on coverage: this will never be tested in nightly since it's a
+        // polyfill for a feature which has been stabilized on our nightly
+        // toolchain.
+        #[cfg_attr(coverage_nightly, coverage(off))]
         #[inline(always)]
         fn slice_from_raw_parts(data: Self, len: usize) -> NonNull<[T]> {
             let ptr = ptr::slice_from_raw_parts_mut(data.as_ptr(), len);
@@ -638,6 +642,11 @@ pub(crate) mod polyfills {
     }
 
     impl NumExt for usize {
+        // NOTE on coverage: this will never be tested in nightly since it's a
+        // polyfill for a feature which has been stabilized on our nightly
+        // toolchain.
+        #[cfg_attr(coverage_nightly, coverage(off))]
+        #[inline(always)]
         unsafe fn unchecked_sub(self, rhs: usize) -> usize {
             match self.checked_sub(rhs) {
                 Some(x) => x,
@@ -674,10 +683,33 @@ pub(crate) mod testutil {
         }
     }
 
+    /// A `T` which is guaranteed not to satisfy `align_of::<A>()`.
+    ///
+    /// It must be the case that `align_of::<T>() < align_of::<A>()` in order
+    /// fot this type to work properly.
+    #[repr(C)]
+    pub(crate) struct ForceUnalign<T: Unaligned, A> {
+        // The outer struct is aligned to `A`, and, thanks to `repr(C)`, `t` is
+        // placed at the minimum offset that guarantees its alignment. If
+        // `align_of::<T>() < align_of::<A>()`, then that offset will be
+        // guaranteed *not* to satisfy `align_of::<A>()`.
+        //
+        // Note that we need `T: Unaligned` in order to guarantee that there is
+        // no padding between `_u` and `t`.
+        _u: u8,
+        pub(crate) t: T,
+        _a: [A; 0],
+    }
+
+    impl<T: Unaligned, A> ForceUnalign<T, A> {
+        pub(crate) fn new(t: T) -> ForceUnalign<T, A> {
+            ForceUnalign { _u: 0, t, _a: [] }
+        }
+    }
     // A `u64` with alignment 8.
     //
-    // Though `u64` has alignment 8 on some platforms, it's not guaranteed.
-    // By contrast, `AU64` is guaranteed to have alignment 8.
+    // Though `u64` has alignment 8 on some platforms, it's not guaranteed. By
+    // contrast, `AU64` is guaranteed to have alignment 8 on all platforms.
     #[derive(
         KnownLayout,
         Immutable,
@@ -703,6 +735,7 @@ pub(crate) mod testutil {
     }
 
     impl Display for AU64 {
+        #[cfg_attr(coverage_nightly, coverage(off))]
         fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
             Display::fmt(&self.0, f)
         }
