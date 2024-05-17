@@ -6,6 +6,20 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+// Many of our UI tests require the "derive" feature to function properly. In
+// particular:
+// - Some tests directly include `zerocopy-derive/tests/include.rs`, which
+//   derives traits on the `AU16` type.
+// - The file `invalid-impls.rs` directly includes `src/macros.rs` in order to
+//   test the `impl_or_verify!` macro which is defined in that file.
+//   Specifically, it tests the verification portion of that macro, which is
+//   enabled when `cfg(any(feature = "derive", test))`. While `--cfg test` is of
+//   course passed to the code in the file you're reading right now, `trybuild`
+//   does not pass `--cfg test` when it invokes Cargo. As a result, this
+//   `trybuild` test only tests the correct behavior when the "derive" feature
+//   is enabled.
+#![cfg(feature = "derive")]
+
 use testutil::ToolchainVersion;
 
 #[test]
@@ -20,19 +34,9 @@ fn ui() {
     t.compile_fail(format!("tests/{}/*.rs", source_files_dirname));
 }
 
-// The file `invalid-impls.rs` directly includes `src/macros.rs` in order to
-// test the `impl_or_verify!` macro which is defined in that file. Specifically,
-// it tests the verification portion of that macro, which is enabled when
-// `cfg(any(feature = "derive", test))`. While `--cfg test` is of course passed
-// to the code in the file you're reading right now, `trybuild` does not pass
-// `--cfg test` when it invokes Cargo. As a result, this `trybuild` test only
-// tests the correct behavior when the "derive" feature is enabled.
-#[cfg(feature = "derive")]
 #[test]
 #[cfg_attr(miri, ignore)]
 fn ui_invalid_impls() {
-    assert!(cfg!(feature = "derive"), "ui tests cannot be run without the `derive` feature");
-
     let version = ToolchainVersion::extract_from_pwd().unwrap();
     // See the doc comment on this method for an explanation of what this does
     // and why we store source files in different directories.
