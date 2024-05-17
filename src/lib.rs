@@ -1680,7 +1680,7 @@ pub unsafe trait TryFromBytes {
         // mut` and `Ptr::from_mut` here. See the doc comment on `is_bit_valid`
         // and the implementation of `TryFromBytes` for `UnsafeCell` for more
         // details.
-        let mut candidate = match MaybeUninit::<Self>::read_from(bytes) {
+        let mut candidate = match MaybeUninit::<Self>::read_from_bytes(bytes) {
             Ok(candidate) => candidate,
             Err(e) => {
                 return Err(TryReadError::Size(e.with_dst()));
@@ -2508,7 +2508,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// let mut source = [85, 85];
-    /// let _ = ZSTy::mut_from(&mut source[..]); // ⚠ Compile Error!
+    /// let _ = ZSTy::mut_from_bytes(&mut source[..]); // ⚠ Compile Error!
     /// ```
     ///
     /// [`mut_from_prefix_with_elems`]: FromBytes::mut_from_prefix_with_elems
@@ -2531,7 +2531,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These bytes encode a `PacketHeader`.
     /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7][..];
     ///
-    /// let header = PacketHeader::mut_from(bytes).unwrap();
+    /// let header = PacketHeader::mut_from_bytes(bytes).unwrap();
     ///
     /// assert_eq!(header.src_port, [0, 1]);
     /// assert_eq!(header.dst_port, [2, 3]);
@@ -2544,7 +2544,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn mut_from(source: &mut [u8]) -> Result<&mut Self, CastError<&mut [u8], Self>>
+    fn mut_from_bytes(source: &mut [u8]) -> Result<&mut Self, CastError<&mut [u8], Self>>
     where
         Self: IntoBytes + KnownLayout,
     {
@@ -2841,17 +2841,6 @@ pub unsafe trait FromBytes: FromZeros {
         ref_from_prefix_suffix(source, Some(count), CastType::Prefix)
     }
 
-    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::from_prefix_with_elems`")]
-    #[doc(hidden)]
-    #[must_use = "has no side effects"]
-    #[inline]
-    fn slice_from_prefix(source: &[u8], count: usize) -> Option<(&[Self], &[u8])>
-    where
-        Self: Sized + Immutable,
-    {
-        <[Self]>::ref_from_prefix_with_elems(source, count).ok()
-    }
-
     /// Interprets the suffix of the given bytes as a DST `&Self` with length
     /// equal to `count` without copying.
     ///
@@ -2922,28 +2911,6 @@ pub unsafe trait FromBytes: FromZeros {
         ref_from_prefix_suffix(source, Some(count), CastType::Suffix).map(swap)
     }
 
-    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::from_prefix_with_elems`")]
-    #[doc(hidden)]
-    #[must_use = "has no side effects"]
-    #[inline]
-    fn slice_from_suffix(source: &[u8], count: usize) -> Option<(&[u8], &[Self])>
-    where
-        Self: Sized + Immutable,
-    {
-        <[Self]>::ref_from_suffix_with_elems(source, count).ok()
-    }
-
-    #[deprecated(since = "0.8.0", note = "`FromBytes::mut_from` now supports slices")]
-    #[must_use = "has no side effects"]
-    #[doc(hidden)]
-    #[inline]
-    fn mut_slice_from(source: &mut [u8]) -> Option<&mut [Self]>
-    where
-        Self: Sized + IntoBytes,
-    {
-        <[Self]>::mut_from(source).ok()
-    }
-
     /// Interprets the given bytes as a `&mut Self` with a DST length equal to
     /// `count`.
     ///
@@ -2970,7 +2937,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 7][..];
     ///
-    /// let pixels = <[Pixel]>::mut_from_with_elems(bytes, 2).unwrap();
+    /// let pixels = <[Pixel]>::mut_from_bytes_with_elems(bytes, 2).unwrap();
     ///
     /// assert_eq!(pixels, &[
     ///     Pixel { r: 0, g: 1, b: 2, a: 3 },
@@ -2998,14 +2965,14 @@ pub unsafe trait FromBytes: FromZeros {
     /// }
     ///
     /// let src = &mut [85, 85][..];
-    /// let zsty = ZSTy::mut_from_with_elems(src, 42).unwrap();
+    /// let zsty = ZSTy::mut_from_bytes_with_elems(src, 42).unwrap();
     /// assert_eq!(zsty.trailing_dst.len(), 42);
     /// ```
     ///
     /// [`mut_from`]: FromBytes::mut_from
     #[must_use = "has no side effects"]
     #[inline]
-    fn mut_from_with_elems(
+    fn mut_from_bytes_with_elems(
         source: &mut [u8],
         count: usize,
     ) -> Result<&mut Self, CastError<&mut [u8], Self>>
@@ -3095,17 +3062,6 @@ pub unsafe trait FromBytes: FromZeros {
         mut_from_prefix_suffix(source, Some(count), CastType::Prefix)
     }
 
-    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::mut_from_prefix_with_elems`")]
-    #[doc(hidden)]
-    #[must_use = "has no side effects"]
-    #[inline]
-    fn mut_slice_from_prefix(source: &mut [u8], count: usize) -> Option<(&mut [Self], &mut [u8])>
-    where
-        Self: Sized + IntoBytes,
-    {
-        <[Self]>::mut_from_prefix_with_elems(source, count).ok()
-    }
-
     /// Interprets the suffix of the given bytes as a `&mut [Self]` with length
     /// equal to `count` without copying.
     ///
@@ -3181,19 +3137,9 @@ pub unsafe trait FromBytes: FromZeros {
         mut_from_prefix_suffix(source, Some(count), CastType::Suffix).map(swap)
     }
 
-    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::mut_from_suffix_with_elems`")]
-    #[doc(hidden)]
-    #[inline]
-    fn mut_slice_from_suffix(source: &mut [u8], count: usize) -> Option<(&mut [u8], &mut [Self])>
-    where
-        Self: Sized + IntoBytes,
-    {
-        <[Self]>::mut_from_suffix_with_elems(source, count).ok()
-    }
-
     /// Reads a copy of `Self` from the given bytes.
     ///
-    /// If `source.len() != size_of::<Self>()`, `read_from` returns `Err`.
+    /// If `source.len() != size_of::<Self>()`, `read_from_bytes` returns `Err`.
     ///
     /// # Examples
     ///
@@ -3213,7 +3159,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// // These bytes encode a `PacketHeader`.
     /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 7][..];
     ///
-    /// let header = PacketHeader::read_from(bytes).unwrap();
+    /// let header = PacketHeader::read_from_bytes(bytes).unwrap();
     ///
     /// assert_eq!(header.src_port, [0, 1]);
     /// assert_eq!(header.dst_port, [2, 3]);
@@ -3222,7 +3168,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn read_from(source: &[u8]) -> Result<Self, SizeError<&[u8], Self>>
+    fn read_from_bytes(source: &[u8]) -> Result<Self, SizeError<&[u8], Self>>
     where
         Self: Sized,
     {
@@ -3320,15 +3266,103 @@ pub unsafe trait FromBytes: FromZeros {
         }
     }
 
-    #[deprecated(since = "0.8.0", note = "`FromBytes::ref_from` now supports slices")]
-    #[allow(clippy::must_use_candidate)]
+    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::ref_from_bytes`")]
     #[doc(hidden)]
-    #[inline]
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    fn ref_from(source: &[u8]) -> Option<&Self>
+    where
+        Self: KnownLayout + Immutable,
+    {
+        Self::ref_from_bytes(source).ok()
+    }
+
+    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::mut_from_bytes`")]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    fn mut_from(source: &mut [u8]) -> Option<&mut Self>
+    where
+        Self: KnownLayout + IntoBytes,
+    {
+        Self::mut_from_bytes(source).ok()
+    }
+
+    #[deprecated(since = "0.8.0", note = "`FromBytes::ref_from_bytes` now supports slices")]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline(always)]
     fn slice_from(source: &[u8]) -> Option<&[Self]>
     where
         Self: Sized + Immutable,
     {
         <[Self]>::ref_from_bytes(source).ok()
+    }
+
+    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::ref_from_prefix_with_elems`")]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    fn slice_from_prefix(source: &[u8], count: usize) -> Option<(&[Self], &[u8])>
+    where
+        Self: Sized + Immutable,
+    {
+        <[Self]>::ref_from_prefix_with_elems(source, count).ok()
+    }
+
+    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::ref_from_suffix_with_elems`")]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    fn slice_from_suffix(source: &[u8], count: usize) -> Option<(&[u8], &[Self])>
+    where
+        Self: Sized + Immutable,
+    {
+        <[Self]>::ref_from_suffix_with_elems(source, count).ok()
+    }
+
+    #[deprecated(since = "0.8.0", note = "`FromBytes::mut_from_bytes` now supports slices")]
+    #[must_use = "has no side effects"]
+    #[doc(hidden)]
+    #[inline(always)]
+    fn mut_slice_from(source: &mut [u8]) -> Option<&mut [Self]>
+    where
+        Self: Sized + IntoBytes,
+    {
+        <[Self]>::mut_from_bytes(source).ok()
+    }
+
+    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::mut_from_prefix_with_elems`")]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    fn mut_slice_from_prefix(source: &mut [u8], count: usize) -> Option<(&mut [Self], &mut [u8])>
+    where
+        Self: Sized + IntoBytes,
+    {
+        <[Self]>::mut_from_prefix_with_elems(source, count).ok()
+    }
+
+    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::mut_from_suffix_with_elems`")]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    fn mut_slice_from_suffix(source: &mut [u8], count: usize) -> Option<(&mut [u8], &mut [Self])>
+    where
+        Self: Sized + IntoBytes,
+    {
+        <[Self]>::mut_from_suffix_with_elems(source, count).ok()
+    }
+
+    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::read_from_bytes`")]
+    #[doc(hidden)]
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    fn read_from(source: &[u8]) -> Option<Self>
+    where
+        Self: Sized,
+    {
+        Self::read_from_bytes(source).ok()
     }
 }
 
@@ -5580,7 +5614,7 @@ mod tests {
 
         // Test `FromBytes::{read_from, read_from_prefix, read_from_suffix}`.
 
-        assert_eq!(u64::read_from(&VAL_BYTES[..]), Ok(VAL));
+        assert_eq!(u64::read_from_bytes(&VAL_BYTES[..]), Ok(VAL));
         // The first 8 bytes are from `VAL_BYTES` and the second 8 bytes are all
         // zeros.
         let bytes_with_prefix: [u8; 16] = transmute!([VAL_BYTES, [0; 8]]);
@@ -5817,7 +5851,7 @@ mod tests {
             AU64::ref_from_bytes(&buf.t[8..]).unwrap().0.to_ne_bytes(),
             [8, 9, 10, 11, 12, 13, 14, 15]
         );
-        let suffix = AU64::mut_from(&mut buf.t[8..]).unwrap();
+        let suffix = AU64::mut_from_bytes(&mut buf.t[8..]).unwrap();
         suffix.0 = 0x0101010101010101;
         // The `[u8:9]` is a non-half size of the full buffer, which would catch
         // `from_prefix` having the same implementation as `from_suffix` (issues #506, #511).
@@ -5847,16 +5881,16 @@ mod tests {
         let mut buf = Align::<[u8; 16], AU64>::default();
         // `buf.t` should be aligned to 8, so only the length check should fail.
         assert!(AU64::ref_from_bytes(&buf.t[..]).is_err());
-        assert!(AU64::mut_from(&mut buf.t[..]).is_err());
+        assert!(AU64::mut_from_bytes(&mut buf.t[..]).is_err());
         assert!(<[u8; 8]>::ref_from_bytes(&buf.t[..]).is_err());
-        assert!(<[u8; 8]>::mut_from(&mut buf.t[..]).is_err());
+        assert!(<[u8; 8]>::mut_from_bytes(&mut buf.t[..]).is_err());
 
         // Fail because the buffer is too small.
         let mut buf = Align::<[u8; 4], AU64>::default();
         assert!(AU64::ref_from_bytes(&buf.t[..]).is_err());
-        assert!(AU64::mut_from(&mut buf.t[..]).is_err());
+        assert!(AU64::mut_from_bytes(&mut buf.t[..]).is_err());
         assert!(<[u8; 8]>::ref_from_bytes(&buf.t[..]).is_err());
-        assert!(<[u8; 8]>::mut_from(&mut buf.t[..]).is_err());
+        assert!(<[u8; 8]>::mut_from_bytes(&mut buf.t[..]).is_err());
         assert!(AU64::ref_from_prefix(&buf.t[..]).is_err());
         assert!(AU64::mut_from_prefix(&mut buf.t[..]).is_err());
         assert!(AU64::ref_from_suffix(&buf.t[..]).is_err());
@@ -5869,9 +5903,9 @@ mod tests {
         // Fail because the alignment is insufficient.
         let mut buf = Align::<[u8; 13], AU64>::default();
         assert!(AU64::ref_from_bytes(&buf.t[1..]).is_err());
-        assert!(AU64::mut_from(&mut buf.t[1..]).is_err());
+        assert!(AU64::mut_from_bytes(&mut buf.t[1..]).is_err());
         assert!(AU64::ref_from_bytes(&buf.t[1..]).is_err());
-        assert!(AU64::mut_from(&mut buf.t[1..]).is_err());
+        assert!(AU64::mut_from_bytes(&mut buf.t[1..]).is_err());
         assert!(AU64::ref_from_prefix(&buf.t[1..]).is_err());
         assert!(AU64::mut_from_prefix(&mut buf.t[1..]).is_err());
         assert!(AU64::ref_from_suffix(&buf.t[..]).is_err());
