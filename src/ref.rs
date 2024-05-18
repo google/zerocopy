@@ -757,10 +757,10 @@ where
         let b = unsafe { self.into_byte_slice() };
 
         // PANICS: By post-condition on `into_byte_slice`, `b`'s size and
-        // alignment are valid for `T`. By invariant on `IntoByteSlice`,
-        // `b.into()` produces a byte slice with identical address and length to
-        // that produced by `b.deref()`.
-        let ptr = Ptr::from_ref(b.into())
+        // alignment are valid for `T`. By post-condition, `b.into_byte_slice()`
+        // produces a byte slice with identical address and length to that
+        // produced by `b.deref()`.
+        let ptr = Ptr::from_ref(b.into_byte_slice())
             .try_cast_into_no_leftover::<T, BecauseImmutable>(None)
             .expect("zerocopy internal error: into_ref should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
@@ -787,10 +787,10 @@ where
         let b = unsafe { self.into_byte_slice_mut() };
 
         // PANICS: By post-condition on `into_byte_slice_mut`, `b`'s size and
-        // alignment are valid for `T`. By invariant on `IntoByteSliceMut`,
-        // `b.into()` produces a byte slice with identical address and length to
-        // that produced by `b.deref_mut()`.
-        let ptr = Ptr::from_mut(b.into())
+        // alignment are valid for `T`. By post-condition,
+        // `b.into_byte_slice_mut()` produces a byte slice with identical
+        // address and length to that produced by `b.deref_mut()`.
+        let ptr = Ptr::from_mut(b.into_byte_slice_mut())
             .try_cast_into_no_leftover::<T, BecauseExclusive>(None)
             .expect("zerocopy internal error: into_ref should be infallible");
         let ptr = ptr.bikeshed_recall_valid();
@@ -996,6 +996,15 @@ mod tests {
 
     use super::*;
     use crate::util::testutil::*;
+
+    #[test]
+    fn test_mut_slice_into_ref() {
+        // Prior to #1260/#1299, calling `into_ref` on a `&mut [u8]`-backed
+        // `Ref` was not supportd.
+        let mut buf = [0u8];
+        let r = Ref::<&mut [u8], u8>::from_bytes(&mut buf).unwrap();
+        assert_eq!(r.into_ref(), &0);
+    }
 
     #[test]
     fn test_address() {
