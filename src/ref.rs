@@ -991,6 +991,7 @@ where
 
 #[cfg(test)]
 #[allow(clippy::assertions_on_result_states)]
+#[cfg_attr(coverage_nightly, coverage(off))]
 mod tests {
     use core::convert::TryInto as _;
 

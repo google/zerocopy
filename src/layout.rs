@@ -605,6 +605,7 @@ impl DstLayout {
 // fixed, remove this `allow`.
 #[allow(unknown_lints)]
 #[cfg(test)]
+#[cfg_attr(coverage_nightly, coverage(off))]
 mod tests {
     use super::*;
 

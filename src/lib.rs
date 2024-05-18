@@ -4832,6 +4832,7 @@ mod alloc_support {
     }
 
     #[cfg(test)]
+    #[cfg_attr(coverage_nightly, coverage(off))]
     mod tests {
         use core::convert::TryFrom as _;
 
@@ -5008,6 +5009,7 @@ pub use alloc_support::*;
 
 #[cfg(test)]
 #[allow(clippy::assertions_on_result_states, clippy::unreadable_literal)]
+#[cfg_attr(coverage_nightly, coverage(off))]
 mod tests {
     use static_assertions::assert_impl_all;
 

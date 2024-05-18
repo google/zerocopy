@@ -523,6 +523,7 @@ pub mod core_reexport {
 }
 
 #[cfg(test)]
+#[cfg_attr(coverage_nightly, coverage(off))]
 mod tests {
     use super::*;
     use crate::util::testutil::*;

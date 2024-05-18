@@ -855,6 +855,7 @@ module!(network_endian, NetworkEndian, "network-endian");
 module!(native_endian, NativeEndian, "native-endian");
 
 #[cfg(any(test, kani))]
+#[cfg_attr(coverage_nightly, coverage(off))]
 mod tests {
     use super::*;
 
