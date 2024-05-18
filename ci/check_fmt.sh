@@ -15,4 +15,4 @@ if [[ -z $files ]]
 then
 	exit 1
 fi
-rustfmt --check $files
+rustfmt --check $files >&2

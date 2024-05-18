@@ -22,4 +22,4 @@ diff \
     sort -u | grep -v '^\(msrv\|stable\|nightly\)$') \
   <(cargo metadata -q --format-version 1 | \
     jq -r ".packages[] | select(.name == \"zerocopy\").metadata.\"build-rs\" | keys | .[]" | \
-    sort -u)
+    sort -u) >&2
