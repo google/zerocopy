@@ -60,10 +60,11 @@ alloc = []
 derive = ["zerocopy-derive"]
 simd = []
 simd-nightly = ["simd"]
+std = ["alloc"]
 # This feature depends on all other features that work on the stable compiler.
 # We make no stability guarantees about this feature; it may be modified or
 # removed at any time.
-__internal_use_only_features_that_work_on_stable = ["alloc", "derive", "simd"]
+__internal_use_only_features_that_work_on_stable = ["alloc", "derive", "simd", "std"]
 
 [dependencies]
 zerocopy-derive = { version = "=0.8.0-alpha.14", path = "zerocopy-derive", optional = true }

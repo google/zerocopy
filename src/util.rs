@@ -8,6 +8,7 @@
 
 use core::{
     cell::UnsafeCell,
+    marker::PhantomData,
     mem::{self, ManuallyDrop, MaybeUninit},
     num::{NonZeroUsize, Wrapping},
     ptr::NonNull,
@@ -430,6 +431,31 @@ safety_comment! {
         core::sync::atomic::AtomicU64 [u64],
     );
 }
+
+/// Like [`PhantomData`], but [`Send`] and [`Sync`] regardless of whether the
+/// wrapped `T` is.
+pub(crate) struct SendSyncPhantomData<T: ?Sized>(PhantomData<T>);
+
+// SAFETY: `SendSyncPhantomData` does not enable any behavior which isn't sound
+// to be called from multiple threads.
+unsafe impl<T: ?Sized> Send for SendSyncPhantomData<T> {}
+// SAFETY: `SendSyncPhantomData` does not enable any behavior which isn't sound
+// to be called from multiple threads.
+unsafe impl<T: ?Sized> Sync for SendSyncPhantomData<T> {}
+
+impl<T: ?Sized> Default for SendSyncPhantomData<T> {
+    fn default() -> SendSyncPhantomData<T> {
+        SendSyncPhantomData(PhantomData)
+    }
+}
+
+impl<T: ?Sized> PartialEq for SendSyncPhantomData<T> {
+    fn eq(&self, other: &Self) -> bool {
+        self.0.eq(&other.0)
+    }
+}
+
+impl<T: ?Sized> Eq for SendSyncPhantomData<T> {}
 
 pub(crate) trait AsAddress {
     fn addr(self) -> usize;
