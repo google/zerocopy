@@ -30,6 +30,6 @@ jobs=$(for i in $(find .github -iname '*.yaml' -or -iname '*.yml')
 if [ -n "$jobs" ]
 then
   missing_jobs="$(echo "$jobs" | tr ' ' '\n')"
-  echo "all-jobs-succeed missing dependencies on some jobs: $missing_jobs" | tee -a $GITHUB_STEP_SUMMARY
+  echo "all-jobs-succeed missing dependencies on some jobs: $missing_jobs" | tee -a $GITHUB_STEP_SUMMARY >&2
   exit 1
 fi
