@@ -191,9 +191,34 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
                 };
 
                 // SAFETY:
-                // - The recursive call to `raw_from_ptr_len` preserves both address and provenance.
-                // - The `as` cast preserves both address and provenance.
-                // - `NonNull::new_unchecked` preserves both address and provenance.
+                // - The returned pointer has the same address and provenance as
+                //   `bytes`:
+                //   - The recursive call to `raw_from_ptr_len` preserves both
+                //     address and provenance.
+                //   - The `as` cast preserves both address and provenance.
+                //   - `NonNull::new_unchecked` preserves both address and
+                //     provenance.
+                // - If `Self` is a slice DST, the returned pointer encodes
+                //   `elems` elements in the trailing slice:
+                //   - This is true of the recursive call to `raw_from_ptr_len`.
+                //   - `trailing.as_ptr() as *mut Self` preserves trailing slice
+                //     element count [1].
+                //   - `NonNull::new_unchecked` preserves trailing slice element
+                //     count.
+                //
+                // [1] Per https://doc.rust-lang.org/reference/expressions/operator-expr.html#pointer-to-pointer-cast:
+                //
+                //   `*const T`` / `*mut T` can be cast to `*const U` / `*mut U`
+                //   with the following behavior:
+                //     ...
+                //     - If `T` and `U` are both unsized, the pointer is also
+                //       returned unchanged. In particular, the metadata is
+                //       preserved exactly.
+                //
+                //       For instance, a cast from `*const [T]` to `*const [U]`
+                //       preserves the number of elements. ... The same holds
+                //       for str and any compound type whose unsized tail is a
+                //       slice type, such as struct `Foo(i32, [u8])` or `(u64, Foo)`.
                 #[inline(always)]
                 fn raw_from_ptr_len(
                     bytes: ::zerocopy::macro_util::core_reexport::ptr::NonNull<u8>,

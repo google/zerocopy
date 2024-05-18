@@ -785,24 +785,16 @@ unsafe impl<T> KnownLayout for [T] {
         let slc = unsafe { &*slc };
 
         // This is correct because the preceding `as` cast preserves the number
-        // of slice elements. Per
-        // https://doc.rust-lang.org/nightly/reference/expressions/operator-expr.html#slice-dst-pointer-to-pointer-cast:
+        // of slice elements. [1]
+        //
+        // [1] Per https://doc.rust-lang.org/reference/expressions/operator-expr.html#pointer-to-pointer-cast:
         //
         //   For slice types like `[T]` and `[U]`, the raw pointer types `*const
         //   [T]`, `*mut [T]`, `*const [U]`, and `*mut [U]` encode the number of
         //   elements in this slice. Casts between these raw pointer types
-        //   preserve the number of elements. Note that, as a consequence, such
-        //   casts do *not* necessarily preserve the size of the pointer's
-        //   referent (e.g., casting `*const [u16]` to `*const [u8]` will result
-        //   in a raw pointer which refers to an object of half the size of the
-        //   original). The same holds for `str` and any compound type whose
-        //   unsized tail is a slice type, such as struct `Foo(i32, [u8])` or
-        //   `(u64, Foo)`.
-        //
-        // TODO(#429),
-        // TODO(https://github.com/rust-lang/reference/pull/1417): Once this
-        // text is available on the Stable docs, cite those instead of the
-        // Nightly docs.
+        //   preserve the number of elements. ... The same holds for `str` and
+        //   any compound type whose unsized tail is a slice type, such as
+        //   struct `Foo(i32, [u8])` or `(u64, Foo)`.
         slc.len()
     }
 }
