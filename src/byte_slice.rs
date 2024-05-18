@@ -160,6 +160,7 @@ where
 pub trait SplitByteSliceMut: SplitByteSlice + ByteSliceMut {}
 impl<B: SplitByteSlice + ByteSliceMut> SplitByteSliceMut for B {}
 
+#[allow(clippy::missing_safety_doc)] // There's a `Safety` section on `into_byte_slice`.
 /// A [`ByteSlice`] that conveys no ownership, and so can be converted into a
 /// byte slice.
 ///
@@ -169,19 +170,22 @@ impl<B: SplitByteSlice + ByteSliceMut> SplitByteSliceMut for B {}
 /// are only compatible with `ByteSlice` types without these ownership
 /// semantics.
 ///
-/// # Safety
-///
-/// Invoking `self.into()` produces a `&[u8]` with identical address and length
-/// as the slice produced by `self.deref()`. Note that this implies that the
-/// slice produced by `self.into()` is "stable" in the same sense as defined by
-/// [`ByteSlice`]'s safety invariant.
-///
-/// If `Self: Into<&mut [u8]>`, then the same stability requirement holds of
-/// `<Self as Into<&mut [u8]>>::into`.
-///
 /// [`Ref`]: core::cell::Ref
-pub unsafe trait IntoByteSlice<'a>: ByteSlice + Into<&'a [u8]> {}
+pub unsafe trait IntoByteSlice<'a>: ByteSlice {
+    /// Coverts `self` into a `&[u8]`.
+    ///
+    /// # Safety
+    ///
+    /// The returned reference has the same address and length as `self.deref()`
+    /// or `self.deref_mut()`.
+    ///
+    /// Note that, combined with the safety invariant on [`ByteSlice`], this
+    /// safety invariant implies that the returned reference is "stable" in the
+    /// sense described in the `ByteSlice` docs.
+    fn into_byte_slice(self) -> &'a [u8];
+}
 
+#[allow(clippy::missing_safety_doc)] // There's a `Safety` section on `into_byte_slice_mut`.
 /// A [`ByteSliceMut`] that conveys no ownership, and so can be converted into a
 /// mutable byte slice.
 ///
@@ -192,8 +196,19 @@ pub unsafe trait IntoByteSlice<'a>: ByteSlice + Into<&'a [u8]> {}
 /// these ownership semantics.
 ///
 /// [`RefMut`]: core::cell::RefMut
-pub trait IntoByteSliceMut<'a>: ByteSliceMut + Into<&'a mut [u8]> {}
-impl<'a, B: ByteSliceMut + Into<&'a mut [u8]>> IntoByteSliceMut<'a> for B {}
+pub unsafe trait IntoByteSliceMut<'a>: IntoByteSlice<'a> + ByteSliceMut {
+    /// Coverts `self` into a `&mut [u8]`.
+    ///
+    /// # Safety
+    ///
+    /// The returned reference has the same address and length as `self.deref()`
+    /// or `self.deref_mut()`.
+    ///
+    /// Note that, combined with the safety invariant on [`ByteSlice`], this
+    /// safety invariant implies that the returned reference is "stable" in the
+    /// sense described in the `ByteSlice` docs.
+    fn into_byte_slice_mut(self) -> &'a mut [u8];
+}
 
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
@@ -218,16 +233,17 @@ unsafe impl<'a> SplitByteSlice for &'a [u8] {
     }
 }
 
-// SAFETY: The standard library impl of `From<T> for T` [1] cannot be removed
-// without being a backwards-breaking change. Thus, we can rely on it continuing
-// to exist. So long as that is the impl backing `Into<&[u8]> for &[u8]`, we
-// know (barring a truly ridiculous stdlib implementation) that this impl is
-// simply implemented as `fn into(bytes: &[u8]) -> &[u8] { bytes }` (or
-// something semantically equivalent to it). Thus, `ByteSlice`'s stability
-// guarantees are not violated by the `Into<&[u8]>` impl.
-//
-// [1] https://doc.rust-lang.org/std/convert/trait.From.html#impl-From%3CT%3E-for-T
-unsafe impl<'a> IntoByteSlice<'a> for &'a [u8] {}
+// SAFETY: See inline.
+unsafe impl<'a> IntoByteSlice<'a> for &'a [u8] {
+    #[inline(always)]
+    fn into_byte_slice(self) -> &'a [u8] {
+        // SAFETY: It would be patently insane to implement `<Deref for
+        // &[u8]>::deref` as anything other than `fn deref(&self) -> &[u8] {
+        // *self }`. Assuming this holds, then `self` is stable as required by
+        // `into_byte_slice`.
+        self
+    }
+}
 
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
@@ -287,6 +303,30 @@ unsafe impl<'a> SplitByteSlice for &'a mut [u8] {
         //
         // [1] https://doc.rust-lang.org/std/slice/fn.from_raw_parts_mut.html#safety
         unsafe { (from_raw_parts_mut(l_ptr, l_len), from_raw_parts_mut(r_ptr, r_len)) }
+    }
+}
+
+// SAFETY: See inline.
+unsafe impl<'a> IntoByteSlice<'a> for &'a mut [u8] {
+    #[inline(always)]
+    fn into_byte_slice(self) -> &'a [u8] {
+        // SAFETY: It would be patently insane to implement `<Deref for &mut
+        // [u8]>::deref` as anything other than `fn deref(&self) -> &[u8] {
+        // *self }`. Assuming this holds, then `self` is stable as required by
+        // `into_byte_slice`.
+        self
+    }
+}
+
+// SAFETY: See inline.
+unsafe impl<'a> IntoByteSliceMut<'a> for &'a mut [u8] {
+    #[inline(always)]
+    fn into_byte_slice_mut(self) -> &'a mut [u8] {
+        // SAFETY: It would be patently insane to implement `<DerefMut for &mut
+        // [u8]>::deref` as anything other than `fn deref_mut(&mut self) -> &mut
+        // [u8] { *self }`. Assuming this holds, then `self` is stable as
+        // required by `into_byte_slice_mut`.
+        self
     }
 }
 
