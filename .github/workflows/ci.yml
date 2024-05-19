@@ -268,9 +268,20 @@ jobs:
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
       #
+      # We skip Miri tests on pull request, but run them in the merge queue.
+      # Miri tests are far and away the most expensive aspect of our CI tests,
+      # but they rarely surface issues (ie, tests that pass `cargo test` but
+      # fail `cargo miri test`). Skipping them during PR development
+      # significantly speeds up our development flow, while still ensuring that
+      # Miri can catch any errors before a PR is merged into main.
+      #
       # TODO(#22): Re-enable testing on riscv64gc-unknown-linux-gnu and/or
       # wasm32-wasi once those work.
-      if: matrix.toolchain == 'nightly' && matrix.target != 'riscv64gc-unknown-linux-gnu' && matrix.target != 'wasm32-wasi'
+      if: |
+        matrix.toolchain == 'nightly' &&
+        matrix.target != 'riscv64gc-unknown-linux-gnu' &&
+        matrix.target != 'wasm32-wasi' &&
+        github.event_name != 'pull_request'
 
     - name: Clippy check
       run: ./cargo.sh +${{ matrix.toolchain }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --tests --verbose
