@@ -249,22 +249,34 @@ jobs:
         # Work around https://github.com/rust-lang/miri/issues/3125
         [ "${{ matrix.target }}" == "aarch64-unknown-linux-gnu" ] && cargo clean
 
-        # Spawn twice the number of workers as there are CPU cores.
-        THREADS=$(echo "$(nproc) * 2" | bc)
-        echo "Running Miri tests with $THREADS threads" | tee -a $GITHUB_STEP_SUMMARY
+        # We run two executions in parallel (one for each aliasing model), so
+        # this has the effect of, in total, running twice the number of workers
+        # as there are CPU cores. Note that this isn't *quite* the same as
+        # having 2n threads, since the two distinct executions can't share work.
+        # Hopefully, since the executions should be nearly identical (I don't
+        # assume that the aliasing model has a huge impact on the performance
+        # characteristics of these tests), this shouldn't be a big deal.
+        THREADS=$(nproc)
+        echo "Running Miri tests with $THREADS threads per aliasing model" | tee -a $GITHUB_STEP_SUMMARY
 
         cargo install cargo-nextest
 
         # Run under both the stacked borrows model (default) and under the tree 
         # borrows model to ensure we're compliant with both.
+        #
+        # Run both executions in parallel to make better use of available
+        # parallelism.
         for EXTRA_FLAGS in "" "-Zmiri-tree-borrows"; do
           MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" ./cargo.sh +${{ matrix.toolchain }} \
             miri nextest run \
             --test-threads "$THREADS" \
             --package ${{ matrix.crate }} \
             --target ${{ matrix.target }} \
-            ${{ matrix.features }}
+            ${{ matrix.features }} &
         done
+
+        wait
+
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
       #
