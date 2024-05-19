@@ -29,7 +29,7 @@ env:
 
 jobs:
   build_test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04-64core
     # Generate and populate the global Cargo registry and cache first. Each
     # job in the matrix runs in parallel, so without populating the cache
     # first, most jobs would duplicate the work of downloading crates from
