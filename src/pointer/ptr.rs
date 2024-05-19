@@ -1526,8 +1526,9 @@ mod tests {
         }
     }
 
-    #[test]
-    fn test_ptr_try_cast_into_soundness() {
+    mod test_ptr_try_cast_into_soundness {
+        use super::*;
+
         // This test is designed so that if `Ptr::try_cast_into_xxx` are
         // buggy, it will manifest as unsoundness that Miri can detect.
 
@@ -1650,9 +1651,21 @@ mod tests {
             trailing: [T],
         }
 
+        // Each test case becomes its own `#[test]` function. We do this because
+        // this test in particular takes far, far longer to execute under Miri
+        // than all of our other tests combined. Previously, we had these
+        // execute sequentially in a single test function. We run Miri tests in
+        // parallel in CI, but this test being sequential meant that most of
+        // that parallelism was wasted, as all other tests would finish in a
+        // fraction of the total execution time, leaving this test to execute on
+        // a single thread for the remainder of the test. By putting each test
+        // case in its own function, we permit better use of available
+        // parallelism.
         macro_rules! test {
-            ($($ty:ty),*) => {
-                $({
+            ($test_name:ident: $ty:ty) => {
+                #[test]
+                #[allow(non_snake_case)]
+                fn $test_name() {
                     const S: usize = core::mem::size_of::<$ty>();
                     const N: usize = if S == 0 { 4 } else { S * 4 };
                     test::<$ty, _, N>([None]);
@@ -1667,11 +1680,15 @@ mod tests {
                         test::<[$ty], _, N>([None, Some(0), Some(1), Some(2), Some(3)]);
                         test::<SliceDst<$ty>, _, N>([None, Some(0), Some(1), Some(2), Some(3)]);
                     }
-                })*
+                }
             };
+            ($ty:ident) => {
+                test!($ty: $ty);
+            };
+            ($($ty:ident),*) => { $(test!($ty);)* }
         }
 
-        test!(());
+        test!(empty_tuple: ());
         test!(u8, u16, u32, u64, u128, usize, AU64);
         test!(i8, i16, i32, i64, i128, isize);
         test!(f32, f64);
