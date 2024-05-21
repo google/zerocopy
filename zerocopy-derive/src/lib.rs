@@ -79,22 +79,26 @@ macro_rules! try_or_print {
 /// are currently required to live at the crate root, and so the caller must
 /// specify the name in order to avoid name collisions.
 macro_rules! derive {
-    ($trait:ident => $outer:ident => $inner:ident) => {
-        #[proc_macro_derive($trait)]
-        pub fn $outer(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
-            let ast = syn::parse_macro_input!(ts as DeriveInput);
-            $inner(&ast).into()
-        }
+    ($($trait:ident => $outer:ident => $inner:ident,)*) => {
+        $(
+            #[proc_macro_derive($trait)]
+            pub fn $outer(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
+                let ast = syn::parse_macro_input!(ts as DeriveInput);
+                $inner(&ast, Trait::$trait).into()
+            }
+        )*
     };
 }
 
-derive!(KnownLayout => derive_known_layout => derive_known_layout_inner);
-derive!(Immutable => derive_no_cell => derive_no_cell_inner);
-derive!(TryFromBytes => derive_try_from_bytes => derive_try_from_bytes_inner);
-derive!(FromZeros => derive_from_zeros => derive_from_zeros_inner);
-derive!(FromBytes => derive_from_bytes => derive_from_bytes_inner);
-derive!(IntoBytes => derive_into_bytes => derive_into_bytes_inner);
-derive!(Unaligned => derive_unaligned => derive_unaligned_inner);
+derive!(
+    KnownLayout  => derive_known_layout   => derive_known_layout_inner,
+    Immutable    => derive_no_cell        => derive_no_cell_inner,
+    TryFromBytes => derive_try_from_bytes => derive_try_from_bytes_inner,
+    FromZeros    => derive_from_zeros     => derive_from_zeros_inner,
+    FromBytes    => derive_from_bytes     => derive_from_bytes_inner,
+    IntoBytes    => derive_into_bytes     => derive_into_bytes_inner,
+    Unaligned    => derive_unaligned      => derive_unaligned_inner,
+);
 
 /// Deprecated: prefer [`FromZeros`] instead.
 #[deprecated(since = "0.8.0", note = "`FromZeroes` was renamed to `FromZeros`")]
@@ -112,7 +116,7 @@ pub fn derive_as_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     derive_into_bytes(ts)
 }
 
-fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
+fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> proc_macro2::TokenStream {
     let is_repr_c_struct = match &ast.data {
         Data::Struct(..) => {
             let reprs = try_or_print!(repr::reprs::<Repr>(&ast.attrs));
@@ -325,7 +329,7 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     }
 }
 
-fn derive_no_cell_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
+fn derive_no_cell_inner(ast: &DeriveInput, _top_level: Trait) -> proc_macro2::TokenStream {
     match &ast.data {
         Data::Struct(strct) => impl_block(
             ast,
@@ -357,16 +361,16 @@ fn derive_no_cell_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     }
 }
 
-fn derive_try_from_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
+fn derive_try_from_bytes_inner(ast: &DeriveInput, top_level: Trait) -> proc_macro2::TokenStream {
     match &ast.data {
-        Data::Struct(strct) => derive_try_from_bytes_struct(ast, strct),
-        Data::Enum(enm) => derive_try_from_bytes_enum(ast, enm),
-        Data::Union(unn) => derive_try_from_bytes_union(ast, unn),
+        Data::Struct(strct) => derive_try_from_bytes_struct(ast, strct, top_level),
+        Data::Enum(enm) => derive_try_from_bytes_enum(ast, enm, top_level),
+        Data::Union(unn) => derive_try_from_bytes_union(ast, unn, top_level),
     }
 }
 
-fn derive_from_zeros_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
-    let try_from_bytes = derive_try_from_bytes_inner(ast);
+fn derive_from_zeros_inner(ast: &DeriveInput, top_level: Trait) -> proc_macro2::TokenStream {
+    let try_from_bytes = derive_try_from_bytes_inner(ast, top_level);
     let from_zeros = match &ast.data {
         Data::Struct(strct) => derive_from_zeros_struct(ast, strct),
         Data::Enum(enm) => derive_from_zeros_enum(ast, enm),
@@ -375,8 +379,8 @@ fn derive_from_zeros_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     IntoIterator::into_iter([try_from_bytes, from_zeros]).collect()
 }
 
-fn derive_from_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
-    let from_zeros = derive_from_zeros_inner(ast);
+fn derive_from_bytes_inner(ast: &DeriveInput, top_level: Trait) -> proc_macro2::TokenStream {
+    let from_zeros = derive_from_zeros_inner(ast, top_level);
     let from_bytes = match &ast.data {
         Data::Struct(strct) => derive_from_bytes_struct(ast, strct),
         Data::Enum(enm) => derive_from_bytes_enum(ast, enm),
@@ -386,7 +390,7 @@ fn derive_from_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     IntoIterator::into_iter([from_zeros, from_bytes]).collect()
 }
 
-fn derive_into_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
+fn derive_into_bytes_inner(ast: &DeriveInput, _top_level: Trait) -> proc_macro2::TokenStream {
     match &ast.data {
         Data::Struct(strct) => derive_into_bytes_struct(ast, strct),
         Data::Enum(enm) => derive_into_bytes_enum(ast, enm),
@@ -394,7 +398,7 @@ fn derive_into_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     }
 }
 
-fn derive_unaligned_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
+fn derive_unaligned_inner(ast: &DeriveInput, _top_level: Trait) -> proc_macro2::TokenStream {
     match &ast.data {
         Data::Struct(strct) => derive_unaligned_struct(ast, strct),
         Data::Enum(enm) => derive_unaligned_enum(ast, enm),
@@ -405,8 +409,12 @@ fn derive_unaligned_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
 // A struct is `TryFromBytes` if:
 // - all fields are `TryFromBytes`
 
-fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    let extras = Some({
+fn derive_try_from_bytes_struct(
+    ast: &DeriveInput,
+    strct: &DataStruct,
+    top_level: Trait,
+) -> proc_macro2::TokenStream {
+    let extras = try_gen_trivial_is_bit_valid(ast, top_level).unwrap_or_else(|| {
         let fields = strct.fields();
         let field_names = fields.iter().map(|(name, _ty)| name);
         let field_tys = fields.iter().map(|(_name, ty)| ty);
@@ -446,18 +454,22 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
         FieldBounds::ALL_SELF,
         SelfBounds::None,
         None,
-        extras,
+        Some(extras),
     )
 }
 
 // A union is `TryFromBytes` if:
 // - all of its fields are `TryFromBytes` and `Immutable`
 
-fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
+fn derive_try_from_bytes_union(
+    ast: &DeriveInput,
+    unn: &DataUnion,
+    top_level: Trait,
+) -> proc_macro2::TokenStream {
     // TODO(#5): Remove the `Immutable` bound.
     let field_type_trait_bounds =
         FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
-    let extras = Some({
+    let extras = try_gen_trivial_is_bit_valid(ast, top_level).unwrap_or_else(|| {
         let fields = unn.fields();
         let field_names = fields.iter().map(|(name, _ty)| name);
         let field_tys = fields.iter().map(|(_name, ty)| ty);
@@ -497,7 +509,7 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
         field_type_trait_bounds,
         SelfBounds::None,
         None,
-        extras,
+        Some(extras),
     )
 }
 
@@ -508,7 +520,11 @@ const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[
     &[StructRepr::C, StructRepr::Packed],
 ];
 
-fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
+fn derive_try_from_bytes_enum(
+    ast: &DeriveInput,
+    enm: &DataEnum,
+    top_level: Trait,
+) -> proc_macro2::TokenStream {
     if !enm.is_fieldless() {
         return Error::new_spanned(ast, "only field-less enums can implement TryFromBytes")
             .to_compile_error();
@@ -527,77 +543,161 @@ fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2:
         })
         .unwrap_or(false);
 
-    let variant_names = enm.variants.iter().map(|v| &v.ident);
-    let is_bit_valid_body = if from_bytes {
-        // If the enum could implement `FromBytes`, we can avoid emitting a
-        // match statement. This is faster to compile, and generates code which
-        // performs better.
-        quote!({
-            // Prevent an "unused" warning.
-            let _ = candidate;
-            // SAFETY: If the enum could implement `FromBytes`, then all bit
-            // patterns are valid. Thus, this is a sound implementation.
-            true
+    let extras = try_gen_trivial_is_bit_valid(ast, top_level)
+        .or_else(|| {
+            if from_bytes {
+                // SAFETY: It would be sound for the enum to implement
+                // `FomBytes`, as required by
+                // `gen_trivial_is_bit_valid_unchecked`.
+                Some(unsafe { gen_trivial_is_bit_valid_unchecked() })
+            } else {
+                None
+            }
         })
+        .unwrap_or_else(|| {
+            let variant_names = enm.variants.iter().map(|v| &v.ident);
+            quote!(
+                // SAFETY: We use `is_bit_valid` to validate that the bit
+                // pattern corresponds to one of the field-less enum's variant
+                // discriminants. Thus, this is a sound implementation of
+                // `is_bit_valid`.
+                fn is_bit_valid<
+                    A: ::zerocopy::pointer::invariant::Aliasing
+                        + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                >(
+                    candidate: ::zerocopy::Ptr<
+                        '_,
+                        Self,
+                        (
+                            A,
+                            ::zerocopy::pointer::invariant::Any,
+                            ::zerocopy::pointer::invariant::Initialized,
+                        ),
+                    >,
+                ) -> ::zerocopy::macro_util::core_reexport::primitive::bool {
+                    use ::zerocopy::macro_util::core_reexport;
+                    // SAFETY:
+                    // - The closure is a pointer cast, and `Self` and `[u8;
+                    //   size_of::<Self>()]` have the same size, so the returned
+                    //   pointer addresses the same bytes as `p` subset of the
+                    //   bytes addressed by `slf`
+                    // - ..., and so it preserves provenance
+                    // - Since we validate that this type is a field-less enum,
+                    //   it cannot contain any `UnsafeCell`s. Neither does `[u8;
+                    //   N]`.
+                    let discriminant = unsafe { candidate.cast_unsized(|p: *mut Self| p as *mut [core_reexport::primitive::u8; core_reexport::mem::size_of::<Self>()]) };
+                    // SAFETY: Since `candidate` has the invariant
+                    // `Initialized`, we know that `candidate`'s referent (and
+                    // thus `discriminant`'s referent) are fully initialized.
+                    // Since all of the allowed `repr`s are types for which all
+                    // bytes are always initialized, we know that
+                    // `discriminant`'s referent has all of its bytes
+                    // initialized. Since `[u8; N]`'s validity invariant is just
+                    // that all of its bytes are initialized, we know that
+                    // `discriminant`'s referent is bit-valid.
+                    let discriminant = unsafe { discriminant.assume_valid() };
+                    let discriminant = discriminant.read_unaligned();
+
+                    false #(|| {
+                        let v = Self::#variant_names{};
+                        // SAFETY: All of the allowed `repr`s for `Self`
+                        // guarantee that `Self`'s discriminant bytes are all
+                        // initialized. Since we validate that `Self` has no
+                        // fields, it has no bytes other than the discriminant.
+                        // Thus, it is sound to transmute any instance of `Self`
+                        // to `[u8; size_of::<Self>()]`.
+                        let d: [core_reexport::primitive::u8; core_reexport::mem::size_of::<Self>()] = unsafe { core_reexport::mem::transmute(v) };
+                        // SAFETY: Here we check that the bits of the argument
+                        // `candidate` are equal to the bits of a `Self`
+                        // constructed using safe code. If this condition
+                        // passes, then we know that `candidate` refers to a
+                        // bit-valid `Self`.
+                        discriminant == d
+                    })*
+                }
+            )
+        });
+
+    impl_block(
+        ast,
+        enm,
+        Trait::TryFromBytes,
+        FieldBounds::ALL_SELF,
+        SelfBounds::None,
+        None,
+        Some(extras),
+    )
+}
+
+/// Attempts to generate a `TryFromBytes::is_bit_valid` instance that
+/// unconditionally returns true.
+///
+/// This should be used where possible. Using this impl is faster to codegen,
+/// faster to compile, and is friendlier on the optimizer.
+fn try_gen_trivial_is_bit_valid(
+    ast: &DeriveInput,
+    top_level: Trait,
+) -> Option<proc_macro2::TokenStream> {
+    // If the top-level trait is `FromBytes` and `Self` has no type parameters,
+    // then the `FromBytes` derive will fail compilation if `Self` is not
+    // actually soundly `FromBytes`, and so we can rely on that for our
+    // `is_bit_valid` impl. It's plausible that we could make changes - or Rust
+    // could make changes (such as the "trivial bounds" language feature) - that
+    // make this no longer true. To hedge against these, we include an explicit
+    // `Self: FromBytes` check in the generated `is_bit_valid`, which is
+    // bulletproof.
+    if top_level == Trait::FromBytes && ast.generics.params.is_empty() {
+        Some(quote!(
+            // SAFETY: See inline.
+            fn is_bit_valid<A>(candidate: ::zerocopy::Maybe<Self, A>) -> bool
+            where
+                A: ::zerocopy::pointer::invariant::Aliasing
+                    + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+            {
+                if false {
+                    fn assert_is_from_bytes<T>()
+                    where
+                        T: ::zerocopy::FromBytes,
+                        T: ?::zerocopy::macro_util::core_reexport::marker::Sized,
+                    {
+                    }
+
+                    assert_is_from_bytes::<Self>();
+                }
+
+                // SAFETY: The preceding code only compiles if `Self: FromBytes`.
+                // Thus, this code only compiles if all initialized byte sequences
+                // represent valid instances of `Self`.
+                true
+            }
+        ))
     } else {
-        quote!(
-            use ::zerocopy::macro_util::core_reexport;
-            // SAFETY:
-            // - The closure is a pointer cast, and `Self` and `[u8;
-            //   size_of::<Self>()]` have the same size, so the returned pointer
-            //   addresses the same bytes as `p` subset of the bytes addressed
-            //   by `slf`
-            // - ..., and so it preserves provenance
-            // - Since we validate that this type is a field-less enum, it
-            //   cannot contain any `UnsafeCell`s. Neither does `[u8; N]`.
-            let discriminant = unsafe { candidate.cast_unsized(|p: *mut Self| p as *mut [core_reexport::primitive::u8; core_reexport::mem::size_of::<Self>()]) };
-            // SAFETY: Since `candidate` has the invariant `Initialized`, we
-            // know that `candidate`'s referent (and thus `discriminant`'s
-            // referent) are fully initialized. Since all of the allowed `repr`s
-            // are types for which all bytes are always initialized, we know
-            // that `discriminant`'s referent has all of its bytes initialized.
-            // Since `[u8; N]`'s validity invariant is just that all of its
-            // bytes are initialized, we know that `discriminant`'s referent is
-            // bit-valid.
-            let discriminant = unsafe { discriminant.assume_valid() };
-            let discriminant = discriminant.read_unaligned();
+        None
+    }
+}
 
-            false #(|| {
-                let v = Self::#variant_names{};
-                // SAFETY: All of the allowed `repr`s for `Self` guarantee that
-                // `Self`'s discriminant bytes are all initialized. Since we
-                // validate that `Self` has no fields, it has no bytes other
-                // than the discriminant. Thus, it is sound to transmute any
-                // instance of `Self` to `[u8; size_of::<Self>()]`.
-                let d: [core_reexport::primitive::u8; core_reexport::mem::size_of::<Self>()] = unsafe { core_reexport::mem::transmute(v) };
-                // SAFETY: Here we check that the bits of the argument
-                // `candidate` are equal to the bits of a `Self` constructed
-                // using safe code. If this condition passes, then we know that
-                // `candidate` refers to a bit-valid `Self`.
-                discriminant == d
-            })*
-        )
-    };
-
-    let extras = Some(quote!(
-        // SAFETY: We use `is_bit_valid` to validate that the bit pattern
-        // corresponds to one of the field-less enum's variant discriminants.
-        // Thus, this is a sound implementation of `is_bit_valid`.
-        fn is_bit_valid<A: ::zerocopy::pointer::invariant::Aliasing + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>>(
-            candidate: ::zerocopy::Ptr<
-                '_,
-                Self,
-                (
-                    A,
-                    ::zerocopy::pointer::invariant::Any,
-                    ::zerocopy::pointer::invariant::Initialized,
-                ),
-            >,
-        ) -> ::zerocopy::macro_util::core_reexport::primitive::bool {
-            #is_bit_valid_body
+/// Generates a `TryFromBytes::is_bit_valid` instance that unconditionally
+/// returns true.
+///
+/// This should be used where possible. Using this impl is faster to codegen,
+/// faster to compile, and is friendlier on the optimizer.
+///
+/// # Safety
+///
+/// The caller must ensure that all initialized bit patterns are valid for
+/// `Self`.
+unsafe fn gen_trivial_is_bit_valid_unchecked() -> proc_macro2::TokenStream {
+    quote!(
+        // SAFETY: The caller of `gen_trivial_is_bit_valid_unchecked` has
+        // promised that all initialized bit patterns are valid for `Self`.
+        fn is_bit_valid<A>(candidate: ::zerocopy::Maybe<Self, A>) -> bool
+        where
+            A: ::zerocopy::pointer::invariant::Aliasing
+                + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+        {
+            true
         }
-    ));
-    impl_block(ast, enm, Trait::TryFromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, extras)
+    )
 }
 
 #[rustfmt::skip]

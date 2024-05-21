@@ -270,3 +270,164 @@ error[E0277]: the trait bound `UnsafeCell<u8>: Immutable` is not satisfied
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `FromBytes1: FromBytes` is not satisfied
+   --> tests/ui-stable/enum.rs:105:10
+    |
+105 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `FromBytes1`
+    |
+    = help: the following other types implement trait `FromBytes`:
+              isize
+              i8
+              i16
+              i32
+              i64
+              i128
+              usize
+              u8
+            and $N others
+note: required by a bound in `<FromBytes1 as TryFromBytes>::is_bit_valid::assert_is_from_bytes`
+   --> tests/ui-stable/enum.rs:105:10
+    |
+105 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ required by this bound in `assert_is_from_bytes`
+    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `FromBytes2: FromBytes` is not satisfied
+   --> tests/ui-stable/enum.rs:111:10
+    |
+111 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `FromBytes2`
+    |
+    = help: the following other types implement trait `FromBytes`:
+              isize
+              i8
+              i16
+              i32
+              i64
+              i128
+              usize
+              u8
+            and $N others
+note: required by a bound in `<FromBytes2 as TryFromBytes>::is_bit_valid::assert_is_from_bytes`
+   --> tests/ui-stable/enum.rs:111:10
+    |
+111 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ required by this bound in `assert_is_from_bytes`
+    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `FromBytes3: FromBytes` is not satisfied
+   --> tests/ui-stable/enum.rs:117:10
+    |
+117 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `FromBytes3`
+    |
+    = help: the following other types implement trait `FromBytes`:
+              isize
+              i8
+              i16
+              i32
+              i64
+              i128
+              usize
+              u8
+            and $N others
+note: required by a bound in `<FromBytes3 as TryFromBytes>::is_bit_valid::assert_is_from_bytes`
+   --> tests/ui-stable/enum.rs:117:10
+    |
+117 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ required by this bound in `assert_is_from_bytes`
+    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `FromBytes4: FromBytes` is not satisfied
+   --> tests/ui-stable/enum.rs:123:10
+    |
+123 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `FromBytes4`
+    |
+    = help: the following other types implement trait `FromBytes`:
+              isize
+              i8
+              i16
+              i32
+              i64
+              i128
+              usize
+              u8
+            and $N others
+note: required by a bound in `<FromBytes4 as TryFromBytes>::is_bit_valid::assert_is_from_bytes`
+   --> tests/ui-stable/enum.rs:123:10
+    |
+123 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ required by this bound in `assert_is_from_bytes`
+    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `FromBytes5: FromBytes` is not satisfied
+   --> tests/ui-stable/enum.rs:129:10
+    |
+129 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `FromBytes5`
+    |
+    = help: the following other types implement trait `FromBytes`:
+              isize
+              i8
+              i16
+              i32
+              i64
+              i128
+              usize
+              u8
+            and $N others
+note: required by a bound in `<FromBytes5 as TryFromBytes>::is_bit_valid::assert_is_from_bytes`
+   --> tests/ui-stable/enum.rs:129:10
+    |
+129 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ required by this bound in `assert_is_from_bytes`
+    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `FromBytes6: FromBytes` is not satisfied
+   --> tests/ui-stable/enum.rs:135:10
+    |
+135 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `FromBytes6`
+    |
+    = help: the following other types implement trait `FromBytes`:
+              isize
+              i8
+              i16
+              i32
+              i64
+              i128
+              usize
+              u8
+            and $N others
+note: required by a bound in `<FromBytes6 as TryFromBytes>::is_bit_valid::assert_is_from_bytes`
+   --> tests/ui-stable/enum.rs:135:10
+    |
+135 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ required by this bound in `assert_is_from_bytes`
+    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `FromBytes7: FromBytes` is not satisfied
+   --> tests/ui-stable/enum.rs:141:10
+    |
+141 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `FromBytes7`
+    |
+    = help: the following other types implement trait `FromBytes`:
+              isize
+              i8
+              i16
+              i32
+              i64
+              i128
+              usize
+              u8
+            and $N others
+note: required by a bound in `<FromBytes7 as TryFromBytes>::is_bit_valid::assert_is_from_bytes`
+   --> tests/ui-stable/enum.rs:141:10
+    |
+141 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ required by this bound in `assert_is_from_bytes`
+    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)

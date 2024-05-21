@@ -111,6 +111,33 @@ fn bool_and_zst() {
     assert!(is_bit_valid);
 }
 
+#[derive(imp::FromBytes)]
+#[repr(C)]
+union MaybeFromBytes<T: imp::Copy> {
+    t: T,
+}
+
+#[test]
+fn test_maybe_from_bytes() {
+    // When deriving `FromBytes` on a type with no generic parameters, we emit a
+    // trivial `is_bit_valid` impl that always returns true. This test confirms
+    // that we *don't* spuriously do that when generic parameters are present.
+
+    let candidate = ::zerocopy::Ptr::from_ref(&[2u8][..]);
+
+    // SAFETY:
+    // - The cast preserves address and size. As a result, the cast will address
+    //   the same bytes as `c`.
+    // - The cast preserves provenance.
+    // - Neither the input nor output types contain any `UnsafeCell`s.
+    let candidate = unsafe { candidate.cast_unsized(|p| p as *mut MaybeFromBytes<bool>) };
+
+    // SAFETY: `[u8]` consists entirely of initialized bytes.
+    let candidate = unsafe { candidate.assume_initialized() };
+    let is_bit_valid = <MaybeFromBytes<bool> as imp::TryFromBytes>::is_bit_valid(candidate);
+    imp::assert!(!is_bit_valid);
+}
+
 #[derive(imp::Immutable, imp::FromBytes)]
 #[repr(C)]
 union TypeParams<'a, T: imp::Copy, I: imp::Iterator>

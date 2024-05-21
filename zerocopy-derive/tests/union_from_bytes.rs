@@ -21,6 +21,7 @@ union Zst {
 }
 
 util_assert_impl_all!(Zst: imp::FromBytes);
+test_trivial_is_bit_valid!(Zst => test_zst_trivial_is_bit_valid);
 
 #[derive(imp::Immutable, imp::FromBytes)]
 union One {
@@ -28,6 +29,7 @@ union One {
 }
 
 util_assert_impl_all!(One: imp::FromBytes);
+test_trivial_is_bit_valid!(One => test_one_trivial_is_bit_valid);
 
 #[derive(imp::Immutable, imp::FromBytes)]
 union Two {
@@ -36,6 +38,7 @@ union Two {
 }
 
 util_assert_impl_all!(Two: imp::FromBytes);
+test_trivial_is_bit_valid!(Two => test_two_trivial_is_bit_valid);
 
 #[derive(imp::Immutable, imp::FromBytes)]
 union TypeParams<'a, T: imp::Copy, I: imp::Iterator>
@@ -51,6 +54,7 @@ where
 }
 
 util_assert_impl_all!(TypeParams<'static, (), imp::IntoIter<()>>: imp::FromBytes);
+test_trivial_is_bit_valid!(TypeParams<'static, (), imp::IntoIter<()>> => test_type_params_trivial_is_bit_valid);
 
 // Deriving `imp::FromBytes` should work if the union has bounded parameters.
 
@@ -67,3 +71,4 @@ where
 }
 
 util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::FromBytes);
+test_trivial_is_bit_valid!(WithParams<'static, 'static, u8, 42> => test_with_params_trivial_is_bit_valid);
