@@ -9,6 +9,7 @@
 // See comment in `include.rs` for why we disable the prelude.
 #![no_implicit_prelude]
 #![allow(warnings)]
+#![deny(deprecated)]
 
 include!("include.rs");
 
@@ -29,6 +30,8 @@ include!("include.rs");
 // `Variant128` has a discriminant of -128) since Rust won't automatically wrap
 // a signed discriminant around without you explicitly telling it to.
 
+// Make sure no deprecation warning is generated from our derive (see #553).
+#[deprecated = "do not use"]
 #[derive(imp::FromBytes)]
 #[repr(u8)]
 enum FooU8 {
@@ -290,7 +293,10 @@ enum FooU8 {
     Variant255,
 }
 
-util_assert_impl_all!(FooU8: imp::FromBytes);
+#[allow(deprecated)]
+fn _allow_deprecated() {
+    util_assert_impl_all!(FooU8: imp::FromBytes);
+}
 
 #[derive(imp::FromBytes)]
 #[repr(i8)]
