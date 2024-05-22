@@ -35,7 +35,7 @@ note: required by a bound in `MaxAlignsOf`
    |
    | pub union MaxAlignsOf<T, U> {
    |                          ^ required by this bound in `MaxAlignsOf`
-   = note: this error originates in the macro `$crate::assert_align_gt_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::unsafe_assert_align_gt_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-msrv/transmute-mut-dst-unsized.rs:17:32
@@ -49,7 +49,7 @@ note: required by a bound in `transmute`
    |
    |     pub fn transmute<T, U>(e: T) -> U;
    |                         ^ required by this bound in `transmute`
-   = note: this error originates in the macro `$crate::assert_size_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::unsafe_assert_size_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-msrv/transmute-mut-dst-unsized.rs:17:32
@@ -63,7 +63,7 @@ note: required by `MaxAlignsOf::<T, U>::new`
    |
    |     pub fn new(_t: T, _u: U) -> MaxAlignsOf<T, U> {
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   = note: this error originates in the macro `$crate::assert_align_gt_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::unsafe_assert_align_gt_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-msrv/transmute-mut-dst-unsized.rs:17:32
@@ -77,7 +77,7 @@ note: required by a bound in `MaxAlignsOf`
    |
    | pub union MaxAlignsOf<T, U> {
    |                          ^ required by this bound in `MaxAlignsOf`
-   = note: this error originates in the macro `$crate::assert_align_gt_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::unsafe_assert_align_gt_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-msrv/transmute-mut-dst-unsized.rs:17:32

@@ -4321,6 +4321,13 @@ macro_rules! transmute {
         // to enforce this so long as the types are concrete.
 
         let e = $e;
+
+        #[allow(unknown_lints)]
+        // This code's soundness depends upon the inferred types being the
+        // correct ones. This lint catches cases in which that behavior is
+        // implicitly violated. We have no reason to expect it to happen - none
+        // of this code diverges, producing the never type - but it's a hedge.
+        #[deny(never_type_fallback_flowing_into_unsafe)]
         if false {
             // This branch, though never taken, ensures that the type of `e` is
             // `IntoBytes` and that the type of this macro invocation expression
@@ -4439,7 +4446,12 @@ macro_rules! transmute_ref {
         // (note that mutable references are implicitly reborrowed here).
         let e: &_ = $e;
 
-        #[allow(unused, clippy::diverging_sub_expression)]
+        #[allow(unused, unknown_lints, clippy::diverging_sub_expression)]
+        // This code's soundness depends upon the inferred types being the
+        // correct ones. This lint catches cases in which that behavior is
+        // implicitly violated. We have no reason to expect it to happen - none
+        // of this code diverges, producing the never type - but it's a hedge.
+        #[deny(never_type_fallback_flowing_into_unsafe)]
         if false {
             // This branch, though never taken, ensures that the type of `e` is
             // `&T` where `T: 't + Sized + IntoBytes + Immutable`, that the type of
@@ -4484,8 +4496,11 @@ macro_rules! transmute_ref {
             // value returned from this branch.
             let u;
 
-            $crate::assert_size_eq!(t, u);
-            $crate::assert_align_gt_eq!(t, u);
+            // SAFETY: This branch is never executed.
+            unsafe { $crate::unsafe_assert_size_eq!(t, u) };
+
+            // SAFETY: This branch is never executed.
+            unsafe { $crate::unsafe_assert_align_gt_eq!(t, u) };
 
             &u
         } else {
@@ -4586,7 +4601,12 @@ macro_rules! transmute_mut {
         // Ensure that the source type is a mutable reference.
         let e: &mut _ = $e;
 
-        #[allow(unused, clippy::diverging_sub_expression)]
+        #[allow(unused, unknown_lints, clippy::diverging_sub_expression)]
+        // This code's soundness depends upon the inferred types being the
+        // correct ones. This lint catches cases in which that behavior is
+        // implicitly violated. We have no reason to expect it to happen - none
+        // of this code diverges, producing the never type - but it's a hedge.
+        #[deny(never_type_fallback_flowing_into_unsafe)]
         if false {
             // This branch, though never taken, ensures that the type of `e` is
             // `&mut T` where `T: 't + Sized + FromBytes + IntoBytes + Immutable`
@@ -4640,8 +4660,11 @@ macro_rules! transmute_mut {
             // the value returned from this branch.
             let u;
 
-            $crate::assert_size_eq!(t, u);
-            $crate::assert_align_gt_eq!(t, u);
+            // SAFETY: This branch is never executed.
+            unsafe { $crate::unsafe_assert_size_eq!(t, u) };
+
+            // SAFETY: This branch is never executed.
+            unsafe { $crate::unsafe_assert_align_gt_eq!(t, u) };
 
             &mut u
         } else {
@@ -4710,6 +4733,13 @@ macro_rules! try_transmute {
         // to enforce this so long as the types are concrete.
 
         let e = $e;
+
+        #[allow(unknown_lints)]
+        // This code's soundness depends upon the inferred types being the
+        // correct ones. This lint catches cases in which that behavior is
+        // implicitly violated. We have no reason to expect it to happen - none
+        // of this code diverges, producing the never type - but it's a hedge.
+        #[deny(never_type_fallback_flowing_into_unsafe)]
         if false {
             // Check that the sizes of the source and destination types are
             // equal.

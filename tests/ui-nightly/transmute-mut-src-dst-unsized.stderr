@@ -72,7 +72,7 @@ note: required by a bound in `AlignOf::<T>::into_t`
 ...
    |     pub fn into_t(self) -> T {
    |            ------ required by a bound in this associated function
-   = note: this error originates in the macro `$crate::assert_align_gt_eq` which comes from the expansion of the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::unsafe_assert_align_gt_eq` which comes from the expansion of the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-nightly/transmute-mut-src-dst-unsized.rs:17:36
@@ -82,7 +82,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    |
    = help: the trait `Sized` is not implemented for `[u8]`
    = note: the left-hand-side of an assignment must have a statically known size
-   = note: this error originates in the macro `$crate::assert_align_gt_eq` which comes from the expansion of the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::unsafe_assert_align_gt_eq` which comes from the expansion of the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-nightly/transmute-mut-src-dst-unsized.rs:17:36
@@ -96,7 +96,7 @@ note: required by an implicit `Sized` bound in `AlignOf`
    |
    | pub struct AlignOf<T> {
    |                    ^ required by the implicit `Sized` requirement on this type parameter in `AlignOf`
-   = note: this error originates in the macro `$crate::assert_align_gt_eq` which comes from the expansion of the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::unsafe_assert_align_gt_eq` which comes from the expansion of the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-nightly/transmute-mut-src-dst-unsized.rs:17:36
@@ -110,7 +110,7 @@ note: required by an implicit `Sized` bound in `MaxAlignsOf`
    |
    | pub union MaxAlignsOf<T, U> {
    |                       ^ required by the implicit `Sized` requirement on this type parameter in `MaxAlignsOf`
-   = note: this error originates in the macro `$crate::assert_align_gt_eq` which comes from the expansion of the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::unsafe_assert_align_gt_eq` which comes from the expansion of the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-nightly/transmute-mut-src-dst-unsized.rs:17:36
@@ -124,7 +124,7 @@ note: required by an implicit `Sized` bound in `AlignOf`
    |
    | pub struct AlignOf<T> {
    |                    ^ required by the implicit `Sized` requirement on this type parameter in `AlignOf`
-   = note: this error originates in the macro `$crate::assert_align_gt_eq` which comes from the expansion of the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::unsafe_assert_align_gt_eq` which comes from the expansion of the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-nightly/transmute-mut-src-dst-unsized.rs:17:36
@@ -149,7 +149,7 @@ note: required by an implicit `Sized` bound in `transmute`
    |
    |     pub fn transmute<Src, Dst>(src: Src) -> Dst;
    |                           ^^^ required by the implicit `Sized` requirement on this type parameter in `transmute`
-   = note: this error originates in the macro `$crate::assert_size_eq` which comes from the expansion of the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::unsafe_assert_size_eq` which comes from the expansion of the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-nightly/transmute-mut-src-dst-unsized.rs:17:36

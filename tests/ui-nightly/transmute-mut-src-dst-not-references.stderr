@@ -13,3 +13,19 @@ help: consider mutably borrowing here
    |
 17 | const SRC_DST_NOT_REFERENCES: &mut usize = transmute_mut!(&mut 0usize);
    |                                                           ++++
+
+error: never type fallback affects this call to an `unsafe` function
+  --> tests/ui-nightly/transmute-mut-src-dst-not-references.rs:17:44
+   |
+17 | const SRC_DST_NOT_REFERENCES: &mut usize = transmute_mut!(0usize);
+   |                                            ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = warning: this will change its meaning in a future release!
+   = note: for more information, see issue #123748 <https://github.com/rust-lang/rust/issues/123748>
+   = help: specify the type explicitly
+note: the lint level is defined here
+  --> tests/ui-nightly/transmute-mut-src-dst-not-references.rs:17:44
+   |
+17 | const SRC_DST_NOT_REFERENCES: &mut usize = transmute_mut!(0usize);
+   |                                            ^^^^^^^^^^^^^^^^^^^^^^
+   = note: this error originates in the macro `$crate::unsafe_assert_size_eq` which comes from the expansion of the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)

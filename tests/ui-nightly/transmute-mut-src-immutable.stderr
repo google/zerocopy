@@ -9,3 +9,19 @@ error[E0308]: mismatched types
    |
    = note: expected mutable reference `&mut _`
                       found reference `&u8`
+
+error: never type fallback affects this call to an `unsafe` function
+  --> tests/ui-nightly/transmute-mut-src-immutable.rs:17:22
+   |
+17 |     let _: &mut u8 = transmute_mut!(&0u8);
+   |                      ^^^^^^^^^^^^^^^^^^^^
+   |
+   = warning: this will change its meaning in a future release!
+   = note: for more information, see issue #123748 <https://github.com/rust-lang/rust/issues/123748>
+   = help: specify the type explicitly
+note: the lint level is defined here
+  --> tests/ui-nightly/transmute-mut-src-immutable.rs:17:22
+   |
+17 |     let _: &mut u8 = transmute_mut!(&0u8);
+   |                      ^^^^^^^^^^^^^^^^^^^^
+   = note: this error originates in the macro `$crate::unsafe_assert_size_eq` which comes from the expansion of the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
