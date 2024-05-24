@@ -618,7 +618,7 @@ unsafe impl<T: TryFromBytes> TryFromBytes for UnsafeCell<T> {
         // invariant `Initialized`. Our safety proof depends upon this
         // invariant, and it might change at some point. If that happens, we
         // want this function to stop compiling.
-        let _: Ptr<'_, UnsafeCell<T>, (_, _, invariant::Initialized)> = candidate;
+        let _: Ptr<'_, UnsafeCell<T>, (_, _, invariant::Initialized, _)> = candidate;
 
         // SAFETY: Since `UnsafeCell<T>` and `T` have the same layout and bit
         // validity, `UnsafeCell<T>` is bit-valid exactly when its wrapped `T`
@@ -1273,7 +1273,7 @@ mod tests {
                     // necessarily `IntoBytes`, but that's the corner we've
                     // backed ourselves into by using `Ptr::from_ref`.
                     let c = unsafe { c.assume_initialized() };
-                    let res = w.test_is_bit_valid_shared(c);
+                    let res = w.test_is_bit_valid_shared(c.forget_source());
                     if let Some(res) = res {
                         assert!(res, "{}::is_bit_valid({:?}) (shared `Ptr`): got false, expected true", stringify!($ty), val);
                     }
@@ -1284,7 +1284,7 @@ mod tests {
                     // necessarily `IntoBytes`, but that's the corner we've
                     // backed ourselves into by using `Ptr::from_ref`.
                     let c = unsafe { c.assume_initialized() };
-                    let res = <$ty as TryFromBytes>::is_bit_valid(c);
+                    let res = <$ty as TryFromBytes>::is_bit_valid(c.forget_source());
                     assert!(res, "{}::is_bit_valid({:?}) (exclusive `Ptr`): got false, expected true", stringify!($ty), val);
 
                     // `bytes` is `Some(val.as_bytes())` if `$ty: IntoBytes +
