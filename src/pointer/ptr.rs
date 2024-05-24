@@ -94,7 +94,7 @@ mod def {
         ///   [`I::Alignment`](invariant::Alignment).
         /// 8. `ptr` conforms to the validity invariant of
         ///   [`I::Validity`](invariant::Validity).
-        pub(super) unsafe fn new(ptr: NonNull<T>) -> Ptr<'a, T, I> {
+        pub(crate) unsafe fn new(ptr: NonNull<T>) -> Ptr<'a, T, I> {
             // SAFETY: The caller has promised to satisfy all safety invariants
             // of `Ptr`.
             Self { ptr, _invariants: PhantomData }
@@ -289,6 +289,17 @@ pub mod invariant {
                 /// The referent is bit-valid for `T`.
                 Valid,
             }
+
+            // TODO: This name needs to convey both the source and the idea that
+            // this is *the* owner. For example, if we reborrow a Ptr whose
+            // source is Box, we can't let the generated Ptr be converted back
+            // into a Box
+            Source {
+                Ref,
+                Mut,
+                Box,
+                Arc,
+            }
         }
     }
 }
@@ -346,7 +357,7 @@ mod _conversions {
     use crate::util::{AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance};
 
     /// `&'a T` → `Ptr<'a, T>`
-    impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
+    impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid, Ref)>
     where
         T: 'a + ?Sized,
     {
@@ -379,7 +390,7 @@ mod _conversions {
     }
 
     /// `&'a mut T` → `Ptr<'a, T>`
-    impl<'a, T> Ptr<'a, T, (Exclusive, Aligned, Valid)>
+    impl<'a, T> Ptr<'a, T, (Exclusive, Aligned, Valid, Mut)>
     where
         T: 'a + ?Sized,
     {
@@ -512,9 +523,10 @@ mod _conversions {
     }
 
     /// `Ptr<'a, T>` → `&'a mut T`
-    impl<'a, T> Ptr<'a, T, (Exclusive, Aligned, Valid)>
+    impl<'a, T, I> Ptr<'a, T, I>
     where
         T: 'a + ?Sized,
+        I: Invariants<Aliasing = Exclusive, Alignment = Aligned, Validity = Valid>,
     {
         /// Converts `self` to a mutable reference.
         #[allow(clippy::wrong_self_convention)]
@@ -566,6 +578,7 @@ mod _conversions {
                 I::Aliasing,
                 <T::AlignmentVariance as AlignmentVariance<I::Alignment>>::Applied,
                 <T::ValidityVariance as ValidityVariance<I::Validity>>::Applied,
+                Any, // TODO: Maybe this can preserve the original source? Would permit e.g. Box<Wrapping<T>> -> Box<T>
             ),
         > {
             // SAFETY:
@@ -604,7 +617,7 @@ mod _conversions {
         /// `Unalign<T>`.
         pub(crate) fn into_unalign(
             self,
-        ) -> Ptr<'a, crate::Unalign<T>, (I::Aliasing, Aligned, I::Validity)> {
+        ) -> Ptr<'a, crate::Unalign<T>, (I::Aliasing, Aligned, I::Validity, Any)> {
             // SAFETY:
             // - This cast preserves provenance.
             // - This cast preserves address. `Unalign<T>` promises to have the
@@ -647,7 +660,7 @@ mod _transitions {
         #[inline]
         pub(crate) fn into_exclusive_or_post_monomorphization_error(
             self,
-        ) -> Ptr<'a, T, (Exclusive, I::Alignment, I::Validity)> {
+        ) -> Ptr<'a, T, (Exclusive, I::Alignment, I::Validity, I::Source)> {
             trait AliasingExt: Aliasing {
                 const IS_EXCLUSIVE: bool;
             }
@@ -714,7 +727,7 @@ mod _transitions {
         #[inline]
         pub(crate) unsafe fn assume_aliasing<A: Aliasing>(
             self,
-        ) -> Ptr<'a, T, (A, I::Alignment, I::Validity)> {
+        ) -> Ptr<'a, T, (A, I::Alignment, I::Validity, I::Source)> {
             // SAFETY: The caller promises that `self` satisfies the aliasing
             // requirements of `A`.
             unsafe { self.assume_invariants() }
@@ -731,7 +744,7 @@ mod _transitions {
         #[inline]
         pub(crate) unsafe fn assume_exclusive(
             self,
-        ) -> Ptr<'a, T, (Exclusive, I::Alignment, I::Validity)> {
+        ) -> Ptr<'a, T, (Exclusive, I::Alignment, I::Validity, I::Source)> {
             // SAFETY: The caller promises that `self` satisfies the aliasing
             // requirements of `Exclusive`.
             unsafe { self.assume_aliasing::<Exclusive>() }
@@ -747,9 +760,17 @@ mod _transitions {
         #[inline]
         pub(crate) unsafe fn assume_alignment<A: Alignment>(
             self,
-        ) -> Ptr<'a, T, (I::Aliasing, A, I::Validity)> {
+        ) -> Ptr<'a, T, (I::Aliasing, A, I::Validity, I::Source)> {
             // SAFETY: The caller promises that `self`'s referent is
             // well-aligned for `T` if required by `A` .
+            unsafe { self.assume_invariants() }
+        }
+
+        /// TODO
+        #[inline]
+        pub(crate) unsafe fn assume_source<S: Source>(
+            self,
+        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, I::Validity, S)> {
             unsafe { self.assume_invariants() }
         }
 
@@ -757,7 +778,10 @@ mod _transitions {
         /// on success.
         pub(crate) fn bikeshed_try_into_aligned(
             self,
-        ) -> Result<Ptr<'a, T, (I::Aliasing, Aligned, I::Validity)>, AlignmentError<Self, T>>
+        ) -> Result<
+            Ptr<'a, T, (I::Aliasing, Aligned, I::Validity, I::Source)>,
+            AlignmentError<Self, T>,
+        >
         where
             T: Sized,
         {
@@ -775,7 +799,7 @@ mod _transitions {
         // public.
         pub(crate) fn bikeshed_recall_aligned(
             self,
-        ) -> Ptr<'a, T, (I::Aliasing, Aligned, I::Validity)>
+        ) -> Ptr<'a, T, (I::Aliasing, Aligned, I::Validity, I::Source)>
         where
             T: crate::Unaligned,
         {
@@ -796,7 +820,7 @@ mod _transitions {
         #[inline]
         pub unsafe fn assume_validity<V: Validity>(
             self,
-        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, V)> {
+        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, V, I::Source)> {
             // SAFETY: The caller promises that `self`'s referent conforms to
             // the validity requirement of `V`.
             unsafe { self.assume_invariants() }
@@ -813,7 +837,7 @@ mod _transitions {
         #[inline]
         pub unsafe fn assume_initialized(
             self,
-        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Initialized)> {
+        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Initialized, I::Source)> {
             // SAFETY: The caller has promised to uphold the safety
             // preconditions.
             unsafe { self.assume_validity::<Initialized>() }
@@ -828,7 +852,9 @@ mod _transitions {
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        pub unsafe fn assume_valid(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)> {
+        pub unsafe fn assume_valid(
+            self,
+        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid, I::Source)> {
             // SAFETY: The caller has promised to uphold the safety
             // preconditions.
             unsafe { self.assume_validity::<Valid>() }
@@ -838,7 +864,9 @@ mod _transitions {
         #[inline]
         // TODO(#859): Reconsider the name of this method before making it
         // public.
-        pub(crate) fn bikeshed_recall_valid(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>
+        pub(crate) fn bikeshed_recall_valid(
+            self,
+        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid, I::Source)>
         where
             T: crate::FromBytes,
             I: Invariants<Validity = Initialized>,
@@ -865,7 +893,7 @@ mod _transitions {
         #[inline]
         pub(crate) fn try_into_valid(
             mut self,
-        ) -> Result<Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>, ValidityError<Self, T>>
+        ) -> Result<Ptr<'a, T, (I::Aliasing, I::Alignment, Valid, I::Source)>, ValidityError<Self, T>>
         where
             T: TryFromBytes,
             I::Aliasing: AtLeast<Shared>,
@@ -874,7 +902,7 @@ mod _transitions {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
             // fix before returning.
-            if T::is_bit_valid(self.reborrow().forget_aligned()) {
+            if T::is_bit_valid(self.reborrow().forget_aligned().forget_source()) {
                 // SAFETY: If `T::is_bit_valid`, code may assume that `self`
                 // contains a bit-valid instance of `Self`.
                 Ok(unsafe { self.assume_valid() })
@@ -888,7 +916,7 @@ mod _transitions {
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        pub fn forget_exclusive(self) -> Ptr<'a, T, (Shared, I::Alignment, I::Validity)>
+        pub fn forget_exclusive(self) -> Ptr<'a, T, (Shared, I::Alignment, I::Validity, I::Source)>
         where
             I::Aliasing: AtLeast<Shared>,
         {
@@ -900,8 +928,17 @@ mod _transitions {
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        pub fn forget_aligned(self) -> Ptr<'a, T, (I::Aliasing, Any, I::Validity)> {
+        pub fn forget_aligned(self) -> Ptr<'a, T, (I::Aliasing, Any, I::Validity, I::Source)> {
             // SAFETY: `Any` is less restrictive than `Aligned`.
+            unsafe { self.assume_invariants() }
+        }
+
+        /// TODO
+        #[doc(hidden)]
+        #[must_use]
+        #[inline]
+        pub fn forget_source(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, I::Validity, Any)> {
+            // SAFETY: `Any` is less restrictive than `I::Source`.
             unsafe { self.assume_invariants() }
         }
     }
@@ -937,7 +974,7 @@ mod _casts {
         pub unsafe fn cast_unsized<U: 'a + ?Sized, F: FnOnce(*mut T) -> *mut U>(
             self,
             cast: F,
-        ) -> Ptr<'a, U, (I::Aliasing, Any, Any)> {
+        ) -> Ptr<'a, U, (I::Aliasing, Any, Any, Any)> {
             let ptr = cast(self.as_non_null().as_ptr());
 
             // SAFETY: Caller promises that `cast` returns a pointer whose
@@ -1003,7 +1040,7 @@ mod _casts {
     {
         /// Casts this pointer-to-initialized into a pointer-to-bytes.
         #[allow(clippy::wrong_self_convention)]
-        pub(crate) fn as_bytes<R>(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Valid)>
+        pub(crate) fn as_bytes<R>(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Valid, I::Source)>
         where
             [u8]: AliasingSafe<T, I::Aliasing, R>,
             R: AliasingSafeReason,
@@ -1035,6 +1072,8 @@ mod _casts {
             };
 
             let ptr = ptr.bikeshed_recall_aligned();
+
+            let ptr = unsafe { ptr.assume_source() };
 
             // SAFETY: `ptr`'s referent begins as `Initialized`, denoting that
             // all bytes of the referent are initialized bytes. The referent
@@ -1131,7 +1170,7 @@ mod _casts {
             cast_type: CastType,
             meta: Option<U::PointerMetadata>,
         ) -> Result<
-            (Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, Ptr<'a, [u8], I>),
+            (Ptr<'a, U, (I::Aliasing, Aligned, Initialized, Any)>, Ptr<'a, [u8], I>),
             CastError<Self, U>,
         >
         where
@@ -1244,7 +1283,8 @@ mod _casts {
         pub(crate) fn try_cast_into_no_leftover<U, R>(
             self,
             meta: Option<U::PointerMetadata>,
-        ) -> Result<Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, CastError<Self, U>>
+            // TODO: We should be able to do I::Source here since we validate internally that the referent bytes are identical
+        ) -> Result<Ptr<'a, U, (I::Aliasing, Aligned, Initialized, Any)>, CastError<Self, U>>
         where
             U: 'a + ?Sized + KnownLayout + AliasingSafe<[u8], I::Aliasing, R>,
             R: AliasingSafeReason,
@@ -1301,7 +1341,7 @@ mod _project {
         pub unsafe fn project<U: 'a + ?Sized>(
             self,
             projector: impl FnOnce(*mut T) -> *mut U,
-        ) -> Ptr<'a, U, (I::Aliasing, Any, Initialized)> {
+        ) -> Ptr<'a, U, (I::Aliasing, Any, Initialized, Any)> {
             // TODO(#1122): If `cast_unsized` were able to reason that, when
             // casting from an `Initialized` pointer, the result is another
             // `Initialized` pointer, we could remove this method entirely.
@@ -1568,7 +1608,7 @@ mod tests {
 
                     // SAFETY: The bytes in `slf` must be initialized.
                     unsafe fn validate_and_get_len<T: ?Sized + KnownLayout + FromBytes>(
-                        slf: Ptr<'_, T, (Shared, Aligned, Initialized)>,
+                        slf: Ptr<'_, T, (Shared, Aligned, Initialized, Any)>,
                     ) -> usize {
                         let t = slf.bikeshed_recall_valid().as_ref();
 
