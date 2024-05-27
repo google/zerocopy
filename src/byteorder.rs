@@ -189,9 +189,9 @@ macro_rules! impl_fmt_traits {
 }
 
 macro_rules! impl_ops_traits {
-    ($name:ident, $native:ident, "floating point number") => {
-        impl_ops_traits!($name, $native, @all_types);
-        impl_ops_traits!($name, $native, @signed_integer_floating_point);
+    ($name:ident, $native:ident, $from_ne_fn:path, $to_ne_fn:path, "floating point number") => {
+        impl_ops_traits!($name, $native, $from_ne_fn, $to_ne_fn, @all_types);
+        impl_ops_traits!($name, $native, $from_ne_fn, $to_ne_fn, @signed_integer_floating_point);
 
         impl<O: ByteOrder> PartialOrd for $name<O> {
             #[inline(always)]
@@ -200,29 +200,29 @@ macro_rules! impl_ops_traits {
             }
         }
     };
-    ($name:ident, $native:ident, "unsigned integer") => {
-        impl_ops_traits!($name, $native, @signed_unsigned_integer);
-        impl_ops_traits!($name, $native, @all_types);
+    ($name:ident, $native:ident, $from_ne_fn:path, $to_ne_fn:path, "unsigned integer") => {
+        impl_ops_traits!($name, $native, $from_ne_fn, $to_ne_fn, @signed_unsigned_integer);
+        impl_ops_traits!($name, $native, $from_ne_fn, $to_ne_fn, @all_types);
     };
-    ($name:ident, $native:ident, "signed integer") => {
-        impl_ops_traits!($name, $native, @signed_unsigned_integer);
-        impl_ops_traits!($name, $native, @signed_integer_floating_point);
-        impl_ops_traits!($name, $native, @all_types);
+    ($name:ident, $native:ident, $from_ne_fn:path, $to_ne_fn:path, "signed integer") => {
+        impl_ops_traits!($name, $native, $from_ne_fn, $to_ne_fn, @signed_unsigned_integer);
+        impl_ops_traits!($name, $native, $from_ne_fn, $to_ne_fn, @signed_integer_floating_point);
+        impl_ops_traits!($name, $native, $from_ne_fn, $to_ne_fn, @all_types);
     };
-    ($name:ident, $native:ident, @signed_unsigned_integer) => {
-        impl_ops_traits!(@without_byteorder_swap $name, $native, BitAnd, bitand, BitAndAssign, bitand_assign);
-        impl_ops_traits!(@without_byteorder_swap $name, $native, BitOr, bitor, BitOrAssign, bitor_assign);
-        impl_ops_traits!(@without_byteorder_swap $name, $native, BitXor, bitxor, BitXorAssign, bitxor_assign);
-        impl_ops_traits!(@with_byteorder_swap $name, $native, Shl, shl, ShlAssign, shl_assign);
-        impl_ops_traits!(@with_byteorder_swap $name, $native, Shr, shr, ShrAssign, shr_assign);
+    ($name:ident, $native:ident, $from_ne_fn:path, $to_ne_fn:path, @signed_unsigned_integer) => {
+        impl_ops_traits!(@without_byteorder_swap $name, $native, $from_ne_fn, $to_ne_fn, BitAnd, bitand, BitAndAssign, bitand_assign);
+        impl_ops_traits!(@without_byteorder_swap $name, $native, $from_ne_fn, $to_ne_fn, BitOr, bitor, BitOrAssign, bitor_assign);
+        impl_ops_traits!(@without_byteorder_swap $name, $native, $from_ne_fn, $to_ne_fn, BitXor, bitxor, BitXorAssign, bitxor_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, $from_ne_fn, $to_ne_fn, Shl, shl, ShlAssign, shl_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, $from_ne_fn, $to_ne_fn, Shr, shr, ShrAssign, shr_assign);
 
         impl<O> core::ops::Not for $name<O> {
             type Output = $name<O>;
 
             #[inline(always)]
             fn not(self) -> $name<O> {
-                 let self_native = $native::from_ne_bytes(self.0);
-                 $name((!self_native).to_ne_bytes(), PhantomData)
+                 let self_native = $from_ne_fn(self.0);
+                 $name($to_ne_fn(!self_native), PhantomData)
             }
         }
 
@@ -240,7 +240,7 @@ macro_rules! impl_ops_traits {
             }
         }
     };
-    ($name:ident, $native:ident, @signed_integer_floating_point) => {
+    ($name:ident, $native:ident, $from_ne_fn:path, $to_ne_fn:path, @signed_integer_floating_point) => {
         impl<O: ByteOrder> core::ops::Neg for $name<O> {
             type Output = $name<O>;
 
@@ -252,14 +252,14 @@ macro_rules! impl_ops_traits {
             }
         }
     };
-    ($name:ident, $native:ident, @all_types) => {
-        impl_ops_traits!(@with_byteorder_swap $name, $native, Add, add, AddAssign, add_assign);
-        impl_ops_traits!(@with_byteorder_swap $name, $native, Div, div, DivAssign, div_assign);
-        impl_ops_traits!(@with_byteorder_swap $name, $native, Mul, mul, MulAssign, mul_assign);
-        impl_ops_traits!(@with_byteorder_swap $name, $native, Rem, rem, RemAssign, rem_assign);
-        impl_ops_traits!(@with_byteorder_swap $name, $native, Sub, sub, SubAssign, sub_assign);
+    ($name:ident, $native:ident, $from_ne_fn:path, $to_ne_fn:path, @all_types) => {
+        impl_ops_traits!(@with_byteorder_swap $name, $native, $from_ne_fn, $to_ne_fn, Add, add, AddAssign, add_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, $from_ne_fn, $to_ne_fn, Div, div, DivAssign, div_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, $from_ne_fn, $to_ne_fn, Mul, mul, MulAssign, mul_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, $from_ne_fn, $to_ne_fn, Rem, rem, RemAssign, rem_assign);
+        impl_ops_traits!(@with_byteorder_swap $name, $native, $from_ne_fn, $to_ne_fn, Sub, sub, SubAssign, sub_assign);
     };
-    (@with_byteorder_swap $name:ident, $native:ident, $trait:ident, $method:ident, $trait_assign:ident, $method_assign:ident) => {
+    (@with_byteorder_swap $name:ident, $native:ident, $from_ne_fn:path, $to_ne_fn:path, $trait:ident, $method:ident, $trait_assign:ident, $method_assign:ident) => {
         impl<O: ByteOrder> core::ops::$trait for $name<O> {
             type Output = $name<O>;
 
@@ -282,16 +282,16 @@ macro_rules! impl_ops_traits {
     // Implement traits in terms of the same trait on the native type, but
     // without performing a byte order swap. This only works for bitwise
     // operations like `&`, `|`, etc.
-    (@without_byteorder_swap $name:ident, $native:ident, $trait:ident, $method:ident, $trait_assign:ident, $method_assign:ident) => {
+    (@without_byteorder_swap $name:ident, $native:ident, $from_ne_fn:path, $to_ne_fn:path, $trait:ident, $method:ident, $trait_assign:ident, $method_assign:ident) => {
         impl<O: ByteOrder> core::ops::$trait for $name<O> {
             type Output = $name<O>;
 
             #[inline(always)]
             fn $method(self, rhs: $name<O>) -> $name<O> {
-                let self_native = $native::from_ne_bytes(self.0);
-                let rhs_native = $native::from_ne_bytes(rhs.0);
+                let self_native = $from_ne_fn(self.0);
+                let rhs_native = $from_ne_fn(rhs.0);
                 let result_native = core::ops::$trait::$method(self_native, rhs_native);
-                $name(result_native.to_ne_bytes(), PhantomData)
+                $name($to_ne_fn(result_native), PhantomData)
             }
         }
 
@@ -343,6 +343,8 @@ macro_rules! define_type {
         $to_be_fn:path,
         $from_le_fn:path,
         $to_le_fn:path,
+        $from_ne_fn:path,
+        $to_ne_fn:path,
         $number_kind:tt,
         [$($larger_native:ty),*],
         [$($larger_native_try:ty),*],
@@ -575,7 +577,7 @@ example of how it can be used for parsing UDP packets.
         }
 
         impl_fmt_traits!($name, $native, $number_kind);
-        impl_ops_traits!($name, $native, $number_kind);
+        impl_ops_traits!($name, $native, $from_ne_fn, $to_ne_fn, $number_kind);
 
         impl<O: ByteOrder> Debug for $name<O> {
             #[inline]
@@ -598,11 +600,32 @@ define_type!(
     u16::to_be_bytes,
     u16::from_le_bytes,
     u16::to_le_bytes,
+    u16::from_ne_bytes,
+    u16::to_ne_bytes,
     "unsigned integer",
     [u32, u64, u128, usize],
     [u32, u64, u128, usize],
     [U32, U64, U128, Usize],
     [U32, U64, U128, Usize]
+);
+define_type!(
+    A,
+    "A 24-bit unsigned integer",
+    U24,
+    u32,
+    24,
+    3,
+    u24_ext::u32_from_u24_be_bytes,
+    u24_ext::u32_to_u24_be_bytes,
+    u24_ext::u32_from_u24_le_bytes,
+    u24_ext::u32_to_u24_le_bytes,
+    u24_ext::u32_from_u24_ne_bytes,
+    u24_ext::u32_to_u24_ne_bytes,
+    "unsigned integer",
+    [u64, u128],
+    [u64, u128],
+    [U64, U128],
+    [U64, U128]
 );
 define_type!(
     A,
@@ -615,6 +638,8 @@ define_type!(
     u32::to_be_bytes,
     u32::from_le_bytes,
     u32::to_le_bytes,
+    u32::from_ne_bytes,
+    u32::to_ne_bytes,
     "unsigned integer",
     [u64, u128],
     [u64, u128],
@@ -632,6 +657,8 @@ define_type!(
     u64::to_be_bytes,
     u64::from_le_bytes,
     u64::to_le_bytes,
+    u64::from_ne_bytes,
+    u64::to_ne_bytes,
     "unsigned integer",
     [u128],
     [u128],
@@ -649,6 +676,8 @@ define_type!(
     u128::to_be_bytes,
     u128::from_le_bytes,
     u128::to_le_bytes,
+    u128::from_ne_bytes,
+    u128::to_ne_bytes,
     "unsigned integer",
     [],
     [],
@@ -666,6 +695,8 @@ define_type!(
     usize::to_be_bytes,
     usize::from_le_bytes,
     usize::to_le_bytes,
+    usize::from_ne_bytes,
+    usize::to_ne_bytes,
     "unsigned integer",
     [],
     [],
@@ -683,6 +714,8 @@ define_type!(
     i16::to_be_bytes,
     i16::from_le_bytes,
     i16::to_le_bytes,
+    i16::from_ne_bytes,
+    i16::to_ne_bytes,
     "signed integer",
     [i32, i64, i128, isize],
     [i32, i64, i128, isize],
@@ -700,6 +733,8 @@ define_type!(
     i32::to_be_bytes,
     i32::from_le_bytes,
     i32::to_le_bytes,
+    i32::from_ne_bytes,
+    i32::to_ne_bytes,
     "signed integer",
     [i64, i128],
     [i64, i128],
@@ -717,6 +752,8 @@ define_type!(
     i64::to_be_bytes,
     i64::from_le_bytes,
     i64::to_le_bytes,
+    i64::from_ne_bytes,
+    i64::to_ne_bytes,
     "signed integer",
     [i128],
     [i128],
@@ -734,6 +771,8 @@ define_type!(
     i128::to_be_bytes,
     i128::from_le_bytes,
     i128::to_le_bytes,
+    i128::from_ne_bytes,
+    i128::to_ne_bytes,
     "signed integer",
     [],
     [],
@@ -751,12 +790,137 @@ define_type!(
     isize::to_be_bytes,
     isize::from_le_bytes,
     isize::to_le_bytes,
+    isize::from_ne_bytes,
+    isize::to_ne_bytes,
     "signed integer",
     [],
     [],
     [],
     []
 );
+
+mod u24_ext {
+    const U24_BYTES: usize = 3;
+
+    #[allow(clippy::arithmetic_side_effects, clippy::indexing_slicing)]
+    pub(crate) const fn u32_to_u24_be_bytes(native: u32) -> [u8; U24_BYTES] {
+        let mut bytes = [0; U24_BYTES];
+        let native_bytes = native.to_be_bytes();
+        let mut i = 0;
+        while i < U24_BYTES {
+            bytes[i] = native_bytes[i + 1];
+            i += 1;
+        }
+        bytes
+    }
+
+    #[allow(clippy::arithmetic_side_effects, clippy::indexing_slicing)]
+    pub(crate) const fn u32_to_u24_le_bytes(native: u32) -> [u8; U24_BYTES] {
+        let mut bytes = [0; U24_BYTES];
+        let native_bytes = native.to_le_bytes();
+        let mut i = 0;
+        while i < U24_BYTES {
+            bytes[i] = native_bytes[i];
+            i += 1;
+        }
+        bytes
+    }
+
+    pub(crate) const fn u32_to_u24_ne_bytes(native: u32) -> [u8; U24_BYTES] {
+        if cfg!(target_endian = "big") {
+            u32_to_u24_be_bytes(native)
+        } else {
+            u32_to_u24_le_bytes(native)
+        }
+    }
+
+    #[allow(clippy::arithmetic_side_effects, clippy::indexing_slicing)]
+    pub(crate) const fn u32_from_u24_be_bytes(bytes: [u8; U24_BYTES]) -> u32 {
+        let mut native_bytes = [0; 4];
+        let mut i = 0;
+        while i < U24_BYTES {
+            native_bytes[i + 1] = bytes[i];
+            i += 1;
+        }
+        u32::from_be_bytes(native_bytes)
+    }
+
+    #[allow(clippy::arithmetic_side_effects, clippy::indexing_slicing)]
+    pub(crate) const fn u32_from_u24_le_bytes(bytes: [u8; U24_BYTES]) -> u32 {
+        let mut native_bytes = [0; 4];
+        let mut i = 0;
+        while i < U24_BYTES {
+            native_bytes[i] = bytes[i];
+            i += 1;
+        }
+        u32::from_le_bytes(native_bytes)
+    }
+
+    pub(crate) const fn u32_from_u24_ne_bytes(bytes: [u8; U24_BYTES]) -> u32 {
+        if cfg!(target_endian = "big") {
+            u32_from_u24_be_bytes(bytes)
+        } else {
+            u32_from_u24_le_bytes(bytes)
+        }
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+
+        #[test]
+        fn test_u32_to_u24_be_bytes() {
+            let native_bytes: [u8; 4] = [0x89, 0xab, 0xcd, 0xef];
+            let native: u32 = u32::from_be_bytes(native_bytes);
+            let u24_bytes = u32_to_u24_be_bytes(native);
+            let expected: [u8; 3] = [0xab, 0xcd, 0xef];
+            assert_eq!(expected, u24_bytes);
+        }
+
+        #[test]
+        fn test_u32_to_u24_le_bytes() {
+            let native_bytes: [u8; 4] = [0x89, 0xab, 0xcd, 0xef];
+            let native: u32 = u32::from_le_bytes(native_bytes);
+            let u24_bytes = u32_to_u24_le_bytes(native);
+            let expected: [u8; 3] = [0x89, 0xab, 0xcd];
+            assert_eq!(expected, u24_bytes);
+        }
+
+        #[test]
+        fn test_u32_to_u24_ne_bytes() {
+            let native_bytes: [u8; 4] = [0x89, 0xab, 0xcd, 0xef];
+            let native: u32 = u32::from_ne_bytes(native_bytes);
+            let u24_bytes = u32_to_u24_ne_bytes(native);
+            let expected: [u8; 3] =
+                if cfg!(target_endian = "big") { [0xab, 0xcd, 0xef] } else { [0x89, 0xab, 0xcd] };
+            assert_eq!(expected, u24_bytes);
+        }
+
+        #[test]
+        fn test_u32_from_u24_be_bytes() {
+            let bytes: [u8; 3] = [0xab, 0xcd, 0xef];
+            let native = u32_from_u24_be_bytes(bytes);
+            let expected: u32 = 0xabcdef;
+            assert_eq!(expected, native);
+        }
+
+        #[test]
+        fn test_u32_from_u24_le_bytes() {
+            let bytes: [u8; 3] = [0xab, 0xcd, 0xef];
+            let native = u32_from_u24_le_bytes(bytes);
+            let expected: u32 = 0xefcdab;
+            assert_eq!(expected, native);
+        }
+
+        #[test]
+        fn test_u32_from_u24_ne_bytes() {
+            let bytes: [u8; 3] = [0xab, 0xcd, 0xef];
+            let native = u32_from_u24_ne_bytes(bytes);
+            let expected: u32 = if cfg!(target_endian = "big") { 0xabcdef } else { 0xefcdab };
+            assert_eq!(expected, native);
+        }
+    }
+}
 
 // TODO(https://github.com/rust-lang/rust/issues/72447): Use the endianness
 // conversion methods directly once those are const-stable.
@@ -795,6 +959,8 @@ define_type!(
     f32_ext::to_be_bytes,
     f32_ext::from_le_bytes,
     f32_ext::to_le_bytes,
+    f32_ext::from_ne_bytes,
+    f32_ext::to_ne_bytes,
     "floating point number",
     [f64],
     [],
@@ -812,6 +978,8 @@ define_type!(
     f64_ext::to_be_bytes,
     f64_ext::from_le_bytes,
     f64_ext::to_le_bytes,
+    f64_ext::from_ne_bytes,
+    f64_ext::to_ne_bytes,
     "floating point number",
     [],
     [],
