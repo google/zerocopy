@@ -94,7 +94,7 @@ mod def {
         ///   [`I::Alignment`](invariant::Alignment).
         /// 8. `ptr` conforms to the validity invariant of
         ///   [`I::Validity`](invariant::Validity).
-        pub(super) unsafe fn new(ptr: NonNull<T>) -> Ptr<'a, T, I> {
+        pub(crate) unsafe fn new(ptr: NonNull<T>) -> Ptr<'a, T, I> {
             // SAFETY: The caller has promised to satisfy all safety invariants
             // of `Ptr`.
             Self { ptr, _invariants: PhantomData }
@@ -512,9 +512,10 @@ mod _conversions {
     }
 
     /// `Ptr<'a, T>` → `&'a mut T`
-    impl<'a, T> Ptr<'a, T, (Exclusive, Aligned, Valid)>
+    impl<'a, T, I> Ptr<'a, T, I>
     where
         T: 'a + ?Sized,
+        I: Invariants<Aliasing = Exclusive, Alignment = Aligned, Validity = Valid>,
     {
         /// Converts `self` to a mutable reference.
         #[allow(clippy::wrong_self_convention)]
@@ -524,7 +525,7 @@ mod _conversions {
             // documented safety preconditions:
             //
             // 1. The pointer is properly aligned. This is ensured by-contract
-            //    on `Ptr`, because the `ALIGNMENT_INVARIANT` is `Aligned`.
+            //    on `Ptr`, because `Alignment = Aligned`.
             //
             // 2. It must be “dereferenceable” in the sense defined in the
             //    module documentation; i.e.:
@@ -537,11 +538,10 @@ mod _conversions {
             //
             // 3. The pointer must point to an initialized instance of `T`. This
             //    is ensured by-contract on `Ptr`, because the
-            //    `VALIDITY_INVARIANT` is `Valid`.
+            //    `Validity = Valid`.
             //
             // 4. You must enforce Rust’s aliasing rules. This is ensured by
-            //    contract on `Ptr`, because the `ALIASING_INVARIANT` is
-            //    `Exclusive`.
+            //    contract on `Ptr`, because the `Aliasing = Exclusive`.
             //
             // [1]: https://doc.rust-lang.org/std/ptr/struct.NonNull.html#method.as_mut
             // [2]: https://doc.rust-lang.org/std/ptr/index.html#safety

@@ -329,7 +329,10 @@ use core::{
     },
 };
 
-use crate::pointer::{invariant, BecauseExclusive, BecauseImmutable};
+use crate::pointer::{
+    invariant, AliasingSafe, AliasingSafeReason, BecauseExclusive, BecauseImmutable, FromPtr,
+    IntoPtr,
+};
 
 #[cfg(any(feature = "alloc", test))]
 extern crate alloc;
@@ -1420,7 +1423,7 @@ pub unsafe trait TryFromBytes {
         Self: KnownLayout + Immutable,
     {
         static_assert_dst_is_not_zst!(Self);
-        try_ref_from_prefix_suffix(candidate, CastType::Prefix, None)
+        try_from_prefix_suffix::<_, _, _, BecauseImmutable>(candidate, None, CastType::Prefix)
     }
 
     /// Attempts to interpret the suffix of the given `candidate` as a `&Self`
@@ -1505,7 +1508,8 @@ pub unsafe trait TryFromBytes {
         Self: KnownLayout + Immutable,
     {
         static_assert_dst_is_not_zst!(Self);
-        try_ref_from_prefix_suffix(candidate, CastType::Suffix, None).map(swap)
+        try_from_prefix_suffix::<_, _, _, BecauseImmutable>(candidate, None, CastType::Suffix)
+            .map(swap)
     }
 
     /// Attempts to interpret the given `candidate` as a `&mut Self` without
@@ -1697,7 +1701,7 @@ pub unsafe trait TryFromBytes {
         Self: KnownLayout,
     {
         static_assert_dst_is_not_zst!(Self);
-        try_mut_from_prefix_suffix(candidate, CastType::Prefix, None)
+        try_from_prefix_suffix::<_, _, _, BecauseExclusive>(candidate, None, CastType::Prefix)
     }
 
     /// Attempts to interpret the suffix of the given `candidate` as a `&mut
@@ -1790,7 +1794,8 @@ pub unsafe trait TryFromBytes {
         Self: KnownLayout,
     {
         static_assert_dst_is_not_zst!(Self);
-        try_mut_from_prefix_suffix(candidate, CastType::Suffix, None).map(swap)
+        try_from_prefix_suffix::<_, _, _, BecauseExclusive>(candidate, None, CastType::Suffix)
+            .map(swap)
     }
 
     /// Attempts to read the given `candidate` as a `Self`.
@@ -1874,12 +1879,21 @@ pub unsafe trait TryFromBytes {
 }
 
 #[inline(always)]
-fn try_ref_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized>(
-    candidate: &[u8],
-    cast_type: CastType,
+fn try_from_prefix_suffix<'a, T, S, D, R>(
+    candidate: S,
     meta: Option<T::PointerMetadata>,
-) -> Result<(&T, &[u8]), TryCastError<&[u8], T>> {
-    match Ptr::from_ref(candidate).try_cast_into::<T, BecauseImmutable>(cast_type, meta) {
+    cast_type: CastType,
+) -> Result<(D, S), TryCastError<S, T>>
+where
+    T: 'a + TryFromBytes + KnownLayout + ?Sized,
+    S: IntoPtr<'a, [u8], Alignment = invariant::Aligned, Validity = invariant::Valid>,
+    S: FromPtr<'a, [u8], (S::Aliasing, invariant::Aligned, invariant::Valid)>,
+    S::Aliasing: invariant::AtLeast<invariant::Shared>,
+    D: FromPtr<'a, T, (S::Aliasing, invariant::Aligned, invariant::Valid)>,
+    R: AliasingSafeReason,
+    T: AliasingSafe<[u8], S::Aliasing, R>,
+{
+    match S::into_ptr(candidate).try_cast_into::<T, R>(cast_type, meta) {
         Ok((candidate, prefix_suffix)) => {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
@@ -1890,36 +1904,11 @@ fn try_ref_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized
             // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
             // condition will not happen.
             match candidate.try_into_valid() {
-                Ok(valid) => Ok((valid.as_ref(), prefix_suffix.as_ref())),
-                Err(e) => Err(e.map_src(|src| src.as_bytes::<BecauseImmutable>().as_ref()).into()),
+                Ok(valid) => Ok((D::from_ptr(valid), S::from_ptr(prefix_suffix))),
+                Err(e) => Err(e.map_src(|src| S::from_ptr(src.as_bytes::<(R,)>())).into()),
             }
         }
-        Err(e) => Err(e.map_src(Ptr::as_ref).into()),
-    }
-}
-
-#[inline(always)]
-fn try_mut_from_prefix_suffix<T: TryFromBytes + KnownLayout + ?Sized>(
-    candidate: &mut [u8],
-    cast_type: CastType,
-    meta: Option<T::PointerMetadata>,
-) -> Result<(&mut T, &mut [u8]), TryCastError<&mut [u8], T>> {
-    match Ptr::from_mut(candidate).try_cast_into::<T, BecauseExclusive>(cast_type, meta) {
-        Ok((candidate, prefix_suffix)) => {
-            // This call may panic. If that happens, it doesn't cause any soundness
-            // issues, as we have not generated any invalid state which we need to
-            // fix before returning.
-            //
-            // Note that one panic or post-monomorphization error condition is
-            // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
-            // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
-            // condition will not happen.
-            match candidate.try_into_valid() {
-                Ok(valid) => Ok((valid.as_mut(), prefix_suffix.as_mut())),
-                Err(e) => Err(e.map_src(|src| src.as_bytes::<BecauseExclusive>().as_mut()).into()),
-            }
-        }
-        Err(e) => Err(e.map_src(Ptr::as_mut).into()),
+        Err(e) => Err(e.map_src(S::from_ptr).into()),
     }
 }
 
@@ -2594,7 +2583,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: KnownLayout + Immutable,
     {
         static_assert_dst_is_not_zst!(Self);
-        ref_from_prefix_suffix(source, None, CastType::Prefix)
+        from_prefix_suffix::<_, _, _, BecauseImmutable>(source, None, CastType::Prefix)
     }
 
     /// Interprets the suffix of the given bytes as a `&Self` without copying.
@@ -2660,7 +2649,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: Immutable + KnownLayout,
     {
         static_assert_dst_is_not_zst!(Self);
-        ref_from_prefix_suffix(source, None, CastType::Suffix).map(swap)
+        from_prefix_suffix::<_, _, _, BecauseImmutable>(source, None, CastType::Suffix).map(swap)
     }
 
     /// Interprets the given bytes as a `&mut Self` without copying.
@@ -2819,7 +2808,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: IntoBytes + KnownLayout,
     {
         static_assert_dst_is_not_zst!(Self);
-        mut_from_prefix_suffix(source, None, CastType::Prefix)
+        from_prefix_suffix::<_, _, _, BecauseExclusive>(source, None, CastType::Prefix)
     }
 
     /// Interprets the suffix of the given bytes as a `&mut Self` without
@@ -2891,7 +2880,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: IntoBytes + KnownLayout,
     {
         static_assert_dst_is_not_zst!(Self);
-        mut_from_prefix_suffix(source, None, CastType::Suffix).map(swap)
+        from_prefix_suffix::<_, _, _, BecauseExclusive>(source, None, CastType::Suffix).map(swap)
     }
 
     /// Interprets the given bytes as a `&Self` with a DST length equal to
@@ -3034,7 +3023,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: KnownLayout<PointerMetadata = usize> + Immutable,
     {
-        ref_from_prefix_suffix(source, Some(count), CastType::Prefix)
+        from_prefix_suffix::<_, _, _, BecauseImmutable>(source, Some(count), CastType::Prefix)
     }
 
     /// Interprets the suffix of the given bytes as a DST `&Self` with length
@@ -3104,7 +3093,8 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: KnownLayout<PointerMetadata = usize> + Immutable,
     {
-        ref_from_prefix_suffix(source, Some(count), CastType::Suffix).map(swap)
+        from_prefix_suffix::<_, _, _, BecauseImmutable>(source, Some(count), CastType::Suffix)
+            .map(swap)
     }
 
     /// Interprets the given bytes as a `&mut Self` with a DST length equal to
@@ -3255,7 +3245,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: IntoBytes + KnownLayout<PointerMetadata = usize>,
     {
-        mut_from_prefix_suffix(source, Some(count), CastType::Prefix)
+        from_prefix_suffix::<_, _, _, BecauseExclusive>(source, Some(count), CastType::Prefix)
     }
 
     /// Interprets the suffix of the given bytes as a `&mut [Self]` with length
@@ -3330,7 +3320,8 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: IntoBytes + KnownLayout<PointerMetadata = usize>,
     {
-        mut_from_prefix_suffix(source, Some(count), CastType::Suffix).map(swap)
+        from_prefix_suffix::<_, _, _, BecauseExclusive>(source, Some(count), CastType::Suffix)
+            .map(swap)
     }
 
     /// Reads a copy of `Self` from the given bytes.
@@ -3562,26 +3553,7 @@ pub unsafe trait FromBytes: FromZeros {
     }
 }
 
-/// Interprets the given affix of the given bytes as a `&Self` without copying.
-///
-/// This method computes the largest possible size of `Self` that can fit in the
-/// prefix or suffix bytes of `source`, then attempts to return both a reference
-/// to those bytes interpreted as a `Self`, and a reference to the excess bytes.
-/// If there are insufficient bytes, or if that affix of `source` is not
-/// appropriately aligned, this returns `Err`.
-#[inline(always)]
-fn ref_from_prefix_suffix<T: FromBytes + KnownLayout + Immutable + ?Sized>(
-    source: &[u8],
-    meta: Option<T::PointerMetadata>,
-    cast_type: CastType,
-) -> Result<(&T, &[u8]), CastError<&[u8], T>> {
-    let (slf, prefix_suffix) = Ptr::from_ref(source)
-        .try_cast_into::<_, BecauseImmutable>(cast_type, meta)
-        .map_err(|err| err.map_src(|s| s.as_ref()))?;
-    Ok((slf.bikeshed_recall_valid().as_ref(), prefix_suffix.as_ref()))
-}
-
-/// Interprets the given affix of the given bytes as a `&mut Self` without
+/// Interprets the given affix of the given bytes as a `Self` reference without
 /// copying.
 ///
 /// This method computes the largest possible size of `Self` that can fit in the
@@ -3590,15 +3562,23 @@ fn ref_from_prefix_suffix<T: FromBytes + KnownLayout + Immutable + ?Sized>(
 /// If there are insufficient bytes, or if that affix of `source` is not
 /// appropriately aligned, this returns `Err`.
 #[inline(always)]
-fn mut_from_prefix_suffix<T: FromBytes + KnownLayout + ?Sized>(
-    source: &mut [u8],
+fn from_prefix_suffix<'a, T, S, D, R>(
+    source: S,
     meta: Option<T::PointerMetadata>,
     cast_type: CastType,
-) -> Result<(&mut T, &mut [u8]), CastError<&mut [u8], T>> {
-    let (slf, prefix_suffix) = Ptr::from_mut(source)
-        .try_cast_into::<_, BecauseExclusive>(cast_type, meta)
-        .map_err(|err| err.map_src(|s| s.as_mut()))?;
-    Ok((slf.bikeshed_recall_valid().as_mut(), prefix_suffix.as_mut()))
+) -> Result<(D, S), CastError<S, T>>
+where
+    T: 'a + FromBytes + KnownLayout + ?Sized,
+    S: IntoPtr<'a, [u8], Alignment = invariant::Aligned, Validity = invariant::Valid>,
+    S: FromPtr<'a, [u8], (S::Aliasing, invariant::Aligned, invariant::Valid)>,
+    D: FromPtr<'a, T, (S::Aliasing, invariant::Aligned, invariant::Valid)>,
+    R: AliasingSafeReason,
+    T: AliasingSafe<[u8], S::Aliasing, R>,
+{
+    let (slf, prefix_suffix) = IntoPtr::into_ptr(source)
+        .try_cast_into::<_, R>(cast_type, meta)
+        .map_err(|err| err.map_src(|s| S::from_ptr(s)))?;
+    Ok((D::from_ptr(slf.bikeshed_recall_valid()), S::from_ptr(prefix_suffix)))
 }
 
 /// Analyzes whether a type is [`IntoBytes`].
