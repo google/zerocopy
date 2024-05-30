@@ -89,11 +89,11 @@ mod def {
         ///    address space.
         /// 5. `A` is guaranteed to live for at least `'a`.
         /// 6. `ptr` conforms to the aliasing invariant of
-        ///   [`I::Aliasing`](invariant::Aliasing).
+        ///    [`I::Aliasing`](invariant::Aliasing).
         /// 7. `ptr` conforms to the alignment invariant of
-        ///   [`I::Alignment`](invariant::Alignment).
+        ///    [`I::Alignment`](invariant::Alignment).
         /// 8. `ptr` conforms to the validity invariant of
-        ///   [`I::Validity`](invariant::Validity).
+        ///    [`I::Validity`](invariant::Validity).
         pub(super) unsafe fn new(ptr: NonNull<T>) -> Ptr<'a, T, I> {
             // SAFETY: The caller has promised to satisfy all safety invariants
             // of `Ptr`.
