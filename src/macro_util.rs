@@ -122,9 +122,6 @@ pub const ALIGNED_64K_ALLOCATION: NonNull<[u8]> = {
 /// the type `$ty`.
 ///
 /// `trailing_field_offset!` produces code which is valid in a `const` context.
-// TODO(#1367): !!!WARNING!!! Make sure to debug #1367 before making use of this
-// macro!
-//
 // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
 // `cfg` when `size_of_val_raw` is stabilized.
 #[cfg(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
@@ -604,7 +601,7 @@ mod tests {
 
         test!(#[repr(C)] #[repr(transparent)] #[repr(packed)](; u8) => Some(0));
         test!(#[repr(C)] #[repr(transparent)] #[repr(packed)](; [u8]) => Some(0));
-        test!(#[repr(C)] #[repr(packed)] (u8; u8) => Some(1));
+        test!(#[repr(C)] #[repr(C, packed)] (u8; u8) => Some(1));
         test!(#[repr(C)] (; AU64) => Some(0));
         test!(#[repr(C)] (; [AU64]) => Some(0));
         test!(#[repr(C)] (u8; AU64) => Some(8));
