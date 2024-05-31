@@ -11,9 +11,14 @@ description: 'Caches cargo dependencies'
 runs:
   using: composite
   steps:
-    - uses: actions/cache@v3 
-      with: 
-        path: | 
-          ~/.cargo/ 
+    - uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cargo/.crates.toml
+          ~/.cargo/.crates2.json
+          ~/.cargo/bin/
+          ~/.cargo/git/db/
+          ~/.cargo/registry/cache/
+          ~/.cargo/registry/index/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
-        
+
