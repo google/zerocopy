@@ -1084,7 +1084,7 @@ safety_comment! {
 /// Per the [Rust reference](reference),
 ///
 /// > The representation of a type can change the padding between fields, but
-/// does not change the layout of the fields themselves.
+/// > does not change the layout of the fields themselves.
 ///
 /// [reference]: https://doc.rust-lang.org/reference/type-layout.html#representations
 ///
@@ -1699,7 +1699,7 @@ pub unsafe trait FromZeroes {
 /// Per the [Rust reference](reference),
 ///
 /// > The representation of a type can change the padding between fields, but
-/// does not change the layout of the fields themselves.
+/// > does not change the layout of the fields themselves.
 ///
 /// [reference]: https://doc.rust-lang.org/reference/type-layout.html#representations
 ///
