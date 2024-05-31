@@ -29,7 +29,7 @@ env:
 
 jobs:
   build_test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     # Generate and populate the global Cargo registry and cache first. Each
     # job in the matrix runs in parallel, so without populating the cache
     # first, most jobs would duplicate the work of downloading crates from
@@ -47,7 +47,9 @@ jobs:
         # See `INTERNAL.md` for an explanation of these pinned toolchain
         # versions.
         toolchain: [ "msrv", "stable", "nightly",  "zerocopy-generic-bounds-in-const-fn", "zerocopy-aarch64-simd", "zerocopy-panic-in-const", ]
+        runner: ["ubuntu-latest", "windows-2019"]
         target: [
+          # Linux targets
           "i686-unknown-linux-gnu",
           "x86_64-unknown-linux-gnu",
           "arm-unknown-linux-gnueabi",
@@ -56,12 +58,20 @@ jobs:
           "powerpc64-unknown-linux-gnu",
           "riscv64gc-unknown-linux-gnu",
           "s390x-unknown-linux-gnu",
+
+          # Windows targets
+          "x86_64-pc-windows-msvc",
+
+          # WASM targets
           "wasm32-wasi"
         ]
         features: [ "--no-default-features", "", "--features __internal_use_only_features_that_work_on_stable", "--all-features" ]
         crate: [ "zerocopy", "zerocopy-derive" ]
         event_name: [ "${{ github.event_name }}" ]
         exclude:
+          # Unconditionally exclude the Windows runner so that we can add it
+          # back later specifically for Windows targets.
+          - runner: "windows-2019"
           # Exclude any combination which uses a non-nightly toolchain but
           # enables nightly features.
           - toolchain: "msrv"
@@ -110,6 +120,9 @@ jobs:
             event_name: "pull_request"
           - target: "wasm32-wasi"
             event_name: "pull_request"
+        include:
+          - runner: "windows-2019"
+            target: "x86_64-pc-windows-msvc"
 
     name: Build & Test (${{ matrix.crate }} / ${{ matrix.toolchain }} / ${{ matrix.features }} / ${{ matrix.target }})
 
