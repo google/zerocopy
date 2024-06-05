@@ -6,6 +6,11 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+use std::env;
+
+const RUSTFLAGS: &str = "RUSTFLAGS";
+const WARN_LINT_GROUP: &str = "-Wwarnings";
+
 #[test]
 #[cfg_attr(miri, ignore)]
 fn ui() {
@@ -14,6 +19,22 @@ fn ui() {
     // and why we store source files in different directories.
     let source_files_dirname = version.get_ui_source_files_dirname_and_maybe_print_warning();
 
+    assert!(
+        has_warnings_in_rustflags(),
+        "skipping {} tests. `{}` was not passed into {}.",
+        source_files_dirname,
+        WARN_LINT_GROUP,
+        RUSTFLAGS
+    );
+
     let t = trybuild::TestCases::new();
     t.compile_fail(format!("tests/{}/*.rs", source_files_dirname));
+}
+
+fn has_warnings_in_rustflags() -> bool {
+    let rustflags = match env::var(RUSTFLAGS) {
+        Ok(flags) => flags.chars().filter(|c| !c.is_whitespace()).collect(),
+        Err(_) => String::new(),
+    };
+    rustflags.contains(WARN_LINT_GROUP)
 }
