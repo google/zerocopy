@@ -8,7 +8,7 @@
 
 use core::{
     cell::UnsafeCell,
-    mem::{self, ManuallyDrop, MaybeUninit},
+    mem::{ManuallyDrop, MaybeUninit},
     num::{NonZeroUsize, Wrapping},
     ptr::NonNull,
     sync::atomic::{
@@ -484,7 +484,7 @@ pub(crate) fn aligned_to<T: AsAddress, U>(t: T) -> bool {
     // `mem::align_of::<U>()` is guaranteed to return a non-zero value, which in
     // turn guarantees that this mod operation will not panic.
     #[allow(clippy::arithmetic_side_effects)]
-    let remainder = t.addr() % mem::align_of::<U>();
+    let remainder = t.addr() % align_of::<U>();
     remainder == 0
 }
 
