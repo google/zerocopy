@@ -323,7 +323,8 @@ jobs:
         set -eo pipefail
         METADATA_DOCS_RS_RUSTDOC_ARGS="$(cargo metadata --format-version 1 | \
           jq -r ".packages[] | select(.name == \"zerocopy\").metadata.docs.rs.\"rustdoc-args\"[]" | tr '\n' ' ')"
-        export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS'|| '' }} $RUSTDOCFLAGS
+        echo "matt_testing METADATA_DOCS_RS_RUSTDOC_ARGS = $METADATA_DOCS_RS_RUSTDOC_ARGS"
+        export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS'|| '' }}" $RUSTDOCFLAGS
         echo "matt_testing RUSTDOCFLAGS = $RUSTDOCFLAGS"
         ./cargo.sh +${{ matrix.toolchain }} doc --document-private-items --package ${{ matrix.crate }} ${{ matrix.features }}
 
