@@ -50,7 +50,7 @@ pinned-nightly = "nightly-2024-06-02"
 
 [package.metadata.docs.rs]
 all-features = true
-rustdoc-args = []
+rustdoc-args = ["--cfg", "doc_cfg", "--generate-link-to-definition"]
 
 [package.metadata.playground]
 features = ["__internal_use_only_features_that_work_on_stable"]
