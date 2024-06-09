@@ -55,6 +55,43 @@ macro_rules! try_or_print {
     };
 }
 
+/// Inline size assertion annotations
+/// Any non-generic type can be check if the size is as expected or not in compile time
+/// # Implementation
+/// ```
+/// # use zerocopy_derive::inline_assert_size_eq;
+/// # use static_assertions;
+/// #[inline_assert_size_eq(4)]
+/// struct MyStruct {
+///     val: i32
+/// }
+/// ```
+/// # Example that will fail
+/// ```compile_fail
+/// # use zero_derive::inline_assert_size_eq;
+/// # use static_assertions;
+/// #[inline_assert_size_eq(1)]
+/// struct MyStruct {
+///     val: i32
+/// }
+/// ```
+#[proc_macro_attribute]
+pub fn inline_assert_size_eq(args: proc_macro::TokenStream, input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let ast: Result<DeriveInput, _> = syn::parse(input.clone());
+    let expected_size: Result<usize, _> = args.to_string().trim().parse();
+    if let (Ok(ast), Ok(size)) = (ast, expected_size) {
+        let name  =&ast.ident;
+        return quote! {
+            #ast
+            static_assertions::const_assert!(core::mem::size_of::<#name>() == #size);
+        }.into()
+    }
+    else {
+        return input;
+    }
+
+}
+
 // TODO(https://github.com/rust-lang/rust/issues/54140): Some errors could be
 // made better if we could add multiple lines of error output like this:
 //
