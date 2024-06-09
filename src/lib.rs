@@ -2043,7 +2043,7 @@ pub unsafe trait FromZeros: TryFromBytes {
     #[inline(always)]
     fn zero(&mut self) {
         let slf: *mut Self = self;
-        let len = mem::size_of_val(self);
+        let len = size_of_val(self);
         // SAFETY:
         // - `self` is guaranteed by the type system to be valid for writes of
         //   size `size_of_val(self)`.
@@ -2165,10 +2165,10 @@ pub unsafe trait FromZeros: TryFromBytes {
     where
         Self: Sized,
     {
-        let size = mem::size_of::<Self>()
+        let size = size_of::<Self>()
             .checked_mul(len)
             .expect("mem::size_of::<Self>() * len overflows `usize`");
-        let align = mem::align_of::<Self>();
+        let align = align_of::<Self>();
         // On stable Rust versions <= 1.64.0, `Layout::from_size_align` has a
         // bug in which sufficiently-large allocations (those which, when
         // rounded up to the alignment, overflow `isize`) are not rejected,
@@ -3817,7 +3817,7 @@ pub unsafe trait IntoBytes {
     {
         // Note that this method does not have a `Self: Sized` bound;
         // `size_of_val` works for unsized values too.
-        let len = mem::size_of_val(self);
+        let len = size_of_val(self);
         let slf: *const Self = self;
 
         // SAFETY:
@@ -3894,7 +3894,7 @@ pub unsafe trait IntoBytes {
     {
         // Note that this method does not have a `Self: Sized` bound;
         // `size_of_val` works for unsized values too.
-        let len = mem::size_of_val(self);
+        let len = size_of_val(self);
         let slf: *mut Self = self;
 
         // SAFETY:
@@ -3972,7 +3972,7 @@ pub unsafe trait IntoBytes {
     where
         Self: Immutable,
     {
-        if bytes.len() != mem::size_of_val(self) {
+        if bytes.len() != size_of_val(self) {
             return Err(SizeError::new(self));
         }
         bytes.copy_from_slice(self.as_bytes());
@@ -4032,7 +4032,7 @@ pub unsafe trait IntoBytes {
     where
         Self: Immutable,
     {
-        let size = mem::size_of_val(self);
+        let size = size_of_val(self);
         match bytes.get_mut(..size) {
             Some(bytes) => {
                 bytes.copy_from_slice(self.as_bytes());
@@ -4102,7 +4102,7 @@ pub unsafe trait IntoBytes {
     where
         Self: Immutable,
     {
-        let start = if let Some(start) = bytes.len().checked_sub(mem::size_of_val(self)) {
+        let start = if let Some(start) = bytes.len().checked_sub(size_of_val(self)) {
             start
         } else {
             return Err(SizeError::new(self));
@@ -4989,7 +4989,7 @@ mod alloc_support {
         #[should_panic(expected = "assertion failed: size <= max_alloc")]
         fn test_new_box_slice_zeroed_panics_isize_overflow() {
             let max = usize::try_from(isize::MAX).unwrap();
-            let _ = u16::new_box_slice_zeroed((max / mem::size_of::<u16>()) + 1);
+            let _ = u16::new_box_slice_zeroed((max / size_of::<u16>()) + 1);
         }
     }
 }
@@ -5053,7 +5053,7 @@ mod tests {
         test!(u8, layout(1, 1, None));
         // Use `align_of` because `u64` alignment may be smaller than 8 on some
         // platforms.
-        test!(u64, layout(8, mem::align_of::<u64>(), None));
+        test!(u64, layout(8, align_of::<u64>(), None));
         test!(AU64, layout(8, 8, None));
 
         test!(Option<&'static ()>, usize::LAYOUT);
