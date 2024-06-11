@@ -320,9 +320,10 @@ jobs:
       run: |
         # Include arguments passed during docs.rs deployments to make sure those
         # work properly.
+        set -eo pipefail
         METADATA_DOCS_RS_RUSTDOC_ARGS="$(cargo metadata --format-version 1 | \
-          jq -r ".packages[] | select(.name == \"zerocopy\").metadata.docs.rs.\"rustdoc-args\".[]" | tr '\n' ' ')"
-        export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items' || '' }} $RUSTDOCFLAGS $METADATA_DOCS_RS_RUSTDOC_ARGS"
+          jq -r ".packages[] | select(.name == \"zerocopy\").metadata.docs.rs.\"rustdoc-args\"[]" | tr '\n' ' ')"
+        export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS'|| '' }} $RUSTDOCFLAGS"
         ./cargo.sh +${{ matrix.toolchain }} doc --document-private-items --package ${{ matrix.crate }} ${{ matrix.features }}
 
     # Check semver compatibility with the most recently-published version on
