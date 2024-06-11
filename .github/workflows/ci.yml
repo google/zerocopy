@@ -341,16 +341,19 @@ jobs:
         # Don't semver check zerocopy-derive; as a proc macro, it doesn't have
         # an API that cargo-semver-checks can understand.
         package: zerocopy
-        # Don't test nightly features. The reason this doesn't work is that
-        # cargo-semver-checks works relative to the most recently-published
-        # stable release on crates.io. The pinned nightly toolchain may be
-        # incompatible with the unstable features on that published release, as
-        # nightly features may have changed since it was released. Luckily, we
-        # don't care about the API stability of these features anyway.
+        # Test on the stable toolchain, and thus don't test nightly features.
+        # We previously tested on the nightly toolchain, but this caused problems
+        # [1] because cargo-semver-checks only promises compatibility with the
+        # latest stable toolchain. Testing on the stable toolchain is more
+        # reliable, and doesn't require us to give up anything - we wouldn't want
+        # to test nightly-only features anyway, as we don't make stability
+        # guarantees regarding these features.
+        # 
+        # [1] See, for example: https://github.com/google/zerocopy/actions/runs/9466417300/job/26078264384?pr=1413
         feature-group: only-explicit-features
         features: __internal_use_only_features_that_work_on_stable
         rust-toolchain: ${{ env.ZC_TOOLCHAIN }}
-      if: matrix.crate == 'zerocopy' && matrix.features == '--features __internal_use_only_features_that_work_on_stable' && matrix.toolchain == 'nightly'
+      if: matrix.crate == 'zerocopy' && matrix.features == '--features __internal_use_only_features_that_work_on_stable' && matrix.toolchain == 'stable'
 
     # TODO(#453): Doing this as a matrix step is a hack that allows us to depend
     # on the fact that toolchains have already been installed. We currently only
