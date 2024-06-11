@@ -196,6 +196,9 @@
     unused_qualifications,
     variant_size_differences
 )]
+// See the comment in `Cargo.toml` on `zerocopy-mem-in-prelude` for why we do
+// this.
+#![cfg_attr(zerocopy_mem_in_prelude, allow(unused_qualifications))]
 #![cfg_attr(
     __INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS,
     deny(fuzzy_provenance_casts, lossy_provenance_casts)

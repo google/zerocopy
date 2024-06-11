@@ -32,21 +32,36 @@ exclude = [".*"]
 # as high as the specified version. In the emitted `--cfg`, dashes are replaced
 # by underscores.
 
+# From 1.81.0, some items in the `mem` module are also in the prelude. Using,
+# e.g., `mem::size_of` generates an `unused_qualifications` warning starting on
+# this toolchain, but we can't do `size_of` instead since that doesn't work on
+# older toolchains. Instead, we `#![allow(unused_qualifications)]` on this and
+# more recent toolchains.
+#
+# TODO(#67): Remove this once our MSRV is at least 1.81.0
+zerocopy-mem-in-prelude = "1.81.0"
+
 # From 1.61.0, Rust supports generic types with trait bounds in `const fn`.
+#
+# TODO(#67): Remove this once our MSRV is at least 1.61.0
 zerocopy-generic-bounds-in-const-fn = "1.61.0"
 
 # When the "simd" feature is enabled, include SIMD types from the
 # `core::arch::aarch64` module, which was stabilized in 1.59.0. On earlier Rust
 # versions, these types require the "simd-nightly" feature.
+#
+# TODO(#67): Remove this once our MSRV is at least 1.59.0
 zerocopy-aarch64-simd = "1.59.0"
 
 # Permit panicking in `const fn`s.
+#
+# TODO(#67): Remove this once our MSRV is at least 1.57.0
 zerocopy-panic-in-const = "1.57.0"
 
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.
 pinned-stable = "1.78.0"
-pinned-nightly = "nightly-2024-06-05"
+pinned-nightly = "nightly-2024-06-10"
 
 [package.metadata.docs.rs]
 all-features = true
