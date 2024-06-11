@@ -1573,7 +1573,7 @@ mod tests {
                         let t = slf.bikeshed_recall_valid().as_ref();
 
                         let bytes = {
-                            let len = mem::size_of_val(t);
+                            let len = size_of_val(t);
                             let t: *const T = t;
                             // SAFETY:
                             // - We know `t`'s bytes are all initialized
@@ -1596,7 +1596,7 @@ mod tests {
                         // shouldn't be (see the comment above).
                         assert_eq!(bytes, vec![0u8; bytes.len()]);
 
-                        mem::size_of_val(t)
+                        size_of_val(t)
                     }
 
                     for meta in metas.clone().into_iter() {

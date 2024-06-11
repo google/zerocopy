@@ -7,12 +7,12 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use core::{mem, num::NonZeroUsize};
+use core::num::NonZeroUsize;
 
 use crate::util;
 
 /// The target pointer width, counted in bits.
-const POINTER_WIDTH_BITS: usize = mem::size_of::<usize>() * 8;
+const POINTER_WIDTH_BITS: usize = size_of::<usize>() * 8;
 
 /// The layout of a type which might be dynamically-sized.
 ///
@@ -160,11 +160,11 @@ impl DstLayout {
         // sound to initialize `size_info` to `SizeInfo::Sized { size }`; the
         // `size` field is also correct by construction.
         DstLayout {
-            align: match NonZeroUsize::new(mem::align_of::<T>()) {
+            align: match NonZeroUsize::new(align_of::<T>()) {
                 Some(align) => align,
                 None => const_unreachable!(),
             },
-            size_info: SizeInfo::Sized { size: mem::size_of::<T>() },
+            size_info: SizeInfo::Sized { size: size_of::<T>() },
         }
     }
 
@@ -183,13 +183,13 @@ impl DstLayout {
         // construction. Since `[T]` is a (degenerate case of a) slice DST, it
         // is correct to initialize `size_info` to `SizeInfo::SliceDst`.
         DstLayout {
-            align: match NonZeroUsize::new(mem::align_of::<T>()) {
+            align: match NonZeroUsize::new(align_of::<T>()) {
                 Some(align) => align,
                 None => const_unreachable!(),
             },
             size_info: SizeInfo::SliceDst(TrailingSliceLayout {
                 offset: 0,
-                elem_size: mem::size_of::<T>(),
+                elem_size: size_of::<T>(),
             }),
         }
     }
