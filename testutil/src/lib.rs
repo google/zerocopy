@@ -163,3 +163,22 @@ impl ToolchainVersion {
         }
     }
 }
+
+/// Sets `-Wwarnings` in `RUSTFLAGS`.
+pub fn set_rustflags_w_warnings() {
+    use parking_lot::Mutex;
+
+    static ENV_MTX: Mutex<()> = parking_lot::const_mutex(());
+
+    // Make sure we don't read/write the environment concurrently.
+    // `env::set_var` should be `unsafe` to prevent this, but isn't. [1]
+    //
+    // [1] https://github.com/rust-lang/rust/issues/27970
+    let guard = ENV_MTX.lock();
+
+    let mut rustflags = env::var_os("RUSTFLAGS").unwrap_or_default();
+    rustflags.push(" -Wwarnings");
+    env::set_var("RUSTFLAGS", rustflags);
+
+    std::mem::drop(guard);
+}
