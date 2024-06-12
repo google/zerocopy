@@ -1,7 +1,9 @@
+extern crate zerocopy;
 extern crate zerocopy_derive;
-use zerocopy_derive::inline_assert_size_eq;
+use zerocopy::*;
+use zerocopy_derive::assert_size_eq_val;
 
-#[inline_assert_size_eq(1)]
+#[assert_size_eq_val(1)]
 struct TestSizeNeqStruct {
     i: i32,
 }

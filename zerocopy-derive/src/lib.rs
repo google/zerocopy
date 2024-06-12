@@ -59,24 +59,24 @@ macro_rules! try_or_print {
 /// Any non-generic type can be check if the size is as expected or not in compile time
 /// # Implementation
 /// ```
-/// # use zerocopy_derive::inline_assert_size_eq;
+/// # use zerocopy_derive::assert_size_eq_val;
 /// # use static_assertions;
-/// #[inline_assert_size_eq(4)]
+/// #[assert_size_eq_val(4)]
 /// struct MyStruct {
 ///     val: i32
 /// }
 /// ```
 /// # Example that will fail
 /// ```compile_fail
-/// # use zero_derive::inline_assert_size_eq;
+/// # use zero_derive::assert_size_eq_val;
 /// # use static_assertions;
-/// #[inline_assert_size_eq(1)]
+/// #[assert_size_eq_val(1)]
 /// struct MyStruct {
 ///     val: i32
 /// }
 /// ```
 #[proc_macro_attribute]
-pub fn inline_assert_size_eq(
+pub fn assert_size_eq_val(
     args: proc_macro::TokenStream,
     input: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
@@ -87,7 +87,7 @@ pub fn inline_assert_size_eq(
         let name = &ast.ident;
         ret = quote! {
             #ast
-            static_assertions::const_assert!(core::mem::size_of::<#name>() == #size);
+            static_const_assert!(core::mem::size_of::<#name>() == #size);
         }
         .into()
     }

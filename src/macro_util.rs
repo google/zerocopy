@@ -359,6 +359,16 @@ macro_rules! assert_size_eq {
     }};
 }
 
+/// Panic if the expression evaluates to `false`.
+#[doc(hidden)]
+#[macro_export]
+macro_rules! static_const_assert {
+    ($x:expr $(,)?) => {
+        #[allow(unknown_lints, eq_op)]
+        const _: [(); 0 - !{ const ASSERT: bool = $x; ASSERT } as usize] = [];
+    };
+}
+
 /// Transmutes a reference of one type to a reference of another type.
 ///
 /// # Safety
