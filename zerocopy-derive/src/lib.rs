@@ -61,6 +61,7 @@ macro_rules! try_or_print {
 /// ```
 /// # use zerocopy_derive::assert_size_eq_val;
 /// # use static_assertions;
+/// # use zerocopy::static_const_assert;
 /// #[assert_size_eq_val(4)]
 /// struct MyStruct {
 ///     val: i32
@@ -70,6 +71,7 @@ macro_rules! try_or_print {
 /// ```compile_fail
 /// # use zero_derive::assert_size_eq_val;
 /// # use static_assertions;
+/// # use zerocopy::static_const_assert;
 /// #[assert_size_eq_val(1)]
 /// struct MyStruct {
 ///     val: i32
@@ -81,17 +83,18 @@ pub fn assert_size_eq_val(
     input: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
     let ast: Result<DeriveInput, _> = syn::parse(input.clone());
-    let expected_size: Result<usize, _> = args.to_string().trim().parse();
-    let mut ret: proc_macro::TokenStream = input;
-    if let (Ok(ast), Ok(size)) = (ast, expected_size) {
-        let name = &ast.ident;
-        ret = quote! {
-            #ast
-            static_const_assert!(core::mem::size_of::<#name>() == #size);
+    let args: proc_macro2::TokenStream = args.into();
+    match ast {
+        Ok(ast) => {
+            let name = &ast.ident;
+            let expand = quote! {
+                #ast
+                static_const_assert!(core::mem::size_of::<#name>() == #args);
+            };
+            expand.into()
         }
-        .into()
+        _ => input,
     }
-    ret
 }
 
 // TODO(https://github.com/rust-lang/rust/issues/54140): Some errors could be
