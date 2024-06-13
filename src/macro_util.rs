@@ -447,7 +447,7 @@ where
     I::Aliasing: AtLeast<invariant::Shared>,
     R: AliasingSafeReason,
 {
-    static_assert!(Src, Dst => mem::size_of::<Dst>() >= mem::size_of::<Src>());
+    static_assert!(Src, Dst => size_of::<Dst>() >= size_of::<Src>());
 
     // SAFETY: This is a pointer cast, satisfying the following properties:
     // - `p as *mut Dst` addresses a subset of the `bytes` addressed by `src`,

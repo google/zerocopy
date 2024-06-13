@@ -209,7 +209,7 @@ where
 {
     #[must_use = "has no side effects"]
     pub(crate) fn sized_from(bytes: B) -> Result<Ref<B, T>, CastError<B, T>> {
-        if bytes.len() != mem::size_of::<T>() {
+        if bytes.len() != size_of::<T>() {
             return Err(SizeError::new(bytes).into());
         }
         if !util::aligned_to::<_, T>(bytes.deref()) {
@@ -227,14 +227,14 @@ where
 {
     #[must_use = "has no side effects"]
     pub(crate) fn sized_from_prefix(bytes: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
-        if bytes.len() < mem::size_of::<T>() {
+        if bytes.len() < size_of::<T>() {
             return Err(SizeError::new(bytes).into());
         }
         if !util::aligned_to::<_, T>(bytes.deref()) {
             return Err(AlignmentError::new(bytes).into());
         }
         let (bytes, suffix) =
-            try_split_at(bytes, mem::size_of::<T>()).map_err(|b| SizeError::new(b).into())?;
+            try_split_at(bytes, size_of::<T>()).map_err(|b| SizeError::new(b).into())?;
         // SAFETY: We just validated alignment and that `bytes` is at least as
         // large as `T`. `try_split_at(bytes, mem::size_of::<T>())?` ensures
         // that the new `bytes` is exactly the size of `T`. By safety
@@ -247,7 +247,7 @@ where
     #[must_use = "has no side effects"]
     pub(crate) fn sized_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
         let bytes_len = bytes.len();
-        let split_at = if let Some(split_at) = bytes_len.checked_sub(mem::size_of::<T>()) {
+        let split_at = if let Some(split_at) = bytes_len.checked_sub(size_of::<T>()) {
             split_at
         } else {
             return Err(SizeError::new(bytes).into());
@@ -1324,7 +1324,7 @@ mod tests {
         // will fail thanks to the buffer being too short; these are different
         // error paths, and while the error types are the same, the distinction
         // shows up in code coverage metrics.
-        let n = (usize::MAX / mem::size_of::<AU64>()) + 1;
+        let n = (usize::MAX / size_of::<AU64>()) + 1;
         assert!(Ref::<_, [AU64]>::from_bytes_with_elems(&buf.t[..], n).is_err());
         assert!(Ref::<_, [AU64]>::from_bytes_with_elems(&buf.t[..], 2).is_err());
         assert!(Ref::<_, [AU64]>::from_prefix_with_elems(&buf.t[..], n).is_err());
@@ -1358,7 +1358,7 @@ mod tests {
         // Fail due to arithmetic overflow.
 
         let buf = Align::<[u8; 16], AU64>::default();
-        let unreasonable_len = usize::MAX / mem::size_of::<AU64>() + 1;
+        let unreasonable_len = usize::MAX / size_of::<AU64>() + 1;
         assert!(Ref::<_, [AU64]>::from_prefix_with_elems(&buf.t[..], unreasonable_len).is_err());
         assert!(Ref::<_, [AU64]>::from_suffix_with_elems(&buf.t[..], unreasonable_len).is_err());
         assert!(Ref::<_, [[u8; 8]]>::unaligned_from_prefix_with_elems(
