@@ -115,7 +115,7 @@ jobs:
     name: Build & Test (${{ matrix.crate }} / ${{ matrix.toolchain }} / ${{ matrix.features }} / ${{ matrix.target }})
 
     steps:
-    - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
     - name: Populate cache
       uses: ./.github/actions/cache
@@ -399,7 +399,7 @@ jobs:
     runs-on: ubuntu-latest        
     name: 'Run tests under Kani'
     steps:
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - uses: model-checking/kani-github-action@f838096619a707b0f6b2118cf435eaccfa33e51f # v1.1
         with:
           # Use `--features __internal_use_only_features_that_work_on_stable`
@@ -421,7 +421,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check Rust formatting
     steps:
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Check Rust formatting
         run: ./ci/check_fmt.sh
 
@@ -430,7 +430,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check README.md
     steps:
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Populate cache
         uses: ./.github/actions/cache
@@ -443,7 +443,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check MSRVs match
     steps:
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       
       - name: Populate cache
         uses: ./.github/actions/cache
@@ -465,7 +465,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check crate versions match
     steps:
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Populate cache
         uses: ./.github/actions/cache
@@ -480,7 +480,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Generate cache
     steps:
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Populate cache
         uses: ./.github/actions/cache
@@ -519,7 +519,7 @@ jobs:
     steps:
       - name: Install yq (for YAML parsing)
         run: go install github.com/mikefarah/yq/v4@latest
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Run check
         run: ./ci/check_all_toolchains_tested.sh
 
@@ -529,7 +529,7 @@ jobs:
     steps:
       - name: Install yq (for YAML parsing)
         run: go install github.com/mikefarah/yq/v4@latest
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Run dependency check
         run: ./ci/check_job_dependencies.sh
 
@@ -539,7 +539,7 @@ jobs:
     steps:
       - name: Install yq (for YAML parsing)
         run: go install github.com/mikefarah/yq/v4@latest
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Run dependency check
         # Ensure that Git hooks execute successfully.
         #
