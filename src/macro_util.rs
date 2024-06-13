@@ -339,7 +339,7 @@ macro_rules! assert_align_gt_eq {
 /// `transmute_ref!` and `transmute_mut!`.
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
-macro_rules! assert_size_eq {
+macro_rules! assert_type_size_eq {
     ($t:ident, $u: ident) => {{
         // The comments here should be read in the context of this macro's
         // invocations in `transmute_ref!` and `transmute_mut!`.

@@ -24,4 +24,4 @@ warning: never type fallback affects this call to an `unsafe` function
    = note: for more information, see issue #123748 <https://github.com/rust-lang/rust/issues/123748>
    = help: specify the type explicitly
    = note: `#[warn(never_type_fallback_flowing_into_unsafe)]` on by default
-   = note: this warning originates in the macro `$crate::assert_size_eq` which comes from the expansion of the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this warning originates in the macro `$crate::assert_type_size_eq` which comes from the expansion of the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
