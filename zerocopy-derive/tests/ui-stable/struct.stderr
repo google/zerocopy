@@ -79,14 +79,14 @@ error[E0277]: the trait bound `NotKnownLayoutDst: KnownLayout` is not satisfied
    |          ^^^^^^^^^^^ the trait `KnownLayout` is not implemented for `NotKnownLayoutDst`
    |
    = help: the following other types implement trait `KnownLayout`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
+             ()
+             *const T
+             *mut T
+             AU16
+             F32<O>
+             F64<O>
+             I128<O>
+             I16<O>
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -98,14 +98,14 @@ error[E0277]: the trait bound `NotKnownLayout: KnownLayout` is not satisfied
    |          ^^^^^^^^^^^ the trait `KnownLayout` is not implemented for `NotKnownLayout`
    |
    = help: the following other types implement trait `KnownLayout`:
-             bool
-             char
-             isize
-             i8
-             i16
-             i32
-             i64
-             i128
+             ()
+             *const T
+             *mut T
+             AU16
+             F32<O>
+             F64<O>
+             I128<O>
+             I16<O>
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
