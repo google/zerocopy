@@ -919,7 +919,7 @@ mod tests {
                     let mut t = Self::new_zeroed();
                     let ptr: *mut T = &mut t;
                     // SAFETY: `T: FromBytes`
-                    unsafe { ptr::write_bytes(ptr.cast::<u8>(), 0xFF, mem::size_of::<T>()) };
+                    unsafe { ptr::write_bytes(ptr.cast::<u8>(), 0xFF, size_of::<T>()) };
                     t
                 };
 
