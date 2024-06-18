@@ -139,7 +139,7 @@ where
         f.write_str("the conversion failed because the address of the source (a multiple of ")?;
         addr_align.fmt(f)?;
         f.write_str(") is not a multiple of the alignment (")?;
-        core::mem::align_of::<Dst>().fmt(f)?;
+        align_of::<Dst>().fmt(f)?;
         f.write_str(") of the destination type: ")?;
         f.write_str(core::any::type_name::<Dst>())?;
         Ok(())
