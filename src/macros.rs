@@ -561,7 +561,6 @@ macro_rules! impl_known_layout {
 
                 type PointerMetadata = ();
 
-                #[allow(unused_qualifications)]
                 const LAYOUT: crate::DstLayout = crate::DstLayout::for_type::<$ty>();
 
                 // SAFETY: `.cast` preserves address and provenance.
@@ -613,7 +612,6 @@ macro_rules! unsafe_impl_known_layout {
                 // TODO(#429): Add documentation to `NonNull::new_unchecked`
                 // that it preserves provenance.
                 #[inline(always)]
-                #[allow(unused_qualifications)] // for `core::ptr::NonNull`
                 fn raw_from_ptr_len(bytes: NonNull<u8>, meta: <$repr as KnownLayout>::PointerMetadata) -> NonNull<Self> {
                     #[allow(clippy::as_conversions)]
                     let ptr = <$repr>::raw_from_ptr_len(bytes, meta).as_ptr() as *mut Self;

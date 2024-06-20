@@ -976,16 +976,13 @@ mod tests {
             (@methods @success $($success_case:expr),* $(, @failure $($failure_case:expr),*)?) => {
                 fn with_passing_test_cases<F: Fn(Box<Self>)>(_f: F) {
                     $(
-                        _f(Box::<Self>::from($success_case));//.borrow());
+                        _f(Box::<Self>::from($success_case));
                     )*
                 }
 
                 fn with_failing_test_cases<F: Fn(&mut [u8])>(_f: F) {
                     $($(
-                        // `unused_qualifications` is spuriously triggered on
-                        // `Option::<Self>::None`.
-                        #[allow(unused_qualifications)]
-                        let mut case = $failure_case;//.as_mut_bytes();
+                        let mut case = $failure_case;
                         _f(case.as_mut_bytes());
                     )*)?
                 }

@@ -26,7 +26,6 @@
     unreachable_pub,
     unsafe_op_in_unsafe_fn,
     unused_extern_crates,
-    unused_qualifications,
     variant_size_differences
 )]
 #![deny(
