@@ -3929,9 +3929,9 @@ pub unsafe trait IntoBytes {
         unsafe { slice::from_raw_parts_mut(slf.cast::<u8>(), len) }
     }
 
-    /// Writes a copy of `self` to `bytes`.
+    /// Writes a copy of `self` to `dst`.
     ///
-    /// If `bytes.len() != size_of_val(self)`, `write_to` returns `Err`.
+    /// If `dst.len() != size_of_val(self)`, `write_to` returns `Err`.
     ///
     /// # Examples
     ///
@@ -3977,21 +3977,27 @@ pub unsafe trait IntoBytes {
     /// ```
     #[must_use = "callers should check the return value to see if the operation succeeded"]
     #[inline]
-    fn write_to(&self, bytes: &mut [u8]) -> Result<(), SizeError<&Self, &mut [u8]>>
+    fn write_to(&self, dst: &mut [u8]) -> Result<(), SizeError<&Self, &mut [u8]>>
     where
         Self: Immutable,
     {
-        if bytes.len() != mem::size_of_val(self) {
-            return Err(SizeError::new(self));
+        let src = self.as_bytes();
+        if dst.len() == src.len() {
+            // SAFETY: Within this branch of the conditional, we have ensured
+            // that `dst.len()` is equal to `src.len()`. Neither the size of the
+            // source nor the size of the destination change between the above
+            // size check and the invocation of `copy_unchecked`.
+            unsafe { util::copy_unchecked(src, dst) }
+            Ok(())
+        } else {
+            Err(SizeError::new(self))
         }
-        bytes.copy_from_slice(self.as_bytes());
-        Ok(())
     }
 
-    /// Writes a copy of `self` to the prefix of `bytes`.
+    /// Writes a copy of `self` to the prefix of `dst`.
     ///
     /// `write_to_prefix` writes `self` to the first `size_of_val(self)` bytes
-    /// of `bytes`. If `bytes.len() < size_of_val(self)`, it returns `Err`.
+    /// of `dst`. If `dst.len() < size_of_val(self)`, it returns `Err`.
     ///
     /// # Examples
     ///
@@ -4037,24 +4043,29 @@ pub unsafe trait IntoBytes {
     /// ```
     #[must_use = "callers should check the return value to see if the operation succeeded"]
     #[inline]
-    fn write_to_prefix(&self, bytes: &mut [u8]) -> Result<(), SizeError<&Self, &mut [u8]>>
+    fn write_to_prefix(&self, dst: &mut [u8]) -> Result<(), SizeError<&Self, &mut [u8]>>
     where
         Self: Immutable,
     {
-        let size = mem::size_of_val(self);
-        match bytes.get_mut(..size) {
-            Some(bytes) => {
-                bytes.copy_from_slice(self.as_bytes());
+        let src = self.as_bytes();
+        match dst.get_mut(..src.len()) {
+            Some(dst) => {
+                // SAFETY: Within this branch of the `match`, we have ensured
+                // through fallible subslicing that `dst.len()` is equal to
+                // `src.len()`. Neither the size of the source nor the size of
+                // the destination change between the above subslicing operation
+                // and the invocation of `copy_unchecked`.
+                unsafe { util::copy_unchecked(src, dst) }
                 Ok(())
             }
             None => Err(SizeError::new(self)),
         }
     }
 
-    /// Writes a copy of `self` to the suffix of `bytes`.
+    /// Writes a copy of `self` to the suffix of `dst`.
     ///
     /// `write_to_suffix` writes `self` to the last `size_of_val(self)` bytes of
-    /// `bytes`. If `bytes.len() < size_of_val(self)`, it returns `Err`.
+    /// `dst`. If `dst.len() < size_of_val(self)`, it returns `Err`.
     ///
     /// # Examples
     ///
@@ -4107,17 +4118,18 @@ pub unsafe trait IntoBytes {
     /// ```
     #[must_use = "callers should check the return value to see if the operation succeeded"]
     #[inline]
-    fn write_to_suffix(&self, bytes: &mut [u8]) -> Result<(), SizeError<&Self, &mut [u8]>>
+    fn write_to_suffix(&self, dst: &mut [u8]) -> Result<(), SizeError<&Self, &mut [u8]>>
     where
         Self: Immutable,
     {
-        let start = if let Some(start) = bytes.len().checked_sub(mem::size_of_val(self)) {
+        let src = self.as_bytes();
+        let start = if let Some(start) = dst.len().checked_sub(src.len()) {
             start
         } else {
             return Err(SizeError::new(self));
         };
-        let bytes = if let Some(bytes) = bytes.get_mut(start..) {
-            bytes
+        let dst = if let Some(dst) = dst.get_mut(start..) {
+            dst
         } else {
             // get_mut() should never return None here. We return a `SizeError`
             // rather than .unwrap() because in the event the branch is not
@@ -4125,7 +4137,13 @@ pub unsafe trait IntoBytes {
             // than panicking.
             return Err(SizeError::new(self));
         };
-        bytes.copy_from_slice(self.as_bytes());
+        // SAFETY: Through fallible subslicing of `dst`, we have ensured that
+        // `dst.len()` is equal to `src.len()`. Neither the size of the source
+        // nor the size of the destination change between the above subslicing
+        // operation and the invocation of `copy_unchecked`.
+        unsafe {
+            util::copy_unchecked(src, dst);
+        }
         Ok(())
     }
 
