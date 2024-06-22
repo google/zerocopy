@@ -493,7 +493,7 @@ mod tests {
 
         test!(#[repr(C)] #[repr(transparent)] #[repr(packed)](; u8) => Some(0));
         test!(#[repr(C)] #[repr(transparent)] #[repr(packed)](; [u8]) => Some(0));
-        test!(#[repr(C)] #[repr(packed)] (u8; u8) => Some(1));
+        test!(#[repr(C)] #[repr(C, packed)] (u8; u8) => Some(1));
         test!(#[repr(C)] (; AU64) => Some(0));
         test!(#[repr(C)] (; [AU64]) => Some(0));
         test!(#[repr(C)] (u8; AU64) => Some(8));
