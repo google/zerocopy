@@ -1,3 +1,12 @@
+// Copyright 2024 The Fuchsia Authors
+//
+// Licensed under the 2-Clause BSD License <LICENSE-BSD or
+// https://opensource.org/license/bsd-2-clause>, Apache License, Version 2.0
+// <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+// license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+// This file may not be copied, modified, or distributed except according to
+// those terms.
+
 //! Types related to error reporting.
 //!
 //! ## Single failure mode errors
@@ -22,6 +31,12 @@
 //!
 //! All error types provide an `into_src` method that converts the error into
 //! the source value underlying the failed conversion.
+//!
+//! ## Validation order
+//!
+//! Our conversion methods typically check alignment, then size, then bit
+//! validity. However, we do not guarantee that this is always the case, and
+//! this behavior may change between releases.
 
 use core::{convert::Infallible, fmt, marker::PhantomData, ops::Deref};
 
