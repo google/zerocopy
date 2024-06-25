@@ -330,7 +330,7 @@ const _: () = {
 };
 
 /// The target pointer width, counted in bits.
-const POINTER_WIDTH_BITS: usize = mem::size_of::<usize>() * 8;
+const POINTER_WIDTH_BITS: usize = size_of::<usize>() * 8;
 
 /// The layout of a type which might be dynamically-sized.
 ///
@@ -485,11 +485,11 @@ impl DstLayout {
         // sound to initialize `size_info` to `SizeInfo::Sized { size }`; the
         // `size` field is also correct by construction.
         DstLayout {
-            align: match NonZeroUsize::new(mem::align_of::<T>()) {
+            align: match NonZeroUsize::new(align_of::<T>()) {
                 Some(align) => align,
                 None => unreachable!(),
             },
-            size_info: SizeInfo::Sized { _size: mem::size_of::<T>() },
+            size_info: SizeInfo::Sized { _size: size_of::<T>() },
         }
     }
 
@@ -508,13 +508,13 @@ impl DstLayout {
         // construction. Since `[T]` is a (degenerate case of a) slice DST, it
         // is correct to initialize `size_info` to `SizeInfo::SliceDst`.
         DstLayout {
-            align: match NonZeroUsize::new(mem::align_of::<T>()) {
+            align: match NonZeroUsize::new(align_of::<T>()) {
                 Some(align) => align,
                 None => unreachable!(),
             },
             size_info: SizeInfo::SliceDst(TrailingSliceLayout {
                 _offset: 0,
-                _elem_size: mem::size_of::<T>(),
+                _elem_size: size_of::<T>(),
             }),
         }
     }
@@ -1415,7 +1415,7 @@ pub unsafe trait FromZeroes {
     #[inline(always)]
     fn zero(&mut self) {
         let slf: *mut Self = self;
-        let len = mem::size_of_val(self);
+        let len = size_of_val(self);
         // SAFETY:
         // - `self` is guaranteed by the type system to be valid for writes of
         //   size `size_of_val(self)`.
@@ -1534,10 +1534,10 @@ pub unsafe trait FromZeroes {
     where
         Self: Sized,
     {
-        let size = mem::size_of::<Self>()
+        let size = size_of::<Self>()
             .checked_mul(len)
             .expect("mem::size_of::<Self>() * len overflows `usize`");
-        let align = mem::align_of::<Self>();
+        let align = align_of::<Self>();
         // On stable Rust versions <= 1.64.0, `Layout::from_size_align` has a
         // bug in which sufficiently-large allocations (those which, when
         // rounded up to the alignment, overflow `isize`) are not rejected,
@@ -2711,7 +2711,7 @@ pub unsafe trait AsBytes {
     fn as_bytes(&self) -> &[u8] {
         // Note that this method does not have a `Self: Sized` bound;
         // `size_of_val` works for unsized values too.
-        let len = mem::size_of_val(self);
+        let len = size_of_val(self);
         let slf: *const Self = self;
 
         // SAFETY:
@@ -2786,7 +2786,7 @@ pub unsafe trait AsBytes {
     {
         // Note that this method does not have a `Self: Sized` bound;
         // `size_of_val` works for unsized values too.
-        let len = mem::size_of_val(self);
+        let len = size_of_val(self);
         let slf: *mut Self = self;
 
         // SAFETY:
@@ -2860,7 +2860,7 @@ pub unsafe trait AsBytes {
     /// ```
     #[inline]
     fn write_to(&self, bytes: &mut [u8]) -> Option<()> {
-        if bytes.len() != mem::size_of_val(self) {
+        if bytes.len() != size_of_val(self) {
             return None;
         }
 
@@ -2917,7 +2917,7 @@ pub unsafe trait AsBytes {
     /// ```
     #[inline]
     fn write_to_prefix(&self, bytes: &mut [u8]) -> Option<()> {
-        let size = mem::size_of_val(self);
+        let size = size_of_val(self);
         bytes.get_mut(..size)?.copy_from_slice(self.as_bytes());
         Some(())
     }
@@ -2978,7 +2978,7 @@ pub unsafe trait AsBytes {
     /// ```
     #[inline]
     fn write_to_suffix(&self, bytes: &mut [u8]) -> Option<()> {
-        let start = bytes.len().checked_sub(mem::size_of_val(self))?;
+        let start = bytes.len().checked_sub(size_of_val(self))?;
         bytes
             .get_mut(start..)
             .expect("`start` should be in-bounds of `bytes`")
@@ -4158,7 +4158,7 @@ where
     /// these checks fail, it returns `None`.
     #[inline]
     pub fn new(bytes: B) -> Option<Ref<B, T>> {
-        if bytes.len() != mem::size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
+        if bytes.len() != size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
             return None;
         }
         Some(Ref(bytes, PhantomData))
@@ -4173,10 +4173,10 @@ where
     /// checks fail, it returns `None`.
     #[inline]
     pub fn new_from_prefix(bytes: B) -> Option<(Ref<B, T>, B)> {
-        if bytes.len() < mem::size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
+        if bytes.len() < size_of::<T>() || !util::aligned_to::<_, T>(bytes.deref()) {
             return None;
         }
-        let (bytes, suffix) = bytes.split_at(mem::size_of::<T>());
+        let (bytes, suffix) = bytes.split_at(size_of::<T>());
         Some((Ref(bytes, PhantomData), suffix))
     }
 
@@ -4191,7 +4191,7 @@ where
     #[inline]
     pub fn new_from_suffix(bytes: B) -> Option<(B, Ref<B, T>)> {
         let bytes_len = bytes.len();
-        let split_at = bytes_len.checked_sub(mem::size_of::<T>())?;
+        let split_at = bytes_len.checked_sub(size_of::<T>())?;
         let (prefix, bytes) = bytes.split_at(split_at);
         if !util::aligned_to::<_, T>(bytes.deref()) {
             return None;
@@ -4218,7 +4218,7 @@ where
     pub fn new_slice(bytes: B) -> Option<Ref<B, [T]>> {
         let remainder = bytes
             .len()
-            .checked_rem(mem::size_of::<T>())
+            .checked_rem(size_of::<T>())
             .expect("Ref::new_slice called on a zero-sized type");
         if remainder != 0 || !util::aligned_to::<_, T>(bytes.deref()) {
             return None;
@@ -4240,7 +4240,7 @@ where
     /// `new_slice_from_prefix` panics if `T` is a zero-sized type.
     #[inline]
     pub fn new_slice_from_prefix(bytes: B, count: usize) -> Option<(Ref<B, [T]>, B)> {
-        let expected_len = match mem::size_of::<T>().checked_mul(count) {
+        let expected_len = match size_of::<T>().checked_mul(count) {
             Some(len) => len,
             None => return None,
         };
@@ -4265,7 +4265,7 @@ where
     /// `new_slice_from_suffix` panics if `T` is a zero-sized type.
     #[inline]
     pub fn new_slice_from_suffix(bytes: B, count: usize) -> Option<(B, Ref<B, [T]>)> {
-        let expected_len = match mem::size_of::<T>().checked_mul(count) {
+        let expected_len = match size_of::<T>().checked_mul(count) {
             Some(len) => len,
             None => return None,
         };
@@ -4792,7 +4792,7 @@ where
     /// `deref_slice_helper` has the same safety requirements as `deref_helper`.
     unsafe fn deref_slice_helper<'a>(&self) -> &'a [T] {
         let len = self.0.len();
-        let elem_size = mem::size_of::<T>();
+        let elem_size = size_of::<T>();
         debug_assert_ne!(elem_size, 0);
         // `Ref<_, [T]>` maintains the invariant that `size_of::<T>() > 0`.
         // Thus, neither the mod nor division operations here can panic.
@@ -4822,7 +4822,7 @@ where
     /// `deref_mut_helper`.
     unsafe fn deref_mut_slice_helper<'a>(&mut self) -> &'a mut [T] {
         let len = self.0.len();
-        let elem_size = mem::size_of::<T>();
+        let elem_size = size_of::<T>();
         debug_assert_ne!(elem_size, 0);
         // `Ref<_, [T]>` maintains the invariant that `size_of::<T>() > 0`.
         // Thus, neither the mod nor division operations here can panic.
@@ -5481,7 +5481,7 @@ mod alloc_support {
         #[should_panic(expected = "assertion failed: size <= max_alloc")]
         fn test_new_box_slice_zeroed_panics_isize_overflow() {
             let max = usize::try_from(isize::MAX).unwrap();
-            let _ = u16::new_box_slice_zeroed((max / mem::size_of::<u16>()) + 1);
+            let _ = u16::new_box_slice_zeroed((max / size_of::<u16>()) + 1);
         }
     }
 }
@@ -6348,7 +6348,7 @@ mod tests {
         test!(u8, layout(1, 1, None));
         // Use `align_of` because `u64` alignment may be smaller than 8 on some
         // platforms.
-        test!(u64, layout(8, mem::align_of::<u64>(), None));
+        test!(u64, layout(8, align_of::<u64>(), None));
         test!(AU64, layout(8, 8, None));
 
         test!(Option<&'static ()>, usize::LAYOUT);
@@ -7460,7 +7460,7 @@ mod tests {
         // Fail due to arithmetic overflow.
 
         let mut buf = Align::<[u8; 16], AU64>::default();
-        let unreasonable_len = usize::MAX / mem::size_of::<AU64>() + 1;
+        let unreasonable_len = usize::MAX / size_of::<AU64>() + 1;
         assert!(Ref::<_, [AU64]>::new_slice_from_prefix(&buf.t[..], unreasonable_len).is_none());
         assert!(Ref::<_, [AU64]>::new_slice_from_prefix_zeroed(&mut buf.t[..], unreasonable_len)
             .is_none());
@@ -7722,7 +7722,7 @@ mod tests {
                     let mut t = Self::new_zeroed();
                     let ptr: *mut T = &mut t;
                     // SAFETY: `T: FromBytes`
-                    unsafe { ptr::write_bytes(ptr.cast::<u8>(), 0xFF, mem::size_of::<T>()) };
+                    unsafe { ptr::write_bytes(ptr.cast::<u8>(), 0xFF, size_of::<T>()) };
                     t
                 };
 
