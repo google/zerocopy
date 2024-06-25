@@ -10,9 +10,9 @@ error[E0277]: the trait bound `NotZerocopy<u32>: zerocopy::FromBytes` is not sat
    = help: the following other types implement trait `zerocopy::FromBytes`:
              ()
              AU16
-             AtomicBool
              AtomicI16
              AtomicI32
+             AtomicI64
              AtomicI8
              AtomicIsize
              AtomicU16
