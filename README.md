@@ -82,6 +82,11 @@ for network parsing.
   the `alloc` crate is added as a dependency, and some allocation-related
   functionality is added.
 
+- **`std`**
+  By default, `zerocopy` is `no_std`. When the `std` feature is enabled, the
+  `std` crate is added as a dependency (ie, `no_std` is disabled), and
+  support for some `std` types is added. `std` implies `alloc`.
+
 - **`derive`**
   Provides derives for the core marker traits via the `zerocopy-derive`
   crate. These derives are re-exported from `zerocopy`, so it is not

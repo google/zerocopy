@@ -32,15 +32,40 @@
 //! All error types provide an `into_src` method that converts the error into
 //! the source value underlying the failed conversion.
 //!
+//! ## Display formatting
+//!
+//! All error types provide a `Display` implementation that produces a
+//! human-readable error message. When `debug_assertions` are enabled, these
+//! error messages are verbose and may include potentially sensitive
+//! information, including:
+//!
+//! - the names of the involved types
+//! - the sizes of the involved types
+//! - the addresses of the involved types
+//! - the contents of the involved types
+//!
+//! When `debug_assertions` are disabled (as is default for `release` builds),
+//! such potentially sensitive information is excluded.
+//!
+//! In the future, we may support manually configuring this behavior. If you are
+//! interested in this feature, [let us know on GitHub][issue-1457] so we know
+//! to prioritize it.
+//!
+//! [issue-1457]: https://github.com/google/zerocopy/issues/1457
+//!
 //! ## Validation order
 //!
 //! Our conversion methods typically check alignment, then size, then bit
 //! validity. However, we do not guarantee that this is always the case, and
 //! this behavior may change between releases.
 
-use core::{convert::Infallible, fmt, marker::PhantomData, ops::Deref};
+use core::{
+    convert::Infallible,
+    fmt::{self, Debug, Write},
+    ops::Deref,
+};
 
-use crate::TryFromBytes;
+use crate::{util::SendSyncPhantomData, KnownLayout, TryFromBytes};
 #[cfg(doc)]
 use crate::{FromBytes, Ref};
 
@@ -86,6 +111,10 @@ impl<A: fmt::Debug, S: fmt::Debug, V: fmt::Debug> fmt::Debug for ConvertError<A,
 }
 
 /// Produces a human-readable error message.
+///
+/// The message differs between debug and release builds. When
+/// `debug_assertions` are enabled, this message is verbose and includes
+/// potentially sensitive information.
 impl<A: fmt::Display, S: fmt::Display, V: fmt::Display> fmt::Display for ConvertError<A, S, V> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -97,18 +126,28 @@ impl<A: fmt::Display, S: fmt::Display, V: fmt::Display> fmt::Display for Convert
     }
 }
 
+#[cfg(any(feature = "std", test))]
+#[allow(clippy::std_instead_of_core)]
+impl<A, S, V> std::error::Error for ConvertError<A, S, V>
+where
+    A: fmt::Display + fmt::Debug,
+    S: fmt::Display + fmt::Debug,
+    V: fmt::Display + fmt::Debug,
+{
+}
+
 /// The error emitted if the conversion source is improperly aligned.
 #[derive(PartialEq, Eq)]
 pub struct AlignmentError<Src, Dst: ?Sized> {
     /// The source value involved in the conversion.
     src: Src,
     /// The inner destination type inolved in the conversion.
-    dst: PhantomData<Dst>,
+    dst: SendSyncPhantomData<Dst>,
 }
 
 impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
     pub(crate) fn new(src: Src) -> Self {
-        Self { src, dst: PhantomData }
+        Self { src, dst: SendSyncPhantomData::default() }
     }
 
     /// Produces the source underlying the failed conversion.
@@ -118,15 +157,45 @@ impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
     }
 
     pub(crate) fn with_src<NewSrc>(self, new_src: NewSrc) -> AlignmentError<NewSrc, Dst> {
-        AlignmentError { src: new_src, dst: PhantomData }
+        AlignmentError { src: new_src, dst: SendSyncPhantomData::default() }
     }
 
     pub(crate) fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> AlignmentError<NewSrc, Dst> {
-        AlignmentError { src: f(self.src), dst: PhantomData }
+        AlignmentError { src: f(self.src), dst: SendSyncPhantomData::default() }
     }
 
     pub(crate) fn into<S, V>(self) -> ConvertError<Self, S, V> {
         ConvertError::Alignment(self)
+    }
+
+    /// Format extra details for a verbose, human-readable error message.
+    ///
+    /// This formatting may include potentially sensitive information.
+    fn display_verbose_extras(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+    where
+        Src: Deref,
+        Dst: KnownLayout,
+    {
+        #[allow(clippy::as_conversions)]
+        let addr = self.src.deref() as *const _ as *const ();
+        let addr_align = 2usize.pow((crate::util::AsAddress::addr(addr)).trailing_zeros());
+
+        f.write_str("\n\nSource type: ")?;
+        f.write_str(core::any::type_name::<Src>())?;
+
+        f.write_str("\nSource address: ")?;
+        addr.fmt(f)?;
+        f.write_str(" (a multiple of ")?;
+        addr_align.fmt(f)?;
+        f.write_str(")")?;
+
+        f.write_str("\nDestination type: ")?;
+        f.write_str(core::any::type_name::<Dst>())?;
+
+        f.write_str("\nDestination alignment: ")?;
+        <Dst as KnownLayout>::LAYOUT.align.get().fmt(f)?;
+
+        Ok(())
     }
 }
 
@@ -138,30 +207,37 @@ impl<Src, Dst: ?Sized> fmt::Debug for AlignmentError<Src, Dst> {
 }
 
 /// Produces a human-readable error message.
-// The bounds on this impl are intentionally conservative, and can be relaxed
-// either once a `?Sized` alignment accessor is stabilized, or by storing the
-// alignment as a runtime value.
-impl<Src, Dst> fmt::Display for AlignmentError<Src, Dst>
+///
+/// The message differs between debug and release builds. When
+/// `debug_assertions` are enabled, this message is verbose and includes
+/// potentially sensitive information.
+impl<Src, Dst: ?Sized> fmt::Display for AlignmentError<Src, Dst>
 where
     Src: Deref,
+    Dst: KnownLayout,
 {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        #[cfg_attr(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS, allow(lossy_provenance_casts))]
-        #[allow(clippy::as_conversions)]
-        let addr = self.src.deref() as *const _ as *const () as usize;
-        let addr_align = 2usize.pow(addr.trailing_zeros());
-        f.write_str("the conversion failed because the address of the source (a multiple of ")?;
-        addr_align.fmt(f)?;
-        f.write_str(") is not a multiple of the alignment (")?;
-        core::mem::align_of::<Dst>().fmt(f)?;
-        f.write_str(") of the destination type: ")?;
-        f.write_str(core::any::type_name::<Dst>())?;
-        Ok(())
+        f.write_str("The conversion failed because the address of the source is not a multiple of the alignment of the destination type.")?;
+
+        if cfg!(debug_assertions) {
+            self.display_verbose_extras(f)
+        } else {
+            Ok(())
+        }
     }
 }
 
-impl<Src, Dst, S, V> From<AlignmentError<Src, Dst>>
+#[cfg(any(feature = "std", test))]
+#[allow(clippy::std_instead_of_core)]
+impl<Src, Dst: ?Sized> std::error::Error for AlignmentError<Src, Dst>
+where
+    Src: Deref,
+    Dst: KnownLayout,
+{
+}
+
+impl<Src, Dst: ?Sized, S, V> From<AlignmentError<Src, Dst>>
     for ConvertError<AlignmentError<Src, Dst>, S, V>
 {
     #[inline]
@@ -176,12 +252,12 @@ pub struct SizeError<Src, Dst: ?Sized> {
     /// The source value involved in the conversion.
     src: Src,
     /// The inner destination type inolved in the conversion.
-    dst: PhantomData<Dst>,
+    dst: SendSyncPhantomData<Dst>,
 }
 
 impl<Src, Dst: ?Sized> SizeError<Src, Dst> {
     pub(crate) fn new(src: Src) -> Self {
-        Self { src, dst: PhantomData }
+        Self { src, dst: SendSyncPhantomData::default() }
     }
 
     /// Produces the source underlying the failed conversion.
@@ -192,22 +268,60 @@ impl<Src, Dst: ?Sized> SizeError<Src, Dst> {
 
     /// Sets the source value associated with the conversion error.
     pub(crate) fn with_src<NewSrc>(self, new_src: NewSrc) -> SizeError<NewSrc, Dst> {
-        SizeError { src: new_src, dst: PhantomData }
+        SizeError { src: new_src, dst: SendSyncPhantomData::default() }
     }
 
     /// Maps the source value associated with the conversion error.
     pub(crate) fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> SizeError<NewSrc, Dst> {
-        SizeError { src: f(self.src), dst: PhantomData }
+        SizeError { src: f(self.src), dst: SendSyncPhantomData::default() }
     }
 
     /// Sets the destination type associated with the conversion error.
     pub(crate) fn with_dst<NewDst: ?Sized>(self) -> SizeError<Src, NewDst> {
-        SizeError { src: self.src, dst: PhantomData }
+        SizeError { src: self.src, dst: SendSyncPhantomData::default() }
     }
 
     /// Converts the error into a general [`ConvertError`].
     pub(crate) fn into<A, V>(self) -> ConvertError<A, Self, V> {
         ConvertError::Size(self)
+    }
+
+    /// Format extra details for a verbose, human-readable error message.
+    ///
+    /// This formatting may include potentially sensitive information.
+    fn display_verbose_extras(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+    where
+        Src: Deref,
+        Dst: KnownLayout,
+    {
+        // include the source type
+        f.write_str("\nSource type: ")?;
+        f.write_str(core::any::type_name::<Src>())?;
+
+        // include the source.deref() size
+        let src_size = core::mem::size_of_val(&*self.src);
+        f.write_str("\nSource size: ")?;
+        src_size.fmt(f)?;
+        f.write_str(" byte")?;
+        if src_size != 1 {
+            f.write_char('s')?;
+        }
+
+        // if `Dst` is `Sized`, include the `Dst` size
+        if let crate::SizeInfo::Sized { size } = Dst::LAYOUT.size_info {
+            f.write_str("\nDestination size: ")?;
+            size.fmt(f)?;
+            f.write_str(" byte")?;
+            if size != 1 {
+                f.write_char('s')?;
+            }
+        }
+
+        // include the destination type
+        f.write_str("\nDestination type: ")?;
+        f.write_str(core::any::type_name::<Dst>())?;
+
+        Ok(())
     }
 }
 
@@ -219,19 +333,36 @@ impl<Src, Dst: ?Sized> fmt::Debug for SizeError<Src, Dst> {
 }
 
 /// Produces a human-readable error message.
+///
+/// The message differs between debug and release builds. When
+/// `debug_assertions` are enabled, this message is verbose and includes
+/// potentially sensitive information.
 impl<Src, Dst: ?Sized> fmt::Display for SizeError<Src, Dst>
 where
     Src: Deref,
+    Dst: KnownLayout,
 {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_str("the conversion failed because the source was incorrectly sized to complete the conversion into the destination type: ")?;
-        f.write_str(core::any::type_name::<Dst>())?;
+        f.write_str("The conversion failed because the source was incorrectly sized to complete the conversion into the destination type.")?;
+        if cfg!(debug_assertions) {
+            f.write_str("\n")?;
+            self.display_verbose_extras(f)?;
+        }
         Ok(())
     }
 }
 
-impl<Src, Dst, A, V> From<SizeError<Src, Dst>> for ConvertError<A, SizeError<Src, Dst>, V> {
+#[cfg(any(feature = "std", test))]
+#[allow(clippy::std_instead_of_core)]
+impl<Src, Dst: ?Sized> std::error::Error for SizeError<Src, Dst>
+where
+    Src: Deref,
+    Dst: KnownLayout,
+{
+}
+
+impl<Src, Dst: ?Sized, A, V> From<SizeError<Src, Dst>> for ConvertError<A, SizeError<Src, Dst>, V> {
     #[inline]
     fn from(err: SizeError<Src, Dst>) -> Self {
         Self::Size(err)
@@ -244,12 +375,12 @@ pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
     /// The source value involved in the conversion.
     pub(crate) src: Src,
     /// The inner destination type inolved in the conversion.
-    dst: PhantomData<Dst>,
+    dst: SendSyncPhantomData<Dst>,
 }
 
 impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
     pub(crate) fn new(src: Src) -> Self {
-        Self { src, dst: PhantomData }
+        Self { src, dst: SendSyncPhantomData::default() }
     }
 
     /// Produces the source underlying the failed conversion.
@@ -260,12 +391,25 @@ impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
 
     /// Maps the source value associated with the conversion error.
     pub(crate) fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> ValidityError<NewSrc, Dst> {
-        ValidityError { src: f(self.src), dst: PhantomData }
+        ValidityError { src: f(self.src), dst: SendSyncPhantomData::default() }
     }
 
     /// Converts the error into a general [`ConvertError`].
     pub(crate) fn into<A, S>(self) -> ConvertError<A, S, Self> {
         ConvertError::Validity(self)
+    }
+
+    /// Format extra details for a verbose, human-readable error message.
+    ///
+    /// This formatting may include potentially sensitive information.
+    fn display_verbose_extras(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+    where
+        Src: Deref,
+        Dst: KnownLayout,
+    {
+        f.write_str("Destination type: ")?;
+        f.write_str(core::any::type_name::<Dst>())?;
+        Ok(())
     }
 }
 
@@ -277,16 +421,33 @@ impl<Src, Dst: ?Sized + TryFromBytes> fmt::Debug for ValidityError<Src, Dst> {
 }
 
 /// Produces a human-readable error message.
-impl<Src, Dst: ?Sized + TryFromBytes> fmt::Display for ValidityError<Src, Dst>
+///
+/// The message differs between debug and release builds. When
+/// `debug_assertions` are enabled, this message is verbose and includes
+/// potentially sensitive information.
+impl<Src, Dst: ?Sized> fmt::Display for ValidityError<Src, Dst>
 where
     Src: Deref,
+    Dst: KnownLayout + TryFromBytes,
 {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_str("the conversion failed because the source bytes are not a valid value of the destination type: ")?;
-        f.write_str(core::any::type_name::<Dst>())?;
+        f.write_str("The conversion failed because the source bytes are not a valid value of the destination type.")?;
+        if cfg!(debug_assertions) {
+            f.write_str("\n\n")?;
+            self.display_verbose_extras(f)?;
+        }
         Ok(())
     }
+}
+
+#[cfg(any(feature = "std", test))]
+#[allow(clippy::std_instead_of_core)]
+impl<Src, Dst: ?Sized> std::error::Error for ValidityError<Src, Dst>
+where
+    Src: Deref,
+    Dst: KnownLayout + TryFromBytes,
+{
 }
 
 impl<Src, Dst: ?Sized + TryFromBytes, A, S> From<ValidityError<Src, Dst>>
@@ -410,8 +571,45 @@ impl<Src, Dst: ?Sized + TryFromBytes> TryReadError<Src, Dst> {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use super::*;
+
+    #[test]
+    fn test_send_sync() {
+        // Test that all error types are `Send + Sync` even if `Dst: !Send +
+        // !Sync`.
+
+        #[allow(dead_code)]
+        fn is_send_sync<T: Send + Sync>(_t: T) {}
+
+        #[allow(dead_code)]
+        fn alignment_err_is_send_sync<Src: Send + Sync, Dst>(err: AlignmentError<Src, Dst>) {
+            is_send_sync(err)
+        }
+
+        #[allow(dead_code)]
+        fn size_err_is_send_sync<Src: Send + Sync, Dst>(err: SizeError<Src, Dst>) {
+            is_send_sync(err)
+        }
+
+        #[allow(dead_code)]
+        fn validity_err_is_send_sync<Src: Send + Sync, Dst: TryFromBytes>(
+            err: ValidityError<Src, Dst>,
+        ) {
+            is_send_sync(err)
+        }
+
+        #[allow(dead_code)]
+        fn convert_error_is_send_sync<Src: Send + Sync, Dst: TryFromBytes>(
+            err: ConvertError<
+                AlignmentError<Src, Dst>,
+                SizeError<Src, Dst>,
+                ValidityError<Src, Dst>,
+            >,
+        ) {
+            is_send_sync(err)
+        }
+    }
 
     #[test]
     fn alignment_display() {
@@ -420,34 +618,72 @@ mod test {
             bytes: [u8; 128],
         }
 
+        impl_known_layout!(elain::Align::<8>);
+
         let aligned = Aligned { bytes: [0; 128] };
 
+        let bytes = &aligned.bytes[1..];
+        let addr = crate::util::AsAddress::addr(bytes);
         assert_eq!(
-            AlignmentError::<_, elain::Align::<8>>::new(&aligned.bytes[1..]).to_string(),
-            "the conversion failed because the address of the source (a multiple of 1) is not a multiple of the alignment (8) of the destination type: elain::Align<8>"
+            AlignmentError::<_, elain::Align::<8>>::new(bytes).to_string(),
+            format!("The conversion failed because the address of the source is not a multiple of the alignment of the destination type.\n\
+            \nSource type: &[u8]\
+            \nSource address: 0x{:x} (a multiple of 1)\
+            \nDestination type: elain::Align<8>\
+            \nDestination alignment: 8", addr)
         );
 
+        let bytes = &aligned.bytes[2..];
+        let addr = crate::util::AsAddress::addr(bytes);
         assert_eq!(
-            AlignmentError::<_, elain::Align::<8>>::new(&aligned.bytes[2..]).to_string(),
-            "the conversion failed because the address of the source (a multiple of 2) is not a multiple of the alignment (8) of the destination type: elain::Align<8>"
+            AlignmentError::<_, elain::Align::<8>>::new(bytes).to_string(),
+            format!("The conversion failed because the address of the source is not a multiple of the alignment of the destination type.\n\
+            \nSource type: &[u8]\
+            \nSource address: 0x{:x} (a multiple of 2)\
+            \nDestination type: elain::Align<8>\
+            \nDestination alignment: 8", addr)
         );
 
+        let bytes = &aligned.bytes[3..];
+        let addr = crate::util::AsAddress::addr(bytes);
         assert_eq!(
-            AlignmentError::<_, elain::Align::<8>>::new(&aligned.bytes[3..]).to_string(),
-            "the conversion failed because the address of the source (a multiple of 1) is not a multiple of the alignment (8) of the destination type: elain::Align<8>"
+            AlignmentError::<_, elain::Align::<8>>::new(bytes).to_string(),
+            format!("The conversion failed because the address of the source is not a multiple of the alignment of the destination type.\n\
+            \nSource type: &[u8]\
+            \nSource address: 0x{:x} (a multiple of 1)\
+            \nDestination type: elain::Align<8>\
+            \nDestination alignment: 8", addr)
         );
 
+        let bytes = &aligned.bytes[4..];
+        let addr = crate::util::AsAddress::addr(bytes);
         assert_eq!(
-            AlignmentError::<_, elain::Align::<8>>::new(&aligned.bytes[4..]).to_string(),
-            "the conversion failed because the address of the source (a multiple of 4) is not a multiple of the alignment (8) of the destination type: elain::Align<8>"
+            AlignmentError::<_, elain::Align::<8>>::new(bytes).to_string(),
+            format!("The conversion failed because the address of the source is not a multiple of the alignment of the destination type.\n\
+            \nSource type: &[u8]\
+            \nSource address: 0x{:x} (a multiple of 4)\
+            \nDestination type: elain::Align<8>\
+            \nDestination alignment: 8", addr)
         );
     }
 
     #[test]
     fn size_display() {
         assert_eq!(
-            SizeError::<_, [u8]>::new(&[0u8; 1][..]).to_string(),
-            "the conversion failed because the source was incorrectly sized to complete the conversion into the destination type: [u8]"
+            SizeError::<_, [u8]>::new(&[0u8; 2][..]).to_string(),
+            "The conversion failed because the source was incorrectly sized to complete the conversion into the destination type.\n\
+            \nSource type: &[u8]\
+            \nSource size: 2 bytes\
+            \nDestination type: [u8]"
+        );
+
+        assert_eq!(
+            SizeError::<_, [u8; 2]>::new(&[0u8; 1][..]).to_string(),
+            "The conversion failed because the source was incorrectly sized to complete the conversion into the destination type.\n\
+            \nSource type: &[u8]\
+            \nSource size: 1 byte\
+            \nDestination size: 2 bytes\
+            \nDestination type: [u8; 2]"
         );
     }
 
@@ -455,7 +691,9 @@ mod test {
     fn validity_display() {
         assert_eq!(
             ValidityError::<_, bool>::new(&[2u8; 1][..]).to_string(),
-            "the conversion failed because the source bytes are not a valid value of the destination type: bool"
+            "The conversion failed because the source bytes are not a valid value of the destination type.\n\
+            \n\
+            Destination type: bool"
         );
     }
 }

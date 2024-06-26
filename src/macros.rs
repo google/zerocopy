@@ -553,6 +553,7 @@ macro_rules! impl_known_layout {
         const _: () = {
             use core::ptr::NonNull;
 
+            #[allow(non_local_definitions)]
             // SAFETY: Delegates safety to `DstLayout::for_type`.
             unsafe impl<$($tyvar $(: ?$optbound)?)? $(, const $constvar : $constty)?> KnownLayout for $ty {
                 #[allow(clippy::missing_inline_in_public_items)]

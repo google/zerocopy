@@ -82,6 +82,11 @@
 //!   the `alloc` crate is added as a dependency, and some allocation-related
 //!   functionality is added.
 //!
+//! - **`std`**
+//!   By default, `zerocopy` is `no_std`. When the `std` feature is enabled, the
+//!   `std` crate is added as a dependency (ie, `no_std` is disabled), and
+//!   support for some `std` types is added. `std` implies `alloc`.
+//!
 //! - **`derive`**   
 //!   Provides derives for the core marker traits via the `zerocopy-derive`
 //!   crate. These derives are re-exported from `zerocopy`, so it is not
@@ -264,7 +269,7 @@
     clippy::arithmetic_side_effects,
     clippy::indexing_slicing,
 ))]
-#![cfg_attr(not(test), no_std)]
+#![cfg_attr(not(any(test, feature = "std")), no_std)]
 #![cfg_attr(
     all(feature = "simd-nightly", any(target_arch = "x86", target_arch = "x86_64")),
     feature(stdarch_x86_avx512)
