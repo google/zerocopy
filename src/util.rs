@@ -610,6 +610,29 @@ pub(crate) const fn min(a: NonZeroUsize, b: NonZeroUsize) -> NonZeroUsize {
     }
 }
 
+/// Copies `src` into the prefix of `dst`.
+///
+/// # Safety
+///
+/// The caller guarantees that `src.len() <= dst.len()`.
+#[inline(always)]
+pub(crate) unsafe fn copy_unchecked(src: &[u8], dst: &mut [u8]) {
+    debug_assert!(src.len() <= dst.len());
+    // SAFETY: This invocation satisfies the safety contract of
+    // copy_nonoverlapping [1]:
+    // - `src.as_ptr()` is trivially valid for reads of `src.len()` bytes
+    // - `dst.as_ptr()` is valid for writes of `src.len()` bytes, because the
+    //   caller has promised that `src.len() <= dst.len()`
+    // - `src` and `dst` are, trivially, properly aligned
+    // - the region of memory beginning at `src` with a size of `src.len()`
+    //   bytes does not overlap with the region of memory beginning at `dst`
+    //   with the same size, because `dst` is derived from an exclusive
+    //   reference.
+    unsafe {
+        core::ptr::copy_nonoverlapping(src.as_ptr(), dst.as_mut_ptr(), src.len());
+    };
+}
+
 /// Since we support multiple versions of Rust, there are often features which
 /// have been stabilized in the most recent stable release which do not yet
 /// exist (stably) on our MSRV. This module provides polyfills for those
