@@ -1,0 +1,1 @@
+../ui-nightly/inline_assert_size_eq_failed.rs
