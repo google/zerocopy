@@ -1711,7 +1711,7 @@ mod tests {
         // This test is important because it allows us to test our hand-rolled
         // implementation of `<Unalign<T> as TryFromBytes>::is_bit_valid`.
         assert_impls!(Unalign<bool>: KnownLayout, Immutable, TryFromBytes, FromZeros, IntoBytes, Unaligned, !FromBytes);
-        assert_impls!(Unalign<NotZerocopy>: Unaligned, !Immutable, !KnownLayout, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes);
+        assert_impls!(Unalign<NotZerocopy>: KnownLayout, Unaligned, !Immutable, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes);
 
         assert_impls!(
             [u8]: KnownLayout,
