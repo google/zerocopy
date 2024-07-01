@@ -2175,14 +2175,16 @@ pub unsafe trait FromZeros: TryFromBytes {
     #[cfg(feature = "alloc")]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
     #[inline]
-    fn new_box_slice_zeroed(len: usize) -> Box<[Self]>
+    fn new_box_zeroed_with_elems(count: usize) -> Option<Box<Self>>
     where
-        Self: Sized,
+        Self: KnownLayout<PointerMetadata = usize>,
     {
-        let size = mem::size_of::<Self>()
-            .checked_mul(len)
-            .expect("mem::size_of::<Self>() * len overflows `usize`");
-        let align = mem::align_of::<Self>();
+        let size = match count.size_for_metadata(Self::LAYOUT) {
+            Some(size) => size,
+            None => return None,
+        };
+
+        let align = Self::LAYOUT.align.get();
         // On stable Rust versions <= 1.64.0, `Layout::from_size_align` has a
         // bug in which sufficiently-large allocations (those which, when
         // rounded up to the alignment, overflow `isize`) are not rejected,
@@ -2194,29 +2196,28 @@ pub unsafe trait FromZeros: TryFromBytes {
         assert!(size <= max_alloc);
         // TODO(https://github.com/rust-lang/rust/issues/55724): Use
         // `Layout::repeat` once it's stabilized.
-        let layout =
-            Layout::from_size_align(size, align).expect("total allocation size overflows `isize`");
+        let layout = Layout::from_size_align(size, align).ok()?;
 
         let ptr = if layout.size() != 0 {
             // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
             #[allow(clippy::undocumented_unsafe_blocks)]
-            let ptr = unsafe { alloc::alloc::alloc_zeroed(layout).cast::<Self>() };
-            if ptr.is_null() {
-                alloc::alloc::handle_alloc_error(layout);
+            let ptr = unsafe { alloc::alloc::alloc_zeroed(layout) };
+            match NonNull::new(ptr) {
+                Some(ptr) => ptr,
+                None => alloc::alloc::handle_alloc_error(layout),
             }
-            ptr
         } else {
             // `Box<[T]>` does not allocate when `T` is zero-sized or when `len`
             // is zero, but it does require a non-null dangling pointer for its
             // allocation.
-            NonNull::<Self>::dangling().as_ptr()
+            NonNull::<u8>::dangling()
         };
+
+        let ptr = Self::raw_from_ptr_len(ptr, count);
 
         // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
         #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe {
-            Box::from_raw(slice::from_raw_parts_mut(ptr, len))
-        }
+        Some(unsafe { Box::from_raw(ptr.as_ptr()) })
     }
 
     /// Creates a `Vec<Self>` from zeroed bytes.
@@ -2243,11 +2244,11 @@ pub unsafe trait FromZeros: TryFromBytes {
     #[cfg(feature = "alloc")]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
     #[inline(always)]
-    fn new_vec_zeroed(len: usize) -> Vec<Self>
+    fn new_vec_zeroed(len: usize) -> Option<Vec<Self>>
     where
         Self: Sized,
     {
-        Self::new_box_slice_zeroed(len).into()
+        <[Self]>::new_box_zeroed_with_elems(len).map(Into::into)
     }
 }
 
