@@ -8,10 +8,15 @@
 
 name: Cache
 description: 'Caches cargo dependencies'
+outputs:
+  cache-hit:
+    description: 'Cache hit status'
+    value: ${{ steps.cache.outputs.cache-hit }}
 runs:
   using: composite
   steps:
     - uses: actions/cache@v4
+      id: cache
       with:
         path: |
           ~/.cargo/
