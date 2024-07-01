@@ -1112,7 +1112,7 @@ mod tests {
                     &self,
                     bytes: &'bytes [u8],
                 ) -> Option<Option<&'bytes T>> {
-                    Some(T::try_ref_from(bytes).ok())
+                    Some(T::try_ref_from_bytes(bytes).ok())
                 }
             }
 
@@ -1122,7 +1122,7 @@ mod tests {
 
             impl<T: TryFromBytes> TestTryReadFrom<T> for AutorefWrapper<T> {
                 fn test_try_read_from(&self, bytes: &[u8]) -> Option<Option<T>> {
-                    Some(T::try_read_from(bytes).ok())
+                    Some(T::try_read_from_bytes(bytes).ok())
                 }
             }
 
@@ -1289,11 +1289,11 @@ mod tests {
                     let bytes = w.test_as_bytes(&*val);
 
                     // The inner closure returns
-                    // `Some($ty::try_ref_from(bytes))` if `$ty: Immutable` and
-                    // `None` otherwise.
+                    // `Some($ty::try_ref_from_bytes(bytes))` if `$ty:
+                    // Immutable` and `None` otherwise.
                     let res = bytes.and_then(|bytes| ww.test_try_from_ref(bytes));
                     if let Some(res) = res {
-                        assert!(res.is_some(), "{}::try_ref_from({:?}): got `None`, expected `Some`", stringify!($ty), val);
+                        assert!(res.is_some(), "{}::try_ref_from_bytes({:?}): got `None`, expected `Some`", stringify!($ty), val);
                     }
 
                     if let Some(bytes) = bytes {
@@ -1315,13 +1315,13 @@ mod tests {
                         let bytes_mut = &mut vec.as_mut_slice()[offset..offset+size];
                         bytes_mut.copy_from_slice(bytes);
 
-                        let res = <$ty as TryFromBytes>::try_mut_from(bytes_mut);
-                        assert!(res.is_ok(), "{}::try_mut_from({:?}): got `Err`, expected `Ok`", stringify!($ty), val);
+                        let res = <$ty as TryFromBytes>::try_mut_from_bytes(bytes_mut);
+                        assert!(res.is_ok(), "{}::try_mut_from_bytes({:?}): got `Err`, expected `Ok`", stringify!($ty), val);
                     }
 
                     let res = bytes.and_then(|bytes| ww.test_try_read_from(bytes));
                     if let Some(res) = res {
-                        assert!(res.is_some(), "{}::try_read_from({:?}): got `None`, expected `Some`", stringify!($ty), val);
+                        assert!(res.is_some(), "{}::try_read_from_bytes({:?}): got `None`, expected `Some`", stringify!($ty), val);
                     }
                 });
                 #[allow(clippy::as_conversions)]
@@ -1329,19 +1329,19 @@ mod tests {
                     #[allow(unused_mut)] // For cases where the "real" impls are used, which take `&self`.
                     let mut w = AutorefWrapper::<$ty>(PhantomData);
 
-                    // This is `Some($ty::try_ref_from(c))` if `$ty: Immutable` and
-                    // `None` otherwise.
+                    // This is `Some($ty::try_ref_from_bytes(c))` if `$ty:
+                    // Immutable` and `None` otherwise.
                     let res = w.test_try_from_ref(c);
                     if let Some(res) = res {
-                        assert!(res.is_none(), "{}::try_ref_from({:?}): got Some, expected None", stringify!($ty), c);
+                        assert!(res.is_none(), "{}::try_ref_from_bytes({:?}): got Some, expected None", stringify!($ty), c);
                     }
 
-                    let res = <$ty as TryFromBytes>::try_mut_from(c);
-                    assert!(res.is_err(), "{}::try_mut_from({:?}): got Ok, expected Err", stringify!($ty), c);
+                    let res = <$ty as TryFromBytes>::try_mut_from_bytes(c);
+                    assert!(res.is_err(), "{}::try_mut_from_bytes({:?}): got Ok, expected Err", stringify!($ty), c);
 
                     let res = w.test_try_read_from(c);
                     if let Some(res) = res {
-                        assert!(res.is_none(), "{}::try_read_from({:?}): got Some, expected None", stringify!($ty), c);
+                        assert!(res.is_none(), "{}::try_read_from_bytes({:?}): got Some, expected None", stringify!($ty), c);
                     }
                 });
 
