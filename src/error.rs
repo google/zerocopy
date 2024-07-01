@@ -570,6 +570,20 @@ impl<Src, Dst: ?Sized + TryFromBytes> TryReadError<Src, Dst> {
     }
 }
 
+/// The error type of a failed allocation.
+///
+/// This type is intended to be deprecated in favor of the standard library's
+/// [`AllocError`] type once it is stabilized. When that happens, this type will
+/// be replaced by a type alias to the standard library type. We do not intend
+/// to treat this as a breaking change; users who wish to avoid breakage should
+/// avoid writing code which assumes that this is *not* such an alias. For
+/// example, implementing the same trait for both types will result in an impl
+/// conflict once this type is an alias.
+///
+/// [`AllocError`]: https://doc.rust-lang.org/alloc/alloc/struct.AllocError.html
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub struct AllocError;
+
 #[cfg(test)]
 mod tests {
     use super::*;

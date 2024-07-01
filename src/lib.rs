@@ -2113,14 +2113,15 @@ pub unsafe trait FromZeros: TryFromBytes {
     /// Note that `Box<Self>` can be converted to `Arc<Self>` and other
     /// container types without reallocation.
     ///
-    /// # Panics
+    /// # Errors
     ///
-    /// Panics if allocation of `size_of::<Self>()` bytes fails.
+    /// Returns an error on allocation failure. Allocation failure is guaranteed
+    /// never to cause a panic or an abort.
     #[must_use = "has no side effects (other than allocation)"]
     #[cfg(any(feature = "alloc", test))]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
     #[inline]
-    fn new_box_zeroed() -> Box<Self>
+    fn new_box_zeroed() -> Result<Box<Self>, AllocError>
     where
         Self: Sized,
     {
@@ -2146,22 +2147,18 @@ pub unsafe trait FromZeros: TryFromBytes {
             // [2] Per https://doc.rust-lang.org/std/ptr/struct.NonNull.html#method.dangling:
             //
             //   Creates a new `NonNull` that is dangling, but well-aligned.
-            unsafe {
-                return Box::from_raw(NonNull::dangling().as_ptr());
-            }
+            return Ok(unsafe { Box::from_raw(NonNull::dangling().as_ptr()) });
         }
 
         // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
         #[allow(clippy::undocumented_unsafe_blocks)]
         let ptr = unsafe { alloc::alloc::alloc_zeroed(layout).cast::<Self>() };
         if ptr.is_null() {
-            alloc::alloc::handle_alloc_error(layout);
+            return Err(AllocError);
         }
         // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
         #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe {
-            Box::from_raw(ptr)
-        }
+        Ok(unsafe { Box::from_raw(ptr) })
     }
 
     /// Creates a `Box<[Self]>` (a boxed slice) from zeroed bytes.
@@ -2181,22 +2178,24 @@ pub unsafe trait FromZeros: TryFromBytes {
     /// actual information, but its `len()` property will report the correct
     /// value.
     ///
-    /// # Panics
+    /// # Errors
     ///
-    /// * Panics if `size_of::<Self>() * len` overflows.
-    /// * Panics if allocation of `size_of::<Self>() * len` bytes fails.
+    /// Returns an error on allocation failure. Allocation failure is
+    /// guaranteed never to cause a panic or an abort.
     #[must_use = "has no side effects (other than allocation)"]
     #[cfg(feature = "alloc")]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
     #[inline]
-    fn new_box_slice_zeroed(len: usize) -> Box<[Self]>
+    fn new_box_zeroed_with_elems(count: usize) -> Result<Box<Self>, AllocError>
     where
-        Self: Sized,
+        Self: KnownLayout<PointerMetadata = usize>,
     {
-        let size = mem::size_of::<Self>()
-            .checked_mul(len)
-            .expect("mem::size_of::<Self>() * len overflows `usize`");
-        let align = mem::align_of::<Self>();
+        let size = match count.size_for_metadata(Self::LAYOUT) {
+            Some(size) => size,
+            None => return Err(AllocError),
+        };
+
+        let align = Self::LAYOUT.align.get();
         // On stable Rust versions <= 1.64.0, `Layout::from_size_align` has a
         // bug in which sufficiently-large allocations (those which, when
         // rounded up to the alignment, overflow `isize`) are not rejected,
@@ -2205,32 +2204,74 @@ pub unsafe trait FromZeros: TryFromBytes {
         // TODO(#67): Once our MSRV is > 1.64.0, remove this assertion.
         #[allow(clippy::as_conversions)]
         let max_alloc = (isize::MAX as usize).saturating_sub(align);
-        assert!(size <= max_alloc);
+        if size > max_alloc {
+            return Err(AllocError);
+        }
+
         // TODO(https://github.com/rust-lang/rust/issues/55724): Use
         // `Layout::repeat` once it's stabilized.
-        let layout =
-            Layout::from_size_align(size, align).expect("total allocation size overflows `isize`");
+        let layout = Layout::from_size_align(size, align).or(Err(AllocError))?;
 
         let ptr = if layout.size() != 0 {
             // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
             #[allow(clippy::undocumented_unsafe_blocks)]
-            let ptr = unsafe { alloc::alloc::alloc_zeroed(layout).cast::<Self>() };
-            if ptr.is_null() {
-                alloc::alloc::handle_alloc_error(layout);
+            let ptr = unsafe { alloc::alloc::alloc_zeroed(layout) };
+            match NonNull::new(ptr) {
+                Some(ptr) => ptr,
+                None => return Err(AllocError),
             }
-            ptr
         } else {
+            let align = Self::LAYOUT.align.get();
+            // We use `transmute` instead of an `as` cast since Miri (with
+            // strict provenance enabled) notices and complains that an `as`
+            // cast creates a pointer with no provenance. Miri isn't smart
+            // enough to realize that we're only executing this branch when
+            // we're constructing a zero-sized `Box`, which doesn't require
+            // provenance.
+            //
+            // SAFETY: any initialized bit sequence is a bit-valid `*mut u8`.
+            // All bits of a `usize` are initialized.
+            #[allow(clippy::useless_transmute)]
+            let dangling = unsafe { mem::transmute::<usize, *mut u8>(align) };
+            // SAFETY: `dangling` is constructed from `Self::LAYOUT.align`,
+            // which is a `NonZeroUsize`, which is guaranteed to be non-zero.
+            //
             // `Box<[T]>` does not allocate when `T` is zero-sized or when `len`
             // is zero, but it does require a non-null dangling pointer for its
             // allocation.
-            NonNull::<Self>::dangling().as_ptr()
+            //
+            // TODO(https://github.com/rust-lang/rust/issues/95228): Use
+            // `std::ptr::without_provenance` once it's stable. That may
+            // optimize better. As written, Rust may assume that this consumes
+            // "exposed" provenance, and thus Rust may have to assume that this
+            // may consume provenance from any pointer whose provenance has been
+            // exposed.
+            #[allow(fuzzy_provenance_casts)]
+            unsafe {
+                NonNull::new_unchecked(dangling)
+            }
         };
 
-        // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+        let ptr = Self::raw_from_ptr_len(ptr, count);
+
+        // TODO(#429): Add a "SAFETY" comment and remove this `allow`. Make sure
+        // to include a justification that `ptr.as_ptr()` is validly-aligned in
+        // the ZST case (in which we manually construct a dangling pointer).
         #[allow(clippy::undocumented_unsafe_blocks)]
-        unsafe {
-            Box::from_raw(slice::from_raw_parts_mut(ptr, len))
-        }
+        Ok(unsafe { Box::from_raw(ptr.as_ptr()) })
+    }
+
+    #[deprecated(since = "0.8.0", note = "renamed to `FromZeros::new_box_zeroed_with_elems`")]
+    #[doc(hidden)]
+    #[cfg(feature = "alloc")]
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
+    #[must_use = "has no side effects (other than allocation)"]
+    #[inline(always)]
+    fn new_box_slice_zeroed(len: usize) -> Result<Box<[Self]>, AllocError>
+    where
+        Self: Sized,
+    {
+        <[Self]>::new_box_zeroed_with_elems(len)
     }
 
     /// Creates a `Vec<Self>` from zeroed bytes.
@@ -2249,19 +2290,19 @@ pub unsafe trait FromZeros: TryFromBytes {
     /// actual information, but its `len()` property will report the correct
     /// value.
     ///
-    /// # Panics
+    /// # Errors
     ///
-    /// * Panics if `size_of::<Self>() * len` overflows.
-    /// * Panics if allocation of `size_of::<Self>() * len` bytes fails.
+    /// Returns an error on allocation failure. Allocation failure is
+    /// guaranteed never to cause a panic or an abort.
     #[must_use = "has no side effects (other than allocation)"]
     #[cfg(feature = "alloc")]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
     #[inline(always)]
-    fn new_vec_zeroed(len: usize) -> Vec<Self>
+    fn new_vec_zeroed(len: usize) -> Result<Vec<Self>, AllocError>
     where
         Self: Sized,
     {
-        Self::new_box_slice_zeroed(len).into()
+        <[Self]>::new_box_zeroed_with_elems(len).map(Into::into)
     }
 }
 
@@ -4972,7 +5013,7 @@ mod alloc_support {
 
         #[test]
         fn test_new_box_zeroed() {
-            assert_eq!(*u64::new_box_zeroed(), 0);
+            assert_eq!(u64::new_box_zeroed(), Ok(Box::new(0)));
         }
 
         #[test]
@@ -4986,13 +5027,13 @@ mod alloc_support {
             // when running under Miri.
             #[allow(clippy::unit_cmp)]
             {
-                assert_eq!(*<()>::new_box_zeroed(), ());
+                assert_eq!(<()>::new_box_zeroed(), Ok(Box::new(())));
             }
         }
 
         #[test]
-        fn test_new_box_slice_zeroed() {
-            let mut s: Box<[u64]> = u64::new_box_slice_zeroed(3);
+        fn test_new_box_zeroed_with_elems() {
+            let mut s: Box<[u64]> = <[u64]>::new_box_zeroed_with_elems(3).unwrap();
             assert_eq!(s.len(), 3);
             assert_eq!(&*s, &[0, 0, 0]);
             s[1] = 3;
@@ -5000,14 +5041,14 @@ mod alloc_support {
         }
 
         #[test]
-        fn test_new_box_slice_zeroed_empty() {
-            let s: Box<[u64]> = u64::new_box_slice_zeroed(0);
+        fn test_new_box_zeroed_with_elems_empty() {
+            let s: Box<[u64]> = <[u64]>::new_box_zeroed_with_elems(0).unwrap();
             assert_eq!(s.len(), 0);
         }
 
         #[test]
-        fn test_new_box_slice_zeroed_zst() {
-            let mut s: Box<[()]> = <()>::new_box_slice_zeroed(3);
+        fn test_new_box_zeroed_with_elems_zst() {
+            let mut s: Box<[()]> = <[()]>::new_box_zeroed_with_elems(3).unwrap();
             assert_eq!(s.len(), 3);
             assert!(s.get(10).is_none());
             // This test exists in order to exercise unsafe code, especially
@@ -5020,22 +5061,20 @@ mod alloc_support {
         }
 
         #[test]
-        fn test_new_box_slice_zeroed_zst_empty() {
-            let s: Box<[()]> = <()>::new_box_slice_zeroed(0);
+        fn test_new_box_zeroed_with_elems_zst_empty() {
+            let s: Box<[()]> = <[()]>::new_box_zeroed_with_elems(0).unwrap();
             assert_eq!(s.len(), 0);
         }
 
         #[test]
-        #[should_panic(expected = "mem::size_of::<Self>() * len overflows `usize`")]
-        fn test_new_box_slice_zeroed_panics_mul_overflow() {
-            let _ = u16::new_box_slice_zeroed(usize::MAX);
-        }
+        fn new_box_zeroed_with_elems_errors() {
+            assert_eq!(<[u16]>::new_box_zeroed_with_elems(usize::MAX), Err(AllocError));
 
-        #[test]
-        #[should_panic(expected = "assertion failed: size <= max_alloc")]
-        fn test_new_box_slice_zeroed_panics_isize_overflow() {
             let max = usize::try_from(isize::MAX).unwrap();
-            let _ = u16::new_box_slice_zeroed((max / mem::size_of::<u16>()) + 1);
+            assert_eq!(
+                <[u16]>::new_box_zeroed_with_elems((max / mem::size_of::<u16>()) + 1),
+                Err(AllocError)
+            );
         }
     }
 }
@@ -5525,14 +5564,20 @@ mod tests {
 
         #[cfg(feature = "alloc")]
         {
-            assert_eq!(bool::new_box_zeroed(), Box::new(false));
-            assert_eq!(char::new_box_zeroed(), Box::new('\0'));
+            assert_eq!(bool::new_box_zeroed(), Ok(Box::new(false)));
+            assert_eq!(char::new_box_zeroed(), Ok(Box::new('\0')));
 
-            assert_eq!(bool::new_box_slice_zeroed(3).as_ref(), [false, false, false]);
-            assert_eq!(char::new_box_slice_zeroed(3).as_ref(), ['\0', '\0', '\0']);
+            assert_eq!(
+                <[bool]>::new_box_zeroed_with_elems(3).unwrap().as_ref(),
+                [false, false, false]
+            );
+            assert_eq!(
+                <[char]>::new_box_zeroed_with_elems(3).unwrap().as_ref(),
+                ['\0', '\0', '\0']
+            );
 
-            assert_eq!(bool::new_vec_zeroed(3).as_ref(), [false, false, false]);
-            assert_eq!(char::new_vec_zeroed(3).as_ref(), ['\0', '\0', '\0']);
+            assert_eq!(bool::new_vec_zeroed(3).unwrap().as_ref(), [false, false, false]);
+            assert_eq!(char::new_vec_zeroed(3).unwrap().as_ref(), ['\0', '\0', '\0']);
         }
 
         let mut string = "hello".to_string();

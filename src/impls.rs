@@ -1020,7 +1020,7 @@ mod tests {
         impl<T: FromBytes> TryFromBytesTestable for T {
             fn with_passing_test_cases<F: Fn(Box<Self>)>(f: F) {
                 // Test with a zeroed value.
-                f(Self::new_box_zeroed());
+                f(Self::new_box_zeroed().unwrap());
 
                 let ffs = {
                     let mut t = Self::new_zeroed();
