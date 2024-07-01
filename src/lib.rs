@@ -1196,7 +1196,7 @@ pub use zerocopy_derive::TryFromBytes;
 /// but for which `TryFromBytes` is not guaranteed to accept all byte sequences
 /// produced by `IntoBytes`. In other words, for some `T: TryFromBytes +
 /// IntoBytes`, there exist values of `t: T` such that
-/// `TryFromBytes::try_ref_from(t.as_bytes()) == None`. Code should not
+/// `TryFromBytes::try_ref_from_bytes(t.as_bytes()) == None`. Code should not
 /// generally assume that values produced by `IntoBytes` will necessarily be
 /// accepted as valid by `TryFromBytes`.
 ///
@@ -1204,7 +1204,7 @@ pub use zerocopy_derive::TryFromBytes;
 ///
 /// On its own, `T: TryFromBytes` does not make any guarantees about the layout
 /// or representation of `T`. It merely provides the ability to perform a
-/// validity check at runtime via methods like [`try_ref_from`].
+/// validity check at runtime via methods like [`try_ref_from_bytes`].
 ///
 /// You must not rely on the `#[doc(hidden)]` internals of `TryFromBytes`.
 /// Future releases of zerocopy may make backwards-breaking changes to these
@@ -1213,7 +1213,7 @@ pub use zerocopy_derive::TryFromBytes;
 ///
 /// [undefined behavior]: https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html
 /// [github-repo]: https://github.com/google/zerocopy
-/// [`try_ref_from`]: TryFromBytes::try_ref_from
+/// [`try_ref_from_bytes`]: TryFromBytes::try_ref_from_bytes
 /// [*valid instance*]: #what-is-a-valid-instance
 #[cfg_attr(feature = "derive", doc = "[derive]: zerocopy_derive::TryFromBytes")]
 #[cfg_attr(
@@ -1285,7 +1285,7 @@ pub unsafe trait TryFromBytes {
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let _ = ZSTy::try_ref_from(0u16.as_bytes()); // ⚠ Compile Error!
+    /// let _ = ZSTy::try_ref_from_bytes(0u16.as_bytes()); // ⚠ Compile Error!
     /// ```
     ///
     /// # Examples
@@ -1315,7 +1315,7 @@ pub unsafe trait TryFromBytes {
     ///
     /// let bytes = &[0xC0, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
     ///
-    /// let packet = Packet::try_ref_from(bytes).unwrap();
+    /// let packet = Packet::try_ref_from_bytes(bytes).unwrap();
     ///
     /// assert_eq!(packet.mug_size, 240);
     /// assert_eq!(packet.temperature, 77);
@@ -1323,11 +1323,11 @@ pub unsafe trait TryFromBytes {
     ///
     /// // These bytes are not valid instance of `Packet`.
     /// let bytes = &[0x70, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
-    /// assert!(Packet::try_ref_from_prefix(bytes).is_err());
+    /// assert!(Packet::try_ref_from_bytes(bytes).is_err());
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn try_ref_from(candidate: &[u8]) -> Result<&Self, TryCastError<&[u8], Self>>
+    fn try_ref_from_bytes(candidate: &[u8]) -> Result<&Self, TryCastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
     {
@@ -1554,7 +1554,7 @@ pub unsafe trait TryFromBytes {
     /// }
     ///
     /// let mut source = [85, 85];
-    /// let _ = ZSTy::try_mut_from(&mut source[..]); // ⚠ Compile Error!
+    /// let _ = ZSTy::try_mut_from_bytes(&mut source[..]); // ⚠ Compile Error!
     /// ```
     ///
     /// # Examples
@@ -1584,7 +1584,7 @@ pub unsafe trait TryFromBytes {
     ///
     /// let bytes = &mut [0xC0, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
     ///
-    /// let packet = Packet::try_mut_from(bytes).unwrap();
+    /// let packet = Packet::try_mut_from_bytes(bytes).unwrap();
     ///
     /// assert_eq!(packet.mug_size, 240);
     /// assert_eq!(packet.temperature, 77);
@@ -1592,11 +1592,11 @@ pub unsafe trait TryFromBytes {
     ///
     /// // These bytes are not valid instance of `Packet`.
     /// let bytes = &mut [0x70, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5, 6][..];
-    /// assert!(Packet::try_mut_from(bytes).is_err());
+    /// assert!(Packet::try_mut_from_bytes(bytes).is_err());
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn try_mut_from(bytes: &mut [u8]) -> Result<&mut Self, TryCastError<&mut [u8], Self>>
+    fn try_mut_from_bytes(bytes: &mut [u8]) -> Result<&mut Self, TryCastError<&mut [u8], Self>>
     where
         Self: KnownLayout,
     {
@@ -1838,18 +1838,18 @@ pub unsafe trait TryFromBytes {
     ///
     /// let bytes = &[0xC0, 0xC0, 240, 77][..];
     ///
-    /// let packet = Packet::try_read_from(bytes).unwrap();
+    /// let packet = Packet::try_read_from_bytes(bytes).unwrap();
     ///
     /// assert_eq!(packet.mug_size, 240);
     /// assert_eq!(packet.temperature, 77);
     ///
     /// // These bytes are not valid instance of `Packet`.
     /// let bytes = &mut [0x70, 0xC0, 240, 77][..];
-    /// assert!(Packet::try_read_from(bytes).is_err());
+    /// assert!(Packet::try_read_from_bytes(bytes).is_err());
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn try_read_from(bytes: &[u8]) -> Result<Self, TryReadError<&[u8], Self>>
+    fn try_read_from_bytes(bytes: &[u8]) -> Result<Self, TryReadError<&[u8], Self>>
     where
         Self: Sized,
     {
@@ -5568,18 +5568,24 @@ mod tests {
 
     #[test]
     fn test_try_from_bytes_try_read_from() {
-        assert_eq!(<bool as TryFromBytes>::try_read_from(&[0]), Ok(false));
-        assert_eq!(<bool as TryFromBytes>::try_read_from(&[1]), Ok(true));
+        assert_eq!(<bool as TryFromBytes>::try_read_from_bytes(&[0]), Ok(false));
+        assert_eq!(<bool as TryFromBytes>::try_read_from_bytes(&[1]), Ok(true));
 
         // If we don't pass enough bytes, it fails.
-        assert!(matches!(<u8 as TryFromBytes>::try_read_from(&[]), Err(TryReadError::Size(_))));
+        assert!(matches!(
+            <u8 as TryFromBytes>::try_read_from_bytes(&[]),
+            Err(TryReadError::Size(_))
+        ));
 
         // If we pass too many bytes, it fails.
-        assert!(matches!(<u8 as TryFromBytes>::try_read_from(&[0, 0]), Err(TryReadError::Size(_))));
+        assert!(matches!(
+            <u8 as TryFromBytes>::try_read_from_bytes(&[0, 0]),
+            Err(TryReadError::Size(_))
+        ));
 
         // If we pass an invalid value, it fails.
         assert!(matches!(
-            <bool as TryFromBytes>::try_read_from(&[2]),
+            <bool as TryFromBytes>::try_read_from_bytes(&[2]),
             Err(TryReadError::Validity(_))
         ));
 
@@ -5588,8 +5594,8 @@ mod tests {
         // byte apart, it is guaranteed that at least one of them (though
         // possibly both) will be misaligned.
         let bytes: [u8; 9] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-        assert_eq!(<AU64 as TryFromBytes>::try_read_from(&bytes[..8]), Ok(AU64(0)));
-        assert_eq!(<AU64 as TryFromBytes>::try_read_from(&bytes[1..9]), Ok(AU64(0)));
+        assert_eq!(<AU64 as TryFromBytes>::try_read_from_bytes(&bytes[..8]), Ok(AU64(0)));
+        assert_eq!(<AU64 as TryFromBytes>::try_read_from_bytes(&bytes[1..9]), Ok(AU64(0)));
     }
 
     #[test]
