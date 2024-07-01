@@ -57,14 +57,13 @@ use super::*;
 // [3] https://github.com/google/zerocopy/issues/209
 #[allow(missing_debug_implementations)]
 #[derive(Default, Copy)]
-#[cfg_attr(
-    any(feature = "derive", test),
-    derive(Immutable, KnownLayout, FromBytes, IntoBytes, Unaligned)
-)]
+#[cfg_attr(any(feature = "derive", test), derive(Immutable, FromBytes, IntoBytes, Unaligned))]
 #[repr(C, packed)]
 pub struct Unalign<T>(T);
 
-#[cfg(not(any(feature = "derive", test)))]
+// We do not use `derive(KnownLayout)` on `Unalign`, because the derive is not
+// smart enough to realize that `Unalign<T>` is always sized and thus emits a
+// `KnownLayout` impl bounded on `T: KnownLayout.` This is overly restrictive.
 impl_known_layout!(T => Unalign<T>);
 
 safety_comment! {
