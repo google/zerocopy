@@ -9,7 +9,7 @@
 #[path = "third_party/rust/layout.rs"]
 pub(crate) mod core_layout;
 
-use core::{mem, num::NonZeroUsize};
+use core::num::NonZeroUsize;
 
 pub(crate) mod ptr {
     use core::{
@@ -473,7 +473,7 @@ pub(crate) mod ptr {
                             let t = unsafe { slf.as_ref() };
 
                             let bytes = {
-                                let len = mem::size_of_val(t);
+                                let len = size_of_val(t);
                                 let t: *const T = t;
                                 // SAFETY:
                                 // - We know `t`'s bytes are all initialized
@@ -496,7 +496,7 @@ pub(crate) mod ptr {
                             // shouldn't be (see the comment above).
                             assert_eq!(bytes, vec![0u8; bytes.len()]);
 
-                            mem::size_of_val(t)
+                            size_of_val(t)
                         }
 
                         for cast_type in [_CastType::_Prefix, _CastType::_Suffix] {
@@ -594,7 +594,7 @@ pub(crate) fn aligned_to<T: AsAddress, U>(t: T) -> bool {
     // `mem::align_of::<U>()` is guaranteed to return a non-zero value, which in
     // turn guarantees that this mod operation will not panic.
     #[allow(clippy::arithmetic_side_effects)]
-    let remainder = t.addr() % mem::align_of::<U>();
+    let remainder = t.addr() % align_of::<U>();
     remainder == 0
 }
 
