@@ -120,6 +120,16 @@ jobs:
     - name: Populate cache
       uses: ./.github/actions/cache
     
+    # Ensure that Cargo resolves the minimum possible syn version so that if we
+    # accidentally make a change which depends upon features added in more
+    # recent versions of syn, we'll catch it in CI.
+    - name: Pin syn dependency
+      run: |
+        set -eo pipefail
+        # Override the exising `syn` dependency with one which requires an exact
+        # version.
+        cargo add -p zerocopy-derive 'syn@=2.0.46'
+
     - name: Configure environment variables
       run: |
         set -eo pipefail
@@ -438,28 +448,6 @@ jobs:
       - name: Check README.md
         run: ./ci/check_readme.sh
 
-  check_msrv:
-    needs: generate_cache
-    runs-on: ubuntu-latest
-    name: Check MSRVs match
-    steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-      
-      - name: Populate cache
-        uses: ./.github/actions/cache
-      
-      # Make sure that the MSRV in zerocopy's and zerocopy-derive's `Cargo.toml`
-      # files are the same. In CI, we test with a single MSRV (the one indicated
-      # in zerocopy's `Cargo.toml`), so it's important that:
-      # - zerocopy-derive's MSRV is not lower than zerocopy's (we don't test with
-      #   a lower MSRV in CI, so we couldn't guarantee that zerocopy-derive
-      #   actually built and ran on a lower MSRV)
-      # - zerocopy-derive's MSRV is not higher than zerocopy's (this would mean
-      #   that compiling zerocopy with the `derive` feature enabled would fail
-      #   on its own published MSRV)
-      - name: Check MSRVs match
-        run: ./ci/check_msrv.sh
-
   check_versions:
     needs: generate_cache
     runs-on: ubuntu-latest
@@ -504,6 +492,12 @@ jobs:
           # in parallel.
           #
           # [1]  https://stackoverflow.com/a/42139535/836390
+
+          # See comment on "Pin syn dependency" job for why we do this. It needs
+          # to happen before the subsequent `cargo check`, so we don't
+          # background it.
+          cargo add -p zerocopy-derive 'syn@=2.0.46' &> /dev/null
+
           cargo check --workspace --tests            &> /dev/null &
           cargo metadata                             &> /dev/null &
           cargo install cargo-readme --version 3.2.0 &> /dev/null &
@@ -559,7 +553,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_versions, generate_cache, check-all-toolchains-tested, check-job-dependencies, run-git-hooks]
+      needs: [build_test, kani, check_fmt, check_readme, check_versions, generate_cache, check-all-toolchains-tested, check-job-dependencies, run-git-hooks]
       steps:
         - name: Mark the job as failed
           run: exit 1
