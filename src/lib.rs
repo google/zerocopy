@@ -171,7 +171,16 @@
     unreachable_pub,
     unsafe_op_in_unsafe_fn,
     unused_extern_crates,
-    unused_qualifications,
+    // We intentionally choose not to deny `unused_qualifications`. When items
+    // are added to the prelude (e.g., `core::mem::size_of`), this has the
+    // consequence of making some uses trigger this lint on the latest toolchain
+    // (e.g., `mem::size_of`), but fixing it (e.g. by replacing with `size_of`)
+    // does not work on older toolchains.
+    //
+    // We tested a more complicated fix in #1413, but ultimately decided that,
+    // since this lint is just a minor style lint, the complexity isn't worth it
+    // - it's fine to occasionally have unused qualifications slip through,
+    // especially since these do not affect our user-facing API in any way.
     variant_size_differences
 )]
 #![cfg_attr(
