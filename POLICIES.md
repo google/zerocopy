@@ -89,10 +89,21 @@ documented guarantees do not hold.
 
 ## MSRV
 
-Our minimum supported Rust version (MSRV) is encoded in our `Cargo.toml` file.
-We consider an increase in MSRV to be a semver-breaking change, and will only
-increase our MSRV during semver-breaking version changes (e.g., 0.1 -> 0.2, 1.0
--> 2.0, etc).
+<!-- Our policy used to be simply that MSRV was a breaking change in all
+circumstances. This implicitly relied on syn having the same MSRV policy, which
+it does not. See #1085 and #1088. -->
+
+Without the `derive` feature enabled, zerocopy's minimum supported Rust version
+(MSRV) is encoded the `package.rust-version` field in its `Cargo.toml` file. For
+zerocopy, we consider an increase in MSRV to be a semver-breaking change, and
+will only increase our MSRV during semver-breaking version changes (e.g., 0.1 ->
+0.2, 1.0 -> 2.0, etc).
+
+For zerocopy with the `derive` feature enabled, and for the zerocopy-derive
+crate, we inherit the MSRV of our sole external dependency, syn. As of this
+writing (2024-07-02), syn does *not* consider MSRV increases to be
+semver-breaking changes. Thus, using the `derive` feature may result in the
+effective MSRV increasing within a semver version train.
 
 ## Yanking
 

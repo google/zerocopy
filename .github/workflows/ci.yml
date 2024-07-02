@@ -79,6 +79,16 @@ jobs:
           ~/.cargo/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
 
+    # Ensure that Cargo resolves the minimum possible syn version so that if we
+    # accidentally make a change which depends upon features added in more
+    # recent versions of syn, we'll catch it in CI.
+    - name: Pin syn dependency
+      run: |
+        set -eo pipefail
+        # Override the exising `syn` dependency with one which requires an exact
+        # version.
+        cargo add -p zerocopy-derive 'syn@=2.0.31'
+
     - name: Configure environment variables
       run: |
         set -eo pipefail
@@ -318,49 +328,6 @@ jobs:
           diff <(./generate-readme.sh) README.md
           exit $?
 
-  check_msrv:
-    needs: generate_cache
-    runs-on: ubuntu-latest
-    name: Check MSRVs match
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-
-      - uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
-        with:
-          path: |
-            ~/.cargo/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
-
-      # Make sure that the MSRV in zerocopy's and zerocopy-derive's `Cargo.toml`
-      # files are the same. In CI, we test with a single MSRV (the one indicated
-      # in zerocopy's `Cargo.toml`), so it's important that:
-      # - zerocopy-derive's MSRV is not lower than zerocopy's (we don't test with
-      #   a lower MSRV in CI, so we couldn't guarantee that zerocopy-derive
-      #   actually built and ran on a lower MSRV)
-      # - zerocopy-derive's MSRV is not higher than zerocopy's (this would mean
-      #   that compiling zerocopy with the `derive` feature enabled would fail
-      #   on its own published MSRV)
-      - name: Check MSRVs match
-        run: |
-          set -eo pipefail
-
-          # Usage: msrv <crate-name>
-          function msrv {
-            cargo metadata --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").rust_version"
-          }
-
-          ver_zerocopy=$(msrv zerocopy)
-          ver_zerocopy_derive=$(msrv zerocopy-derive)
-
-          if [[ "$ver_zerocopy" == "$ver_zerocopy_derive" ]]; then
-            echo "Same MSRV ($ver_zerocopy) found for zerocopy and zerocopy-derive." | tee -a $GITHUB_STEP_SUMMARY
-            exit 0
-          else
-            echo "Different MSRVs found for zerocopy ($ver_zerocopy) and zerocopy-derive ($ver_zerocopy_derive)." \
-              | tee -a $GITHUB_STEP_SUMMARY >&2
-            exit 1
-          fi
-
   check_versions:
     needs: generate_cache
     runs-on: ubuntu-latest
@@ -454,6 +421,9 @@ jobs:
 
       - name: Populate cache
         run: |
+          # See comment on "Pin syn dependency" job for why we do this.
+          cargo add -p zerocopy-derive 'syn@=2.0.31'
+
           # Ensure all dependencies are downloaded - both for our crates and for
           # tools we use in CI. We don't care about these tools succeeding for
           # two reasons: First, this entire job is best-effort since it's just a
@@ -484,7 +454,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, kani, check_fmt, check_readme, check_msrv, check_versions, generate_cache]
+      needs: [build_test, kani, check_fmt, check_readme, check_versions, generate_cache]
       steps:
         - name: Mark the job as failed
           run: exit 1
