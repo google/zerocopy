@@ -387,7 +387,6 @@ macro_rules! unsafe_impl_known_layout {
                 // TODO(#429): Add documentation to `NonNull::new_unchecked`
                 // that it preserves provenance.
                 #[inline(always)]
-                #[allow(unused_qualifications)] // for `core::ptr::NonNull`
                 fn raw_from_ptr_len(bytes: NonNull<u8>, elems: usize) -> NonNull<Self> {
                     #[allow(clippy::as_conversions)]
                     let ptr = <$repr>::raw_from_ptr_len(bytes, elems).as_ptr() as *mut Self;
