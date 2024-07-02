@@ -483,9 +483,11 @@ jobs:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Populate cache
+        id: populate-cache
         uses: ./.github/actions/cache
 
-      - name: Download dependencies
+      - if: ${{ steps.populate-cache.outputs.cache-hit != 'true' }}
+        name: Download dependencies
         run: |
           # Ensure all dependencies are downloaded - both for our crates and for
           # tools we use in CI. We don't care about these tools succeeding for
