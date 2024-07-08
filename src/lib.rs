@@ -5981,6 +5981,7 @@ mod tests {
     fn test_transparent_packed_generic_struct() {
         #[derive(IntoBytes, FromBytes, Unaligned)]
         #[repr(transparent)]
+        #[allow(dead_code)] // We never construct this type
         struct Foo<T> {
             _t: T,
             _phantom: PhantomData<()>,
@@ -5991,6 +5992,7 @@ mod tests {
 
         #[derive(IntoBytes, FromBytes, Unaligned)]
         #[repr(packed)]
+        #[allow(dead_code)] // We never construct this type
         struct Bar<T, U> {
             _t: T,
             _u: U,
