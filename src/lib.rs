@@ -6663,6 +6663,7 @@ mod tests {
         // |          Y |        Y |              Y |        N |      KL14 |
         #[derive(KnownLayout)]
         #[repr(C)]
+        #[allow(dead_code)] // We never construct this type
         struct KL14<T: ?Sized + KnownLayout>(u8, T);
 
         fn _test_kl14<T: ?Sized + KnownLayout>(kl: &KL14<T>) {
@@ -6673,6 +6674,7 @@ mod tests {
         // |          Y |        Y |              Y |        Y |      KL15 |
         #[derive(KnownLayout)]
         #[repr(C)]
+        #[allow(dead_code)] // We never construct this type
         struct KL15<T: KnownLayout>(u8, T);
 
         fn _test_kl15<T: KnownLayout>(t: T) -> impl KnownLayout {
