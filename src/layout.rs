@@ -1069,7 +1069,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
+    #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
     fn test_validate_rust_layout() {
         use crate::util::testutil::*;
         use core::{

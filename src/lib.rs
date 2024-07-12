@@ -211,7 +211,7 @@
     variant_size_differences
 )]
 #![cfg_attr(
-    __INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS,
+    __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS,
     deny(fuzzy_provenance_casts, lossy_provenance_casts)
 )]
 #![deny(
@@ -284,7 +284,7 @@
 )]
 #![cfg_attr(doc_cfg, feature(doc_cfg))]
 #![cfg_attr(
-    __INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS,
+    __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS,
     feature(layout_for_ptr, strict_provenance, coverage_attribute)
 )]
 
@@ -370,9 +370,9 @@ pub use crate::layout::*;
 use crate::util::polyfills::{self, NonNullExt as _, NumExt as _};
 
 #[rustversion::nightly]
-#[cfg(all(test, not(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)))]
+#[cfg(all(test, not(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)))]
 const _: () = {
-    #[deprecated = "some tests may be skipped due to missing RUSTFLAGS=\"--cfg __INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS\""]
+    #[deprecated = "some tests may be skipped due to missing RUSTFLAGS=\"--cfg __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS\""]
     const _WARNING: () = ();
     #[warn(deprecated)]
     _WARNING

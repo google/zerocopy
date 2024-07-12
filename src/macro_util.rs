@@ -24,7 +24,7 @@ use core::{
 
 // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
 // `cfg` when `size_of_val_raw` is stabilized.
-#[cfg(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
+#[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 use core::ptr::{self, NonNull};
 
 use crate::{
@@ -83,7 +83,7 @@ const _64K: usize = 1 << 16;
 
 // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
 // `cfg` when `size_of_val_raw` is stabilized.
-#[cfg(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
+#[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 #[repr(C, align(65536))]
 struct Aligned64kAllocation([u8; _64K]);
 
@@ -95,7 +95,7 @@ struct Aligned64kAllocation([u8; _64K]);
 /// allocation with size and alignment 2^16, and to have valid provenance.
 // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
 // `cfg` when `size_of_val_raw` is stabilized.
-#[cfg(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
+#[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 pub const ALIGNED_64K_ALLOCATION: NonNull<[u8]> = {
     const REF: &Aligned64kAllocation = &Aligned64kAllocation([0; _64K]);
     let ptr: *const Aligned64kAllocation = REF;
@@ -124,7 +124,7 @@ pub const ALIGNED_64K_ALLOCATION: NonNull<[u8]> = {
 /// `trailing_field_offset!` produces code which is valid in a `const` context.
 // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
 // `cfg` when `size_of_val_raw` is stabilized.
-#[cfg(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
+#[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
 macro_rules! trailing_field_offset {
@@ -224,7 +224,7 @@ macro_rules! trailing_field_offset {
 /// `align_of!` produces code which is valid in a `const` context.
 // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
 // `cfg` when `size_of_val_raw` is stabilized.
-#[cfg(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
+#[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
 macro_rules! align_of {
@@ -580,7 +580,7 @@ mod tests {
     // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove
     // this `cfg` when `size_of_val_raw` is stabilized.
     #[allow(clippy::decimal_literal_representation)]
-    #[cfg(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
+    #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
     #[test]
     fn test_trailing_field_offset() {
         assert_eq!(mem::align_of::<Aligned64kAllocation>(), _64K);
@@ -682,7 +682,7 @@ mod tests {
     // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove
     // this `cfg` when `size_of_val_raw` is stabilized.
     #[allow(clippy::decimal_literal_representation)]
-    #[cfg(__INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
+    #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
     #[test]
     fn test_align_of_dst() {
         // Test that `align_of!` correctly computes the alignment of DSTs.
