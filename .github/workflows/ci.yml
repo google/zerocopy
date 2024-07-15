@@ -346,7 +346,7 @@ jobs:
     # just duplicating work by running this job multiple times, each time
     # targetting the host platform.
     - name: Check semver compatibility
-      uses: obi1kenobi/cargo-semver-checks-action@c7306483f698c511eaf7416d1bf2e1958c90140f # v2.4
+      uses: obi1kenobi/cargo-semver-checks-action@ca26a44cfb670b2078c8f757d06e696a7c3820cf # v2.5
       with:
         # Don't semver check zerocopy-derive; as a proc macro, it doesn't have
         # an API that cargo-semver-checks can understand.
