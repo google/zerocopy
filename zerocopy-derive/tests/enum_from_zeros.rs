@@ -36,3 +36,17 @@ enum Baz {
 }
 
 util_assert_impl_all!(Baz: imp::FromZeros);
+
+#[derive(imp::FromZeros)]
+#[repr(i8)]
+enum ImplicitNonFirstVariantIsZero {
+    A = -1,
+    B,
+}
+
+#[derive(imp::FromZeros)]
+#[repr(u64)]
+enum LargeDiscriminant {
+    A = 0xFFFF_FFFF_FFFF_FFFF,
+    B = 0x0000_0000_0000_0000,
+}

@@ -98,6 +98,22 @@ enum FromZeros3 {
     B,
 }
 
+#[derive(FromZeros)]
+#[repr(u8)]
+enum FromZeros4 {
+    A = 1,
+    B = 2,
+}
+
+const NEGATIVE_ONE: i8 = -1;
+
+#[derive(FromZeros)]
+#[repr(i8)]
+enum FromZeros5 {
+    A = NEGATIVE_ONE,
+    B,
+}
+
 //
 // FromBytes errors
 //
