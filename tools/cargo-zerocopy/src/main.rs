@@ -197,10 +197,14 @@ fn install_toolchain_or_exit(versions: &Versions, name: &str) -> Result<(), Erro
 
 fn get_rustflags(name: &str) -> &'static str {
     if name == "nightly" {
-        "--cfg __INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS "
+        "--cfg __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS "
     } else {
         ""
     }
+}
+
+fn get_toolchain_rustflags(name: &str) -> String {
+    format!("--cfg __ZEROCOPY_TOOLCHAIN=\"{}\" ", name)
 }
 
 fn rustup<'a>(args: impl IntoIterator<Item = &'a str>, env: Option<(&str, &str)>) -> Command {
@@ -253,7 +257,12 @@ fn delegate_cargo() -> Result<(), Error> {
                     .next()
                     .unwrap_or_default();
 
-                let rustflags = format!("{}{}", get_rustflags(name), env_rustflags);
+                let rustflags = format!(
+                    "{}{}{}",
+                    get_rustflags(name),
+                    get_toolchain_rustflags(name),
+                    env_rustflags,
+                );
                 rustup(["run", &version, "cargo"], Some(("RUSTFLAGS", &rustflags)))
                     .args(args)
                     .execute();
