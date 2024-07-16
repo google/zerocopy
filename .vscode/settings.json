@@ -1,0 +1,8 @@
+{
+    "rust-analyzer.cargo.cfgs": {
+        // This adds an extra cfg to rust-analyzer so we can prevent it from
+        // analyzing tests with a lot of generated code. These can cause it to
+        // hang or run slowly in general, which is bad for workflows.
+        "rust_analyzer": null,
+    }
+}
