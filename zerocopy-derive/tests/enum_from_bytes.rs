@@ -10,6 +10,8 @@
 #![no_implicit_prelude]
 #![allow(warnings)]
 #![deny(deprecated)]
+// The giant enums in this file cause rust-analyzer to hang during analysis.
+#![cfg(not(rust_analyzer))]
 
 include!("include.rs");
 
