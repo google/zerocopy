@@ -30,9 +30,9 @@ use core::ptr::{self, NonNull};
 use crate::{
     pointer::{
         invariant::{self, AtLeast, Invariants},
-        AliasingSafe, AliasingSafeReason, BecauseExclusive,
+        AliasingSafe, AliasingSafeReason, BecauseExclusive, BecauseImmutable,
     },
-    IntoBytes, Ptr, TryFromBytes, ValidityError,
+    Immutable, IntoBytes, Ptr, TryFromBytes, ValidityError,
 };
 
 /// A compile-time check that should be one particular value.
@@ -422,24 +422,29 @@ pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
     unsafe { &mut *dst }
 }
 
-/// Is a given source a valid instance of `Self`?
+/// Attempts to transmute a pointer from `Src` to `Dst`.
 ///
 /// # Safety
 ///
-/// Unsafe code may assume that, if `is_mut_src_valid(src)` returns true, `*src`
-/// is a bit-valid instance of `Dst`, and that the size of `Src` is greater than
-/// or equal to the size of `Dst`.
+/// Unsafe code may assume that, if `try_transmute_ptr(src)` returns true,
+/// `*src` is a bit-valid instance of `Dst`, and that the size of `Src` is
+/// greater than or equal to the size of `Dst`.
 ///
 /// # Panics
 ///
-/// `is_src_valid` may either produce a post-monomorphization error or a panic
-/// if `Dst` is bigger than `Src`. Otherwise, `is_src_valid` panics under the
-/// same circumstances as [`is_bit_valid`].
+/// `try_transmute_ptr` may either produce a post-monomorphization error or a
+/// panic if `Dst` is bigger than `Src`. Otherwise, `try_transmute_ptr` panics
+/// under the same circumstances as [`is_bit_valid`].
 ///
 /// [`is_bit_valid`]: TryFromBytes::is_bit_valid
 #[doc(hidden)]
 #[inline]
-fn is_src_valid<Src, Dst, I, R>(src: Ptr<'_, Src, I>) -> bool
+fn try_transmute_ptr<Src, Dst, I, R>(
+    mut src: Ptr<'_, Src, I>,
+) -> Result<
+    Ptr<'_, Dst, (I::Aliasing, invariant::Any, invariant::Valid)>,
+    ValidityError<Ptr<'_, Src, I>, Dst>,
+>
 where
     Src: IntoBytes,
     Dst: TryFromBytes + AliasingSafe<Src, I::Aliasing, R>,
@@ -464,9 +469,30 @@ where
     // SAFETY: `c_ptr` is derived from `src` which is `IntoBytes`. By
     // invariant on `IntoByte`s, `c_ptr`'s referent consists entirely of
     // initialized bytes.
-    let c_ptr = unsafe { c_ptr.assume_initialized() };
+    let mut c_ptr = unsafe { c_ptr.assume_initialized() };
 
-    Dst::is_bit_valid(c_ptr)
+    c_ptr.try_into_valid().map_err(|err| {
+        err.map_src(|src| {
+            // SAFETY: TODO
+            let src = unsafe { src.cast_unsized(|p| p as *mut Src) };
+            // SAFETY: `src` is the same pointer that was passed to this method,
+            // which had validity `invariant::Valid`. `try_into_valid` promises not
+            // to modify its receiver's referent, so `src`'s referent is still a
+            // valid `Src`.
+            let src = unsafe { src.assume_valid() };
+
+            src.foobar()
+        })
+    })
+
+    // if Dst::is_bit_valid(c_ptr.reborrow()) {
+    //     // SAFETY: TODO
+    //     let ptr = unsafe { c_ptr.assume_valid() };
+
+    //     Ok(ptr)
+    // } else {
+    //     Err(src)
+    // }
 }
 
 /// Attempts to transmute `Src` into `Dst`.
@@ -486,7 +512,7 @@ where
     Src: IntoBytes,
     Dst: TryFromBytes,
 {
-    if !is_src_valid::<Src, Dst, _, BecauseExclusive>(Ptr::from_mut(&mut src)) {
+    if try_transmute_ptr::<Src, Dst, _, BecauseExclusive>(Ptr::from_mut(&mut src)).is_err() {
         return Err(ValidityError::new(src));
     }
 
@@ -500,6 +526,72 @@ where
     //
     // [1]: https://doc.rust-lang.org/std/mem/struct.ManuallyDrop.html
     Ok(unsafe { mem::transmute_copy(&*src) })
+}
+
+/// Attempts to transmute `&Src` into `&Dst`.
+///
+/// A helper for `try_transmute_ref!`.
+///
+/// # Safety
+///
+/// The caller promises that `size_of::<Src>() == size_of::<Dst>()` and that
+/// `align_of::<Src>() >= align_of::<Dst>()`.
+///
+/// # Panics
+///
+/// `try_transmute_ref` may either produce a post-monomorphization error or a
+/// panic if `Dst` is bigger than `Src`. Otherwise, `try_transmute_ref` panics
+/// under the same circumstances as [`is_bit_valid`].
+///
+/// [`is_bit_valid`]: TryFromBytes::is_bit_valid
+#[inline(always)]
+pub unsafe fn try_transmute_ref<Src, Dst>(src: &Src) -> Result<&Dst, ValidityError<&Src, Dst>>
+where
+    Src: IntoBytes + Immutable,
+    Dst: TryFromBytes + Immutable,
+{
+    let ptr = Ptr::from_ref(src);
+    try_transmute_ptr::<Src, Dst, _, BecauseImmutable>(ptr)
+        .map(|ptr| {
+            // SAFETY: TODO
+            let ptr = unsafe { ptr.assume_alignment::<invariant::Aligned>() };
+            ptr.as_ref()
+        })
+        .map_err(|src| ValidityError::new(src.as_ref()))
+}
+
+/// Attempts to transmute `&mut Src` into `&mut Dst`.
+///
+/// A helper for `try_transmute_mut!`.
+///
+/// # Safety
+///
+/// The caller promises that `size_of::<Src>() == size_of::<Dst>()` and that
+/// `align_of::<Src>() >= align_of::<Dst>()`.
+///
+/// # Panics
+///
+/// `try_transmute_mut` may either produce a post-monomorphization error or a
+/// panic if `Dst` is bigger than `Src`. Otherwise, `try_transmute_mut` panics
+/// under the same circumstances as [`is_bit_valid`].
+///
+/// [`is_bit_valid`]: TryFromBytes::is_bit_valid
+#[inline(always)]
+pub unsafe fn try_transmute_mut<Src, Dst>(
+    src: &mut Src,
+) -> Result<&mut Dst, ValidityError<&mut Src, Dst>>
+where
+    Src: IntoBytes,
+    Dst: TryFromBytes,
+{
+    let ptr = Ptr::from_mut(src);
+    try_transmute_ptr::<Src, Dst, _, BecauseExclusive>(ptr)
+        .map(|ptr| {
+            // SAFETY: TODO
+            let ptr = unsafe { ptr.assume_alignment::<invariant::Aligned>() };
+            ptr.as_mut()
+        })
+        .map_err(|src| ValidityError::new(src.as_mut()))
 }
 
 /// A function which emits a warning if its return value is not used.

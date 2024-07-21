@@ -159,7 +159,7 @@ macro_rules! define_system {
         )]
         /// This trait is implemented for such tuples, and can be used to
         /// project out the components of these tuples via its associated types.
-        pub trait $system: sealed::Sealed {
+        pub trait $system: sealed::Sealed + From<($(Self::$set),*)> {
             $(
                 $(#[$set_attr])*
                 type $set: $set;
@@ -637,6 +637,19 @@ mod _transitions {
         T: 'a + ?Sized,
         I: Invariants,
     {
+        pub(crate) fn foobar<II>(self) -> Ptr<'a, T, II>
+        where
+            II: Invariants<
+                Aliasing = I::Aliasing,
+                Alignment = I::Alignment,
+                Validity = I::Validity,
+            >,
+        {
+            // SAFETY: All of the invariants in `II` are the same as those in
+            // `I`.
+            unsafe { self.assume_invariants() }
+        }
+
         /// Returns a `Ptr` with [`Exclusive`] aliasing if `self` already has
         /// `Exclusive` aliasing.
         ///
