@@ -20,12 +20,12 @@
 // Cargo.toml section.
 
 use std::{
-    env, fmt,
+    env, fmt, fs,
     io::{self, Read as _},
     process::{self, Command, Output},
 };
 
-use serde_json::{Map, Value};
+use toml::{map::Map, Value};
 
 #[derive(Debug)]
 enum Error {
@@ -110,52 +110,20 @@ impl Versions {
 }
 
 fn get_toolchain_versions() -> Versions {
-    // NOTE(#547): We set `CARGO_TARGET_DIR` here because `cargo metadata`
-    // sometimes causes the `cargo-metadata` crate to be rebuilt from source
-    // using the default toolchain. This has the effect of clobbering any
-    // existing build artifacts from whatever toolchain the user has specified
-    // (e.g., `+nightly`), causing the subsequent `cargo` invocation to rebuild
-    // unnecessarily. By specifying a separate build directory here, we ensure
-    // that this never clobbers the build artifacts used by the later `cargo`
-    // invocation.
-    //
-    // In CI, make sure to use the default stable toolchain. If we're testing on
-    // our MSRV, then we also have our MSRV toolchain installed. As of this
-    // writing, our MSRV is low enough that the correspoding Rust toolchain's
-    // Cargo doesn't know about the `rust-version` field, and so if we were to
-    // use Cargo with that toolchain, `pkg-meta` would return `null` when asked
-    // to retrieve the `rust-version` field. This also requires `RUSTFLAGS=''`
-    // to override any unstable `RUSTFLAGS` set by the caller.
-    let output = rustup(
-        ["run", "stable", "cargo", "metadata", "--format-version", "1"],
-        Some(("CARGO_TARGET_DIR", "target/cargo-zerocopy")),
-    )
-    .env_remove("RUSTFLAGS")
-    .output_or_exit();
+    let manifest_text = fs::read_to_string("Cargo.toml").unwrap();
+    let manifest = toml::from_str::<Value>(&manifest_text).unwrap();
 
-    let json = serde_json::from_slice::<Value>(&output.stdout).unwrap();
-    let packages = json.as_object().unwrap().get("packages").unwrap();
-    packages
-        .as_array()
-        .unwrap()
-        .iter()
-        .filter_map(|p| {
-            let package = p.as_object().unwrap();
-            if package.get("name").unwrap().as_str() == Some("zerocopy") {
-                let metadata = package.get("metadata").unwrap().as_object().unwrap();
-                let ci = metadata.get("ci").unwrap().as_object().unwrap();
-                Some(Versions {
-                    msrv: package.get("rust_version").unwrap().as_str().unwrap().to_string(),
-                    stable: ci.get("pinned-stable").unwrap().as_str().unwrap().to_string(),
-                    nightly: ci.get("pinned-nightly").unwrap().as_str().unwrap().to_string(),
-                    build_rs: metadata.get("build-rs").unwrap().as_object().unwrap().clone(),
-                })
-            } else {
-                None
-            }
-        })
-        .next()
-        .unwrap()
+    let package = manifest.as_table().unwrap()["package"].as_table().unwrap();
+    let metadata = package["metadata"].as_table().unwrap();
+    let build_rs = metadata["build-rs"].as_table().unwrap();
+    let ci = metadata["ci"].as_table().unwrap();
+
+    Versions {
+        msrv: package["rust-version"].as_str().unwrap().to_string(),
+        stable: ci["pinned-stable"].as_str().unwrap().to_string(),
+        nightly: ci["pinned-nightly"].as_str().unwrap().to_string(),
+        build_rs: build_rs.clone(),
+    }
 }
 
 fn is_toolchain_installed(versions: &Versions, name: &str) -> Result<bool, Error> {
@@ -190,7 +158,7 @@ fn install_toolchain_or_exit(versions: &Versions, name: &str) -> Result<(), Erro
     }
 
     let version = versions.get(name)?;
-    rustup(["toolchain", "install", &version, "-c", "rust-src"], None).execute();
+    rustup(["toolchain", "install", version, "-c", "rust-src"], None).execute();
 
     Ok(())
 }
@@ -263,7 +231,7 @@ fn delegate_cargo() -> Result<(), Error> {
                     get_toolchain_rustflags(name),
                     env_rustflags,
                 );
-                rustup(["run", &version, "cargo"], Some(("RUSTFLAGS", &rustflags)))
+                rustup(["run", version, "cargo"], Some(("RUSTFLAGS", &rustflags)))
                     .args(args)
                     .execute();
 
