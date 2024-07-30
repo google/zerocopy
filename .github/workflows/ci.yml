@@ -119,16 +119,6 @@ jobs:
 
     - name: Populate cache
       uses: ./.github/actions/cache
-    
-    # Ensure that Cargo resolves the minimum possible syn version so that if we
-    # accidentally make a change which depends upon features added in more
-    # recent versions of syn, we'll catch it in CI.
-    - name: Pin syn dependency
-      run: |
-        set -eo pipefail
-        # Override the exising `syn` dependency with one which requires an exact
-        # version.
-        cargo add -p zerocopy-derive 'syn@=2.0.46'
 
     - name: Configure environment variables
       run: |
