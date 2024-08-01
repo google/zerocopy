@@ -330,11 +330,6 @@ jobs:
     # crates.io. We do this in the matrix rather than in its own job so that it
     # gets run on different targets. Some of our API is target-specific (e.g.,
     # SIMD type impls), and so we need to run on each target.
-    #
-    # TODO(https://github.com/obi1kenobi/cargo-semver-checks-action/issues/54):
-    # Currently we don't actually do anything with `matrix.target`, so we're
-    # just duplicating work by running this job multiple times, each time
-    # targetting the host platform.
     - name: Check semver compatibility
       uses: obi1kenobi/cargo-semver-checks-action@7272cc2caa468d3e009a2b0a9cc366839348237b # v2.6
       with:
@@ -353,7 +348,14 @@ jobs:
         feature-group: only-explicit-features
         features: __internal_use_only_features_that_work_on_stable
         rust-toolchain: ${{ env.ZC_TOOLCHAIN }}
-      if: matrix.crate == 'zerocopy' && matrix.features == '--features __internal_use_only_features_that_work_on_stable' && matrix.toolchain == 'stable'
+        rust-target: ${{ matrix.target }}
+      # TODO(#1565): Run on wasm32-wasi. As of this writing, this target fails:
+      # https://github.com/google/zerocopy/actions/runs/9944220377/job/27469879712
+      if: |
+        matrix.crate == 'zerocopy' &&
+        matrix.features == '--features __internal_use_only_features_that_work_on_stable' &&
+        matrix.toolchain == 'stable' &&
+        matrix.target != 'wasm32-wasi'
 
     # TODO(#453): Doing this as a matrix step is a hack that allows us to depend
     # on the fact that toolchains have already been installed. We currently only
