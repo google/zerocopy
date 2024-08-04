@@ -8,6 +8,8 @@
 // those terms.
 
 use super::*;
+#[cfg(zerocopy_atomics)]
+use core::sync::atomic::*;
 
 safety_comment! {
     /// SAFETY:
@@ -440,46 +442,96 @@ safety_comment! {
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => Immutable for opt_extern_c_fn!(...));
 }
 
-macro_rules! impl_traits_for_atomics {
-    ($($atomics:ident [$inners:ident]),* $(,)?) => {
-        $(
-            impl_for_transparent_wrapper!(TryFromBytes for $atomics [UnsafeCell<$inners>]);
-            impl_for_transparent_wrapper!(FromZeros for $atomics [UnsafeCell<$inners>]);
-            impl_for_transparent_wrapper!(FromBytes for $atomics [UnsafeCell<$inners>]);
-            impl_for_transparent_wrapper!(IntoBytes for $atomics [UnsafeCell<$inners>]);
-        )*
-    };
+/// Implements the zerocopy traits for atomic integer types.
+///
+/// Note that we only implement traits for atomics types if the corresponding
+/// [`#[cfg(target_has_atomic)]`][target_has_atomic] configuration is true.
+///
+/// Note: On targets like `thumbv6m-none-eabi` (which has an [`AtomicU32`]
+/// type but `#[cfg(target_has_atomic = "32")]` is false), we don't implement
+/// the zerocopy traits. We will be able to handle this when Rust stabilizes
+/// [`#[cfg(target_has_atomic_load_store)]`][target_has_atomic_load_store].
+///
+/// [target_has_atomic]: https://doc.rust-lang.org/reference/conditional-compilation.html#target_has_atomic
+/// [target_has_atomic_load_store]: https://www.github.com/rust-lang/rust/issues/94039
+///
+/// # Safety
+///
+/// `$atomic` must be an atomic type with corresponding native type `$native`.
+#[cfg(zerocopy_atomics)]
+macro_rules! unsafe_impl_traits_for_atomics {
+    ($($atomic:ident [$native:ident]),*) => {$(
+        // SAFETY: `$atomic` is an atomic type with native type `$native`.
+        unsafe impl util::Atomic for $atomic { type Native = $native; }
+
+        impl_for_transparent_wrapper!(TryFromBytes for $atomic);
+        impl_for_transparent_wrapper!(FromZeros for $atomic);
+        unsafe_impl_traits_for_atomics!(@from_bytes $atomic);
+        impl_for_transparent_wrapper!(IntoBytes for $atomic);
+        impl_known_layout!($atomic);
+    )*};
+    (@from_bytes AtomicBool) => {};
+    (@from_bytes $atomic:ty) => { impl_for_transparent_wrapper!(FromBytes for $atomic); };
 }
 
-#[rustfmt::skip]
-impl_traits_for_atomics!(
-    AtomicBool [bool],
-    AtomicI16 [i16], AtomicI32 [i32], AtomicI8 [i8], AtomicIsize [isize],
-    AtomicU16 [u16], AtomicU32 [u32], AtomicU8 [u8], AtomicUsize [usize],
-);
-
-safety_comment! {
-    /// SAFETY:
-    /// Per [1], `AtomicBool`, `AtomicU8`, and `AtomicI8` have the same size as
-    /// `bool`, `u8`, and `i8` respectively. Since a type's alignment cannot be
-    /// smaller than 1 [2], and since its alignment cannot be greater than its
-    /// size [3], the only possible value for the alignment is 1. Thus, it is
-    /// sound to implement `Unaligned`.
-    ///
-    /// [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
-    ///     Cite docs once they've landed.
-    ///
-    /// [2] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
-    ///
-    ///     Alignment is measured in bytes, and must be at least 1.
-    ///
-    /// [3] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
-    ///
-    ///     The size of a value is always a multiple of its alignment.
-    unsafe_impl!(AtomicBool: Unaligned);
-    unsafe_impl!(AtomicU8: Unaligned);
-    unsafe_impl!(AtomicI8: Unaligned);
+#[cfg(zerocopy_atomics)]
+#[cfg(target_has_atomic = "8")]
+#[cfg_attr(doc_cfg, doc(cfg(target_has_atomic = "8")))]
+mod atomic_8 {
+    use super::*;
+    unsafe_impl_traits_for_atomics!(AtomicBool[bool], AtomicU8[u8], AtomicI8[i8]);
+    safety_comment! {
+        /// SAFETY:
+        /// Per [1], `AtomicBool`, `AtomicU8`, and `AtomicI8` have an alignment of 1.
+        ///
+        /// [1] Per https://doc.rust-lang.org/nightly/core/sync/atomic/struct.AtomicBool.html:
+        ///
+        ///     This type has the same size, alignment, and bit validity as [the native type].
+        unsafe_impl!(AtomicBool: Unaligned);
+        unsafe_impl!(AtomicU8: Unaligned);
+        unsafe_impl!(AtomicI8: Unaligned);
+    }
     assert_unaligned!(AtomicBool, AtomicU8, AtomicI8);
+}
+#[cfg(zerocopy_atomics)]
+#[cfg(target_has_atomic = "16")]
+#[cfg_attr(doc_cfg, doc(cfg(target_has_atomic = "16")))]
+mod atomic_16 {
+    use super::*;
+    unsafe_impl_traits_for_atomics!(AtomicU16[u16], AtomicI16[i16]);
+}
+#[cfg(zerocopy_atomics)]
+#[cfg(target_has_atomic = "32")]
+#[cfg_attr(doc_cfg, doc(cfg(target_has_atomic = "32")))]
+mod atomic_32 {
+    use super::*;
+    unsafe_impl_traits_for_atomics!(AtomicU32[u32], AtomicI32[i32]);
+}
+#[cfg(zerocopy_atomics)]
+#[cfg(target_has_atomic = "64")]
+#[cfg_attr(doc_cfg, doc(cfg(target_has_atomic = "64")))]
+mod atomic_64 {
+    use super::*;
+    unsafe_impl_traits_for_atomics!(AtomicU64[u64], AtomicI64[i64]);
+}
+#[cfg(zerocopy_atomics)]
+#[cfg(target_has_atomic = "ptr")]
+#[cfg_attr(doc_cfg, doc(cfg(target_has_atomic = "ptr")))]
+mod atomic_ptr {
+    use super::*;
+    unsafe_impl_traits_for_atomics!(AtomicUsize[usize], AtomicIsize[isize]);
+
+    /// SAFETY:
+    /// `AtomicPtr<T>`` is garunteed to wrap a `*mut T`. Just like *mut T, we
+    /// don't implement FromBytes/IntoBytes.
+    ///
+    /// See the comments on the `*mut T` impls for more information.
+    unsafe impl<T> util::Atomic for AtomicPtr<T> {
+        type Native = *mut T;
+    }
+    impl_for_transparent_wrapper!(T => TryFromBytes for AtomicPtr<T>);
+    impl_for_transparent_wrapper!(T => FromZeros for AtomicPtr<T>);
+    impl_known_layout!(T => AtomicPtr<T>);
 }
 
 safety_comment! {
