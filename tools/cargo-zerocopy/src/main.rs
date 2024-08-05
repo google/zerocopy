@@ -231,9 +231,46 @@ fn delegate_cargo() -> Result<(), Error> {
                     get_toolchain_rustflags(name),
                     env_rustflags,
                 );
-                rustup(["run", version, "cargo"], Some(("RUSTFLAGS", &rustflags)))
-                    .args(args)
-                    .execute();
+
+                let mut cmd = rustup(["run", version, "cargo"], Some(("RUSTFLAGS", &rustflags)));
+
+                // Computes the fully-qualified package name of workspace package `p`.
+                let fqpn = |p| {
+                    // Generate a lockfile, if absent.
+                    // This is a prerequisite of running pkgid.
+                    let _ = rustup(["run", version, "cargo", "generate-lockfile"], None)
+                        .output_or_exit();
+
+                    let output = rustup(["run", version, "cargo", "pkgid", "-p"], None)
+                        .arg(p)
+                        .output_or_exit();
+                    String::from_utf8(output.stdout).unwrap()
+                };
+
+                // Replace `-p<package>`, `-p <package>` and `--package <package`
+                // with the equivalent of `-p $(cargo pkgid -p <package>)`. We do
+                // this because unqualified package names are sometimes ambiguous
+                // if a dev-dependency has taken a dependency on an earlier
+                // version of zerocopy or zerocopy-derive.
+                loop {
+                    let Some(arg) = args.next() else {
+                        break;
+                    };
+                    if arg == "-p" || arg == "--package" {
+                        cmd.arg(arg);
+                        let Some(arg) = args.next() else {
+                            break;
+                        };
+                        cmd.arg(fqpn(arg));
+                    } else if arg.starts_with("-p") {
+                        cmd.arg("-p");
+                        cmd.arg(fqpn(arg[2..].to_string()));
+                    } else {
+                        cmd.arg(arg);
+                    }
+                }
+
+                cmd.execute();
 
                 Ok(())
             } else {

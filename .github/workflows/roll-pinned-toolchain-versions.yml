@@ -92,12 +92,22 @@ jobs:
             # introduced on this new toolchain that we can fix automatically.
             # This is best-effort, so we don't let failure cause the whole job
             # to fail.
-            cargo "+$VERSION_FOR_CARGO" fix --allow-dirty --tests --package zerocopy $ZEROCOPY_FEATURES || true
-            cargo "+$VERSION_FOR_CARGO" fix --allow-dirty --tests --package zerocopy-derive             || true
+            #
+            # We use `cargo pkgid` here to ensure that the package identifier is
+            # fully qualified. Otherwise, if a dev-dependency were to take a
+            # dependency on an earlier version of zerocopy or zerocopy-derive,
+            # these invocations would fail due to ambiguity.
+            cargo "+$VERSION_FOR_CARGO" fix --allow-dirty --tests --package "$(cargo pkgid -p zerocopy)" $ZEROCOPY_FEATURES || true
+            cargo "+$VERSION_FOR_CARGO" fix --allow-dirty --tests --package "$(cargo pkgid -p zerocopy-derive)"            || true
 
             # Update `.stderr` files as needed for the new version.
-            TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package zerocopy $ZEROCOPY_FEATURES
-            TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package zerocopy-derive
+            #
+            # We use `cargo pkgid` here to ensure that the package identifier is
+            # fully qualified. Otherwise, if a dev-dependency were to take a
+            # dependency on an earlier version of zerocopy or zerocopy-derive,
+            # these invocations would fail due to ambiguity.
+            TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package "$(cargo pkgid -p zerocopy)" $ZEROCOPY_FEATURES
+            TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package "$(cargo pkgid -p zerocopy-derive)"
           }
 
           if [ "${{ matrix.toolchain }}" == stable ]; then
