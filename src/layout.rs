@@ -836,7 +836,7 @@ mod tests {
         /// The final argument uses the same syntax, but it has a different
         /// meaning:
         /// - If it is `Ok(pat)`, then the pattern `pat` is supplied to
-        ///   `assert_matches!` to validate the computed result for each
+        ///   a matching assert to validate the computed result for each
         ///   combination of input values.
         /// - If it is `Err(Some(msg) | None)`, then `test!` validates that the
         ///   call to `validate_cast_and_convert_metadata` panics with the given
@@ -885,8 +885,8 @@ mod tests {
                         });
                         std::panic::set_hook(previous_hook);
 
-                        assert_matches::assert_matches!(
-                            actual, $expect,
+                        assert!(
+                            matches!(actual, $expect),
                             "layout({:?}, {}).validate_cast_and_convert_metadata({}, {}, {:?})" ,size_info, align, addr, bytes_len, cast_type
                         );
                     });
