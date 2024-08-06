@@ -22,3 +22,7 @@ rustc_version = "0.4.0"
 # than our MSRV.
 time = { version = "=0.3.0", default-features = false, features = ["formatting", "macros", "parsing"] }
 toml = "0.5.11"
+# Pin to 0.1.8 because 0.1.9 takes a dependency on windows-sys 0.59.0, which
+# in turn requires a Rust version more recent than our MSRV. By contrast,
+# 0.1.8 depends on windows-sys 0.52.0, which works with our MSRV.
+winapi-util = "=0.1.8"
