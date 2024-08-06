@@ -132,7 +132,8 @@ macro_rules! trailing_field_offset {
         let min_size = {
             let zero_elems: *const [()] =
                 $crate::macro_util::core_reexport::ptr::slice_from_raw_parts(
-                    #[allow(clippy::incompatible_msrv)] // Work around https://github.com/rust-lang/rust-clippy/issues/12280
+                    // Work around https://github.com/rust-lang/rust-clippy/issues/12280
+                    #[allow(clippy::incompatible_msrv)]
                     $crate::macro_util::core_reexport::ptr::NonNull::<()>::dangling()
                         .as_ptr()
                         .cast_const(),
@@ -144,16 +145,12 @@ macro_rules! trailing_field_offset {
             //   - If `$ty` is not a slice DST, this pointer conversion will
             //     fail due to "mismatched vtable kinds", and compilation will
             //     fail.
-            //   - If `$ty` is a slice DST, the safety requirement is that "the
-            //     length of the slice tail must be an initialized integer, and
-            //     the size of the entire value (dynamic tail length +
-            //     statically sized prefix) must fit in isize." The length is
-            //     initialized to 0 above, and Rust guarantees that no type's
-            //     minimum size may overflow `isize`. [1]
+            //   - If `$ty` is a slice DST, we have constructed `zero_elems` to
+            //     have zero trailing slice elements. Per the `size_of_val_raw`
+            //     docs, "For the special case where the dynamic tail length is
+            //     0, this function is safe to call." [1]
             //
-            // [1] TODO(#429),
-            // TODO(https://github.com/rust-lang/unsafe-code-guidelines/issues/465#issuecomment-1782206516):
-            // Citation for this?
+            // [1] https://doc.rust-lang.org/nightly/std/mem/fn.size_of_val_raw.html
             unsafe {
                 #[allow(clippy::as_conversions)]
                 $crate::macro_util::core_reexport::mem::size_of_val_raw(zero_elems as *const $ty)
