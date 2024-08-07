@@ -87,6 +87,8 @@ jobs:
 
             # Confirm that the update didn't bork `Cargo.toml`.
             validate-file "$REGEX" Cargo.toml
+            # Having a lockfile is a prerequisite of invoking `cargo pkgid`.
+            cargo "+$VERSION_FOR_CARGO" generate-lockfile
 
             # Run `cargo fix` in case there are any warnings or errors
             # introduced on this new toolchain that we can fix automatically.
