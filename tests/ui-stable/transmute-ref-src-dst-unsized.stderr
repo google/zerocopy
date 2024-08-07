@@ -149,7 +149,7 @@ note: required by an implicit `Sized` bound in `transmute`
    |
    |     pub fn transmute<Src, Dst>(src: Src) -> Dst;
    |                           ^^^ required by the implicit `Sized` requirement on this type parameter in `transmute`
-   = note: this error originates in the macro `$crate::assert_size_eq` which comes from the expansion of the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::assert_type_size_eq` which comes from the expansion of the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
   --> tests/ui-stable/transmute-ref-src-dst-unsized.rs:17:32
