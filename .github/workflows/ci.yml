@@ -55,6 +55,7 @@ jobs:
           # `build.rs`. Each of these represents the minimum Rust version for
           # which a particular feature is supported.
           "zerocopy-generic-bounds-in-const-fn",
+          "zerocopy-target-has-atomics",
           "zerocopy-aarch64-simd",
           "zerocopy-panic-in-const"
         ]
@@ -68,6 +69,7 @@ jobs:
           "riscv64gc-unknown-linux-gnu",
           "s390x-unknown-linux-gnu",
           "x86_64-pc-windows-msvc",
+          "thumbv6m-none-eabi",
           "wasm32-wasi"
         ]
         features: [
@@ -87,6 +89,8 @@ jobs:
             features: "--all-features"
           - toolchain: "zerocopy-generic-bounds-in-const-fn"
             features: "--all-features"
+          - toolchain: "zerocopy-target-has-atomics"
+            features: "--all-features"
           - toolchain: "zerocopy-aarch64-simd"
             features: "--all-features"
           - toolchain: "zerocopy-panic-in-const"
@@ -105,6 +109,8 @@ jobs:
           # zerocopy-derive doesn't behave different on these toolchains.
           - crate: "zerocopy-derive"
             toolchain: "zerocopy-generic-bounds-in-const-fn"
+          - crate: "zerocopy-derive"
+            toolchain: "zerocopy-target-has-atomics"
           - crate: "zerocopy-derive"
             toolchain: "zerocopy-aarch64-simd"
           - crate: "zerocopy-derive"
@@ -128,6 +134,8 @@ jobs:
           - toolchain: "zerocopy-aarch64-simd"
             target: "x86_64-pc-windows-msvc"
           - toolchain: "zerocopy-aarch64-simd"
+            target: "thumbv6m-none-eabi"
+          - toolchain: "zerocopy-aarch64-simd"
             target: "wasm32-wasi"
           # Exclude most targets targets from the
           # `zerocopy-generic-bounds-in-const-fn` toolchain since the
@@ -148,7 +156,16 @@ jobs:
           - toolchain: "zerocopy-generic-bounds-in-const-fn"
             target: "x86_64-pc-windows-msvc"
           - toolchain: "zerocopy-generic-bounds-in-const-fn"
+            target: "thumbv6m-none-eabi"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn"
             target: "wasm32-wasi"
+          # Exclude `thumbv6m-none-eabi` combined with any feature that implies
+          # the `std` feature since `thumbv6m-none-eabi` does not include a
+          # pre-compiled std.
+          - target: "thumbv6m-none-eabi"
+            features: "--features __internal_use_only_features_that_work_on_stable"
+          - target: "thumbv6m-none-eabi"
+            features: "--all-features"
           # Exclude most targets during PR development, but allow them in the
           # merge queue. This speeds up our development flow, while still
           # ensuring that errors on these targets are caught before a PR is
@@ -165,6 +182,8 @@ jobs:
             event_name: "pull_request"
           - target: "s390x-unknown-linux-gnu"
             event_name: "pull_request"
+          - target: "thumbv6m-none-eabi"
+            event_name: "pull_request"
           - target: "wasm32-wasi"
             event_name: "pull_request"
 
@@ -175,6 +194,19 @@ jobs:
 
     - name: Populate cache
       uses: ./.github/actions/cache
+
+    # Ensure that Cargo resolves the minimum possible syn version so that if we
+    # accidentally make a change which depends upon features added in more
+    # recent versions of syn, we'll catch it in CI.
+    #
+    # TODO(#1595): Debug why this step is still necessary after #1564 and maybe
+    # remove it.
+    - name: Pin syn dependency
+      run: |
+        set -eo pipefail
+        # Override the exising `syn` dependency with one which requires an exact
+        # version.
+        cargo add -p zerocopy-derive 'syn@=2.0.46'
 
     - name: Configure environment variables
       run: |
@@ -240,11 +272,19 @@ jobs:
       with:
         key: "${{ matrix.target }}"
 
+    # On the `thumbv6m-none-eabi` target, we can't run `cargo check --tests` due
+    # to the `memchr` crate, so we just do `cargo check` instead.
+    - name: Check
+      run: ./cargo.sh +${{ matrix.toolchain }} check --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      if: matrix.target == 'thumbv6m-none-eabi'
+
     - name: Check tests
       run: ./cargo.sh +${{ matrix.toolchain }} check --tests --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      if: matrix.target != 'thumbv6m-none-eabi'
 
     - name: Build
       run: ./cargo.sh +${{ matrix.toolchain }} build --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      if: matrix.target != 'thumbv6m-none-eabi'
 
     # When building tests for the i686 target, we need certain libraries which
     # are not installed by default; `gcc-multilib` includes these libraries.
@@ -356,16 +396,23 @@ jobs:
       if: |
         matrix.toolchain == 'nightly' &&
         matrix.target != 'riscv64gc-unknown-linux-gnu' &&
+        matrix.target != 'thumbv6m-none-eabi' &&
         matrix.target != 'wasm32-wasi' &&
         github.event_name != 'pull_request'
 
-    - name: Clippy check
+    # On the `thumbv6m-none-eabi` target, we can't run `cargo clippy --tests`
+    # due to the `memchr` crate, so we just do `cargo clippy` instead.
+    - name: Clippy
+      run: ./cargo.sh +${{ matrix.toolchain }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      if: matrix.toolchain == 'nightly' && matrix.target == 'thumbv6m-none-eabi'
+
+    - name: Clippy tests
       run: ./cargo.sh +${{ matrix.toolchain }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --tests --verbose
       # Clippy improves the accuracy of lints over time, and fixes bugs. Only
       # running Clippy on nightly allows us to avoid having to write code which
       # is compatible with older versions of Clippy, which sometimes requires
       # hacks to work around limitations that are fixed in more recent versions.
-      if: matrix.toolchain == 'nightly'
+      if: matrix.toolchain == 'nightly' && matrix.target != 'thumbv6m-none-eabi'
 
     - name: Cargo doc
       # We pass --document-private-items and --document-hidden items to ensure that 
@@ -544,6 +591,9 @@ jobs:
           # See comment on "Pin syn dependency" job for why we do this. It needs
           # to happen before the subsequent `cargo check`, so we don't
           # background it.
+          #
+          # TODO(#1595): Debug why this step is still necessary after #1564 and
+          # maybe remove it.
           cargo add -p zerocopy-derive 'syn@=2.0.46' &> /dev/null
 
           cargo check --workspace --tests            &> /dev/null &

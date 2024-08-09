@@ -20,7 +20,7 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
              AtomicBool
              AtomicI16
              AtomicI32
-             AtomicI8
+             AtomicI64
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -39,7 +39,7 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
              AtomicBool
              AtomicI16
              AtomicI32
-             AtomicI8
+             AtomicI64
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -58,7 +58,7 @@ error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
              AtomicBool
              AtomicI16
              AtomicI32
-             AtomicI8
+             AtomicI64
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -77,7 +77,7 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
              AtomicBool
              AtomicI16
              AtomicI32
-             AtomicI8
+             AtomicI64
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -96,7 +96,7 @@ error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
              AtomicBool
              AtomicI16
              AtomicI32
-             AtomicI8
+             AtomicI64
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -112,10 +112,10 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfie
              AU16
              AtomicI16
              AtomicI32
+             AtomicI64
              AtomicI8
              AtomicIsize
              AtomicU16
-             AtomicU32
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -132,9 +132,9 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfie
              AtomicBool
              AtomicI16
              AtomicI32
+             AtomicI64
              AtomicI8
              AtomicIsize
-             AtomicU16
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)

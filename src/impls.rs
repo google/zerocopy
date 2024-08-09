@@ -440,49 +440,151 @@ safety_comment! {
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => Immutable for opt_extern_c_fn!(...));
 }
 
-macro_rules! impl_traits_for_atomics {
-    ($($atomics:ident),* $(,)?) => {
-        $(
-            impl_for_transparent_wrapper!(=> TryFromBytes for $atomics);
-            impl_for_transparent_wrapper!(=> FromZeros for $atomics);
-            impl_for_transparent_wrapper!(=> FromBytes for $atomics);
-            impl_for_transparent_wrapper!(=> IntoBytes for $atomics);
-        )*
-    };
-}
+#[cfg(all(
+    zerocopy_target_has_atomics,
+    any(
+        target_has_atomic = "8",
+        target_has_atomic = "16",
+        target_has_atomic = "32",
+        target_has_atomic = "64",
+        target_has_atomic = "ptr"
+    )
+))]
+mod atomics {
+    use super::*;
 
-#[rustfmt::skip]
-impl_traits_for_atomics!(
-    AtomicI16, AtomicI32, AtomicI8, AtomicIsize,
-    AtomicU16, AtomicU32, AtomicU8, AtomicUsize,
-);
+    macro_rules! impl_traits_for_atomics {
+        ($($atomics:ident),* $(,)?) => {
+            $(
+                impl_known_layout!($atomics);
+                impl_for_transparent_wrapper!(=> TryFromBytes for $atomics);
+                impl_for_transparent_wrapper!(=> FromZeros for $atomics);
+                impl_for_transparent_wrapper!(=> FromBytes for $atomics);
+                impl_for_transparent_wrapper!(=> IntoBytes for $atomics);
+            )*
+        };
+    }
 
-impl_for_transparent_wrapper!(=> TryFromBytes for AtomicBool);
-impl_for_transparent_wrapper!(=> FromZeros for AtomicBool);
-impl_for_transparent_wrapper!(=> IntoBytes for AtomicBool);
+    #[cfg(target_has_atomic = "8")]
+    #[cfg_attr(doc_cfg, doc(cfg(target_has_atomic = "8")))]
+    mod atomic_8 {
+        use core::sync::atomic::{AtomicBool, AtomicI8, AtomicU8};
 
-safety_comment! {
-    /// SAFETY:
-    /// Per [1], `AtomicBool`, `AtomicU8`, and `AtomicI8` have the same size as
-    /// `bool`, `u8`, and `i8` respectively. Since a type's alignment cannot be
-    /// smaller than 1 [2], and since its alignment cannot be greater than its
-    /// size [3], the only possible value for the alignment is 1. Thus, it is
-    /// sound to implement `Unaligned`.
-    ///
-    /// [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
-    ///     Cite docs once they've landed.
-    ///
-    /// [2] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
-    ///
-    ///     Alignment is measured in bytes, and must be at least 1.
-    ///
-    /// [3] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
-    ///
-    ///     The size of a value is always a multiple of its alignment.
-    unsafe_impl!(AtomicBool: Unaligned);
-    unsafe_impl!(AtomicU8: Unaligned);
-    unsafe_impl!(AtomicI8: Unaligned);
-    assert_unaligned!(AtomicBool, AtomicU8, AtomicI8);
+        use super::*;
+
+        impl_traits_for_atomics!(AtomicU8, AtomicI8);
+
+        impl_known_layout!(AtomicBool);
+
+        impl_for_transparent_wrapper!(=> TryFromBytes for AtomicBool);
+        impl_for_transparent_wrapper!(=> FromZeros for AtomicBool);
+        impl_for_transparent_wrapper!(=> IntoBytes for AtomicBool);
+
+        safety_comment! {
+            /// SAFETY:
+            /// Per [1], `AtomicBool`, `AtomicU8`, and `AtomicI8` have the same
+            /// size as `bool`, `u8`, and `i8` respectively. Since a type's
+            /// alignment cannot be smaller than 1 [2], and since its alignment
+            /// cannot be greater than its size [3], the only possible value for
+            /// the alignment is 1. Thus, it is sound to implement `Unaligned`.
+            ///
+            /// [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
+            ///     Cite docs once they've landed.
+            ///
+            /// [2] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
+            ///
+            ///     Alignment is measured in bytes, and must be at least 1.
+            ///
+            /// [3] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
+            ///
+            ///     The size of a value is always a multiple of its alignment.
+            unsafe_impl!(AtomicBool: Unaligned);
+            unsafe_impl!(AtomicU8: Unaligned);
+            unsafe_impl!(AtomicI8: Unaligned);
+            assert_unaligned!(AtomicBool, AtomicU8, AtomicI8);
+
+            /// SAFETY:
+            /// All of these pass an atomic type and that type's native equivalent, as
+            /// required by the macro safety preconditions.
+            unsafe_impl_transparent_wrapper_for_atomic!(AtomicU8 [u8], AtomicI8 [i8], AtomicBool [bool]);
+        }
+    }
+
+    #[cfg(target_has_atomic = "16")]
+    #[cfg_attr(doc_cfg, doc(cfg(target_has_atomic = "16")))]
+    mod atomic_16 {
+        use core::sync::atomic::{AtomicI16, AtomicU16};
+
+        use super::*;
+
+        impl_traits_for_atomics!(AtomicU16, AtomicI16);
+
+        safety_comment! {
+            /// SAFETY:
+            /// All of these pass an atomic type and that type's native equivalent, as
+            /// required by the macro safety preconditions.
+            unsafe_impl_transparent_wrapper_for_atomic!(AtomicU16 [u16], AtomicI16 [i16]);
+        }
+    }
+
+    #[cfg(target_has_atomic = "32")]
+    #[cfg_attr(doc_cfg, doc(cfg(target_has_atomic = "32")))]
+    mod atomic_32 {
+        use core::sync::atomic::{AtomicI32, AtomicU32};
+
+        use super::*;
+
+        impl_traits_for_atomics!(AtomicU32, AtomicI32);
+
+        safety_comment! {
+            /// SAFETY:
+            /// All of these pass an atomic type and that type's native equivalent, as
+            /// required by the macro safety preconditions.
+            unsafe_impl_transparent_wrapper_for_atomic!(AtomicU32 [u32], AtomicI32 [i32]);
+        }
+    }
+
+    #[cfg(target_has_atomic = "64")]
+    #[cfg_attr(doc_cfg, doc(cfg(target_has_atomic = "64")))]
+    mod atomic_64 {
+        use core::sync::atomic::{AtomicI64, AtomicU64};
+
+        use super::*;
+
+        impl_traits_for_atomics!(AtomicU64, AtomicI64);
+
+        safety_comment! {
+            /// SAFETY:
+            /// All of these pass an atomic type and that type's native equivalent, as
+            /// required by the macro safety preconditions.
+            unsafe_impl_transparent_wrapper_for_atomic!(AtomicU64 [u64], AtomicI64 [i64]);
+        }
+    }
+
+    #[cfg(target_has_atomic = "ptr")]
+    #[cfg_attr(doc_cfg, doc(cfg(target_has_atomic = "ptr")))]
+    mod atomic_ptr {
+        use core::sync::atomic::{AtomicIsize, AtomicPtr, AtomicUsize};
+
+        use super::*;
+
+        impl_traits_for_atomics!(AtomicUsize, AtomicIsize);
+
+        impl_known_layout!(T => AtomicPtr<T>);
+
+        // TODO(#170): Implement `FromBytes` and `IntoBytes` once we implement
+        // those traits for `*mut T`.
+        impl_for_transparent_wrapper!(T => TryFromBytes for AtomicPtr<T>);
+        impl_for_transparent_wrapper!(T => FromZeros for AtomicPtr<T>);
+
+        safety_comment! {
+            /// SAFETY:
+            /// This passes an atomic type and that type's native equivalent, as
+            /// required by the macro safety preconditions.
+            unsafe_impl_transparent_wrapper_for_atomic!(AtomicUsize [usize], AtomicIsize [isize]);
+            unsafe_impl_transparent_wrapper_for_atomic!(T => AtomicPtr<T> [*mut T]);
+        }
+    }
 }
 
 safety_comment! {

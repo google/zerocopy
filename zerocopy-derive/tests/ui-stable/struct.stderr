@@ -78,7 +78,7 @@ error[E0277]: the trait bound `NotKnownLayoutDst: zerocopy::KnownLayout` is not 
              AtomicBool
              AtomicI16
              AtomicI32
-             AtomicI8
+             AtomicI64
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -97,7 +97,7 @@ error[E0277]: the trait bound `NotKnownLayout: zerocopy::KnownLayout` is not sat
              AtomicBool
              AtomicI16
              AtomicI32
-             AtomicI8
+             AtomicI64
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)

@@ -12,10 +12,6 @@ use core::{
     mem::{self, ManuallyDrop, MaybeUninit},
     num::{NonZeroUsize, Wrapping},
     ptr::NonNull,
-    sync::atomic::{
-        AtomicBool, AtomicI16, AtomicI32, AtomicI8, AtomicIsize, AtomicPtr, AtomicU16, AtomicU32,
-        AtomicU8, AtomicUsize,
-    },
 };
 
 use crate::{
@@ -332,12 +328,22 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Unalign<T> {
 ///
 /// The caller promises that `$atomic` is an atomic type whose natie equivalent
 /// is `$native`.
+#[cfg(all(
+    zerocopy_target_has_atomics,
+    any(
+        target_has_atomic = "8",
+        target_has_atomic = "16",
+        target_has_atomic = "32",
+        target_has_atomic = "64",
+        target_has_atomic = "ptr"
+    )
+))]
 macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
     ($(#[$attr:meta])* $(,)?) => {};
     ($(#[$attr:meta])* $atomic:ty [$native:ty], $($atomics:ty [$natives:ty]),* $(,)?) => {
         $(#[$attr])*
         // SAFETY: See safety comment in next match arm.
-        unsafe impl<I: Invariants> TransparentWrapper<I> for $atomic {
+        unsafe impl<I: crate::invariant::Invariants> crate::util::TransparentWrapper<I> for $atomic {
             unsafe_impl_transparent_wrapper_for_atomic!(@inner $atomic [$native]);
         }
         unsafe_impl_transparent_wrapper_for_atomic!($(#[$attr])* $($atomics [$natives],)*);
@@ -351,7 +357,7 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
         // [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
         //     Cite docs once they've landed.
         $(#[$attr])*
-        unsafe impl<$tyvar, I: Invariants> TransparentWrapper<I> for $atomic {
+        unsafe impl<$tyvar, I: crate::invariant::Invariants> crate::util::TransparentWrapper<I> for $atomic {
             unsafe_impl_transparent_wrapper_for_atomic!(@inner $atomic [$native]);
         }
     };
@@ -381,11 +387,11 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
         //
         // [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
         //     Cite docs once they've landed.
-        type UnsafeCellVariance = Covariant;
+        type UnsafeCellVariance = crate::util::Covariant;
 
         // SAFETY: No safety justification is required for an invariant
         // variance.
-        type AlignmentVariance = Invariant;
+        type AlignmentVariance = crate::util::Invariant;
 
         // SAFETY: Per [1], all atomic types have the same bit validity as their
         // native counterparts. The caller has promised that `$atomic` and
@@ -394,7 +400,7 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
         //
         // [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
         //     Cite docs once they've landed.
-        type ValidityVariance = Covariant;
+        type ValidityVariance = crate::util::Covariant;
 
         fn cast_into_inner(ptr: *mut $atomic) -> *mut UnsafeCell<$native> {
             // SAFETY: Per [1] (from comment on impl block), `$atomic` has the
@@ -412,24 +418,6 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
             ptr.cast::<$atomic>()
         }
     };
-}
-
-safety_comment! {
-    /// SAFETY:
-    /// All of these pass an atomic type and that type's native equivalent, as
-    /// required by the macro safety preconditions.
-    unsafe_impl_transparent_wrapper_for_atomic!(T => AtomicPtr<T> [*mut T]);
-    unsafe_impl_transparent_wrapper_for_atomic!(
-        AtomicBool [bool],
-        AtomicI16 [i16], AtomicI32 [i32], AtomicI8 [i8], AtomicIsize [isize],
-        AtomicU16 [u16], AtomicU32 [u32], AtomicU8 [u8], AtomicUsize [usize],
-    );
-    #[cfg(not(target_arch = "powerpc"))]
-    unsafe_impl_transparent_wrapper_for_atomic!(
-        #[cfg_attr(doc_cfg, doc(cfg(not(target_arch = "powerpc"))))]
-        core::sync::atomic::AtomicI64 [i64],
-        core::sync::atomic::AtomicU64 [u64],
-    );
 }
 
 /// Like [`PhantomData`], but [`Send`] and [`Sync`] regardless of whether the
