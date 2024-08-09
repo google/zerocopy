@@ -10,12 +10,12 @@ error[E0277]: the trait bound `NotZerocopy<u32>: zerocopy::FromBytes` is not sat
    = help: the following other types implement trait `zerocopy::FromBytes`:
              ()
              AU16
-             AtomicBool
              AtomicI16
              AtomicI32
              AtomicI8
              AtomicIsize
              AtomicU16
+             AtomicU32
            and $N others
 note: required by a bound in `AssertIsFromBytes`
   --> tests/ui-stable/include_value_not_from_bytes.rs:15:42

@@ -63,12 +63,12 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfie
    = help: the following other types implement trait `zerocopy::FromBytes`:
              ()
              AU16
-             AtomicBool
              AtomicI16
              AtomicI32
              AtomicI8
              AtomicIsize
              AtomicU16
+             AtomicU32
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::FromBytes`
   --> tests/ui-stable/derive_transparent.rs:24:21
