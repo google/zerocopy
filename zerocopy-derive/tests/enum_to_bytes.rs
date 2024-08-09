@@ -101,3 +101,23 @@ enum Isize {
 }
 
 util_assert_impl_all!(Isize: imp::IntoBytes);
+
+#[derive(imp::IntoBytes)]
+#[repr(u8)]
+enum HasData {
+    A(u8),
+    B(i8),
+}
+
+util_assert_impl_all!(HasData: imp::IntoBytes);
+
+#[derive(imp::IntoBytes)]
+#[repr(u32)]
+enum HasData32 {
+    A(u32),
+    B(i32),
+    C([u8; 4]),
+    D([u16; 2]),
+}
+
+util_assert_impl_all!(HasData: imp::IntoBytes);

@@ -1731,7 +1731,15 @@ mod tests {
             Unaligned,
             !FromBytes
         );
-        assert_impls!([NotZerocopy]: KnownLayout, !Immutable, !TryFromBytes, !FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+        assert_impls!(
+            [NotZerocopy]: KnownLayout,
+            !Immutable,
+            !TryFromBytes,
+            !FromZeros,
+            !FromBytes,
+            !IntoBytes,
+            !Unaligned
+        );
         assert_impls!(
             [u8; 0]: KnownLayout,
             Immutable,

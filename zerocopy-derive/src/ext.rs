@@ -6,9 +6,9 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use proc_macro2::TokenStream;
+use proc_macro2::{Span, TokenStream};
 use quote::ToTokens;
-use syn::{Data, DataEnum, DataStruct, DataUnion, Field, Index, Type};
+use syn::{Data, DataEnum, DataStruct, DataUnion, Field, Ident, Index, Type};
 
 pub(crate) trait DataExt {
     /// Extracts the names and types of all fields. For enums, extracts the names
@@ -20,6 +20,10 @@ pub(crate) trait DataExt {
     /// about transitive ownership. But for field names, we'd only use them when
     /// generating is_bit_valid, which cares about where they live.
     fn fields(&self) -> Vec<(TokenStream, &Type)>;
+
+    fn variants(&self) -> Vec<Vec<(TokenStream, &Type)>>;
+
+    fn tag(&self) -> Option<Ident>;
 }
 
 impl DataExt for Data {
@@ -30,11 +34,35 @@ impl DataExt for Data {
             Data::Union(un) => un.fields(),
         }
     }
+
+    fn variants(&self) -> Vec<Vec<(TokenStream, &Type)>> {
+        match self {
+            Data::Struct(strc) => strc.variants(),
+            Data::Enum(enm) => enm.variants(),
+            Data::Union(un) => un.variants(),
+        }
+    }
+
+    fn tag(&self) -> Option<Ident> {
+        match self {
+            Data::Struct(strc) => strc.tag(),
+            Data::Enum(enm) => enm.tag(),
+            Data::Union(un) => un.tag(),
+        }
+    }
 }
 
 impl DataExt for DataStruct {
     fn fields(&self) -> Vec<(TokenStream, &Type)> {
         map_fields(&self.fields)
+    }
+
+    fn variants(&self) -> Vec<Vec<(TokenStream, &Type)>> {
+        vec![self.fields()]
+    }
+
+    fn tag(&self) -> Option<Ident> {
+        None
     }
 }
 
@@ -42,11 +70,27 @@ impl DataExt for DataEnum {
     fn fields(&self) -> Vec<(TokenStream, &Type)> {
         map_fields(self.variants.iter().flat_map(|var| &var.fields))
     }
+
+    fn variants(&self) -> Vec<Vec<(TokenStream, &Type)>> {
+        self.variants.iter().map(|var| map_fields(&var.fields)).collect()
+    }
+
+    fn tag(&self) -> Option<Ident> {
+        Some(Ident::new("___ZerocopyTag", Span::call_site()))
+    }
 }
 
 impl DataExt for DataUnion {
     fn fields(&self) -> Vec<(TokenStream, &Type)> {
         map_fields(&self.fields.named)
+    }
+
+    fn variants(&self) -> Vec<Vec<(TokenStream, &Type)>> {
+        vec![self.fields()]
+    }
+
+    fn tag(&self) -> Option<Ident> {
+        None
     }
 }
 
@@ -66,14 +110,4 @@ fn map_fields<'a>(
             )
         })
         .collect()
-}
-
-pub(crate) trait EnumExt {
-    fn is_fieldless(&self) -> bool;
-}
-
-impl EnumExt for DataEnum {
-    fn is_fieldless(&self) -> bool {
-        self.fields().is_empty()
-    }
 }
