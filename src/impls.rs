@@ -441,22 +441,25 @@ safety_comment! {
 }
 
 macro_rules! impl_traits_for_atomics {
-    ($($atomics:ident [$inners:ident]),* $(,)?) => {
+    ($($atomics:ident),* $(,)?) => {
         $(
-            impl_for_transparent_wrapper!(TryFromBytes for $atomics [UnsafeCell<$inners>]);
-            impl_for_transparent_wrapper!(FromZeros for $atomics [UnsafeCell<$inners>]);
-            impl_for_transparent_wrapper!(FromBytes for $atomics [UnsafeCell<$inners>]);
-            impl_for_transparent_wrapper!(IntoBytes for $atomics [UnsafeCell<$inners>]);
+            impl_for_transparent_wrapper!(=> TryFromBytes for $atomics);
+            impl_for_transparent_wrapper!(=> FromZeros for $atomics);
+            impl_for_transparent_wrapper!(=> FromBytes for $atomics);
+            impl_for_transparent_wrapper!(=> IntoBytes for $atomics);
         )*
     };
 }
 
 #[rustfmt::skip]
 impl_traits_for_atomics!(
-    AtomicBool [bool],
-    AtomicI16 [i16], AtomicI32 [i32], AtomicI8 [i8], AtomicIsize [isize],
-    AtomicU16 [u16], AtomicU32 [u32], AtomicU8 [u8], AtomicUsize [usize],
+    AtomicI16, AtomicI32, AtomicI8, AtomicIsize,
+    AtomicU16, AtomicU32, AtomicU8, AtomicUsize,
 );
+
+impl_for_transparent_wrapper!(=> TryFromBytes for AtomicBool);
+impl_for_transparent_wrapper!(=> FromZeros for AtomicBool);
+impl_for_transparent_wrapper!(=> IntoBytes for AtomicBool);
 
 safety_comment! {
     /// SAFETY:
