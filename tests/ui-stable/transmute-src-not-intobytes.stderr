@@ -13,9 +13,9 @@ error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::IntoBytes` is not sa
              AtomicBool
              AtomicI16
              AtomicI32
+             AtomicI64
              AtomicI8
              AtomicIsize
-             AtomicU16
            and $N others
 note: required by a bound in `AssertIsIntoBytes`
   --> tests/ui-stable/transmute-src-not-intobytes.rs:19:32
@@ -36,9 +36,9 @@ error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::IntoBytes` is not sa
              AtomicBool
              AtomicI16
              AtomicI32
+             AtomicI64
              AtomicI8
              AtomicIsize
-             AtomicU16
            and $N others
 note: required by a bound in `AssertIsIntoBytes`
   --> tests/ui-stable/transmute-src-not-intobytes.rs:19:32

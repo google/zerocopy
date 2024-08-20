@@ -12,7 +12,7 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
              AtomicBool
              AtomicI16
              AtomicI32
-             AtomicI8
+             AtomicI64
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `TryFromBytes`
   --> tests/ui-stable/derive_transparent.rs:24:21
@@ -40,7 +40,7 @@ error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
              AtomicBool
              AtomicI16
              AtomicI32
-             AtomicI8
+             AtomicI64
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `FromZeros`
   --> tests/ui-stable/derive_transparent.rs:24:21
@@ -65,10 +65,10 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfie
              AU16
              AtomicI16
              AtomicI32
+             AtomicI64
              AtomicI8
              AtomicIsize
              AtomicU16
-             AtomicU32
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::FromBytes`
   --> tests/ui-stable/derive_transparent.rs:24:21
@@ -94,9 +94,9 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfie
              AtomicBool
              AtomicI16
              AtomicI32
+             AtomicI64
              AtomicI8
              AtomicIsize
-             AtomicU16
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::IntoBytes`
   --> tests/ui-stable/derive_transparent.rs:24:10

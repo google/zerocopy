@@ -35,6 +35,10 @@ exclude = [".*"]
 # From 1.61.0, Rust supports generic types with trait bounds in `const fn`.
 zerocopy-generic-bounds-in-const-fn = "1.61.0"
 
+# From 1.60.0, Rust supports `cfg(target_has_atomics)`, which allows us to
+# detect whether a target supports particular sets of atomics.
+zerocopy-target-has-atomics = "1.60.0"
+
 # When the "simd" feature is enabled, include SIMD types from the
 # `core::arch::aarch64` module, which was stabilized in 1.59.0. On earlier Rust
 # versions, these types require the "simd-nightly" feature.
