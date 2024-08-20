@@ -46,7 +46,18 @@ jobs:
       matrix:
         # See `INTERNAL.md` for an explanation of these pinned toolchain
         # versions.
-        toolchain: [ "msrv", "stable", "nightly",  "zerocopy-generic-bounds-in-const-fn", "zerocopy-aarch64-simd", "zerocopy-panic-in-const", ]
+        toolchain: [
+          "msrv",
+          "stable",
+          "nightly",
+
+          # These are the names of specific Rust versions detected in
+          # `build.rs`. Each of these represents the minimum Rust version for
+          # which a particular feature is supported.
+          "zerocopy-generic-bounds-in-const-fn",
+          "zerocopy-aarch64-simd",
+          "zerocopy-panic-in-const"
+        ]
         target: [
           "i686-unknown-linux-gnu",
           "x86_64-unknown-linux-gnu",
@@ -59,7 +70,12 @@ jobs:
           "x86_64-pc-windows-msvc",
           "wasm32-wasi"
         ]
-        features: [ "--no-default-features", "", "--features __internal_use_only_features_that_work_on_stable", "--all-features" ]
+        features: [
+          "--no-default-features",
+          "",
+          "--features __internal_use_only_features_that_work_on_stable",
+          "--all-features"
+        ]
         crate: [ "zerocopy", "zerocopy-derive" ]
         event_name: [ "${{ github.event_name }}" ]
         exclude:
@@ -93,6 +109,46 @@ jobs:
             toolchain: "zerocopy-aarch64-simd"
           - crate: "zerocopy-derive"
             toolchain: "zerocopy-panic-in-const"
+          # Exclude non-aarch64 targets from the `zerocopy-aarch64-simd`
+          # toolchain.
+          - toolchain: "zerocopy-aarch64-simd"
+            target: "i686-unknown-linux-gnu"
+          - toolchain: "zerocopy-aarch64-simd"
+            target: "x86_64-unknown-linux-gnu"
+          - toolchain: "zerocopy-aarch64-simd"
+            target: "arm-unknown-linux-gnueabi"
+          - toolchain: "zerocopy-aarch64-simd"
+            target: "powerpc-unknown-linux-gnu"
+          - toolchain: "zerocopy-aarch64-simd"
+            target: "powerpc64-unknown-linux-gnu"
+          - toolchain: "zerocopy-aarch64-simd"
+            target: "riscv64gc-unknown-linux-gnu"
+          - toolchain: "zerocopy-aarch64-simd"
+            target: "s390x-unknown-linux-gnu"
+          - toolchain: "zerocopy-aarch64-simd"
+            target: "x86_64-pc-windows-msvc"
+          - toolchain: "zerocopy-aarch64-simd"
+            target: "wasm32-wasi"
+          # Exclude most targets targets from the
+          # `zerocopy-generic-bounds-in-const-fn` toolchain since the
+          # `zerocopy-generic-bounds-in-const-fn` feature is unrelated to
+          # compilation target. This only leaves i686 and x86_64 targets.
+          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+            target: "arm-unknown-linux-gnueabi"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+            target: "aarch64-unknown-linux-gnu"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+            target: "powerpc-unknown-linux-gnu"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+            target: "powerpc64-unknown-linux-gnu"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+            target: "riscv64gc-unknown-linux-gnu"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+            target: "s390x-unknown-linux-gnu"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+            target: "x86_64-pc-windows-msvc"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+            target: "wasm32-wasi"
           # Exclude most targets during PR development, but allow them in the
           # merge queue. This speeds up our development flow, while still
           # ensuring that errors on these targets are caught before a PR is
