@@ -1499,7 +1499,27 @@ pub unsafe trait FromZeroes {
         // no allocation, but `Box` does require a correct dangling pointer.
         let layout = Layout::new::<Self>();
         if layout.size() == 0 {
-            return Box::new(Self::new_zeroed());
+            // Construct the `Box` from a dangling pointer to avoid calling
+            // `Self::new_zeroed`. This ensures that stack space is never
+            // allocated for `Self` even on lower opt-levels where this branch
+            // might not get optimized out.
+
+            // SAFETY: Per [1], when `T` is a ZST, `Box<T>`'s only validity
+            // requirements are that the pointer is non-null and sufficiently
+            // aligned. Per [2], `NonNull::dangling` produces a pointer which
+            // is sufficiently aligned. Since the produced pointer is a
+            // `NonNull`, it is non-null.
+            //
+            // [1] Per https://doc.rust-lang.org/nightly/std/boxed/index.html#memory-layout:
+            //
+            //   For zero-sized values, the `Box` pointer has to be non-null and sufficiently aligned.
+            //
+            // [2] Per https://doc.rust-lang.org/std/ptr/struct.NonNull.html#method.dangling:
+            //
+            //   Creates a new `NonNull` that is dangling, but well-aligned.
+            unsafe {
+                return Box::from_raw(NonNull::dangling().as_ptr());
+            }
         }
 
         // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
