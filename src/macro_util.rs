@@ -336,7 +336,7 @@ macro_rules! assert_align_gt_eq {
 /// `transmute_ref!` and `transmute_mut!`.
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
-macro_rules! assert_size_eq {
+macro_rules! assert_type_size_eq {
     ($t:ident, $u: ident) => {{
         // The comments here should be read in the context of this macro's
         // invocations in `transmute_ref!` and `transmute_mut!`.
@@ -354,6 +354,19 @@ macro_rules! assert_size_eq {
             loop {}
         }
     }};
+}
+
+/// Panic if the expression evaluates to `false`.
+#[doc(hidden)]
+#[macro_export]
+macro_rules! static_const_assert {
+    ($x:expr $(,)?) => {
+        #[allow(unknown_lints, eq_op)]
+        const _: [(); 0 - !{
+            const ASSERT: bool = $x;
+            ASSERT
+        } as usize] = [];
+    };
 }
 
 /// Transmutes a reference of one type to a reference of another type.

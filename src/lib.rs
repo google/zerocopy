@@ -4530,7 +4530,7 @@ macro_rules! transmute_ref {
             // value returned from this branch.
             let u;
 
-            $crate::assert_size_eq!(t, u);
+            $crate::assert_type_size_eq!(t, u);
             $crate::assert_align_gt_eq!(t, u);
 
             &u
@@ -4541,7 +4541,7 @@ macro_rules! transmute_ref {
             //   `AssertSrcIsImmutable`, `AssertDstIsFromBytes`, and
             //   `AssertDstIsImmutable` above.
             // - We know that `size_of::<Src>() == size_of::<Dst>()` thanks to
-            //   the use of `assert_size_eq!` above.
+            //   the use of `assert_type_size_eq!` above.
             // - We know that `align_of::<Src>() >= align_of::<Dst>()` thanks to
             //   the use of `assert_align_gt_eq!` above.
             let u = unsafe { $crate::macro_util::transmute_ref(e) };
@@ -4686,14 +4686,14 @@ macro_rules! transmute_mut {
             // the value returned from this branch.
             let u;
 
-            $crate::assert_size_eq!(t, u);
+            $crate::assert_type_size_eq!(t, u);
             $crate::assert_align_gt_eq!(t, u);
 
             &mut u
         } else {
             // SAFETY: For source type `Src` and destination type `Dst`:
             // - We know that `size_of::<Src>() == size_of::<Dst>()` thanks to
-            //   the use of `assert_size_eq!` above.
+            //   the use of `assert_type_size_eq!` above.
             // - We know that `align_of::<Src>() >= align_of::<Dst>()` thanks to
             //   the use of `assert_align_gt_eq!` above.
             let u = unsafe { $crate::macro_util::transmute_mut(e) };
