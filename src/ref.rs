@@ -746,15 +746,19 @@ where
     /// Converts this `Ref` into a reference.
     ///
     /// `into_ref` consumes the `Ref`, and returns a reference to `T`.
+    ///
+    /// Note: this is an associated function, which means that you have to call
+    /// it as `Ref::into_ref(r)` instead of `r.into_ref()`. This is so that
+    /// there is no conflict with a method on the inner type.
     #[must_use = "has no side effects"]
     #[inline(always)]
-    pub fn into_ref(self) -> &'a T {
+    pub fn into_ref(r: Self) -> &'a T {
         // Presumably unreachable, since we've guarded each constructor of `Ref`.
         static_assert_dst_is_not_zst!(T);
 
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `IntoByteSlice`.
-        let b = unsafe { self.into_byte_slice() };
+        let b = unsafe { r.into_byte_slice() };
 
         // PANICS: By post-condition on `into_byte_slice`, `b`'s size and
         // alignment are valid for `T`. By post-condition, `b.into_byte_slice()`
@@ -776,15 +780,19 @@ where
     /// Converts this `Ref` into a mutable reference.
     ///
     /// `into_mut` consumes the `Ref`, and returns a mutable reference to `T`.
+    ///
+    /// Note: this is an associated function, which means that you have to call
+    /// it as `Ref::into_mut(r)` instead of `r.into_mut()`. This is so that
+    /// there is no conflict with a method on the inner type.
     #[must_use = "has no side effects"]
     #[inline(always)]
-    pub fn into_mut(self) -> &'a mut T {
+    pub fn into_mut(r: Self) -> &'a mut T {
         // Presumably unreachable, since we've guarded each constructor of `Ref`.
         static_assert_dst_is_not_zst!(T);
 
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `IntoByteSliceMut`.
-        let b = unsafe { self.into_byte_slice_mut() };
+        let b = unsafe { r.into_byte_slice_mut() };
 
         // PANICS: By post-condition on `into_byte_slice_mut`, `b`'s size and
         // alignment are valid for `T`. By post-condition,
@@ -804,11 +812,15 @@ where
     T: ?Sized,
 {
     /// Gets the underlying bytes.
+    ///
+    /// Note: this is an associated function, which means that you have to call
+    /// it as `Ref::bytes(r)` instead of `r.bytes()`. This is so that there is
+    /// no conflict with a method on the inner type.
     #[inline]
-    pub fn bytes(&self) -> &[u8] {
+    pub fn bytes(r: &Self) -> &[u8] {
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `ByteSlice`.
-        unsafe { self.as_byte_slice().deref() }
+        unsafe { r.as_byte_slice().deref() }
     }
 }
 
@@ -818,11 +830,15 @@ where
     T: ?Sized,
 {
     /// Gets the underlying bytes mutably.
+    ///
+    /// Note: this is an associated function, which means that you have to call
+    /// it as `Ref::bytes_mut(r)` instead of `r.bytes_mut()`. This is so that
+    /// there is no conflict with a method on the inner type.
     #[inline]
-    pub fn bytes_mut(&mut self) -> &mut [u8] {
+    pub fn bytes_mut(r: &mut Self) -> &mut [u8] {
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `ByteSliceMut`.
-        unsafe { self.as_byte_slice_mut().deref_mut() }
+        unsafe { r.as_byte_slice_mut().deref_mut() }
     }
 }
 
@@ -832,12 +848,16 @@ where
     T: FromBytes,
 {
     /// Reads a copy of `T`.
+    ///
+    /// Note: this is an associated function, which means that you have to call
+    /// it as `Ref::read(r)` instead of `r.read()`. This is so that there is no
+    /// conflict with a method on the inner type.
     #[must_use = "has no side effects"]
     #[inline]
-    pub fn read(&self) -> T {
+    pub fn read(r: &Self) -> T {
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `ByteSlice`.
-        let b = unsafe { self.as_byte_slice() };
+        let b = unsafe { r.as_byte_slice() };
 
         // SAFETY: By postcondition on `as_byte_slice`, we know that `b` is a
         // valid size and ailgnment for `T`. By safety invariant on `ByteSlice`,
@@ -853,11 +873,15 @@ where
     T: IntoBytes,
 {
     /// Writes the bytes of `t` and then forgets `t`.
+    ///
+    /// Note: this is an associated function, which means that you have to call
+    /// it as `Ref::write(r, t)` instead of `r.write(t)`. This is so that there
+    /// is no conflict with a method on the inner type.
     #[inline]
-    pub fn write(&mut self, t: T) {
+    pub fn write(r: &mut Self, t: T) {
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `ByteSliceMut`.
-        let b = unsafe { self.as_byte_slice_mut() };
+        let b = unsafe { r.as_byte_slice_mut() };
 
         // SAFETY: By postcondition on `as_byte_slice_mut`, we know that `b` is
         // a valid size and ailgnment for `T`. By safety invariant on
@@ -1003,7 +1027,7 @@ mod tests {
         // `Ref` was not supportd.
         let mut buf = [0u8];
         let r = Ref::<&mut [u8], u8>::from_bytes(&mut buf).unwrap();
-        assert_eq!(r.into_ref(), &0);
+        assert_eq!(Ref::into_ref(r), &0);
     }
 
     #[test]
@@ -1031,23 +1055,23 @@ mod tests {
     fn test_new_helper(mut r: Ref<&mut [u8], AU64>) {
         // assert that the value starts at 0
         assert_eq!(*r, AU64(0));
-        assert_eq!(r.read(), AU64(0));
+        assert_eq!(Ref::read(&r), AU64(0));
 
         // Assert that values written to the typed value are reflected in the
         // byte slice.
         const VAL1: AU64 = AU64(0xFF00FF00FF00FF00);
         *r = VAL1;
-        assert_eq!(r.bytes(), &VAL1.to_bytes());
+        assert_eq!(Ref::bytes(&r), &VAL1.to_bytes());
         *r = AU64(0);
-        r.write(VAL1);
-        assert_eq!(r.bytes(), &VAL1.to_bytes());
+        Ref::write(&mut r, VAL1);
+        assert_eq!(Ref::bytes(&r), &VAL1.to_bytes());
 
         // Assert that values written to the byte slice are reflected in the
         // typed value.
         const VAL2: AU64 = AU64(!VAL1.0); // different from `VAL1`
-        r.bytes_mut().copy_from_slice(&VAL2.to_bytes()[..]);
+        Ref::bytes_mut(&mut r).copy_from_slice(&VAL2.to_bytes()[..]);
         assert_eq!(*r, VAL2);
-        assert_eq!(r.read(), VAL2);
+        assert_eq!(Ref::read(&r), VAL2);
     }
 
     // Verify that values written to a `Ref` are properly shared between the
@@ -1059,8 +1083,8 @@ mod tests {
 
         // Check the backing storage is the exact same slice.
         let untyped_len = typed_len * 8;
-        assert_eq!(r.bytes().len(), untyped_len);
-        assert_eq!(r.bytes().as_ptr(), r.as_ptr().cast::<u8>());
+        assert_eq!(Ref::bytes(&r).len(), untyped_len);
+        assert_eq!(Ref::bytes(&r).as_ptr(), r.as_ptr().cast::<u8>());
 
         // Assert that values written to the typed value are reflected in the
         // byte slice.
@@ -1068,12 +1092,12 @@ mod tests {
         for typed in &mut *r {
             *typed = VAL1;
         }
-        assert_eq!(r.bytes(), VAL1.0.to_ne_bytes().repeat(typed_len).as_slice());
+        assert_eq!(Ref::bytes(&r), VAL1.0.to_ne_bytes().repeat(typed_len).as_slice());
 
         // Assert that values written to the byte slice are reflected in the
         // typed value.
         const VAL2: AU64 = AU64(!VAL1.0); // different from VAL1
-        r.bytes_mut().copy_from_slice(&VAL2.0.to_ne_bytes().repeat(typed_len));
+        Ref::bytes_mut(&mut r).copy_from_slice(&VAL2.0.to_ne_bytes().repeat(typed_len));
         assert!(r.iter().copied().all(|x| x == VAL2));
     }
 
@@ -1084,23 +1108,23 @@ mod tests {
     fn test_new_helper_unaligned(mut r: Ref<&mut [u8], [u8; 8]>) {
         // assert that the value starts at 0
         assert_eq!(*r, [0; 8]);
-        assert_eq!(r.read(), [0; 8]);
+        assert_eq!(Ref::read(&r), [0; 8]);
 
         // Assert that values written to the typed value are reflected in the
         // byte slice.
         const VAL1: [u8; 8] = [0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00];
         *r = VAL1;
-        assert_eq!(r.bytes(), &VAL1);
+        assert_eq!(Ref::bytes(&r), &VAL1);
         *r = [0; 8];
-        r.write(VAL1);
-        assert_eq!(r.bytes(), &VAL1);
+        Ref::write(&mut r, VAL1);
+        assert_eq!(Ref::bytes(&r), &VAL1);
 
         // Assert that values written to the byte slice are reflected in the
         // typed value.
         const VAL2: [u8; 8] = [0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF]; // different from VAL1
-        r.bytes_mut().copy_from_slice(&VAL2[..]);
+        Ref::bytes_mut(&mut r).copy_from_slice(&VAL2[..]);
         assert_eq!(*r, VAL2);
-        assert_eq!(r.read(), VAL2);
+        assert_eq!(Ref::read(&r), VAL2);
     }
 
     // Verify that values written to a `Ref` are properly shared between the
@@ -1111,21 +1135,21 @@ mod tests {
         assert_eq!(&*r, vec![0u8; len].as_slice());
 
         // Check the backing storage is the exact same slice.
-        assert_eq!(r.bytes().len(), len);
-        assert_eq!(r.bytes().as_ptr(), r.as_ptr());
+        assert_eq!(Ref::bytes(&r).len(), len);
+        assert_eq!(Ref::bytes(&r).as_ptr(), r.as_ptr());
 
         // Assert that values written to the typed value are reflected in the
         // byte slice.
         let mut expected_bytes = [0xFF, 0x00].iter().copied().cycle().take(len).collect::<Vec<_>>();
         r.copy_from_slice(&expected_bytes);
-        assert_eq!(r.bytes(), expected_bytes.as_slice());
+        assert_eq!(Ref::bytes(&r), expected_bytes.as_slice());
 
         // Assert that values written to the byte slice are reflected in the
         // typed value.
         for byte in &mut expected_bytes {
             *byte = !*byte; // different from `expected_len`
         }
-        r.bytes_mut().copy_from_slice(&expected_bytes);
+        Ref::bytes_mut(&mut r).copy_from_slice(&expected_bytes);
         assert_eq!(&*r, expected_bytes.as_slice());
     }
 
@@ -1382,13 +1406,13 @@ mod tests {
 
         let mut buf = Align::<[u8; 8], u64>::default();
         let r = Ref::<_, u64>::from_bytes(&buf.t[..]).unwrap();
-        let rf = r.into_ref();
+        let rf = Ref::into_ref(r);
         assert_eq!(rf, &0u64);
         let buf_addr = (&buf.t as *const [u8; 8]).addr();
         assert_eq!((rf as *const u64).addr(), buf_addr);
 
         let r = Ref::<_, u64>::from_bytes(&mut buf.t[..]).unwrap();
-        let rf = r.into_mut();
+        let rf = Ref::into_mut(r);
         assert_eq!(rf, &mut 0u64);
         assert_eq!((rf as *mut u64).addr(), buf_addr);
 

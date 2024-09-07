@@ -3397,7 +3397,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: Sized,
     {
         match Ref::<_, Unalign<Self>>::sized_from(source) {
-            Ok(r) => Ok(r.read().into_inner()),
+            Ok(r) => Ok(Ref::read(&r).into_inner()),
             Err(CastError::Size(e)) => Err(e.with_dst()),
             Err(CastError::Alignment(_)) => unreachable!(),
             Err(CastError::Validity(i)) => match i {},
@@ -3443,7 +3443,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: Sized,
     {
         match Ref::<_, Unalign<Self>>::sized_from_prefix(source) {
-            Ok((r, suffix)) => Ok((r.read().into_inner(), suffix)),
+            Ok((r, suffix)) => Ok((Ref::read(&r).into_inner(), suffix)),
             Err(CastError::Size(e)) => Err(e.with_dst()),
             Err(CastError::Alignment(_)) => unreachable!(),
             Err(CastError::Validity(i)) => match i {},
@@ -3483,7 +3483,7 @@ pub unsafe trait FromBytes: FromZeros {
         Self: Sized,
     {
         match Ref::<_, Unalign<Self>>::sized_from_suffix(source) {
-            Ok((prefix, r)) => Ok((prefix, r.read().into_inner())),
+            Ok((prefix, r)) => Ok((prefix, Ref::read(&r).into_inner())),
             Err(CastError::Size(e)) => Err(CastError::Size(e.with_dst())),
             Err(CastError::Alignment(_)) => unreachable!(),
             Err(CastError::Validity(i)) => match i {},

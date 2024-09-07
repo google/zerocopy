@@ -131,7 +131,7 @@ where
     #[doc(hidden)]
     #[inline(always)]
     pub fn into_slice(self) -> &'a [T] {
-        self.into_ref()
+        Ref::into_ref(self)
     }
 }
 
@@ -144,7 +144,7 @@ where
     #[doc(hidden)]
     #[inline(always)]
     pub fn into_mut_slice(self) -> &'a mut [T] {
-        self.into_mut()
+        Ref::into_mut(self)
     }
 }
 
