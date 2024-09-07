@@ -1411,7 +1411,36 @@ mod _project {
             // `ptr` is non-null.
             let ptr = unsafe { NonNull::new_unchecked(ptr) };
 
-            // SAFETY: TODO(#896)
+            // SAFETY:
+            //
+            // Lemma 0: `ptr` addresses a subset of the bytes addressed by
+            //          `self`, and has the same provenance.
+            // Proof: The caller guarantees that `start <= end <= self.len()`.
+            //        Thus, `base` is in-bounds of `self`, and `base + (end -
+            //        start)` is also in-bounds of self. Finally, `ptr` is
+            //        constructed using provenance-preserving operations.
+            //
+            // 0. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is
+            //    not zero sized, then `ptr` is derived from some valid Rust
+            //    allocation, `A`.
+            // 1. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is
+            //    not zero sized, then `ptr` has valid provenance for `A`.
+            // 2. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is
+            //    not zero sized, then `ptr` addresses a byte range which is
+            //    entirely contained in `A`.
+            // 3. Per Lemma 0 and by invariant on `self`, `ptr` addresses a byte
+            //    range whose length fits in an `isize`.
+            // 4. Per Lemma 0 and by invariant on `self`, `ptr` addresses a byte
+            //    range which does not wrap around the address space.
+            // 5. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is
+            //    not zero sized, then `A` is guaranteed to live for at least
+            //    `'a`.
+            // 6. Per Lemma 0 and by invariant on `self`, `ptr` conforms to the
+            //    aliasing invariant of [`I::Aliasing`](invariant::Aliasing).
+            // 7. Per Lemma 0 and by invariant on `self`, `ptr` conforms to the
+            //    alignment invariant of [`I::Alignment`](invariant::Alignment).
+            // 8. Per Lemma 0 and by invariant on `self`, `ptr` conforms to the
+            //    validity invariant of [`I::Validity`](invariant::Validity).
             unsafe { Ptr::new(ptr) }
         }
 
