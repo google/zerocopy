@@ -307,8 +307,8 @@ safety_comment! {
     ///   `NonZeroU16` is guaranteed to have the same layout and bit validity as
     ///   `u16` with the exception that `0` is not a valid instance.
     ///
-    /// [2] TODO(#896): Write a safety proof for this before the next stable
-    ///     release.
+    /// [2] `NonZeroXxx` self-evidently does not contain `UnsafeCell`s. This is
+    ///     not a proof, but we are accepting this as a known risk per #1358.
     unsafe_impl!(NonZeroU8: TryFromBytes; |n: MaybeAligned<u8>| NonZeroU8::new(n.read_unaligned()).is_some());
     unsafe_impl!(NonZeroI8: TryFromBytes; |n: MaybeAligned<i8>| NonZeroI8::new(n.read_unaligned()).is_some());
     unsafe_impl!(NonZeroU16: TryFromBytes; |n: MaybeAligned<u16>| NonZeroU16::new(n.read_unaligned()).is_some());
@@ -360,12 +360,10 @@ safety_comment! {
 safety_comment! {
     /// SAFETY:
     /// While it's not fully documented, the consensus is that `Box<T>` does not
-    /// contain any `UnsafeCell`s for `T: Sized` [1].
+    /// contain any `UnsafeCell`s for `T: Sized` [1]. This is not a complete
+    /// proof, but we are accepting this as a known risk per #1358.
     ///
     /// [1] https://github.com/rust-lang/unsafe-code-guidelines/issues/492
-    ///
-    /// TODO(#896): Write a more complete safety proof before the next stable
-    /// release.
     #[cfg(feature = "alloc")]
     unsafe_impl!(
         #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
@@ -435,7 +433,9 @@ safety_comment! {
 
 safety_comment! {
     /// SAFETY:
-    /// TODO(#896): Write this safety proof before the next stable release.
+    /// `fn()` and `extern "C" fn()` self-evidently do not contain
+    /// `UnsafeCell`s. This is not a proof, but we are accepting this as a known
+    /// risk per #1358.
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => Immutable for opt_fn!(...));
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => Immutable for opt_extern_c_fn!(...));
 }
@@ -488,8 +488,10 @@ mod atomics {
             /// cannot be greater than its size [3], the only possible value for
             /// the alignment is 1. Thus, it is sound to implement `Unaligned`.
             ///
-            /// [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
-            ///     Cite docs once they've landed.
+            /// [1] Per (for example) https://doc.rust-lang.org/1.81.0/std/sync/atomic/struct.AtomicU8.html:
+            ///
+            ///   This type has the same size, alignment, and bit validity as
+            ///   the underlying integer type
             ///
             /// [2] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
             ///
@@ -830,8 +832,8 @@ safety_comment! {
 
 safety_comment! {
     /// SAFETY:
-    ///
-    /// TODO(#896): Write this safety proof before the next stable release.
+    /// `NonNull<T>` self-evidently does not contain `UnsafeCell`s. This is not
+    /// a proof, but we are accepting this as a known risk per #1358.
     unsafe_impl!(T: ?Sized => Immutable for NonNull<T>);
 }
 

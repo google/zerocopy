@@ -103,7 +103,10 @@ impl<I: invariant::Validity> ValidityVariance<I> for Invariant {
 // - Per [1], `MaybeUninit<T>` has the same size as `T`.
 // - See inline comments for other safety justifications.
 //
-// [1] TODO(#896): Write a safety proof before the next stable release.
+// [1] Per https://doc.rust-lang.org/1.81.0/std/mem/union.MaybeUninit.html#layout-1:
+//
+//   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and ABI as
+//   `T`
 unsafe impl<T, I: Invariants> TransparentWrapper<I> for MaybeUninit<T> {
     type Inner = T;
 
@@ -145,14 +148,22 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for MaybeUninit<T> {
 // - Per [1], `ManuallyDrop<T>` has the same size as `T`.
 // - See inline comments for other safety justifications.
 //
-// [1] TODO(#896): Write a safety proof before the next stable release.
+// [1] Per https://doc.rust-lang.org/1.81.0/std/mem/struct.ManuallyDrop.html:
+//
+//   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
+//   `T`
 unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for ManuallyDrop<T> {
     type Inner = T;
 
     // SAFETY: Per [1], `ManuallyDrop<T>` has `UnsafeCell`s covering the same
     // byte ranges as `Inner = T`.
     //
-    // [1] TODO(#896): Write a safety proof before the next stable release.
+    // [1] Per https://doc.rust-lang.org/1.81.0/std/mem/struct.ManuallyDrop.html:
+    //
+    //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
+    //   validity as `T`, and is subject to the same layout optimizations as
+    //   `T`. As a consequence, it has no effect on the assumptions that the
+    //   compiler makes about its contents.
     type UnsafeCellVariance = Covariant;
     // SAFETY: Per [1], `ManuallyDrop<T>` has the same layout as `T`, and thus
     // has the same alignment as `T`.
@@ -190,14 +201,22 @@ unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for ManuallyDrop<T> 
 // - Per [1], `Wrapping<T>` has the same size as `T`.
 // - See inline comments for other safety justifications.
 //
-// [1] TODO(#896): Write a safety proof before the next stable release.
+// [1] Per https://doc.rust-lang.org/1.81.0/std/num/struct.Wrapping.html#layout-1:
+//
+//   `Wrapping<T>` is guaranteed to have the same layout and ABI as `T`.
 unsafe impl<T, I: Invariants> TransparentWrapper<I> for Wrapping<T> {
     type Inner = T;
 
-    // SAFETY: Per [1], `Wrapping<T>` has `UnsafeCell`s covering the same byte
-    // ranges as `Inner = T`.
+    // SAFETY: Per [1], `Wrapping<T>` has the same layout as `T`. Since its
+    // single field (of type `T`) is public, it would be a breaking change to
+    // add or remove fields. Thus, we know that `Wrapping<T>` contains a `T` (as
+    // opposed to just having the same size and alignment as `T`) with no pre-
+    // or post-padding. Thus, `Wrapping<T>` must have `UnsafeCell`s covering the
+    // same byte ranges as `Inner = T`.
     //
-    // [1] TODO(#896): Write a safety proof before the next stable release.
+    // [1] Per https://doc.rust-lang.org/1.81.0/std/num/struct.Wrapping.html#layout-1:
+    //
+    //   `Wrapping<T>` is guaranteed to have the same layout and ABI as `T`.
     type UnsafeCellVariance = Covariant;
     // SAFETY: Per [1], `Wrapping<T>` has the same layout as `T`, and thus has
     // the same alignment as `T`.
@@ -354,8 +373,10 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
         // native counterpart, respectively. Per [1], `$atomic` and `$native`
         // have the same size.
         //
-        // [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
-        //     Cite docs once they've landed.
+        // [1] Per (for example) https://doc.rust-lang.org/1.81.0/std/sync/atomic/struct.AtomicU64.html:
+        //
+        //   This type has the same size and bit validity as the underlying
+        //   integer type
         $(#[$attr])*
         unsafe impl<$tyvar, I: crate::invariant::Invariants> crate::util::TransparentWrapper<I> for $atomic {
             unsafe_impl_transparent_wrapper_for_atomic!(@inner $atomic [$native]);
@@ -385,8 +406,10 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
         // set `type Inner = UnsafeCell<$native>`. Thus, `Self` and
         // `Self::Inner` have `UnsafeCell`s covering the same byte ranges.
         //
-        // [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
-        //     Cite docs once they've landed.
+        // [1] Per (for example) https://doc.rust-lang.org/1.81.0/std/sync/atomic/struct.AtomicU64.html:
+        //
+        //   This type has the same size and bit validity as the underlying
+        //   integer type
         type UnsafeCellVariance = crate::util::Covariant;
 
         // SAFETY: No safety justification is required for an invariant
@@ -398,8 +421,10 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
         // `$native` are an atomic type and its native counterpart,
         // respectively.
         //
-        // [1] TODO(#896), TODO(https://github.com/rust-lang/rust/pull/121943):
-        //     Cite docs once they've landed.
+        // [1] Per (for example) https://doc.rust-lang.org/1.81.0/std/sync/atomic/struct.AtomicU64.html:
+        //
+        //   This type has the same size and bit validity as the underlying
+        //   integer type
         type ValidityVariance = crate::util::Covariant;
 
         fn cast_into_inner(ptr: *mut $atomic) -> *mut UnsafeCell<$native> {
