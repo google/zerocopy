@@ -276,6 +276,15 @@ jobs:
     name: 'Run tests under Kani'
     steps:
       - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+      - run: |
+          # If Kani transitively depends on zerocopy, then we'll have zerocopy
+          # instances in our build graph - the one from crates.io, and the local
+          # one. This ensures that we always resolve unambiguously to the local
+          # one.
+          cargo generate-lockfile
+          ZC_ZEROCOPY_PKGID="$(cargo pkgid -p path+file:///home/runner/work/zerocopy/zerocopy)"
+          echo "Found that zerocopy's pkgid is $ZC_ZEROCOPY_PKGID" | tee -a $GITHUB_STEP_SUMMARY
+          echo "ZC_ZEROCOPY_PKGID=$ZC_ZEROCOPY_PKGID" >> $GITHUB_ENV
       - uses: model-checking/kani-github-action@f838096619a707b0f6b2118cf435eaccfa33e51f # v1.1
         with:
           # Use `--features __internal_use_only_features_that_work_on_stable`
@@ -288,7 +297,7 @@ jobs:
           # TODO(https://github.com/model-checking/kani-github-action/issues/56):
           # Go back to testing all features once the Kani GitHub Action supports
           # specifying a particular toolchain.
-          args: "--package zerocopy --features __internal_use_only_features_that_work_on_stable --output-format=terse --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
+          args: "--features __internal_use_only_features_that_work_on_stable --output-format=terse --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
           # This version is automatically rolled by
           # `roll-pinned-toolchain-versions.yml`.
           kani-version: 0.53.0
