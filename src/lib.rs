@@ -3702,14 +3702,15 @@ fn mut_from_prefix_suffix<T: FromBytes + KnownLayout + ?Sized>(
 /// If a type has the following properties, then this derive can implement
 /// `IntoBytes` for that type:
 ///
-/// - If the type is a struct:
-///   - It must have a defined representation (`repr(C)`, `repr(transparent)`,
-///     or `repr(packed)`).
-///   - All of its fields must be `IntoBytes`.
-///   - Its layout must have no padding. This is always true for
-///     `repr(transparent)` and `repr(packed)`. For `repr(C)`, see the layout
-///     algorithm described in the [Rust Reference].
-/// - If the type is an enum:
+/// - If the type is a struct, its fields must be [`IntoBytes`]. Additionally:
+///     - if the type is `repr(transparent)` or `repr(packed)`, it is
+///       [`IntoBytes`] if its fields are [`IntoBytes`]; else,
+///     - if the type is `repr(C)` with at most one field, it is [`IntoBytes`]
+///       if its field is [`IntoBytes`]; else,
+///     - if the type has no generic parameters, it is [`IntoBytes`] if the type
+///       is sized and has no padding bytes; else,
+///     - if the type is `repr(C)`, its fields must be [`Unaligned`].
+/// - If the type is an enum,
 ///   - It must be a C-like enum (meaning that all variants have no fields).
 ///   - It must have a defined representation (`repr`s `C`, `u8`, `u16`, `u32`,
 ///     `u64`, `usize`, `i8`, `i16`, `i32`, `i64`, or `isize`).
