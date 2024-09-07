@@ -228,7 +228,13 @@ impl<T> Unalign<T> {
     /// documented as being sound to use with an unaligned pointer, such as
     /// [`read_unaligned`].
     ///
+    /// Even if the caller is permitted to mutate `self` (e.g. they have
+    /// ownership or a mutable borrow), it is not guaranteed to be sound to
+    /// write through the returned pointer. If writing is required, prefer
+    /// [`get_mut_ptr`] instead.
+    ///
     /// [`read_unaligned`]: core::ptr::read_unaligned
+    /// [`get_mut_ptr`]: Unalign::get_mut_ptr
     #[inline(always)]
     pub const fn get_ptr(&self) -> *const T {
         ptr::addr_of!(self.0)

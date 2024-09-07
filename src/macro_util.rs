@@ -174,6 +174,7 @@ macro_rules! trailing_field_offset {
         //   allocation addressed by `ALIGNED_64K_ALLOCATION` is guaranteed to
         //   be aligned to `_64K`, so `ptr` is guaranteed to satisfy `$ty`'s
         //   alignment.
+        // - As required by `addr_of!`, we do not write through `field`.
         //
         //   Note that, as of [2], this requirement is technically unnecessary
         //   for Rust versions >= 1.75.0, but no harm in guaranteeing it anyway
