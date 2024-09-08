@@ -60,10 +60,12 @@
 //!
 //! - ([`try_`][try_transmute])[`transmute`] (conditionally) converts a value of
 //!   one type to a value of another type of the same size
-//! - [`transmute_mut`] converts a mutable reference of one type to a mutable
-//!   reference of another type of the same size
-//! - [`transmute_ref`] converts a mutable or immutable reference
-//!   of one type to an immutable reference of another type of the same size
+//! - ([`try_`][try_transmute_mut])[`transmute_mut`] (conditionally) converts a
+//!   mutable reference of one type to a mutable reference of another type of
+//!   the same size
+//! - ([`try_`][try_transmute_ref])[`transmute_ref`] (conditionally) converts a
+//!   mutable or immutable reference of one type to an immutable reference of
+//!   another type of the same size
 //!
 //! These macros perform *compile-time* alignment and size checks, but cannot be
 //! used in generic contexts. For generic conversions, use the methods defined
@@ -4750,7 +4752,7 @@ macro_rules! transmute_mut {
 /// This macro behaves like an invocation of this function:
 ///
 /// ```ignore
-/// const fn try_transmute<Src, Dst>(src: Src) -> Result<Dst, ValidityError<Src, Dst>>
+/// fn try_transmute<Src, Dst>(src: Src) -> Result<Dst, ValidityError<Src, Dst>>
 /// where
 ///     Src: IntoBytes,
 ///     Dst: TryFromBytes,
@@ -4784,10 +4786,9 @@ macro_rules! transmute_mut {
 ///
 /// // 2u8 → bool = error
 /// assert!(matches!(
-///     try_transmute!(3u8),
+///     try_transmute!(2u8),
 ///     Result::<bool, _>::Err(ValidityError { .. })
 /// ));
-///
 /// ```
 #[macro_export]
 macro_rules! try_transmute {
@@ -4810,6 +4811,221 @@ macro_rules! try_transmute {
             })
         } else {
             $crate::macro_util::try_transmute::<_, _>(e)
+        }
+    }}
+}
+
+/// Conditionally transmutes a mutable or immutable reference of one type to an
+/// immutable reference of another type of the same size.
+///
+/// This macro behaves like an invocation of this function:
+///
+/// ```ignore
+/// fn try_transmute_ref<Src, Dst>(src: &Src) -> Result<&Dst, ValidityError<&Src, &Dst>>
+/// where
+///     Src: IntoBytes + Immutable,
+///     Dst: TryFromBytes + Immutable,
+///     size_of::<Src>() == size_of::<Dst>(),
+///     align_of::<Src>() >= align_of::<Dst>(),
+/// {
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// However, unlike a function, this macro can only be invoked when the types of
+/// `Src` and `Dst` are completely concrete. The types `Src` and `Dst` are
+/// inferred from the calling context; they cannot be explicitly specified in
+/// the macro invocation.
+///
+/// # Examples
+///
+/// ```
+/// # use zerocopy::*;
+/// // 0u8 → bool = false
+/// assert_eq!(try_transmute_ref!(&0u8), Ok(&false));
+///
+/// // 1u8 → bool = true
+///  assert_eq!(try_transmute_ref!(&1u8), Ok(&true));
+///
+/// // 2u8 → bool = error
+/// assert!(matches!(
+///     try_transmute_ref!(&2u8),
+///     Result::<&bool, _>::Err(ValidityError { .. })
+/// ));
+/// ```
+///
+/// # Alignment increase error message
+///
+/// Because of limitations on macros, the error message generated when
+/// `try_transmute_ref!` is used to transmute from a type of lower alignment to
+/// a type of higher alignment is somewhat confusing. For example, the following
+/// code:
+///
+/// ```compile_fail
+/// let increase_alignment: Result<&u16, _> = zerocopy::try_transmute_ref!(&[0u8; 2]);
+/// ```
+///
+/// ...generates the following error:
+///
+/// ```text
+/// error[E0512]: cannot transmute between types of different sizes, or dependently-sized types
+///  --> example.rs:1:47
+///   |
+/// 1 |     let increase_alignment: Result<&u16, _> = zerocopy::try_transmute_ref!(&[0u8; 2]);
+///   |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+///   |
+///   = note: source type: `AlignOf<[u8; 2]>` (8 bits)
+///   = note: target type: `MaxAlignsOf<[u8; 2], u16>` (16 bits)
+///   = note: this error originates in the macro `$crate::assert_align_gt_eq` which comes from the expansion of the macro `zerocopy::try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)/// ```
+/// ```
+///
+/// This is saying that `max(align_of::<T>(), align_of::<U>()) !=
+/// align_of::<T>()`, which is equivalent to `align_of::<T>() <
+/// align_of::<U>()`.
+#[macro_export]
+macro_rules! try_transmute_ref {
+    ($e:expr) => {{
+        // NOTE: This must be a macro (rather than a function with trait bounds)
+        // because there's no way, in a generic context, to enforce that two
+        // types have the same size. `core::mem::transmute` uses compiler magic
+        // to enforce this so long as the types are concrete.
+
+        // Ensure that the source type is a reference or a mutable reference
+        // (note that mutable references are implicitly reborrowed here).
+        let e: &_ = $e;
+
+        #[allow(unreachable_code, unused, clippy::diverging_sub_expression)]
+        if false {
+            // This branch, though never taken, ensures that `size_of::<T>() ==
+            // size_of::<U>()` and that that `align_of::<T>() >=
+            // align_of::<U>()`.
+
+            // `t` is inferred to have type `T` because it's assigned to `e` (of
+            // type `&T`) as `&t`.
+            let mut t = loop {};
+            e = &t;
+
+            // `u` is inferred to have type `U` because it's used as `Ok(&u)` as
+            // the value returned from this branch.
+            let u;
+
+            $crate::assert_size_eq!(t, u);
+            $crate::assert_align_gt_eq!(t, u);
+
+            Ok(&u)
+        } else {
+            $crate::macro_util::try_transmute_ref::<_, _>(e)
+        }
+    }}
+}
+
+/// Conditionally transmutes a mutable reference of one type to a mutable
+/// reference of another type of the same size.
+///
+/// This macro behaves like an invocation of this function:
+///
+/// ```ignore
+/// fn try_transmute_mut<Src, Dst>(src: &mut Src) -> Result<&mut Dst, ValidityError<&mut Src, &mut Dst>>
+/// where
+///     Src: IntoBytes,
+///     Dst: TryFromBytes,
+///     size_of::<Src>() == size_of::<Dst>(),
+///     align_of::<Src>() >= align_of::<Dst>(),
+/// {
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// However, unlike a function, this macro can only be invoked when the types of
+/// `Src` and `Dst` are completely concrete. The types `Src` and `Dst` are
+/// inferred from the calling context; they cannot be explicitly specified in
+/// the macro invocation.
+///
+/// # Examples
+///
+/// ```
+/// # use zerocopy::*;
+/// // 0u8 → bool = false
+/// let src = &mut 0u8;
+/// assert_eq!(try_transmute_mut!(src), Ok(&mut false));
+///
+/// // 1u8 → bool = true
+/// let src = &mut 1u8;
+///  assert_eq!(try_transmute_mut!(src), Ok(&mut true));
+///
+/// // 2u8 → bool = error
+/// let src = &mut 2u8;
+/// assert!(matches!(
+///     try_transmute_mut!(src),
+///     Result::<&mut bool, _>::Err(ValidityError { .. })
+/// ));
+/// ```
+///
+/// # Alignment increase error message
+///
+/// Because of limitations on macros, the error message generated when
+/// `try_transmute_ref!` is used to transmute from a type of lower alignment to
+/// a type of higher alignment is somewhat confusing. For example, the following
+/// code:
+///
+/// ```compile_fail
+/// let src = &mut [0u8; 2];
+/// let increase_alignment: Result<&mut u16, _> = zerocopy::try_transmute_mut!(src);
+/// ```
+///
+/// ...generates the following error:
+///
+/// ```text
+/// error[E0512]: cannot transmute between types of different sizes, or dependently-sized types
+///  --> example.rs:2:51
+///   |
+/// 2 |     let increase_alignment: Result<&mut u16, _> = zerocopy::try_transmute_mut!(src);
+///   |                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+///   |
+///   = note: source type: `AlignOf<[u8; 2]>` (8 bits)
+///   = note: target type: `MaxAlignsOf<[u8; 2], u16>` (16 bits)
+///   = note: this error originates in the macro `$crate::assert_align_gt_eq` which comes from the expansion of the macro `zerocopy::try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+/// ```
+///
+/// This is saying that `max(align_of::<T>(), align_of::<U>()) !=
+/// align_of::<T>()`, which is equivalent to `align_of::<T>() <
+/// align_of::<U>()`.
+#[macro_export]
+macro_rules! try_transmute_mut {
+    ($e:expr) => {{
+        // NOTE: This must be a macro (rather than a function with trait bounds)
+        // because there's no way, in a generic context, to enforce that two
+        // types have the same size. `core::mem::transmute` uses compiler magic
+        // to enforce this so long as the types are concrete.
+
+        // Ensure that the source type is a mutable reference.
+        let e: &mut _ = $e;
+
+        #[allow(unreachable_code, unused, clippy::diverging_sub_expression)]
+        if false {
+            // This branch, though never taken, ensures that `size_of::<T>() ==
+            // size_of::<U>()` and that that `align_of::<T>() >=
+            // align_of::<U>()`.
+
+            // `t` is inferred to have type `T` because it's assigned to `e` (of
+            // type `&mut T`) as `&mut t`.
+            let mut t = loop {};
+            e = &mut t;
+
+            // `u` is inferred to have type `U` because it's used as `Ok(&mut
+            // u)` as the value returned from this branch.
+            let u;
+
+            $crate::assert_size_eq!(t, u);
+            $crate::assert_align_gt_eq!(t, u);
+
+            Ok(&mut u)
+        } else {
+            $crate::macro_util::try_transmute_mut::<_, _>(e)
         }
     }}
 }
@@ -5773,6 +5989,71 @@ mod tests {
         // its `PanicOnDrop` temporary, which would cause a panic.
         assert_eq!(y.as_ref().map_err(|p| &p.src.0), Err::<&bool, _>(&2u8));
         mem::forget(y);
+    }
+
+    #[test]
+    fn test_try_transmute_ref() {
+        // Test that memory is transmuted with `try_transmute_ref` as expected.
+        let array_of_bools = &[false, true, false, true, false, true, false, true];
+        let array_of_arrays = &[[0, 1], [0, 1], [0, 1], [0, 1]];
+        let x: Result<&[[u8; 2]; 4], _> = try_transmute_ref!(array_of_bools);
+        assert_eq!(x, Ok(array_of_arrays));
+        let x: Result<&[bool; 8], _> = try_transmute_ref!(array_of_arrays);
+        assert_eq!(x, Ok(array_of_bools));
+
+        // Test that it's legal to transmute a reference while shrinking the
+        // lifetime.
+        {
+            let x: Result<&[[u8; 2]; 4], _> = try_transmute_ref!(array_of_bools);
+            assert_eq!(x, Ok(array_of_arrays));
+        }
+
+        // Test that `try_transmute_ref!` supports decreasing alignment.
+        let u = AU64(0);
+        let array = [0u8, 0, 0, 0, 0, 0, 0, 0];
+        let x: Result<&[u8; 8], _> = try_transmute_ref!(&u);
+        assert_eq!(x, Ok(&array));
+
+        // Test that a mutable reference can be turned into an immutable one.
+        let mut x = 0u8;
+        #[allow(clippy::useless_transmute)]
+        let y: Result<&u8, _> = try_transmute_ref!(&mut x);
+        assert_eq!(y, Ok(&0));
+    }
+
+    #[test]
+    fn test_try_transmute_mut() {
+        // Test that memory is transmuted with `try_transmute_mut` as expected.
+        let array_of_bools = &mut [false, true, false, true, false, true, false, true];
+        let array_of_arrays = &mut [[0u8, 1], [0, 1], [0, 1], [0, 1]];
+        let x: Result<&mut [[u8; 2]; 4], _> = try_transmute_mut!(array_of_bools);
+        assert_eq!(x, Ok(array_of_arrays));
+
+        let array_of_bools = &mut [false, true, false, true, false, true, false, true];
+        let array_of_arrays = &mut [[0u8, 1], [0, 1], [0, 1], [0, 1]];
+        let x: Result<&mut [bool; 8], _> = try_transmute_mut!(array_of_arrays);
+        assert_eq!(x, Ok(array_of_bools));
+
+        // Test that it's legal to transmute a reference while shrinking the
+        // lifetime.
+        let array_of_bools = &mut [false, true, false, true, false, true, false, true];
+        let array_of_arrays = &mut [[0u8, 1], [0, 1], [0, 1], [0, 1]];
+        {
+            let x: Result<&mut [[u8; 2]; 4], _> = try_transmute_mut!(array_of_bools);
+            assert_eq!(x, Ok(array_of_arrays));
+        }
+
+        // Test that `try_transmute_mut!` supports decreasing alignment.
+        let u = &mut AU64(0);
+        let array = &mut [0u8, 0, 0, 0, 0, 0, 0, 0];
+        let x: Result<&mut [u8; 8], _> = try_transmute_mut!(u);
+        assert_eq!(x, Ok(array));
+
+        // Test that a mutable reference can be turned into an immutable one.
+        let mut x = 0u8;
+        #[allow(clippy::useless_transmute)]
+        let y: Result<&mut u8, _> = try_transmute_mut!(&mut x);
+        assert_eq!(y, Ok(&mut 0));
     }
 
     #[test]

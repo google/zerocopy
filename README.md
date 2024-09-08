@@ -60,10 +60,12 @@ Zerocopy provides four macros for safe, zero-cost casting between types:
 
 - (`try_`[try_transmute])`transmute` (conditionally) converts a value of
   one type to a value of another type of the same size
-- `transmute_mut` converts a mutable reference of one type to a mutable
-  reference of another type of the same size
-- `transmute_ref` converts a mutable or immutable reference
-  of one type to an immutable reference of another type of the same size
+- (`try_`[try_transmute_mut])`transmute_mut` (conditionally) converts a
+  mutable reference of one type to a mutable reference of another type of
+  the same size
+- (`try_`[try_transmute_ref])`transmute_ref` (conditionally) converts a
+  mutable or immutable reference of one type to an immutable reference of
+  another type of the same size
 
 These macros perform *compile-time* alignment and size checks, but cannot be
 used in generic contexts. For generic conversions, use the methods defined

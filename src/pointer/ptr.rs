@@ -726,7 +726,7 @@ mod _transitions {
 
         /// Helps the type system unify two distinct invariant types which are
         /// actually the same.
-        pub(super) fn unify_invariants<
+        pub(crate) fn unify_invariants<
             H: Invariants<Aliasing = I::Aliasing, Alignment = I::Alignment, Validity = I::Validity>,
         >(
             self,
