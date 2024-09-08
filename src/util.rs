@@ -110,10 +110,19 @@ impl<I: invariant::Validity> ValidityVariance<I> for Invariant {
 unsafe impl<T, I: Invariants> TransparentWrapper<I> for MaybeUninit<T> {
     type Inner = T;
 
-    // SAFETY: Per [1], `MaybeUninit<T>` has `UnsafeCell`s covering the same
-    // byte ranges as `Inner = T`.
+    // SAFETY: `MaybeUninit<T>` has `UnsafeCell`s covering the same byte ranges
+    // as `Inner = T`. This is not explicitly documented, but it can be
+    // inferred. Per [1] in the preceding safety comment, `MaybeUninit<T>` has
+    // the same size as `T`. Further, note the signature of
+    // `MaybeUninit::assume_init_ref` [2]:
     //
-    // [1] TODO(#896): Write a safety proof before the next stable release.
+    //   pub unsafe fn assume_init_ref(&self) -> &T
+    //
+    // If the argument `&MaybeUninit<T>` and the returned `&T` had `UnsafeCell`s
+    // at different offsets, this would be unsound. Its existence is proof that
+    // this is not the case.
+    //
+    // [2] https://doc.rust-lang.org/1.81.0/std/mem/union.MaybeUninit.html#method.assume_init_ref
     type UnsafeCellVariance = Covariant;
     // SAFETY: Per [1], `MaybeUninit<T>` has the same layout as `T`, and thus
     // has the same alignment as `T`.
@@ -261,7 +270,7 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Wrapping<T> {
 // - Per [1], `UnsafeCell<T>` has the same size as `T`.
 // - See inline comments for other safety justifications.
 //
-// [1] Per https://doc.rust-lang.org/core/cell/struct.UnsafeCell.html#memory-layout:
+// [1] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout:
 //
 //   `UnsafeCell<T>` has the same in-memory representation as its inner type
 //   `T`.
@@ -280,7 +289,7 @@ unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for UnsafeCell<T> {
     // subsequent sentence in the documentation makes it clear that this is the
     // intention.
     //
-    // [1] Per https://doc.rust-lang.org/std/cell/struct.UnsafeCell.html#memory-layout:
+    // [1] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout:
     //
     //   `UnsafeCell<T>` has the same in-memory representation as its inner type
     //   `T`. A consequence of this guarantee is that it is possible to convert
