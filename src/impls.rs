@@ -643,17 +643,14 @@ impl_for_transparent_wrapper!(T: ?Sized + IntoBytes => IntoBytes for ManuallyDro
 impl_for_transparent_wrapper!(T: ?Sized + Unaligned => Unaligned for ManuallyDrop<T>);
 assert_unaligned!(ManuallyDrop<()>, ManuallyDrop<u8>);
 
-// TODO(#5): Implement `FromZeros` and `FromBytes` when `T: ?Sized`.
-impl_for_transparent_wrapper!(T: FromZeros => FromZeros for UnsafeCell<T>);
-impl_for_transparent_wrapper!(T: FromBytes => FromBytes for UnsafeCell<T>);
+impl_for_transparent_wrapper!(T: ?Sized + FromZeros => FromZeros for UnsafeCell<T>);
+impl_for_transparent_wrapper!(T: ?Sized + FromBytes => FromBytes for UnsafeCell<T>);
 impl_for_transparent_wrapper!(T: ?Sized + IntoBytes => IntoBytes for UnsafeCell<T>);
 impl_for_transparent_wrapper!(T: ?Sized + Unaligned => Unaligned for UnsafeCell<T>);
 assert_unaligned!(UnsafeCell<()>, UnsafeCell<u8>);
 
 // SAFETY: See safety comment in `is_bit_valid` impl.
-//
-// TODO(#5): Try to add `T: ?Sized` bound.
-unsafe impl<T: TryFromBytes> TryFromBytes for UnsafeCell<T> {
+unsafe impl<T: TryFromBytes + ?Sized> TryFromBytes for UnsafeCell<T> {
     #[allow(clippy::missing_inline_in_public_items)]
     fn only_derive_is_allowed_to_implement_this_trait()
     where
@@ -682,56 +679,11 @@ unsafe impl<T: TryFromBytes> TryFromBytes for UnsafeCell<T> {
         // chance to fix it quickly.
         let c = candidate.into_exclusive_or_post_monomorphization_error();
 
-        // We wrap in `Unalign` here so that we can get a vanilla Rust reference
-        // below, which in turn allows us to call `UnsafeCell::get_mut`.
-        //
-        // SAFETY:
-        // - `.cast` preserves address. `Unalign` and `MaybeUninit` both have
-        //   the same size as the types they wrap [1]. Thus, this cast will
-        //   preserve the size of the pointer. As a result, the cast will
-        //   address the same bytes as `c`.
-        // - `.cast` preserves provenance.
-        // - Since both the source and destination types are wrapped in
-        //   `UnsafeCell`, all bytes of both types are inside of `UnsafeCell`s,
-        //   and so the byte ranges covered by `UnsafeCell`s are identical in
-        //   both types. Since the pointers refer to the same byte ranges,
-        //   the same is true of the pointers' referents as well.
-        //
-        // [1] Per https://doc.rust-lang.org/stable/core/mem/union.MaybeUninit.html#layout-1:
-        //
-        //   MaybeUninit<T> is guaranteed to have the same size, alignment, and
-        //   ABI as T.
-        let c = unsafe {
-            c.cast_unsized(|c: *mut UnsafeCell<T>| c.cast::<UnsafeCell<Unalign<MaybeUninit<T>>>>())
-        };
-        // SAFETY: `MaybeUninit` has no validity requirements.
-        let c = unsafe { c.assume_valid() };
-        let c = c.bikeshed_recall_aligned();
-        // This is the crucial step at which we use `UnsafeCell::get_mut` to go
-        // from `UnsafeCell<U>` to `U` (where `U = Unalign<MaybeUninit<T>>`).
-        // Now that we've gotten rid of the `UnsafeCell`, we can delegate to
-        // `T::is_bit_valid`.
-        let c: &mut Unalign<MaybeUninit<T>> = c.as_mut().get_mut();
-        // This converts from an aligned `Unalign<MaybeUninit<T>>` pointer to an
-        // unaligned `MaybeUninit<T>` pointer.
-        let c: Ptr<'_, MaybeUninit<T>, _> = Ptr::from_mut(c).transparent_wrapper_into_inner();
-        let c: Ptr<'_, T, _> = c.transparent_wrapper_into_inner();
-
-        // SAFETY: The original `candidate` argument has `Initialized` validity.
-        // None of the subsequent operations modify the memory itself, and so
-        // that guarantee is still upheld.
-        let c = unsafe { c.assume_initialized() };
-        // Confirm that `Maybe` is a type alias for `Ptr` with the validity
-        // invariant `Initialized`. Our safety proof depends upon this
-        // invariant, and it might change at some point. If that happens, we
-        // want this function to stop compiling.
-        let _: Ptr<'_, UnsafeCell<T>, (_, _, invariant::Initialized)> = candidate;
-
         // SAFETY: Since `UnsafeCell<T>` and `T` have the same layout and bit
         // validity, `UnsafeCell<T>` is bit-valid exactly when its wrapped `T`
         // is. Thus, this is a sound implementation of
         // `UnsafeCell::is_bit_valid`.
-        T::is_bit_valid(c.forget_exclusive())
+        T::is_bit_valid(c.get_mut())
     }
 }
 

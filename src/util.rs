@@ -261,7 +261,7 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Wrapping<T> {
 // - Per [1], `UnsafeCell<T>` has the same size as `T`.
 // - See inline comments for other safety justifications.
 //
-// [1] Per https://doc.rust-lang.org/core/cell/struct.UnsafeCell.html#memory-layout:
+// [1] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout:
 //
 //   `UnsafeCell<T>` has the same in-memory representation as its inner type
 //   `T`.
