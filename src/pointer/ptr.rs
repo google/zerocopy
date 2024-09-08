@@ -717,11 +717,23 @@ mod _transitions {
         /// # Safety
         ///
         /// The caller promises that `self` satisfies the invariants `H`.
-        pub(super) unsafe fn assume_invariants<H: Invariants>(self) -> Ptr<'a, T, H> {
+        unsafe fn assume_invariants<H: Invariants>(self) -> Ptr<'a, T, H> {
             // SAFETY: The caller has promised to satisfy all parameterized
             // invariants of `Ptr`. `Ptr`'s other invariants are satisfied
             // by-contract by the source `Ptr`.
             unsafe { Ptr::new(self.as_non_null()) }
+        }
+
+        /// Helps the type system unify two distinct invariant types which are
+        /// actually the same.
+        pub(super) fn unify_invariants<
+            H: Invariants<Aliasing = I::Aliasing, Alignment = I::Alignment, Validity = I::Validity>,
+        >(
+            self,
+        ) -> Ptr<'a, T, H> {
+            // SAFETY: The associated type bounds on `H` ensure that the
+            // invariants are unchanged.
+            unsafe { self.assume_invariants::<H>() }
         }
 
         /// Assumes that `self` satisfies the aliasing requirement of `A`.
@@ -1288,20 +1300,74 @@ mod _casts {
                     } else {
                         // Undo the cast so we can return the original bytes.
                         let slf = slf.as_bytes();
-                        // Restore the initial invariants of `self`.
+                        // Restore the initial alignment invariant of `self`.
                         //
                         // SAFETY: The referent type of `slf` is now equal to
-                        // that of `self`, but the invariants nominally differ.
-                        // Since `slf` and `self` refer to the same memory and
-                        // no actions have been taken that would violate the
-                        // original invariants on `self`, it is sound to apply
-                        // the invariants of `self` onto `slf`.
-                        let slf = unsafe { slf.assume_invariants() };
+                        // that of `self`, but the alignment invariants
+                        // nominally differ. Since `slf` and `self` refer to the
+                        // same memory and no actions have been taken that would
+                        // violate the original invariants on `self`, it is
+                        // sound to apply the alignment invariant of `self` onto
+                        // `slf`.
+                        let slf = unsafe { slf.assume_alignment::<I::Alignment>() };
+                        let slf = slf.unify_invariants();
                         Err(CastError::Size(SizeError::<_, U>::new(slf)))
                     }
                 }
                 Err(err) => Err(err),
             }
+        }
+    }
+
+    impl<'a, T, I> Ptr<'a, core::cell::UnsafeCell<T>, I>
+    where
+        T: 'a + ?Sized,
+        I: Invariants<Aliasing = Exclusive>,
+    {
+        /// Converts this `Ptr` into a pointer to the underlying data.
+        ///
+        /// This call borrows the `UnsafeCell` mutably (at compile-time) which
+        /// guarantees that we possess the only reference.
+        ///
+        /// This is like [`UnsafeCell::get_mut`], but for `Ptr`.
+        ///
+        /// [`UnsafeCell::get_mut`]: core::cell::UnsafeCell::get_mut
+        #[must_use]
+        #[inline(always)]
+        pub fn get_mut(self) -> Ptr<'a, T, I> {
+            // SAFETY:
+            // - The closure uses an `as` cast, which preserves address range
+            //   and provenance.
+            // - We require `I: Invariants<Aliasing = Exclusive>`, so we are not
+            //   required to uphold `UnsafeCell` equality.
+            #[allow(clippy::as_conversions)]
+            let ptr = unsafe { self.cast_unsized(|p| p as *mut T) };
+
+            // SAFETY: `UnsafeCell<T>` has the same alignment as `T` [1],
+            // and so if `self` is guaranteed to be aligned, then so is the
+            // returned `Ptr`.
+            //
+            // [1] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout:
+            //
+            //   `UnsafeCell<T>` has the same in-memory representation as
+            //   its inner type `T`. A consequence of this guarantee is that
+            //   it is possible to convert between `T` and `UnsafeCell<T>`.
+            let ptr = unsafe { ptr.assume_alignment::<I::Alignment>() };
+
+            // SAFETY: `UnsafeCell<T>` has the same bit validity as `T` [1], and
+            // so if `self` has a particular validity invariant, then the same
+            // holds of the returned `Ptr`. Technically the term
+            // "representation" doesn't guarantee this, but the subsequent
+            // sentence in the documentation makes it clear that this is the
+            // intention.
+            //
+            // [1] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout:
+            //
+            //   `UnsafeCell<T>` has the same in-memory representation as its
+            //   inner type `T`. A consequence of this guarantee is that it is
+            //   possible to convert between `T` and `UnsafeCell<T>`.
+            let ptr = unsafe { ptr.assume_validity::<I::Validity>() };
+            ptr.unify_invariants()
         }
     }
 }
@@ -1467,16 +1533,17 @@ mod _project {
             // its (inclusive) lower bound. Thus, no index is a member of both
             // ranges.
 
-            // SAFETY: We never change invariants other than aliasing.
-            //
-            // By the preceding lemma, `left` and `right` do not alias. We do
-            // not construct any other `Ptr`s or references which alias `left`
-            // or `right`. Thus, the only `Ptr`s or references which alias
-            // `left` or `right` are outside of this method. By invariant,
+            // SAFETY: By the preceding lemma, `left` and `right` do not alias.
+            // We do not construct any other `Ptr`s or references which alias
+            // `left` or `right`. Thus, the only `Ptr`s or references which
+            // alias `left` or `right` are outside of this method. By invariant,
             // `self` obeys the aliasing invariant `I::Aliasing` with respect to
             // those other `Ptr`s or references, and so `left` and `right` do as
             // well.
-            unsafe { (left.assume_invariants::<I>(), right.assume_invariants::<I>()) }
+            let (left, right) = unsafe {
+                (left.assume_aliasing::<I::Aliasing>(), right.assume_aliasing::<I::Aliasing>())
+            };
+            (left.unify_invariants(), right.unify_invariants())
         }
 
         /// Iteratively projects the elements `Ptr<T>` from `Ptr<[T]>`.
