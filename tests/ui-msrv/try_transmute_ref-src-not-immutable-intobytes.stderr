@@ -5,7 +5,7 @@ error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::IntoBytes` is not sa
    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy<AU16>`
    |
 note: required by a bound in `try_transmute_ref`
-  --> src/macro_util.rs
+  --> src/util/macro_util.rs
    |
    |     Src: IntoBytes + Immutable,
    |          ^^^^^^^^^ required by this bound in `try_transmute_ref`
@@ -18,7 +18,7 @@ error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::Immutable` is not sa
    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected an implementor of trait `zerocopy::Immutable`
    |
 note: required by a bound in `try_transmute_ref`
-  --> src/macro_util.rs
+  --> src/util/macro_util.rs
    |
    |     Src: IntoBytes + Immutable,
    |                      ^^^^^^^^^ required by this bound in `try_transmute_ref`

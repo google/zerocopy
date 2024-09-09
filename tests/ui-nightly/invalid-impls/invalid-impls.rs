@@ -12,7 +12,7 @@
 extern crate zerocopy;
 extern crate zerocopy_derive;
 
-include!("../../../src/macros.rs");
+include!("../../../src/util/macros.rs");
 
 use zerocopy::*;
 use zerocopy_derive::*;

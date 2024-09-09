@@ -10,8 +10,8 @@
 // particular:
 // - Some tests directly include `zerocopy-derive/tests/include.rs`, which
 //   derives traits on the `AU16` type.
-// - The file `invalid-impls.rs` directly includes `src/macros.rs` in order to
-//   test the `impl_or_verify!` macro which is defined in that file.
+// - The file `invalid-impls.rs` directly includes `src/util/macros.rs` in order
+//   to test the `impl_or_verify!` macro which is defined in that file.
 //   Specifically, it tests the verification portion of that macro, which is
 //   enabled when `cfg(any(feature = "derive", test))`. While `--cfg test` is of
 //   course passed to the code in the file you're reading right now, `trybuild`
