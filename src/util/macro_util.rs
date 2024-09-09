@@ -131,10 +131,10 @@ macro_rules! trailing_field_offset {
     ($ty:ty, $trailing_field_name:tt) => {{
         let min_size = {
             let zero_elems: *const [()] =
-                $crate::macro_util::core_reexport::ptr::slice_from_raw_parts(
+                $crate::util::macro_util::core_reexport::ptr::slice_from_raw_parts(
                     // Work around https://github.com/rust-lang/rust-clippy/issues/12280
                     #[allow(clippy::incompatible_msrv)]
-                    $crate::macro_util::core_reexport::ptr::NonNull::<()>::dangling()
+                    $crate::util::macro_util::core_reexport::ptr::NonNull::<()>::dangling()
                         .as_ptr()
                         .cast_const(),
                     0,
@@ -153,7 +153,9 @@ macro_rules! trailing_field_offset {
             // [1] https://doc.rust-lang.org/nightly/std/mem/fn.size_of_val_raw.html
             unsafe {
                 #[allow(clippy::as_conversions)]
-                $crate::macro_util::core_reexport::mem::size_of_val_raw(zero_elems as *const $ty)
+                $crate::util::macro_util::core_reexport::mem::size_of_val_raw(
+                    zero_elems as *const $ty,
+                )
             }
         };
 
@@ -186,7 +188,7 @@ macro_rules! trailing_field_offset {
         //
         // [2] https://github.com/rust-lang/reference/pull/1387
         let field = unsafe {
-            $crate::macro_util::core_reexport::ptr::addr_of!((*ptr).$trailing_field_name)
+            $crate::util::macro_util::core_reexport::ptr::addr_of!((*ptr).$trailing_field_name)
         };
         // SAFETY:
         // - Both `ptr` and `field` are derived from the same allocated object.
@@ -262,7 +264,7 @@ macro_rules! align_of {
 /// `$ts` is the list of the type of every field in `$t`. `$t` must be a
 /// struct type, or else `struct_has_padding!`'s result may be meaningless.
 ///
-/// Note that `struct_has_padding!`'s results are independent of `repr` since
+/// Note that `struct_has_padding!`'s results are independent of `repcr` since
 /// they only consider the size of the type and the sizes of the fields.
 /// Whatever the repr, the size of the type already takes into account any
 /// padding that the compiler has decided to add. Structs with well-defined
@@ -273,7 +275,7 @@ macro_rules! align_of {
 #[macro_export]
 macro_rules! struct_has_padding {
     ($t:ty, $($ts:ty),*) => {
-        ::zerocopy::macro_util::core_reexport::mem::size_of::<$t>() > 0 $(+ ::zerocopy::macro_util::core_reexport::mem::size_of::<$ts>())*
+        ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$t>() > 0 $(+ ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$ts>())*
     };
 }
 
@@ -293,7 +295,7 @@ macro_rules! struct_has_padding {
 #[macro_export]
 macro_rules! union_has_padding {
     ($t:ty, $($ts:ty),*) => {
-        false $(|| ::zerocopy::macro_util::core_reexport::mem::size_of::<$t>() != ::zerocopy::macro_util::core_reexport::mem::size_of::<$ts>())*
+        false $(|| ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$t>() != ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$ts>())*
     };
 }
 
@@ -309,11 +311,11 @@ macro_rules! assert_align_gt_eq {
         if false {
             // The type wildcard in this bound is inferred to be `T` because
             // `align_of.into_t()` is assigned to `t` (which has type `T`).
-            let align_of: $crate::macro_util::AlignOf<_> = unreachable!();
+            let align_of: $crate::util::macro_util::AlignOf<_> = unreachable!();
             $t = align_of.into_t();
             // `max_aligns` is inferred to have type `MaxAlignsOf<T, U>` because
             // of the inferred types of `t` and `u`.
-            let mut max_aligns = $crate::macro_util::MaxAlignsOf::new($t, $u);
+            let mut max_aligns = $crate::util::macro_util::MaxAlignsOf::new($t, $u);
 
             // This transmute will only compile successfully if
             // `align_of::<T>() == max(align_of::<T>(), align_of::<U>())` - in
@@ -324,7 +326,7 @@ macro_rules! assert_align_gt_eq {
                 // Clippy: We can't annotate the types; this macro is designed
                 // to infer the types from the calling context.
                 #[allow(clippy::missing_transmute_annotations)]
-                $crate::macro_util::core_reexport::mem::transmute(align_of)
+                $crate::util::macro_util::core_reexport::mem::transmute(align_of)
             };
         } else {
             loop {}
@@ -349,7 +351,7 @@ macro_rules! assert_size_eq {
                 // - We can't annotate the types; this macro is designed to
                 //   infer the types from the calling context.
                 #[allow(clippy::useless_transmute, clippy::missing_transmute_annotations)]
-                $crate::macro_util::core_reexport::mem::transmute($t)
+                $crate::util::macro_util::core_reexport::mem::transmute($t)
             };
         } else {
             loop {}

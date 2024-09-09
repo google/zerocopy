@@ -296,10 +296,9 @@
 #[cfg(any(feature = "derive", test))]
 extern crate self as zerocopy;
 
+#[doc(hidden)]
 #[macro_use]
-mod macros;
-#[macro_use]
-mod util;
+pub mod util;
 
 pub mod byte_slice;
 pub mod byteorder;
@@ -312,8 +311,6 @@ pub mod error;
 mod impls;
 #[doc(hidden)]
 pub mod layout;
-#[doc(hidden)]
-pub mod macro_util;
 #[doc(hidden)]
 pub mod pointer;
 mod r#ref;
@@ -4443,9 +4440,9 @@ macro_rules! transmute {
                 // - We can't annotate the types; this macro is designed to
                 //   infer the types from the calling context.
                 #[allow(clippy::useless_transmute, clippy::missing_transmute_annotations)]
-                $crate::macro_util::core_reexport::mem::transmute(e)
+                $crate::util::macro_util::core_reexport::mem::transmute(e)
             };
-            $crate::macro_util::must_use(u)
+            $crate::util::macro_util::must_use(u)
         }
     }}
 }
@@ -4588,8 +4585,8 @@ macro_rules! transmute_ref {
             //   the use of `assert_size_eq!` above.
             // - We know that `align_of::<Src>() >= align_of::<Dst>()` thanks to
             //   the use of `assert_align_gt_eq!` above.
-            let u = unsafe { $crate::macro_util::transmute_ref(e) };
-            $crate::macro_util::must_use(u)
+            let u = unsafe { $crate::util::macro_util::transmute_ref(e) };
+            $crate::util::macro_util::must_use(u)
         }
     }}
 }
@@ -4740,8 +4737,8 @@ macro_rules! transmute_mut {
             //   the use of `assert_size_eq!` above.
             // - We know that `align_of::<Src>() >= align_of::<Dst>()` thanks to
             //   the use of `assert_align_gt_eq!` above.
-            let u = unsafe { $crate::macro_util::transmute_mut(e) };
-            $crate::macro_util::must_use(u)
+            let u = unsafe { $crate::util::macro_util::transmute_mut(e) };
+            $crate::util::macro_util::must_use(u)
         }
     }}
 }
@@ -4807,10 +4804,10 @@ macro_rules! try_transmute {
             Ok(unsafe {
                 // Clippy: It's okay to transmute a type to itself.
                 #[allow(clippy::useless_transmute, clippy::missing_transmute_annotations)]
-                $crate::macro_util::core_reexport::mem::transmute(e)
+                $crate::util::macro_util::core_reexport::mem::transmute(e)
             })
         } else {
-            $crate::macro_util::try_transmute::<_, _>(e)
+            $crate::util::macro_util::try_transmute::<_, _>(e)
         }
     }}
 }
@@ -4916,7 +4913,7 @@ macro_rules! try_transmute_ref {
 
             Ok(&u)
         } else {
-            $crate::macro_util::try_transmute_ref::<_, _>(e)
+            $crate::util::macro_util::try_transmute_ref::<_, _>(e)
         }
     }}
 }
@@ -5025,7 +5022,7 @@ macro_rules! try_transmute_mut {
 
             Ok(&mut u)
         } else {
-            $crate::macro_util::try_transmute_mut::<_, _>(e)
+            $crate::util::macro_util::try_transmute_mut::<_, _>(e)
         }
     }}
 }

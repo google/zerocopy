@@ -92,7 +92,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    |
    = help: the trait `Sized` is not implemented for `[u8]`
 note: required by a bound in `AlignOf`
-  --> src/macro_util.rs
+  --> src/util/macro_util.rs
    |
    | pub struct AlignOf<T> {
    |                    ^ required by this bound in `AlignOf`
@@ -106,7 +106,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    |
    = help: the trait `Sized` is not implemented for `[u8]`
 note: required by `MaxAlignsOf::<T, U>::new`
-  --> src/macro_util.rs
+  --> src/util/macro_util.rs
    |
    |     pub fn new(_t: T, _u: U) -> MaxAlignsOf<T, U> {
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -120,7 +120,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    |
    = help: the trait `Sized` is not implemented for `[u8]`
 note: required by a bound in `MaxAlignsOf`
-  --> src/macro_util.rs
+  --> src/util/macro_util.rs
    |
    | pub union MaxAlignsOf<T, U> {
    |                       ^ required by this bound in `MaxAlignsOf`
@@ -134,7 +134,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    |
    = help: the trait `Sized` is not implemented for `[u8]`
 note: required by a bound in `MaxAlignsOf`
-  --> src/macro_util.rs
+  --> src/util/macro_util.rs
    |
    | pub union MaxAlignsOf<T, U> {
    |                       ^ required by this bound in `MaxAlignsOf`
@@ -148,7 +148,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    |
    = help: the trait `Sized` is not implemented for `[u8]`
 note: required by a bound in `AlignOf`
-  --> src/macro_util.rs
+  --> src/util/macro_util.rs
    |
    | pub struct AlignOf<T> {
    |                    ^ required by this bound in `AlignOf`
@@ -162,7 +162,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    |
    = help: the trait `Sized` is not implemented for `[u8]`
 note: required by a bound in `MaxAlignsOf`
-  --> src/macro_util.rs
+  --> src/util/macro_util.rs
    |
    | pub union MaxAlignsOf<T, U> {
    |                       ^ required by this bound in `MaxAlignsOf`
@@ -201,7 +201,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    |
    = help: the trait `Sized` is not implemented for `[u8]`
 note: required by a bound in `transmute_mut`
-  --> src/macro_util.rs
+  --> src/util/macro_util.rs
    |
    | pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
    |                                               ^^^ required by this bound in `transmute_mut`
@@ -215,7 +215,7 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
    |
    = help: the trait `Sized` is not implemented for `[u8]`
 note: required by a bound in `transmute_mut`
-  --> src/macro_util.rs
+  --> src/util/macro_util.rs
    |
    | pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
    |                                                          ^^^ required by this bound in `transmute_mut`

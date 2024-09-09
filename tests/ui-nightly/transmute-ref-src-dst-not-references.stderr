@@ -71,7 +71,7 @@ help: the return type of this call is `&_` due to the type of the argument passe
 17 | const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
    |                                       ^^^^^^^^^^^^^^^^^^^^^^ this argument influences the return type of `$crate`
 note: function defined here
-  --> src/macro_util.rs
+  --> src/util/macro_util.rs
    |
    | pub const fn must_use<T>(t: T) -> T {
    |              ^^^^^^^^

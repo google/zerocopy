@@ -6,6 +6,12 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+#[macro_use]
+mod macros;
+
+#[doc(hidden)]
+pub mod macro_util;
+
 use core::{
     cell::UnsafeCell,
     marker::PhantomData,
@@ -136,6 +142,7 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for MaybeUninit<T> {
     // `MaybeUninit<T>` is not necessarily a valid `T`.
     type ValidityVariance = Invariant;
 
+    #[inline(always)]
     fn cast_into_inner(ptr: *mut MaybeUninit<T>) -> *mut T {
         // SAFETY: Per [1] (from comment above), `MaybeUninit<T>` has the same
         // layout as `T`. Thus, this cast preserves size.
@@ -144,6 +151,7 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for MaybeUninit<T> {
         ptr.cast::<T>()
     }
 
+    #[inline(always)]
     fn cast_from_inner(ptr: *mut T) -> *mut MaybeUninit<T> {
         // SAFETY: Per [1] (from comment above), `MaybeUninit<T>` has the same
         // layout as `T`. Thus, this cast preserves size.
@@ -187,6 +195,7 @@ unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for ManuallyDrop<T> 
     // validity as `T`.
     type ValidityVariance = Covariant;
 
+    #[inline(always)]
     fn cast_into_inner(ptr: *mut ManuallyDrop<T>) -> *mut T {
         // SAFETY: Per [1] (from comment above), `ManuallyDrop<T>` has the same
         // layout as `T`. Thus, this cast preserves size even if `T` is unsized.
@@ -196,6 +205,7 @@ unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for ManuallyDrop<T> 
         return ptr as *mut T;
     }
 
+    #[inline(always)]
     fn cast_from_inner(ptr: *mut T) -> *mut ManuallyDrop<T> {
         // SAFETY: Per [1] (from comment above), `ManuallyDrop<T>` has the same
         // layout as `T`. Thus, this cast preserves size even if `T` is unsized.
@@ -249,6 +259,7 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Wrapping<T> {
     // [2] https://doc.rust-lang.org/core/num/struct.Wrapping.html
     type ValidityVariance = Covariant;
 
+    #[inline(always)]
     fn cast_into_inner(ptr: *mut Wrapping<T>) -> *mut T {
         // SAFETY: Per [1] (from comment above), `Wrapping<T>` has the same
         // layout as `T`. Thus, this cast preserves size.
@@ -257,6 +268,7 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Wrapping<T> {
         ptr.cast::<T>()
     }
 
+    #[inline(always)]
     fn cast_from_inner(ptr: *mut T) -> *mut Wrapping<T> {
         // SAFETY: Per [1] (from comment above), `Wrapping<T>` has the same
         // layout as `T`. Thus, this cast preserves size.
@@ -296,6 +308,7 @@ unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for UnsafeCell<T> {
     //   between `T` and `UnsafeCell<T>`.
     type ValidityVariance = Covariant;
 
+    #[inline(always)]
     fn cast_into_inner(ptr: *mut UnsafeCell<T>) -> *mut T {
         // SAFETY: Per [1] (from comment above), `UnsafeCell<T>` has the same
         // representation as `T`. Thus, this cast preserves size.
@@ -305,6 +318,7 @@ unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for UnsafeCell<T> {
         return ptr as *mut T;
     }
 
+    #[inline(always)]
     fn cast_from_inner(ptr: *mut T) -> *mut UnsafeCell<T> {
         // SAFETY: Per [1] (from comment above), `UnsafeCell<T>` has the same
         // representation as `T`. Thus, this cast preserves size.
@@ -333,6 +347,7 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Unalign<T> {
     // SAFETY: `Unalign<T>` promises to have the same validity as `T`.
     type ValidityVariance = Covariant;
 
+    #[inline(always)]
     fn cast_into_inner(ptr: *mut Unalign<T>) -> *mut T {
         // SAFETY: Per the safety comment on the impl block, `Unalign<T>` has
         // the size as `T`. Thus, this cast preserves size.
@@ -341,6 +356,7 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Unalign<T> {
         ptr.cast::<T>()
     }
 
+    #[inline(always)]
     fn cast_from_inner(ptr: *mut T) -> *mut Unalign<T> {
         // SAFETY: Per the safety comment on the impl block, `Unalign<T>` has
         // the size as `T`. Thus, this cast preserves size.
@@ -436,6 +452,7 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
         //   integer type
         type ValidityVariance = crate::util::Covariant;
 
+        #[inline(always)]
         fn cast_into_inner(ptr: *mut $atomic) -> *mut UnsafeCell<$native> {
             // SAFETY: Per [1] (from comment on impl block), `$atomic` has the
             // same size as `$native`. Thus, this cast preserves size.
@@ -444,6 +461,7 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
             ptr.cast::<UnsafeCell<$native>>()
         }
 
+        #[inline(always)]
         fn cast_from_inner(ptr: *mut UnsafeCell<$native>) -> *mut $atomic {
             // SAFETY: Per [1] (from comment on impl block), `$atomic` has the
             // same size as `$native`. Thus, this cast preserves size.

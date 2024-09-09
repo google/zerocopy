@@ -134,7 +134,7 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
         let (_name, trailing_field_ty) = trailing_field;
         let leading_fields_tys = leading_fields.iter().map(|(_name, ty)| ty);
 
-        let core_path = quote!(::zerocopy::macro_util::core_reexport);
+        let core_path = quote!(::zerocopy::util::macro_util::core_reexport);
         let repr_align = reprs
             .iter()
             .find_map(
@@ -179,7 +179,7 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
                 // the fields in order, and we extract the values of `align(N)`
                 // and `packed(N)`.
                 const LAYOUT: ::zerocopy::DstLayout = {
-                    use ::zerocopy::macro_util::core_reexport::num::NonZeroUsize;
+                    use ::zerocopy::util::macro_util::core_reexport::num::NonZeroUsize;
                     use ::zerocopy::{DstLayout, KnownLayout};
 
                     let repr_align = #repr_align;
@@ -222,20 +222,20 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
                 //       slice type, such as struct `Foo(i32, [u8])` or `(u64, Foo)`.
                 #[inline(always)]
                 fn raw_from_ptr_len(
-                    bytes: ::zerocopy::macro_util::core_reexport::ptr::NonNull<u8>,
+                    bytes: ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<u8>,
                     meta: Self::PointerMetadata,
-                ) -> ::zerocopy::macro_util::core_reexport::ptr::NonNull<Self> {
+                ) -> ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<Self> {
                     use ::zerocopy::KnownLayout;
                     let trailing = <#trailing_field_ty as KnownLayout>::raw_from_ptr_len(bytes, meta);
                     let slf = trailing.as_ptr() as *mut Self;
                     // SAFETY: Constructed from `trailing`, which is non-null.
-                    unsafe { ::zerocopy::macro_util::core_reexport::ptr::NonNull::new_unchecked(slf) }
+                    unsafe { ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(slf) }
                 }
 
                 #[inline(always)]
-                fn pointer_to_metadata(ptr: ::zerocopy::macro_util::core_reexport::ptr::NonNull<Self>) -> Self::PointerMetadata {
+                fn pointer_to_metadata(ptr: ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<Self>) -> Self::PointerMetadata {
                     // SAFETY: `ptr` is non-null.
-                    let ptr = unsafe { ::zerocopy::macro_util::core_reexport::ptr::NonNull::new_unchecked(ptr.as_ptr() as *mut _) };
+                    let ptr = unsafe { ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(ptr.as_ptr() as *mut _) };
                     <#trailing_field_ty>::pointer_to_metadata(ptr)
                 }
             ),
@@ -260,15 +260,16 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
                 // it preserves provenance.
                 #[inline(always)]
                 fn raw_from_ptr_len(
-                    bytes: ::zerocopy::macro_util::core_reexport::ptr::NonNull<u8>,
+                    bytes: ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<u8>,
                     _meta: (),
-                ) -> ::zerocopy::macro_util::core_reexport::ptr::NonNull<Self> {
+                ) -> ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<Self>
+                {
                     bytes.cast::<Self>()
                 }
 
                 #[inline(always)]
                 fn pointer_to_metadata(
-                    _ptr: ::zerocopy::macro_util::core_reexport::ptr::NonNull<Self>,
+                    _ptr: ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<Self>,
                 ) -> () {
                 }
             ),
@@ -430,7 +431,7 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
                     //   as they do in `*slf`
                     let field_candidate = unsafe {
                         let project = |slf: *mut Self|
-                            ::zerocopy::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
 
                         candidate.reborrow().project(project)
                     };
@@ -481,7 +482,7 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
                     //   returned pointer's referent contain any `UnsafeCell`s
                     let field_candidate = unsafe {
                         let project = |slf: *mut Self|
-                            ::zerocopy::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
 
                         candidate.reborrow().project(project)
                     };
@@ -542,7 +543,7 @@ fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2:
         })
     } else {
         quote!(
-            use ::zerocopy::macro_util::core_reexport;
+            use ::zerocopy::util::macro_util::core_reexport;
             // SAFETY:
             // - The closure is a pointer cast, and `Self` and `[u8;
             //   size_of::<Self>()]` have the same size, so the returned pointer
@@ -594,7 +595,7 @@ fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2:
                     ::zerocopy::pointer::invariant::Initialized,
                 ),
             >,
-        ) -> ::zerocopy::macro_util::core_reexport::primitive::bool {
+        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool {
             #is_bit_valid_body
         }
     ));
@@ -1097,7 +1098,7 @@ impl Trait {
     fn path(&self) -> Path {
         let span = Span::call_site();
         let root = if *self == Self::Sized {
-            quote_spanned!(span=> ::zerocopy::macro_util::core_reexport::marker)
+            quote_spanned!(span=> ::zerocopy::util::macro_util::core_reexport::marker)
         } else {
             quote_spanned!(span=> ::zerocopy)
         };
@@ -1234,8 +1235,8 @@ fn impl_block<D: DataExt>(
         let fields = fields.iter().map(|(_name, ty)| ty);
         let validator_macro = check.validator_macro_ident();
         parse_quote!(
-            ::zerocopy::macro_util::HasPadding<#type_ident, {::zerocopy::#validator_macro!(#type_ident, #(#fields),*)}>:
-                ::zerocopy::macro_util::ShouldBe<false>
+            ::zerocopy::util::macro_util::HasPadding<#type_ident, {::zerocopy::#validator_macro!(#type_ident, #(#fields),*)}>:
+                ::zerocopy::util::macro_util::ShouldBe<false>
         )
     });
 
