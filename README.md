@@ -21,7 +21,12 @@ style="color:red;">compile error</span>. Pick two.</span>***
 Zerocopy makes zero-cost memory manipulation effortless. We write `unsafe`
 so you don't have to.
 
+*Thanks for your interest in zerocopy's 0.8 alpha release! For an overview
+of what changes from 0.7, check out our [draft release
+notes][release-notes].*
+
 [customer-request-issue]: https://github.com/google/zerocopy/issues/new/choose
+[release-notes]: https://github.com/google/zerocopy/discussions/1288
 
 ## Overview
 
