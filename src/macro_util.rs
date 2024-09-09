@@ -30,9 +30,9 @@ use core::ptr::{self, NonNull};
 use crate::{
     pointer::{
         invariant::{self, AtLeast, Invariants},
-        AliasingSafe, AliasingSafeReason, BecauseExclusive,
+        AliasingSafe, AliasingSafeReason, BecauseExclusive, BecauseImmutable,
     },
-    IntoBytes, Ptr, TryFromBytes, ValidityError,
+    Immutable, IntoBytes, Ptr, TryFromBytes, Unalign, ValidityError,
 };
 
 /// A compile-time check that should be one particular value.
@@ -420,24 +420,31 @@ pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
     unsafe { &mut *dst }
 }
 
-/// Is a given source a valid instance of `Self`?
+/// Is a given source a valid instance of `Dst`?
+///
+/// If so, returns `src` casted to a `Ptr<Dst, _>`. Otherwise returns `None`.
 ///
 /// # Safety
 ///
-/// Unsafe code may assume that, if `is_mut_src_valid(src)` returns true, `*src`
-/// is a bit-valid instance of `Dst`, and that the size of `Src` is greater than
-/// or equal to the size of `Dst`.
+/// Unsafe code may assume that, if `try_cast_or_pme(src)` returns `Some`,
+/// `*src` is a bit-valid instance of `Dst`, and that the size of `Src` is
+/// greater than or equal to the size of `Dst`.
 ///
 /// # Panics
 ///
-/// `is_src_valid` may either produce a post-monomorphization error or a panic
-/// if `Dst` is bigger than `Src`. Otherwise, `is_src_valid` panics under the
-/// same circumstances as [`is_bit_valid`].
+/// `try_cast_or_pme` may either produce a post-monomorphization error or a
+/// panic if `Dst` not the same size as `Src`. Otherwise, `try_cast_or_pme`
+/// panics under the same circumstances as [`is_bit_valid`].
 ///
 /// [`is_bit_valid`]: TryFromBytes::is_bit_valid
 #[doc(hidden)]
 #[inline]
-fn is_src_valid<Src, Dst, I, R>(src: Ptr<'_, Src, I>) -> bool
+fn try_cast_or_pme<Src, Dst, I, R>(
+    src: Ptr<'_, Src, I>,
+) -> Result<
+    Ptr<'_, Dst, (I::Aliasing, invariant::Any, invariant::Valid)>,
+    ValidityError<Ptr<'_, Src, I>, Dst>,
+>
 where
     Src: IntoBytes,
     Dst: TryFromBytes + AliasingSafe<Src, I::Aliasing, R>,
@@ -445,12 +452,12 @@ where
     I::Aliasing: AtLeast<invariant::Shared>,
     R: AliasingSafeReason,
 {
-    static_assert!(Src, Dst => mem::size_of::<Dst>() >= mem::size_of::<Src>());
+    static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
 
     // SAFETY: This is a pointer cast, satisfying the following properties:
     // - `p as *mut Dst` addresses a subset of the `bytes` addressed by `src`,
-    //   because we assert above that the size of `Dst` is less than or equal to
-    //   the size of `Src`.
+    //   because we assert above that the size of `Dst` equal to the size of
+    //   `Src`.
     // - `p as *mut Dst` is a provenance-preserving cast
     // - Because `Dst: AliasingSafe<Src, I::Aliasing, _>`, either:
     //   - `I::Aliasing` is `Exclusive`
@@ -464,7 +471,30 @@ where
     // initialized bytes.
     let c_ptr = unsafe { c_ptr.assume_initialized() };
 
-    Dst::is_bit_valid(c_ptr)
+    match c_ptr.try_into_valid() {
+        Ok(ptr) => Ok(ptr),
+        Err(err) => {
+            // Re-cast `Ptr<Dst>` to `Ptr<Src>`.
+            let ptr = err.into_src();
+            // SAFETY: This is a pointer cast, satisfying the following
+            // properties:
+            // - `p as *mut Src` addresses a subset of the `bytes` addressed by
+            //   `ptr`, because we assert above that the size of `Dst` is equal
+            //   to the size of `Src`.
+            // - `p as *mut Src` is a provenance-preserving cast
+            // - Because `Dst: AliasingSafe<Src, I::Aliasing, _>`, either:
+            //   - `I::Aliasing` is `Exclusive`
+            //   - `Src` and `Dst` are both `Immutable`, in which case they
+            //     trivially contain `UnsafeCell`s at identical locations
+            #[allow(clippy::as_conversions)]
+            let ptr = unsafe { ptr.cast_unsized(|p| p as *mut Src) };
+            // SAFETY: `ptr` is `src`, and has the same alignment invariant.
+            let ptr = unsafe { ptr.assume_alignment::<I::Alignment>() };
+            // SAFETY: `ptr` is `src` and has the same validity invariant.
+            let ptr = unsafe { ptr.assume_validity::<I::Validity>() };
+            Err(ValidityError::new(ptr.unify_invariants()))
+        }
+    }
 }
 
 /// Attempts to transmute `Src` into `Dst`.
@@ -479,25 +509,85 @@ where
 ///
 /// [`is_bit_valid`]: TryFromBytes::is_bit_valid
 #[inline(always)]
-pub fn try_transmute<Src, Dst>(mut src: Src) -> Result<Dst, ValidityError<Src, Dst>>
+pub fn try_transmute<Src, Dst>(src: Src) -> Result<Dst, ValidityError<Src, Dst>>
 where
     Src: IntoBytes,
     Dst: TryFromBytes,
 {
-    if !is_src_valid::<Src, Dst, _, BecauseExclusive>(Ptr::from_mut(&mut src)) {
-        return Err(ValidityError::new(src));
+    let mut src = ManuallyDrop::new(src);
+    let ptr = Ptr::from_mut(&mut src);
+    // Wrapping `Dst` in `Unalign` ensures that this cast does not fail due to
+    // alignment requirements.
+    match try_cast_or_pme::<_, ManuallyDrop<Unalign<Dst>>, _, BecauseExclusive>(ptr) {
+        Ok(ptr) => {
+            let dst = ptr.bikeshed_recall_aligned().as_mut();
+            // SAFETY: By shadowing `dst`, we ensure that `dst` is not re-used
+            // after taking its inner value.
+            let dst = unsafe { ManuallyDrop::take(dst) };
+            Ok(dst.into_inner())
+        }
+        Err(_) => Err(ValidityError::new(ManuallyDrop::into_inner(src))),
     }
+}
 
-    let src = ManuallyDrop::new(src);
+/// Attempts to transmute `&Src` into `&Dst`.
+///
+/// A helper for `try_transmute_ref!`.
+///
+/// # Panics
+///
+/// `try_transmute_ref` may either produce a post-monomorphization error or a
+/// panic if `Dst` is bigger or has a stricter alignment requirement than `Src`.
+/// Otherwise, `try_transmute_ref` panics under the same circumstances as
+/// [`is_bit_valid`].
+///
+/// [`is_bit_valid`]: TryFromBytes::is_bit_valid
+#[inline(always)]
+pub fn try_transmute_ref<Src, Dst>(src: &Src) -> Result<&Dst, ValidityError<&Src, Dst>>
+where
+    Src: IntoBytes + Immutable,
+    Dst: TryFromBytes + Immutable,
+{
+    match try_cast_or_pme::<Src, Dst, _, BecauseImmutable>(Ptr::from_ref(src)) {
+        Ok(ptr) => {
+            static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
+            // SAFETY: We have checked that `Dst` does not have a stricter
+            // alignment requirement than `Src`.
+            let ptr = unsafe { ptr.assume_alignment::<invariant::Aligned>() };
+            Ok(ptr.as_ref())
+        }
+        Err(err) => Err(err.map_src(Ptr::as_ref)),
+    }
+}
 
-    // SAFETY: By contract on `is_src_valid`, we have confirmed both that `Dst`
-    // is no larger than `Src`, and that `src` is a bit-valid instance of `Dst`.
-    // These conditions are preserved through the `ManuallyDrop<T>` wrapper,
-    // which is documented to have identical and layout bit validity to its
-    // inner value [1].
-    //
-    // [1]: https://doc.rust-lang.org/std/mem/struct.ManuallyDrop.html
-    Ok(unsafe { mem::transmute_copy(&*src) })
+/// Attempts to transmute `&mut Src` into `&mut Dst`.
+///
+/// A helper for `try_transmute_mut!`.
+///
+/// # Panics
+///
+/// `try_transmute_mut` may either produce a post-monomorphization error or a
+/// panic if `Dst` is bigger or has a stricter alignment requirement than `Src`.
+/// Otherwise, `try_transmute_mut` panics under the same circumstances as
+/// [`is_bit_valid`].
+///
+/// [`is_bit_valid`]: TryFromBytes::is_bit_valid
+#[inline(always)]
+pub fn try_transmute_mut<Src, Dst>(src: &mut Src) -> Result<&mut Dst, ValidityError<&mut Src, Dst>>
+where
+    Src: IntoBytes,
+    Dst: TryFromBytes,
+{
+    match try_cast_or_pme::<Src, Dst, _, BecauseExclusive>(Ptr::from_mut(src)) {
+        Ok(ptr) => {
+            static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
+            // SAFETY: We have checked that `Dst` does not have a stricter
+            // alignment requirement than `Src`.
+            let ptr = unsafe { ptr.assume_alignment::<invariant::Aligned>() };
+            Ok(ptr.as_mut())
+        }
+        Err(err) => Err(err.map_src(Ptr::as_mut)),
+    }
 }
 
 /// A function which emits a warning if its return value is not used.
