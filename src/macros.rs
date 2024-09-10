@@ -85,11 +85,9 @@ macro_rules! transmute {
             // contexts in which `core` was not manually imported. This is not a
             // problem for 2018 edition crates.
             let u = unsafe {
-                // Clippy:
-                // - It's okay to transmute a type to itself.
-                // - We can't annotate the types; this macro is designed to
-                //   infer the types from the calling context.
-                #[allow(clippy::useless_transmute, clippy::missing_transmute_annotations)]
+                // Clippy: We can't annotate the types; this macro is designed
+                // to infer the types from the calling context.
+                #[allow(clippy::missing_transmute_annotations)]
                 $crate::util::macro_util::core_reexport::mem::transmute(e)
             };
             $crate::util::macro_util::must_use(u)
@@ -452,8 +450,9 @@ macro_rules! try_transmute {
 
             // SAFETY: This code is never executed.
             Ok(unsafe {
-                // Clippy: It's okay to transmute a type to itself.
-                #[allow(clippy::useless_transmute, clippy::missing_transmute_annotations)]
+                // Clippy: We can't annotate the types; this macro is designed
+                // to infer the types from the calling context.
+                #[allow(clippy::missing_transmute_annotations)]
                 $crate::util::macro_util::core_reexport::mem::transmute(e)
             })
         } else {
@@ -951,6 +950,7 @@ mod tests {
     #[test]
     fn test_macros_evaluate_args_once() {
         let mut ctr = 0;
+        #[allow(clippy::useless_transmute)]
         let _: usize = transmute!({
             ctr += 1;
             0usize
@@ -972,6 +972,7 @@ mod tests {
         assert_eq!(ctr, 1);
 
         let mut ctr = 0;
+        #[allow(clippy::useless_transmute)]
         let _: usize = try_transmute!({
             ctr += 1;
             0usize
