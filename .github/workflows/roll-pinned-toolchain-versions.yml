@@ -87,29 +87,28 @@ jobs:
 
             # Confirm that the update didn't bork `Cargo.toml`.
             validate-file "$REGEX" Cargo.toml
-            # Having a lockfile is a prerequisite of invoking `cargo pkgid`.
-            cargo "+$VERSION_FOR_CARGO" generate-lockfile
-
             # Run `cargo fix` in case there are any warnings or errors
             # introduced on this new toolchain that we can fix automatically.
             # This is best-effort, so we don't let failure cause the whole job
             # to fail.
             #
-            # We use `cargo pkgid` here to ensure that the package identifier is
-            # fully qualified. Otherwise, if a dev-dependency were to take a
-            # dependency on an earlier version of zerocopy or zerocopy-derive,
-            # these invocations would fail due to ambiguity.
-            cargo "+$VERSION_FOR_CARGO" fix --allow-dirty --tests --package "$(cargo pkgid -p zerocopy)" $ZEROCOPY_FEATURES || true
-            cargo "+$VERSION_FOR_CARGO" fix --allow-dirty --tests --package "$(cargo pkgid -p zerocopy-derive)"            || true
+            # We use the full package filepaths here since our dev-dependencies
+            # sometimes depend on zerocopy. When this happens, the names
+            # `zerocopy` and `zerocopy-derive` alone are ambiguous (they refer
+            # both to the local filesystem versions and to the crates.io
+            # versions).
+            cargo "+$VERSION_FOR_CARGO" fix --allow-dirty --tests --package file:///home/runner/work/zerocopy/zerocopy $ZEROCOPY_FEATURES || true
+            cargo "+$VERSION_FOR_CARGO" fix --allow-dirty --tests --package file:///home/runner/work/zerocopy/zerocopy/zerocopy-derive    || true
 
             # Update `.stderr` files as needed for the new version.
             #
-            # We use `cargo pkgid` here to ensure that the package identifier is
-            # fully qualified. Otherwise, if a dev-dependency were to take a
-            # dependency on an earlier version of zerocopy or zerocopy-derive,
-            # these invocations would fail due to ambiguity.
-            TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package "$(cargo pkgid -p zerocopy)" $ZEROCOPY_FEATURES
-            TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package "$(cargo pkgid -p zerocopy-derive)"
+            # We use the full package filepaths here since our dev-dependencies
+            # sometimes depend on zerocopy. When this happens, the names
+            # `zerocopy` and `zerocopy-derive` alone are ambiguous (they refer
+            # both to the local filesystem versions and to the crates.io
+            # versions).
+            TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package file:///home/runner/work/zerocopy/zerocopy $ZEROCOPY_FEATURES
+            TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package file:///home/runner/work/zerocopy/zerocopy/zerocopy-derive
           }
 
           if [ "${{ matrix.toolchain }}" == stable ]; then
