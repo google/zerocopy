@@ -28,6 +28,11 @@ jobs:
   roll_rust:
     runs-on: ubuntu-latest
     strategy:
+      # By default, this is set to `true`, which means that a single CI job
+      # failure will cause all outstanding jobs to be canceled. This means that
+      # if, for example, rolling the nightly toolchain on a particular branch
+      # fails, all other rollers (which might have succeeded) will be canceled.
+      fail-fast: false
       matrix:
         toolchain: ["stable", "nightly"]
         branch: ["main", "v0.7.x"]
