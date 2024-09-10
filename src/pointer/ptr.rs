@@ -866,10 +866,12 @@ mod _transitions {
         }
 
         /// Recalls that `self`'s referent is bit-valid for `T`.
+        #[doc(hidden)]
+        #[must_use]
         #[inline]
         // TODO(#859): Reconsider the name of this method before making it
         // public.
-        pub(crate) fn bikeshed_recall_valid(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>
+        pub fn bikeshed_recall_valid(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>
         where
             T: crate::FromBytes,
             I: Invariants<Validity = Initialized>,

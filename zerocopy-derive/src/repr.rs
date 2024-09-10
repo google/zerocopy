@@ -8,6 +8,9 @@
 
 use core::fmt::{self, Display, Formatter};
 
+use proc_macro2::Ident;
+use quote::{ToTokens, TokenStreamExt as _};
+
 use {
     proc_macro2::Span,
     syn::punctuated::Punctuated,
@@ -170,6 +173,31 @@ define_kind_specific_repr!(
     [C, U8, U16, U32, U64, Usize, I8, I16, I32, I64, Isize],
     [Align]
 );
+
+impl EnumRepr {
+    fn as_str(&self) -> &'static str {
+        match self {
+            EnumRepr::C => "C",
+            EnumRepr::U8 => "u8",
+            EnumRepr::U16 => "u16",
+            EnumRepr::U32 => "u32",
+            EnumRepr::U64 => "u64",
+            EnumRepr::Usize => "usize",
+            EnumRepr::I8 => "i8",
+            EnumRepr::I16 => "i16",
+            EnumRepr::I32 => "i32",
+            EnumRepr::I64 => "i64",
+            EnumRepr::Isize => "isize",
+            EnumRepr::Align(_) => unimplemented!("repr not yet supported"),
+        }
+    }
+}
+
+impl ToTokens for EnumRepr {
+    fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
+        tokens.append(Ident::new(self.as_str(), Span::call_site()));
+    }
+}
 
 // All representations known to Rust.
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
