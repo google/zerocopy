@@ -47,8 +47,8 @@ use {
 
 use {crate::ext::*, crate::repr::*};
 
-// Unwraps a `Result<_, Vec<Error>>`, converting any `Err` value into a
-// `TokenStream` and returning it.
+/// Unwraps a `Result<_, Vec<Error>>`, converting any `Err` value into a
+/// `TokenStream` and returning it.
 macro_rules! try_or_print {
     ($e:expr) => {
         match $e {
@@ -406,9 +406,8 @@ fn derive_unaligned_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     }
 }
 
-// A struct is `TryFromBytes` if:
-// - all fields are `TryFromBytes`
-
+/// A struct is `TryFromBytes` if:
+/// - all fields are `TryFromBytes`
 fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
     let extras = Some({
         let fields = strct.fields();
@@ -454,9 +453,8 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
     )
 }
 
-// A union is `TryFromBytes` if:
-// - all of its fields are `TryFromBytes` and `Immutable`
-
+/// A union is `TryFromBytes` if:
+/// - all of its fields are `TryFromBytes` and `Immutable`
 fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
     // TODO(#5): Remove the `Immutable` bound.
     let field_type_trait_bounds =
@@ -554,21 +552,17 @@ const ENUM_TRY_FROM_BYTES_CFG: Config<EnumRepr> = {
     }
 };
 
-// A struct is `FromZeros` if:
-// - all fields are `FromZeros`
-
+/// A struct is `FromZeros` if:
+/// - all fields are `FromZeros`
 fn derive_from_zeros_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
     impl_block(ast, strct, Trait::FromZeros, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
 }
 
-// An enum is `FromZeros` if:
-// - one of the variants has a discriminant of `0`
-
-// Returns `Ok(index)` if variant `index` of the enum has a discriminant of
-// zero. If `Err(bool)` is returned, the boolean is true if the enum has unknown
-// discriminants (e.g. discriminants set to const expressions which we can't
-// evaluate in a proc macro). If the enum has unknown discriminants, then it
-// might have a zero variant that we just can't detect.
+/// Returns `Ok(index)` if variant `index` of the enum has a discriminant of
+/// zero. If `Err(bool)` is returned, the boolean is true if the enum has
+/// unknown discriminants (e.g. discriminants set to const expressions which we
+/// can't evaluate in a proc macro). If the enum has unknown discriminants, then
+/// it might have a zero variant that we just can't detect.
 fn find_zero_variant(enm: &DataEnum) -> Result<usize, bool> {
     // Discriminants can be anywhere in the range [i128::MIN, u128::MAX] because
     // the discriminant type may be signed or unsigned. Since we only care about
@@ -642,6 +636,9 @@ fn find_zero_variant(enm: &DataEnum) -> Result<usize, bool> {
     Err(has_unknown_discriminants)
 }
 
+/// An enum is `FromZeros` if:
+/// - one of the variants has a discriminant of `0`
+/// - that variant's fields are all `FromZeros`
 fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
     // We don't actually care what the repr is; we just care that it's one of
     // the allowed ones.
@@ -690,9 +687,8 @@ fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
     )
 }
 
-// Unions are `FromZeros` if
-// - all fields are `FromZeros` and `Immutable`
-
+/// Unions are `FromZeros` if
+/// - all fields are `FromZeros` and `Immutable`
 fn derive_from_zeros_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
     // TODO(#5): Remove the `Immutable` bound. It's only necessary for
     // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
@@ -701,27 +697,26 @@ fn derive_from_zeros_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::T
     impl_block(ast, unn, Trait::FromZeros, field_type_trait_bounds, SelfBounds::None, None, None)
 }
 
-// A struct is `FromBytes` if:
-// - all fields are `FromBytes`
-
+/// A struct is `FromBytes` if:
+/// - all fields are `FromBytes`
 fn derive_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
     impl_block(ast, strct, Trait::FromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
 }
 
-// An enum is `FromBytes` if:
-// - Every possible bit pattern must be valid, which means that every bit
-//   pattern must correspond to a different enum variant. Thus, for an enum
-//   whose layout takes up N bytes, there must be 2^N variants.
-// - Since we must know N, only representations which guarantee the layout's
-//   size are allowed. These are `repr(uN)` and `repr(iN)` (`repr(C)` implies an
-//   implementation-defined size). `usize` and `isize` technically guarantee the
-//   layout's size, but would require us to know how large those are on the
-//   target platform. This isn't terribly difficult - we could emit a const
-//   expression that could call `core::mem::size_of` in order to determine the
-//   size and check against the number of enum variants, but a) this would be
-//   platform-specific and, b) even on Rust's smallest bit width platform (32),
-//   this would require ~4 billion enum variants, which obviously isn't a thing.
-
+/// An enum is `FromBytes` if:
+/// - Every possible bit pattern must be valid, which means that every bit
+///   pattern must correspond to a different enum variant. Thus, for an enum
+///   whose layout takes up N bytes, there must be 2^N variants.
+/// - Since we must know N, only representations which guarantee the layout's
+///   size are allowed. These are `repr(uN)` and `repr(iN)` (`repr(C)` implies an
+///   implementation-defined size). `usize` and `isize` technically guarantee the
+///   layout's size, but would require us to know how large those are on the
+///   target platform. This isn't terribly difficult - we could emit a const
+///   expression that could call `core::mem::size_of` in order to determine the
+///   size and check against the number of enum variants, but a) this would be
+///   platform-specific and, b) even on Rust's smallest bit width platform (32),
+///   this would require ~4 billion enum variants, which obviously isn't a thing.
+/// - All fields of all variants are `FromBytes`.
 fn derive_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
     let reprs = try_or_print!(ENUM_FROM_BYTES_CFG.validate_reprs(ast));
 
@@ -775,9 +770,8 @@ const ENUM_FROM_BYTES_CFG: Config<EnumRepr> = {
     }
 };
 
-// Unions are `FromBytes` if
-// - all fields are `FromBytes` and `Immutable`
-
+/// Unions are `FromBytes` if
+/// - all fields are `FromBytes` and `Immutable`
 fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
     // TODO(#5): Remove the `Immutable` bound. It's only necessary for
     // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
@@ -845,8 +839,11 @@ const STRUCT_UNION_INTO_BYTES_CFG: Config<StructRepr> = Config {
     disallowed_but_legal_combinations: &[],
 };
 
-// An enum is `IntoBytes` if it is field-less and has a defined repr.
-
+/// If the type is an enum:
+/// - It must have a defined representation (`repr`s `C`, `u8`, `u16`, `u32`,
+///   `u64`, `usize`, `i8`, `i16`, `i32`, `i64`, or `isize`).
+/// - It must have no padding bytes.
+/// - Its fields must be `IntoBytes`.
 fn derive_into_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
     // We don't care what the repr is; we only care that it is one of the
     // allowed ones.
@@ -901,11 +898,10 @@ const ENUM_FROM_ZEROS_INTO_BYTES_CFG: Config<EnumRepr> = {
     }
 };
 
-// A union is `IntoBytes` if:
-// - all fields are `IntoBytes`
-// - `repr(C)`, `repr(transparent)`, or `repr(packed)`
-// - no padding (size of union equals size of each field type)
-
+/// A union is `IntoBytes` if:
+/// - all fields are `IntoBytes`
+/// - `repr(C)`, `repr(transparent)`, or `repr(packed)`
+/// - no padding (size of union equals size of each field type)
 fn derive_into_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
     // TODO(#10): Support type parameters.
     if !ast.generics.params.is_empty() {
@@ -926,12 +922,11 @@ fn derive_into_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::T
     )
 }
 
-// A struct is `Unaligned` if:
-// - `repr(align)` is no more than 1 and either
-//   - `repr(C)` or `repr(transparent)` and
-//     - all fields `Unaligned`
-//   - `repr(packed)`
-
+/// A struct is `Unaligned` if:
+/// - `repr(align)` is no more than 1 and either
+///   - `repr(C)` or `repr(transparent)` and
+///     - all fields `Unaligned`
+///   - `repr(packed)`
 fn derive_unaligned_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
     let reprs = try_or_print!(STRUCT_UNION_UNALIGNED_CFG.validate_reprs(ast));
     let field_bounds = if !reprs.contains(&StructRepr::Packed) {
@@ -952,10 +947,9 @@ const STRUCT_UNION_UNALIGNED_CFG: Config<StructRepr> = Config {
     disallowed_but_legal_combinations: &[],
 };
 
-// An enum is `Unaligned` if:
-// - No `repr(align(N > 1))`
-// - `repr(u8)` or `repr(i8)`
-
+/// An enum is `Unaligned` if:
+/// - No `repr(align(N > 1))`
+/// - `repr(u8)` or `repr(i8)`
 fn derive_unaligned_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
     // The only valid reprs are `u8` and `i8`, and optionally `align(1)`. We
     // don't actually care what the reprs are so long as they satisfy that
@@ -1000,12 +994,11 @@ const ENUM_UNALIGNED_CFG: Config<EnumRepr> = {
     }
 };
 
-// Like structs, a union is `Unaligned` if:
-// - `repr(align)` is no more than 1 and either
-//   - `repr(C)` or `repr(transparent)` and
-//     - all fields `Unaligned`
-//   - `repr(packed)`
-
+/// Like structs, a union is `Unaligned` if:
+/// - `repr(align)` is no more than 1 and either
+///   - `repr(C)` or `repr(transparent)` and
+///     - all fields `Unaligned`
+///   - `repr(packed)`
 fn derive_unaligned_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
     let reprs = try_or_print!(STRUCT_UNION_UNALIGNED_CFG.validate_reprs(ast));
     let field_type_trait_bounds = if !reprs.contains(&StructRepr::Packed) {
@@ -1017,17 +1010,18 @@ fn derive_unaligned_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::To
     impl_block(ast, unn, Trait::Unaligned, field_type_trait_bounds, SelfBounds::None, None, None)
 }
 
-// This enum describes what kind of padding check needs to be generated for the
-// associated impl.
+/// This enum describes what kind of padding check needs to be generated for the
+/// associated impl.
 enum PaddingCheck {
-    // Check that the sum of the fields' sizes exactly equals the struct's size.
+    /// Check that the sum of the fields' sizes exactly equals the struct's
+    /// size.
     Struct,
-    // Check that the size of each field exactly equals the union's size.
+    /// Check that the size of each field exactly equals the union's size.
     Union,
-    // Check that every variant of the enum contains no padding.
-    //
-    // Because doing so requires a tag enum, this padding check requires an
-    // additional `TokenStream` which defines the tag enum as `___ZerocopyTag`.
+    /// Check that every variant of the enum contains no padding.
+    ///
+    /// Because doing so requires a tag enum, this padding check requires an
+    /// additional `TokenStream` which defines the tag enum as `___ZerocopyTag`.
     Enum { tag_type_definition: TokenStream },
 }
 
