@@ -909,9 +909,13 @@ safety_comment! {
 /// `FromZeros` for that type:
 ///
 /// - If the type is a struct, all of its fields must be `FromZeros`.
-/// - If the type is an enum, it must be C-like (meaning that all variants have
-///   no fields) and it must have a variant with a discriminant of `0`. See [the
-///   reference] for a description of how discriminant values are chosen.
+/// - If the type is an enum:
+///   - It must have a defined representation (`repr`s `C`, `u8`, `u16`, `u32`,
+///     `u64`, `usize`, `i8`, `i16`, `i32`, `i64`, or `isize`).
+///   - It must have a variant with a discriminant/tag of `0`, and its fields
+///     must be `FromZeros`. See [the reference] for a description of
+///     discriminant values are specified.
+///   - The fields of that variant must be `FromZeros`.
 ///
 /// This analysis is subject to change. Unsafe code may *only* rely on the
 /// documented [safety conditions] of `FromZeros`, and must *not* rely on the
@@ -2377,13 +2381,13 @@ pub unsafe trait FromZeros: TryFromBytes {
 ///
 /// - If the type is a struct, all of its fields must be `FromBytes`.
 /// - If the type is an enum:
-///   - It must be a C-like enum (meaning that all variants have no fields).
 ///   - It must have a defined representation (`repr`s `C`, `u8`, `u16`, `u32`,
 ///     `u64`, `usize`, `i8`, `i16`, `i32`, `i64`, or `isize`).
 ///   - The maximum number of discriminants must be used (so that every possible
 ///     bit pattern is a valid one). Be very careful when using the `C`,
 ///     `usize`, or `isize` representations, as their size is
 ///     platform-dependent.
+///   - Its fields must be `FromBytes`.
 ///
 /// This analysis is subject to change. Unsafe code may *only* rely on the
 /// documented [safety conditions] of `FromBytes`, and must *not* rely on the
@@ -3756,10 +3760,11 @@ fn mut_from_prefix_suffix<T: FromBytes + KnownLayout + ?Sized>(
 ///     - if the type has no generic parameters, it is [`IntoBytes`] if the type
 ///       is sized and has no padding bytes; else,
 ///     - if the type is `repr(C)`, its fields must be [`Unaligned`].
-/// - If the type is an enum,
-///   - It must be a C-like enum (meaning that all variants have no fields).
+/// - If the type is an enum:
 ///   - It must have a defined representation (`repr`s `C`, `u8`, `u16`, `u32`,
 ///     `u64`, `usize`, `i8`, `i16`, `i32`, `i64`, or `isize`).
+///   - It must have no padding bytes.
+///   - Its fields must be [`IntoBytes`].
 ///
 /// This analysis is subject to change. Unsafe code may *only* rely on the
 /// documented [safety conditions] of `FromBytes`, and must *not* rely on the
