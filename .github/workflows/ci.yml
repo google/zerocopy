@@ -57,7 +57,7 @@ jobs:
           "zerocopy-generic-bounds-in-const-fn",
           "zerocopy-target-has-atomics",
           "zerocopy-aarch64-simd",
-          "zerocopy-panic-in-const"
+          "zerocopy-panic-in-const-and-vec-try-reserve"
         ]
         target: [
           "i686-unknown-linux-gnu",
@@ -93,7 +93,7 @@ jobs:
             features: "--all-features"
           - toolchain: "zerocopy-aarch64-simd"
             features: "--all-features"
-          - toolchain: "zerocopy-panic-in-const"
+          - toolchain: "zerocopy-panic-in-const-and-vec-try-reserve"
             features: "--all-features"
           # Exclude any combination for the zerocopy-derive crate which
           # uses zerocopy features.
@@ -114,7 +114,7 @@ jobs:
           - crate: "zerocopy-derive"
             toolchain: "zerocopy-aarch64-simd"
           - crate: "zerocopy-derive"
-            toolchain: "zerocopy-panic-in-const"
+            toolchain: "zerocopy-panic-in-const-and-vec-try-reserve"
           # Exclude non-aarch64 targets from the `zerocopy-aarch64-simd`
           # toolchain.
           - toolchain: "zerocopy-aarch64-simd"

@@ -628,7 +628,7 @@ pub(crate) const fn round_down_to_next_multiple_of_alignment(
     align: NonZeroUsize,
 ) -> usize {
     let align = align.get();
-    #[cfg(zerocopy_panic_in_const)]
+    #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
     debug_assert!(align.is_power_of_two());
 
     // Subtraction can't underflow because `align.get() >= 1`.
@@ -865,7 +865,7 @@ mod tests {
     #[rustversion::since(1.57.0)]
     #[test]
     #[should_panic]
-    fn test_round_down_to_next_multiple_of_alignment_panic_in_const() {
+    fn test_round_down_to_next_multiple_of_alignment_zerocopy_panic_in_const_and_vec_try_reserve() {
         round_down_to_next_multiple_of_alignment(0, NonZeroUsize::new(3).unwrap());
     }
 }

@@ -880,7 +880,7 @@ mod tests {
                             layout(size_info, align).validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
                         }).map_err(|d| {
                             let msg = d.downcast::<&'static str>().ok().map(|s| *s.as_ref());
-                            assert!(msg.is_some() || cfg!(not(zerocopy_panic_in_const)), "non-string panic messages are not permitted when `--cfg zerocopy_panic_in_const` is set");
+                            assert!(msg.is_some() || cfg!(not(zerocopy_panic_in_const_and_vec_try_reserve)), "non-string panic messages are not permitted when `--cfg zerocopy_panic_in_const_and_vec_try_reserve` is set");
                             msg
                         });
                         std::panic::set_hook(previous_hook);
