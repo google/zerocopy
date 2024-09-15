@@ -30,6 +30,8 @@
 
 mod r#enum;
 mod ext;
+#[cfg(test)]
+mod output_tests;
 mod repr;
 
 use proc_macro2::{TokenStream, TokenTree};
@@ -419,7 +421,7 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
             // validity of a struct is just the composition of the bit
             // validities of its fields, so this is a sound implementation of
             // `is_bit_valid`.
-            fn is_bit_valid<A: ::zerocopy::pointer::invariant::Aliasing + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>>(
+            fn is_bit_valid<A: ::zerocopy::pointer::invariant::Aliasing + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared> >(
                 mut candidate: ::zerocopy::Maybe<Self, A>
             ) -> bool {
                 true #(&& {
