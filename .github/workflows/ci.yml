@@ -54,6 +54,7 @@ jobs:
           # These are the names of specific Rust versions detected in
           # `build.rs`. Each of these represents the minimum Rust version for
           # which a particular feature is supported.
+          "zerocopy-core-error",
           "zerocopy-generic-bounds-in-const-fn",
           "zerocopy-target-has-atomics",
           "zerocopy-aarch64-simd",
@@ -87,6 +88,8 @@ jobs:
             features: "--all-features"
           - toolchain: "stable"
             features: "--all-features"
+          - toolchain: "zerocopy-core-error"
+            features: "--all-features"
           - toolchain: "zerocopy-generic-bounds-in-const-fn"
             features: "--all-features"
           - toolchain: "zerocopy-target-has-atomics"
@@ -107,6 +110,8 @@ jobs:
           # other than "msrv", "stable", and "nightly". These other versions
           # exist to exercise zerocopy behavior which differs by toolchain;
           # zerocopy-derive doesn't behave different on these toolchains.
+          - crate: "zerocopy-derive"
+            toolchain: "zerocopy-core-error"
           - crate: "zerocopy-derive"
             toolchain: "zerocopy-generic-bounds-in-const-fn"
           - crate: "zerocopy-derive"
@@ -137,7 +142,28 @@ jobs:
             target: "thumbv6m-none-eabi"
           - toolchain: "zerocopy-aarch64-simd"
             target: "wasm32-wasi"
-          # Exclude most targets targets from the
+          # Exclude most targets targets from the `zerocopy-core-error`
+          # toolchain since the `zerocopy-core-error` feature is unrelated to
+          # compilation target. This only leaves i686 and x86_64 targets.
+          - toolchain: "zerocopy-core-error"
+            target: "arm-unknown-linux-gnueabi"
+          - toolchain: "zerocopy-core-error"
+            target: "aarch64-unknown-linux-gnu"
+          - toolchain: "zerocopy-core-error"
+            target: "powerpc-unknown-linux-gnu"
+          - toolchain: "zerocopy-core-error"
+            target: "powerpc64-unknown-linux-gnu"
+          - toolchain: "zerocopy-core-error"
+            target: "riscv64gc-unknown-linux-gnu"
+          - toolchain: "zerocopy-core-error"
+            target: "s390x-unknown-linux-gnu"
+          - toolchain: "zerocopy-core-error"
+            target: "x86_64-pc-windows-msvc"
+          - toolchain: "zerocopy-core-error"
+            target: "thumbv6m-none-eabi"
+          - toolchain: "zerocopy-core-error"
+            target: "wasm32-wasi"
+            # Exclude most targets targets from the
           # `zerocopy-generic-bounds-in-const-fn` toolchain since the
           # `zerocopy-generic-bounds-in-const-fn` feature is unrelated to
           # compilation target. This only leaves i686 and x86_64 targets.

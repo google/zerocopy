@@ -32,6 +32,9 @@ exclude = [".*"]
 # as high as the specified version. In the emitted `--cfg`, dashes are replaced
 # by underscores.
 
+# From 1.81.0, Rust supports the `core::error::Error` trait.
+zerocopy-core-error = "1.81.0"
+
 # From 1.61.0, Rust supports generic types with trait bounds in `const fn`.
 zerocopy-generic-bounds-in-const-fn = "1.61.0"
 
