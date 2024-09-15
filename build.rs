@@ -60,6 +60,11 @@ use std::{env, fs, process::Command, str};
 fn main() {
     // Avoid unnecessary re-building.
     println!("cargo:rerun-if-changed=build.rs");
+    // This is necessary because changes to the list of detected Rust toolchain
+    // versions will affect what `--cfg`s this script emits. Without this,
+    // changes to that list have no effect on the build without running `cargo
+    // clean` or similar.
+    println!("cargo:rerun-if-changed=Cargo.toml");
 
     let version_cfgs = parse_version_cfgs_from_cargo_toml();
     let rustc_version = rustc_version();

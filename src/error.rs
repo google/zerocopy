@@ -65,6 +65,11 @@ use core::{
     ops::Deref,
 };
 
+#[cfg(zerocopy_core_error)]
+use core::error::Error;
+#[cfg(all(not(zerocopy_core_error), any(feature = "std", test)))]
+use std::error::Error;
+
 use crate::{util::SendSyncPhantomData, KnownLayout, TryFromBytes};
 #[cfg(doc)]
 use crate::{FromBytes, Ref};
@@ -126,9 +131,8 @@ impl<A: fmt::Display, S: fmt::Display, V: fmt::Display> fmt::Display for Convert
     }
 }
 
-#[cfg(any(feature = "std", test))]
-#[allow(clippy::std_instead_of_core)]
-impl<A, S, V> std::error::Error for ConvertError<A, S, V>
+#[cfg(any(zerocopy_core_error, feature = "std", test))]
+impl<A, S, V> Error for ConvertError<A, S, V>
 where
     A: fmt::Display + fmt::Debug,
     S: fmt::Display + fmt::Debug,
@@ -228,9 +232,8 @@ where
     }
 }
 
-#[cfg(any(feature = "std", test))]
-#[allow(clippy::std_instead_of_core)]
-impl<Src, Dst: ?Sized> std::error::Error for AlignmentError<Src, Dst>
+#[cfg(any(zerocopy_core_error, feature = "std", test))]
+impl<Src, Dst: ?Sized> Error for AlignmentError<Src, Dst>
 where
     Src: Deref,
     Dst: KnownLayout,
@@ -353,9 +356,8 @@ where
     }
 }
 
-#[cfg(any(feature = "std", test))]
-#[allow(clippy::std_instead_of_core)]
-impl<Src, Dst: ?Sized> std::error::Error for SizeError<Src, Dst>
+#[cfg(any(zerocopy_core_error, feature = "std", test))]
+impl<Src, Dst: ?Sized> Error for SizeError<Src, Dst>
 where
     Src: Deref,
     Dst: KnownLayout,
@@ -441,9 +443,8 @@ where
     }
 }
 
-#[cfg(any(feature = "std", test))]
-#[allow(clippy::std_instead_of_core)]
-impl<Src, Dst: ?Sized> std::error::Error for ValidityError<Src, Dst>
+#[cfg(any(zerocopy_core_error, feature = "std", test))]
+impl<Src, Dst: ?Sized> Error for ValidityError<Src, Dst>
 where
     Src: Deref,
     Dst: KnownLayout + TryFromBytes,
