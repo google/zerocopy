@@ -4284,7 +4284,7 @@ pub unsafe trait IntoBytes {
 ///     `repr(packed)` or `repr(packed(1))`.
 /// - If the type is an enum:
 ///   - If `repr(align(N))` is provided, `N` must equal 1.
-///   - It must be a C-like enum (meaning that all variants have no fields).
+///   - It must be a field-less enum (meaning that all variants have no fields).
 ///   - It must be `repr(i8)` or `repr(u8)`.
 ///
 /// [safety conditions]: trait@Unaligned#safety
