@@ -44,8 +44,8 @@ zerocopy-target-has-atomics = "1.60.0"
 # versions, these types require the "simd-nightly" feature.
 zerocopy-aarch64-simd = "1.59.0"
 
-# Permit panicking in `const fn`s.
-zerocopy-panic-in-const = "1.57.0"
+# Permit panicking in `const fn`s and calling `Vec::try_reserve`.
+zerocopy-panic-in-const-and-vec-try-reserve = "1.57.0"
 
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.

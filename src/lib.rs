@@ -4371,31 +4371,41 @@ pub unsafe trait Unaligned {
 #[cfg(feature = "alloc")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
 mod alloc_support {
+    #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
     use super::*;
 
     /// Extends a `Vec<T>` by pushing `additional` new items onto the end of the
     /// vector. The new items are initialized with zeros.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `Vec::reserve(additional)` fails to reserve enough memory.
+    #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
     #[inline(always)]
-    pub fn extend_vec_zeroed<T: FromZeros>(v: &mut Vec<T>, additional: usize) {
-        insert_vec_zeroed(v, v.len(), additional);
+    pub fn extend_vec_zeroed<T: FromZeros>(
+        v: &mut Vec<T>,
+        additional: usize,
+    ) -> Result<(), AllocError> {
+        // PANICS: We pass `v.len()` for `position`, so the `position > v.len()`
+        // panic condition is not satisfied.
+        insert_vec_zeroed(v, v.len(), additional)
     }
 
-    /// Inserts `additional` new items into `Vec<T>` at `position`.
-    /// The new items are initialized with zeros.
+    /// Inserts `additional` new items into `Vec<T>` at `position`. The new
+    /// items are initialized with zeros.
     ///
     /// # Panics
     ///
-    /// * Panics if `position > v.len()`.
-    /// * Panics if `Vec::reserve(additional)` fails to reserve enough memory.
+    /// Panics if `position > v.len()`.
+    #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
     #[inline]
-    pub fn insert_vec_zeroed<T: FromZeros>(v: &mut Vec<T>, position: usize, additional: usize) {
+    pub fn insert_vec_zeroed<T: FromZeros>(
+        v: &mut Vec<T>,
+        position: usize,
+        additional: usize,
+    ) -> Result<(), AllocError> {
         assert!(position <= v.len());
-        v.reserve(additional);
-        // SAFETY: The `reserve` call guarantees that these cannot overflow:
+        // We only conditionally compile on versions on which `try_reserve` is
+        // stable; the Clippy lint is a false positive.
+        #[allow(clippy::incompatible_msrv)]
+        v.try_reserve(additional).map_err(|_| AllocError)?;
+        // SAFETY: The `try_reserve` call guarantees that these cannot overflow:
         // * `ptr.add(position)`
         // * `position + additional`
         // * `v.len() + additional`
@@ -4411,104 +4421,112 @@ mod alloc_support {
             #[allow(clippy::arithmetic_side_effects)]
             v.set_len(v.len() + additional);
         }
+
+        Ok(())
     }
 
     #[cfg(test)]
     mod tests {
         use core::convert::TryFrom as _;
 
+        use super::super::*;
+        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
         use super::*;
 
+        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
         #[test]
         fn test_extend_vec_zeroed() {
             // Test extending when there is an existing allocation.
             let mut v = vec![100u64, 200, 300];
-            extend_vec_zeroed(&mut v, 3);
+            extend_vec_zeroed(&mut v, 3).unwrap();
             assert_eq!(v.len(), 6);
             assert_eq!(&*v, &[100, 200, 300, 0, 0, 0]);
             drop(v);
 
             // Test extending when there is no existing allocation.
             let mut v: Vec<u64> = Vec::new();
-            extend_vec_zeroed(&mut v, 3);
+            extend_vec_zeroed(&mut v, 3).unwrap();
             assert_eq!(v.len(), 3);
             assert_eq!(&*v, &[0, 0, 0]);
             drop(v);
         }
 
+        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
         #[test]
         fn test_extend_vec_zeroed_zst() {
             // Test extending when there is an existing (fake) allocation.
             let mut v = vec![(), (), ()];
-            extend_vec_zeroed(&mut v, 3);
+            extend_vec_zeroed(&mut v, 3).unwrap();
             assert_eq!(v.len(), 6);
             assert_eq!(&*v, &[(), (), (), (), (), ()]);
             drop(v);
 
             // Test extending when there is no existing (fake) allocation.
             let mut v: Vec<()> = Vec::new();
-            extend_vec_zeroed(&mut v, 3);
+            extend_vec_zeroed(&mut v, 3).unwrap();
             assert_eq!(&*v, &[(), (), ()]);
             drop(v);
         }
 
+        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
         #[test]
         fn test_insert_vec_zeroed() {
             // Insert at start (no existing allocation).
             let mut v: Vec<u64> = Vec::new();
-            insert_vec_zeroed(&mut v, 0, 2);
+            insert_vec_zeroed(&mut v, 0, 2).unwrap();
             assert_eq!(v.len(), 2);
             assert_eq!(&*v, &[0, 0]);
             drop(v);
 
             // Insert at start.
             let mut v = vec![100u64, 200, 300];
-            insert_vec_zeroed(&mut v, 0, 2);
+            insert_vec_zeroed(&mut v, 0, 2).unwrap();
             assert_eq!(v.len(), 5);
             assert_eq!(&*v, &[0, 0, 100, 200, 300]);
             drop(v);
 
             // Insert at middle.
             let mut v = vec![100u64, 200, 300];
-            insert_vec_zeroed(&mut v, 1, 1);
+            insert_vec_zeroed(&mut v, 1, 1).unwrap();
             assert_eq!(v.len(), 4);
             assert_eq!(&*v, &[100, 0, 200, 300]);
             drop(v);
 
             // Insert at end.
             let mut v = vec![100u64, 200, 300];
-            insert_vec_zeroed(&mut v, 3, 1);
+            insert_vec_zeroed(&mut v, 3, 1).unwrap();
             assert_eq!(v.len(), 4);
             assert_eq!(&*v, &[100, 200, 300, 0]);
             drop(v);
         }
 
+        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
         #[test]
         fn test_insert_vec_zeroed_zst() {
             // Insert at start (no existing fake allocation).
             let mut v: Vec<()> = Vec::new();
-            insert_vec_zeroed(&mut v, 0, 2);
+            insert_vec_zeroed(&mut v, 0, 2).unwrap();
             assert_eq!(v.len(), 2);
             assert_eq!(&*v, &[(), ()]);
             drop(v);
 
             // Insert at start.
             let mut v = vec![(), (), ()];
-            insert_vec_zeroed(&mut v, 0, 2);
+            insert_vec_zeroed(&mut v, 0, 2).unwrap();
             assert_eq!(v.len(), 5);
             assert_eq!(&*v, &[(), (), (), (), ()]);
             drop(v);
 
             // Insert at middle.
             let mut v = vec![(), (), ()];
-            insert_vec_zeroed(&mut v, 1, 1);
+            insert_vec_zeroed(&mut v, 1, 1).unwrap();
             assert_eq!(v.len(), 4);
             assert_eq!(&*v, &[(), (), (), ()]);
             drop(v);
 
             // Insert at end.
             let mut v = vec![(), (), ()];
-            insert_vec_zeroed(&mut v, 3, 1);
+            insert_vec_zeroed(&mut v, 3, 1).unwrap();
             assert_eq!(v.len(), 4);
             assert_eq!(&*v, &[(), (), (), ()]);
             drop(v);
