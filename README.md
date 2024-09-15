@@ -42,7 +42,7 @@ Zerocopy provides four derivable traits for zero-cost conversions:
 - `IntoBytes` indicates that a type may safely be converted *to* a byte
   sequence
 
-This traits support sized types, slices, and [slice DSTs][slice-dsts].
+These traits support sized types, slices, and [slice DSTs][slice-dsts].
 
 [slice-dsts]: KnownLayout#dynamically-sized-types
 
@@ -61,7 +61,7 @@ You should generally derive these marker traits whenever possible.
 
 ###### Conversion Macros
 
-Zerocopy provides four macros for safe, zero-cost casting between types:
+Zerocopy provides six macros for safe casting between types:
 
 - (`try_`[try_transmute])`transmute` (conditionally) converts a value of
   one type to a value of another type of the same size
@@ -72,9 +72,12 @@ Zerocopy provides four macros for safe, zero-cost casting between types:
   mutable or immutable reference of one type to an immutable reference of
   another type of the same size
 
-These macros perform *compile-time* alignment and size checks, but cannot be
-used in generic contexts. For generic conversions, use the methods defined
-by the [conversion traits](#conversion-traits).
+These macros perform *compile-time* size and alignment checks, meaning that
+unconditional casts have zero cost at runtime. Conditional casts do not need
+to validate size or alignment runtime, but do need to validate contents.
+
+These macros cannot be used in generic contexts. For generic conversions,
+use the methods defined by the [conversion traits](#conversion-traits).
 
 ###### Byteorder-Aware Numerics
 
