@@ -422,7 +422,7 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
             // validities of its fields, so this is a sound implementation of
             // `is_bit_valid`.
             fn is_bit_valid<A: ::zerocopy::pointer::invariant::Aliasing + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared> >(
-                mut candidate: ::zerocopy::Maybe<Self, A>
+                mut candidate: ::zerocopy::Maybe<Self, A>,
             ) -> bool {
                 true #(&& {
                     // SAFETY:
