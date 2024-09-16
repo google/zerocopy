@@ -87,7 +87,7 @@
 //!
 //! # Cargo Features
 //!
-//! - **`alloc`**   
+//! - **`alloc`**
 //!   By default, `zerocopy` is `no_std`. When the `alloc` feature is enabled,
 //!   the `alloc` crate is added as a dependency, and some allocation-related
 //!   functionality is added.
@@ -97,10 +97,10 @@
 //!   `std` crate is added as a dependency (ie, `no_std` is disabled), and
 //!   support for some `std` types is added. `std` implies `alloc`.
 //!
-//! - **`derive`**   
+//! - **`derive`**
 //!   Provides derives for the core marker traits via the `zerocopy-derive`
 //!   crate. These derives are re-exported from `zerocopy`, so it is not
-//!   necessary to depend on `zerocopy-derive` directly.   
+//!   necessary to depend on `zerocopy-derive` directly.
 //!
 //!   However, you may experience better compile times if you instead directly
 //!   depend on both `zerocopy` and `zerocopy-derive` in your `Cargo.toml`,
@@ -114,7 +114,7 @@
 //!   zerocopy-derive = "0.X"
 //!   ```
 //!
-//! - **`simd`**   
+//! - **`simd`**
 //!   When the `simd` feature is enabled, `FromZeros`, `FromBytes`, and
 //!   `IntoBytes` impls are emitted for all stable SIMD types which exist on the
 //!   target platform. Note that the layout of SIMD types is not yet stabilized,
@@ -122,7 +122,7 @@
 //!   invalid. For more information, see the Unsafe Code Guidelines Reference
 //!   page on the [layout of packed SIMD vectors][simd-layout].
 //!
-//! - **`simd-nightly`**   
+//! - **`simd-nightly`**
 //!   Enables the `simd` feature and adds support for SIMD types which are only
 //!   available on nightly. Since these types are unstable, support for any type
 //!   may be removed at any point in the future.
@@ -134,16 +134,16 @@
 //! Zerocopy is expressly designed for use in security-critical contexts. We
 //! strive to ensure that that zerocopy code is sound under Rust's current
 //! memory model, and *any future memory model*. We ensure this by:
-//! - **...not 'guessing' about Rust's semantics.**   
+//! - **...not 'guessing' about Rust's semantics.**
 //!   We annotate `unsafe` code with a precise rationale for its soundness that
 //!   cites a relevant section of Rust's official documentation. When Rust's
 //!   documented semantics are unclear, we work with the Rust Operational
 //!   Semantics Team to clarify Rust's documentation.
-//! - **...rigorously testing our implementation.**   
+//! - **...rigorously testing our implementation.**
 //!   We run tests using [Miri], ensuring that zerocopy is sound across a wide
 //!   array of supported target platforms of varying endianness and pointer
 //!   width, and across both current and experimental memory models of Rust.
-//! - **...formally proving the correctness of our implementation.**   
+//! - **...formally proving the correctness of our implementation.**
 //!   We apply formal verification tools like [Kani][kani] to prove zerocopy's
 //!   correctness.
 //!
@@ -1956,6 +1956,15 @@ fn swap<T, U>((t, u): (T, U)) -> (U, T) {
 /// overhead. This is useful whenever memory is known to be in a zeroed state,
 /// such memory returned from some allocation routines.
 ///
+/// # Warning: Padding bytes
+///
+/// Note that, when a value is moved or copied, only the non-padding bytes of
+/// that value are guaranteed to be preserved. It is unsound to assume that
+/// values written to padding bytes are preserved after a move or copy. For more
+/// details, see the [`FromBytes` docs][frombytes-warning-padding-bytes].
+///
+/// [frombytes-warning-padding-bytes]: FromBytes#warning-padding-bytes
+///
 /// # Implementation
 ///
 /// **Do not implement this trait yourself!** Instead, use
@@ -2433,6 +2442,34 @@ pub use zerocopy_derive::FromBytes;
 /// Any memory region of the appropriate length which contains initialized bytes
 /// can be viewed as any `FromBytes` type with no runtime overhead. This is
 /// useful for efficiently parsing bytes as structured data.
+///
+/// # Warning: Padding bytes
+///
+/// Note that, when a value is moved or copied, only the non-padding bytes of
+/// that value are guaranteed to be preserved. It is unsound to assume that
+/// values written to padding bytes are preserved after a move or copy. For
+/// example, the following is unsound:
+///
+/// ```rust,no_run
+/// use core::mem::{size_of, transmute};
+/// use zerocopy::FromZeros;
+/// # use zerocopy_derive::*;
+///
+/// // Assume `Foo` is a type with padding bytes.
+/// #[derive(FromZeros, Default)]
+/// struct Foo {
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// let mut foo: Foo = Foo::default();
+/// FromZeros::zero(&mut foo);
+/// // UNSOUND: Although `FromZeros::zero` writes zeros to all bytes of `foo`,
+/// // those writes are not guaranteed to be preserved in padding bytes when
+/// // `foo` is moved, so this may expose padding bytes as `u8`s.
+/// let foo_bytes: [u8; size_of::<Foo>()] = unsafe { transmute(foo) };
+/// ```
 ///
 /// # Implementation
 ///
