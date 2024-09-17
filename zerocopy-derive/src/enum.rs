@@ -59,7 +59,7 @@ pub(crate) fn generate_tag_enum(repr: &EnumRepr, data: &DataEnum) -> TokenStream
         #[repr(#repr)]
         #[allow(dead_code)]
         enum ___ZerocopyTag {
-            #(#variants),*
+            #(#variants,)*
         }
     }
 }
@@ -305,9 +305,9 @@ pub(crate) fn derive_is_bit_valid(
 
             #tag_enum
 
-            type ___ZerocopyTagPrimitive = ::zerocopy::util::macro_util::SizeToTag<{
-                core_reexport::mem::size_of::<___ZerocopyTag>()
-            }>;
+            type ___ZerocopyTagPrimitive = ::zerocopy::util::macro_util::SizeToTag<
+                { core_reexport::mem::size_of::<___ZerocopyTag>() },
+            >;
 
             #tag_consts
 
