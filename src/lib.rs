@@ -114,6 +114,11 @@
 //!   zerocopy-derive = "0.X"
 //!   ```
 //!
+//!   To avoid the risk of [duplicate import errors][duplicate-import-errors] if
+//!   one of your dependencies enables zerocopy's `derive` feature, import
+//!   derives as `use zerocopy_derive::*` rather than by name (e.g., `use
+//!   zerocopy_derive::FromBytes`).
+//!
 //! - **`simd`**
 //!   When the `simd` feature is enabled, `FromZeros`, `FromBytes`, and
 //!   `IntoBytes` impls are emitted for all stable SIMD types which exist on the
@@ -127,6 +132,7 @@
 //!   available on nightly. Since these types are unstable, support for any type
 //!   may be removed at any point in the future.
 //!
+//! [duplicate-import-errors]: https://github.com/google/zerocopy/issues/1587
 //! [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 //!
 //! # Security Ethos
