@@ -1334,7 +1334,7 @@ pub unsafe trait TryFromBytes {
     /// assert_eq!(packet.marshmallows, [[0, 1], [2, 3], [4, 5]]);
     ///
     /// // These bytes are not valid instance of `Packet`.
-    /// let bytes = &[0x70, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
+    /// let bytes = &[0x10, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5][..];
     /// assert!(Packet::try_ref_from_bytes(bytes).is_err());
     /// ```
     #[must_use = "has no side effects"]
@@ -1436,7 +1436,7 @@ pub unsafe trait TryFromBytes {
     /// assert_eq!(excess, &[6u8][..]);
     ///
     /// // These bytes are not valid instance of `Packet`.
-    /// let bytes = &[0x70, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5, 6][..];
+    /// let bytes = &[0x10, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5, 6][..];
     /// assert!(Packet::try_ref_from_prefix(bytes).is_err());
     /// ```
     #[must_use = "has no side effects"]
@@ -1521,7 +1521,7 @@ pub unsafe trait TryFromBytes {
     /// assert_eq!(excess, &[0u8][..]);
     ///
     /// // These bytes are not valid instance of `Packet`.
-    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 77, 240, 0xC0, 0x70][..];
+    /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 77, 240, 0xC0, 0x10][..];
     /// assert!(Packet::try_ref_from_prefix(bytes).is_err());
     /// ```
     #[must_use = "has no side effects"]
@@ -1603,7 +1603,7 @@ pub unsafe trait TryFromBytes {
     /// assert_eq!(packet.marshmallows, [[0, 1], [2, 3], [4, 5]]);
     ///
     /// // These bytes are not valid instance of `Packet`.
-    /// let bytes = &mut [0x70, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5, 6][..];
+    /// let bytes = &mut [0x10, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5, 6][..];
     /// assert!(Packet::try_mut_from_bytes(bytes).is_err());
     /// ```
     #[must_use = "has no side effects"]
@@ -1711,7 +1711,7 @@ pub unsafe trait TryFromBytes {
     /// assert_eq!(bytes, [0xC0, 0xC0, 240, 111, 0, 1, 2, 3, 4, 5, 222]);
     ///
     /// // These bytes are not valid instance of `Packet`.
-    /// let bytes = &mut [0x70, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5, 6][..];
+    /// let bytes = &mut [0x10, 0xC0, 240, 77, 0, 1, 2, 3, 4, 5, 6][..];
     /// assert!(Packet::try_mut_from_prefix(bytes).is_err());
     /// ```
     #[must_use = "has no side effects"]
@@ -1804,7 +1804,7 @@ pub unsafe trait TryFromBytes {
     /// assert_eq!(bytes, [111, 0xC0, 0xC0, 240, 222, 2, 3, 4, 5, 6, 7]);
     ///
     /// // These bytes are not valid instance of `Packet`.
-    /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 77, 240, 0xC0, 0x70][..];
+    /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 77, 240, 0xC0, 0x10][..];
     /// assert!(Packet::try_mut_from_prefix(bytes).is_err());
     /// ```
     #[must_use = "has no side effects"]
@@ -1856,7 +1856,7 @@ pub unsafe trait TryFromBytes {
     /// assert_eq!(packet.temperature, 77);
     ///
     /// // These bytes are not valid instance of `Packet`.
-    /// let bytes = &mut [0x70, 0xC0, 240, 77][..];
+    /// let bytes = &mut [0x10, 0xC0, 240, 77][..];
     /// assert!(Packet::try_read_from_bytes(bytes).is_err());
     /// ```
     #[must_use = "has no side effects"]
