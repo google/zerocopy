@@ -58,6 +58,37 @@
 //! Our conversion methods typically check alignment, then size, then bit
 //! validity. However, we do not guarantee that this is always the case, and
 //! this behavior may change between releases.
+//!
+//! ## `Send`, `Sync`, and `'static`
+//!
+//! Our error types are `Send`, `Sync`, and `'static` when their `Src` parameter
+//! is `Send`, `Sync`, or `'static`, respectively. This can cause issues when
+//! an error is sent or synchronized across threads; e.g.:
+//!
+//! ```compile_fail,E0515
+//! use zerocopy::*;
+//!
+//! let result: SizeError<&[u8], u32> = std::thread::spawn(|| {
+//!     let source = &mut [0u8, 1, 2][..];
+//!     // Try (and fail) to read a `u32` from `source`.
+//!     u32::read_from_bytes(source).unwrap_err()
+//! }).join().unwrap();
+//! ```
+//!
+//! To work around this, use [`map_src`][CastError::map_src] to convert the
+//! source parameter to an unproblematic type e.g.:
+//!
+//! ```
+//! use zerocopy::*;
+//!
+//! let result: SizeError<(), u32> = std::thread::spawn(|| {
+//!     let source = &mut [0u8, 1, 2][..];
+//!     // Try (and fail) to read a `u32` from `source`.
+//!     u32::read_from_bytes(source).unwrap_err()
+//!         // Erase the error source.
+//!         .map_src(drop)
+//! }).join().unwrap();
+//! ```
 
 use core::{
     convert::Infallible,
@@ -164,7 +195,28 @@ impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
         AlignmentError { src: new_src, dst: SendSyncPhantomData::default() }
     }
 
-    pub(crate) fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> AlignmentError<NewSrc, Dst> {
+    /// Maps the source value associated with the conversion error.
+    ///
+    /// This can help mitigate [issues with `Send`, `Sync` and `'static`
+    /// bounds][self#send-sync-and-static].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::*;
+    ///
+    /// let unaligned = Unalign::new(0u16);
+    ///
+    /// // Attempt to deref `unaligned`. This might fail with an alignment error.
+    /// let maybe_n: Result<&u16, AlignmentError<&Unalign<u16>, u16>> = unaligned.try_deref();
+    ///
+    /// // Map the error's source to its address as a usize.
+    /// let maybe_n: Result<&u16, AlignmentError<usize, u16>> = maybe_n.map_err(|err| {
+    ///     err.map_src(|src| src as *const _ as usize)
+    /// });
+    /// ```
+    #[inline]
+    pub fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> AlignmentError<NewSrc, Dst> {
         AlignmentError { src: f(self.src), dst: SendSyncPhantomData::default() }
     }
 
@@ -275,7 +327,28 @@ impl<Src, Dst: ?Sized> SizeError<Src, Dst> {
     }
 
     /// Maps the source value associated with the conversion error.
-    pub(crate) fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> SizeError<NewSrc, Dst> {
+    ///
+    /// This can help mitigate [issues with `Send`, `Sync` and `'static`
+    /// bounds][self#send-sync-and-static].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::*;
+    ///
+    /// let source: [u8; 3] = [0, 1, 2];
+    ///
+    /// // Try to read a `u32` from `source`. This will fail because there are insufficient
+    /// // bytes in `source`.
+    /// let maybe_u32: Result<u32, SizeError<&[u8], u32>> = u32::read_from_bytes(&source[..]);
+    ///
+    /// // Map the error's source to its size.
+    /// let maybe_u32: Result<u32, SizeError<usize, u32>> = maybe_u32.map_err(|err| {
+    ///     err.map_src(|src| src.len())
+    /// });
+    /// ```
+    #[inline]
+    pub fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> SizeError<NewSrc, Dst> {
         SizeError { src: f(self.src), dst: SendSyncPhantomData::default() }
     }
 
@@ -392,7 +465,27 @@ impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
     }
 
     /// Maps the source value associated with the conversion error.
-    pub(crate) fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> ValidityError<NewSrc, Dst> {
+    ///
+    /// This can help mitigate [issues with `Send`, `Sync` and `'static`
+    /// bounds][self#send-sync-and-static].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::*;
+    ///
+    /// let source: u8 = 42;
+    ///
+    /// // Try to transmute the `source` to a `bool`. This will fail.
+    /// let maybe_bool: Result<bool, ValidityError<u8, bool>> = try_transmute!(source);
+    ///
+    /// // Drop the error's source.
+    /// let maybe_bool: Result<bool, ValidityError<(), bool>> = maybe_bool.map_err(|err| {
+    ///     err.map_src(drop)
+    /// });
+    /// ```
+    #[inline]
+    pub fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> ValidityError<NewSrc, Dst> {
         ValidityError { src: f(self.src), dst: SendSyncPhantomData::default() }
     }
 
@@ -491,7 +584,28 @@ impl<Src, Dst: ?Sized> CastError<Src, Dst> {
     }
 
     /// Maps the source value associated with the conversion error.
-    pub(crate) fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> CastError<NewSrc, Dst> {
+    ///
+    /// This can help mitigate [issues with `Send`, `Sync` and `'static`
+    /// bounds][self#send-sync-and-static].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::*;
+    ///
+    /// let source: [u8; 3] = [0, 1, 2];
+    ///
+    /// // Try to read a `u32` from `source`. This will fail because there are insufficient
+    /// // bytes in `source`.
+    /// let maybe_u32: Result<&u32, CastError<&[u8], u32>> = u32::ref_from_bytes(&source[..]);
+    ///
+    /// // Map the error's source to its size and address.
+    /// let maybe_u32: Result<&u32, CastError<(usize, usize), u32>> = maybe_u32.map_err(|err| {
+    ///     err.map_src(|src| (src.len(), src.as_ptr() as usize))
+    /// });
+    /// ```
+    #[inline]
+    pub fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> CastError<NewSrc, Dst> {
         match self {
             Self::Alignment(e) => CastError::Alignment(e.map_src(f)),
             Self::Size(e) => CastError::Size(e.map_src(f)),
@@ -534,6 +648,38 @@ impl<Src, Dst: ?Sized + TryFromBytes> TryCastError<Src, Dst> {
             Self::Alignment(e) => e.src,
             Self::Size(e) => e.src,
             Self::Validity(e) => e.src,
+        }
+    }
+
+    /// Maps the source value associated with the conversion error.
+    ///
+    /// This can help mitigate [issues with `Send`, `Sync` and `'static`
+    /// bounds][self#send-sync-and-static].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use core::num::NonZeroU32;
+    /// use zerocopy::*;
+    ///
+    /// let source: [u8; 3] = [0, 0, 0];
+    ///
+    /// // Try to read a `NonZeroU32` from `source`.
+    /// let maybe_u32: Result<&NonZeroU32, TryCastError<&[u8], NonZeroU32>>
+    ///     = NonZeroU32::try_ref_from_bytes(&source[..]);
+    ///
+    /// // Map the error's source to its size and address.
+    /// let maybe_u32: Result<&NonZeroU32, TryCastError<(usize, usize), NonZeroU32>> =
+    ///     maybe_u32.map_err(|err| {
+    ///         err.map_src(|src| (src.len(), src.as_ptr() as usize))
+    ///     });
+    /// ```
+    #[inline]
+    pub fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> TryCastError<NewSrc, Dst> {
+        match self {
+            Self::Alignment(e) => TryCastError::Alignment(e.map_src(f)),
+            Self::Size(e) => TryCastError::Size(e.map_src(f)),
+            Self::Validity(e) => TryCastError::Validity(e.map_src(f)),
         }
     }
 }
