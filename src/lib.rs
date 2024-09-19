@@ -2331,6 +2331,61 @@ pub unsafe trait FromZeros: TryFromBytes {
     {
         <[Self]>::new_box_zeroed_with_elems(len).map(Into::into)
     }
+
+    /// Extends a `Vec<T>` by pushing `additional` new items onto the end of the
+    /// vector. The new items are initialized with zeros.
+    #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
+    #[cfg(feature = "alloc")]
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
+    #[inline(always)]
+    fn extend_vec_zeroed<T: FromZeros>(
+        v: &mut Vec<T>,
+        additional: usize,
+    ) -> Result<(), AllocError> {
+        // PANICS: We pass `v.len()` for `position`, so the `position > v.len()`
+        // panic condition is not satisfied.
+        <T as FromZeros>::insert_vec_zeroed(v, v.len(), additional)
+    }
+
+    /// Inserts `additional` new items into `Vec<T>` at `position`. The new
+    /// items are initialized with zeros.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `position > v.len()`.
+    #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
+    #[cfg(feature = "alloc")]
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
+    #[inline]
+    fn insert_vec_zeroed<T: FromZeros>(
+        v: &mut Vec<T>,
+        position: usize,
+        additional: usize,
+    ) -> Result<(), AllocError> {
+        assert!(position <= v.len());
+        // We only conditionally compile on versions on which `try_reserve` is
+        // stable; the Clippy lint is a false positive.
+        #[allow(clippy::incompatible_msrv)]
+        v.try_reserve(additional).map_err(|_| AllocError)?;
+        // SAFETY: The `try_reserve` call guarantees that these cannot overflow:
+        // * `ptr.add(position)`
+        // * `position + additional`
+        // * `v.len() + additional`
+        //
+        // `v.len() - position` cannot overflow because we asserted that
+        // `position <= v.len()`.
+        unsafe {
+            // This is a potentially overlapping copy.
+            let ptr = v.as_mut_ptr();
+            #[allow(clippy::arithmetic_side_effects)]
+            ptr.add(position).copy_to(ptr.add(position + additional), v.len() - position);
+            ptr.add(position).write_bytes(0, additional);
+            #[allow(clippy::arithmetic_side_effects)]
+            v.set_len(v.len() + additional);
+        }
+
+        Ok(())
+    }
 }
 
 /// Analyzes whether a type is [`FromBytes`].
@@ -4416,21 +4471,21 @@ pub unsafe trait Unaligned {
 
 #[cfg(feature = "alloc")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
+#[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
 mod alloc_support {
-    #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
     use super::*;
 
     /// Extends a `Vec<T>` by pushing `additional` new items onto the end of the
     /// vector. The new items are initialized with zeros.
     #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
+    #[doc(hidden)]
+    #[deprecated(since = "0.8.0", note = "moved to `FromZeros`")]
     #[inline(always)]
     pub fn extend_vec_zeroed<T: FromZeros>(
         v: &mut Vec<T>,
         additional: usize,
     ) -> Result<(), AllocError> {
-        // PANICS: We pass `v.len()` for `position`, so the `position > v.len()`
-        // panic condition is not satisfied.
-        insert_vec_zeroed(v, v.len(), additional)
+        <T as FromZeros>::extend_vec_zeroed(v, additional)
     }
 
     /// Inserts `additional` new items into `Vec<T>` at `position`. The new
@@ -4440,213 +4495,20 @@ mod alloc_support {
     ///
     /// Panics if `position > v.len()`.
     #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
-    #[inline]
+    #[doc(hidden)]
+    #[deprecated(since = "0.8.0", note = "moved to `FromZeros`")]
+    #[inline(always)]
     pub fn insert_vec_zeroed<T: FromZeros>(
         v: &mut Vec<T>,
         position: usize,
         additional: usize,
     ) -> Result<(), AllocError> {
-        assert!(position <= v.len());
-        // We only conditionally compile on versions on which `try_reserve` is
-        // stable; the Clippy lint is a false positive.
-        #[allow(clippy::incompatible_msrv)]
-        v.try_reserve(additional).map_err(|_| AllocError)?;
-        // SAFETY: The `try_reserve` call guarantees that these cannot overflow:
-        // * `ptr.add(position)`
-        // * `position + additional`
-        // * `v.len() + additional`
-        //
-        // `v.len() - position` cannot overflow because we asserted that
-        // `position <= v.len()`.
-        unsafe {
-            // This is a potentially overlapping copy.
-            let ptr = v.as_mut_ptr();
-            #[allow(clippy::arithmetic_side_effects)]
-            ptr.add(position).copy_to(ptr.add(position + additional), v.len() - position);
-            ptr.add(position).write_bytes(0, additional);
-            #[allow(clippy::arithmetic_side_effects)]
-            v.set_len(v.len() + additional);
-        }
-
-        Ok(())
-    }
-
-    #[cfg(test)]
-    mod tests {
-        use core::convert::TryFrom as _;
-
-        use super::super::*;
-        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
-        use super::*;
-
-        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
-        #[test]
-        fn test_extend_vec_zeroed() {
-            // Test extending when there is an existing allocation.
-            let mut v = vec![100u64, 200, 300];
-            extend_vec_zeroed(&mut v, 3).unwrap();
-            assert_eq!(v.len(), 6);
-            assert_eq!(&*v, &[100, 200, 300, 0, 0, 0]);
-            drop(v);
-
-            // Test extending when there is no existing allocation.
-            let mut v: Vec<u64> = Vec::new();
-            extend_vec_zeroed(&mut v, 3).unwrap();
-            assert_eq!(v.len(), 3);
-            assert_eq!(&*v, &[0, 0, 0]);
-            drop(v);
-        }
-
-        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
-        #[test]
-        fn test_extend_vec_zeroed_zst() {
-            // Test extending when there is an existing (fake) allocation.
-            let mut v = vec![(), (), ()];
-            extend_vec_zeroed(&mut v, 3).unwrap();
-            assert_eq!(v.len(), 6);
-            assert_eq!(&*v, &[(), (), (), (), (), ()]);
-            drop(v);
-
-            // Test extending when there is no existing (fake) allocation.
-            let mut v: Vec<()> = Vec::new();
-            extend_vec_zeroed(&mut v, 3).unwrap();
-            assert_eq!(&*v, &[(), (), ()]);
-            drop(v);
-        }
-
-        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
-        #[test]
-        fn test_insert_vec_zeroed() {
-            // Insert at start (no existing allocation).
-            let mut v: Vec<u64> = Vec::new();
-            insert_vec_zeroed(&mut v, 0, 2).unwrap();
-            assert_eq!(v.len(), 2);
-            assert_eq!(&*v, &[0, 0]);
-            drop(v);
-
-            // Insert at start.
-            let mut v = vec![100u64, 200, 300];
-            insert_vec_zeroed(&mut v, 0, 2).unwrap();
-            assert_eq!(v.len(), 5);
-            assert_eq!(&*v, &[0, 0, 100, 200, 300]);
-            drop(v);
-
-            // Insert at middle.
-            let mut v = vec![100u64, 200, 300];
-            insert_vec_zeroed(&mut v, 1, 1).unwrap();
-            assert_eq!(v.len(), 4);
-            assert_eq!(&*v, &[100, 0, 200, 300]);
-            drop(v);
-
-            // Insert at end.
-            let mut v = vec![100u64, 200, 300];
-            insert_vec_zeroed(&mut v, 3, 1).unwrap();
-            assert_eq!(v.len(), 4);
-            assert_eq!(&*v, &[100, 200, 300, 0]);
-            drop(v);
-        }
-
-        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
-        #[test]
-        fn test_insert_vec_zeroed_zst() {
-            // Insert at start (no existing fake allocation).
-            let mut v: Vec<()> = Vec::new();
-            insert_vec_zeroed(&mut v, 0, 2).unwrap();
-            assert_eq!(v.len(), 2);
-            assert_eq!(&*v, &[(), ()]);
-            drop(v);
-
-            // Insert at start.
-            let mut v = vec![(), (), ()];
-            insert_vec_zeroed(&mut v, 0, 2).unwrap();
-            assert_eq!(v.len(), 5);
-            assert_eq!(&*v, &[(), (), (), (), ()]);
-            drop(v);
-
-            // Insert at middle.
-            let mut v = vec![(), (), ()];
-            insert_vec_zeroed(&mut v, 1, 1).unwrap();
-            assert_eq!(v.len(), 4);
-            assert_eq!(&*v, &[(), (), (), ()]);
-            drop(v);
-
-            // Insert at end.
-            let mut v = vec![(), (), ()];
-            insert_vec_zeroed(&mut v, 3, 1).unwrap();
-            assert_eq!(v.len(), 4);
-            assert_eq!(&*v, &[(), (), (), ()]);
-            drop(v);
-        }
-
-        #[test]
-        fn test_new_box_zeroed() {
-            assert_eq!(u64::new_box_zeroed(), Ok(Box::new(0)));
-        }
-
-        #[test]
-        fn test_new_box_zeroed_array() {
-            drop(<[u32; 0x1000]>::new_box_zeroed());
-        }
-
-        #[test]
-        fn test_new_box_zeroed_zst() {
-            // This test exists in order to exercise unsafe code, especially
-            // when running under Miri.
-            #[allow(clippy::unit_cmp)]
-            {
-                assert_eq!(<()>::new_box_zeroed(), Ok(Box::new(())));
-            }
-        }
-
-        #[test]
-        fn test_new_box_zeroed_with_elems() {
-            let mut s: Box<[u64]> = <[u64]>::new_box_zeroed_with_elems(3).unwrap();
-            assert_eq!(s.len(), 3);
-            assert_eq!(&*s, &[0, 0, 0]);
-            s[1] = 3;
-            assert_eq!(&*s, &[0, 3, 0]);
-        }
-
-        #[test]
-        fn test_new_box_zeroed_with_elems_empty() {
-            let s: Box<[u64]> = <[u64]>::new_box_zeroed_with_elems(0).unwrap();
-            assert_eq!(s.len(), 0);
-        }
-
-        #[test]
-        fn test_new_box_zeroed_with_elems_zst() {
-            let mut s: Box<[()]> = <[()]>::new_box_zeroed_with_elems(3).unwrap();
-            assert_eq!(s.len(), 3);
-            assert!(s.get(10).is_none());
-            // This test exists in order to exercise unsafe code, especially
-            // when running under Miri.
-            #[allow(clippy::unit_cmp)]
-            {
-                assert_eq!(s[1], ());
-            }
-            s[2] = ();
-        }
-
-        #[test]
-        fn test_new_box_zeroed_with_elems_zst_empty() {
-            let s: Box<[()]> = <[()]>::new_box_zeroed_with_elems(0).unwrap();
-            assert_eq!(s.len(), 0);
-        }
-
-        #[test]
-        fn new_box_zeroed_with_elems_errors() {
-            assert_eq!(<[u16]>::new_box_zeroed_with_elems(usize::MAX), Err(AllocError));
-
-            let max = usize::try_from(isize::MAX).unwrap();
-            assert_eq!(
-                <[u16]>::new_box_zeroed_with_elems((max / mem::size_of::<u16>()) + 1),
-                Err(AllocError)
-            );
-        }
+        <T as FromZeros>::insert_vec_zeroed(v, position, additional)
     }
 }
 
 #[cfg(feature = "alloc")]
+#[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
 #[doc(inline)]
 pub use alloc_support::*;
 
@@ -5439,6 +5301,176 @@ mod tests {
         }
 
         assert_impl_all!(Bar<u8, AU64>: FromZeros, FromBytes, IntoBytes, Unaligned);
+    }
+
+    #[cfg(feature = "alloc")]
+    mod alloc {
+        use super::*;
+
+        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
+        #[test]
+        fn test_extend_vec_zeroed() {
+            // Test extending when there is an existing allocation.
+            let mut v = vec![100u64, 200, 300];
+            u16::extend_vec_zeroed(&mut v, 3).unwrap();
+            assert_eq!(v.len(), 6);
+            assert_eq!(&*v, &[100, 200, 300, 0, 0, 0]);
+            drop(v);
+
+            // Test extending when there is no existing allocation.
+            let mut v: Vec<u64> = Vec::new();
+            u16::extend_vec_zeroed(&mut v, 3).unwrap();
+            assert_eq!(v.len(), 3);
+            assert_eq!(&*v, &[0, 0, 0]);
+            drop(v);
+        }
+
+        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
+        #[test]
+        fn test_extend_vec_zeroed_zst() {
+            // Test extending when there is an existing (fake) allocation.
+            let mut v = vec![(), (), ()];
+            <()>::extend_vec_zeroed(&mut v, 3).unwrap();
+            assert_eq!(v.len(), 6);
+            assert_eq!(&*v, &[(), (), (), (), (), ()]);
+            drop(v);
+
+            // Test extending when there is no existing (fake) allocation.
+            let mut v: Vec<()> = Vec::new();
+            <()>::extend_vec_zeroed(&mut v, 3).unwrap();
+            assert_eq!(&*v, &[(), (), ()]);
+            drop(v);
+        }
+
+        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
+        #[test]
+        fn test_insert_vec_zeroed() {
+            // Insert at start (no existing allocation).
+            let mut v: Vec<u64> = Vec::new();
+            u64::insert_vec_zeroed(&mut v, 0, 2).unwrap();
+            assert_eq!(v.len(), 2);
+            assert_eq!(&*v, &[0, 0]);
+            drop(v);
+
+            // Insert at start.
+            let mut v = vec![100u64, 200, 300];
+            u64::insert_vec_zeroed(&mut v, 0, 2).unwrap();
+            assert_eq!(v.len(), 5);
+            assert_eq!(&*v, &[0, 0, 100, 200, 300]);
+            drop(v);
+
+            // Insert at middle.
+            let mut v = vec![100u64, 200, 300];
+            u64::insert_vec_zeroed(&mut v, 1, 1).unwrap();
+            assert_eq!(v.len(), 4);
+            assert_eq!(&*v, &[100, 0, 200, 300]);
+            drop(v);
+
+            // Insert at end.
+            let mut v = vec![100u64, 200, 300];
+            u64::insert_vec_zeroed(&mut v, 3, 1).unwrap();
+            assert_eq!(v.len(), 4);
+            assert_eq!(&*v, &[100, 200, 300, 0]);
+            drop(v);
+        }
+
+        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
+        #[test]
+        fn test_insert_vec_zeroed_zst() {
+            // Insert at start (no existing fake allocation).
+            let mut v: Vec<()> = Vec::new();
+            <()>::insert_vec_zeroed(&mut v, 0, 2).unwrap();
+            assert_eq!(v.len(), 2);
+            assert_eq!(&*v, &[(), ()]);
+            drop(v);
+
+            // Insert at start.
+            let mut v = vec![(), (), ()];
+            <()>::insert_vec_zeroed(&mut v, 0, 2).unwrap();
+            assert_eq!(v.len(), 5);
+            assert_eq!(&*v, &[(), (), (), (), ()]);
+            drop(v);
+
+            // Insert at middle.
+            let mut v = vec![(), (), ()];
+            <()>::insert_vec_zeroed(&mut v, 1, 1).unwrap();
+            assert_eq!(v.len(), 4);
+            assert_eq!(&*v, &[(), (), (), ()]);
+            drop(v);
+
+            // Insert at end.
+            let mut v = vec![(), (), ()];
+            <()>::insert_vec_zeroed(&mut v, 3, 1).unwrap();
+            assert_eq!(v.len(), 4);
+            assert_eq!(&*v, &[(), (), (), ()]);
+            drop(v);
+        }
+
+        #[test]
+        fn test_new_box_zeroed() {
+            assert_eq!(u64::new_box_zeroed(), Ok(Box::new(0)));
+        }
+
+        #[test]
+        fn test_new_box_zeroed_array() {
+            drop(<[u32; 0x1000]>::new_box_zeroed());
+        }
+
+        #[test]
+        fn test_new_box_zeroed_zst() {
+            // This test exists in order to exercise unsafe code, especially
+            // when running under Miri.
+            #[allow(clippy::unit_cmp)]
+            {
+                assert_eq!(<()>::new_box_zeroed(), Ok(Box::new(())));
+            }
+        }
+
+        #[test]
+        fn test_new_box_zeroed_with_elems() {
+            let mut s: Box<[u64]> = <[u64]>::new_box_zeroed_with_elems(3).unwrap();
+            assert_eq!(s.len(), 3);
+            assert_eq!(&*s, &[0, 0, 0]);
+            s[1] = 3;
+            assert_eq!(&*s, &[0, 3, 0]);
+        }
+
+        #[test]
+        fn test_new_box_zeroed_with_elems_empty() {
+            let s: Box<[u64]> = <[u64]>::new_box_zeroed_with_elems(0).unwrap();
+            assert_eq!(s.len(), 0);
+        }
+
+        #[test]
+        fn test_new_box_zeroed_with_elems_zst() {
+            let mut s: Box<[()]> = <[()]>::new_box_zeroed_with_elems(3).unwrap();
+            assert_eq!(s.len(), 3);
+            assert!(s.get(10).is_none());
+            // This test exists in order to exercise unsafe code, especially
+            // when running under Miri.
+            #[allow(clippy::unit_cmp)]
+            {
+                assert_eq!(s[1], ());
+            }
+            s[2] = ();
+        }
+
+        #[test]
+        fn test_new_box_zeroed_with_elems_zst_empty() {
+            let s: Box<[()]> = <[()]>::new_box_zeroed_with_elems(0).unwrap();
+            assert_eq!(s.len(), 0);
+        }
+
+        #[test]
+        fn new_box_zeroed_with_elems_errors() {
+            assert_eq!(<[u16]>::new_box_zeroed_with_elems(usize::MAX), Err(AllocError));
+
+            let max = <usize as core::convert::TryFrom<_>>::try_from(isize::MAX).unwrap();
+            assert_eq!(
+                <[u16]>::new_box_zeroed_with_elems((max / mem::size_of::<u16>()) + 1),
+                Err(AllocError)
+            );
+        }
     }
 }
 
