@@ -96,7 +96,8 @@ macro_rules! transmute {
 }
 
 /// Safely transmutes a mutable or immutable reference of one type to an
-/// immutable reference of another type of the same size.
+/// immutable reference of another type of the same size and compatible
+/// alignment.
 ///
 /// This macro behaves like an invocation of this function:
 ///
@@ -240,7 +241,7 @@ macro_rules! transmute_ref {
 }
 
 /// Safely transmutes a mutable reference of one type to a mutable reference of
-/// another type of the same size.
+/// another type of the same size and compatible alignment.
 ///
 /// This macro behaves like an invocation of this function:
 ///
@@ -462,12 +463,13 @@ macro_rules! try_transmute {
 }
 
 /// Conditionally transmutes a mutable or immutable reference of one type to an
-/// immutable reference of another type of the same size.
+/// immutable reference of another type of the same size and compatible
+/// alignment.
 ///
 /// This macro behaves like an invocation of this function:
 ///
 /// ```ignore
-/// fn try_transmute_ref<Src, Dst>(src: &Src) -> Result<&Dst, ValidityError<&Src, &Dst>>
+/// fn try_transmute_ref<Src, Dst>(src: &Src) -> Result<&Dst, ValidityError<&Src, Dst>>
 /// where
 ///     Src: IntoBytes + Immutable,
 ///     Dst: TryFromBytes + Immutable,
@@ -568,12 +570,12 @@ macro_rules! try_transmute_ref {
 }
 
 /// Conditionally transmutes a mutable reference of one type to a mutable
-/// reference of another type of the same size.
+/// reference of another type of the same size and compatible alignment.
 ///
 /// This macro behaves like an invocation of this function:
 ///
 /// ```ignore
-/// fn try_transmute_mut<Src, Dst>(src: &mut Src) -> Result<&mut Dst, ValidityError<&mut Src, &mut Dst>>
+/// fn try_transmute_mut<Src, Dst>(src: &mut Src) -> Result<&mut Dst, ValidityError<&mut Src, Dst>>
 /// where
 ///     Src: IntoBytes,
 ///     Dst: TryFromBytes,
