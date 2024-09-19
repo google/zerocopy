@@ -251,6 +251,7 @@ error[E0277]: the trait bound `UnsafeCell<()>: Immutable` is not satisfied
 51 | #[derive(Immutable)]
    |          ^^^^^^^^^ the trait `Immutable` is not implemented for `UnsafeCell<()>`
    |
+   = note: Consider adding `#[derive(Immutable)]` to `UnsafeCell<()>`
    = help: the following other types implement trait `Immutable`:
              &T
              &mut T
@@ -274,6 +275,7 @@ error[E0277]: the trait bound `UnsafeCell<u8>: Immutable` is not satisfied
 59 | #[derive(Immutable)]
    |          ^^^^^^^^^ the trait `Immutable` is not implemented for `UnsafeCell<u8>`
    |
+   = note: Consider adding `#[derive(Immutable)]` to `UnsafeCell<u8>`
    = help: the following other types implement trait `Immutable`:
              &T
              &mut T
@@ -297,6 +299,7 @@ error[E0277]: the trait bound `NotTryFromBytes: TryFromBytes` is not satisfied
 82 | #[derive(TryFromBytes)]
    |          ^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotTryFromBytes`
    |
+   = note: Consider adding `#[derive(TryFromBytes)]` to `NotTryFromBytes`
    = help: the following other types implement trait `TryFromBytes`:
              ()
              *const T
@@ -320,6 +323,7 @@ error[E0277]: the trait bound `NotFromZeros: TryFromBytes` is not satisfied
 127 | #[derive(FromZeros)]
     |          ^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotFromZeros`
     |
+    = note: Consider adding `#[derive(TryFromBytes)]` to `NotFromZeros`
     = help: the following other types implement trait `TryFromBytes`:
               ()
               *const T
@@ -343,6 +347,7 @@ error[E0277]: the trait bound `NotFromZeros: FromZeros` is not satisfied
 127 | #[derive(FromZeros)]
     |          ^^^^^^^^^ the trait `FromZeros` is not implemented for `NotFromZeros`
     |
+    = note: Consider adding `#[derive(FromZeros)]` to `NotFromZeros`
     = help: the following other types implement trait `FromZeros`:
               ()
               *const T
@@ -366,6 +371,7 @@ error[E0277]: the trait bound `NotFromZeros: TryFromBytes` is not satisfied
 133 | #[derive(FromZeros)]
     |          ^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotFromZeros`
     |
+    = note: Consider adding `#[derive(TryFromBytes)]` to `NotFromZeros`
     = help: the following other types implement trait `TryFromBytes`:
               ()
               *const T
@@ -389,6 +395,7 @@ error[E0277]: the trait bound `bool: FromBytes` is not satisfied
 186 | #[derive(FromBytes)]
     |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `bool`
     |
+    = note: Consider adding `#[derive(FromBytes)]` to `bool`
     = help: the following other types implement trait `FromBytes`:
               ()
               AtomicI16

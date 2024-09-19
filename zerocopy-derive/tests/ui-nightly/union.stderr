@@ -36,6 +36,7 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::Immutable` is not satis
 24 | #[derive(Immutable)]
    |          ^^^^^^^^^ the trait `zerocopy::Immutable` is not implemented for `UnsafeCell<()>`, which is required by `ManuallyDrop<UnsafeCell<()>>: zerocopy::Immutable`
    |
+   = note: Consider adding `#[derive(Immutable)]` to `UnsafeCell<()>`
    = help: the following other types implement trait `zerocopy::Immutable`:
              &T
              &mut T

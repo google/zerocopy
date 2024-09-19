@@ -70,6 +70,7 @@ error[E0277]: the trait bound `NotKnownLayoutDst: zerocopy::KnownLayout` is not 
 41 | #[derive(KnownLayout)]
    |          ^^^^^^^^^^^ the trait `zerocopy::KnownLayout` is not implemented for `NotKnownLayoutDst`
    |
+   = note: Consider adding `#[derive(KnownLayout)]` to `NotKnownLayoutDst`
    = help: the following other types implement trait `zerocopy::KnownLayout`:
              ()
              *const T
@@ -89,6 +90,7 @@ error[E0277]: the trait bound `NotKnownLayout: zerocopy::KnownLayout` is not sat
 47 | #[derive(KnownLayout)]
    |          ^^^^^^^^^^^ the trait `zerocopy::KnownLayout` is not implemented for `NotKnownLayout`
    |
+   = note: Consider adding `#[derive(KnownLayout)]` to `NotKnownLayout`
    = help: the following other types implement trait `zerocopy::KnownLayout`:
              ()
              *const T
@@ -108,6 +110,7 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::Immutable` is not satis
 55 | #[derive(Immutable)]
    |          ^^^^^^^^^ the trait `zerocopy::Immutable` is not implemented for `UnsafeCell<()>`
    |
+   = note: Consider adding `#[derive(Immutable)]` to `UnsafeCell<()>`
    = help: the following other types implement trait `zerocopy::Immutable`:
              &T
              &mut T
@@ -127,6 +130,7 @@ error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy::Immutable` is not satis
 60 | #[derive(Immutable)]
    |          ^^^^^^^^^ the trait `zerocopy::Immutable` is not implemented for `UnsafeCell<u8>`, which is required by `[UnsafeCell<u8>; 0]: zerocopy::Immutable`
    |
+   = note: Consider adding `#[derive(Immutable)]` to `UnsafeCell<u8>`
    = help: the following other types implement trait `zerocopy::Immutable`:
              &T
              &mut T
@@ -195,6 +199,7 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
 100 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
     |
+    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
     = help: the following other types implement trait `Unaligned`:
               ()
               AtomicBool

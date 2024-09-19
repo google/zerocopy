@@ -4,6 +4,7 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
 20 |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `TryFromBytes`:
              ()
              *const T
@@ -26,6 +27,7 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
 20 |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
    |                                                               ^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `TryFromBytes`:
              ()
              *const T
@@ -52,6 +54,7 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
 20 |     let dst_not_try_from_bytes: Result<&mut NotZerocopy, _> = try_transmute_mut!(src);
    |                                                               ^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `TryFromBytes`:
              ()
              *const T

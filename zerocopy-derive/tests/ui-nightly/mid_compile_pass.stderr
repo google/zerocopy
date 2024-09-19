@@ -4,6 +4,7 @@ error[E0277]: the trait bound `T: KnownLayout` is not satisfied
 59 | fn test_kl13<T>(t: T) -> impl KnownLayout {
    |                          ^^^^^^^^^^^^^^^^ the trait `KnownLayout` is not implemented for `T`, which is required by `KL13<T>: KnownLayout`
    |
+   = note: Consider adding `#[derive(KnownLayout)]` to `T`
 note: required for `KL13<T>` to implement `KnownLayout`
   --> tests/ui-nightly/mid_compile_pass.rs:55:10
    |
@@ -87,6 +88,7 @@ error[E0277]: the trait bound `T: KnownLayout` is not satisfied
    |     |
    |     required by a bound introduced by this call
    |
+   = note: Consider adding `#[derive(KnownLayout)]` to `T`
 note: required for `KL12<T>` to implement `KnownLayout`
   --> tests/ui-nightly/mid_compile_pass.rs:45:10
    |

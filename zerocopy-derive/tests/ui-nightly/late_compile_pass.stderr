@@ -12,6 +12,7 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
 28 | #[derive(TryFromBytes)]
    |          ^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `TryFromBytes`:
              ()
              *const T
@@ -35,6 +36,7 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
 37 | #[derive(FromZeros)]
    |          ^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `TryFromBytes`:
              ()
              *const T
@@ -58,6 +60,7 @@ error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
 37 | #[derive(FromZeros)]
    |          ^^^^^^^^^ the trait `FromZeros` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
    = help: the following other types implement trait `FromZeros`:
              ()
              *const T
@@ -81,6 +84,7 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
 46 | #[derive(FromBytes)]
    |          ^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `TryFromBytes`:
              ()
              *const T
@@ -104,6 +108,7 @@ error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
 46 | #[derive(FromBytes)]
    |          ^^^^^^^^^ the trait `FromZeros` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
    = help: the following other types implement trait `FromZeros`:
              ()
              *const T
@@ -127,6 +132,7 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfie
 46 | #[derive(FromBytes)]
    |          ^^^^^^^^^ the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::FromBytes`:
              ()
              AU16
@@ -150,6 +156,7 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfie
 55 | #[derive(IntoBytes)]
    |          ^^^^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy`
    |
+   = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::IntoBytes`:
              ()
              AU16
@@ -173,6 +180,7 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
 65 | #[derive(Unaligned)]
    |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
    |
+   = note: Consider adding `#[derive(Unaligned)]` to `AU16`
    = help: the following other types implement trait `Unaligned`:
              ()
              AtomicBool
@@ -196,6 +204,7 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
 73 | #[derive(Unaligned)]
    |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
    |
+   = note: Consider adding `#[derive(Unaligned)]` to `AU16`
    = help: the following other types implement trait `Unaligned`:
              ()
              AtomicBool
@@ -219,6 +228,7 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
 80 | #[derive(Unaligned)]
    |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
    |
+   = note: Consider adding `#[derive(Unaligned)]` to `AU16`
    = help: the following other types implement trait `Unaligned`:
              ()
              AtomicBool

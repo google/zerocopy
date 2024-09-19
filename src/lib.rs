@@ -638,6 +638,10 @@ pub use zerocopy_derive::KnownLayout;
     not(feature = "derive"),
     doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.KnownLayout.html"),
 )]
+#[cfg_attr(
+    zerocopy_diagnostic_on_unimplemented,
+    diagnostic::on_unimplemented(note = "Consider adding `#[derive(KnownLayout)]` to `{Self}`")
+)]
 pub unsafe trait KnownLayout {
     // The `Self: Sized` bound makes it so that `KnownLayout` can still be
     // object safe. It's not currently object safe thanks to `const LAYOUT`, and
@@ -1086,6 +1090,10 @@ pub use zerocopy_derive::Immutable;
     doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.Immutable.html"),
     doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.Immutable.html#analysis"),
 )]
+#[cfg_attr(
+    zerocopy_diagnostic_on_unimplemented,
+    diagnostic::on_unimplemented(note = "Consider adding `#[derive(Immutable)]` to `{Self}`")
+)]
 pub unsafe trait Immutable {
     // The `Self: Sized` bound makes it so that `Immutable` is still object
     // safe.
@@ -1231,6 +1239,10 @@ pub use zerocopy_derive::TryFromBytes;
 #[cfg_attr(
     not(feature = "derive"),
     doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.TryFromBytes.html"),
+)]
+#[cfg_attr(
+    zerocopy_diagnostic_on_unimplemented,
+    diagnostic::on_unimplemented(note = "Consider adding `#[derive(TryFromBytes)]` to `{Self}`")
 )]
 pub unsafe trait TryFromBytes {
     // The `Self: Sized` bound makes it so that `TryFromBytes` is still object
@@ -2031,6 +2043,10 @@ fn swap<T, U>((t, u): (T, U)) -> (U, T) {
     doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.FromZeros.html"),
     doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.FromZeros.html#analysis"),
 )]
+#[cfg_attr(
+    zerocopy_diagnostic_on_unimplemented,
+    diagnostic::on_unimplemented(note = "Consider adding `#[derive(FromZeros)]` to `{Self}`")
+)]
 pub unsafe trait FromZeros: TryFromBytes {
     // The `Self: Sized` bound makes it so that `FromZeros` is still object
     // safe.
@@ -2554,6 +2570,10 @@ pub use zerocopy_derive::FromBytes;
     not(feature = "derive"),
     doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.FromBytes.html"),
     doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.FromBytes.html#analysis"),
+)]
+#[cfg_attr(
+    zerocopy_diagnostic_on_unimplemented,
+    diagnostic::on_unimplemented(note = "Consider adding `#[derive(FromBytes)]` to `{Self}`")
 )]
 pub unsafe trait FromBytes: FromZeros {
     // The `Self: Sized` bound makes it so that `FromBytes` is still object
@@ -3892,6 +3912,10 @@ pub use zerocopy_derive::IntoBytes;
     doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.IntoBytes.html"),
     doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.IntoBytes.html#analysis"),
 )]
+#[cfg_attr(
+    zerocopy_diagnostic_on_unimplemented,
+    diagnostic::on_unimplemented(note = "Consider adding `#[derive(IntoBytes)]` to `{Self}`")
+)]
 pub unsafe trait IntoBytes {
     // The `Self: Sized` bound makes it so that this function doesn't prevent
     // `IntoBytes` from being object safe. Note that other `IntoBytes` methods
@@ -4404,6 +4428,10 @@ pub use zerocopy_derive::Unaligned;
     not(feature = "derive"),
     doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.Unaligned.html"),
     doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.Unaligned.html#analysis"),
+)]
+#[cfg_attr(
+    zerocopy_diagnostic_on_unimplemented,
+    diagnostic::on_unimplemented(note = "Consider adding `#[derive(Unaligned)]` to `{Self}`")
 )]
 pub unsafe trait Unaligned {
     // The `Self: Sized` bound makes it so that `Unaligned` is still object

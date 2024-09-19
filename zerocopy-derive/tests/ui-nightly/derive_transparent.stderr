@@ -4,6 +4,7 @@ error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
 34 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`, which is required by `TransparentStruct<NotZerocopy>: TryFromBytes`
    |
+   = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `TryFromBytes`:
              ()
              *const T
@@ -32,6 +33,7 @@ error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
 35 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromZeros` is not implemented for `NotZerocopy`, which is required by `TransparentStruct<NotZerocopy>: FromZeros`
    |
+   = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
    = help: the following other types implement trait `FromZeros`:
              ()
              *const T
@@ -60,6 +62,7 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfie
 36 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`, which is required by `TransparentStruct<NotZerocopy>: zerocopy::FromBytes`
    |
+   = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::FromBytes`:
              ()
              AU16
@@ -88,6 +91,7 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfie
 37 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: IntoBytes);
    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy`, which is required by `TransparentStruct<NotZerocopy>: zerocopy::IntoBytes`
    |
+   = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::IntoBytes`:
              ()
              AU16
@@ -116,6 +120,7 @@ error[E0277]: the trait bound `NotZerocopy: Unaligned` is not satisfied
 38 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Unaligned` is not implemented for `NotZerocopy`, which is required by `TransparentStruct<NotZerocopy>: Unaligned`
    |
+   = note: Consider adding `#[derive(Unaligned)]` to `NotZerocopy`
    = help: the following other types implement trait `Unaligned`:
              ()
              AtomicBool

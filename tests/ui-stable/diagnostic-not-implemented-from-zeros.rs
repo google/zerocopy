@@ -1,0 +1,1 @@
+../ui-nightly/diagnostic-not-implemented-from-zeros.rs
