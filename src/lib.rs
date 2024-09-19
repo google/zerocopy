@@ -5155,6 +5155,30 @@ mod tests {
     }
 
     #[test]
+    fn test_zst_count_preserved() {
+        // Test that, when an explicit count is provided to for a type with a
+        // ZST trailing slice element, that count is preserved. This is
+        // important since, for such types, all element counts result in objects
+        // of the same size, and so the correct behavior is ambiguous. However,
+        // preserving the count as requested by the user is the behavior that we
+        // document publicly.
+
+        // FromZeros methods
+        #[cfg(feature = "alloc")]
+        assert_eq!(<[()]>::new_box_zeroed_with_elems(3).unwrap().len(), 3);
+        #[cfg(feature = "alloc")]
+        assert_eq!(<()>::new_vec_zeroed(3).unwrap().len(), 3);
+
+        // FromBytes methods
+        assert_eq!(<[()]>::ref_from_bytes_with_elems(&[][..], 3).unwrap().len(), 3);
+        assert_eq!(<[()]>::ref_from_prefix_with_elems(&[][..], 3).unwrap().0.len(), 3);
+        assert_eq!(<[()]>::ref_from_suffix_with_elems(&[][..], 3).unwrap().1.len(), 3);
+        assert_eq!(<[()]>::mut_from_bytes_with_elems(&mut [][..], 3).unwrap().len(), 3);
+        assert_eq!(<[()]>::mut_from_prefix_with_elems(&mut [][..], 3).unwrap().0.len(), 3);
+        assert_eq!(<[()]>::mut_from_suffix_with_elems(&mut [][..], 3).unwrap().1.len(), 3);
+    }
+
+    #[test]
     fn test_read_write() {
         const VAL: u64 = 0x12345678;
         #[cfg(target_endian = "big")]
