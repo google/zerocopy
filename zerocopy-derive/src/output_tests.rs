@@ -197,19 +197,28 @@ fn test_try_from_bytes_enum() {
     test_derive! {
         TryFromBytes {
             #[repr(u8)]
-            enum ComplexWithGenerics<X, Y> {
+            enum ComplexWithGenerics<'a: 'static, const N: usize, X, Y: Deref>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
                 UnitLike,
-                StructLike { a: u8, b: X },
-                TupleLike(bool, Y),
+                StructLike { a: u8, b: X, c: X::Target, d: Y::Target, e: [(X, Y); N] },
+                TupleLike(bool, Y, PhantomData<&'a [(X, Y); N]>),
             }
         } expands to {
             #[allow(deprecated)]
-            unsafe impl<X, Y> ::zerocopy::TryFromBytes for ComplexWithGenerics<X, Y>
+            unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
+                for ComplexWithGenerics<'a, { N }, X, Y>
             where
+                X: Deref<Target = &'a [(X, Y); N]>,
                 u8: ::zerocopy::TryFromBytes,
                 X: ::zerocopy::TryFromBytes,
+                X::Target: ::zerocopy::TryFromBytes,
+                Y::Target: ::zerocopy::TryFromBytes,
+                [(X, Y); N]: ::zerocopy::TryFromBytes,
                 bool: ::zerocopy::TryFromBytes,
                 Y: ::zerocopy::TryFromBytes,
+                PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
             {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
                 fn is_bit_valid<A>(
@@ -244,34 +253,42 @@ fn test_try_from_bytes_enum() {
                     #[repr(C)]
                     #[allow(non_snake_case)]
                     #[derive(:: zerocopy_derive :: TryFromBytes)]
-                    struct ___ZerocopyVariantStruct_StructLike<X, Y>(
+                    struct ___ZerocopyVariantStruct_StructLike<'a: 'static, const N: usize, X, Y: Deref>(
                         core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                         u8,
                         X,
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<X, Y> >,
-                    );
+                        X::Target,
+                        Y::Target,
+                        [(X, Y); N],
+                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y> >,
+                    )
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,;
                     #[repr(C)]
                     #[allow(non_snake_case)]
                     #[derive(:: zerocopy_derive :: TryFromBytes)]
-                    struct ___ZerocopyVariantStruct_TupleLike<X, Y>(
+                    struct ___ZerocopyVariantStruct_TupleLike<'a: 'static, const N: usize, X, Y: Deref>(
                         core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                         bool,
                         Y,
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<X, Y> >,
-                    );
+                        PhantomData<&'a [(X, Y); N]>,
+                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y> >,
+                    )
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,;
                     #[repr(C)]
                     #[allow(non_snake_case)]
-                    union ___ZerocopyVariants<X, Y> {
+                    union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref> {
                         __field_StructLike:
-                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_StructLike<X, Y> >,
+                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_StructLike<'a, N, X, Y> >,
                         __field_TupleLike:
-                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_TupleLike<X, Y> >,
+                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_TupleLike<'a, N, X, Y> >,
                         __nonempty: (),
                     }
                     #[repr(C)]
-                    struct ___ZerocopyRawEnum<X, Y> {
+                    struct ___ZerocopyRawEnum<'a: 'static, const N: usize, X, Y: Deref> {
                         tag: ___ZerocopyOuterTag,
-                        variants: ___ZerocopyVariants<X, Y>,
+                        variants: ___ZerocopyVariants<'a, N, X, Y>,
                     }
                     let tag = {
                         let tag_ptr = unsafe {
@@ -280,11 +297,12 @@ fn test_try_from_bytes_enum() {
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
                         tag_ptr.bikeshed_recall_valid().read_unaligned()
                     };
-                    let raw_enum =
-                        unsafe { candidate.cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<X, Y> }) };
+                    let raw_enum = unsafe {
+                        candidate.cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<'a, N, X, Y> })
+                    };
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let variants = unsafe {
-                        raw_enum.project(|p: *mut ___ZerocopyRawEnum<X, Y>| {
+                        raw_enum.project(|p: *mut ___ZerocopyRawEnum<'a, N, X, Y>| {
                             core_reexport::ptr::addr_of_mut!((*p).variants)
                         })
                     };
@@ -293,25 +311,23 @@ fn test_try_from_bytes_enum() {
                         ___ZEROCOPY_TAG_UnitLike => true,
                         ___ZEROCOPY_TAG_StructLike => {
                             let variant = unsafe {
-                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<X, Y>| {
-                                    p as *mut ___ZerocopyVariantStruct_StructLike<X, Y>
+                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
+                                    p as *mut ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>
                                 })
                             };
                             let variant = unsafe { variant.assume_initialized() };
-                            < ___ZerocopyVariantStruct_StructLike < X , Y > as :: zerocopy :: TryFromBytes > :: is_bit_valid (
-                                variant
-                            )
+                            < ___ZerocopyVariantStruct_StructLike < 'a , N , X , Y > as :: zerocopy :: TryFromBytes > :: is_bit_valid (
+                                variant)
                         },
                         ___ZEROCOPY_TAG_TupleLike => {
                             let variant = unsafe {
-                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<X, Y>| {
-                                    p as *mut ___ZerocopyVariantStruct_TupleLike<X, Y>
+                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
+                                    p as *mut ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>
                                 })
                             };
                             let variant = unsafe { variant.assume_initialized() };
-                            <___ZerocopyVariantStruct_TupleLike<X, Y> as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                variant
-                            )
+                            < ___ZerocopyVariantStruct_TupleLike < 'a , N , X , Y > as :: zerocopy :: TryFromBytes > :: is_bit_valid (
+                                variant)
                         },
                         _ => false,
                     }
@@ -323,19 +339,28 @@ fn test_try_from_bytes_enum() {
     test_derive! {
         TryFromBytes {
             #[repr(u32)]
-            enum ComplexWithGenerics<X, Y> {
+            enum ComplexWithGenerics<'a: 'static, const N: usize, X, Y: Deref>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
                 UnitLike,
-                StructLike { a: u8, b: X },
-                TupleLike(bool, Y),
+                StructLike { a: u8, b: X, c: X::Target, d: Y::Target, e: [(X, Y); N] },
+                TupleLike(bool, Y, PhantomData<&'a [(X, Y); N]>),
             }
         } expands to {
             #[allow(deprecated)]
-            unsafe impl<X, Y> ::zerocopy::TryFromBytes for ComplexWithGenerics<X, Y>
+            unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
+                for ComplexWithGenerics<'a, { N }, X, Y>
             where
+                X: Deref<Target = &'a [(X, Y); N]>,
                 u8: ::zerocopy::TryFromBytes,
                 X: ::zerocopy::TryFromBytes,
+                X::Target: ::zerocopy::TryFromBytes,
+                Y::Target: ::zerocopy::TryFromBytes,
+                [(X, Y); N]: ::zerocopy::TryFromBytes,
                 bool: ::zerocopy::TryFromBytes,
                 Y: ::zerocopy::TryFromBytes,
+                PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
             {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
                 fn is_bit_valid<A>(
@@ -370,34 +395,42 @@ fn test_try_from_bytes_enum() {
                     #[repr(C)]
                     #[allow(non_snake_case)]
                     #[derive(:: zerocopy_derive :: TryFromBytes)]
-                    struct ___ZerocopyVariantStruct_StructLike<X, Y>(
+                    struct ___ZerocopyVariantStruct_StructLike<'a: 'static, const N: usize, X, Y: Deref>(
                         core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                         u8,
                         X,
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<X, Y> >,
-                    );
+                        X::Target,
+                        Y::Target,
+                        [(X, Y); N],
+                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y> >,
+                    )
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,;
                     #[repr(C)]
                     #[allow(non_snake_case)]
                     #[derive(:: zerocopy_derive :: TryFromBytes)]
-                    struct ___ZerocopyVariantStruct_TupleLike<X, Y>(
+                    struct ___ZerocopyVariantStruct_TupleLike<'a: 'static, const N: usize, X, Y: Deref>(
                         core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                         bool,
                         Y,
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<X, Y> >,
-                    );
+                        PhantomData<&'a [(X, Y); N]>,
+                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y> >,
+                    )
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,;
                     #[repr(C)]
                     #[allow(non_snake_case)]
-                    union ___ZerocopyVariants<X, Y> {
+                    union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref> {
                         __field_StructLike:
-                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_StructLike<X, Y> >,
+                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_StructLike<'a, N, X, Y> >,
                         __field_TupleLike:
-                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_TupleLike<X, Y> >,
+                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_TupleLike<'a, N, X, Y> >,
                         __nonempty: (),
                     }
                     #[repr(C)]
-                    struct ___ZerocopyRawEnum<X, Y> {
+                    struct ___ZerocopyRawEnum<'a: 'static, const N: usize, X, Y: Deref> {
                         tag: ___ZerocopyOuterTag,
-                        variants: ___ZerocopyVariants<X, Y>,
+                        variants: ___ZerocopyVariants<'a, N, X, Y>,
                     }
                     let tag = {
                         let tag_ptr = unsafe {
@@ -406,11 +439,12 @@ fn test_try_from_bytes_enum() {
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
                         tag_ptr.bikeshed_recall_valid().read_unaligned()
                     };
-                    let raw_enum =
-                        unsafe { candidate.cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<X, Y> }) };
+                    let raw_enum = unsafe {
+                        candidate.cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<'a, N, X, Y> })
+                    };
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let variants = unsafe {
-                        raw_enum.project(|p: *mut ___ZerocopyRawEnum<X, Y>| {
+                        raw_enum.project(|p: *mut ___ZerocopyRawEnum<'a, N, X, Y>| {
                             core_reexport::ptr::addr_of_mut!((*p).variants)
                         })
                     };
@@ -419,25 +453,23 @@ fn test_try_from_bytes_enum() {
                         ___ZEROCOPY_TAG_UnitLike => true,
                         ___ZEROCOPY_TAG_StructLike => {
                             let variant = unsafe {
-                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<X, Y>| {
-                                    p as *mut ___ZerocopyVariantStruct_StructLike<X, Y>
+                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
+                                    p as *mut ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>
                                 })
                             };
                             let variant = unsafe { variant.assume_initialized() };
-                            < ___ZerocopyVariantStruct_StructLike < X , Y > as :: zerocopy :: TryFromBytes > :: is_bit_valid (
-                                variant
-                            )
+                            < ___ZerocopyVariantStruct_StructLike < 'a , N , X , Y > as :: zerocopy :: TryFromBytes > :: is_bit_valid (
+                                variant)
                         },
                         ___ZEROCOPY_TAG_TupleLike => {
                             let variant = unsafe {
-                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<X, Y>| {
-                                    p as *mut ___ZerocopyVariantStruct_TupleLike<X, Y>
+                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
+                                    p as *mut ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>
                                 })
                             };
                             let variant = unsafe { variant.assume_initialized() };
-                            <___ZerocopyVariantStruct_TupleLike<X, Y> as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                variant
-                            )
+                            < ___ZerocopyVariantStruct_TupleLike < 'a , N , X , Y > as :: zerocopy :: TryFromBytes > :: is_bit_valid (
+                                variant)
                         },
                         _ => false,
                     }
@@ -449,19 +481,28 @@ fn test_try_from_bytes_enum() {
     test_derive! {
         TryFromBytes {
             #[repr(C)]
-            enum ComplexWithGenerics<X, Y> {
+            enum ComplexWithGenerics<'a: 'static, const N: usize, X, Y: Deref>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
                 UnitLike,
-                StructLike { a: u8, b: X },
-                TupleLike(bool, Y),
+                StructLike { a: u8, b: X, c: X::Target, d: Y::Target, e: [(X, Y); N] },
+                TupleLike(bool, Y, PhantomData<&'a [(X, Y); N]>),
             }
         } expands to {
             #[allow(deprecated)]
-            unsafe impl<X, Y> ::zerocopy::TryFromBytes for ComplexWithGenerics<X, Y>
+            unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
+            for ComplexWithGenerics<'a, { N }, X, Y>
             where
+                X: Deref<Target = &'a [(X, Y); N]>,
                 u8: ::zerocopy::TryFromBytes,
                 X: ::zerocopy::TryFromBytes,
+                X::Target: ::zerocopy::TryFromBytes,
+                Y::Target: ::zerocopy::TryFromBytes,
+                [(X, Y); N]: ::zerocopy::TryFromBytes,
                 bool: ::zerocopy::TryFromBytes,
                 Y: ::zerocopy::TryFromBytes,
+                PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
             {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
                 fn is_bit_valid<A>(
@@ -496,34 +537,42 @@ fn test_try_from_bytes_enum() {
                     #[repr(C)]
                     #[allow(non_snake_case)]
                     #[derive(:: zerocopy_derive :: TryFromBytes)]
-                    struct ___ZerocopyVariantStruct_StructLike<X, Y>(
+                    struct ___ZerocopyVariantStruct_StructLike<'a: 'static, const N: usize, X, Y: Deref>(
                         core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                         u8,
                         X,
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<X, Y> >,
-                    );
+                        X::Target,
+                        Y::Target,
+                        [(X, Y); N],
+                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y> >,
+                    )
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,;
                     #[repr(C)]
                     #[allow(non_snake_case)]
                     #[derive(:: zerocopy_derive :: TryFromBytes)]
-                    struct ___ZerocopyVariantStruct_TupleLike<X, Y>(
+                    struct ___ZerocopyVariantStruct_TupleLike<'a: 'static, const N: usize, X, Y: Deref>(
                         core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                         bool,
                         Y,
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<X, Y> >,
-                    );
+                        PhantomData<&'a [(X, Y); N]>,
+                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y> >,
+                    )
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,;
                     #[repr(C)]
                     #[allow(non_snake_case)]
-                    union ___ZerocopyVariants<X, Y> {
+                    union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref> {
                         __field_StructLike:
-                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_StructLike<X, Y> >,
+                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_StructLike<'a, N, X, Y> >,
                         __field_TupleLike:
-                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_TupleLike<X, Y> >,
+                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_TupleLike<'a, N, X, Y> >,
                         __nonempty: (),
                     }
                     #[repr(C)]
-                    struct ___ZerocopyRawEnum<X, Y> {
+                    struct ___ZerocopyRawEnum<'a: 'static, const N: usize, X, Y: Deref> {
                         tag: ___ZerocopyOuterTag,
-                        variants: ___ZerocopyVariants<X, Y>,
+                        variants: ___ZerocopyVariants<'a, N, X, Y>,
                     }
                     let tag = {
                         let tag_ptr = unsafe {
@@ -532,11 +581,12 @@ fn test_try_from_bytes_enum() {
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
                         tag_ptr.bikeshed_recall_valid().read_unaligned()
                     };
-                    let raw_enum =
-                        unsafe { candidate.cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<X, Y> }) };
+                    let raw_enum = unsafe {
+                        candidate.cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<'a, N, X, Y> })
+                    };
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let variants = unsafe {
-                        raw_enum.project(|p: *mut ___ZerocopyRawEnum<X, Y>| {
+                        raw_enum.project(|p: *mut ___ZerocopyRawEnum<'a, N, X, Y>| {
                             core_reexport::ptr::addr_of_mut!((*p).variants)
                         })
                     };
@@ -545,25 +595,23 @@ fn test_try_from_bytes_enum() {
                         ___ZEROCOPY_TAG_UnitLike => true,
                         ___ZEROCOPY_TAG_StructLike => {
                             let variant = unsafe {
-                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<X, Y>| {
-                                    p as *mut ___ZerocopyVariantStruct_StructLike<X, Y>
+                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
+                                    p as *mut ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>
                                 })
                             };
                             let variant = unsafe { variant.assume_initialized() };
-                            < ___ZerocopyVariantStruct_StructLike < X , Y > as :: zerocopy :: TryFromBytes > :: is_bit_valid (
-                                variant
-                            )
+                            < ___ZerocopyVariantStruct_StructLike < 'a , N , X , Y > as :: zerocopy :: TryFromBytes > :: is_bit_valid (
+                                variant)
                         },
                         ___ZEROCOPY_TAG_TupleLike => {
                             let variant = unsafe {
-                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<X, Y>| {
-                                    p as *mut ___ZerocopyVariantStruct_TupleLike<X, Y>
+                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
+                                    p as *mut ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>
                                 })
                             };
                             let variant = unsafe { variant.assume_initialized() };
-                            <___ZerocopyVariantStruct_TupleLike<X, Y> as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                variant
-                            )
+                            < ___ZerocopyVariantStruct_TupleLike < 'a , N , X , Y > as :: zerocopy :: TryFromBytes > :: is_bit_valid (
+                                variant)
                         },
                         _ => false,
                     }
