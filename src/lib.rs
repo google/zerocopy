@@ -458,8 +458,7 @@ pub use zerocopy_derive::KnownLayout;
 /// # Implementation
 ///
 /// **Do not implement this trait yourself!** Instead, use
-/// [`#[derive(KnownLayout)]`][derive] (requires the `derive` Cargo feature);
-/// e.g.:
+/// [`#[derive(KnownLayout)]`][derive]; e.g.:
 ///
 /// ```
 /// # use zerocopy_derive::KnownLayout;
@@ -1020,7 +1019,7 @@ pub use zerocopy_derive::Immutable;
 
 /// Types which are free from interior mutability.
 ///
-/// `T: Immutable` indicates that `T` does not permit interior mutability, except
+/// `T: Immutable` indicates that `T` does not permit interior mutation, except
 /// by ownership or an exclusive (`&mut`) borrow.
 ///
 /// # Implementation
@@ -1138,14 +1137,14 @@ pub use zerocopy_derive::TryFromBytes;
 /// A memory region of the appropriate length which contains initialized bytes
 /// can be viewed as a `TryFromBytes` type so long as the runtime value of those
 /// bytes corresponds to a [*valid instance*] of that type. For example,
-/// [`bool`] is `TryFromBytes`; zerocopy can transmute a `[u8]` into a [`bool`]
-/// so long as it first checks that the value of the `[u8]` is `[0]` or `[1]`.
+/// [`bool`] is `TryFromBytes`, so zerocopy can transmute a [`u8`] into a
+/// [`bool`] so long as it first checks that the value of the [`u8`] is `0` or
+/// `1`.
 ///
 /// # Implementation
 ///
 /// **Do not implement this trait yourself!** Instead, use
-/// [`#[derive(TryFromBytes)]`][derive] (requires the `derive` Cargo feature);
-/// e.g.:
+/// [`#[derive(TryFromBytes)]`][derive]; e.g.:
 ///
 /// ```
 /// # use zerocopy_derive::{TryFromBytes, Immutable};
@@ -1266,14 +1265,13 @@ pub unsafe trait TryFromBytes {
         candidate: Maybe<'_, Self, A>,
     ) -> bool;
 
-    /// Attempts to interpret the given `candidate` as a `&Self` without
-    /// copying.
+    /// Attempts to interpret the given `source` as a `&Self` without copying.
     ///
-    /// If the bytes of `candidate` are a valid instance of `Self`, this method
+    /// If the bytes of `source` are a valid instance of `Self`, this method
     /// returns a reference to those bytes interpreted as a `Self`. If the
-    /// length of `candidate` is not a [valid size of `Self`][valid-size], or if
-    /// `candidate` is not appropriately aligned, or if the bytes are not a
-    /// valid instance of `Self`, this returns `Err`.
+    /// length of `source` is not a [valid size of `Self`][valid-size], or if
+    /// `source` is not appropriately aligned, or if `source` is not a valid
+    /// instance of `Self`, this returns `Err`.
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
@@ -1339,13 +1337,13 @@ pub unsafe trait TryFromBytes {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn try_ref_from_bytes(candidate: &[u8]) -> Result<&Self, TryCastError<&[u8], Self>>
+    fn try_ref_from_bytes(source: &[u8]) -> Result<&Self, TryCastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
     {
         static_assert_dst_is_not_zst!(Self);
-        match Ptr::from_ref(candidate).try_cast_into_no_leftover::<Self, BecauseImmutable>(None) {
-            Ok(candidate) => {
+        match Ptr::from_ref(source).try_cast_into_no_leftover::<Self, BecauseImmutable>(None) {
+            Ok(source) => {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
                 // fix before returning.
@@ -1354,7 +1352,7 @@ pub unsafe trait TryFromBytes {
                 // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
                 // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
                 // condition will not happen.
-                match candidate.try_into_valid() {
+                match source.try_into_valid() {
                     Ok(valid) => Ok(valid.as_ref()),
                     Err(e) => {
                         Err(e.map_src(|src| src.as_bytes::<BecauseImmutable>().as_ref()).into())
@@ -1365,15 +1363,15 @@ pub unsafe trait TryFromBytes {
         }
     }
 
-    /// Attempts to interpret the prefix of the given `candidate` as a `&Self`
+    /// Attempts to interpret the prefix of the given `source` as a `&Self`
     /// without copying.
     ///
     /// This method computes the [largest possible size of `Self`][valid-size]
-    /// that can fit in the leading bytes of `candidate`. If that prefix is a
-    /// valid instance of `Self`, this method returns a reference to those bytes
+    /// that can fit in the leading bytes of `source`. If that prefix is a valid
+    /// instance of `Self`, this method returns a reference to those bytes
     /// interpreted as `Self`, and a reference to the remaining bytes. If there
-    /// are insufficient bytes, or if `candidate` is not appropriately aligned,
-    /// or if the bytes are not a valid instance of `Self`, this returns `Err`.
+    /// are insufficient bytes, or if `source` is not appropriately aligned, or
+    /// if those bytes are not a valid instance of `Self`, this returns `Err`.
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
@@ -1441,22 +1439,22 @@ pub unsafe trait TryFromBytes {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn try_ref_from_prefix(candidate: &[u8]) -> Result<(&Self, &[u8]), TryCastError<&[u8], Self>>
+    fn try_ref_from_prefix(source: &[u8]) -> Result<(&Self, &[u8]), TryCastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
     {
         static_assert_dst_is_not_zst!(Self);
-        try_ref_from_prefix_suffix(candidate, CastType::Prefix, None)
+        try_ref_from_prefix_suffix(source, CastType::Prefix, None)
     }
 
-    /// Attempts to interpret the suffix of the given `candidate` as a `&Self`
+    /// Attempts to interpret the suffix of the given `source` as a `&Self`
     /// without copying.
     ///
     /// This method computes the [largest possible size of `Self`][valid-size]
-    /// that can fit in the trailing bytes of `candidate`. If that suffix is a
+    /// that can fit in the trailing bytes of `source`. If that suffix is a
     /// valid instance of `Self`, this method returns a reference to those bytes
     /// interpreted as `Self`, and a reference to the preceding bytes. If there
-    /// are insufficient bytes, or if the suffix of `candidate` would not be
+    /// are insufficient bytes, or if the suffix of `source` would not be
     /// appropriately aligned, or if the suffix is not a valid instance of
     /// `Self`, this returns `Err`.
     ///
@@ -1522,26 +1520,26 @@ pub unsafe trait TryFromBytes {
     ///
     /// // These bytes are not valid instance of `Packet`.
     /// let bytes = &[0, 1, 2, 3, 4, 5, 6, 77, 240, 0xC0, 0x10][..];
-    /// assert!(Packet::try_ref_from_prefix(bytes).is_err());
+    /// assert!(Packet::try_ref_from_suffix(bytes).is_err());
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn try_ref_from_suffix(candidate: &[u8]) -> Result<(&[u8], &Self), TryCastError<&[u8], Self>>
+    fn try_ref_from_suffix(source: &[u8]) -> Result<(&[u8], &Self), TryCastError<&[u8], Self>>
     where
         Self: KnownLayout + Immutable,
     {
         static_assert_dst_is_not_zst!(Self);
-        try_ref_from_prefix_suffix(candidate, CastType::Suffix, None).map(swap)
+        try_ref_from_prefix_suffix(source, CastType::Suffix, None).map(swap)
     }
 
-    /// Attempts to interpret the given `candidate` as a `&mut Self` without
+    /// Attempts to interpret the given `source` as a `&mut Self` without
     /// copying.
     ///
-    /// If the bytes of `candidate` are a valid instance of `Self`, this method
+    /// If the bytes of `source` are a valid instance of `Self`, this method
     /// returns a reference to those bytes interpreted as a `Self`. If the
-    /// length of `candidate` is not a [valid size of `Self`][valid-size], or if
-    /// `candidate` is not appropriately aligned, or if the bytes are not a
-    /// valid instance of `Self`, this returns `Err`.
+    /// length of `source` is not a [valid size of `Self`][valid-size], or if
+    /// `source` is not appropriately aligned, or if `source` is not a valid
+    /// instance of `Self`, this returns `Err`.
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
@@ -1614,7 +1612,7 @@ pub unsafe trait TryFromBytes {
     {
         static_assert_dst_is_not_zst!(Self);
         match Ptr::from_mut(bytes).try_cast_into_no_leftover::<Self, BecauseExclusive>(None) {
-            Ok(candidate) => {
+            Ok(source) => {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
                 // fix before returning.
@@ -1623,8 +1621,8 @@ pub unsafe trait TryFromBytes {
                 // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
                 // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
                 // condition will not happen.
-                match candidate.try_into_valid() {
-                    Ok(candidate) => Ok(candidate.as_mut()),
+                match source.try_into_valid() {
+                    Ok(source) => Ok(source.as_mut()),
                     Err(e) => {
                         Err(e.map_src(|src| src.as_bytes::<BecauseExclusive>().as_mut()).into())
                     }
@@ -1634,14 +1632,14 @@ pub unsafe trait TryFromBytes {
         }
     }
 
-    /// Attempts to interpret the prefix of the given `candidate` as a `&mut
+    /// Attempts to interpret the prefix of the given `source` as a `&mut
     /// Self` without copying.
     ///
     /// This method computes the [largest possible size of `Self`][valid-size]
-    /// that can fit in the leading bytes of `candidate`. If that prefix is a
+    /// that can fit in the leading bytes of `source`. If that prefix is a
     /// valid instance of `Self`, this method returns a reference to those bytes
     /// interpreted as `Self`, and a reference to the remaining bytes. If there
-    /// are insufficient bytes, or if `candidate` is not appropriately aligned,
+    /// are insufficient bytes, or if `source` is not appropriately aligned,
     /// or if the bytes are not a valid instance of `Self`, this returns `Err`.
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
@@ -1717,23 +1715,23 @@ pub unsafe trait TryFromBytes {
     #[must_use = "has no side effects"]
     #[inline]
     fn try_mut_from_prefix(
-        candidate: &mut [u8],
+        source: &mut [u8],
     ) -> Result<(&mut Self, &mut [u8]), TryCastError<&mut [u8], Self>>
     where
         Self: KnownLayout,
     {
         static_assert_dst_is_not_zst!(Self);
-        try_mut_from_prefix_suffix(candidate, CastType::Prefix, None)
+        try_mut_from_prefix_suffix(source, CastType::Prefix, None)
     }
 
-    /// Attempts to interpret the suffix of the given `candidate` as a `&mut
+    /// Attempts to interpret the suffix of the given `source` as a `&mut
     /// Self` without copying.
     ///
     /// This method computes the [largest possible size of `Self`][valid-size]
-    /// that can fit in the trailing bytes of `candidate`. If that suffix is a
+    /// that can fit in the trailing bytes of `source`. If that suffix is a
     /// valid instance of `Self`, this method returns a reference to those bytes
     /// interpreted as `Self`, and a reference to the preceding bytes. If there
-    /// are insufficient bytes, or if the suffix of `candidate` would not be
+    /// are insufficient bytes, or if the suffix of `source` would not be
     /// appropriately aligned, or if the suffix is not a valid instance of
     /// `Self`, this returns `Err`.
     ///
@@ -1805,23 +1803,23 @@ pub unsafe trait TryFromBytes {
     ///
     /// // These bytes are not valid instance of `Packet`.
     /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 77, 240, 0xC0, 0x10][..];
-    /// assert!(Packet::try_mut_from_prefix(bytes).is_err());
+    /// assert!(Packet::try_mut_from_suffix(bytes).is_err());
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
     fn try_mut_from_suffix(
-        candidate: &mut [u8],
+        source: &mut [u8],
     ) -> Result<(&mut [u8], &mut Self), TryCastError<&mut [u8], Self>>
     where
         Self: KnownLayout,
     {
         static_assert_dst_is_not_zst!(Self);
-        try_mut_from_prefix_suffix(candidate, CastType::Suffix, None).map(swap)
+        try_mut_from_prefix_suffix(source, CastType::Suffix, None).map(swap)
     }
 
-    /// Attempts to read the given `candidate` as a `Self`.
+    /// Attempts to read the given `source` as a `Self`.
     ///
-    /// If `candidate.len() != size_of::<Self>()` or the bytes are not a valid
+    /// If `source.len() != size_of::<Self>()` or the bytes are not a valid
     /// instance of `Self`, this returns `Err`.
     ///
     /// # Examples
@@ -1861,7 +1859,7 @@ pub unsafe trait TryFromBytes {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn try_read_from_bytes(bytes: &[u8]) -> Result<Self, TryReadError<&[u8], Self>>
+    fn try_read_from_bytes(source: &[u8]) -> Result<Self, TryReadError<&[u8], Self>>
     where
         Self: Sized,
     {
@@ -1870,7 +1868,7 @@ pub unsafe trait TryFromBytes {
         // mut` and `Ptr::from_mut` here. See the doc comment on `is_bit_valid`
         // and the implementation of `TryFromBytes` for `UnsafeCell` for more
         // details.
-        let mut candidate = match MaybeUninit::<Self>::read_from_bytes(bytes) {
+        let mut candidate = match MaybeUninit::<Self>::read_from_bytes(source) {
             Ok(candidate) => candidate,
             Err(e) => {
                 return Err(TryReadError::Size(e.with_dst()));
@@ -1879,7 +1877,7 @@ pub unsafe trait TryFromBytes {
         let c_ptr = Ptr::from_mut(&mut candidate);
         let c_ptr = c_ptr.transparent_wrapper_into_inner();
         // SAFETY: `c_ptr` has no uninitialized sub-ranges because it derived
-        // from `candidate`, which in turn derives from `bytes: &[u8]`.
+        // from `candidate`, which in turn derives from `source: &[u8]`.
         let c_ptr = unsafe { c_ptr.assume_validity::<invariant::Initialized>() };
 
         // This call may panic. If that happens, it doesn't cause any soundness
@@ -1891,7 +1889,7 @@ pub unsafe trait TryFromBytes {
         // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
         // condition will not happen.
         if !Self::is_bit_valid(c_ptr.forget_aligned()) {
-            return Err(ValidityError::new(bytes).into());
+            return Err(ValidityError::new(source).into());
         }
 
         // SAFETY: We just validated that `candidate` contains a valid `Self`.
@@ -1901,12 +1899,12 @@ pub unsafe trait TryFromBytes {
 
 #[inline(always)]
 fn try_ref_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized>(
-    candidate: &[u8],
+    source: &[u8],
     cast_type: CastType,
     meta: Option<T::PointerMetadata>,
 ) -> Result<(&T, &[u8]), TryCastError<&[u8], T>> {
-    match Ptr::from_ref(candidate).try_cast_into::<T, BecauseImmutable>(cast_type, meta) {
-        Ok((candidate, prefix_suffix)) => {
+    match Ptr::from_ref(source).try_cast_into::<T, BecauseImmutable>(cast_type, meta) {
+        Ok((source, prefix_suffix)) => {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
             // fix before returning.
@@ -1915,7 +1913,7 @@ fn try_ref_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized
             // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
             // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
             // condition will not happen.
-            match candidate.try_into_valid() {
+            match source.try_into_valid() {
                 Ok(valid) => Ok((valid.as_ref(), prefix_suffix.as_ref())),
                 Err(e) => Err(e.map_src(|src| src.as_bytes::<BecauseImmutable>().as_ref()).into()),
             }
@@ -1974,8 +1972,7 @@ fn swap<T, U>((t, u): (T, U)) -> (U, T) {
 /// # Implementation
 ///
 /// **Do not implement this trait yourself!** Instead, use
-/// [`#[derive(FromZeros)]`][derive] (requires the `derive` Cargo feature);
-/// e.g.:
+/// [`#[derive(FromZeros)]`][derive]; e.g.:
 ///
 /// ```
 /// # use zerocopy_derive::{FromZeros, Immutable};
@@ -2043,7 +2040,7 @@ pub unsafe trait FromZeros: TryFromBytes {
     ///
     /// Sets every byte in `self` to 0. While this is similar to doing `*self =
     /// Self::new_zeroed()`, it differs in that `zero` does not semantically
-    /// drop the current value and replace it with a new one - it simply
+    /// drop the current value and replace it with a new one — it simply
     /// modifies the bytes of the existing value.
     ///
     /// # Examples
@@ -2480,8 +2477,7 @@ pub use zerocopy_derive::FromBytes;
 /// # Implementation
 ///
 /// **Do not implement this trait yourself!** Instead, use
-/// [`#[derive(FromBytes)]`][derive] (requires the `derive` Cargo feature);
-/// e.g.:
+/// [`#[derive(FromBytes)]`][derive]; e.g.:
 ///
 /// ```
 /// # use zerocopy_derive::{FromBytes, Immutable};
@@ -2563,7 +2559,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized;
 
-    /// Interprets the given bytes as a `&Self` without copying.
+    /// Interprets the given `source` as a `&Self` without copying.
     ///
     /// This method attempts to return a reference to `source` interpreted as a
     /// `Self`. If the length of `source` is not a [valid size of
@@ -2641,7 +2637,8 @@ pub unsafe trait FromBytes: FromZeros {
         }
     }
 
-    /// Interprets the prefix of the given bytes as a `&Self` without copying.
+    /// Interprets the prefix of the given `source` as a `&Self` without
+    /// copying.
     ///
     /// This method computes the [largest possible size of `Self`][valid-size]
     /// that can fit in the leading bytes of `source`, then attempts to return
@@ -2787,7 +2784,7 @@ pub unsafe trait FromBytes: FromZeros {
         ref_from_prefix_suffix(source, None, CastType::Suffix).map(swap)
     }
 
-    /// Interprets the given bytes as a `&mut Self` without copying.
+    /// Interprets the given `source` as a `&mut Self` without copying.
     ///
     /// This method attempts to return a reference to `source` interpreted as a
     /// `Self`. If the length of `source` is not a [valid size of
@@ -2865,7 +2862,7 @@ pub unsafe trait FromBytes: FromZeros {
         }
     }
 
-    /// Interprets the prefix of the given bytes as a `&mut Self` without
+    /// Interprets the prefix of the given `source` as a `&mut Self` without
     /// copying.
     ///
     /// This method computes the [largest possible size of `Self`][valid-size]
@@ -2946,7 +2943,7 @@ pub unsafe trait FromBytes: FromZeros {
         mut_from_prefix_suffix(source, None, CastType::Prefix)
     }
 
-    /// Interprets the suffix of the given bytes as a `&mut Self` without
+    /// Interprets the suffix of the given `source` as a `&mut Self` without
     /// copying.
     ///
     /// This method computes the [largest possible size of `Self`][valid-size]
@@ -3018,7 +3015,7 @@ pub unsafe trait FromBytes: FromZeros {
         mut_from_prefix_suffix(source, None, CastType::Suffix).map(swap)
     }
 
-    /// Interprets the given bytes as a `&Self` with a DST length equal to
+    /// Interprets the given `source` as a `&Self` with a DST length equal to
     /// `count`.
     ///
     /// This method attempts to return a reference to `source` interpreted as a
@@ -3091,7 +3088,7 @@ pub unsafe trait FromBytes: FromZeros {
         }
     }
 
-    /// Interprets the prefix of the given bytes as a DST `&Self` with length
+    /// Interprets the prefix of the given `source` as a DST `&Self` with length
     /// equal to `count` without copying.
     ///
     /// This method attempts to return a reference to the prefix of `source`
@@ -3161,7 +3158,7 @@ pub unsafe trait FromBytes: FromZeros {
         ref_from_prefix_suffix(source, Some(count), CastType::Prefix)
     }
 
-    /// Interprets the suffix of the given bytes as a DST `&Self` with length
+    /// Interprets the suffix of the given `source` as a DST `&Self` with length
     /// equal to `count` without copying.
     ///
     /// This method attempts to return a reference to the suffix of `source`
@@ -3231,8 +3228,8 @@ pub unsafe trait FromBytes: FromZeros {
         ref_from_prefix_suffix(source, Some(count), CastType::Suffix).map(swap)
     }
 
-    /// Interprets the given bytes as a `&mut Self` with a DST length equal to
-    /// `count`.
+    /// Interprets the given `source` as a `&mut Self` with a DST length equal
+    /// to `count`.
     ///
     /// This method attempts to return a reference to `source` interpreted as a
     /// `Self` with `count` trailing elements. If the length of `source` is not
@@ -3307,8 +3304,8 @@ pub unsafe trait FromBytes: FromZeros {
         }
     }
 
-    /// Interprets the prefix of the given bytes as a `&mut [Self]` with length
-    /// equal to `count` without copying.
+    /// Interprets the prefix of the given `source` as a `&mut Self` with DST
+    /// length equal to `count` without copying.
     ///
     /// This method attempts to return a reference to the prefix of `source`
     /// interpreted as a `Self` with `count` trailing elements, and a reference
@@ -3382,8 +3379,8 @@ pub unsafe trait FromBytes: FromZeros {
         mut_from_prefix_suffix(source, Some(count), CastType::Prefix)
     }
 
-    /// Interprets the suffix of the given bytes as a `&mut [Self]` with length
-    /// equal to `count` without copying.
+    /// Interprets the suffix of the given `source` as a `&mut Self` with DST
+    /// length equal to `count` without copying.
     ///
     /// This method attempts to return a reference to the suffix of `source`
     /// interpreted as a `Self` with `count` trailing elements, and a reference
@@ -3457,7 +3454,7 @@ pub unsafe trait FromBytes: FromZeros {
         mut_from_prefix_suffix(source, Some(count), CastType::Suffix).map(swap)
     }
 
-    /// Reads a copy of `Self` from the given bytes.
+    /// Reads a copy of `Self` from the given `source`.
     ///
     /// If `source.len() != size_of::<Self>()`, `read_from_bytes` returns `Err`.
     ///
@@ -3500,7 +3497,7 @@ pub unsafe trait FromBytes: FromZeros {
         }
     }
 
-    /// Reads a copy of `Self` from the prefix of the given bytes.
+    /// Reads a copy of `Self` from the prefix of the given `source`.
     ///
     /// This attempts to read a `Self` from the first `size_of::<Self>()` bytes
     /// of `source`, returning that `Self` and any remaining bytes. If
@@ -3546,7 +3543,7 @@ pub unsafe trait FromBytes: FromZeros {
         }
     }
 
-    /// Reads a copy of `Self` from the suffix of the given bytes.
+    /// Reads a copy of `Self` from the suffix of the given `source`.
     ///
     /// This attempts to read a `Self` from the last `size_of::<Self>()` bytes
     /// of `source`, returning that `Self` and any preceding bytes. If
@@ -3830,8 +3827,7 @@ pub use zerocopy_derive::IntoBytes;
 /// # Implementation
 ///
 /// **Do not implement this trait yourself!** Instead, use
-/// [`#[derive(IntoBytes)]`][derive] (requires the `derive` Cargo feature);
-/// e.g.:
+/// [`#[derive(IntoBytes)]`][derive]; e.g.:
 ///
 /// ```
 /// # use zerocopy_derive::IntoBytes;
@@ -3906,9 +3902,6 @@ pub unsafe trait IntoBytes {
 
     /// Gets the bytes of this value.
     ///
-    /// `as_bytes` provides access to the bytes of this value as an immutable
-    /// byte slice.
-    ///
     /// # Examples
     ///
     /// ```
@@ -3972,9 +3965,6 @@ pub unsafe trait IntoBytes {
     }
 
     /// Gets the bytes of this value mutably.
-    ///
-    /// `as_mut_bytes` provides access to the bytes of this value as a mutable
-    /// byte slice.
     ///
     /// # Examples
     ///
@@ -4345,8 +4335,7 @@ pub use zerocopy_derive::Unaligned;
 /// # Implementation
 ///
 /// **Do not implement this trait yourself!** Instead, use
-/// [`#[derive(Unaligned)]`][derive] (requires the `derive` Cargo feature);
-/// e.g.:
+/// [`#[derive(Unaligned)]`][derive]; e.g.:
 ///
 /// ```
 /// # use zerocopy_derive::Unaligned;
