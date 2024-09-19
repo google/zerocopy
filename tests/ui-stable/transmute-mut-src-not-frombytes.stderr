@@ -7,6 +7,7 @@ error[E0277]: the trait bound `Src: FromBytes` is not satisfied
    |                                      the trait `FromBytes` is not implemented for `Src`
    |                                      required by a bound introduced by this call
    |
+   = note: Consider adding `#[derive(FromBytes)]` to `Src`
    = help: the following other types implement trait `FromBytes`:
              ()
              AtomicI16
@@ -30,6 +31,7 @@ error[E0277]: the trait bound `Src: FromBytes` is not satisfied
 24 | const SRC_NOT_FROM_BYTES: &mut Dst = transmute_mut!(&mut Src);
    |                                      ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `Src`
    |
+   = note: Consider adding `#[derive(FromBytes)]` to `Src`
    = help: the following other types implement trait `FromBytes`:
              ()
              AtomicI16

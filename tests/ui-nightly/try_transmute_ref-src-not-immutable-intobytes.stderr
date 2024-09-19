@@ -4,6 +4,7 @@ error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::IntoBytes` is not sa
 19 |     let src_not_into_bytes: Result<&AU16, _> = try_transmute_ref!(&NotZerocopy(AU16(0)));
    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy<AU16>`
    |
+   = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy<AU16>`
    = help: the following other types implement trait `zerocopy::IntoBytes`:
              ()
              AU16
@@ -30,6 +31,7 @@ error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::Immutable` is not sa
 19 |     let src_not_into_bytes: Result<&AU16, _> = try_transmute_ref!(&NotZerocopy(AU16(0)));
    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::Immutable` is not implemented for `NotZerocopy<AU16>`
    |
+   = note: Consider adding `#[derive(Immutable)]` to `NotZerocopy<AU16>`
    = help: the following other types implement trait `zerocopy::Immutable`:
              &T
              &mut T

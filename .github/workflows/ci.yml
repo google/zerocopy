@@ -55,6 +55,7 @@ jobs:
           # `build.rs`. Each of these represents the minimum Rust version for
           # which a particular feature is supported.
           "zerocopy-core-error",
+          "zerocopy-diagnostic-on-unimplemented",
           "zerocopy-generic-bounds-in-const-fn",
           "zerocopy-target-has-atomics",
           "zerocopy-aarch64-simd",
@@ -90,6 +91,8 @@ jobs:
             features: "--all-features"
           - toolchain: "zerocopy-core-error"
             features: "--all-features"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented"
+            features: "--all-features"
           - toolchain: "zerocopy-generic-bounds-in-const-fn"
             features: "--all-features"
           - toolchain: "zerocopy-target-has-atomics"
@@ -112,6 +115,8 @@ jobs:
           # zerocopy-derive doesn't behave different on these toolchains.
           - crate: "zerocopy-derive"
             toolchain: "zerocopy-core-error"
+          - crate: "zerocopy-derive"
+            toolchain: "zerocopy-diagnostic-on-unimplemented"
           - crate: "zerocopy-derive"
             toolchain: "zerocopy-generic-bounds-in-const-fn"
           - crate: "zerocopy-derive"
@@ -163,7 +168,29 @@ jobs:
             target: "thumbv6m-none-eabi"
           - toolchain: "zerocopy-core-error"
             target: "wasm32-wasi"
-            # Exclude most targets targets from the
+          # Exclude most targets targets from the
+          # `zerocopy-diagnostic-on-unimplemented` toolchain since the
+          # `zerocopy-diagnostic-on-unimplemented` feature is unrelated to
+          # compilation target. This only leaves i686 and x86_64 targets.
+          - toolchain: "zerocopy-diagnostic-on-unimplemented"
+            target: "arm-unknown-linux-gnueabi"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented"
+            target: "aarch64-unknown-linux-gnu"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented"
+            target: "powerpc-unknown-linux-gnu"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented"
+            target: "powerpc64-unknown-linux-gnu"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented"
+            target: "riscv64gc-unknown-linux-gnu"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented"
+            target: "s390x-unknown-linux-gnu"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented"
+            target: "x86_64-pc-windows-msvc"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented"
+            target: "thumbv6m-none-eabi"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented"
+            target: "wasm32-wasi"
+          # Exclude most targets targets from the
           # `zerocopy-generic-bounds-in-const-fn` toolchain since the
           # `zerocopy-generic-bounds-in-const-fn` feature is unrelated to
           # compilation target. This only leaves i686 and x86_64 targets.

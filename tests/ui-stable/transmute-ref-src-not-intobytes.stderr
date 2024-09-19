@@ -7,6 +7,7 @@ error[E0277]: the trait bound `Src: zerocopy::IntoBytes` is not satisfied
    |                                 the trait `zerocopy::IntoBytes` is not implemented for `Src`
    |                                 required by a bound introduced by this call
    |
+   = note: Consider adding `#[derive(IntoBytes)]` to `Src`
    = help: the following other types implement trait `zerocopy::IntoBytes`:
              ()
              AU16
@@ -30,6 +31,7 @@ error[E0277]: the trait bound `Src: zerocopy::IntoBytes` is not satisfied
 23 | const SRC_NOT_AS_BYTES: &AU16 = transmute_ref!(&Src(AU16(0)));
    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `Src`
    |
+   = note: Consider adding `#[derive(IntoBytes)]` to `Src`
    = help: the following other types implement trait `zerocopy::IntoBytes`:
              ()
              AU16
