@@ -120,6 +120,14 @@ struct IntoBytes3 {
     bar: u64,
 }
 
+// TODO(#1708): Improve the ergonomics of this error message.
+#[derive(IntoBytes)]
+#[repr(C)]
+struct IntoBytes4 {
+    a: u8,
+    b: [u8],
+}
+
 //
 // Unaligned errors
 //

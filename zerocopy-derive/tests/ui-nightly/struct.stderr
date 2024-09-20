@@ -1,37 +1,37 @@
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/struct.rs:128:11
+   --> tests/ui-nightly/struct.rs:136:11
     |
-128 | #[repr(C, align(2))]
+136 | #[repr(C, align(2))]
     |           ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/struct.rs:132:21
+   --> tests/ui-nightly/struct.rs:140:21
     |
-132 | #[repr(transparent, align(2))]
+140 | #[repr(transparent, align(2))]
     |                     ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/struct.rs:138:16
+   --> tests/ui-nightly/struct.rs:146:16
     |
-138 | #[repr(packed, align(2))]
+146 | #[repr(packed, align(2))]
     |                ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/struct.rs:142:18
+   --> tests/ui-nightly/struct.rs:150:18
     |
-142 | #[repr(align(1), align(2))]
+150 | #[repr(align(1), align(2))]
     |                  ^^^^^^^^
 
 error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/struct.rs:146:8
+   --> tests/ui-nightly/struct.rs:154:8
     |
-146 | #[repr(align(2), align(4))]
+154 | #[repr(align(2), align(4))]
     |        ^^^^^^^^
 
 error[E0692]: transparent struct cannot have other repr hints
-   --> tests/ui-nightly/struct.rs:132:8
+   --> tests/ui-nightly/struct.rs:140:8
     |
-132 | #[repr(transparent, align(2))]
+140 | #[repr(transparent, align(2))]
     |        ^^^^^^^^^^^  ^^^^^^^^
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
@@ -269,8 +269,39 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
 9   + #![feature(trivial_bounds)]
     |
 
-error[E0587]: type has conflicting packed and align representation hints
-   --> tests/ui-nightly/struct.rs:139:1
+error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
+   --> tests/ui-nightly/struct.rs:126:8
     |
-139 | struct Unaligned3;
+126 | struct IntoBytes4 {
+    |        ^^^^^^^^^^ doesn't have a size known at compile-time
+    |
+    = help: within `IntoBytes4`, the trait `Sized` is not implemented for `[u8]`, which is required by `IntoBytes4: Sized`
+note: required because it appears within the type `IntoBytes4`
+   --> tests/ui-nightly/struct.rs:126:8
+    |
+126 | struct IntoBytes4 {
+    |        ^^^^^^^^^^
+note: required by an implicit `Sized` bound in `std::mem::size_of`
+   --> $RUST/core/src/mem/mod.rs
+    |
+    | pub const fn size_of<T>() -> usize {
+    |                      ^ required by the implicit `Sized` requirement on this type parameter in `size_of`
+
+error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
+   --> tests/ui-nightly/struct.rs:128:8
+    |
+128 |     b: [u8],
+    |        ^^^^ doesn't have a size known at compile-time
+    |
+    = help: the trait `Sized` is not implemented for `[u8]`
+note: required by an implicit `Sized` bound in `std::mem::size_of`
+   --> $RUST/core/src/mem/mod.rs
+    |
+    | pub const fn size_of<T>() -> usize {
+    |                      ^ required by the implicit `Sized` requirement on this type parameter in `size_of`
+
+error[E0587]: type has conflicting packed and align representation hints
+   --> tests/ui-nightly/struct.rs:147:1
+    |
+147 | struct Unaligned3;
     | ^^^^^^^^^^^^^^^^^
