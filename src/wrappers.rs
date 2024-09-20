@@ -40,6 +40,59 @@ use super::*;
 /// [`deref_unchecked`]: Unalign::deref_unchecked
 /// [`deref_mut_unchecked`]: Unalign::deref_mut_unchecked
 ///
+/// # Example
+///
+/// In this example, we need `EthernetFrame` to have no alignment requirement -
+/// and thus implement [`Unaligned`]. `EtherType` is `#[repr(u16)]` and so
+/// cannot implement `Unaligned`. We use `Unalign` to relax `EtherType`'s
+/// alignment requirement so that `EthernetFrame` has no alignment requirement
+/// and can implement `Unaligned`.
+///
+/// ```rust
+/// use zerocopy::*;
+/// # use zerocopy_derive::*;
+/// # #[derive(FromBytes, KnownLayout, Immutable, Unaligned)] #[repr(C)] struct Mac([u8; 6]);
+///
+/// # #[derive(PartialEq, Copy, Clone, Debug)]
+/// #[derive(TryFromBytes, KnownLayout, Immutable)]
+/// #[repr(u16)]
+/// enum EtherType {
+///     Ipv4 = 0x0800u16.to_be(),
+///     Arp = 0x0806u16.to_be(),
+///     Ipv6 = 0x86DDu16.to_be(),
+///     # /*
+///     ...
+///     # */
+/// }
+///
+/// #[derive(TryFromBytes, KnownLayout, Immutable, Unaligned)]
+/// #[repr(C)]
+/// struct EthernetFrame {
+///     src: Mac,
+///     dst: Mac,
+///     ethertype: Unalign<EtherType>,
+///     payload: [u8],
+/// }
+///
+/// let bytes = &[
+///     # 0, 1, 2, 3, 4, 5,
+///     # 6, 7, 8, 9, 10, 11,
+///     # /*
+///     ...
+///     # */
+///     0x86, 0xDD,            // EtherType
+///     0xDE, 0xAD, 0xBE, 0xEF // Payload
+/// ][..];
+///
+/// // PANICS: Guaranteed not to panic because `bytes` is of the right
+/// // length, has the right contents, and `EthernetFrame` has no
+/// // alignment requirement.
+/// let packet = EthernetFrame::try_ref_from_bytes(&bytes).unwrap();
+///
+/// assert_eq!(packet.ethertype.get(), EtherType::Ipv6);
+/// assert_eq!(packet.payload, [0xDE, 0xAD, 0xBE, 0xEF]);
+/// ```
+///
 /// # Safety
 ///
 /// `Unalign<T>` is guaranteed to have the same size and bit validity as `T`,
@@ -140,8 +193,8 @@ impl<T> Unalign<T> {
     /// Attempts to return a reference to the wrapped `T`, failing if `self` is
     /// not properly aligned.
     ///
-    /// If `self` does not satisfy `mem::align_of::<T>()`, then it is unsound to
-    /// return a reference to the wrapped `T`, and `try_deref` returns `Err`.
+    /// If `self` does not satisfy `align_of::<T>()`, then `try_deref` returns
+    /// `Err`.
     ///
     /// If `T: Unaligned`, then `Unalign<T>` implements [`Deref`], and callers
     /// may prefer [`Deref::deref`], which is infallible.
@@ -157,8 +210,7 @@ impl<T> Unalign<T> {
     /// Attempts to return a mutable reference to the wrapped `T`, failing if
     /// `self` is not properly aligned.
     ///
-    /// If `self` does not satisfy `mem::align_of::<T>()`, then it is unsound to
-    /// return a reference to the wrapped `T`, and `try_deref_mut` returns
+    /// If `self` does not satisfy `align_of::<T>()`, then `try_deref` returns
     /// `Err`.
     ///
     /// If `T: Unaligned`, then `Unalign<T>` implements [`DerefMut`], and
@@ -179,8 +231,7 @@ impl<T> Unalign<T> {
     ///
     /// # Safety
     ///
-    /// If `self` does not satisfy `mem::align_of::<T>()`, then
-    /// `self.deref_unchecked()` may cause undefined behavior.
+    /// The caller must guarantee that `self` satisfies `align_of::<T>()`.
     #[inline(always)]
     pub const unsafe fn deref_unchecked(&self) -> &T {
         // SAFETY: `Unalign<T>` is `repr(transparent)`, so there is a valid `T`
@@ -203,8 +254,7 @@ impl<T> Unalign<T> {
     ///
     /// # Safety
     ///
-    /// If `self` does not satisfy `mem::align_of::<T>()`, then
-    /// `self.deref_mut_unchecked()` may cause undefined behavior.
+    /// The caller must guarantee that `self` satisfies `align_of::<T>()`.
     #[inline(always)]
     pub unsafe fn deref_mut_unchecked(&mut self) -> &mut T {
         // SAFETY: `self.get_mut_ptr()` returns a raw pointer to a valid `T` at
@@ -222,11 +272,11 @@ impl<T> Unalign<T> {
     /// The returned raw pointer is not necessarily aligned to
     /// `align_of::<T>()`. Most functions which operate on raw pointers require
     /// those pointers to be aligned, so calling those functions with the result
-    /// of `get_ptr` will be undefined behavior if alignment is not guaranteed
-    /// using some out-of-band mechanism. In general, the only functions which
-    /// are safe to call with this pointer are those which are explicitly
-    /// documented as being sound to use with an unaligned pointer, such as
-    /// [`read_unaligned`].
+    /// of `get_ptr` will result in undefined behavior if alignment is not
+    /// guaranteed using some out-of-band mechanism. In general, the only
+    /// functions which are safe to call with this pointer are those which are
+    /// explicitly documented as being sound to use with an unaligned pointer,
+    /// such as [`read_unaligned`].
     ///
     /// Even if the caller is permitted to mutate `self` (e.g. they have
     /// ownership or a mutable borrow), it is not guaranteed to be sound to
@@ -247,11 +297,11 @@ impl<T> Unalign<T> {
     /// The returned raw pointer is not necessarily aligned to
     /// `align_of::<T>()`. Most functions which operate on raw pointers require
     /// those pointers to be aligned, so calling those functions with the result
-    /// of `get_ptr` will be undefined behavior if alignment is not guaranteed
-    /// using some out-of-band mechanism. In general, the only functions which
-    /// are safe to call with this pointer are those which are explicitly
-    /// documented as being sound to use with an unaligned pointer, such as
-    /// [`read_unaligned`].
+    /// of `get_ptr` will result in undefined behavior if alignment is not
+    /// guaranteed using some out-of-band mechanism. In general, the only
+    /// functions which are safe to call with this pointer are those which are
+    /// explicitly documented as being sound to use with an unaligned pointer,
+    /// such as [`read_unaligned`].
     ///
     /// [`read_unaligned`]: core::ptr::read_unaligned
     // TODO(https://github.com/rust-lang/rust/issues/57349): Make this `const`.

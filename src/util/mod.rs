@@ -547,7 +547,7 @@ impl<T: ?Sized> AsAddress for *mut T {
     }
 }
 
-/// Is `t` aligned to `mem::align_of::<U>()`?
+/// Is `t` aligned to `align_of::<U>()`?
 #[inline(always)]
 pub(crate) fn aligned_to<T: AsAddress, U>(t: T) -> bool {
     // `mem::align_of::<U>()` is guaranteed to return a non-zero value, which in
