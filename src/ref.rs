@@ -25,13 +25,13 @@ mod def {
     ///
     /// # Examples
     ///
-    /// `Ref` can be used to treat a sequence of bytes as a structured type, and to
-    /// read and write the fields of that type as if the byte slice reference were
-    /// simply a reference to that type.
+    /// `Ref` can be used to treat a sequence of bytes as a structured type, and
+    /// to read and write the fields of that type as if the byte slice reference
+    /// were simply a reference to that type.
     ///
     /// ```rust
-    /// # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
-    /// use zerocopy::{IntoBytes, ByteSliceMut, FromBytes, FromZeros, KnownLayout, Immutable, Ref, SplitByteSlice, Unaligned};
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
     ///
     /// #[derive(FromBytes, IntoBytes, KnownLayout, Immutable, Unaligned)]
     /// #[repr(C)]
@@ -42,28 +42,18 @@ mod def {
     ///     checksum: [u8; 2],
     /// }
     ///
-    /// struct UdpPacket<B> {
-    ///     header: Ref<B, UdpHeader>,
-    ///     body: B,
+    /// #[derive(FromBytes, IntoBytes, KnownLayout, Immutable, Unaligned)]
+    /// #[repr(C, packed)]
+    /// struct UdpPacket {
+    ///     header: UdpHeader,
+    ///     body: [u8],
     /// }
     ///
-    /// impl<B: SplitByteSlice> UdpPacket<B> {
-    ///     pub fn parse(bytes: B) -> Option<UdpPacket<B>> {
-    ///         let (header, body) = Ref::unaligned_from_prefix(bytes).ok()?;
-    ///         Some(UdpPacket { header, body })
-    ///     }
-    ///
-    ///     pub fn get_src_port(&self) -> [u8; 2] {
-    ///         self.header.src_port
+    /// impl UdpPacket {
+    ///     pub fn parse<B: ByteSlice>(bytes: B) -> Option<Ref<B, UdpPacket>> {
+    ///         Ref::unaligned_from_bytes(bytes).ok()
     ///     }
     /// }
-    ///
-    /// impl<B: ByteSliceMut> UdpPacket<B> {
-    ///     pub fn with_src_port(&mut self, src_port: [u8; 2]) {
-    ///         self.header.src_port = src_port;
-    ///     }
-    /// }
-    /// # }
     /// ```
     pub struct Ref<B, T: ?Sized>(
         // INVARIANTS: The referent (via `.deref`, `.deref_mut`, `.into`) byte
