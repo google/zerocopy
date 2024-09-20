@@ -65,10 +65,10 @@ impl<B: ByteSlice + DerefMut> ByteSliceMut for B {}
 /// # Safety
 ///
 /// If `B: CopyableByteSlice`, then the dereference stability properties
-/// required by `ByteSlice` (see that trait's safety documentation) do not only
-/// hold regarding two calls to `b.deref()` or `b.deref_mut()`, but also hold
-/// regarding `c.deref()` or `c.deref_mut()`, where `c` is produced by copying
-/// `b`.
+/// required by [`ByteSlice`] (see that trait's safety documentation) do not
+/// only hold regarding two calls to `b.deref()` or `b.deref_mut()`, but also
+/// hold regarding `c.deref()` or `c.deref_mut()`, where `c` is produced by
+/// copying `b`.
 pub unsafe trait CopyableByteSlice: ByteSlice + Copy + CloneableByteSlice {}
 
 /// A [`ByteSlice`] which can be cloned without violating dereference stability.
@@ -76,9 +76,9 @@ pub unsafe trait CopyableByteSlice: ByteSlice + Copy + CloneableByteSlice {}
 /// # Safety
 ///
 /// If `B: CloneableByteSlice`, then the dereference stability properties
-/// required by `ByteSlice` (see that trait's safety documentation) do not only
-/// hold regarding two calls to `b.deref()` or `b.deref_mut()`, but also hold
-/// regarding `c.deref()` or `c.deref_mut()`, where `c` is produced by
+/// required by [`ByteSlice`] (see that trait's safety documentation) do not
+/// only hold regarding two calls to `b.deref()` or `b.deref_mut()`, but also
+/// hold regarding `c.deref()` or `c.deref_mut()`, where `c` is produced by
 /// `b.clone()`, `b.clone().clone()`, etc.
 pub unsafe trait CloneableByteSlice: ByteSlice + Clone {}
 
@@ -98,59 +98,46 @@ pub unsafe trait CloneableByteSlice: ByteSlice + Clone {}
 /// - `first`'s address is `addr` and its length is `split`
 /// - `second`'s address is `addr + split` and its length is `len - split`
 pub unsafe trait SplitByteSlice: ByteSlice {
-    /// Splits the slice at the midpoint.
+    /// Attempts to split `self` at the midpoint.
     ///
-    /// `x.split_at(mid)` returns `x[..mid]` and `x[mid..]`.
+    /// `s.split_at(mid)` returns `Ok((s[..mid], s[mid..]))` if `mid <=
+    /// s.deref().len()` and otherwise returns `Err(s)`.
     ///
-    /// # Panics
+    /// # Safety
     ///
-    /// `x.split_at(mid)` panics if `mid > x.deref().len()`.
-    #[must_use]
+    /// Unsafe code may rely on this function correctly implementing the above
+    /// functionality.
     #[inline]
-    fn split_at(self, mid: usize) -> (Self, Self) {
-        if let Ok(splits) = try_split_at(self, mid) {
-            splits
+    fn split_at(self, mid: usize) -> Result<(Self, Self), Self> {
+        if mid <= self.deref().len() {
+            // SAFETY: Above, we ensure that `mid <= self.deref().len()`. By
+            // invariant on `ByteSlice`, a supertrait of `SplitByteSlice`,
+            // `.deref()` is guranteed to be "stable"; i.e., it will always
+            // dereference to a byte slice of the same address and length. Thus,
+            // we can be sure that the above precondition remains satisfied
+            // through the call to `split_at_unchecked`.
+            unsafe { Ok(self.split_at_unchecked(mid)) }
         } else {
-            panic!("mid > len")
+            Err(self)
         }
     }
 
     /// Splits the slice at the midpoint, possibly omitting bounds checks.
     ///
-    /// `x.split_at_unchecked(mid)` returns `x[..mid]` and `x[mid..]`.
+    /// `s.split_at_unchecked(mid)` returns `s[..mid]` and `s[mid..]`.
     ///
     /// # Safety
     ///
-    /// `mid` must not be greater than `x.deref().len()`.
+    /// `mid` must not be greater than `self.deref().len()`.
+    ///
+    /// # Panics
+    ///
+    /// Implementations of this method may choose to perform a bounds check and
+    /// panic if `mid > self.deref().len()`. They may also panic for any other
+    /// reason. Since it is optional, callers must not rely on this behavior for
+    /// soundness.
     #[must_use]
     unsafe fn split_at_unchecked(self, mid: usize) -> (Self, Self);
-}
-
-/// Attempts to split the slice at the midpoint.
-///
-/// `x.try_split_at(mid)` returns `Ok((x[..mid], x[mid..]))` if `mid <=
-/// x.deref().len()` and otherwise returns `Err(x)`.
-///
-/// # Safety
-///
-/// Unsafe code may rely on this function correctly implementing the above
-/// functionality.
-#[inline]
-pub(crate) fn try_split_at<S>(slice: S, mid: usize) -> Result<(S, S), S>
-where
-    S: SplitByteSlice,
-{
-    if mid <= slice.deref().len() {
-        // SAFETY: Above, we ensure that `mid <= self.deref().len()`. By
-        // invariant on `ByteSlice`, a supertrait of `SplitByteSlice`,
-        // `.deref()` is guranteed to be "stable"; i.e., it will always
-        // dereference to a byte slice of the same address and length. Thus, we
-        // can be sure that the above precondition remains satisfied through the
-        // call to `split_at_unchecked`.
-        unsafe { Ok(slice.split_at_unchecked(mid)) }
-    } else {
-        Err(slice)
-    }
 }
 
 /// A shorthand for [`SplitByteSlice`] and [`ByteSliceMut`].
@@ -174,7 +161,7 @@ pub unsafe trait IntoByteSlice<'a>: ByteSlice {
     /// # Safety
     ///
     /// The returned reference has the same address and length as `self.deref()`
-    /// or `self.deref_mut()`.
+    /// and `self.deref_mut()`.
     ///
     /// Note that, combined with the safety invariant on [`ByteSlice`], this
     /// safety invariant implies that the returned reference is "stable" in the
@@ -199,7 +186,7 @@ pub unsafe trait IntoByteSliceMut<'a>: IntoByteSlice<'a> + ByteSliceMut {
     /// # Safety
     ///
     /// The returned reference has the same address and length as `self.deref()`
-    /// or `self.deref_mut()`.
+    /// and `self.deref_mut()`.
     ///
     /// Note that, combined with the safety invariant on [`ByteSlice`], this
     /// safety invariant implies that the returned reference is "stable" in the
