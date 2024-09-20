@@ -30,11 +30,8 @@ use crate::util::polyfills::{self, NonNullExt as _, NumExt as _};
 /// A mutable or immutable reference to a byte slice.
 ///
 /// `ByteSlice` abstracts over the mutability of a byte slice reference, and is
-/// implemented for various special reference types such as [`Ref<[u8]>`] and
-/// [`RefMut<[u8]>`].
-///
-/// [`Ref<[u8]>`]: core::cell::Ref
-/// [`RefMut<[u8]>`]: core::cell::RefMut
+/// implemented for various special reference types such as
+/// [`Ref<[u8]>`](core::cell::Ref) and [`RefMut<[u8]>`](core::cell::RefMut).
 ///
 /// # Safety
 ///
