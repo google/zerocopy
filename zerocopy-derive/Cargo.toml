@@ -31,13 +31,16 @@ quote = "1.0.10"
 syn = "2.0.46"
 
 [dev-dependencies]
+dissimilar = "1.0.9"
 # We don't use this directly, but trybuild does. On the MSRV toolchain, the
 # version resolver fails to select any version for once_cell unless we
 # depend on it directly.
 once_cell = "=1.9"
+# This is the latest version which is compatible with `syn` 2.0.46, which we pin
+# to in CI for MSRV compatibility reasons.
+prettyplease = "=0.2.17"
 rustversion = "1.0"
 static_assertions = "1.1"
-synstructure = "0.13.1"
 testutil = { path = "../testutil" }
 # Pinned to a specific version so that the version used for local development
 # and the version used in CI are guaranteed to be the same. Future versions
