@@ -456,6 +456,26 @@ where
     /// the remaining bytes. If the length of `source` is not equal to the size
     /// of `Self` with `count` elements, or if `source` is not appropriately
     /// aligned, this returns `Err`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = Ref::<_, ZSTy>::from_bytes_with_elems(&b"UU"[..], 42); // ⚠ Compile Error!
+    /// ```
     #[inline]
     pub fn from_bytes_with_elems(source: B, count: usize) -> Result<Ref<B, T>, CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
@@ -482,6 +502,26 @@ where
     /// interpreted as a `T` with `count` trailing elements, and a reference to
     /// the remaining bytes. If there are insufficient bytes, or if `source` is
     /// not appropriately aligned, this returns `Err`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = Ref::<_, ZSTy>::from_prefix_with_elems(&b"UU"[..], 42); // ⚠ Compile Error!
+    /// ```
     #[inline]
     pub fn from_prefix_with_elems(
         source: B,
@@ -506,6 +546,26 @@ where
     /// interpreted as a `T` with `count` trailing elements, and a reference to
     /// the preceding bytes. If there are insufficient bytes, or if that suffix
     /// of `source` is not appropriately aligned, this returns `Err`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let _ = Ref::<_, ZSTy>::from_suffix_with_elems(&b"UU"[..], 42); // ⚠ Compile Error!
+    /// ```
     #[inline]
     pub fn from_suffix_with_elems(
         source: B,
@@ -678,6 +738,26 @@ where
     /// interpreted as a `T` with `count` trailing elements, and a reference to
     /// the remaining bytes. If the length of `source` is not equal to the size
     /// of `Self` with `count` elements, this returns `Err`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout, Unaligned)]
+    /// #[repr(C, packed)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let f = Ref::<&[u8], ZSTy>::unaligned_from_bytes_with_elems(&b"UU"[..], 42); // ⚠ Compile Error!
+    /// ```
     #[inline]
     pub fn unaligned_from_bytes_with_elems(
         source: B,
@@ -704,6 +784,26 @@ where
     /// interpreted as a `T` with `count` trailing elements, and a reference to
     /// the remaining bytes. If there are insufficient bytes, this returns
     /// `Err`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout, Unaligned)]
+    /// #[repr(C, packed)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let f = Ref::<&[u8], ZSTy>::unaligned_from_prefix_with_elems(&b"UU"[..], 42); // ⚠ Compile Error!
+    /// ```
     #[inline]
     pub fn unaligned_from_prefix_with_elems(
         source: B,
@@ -724,6 +824,26 @@ where
     /// interpreted as a `T` with `count` trailing elements, and a reference to
     /// the preceding bytes. If there are insufficient bytes, this returns
     /// `Err`.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout, Unaligned)]
+    /// #[repr(C, packed)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let f = Ref::<&[u8], ZSTy>::unaligned_from_suffix_with_elems(&b"UU"[..], 42); // ⚠ Compile Error!
+    /// ```
     #[inline]
     pub fn unaligned_from_suffix_with_elems(
         source: B,
@@ -900,6 +1020,7 @@ where
     type Target = T;
     #[inline]
     fn deref(&self) -> &T {
+        // Presumably unreachable, since we've guarded each constructor of `Ref`.
         static_assert_dst_is_not_zst!(T);
 
         // SAFETY: We don't call any methods on `b` other than those provided by
@@ -927,6 +1048,7 @@ where
 {
     #[inline]
     fn deref_mut(&mut self) -> &mut T {
+        // Presumably unreachable, since we've guarded each constructor of `Ref`.
         static_assert_dst_is_not_zst!(T);
 
         // SAFETY: We don't call any methods on `b` other than those provided by
