@@ -120,6 +120,15 @@ struct IntoBytes3 {
     bar: u64,
 }
 
+// NOTE(#1708): This exists to ensure that our error messages are good when a
+// field is unsized.
+#[derive(IntoBytes)]
+#[repr(C)]
+struct IntoBytes4 {
+    a: u8,
+    b: [u8],
+}
+
 //
 // Unaligned errors
 //
