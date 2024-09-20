@@ -13,10 +13,10 @@
 //!
 //! For each native multi-byte integer type - `u16`, `i16`, `u32`, etc - and
 //! floating point type - `f32` and `f64` - an equivalent type is defined by
-//! this module - [`U16`], [`I16`], [`U32`], [`F64`], etc. Unlike their native
-//! counterparts, these types have alignment 1, and take a type parameter
+//! this module - [`U16`], [`I16`], [`U32`], [`F32`], [`F64`], etc. Unlike their
+//! native counterparts, these types have alignment 1, and take a type parameter
 //! specifying the byte order in which the bytes are stored in memory. Each type
-//! implements the [`FromBytes`], [`IntoBytes`], and [`Unaligned`] traits.
+//! implements this crate's relevant conversion and marker traits.
 //!
 //! These two properties, taken together, make these types useful for defining
 //! data structures whose memory layout matches a wire format such as that of a
@@ -33,10 +33,9 @@
 //! One use of these types is for representing network packet formats, such as
 //! UDP:
 //!
-//! ```rust,edition2021
-//! # #[cfg(feature = "derive")] { // This example uses derives, and won't compile without them
-//! use zerocopy::{IntoBytes, FromBytes, KnownLayout, Immutable, Ref, SplitByteSlice, Unaligned};
-//! use zerocopy::byteorder::network_endian::U16;
+//! ```rust
+//! use zerocopy::{*, byteorder::network_endian::U16};
+//! # use zerocopy_derive::*;
 //!
 //! #[derive(FromBytes, IntoBytes, KnownLayout, Immutable, Unaligned)]
 //! #[repr(C)]
@@ -47,24 +46,18 @@
 //!     checksum: U16,
 //! }
 //!
-//! struct UdpPacket<B> {
-//!     header: Ref<B, UdpHeader>,
-//!     body: B,
+//! #[derive(FromBytes, IntoBytes, KnownLayout, Immutable, Unaligned)]
+//! #[repr(C, packed)]
+//! struct UdpPacket {
+//!     header: UdpHeader,
+//!     body: [u8],
 //! }
 //!
-//! impl<B: SplitByteSlice> UdpPacket<B> {
-//!     fn parse(bytes: B) -> Option<UdpPacket<B>> {
-//!         let (header, body) = Ref::from_prefix(bytes).ok()?;
-//!         Some(UdpPacket { header, body })
+//! impl UdpPacket {
+//!     fn parse(bytes: &[u8]) -> Option<&UdpPacket> {
+//!         UdpPacket::ref_from_bytes(bytes).ok()
 //!     }
-//!
-//!     fn src_port(&self) -> u16 {
-//!         self.header.src_port.get()
-//!     }
-//!
-//!     // more getters...
 //! }
-//! # }
 //! ```
 
 use core::{
@@ -555,28 +548,28 @@ example of how it can be used for parsing UDP packets.
             }
         )*
 
-        impl<O: ByteOrder> AsRef<[u8; $bytes]> for $name<O> {
+        impl<O> AsRef<[u8; $bytes]> for $name<O> {
             #[inline(always)]
             fn as_ref(&self) -> &[u8; $bytes] {
                 &self.0
             }
         }
 
-        impl<O: ByteOrder> AsMut<[u8; $bytes]> for $name<O> {
+        impl<O> AsMut<[u8; $bytes]> for $name<O> {
             #[inline(always)]
             fn as_mut(&mut self) -> &mut [u8; $bytes] {
                 &mut self.0
             }
         }
 
-        impl<O: ByteOrder> PartialEq<$name<O>> for [u8; $bytes] {
+        impl<O> PartialEq<$name<O>> for [u8; $bytes] {
             #[inline(always)]
             fn eq(&self, other: &$name<O>) -> bool {
                 self.eq(&other.0)
             }
         }
 
-        impl<O: ByteOrder> PartialEq<[u8; $bytes]> for $name<O> {
+        impl<O> PartialEq<[u8; $bytes]> for $name<O> {
             #[inline(always)]
             fn eq(&self, other: &[u8; $bytes]) -> bool {
                 self.0.eq(other)
