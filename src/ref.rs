@@ -234,12 +234,12 @@ where
             return Err(AlignmentError::new(bytes).into());
         }
         let (bytes, suffix) =
-            try_split_at(bytes, mem::size_of::<T>()).map_err(|b| SizeError::new(b).into())?;
+            bytes.split_at(mem::size_of::<T>()).map_err(|b| SizeError::new(b).into())?;
         // SAFETY: We just validated alignment and that `bytes` is at least as
-        // large as `T`. `try_split_at(bytes, mem::size_of::<T>())?` ensures
-        // that the new `bytes` is exactly the size of `T`. By safety
-        // postcondition on `SplitByteSlice::try_split_at` we can rely on
-        // `try_split_at` to produce the correct `bytes` and `suffix`.
+        // large as `T`. `bytes.split_at(mem::size_of::<T>())?` ensures that the
+        // new `bytes` is exactly the size of `T`. By safety postcondition on
+        // `SplitByteSlice::split_at` we can rely on `split_at` to produce the
+        // correct `bytes` and `suffix`.
         let r = unsafe { Ref::new_unchecked(bytes) };
         Ok((r, suffix))
     }
@@ -252,17 +252,16 @@ where
         } else {
             return Err(SizeError::new(bytes).into());
         };
-        let (prefix, bytes) =
-            try_split_at(bytes, split_at).map_err(|b| SizeError::new(b).into())?;
+        let (prefix, bytes) = bytes.split_at(split_at).map_err(|b| SizeError::new(b).into())?;
         if !util::aligned_to::<_, T>(bytes.deref()) {
             return Err(AlignmentError::new(bytes).into());
         }
         // SAFETY: Since `split_at` is defined as `bytes_len - size_of::<T>()`,
         // the `bytes` which results from `let (prefix, bytes) =
-        // try_split_at(bytes, split_at)?` has length `size_of::<T>()`. After
+        // bytes.split_at(split_at)?` has length `size_of::<T>()`. After
         // constructing `bytes`, we validate that it has the proper alignment.
-        // By safety postcondition on `SplitByteSlice::try_split_at` we can rely
-        // on `try_split_at` to produce the correct `prefix` and `bytes`.
+        // By safety postcondition on `SplitByteSlice::split_at` we can rely on
+        // `split_at` to produce the correct `prefix` and `bytes`.
         let r = unsafe { Ref::new_unchecked(bytes) };
         Ok((prefix, r))
     }
@@ -373,13 +372,11 @@ where
         // underflow.
         #[allow(unstable_name_collisions, clippy::incompatible_msrv)]
         let split_at = unsafe { source.len().unchecked_sub(remainder.len()) };
-        let (bytes, suffix) =
-            try_split_at(source, split_at).map_err(|b| SizeError::new(b).into())?;
+        let (bytes, suffix) = source.split_at(split_at).map_err(|b| SizeError::new(b).into())?;
         // SAFETY: `try_cast_into` validates size and alignment, and returns a
         // `split_at` that indicates how many bytes of `source` correspond to a
-        // valid `T`. By safety postcondition on `SplitByteSlice::try_split_at`
-        // we can rely on `try_split_at` to produce the correct `source` and
-        // `suffix`.
+        // valid `T`. By safety postcondition on `SplitByteSlice::split_at` we
+        // can rely on `split_at` to produce the correct `source` and `suffix`.
         let r = unsafe { Ref::new_unchecked(bytes) };
         Ok((r, suffix))
     }
@@ -431,13 +428,11 @@ where
         };
 
         let split_at = remainder.len();
-        let (prefix, bytes) =
-            try_split_at(source, split_at).map_err(|b| SizeError::new(b).into())?;
+        let (prefix, bytes) = source.split_at(split_at).map_err(|b| SizeError::new(b).into())?;
         // SAFETY: `try_cast_into` validates size and alignment, and returns a
-        // `try_split_at` that indicates how many bytes of `source` correspond to
-        // a valid `T`. By safety postcondition on
-        // `SplitByteSlice::try_split_at` we can rely on `try_split_at` to
-        // produce the correct `prefix` and `bytes`.
+        // `split_at` that indicates how many bytes of `source` correspond to a
+        // valid `T`. By safety postcondition on `SplitByteSlice::split_at` we
+        // can rely on `split_at` to produce the correct `prefix` and `bytes`.
         let r = unsafe { Ref::new_unchecked(bytes) };
         Ok((prefix, r))
     }
@@ -492,10 +487,7 @@ where
             Some(len) => len,
             None => return Err(SizeError::new(source).into()),
         };
-        if source.len() < expected_len {
-            return Err(SizeError::new(source).into());
-        }
-        let (prefix, bytes) = source.split_at(expected_len);
+        let (prefix, bytes) = source.split_at(expected_len).map_err(SizeError::new)?;
         Self::from_bytes(prefix).map(move |l| (l, bytes))
     }
 
@@ -521,7 +513,9 @@ where
         } else {
             return Err(SizeError::new(source).into());
         };
-        let (bytes, suffix) = source.split_at(split_at);
+        // SAFETY: The preceeding `source.len().checked_sub(expected_len)`
+        // guarantees that `split_at` is in-bounds.
+        let (bytes, suffix) = unsafe { source.split_at_unchecked(split_at) };
         Self::from_bytes(suffix).map(move |l| (bytes, l))
     }
 }
