@@ -284,6 +284,21 @@ impl<T> Unalign<T> {
     /// [`T: Unaligned`]: Unaligned
     #[inline]
     pub fn update<O, F: FnOnce(&mut T) -> O>(&mut self, f: F) -> O {
+        if mem::align_of::<T>() == 1 {
+            // While we advise callers to use `DerefMut` when `T: Unaligned`,
+            // not all callers will be able to guarantee `T: Unaligned` in all
+            // cases. In particular, callers who are themselves providing an API
+            // which is generic over `T` may sometimes be called by *their*
+            // callers with `T` such that `align_of::<T>() == 1`, but cannot
+            // guarantee this in the general case. Thus, this optimization may
+            // sometimes be helpful.
+
+            // SAFETY: Since `T`'s alignment is 1, `self` satisfies its
+            // alignment by definition.
+            let t = unsafe { self.deref_mut_unchecked() };
+            return f(t);
+        }
+
         // On drop, this moves `copy` out of itself and uses `ptr::write` to
         // overwrite `slf`.
         struct WriteBackOnDrop<T> {
@@ -485,6 +500,11 @@ mod tests {
         }));
         assert!(res.is_err());
         assert_eq!(u.into_inner(), Box::new(AU64(124)));
+
+        // Test the align_of::<T>() == 1 optimization.
+        let mut u = Unalign::new([0u8, 1]);
+        u.update(|a| a[0] += 1);
+        assert_eq!(u.get(), [1u8, 1]);
     }
 
     #[test]
