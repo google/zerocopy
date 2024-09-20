@@ -664,7 +664,7 @@ pub unsafe trait KnownLayout {
     /// `Self`. In particular:
     /// - `LAYOUT.align` is equal to `Self`'s alignment
     /// - If `Self: Sized`, then `LAYOUT.size_info == SizeInfo::Sized { size }`
-    ///   where `size == mem::size_of::<Self>()`
+    ///   where `size == size_of::<Self>()`
     /// - If `Self` is a slice DST, then `LAYOUT.size_info ==
     ///   SizeInfo::SliceDst(slice_layout)` where:
     ///   - The size, `size`, of an instance of `Self` with `elems` trailing
@@ -3964,8 +3964,8 @@ pub unsafe trait IntoBytes {
         let slf: *const Self = self;
 
         // SAFETY:
-        // - `slf.cast::<u8>()` is valid for reads for `len *
-        //   mem::size_of::<u8>()` many bytes because...
+        // - `slf.cast::<u8>()` is valid for reads for `len * size_of::<u8>()`
+        //   many bytes because...
         //   - `slf` is the same pointer as `self`, and `self` is a reference
         //     which points to an object whose size is `len`. Thus...
         //     - The entire region of `len` bytes starting at `slf` is contained
@@ -4039,7 +4039,7 @@ pub unsafe trait IntoBytes {
 
         // SAFETY:
         // - `slf.cast::<u8>()` is valid for reads and writes for `len *
-        //   mem::size_of::<u8>()` many bytes because...
+        //   size_of::<u8>()` many bytes because...
         //   - `slf` is the same pointer as `self`, and `self` is a reference
         //     which points to an object whose size is `len`. Thus...
         //     - The entire region of `len` bytes starting at `slf` is contained
