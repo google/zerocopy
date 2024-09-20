@@ -715,6 +715,38 @@ impl<Src, Dst: ?Sized + TryFromBytes> TryReadError<Src, Dst> {
             Self::Validity(e) => e.src,
         }
     }
+
+    /// Maps the source value associated with the conversion error.
+    ///
+    /// This can help mitigate [issues with `Send`, `Sync` and `'static`
+    /// bounds][self#send-sync-and-static].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use core::num::NonZeroU32;
+    /// use zerocopy::*;
+    ///
+    /// let source: [u8; 3] = [0, 0, 0];
+    ///
+    /// // Try to read a `NonZeroU32` from `source`.
+    /// let maybe_u32: Result<NonZeroU32, TryReadError<&[u8], NonZeroU32>>
+    ///     = NonZeroU32::try_read_from_bytes(&source[..]);
+    ///
+    /// // Map the error's source to its size.
+    /// let maybe_u32: Result<NonZeroU32, TryReadError<usize, NonZeroU32>> =
+    ///     maybe_u32.map_err(|err| {
+    ///         err.map_src(|src| src.len())
+    ///     });
+    /// ```
+    #[inline]
+    pub fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> TryReadError<NewSrc, Dst> {
+        match self {
+            Self::Alignment(i) => match i {},
+            Self::Size(e) => TryReadError::Size(e.map_src(f)),
+            Self::Validity(e) => TryReadError::Validity(e.map_src(f)),
+        }
+    }
 }
 
 /// The error type of a failed allocation.
