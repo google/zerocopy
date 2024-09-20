@@ -87,9 +87,18 @@ use super::*;
 /// big-endian byte order.
 ///
 /// [`U32<BigEndian>`]: U32
-pub trait ByteOrder: Copy + Clone + Debug + Display + Eq + PartialEq + Ord + PartialOrd {
+pub trait ByteOrder:
+    Copy + Clone + Debug + Display + Eq + PartialEq + Ord + PartialOrd + private::Sealed
+{
     #[doc(hidden)]
     const ORDER: Order;
+}
+
+mod private {
+    pub trait Sealed {}
+
+    impl Sealed for super::BigEndian {}
+    impl Sealed for super::LittleEndian {}
 }
 
 #[allow(missing_copy_implementations, missing_debug_implementations)]
