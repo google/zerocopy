@@ -216,3 +216,11 @@ fn packed_unsized() {
     let converted = <CPackedUnsized as imp::TryFromBytes>::try_ref_from_bytes(candidate);
     imp::assert!(converted.is_ok());
 }
+
+#[derive(imp::TryFromBytes)]
+struct A;
+
+#[derive(imp::TryFromBytes)]
+struct B {
+    a: A,
+}
