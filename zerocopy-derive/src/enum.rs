@@ -9,8 +9,9 @@
 use ::proc_macro2::TokenStream;
 use ::quote::quote;
 use ::syn::{DataEnum, Fields, Generics, Ident};
+use syn::parse_quote;
 
-use crate::{EnumRepr, Trait};
+use crate::{derive_try_from_bytes_inner, EnumRepr, Trait};
 
 /// Returns the repr for the tag enum, given the collection of reprs on the
 /// enum.
@@ -141,19 +142,26 @@ fn generate_variant_structs(
             return None;
         }
 
-        let trait_path = Trait::TryFromBytes.derive_path();
         let variant_struct_ident = variant_struct_ident(&variant.ident);
         let field_types = variant.fields.iter().map(|f| &f.ty);
 
-        Some(quote! {
+        let variant_struct = parse_quote! {
             #[repr(C)]
             #[allow(non_snake_case)]
-            #[derive(#trait_path)]
             struct #variant_struct_ident #impl_generics (
                 core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                 #(#field_types,)*
                 #phantom_ty,
             ) #where_clause;
+        };
+
+        // We do this rather than emitting `#[derive(::zerocopy::TryFromBytes)]`
+        // because that is not hygienic, and this is also more performant.
+        let try_from_bytes_impl = derive_try_from_bytes_inner(&variant_struct);
+
+        Some(quote! {
+            #variant_struct
+            #try_from_bytes_impl
         })
     });
 

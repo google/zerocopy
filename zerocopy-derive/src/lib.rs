@@ -1083,13 +1083,6 @@ impl Trait {
             _ => parse_quote!(::zerocopy::#self),
         }
     }
-
-    fn derive_path(&self) -> Path {
-        match self {
-            Self::Sized => panic!("no derive path for builtin types"),
-            _ => parse_quote!(::zerocopy_derive::#self),
-        }
-    }
 }
 
 #[derive(Debug, Eq, PartialEq)]
