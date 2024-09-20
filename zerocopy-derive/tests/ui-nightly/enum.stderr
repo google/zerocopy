@@ -413,13 +413,17 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
 9   + #![feature(trivial_bounds)]
     |
 
-error[E0277]: the trait bound `HasPadding<IntoBytes1, true>: ShouldBe<false>` is not satisfied
+error[E0277]: `IntoBytes1` has inter-field padding
    --> tests/ui-nightly/enum.rs:533:10
     |
 533 | #[derive(IntoBytes)]
-    |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes1, true>`
+    |          ^^^^^^^^^ types with padding cannot implement `IntoBytes`
     |
-    = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes1, true>`
+    = help: the trait `PaddingFree<IntoBytes1, true>` is not implemented for `()`
+    = note: consider using `zerocopy::Unalign` to lower the alignment of individual fields
+    = note: consider adding explicit fields where padding would be
+    = note: consider using `#[repr(packed)]` to remove inter-field padding
+    = help: the trait `PaddingFree<IntoBytes1, false>` is implemented for `()`
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
@@ -427,13 +431,17 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
 9   + #![feature(trivial_bounds)]
     |
 
-error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is not satisfied
+error[E0277]: `IntoBytes2` has inter-field padding
    --> tests/ui-nightly/enum.rs:544:10
     |
 544 | #[derive(IntoBytes)]
-    |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes2, true>`
+    |          ^^^^^^^^^ types with padding cannot implement `IntoBytes`
     |
-    = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes2, true>`
+    = help: the trait `PaddingFree<IntoBytes2, true>` is not implemented for `()`
+    = note: consider using `zerocopy::Unalign` to lower the alignment of individual fields
+    = note: consider adding explicit fields where padding would be
+    = note: consider using `#[repr(packed)]` to remove inter-field padding
+    = help: the trait `PaddingFree<IntoBytes2, false>` is implemented for `()`
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
@@ -441,13 +449,17 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
 9   + #![feature(trivial_bounds)]
     |
 
-error[E0277]: the trait bound `HasPadding<IntoBytes3, true>: ShouldBe<false>` is not satisfied
+error[E0277]: `IntoBytes3` has inter-field padding
    --> tests/ui-nightly/enum.rs:550:10
     |
 550 | #[derive(IntoBytes)]
-    |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes3, true>`
+    |          ^^^^^^^^^ types with padding cannot implement `IntoBytes`
     |
-    = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes3, true>`
+    = help: the trait `PaddingFree<IntoBytes3, true>` is not implemented for `()`
+    = note: consider using `zerocopy::Unalign` to lower the alignment of individual fields
+    = note: consider adding explicit fields where padding would be
+    = note: consider using `#[repr(packed)]` to remove inter-field padding
+    = help: the trait `PaddingFree<IntoBytes3, false>` is implemented for `()`
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable

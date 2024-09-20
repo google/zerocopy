@@ -17,10 +17,7 @@
 
 #![allow(missing_debug_implementations)]
 
-use core::{
-    marker::PhantomData,
-    mem::{self, ManuallyDrop},
-};
+use core::mem::{self, ManuallyDrop};
 
 // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
 // `cfg` when `size_of_val_raw` is stabilized.
@@ -35,13 +32,18 @@ use crate::{
     Immutable, IntoBytes, Ptr, TryFromBytes, Unalign, ValidityError,
 };
 
-/// A compile-time check that should be one particular value.
-pub trait ShouldBe<const VALUE: bool> {}
-
-/// A struct for checking whether `T` contains padding.
-pub struct HasPadding<T: ?Sized, const VALUE: bool>(PhantomData<T>);
-
-impl<T: ?Sized, const VALUE: bool> ShouldBe<VALUE> for HasPadding<T, VALUE> {}
+#[cfg_attr(
+    zerocopy_diagnostic_on_unimplemented,
+    diagnostic::on_unimplemented(
+        message = "`{T}` has inter-field padding",
+        label = "types with padding cannot implement `IntoBytes`",
+        note = "consider using `zerocopy::Unalign` to lower the alignment of individual fields",
+        note = "consider adding explicit fields where padding would be",
+        note = "consider using `#[repr(packed)]` to remove inter-field padding"
+    )
+)]
+pub trait PaddingFree<T: ?Sized, const HAS_PADDING: bool> {}
+impl<T: ?Sized> PaddingFree<T, false> for () {}
 
 /// A type whose size is equal to `align_of::<T>()`.
 #[repr(C)]

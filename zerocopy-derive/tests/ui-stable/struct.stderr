@@ -213,23 +213,31 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is not satisfied
+error[E0277]: `IntoBytes2` has inter-field padding
    --> tests/ui-stable/struct.rs:107:10
     |
 107 | #[derive(IntoBytes)]
-    |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes2, true>`
+    |          ^^^^^^^^^ types with padding cannot implement `IntoBytes`
     |
-    = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes2, true>`
+    = help: the trait `PaddingFree<IntoBytes2, true>` is not implemented for `()`
+    = note: consider using `zerocopy::Unalign` to lower the alignment of individual fields
+    = note: consider adding explicit fields where padding would be
+    = note: consider using `#[repr(packed)]` to remove inter-field padding
+    = help: the trait `PaddingFree<IntoBytes2, false>` is implemented for `()`
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `HasPadding<IntoBytes3, true>: ShouldBe<false>` is not satisfied
+error[E0277]: `IntoBytes3` has inter-field padding
    --> tests/ui-stable/struct.rs:114:10
     |
 114 | #[derive(IntoBytes)]
-    |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes3, true>`
+    |          ^^^^^^^^^ types with padding cannot implement `IntoBytes`
     |
-    = help: the trait `ShouldBe<true>` is implemented for `HasPadding<IntoBytes3, true>`
+    = help: the trait `PaddingFree<IntoBytes3, true>` is not implemented for `()`
+    = note: consider using `zerocopy::Unalign` to lower the alignment of individual fields
+    = note: consider adding explicit fields where padding would be
+    = note: consider using `#[repr(packed)]` to remove inter-field padding
+    = help: the trait `PaddingFree<IntoBytes3, false>` is implemented for `()`
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
