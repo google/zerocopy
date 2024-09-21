@@ -202,8 +202,8 @@ where
         if bytes.len() != mem::size_of::<T>() {
             return Err(SizeError::new(bytes).into());
         }
-        if !util::aligned_to::<_, T>(bytes.deref()) {
-            return Err(AlignmentError::new(bytes).into());
+        if let Err(err) = util::validate_aligned_to::<_, T>(bytes.deref()) {
+            return Err(err.with_src(bytes).into());
         }
 
         // SAFETY: We just validated size and alignment.
@@ -220,8 +220,8 @@ where
         if bytes.len() < mem::size_of::<T>() {
             return Err(SizeError::new(bytes).into());
         }
-        if !util::aligned_to::<_, T>(bytes.deref()) {
-            return Err(AlignmentError::new(bytes).into());
+        if let Err(err) = util::validate_aligned_to::<_, T>(bytes.deref()) {
+            return Err(err.with_src(bytes).into());
         }
         let (bytes, suffix) =
             bytes.split_at(mem::size_of::<T>()).map_err(|b| SizeError::new(b).into())?;
@@ -243,8 +243,8 @@ where
             return Err(SizeError::new(bytes).into());
         };
         let (prefix, bytes) = bytes.split_at(split_at).map_err(|b| SizeError::new(b).into())?;
-        if !util::aligned_to::<_, T>(bytes.deref()) {
-            return Err(AlignmentError::new(bytes).into());
+        if let Err(err) = util::validate_aligned_to::<_, T>(bytes.deref()) {
+            return Err(err.with_src(bytes).into());
         }
         // SAFETY: Since `split_at` is defined as `bytes_len - size_of::<T>()`,
         // the `bytes` which results from `let (prefix, bytes) =

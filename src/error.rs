@@ -101,7 +101,7 @@ use core::error::Error;
 #[cfg(all(not(zerocopy_core_error), any(feature = "std", test)))]
 use std::error::Error;
 
-use crate::{util::SendSyncPhantomData, KnownLayout, TryFromBytes};
+use crate::{util::SendSyncPhantomData, KnownLayout, TryFromBytes, Unaligned};
 #[cfg(doc)]
 use crate::{FromBytes, Ref};
 
@@ -133,6 +133,51 @@ pub enum ConvertError<A, S, V> {
     Size(S),
     /// The conversion source contained invalid data.
     Validity(V),
+}
+
+impl<Src, Dst: ?Sized + Unaligned, S, V> From<ConvertError<AlignmentError<Src, Dst>, S, V>>
+    for ConvertError<Infallible, S, V>
+{
+    /// Infallibly discards the alignment error from this `ConvertError` since
+    /// `Dst` is unaligned.
+    ///
+    /// Since [`Dst: Unaligned`], it is impossible to encounter an alignment
+    /// error. This method permits discarding that alignment error infallibly
+    /// and replacing it with [`Infallible`].
+    ///
+    /// [`Dst: Unaligned`]: crate::Unaligned
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use core::convert::Infallible;
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(TryFromBytes, KnownLayout, Unaligned, Immutable)]
+    /// #[repr(C, packed)]
+    /// struct Bools {
+    ///     one: bool,
+    ///     two: bool,
+    ///     many: [bool],
+    /// }
+    ///
+    /// impl Bools {
+    ///     fn parse(bytes: &[u8]) -> Result<&Bools, UnalignedTryCastError<&[u8], Bools>> {
+    ///         // Since `Bools: Unaligned`, we can infallibly discard
+    ///         // the alignment error.
+    ///         Bools::try_ref_from_bytes(bytes).map_err(Into::into)
+    ///     }
+    /// }
+    /// ```
+    #[inline]
+    fn from(err: ConvertError<AlignmentError<Src, Dst>, S, V>) -> ConvertError<Infallible, S, V> {
+        match err {
+            ConvertError::Alignment(e) => ConvertError::Alignment(Infallible::from(e)),
+            ConvertError::Size(e) => ConvertError::Size(e),
+            ConvertError::Validity(e) => ConvertError::Validity(e),
+        }
+    }
 }
 
 impl<A: fmt::Debug, S: fmt::Debug, V: fmt::Debug> fmt::Debug for ConvertError<A, S, V> {
@@ -177,11 +222,20 @@ pub struct AlignmentError<Src, Dst: ?Sized> {
     /// The source value involved in the conversion.
     src: Src,
     /// The inner destination type inolved in the conversion.
+    ///
+    /// INVARIANT: An `AlignmentError` may only be constructed if `Dst`'s
+    /// alignment requirement is greater than one.
     dst: SendSyncPhantomData<Dst>,
 }
 
 impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
-    pub(crate) fn new(src: Src) -> Self {
+    /// # Safety
+    ///
+    /// The caller must ensure that `Dst`'s alignment requirement is greater
+    /// than one.
+    pub(crate) unsafe fn new_unchecked(src: Src) -> Self {
+        // INVARIANT: The caller guarantees that `Dst`'s alignment requirement
+        // is greater than one.
         Self { src, dst: SendSyncPhantomData::default() }
     }
 
@@ -192,6 +246,9 @@ impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
     }
 
     pub(crate) fn with_src<NewSrc>(self, new_src: NewSrc) -> AlignmentError<NewSrc, Dst> {
+        // INVARIANT: `with_src` doesn't change the type of `Dst`, so the
+        // invariant that `Dst`'s alignment requirement is greater than one is
+        // preserved.
         AlignmentError { src: new_src, dst: SendSyncPhantomData::default() }
     }
 
@@ -255,6 +312,29 @@ impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
     }
 }
 
+impl<Src, Dst: ?Sized + Unaligned> From<AlignmentError<Src, Dst>> for Infallible {
+    #[inline(always)]
+    fn from(_: AlignmentError<Src, Dst>) -> Infallible {
+        // SAFETY: `AlignmentError`s can only be constructed when `Dst`'s
+        // alignment requirement is greater than one. In this block, `Dst:
+        // Unaligned`, which means that its alignment requirement is equal to
+        // one. Thus, it's not possible to reach here at runtime.
+        unsafe { core::hint::unreachable_unchecked() }
+    }
+}
+
+#[cfg(test)]
+impl<Src, Dst> AlignmentError<Src, Dst> {
+    // A convenience constructor so that test code doesn't need to write
+    // `unsafe`.
+    fn new_checked(src: Src) -> AlignmentError<Src, Dst> {
+        assert_ne!(core::mem::align_of::<Dst>(), 1);
+        // SAFETY: The preceding assertion guarantees that `Dst`'s alignment
+        // requirement is greater than one.
+        unsafe { AlignmentError::new_unchecked(src) }
+    }
+}
+
 impl<Src, Dst: ?Sized> fmt::Debug for AlignmentError<Src, Dst> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -295,7 +375,7 @@ where
 impl<Src, Dst: ?Sized, S, V> From<AlignmentError<Src, Dst>>
     for ConvertError<AlignmentError<Src, Dst>, S, V>
 {
-    #[inline]
+    #[inline(always)]
     fn from(err: AlignmentError<Src, Dst>) -> Self {
         Self::Alignment(err)
     }
@@ -438,7 +518,7 @@ where
 }
 
 impl<Src, Dst: ?Sized, A, V> From<SizeError<Src, Dst>> for ConvertError<A, SizeError<Src, Dst>, V> {
-    #[inline]
+    #[inline(always)]
     fn from(err: SizeError<Src, Dst>) -> Self {
         Self::Size(err)
     }
@@ -547,7 +627,7 @@ where
 impl<Src, Dst: ?Sized + TryFromBytes, A, S> From<ValidityError<Src, Dst>>
     for ConvertError<A, S, ValidityError<Src, Dst>>
 {
-    #[inline]
+    #[inline(always)]
     fn from(err: ValidityError<Src, Dst>) -> Self {
         Self::Validity(err)
     }
@@ -622,6 +702,57 @@ impl<Src, Dst: ?Sized> CastError<Src, Dst> {
             Self::Alignment(e) => TryCastError::Alignment(e),
             Self::Size(e) => TryCastError::Size(e),
             Self::Validity(i) => match i {},
+        }
+    }
+}
+
+impl<Src, Dst: ?Sized + Unaligned> From<CastError<Src, Dst>> for SizeError<Src, Dst> {
+    /// Infallibly extracts the [`SizeError`] from this `CastError` since `Dst`
+    /// is unaligned.
+    ///
+    /// Since [`Dst: Unaligned`], it is impossible to encounter an alignment
+    /// error, and so the only error that can be encountered at runtime is a
+    /// [`SizeError`]. This method permits extracting that `SizeError`
+    /// infallibly.
+    ///
+    /// [`Dst: Unaligned`]: crate::Unaligned
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, IntoBytes, KnownLayout, Immutable, Unaligned)]
+    /// #[repr(C)]
+    /// struct UdpHeader {
+    ///     src_port: [u8; 2],
+    ///     dst_port: [u8; 2],
+    ///     length: [u8; 2],
+    ///     checksum: [u8; 2],
+    /// }
+    ///
+    /// #[derive(FromBytes, IntoBytes, KnownLayout, Immutable, Unaligned)]
+    /// #[repr(C, packed)]
+    /// struct UdpPacket {
+    ///     header: UdpHeader,
+    ///     body: [u8],
+    /// }
+    ///
+    /// impl UdpPacket {
+    ///     pub fn parse(bytes: &[u8]) -> Result<&UdpPacket, SizeError<&[u8], UdpPacket>> {
+    ///         // Since `UdpPacket: Unaligned`, we can map the `CastError` to a `SizeError`.
+    ///         UdpPacket::ref_from_bytes(bytes).map_err(Into::into)
+    ///     }
+    /// }
+    /// ```
+    #[inline(always)]
+    fn from(err: CastError<Src, Dst>) -> SizeError<Src, Dst> {
+        match err {
+            #[allow(unreachable_code)]
+            CastError::Alignment(e) => match Infallible::from(e) {},
+            CastError::Size(e) => e,
+            CastError::Validity(i) => match i {},
         }
     }
 }
@@ -749,6 +880,42 @@ impl<Src, Dst: ?Sized + TryFromBytes> TryReadError<Src, Dst> {
     }
 }
 
+/// The error type of fallible casts to unaligned types.
+///
+/// This is like [`TryCastError`], but for unaligned types. It is identical to
+/// `TryCastError`, except that its alignment error is [`Infallible`].
+///
+/// As of this writing, none of zerocopy's API produces this error directly.
+/// However, it is useful since it permits users to infallibly discard alignment
+/// errors when they can prove statically that alignment errors are impossible.
+///
+/// # Examples
+///
+/// ```
+/// use core::convert::Infallible;
+/// use zerocopy::*;
+/// # use zerocopy_derive::*;
+///
+/// #[derive(TryFromBytes, KnownLayout, Unaligned, Immutable)]
+/// #[repr(C, packed)]
+/// struct Bools {
+///     one: bool,
+///     two: bool,
+///     many: [bool],
+/// }
+///
+/// impl Bools {
+///     fn parse(bytes: &[u8]) -> Result<&Bools, UnalignedTryCastError<&[u8], Bools>> {
+///         // Since `Bools: Unaligned`, we can infallibly discard
+///         // the alignment error.
+///         Bools::try_ref_from_bytes(bytes).map_err(Into::into)
+///     }
+/// }
+/// ```
+#[allow(type_alias_bounds)]
+pub type UnalignedTryCastError<Src, Dst: ?Sized + TryFromBytes> =
+    ConvertError<Infallible, SizeError<Src, Dst>, ValidityError<Src, Dst>>;
+
 /// The error type of a failed allocation.
 ///
 /// This type is intended to be deprecated in favor of the standard library's
@@ -818,7 +985,7 @@ mod tests {
         let bytes = &aligned.bytes[1..];
         let addr = crate::util::AsAddress::addr(bytes);
         assert_eq!(
-            AlignmentError::<_, elain::Align::<8>>::new(bytes).to_string(),
+            AlignmentError::<_, elain::Align::<8>>::new_checked(bytes).to_string(),
             format!("The conversion failed because the address of the source is not a multiple of the alignment of the destination type.\n\
             \nSource type: &[u8]\
             \nSource address: 0x{:x} (a multiple of 1)\
@@ -829,7 +996,7 @@ mod tests {
         let bytes = &aligned.bytes[2..];
         let addr = crate::util::AsAddress::addr(bytes);
         assert_eq!(
-            AlignmentError::<_, elain::Align::<8>>::new(bytes).to_string(),
+            AlignmentError::<_, elain::Align::<8>>::new_checked(bytes).to_string(),
             format!("The conversion failed because the address of the source is not a multiple of the alignment of the destination type.\n\
             \nSource type: &[u8]\
             \nSource address: 0x{:x} (a multiple of 2)\
@@ -840,7 +1007,7 @@ mod tests {
         let bytes = &aligned.bytes[3..];
         let addr = crate::util::AsAddress::addr(bytes);
         assert_eq!(
-            AlignmentError::<_, elain::Align::<8>>::new(bytes).to_string(),
+            AlignmentError::<_, elain::Align::<8>>::new_checked(bytes).to_string(),
             format!("The conversion failed because the address of the source is not a multiple of the alignment of the destination type.\n\
             \nSource type: &[u8]\
             \nSource address: 0x{:x} (a multiple of 1)\
@@ -851,7 +1018,7 @@ mod tests {
         let bytes = &aligned.bytes[4..];
         let addr = crate::util::AsAddress::addr(bytes);
         assert_eq!(
-            AlignmentError::<_, elain::Align::<8>>::new(bytes).to_string(),
+            AlignmentError::<_, elain::Align::<8>>::new_checked(bytes).to_string(),
             format!("The conversion failed because the address of the source is not a multiple of the alignment of the destination type.\n\
             \nSource type: &[u8]\
             \nSource address: 0x{:x} (a multiple of 4)\
