@@ -3512,7 +3512,12 @@ pub unsafe trait FromBytes: FromZeros {
         match Ref::<_, Unalign<Self>>::sized_from(source) {
             Ok(r) => Ok(Ref::read(&r).into_inner()),
             Err(CastError::Size(e)) => Err(e.with_dst()),
-            Err(CastError::Alignment(_)) => unreachable!(),
+            Err(CastError::Alignment(_)) => {
+                // SAFETY: `Unalign<Self>` is trivially aligned, so
+                // `Ref::sized_from` cannot fail due to unmet alignment
+                // requirements.
+                unsafe { core::hint::unreachable_unchecked() }
+            }
             Err(CastError::Validity(i)) => match i {},
         }
     }
@@ -3558,7 +3563,12 @@ pub unsafe trait FromBytes: FromZeros {
         match Ref::<_, Unalign<Self>>::sized_from_prefix(source) {
             Ok((r, suffix)) => Ok((Ref::read(&r).into_inner(), suffix)),
             Err(CastError::Size(e)) => Err(e.with_dst()),
-            Err(CastError::Alignment(_)) => unreachable!(),
+            Err(CastError::Alignment(_)) => {
+                // SAFETY: `Unalign<Self>` is trivially aligned, so
+                // `Ref::sized_from_prefix` cannot fail due to unmet alignment
+                // requirements.
+                unsafe { core::hint::unreachable_unchecked() }
+            }
             Err(CastError::Validity(i)) => match i {},
         }
     }
@@ -3591,14 +3601,19 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[must_use = "has no side effects"]
     #[inline]
-    fn read_from_suffix(source: &[u8]) -> Result<(&[u8], Self), CastError<&[u8], Self>>
+    fn read_from_suffix(source: &[u8]) -> Result<(&[u8], Self), SizeError<&[u8], Self>>
     where
         Self: Sized,
     {
         match Ref::<_, Unalign<Self>>::sized_from_suffix(source) {
             Ok((prefix, r)) => Ok((prefix, Ref::read(&r).into_inner())),
-            Err(CastError::Size(e)) => Err(CastError::Size(e.with_dst())),
-            Err(CastError::Alignment(_)) => unreachable!(),
+            Err(CastError::Size(e)) => Err(e.with_dst()),
+            Err(CastError::Alignment(_)) => {
+                // SAFETY: `Unalign<Self>` is trivially aligned, so
+                // `Ref::sized_from_suffix` cannot fail due to unmet alignment
+                // requirements.
+                unsafe { core::hint::unreachable_unchecked() }
+            }
             Err(CastError::Validity(i)) => match i {},
         }
     }
