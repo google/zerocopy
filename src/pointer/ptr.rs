@@ -792,8 +792,8 @@ mod _transitions {
         where
             T: Sized,
         {
-            if !crate::util::aligned_to::<_, T>(self.as_non_null()) {
-                return Err(AlignmentError::new(self));
+            if let Err(err) = crate::util::validate_aligned_to::<_, T>(self.as_non_null()) {
+                return Err(err.with_src(self));
             }
 
             // SAFETY: We just checked the alignment.
@@ -1204,7 +1204,11 @@ mod _casts {
             let (elems, split_at) = match maybe_metadata {
                 Ok((elems, split_at)) => (elems, split_at),
                 Err(MetadataCastError::Alignment) => {
-                    return Err(CastError::Alignment(AlignmentError::new(self)))
+                    // SAFETY: Since `validate_cast_and_convert_metadata`
+                    // returned an alignment error, `U` must have an alignment
+                    // requirement greater than one.
+                    let err = unsafe { AlignmentError::<_, U>::new_unchecked(self) };
+                    return Err(CastError::Alignment(err));
                 }
                 Err(MetadataCastError::Size) => return Err(CastError::Size(SizeError::new(self))),
             };

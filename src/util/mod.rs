@@ -21,6 +21,7 @@ use core::{
 };
 
 use crate::{
+    error::AlignmentError,
     pointer::invariant::{self, Invariants},
     Unalign,
 };
@@ -547,14 +548,20 @@ impl<T: ?Sized> AsAddress for *mut T {
     }
 }
 
-/// Is `t` aligned to `align_of::<U>()`?
+/// Validates that `t` is aligned to `align_of::<U>()`.
 #[inline(always)]
-pub(crate) fn aligned_to<T: AsAddress, U>(t: T) -> bool {
+pub(crate) fn validate_aligned_to<T: AsAddress, U>(t: T) -> Result<(), AlignmentError<(), U>> {
     // `mem::align_of::<U>()` is guaranteed to return a non-zero value, which in
     // turn guarantees that this mod operation will not panic.
     #[allow(clippy::arithmetic_side_effects)]
     let remainder = t.addr() % mem::align_of::<U>();
-    remainder == 0
+    if remainder == 0 {
+        Ok(())
+    } else {
+        // SAFETY: We just confirmed that `t.addr() % align_of::<U>() != 0`.
+        // That's only possible if `align_of::<U>() > 1`.
+        Err(unsafe { AlignmentError::new_unchecked(()) })
+    }
 }
 
 /// Returns the bytes needed to pad `len` to the next multiple of `align`.
