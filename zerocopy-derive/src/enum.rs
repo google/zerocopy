@@ -294,6 +294,7 @@ pub(crate) fn derive_is_bit_valid(
         // enum's tag corresponds to one of the enum's discriminants. Then, we
         // check the bit validity of each field of the corresponding variant.
         // Thus, this is a sound implementation of `is_bit_valid`.
+        #[inline(always)]
         fn is_bit_valid<A>(
             mut candidate: ::zerocopy::Maybe<'_, Self, A>,
         ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
