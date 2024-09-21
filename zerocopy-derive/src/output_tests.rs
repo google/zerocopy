@@ -234,6 +234,29 @@ fn test_into_bytes() {
             }
         } no_build
     }
+
+    test! {
+        IntoBytes {
+            #[repr(C)]
+            struct Foo {
+                a: u8,
+                b: u8,
+            }
+        } expands to {
+            #[allow(deprecated)]
+            unsafe impl ::zerocopy::IntoBytes for Foo
+            where
+                u8: ::zerocopy::IntoBytes,
+                u8: ::zerocopy::IntoBytes,
+                (): ::zerocopy::util::macro_util::PaddingFree<
+                    Foo,
+                    { ::zerocopy::struct_has_padding!(Foo, [u8, u8]) },
+                >,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+            }
+        } no_build
+    }
 }
 
 #[test]

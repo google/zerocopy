@@ -343,35 +343,35 @@ error[E0277]: the trait bound `bool: FromBytes` is not satisfied
     = help: see issue #48214
     = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `HasPadding<IntoBytes1, true>: ShouldBe<false>` is not satisfied
+error[E0277]: the trait bound `(): PaddingFree<IntoBytes1, true>` is not satisfied
    --> tests/ui-msrv/enum.rs:533:10
     |
 533 | #[derive(IntoBytes)]
-    |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes1, true>`
+    |          ^^^^^^^^^ the trait `PaddingFree<IntoBytes1, true>` is not implemented for `()`
     |
     = help: the following implementations were found:
-              <HasPadding<T, VALUE> as ShouldBe<VALUE>>
+              <() as PaddingFree<T, false>>
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `HasPadding<IntoBytes2, true>: ShouldBe<false>` is not satisfied
+error[E0277]: the trait bound `(): PaddingFree<IntoBytes2, true>` is not satisfied
    --> tests/ui-msrv/enum.rs:544:10
     |
 544 | #[derive(IntoBytes)]
-    |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes2, true>`
+    |          ^^^^^^^^^ the trait `PaddingFree<IntoBytes2, true>` is not implemented for `()`
     |
     = help: the following implementations were found:
-              <HasPadding<T, VALUE> as ShouldBe<VALUE>>
+              <() as PaddingFree<T, false>>
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `HasPadding<IntoBytes3, true>: ShouldBe<false>` is not satisfied
+error[E0277]: the trait bound `(): PaddingFree<IntoBytes3, true>` is not satisfied
    --> tests/ui-msrv/enum.rs:550:10
     |
 550 | #[derive(IntoBytes)]
-    |          ^^^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<IntoBytes3, true>`
+    |          ^^^^^^^^^ the trait `PaddingFree<IntoBytes3, true>` is not implemented for `()`
     |
     = help: the following implementations were found:
-              <HasPadding<T, VALUE> as ShouldBe<VALUE>>
+              <() as PaddingFree<T, false>>
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)

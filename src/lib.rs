@@ -3852,25 +3852,26 @@ fn mut_from_prefix_suffix<T: FromBytes + KnownLayout + ?Sized>(
 ///
 /// # Error Messages
 ///
-/// Due to the way that the custom derive for `IntoBytes` is implemented, you
-/// may get an error like this:
+/// On Rust toolchains prior to 1.78.0, due to the way that the custom derive
+/// for `IntoBytes` is implemented, you may get an error like this:
 ///
 /// ```text
-/// error[E0277]: the trait bound `HasPadding<Foo, true>: ShouldBe<false>` is not satisfied
+/// error[E0277]: the trait bound `(): PaddingFree<Foo, true>` is not satisfied
 ///   --> lib.rs:23:10
 ///    |
 ///  1 | #[derive(IntoBytes)]
-///    |          ^^^^^^^ the trait `ShouldBe<false>` is not implemented for `HasPadding<Foo, true>`
+///    |          ^^^^^^^^^ the trait `PaddingFree<Foo, true>` is not implemented for `()`
 ///    |
-///    = help: the trait `ShouldBe<VALUE>` is implemented for `HasPadding<T, VALUE>`
+///    = help: the following implementations were found:
+///                   <() as PaddingFree<T, false>>
 /// ```
 ///
 /// This error indicates that the type being annotated has padding bytes, which
 /// is illegal for `IntoBytes` types. Consider reducing the alignment of some
-/// fields by using types in the [`byteorder`] module, adding explicit struct
-/// fields where those padding bytes would be, or using `#[repr(packed)]`. See
-/// the Rust Reference's page on [type layout] for more information about type
-/// layout and padding.
+/// fields by using types in the [`byteorder`] module, wrapping field types in
+/// [`Unalign`], adding explicit struct fields where those padding bytes would
+/// be, or using `#[repr(packed)]`. See the Rust Reference's page on [type
+/// layout] for more information about type layout and padding.
 ///
 /// [type layout]: https://doc.rust-lang.org/reference/type-layout.html
 ///

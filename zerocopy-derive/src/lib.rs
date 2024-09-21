@@ -36,7 +36,6 @@ mod repr;
 
 use proc_macro2::{TokenStream, TokenTree};
 use quote::ToTokens;
-use syn::{punctuated::Punctuated, token::Colon, PredicateType};
 
 use {
     proc_macro2::Span,
@@ -1222,27 +1221,15 @@ fn impl_block<D: DataExt>(
             let validator_context = check.validator_macro_context();
             let validator_macro = check.validator_macro_ident();
             let t = tag.iter();
-            // We have to manually construct a bound here because the validator
-            // context may include type definitions and syn cannot parse type
-            // definitions in const exprs without the `full` feature enabled.
-            // Constructing these bounds "verbatim" gets around this issue.
-            let bounded_ty = Type::Verbatim(quote! {
-                ::zerocopy::util::macro_util::HasPadding<
+            parse_quote! {
+                (): ::zerocopy::util::macro_util::PaddingFree<
                     #type_ident,
                     {
                         #validator_context
                         ::zerocopy::#validator_macro!(#type_ident, #(#t,)* #(#variant_types),*)
                     }
                 >
-            });
-            let mut bounds = Punctuated::new();
-            bounds.push(parse_quote! { ::zerocopy::util::macro_util::ShouldBe<false> });
-            WherePredicate::Type(PredicateType {
-                lifetimes: None,
-                bounded_ty,
-                colon_token: Colon::default(),
-                bounds,
-            })
+            }
         });
 
     let self_bounds: Option<WherePredicate> = match self_type_trait_bounds {
