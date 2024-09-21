@@ -285,6 +285,32 @@ mod size_to_tag {
 #[doc(hidden)]
 pub type SizeToTag<const SIZE: usize> = <() as size_to_tag::SizeToTag<SIZE>>::Tag;
 
+// We put `Sized` in its own module so it can have the same name as the standard
+// library `Sized` without shadowing it in the parent module.
+#[cfg(zerocopy_diagnostic_on_unimplemented)]
+mod __size_of {
+    #[diagnostic::on_unimplemented(
+        message = "`{Self}` is unsized",
+        label = "`IntoBytes` needs all field types to be `Sized` in order to determine whether there is inter-field padding",
+        note = "consider using `#[repr(packed)]` to remove inter-field padding",
+        note = "`IntoBytes` does not require the fields of `#[repr(packed)]` types to be `Sized`"
+    )]
+    pub trait Sized: core::marker::Sized {}
+    impl<T: core::marker::Sized> Sized for T {}
+
+    #[inline(always)]
+    #[must_use]
+    #[allow(clippy::needless_maybe_sized)]
+    pub const fn size_of<T: Sized + ?core::marker::Sized>() -> usize {
+        core::mem::size_of::<T>()
+    }
+}
+
+#[cfg(zerocopy_diagnostic_on_unimplemented)]
+pub use __size_of::size_of;
+#[cfg(not(zerocopy_diagnostic_on_unimplemented))]
+pub use core::mem::size_of;
+
 /// Does the struct type `$t` have padding?
 ///
 /// `$ts` is the list of the type of every field in `$t`. `$t` must be a
@@ -301,7 +327,7 @@ pub type SizeToTag<const SIZE: usize> = <() as size_to_tag::SizeToTag<SIZE>>::Ta
 #[macro_export]
 macro_rules! struct_has_padding {
     ($t:ty, [$($ts:ty),*]) => {
-        ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$t>() > 0 $(+ ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$ts>())*
+        ::zerocopy::util::macro_util::size_of::<$t>() > 0 $(+ ::zerocopy::util::macro_util::size_of::<$ts>())*
     };
 }
 
@@ -321,7 +347,7 @@ macro_rules! struct_has_padding {
 #[macro_export]
 macro_rules! union_has_padding {
     ($t:ty, [$($ts:ty),*]) => {
-        false $(|| ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$t>() != ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$ts>())*
+        false $(|| ::zerocopy::util::macro_util::size_of::<$t>() != ::zerocopy::util::macro_util::size_of::<$ts>())*
     };
 }
 
@@ -346,10 +372,10 @@ macro_rules! union_has_padding {
 macro_rules! enum_has_padding {
     ($t:ty, $disc:ty, $([$($ts:ty),*]),*) => {
         false $(
-            || ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$t>()
+            || ::zerocopy::util::macro_util::size_of::<$t>()
                 != (
-                    ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$disc>()
-                    $(+ ::zerocopy::util::macro_util::core_reexport::mem::size_of::<$ts>())*
+                    ::zerocopy::util::macro_util::size_of::<$disc>()
+                    $(+ ::zerocopy::util::macro_util::size_of::<$ts>())*
                 )
         )*
     }
