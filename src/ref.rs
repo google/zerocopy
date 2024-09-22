@@ -51,7 +51,7 @@ mod def {
     ///
     /// impl UdpPacket {
     ///     pub fn parse<B: ByteSlice>(bytes: B) -> Option<Ref<B, UdpPacket>> {
-    ///         Ref::unaligned_from_bytes(bytes).ok()
+    ///         Ref::from_bytes(bytes).ok()
     ///     }
     /// }
     /// ```
@@ -570,278 +570,6 @@ where
     }
 }
 
-impl<B, T> Ref<B, T>
-where
-    B: ByteSlice,
-    T: Unaligned + KnownLayout + Immutable + ?Sized,
-{
-    /// Constructs a `Ref` for a type with no alignment requirement from a byte
-    /// slice.
-    ///
-    /// If the length of `source` is not a [valid size of `T`][valid-size], this
-    /// returns `Err`.
-    ///
-    /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
-    ///
-    /// [valid-size]: crate#what-is-a-valid-size
-    /// [slice-dst]: KnownLayout#dynamically-sized-types
-    ///
-    /// # Compile-Time Assertions
-    ///
-    /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. Attempting to use this method on such types
-    /// results in a compile-time assertion error; e.g.:
-    ///
-    /// ```compile_fail,E0080
-    /// use zerocopy::*;
-    /// # use zerocopy_derive::*;
-    ///
-    /// #[derive(Immutable, KnownLayout, Unaligned)]
-    /// #[repr(C, packed)]
-    /// struct ZSTy {
-    ///     leading_sized: u16,
-    ///     trailing_dst: [()],
-    /// }
-    ///
-    /// let f = Ref::<&[u8], ZSTy>::unaligned_from_bytes(&b"UU"[..]); // ⚠ Compile Error!
-    /// ```
-    #[must_use = "has no side effects"]
-    #[inline(always)]
-    pub fn unaligned_from_bytes(source: B) -> Result<Ref<B, T>, SizeError<B, T>> {
-        static_assert_dst_is_not_zst!(T);
-        match Ref::from_bytes(source) {
-            Ok(dst) => Ok(dst),
-            Err(CastError::Size(e)) => Err(e),
-            Err(CastError::Alignment(_)) => unreachable!(),
-            Err(CastError::Validity(i)) => match i {},
-        }
-    }
-}
-
-impl<B, T> Ref<B, T>
-where
-    B: SplitByteSlice,
-    T: Unaligned + KnownLayout + Immutable + ?Sized,
-{
-    /// Constructs a `Ref` for a type with no alignment requirement from the
-    /// prefix of a byte slice.
-    ///
-    /// This method computes the [largest possible size of `T`][valid-size] that
-    /// can fit in the leading bytes of `source`, then attempts to return both a
-    /// `Ref` to those bytes, and a reference to the remaining bytes. If there
-    /// are insufficient bytes, this returns `Err`.
-    ///
-    /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
-    ///
-    /// [valid-size]: crate#what-is-a-valid-size
-    /// [slice-dst]: KnownLayout#dynamically-sized-types
-    ///
-    /// # Compile-Time Assertions
-    ///
-    /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. Attempting to use this method on such types
-    /// results in a compile-time assertion error; e.g.:
-    ///
-    /// ```compile_fail,E0080
-    /// use zerocopy::*;
-    /// # use zerocopy_derive::*;
-    ///
-    /// #[derive(Immutable, KnownLayout, Unaligned)]
-    /// #[repr(C, packed)]
-    /// struct ZSTy {
-    ///     leading_sized: u16,
-    ///     trailing_dst: [()],
-    /// }
-    ///
-    /// let _ = Ref::<_, ZSTy>::unaligned_from_prefix(&b"UU"[..]); // ⚠ Compile Error!
-    /// ```
-    #[must_use = "has no side effects"]
-    #[inline(always)]
-    pub fn unaligned_from_prefix(source: B) -> Result<(Ref<B, T>, B), SizeError<B, T>> {
-        static_assert_dst_is_not_zst!(T);
-        Ref::from_prefix(source).map_err(|e| match e {
-            CastError::Size(e) => e,
-            CastError::Alignment(_) => unreachable!(),
-            CastError::Validity(i) => match i {},
-        })
-    }
-
-    /// Constructs a `Ref` for a type with no alignment requirement from the
-    /// suffix of a byte slice.
-    ///
-    /// This method computes the [largest possible size of `T`][valid-size] that
-    /// can fit in the trailing bytes of `source`, then attempts to return both
-    /// a `Ref` to those bytes, and a reference to the preceding bytes. If there
-    /// are insufficient bytes, this returns `Err`.
-    ///
-    /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
-    ///
-    /// [valid-size]: crate#what-is-a-valid-size
-    /// [slice-dst]: KnownLayout#dynamically-sized-types
-    ///
-    /// # Compile-Time Assertions
-    ///
-    /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. Attempting to use this method on such types
-    /// results in a compile-time assertion error; e.g.:
-    ///
-    /// ```compile_fail,E0080
-    /// use zerocopy::*;
-    /// # use zerocopy_derive::*;
-    ///
-    /// #[derive(Immutable, KnownLayout, Unaligned)]
-    /// #[repr(C, packed)]
-    /// struct ZSTy {
-    ///     leading_sized: u16,
-    ///     trailing_dst: [()],
-    /// }
-    ///
-    /// let _ = Ref::<_, ZSTy>::unaligned_from_suffix(&b"UU"[..]); // ⚠ Compile Error!
-    /// ```
-    #[must_use = "has no side effects"]
-    #[inline(always)]
-    pub fn unaligned_from_suffix(source: B) -> Result<(B, Ref<B, T>), SizeError<B, T>> {
-        static_assert_dst_is_not_zst!(T);
-        Ref::from_suffix(source).map_err(|e| match e {
-            CastError::Size(e) => e,
-            CastError::Alignment(_) => unreachable!(),
-            CastError::Validity(i) => match i {},
-        })
-    }
-}
-
-impl<B, T> Ref<B, T>
-where
-    B: ByteSlice,
-    T: KnownLayout<PointerMetadata = usize> + Unaligned + Immutable + ?Sized,
-{
-    /// Constructs a `Ref` from the given bytes with DST length equal to `count`
-    /// without copying.
-    ///
-    /// This method attempts to return a `Ref` to the prefix of `source`
-    /// interpreted as a `T` with `count` trailing elements, and a reference to
-    /// the remaining bytes. If the length of `source` is not equal to the size
-    /// of `Self` with `count` elements, this returns `Err`.
-    ///
-    /// # Compile-Time Assertions
-    ///
-    /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. Attempting to use this method on such types
-    /// results in a compile-time assertion error; e.g.:
-    ///
-    /// ```compile_fail,E0080
-    /// use zerocopy::*;
-    /// # use zerocopy_derive::*;
-    ///
-    /// #[derive(Immutable, KnownLayout, Unaligned)]
-    /// #[repr(C, packed)]
-    /// struct ZSTy {
-    ///     leading_sized: u16,
-    ///     trailing_dst: [()],
-    /// }
-    ///
-    /// let f = Ref::<&[u8], ZSTy>::unaligned_from_bytes_with_elems(&b"UU"[..], 42); // ⚠ Compile Error!
-    /// ```
-    #[inline]
-    pub fn unaligned_from_bytes_with_elems(
-        source: B,
-        count: usize,
-    ) -> Result<Ref<B, T>, SizeError<B, T>> {
-        static_assert_dst_is_not_zst!(T);
-        Self::from_bytes_with_elems(source, count).map_err(|e| match e {
-            CastError::Size(e) => e,
-            CastError::Alignment(_) => unreachable!(),
-            CastError::Validity(i) => match i {},
-        })
-    }
-}
-
-impl<B, T> Ref<B, T>
-where
-    B: SplitByteSlice,
-    T: KnownLayout<PointerMetadata = usize> + Unaligned + Immutable + ?Sized,
-{
-    /// Constructs a `Ref` from the prefix of the given bytes with DST
-    /// length equal to `count` without copying.
-    ///
-    /// This method attempts to return a `Ref` to the prefix of `source`
-    /// interpreted as a `T` with `count` trailing elements, and a reference to
-    /// the remaining bytes. If there are insufficient bytes, this returns
-    /// `Err`.
-    ///
-    /// # Compile-Time Assertions
-    ///
-    /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. Attempting to use this method on such types
-    /// results in a compile-time assertion error; e.g.:
-    ///
-    /// ```compile_fail,E0080
-    /// use zerocopy::*;
-    /// # use zerocopy_derive::*;
-    ///
-    /// #[derive(Immutable, KnownLayout, Unaligned)]
-    /// #[repr(C, packed)]
-    /// struct ZSTy {
-    ///     leading_sized: u16,
-    ///     trailing_dst: [()],
-    /// }
-    ///
-    /// let f = Ref::<&[u8], ZSTy>::unaligned_from_prefix_with_elems(&b"UU"[..], 42); // ⚠ Compile Error!
-    /// ```
-    #[inline]
-    pub fn unaligned_from_prefix_with_elems(
-        source: B,
-        count: usize,
-    ) -> Result<(Ref<B, T>, B), SizeError<B, T>> {
-        static_assert_dst_is_not_zst!(T);
-        Self::from_prefix_with_elems(source, count).map_err(|e| match e {
-            CastError::Size(e) => e,
-            CastError::Alignment(_) => unreachable!(),
-            CastError::Validity(i) => match i {},
-        })
-    }
-
-    /// Constructs a `Ref` from the suffix of the given bytes with DST length
-    /// equal to `count` without copying.
-    ///
-    /// This method attempts to return a `Ref` to the suffix of `source`
-    /// interpreted as a `T` with `count` trailing elements, and a reference to
-    /// the preceding bytes. If there are insufficient bytes, this returns
-    /// `Err`.
-    ///
-    /// # Compile-Time Assertions
-    ///
-    /// This method cannot yet be used on unsized types whose dynamically-sized
-    /// component is zero-sized. Attempting to use this method on such types
-    /// results in a compile-time assertion error; e.g.:
-    ///
-    /// ```compile_fail,E0080
-    /// use zerocopy::*;
-    /// # use zerocopy_derive::*;
-    ///
-    /// #[derive(Immutable, KnownLayout, Unaligned)]
-    /// #[repr(C, packed)]
-    /// struct ZSTy {
-    ///     leading_sized: u16,
-    ///     trailing_dst: [()],
-    /// }
-    ///
-    /// let f = Ref::<&[u8], ZSTy>::unaligned_from_suffix_with_elems(&b"UU"[..], 42); // ⚠ Compile Error!
-    /// ```
-    #[inline]
-    pub fn unaligned_from_suffix_with_elems(
-        source: B,
-        count: usize,
-    ) -> Result<(B, Ref<B, T>), SizeError<B, T>> {
-        static_assert_dst_is_not_zst!(T);
-        Self::from_suffix_with_elems(source, count).map_err(|e| match e {
-            CastError::Size(e) => e,
-            CastError::Alignment(_) => unreachable!(),
-            CastError::Validity(i) => match i {},
-        })
-    }
-}
-
 impl<'a, B, T> Ref<B, T>
 where
     B: 'a + IntoByteSlice<'a>,
@@ -1207,58 +935,6 @@ mod tests {
         assert!(r.iter().copied().all(|x| x == VAL2));
     }
 
-    // Verify that values written to a `Ref` are properly shared between the
-    // typed and untyped representations, that reads via `deref` and `read`
-    // behave the same, and that writes via `deref_mut` and `write` behave the
-    // same.
-    fn test_new_helper_unaligned(mut r: Ref<&mut [u8], [u8; 8]>) {
-        // assert that the value starts at 0
-        assert_eq!(*r, [0; 8]);
-        assert_eq!(Ref::read(&r), [0; 8]);
-
-        // Assert that values written to the typed value are reflected in the
-        // byte slice.
-        const VAL1: [u8; 8] = [0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00];
-        *r = VAL1;
-        assert_eq!(Ref::bytes(&r), &VAL1);
-        *r = [0; 8];
-        Ref::write(&mut r, VAL1);
-        assert_eq!(Ref::bytes(&r), &VAL1);
-
-        // Assert that values written to the byte slice are reflected in the
-        // typed value.
-        const VAL2: [u8; 8] = [0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF]; // different from VAL1
-        Ref::bytes_mut(&mut r).copy_from_slice(&VAL2[..]);
-        assert_eq!(*r, VAL2);
-        assert_eq!(Ref::read(&r), VAL2);
-    }
-
-    // Verify that values written to a `Ref` are properly shared between the
-    // typed and untyped representations; pass a value with `len` `u8`s backed
-    // by an array of `len` bytes.
-    fn test_new_helper_slice_unaligned(mut r: Ref<&mut [u8], [u8]>, len: usize) {
-        // Assert that the value starts out zeroed.
-        assert_eq!(&*r, vec![0u8; len].as_slice());
-
-        // Check the backing storage is the exact same slice.
-        assert_eq!(Ref::bytes(&r).len(), len);
-        assert_eq!(Ref::bytes(&r).as_ptr(), r.as_ptr());
-
-        // Assert that values written to the typed value are reflected in the
-        // byte slice.
-        let mut expected_bytes = [0xFF, 0x00].iter().copied().cycle().take(len).collect::<Vec<_>>();
-        r.copy_from_slice(&expected_bytes);
-        assert_eq!(Ref::bytes(&r), expected_bytes.as_slice());
-
-        // Assert that values written to the byte slice are reflected in the
-        // typed value.
-        for byte in &mut expected_bytes {
-            *byte = !*byte; // different from `expected_len`
-        }
-        Ref::bytes_mut(&mut r).copy_from_slice(&expected_bytes);
-        assert_eq!(&*r, expected_bytes.as_slice());
-    }
-
     #[test]
     fn test_new_aligned_sized() {
         // Test that a properly-aligned, properly-sized buffer works for new,
@@ -1320,59 +996,6 @@ mod tests {
     }
 
     #[test]
-    fn test_new_unaligned_sized() {
-        // Test that an unaligned, properly-sized buffer works for
-        // `new_unaligned`, `new_unaligned_from_prefix`, and
-        // `new_unaligned_from_suffix`, and that `new_unaligned_from_prefix`
-        // `new_unaligned_from_suffix` return empty slices. Test that an
-        // unaligned buffer whose length is a multiple of the element size works
-        // for `new_slice`.
-
-        let mut buf = [0u8; 8];
-        test_new_helper_unaligned(Ref::<_, [u8; 8]>::unaligned_from_bytes(&mut buf[..]).unwrap());
-        {
-            // In a block so that `r` and `suffix` don't live too long.
-            buf = [0u8; 8];
-            let (r, suffix) = Ref::<_, [u8; 8]>::unaligned_from_prefix(&mut buf[..]).unwrap();
-            assert!(suffix.is_empty());
-            test_new_helper_unaligned(r);
-        }
-        {
-            buf = [0u8; 8];
-            let (prefix, r) = Ref::<_, [u8; 8]>::unaligned_from_suffix(&mut buf[..]).unwrap();
-            assert!(prefix.is_empty());
-            test_new_helper_unaligned(r);
-        }
-
-        let mut buf = [0u8; 16];
-        // `buf.t` should be aligned to 8 and have a length which is a multiple
-        // of `size_of::AU64>()`, so this should always succeed.
-        test_new_helper_slice_unaligned(
-            Ref::<_, [u8]>::unaligned_from_bytes(&mut buf[..]).unwrap(),
-            16,
-        );
-
-        buf = [0u8; 16];
-        let r = Ref::<_, [u8]>::unaligned_from_bytes_with_elems(&mut buf[..], 16).unwrap();
-        test_new_helper_slice_unaligned(r, 16);
-
-        {
-            buf = [0u8; 16];
-            let (r, suffix) =
-                Ref::<_, [u8]>::unaligned_from_prefix_with_elems(&mut buf[..], 8).unwrap();
-            assert_eq!(suffix, [0; 8]);
-            test_new_helper_slice_unaligned(r, 8);
-        }
-        {
-            buf = [0u8; 16];
-            let (prefix, r) =
-                Ref::<_, [u8]>::unaligned_from_suffix_with_elems(&mut buf[..], 8).unwrap();
-            assert_eq!(prefix, [0; 8]);
-            test_new_helper_slice_unaligned(r, 8);
-        }
-    }
-
-    #[test]
     fn test_new_oversized() {
         // Test that a properly-aligned, overly-sized buffer works for
         // `new_from_prefix` and `new_from_suffix`, and that they return the
@@ -1396,27 +1019,6 @@ mod tests {
     }
 
     #[test]
-    fn test_new_unaligned_oversized() {
-        // Test than an unaligned, overly-sized buffer works for
-        // `new_unaligned_from_prefix` and `new_unaligned_from_suffix`, and that
-        // they return the remainder and prefix of the slice respectively.
-
-        let mut buf = [0u8; 16];
-        {
-            // In a block so that `r` and `suffix` don't live too long.
-            let (r, suffix) = Ref::<_, [u8; 8]>::unaligned_from_prefix(&mut buf[..]).unwrap();
-            assert_eq!(suffix.len(), 8);
-            test_new_helper_unaligned(r);
-        }
-        {
-            buf = [0u8; 16];
-            let (prefix, r) = Ref::<_, [u8; 8]>::unaligned_from_suffix(&mut buf[..]).unwrap();
-            assert_eq!(prefix.len(), 8);
-            test_new_helper_unaligned(r);
-        }
-    }
-
-    #[test]
     #[allow(clippy::cognitive_complexity)]
     fn test_new_error() {
         // Fail because the buffer is too large.
@@ -1425,7 +1027,6 @@ mod tests {
         let buf = Align::<[u8; 16], AU64>::default();
         // `buf.t` should be aligned to 8, so only the length check should fail.
         assert!(Ref::<_, AU64>::from_bytes(&buf.t[..]).is_err());
-        assert!(Ref::<_, [u8; 8]>::unaligned_from_bytes(&buf.t[..]).is_err());
 
         // Fail because the buffer is too small.
 
@@ -1433,18 +1034,14 @@ mod tests {
         let buf = Align::<[u8; 4], AU64>::default();
         // `buf.t` should be aligned to 8, so only the length check should fail.
         assert!(Ref::<_, AU64>::from_bytes(&buf.t[..]).is_err());
-        assert!(Ref::<_, [u8; 8]>::unaligned_from_bytes(&buf.t[..]).is_err());
         assert!(Ref::<_, AU64>::from_prefix(&buf.t[..]).is_err());
         assert!(Ref::<_, AU64>::from_suffix(&buf.t[..]).is_err());
-        assert!(Ref::<_, [u8; 8]>::unaligned_from_prefix(&buf.t[..]).is_err());
-        assert!(Ref::<_, [u8; 8]>::unaligned_from_suffix(&buf.t[..]).is_err());
 
         // Fail because the length is not a multiple of the element size.
 
         let buf = Align::<[u8; 12], AU64>::default();
         // `buf.t` has length 12, but element size is 8.
         assert!(Ref::<_, [AU64]>::from_bytes(&buf.t[..]).is_err());
-        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_bytes(&buf.t[..]).is_err());
 
         // Fail because the buffer is too short.
         let buf = Align::<[u8; 12], AU64>::default();
@@ -1461,12 +1058,6 @@ mod tests {
         assert!(Ref::<_, [AU64]>::from_prefix_with_elems(&buf.t[..], 2).is_err());
         assert!(Ref::<_, [AU64]>::from_suffix_with_elems(&buf.t[..], n).is_err());
         assert!(Ref::<_, [AU64]>::from_suffix_with_elems(&buf.t[..], 2).is_err());
-        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_bytes_with_elems(&buf.t[..], n).is_err());
-        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_bytes_with_elems(&buf.t[..], 2).is_err());
-        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_prefix_with_elems(&buf.t[..], n).is_err());
-        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_prefix_with_elems(&buf.t[..], 2).is_err());
-        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_suffix_with_elems(&buf.t[..], n).is_err());
-        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_suffix_with_elems(&buf.t[..], 2).is_err());
 
         // Fail because the alignment is insufficient.
 
@@ -1491,16 +1082,6 @@ mod tests {
         let unreasonable_len = usize::MAX / mem::size_of::<AU64>() + 1;
         assert!(Ref::<_, [AU64]>::from_prefix_with_elems(&buf.t[..], unreasonable_len).is_err());
         assert!(Ref::<_, [AU64]>::from_suffix_with_elems(&buf.t[..], unreasonable_len).is_err());
-        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_prefix_with_elems(
-            &buf.t[..],
-            unreasonable_len
-        )
-        .is_err());
-        assert!(Ref::<_, [[u8; 8]]>::unaligned_from_suffix_with_elems(
-            &buf.t[..],
-            unreasonable_len
-        )
-        .is_err());
     }
 
     #[test]

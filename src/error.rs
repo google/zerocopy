@@ -16,8 +16,9 @@
 //! - [`SizeError`]: the conversion source was of incorrect size
 //! - [`ValidityError`]: the conversion source contained invalid data
 //!
-//! Methods that only have one failure mode, like [`Ref::unaligned_from_bytes`],
-//! return that mode's corresponding error type directly.
+//! Methods that only have one failure mode, like
+//! [`FromBytes::read_from_bytes`], return that mode's corresponding error type
+//! directly.
 //!
 //! ## Compound errors
 //!
