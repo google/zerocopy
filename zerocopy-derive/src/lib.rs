@@ -87,7 +87,7 @@ macro_rules! derive {
         #[proc_macro_derive($trait)]
         pub fn $outer(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
             let ast = syn::parse_macro_input!(ts as DeriveInput);
-            $inner(&ast).into()
+            $inner(Ctx::new(&ast)).into()
         }
     };
 }
@@ -116,10 +116,10 @@ pub fn derive_as_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     derive_into_bytes(ts)
 }
 
-fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
-    let is_repr_c_struct = match &ast.data {
+fn derive_known_layout_inner(mut ctx: Ctx<'_>) -> proc_macro2::TokenStream {
+    let is_repr_c_struct = match &ctx.ast.data {
         Data::Struct(..) => {
-            let reprs = try_or_print!(repr::reprs::<Repr>(&ast.attrs));
+            let reprs = try_or_print!(repr::reprs::<Repr>(&ctx.ast.attrs));
             if reprs.iter().any(|(_meta, repr)| repr == &Repr::C) {
                 Some(reprs)
             } else {
@@ -129,7 +129,7 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
         Data::Enum(..) | Data::Union(..) => None,
     };
 
-    let fields = ast.data.fields();
+    let fields = ctx.ast.data.fields();
 
     let (self_bounds, extras) = if let (Some(reprs), Some((trailing_field, leading_fields))) =
         (is_repr_c_struct, fields.split_last())
@@ -279,7 +279,7 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
         )
     };
 
-    match &ast.data {
+    match &ctx.ast.data {
         Data::Struct(strct) => {
             let require_trait_bound_on_field_types = if self_bounds == SelfBounds::SIZED {
                 FieldBounds::None
@@ -292,8 +292,7 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
             // of an usized trailing field requires that the field is
             // `KnownLayout`.
             impl_block(
-                ast,
-                strct,
+                ctx.with_data(strct),
                 Trait::KnownLayout,
                 require_trait_bound_on_field_types,
                 self_bounds,
@@ -305,8 +304,7 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
             // A bound on the trailing field is not required, since enums cannot
             // currently be unsized.
             impl_block(
-                ast,
-                enm,
+                ctx.with_data(enm),
                 Trait::KnownLayout,
                 FieldBounds::None,
                 SelfBounds::SIZED,
@@ -318,8 +316,7 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
             // A bound on the trailing field is not required, since unions
             // cannot currently be unsized.
             impl_block(
-                ast,
-                unn,
+                ctx.with_data(unn),
                 Trait::KnownLayout,
                 FieldBounds::None,
                 SelfBounds::SIZED,
@@ -330,11 +327,10 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     }
 }
 
-fn derive_no_cell_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
-    match &ast.data {
+fn derive_no_cell_inner(mut ctx: Ctx<'_>) -> proc_macro2::TokenStream {
+    match &ctx.ast.data {
         Data::Struct(strct) => impl_block(
-            ast,
-            strct,
+            ctx.with_data(strct),
             Trait::Immutable,
             FieldBounds::ALL_SELF,
             SelfBounds::None,
@@ -342,8 +338,7 @@ fn derive_no_cell_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
             None,
         ),
         Data::Enum(enm) => impl_block(
-            ast,
-            enm,
+            ctx.with_data(enm),
             Trait::Immutable,
             FieldBounds::ALL_SELF,
             SelfBounds::None,
@@ -351,8 +346,7 @@ fn derive_no_cell_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
             None,
         ),
         Data::Union(unn) => impl_block(
-            ast,
-            unn,
+            ctx.with_data(unn),
             Trait::Immutable,
             FieldBounds::ALL_SELF,
             SelfBounds::None,
@@ -362,66 +356,50 @@ fn derive_no_cell_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
     }
 }
 
-fn derive_try_from_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
-    match &ast.data {
-        Data::Struct(strct) => derive_try_from_bytes_struct(ast, strct),
-        Data::Enum(enm) => derive_try_from_bytes_enum(ast, enm),
-        Data::Union(unn) => derive_try_from_bytes_union(ast, unn),
-    }
+fn derive_try_from_bytes_inner(mut ctx: Ctx<'_>) -> proc_macro2::TokenStream {
+    ctx.foo(derive_try_from_bytes_struct, derive_try_from_bytes_enum, derive_try_from_bytes_union)
 }
 
-fn derive_from_zeros_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
-    let try_from_bytes = derive_try_from_bytes_inner(ast);
-    let from_zeros = match &ast.data {
-        Data::Struct(strct) => derive_from_zeros_struct(ast, strct),
-        Data::Enum(enm) => derive_from_zeros_enum(ast, enm),
-        Data::Union(unn) => derive_from_zeros_union(ast, unn),
-    };
+fn derive_from_zeros_inner(mut ctx: Ctx<'_>) -> proc_macro2::TokenStream {
+    let try_from_bytes = derive_try_from_bytes_inner(ctx.reborrow());
+    let from_zeros =
+        ctx.foo(derive_from_zeros_struct, derive_from_zeros_enum, derive_from_zeros_union);
     IntoIterator::into_iter([try_from_bytes, from_zeros]).collect()
 }
 
-fn derive_from_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
-    let from_zeros = derive_from_zeros_inner(ast);
-    let from_bytes = match &ast.data {
-        Data::Struct(strct) => derive_from_bytes_struct(ast, strct),
-        Data::Enum(enm) => derive_from_bytes_enum(ast, enm),
-        Data::Union(unn) => derive_from_bytes_union(ast, unn),
-    };
+fn derive_from_bytes_inner(mut ctx: Ctx<'_>) -> proc_macro2::TokenStream {
+    let from_zeros = derive_from_zeros_inner(ctx.reborrow());
+    let from_bytes =
+        ctx.foo(derive_from_bytes_struct, derive_from_bytes_enum, derive_from_bytes_union);
 
     IntoIterator::into_iter([from_zeros, from_bytes]).collect()
 }
 
-fn derive_into_bytes_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
-    match &ast.data {
-        Data::Struct(strct) => derive_into_bytes_struct(ast, strct),
-        Data::Enum(enm) => derive_into_bytes_enum(ast, enm),
-        Data::Union(unn) => derive_into_bytes_union(ast, unn),
-    }
+fn derive_into_bytes_inner(mut ctx: Ctx<'_>) -> proc_macro2::TokenStream {
+    ctx.foo(derive_into_bytes_struct, derive_into_bytes_enum, derive_into_bytes_union)
 }
 
-fn derive_unaligned_inner(ast: &DeriveInput) -> proc_macro2::TokenStream {
-    match &ast.data {
-        Data::Struct(strct) => derive_unaligned_struct(ast, strct),
-        Data::Enum(enm) => derive_unaligned_enum(ast, enm),
-        Data::Union(unn) => derive_unaligned_union(ast, unn),
-    }
+fn derive_unaligned_inner(mut ctx: Ctx<'_>) -> proc_macro2::TokenStream {
+    ctx.foo(derive_unaligned_struct, derive_unaligned_enum, derive_unaligned_union)
 }
 
 /// A struct is `TryFromBytes` if:
 /// - all fields are `TryFromBytes`
-fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
+fn derive_try_from_bytes_struct(mut ctx: Ctx<'_, DataStruct>) -> proc_macro2::TokenStream {
     let extras = Some({
-        let fields = strct.fields();
+        let fields = ctx.data.fields();
         let field_names = fields.iter().map(|(name, _ty)| name);
         let field_tys = fields.iter().map(|(_name, ty)| ty);
+
+        let aliasing_ty_ident = ctx.call_site_ident("Aliasing");
         quote!(
             // SAFETY: We use `is_bit_valid` to validate that each field is
             // bit-valid, and only return `true` if all of them are. The bit
             // validity of a struct is just the composition of the bit
             // validities of its fields, so this is a sound implementation of
             // `is_bit_valid`.
-            fn is_bit_valid<A: ::zerocopy::pointer::invariant::Aliasing + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>>(
-                mut candidate: ::zerocopy::Maybe<Self, A>,
+            fn is_bit_valid<#aliasing_ty_ident: ::zerocopy::pointer::invariant::Aliasing + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>>(
+                mut candidate: ::zerocopy::Maybe<Self, #aliasing_ty_ident>,
             ) -> bool {
                 true #(&& {
                     // SAFETY:
@@ -443,25 +421,17 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
             }
         )
     });
-    impl_block(
-        ast,
-        strct,
-        Trait::TryFromBytes,
-        FieldBounds::ALL_SELF,
-        SelfBounds::None,
-        None,
-        extras,
-    )
+    impl_block(ctx, Trait::TryFromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, extras)
 }
 
 /// A union is `TryFromBytes` if:
 /// - all of its fields are `TryFromBytes` and `Immutable`
-fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
+fn derive_try_from_bytes_union(ctx: Ctx<'_, DataUnion>) -> proc_macro2::TokenStream {
     // TODO(#5): Remove the `Immutable` bound.
     let field_type_trait_bounds =
         FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
     let extras = Some({
-        let fields = unn.fields();
+        let fields = ctx.data.fields();
         let field_names = fields.iter().map(|(name, _ty)| name);
         let field_tys = fields.iter().map(|(_name, ty)| ty);
         quote!(
@@ -493,15 +463,7 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
             }
         )
     });
-    impl_block(
-        ast,
-        unn,
-        Trait::TryFromBytes,
-        field_type_trait_bounds,
-        SelfBounds::None,
-        None,
-        extras,
-    )
+    impl_block(ctx, Trait::TryFromBytes, field_type_trait_bounds, SelfBounds::None, None, extras)
 }
 
 const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[
@@ -511,13 +473,14 @@ const STRUCT_UNION_ALLOWED_REPR_COMBINATIONS: &[&[StructRepr]] = &[
     &[StructRepr::C, StructRepr::Packed],
 ];
 
-fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
+fn derive_try_from_bytes_enum(mut ctx: Ctx<'_, DataEnum>) -> proc_macro2::TokenStream {
+    let ast = &ctx.ast;
     let reprs = try_or_print!(ENUM_TRY_FROM_BYTES_CFG.validate_reprs(ast));
 
     // The enum derive requires some extra scaffolding
-    let extra = Some(r#enum::derive_is_bit_valid(&ast.ident, &reprs, &ast.generics, enm));
+    let extra = Some(r#enum::derive_is_bit_valid(ctx.reborrow(), &reprs));
 
-    impl_block(ast, enm, Trait::TryFromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, extra)
+    impl_block(ctx, Trait::TryFromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, extra)
 }
 
 #[rustfmt::skip]
@@ -555,8 +518,8 @@ const ENUM_TRY_FROM_BYTES_CFG: Config<EnumRepr> = {
 
 /// A struct is `FromZeros` if:
 /// - all fields are `FromZeros`
-fn derive_from_zeros_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    impl_block(ast, strct, Trait::FromZeros, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
+fn derive_from_zeros_struct(ctx: Ctx<'_, DataStruct>) -> proc_macro2::TokenStream {
+    impl_block(ctx, Trait::FromZeros, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
 }
 
 /// Returns `Ok(index)` if variant `index` of the enum has a discriminant of
@@ -640,17 +603,17 @@ fn find_zero_variant(enm: &DataEnum) -> Result<usize, bool> {
 /// An enum is `FromZeros` if:
 /// - one of the variants has a discriminant of `0`
 /// - that variant's fields are all `FromZeros`
-fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
+fn derive_from_zeros_enum(ctx: Ctx<'_, DataEnum>) -> proc_macro2::TokenStream {
     // We don't actually care what the repr is; we just care that it's one of
     // the allowed ones.
-    try_or_print!(ENUM_FROM_ZEROS_INTO_BYTES_CFG.validate_reprs(ast));
+    try_or_print!(ENUM_FROM_ZEROS_INTO_BYTES_CFG.validate_reprs(ctx.ast));
 
-    let zero_variant = match find_zero_variant(enm) {
-        Ok(index) => enm.variants.iter().nth(index).unwrap(),
+    let zero_variant = match find_zero_variant(ctx.data) {
+        Ok(index) => ctx.data.variants.iter().nth(index).unwrap(),
         // Has unknown variants
         Err(true) => {
             return Error::new_spanned(
-                ast,
+                ctx.ast,
                 "FromZeros only supported on enums with a variant that has a discriminant of `0`\n\
                 help: This enum has discriminants which are not literal integers. One of those may \
                 define or imply which variant has a discriminant of zero. Use a literal integer to \
@@ -661,7 +624,7 @@ fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
         // Does not have unknown variants
         Err(false) => {
             return Error::new_spanned(
-                ast,
+                ctx.ast,
                 "FromZeros only supported on enums with a variant that has a discriminant of `0`",
             )
             .to_compile_error();
@@ -678,8 +641,7 @@ fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
         .collect::<Vec<WherePredicate>>();
 
     impl_block(
-        ast,
-        enm,
+        ctx,
         Trait::FromZeros,
         FieldBounds::Explicit(explicit_bounds),
         SelfBounds::None,
@@ -690,18 +652,18 @@ fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
 
 /// Unions are `FromZeros` if
 /// - all fields are `FromZeros` and `Immutable`
-fn derive_from_zeros_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
+fn derive_from_zeros_union(ctx: Ctx<'_, DataUnion>) -> proc_macro2::TokenStream {
     // TODO(#5): Remove the `Immutable` bound. It's only necessary for
     // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
     let field_type_trait_bounds =
         FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
-    impl_block(ast, unn, Trait::FromZeros, field_type_trait_bounds, SelfBounds::None, None, None)
+    impl_block(ctx, Trait::FromZeros, field_type_trait_bounds, SelfBounds::None, None, None)
 }
 
 /// A struct is `FromBytes` if:
 /// - all fields are `FromBytes`
-fn derive_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    impl_block(ast, strct, Trait::FromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
+fn derive_from_bytes_struct(ctx: Ctx<'_, DataStruct>) -> proc_macro2::TokenStream {
+    impl_block(ctx, Trait::FromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
 }
 
 /// An enum is `FromBytes` if:
@@ -718,15 +680,15 @@ fn derive_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro
 ///   platform-specific and, b) even on Rust's smallest bit width platform (32),
 ///   this would require ~4 billion enum variants, which obviously isn't a thing.
 /// - All fields of all variants are `FromBytes`.
-fn derive_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
-    let reprs = try_or_print!(ENUM_FROM_BYTES_CFG.validate_reprs(ast));
+fn derive_from_bytes_enum(ctx: Ctx<'_, DataEnum>) -> proc_macro2::TokenStream {
+    let reprs = try_or_print!(ENUM_FROM_BYTES_CFG.validate_reprs(ctx.ast));
 
     let variants_required = 1usize
         << enum_size_from_repr(reprs.as_slice())
             .expect("internal error: `validate_reprs` has already validated that the reprs guarantee the enum's size");
-    if enm.variants.len() != variants_required {
+    if ctx.data.variants.len() != variants_required {
         return Error::new_spanned(
-            ast,
+            ctx.ast,
             format!(
                 "FromBytes only supported on {} enum with {} variants",
                 reprs[0], variants_required
@@ -735,7 +697,7 @@ fn derive_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::Tok
         .to_compile_error();
     }
 
-    impl_block(ast, enm, Trait::FromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
+    impl_block(ctx, Trait::FromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
 }
 
 // Returns `None` if the enum's size is not guaranteed by the repr.
@@ -773,19 +735,19 @@ const ENUM_FROM_BYTES_CFG: Config<EnumRepr> = {
 
 /// Unions are `FromBytes` if
 /// - all fields are `FromBytes` and `Immutable`
-fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
+fn derive_from_bytes_union(ctx: Ctx<'_, DataUnion>) -> proc_macro2::TokenStream {
     // TODO(#5): Remove the `Immutable` bound. It's only necessary for
     // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
     let field_type_trait_bounds =
         FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
-    impl_block(ast, unn, Trait::FromBytes, field_type_trait_bounds, SelfBounds::None, None, None)
+    impl_block(ctx, Trait::FromBytes, field_type_trait_bounds, SelfBounds::None, None, None)
 }
 
-fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    let reprs = try_or_print!(STRUCT_UNION_INTO_BYTES_CFG.validate_reprs(ast));
+fn derive_into_bytes_struct(ctx: Ctx<'_, DataStruct>) -> proc_macro2::TokenStream {
+    let reprs = try_or_print!(STRUCT_UNION_INTO_BYTES_CFG.validate_reprs(ctx.ast));
     let is_transparent = reprs.contains(&StructRepr::Transparent);
     let is_packed = reprs.contains(&StructRepr::Packed);
-    let num_fields = strct.fields().len();
+    let num_fields = ctx.data.fields().len();
 
     let (padding_check, require_unaligned_fields) = if is_transparent || is_packed {
         // No padding check needed.
@@ -802,7 +764,7 @@ fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro
         // No padding check needed. A repr(C) struct with zero or one field has
         // no padding.
         (None, false)
-    } else if ast.generics.params.is_empty() {
+    } else if ctx.ast.generics.params.is_empty() {
         // Since there are no generics, we can emit a padding check. This is
         // more permissive than the next case, which requires that all field
         // types implement `Unaligned`.
@@ -828,7 +790,7 @@ fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro
         FieldBounds::ALL_SELF
     };
 
-    impl_block(ast, strct, Trait::IntoBytes, field_bounds, SelfBounds::None, padding_check, None)
+    impl_block(ctx, Trait::IntoBytes, field_bounds, SelfBounds::None, padding_check, None)
 }
 
 const STRUCT_UNION_INTO_BYTES_CFG: Config<StructRepr> = Config {
@@ -845,17 +807,16 @@ const STRUCT_UNION_INTO_BYTES_CFG: Config<StructRepr> = Config {
 ///   `u64`, `usize`, `i8`, `i16`, `i32`, `i64`, or `isize`).
 /// - It must have no padding bytes.
 /// - Its fields must be `IntoBytes`.
-fn derive_into_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
+fn derive_into_bytes_enum(mut ctx: Ctx<'_, DataEnum>) -> proc_macro2::TokenStream {
     // We don't care what the repr is; we only care that it is one of the
     // allowed ones.
-    let reprs = try_or_print!(ENUM_FROM_ZEROS_INTO_BYTES_CFG.validate_reprs(ast));
+    let reprs = try_or_print!(ENUM_FROM_ZEROS_INTO_BYTES_CFG.validate_reprs(ctx.ast));
     let repr = r#enum::tag_repr(&reprs)
         .expect("cannot derive IntoBytes for enum without a well-defined repr");
-    let tag_type_definition = r#enum::generate_tag_enum(repr, enm);
+    let tag_type_definition = r#enum::generate_tag_enum(ctx.reborrow(), repr);
 
     impl_block(
-        ast,
-        enm,
+        ctx,
         Trait::IntoBytes,
         FieldBounds::ALL_SELF,
         SelfBounds::None,
@@ -903,18 +864,17 @@ const ENUM_FROM_ZEROS_INTO_BYTES_CFG: Config<EnumRepr> = {
 /// - all fields are `IntoBytes`
 /// - `repr(C)`, `repr(transparent)`, or `repr(packed)`
 /// - no padding (size of union equals size of each field type)
-fn derive_into_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
+fn derive_into_bytes_union(ctx: Ctx<'_, DataUnion>) -> proc_macro2::TokenStream {
     // TODO(#10): Support type parameters.
-    if !ast.generics.params.is_empty() {
+    if !ctx.ast.generics.params.is_empty() {
         return Error::new(Span::call_site(), "unsupported on types with type parameters")
             .to_compile_error();
     }
 
-    try_or_print!(STRUCT_UNION_INTO_BYTES_CFG.validate_reprs(ast));
+    try_or_print!(STRUCT_UNION_INTO_BYTES_CFG.validate_reprs(ctx.ast));
 
     impl_block(
-        ast,
-        unn,
+        ctx,
         Trait::IntoBytes,
         FieldBounds::ALL_SELF,
         SelfBounds::None,
@@ -928,15 +888,15 @@ fn derive_into_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::T
 ///   - `repr(C)` or `repr(transparent)` and
 ///     - all fields `Unaligned`
 ///   - `repr(packed)`
-fn derive_unaligned_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_macro2::TokenStream {
-    let reprs = try_or_print!(STRUCT_UNION_UNALIGNED_CFG.validate_reprs(ast));
+fn derive_unaligned_struct(ctx: Ctx<'_, DataStruct>) -> proc_macro2::TokenStream {
+    let reprs = try_or_print!(STRUCT_UNION_UNALIGNED_CFG.validate_reprs(ctx.ast));
     let field_bounds = if !reprs.contains(&StructRepr::Packed) {
         FieldBounds::ALL_SELF
     } else {
         FieldBounds::None
     };
 
-    impl_block(ast, strct, Trait::Unaligned, field_bounds, SelfBounds::None, None, None)
+    impl_block(ctx, Trait::Unaligned, field_bounds, SelfBounds::None, None, None)
 }
 
 const STRUCT_UNION_UNALIGNED_CFG: Config<StructRepr> = Config {
@@ -951,13 +911,13 @@ const STRUCT_UNION_UNALIGNED_CFG: Config<StructRepr> = Config {
 /// An enum is `Unaligned` if:
 /// - No `repr(align(N > 1))`
 /// - `repr(u8)` or `repr(i8)`
-fn derive_unaligned_enum(ast: &DeriveInput, enm: &DataEnum) -> proc_macro2::TokenStream {
+fn derive_unaligned_enum(ctx: Ctx<'_, DataEnum>) -> proc_macro2::TokenStream {
     // The only valid reprs are `u8` and `i8`, and optionally `align(1)`. We
     // don't actually care what the reprs are so long as they satisfy that
     // requirement.
-    let _: Vec<repr::EnumRepr> = try_or_print!(ENUM_UNALIGNED_CFG.validate_reprs(ast));
+    let _: Vec<repr::EnumRepr> = try_or_print!(ENUM_UNALIGNED_CFG.validate_reprs(ctx.ast));
 
-    impl_block(ast, enm, Trait::Unaligned, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
+    impl_block(ctx, Trait::Unaligned, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
 }
 
 #[rustfmt::skip]
@@ -1000,15 +960,15 @@ const ENUM_UNALIGNED_CFG: Config<EnumRepr> = {
 ///   - `repr(C)` or `repr(transparent)` and
 ///     - all fields `Unaligned`
 ///   - `repr(packed)`
-fn derive_unaligned_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro2::TokenStream {
-    let reprs = try_or_print!(STRUCT_UNION_UNALIGNED_CFG.validate_reprs(ast));
+fn derive_unaligned_union(ctx: Ctx<'_, DataUnion>) -> proc_macro2::TokenStream {
+    let reprs = try_or_print!(STRUCT_UNION_UNALIGNED_CFG.validate_reprs(ctx.ast));
     let field_type_trait_bounds = if !reprs.contains(&StructRepr::Packed) {
         FieldBounds::ALL_SELF
     } else {
         FieldBounds::None
     };
 
-    impl_block(ast, unn, Trait::Unaligned, field_type_trait_bounds, SelfBounds::None, None, None)
+    impl_block(ctx, Trait::Unaligned, field_type_trait_bounds, SelfBounds::None, None, None)
 }
 
 /// This enum describes what kind of padding check needs to be generated for the
@@ -1121,8 +1081,7 @@ fn normalize_bounds(slf: Trait, bounds: &[TraitBound]) -> impl '_ + Iterator<Ite
 }
 
 fn impl_block<D: DataExt>(
-    input: &DeriveInput,
-    data: &D,
+    mut ctx: Ctx<'_, D>,
     trt: Trait,
     field_type_trait_bounds: FieldBounds,
     self_type_trait_bounds: SelfBounds,
@@ -1187,11 +1146,11 @@ fn impl_block<D: DataExt>(
     //       |
     //       = note: required by `zerocopy::Unaligned`
 
-    let type_ident = &input.ident;
+    let type_ident = &ctx.ast.ident;
     let trait_path = trt.crate_path();
-    let fields = data.fields();
-    let variants = data.variants();
-    let tag = data.tag();
+    let fields = ctx.data.fields();
+    let variants = ctx.data.variants();
+    let tag = ctx.data.tag(ctx.reborrow());
 
     fn bound_tt(ty: &Type, traits: impl Iterator<Item = Trait>) -> WherePredicate {
         let traits = traits.map(|t| t.crate_path());
@@ -1237,7 +1196,8 @@ fn impl_block<D: DataExt>(
         SelfBounds::All(traits) => Some(bound_tt(&parse_quote!(Self), traits.iter().copied())),
     };
 
-    let bounds = input
+    let bounds = ctx
+        .ast
         .generics
         .where_clause
         .as_ref()
@@ -1249,7 +1209,7 @@ fn impl_block<D: DataExt>(
         .chain(self_bounds.iter());
 
     // The parameters with trait bounds, but without type defaults.
-    let params = input.generics.params.clone().into_iter().map(|mut param| {
+    let params = ctx.ast.generics.params.clone().into_iter().map(|mut param| {
         match &mut param {
             GenericParam::Type(ty) => ty.default = None,
             GenericParam::Const(cnst) => cnst.default = None,
@@ -1259,7 +1219,7 @@ fn impl_block<D: DataExt>(
     });
 
     // The identifiers of the parameters without trait bounds or type defaults.
-    let param_idents = input.generics.params.iter().map(|param| match param {
+    let param_idents = ctx.ast.generics.params.iter().map(|param| match param {
         GenericParam::Type(ty) => {
             let ident = &ty.ident;
             quote!(#ident)
@@ -1311,6 +1271,113 @@ impl BoolExt for bool {
             Some(t)
         } else {
             None
+        }
+    }
+}
+
+use ctx::*;
+mod ctx {
+    use super::*;
+
+    enum Hash<'a> {
+        Owned(Box<Option<u64>>),
+        Parent(&'a mut Option<u64>),
+    }
+
+    impl<'a> Hash<'a> {
+        fn to_child<'b>(&'b mut self) -> Hash<'b>
+        where
+            'a: 'b,
+        {
+            match self {
+                Hash::Owned(bx) => Hash::Parent(&mut *bx),
+                Hash::Parent(opt) => Hash::Parent(*opt),
+            }
+        }
+    }
+
+    pub struct Ctx<'a, D = ()> {
+        pub ast: &'a DeriveInput,
+        pub data: &'a D,
+        // The (lazily computed) hash of `ast`, either owned or a reference to
+        // another `Ctx`.
+        hash: Hash<'a>,
+    }
+
+    impl<'a> Ctx<'a, ()> {
+        pub fn new(ast: &'a DeriveInput) -> Ctx<'a, ()> {
+            Ctx { ast, data: &(), hash: Hash::Owned(Box::new(None)) }
+        }
+
+        pub fn foo<'b, S, E, U, O>(&'b mut self, strct: S, enm: E, unn: U) -> O
+        where
+            'a: 'b,
+            S: FnOnce(Ctx<'b, DataStruct>) -> O,
+            E: FnOnce(Ctx<'b, DataEnum>) -> O,
+            U: FnOnce(Ctx<'b, DataUnion>) -> O,
+        {
+            match &self.ast.data {
+                Data::Struct(data) => {
+                    strct(Ctx { ast: &self.ast, data, hash: self.hash.to_child() })
+                }
+                Data::Enum(data) => enm(Ctx { ast: &self.ast, data, hash: self.hash.to_child() }),
+                Data::Union(data) => unn(Ctx { ast: &self.ast, data, hash: self.hash.to_child() }),
+            }
+        }
+
+        pub fn with_data<'b, D>(&'b mut self, data: &'b D) -> Ctx<'b, D>
+        where
+            'a: 'b,
+        {
+            Ctx { ast: &self.ast, data, hash: self.hash.to_child() }
+        }
+    }
+
+    impl<'a, D> Ctx<'a, D> {
+        fn hash(&mut self) -> u64 {
+            if cfg!(test) {
+                // When unit testing, we assert on the exact output of derives.
+                // If we enabled hashing during these tests, any change to the
+                // input would change the hash, and require updating the entire
+                // expected output. Worse, SipHasher does not guarantee stable
+                // output across Rust versions, so we could get into a situation
+                // where there is no single correct expected output that is
+                // consistent across the Rust versions that we pin in CI.
+                //
+                // Note that `cfg!(test)` is not enabled during trybuild tests
+                // since zerocopy-derive built manually by the `trybuild` crate.
+                return 0;
+            }
+
+            let Ctx { ast, hash, .. } = self;
+            let opt: &mut Option<_> = match hash {
+                Hash::Owned(bx) => &mut *bx,
+                Hash::Parent(opt) => opt,
+            };
+
+            *opt.get_or_insert_with(|| {
+                use core::hash::{Hash, Hasher};
+
+                #[allow(deprecated)]
+                let mut h = core::hash::SipHasher::new();
+                ast.hash(&mut h);
+                h.finish()
+            })
+        }
+
+        pub fn call_site_ident(&mut self, name: &str) -> Ident {
+            self.spanned_ident(name, Span::call_site())
+        }
+
+        pub fn spanned_ident(&mut self, name: &str, span: Span) -> Ident {
+            Ident::new(&format!("___ZEROCOPY_{}_{}", name, self.hash()), span)
+        }
+
+        pub fn reborrow<'b>(&'b mut self) -> Ctx<'b, D>
+        where
+            'a: 'b,
+        {
+            Ctx { ast: &self.ast, data: &self.data, hash: self.hash.to_child() }
         }
     }
 }
