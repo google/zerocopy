@@ -144,3 +144,11 @@ where
 }
 
 util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::TryFromBytes);
+
+#[derive(Clone, Copy, imp::TryFromBytes, imp::Immutable)]
+struct A;
+
+#[derive(imp::TryFromBytes)]
+union B {
+    a: A,
+}

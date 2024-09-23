@@ -420,9 +420,13 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
             // validity of a struct is just the composition of the bit
             // validities of its fields, so this is a sound implementation of
             // `is_bit_valid`.
-            fn is_bit_valid<A: ::zerocopy::pointer::invariant::Aliasing + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>>(
-                mut candidate: ::zerocopy::Maybe<Self, A>,
-            ) -> bool {
+            fn is_bit_valid<___ZerocopyAliasing>(
+                mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+            where
+                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
+                    + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+            {
                 true #(&& {
                     // SAFETY:
                     // - `project` is a field projection, and so it addresses a
@@ -470,9 +474,13 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
             // bit validity of a union is not yet well defined in Rust, but it
             // is guaranteed to be no more strict than this definition. See #696
             // for a more in-depth discussion.
-            fn is_bit_valid<A: ::zerocopy::pointer::invariant::Aliasing + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>>(
-                mut candidate: ::zerocopy::Maybe<Self, A>
-            ) -> bool {
+            fn is_bit_valid<___ZerocopyAliasing>(
+                mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>
+            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+            where
+                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
+                    + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+            {
                 false #(|| {
                     // SAFETY:
                     // - `project` is a field projection, and so it addresses a

@@ -268,3 +268,13 @@ enum GenericWithLifetimes<'a, 'b, X: 'a, Y: 'b> {
     Foo(::core::marker::PhantomData<&'a X>),
     Bar(::core::marker::PhantomData<&'b Y>),
 }
+
+#[derive(Clone, Copy, imp::TryFromBytes)]
+struct A;
+
+#[derive(imp::TryFromBytes)]
+#[repr(C)]
+enum B {
+    A(A),
+    A2 { a: A },
+}

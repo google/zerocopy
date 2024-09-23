@@ -147,12 +147,13 @@ fn test_try_from_bytes() {
             unsafe impl ::zerocopy::TryFromBytes for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
 
-                fn is_bit_valid<
-                    A: ::zerocopy::pointer::invariant::Aliasing
+                fn is_bit_valid<___ZerocopyAliasing>(
+                    mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                where
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
                         + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
-                >(
-                    mut candidate: ::zerocopy::Maybe<Self, A>,
-                ) -> bool {
+                {
                     true
                 }
             }
@@ -170,12 +171,13 @@ fn test_from_zeros() {
             unsafe impl ::zerocopy::TryFromBytes for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
 
-                fn is_bit_valid<
-                    A: ::zerocopy::pointer::invariant::Aliasing
+                fn is_bit_valid<___ZerocopyAliasing>(
+                    mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                where
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
                         + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
-                >(
-                    mut candidate: ::zerocopy::Maybe<Self, A>,
-                ) -> bool {
+                {
                     true
                 }
             }
@@ -198,12 +200,13 @@ fn test_from_bytes() {
             unsafe impl ::zerocopy::TryFromBytes for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
 
-                fn is_bit_valid<
-                    A: ::zerocopy::pointer::invariant::Aliasing
+                fn is_bit_valid<___ZerocopyAliasing>(
+                    mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                where
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
                         + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
-                >(
-                    mut candidate: ::zerocopy::Maybe<Self, A>,
-                ) -> bool {
+                {
                     true
                 }
             }
@@ -303,11 +306,11 @@ fn test_try_from_bytes_enum() {
                 PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
             {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
-                fn is_bit_valid<A>(
-                    mut candidate: ::zerocopy::Maybe<'_, Self, A>,
+                fn is_bit_valid<___ZerocopyAliasing>(
+                    mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>,
                 ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                 where
-                    A: ::zerocopy::pointer::invariant::Aliasing
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
                         + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
                 {
                     use ::zerocopy::util::macro_util::core_reexport;
@@ -445,11 +448,11 @@ fn test_try_from_bytes_enum() {
                 PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
             {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
-                fn is_bit_valid<A>(
-                    mut candidate: ::zerocopy::Maybe<'_, Self, A>,
+                fn is_bit_valid<___ZerocopyAliasing>(
+                    mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>,
                 ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                 where
-                    A: ::zerocopy::pointer::invariant::Aliasing
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
                         + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
                 {
                     use ::zerocopy::util::macro_util::core_reexport;
@@ -587,11 +590,11 @@ fn test_try_from_bytes_enum() {
                 PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
             {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
-                fn is_bit_valid<A>(
-                    mut candidate: ::zerocopy::Maybe<'_, Self, A>,
+                fn is_bit_valid<___ZerocopyAliasing>(
+                    mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>,
                 ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                 where
-                    A: ::zerocopy::pointer::invariant::Aliasing
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
                         + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
                 {
                     use ::zerocopy::util::macro_util::core_reexport;
