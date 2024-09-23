@@ -1277,17 +1277,20 @@ pub unsafe trait TryFromBytes {
         candidate: Maybe<'_, Self, A>,
     ) -> bool;
 
-    /// Attempts to interpret the given `source` as a `&Self` without copying.
+    /// Attempts to interpret the given `source` as a `&Self`.
     ///
     /// If the bytes of `source` are a valid instance of `Self`, this method
     /// returns a reference to those bytes interpreted as a `Self`. If the
     /// length of `source` is not a [valid size of `Self`][valid-size], or if
     /// `source` is not appropriately aligned, or if `source` is not a valid
-    /// instance of `Self`, this returns `Err`.
+    /// instance of `Self`, this returns `Err`. If [`Self:
+    /// Unaligned`][self-unaligned], you can [infallibly discard the alignment
+    /// error][ConvertError::from].
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate#what-is-a-valid-size
+    /// [self-unaligned]: Unaligned
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
@@ -1375,8 +1378,7 @@ pub unsafe trait TryFromBytes {
         }
     }
 
-    /// Attempts to interpret the prefix of the given `source` as a `&Self`
-    /// without copying.
+    /// Attempts to interpret the prefix of the given `source` as a `&Self`.
     ///
     /// This method computes the [largest possible size of `Self`][valid-size]
     /// that can fit in the leading bytes of `source`. If that prefix is a valid
@@ -1384,10 +1386,13 @@ pub unsafe trait TryFromBytes {
     /// interpreted as `Self`, and a reference to the remaining bytes. If there
     /// are insufficient bytes, or if `source` is not appropriately aligned, or
     /// if those bytes are not a valid instance of `Self`, this returns `Err`.
+    /// If [`Self: Unaligned`][self-unaligned], you can [infallibly discard the
+    /// alignment error][ConvertError::from].
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate#what-is-a-valid-size
+    /// [self-unaligned]: Unaligned
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
@@ -1459,8 +1464,7 @@ pub unsafe trait TryFromBytes {
         try_ref_from_prefix_suffix(source, CastType::Prefix, None)
     }
 
-    /// Attempts to interpret the suffix of the given `source` as a `&Self`
-    /// without copying.
+    /// Attempts to interpret the suffix of the given `source` as a `&Self`.
     ///
     /// This method computes the [largest possible size of `Self`][valid-size]
     /// that can fit in the trailing bytes of `source`. If that suffix is a
@@ -1468,11 +1472,13 @@ pub unsafe trait TryFromBytes {
     /// interpreted as `Self`, and a reference to the preceding bytes. If there
     /// are insufficient bytes, or if the suffix of `source` would not be
     /// appropriately aligned, or if the suffix is not a valid instance of
-    /// `Self`, this returns `Err`.
+    /// `Self`, this returns `Err`. If [`Self: Unaligned`][self-unaligned], you
+    /// can [infallibly discard the alignment error][ConvertError::from].
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate#what-is-a-valid-size
+    /// [self-unaligned]: Unaligned
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
@@ -1551,11 +1557,14 @@ pub unsafe trait TryFromBytes {
     /// returns a reference to those bytes interpreted as a `Self`. If the
     /// length of `source` is not a [valid size of `Self`][valid-size], or if
     /// `source` is not appropriately aligned, or if `source` is not a valid
-    /// instance of `Self`, this returns `Err`.
+    /// instance of `Self`, this returns `Err`. If [`Self:
+    /// Unaligned`][self-unaligned], you can [infallibly discard the alignment
+    /// error][ConvertError::from].
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate#what-is-a-valid-size
+    /// [self-unaligned]: Unaligned
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
@@ -1645,18 +1654,21 @@ pub unsafe trait TryFromBytes {
     }
 
     /// Attempts to interpret the prefix of the given `source` as a `&mut
-    /// Self` without copying.
+    /// Self`.
     ///
     /// This method computes the [largest possible size of `Self`][valid-size]
-    /// that can fit in the leading bytes of `source`. If that prefix is a
-    /// valid instance of `Self`, this method returns a reference to those bytes
+    /// that can fit in the leading bytes of `source`. If that prefix is a valid
+    /// instance of `Self`, this method returns a reference to those bytes
     /// interpreted as `Self`, and a reference to the remaining bytes. If there
-    /// are insufficient bytes, or if `source` is not appropriately aligned,
-    /// or if the bytes are not a valid instance of `Self`, this returns `Err`.
+    /// are insufficient bytes, or if `source` is not appropriately aligned, or
+    /// if the bytes are not a valid instance of `Self`, this returns `Err`. If
+    /// [`Self: Unaligned`][self-unaligned], you can [infallibly discard the
+    /// alignment error][ConvertError::from].
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate#what-is-a-valid-size
+    /// [self-unaligned]: Unaligned
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
@@ -1737,7 +1749,7 @@ pub unsafe trait TryFromBytes {
     }
 
     /// Attempts to interpret the suffix of the given `source` as a `&mut
-    /// Self` without copying.
+    /// Self`.
     ///
     /// This method computes the [largest possible size of `Self`][valid-size]
     /// that can fit in the trailing bytes of `source`. If that suffix is a
@@ -1745,11 +1757,13 @@ pub unsafe trait TryFromBytes {
     /// interpreted as `Self`, and a reference to the preceding bytes. If there
     /// are insufficient bytes, or if the suffix of `source` would not be
     /// appropriately aligned, or if the suffix is not a valid instance of
-    /// `Self`, this returns `Err`.
+    /// `Self`, this returns `Err`. If [`Self: Unaligned`][self-unaligned], you
+    /// can [infallibly discard the alignment error][ConvertError::from].
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate#what-is-a-valid-size
+    /// [self-unaligned]: Unaligned
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
@@ -2634,16 +2648,19 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized;
 
-    /// Interprets the given `source` as a `&Self` without copying.
+    /// Interprets the given `source` as a `&Self`.
     ///
     /// This method attempts to return a reference to `source` interpreted as a
     /// `Self`. If the length of `source` is not a [valid size of
     /// `Self`][valid-size], or if `source` is not appropriately aligned, this
-    /// returns `Err`.
+    /// returns `Err`. If [`Self: Unaligned`][self-unaligned], you can
+    /// [infallibly discard the alignment error][size-error-from].
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate#what-is-a-valid-size
+    /// [self-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
@@ -2719,11 +2736,15 @@ pub unsafe trait FromBytes: FromZeros {
     /// that can fit in the leading bytes of `source`, then attempts to return
     /// both a reference to those bytes interpreted as a `Self`, and a reference
     /// to the remaining bytes. If there are insufficient bytes, or if `source`
-    /// is not appropriately aligned, this returns `Err`.
+    /// is not appropriately aligned, this returns `Err`. If [`Self:
+    /// Unaligned`][self-unaligned], you can [infallibly discard the alignment
+    /// error][size-error-from].
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate#what-is-a-valid-size
+    /// [self-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
@@ -2793,17 +2814,21 @@ pub unsafe trait FromBytes: FromZeros {
         ref_from_prefix_suffix(source, None, CastType::Prefix)
     }
 
-    /// Interprets the suffix of the given bytes as a `&Self` without copying.
+    /// Interprets the suffix of the given bytes as a `&Self`.
     ///
     /// This method computes the [largest possible size of `Self`][valid-size]
     /// that can fit in the trailing bytes of `source`, then attempts to return
     /// both a reference to those bytes interpreted as a `Self`, and a reference
     /// to the preceding bytes. If there are insufficient bytes, or if that
-    /// suffix of `source` is not appropriately aligned, this returns `Err`.
+    /// suffix of `source` is not appropriately aligned, this returns `Err`. If
+    /// [`Self: Unaligned`][self-unaligned], you can [infallibly discard the
+    /// alignment error][size-error-from].
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate#what-is-a-valid-size
+    /// [self-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
@@ -2859,16 +2884,19 @@ pub unsafe trait FromBytes: FromZeros {
         ref_from_prefix_suffix(source, None, CastType::Suffix).map(swap)
     }
 
-    /// Interprets the given `source` as a `&mut Self` without copying.
+    /// Interprets the given `source` as a `&mut Self`.
     ///
     /// This method attempts to return a reference to `source` interpreted as a
     /// `Self`. If the length of `source` is not a [valid size of
     /// `Self`][valid-size], or if `source` is not appropriately aligned, this
-    /// returns `Err`.
+    /// returns `Err`. If [`Self: Unaligned`][self-unaligned], you can
+    /// [infallibly discard the alignment error][size-error-from].
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate#what-is-a-valid-size
+    /// [self-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
@@ -2944,11 +2972,15 @@ pub unsafe trait FromBytes: FromZeros {
     /// that can fit in the leading bytes of `source`, then attempts to return
     /// both a reference to those bytes interpreted as a `Self`, and a reference
     /// to the remaining bytes. If there are insufficient bytes, or if `source`
-    /// is not appropriately aligned, this returns `Err`.
+    /// is not appropriately aligned, this returns `Err`. If [`Self:
+    /// Unaligned`][self-unaligned], you can [infallibly discard the alignment
+    /// error][size-error-from].
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate#what-is-a-valid-size
+    /// [self-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
@@ -3025,11 +3057,15 @@ pub unsafe trait FromBytes: FromZeros {
     /// that can fit in the trailing bytes of `source`, then attempts to return
     /// both a reference to those bytes interpreted as a `Self`, and a reference
     /// to the preceding bytes. If there are insufficient bytes, or if that
-    /// suffix of `source` is not appropriately aligned, this returns `Err`.
+    /// suffix of `source` is not appropriately aligned, this returns `Err`. If
+    /// [`Self: Unaligned`][self-unaligned], you can [infallibly discard the
+    /// alignment error][size-error-from].
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate#what-is-a-valid-size
+    /// [self-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
@@ -3096,7 +3132,12 @@ pub unsafe trait FromBytes: FromZeros {
     /// This method attempts to return a reference to `source` interpreted as a
     /// `Self` with `count` trailing elements. If the length of `source` is not
     /// equal to the size of `Self` with `count` elements, or if `source` is not
-    /// appropriately aligned, this returns `Err`.
+    /// appropriately aligned, this returns `Err`. If [`Self:
+    /// Unaligned`][self-unaligned], you can [infallibly discard the alignment
+    /// error][size-error-from].
+    ///
+    /// [self-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     ///
     /// # Examples
     ///
@@ -3164,12 +3205,17 @@ pub unsafe trait FromBytes: FromZeros {
     }
 
     /// Interprets the prefix of the given `source` as a DST `&Self` with length
-    /// equal to `count` without copying.
+    /// equal to `count`.
     ///
     /// This method attempts to return a reference to the prefix of `source`
     /// interpreted as a `Self` with `count` trailing elements, and a reference
     /// to the remaining bytes. If there are insufficient bytes, or if `source`
-    /// is not appropriately aligned, this returns `Err`.
+    /// is not appropriately aligned, this returns `Err`. If [`Self:
+    /// Unaligned`][self-unaligned], you can [infallibly discard the alignment
+    /// error][size-error-from].
+    ///
+    /// [self-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     ///
     /// # Examples
     ///
@@ -3234,12 +3280,17 @@ pub unsafe trait FromBytes: FromZeros {
     }
 
     /// Interprets the suffix of the given `source` as a DST `&Self` with length
-    /// equal to `count` without copying.
+    /// equal to `count`.
     ///
     /// This method attempts to return a reference to the suffix of `source`
     /// interpreted as a `Self` with `count` trailing elements, and a reference
     /// to the preceding bytes. If there are insufficient bytes, or if that
-    /// suffix of `source` is not appropriately aligned, this returns `Err`.
+    /// suffix of `source` is not appropriately aligned, this returns `Err`. If
+    /// [`Self: Unaligned`][self-unaligned], you can [infallibly discard the
+    /// alignment error][size-error-from].
+    ///
+    /// [self-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     ///
     /// # Examples
     ///
@@ -3309,7 +3360,12 @@ pub unsafe trait FromBytes: FromZeros {
     /// This method attempts to return a reference to `source` interpreted as a
     /// `Self` with `count` trailing elements. If the length of `source` is not
     /// equal to the size of `Self` with `count` elements, or if `source` is not
-    /// appropriately aligned, this returns `Err`.
+    /// appropriately aligned, this returns `Err`. If [`Self:
+    /// Unaligned`][self-unaligned], you can [infallibly discard the alignment
+    /// error][size-error-from].
+    ///
+    /// [self-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     ///
     /// # Examples
     ///
@@ -3380,12 +3436,17 @@ pub unsafe trait FromBytes: FromZeros {
     }
 
     /// Interprets the prefix of the given `source` as a `&mut Self` with DST
-    /// length equal to `count` without copying.
+    /// length equal to `count`.
     ///
     /// This method attempts to return a reference to the prefix of `source`
     /// interpreted as a `Self` with `count` trailing elements, and a reference
     /// to the preceding bytes. If there are insufficient bytes, or if `source`
-    /// is not appropriately aligned, this returns `Err`.
+    /// is not appropriately aligned, this returns `Err`. If [`Self:
+    /// Unaligned`][self-unaligned], you can [infallibly discard the alignment
+    /// error][size-error-from].
+    ///
+    /// [self-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     ///
     /// # Examples
     ///
@@ -3455,12 +3516,17 @@ pub unsafe trait FromBytes: FromZeros {
     }
 
     /// Interprets the suffix of the given `source` as a `&mut Self` with DST
-    /// length equal to `count` without copying.
+    /// length equal to `count`.
     ///
     /// This method attempts to return a reference to the suffix of `source`
     /// interpreted as a `Self` with `count` trailing elements, and a reference
     /// to the remaining bytes. If there are insufficient bytes, or if that
-    /// suffix of `source` is not appropriately aligned, this returns `Err`.
+    /// suffix of `source` is not appropriately aligned, this returns `Err`. If
+    /// [`Self: Unaligned`][self-unaligned], you can [infallibly discard the
+    /// alignment error][size-error-from].
+    ///
+    /// [self-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     ///
     /// # Examples
     ///
@@ -3773,7 +3839,7 @@ pub unsafe trait FromBytes: FromZeros {
     }
 }
 
-/// Interprets the given affix of the given bytes as a `&Self` without copying.
+/// Interprets the given affix of the given bytes as a `&Self`.
 ///
 /// This method computes the largest possible size of `Self` that can fit in the
 /// prefix or suffix bytes of `source`, then attempts to return both a reference

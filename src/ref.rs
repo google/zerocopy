@@ -265,11 +265,15 @@ where
     /// Constructs a `Ref` from a byte slice.
     ///
     /// If the length of `source` is not a [valid size of `T`][valid-size], or
-    /// if `source` is not appropriately aligned for `T`, this returns `Err`.
+    /// if `source` is not appropriately aligned for `T`, this returns `Err`. If
+    /// [`T: Unaligned`][t-unaligned], you can [infallibly discard the alignment
+    /// error][size-error-from].
     ///
     /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate#what-is-a-valid-size
+    /// [t-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
@@ -316,11 +320,14 @@ where
     /// can fit in the leading bytes of `source`, then attempts to return both a
     /// `Ref` to those bytes, and a reference to the remaining bytes. If there
     /// are insufficient bytes, or if `source` is not appropriately aligned,
-    /// this returns `Err`.
+    /// this returns `Err`. If [`T: Unaligned`][t-unaligned], you can
+    /// [infallibly discard the alignment error][size-error-from].
     ///
     /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate#what-is-a-valid-size
+    /// [t-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
@@ -377,11 +384,15 @@ where
     /// can fit in the trailing bytes of `source`, then attempts to return both
     /// a `Ref` to those bytes, and a reference to the preceding bytes. If there
     /// are insufficient bytes, or if that suffix of `source` is not
-    /// appropriately aligned, this returns `Err`.
+    /// appropriately aligned, this returns `Err`. If [`T:
+    /// Unaligned`][t-unaligned], you can [infallibly discard the alignment
+    /// error][size-error-from].
     ///
     /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate#what-is-a-valid-size
+    /// [t-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
     /// # Compile-Time Assertions
@@ -440,7 +451,11 @@ where
     /// interpreted as a `T` with `count` trailing elements, and a reference to
     /// the remaining bytes. If the length of `source` is not equal to the size
     /// of `Self` with `count` elements, or if `source` is not appropriately
-    /// aligned, this returns `Err`.
+    /// aligned, this returns `Err`. If [`T: Unaligned`][t-unaligned], you can
+    /// [infallibly discard the alignment error][size-error-from].
+    ///
+    /// [t-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     ///
     /// # Compile-Time Assertions
     ///
@@ -486,7 +501,12 @@ where
     /// This method attempts to return a `Ref` to the prefix of `source`
     /// interpreted as a `T` with `count` trailing elements, and a reference to
     /// the remaining bytes. If there are insufficient bytes, or if `source` is
-    /// not appropriately aligned, this returns `Err`.
+    /// not appropriately aligned, this returns `Err`. If [`T:
+    /// Unaligned`][t-unaligned], you can [infallibly discard the alignment
+    /// error][size-error-from].
+    ///
+    /// [t-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     ///
     /// # Compile-Time Assertions
     ///
@@ -527,7 +547,12 @@ where
     /// This method attempts to return a `Ref` to the suffix of `source`
     /// interpreted as a `T` with `count` trailing elements, and a reference to
     /// the preceding bytes. If there are insufficient bytes, or if that suffix
-    /// of `source` is not appropriately aligned, this returns `Err`.
+    /// of `source` is not appropriately aligned, this returns `Err`. If [`T:
+    /// Unaligned`][t-unaligned], you can [infallibly discard the alignment
+    /// error][size-error-from].
+    ///
+    /// [t-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
     ///
     /// # Compile-Time Assertions
     ///
