@@ -276,6 +276,10 @@ jobs:
     name: 'Run tests under Kani'
     steps:
       - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+      - run: |
+          # Change local crate versions to 0.0.0 to work around Kani bug.
+          sed -i -e 's/^zerocopy-derive = { version = "=[0-9a-zA-Z\.-]*"/zerocopy-derive = { version = "=0.0.0"/' Cargo.toml
+          sed -i -e 's/^version = "[0-9a-zA-Z\.-]*"/version = "0.0.0"/' Cargo.toml zerocopy-derive/Cargo.toml
       - uses: model-checking/kani-github-action@f838096619a707b0f6b2118cf435eaccfa33e51f # v1.1
         with:
           # Use `--features __internal_use_only_features_that_work_on_stable`
@@ -291,7 +295,7 @@ jobs:
           args: "--package zerocopy --features __internal_use_only_features_that_work_on_stable --output-format=terse --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
           # This version is automatically rolled by
           # `roll-pinned-toolchain-versions.yml`.
-          kani-version: 0.53.0
+          kani-version: 0.55.0
 
   check_fmt:
     runs-on: ubuntu-latest
