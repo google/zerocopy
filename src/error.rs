@@ -11,7 +11,8 @@
 //!
 //! ## Single failure mode errors
 //!
-//! Generally speaking, zerocopy's conversions may fail for one of up to three reasons:
+//! Generally speaking, zerocopy's conversions may fail for one of up to three
+//! reasons:
 //! - [`AlignmentError`]: the conversion source was improperly aligned
 //! - [`SizeError`]: the conversion source was of incorrect size
 //! - [`ValidityError`]: the conversion source contained invalid data
@@ -27,6 +28,15 @@
 //! - [`CastError`]: the error type of reference conversions
 //! - [`TryCastError`]: the error type of fallible reference conversions
 //! - [`TryReadError`]: the error type of fallible read conversions
+//!
+//! ## [`Unaligned`] destination types
+//!
+//! For [`Unaligned`] destination types, alignment errors are impossible. All
+//! compound error types support infallibly discarding the alignment error via
+//! [`From`] so long as `Dst: Unaligned`. For example, see [`<SizeError as
+//! From<ConvertError>>::from`][size-error-from].
+//!
+//! [size-error-from]: struct.SizeError.html#method.from-1
 //!
 //! ## Accessing the conversion source
 //!
@@ -63,8 +73,8 @@
 //! ## `Send`, `Sync`, and `'static`
 //!
 //! Our error types are `Send`, `Sync`, and `'static` when their `Src` parameter
-//! is `Send`, `Sync`, or `'static`, respectively. This can cause issues when
-//! an error is sent or synchronized across threads; e.g.:
+//! is `Send`, `Sync`, or `'static`, respectively. This can cause issues when an
+//! error is sent or synchronized across threads; e.g.:
 //!
 //! ```compile_fail,E0515
 //! use zerocopy::*;
@@ -164,7 +174,7 @@ impl<Src, Dst: ?Sized + Unaligned, S, V> From<ConvertError<AlignmentError<Src, D
     /// }
     ///
     /// impl Bools {
-    ///     fn parse(bytes: &[u8]) -> Result<&Bools, UnalignedTryCastError<&[u8], Bools>> {
+    ///     fn parse(bytes: &[u8]) -> Result<&Bools, AlignedTryCastError<&[u8], Bools>> {
     ///         // Since `Bools: Unaligned`, we can infallibly discard
     ///         // the alignment error.
     ///         Bools::try_ref_from_bytes(bytes).map_err(Into::into)
@@ -881,10 +891,11 @@ impl<Src, Dst: ?Sized + TryFromBytes> TryReadError<Src, Dst> {
     }
 }
 
-/// The error type of fallible casts to unaligned types.
+/// The error type of well-aligned, fallible casts.
 ///
-/// This is like [`TryCastError`], but for unaligned types. It is identical to
-/// `TryCastError`, except that its alignment error is [`Infallible`].
+/// This is like [`TryCastError`], but for casts that are always well-aligned.
+/// It is identical to `TryCastError`, except that its alignment error is
+/// [`Infallible`].
 ///
 /// As of this writing, none of zerocopy's API produces this error directly.
 /// However, it is useful since it permits users to infallibly discard alignment
@@ -906,7 +917,7 @@ impl<Src, Dst: ?Sized + TryFromBytes> TryReadError<Src, Dst> {
 /// }
 ///
 /// impl Bools {
-///     fn parse(bytes: &[u8]) -> Result<&Bools, UnalignedTryCastError<&[u8], Bools>> {
+///     fn parse(bytes: &[u8]) -> Result<&Bools, AlignedTryCastError<&[u8], Bools>> {
 ///         // Since `Bools: Unaligned`, we can infallibly discard
 ///         // the alignment error.
 ///         Bools::try_ref_from_bytes(bytes).map_err(Into::into)
@@ -914,7 +925,7 @@ impl<Src, Dst: ?Sized + TryFromBytes> TryReadError<Src, Dst> {
 /// }
 /// ```
 #[allow(type_alias_bounds)]
-pub type UnalignedTryCastError<Src, Dst: ?Sized + TryFromBytes> =
+pub type AlignedTryCastError<Src, Dst: ?Sized + TryFromBytes> =
     ConvertError<Infallible, SizeError<Src, Dst>, ValidityError<Src, Dst>>;
 
 /// The error type of a failed allocation.
