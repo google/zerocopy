@@ -8,9 +8,9 @@
 
 use ::proc_macro2::TokenStream;
 use ::quote::quote;
-use ::syn::{DataEnum, Fields, Generics, Ident};
+use ::syn::{DataEnum, Fields, Ident};
 
-use crate::{EnumRepr, Trait};
+use crate::{Ctx, EnumRepr, Trait};
 
 /// Returns the repr for the tag enum, given the collection of reprs on the
 /// enum.
@@ -45,8 +45,8 @@ pub(crate) fn tag_repr(reprs: &[EnumRepr]) -> Option<&EnumRepr> {
 /// Generates a tag enum for the given enum. This generates an enum with the
 /// same `repr`s, variants, and corresponding discriminants, but none of the
 /// fields.
-pub(crate) fn generate_tag_enum(repr: &EnumRepr, data: &DataEnum) -> TokenStream {
-    let variants = data.variants.iter().map(|v| {
+pub(crate) fn generate_tag_enum(mut ctx: Ctx<'_, DataEnum>, repr: &EnumRepr) -> TokenStream {
+    let variants = ctx.data.variants.iter().map(|v| {
         let ident = &v.ident;
         if let Some((eq, discriminant)) = &v.discriminant {
             quote! { #ident #eq #discriminant }
@@ -55,17 +55,14 @@ pub(crate) fn generate_tag_enum(repr: &EnumRepr, data: &DataEnum) -> TokenStream
         }
     });
 
+    let tag_ident = ctx.call_site_ident("Tag");
     quote! {
         #[repr(#repr)]
         #[allow(dead_code)]
-        enum ___ZerocopyTag {
+        enum #tag_ident {
             #(#variants,)*
         }
     }
-}
-
-fn tag_ident(variant_ident: &Ident) -> Ident {
-    Ident::new(&format!("___ZEROCOPY_TAG_{}", variant_ident), variant_ident.span())
 }
 
 /// Generates a constant for the tag associated with each variant of the enum.
@@ -79,11 +76,13 @@ fn tag_ident(variant_ident: &Ident) -> Ident {
 /// - Patterns do not currently support const expressions, so we have to assign
 ///   these constants to names rather than use them inline in the `match`
 ///   statement.
-fn generate_tag_consts(data: &DataEnum) -> TokenStream {
-    let tags = data.variants.iter().map(|v| {
+fn generate_tag_consts(mut ctx: Ctx<'_, DataEnum>) -> TokenStream {
+    let tags = ctx.data.variants.iter().map(|v| {
+        let mut ctx = ctx.reborrow();
         let variant_ident = &v.ident;
-        let tag_ident = tag_ident(variant_ident);
-
+        let tag_const_ident = ctx.tag_const_ident(variant_ident);
+        let tag_primitive_alias_ident = ctx.tag_primitive_alias_ident();
+        let tag_enum_ident = ctx.tag_enum_ident();
         quote! {
             // This casts the enum variant to its discriminant, and then
             // converts the discriminant to the target integral type via a
@@ -95,8 +94,8 @@ fn generate_tag_consts(data: &DataEnum) -> TokenStream {
             // [1]: https://doc.rust-lang.org/stable/reference/expressions/operator-expr.html#enum-cast
             // [2]: https://doc.rust-lang.org/stable/reference/expressions/operator-expr.html#numeric-cast
             #[allow(non_upper_case_globals)]
-            const #tag_ident: ___ZerocopyTagPrimitive =
-                ___ZerocopyTag::#variant_ident as ___ZerocopyTagPrimitive;
+            const #tag_const_ident: #tag_primitive_alias_ident =
+                #tag_enum_ident::#variant_ident as #tag_primitive_alias_ident;
         }
     });
 
@@ -105,36 +104,29 @@ fn generate_tag_consts(data: &DataEnum) -> TokenStream {
     }
 }
 
-fn variant_struct_ident(variant_ident: &Ident) -> Ident {
-    Ident::new(&format!("___ZerocopyVariantStruct_{}", variant_ident), variant_ident.span())
-}
-
 /// Generates variant structs for the given enum variant.
 ///
 /// These are structs associated with each variant of an enum. They are
 /// `repr(C)` tuple structs with the same fields as the variant after a
-/// `MaybeUninit<___ZerocopyInnerTag>`.
+/// `MaybeUninit<#inner_tag_alias_ident>`.
 ///
 /// In order to unify the generated types for `repr(C)` and `repr(int)` enums,
 /// we use a "fused" representation with fields for both an inner tag and an
 /// outer tag. Depending on the repr, we will set one of these tags to the tag
 /// type and the other to `()`. This lets us generate the same code but put the
 /// tags in different locations.
-fn generate_variant_structs(
-    enum_name: &Ident,
-    generics: &Generics,
-    data: &DataEnum,
-) -> TokenStream {
-    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
+fn generate_variant_structs(mut ctx: Ctx<'_, DataEnum>) -> TokenStream {
+    let (impl_generics, ty_generics, where_clause) = ctx.ast.generics.split_for_impl();
 
     // All variant structs have a `PhantomData<MyEnum<...>>` field because we
     // don't know which generic parameters each variant will use, and unused
     // generic parameters are a compile error.
+    let enum_name = &ctx.ast.ident;
     let phantom_ty = quote! {
         core_reexport::marker::PhantomData<#enum_name #ty_generics>
     };
 
-    let variant_structs = data.variants.iter().filter_map(|variant| {
+    let variant_structs = ctx.data.variants.iter().filter_map(|variant| {
         // We don't generate variant structs for unit variants because we only
         // need to check the tag. This helps cut down our generated code a bit.
         if matches!(variant.fields, Fields::Unit) {
@@ -142,15 +134,16 @@ fn generate_variant_structs(
         }
 
         let trait_path = Trait::TryFromBytes.derive_path();
-        let variant_struct_ident = variant_struct_ident(&variant.ident);
+        let variant_struct_ident = ctx.reborrow().variant_struct_ident(&variant.ident);
         let field_types = variant.fields.iter().map(|f| &f.ty);
 
+        let inner_tag_alias_ident = ctx.inner_tag_alias_ident();
         Some(quote! {
             #[repr(C)]
             #[allow(non_snake_case)]
             #[derive(#trait_path)]
             struct #variant_struct_ident #impl_generics (
-                core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
+                core_reexport::mem::MaybeUninit<#inner_tag_alias_ident>,
                 #(#field_types,)*
                 #phantom_ty,
             ) #where_clause;
@@ -162,20 +155,25 @@ fn generate_variant_structs(
     }
 }
 
-fn generate_variants_union(generics: &Generics, data: &DataEnum) -> TokenStream {
+fn generate_variants_union(mut ctx: Ctx<'_, DataEnum>) -> TokenStream {
+    let generics = &ctx.ast.generics;
     let (_, ty_generics, _) = generics.split_for_impl();
 
-    let fields = data.variants.iter().filter_map(|variant| {
+    let variants_union_ident = ctx.variants_union_ident();
+    let nonempty_field_ident = ctx.nonempty_field_ident();
+
+    let fields = ctx.data.variants.iter().filter_map(|variant| {
         // We don't generate variant structs for unit variants because we only
         // need to check the tag. This helps cut down our generated code a bit.
         if matches!(variant.fields, Fields::Unit) {
             return None;
         }
 
-        // Field names are prefixed with `__field_` to prevent name collision with
-        // the `__nonempty` field.
-        let field_name = Ident::new(&format!("__field_{}", &variant.ident), variant.ident.span());
-        let variant_struct_ident = variant_struct_ident(&variant.ident);
+        // Field names are prefixed with `field_` to prevent name collision with
+        // the `nonempty` field.
+        let field_name =
+            ctx.spanned_ident(&format!("field_{}", &variant.ident), variant.ident.span());
+        let variant_struct_ident = ctx.reborrow().variant_struct_ident(&variant.ident);
 
         Some(quote! {
             #field_name: core_reexport::mem::ManuallyDrop<
@@ -187,14 +185,14 @@ fn generate_variants_union(generics: &Generics, data: &DataEnum) -> TokenStream 
     quote! {
         #[repr(C)]
         #[allow(non_snake_case)]
-        union ___ZerocopyVariants #generics {
+        union #variants_union_ident #generics {
             #(#fields)*
             // Enums can have variants with no fields, but unions must
             // have at least one field. So we just add a trailing unit
             // to ensure that this union always has at least one field.
             // Because this union is `repr(C)`, this unit type does not
             // affect the layout.
-            __nonempty: (),
+            #nonempty_field_ident: (),
         }
     }
 }
@@ -221,33 +219,37 @@ fn generate_variants_union(generics: &Generics, data: &DataEnum) -> TokenStream 
 /// - `repr(C)`: <https://doc.rust-lang.org/reference/type-layout.html#reprc-enums-with-fields>
 /// - `repr(int)`: <https://doc.rust-lang.org/reference/type-layout.html#primitive-representation-of-enums-with-fields>
 /// - `repr(C, int)`: <https://doc.rust-lang.org/reference/type-layout.html#combining-primitive-representations-of-enums-with-fields-and-reprc>
-pub(crate) fn derive_is_bit_valid(
-    enum_ident: &Ident,
-    reprs: &[EnumRepr],
-    generics: &Generics,
-    data: &DataEnum,
-) -> TokenStream {
+pub(crate) fn derive_is_bit_valid(mut ctx: Ctx<'_, DataEnum>, reprs: &[EnumRepr]) -> TokenStream {
     let repr =
         tag_repr(reprs).expect("cannot derive is_bit_valid for enum without a well-defined repr");
 
     let trait_path = Trait::TryFromBytes.crate_path();
-    let tag_enum = generate_tag_enum(repr, data);
-    let tag_consts = generate_tag_consts(data);
+    let tag_enum = generate_tag_enum(ctx.reborrow(), repr);
+    let tag_consts = generate_tag_consts(ctx.reborrow());
 
+    let tag_type_ident = ctx.call_site_ident("Tag");
     let (outer_tag_type, inner_tag_type) = if matches!(repr, EnumRepr::C) {
-        (quote! { ___ZerocopyTag }, quote! { () })
+        (quote! { #tag_type_ident }, quote! { () })
     } else {
-        (quote! { () }, quote! { ___ZerocopyTag })
+        (quote! { () }, quote! { #tag_type_ident })
     };
 
-    let variant_structs = generate_variant_structs(enum_ident, generics, data);
-    let variants_union = generate_variants_union(generics, data);
+    let generics = &ctx.ast.generics;
+    let variant_structs = generate_variant_structs(ctx.reborrow());
+    let variants_union = generate_variants_union(ctx.reborrow());
+
+    let aliasing_ty_ident = ctx.aliasing_ty_ident();
+    let tag_primitive_alias_ident = ctx.tag_primitive_alias_ident();
+    let tag_enum_ident = ctx.tag_enum_ident();
+    let outer_tag_alias_ident = ctx.outer_tag_alias_ident();
+    let inner_tag_alias_ident = ctx.inner_tag_alias_ident();
+    let variants_union_ident = ctx.variants_union_ident();
+    let raw_enum_struct_ident = ctx.raw_enum_struct_ident();
 
     let (_, ty_generics, _) = generics.split_for_impl();
-
-    let match_arms = data.variants.iter().map(|variant| {
-        let tag_ident = tag_ident(&variant.ident);
-        let variant_struct_ident = variant_struct_ident(&variant.ident);
+    let match_arms = ctx.data.variants.iter().map(|variant| {
+        let tag_ident = ctx.reborrow().tag_const_ident(&variant.ident);
+        let variant_struct_ident = ctx.reborrow().variant_struct_ident(&variant.ident);
 
         if matches!(variant.fields, Fields::Unit) {
             // Unit variants don't need any further validation beyond checking
@@ -256,6 +258,7 @@ pub(crate) fn derive_is_bit_valid(
                 #tag_ident => true
             }
         } else {
+            let variants_union_ident = ctx.variants_union_ident();
             quote! {
                 #tag_ident => {
                     // SAFETY:
@@ -272,7 +275,7 @@ pub(crate) fn derive_is_bit_valid(
                     //   original type.
                     let variant = unsafe {
                         variants.cast_unsized(
-                            |p: *mut ___ZerocopyVariants #ty_generics| {
+                            |p: *mut #variants_union_ident #ty_generics| {
                                 p as *mut #variant_struct_ident #ty_generics
                             }
                         )
@@ -294,34 +297,34 @@ pub(crate) fn derive_is_bit_valid(
         // enum's tag corresponds to one of the enum's discriminants. Then, we
         // check the bit validity of each field of the corresponding variant.
         // Thus, this is a sound implementation of `is_bit_valid`.
-        fn is_bit_valid<A>(
-            mut candidate: ::zerocopy::Maybe<'_, Self, A>,
+        fn is_bit_valid<#aliasing_ty_ident>(
+            mut candidate: ::zerocopy::Maybe<'_, Self, #aliasing_ty_ident>,
         ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
         where
-            A: ::zerocopy::pointer::invariant::Aliasing
+            #aliasing_ty_ident: ::zerocopy::pointer::invariant::Aliasing
                 + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
         {
             use ::zerocopy::util::macro_util::core_reexport;
 
             #tag_enum
 
-            type ___ZerocopyTagPrimitive = ::zerocopy::util::macro_util::SizeToTag<
-                { core_reexport::mem::size_of::<___ZerocopyTag>() },
+            type #tag_primitive_alias_ident = ::zerocopy::util::macro_util::SizeToTag<
+                { core_reexport::mem::size_of::<#tag_enum_ident>() },
             >;
 
             #tag_consts
 
-            type ___ZerocopyOuterTag = #outer_tag_type;
-            type ___ZerocopyInnerTag = #inner_tag_type;
+            type #outer_tag_alias_ident = #outer_tag_type;
+            type #inner_tag_alias_ident = #inner_tag_type;
 
             #variant_structs
 
             #variants_union
 
             #[repr(C)]
-            struct ___ZerocopyRawEnum #generics {
-                tag: ___ZerocopyOuterTag,
-                variants: ___ZerocopyVariants #ty_generics,
+            struct #raw_enum_struct_ident #generics {
+                tag: #outer_tag_alias_ident,
+                variants: #variants_union_ident #ty_generics,
             }
 
             let tag = {
@@ -335,7 +338,7 @@ pub(crate) fn derive_is_bit_valid(
                 //   primitive integer.
                 let tag_ptr = unsafe {
                     candidate.reborrow().cast_unsized(|p: *mut Self| {
-                        p as *mut ___ZerocopyTagPrimitive
+                        p as *mut #tag_primitive_alias_ident
                     })
                 };
                 // SAFETY: `tag_ptr` is casted from `candidate`, whose referent
@@ -357,7 +360,7 @@ pub(crate) fn derive_is_bit_valid(
             //   `UnsafeCell`s.
             let raw_enum = unsafe {
                 candidate.cast_unsized(|p: *mut Self| {
-                    p as *mut ___ZerocopyRawEnum #ty_generics
+                    p as *mut #raw_enum_struct_ident #ty_generics
                 })
             };
             // SAFETY: `cast_unsized` removes the initialization invariant from
@@ -373,7 +376,7 @@ pub(crate) fn derive_is_bit_valid(
             //   subfield pointer just points to a smaller portion of the
             //   overall struct.
             let variants = unsafe {
-                raw_enum.project(|p: *mut ___ZerocopyRawEnum #ty_generics| {
+                raw_enum.project(|p: *mut #raw_enum_struct_ident #ty_generics| {
                     core_reexport::ptr::addr_of_mut!((*p).variants)
                 })
             };
@@ -384,5 +387,60 @@ pub(crate) fn derive_is_bit_valid(
                 _ => false,
             }
         }
+    }
+}
+
+pub(crate) trait EnumCtxExt {
+    fn tag_enum_ident(&mut self) -> Ident;
+    fn tag_const_ident(&mut self, variant_ident: &Ident) -> Ident;
+    fn tag_primitive_alias_ident(&mut self) -> Ident;
+    fn inner_tag_alias_ident(&mut self) -> Ident;
+    fn outer_tag_alias_ident(&mut self) -> Ident;
+    fn variant_struct_ident(&mut self, variant_ident: &Ident) -> Ident;
+    fn variants_union_ident(&mut self) -> Ident;
+    fn nonempty_field_ident(&mut self) -> Ident;
+    fn raw_enum_struct_ident(&mut self) -> Ident;
+    fn aliasing_ty_ident(&mut self) -> Ident;
+}
+
+impl<'a> EnumCtxExt for Ctx<'a, DataEnum> {
+    fn tag_enum_ident(&mut self) -> Ident {
+        self.call_site_ident("Tag")
+    }
+
+    fn tag_const_ident(&mut self, variant_ident: &Ident) -> Ident {
+        self.spanned_ident(&format!("TAG_{}", variant_ident), variant_ident.span())
+    }
+
+    fn tag_primitive_alias_ident(&mut self) -> Ident {
+        self.call_site_ident("TagPrimitive")
+    }
+
+    fn inner_tag_alias_ident(&mut self) -> Ident {
+        self.call_site_ident("InnerTag")
+    }
+
+    fn outer_tag_alias_ident(&mut self) -> Ident {
+        self.call_site_ident("OuterTag")
+    }
+
+    fn variant_struct_ident(&mut self, variant_ident: &Ident) -> Ident {
+        self.spanned_ident(&format!("VariantStruct_{}", variant_ident), variant_ident.span())
+    }
+
+    fn variants_union_ident(&mut self) -> Ident {
+        self.call_site_ident("Variants")
+    }
+
+    fn nonempty_field_ident(&mut self) -> Ident {
+        self.call_site_ident("nonempty")
+    }
+
+    fn raw_enum_struct_ident(&mut self) -> Ident {
+        self.call_site_ident("RawEnum")
+    }
+
+    fn aliasing_ty_ident(&mut self) -> Ident {
+        self.call_site_ident("Aliasing")
     }
 }

@@ -28,7 +28,7 @@ proc-macro = true
 [dependencies]
 proc-macro2 = "1.0.1"
 quote = "1.0.10"
-syn = { version = "2.0.46", features = ["full"] }
+syn = { version = "2.0.46", features = ["full", "extra-traits"] }
 
 [dev-dependencies]
 dissimilar = "1.0.9"

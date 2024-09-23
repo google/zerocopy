@@ -304,11 +304,11 @@ error[E0277]: the trait bound `NotTryFromBytes: TryFromBytes` is not satisfied
              ()
              *const T
              *mut T
-             <FromZeros6 as TryFromBytes>::is_bit_valid::___ZerocopyVariantStruct_A
-             <TryFromBytes3 as TryFromBytes>::is_bit_valid::___ZerocopyVariantStruct_A
              AtomicBool
              AtomicI16
              AtomicI32
+             AtomicI64
+             AtomicI8
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -328,11 +328,11 @@ error[E0277]: the trait bound `NotFromZeros: TryFromBytes` is not satisfied
               ()
               *const T
               *mut T
-              <FromZeros6 as TryFromBytes>::is_bit_valid::___ZerocopyVariantStruct_A
-              <TryFromBytes3 as TryFromBytes>::is_bit_valid::___ZerocopyVariantStruct_A
               AtomicBool
               AtomicI16
               AtomicI32
+              AtomicI64
+              AtomicI8
             and $N others
     = help: see issue #48214
     = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -376,11 +376,11 @@ error[E0277]: the trait bound `NotFromZeros: TryFromBytes` is not satisfied
               ()
               *const T
               *mut T
-              <FromZeros6 as TryFromBytes>::is_bit_valid::___ZerocopyVariantStruct_A
-              <TryFromBytes3 as TryFromBytes>::is_bit_valid::___ZerocopyVariantStruct_A
               AtomicBool
               AtomicI16
               AtomicI32
+              AtomicI64
+              AtomicI8
             and $N others
     = help: see issue #48214
     = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)

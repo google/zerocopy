@@ -6,11 +6,12 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use proc_macro2::{Span, TokenStream};
+use crate::Ctx;
+use proc_macro2::TokenStream;
 use quote::ToTokens;
 use syn::{Data, DataEnum, DataStruct, DataUnion, Field, Ident, Index, Type};
 
-pub(crate) trait DataExt {
+pub(crate) trait DataExt: Sized {
     /// Extracts the names and types of all fields. For enums, extracts the names
     /// and types of fields from each variant. For tuple structs, the names are
     /// the indices used to index into the struct (ie, `0`, `1`, etc).
@@ -23,7 +24,7 @@ pub(crate) trait DataExt {
 
     fn variants(&self) -> Vec<Vec<(TokenStream, &Type)>>;
 
-    fn tag(&self) -> Option<Ident>;
+    fn tag(&self, ctx: Ctx<'_, Self>) -> Option<Ident>;
 }
 
 impl DataExt for Data {
@@ -43,12 +44,8 @@ impl DataExt for Data {
         }
     }
 
-    fn tag(&self) -> Option<Ident> {
-        match self {
-            Data::Struct(strc) => strc.tag(),
-            Data::Enum(enm) => enm.tag(),
-            Data::Union(un) => un.tag(),
-        }
+    fn tag(&self, _ctx: Ctx<'_, Self>) -> Option<Ident> {
+        unimplemented!()
     }
 }
 
@@ -61,7 +58,7 @@ impl DataExt for DataStruct {
         vec![self.fields()]
     }
 
-    fn tag(&self) -> Option<Ident> {
+    fn tag(&self, _ctx: Ctx<'_, Self>) -> Option<Ident> {
         None
     }
 }
@@ -75,8 +72,8 @@ impl DataExt for DataEnum {
         self.variants.iter().map(|var| map_fields(&var.fields)).collect()
     }
 
-    fn tag(&self) -> Option<Ident> {
-        Some(Ident::new("___ZerocopyTag", Span::call_site()))
+    fn tag(&self, mut ctx: Ctx<'_, Self>) -> Option<Ident> {
+        Some(crate::r#enum::EnumCtxExt::tag_enum_ident(&mut ctx))
     }
 }
 
@@ -89,7 +86,7 @@ impl DataExt for DataUnion {
         vec![self.fields()]
     }
 
-    fn tag(&self) -> Option<Ident> {
+    fn tag(&self, _ctx: Ctx<'_, Self>) -> Option<Ident> {
         None
     }
 }
