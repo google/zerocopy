@@ -446,6 +446,69 @@ use {FromZeros as FromZeroes, IntoBytes as AsBytes, Ref as LayoutVerified};
 ///
 /// This derive cannot currently be applied to unsized structs without an
 /// explicit `repr` attribute.
+///
+/// Some invocations of this derive run afoul of a [known bug] in Rust's type
+/// privacy checker. For example, this code:
+///
+/// ```compile_fail,E0446
+/// use zerocopy::*;
+/// # use zerocopy_derive::*;
+///
+/// #[derive(KnownLayout)]
+/// #[repr(C)]
+/// pub struct PublicType {
+///     leading: Foo,
+///     trailing: Bar,
+/// }
+///
+/// #[derive(KnownLayout)]
+/// struct Foo;
+///
+/// #[derive(KnownLayout)]
+/// struct Bar;
+/// ```
+///
+/// ...results in a compilation error:
+///
+/// ```text
+/// error[E0446]: private type `Bar` in public interface
+///  --> examples/bug.rs:3:10
+///    |
+/// 3  | #[derive(KnownLayout)]
+///    |          ^^^^^^^^^^^ can't leak private type
+/// ...
+/// 14 | struct Bar;
+///    | ---------- `Bar` declared as private
+///    |
+///    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
+/// ```
+///
+/// This issue arises when `#[derive(KnownLayout)]` is applied to `repr(C)`
+/// structs whose trailing field type is less public than the enclosing struct.
+///
+/// To work around this, mark the trailing field type `pub` and annotate it with
+/// `#[doc(hidden)]`; e.g.:
+///
+/// ```no_run
+/// use zerocopy::*;
+/// # use zerocopy_derive::*;
+///
+/// #[derive(KnownLayout)]
+/// #[repr(C)]
+/// pub struct PublicType {
+///     leading: Foo,
+///     trailing: Bar,
+/// }
+///
+/// #[derive(KnownLayout)]
+/// struct Foo;
+///
+/// #[doc(hidden)]
+/// #[derive(KnownLayout)]
+/// pub struct Bar; // <- `Bar` is now also `pub`
+/// ```
+///
+/// [known bug]: https://github.com/rust-lang/rust/issues/45713
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::KnownLayout;
