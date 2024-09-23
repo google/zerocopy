@@ -678,6 +678,110 @@ macro_rules! try_transmute_mut {
     }}
 }
 
+/// TODO:
+/// - Prevent lifetime extension
+/// - Justify that this doesn't violate Src or Dst's safety invariants
+///   (basically just that they opted into being FromBytes + IntoBytes +
+///   Immutable)
+#[macro_export]
+#[cfg(all(zerocopy_gat, feature = "alloc"))]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
+macro_rules! transmute_container {
+    ($e:expr) => {{
+        // NOTE: This must be a macro (rather than a function with trait bounds)
+        // because there's no way, in a generic context, to enforce that two
+        // types have the same size or alignment.
+
+        let e = $e;
+
+        fn into_elem<C: $crate::util::macro_util::Container>(_c: C) -> C::Elem {
+            loop {}
+        }
+
+        fn from_elem<C: $crate::util::macro_util::Container>(_e: C::Elem) -> C {
+            loop {}
+        }
+
+        #[allow(unused, clippy::diverging_sub_expression)]
+        if false {
+            // This branch, though never taken, ensures that element type of `e`
+            // is `T` where `T: Sized + FromBytes + IntoBytes + Immutable` and
+            // that the element type of this macro expression is `U` where `U:
+            // Sized + FromBytes + IntoBytes + Immutable`.
+
+            struct AssertSrcIsSized<T: ::core::marker::Sized>(T);
+            struct AssertSrcIsFromBytes<T: ?::core::marker::Sized + $crate::FromBytes>(T);
+            struct AssertSrcIsIntoBytes<T: ?::core::marker::Sized + $crate::IntoBytes>(T);
+            struct AssertSrcIsImmutable<T: ?::core::marker::Sized + $crate::Immutable>(T);
+            struct AssertDstIsSized<T: ::core::marker::Sized>(T);
+            struct AssertDstIsFromBytes<T: ?::core::marker::Sized + $crate::FromBytes>(T);
+            struct AssertDstIsIntoBytes<T: ?::core::marker::Sized + $crate::IntoBytes>(T);
+            struct AssertDstIsImmutable<T: ?::core::marker::Sized + $crate::Immutable>(T);
+
+            let src_elem = into_elem(e);
+
+            if true {
+                let _ = AssertSrcIsSized(src_elem);
+            } else if true {
+                let _ = AssertSrcIsFromBytes(src_elem);
+            } else if true {
+                let _ = AssertSrcIsIntoBytes(src_elem);
+            } else {
+                let _ = AssertSrcIsImmutable(src_elem);
+            }
+
+            if true {
+                #[allow(unused, unreachable_code)]
+                let u = AssertDstIsSized(loop {});
+                from_elem(u.0)
+            } else if true {
+                #[allow(unused, unreachable_code)]
+                let u = AssertDstIsFromBytes(loop {});
+                from_elem(u.0)
+            } else if true {
+                #[allow(unused, unreachable_code)]
+                let u = AssertDstIsIntoBytes(loop {});
+                from_elem(u.0)
+            } else {
+                #[allow(unused, unreachable_code)]
+                let u = AssertDstIsImmutable(loop {});
+                from_elem(u.0)
+            }
+        } else if false {
+            // This branch, though never taken, ensures that `size_of::<T>() ==
+            // size_of::<U>()` and that that `align_of::<T>() >=
+            // align_of::<U>()`.
+
+            // `t` is inferred to have type `T` because it's assigned to `e` (of
+            // type `&mut T`) as `&mut t`.
+            let mut t = loop {};
+            e = from_elem(t);
+
+            // `u` is inferred to have type `U` because it's used as `&mut u` as
+            // the value returned from this branch.
+            let u;
+
+            $crate::assert_size_eq!(t, u);
+            $crate::assert_align_eq!(t, u);
+
+            from_elem(u)
+        } else {
+            // SAFETY: For source type `Src` and destination type `Dst`:
+            // - We know that `size_of::<Src>() == size_of::<Dst>()` thanks to
+            //   the use of `assert_size_eq!` above.
+            // - We know that `align_of::<Src>() == align_of::<Dst>()` thanks to
+            //   the use of `assert_align_eq!` above.
+            // - We know that `Src` and `Dst` have equivalent bit validity
+            //   thanks to `Src: FromBytes + IntoBytes` and `Dst: FromBytes +
+            //   IntoBytes`, which are guaranteed above.
+            // - We know that `Src` and `Dst` have `UnsafeCell`s at the same
+            //   offsets thanks to `Src: Immutable` and `Dst: Immutable` above.
+            let u = unsafe { $crate::util::macro_util::Container::transmute_from(e) };
+            $crate::util::macro_util::must_use(u)
+        }
+    }}
+}
+
 /// Includes a file and safely transmutes it to a value of an arbitrary type.
 ///
 /// The file will be included as a byte array, `[u8; N]`, which will be
@@ -950,6 +1054,27 @@ mod tests {
     }
 
     #[test]
+    #[cfg(all(zerocopy_gat, feature = "alloc"))]
+    fn test_transmute_container() {
+        use alloc::{rc::Rc, sync::Arc};
+
+        macro_rules! test {
+            ($cont:ident) => {
+                let array_of_u8s = [0u8, 1, 2, 3, 4, 5, 6, 7];
+                let array_of_arrays = [[0, 1], [2, 3], [4, 5], [6, 7]];
+                let x: $cont<[[u8; 2]; 4]> = transmute_container!($cont::new(array_of_u8s));
+                assert_eq!(*x, array_of_arrays);
+                let x: $cont<[u8; 8]> = transmute_container!($cont::new(array_of_arrays));
+                assert_eq!(*x, array_of_u8s);
+            };
+        }
+
+        test!(Box);
+        test!(Rc);
+        test!(Arc);
+    }
+
+    #[test]
     fn test_macros_evaluate_args_once() {
         let mut ctr = 0;
         #[allow(clippy::useless_transmute)]
@@ -980,6 +1105,20 @@ mod tests {
             0usize
         })
         .unwrap();
+        assert_eq!(ctr, 1);
+
+        let mut ctr = 0;
+        let _: Result<&usize, _> = try_transmute_ref!({
+            ctr += 1;
+            &0usize
+        });
+        assert_eq!(ctr, 1);
+
+        let mut ctr: usize = 0;
+        let _: Result<&mut usize, _> = try_transmute_mut!({
+            ctr += 1;
+            &mut ctr
+        });
         assert_eq!(ctr, 1);
     }
 
