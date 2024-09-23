@@ -87,9 +87,40 @@ macro_rules! derive {
         #[proc_macro_derive($trait)]
         pub fn $outer(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
             let ast = syn::parse_macro_input!(ts as DeriveInput);
-            $inner(&ast).into()
+            let expanded = $inner(&ast);
+
+            // We manually check if public functions are inlined
+            // We do this because clippy doesn't check for the inline lint
+            // If the code was expanded from a proc macro
+            if cfg!(debug_assertions) {
+                let expanded_clone = expanded.clone();
+                debug_check_pub_functions_of_trait_are_inlined(expanded_clone);
+            }
+
+            expanded.into()
         }
     };
+}
+
+fn debug_check_pub_functions_of_trait_are_inlined(expanded_impl_blocks: proc_macro2::TokenStream) {
+    let file: syn::File =
+        syn::parse2(expanded_impl_blocks).expect("Failed to parse expanded TokenStream");
+
+    // Iterate over all impl blocks, check if functions have the inline attribute
+    for item in file.items {
+        if let syn::Item::Impl(item_impl) = item {
+            for impl_item in item_impl.items {
+                if let syn::ImplItem::Fn(method) = impl_item {
+                    let has_inline = method.attrs.iter().any(|attr| attr.path().is_ident("inline"));
+                    debug_assert!(
+                        has_inline,
+                        "Method {} does not have #[inline] attribute",
+                        method.sig.ident
+                    );
+                }
+            }
+        }
+    }
 }
 
 derive!(KnownLayout => derive_known_layout => derive_known_layout_inner);
@@ -420,6 +451,7 @@ fn derive_try_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> proc_m
             // validity of a struct is just the composition of the bit
             // validities of its fields, so this is a sound implementation of
             // `is_bit_valid`.
+            #[inline(always)]
             fn is_bit_valid<A: ::zerocopy::pointer::invariant::Aliasing + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>>(
                 mut candidate: ::zerocopy::Maybe<Self, A>,
             ) -> bool {
@@ -470,6 +502,7 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> proc_macro
             // bit validity of a union is not yet well defined in Rust, but it
             // is guaranteed to be no more strict than this definition. See #696
             // for a more in-depth discussion.
+            #[inline(always)]
             fn is_bit_valid<A: ::zerocopy::pointer::invariant::Aliasing + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>>(
                 mut candidate: ::zerocopy::Maybe<Self, A>
             ) -> bool {
@@ -1282,6 +1315,7 @@ fn impl_block<D: DataExt>(
         where
             #(#bounds,)*
         {
+            #[inline(always)]
             fn only_derive_is_allowed_to_implement_this_trait() {}
 
             #extras
