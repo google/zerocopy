@@ -1906,6 +1906,111 @@ pub unsafe trait TryFromBytes {
         try_mut_from_prefix_suffix(source, CastType::Suffix, None).map(swap)
     }
 
+    /// Attempts to interpret the given `source` as a `&Self` with a DST length
+    /// equal to `count`.
+    ///
+    /// This method attempts to return a reference to `source` interpreted as a
+    /// `Self` with `count` trailing elements. If the length of `source` is not
+    /// equal to the size of `Self` with `count` elements, if `source` is not
+    /// appropriately aligned, or if `source` does not contain a valid instance
+    /// of `Self`, this returns `Err`. If [`Self: Unaligned`][self-unaligned],
+    /// you can [infallibly discard the alignment error][ConvertError::from].
+    ///
+    /// [self-unaligned]: Unaligned
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # #![allow(non_camel_case_types)] // For C0::xC0
+    /// use zerocopy::TryFromBytes;
+    /// # use zerocopy_derive::*;
+    ///
+    /// // The only valid value of this type is the byte `0xC0`
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(u8)]
+    /// enum C0 { xC0 = 0xC0 }
+    ///
+    /// // The only valid value of this type is the bytes `0xC0C0`.
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct C0C0(C0, C0);
+    ///
+    /// #[derive(TryFromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct Packet {
+    ///     magic_number: C0C0,
+    ///     mug_size: u8,
+    ///     temperature: u8,
+    ///     marshmallows: [[u8; 2]],
+    /// }
+    ///
+    /// let bytes = &mut [0xC0, 0xC0, 240, 77, 2, 3, 4, 5, 6, 7][..];
+    ///
+    /// let packet = Packet::try_ref_from_bytes_with_elems(bytes, 3).unwrap();
+    ///
+    /// assert_eq!(packet.mug_size, 240);
+    /// assert_eq!(packet.temperature, 77);
+    /// assert_eq!(packet.marshmallows, [[2, 3], [4, 5], [6, 7]]);
+    ///
+    /// // These bytes are not valid instance of `Packet`.
+    /// let bytes = &mut [0, 1, 2, 3, 4, 5, 6, 77, 240, 0xC0, 0xC0][..];
+    /// assert!(Packet::try_ref_from_bytes_with_elems(bytes, 3).is_err());
+    /// ```
+    ///
+    /// Since an explicit `count` is provided, this method supports types with
+    /// zero-sized trailing slice elements. Methods such as [`try_ref_from_bytes`]
+    /// which do not take an explicit count do not support such types.
+    ///
+    /// ```
+    /// use core::num::NonZeroU16;
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(TryFromBytes, Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: NonZeroU16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let src = &[85, 85][..];
+    /// let zsty = ZSTy::try_ref_from_bytes_with_elems(src, 42).unwrap();
+    /// assert_eq!(zsty.trailing_dst.len(), 42);
+    /// ```
+    ///
+    /// [`try_ref_from_bytes`]: TryFromBytes::try_ref_from_bytes
+    #[must_use = "has no side effects"]
+    #[inline]
+    fn try_ref_from_bytes_with_elems(
+        source: &[u8],
+        count: usize,
+    ) -> Result<&Self, TryCastError<&[u8], Self>>
+    where
+        Self: KnownLayout<PointerMetadata = usize> + Immutable,
+    {
+        match Ptr::from_ref(source).try_cast_into_no_leftover::<Self, BecauseImmutable>(Some(count))
+        {
+            Ok(source) => {
+                // This call may panic. If that happens, it doesn't cause any soundness
+                // issues, as we have not generated any invalid state which we need to
+                // fix before returning.
+                //
+                // Note that one panic or post-monomorphization error condition is
+                // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
+                // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
+                // condition will not happen.
+                match source.try_into_valid() {
+                    Ok(source) => Ok(source.as_ref()),
+                    Err(e) => {
+                        Err(e.map_src(|src| src.as_bytes::<BecauseImmutable>().as_ref()).into())
+                    }
+                }
+            }
+            Err(e) => Err(e.map_src(Ptr::as_ref).into()),
+        }
+    }
+
     /// Attempts to read the given `source` as a `Self`.
     ///
     /// If `source.len() != size_of::<Self>()` or the bytes are not a valid
