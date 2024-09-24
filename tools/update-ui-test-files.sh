@@ -12,6 +12,8 @@
 
 set -e
 
-TRYBUILD=overwrite ./cargo.sh +nightly test ui --test trybuild --workspace --all-features
-TRYBUILD=overwrite ./cargo.sh +stable test ui --test trybuild --workspace --features=__internal_use_only_features_that_work_on_stable
-TRYBUILD=overwrite ./cargo.sh +msrv test ui --test trybuild --workspace --features=__internal_use_only_features_that_work_on_stable
+TRYBUILD=overwrite ./cargo.sh +nightly test ui --test trybuild -p zerocopy --all-features
+TRYBUILD=overwrite ./cargo.sh +stable  test ui --test trybuild -p zerocopy --features=__internal_use_only_features_that_work_on_stable
+TRYBUILD=overwrite ./cargo.sh +msrv    test ui --test trybuild -p zerocopy --features=__internal_use_only_features_that_work_on_stable
+
+TRYBUILD=overwrite ./cargo.sh +all test ui --test trybuild -p zerocopy-derive
