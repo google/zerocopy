@@ -280,15 +280,6 @@ error[E0277]: the trait bound `NotTryFromBytes: TryFromBytes` is not satisfied
    = help: see issue #48214
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotTryFromBytes: TryFromBytes` is not satisfied
-  --> tests/ui-msrv/enum.rs:82:10
-   |
-82 | #[derive(TryFromBytes)]
-   |          ^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotTryFromBytes`
-   |
-   = help: see issue #48214
-   = note: this error originates in the derive macro `::zerocopy_derive::TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
-
 error[E0277]: the trait bound `NotFromZeros: TryFromBytes` is not satisfied
    --> tests/ui-msrv/enum.rs:127:10
     |
@@ -308,15 +299,6 @@ error[E0277]: the trait bound `NotFromZeros: FromZeros` is not satisfied
     = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotFromZeros: TryFromBytes` is not satisfied
-   --> tests/ui-msrv/enum.rs:127:10
-    |
-127 | #[derive(FromZeros)]
-    |          ^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotFromZeros`
-    |
-    = help: see issue #48214
-    = note: this error originates in the derive macro `::zerocopy_derive::TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0277]: the trait bound `NotFromZeros: TryFromBytes` is not satisfied
    --> tests/ui-msrv/enum.rs:133:10
     |
 133 | #[derive(FromZeros)]
@@ -324,15 +306,6 @@ error[E0277]: the trait bound `NotFromZeros: TryFromBytes` is not satisfied
     |
     = help: see issue #48214
     = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0277]: the trait bound `NotFromZeros: TryFromBytes` is not satisfied
-   --> tests/ui-msrv/enum.rs:133:10
-    |
-133 | #[derive(FromZeros)]
-    |          ^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotFromZeros`
-    |
-    = help: see issue #48214
-    = note: this error originates in the derive macro `::zerocopy_derive::TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `bool: FromBytes` is not satisfied
    --> tests/ui-msrv/enum.rs:186:10
