@@ -6,29 +6,45 @@ error: unsupported on types with type parameters
    |
    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: cannot derive Unaligned with repr(align(N > 1))
+error: cannot derive `Unaligned` on type with alignment greater than 1
   --> tests/ui-nightly/union.rs:51:11
    |
 51 | #[repr(C, align(2))]
    |           ^^^^^^^^
 
-error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-nightly/union.rs:67:16
+error: this conflicts with another representation hint
+  --> tests/ui-nightly/union.rs:67:8
    |
 67 | #[repr(packed, align(2))]
-   |                ^^^^^^^^
+   |        ^^^^^^^^^^^^^^^^
 
-error: cannot derive Unaligned with repr(align(N > 1))
-  --> tests/ui-nightly/union.rs:73:18
+error: this conflicts with another representation hint
+  --> tests/ui-nightly/union.rs:73:8
    |
 73 | #[repr(align(1), align(2))]
-   |                  ^^^^^^^^
+   |        ^^^^^^^^^^^^^^^^^^
 
-error: cannot derive Unaligned with repr(align(N > 1))
+error: this conflicts with another representation hint
   --> tests/ui-nightly/union.rs:79:8
    |
 79 | #[repr(align(2), align(4))]
-   |        ^^^^^^^^
+   |        ^^^^^^^^^^^^^^^^^^
+
+error: must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment
+  --> tests/ui-nightly/union.rs:84:10
+   |
+84 | #[derive(Unaligned)]
+   |          ^^^^^^^^^
+   |
+   = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment
+  --> tests/ui-nightly/union.rs:90:10
+   |
+90 | #[derive(Unaligned)]
+   |          ^^^^^^^^^
+   |
+   = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::Immutable` is not satisfied
   --> tests/ui-nightly/union.rs:24:10
@@ -78,3 +94,15 @@ error[E0587]: type has conflicting packed and align representation hints
    |
 68 | union Unaligned3 {
    | ^^^^^^^^^^^^^^^^
+
+error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
+  --> tests/ui-nightly/union.rs:92:1
+   |
+92 | union Unaligned7 {
+   | ^^^^^^^^^^^^^^^^
+   |
+note: `AU16` has a `#[repr(align)]` attribute
+  --> tests/ui-nightly/../include.rs
+   |
+   |     pub struct AU16(pub u16);
+   |     ^^^^^^^^^^^^^^^

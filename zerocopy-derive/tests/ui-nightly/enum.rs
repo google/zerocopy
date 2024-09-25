@@ -142,44 +142,49 @@ enum FromZeros7 {
 //
 
 #[derive(FromBytes)]
-#[repr(C)]
 enum FromBytes1 {
     A,
 }
 
 #[derive(FromBytes)]
-#[repr(usize)]
+#[repr(C)]
 enum FromBytes2 {
     A,
 }
 
 #[derive(FromBytes)]
-#[repr(isize)]
+#[repr(usize)]
 enum FromBytes3 {
     A,
 }
 
 #[derive(FromBytes)]
-#[repr(u32)]
+#[repr(isize)]
 enum FromBytes4 {
     A,
 }
 
 #[derive(FromBytes)]
-#[repr(i32)]
+#[repr(u32)]
 enum FromBytes5 {
     A,
 }
 
 #[derive(FromBytes)]
-#[repr(u64)]
+#[repr(i32)]
 enum FromBytes6 {
     A,
 }
 
 #[derive(FromBytes)]
-#[repr(i64)]
+#[repr(u64)]
 enum FromBytes7 {
+    A,
+}
+
+#[derive(FromBytes)]
+#[repr(i64)]
+enum FromBytes8 {
     A,
 }
 
@@ -552,4 +557,15 @@ enum IntoBytes2 {
 enum IntoBytes3 {
     A(u32),
     B(u16),
+}
+
+#[derive(IntoBytes)]
+enum IntoBytes4 {
+    A(u32),
+    B(u16),
+}
+
+#[derive(IntoBytes)]
+enum IntoBytes5 {
+    A(u32),
 }

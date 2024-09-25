@@ -129,6 +129,36 @@ struct IntoBytes4 {
     b: [u8],
 }
 
+#[derive(IntoBytes)]
+#[repr(C, C)] // zerocopy-derive conservatively treats these as conflicting reprs
+struct IntoBytes5 {
+    a: u8,
+}
+
+// TODO(#1764): This currently compiles, but maybe it shouldn't.
+#[derive(IntoBytes)]
+struct IntoBytes6 {
+    a: u8,
+}
+
+// TODO(#1764): This currently compiles, but maybe it shouldn't.
+#[derive(IntoBytes)]
+#[repr(packed(2))]
+struct IntoBytes7 {
+    a: u8,
+}
+
+#[derive(IntoBytes)]
+struct IntoBytes8<T> {
+    t: T,
+}
+
+#[derive(IntoBytes)]
+#[repr(packed(2))]
+struct IntoBytes9<T> {
+    t: T,
+}
+
 //
 // Unaligned errors
 //
@@ -154,3 +184,19 @@ struct Unaligned4;
 #[derive(Unaligned)]
 #[repr(align(2), align(4))]
 struct Unaligned5;
+
+#[derive(Unaligned)]
+struct Unaligned6;
+
+#[derive(Unaligned)]
+#[repr(packed(2))]
+struct Unaligned7;
+
+// Test the error message emitted when conflicting reprs appear on different
+// lines. On the nightly compiler, this emits a "joint span" that spans both
+// problematic repr token trees and everything in between.
+#[derive(Copy, Clone)]
+#[repr(packed(2), C)]
+#[derive(Unaligned)]
+#[repr(C, packed(2))]
+struct WeirdReprSpan;

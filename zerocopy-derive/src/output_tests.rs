@@ -6,6 +6,7 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+use crate::IntoTokenStream;
 use dissimilar::Chunk;
 use proc_macro2::TokenStream;
 
@@ -52,7 +53,7 @@ macro_rules! test {
             let ast = syn::parse2::<syn::DeriveInput>(ts).unwrap();
             let res = $name(&ast);
             let expected_toks = quote::quote!( $($o)* );
-            assert_eq_streams(expected_toks.into(), res.into());
+            assert_eq_streams(expected_toks.into(), res.into_ts().into());
         }
     };
 }
