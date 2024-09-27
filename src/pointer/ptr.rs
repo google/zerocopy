@@ -1414,7 +1414,7 @@ mod _project {
             // SAFETY: If all of the bytes of `self` are initialized (as
             // promised by `I: Invariants<Validity = Initialized>`), then any
             // subset of those bytes are also all initialized.
-            return unsafe { ptr.assume_validity::<Initialized>() };
+            unsafe { ptr.assume_validity::<Initialized>() }
         }
     }
 
