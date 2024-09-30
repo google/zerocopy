@@ -80,3 +80,16 @@ struct Unaligned4 {
 struct Unaligned5 {
     foo: u8,
 }
+
+#[derive(Unaligned)]
+union Unaligned6 {
+    foo: i16,
+    bar: AU16,
+}
+
+#[derive(Unaligned)]
+#[repr(packed(2))]
+union Unaligned7 {
+    foo: i16,
+    bar: AU16,
+}

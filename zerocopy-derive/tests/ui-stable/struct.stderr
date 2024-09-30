@@ -1,37 +1,81 @@
-error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-stable/struct.rs:137:11
+error: this conflicts with another representation hint
+   --> tests/ui-stable/struct.rs:133:11
     |
-137 | #[repr(C, align(2))]
-    |           ^^^^^^^^
+133 | #[repr(C, C)] // zerocopy-derive conservatively treats these as conflicting reprs
+    |           ^
 
-error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-stable/struct.rs:141:21
+error: must have a non-align #[repr(...)] attribute or #[repr(packed)] in order to guarantee this type's memory layout
+   --> tests/ui-stable/struct.rs:151:10
     |
-141 | #[repr(transparent, align(2))]
-    |                     ^^^^^^^^
+151 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-stable/struct.rs:147:16
+error: must have a non-align #[repr(...)] attribute or #[repr(packed)] in order to guarantee this type's memory layout
+   --> tests/ui-stable/struct.rs:156:10
     |
-147 | #[repr(packed, align(2))]
-    |                ^^^^^^^^
+156 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-stable/struct.rs:151:18
+error: cannot derive `Unaligned` on type with alignment greater than 1
+   --> tests/ui-stable/struct.rs:167:11
     |
-151 | #[repr(align(1), align(2))]
-    |                  ^^^^^^^^
+167 | #[repr(C, align(2))]
+    |           ^^^^^
 
-error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-stable/struct.rs:155:8
+error: this conflicts with another representation hint
+   --> tests/ui-stable/struct.rs:171:8
     |
-155 | #[repr(align(2), align(4))]
-    |        ^^^^^^^^
+171 | #[repr(transparent, align(2))]
+    |        ^^^^^^^^^^^
+
+error: this conflicts with another representation hint
+   --> tests/ui-stable/struct.rs:177:16
+    |
+177 | #[repr(packed, align(2))]
+    |                ^^^^^
+
+error: this conflicts with another representation hint
+   --> tests/ui-stable/struct.rs:181:18
+    |
+181 | #[repr(align(1), align(2))]
+    |                  ^^^^^
+
+error: this conflicts with another representation hint
+   --> tests/ui-stable/struct.rs:185:18
+    |
+185 | #[repr(align(2), align(4))]
+    |                  ^^^^^
+
+error: must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment
+   --> tests/ui-stable/struct.rs:188:10
+    |
+188 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment
+   --> tests/ui-stable/struct.rs:191:10
+    |
+191 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: this conflicts with another representation hint
+   --> tests/ui-stable/struct.rs:201:8
+    |
+201 | #[repr(C, packed(2))]
+    |        ^
 
 error[E0692]: transparent struct cannot have other repr hints
-   --> tests/ui-stable/struct.rs:141:8
+   --> tests/ui-stable/struct.rs:171:8
     |
-141 | #[repr(transparent, align(2))]
+171 | #[repr(transparent, align(2))]
     |        ^^^^^^^^^^^  ^^^^^^^^
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
@@ -277,7 +321,7 @@ note: required by a bound in `macro_util::__size_of::size_of`
     |                             ^^^^^ required by this bound in `size_of`
 
 error[E0587]: type has conflicting packed and align representation hints
-   --> tests/ui-stable/struct.rs:148:1
+   --> tests/ui-stable/struct.rs:178:1
     |
-148 | struct Unaligned3;
+178 | struct Unaligned3;
     | ^^^^^^^^^^^^^^^^^

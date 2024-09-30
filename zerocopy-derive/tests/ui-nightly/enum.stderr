@@ -10,19 +10,21 @@ error: unrecognized representation hint
 25 | #[repr(foo)]
    |        ^^^
 
-error: unsupported representation for deriving zerocopy trait(s) on an enum
-  --> tests/ui-nightly/enum.rs:31:8
+error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
+  --> tests/ui-nightly/enum.rs:30:10
    |
-31 | #[repr(transparent)]
-   |        ^^^^^^^^^^^
+30 | #[derive(FromBytes)]
+   |          ^^^^^^^^^
+   |
+   = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: conflicting representation hints
+error: this conflicts with another representation hint
   --> tests/ui-nightly/enum.rs:37:8
    |
 37 | #[repr(u8, u16)]
    |        ^^^^^^^
 
-error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
   --> tests/ui-nightly/enum.rs:42:10
    |
 42 | #[derive(FromBytes)]
@@ -30,7 +32,7 @@ error: must have a non-align #[repr(...)] attribute in order to guarantee this t
    |
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
   --> tests/ui-nightly/enum.rs:69:10
    |
 69 | #[derive(TryFromBytes)]
@@ -38,7 +40,7 @@ error: must have a non-align #[repr(...)] attribute in order to guarantee this t
    |
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
   --> tests/ui-nightly/enum.rs:74:10
    |
 74 | #[derive(TryFromBytes)]
@@ -46,7 +48,7 @@ error: must have a non-align #[repr(...)] attribute in order to guarantee this t
    |
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
   --> tests/ui-nightly/enum.rs:92:10
    |
 92 | #[derive(FromZeros)]
@@ -54,7 +56,7 @@ error: must have a non-align #[repr(...)] attribute in order to guarantee this t
    |
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
   --> tests/ui-nightly/enum.rs:97:10
    |
 97 | #[derive(FromZeros)]
@@ -62,7 +64,7 @@ error: must have a non-align #[repr(...)] attribute in order to guarantee this t
    |
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
    --> tests/ui-nightly/enum.rs:103:10
     |
 103 | #[derive(FromZeros)]
@@ -101,125 +103,167 @@ error: FromZeros only supported on enums with a variant that has a discriminant 
 138 | | }
     | |_^
 
-error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-   --> tests/ui-nightly/enum.rs:145:8
+error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
+   --> tests/ui-nightly/enum.rs:144:10
     |
-145 | #[repr(C)]
+144 | #[derive(FromBytes)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
+   --> tests/ui-nightly/enum.rs:150:8
+    |
+150 | #[repr(C)]
     |        ^
 
-error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-   --> tests/ui-nightly/enum.rs:151:8
+error: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
+   --> tests/ui-nightly/enum.rs:156:8
     |
-151 | #[repr(usize)]
+156 | #[repr(usize)]
     |        ^^^^^
 
-error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-   --> tests/ui-nightly/enum.rs:157:8
+error: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
+   --> tests/ui-nightly/enum.rs:162:8
     |
-157 | #[repr(isize)]
+162 | #[repr(isize)]
     |        ^^^^^
 
-error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-   --> tests/ui-nightly/enum.rs:163:8
+error: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
+   --> tests/ui-nightly/enum.rs:168:8
     |
-163 | #[repr(u32)]
+168 | #[repr(u32)]
     |        ^^^
 
-error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-   --> tests/ui-nightly/enum.rs:169:8
+error: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
+   --> tests/ui-nightly/enum.rs:174:8
     |
-169 | #[repr(i32)]
+174 | #[repr(i32)]
     |        ^^^
 
-error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-   --> tests/ui-nightly/enum.rs:175:8
+error: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
+   --> tests/ui-nightly/enum.rs:180:8
     |
-175 | #[repr(u64)]
+180 | #[repr(u64)]
     |        ^^^
 
-error: FromBytes requires repr of "u8", "u16", "i8", or "i16"
-   --> tests/ui-nightly/enum.rs:181:8
+error: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
+   --> tests/ui-nightly/enum.rs:186:8
     |
-181 | #[repr(i64)]
+186 | #[repr(i64)]
     |        ^^^
 
-error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-nightly/enum.rs:452:8
+error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
+   --> tests/ui-nightly/enum.rs:456:10
     |
-452 | #[repr(C)]
-    |        ^
+456 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-nightly/enum.rs:458:8
+error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
+   --> tests/ui-nightly/enum.rs:462:10
     |
-458 | #[repr(u16)]
-    |        ^^^
+462 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-nightly/enum.rs:464:8
+error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
+   --> tests/ui-nightly/enum.rs:468:10
     |
-464 | #[repr(i16)]
-    |        ^^^
+468 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-nightly/enum.rs:470:8
+error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
+   --> tests/ui-nightly/enum.rs:474:10
     |
-470 | #[repr(u32)]
-    |        ^^^
+474 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-nightly/enum.rs:476:8
+error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
+   --> tests/ui-nightly/enum.rs:480:10
     |
-476 | #[repr(i32)]
-    |        ^^^
+480 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-nightly/enum.rs:482:8
+error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
+   --> tests/ui-nightly/enum.rs:486:10
     |
-482 | #[repr(u64)]
-    |        ^^^
+486 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-nightly/enum.rs:488:8
+error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
+   --> tests/ui-nightly/enum.rs:492:10
     |
-488 | #[repr(i64)]
-    |        ^^^
+492 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-nightly/enum.rs:494:8
+error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
+   --> tests/ui-nightly/enum.rs:498:10
     |
-494 | #[repr(usize)]
-    |        ^^^^^
+498 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unaligned requires repr of "u8" or "i8", and no alignment (i.e., repr(align(N > 1)))
-   --> tests/ui-nightly/enum.rs:500:8
+error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
+   --> tests/ui-nightly/enum.rs:504:10
     |
-500 | #[repr(isize)]
-    |        ^^^^^
+504 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/enum.rs:506:12
+error: cannot derive `Unaligned` on type with alignment greater than 1
+   --> tests/ui-nightly/enum.rs:511:12
     |
-506 | #[repr(u8, align(2))]
+511 | #[repr(u8, align(2))]
     |            ^^^^^^^^
 
-error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/enum.rs:512:12
+error: cannot derive `Unaligned` on type with alignment greater than 1
+   --> tests/ui-nightly/enum.rs:517:12
     |
-512 | #[repr(i8, align(2))]
+517 | #[repr(i8, align(2))]
     |            ^^^^^^^^
 
-error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/enum.rs:518:18
+error: this conflicts with another representation hint
+   --> tests/ui-nightly/enum.rs:523:8
     |
-518 | #[repr(align(1), align(2))]
-    |                  ^^^^^^^^
+523 | #[repr(align(1), align(2))]
+    |        ^^^^^^^^^^^^^^^^^^
 
-error: cannot derive Unaligned with repr(align(N > 1))
-   --> tests/ui-nightly/enum.rs:524:8
+error: this conflicts with another representation hint
+   --> tests/ui-nightly/enum.rs:529:8
     |
-524 | #[repr(align(2), align(4))]
-    |        ^^^^^^^^
+529 | #[repr(align(2), align(4))]
+    |        ^^^^^^^^^^^^^^^^^^
+
+error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
+   --> tests/ui-nightly/enum.rs:562:10
+    |
+562 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
+   --> tests/ui-nightly/enum.rs:568:10
+    |
+568 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0565]: meta item in `repr` must be an identifier
   --> tests/ui-nightly/enum.rs:19:8
@@ -365,34 +409,10 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
 9   + #![feature(trivial_bounds)]
     |
 
-error[E0277]: the trait bound `NotFromZeros: TryFromBytes` is not satisfied
-   --> tests/ui-nightly/enum.rs:133:10
-    |
-133 | #[derive(FromZeros)]
-    |          ^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotFromZeros`
-    |
-    = note: Consider adding `#[derive(TryFromBytes)]` to `NotFromZeros`
-    = help: the following other types implement trait `TryFromBytes`:
-              ()
-              *const T
-              *mut T
-              <FromZeros6 as TryFromBytes>::is_bit_valid::___ZerocopyVariantStruct_A
-              <TryFromBytes3 as TryFromBytes>::is_bit_valid::___ZerocopyVariantStruct_A
-              AtomicBool
-              AtomicI16
-              AtomicI32
-            and $N others
-    = help: see issue #48214
-    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
-help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
-    |
-9   + #![feature(trivial_bounds)]
-    |
-
 error[E0277]: the trait bound `bool: FromBytes` is not satisfied
-   --> tests/ui-nightly/enum.rs:186:10
+   --> tests/ui-nightly/enum.rs:191:10
     |
-186 | #[derive(FromBytes)]
+191 | #[derive(FromBytes)]
     |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `bool`
     |
     = note: Consider adding `#[derive(FromBytes)]` to `bool`
@@ -414,9 +434,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
 
 error[E0277]: `IntoBytes1` has inter-field padding
-   --> tests/ui-nightly/enum.rs:533:10
+   --> tests/ui-nightly/enum.rs:538:10
     |
-533 | #[derive(IntoBytes)]
+538 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ types with padding cannot implement `IntoBytes`
     |
     = help: the trait `PaddingFree<IntoBytes1, true>` is not implemented for `()`
@@ -432,9 +452,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
 
 error[E0277]: `IntoBytes2` has inter-field padding
-   --> tests/ui-nightly/enum.rs:544:10
+   --> tests/ui-nightly/enum.rs:549:10
     |
-544 | #[derive(IntoBytes)]
+549 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ types with padding cannot implement `IntoBytes`
     |
     = help: the trait `PaddingFree<IntoBytes2, true>` is not implemented for `()`
@@ -450,9 +470,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
 
 error[E0277]: `IntoBytes3` has inter-field padding
-   --> tests/ui-nightly/enum.rs:550:10
+   --> tests/ui-nightly/enum.rs:555:10
     |
-550 | #[derive(IntoBytes)]
+555 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ types with padding cannot implement `IntoBytes`
     |
     = help: the trait `PaddingFree<IntoBytes3, true>` is not implemented for `()`

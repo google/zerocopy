@@ -6,42 +6,11 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use ::proc_macro2::TokenStream;
-use ::quote::quote;
-use ::syn::{DataEnum, Fields, Generics, Ident};
-use syn::parse_quote;
+use proc_macro2::{Span, TokenStream};
+use quote::quote;
+use syn::{parse_quote, DataEnum, Error, Fields, Generics, Ident};
 
-use crate::{derive_try_from_bytes_inner, EnumRepr, Trait};
-
-/// Returns the repr for the tag enum, given the collection of reprs on the
-/// enum.
-///
-/// This function returns:
-/// - `Some(C)` for `repr(C)`
-/// - `Some(int)` for `repr(int)` and `repr(C, int)`
-/// - `None` for all other reprs
-pub(crate) fn tag_repr(reprs: &[EnumRepr]) -> Option<&EnumRepr> {
-    let mut result = None;
-    for repr in reprs {
-        match repr {
-            EnumRepr::C => result = Some(repr),
-            EnumRepr::U8
-            | EnumRepr::U16
-            | EnumRepr::U32
-            | EnumRepr::U64
-            | EnumRepr::Usize
-            | EnumRepr::I8
-            | EnumRepr::I16
-            | EnumRepr::I32
-            | EnumRepr::I64
-            | EnumRepr::Isize => {
-                return Some(repr);
-            }
-            _ => (),
-        }
-    }
-    result
-}
+use crate::{derive_try_from_bytes_inner, repr::EnumRepr, Trait};
 
 /// Generates a tag enum for the given enum. This generates an enum with the
 /// same `repr`s, variants, and corresponding discriminants, but none of the
@@ -57,7 +26,7 @@ pub(crate) fn generate_tag_enum(repr: &EnumRepr, data: &DataEnum) -> TokenStream
     });
 
     quote! {
-        #[repr(#repr)]
+        #repr
         #[allow(dead_code)]
         enum ___ZerocopyTag {
             #(#variants,)*
@@ -157,7 +126,8 @@ fn generate_variant_structs(
 
         // We do this rather than emitting `#[derive(::zerocopy::TryFromBytes)]`
         // because that is not hygienic, and this is also more performant.
-        let try_from_bytes_impl = derive_try_from_bytes_inner(&variant_struct);
+        let try_from_bytes_impl = derive_try_from_bytes_inner(&variant_struct)
+            .expect("derive_try_from_bytes_inner should not fail on synthesized type");
 
         Some(quote! {
             #variant_struct
@@ -231,21 +201,23 @@ fn generate_variants_union(generics: &Generics, data: &DataEnum) -> TokenStream 
 /// - `repr(C, int)`: <https://doc.rust-lang.org/reference/type-layout.html#combining-primitive-representations-of-enums-with-fields-and-reprc>
 pub(crate) fn derive_is_bit_valid(
     enum_ident: &Ident,
-    reprs: &[EnumRepr],
+    repr: &EnumRepr,
     generics: &Generics,
     data: &DataEnum,
-) -> TokenStream {
-    let repr =
-        tag_repr(reprs).expect("cannot derive is_bit_valid for enum without a well-defined repr");
-
+) -> Result<TokenStream, Error> {
     let trait_path = Trait::TryFromBytes.crate_path();
     let tag_enum = generate_tag_enum(repr, data);
     let tag_consts = generate_tag_consts(data);
 
-    let (outer_tag_type, inner_tag_type) = if matches!(repr, EnumRepr::C) {
+    let (outer_tag_type, inner_tag_type) = if repr.is_c() {
         (quote! { ___ZerocopyTag }, quote! { () })
-    } else {
+    } else if repr.is_primitive() {
         (quote! { () }, quote! { ___ZerocopyTag })
+    } else {
+        return Err(Error::new(
+            Span::call_site(),
+            "must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout",
+        ));
     };
 
     let variant_structs = generate_variant_structs(enum_ident, generics, data);
@@ -297,7 +269,7 @@ pub(crate) fn derive_is_bit_valid(
         }
     });
 
-    quote! {
+    Ok(quote! {
         // SAFETY: We use `is_bit_valid` to validate that the bit pattern of the
         // enum's tag corresponds to one of the enum's discriminants. Then, we
         // check the bit validity of each field of the corresponding variant.
@@ -392,5 +364,5 @@ pub(crate) fn derive_is_bit_valid(
                 _ => false,
             }
         }
-    }
+    })
 }
