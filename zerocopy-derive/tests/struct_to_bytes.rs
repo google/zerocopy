@@ -153,7 +153,7 @@ util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::IntoBytes);
 // Test for the failure reported in #1182.
 
 #[derive(imp::IntoBytes)]
-#[repr(packed)]
+#[repr(C, packed)]
 pub struct IndexEntryFlags(u8);
 
 #[derive(imp::IntoBytes)]

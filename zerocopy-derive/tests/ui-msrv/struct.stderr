@@ -4,23 +4,31 @@ error: this conflicts with another representation hint
 133 | #[repr(C, C)] // zerocopy-derive conservatively treats these as conflicting reprs
     |           ^
 
-error: must have a non-align #[repr(...)] attribute or #[repr(packed)] in order to guarantee this type's memory layout
-   --> tests/ui-msrv/struct.rs:151:10
+error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+   --> tests/ui-msrv/struct.rs:140:10
     |
-151 | #[derive(IntoBytes)]
+140 | #[derive(IntoBytes)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: must have a non-align #[repr(...)] attribute or #[repr(packed)] in order to guarantee this type's memory layout
-   --> tests/ui-msrv/struct.rs:156:10
+error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+   --> tests/ui-msrv/struct.rs:150:10
     |
-156 | #[derive(IntoBytes)]
+150 | #[derive(IntoBytes)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: must have a non-align #[repr(...)] attribute or #[repr(packed)] in order to guarantee this type's memory layout
+error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+   --> tests/ui-msrv/struct.rs:159:10
+    |
+159 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
    --> tests/ui-msrv/struct.rs:164:10
     |
 164 | #[derive(IntoBytes)]
@@ -28,70 +36,78 @@ error: must have a non-align #[repr(...)] attribute or #[repr(packed)] in order 
     |
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: must have a non-align #[repr(...)] attribute or #[repr(packed)] in order to guarantee this type's memory layout
-   --> tests/ui-msrv/struct.rs:187:10
+error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+   --> tests/ui-msrv/struct.rs:172:10
     |
-187 | #[derive(IntoBytes)]
+172 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
+   --> tests/ui-msrv/struct.rs:195:10
+    |
+195 | #[derive(IntoBytes)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: cannot derive `Unaligned` on type with alignment greater than 1
-   --> tests/ui-msrv/struct.rs:198:11
+   --> tests/ui-msrv/struct.rs:206:11
     |
-198 | #[repr(C, align(2))]
+206 | #[repr(C, align(2))]
     |           ^^^^^
 
 error: this conflicts with another representation hint
-   --> tests/ui-msrv/struct.rs:202:8
+   --> tests/ui-msrv/struct.rs:210:8
     |
-202 | #[repr(transparent, align(2))]
+210 | #[repr(transparent, align(2))]
     |        ^^^^^^^^^^^
 
 error: this conflicts with another representation hint
-   --> tests/ui-msrv/struct.rs:208:16
+   --> tests/ui-msrv/struct.rs:216:16
     |
-208 | #[repr(packed, align(2))]
+216 | #[repr(packed, align(2))]
     |                ^^^^^
 
 error: this conflicts with another representation hint
-   --> tests/ui-msrv/struct.rs:212:18
+   --> tests/ui-msrv/struct.rs:220:18
     |
-212 | #[repr(align(1), align(2))]
+220 | #[repr(align(1), align(2))]
     |                  ^^^^^
 
 error: this conflicts with another representation hint
-   --> tests/ui-msrv/struct.rs:216:18
+   --> tests/ui-msrv/struct.rs:224:18
     |
-216 | #[repr(align(2), align(4))]
+224 | #[repr(align(2), align(4))]
     |                  ^^^^^
 
 error: must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment
-   --> tests/ui-msrv/struct.rs:219:10
+   --> tests/ui-msrv/struct.rs:227:10
     |
-219 | #[derive(Unaligned)]
+227 | #[derive(Unaligned)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment
-   --> tests/ui-msrv/struct.rs:222:10
+   --> tests/ui-msrv/struct.rs:230:10
     |
-222 | #[derive(Unaligned)]
+230 | #[derive(Unaligned)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: this conflicts with another representation hint
-   --> tests/ui-msrv/struct.rs:232:8
+   --> tests/ui-msrv/struct.rs:240:8
     |
-232 | #[repr(C, packed(2))]
+240 | #[repr(C, packed(2))]
     |        ^
 
 error[E0692]: transparent struct cannot have other repr hints
-   --> tests/ui-msrv/struct.rs:202:8
+   --> tests/ui-msrv/struct.rs:210:8
     |
-202 | #[repr(transparent, align(2))]
+210 | #[repr(transparent, align(2))]
     |        ^^^^^^^^^^^  ^^^^^^^^
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
