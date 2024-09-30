@@ -13,8 +13,8 @@ use syn::{parse_quote, DataEnum, Error, Fields, Generics, Ident};
 use crate::{derive_try_from_bytes_inner, repr::EnumRepr, Trait};
 
 /// Generates a tag enum for the given enum. This generates an enum with the
-/// same `repr`s, variants, and corresponding discriminants, but none of the
-/// fields.
+/// same non-align `repr`s, variants, and corresponding discriminants, but none
+/// of the fields.
 pub(crate) fn generate_tag_enum(repr: &EnumRepr, data: &DataEnum) -> TokenStream {
     let variants = data.variants.iter().map(|v| {
         let ident = &v.ident;
@@ -24,6 +24,14 @@ pub(crate) fn generate_tag_enum(repr: &EnumRepr, data: &DataEnum) -> TokenStream
             quote! { #ident }
         }
     });
+
+    // Don't include any `repr(align)` when generating the tag enum, as that
+    // could add padding after the tag but before any variants, which is not the
+    // correct behavior.
+    let repr = match repr {
+        EnumRepr::Transparent(span) => quote::quote_spanned! { *span => #[repr(transparent)] },
+        EnumRepr::Compound(c, _) => quote! { #c },
+    };
 
     quote! {
         #repr
