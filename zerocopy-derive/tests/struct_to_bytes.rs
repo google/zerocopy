@@ -103,37 +103,6 @@ util_assert_impl_all!(CPackedGeneric<u8, util::AU16>: imp::IntoBytes);
 util_assert_impl_all!(CPackedGeneric<u8, [util::AU16]>: imp::IntoBytes);
 
 #[derive(imp::IntoBytes)]
-#[repr(packed)]
-struct Packed {
-    a: u8,
-    // NOTE: The `u16` type is not guaranteed to have alignment 2, although it
-    // does on many platforms. However, to fix this would require a custom type
-    // with a `#[repr(align(2))]` attribute, and `#[repr(packed)]` types are not
-    // allowed to transitively contain `#[repr(align(...))]` types. Thus, we
-    // have no choice but to use `u16` here. Luckily, these tests run in CI on
-    // platforms on which `u16` has alignment 2, so this isn't that big of a
-    // deal.
-    b: u16,
-}
-
-util_assert_impl_all!(Packed: imp::IntoBytes);
-
-#[derive(imp::IntoBytes)]
-#[repr(packed)]
-struct PackedGeneric<T, U: ?imp::Sized> {
-    t: T,
-    // Unsized types stored in `repr(packed)` structs must not be dropped
-    // because dropping them in-place might be unsound depending on the
-    // alignment of the outer struct. Sized types can be dropped by first being
-    // moved to an aligned stack variable, but this isn't possible with unsized
-    // types.
-    u: imp::ManuallyDrop<U>,
-}
-
-util_assert_impl_all!(PackedGeneric<u8, util::AU16>: imp::IntoBytes);
-util_assert_impl_all!(PackedGeneric<u8, [util::AU16]>: imp::IntoBytes);
-
-#[derive(imp::IntoBytes)]
 #[repr(C)]
 struct ReprCGenericOneField<T: ?imp::Sized> {
     t: T,
@@ -188,7 +157,7 @@ util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::IntoBytes);
 pub struct IndexEntryFlags(u8);
 
 #[derive(imp::IntoBytes)]
-#[repr(packed)]
+#[repr(C, packed)]
 pub struct IndexEntry<const SIZE_BLOCK_ID: usize> {
     block_number: imp::native_endian::U64,
     flags: IndexEntryFlags,

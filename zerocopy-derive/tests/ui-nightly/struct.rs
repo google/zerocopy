@@ -12,7 +12,7 @@ extern crate zerocopy;
 #[path = "../include.rs"]
 mod util;
 
-use zerocopy::KnownLayout;
+use zerocopy::{IntoBytes, KnownLayout};
 
 use self::util::util::AU16;
 
@@ -156,6 +156,37 @@ struct IntoBytes8<T> {
 #[derive(IntoBytes)]
 #[repr(packed(2))]
 struct IntoBytes9<T> {
+    t: T,
+}
+
+// `repr(packed)` without `repr(C)` is not considered sufficient to guarantee
+// layout.
+#[derive(IntoBytes)]
+#[repr(packed)]
+struct IntoBytes10<T> {
+    t: T,
+}
+
+// `repr(C, packed(2))` is not equivalent to `repr(C, packed)`.
+#[derive(IntoBytes)]
+#[repr(C, packed(2))]
+struct IntoBytes11<T> {
+    t0: T,
+    // Add a second field to avoid triggering the "repr(C) struct with one
+    // field" special case.
+    t1: T,
+}
+
+fn is_into_bytes_11<T: IntoBytes>() {
+    if false {
+        is_into_bytes_11::<IntoBytes11<AU16>>();
+    }
+}
+
+// `repr(C, align(2))` is not sufficient to guarantee the layout of this type.
+#[derive(IntoBytes)]
+#[repr(C, align(2))]
+struct IntoBytes12<T> {
     t: T,
 }
 

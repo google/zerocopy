@@ -132,9 +132,11 @@ impl<Prim, Packed> Repr<Prim, Packed> {
             None
         }
     }
-}
 
-impl<Prim, Packed> Repr<Prim, Packed> {
+    pub(crate) fn is_align_gt_1(&self) -> bool {
+        self.get_align().map(|n| n.t.get() > 1).unwrap_or(false)
+    }
+
     /// When deriving `Unaligned`, validate that the decorated type has no
     /// `#[repr(align(N))]` attribute where `N > 1`. If no such attribute exists
     /// (including if `N == 1`), this returns `Ok(())`, and otherwise it returns
