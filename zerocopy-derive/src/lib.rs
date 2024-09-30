@@ -769,12 +769,11 @@ fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> Result<Tok
         // no padding unless #[repr(align)] explicitly adds padding, which we
         // check for in this branch's condition.
         (None, false)
-    } else if ast.generics.params.is_empty() {
-        // Since there are no generics, we can emit a padding check. This is
-        // more permissive than the next case, which requires that all field
-        // types implement `Unaligned`.
-        //
-        // TODO(#1764): This is probably unsound! Fix it.
+    } else if is_c && ast.generics.params.is_empty() {
+        // Since there are no generics, we can emit a padding check. `repr(C)`
+        // guarantees that fields won't overlap, so the padding check is sound.
+        // This is more permissive than the next case, which requires that all
+        // field types implement `Unaligned`.
         (Some(PaddingCheck::Struct), false)
     } else if is_c && !repr.is_align_gt_1() {
         // We can't use a padding check since there are generic type arguments.
@@ -787,7 +786,7 @@ fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> Result<Tok
         // structs without requiring `Unaligned`.
         (None, true)
     } else {
-        return Err(Error::new(Span::call_site(), "must have a non-align #[repr(...)] attribute or #[repr(packed)] in order to guarantee this type's memory layout"));
+        return Err(Error::new(Span::call_site(), "must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout"));
     };
 
     let field_bounds = if require_unaligned_fields {
