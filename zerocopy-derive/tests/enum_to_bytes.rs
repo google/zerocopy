@@ -121,3 +121,13 @@ enum HasData32 {
 }
 
 util_assert_impl_all!(HasData: imp::IntoBytes);
+
+// After #1752 landed but before #1758 was fixed, this failed to compile because
+// the padding check treated the tag type as being `#[repr(u8, align(2))] struct
+// Tag { A }`, which is two bytes long, rather than the correct `#[repr(u8)]
+// struct Tag { A }`, which is one byte long.
+#[derive(imp::IntoBytes)]
+#[repr(u8, align(2))]
+enum BadTagWouldHavePadding {
+    A(u8, u16),
+}

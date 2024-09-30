@@ -178,6 +178,8 @@ fn test_weird_discriminants() {
     );
 }
 
+// Technically non-portable since this is only `IntoBytes` if the discriminant
+// is an `i32` or `u32`, but we'll cross that bridge when we get to it...
 #[derive(
     Eq, PartialEq, Debug, imp::KnownLayout, imp::Immutable, imp::TryFromBytes, imp::IntoBytes,
 )]
@@ -202,6 +204,43 @@ fn test_has_fields() {
     imp::assert_eq!(
         <HasFields as imp::TryFromBytes>::try_read_from_bytes(&bytes[..]),
         imp::Ok(HasFields::B { foo: ::core::num::NonZeroU32::new(123456).unwrap() }),
+    );
+}
+
+#[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::Immutable, imp::TryFromBytes)]
+#[repr(C, align(16))]
+enum HasFieldsAligned {
+    A(u32),
+    B { foo: ::core::num::NonZeroU32 },
+}
+
+util_assert_impl_all!(HasFieldsAligned: imp::TryFromBytes);
+
+#[test]
+fn test_has_fields_aligned() {
+    const SIZE: usize = ::core::mem::size_of::<HasFieldsAligned>();
+
+    #[derive(imp::IntoBytes)]
+    #[repr(C)]
+    struct BytesOfHasFieldsAligned {
+        has_fields: HasFields,
+        padding: [u8; 8],
+    }
+
+    let wrap = |has_fields| BytesOfHasFieldsAligned { has_fields, padding: [0; 8] };
+
+    let bytes: [u8; SIZE] = ::zerocopy::transmute!(wrap(HasFields::A(10)));
+    imp::assert_eq!(
+        <HasFieldsAligned as imp::TryFromBytes>::try_read_from_bytes(&bytes[..]),
+        imp::Ok(HasFieldsAligned::A(10)),
+    );
+
+    let bytes: [u8; SIZE] = ::zerocopy::transmute!(wrap(HasFields::B {
+        foo: ::core::num::NonZeroU32::new(123456).unwrap()
+    }));
+    imp::assert_eq!(
+        <HasFieldsAligned as imp::TryFromBytes>::try_read_from_bytes(&bytes[..]),
+        imp::Ok(HasFieldsAligned::B { foo: ::core::num::NonZeroU32::new(123456).unwrap() }),
     );
 }
 
@@ -230,6 +269,45 @@ fn test_has_fields_primitive() {
     imp::assert_eq!(
         <HasFieldsPrimitive as imp::TryFromBytes>::try_read_from_bytes(&bytes[..]),
         imp::Ok(HasFieldsPrimitive::B { foo: ::core::num::NonZeroU32::new(123456).unwrap() }),
+    );
+}
+
+#[derive(Eq, PartialEq, Debug, imp::KnownLayout, imp::Immutable, imp::TryFromBytes)]
+#[repr(u32, align(16))]
+enum HasFieldsPrimitiveAligned {
+    A(u32),
+    B { foo: ::core::num::NonZeroU32 },
+}
+
+util_assert_impl_all!(HasFieldsPrimitiveAligned: imp::TryFromBytes);
+
+#[test]
+fn test_has_fields_primitive_aligned() {
+    const SIZE: usize = ::core::mem::size_of::<HasFieldsPrimitiveAligned>();
+
+    #[derive(imp::IntoBytes)]
+    #[repr(C)]
+    struct BytesOfHasFieldsPrimitiveAligned {
+        has_fields: HasFieldsPrimitive,
+        padding: [u8; 8],
+    }
+
+    let wrap = |has_fields| BytesOfHasFieldsPrimitiveAligned { has_fields, padding: [0; 8] };
+
+    let bytes: [u8; SIZE] = ::zerocopy::transmute!(wrap(HasFieldsPrimitive::A(10)));
+    imp::assert_eq!(
+        <HasFieldsPrimitiveAligned as imp::TryFromBytes>::try_read_from_bytes(&bytes[..]),
+        imp::Ok(HasFieldsPrimitiveAligned::A(10)),
+    );
+
+    let bytes: [u8; SIZE] = ::zerocopy::transmute!(wrap(HasFieldsPrimitive::B {
+        foo: ::core::num::NonZeroU32::new(123456).unwrap()
+    }));
+    imp::assert_eq!(
+        <HasFieldsPrimitiveAligned as imp::TryFromBytes>::try_read_from_bytes(&bytes[..]),
+        imp::Ok(HasFieldsPrimitiveAligned::B {
+            foo: ::core::num::NonZeroU32::new(123456).unwrap()
+        }),
     );
 }
 
