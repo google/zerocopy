@@ -6268,7 +6268,7 @@ mod tests {
         assert_impl_all!(Foo<u8>: Unaligned);
 
         #[derive(IntoBytes, FromBytes, Unaligned)]
-        #[repr(packed)]
+        #[repr(C, packed)]
         #[allow(dead_code)] // We never construct this type
         struct Bar<T, U> {
             _t: T,

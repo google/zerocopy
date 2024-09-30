@@ -43,6 +43,19 @@ union IntoBytes2 {
     bar: [u8; 2],
 }
 
+// Need a `repr` attribute
+#[derive(IntoBytes)]
+union IntoBytes3 {
+    foo: u8,
+}
+
+// `repr(packed(2))` isn't equivalent to `repr(packed)`
+#[derive(IntoBytes)]
+#[repr(packed(2))]
+union IntoBytes4 {
+    foo: u8,
+}
+
 //
 // Unaligned errors
 //

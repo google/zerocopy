@@ -753,22 +753,21 @@ fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> Result<Tok
     let is_packed_1 = repr.is_packed_1();
     let num_fields = strct.fields().len();
 
-    let (padding_check, require_unaligned_fields) = if is_transparent || is_packed_1 {
+    let (padding_check, require_unaligned_fields) = if is_transparent || (is_c && is_packed_1) {
         // No padding check needed.
         // - repr(transparent): The layout and ABI of the whole struct is the
         //   same as its only non-ZST field (meaning there's no padding outside
         //   of that field) and we require that field to be `IntoBytes` (meaning
         //   there's no padding in that field).
-        // - repr(packed): Any inter-field padding bytes are removed, meaning
+        // - repr(C, packed): Any inter-field padding bytes are removed, meaning
         //   that any padding bytes would need to come from the fields, all of
         //   which we require to be `IntoBytes` (meaning they don't have any
         //   padding).
         (None, false)
-    } else if is_c && num_fields <= 1 {
+    } else if is_c && !repr.is_align_gt_1() && num_fields <= 1 {
         // No padding check needed. A repr(C) struct with zero or one field has
-        // no padding.
-        //
-        // TODO(#1763): This is probably unsound! Fix it.
+        // no padding unless #[repr(align)] explicitly adds padding, which we
+        // check for in this branch's condition.
         (None, false)
     } else if ast.generics.params.is_empty() {
         // Since there are no generics, we can emit a padding check. This is
@@ -777,16 +776,15 @@ fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> Result<Tok
         //
         // TODO(#1764): This is probably unsound! Fix it.
         (Some(PaddingCheck::Struct), false)
-    } else if is_c {
+    } else if is_c && !repr.is_align_gt_1() {
         // We can't use a padding check since there are generic type arguments.
         // Instead, we require all field types to implement `Unaligned`. This
         // ensures that the `repr(C)` layout algorithm will not insert any
-        // padding.
+        // padding unless #[repr(align)] explicitly adds padding, which we check
+        // for in this branch's condition.
         //
         // TODO(#10): Support type parameters for non-transparent, non-packed
         // structs without requiring `Unaligned`.
-        //
-        // TODO(#1763): This is probably unsound! Fix it.
         (None, true)
     } else {
         return Err(Error::new(Span::call_site(), "must have a non-align #[repr(...)] attribute or #[repr(packed)] in order to guarantee this type's memory layout"));
@@ -842,9 +840,16 @@ fn derive_into_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> Result<TokenSt
         return Err(Error::new(Span::call_site(), "unsupported on types with type parameters"));
     }
 
+    // Because we don't support generics, we don't need to worry about
+    // special-casing different reprs. So long as there is *some* repr which
+    // guarantees the layout, our `PaddingCheck::Union` guarantees that there is
+    // no padding.
     let repr = StructUnionRepr::from_attrs(&ast.attrs)?;
     if !repr.is_c() && !repr.is_transparent() && !repr.is_packed_1() {
-        return Err(Error::new(Span::call_site(), "must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout"));
+        return Err(Error::new(
+            Span::call_site(),
+            "must be #[repr(C)], #[repr(packed)], or #[repr(transparent)]",
+        ));
     }
 
     Ok(impl_block(
