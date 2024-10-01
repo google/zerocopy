@@ -6,20 +6,20 @@ warning: unused import: `zerocopy::KnownLayout`
    |
    = note: `#[warn(unused_imports)]` on by default
 
-error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
   --> tests/ui-msrv/late_compile_pass.rs:28:10
    |
 28 | #[derive(TryFromBytes)]
-   |          ^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
+   |          ^^^^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
   --> tests/ui-msrv/late_compile_pass.rs:37:10
    |
 37 | #[derive(FromZeros)]
-   |          ^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
+   |          ^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -33,11 +33,11 @@ error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
    = help: see issue #48214
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
   --> tests/ui-msrv/late_compile_pass.rs:46:10
    |
 46 | #[derive(FromBytes)]
-   |          ^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
+   |          ^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)

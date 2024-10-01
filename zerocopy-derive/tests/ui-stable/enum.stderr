@@ -450,3 +450,32 @@ error[E0277]: `IntoBytes3` has inter-field padding
     = help: the trait `PaddingFree<IntoBytes3, false>` is implemented for `()`
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `bool: FromBytes` is not satisfied
+   --> tests/ui-stable/enum.rs:191:10
+    |
+191 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `bool`, which is required by `FooU8: FromBytes`
+    |
+    = note: Consider adding `#[derive(FromBytes)]` to `bool`
+    = help: the following other types implement trait `FromBytes`:
+              ()
+              AtomicI16
+              AtomicI32
+              AtomicI64
+              AtomicI8
+              AtomicIsize
+              AtomicU16
+              AtomicU32
+            and $N others
+note: required for `FooU8` to implement `FromBytes`
+   --> tests/ui-stable/enum.rs:191:10
+    |
+191 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+note: required by a bound in `assert_is_from_bytes`
+   --> tests/ui-stable/enum.rs:191:10
+    |
+191 | #[derive(FromBytes)]
+    |          ^^^^^^^^^ required by this bound in `assert_is_from_bytes`
+    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)

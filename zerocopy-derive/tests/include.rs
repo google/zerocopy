@@ -26,8 +26,14 @@ mod imp {
     #[allow(unused)]
     pub use {
         ::core::{
-            assert_eq, cell::UnsafeCell, convert::TryFrom, marker::PhantomData, mem::ManuallyDrop,
-            option::IntoIter, prelude::v1::*, primitive::*,
+            assert_eq,
+            cell::UnsafeCell,
+            convert::TryFrom,
+            marker::PhantomData,
+            mem::{ManuallyDrop, MaybeUninit},
+            option::IntoIter,
+            prelude::v1::*,
+            primitive::*,
         },
         ::std::prelude::v1::*,
         ::zerocopy::*,
@@ -79,5 +85,43 @@ pub mod util {
                 ::static_assertions::assert_not_impl_any!($x: $($t),+);
             };
         };
+    }
+
+    #[macro_export]
+    macro_rules! test_trivial_is_bit_valid {
+        ($x:ty => $name:ident) => {
+            #[test]
+            fn $name() {
+                util::test_trivial_is_bit_valid::<$x>();
+            }
+        };
+    }
+
+    // Under some circumstances, our `TryFromBytes` derive generates a trivial
+    // `is_bit_valid` impl that unconditionally returns `true`. This test
+    // attempts to validate that this is, indeed, the behavior of our
+    // `TryFromBytes` derive. It is not foolproof, but is likely to catch some
+    // mistakes.
+    //
+    // As of this writing, this happens when deriving `TryFromBytes` thanks to a
+    // top-level `#[derive(FromBytes)]`.
+    pub fn test_trivial_is_bit_valid<T: super::imp::TryFromBytes>() {
+        // This test works based on the insight that a trivial `is_bit_valid`
+        // impl should never load any bytes from memory. Thus, while it is
+        // technically a violation of `is_bit_valid`'s safety precondition to
+        // pass a pointer to uninitialized memory, the `is_bit_valid` impl we
+        // expect our derives to generate should never touch this memory, and
+        // thus should never exhibit UB. By contrast, if our derives are
+        // spuriously generating non-trivial `is_bit_valid` impls, this should
+        // cause UB which may be caught by Miri.
+
+        let buf = super::imp::MaybeUninit::<T>::uninit();
+        let ptr = super::imp::Ptr::from_ref(&buf);
+        // SAFETY: `T` and `MaybeUninit<T>` have the same layout, so this is a
+        // size-preserving cast. It is also a provenance-preserving cast.
+        let ptr = unsafe { ptr.cast_unsized(|p| p as *mut T) };
+        // SAFETY: This is intentionally unsound; see the preceding comment.
+        let ptr = unsafe { ptr.assume_initialized() };
+        assert!(<T as super::imp::TryFromBytes>::is_bit_valid(ptr));
     }
 }

@@ -32,6 +32,19 @@ include!("include.rs");
 // `Variant128` has a discriminant of -128) since Rust won't automatically wrap
 // a signed discriminant around without you explicitly telling it to.
 
+#[test]
+#[allow(deprecated)]
+fn test_trivial_is_bit_valid() {
+    // Since we derive `FromBytes`, the implied `TryFromBytes` derive's
+    // `is_bit_valid` impl is trivial - it unconditionally returns `true`.
+    util::test_trivial_is_bit_valid::<FooU8>();
+    util::test_trivial_is_bit_valid::<FooI8>();
+    util::test_trivial_is_bit_valid::<FooU8Align>();
+    util::test_trivial_is_bit_valid::<FooI8Align>();
+    util::test_trivial_is_bit_valid::<FooU16>();
+    util::test_trivial_is_bit_valid::<FooI16>();
+}
+
 // Make sure no deprecation warning is generated from our derive (see #553).
 #[deprecated = "do not use"]
 #[derive(imp::FromBytes)]
