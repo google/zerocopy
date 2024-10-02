@@ -25,8 +25,13 @@
 //! check out our [release notes][release-notes], which include a step-by-step
 //! guide for upgrading from 0.7.*
 //!
+//! *Have questions? Need help? Ask the maintainers on [GitHub][github-q-a] or
+//! on [Discord][discord]!*
+//!
 //! [customer-request-issue]: https://github.com/google/zerocopy/issues/new/choose
 //! [release-notes]: https://github.com/google/zerocopy/discussions/1680
+//! [github-q-a]: https://github.com/google/zerocopy/discussions/categories/q-a
+//! [discord]: https://discord.gg/MAvWH2R6zk
 //!
 //! # Overview
 //!
