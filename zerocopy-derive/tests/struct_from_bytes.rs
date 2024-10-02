@@ -19,6 +19,7 @@ include!("include.rs");
 struct Zst;
 
 util_assert_impl_all!(Zst: imp::FromBytes);
+test_trivial_is_bit_valid!(Zst => test_zst_trivial_is_bit_valid);
 
 #[derive(imp::FromBytes)]
 struct One {
@@ -26,6 +27,7 @@ struct One {
 }
 
 util_assert_impl_all!(One: imp::FromBytes);
+test_trivial_is_bit_valid!(One => test_one_trivial_is_bit_valid);
 
 #[derive(imp::FromBytes)]
 struct Two {
@@ -34,6 +36,7 @@ struct Two {
 }
 
 util_assert_impl_all!(Two: imp::FromBytes);
+test_trivial_is_bit_valid!(Two => test_two_trivial_is_bit_valid);
 
 #[derive(imp::FromBytes)]
 struct Unsized {
@@ -55,6 +58,7 @@ struct TypeParams<'a, T: ?imp::Sized, I: imp::Iterator> {
 util_assert_impl_all!(TypeParams<'static, (), imp::IntoIter<()>>: imp::FromBytes);
 util_assert_impl_all!(TypeParams<'static, util::AU16, imp::IntoIter<()>>: imp::FromBytes);
 util_assert_impl_all!(TypeParams<'static, [util::AU16], imp::IntoIter<()>>: imp::FromBytes);
+test_trivial_is_bit_valid!(TypeParams<'static, (), imp::IntoIter<()>> => test_type_params_trivial_is_bit_valid);
 
 // Deriving `FromBytes` should work if the struct has bounded parameters.
 
@@ -70,3 +74,4 @@ where
     T: 'a + 'b + imp::FromBytes;
 
 util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::FromBytes);
+test_trivial_is_bit_valid!(WithParams<'static, 'static, u8, 42> => test_with_params_trivial_is_bit_valid);

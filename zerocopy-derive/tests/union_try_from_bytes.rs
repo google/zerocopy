@@ -15,7 +15,7 @@ include!("include.rs");
 // A struct is `imp::TryFromBytes` if:
 // - any of its fields are `imp::TryFromBytes`
 
-#[derive(imp::Immutable, imp::FromBytes)]
+#[derive(imp::Immutable, imp::TryFromBytes)]
 union One {
     a: u8,
 }
@@ -33,7 +33,7 @@ fn one() {
     assert!(is_bit_valid);
 }
 
-#[derive(imp::Immutable, imp::FromZeros)]
+#[derive(imp::Immutable, imp::TryFromBytes)]
 #[repr(C)]
 union Two {
     a: bool,
@@ -82,7 +82,7 @@ fn two_bad() {
     assert!(!is_bit_valid);
 }
 
-#[derive(imp::Immutable, imp::FromZeros)]
+#[derive(imp::Immutable, imp::TryFromBytes)]
 #[repr(C)]
 union BoolAndZst {
     a: bool,
@@ -111,7 +111,34 @@ fn bool_and_zst() {
     assert!(is_bit_valid);
 }
 
-#[derive(imp::Immutable, imp::FromBytes)]
+#[derive(imp::FromBytes)]
+#[repr(C)]
+union MaybeFromBytes<T: imp::Copy> {
+    t: T,
+}
+
+#[test]
+fn test_maybe_from_bytes() {
+    // When deriving `FromBytes` on a type with no generic parameters, we emit a
+    // trivial `is_bit_valid` impl that always returns true. This test confirms
+    // that we *don't* spuriously do that when generic parameters are present.
+
+    let candidate = ::zerocopy::Ptr::from_ref(&[2u8][..]);
+
+    // SAFETY:
+    // - The cast preserves address and size. As a result, the cast will address
+    //   the same bytes as `c`.
+    // - The cast preserves provenance.
+    // - Neither the input nor output types contain any `UnsafeCell`s.
+    let candidate = unsafe { candidate.cast_unsized(|p| p as *mut MaybeFromBytes<bool>) };
+
+    // SAFETY: `[u8]` consists entirely of initialized bytes.
+    let candidate = unsafe { candidate.assume_initialized() };
+    let is_bit_valid = <MaybeFromBytes<bool> as imp::TryFromBytes>::is_bit_valid(candidate);
+    imp::assert!(!is_bit_valid);
+}
+
+#[derive(imp::Immutable, imp::TryFromBytes)]
 #[repr(C)]
 union TypeParams<'a, T: imp::Copy, I: imp::Iterator>
 where
@@ -131,7 +158,7 @@ util_assert_impl_all!(TypeParams<'static, [util::AU16; 2], imp::IntoIter<()>>: i
 
 // Deriving `imp::TryFromBytes` should work if the union has bounded parameters.
 
-#[derive(imp::Immutable, imp::FromBytes)]
+#[derive(imp::Immutable, imp::TryFromBytes)]
 #[repr(C)]
 union WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::TryFromBytes, const N: usize>
 where

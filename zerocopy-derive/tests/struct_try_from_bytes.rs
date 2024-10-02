@@ -26,7 +26,7 @@ fn zst() {
     imp::assert!(is_bit_valid);
 }
 
-#[derive(imp::FromBytes)]
+#[derive(imp::TryFromBytes)]
 #[repr(C)]
 struct One {
     a: u8,
@@ -45,7 +45,7 @@ fn one() {
     imp::assert!(is_bit_valid);
 }
 
-#[derive(imp::FromZeros)]
+#[derive(imp::TryFromBytes)]
 #[repr(C)]
 struct Two {
     a: bool,
@@ -87,7 +87,7 @@ fn two_bad() {
     imp::assert!(!is_bit_valid);
 }
 
-#[derive(imp::FromBytes)]
+#[derive(imp::TryFromBytes)]
 #[repr(C)]
 struct Unsized {
     a: [u8],
@@ -116,7 +116,7 @@ fn un_sized() {
     imp::assert!(is_bit_valid);
 }
 
-#[derive(imp::FromBytes)]
+#[derive(imp::TryFromBytes)]
 #[repr(C)]
 struct TypeParams<'a, T: ?imp::Sized, I: imp::Iterator> {
     a: I::Item,
@@ -133,7 +133,7 @@ util_assert_impl_all!(TypeParams<'static, [util::AU16], imp::IntoIter<()>>: imp:
 
 // Deriving `imp::TryFromBytes` should work if the struct has bounded parameters.
 
-#[derive(imp::FromBytes)]
+#[derive(imp::TryFromBytes)]
 #[repr(transparent)]
 struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::TryFromBytes, const N: usize>(
     imp::PhantomData<&'a &'b ()>,
@@ -145,6 +145,31 @@ where
     T: 'a + 'b + imp::TryFromBytes;
 
 util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::TryFromBytes);
+
+#[derive(imp::FromBytes)]
+#[repr(C)]
+struct MaybeFromBytes<T>(T);
+
+#[test]
+fn test_maybe_from_bytes() {
+    // When deriving `FromBytes` on a type with no generic parameters, we emit a
+    // trivial `is_bit_valid` impl that always returns true. This test confirms
+    // that we *don't* spuriously do that when generic parameters are present.
+
+    let candidate = ::zerocopy::Ptr::from_ref(&[2u8][..]);
+
+    // SAFETY:
+    // - The cast preserves address and size. As a result, the cast will address
+    //   the same bytes as `c`.
+    // - The cast preserves provenance.
+    // - Neither the input nor output types contain any `UnsafeCell`s.
+    let candidate = unsafe { candidate.cast_unsized(|p| p as *mut MaybeFromBytes<bool>) };
+
+    // SAFETY: `[u8]` consists entirely of initialized bytes.
+    let candidate = unsafe { candidate.assume_initialized() };
+    let is_bit_valid = <MaybeFromBytes<bool> as imp::TryFromBytes>::is_bit_valid(candidate);
+    imp::assert!(!is_bit_valid);
+}
 
 #[derive(Debug, PartialEq, Eq, imp::TryFromBytes, imp::Immutable, imp::KnownLayout)]
 #[repr(C, packed)]

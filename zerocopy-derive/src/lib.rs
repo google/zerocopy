@@ -76,7 +76,7 @@ macro_rules! derive {
         #[proc_macro_derive($trait)]
         pub fn $outer(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
             let ast = syn::parse_macro_input!(ts as DeriveInput);
-            $inner(&ast).into_ts().into()
+            $inner(&ast, Trait::$trait).into_ts().into()
         }
     };
 }
@@ -124,7 +124,7 @@ pub fn derive_as_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     derive_into_bytes(ts)
 }
 
-fn derive_known_layout_inner(ast: &DeriveInput) -> Result<TokenStream, Error> {
+fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<TokenStream, Error> {
     let is_repr_c_struct = match &ast.data {
         Data::Struct(..) => {
             let repr = StructUnionRepr::from_attrs(&ast.attrs)?;
@@ -329,7 +329,7 @@ fn derive_known_layout_inner(ast: &DeriveInput) -> Result<TokenStream, Error> {
     })
 }
 
-fn derive_no_cell_inner(ast: &DeriveInput) -> TokenStream {
+fn derive_no_cell_inner(ast: &DeriveInput, _top_level: Trait) -> TokenStream {
     match &ast.data {
         Data::Struct(strct) => impl_block(
             ast,
@@ -361,16 +361,16 @@ fn derive_no_cell_inner(ast: &DeriveInput) -> TokenStream {
     }
 }
 
-fn derive_try_from_bytes_inner(ast: &DeriveInput) -> Result<TokenStream, Error> {
+fn derive_try_from_bytes_inner(ast: &DeriveInput, top_level: Trait) -> Result<TokenStream, Error> {
     match &ast.data {
-        Data::Struct(strct) => derive_try_from_bytes_struct(ast, strct),
-        Data::Enum(enm) => derive_try_from_bytes_enum(ast, enm),
-        Data::Union(unn) => Ok(derive_try_from_bytes_union(ast, unn)),
+        Data::Struct(strct) => derive_try_from_bytes_struct(ast, strct, top_level),
+        Data::Enum(enm) => derive_try_from_bytes_enum(ast, enm, top_level),
+        Data::Union(unn) => Ok(derive_try_from_bytes_union(ast, unn, top_level)),
     }
 }
 
-fn derive_from_zeros_inner(ast: &DeriveInput) -> Result<TokenStream, Error> {
-    let try_from_bytes = derive_try_from_bytes_inner(ast)?;
+fn derive_from_zeros_inner(ast: &DeriveInput, top_level: Trait) -> Result<TokenStream, Error> {
+    let try_from_bytes = derive_try_from_bytes_inner(ast, top_level)?;
     let from_zeros = match &ast.data {
         Data::Struct(strct) => derive_from_zeros_struct(ast, strct),
         Data::Enum(enm) => derive_from_zeros_enum(ast, enm)?,
@@ -379,8 +379,8 @@ fn derive_from_zeros_inner(ast: &DeriveInput) -> Result<TokenStream, Error> {
     Ok(IntoIterator::into_iter([try_from_bytes, from_zeros]).collect())
 }
 
-fn derive_from_bytes_inner(ast: &DeriveInput) -> Result<TokenStream, Error> {
-    let from_zeros = derive_from_zeros_inner(ast)?;
+fn derive_from_bytes_inner(ast: &DeriveInput, top_level: Trait) -> Result<TokenStream, Error> {
+    let from_zeros = derive_from_zeros_inner(ast, top_level)?;
     let from_bytes = match &ast.data {
         Data::Struct(strct) => derive_from_bytes_struct(ast, strct),
         Data::Enum(enm) => derive_from_bytes_enum(ast, enm)?,
@@ -390,7 +390,7 @@ fn derive_from_bytes_inner(ast: &DeriveInput) -> Result<TokenStream, Error> {
     Ok(IntoIterator::into_iter([from_zeros, from_bytes]).collect())
 }
 
-fn derive_into_bytes_inner(ast: &DeriveInput) -> Result<TokenStream, Error> {
+fn derive_into_bytes_inner(ast: &DeriveInput, _top_level: Trait) -> Result<TokenStream, Error> {
     match &ast.data {
         Data::Struct(strct) => derive_into_bytes_struct(ast, strct),
         Data::Enum(enm) => derive_into_bytes_enum(ast, enm),
@@ -398,7 +398,7 @@ fn derive_into_bytes_inner(ast: &DeriveInput) -> Result<TokenStream, Error> {
     }
 }
 
-fn derive_unaligned_inner(ast: &DeriveInput) -> Result<TokenStream, Error> {
+fn derive_unaligned_inner(ast: &DeriveInput, _top_level: Trait) -> Result<TokenStream, Error> {
     match &ast.data {
         Data::Struct(strct) => derive_unaligned_struct(ast, strct),
         Data::Enum(enm) => derive_unaligned_enum(ast, enm),
@@ -411,8 +411,9 @@ fn derive_unaligned_inner(ast: &DeriveInput) -> Result<TokenStream, Error> {
 fn derive_try_from_bytes_struct(
     ast: &DeriveInput,
     strct: &DataStruct,
+    top_level: Trait,
 ) -> Result<TokenStream, Error> {
-    let extras = Some({
+    let extras = try_gen_trivial_is_bit_valid(ast, top_level).unwrap_or_else(|| {
         let fields = strct.fields();
         let field_names = fields.iter().map(|(name, _ty)| name);
         let field_tys = fields.iter().map(|(_name, ty)| ty);
@@ -456,17 +457,21 @@ fn derive_try_from_bytes_struct(
         FieldBounds::ALL_SELF,
         SelfBounds::None,
         None,
-        extras,
+        Some(extras),
     ))
 }
 
 /// A union is `TryFromBytes` if:
 /// - all of its fields are `TryFromBytes` and `Immutable`
-fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> TokenStream {
+fn derive_try_from_bytes_union(
+    ast: &DeriveInput,
+    unn: &DataUnion,
+    top_level: Trait,
+) -> TokenStream {
     // TODO(#5): Remove the `Immutable` bound.
     let field_type_trait_bounds =
         FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
-    let extras = Some({
+    let extras = try_gen_trivial_is_bit_valid(ast, top_level).unwrap_or_else(|| {
         let fields = unn.fields();
         let field_names = fields.iter().map(|(name, _ty)| name);
         let field_tys = fields.iter().map(|(_name, ty)| ty);
@@ -510,15 +515,34 @@ fn derive_try_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> TokenStrea
         field_type_trait_bounds,
         SelfBounds::None,
         None,
-        extras,
+        Some(extras),
     )
 }
 
-fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<TokenStream, Error> {
+fn derive_try_from_bytes_enum(
+    ast: &DeriveInput,
+    enm: &DataEnum,
+    top_level: Trait,
+) -> Result<TokenStream, Error> {
     let repr = EnumRepr::from_attrs(&ast.attrs)?;
 
-    // The enum derive requires some extra scaffolding
-    let extra = Some(r#enum::derive_is_bit_valid(&ast.ident, &repr, &ast.generics, enm)?);
+    // If an enum has no fields, it has a well-defined integer representation,
+    // and every possible bit pattern corresponds to a valid discriminant tag,
+    // then it *could* be `FromBytes` (even if the user hasn't derived
+    // `FromBytes`). This holds if, for `repr(uN)` or `repr(iN)`, there are 2^N
+    // variants.
+    let could_be_from_bytes = enum_size_from_repr(&repr)
+        .map(|size| enm.fields().is_empty() && enm.variants.len() == 1usize << size)
+        .unwrap_or(false);
+
+    let trivial_is_bit_valid = try_gen_trivial_is_bit_valid(ast, top_level);
+    let extra = match (trivial_is_bit_valid, could_be_from_bytes) {
+        (Some(is_bit_valid), _) => is_bit_valid,
+        // SAFETY: It would be sound for the enum to implement `FomBytes`, as
+        // required by `gen_trivial_is_bit_valid_unchecked`.
+        (None, true) => unsafe { gen_trivial_is_bit_valid_unchecked() },
+        (None, false) => r#enum::derive_is_bit_valid(&ast.ident, &repr, &ast.generics, enm)?,
+    };
 
     Ok(impl_block(
         ast,
@@ -527,8 +551,84 @@ fn derive_try_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<Token
         FieldBounds::ALL_SELF,
         SelfBounds::None,
         None,
-        extra,
+        Some(extra),
     ))
+}
+
+/// Attempts to generate a `TryFromBytes::is_bit_valid` instance that
+/// unconditionally returns true.
+///
+/// This should be used where possible. Using this impl is faster to codegen,
+/// faster to compile, and is friendlier on the optimizer.
+fn try_gen_trivial_is_bit_valid(
+    ast: &DeriveInput,
+    top_level: Trait,
+) -> Option<proc_macro2::TokenStream> {
+    // If the top-level trait is `FromBytes` and `Self` has no type parameters,
+    // then the `FromBytes` derive will fail compilation if `Self` is not
+    // actually soundly `FromBytes`, and so we can rely on that for our
+    // `is_bit_valid` impl. It's plausible that we could make changes - or Rust
+    // could make changes (such as the "trivial bounds" language feature) - that
+    // make this no longer true. To hedge against these, we include an explicit
+    // `Self: FromBytes` check in the generated `is_bit_valid`, which is
+    // bulletproof.
+    if top_level == Trait::FromBytes && ast.generics.params.is_empty() {
+        Some(quote!(
+            // SAFETY: See inline.
+            fn is_bit_valid<___ZerocopyAliasing>(
+                _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+            where
+                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
+                    + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+            {
+                if false {
+                    fn assert_is_from_bytes<T>()
+                    where
+                        T: ::zerocopy::FromBytes,
+                        T: ?::zerocopy::util::macro_util::core_reexport::marker::Sized,
+                    {
+                    }
+
+                    assert_is_from_bytes::<Self>();
+                }
+
+                // SAFETY: The preceding code only compiles if `Self:
+                // FromBytes`. Thus, this code only compiles if all initialized
+                // byte sequences represent valid instances of `Self`.
+                true
+            }
+        ))
+    } else {
+        None
+    }
+}
+
+/// Generates a `TryFromBytes::is_bit_valid` instance that unconditionally
+/// returns true.
+///
+/// This should be used where possible, (although `try_gen_trivial_is_bit_valid`
+/// should be preferred over this for safety reasons). Using this impl is faster
+/// to codegen, faster to compile, and is friendlier on the optimizer.
+///
+/// # Safety
+///
+/// The caller must ensure that all initialized bit patterns are valid for
+/// `Self`.
+unsafe fn gen_trivial_is_bit_valid_unchecked() -> proc_macro2::TokenStream {
+    quote!(
+        // SAFETY: The caller of `gen_trivial_is_bit_valid_unchecked` has
+        // promised that all initialized bit patterns are valid for `Self`.
+        fn is_bit_valid<___ZerocopyAliasing>(
+            _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+        where
+            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
+                + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+        {
+            true
+        }
+    )
 }
 
 /// A struct is `FromZeros` if:

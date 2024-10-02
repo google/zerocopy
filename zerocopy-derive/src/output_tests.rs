@@ -35,7 +35,7 @@ use_as_trait_name!(
 /// tests less brittle and robust against meaningless formatting changes.
 // Adapted from https://github.com/joshlf/synstructure/blob/400499aaf54840056ff56718beb7810540e6be59/src/macros.rs#L212-L317
 macro_rules! test {
-    ($name:path { $($i:tt)* } expands to { $($o:tt)* }) => {
+    ($name:ident { $($i:tt)* } expands to { $($o:tt)* }) => {
         {
             #[allow(dead_code)]
             fn ensure_compiles() {
@@ -47,17 +47,18 @@ macro_rules! test {
         }
     };
 
-    ($name:path { $($i:tt)* } expands to { $($o:tt)* } no_build) => {
+    ($name:ident { $($i:tt)* } expands to { $($o:tt)* } no_build) => {
         {
             let ts: proc_macro2::TokenStream = quote::quote!( $($i)* );
             let ast = syn::parse2::<syn::DeriveInput>(ts).unwrap();
-            let res = $name(&ast);
+            let res = $name(&ast, crate::Trait::$name);
             let expected_toks = quote::quote!( $($o)* );
             assert_eq_streams(expected_toks.into(), res.into_ts().into());
         }
     };
 }
 
+#[track_caller]
 fn assert_eq_streams(expect: TokenStream, res: TokenStream) {
     let pretty =
         |ts: TokenStream| prettyplease::unparse(&syn::parse_file(&ts.to_string()).unwrap());
@@ -81,7 +82,9 @@ fn assert_eq_streams(expect: TokenStream, res: TokenStream) {
             "\
 test failed:
 got:
+```
 {}
+```
 
 diff (expected vs got):
 ```
@@ -195,7 +198,7 @@ fn test_from_zeros() {
 }
 
 #[test]
-fn test_from_bytes() {
+fn test_from_bytes_struct() {
     test! {
         FromBytes {
             struct Foo;
@@ -205,12 +208,21 @@ fn test_from_bytes() {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
 
                 fn is_bit_valid<___ZerocopyAliasing>(
-                    mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                    _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
                 ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                 where
                     ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
                         + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
                 {
+                    if false {
+                        fn assert_is_from_bytes<T>()
+                        where
+                            T: ::zerocopy::FromBytes,
+                            T: ?::zerocopy::util::macro_util::core_reexport::marker::Sized,
+                        {}
+                        assert_is_from_bytes::<Self>();
+                    }
+
                     true
                 }
             }
@@ -222,6 +234,60 @@ fn test_from_bytes() {
 
             #[allow(deprecated)]
             unsafe impl ::zerocopy::FromBytes for Foo {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+            }
+        } no_build
+    }
+}
+
+#[test]
+fn test_from_bytes_union() {
+    test! {
+        FromBytes {
+            union Foo {
+                a: u8,
+            }
+        } expands to {
+            #[allow(deprecated)]
+            unsafe impl ::zerocopy::TryFromBytes for Foo
+            where
+                u8: ::zerocopy::TryFromBytes + ::zerocopy::Immutable,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+
+                fn is_bit_valid<___ZerocopyAliasing>(
+                    _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                where
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
+                        + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                {
+                    if false {
+                        fn assert_is_from_bytes<T>()
+                        where
+                            T: ::zerocopy::FromBytes,
+                            T: ?::zerocopy::util::macro_util::core_reexport::marker::Sized,
+                        {}
+                        assert_is_from_bytes::<Self>();
+                    }
+
+                    true
+                }
+            }
+
+            #[allow(deprecated)]
+            unsafe impl ::zerocopy::FromZeros for Foo
+            where
+                u8: ::zerocopy::FromZeros + ::zerocopy::Immutable,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+            }
+
+            #[allow(deprecated)]
+            unsafe impl ::zerocopy::FromBytes for Foo
+            where
+                u8: ::zerocopy::FromBytes + ::zerocopy::Immutable,
+            {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
             }
         } no_build
@@ -1160,6 +1226,595 @@ fn test_try_from_bytes_enum() {
                         }
                         _ => false,
                     }
+                }
+            }
+        } no_build
+    }
+}
+
+// This goes at the bottom because it's so verbose and it makes scrolling past
+// other code a pain.
+#[test]
+fn test_from_bytes_enum() {
+    test! {
+        FromBytes {
+            #[repr(u8)]
+            enum Foo {
+                Variant0,
+                Variant1,
+                Variant2,
+                Variant3,
+                Variant4,
+                Variant5,
+                Variant6,
+                Variant7,
+                Variant8,
+                Variant9,
+                Variant10,
+                Variant11,
+                Variant12,
+                Variant13,
+                Variant14,
+                Variant15,
+                Variant16,
+                Variant17,
+                Variant18,
+                Variant19,
+                Variant20,
+                Variant21,
+                Variant22,
+                Variant23,
+                Variant24,
+                Variant25,
+                Variant26,
+                Variant27,
+                Variant28,
+                Variant29,
+                Variant30,
+                Variant31,
+                Variant32,
+                Variant33,
+                Variant34,
+                Variant35,
+                Variant36,
+                Variant37,
+                Variant38,
+                Variant39,
+                Variant40,
+                Variant41,
+                Variant42,
+                Variant43,
+                Variant44,
+                Variant45,
+                Variant46,
+                Variant47,
+                Variant48,
+                Variant49,
+                Variant50,
+                Variant51,
+                Variant52,
+                Variant53,
+                Variant54,
+                Variant55,
+                Variant56,
+                Variant57,
+                Variant58,
+                Variant59,
+                Variant60,
+                Variant61,
+                Variant62,
+                Variant63,
+                Variant64,
+                Variant65,
+                Variant66,
+                Variant67,
+                Variant68,
+                Variant69,
+                Variant70,
+                Variant71,
+                Variant72,
+                Variant73,
+                Variant74,
+                Variant75,
+                Variant76,
+                Variant77,
+                Variant78,
+                Variant79,
+                Variant80,
+                Variant81,
+                Variant82,
+                Variant83,
+                Variant84,
+                Variant85,
+                Variant86,
+                Variant87,
+                Variant88,
+                Variant89,
+                Variant90,
+                Variant91,
+                Variant92,
+                Variant93,
+                Variant94,
+                Variant95,
+                Variant96,
+                Variant97,
+                Variant98,
+                Variant99,
+                Variant100,
+                Variant101,
+                Variant102,
+                Variant103,
+                Variant104,
+                Variant105,
+                Variant106,
+                Variant107,
+                Variant108,
+                Variant109,
+                Variant110,
+                Variant111,
+                Variant112,
+                Variant113,
+                Variant114,
+                Variant115,
+                Variant116,
+                Variant117,
+                Variant118,
+                Variant119,
+                Variant120,
+                Variant121,
+                Variant122,
+                Variant123,
+                Variant124,
+                Variant125,
+                Variant126,
+                Variant127,
+                Variant128,
+                Variant129,
+                Variant130,
+                Variant131,
+                Variant132,
+                Variant133,
+                Variant134,
+                Variant135,
+                Variant136,
+                Variant137,
+                Variant138,
+                Variant139,
+                Variant140,
+                Variant141,
+                Variant142,
+                Variant143,
+                Variant144,
+                Variant145,
+                Variant146,
+                Variant147,
+                Variant148,
+                Variant149,
+                Variant150,
+                Variant151,
+                Variant152,
+                Variant153,
+                Variant154,
+                Variant155,
+                Variant156,
+                Variant157,
+                Variant158,
+                Variant159,
+                Variant160,
+                Variant161,
+                Variant162,
+                Variant163,
+                Variant164,
+                Variant165,
+                Variant166,
+                Variant167,
+                Variant168,
+                Variant169,
+                Variant170,
+                Variant171,
+                Variant172,
+                Variant173,
+                Variant174,
+                Variant175,
+                Variant176,
+                Variant177,
+                Variant178,
+                Variant179,
+                Variant180,
+                Variant181,
+                Variant182,
+                Variant183,
+                Variant184,
+                Variant185,
+                Variant186,
+                Variant187,
+                Variant188,
+                Variant189,
+                Variant190,
+                Variant191,
+                Variant192,
+                Variant193,
+                Variant194,
+                Variant195,
+                Variant196,
+                Variant197,
+                Variant198,
+                Variant199,
+                Variant200,
+                Variant201,
+                Variant202,
+                Variant203,
+                Variant204,
+                Variant205,
+                Variant206,
+                Variant207,
+                Variant208,
+                Variant209,
+                Variant210,
+                Variant211,
+                Variant212,
+                Variant213,
+                Variant214,
+                Variant215,
+                Variant216,
+                Variant217,
+                Variant218,
+                Variant219,
+                Variant220,
+                Variant221,
+                Variant222,
+                Variant223,
+                Variant224,
+                Variant225,
+                Variant226,
+                Variant227,
+                Variant228,
+                Variant229,
+                Variant230,
+                Variant231,
+                Variant232,
+                Variant233,
+                Variant234,
+                Variant235,
+                Variant236,
+                Variant237,
+                Variant238,
+                Variant239,
+                Variant240,
+                Variant241,
+                Variant242,
+                Variant243,
+                Variant244,
+                Variant245,
+                Variant246,
+                Variant247,
+                Variant248,
+                Variant249,
+                Variant250,
+                Variant251,
+                Variant252,
+                Variant253,
+                Variant254,
+                Variant255,
+            }
+        } expands to {
+            #[allow(deprecated)]
+            unsafe impl ::zerocopy::TryFromBytes for Foo {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+
+                fn is_bit_valid<___ZerocopyAliasing>(
+                    _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                where
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
+                        + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                {
+                    if false {
+                        fn assert_is_from_bytes<T>()
+                        where
+                            T: ::zerocopy::FromBytes,
+                            T: ?::zerocopy::util::macro_util::core_reexport::marker::Sized,
+                        {}
+                        assert_is_from_bytes::<Self>();
+                    }
+
+                    true
+                }
+            }
+
+            #[allow(deprecated)]
+            unsafe impl ::zerocopy::FromZeros for Foo {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+            }
+
+            #[allow(deprecated)]
+            unsafe impl ::zerocopy::FromBytes for Foo {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+            }
+        } no_build
+    }
+}
+
+#[test]
+fn test_try_from_bytes_trivial_is_bit_valid_enum() {
+    // Even when we aren't deriving `FromBytes` as the top-level trait,
+    // `TryFromBytes` on enums still detects whether we *could* derive
+    // `FromBytes`, and if so, performs the same "trivial `is_bit_valid`"
+    // optimization.
+    test! {
+        TryFromBytes {
+            #[repr(u8)]
+            enum Foo {
+                Variant0,
+                Variant1,
+                Variant2,
+                Variant3,
+                Variant4,
+                Variant5,
+                Variant6,
+                Variant7,
+                Variant8,
+                Variant9,
+                Variant10,
+                Variant11,
+                Variant12,
+                Variant13,
+                Variant14,
+                Variant15,
+                Variant16,
+                Variant17,
+                Variant18,
+                Variant19,
+                Variant20,
+                Variant21,
+                Variant22,
+                Variant23,
+                Variant24,
+                Variant25,
+                Variant26,
+                Variant27,
+                Variant28,
+                Variant29,
+                Variant30,
+                Variant31,
+                Variant32,
+                Variant33,
+                Variant34,
+                Variant35,
+                Variant36,
+                Variant37,
+                Variant38,
+                Variant39,
+                Variant40,
+                Variant41,
+                Variant42,
+                Variant43,
+                Variant44,
+                Variant45,
+                Variant46,
+                Variant47,
+                Variant48,
+                Variant49,
+                Variant50,
+                Variant51,
+                Variant52,
+                Variant53,
+                Variant54,
+                Variant55,
+                Variant56,
+                Variant57,
+                Variant58,
+                Variant59,
+                Variant60,
+                Variant61,
+                Variant62,
+                Variant63,
+                Variant64,
+                Variant65,
+                Variant66,
+                Variant67,
+                Variant68,
+                Variant69,
+                Variant70,
+                Variant71,
+                Variant72,
+                Variant73,
+                Variant74,
+                Variant75,
+                Variant76,
+                Variant77,
+                Variant78,
+                Variant79,
+                Variant80,
+                Variant81,
+                Variant82,
+                Variant83,
+                Variant84,
+                Variant85,
+                Variant86,
+                Variant87,
+                Variant88,
+                Variant89,
+                Variant90,
+                Variant91,
+                Variant92,
+                Variant93,
+                Variant94,
+                Variant95,
+                Variant96,
+                Variant97,
+                Variant98,
+                Variant99,
+                Variant100,
+                Variant101,
+                Variant102,
+                Variant103,
+                Variant104,
+                Variant105,
+                Variant106,
+                Variant107,
+                Variant108,
+                Variant109,
+                Variant110,
+                Variant111,
+                Variant112,
+                Variant113,
+                Variant114,
+                Variant115,
+                Variant116,
+                Variant117,
+                Variant118,
+                Variant119,
+                Variant120,
+                Variant121,
+                Variant122,
+                Variant123,
+                Variant124,
+                Variant125,
+                Variant126,
+                Variant127,
+                Variant128,
+                Variant129,
+                Variant130,
+                Variant131,
+                Variant132,
+                Variant133,
+                Variant134,
+                Variant135,
+                Variant136,
+                Variant137,
+                Variant138,
+                Variant139,
+                Variant140,
+                Variant141,
+                Variant142,
+                Variant143,
+                Variant144,
+                Variant145,
+                Variant146,
+                Variant147,
+                Variant148,
+                Variant149,
+                Variant150,
+                Variant151,
+                Variant152,
+                Variant153,
+                Variant154,
+                Variant155,
+                Variant156,
+                Variant157,
+                Variant158,
+                Variant159,
+                Variant160,
+                Variant161,
+                Variant162,
+                Variant163,
+                Variant164,
+                Variant165,
+                Variant166,
+                Variant167,
+                Variant168,
+                Variant169,
+                Variant170,
+                Variant171,
+                Variant172,
+                Variant173,
+                Variant174,
+                Variant175,
+                Variant176,
+                Variant177,
+                Variant178,
+                Variant179,
+                Variant180,
+                Variant181,
+                Variant182,
+                Variant183,
+                Variant184,
+                Variant185,
+                Variant186,
+                Variant187,
+                Variant188,
+                Variant189,
+                Variant190,
+                Variant191,
+                Variant192,
+                Variant193,
+                Variant194,
+                Variant195,
+                Variant196,
+                Variant197,
+                Variant198,
+                Variant199,
+                Variant200,
+                Variant201,
+                Variant202,
+                Variant203,
+                Variant204,
+                Variant205,
+                Variant206,
+                Variant207,
+                Variant208,
+                Variant209,
+                Variant210,
+                Variant211,
+                Variant212,
+                Variant213,
+                Variant214,
+                Variant215,
+                Variant216,
+                Variant217,
+                Variant218,
+                Variant219,
+                Variant220,
+                Variant221,
+                Variant222,
+                Variant223,
+                Variant224,
+                Variant225,
+                Variant226,
+                Variant227,
+                Variant228,
+                Variant229,
+                Variant230,
+                Variant231,
+                Variant232,
+                Variant233,
+                Variant234,
+                Variant235,
+                Variant236,
+                Variant237,
+                Variant238,
+                Variant239,
+                Variant240,
+                Variant241,
+                Variant242,
+                Variant243,
+                Variant244,
+                Variant245,
+                Variant246,
+                Variant247,
+                Variant248,
+                Variant249,
+                Variant250,
+                Variant251,
+                Variant252,
+                Variant253,
+                Variant254,
+                Variant255,
+            }
+        } expands to {
+            #[allow(deprecated)]
+            unsafe impl ::zerocopy::TryFromBytes for Foo {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+
+                fn is_bit_valid<___ZerocopyAliasing>(
+                    _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                where
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
+                        + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                {
+                    true
                 }
             }
         } no_build

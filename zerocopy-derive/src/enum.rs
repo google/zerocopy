@@ -134,7 +134,7 @@ fn generate_variant_structs(
 
         // We do this rather than emitting `#[derive(::zerocopy::TryFromBytes)]`
         // because that is not hygienic, and this is also more performant.
-        let try_from_bytes_impl = derive_try_from_bytes_inner(&variant_struct)
+        let try_from_bytes_impl = derive_try_from_bytes_inner(&variant_struct, Trait::TryFromBytes)
             .expect("derive_try_from_bytes_inner should not fail on synthesized type");
 
         Some(quote! {
