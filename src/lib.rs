@@ -3176,22 +3176,22 @@ pub unsafe trait FromZeros: TryFromBytes {
         <[Self]>::new_box_zeroed_with_elems(len).map(Into::into)
     }
 
-    /// Extends a `Vec<T>` by pushing `additional` new items onto the end of the
-    /// vector. The new items are initialized with zeros.
+    /// Extends a `Vec<Self>` by pushing `additional` new items onto the end of
+    /// the vector. The new items are initialized with zeros.
     #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
     #[cfg(feature = "alloc")]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
     #[inline(always)]
-    fn extend_vec_zeroed<T: FromZeros>(
-        v: &mut Vec<T>,
-        additional: usize,
-    ) -> Result<(), AllocError> {
+    fn extend_vec_zeroed(v: &mut Vec<Self>, additional: usize) -> Result<(), AllocError>
+    where
+        Self: Sized,
+    {
         // PANICS: We pass `v.len()` for `position`, so the `position > v.len()`
         // panic condition is not satisfied.
-        <T as FromZeros>::insert_vec_zeroed(v, v.len(), additional)
+        <Self as FromZeros>::insert_vec_zeroed(v, v.len(), additional)
     }
 
-    /// Inserts `additional` new items into `Vec<T>` at `position`. The new
+    /// Inserts `additional` new items into `Vec<Self>` at `position`. The new
     /// items are initialized with zeros.
     ///
     /// # Panics
@@ -3201,11 +3201,14 @@ pub unsafe trait FromZeros: TryFromBytes {
     #[cfg(feature = "alloc")]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
     #[inline]
-    fn insert_vec_zeroed<T: FromZeros>(
-        v: &mut Vec<T>,
+    fn insert_vec_zeroed(
+        v: &mut Vec<Self>,
         position: usize,
         additional: usize,
-    ) -> Result<(), AllocError> {
+    ) -> Result<(), AllocError>
+    where
+        Self: Sized,
+    {
         assert!(position <= v.len());
         // We only conditionally compile on versions on which `try_reserve` is
         // stable; the Clippy lint is a false positive.
@@ -6291,15 +6294,15 @@ mod tests {
         #[test]
         fn test_extend_vec_zeroed() {
             // Test extending when there is an existing allocation.
-            let mut v = vec![100u64, 200, 300];
-            u16::extend_vec_zeroed(&mut v, 3).unwrap();
+            let mut v = vec![100u16, 200, 300];
+            FromZeros::extend_vec_zeroed(&mut v, 3).unwrap();
             assert_eq!(v.len(), 6);
             assert_eq!(&*v, &[100, 200, 300, 0, 0, 0]);
             drop(v);
 
             // Test extending when there is no existing allocation.
             let mut v: Vec<u64> = Vec::new();
-            u16::extend_vec_zeroed(&mut v, 3).unwrap();
+            FromZeros::extend_vec_zeroed(&mut v, 3).unwrap();
             assert_eq!(v.len(), 3);
             assert_eq!(&*v, &[0, 0, 0]);
             drop(v);
