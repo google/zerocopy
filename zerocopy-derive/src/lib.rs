@@ -853,27 +853,42 @@ fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> Result<Tok
     let is_packed_1 = repr.is_packed_1();
     let num_fields = strct.fields().len();
 
-    let (padding_check, require_unaligned_fields) = if is_transparent || (is_c && is_packed_1) {
+    let (padding_check, require_unaligned_fields) = if is_transparent || is_packed_1 {
         // No padding check needed.
         // - repr(transparent): The layout and ABI of the whole struct is the
         //   same as its only non-ZST field (meaning there's no padding outside
         //   of that field) and we require that field to be `IntoBytes` (meaning
         //   there's no padding in that field).
-        // - repr(C, packed): Any inter-field padding bytes are removed, meaning
+        // - repr(packed): Any inter-field padding bytes are removed, meaning
         //   that any padding bytes would need to come from the fields, all of
         //   which we require to be `IntoBytes` (meaning they don't have any
-        //   padding).
+        //   padding). Note that this holds regardless of other `repr`
+        //   attributes, including `repr(Rust)`. [1]
+        //
+        // [1] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#the-alignment-modifiers:
+        //
+        //   An important consequence of these rules is that a type with
+        //   `#[repr(packed(1))]`` (or `#[repr(packed)]``) will have no
+        //   inter-field padding.
         (None, false)
     } else if is_c && !repr.is_align_gt_1() && num_fields <= 1 {
         // No padding check needed. A repr(C) struct with zero or one field has
         // no padding unless #[repr(align)] explicitly adds padding, which we
         // check for in this branch's condition.
         (None, false)
-    } else if is_c && ast.generics.params.is_empty() {
-        // Since there are no generics, we can emit a padding check. `repr(C)`
-        // guarantees that fields won't overlap, so the padding check is sound.
-        // This is more permissive than the next case, which requires that all
-        // field types implement `Unaligned`.
+    } else if ast.generics.params.is_empty() {
+        // Since there are no generics, we can emit a padding check. All reprs
+        // guarantee that fields won't overlap [1], so the padding check is
+        // sound. This is more permissive than the next case, which requires
+        // that all field types implement `Unaligned`.
+        //
+        // [1] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#the-rust-representation:
+        //
+        //   The only data layout guarantees made by [`repr(Rust)`] are those
+        //   required for soundness. They are:
+        //   ...
+        //   2. The fields do not overlap.
+        //   ...
         (Some(PaddingCheck::Struct), false)
     } else if is_c && !repr.is_align_gt_1() {
         // We can't use a padding check since there are generic type arguments.

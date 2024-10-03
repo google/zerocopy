@@ -103,6 +103,31 @@ util_assert_impl_all!(CPackedGeneric<u8, util::AU16>: imp::IntoBytes);
 util_assert_impl_all!(CPackedGeneric<u8, [util::AU16]>: imp::IntoBytes);
 
 #[derive(imp::IntoBytes)]
+#[repr(packed)]
+struct PackedGeneric<T, U: ?imp::Sized> {
+    t: T,
+    // Unsized types stored in `repr(packed)` structs must not be dropped
+    // because dropping them in-place might be unsound depending on the
+    // alignment of the outer struct. Sized types can be dropped by first being
+    // moved to an aligned stack variable, but this isn't possible with unsized
+    // types.
+    u: imp::ManuallyDrop<U>,
+}
+
+util_assert_impl_all!(PackedGeneric<u8, util::AU16>: imp::IntoBytes);
+util_assert_impl_all!(PackedGeneric<u8, [util::AU16]>: imp::IntoBytes);
+
+// This test is non-portable, but works so long as Rust happens to lay this
+// struct out with no padding.
+#[derive(imp::IntoBytes)]
+struct Unpacked {
+    a: u8,
+    b: u8,
+}
+
+util_assert_impl_all!(Unpacked: imp::IntoBytes);
+
+#[derive(imp::IntoBytes)]
 #[repr(C)]
 struct ReprCGenericOneField<T: ?imp::Sized> {
     t: T,

@@ -135,27 +135,6 @@ struct IntoBytes5 {
     a: u8,
 }
 
-// We don't emit a padding check unless there's a repr that can guarantee that
-// fields don't overlap.
-#[derive(IntoBytes)]
-struct IntoBytes6 {
-    a: u8,
-    // Add a second field to avoid triggering the "repr(C) struct with one
-    // field" special case.
-    b: u8,
-}
-
-// We don't emit a padding check unless there's a repr that can guarantee that
-// fields don't overlap. `repr(packed)` on its own doesn't guarantee this.
-#[derive(IntoBytes)]
-#[repr(packed(2))]
-struct IntoBytes7 {
-    a: u8,
-    // Add a second field to avoid triggering the "repr(C) struct with one
-    // field" special case.
-    b: u8,
-}
-
 #[derive(IntoBytes)]
 struct IntoBytes8<T> {
     t: T,
@@ -164,14 +143,6 @@ struct IntoBytes8<T> {
 #[derive(IntoBytes)]
 #[repr(packed(2))]
 struct IntoBytes9<T> {
-    t: T,
-}
-
-// `repr(packed)` without `repr(C)` is not considered sufficient to guarantee
-// layout.
-#[derive(IntoBytes)]
-#[repr(packed)]
-struct IntoBytes10<T> {
     t: T,
 }
 
