@@ -5425,7 +5425,7 @@ mod alloc_support {
 
 #[cfg(feature = "alloc")]
 #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
-#[doc(inline)]
+#[doc(hidden)]
 pub use alloc_support::*;
 
 #[cfg(test)]
