@@ -333,6 +333,40 @@ fn test_into_bytes() {
 }
 
 #[test]
+fn test_union_into_bytes() {
+    // Rustfmt spuriously adds spaces after the newline in the middle of the
+    // string literal.
+    #[rustfmt::skip]
+    test! {
+        IntoBytes {
+            #[repr(C)]
+            union Foo {
+                a: u8,
+            }
+        } expands to {
+            const _: () = {
+                #[cfg(not(zerocopy_derive_union_into_bytes))]
+                ::zerocopy::util::macro_util::core_reexport::compile_error!(
+                    "requires --cfg zerocopy_derive_union_into_bytes;
+please let us know you use this feature: https://github.com/google/zerocopy/discussions/1802"
+                );
+            };
+            #[allow(deprecated)]
+            unsafe impl ::zerocopy::IntoBytes for Foo
+            where
+                u8: ::zerocopy::IntoBytes,
+                (): ::zerocopy::util::macro_util::PaddingFree<
+                    Foo,
+                    { ::zerocopy::union_has_padding!(Foo, [u8]) },
+                >,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+            }
+        } no_build
+    }
+}
+
+#[test]
 fn test_unaligned() {
     test! {
         Unaligned {

@@ -4668,8 +4668,8 @@ fn mut_from_prefix_suffix<T: FromBytes + KnownLayout + ?Sized>(
 ///
 /// This derive analyzes, at compile time, whether the annotated type satisfies
 /// the [safety conditions] of `IntoBytes` and implements `IntoBytes` if it is
-/// sound to do so. This derive can be applied to structs, enums, and unions;
-/// e.g.:
+/// sound to do so. This derive can be applied to structs and enums (see below
+/// for union support); e.g.:
 ///
 /// ```
 /// # use zerocopy_derive::{IntoBytes};
@@ -4685,15 +4685,6 @@ fn mut_from_prefix_suffix<T: FromBytes + KnownLayout + ?Sized>(
 /// #[repr(u8)]
 /// enum MyEnum {
 /// #   Variant,
-/// # /*
-///     ...
-/// # */
-/// }
-///
-/// #[derive(IntoBytes)]
-/// #[repr(C)]
-/// union MyUnion {
-/// #   variant: u8,
 /// # /*
 ///     ...
 /// # */
@@ -4726,6 +4717,31 @@ fn mut_from_prefix_suffix<T: FromBytes + KnownLayout + ?Sized>(
 /// layout] for more information about type layout and padding.
 ///
 /// [type layout]: https://doc.rust-lang.org/reference/type-layout.html
+///
+/// # Unions
+///
+/// Currently, union bit validity is [up in the air][union-validity], and so
+/// zerocopy does not support `#[derive(IntoBytes)]` on unions by default.
+/// However, implementing `IntoBytes` on a union type is likely sound on all
+/// existing Rust toolchains - it's just that it may become unsound in the
+/// future. You can opt-in to `#[derive(IntoBytes)]` support on unions by
+/// passing the unstable `zerocopy_derive_union_into_bytes` cfg:
+///
+/// ```shell
+/// $ RUSTFLAGS='--cfg zerocopy_derive_union_into_bytes' cargo build
+/// ```
+///
+/// We make no stability guarantees regarding this cfg, and may remove it at any
+/// point.
+///
+/// We are actively working with Rust to stabilize the necessary language
+/// guarantees to support this in a forwards-compatible way, which will enable
+/// us to remove the cfg gate. As part of this effort, we need to know how much
+/// demand there is for this feature. If you would like to use `IntoBytes` on
+/// unions, [please let us know][discussion].
+///
+/// [union-validity]: https://github.com/rust-lang/unsafe-code-guidelines/issues/438
+/// [discussion]: https://github.com/google/zerocopy/discussions/1802
 ///
 /// # Analysis
 ///
@@ -4786,15 +4802,6 @@ pub use zerocopy_derive::IntoBytes;
 /// #[repr(u8)]
 /// enum MyEnum {
 /// #   Variant0,
-/// # /*
-///     ...
-/// # */
-/// }
-///
-/// #[derive(IntoBytes)]
-/// #[repr(C)]
-/// union MyUnion {
-/// #   variant: u8,
 /// # /*
 ///     ...
 /// # */
