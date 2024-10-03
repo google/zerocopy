@@ -4731,8 +4731,10 @@ fn mut_from_prefix_suffix<T: FromBytes + KnownLayout + ?Sized>(
 /// $ RUSTFLAGS='--cfg zerocopy_derive_union_into_bytes' cargo build
 /// ```
 ///
-/// We make no stability guarantees regarding this cfg, and may remove it at any
-/// point.
+/// However, it is your responsibility to ensure that this derive is sound on
+/// the specific versions of the Rust toolchain you are using! We make no
+/// stability or soundness guarantees regarding this cfg, and may remove it at
+/// any point.
 ///
 /// We are actively working with Rust to stabilize the necessary language
 /// guarantees to support this in a forwards-compatible way, which will enable
