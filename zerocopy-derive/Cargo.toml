@@ -22,6 +22,10 @@ repository = "https://github.com/google/zerocopy"
 # [1] https://github.com/rust-lang/crater
 exclude = [".*", "tests/enum_from_bytes.rs", "tests/ui-nightly/enum_from_bytes_u16_too_few.rs.disabled"]
 
+[lints.rust]
+# See #1792 for more context.
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(zerocopy_derive_union_into_bytes)'] }
+
 [lib]
 proc-macro = true
 

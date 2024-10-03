@@ -949,6 +949,17 @@ fn derive_into_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<TokenStre
 /// - `repr(C)`, `repr(transparent)`, or `repr(packed)`
 /// - no padding (size of union equals size of each field type)
 fn derive_into_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> Result<TokenStream, Error> {
+    // See #1792 for more context.
+    let cfg_compile_error = quote!(
+        const _: () = {
+            #[cfg(not(zerocopy_derive_union_into_bytes))]
+            ::zerocopy::util::macro_util::core_reexport::compile_error!(
+                "requires --cfg zerocopy_derive_union_into_bytes;
+please let us know you use this feature: https://github.com/google/zerocopy/discussions/1802"
+            );
+        };
+    );
+
     // TODO(#10): Support type parameters.
     if !ast.generics.params.is_empty() {
         return Err(Error::new(Span::call_site(), "unsupported on types with type parameters"));
@@ -966,7 +977,7 @@ fn derive_into_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> Result<TokenSt
         ));
     }
 
-    Ok(impl_block(
+    let impl_block = impl_block(
         ast,
         unn,
         Trait::IntoBytes,
@@ -974,7 +985,8 @@ fn derive_into_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> Result<TokenSt
         SelfBounds::None,
         Some(PaddingCheck::Union),
         None,
-    ))
+    );
+    Ok(quote!(#cfg_compile_error #impl_block))
 }
 
 /// A struct is `Unaligned` if:

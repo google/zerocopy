@@ -164,10 +164,11 @@ fn install_toolchain_or_exit(versions: &Versions, name: &str) -> Result<(), Erro
 }
 
 fn get_rustflags(name: &str) -> &'static str {
+    // See #1792 for context on zerocopy_derive_union_into_bytes.
     if name == "nightly" {
-        "--cfg __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS "
+        "--cfg __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS --cfg zerocopy_derive_union_into_bytes "
     } else {
-        ""
+        "--cfg zerocopy_derive_union_into_bytes "
     }
 }
 
