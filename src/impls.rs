@@ -934,7 +934,9 @@ mod simd {
         );
         #[cfg(zerocopy_aarch64_simd)]
         simd_arch_mod!(
-            #[cfg(target_arch = "aarch64")]
+            // NOTE(https://github.com/rust-lang/stdarch/issues/1484): NEON intrinsics are currently
+            // broken on big-endian platforms.
+            #[cfg(all(target_arch = "aarch64", target_endian = "little"))]
             aarch64, aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,
             int8x8x3_t, int8x8x4_t, int8x16_t, int8x16x2_t, int8x16x3_t, int8x16x4_t, int16x4_t,
             int16x8_t, int32x2_t, int32x4_t, int64x1_t, int64x2_t, poly8x8_t, poly8x8x2_t, poly8x8x3_t,
