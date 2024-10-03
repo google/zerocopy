@@ -2539,37 +2539,15 @@ pub unsafe trait TryFromBytes {
     where
         Self: Sized,
     {
-        // Note that we have to call `is_bit_valid` on an exclusive-aliased
-        // pointer since we don't require `Self: Immutable`. That's why we do `let
-        // mut` and `Ptr::from_mut` here. See the doc comment on `is_bit_valid`
-        // and the implementation of `TryFromBytes` for `UnsafeCell` for more
-        // details.
-        let mut candidate = match MaybeUninit::<Self>::read_from_bytes(source) {
+        let candidate = match MaybeUninit::<Self>::read_from_bytes(source) {
             Ok(candidate) => candidate,
             Err(e) => {
                 return Err(TryReadError::Size(e.with_dst()));
             }
         };
-        let c_ptr = Ptr::from_mut(&mut candidate);
-        let c_ptr = c_ptr.transparent_wrapper_into_inner();
-        // SAFETY: `c_ptr` has no uninitialized sub-ranges because it derived
-        // from `candidate`, which in turn derives from `source: &[u8]`.
-        let c_ptr = unsafe { c_ptr.assume_validity::<invariant::Initialized>() };
-
-        // This call may panic. If that happens, it doesn't cause any soundness
-        // issues, as we have not generated any invalid state which we need to
-        // fix before returning.
-        //
-        // Note that one panic or post-monomorphization error condition is
-        // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
-        // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
-        // condition will not happen.
-        if !Self::is_bit_valid(c_ptr.forget_aligned()) {
-            return Err(ValidityError::new(source).into());
-        }
-
-        // SAFETY: We just validated that `candidate` contains a valid `Self`.
-        Ok(unsafe { candidate.assume_init() })
+        // SAFETY: `candidate` was copied from from `source: &[u8]`, so all of
+        // its bytes are initialized.
+        unsafe { try_read_from(source, candidate) }
     }
 
     /// Attempts to read a `Self` from the prefix of the given `source`.
@@ -2622,37 +2600,15 @@ pub unsafe trait TryFromBytes {
     where
         Self: Sized,
     {
-        // Note that we have to call `is_bit_valid` on an exclusive-aliased
-        // pointer since we don't require `Self: Immutable`. That's why we do `let
-        // mut` and `Ptr::from_mut` here. See the doc comment on `is_bit_valid`
-        // and the implementation of `TryFromBytes` for `UnsafeCell` for more
-        // details.
-        let (mut candidate, suffix) = match MaybeUninit::<Self>::read_from_prefix(source) {
+        let (candidate, suffix) = match MaybeUninit::<Self>::read_from_prefix(source) {
             Ok(candidate) => candidate,
             Err(e) => {
                 return Err(TryReadError::Size(e.with_dst()));
             }
         };
-        let c_ptr = Ptr::from_mut(&mut candidate);
-        let c_ptr = c_ptr.transparent_wrapper_into_inner();
-        // SAFETY: `c_ptr` has no uninitialized sub-ranges because it derived
-        // from `candidate`, which in turn derives from `source: &[u8]`.
-        let c_ptr = unsafe { c_ptr.assume_validity::<invariant::Initialized>() };
-
-        // This call may panic. If that happens, it doesn't cause any soundness
-        // issues, as we have not generated any invalid state which we need to
-        // fix before returning.
-        //
-        // Note that one panic or post-monomorphization error condition is
-        // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
-        // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
-        // condition will not happen.
-        if !Self::is_bit_valid(c_ptr.forget_aligned()) {
-            return Err(ValidityError::new(source).into());
-        }
-
-        // SAFETY: We just validated that `candidate` contains a valid `Self`.
-        Ok((unsafe { candidate.assume_init() }, suffix))
+        // SAFETY: `candidate` was copied from from `source: &[u8]`, so all of
+        // its bytes are initialized.
+        unsafe { try_read_from(source, candidate).map(|slf| (slf, suffix)) }
     }
 
     /// Attempts to read a `Self` from the suffix of the given `source`.
@@ -2706,37 +2662,15 @@ pub unsafe trait TryFromBytes {
     where
         Self: Sized,
     {
-        // Note that we have to call `is_bit_valid` on an exclusive-aliased
-        // pointer since we don't require `Self: Immutable`. That's why we do `let
-        // mut` and `Ptr::from_mut` here. See the doc comment on `is_bit_valid`
-        // and the implementation of `TryFromBytes` for `UnsafeCell` for more
-        // details.
-        let (prefix, mut candidate) = match MaybeUninit::<Self>::read_from_suffix(source) {
+        let (prefix, candidate) = match MaybeUninit::<Self>::read_from_suffix(source) {
             Ok(candidate) => candidate,
             Err(e) => {
                 return Err(TryReadError::Size(e.with_dst()));
             }
         };
-        let c_ptr = Ptr::from_mut(&mut candidate);
-        let c_ptr = c_ptr.transparent_wrapper_into_inner();
-        // SAFETY: `c_ptr` has no uninitialized sub-ranges because it derived
-        // from `candidate`, which in turn derives from `source: &[u8]`.
-        let c_ptr = unsafe { c_ptr.assume_validity::<invariant::Initialized>() };
-
-        // This call may panic. If that happens, it doesn't cause any soundness
-        // issues, as we have not generated any invalid state which we need to
-        // fix before returning.
-        //
-        // Note that one panic or post-monomorphization error condition is
-        // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
-        // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
-        // condition will not happen.
-        if !Self::is_bit_valid(c_ptr.forget_aligned()) {
-            return Err(ValidityError::new(source).into());
-        }
-
-        // SAFETY: We just validated that `candidate` contains a valid `Self`.
-        Ok((prefix, unsafe { candidate.assume_init() }))
+        // SAFETY: `candidate` was copied from from `source: &[u8]`, so all of
+        // its bytes are initialized.
+        unsafe { try_read_from(source, candidate).map(|slf| (prefix, slf)) }
     }
 }
 
@@ -2793,6 +2727,38 @@ fn try_mut_from_prefix_suffix<T: TryFromBytes + KnownLayout + ?Sized>(
 #[inline(always)]
 fn swap<T, U>((t, u): (T, U)) -> (U, T) {
     (u, t)
+}
+
+/// # Safety
+///
+/// All bytes of `candidate` must be initialized.
+#[inline(always)]
+unsafe fn try_read_from<S, T: TryFromBytes>(
+    source: S,
+    mut candidate: MaybeUninit<T>,
+) -> Result<T, TryReadError<S, T>> {
+    // We use `from_mut` despite not mutating via `c_ptr` so that we don't need
+    // to add a `T: Immutable` bound.
+    let c_ptr = Ptr::from_mut(&mut candidate);
+    let c_ptr = c_ptr.transparent_wrapper_into_inner();
+    // SAFETY: `c_ptr` has no uninitialized sub-ranges because it derived from
+    // `candidate`, which the caller promises is entirely initialized.
+    let c_ptr = unsafe { c_ptr.assume_validity::<invariant::Initialized>() };
+
+    // This call may panic. If that happens, it doesn't cause any soundness
+    // issues, as we have not generated any invalid state which we need to
+    // fix before returning.
+    //
+    // Note that one panic or post-monomorphization error condition is
+    // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
+    // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
+    // condition will not happen.
+    if !T::is_bit_valid(c_ptr.forget_aligned()) {
+        return Err(ValidityError::new(source).into());
+    }
+
+    // SAFETY: We just validated that `candidate` contains a valid `T`.
+    Ok(unsafe { candidate.assume_init() })
 }
 
 /// Types for which a sequence of bytes all set to zero represents a valid
