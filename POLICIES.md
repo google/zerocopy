@@ -100,10 +100,10 @@ will only increase our MSRV during semver-breaking version changes (e.g., 0.1 ->
 0.2, 1.0 -> 2.0, etc).
 
 For zerocopy with the `derive` feature enabled, and for the zerocopy-derive
-crate, we inherit the MSRV of our sole external dependency, syn. As of this
-writing (2024-07-02), syn does *not* consider MSRV increases to be
-semver-breaking changes. Thus, using the `derive` feature may result in the
-effective MSRV increasing within a semver version train.
+crate, we inherit the maximum MSRV any of our dependencies. As of this writing
+(2024-10-03), at least one dependency (syn) does *not* consider MSRV increases
+to be semver-breaking changes. Thus, using the `derive` feature may result in
+the effective MSRV increasing within a semver version train.
 
 ## Yanking
 
