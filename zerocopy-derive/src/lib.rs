@@ -1114,7 +1114,26 @@ enum Trait {
 
 impl ToTokens for Trait {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        let ident = Ident::new(&format!("{:?}", self), Span::call_site());
+        // According to [1], the format of the derived `Debug`` output is not
+        // stable and therefore not guaranteed to represent the variant names.
+        // Indeed with the (unstable) `fmt-debug` compiler flag [2], it can
+        // return only a minimalized output or empty string. To make sure this
+        // code will work in the future and independet of the compiler flag, we
+        // translate the variants to their names manually here.
+        //
+        // [1] https://doc.rust-lang.org/1.81.0/std/fmt/trait.Debug.html#stability
+        // [2] https://doc.rust-lang.org/beta/unstable-book/compiler-flags/fmt-debug.html
+        let s = match self {
+            Trait::KnownLayout => "KnownLayout",
+            Trait::Immutable => "Immutable",
+            Trait::TryFromBytes => "TryFromBytes",
+            Trait::FromZeros => "FromZeros",
+            Trait::FromBytes => "FromBytes",
+            Trait::IntoBytes => "IntoBytes",
+            Trait::Unaligned => "Unaligned",
+            Trait::Sized => "Sized",
+        };
+        let ident = Ident::new(s, Span::call_site());
         tokens.extend(core::iter::once(TokenTree::Ident(ident)));
     }
 }
