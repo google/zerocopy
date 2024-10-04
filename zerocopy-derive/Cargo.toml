@@ -7,7 +7,7 @@
 # those terms.
 
 [package]
-edition = "2018"
+edition = "2021"
 name = "zerocopy-derive"
 version = "0.8.0"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
