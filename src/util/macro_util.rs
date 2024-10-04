@@ -81,6 +81,28 @@ impl<T, U> MaxAlignsOf<T, U> {
     }
 }
 
+#[doc(hidden)]
+pub trait TransmuteRefHelper {
+    // For `Self: Sized`, `Elem = Self`. For `Self = [T]`, `Elem = T`.
+    type Elem;
+
+    fn from_elem(_elem: Self::Elem) -> &'static Self {
+        loop {}
+    }
+
+    fn from_elem_mut(_elem: Self::Elem) -> &'static mut Self {
+        loop {}
+    }
+}
+
+impl<T: Sized> TransmuteRefHelper for T {
+    type Elem = T;
+}
+
+impl<T: Sized> TransmuteRefHelper for [T] {
+    type Elem = T;
+}
+
 const _64K: usize = 1 << 16;
 
 // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
@@ -443,38 +465,120 @@ macro_rules! assert_size_eq {
     }};
 }
 
-/// Transmutes a reference of one type to a reference of another type.
-///
 /// # Safety
 ///
-/// The caller must guarantee that:
-/// - `Src: IntoBytes + Immutable`
-/// - `Dst: FromBytes + Immutable`
-/// - `size_of::<Src>() == size_of::<Dst>()`
-/// - `align_of::<Src>() >= align_of::<Dst>()`
-#[inline(always)]
-pub const unsafe fn transmute_ref<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
-    src: &'src Src,
-) -> &'dst Dst {
-    let src: *const Src = src;
-    let dst = src.cast::<Dst>();
-    // SAFETY:
-    // - We know that it is sound to view the target type of the input reference
-    //   (`Src`) as the target type of the output reference (`Dst`) because the
-    //   caller has guaranteed that `Src: IntoBytes`, `Dst: FromBytes`, and
-    //   `size_of::<Src>() == size_of::<Dst>()`.
-    // - We know that there are no `UnsafeCell`s, and thus we don't have to
-    //   worry about `UnsafeCell` overlap, because `Src: Immutable` and `Dst:
-    //   Immutable`.
-    // - The caller has guaranteed that alignment is not increased.
-    // - We know that the returned lifetime will not outlive the input lifetime
-    //   thanks to the lifetime bounds on this function.
-    //
-    // TODO(#67): Once our MSRV is 1.58, replace this `transmute` with `&*dst`.
-    #[allow(clippy::transmute_ptr_to_ref)]
-    unsafe {
-        mem::transmute(dst)
-    }
+/// TODO
+#[cfg(zerocopy_deref_const)] // 1.58 and later
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! transmute_ref_inner {
+    ($src:expr) => {
+        unsafe { &*($src as *const _ as *const _) }
+    };
+}
+
+/// # Safety
+///
+/// This must be called in a context in which `$src` has type `*const Src` and
+/// the macro expression (inferred from the calling context) has type `*const
+/// Dst`. `Src` and `Dst` must either both be sized types or must both be slice
+/// types.
+///
+/// If `Src: Sized, Dst: Sized`, let `S = Src, D = Dst`. Otherwise, let `Src =
+/// [S], Dst = [D]`. The caller must promise:
+/// - `size_of::<S>() == size_of::<D>()`
+/// - `align_of::<S>() == align_of::<D>()`
+/// - `S: IntoBytes + Immutable`
+/// - `D: FromBytes + Immutable`
+///
+/// TODO: Safety postconditions?
+#[cfg(not(zerocopy_deref_const))] // 1.56 and 1.57
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! transmute_ref_inner {
+    ($src:expr) => {
+        // SAFETY: The caller promises that this is either a sized-to-sized raw
+        // pointer transmutation or a slice-to-slice raw pointer transmutation.
+        //
+        // In the sized-to-sized case, the layout of sized (thin) raw pointers
+        // is well-defined, and this transmute is well-defined.
+        //
+        // In the slice-to-slice case, the layout of slice (fat) raw pointers is
+        // not guaranteed by the Rust Reference. However, we only permit this to
+        // compile on Rust 1.56 and 1.57. Thus, while this code's soundness
+        // isn't forwards-compatible, it doesn't need to be. It only needs to be
+        // sound on 1.56 and 1.57, and on those toolchains, the layout of fat
+        // pointers is equal to:
+        //
+        //   #[repr(C)]
+        //   struct SlicePtr<T> {
+        //       data: *const T,
+        //       len: usize,
+        //   }
+        //
+        // Thus, this transmute produces a destination pointer with the same
+        // referent address and the same number of slice elements as the source
+        // pointer.
+        $crate::util::macro_util::core_reexport::mem::transmute(src)
+    };
+}
+
+/// # Safety
+///
+/// TODO
+#[cfg(zerocopy_deref_const)] // 1.58 and later
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! transmute_mut_inner {
+    ($src:expr) => {
+        unsafe { &mut *($src as *mut _ as *mut _) }
+    };
+}
+
+/// # Safety
+///
+/// This must be called in a context in which `$src` has type `*const Src` and
+/// the macro expression (inferred from the calling context) has type `*const
+/// Dst`. `Src` and `Dst` must either both be sized types or must both be slice
+/// types.
+///
+/// If `Src: Sized, Dst: Sized`, let `S = Src, D = Dst`. Otherwise, let `Src =
+/// [S], Dst = [D]`. The caller must promise:
+/// - `size_of::<S>() == size_of::<D>()`
+/// - `align_of::<S>() == align_of::<D>()`
+/// - `S: IntoBytes`
+/// - `D: FromBytes`
+///
+/// TODO: Safety postconditions?
+#[cfg(not(zerocopy_deref_const))] // 1.56 and 1.57
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! transmute_mut_inner {
+    ($src:expr) => {
+        // SAFETY: The caller promises that this is either a sized-to-sized raw
+        // pointer transmutation or a slice-to-slice raw pointer transmutation.
+        //
+        // In the sized-to-sized case, the layout of sized (thin) raw pointers
+        // is well-defined, and this transmute is well-defined.
+        //
+        // In the slice-to-slice case, the layout of slice (fat) raw pointers is
+        // not guaranteed by the Rust Reference. However, we only permit this to
+        // compile on Rust 1.56 and 1.57. Thus, while this code's soundness
+        // isn't forwards-compatible, it doesn't need to be. It only needs to be
+        // sound on 1.56 and 1.57, and on those toolchains, the layout of fat
+        // pointers is equal to:
+        //
+        //   #[repr(C)]
+        //   struct SlicePtr<T> {
+        //       data: *const T,
+        //       len: usize,
+        //   }
+        //
+        // Thus, this transmute produces a destination pointer with the same
+        // referent address and the same number of slice elements as the source
+        // pointer.
+        $crate::util::macro_util::core_reexport::mem::transmute(src)
+    };
 }
 
 /// Transmutes a mutable reference of one type to a mutable reference of another

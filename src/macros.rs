@@ -182,22 +182,30 @@ macro_rules! transmute_ref {
             // this macro expression is `&U` where `U: 'u + Sized + FromBytes +
             // Immutable`, and that `'t` outlives `'u`.
 
-            struct AssertSrcIsSized<'a, T: ::core::marker::Sized>(&'a T);
-            struct AssertSrcIsIntoBytes<'a, T: ?::core::marker::Sized + $crate::IntoBytes>(&'a T);
-            struct AssertSrcIsImmutable<'a, T: ?::core::marker::Sized + $crate::Immutable>(&'a T);
-            struct AssertDstIsSized<'a, T: ::core::marker::Sized>(&'a T);
-            struct AssertDstIsFromBytes<'a, U: ?::core::marker::Sized + $crate::FromBytes>(&'a U);
-            struct AssertDstIsImmutable<'a, T: ?::core::marker::Sized + $crate::Immutable>(&'a T);
+            struct AssertSrcIsIntoBytes<'a, T>(&'a T)
+            where
+                T: ?::core::marker::Sized + $crate::util::macro_util::TransmuteRefHelper,
+                T::Elem: $crate::IntoBytes;
 
-            let _ = AssertSrcIsSized(e);
+            struct AssertSrcIsImmutable<'a, T>(&'a T)
+            where
+                T: ?::core::marker::Sized + $crate::util::macro_util::TransmuteRefHelper,
+                T::Elem: $crate::Immutable;
+
+            struct AssertDstIsFromBytes<'a, T>(&'a T)
+            where
+                T: ?::core::marker::Sized + $crate::util::macro_util::TransmuteRefHelper,
+                T::Elem: $crate::IntoBytes;
+
+            struct AssertDstIsImmutable<'a, T>(&'a T)
+            where
+                T: ?::core::marker::Sized + $crate::util::macro_util::TransmuteRefHelper,
+                T::Elem: $crate::Immutable;
+
             let _ = AssertSrcIsIntoBytes(e);
             let _ = AssertSrcIsImmutable(e);
 
             if true {
-                #[allow(unused, unreachable_code)]
-                let u = AssertDstIsSized(loop {});
-                u.0
-            } else if true {
                 #[allow(unused, unreachable_code)]
                 let u = AssertDstIsFromBytes(loop {});
                 u.0
@@ -214,16 +222,20 @@ macro_rules! transmute_ref {
             // `t` is inferred to have type `T` because it's assigned to `e` (of
             // type `&T`) as `&t`.
             let mut t = loop {};
-            e = &t;
 
-            // `u` is inferred to have type `U` because it's used as `&u` as the
-            // value returned from this branch.
-            let u;
+            if false {
+                e = $crate::util::macro_util::TransmuteRefHelper::from_elem(t);
+                loop {}
+            } else {
+                // `u` is inferred to have type `U` because it's used as `&u` as
+                // the value returned from this branch.
+                let u;
 
-            $crate::assert_size_eq!(t, u);
-            $crate::assert_align_gt_eq!(t, u);
+                $crate::assert_size_eq!(t, u);
+                $crate::assert_align_gt_eq!(t, u);
 
-            &u
+                $crate::util::macro_util::TransmuteRefHelper::from_elem(u)
+            }
         } else {
             // SAFETY: For source type `Src` and destination type `Dst`:
             // - We know that `Src: IntoBytes + Immutable` and `Dst: FromBytes +
@@ -234,7 +246,7 @@ macro_rules! transmute_ref {
             //   the use of `assert_size_eq!` above.
             // - We know that `align_of::<Src>() >= align_of::<Dst>()` thanks to
             //   the use of `assert_align_gt_eq!` above.
-            let u = unsafe { $crate::util::macro_util::transmute_ref(e) };
+            let u = unsafe { $crate::transmute_ref_inner!(e) };
             $crate::util::macro_util::must_use(u)
         }
     }}
@@ -325,43 +337,28 @@ macro_rules! transmute_mut {
         #[allow(unused, clippy::diverging_sub_expression)]
         if false {
             // This branch, though never taken, ensures that the type of `e` is
-            // `&mut T` where `T: 't + Sized + FromBytes + IntoBytes + Immutable`
-            // and that the type of this macro expression is `&mut U` where `U:
-            // 'u + Sized + FromBytes + IntoBytes + Immutable`.
+            // `&mut T` where `T: 't + Sized + FromBytes + IntoBytes` and that
+            // the type of this macro expression is `&mut U` where `U: 'u +
+            // Sized + FromBytes + IntoBytes`.
 
             // We use immutable references here rather than mutable so that, if
             // this macro is used in a const context (in which, as of this
             // writing, mutable references are banned), the error message
             // appears to originate in the user's code rather than in the
             // internals of this macro.
-            struct AssertSrcIsSized<'a, T: ::core::marker::Sized>(&'a T);
-            struct AssertSrcIsFromBytes<'a, T: ?::core::marker::Sized + $crate::FromBytes>(&'a T);
-            struct AssertSrcIsIntoBytes<'a, T: ?::core::marker::Sized + $crate::IntoBytes>(&'a T);
-            struct AssertDstIsSized<'a, T: ::core::marker::Sized>(&'a T);
-            struct AssertDstIsFromBytes<'a, T: ?::core::marker::Sized + $crate::FromBytes>(&'a T);
-            struct AssertDstIsIntoBytes<'a, T: ?::core::marker::Sized + $crate::IntoBytes>(&'a T);
+            struct AssertSrcIsIntoBytes<'a, T>(&'a T)
+            where
+                T: ?::core::marker::Sized + $crate::util::macro_util::TransmuteRefHelper,
+                T::Elem: $crate::IntoBytes;
 
-            if true {
-                let _ = AssertSrcIsSized(&*e);
-            } else if true {
-                let _ = AssertSrcIsFromBytes(&*e);
-            } else {
-                let _ = AssertSrcIsIntoBytes(&*e);
-            }
+            struct AssertDstIsFromBytes<'a, T>(&'a T)
+            where
+                T: ?::core::marker::Sized + $crate::util::macro_util::TransmuteRefHelper,
+                T::Elem: $crate::IntoBytes;
 
-            if true {
-                #[allow(unused, unreachable_code)]
-                let u = AssertDstIsSized(loop {});
-                &mut *u.0
-            } else if true {
-                #[allow(unused, unreachable_code)]
-                let u = AssertDstIsFromBytes(loop {});
-                &mut *u.0
-            } else {
-                #[allow(unused, unreachable_code)]
-                let u = AssertDstIsIntoBytes(loop {});
-                &mut *u.0
-            }
+            let _ = AssertSrcIsIntoBytes(e);
+            let u = AssertDstIsFromBytes(loop {});
+            &mut *u.0
         } else if false {
             // This branch, though never taken, ensures that `size_of::<T>() ==
             // size_of::<U>()` and that that `align_of::<T>() >=
@@ -370,23 +367,30 @@ macro_rules! transmute_mut {
             // `t` is inferred to have type `T` because it's assigned to `e` (of
             // type `&mut T`) as `&mut t`.
             let mut t = loop {};
-            e = &mut t;
 
-            // `u` is inferred to have type `U` because it's used as `&mut u` as
-            // the value returned from this branch.
-            let u;
+            if false {
+                e = $crate::util::macro_util::TransmuteRefHelper::from_elem_mut(t);
+                loop {}
+            } else {
+                // `u` is inferred to have type `U` because it's used as `&u` as
+                // the value returned from this branch.
+                let u;
 
-            $crate::assert_size_eq!(t, u);
-            $crate::assert_align_gt_eq!(t, u);
+                $crate::assert_size_eq!(t, u);
+                $crate::assert_align_gt_eq!(t, u);
 
-            &mut u
+                $crate::util::macro_util::TransmuteRefHelper::from_elem_mut(u)
+            }
         } else {
             // SAFETY: For source type `Src` and destination type `Dst`:
+            // - We know that `Src: IntoBytes` and `Dst: FromBytes` thanks to
+            //   the uses of `AssertSrcIsIntoBytes`, and `AssertDstIsFromBytes`
+            //   above.
             // - We know that `size_of::<Src>() == size_of::<Dst>()` thanks to
             //   the use of `assert_size_eq!` above.
             // - We know that `align_of::<Src>() >= align_of::<Dst>()` thanks to
             //   the use of `assert_align_gt_eq!` above.
-            let u = unsafe { $crate::util::macro_util::transmute_mut(e) };
+            let u = unsafe { $crate::transmute_mut_inner!(e) };
             $crate::util::macro_util::must_use(u)
         }
     }}
@@ -790,8 +794,14 @@ mod tests {
         const ARRAY_OF_U8S: [u8; 8] = [0u8, 1, 2, 3, 4, 5, 6, 7];
         const ARRAY_OF_ARRAYS: [[u8; 2]; 4] = [[0, 1], [2, 3], [4, 5], [6, 7]];
         #[allow(clippy::redundant_static_lifetimes)]
-        const X: &'static [[u8; 2]; 4] = transmute_ref!(&ARRAY_OF_U8S);
+        const X: &[[u8; 2]; 4] = transmute_ref!(&ARRAY_OF_U8S);
         assert_eq!(*X, ARRAY_OF_ARRAYS);
+
+        // Test that `transmute_ref!` on slices is legal in a const context.
+        const ARRAY_OF_U16S: &[u16] = &[0u16, 1, 2];
+        const ARRAY_OF_I16S: &[i16] = &[0i16, 1, 2];
+        const Y: &[i16] = transmute_ref!(ARRAY_OF_U16S);
+        assert_eq!(Y, ARRAY_OF_I16S);
 
         // Test that it's legal to transmute a reference while shrinking the
         // lifetime (note that `X` has the lifetime `'static`).
@@ -947,6 +957,11 @@ mod tests {
         #[allow(clippy::useless_transmute)]
         let y: &u8 = transmute_mut!(&mut x);
         assert_eq!(*y, 0);
+    }
+
+    #[test]
+    fn test_transmute_mut_slice() {
+        todo!();
     }
 
     #[test]

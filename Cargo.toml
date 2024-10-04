@@ -50,6 +50,9 @@ zerocopy-target-has-atomics = "1.60.0"
 # versions, these types require the "simd-nightly" feature.
 zerocopy-aarch64-simd = "1.59.0"
 
+# From 1.58.0, Rust supports dereferencing raw pointers in `const fn`.
+zerocopy-deref-const = "1.58.0"
+
 # Permit panicking in `const fn`s and calling `Vec::try_reserve`.
 zerocopy-panic-in-const-and-vec-try-reserve = "1.57.0"
 
