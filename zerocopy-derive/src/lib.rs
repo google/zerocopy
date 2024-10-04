@@ -950,15 +950,26 @@ fn derive_into_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<TokenStre
 /// - no padding (size of union equals size of each field type)
 fn derive_into_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> Result<TokenStream, Error> {
     // See #1792 for more context.
-    let cfg_compile_error = quote!(
-        const _: () = {
-            #[cfg(not(zerocopy_derive_union_into_bytes))]
-            ::zerocopy::util::macro_util::core_reexport::compile_error!(
-                "requires --cfg zerocopy_derive_union_into_bytes;
+    //
+    // By checking for `zerocopy_derive_union_into_bytes` both here and in the
+    // generated code, we ensure that `--cfg zerocopy_derive_union_into_bytes`
+    // need only be passed *either* when compiling this crate *or* when
+    // compiling the user's crate. The former is preferable, but in some
+    // situations (such as when cross-compiling using `cargo build --target`),
+    // it doesn't get propagated to this crate's build by default.
+    let cfg_compile_error = if cfg!(zerocopy_derive_union_into_bytes) {
+        quote!()
+    } else {
+        quote!(
+            const _: () = {
+                #[cfg(not(zerocopy_derive_union_into_bytes))]
+                ::zerocopy::util::macro_util::core_reexport::compile_error!(
+                    "requires --cfg zerocopy_derive_union_into_bytes;
 please let us know you use this feature: https://github.com/google/zerocopy/discussions/1802"
-            );
-        };
-    );
+                );
+            };
+        )
+    };
 
     // TODO(#10): Support type parameters.
     if !ast.generics.params.is_empty() {
