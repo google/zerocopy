@@ -349,7 +349,7 @@ use core::{
     fmt::{self, Debug, Display, Formatter},
     hash::Hasher,
     marker::PhantomData,
-    mem::{self, ManuallyDrop, MaybeUninit},
+    mem::{self, ManuallyDrop, MaybeUninit as CoreMaybeUninit},
     num::{
         NonZeroI128, NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8, NonZeroIsize, NonZeroU128,
         NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize, Wrapping,
@@ -724,6 +724,22 @@ pub unsafe trait KnownLayout {
     /// This is `()` for sized types and `usize` for slice DSTs.
     type PointerMetadata: PointerMetadata;
 
+    /// A maybe-uninitialized analog of `Self`
+    ///
+    /// # Safety
+    ///
+    /// Users may assume that:
+    /// - `Self` and `Self::MaybeUninit` have the same:
+    ///   - Fixed prefix size
+    ///   - Alignment
+    ///   - (For DSTs) trailing slice element size
+    /// - It is valid to perform an `as` cast from `*mut Self` and `*mut
+    ///   Self::MaybeUninit`, and this operation preserves referent size (ie,
+    ///   `size_of_val_raw`).
+    #[cfg(zerocopy_unstable)]
+    #[doc(hidden)]
+    type MaybeUninit: ?Sized + KnownLayout<PointerMetadata = Self::PointerMetadata>;
+
     /// The layout of `Self`.
     ///
     /// # Safety
@@ -856,6 +872,17 @@ unsafe impl<T> KnownLayout for [T] {
 
     type PointerMetadata = usize;
 
+    // SAFETY: `CoreMaybeUninit<T>` has the same size and alignment as `T`.
+    // Consequently, `[CoreMaybeUninit<T>]` has the same size and alignment as
+    // `[T]`, becuase `CoreMaybeUninit<T>` has the same size and alignment as
+    // `T` [1].
+    //
+    // [1] Per https://doc.rust-lang.org/1.81.0/std/mem/union.MaybeUninit.html#layout-1:
+    //
+    //   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and ABI as
+    //   `T`
+    type MaybeUninit = [CoreMaybeUninit<T>];
+
     const LAYOUT: DstLayout = DstLayout::for_slice::<T>();
 
     // SAFETY: `.cast` preserves address and provenance. The returned pointer
@@ -908,7 +935,7 @@ impl_known_layout!(
     T         => Option<T>,
     T: ?Sized => PhantomData<T>,
     T         => Wrapping<T>,
-    T         => MaybeUninit<T>,
+    T         => CoreMaybeUninit<T>,
     T: ?Sized => *const T,
     T: ?Sized => *mut T
 );
@@ -939,6 +966,19 @@ safety_comment! {
     unsafe_impl_known_layout!(#[repr([u8])] str);
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] ManuallyDrop<T>);
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] UnsafeCell<T>);
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// - By invariant on `KnownLayout::MaybeUninit`, `T` and `T::MaybeUninit`
+    ///   have the same:
+    ///   - Fixed prefix size
+    ///   - Alignment
+    ///   - (For DSTs) trailing slice element size
+    /// - By invariant on `KnownLayout`, it is valid to perform an `as` cast
+    ///   from `*mut T` and `*mut T::MaybeUninit`, and this operation preserves
+    ///   referent size (ie, `size_of_val_raw`).
+    unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T::MaybeUninit)] MaybeUninit<T>);
 }
 
 /// Analyzes whether a type is [`FromZeros`].
@@ -2539,7 +2579,7 @@ pub unsafe trait TryFromBytes {
     where
         Self: Sized,
     {
-        let candidate = match MaybeUninit::<Self>::read_from_bytes(source) {
+        let candidate = match CoreMaybeUninit::<Self>::read_from_bytes(source) {
             Ok(candidate) => candidate,
             Err(e) => {
                 return Err(TryReadError::Size(e.with_dst()));
@@ -2600,7 +2640,7 @@ pub unsafe trait TryFromBytes {
     where
         Self: Sized,
     {
-        let (candidate, suffix) = match MaybeUninit::<Self>::read_from_prefix(source) {
+        let (candidate, suffix) = match CoreMaybeUninit::<Self>::read_from_prefix(source) {
             Ok(candidate) => candidate,
             Err(e) => {
                 return Err(TryReadError::Size(e.with_dst()));
@@ -2662,7 +2702,7 @@ pub unsafe trait TryFromBytes {
     where
         Self: Sized,
     {
-        let (prefix, candidate) = match MaybeUninit::<Self>::read_from_suffix(source) {
+        let (prefix, candidate) = match CoreMaybeUninit::<Self>::read_from_suffix(source) {
             Ok(candidate) => candidate,
             Err(e) => {
                 return Err(TryReadError::Size(e.with_dst()));
@@ -2735,7 +2775,7 @@ fn swap<T, U>((t, u): (T, U)) -> (U, T) {
 #[inline(always)]
 unsafe fn try_read_from<S, T: TryFromBytes>(
     source: S,
-    mut candidate: MaybeUninit<T>,
+    mut candidate: CoreMaybeUninit<T>,
 ) -> Result<T, TryReadError<S, T>> {
     // We use `from_mut` despite not mutating via `c_ptr` so that we don't need
     // to add a `T: Immutable` bound.
