@@ -135,14 +135,14 @@ error[E0277]: the trait bound `NotKnownLayoutDst: zerocopy::KnownLayout` is not 
    |
    = note: Consider adding `#[derive(KnownLayout)]` to `NotKnownLayoutDst`
    = help: the following other types implement trait `zerocopy::KnownLayout`:
+             &T
+             &mut T
              ()
              *const T
              *mut T
              AU16
              AtomicBool
              AtomicI16
-             AtomicI32
-             AtomicI64
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -159,14 +159,14 @@ error[E0277]: the trait bound `NotKnownLayout: zerocopy::KnownLayout` is not sat
    |
    = note: Consider adding `#[derive(KnownLayout)]` to `NotKnownLayout`
    = help: the following other types implement trait `zerocopy::KnownLayout`:
+             &T
+             &mut T
              ()
              *const T
              *mut T
              AU16
              AtomicBool
              AtomicI16
-             AtomicI32
-             AtomicI64
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)

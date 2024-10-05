@@ -79,7 +79,10 @@ error[E0277]: the trait bound `T: KnownLayout` is not satisfied
   --> tests/ui-msrv/mid_compile_pass.rs:50:15
    |
 50 |     assert_kl(kl)
-   |               ^^ the trait `KnownLayout` is not implemented for `T`
+   |               ^^
+   |               |
+   |               expected an implementor of trait `KnownLayout`
+   |               help: consider borrowing here: `&kl`
    |
 note: required because of the requirements on the impl of `KnownLayout` for `KL12<T>`
   --> tests/ui-msrv/mid_compile_pass.rs:45:10
@@ -92,7 +95,3 @@ note: required by a bound in `assert_kl`
 23 | fn assert_kl<T: ?Sized + KnownLayout>(_: &T) {}
    |                          ^^^^^^^^^^^ required by this bound in `assert_kl`
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
-help: consider further restricting this bound
-   |
-49 | fn test_kl12<T: ?Sized + zerocopy::KnownLayout>(kl: &KL12<T>) {
-   |                        +++++++++++++++++++++++
