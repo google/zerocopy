@@ -271,7 +271,7 @@ where
     ///
     /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
-    /// [valid-size]: crate#what-is-a-valid-size
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     /// [t-unaligned]: Unaligned
     /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
@@ -325,7 +325,7 @@ where
     ///
     /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
-    /// [valid-size]: crate#what-is-a-valid-size
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     /// [t-unaligned]: Unaligned
     /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
@@ -390,7 +390,7 @@ where
     ///
     /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
-    /// [valid-size]: crate#what-is-a-valid-size
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     /// [t-unaligned]: Unaligned
     /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types

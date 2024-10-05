@@ -1357,7 +1357,7 @@ pub unsafe trait TryFromBytes {
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
-    /// [valid-size]: crate#what-is-a-valid-size
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     /// [self-unaligned]: Unaligned
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
@@ -1459,7 +1459,7 @@ pub unsafe trait TryFromBytes {
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
-    /// [valid-size]: crate#what-is-a-valid-size
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     /// [self-unaligned]: Unaligned
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
@@ -1545,7 +1545,7 @@ pub unsafe trait TryFromBytes {
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
-    /// [valid-size]: crate#what-is-a-valid-size
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     /// [self-unaligned]: Unaligned
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
@@ -1631,7 +1631,7 @@ pub unsafe trait TryFromBytes {
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
-    /// [valid-size]: crate#what-is-a-valid-size
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     /// [self-unaligned]: Unaligned
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
@@ -1739,7 +1739,7 @@ pub unsafe trait TryFromBytes {
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
-    /// [valid-size]: crate#what-is-a-valid-size
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     /// [self-unaligned]: Unaligned
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
@@ -1834,7 +1834,7 @@ pub unsafe trait TryFromBytes {
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
-    /// [valid-size]: crate#what-is-a-valid-size
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     /// [self-unaligned]: Unaligned
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
@@ -3444,7 +3444,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
-    /// [valid-size]: crate#what-is-a-valid-size
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     /// [self-unaligned]: Unaligned
     /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
@@ -3528,7 +3528,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
-    /// [valid-size]: crate#what-is-a-valid-size
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     /// [self-unaligned]: Unaligned
     /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
@@ -3612,7 +3612,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
-    /// [valid-size]: crate#what-is-a-valid-size
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     /// [self-unaligned]: Unaligned
     /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
@@ -3680,7 +3680,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
-    /// [valid-size]: crate#what-is-a-valid-size
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     /// [self-unaligned]: Unaligned
     /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
@@ -3764,7 +3764,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
-    /// [valid-size]: crate#what-is-a-valid-size
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     /// [self-unaligned]: Unaligned
     /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
@@ -3849,7 +3849,7 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// `Self` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
-    /// [valid-size]: crate#what-is-a-valid-size
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
     /// [self-unaligned]: Unaligned
     /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
