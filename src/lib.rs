@@ -758,7 +758,7 @@ pub unsafe trait KnownLayout {
     /// `pointer_to_metadata` always returns the correct metadata stored in
     /// `ptr`.
     #[doc(hidden)]
-    fn pointer_to_metadata(ptr: NonNull<Self>) -> Self::PointerMetadata;
+    fn pointer_to_metadata(ptr: *mut Self) -> Self::PointerMetadata;
 
     /// Computes the length of the byte range addressed by `ptr`.
     ///
@@ -775,7 +775,7 @@ pub unsafe trait KnownLayout {
     #[must_use]
     #[inline(always)]
     fn size_of_val_raw(ptr: NonNull<Self>) -> Option<usize> {
-        let meta = Self::pointer_to_metadata(ptr);
+        let meta = Self::pointer_to_metadata(ptr.as_ptr());
         // SAFETY: `size_for_metadata` promises to only return `None` if the
         // resulting size would not fit in a `usize`.
         meta.size_for_metadata(Self::LAYOUT)
@@ -868,9 +868,9 @@ unsafe impl<T> KnownLayout for [T] {
     }
 
     #[inline(always)]
-    fn pointer_to_metadata(ptr: NonNull<[T]>) -> usize {
+    fn pointer_to_metadata(ptr: *mut [T]) -> usize {
         #[allow(clippy::as_conversions)]
-        let slc = ptr.as_ptr() as *const [()];
+        let slc = ptr as *const [()];
 
         // SAFETY:
         // - `()` has alignment 1, so `slc` is trivially aligned.

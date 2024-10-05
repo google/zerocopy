@@ -542,7 +542,7 @@ macro_rules! impl_known_layout {
                 }
 
                 #[inline(always)]
-                fn pointer_to_metadata(_ptr: NonNull<Self>) -> () {
+                fn pointer_to_metadata(_ptr: *mut Self) -> () {
                 }
             }
         };
@@ -589,10 +589,9 @@ macro_rules! unsafe_impl_known_layout {
                 }
 
                 #[inline(always)]
-                fn pointer_to_metadata(ptr: NonNull<Self>) -> Self::PointerMetadata {
-                    // SAFETY: `ptr` is non-null.
+                fn pointer_to_metadata(ptr: *mut Self) -> Self::PointerMetadata {
                     #[allow(clippy::as_conversions)]
-                    let ptr = unsafe { NonNull::new_unchecked(ptr.as_ptr() as *mut $repr) };
+                    let ptr = ptr as *mut $repr;
                     <$repr>::pointer_to_metadata(ptr)
                 }
             }
