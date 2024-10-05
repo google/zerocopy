@@ -6,7 +6,7 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use core::hash::Hash;
+use core::{fmt, hash::Hash};
 
 use super::*;
 
@@ -461,6 +461,137 @@ impl<T: Unaligned + Display> Display for Unalign<T> {
     #[inline(always)]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         Display::fmt(self.deref(), f)
+    }
+}
+
+/// A wrapper type to construct uninitialized instances of `T`.
+///
+/// `MaybeUninit` is identical to the [standard library
+/// `MaybeUninit`][core-maybe-uninit] type except that it supports unsized
+/// types.
+///
+/// # Layout
+///
+/// The same layout guarantees and caveats apply to `MaybeUninit<T>` as apply to
+/// the [standard library `MaybeUninit`][core-maybe-uninit] with one exception:
+/// for `T: !Sized`, there is no single value for `T`'s size. Instead, for such
+/// types, the following are guaranteed:
+/// - Every [valid size][valid-size] for `T` is a valid size for
+///   `MaybeUninit<T>` and vice versa
+/// - Given `t: *const T` and `m: *const MaybeUninit<T>` with identical fat
+///   pointer metadata, `t` and `m` address the same number of bytes (and
+///   likewise for `*mut`)
+///
+/// [core-maybe-uninit]: core::mem::MaybeUninit
+/// [valid-size]: crate::KnownLayout#what-is-a-valid-size
+#[repr(transparent)]
+#[doc(hidden)]
+pub struct MaybeUninit<T: ?Sized + KnownLayout>(
+    // SAFETY: `MaybeUninit<T>` has the same size as `T`, because (by invariant
+    // on `T::MaybeUninit`) `T::MaybeUninit` has `T::LAYOUT` identical to `T`,
+    // and because (invariant on `T::LAYOUT`) we can trust that `LAYOUT`
+    // accurately reflects the layout of `T`. By invariant on `T::MaybeUninit`,
+    // it admits uninitialized bytes in all positions. Because `MabyeUninit` is
+    // marked `repr(transparent)`, these properties additionally hold true for
+    // `MaybeUninit`.
+    T::MaybeUninit,
+);
+
+#[doc(hidden)]
+impl<T: ?Sized + KnownLayout> MaybeUninit<T> {
+    /// Constructs a `MaybeUninit<T>` initialized with the given value.
+    #[inline(always)]
+    pub fn new(val: T) -> Self
+    where
+        T: Sized + KnownLayout<PointerMetadata = ()>,
+        Self: Sized,
+    {
+        // SAFETY: It is valid to transmute `val` to `MaybeUninit<T>` because it
+        // is both valid to transmute `val` to `T::MaybeUninit`, and it is valid
+        // to transmute from `T::MaybeUninit` to `MaybeUninit<T>`.
+        //
+        // First, it is valid to transmute `val` to `T::MaybeUninit` because, by
+        // invariant on `T::MaybeUninit`:
+        // - For `T: Sized`, `T` and `T::MaybeUninit` have the same size.
+        // - All byte sequences of the correct size are valid values of
+        //   `T::MaybeUninit`.
+        //
+        // Second, it is additionally valid to transmute from `T::MaybeUninit`
+        // to `MaybeUninit<T>`, because `MaybeUninit<T>` is a
+        // `repr(transparent)` wrapper around `T::MaybeUninit`.
+        //
+        // These two transmutes are collapsed into one so we don't need to add a
+        // `T::MaybeUninit: Sized` bound to this function's `where` clause.
+        unsafe { crate::util::transmute_unchecked(val) }
+    }
+
+    /// Constructs an uninitialized `MaybeUninit<T>`.
+    #[must_use]
+    #[inline(always)]
+    pub fn uninit() -> Self
+    where
+        T: Sized + KnownLayout<PointerMetadata = ()>,
+        Self: Sized,
+    {
+        let uninit = CoreMaybeUninit::<T>::uninit();
+        // SAFETY: It is valid to transmute from `CoreMaybeUninit<T>` to
+        // `MaybeUninit<T>` since they both admit uninitialized bytes in all
+        // positions, and they have the same size (i.e., that of `T`).
+        //
+        // `MaybeUninit<T>` has the same size as `T`, because (by invariant on
+        // `T::MaybeUninit`) `T::MaybeUninit` has `T::LAYOUT` identical to `T`,
+        // and because (invariant on `T::LAYOUT`) we can trust that `LAYOUT`
+        // accurately reflects the layout of `T`.
+        //
+        // `CoreMaybeUninit<T>` has the same size as `T` [1] and admits
+        // uninitialized bytes in all positions.
+        //
+        // [1] Per https://doc.rust-lang.org/1.81.0/std/mem/union.MaybeUninit.html#layout-1:
+        //
+        //   `MaybeUninit<T>` is guaranteed to have the same size, alignment,
+        //   and ABI as `T`
+        unsafe { crate::util::transmute_unchecked(uninit) }
+    }
+
+    /// Creates a `Box<MaybeUninit<T>>`.
+    ///
+    /// This function is useful for allocating large, uninit values on the heap
+    /// without ever creating a temporary instance of `Self` on the stack.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error on allocation failure. Allocation failure is guaranteed
+    /// never to cause a panic or an abort.
+    #[cfg(feature = "alloc")]
+    #[inline]
+    pub fn new_boxed_uninit(meta: T::PointerMetadata) -> Result<Box<Self>, AllocError> {
+        // SAFETY: The referent of the pointer returned by `alloc` is a valid
+        // instance of `Self`, because `Self` is `MaybeUninit` and thus admits
+        // arbitrary (un)initialized bytes.
+        unsafe { crate::util::new_box(meta, alloc::alloc::alloc) }
+    }
+
+    /// Extracts the value from the `MaybeUninit<T>`` container.
+    ///
+    /// # Safety
+    ///
+    /// The caller must ensure that `self` is in an bit-valid state. Depending
+    /// on subsequent use, it may also need to be in a library-valid state.
+    #[inline(always)]
+    pub unsafe fn assume_init(self) -> T
+    where
+        T: Sized + KnownLayout<PointerMetadata = ()>,
+        Self: Sized,
+    {
+        // SAFETY: The caller guarantees that `self` is in an bit-valid state.
+        unsafe { crate::util::transmute_unchecked(self) }
+    }
+}
+
+impl<T: ?Sized + KnownLayout> fmt::Debug for MaybeUninit<T> {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.pad(core::any::type_name::<Self>())
     }
 }
 

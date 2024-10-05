@@ -683,6 +683,114 @@ pub(crate) unsafe fn copy_unchecked(src: &[u8], dst: &mut [u8]) {
     };
 }
 
+/// Unsafely transmutes the given `src` into a type `Dst`.
+///
+/// # Safety
+///
+/// The value `src` must be a bit-valid instance of `Dst`.
+#[inline(always)]
+pub(crate) const unsafe fn transmute_unchecked<Src, Dst>(src: Src) -> Dst {
+    static_assert!(Src, Dst => core::mem::size_of::<Src>() == core::mem::size_of::<Dst>());
+    #[repr(C)]
+    union Transmute<Src, Dst> {
+        src: ManuallyDrop<Src>,
+        dst: ManuallyDrop<Dst>,
+    }
+    // SAFETY: The caller promises that `src` is a bit-valid instance of `Dst`.
+    unsafe { ManuallyDrop::into_inner(Transmute { src: ManuallyDrop::new(src) }.dst) }
+}
+
+/// Use `allocate` to create a `Box<T>`.
+///
+/// # Errors
+///
+/// Returns an error on allocation failure. Allocation failure is guaranteed
+/// never to cause a panic or an abort.
+///
+/// # Safety
+///
+/// The referent of the pointer returned by `allocate` must be a bit-valid
+/// instance of `T`.
+#[must_use = "has no side effects (other than allocation)"]
+#[cfg(feature = "alloc")]
+#[inline]
+pub(crate) unsafe fn new_box<T>(
+    meta: T::PointerMetadata,
+    allocate: unsafe fn(core::alloc::Layout) -> *mut u8,
+) -> Result<alloc::boxed::Box<T>, crate::error::AllocError>
+where
+    T: ?Sized + crate::KnownLayout,
+{
+    use crate::error::AllocError;
+    use crate::PointerMetadata;
+    use core::alloc::Layout;
+
+    let size = match meta.size_for_metadata(T::LAYOUT) {
+        Some(size) => size,
+        None => return Err(AllocError),
+    };
+
+    let align = T::LAYOUT.align.get();
+    // On stable Rust versions <= 1.64.0, `Layout::from_size_align` has a bug in
+    // which sufficiently-large allocations (those which, when rounded up to the
+    // alignment, overflow `isize`) are not rejected, which can cause undefined
+    // behavior. See #64 for details.
+    //
+    // TODO(#67): Once our MSRV is > 1.64.0, remove this assertion.
+    #[allow(clippy::as_conversions)]
+    let max_alloc = (isize::MAX as usize).saturating_sub(align);
+    if size > max_alloc {
+        return Err(AllocError);
+    }
+
+    // TODO(https://github.com/rust-lang/rust/issues/55724): Use
+    // `Layout::repeat` once it's stabilized.
+    let layout = Layout::from_size_align(size, align).or(Err(AllocError))?;
+
+    let ptr = if layout.size() != 0 {
+        // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+        #[allow(clippy::undocumented_unsafe_blocks)]
+        let ptr = unsafe { allocate(layout) };
+        match NonNull::new(ptr) {
+            Some(ptr) => ptr,
+            None => return Err(AllocError),
+        }
+    } else {
+        let align = T::LAYOUT.align.get();
+        // We use `transmute` instead of an `as` cast since Miri (with strict
+        // provenance enabled) notices and complains that an `as` cast creates a
+        // pointer with no provenance. Miri isn't smart enough to realize that
+        // we're only executing this branch when we're constructing a zero-sized
+        // `Box`, which doesn't require provenance.
+        //
+        // SAFETY: any initialized bit sequence is a bit-valid `*mut u8`. All
+        // bits of a `usize` are initialized.
+        #[allow(clippy::useless_transmute)]
+        let dangling = unsafe { mem::transmute::<usize, *mut u8>(align) };
+        // SAFETY: `dangling` is constructed from `T::LAYOUT.align`, which is a
+        // `NonZeroUsize`, which is guaranteed to be non-zero.
+        //
+        // `Box<[T]>` does not allocate when `T` is zero-sized or when `len` is
+        // zero, but it does require a non-null dangling pointer for its
+        // allocation.
+        //
+        // TODO(https://github.com/rust-lang/rust/issues/95228): Use
+        // `std::ptr::without_provenance` once it's stable. That may optimize
+        // better. As written, Rust may assume that this consumes "exposed"
+        // provenance, and thus Rust may have to assume that this may consume
+        // provenance from any pointer whose provenance has been exposed.
+        unsafe { NonNull::new_unchecked(dangling) }
+    };
+
+    let ptr = T::raw_from_ptr_len(ptr, meta);
+
+    // TODO(#429): Add a "SAFETY" comment and remove this `allow`. Make sure to
+    // include a justification that `ptr.as_ptr()` is validly-aligned in the ZST
+    // case (in which we manually construct a dangling pointer).
+    #[allow(clippy::undocumented_unsafe_blocks)]
+    Ok(unsafe { alloc::boxed::Box::from_raw(ptr.as_ptr()) })
+}
+
 /// Since we support multiple versions of Rust, there are often features which
 /// have been stabilized in the most recent stable release which do not yet
 /// exist (stably) on our MSRV. This module provides polyfills for those

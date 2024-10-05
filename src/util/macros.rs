@@ -530,6 +530,17 @@ macro_rules! impl_known_layout {
 
                 type PointerMetadata = ();
 
+                // SAFETY: `CoreMaybeUninit<T>::LAYOUT` and `T::LAYOUT` are
+                // identical because `CoreMaybeUninit<T>` has the same size and
+                // alignment as `T` [1], and `CoreMaybeUninit` admits
+                // uninitialized bytes in all positions.
+                //
+                // [1] Per https://doc.rust-lang.org/1.81.0/std/mem/union.MaybeUninit.html#layout-1:
+                //
+                //   `MaybeUninit<T>` is guaranteed to have the same size,
+                //   alignment, and ABI as `T`
+                type MaybeUninit = core::mem::MaybeUninit<Self>;
+
                 const LAYOUT: crate::DstLayout = crate::DstLayout::for_type::<$ty>();
 
                 // SAFETY: `.cast` preserves address and provenance.
@@ -572,6 +583,7 @@ macro_rules! unsafe_impl_known_layout {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
 
                 type PointerMetadata = <$repr as KnownLayout>::PointerMetadata;
+                type MaybeUninit = <$repr as KnownLayout>::MaybeUninit;
 
                 const LAYOUT: DstLayout = <$repr as KnownLayout>::LAYOUT;
 
