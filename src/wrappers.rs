@@ -723,13 +723,19 @@ mod tests {
     }
 
     #[test]
+<<<<<<< HEAD
     #[allow(clippy::as_conversions)]
+=======
+>>>>>>> Add initial support for unsized `MaybeUninit` wrapper type
     fn test_maybe_uninit() {
         // int
         {
             let input = 42;
             let uninit = MaybeUninit::new(input);
+<<<<<<< HEAD
             // SAFETY: `uninit` is in an initialized state
+=======
+>>>>>>> Add initial support for unsized `MaybeUninit` wrapper type
             let output = unsafe { uninit.assume_init() };
             assert_eq!(input, output);
         }
@@ -738,7 +744,10 @@ mod tests {
         {
             let input = 42;
             let uninit = MaybeUninit::new(&input);
+<<<<<<< HEAD
             // SAFETY: `uninit` is in an initialized state
+=======
+>>>>>>> Add initial support for unsized `MaybeUninit` wrapper type
             let output = unsafe { uninit.assume_init() };
             assert_eq!(&input as *const _, output as *const _);
             assert_eq!(input, *output);
@@ -748,7 +757,10 @@ mod tests {
         {
             let input = [1, 2, 3, 4];
             let uninit = MaybeUninit::new(&input[..]);
+<<<<<<< HEAD
             // SAFETY: `uninit` is in an initialized state
+=======
+>>>>>>> Add initial support for unsized `MaybeUninit` wrapper type
             let output = unsafe { uninit.assume_init() };
             assert_eq!(&input[..] as *const _, output as *const _);
             assert_eq!(input, *output);
