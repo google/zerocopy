@@ -452,6 +452,202 @@ impl<T: Unaligned + Display> Display for Unalign<T> {
     }
 }
 
+/// A possibly-unsized type with no alignment requirement.
+///
+/// An `UnalignUnsized` wraps a `T`, removing any alignment requirement.
+/// `UnalignUnsized<T>` has the same size and bit validity as `T`, but not
+/// necessarily the same alignment [or ABI]. This is useful if a type with an
+/// alignment requirement needs to be read from a chunk of memory which provides
+/// no alignment guarantees.
+///
+/// [or ABI]: https://github.com/google/zerocopy/issues/164
+///
+/// # Safety
+///
+/// `UnalignUnsized<T>` is guaranteed to have the same size and bit validity as
+/// `T`, and to have [`UnsafeCell`]s covering the same byte ranges as `T`.
+/// `UnalignUnsized<T>` is guaranteed to have alignment 1.
+#[repr(C, packed)]
+pub struct UnalignUnsized<T: ?Sized>(ManuallyDrop<T>)
+where
+    T: KnownLayout;
+
+// SAFETY: Mostly delegates safety to `T`, except in the cases of layout
+// alignment and `destroy`.
+unsafe impl<T: ?Sized + KnownLayout> KnownLayout for UnalignUnsized<T> {
+    #[allow(clippy::missing_inline_in_public_items)]
+    #[cfg_attr(coverage_nightly, coverage(off))]
+    fn only_derive_is_allowed_to_implement_this_trait() {}
+
+    // SAFETY: By invariant on `UnalignUnsized`, `T` and `UnalignUnsized<T>`
+    // have the same layout (excepting alignment) and therefore the same pointer
+    // metadata kinds.
+    type PointerMetadata = <T as KnownLayout>::PointerMetadata;
+
+    // SAFETY: `UnalignUnsized<T>` and `UnalignUnsized<T::MaybeUninit>` have
+    // identical `LAYOUT`s, because `T` and `T::MaybeUninit` have identical
+    // layouts.
+    type MaybeUninit = UnalignUnsized<<T as KnownLayout>::MaybeUninit>;
+
+    const NEEDS_DROP: bool = T::NEEDS_DROP;
+
+    // SAFETY: By invariant on `UnalignUnsized`, `UnalignUnsize<T>`'s layout has
+    // the same `size_info` as `T`, but an alignment of 1.
+    const LAYOUT: DstLayout = DstLayout {
+        // The alignment is `1`, since `Self` is `repr(packed)`.
+        align: DstLayout::MIN_ALIGN,
+        // Otherwise, we retain the size of the inner `T`.
+        size_info: <T as KnownLayout>::LAYOUT.size_info,
+    };
+
+    // SAFETY: The returned pointer has the same address and provenance as
+    // `bytes`, aince all operations here preserve provenance. If `Self` is a
+    // DST, the returned pointer's referent has `elems` elements in its trailing
+    // slice, since (by invariant on `UnalignUnsized`), `UnalignUnsize<T>`'s
+    // layout has the same `size_info` as `T` (and thus the same pointer
+    // metadata).
+    //
+    // TODO(#429): Add documentation to `NonNull::new_unchecked`
+    // that it preserves provenance.
+    #[inline(always)]
+    fn raw_from_ptr_len(bytes: NonNull<u8>, meta: Self::PointerMetadata) -> NonNull<Self> {
+        #[allow(clippy::as_conversions)]
+        let ptr = <T>::raw_from_ptr_len(bytes, meta).as_ptr() as *mut Self;
+        // SAFETY: `ptr` was converted from `bytes`, which is non-null.
+        unsafe { NonNull::new_unchecked(ptr) }
+    }
+
+    // SAFETY: All operations preserve provenance. `UnalignUnsize<T>`'s layout
+    // has the same `size_info` as `T` (and thus the same pointer metadata), and
+    // we assume — by contract on `KnownLayout` that `<T>::pointer_to_metadata`
+    // is implemented correctly.
+    #[inline(always)]
+    fn pointer_to_metadata(ptr: *mut Self) -> Self::PointerMetadata {
+        #[allow(clippy::as_conversions)]
+        let ptr = ptr as *mut T;
+        <T>::pointer_to_metadata(ptr)
+    }
+
+    #[inline(always)]
+    unsafe fn destroy(ptr: MaybeAligned<'_, Self, invariant::Exclusive>) {
+        // SAFETY: Because `ptr` carries `invariant::Exclusive`, there are no
+        // safety preconditions.
+        let ptr = match unsafe { ptr.try_cast::<T>() } {
+            Ok(ptr) => ptr,
+            Err(_) => {
+                // SAFETY: By postcondition on `Ptr::try_cast`, `Err` is only
+                // produced if the resulting cast would reference more bytes
+                // than referenced the input `ptr`. This is impossible, since,
+                // by invariant on `UnalignUnsized`, `T` and `UnalignUnsized<T>`
+                // are guaranteed to have the same size.
+                unsafe { core::hint::unreachable_unchecked() }
+            }
+        };
+        // SAFETY: By invariant on `UnalignUnsized<T>`, it has the same
+        // bit-validity as `T`. Thus, what was a valid pointer to
+        // `UnalignUnsized<T>` is now a valid pointer to `T`.
+        let ptr = unsafe { ptr.assume_valid() };
+        // SAFETY: By invariant on the caller, this function is called from the
+        // destructor of an transitive owner `ptr`'s referent.
+        unsafe {
+            KnownLayout::destroy(ptr);
+        }
+    }
+}
+
+impl<T: ?Sized> Drop for UnalignUnsized<T>
+where
+    T: KnownLayout,
+{
+    #[inline]
+    fn drop(&mut self) {
+        let ptr = Ptr::from_mut(self).forget_aligned();
+        // SAFETY: This function is called from the owner of `ptr`'s referent.
+        // After `drop` completes, it it is forbidden to re-use `ptr` or its
+        // referent.
+        unsafe { Self::destroy(ptr) }
+    }
+}
+
+impl<T: ?Sized + KnownLayout + Unaligned> Deref for UnalignUnsized<T> {
+    type Target = T;
+
+    #[inline(always)]
+    fn deref(&self) -> &T {
+        Ptr::from_ref(self).transparent_wrapper_into_inner().bikeshed_recall_aligned().as_ref()
+    }
+}
+
+impl<T: ?Sized + KnownLayout + Unaligned> DerefMut for UnalignUnsized<T> {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut T {
+        Ptr::from_mut(self).transparent_wrapper_into_inner().bikeshed_recall_aligned().as_mut()
+    }
+}
+
+impl<T: ?Sized + KnownLayout + Unaligned + PartialOrd> PartialOrd<UnalignUnsized<T>>
+    for UnalignUnsized<T>
+{
+    #[inline(always)]
+    fn partial_cmp(&self, other: &UnalignUnsized<T>) -> Option<Ordering> {
+        PartialOrd::partial_cmp(self.deref(), other.deref())
+    }
+}
+
+impl<T: ?Sized + KnownLayout + Unaligned + Ord> Ord for UnalignUnsized<T> {
+    #[inline(always)]
+    fn cmp(&self, other: &UnalignUnsized<T>) -> Ordering {
+        Ord::cmp(self.deref(), other.deref())
+    }
+}
+
+impl<T: ?Sized + KnownLayout + Unaligned + PartialEq> PartialEq<UnalignUnsized<T>>
+    for UnalignUnsized<T>
+{
+    #[inline(always)]
+    fn eq(&self, other: &UnalignUnsized<T>) -> bool {
+        PartialEq::eq(self.deref(), other.deref())
+    }
+}
+
+impl<T: ?Sized + KnownLayout + Unaligned + Eq> Eq for UnalignUnsized<T> {}
+
+impl<T: ?Sized + KnownLayout + Unaligned + Hash> Hash for UnalignUnsized<T> {
+    #[inline(always)]
+    fn hash<H>(&self, state: &mut H)
+    where
+        H: Hasher,
+    {
+        self.deref().hash(state);
+    }
+}
+
+impl<T: ?Sized + KnownLayout + Unaligned + Debug> Debug for UnalignUnsized<T> {
+    #[inline(always)]
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        Debug::fmt(self.deref(), f)
+    }
+}
+
+impl<T: ?Sized + KnownLayout + Unaligned + Display> Display for UnalignUnsized<T> {
+    #[inline(always)]
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        Display::fmt(self.deref(), f)
+    }
+}
+
+safety_comment! {
+    /// SAFETY:
+    /// By invariant on `UnalignUnsized`, `UnalignUnsized<T>` is
+    /// guaranteed to have the same size and bit validity as `T`.
+    unsafe_impl!(T: ?Sized + KnownLayout + Immutable => Immutable for UnalignUnsized<T>);
+    unsafe_impl!(T: ?Sized + KnownLayout + TryFromBytes => TryFromBytes for UnalignUnsized<T>);
+    unsafe_impl!(T: ?Sized + KnownLayout + FromZeros => FromZeros for UnalignUnsized<T>);
+    unsafe_impl!(T: ?Sized + KnownLayout + FromBytes => FromBytes for UnalignUnsized<T>);
+    unsafe_impl!(T: ?Sized + KnownLayout + IntoBytes => IntoBytes for UnalignUnsized<T>);
+    unsafe_impl!(T: ?Sized + KnownLayout => Unaligned for UnalignUnsized<T>);
+}
+
 /// A wrapper type to construct uninitialized instances of `T`.
 ///
 /// `MaybeUninit` is identical to the [standard library
@@ -723,19 +919,13 @@ mod tests {
     }
 
     #[test]
-<<<<<<< HEAD
     #[allow(clippy::as_conversions)]
-=======
->>>>>>> Add initial support for unsized `MaybeUninit` wrapper type
     fn test_maybe_uninit() {
         // int
         {
             let input = 42;
             let uninit = MaybeUninit::new(input);
-<<<<<<< HEAD
             // SAFETY: `uninit` is in an initialized state
-=======
->>>>>>> Add initial support for unsized `MaybeUninit` wrapper type
             let output = unsafe { uninit.assume_init() };
             assert_eq!(input, output);
         }
@@ -744,10 +934,7 @@ mod tests {
         {
             let input = 42;
             let uninit = MaybeUninit::new(&input);
-<<<<<<< HEAD
             // SAFETY: `uninit` is in an initialized state
-=======
->>>>>>> Add initial support for unsized `MaybeUninit` wrapper type
             let output = unsafe { uninit.assume_init() };
             assert_eq!(&input as *const _, output as *const _);
             assert_eq!(input, *output);
@@ -757,10 +944,7 @@ mod tests {
         {
             let input = [1, 2, 3, 4];
             let uninit = MaybeUninit::new(&input[..]);
-<<<<<<< HEAD
             // SAFETY: `uninit` is in an initialized state
-=======
->>>>>>> Add initial support for unsized `MaybeUninit` wrapper type
             let output = unsafe { uninit.assume_init() };
             assert_eq!(&input[..] as *const _, output as *const _);
             assert_eq!(input, *output);

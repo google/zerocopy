@@ -762,6 +762,24 @@ pub unsafe trait KnownLayout {
     #[doc(hidden)]
     const LAYOUT: DstLayout;
 
+    /// Does `Self` have a non-trivial destructor?
+    ///
+    /// This defaulted implementation is appropriate for all types except
+    /// `UnalignUnsized<T>` which has an explicit `Drop` implementation and is
+    /// thus unconditionally `mem::needs_drop`, even if `T` is not
+    /// `mem::needs_drop`.
+    ///
+    /// # Safety
+    ///
+    /// Unsafe code may not assume anything about the value of `NEEDS_DROP`.
+    const NEEDS_DROP: bool = {
+        #[cfg(zerocopy_unsized_needs_drop_1_63_0)]
+        let val = core::mem::needs_drop::<Self>();
+        #[cfg(not(zerocopy_unsized_needs_drop_1_63_0))]
+        let val = true;
+        val
+    };
+
     /// SAFETY: The returned pointer has the same address and provenance as
     /// `bytes`. If `Self` is a DST, the returned pointer's referent has `elems`
     /// elements in its trailing slice.
@@ -796,6 +814,34 @@ pub unsafe trait KnownLayout {
         // SAFETY: `size_for_metadata` promises to only return `None` if the
         // resulting size would not fit in a `usize`.
         meta.size_for_metadata(Self::LAYOUT)
+    }
+
+    /// Run the destructor of `ptr`'s referent.
+    ///
+    /// # Panics
+    ///
+    /// Implementations of this function never panic.
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// Implementations of this function must emit a post-monomorphization error
+    /// if `ptr`'s referent has a non-trivial drop that cannot be run.
+    ///
+    /// # Safety
+    ///
+    /// This function may only be called from the destructor (i.e.,
+    /// `Drop::drop`) of transitive owner of `ptr`'s referent. After invoking
+    /// this function, it is forbidden to re-use `ptr` or its referent.
+    #[doc(hidden)]
+    #[inline]
+    unsafe fn destroy(ptr: MaybeAligned<'_, Self, invariant::Exclusive>) {
+        // SAFETY: The preconditions of `destroy_unsized` are identical to that
+        // of `destroy` and are ensured by the caller.
+        //
+        // This defaulted implementation works for all types, but for sized
+        // types, delegating to `crate::util::destroy::destroy_sized` — which
+        // does not allocate — is preferable.
+        unsafe { crate::util::destroy::destroy_unsized(ptr) }
     }
 }
 

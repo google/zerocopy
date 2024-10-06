@@ -56,6 +56,7 @@ jobs:
           # which a particular feature is supported.
           "zerocopy-core-error-1-81-0",
           "zerocopy-diagnostic-on-unimplemented-1-78-0",
+          "zerocopy-unsized-needs-drop-1-63-0",
           "zerocopy-generic-bounds-in-const-fn-1-61-0",
           "zerocopy-target-has-atomics-1-60-0",
           "zerocopy-aarch64-simd-1-59-0",
@@ -93,6 +94,8 @@ jobs:
             features: "--all-features"
           - toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
             features: "--all-features"
+          - toolchain: "zerocopy-unsized-needs-drop-1-63-0"
+            features: "--all-features"
           - toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
             features: "--all-features"
           - toolchain: "zerocopy-target-has-atomics-1-60-0"
@@ -117,6 +120,8 @@ jobs:
             toolchain: "zerocopy-core-error-1-81-0"
           - crate: "zerocopy-derive"
             toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
+          - crate: "zerocopy-derive"
+            toolchain: "zerocopy-unsized-needs-drop-1-63-0"
           - crate: "zerocopy-derive"
             toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
           - crate: "zerocopy-derive"
@@ -211,6 +216,28 @@ jobs:
           - toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
             target: "thumbv6m-none-eabi"
           - toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
+            target: "wasm32-wasi"
+          # Exclude most targets targets from the
+          # `zerocopy-unsized-needs-drop-1-63-0` toolchain since the
+          # `zerocopy-unsized-needs-drop-1-63-0` feature is unrelated to
+          # compilation target. This only leaves i686 and x86_64 targets.
+          - toolchain: "zerocopy-unsized-needs-drop-1-63-0"
+            target: "arm-unknown-linux-gnueabi"
+          - toolchain: "zerocopy-unsized-needs-drop-1-63-0"
+            target: "aarch64-unknown-linux-gnu"
+          - toolchain: "zerocopy-unsized-needs-drop-1-63-0"
+            target: "powerpc-unknown-linux-gnu"
+          - toolchain: "zerocopy-unsized-needs-drop-1-63-0"
+            target: "powerpc64-unknown-linux-gnu"
+          - toolchain: "zerocopy-unsized-needs-drop-1-63-0"
+            target: "riscv64gc-unknown-linux-gnu"
+          - toolchain: "zerocopy-unsized-needs-drop-1-63-0"
+            target: "s390x-unknown-linux-gnu"
+          - toolchain: "zerocopy-unsized-needs-drop-1-63-0"
+            target: "x86_64-pc-windows-msvc"
+          - toolchain: "zerocopy-unsized-needs-drop-1-63-0"
+            target: "thumbv6m-none-eabi"
+          - toolchain: "zerocopy-unsized-needs-drop-1-63-0"
             target: "wasm32-wasi"
           # Exclude `thumbv6m-none-eabi` combined with any feature that implies
           # the `std` feature since `thumbv6m-none-eabi` does not include a
