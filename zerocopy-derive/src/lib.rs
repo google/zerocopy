@@ -235,10 +235,8 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                 }
 
                 #[inline(always)]
-                fn pointer_to_metadata(ptr: ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<Self>) -> Self::PointerMetadata {
-                    // SAFETY: `ptr` is non-null.
-                    let ptr = unsafe { ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(ptr.as_ptr() as *mut _) };
-                    <#trailing_field_ty>::pointer_to_metadata(ptr)
+                fn pointer_to_metadata(ptr: *mut Self) -> Self::PointerMetadata {
+                    <#trailing_field_ty>::pointer_to_metadata(ptr as *mut _)
                 }
             ),
         )
@@ -270,10 +268,7 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                 }
 
                 #[inline(always)]
-                fn pointer_to_metadata(
-                    _ptr: ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<Self>,
-                ) -> () {
-                }
+                fn pointer_to_metadata(_ptr: *mut Self) -> () {}
             ),
         )
     };

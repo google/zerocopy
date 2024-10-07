@@ -121,10 +121,7 @@ fn test_known_layout() {
                 }
 
                 #[inline(always)]
-                fn pointer_to_metadata(
-                    _ptr: ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<Self>,
-                ) -> () {
-                }
+                fn pointer_to_metadata(_ptr: *mut Self) -> () {}
             }
         } no_build
     }

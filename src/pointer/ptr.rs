@@ -1431,7 +1431,7 @@ mod _project {
         /// Unsafe code my rely on `trailing_slice_len` satisfying the above
         /// contract.
         pub(super) fn trailing_slice_len(&self) -> usize {
-            T::pointer_to_metadata(self.as_non_null())
+            T::pointer_to_metadata(self.as_non_null().as_ptr())
         }
     }
 
@@ -1760,7 +1760,9 @@ mod tests {
                                 }
 
                                 if let Some(want) = meta {
-                                    let got = KnownLayout::pointer_to_metadata(slf.as_non_null());
+                                    let got = KnownLayout::pointer_to_metadata(
+                                        slf.as_non_null().as_ptr(),
+                                    );
                                     assert_eq!(got, want);
                                 }
                             }
@@ -1775,7 +1777,8 @@ mod tests {
                             assert_eq!(len, bytes.len());
 
                             if let Some(want) = meta {
-                                let got = KnownLayout::pointer_to_metadata(slf.as_non_null());
+                                let got =
+                                    KnownLayout::pointer_to_metadata(slf.as_non_null().as_ptr());
                                 assert_eq!(got, want);
                             }
                         }
@@ -1859,7 +1862,10 @@ mod tests {
                     ptr.try_cast_into::<$ty, BecauseImmutable>(CastType::Prefix, Some($elems));
                 if let Some(expect) = $expect {
                     let (ptr, _) = res.unwrap();
-                    assert_eq!(KnownLayout::pointer_to_metadata(ptr.as_non_null()), expect);
+                    assert_eq!(
+                        KnownLayout::pointer_to_metadata(ptr.as_non_null().as_ptr()),
+                        expect
+                    );
                 } else {
                     let _ = res.unwrap_err();
                 }
