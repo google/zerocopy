@@ -196,19 +196,19 @@ pub unsafe trait IntoByteSliceMut<'a>: IntoByteSlice<'a> + ByteSliceMut {
 
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
-unsafe impl<'a> ByteSlice for &'a [u8] {}
+unsafe impl ByteSlice for &[u8] {}
 
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
-unsafe impl<'a> CopyableByteSlice for &'a [u8] {}
+unsafe impl CopyableByteSlice for &[u8] {}
 
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
-unsafe impl<'a> CloneableByteSlice for &'a [u8] {}
+unsafe impl CloneableByteSlice for &[u8] {}
 
 // SAFETY: This delegates to `polyfills:split_at_unchecked`, which is documented
 // to correctly split `self` into two slices at the given `mid` point.
-unsafe impl<'a> SplitByteSlice for &'a [u8] {
+unsafe impl SplitByteSlice for &[u8] {
     #[inline]
     unsafe fn split_at_unchecked(self, mid: usize) -> (Self, Self) {
         // SAFETY: By contract on caller, `mid` is not greater than
@@ -231,12 +231,12 @@ unsafe impl<'a> IntoByteSlice<'a> for &'a [u8] {
 
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
-unsafe impl<'a> ByteSlice for &'a mut [u8] {}
+unsafe impl ByteSlice for &mut [u8] {}
 
 // SAFETY: This delegates to `polyfills:split_at_mut_unchecked`, which is
 // documented to correctly split `self` into two slices at the given `mid`
 // point.
-unsafe impl<'a> SplitByteSlice for &'a mut [u8] {
+unsafe impl SplitByteSlice for &mut [u8] {
     #[inline]
     unsafe fn split_at_unchecked(self, mid: usize) -> (Self, Self) {
         use core::slice::from_raw_parts_mut;
@@ -316,13 +316,13 @@ unsafe impl<'a> IntoByteSliceMut<'a> for &'a mut [u8] {
 
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
-unsafe impl<'a> ByteSlice for cell::Ref<'a, [u8]> {}
+unsafe impl ByteSlice for cell::Ref<'_, [u8]> {}
 
 // SAFETY: This delegates to stdlib implementation of `Ref::map_split`, which is
 // assumed to be correct, and `SplitByteSlice::split_at_unchecked`, which is
 // documented to correctly split `self` into two slices at the given `mid`
 // point.
-unsafe impl<'a> SplitByteSlice for cell::Ref<'a, [u8]> {
+unsafe impl SplitByteSlice for cell::Ref<'_, [u8]> {
     #[inline]
     unsafe fn split_at_unchecked(self, mid: usize) -> (Self, Self) {
         cell::Ref::map_split(self, |slice|
@@ -336,13 +336,13 @@ unsafe impl<'a> SplitByteSlice for cell::Ref<'a, [u8]> {
 
 // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
-unsafe impl<'a> ByteSlice for cell::RefMut<'a, [u8]> {}
+unsafe impl ByteSlice for cell::RefMut<'_, [u8]> {}
 
 // SAFETY: This delegates to stdlib implementation of `RefMut::map_split`, which
 // is assumed to be correct, and `SplitByteSlice::split_at_unchecked`, which is
 // documented to correctly split `self` into two slices at the given `mid`
 // point.
-unsafe impl<'a> SplitByteSlice for cell::RefMut<'a, [u8]> {
+unsafe impl SplitByteSlice for cell::RefMut<'_, [u8]> {
     #[inline]
     unsafe fn split_at_unchecked(self, mid: usize) -> (Self, Self) {
         cell::RefMut::map_split(self, |slice|
