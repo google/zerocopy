@@ -40,6 +40,8 @@ wait $VERSIONS_PID
 #
 # This was added because, in #728, we added `ci/check_all_toolchains_tested.sh`
 # without calling it from this script.
+GLOBIGNORE="./*/release_crate_version.sh" # We don't want to run this one
 for f in ./ci/*; do
     grep "$f" githooks/pre-push >/dev/null || { echo "$f not called from githooks/pre-push" >&2 ; exit 1; }
 done
+unset GLOBIGNORE
