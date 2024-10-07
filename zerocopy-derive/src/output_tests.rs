@@ -322,8 +322,8 @@ fn test_into_bytes() {
                 u8: ::zerocopy::IntoBytes,
                 u8: ::zerocopy::IntoBytes,
                 (): ::zerocopy::util::macro_util::PaddingFree<
-                    Foo,
-                    { ::zerocopy::struct_has_padding!(Foo, [u8, u8]) },
+                    Self,
+                    { ::zerocopy::struct_has_padding!(Self, [u8, u8]) },
                 >,
             {
                 fn only_derive_is_allowed_to_implement_this_trait() {}

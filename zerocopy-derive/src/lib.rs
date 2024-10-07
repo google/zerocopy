@@ -1286,10 +1286,10 @@ fn impl_block<D: DataExt>(
             let t = tag.iter();
             parse_quote! {
                 (): ::zerocopy::util::macro_util::PaddingFree<
-                    #type_ident,
+                    Self,
                     {
                         #validator_context
-                        ::zerocopy::#validator_macro!(#type_ident, #(#t,)* #(#variant_types),*)
+                        ::zerocopy::#validator_macro!(Self, #(#t,)* #(#variant_types),*)
                     }
                 >
             }
