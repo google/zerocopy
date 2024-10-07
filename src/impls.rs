@@ -19,7 +19,7 @@ safety_comment! {
     /// - `IntoBytes`: Since `()` has size 0, it contains no padding bytes.
     /// - `Unaligned`: `()` has alignment 1.
     ///
-    /// [1] https://doc.rust-lang.org/reference/type-layout.html#tuple-layout
+    /// [1] https://doc.rust-lang.org/1.81.0/reference/type-layout.html#tuple-layout
     unsafe_impl!((): Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
     assert_unaligned!(());
 }
@@ -47,13 +47,13 @@ safety_comment! {
     /// TODO(https://github.com/rust-lang/reference/pull/1392): Once this text
     /// is available on the Stable docs, cite those instead.
     ///
-    /// [2] https://doc.rust-lang.org/reference/type-layout.html#primitive-data-layout
+    /// [2] https://doc.rust-lang.org/1.81.0/reference/type-layout.html#primitive-data-layout
     ///
-    /// [3] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
+    /// [3] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#size-and-alignment:
     ///
     ///     Alignment is measured in bytes, and must be at least 1.
     ///
-    /// [4] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
+    /// [4] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#size-and-alignment:
     ///
     ///     The size of a value is always a multiple of its alignment.
     ///
@@ -89,7 +89,7 @@ safety_comment! {
     /// - `Unaligned`: Per the reference [1], "[a]n object with the boolean type
     ///   has a size and alignment of 1 each."
     ///
-    /// [1] https://doc.rust-lang.org/reference/types/boolean.html
+    /// [1] https://doc.rust-lang.org/1.81.0/reference/types/boolean.html
     unsafe_impl!(bool: Immutable, FromZeros, IntoBytes, Unaligned);
     assert_unaligned!(bool);
     /// SAFETY:
@@ -112,7 +112,7 @@ safety_comment! {
     ///     the `u8` value is 0 or 1, and both of these are valid values for
     ///     `bool`. [3]
     ///
-    /// [1] Per https://doc.rust-lang.org/reference/type-layout.html#primitive-data-layout:
+    /// [1] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#primitive-data-layout:
     ///
     ///   The size of most primitives is given in this table.
     ///
@@ -121,11 +121,11 @@ safety_comment! {
     ///   | `bool`    | 1                    |
     ///   | `u8`/`i8` | 1                    |
     ///
-    /// [2] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
+    /// [2] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#size-and-alignment:
     ///
     ///   The size of a value is always a multiple of its alignment.
     ///
-    /// [3] Per https://doc.rust-lang.org/reference/types/boolean.html:
+    /// [3] Per https://doc.rust-lang.org/1.81.0/reference/types/boolean.html:
     ///
     ///   The value false has the bit pattern 0x00 and the value true has the
     ///   bit pattern 0x01.
@@ -144,7 +144,7 @@ safety_comment! {
     ///   unsigned word" (`u32`) which is `IntoBytes`. Note that unlike `u32`,
     ///   not all bit patterns are valid for `char`.
     ///
-    /// [1] https://doc.rust-lang.org/reference/types/textual.html
+    /// [1] https://doc.rust-lang.org/1.81.0/reference/types/textual.html
     unsafe_impl!(char: Immutable, FromZeros, IntoBytes);
     /// SAFETY:
     /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
@@ -202,7 +202,7 @@ safety_comment! {
     /// - Improve safety proof for `FromZeros` and `IntoBytes`; having the same
     ///   layout as `[u8]` isn't sufficient.
     ///
-    /// [1] https://doc.rust-lang.org/reference/type-layout.html#str-layout
+    /// [1] https://doc.rust-lang.org/1.81.0/reference/type-layout.html#str-layout
     unsafe_impl!(str: Immutable, FromZeros, IntoBytes, Unaligned);
     /// SAFETY:
     /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
@@ -226,7 +226,7 @@ safety_comment! {
     ///     guarantees that it returns `Err` if its input is not a valid `str`.
     ///     [2]
     ///
-    /// [1] Per https://doc.rust-lang.org/reference/types/textual.html:
+    /// [1] Per https://doc.rust-lang.org/1.81.0/reference/types/textual.html:
     ///
     ///   A value of type `str` is represented the same was as `[u8]`.
     ///
@@ -264,8 +264,12 @@ safety_comment! {
     ///   clear how we'd prove it short of adding text to the stdlib docs that
     ///   says so explicitly, which likely wouldn't be accepted.
     ///
-    /// [1] https://doc.rust-lang.org/stable/std/num/struct.NonZeroU8.html
-    /// [2] https://doc.rust-lang.org/stable/std/num/struct.NonZeroI8.html
+    /// [1] https://doc.rust-lang.org/1.81.0/std/num/type.NonZeroU8.html
+    ///
+    ///     `NonZeroU8` is guaranteed to have the same layout and bit validity as `u8` with
+    ///     the exception that 0 is not a valid instance
+    ///
+    /// [2] https://doc.rust-lang.org/1.81.0/std/num/type.NonZeroI8.html
     /// TODO(https://github.com/rust-lang/rust/pull/104082): Cite documentation
     /// that layout is the same as primitive layout.
     unsafe_impl!(NonZeroU8: Immutable, IntoBytes, Unaligned);
@@ -302,7 +306,7 @@ safety_comment! {
     ///     `Maybe<NonZeroXxx>` refers to a valid `NonZeroXxx`. The only
     ///     `xxx` which is not also a valid `NonZeroXxx` is 0. [1]
     ///
-    /// [1] Per https://doc.rust-lang.org/core/num/struct.NonZeroU16.html:
+    /// [1] Per https://doc.rust-lang.org/1.81.0/core/num/type.NonZeroU16.html:
     ///
     ///   `NonZeroU16` is guaranteed to have the same layout and bit validity as
     ///   `u16` with the exception that `0` is not a valid instance.
@@ -493,11 +497,11 @@ mod atomics {
             ///   This type has the same size, alignment, and bit validity as
             ///   the underlying integer type
             ///
-            /// [2] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
+            /// [2] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#size-and-alignment:
             ///
             ///     Alignment is measured in bytes, and must be at least 1.
             ///
-            /// [3] Per https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment:
+            /// [3] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#size-and-alignment:
             ///
             ///     The size of a value is always a multiple of its alignment.
             unsafe_impl!(AtomicBool: Unaligned);
@@ -604,7 +608,7 @@ safety_comment! {
     /// - `Unaligned`: Per the preceding reference, `PhantomData` has alignment
     ///   1.
     ///
-    /// [1] https://doc.rust-lang.org/std/marker/struct.PhantomData.html#layout-1
+    /// [1] https://doc.rust-lang.org/1.81.0/std/marker/struct.PhantomData.html#layout-1
     unsafe_impl!(T: ?Sized => Immutable for PhantomData<T>);
     unsafe_impl!(T: ?Sized => TryFromBytes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => FromZeros for PhantomData<T>);
@@ -710,7 +714,7 @@ safety_comment! {
     /// Note that we don't `assert_unaligned!` for slice types because
     /// `assert_unaligned!` uses `align_of`, which only works for `Sized` types.
     ///
-    /// [1] https://doc.rust-lang.org/reference/type-layout.html#array-layout
+    /// [1] https://doc.rust-lang.org/1.81.0/reference/type-layout.html#array-layout
     unsafe_impl!(const N: usize, T: Immutable => Immutable for [T; N]);
     unsafe_impl!(const N: usize, T: TryFromBytes => TryFromBytes for [T; N]; |c: Maybe<[T; N]>| {
         // Note that this call may panic, but it would still be sound even if it
