@@ -1166,6 +1166,9 @@ enum SelfBounds<'a> {
     All(&'a [Trait]),
 }
 
+// TODO(https://github.com/rust-lang/rust-clippy/issues/12908): This is a false positive.
+// Explicit lifetimes are actually necessary here.
+#[allow(clippy::needless_lifetimes)]
 impl<'a> SelfBounds<'a> {
     const SIZED: Self = Self::All(&[Trait::Sized]);
 }

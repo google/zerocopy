@@ -502,7 +502,7 @@ pub(crate) trait AsAddress {
     fn addr(self) -> usize;
 }
 
-impl<'a, T: ?Sized> AsAddress for &'a T {
+impl<T: ?Sized> AsAddress for &T {
     #[inline(always)]
     fn addr(self) -> usize {
         let ptr: *const T = self;
@@ -510,7 +510,7 @@ impl<'a, T: ?Sized> AsAddress for &'a T {
     }
 }
 
-impl<'a, T: ?Sized> AsAddress for &'a mut T {
+impl<T: ?Sized> AsAddress for &mut T {
     #[inline(always)]
     fn addr(self) -> usize {
         let ptr: *const T = self;
