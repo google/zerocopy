@@ -2947,9 +2947,6 @@ pub unsafe trait FromZeros: TryFromBytes {
     /// pre-zeroed memory, using `new_box_zeroed` (or related functions) may
     /// have performance benefits.
     ///
-    /// Note that `Box<Self>` can be converted to `Arc<Self>` and other
-    /// container types without reallocation.
-    ///
     /// # Errors
     ///
     /// Returns an error on allocation failure. Allocation failure is guaranteed
