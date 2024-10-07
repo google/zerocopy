@@ -569,3 +569,9 @@ enum IntoBytes4 {
 enum IntoBytes5 {
     A(u32),
 }
+
+#[derive(IntoBytes)]
+#[repr(u8)]
+enum IntoBytes6<T> {
+    A(T),
+}

@@ -265,6 +265,14 @@ error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this
     |
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
+error: generic parameters may not be used in const operations
+   --> tests/ui-stable/enum.rs:576:7
+    |
+576 |     A(T),
+    |       ^ cannot perform const operation using `T`
+    |
+    = note: type parameters may not be used in const expressions
+
 error[E0565]: meta item in `repr` must be an identifier
   --> tests/ui-stable/enum.rs:19:8
    |
@@ -449,6 +457,19 @@ error[E0277]: `IntoBytes3` has inter-field padding
     = note: consider using `#[repr(packed)]` to remove inter-field padding
     = help: the trait `PaddingFree<IntoBytes3, false>` is implemented for `()`
     = help: see issue #48214
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: generic `Self` types are currently not permitted in anonymous constants
+   --> tests/ui-stable/enum.rs:573:10
+    |
+573 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+note: not a concrete type
+   --> tests/ui-stable/enum.rs:573:10
+    |
+573 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `bool: FromBytes` is not satisfied

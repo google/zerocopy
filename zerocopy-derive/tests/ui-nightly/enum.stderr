@@ -265,6 +265,15 @@ error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this
     |
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
+error: generic parameters may not be used in const operations
+   --> tests/ui-nightly/enum.rs:576:7
+    |
+576 |     A(T),
+    |       ^ cannot perform const operation using `T`
+    |
+    = note: type parameters may not be used in const expressions
+    = help: add `#![feature(generic_const_exprs)]` to allow generic const expressions
+
 error[E0565]: meta item in `repr` must be an identifier
   --> tests/ui-nightly/enum.rs:19:8
    |
@@ -486,6 +495,19 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
 9   + #![feature(trivial_bounds)]
     |
+
+error: generic `Self` types are currently not permitted in anonymous constants
+   --> tests/ui-nightly/enum.rs:573:10
+    |
+573 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+note: not a concrete type
+   --> tests/ui-nightly/enum.rs:573:10
+    |
+573 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `bool: FromBytes` is not satisfied
    --> tests/ui-nightly/enum.rs:191:10

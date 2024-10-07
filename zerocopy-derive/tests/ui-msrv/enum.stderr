@@ -265,6 +265,14 @@ error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this
     |
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
+error: generic parameters may not be used in const operations
+   --> tests/ui-msrv/enum.rs:576:7
+    |
+576 |     A(T),
+    |       ^ cannot perform const operation using `T`
+    |
+    = note: type parameters may not be used in const expressions
+
 error[E0658]: custom discriminant values are not allowed in enums with tuple or struct variants
    --> tests/ui-msrv/enum.rs:136:9
     |
@@ -382,4 +390,17 @@ error[E0277]: the trait bound `(): PaddingFree<IntoBytes3, true>` is not satisfi
     = help: the following implementations were found:
               <() as PaddingFree<T, false>>
     = help: see issue #48214
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: generic `Self` types are currently not permitted in anonymous constants
+   --> tests/ui-msrv/enum.rs:573:10
+    |
+573 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
+    |
+note: not a concrete type
+   --> tests/ui-msrv/enum.rs:573:10
+    |
+573 | #[derive(IntoBytes)]
+    |          ^^^^^^^^^
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
