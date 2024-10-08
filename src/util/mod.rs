@@ -678,6 +678,8 @@ pub(crate) unsafe fn copy_unchecked(src: &[u8], dst: &mut [u8]) {
     //   bytes does not overlap with the region of memory beginning at `dst`
     //   with the same size, because `dst` is derived from an exclusive
     //   reference.
+    //
+    // [1] https://doc.rust-lang.org/1.81.0/core/ptr/fn.copy_nonoverlapping.html#safety
     unsafe {
         core::ptr::copy_nonoverlapping(src.as_ptr(), dst.as_mut_ptr(), src.len());
     };

@@ -546,6 +546,10 @@ macro_rules! impl_known_layout {
                 #[inline(always)]
                 fn pointer_to_metadata(_ptr: *mut Self) -> () {
                 }
+
+                unsafe fn drop(slf: &mut crate::UnalignUnsized<Self>) {
+                    let _ = unsafe { slf.take() };
+                }
             }
         };
     };
@@ -563,7 +567,7 @@ macro_rules! impl_known_layout {
 /// - It must be valid to perform an `as` cast from `*mut $repr` to `*mut $ty`,
 ///   and this operation must preserve referent size (ie, `size_of_val_raw`).
 macro_rules! unsafe_impl_known_layout {
-    ($($tyvar:ident: ?Sized + KnownLayout =>)? #[repr($repr:ty)] $ty:ty) => {
+    ($($tyvar:ident: ?Sized + KnownLayout =>)? #[repr($(packed,)? $repr:ty)] $ty:ty) => {
         const _: () = {
             use core::ptr::NonNull;
 
@@ -596,6 +600,13 @@ macro_rules! unsafe_impl_known_layout {
                     #[allow(clippy::as_conversions)]
                     let ptr = ptr as *mut $repr;
                     <$repr>::pointer_to_metadata(ptr)
+                }
+
+                unsafe fn drop(slf: &mut UnalignUnsized<Self>) {
+                    // SAFETY: TODO
+                    let slf = unsafe { &mut *(slf as *mut _ as *mut UnalignUnsized<$repr>) };
+                    // SAFETY: TODO
+                    unsafe { KnownLayout::drop(slf) }
                 }
             }
         };

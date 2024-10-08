@@ -464,6 +464,92 @@ impl<T: Unaligned + Display> Display for Unalign<T> {
     }
 }
 
+/// A type with no alignment requirement.
+#[derive(Debug)]
+#[repr(C, packed)]
+pub struct UnalignUnsized<T: ?Sized>(ManuallyDrop<T>)
+where
+    T: KnownLayout;
+
+// SAFETY: TODO
+unsafe impl<T: ?Sized + KnownLayout> KnownLayout for UnalignUnsized<T> {
+    #[allow(clippy::missing_inline_in_public_items)]
+    #[cfg_attr(coverage_nightly, coverage(off))]
+    fn only_derive_is_allowed_to_implement_this_trait() {}
+
+    type PointerMetadata = <T as KnownLayout>::PointerMetadata;
+
+    type MaybeUninit = UnalignUnsized<<T as KnownLayout>::MaybeUninit>;
+
+    const LAYOUT: DstLayout = DstLayout {
+        // The alignment is `1`, since `Self` is `repr(packed)`.
+        align: unsafe { NonZeroUsize::new_unchecked(1) },
+        // Otherwise, we retain the size of the inner `T`.
+        size_info: <T as KnownLayout>::LAYOUT.size_info,
+    };
+
+    #[inline(always)]
+    fn raw_from_ptr_len(
+        bytes: NonNull<u8>,
+        meta: <T as KnownLayout>::PointerMetadata,
+    ) -> NonNull<Self> {
+        #[allow(clippy::as_conversions)]
+        let ptr = <T>::raw_from_ptr_len(bytes, meta).as_ptr() as *mut Self;
+        unsafe { NonNull::new_unchecked(ptr) }
+    }
+
+    #[inline(always)]
+    fn pointer_to_metadata(ptr: *mut Self) -> Self::PointerMetadata {
+        #[allow(clippy::as_conversions)]
+        let ptr = ptr as *mut T;
+        <T>::pointer_to_metadata(ptr)
+    }
+
+    #[inline(always)]
+    unsafe fn drop(slf: &mut UnalignUnsized<Self>) {
+        let slf = slf.peel();
+        // SAFETY: By contract on the caller, this method — and, by extension,
+        // the below invocation — is executed at most once.
+        unsafe {
+            KnownLayout::drop(slf);
+        }
+    }
+}
+
+impl<T> UnalignUnsized<T>
+where
+    T: KnownLayout,
+{
+    pub(crate) unsafe fn take(&mut self) -> T {
+        let inner = core::ptr::addr_of!(self.0) as *const _;
+        // SAFETY: TODO
+        unsafe { core::ptr::read_unaligned(inner) }
+    }
+}
+
+impl<T: ?Sized> UnalignUnsized<UnalignUnsized<T>>
+where
+    T: KnownLayout,
+{
+    pub(crate) fn peel(&mut self) -> &mut UnalignUnsized<T> {
+        // SAFETY: TODO
+        unsafe { &mut *(self as *mut _ as *mut UnalignUnsized<T>) }
+    }
+}
+
+impl<T: ?Sized> Drop for UnalignUnsized<T>
+where
+    T: KnownLayout,
+{
+    fn drop(&mut self) {
+        if core::mem::needs_drop::<T>() {
+            // SAFETY: By contract on the caller, this method — and, by
+            // extension, the below invocation — is executed at most once.
+            unsafe { T::drop(self) }
+        }
+    }
+}
+
 /// A wrapper type to construct uninitialized instances of `T`.
 ///
 /// `MaybeUninit` is identical to the [standard library

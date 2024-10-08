@@ -796,6 +796,16 @@ pub unsafe trait KnownLayout {
         // resulting size would not fit in a `usize`.
         meta.size_for_metadata(Self::LAYOUT)
     }
+
+    /// Run `slf`'s destructor (if any).
+    ///
+    /// # Safety
+    ///
+    /// `slf`'s destructor must not already have been run. After invoking this
+    /// function, re-using `slf` may be undefined behavior.
+    #[cfg(zerocopy_unstable)]
+    #[doc(hidden)]
+    unsafe fn drop(slf: &mut UnalignUnsized<Self>);
 }
 
 /// The metadata associated with a [`KnownLayout`] type.
@@ -919,6 +929,57 @@ unsafe impl<T> KnownLayout for [T] {
         //   any compound type whose unsized tail is a slice type, such as
         //   struct `Foo(i32, [u8])` or `(u64, Foo)`.
         slc.len()
+    }
+
+    #[cfg(feature = "alloc")]
+    unsafe fn drop(slf: &mut UnalignUnsized<Self>) {
+        let meta = KnownLayout::pointer_to_metadata(slf);
+        let size = meta.size_for_metadata(Self::LAYOUT).unwrap();
+        let aligned = MaybeUninit::<Self>::new_boxed_uninit(meta).unwrap();
+        let aligned = Box::into_raw(aligned);
+        // SAFETY: This invocation satisfies the safety contract of
+        // copy_nonoverlapping [1]:
+        // - `slf as *mut _ as *mut u8` is valid for reads of `size` bytes
+        // - `aligned as *mut u8` is valid for writes of `size` bytes, because
+        //   `aligned`'s referent is greater-than-or-equal in size to that of
+        //   `slf`, because `aligned` might include trailing padding.
+        // - `src` and `dst` are, trivially, properly aligned
+        // - the region of memory beginning at `src` with a size of `size` bytes
+        //   does not overlap with the region of memory beginning at `aligned`
+        //   with the same size, because `aligned` is derived from a fresh
+        //   allocation.
+        //
+        // [1] https://doc.rust-lang.org/1.81.0/core/ptr/fn.copy_nonoverlapping.html#safety
+        unsafe {
+            core::ptr::copy_nonoverlapping(slf as *mut _ as *mut u8, aligned as *mut u8, size);
+        }
+        // LEMMA 1: `aligned`'s referent is a bit-valid and aligned instance of
+        // `Self`. In its declaration, `aligned` was initialized from a
+        // `Box<MaybeUninit<Self>>`, which has the same alignment as `Self`.
+        // Then, via the preceeding `copy_nonoverlapping`, `aligned` was
+        // initialized with a valid instance of `Self.`
+        let aligned = aligned as *mut Self;
+        // SAFETY: This invocation satisfies the safety contract of
+        // `Box::from_raw` [1], because `aligned` is directly derived from
+        // `Box::into_raw`. By LEMMA 1, `aligned`'s referent is additionally a
+        // valid instance of `Self`. The `Layout`s of `Self` and
+        // `MaybeUninit<Self>` are the same, by contract on `MaybeUninit<Self>`.
+        //
+        // [1] Per https://doc.rust-lang.org/1.81.0/alloc/boxed/struct.Box.html#method.from_raw:
+        //
+        //   It is valid to convert both ways between a `Box`` and a raw pointer
+        //   allocated with the `Global`` allocator, given that the `Layout`
+        //   used with the allocator is correct for the type.
+        unsafe {
+            // drop `aligned`
+            let _ = Box::from_raw(aligned);
+        }
+    }
+
+    #[cfg(not(feature = "alloc"))]
+    unsafe fn drop(_: &mut UnalignUnsized<Self>) {
+        // PME if T needs drop.
+        static_assert!(T=> !core::mem::needs_drop::<T>());
     }
 }
 
