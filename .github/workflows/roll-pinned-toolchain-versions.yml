@@ -159,7 +159,7 @@ jobs:
           echo "ZC_KANI_LATEST=$KANI_LATEST" >> $GITHUB_ENV
 
           # Update the `kani-version:` argument in-place.
-          sed -i -E -e "s/^( *kani-version:)( [0-9]+\.[0-9]+\.[0-9]+)/\1 $KANI_LATEST/" .github/workflows/ci.yml
+          sed -i '' -E -e "s/^( *kani-version:)( [0-9]+\.[0-9]+\.[0-9]+)/\1 $KANI_LATEST/" .github/workflows/ci.yml
       - name: Submit PR
         uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f # v7.0.5
         with:
