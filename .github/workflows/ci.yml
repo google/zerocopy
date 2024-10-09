@@ -56,6 +56,7 @@ jobs:
           # which a particular feature is supported.
           "zerocopy-core-error",
           "zerocopy-diagnostic-on-unimplemented",
+          "zerocopy-gat",
           "zerocopy-generic-bounds-in-const-fn",
           "zerocopy-target-has-atomics",
           "zerocopy-aarch64-simd",
@@ -93,6 +94,8 @@ jobs:
             features: "--all-features"
           - toolchain: "zerocopy-diagnostic-on-unimplemented"
             features: "--all-features"
+          - toolchain: "zerocopy-gat"
+            features: "--all-features"
           - toolchain: "zerocopy-generic-bounds-in-const-fn"
             features: "--all-features"
           - toolchain: "zerocopy-target-has-atomics"
@@ -117,6 +120,8 @@ jobs:
             toolchain: "zerocopy-core-error"
           - crate: "zerocopy-derive"
             toolchain: "zerocopy-diagnostic-on-unimplemented"
+          - crate: "zerocopy-derive"
+            toolchain: "zerocopy-gat"
           - crate: "zerocopy-derive"
             toolchain: "zerocopy-generic-bounds-in-const-fn"
           - crate: "zerocopy-derive"
@@ -189,6 +194,27 @@ jobs:
           - toolchain: "zerocopy-diagnostic-on-unimplemented"
             target: "thumbv6m-none-eabi"
           - toolchain: "zerocopy-diagnostic-on-unimplemented"
+            target: "wasm32-wasi"
+          # Exclude most targets targets from the `zerocopy-gat` toolchain since
+          # the `zerocopy-gat` feature is unrelated to compilation target. This
+          # only leaves i686 and x86_64 targets.
+          - toolchain: "zerocopy-gat"
+            target: "arm-unknown-linux-gnueabi"
+          - toolchain: "zerocopy-gat"
+            target: "aarch64-unknown-linux-gnu"
+          - toolchain: "zerocopy-gat"
+            target: "powerpc-unknown-linux-gnu"
+          - toolchain: "zerocopy-gat"
+            target: "powerpc64-unknown-linux-gnu"
+          - toolchain: "zerocopy-gat"
+            target: "riscv64gc-unknown-linux-gnu"
+          - toolchain: "zerocopy-gat"
+            target: "s390x-unknown-linux-gnu"
+          - toolchain: "zerocopy-gat"
+            target: "x86_64-pc-windows-msvc"
+          - toolchain: "zerocopy-gat"
+            target: "thumbv6m-none-eabi"
+          - toolchain: "zerocopy-gat"
             target: "wasm32-wasi"
           # Exclude most targets targets from the
           # `zerocopy-generic-bounds-in-const-fn` toolchain since the

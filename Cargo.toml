@@ -38,6 +38,9 @@ zerocopy-core-error = "1.81.0"
 # From 1.78.0, Rust supports the `#[diagnostic::on_unimplemented]` attribute.
 zerocopy-diagnostic-on-unimplemented = "1.78.0"
 
+# From 1.65.0, Rust supports generic associated types (GATs).
+zerocopy-gat = "1.65.0"
+
 # From 1.61.0, Rust supports generic types with trait bounds in `const fn`.
 zerocopy-generic-bounds-in-const-fn = "1.61.0"
 

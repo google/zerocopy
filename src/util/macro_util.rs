@@ -418,6 +418,36 @@ macro_rules! assert_align_gt_eq {
     }};
 }
 
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! assert_align_eq {
+    ($t:ident, $u: ident) => {{
+        // The comments here should be read in the context of this macro's
+        // invocations in `transmute_ref!` and `transmute_mut!`.
+        if false {
+            let align_t: $crate::util::macro_util::AlignOf<_> = unreachable!();
+            $t = align_t.into_t();
+
+            let mut align_u: $crate::util::macro_util::AlignOf<_> = unreachable!();
+            $u = align_u.into_t();
+
+            // This transmute will only compile successfully if
+            // `align_of::<T>() == max(align_of::<T>(), align_of::<U>())` - in
+            // other words, if `align_of::<T>() >= align_of::<U>()`.
+            //
+            // SAFETY: This code is never run.
+            align_u = unsafe {
+                // Clippy: We can't annotate the types; this macro is designed
+                // to infer the types from the calling context.
+                #[allow(clippy::missing_transmute_annotations)]
+                $crate::util::macro_util::core_reexport::mem::transmute(align_t)
+            };
+        } else {
+            loop {}
+        }
+    }};
+}
+
 /// Do `t` and `u` have the same size?  If not, this macro produces a compile
 /// error. It must be invoked in a dead codepath. This is used in
 /// `transmute_ref!` and `transmute_mut!`.
@@ -682,6 +712,154 @@ where
 pub const fn must_use<T>(t: T) -> T {
     t
 }
+
+#[cfg(all(zerocopy_gat, feature = "alloc"))]
+mod container {
+    use alloc::{boxed::Box, rc::Rc, sync::Arc};
+
+    pub trait Container {
+        type Applied<E>: Container<Elem = E>;
+        type Elem;
+        type Raw;
+
+        fn into_raw(slf: Self) -> Self::Raw;
+
+        /// Constructs a new container from a pointer obtained via `into_raw`.
+        ///
+        /// # Safety
+        ///
+        /// - `raw` must have been obtained via `into_raw` on either `Self` or
+        ///   `Self::Applied`
+        /// - `raw` may have been passed through `transmute_raw`, but must not
+        ///   have been otherwise modified
+        /// - `Self::Elem` must have the same size, alignment, and bit validity
+        ///   as the element type of the container that produced this `raw` via
+        ///   `into_raw`
+        /// - `Self::Elem` must have `UnsafeCell`s at the same byte ranges as
+        ///   the element type of the container that produced this `raw` via
+        ///   `into_raw`
+        unsafe fn from_raw(raw: Self::Raw) -> Self;
+
+        fn transmute_raw<T>(raw: <Self::Applied<T> as Container>::Raw) -> Self::Raw;
+
+        /// Transmutes this container from one element type to another.
+        ///
+        /// # Safety
+        ///
+        /// `T` and `Self::Elem` must have the same size, alignment, and bit
+        /// validity. They must have `UnsafeCell`s at the same byte ranges.
+        #[inline(always)]
+        unsafe fn transmute_from<T>(c: Self::Applied<T>) -> Self
+        where
+            Self: Sized,
+        {
+            let raw = <Self::Applied<T> as Container>::into_raw(c);
+            let raw = Self::transmute_raw::<T>(raw);
+
+            // SAFETY:
+            // - `raw` was obtained via `into_raw`
+            // - `raw` was passed through `transmute_raw`, but was not otherwise
+            //   modified
+            // - The caller promises that `T` and `Self::Elem` have the same
+            //   size, alignment, and bit validity
+            // - The caller promises that `T` and `Self::Elem` have
+            //   `UnsafeCell`s at the same byte ranges
+            unsafe { Self::from_raw(raw) }
+        }
+    }
+
+    impl<T> Container for Box<T> {
+        type Applied<U> = Box<U>;
+        type Elem = T;
+        type Raw = *mut T;
+
+        #[inline(always)]
+        fn into_raw(b: Box<T>) -> *mut T {
+            Box::into_raw(b)
+        }
+
+        #[inline(always)]
+        unsafe fn from_raw(ptr: *mut T) -> Box<T> {
+            unsafe { Box::from_raw(ptr) }
+        }
+
+        #[inline(always)]
+        fn transmute_raw<U>(raw: *mut U) -> *mut T {
+            raw.cast()
+        }
+    }
+
+    impl<T> Container for Rc<T> {
+        type Applied<U> = Rc<U>;
+        type Elem = T;
+        type Raw = *const T;
+
+        #[inline(always)]
+        fn into_raw(r: Rc<T>) -> *const T {
+            Rc::into_raw(r)
+        }
+
+        #[inline(always)]
+        unsafe fn from_raw(ptr: *const T) -> Rc<T> {
+            // SAFETY:
+            // - The caller promises that `ptr` was obtained via `into_raw` on
+            //   `Self` or on `Self::Applied` (which is also `Rc`). Since all
+            //   such types implement `into_raw` as `Rc::into_raw`, `ptr` was
+            //   obtained via `Rc::into_raw`. The caller further promises that
+            //   `ptr` was not modified other than being passed through
+            //   `transmute_raw` which, by the same argument, is always
+            //   implemented as a pointer type cast which preserves referent
+            //   bytes and provenance.
+            // - The caller promises that the original element type and
+            //   `Self::Elem` have the same size, alignment, and bit validity.
+            // - The caller promises that the original element type and
+            //   `Self::Elem` have `UnsafeCell`s at the same byte ranges.
+            unsafe { Rc::from_raw(ptr) }
+        }
+
+        #[inline(always)]
+        fn transmute_raw<U>(raw: *const U) -> *const T {
+            raw.cast()
+        }
+    }
+
+    impl<T> Container for Arc<T> {
+        type Applied<U> = Arc<U>;
+        type Elem = T;
+        type Raw = *const T;
+
+        #[inline(always)]
+        fn into_raw(a: Arc<T>) -> *const T {
+            Arc::into_raw(a)
+        }
+
+        #[inline(always)]
+        unsafe fn from_raw(ptr: *const T) -> Arc<T> {
+            // SAFETY:
+            // - The caller promises that `ptr` was obtained via `into_raw` on
+            //   `Self` or on `Self::Applied` (which is also `Arc`). Since all
+            //   such types implement `into_raw` as `Arc::into_raw`, `ptr` was
+            //   obtained via `Arc::into_raw`. The caller further promises that
+            //   `ptr` was not modified other than being passed through
+            //   `transmute_raw` which, by the same argument, is always
+            //   implemented as a pointer type cast which preserves referent
+            //   bytes and provenance.
+            // - The caller promises that the original element type and
+            //   `Self::Elem` have the same size, alignment, and bit validity.
+            // - The caller promises that the original element type and
+            //   `Self::Elem` have `UnsafeCell`s at the same byte ranges.
+            unsafe { Arc::from_raw(ptr) }
+        }
+
+        #[inline(always)]
+        fn transmute_raw<U>(raw: *const U) -> *const T {
+            raw.cast()
+        }
+    }
+}
+
+#[cfg(all(zerocopy_gat, feature = "alloc"))]
+pub use container::*;
 
 // NOTE: We can't change this to a `pub use core as core_reexport` until [1] is
 // fixed or we update to a semver-breaking version (as of this writing, 0.8.0)
