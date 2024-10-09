@@ -6,7 +6,7 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use core::hash::Hash;
+use core::{fmt, hash::Hash};
 
 use super::*;
 
@@ -461,6 +461,121 @@ impl<T: Unaligned + Display> Display for Unalign<T> {
     #[inline(always)]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         Display::fmt(self.deref(), f)
+    }
+}
+
+/// A wrapper type to construct uninitialized instances of `T`.
+///
+/// `MaybeUninit` is identical to the [standard library
+/// `MaybeUninit`][core-maybe-uninit] type except that it supports unsized
+/// types.
+///
+/// # Layout
+///
+/// The same layout guarantees and caveats apply to `MaybeUninit<T>` as apply to
+/// the [standard library `MaybeUninit`][core-maybe-uninit] with one exception:
+/// for `T: !Sized`, there is no single value for `T`'s size. Instead, for such
+/// types, the following are guaranteed:
+/// - Every [valid size][valid-size] for `T` is a valid size for
+///   `MaybeUninit<T>` and vice versa
+/// - Given `t: *const T` and `m: *const MaybeUninit<T>` with identical fat
+///   pointer metadata, `t` and `m` address the same number of bytes (and
+///   likewise for `*mut`)
+///
+/// [core-maybe-uninit]: core::mem::MaybeUninit
+/// [valid-size]: crate::KnownLayout#what-is-a-valid-size
+#[repr(transparent)]
+#[cfg(zerocopy_unstable)]
+pub struct MaybeUninit<T: ?Sized + KnownLayout>(T::MaybeUninit);
+
+#[cfg(zerocopy_unstable)]
+impl<T: ?Sized + KnownLayout> MaybeUninit<T> {
+    /// Creates a `Box<MaybeUninit<T>>`.
+    ///
+    /// This function is useful for allocating large, uninit values on the heap,
+    /// without ever creating a temporary instance of `Self` on the stack.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error on allocation failure. Allocation failure is guaranteed
+    /// never to cause a panic or an abort.
+    #[cfg(feature = "alloc")]
+    pub fn new_boxed_uninit(meta: T::PointerMetadata) -> Result<Box<Self>, AllocError> {
+        let align = Self::LAYOUT.align.get();
+        let size = match meta.size_for_metadata(Self::LAYOUT) {
+            Some(size) => size,
+            None => return Err(AllocError),
+        };
+        // On stable Rust versions <= 1.64.0, `Layout::from_size_align` has a
+        // bug in which sufficiently-large allocations (those which, when
+        // rounded up to the alignment, overflow `isize`) are not rejected,
+        // which can cause undefined behavior. See #64 for details.
+        //
+        // TODO(#67): Once our MSRV is > 1.64.0, remove this assertion.
+        #[allow(clippy::as_conversions)]
+        let max_alloc = (isize::MAX as usize).saturating_sub(align);
+        if size > max_alloc {
+            return Err(AllocError);
+        }
+
+        // TODO(https://github.com/rust-lang/rust/issues/55724): Use
+        // `Layout::repeat` once it's stabilized.
+        let layout = Layout::from_size_align(size, align).or(Err(AllocError))?;
+
+        let ptr = if layout.size() != 0 {
+            // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+            #[allow(clippy::undocumented_unsafe_blocks)]
+            let ptr = unsafe { alloc::alloc::alloc(layout) };
+            match NonNull::new(ptr) {
+                Some(ptr) => ptr,
+                None => return Err(AllocError),
+            }
+        } else {
+            let align = Self::LAYOUT.align.get();
+            // We use `transmute` instead of an `as` cast since Miri (with
+            // strict provenance enabled) notices and complains that an `as`
+            // cast creates a pointer with no provenance. Miri isn't smart
+            // enough to realize that we're only executing this branch when
+            // we're constructing a zero-sized `Box`, which doesn't require
+            // provenance.
+            //
+            // SAFETY: any initialized bit sequence is a bit-valid `*mut u8`.
+            // All bits of a `usize` are initialized.
+            #[allow(clippy::useless_transmute)]
+            let dangling = unsafe { mem::transmute::<usize, *mut u8>(align) };
+            // SAFETY: `dangling` is constructed from `Self::LAYOUT.align`,
+            // which is a `NonZeroUsize`, which is guaranteed to be non-zero.
+            //
+            // `Box<[T]>` does not allocate when `T` is zero-sized or when `len`
+            // is zero, but it does require a non-null dangling pointer for its
+            // allocation.
+            //
+            // TODO(https://github.com/rust-lang/rust/issues/95228): Use
+            // `std::ptr::without_provenance` once it's stable. That may
+            // optimize better. As written, Rust may assume that this consumes
+            // "exposed" provenance, and thus Rust may have to assume that this
+            // may consume provenance from any pointer whose provenance has been
+            // exposed.
+            #[allow(fuzzy_provenance_casts)]
+            unsafe {
+                NonNull::new_unchecked(dangling)
+            }
+        };
+
+        let ptr = Self::raw_from_ptr_len(ptr, meta);
+
+        // TODO(#429): Add a "SAFETY" comment and remove this `allow`. Make sure
+        // to include a justification that `ptr.as_ptr()` is validly-aligned in
+        // the ZST case (in which we manually construct a dangling pointer).
+        #[allow(clippy::undocumented_unsafe_blocks)]
+        Ok(unsafe { Box::from_raw(ptr.as_ptr()) })
+    }
+}
+
+#[cfg(zerocopy_unstable)]
+impl<T: ?Sized + KnownLayout> fmt::Debug for MaybeUninit<T> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.pad(core::any::type_name::<Self>())
     }
 }
 
