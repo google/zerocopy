@@ -87,7 +87,7 @@
 //! ```
 //!
 //! To work around this, use [`map_src`][CastError::map_src] to convert the
-//! source parameter to an unproblematic type e.g.:
+//! source parameter to an unproblematic type; e.g.:
 //!
 //! ```
 //! use zerocopy::*;
@@ -100,7 +100,21 @@
 //!         .map_src(drop)
 //! }).join().unwrap();
 //! ```
-
+//!
+//! Alternatively, use `.to_string()` to eagerly convert the error into a
+//! human-readable message; e.g.:
+//!
+//! ```
+//! use zerocopy::*;
+//!
+//! let result: Result<u32, String> = std::thread::spawn(|| {
+//!     let source = &mut [0u8, 1, 2][..];
+//!     // Try (and fail) to read a `u32` from `source`.
+//!     u32::read_from_bytes(source)
+//!         // Eagerly render the error message.
+//!         .map_err(|err| err.to_string())
+//! }).join().unwrap();
+//! ```
 use core::{
     convert::Infallible,
     fmt::{self, Debug, Write},
