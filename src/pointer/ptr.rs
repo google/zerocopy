@@ -717,7 +717,7 @@ mod _transitions {
         /// # Safety
         ///
         /// The caller promises that `self` satisfies the invariants `H`.
-        unsafe fn assume_invariants<H: Invariants>(self) -> Ptr<'a, T, H> {
+        pub(crate) unsafe fn assume_invariants<H: Invariants>(self) -> Ptr<'a, T, H> {
             // SAFETY: The caller has promised to satisfy all parameterized
             // invariants of `Ptr`. `Ptr`'s other invariants are satisfied
             // by-contract by the source `Ptr`.
@@ -938,6 +938,40 @@ mod _transitions {
             unsafe { self.assume_invariants() }
         }
     }
+}
+
+#[cfg(test)]
+#[test]
+fn test_forget_valid() {
+    use core::mem::MaybeUninit;
+
+    impl<'a, T, I: Invariants> Ptr<'a, T, I> {
+        /// Forgets that `self`'s referent is a bit-valid `T`.
+        fn forget_valid(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Any)> {
+            // SAFETY: `Any` is less restrictive than any validity invariant.
+            unsafe { self.assume_invariants() }
+        }
+
+        fn as_maybe_uninit(self) -> Ptr<'a, MaybeUninit<T>, (I::Aliasing, I::Alignment, Valid)> {
+            // SAFETY: `MaybeUninit<T>` has the same size and `UnsafeCell`s as
+            // `T`. This is a provenance-preserving cast.
+            let ptr = unsafe { self.cast_unsized(|ptr| ptr.cast::<MaybeUninit<T>>()) };
+
+            // SAFETY: `MaybeUninit<T>` has the same alignment as `T`.
+            let ptr = unsafe { ptr.assume_alignment::<I::Alignment>() };
+
+            // SAFETY: `MaybeUninit<T>` has no validity requirements.
+            unsafe { ptr.assume_valid() }
+        }
+    }
+
+    let mut b = true;
+    let ptr = Ptr::from_mut(&mut b);
+    let ptr = ptr.forget_valid();
+    let ptr = ptr.as_maybe_uninit();
+    let mu = ptr.as_mut();
+    *mu = crate::transmute!(2u8);
+    assert_eq!(b, true);
 }
 
 /// Casts of the referent type.
