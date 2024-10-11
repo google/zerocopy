@@ -38,14 +38,11 @@ safety_comment! {
     ///   - The only value >= 1 for which 1 is an integer multiple is 1
     ///   Therefore, the only possible alignment for `u8` and `i8` is 1.
     ///
-    /// [1] Per https://doc.rust-lang.org/beta/reference/types/numeric.html#bit-validity:
+    /// [1] Per https://doc.rust-lang.org/1.81.0/reference/types/numeric.html#bit-validity:
     ///
     ///     For every numeric type, `T`, the bit validity of `T` is equivalent to
     ///     the bit validity of `[u8; size_of::<T>()]`. An uninitialized byte is
     ///     not a valid `u8`.
-    ///
-    /// TODO(https://github.com/rust-lang/reference/pull/1392): Once this text
-    /// is available on the Stable docs, cite those instead.
     ///
     /// [2] https://doc.rust-lang.org/1.81.0/reference/type-layout.html#primitive-data-layout
     ///
