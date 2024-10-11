@@ -63,6 +63,7 @@
 use core::{
     convert::{TryFrom, TryInto},
     fmt::{Binary, Debug, LowerHex, Octal, UpperHex},
+    hash::Hash,
     num::TryFromIntError,
 };
 
@@ -81,7 +82,7 @@ use super::*;
 ///
 /// [`U32<BigEndian>`]: U32
 pub trait ByteOrder:
-    Copy + Clone + Debug + Display + Eq + PartialEq + Ord + PartialOrd + private::Sealed
+    Copy + Clone + Debug + Display + Eq + PartialEq + Ord + PartialOrd + Hash + private::Sealed
 {
     #[doc(hidden)]
     const ORDER: Order;
@@ -104,7 +105,7 @@ pub enum Order {
 /// Big-endian byte order.
 ///
 /// See [`ByteOrder`] for more details.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub enum BigEndian {}
 
 impl ByteOrder for BigEndian {
@@ -121,7 +122,7 @@ impl Display for BigEndian {
 /// Little-endian byte order.
 ///
 /// See [`ByteOrder`] for more details.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub enum LittleEndian {}
 
 impl ByteOrder for LittleEndian {
@@ -1070,7 +1071,7 @@ mod tests {
     }
 
     trait ByteOrderType:
-        FromBytes + IntoBytes + Unaligned + Copy + Eq + Debug + From<Self::Native>
+        FromBytes + IntoBytes + Unaligned + Copy + Eq + Debug + Hash + From<Self::Native>
     {
         type Native: Native;
         type ByteArray: ByteArray;
