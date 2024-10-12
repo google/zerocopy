@@ -122,6 +122,16 @@ error[E0277]: the trait bound `NotKnownLayoutDst: zerocopy::KnownLayout` is not 
 41 | #[derive(KnownLayout)]
    |          ^^^^^^^^^^^ the trait `zerocopy::KnownLayout` is not implemented for `NotKnownLayoutDst`
    |
+   = help: the following other types implement trait `zerocopy::KnownLayout`:
+             ()
+             *const T
+             *mut T
+             AU16
+             AtomicBool
+             AtomicI16
+             AtomicI32
+             AtomicI64
+           and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -131,6 +141,16 @@ error[E0277]: the trait bound `NotKnownLayout: zerocopy::KnownLayout` is not sat
 47 | #[derive(KnownLayout)]
    |          ^^^^^^^^^^^ the trait `zerocopy::KnownLayout` is not implemented for `NotKnownLayout`
    |
+   = help: the following other types implement trait `zerocopy::KnownLayout`:
+             ()
+             *const T
+             *mut T
+             AU16
+             AtomicBool
+             AtomicI16
+             AtomicI32
+             AtomicI64
+           and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -140,6 +160,16 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::Immutable` is not satis
 55 | #[derive(Immutable)]
    |          ^^^^^^^^^ the trait `zerocopy::Immutable` is not implemented for `UnsafeCell<()>`
    |
+   = help: the following other types implement trait `zerocopy::Immutable`:
+             &T
+             &mut T
+             ()
+             *const T
+             *mut T
+             AU16
+             F32<O>
+             F64<O>
+           and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -149,7 +179,17 @@ error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy::Immutable` is not satis
 60 | #[derive(Immutable)]
    |          ^^^^^^^^^ the trait `zerocopy::Immutable` is not implemented for `UnsafeCell<u8>`
    |
-   = note: required because of the requirements on the impl of `zerocopy::Immutable` for `[UnsafeCell<u8>; 0]`
+   = help: the following other types implement trait `zerocopy::Immutable`:
+             &T
+             &mut T
+             ()
+             *const T
+             *mut T
+             AU16
+             F32<O>
+             F64<O>
+           and $N others
+   = note: required for `[UnsafeCell<u8>; 0]` to implement `zerocopy::Immutable`
    = help: see issue #48214
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -159,6 +199,16 @@ error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
 100 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
     |
+    = help: the following other types implement trait `Unaligned`:
+              ()
+              AtomicBool
+              AtomicI8
+              AtomicU8
+              F32<O>
+              F64<O>
+              I128<O>
+              I16<O>
+            and $N others
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -168,8 +218,7 @@ error[E0277]: the trait bound `(): PaddingFree<IntoBytes2, true>` is not satisfi
 107 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ the trait `PaddingFree<IntoBytes2, true>` is not implemented for `()`
     |
-    = help: the following implementations were found:
-              <() as PaddingFree<T, false>>
+    = help: the trait `PaddingFree<T, false>` is implemented for `()`
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -179,8 +228,7 @@ error[E0277]: the trait bound `(): PaddingFree<IntoBytes3, true>` is not satisfi
 114 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ the trait `PaddingFree<IntoBytes3, true>` is not implemented for `()`
     |
-    = help: the following implementations were found:
-              <() as PaddingFree<T, false>>
+    = help: the trait `PaddingFree<T, false>` is implemented for `()`
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -201,7 +249,7 @@ note: required by a bound in `std::mem::size_of`
     |
     | pub const fn size_of<T>() -> usize {
     |                      ^ required by this bound in `std::mem::size_of`
-    = note: this error originates in the macro `::zerocopy::struct_has_padding` (in Nightly builds, run with -Z macro-backtrace for more info)
+    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
    --> tests/ui-msrv/struct.rs:129:8

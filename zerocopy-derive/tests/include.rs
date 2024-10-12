@@ -26,7 +26,7 @@ mod imp {
     #[allow(unused)]
     pub use {
         ::core::{
-            assert_eq,
+            self, assert_eq,
             cell::UnsafeCell,
             convert::TryFrom,
             marker::PhantomData,

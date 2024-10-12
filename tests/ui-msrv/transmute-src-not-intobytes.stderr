@@ -2,13 +2,26 @@ error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::IntoBytes` is not sa
   --> tests/ui-msrv/transmute-src-not-intobytes.rs:19:32
    |
 19 | const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
-   |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy<AU16>`
+   |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |                                |
+   |                                the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy<AU16>`
+   |                                required by a bound introduced by this call
    |
-note: required by `AssertIsIntoBytes`
+   = help: the following other types implement trait `zerocopy::IntoBytes`:
+             ()
+             AU16
+             AtomicBool
+             AtomicI16
+             AtomicI32
+             AtomicI64
+             AtomicI8
+             AtomicIsize
+           and $N others
+note: required by a bound in `AssertIsIntoBytes`
   --> tests/ui-msrv/transmute-src-not-intobytes.rs:19:32
    |
 19 | const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
-   |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertIsIntoBytes`
    = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::IntoBytes` is not satisfied
@@ -17,6 +30,16 @@ error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::IntoBytes` is not sa
 19 | const SRC_NOT_AS_BYTES: AU16 = transmute!(NotZerocopy(AU16(0)));
    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy<AU16>`
    |
+   = help: the following other types implement trait `zerocopy::IntoBytes`:
+             ()
+             AU16
+             AtomicBool
+             AtomicI16
+             AtomicI32
+             AtomicI64
+             AtomicI8
+             AtomicIsize
+           and $N others
 note: required by a bound in `AssertIsIntoBytes`
   --> tests/ui-msrv/transmute-src-not-intobytes.rs:19:32
    |

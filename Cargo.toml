@@ -15,14 +15,14 @@
 [package]
 edition = "2021"
 name = "zerocopy"
-version = "0.8.5"
+version = "0.9.0-alpha.0"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Zerocopy makes zero-cost memory manipulation effortless. We write \"unsafe\" so you don't have to."
 categories = ["embedded", "encoding", "no-std::no-alloc", "parsing", "rust-patterns"]
 keywords = ["cast", "convert", "transmute", "transmutation", "type-punning"]
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"
-rust-version = "1.56.0"
+rust-version = "1.65.0"
 
 exclude = [".*"]
 
@@ -37,21 +37,6 @@ zerocopy-core-error = "1.81.0"
 
 # From 1.78.0, Rust supports the `#[diagnostic::on_unimplemented]` attribute.
 zerocopy-diagnostic-on-unimplemented = "1.78.0"
-
-# From 1.61.0, Rust supports generic types with trait bounds in `const fn`.
-zerocopy-generic-bounds-in-const-fn = "1.61.0"
-
-# From 1.60.0, Rust supports `cfg(target_has_atomics)`, which allows us to
-# detect whether a target supports particular sets of atomics.
-zerocopy-target-has-atomics = "1.60.0"
-
-# When the "simd" feature is enabled, include SIMD types from the
-# `core::arch::aarch64` module, which was stabilized in 1.59.0. On earlier Rust
-# versions, these types require the "simd-nightly" feature.
-zerocopy-aarch64-simd = "1.59.0"
-
-# Permit panicking in `const fn`s and calling `Vec::try_reserve`.
-zerocopy-panic-in-const-and-vec-try-reserve = "1.57.0"
 
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.
@@ -77,13 +62,13 @@ std = ["alloc"]
 __internal_use_only_features_that_work_on_stable = ["alloc", "derive", "simd", "std"]
 
 [dependencies]
-zerocopy-derive = { version = "=0.8.5", path = "zerocopy-derive", optional = true }
+zerocopy-derive = { version = "=0.9.0-alpha.0", path = "zerocopy-derive", optional = true }
 
 # The "associated proc macro pattern" ensures that the versions of zerocopy and
 # zerocopy-derive remain equal, even if the 'derive' feature isn't used.
 # See: https://github.com/matklad/macro-dep-test
 [target.'cfg(any())'.dependencies]
-zerocopy-derive = { version = "=0.8.5", path = "zerocopy-derive" }
+zerocopy-derive = { version = "=0.9.0-alpha.0", path = "zerocopy-derive" }
 
 [dev-dependencies]
 itertools = "0.11"
@@ -97,6 +82,6 @@ testutil = { path = "testutil" }
 # CI test failures.
 trybuild = { version = "=1.0.89", features = ["diff"] }
 # In tests, unlike in production, zerocopy-derive is not optional
-zerocopy-derive = { version = "=0.8.5", path = "zerocopy-derive" }
+zerocopy-derive = { version = "=0.9.0-alpha.0", path = "zerocopy-derive" }
 # TODO(#381) Remove this dependency once we have our own layout gadgets.
 elain = "0.3.0"

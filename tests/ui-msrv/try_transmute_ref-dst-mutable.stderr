@@ -2,21 +2,31 @@ error[E0308]: mismatched types
   --> tests/ui-msrv/try_transmute_ref-dst-mutable.rs:18:33
    |
 18 |     let _: Result<&mut u8, _> = try_transmute_ref!(&0u8);
-   |                                 ^^^^^^^^^^^^^^^^^^^^^^^^ types differ in mutability
+   |                                 ^^^^^^^^^^^^^^^^^^^^^^^^
+   |                                 |
+   |                                 types differ in mutability
+   |                                 arguments to this enum variant are incorrect
    |
    = note: expected mutable reference `&mut u8`
                       found reference `&_`
+note: tuple variant defined here
+  --> $RUST/core/src/result.rs
+   |
+   |     Ok(#[stable(feature = "rust1", since = "1.0.0")] T),
+   |     ^^
    = note: this error originates in the macro `try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0308]: mismatched types
   --> tests/ui-msrv/try_transmute_ref-dst-mutable.rs:18:33
    |
 18 |     let _: Result<&mut u8, _> = try_transmute_ref!(&0u8);
-   |                                 ^^^^^^^^^^^^^^^^^^^^^^^^
-   |                                 |
-   |                                 types differ in mutability
-   |                                 help: try using a variant of the expected enum: `Err($crate::util::macro_util::try_transmute_ref::<_, _>(e))`
+   |                                 ^^^^^^^^^^^^^^^^^^^^^^^^ types differ in mutability
    |
    = note: expected enum `Result<&mut u8, _>`
               found enum `Result<&_, ValidityError<&u8, _>>`
    = note: this error originates in the macro `try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: try wrapping the expression in `Err`
+  --> src/macros.rs
+   |
+   |             Err($crate::util::macro_util::try_transmute_ref::<_, _>(e))
+   |             ++++                                                      +

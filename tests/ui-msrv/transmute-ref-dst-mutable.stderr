@@ -42,8 +42,16 @@ error[E0308]: mismatched types
   --> tests/ui-msrv/transmute-ref-dst-mutable.rs:18:22
    |
 18 |     let _: &mut u8 = transmute_ref!(&0u8);
-   |                      ^^^^^^^^^^^^^^^^^^^^ types differ in mutability
+   |                      ^^^^^^^^^^^^^^^^^^^^
+   |                      |
+   |                      types differ in mutability
+   |                      arguments to this function are incorrect
    |
    = note: expected mutable reference `&mut u8`
                       found reference `&_`
+note: function defined here
+  --> src/util/macro_util.rs
+   |
+   | pub const fn must_use<T>(t: T) -> T {
+   |              ^^^^^^^^
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)

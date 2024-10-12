@@ -525,7 +525,7 @@ mod tests {
             let au64 = unsafe { x.t.deref_unchecked() };
             match au64 {
                 AU64(123) => {}
-                _ => const_unreachable!(),
+                _ => unreachable!(),
             }
         };
     }

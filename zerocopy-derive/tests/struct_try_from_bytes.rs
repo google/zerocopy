@@ -171,7 +171,7 @@ fn test_maybe_from_bytes() {
     imp::assert!(!is_bit_valid);
 }
 
-#[derive(Debug, PartialEq, Eq, imp::TryFromBytes, imp::Immutable, imp::KnownLayout)]
+#[derive(imp::TryFromBytes, imp::Immutable, imp::KnownLayout)]
 #[repr(C, packed)]
 struct CPacked {
     a: u8,
@@ -189,7 +189,9 @@ struct CPacked {
 fn c_packed() {
     let candidate = &[42u8, 0xFF, 0xFF, 0xFF, 0xFF];
     let converted = <CPacked as imp::TryFromBytes>::try_ref_from_bytes(candidate);
-    imp::assert_eq!(converted, imp::Ok(&CPacked { a: 42, b: u32::MAX }));
+    // Can't derive `Debug` or `PartialEq` on a `#[repr(packed)]` type, so we
+    // can't use `assert_eq!` or `assert!(converted == ...)`.
+    imp::assert!(imp::core::matches!(converted, imp::Ok(&CPacked { a: 42, b: u32::MAX })));
 }
 
 #[derive(imp::TryFromBytes, imp::KnownLayout, imp::Immutable)]
