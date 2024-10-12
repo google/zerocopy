@@ -679,6 +679,22 @@ pub(crate) unsafe fn copy_unchecked(src: &[u8], dst: &mut [u8]) {
     };
 }
 
+/// Unsafely transmutes the given `src` into a type `Dst`.
+///
+/// # Safety
+///
+/// TODO. Same as it ever was.
+#[inline(always)]
+pub(crate) const unsafe fn transmute_unchecked<Src, Dst>(src: Src) -> Dst {
+    static_assert!(Src, Dst => core::mem::size_of::<Src>() >= core::mem::size_of::<Dst>());
+    #[repr(C)]
+    union Transmute<Src, Dst> {
+        src: ManuallyDrop<Src>,
+        dst: ManuallyDrop<Dst>,
+    }
+    unsafe { ManuallyDrop::into_inner(Transmute { src: ManuallyDrop::new(src) }.dst) }
+}
+
 /// Since we support multiple versions of Rust, there are often features which
 /// have been stabilized in the most recent stable release which do not yet
 /// exist (stably) on our MSRV. This module provides polyfills for those

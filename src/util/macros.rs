@@ -530,6 +530,8 @@ macro_rules! impl_known_layout {
 
                 type PointerMetadata = ();
 
+                type MaybeUninit = core::mem::MaybeUninit<Self>;
+
                 const LAYOUT: crate::DstLayout = crate::DstLayout::for_type::<$ty>();
 
                 // SAFETY: `.cast` preserves address and provenance.
@@ -572,6 +574,7 @@ macro_rules! unsafe_impl_known_layout {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
 
                 type PointerMetadata = <$repr as KnownLayout>::PointerMetadata;
+                type MaybeUninit = <$repr as KnownLayout>::MaybeUninit;
 
                 const LAYOUT: DstLayout = <$repr as KnownLayout>::LAYOUT;
 
