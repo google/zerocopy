@@ -248,6 +248,7 @@
     clippy::double_must_use,
     clippy::get_unwrap,
     clippy::indexing_slicing,
+    clippy::missing_const_for_fn,
     clippy::missing_inline_in_public_items,
     clippy::missing_safety_doc,
     clippy::must_use_candidate,
@@ -3030,17 +3031,6 @@ pub unsafe trait FromZeros: TryFromBytes {
         };
 
         let align = Self::LAYOUT.align.get();
-        // On stable Rust versions <= 1.64.0, `Layout::from_size_align` has a
-        // bug in which sufficiently-large allocations (those which, when
-        // rounded up to the alignment, overflow `isize`) are not rejected,
-        // which can cause undefined behavior. See #64 for details.
-        //
-        // TODO(#67): Once our MSRV is > 1.64.0, remove this assertion.
-        #[allow(clippy::as_conversions)]
-        let max_alloc = (isize::MAX as usize).saturating_sub(align);
-        if size > max_alloc {
-            return Err(AllocError);
-        }
 
         // TODO(https://github.com/rust-lang/rust/issues/55724): Use
         // `Layout::repeat` once it's stabilized.
@@ -3055,7 +3045,6 @@ pub unsafe trait FromZeros: TryFromBytes {
                 None => return Err(AllocError),
             }
         } else {
-            let align = Self::LAYOUT.align.get();
             // We use `transmute` instead of an `as` cast since Miri (with
             // strict provenance enabled) notices and complains that an `as`
             // cast creates a pointer with no provenance. Miri isn't smart
@@ -5398,7 +5387,11 @@ mod alloc_support {
 pub use alloc_support::*;
 
 #[cfg(test)]
-#[allow(clippy::assertions_on_result_states, clippy::unreadable_literal)]
+#[allow(
+    clippy::assertions_on_result_states,
+    clippy::unreadable_literal,
+    clippy::missing_const_for_fn
+)]
 mod tests {
     use static_assertions::assert_impl_all;
 

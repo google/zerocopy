@@ -103,7 +103,7 @@ mod def {
         ///    [`I::Alignment`](invariant::Alignment).
         /// 8. `ptr` conforms to the validity invariant of
         ///    [`I::Validity`](invariant::Validity).
-        pub(super) unsafe fn new(ptr: NonNull<T>) -> Ptr<'a, T, I> {
+        pub(super) const unsafe fn new(ptr: NonNull<T>) -> Ptr<'a, T, I> {
             // SAFETY: The caller has promised to satisfy all safety invariants
             // of `Ptr`.
             Self { ptr, _invariants: PhantomData }
@@ -114,7 +114,7 @@ mod def {
         /// Note that this method does not consume `self`. The caller should
         /// watch out for `unsafe` code which uses the returned `NonNull` in a
         /// way that violates the safety invariants of `self`.
-        pub(crate) fn as_non_null(&self) -> NonNull<T> {
+        pub(crate) const fn as_non_null(&self) -> NonNull<T> {
             self.ptr
         }
     }
@@ -717,7 +717,7 @@ mod _transitions {
         /// # Safety
         ///
         /// The caller promises that `self` satisfies the invariants `H`.
-        unsafe fn assume_invariants<H: Invariants>(self) -> Ptr<'a, T, H> {
+        const unsafe fn assume_invariants<H: Invariants>(self) -> Ptr<'a, T, H> {
             // SAFETY: The caller has promised to satisfy all parameterized
             // invariants of `Ptr`. `Ptr`'s other invariants are satisfied
             // by-contract by the source `Ptr`.
@@ -726,7 +726,7 @@ mod _transitions {
 
         /// Helps the type system unify two distinct invariant types which are
         /// actually the same.
-        pub(crate) fn unify_invariants<
+        pub(crate) const fn unify_invariants<
             H: Invariants<Aliasing = I::Aliasing, Alignment = I::Alignment, Validity = I::Validity>,
         >(
             self,
@@ -743,7 +743,7 @@ mod _transitions {
         /// The caller promises that `self` satisfies the aliasing requirement
         /// of `A`.
         #[inline]
-        pub(crate) unsafe fn assume_aliasing<A: Aliasing>(
+        pub(crate) const unsafe fn assume_aliasing<A: Aliasing>(
             self,
         ) -> Ptr<'a, T, (A, I::Alignment, I::Validity)> {
             // SAFETY: The caller promises that `self` satisfies the aliasing
@@ -760,7 +760,7 @@ mod _transitions {
         ///
         /// [`Exclusive`]: invariant::Exclusive
         #[inline]
-        pub(crate) unsafe fn assume_exclusive(
+        pub(crate) const unsafe fn assume_exclusive(
             self,
         ) -> Ptr<'a, T, (Exclusive, I::Alignment, I::Validity)> {
             // SAFETY: The caller promises that `self` satisfies the aliasing
@@ -776,7 +776,7 @@ mod _transitions {
         /// The caller promises that `self`'s referent conforms to the alignment
         /// invariant of `T` if required by `A`.
         #[inline]
-        pub(crate) unsafe fn assume_alignment<A: Alignment>(
+        pub(crate) const unsafe fn assume_alignment<A: Alignment>(
             self,
         ) -> Ptr<'a, T, (I::Aliasing, A, I::Validity)> {
             // SAFETY: The caller promises that `self`'s referent is
@@ -804,7 +804,7 @@ mod _transitions {
         #[inline]
         // TODO(#859): Reconsider the name of this method before making it
         // public.
-        pub(crate) fn bikeshed_recall_aligned(
+        pub(crate) const fn bikeshed_recall_aligned(
             self,
         ) -> Ptr<'a, T, (I::Aliasing, Aligned, I::Validity)>
         where
@@ -825,7 +825,7 @@ mod _transitions {
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        pub unsafe fn assume_validity<V: Validity>(
+        pub const unsafe fn assume_validity<V: Validity>(
             self,
         ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, V)> {
             // SAFETY: The caller promises that `self`'s referent conforms to
@@ -842,7 +842,7 @@ mod _transitions {
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        pub unsafe fn assume_initialized(
+        pub const unsafe fn assume_initialized(
             self,
         ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Initialized)> {
             // SAFETY: The caller has promised to uphold the safety
@@ -859,7 +859,7 @@ mod _transitions {
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        pub unsafe fn assume_valid(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)> {
+        pub const unsafe fn assume_valid(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)> {
             // SAFETY: The caller has promised to uphold the safety
             // preconditions.
             unsafe { self.assume_validity::<Valid>() }
@@ -871,7 +871,7 @@ mod _transitions {
         #[inline]
         // TODO(#859): Reconsider the name of this method before making it
         // public.
-        pub fn bikeshed_recall_valid(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>
+        pub const fn bikeshed_recall_valid(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>
         where
             T: crate::FromBytes,
             I: Invariants<Validity = Initialized>,
@@ -921,7 +921,7 @@ mod _transitions {
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        pub fn forget_exclusive(self) -> Ptr<'a, T, (Shared, I::Alignment, I::Validity)>
+        pub const fn forget_exclusive(self) -> Ptr<'a, T, (Shared, I::Alignment, I::Validity)>
         where
             I::Aliasing: AtLeast<Shared>,
         {
@@ -933,7 +933,7 @@ mod _transitions {
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        pub fn forget_aligned(self) -> Ptr<'a, T, (I::Aliasing, Any, I::Validity)> {
+        pub const fn forget_aligned(self) -> Ptr<'a, T, (I::Aliasing, Any, I::Validity)> {
             // SAFETY: `Any` is less restrictive than `Aligned`.
             unsafe { self.assume_invariants() }
         }
@@ -1641,6 +1641,7 @@ mod _project {
 }
 
 #[cfg(test)]
+#[allow(clippy::missing_const_for_fn)]
 mod tests {
     use core::mem::{self, MaybeUninit};
 

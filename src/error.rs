@@ -302,7 +302,7 @@ impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
         AlignmentError { src: f(self.src), dst: SendSyncPhantomData::default() }
     }
 
-    pub(crate) fn into<S, V>(self) -> ConvertError<Self, S, V> {
+    pub(crate) const fn into<S, V>(self) -> ConvertError<Self, S, V> {
         ConvertError::Alignment(self)
     }
 
@@ -463,7 +463,7 @@ impl<Src, Dst: ?Sized> SizeError<Src, Dst> {
     }
 
     /// Converts the error into a general [`ConvertError`].
-    pub(crate) fn into<A, V>(self) -> ConvertError<A, Self, V> {
+    pub(crate) const fn into<A, V>(self) -> ConvertError<A, Self, V> {
         ConvertError::Size(self)
     }
 
@@ -595,7 +595,7 @@ impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
     }
 
     /// Converts the error into a general [`ConvertError`].
-    pub(crate) fn into<A, S>(self) -> ConvertError<A, S, Self> {
+    pub(crate) const fn into<A, S>(self) -> ConvertError<A, S, Self> {
         ConvertError::Validity(self)
     }
 
@@ -957,6 +957,7 @@ pub type AlignedTryCastError<Src, Dst: ?Sized + TryFromBytes> =
 pub struct AllocError;
 
 #[cfg(test)]
+#[allow(clippy::missing_const_for_fn)]
 mod tests {
     use super::*;
 

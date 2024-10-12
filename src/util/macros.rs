@@ -255,7 +255,7 @@ macro_rules! impl_for_transparent_wrapper {
                 impl_for_transparent_wrapper!(@define_is_transparent_wrapper $trait);
 
                 #[cfg_attr(coverage_nightly, coverage(off))]
-                fn f<I: Invariants, $($tyvar $(: $(? $optbound +)* $($bound +)*)?)?>() {
+                const fn f<I: Invariants, $($tyvar $(: $(? $optbound +)* $($bound +)*)?)?>() {
                     is_transparent_wrapper::<I, $ty>();
                 }
             }
@@ -327,7 +327,7 @@ macro_rules! impl_for_transparent_wrapper {
     };
     (@define_is_transparent_wrapper $trait:ident, $variance:ident) => {
         #[cfg_attr(coverage_nightly, coverage(off))]
-        fn is_transparent_wrapper<I: Invariants, W: TransparentWrapper<I, $variance = Covariant> + ?Sized>()
+        const fn is_transparent_wrapper<I: Invariants, W: TransparentWrapper<I, $variance = Covariant> + ?Sized>()
         where
             W::Inner: $trait,
         {}

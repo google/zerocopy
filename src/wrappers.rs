@@ -393,9 +393,8 @@ impl<T> Unalign<T> {
 
 impl<T: Copy> Unalign<T> {
     /// Gets a copy of the inner `T`.
-    // TODO(https://github.com/rust-lang/rust/issues/57349): Make this `const`.
     #[inline(always)]
-    pub fn get(&self) -> T {
+    pub const fn get(&self) -> T {
         let Unalign(val) = *self;
         val
     }
