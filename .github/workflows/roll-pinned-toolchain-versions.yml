@@ -35,7 +35,7 @@ jobs:
       fail-fast: false
       matrix:
         toolchain: ["stable", "nightly"]
-        branch: ["main"]
+        branch: ["main", "v0.8.x"]
     name: Roll pinned toolchain ${{ matrix.toolchain }} version on ${{ matrix.branch }}
     steps:
       - name: Checkout code
