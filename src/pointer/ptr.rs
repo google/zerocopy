@@ -401,9 +401,7 @@ mod _conversions {
     {
         /// Converts a `Ptr` an unaligned `T` into a `Ptr` to an aligned
         /// `Unalign<T>`.
-        pub(crate) fn into_unalign(
-            self,
-        ) -> Ptr<'a, crate::Unalign<T>, (I::Aliasing, Aligned, I::Validity)> {
+        pub(crate) fn into_unalign(self) -> Ptr<'a, crate::Unalign<T>, I::WithAlignment<Aligned>> {
             // SAFETY:
             // - This cast preserves provenance.
             // - This cast preserves address. `Unalign<T>` promises to have the
@@ -421,7 +419,7 @@ mod _conversions {
             // SAFETY: `Unalign<T>` promises to have alignment 1, and so it is
             // trivially aligned.
             let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
-            ptr
+            ptr.unify_invariants()
         }
     }
 }
@@ -446,7 +444,7 @@ mod _transitions {
         #[inline]
         pub(crate) fn into_exclusive_or_post_monomorphization_error(
             self,
-        ) -> Ptr<'a, T, (Exclusive, I::Alignment, I::Validity)> {
+        ) -> Ptr<'a, T, I::WithAliasing<Exclusive>> {
             // NOTE(https://github.com/rust-lang/rust/issues/131625): We do this
             // rather than just having `Aliasing::IS_EXCLUSIVE` have the panic
             // behavior because doing it that way causes rustdoc to fail while
@@ -506,7 +504,7 @@ mod _transitions {
         #[inline]
         pub(crate) const unsafe fn assume_aliasing<A: Aliasing>(
             self,
-        ) -> Ptr<'a, T, (A, I::Alignment, I::Validity)> {
+        ) -> Ptr<'a, T, I::WithAliasing<A>> {
             // SAFETY: The caller promises that `self` satisfies the aliasing
             // requirements of `A`.
             unsafe { self.assume_invariants() }
@@ -523,7 +521,7 @@ mod _transitions {
         #[inline]
         pub(crate) const unsafe fn assume_exclusive(
             self,
-        ) -> Ptr<'a, T, (Exclusive, I::Alignment, I::Validity)> {
+        ) -> Ptr<'a, T, I::WithAliasing<Exclusive>> {
             // SAFETY: The caller promises that `self` satisfies the aliasing
             // requirements of `Exclusive`.
             unsafe { self.assume_aliasing::<Exclusive>() }
@@ -539,7 +537,7 @@ mod _transitions {
         #[inline]
         pub(crate) const unsafe fn assume_alignment<A: Alignment>(
             self,
-        ) -> Ptr<'a, T, (I::Aliasing, A, I::Validity)> {
+        ) -> Ptr<'a, T, I::WithAlignment<A>> {
             // SAFETY: The caller promises that `self`'s referent is
             // well-aligned for `T` if required by `A` .
             unsafe { self.assume_invariants() }
@@ -549,7 +547,7 @@ mod _transitions {
         /// on success.
         pub(crate) fn bikeshed_try_into_aligned(
             self,
-        ) -> Result<Ptr<'a, T, (I::Aliasing, Aligned, I::Validity)>, AlignmentError<Self, T>>
+        ) -> Result<Ptr<'a, T, I::WithAlignment<Aligned>>, AlignmentError<Self, T>>
         where
             T: Sized,
         {
@@ -567,9 +565,7 @@ mod _transitions {
         #[inline]
         // TODO(#859): Reconsider the name of this method before making it
         // public.
-        pub(crate) const fn bikeshed_recall_aligned(
-            self,
-        ) -> Ptr<'a, T, (I::Aliasing, Aligned, I::Validity)>
+        pub(crate) const fn bikeshed_recall_aligned(self) -> Ptr<'a, T, I::WithAlignment<Aligned>>
         where
             T: crate::Unaligned,
         {
@@ -588,9 +584,7 @@ mod _transitions {
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        pub const unsafe fn assume_validity<V: Validity>(
-            self,
-        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, V)> {
+        pub const unsafe fn assume_validity<V: Validity>(self) -> Ptr<'a, T, I::WithValidity<V>> {
             // SAFETY: The caller promises that `self`'s referent conforms to
             // the validity requirement of `V`.
             unsafe { self.assume_invariants() }
@@ -605,9 +599,7 @@ mod _transitions {
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        pub const unsafe fn assume_initialized(
-            self,
-        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Initialized)> {
+        pub const unsafe fn assume_initialized(self) -> Ptr<'a, T, I::WithValidity<Initialized>> {
             // SAFETY: The caller has promised to uphold the safety
             // preconditions.
             unsafe { self.assume_validity::<Initialized>() }
@@ -622,7 +614,7 @@ mod _transitions {
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        pub const unsafe fn assume_valid(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)> {
+        pub const unsafe fn assume_valid(self) -> Ptr<'a, T, I::WithValidity<Valid>> {
             // SAFETY: The caller has promised to uphold the safety
             // preconditions.
             unsafe { self.assume_validity::<Valid>() }
@@ -634,7 +626,7 @@ mod _transitions {
         #[inline]
         // TODO(#859): Reconsider the name of this method before making it
         // public.
-        pub const fn bikeshed_recall_valid(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>
+        pub const fn bikeshed_recall_valid(self) -> Ptr<'a, T, I::WithValidity<Valid>>
         where
             T: crate::FromBytes,
             I: Invariants<Validity = Initialized>,
@@ -661,7 +653,7 @@ mod _transitions {
         #[inline]
         pub(crate) fn try_into_valid(
             mut self,
-        ) -> Result<Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>, ValidityError<Self, T>>
+        ) -> Result<Ptr<'a, T, I::WithValidity<Valid>>, ValidityError<Self, T>>
         where
             T: TryFromBytes,
             I::Aliasing: Reference,
@@ -670,7 +662,7 @@ mod _transitions {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
             // fix before returning.
-            if T::is_bit_valid(self.reborrow().forget_aligned()) {
+            if T::is_bit_valid(self.reborrow().forget_aligned().unify_invariants()) {
                 // SAFETY: If `T::is_bit_valid`, code may assume that `self`
                 // contains a bit-valid instance of `Self`.
                 Ok(unsafe { self.assume_valid() })
@@ -683,7 +675,7 @@ mod _transitions {
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        pub const fn forget_aligned(self) -> Ptr<'a, T, (I::Aliasing, Any, I::Validity)> {
+        pub const fn forget_aligned(self) -> Ptr<'a, T, I::WithAlignment<Any>> {
             // SAFETY: `Any` is less restrictive than `Aligned`.
             unsafe { self.assume_invariants() }
         }

@@ -18,12 +18,40 @@ pub trait Invariants: Sealed {
     type Aliasing: Aliasing;
     type Alignment: Alignment;
     type Validity: Validity;
+
+    /// Invariants identical to `Self` except with a different aliasing
+    /// invariant.
+    type WithAliasing<A: Aliasing>: Invariants<
+        Aliasing = A,
+        Alignment = Self::Alignment,
+        Validity = Self::Validity,
+    >;
+
+    /// Invariants identical to `Self` except with a different alignment
+    /// invariant.
+    type WithAlignment<A: Alignment>: Invariants<
+        Aliasing = Self::Aliasing,
+        Alignment = A,
+        Validity = Self::Validity,
+    >;
+
+    /// Invariants identical to `Self` except with a different validity
+    /// invariant.
+    type WithValidity<V: Validity>: Invariants<
+        Aliasing = Self::Aliasing,
+        Alignment = Self::Alignment,
+        Validity = V,
+    >;
 }
 
 impl<A: Aliasing, AA: Alignment, V: Validity> Invariants for (A, AA, V) {
     type Aliasing = A;
     type Alignment = AA;
     type Validity = V;
+
+    type WithAliasing<AB: Aliasing> = (AB, AA, V);
+    type WithAlignment<AB: Alignment> = (A, AB, V);
+    type WithValidity<VB: Validity> = (A, AA, VB);
 }
 
 /// The aliasing invariant of a [`Ptr`][super::Ptr].
@@ -107,29 +135,29 @@ impl Alignment for Aligned {}
 /// The byte ranges initialized in `T` are also initialized in the referent.
 ///
 /// Formally: uninitialized bytes may only be present in `Ptr<T>`'s referent
-/// where they are guaranteed to be present in `T`. This is a dynamic property:
-/// if, at a particular byte offset, a valid enum discriminant is set, the
-/// subsequent bytes may only have uninitialized bytes as specificed by the
-/// corresponding enum.
+/// where they are guaranteed to be present in `T`. This is a dynamic
+/// property: if, at a particular byte offset, a valid enum discriminant is
+/// set, the subsequent bytes may only have uninitialized bytes as
+/// specificed by the corresponding enum.
 ///
-/// Formally, given `len = size_of_val_raw(ptr)`, at every byte offset, `b`, in
-/// the range `[0, len)`:
-/// - If, in any instance `t: T` of length `len`, the byte at offset `b` in `t`
-///   is initialized, then the byte at offset `b` within `*ptr` must be
+/// Formally, given `len = size_of_val_raw(ptr)`, at every byte offset, `b`,
+/// in the range `[0, len)`:
+/// - If, in any instance `t: T` of length `len`, the byte at offset `b` in
+///   `t` is initialized, then the byte at offset `b` within `*ptr` must be
 ///   initialized.
-/// - Let `c` be the contents of the byte range `[0, b)` in `*ptr`. Let `S` be
-///   the subset of valid instances of `T` of length `len` which contain `c` in
-///   the offset range `[0, b)`. If, in any instance of `t: T` in `S`, the byte
-///   at offset `b` in `t` is initialized, then the byte at offset `b` in `*ptr`
-///   must be initialized.
+/// - Let `c` be the contents of the byte range `[0, b)` in `*ptr`. Let `S`
+///   be the subset of valid instances of `T` of length `len` which contain
+///   `c` in the offset range `[0, b)`. If, in any instance of `t: T` in
+///   `S`, the byte at offset `b` in `t` is initialized, then the byte at
+///   offset `b` in `*ptr` must be initialized.
 ///
-///   Pragmatically, this means that if `*ptr` is guaranteed to contain an enum
-///   type at a particular offset, and the enum discriminant stored in `*ptr`
-///   corresponds to a valid variant of that enum type, then it is guaranteed
-///   that the appropriate bytes of `*ptr` are initialized as defined by that
-///   variant's bit validity (although note that the variant may contain another
-///   enum type, in which case the same rules apply depending on the state of
-///   its discriminant, and so on recursively).
+///   Pragmatically, this means that if `*ptr` is guaranteed to contain an
+///   enum type at a particular offset, and the enum discriminant stored in
+///   `*ptr` corresponds to a valid variant of that enum type, then it is
+///   guaranteed that the appropriate bytes of `*ptr` are initialized as
+///   defined by that variant's bit validity (although note that the variant
+///   may contain another enum type, in which case the same rules apply
+///   depending on the state of its discriminant, and so on recursively).
 pub enum AsInitialized {}
 impl Validity for AsInitialized {}
 
