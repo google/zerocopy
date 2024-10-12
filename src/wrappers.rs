@@ -239,11 +239,7 @@ impl<T> Unalign<T> {
         // but the caller has promised that `self` is properly aligned, so we
         // know that it is sound to create a reference to `T` at this memory
         // location.
-        //
-        // We use `mem::transmute` instead of `&*self.get_ptr()` because
-        // dereferencing pointers is not stable in `const` on our current MSRV
-        // (1.56 as of this writing).
-        unsafe { mem::transmute(self) }
+        unsafe { &*self.get_ptr() }
     }
 
     /// Returns a mutable reference to the wrapped `T` without checking

@@ -120,7 +120,6 @@ mod def {
     }
 }
 
-#[allow(unreachable_pub)] // This is a false positive on our MSRV toolchain.
 pub use def::Ptr;
 
 /// Used to define the system of [invariants][invariant] of `Ptr`.
