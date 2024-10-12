@@ -286,8 +286,7 @@ pub(crate) fn derive_is_bit_valid(
             mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>,
         ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
         where
-            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
         {
             use ::zerocopy::util::macro_util::core_reexport;
 

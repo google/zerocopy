@@ -26,7 +26,7 @@ use core::ptr::{self, NonNull};
 
 use crate::{
     pointer::{
-        invariant::{self, AtLeast, Invariants},
+        invariant::{self, Invariants},
         AliasingSafe, AliasingSafeReason, BecauseExclusive, BecauseImmutable,
     },
     Immutable, IntoBytes, Ptr, TryFromBytes, Unalign, ValidityError,
@@ -530,7 +530,7 @@ where
     Src: IntoBytes,
     Dst: TryFromBytes + AliasingSafe<Src, I::Aliasing, R>,
     I: Invariants<Validity = invariant::Valid>,
-    I::Aliasing: AtLeast<invariant::Shared>,
+    I::Aliasing: invariant::Reference,
     R: AliasingSafeReason,
 {
     static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
