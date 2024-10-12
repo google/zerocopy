@@ -13,7 +13,7 @@ on:
   push:
     branches:
       - main
-      - v0.6.x
+      - v0.8.x
   merge_group:
 
 permissions: read-all
