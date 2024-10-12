@@ -474,12 +474,8 @@ impl DstLayout {
         // invalid type) instead of allowing this panic to be hidden if the cast
         // would have failed anyway for runtime reasons (such as a too-small
         // memory region).
-        //
-        // TODO(#67): Once our MSRV is 1.65, use let-else:
-        // https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html#let-else-statements
-        let size_info = match self.size_info.try_to_nonzero_elem_size() {
-            Some(size_info) => size_info,
-            None => panic!("attempted to cast to slice type with zero-sized element"),
+        let Some(size_info) = self.size_info.try_to_nonzero_elem_size() else {
+            panic!("attempted to cast to slice type with zero-sized element");
         };
 
         // Precondition
@@ -531,13 +527,9 @@ impl DstLayout {
                     util::round_down_to_next_multiple_of_alignment(bytes_len, self.align);
                 // Calculate the maximum number of bytes that could be consumed
                 // by the trailing slice.
-                //
-                // TODO(#67): Once our MSRV is 1.65, use let-else:
-                // https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html#let-else-statements
-                let max_slice_and_padding_bytes = match max_total_bytes.checked_sub(offset) {
-                    Some(max) => max,
+                let Some(max_slice_and_padding_bytes) = max_total_bytes.checked_sub(offset) else {
                     // `bytes_len` too small even for 0 trailing slice elements.
-                    None => return Err(MetadataCastError::Size),
+                    return Err(MetadataCastError::Size);
                 };
 
                 // Calculate the number of elements that fit in
@@ -596,11 +588,6 @@ impl DstLayout {
     }
 }
 
-// TODO(#67): For some reason, on our MSRV toolchain, this `allow` isn't
-// enforced despite having `#![allow(unknown_lints)]` at the crate root, but
-// putting it here works. Once our MSRV is high enough that this bug has been
-// fixed, remove this `allow`.
-#[allow(unknown_lints)]
 #[cfg(test)]
 mod tests {
     use super::*;

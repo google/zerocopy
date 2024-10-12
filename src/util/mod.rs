@@ -725,7 +725,7 @@ pub(crate) mod polyfills {
     // toolchain versions, `ptr.slice_from_raw_parts()` resolves to the inherent
     // method rather than to this trait, and so this trait is considered unused.
     //
-    // TODO(#67): Once our MSRV is high enough, remove this.
+    // TODO(#67): Once our MSRV is >= 1.79, remove this.
     #[allow(unused)]
     pub(crate) trait NumExt {
         /// Subtract without checking for underflow.

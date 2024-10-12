@@ -1349,25 +1349,3 @@ fn impl_block<D: DataExt>(
         }
     }
 }
-
-// A polyfill for `Option::then_some`, which was added after our MSRV.
-//
-// The `#[allow(unused)]` is necessary because, on sufficiently recent toolchain
-// versions, `b.then_some(...)` resolves to the inherent method rather than to
-// this trait, and so this trait is considered unused.
-//
-// TODO(#67): Remove this once our MSRV is >= 1.62.
-#[allow(unused)]
-trait BoolExt {
-    fn then_some<T>(self, t: T) -> Option<T>;
-}
-
-impl BoolExt for bool {
-    fn then_some<T>(self, t: T) -> Option<T> {
-        if self {
-            Some(t)
-        } else {
-            None
-        }
-    }
-}
