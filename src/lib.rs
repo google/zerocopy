@@ -395,27 +395,6 @@ const _: () = {
     _WARNING
 };
 
-// These exist so that code which was written against the old names will get
-// less confusing error messages when they upgrade to a more recent version of
-// zerocopy. On our MSRV toolchain, the error messages read, for example:
-//
-//   error[E0603]: trait `FromZeroes` is private
-//       --> examples/deprecated.rs:1:15
-//        |
-//   1    | use zerocopy::FromZeroes;
-//        |               ^^^^^^^^^^ private trait
-//        |
-//   note: the trait `FromZeroes` is defined here
-//       --> /Users/josh/workspace/zerocopy/src/lib.rs:1845:5
-//        |
-//   1845 | use FromZeros as FromZeroes;
-//        |     ^^^^^^^^^^^^^^^^^^^^^^^
-//
-// The "note" provides enough context to make it easy to figure out how to fix
-// the error.
-#[allow(unused)]
-use {FromZeros as FromZeroes, IntoBytes as AsBytes, Ref as LayoutVerified};
-
 /// Implements [`KnownLayout`].
 ///
 /// This derive analyzes various aspects of a type's layout that are needed for
