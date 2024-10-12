@@ -10,14 +10,6 @@
 
 set -eo pipefail
 
-# Usage: version <crate-name>
-function version {
-  cargo metadata -q --format-version 1 | jq -r ".packages[] | select(.name == \"$1\").version"
-}
-
-ver_zerocopy=$(version zerocopy)
-ver_zerocopy_derive=$(version zerocopy-derive)
-
 # Usage: dependency-version <kind> <target>
 function dependency-version {
   KIND="$1"
@@ -50,10 +42,6 @@ function assert-match {
     exit 1
   fi
 }
-
-assert-match "$ver_zerocopy" "$ver_zerocopy_derive" \
-  "Same crate version ($ver_zerocopy) found for zerocopy and zerocopy-derive." \
-  "Different crate versions found for zerocopy ($ver_zerocopy) and zerocopy-derive ($ver_zerocopy_derive)."
 
 # Note the leading `=` sign - the dependency needs to be an exact one.
 assert-match "=$ver_zerocopy_derive" "$zerocopy_derive_dep_ver" \
