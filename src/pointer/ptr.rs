@@ -1296,9 +1296,6 @@ mod _casts {
             U: 'a + ?Sized + KnownLayout + AliasingSafe<[u8], I::Aliasing, R>,
             R: AliasingSafeReason,
         {
-            // TODO(#67): Remove this allow. See NonNulSlicelExt for more
-            // details.
-            #[allow(unstable_name_collisions)]
             match self.try_cast_into(CastType::Prefix, meta) {
                 Ok((slf, remainder)) => {
                     if remainder.len() == 0 {
