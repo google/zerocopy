@@ -967,6 +967,7 @@ module!(network_endian, NetworkEndian, "network-endian");
 module!(native_endian, NativeEndian, "native-endian");
 
 #[cfg(any(test, kani))]
+#[allow(clippy::missing_const_for_fn)]
 mod tests {
     use super::*;
 

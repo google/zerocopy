@@ -75,7 +75,7 @@ mod def {
         /// [`deref`]: core::ops::Deref::deref
         /// [`deref_mut`]: core::ops::DerefMut::deref_mut
         /// [`into`]: core::convert::Into::into
-        pub(crate) unsafe fn new_unchecked(bytes: B) -> Ref<B, T> {
+        pub(crate) const unsafe fn new_unchecked(bytes: B) -> Ref<B, T> {
             // INVARIANTS: The caller has promised that `bytes`'s referent is
             // validly-aligned and has a valid size.
             Ref(bytes, PhantomData)

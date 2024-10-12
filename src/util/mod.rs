@@ -756,6 +756,7 @@ pub(crate) mod polyfills {
 }
 
 #[cfg(test)]
+#[allow(clippy::missing_const_for_fn)]
 pub(crate) mod testutil {
     use crate::*;
 
@@ -845,6 +846,7 @@ pub(crate) mod testutil {
 }
 
 #[cfg(test)]
+#[allow(clippy::missing_const_for_fn)]
 mod tests {
     use super::*;
 
