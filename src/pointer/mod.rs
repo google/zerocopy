@@ -41,14 +41,17 @@ where
     /// Reads the value from `MaybeAligned`.
     #[must_use]
     #[inline]
-    pub fn read_unaligned(self) -> T
+    pub fn read_unaligned<R>(self) -> T
     where
         T: Copy,
+        R: AliasingSafeReason,
+        T: AliasingSafe<T, Aliasing, R>,
     {
         let raw = self.as_non_null().as_ptr();
         // SAFETY: By invariant on `MaybeAligned`, `raw` contains
-        // validly-initialized data for `T`. The value is safe to read and
-        // return, because `T` is copy.
+        // validly-initialized data for `T`. By `T: AliasingSafe`, we are
+        // permitted to perform a read of `raw`'s referent. The value is safe to
+        // read and return, because `T` is copy.
         unsafe { core::ptr::read_unaligned(raw) }
     }
 
