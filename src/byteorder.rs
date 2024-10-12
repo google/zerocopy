@@ -539,33 +539,29 @@ example of how it can be used for parsing UDP packets.
         }
 
         impl<O: ByteOrder> $name<O> {
-            maybe_const_trait_bounded_fn! {
-                /// Constructs a new value, possibly performing an endianness
-                /// swap to guarantee that the returned value has endianness
-                /// `O`.
-                #[must_use = "has no side effects"]
-                #[inline(always)]
-                pub const fn new(n: $native) -> $name<O> {
-                    let bytes = match O::ORDER {
-                        Order::BigEndian => $to_be_fn(n),
-                        Order::LittleEndian => $to_le_fn(n),
-                    };
+            /// Constructs a new value, possibly performing an endianness
+            /// swap to guarantee that the returned value has endianness
+            /// `O`.
+            #[must_use = "has no side effects"]
+            #[inline(always)]
+            pub const fn new(n: $native) -> $name<O> {
+                let bytes = match O::ORDER {
+                    Order::BigEndian => $to_be_fn(n),
+                    Order::LittleEndian => $to_le_fn(n),
+                };
 
-                    $name(bytes, PhantomData)
-                }
+                $name(bytes, PhantomData)
             }
 
-            maybe_const_trait_bounded_fn! {
-                /// Returns the value as a primitive type, possibly performing
-                /// an endianness swap to guarantee that the return value has
-                /// the endianness of the native platform.
-                #[must_use = "has no side effects"]
-                #[inline(always)]
-                pub const fn get(self) -> $native {
-                    match O::ORDER {
-                        Order::BigEndian => $from_be_fn(self.0),
-                        Order::LittleEndian => $from_le_fn(self.0),
-                    }
+            /// Returns the value as a primitive type, possibly performing
+            /// an endianness swap to guarantee that the return value has
+            /// the endianness of the native platform.
+            #[must_use = "has no side effects"]
+            #[inline(always)]
+            pub const fn get(self) -> $native {
+                match O::ORDER {
+                    Order::BigEndian => $from_be_fn(self.0),
+                    Order::LittleEndian => $from_le_fn(self.0),
                 }
             }
 
@@ -1057,8 +1053,8 @@ mod tests {
         /// themselves. This method is like `assert_eq!`, but it treats NaN
         /// values as equal.
         fn assert_eq_or_nan(self, other: Self) {
-            let slf = (!self.is_nan()).then(|| self);
-            let other = (!other.is_nan()).then(|| other);
+            let slf = (!self.is_nan()).then_some(self);
+            let other = (!other.is_nan()).then_some(other);
             assert_eq!(slf, other);
         }
     }
@@ -1088,8 +1084,8 @@ mod tests {
         /// themselves. This method is like `assert_eq!`, but it treats NaN
         /// values as equal.
         fn assert_eq_or_nan(self, other: Self) {
-            let slf = (!self.get().is_nan()).then(|| self);
-            let other = (!other.get().is_nan()).then(|| other);
+            let slf = (!self.get().is_nan()).then_some(self);
+            let other = (!other.get().is_nan()).then_some(other);
             assert_eq!(slf, other);
         }
     }
@@ -1396,11 +1392,11 @@ mod tests {
                 // For `f32` and `f64`, NaN values are not considered equal to
                 // themselves. We store `Option<f32>`/`Option<f64>` and store
                 // NaN as `None` so they can still be compared.
-                let val_or_none = |t: T| (!T::Native::is_nan(t.get())).then(|| t.get());
+                let val_or_none = |t: T| (!T::Native::is_nan(t.get())).then_some(t.get());
                 let t_t_res = val_or_none(t_t_res);
                 let t_n_res = val_or_none(t_n_res);
                 let n_t_res = val_or_none(n_t_res);
-                let n_n_res = (!T::Native::is_nan(n_n_res)).then(|| n_n_res);
+                let n_n_res = (!T::Native::is_nan(n_n_res)).then_some(n_n_res);
                 assert_eq!(t_t_res, n_n_res);
                 assert_eq!(t_n_res, n_n_res);
                 assert_eq!(n_t_res, n_n_res);
@@ -1418,7 +1414,7 @@ mod tests {
                     // NaN as `None` so they can still be compared.
                     let t_t_res = val_or_none(t_t_res);
                     let t_n_res = val_or_none(t_n_res);
-                    let n_t_res = (!T::Native::is_nan(n_t_res)).then(|| n_t_res);
+                    let n_t_res = (!T::Native::is_nan(n_t_res)).then_some(n_t_res);
                     assert_eq!(t_t_res, n_n_res);
                     assert_eq!(t_n_res, n_n_res);
                     assert_eq!(n_t_res, n_n_res);

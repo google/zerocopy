@@ -373,15 +373,12 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Unalign<T> {
 ///
 /// The caller promises that `$atomic` is an atomic type whose natie equivalent
 /// is `$native`.
-#[cfg(all(
-    zerocopy_target_has_atomics,
-    any(
-        target_has_atomic = "8",
-        target_has_atomic = "16",
-        target_has_atomic = "32",
-        target_has_atomic = "64",
-        target_has_atomic = "ptr"
-    )
+#[cfg(any(
+    target_has_atomic = "8",
+    target_has_atomic = "16",
+    target_has_atomic = "32",
+    target_has_atomic = "64",
+    target_has_atomic = "ptr"
 ))]
 macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
     ($(#[$attr:meta])* $(,)?) => {};
@@ -635,7 +632,6 @@ pub(crate) const fn round_down_to_next_multiple_of_alignment(
     align: NonZeroUsize,
 ) -> usize {
     let align = align.get();
-    #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
     debug_assert!(align.is_power_of_two());
 
     // Subtraction can't underflow because `align.get() >= 1`.
@@ -869,10 +865,9 @@ mod tests {
         }
     }
 
-    #[rustversion::since(1.57.0)]
     #[test]
     #[should_panic]
-    fn test_round_down_to_next_multiple_of_alignment_zerocopy_panic_in_const_and_vec_try_reserve() {
+    fn test_round_down_to_next_multiple_of_alignment_panics() {
         round_down_to_next_multiple_of_alignment(0, NonZeroUsize::new(3).unwrap());
     }
 }

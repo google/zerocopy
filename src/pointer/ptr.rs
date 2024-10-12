@@ -675,7 +675,7 @@ mod _transitions {
                 const IS_EXCLUSIVE: bool = {
                     let is_exclusive =
                         strs_are_equal(<Self as Aliasing>::NAME, <Exclusive as Aliasing>::NAME);
-                    const_assert!(is_exclusive);
+                    assert!(is_exclusive);
                     true
                 };
             }

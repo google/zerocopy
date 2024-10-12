@@ -3141,7 +3141,6 @@ pub unsafe trait FromZeros: TryFromBytes {
 
     /// Extends a `Vec<Self>` by pushing `additional` new items onto the end of
     /// the vector. The new items are initialized with zeros.
-    #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
     #[cfg(feature = "alloc")]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
     #[inline(always)]
@@ -3160,7 +3159,6 @@ pub unsafe trait FromZeros: TryFromBytes {
     /// # Panics
     ///
     /// Panics if `position > v.len()`.
-    #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
     #[cfg(feature = "alloc")]
     #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
     #[inline]
@@ -5362,13 +5360,11 @@ pub unsafe trait Unaligned {
 
 #[cfg(feature = "alloc")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
-#[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
 mod alloc_support {
     use super::*;
 
     /// Extends a `Vec<T>` by pushing `additional` new items onto the end of the
     /// vector. The new items are initialized with zeros.
-    #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
     #[doc(hidden)]
     #[deprecated(since = "0.8.0", note = "moved to `FromZeros`")]
     #[inline(always)]
@@ -5385,7 +5381,6 @@ mod alloc_support {
     /// # Panics
     ///
     /// Panics if `position > v.len()`.
-    #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
     #[doc(hidden)]
     #[deprecated(since = "0.8.0", note = "moved to `FromZeros`")]
     #[inline(always)]
@@ -5399,7 +5394,6 @@ mod alloc_support {
 }
 
 #[cfg(feature = "alloc")]
-#[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
 #[doc(hidden)]
 pub use alloc_support::*;
 
@@ -6262,7 +6256,6 @@ mod tests {
     mod alloc {
         use super::*;
 
-        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
         #[test]
         fn test_extend_vec_zeroed() {
             // Test extending when there is an existing allocation.
@@ -6280,7 +6273,6 @@ mod tests {
             drop(v);
         }
 
-        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
         #[test]
         fn test_extend_vec_zeroed_zst() {
             // Test extending when there is an existing (fake) allocation.
@@ -6297,7 +6289,6 @@ mod tests {
             drop(v);
         }
 
-        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
         #[test]
         fn test_insert_vec_zeroed() {
             // Insert at start (no existing allocation).
@@ -6329,7 +6320,6 @@ mod tests {
             drop(v);
         }
 
-        #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
         #[test]
         fn test_insert_vec_zeroed_zst() {
             // Insert at start (no existing fake allocation).

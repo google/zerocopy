@@ -96,7 +96,7 @@ impl DstLayout {
     /// The minimum possible alignment of a type.
     const MIN_ALIGN: NonZeroUsize = match NonZeroUsize::new(1) {
         Some(min_align) => min_align,
-        None => const_unreachable!(),
+        None => unreachable!(),
     };
 
     /// The maximum theoretic possible alignment of a type.
@@ -107,7 +107,7 @@ impl DstLayout {
     pub(crate) const THEORETICAL_MAX_ALIGN: NonZeroUsize =
         match NonZeroUsize::new(1 << (POINTER_WIDTH_BITS - 1)) {
             Some(max_align) => max_align,
-            None => const_unreachable!(),
+            None => unreachable!(),
         };
 
     /// The current, documented max alignment of a type \[1\].
@@ -119,7 +119,7 @@ impl DstLayout {
     #[cfg(not(kani))]
     pub(crate) const CURRENT_MAX_ALIGN: NonZeroUsize = match NonZeroUsize::new(1 << 28) {
         Some(max_align) => max_align,
-        None => const_unreachable!(),
+        None => unreachable!(),
     };
 
     /// Constructs a `DstLayout` for a zero-sized type with `repr_align`
@@ -142,7 +142,7 @@ impl DstLayout {
             None => Self::MIN_ALIGN,
         };
 
-        const_assert!(align.get().is_power_of_two());
+        assert!(align.get().is_power_of_two());
 
         DstLayout { align, size_info: SizeInfo::Sized { size: 0 } }
     }
@@ -162,7 +162,7 @@ impl DstLayout {
         DstLayout {
             align: match NonZeroUsize::new(mem::align_of::<T>()) {
                 Some(align) => align,
-                None => const_unreachable!(),
+                None => unreachable!(),
             },
             size_info: SizeInfo::Sized { size: mem::size_of::<T>() },
         }
@@ -185,7 +185,7 @@ impl DstLayout {
         DstLayout {
             align: match NonZeroUsize::new(mem::align_of::<T>()) {
                 Some(align) => align,
-                None => const_unreachable!(),
+                None => unreachable!(),
             },
             size_info: SizeInfo::SliceDst(TrailingSliceLayout {
                 offset: 0,
@@ -232,17 +232,17 @@ impl DstLayout {
             None => Self::THEORETICAL_MAX_ALIGN,
         };
 
-        const_assert!(max_align.get().is_power_of_two());
+        assert!(max_align.get().is_power_of_two());
 
         // We use Kani to prove that this method is robust to future increases
         // in Rust's maximum allowed alignment. However, if such a change ever
         // actually occurs, we'd like to be notified via assertion failures.
         #[cfg(not(kani))]
         {
-            const_debug_assert!(self.align.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
-            const_debug_assert!(field.align.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
+            debug_assert!(self.align.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
+            debug_assert!(field.align.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
             if let Some(repr_packed) = repr_packed {
-                const_debug_assert!(repr_packed.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
+                debug_assert!(repr_packed.get() <= DstLayout::CURRENT_MAX_ALIGN.get());
             }
         }
 
@@ -263,7 +263,7 @@ impl DstLayout {
         let size_info = match self.size_info {
             // If the layout is already a DST, we panic; DSTs cannot be extended
             // with additional fields.
-            SizeInfo::SliceDst(..) => const_panic!("Cannot extend a DST with additional fields."),
+            SizeInfo::SliceDst(..) => panic!("Cannot extend a DST with additional fields."),
 
             SizeInfo::Sized { size: preceding_size } => {
                 // Compute the minimum amount of inter-field padding needed to
@@ -284,7 +284,7 @@ impl DstLayout {
                 // exceeding `isize::MAX`).
                 let offset = match preceding_size.checked_add(padding) {
                     Some(offset) => offset,
-                    None => const_panic!("Adding padding to `self`'s size overflows `usize`."),
+                    None => panic!("Adding padding to `self`'s size overflows `usize`."),
                 };
 
                 match field.size_info {
@@ -302,7 +302,7 @@ impl DstLayout {
                         // `usize::MAX`).
                         let size = match offset.checked_add(field_size) {
                             Some(size) => size,
-                            None => const_panic!("`field` cannot be appended without the total size overflowing `usize`"),
+                            None => panic!("`field` cannot be appended without the total size overflowing `usize`"),
                         };
                         SizeInfo::Sized { size }
                     }
@@ -324,7 +324,7 @@ impl DstLayout {
                         // `usize::MAX`).
                         let offset = match offset.checked_add(trailing_offset) {
                             Some(offset) => offset,
-                            None => const_panic!("`field` cannot be appended without the total size overflowing `usize`"),
+                            None => panic!("`field` cannot be appended without the total size overflowing `usize`"),
                         };
                         SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size })
                     }
@@ -372,7 +372,7 @@ impl DstLayout {
                 let padding = padding_needed_for(unpadded_size, self.align);
                 let size = match unpadded_size.checked_add(padding) {
                     Some(size) => size,
-                    None => const_panic!("Adding padding caused size to overflow `usize`."),
+                    None => panic!("Adding padding caused size to overflow `usize`."),
                 };
                 SizeInfo::Sized { size }
             }
@@ -458,9 +458,9 @@ impl DstLayout {
         cast_type: CastType,
     ) -> Result<(usize, usize), MetadataCastError> {
         // `debug_assert!`, but with `#[allow(clippy::arithmetic_side_effects)]`.
-        macro_rules! __const_debug_assert {
+        macro_rules! __debug_assert {
             ($e:expr $(, $msg:expr)?) => {
-                const_debug_assert!({
+                debug_assert!({
                     #[allow(clippy::arithmetic_side_effects)]
                     let e = $e;
                     e
@@ -479,14 +479,11 @@ impl DstLayout {
         // https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html#let-else-statements
         let size_info = match self.size_info.try_to_nonzero_elem_size() {
             Some(size_info) => size_info,
-            None => const_panic!("attempted to cast to slice type with zero-sized element"),
+            None => panic!("attempted to cast to slice type with zero-sized element"),
         };
 
         // Precondition
-        __const_debug_assert!(
-            addr.checked_add(bytes_len).is_some(),
-            "`addr` + `bytes_len` > usize::MAX"
-        );
+        __debug_assert!(addr.checked_add(bytes_len).is_some(), "`addr` + `bytes_len` > usize::MAX");
 
         // Alignment checks go in their own block to avoid introducing variables
         // into the top-level scope.
@@ -582,7 +579,7 @@ impl DstLayout {
             }
         };
 
-        __const_debug_assert!(self_bytes <= bytes_len);
+        __debug_assert!(self_bytes <= bytes_len);
 
         let split_at = match cast_type {
             CastType::Prefix => self_bytes,
@@ -842,7 +839,7 @@ mod tests {
         ///   call to `validate_cast_and_convert_metadata` panics with the given
         ///   panic message or, if the current Rust toolchain version is too
         ///   early to support panicking in `const fn`s, panics with *some*
-        ///   message. In the latter case, the `const_panic!` macro is used,
+        ///   message. In the latter case, the `panic!` macro is used,
         ///   which emits code which causes a non-panicking error at const eval
         ///   time, but which does panic when invoked at runtime. Thus, it is
         ///   merely difficult to predict the *value* of this panic. We deem
@@ -880,7 +877,7 @@ mod tests {
                             layout(size_info, align).validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
                         }).map_err(|d| {
                             let msg = d.downcast::<&'static str>().ok().map(|s| *s.as_ref());
-                            assert!(msg.is_some() || cfg!(not(zerocopy_panic_in_const_and_vec_try_reserve)), "non-string panic messages are not permitted when `--cfg zerocopy_panic_in_const_and_vec_try_reserve` is set");
+                            assert!(msg.is_some(), "non-string panic messages are not permitted");
                             msg
                         });
                         std::panic::set_hook(previous_hook);
