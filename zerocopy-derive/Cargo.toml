@@ -7,13 +7,13 @@
 # those terms.
 
 [package]
-edition = "2021"
 name = "zerocopy-derive"
-version = "0.9.0-alpha.0"
-authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
 description = "Custom derive for traits from the zerocopy crate"
-license = "BSD-2-Clause OR Apache-2.0 OR MIT"
-repository = "https://github.com/google/zerocopy"
+
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
 
 # We prefer to include tests when publishing to crates.io so that Crater [1] can
 # detect regressions in our test suite. These two tests are excessively large,
