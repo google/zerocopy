@@ -265,10 +265,6 @@ pub(crate) fn derive_is_bit_valid(
                             }
                         )
                     };
-                    // SAFETY: `cast_unsized_unchecked` removes the
-                    // initialization invariant from `p`, so we re-assert that
-                    // all of the bytes are initialized.
-                    let variant = unsafe { variant.assume_initialized() };
                     <
                         #variant_struct_ident #ty_generics as #trait_path
                     >::is_bit_valid(variant)
@@ -325,10 +321,6 @@ pub(crate) fn derive_is_bit_valid(
                         p as *mut ___ZerocopyTagPrimitive
                     })
                 };
-                // SAFETY: `tag_ptr` is casted from `candidate`, whose referent
-                // is `Initialized`. Since we have not written uninitialized
-                // bytes into the referent, `tag_ptr` is also `Initialized`.
-                let tag_ptr = unsafe { tag_ptr.assume_initialized() };
                 tag_ptr.bikeshed_recall_valid().read_unaligned::<::zerocopy::BecauseImmutable>()
             };
 
@@ -347,10 +339,6 @@ pub(crate) fn derive_is_bit_valid(
                     p as *mut ___ZerocopyRawEnum #ty_generics
                 })
             };
-            // SAFETY: `cast_unsized_unchecked` removes the initialization
-            // invariant from `p`, so we re-assert that all of the bytes are
-            // initialized.
-            let raw_enum = unsafe { raw_enum.assume_initialized() };
             // SAFETY:
             // - This projection returns a subfield of `this` using
             //   `addr_of_mut!`.

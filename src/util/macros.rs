@@ -52,10 +52,6 @@ macro_rules! safety_comment {
 ///       referred to by `t`.
 ///     - `r` refers to an object with `UnsafeCell`s at the same byte ranges as
 ///       the object referred to by `t`.
-///   - If the provided closure takes a `&$repr` argument, then given a `Ptr<'a,
-///     $ty>` which satisfies the preconditions of
-///     `TryFromBytes::<$ty>::is_bit_valid`, it must be guaranteed that the
-///     memory referenced by that `Ptr` always contains a valid `$repr`.
 ///   - The impl of `is_bit_valid` must only return `true` for its argument
 ///     `Ptr<$repr>` if the original `Ptr<$ty>` refers to a valid `$ty`.
 macro_rules! unsafe_impl {
@@ -153,9 +149,7 @@ macro_rules! unsafe_impl {
             #[allow(clippy::as_conversions)]
             let candidate = unsafe { candidate.cast_unsized_unchecked::<$repr, _>(|p| p as *mut _) };
 
-            // SAFETY: The caller has promised that the referenced memory region
-            // will contain a valid `$repr`.
-            let $candidate = unsafe { candidate.assume_validity::<crate::pointer::invariant::Valid>() };
+            let $candidate = candidate.bikeshed_recall_valid();
             $is_bit_valid
         }
     };
@@ -176,11 +170,6 @@ macro_rules! unsafe_impl {
             //   `UnsafeCell`s at the same byte ranges as the source type.
             #[allow(clippy::as_conversions)]
             let $candidate = unsafe { candidate.cast_unsized_unchecked::<$repr, _>(|p| p as *mut _) };
-
-            // Restore the invariant that the referent bytes are initialized.
-            // SAFETY: The above cast does not uninitialize any referent bytes;
-            // they remain initialized.
-            let $candidate = unsafe { $candidate.assume_validity::<crate::pointer::invariant::Initialized>() };
 
             $is_bit_valid
         }

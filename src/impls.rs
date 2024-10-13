@@ -290,15 +290,6 @@ safety_comment! {
     ///     because `NonZeroXxx` and `xxx` have the same size. [1] Neither `r`
     ///     nor `t` refer to any `UnsafeCell`s because neither `NonZeroXxx` [2]
     ///     nor `xxx` do.
-    ///   - Since the closure takes a `&xxx` argument, given a `Maybe<'a,
-    ///     NonZeroXxx>` which satisfies the preconditions of
-    ///     `TryFromBytes::<NonZeroXxx>::is_bit_valid`, it must be guaranteed
-    ///     that the memory referenced by that `MabyeValid` always contains a
-    ///     valid `xxx`. Since `NonZeroXxx`'s bytes are always initialized [1],
-    ///     `is_bit_valid`'s precondition requires that the same is true of its
-    ///     argument. Since `xxx`'s only bit validity invariant is that its
-    ///     bytes must be initialized, this memory is guaranteed to contain a
-    ///     valid `xxx`.
     ///   - The impl must only return `true` for its argument if the original
     ///     `Maybe<NonZeroXxx>` refers to a valid `NonZeroXxx`. The only
     ///     `xxx` which is not also a valid `NonZeroXxx` is 0. [1]

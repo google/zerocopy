@@ -713,7 +713,11 @@ mod _casts {
         pub unsafe fn cast_unsized_unchecked<U: 'a + ?Sized, F: FnOnce(*mut T) -> *mut U>(
             self,
             cast: F,
-        ) -> Ptr<'a, U, (I::Aliasing, Unknown, Unknown)> {
+        ) -> Ptr<
+            'a,
+            U,
+            (I::Aliasing, Unknown, MappedValidity<I::Validity, (Initialized, Initialized)>),
+        > {
             let ptr = cast(self.as_inner().as_non_null().as_ptr());
 
             // SAFETY: Caller promises that `cast` returns a pointer whose
@@ -770,8 +774,13 @@ mod _casts {
             //    - `Inaccessible`: There are no restrictions we need to uphold.
             // 7. `ptr`, trivially, conforms to the alignment invariant of
             //    `Unknown`.
-            // 8. `ptr`, trivially, conforms to the validity invariant of
-            //    `Unknown`.
+            // 8. If `I::Validity = Unknown`, `AsInitialized`, or `Valid`, the
+            //    output validity invariant is `Unknown`. `ptr` trivially
+            //    conforms to this invariant. If `I::Validity = Initialized`,
+            //    the output validity invariant is `Initialized`. Regardless of
+            //    what subset of `self`'s referent is referred to by `ptr`, if
+            //    all of `self`'s referent is initialized, then the same holds
+            //    of `ptr`'s referent.
             unsafe { Ptr::new(ptr) }
         }
 
@@ -788,7 +797,11 @@ mod _casts {
         pub unsafe fn cast_unsized<U, F, R, S>(
             self,
             cast: F,
-        ) -> Ptr<'a, U, (I::Aliasing, Unknown, Unknown)>
+        ) -> Ptr<
+            'a,
+            U,
+            (I::Aliasing, Unknown, MappedValidity<I::Validity, (Initialized, Initialized)>),
+        >
         where
             T: Read<I::Aliasing, R>,
             U: 'a + ?Sized + Read<I::Aliasing, S>,
@@ -842,14 +855,7 @@ mod _casts {
                 })
             };
 
-            let ptr = ptr.bikeshed_recall_aligned();
-
-            // SAFETY: `ptr`'s referent begins as `Initialized`, denoting that
-            // all bytes of the referent are initialized bytes. The referent
-            // type is then casted to `[u8]`, whose only validity invariant is
-            // that its bytes are initialized. This validity invariant is
-            // satisfied by the `Initialized` invariant on the starting `ptr`.
-            unsafe { ptr.assume_validity::<Valid>() }
+            ptr.bikeshed_recall_aligned().bikeshed_recall_valid()
         }
     }
 
@@ -1082,12 +1088,7 @@ mod _project {
 
             // SAFETY: This method has the same safety preconditions as
             // `cast_unsized_unchecked`.
-            let ptr = unsafe { self.cast_unsized_unchecked(projector) };
-
-            // SAFETY: If all of the bytes of `self` are initialized (as
-            // promised by `I: Invariants<Validity = Initialized>`), then any
-            // subset of those bytes are also all initialized.
-            unsafe { ptr.assume_validity::<Initialized>() }
+            unsafe { self.cast_unsized_unchecked(projector) }
         }
     }
 
