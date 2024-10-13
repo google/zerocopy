@@ -12,6 +12,7 @@ mod inner;
 #[doc(hidden)]
 pub mod invariant;
 mod ptr;
+pub(crate) mod transmute;
 
 #[doc(hidden)]
 pub use invariant::{BecauseExclusive, BecauseImmutable, Read, ReadReason};
