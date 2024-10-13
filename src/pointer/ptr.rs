@@ -172,9 +172,7 @@ mod _external {
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
     use super::*;
-    use crate::pointer::transmute::{
-        AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance,
-    };
+    use crate::pointer::transmute::TransmuteFromPtr;
 
     /// `&'a T` → `Ptr<'a, T>`
     impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
@@ -350,25 +348,16 @@ mod _conversions {
         }
     }
 
-    /// `Ptr<'a, T = Wrapper<U>>` → `Ptr<'a, U>`
+    /// `Ptr<'a, T>` → `Ptr<'a, U>`
     impl<'a, T, I> Ptr<'a, T, I>
     where
-        T: 'a + TransparentWrapper<I, UnsafeCellVariance = Covariant> + ?Sized,
+        T: 'a + ?Sized,
         I: Invariants,
     {
-        /// Converts `self` to a transparent wrapper type into a `Ptr` to the
-        /// wrapped inner type.
-        pub(crate) fn transparent_wrapper_into_inner(
-            self,
-        ) -> Ptr<
-            'a,
-            T::Inner,
-            (
-                I::Aliasing,
-                <T::AlignmentVariance as AlignmentVariance<I::Alignment>>::Applied,
-                <T::ValidityVariance as ValidityVariance<I::Validity>>::Applied,
-            ),
-        > {
+        pub(crate) fn transmute<U, R>(self) -> Ptr<'a, U, Mapped<I, U::Mapping>>
+        where
+            U: ?Sized + TransmuteFromPtr<T, I::Aliasing, R>,
+        {
             // SAFETY:
             // - By invariant on `TransparentWrapper::cast_into_inner`:
             //   - This cast preserves address and referent size, and thus the
@@ -379,20 +368,8 @@ mod _conversions {
             //   byte ranges. Since `p` and the returned pointer address the
             //   same byte range, they refer to `UnsafeCell`s at the same byte
             //   ranges.
-            let c = unsafe { self.cast_unsized_unchecked(|p| T::cast_into_inner(p)) };
-            // SAFETY: By invariant on `TransparentWrapper`, since `self`
-            // satisfies the alignment invariant `I::Alignment`, `c` (of type
-            // `T::Inner`) satisfies the given "applied" alignment invariant.
-            let c = unsafe {
-                c.assume_alignment::<<T::AlignmentVariance as AlignmentVariance<I::Alignment>>::Applied>()
-            };
-            // SAFETY: By invariant on `TransparentWrapper`, since `self`
-            // satisfies the validity invariant `I::Validity`, `c` (of type
-            // `T::Inner`) satisfies the given "applied" validity invariant.
-            let c = unsafe {
-                c.assume_validity::<<T::ValidityVariance as ValidityVariance<I::Validity>>::Applied>()
-            };
-            c
+            let ptr = unsafe { self.cast_unsized_unchecked(|p| U::cast_from(p)) };
+            unsafe { ptr.assume_invariants() }
         }
     }
 
@@ -478,7 +455,7 @@ mod _transitions {
         /// # Safety
         ///
         /// The caller promises that `self` satisfies the invariants `H`.
-        const unsafe fn assume_invariants<H: Invariants>(self) -> Ptr<'a, T, H> {
+        pub(super) const unsafe fn assume_invariants<H: Invariants>(self) -> Ptr<'a, T, H> {
             // SAFETY: The caller has promised to satisfy all parameterized
             // invariants of `Ptr`. `Ptr`'s other invariants are satisfied
             // by-contract by the source `Ptr`.
