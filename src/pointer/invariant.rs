@@ -42,6 +42,24 @@ pub trait Invariants: Sealed {
         Alignment = Self::Alignment,
         Validity = V,
     >;
+
+    /// Invariants identical to `Self` except with a different alignment
+    /// invariant, produced by applying the mapping `M` to `Self`'s alignment
+    /// invariant.
+    type WithMappedAlignment<M: AlignmentMapping>: Invariants<
+        Aliasing = Self::Aliasing,
+        Alignment = MappedAlignment<Self::Alignment, M>,
+        Validity = Self::Validity,
+    >;
+
+    /// Invariants identical to `Self` except with a different validity
+    /// invariant, produced by applying the mapping `M` to `Self`'s validity
+    /// invariant.
+    type WithMappedValidity<M: ValidityMapping>: Invariants<
+        Aliasing = Self::Aliasing,
+        Alignment = Self::Alignment,
+        Validity = MappedValidity<Self::Validity, M>,
+    >;
 }
 
 impl<A: Aliasing, AA: Alignment, V: Validity> Invariants for (A, AA, V) {
@@ -52,12 +70,15 @@ impl<A: Aliasing, AA: Alignment, V: Validity> Invariants for (A, AA, V) {
     type WithAliasing<AB: Aliasing> = (AB, AA, V);
     type WithAlignment<AB: Alignment> = (A, AB, V);
     type WithValidity<VB: Validity> = (A, AA, VB);
+
+    type WithMappedAlignment<M: AlignmentMapping> = (A, MappedAlignment<AA, M>, V);
+    type WithMappedValidity<M: ValidityMapping> = (A, AA, MappedValidity<V, M>);
 }
 
 /// The aliasing invariant of a [`Ptr`][super::Ptr].
 ///
 /// All aliasing invariants must permit reading from the bytes of a pointer's
-/// referent which are not covered by [`UnsafeCell`]s.
+/// referent which are not covered by [`UnsafeCell`](core::cell::UnsafeCell)s.
 pub trait Aliasing: Sealed {
     /// Is `Self` [`Exclusive`]?
     #[doc(hidden)]
@@ -70,16 +91,54 @@ pub trait Aliasing: Sealed {
     type Variance<'a, T: 'a + ?Sized>;
 }
 
-/// The alignment invariant of a [`Ptr`][super::Ptr].
-pub trait Alignment: Sealed {
-    #[doc(hidden)]
+// NOTE: The `AlignmentInner`/`Alignment` distinction is required so that we can
+// add a `MappedTo<Preserved> = Self` bound. For an explanation of the design
+// space (and prior attempts), see:
+// https://users.rust-lang.org/t/how-to-implement-a-type-level-map-with-an-identity-function/119745
+#[doc(hidden)]
+pub trait AlignmentInner: Sealed {
     type MappedTo<M: AlignmentMapping>: Alignment;
 }
 
-/// The validity invariant of a [`Ptr`][super::Ptr].
-pub trait Validity: Sealed {
-    #[doc(hidden)]
+/// The alignment invariant of a [`Ptr`][super::Ptr].
+pub trait Alignment:
+    AlignmentInner<MappedTo<Preserved> = Self>
+    + AlignmentInner<MappedTo<Unknown> = Unknown>
+    + AlignmentInner<MappedTo<Aligned> = Aligned>
+    + Sealed
+{
+}
+impl<
+        A: AlignmentInner<MappedTo<Preserved> = Self>
+            + AlignmentInner<MappedTo<Unknown> = Unknown>
+            + AlignmentInner<MappedTo<Aligned> = Aligned>,
+    > Alignment for A
+{
+}
+
+#[doc(hidden)]
+pub trait ValidityInner: Sealed {
     type MappedTo<M: ValidityMapping>: Validity;
+}
+
+/// The validity invariant of a [`Ptr`][super::Ptr].
+pub trait Validity:
+    ValidityInner<MappedTo<Preserved> = Self>
+    + ValidityInner<MappedTo<Unknown> = Unknown>
+    + ValidityInner<MappedTo<AsInitialized> = AsInitialized>
+    + ValidityInner<MappedTo<Initialized> = Initialized>
+    + ValidityInner<MappedTo<Valid> = Valid>
+    + Sealed
+{
+}
+impl<
+        V: ValidityInner<MappedTo<Preserved> = Self>
+            + ValidityInner<MappedTo<Unknown> = Unknown>
+            + ValidityInner<MappedTo<AsInitialized> = AsInitialized>
+            + ValidityInner<MappedTo<Initialized> = Initialized>
+            + ValidityInner<MappedTo<Valid> = Valid>,
+    > Validity for V
+{
 }
 
 /// An [`Aliasing`] invariant which is either [`Shared`] or [`Exclusive`].
@@ -93,10 +152,10 @@ pub trait Reference: Aliasing + Sealed {}
 /// It is unknown whether any invariant holds.
 pub enum Unknown {}
 
-impl Alignment for Unknown {
+impl AlignmentInner for Unknown {
     type MappedTo<M: AlignmentMapping> = M::FromUnknown;
 }
-impl Validity for Unknown {
+impl ValidityInner for Unknown {
     type MappedTo<M: ValidityMapping> = M::FromUnknown;
 }
 
@@ -127,10 +186,10 @@ impl Aliasing for Exclusive {
 }
 impl Reference for Exclusive {}
 
-/// The referent is aligned: for `Ptr<T>`, the referent's address is a
-/// multiple of the `T`'s alignment.
+/// The referent is aligned: for `Ptr<T>`, the referent's address is a multiple
+/// of the `T`'s alignment.
 pub enum Aligned {}
-impl Alignment for Aligned {
+impl AlignmentInner for Aligned {
     type MappedTo<M: AlignmentMapping> = M::FromAligned;
 }
 
@@ -161,20 +220,20 @@ impl Alignment for Aligned {
 ///   enum type, in which case the same rules apply depending on the state of
 ///   its discriminant, and so on recursively).
 pub enum AsInitialized {}
-impl Validity for AsInitialized {
+impl ValidityInner for AsInitialized {
     type MappedTo<M: ValidityMapping> = M::FromAsInitialized;
 }
 
-/// The byte ranges in the referent are fully initialized. In other words, if
-/// the referent is `N` bytes long, then it contains a bit-valid `[u8; N]`.
+/// The byte ranges in the referent are fully initialized. In other words,
+/// if the referent is `N` bytes long, then it contains a bit-valid `[u8; N]`.
 pub enum Initialized {}
-impl Validity for Initialized {
+impl ValidityInner for Initialized {
     type MappedTo<M: ValidityMapping> = M::FromInitialized;
 }
 
 /// The referent is bit-valid for `T`.
 pub enum Valid {}
-impl Validity for Valid {
+impl ValidityInner for Valid {
     type MappedTo<M: ValidityMapping> = M::FromValid;
 }
 
@@ -272,6 +331,12 @@ mod mapping {
         type FromValid: Validity;
     }
 
+    /// A mapping which preserves all invariants as-is.
+    ///
+    /// `Preserved` is a valid type for any mapping trait ([`AlignmentMapping`]
+    /// and [`ValidityMapping`]).
+    pub enum Preserved {}
+
     /// The application of the [`AlignmentMapping`] `M` to the [`Alignment`] `A`.
     #[allow(type_alias_bounds)]
     pub type MappedAlignment<A: Alignment, M: AlignmentMapping> = A::MappedTo<M>;
@@ -281,10 +346,25 @@ mod mapping {
     pub type MappedValidity<V: Validity, M: ValidityMapping> = V::MappedTo<M>;
 
     impl<FromUnknown: Alignment, FromAligned: Alignment> AlignmentMapping
-        for ((Unknown, FromUnknown), (Shared, FromAligned))
+        for ((Unknown, FromUnknown), (Aligned, FromAligned))
     {
         type FromUnknown = FromUnknown;
         type FromAligned = FromAligned;
+    }
+
+    impl AlignmentMapping for Unknown {
+        type FromUnknown = Unknown;
+        type FromAligned = Unknown;
+    }
+
+    impl AlignmentMapping for Preserved {
+        type FromUnknown = Unknown;
+        type FromAligned = Aligned;
+    }
+
+    impl AlignmentMapping for Aligned {
+        type FromUnknown = Aligned;
+        type FromAligned = Aligned;
     }
 
     impl<
@@ -311,5 +391,40 @@ mod mapping {
         type FromAsInitialized = Unknown;
         type FromInitialized = FromInitialized;
         type FromValid = Unknown;
+    }
+
+    impl ValidityMapping for Unknown {
+        type FromUnknown = Unknown;
+        type FromAsInitialized = Unknown;
+        type FromInitialized = Unknown;
+        type FromValid = Unknown;
+    }
+
+    impl ValidityMapping for Preserved {
+        type FromUnknown = Unknown;
+        type FromAsInitialized = AsInitialized;
+        type FromInitialized = Initialized;
+        type FromValid = Valid;
+    }
+
+    impl ValidityMapping for AsInitialized {
+        type FromUnknown = AsInitialized;
+        type FromAsInitialized = AsInitialized;
+        type FromInitialized = AsInitialized;
+        type FromValid = AsInitialized;
+    }
+
+    impl ValidityMapping for Initialized {
+        type FromUnknown = Initialized;
+        type FromAsInitialized = Initialized;
+        type FromInitialized = Initialized;
+        type FromValid = Initialized;
+    }
+
+    impl ValidityMapping for Valid {
+        type FromUnknown = Valid;
+        type FromAsInitialized = Valid;
+        type FromInitialized = Valid;
+        type FromValid = Valid;
     }
 }
