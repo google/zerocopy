@@ -9,6 +9,7 @@
 use core::{fmt, hash::Hash};
 
 use super::*;
+use crate::pointer::transmute::BecauseBidirectional;
 
 /// A type with no alignment requirement.
 ///
@@ -188,7 +189,7 @@ impl<T> Unalign<T> {
     /// may prefer [`Deref::deref`], which is infallible.
     #[inline(always)]
     pub fn try_deref(&self) -> Result<&T, AlignmentError<&Self, T>> {
-        let inner = Ptr::from_ref(self).transparent_wrapper_into_inner();
+        let inner = Ptr::from_ref(self).transmute();
         match inner.bikeshed_try_into_aligned() {
             Ok(aligned) => Ok(aligned.as_ref()),
             Err(err) => Err(err.map_src(|src| src.into_unalign().as_ref())),
@@ -205,7 +206,7 @@ impl<T> Unalign<T> {
     /// callers may prefer [`DerefMut::deref_mut`], which is infallible.
     #[inline(always)]
     pub fn try_deref_mut(&mut self) -> Result<&mut T, AlignmentError<&mut Self, T>> {
-        let inner = Ptr::from_mut(self).transparent_wrapper_into_inner();
+        let inner = Ptr::from_mut(self).transmute::<_, _, _, BecauseBidirectional>();
         match inner.bikeshed_try_into_aligned() {
             Ok(aligned) => Ok(aligned.as_mut()),
             Err(err) => Err(err.map_src(|src| src.into_unalign().as_mut())),
@@ -389,14 +390,17 @@ impl<T: Unaligned> Deref for Unalign<T> {
 
     #[inline(always)]
     fn deref(&self) -> &T {
-        Ptr::from_ref(self).transparent_wrapper_into_inner().bikeshed_recall_aligned().as_ref()
+        Ptr::from_ref(self).transmute().bikeshed_recall_aligned().as_ref()
     }
 }
 
 impl<T: Unaligned> DerefMut for Unalign<T> {
     #[inline(always)]
     fn deref_mut(&mut self) -> &mut T {
-        Ptr::from_mut(self).transparent_wrapper_into_inner().bikeshed_recall_aligned().as_mut()
+        Ptr::from_mut(self)
+            .transmute::<_, _, _, BecauseBidirectional>()
+            .bikeshed_recall_aligned()
+            .as_mut()
     }
 }
 

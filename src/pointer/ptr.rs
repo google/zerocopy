@@ -173,7 +173,7 @@ mod _external {
 mod _conversions {
     use super::*;
     use crate::pointer::transmute::{
-        AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance,
+        TransmuteFromAlignment, TransmuteFromPtr, TransmuteFromPtrOld,
     };
 
     /// `&'a T` → `Ptr<'a, T>`
@@ -350,49 +350,68 @@ mod _conversions {
         }
     }
 
-    /// `Ptr<'a, T = Wrapper<U>>` → `Ptr<'a, U>`
+    /// `Ptr<'a, T>` → `Ptr<'a, U>`
     impl<'a, T, I> Ptr<'a, T, I>
     where
-        T: 'a + TransparentWrapper<I, UnsafeCellVariance = Covariant> + ?Sized,
+        T: 'a + ?Sized,
         I: Invariants,
     {
-        /// Converts `self` to a transparent wrapper type into a `Ptr` to the
-        /// wrapped inner type.
-        pub(crate) fn transparent_wrapper_into_inner(
-            self,
-        ) -> Ptr<
-            'a,
-            T::Inner,
-            (
-                I::Aliasing,
-                <T::AlignmentVariance as AlignmentVariance<I::Alignment>>::Applied,
-                <T::ValidityVariance as ValidityVariance<I::Validity>>::Applied,
-            ),
-        > {
+        pub(crate) fn transmute<U, A, V, R>(self) -> Ptr<'a, U, (I::Aliasing, A, V)>
+        where
+            A: Alignment,
+            V: Validity,
+            U: ?Sized
+                + TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R>
+                + TransmuteFromAlignment<T, I::Alignment, A>,
+        {
             // SAFETY:
-            // - By invariant on `TransparentWrapper::cast_into_inner`:
+            // - By invariant on `TransmuteFrom::cast_from`:
             //   - This cast preserves address and referent size, and thus the
             //     returned pointer addresses the same bytes as `p`
             //   - This cast preserves provenance
-            // - By invariant on `TransparentWrapper<UnsafeCellVariance =
-            //   Covariant>`, `T` and `T::Inner` have `UnsafeCell`s at the same
-            //   byte ranges. Since `p` and the returned pointer address the
-            //   same byte range, they refer to `UnsafeCell`s at the same byte
-            //   ranges.
-            let c = unsafe { self.cast_unsized_unchecked(|p| T::cast_into_inner(p)) };
-            // SAFETY: By invariant on `TransparentWrapper`, since `self`
-            // satisfies the alignment invariant `I::Alignment`, `c` (of type
-            // `T::Inner`) satisfies the given "applied" alignment invariant.
-            let c = unsafe {
-                c.assume_alignment::<<T::AlignmentVariance as AlignmentVariance<I::Alignment>>::Applied>()
-            };
-            // SAFETY: By invariant on `TransparentWrapper`, since `self`
-            // satisfies the validity invariant `I::Validity`, `c` (of type
-            // `T::Inner`) satisfies the given "applied" validity invariant.
-            let c = unsafe {
-                c.assume_validity::<<T::ValidityVariance as ValidityVariance<I::Validity>>::Applied>()
-            };
-            c
+            // - By invariant on `TransmuteFromPtr`, if `A` is `Shared`, then
+            //   `T` and `U` have `UnsafeCell`s at the same byte ranges
+            let ptr = unsafe { self.cast_unsized_unchecked(|p| U::cast_from(p)) };
+            // SAFETY: By invariant on `TransmuteFromPtr`, it is sound to treat
+            // the resulting pointer as having alignment
+            // `MappedAlignment<I::Alignment, U::AlignmentMapping>`.
+            let ptr = unsafe { ptr.assume_alignment() };
+            // SAFETY: By invariant on `TransmuteFromPtr`, it is sound to treat
+            // the resulting pointer as having validity
+            // `MappedValidity<I::Validity, U::ValidityMapping>`.
+            unsafe { ptr.assume_validity() }
+        }
+
+        pub(crate) fn transmute_old<U, R>(
+            self,
+        ) -> Ptr<
+            'a,
+            U,
+            (
+                I::Aliasing,
+                MappedAlignment<I::Alignment, U::AlignmentMapping>,
+                MappedValidity<I::Validity, U::ValidityMapping>,
+            ),
+        >
+        where
+            U: ?Sized + TransmuteFromPtrOld<T, I::Aliasing, R>,
+        {
+            // SAFETY:
+            // - By invariant on `TransmuteFrom::cast_from`:
+            //   - This cast preserves address and referent size, and thus the
+            //     returned pointer addresses the same bytes as `p`
+            //   - This cast preserves provenance
+            // - By invariant on `TransmuteFromPtr`, if `A` is `Shared`, then
+            //   `T` and `U` have `UnsafeCell`s at the same byte ranges
+            let ptr = unsafe { self.cast_unsized_unchecked(|p| U::cast_from(p)) };
+            // SAFETY: By invariant on `TransmuteFromPtr`, it is sound to treat
+            // the resulting pointer as having alignment
+            // `MappedAlignment<I::Alignment, U::AlignmentMapping>`.
+            let ptr = unsafe { ptr.assume_alignment() };
+            // SAFETY: By invariant on `TransmuteFromPtr`, it is sound to treat
+            // the resulting pointer as having validity
+            // `MappedValidity<I::Validity, U::ValidityMapping>`.
+            unsafe { ptr.assume_validity() }
         }
     }
 
@@ -478,7 +497,7 @@ mod _transitions {
         /// # Safety
         ///
         /// The caller promises that `self` satisfies the invariants `H`.
-        const unsafe fn assume_invariants<H: Invariants>(self) -> Ptr<'a, T, H> {
+        pub(super) const unsafe fn assume_invariants<H: Invariants>(self) -> Ptr<'a, T, H> {
             // SAFETY: The caller has promised to satisfy all parameterized
             // invariants of `Ptr`. `Ptr`'s other invariants are satisfied
             // by-contract by the source `Ptr`.
