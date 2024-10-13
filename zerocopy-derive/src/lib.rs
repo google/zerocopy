@@ -476,7 +476,7 @@ fn derive_try_from_bytes_union(
             // is guaranteed to be no more strict than this definition. See #696
             // for a more in-depth discussion.
             fn is_bit_valid<___ZerocopyAliasing>(
-                mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>
+                mut candidate: ::zerocopy::Maybe<'_, Self,___ZerocopyAliasing>
             ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
             where
                 ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
