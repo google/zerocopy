@@ -172,7 +172,9 @@ mod _external {
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
     use super::*;
-    use crate::util::{AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance};
+    use crate::pointer::transmute::{
+        AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance,
+    };
 
     /// `&'a T` → `Ptr<'a, T>`
     impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
