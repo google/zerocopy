@@ -443,13 +443,13 @@ mod atomics {
     use super::*;
 
     macro_rules! impl_traits_for_atomics {
-        ($($atomics:ident),* $(,)?) => {
+        ($($atomics:ident[$repr:ty]),* $(,)?) => {
             $(
                 impl_known_layout!($atomics);
-                impl_for_transparent_wrapper!(=> TryFromBytes for $atomics);
-                impl_for_transparent_wrapper!(=> FromZeros for $atomics);
-                impl_for_transparent_wrapper!(=> FromBytes for $atomics);
-                impl_for_transparent_wrapper!(=> IntoBytes for $atomics);
+                impl_for_transmute_from!(=> TryFromBytes for $atomics[UnsafeCell<$repr>]);
+                impl_for_transmute_from!(=> FromZeros for $atomics[UnsafeCell<$repr>]);
+                impl_for_transmute_from!(=> FromBytes for $atomics[UnsafeCell<$repr>]);
+                impl_for_transmute_from!(=> IntoBytes for $atomics[UnsafeCell<$repr>]);
             )*
         };
     }
@@ -461,13 +461,13 @@ mod atomics {
 
         use super::*;
 
-        impl_traits_for_atomics!(AtomicU8, AtomicI8);
+        impl_traits_for_atomics!(AtomicU8[u8], AtomicI8[i8]);
 
         impl_known_layout!(AtomicBool);
 
-        impl_for_transparent_wrapper!(=> TryFromBytes for AtomicBool);
-        impl_for_transparent_wrapper!(=> FromZeros for AtomicBool);
-        impl_for_transparent_wrapper!(=> IntoBytes for AtomicBool);
+        impl_for_transmute_from!(=> TryFromBytes for AtomicBool[UnsafeCell<bool>]);
+        impl_for_transmute_from!(=> FromZeros for AtomicBool[UnsafeCell<bool>]);
+        impl_for_transmute_from!(=> IntoBytes for AtomicBool[UnsafeCell<bool>]);
 
         safety_comment! {
             /// SAFETY:
@@ -497,7 +497,7 @@ mod atomics {
             /// SAFETY:
             /// All of these pass an atomic type and that type's native equivalent, as
             /// required by the macro safety preconditions.
-            unsafe_impl_transparent_wrapper_for_atomic!(AtomicU8 [u8], AtomicI8 [i8], AtomicBool [bool]);
+            unsafe_impl_transmute_from_for_atomic!(AtomicU8 [u8], AtomicI8 [i8], AtomicBool [bool]);
         }
     }
 
@@ -508,13 +508,13 @@ mod atomics {
 
         use super::*;
 
-        impl_traits_for_atomics!(AtomicU16, AtomicI16);
+        impl_traits_for_atomics!(AtomicU16[u16], AtomicI16[i16]);
 
         safety_comment! {
             /// SAFETY:
             /// All of these pass an atomic type and that type's native equivalent, as
             /// required by the macro safety preconditions.
-            unsafe_impl_transparent_wrapper_for_atomic!(AtomicU16 [u16], AtomicI16 [i16]);
+            unsafe_impl_transmute_from_for_atomic!(AtomicU16 [u16], AtomicI16 [i16]);
         }
     }
 
@@ -525,13 +525,13 @@ mod atomics {
 
         use super::*;
 
-        impl_traits_for_atomics!(AtomicU32, AtomicI32);
+        impl_traits_for_atomics!(AtomicU32[u32], AtomicI32[i32]);
 
         safety_comment! {
             /// SAFETY:
             /// All of these pass an atomic type and that type's native equivalent, as
             /// required by the macro safety preconditions.
-            unsafe_impl_transparent_wrapper_for_atomic!(AtomicU32 [u32], AtomicI32 [i32]);
+            unsafe_impl_transmute_from_for_atomic!(AtomicU32 [u32], AtomicI32 [i32]);
         }
     }
 
@@ -542,13 +542,13 @@ mod atomics {
 
         use super::*;
 
-        impl_traits_for_atomics!(AtomicU64, AtomicI64);
+        impl_traits_for_atomics!(AtomicU64[u64], AtomicI64[i64]);
 
         safety_comment! {
             /// SAFETY:
             /// All of these pass an atomic type and that type's native equivalent, as
             /// required by the macro safety preconditions.
-            unsafe_impl_transparent_wrapper_for_atomic!(AtomicU64 [u64], AtomicI64 [i64]);
+            unsafe_impl_transmute_from_for_atomic!(AtomicU64 [u64], AtomicI64 [i64]);
         }
     }
 
@@ -559,21 +559,21 @@ mod atomics {
 
         use super::*;
 
-        impl_traits_for_atomics!(AtomicUsize, AtomicIsize);
+        impl_traits_for_atomics!(AtomicUsize[usize], AtomicIsize[isize]);
 
         impl_known_layout!(T => AtomicPtr<T>);
 
         // TODO(#170): Implement `FromBytes` and `IntoBytes` once we implement
         // those traits for `*mut T`.
-        impl_for_transparent_wrapper!(T => TryFromBytes for AtomicPtr<T>);
-        impl_for_transparent_wrapper!(T => FromZeros for AtomicPtr<T>);
+        impl_for_transmute_from!(T => TryFromBytes for AtomicPtr<T>[UnsafeCell<*mut T>]);
+        impl_for_transmute_from!(T => FromZeros for AtomicPtr<T>[UnsafeCell<*mut T>]);
 
         safety_comment! {
             /// SAFETY:
             /// This passes an atomic type and that type's native equivalent, as
             /// required by the macro safety preconditions.
-            unsafe_impl_transparent_wrapper_for_atomic!(AtomicUsize [usize], AtomicIsize [isize]);
-            unsafe_impl_transparent_wrapper_for_atomic!(T => AtomicPtr<T> [*mut T]);
+            unsafe_impl_transmute_from_for_atomic!(AtomicUsize [usize], AtomicIsize [isize]);
+            unsafe_impl_transmute_from_for_atomic!(T => AtomicPtr<T> [*mut T]);
         }
     }
 }
@@ -603,12 +603,12 @@ safety_comment! {
     assert_unaligned!(PhantomData<()>, PhantomData<u8>, PhantomData<u64>);
 }
 
-impl_for_transparent_wrapper!(T: Immutable => Immutable for Wrapping<T>);
-impl_for_transparent_wrapper!(T: TryFromBytes => TryFromBytes for Wrapping<T>);
-impl_for_transparent_wrapper!(T: FromZeros => FromZeros for Wrapping<T>);
-impl_for_transparent_wrapper!(T: FromBytes => FromBytes for Wrapping<T>);
-impl_for_transparent_wrapper!(T: IntoBytes => IntoBytes for Wrapping<T>);
-impl_for_transparent_wrapper!(T: Unaligned => Unaligned for Wrapping<T>);
+impl_for_transmute_from!(T: Immutable => Immutable for Wrapping<T>[T]);
+impl_for_transmute_from!(T: TryFromBytes => TryFromBytes for Wrapping<T>[T]);
+impl_for_transmute_from!(T: FromZeros => FromZeros for Wrapping<T>[T]);
+impl_for_transmute_from!(T: FromBytes => FromBytes for Wrapping<T>[T]);
+impl_for_transmute_from!(T: IntoBytes => IntoBytes for Wrapping<T>[T]);
+impl_for_transmute_from!(T: Unaligned => Unaligned for Wrapping<T>[T]);
 assert_unaligned!(Wrapping<()>, Wrapping<u8>);
 
 safety_comment! {
@@ -620,22 +620,22 @@ safety_comment! {
     unsafe_impl!(T => FromBytes for MaybeUninit<T>);
 }
 
-impl_for_transparent_wrapper!(T: Immutable => Immutable for MaybeUninit<T>);
-impl_for_transparent_wrapper!(T: Unaligned => Unaligned for MaybeUninit<T>);
+impl_for_transmute_from!(T: Immutable => Immutable for MaybeUninit<T>[T]);
+impl_for_transmute_from!(T: Unaligned => Unaligned for MaybeUninit<T>[T]);
 assert_unaligned!(MaybeUninit<()>, MaybeUninit<u8>);
 
-impl_for_transparent_wrapper!(T: ?Sized + Immutable => Immutable for ManuallyDrop<T>);
-impl_for_transparent_wrapper!(T: ?Sized + TryFromBytes => TryFromBytes for ManuallyDrop<T>);
-impl_for_transparent_wrapper!(T: ?Sized + FromZeros => FromZeros for ManuallyDrop<T>);
-impl_for_transparent_wrapper!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>);
-impl_for_transparent_wrapper!(T: ?Sized + IntoBytes => IntoBytes for ManuallyDrop<T>);
-impl_for_transparent_wrapper!(T: ?Sized + Unaligned => Unaligned for ManuallyDrop<T>);
+impl_for_transmute_from!(T: ?Sized + Immutable => Immutable for ManuallyDrop<T>[T]);
+impl_for_transmute_from!(T: ?Sized + TryFromBytes => TryFromBytes for ManuallyDrop<T>[T]);
+impl_for_transmute_from!(T: ?Sized + FromZeros => FromZeros for ManuallyDrop<T>[T]);
+impl_for_transmute_from!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>[T]);
+impl_for_transmute_from!(T: ?Sized + IntoBytes => IntoBytes for ManuallyDrop<T>[T]);
+impl_for_transmute_from!(T: ?Sized + Unaligned => Unaligned for ManuallyDrop<T>[T]);
 assert_unaligned!(ManuallyDrop<()>, ManuallyDrop<u8>);
 
-impl_for_transparent_wrapper!(T: ?Sized + FromZeros => FromZeros for UnsafeCell<T>);
-impl_for_transparent_wrapper!(T: ?Sized + FromBytes => FromBytes for UnsafeCell<T>);
-impl_for_transparent_wrapper!(T: ?Sized + IntoBytes => IntoBytes for UnsafeCell<T>);
-impl_for_transparent_wrapper!(T: ?Sized + Unaligned => Unaligned for UnsafeCell<T>);
+impl_for_transmute_from!(T: ?Sized + FromZeros => FromZeros for UnsafeCell<T>[T]);
+impl_for_transmute_from!(T: ?Sized + FromBytes => FromBytes for UnsafeCell<T>[T]);
+impl_for_transmute_from!(T: ?Sized + IntoBytes => IntoBytes for UnsafeCell<T>[T]);
+impl_for_transmute_from!(T: ?Sized + Unaligned => Unaligned for UnsafeCell<T>[T]);
 assert_unaligned!(UnsafeCell<()>, UnsafeCell<u8>);
 
 // SAFETY: See safety comment in `is_bit_valid` impl.
