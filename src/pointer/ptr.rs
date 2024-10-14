@@ -1658,8 +1658,8 @@ mod tests {
             assert_eq!(ptr.len(), N);
             // SAFETY: `i` is in bounds by construction.
             let (l, r) = unsafe { ptr.reborrow().split_at(i) };
-            let l_sum: usize = l.iter().map(Ptr::read_unaligned).sum();
-            let r_sum: usize = r.iter().map(Ptr::read_unaligned).sum();
+            let l_sum: usize = l.iter().map(Ptr::read_unaligned::<BecauseImmutable>).sum();
+            let r_sum: usize = r.iter().map(Ptr::read_unaligned::<BecauseImmutable>).sum();
             assert_eq!(l_sum, i);
             assert_eq!(r_sum, N - i);
             assert_eq!(l_sum + r_sum, N);

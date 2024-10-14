@@ -599,7 +599,7 @@ fn test_try_from_bytes_enum() {
                             candidate.reborrow().cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyTagPrimitive })
                         };
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                        tag_ptr.bikeshed_recall_valid().read_unaligned()
+                        tag_ptr.bikeshed_recall_valid().read_unaligned::<::zerocopy::BecauseImmutable>()
                     };
                     let raw_enum = unsafe {
                         candidate.cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<'a, N, X, Y> })
@@ -893,7 +893,7 @@ fn test_try_from_bytes_enum() {
                             candidate.reborrow().cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyTagPrimitive })
                         };
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                        tag_ptr.bikeshed_recall_valid().read_unaligned()
+                        tag_ptr.bikeshed_recall_valid().read_unaligned::<::zerocopy::BecauseImmutable>()
                     };
                     let raw_enum = unsafe {
                         candidate.cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<'a, N, X, Y> })
@@ -1187,7 +1187,7 @@ fn test_try_from_bytes_enum() {
                             candidate.reborrow().cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyTagPrimitive })
                         };
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                        tag_ptr.bikeshed_recall_valid().read_unaligned()
+                        tag_ptr.bikeshed_recall_valid().read_unaligned::<::zerocopy::BecauseImmutable>()
                     };
                     let raw_enum = unsafe {
                         candidate.cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<'a, N, X, Y> })
