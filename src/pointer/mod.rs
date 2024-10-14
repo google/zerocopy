@@ -14,9 +14,7 @@ pub mod invariant;
 mod ptr;
 
 #[doc(hidden)]
-pub use invariant::aliasing_safety::{
-    AliasingSafe, AliasingSafeReason, BecauseExclusive, BecauseImmutable,
-};
+pub use invariant::{BecauseExclusive, BecauseImmutable, Read, ReadReason};
 #[doc(hidden)]
 pub use ptr::Ptr;
 
@@ -50,11 +48,11 @@ where
     pub fn read_unaligned<R>(self) -> T
     where
         T: Copy,
-        R: AliasingSafeReason,
-        T: AliasingSafe<T, Aliasing, R>,
+        R: invariant::ReadReason,
+        T: invariant::Read<Aliasing, R>,
     {
         // SAFETY: By invariant on `MaybeAligned`, `raw` contains
-        // validly-initialized data for `T`. By `T: AliasingSafe`, we are
+        // validly-initialized data for `T`. By `T: Read<Aliasing>`, we are
         // permitted to perform a read of `self`'s referent.
         unsafe { self.as_inner().read_unaligned() }
     }

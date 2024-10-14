@@ -377,7 +377,7 @@ mod _conversions {
             //   byte ranges. Since `p` and the returned pointer address the
             //   same byte range, they refer to `UnsafeCell`s at the same byte
             //   ranges.
-            let c = unsafe { self.cast_unsized(|p| T::cast_into_inner(p)) };
+            let c = unsafe { self.cast_unsized_unchecked(|p| T::cast_into_inner(p)) };
             // SAFETY: By invariant on `TransparentWrapper`, since `self`
             // satisfies the alignment invariant `I::Alignment`, `c` (of type
             // `T::Inner`) satisfies the given "applied" alignment invariant.
@@ -413,7 +413,7 @@ mod _conversions {
             //   `UnsafeCell`s at the same locations as `p`.
             let ptr = unsafe {
                 #[allow(clippy::as_conversions)]
-                self.cast_unsized(|p: *mut T| p as *mut crate::Unalign<T>)
+                self.cast_unsized_unchecked(|p: *mut T| p as *mut crate::Unalign<T>)
             };
             // SAFETY: `Unalign<T>` promises to have the same bit validity as
             // `T`.
@@ -659,13 +659,14 @@ mod _transitions {
         /// On error, unsafe code may rely on this method's returned
         /// `ValidityError` containing `self`.
         #[inline]
-        pub(crate) fn try_into_valid(
+        pub(crate) fn try_into_valid<R>(
             mut self,
         ) -> Result<Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>, ValidityError<Self, T>>
         where
-            T: TryFromBytes,
+            T: TryFromBytes + Read<I::Aliasing, R>,
             I::Aliasing: Reference,
             I: Invariants<Validity = Initialized>,
+            R: crate::pointer::ReadReason,
         {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
@@ -693,14 +694,19 @@ mod _transitions {
 /// Casts of the referent type.
 mod _casts {
     use super::*;
-    use crate::{pointer::invariant::aliasing_safety::*, CastError, SizeError};
+    use crate::{CastError, SizeError};
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
         T: 'a + ?Sized,
         I: Invariants,
     {
-        /// Casts to a different (unsized) target type.
+        /// Casts to a different (unsized) target type without checking interior
+        /// mutability.
+        ///
+        /// Callers should prefer [`cast_unsized`] where possible.
+        ///
+        /// [`cast_unsized`]: Ptr::cast_unsized
         ///
         /// # Safety
         ///
@@ -713,7 +719,7 @@ mod _casts {
         ///   exist in `*p`
         #[doc(hidden)]
         #[inline]
-        pub unsafe fn cast_unsized<U: 'a + ?Sized, F: FnOnce(*mut T) -> *mut U>(
+        pub unsafe fn cast_unsized_unchecked<U: 'a + ?Sized, F: FnOnce(*mut T) -> *mut U>(
             self,
             cast: F,
         ) -> Ptr<'a, U, (I::Aliasing, Any, Any)> {
@@ -775,6 +781,34 @@ mod _casts {
             // 8. `ptr`, trivially, conforms to the validity invariant of `Any`.
             unsafe { Ptr::new(ptr) }
         }
+
+        /// Casts to a different (unsized) target type.
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that `u = cast(p)` is a pointer cast with the
+        /// following properties:
+        /// - `u` addresses a subset of the bytes addressed by `p`
+        /// - `u` has the same provenance as `p`
+        #[doc(hidden)]
+        #[inline]
+        pub unsafe fn cast_unsized<U, F, R, S>(self, cast: F) -> Ptr<'a, U, (I::Aliasing, Any, Any)>
+        where
+            T: Read<I::Aliasing, R>,
+            U: 'a + ?Sized + Read<I::Aliasing, S>,
+            R: ReadReason,
+            S: ReadReason,
+            F: FnOnce(*mut T) -> *mut U,
+        {
+            // SAFETY: Because `T` and `U` both implement `Read<I::Aliasing, _>`,
+            // either:
+            // - `I::Aliasing` is `Exclusive`
+            // - `T` and `U` are both `Immutable`, in which case they trivially
+            //   contain `UnsafeCell`s at identical locations
+            //
+            // The caller promises all other safety preconditions.
+            unsafe { self.cast_unsized_unchecked(cast) }
+        }
     }
 
     impl<'a, T, I> Ptr<'a, T, I>
@@ -786,8 +820,9 @@ mod _casts {
         #[allow(clippy::wrong_self_convention)]
         pub(crate) fn as_bytes<R>(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Valid)>
         where
-            [u8]: AliasingSafe<T, I::Aliasing, R>,
-            R: AliasingSafeReason,
+            R: ReadReason,
+            T: Read<I::Aliasing, R>,
+            I::Aliasing: Reference,
         {
             let bytes = match T::size_of_val_raw(self.as_inner().as_non_null()) {
                 Some(bytes) => bytes,
@@ -804,10 +839,6 @@ mod _casts {
             //   pointer's address, and `bytes` is the length of `p`, so the
             //   returned pointer addresses the same bytes as `p`
             // - `slice_from_raw_parts_mut` and `.cast` both preserve provenance
-            // - Because `[u8]: AliasingSafe<T, I::Aliasing, _>`, either:
-            //   - `I::Aliasing` is `Exclusive`
-            //   - `T` and `[u8]` are both `Immutable`, in which case they
-            //     trivially contain `UnsafeCell`s at identical locations
             let ptr: Ptr<'a, [u8], _> = unsafe {
                 self.cast_unsized(|p: *mut T| {
                     #[allow(clippy::as_conversions)]
@@ -887,9 +918,9 @@ mod _casts {
             CastError<Self, U>,
         >
         where
-            R: AliasingSafeReason,
+            R: ReadReason,
             I::Aliasing: Reference,
-            U: 'a + ?Sized + KnownLayout + AliasingSafe<[u8], I::Aliasing, R>,
+            U: 'a + ?Sized + KnownLayout + Read<I::Aliasing, R>,
         {
             let (inner, remainder) =
                 self.as_inner().try_cast_into(cast_type, meta).map_err(|err| {
@@ -902,12 +933,13 @@ mod _casts {
                 })?;
 
             // SAFETY:
-            // 0. Since `U: AliasingSafe<[u8], I::Aliasing, _>`, either:
+            // 0. Since `U: Read<I::Aliasing, _>`, either:
             //    - `I::Aliasing` is `Exclusive`, in which case both `src` and
             //      `ptr` conform to `Exclusive`
-            //    - `I::Aliasing` is `Shared` or `Any` and both `U` and `[u8]`
-            //      are `Immutable`. In this case, neither pointer permits
-            //      mutation, and so `Shared` aliasing is satisfied.
+            //    - `I::Aliasing` is `Shared` or `Any` and `U` is `Immutable`
+            //      (we already know that `[u8]: Immutable`). In this case,
+            //      neither `U` nor `[u8]` permit mutation, and so `Shared`
+            //      aliasing is satisfied.
             // 1. `ptr` conforms to the alignment invariant of `Aligned` because
             //    it is derived from `try_cast_into`, which promises that the
             //    object described by `target` is validly aligned for `U`.
@@ -948,8 +980,8 @@ mod _casts {
         ) -> Result<Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, CastError<Self, U>>
         where
             I::Aliasing: Reference,
-            U: 'a + ?Sized + KnownLayout + AliasingSafe<[u8], I::Aliasing, R>,
-            R: AliasingSafeReason,
+            U: 'a + ?Sized + KnownLayout + Read<I::Aliasing, R>,
+            R: ReadReason,
         {
             // TODO(#67): Remove this allow. See NonNulSlicelExt for more
             // details.
@@ -996,11 +1028,8 @@ mod _casts {
         #[must_use]
         #[inline(always)]
         pub fn get_mut(self) -> Ptr<'a, T, I> {
-            // SAFETY:
-            // - The closure uses an `as` cast, which preserves address range
-            //   and provenance.
-            // - We require `I: Invariants<Aliasing = Exclusive>`, so we are not
-            //   required to uphold `UnsafeCell` equality.
+            // SAFETY: The closure uses an `as` cast, which preserves address
+            // range and provenance.
             #[allow(clippy::as_conversions)]
             let ptr = unsafe { self.cast_unsized(|p| p as *mut T) };
 
@@ -1046,7 +1075,8 @@ mod _project {
         ///
         /// # Safety
         ///
-        /// `project` has the same safety preconditions as `cast_unsized`.
+        /// `project` has the same safety preconditions as
+        /// `cast_unsized_unchecked`.
         #[doc(hidden)]
         #[inline]
         pub unsafe fn project<U: 'a + ?Sized>(
@@ -1058,8 +1088,8 @@ mod _project {
             // `Initialized` pointer, we could remove this method entirely.
 
             // SAFETY: This method has the same safety preconditions as
-            // `cast_unsized`.
-            let ptr = unsafe { self.cast_unsized(projector) };
+            // `cast_unsized_unchecked`.
+            let ptr = unsafe { self.cast_unsized_unchecked(projector) };
 
             // SAFETY: If all of the bytes of `self` are initialized (as
             // promised by `I: Invariants<Validity = Initialized>`), then any

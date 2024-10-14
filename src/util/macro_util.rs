@@ -25,10 +25,7 @@ use core::mem::{self, ManuallyDrop};
 use core::ptr::{self, NonNull};
 
 use crate::{
-    pointer::{
-        invariant::{self, Invariants},
-        AliasingSafe, AliasingSafeReason, BecauseExclusive, BecauseImmutable,
-    },
+    pointer::invariant::{self, BecauseExclusive, BecauseImmutable, Invariants, ReadReason},
     FromBytes, Immutable, IntoBytes, Ptr, TryFromBytes, Unalign, ValidityError,
 };
 
@@ -554,11 +551,11 @@ fn try_cast_or_pme<Src, Dst, I, R>(
 where
     // TODO(#2226): There should be a `Src: FromBytes` bound here, but doing so
     // requires deeper surgery.
-    Src: IntoBytes,
-    Dst: TryFromBytes + AliasingSafe<Src, I::Aliasing, R>,
+    Src: IntoBytes + invariant::Read<I::Aliasing, R>,
+    Dst: TryFromBytes + invariant::Read<I::Aliasing, R>,
     I: Invariants<Validity = invariant::Valid>,
     I::Aliasing: invariant::Reference,
-    R: AliasingSafeReason,
+    R: ReadReason,
 {
     static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
 
@@ -567,10 +564,6 @@ where
     //   because we assert above that the size of `Dst` equal to the size of
     //   `Src`.
     // - `p as *mut Dst` is a provenance-preserving cast
-    // - Because `Dst: AliasingSafe<Src, I::Aliasing, _>`, either:
-    //   - `I::Aliasing` is `Exclusive`
-    //   - `Src` and `Dst` are both `Immutable`, in which case they
-    //     trivially contain `UnsafeCell`s at identical locations
     #[allow(clippy::as_conversions)]
     let c_ptr = unsafe { src.cast_unsized(|p| p as *mut Dst) };
 
@@ -590,10 +583,6 @@ where
             //   `ptr`, because we assert above that the size of `Dst` is equal
             //   to the size of `Src`.
             // - `p as *mut Src` is a provenance-preserving cast
-            // - Because `Dst: AliasingSafe<Src, I::Aliasing, _>`, either:
-            //   - `I::Aliasing` is `Exclusive`
-            //   - `Src` and `Dst` are both `Immutable`, in which case they
-            //     trivially contain `UnsafeCell`s at identical locations
             #[allow(clippy::as_conversions)]
             let ptr = unsafe { ptr.cast_unsized(|p| p as *mut Src) };
             // SAFETY: `ptr` is `src`, and has the same alignment invariant.
