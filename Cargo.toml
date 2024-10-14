@@ -91,6 +91,10 @@ zerocopy-derive = { version = "=0.8.20", path = "zerocopy-derive", optional = tr
 zerocopy-derive = { version = "=0.8.20", path = "zerocopy-derive" }
 
 [dev-dependencies]
+# More recent versions of `either` have an MSRV higher than ours.
+either = "=1.13.0"
+# TODO(#381) Remove this dependency once we have our own layout gadgets.
+elain = "0.3.0"
 itertools = "0.11"
 rand = { version = "0.8.5", default-features = false, features = ["small_rng"] }
 rustversion = "1.0"
@@ -103,5 +107,3 @@ testutil = { path = "testutil" }
 trybuild = { version = "=1.0.89", features = ["diff"] }
 # In tests, unlike in production, zerocopy-derive is not optional
 zerocopy-derive = { version = "=0.8.20", path = "zerocopy-derive" }
-# TODO(#381) Remove this dependency once we have our own layout gadgets.
-elain = "0.3.0"

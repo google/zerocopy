@@ -300,8 +300,7 @@ fn test_try_from_bytes() {
                     mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
                 ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                 where
-                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                        + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                 {
                     true
                 }
@@ -325,8 +324,7 @@ fn test_from_zeros() {
                     mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
                 ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                 where
-                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                        + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                 {
                     true
                 }
@@ -356,8 +354,7 @@ fn test_from_bytes_struct() {
                     _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
                 ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                 where
-                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                        + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                 {
                     if false {
                         fn assert_is_from_bytes<T>()
@@ -407,8 +404,7 @@ fn test_from_bytes_union() {
                     _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
                 ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                 where
-                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                        + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                 {
                     if false {
                         fn assert_is_from_bytes<T>()
@@ -534,8 +530,7 @@ fn test_try_from_bytes_enum() {
                     mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>,
                 ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                 where
-                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                        + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                 {
                     use ::zerocopy::util::macro_util::core_reexport;
                     #[repr(u8)]
@@ -592,8 +587,7 @@ fn test_try_from_bytes_enum() {
                             mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
                         ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                         where
-                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                                + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                         {
                             true && {
                                 let field_candidate = unsafe {
@@ -687,8 +681,7 @@ fn test_try_from_bytes_enum() {
                             mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
                         ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                         where
-                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                                + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                         {
                             true && {
                                 let field_candidate = unsafe {
@@ -831,8 +824,7 @@ fn test_try_from_bytes_enum() {
                     mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>,
                 ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                 where
-                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                        + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                 {
                     use ::zerocopy::util::macro_util::core_reexport;
                     #[repr(u32)]
@@ -889,8 +881,7 @@ fn test_try_from_bytes_enum() {
                             mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
                         ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                         where
-                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                                + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                         {
                             true && {
                                 let field_candidate = unsafe {
@@ -984,8 +975,7 @@ fn test_try_from_bytes_enum() {
                             mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
                         ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                         where
-                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                                + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                         {
                             true && {
                                 let field_candidate = unsafe {
@@ -1128,8 +1118,7 @@ fn test_try_from_bytes_enum() {
                     mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>,
                 ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                 where
-                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                        + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                 {
                     use ::zerocopy::util::macro_util::core_reexport;
                     #[repr(C)]
@@ -1186,8 +1175,7 @@ fn test_try_from_bytes_enum() {
                             mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
                         ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                         where
-                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                                + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                         {
                             true && {
                                 let field_candidate = unsafe {
@@ -1281,8 +1269,7 @@ fn test_try_from_bytes_enum() {
                             mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
                         ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                         where
-                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                                + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                         {
                             true && {
                                 let field_candidate = unsafe {
@@ -1669,8 +1656,7 @@ fn test_from_bytes_enum() {
                     _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
                 ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                 where
-                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                        + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                 {
                     if false {
                         fn assert_is_from_bytes<T>()
@@ -1977,8 +1963,7 @@ fn test_try_from_bytes_trivial_is_bit_valid_enum() {
                     _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
                 ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                 where
-                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                        + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                 {
                     true
                 }

@@ -667,9 +667,7 @@ unsafe impl<T: TryFromBytes + ?Sized> TryFromBytes for UnsafeCell<T> {
     }
 
     #[inline]
-    fn is_bit_valid<A: invariant::Aliasing + invariant::AtLeast<invariant::Shared>>(
-        candidate: Maybe<'_, Self, A>,
-    ) -> bool {
+    fn is_bit_valid<A: invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
         // The only way to implement this function is using an exclusive-aliased
         // pointer. `UnsafeCell`s cannot be read via shared-aliased pointers
         // (other than by using `unsafe` code, which we can't use since we can't
@@ -1146,10 +1144,7 @@ mod tests {
 
             pub(super) trait TestIsBitValidShared<T: ?Sized> {
                 #[allow(clippy::needless_lifetimes)]
-                fn test_is_bit_valid_shared<
-                    'ptr,
-                    A: invariant::Aliasing + invariant::AtLeast<invariant::Shared>,
-                >(
+                fn test_is_bit_valid_shared<'ptr, A: invariant::Reference>(
                     &self,
                     candidate: Maybe<'ptr, T, A>,
                 ) -> Option<bool>;
@@ -1157,10 +1152,7 @@ mod tests {
 
             impl<T: TryFromBytes + Immutable + ?Sized> TestIsBitValidShared<T> for AutorefWrapper<T> {
                 #[allow(clippy::needless_lifetimes)]
-                fn test_is_bit_valid_shared<
-                    'ptr,
-                    A: invariant::Aliasing + invariant::AtLeast<invariant::Shared>,
-                >(
+                fn test_is_bit_valid_shared<'ptr, A: invariant::Reference>(
                     &self,
                     candidate: Maybe<'ptr, T, A>,
                 ) -> Option<bool> {
@@ -1268,7 +1260,7 @@ mod tests {
                 #[allow(unused, non_local_definitions)]
                 impl AutorefWrapper<$ty> {
                     #[allow(clippy::needless_lifetimes)]
-                    fn test_is_bit_valid_shared<'ptr, A: invariant::Aliasing + invariant::AtLeast<invariant::Shared>>(
+                    fn test_is_bit_valid_shared<'ptr, A: invariant::Reference>(
                         &mut self,
                         candidate: Maybe<'ptr, $ty, A>,
                     ) -> Option<bool> {
