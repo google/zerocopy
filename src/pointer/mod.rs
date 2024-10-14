@@ -9,6 +9,7 @@
 //! Abstractions over raw pointers.
 
 mod aliasing_safety;
+mod inner;
 mod ptr;
 
 pub use aliasing_safety::{AliasingSafe, AliasingSafeReason, BecauseExclusive, BecauseImmutable};
@@ -35,7 +36,7 @@ pub type MaybeAligned<'a, T, Aliasing = invariant::Shared, Alignment = invariant
 impl<'a, T, Aliasing, Alignment> MaybeAligned<'a, T, Aliasing, Alignment>
 where
     T: 'a + ?Sized,
-    Aliasing: invariant::Reference,
+    Aliasing: invariant::Aliasing,
     Alignment: invariant::Alignment,
 {
     /// Reads the value from `MaybeAligned`.
@@ -47,13 +48,10 @@ where
         R: AliasingSafeReason,
         T: AliasingSafe<T, Aliasing, R>,
     {
-        let raw = self.as_non_null().as_ptr();
         // SAFETY: By invariant on `MaybeAligned`, `raw` contains
-        // validly-initialized data for `T`. By `Aliasing: Reference`,
-        // `Aliasing` is either `Shared` or `Exclusive`, both of which ensure
-        // that it is sound to perform this read. By `T: Copy`, the value is
-        // safe to return.
-        unsafe { core::ptr::read_unaligned(raw) }
+        // validly-initialized data for `T`. By `T: AliasingSafe`, we are
+        // permitted to perform a read of `self`'s referent.
+        unsafe { self.as_inner().read_unaligned() }
     }
 }
 
