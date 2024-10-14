@@ -24,14 +24,14 @@ use crate::Unaligned;
 /// to [`TryFromBytes::is_bit_valid`].
 ///
 /// [`TryFromBytes::is_bit_valid`]: crate::TryFromBytes::is_bit_valid
-pub type Maybe<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Any> =
+pub type Maybe<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Unknown> =
     Ptr<'a, T, (Aliasing, Alignment, invariant::Initialized)>;
 
 /// A semi-user-facing wrapper type representing a maybe-aligned reference, for
 /// use in [`TryFromBytes::is_bit_valid`].
 ///
 /// [`TryFromBytes::is_bit_valid`]: crate::TryFromBytes::is_bit_valid
-pub type MaybeAligned<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Any> =
+pub type MaybeAligned<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Unknown> =
     Ptr<'a, T, (Aliasing, Alignment, invariant::Valid)>;
 
 // These methods are defined on the type alias, `MaybeAligned`, so as to bring

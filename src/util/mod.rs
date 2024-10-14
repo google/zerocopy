@@ -99,11 +99,11 @@ impl<I: invariant::Validity> ValidityVariance<I> for Covariant {
 pub enum Invariant {}
 
 impl<I: invariant::Alignment> AlignmentVariance<I> for Invariant {
-    type Applied = invariant::Any;
+    type Applied = invariant::Unknown;
 }
 
 impl<I: invariant::Validity> ValidityVariance<I> for Invariant {
-    type Applied = invariant::Any;
+    type Applied = invariant::Unknown;
 }
 
 // SAFETY:
