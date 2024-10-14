@@ -8,12 +8,17 @@
 
 //! Abstractions over raw pointers.
 
-mod aliasing_safety;
 mod inner;
+#[doc(hidden)]
+pub mod invariant;
 mod ptr;
 
-pub use aliasing_safety::{AliasingSafe, AliasingSafeReason, BecauseExclusive, BecauseImmutable};
-pub use ptr::{invariant, Ptr};
+#[doc(hidden)]
+pub use invariant::aliasing_safety::{
+    AliasingSafe, AliasingSafeReason, BecauseExclusive, BecauseImmutable,
+};
+#[doc(hidden)]
+pub use ptr::Ptr;
 
 use crate::Unaligned;
 

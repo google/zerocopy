@@ -8,7 +8,7 @@
 
 use core::{marker::PhantomData, ptr::NonNull};
 
-use super::inner::PtrInner;
+use super::{inner::PtrInner, invariant::*};
 use crate::{CastType, KnownLayout};
 
 /// Module used to gate access to [`Ptr`]'s fields.
@@ -16,7 +16,7 @@ mod def {
     use super::*;
 
     #[cfg(doc)]
-    use super::invariant;
+    use super::super::invariant;
 
     /// A raw pointer with more restrictions.
     ///
@@ -127,148 +127,6 @@ mod def {
 
 #[allow(unreachable_pub)] // This is a false positive on our MSRV toolchain.
 pub use def::Ptr;
-
-/// The parameterized invariants of a [`Ptr`].
-///
-/// Invariants are encoded as ([`Aliasing`], [`Alignment`], [`Validity`])
-/// triples implementing the [`Invariants`] trait.
-#[doc(hidden)]
-#[allow(missing_copy_implementations, missing_debug_implementations)]
-pub mod invariant {
-    /// The invariants of a [`Ptr`][super::Ptr].
-    pub trait Invariants: Sealed {
-        type Aliasing: Aliasing;
-        type Alignment: Alignment;
-        type Validity: Validity;
-    }
-
-    impl<A: Aliasing, AA: Alignment, V: Validity> Invariants for (A, AA, V) {
-        type Aliasing = A;
-        type Alignment = AA;
-        type Validity = V;
-    }
-
-    /// The aliasing invariant of a [`Ptr`][super::Ptr].
-    pub trait Aliasing: Sealed {
-        /// Is `Self` [`Exclusive`]?
-        #[doc(hidden)]
-        const IS_EXCLUSIVE: bool;
-    }
-
-    /// The alignment invariant of a [`Ptr`][super::Ptr].
-    pub trait Alignment: Sealed {}
-
-    /// The validity invariant of a [`Ptr`][super::Ptr].
-    pub trait Validity: Sealed {}
-
-    /// An [`Aliasing`] invariant which is either [`Shared`] or [`Exclusive`].
-    ///
-    /// # Safety
-    ///
-    /// Given `A: Reference`, callers may assume that either `A = Shared` or `A
-    /// = Exclusive`.
-    pub trait Reference: Aliasing + Sealed {}
-
-    /// No requirement - any invariant is allowed.
-    pub enum Any {}
-    impl Aliasing for Any {
-        const IS_EXCLUSIVE: bool = false;
-    }
-    impl Alignment for Any {}
-    impl Validity for Any {}
-
-    /// The `Ptr<'a, T>` adheres to the aliasing rules of a `&'a T`.
-    ///
-    /// The referent of a shared-aliased `Ptr` may be concurrently referenced by
-    /// any number of shared-aliased `Ptr` or `&T` references, and may not be
-    /// concurrently referenced by any exclusively-aliased `Ptr`s or `&mut T`
-    /// references. The referent must not be mutated, except via
-    /// [`UnsafeCell`]s.
-    ///
-    /// [`UnsafeCell`]: core::cell::UnsafeCell
-    pub enum Shared {}
-    impl Aliasing for Shared {
-        const IS_EXCLUSIVE: bool = false;
-    }
-    impl Reference for Shared {}
-
-    /// The `Ptr<'a, T>` adheres to the aliasing rules of a `&'a mut T`.
-    ///
-    /// The referent of an exclusively-aliased `Ptr` may not be concurrently
-    /// referenced by any other `Ptr`s or references, and may not be accessed
-    /// (read or written) other than via this `Ptr`.
-    pub enum Exclusive {}
-    impl Aliasing for Exclusive {
-        const IS_EXCLUSIVE: bool = true;
-    }
-    impl Reference for Exclusive {}
-
-    /// The referent is aligned: for `Ptr<T>`, the referent's address is a
-    /// multiple of the `T`'s alignment.
-    pub enum Aligned {}
-    impl Alignment for Aligned {}
-
-    /// The byte ranges initialized in `T` are also initialized in the referent.
-    ///
-    /// Formally: uninitialized bytes may only be present in `Ptr<T>`'s referent
-    /// where they are guaranteed to be present in `T`. This is a dynamic
-    /// property: if, at a particular byte offset, a valid enum discriminant is
-    /// set, the subsequent bytes may only have uninitialized bytes as
-    /// specificed by the corresponding enum.
-    ///
-    /// Formally, given `len = size_of_val_raw(ptr)`, at every byte offset, `b`,
-    /// in the range `[0, len)`:
-    /// - If, in any instance `t: T` of length `len`, the byte at offset `b` in
-    ///   `t` is initialized, then the byte at offset `b` within `*ptr` must be
-    ///   initialized.
-    /// - Let `c` be the contents of the byte range `[0, b)` in `*ptr`. Let `S`
-    ///   be the subset of valid instances of `T` of length `len` which contain
-    ///   `c` in the offset range `[0, b)`. If, in any instance of `t: T` in
-    ///   `S`, the byte at offset `b` in `t` is initialized, then the byte at
-    ///   offset `b` in `*ptr` must be initialized.
-    ///
-    ///   Pragmatically, this means that if `*ptr` is guaranteed to contain an
-    ///   enum type at a particular offset, and the enum discriminant stored in
-    ///   `*ptr` corresponds to a valid variant of that enum type, then it is
-    ///   guaranteed that the appropriate bytes of `*ptr` are initialized as
-    ///   defined by that variant's bit validity (although note that the variant
-    ///   may contain another enum type, in which case the same rules apply
-    ///   depending on the state of its discriminant, and so on recursively).
-    pub enum AsInitialized {}
-    impl Validity for AsInitialized {}
-
-    /// The byte ranges in the referent are fully initialized. In other words,
-    /// if the referent is `N` bytes long, then it contains a bit-valid `[u8;
-    /// N]`.
-    pub enum Initialized {}
-    impl Validity for Initialized {}
-
-    /// The referent is bit-valid for `T`.
-    pub enum Valid {}
-    impl Validity for Valid {}
-
-    use sealed::Sealed;
-    mod sealed {
-        use super::*;
-
-        pub trait Sealed {}
-
-        impl Sealed for Any {}
-
-        impl Sealed for Shared {}
-        impl Sealed for Exclusive {}
-
-        impl Sealed for Aligned {}
-
-        impl Sealed for AsInitialized {}
-        impl Sealed for Initialized {}
-        impl Sealed for Valid {}
-
-        impl<A: Sealed, AA: Sealed, V: Sealed> Sealed for (A, AA, V) {}
-    }
-}
-
-pub(crate) use invariant::*;
 
 /// External trait implementations on [`Ptr`].
 mod _external {
@@ -584,7 +442,7 @@ mod _transitions {
         /// This allows code which is generic over aliasing to down-cast to a
         /// concrete aliasing.
         ///
-        /// [`Exclusive`]: invariant::Exclusive
+        /// [`Exclusive`]: crate::pointer::invariant::Exclusive
         #[inline]
         pub(crate) fn into_exclusive_or_post_monomorphization_error(
             self,
@@ -661,7 +519,7 @@ mod _transitions {
         /// The caller promises that `self` satisfies the aliasing requirement
         /// of `Exclusive`.
         ///
-        /// [`Exclusive`]: invariant::Exclusive
+        /// [`Exclusive`]: crate::pointer::invariant::Exclusive
         #[inline]
         pub(crate) unsafe fn assume_exclusive(
             self,
@@ -835,7 +693,7 @@ mod _transitions {
 /// Casts of the referent type.
 mod _casts {
     use super::*;
-    use crate::{pointer::aliasing_safety::*, CastError, SizeError};
+    use crate::{pointer::invariant::aliasing_safety::*, CastError, SizeError};
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
