@@ -360,7 +360,7 @@ use core::{
     slice,
 };
 
-use crate::pointer::{invariant, BecauseExclusive};
+use crate::pointer::invariant::{self, BecauseExclusive};
 
 #[cfg(any(feature = "alloc", test))]
 extern crate alloc;
@@ -372,7 +372,7 @@ use core::alloc::Layout;
 
 // Used by `TryFromBytes::is_bit_valid`.
 #[doc(hidden)]
-pub use crate::pointer::{BecauseImmutable, Maybe, MaybeAligned, Ptr};
+pub use crate::pointer::{invariant::BecauseImmutable, Maybe, MaybeAligned, Ptr};
 // Used by `KnownLayout`.
 #[doc(hidden)]
 pub use crate::layout::*;

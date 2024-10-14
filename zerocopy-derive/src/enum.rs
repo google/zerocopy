@@ -259,15 +259,15 @@ pub(crate) fn derive_is_bit_valid(
                     //   `UnsafeCell`s will have the same location as in the
                     //   original type.
                     let variant = unsafe {
-                        variants.cast_unsized(
+                        variants.cast_unsized_unchecked(
                             |p: *mut ___ZerocopyVariants #ty_generics| {
                                 p as *mut #variant_struct_ident #ty_generics
                             }
                         )
                     };
-                    // SAFETY: `cast_unsized` removes the initialization
-                    // invariant from `p`, so we re-assert that all of the bytes
-                    // are initialized.
+                    // SAFETY: `cast_unsized_unchecked` removes the
+                    // initialization invariant from `p`, so we re-assert that
+                    // all of the bytes are initialized.
                     let variant = unsafe { variant.assume_initialized() };
                     <
                         #variant_struct_ident #ty_generics as #trait_path
@@ -321,7 +321,7 @@ pub(crate) fn derive_is_bit_valid(
                 // - There are no `UnsafeCell`s in the tag because it is a
                 //   primitive integer.
                 let tag_ptr = unsafe {
-                    candidate.reborrow().cast_unsized(|p: *mut Self| {
+                    candidate.reborrow().cast_unsized_unchecked(|p: *mut Self| {
                         p as *mut ___ZerocopyTagPrimitive
                     })
                 };
@@ -343,12 +343,13 @@ pub(crate) fn derive_is_bit_valid(
             //   original enum, and so preserves the locations of any
             //   `UnsafeCell`s.
             let raw_enum = unsafe {
-                candidate.cast_unsized(|p: *mut Self| {
+                candidate.cast_unsized_unchecked(|p: *mut Self| {
                     p as *mut ___ZerocopyRawEnum #ty_generics
                 })
             };
-            // SAFETY: `cast_unsized` removes the initialization invariant from
-            // `p`, so we re-assert that all of the bytes are initialized.
+            // SAFETY: `cast_unsized_unchecked` removes the initialization
+            // invariant from `p`, so we re-assert that all of the bytes are
+            // initialized.
             let raw_enum = unsafe { raw_enum.assume_initialized() };
             // SAFETY:
             // - This projection returns a subfield of `this` using

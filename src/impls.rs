@@ -950,6 +950,7 @@ mod simd {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::pointer::invariant;
 
     #[test]
     fn test_impls() {
