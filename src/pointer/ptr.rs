@@ -56,6 +56,7 @@ mod def {
         ///    [`I::Validity`](invariant::Validity).
         // SAFETY: `PtrInner<'a, T>` is covariant over `'a` and `T`.
         ptr: PtrInner<'a, T>,
+        _variance: PhantomData<<I::Aliasing as Aliasing>::Variance<'a, T>>,
         _invariants: PhantomData<I>,
     }
 
@@ -93,7 +94,7 @@ mod def {
             let ptr = unsafe { PtrInner::new(ptr) };
             // SAFETY: The caller has promised (in 6 - 8) to satisfy all safety
             // invariants of `Ptr`.
-            Self { ptr, _invariants: PhantomData }
+            Self { ptr, _variance: PhantomData, _invariants: PhantomData }
         }
 
         /// Constructs a new `Ptr` from a [`PtrInner`].
@@ -111,7 +112,7 @@ mod def {
         pub(super) unsafe fn from_inner(ptr: PtrInner<'a, T>) -> Ptr<'a, T, I> {
             // SAFETY: The caller has promised to satisfy all safety invariants
             // of `Ptr`.
-            Self { ptr, _invariants: PhantomData }
+            Self { ptr, _variance: PhantomData, _invariants: PhantomData }
         }
 
         /// Converts this `Ptr<T>` to a [`PtrInner<T>`].

@@ -31,6 +31,12 @@ pub trait Aliasing: Sealed {
     /// Is `Self` [`Exclusive`]?
     #[doc(hidden)]
     const IS_EXCLUSIVE: bool;
+
+    /// A type which has the correct variance over `'a` and `T` for this
+    /// aliasing invariant. `Ptr` stores a `<I::Aliasing as
+    /// Aliasing>::Variance<'a, T>` to inherit this variance.
+    #[doc(hidden)]
+    type Variance<'a, T: 'a + ?Sized>;
 }
 
 /// The alignment invariant of a [`Ptr`][super::Ptr].
@@ -51,6 +57,17 @@ pub trait Reference: Aliasing + Sealed {}
 pub enum Any {}
 impl Aliasing for Any {
     const IS_EXCLUSIVE: bool = false;
+
+    // SAFETY: Since we don't know what aliasing model this is, we have to be
+    // conservative. Invariance is strictly more restrictive than any other
+    // variance model, so this can never cause soundness issues.
+    //
+    // `fn() -> T` and `fn(T) -> ()` are covariant and contravariant in `T`,
+    // respectively. [1] Thus, `fn(T) -> T` is invariant in `T`. Thus, `fn(&'a
+    // T) -> &'a T` is invariant in `'a` and `T`.
+    //
+    // [1] https://doc.rust-lang.org/1.81.0/reference/subtyping.html#variance
+    type Variance<'a, T: 'a + ?Sized> = fn(&'a T) -> &'a T;
 }
 impl Alignment for Any {}
 impl Validity for Any {}
@@ -66,6 +83,7 @@ impl Validity for Any {}
 pub enum Shared {}
 impl Aliasing for Shared {
     const IS_EXCLUSIVE: bool = false;
+    type Variance<'a, T: 'a + ?Sized> = &'a T;
 }
 impl Reference for Shared {}
 
@@ -77,6 +95,7 @@ impl Reference for Shared {}
 pub enum Exclusive {}
 impl Aliasing for Exclusive {
     const IS_EXCLUSIVE: bool = true;
+    type Variance<'a, T: 'a + ?Sized> = &'a mut T;
 }
 impl Reference for Exclusive {}
 
