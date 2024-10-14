@@ -65,13 +65,22 @@ pub trait Aliasing: Sealed {
     /// Aliasing>::Variance<'a, T>` to inherit this variance.
     #[doc(hidden)]
     type Variance<'a, T: 'a + ?Sized>;
+
+    #[doc(hidden)]
+    type MappedTo<M: AliasingMapping>: Aliasing;
 }
 
 /// The alignment invariant of a [`Ptr`][super::Ptr].
-pub trait Alignment: Sealed {}
+pub trait Alignment: Sealed {
+    #[doc(hidden)]
+    type MappedTo<M: AlignmentMapping>: Alignment;
+}
 
 /// The validity invariant of a [`Ptr`][super::Ptr].
-pub trait Validity: Sealed {}
+pub trait Validity: Sealed {
+    #[doc(hidden)]
+    type MappedTo<M: ValidityMapping>: Validity;
+}
 
 /// An [`Aliasing`] invariant which is either [`Shared`] or [`Exclusive`].
 ///
@@ -84,8 +93,12 @@ pub trait Reference: Aliasing + Sealed {}
 /// It is unknown whether any invariant holds.
 pub enum Unknown {}
 
-impl Alignment for Unknown {}
-impl Validity for Unknown {}
+impl Alignment for Unknown {
+    type MappedTo<M: AlignmentMapping> = M::FromUnknown;
+}
+impl Validity for Unknown {
+    type MappedTo<M: ValidityMapping> = M::FromUnknown;
+}
 
 /// The `Ptr<'a, T>` does not permit any reads or writes from or to its referent.
 pub enum Inaccessible {}
@@ -100,6 +113,7 @@ impl Aliasing for Inaccessible {
     //
     // [1] https://doc.rust-lang.org/1.81.0/reference/subtyping.html#variance
     type Variance<'a, T: 'a + ?Sized> = &'a T;
+    type MappedTo<M: AliasingMapping> = M::FromInaccessible;
 }
 
 /// The `Ptr<'a, T>` adheres to the aliasing rules of a `&'a T`.
@@ -114,6 +128,7 @@ pub enum Shared {}
 impl Aliasing for Shared {
     const IS_EXCLUSIVE: bool = false;
     type Variance<'a, T: 'a + ?Sized> = &'a T;
+    type MappedTo<M: AliasingMapping> = M::FromShared;
 }
 impl Reference for Shared {}
 
@@ -126,51 +141,60 @@ pub enum Exclusive {}
 impl Aliasing for Exclusive {
     const IS_EXCLUSIVE: bool = true;
     type Variance<'a, T: 'a + ?Sized> = &'a mut T;
+    type MappedTo<M: AliasingMapping> = M::FromExclusive;
 }
 impl Reference for Exclusive {}
 
-/// The referent is aligned: for `Ptr<T>`, the referent's address is a multiple
-/// of the `T`'s alignment.
+/// The referent is aligned: for `Ptr<T>`, the referent's address is a
+/// multiple of the `T`'s alignment.
 pub enum Aligned {}
-impl Alignment for Aligned {}
+impl Alignment for Aligned {
+    type MappedTo<M: AlignmentMapping> = M::FromAligned;
+}
 
 /// The byte ranges initialized in `T` are also initialized in the referent.
 ///
 /// Formally: uninitialized bytes may only be present in `Ptr<T>`'s referent
-/// where they are guaranteed to be present in `T`. This is a dynamic
-/// property: if, at a particular byte offset, a valid enum discriminant is
-/// set, the subsequent bytes may only have uninitialized bytes as
-/// specificed by the corresponding enum.
+/// where they are guaranteed to be present in `T`. This is a dynamic property:
+/// if, at a particular byte offset, a valid enum discriminant is set, the
+/// subsequent bytes may only have uninitialized bytes as specificed by the
+/// corresponding enum.
 ///
-/// Formally, given `len = size_of_val_raw(ptr)`, at every byte offset, `b`,
-/// in the range `[0, len)`:
-/// - If, in any instance `t: T` of length `len`, the byte at offset `b` in
-///   `t` is initialized, then the byte at offset `b` within `*ptr` must be
+/// Formally, given `len = size_of_val_raw(ptr)`, at every byte offset, `b`, in
+/// the range `[0, len)`:
+/// - If, in any instance `t: T` of length `len`, the byte at offset `b` in `t`
+///   is initialized, then the byte at offset `b` within `*ptr` must be
 ///   initialized.
-/// - Let `c` be the contents of the byte range `[0, b)` in `*ptr`. Let `S`
-///   be the subset of valid instances of `T` of length `len` which contain
-///   `c` in the offset range `[0, b)`. If, in any instance of `t: T` in
-///   `S`, the byte at offset `b` in `t` is initialized, then the byte at
-///   offset `b` in `*ptr` must be initialized.
+/// - Let `c` be the contents of the byte range `[0, b)` in `*ptr`. Let `S` be
+///   the subset of valid instances of `T` of length `len` which contain `c` in
+///   the offset range `[0, b)`. If, in any instance of `t: T` in `S`, the byte
+///   at offset `b` in `t` is initialized, then the byte at offset `b` in `*ptr`
+///   must be initialized.
 ///
-///   Pragmatically, this means that if `*ptr` is guaranteed to contain an
-///   enum type at a particular offset, and the enum discriminant stored in
-///   `*ptr` corresponds to a valid variant of that enum type, then it is
-///   guaranteed that the appropriate bytes of `*ptr` are initialized as
-///   defined by that variant's bit validity (although note that the variant
-///   may contain another enum type, in which case the same rules apply
-///   depending on the state of its discriminant, and so on recursively).
+///   Pragmatically, this means that if `*ptr` is guaranteed to contain an enum
+///   type at a particular offset, and the enum discriminant stored in `*ptr`
+///   corresponds to a valid variant of that enum type, then it is guaranteed
+///   that the appropriate bytes of `*ptr` are initialized as defined by that
+///   variant's bit validity (although note that the variant may contain another
+///   enum type, in which case the same rules apply depending on the state of
+///   its discriminant, and so on recursively).
 pub enum AsInitialized {}
-impl Validity for AsInitialized {}
+impl Validity for AsInitialized {
+    type MappedTo<M: ValidityMapping> = M::FromAsInitialized;
+}
 
 /// The byte ranges in the referent are fully initialized. In other words, if
 /// the referent is `N` bytes long, then it contains a bit-valid `[u8; N]`.
 pub enum Initialized {}
-impl Validity for Initialized {}
+impl Validity for Initialized {
+    type MappedTo<M: ValidityMapping> = M::FromInitialized;
+}
 
 /// The referent is bit-valid for `T`.
 pub enum Valid {}
-impl Validity for Valid {}
+impl Validity for Valid {
+    type MappedTo<M: ValidityMapping> = M::FromValid;
+}
 
 /// [`Ptr`](crate::Ptr) referents that permit unsynchronized read operations.
 ///
@@ -230,4 +254,113 @@ mod sealed {
 
     impl Sealed for BecauseImmutable {}
     impl Sealed for BecauseExclusive {}
+}
+
+pub use mapping::*;
+mod mapping {
+    use super::*;
+
+    /// A mapping from one [`Aliasing`] type to another.
+    ///
+    /// An `AliasingMapping` is a type-level map which maps one `Aliasing` type
+    /// to another. It is always "total" in the sense of having a mapping for
+    /// any `A: Aliasing`.
+    ///
+    /// Given `A: Aliasing` and `M: AliasingMapping`, `M` can be applied to `A`
+    /// as [`MappedAliasing<A, M>`](MappedAliasing).
+    ///
+    /// Mappings are used by [`Ptr`](crate::Ptr) conversion methods to preserve
+    /// or modify invariants as required by each method's semantics.
+    pub trait AliasingMapping {
+        type FromInaccessible: Aliasing;
+        type FromShared: Aliasing;
+        type FromExclusive: Aliasing;
+    }
+
+    /// A mapping from one [`Alignment`] type to another.
+    ///
+    /// An `AlignmentMapping` is a type-level map which maps one `Alignment`
+    /// type to another. It is always "total" in the sense of having a mapping
+    /// for any `A: Alignment`.
+    ///
+    /// Given `A: Alignment` and `M: AlignmentMapping`, `M` can be applied to
+    /// `A` as [`MappedAlignment<A, M>`](MappedAlignment).
+    ///
+    /// Mappings are used by [`Ptr`](crate::Ptr) conversion methods to preserve
+    /// or modify invariants as required by each method's semantics.
+    pub trait AlignmentMapping {
+        type FromUnknown: Alignment;
+        type FromAligned: Alignment;
+    }
+
+    /// A mapping from one [`Validity`] type to another.
+    ///
+    /// An `ValidityMapping` is a type-level map which maps one `Validity` type
+    /// to another. It is always "total" in the sense of having a mapping for
+    /// any `A: Validity`.
+    ///
+    /// Given `V: Validity` and `M: ValidityMapping`, `M` can be applied to `V`
+    /// as [`MappedValidity<A, M>`](MappedValidity).
+    ///
+    /// Mappings are used by [`Ptr`](crate::Ptr) conversion methods to preserve
+    /// or modify invariants as required by each method's semantics.
+    pub trait ValidityMapping {
+        type FromUnknown: Validity;
+        type FromAsInitialized: Validity;
+        type FromInitialized: Validity;
+        type FromValid: Validity;
+    }
+
+    /// The application of the [`AliasingMapping`] `M` to the [`Aliasing`] `A`.
+    #[allow(type_alias_bounds)]
+    pub type MappedAliasing<A: Aliasing, M: AliasingMapping> = A::MappedTo<M>;
+
+    /// The application of the [`AlignmentMapping`] `M` to the [`Alignment`] `A`.
+    #[allow(type_alias_bounds)]
+    pub type MappedAlignment<A: Alignment, M: AlignmentMapping> = A::MappedTo<M>;
+
+    /// The application of the [`ValidityMapping`] `M` to the [`Validity`] `A`.
+    #[allow(type_alias_bounds)]
+    pub type MappedValidity<V: Validity, M: ValidityMapping> = V::MappedTo<M>;
+
+    impl<FromInaccessible: Aliasing, FromShared: Aliasing, FromExclusive: Aliasing> AliasingMapping
+        for ((Inaccessible, FromInaccessible), (Shared, FromShared), (Exclusive, FromExclusive))
+    {
+        type FromInaccessible = FromInaccessible;
+        type FromShared = FromShared;
+        type FromExclusive = FromExclusive;
+    }
+
+    impl<FromUnknown: Alignment, FromAligned: Alignment> AlignmentMapping
+        for ((Unknown, FromUnknown), (Shared, FromAligned))
+    {
+        type FromUnknown = FromUnknown;
+        type FromAligned = FromAligned;
+    }
+
+    impl<
+            FromUnknown: Validity,
+            FromAsInitialized: Validity,
+            FromInitialized: Validity,
+            FromValid: Validity,
+        > ValidityMapping
+        for (
+            (Unknown, FromUnknown),
+            (AsInitialized, FromAsInitialized),
+            (Initialized, FromInitialized),
+            (Valid, FromValid),
+        )
+    {
+        type FromUnknown = FromUnknown;
+        type FromAsInitialized = FromAsInitialized;
+        type FromInitialized = FromInitialized;
+        type FromValid = FromValid;
+    }
+
+    impl<FromInitialized: Validity> ValidityMapping for (Initialized, FromInitialized) {
+        type FromUnknown = Unknown;
+        type FromAsInitialized = Unknown;
+        type FromInitialized = FromInitialized;
+        type FromValid = Unknown;
+    }
 }
