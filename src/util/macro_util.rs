@@ -520,7 +520,7 @@ pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
 fn try_cast_or_pme<Src, Dst, I, R>(
     src: Ptr<'_, Src, I>,
 ) -> Result<
-    Ptr<'_, Dst, (I::Aliasing, invariant::Any, invariant::Valid)>,
+    Ptr<'_, Dst, (I::Aliasing, invariant::Unknown, invariant::Valid)>,
     ValidityError<Ptr<'_, Src, I>, Dst>,
 >
 where
