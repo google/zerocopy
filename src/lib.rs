@@ -3458,10 +3458,22 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: KnownLayout + Immutable,
     {
-        static_assert_dst_is_not_zst!(Self);
-        match Ptr::from_ref(source).try_cast_into_no_leftover::<_, BecauseImmutable>(None) {
-            Ok(ptr) => Ok(ptr.bikeshed_recall_valid().as_ref()),
-            Err(err) => Err(err.map_src(|src| src.as_ref())),
+        Self::from_bytes(source)
+    }
+
+    #[must_use = "has no side effects"]
+    #[inline]
+    fn from_bytes<'a, P: pointer::Pointer<'a, Self>, R>(
+        source: P::To<'a, [u8]>,
+    ) -> Result<P, CastError<P::To<'a, [u8]>, Self>>
+    where
+        Self: 'a + KnownLayout + invariant::Read<P::Aliasing, R>,
+    {
+        match Ptr::<'_, _, (P::Aliasing, _, _)>::from_pointer(source)
+            .try_cast_into_no_leftover::<_, R>(None)
+        {
+            Ok(ptr) => Ok(ptr.bikeshed_recall_valid().into_pointer()),
+            Err(err) => Err(err.map_src(|src| src.into_pointer())),
         }
     }
 
@@ -3694,11 +3706,7 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: IntoBytes + KnownLayout,
     {
-        static_assert_dst_is_not_zst!(Self);
-        match Ptr::from_mut(source).try_cast_into_no_leftover::<_, BecauseExclusive>(None) {
-            Ok(ptr) => Ok(ptr.bikeshed_recall_valid().as_mut()),
-            Err(err) => Err(err.map_src(|src| src.as_mut())),
-        }
+        Self::from_bytes(source)
     }
 
     /// Interprets the prefix of the given `source` as a `&mut Self` without
