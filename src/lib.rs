@@ -322,7 +322,6 @@ pub mod util;
 
 pub mod byte_slice;
 pub mod byteorder;
-mod deprecated;
 // This module is `pub` so that zerocopy's error types and error handling
 // documentation is grouped together in a cohesive module. In practice, we
 // expect most users to use the re-export of `error`'s items to avoid identifier
@@ -3061,19 +3060,6 @@ pub unsafe trait FromZeros: TryFromBytes {
         Ok(unsafe { Box::from_raw(ptr.as_ptr()) })
     }
 
-    #[deprecated(since = "0.8.0", note = "renamed to `FromZeros::new_box_zeroed_with_elems`")]
-    #[doc(hidden)]
-    #[cfg(feature = "alloc")]
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
-    #[must_use = "has no side effects (other than allocation)"]
-    #[inline(always)]
-    fn new_box_slice_zeroed(len: usize) -> Result<Box<[Self]>, AllocError>
-    where
-        Self: Sized,
-    {
-        <[Self]>::new_box_zeroed_with_elems(len)
-    }
-
     /// Creates a `Vec<Self>` from zeroed bytes.
     ///
     /// This function is useful for allocating large values of `Vec`s and
@@ -4145,8 +4131,8 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     ///
     /// Since an explicit `count` is provided, this method supports types with
-    /// zero-sized trailing slice elements. Methods such as [`mut_from`] which
-    /// do not take an explicit count do not support such types.
+    /// zero-sized trailing slice elements. Methods such as [`mut_from_bytes`]
+    /// which do not take an explicit count do not support such types.
     ///
     /// ```
     /// use zerocopy::*;
@@ -4164,7 +4150,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(zsty.trailing_dst.len(), 42);
     /// ```
     ///
-    /// [`mut_from`]: FromBytes::mut_from
+    /// [`mut_from_bytes`]: FromBytes::mut_from_bytes
     #[must_use = "has no side effects"]
     #[inline]
     fn mut_from_bytes_with_elems(
@@ -4484,105 +4470,6 @@ pub unsafe trait FromBytes: FromZeros {
             }
             Err(CastError::Validity(i)) => match i {},
         }
-    }
-
-    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::ref_from_bytes`")]
-    #[doc(hidden)]
-    #[must_use = "has no side effects"]
-    #[inline(always)]
-    fn ref_from(source: &[u8]) -> Option<&Self>
-    where
-        Self: KnownLayout + Immutable,
-    {
-        Self::ref_from_bytes(source).ok()
-    }
-
-    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::mut_from_bytes`")]
-    #[doc(hidden)]
-    #[must_use = "has no side effects"]
-    #[inline(always)]
-    fn mut_from(source: &mut [u8]) -> Option<&mut Self>
-    where
-        Self: KnownLayout + IntoBytes,
-    {
-        Self::mut_from_bytes(source).ok()
-    }
-
-    #[deprecated(since = "0.8.0", note = "`FromBytes::ref_from_bytes` now supports slices")]
-    #[doc(hidden)]
-    #[must_use = "has no side effects"]
-    #[inline(always)]
-    fn slice_from(source: &[u8]) -> Option<&[Self]>
-    where
-        Self: Sized + Immutable,
-    {
-        <[Self]>::ref_from_bytes(source).ok()
-    }
-
-    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::ref_from_prefix_with_elems`")]
-    #[doc(hidden)]
-    #[must_use = "has no side effects"]
-    #[inline(always)]
-    fn slice_from_prefix(source: &[u8], count: usize) -> Option<(&[Self], &[u8])>
-    where
-        Self: Sized + Immutable,
-    {
-        <[Self]>::ref_from_prefix_with_elems(source, count).ok()
-    }
-
-    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::ref_from_suffix_with_elems`")]
-    #[doc(hidden)]
-    #[must_use = "has no side effects"]
-    #[inline(always)]
-    fn slice_from_suffix(source: &[u8], count: usize) -> Option<(&[u8], &[Self])>
-    where
-        Self: Sized + Immutable,
-    {
-        <[Self]>::ref_from_suffix_with_elems(source, count).ok()
-    }
-
-    #[deprecated(since = "0.8.0", note = "`FromBytes::mut_from_bytes` now supports slices")]
-    #[must_use = "has no side effects"]
-    #[doc(hidden)]
-    #[inline(always)]
-    fn mut_slice_from(source: &mut [u8]) -> Option<&mut [Self]>
-    where
-        Self: Sized + IntoBytes,
-    {
-        <[Self]>::mut_from_bytes(source).ok()
-    }
-
-    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::mut_from_prefix_with_elems`")]
-    #[doc(hidden)]
-    #[must_use = "has no side effects"]
-    #[inline(always)]
-    fn mut_slice_from_prefix(source: &mut [u8], count: usize) -> Option<(&mut [Self], &mut [u8])>
-    where
-        Self: Sized + IntoBytes,
-    {
-        <[Self]>::mut_from_prefix_with_elems(source, count).ok()
-    }
-
-    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::mut_from_suffix_with_elems`")]
-    #[doc(hidden)]
-    #[must_use = "has no side effects"]
-    #[inline(always)]
-    fn mut_slice_from_suffix(source: &mut [u8], count: usize) -> Option<(&mut [u8], &mut [Self])>
-    where
-        Self: Sized + IntoBytes,
-    {
-        <[Self]>::mut_from_suffix_with_elems(source, count).ok()
-    }
-
-    #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::read_from_bytes`")]
-    #[doc(hidden)]
-    #[must_use = "has no side effects"]
-    #[inline(always)]
-    fn read_from(source: &[u8]) -> Option<Self>
-    where
-        Self: Sized,
-    {
-        Self::read_from_bytes(source).ok()
     }
 }
 
@@ -5170,16 +5057,6 @@ pub unsafe trait IntoBytes {
         }
         Ok(())
     }
-
-    #[deprecated(since = "0.8.0", note = "`IntoBytes::as_bytes_mut` was renamed to `as_mut_bytes`")]
-    #[doc(hidden)]
-    #[inline]
-    fn as_bytes_mut(&mut self) -> &mut [u8]
-    where
-        Self: FromBytes,
-    {
-        self.as_mut_bytes()
-    }
 }
 
 /// Analyzes whether a type is [`Unaligned`].
@@ -5323,45 +5200,6 @@ pub unsafe trait Unaligned {
     where
         Self: Sized;
 }
-
-#[cfg(feature = "alloc")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
-mod alloc_support {
-    use super::*;
-
-    /// Extends a `Vec<T>` by pushing `additional` new items onto the end of the
-    /// vector. The new items are initialized with zeros.
-    #[doc(hidden)]
-    #[deprecated(since = "0.8.0", note = "moved to `FromZeros`")]
-    #[inline(always)]
-    pub fn extend_vec_zeroed<T: FromZeros>(
-        v: &mut Vec<T>,
-        additional: usize,
-    ) -> Result<(), AllocError> {
-        <T as FromZeros>::extend_vec_zeroed(v, additional)
-    }
-
-    /// Inserts `additional` new items into `Vec<T>` at `position`. The new
-    /// items are initialized with zeros.
-    ///
-    /// # Panics
-    ///
-    /// Panics if `position > v.len()`.
-    #[doc(hidden)]
-    #[deprecated(since = "0.8.0", note = "moved to `FromZeros`")]
-    #[inline(always)]
-    pub fn insert_vec_zeroed<T: FromZeros>(
-        v: &mut Vec<T>,
-        position: usize,
-        additional: usize,
-    ) -> Result<(), AllocError> {
-        <T as FromZeros>::insert_vec_zeroed(v, position, additional)
-    }
-}
-
-#[cfg(feature = "alloc")]
-#[doc(hidden)]
-pub use alloc_support::*;
 
 #[cfg(test)]
 #[allow(
