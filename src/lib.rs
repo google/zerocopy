@@ -1960,7 +1960,7 @@ pub unsafe trait TryFromBytes {
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let src = &[85, 85][..];
+    /// let src = 0xCAFEu16.as_bytes();
     /// let zsty = ZSTy::try_ref_from_bytes_with_elems(src, 42).unwrap();
     /// assert_eq!(zsty.trailing_dst.len(), 42);
     /// ```
@@ -2067,7 +2067,7 @@ pub unsafe trait TryFromBytes {
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let src = &[85, 85][..];
+    /// let src = 0xCAFEu16.as_bytes();
     /// let (zsty, _) = ZSTy::try_ref_from_prefix_with_elems(src, 42).unwrap();
     /// assert_eq!(zsty.trailing_dst.len(), 42);
     /// ```
@@ -2156,7 +2156,7 @@ pub unsafe trait TryFromBytes {
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let src = &[85, 85][..];
+    /// let src = 0xCAFEu16.as_bytes();
     /// let (_, zsty) = ZSTy::try_ref_from_suffix_with_elems(src, 42).unwrap();
     /// assert_eq!(zsty.trailing_dst.len(), 42);
     /// ```
@@ -2246,7 +2246,8 @@ pub unsafe trait TryFromBytes {
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let src = &mut [85, 85][..];
+    /// let mut src = 0xCAFEu16;
+    /// let src = src.as_mut_bytes();
     /// let zsty = ZSTy::try_mut_from_bytes_with_elems(src, 42).unwrap();
     /// assert_eq!(zsty.trailing_dst.len(), 42);
     /// ```
@@ -2358,7 +2359,8 @@ pub unsafe trait TryFromBytes {
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let src = &mut [85, 85][..];
+    /// let mut src = 0xCAFEu16;
+    /// let src = src.as_mut_bytes();
     /// let (zsty, _) = ZSTy::try_mut_from_prefix_with_elems(src, 42).unwrap();
     /// assert_eq!(zsty.trailing_dst.len(), 42);
     /// ```
@@ -2452,7 +2454,8 @@ pub unsafe trait TryFromBytes {
     ///     trailing_dst: [()],
     /// }
     ///
-    /// let src = &mut [85, 85][..];
+    /// let mut src = 0xCAFEu16;
+    /// let src = src.as_mut_bytes();
     /// let (_, zsty) = ZSTy::try_mut_from_suffix_with_elems(src, 42).unwrap();
     /// assert_eq!(zsty.trailing_dst.len(), 42);
     /// ```
