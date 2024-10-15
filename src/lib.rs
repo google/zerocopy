@@ -1321,7 +1321,9 @@ pub unsafe trait TryFromBytes {
     /// [`UnsafeCell`]: core::cell::UnsafeCell
     /// [`Shared`]: invariant::Shared
     #[doc(hidden)]
-    fn is_bit_valid<A: invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool;
+    fn is_bit_valid<A: invariant::Reference, R: ?Sized>(candidate: Maybe<'_, Self, A>) -> bool
+    where
+        Self: invariant::Read<A, R>;
 
     /// Attempts to interpret the given `source` as a `&Self`.
     ///

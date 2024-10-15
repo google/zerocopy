@@ -648,7 +648,10 @@ unsafe impl<T: TryFromBytes + ?Sized> TryFromBytes for UnsafeCell<T> {
     }
 
     #[inline]
-    fn is_bit_valid<A: invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
+    fn is_bit_valid<A: invariant::Reference, R>(candidate: Maybe<'_, Self, A>) -> bool
+    where
+        Self: invariant::Read<A, R>,
+    {
         // The only way to implement this function is using an exclusive-aliased
         // pointer. `UnsafeCell`s cannot be read via shared-aliased pointers
         // (other than by using `unsafe` code, which we can't use since we can't
@@ -700,11 +703,12 @@ safety_comment! {
     /// [1] https://doc.rust-lang.org/1.81.0/reference/type-layout.html#array-layout
     unsafe_impl!(const N: usize, T: Immutable => Immutable for [T; N]);
     unsafe_impl!(const N: usize, T: TryFromBytes => TryFromBytes for [T; N]; |c: Maybe<[T; N]>| {
+        use invariant::*;
         // Note that this call may panic, but it would still be sound even if it
         // did. `is_bit_valid` does not promise that it will not panic (in fact,
         // it explicitly warns that it's a possibility), and we have not
         // violated any safety invariants that we must fix before returning.
-        <[T] as TryFromBytes>::is_bit_valid(c.as_slice())
+        <[T] as TryFromBytes>::is_bit_valid::<AA, BecauseSliceElem<BecauseArray<R, N>>>(c.as_slice())
     });
     unsafe_impl!(const N: usize, T: FromZeros => FromZeros for [T; N]);
     unsafe_impl!(const N: usize, T: FromBytes => FromBytes for [T; N]);

@@ -137,7 +137,10 @@ macro_rules! unsafe_impl {
         fn only_derive_is_allowed_to_implement_this_trait() {}
 
         #[inline]
-        fn is_bit_valid<AA: crate::pointer::invariant::Reference>(candidate: Maybe<'_, Self, AA>) -> bool {
+        fn is_bit_valid<AA: crate::pointer::invariant::Reference, R: ?Sized>(candidate: Maybe<'_, Self, AA>) -> bool
+        where
+            Self: invariant::Read<AA, R>
+        {
             // SAFETY:
             // - The cast preserves address. The caller has promised that the
             //   cast results in an object of equal or lesser size, and so the
@@ -159,7 +162,10 @@ macro_rules! unsafe_impl {
         fn only_derive_is_allowed_to_implement_this_trait() {}
 
         #[inline]
-        fn is_bit_valid<AA: crate::pointer::invariant::Reference>(candidate: Maybe<'_, Self, AA>) -> bool {
+        fn is_bit_valid<AA: crate::pointer::invariant::Reference, R: ?Sized>(candidate: Maybe<'_, Self, AA>) -> bool
+        where
+            Self: invariant::Read<AA, R>
+        {
             // SAFETY:
             // - The cast preserves address. The caller has promised that the
             //   cast results in an object of equal or lesser size, and so the
@@ -178,7 +184,10 @@ macro_rules! unsafe_impl {
         #[allow(clippy::missing_inline_in_public_items)]
         #[cfg_attr(coverage_nightly, coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
-        #[inline(always)] fn is_bit_valid<AA: crate::pointer::invariant::Reference>(_: Maybe<'_, Self, AA>) -> bool { true }
+        #[inline(always)] fn is_bit_valid<AA: crate::pointer::invariant::Reference, R: ?Sized>(_: Maybe<'_, Self, AA>) -> bool
+        where
+            Self: invariant::Read<AA, R>
+        { true }
     };
     (@method $trait:ident) => {
         #[allow(clippy::missing_inline_in_public_items)]
@@ -320,8 +329,12 @@ macro_rules! impl_for_transmute_from {
         // TryFromBytes)` macro arm for an explanation of why this is a sound
         // implementation of `is_bit_valid`.
         #[inline]
-        fn is_bit_valid<A: crate::pointer::invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
-            <$repr as TryFromBytes>::is_bit_valid(candidate.transmute::<$repr, _>())
+        fn is_bit_valid<A: crate::pointer::invariant::Reference, R: ?Sized>(candidate: Maybe<'_, Self, A>) -> bool
+        where
+            Self: invariant::Read<A, R>
+        {
+            let candidate: Ptr<'_, $repr, (A, _, _)> = candidate.transmute();
+            <$repr as TryFromBytes>::is_bit_valid::<_, R>(candidate)
         }
     };
     (
