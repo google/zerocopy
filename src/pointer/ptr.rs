@@ -172,7 +172,30 @@ mod _external {
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
     use super::*;
-    use crate::pointer::transmute::TransmuteFromPtr;
+    use crate::pointer::{transmute::TransmuteFromPtr, Pointer};
+
+    // TODO: How to make this a `From` impl without blanket impl conflicts?
+    impl<'a, T, A> Ptr<'a, T, (A, Aligned, Valid)>
+    where
+        T: 'a + ?Sized,
+        A: Aliasing,
+    {
+        /// Constructs a `Ptr` from an existing smart pointer or reference type.
+        #[doc(hidden)]
+        #[inline]
+        pub fn from_pointer<P: Pointer<'a, T, Aliasing = A>>(ptr: P) -> Self {
+            let ptr = P::into_ptr(ptr);
+            unsafe { Self::from_inner(ptr) }
+        }
+
+        /// Constructs `self` to a smart pointer or reference type.
+        #[doc(hidden)]
+        #[inline]
+        #[must_use]
+        pub fn into_pointer<P: Pointer<'a, T, Aliasing = A>>(self) -> P {
+            unsafe { P::from_ptr(self.as_inner()) }
+        }
+    }
 
     /// `&'a T` → `Ptr<'a, T>`
     impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
@@ -220,7 +243,7 @@ mod _conversions {
     where
         T: 'a + ?Sized,
         I: Invariants<Alignment = Aligned, Validity = Valid>,
-        I::Aliasing: Reference,
+        I::Aliasing: ReadFoo,
     {
         /// Converts `self` to a shared reference.
         // This consumes `self`, not `&self`, because `self` is, logically, a
@@ -266,7 +289,7 @@ mod _conversions {
     where
         T: 'a + ?Sized,
         I: Invariants,
-        I::Aliasing: Reference,
+        I::Aliasing: ReadFoo,
     {
         /// Reborrows `self`, producing another `Ptr`.
         ///
@@ -646,7 +669,7 @@ mod _transitions {
         ) -> Result<Ptr<'a, T, I::WithValidity<Valid>>, ValidityError<Self, T>>
         where
             T: TryFromBytes + Read<I::Aliasing, R>,
-            I::Aliasing: Reference,
+            I::Aliasing: ReadFoo,
             I: Invariants<Validity = Initialized>,
         {
             // This call may panic. If that happens, it doesn't cause any soundness
@@ -817,7 +840,7 @@ mod _casts {
         pub(crate) fn as_bytes<R>(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Valid)>
         where
             T: Read<I::Aliasing, R>,
-            I::Aliasing: Reference,
+            I::Aliasing: ReadFoo,
         {
             let bytes = match T::size_of_val_raw(self.as_inner().as_non_null()) {
                 Some(bytes) => bytes,
@@ -896,6 +919,9 @@ mod _casts {
         /// - If this is a prefix cast, `ptr` has the same address as `self`.
         /// - If this is a suffix cast, `remainder` has the same address as
         ///   `self`.
+        // TODO: This is currently unsound - need to bound with `I::Aliasing:
+        // Reference` in order to prove that splitting is okay (it isn't for
+        // e.g. Box and Arc).
         pub(crate) fn try_cast_into<U, R>(
             self,
             cast_type: CastType,
@@ -905,7 +931,7 @@ mod _casts {
             CastError<Self, U>,
         >
         where
-            I::Aliasing: Reference,
+            I::Aliasing: ReadFoo,
             U: 'a + ?Sized + KnownLayout + Read<I::Aliasing, R>,
         {
             let (inner, remainder) =
@@ -966,7 +992,7 @@ mod _casts {
             meta: Option<U::PointerMetadata>,
         ) -> Result<Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, CastError<Self, U>>
         where
-            I::Aliasing: Reference,
+            I::Aliasing: ReadFoo,
             U: 'a + ?Sized + KnownLayout + Read<I::Aliasing, R>,
         {
             match self.try_cast_into(CastType::Prefix, meta) {
@@ -1095,7 +1121,7 @@ mod _project {
     where
         T: 'a,
         I: Invariants,
-        I::Aliasing: Reference,
+        I::Aliasing: ReadFoo,
     {
         /// Iteratively projects the elements `Ptr<T>` from `Ptr<[T]>`.
         pub(crate) fn iter(&self) -> impl Iterator<Item = Ptr<'a, T, I>> {

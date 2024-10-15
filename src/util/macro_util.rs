@@ -527,7 +527,7 @@ where
     Src: IntoBytes + invariant::Read<I::Aliasing, R>,
     Dst: TryFromBytes + invariant::Read<I::Aliasing, R>,
     I: Invariants<Validity = invariant::Valid>,
-    I::Aliasing: invariant::Reference,
+    I::Aliasing: invariant::ReadFoo,
 {
     static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
 
