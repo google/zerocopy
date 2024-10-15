@@ -14,6 +14,12 @@ use core::{
 
 use crate::{pointer::invariant::*, Unalign};
 
+// T -> U
+// U: TransmuteFrom<T, Mapping::Aliasing = Preserved>
+// T: Read<A, R>
+//
+// U: Read<A, R>
+
 /// [`Ptr`](crate::Ptr) referents that disallow mutation.
 ///
 /// `T: NoWrite<A>` implies that a pointer to `T` with aliasing `A` does not
@@ -150,5 +156,13 @@ unsafe impl<T> TransmuteFrom<Unalign<T>> for T {
 
     fn cast_from(ptr: *mut Unalign<T>) -> *mut T {
         ptr.cast()
+    }
+}
+
+unsafe impl<T, const N: usize> TransmuteFrom<[T; N]> for [T] {
+    type Mapping = Preserved;
+
+    fn cast_from(ptr: *mut [T; N]) -> *mut [T] {
+        unsafe { core::ptr::slice_from_raw_parts_mut(ptr.cast(), N) }
     }
 }

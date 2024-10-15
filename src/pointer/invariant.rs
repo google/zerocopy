@@ -293,27 +293,48 @@ impl ValidityInner for Valid {
 ///
 /// As a consequence, if `T: Read<A, R>`, then any `Ptr<T, (A, ...)>` is
 /// permitted to perform unsynchronized reads from its referent.
-pub trait Read<A: Aliasing, R: ReadReason> {}
-
-impl<A: Reference, T: ?Sized + crate::Immutable> Read<A, BecauseImmutable> for T {}
-impl<T: ?Sized> Read<Exclusive, BecauseExclusive> for T {}
-
-/// Used to disambiguate [`Read`] impls.
-pub trait ReadReason: Sealed {}
+pub trait Read<A: Aliasing, R: ?Sized> {}
 
 /// Unsynchronized reads are permitted because only one live [`Ptr`](crate::Ptr)
 /// or reference may exist to the referent bytes at a time.
 #[derive(Copy, Clone, Debug)]
 #[doc(hidden)]
 pub enum BecauseExclusive {}
-impl ReadReason for BecauseExclusive {}
+impl<T: ?Sized> Read<Exclusive, BecauseExclusive> for T {}
 
 /// Unsynchronized reads are permitted because no live [`Ptr`](crate::Ptr)s or
 /// references permit interior mutation.
 #[derive(Copy, Clone, Debug)]
 #[doc(hidden)]
 pub enum BecauseImmutable {}
-impl ReadReason for BecauseImmutable {}
+impl<A: Reference, T: ?Sized + crate::Immutable> Read<A, BecauseImmutable> for T {}
+
+macro_rules! declare_because {
+    ($($name:ident),*) => {$(
+        #[doc(hidden)]
+        pub struct $name<R: ?Sized>(core::marker::PhantomData<R>);
+    )*};
+}
+
+declare_because!(
+    BecauseSliceElem,
+    BecauseArrayElem,
+    BecauseSlice // BecauseArray
+);
+
+#[doc(hidden)]
+pub struct BecauseArray<R: ?Sized, const N: usize>(core::marker::PhantomData<([(); N], R)>);
+
+impl<A: Reference, T, R: ?Sized> Read<A, BecauseSliceElem<R>> for [T] where T: Read<A, R> {}
+impl<A: Reference, T, R: ?Sized> Read<A, BecauseArrayElem<R>> for T where [T]: Read<A, R> {}
+impl<A: Reference, T, R: ?Sized, const N: usize> Read<A, BecauseSlice<R>> for [T; N] where
+    T: Read<A, R>
+{
+}
+impl<A: Reference, T, R: ?Sized, const N: usize> Read<A, BecauseArray<R, N>> for T where
+    [T; N]: Read<A, R>
+{
+}
 
 use sealed::Sealed;
 mod sealed {
