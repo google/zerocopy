@@ -91,6 +91,15 @@ pub trait Aliasing: Sealed {
     /// Aliasing>::Variance<'a, T>` to inherit this variance.
     #[doc(hidden)]
     type Variance<'a, T: 'a + ?Sized>;
+
+    // #[doc(hidden)]
+    // type Applied<'a, T: 'a + ?Sized>;
+
+    // #[doc(hidden)]
+    // fn into_ptr<'a, T: 'a + ?Sized>(ptr: Self::Applied<'a, T>) -> PtrInner<'a, T>;
+
+    // #[doc(hidden)]
+    // unsafe fn from_ptr<'a, T: 'a + ?Sized>(ptr: PtrInner<'a, T>) -> Self::Applied<'a, T>;
 }
 
 // NOTE: The `AlignmentInner`/`Alignment` distinction is required so that we can
@@ -188,6 +197,34 @@ impl Aliasing for Exclusive {
 }
 impl Reference for Exclusive {}
 
+#[cfg(feature = "alloc")]
+mod _alloc {
+    use alloc::boxed::Box as Bx;
+
+    use super::*;
+
+    pub enum Box {}
+    impl Aliasing for Box {
+        const IS_EXCLUSIVE: bool = false;
+        type Variance<'a, T: 'a + ?Sized> = Bx<T>;
+    }
+}
+
+#[cfg(feature = "std")]
+pub use _std::*;
+#[cfg(feature = "std")]
+mod _std {
+    use std::sync::Arc as Ac;
+
+    use super::*;
+
+    pub enum Arc {}
+    impl Aliasing for Arc {
+        const IS_EXCLUSIVE: bool = false;
+        type Variance<'a, T: 'a + ?Sized> = Ac<T>;
+    }
+}
+
 /// The referent is aligned: for `Ptr<T>`, the referent's address is a multiple
 /// of the `T`'s alignment.
 pub enum Aligned {}
@@ -239,6 +276,18 @@ impl ValidityInner for Valid {
     type MappedTo<M: ValidityMapping> = M::FromValid;
 }
 
+// Shared, Arc, etc
+pub trait SharedFoo: Aliasing {}
+impl SharedFoo for Shared {}
+#[cfg(feature = "std")]
+impl SharedFoo for Arc {}
+
+// Exclusive, Box, etc
+pub trait ExclusiveFoo: Aliasing {}
+impl ExclusiveFoo for Exclusive {}
+#[cfg(feature = "alloc")]
+impl ExclusiveFoo for Box {}
+
 /// [`Ptr`](crate::Ptr) referents that permit unsynchronized read operations.
 ///
 /// `T: Read<A, R>` implies that a pointer to `T` with aliasing `A` permits
@@ -263,8 +312,7 @@ define_because!(
     #[doc(hidden)]
     pub BecauseExclusive
 );
-// SAFETY: The aliasing parameter is `Exclusive`.
-unsafe impl<T: ?Sized> Read<Exclusive, BecauseExclusive> for T {}
+unsafe impl<A: ExclusiveFoo, T: ?Sized> Read<A, BecauseExclusive> for T {}
 
 define_because!(
     /// Unsynchronized reads are permitted because no live [`Ptr`](crate::Ptr)s
@@ -285,6 +333,10 @@ mod sealed {
 
     impl Sealed for Shared {}
     impl Sealed for Exclusive {}
+    #[cfg(feature = "alloc")]
+    impl Sealed for Box {}
+    #[cfg(feature = "std")]
+    impl Sealed for Arc {}
 
     impl Sealed for Aligned {}
 
