@@ -823,6 +823,35 @@ impl PointerMetadata for usize {
     }
 }
 
+unsafe impl<T: Sized> KnownLayout for T {
+    #[allow(clippy::missing_inline_in_public_items)]
+    #[cfg_attr(coverage_nightly, coverage(off))]
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized,
+    {
+    }
+
+    type PointerMetadata = ();
+
+    // SAFETY: `LAYOUT` is guaranteed to accurately describe the layout of
+    // `Self` because that is the documented safety contract of
+    // `DstLayout::for_type`.
+    const LAYOUT: DstLayout = DstLayout::for_type::<Self>();
+
+    // SAFETY: `.cast` preserves address and provenance.
+    //
+    // TODO(#429): Add documentation to `.cast` that promises that it preserves
+    // provenance.
+    #[inline(always)]
+    fn raw_from_ptr_len(bytes: NonNull<u8>, _meta: ()) -> NonNull<Self> {
+        bytes.cast::<Self>()
+    }
+
+    #[inline(always)]
+    fn pointer_to_metadata(_ptr: *mut Self) -> () {}
+}
+
 // SAFETY: Delegates safety to `DstLayout::for_slice`.
 unsafe impl<T> KnownLayout for [T] {
     #[allow(clippy::missing_inline_in_public_items)]

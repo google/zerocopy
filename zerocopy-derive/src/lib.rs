@@ -134,7 +134,7 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                 None
             }
         }
-        Data::Enum(..) | Data::Union(..) => None,
+        Data::Enum(..) | Data::Union(..) => return Ok(quote!()),
     };
 
     let fields = ast.data.fields();
@@ -241,6 +241,8 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
             ),
         )
     } else {
+        return Ok(quote!());
+
         // For enums, unions, and non-`repr(C)` structs, we require that
         // `Self` is sized, and as a result don't need to reason about the
         // internals of the type.
@@ -278,7 +280,11 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
             let require_trait_bound_on_field_types = if self_bounds == SelfBounds::SIZED {
                 FieldBounds::None
             } else {
-                FieldBounds::TRAILING_SELF
+                let ((_, trailing_field_ty), _) = fields.split_last().unwrap();
+                FieldBounds::Explicit(vec![
+                    parse_quote! { #trailing_field_ty: ::zerocopy::KnownLayout<PointerMetadata = usize> },
+                ])
+                // FieldBounds::TRAILING_SELF
             };
 
             // A bound on the trailing field is required, since structs are
