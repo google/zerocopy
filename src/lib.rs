@@ -4544,17 +4544,6 @@ pub unsafe trait FromBytes: FromZeros {
         Self::mut_from_bytes(source).ok()
     }
 
-    #[deprecated(since = "0.8.0", note = "`FromBytes::ref_from_bytes` now supports slices")]
-    #[doc(hidden)]
-    #[must_use = "has no side effects"]
-    #[inline(always)]
-    fn slice_from(source: &[u8]) -> Option<&[Self]>
-    where
-        Self: Sized + Immutable,
-    {
-        <[Self]>::ref_from_bytes(source).ok()
-    }
-
     #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::ref_from_prefix_with_elems`")]
     #[doc(hidden)]
     #[must_use = "has no side effects"]
@@ -4575,17 +4564,6 @@ pub unsafe trait FromBytes: FromZeros {
         Self: Sized + Immutable,
     {
         <[Self]>::ref_from_suffix_with_elems(source, count).ok()
-    }
-
-    #[deprecated(since = "0.8.0", note = "`FromBytes::mut_from_bytes` now supports slices")]
-    #[must_use = "has no side effects"]
-    #[doc(hidden)]
-    #[inline(always)]
-    fn mut_slice_from(source: &mut [u8]) -> Option<&mut [Self]>
-    where
-        Self: Sized + IntoBytes,
-    {
-        <[Self]>::mut_from_bytes(source).ok()
     }
 
     #[deprecated(since = "0.8.0", note = "renamed to `FromBytes::mut_from_prefix_with_elems`")]
