@@ -13,7 +13,7 @@ use core::{
 };
 
 use crate::{
-    pointer::{invariant::*, PtrInner},
+    pointer::{inner::PtrInner, invariant::*},
     FromBytes, Immutable, IntoBytes, Unalign,
 };
 
@@ -33,42 +33,44 @@ use crate::{
 /// Given `Dst: TryTransmuteFromPtr<Src, A, SV, DV, _>`, callers may assume the
 /// following:
 ///
-/// Given `src: Ptr<'a, Src, (A, _, SV)>`, if the referent of `src` is
-/// `DV`-valid for `Dst`, then it is sound to transmute `src` into `dst: Ptr<'a,
-/// Dst, (A, Unaligned, DV)>` by preserving pointer address and metadata.
+/// Given `src: Ptr<'a, Src, (A, _, SV)>` and `dst_inner =
+/// SizeCompat::cast_from_raw(src.into_inner())`, if the referent of `dst_inner`
+/// is `DV`-valid for `Dst`, then it is sound to construct `dst: Ptr<'a, Dst,
+/// (A, Unaligned, DV)>` from `dst_inner`. Equivalently, it is sound to
+/// transmute `src` into `dst` using [`SizeCompat::cast_from_raw`].
 ///
 /// ## Pre-conditions
 ///
-/// Given `src: Ptr<Src, (A, _, SV)>` and `dst: Ptr<Dst, (A, Unaligned, DV)>`,
-/// `Dst: TryTransmuteFromPtr<Src, A, SV, DV, _>` is sound if all of the
-/// following hold:
+/// Given `src: Ptr<Src, (A, _, SV)>` and `dst: Ptr<Dst, (A, Unaligned, DV)>`
+/// constructed from `SizeCompat::cast_from_raw(src.into_inner())`, `Dst:
+/// TryTransmuteFromPtr<Src, A, SV, DV, _>` is sound if all of the following
+/// hold:
 /// - Forwards transmutation: Either of the following hold:
 ///   - So long as `dst` is active, no mutation of `dst`'s referent is allowed
 ///     except via `dst` itself
-///   - The set of `DV`-valid `Dst`s is a superset of the set of `SV`-valid
-///     `Src`s
+///   - `Dst: TransmuteFrom<Src, SV, DV>`
 /// - Reverse transmutation: Either of the following hold:
 ///   - `dst` does not permit mutation of its referent
-///   - The set of `DV`-valid `Dst`s is a subset of the set of `SV`-valid `Src`s
+///   - `Src: TransmuteFrom<Dst, DV, SV>`
 /// - No safe code, given access to `src` and `dst`, can cause undefined
 ///   behavior: Any of the following hold:
 ///   - `A` is `Exclusive`
 ///   - `Src: Immutable` and `Dst: Immutable`
-///   - It is sound for shared code to operate on a `&Src` and `&Dst` which
-///     reference the same byte range at the same time
+///   - It is sound for safe code to operate on `src.as_ref(): &Src` and
+///     `dst.as_ref(): &Dst` at the same time
 ///
 /// ## Proof
 ///
 /// Given:
 /// - `src: Ptr<'a, Src, (A, _, SV)>`
-/// - `src`'s referent is `DV`-valid for `Dst`
-/// - `Dst: SizeEq<Src>`
+/// - The leading `N` bytes of `src`'s referent are a `DV`-valid `Dst`, where
+///   `N` is the referent size of `SizeCompat::cast_from_raw(src)`
 ///
-/// We are trying to prove that it is sound to perform a pointer address- and
-/// metadata-preserving transmute from `src` to a `dst: Ptr<'a, Dst, (A,
-/// Unaligned, DV)>`. We need to prove that such a transmute does not violate
-/// any of `src`'s invariants, and that it satisfies all invariants of the
-/// destination `Ptr` type.
+/// We are trying to prove that it is sound to use `SizeCompat::cast_from_raw`
+/// to transmute from `src` to a `dst: Ptr<'a, Dst, (A, Unaligned, DV)>`. We
+/// need to prove that such a transmute does not violate any of `src`'s
+/// invariants, and that it satisfies all invariants of the destination `Ptr`
+/// type.
 ///
 /// First, all of `src`'s `PtrInner` invariants are upheld. `src`'s address and
 /// metadata are unchanged, so:
@@ -78,16 +80,16 @@ use crate::{
 /// - If its referent is not zero sized, `A` is guaranteed to live for at least
 ///   `'a`
 ///
-/// Since `Dst: SizeEq<Src>`, and since `dst` has the same address and metadata
-/// as `src`, `dst` addresses the same byte range as `src`. `dst` also has the
-/// same lifetime as `src`. Therefore, all of the `PtrInner` invariants
-/// mentioned above also hold for `dst`.
+/// By post-condition on `SizeCompat::cast_from_raw`, `dst` addresses a prefix
+/// of the bytes addressed by `src`. `dst` also has the same lifetime as `src`.
+/// Therefore, all of the `PtrInner` invariants mentioned above also hold for
+/// `dst`.
 ///
 /// Second, since `src`'s address is unchanged, it still satisfies its
 /// alignment. Since `dst`'s alignment is `Unaligned`, it trivially satisfies
 /// its alignment.
 ///
-/// Third, aliasing is either `Exclusive` or `Shared`:
+/// Third, aliasing (`A`) is either `Exclusive` or `Shared`:
 /// - If it is `Exclusive`, then both `src` and `dst` satisfy `Exclusive`
 ///   aliasing trivially: since `src` and `dst` have the same lifetime, `src` is
 ///   inaccessible so long as `dst` is alive, and no other live `Ptr`s or
@@ -95,27 +97,32 @@ use crate::{
 /// - If it is `Shared`, then either:
 ///   - `Src: Immutable` and `Dst: Immutable`, and so `UnsafeCell`s trivially
 ///     cover the same byte ranges in both types.
-///   - It is explicitly sound for safe code to operate on a `&Src` and a `&Dst`
-///     pointing to the same byte range at the same time.
+///   - It is sound for safe code to operate on a `src.as_ref()` and
+///     `dst.as_ref()` at the same time.
 ///
 /// Fourth, `src`'s validity is satisfied. By invariant, `src`'s referent began
 /// as an `SV`-valid `Src`. It is guaranteed to remain so, as either of the
 /// following hold:
 /// - `dst` does not permit mutation of its referent.
-/// - The set of `DV`-valid `Dst`s is a superset of the set of `SV`-valid
-///   `Src`s. Thus, any value written via `dst` is guaranteed to be `SV`-valid
-///   for `Src`.
+/// - `Src: TransmuteFrom<Dst, DV, SV>`. Since `Dst: SizeCompat<Src>`, and since
+///   `dst` is produced using `SizeCompat::cast_from_raw`, given `src'` composed
+///   by concatenating any `DV`-valid `Dst` of size `size_of_val(dst)` with the
+///   trailing `size_of_val(src) - size_of_val(dst)` bytes of `src`, `src'` is
+///   an `SV`-valid `Src`. Thus, any value written to `dst` is guaranteed not to
+///   violate the `SV`-validity of `Src`.
 ///
 /// Fifth, `dst`'s validity is satisfied. It is a given of this proof that the
-/// referent is `DV`-valid for `Dst`. It is guaranteed to remain so, as either
-/// of the following hold:
+/// leading bytes of the referent are `DV`-valid for `Dst`. It is guaranteed to
+/// remain so, as either of the following hold:
 /// - So long as `dst` is active, no mutation of the referent is allowed except
 ///   via `dst` itself.
-/// - The set of `DV`-valid `Dst`s is a superset of the set of `SV`-valid
-///   `Src`s. Thus, any value written via `src` is guaranteed to be a `DV`-valid
-///   `Dst`.
+/// - `Dst: TransmuteFrom<Src, SV, DV>`. Since `Dst: SizeCompat<Src>`, and since
+///   `dst` is produced using `SizeCompat::cast_from_raw`, the leading
+///   `size_of_val(dst)` bytes of any `SV`-valid `Src` constitute a `DV`-valid
+///   `Dst`. Thus, any value written via `src` is guaranteed not to violate the
+///   `DV`-validity of `Dst`.
 pub unsafe trait TryTransmuteFromPtr<Src: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R>:
-    SizeEq<Src>
+    SizeCompat<Src>
 {
 }
 
@@ -131,12 +138,9 @@ pub enum BecauseMutationCompatible {}
 //       exists, no mutation is permitted except via that `Ptr`
 //     - Aliasing is `Shared`, `Src: Immutable`, and `Dst: Immutable`, in which
 //       case no mutation is possible via either `Ptr`
-//   - `Dst: TransmuteFrom<Src, SV, DV>`. Since `Dst: SizeEq<Src>`, this bound
-//     guarantees that the set of `DV`-valid `Dst`s is a supserset of the set of
-//     `SV`-valid `Src`s.
-// - Reverse transmutation: `Src: TransmuteFrom<Dst, DV, SV>`. Since `Dst:
-//   SizeEq<Src>`, this guarantees that the set of `DV`-valid `Dst`s is a subset
-//   of the set of `SV`-valid `Src`s.
+//   - `Dst: TransmuteFrom<Src, SV, DV>`
+// - Reverse transmutation: `Src: TransmuteFrom<Dst, DV, SV>`, and so the set of
+//   `DV`-valid `Dst`s is a subset of the set of `SV`-valid `Src`s
 // - No safe code, given access to `src` and `dst`, can cause undefined
 //   behavior: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, at least one of
 //   the following holds:
@@ -151,7 +155,7 @@ where
     SV: Validity,
     DV: Validity,
     Src: TransmuteFrom<Dst, DV, SV> + ?Sized,
-    Dst: MutationCompatible<Src, A, SV, DV, R> + SizeEq<Src> + ?Sized,
+    Dst: MutationCompatible<Src, A, SV, DV, R> + SizeCompat<Src> + ?Sized,
 {
 }
 
@@ -167,7 +171,7 @@ where
     SV: Validity,
     DV: Validity,
     Src: Immutable + ?Sized,
-    Dst: Immutable + SizeEq<Src> + ?Sized,
+    Dst: Immutable + SizeCompat<Src> + ?Sized,
 {
 }
 
@@ -179,9 +183,9 @@ where
 ///
 /// At least one of the following must hold:
 /// - `Src: Read<A, _>` and `Self: Read<A, _>`
-/// - `Self: InvariantsEq<Src>`, and, for some `V`:
-///   - `Dst: TransmuteFrom<Src, V, V>`
-///   - `Src: TransmuteFrom<Dst, V, V>`
+/// - `Self: InvariantsEq<Src>` and:
+///   - `Dst: TransmuteFrom<Src, SV, DV>`
+///   - `Src: TransmuteFrom<Dst, DV, SV>`
 pub unsafe trait MutationCompatible<Src: ?Sized, A: Aliasing, SV, DV, R> {}
 
 #[allow(missing_copy_implementations, missing_debug_implementations)]
@@ -250,13 +254,22 @@ unsafe impl<T: ?Sized> InvariantsEq<ManuallyDrop<T>> for T {}
 
 /// Transmutations which are always sound.
 ///
-/// `TransmuteFromPtr` is a shorthand for [`TryTransmuteFromPtr`] and
-/// [`TransmuteFrom`].
+/// `TransmuteFromPtr` is a shorthand for the conjuction of
+/// [`TryTransmuteFromPtr`] and [`TransmuteFrom`].
 ///
 /// # Safety
 ///
 /// `Dst: TransmuteFromPtr<Src, A, SV, DV, _>` is equivalent to `Dst:
 /// TryTransmuteFromPtr<Src, A, SV, DV, _> + TransmuteFrom<Src, SV, DV>`.
+///
+/// Further, if `Dst: TransmuteFromPtr<Src, A, SV, DV>`, then given `src:
+/// Ptr<'_, (A, _, SV)>`, it is sound to transmute `src` to `dst: Ptr<'_, (A, _,
+/// DV)>` using [`SizeCompat::cast_from_raw`] to perform the raw pointer
+/// transmute.
+///
+/// ## Proof
+///
+/// TODO
 pub unsafe trait TransmuteFromPtr<Src: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R>:
     TryTransmuteFromPtr<Src, A, SV, DV, R> + TransmuteFrom<Src, SV, DV>
 {
@@ -276,43 +289,96 @@ where
 ///
 /// # Safety
 ///
-/// Given `src: Ptr<Src, (_, _, SV)>` and `dst: Ptr<Dst, (_, _, DV)>`, if the
-/// referents of `src` and `dst` are the same size, then the set of bit patterns
-/// allowed to appear in `src`'s referent must be a subset of the set allowed to
-/// appear in `dst`'s referent.
+/// *In this section, we refer to `Self` as `Dst`.*
 ///
-/// If the referents are not the same size, then `Dst: TransmuteFrom<Src, SV,
-/// DV>` conveys no safety guarantee.
+/// If `Src` is an inhabited type, then `Dst` must also be an inhabited type.
+///
+/// ## By-value transmutation
+///
+/// If `Src: Sized` and `Dst: Sized`, then it must be sound to transmute an
+/// `SV`-valid `Src` into a `DV`-valid `Dst` by value via size-preserving or
+/// size-shrinking transmute. In particular, the first `size_of::<Dst>()` bytes
+/// of any `SV`-valid `Src` must be a `DV`-valid `Dst`.
+///
+/// If either `Src: !Sized` or `Dst: !Sized`, then this condition does not need
+/// to hold.
+///
+/// ## By-reference transmutation
+///
+/// If `Dst: SizeCompat<Src>`, then the following must hold: For all [valid
+/// sizes] of `Src`, `ssize` let `s: PtrInner<'_, Src>` with referent size
+/// `ssize`. Let `dsize` be the referent size of `SizeCompat::cast_from_raw(s)`.
+/// Note that, by invariant on `cast_from_raw`, `ssize >= dsize`. For all
+/// `SV`-valid values of `Src` with size `ssize`, `src`, it must be the case
+/// that the leading `dsize` bytes of `src` constitute a `DV`-valid `Dst`.
+///
+/// *This case corresponds to a `&Src` to `&Dst` transmute.*
+///
+/// If `Src: SizeCompat<Dst>`, then the following must hold: For all [valid
+/// sizes] of `Dst`, `dsize`, let `d: PtrInner<'_, Dst>` with referent size
+/// `dsize`. Let `ssize` be the referent size of `SizeCompat::cast_from_raw(d)`.
+/// Note that, by invariant on `cast_from_raw`, `dsize >= ssize`. For all
+/// `DV`-valid values of `Dst` with size `dsize`, `dst`, and for all `SV`-valid
+/// values of `Src` with size `ssize`, `src`, let `dst'` be constructed by
+/// concatenating `src` with the trailing `dsize - ssize` bytes of `dst`. It
+/// must be the case that `dst'` is a `DV`-valid `Dst`.
+///
+/// *This case corresponds to a `&Dst` to `&Src` transmute where `Src` and `Dst`
+/// permit interior mutation, or to a `&mut Dst` to `&mut Src` transmute. In
+/// particular, it ensures that, once values have been written to the `&Src` or
+/// `&mut Src` and the `&Src` or `&mut Src` have been dropped, the original
+/// `&Src` or `&mut Src` still refer to an `SV`-valid `Src`.*
+///
+/// Note that, if `<Dst as SizeCompat<Src>>::cast_from_raw` and `<Src as
+/// SizeCompat<Dst>>::cast_from_raw` both preserve referent size exactly, then
+/// the conditions in this section are a logical consequence of the conditions
+/// in the "By-value transmutation" section.
+///
+/// [valid sizes]: crate::KnownLayout#what-is-a-valid-size
 pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV> {}
 
 /// # Safety
 ///
-/// `T` and `Self` must have the same vtable kind (`Sized`, slice DST, `dyn`,
-/// etc) and have the same size. In particular:
-/// - If `T: Sized` and `Self: Sized`, then their sizes must be equal
-/// - If `T: ?Sized` and `Self: ?Sized`, then it must be the case that, given
-///   any `t: PtrInner<'_, T>`, `<Self as SizeEq<T>>::cast_from_raw(t)` produces
-///   a pointer which addresses the same number of bytes as `t`. *Note that it
-///   is **not** guaranteed that an `as` cast preserves referent size: it may be
-///   the case that `cast_from_raw` modifies the pointer's metadata in order to
-///   preserve referent size, which an `as` cast does not do.*
-pub unsafe trait SizeEq<T: ?Sized> {
-    fn cast_from_raw(t: PtrInner<'_, T>) -> PtrInner<'_, Self>;
+/// Implementations of `cast_from_raw` must satisfy that method's safety
+/// post-condition.
+pub unsafe trait SizeCompat<Src: ?Sized> {
+    /// # Safety
+    ///
+    /// Given `src: PtrInner<'_, Src>`, `let dst = Self::cast_from_raw(src)`
+    /// produces a pointer with the same address as `src`, and referring to at
+    /// most as many bytes. If `src` has valid provenance for its referent, then
+    /// `dst` has valid provenance for *its* referent.
+    ///
+    /// The size of `dst` must only be a function of the size of `src`. It must
+    /// not be a function of `src`'s address.
+    ///
+    /// `<Self as SizeCompat<Self>>::cast_from_raw` is guaranteed to be the
+    /// identity function.
+    fn cast_from_raw(src: PtrInner<'_, Src>) -> PtrInner<'_, Self>;
 }
 
 // SAFETY: `T` trivially has the same size and vtable kind as `T`, and since
 // pointer `*mut T -> *mut T` pointer casts are no-ops, this cast trivially
 // preserves referent size (when `T: ?Sized`).
-unsafe impl<T: ?Sized> SizeEq<T> for T {
+unsafe impl<T: ?Sized> SizeCompat<T> for T {
     #[inline(always)]
-    fn cast_from_raw(t: PtrInner<'_, T>) -> PtrInner<'_, T> {
+    fn cast_from_raw<'a>(t: PtrInner<'a, T>) -> PtrInner<'a, T> {
         t
     }
 }
 
-// SAFETY: Since `Src: IntoBytes`, the set of valid `Src`'s is the set of
-// initialized bit patterns, which is exactly the set allowed in the referent of
-// any `Initialized` `Ptr`.
+/// `Valid<Src: IntoBytes> → Initialized<Dst>`
+// SAFETY:
+// - By-value: Since `Src: IntoBytes`, the set of valid `Src`'s is the set of
+//   initialized bit patterns, which is exactly the set allowed in the referent
+//   of any `Initialized` `Ptr`. This holds for both size-preserving and
+//   size-shrinking transmutes.
+// - By-reference:
+//   - Shrinking: See above.
+//   - Tearing: Let `src` be a `Valid` `Src` and `dst` be an `Initialized`
+//     `Dst`. The trailing bytes of `dst` have bit validity `[u8; N]`. `src` has
+//     bit validity `[u8; M]`. Thus, `dst' = src + trailing_bytes_of(dst)` has
+//     bit validity `[u8; N + M]`, which is a valid `Initialized` value.
 unsafe impl<Src, Dst> TransmuteFrom<Src, Valid, Initialized> for Dst
 where
     Src: IntoBytes + ?Sized,
@@ -320,9 +386,12 @@ where
 {
 }
 
+/// `Initialized<Src> → Valid<Dst: FromBytes>`
 // SAFETY: Since `Dst: FromBytes`, any initialized bit pattern may appear in the
 // referent of a `Ptr<Dst, (_, _, Valid)>`. This is exactly equal to the set of
 // bit patterns which may appear in the referent of any `Initialized` `Ptr`.
+//
+// TODO: Prove `TransmuteFrom` reference transmutation conditions.
 unsafe impl<Src, Dst> TransmuteFrom<Src, Initialized, Valid> for Dst
 where
     Src: ?Sized,
@@ -334,8 +403,11 @@ where
 // nothing to do with `Src` or `Dst` - we're basically just saying `[u8; N]` is
 // transmutable into `[u8; N]`.
 
+/// `Initialized<Src> → Initialized<Dst>`
 // SAFETY: The set of allowed bit patterns in the referent of any `Initialized`
 // `Ptr` is the same regardless of referent type.
+//
+// TODO: Prove `TransmuteFrom` reference transmutation conditions.
 unsafe impl<Src, Dst> TransmuteFrom<Src, Initialized, Initialized> for Dst
 where
     Src: ?Sized,
@@ -347,8 +419,11 @@ where
 // nothing to do with `Dst` - we're basically just saying that any type is
 // transmutable into `MaybeUninit<[u8; N]>`.
 
+/// `V<Src> → Uninit<Dst>`
 // SAFETY: A `Dst` with validity `Uninit` permits any byte sequence, and
 // therefore can be transmuted from any value.
+//
+// TODO: Prove `TransmuteFrom` reference transmutation conditions.
 unsafe impl<Src, Dst, V> TransmuteFrom<Src, V, Uninit> for Dst
 where
     Src: ?Sized,
@@ -447,19 +522,23 @@ const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T: ?Sized => Cell<T>
 impl_transitive_transmute_from!(T: ?Sized => Cell<T> => T => UnsafeCell<T>);
 impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
 
+/// `Uninit<Src> → Valid<MaybeUninit<Dst>>`
 // SAFETY: `MaybeUninit<T>` has no validity requirements. Currently this is not
 // explicitly guaranteed, but it's obvious from `MaybeUninit`'s documentation
 // that this is the intention:
 // https://doc.rust-lang.org/1.85.0/core/mem/union.MaybeUninit.html
-unsafe impl<T> TransmuteFrom<T, Uninit, Valid> for MaybeUninit<T> {}
+//
+// TODO: Prove `TransmuteFrom` reference transmutation conditions.
+unsafe impl<Src, Dst> TransmuteFrom<Src, Uninit, Valid> for MaybeUninit<Dst> {}
 
-// SAFETY: `MaybeUninit<T>` has the same size as `T` [1].
+// SAFETY: `MaybeUninit<T>` has the same size as `T` [1]. Thus, a pointer cast
+// preserves address and referent size.
 //
 // [1] Per https://doc.rust-lang.org/1.81.0/std/mem/union.MaybeUninit.html#layout-1:
 //
 //   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and ABI as
 //   `T`
-unsafe impl<T> SizeEq<T> for MaybeUninit<T> {
+unsafe impl<T> SizeCompat<T> for MaybeUninit<T> {
     #[inline(always)]
     fn cast_from_raw(t: PtrInner<'_, T>) -> PtrInner<'_, MaybeUninit<T>> {
         // SAFETY: Per preceding safety comment, `MaybeUninit<T>` and `T` have
@@ -469,7 +548,7 @@ unsafe impl<T> SizeEq<T> for MaybeUninit<T> {
 }
 
 // SAFETY: See previous safety comment.
-unsafe impl<T> SizeEq<MaybeUninit<T>> for T {
+unsafe impl<T> SizeCompat<MaybeUninit<T>> for T {
     #[inline(always)]
     fn cast_from_raw(t: PtrInner<'_, MaybeUninit<T>>) -> PtrInner<'_, T> {
         // SAFETY: Per preceding safety comment, `MaybeUninit<T>` and `T` have

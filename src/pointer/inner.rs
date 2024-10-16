@@ -89,7 +89,9 @@ mod _def {
         ///    Rust allocation, `A`.
         /// 1. If `ptr`'s referent is not zero sized, `A` is guaranteed to live
         ///    for at least `'a`.
-        pub(crate) const unsafe fn new(ptr: NonNull<T>) -> PtrInner<'a, T> {
+        #[inline(always)]
+        #[must_use]
+        pub const unsafe fn new(ptr: NonNull<T>) -> PtrInner<'a, T> {
             // SAFETY: The caller has promised to satisfy all safety invariants
             // of `PtrInner`.
             Self { ptr, _marker: PhantomData }
@@ -159,6 +161,27 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
         //   means that the memory range `[a, a + N)` is all contained within a
         //   single allocated object.
         unsafe { Self::new(ptr) }
+    }
+
+    #[must_use]
+    #[inline(always)]
+    pub fn cast_sized<U>(self) -> PtrInner<'a, U>
+    where
+        T: Sized,
+    {
+        static_assert!(T, U => size_of::<T>() >= size_of::<U>());
+        let ptr = self.as_non_null().cast::<U>();
+
+        // SAFETY: By the preceding assert, `U` is no larger than `T`. Thus,
+        // `ptr` addresses a subset of the bytes addressed by `self`.
+        //
+        // 0. By invariant on `self`, if `self`'s referent is not zero sized,
+        //    then `self` has valid provenance for its referent, which is
+        //    entirely contained in some Rust allocation, `A`. Thus, the same
+        //    holds of `ptr`.
+        // 1. By invariant on `self`, if `self`'s referent is not zero sized,
+        //    then `A` is guaranteed to live for at least `'a`.
+        unsafe { PtrInner::new(ptr) }
     }
 }
 
