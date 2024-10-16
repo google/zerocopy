@@ -658,7 +658,7 @@ where
         let ptr = Ptr::from_mut(b.into_byte_slice_mut())
             .try_cast_into_no_leftover::<T, BecauseExclusive>(None)
             .expect("zerocopy internal error: into_ref should be infallible");
-        let ptr = ptr.recall_validity();
+        let ptr = ptr.recall_validity::<_, (_, (_, _))>();
         ptr.as_mut()
     }
 }

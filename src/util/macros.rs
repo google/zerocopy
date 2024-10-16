@@ -29,7 +29,12 @@ macro_rules! safety_comment {
     (#[doc = r" SAFETY:"] $($(#[$attr:meta])* $macro:ident!$args:tt;)*) => {
         #[allow(clippy::undocumented_unsafe_blocks, unused_attributes)]
         const _: () = { $($(#[$attr])* $macro!$args;)* };
-    }
+    };
+    (#[doc = r" SAFETY:"] $(#[doc = $_doc:literal])* $macro:ident!$args:tt) => {
+        #[allow(clippy::undocumented_unsafe_blocks, unused_attributes)]
+        let x = $macro!$args;
+        x
+    };
 }
 
 /// Unsafely implements trait(s) for a type.
@@ -250,7 +255,7 @@ macro_rules! impl_for_transmute_from {
         TryFromBytes for $ty:ty [<$repr:ty>]
     ) => {
         #[inline]
-        fn is_bit_valid<A: crate::pointer::invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
+        fn is_bit_valid<A: crate::pointer::invariant::Reference>(candidate: $crate::Maybe<'_, Self, A>) -> bool {
             // SAFETY: This macro ensures that `$repr` and `Self` have the same
             // size and bit validity. Thus, a bit-valid instance of `$repr` is
             // also a bit-valid instance of `Self`.
@@ -664,14 +669,15 @@ macro_rules! static_assert {
             const ASSERT: bool;
         }
 
-        impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?,)*> StaticAssert for ($($tyvar,)*) {
+        // NOTE: We use `PhantomData` so we can support unsized types.
+        impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?,)*> StaticAssert for ($(core::marker::PhantomData<$tyvar>,)*) {
             const ASSERT: bool = {
                 const_assert!($condition $(, $args)*);
                 $condition
             };
         }
 
-        const_assert!(<($($tyvar,)*) as StaticAssert>::ASSERT);
+        const_assert!(<($(core::marker::PhantomData<$tyvar>,)*) as StaticAssert>::ASSERT);
     }};
 }
 
@@ -692,6 +698,11 @@ macro_rules! static_assert_dst_is_not_zst {
     }}
 }
 
+/// # Safety
+///
+/// This macro is `unsafe` when called as `cast!($p)`. The caller must ensure
+/// that the cast does not grow the size of the referent. Preserving or
+/// shrinking the size of the referent are both acceptable.
 macro_rules! cast {
     () => {
         |p| {
@@ -704,39 +715,52 @@ macro_rules! cast {
             };
         }
     };
-    ($p:ident) => {
-        cast!()($p)
-    };
+    ($p:expr) => {{
+        let ptr: crate::pointer::PtrInner<'_, _> = $p;
+        let ptr = ptr.as_non_null();
+        let ptr = cast!()(ptr);
+        // SAFETY: The caller promises that the cast preserves or shrinks
+        // referent size. By invariant on `$p: PtrInner` (guaranteed by type
+        // annotation above), `$p` refers to a byte range entirely contained
+        // inside of a single allocation, has provenance for that whole byte
+        // range, and will not outlive the allocation. All of these conditions
+        // are preserved when preserving or shrinking referent size.
+        crate::pointer::PtrInner::new(ptr)
+    }};
 }
 
-/// Implements `TransmuteFrom` and `SizeEq` for `T` and `$wrapper<T>`.
+/// Implements `TransmuteFrom` and `SizeCompat` for `T` and `$wrapper<T>`.
 ///
 /// # Safety
 ///
-/// `T` and `$wrapper<T>` must have the same bit validity, and must have the
-/// same size in the sense of `SizeEq`.
+/// `T` and `$wrapper<T>` must have the same bit validity, and must satisfy the
+/// following property: given `t: *mut T`, `let w = t as *mut $wrapper<T>`
+/// produces a pointer which address the same bytes as `t`. The inverse must
+/// also hold.
 macro_rules! unsafe_impl_for_transparent_wrapper {
     (T $(: ?$optbound:ident)? => $wrapper:ident<T>) => {
         const _: () = {
-            use core::ptr::NonNull;
-            use crate::pointer::{TransmuteFrom, SizeEq, invariant::Valid};
+            use crate::pointer::{TransmuteFrom, PtrInner, SizeCompat, invariant::Valid};
 
             // SAFETY: The caller promises that `T` and `$wrapper<T>` have the
-            // same bit validity.
+            // same bit validity, and that both implementations of
+            // `SizeCompat::cast_from_raw` preserve referent size exactly.
             unsafe impl<T $(: ?$optbound)?> TransmuteFrom<T, Valid, Valid> for $wrapper<T> {}
             // SAFETY: See previous safety comment.
             unsafe impl<T $(: ?$optbound)?> TransmuteFrom<$wrapper<T>, Valid, Valid> for T {}
             // SAFETY: The caller promises that `T` and `$wrapper<T>` satisfy
-            // `SizeEq`.
-            unsafe impl<T $(: ?$optbound)?> SizeEq<T> for $wrapper<T> {
-                fn cast_from_raw(t: NonNull<T>) -> NonNull<$wrapper<T>> {
-                    cast!(t)
+            // `cast_from_raw`'s safety post-condition.
+            unsafe impl<T $(: ?$optbound)?> SizeCompat<T> for $wrapper<T> {
+                #[inline(always)]
+                fn cast_from_raw(t: PtrInner<'_, T>) -> PtrInner<'_, $wrapper<T>> {
+                    unsafe { cast!(t) }
                 }
             }
             // SAFETY: See previous safety comment.
-            unsafe impl<T $(: ?$optbound)?> SizeEq<$wrapper<T>> for T {
-                fn cast_from_raw(t: NonNull<$wrapper<T>>) -> NonNull<T> {
-                    cast!(t)
+            unsafe impl<T $(: ?$optbound)?> SizeCompat<$wrapper<T>> for T {
+                #[inline(always)]
+                fn cast_from_raw(t: PtrInner<'_, $wrapper<T>>) -> PtrInner<'_, T> {
+                    unsafe { cast!(t) }
                 }
             }
         };
@@ -751,18 +775,20 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
 macro_rules! impl_transitive_transmute_from {
     ($($tyvar:ident $(: ?$optbound:ident)?)? => $t:ty => $u:ty => $v:ty) => {
         const _: () = {
-            use core::ptr::NonNull;
-            use crate::pointer::{TransmuteFrom, SizeEq, invariant::Valid};
+            use crate::pointer::{TransmuteFrom, SizeCompat, invariant::Valid};
 
-            // SAFETY: Since `$u: SizeEq<$t>` and `$v: SizeEq<U>`, this impl is
-            // transitively sound.
-            unsafe impl<$($tyvar $(: ?$optbound)?)?> SizeEq<$t> for $v
+            // SAFETY: See safety comment on `cast_from_raw`.
+            unsafe impl<$($tyvar $(: ?$optbound)?)?> SizeCompat<$t> for $v
             where
-                $u: SizeEq<$t>,
-                $v: SizeEq<$u>,
+                $u: SizeCompat<$t>,
+                $v: SizeCompat<$u>,
             {
-                fn cast_from_raw(t: NonNull<$t>) -> NonNull<$v> {
-                    cast!(t)
+                // SAFETY: Each inner call to `cast_from_raw` preserves
+                // provenance and addressed byte range.
+                #[inline(always)]
+                fn cast_from_raw(t: PtrInner<'_, $t>) -> PtrInner<'_, $v> {
+                    let u = SizeCompat::cast_from_raw(t);
+                    SizeCompat::cast_from_raw(u)
                 }
             }
 
@@ -779,26 +805,148 @@ macro_rules! impl_transitive_transmute_from {
     };
 }
 
-macro_rules! impl_size_eq {
+#[rustfmt::skip]
+macro_rules! impl_size_compat {
     ($t:ty, $u:ty) => {
         const _: () = {
-            use crate::pointer::SizeEq;
-            use core::ptr::NonNull;
+            use crate::{KnownLayout, pointer::{PtrInner, SizeCompat}};
 
-    static_assert!(=> mem::size_of::<$t>() == mem::size_of::<$u>());
+            static_assert!(=> {
+                let t = <$t as KnownLayout>::LAYOUT;
+                let u = <$u as KnownLayout>::LAYOUT;
+                t.align.get() >= u.align.get() && match (t.size_info, u.size_info) {
+                    (SizeInfo::Sized { size: t }, SizeInfo::Sized { size: u }) => t == u,
+                    (
+                        SizeInfo::SliceDst(TrailingSliceLayout { offset: t_offset, elem_size: t_elem_size }),
+                        SizeInfo::SliceDst(TrailingSliceLayout { offset: u_offset, elem_size: u_elem_size })
+                    ) => t_offset == u_offset && t_elem_size == u_elem_size,
+                    _ => false,
+                }
+            });
 
-            // SAFETY: We've asserted that their sizes are equal.
-            unsafe impl SizeEq<$t> for $u {
-                fn cast_from_raw(t: NonNull<$t>) -> NonNull<$u> {
-                    cast!(t)
+            // SAFETY: See inline.
+            unsafe impl SizeCompat<$t> for $u {
+                #[inline(always)]
+                fn cast_from_raw(t: PtrInner<'_, $t>) -> PtrInner<'_, $u> {
+                    // SAFETY: We've asserted that their
+                    // `KnownLayout::LAYOUT.size_info`s are equal, and so this
+                    // cast is guaranteed to preserve address and referent size.
+                    // It trivially preserves provenance.
+                    unsafe { cast!(t) }
                 }
             }
-            // SAFETY: We've asserted that their sizes are equal.
-            unsafe impl SizeEq<$u> for $t {
-                fn cast_from_raw(u: NonNull<$u>) -> NonNull<$t> {
-                    cast!(u)
+            // SAFETY: See previous safety comment.
+            unsafe impl SizeCompat<$u> for $t {
+                #[inline(always)]
+                fn cast_from_raw(u: PtrInner<'_, $u>) -> PtrInner<'_, $t> {
+                    // SAFETY: See previous safety comment.
+                    unsafe { cast!(u) }
                 }
             }
         };
     };
+}
+
+/// Invokes `$blk` in a context in which `$src<$t>` and `$dst<$u>` implement
+/// `SizeCompat`.
+///
+/// This macro emits code which implements `SizeComapt`, and ensures that the
+/// impl is sound via PME.
+///
+/// # Safety
+///
+/// Inside of `$blk`, the caller must only use `$src` and `$dst` as `$src<$t>`
+/// and `$dst<$u>`. The caller must not use `$src` or `$dst` to wrap any other
+/// types.
+macro_rules! unsafe_with_size_compat {
+    (<$src:ident<$t:ident>, $dst:ident<$u:ident>> $blk:expr) => {{
+        #[allow(unused_unsafe)]
+        const _: () = unsafe {}; // Force the caller to wrap this in a `safety_comment!`.
+
+        use crate::{KnownLayout, pointer::PtrInner};
+
+        #[repr(transparent)]
+        struct $src<T: ?Sized>(T);
+
+        #[repr(transparent)]
+        struct $dst<U: ?Sized>(U);
+
+        // SAFETY: Since `$src<T>` is a `#[repr(transparent)]` wrapper around
+        // `T`, it has the same bit validity and size as `T`.
+        unsafe_impl_for_transparent_wrapper!(T: ?Sized => $src<T>);
+
+        // SAFETY: Since `$dst<T>` is a `#[repr(transparent)]` wrapper around
+        // `T`, it has the same bit validity and size as `T`.
+        unsafe_impl_for_transparent_wrapper!(T: ?Sized => $dst<T>);
+
+        // SAFETY: `$src<T>` is a `#[repr(transparent)]` wrapper around `T` with
+        // no added semantics.
+        unsafe impl<T: ?Sized> InvariantsEq<$src<T>> for T {}
+
+        // SAFETY: `$dst<T>` is a `#[repr(transparent)]` wrapper around `T` with
+        // no added semantics.
+        unsafe impl<T: ?Sized> InvariantsEq<$dst<T>> for T {}
+
+        // SAFETY: See inline for the soundness of this impl when
+        // `cast_from_raw` is actually instantiated (otherwise, PMEs may not be
+        // triggered).
+        //
+        // We manually instantiate `cast_from_raw` below to ensure that this PME
+        // can be triggered, and the caller promises not to use `$src` and
+        // `$dst` with any wrapped types other than `$t` and `$u` respectively.
+        unsafe impl<T: ?Sized, U: ?Sized> SizeCompat<$src<T>> for $dst<U>
+        where
+            T: KnownLayout<PointerMetadata = usize>,
+            U: KnownLayout<PointerMetadata = usize>,
+        {
+            fn cast_from_raw(src: PtrInner<'_, $src<T>>) -> PtrInner<'_, Self> {
+                // SAFETY: `crate::layout::cast_from_raw` promises to satisfy
+                // the safety invariants of `SizeCompat::cast_from_raw`, or to
+                // generate a PME. Since `$src<T>` and `$dst<U>` are
+                // `#[repr(transparent)]` wrappers around `T` and `U`
+                // respectively, a `cast_from_raw` impl which satisfies the
+                // conditions for casting from `NonNull<T>` to `NonNull<U>` also
+                // satisfies the conditions for casting from `NonNull<$src<T>>`
+                // to `NonNull<$dst<U>>`.
+
+                // SAFETY: By the preceding safety comment, this cast preserves
+                // referent size.
+                let src: PtrInner<'_, T> = unsafe { cast!(src) };
+                let dst: PtrInner<'_, U> = crate::layout::cast_from_raw(src);
+                // SAFETY: By the preceding safety comment, this cast preserves
+                // referent size.
+                unsafe { cast!(dst) }
+            }
+        }
+
+        if 1 == 0 {
+            let ptr = <$t as KnownLayout>::raw_dangling();
+            // SAFETY: This call is never executed.
+            let ptr = unsafe { crate::pointer::PtrInner::new(ptr) };
+            // SAFETY: This call is never executed.
+            let ptr = unsafe { cast!(ptr) };
+            let _ = <$dst<$u> as SizeCompat<$src<$t>>>::cast_from_raw(ptr);
+        }
+
+
+        impl_for_transmute_from!(T: ?Sized + TryFromBytes => TryFromBytes for $src<T>[<T>]);
+        impl_for_transmute_from!(T: ?Sized + FromBytes => FromBytes for $src<T>[<T>]);
+        impl_for_transmute_from!(T: ?Sized + FromZeros => FromZeros for $src<T>[<T>]);
+        impl_for_transmute_from!(T: ?Sized + IntoBytes => IntoBytes for $src<T>[<T>]);
+
+        impl_for_transmute_from!(U: ?Sized + TryFromBytes => TryFromBytes for $dst<U>[<U>]);
+        impl_for_transmute_from!(U: ?Sized + FromBytes => FromBytes for $dst<U>[<U>]);
+        impl_for_transmute_from!(U: ?Sized + FromZeros => FromZeros for $dst<U>[<U>]);
+        impl_for_transmute_from!(U: ?Sized + IntoBytes => IntoBytes for $dst<U>[<U>]);
+
+        // SAFETY: `$src<T>` is a `#[repr(transparent)]` wrapper around `T`, and
+        // so permits interior mutation exactly when `T` does.
+        unsafe_impl!(T: ?Sized + Immutable => Immutable for $src<T>);
+
+        // SAFETY: `$dst<T>` is a `#[repr(transparent)]` wrapper around `T`, and
+        // so permits interior mutation exactly when `T` does.
+        unsafe_impl!(T: ?Sized + Immutable => Immutable for $dst<T>);
+
+        $blk
+    }};
 }
