@@ -30,9 +30,9 @@ use core::ptr;
 use crate::{
     pointer::{
         invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
-        TryTransmuteFromPtr,
+        InvariantsEq, SizeCompat, TryTransmuteFromPtr,
     },
-    FromBytes, Immutable, IntoBytes, Ptr, TryFromBytes, ValidityError,
+    FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, Ptr, TryFromBytes, ValidityError,
 };
 
 /// Projects the type of the field at `Index` in `Self`.
@@ -467,69 +467,6 @@ macro_rules! assert_size_eq {
     }};
 }
 
-/// Transmutes a reference of one type to a reference of another type.
-///
-/// # Safety
-///
-/// The caller must guarantee that:
-/// - `Src: IntoBytes + Immutable`
-/// - `Dst: FromBytes + Immutable`
-/// - `size_of::<Src>() == size_of::<Dst>()`
-/// - `align_of::<Src>() >= align_of::<Dst>()`
-#[inline(always)]
-pub const unsafe fn transmute_ref<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
-    src: &'src Src,
-) -> &'dst Dst {
-    let src: *const Src = src;
-    let dst = src.cast::<Dst>();
-    // SAFETY:
-    // - We know that it is sound to view the target type of the input reference
-    //   (`Src`) as the target type of the output reference (`Dst`) because the
-    //   caller has guaranteed that `Src: IntoBytes`, `Dst: FromBytes`, and
-    //   `size_of::<Src>() == size_of::<Dst>()`.
-    // - We know that there are no `UnsafeCell`s, and thus we don't have to
-    //   worry about `UnsafeCell` overlap, because `Src: Immutable` and `Dst:
-    //   Immutable`.
-    // - The caller has guaranteed that alignment is not increased.
-    // - We know that the returned lifetime will not outlive the input lifetime
-    //   thanks to the lifetime bounds on this function.
-    //
-    // TODO(#67): Once our MSRV is 1.58, replace this `transmute` with `&*dst`.
-    #[allow(clippy::transmute_ptr_to_ref)]
-    unsafe {
-        mem::transmute(dst)
-    }
-}
-
-/// Transmutes a mutable reference of one type to a mutable reference of another
-/// type.
-///
-/// # Safety
-///
-/// The caller must guarantee that:
-/// - `Src: FromBytes + IntoBytes`
-/// - `Dst: FromBytes + IntoBytes`
-/// - `size_of::<Src>() == size_of::<Dst>()`
-/// - `align_of::<Src>() >= align_of::<Dst>()`
-// TODO(#686): Consider removing the `Immutable` requirement.
-#[inline(always)]
-pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
-    src: &'src mut Src,
-) -> &'dst mut Dst {
-    let src: *mut Src = src;
-    let dst = src.cast::<Dst>();
-    // SAFETY:
-    // - We know that it is sound to view the target type of the input reference
-    //   (`Src`) as the target type of the output reference (`Dst`) and
-    //   vice-versa because the caller has guaranteed that `Src: FromBytes +
-    //   IntoBytes`, `Dst: FromBytes + IntoBytes`, and `size_of::<Src>() ==
-    //   size_of::<Dst>()`.
-    // - The caller has guaranteed that alignment is not increased.
-    // - We know that the returned lifetime will not outlive the input lifetime
-    //   thanks to the lifetime bounds on this function.
-    unsafe { &mut *dst }
-}
-
 /// Is a given source a valid instance of `Dst`?
 ///
 /// If so, returns `src` casted to a `Ptr<Dst, _>`. Otherwise returns `None`.
@@ -732,6 +669,160 @@ where
             Ok(ptr.as_mut())
         }
         Err(err) => Err(err.map_src(|ptr| ptr.recall_validity().as_mut())),
+    }
+}
+
+#[derive(Copy, Clone)]
+pub struct Wrap<Src>(pub Src);
+
+impl<'a, Src> Wrap<&'a Src> {
+    /// # Safety
+    /// The caller must guarantee that:
+    /// - `Src: IntoBytes + Immutable`
+    /// - `Dst: FromBytes + Immutable`
+    ///
+    /// # PME
+    ///
+    /// Instantiating this method PMEs unless both:
+    /// - `mem::size_of::<Dst>() == mem::size_of::<Src>()`
+    /// - `mem::align_of::<Dst>() <= mem::align_of::<Src>()`
+    #[inline(always)]
+    #[must_use]
+    pub const unsafe fn transmute_ref<Dst>(self) -> &'a Dst {
+        static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
+        static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
+
+        let src: *const Src = self.0;
+        let dst = src.cast::<Dst>();
+        // SAFETY:
+        // - We know that it is sound to view the target type of the input reference
+        //   (`Src`) as the target type of the output reference (`Dst`) because the
+        //   caller has guaranteed that `Src: IntoBytes`, `Dst: FromBytes`, and
+        //   `size_of::<Src>() == size_of::<Dst>()`.
+        // - We know that there are no `UnsafeCell`s, and thus we don't have to
+        //   worry about `UnsafeCell` overlap, because `Src: Immutable` and `Dst:
+        //   Immutable`.
+        // - The caller has guaranteed that alignment is not increased.
+        // - We know that the returned lifetime will not outlive the input lifetime
+        //   thanks to the lifetime bounds on this function.
+        //
+        // TODO(#67): Once our MSRV is 1.58, replace this `transmute` with `&*dst`.
+        #[allow(clippy::transmute_ptr_to_ref)]
+        unsafe {
+            mem::transmute(dst)
+        }
+    }
+}
+
+impl<'a, Src> Wrap<&'a mut Src> {
+    /// Transmutes a mutable reference of one type to a mutable reference of another
+    /// type.
+    ///
+    /// # Safety
+    ///
+    /// The caller must guarantee that:
+    /// - `Src: FromBytes + IntoBytes`
+    /// - `Dst: FromBytes + IntoBytes`
+    ///
+    /// # PME
+    ///
+    /// Instantiating this method PMEs unless both:
+    /// - `mem::size_of::<Dst>() == mem::size_of::<Src>()`
+    /// - `mem::align_of::<Dst>() <= mem::align_of::<Src>()`
+    #[inline(always)]
+    #[must_use]
+    pub unsafe fn transmute_mut<Dst>(self) -> &'a mut Dst {
+        static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
+        static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
+
+        let src: *mut Src = self.0;
+        let dst = src.cast::<Dst>();
+        // SAFETY:
+        // - We know that it is sound to view the target type of the input reference
+        //   (`Src`) as the target type of the output reference (`Dst`) and
+        //   vice-versa because the caller has guaranteed that `Src: FromBytes +
+        //   IntoBytes`, `Dst: FromBytes + IntoBytes`, and `size_of::<Src>() ==
+        //   size_of::<Dst>()`.
+        // - The caller has guaranteed that alignment is not increased.
+        // - We know that the returned lifetime will not outlive the input lifetime
+        //   thanks to the lifetime bounds on this function.
+        unsafe { &mut *dst }
+    }
+}
+
+pub trait TransmuteRefDst<'a> {
+    #[must_use]
+    fn transmute_ref<U>(self) -> &'a U
+    where
+        U: KnownLayout<PointerMetadata = usize> + FromBytes + Immutable + ?Sized;
+}
+
+impl<'a, Src: ?Sized> TransmuteRefDst<'a> for Wrap<&'a Src>
+where
+    Src: KnownLayout<PointerMetadata = usize> + IntoBytes + Immutable,
+{
+    #[inline(always)]
+    fn transmute_ref<Dst>(self) -> &'a Dst
+    where
+        Dst: KnownLayout<PointerMetadata = usize> + FromBytes + Immutable + ?Sized,
+    {
+        safety_comment! {
+            /// SAFETY:
+            /// The preceding `static_assert!` ensures that `T::LAYOUT.size_info
+            /// == U::LAYOUT.size_info`.
+            unsafe_with_size_eq!(<S<Src>, D<Dst>> {
+                let ptr = Ptr::from_ref(self.0)
+                    .transmute::<S<Src>, invariant::Valid, BecauseImmutable>()
+                    .recall_validity::<invariant::Initialized, _>()
+                    .transmute::<D<Dst>, invariant::Initialized, (crate::pointer::BecauseMutationCompatible, _)>()
+                    .recall_validity::<invariant::Valid, _>();
+
+                // SAFETY: The preceding `static_assert!` ensures that
+                // `T::LAYOUT.align >= U::LAYOUT.align`. Since `self.0` is
+                // validly-aligned for `T`, it is also validly-aligned for `U`.
+                let ptr = unsafe { ptr.assume_alignment() };
+
+                &ptr.as_ref().0
+            })
+        }
+    }
+}
+
+pub trait TransmuteMutDst<'a> {
+    #[must_use]
+    fn transmute_mut<U>(self) -> &'a mut U
+    where
+        U: KnownLayout<PointerMetadata = usize> + FromBytes + IntoBytes + ?Sized;
+}
+
+impl<'a, T: ?Sized> TransmuteMutDst<'a> for Wrap<&'a mut T>
+where
+    T: KnownLayout<PointerMetadata = usize> + FromBytes + IntoBytes,
+{
+    #[inline(always)]
+    fn transmute_mut<U>(self) -> &'a mut U
+    where
+        U: KnownLayout<PointerMetadata = usize> + FromBytes + IntoBytes + ?Sized,
+    {
+        safety_comment! {
+            /// SAFETY:
+            /// The preceding `static_assert!` ensures that `T::LAYOUT.size_info
+            /// == U::LAYOUT.size_info`.
+            unsafe_with_size_eq!(<Src<T>, Dst<U>> {
+                let ptr = Ptr::from_mut(self.0)
+                    .transmute::<Src<T>, invariant::Valid, _>()
+                    .recall_validity::<invariant::Initialized, _>()
+                    .transmute::<Dst<U>, invariant::Initialized, _>()
+                    .recall_validity::<invariant::Valid, _>();
+
+                // SAFETY: The preceding `static_assert!` ensures that
+                // `T::LAYOUT.align >= U::LAYOUT.align`. Since `self.0` is
+                // validly-aligned for `T`, it is also validly-aligned for `U`.
+                let ptr = unsafe { ptr.assume_alignment() };
+
+                &mut ptr.as_mut().0
+            })
+        }
     }
 }
 
