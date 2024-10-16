@@ -31,7 +31,7 @@ use core::ptr::{self, NonNull};
 use crate::{
     pointer::{
         invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
-        BecauseInvariantsEq, InvariantsEq, SizeEq, TryTransmuteFromPtr,
+        BecauseInvariantsEq, InvariantsEq, SizeCompat, TryTransmuteFromPtr,
     },
     FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, Ptr, TryFromBytes, ValidityError,
 };
@@ -516,8 +516,7 @@ where
     //   because we assert above that the size of `Dst` equal to the size of
     //   `Src`.
     // - `p as *mut Dst` is a provenance-preserving cast
-    #[allow(clippy::as_conversions)]
-    let c_ptr = unsafe { src.cast_unsized(|ptr| ptr.as_non_null().cast::<Dst>()) };
+    let c_ptr = unsafe { src.cast_unsized(|p| cast!(p)) };
 
     match c_ptr.try_into_valid() {
         Ok(ptr) => Ok(ptr),
@@ -530,8 +529,7 @@ where
             //   `ptr`, because we assert above that the size of `Dst` is equal
             //   to the size of `Src`.
             // - `p as *mut Src` is a provenance-preserving cast
-            #[allow(clippy::as_conversions)]
-            let ptr = unsafe { ptr.cast_unsized(|ptr| ptr.as_non_null().cast::<Src>()) };
+            let ptr = unsafe { ptr.cast_unsized(|p| cast!(p)) };
             // SAFETY: `ptr` is `src`, and has the same alignment invariant.
             let ptr = unsafe { ptr.assume_alignment::<I::Alignment>() };
             // SAFETY: `ptr` is `src` and has the same validity invariant.
@@ -586,7 +584,7 @@ where
     //   ABI as `T`
     let ptr: Ptr<'_, Dst, _> = unsafe {
         ptr.cast_unsized(|ptr: crate::pointer::PtrInner<'_, mem::MaybeUninit<Dst>>| {
-            ptr.as_non_null().cast()
+            ptr.cast_sized()
         })
     };
 
@@ -795,7 +793,7 @@ where
 
         // SAFETY: We only use `S` as `S<Src>` and `D` as `D<Dst>`.
         unsafe {
-            unsafe_with_size_eq!(<S<Src>, D<Dst>> {
+            unsafe_with_size_compat!(<S<Src>, D<Dst>> {
                 let ptr = Ptr::from_ref(self.0)
                     .transmute::<S<Src>, invariant::Valid, BecauseImmutable>()
                     .recall_validity::<invariant::Initialized, _>()
@@ -835,7 +833,7 @@ where
 
         // SAFETY: We only use `S` as `S<Src>` and `D` as `D<Dst>`.
         unsafe {
-            unsafe_with_size_eq!(<S<Src>, D<Dst>> {
+            unsafe_with_size_compat!(<S<Src>, D<Dst>> {
                 let ptr = Ptr::from_mut(self.0)
                     .transmute::<S<Src>, invariant::Valid, _>()
                     .recall_validity::<invariant::Initialized, (_, (_, _))>()
