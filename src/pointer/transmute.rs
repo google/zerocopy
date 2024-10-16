@@ -33,7 +33,7 @@ use crate::{pointer::invariant::*, FromBytes, Immutable, IntoBytes, Unalign};
 ///
 /// Given `src: Ptr<'a, Src, (A, _, SV)>`, if the referent of `src` is
 /// `DV`-valid for `Dst`, then it is sound to transmute `src` into `dst: Ptr<'a,
-/// Dst, (A, Unaligned, DV)>` by preserving pointer address and metadata.
+/// Dst, (A, Unaligned, DV)>` using [`SizeCompat::cast_from_raw`].
 ///
 /// ## Pre-conditions
 ///
@@ -60,13 +60,12 @@ use crate::{pointer::invariant::*, FromBytes, Immutable, IntoBytes, Unalign};
 /// Given:
 /// - `src: Ptr<'a, Src, (A, _, SV)>`
 /// - `src`'s referent is `DV`-valid for `Dst`
-/// - `Dst: SizeEq<Src>`
 ///
-/// We are trying to prove that it is sound to perform a pointer address- and
-/// metadata-preserving transmute from `src` to a `dst: Ptr<'a, Dst, (A,
-/// Unaligned, DV)>`. We need to prove that such a transmute does not violate
-/// any of `src`'s invariants, and that it satisfies all invariants of the
-/// destination `Ptr` type.
+/// We are trying to prove that it is sound to use `SizeCompat::cast_from_raw`
+/// to transmute from `src` to a `dst: Ptr<'a, Dst, (A, Unaligned, DV)>`. We
+/// need to prove that such a transmute does not violate any of `src`'s
+/// invariants, and that it satisfies all invariants of the destination `Ptr`
+/// type.
 ///
 /// First, all of `src`'s `PtrInner` invariants are upheld. `src`'s address and
 /// metadata are unchanged, so:
@@ -81,9 +80,9 @@ use crate::{pointer::invariant::*, FromBytes, Immutable, IntoBytes, Unalign};
 /// - If its referent is not zero sized, `A` is guaranteed to live for at least
 ///   `'a`
 ///
-/// Since `Dst: SizeEq<Src>`, and since `dst` has the same address and metadata
-/// as `src`, `dst` addresses the same byte range as `src`. `dst` also has the
-/// same lifetime as `src`. Therefore, all of the `PtrInner` invariants
+/// By post-condition on `SizeCompat::cast_from_raw`, `dst` addresses the same
+/// bytes as `src`, `dst` addresses the same byte range as `src`. `dst` also has
+/// the same lifetime as `src`. Therefore, all of the `PtrInner` invariants
 /// mentioned above also hold for `dst`.
 ///
 /// Second, since `src`'s address is unchanged, it still satisfies its
@@ -118,7 +117,7 @@ use crate::{pointer::invariant::*, FromBytes, Immutable, IntoBytes, Unalign};
 ///   `Src`s. Thus, any value written via `src` is guaranteed to be a `DV`-valid
 ///   `Dst`.
 pub unsafe trait TryTransmuteFromPtr<Src: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R>:
-    SizeEq<Src>
+    SizeCompat<Src>
 {
 }
 
@@ -152,7 +151,7 @@ where
     SV: Validity,
     DV: Validity,
     Src: TransmuteFrom<Dst, DV, SV> + ?Sized,
-    Dst: MutationCompatible<Src, A, SV, DV, R> + SizeEq<Src> + ?Sized,
+    Dst: MutationCompatible<Src, A, SV, DV, R> + SizeCompat<Src> + ?Sized,
 {
 }
 
@@ -168,7 +167,7 @@ where
     SV: Validity,
     DV: Validity,
     Src: Immutable + ?Sized,
-    Dst: Immutable + SizeEq<Src> + ?Sized,
+    Dst: Immutable + SizeCompat<Src> + ?Sized,
 {
 }
 
@@ -274,27 +273,61 @@ where
 ///
 /// # Safety
 ///
+/// If `Src` is an inhabited type, then `Dst` must also be an inhabited type.
+///
+/// ## By-value transmutation
+///
+/// If `Src: Sized` and `Self: Sized`, then it must be sound to transmute an
+/// `SV`-valid `Src` into a `DV`-valid `Dst` by value. If either `Src: !Sized`
+/// or `Self: !Sized`, then this condition does not need to hold.
+///
+/// ## By-reference transmutation
+///
+/// For all [valid sizes] of `Src`, `ssize`, the following must hold:
+///
+/// Let `dsize` be the smallest valid size of `Dst` such that `dsize >=
+/// ssize`.\* For all `DV`-valid values of `Dst` with size `dsize`, `dst`, and
+/// for all `SV`-valid values of `Src` with size `ssize`, `src`, let `dst'` be
+/// constructed by concatenating `src` with the trailing `dsize - ssize` bytes
+/// of `dst`. It must be the case that `dst'` is a `DV`-valid `Dst`.
+///
+/// Now, instead let `dsize` be the largest valid size of `Dst` such that `dsize
+/// <= ssize`.\* For all `SV`-valid values of `Src` with size `ssize`, `src`, it
+/// must be the case that the leading `dsize` bytes of `src` constitute a
+/// `DV`-valid `Dst`.
+///
+/// \* *If, for all values of `ssize`, no such `dsize` exists, then this
+/// condition is trivially satisfied.*
+///
+/// [valid sizes]: crate::KnownLayout#what-is-a-valid-size
+///
+/// TODO: Maybe describe simpler cases which are sufficient to satisfy this
+/// general requirement (e.g., two sized types of equal size) and prove that
+/// satisfying those preconditions is sufficient to satisfy this invariant.
+///
+/// ## OLD TEXT
+///
 /// The set of bit patterns allowed to appear in the referent of a `Ptr<Src, (_,
 /// _, SV)>` must be a subset of the set allowed to appear in the referent of a
 /// `Ptr<Self, (_, _, DV)>`.
-pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV>: SizeEq<Src> {}
+pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV> {} //: SizeCompat<Src> {}
 
 /// # Safety
 ///
-/// `T` and `Self` must have the same vtable kind (`Sized`, slice DST, `dyn`,
-/// etc) and have the same size. In particular:
-/// - If `T: Sized` and `Self: Sized`, then their sizes must be equal
-/// - If `T: ?Sized` and `Self: ?Sized`, then it must be the case that, given
-///   any `t: *mut T`, `t as *mut Self` produces a pointer which addresses the
-///   same number of bytes as `t`.
-pub unsafe trait SizeEq<T: ?Sized> {
+/// Implementations of `cast_from_raw` must satisfy that method's safety
+/// post-condition.
+pub unsafe trait SizeCompat<T: ?Sized> {
+    /// # Safety
+    ///
+    /// Given `t: NonNull<T>`, `let s = Self::cast_from_raw(t)` produces a
+    /// pointer with the same address, referent size, and provenance as `t`.
     fn cast_from_raw(t: NonNull<T>) -> NonNull<Self>;
 }
 
 // SAFETY: `T` trivially has the same size and vtable kind as `T`, and since
 // pointer `*mut T -> *mut T` pointer casts are no-ops, this cast trivially
 // preserves referent size (when `T: ?Sized`).
-unsafe impl<T: ?Sized> SizeEq<T> for T {
+unsafe impl<T: ?Sized> SizeCompat<T> for T {
     fn cast_from_raw(t: NonNull<T>) -> NonNull<T> {
         t
     }
@@ -306,7 +339,8 @@ unsafe impl<T: ?Sized> SizeEq<T> for T {
 unsafe impl<Src, Dst> TransmuteFrom<Src, Valid, Initialized> for Dst
 where
     Src: IntoBytes + ?Sized,
-    Dst: SizeEq<Src> + ?Sized,
+    Dst: ?Sized,
+    // Dst: SizeCompat<Src> + ?Sized,
 {
 }
 
@@ -316,7 +350,7 @@ where
 unsafe impl<Src, Dst> TransmuteFrom<Src, Initialized, Valid> for Dst
 where
     Src: ?Sized,
-    Dst: FromBytes + SizeEq<Src> + ?Sized,
+    Dst: FromBytes + ?Sized, // SizeCompat<Src> + ?Sized,
 {
 }
 
@@ -329,7 +363,7 @@ where
 unsafe impl<Src, Dst> TransmuteFrom<Src, Initialized, Initialized> for Dst
 where
     Src: ?Sized,
-    Dst: SizeEq<Src> + ?Sized,
+    Dst: ?Sized, // SizeCompat<Src> + ?Sized,
 {
 }
 
@@ -342,7 +376,7 @@ where
 unsafe impl<Src, Dst, V> TransmuteFrom<Src, V, Uninit> for Dst
 where
     Src: ?Sized,
-    Dst: SizeEq<Src> + ?Sized,
+    Dst: ?Sized, //SizeCompat<Src> + ?Sized,
     V: Validity,
 {
 }
@@ -449,20 +483,21 @@ impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
 // https://doc.rust-lang.org/1.85.0/core/mem/union.MaybeUninit.html
 unsafe impl<T> TransmuteFrom<T, Uninit, Valid> for MaybeUninit<T> {}
 
-// SAFETY: `MaybeUninit<T>` has the same size as `T` [1].
+// SAFETY: `MaybeUninit<T>` has the same size as `T` [1]. Thus, a pointer cast
+// preserves address and referent size.
 //
 // [1] Per https://doc.rust-lang.org/1.81.0/std/mem/union.MaybeUninit.html#layout-1:
 //
 //   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and ABI as
 //   `T`
-unsafe impl<T> SizeEq<T> for MaybeUninit<T> {
+unsafe impl<T> SizeCompat<T> for MaybeUninit<T> {
     fn cast_from_raw(t: NonNull<T>) -> NonNull<MaybeUninit<T>> {
         cast!(t)
     }
 }
 
 // SAFETY: See previous safety comment.
-unsafe impl<T> SizeEq<MaybeUninit<T>> for T {
+unsafe impl<T> SizeCompat<MaybeUninit<T>> for T {
     fn cast_from_raw(t: NonNull<MaybeUninit<T>>) -> NonNull<T> {
         cast!(t)
     }
