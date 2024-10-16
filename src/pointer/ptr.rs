@@ -16,7 +16,7 @@ use crate::{
     pointer::{
         inner::PtrInner,
         invariant::*,
-        transmute::{MutationCompatible, SizeEq, TransmuteFromPtr},
+        transmute::{MutationCompatible, SizeCompat, TransmuteFromPtr},
     },
     AlignmentError, CastError, CastType, KnownLayout, SizeError, TryFromBytes, ValidityError,
 };
@@ -388,10 +388,10 @@ mod _conversions {
         pub(crate) fn transmute<U, V, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
             V: Validity,
-            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + SizeEq<T> + ?Sized,
+            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + SizeCompat<T> + ?Sized,
         {
             // SAFETY:
-            // - `SizeEq::cast_from_raw` promises to preserve address,
+            // - `SizeCompat::cast_from_raw` promises to preserve address,
             //   provenance, and the number of bytes in the referent
             // - If aliasing is `Shared`, then by `U: TransmuteFromPtr<T>`, at
             //   least one of the following holds:
@@ -402,7 +402,7 @@ mod _conversions {
             //     operate on these references simultaneously
             // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
             //   sound to perform this transmute.
-            unsafe { self.transmute_unchecked(|ptr| SizeEq::cast_from_raw(ptr).as_non_null()) }
+            unsafe { self.transmute_unchecked(|ptr| SizeCompat::cast_from_raw(ptr).as_non_null()) }
         }
 
         #[doc(hidden)]

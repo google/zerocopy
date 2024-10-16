@@ -31,7 +31,7 @@ use core::ptr::{self, NonNull};
 use crate::{
     pointer::{
         invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
-        BecauseInvariantsEq, InvariantsEq, SizeEq, TryTransmuteFromPtr,
+        BecauseInvariantsEq, InvariantsEq, SizeCompat, TryTransmuteFromPtr,
     },
     FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, Ptr, TryFromBytes, ValidityError,
 };
@@ -795,7 +795,7 @@ where
 
         // SAFETY: We only use `S` as `S<Src>` and `D` as `D<Dst>`.
         unsafe {
-            unsafe_with_size_eq!(<S<Src>, D<Dst>> {
+            unsafe_with_size_compat!(<S<Src>, D<Dst>> {
                 let ptr = Ptr::from_ref(self.0)
                     .transmute::<S<Src>, invariant::Valid, BecauseImmutable>()
                     .recall_validity::<invariant::Initialized, _>()
@@ -835,7 +835,7 @@ where
 
         // SAFETY: We only use `S` as `S<Src>` and `D` as `D<Dst>`.
         unsafe {
-            unsafe_with_size_eq!(<S<Src>, D<Dst>> {
+            unsafe_with_size_compat!(<S<Src>, D<Dst>> {
                 let ptr = Ptr::from_mut(self.0)
                     .transmute::<S<Src>, invariant::Valid, _>()
                     .recall_validity::<invariant::Initialized, (_, (_, _))>()
