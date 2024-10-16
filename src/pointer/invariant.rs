@@ -198,25 +198,6 @@ unsafe impl<ST: ?Sized, DT: ?Sized> CastableFrom<ST, Uninit, Uninit> for DT {}
 // SAFETY: `SV = DV = Initialized`.
 unsafe impl<ST: ?Sized, DT: ?Sized> CastableFrom<ST, Initialized, Initialized> for DT {}
 
-/// [`Ptr`](crate::Ptr) referents that permit unsynchronized read operations.
-///
-/// `T: Read<A, R>` implies that a pointer to `T` with aliasing `A` permits
-/// unsynchronized read operations. This can be because `A` is [`Exclusive`] or
-/// because `T` does not permit interior mutation.
-///
-/// # Safety
-///
-/// `T: Read<A, R>` if either of the following conditions holds:
-/// - `A` is [`Exclusive`]
-/// - `T` implements [`Immutable`](crate::Immutable)
-///
-/// As a consequence, if `T: Read<A, R>`, then any `Ptr<T, (A, ...)>` is
-/// permitted to perform unsynchronized reads from its referent.
-pub trait Read<A: Aliasing, R> {}
-
-impl<A: Aliasing, T: ?Sized + crate::Immutable> Read<A, BecauseImmutable> for T {}
-impl<T: ?Sized> Read<Exclusive, BecauseExclusive> for T {}
-
 /// Unsynchronized reads are permitted because only one live [`Ptr`](crate::Ptr)
 /// or reference may exist to the referent bytes at a time.
 #[derive(Copy, Clone, Debug)]

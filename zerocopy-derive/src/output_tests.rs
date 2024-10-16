@@ -800,7 +800,7 @@ fn test_try_from_bytes_enum() {
                             candidate.reborrow().cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| { p.cast_sized::<___ZerocopyTagPrimitive>() })
                         };
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                        tag_ptr.recall_validity::<_, (_, (_, _))>().read_unaligned::<::zerocopy::BecauseImmutable>()
+                        tag_ptr.recall_validity().read_unaligned::<::zerocopy::BecauseImmutable>()
                     };
                     let raw_enum = unsafe {
                         candidate.cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| { p.cast_sized::<___ZerocopyRawEnum<'a, N, X, Y>>() })
@@ -1141,7 +1141,7 @@ fn test_try_from_bytes_enum() {
                             candidate.reborrow().cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| { p.cast_sized::<___ZerocopyTagPrimitive> ()})
                         };
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                        tag_ptr.recall_validity::<_, (_, (_, _))>().read_unaligned::<::zerocopy::BecauseImmutable>()
+                        tag_ptr.recall_validity().read_unaligned::<::zerocopy::BecauseImmutable>()
                     };
                     let raw_enum = unsafe {
                         candidate.cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| { p.cast_sized::<___ZerocopyRawEnum<'a, N, X, Y>> ()})
@@ -1482,7 +1482,7 @@ fn test_try_from_bytes_enum() {
                             candidate.reborrow().cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| { p.cast_sized::<___ZerocopyTagPrimitive> ()})
                         };
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                        tag_ptr.recall_validity::<_, (_, (_, _))>().read_unaligned::<::zerocopy::BecauseImmutable>()
+                        tag_ptr.recall_validity().read_unaligned::<::zerocopy::BecauseImmutable>()
                     };
                     let raw_enum = unsafe {
                         candidate.cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| { p.cast_sized::<___ZerocopyRawEnum<'a, N, X, Y>> ()})
