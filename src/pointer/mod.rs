@@ -18,7 +18,7 @@ mod transmute;
 pub use {inner::PtrInner, transmute::*};
 #[doc(hidden)]
 pub use {
-    invariant::{BecauseExclusive, BecauseImmutable, Read},
+    invariant::{BecauseExclusive, Read},
     ptr::Ptr,
 };
 
@@ -30,11 +30,11 @@ pub type Maybe<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Unali
     Ptr<'a, T, (Aliasing, Alignment, invariant::Initialized)>;
 
 /// Checks if the referent is zeroed.
-pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
+pub(crate) fn is_zeroed<T, I>(mut ptr: Ptr<'_, T, I>) -> bool
 where
     T: crate::Immutable + crate::KnownLayout,
     I: invariant::Invariants<Validity = invariant::Initialized>,
     I::Aliasing: invariant::Reference,
 {
-    ptr.as_bytes::<BecauseImmutable>().as_ref().iter().all(|&byte| byte == 0)
+    ptr.reborrow().into_shared().as_bytes().as_ref().iter().all(|&byte| byte == 0)
 }
