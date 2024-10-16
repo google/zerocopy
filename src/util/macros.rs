@@ -250,7 +250,7 @@ macro_rules! impl_for_transmute_from {
         TryFromBytes for $ty:ty [<$repr:ty>]
     ) => {
         #[inline]
-        fn is_bit_valid<A: crate::pointer::invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
+        fn is_bit_valid<A: crate::pointer::invariant::Reference>(candidate: $crate::Maybe<'_, Self, A>) -> bool {
             // SAFETY: This macro ensures that `$repr` and `Self` have the same
             // size and bit validity. Thus, a bit-valid instance of `$repr` is
             // also a bit-valid instance of `Self`.
@@ -664,14 +664,15 @@ macro_rules! static_assert {
             const ASSERT: bool;
         }
 
-        impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?,)*> StaticAssert for ($($tyvar,)*) {
+        // NOTE: We use `PhantomData` so we can support unsized types.
+        impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?,)*> StaticAssert for ($(core::marker::PhantomData<$tyvar>,)*) {
             const ASSERT: bool = {
                 const_assert!($condition $(, $args)*);
                 $condition
             };
         }
 
-        const_assert!(<($($tyvar,)*) as StaticAssert>::ASSERT);
+        const_assert!(<($(core::marker::PhantomData<$tyvar>,)*) as StaticAssert>::ASSERT);
     }};
 }
 
