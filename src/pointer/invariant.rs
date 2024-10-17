@@ -210,27 +210,27 @@ impl Validity for Valid {
 ///
 /// As a consequence, if `T: Read<A, R>`, then any `Ptr<T, (A, ...)>` is
 /// permitted to perform unsynchronized reads from its referent.
-pub trait Read<A: Aliasing, R: ReadReason> {}
+#[cfg_attr(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS, marker)]
+pub unsafe trait Read<A: Aliasing, R> {}
 
-impl<A: Reference, T: ?Sized + crate::Immutable> Read<A, BecauseImmutable> for T {}
-impl<T: ?Sized> Read<Exclusive, BecauseExclusive> for T {}
+define_because!(
+    /// Unsynchronized reads are permitted because only one live
+    /// [`Ptr`](crate::Ptr) or reference may exist to the referent bytes at a
+    /// time.
+    #[doc(hidden)]
+    pub BecauseExclusive
+);
+// SAFETY: The aliasing parameter is `Exclusive`.
+unsafe impl<T: ?Sized> Read<Exclusive, BecauseExclusive> for T {}
 
-/// Used to disambiguate [`Read`] impls.
-pub trait ReadReason: Sealed {}
-
-/// Unsynchronized reads are permitted because only one live [`Ptr`](crate::Ptr)
-/// or reference may exist to the referent bytes at a time.
-#[derive(Copy, Clone, Debug)]
-#[doc(hidden)]
-pub enum BecauseExclusive {}
-impl ReadReason for BecauseExclusive {}
-
-/// Unsynchronized reads are permitted because no live [`Ptr`](crate::Ptr)s or
-/// references permit interior mutation.
-#[derive(Copy, Clone, Debug)]
-#[doc(hidden)]
-pub enum BecauseImmutable {}
-impl ReadReason for BecauseImmutable {}
+define_because!(
+    /// Unsynchronized reads are permitted because no live [`Ptr`](crate::Ptr)s
+    /// or references permit interior mutation.
+    #[doc(hidden)]
+    pub BecauseImmutable
+);
+// SAFETY: `T: Immutable`.
+unsafe impl<A: Reference, T: ?Sized + crate::Immutable> Read<A, BecauseImmutable> for T {}
 
 use sealed::Sealed;
 mod sealed {
@@ -251,9 +251,6 @@ mod sealed {
     impl Sealed for Valid {}
 
     impl<A: Sealed, AA: Sealed, V: Sealed> Sealed for (A, AA, V) {}
-
-    impl Sealed for BecauseImmutable {}
-    impl Sealed for BecauseExclusive {}
 }
 
 pub use mapping::*;
