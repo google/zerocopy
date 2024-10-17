@@ -739,14 +739,15 @@ macro_rules! static_assert {
             const ASSERT: bool;
         }
 
-        impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?,)*> StaticAssert for ($($tyvar,)*) {
+        // NOTE: We use `PhantomData` so we can support unsized types.
+        impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?,)*> StaticAssert for ($(core::marker::PhantomData<$tyvar>,)*) {
             const ASSERT: bool = {
                 const_assert!($condition $(, $args)*);
                 $condition
             };
         }
 
-        const_assert!(<($($tyvar,)*) as StaticAssert>::ASSERT);
+        const_assert!(<($(core::marker::PhantomData<$tyvar>,)*) as StaticAssert>::ASSERT);
     }};
 }
 

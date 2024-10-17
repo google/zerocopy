@@ -443,6 +443,38 @@ macro_rules! assert_size_eq {
     }};
 }
 
+// TODO: Document that this MUST be called from a live codepath in order for its
+// guarantees to hold.
+#[doc(hidden)]
+#[inline(always)]
+#[cfg(zerocopy_generic_bounds_in_const_fn)]
+pub const fn static_assert_transmute_ref<T, U>(_t: &T) -> Option<&U>
+where
+    T: ?Sized + crate::KnownLayout,
+    U: ?Sized + crate::KnownLayout,
+{
+    use crate::{layout::*, KnownLayout};
+    static_assert!(T: ?Sized + KnownLayout, U: ?Sized + KnownLayout => {
+        let t = T::LAYOUT;
+        let u = U::LAYOUT;
+        t.align.get() >= u.align.get() && match (t.size_info, u.size_info) {
+            (SizeInfo::Sized { size: t }, SizeInfo::Sized { size: u }) => t == u,
+            (
+                SizeInfo::SliceDst(TrailingSliceLayout { offset: t_offset, elem_size: t_elem_size }),
+                SizeInfo::SliceDst(TrailingSliceLayout { offset: u_offset, elem_size: u_elem_size })
+            ) => t_offset == u_offset && t_elem_size == u_elem_size,
+            _ => false,
+        }
+    });
+
+    None
+}
+
+// #[cfg(not(zerocopy_generic_bounds_in_const_fn))]
+// macro_rules! assert_transmute_ref_layouts {
+//     ($e:ident) => {};
+// }
+
 /// Transmutes a reference of one type to a reference of another type.
 ///
 /// # Safety
@@ -487,7 +519,6 @@ pub const unsafe fn transmute_ref<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
 /// - `Dst: FromBytes + IntoBytes`
 /// - `size_of::<Src>() == size_of::<Dst>()`
 /// - `align_of::<Src>() >= align_of::<Dst>()`
-// TODO(#686): Consider removing the `Immutable` requirement.
 #[inline(always)]
 pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
     src: &'src mut Src,
