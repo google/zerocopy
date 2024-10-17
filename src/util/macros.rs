@@ -655,3 +655,14 @@ macro_rules! static_assert_dst_is_not_zst {
         }, "cannot call this method on a dynamically-sized type whose trailing slice element is zero-sized");
     }}
 }
+
+macro_rules! define_because {
+    ($(#[$attr:meta])* $vis:vis $name:ident) => {
+        #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
+        $(#[$attr])*
+        $vis type $name = ();
+        #[cfg(not(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS))]
+        $(#[$attr])*
+        $vis enum $name {}
+    };
+}
