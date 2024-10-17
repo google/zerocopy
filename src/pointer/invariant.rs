@@ -13,8 +13,6 @@
 //! Invariants are encoded as ([`Aliasing`], [`Alignment`], [`Validity`])
 //! triples implementing the [`Invariants`] trait.
 
-use super::*;
-
 /// The invariants of a [`Ptr`][super::Ptr].
 pub trait Invariants: Sealed {
     type Aliasing: Aliasing;
@@ -82,6 +80,15 @@ pub trait Aliasing:
     /// Aliasing>::Variance<'a, T>` to inherit this variance.
     #[doc(hidden)]
     type Variance<'a, T: 'a + ?Sized>;
+
+    // #[doc(hidden)]
+    // type Applied<'a, T: 'a + ?Sized>;
+
+    // #[doc(hidden)]
+    // fn into_ptr<'a, T: 'a + ?Sized>(ptr: Self::Applied<'a, T>) -> PtrInner<'a, T>;
+
+    // #[doc(hidden)]
+    // unsafe fn from_ptr<'a, T: 'a + ?Sized>(ptr: PtrInner<'a, T>) -> Self::Applied<'a, T>;
 }
 
 #[doc(hidden)]
@@ -136,14 +143,7 @@ impl<
 ///
 /// Given `A: Reference`, callers may assume that either `A = Shared` or `A =
 /// Exclusive`.
-pub trait Reference: Aliasing + Sealed {
-    fn with<'a, T, I, S, E, O>(ptr: Ptr<'a, T, I>, shared: S, exclusive: E) -> O
-    where
-        T: 'a + ?Sized,
-        I: Invariants<Aliasing = Self>,
-        S: FnOnce(Ptr<'a, T, I::WithAliasing<Shared>>) -> O,
-        E: FnOnce(Ptr<'a, T, I::WithAliasing<Exclusive>>) -> O;
-}
+pub trait Reference: ReadFoo + Sealed {}
 
 /// It is unknown whether any invariant holds.
 pub enum Unknown {}
@@ -189,18 +189,7 @@ impl Aliasing for Shared {
     const IS_EXCLUSIVE: bool = false;
     type Variance<'a, T: 'a + ?Sized> = &'a T;
 }
-impl Reference for Shared {
-    #[inline(always)]
-    fn with<'a, T, I, S, E, O>(ptr: Ptr<'a, T, I>, shared: S, _exclusive: E) -> O
-    where
-        T: 'a + ?Sized,
-        I: Invariants<Aliasing = Shared>,
-        S: FnOnce(Ptr<'a, T, I::WithAliasing<Shared>>) -> O,
-        E: FnOnce(Ptr<'a, T, I::WithAliasing<Exclusive>>) -> O,
-    {
-        shared(ptr.unify_invariants())
-    }
-}
+impl Reference for Shared {}
 
 /// The `Ptr<'a, T>` adheres to the aliasing rules of a `&'a mut T`.
 ///
@@ -215,16 +204,41 @@ impl Aliasing for Exclusive {
     const IS_EXCLUSIVE: bool = true;
     type Variance<'a, T: 'a + ?Sized> = &'a mut T;
 }
-impl Reference for Exclusive {
-    #[inline(always)]
-    fn with<'a, T, I, S, E, O>(ptr: Ptr<'a, T, I>, _shared: S, exclusive: E) -> O
-    where
-        T: 'a + ?Sized,
-        I: Invariants<Aliasing = Exclusive>,
-        S: FnOnce(Ptr<'a, T, I::WithAliasing<Shared>>) -> O,
-        E: FnOnce(Ptr<'a, T, I::WithAliasing<Exclusive>>) -> O,
-    {
-        exclusive(ptr.unify_invariants())
+impl Reference for Exclusive {}
+
+#[cfg(feature = "alloc")]
+pub use _alloc::*;
+#[cfg(feature = "alloc")]
+mod _alloc {
+    use alloc::boxed::Box as Bx;
+
+    use super::*;
+
+    pub enum Box {}
+    impl AliasingInner for Box {
+        // type MappedTo<M: AliasingMapping> = M::FromBox;
+    }
+    impl Aliasing for Box {
+        const IS_EXCLUSIVE: bool = true;
+        type Variance<'a, T: 'a + ?Sized> = Bx<T>;
+    }
+}
+
+#[cfg(feature = "std")]
+pub use _std::*;
+#[cfg(feature = "std")]
+mod _std {
+    use std::sync::Arc as Ac;
+
+    use super::*;
+
+    pub enum Arc {}
+    impl AliasingInner for Arc {
+        // type MappedTo<M: AliasingMapping> = M::FromArc;
+    }
+    impl Aliasing for Arc {
+        const IS_EXCLUSIVE: bool = true;
+        type Variance<'a, T: 'a + ?Sized> = Ac<T>;
     }
 }
 
@@ -279,6 +293,27 @@ impl ValidityInner for Valid {
     type MappedTo<M: ValidityMapping> = M::FromValid;
 }
 
+// Aliasing modes that permit reading at all (ie, everything but Inaccessible).
+pub trait ReadFoo: Aliasing {}
+impl ReadFoo for Shared {}
+impl ReadFoo for Exclusive {}
+#[cfg(feature = "alloc")]
+impl ReadFoo for Box {}
+#[cfg(feature = "std")]
+impl ReadFoo for Arc {}
+
+// Shared, Arc, etc
+pub trait SharedFoo: Aliasing {}
+impl SharedFoo for Shared {}
+#[cfg(feature = "std")]
+impl SharedFoo for Arc {}
+
+// Exclusive, Box, etc
+pub trait ExclusiveFoo: Aliasing {}
+impl ExclusiveFoo for Exclusive {}
+#[cfg(feature = "alloc")]
+impl ExclusiveFoo for Box {}
+
 /// [`Ptr`](crate::Ptr) referents that permit unsynchronized read operations.
 ///
 /// `T: Read<A, R>` implies that a pointer to `T` with aliasing `A` permits
@@ -303,8 +338,7 @@ define_because!(
     #[doc(hidden)]
     pub BecauseExclusive
 );
-// SAFETY: The aliasing parameter is `Exclusive`.
-unsafe impl<T: ?Sized> Read<Exclusive, BecauseExclusive> for T {}
+unsafe impl<A: ExclusiveFoo, T: ?Sized> Read<A, BecauseExclusive> for T {}
 
 define_because!(
     /// Unsynchronized reads are permitted because no live [`Ptr`](crate::Ptr)s
@@ -313,7 +347,7 @@ define_because!(
     pub BecauseImmutable
 );
 // SAFETY: `T: Immutable`.
-unsafe impl<A: Reference, T: ?Sized + crate::Immutable> Read<A, BecauseImmutable> for T {}
+unsafe impl<A: ReadFoo, T: ?Sized + crate::Immutable> Read<A, BecauseImmutable> for T {}
 
 use sealed::Sealed;
 mod sealed {
@@ -326,6 +360,10 @@ mod sealed {
     // impl Sealed for Inaccessible {}
     impl Sealed for Shared {}
     impl Sealed for Exclusive {}
+    #[cfg(feature = "alloc")]
+    impl Sealed for Box {}
+    #[cfg(feature = "std")]
+    impl Sealed for Arc {}
 
     impl Sealed for Aligned {}
 
@@ -386,6 +424,10 @@ mod mapping {
         // type FromInaccessible: Aliasing;
         type FromShared: Aliasing;
         type FromExclusive: Aliasing;
+        #[cfg(feature = "alloc")]
+        type FromBox: Aliasing;
+        #[cfg(feature = "std")]
+        type FromArc: Aliasing;
     }
 
     /// A mapping from one [`Alignment`] type to another.
@@ -454,38 +496,62 @@ mod mapping {
     //     // type FromInaccessible = FromInaccessible;
     //     type FromShared = FromShared;
     //     type FromExclusive = FromExclusive;
+    //     #[cfg(feature = "alloc")]
+    //     type FromBox = Inaccessible;
+    //     #[cfg(feature = "std")]
+    //     type FromArc = Inaccessible;
     // }
 
     // impl AliasingMapping for Inaccessible {
     //     type FromInaccessible = Inaccessible;
     //     type FromShared = Inaccessible;
     //     type FromExclusive = Inaccessible;
+    //     #[cfg(feature = "alloc")]
+    //     type FromBox = Inaccessible;
+    //     #[cfg(feature = "std")]
+    //     type FromArc = Inaccessible;
     // }
 
     // pub enum UnsafeCellMismatch {}
 
     // impl AliasingMapping for UnsafeCellMismatch {
-    //     // type FromInaccessible = Inaccessible;
+    //     type FromInaccessible = Inaccessible;
     //     type FromShared = Inaccessible;
     //     type FromExclusive = Exclusive;
+    //     #[cfg(feature = "alloc")]
+    //     type FromBox = Box;
+    //     #[cfg(feature = "std")]
+    //     type FromArc = Inaccessible;
     // }
 
     // impl AliasingMapping for Preserved {
     //     // type FromInaccessible = Inaccessible;
     //     type FromShared = Shared;
     //     type FromExclusive = Exclusive;
+    //     #[cfg(feature = "alloc")]
+    //     type FromBox = Box;
+    //     #[cfg(feature = "std")]
+    //     type FromArc = Arc;
     // }
 
     // impl AliasingMapping for Shared {
     //     // type FromInaccessible = Shared;
     //     type FromShared = Shared;
     //     type FromExclusive = Shared;
+    //     #[cfg(feature = "alloc")]
+    //     type FromBox = Shared;
+    //     #[cfg(feature = "std")]
+    //     type FromArc = Shared;
     // }
 
     // impl AliasingMapping for Exclusive {
     //     // type FromInaccessible = Exclusive;
     //     type FromShared = Exclusive;
     //     type FromExclusive = Exclusive;
+    //     #[cfg(feature = "alloc")]
+    //     type FromBox = Exclusive;
+    //     #[cfg(feature = "std")]
+    //     type FromArc = Exclusive;
     // }
 
     impl<FromUnknown: Alignment, FromAligned: Alignment> AlignmentMapping
