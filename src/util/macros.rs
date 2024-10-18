@@ -190,160 +190,156 @@ macro_rules! unsafe_impl {
     };
 }
 
-/// Implements `$trait` for a type which implements `TransparentWrapper`.
+/// Implements `$trait` for a type which is `TransmuteFrom<$repr>` where `$repr:
+/// $trait`.
 ///
 /// Calling this macro is safe; the internals of the macro emit appropriate
 /// trait bounds which ensure that the given impl is sound.
-macro_rules! impl_for_transparent_wrapper {
+macro_rules! impl_for_transmute_from {
     (
         $(#[$attr:meta])*
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?)?
-        => $trait:ident for $ty:ty $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
+        => $trait:ident for $ty:ty[$repr:ty] $(; |$candidate:ident $(: MaybeAligned<$ref_repr:ty>)? $(: Maybe<$ptr_repr:ty>)?| $is_bit_valid:expr)?
     ) => {
         $(#[$attr])*
         #[allow(non_local_definitions)]
 
         // This block implements `$trait` for `$ty` under the following
         // conditions:
-        // - `$ty: TransparentWrapper`
-        // - `$ty::Inner: $trait`
-        // - For some `Xxx`, `$ty::XxxVariance = Covariant` (`Xxx` is determined
-        //   by the `@define_is_transparent_wrapper` macro arms). This bound
-        //   ensures that some layout property is the same between `$ty` and
-        //   `$ty::Inner`. Which layout property this is depends on the trait
-        //   being implemented (for example, `FromBytes` is not concerned with
-        //   alignment, but is concerned with bit validity).
+        // - `$ty: TransmuteFrom<$repr>`
+        // - `$repr: $trait`
+        // - For some invariant `Xxx`, `$ty::Mapping: Mapping<Xxx = Preserved>`
+        //   (`Xxx` is determined by the `@define_is_transmute_from` macro
+        //   arms). This bound ensures that some layout property is the same
+        //   between `$ty` and `$repr`. Which layout property this is depends on
+        //   the trait being implemented (for example, `FromBytes` is not
+        //   concerned with alignment, but is concerned with bit validity).
         //
         // In other words, `$ty` is guaranteed to soundly implement `$trait`
-        // because some property of its layout is the same as `$ty::Inner`,
-        // which implements `$trait`. Most of the complexity in this macro is to
+        // because some property of its layout is the same as `$repr`, which
+        // implements `$trait`. Most of the complexity in this macro is to
         // ensure that the above-mentioned conditions are actually met, and that
-        // the proper variance (ie, the proper layout property) is chosen.
+        // the proper invariant (ie, the proper layout property) is chosen.
 
         // SAFETY:
-        // - `is_transparent_wrapper<I, W>` requires:
-        //   - `W: TransparentWrapper<I>`
-        //   - `W::Inner: $trait`
-        // - `f` is generic over `I: Invariants`, and in its body, calls
-        //   `is_transparent_wrapper::<I, $ty>()`. Thus, this code will only
-        //   compile if, for all `I: Invariants`:
-        //   - `$ty: TransparentWrapper<I>`
-        //   - `$ty::Inner: $trait`
+        // - `is_transmute_from<R, T>` requires:
+        //   - `R: $trait`
+        //   - `T: TransmuteFrom<R>`
+        //   - `T::Mapping: Mapping<$invariant = Preserved>`
+        // - `is_transmute_from<$repr, $ty>` is called in the body
         //
-        // These two facts - that `$ty: TransparentWrapper<I>` and that
-        // `$ty::Inner: $trait` - are the preconditions to the full safety
-        // proofs, which are completed below in the
-        // `@define_is_transparent_wrapper` macro arms. The safety proof is
+        // This enforces that `$repr: $trait`, `$ty: TransmuteFrom<$repr>`, and
+        // `$trait::Mapping: Mapping<$invariant = Preserved>`. `$invariant` is
+        // chosen below in the `@define_is_transmute_from` macro arms, which
+        // contain the full safety proofs. They use the facts in this safety
+        // comment as preconditions for their proofs. The safety proof is
         // slightly different for each trait.
         unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> $trait for $ty {
             #[allow(dead_code, clippy::missing_inline_in_public_items)]
             #[cfg_attr(coverage_nightly, coverage(off))]
             fn only_derive_is_allowed_to_implement_this_trait() {
-                use crate::pointer::{invariant::Invariants, transmute::*};
+                use crate::pointer::transmute::*;
 
-                impl_for_transparent_wrapper!(@define_is_transparent_wrapper $trait);
-
-                #[cfg_attr(coverage_nightly, coverage(off))]
-                const fn f<I: Invariants, $($tyvar $(: $(? $optbound +)* $($bound +)*)?)?>() {
-                    is_transparent_wrapper::<I, $ty>();
-                }
+                impl_for_transmute_from!(@define_is_transmute_from $trait);
+                is_transmute_from::<$repr, $ty>();
             }
 
-            impl_for_transparent_wrapper!(
+            impl_for_transmute_from!(
                 @is_bit_valid
                 $(<$tyvar $(: $(? $optbound +)* $($bound +)*)?>)?
-                $trait for $ty
+                $trait for $ty[$repr]
             );
         }
     };
-    (@define_is_transparent_wrapper Immutable) => {
-        // SAFETY: `W: TransparentWrapper<UnsafeCellVariance = Covariant>`
-        // requires that `W` has `UnsafeCell`s at the same byte offsets as
-        // `W::Inner`. `W::Inner: Immutable` implies that `W::Inner` does not
-        // contain any `UnsafeCell`s, and so `W` does not contain any
-        // `UnsafeCell`s. Since `W = $ty`, `$ty` can soundly implement
-        // `Immutable`.
-        impl_for_transparent_wrapper!(@define_is_transparent_wrapper Immutable, UnsafeCellVariance)
-    };
-    (@define_is_transparent_wrapper FromZeros) => {
-        // SAFETY: `W: TransparentWrapper<ValidityVariance = Covariant>`
-        // requires that `W` has the same bit validity as `W::Inner`. `W::Inner:
-        // FromZeros` implies that the all-zeros bit pattern is a bit-valid
-        // instance of `W::Inner`, and so the all-zeros bit pattern is a
-        // bit-valid instance of `W`. Since `W = $ty`, `$ty` can soundly
-        // implement `FromZeros`.
-        impl_for_transparent_wrapper!(@define_is_transparent_wrapper FromZeros, ValidityVariance)
-    };
-    (@define_is_transparent_wrapper FromBytes) => {
-        // SAFETY: `W: TransparentWrapper<ValidityVariance = Covariant>`
-        // requires that `W` has the same bit validity as `W::Inner`. `W::Inner:
-        // FromBytes` implies that any initialized bit pattern is a bit-valid
-        // instance of `W::Inner`, and so any initialized bit pattern is a
-        // bit-valid instance of `W`. Since `W = $ty`, `$ty` can soundly
-        // implement `FromBytes`.
-        impl_for_transparent_wrapper!(@define_is_transparent_wrapper FromBytes, ValidityVariance)
-    };
-    (@define_is_transparent_wrapper IntoBytes) => {
-        // SAFETY: `W: TransparentWrapper<ValidityVariance = Covariant>`
-        // requires that `W` has the same bit validity as `W::Inner`. `W::Inner:
-        // IntoBytes` implies that no bit-valid instance of `W::Inner` contains
-        // uninitialized bytes, and so no bit-valid instance of `W` contains
-        // uninitialized bytes. Since `W = $ty`, `$ty` can soundly implement
-        // `IntoBytes`.
-        impl_for_transparent_wrapper!(@define_is_transparent_wrapper IntoBytes, ValidityVariance)
-    };
-    (@define_is_transparent_wrapper Unaligned) => {
-        // SAFETY: `W: TransparentWrapper<AlignmentVariance = Covariant>`
-        // requires that `W` has the same alignment as `W::Inner`. `W::Inner:
-        // Unaligned` implies `W::Inner`'s alignment is 1, and so `W`'s
-        // alignment is 1. Since `W = $ty`, `W` can soundly implement
-        // `Unaligned`.
-        impl_for_transparent_wrapper!(@define_is_transparent_wrapper Unaligned, AlignmentVariance)
-    };
-    (@define_is_transparent_wrapper TryFromBytes) => {
-        // SAFETY: `W: TransparentWrapper<ValidityVariance = Covariant>`
-        // requires that `W` has the same bit validity as `W::Inner`. `W::Inner:
-        // TryFromBytes` implies that `<W::Inner as
-        // TryFromBytes>::is_bit_valid(c)` only returns `true` if `c` references
-        // a bit-valid instance of `W::Inner`. Thus, `<W::Inner as
-        // TryFromBytes>::is_bit_valid(c)` only returns `true` if `c` references
-        // a bit-valid instance of `W`. Below, we implement `<W as
-        // TryFromBytes>::is_bit_valid` by deferring to `<W::Inner as
-        // TryFromBytes>::is_bit_valid`. Since `W = $ty`, it is sound for `$ty`
-        // to implement `TryFromBytes` with this implementation of
-        // `is_bit_valid`.
-        impl_for_transparent_wrapper!(@define_is_transparent_wrapper TryFromBytes, ValidityVariance)
-    };
-    (@define_is_transparent_wrapper $trait:ident, $variance:ident) => {
+    (@define_is_transmute_from Immutable) => {
+        // SAFETY: `T::Mapping: Mapping<Aliasing = Preserved>` ensures that `T`
+        // and `R` have `UnsafeCell`s at the same byte offsets. If this weren't
+        // the case, then it would be unsound to map `Shared` to `Shared` when
+        // transmuting from `R` to `T`. `R: Immutable` implies that `R` has no
+        // `UnsafeCell`s, and so `T` doesn't either. Since `T = $ty`, `$ty` can
+        // soundly implement `Immutable`.
         #[cfg_attr(coverage_nightly, coverage(off))]
-        const fn is_transparent_wrapper<I: Invariants, W: TransparentWrapper<I, $variance = Covariant> + ?Sized>()
+        const fn is_transmute_from<R, T>()
         where
-            W::Inner: $trait,
+            R: ?Sized + Immutable + UnsafeCellsAgree<T>,
+            T: TransmuteFrom<R> + UnsafeCellsAgree<R> +  ?Sized,
+        {}
+    };
+    (@define_is_transmute_from FromZeros) => {
+        // SAFETY: `T::Mapping: Mapping<Validity = Preserved>` requires that `T`
+        // has the same bit validity as `R`. `R: FromZeros` implies that the
+        // all-zeros bit pattern is a bit-valid instance of `R`, and so the
+        // all-zeros bit pattern is a bit-valid instance of `T`. Since `T =
+        // $ty`, `$ty` can soundly implement `FromZeros`.
+        impl_for_transmute_from!(@define_is_transmute_from FromZeros, ValidityMapping)
+    };
+    (@define_is_transmute_from FromBytes) => {
+        // SAFETY: `T::Mapping: Mapping<Validity = Preserved>` requires that `T`
+        // has the same bit validity as `R`. `R: FromBytes` implies that any
+        // initialized bit pattern is a bit-valid instance of `R`, and so the
+        // any initialized bit pattern is a bit-valid instance of `T`. Since `T
+        // = $ty`, `$ty` can soundly implement `FromBytes`.
+        impl_for_transmute_from!(@define_is_transmute_from FromBytes, ValidityMapping)
+    };
+    (@define_is_transmute_from IntoBytes) => {
+        // SAFETY: `T::Mapping: Mapping<Validity = Preserved>` requires that `T`
+        // has the same bit validity as `R`. `R: IntoBytes` implies that no
+        // bit-valid instance of `R` contains uninitialized bytes, and so no
+        // bit-valid instance of `T` does either. Since `T = $ty`, `$ty` can
+        // soundly implement `IntoBytes`.
+        impl_for_transmute_from!(@define_is_transmute_from IntoBytes, ValidityMapping)
+    };
+    (@define_is_transmute_from Unaligned) => {
+        // SAFETY: `T::Mapping: Mapping<Alignment = Preserved>` requires that
+        // `T` has the same alignment as `R`. `R: Unaligned` implies that
+        // `align_of::<R>() == 1`, and so `align_of::<T>() == 1`. Since `T =
+        // $ty`, `$ty` can soundly implement `Unaligned`.
+        impl_for_transmute_from!(@define_is_transmute_from Unaligned, AlignmentMapping)
+    };
+    (@define_is_transmute_from TryFromBytes) => {
+        // SAFETY: `T::Mapping: Mapping<Validity = Preserved>` requires that `T`
+        // has the same bit validity as `R`. `R: TryFromBytes` implies that `<R
+        // as TryFromBytes>::is_bit_valid(c)` only returns `true` if `c`
+        // references a bit-valid instance of `R`. Thus, `<R as
+        // TryFromBytes>::is_bit_valid(c)` only returns `true` if `c` references
+        // a bit-valid instance of `T`. Below, we implement `<T as
+        // TryFromBytes>::is_bit_valid` by deferring to `<R as
+        // TryFromBytes>::is_bit_valid`. Since `T = $ty`, it is sound for `$ty`
+        // to implement `TryFromBytes` with this `is_bit_valid` implementation.
+        impl_for_transmute_from!(@define_is_transmute_from TryFromBytes, ValidityMapping)
+    };
+    (@define_is_transmute_from $trait:ident, $invariant:ident) => {
+        #[cfg_attr(coverage_nightly, coverage(off))]
+        const fn is_transmute_from<R, T>()
+        where
+            R: ?Sized + $trait,
+            T: TransmuteFrom<R, $invariant = crate::pointer::invariant::Preserved> +  ?Sized,
         {}
     };
     (
         @is_bit_valid
         $(<$tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?>)?
-        TryFromBytes for $ty:ty
+        TryFromBytes for $ty:ty[$repr:ty]
     ) => {
-        // SAFETY: See safety comment in `(@define_is_transparent_wrapper
+        // SAFETY: See safety comment in `(@define_is_transmute_from
         // TryFromBytes)` macro arm for an explanation of why this is a sound
         // implementation of `is_bit_valid`.
         #[inline]
         fn is_bit_valid<A: crate::pointer::invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
-            TryFromBytes::is_bit_valid(candidate.transparent_wrapper_into_inner())
+            <$repr as TryFromBytes>::is_bit_valid(candidate.transmute::<$repr, _>())
         }
     };
     (
         @is_bit_valid
         $(<$tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?>)?
-        $trait:ident for $ty:ty
+        $trait:ident for $ty:ty[$repr:ty]
     ) => {
         // Trait other than `TryFromBytes`; no `is_bit_valid` impl.
     };
 }
 
-/// Implements `TransparentWrapper` for an atomic type.
+/// Implements `TransmuteFrom<UnsafeCell<$native>>` for an atomic type and
+/// vice-versa.
 ///
 /// # Safety
 ///
@@ -356,33 +352,69 @@ macro_rules! impl_for_transparent_wrapper {
     target_has_atomic = "64",
     target_has_atomic = "ptr"
 ))]
-macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
+macro_rules! unsafe_impl_transmute_from_for_atomic {
     ($(#[$attr:meta])* $(,)?) => {};
     ($(#[$attr:meta])* $atomic:ty [$native:ty], $($atomics:ty [$natives:ty]),* $(,)?) => {
         $(#[$attr])*
         // SAFETY: See safety comment in next match arm.
-        unsafe impl<I: crate::invariant::Invariants> crate::pointer::transmute::TransparentWrapper<I> for $atomic {
-            unsafe_impl_transparent_wrapper_for_atomic!(@inner $atomic [$native]);
+        unsafe impl crate::pointer::transmute::TransmuteFrom<UnsafeCell<$native>> for $atomic {
+            // SAFETY: See safety comment in next match arm.
+            unsafe_impl_transmute_from_for_atomic!(@inner UnsafeCell<$native> => $atomic | Unknown);
         }
-        unsafe_impl_transparent_wrapper_for_atomic!($(#[$attr])* $($atomics [$natives],)*);
+        // SAFETY: See safety comment in next match arm.
+        unsafe impl crate::pointer::transmute::TransmuteFrom<$atomic> for UnsafeCell<$native> {
+            // SAFETY: See safety comment in next match arm.
+            unsafe_impl_transmute_from_for_atomic!(@inner $atomic => UnsafeCell<$native> | Preserved);
+        }
+
+        // SAFETY: See safety comment in next match arm.
+        unsafe impl crate::pointer::transmute::UnsafeCellsAgree<$atomic> for UnsafeCell<$native> {}
+        // SAFETY: See safety comment in next match arm.
+        unsafe impl crate::pointer::transmute::UnsafeCellsAgree<UnsafeCell<$native>> for $atomic {}
+
+        unsafe_impl_transmute_from_for_atomic!($(#[$attr])* $($atomics [$natives],)*);
     };
     ($(#[$attr:meta])* $tyvar:ident => $atomic:ty [$native:ty]) => {
-        // We implement for `$atomic` and set `Inner = $native`. The caller has
+        // We implement `TransmuteFrom<$native>` for `$atomic`. The caller has
         // promised that `$atomic` and `$native` are an atomic type and its
         // native counterpart, respectively. Per [1], `$atomic` and `$native`
-        // have the same size.
+        // have the same size. Per [1], `$native` and `UnsafeCell<$native>` have
+        // the same size.
         //
         // [1] Per (for example) https://doc.rust-lang.org/1.81.0/std/sync/atomic/struct.AtomicU64.html:
         //
         //   This type has the same size and bit validity as the underlying
         //   integer type
+        //
+        // [2] Per https://doc.rust-lang.org/1.81.0/std/cell/struct.UnsafeCell.html#memory-layout:
+        //
+        //   `UnsafeCell<T>` has the same in-memory representation as its inner
+        //   type `T`.
         $(#[$attr])*
-        unsafe impl<$tyvar, I: crate::invariant::Invariants> crate::pointer::transmute::TransparentWrapper<I> for $atomic {
-            unsafe_impl_transparent_wrapper_for_atomic!(@inner $atomic [$native]);
+        unsafe impl<$tyvar> crate::pointer::transmute::TransmuteFrom<UnsafeCell<$native>> for $atomic {
+            // SAFETY: It is always trivially sound to produce a `Ptr` with
+            // `Unknown` alignment.
+            unsafe_impl_transmute_from_for_atomic!(@inner UnsafeCell<$native> => $atomic | Unknown);
         }
-    };
-    (@inner $atomic:ty [$native:ty]) => {
-        type Inner = UnsafeCell<$native>;
+
+        unsafe impl<$tyvar> crate::pointer::transmute::TransmuteFrom<$atomic> for UnsafeCell<$native> {
+            // SAFETY: Per [1], an atomic's alignment is equal to its size. This
+            // is the maximum possible alignment for any non-zero-sized type
+            // since size must be a multiple of alignment [2]. Thus, if
+            // `UnsafeCell<$native>` (which has the same size as `$atomic` as
+            // proven above) is well-aligned, then so is an `$atomic` at the
+            // same memory address.
+            //
+            // [1] Per (for example) https://doc.rust-lang.org/1.81.0/std/sync/atomic/struct.AtomicU64.html:
+            //
+            //   However, the alignment of this type is always equal to its
+            //   size, even on targets where `u64`` has a lesser alignment.
+            //
+            // [2] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#size-and-alignment:
+            //
+            //   The size of a value is always a multiple of its alignment.
+            unsafe_impl_transmute_from_for_atomic!(@inner $atomic => UnsafeCell<$native> | Preserved);
+        }
 
         // SAFETY: It is "obvious" that each atomic type contains a single
         // `UnsafeCell` that covers all bytes of the type, but we can also prove
@@ -401,20 +433,25 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
         //   Thus, we can conclude that every byte of `$atomic` must be covered
         //   by an `UnsafeCell`.
         //
-        // Thus, every byte of `$atomic` is covered by an `UnsafeCell`, and we
-        // set `type Inner = UnsafeCell<$native>`. Thus, `Self` and
-        // `Self::Inner` have `UnsafeCell`s covering the same byte ranges.
+        // Thus, every byte of `$atomic` is covered by an `UnsafeCell`, and so
+        // `$atomic` and `UnsafeCell<$native>` have `UnsafeCell`s covering the
+        // same byte ranges. That is required in order for `Preserved` to be the
+        // correct aliasing mapping.
         //
         // [1] Per (for example) https://doc.rust-lang.org/1.81.0/std/sync/atomic/struct.AtomicU64.html:
         //
         //   This type has the same size and bit validity as the underlying
         //   integer type
-        type UnsafeCellVariance = crate::pointer::transmute::Covariant;
-
-        // SAFETY: No safety justification is required for an invariant
-        // variance.
-        type AlignmentVariance = crate::pointer::transmute::Invariant;
-
+        unsafe impl<$tyvar> crate::pointer::transmute::UnsafeCellsAgree<$atomic> for UnsafeCell<$native> {}
+        // SAFETY: See above.
+        unsafe impl<$tyvar> crate::pointer::transmute::UnsafeCellsAgree<UnsafeCell<$native>> for $atomic {}
+    };
+    // # Safety
+    //
+    // The caller promises that `$alignment_mapping` is sound.
+    (@inner $from:ty => $to:ty | $alignment_mapping:ident) => {
+        // The caller guarantees the safety of this mapping.
+        type AlignmentMapping = crate::pointer::invariant::$alignment_mapping;
         // SAFETY: Per [1], all atomic types have the same bit validity as their
         // native counterparts. The caller has promised that `$atomic` and
         // `$native` are an atomic type and its native counterpart,
@@ -424,24 +461,12 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
         //
         //   This type has the same size and bit validity as the underlying
         //   integer type
-        type ValidityVariance = crate::pointer::transmute::Covariant;
+        type ValidityMapping = crate::pointer::invariant::Preserved;
 
         #[inline(always)]
-        fn cast_into_inner(ptr: *mut $atomic) -> *mut UnsafeCell<$native> {
-            // SAFETY: Per [1] (from comment on impl block), `$atomic` has the
-            // same size as `$native`. Thus, this cast preserves size.
-            //
-            // This cast trivially preserves provenance.
-            ptr.cast::<UnsafeCell<$native>>()
-        }
-
-        #[inline(always)]
-        fn cast_from_inner(ptr: *mut UnsafeCell<$native>) -> *mut $atomic {
-            // SAFETY: Per [1] (from comment on impl block), `$atomic` has the
-            // same size as `$native`. Thus, this cast preserves size.
-            //
-            // This cast trivially preserves provenance.
-            ptr.cast::<$atomic>()
+        #[allow(clippy::as_conversions)]
+        fn cast_from(ptr: *mut $from) -> *mut $to {
+            ptr as *mut $to
         }
     };
 }
