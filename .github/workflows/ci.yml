@@ -54,12 +54,12 @@ jobs:
           # These are the names of specific Rust versions detected in
           # `build.rs`. Each of these represents the minimum Rust version for
           # which a particular feature is supported.
-          "zerocopy-core-error",
-          "zerocopy-diagnostic-on-unimplemented",
-          "zerocopy-generic-bounds-in-const-fn",
-          "zerocopy-target-has-atomics",
-          "zerocopy-aarch64-simd",
-          "zerocopy-panic-in-const-and-vec-try-reserve"
+          "zerocopy-core-error-1-81-0",
+          "zerocopy-diagnostic-on-unimplemented-1-78-0",
+          "zerocopy-generic-bounds-in-const-fn-1-61-0",
+          "zerocopy-target-has-atomics-1-60-0",
+          "zerocopy-aarch64-simd-1-59-0",
+          "zerocopy-panic-in-const-and-vec-try-reserve-1-57-0"
         ]
         target: [
           "i686-unknown-linux-gnu",
@@ -89,17 +89,17 @@ jobs:
             features: "--all-features"
           - toolchain: "stable"
             features: "--all-features"
-          - toolchain: "zerocopy-core-error"
+          - toolchain: "zerocopy-core-error-1-81-0"
             features: "--all-features"
-          - toolchain: "zerocopy-diagnostic-on-unimplemented"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
             features: "--all-features"
-          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
             features: "--all-features"
-          - toolchain: "zerocopy-target-has-atomics"
+          - toolchain: "zerocopy-target-has-atomics-1-60-0"
             features: "--all-features"
-          - toolchain: "zerocopy-aarch64-simd"
+          - toolchain: "zerocopy-aarch64-simd-1-59-0"
             features: "--all-features"
-          - toolchain: "zerocopy-panic-in-const-and-vec-try-reserve"
+          - toolchain: "zerocopy-panic-in-const-and-vec-try-reserve-1-57-0"
             features: "--all-features"
           # Exclude any combination for the zerocopy-derive crate which
           # uses zerocopy features.
@@ -114,103 +114,103 @@ jobs:
           # exist to exercise zerocopy behavior which differs by toolchain;
           # zerocopy-derive doesn't behave different on these toolchains.
           - crate: "zerocopy-derive"
-            toolchain: "zerocopy-core-error"
+            toolchain: "zerocopy-core-error-1-81-0"
           - crate: "zerocopy-derive"
-            toolchain: "zerocopy-diagnostic-on-unimplemented"
+            toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
           - crate: "zerocopy-derive"
-            toolchain: "zerocopy-generic-bounds-in-const-fn"
+            toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
           - crate: "zerocopy-derive"
-            toolchain: "zerocopy-target-has-atomics"
+            toolchain: "zerocopy-target-has-atomics-1-60-0"
           - crate: "zerocopy-derive"
-            toolchain: "zerocopy-aarch64-simd"
+            toolchain: "zerocopy-aarch64-simd-1-59-0"
           - crate: "zerocopy-derive"
-            toolchain: "zerocopy-panic-in-const-and-vec-try-reserve"
-          # Exclude non-aarch64 targets from the `zerocopy-aarch64-simd`
+            toolchain: "zerocopy-panic-in-const-and-vec-try-reserve-1-57-0"
+          # Exclude non-aarch64 targets from the `zerocopy-aarch64-simd-1-59-0`
           # toolchain.
-          - toolchain: "zerocopy-aarch64-simd"
+          - toolchain: "zerocopy-aarch64-simd-1-59-0"
             target: "i686-unknown-linux-gnu"
-          - toolchain: "zerocopy-aarch64-simd"
+          - toolchain: "zerocopy-aarch64-simd-1-59-0"
             target: "x86_64-unknown-linux-gnu"
-          - toolchain: "zerocopy-aarch64-simd"
+          - toolchain: "zerocopy-aarch64-simd-1-59-0"
             target: "arm-unknown-linux-gnueabi"
-          - toolchain: "zerocopy-aarch64-simd"
+          - toolchain: "zerocopy-aarch64-simd-1-59-0"
             target: "powerpc-unknown-linux-gnu"
-          - toolchain: "zerocopy-aarch64-simd"
+          - toolchain: "zerocopy-aarch64-simd-1-59-0"
             target: "powerpc64-unknown-linux-gnu"
-          - toolchain: "zerocopy-aarch64-simd"
+          - toolchain: "zerocopy-aarch64-simd-1-59-0"
             target: "riscv64gc-unknown-linux-gnu"
-          - toolchain: "zerocopy-aarch64-simd"
+          - toolchain: "zerocopy-aarch64-simd-1-59-0"
             target: "s390x-unknown-linux-gnu"
-          - toolchain: "zerocopy-aarch64-simd"
+          - toolchain: "zerocopy-aarch64-simd-1-59-0"
             target: "x86_64-pc-windows-msvc"
-          - toolchain: "zerocopy-aarch64-simd"
+          - toolchain: "zerocopy-aarch64-simd-1-59-0"
             target: "thumbv6m-none-eabi"
-          - toolchain: "zerocopy-aarch64-simd"
+          - toolchain: "zerocopy-aarch64-simd-1-59-0"
             target: "wasm32-wasi"
-          # Exclude most targets targets from the `zerocopy-core-error`
-          # toolchain since the `zerocopy-core-error` feature is unrelated to
+          # Exclude most targets targets from the `zerocopy-core-error-1-81-0`
+          # toolchain since the `zerocopy-core-error-1-81-0` feature is unrelated to
           # compilation target. This only leaves i686 and x86_64 targets.
-          - toolchain: "zerocopy-core-error"
+          - toolchain: "zerocopy-core-error-1-81-0"
             target: "arm-unknown-linux-gnueabi"
-          - toolchain: "zerocopy-core-error"
+          - toolchain: "zerocopy-core-error-1-81-0"
             target: "aarch64-unknown-linux-gnu"
-          - toolchain: "zerocopy-core-error"
+          - toolchain: "zerocopy-core-error-1-81-0"
             target: "powerpc-unknown-linux-gnu"
-          - toolchain: "zerocopy-core-error"
+          - toolchain: "zerocopy-core-error-1-81-0"
             target: "powerpc64-unknown-linux-gnu"
-          - toolchain: "zerocopy-core-error"
+          - toolchain: "zerocopy-core-error-1-81-0"
             target: "riscv64gc-unknown-linux-gnu"
-          - toolchain: "zerocopy-core-error"
+          - toolchain: "zerocopy-core-error-1-81-0"
             target: "s390x-unknown-linux-gnu"
-          - toolchain: "zerocopy-core-error"
+          - toolchain: "zerocopy-core-error-1-81-0"
             target: "x86_64-pc-windows-msvc"
-          - toolchain: "zerocopy-core-error"
+          - toolchain: "zerocopy-core-error-1-81-0"
             target: "thumbv6m-none-eabi"
-          - toolchain: "zerocopy-core-error"
-            target: "wasm32-wasi"
-          # Exclude most targets targets from the
-          # `zerocopy-diagnostic-on-unimplemented` toolchain since the
-          # `zerocopy-diagnostic-on-unimplemented` feature is unrelated to
-          # compilation target. This only leaves i686 and x86_64 targets.
-          - toolchain: "zerocopy-diagnostic-on-unimplemented"
-            target: "arm-unknown-linux-gnueabi"
-          - toolchain: "zerocopy-diagnostic-on-unimplemented"
-            target: "aarch64-unknown-linux-gnu"
-          - toolchain: "zerocopy-diagnostic-on-unimplemented"
-            target: "powerpc-unknown-linux-gnu"
-          - toolchain: "zerocopy-diagnostic-on-unimplemented"
-            target: "powerpc64-unknown-linux-gnu"
-          - toolchain: "zerocopy-diagnostic-on-unimplemented"
-            target: "riscv64gc-unknown-linux-gnu"
-          - toolchain: "zerocopy-diagnostic-on-unimplemented"
-            target: "s390x-unknown-linux-gnu"
-          - toolchain: "zerocopy-diagnostic-on-unimplemented"
-            target: "x86_64-pc-windows-msvc"
-          - toolchain: "zerocopy-diagnostic-on-unimplemented"
-            target: "thumbv6m-none-eabi"
-          - toolchain: "zerocopy-diagnostic-on-unimplemented"
+          - toolchain: "zerocopy-core-error-1-81-0"
             target: "wasm32-wasi"
           # Exclude most targets targets from the
-          # `zerocopy-generic-bounds-in-const-fn` toolchain since the
-          # `zerocopy-generic-bounds-in-const-fn` feature is unrelated to
+          # `zerocopy-diagnostic-on-unimplemented-1-78-0` toolchain since the
+          # `zerocopy-diagnostic-on-unimplemented-1-78-0` feature is unrelated to
           # compilation target. This only leaves i686 and x86_64 targets.
-          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
             target: "arm-unknown-linux-gnueabi"
-          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
             target: "aarch64-unknown-linux-gnu"
-          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
             target: "powerpc-unknown-linux-gnu"
-          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
             target: "powerpc64-unknown-linux-gnu"
-          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
             target: "riscv64gc-unknown-linux-gnu"
-          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
             target: "s390x-unknown-linux-gnu"
-          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
             target: "x86_64-pc-windows-msvc"
-          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
             target: "thumbv6m-none-eabi"
-          - toolchain: "zerocopy-generic-bounds-in-const-fn"
+          - toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
+            target: "wasm32-wasi"
+          # Exclude most targets targets from the
+          # `zerocopy-generic-bounds-in-const-fn-1-61-0` toolchain since the
+          # `zerocopy-generic-bounds-in-const-fn-1-61-0` feature is unrelated to
+          # compilation target. This only leaves i686 and x86_64 targets.
+          - toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
+            target: "arm-unknown-linux-gnueabi"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
+            target: "aarch64-unknown-linux-gnu"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
+            target: "powerpc-unknown-linux-gnu"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
+            target: "powerpc64-unknown-linux-gnu"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
+            target: "riscv64gc-unknown-linux-gnu"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
+            target: "s390x-unknown-linux-gnu"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
+            target: "x86_64-pc-windows-msvc"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
+            target: "thumbv6m-none-eabi"
+          - toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
             target: "wasm32-wasi"
           # Exclude `thumbv6m-none-eabi` combined with any feature that implies
           # the `std` feature since `thumbv6m-none-eabi` does not include a
