@@ -374,7 +374,7 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Unalign<T> {
 /// The caller promises that `$atomic` is an atomic type whose natie equivalent
 /// is `$native`.
 #[cfg(all(
-    zerocopy_target_has_atomics,
+    zerocopy_target_has_atomics_1_60_0,
     any(
         target_has_atomic = "8",
         target_has_atomic = "16",
@@ -635,7 +635,7 @@ pub(crate) const fn round_down_to_next_multiple_of_alignment(
     align: NonZeroUsize,
 ) -> usize {
     let align = align.get();
-    #[cfg(zerocopy_panic_in_const_and_vec_try_reserve)]
+    #[cfg(zerocopy_panic_in_const_and_vec_try_reserve_1_57_0)]
     debug_assert!(align.is_power_of_two());
 
     // Subtraction can't underflow because `align.get() >= 1`.
