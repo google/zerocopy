@@ -815,6 +815,16 @@ mod _casts {
             // The caller promises all other safety preconditions.
             unsafe { self.cast_unsized_unchecked(cast) }
         }
+
+        pub const unsafe fn cast<U>(
+            self,
+        ) -> Ptr<
+            'a,
+            U,
+            (I::Aliasing, Unknown, MappedValidity<I::Validity, (Initialized, Initialized)>),
+        > {
+            todo!()
+        }
     }
 
     impl<'a, T, I> Ptr<'a, T, I>
@@ -1058,6 +1068,44 @@ mod _casts {
 /// Projections through the referent.
 mod _project {
     use super::*;
+
+    impl<'a, T, I> Ptr<'a, T, I>
+    where
+        T: 'a + ?Sized,
+        I: Invariants,
+    {
+        /// Projects a field from `self`.
+        ///
+        /// The resulting `Ptr` is not guaranteed to be aligned because, for
+        /// example, a `#[repr(packed)]` struct can be properly aligned but have
+        /// unaligned fields.
+        pub fn project_foo<F, const NAME_HASH: u128>(
+            self,
+        ) -> Ptr<
+            'a,
+            F::Type,
+            (
+                I::Aliasing,
+                MappedAlignment<
+                    I::Alignment,
+                    <F as crate::project::Field<{ NAME_HASH }>>::AlignmentMapping,
+                >,
+                I::Validity,
+            ),
+        >
+        where
+            F: crate::project::Field<{ NAME_HASH }>,
+        {
+            // TODO: Maybe we could use an associated `AlignmentMapping` type on
+            // `Field` to work around the alignment issue? We'd need to be able
+            // to detect `#[repr(packed)]` and stuff like that in order to
+            // generate the correct mapping when implementing `Field`.
+            //
+            // I don't *think* that validity has the same issue (at least not
+            // for structs).
+            todo!()
+        }
+    }
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
