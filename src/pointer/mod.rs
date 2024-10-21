@@ -86,3 +86,92 @@ where
 {
     ptr.as_bytes::<BecauseImmutable>().as_ref().iter().all(|&byte| byte == 0)
 }
+
+pub use _pointer::*;
+mod _pointer {
+    #[cfg(feature = "alloc")]
+    use alloc::boxed::Box;
+    #[cfg(feature = "std")]
+    use std::sync::Arc;
+
+    use super::{inner::PtrInner, invariant::*};
+
+    pub unsafe trait Pointer<'t, T: ?Sized> {
+        type To<'u, U: 'u + ?Sized>: Pointer<'u, U, Aliasing = Self::Aliasing>;
+
+        #[doc(hidden)]
+        type Aliasing: Aliasing;
+
+        #[doc(hidden)]
+        fn into_ptr(self) -> PtrInner<'t, T>;
+
+        #[doc(hidden)]
+        unsafe fn from_ptr(ptr: PtrInner<'t, T>) -> Self;
+    }
+
+    unsafe impl<'t, T: ?Sized> Pointer<'t, T> for &'t T {
+        type To<'u, U: 'u + ?Sized> = &'u U;
+
+        type Aliasing = Shared;
+
+        #[inline(always)]
+        fn into_ptr(self) -> PtrInner<'t, T> {
+            PtrInner::from_ref(self)
+        }
+
+        #[inline(always)]
+        unsafe fn from_ptr(ptr: PtrInner<'t, T>) -> Self {
+            unsafe { ptr.as_non_null().as_ref() }
+        }
+    }
+
+    unsafe impl<'t, T: ?Sized> Pointer<'t, T> for &'t mut T {
+        type To<'u, U: 'u + ?Sized> = &'u mut U;
+
+        type Aliasing = Exclusive;
+
+        #[inline(always)]
+        fn into_ptr(self) -> PtrInner<'t, T> {
+            PtrInner::from_ref(self)
+        }
+
+        #[inline(always)]
+        unsafe fn from_ptr(ptr: PtrInner<'t, T>) -> Self {
+            unsafe { ptr.as_non_null().as_mut() }
+        }
+    }
+
+    #[cfg(feature = "alloc")]
+    unsafe impl<'t, T: ?Sized> Pointer<'t, T> for Box<T> {
+        type To<'u, U: 'u + ?Sized> = Box<U>;
+
+        type Aliasing = super::invariant::Box;
+
+        #[inline(always)]
+        fn into_ptr(self) -> PtrInner<'t, T> {
+            PtrInner::from_box(self)
+        }
+
+        #[inline(always)]
+        unsafe fn from_ptr(ptr: PtrInner<'t, T>) -> Box<T> {
+            unsafe { Box::from_raw(ptr.as_non_null().as_ptr()) }
+        }
+    }
+
+    #[cfg(feature = "std")]
+    unsafe impl<'t, T: ?Sized> Pointer<'t, T> for Arc<T> {
+        type To<'u, U: 'u + ?Sized> = Arc<U>;
+
+        type Aliasing = super::invariant::Arc;
+
+        #[inline(always)]
+        fn into_ptr(self) -> PtrInner<'t, T> {
+            PtrInner::from_arc(self)
+        }
+
+        #[inline(always)]
+        unsafe fn from_ptr(ptr: PtrInner<'t, T>) -> Arc<T> {
+            unsafe { Arc::from_raw(ptr.as_non_null().as_ptr()) }
+        }
+    }
+}
