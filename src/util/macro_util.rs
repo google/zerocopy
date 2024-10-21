@@ -33,7 +33,7 @@ use crate::{
 };
 
 #[cfg_attr(
-    zerocopy_diagnostic_on_unimplemented,
+    zerocopy_diagnostic_on_unimplemented_1_78_0,
     diagnostic::on_unimplemented(
         message = "`{T}` has inter-field padding",
         label = "types with padding cannot implement `IntoBytes`",
@@ -289,7 +289,7 @@ pub type SizeToTag<const SIZE: usize> = <() as size_to_tag::SizeToTag<SIZE>>::Ta
 
 // We put `Sized` in its own module so it can have the same name as the standard
 // library `Sized` without shadowing it in the parent module.
-#[cfg(zerocopy_diagnostic_on_unimplemented)]
+#[cfg(zerocopy_diagnostic_on_unimplemented_1_78_0)]
 mod __size_of {
     #[diagnostic::on_unimplemented(
         message = "`{Self}` is unsized",
@@ -308,9 +308,9 @@ mod __size_of {
     }
 }
 
-#[cfg(zerocopy_diagnostic_on_unimplemented)]
+#[cfg(zerocopy_diagnostic_on_unimplemented_1_78_0)]
 pub use __size_of::size_of;
-#[cfg(not(zerocopy_diagnostic_on_unimplemented))]
+#[cfg(not(zerocopy_diagnostic_on_unimplemented_1_78_0))]
 pub use core::mem::size_of;
 
 /// Does the struct type `$t` have padding?
