@@ -10,6 +10,7 @@
 name = "unsafe-fields"
 version = "0.1.0"
 edition = "2021"
+description = "Make it unsafe to access or modify fields with safety invariants"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"
 rust-version = { workspace = true }
