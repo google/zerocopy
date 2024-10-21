@@ -12,6 +12,10 @@
 # https://github.com/dtolnay/trybuild/issues/207#issuecomment-131227.594
 [workspace]
 
+[workspace.package]
+# Inherited by zerocopy and unsafe-fields.
+rust-version = "1.65.0"
+
 [package]
 edition = "2021"
 name = "zerocopy"
@@ -22,7 +26,7 @@ categories = ["embedded", "encoding", "no-std::no-alloc", "parsing", "rust-patte
 keywords = ["cast", "convert", "transmute", "transmutation", "type-punning"]
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"
-rust-version = "1.65.0"
+rust-version = { workspace = true }
 
 exclude = [".*"]
 
@@ -81,6 +85,7 @@ testutil = { path = "testutil" }
 # sometimes change the output format slightly, so a version mismatch can cause
 # CI test failures.
 trybuild = { version = "=1.0.90", features = ["diff"] }
+unsafe-fields = { path = "./unsafe-fields" }
 # In tests, unlike in production, zerocopy-derive is not optional
 zerocopy-derive = { version = "=0.9.0-alpha.0", path = "zerocopy-derive" }
 # TODO(#381) Remove this dependency once we have our own layout gadgets.

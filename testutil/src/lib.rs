@@ -49,7 +49,7 @@ impl PinnedVersions {
                 .ok_or(format!("expected string value for path in Cargo.toml: {:?}", keys))
         };
 
-        let msrv = extract(&["package", "rust-version"])?;
+        let msrv = extract(&["workspace", "package", "rust-version"])?;
         let stable = extract(&["package", "metadata", "ci", "pinned-stable"])?;
         let nightly = extract(&["package", "metadata", "ci", "pinned-nightly"])?;
         Ok(PinnedVersions { msrv, stable, nightly })
