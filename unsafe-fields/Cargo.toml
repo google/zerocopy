@@ -8,7 +8,7 @@
 
 [package]
 name = "unsafe-fields"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "Make it unsafe to access or modify fields with safety invariants"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
@@ -20,3 +20,9 @@ exclude = [".*"]
 [package.metadata.docs.rs]
 all-features = true
 rustdoc-args = ["--cfg", "doc_cfg", "--generate-link-to-definition"]
+
+ [lints.rust]
+ unexpected_cfgs = { level = "allow", check-cfg = ['cfg(doc_cfg)'] }
+
+[dependencies]
+zerocopy_0_8 = { package = "zerocopy", path = "..", optional = true }

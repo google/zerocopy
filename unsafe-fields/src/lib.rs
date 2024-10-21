@@ -13,7 +13,8 @@
 //! the [`Unsafe`] wrapper type. An `Unsafe` is intended to be used to for
 //! struct, enum, or union fields which carry safety invariants. All accessors
 //! are `unsafe`, which requires any use of an `Unsafe` field to be inside an
-//! `unsafe` block.
+//! `unsafe` block. One exception is [`Unsafe::as_ref`], which is available when
+//! the `zerocopy_0_8` feature is enabled. See its docs for more information.
 //!
 //! An unsafe field has the type `Unsafe<O, F, const NAME_HASH: u128>`. `O` is
 //! the enclosing type (struct, enum, or union), `F` is the type of the field,
@@ -22,6 +23,8 @@
 //! `NAME_HASH` prevents swapping different fields of the same `F` type within
 //! the same enclosing type. Note that swapping the same field between instances
 //! of the same type [cannot be prevented](crate#limitations).
+//!
+//! [immutable]: zerocopy_0_8::Immutable
 //!
 //! # Examples
 //!
@@ -170,6 +173,7 @@
     rustdoc::missing_crate_level_docs,
     rustdoc::private_intra_doc_links
 )]
+#![cfg_attr(doc_cfg, feature(doc_cfg))]
 
 use core::marker::PhantomData;
 
@@ -210,14 +214,39 @@ impl<O: ?Sized, F: Copy, const NAME_HASH: u128> Clone for Unsafe<O, F, { NAME_HA
 impl<O: ?Sized, F: ?Sized, const NAME_HASH: u128> Unsafe<O, F, { NAME_HASH }> {
     /// Gets a reference to the inner value.
     ///
+    /// If [`F: Immutable`][immutable], prefer [`as_ref`], which is safe.
+    ///
+    /// [immutable]: zerocopy_0_8::Immutable
+    /// [`as_ref`]: Unsafe::as_ref
+    ///
     /// # Safety
     ///
     /// The caller is responsible for upholding any safety invariants associated
     /// with this field.
     #[inline(always)]
-    pub const unsafe fn as_ref(&self) -> &F {
+    pub const unsafe fn as_ref_unchecked(&self) -> &F {
         // SAFETY: This method is unsafe to call.
         &self.field
+    }
+
+    /// Gets a reference to the inner value safely so long as the inner value is
+    /// immutable.
+    ///
+    /// If [`F: Immutable`][immutable], then `F` does not permit interior
+    /// mutation, and so it is safe to return a reference to it.
+    ///
+    /// [immutable]: zerocopy_0_8::Immutable
+    #[inline(always)]
+    #[cfg(feature = "zerocopy_0_8")]
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "zerocopy_0_8")))]
+    pub const fn as_ref(&self) -> &F
+    where
+        F: zerocopy_0_8::Immutable,
+    {
+        // SAFETY: `F: Immutable` guarantees that the returned `&F` cannot be
+        // used to mutate `self`, and so it cannot be used to violate any
+        // invariant.
+        unsafe { self.as_ref_unchecked() }
     }
 
     /// Gets a mutable reference to the inner value.
@@ -234,7 +263,7 @@ impl<O: ?Sized, F: ?Sized, const NAME_HASH: u128> Unsafe<O, F, { NAME_HASH }> {
 }
 
 impl<O: ?Sized, F, const NAME_HASH: u128> Unsafe<O, F, { NAME_HASH }> {
-    /// Constructs a new `Unsafe<O, F, NAME_HASH>`.
+    /// Constructs a new `Unsafe`.
     ///
     /// # Safety
     ///
@@ -247,13 +276,8 @@ impl<O: ?Sized, F, const NAME_HASH: u128> Unsafe<O, F, { NAME_HASH }> {
     }
 
     /// Extracts the inner `F` from `self`.
-    ///
-    /// # Safety
-    ///
-    /// The caller is responsible for upholding any safety invariants associated
-    /// with this field.
     #[inline(always)]
-    pub const unsafe fn into(self) -> F {
+    pub const fn into(self) -> F {
         use core::mem::ManuallyDrop;
         let slf = ManuallyDrop::new(self);
 
@@ -280,8 +304,6 @@ impl<O: ?Sized, F, const NAME_HASH: u128> Unsafe<O, F, { NAME_HASH }> {
         //   validity as `T`
         let dst = unsafe { Transmute { src: slf }.dst };
 
-        // SAFETY (satisfaction of `Unsafe`'s field invariant): This method is
-        // unsafe to call.
         ManuallyDrop::into_inner(dst)
     }
 }
