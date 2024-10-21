@@ -2720,7 +2720,7 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
     // We use `from_mut` despite not mutating via `c_ptr` so that we don't need
     // to add a `T: Immutable` bound.
     let c_ptr = Ptr::from_mut(&mut candidate);
-    let c_ptr = c_ptr.transparent_wrapper_into_inner();
+    let c_ptr = c_ptr.transmute::<_, pointer::transmute::BecauseBidirectional>();
     // SAFETY: `c_ptr` has no uninitialized sub-ranges because it derived from
     // `candidate`, which the caller promises is entirely initialized.
     let c_ptr = unsafe { c_ptr.assume_validity::<invariant::Initialized>() };
