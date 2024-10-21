@@ -523,6 +523,10 @@ jobs:
           "stable",
           "nightly",
         ]
+        features: [
+          "",
+          "--features zerocopy_0_8",
+        ]
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
       - name: Configure environment variables
@@ -540,19 +544,19 @@ jobs:
           toolchain: ${{ env.ZC_TOOLCHAIN }}
           components: clippy, rust-src
       - name: Check
-        run: ./cargo.sh +${{ matrix.toolchain }} check --package unsafe-fields --verbose
+        run: ./cargo.sh +${{ matrix.toolchain }} check --package unsafe-fields ${{ matrix.features }} --verbose
       - name: Check tests
-        run: ./cargo.sh +${{ matrix.toolchain }} check --tests --package unsafe-fields --verbose
+        run: ./cargo.sh +${{ matrix.toolchain }} check --tests --package unsafe-fields ${{ matrix.features }} --verbose
       - name: Build
-        run: ./cargo.sh +${{ matrix.toolchain }} build --package unsafe-fields --verbose
+        run: ./cargo.sh +${{ matrix.toolchain }} build --package unsafe-fields ${{ matrix.features }} --verbose
       - name: Run tests
-        run: ./cargo.sh +${{ matrix.toolchain }} test --package unsafe-fields --verbose
+        run: ./cargo.sh +${{ matrix.toolchain }} test --package unsafe-fields ${{ matrix.features }} --verbose
       - name: Clippy
-        run: ./cargo.sh +${{ matrix.toolchain }} clippy --package unsafe-fields --verbose
+        run: ./cargo.sh +${{ matrix.toolchain }} clippy --package unsafe-fields ${{ matrix.features }} --verbose
         # See comment in next step for why we only run on nightly.
         if: matrix.toolchain == 'nightly'
       - name: Clippy tests
-        run: ./cargo.sh +${{ matrix.toolchain }} clippy --package unsafe-fields --tests --verbose
+        run: ./cargo.sh +${{ matrix.toolchain }} clippy --package unsafe-fields --tests ${{ matrix.features }} --verbose
         # Clippy improves the accuracy of lints over time, and fixes bugs. Only
         # running Clippy on nightly allows us to avoid having to write code
         # which is compatible with older versions of Clippy, which sometimes
@@ -573,7 +577,7 @@ jobs:
           METADATA_DOCS_RS_RUSTDOC_ARGS="$(cargo metadata --format-version 1 | \
             jq -r ".packages[] | select(.name == \"unsafe-fields\").metadata.docs.rs.\"rustdoc-args\"[]" | tr '\n' ' ')"
           export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS'|| '' }} $RUSTDOCFLAGS"
-          ./cargo.sh +${{ matrix.toolchain }} doc --document-private-items --package unsafe-fields
+          ./cargo.sh +${{ matrix.toolchain }} doc --document-private-items --package unsafe-fields --all-features
 
   # NEON intrinsics are currently broken on big-endian platforms. [1] This test ensures
   # that we don't accidentally attempt to compile these intrinsics on such platforms. We
