@@ -6,6 +6,11 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+// After updating the following doc comment, make sure to run the following
+// command to update `README.md` based on its contents:
+//
+//   cargo -q run --manifest-path ../tools/Cargo.toml -p generate-readme > README.md
+
 //! Support for unsafe fields.
 //!
 //! This crate provides the [`unsafe_fields!`] macro, which can be used to mark
@@ -28,7 +33,7 @@
 //!
 //! # Examples
 //!
-//! ```
+//! ```rust
 //! use unsafe_fields::{unsafe_fields, Unsafe};
 //!
 //! unsafe_fields! {
@@ -57,7 +62,7 @@
 //!
 //! Attempting to swap unsafe fields of the same type is prevented:
 //!
-//! ```compile_fail,E0308
+//! ```rust,compile_fail,E0308
 //! use unsafe_fields::{unsafe_fields, Unsafe};
 //!
 //! unsafe_fields! {
@@ -84,7 +89,7 @@
 //! Note that we cannot prevent `Unsafe`s from being swapped between the same
 //! field in instances of the same type:
 //!
-//! ```
+//! ```rust
 //! use unsafe_fields::{unsafe_fields, Unsafe};
 //!
 //! unsafe_fields! {

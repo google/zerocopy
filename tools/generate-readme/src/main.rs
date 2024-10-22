@@ -27,7 +27,7 @@ made in the doc comment on `src/lib.rs` or in `tools/generate-readme`.
 const DISCLAIMER_FOOTER: &str = "\
 ## Disclaimer
 
-Disclaimer: Zerocopy is not an officially supported Google product.\
+Disclaimer: This is not an officially supported Google product.\
 ";
 
 fn main() {

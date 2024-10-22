@@ -201,4 +201,4 @@ Zerocopy uses [GitHub Releases].
 
 ## Disclaimer
 
-Disclaimer: Zerocopy is not an officially supported Google product.
+Disclaimer: This is not an officially supported Google product.
