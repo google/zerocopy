@@ -333,6 +333,8 @@ pub mod layout;
 mod macros;
 #[doc(hidden)]
 pub mod pointer;
+#[doc(hidden)]
+pub mod project;
 mod r#ref;
 // TODO(#252): If we make this pub, come up with a better name.
 mod wrappers;
