@@ -307,7 +307,7 @@
 #![cfg_attr(doc_cfg, feature(doc_cfg))]
 #![cfg_attr(
     __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS,
-    feature(layout_for_ptr, strict_provenance, coverage_attribute, marker_trait_attr)
+    feature(layout_for_ptr, coverage_attribute, marker_trait_attr)
 )]
 
 // This is a hack to allow zerocopy-derive derives to work in this crate. They
