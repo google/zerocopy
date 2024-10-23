@@ -258,10 +258,10 @@ impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
     ///
     /// The caller must ensure that `Dst`'s alignment requirement is greater
     /// than one.
-    pub(crate) unsafe fn new_unchecked(src: Src) -> Self {
+    pub(crate) const unsafe fn new_unchecked(src: Src) -> Self {
         // INVARIANT: The caller guarantees that `Dst`'s alignment requirement
         // is greater than one.
-        Self { src, dst: SendSyncPhantomData::default() }
+        Self { src, dst: SendSyncPhantomData::new() }
     }
 
     /// Produces the source underlying the failed conversion.
@@ -274,7 +274,7 @@ impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
         // INVARIANT: `with_src` doesn't change the type of `Dst`, so the
         // invariant that `Dst`'s alignment requirement is greater than one is
         // preserved.
-        AlignmentError { src: new_src, dst: SendSyncPhantomData::default() }
+        AlignmentError { src: new_src, dst: SendSyncPhantomData::new() }
     }
 
     /// Maps the source value associated with the conversion error.
@@ -299,7 +299,7 @@ impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
     /// ```
     #[inline]
     pub fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> AlignmentError<NewSrc, Dst> {
-        AlignmentError { src: f(self.src), dst: SendSyncPhantomData::default() }
+        AlignmentError { src: f(self.src), dst: SendSyncPhantomData::new() }
     }
 
     pub(crate) const fn into<S, V>(self) -> ConvertError<Self, S, V> {
@@ -416,8 +416,8 @@ pub struct SizeError<Src, Dst: ?Sized> {
 }
 
 impl<Src, Dst: ?Sized> SizeError<Src, Dst> {
-    pub(crate) fn new(src: Src) -> Self {
-        Self { src, dst: SendSyncPhantomData::default() }
+    pub(crate) const fn new(src: Src) -> Self {
+        Self { src, dst: SendSyncPhantomData::new() }
     }
 
     /// Produces the source underlying the failed conversion.
@@ -428,7 +428,7 @@ impl<Src, Dst: ?Sized> SizeError<Src, Dst> {
 
     /// Sets the source value associated with the conversion error.
     pub(crate) fn with_src<NewSrc>(self, new_src: NewSrc) -> SizeError<NewSrc, Dst> {
-        SizeError { src: new_src, dst: SendSyncPhantomData::default() }
+        SizeError { src: new_src, dst: SendSyncPhantomData::new() }
     }
 
     /// Maps the source value associated with the conversion error.
@@ -454,12 +454,12 @@ impl<Src, Dst: ?Sized> SizeError<Src, Dst> {
     /// ```
     #[inline]
     pub fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> SizeError<NewSrc, Dst> {
-        SizeError { src: f(self.src), dst: SendSyncPhantomData::default() }
+        SizeError { src: f(self.src), dst: SendSyncPhantomData::new() }
     }
 
     /// Sets the destination type associated with the conversion error.
     pub(crate) fn with_dst<NewDst: ?Sized>(self) -> SizeError<Src, NewDst> {
-        SizeError { src: self.src, dst: SendSyncPhantomData::default() }
+        SizeError { src: self.src, dst: SendSyncPhantomData::new() }
     }
 
     /// Converts the error into a general [`ConvertError`].
@@ -559,8 +559,8 @@ pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
 }
 
 impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
-    pub(crate) fn new(src: Src) -> Self {
-        Self { src, dst: SendSyncPhantomData::default() }
+    pub(crate) const fn new(src: Src) -> Self {
+        Self { src, dst: SendSyncPhantomData::new() }
     }
 
     /// Produces the source underlying the failed conversion.
@@ -591,7 +591,7 @@ impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
     /// ```
     #[inline]
     pub fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> ValidityError<NewSrc, Dst> {
-        ValidityError { src: f(self.src), dst: SendSyncPhantomData::default() }
+        ValidityError { src: f(self.src), dst: SendSyncPhantomData::new() }
     }
 
     /// Converts the error into a general [`ConvertError`].

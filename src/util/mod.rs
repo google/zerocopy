@@ -23,7 +23,7 @@ use core::{
 use crate::{
     error::AlignmentError,
     pointer::invariant::{self, Invariants},
-    Unalign,
+    TrailingSliceLayout, Unalign,
 };
 
 /// A type which has the same layout as the type it wraps.
@@ -481,8 +481,8 @@ unsafe impl<T: ?Sized> Send for SendSyncPhantomData<T> {}
 // to be called from multiple threads.
 unsafe impl<T: ?Sized> Sync for SendSyncPhantomData<T> {}
 
-impl<T: ?Sized> Default for SendSyncPhantomData<T> {
-    fn default() -> SendSyncPhantomData<T> {
+impl<T: ?Sized> SendSyncPhantomData<T> {
+    pub(crate) const fn new() -> SendSyncPhantomData<T> {
         SendSyncPhantomData(PhantomData)
     }
 }
@@ -677,6 +677,107 @@ pub(crate) unsafe fn copy_unchecked(src: &[u8], dst: &mut [u8]) {
     unsafe {
         core::ptr::copy_nonoverlapping(src.as_ptr(), dst.as_mut_ptr(), src.len());
     };
+}
+
+pub(crate) const fn metadata_from_elem_count<T: ?Sized + crate::KnownLayout>(
+    elems: usize,
+) -> T::PointerMetadata {
+    use crate::layout::SizeInfo;
+
+    // SAFETY: Per `KnownLayout::PointerMetadata`:
+    //
+    //   # Safety
+    //
+    //   Callers may assume for soundness that one of the following holds:
+    //   - `Self::LAYOUT.size_info` is a `SizeInfo::Sized` and
+    //     `Self::PointerMetadata = ()`
+    //   - `Self::LAYOUT.size_info` is a `SizeInfo::SliceDst` and
+    //     `Self::PointerMetadata = usize`
+    //
+    // In the following branches, we only transmute as consistent with this
+    // invariant.
+    match T::LAYOUT.size_info {
+        SizeInfo::Sized { .. } => unsafe { transmute::<(), T::PointerMetadata>(()) },
+        SizeInfo::SliceDst(_) => unsafe { transmute::<usize, T::PointerMetadata>(elems) },
+    }
+}
+
+/// Computes the size of the `T` with the given pointer metadata.
+///
+/// # Safety
+///
+/// `size_for_metadata` promises to only return `None` if the resulting size
+/// would not fit in a `usize`.
+pub(crate) const fn size_for_metadata<T: ?Sized + crate::KnownLayout>(
+    meta: T::PointerMetadata,
+) -> Option<usize> {
+    use crate::layout::{SizeInfo, TrailingSliceLayout};
+
+    match T::LAYOUT.size_info {
+        SizeInfo::Sized { size } => Some(size),
+        // NOTE: This branch is unreachable, but we return `None` rather
+        // than `unreachable!()` to avoid generating panic paths.
+        SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
+            // SAFETY: Per `KnownLayout::PointerMetadata`:
+            //
+            //   Callers may assume for soundness that one of the following
+            //   holds:
+            //   ...
+            //   - `Self::LAYOUT.size_info` is a `SizeInfo::SliceDst` and
+            //     `Self::PointerMetadata = usize`
+            //
+            // Since, in this branch, we know that `T::LAYOUT.size_info =
+            // SizeInfo::SliceDst`, we can assume that `T::PointerMetadata =
+            // usize`.
+            let count: usize = unsafe { transmute(meta) };
+            let Some(slice_len) = elem_size.checked_mul(count) else { return None };
+            let Some(without_padding) = offset.checked_add(slice_len) else { return None };
+            without_padding
+                .checked_add(crate::util::padding_needed_for(without_padding, T::LAYOUT.align))
+        }
+    }
+}
+
+/// Casts a `*mut Src` to a `*mut Dst`.
+///
+/// # Safety
+///
+/// The caller must ensure that `Src` and `Dst` must either both be `Sized` or
+/// both be unsized.
+#[inline(always)]
+pub(crate) const unsafe fn cast_unchecked<Src: ?Sized, Dst: ?Sized>(src: *mut Src) -> *mut Dst {
+    // TODO(https://github.com/rust-lang/reference/pull/1661): Add safety
+    // comment once this lands.
+    unsafe { transmute(src) }
+}
+
+/// Like [`core::mem::transmute`], but works on generic types and types of
+/// different sizes.
+///
+/// # Safety
+///
+/// The caller must ensure that reinterpreting the bytes of `src` as a `Dst` is
+/// sound, including if `Src` and `Dst` are different sizes.
+const unsafe fn transmute<Src, Dst>(src: Src) -> Dst {
+    use core::mem::ManuallyDrop;
+
+    #[repr(C)]
+    union Transmute<Src, Dst> {
+        src: ManuallyDrop<Src>,
+        dst: ManuallyDrop<Dst>,
+    }
+
+    // SAFETY: The caller promises that performing this transmute is sound.
+    // Since `Transmute` is a `#[repr(C)]` union, both `src` and `dst` are at
+    // byte offset 0 within `Transmute` [1], and so this is equivalent to
+    // transmuting a `ManuallyDrop<Src>` into a `ManuallyDrop<Dst>`. Since
+    // `ManuallyDrop<T>` has the same layout as `T` [2], this is equivalent to
+    // transmuting `src` directly into `dst`.
+    //
+    // [1] TODO
+    //
+    // [2] TODO
+    ManuallyDrop::into_inner(unsafe { Transmute { src: ManuallyDrop::new(src) }.dst })
 }
 
 /// Since we support multiple versions of Rust, there are often features which
