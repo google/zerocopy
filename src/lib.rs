@@ -701,6 +701,14 @@ pub unsafe trait KnownLayout {
     /// The type of metadata stored in a pointer to `Self`.
     ///
     /// This is `()` for sized types and `usize` for slice DSTs.
+    ///
+    /// # Safety
+    ///
+    /// Callers may assume for soundness that one of the following holds:
+    /// - `Self::LAYOUT.size_info` is a `SizeInfo::Sized` and
+    ///   `Self::PointerMetadata = ()`
+    /// - `Self::LAYOUT.size_info` is a `SizeInfo::SliceDst` and
+    ///   `Self::PointerMetadata = usize`
     type PointerMetadata: PointerMetadata;
 
     /// The layout of `Self`.
@@ -763,7 +771,7 @@ pub unsafe trait KnownLayout {
 
 /// The metadata associated with a [`KnownLayout`] type.
 #[doc(hidden)]
-pub trait PointerMetadata: Copy + Eq + Debug {
+pub trait PointerMetadata: Copy + Eq + Debug + IntoBytes + Immutable {
     /// Constructs a `Self` from an element count.
     ///
     /// If `Self = ()`, this returns `()`. If `Self = usize`, this returns
