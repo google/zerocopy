@@ -19,7 +19,8 @@
 name: Roll pinned toolchain versions
 on:
   schedule:
-    - cron: '29 12 * * *'
+    # Only run on weekdays
+    - cron: '29 12 * * 1-5'
   workflow_dispatch:
 
 permissions: read-all
