@@ -659,7 +659,15 @@ jobs:
       - name: Populate cache
         uses: ./.github/actions/cache
 
+      - uses: actions/cache/restore@v4
+        id: restore-cache
+        with:
+          path: |
+            ~/.cargo/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
+
       - name: Download dependencies
+        if: steps.restore-cache.outputs.cache-hit != 'true'
         run: |
           # Ensure all dependencies are downloaded - both for our crates and for
           # tools we use in CI. We don't care about these tools succeeding for
