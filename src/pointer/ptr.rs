@@ -1165,6 +1165,7 @@ mod _casts {
         /// - If this is a prefix cast, `ptr` has the same address as `self`.
         /// - If this is a suffix cast, `remainder` has the same address as
         ///   `self`.
+        #[inline(always)]
         pub(crate) fn try_cast_into<U, R>(
             self,
             cast_type: CastType,
