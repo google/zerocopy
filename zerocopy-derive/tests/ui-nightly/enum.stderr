@@ -513,7 +513,7 @@ error[E0277]: the trait bound `bool: FromBytes` is not satisfied
    --> tests/ui-nightly/enum.rs:191:10
     |
 191 | #[derive(FromBytes)]
-    |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `bool`, which is required by `FooU8: FromBytes`
+    |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `bool`
     |
     = note: Consider adding `#[derive(FromBytes)]` to `bool`
     = help: the following other types implement trait `FromBytes`:
