@@ -451,6 +451,7 @@ impl DstLayout {
     /// rely on `validate_cast_and_convert_metadata` panicking in any particular
     /// condition, even if `debug_assertions` are enabled.
     #[allow(unused)]
+    #[inline(always)]
     pub(crate) const fn validate_cast_and_convert_metadata(
         &self,
         addr: usize,
