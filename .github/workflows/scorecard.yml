@@ -18,9 +18,12 @@ on:
   # To guarantee Maintained check is occasionally updated. See
   # https://github.com/ossf/scorecard/blob/main/docs/checks.md#maintained
   schedule:
-    - cron: '29 15 * * 6'
+    - cron: "29 15 * * 6"
   push:
-    branches: [ "main" ]
+    branches: ["main"]
+  # Add pull_request trigger to check PRs
+  pull_request:
+    branches: ["main"]
 
 # Declare default permissions as read only.
 permissions: read-all
@@ -55,6 +58,24 @@ jobs:
           #   - See https://github.com/ossf/scorecard-action#publishing-results.
           publish_results: true
 
+          # Enable only Pinned-Dependencies check
+          checks: pinned-dependencies
+
+      # Add step to fail if Pinned-Dependencies check fails
+      - name: "Check Pinned Dependencies Score"
+        run: |
+          score=$(jq -r '.runs[0].results[] | select(.ruleId=="pinned-dependencies") | .score' results.sarif)
+          if (( $(echo "$score < 9" | bc -l) )); then
+            echo "Pinned-Dependencies check failed with score: $score"
+            echo "Please ensure all dependencies are pinned to specific versions."
+            echo "Common locations to check:"
+            echo "- GitHub Actions workflow files (.github/workflows/*.yml)"
+            echo "- Package manager files (package.json, requirements.txt, etc.)"
+            echo "- Docker images in Dockerfiles"
+            exit 1
+          fi
+          echo "Pinned-Dependencies check passed with score: $score"
+
       # Upload the results as artifacts (optional). Commenting out will disable uploads of run results in SARIF
       # format to the repository Actions tab.
       - name: "Upload artifact"
@@ -69,3 +90,11 @@ jobs:
         uses: github/codeql-action/upload-sarif@662472033e021d55d94146f66f6058822b0b39fd # v3.27.0
         with:
           sarif_file: results.sarif
+
+  # Reference to the main all-jobs-succeed job
+  all-jobs-succeed:
+    needs: [analysis]
+    if: false # This job never runs, it's just for dependency tracking
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This job is never executed, it exists only for dependency tracking"
