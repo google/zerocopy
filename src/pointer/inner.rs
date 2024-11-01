@@ -147,7 +147,7 @@ impl<'a, T> PtrInner<'a, [T]> {
     /// # Safety
     ///
     /// `range` is a valid range (`start <= end`) and `end <= self.len()`.
-    pub(crate) unsafe fn slice_unchecked(self, range: Range<usize>) -> Self {
+    pub(crate) const unsafe fn slice_unchecked(self, range: Range<usize>) -> Self {
         let base = self.as_non_null().cast::<T>().as_ptr();
 
         // SAFETY: The caller promises that `start <= end <= self.len()`. By
@@ -209,7 +209,7 @@ impl<'a, T> PtrInner<'a, [T]> {
     ///
     /// Given `let (left, right) = ptr.split_at(l_len)`, it is guaranteed
     /// that `left` and `right` are contiguous and non-overlapping.
-    pub(crate) unsafe fn split_at(self, l_len: usize) -> (Self, Self) {
+    pub(crate) const unsafe fn split_at(self, l_len: usize) -> (Self, Self) {
         // SAFETY: The caller promises that `l_len <= self.len()`.
         // Trivially, `0 <= l_len`.
         let left = unsafe { self.slice_unchecked(0..l_len) };
@@ -304,7 +304,7 @@ impl<'a, T> PtrInner<'a, [T]> {
     /// # Safety
     ///
     /// Unsafe code my rely on `len` satisfying the above contract.
-    pub(crate) fn len(&self) -> usize {
+    pub(crate) const fn len(&self) -> usize {
         self.trailing_slice_len()
     }
 }
@@ -395,7 +395,7 @@ impl<'a> PtrInner<'a, [u8]> {
     /// `self`. Finally:
     /// - If this is a prefix cast, `ptr` has the same address as `self`.
     /// - If this is a suffix cast, `remainder` has the same address as `self`.
-    pub(crate) fn try_cast_into<U>(
+    pub(crate) const fn try_cast_into<U>(
         self,
         cast_type: CastType,
         meta: Option<U::PointerMetadata>,
@@ -408,7 +408,7 @@ impl<'a> PtrInner<'a, [u8]> {
             // This can return `None` if the metadata describes an object
             // which can't fit in an `isize`.
             Some(meta) => {
-                let size = match meta.size_for_metadata(U::LAYOUT) {
+                let size = match crate::util::size_for_metadata::<U>(meta) {
                     Some(size) => size,
                     None => return Err(CastError::Size(SizeError::new(self))),
                 };
@@ -423,7 +423,7 @@ impl<'a> PtrInner<'a, [u8]> {
         // `validate_cast_and_convert_metadata` will only panic if `U` is a DST
         // whose trailing slice element is zero-sized.
         let maybe_metadata = layout.validate_cast_and_convert_metadata(
-            AsAddress::addr(self.as_non_null().as_ptr()),
+            self.as_non_null().as_ptr() as *mut u8 as usize,
             self.len(),
             cast_type,
         );
@@ -451,7 +451,8 @@ impl<'a> PtrInner<'a, [u8]> {
 
         let base = target.as_non_null().cast::<u8>();
 
-        let elems = <U as KnownLayout>::PointerMetadata::from_elem_count(elems);
+        // let elems = <U as KnownLayout>::PointerMetadata::from_elem_count(elems);
+        let elems = crate::util::metadata_from_elem_count::<U>(elems);
         // For a slice DST type, if `meta` is `Some(elems)`, then we synthesize
         // `layout` to describe a sized type whose size is equal to the size of
         // the instance that we are asked to cast. For sized types,
