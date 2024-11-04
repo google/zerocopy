@@ -1,0 +1,82 @@
+name: Backport PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: "Commit hash to backport"
+        required: true
+      target_branch:
+        description: "Target branch for the new PR"
+        required: true
+
+jobs:
+  backport:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Git user
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      - name: Backport Commit
+        id: backport
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Set up remote with dynamic repository
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+
+          # Fetch the latest changes
+          git fetch origin
+
+          # Checkout target branch and update it
+          git checkout ${{ github.event.inputs.target_branch }}
+          git pull origin ${{ github.event.inputs.target_branch }}
+
+          # Create a new branch for the backport
+          BACKPORT_BRANCH="backport/${{ github.event.inputs.commit }}"
+          git checkout -b $BACKPORT_BRANCH
+
+          # Try to cherry-pick the commit
+          if ! git cherry-pick ${{ github.event.inputs.commit }}; then
+            if [[ $(git status --porcelain) ]]; then
+              # There are conflicts
+              echo "Cherry-pick failed due to conflicts"
+              git cherry-pick --abort
+              exit 1
+            else
+              # Empty cherry-pick (changes already present)
+              echo "Changes from commit ${{ github.event.inputs.commit }} are already present in ${{ github.event.inputs.target_branch }}"
+              echo "Creating empty commit to track the backport"
+              git commit --allow-empty -m "Backport: ${{ github.event.inputs.commit }} (changes already present)"
+            fi
+          fi
+
+          # Push the new branch
+          git push origin $BACKPORT_BRANCH
+
+          # Create a pull request from the new branch to target branch
+          if ! gh pr create \
+            --title "Backport: ${{ github.event.inputs.commit }}" \
+            --body "Backporting commit ${{ github.event.inputs.commit }} to ${{ github.event.inputs.target_branch }}
+
+            Note: The changes from this commit might already be present in the target branch." \
+            --base ${{ github.event.inputs.target_branch }} \
+            --head $BACKPORT_BRANCH; then
+            echo "Failed to create PR - the changes might already be present in a PR"
+            exit 1
+          fi
+
+      - name: Handle Failure
+        if: failure()
+        run: |
+          echo "Backport failed. Please check if:"
+          echo "1. The commit exists and is accessible"
+          echo "2. The changes are already present in the target branch"
+          echo "3. There are conflicts that need manual resolution"
