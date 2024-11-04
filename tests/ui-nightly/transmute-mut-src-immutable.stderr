@@ -26,6 +26,11 @@ note: in edition 2024, the requirement `!: FromBytes` will fail
    |                      ^^^^^^^^^^^^^^^^^^^^
    = note: `#[warn(dependency_on_unit_never_type_fallback)]` on by default
    = note: this warning originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `()` annotations to avoid fallback changes
+  --> src/macros.rs
+   |
+   |         let e: &mut () = $e;
+   |                     ~~
 
 warning: never type fallback affects this call to an `unsafe` function
   --> tests/ui-nightly/transmute-mut-src-immutable.rs:17:22

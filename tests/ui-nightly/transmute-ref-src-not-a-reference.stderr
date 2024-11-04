@@ -30,6 +30,11 @@ note: in edition 2024, the requirement `!: IntoBytes` will fail
    |                                  ^^^^^^^^^^^^^^^^^^^^^^
    = note: `#[warn(dependency_on_unit_never_type_fallback)]` on by default
    = note: this warning originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: use `()` annotations to avoid fallback changes
+  --> src/macros.rs
+   |
+   |         let e: &() = $e;
+   |                 ~~
 
 warning: never type fallback affects this call to an `unsafe` function
   --> tests/ui-nightly/transmute-ref-src-not-a-reference.rs:17:34
