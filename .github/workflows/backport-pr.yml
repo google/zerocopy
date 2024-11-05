@@ -29,16 +29,27 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: ${{ github.event.inputs.target_branch }}
+          # Check out the entire repository so that the target commit is checked
+          # out (by default, only fetches the single commit identified by the
+          # `ref` argument).
+          fetch-depth: 0
           persist-credentials: false
       - name: Cherry-pick commit
         run: |
           set -eo pipefail
+
+          AUTHOR_NAME="$(git log -1 --pretty='%an' ${{ github.event.inputs.commit }})"
+          AUTHOR_EMAIL="$(git log -1 --pretty='%ae' ${{ github.event.inputs.commit }})"
+
+          git config --global user.name "$AUTHOR_NAME"
+          git config --global user.email "$AUTHOR_EMAIL"
+
           git cherry-pick ${{ github.event.inputs.commit }}
-          
+
           PR_TITLE="$(git log -1 --pretty=%s)"
           echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
 
-          AUTHOR="$(git log -1 --pretty='%an <%ae>')"
+          AUTHOR="$AUTHOR_NAME <$AUTHOR_EMAIL>"
           echo "AUTHOR=$AUTHOR" >> $GITHUB_ENV
 
       - name: Submit PR
