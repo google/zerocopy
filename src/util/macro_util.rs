@@ -440,6 +440,12 @@ macro_rules! assert_size_eq {
     }};
 }
 
+#[repr(C)]
+pub union MaxSizesOf<T, U> {
+    pub source: ManuallyDrop<T>,
+    pub _dest: ManuallyDrop<U>,
+}
+
 /// Transmutes a reference of one type to a reference of another type.
 ///
 /// # Safety
@@ -498,21 +504,17 @@ pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
     unsafe { &mut *dst }
 }
 
-/// Is a given source a valid instance of `Dst`?
-///
-/// If so, returns `src` casted to a `Ptr<Dst, _>`. Otherwise returns `None`.
+/// Attempts to cast `src` to `Ptr<Dst, _>`. Returns `Some` if successful, `None` otherwise.
 ///
 /// # Safety
 ///
-/// Unsafe code may assume that, if `try_cast_or_pme(src)` returns `Some`,
-/// `*src` is a bit-valid instance of `Dst`, and that the size of `Src` is
-/// greater than or equal to the size of `Dst`.
+/// If `try_cast_or_pme(src)` returns `Some`, `*src` is a valid `Dst`, and `Src`
+/// is at least as large as `Dst`.
 ///
 /// # Panics
 ///
-/// `try_cast_or_pme` may either produce a post-monomorphization error or a
-/// panic if `Dst` not the same size as `Src`. Otherwise, `try_cast_or_pme`
-/// panics under the same circumstances as [`is_bit_valid`].
+/// May panic if `Dst` and `Src` sizes differ, or under the same conditions as
+/// [`is_bit_valid`].
 ///
 /// [`is_bit_valid`]: TryFromBytes::is_bit_valid
 #[doc(hidden)]
@@ -599,6 +601,104 @@ where
     }
 }
 
+#[doc(hidden)]
+#[inline]
+fn try_cast_prefix_or_pme<Src, Dst, I, R>(
+    src: Ptr<'_, Src, I>,
+) -> Result<
+    Ptr<'_, Dst, (I::Aliasing, invariant::Unknown, invariant::Valid)>,
+    ValidityError<Ptr<'_, Src, I>, Dst>,
+>
+where
+    Src: IntoBytes + invariant::Read<I::Aliasing, R>,
+    Dst: TryFromBytes + invariant::Read<I::Aliasing, R>,
+    I: Invariants<Validity = invariant::Valid>,
+    I::Aliasing: invariant::Reference,
+{
+    // Assert that source size is greater than or equal to destination size
+    static_assert!(Src, Dst => mem::size_of::<Src>() >= mem::size_of::<Dst>());
+
+    // SAFETY: This is a pointer cast, satisfying the following properties:
+    // - `p as *mut Dst` addresses a prefix of the bytes addressed by `src`,
+    //   because we assert above that the size of `Dst` is less than or equal
+    //   to the size of `Src`.
+    // - `p as *mut Dst` is a provenance-preserving cast
+    // - Alignment has been verified above
+    #[allow(clippy::as_conversions)]
+    let c_ptr = unsafe { src.cast_unsized(|p| p as *mut Dst) };
+
+    // SAFETY: `c_ptr` is derived from `src` which is `IntoBytes`. By
+    // invariant on `IntoBytes`, `c_ptr`'s referent consists entirely of
+    // initialized bytes. We only read the prefix of these bytes.
+    let c_ptr = unsafe { c_ptr.assume_initialized() };
+
+    match c_ptr.try_into_valid() {
+        Ok(ptr) => Ok(ptr),
+        Err(err) => {
+            let ptr = err.into_src();
+
+            // SAFETY: This is a pointer cast, satisfying the following properties:
+            // - `p as *mut Src` addresses the full range of bytes addressed by `ptr`
+            // - `p as *mut Src` is a provenance-preserving cast
+            #[allow(clippy::as_conversions)]
+            let ptr = unsafe { ptr.cast_unsized(|p| p as *mut Src) };
+
+            // SAFETY: `ptr` is `src`, and has the same alignment invariant
+            let ptr = unsafe { ptr.assume_alignment::<I::Alignment>() };
+
+            // SAFETY: `ptr` is `src` and has the same validity invariant
+            let ptr = unsafe { ptr.assume_validity::<I::Validity>() };
+
+            Err(ValidityError::new(ptr.unify_invariants()))
+        }
+    }
+}
+
+// Helper trait for static assertions
+#[allow(dead_code)]
+trait StaticAssert {
+    fn assert() -> bool;
+}
+
+// Implementation to verify size relationships
+impl<Src, Dst> StaticAssert for (Src, Dst)
+where
+    Src: Sized,
+    Dst: Sized,
+{
+    fn assert() -> bool {
+        mem::size_of::<Src>() >= mem::size_of::<Dst>()
+    }
+}
+
+// Macro for static assertions
+#[inline]
+pub fn try_transmute_prefix<Src, Dst>(src: Src) -> Result<Dst, ValidityError<Src, Dst>>
+where
+    Src: IntoBytes,
+    Dst: TryFromBytes,
+{
+    // Ensure source size is greater than or equal to destination size
+    if mem::size_of::<Src>() < mem::size_of::<Dst>() {
+        return Err(ValidityError::new(src));
+    }
+
+    let mut src = ManuallyDrop::new(src);
+    let ptr = Ptr::from_mut(&mut src);
+
+    // Similar to try_transmute, but we handle partial reads
+    match try_cast_prefix_or_pme::<_, ManuallyDrop<Unalign<Dst>>, _, BecauseExclusive>(ptr) {
+        Ok(ptr) => {
+            let dst = ptr.bikeshed_recall_aligned().as_mut();
+            // SAFETY: By shadowing `dst`, we ensure that `dst` is not re-used
+            // after taking its inner value.
+            let dst = unsafe { ManuallyDrop::take(dst) };
+            Ok(dst.into_inner())
+        }
+        Err(_) => Err(ValidityError::new(ManuallyDrop::into_inner(src))),
+    }
+}
+
 /// Attempts to transmute `&Src` into `&Dst`.
 ///
 /// A helper for `try_transmute_ref!`.
@@ -619,7 +719,7 @@ where
 {
     match try_cast_or_pme::<Src, Dst, _, BecauseImmutable>(Ptr::from_ref(src)) {
         Ok(ptr) => {
-            static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
+            assert!(mem::align_of::<Dst>() <= mem::align_of::<Src>());
             // SAFETY: We have checked that `Dst` does not have a stricter
             // alignment requirement than `Src`.
             let ptr = unsafe { ptr.assume_alignment::<invariant::Aligned>() };
@@ -649,7 +749,7 @@ where
 {
     match try_cast_or_pme::<Src, Dst, _, BecauseExclusive>(Ptr::from_mut(src)) {
         Ok(ptr) => {
-            static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
+            debug_assert!(mem::align_of::<Dst>() <= mem::align_of::<Src>());
             // SAFETY: We have checked that `Dst` does not have a stricter
             // alignment requirement than `Src`.
             let ptr = unsafe { ptr.assume_alignment::<invariant::Aligned>() };

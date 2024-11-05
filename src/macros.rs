@@ -51,18 +51,10 @@
 /// This macro can be invoked in `const` contexts.
 #[macro_export]
 macro_rules! transmute {
+    // Original behavior
     ($e:expr) => {{
-        // NOTE: This must be a macro (rather than a function with trait bounds)
-        // because there's no way, in a generic context, to enforce that two
-        // types have the same size. `core::mem::transmute` uses compiler magic
-        // to enforce this so long as the types are concrete.
-
         let e = $e;
         if false {
-            // This branch, though never taken, ensures that the type of `e` is
-            // `IntoBytes` and that the type of this macro invocation expression
-            // is `FromBytes`.
-
             struct AssertIsIntoBytes<T: $crate::IntoBytes>(T);
             let _ = AssertIsIntoBytes(e);
 
@@ -71,29 +63,56 @@ macro_rules! transmute {
             let u = AssertIsFromBytes(loop {});
             u.0
         } else {
+            #[allow(clippy::missing_transmute_annotations)]
             // SAFETY: `core::mem::transmute` ensures that the type of `e` and
             // the type of this macro invocation expression have the same size.
             // We know this transmute is safe thanks to the `IntoBytes` and
             // `FromBytes` bounds enforced by the `false` branch.
-            //
-            // We use this reexport of `core::mem::transmute` because we know it
-            // will always be available for crates which are using the 2015
-            // edition of Rust. By contrast, if we were to use
-            // `std::mem::transmute`, this macro would not work for such crates
-            // in `no_std` contexts, and if we were to use
-            // `core::mem::transmute`, this macro would not work in `std`
-            // contexts in which `core` was not manually imported. This is not a
-            // problem for 2018 edition crates.
             let u = unsafe {
-                // Clippy: We can't annotate the types; this macro is designed
-                // to infer the types from the calling context.
                 #[allow(clippy::missing_transmute_annotations)]
                 $crate::util::macro_util::core_reexport::mem::transmute(e)
             };
             $crate::util::macro_util::must_use(u)
         }
-    }}
+    }};
+
+    // New prefix transmute behavior
+    (@prefix $e:expr) => {{
+        let e = $e;
+        if false {
+            // Verify source type implements IntoBytes
+            struct AssertIsIntoBytes<T: $crate::IntoBytes>(T);
+            let _ = AssertIsIntoBytes(e);
+
+            // Verify destination type implements FromBytes
+            struct AssertIsFromBytes<U: $crate::FromBytes>(U);
+            #[allow(unused, unreachable_code)]
+            let u = AssertIsFromBytes(loop {});
+            u.0
+        } else {
+            // Create a union to verify size relationships at compile time
+
+            // SAFETY: `core::mem::transmute` is used here to ensure that
+            // the size of `e` is greater than or equal to the size of the
+            // destination type. We verify this through the union `MaxSizesOf`
+            // which enforces the size relationship at compile time. The
+            // transmute is safe because the original `e` is assumed to
+            // contain enough bytes to construct a value of the destination
+            // type.
+
+            let u = unsafe {
+                // First transmute to union to verify size relationships
+                let union_val = $crate::util::macro_util::core_reexport::mem::transmute::<_, $crate::util::macro_util::MaxSizesOf<_, _>>(e);
+
+                // Then transmute to final type, which is guaranteed to be prefix-compatible
+                $crate::util::macro_util::core_reexport::mem::transmute_copy(&union_val.source)
+            };
+            $crate::util::macro_util::must_use(u)
+        }
+    }};
 }
+
+// Helper trait to validate size relationships at compile time
 
 /// Safely transmutes a mutable or immutable reference of one type to an
 /// immutable reference of another type of the same size and compatible
@@ -392,74 +411,109 @@ macro_rules! transmute_mut {
     }}
 }
 
-/// Conditionally transmutes a value of one type to a value of another type of
-/// the same size.
+/// Conditionally transmutes a value of one type to a value of another type,
+/// supporting both same-size transmutations and prefix-compatible transmutations.
 ///
-/// This macro behaves like an invocation of this function:
+/// This macro has two modes:
 ///
+/// 1. **Same-size transmutation**: Transmutes a value of one type to a value of another type of the
+///    same size.
+/// 2. **Prefix-compatible transmutation**: Transmutes a value of one type to a prefix-compatible
+///    value of another type, allowing the destination type to be smaller than the source type.
+///
+/// # Syntax
+///
+/// For same-size transmutation:
 /// ```ignore
-/// fn try_transmute<Src, Dst>(src: Src) -> Result<Dst, ValidityError<Src, Dst>>
-/// where
-///     Src: IntoBytes,
-///     Dst: TryFromBytes,
-///     size_of::<Src>() == size_of::<Dst>(),
-/// {
-/// # /*
-///     ...
-/// # */
-/// }
+/// try_transmute!(value_expr)
 /// ```
 ///
-/// However, unlike a function, this macro can only be invoked when the types of
-/// `Src` and `Dst` are completely concrete. The types `Src` and `Dst` are
-/// inferred from the calling context; they cannot be explicitly specified in
-/// the macro invocation.
+/// For prefix-compatible transmutation:
+/// ```ignore
+/// try_transmute!(@prefix SrcType, DstType, value_expr)
+/// ```
 ///
-/// Note that the `Src` produced by the expression `$e` will *not* be dropped.
-/// Semantically, its bits will be copied into a new value of type `Dst`, the
-/// original `Src` will be forgotten, and the value of type `Dst` will be
-/// returned.
+/// # Parameters
+///
+/// - **`SrcType`**: The source type in prefix transmutation. Must implement `IntoBytes`.
+/// - **`DstType`**: The destination type in prefix transmutation. Must implement `FromBytes`.
+/// - **`value_expr`**: The expression producing the value to be transmuted.
+///
+/// # Safety
+///
+/// This macro performs an unsafe operation, using a union to validate size compatibility. The
+/// transmutation will only compile if `size_of::<SrcType>() >= size_of::<DstType>()` in prefix
+/// mode or `size_of::<Src>() == size_of::<Dst>()` in same-size mode, ensuring safe transmutations.
 ///
 /// # Examples
 ///
-/// ```
+/// ## Same-size Transmutation
+///
+/// ```rust
 /// # use zerocopy::*;
-/// // 0u8 → bool = false
+/// // Transmute from `u8` to `bool`
 /// assert_eq!(try_transmute!(0u8), Ok(false));
+/// assert_eq!(try_transmute!(1u8), Ok(true));
 ///
-/// // 1u8 → bool = true
-///  assert_eq!(try_transmute!(1u8), Ok(true));
-///
-/// // 2u8 → bool = error
+/// // An invalid transmutation example
 /// assert!(matches!(
 ///     try_transmute!(2u8),
 ///     Result::<bool, _>::Err(ValidityError { .. })
 /// ));
 /// ```
+///
+/// ## Prefix-compatible Transmutation
+///
+/// ```rust
+/// # use zerocopy::*;
+/// let large_array: [u8; 5] = [0, 1, 2, 3, 4];
+/// let result: Result<[u8; 2], _> = try_transmute!(@prefix [u8; 5], [u8; 2], large_array);
+/// assert!(result.is_ok());
+/// assert_eq!(result.unwrap(), [0, 1]);
+///
+/// let large_num: u64 = 0x0102030405060708;
+/// let result: Result<u32, _> = try_transmute!(@prefix u64, u32, large_num);
+/// assert!(result.is_ok());
+/// assert_eq!(result.unwrap(), 0x05060708);
+/// ```
 #[macro_export]
 macro_rules! try_transmute {
     ($e:expr) => {{
-        // NOTE: This must be a macro (rather than a function with trait bounds)
-        // because there's no way, in a generic context, to enforce that two
-        // types have the same size. `core::mem::transmute` uses compiler magic
-        // to enforce this so long as the types are concrete.
-
         let e = $e;
         if false {
-            // Check that the sizes of the source and destination types are
-            // equal.
-
-            // SAFETY: This code is never executed.
+            // SAFETY: `core::mem::transmute` ensures that the type of `e` and
+            // the type of this macro invocation expression have the same size.
+            // This check is enforced by the false branch, so the actual transmute
+            // operation is safe.
             Ok(unsafe {
-                // Clippy: We can't annotate the types; this macro is designed
-                // to infer the types from the calling context.
                 #[allow(clippy::missing_transmute_annotations)]
                 $crate::util::macro_util::core_reexport::mem::transmute(e)
             })
         } else {
             $crate::util::macro_util::try_transmute::<_, _>(e)
         }
-    }}
+    }};
+
+    (@prefix $src_type:ty, $dest_type:ty, $e:expr) => {{
+        let e: $src_type = $e;
+        if false {
+            #[allow(clippy::missing_transmute_annotations)]
+            // SAFETY: This code is never executed, and only verifies size
+            // compatibility at compile time using `MaxSizesOf`. Thus, no runtime
+            // transmute is actually performed here.
+            let _ = unsafe {
+                $crate::util::macro_util::core_reexport::mem::transmute::<$src_type, $crate::util::macro_util::MaxSizesOf<$src_type, $dest_type>>(e)
+            };
+
+            // SAFETY: The above transmute check ensures that the prefix transmute
+            // is safe, as `core::mem::transmute_copy` will only copy valid bytes.
+            Ok(unsafe {
+                $crate::util::macro_util::core_reexport::mem::transmute_copy(&e)
+            })
+        } else {
+            $crate::util::macro_util::try_transmute_prefix::<$src_type, $dest_type>(e)
+        }
+    }};
 }
 
 /// Conditionally transmutes a mutable or immutable reference of one type to an
@@ -774,6 +828,24 @@ mod tests {
         assert_eq!(x.into_inner(), 1);
         let x: UnsafeCell<isize> = transmute!(UnsafeCell::new(1usize));
         assert_eq!(x.into_inner(), 1);
+    }
+
+    #[test]
+    fn test_prefix_transmute() {
+        // Test prefix transmutation with arrays
+        let large_array = [0u8, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+        let expected_small_arrays = [[0, 1], [2, 3], [4, 5], [6, 7]];
+
+        let result: Result<[[u8; 2]; 4], _> =
+            try_transmute!(@prefix [u8; 12], [[u8; 2]; 4], large_array);
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), expected_small_arrays);
+
+        // Test with different sized integers
+        let large_num: u64 = 0x0102030405060708;
+        let result: Result<u32, _> = try_transmute!(@prefix u64, u32, large_num);
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), 0x05060708);
     }
 
     #[test]
