@@ -298,7 +298,7 @@ impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
     /// });
     /// ```
     #[inline]
-    pub fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> AlignmentError<NewSrc, Dst> {
+    pub fn map_src<NewSrc>(self, f: impl FnOnce(Src) -> NewSrc) -> AlignmentError<NewSrc, Dst> {
         AlignmentError { src: f(self.src), dst: SendSyncPhantomData::default() }
     }
 
@@ -453,7 +453,7 @@ impl<Src, Dst: ?Sized> SizeError<Src, Dst> {
     /// });
     /// ```
     #[inline]
-    pub fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> SizeError<NewSrc, Dst> {
+    pub fn map_src<NewSrc>(self, f: impl FnOnce(Src) -> NewSrc) -> SizeError<NewSrc, Dst> {
         SizeError { src: f(self.src), dst: SendSyncPhantomData::default() }
     }
 
@@ -590,7 +590,7 @@ impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
     /// });
     /// ```
     #[inline]
-    pub fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> ValidityError<NewSrc, Dst> {
+    pub fn map_src<NewSrc>(self, f: impl FnOnce(Src) -> NewSrc) -> ValidityError<NewSrc, Dst> {
         ValidityError { src: f(self.src), dst: SendSyncPhantomData::default() }
     }
 
@@ -710,7 +710,7 @@ impl<Src, Dst: ?Sized> CastError<Src, Dst> {
     /// });
     /// ```
     #[inline]
-    pub fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> CastError<NewSrc, Dst> {
+    pub fn map_src<NewSrc>(self, f: impl FnOnce(Src) -> NewSrc) -> CastError<NewSrc, Dst> {
         match self {
             Self::Alignment(e) => CastError::Alignment(e.map_src(f)),
             Self::Size(e) => CastError::Size(e.map_src(f)),
@@ -831,7 +831,7 @@ impl<Src, Dst: ?Sized + TryFromBytes> TryCastError<Src, Dst> {
     ///     });
     /// ```
     #[inline]
-    pub fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> TryCastError<NewSrc, Dst> {
+    pub fn map_src<NewSrc>(self, f: impl FnOnce(Src) -> NewSrc) -> TryCastError<NewSrc, Dst> {
         match self {
             Self::Alignment(e) => TryCastError::Alignment(e.map_src(f)),
             Self::Size(e) => TryCastError::Size(e.map_src(f)),
@@ -896,7 +896,7 @@ impl<Src, Dst: ?Sized + TryFromBytes> TryReadError<Src, Dst> {
     ///     });
     /// ```
     #[inline]
-    pub fn map_src<NewSrc>(self, f: impl Fn(Src) -> NewSrc) -> TryReadError<NewSrc, Dst> {
+    pub fn map_src<NewSrc>(self, f: impl FnOnce(Src) -> NewSrc) -> TryReadError<NewSrc, Dst> {
         match self {
             Self::Alignment(i) => match i {},
             Self::Size(e) => TryReadError::Size(e.map_src(f)),
