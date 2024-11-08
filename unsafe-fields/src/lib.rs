@@ -329,6 +329,44 @@ macro_rules! unsafe_fields {
             )*
         }
     };
+
+    (
+        $( #[$attr:meta] )*
+        $vis:vis enum $name:ident {
+            $(
+                $(#[$variant_attrs:meta])*
+                $variant:ident $({
+                    $(
+                        $(#[$field_attr:ident])?
+                        $field:ident: $field_ty:ty
+                    ),+ $(,)?
+                })?
+                $((
+                    $(
+                        $field_ty2:ty
+                    ),+ $(,)?
+                ))?
+            ),+ $(,)?
+        }
+    ) => {
+        $(#[$attr])*
+        $vis enum $name {
+            $(
+                $(#[$variant_attrs])*
+                $variant $({
+                    $(
+                        $field: unsafe_fields!(@field $(#[$field_attr])? $field: $field_ty),
+                    )*
+                })?
+                $((
+                    $(
+                        $field_ty2,
+                    )+
+                ))?
+            ),+
+        }
+    };
+
     (@field #[unsafe] $field:ident: $field_ty:ty) => {
         $crate::Unsafe<Self, $field_ty, {$crate::macro_util::hash_field_name(stringify!($field))}>
     };
@@ -391,9 +429,41 @@ mod tests {
 
     #[test]
     #[allow(clippy::undocumented_unsafe_blocks)]
-    fn test_unsafe_fieds() {
+    fn test_unsafe_fields() {
         let mut _foo = Foo { a: unsafe { Unsafe::new(0) }, b: 0 };
         let mut _bar = Bar { a: unsafe { Unsafe::new(0) }, b: unsafe { Unsafe::new(0) } };
+    }
+
+    unsafe_fields! {
+        #[allow(unused)]
+        enum FooEnum {
+            UnitA,
+            UnitB,
+            StructVariantA {
+                a: i32,
+                #[unsafe]
+                b: String,
+            },
+            StructVariantB {
+                #[unsafe]
+                a: usize,
+                #[unsafe]
+                b: String,
+            },
+            TupleVariant(i32, String, usize),
+        }
+    }
+    #[test]
+    #[allow(clippy::undocumented_unsafe_blocks)]
+    fn test_unsafe_fields_enum() {
+        let mut _foofoo_a =
+            FooEnum::StructVariantA { a: 0, b: unsafe { Unsafe::new(String::from("foo")) } };
+        let mut _foofoo_b = FooEnum::StructVariantB {
+            a: unsafe { Unsafe::new(0) },
+            b: unsafe { Unsafe::new(String::from("foo")) },
+        };
+        let mut _foo_c = FooEnum::UnitA;
+        let mut _foo_d = FooEnum::TupleVariant(1, String::from("foo"), 0);
     }
 }
 
