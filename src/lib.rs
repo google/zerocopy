@@ -923,9 +923,9 @@ safety_comment! {
 /// Analyzes whether a type is [`FromZeros`].
 ///
 /// This derive analyzes, at compile time, whether the annotated type satisfies
-/// the [safety conditions] of `FromZeros` and implements `FromZeros` if it is
-/// sound to do so. This derive can be applied to structs, enums, and unions;
-/// e.g.:
+/// the [safety conditions] of `FromZeros` and implements `FromZeros` and its
+/// supertraits if it is sound to do so. This derive can be applied to structs,
+/// enums, and unions; e.g.:
 ///
 /// ```
 /// # use zerocopy_derive::{FromZeros, Immutable};
@@ -3174,8 +3174,9 @@ pub unsafe trait FromZeros: TryFromBytes {
 /// Analyzes whether a type is [`FromBytes`].
 ///
 /// This derive analyzes, at compile time, whether the annotated type satisfies
-/// the [safety conditions] of `FromBytes` and implements `FromBytes` if it is
-/// sound to do so. This derive can be applied to structs, enums, and unions;
+/// the [safety conditions] of `FromBytes` and implements `FromBytes` and its
+/// supertraits if it is sound to do so. This derive can be applied to structs,
+/// enums, and unions;
 /// e.g.:
 ///
 /// ```
