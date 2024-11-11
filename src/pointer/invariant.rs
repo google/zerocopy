@@ -55,6 +55,9 @@ impl<A: Aliasing, AA: Alignment, V: Validity> Invariants for (A, AA, V) {
 }
 
 /// The aliasing invariant of a [`Ptr`][super::Ptr].
+///
+/// All aliasing invariants must permit reading from the bytes of a pointer's
+/// referent which are not covered by [`UnsafeCell`]s.
 pub trait Aliasing: Sealed {
     /// Is `Self` [`Exclusive`]?
     #[doc(hidden)]
@@ -65,9 +68,6 @@ pub trait Aliasing: Sealed {
     /// Aliasing>::Variance<'a, T>` to inherit this variance.
     #[doc(hidden)]
     type Variance<'a, T: 'a + ?Sized>;
-
-    #[doc(hidden)]
-    type MappedTo<M: AliasingMapping>: Aliasing;
 }
 
 /// The alignment invariant of a [`Ptr`][super::Ptr].
@@ -100,22 +100,6 @@ impl Validity for Unknown {
     type MappedTo<M: ValidityMapping> = M::FromUnknown;
 }
 
-/// The `Ptr<'a, T>` does not permit any reads or writes from or to its referent.
-pub enum Inaccessible {}
-
-impl Aliasing for Inaccessible {
-    const IS_EXCLUSIVE: bool = false;
-
-    // SAFETY: Inaccessible `Ptr`s permit neither reads nor writes, and so it
-    // doesn't matter how long the referent actually lives. Thus, covariance is
-    // fine (and is chosen because it is maximally permissive). Shared
-    // references are covariant [1].
-    //
-    // [1] https://doc.rust-lang.org/1.81.0/reference/subtyping.html#variance
-    type Variance<'a, T: 'a + ?Sized> = &'a T;
-    type MappedTo<M: AliasingMapping> = M::FromInaccessible;
-}
-
 /// The `Ptr<'a, T>` adheres to the aliasing rules of a `&'a T`.
 ///
 /// The referent of a shared-aliased `Ptr` may be concurrently referenced by any
@@ -128,7 +112,6 @@ pub enum Shared {}
 impl Aliasing for Shared {
     const IS_EXCLUSIVE: bool = false;
     type Variance<'a, T: 'a + ?Sized> = &'a T;
-    type MappedTo<M: AliasingMapping> = M::FromShared;
 }
 impl Reference for Shared {}
 
@@ -141,7 +124,6 @@ pub enum Exclusive {}
 impl Aliasing for Exclusive {
     const IS_EXCLUSIVE: bool = true;
     type Variance<'a, T: 'a + ?Sized> = &'a mut T;
-    type MappedTo<M: AliasingMapping> = M::FromExclusive;
 }
 impl Reference for Exclusive {}
 
@@ -230,7 +212,7 @@ define_because!(
     pub BecauseImmutable
 );
 // SAFETY: `T: Immutable`.
-unsafe impl<A: Reference, T: ?Sized + crate::Immutable> Read<A, BecauseImmutable> for T {}
+unsafe impl<A: Aliasing, T: ?Sized + crate::Immutable> Read<A, BecauseImmutable> for T {}
 
 use sealed::Sealed;
 mod sealed {
@@ -240,7 +222,6 @@ mod sealed {
 
     impl Sealed for Unknown {}
 
-    impl Sealed for Inaccessible {}
     impl Sealed for Shared {}
     impl Sealed for Exclusive {}
 
@@ -256,23 +237,6 @@ mod sealed {
 pub use mapping::*;
 mod mapping {
     use super::*;
-
-    /// A mapping from one [`Aliasing`] type to another.
-    ///
-    /// An `AliasingMapping` is a type-level map which maps one `Aliasing` type
-    /// to another. It is always "total" in the sense of having a mapping for
-    /// any `A: Aliasing`.
-    ///
-    /// Given `A: Aliasing` and `M: AliasingMapping`, `M` can be applied to `A`
-    /// as [`MappedAliasing<A, M>`](MappedAliasing).
-    ///
-    /// Mappings are used by [`Ptr`](crate::Ptr) conversion methods to preserve
-    /// or modify invariants as required by each method's semantics.
-    pub trait AliasingMapping {
-        type FromInaccessible: Aliasing;
-        type FromShared: Aliasing;
-        type FromExclusive: Aliasing;
-    }
 
     /// A mapping from one [`Alignment`] type to another.
     ///
@@ -308,10 +272,6 @@ mod mapping {
         type FromValid: Validity;
     }
 
-    /// The application of the [`AliasingMapping`] `M` to the [`Aliasing`] `A`.
-    #[allow(type_alias_bounds)]
-    pub type MappedAliasing<A: Aliasing, M: AliasingMapping> = A::MappedTo<M>;
-
     /// The application of the [`AlignmentMapping`] `M` to the [`Alignment`] `A`.
     #[allow(type_alias_bounds)]
     pub type MappedAlignment<A: Alignment, M: AlignmentMapping> = A::MappedTo<M>;
@@ -319,14 +279,6 @@ mod mapping {
     /// The application of the [`ValidityMapping`] `M` to the [`Validity`] `A`.
     #[allow(type_alias_bounds)]
     pub type MappedValidity<V: Validity, M: ValidityMapping> = V::MappedTo<M>;
-
-    impl<FromInaccessible: Aliasing, FromShared: Aliasing, FromExclusive: Aliasing> AliasingMapping
-        for ((Inaccessible, FromInaccessible), (Shared, FromShared), (Exclusive, FromExclusive))
-    {
-        type FromInaccessible = FromInaccessible;
-        type FromShared = FromShared;
-        type FromExclusive = FromExclusive;
-    }
 
     impl<FromUnknown: Alignment, FromAligned: Alignment> AlignmentMapping
         for ((Unknown, FromUnknown), (Shared, FromAligned))
