@@ -359,6 +359,9 @@ use core::{
     slice,
 };
 
+#[cfg(feature = "std")]
+use std::io;
+
 use crate::pointer::invariant::{self, BecauseExclusive};
 
 #[cfg(any(feature = "alloc", test))]
@@ -3068,10 +3071,7 @@ pub unsafe trait FromZeros: TryFromBytes {
             // "exposed" provenance, and thus Rust may have to assume that this
             // may consume provenance from any pointer whose provenance has been
             // exposed.
-            #[allow(fuzzy_provenance_casts)]
-            unsafe {
-                NonNull::new_unchecked(dangling)
-            }
+            unsafe { NonNull::new_unchecked(dangling) }
         };
 
         let ptr = Self::raw_from_ptr_len(ptr, count);
@@ -4495,6 +4495,48 @@ pub unsafe trait FromBytes: FromZeros {
             Err(CastError::Validity(i)) => match i {},
         }
     }
+
+    /// Reads a copy of `self` from an `io::Read`.
+    ///
+    /// This is useful for interfacing with operating system byte sinks (files,
+    /// sockets, etc.).
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use zerocopy::{byteorder::big_endian::*, FromBytes};
+    /// use std::fs::File;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes)]
+    /// #[repr(C)]
+    /// struct BitmapFileHeader {
+    ///     signature: [u8; 2],
+    ///     size: U32,
+    ///     reserved: U64,
+    ///     offset: U64,
+    /// }
+    ///
+    /// let mut file = File::open("image.bin").unwrap();
+    /// let header = BitmapFileHeader::read_from_io(&mut file).unwrap();
+    /// ```
+    #[cfg(feature = "std")]
+    #[inline(always)]
+    fn read_from_io<R>(mut src: R) -> io::Result<Self>
+    where
+        Self: Sized,
+        R: io::Read,
+    {
+        let mut buf = MaybeUninit::<Self>::zeroed();
+        let ptr = Ptr::from_mut(&mut buf);
+        // SAFETY: `buf` consists entirely of initialized, zeroed bytes.
+        let ptr = unsafe { ptr.assume_validity::<invariant::Initialized>() };
+        let ptr = ptr.as_bytes::<BecauseExclusive>();
+        src.read_exact(ptr.as_mut())?;
+        // SAFETY: `buf` entirely consists of initialized bytes, and `Self` is
+        // `FromBytes`.
+        Ok(unsafe { buf.assume_init() })
+    }
 }
 
 /// Interprets the given affix of the given bytes as a `&Self`.
@@ -5080,6 +5122,55 @@ pub unsafe trait IntoBytes {
             util::copy_unchecked(src, dst);
         }
         Ok(())
+    }
+
+    /// Writes a copy of `self` to an `io::Write`.
+    ///
+    /// This is a shorthand for `dst.write_all(self.as_bytes())`, and is useful
+    /// for interfacing with operating system byte sinks (files, sockets, etc.).
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use zerocopy::{byteorder::big_endian::U16, FromBytes, IntoBytes};
+    /// use std::fs::File;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(FromBytes, IntoBytes, Immutable, KnownLayout)]
+    /// #[repr(C, packed)]
+    /// struct GrayscaleImage {
+    ///     height: U16,
+    ///     width: U16,
+    ///     pixels: [U16],
+    /// }
+    ///
+    /// let image = GrayscaleImage::ref_from_bytes(&[0, 0, 0, 0][..]).unwrap();
+    /// let mut file = File::create("image.bin").unwrap();
+    /// image.write_to_io(&mut file).unwrap();
+    /// ```
+    ///
+    /// If the write fails, `write_to_io` returns `Err` and a partial write may
+    /// have occured; e.g.:
+    ///
+    /// ```
+    /// # use zerocopy::IntoBytes;
+    ///
+    /// let src = u128::MAX;
+    /// let mut dst = [0u8; 2];
+    ///
+    /// let write_result = src.write_to_io(&mut dst[..]);
+    ///
+    /// assert!(write_result.is_err());
+    /// assert_eq!(dst, [255, 255]);
+    /// ```
+    #[cfg(feature = "std")]
+    #[inline(always)]
+    fn write_to_io<W>(&self, mut dst: W) -> io::Result<()>
+    where
+        Self: Immutable,
+        W: io::Write,
+    {
+        dst.write_all(self.as_bytes())
     }
 }
 
@@ -5793,6 +5884,20 @@ mod tests {
         assert_eq!(VAL.write_to_suffix(&mut bytes[..]), Ok(()));
         let want: [u8; 16] = transmute!([[0; 8], VAL_BYTES]);
         assert_eq!(bytes, want);
+    }
+
+    #[test]
+    #[cfg(feature = "std")]
+    fn test_read_write_io() {
+        let mut long_buffer = [0, 0, 0, 0];
+        assert!(matches!(u16::MAX.write_to_io(&mut long_buffer[..]), Ok(())));
+        assert_eq!(long_buffer, [255, 255, 0, 0]);
+        assert!(matches!(u16::read_from_io(&long_buffer[..]), Ok(u16::MAX)));
+
+        let mut short_buffer = [0, 0];
+        assert!(u32::MAX.write_to_io(&mut short_buffer[..]).is_err());
+        assert_eq!(short_buffer, [255, 255]);
+        assert!(u32::read_from_io(&short_buffer[..]).is_err());
     }
 
     #[test]
