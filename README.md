@@ -137,6 +137,10 @@ for network parsing.
   available on nightly. Since these types are unstable, support for any type
   may be removed at any point in the future.
 
+- **`float-nightly`**
+  Adds support for the unstable `f16` and `f128` types. These types are
+  not yet fully implemented and may not be supported on all platforms.
+
 [duplicate-import-errors]: https://github.com/google/zerocopy/issues/1587
 [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 

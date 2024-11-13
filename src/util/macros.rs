@@ -62,10 +62,37 @@ macro_rules! unsafe_impl {
             unsafe_impl!(@method $trait $(; |$candidate: MaybeAligned<$repr>| $is_bit_valid)?);
         }
     };
+
     // Implement all `$traits` for `$ty` with no bounds.
-    ($ty:ty: $($traits:ident),*) => {
-        $( unsafe_impl!($ty: $traits); )*
+    //
+    // The 2 arms under this one are there so we can apply
+    // N attributes for each one of M trait implementations.
+    // The simple solution of:
+    //
+    // ($(#[$attrs:meta])* $ty:ty: $($traits:ident),*) => {
+    //     $( unsafe_impl!( $(#[$attrs])* $ty: $traits ) );*
+    // }
+    //
+    // Won't work. The macro processor sees that the outer repetition
+    // contains both $attrs and $traits and expects them to match the same
+    // amount of fragments.
+    //
+    // To solve this we must:
+    // 1. Pack the attributes into a single token tree fragment we can match over.
+    // 2. Expand the traits.
+    // 3. Unpack and expand the attributes.
+    ($(#[$attrs:meta])* $ty:ty: $($traits:ident),*) => {
+        unsafe_impl!(@impl_traits_with_packed_attrs { $(#[$attrs])* } $ty: $($traits),*)
     };
+
+    (@impl_traits_with_packed_attrs $attrs:tt $ty:ty: $($traits:ident),*) => {
+        $( unsafe_impl!(@unpack_attrs $attrs $ty: $traits); )*
+    };
+
+    (@unpack_attrs { $(#[$attrs:meta])* } $ty:ty: $traits:ident) => {
+        unsafe_impl!($(#[$attrs])* $ty: $traits);
+    };
+
     // This arm is identical to the following one, except it contains a
     // preceding `const`. If we attempt to handle these with a single arm, there
     // is an inherent ambiguity between `const` (the keyword) and `const` (the
