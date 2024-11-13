@@ -1339,6 +1339,9 @@ fn impl_block<D: DataExt>(
         // TODO(#553): Add a test that generates a warning when
         // `#[allow(deprecated)]` isn't present.
         #[allow(deprecated)]
+        // While there are not currently any warnings that this suppresses (that
+        // we're aware of), it's good future-proofing hygiene.
+        #[automatically_derived]
         unsafe impl < #(#params),* > #trait_path for #type_ident < #(#param_idents),* >
         where
             #(#bounds,)*
