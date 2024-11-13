@@ -137,6 +137,10 @@
 //!   available on nightly. Since these types are unstable, support for any type
 //!   may be removed at any point in the future.
 //!
+//! - **`float-nightly`**
+//!   Adds support for the unstable `f16` and `f128` types. These types are
+//!   not yet fully implemented and may not be supported on all platforms.
+//!
 //! [duplicate-import-errors]: https://github.com/google/zerocopy/issues/1587
 //! [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 //!
@@ -304,6 +308,7 @@
     all(feature = "simd-nightly", any(target_arch = "powerpc", target_arch = "powerpc64")),
     feature(stdarch_powerpc)
 )]
+#![cfg_attr(feature = "float-nightly", feature(f16, f128))]
 #![cfg_attr(doc_cfg, feature(doc_cfg))]
 #![cfg_attr(
     __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS,
