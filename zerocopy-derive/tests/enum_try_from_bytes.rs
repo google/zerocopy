@@ -626,3 +626,19 @@ fn test_trivial_is_bit_valid() {
     util_assert_not_impl_any!(FooU8: imp::FromBytes);
     util::test_trivial_is_bit_valid::<FooU8>();
 }
+
+#[deny(non_camel_case_types)]
+mod issue_2051 {
+    use super::*;
+
+    // Test that the `non_camel_case_types` lint isn't triggered by generated code.
+    // Prevents regressions of #2051.
+    #[repr(u32)]
+    #[derive(imp::TryFromBytes)]
+    #[allow(non_camel_case_types)]
+    pub enum Code {
+        I32_ADD,
+        I32_SUB,
+        I32_MUL,
+    }
+}
