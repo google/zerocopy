@@ -36,6 +36,9 @@ syn = { version = "2.0.79", features = ["full"] }
 
 [dev-dependencies]
 dissimilar = "1.0.9"
+# We don't use this directly, but we depend on it indirectly. More recent
+# versions have an MSRV which is higher than our MSRV.
+libc = "=0.2.163"
 prettyplease = "0.2.22"
 rustversion = "1.0.17"
 static_assertions = "1.1.0"
