@@ -244,6 +244,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+      with:
+        fetch-depth: 2
 
     - name: Populate cache
       uses: ./.github/actions/cache
@@ -490,7 +492,7 @@ jobs:
 
         if [ "${{ github.event_name }}" == "pull_request" ]; then
           # Invoked from a PR - get the PR body directly
-          MESSAGE="${{ github.event.pull_request.body }}"
+          MESSAGE="$(git log -1 --pretty=%B ${{ github.event.pull_request.head.sha }})"
         else
           # Invoked from the merge queue - get the commit message
           MESSAGE="$(git log -1 --pretty=%B ${{ github.sha }})"
