@@ -7,6 +7,8 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+use core::mem::MaybeUninit as CoreMaybeUninit;
+
 use super::*;
 
 safety_comment! {
@@ -619,14 +621,14 @@ safety_comment! {
     /// SAFETY:
     /// `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`:
     /// `MaybeUninit<T>` has no restrictions on its contents.
-    unsafe_impl!(T => TryFromBytes for MaybeUninit<T>);
-    unsafe_impl!(T => FromZeros for MaybeUninit<T>);
-    unsafe_impl!(T => FromBytes for MaybeUninit<T>);
+    unsafe_impl!(T => TryFromBytes for CoreMaybeUninit<T>);
+    unsafe_impl!(T => FromZeros for CoreMaybeUninit<T>);
+    unsafe_impl!(T => FromBytes for CoreMaybeUninit<T>);
 }
 
-impl_for_transparent_wrapper!(T: Immutable => Immutable for MaybeUninit<T>);
-impl_for_transparent_wrapper!(T: Unaligned => Unaligned for MaybeUninit<T>);
-assert_unaligned!(MaybeUninit<()>, MaybeUninit<u8>);
+impl_for_transparent_wrapper!(T: Immutable => Immutable for CoreMaybeUninit<T>);
+impl_for_transparent_wrapper!(T: Unaligned => Unaligned for CoreMaybeUninit<T>);
+assert_unaligned!(CoreMaybeUninit<()>, CoreMaybeUninit<u8>);
 
 impl_for_transparent_wrapper!(T: ?Sized + Immutable => Immutable for ManuallyDrop<T>);
 impl_for_transparent_wrapper!(T: ?Sized + TryFromBytes => TryFromBytes for ManuallyDrop<T>);
@@ -1235,8 +1237,8 @@ mod tests {
                             ManuallyDrop<UnsafeCell<()>>,
                             ManuallyDrop<[UnsafeCell<u8>]>,
                             ManuallyDrop<[UnsafeCell<bool>]>,
-                            MaybeUninit<NotZerocopy>,
-                            MaybeUninit<UnsafeCell<()>>,
+                            CoreMaybeUninit<NotZerocopy>,
+                            CoreMaybeUninit<UnsafeCell<()>>,
                             Wrapping<UnsafeCell<()>>
                         );
 
@@ -1278,9 +1280,9 @@ mod tests {
                             Option<FnManyArgs>,
                             Option<extern "C" fn()>,
                             Option<ECFnManyArgs>,
-                            MaybeUninit<u8>,
-                            MaybeUninit<NotZerocopy>,
-                            MaybeUninit<UnsafeCell<()>>,
+                            CoreMaybeUninit<u8>,
+                            CoreMaybeUninit<NotZerocopy>,
+                            CoreMaybeUninit<UnsafeCell<()>>,
                             ManuallyDrop<UnsafeCell<()>>,
                             ManuallyDrop<[UnsafeCell<u8>]>,
                             ManuallyDrop<[UnsafeCell<bool>]>,
@@ -1742,9 +1744,9 @@ mod tests {
         assert_impls!(ManuallyDrop<[UnsafeCell<u8>]>: KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned, !Immutable);
         assert_impls!(ManuallyDrop<[UnsafeCell<bool>]>: KnownLayout, TryFromBytes, FromZeros, IntoBytes, Unaligned, !Immutable, !FromBytes);
 
-        assert_impls!(MaybeUninit<u8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, Unaligned, !IntoBytes);
-        assert_impls!(MaybeUninit<NotZerocopy>: KnownLayout, TryFromBytes, FromZeros, FromBytes, !Immutable, !IntoBytes, !Unaligned);
-        assert_impls!(MaybeUninit<UnsafeCell<()>>: KnownLayout, TryFromBytes, FromZeros, FromBytes, Unaligned, !Immutable, !IntoBytes);
+        assert_impls!(CoreMaybeUninit<u8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, Unaligned, !IntoBytes);
+        assert_impls!(CoreMaybeUninit<NotZerocopy>: KnownLayout, TryFromBytes, FromZeros, FromBytes, !Immutable, !IntoBytes, !Unaligned);
+        assert_impls!(CoreMaybeUninit<UnsafeCell<()>>: KnownLayout, TryFromBytes, FromZeros, FromBytes, Unaligned, !Immutable, !IntoBytes);
 
         assert_impls!(Wrapping<u8>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
         // This test is important because it allows us to test our hand-rolled

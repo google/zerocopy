@@ -139,8 +139,10 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
 
     let fields = ast.data.fields();
 
-    let (self_bounds, extras) = if let (Some(repr), Some((trailing_field, leading_fields))) =
-        (is_repr_c_struct, fields.split_last())
+    let (self_bounds, inner_extras, outer_extras) = if let (
+        Some(repr),
+        Some((trailing_field, leading_fields)),
+    ) = (is_repr_c_struct, fields.split_last())
     {
         let (_name, trailing_field_ty) = trailing_field;
         let leading_fields_tys = leading_fields.iter().map(|(_name, ty)| ty);
@@ -161,38 +163,8 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
             })
             .unwrap_or_else(|| quote!(#core_path::option::Option::None));
 
-        (
-            SelfBounds::None,
-            quote!(
-                type PointerMetadata = <#trailing_field_ty as ::zerocopy::KnownLayout>::PointerMetadata;
-
-                // SAFETY: `LAYOUT` accurately describes the layout of `Self`.
-                // The layout of `Self` is reflected using a sequence of
-                // invocations of `DstLayout::{new_zst,extend,pad_to_align}`.
-                // The documentation of these items vows that invocations in
-                // this manner will acurately describe a type, so long as:
-                //
-                //  - that type is `repr(C)`,
-                //  - its fields are enumerated in the order they appear,
-                //  - the presence of `repr_align` and `repr_packed` are correctly accounted for.
-                //
-                // We respect all three of these preconditions here. This
-                // expansion is only used if `is_repr_c_struct`, we enumerate
-                // the fields in order, and we extract the values of `align(N)`
-                // and `packed(N)`.
-                const LAYOUT: ::zerocopy::DstLayout = {
-                    use ::zerocopy::util::macro_util::core_reexport::num::NonZeroUsize;
-                    use ::zerocopy::{DstLayout, KnownLayout};
-
-                    let repr_align = #repr_align;
-                    let repr_packed = #repr_packed;
-
-                    DstLayout::new_zst(repr_align)
-                        #(.extend(DstLayout::for_type::<#leading_fields_tys>(), repr_packed))*
-                        .extend(<#trailing_field_ty as KnownLayout>::LAYOUT, repr_packed)
-                        .pad_to_align()
-                };
-
+        let make_methods = |trailing_field_ty| {
+            quote! {
                 // SAFETY:
                 // - The returned pointer has the same address and provenance as
                 //   `bytes`:
@@ -238,8 +210,111 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                 fn pointer_to_metadata(ptr: *mut Self) -> Self::PointerMetadata {
                     <#trailing_field_ty>::pointer_to_metadata(ptr as *mut _)
                 }
-            ),
-        )
+            }
+        };
+
+        let inner_extras = {
+            let leading_fields_tys = leading_fields_tys.clone();
+            let methods = make_methods(*trailing_field_ty);
+            let (_, ty_generics, _) = ast.generics.split_for_impl();
+
+            quote!(
+                type PointerMetadata = <#trailing_field_ty as ::zerocopy::KnownLayout>::PointerMetadata;
+
+                type MaybeUninit = __ZerocopyKnownLayoutMaybeUninit #ty_generics;
+
+                // SAFETY: `LAYOUT` accurately describes the layout of `Self`.
+                // The layout of `Self` is reflected using a sequence of
+                // invocations of `DstLayout::{new_zst,extend,pad_to_align}`.
+                // The documentation of these items vows that invocations in
+                // this manner will acurately describe a type, so long as:
+                //
+                //  - that type is `repr(C)`,
+                //  - its fields are enumerated in the order they appear,
+                //  - the presence of `repr_align` and `repr_packed` are correctly accounted for.
+                //
+                // We respect all three of these preconditions here. This
+                // expansion is only used if `is_repr_c_struct`, we enumerate
+                // the fields in order, and we extract the values of `align(N)`
+                // and `packed(N)`.
+                const LAYOUT: ::zerocopy::DstLayout = {
+                    use ::zerocopy::util::macro_util::core_reexport::num::NonZeroUsize;
+                    use ::zerocopy::{DstLayout, KnownLayout};
+
+                    let repr_align = #repr_align;
+                    let repr_packed = #repr_packed;
+
+                    DstLayout::new_zst(repr_align)
+                        #(.extend(DstLayout::for_type::<#leading_fields_tys>(), repr_packed))*
+                        .extend(<#trailing_field_ty as KnownLayout>::LAYOUT, repr_packed)
+                        .pad_to_align()
+                };
+
+                #methods
+            )
+        };
+
+        let outer_extras = {
+            let ident = &ast.ident;
+            let vis = &ast.vis;
+            let params = &ast.generics.params;
+            let (impl_generics, ty_generics, where_clause) = ast.generics.split_for_impl();
+
+            let predicates = if let Some(where_clause) = where_clause {
+                where_clause.predicates.clone()
+            } else {
+                Default::default()
+            };
+
+            let methods = make_methods(&parse_quote! {
+                <#trailing_field_ty as ::zerocopy::KnownLayout>::MaybeUninit
+            });
+
+            quote! {
+                // SAFETY: This has the same layout as the derive target type,
+                // except that it admits uninit bytes. This is ensured by using the
+                // same repr as the target type, and by using field types which have
+                // the same layout as the target type's fields, except that they
+                // admit uninit bytes.
+                #repr
+                #[doc(hidden)]
+                #vis struct __ZerocopyKnownLayoutMaybeUninit<#params> (
+                    #(::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<#leading_fields_tys>,)*
+                    <#trailing_field_ty as ::zerocopy::KnownLayout>::MaybeUninit
+                )
+                where
+                    #trailing_field_ty: ::zerocopy::KnownLayout,
+                    #predicates;
+
+                // SAFETY: We largely defer to the `KnownLayout` implementation on
+                // the derive target type (both by using the same tokens, and by
+                // deferring to impl via type-level indirection). This is sound,
+                // since  `__ZerocopyKnownLayoutMaybeUninit` is guaranteed to
+                // have the same layout as the derive target type, except that
+                // `__ZerocopyKnownLayoutMaybeUninit` admits uninit bytes.
+                unsafe impl #impl_generics ::zerocopy::KnownLayout for __ZerocopyKnownLayoutMaybeUninit #ty_generics
+                where
+                    #trailing_field_ty: ::zerocopy::KnownLayout,
+                    // This bound may appear to be superfluous, but is required
+                    // on our MSRV (1.55) to avoid an ICE.
+                    <#trailing_field_ty as ::zerocopy::KnownLayout>::MaybeUninit: ::zerocopy::KnownLayout,
+                    #predicates
+                {
+                    #[allow(clippy::missing_inline_in_public_items)]
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+
+                    type PointerMetadata = <#ident #ty_generics as ::zerocopy::KnownLayout>::PointerMetadata;
+
+                    type MaybeUninit = Self;
+
+                    const LAYOUT: ::zerocopy::DstLayout = <#ident #ty_generics as ::zerocopy::KnownLayout>::LAYOUT;
+
+                    #methods
+                }
+            }
+        };
+
+        (SelfBounds::None, inner_extras, Some(outer_extras))
     } else {
         // For enums, unions, and non-`repr(C)` structs, we require that
         // `Self` is sized, and as a result don't need to reason about the
@@ -248,6 +323,8 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
             SelfBounds::SIZED,
             quote!(
                 type PointerMetadata = ();
+                type MaybeUninit =
+                    ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<Self>;
 
                 // SAFETY: `LAYOUT` is guaranteed to accurately describe the
                 // layout of `Self`, because that is the documented safety
@@ -270,6 +347,7 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                 #[inline(always)]
                 fn pointer_to_metadata(_ptr: *mut Self) -> () {}
             ),
+            None,
         )
     };
 
@@ -292,7 +370,8 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                 require_trait_bound_on_field_types,
                 self_bounds,
                 None,
-                Some(extras),
+                Some(inner_extras),
+                outer_extras,
             )
         }
         Data::Enum(enm) => {
@@ -305,7 +384,8 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                 FieldBounds::None,
                 SelfBounds::SIZED,
                 None,
-                Some(extras),
+                Some(inner_extras),
+                outer_extras,
             )
         }
         Data::Union(unn) => {
@@ -318,7 +398,8 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                 FieldBounds::None,
                 SelfBounds::SIZED,
                 None,
-                Some(extras),
+                Some(inner_extras),
+                outer_extras,
             )
         }
     })
@@ -334,6 +415,7 @@ fn derive_no_cell_inner(ast: &DeriveInput, _top_level: Trait) -> TokenStream {
             SelfBounds::None,
             None,
             None,
+            None,
         ),
         Data::Enum(enm) => impl_block(
             ast,
@@ -343,6 +425,7 @@ fn derive_no_cell_inner(ast: &DeriveInput, _top_level: Trait) -> TokenStream {
             SelfBounds::None,
             None,
             None,
+            None,
         ),
         Data::Union(unn) => impl_block(
             ast,
@@ -350,6 +433,7 @@ fn derive_no_cell_inner(ast: &DeriveInput, _top_level: Trait) -> TokenStream {
             Trait::Immutable,
             FieldBounds::ALL_SELF,
             SelfBounds::None,
+            None,
             None,
             None,
         ),
@@ -452,6 +536,7 @@ fn derive_try_from_bytes_struct(
         SelfBounds::None,
         None,
         Some(extras),
+        None,
     ))
 }
 
@@ -509,6 +594,7 @@ fn derive_try_from_bytes_union(
         SelfBounds::None,
         None,
         Some(extras),
+        None,
     )
 }
 
@@ -545,6 +631,7 @@ fn derive_try_from_bytes_enum(
         SelfBounds::None,
         None,
         Some(extra),
+        None,
     ))
 }
 
@@ -641,7 +728,16 @@ unsafe fn gen_trivial_is_bit_valid_unchecked() -> proc_macro2::TokenStream {
 /// A struct is `FromZeros` if:
 /// - all fields are `FromZeros`
 fn derive_from_zeros_struct(ast: &DeriveInput, strct: &DataStruct) -> TokenStream {
-    impl_block(ast, strct, Trait::FromZeros, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
+    impl_block(
+        ast,
+        strct,
+        Trait::FromZeros,
+        FieldBounds::ALL_SELF,
+        SelfBounds::None,
+        None,
+        None,
+        None,
+    )
 }
 
 /// Returns `Ok(index)` if variant `index` of the enum has a discriminant of
@@ -777,6 +873,7 @@ fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<TokenStre
         SelfBounds::None,
         None,
         None,
+        None,
     ))
 }
 
@@ -787,13 +884,31 @@ fn derive_from_zeros_union(ast: &DeriveInput, unn: &DataUnion) -> TokenStream {
     // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
     let field_type_trait_bounds =
         FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
-    impl_block(ast, unn, Trait::FromZeros, field_type_trait_bounds, SelfBounds::None, None, None)
+    impl_block(
+        ast,
+        unn,
+        Trait::FromZeros,
+        field_type_trait_bounds,
+        SelfBounds::None,
+        None,
+        None,
+        None,
+    )
 }
 
 /// A struct is `FromBytes` if:
 /// - all fields are `FromBytes`
 fn derive_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> TokenStream {
-    impl_block(ast, strct, Trait::FromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, None)
+    impl_block(
+        ast,
+        strct,
+        Trait::FromBytes,
+        FieldBounds::ALL_SELF,
+        SelfBounds::None,
+        None,
+        None,
+        None,
+    )
 }
 
 /// An enum is `FromBytes` if:
@@ -825,7 +940,16 @@ fn derive_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<TokenStre
         ));
     }
 
-    Ok(impl_block(ast, enm, Trait::FromBytes, FieldBounds::ALL_SELF, SelfBounds::None, None, None))
+    Ok(impl_block(
+        ast,
+        enm,
+        Trait::FromBytes,
+        FieldBounds::ALL_SELF,
+        SelfBounds::None,
+        None,
+        None,
+        None,
+    ))
 }
 
 // Returns `None` if the enum's size is not guaranteed by the repr.
@@ -849,7 +973,16 @@ fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> TokenStream {
     // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
     let field_type_trait_bounds =
         FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
-    impl_block(ast, unn, Trait::FromBytes, field_type_trait_bounds, SelfBounds::None, None, None)
+    impl_block(
+        ast,
+        unn,
+        Trait::FromBytes,
+        field_type_trait_bounds,
+        SelfBounds::None,
+        None,
+        None,
+        None,
+    )
 }
 
 fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> Result<TokenStream, Error> {
@@ -925,6 +1058,7 @@ fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> Result<Tok
         SelfBounds::None,
         padding_check,
         None,
+        None,
     ))
 }
 
@@ -947,6 +1081,7 @@ fn derive_into_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<TokenStre
         FieldBounds::ALL_SELF,
         SelfBounds::None,
         Some(PaddingCheck::Enum { tag_type_definition }),
+        None,
         None,
     ))
 }
@@ -1003,6 +1138,7 @@ please let us know you use this feature: https://github.com/google/zerocopy/disc
         SelfBounds::None,
         Some(PaddingCheck::Union),
         None,
+        None,
     );
     Ok(quote!(#cfg_compile_error #impl_block))
 }
@@ -1024,7 +1160,7 @@ fn derive_unaligned_struct(ast: &DeriveInput, strct: &DataStruct) -> Result<Toke
         return Err(Error::new(Span::call_site(), "must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment"));
     };
 
-    Ok(impl_block(ast, strct, Trait::Unaligned, field_bounds, SelfBounds::None, None, None))
+    Ok(impl_block(ast, strct, Trait::Unaligned, field_bounds, SelfBounds::None, None, None, None))
 }
 
 /// An enum is `Unaligned` if:
@@ -1038,7 +1174,16 @@ fn derive_unaligned_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<TokenStrea
         return Err(Error::new(Span::call_site(), "must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment"));
     }
 
-    Ok(impl_block(ast, enm, Trait::Unaligned, FieldBounds::ALL_SELF, SelfBounds::None, None, None))
+    Ok(impl_block(
+        ast,
+        enm,
+        Trait::Unaligned,
+        FieldBounds::ALL_SELF,
+        SelfBounds::None,
+        None,
+        None,
+        None,
+    ))
 }
 
 /// Like structs, a union is `Unaligned` if:
@@ -1064,6 +1209,7 @@ fn derive_unaligned_union(ast: &DeriveInput, unn: &DataUnion) -> Result<TokenStr
         Trait::Unaligned,
         field_type_trait_bounds,
         SelfBounds::None,
+        None,
         None,
         None,
     ))
@@ -1193,6 +1339,7 @@ fn normalize_bounds(slf: Trait, bounds: &[TraitBound]) -> impl '_ + Iterator<Ite
     })
 }
 
+#[allow(clippy::too_many_arguments)]
 fn impl_block<D: DataExt>(
     input: &DeriveInput,
     data: &D,
@@ -1200,7 +1347,8 @@ fn impl_block<D: DataExt>(
     field_type_trait_bounds: FieldBounds,
     self_type_trait_bounds: SelfBounds,
     padding_check: Option<PaddingCheck>,
-    extras: Option<TokenStream>,
+    inner_extras: Option<TokenStream>,
+    outer_extras: Option<TokenStream>,
 ) -> TokenStream {
     // In this documentation, we will refer to this hypothetical struct:
     //
@@ -1347,7 +1495,7 @@ fn impl_block<D: DataExt>(
         }
     });
 
-    quote! {
+    let impl_tokens = quote! {
         // TODO(#553): Add a test that generates a warning when
         // `#[allow(deprecated)]` isn't present.
         #[allow(deprecated)]
@@ -1360,7 +1508,21 @@ fn impl_block<D: DataExt>(
         {
             fn only_derive_is_allowed_to_implement_this_trait() {}
 
-            #extras
+            #inner_extras
         }
+    };
+
+    if let Some(outer_extras) = outer_extras {
+        // So that any items defined in `#outer_extras` don't conflict with
+        // existing names defined in this scope.
+        quote! {
+            const _: () = {
+                #impl_tokens
+
+                #outer_extras
+            };
+        }
+    } else {
+        impl_tokens
     }
 }
