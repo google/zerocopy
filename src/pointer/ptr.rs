@@ -955,6 +955,28 @@ mod _casts {
         I: Invariants,
     {
         /// Casts to a different (unsized) target type.
+        #[inline]
+        pub fn try_cast<U>(
+            self,
+        ) -> Result<Ptr<'a, U, (I::Aliasing, Any, Any)>, Self>
+        where
+            T: KnownLayout<PointerMetadata = U::PointerMetadata>,
+            U: 'a + ?Sized + KnownLayout,
+        {
+            let ptr = self.as_non_null();
+            let src_size = T::size_of_val_raw(ptr);
+            let meta = T::pointer_to_metadata(ptr.as_ptr());
+            if meta.size_for_metadata(U::LAYOUT) <= src_size {
+                let bytes = ptr.cast::<u8>();
+                let ptr = U::raw_from_ptr_len(bytes, meta);
+                // SAFETY: TODO
+                Ok(unsafe { Ptr::new(ptr) })
+            } else {
+                Err(self)
+            }
+        }
+
+        /// Casts to a different (unsized) target type.
         ///
         /// # Safety
         ///
