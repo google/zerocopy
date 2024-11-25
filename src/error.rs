@@ -302,6 +302,35 @@ impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
         AlignmentError { src: f(self.src), dst: SendSyncPhantomData::default() }
     }
 
+    /// Drop the error's source value.
+    ///
+    /// The error's source is replaced with [`Metadata<Src>`], holding just
+    /// enough metadata for error reporting.
+    ///
+    /// This can help mitigate [issues with `Send`, `Sync` and `'static`
+    /// bounds][self#send-sync-and-static].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::*;
+    ///
+    /// let unaligned = Unalign::new(0u16);
+    ///
+    /// // Attempt to deref `unaligned`. This might fail with an alignment error.
+    /// let maybe_n: Result<&u16, AlignmentError<&Unalign<u16>, u16>> = unaligned.try_deref();
+    ///
+    /// // Drop the error's source.
+    /// let maybe_n: Result<&u16, AlignmentError<Metadata<&Unalign<u16>>, u16>>
+    ///     = maybe_n.map_err(AlignmentError::drop_src);
+    /// ```
+    pub fn drop_src(self) -> AlignmentError<Metadata<Src>, Dst>
+    where
+        Src: Deref,
+    {
+        self.map_src(Metadata::from)
+    }
+
     pub(crate) const fn into<S, V>(self) -> ConvertError<Self, S, V> {
         ConvertError::Alignment(self)
     }
@@ -311,15 +340,15 @@ impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
     /// This formatting may include potentially sensitive information.
     fn display_verbose_extras(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
     where
-        Src: Deref,
+        Src: private::Source,
         Dst: KnownLayout,
     {
         #[allow(clippy::as_conversions)]
-        let addr = self.src.deref() as *const _ as *const ();
+        let addr = self.src.addr();
         let addr_align = 2usize.pow((crate::util::AsAddress::addr(addr)).trailing_zeros());
 
         f.write_str("\n\nSource type: ")?;
-        f.write_str(core::any::type_name::<Src>())?;
+        f.write_str(self.src.name())?;
 
         f.write_str("\nSource address: ")?;
         addr.fmt(f)?;
@@ -374,7 +403,7 @@ impl<Src, Dst: ?Sized> fmt::Debug for AlignmentError<Src, Dst> {
 /// potentially sensitive information.
 impl<Src, Dst: ?Sized> fmt::Display for AlignmentError<Src, Dst>
 where
-    Src: Deref,
+    Src: private::Source,
     Dst: KnownLayout,
 {
     #[inline]
@@ -390,12 +419,7 @@ where
 }
 
 #[cfg(any(zerocopy_core_error, feature = "std", test))]
-impl<Src, Dst: ?Sized> Error for AlignmentError<Src, Dst>
-where
-    Src: Deref,
-    Dst: KnownLayout,
-{
-}
+impl<Src, Dst: ?Sized> Error for AlignmentError<Src, Dst> where Self: fmt::Display {}
 
 impl<Src, Dst: ?Sized, S, V> From<AlignmentError<Src, Dst>>
     for ConvertError<AlignmentError<Src, Dst>, S, V>
@@ -457,6 +481,35 @@ impl<Src, Dst: ?Sized> SizeError<Src, Dst> {
         SizeError { src: f(self.src), dst: SendSyncPhantomData::default() }
     }
 
+    /// Drop the error's source value.
+    ///
+    /// The error's source is replaced with `Metadata<Src>`, holding just enough
+    /// metadata about the source for error reporting.
+    ///
+    /// This can help mitigate [issues with `Send`, `Sync` and `'static`
+    /// bounds][self#send-sync-and-static].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::*;
+    ///
+    /// let source: [u8; 3] = [0, 1, 2];
+    ///
+    /// // Try to read a `u32` from `source`. This will fail because there are insufficient
+    /// // bytes in `source`.
+    /// let maybe_u32: Result<u32, SizeError<&[u8], u32>> = u32::read_from_bytes(&source[..]);
+    ///
+    /// // Drop the error's source.
+    /// let maybe_u32: Result<u32, SizeError<Metadata<&[u8]>, u32>> = maybe_u32.map_err(SizeError::drop_src);
+    /// ```
+    pub fn drop_src(self) -> SizeError<Metadata<Src>, Dst>
+    where
+        Src: Deref,
+    {
+        self.map_src(Metadata::from)
+    }
+
     /// Sets the destination type associated with the conversion error.
     pub(crate) fn with_dst<NewDst: ?Sized>(self) -> SizeError<Src, NewDst> {
         SizeError { src: self.src, dst: SendSyncPhantomData::default() }
@@ -472,15 +525,15 @@ impl<Src, Dst: ?Sized> SizeError<Src, Dst> {
     /// This formatting may include potentially sensitive information.
     fn display_verbose_extras(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
     where
-        Src: Deref,
+        Src: private::Source,
         Dst: KnownLayout,
     {
         // include the source type
         f.write_str("\nSource type: ")?;
         f.write_str(core::any::type_name::<Src>())?;
 
-        // include the source.deref() size
-        let src_size = core::mem::size_of_val(&*self.src);
+        // include the source's size
+        let src_size = self.src.size();
         f.write_str("\nSource size: ")?;
         src_size.fmt(f)?;
         f.write_str(" byte")?;
@@ -520,7 +573,7 @@ impl<Src, Dst: ?Sized> fmt::Debug for SizeError<Src, Dst> {
 /// potentially sensitive information.
 impl<Src, Dst: ?Sized> fmt::Display for SizeError<Src, Dst>
 where
-    Src: Deref,
+    Src: private::Source,
     Dst: KnownLayout,
 {
     #[inline]
@@ -535,12 +588,7 @@ where
 }
 
 #[cfg(any(zerocopy_core_error, feature = "std", test))]
-impl<Src, Dst: ?Sized> Error for SizeError<Src, Dst>
-where
-    Src: Deref,
-    Dst: KnownLayout,
-{
-}
+impl<Src, Dst: ?Sized> Error for SizeError<Src, Dst> where Self: fmt::Display {}
 
 impl<Src, Dst: ?Sized, A, V> From<SizeError<Src, Dst>> for ConvertError<A, SizeError<Src, Dst>, V> {
     #[inline(always)]
@@ -594,6 +642,35 @@ impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
         ValidityError { src: f(self.src), dst: SendSyncPhantomData::default() }
     }
 
+    /// Drop the error's source value.
+    ///
+    /// The error's source is replaced with `Metadata<Src>`, holding just enough
+    /// metadata about the source for error reporting.
+    ///
+    /// This can help mitigate [issues with `Send`, `Sync` and `'static`
+    /// bounds][self#send-sync-and-static].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::*;
+    ///
+    /// let source: u8 = 42;
+    ///
+    /// // Try to transmute the `source` to a `bool`. This will fail.
+    /// let maybe_bool: Result<bool, ValidityError<u8, bool>> = try_transmute!(source);
+    ///
+    /// // Drop the error's source.
+    /// let maybe_bool: Result<bool, ValidityError<Metadata<u8>, bool>>
+    ///     = maybe_bool.map_err(ValidityError::drop_src);
+    /// ```
+    pub fn drop_src(self) -> ValidityError<Metadata<Src>, Dst>
+    where
+        Src: Deref,
+    {
+        self.map_src(Metadata::from)
+    }
+
     /// Converts the error into a general [`ConvertError`].
     pub(crate) const fn into<A, S>(self) -> ConvertError<A, S, Self> {
         ConvertError::Validity(self)
@@ -604,7 +681,7 @@ impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
     /// This formatting may include potentially sensitive information.
     fn display_verbose_extras(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
     where
-        Src: Deref,
+        Src: private::Source,
         Dst: KnownLayout,
     {
         f.write_str("Destination type: ")?;
@@ -627,7 +704,7 @@ impl<Src, Dst: ?Sized + TryFromBytes> fmt::Debug for ValidityError<Src, Dst> {
 /// potentially sensitive information.
 impl<Src, Dst: ?Sized> fmt::Display for ValidityError<Src, Dst>
 where
-    Src: Deref,
+    Src: private::Source,
     Dst: KnownLayout + TryFromBytes,
 {
     #[inline]
@@ -644,8 +721,8 @@ where
 #[cfg(any(zerocopy_core_error, feature = "std", test))]
 impl<Src, Dst: ?Sized> Error for ValidityError<Src, Dst>
 where
-    Src: Deref,
-    Dst: KnownLayout + TryFromBytes,
+    Self: fmt::Display,
+    Dst: TryFromBytes,
 {
 }
 
@@ -955,6 +1032,66 @@ pub type AlignedTryCastError<Src, Dst: ?Sized + TryFromBytes> =
 /// [`AllocError`]: https://doc.rust-lang.org/alloc/alloc/struct.AllocError.html
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub struct AllocError;
+
+mod private {
+    use core::ops::Deref;
+
+    /// Error source types.
+    pub trait Source {
+        fn name(&self) -> &'static str;
+        fn addr(&self) -> *const ();
+        fn size(&self) -> usize;
+    }
+
+    impl<T: ?Sized + Deref> Source for T {
+        fn name(&self) -> &'static str {
+            core::any::type_name::<T>()
+        }
+
+        fn addr(&self) -> *const () {
+            self.deref() as *const _ as *const ()
+        }
+
+        fn size(&self) -> usize {
+            core::mem::size_of_val(self.deref())
+        }
+    }
+
+    impl<T: core::ops::Deref> Source for super::Metadata<T> {
+        fn name(&self) -> &'static str {
+            core::any::type_name::<T>()
+        }
+
+        fn addr(&self) -> *const () {
+            self.addr
+        }
+
+        fn size(&self) -> usize {
+            self.size
+        }
+    }
+}
+
+/// Metadata about dropped `Src`.
+#[allow(missing_copy_implementations, missing_debug_implementations)]
+pub struct Metadata<Src: Deref> {
+    /// The address that `Src` dereferences to.
+    addr: *const (),
+    /// The size of `Src`'s referent.
+    size: usize,
+    _ty: SendSyncPhantomData<Src>,
+}
+
+impl<Src: Deref> Metadata<Src> {
+    /// Converts the given `Src` into its metadata.
+    pub fn from(src: Src) -> Self {
+        Self {
+            addr: src.deref() as *const _ as *const (),
+            size: core::mem::size_of_val(src.deref()),
+            _ty: SendSyncPhantomData::default(),
+        }
+    }
+}
 
 #[cfg(test)]
 #[allow(clippy::missing_const_for_fn)]
