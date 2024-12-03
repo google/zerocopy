@@ -301,7 +301,6 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                     #predicates
                 {
                     #[allow(clippy::missing_inline_in_public_items)]
-                    #[cfg_attr(coverage_nightly, coverage(off))]
                     fn only_derive_is_allowed_to_implement_this_trait() {}
 
                     type PointerMetadata = <#ident #ty_generics as ::zerocopy::KnownLayout>::PointerMetadata;

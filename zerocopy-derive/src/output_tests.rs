@@ -192,7 +192,6 @@ fn test_known_layout() {
                     <U as ::zerocopy::KnownLayout>::MaybeUninit: ::zerocopy::KnownLayout,
                 {
                     #[allow(clippy::missing_inline_in_public_items)]
-                    #[cfg_attr(coverage_nightly, coverage(off))]
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type PointerMetadata = <Foo<T, U> as ::zerocopy::KnownLayout>::PointerMetadata;
                     type MaybeUninit = Self;
