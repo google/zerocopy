@@ -144,8 +144,8 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
         Some((trailing_field, leading_fields)),
     ) = (is_repr_c_struct, fields.split_last())
     {
-        let (_name, trailing_field_ty) = trailing_field;
-        let leading_fields_tys = leading_fields.iter().map(|(_name, ty)| ty);
+        let (_vis, trailing_field_name, trailing_field_ty) = trailing_field;
+        let leading_fields_tys = leading_fields.iter().map(|(_vis, _name, ty)| ty);
 
         let core_path = quote!(::zerocopy::util::macro_util::core_reexport);
         let repr_align = repr
@@ -266,20 +266,66 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                 Default::default()
             };
 
+            // Generate a valid ident for a type-level handle to a field of a
+            // given `name`.
+            let field_index =
+                |name| Ident::new(&format!("__Zerocopy_Field_{}", name), ident.span());
+
+            let field_indices: Vec<_> =
+                fields.iter().map(|(_vis, name, _ty)| field_index(name)).collect();
+
+            // Define the collection of type-level field handles.
+            let field_defs = field_indices.iter().zip(&fields).map(|(idx, (vis, _, _))| {
+                quote! {
+                    #[allow(non_camel_case_types)]
+                    #vis struct #idx;
+                }
+            });
+
+            let field_impls = field_indices.iter().zip(&fields).map(|(idx, (_, _, ty))| quote! {
+                // SAFETY: `#ty` is the type of `#ident`'s field at `#idx`.
+                unsafe impl #impl_generics ::zerocopy::util::macro_util::Field<#idx> for #ident #ty_generics
+                where
+                    #predicates
+                {
+                    type Type = #ty;
+                }
+            });
+
+            let trailing_field_index = field_index(trailing_field_name);
+            let leading_field_indices =
+                leading_fields.iter().map(|(_vis, name, _ty)| field_index(name));
+
+            let trailing_field_ty = quote! {
+                <#ident #ty_generics as
+                    ::zerocopy::util::macro_util::Field<#trailing_field_index>
+                >::Type
+            };
+
             let methods = make_methods(&parse_quote! {
                 <#trailing_field_ty as ::zerocopy::KnownLayout>::MaybeUninit
             });
 
             quote! {
+                #(#field_defs)*
+
+                #(#field_impls)*
+
                 // SAFETY: This has the same layout as the derive target type,
-                // except that it admits uninit bytes. This is ensured by using the
-                // same repr as the target type, and by using field types which have
-                // the same layout as the target type's fields, except that they
-                // admit uninit bytes.
+                // except that it admits uninit bytes. This is ensured by using
+                // the same repr as the target type, and by using field types
+                // which have the same layout as the target type's fields,
+                // except that they admit uninit bytes. We indirect through
+                // `Field` to ensure that occurrences of `Self` resolve to
+                // `#ty`, not `__ZerocopyKnownLayoutMaybeUninit` (see #2116).
                 #repr
                 #[doc(hidden)]
                 #vis struct __ZerocopyKnownLayoutMaybeUninit<#params> (
-                    #(::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<#leading_fields_tys>,)*
+                    #(::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
+                        <#ident #ty_generics as
+                            ::zerocopy::util::macro_util::Field<#leading_field_indices>
+                        >::Type
+                    >,)*
                     <#trailing_field_ty as ::zerocopy::KnownLayout>::MaybeUninit
                 )
                 where
@@ -295,9 +341,6 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                 unsafe impl #impl_generics ::zerocopy::KnownLayout for __ZerocopyKnownLayoutMaybeUninit #ty_generics
                 where
                     #trailing_field_ty: ::zerocopy::KnownLayout,
-                    // This bound may appear to be superfluous, but is required
-                    // on our MSRV (1.55) to avoid an ICE.
-                    <#trailing_field_ty as ::zerocopy::KnownLayout>::MaybeUninit: ::zerocopy::KnownLayout,
                     #predicates
                 {
                     #[allow(clippy::missing_inline_in_public_items)]
@@ -495,8 +538,8 @@ fn derive_try_from_bytes_struct(
 ) -> Result<TokenStream, Error> {
     let extras = try_gen_trivial_is_bit_valid(ast, top_level).unwrap_or_else(|| {
         let fields = strct.fields();
-        let field_names = fields.iter().map(|(name, _ty)| name);
-        let field_tys = fields.iter().map(|(_name, ty)| ty);
+        let field_names = fields.iter().map(|(_vis, name, _ty)| name);
+        let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
         quote!(
             // SAFETY: We use `is_bit_valid` to validate that each field is
             // bit-valid, and only return `true` if all of them are. The bit
@@ -554,8 +597,8 @@ fn derive_try_from_bytes_union(
         FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
     let extras = try_gen_trivial_is_bit_valid(ast, top_level).unwrap_or_else(|| {
         let fields = unn.fields();
-        let field_names = fields.iter().map(|(name, _ty)| name);
-        let field_tys = fields.iter().map(|(_name, ty)| ty);
+        let field_names = fields.iter().map(|(_vis, name, _ty)| name);
+        let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
         quote!(
             // SAFETY: We use `is_bit_valid` to validate that any field is
             // bit-valid; we only return `true` if at least one of them is. The
@@ -1408,12 +1451,13 @@ fn impl_block<D: DataExt>(
         parse_quote!(#ty: #(#traits)+*)
     }
     let field_type_bounds: Vec<_> = match (field_type_trait_bounds, &fields[..]) {
-        (FieldBounds::All(traits), _) => {
-            fields.iter().map(|(_name, ty)| bound_tt(ty, normalize_bounds(trt, traits))).collect()
-        }
+        (FieldBounds::All(traits), _) => fields
+            .iter()
+            .map(|(_vis, _name, ty)| bound_tt(ty, normalize_bounds(trt, traits)))
+            .collect(),
         (FieldBounds::None, _) | (FieldBounds::Trailing(..), []) => vec![],
         (FieldBounds::Trailing(traits), [.., last]) => {
-            vec![bound_tt(last.1, normalize_bounds(trt, traits))]
+            vec![bound_tt(last.2, normalize_bounds(trt, traits))]
         }
         (FieldBounds::Explicit(bounds), _) => bounds,
     };
@@ -1425,7 +1469,7 @@ fn impl_block<D: DataExt>(
     let padding_check_bound =
         padding_check.and_then(|check| (!fields.is_empty()).then_some(check)).map(|check| {
             let variant_types = variants.iter().map(|var| {
-                let types = var.iter().map(|(_name, ty)| ty);
+                let types = var.iter().map(|(_vis, _name, ty)| ty);
                 quote!([#(#types),*])
             });
             let validator_context = check.validator_macro_context();
