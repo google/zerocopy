@@ -176,20 +176,47 @@ fn test_known_layout() {
                         <U>::pointer_to_metadata(ptr as *mut _)
                     }
                 }
+                #[allow(non_camel_case_types)]
+                struct __Zerocopy_Field_0;
+                #[allow(non_camel_case_types)]
+                struct __Zerocopy_Field_1;
+                unsafe impl<T, U> ::zerocopy::util::macro_util::Field<__Zerocopy_Field_0>
+                for Foo<T, U> {
+                    type Type = T;
+                }
+                unsafe impl<T, U> ::zerocopy::util::macro_util::Field<__Zerocopy_Field_1>
+                for Foo<T, U> {
+                    type Type = U;
+                }
                 #[repr(C)]
                 #[repr(align(2))]
                 #[doc(hidden)]
                 struct __ZerocopyKnownLayoutMaybeUninit<T, U>(
-                    ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<T>,
-                    <U as ::zerocopy::KnownLayout>::MaybeUninit,
+                    ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
+                        <Foo<T, U> as ::zerocopy::util::macro_util::Field<__Zerocopy_Field_0>>::Type,
+                    >,
+                    <<Foo<
+                        T,
+                        U,
+                    > as ::zerocopy::util::macro_util::Field<
+                        __Zerocopy_Field_1,
+                    >>::Type as ::zerocopy::KnownLayout>::MaybeUninit,
                 )
                 where
-                    U: ::zerocopy::KnownLayout;
-                unsafe impl<T, U> ::zerocopy::KnownLayout
-                for __ZerocopyKnownLayoutMaybeUninit<T, U>
+                    <Foo<
+                        T,
+                        U,
+                    > as ::zerocopy::util::macro_util::Field<
+                        __Zerocopy_Field_1,
+                    >>::Type: ::zerocopy::KnownLayout;
+                unsafe impl<T, U> ::zerocopy::KnownLayout for __ZerocopyKnownLayoutMaybeUninit<T, U>
                 where
-                    U: ::zerocopy::KnownLayout,
-                    <U as ::zerocopy::KnownLayout>::MaybeUninit: ::zerocopy::KnownLayout,
+                    <Foo<
+                        T,
+                        U,
+                    > as ::zerocopy::util::macro_util::Field<
+                        __Zerocopy_Field_1,
+                    >>::Type: ::zerocopy::KnownLayout,
                 {
                     #[allow(clippy::missing_inline_in_public_items)]
                     fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -205,7 +232,12 @@ fn test_known_layout() {
                         meta: Self::PointerMetadata,
                     ) -> ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<Self> {
                         use ::zerocopy::KnownLayout;
-                        let trailing = <<U as ::zerocopy::KnownLayout>::MaybeUninit as KnownLayout>::raw_from_ptr_len(
+                        let trailing = <<<Foo<
+                            T,
+                            U,
+                        > as ::zerocopy::util::macro_util::Field<
+                            __Zerocopy_Field_1,
+                        >>::Type as ::zerocopy::KnownLayout>::MaybeUninit as KnownLayout>::raw_from_ptr_len(
                             bytes,
                             meta,
                         );
@@ -218,7 +250,12 @@ fn test_known_layout() {
                     }
                     #[inline(always)]
                     fn pointer_to_metadata(ptr: *mut Self) -> Self::PointerMetadata {
-                        <<U as ::zerocopy::KnownLayout>::MaybeUninit>::pointer_to_metadata(
+                        <<<Foo<
+                            T,
+                            U,
+                        > as ::zerocopy::util::macro_util::Field<
+                            __Zerocopy_Field_1,
+                        >>::Type as ::zerocopy::KnownLayout>::MaybeUninit>::pointer_to_metadata(
                             ptr as *mut _,
                         )
                     }

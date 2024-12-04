@@ -10,6 +10,8 @@
 #![no_implicit_prelude]
 #![allow(warnings)]
 
+extern crate rustversion;
+
 include!("include.rs");
 
 #[derive(imp::KnownLayout)]
@@ -46,16 +48,56 @@ util_assert_impl_all!(TypeParams<'static, (), imp::IntoIter<()>>: imp::KnownLayo
 util_assert_impl_all!(TypeParams<'static, util::AU16, imp::IntoIter<()>>: imp::KnownLayout);
 
 // Deriving `KnownLayout` should work if the struct has bounded parameters.
+//
+// N.B. We limit this test to rustc >= 1.62, since earlier versions of rustc ICE
+// when `KnownLayout` is derived on a `repr(C)` struct whose trailing field
+// contains non-static lifetimes.
+#[rustversion::since(1.62)]
+const _: () = {
+    #[derive(imp::KnownLayout)]
+    #[repr(C)]
+    struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::KnownLayout, const N: usize>(
+        [T; N],
+        imp::PhantomData<&'a &'b ()>,
+    )
+    where
+        'a: 'b,
+        'b: 'a,
+        T: 'a + 'b + imp::KnownLayout;
+
+    util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::KnownLayout);
+};
+
+const _: () = {
+    // Similar to the previous test, except that the trailing field contains
+    // only static lifetimes. This is exercisable on all supported toolchains.
+
+    #[derive(imp::KnownLayout)]
+    #[repr(C)]
+    struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::KnownLayout, const N: usize>(
+        &'a &'b [T; N],
+        imp::PhantomData<&'static ()>,
+    )
+    where
+        'a: 'b,
+        'b: 'a,
+        T: 'a + 'b + imp::KnownLayout;
+
+    util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::KnownLayout);
+};
+
+// Deriving `KnownLayout` should work if the struct references `Self`. See
+// #2116.
 
 #[derive(imp::KnownLayout)]
 #[repr(C)]
-struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::KnownLayout, const N: usize>(
-    [T; N],
-    imp::PhantomData<&'a &'b ()>,
-)
-where
-    'a: 'b,
-    'b: 'a,
-    T: 'a + 'b + imp::KnownLayout;
+struct WithSelfReference {
+    leading: [u8; Self::N],
+    trailing: [[u8; Self::N]],
+}
 
-util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::KnownLayout);
+impl WithSelfReference {
+    const N: usize = 42;
+}
+
+util_assert_impl_all!(WithSelfReference: imp::KnownLayout);
