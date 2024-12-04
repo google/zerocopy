@@ -8,7 +8,7 @@
 
 use proc_macro2::{Span, TokenStream};
 use quote::ToTokens;
-use syn::{Data, DataEnum, DataStruct, DataUnion, Field, Ident, Index, Type};
+use syn::{Data, DataEnum, DataStruct, DataUnion, Field, Ident, Index, Type, Visibility};
 
 pub(crate) trait DataExt {
     /// Extracts the names and types of all fields. For enums, extracts the names
@@ -19,15 +19,15 @@ pub(crate) trait DataExt {
     /// makes sense because we don't care about where they live - we just care
     /// about transitive ownership. But for field names, we'd only use them when
     /// generating is_bit_valid, which cares about where they live.
-    fn fields(&self) -> Vec<(TokenStream, &Type)>;
+    fn fields(&self) -> Vec<(&Visibility, TokenStream, &Type)>;
 
-    fn variants(&self) -> Vec<Vec<(TokenStream, &Type)>>;
+    fn variants(&self) -> Vec<Vec<(&Visibility, TokenStream, &Type)>>;
 
     fn tag(&self) -> Option<Ident>;
 }
 
 impl DataExt for Data {
-    fn fields(&self) -> Vec<(TokenStream, &Type)> {
+    fn fields(&self) -> Vec<(&Visibility, TokenStream, &Type)> {
         match self {
             Data::Struct(strc) => strc.fields(),
             Data::Enum(enm) => enm.fields(),
@@ -35,7 +35,7 @@ impl DataExt for Data {
         }
     }
 
-    fn variants(&self) -> Vec<Vec<(TokenStream, &Type)>> {
+    fn variants(&self) -> Vec<Vec<(&Visibility, TokenStream, &Type)>> {
         match self {
             Data::Struct(strc) => strc.variants(),
             Data::Enum(enm) => enm.variants(),
@@ -53,11 +53,11 @@ impl DataExt for Data {
 }
 
 impl DataExt for DataStruct {
-    fn fields(&self) -> Vec<(TokenStream, &Type)> {
+    fn fields(&self) -> Vec<(&Visibility, TokenStream, &Type)> {
         map_fields(&self.fields)
     }
 
-    fn variants(&self) -> Vec<Vec<(TokenStream, &Type)>> {
+    fn variants(&self) -> Vec<Vec<(&Visibility, TokenStream, &Type)>> {
         vec![self.fields()]
     }
 
@@ -67,11 +67,11 @@ impl DataExt for DataStruct {
 }
 
 impl DataExt for DataEnum {
-    fn fields(&self) -> Vec<(TokenStream, &Type)> {
+    fn fields(&self) -> Vec<(&Visibility, TokenStream, &Type)> {
         map_fields(self.variants.iter().flat_map(|var| &var.fields))
     }
 
-    fn variants(&self) -> Vec<Vec<(TokenStream, &Type)>> {
+    fn variants(&self) -> Vec<Vec<(&Visibility, TokenStream, &Type)>> {
         self.variants.iter().map(|var| map_fields(&var.fields)).collect()
     }
 
@@ -81,11 +81,11 @@ impl DataExt for DataEnum {
 }
 
 impl DataExt for DataUnion {
-    fn fields(&self) -> Vec<(TokenStream, &Type)> {
+    fn fields(&self) -> Vec<(&Visibility, TokenStream, &Type)> {
         map_fields(&self.fields.named)
     }
 
-    fn variants(&self) -> Vec<Vec<(TokenStream, &Type)>> {
+    fn variants(&self) -> Vec<Vec<(&Visibility, TokenStream, &Type)>> {
         vec![self.fields()]
     }
 
@@ -96,12 +96,13 @@ impl DataExt for DataUnion {
 
 fn map_fields<'a>(
     fields: impl 'a + IntoIterator<Item = &'a Field>,
-) -> Vec<(TokenStream, &'a Type)> {
+) -> Vec<(&'a Visibility, TokenStream, &'a Type)> {
     fields
         .into_iter()
         .enumerate()
         .map(|(idx, f)| {
             (
+                &f.vis,
                 f.ident
                     .as_ref()
                     .map(ToTokens::to_token_stream)
