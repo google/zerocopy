@@ -94,7 +94,7 @@ pub(crate) enum MetadataCastError {
 
 impl DstLayout {
     /// The minimum possible alignment of a type.
-    const MIN_ALIGN: NonZeroUsize = match NonZeroUsize::new(1) {
+    pub(crate) const MIN_ALIGN: NonZeroUsize = match NonZeroUsize::new(1) {
         Some(min_align) => min_align,
         None => const_unreachable!(),
     };
@@ -597,6 +597,11 @@ impl DstLayout {
         };
 
         Ok((elems, split_at))
+    }
+
+    /// Produces `true` if `self.align` equals 1; otherwise `false`.
+    pub(crate) const fn is_trivially_aligned(&self) -> bool {
+        matches!(self.align, DstLayout::MIN_ALIGN)
     }
 }
 
