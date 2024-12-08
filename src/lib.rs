@@ -4527,7 +4527,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     #[cfg(feature = "std")]
     #[inline(always)]
-    fn read_from_io<R>(mut src: R) -> io::Result<Self>
+    fn read_from_io<R>(src: &mut R) -> io::Result<Self>
     where
         Self: Sized,
         R: io::Read,
