@@ -16,7 +16,7 @@ warning: this function depends on never type fallback being `()`
 15 | fn ref_src_immutable() {
    | ^^^^^^^^^^^^^^^^^^^^^^
    |
-   = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+   = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in Rust 2024 and in a future release in all editions!
    = note: for more information, see issue #123748 <https://github.com/rust-lang/rust/issues/123748>
    = help: specify the types explicitly
 note: in edition 2024, the requirement `!: FromBytes` will fail
@@ -38,7 +38,7 @@ warning: never type fallback affects this call to an `unsafe` function
 17 |     let _: &mut u8 = transmute_mut!(&0u8);
    |                      ^^^^^^^^^^^^^^^^^^^^
    |
-   = warning: this will change its meaning in a future release!
+   = warning: this changes meaning in Rust 2024 and in a future release in all editions!
    = note: for more information, see issue #123748 <https://github.com/rust-lang/rust/issues/123748>
    = help: specify the type explicitly
    = note: `#[warn(never_type_fallback_flowing_into_unsafe)]` on by default
