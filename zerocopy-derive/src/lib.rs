@@ -107,6 +107,7 @@ derive!(FromZeros => derive_from_zeros => derive_from_zeros_inner);
 derive!(FromBytes => derive_from_bytes => derive_from_bytes_inner);
 derive!(IntoBytes => derive_into_bytes => derive_into_bytes_inner);
 derive!(Unaligned => derive_unaligned => derive_unaligned_inner);
+derive!(ByteHash => derive_hash => derive_hash_inner);
 
 /// Deprecated: prefer [`FromZeros`] instead.
 #[deprecated(since = "0.8.0", note = "`FromZeroes` was renamed to `FromZeros`")]
@@ -526,6 +527,50 @@ fn derive_unaligned_inner(ast: &DeriveInput, _top_level: Trait) -> Result<TokenS
         Data::Enum(enm) => derive_unaligned_enum(ast, enm),
         Data::Union(unn) => derive_unaligned_union(ast, unn),
     }
+}
+
+fn derive_hash_inner(ast: &DeriveInput, _top_level: Trait) -> Result<TokenStream, Error> {
+    // This doesn't delegate to `impl_block` because `impl_block` assumes it is deriving a
+    // `zerocopy`-defined trait, and these trait impls share a common shape that `Hash` does not.
+    // In particular, `zerocopy` traits contain a method that only `zerocopy_derive` macros
+    // are supposed to implement, and `impl_block` generating this trait method is incompatible
+    // with `Hash`.
+    let type_ident = &ast.ident;
+    let (impl_generics, ty_generics, where_clause) = ast.generics.split_for_impl();
+    let where_predicates = where_clause.map(|clause| &clause.predicates);
+    Ok(quote! {
+        // TODO(#553): Add a test that generates a warning when
+        // `#[allow(deprecated)]` isn't present.
+        #[allow(deprecated)]
+        // While there are not currently any warnings that this suppresses (that
+        // we're aware of), it's good future-proofing hygiene.
+        #[automatically_derived]
+        impl #impl_generics ::zerocopy::util::macro_util::core_reexport::hash::Hash for #type_ident #ty_generics
+        where
+            Self: ::zerocopy::IntoBytes + ::zerocopy::Immutable,
+            #where_predicates
+        {
+            fn hash<H>(&self, state: &mut H)
+            where
+                H: ::zerocopy::util::macro_util::core_reexport::hash::Hasher,
+            {
+                ::zerocopy::util::macro_util::core_reexport::hash::Hasher::write(
+                    state,
+                    ::zerocopy::IntoBytes::as_bytes(self)
+                )
+            }
+
+            fn hash_slice<H>(data: &[Self], state: &mut H)
+            where
+                H: ::zerocopy::util::macro_util::core_reexport::hash::Hasher,
+            {
+                ::zerocopy::util::macro_util::core_reexport::hash::Hasher::write(
+                    state,
+                    ::zerocopy::IntoBytes::as_bytes(data)
+                )
+            }
+        }
+    })
 }
 
 /// A struct is `TryFromBytes` if:
@@ -1294,6 +1339,7 @@ enum Trait {
     IntoBytes,
     Unaligned,
     Sized,
+    ByteHash,
 }
 
 impl ToTokens for Trait {
@@ -1316,6 +1362,7 @@ impl ToTokens for Trait {
             Trait::IntoBytes => "IntoBytes",
             Trait::Unaligned => "Unaligned",
             Trait::Sized => "Sized",
+            Trait::ByteHash => "ByteHash",
         };
         let ident = Ident::new(s, Span::call_site());
         tokens.extend(core::iter::once(TokenTree::Ident(ident)));
