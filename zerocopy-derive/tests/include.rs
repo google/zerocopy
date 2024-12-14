@@ -29,14 +29,15 @@ mod imp {
             assert_eq,
             cell::UnsafeCell,
             convert::TryFrom,
+            hash,
             marker::PhantomData,
             mem::{ManuallyDrop, MaybeUninit},
             option::IntoIter,
             prelude::v1::*,
             primitive::*,
         },
-        ::std::prelude::v1::*,
-        ::zerocopy::*,
+        ::std::{collections::hash_map::DefaultHasher, prelude::v1::*},
+        ::zerocopy::{Hash as ZerocopyHash, *},
     };
 }
 
