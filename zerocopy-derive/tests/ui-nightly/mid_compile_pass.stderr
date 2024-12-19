@@ -13,7 +13,7 @@ note: required for `KL13<T>` to implement `KnownLayout`
 55 | #[derive(KnownLayout)]
    |          ^^^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
-help: consider restricting type parameter `T`
+help: consider restricting type parameter `T` with trait `KnownLayout`
    |
 59 | fn test_kl13<T: zerocopy::KnownLayout>(t: T) -> impl KnownLayout {
    |               +++++++++++++++++++++++
@@ -102,7 +102,7 @@ note: required by a bound in `assert_kl`
 23 | fn assert_kl<T: ?Sized + KnownLayout>(_: &T) {}
    |                          ^^^^^^^^^^^ required by this bound in `assert_kl`
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
-help: consider further restricting this bound
+help: consider further restricting type parameter `T` with trait `KnownLayout`
    |
 49 | fn test_kl12<T: ?Sized + zerocopy::KnownLayout>(kl: &KL12<T>) {
    |                        +++++++++++++++++++++++
