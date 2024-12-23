@@ -191,6 +191,7 @@ fn test_known_layout() {
                 #[repr(C)]
                 #[repr(align(2))]
                 #[doc(hidden)]
+                #[allow(private_bounds)]
                 struct __ZerocopyKnownLayoutMaybeUninit<T, U>(
                     ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                         <Foo<T, U> as ::zerocopy::util::macro_util::Field<__Zerocopy_Field_0>>::Type,
