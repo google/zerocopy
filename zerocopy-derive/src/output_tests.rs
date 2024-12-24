@@ -26,6 +26,7 @@ use_as_trait_name!(
     FromBytes => derive_from_bytes_inner,
     IntoBytes => derive_into_bytes_inner,
     Unaligned => derive_unaligned_inner,
+    ByteHash => derive_hash_inner,
 );
 
 /// Test that the given derive input expands to the expected output.
@@ -1977,6 +1978,43 @@ fn test_try_from_bytes_trivial_is_bit_valid_enum() {
                         + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
                 {
                     true
+                }
+            }
+        } no_build
+    }
+}
+
+#[test]
+fn test_hash() {
+    test! {
+        ByteHash {
+            struct Foo<T: Clone>(T) where Self: Sized;
+        } expands to {
+            #[allow(deprecated)]
+            #[automatically_derived]
+            impl<T: Clone> ::zerocopy::util::macro_util::core_reexport::hash::Hash for Foo<T>
+            where
+                Self: ::zerocopy::IntoBytes + ::zerocopy::Immutable,
+                Self: Sized,
+            {
+                fn hash<H>(&self, state: &mut H)
+                where
+                    H: ::zerocopy::util::macro_util::core_reexport::hash::Hasher,
+                {
+                    ::zerocopy::util::macro_util::core_reexport::hash::Hasher::write(
+                        state,
+                        ::zerocopy::IntoBytes::as_bytes(self)
+                    )
+                }
+
+                fn hash_slice<H>(data: &[Self], state: &mut H)
+                where
+                    H: ::zerocopy::util::macro_util::core_reexport::hash::Hasher,
+                {
+                    ::zerocopy::util::macro_util::core_reexport::hash::Hasher::write(
+                        state,
+                        ::zerocopy::IntoBytes::as_bytes(data)
+                    )
                 }
             }
         } no_build
