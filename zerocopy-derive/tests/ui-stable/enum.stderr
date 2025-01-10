@@ -423,11 +423,11 @@ error[E0277]: `IntoBytes1` has inter-field padding
 538 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ types with padding cannot implement `IntoBytes`
     |
-    = help: the trait `PaddingFree<IntoBytes1, true>` is not implemented for `()`
     = note: consider using `zerocopy::Unalign` to lower the alignment of individual fields
     = note: consider adding explicit fields where padding would be
     = note: consider using `#[repr(packed)]` to remove inter-field padding
-    = help: the trait `PaddingFree<IntoBytes1, false>` is implemented for `()`
+    = help: the trait `PaddingFree<IntoBytes1, true>` is not implemented for `()`
+            but trait `PaddingFree<IntoBytes1, false>` is implemented for it
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -437,11 +437,11 @@ error[E0277]: `IntoBytes2` has inter-field padding
 549 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ types with padding cannot implement `IntoBytes`
     |
-    = help: the trait `PaddingFree<IntoBytes2, true>` is not implemented for `()`
     = note: consider using `zerocopy::Unalign` to lower the alignment of individual fields
     = note: consider adding explicit fields where padding would be
     = note: consider using `#[repr(packed)]` to remove inter-field padding
-    = help: the trait `PaddingFree<IntoBytes2, false>` is implemented for `()`
+    = help: the trait `PaddingFree<IntoBytes2, true>` is not implemented for `()`
+            but trait `PaddingFree<IntoBytes2, false>` is implemented for it
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -451,11 +451,11 @@ error[E0277]: `IntoBytes3` has inter-field padding
 555 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ types with padding cannot implement `IntoBytes`
     |
-    = help: the trait `PaddingFree<IntoBytes3, true>` is not implemented for `()`
     = note: consider using `zerocopy::Unalign` to lower the alignment of individual fields
     = note: consider adding explicit fields where padding would be
     = note: consider using `#[repr(packed)]` to remove inter-field padding
-    = help: the trait `PaddingFree<IntoBytes3, false>` is implemented for `()`
+    = help: the trait `PaddingFree<IntoBytes3, true>` is not implemented for `()`
+            but trait `PaddingFree<IntoBytes3, false>` is implemented for it
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -476,7 +476,7 @@ error[E0277]: the trait bound `bool: FromBytes` is not satisfied
    --> tests/ui-stable/enum.rs:191:10
     |
 191 | #[derive(FromBytes)]
-    |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `bool`, which is required by `FooU8: FromBytes`
+    |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `bool`
     |
     = note: Consider adding `#[derive(FromBytes)]` to `bool`
     = help: the following other types implement trait `FromBytes`:
