@@ -950,6 +950,14 @@ impl_known_layout!(
     NonZeroU64, NonZeroI64, NonZeroU128, NonZeroI128, NonZeroUsize, NonZeroIsize
 );
 #[rustfmt::skip]
+#[cfg(feature = "float-nightly")]
+impl_known_layout!(
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "float-nightly")))]
+    f16,
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "float-nightly")))]
+    f128
+);
+#[rustfmt::skip]
 impl_known_layout!(
     T         => Option<T>,
     T: ?Sized => PhantomData<T>,
