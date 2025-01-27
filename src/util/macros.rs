@@ -543,12 +543,13 @@ macro_rules! impl_known_layout {
     ($($tyvar:ident $(: ?$optbound:ident)? => $ty:ty),* $(,)?) => {
         $(impl_known_layout!(@inner , $tyvar $(: ?$optbound)? => $ty);)*
     };
-    ($($ty:ty),*) => { $(impl_known_layout!(@inner , => $ty);)* };
-    (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?)? => $ty:ty) => {
+    ($($(#[$attrs:meta])* $ty:ty),*) => { $(impl_known_layout!(@inner , => $(#[$attrs])* $ty);)* };
+    (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?)? => $(#[$attrs:meta])* $ty:ty) => {
         const _: () = {
             use core::ptr::NonNull;
 
             #[allow(non_local_definitions)]
+            $(#[$attrs])*
             // SAFETY: Delegates safety to `DstLayout::for_type`.
             unsafe impl<$($tyvar $(: ?$optbound)?)? $(, const $constvar : $constty)?> KnownLayout for $ty {
                 #[allow(clippy::missing_inline_in_public_items)]
