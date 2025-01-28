@@ -102,6 +102,10 @@ jobs:
             toolchain: "zerocopy-core-error"
           - crate: "zerocopy-derive"
             toolchain: "zerocopy-diagnostic-on-unimplemented"
+          # Exclude stable/wasm since wasm is no longer provided via rustup on
+          # stable.
+          - toolchain: "stable"
+            target: "wasm32-wasi"
           # Exclude most targets targets from the `zerocopy-core-error`
           # toolchain since the `zerocopy-core-error` feature is unrelated to
           # compilation target. This only leaves i686 and x86_64 targets.
