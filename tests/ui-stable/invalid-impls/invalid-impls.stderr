@@ -2,7 +2,7 @@ error[E0277]: the trait bound `T: zerocopy::TryFromBytes` is not satisfied
   --> tests/ui-stable/invalid-impls/invalid-impls.rs:26:39
    |
 26 | impl_or_verify!(T => TryFromBytes for Foo<T>);
-   |                                       ^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `T`, which is required by `Foo<T>: zerocopy::TryFromBytes`
+   |                                       ^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `T`
    |
    = note: Consider adding `#[derive(TryFromBytes)]` to `T`
 note: required for `Foo<T>` to implement `zerocopy::TryFromBytes`
@@ -30,7 +30,7 @@ error[E0277]: the trait bound `T: zerocopy::FromZeros` is not satisfied
   --> tests/ui-stable/invalid-impls/invalid-impls.rs:27:36
    |
 27 | impl_or_verify!(T => FromZeros for Foo<T>);
-   |                                    ^^^^^^ the trait `zerocopy::FromZeros` is not implemented for `T`, which is required by `Foo<T>: zerocopy::FromZeros`
+   |                                    ^^^^^^ the trait `zerocopy::FromZeros` is not implemented for `T`
    |
    = note: Consider adding `#[derive(FromZeros)]` to `T`
 note: required for `Foo<T>` to implement `zerocopy::FromZeros`
@@ -58,7 +58,7 @@ error[E0277]: the trait bound `T: zerocopy::FromBytes` is not satisfied
   --> tests/ui-stable/invalid-impls/invalid-impls.rs:28:36
    |
 28 | impl_or_verify!(T => FromBytes for Foo<T>);
-   |                                    ^^^^^^ the trait `zerocopy::FromBytes` is not implemented for `T`, which is required by `Foo<T>: zerocopy::FromBytes`
+   |                                    ^^^^^^ the trait `zerocopy::FromBytes` is not implemented for `T`
    |
    = note: Consider adding `#[derive(FromBytes)]` to `T`
 note: required for `Foo<T>` to implement `zerocopy::FromBytes`
@@ -86,7 +86,7 @@ error[E0277]: the trait bound `T: zerocopy::IntoBytes` is not satisfied
   --> tests/ui-stable/invalid-impls/invalid-impls.rs:29:36
    |
 29 | impl_or_verify!(T => IntoBytes for Foo<T>);
-   |                                    ^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `T`, which is required by `Foo<T>: zerocopy::IntoBytes`
+   |                                    ^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `T`
    |
    = note: Consider adding `#[derive(IntoBytes)]` to `T`
 note: required for `Foo<T>` to implement `zerocopy::IntoBytes`
@@ -114,7 +114,7 @@ error[E0277]: the trait bound `T: zerocopy::Unaligned` is not satisfied
   --> tests/ui-stable/invalid-impls/invalid-impls.rs:30:36
    |
 30 | impl_or_verify!(T => Unaligned for Foo<T>);
-   |                                    ^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `T`, which is required by `Foo<T>: zerocopy::Unaligned`
+   |                                    ^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `T`
    |
    = note: Consider adding `#[derive(Unaligned)]` to `T`
 note: required for `Foo<T>` to implement `zerocopy::Unaligned`
