@@ -5456,6 +5456,17 @@ pub unsafe trait Unaligned {
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::ByteHash;
 
+/// Derives an optimized implementation of [`PartialEq`] and [`Eq`] for types
+/// that implement [`IntoBytes`] and [`Immutable`].
+///
+/// The standard library's derive for [`PartialEq`] generates a recursive
+///descent into the fields of the type it is applied to. Instead, the
+///implementation derived by this macro performs a single slice comparison of
+///the bytes of the two values being compared.
+#[cfg(any(feature = "derive", test))]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+pub use zerocopy_derive::ByteEq;
+
 #[cfg(feature = "alloc")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
 #[cfg(zerocopy_panic_in_const_and_vec_try_reserve_1_57_0)]
