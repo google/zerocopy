@@ -27,6 +27,7 @@ use_as_trait_name!(
     IntoBytes => derive_into_bytes_inner,
     Unaligned => derive_unaligned_inner,
     ByteHash => derive_hash_inner,
+    ByteEq => derive_eq_inner,
 );
 
 /// Test that the given derive input expands to the expected output.
@@ -2016,6 +2017,39 @@ fn test_hash() {
                         ::zerocopy::IntoBytes::as_bytes(data)
                     )
                 }
+            }
+        } no_build
+    }
+}
+
+#[test]
+fn test_eq() {
+    test! {
+        ByteEq {
+            struct Foo<T: Clone>(T) where Self: Sized;
+        } expands to {
+            #[allow(deprecated)]
+            #[automatically_derived]
+            impl<T: Clone> ::zerocopy::util::macro_util::core_reexport::cmp::PartialEq for Foo<T>
+            where
+                Self: ::zerocopy::IntoBytes + ::zerocopy::Immutable,
+                Self: Sized,
+            {
+                fn eq(&self, other: &Self) -> bool {
+                    ::zerocopy::util::macro_util::core_reexport::cmp::PartialEq::eq(
+                        ::zerocopy::IntoBytes::as_bytes(self),
+                        ::zerocopy::IntoBytes::as_bytes(other),
+                    )
+                }
+            }
+
+            #[allow(deprecated)]
+            #[automatically_derived]
+            impl<T: Clone> ::zerocopy::util::macro_util::core_reexport::cmp::Eq for Foo<T>
+            where
+                Self: ::zerocopy::IntoBytes + ::zerocopy::Immutable,
+                Self: Sized,
+            {
             }
         } no_build
     }
