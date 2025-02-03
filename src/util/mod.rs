@@ -852,7 +852,10 @@ pub(crate) mod polyfills {
         // NOTE on coverage: this will never be tested in nightly since it's a
         // polyfill for a feature which has been stabilized on our nightly
         // toolchain.
-        #[cfg_attr(coverage_nightly, coverage(off))]
+        #[cfg_attr(
+            all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
+            coverage(off)
+        )]
         #[inline(always)]
         fn slice_from_raw_parts(data: Self, len: usize) -> NonNull<[T]> {
             let ptr = ptr::slice_from_raw_parts_mut(data.as_ptr(), len);
@@ -883,7 +886,10 @@ pub(crate) mod polyfills {
         // NOTE on coverage: this will never be tested in nightly since it's a
         // polyfill for a feature which has been stabilized on our nightly
         // toolchain.
-        #[cfg_attr(coverage_nightly, coverage(off))]
+        #[cfg_attr(
+            all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
+            coverage(off)
+        )]
         #[inline(always)]
         unsafe fn unchecked_sub(self, rhs: usize) -> usize {
             match self.checked_sub(rhs) {
@@ -973,7 +979,10 @@ pub(crate) mod testutil {
     }
 
     impl Display for AU64 {
-        #[cfg_attr(coverage_nightly, coverage(off))]
+        #[cfg_attr(
+            all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
+            coverage(off)
+        )]
         fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
             Display::fmt(&self.0, f)
         }
