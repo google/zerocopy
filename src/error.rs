@@ -428,11 +428,6 @@ impl<Src, Dst: ?Sized> SizeError<Src, Dst> {
         self.src
     }
 
-    /// Sets the source value associated with the conversion error.
-    pub(crate) fn with_src<NewSrc>(self, new_src: NewSrc) -> SizeError<NewSrc, Dst> {
-        SizeError { src: new_src, dst: SendSyncPhantomData::default() }
-    }
-
     /// Maps the source value associated with the conversion error.
     ///
     /// This can help mitigate [issues with `Send`, `Sync` and `'static`
@@ -679,15 +674,6 @@ impl<Src, Dst: ?Sized> CastError<Src, Dst> {
         match self {
             Self::Alignment(e) => e.src,
             Self::Size(e) => e.src,
-            Self::Validity(i) => match i {},
-        }
-    }
-
-    /// Sets the source value associated with the conversion error.
-    pub(crate) fn with_src<NewSrc>(self, new_src: NewSrc) -> CastError<NewSrc, Dst> {
-        match self {
-            Self::Alignment(e) => CastError::Alignment(e.with_src(new_src)),
-            Self::Size(e) => CastError::Size(e.with_src(new_src)),
             Self::Validity(i) => match i {},
         }
     }
