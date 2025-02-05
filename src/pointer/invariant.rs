@@ -27,6 +27,11 @@ impl<A: Aliasing, AA: Alignment, V: Validity> Invariants for (A, AA, V) {
 }
 
 /// The aliasing invariant of a [`Ptr`][super::Ptr].
+///
+/// All aliasing invariants must permit reading from the bytes of a pointer's
+/// referent which are not covered by [`UnsafeCell`]s.
+///
+/// [`UnsafeCell`]: core::cell::UnsafeCell
 pub trait Aliasing: Sealed {
     /// Is `Self` [`Exclusive`]?
     #[doc(hidden)]
@@ -139,7 +144,7 @@ impl Validity for Valid {}
 /// permitted to perform unsynchronized reads from its referent.
 pub trait Read<A: Aliasing, R: ReadReason> {}
 
-impl<A: Reference, T: ?Sized + crate::Immutable> Read<A, BecauseImmutable> for T {}
+impl<A: Aliasing, T: ?Sized + crate::Immutable> Read<A, BecauseImmutable> for T {}
 impl<T: ?Sized> Read<Exclusive, BecauseExclusive> for T {}
 
 /// Used to disambiguate [`Read`] impls.
