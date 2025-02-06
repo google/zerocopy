@@ -29,6 +29,20 @@ use crate::{
     Immutable, IntoBytes, Ptr, TryFromBytes, Unalign, ValidityError,
 };
 
+/// Projects the type of the field at `Index` in `Self`.
+///
+/// The `Index` parameter is any sort of handle that identifies the field; its
+/// definition is the obligation of the implementer.
+///
+/// # Safety
+///
+/// Unsafe code may assume that this accurately reflects the definition of
+/// `Self`.
+pub unsafe trait Field<Index> {
+    /// The type of the field at `Index`.
+    type Type: ?Sized;
+}
+
 #[cfg_attr(
     zerocopy_diagnostic_on_unimplemented,
     diagnostic::on_unimplemented(
