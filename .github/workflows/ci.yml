@@ -419,6 +419,25 @@ jobs:
         export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS'|| '' }} $RUSTDOCFLAGS"
         ./cargo.sh +${{ matrix.toolchain }} doc --document-private-items --package ${{ matrix.crate }} ${{ matrix.features }}
 
+    # If the commit message contains the line `SKIP_CARGO_SEMVER_CHECKS=1`, then
+    # skip the cargo-semver-checks step.
+    - name: Check whether to skip cargo-semver-checks
+      run: |
+        set -eo pipefail
+
+        if [ "${{ github.event_name }}" == "pull_request" ]; then
+          # Invoked from a PR - get the PR body directly
+          MESSAGE="${{ github.event.pull_request.body }}"
+        else
+          # Invoked from the merge queue - get the commit message
+          MESSAGE="$(git log -1 --pretty=%B ${{ github.sha }})"
+        fi
+
+        if echo "$MESSAGE" | grep '^\s*SKIP_CARGO_SEMVER_CHECKS=1\s*$' > /dev/null; then
+          echo "Found 'SKIP_CARGO_SEMVER_CHECKS=1' in commit message; skipping cargo-semver-checks..." | tee -a $GITHUB_STEP_SUMMARY
+          echo "ZC_SKIP_CARGO_SEMVER_CHECKS=1" >> $GITHUB_ENV
+        fi
+
     # Check semver compatibility with the most recently-published version on
     # crates.io. We do this in the matrix rather than in its own job so that it
     # gets run on different targets. Some of our API is target-specific (e.g.,
@@ -448,7 +467,8 @@ jobs:
         matrix.crate == 'zerocopy' &&
         matrix.features == '--features __internal_use_only_features_that_work_on_stable' &&
         matrix.toolchain == 'stable' &&
-        matrix.target != 'wasm32-wasi'
+        matrix.target != 'wasm32-wasi' &&
+        env.ZC_SKIP_CARGO_SEMVER_CHECKS != '1'
 
     # TODO(#453): Doing this as a matrix step is a hack that allows us to depend
     # on the fact that toolchains have already been installed. We currently only
