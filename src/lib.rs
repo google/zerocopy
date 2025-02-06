@@ -12,21 +12,16 @@
 //
 //   cargo -q run --manifest-path tools/Cargo.toml -p generate-readme > README.md
 
-//! *<span style="font-size: 100%; color:grey;">Need more out of zerocopy?
-//! Submit a [customer request issue][customer-request-issue]!</span>*
+//! *<span style="font-size: 100%; color:grey;">Have questions? Need help? Ask
+//! the maintainers on [GitHub][github-q-a] or on [Discord][discord]! Need more
+//! out of zerocopy? Submit a [customer request
+//! issue][customer-request-issue]!</span>*
 //!
 //! ***<span style="font-size: 140%">Fast, safe, <span
 //! style="color:red;">compile error</span>. Pick two.</span>***
 //!
-//! Zerocopy makes zero-cost memory manipulation effortless. We write `unsafe`
-//! so you don't have to.
-//!
-//! *Thanks for using zerocopy 0.8! For an overview of what changes from 0.7,
-//! check out our [release notes][release-notes], which include a step-by-step
-//! guide for upgrading from 0.7.*
-//!
-//! *Have questions? Need help? Ask the maintainers on [GitHub][github-q-a] or
-//! on [Discord][discord]!*
+//! Zerocopy is a Swiss Army knife for reasoning about and manipulating types
+//! and their memory layouts. We write `unsafe` correctly so you don't have to.
 //!
 //! [customer-request-issue]: https://github.com/google/zerocopy/issues/new/choose
 //! [release-notes]: https://github.com/google/zerocopy/discussions/1680
