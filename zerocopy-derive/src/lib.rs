@@ -332,7 +332,15 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                             ::zerocopy::util::macro_util::Field<#leading_field_indices>
                         >::Type
                     >,)*
-                    <#trailing_field_ty as ::zerocopy::KnownLayout>::MaybeUninit
+                    // NOTE(#2302): We wrap in `ManuallyDrop` here in case the
+                    // type we're operating on is both generic and
+                    // `repr(packed)`. In that case, Rust needs to know that the
+                    // type is *either* `Sized` or has a trivial `Drop`.
+                    // `ManuallyDrop` has a trivial `Drop`, and so satisfies
+                    // this requirement.
+                    ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
+                        <#trailing_field_ty as ::zerocopy::KnownLayout>::MaybeUninit
+                    >
                 )
                 where
                     #trailing_field_ty: ::zerocopy::KnownLayout,
