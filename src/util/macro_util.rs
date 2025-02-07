@@ -25,8 +25,11 @@ use core::mem::{self, ManuallyDrop};
 use core::ptr::{self, NonNull};
 
 use crate::{
-    pointer::invariant::{self, BecauseExclusive, BecauseImmutable, Invariants, Valid},
-    FromBytes, Immutable, IntoBytes, Ptr, TryFromBytes, Unalign, ValidityError,
+    pointer::{
+        invariant::{self, Valid},
+        transmute::{CastFrom, SizeGtEq, TransmuteFrom},
+    },
+    FromBytes, Immutable, IntoBytes, Ptr, TryFromBytes, ValidityError,
 };
 
 /// Projects the type of the field at `Index` in `Self`.
@@ -512,76 +515,6 @@ pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
     unsafe { &mut *dst }
 }
 
-/// Is a given source a valid instance of `Dst`?
-///
-/// If so, returns `src` casted to a `Ptr<Dst, _>`. Otherwise returns `None`.
-///
-/// # Safety
-///
-/// Unsafe code may assume that, if `try_cast_or_pme(src)` returns `Some`,
-/// `*src` is a bit-valid instance of `Dst`, and that the size of `Src` is
-/// greater than or equal to the size of `Dst`.
-///
-/// # Panics
-///
-/// `try_cast_or_pme` may either produce a post-monomorphization error or a
-/// panic if `Dst` not the same size as `Src`. Otherwise, `try_cast_or_pme`
-/// panics under the same circumstances as [`is_bit_valid`].
-///
-/// [`is_bit_valid`]: TryFromBytes::is_bit_valid
-#[doc(hidden)]
-#[inline]
-fn try_cast_or_pme<Src, Dst, I, R>(
-    src: Ptr<'_, Valid<Src>, I>,
-) -> Result<
-    Ptr<'_, Valid<Dst>, (I::Aliasing, invariant::Unknown)>,
-    ValidityError<Ptr<'_, Valid<Src>, I>, Dst>,
->
-where
-    // TODO(#2226): There should be a `Src: FromBytes` bound here, but doing so
-    // requires deeper surgery.
-    Src: IntoBytes + invariant::Read<I::Aliasing, R>,
-    Dst: TryFromBytes + invariant::Read<I::Aliasing, R>,
-    I: Invariants,
-    I::Aliasing: invariant::Reference,
-{
-    static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
-
-    // SAFETY: This is a pointer cast, satisfying the following properties:
-    // - `p as *mut Dst` addresses a subset of the `bytes` addressed by `src`,
-    //   because we assert above that the size of `Dst` equal to the size of
-    //   `Src`.
-    // - `p as *mut Dst` is a provenance-preserving cast
-    #[allow(clippy::as_conversions)]
-    let c_ptr = unsafe { src.cast_unsized(|p| p as *mut Dst) };
-
-    // SAFETY: `c_ptr` is derived from `src` which is `IntoBytes`. By
-    // invariant on `IntoByte`s, `c_ptr`'s referent consists entirely of
-    // initialized bytes.
-    let c_ptr = unsafe { c_ptr.assume_initialized() };
-
-    match c_ptr.try_into_valid() {
-        Ok(ptr) => Ok(ptr),
-        Err(err) => {
-            // Re-cast `Ptr<Dst>` to `Ptr<Src>`.
-            let ptr = err.into_src();
-            // SAFETY: This is a pointer cast, satisfying the following
-            // properties:
-            // - `p as *mut Src` addresses a subset of the `bytes` addressed by
-            //   `ptr`, because we assert above that the size of `Dst` is equal
-            //   to the size of `Src`.
-            // - `p as *mut Src` is a provenance-preserving cast
-            #[allow(clippy::as_conversions)]
-            let ptr = unsafe { ptr.cast_unsized(|p| p as *mut Src) };
-            // SAFETY: `ptr` is `src`, and has the same alignment invariant.
-            let ptr = unsafe { ptr.assume_alignment::<I::Alignment>() };
-            // SAFETY: `ptr` is `src` and has the same validity invariant.
-            let ptr = unsafe { ptr.assume_validity::<Valid>() };
-            Err(ValidityError::new(ptr.unify_invariants()))
-        }
-    }
-}
-
 /// Attempts to transmute `Src` into `Dst`.
 ///
 /// A helper for `try_transmute!`.
@@ -599,19 +532,30 @@ where
     Src: IntoBytes,
     Dst: TryFromBytes,
 {
-    let mut src = ManuallyDrop::new(src);
-    let ptr = Ptr::from_mut(&mut src);
-    // Wrapping `Dst` in `Unalign` ensures that this cast does not fail due to
-    // alignment requirements.
-    match try_cast_or_pme::<_, ManuallyDrop<Unalign<Dst>>, _, BecauseExclusive>(ptr) {
-        Ok(ptr) => {
-            let dst = ptr.bikeshed_recall_aligned().as_mut();
-            // SAFETY: By shadowing `dst`, we ensure that `dst` is not re-used
-            // after taking its inner value.
-            let dst = unsafe { ManuallyDrop::take(dst) };
-            Ok(dst.into_inner())
-        }
-        Err(_) => Err(ValidityError::new(ManuallyDrop::into_inner(src))),
+    static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
+
+    let mu_src = mem::MaybeUninit::new(src);
+    let mu_src_copy = unsafe { core::ptr::read(&mu_src) };
+    // SAFETY: `MaybeUninit` has no validity constraints.
+    let mut mu_dst: mem::MaybeUninit<Dst> =
+        unsafe { crate::util::transmute_unchecked(mu_src_copy) };
+
+    let ptr = Ptr::from_mut(&mut mu_dst);
+
+    // SAFETY: Since `Src: IntoBytes`, and since `size_of::<Src>() ==
+    // size_of::<Dst>()` by the preceding assertion, all of `mu_dst`'s bytes are
+    // initialized.
+    let ptr = unsafe { ptr.assume_validity::<invariant::Initialized>() };
+
+    let ptr = ptr
+        .transmute::<invariant::Initialized<Dst>, invariant::Aligned, (crate::BecauseRead, _), _>();
+
+    if Dst::is_bit_valid(ptr.forget_aligned()) {
+        Ok(unsafe { mu_dst.assume_init() })
+    } else {
+        // SAFETY: `mu_src` was constructed from `src` and never modified, so it
+        // is still bit-valid.
+        Err(ValidityError::new(unsafe { mu_src.assume_init() }))
     }
 }
 
@@ -631,17 +575,47 @@ where
 pub fn try_transmute_ref<Src, Dst>(src: &Src) -> Result<&Dst, ValidityError<&Src, Dst>>
 where
     Src: IntoBytes + Immutable,
-    Dst: TryFromBytes + Immutable,
+    Dst: TryFromBytes + Immutable + CastFrom<Src>,
 {
-    match try_cast_or_pme::<Src, Dst, _, BecauseImmutable>(Ptr::from_ref(src)) {
+    static_assert!(Src, Dst => mem::size_of::<Dst>() <= mem::size_of::<Src>());
+
+    #[derive(IntoBytes, Immutable)]
+    #[repr(transparent)]
+    struct S<Src>(Src);
+
+    #[derive(TryFromBytes, Immutable)]
+    #[repr(transparent)]
+    struct D<Dst>(Dst);
+
+    unsafe impl<Src, Dst> SizeGtEq<D<Dst>> for S<Src> {}
+
+    unsafe impl<Src, Dst> CastFrom<S<Src>> for D<Dst> {
+        fn cast_from(ptr: *mut S<Src>) -> *mut D<Dst> {
+            ptr.cast()
+        }
+    }
+
+    let src: *const Src = src;
+    let src: &S<Src> = unsafe { &*src.cast() };
+
+    match Ptr::from_ref(src).try_transmute::<Valid<D<Dst>>, _, _>() {
         Ok(ptr) => {
             static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
             // SAFETY: We have checked that `Dst` does not have a stricter
-            // alignment requirement than `Src`.
+            // alignment requirement than `Src`. Since `S` and `D` are
+            // `#[repr(transparent)]`, this also implies that `D<Dst>` does not
+            // have a stricter alignment requirement than `S<Src>`.
+            // `Ptr::try_transmute` promises to return a pointer which addresses
+            // the same bytes as its receiver (`Ptr::from_ref(src)`), which was
+            // guaranteed to be validly-aligned for `S<Src>`, and thus its
+            // return value is validly-aligned for `D<Dst>`.
             let ptr = unsafe { ptr.assume_alignment::<invariant::Aligned>() };
-            Ok(ptr.as_ref())
+            Ok(&ptr.as_ref().0)
         }
-        Err(err) => Err(err.map_src(Ptr::as_ref)),
+        Err(err) => {
+            let err = err.map_src(Ptr::as_ref).map_src(|src| &src.0);
+            Err(unsafe { err.with_dst::<Dst>() })
+        }
     }
 }
 
@@ -661,17 +635,50 @@ where
 pub fn try_transmute_mut<Src, Dst>(src: &mut Src) -> Result<&mut Dst, ValidityError<&mut Src, Dst>>
 where
     Src: FromBytes + IntoBytes,
-    Dst: TryFromBytes + IntoBytes,
+    Dst: TryFromBytes + IntoBytes + CastFrom<Src>,
 {
-    match try_cast_or_pme::<Src, Dst, _, BecauseExclusive>(Ptr::from_mut(src)) {
+    static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
+
+    #[derive(FromBytes, IntoBytes)]
+    #[repr(transparent)]
+    struct S<Src>(Src);
+
+    #[derive(TryFromBytes, IntoBytes)]
+    #[repr(transparent)]
+    struct D<Dst>(Dst);
+
+    unsafe impl<Src, Dst> SizeGtEq<S<Src>> for D<Dst> {}
+    unsafe impl<Src, Dst> SizeGtEq<D<Dst>> for S<Src> {}
+
+    unsafe impl<Src, Dst> CastFrom<S<Src>> for D<Dst> {
+        fn cast_from(ptr: *mut S<Src>) -> *mut D<Dst> {
+            ptr.cast()
+        }
+    }
+
+    let src: *mut Src = src;
+    let src: &mut S<Src> = unsafe { &mut *src.cast() };
+
+    match Ptr::from_mut(src)
+        .try_transmute::<Valid<D<Dst>>, (crate::BecauseRead, _), (crate::BecauseRead, _)>()
+    {
         Ok(ptr) => {
             static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
             // SAFETY: We have checked that `Dst` does not have a stricter
-            // alignment requirement than `Src`.
+            // alignment requirement than `Src`. Since `S` and `D` are
+            // `#[repr(transparent)]`, this also implies that `D<Dst>` does not
+            // have a stricter alignment requirement than `S<Src>`.
+            // `Ptr::try_transmute` promises to return a pointer which addresses
+            // the same bytes as its receiver (`Ptr::from_ref(src)`), which was
+            // guaranteed to be validly-aligned for `S<Src>`, and thus its
+            // return value is validly-aligned for `D<Dst>`.
             let ptr = unsafe { ptr.assume_alignment::<invariant::Aligned>() };
-            Ok(ptr.as_mut())
+            Ok(&mut ptr.as_mut().0)
         }
-        Err(err) => Err(err.map_src(Ptr::as_mut)),
+        Err(err) => {
+            let err = err.map_src(Ptr::as_mut).map_src(|src| &mut src.0);
+            Err(unsafe { err.with_dst::<Dst>() })
+        }
     }
 }
 

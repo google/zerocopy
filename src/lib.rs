@@ -367,7 +367,10 @@ use core::{
 #[cfg(feature = "std")]
 use std::io;
 
-use crate::pointer::invariant::{self, BecauseExclusive};
+use crate::pointer::{
+    invariant::{self, BecauseExclusive},
+    transmute::BecauseRead,
+};
 
 #[cfg(any(feature = "alloc", test))]
 extern crate alloc;
@@ -1782,7 +1785,7 @@ pub unsafe trait TryFromBytes {
                 // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
                 // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
                 // condition will not happen.
-                match source.try_into_valid() {
+                match source.try_into_valid::<(pointer::transmute::BecauseRead, _)>() {
                     Ok(source) => Ok(source.as_mut()),
                     Err(e) => {
                         Err(e.map_src(|src| src.as_bytes::<BecauseExclusive>().as_mut()).into())
@@ -2364,7 +2367,7 @@ pub unsafe trait TryFromBytes {
                 // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
                 // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
                 // condition will not happen.
-                match source.try_into_valid() {
+                match source.try_into_valid::<(BecauseRead, _)>() {
                     Ok(source) => Ok(source.as_mut()),
                     Err(e) => {
                         Err(e.map_src(|src| src.as_bytes::<BecauseExclusive>().as_mut()).into())
@@ -2771,7 +2774,7 @@ fn try_ref_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized
 }
 
 #[inline(always)]
-fn try_mut_from_prefix_suffix<T: IntoBytes + TryFromBytes + KnownLayout + ?Sized>(
+fn try_mut_from_prefix_suffix<T: TryFromBytes + IntoBytes + KnownLayout + ?Sized>(
     candidate: &mut [u8],
     cast_type: CastType,
     meta: Option<T::PointerMetadata>,
@@ -2786,7 +2789,7 @@ fn try_mut_from_prefix_suffix<T: IntoBytes + TryFromBytes + KnownLayout + ?Sized
             // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
             // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
             // condition will not happen.
-            match candidate.try_into_valid() {
+            match candidate.try_into_valid::<(pointer::transmute::BecauseRead, _)>() {
                 Ok(valid) => Ok((valid.as_mut(), prefix_suffix.as_mut())),
                 Err(e) => Err(e.map_src(|src| src.as_bytes::<BecauseExclusive>().as_mut()).into()),
             }
@@ -3500,7 +3503,7 @@ pub unsafe trait FromBytes: FromZeros {
     {
         static_assert_dst_is_not_zst!(Self);
         match Ptr::from_ref(source).try_cast_into_no_leftover::<_, BecauseImmutable>(None) {
-            Ok(ptr) => Ok(ptr.bikeshed_recall_valid().as_ref()),
+            Ok(ptr) => Ok(ptr.transmute().as_ref()),
             Err(err) => Err(err.map_src(|src| src.as_ref())),
         }
     }
@@ -3736,7 +3739,7 @@ pub unsafe trait FromBytes: FromZeros {
     {
         static_assert_dst_is_not_zst!(Self);
         match Ptr::from_mut(source).try_cast_into_no_leftover::<_, BecauseExclusive>(None) {
-            Ok(ptr) => Ok(ptr.bikeshed_recall_valid().as_mut()),
+            Ok(ptr) => Ok(ptr.bikeshed_recall_valid::<(BecauseRead, BecauseExclusive)>().as_mut()),
             Err(err) => Err(err.map_src(|src| src.as_mut())),
         }
     }
@@ -3975,7 +3978,7 @@ pub unsafe trait FromBytes: FromZeros {
         let source = Ptr::from_ref(source);
         let maybe_slf = source.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
         match maybe_slf {
-            Ok(slf) => Ok(slf.bikeshed_recall_valid().as_ref()),
+            Ok(slf) => Ok(slf.transmute().as_ref()),
             Err(err) => Err(err.map_src(|s| s.as_ref())),
         }
     }
@@ -4206,7 +4209,7 @@ pub unsafe trait FromBytes: FromZeros {
         let source = Ptr::from_mut(source);
         let maybe_slf = source.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
         match maybe_slf {
-            Ok(slf) => Ok(slf.bikeshed_recall_valid().as_mut()),
+            Ok(slf) => Ok(slf.bikeshed_recall_valid::<(BecauseRead, BecauseExclusive)>().as_mut()),
             Err(err) => Err(err.map_src(|s| s.as_mut())),
         }
     }
@@ -4582,7 +4585,7 @@ fn ref_from_prefix_suffix<T: FromBytes + KnownLayout + Immutable + ?Sized>(
     let (slf, prefix_suffix) = Ptr::from_ref(source)
         .try_cast_into::<_, BecauseImmutable>(cast_type, meta)
         .map_err(|err| err.map_src(|s| s.as_ref()))?;
-    Ok((slf.bikeshed_recall_valid().as_ref(), prefix_suffix.as_ref()))
+    Ok((slf.transmute().as_ref(), prefix_suffix.as_ref()))
 }
 
 /// Interprets the given affix of the given bytes as a `&mut Self` without
@@ -4594,7 +4597,7 @@ fn ref_from_prefix_suffix<T: FromBytes + KnownLayout + Immutable + ?Sized>(
 /// If there are insufficient bytes, or if that affix of `source` is not
 /// appropriately aligned, this returns `Err`.
 #[inline(always)]
-fn mut_from_prefix_suffix<T: FromBytes + KnownLayout + ?Sized>(
+fn mut_from_prefix_suffix<T: FromBytes + IntoBytes + KnownLayout + ?Sized>(
     source: &mut [u8],
     meta: Option<T::PointerMetadata>,
     cast_type: CastType,
@@ -4602,7 +4605,10 @@ fn mut_from_prefix_suffix<T: FromBytes + KnownLayout + ?Sized>(
     let (slf, prefix_suffix) = Ptr::from_mut(source)
         .try_cast_into::<_, BecauseExclusive>(cast_type, meta)
         .map_err(|err| err.map_src(|s| s.as_mut()))?;
-    Ok((slf.bikeshed_recall_valid().as_mut(), prefix_suffix.as_mut()))
+    Ok((
+        slf.transmute::<invariant::Valid<T>, _, (BecauseRead, _), _>().as_mut(),
+        prefix_suffix.as_mut(),
+    ))
 }
 
 /// Analyzes whether a type is [`IntoBytes`].
