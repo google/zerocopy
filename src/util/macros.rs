@@ -266,7 +266,7 @@ macro_rules! impl_for_transparent_wrapper {
             #[allow(dead_code, clippy::missing_inline_in_public_items)]
             #[cfg_attr(coverage_nightly, coverage(off))]
             fn only_derive_is_allowed_to_implement_this_trait() {
-                use crate::{pointer::invariant::Invariants, util::*};
+                use crate::pointer::{invariant::Invariants, transmute::*};
 
                 impl_for_transparent_wrapper!(@define_is_transparent_wrapper $trait);
 
@@ -367,6 +367,109 @@ macro_rules! impl_for_transparent_wrapper {
         $trait:ident for $ty:ty
     ) => {
         // Trait other than `TryFromBytes`; no `is_bit_valid` impl.
+    };
+}
+
+/// Implements `TransparentWrapper` for an atomic type.
+///
+/// # Safety
+///
+/// The caller promises that `$atomic` is an atomic type whose natie equivalent
+/// is `$native`.
+#[cfg(any(
+    target_has_atomic = "8",
+    target_has_atomic = "16",
+    target_has_atomic = "32",
+    target_has_atomic = "64",
+    target_has_atomic = "ptr"
+))]
+macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
+    ($(#[$attr:meta])* $(,)?) => {};
+    ($(#[$attr:meta])* $atomic:ty [$native:ty], $($atomics:ty [$natives:ty]),* $(,)?) => {
+        $(#[$attr])*
+        // SAFETY: See safety comment in next match arm.
+        unsafe impl<I: crate::invariant::Invariants> crate::pointer::transmute::TransparentWrapper<I> for $atomic {
+            unsafe_impl_transparent_wrapper_for_atomic!(@inner $atomic [$native]);
+        }
+        unsafe_impl_transparent_wrapper_for_atomic!($(#[$attr])* $($atomics [$natives],)*);
+    };
+    ($(#[$attr:meta])* $tyvar:ident => $atomic:ty [$native:ty]) => {
+        // We implement for `$atomic` and set `Inner = $native`. The caller has
+        // promised that `$atomic` and `$native` are an atomic type and its
+        // native counterpart, respectively. Per [1], `$atomic` and `$native`
+        // have the same size.
+        //
+        // [1] Per (for example) https://doc.rust-lang.org/1.81.0/std/sync/atomic/struct.AtomicU64.html:
+        //
+        //   This type has the same size and bit validity as the underlying
+        //   integer type
+        $(#[$attr])*
+        unsafe impl<$tyvar, I: crate::invariant::Invariants> crate::pointer::transmute::TransparentWrapper<I> for $atomic {
+            unsafe_impl_transparent_wrapper_for_atomic!(@inner $atomic [$native]);
+        }
+    };
+    (@inner $atomic:ty [$native:ty]) => {
+        type Inner = UnsafeCell<$native>;
+
+        // SAFETY: It is "obvious" that each atomic type contains a single
+        // `UnsafeCell` that covers all bytes of the type, but we can also prove
+        // it:
+        // - Since `$atomic` provides an API which permits loading and storing
+        //   values of type `$native` via a `&self` (shared) reference, *some*
+        //   interior mutation must be happening, and interior mutation can only
+        //   happen via `UnsafeCell`. Further, there must be enough bytes in
+        //   `$atomic` covered by an `UnsafeCell` to hold every possible value
+        //   of `$native`.
+        // - Per [1], `$atomic` has the same size as `$native`. This on its own
+        //   isn't enough: it would still be possible for `$atomic` to store
+        //   `$native` using a compact representation (for `$native` types for
+        //   which some bit patterns are illegal). However, this is ruled out by
+        //   the fact that `$atomic` has the same bit validity as `$native` [1].
+        //   Thus, we can conclude that every byte of `$atomic` must be covered
+        //   by an `UnsafeCell`.
+        //
+        // Thus, every byte of `$atomic` is covered by an `UnsafeCell`, and we
+        // set `type Inner = UnsafeCell<$native>`. Thus, `Self` and
+        // `Self::Inner` have `UnsafeCell`s covering the same byte ranges.
+        //
+        // [1] Per (for example) https://doc.rust-lang.org/1.81.0/std/sync/atomic/struct.AtomicU64.html:
+        //
+        //   This type has the same size and bit validity as the underlying
+        //   integer type
+        type UnsafeCellVariance = crate::pointer::transmute::Covariant;
+
+        // SAFETY: No safety justification is required for an invariant
+        // variance.
+        type AlignmentVariance = crate::pointer::transmute::Invariant;
+
+        // SAFETY: Per [1], all atomic types have the same bit validity as their
+        // native counterparts. The caller has promised that `$atomic` and
+        // `$native` are an atomic type and its native counterpart,
+        // respectively.
+        //
+        // [1] Per (for example) https://doc.rust-lang.org/1.81.0/std/sync/atomic/struct.AtomicU64.html:
+        //
+        //   This type has the same size and bit validity as the underlying
+        //   integer type
+        type ValidityVariance = crate::pointer::transmute::Covariant;
+
+        #[inline(always)]
+        fn cast_into_inner(ptr: *mut $atomic) -> *mut UnsafeCell<$native> {
+            // SAFETY: Per [1] (from comment on impl block), `$atomic` has the
+            // same size as `$native`. Thus, this cast preserves size.
+            //
+            // This cast trivially preserves provenance.
+            ptr.cast::<UnsafeCell<$native>>()
+        }
+
+        #[inline(always)]
+        fn cast_from_inner(ptr: *mut UnsafeCell<$native>) -> *mut $atomic {
+            // SAFETY: Per [1] (from comment on impl block), `$atomic` has the
+            // same size as `$native`. Thus, this cast preserves size.
+            //
+            // This cast trivially preserves provenance.
+            ptr.cast::<$atomic>()
+        }
     };
 }
 
