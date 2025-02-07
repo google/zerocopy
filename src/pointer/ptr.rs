@@ -172,7 +172,10 @@ mod _external {
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
     use super::*;
-    use crate::util::{AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance};
+    use crate::{
+        pointer::transmute::{CastFrom, TransmuteFromAlignment, TransmuteFromPtr},
+        util::{AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance},
+    };
 
     /// `&'a T` → `Ptr<'a, T>`
     impl<'a, T: ?Sized> Ptr<'a, Valid<T>, (Shared, Aligned)> {
@@ -338,6 +341,54 @@ mod _conversions {
         }
     }
 
+    /// `Ptr<'a, T>` → `Ptr<'a, U>`
+    impl<'a, V, I> Ptr<'a, V, I>
+    where
+        V: Validity,
+        I: Invariants,
+    {
+        /// # Safety
+        /// - TODO: `UnsafeCell` agreement
+        /// - The caller promises that the returned `Ptr` satisfies alignment
+        ///   `A`
+        /// - The caller promises that the returned `Ptr` satisfies validity `V`
+        pub(crate) unsafe fn transmute_unchecked<U, A>(self) -> Ptr<'a, U, (I::Aliasing, A)>
+        where
+            A: Alignment,
+            U: Validity,
+            U::Inner: CastFrom<V::Inner>,
+        {
+            // SAFETY:
+            // - By invariant on `CastFrom::cast_from`:
+            //   - This cast preserves address and referent size, and thus the
+            //     returned pointer addresses the same bytes as `p`
+            //   - This cast preserves provenance
+            // - TODO: `UnsafeCell` agreement
+            let ptr =
+                unsafe { self.cast_unsized_unchecked::<U::Inner, _>(|p| U::Inner::cast_from(p)) };
+            // SAFETY: The caller promises that alignment is satisfied.
+            let ptr = unsafe { ptr.assume_alignment() };
+            // SAFETY: The caller promises that validity is satisfied.
+            let ptr = unsafe { ptr.assume_validity::<U>() };
+            ptr.unify_validity()
+        }
+
+        pub(crate) fn transmute<U, A, RT, RA>(self) -> Ptr<'a, U, (I::Aliasing, A)>
+        where
+            A: Alignment,
+            U: TransmuteFromPtr<V, I::Aliasing, RT>,
+            U::Inner: TransmuteFromAlignment<U::Inner, I::Alignment, A, RA> + CastFrom<V::Inner>,
+        {
+            // SAFETY:
+            // - TODO: `UnsafeCell` agreement
+            // - By invariant on `TransmuteFromPtr`, it is sound to treat the
+            //   resulting pointer as having alignment `A`
+            // - By invariant on `TransmuteFromPtr`, it is sound to treat the
+            //   resulting pointer as having validity `V`
+            unsafe { self.transmute_unchecked() }
+        }
+    }
+
     /// `Ptr<'a, T = Wrapper<U>>` → `Ptr<'a, U>`
     impl<'a, V, I> Ptr<'a, V, I>
     where
@@ -427,7 +478,10 @@ mod _conversions {
 /// State transitions between invariants.
 mod _transitions {
     use super::*;
-    use crate::{AlignmentError, TryFromBytes, ValidityError};
+    use crate::{
+        pointer::transmute::{CastFrom, TransmuteFromPtr, TryTransmuteFromPtr},
+        AlignmentError, TryFromBytes, ValidityError,
+    };
 
     impl<'a, V, I> Ptr<'a, V, I>
     where
@@ -648,6 +702,22 @@ mod _transitions {
         }
     }
 
+    impl<'a, V, I> Ptr<'a, V, I>
+    where
+        V: Validity,
+        I: Invariants,
+        I::Aliasing: Reference,
+    {
+        /// Forgets that `self` is an `Exclusive` pointer, downgrading it to a
+        /// `Shared` pointer.
+        #[doc(hidden)]
+        #[must_use]
+        #[inline]
+        pub const fn forget_exclusive(self) -> Ptr<'a, V, I::WithAliasing<Shared>> {
+            unsafe { self.assume_invariants() }
+        }
+    }
+
     impl<'a, T, I> Ptr<'a, Initialized<T>, I>
     where
         T: ?Sized,
@@ -659,14 +729,11 @@ mod _transitions {
         #[inline]
         // TODO(#859): Reconsider the name of this method before making it
         // public.
-        pub const fn bikeshed_recall_valid(self) -> Ptr<'a, Valid<T>, I>
+        pub fn bikeshed_recall_valid(self) -> Ptr<'a, Valid<T>, I>
         where
-            T: crate::FromBytes,
+            T: crate::FromBytes + crate::IntoBytes,
         {
-            // SAFETY: The bound `T: FromBytes` ensures that any initialized
-            // sequence of bytes is bit-valid for `T`. `V = Initialized<T>`
-            // ensures that all of the referent bytes are initialized.
-            unsafe { self.assume_valid() }
+            self.transmute().unify_invariants()
         }
 
         /// Checks that `self`'s referent is validly initialized for `T`,
@@ -686,7 +753,12 @@ mod _transitions {
             mut self,
         ) -> Result<Ptr<'a, Valid<T>, I>, ValidityError<Self, T>>
         where
-            T: TryFromBytes + Read<I::Aliasing, R>,
+            T: TryFromBytes, // + Read<I::Aliasing, R>,
+            Valid<T>: TryTransmuteFromPtr<Initialized<T>, I::Aliasing, R>,
+            // NOTE: This bound ought to be implied, but leaving it out causes
+            // Rust to infinite loop during trait solving.
+            <Valid<T> as Validity>::Inner:
+                crate::pointer::transmute::CastFrom<<Initialized<T> as Validity>::Inner>,
             I::Aliasing: Reference,
         {
             // This call may panic. If that happens, it doesn't cause any soundness
@@ -696,6 +768,57 @@ mod _transitions {
                 // SAFETY: If `T::is_bit_valid`, code may assume that `self`
                 // contains a bit-valid instance of `Self`.
                 Ok(unsafe { self.assume_valid() })
+            } else {
+                Err(ValidityError::new(self))
+            }
+        }
+    }
+
+    impl<'a, V, I> Ptr<'a, V, I>
+    where
+        V: Validity,
+        I: Invariants,
+    {
+        /// Attempts to transmute a `Ptr<T>` into a `Ptr<U>`.
+        ///
+        /// # Panics
+        ///
+        /// This method will panic if
+        /// [`U::is_bit_valid`][TryFromBytes::is_bit_valid] panics.
+        ///
+        /// # Safety
+        ///
+        /// On error, unsafe code may rely on this method's returned
+        /// `ValidityError` containing `self`.
+        #[inline]
+        pub(crate) fn try_transmute<U, A, R, RR>(
+            mut self,
+        ) -> Result<Ptr<'a, U, I::WithAlignment<A>>, ValidityError<Self, U::Inner>>
+        where
+            U: Validity + TryTransmuteFromPtr<V, I::Aliasing, R>,
+            U::Inner: TryFromBytes + CastFrom<V::Inner>,
+            Initialized<U::Inner>: TransmuteFromPtr<V, I::Aliasing, RR>,
+            <Initialized<U::Inner> as Validity>::Inner: CastFrom<V::Inner>,
+            I::Aliasing: Reference,
+            A: Alignment,
+        {
+            // TODO: Validate alignment
+            if true {
+                todo!()
+            }
+
+            let is_bit_valid = {
+                let ptr = self.reborrow();
+                let ptr = ptr.transmute::<Initialized<U::Inner>, Unknown, _, _>();
+                // This call may panic. If that happens, it doesn't cause any
+                // soundness issues, as we have not generated any invalid state
+                // which we need to fix before returning.
+                <U::Inner as TryFromBytes>::is_bit_valid(ptr)
+            };
+
+            if is_bit_valid {
+                let ptr = unsafe { self.transmute_unchecked() };
+                Ok(ptr.unify_invariants())
             } else {
                 Err(ValidityError::new(self))
             }
