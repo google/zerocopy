@@ -624,7 +624,7 @@ where
         let ptr = Ptr::from_ref(b.into_byte_slice())
             .try_cast_into_no_leftover::<T, BecauseImmutable>(None)
             .expect("zerocopy internal error: into_ref should be infallible");
-        let ptr = ptr.bikeshed_recall_valid();
+        let ptr = ptr.transmute();
         ptr.as_ref()
     }
 }
@@ -770,7 +770,7 @@ where
         let ptr = Ptr::from_ref(b.deref())
             .try_cast_into_no_leftover::<T, BecauseImmutable>(None)
             .expect("zerocopy internal error: Deref::deref should be infallible");
-        let ptr = ptr.bikeshed_recall_valid();
+        let ptr = ptr.transmute();
         ptr.as_ref()
     }
 }
