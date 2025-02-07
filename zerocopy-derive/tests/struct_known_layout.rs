@@ -101,3 +101,14 @@ impl WithSelfReference {
 }
 
 util_assert_impl_all!(WithSelfReference: imp::KnownLayout);
+
+// Deriving `KnownLayout` should work with generic `repr(packed)` types. See
+// #2302.
+
+#[derive(imp::KnownLayout)]
+#[repr(C, packed)]
+struct Packet<P> {
+    payload: P,
+}
+
+util_assert_impl_all!(Packet<imp::u8>: imp::KnownLayout);

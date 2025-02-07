@@ -195,12 +195,14 @@ fn test_known_layout() {
                     ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                         <Foo<T, U> as ::zerocopy::util::macro_util::Field<__Zerocopy_Field_0>>::Type,
                     >,
-                    <<Foo<
-                        T,
-                        U,
-                    > as ::zerocopy::util::macro_util::Field<
-                        __Zerocopy_Field_1,
-                    >>::Type as ::zerocopy::KnownLayout>::MaybeUninit,
+                    ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
+                        <<Foo<
+                            T,
+                            U,
+                        > as ::zerocopy::util::macro_util::Field<
+                            __Zerocopy_Field_1,
+                        >>::Type as ::zerocopy::KnownLayout>::MaybeUninit
+                    >,
                 )
                 where
                     <Foo<
