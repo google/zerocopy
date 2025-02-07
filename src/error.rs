@@ -594,6 +594,20 @@ impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
         ValidityError { src: f(self.src), dst: SendSyncPhantomData::default() }
     }
 
+    /// Changes the destination type.
+    ///
+    /// # Safety
+    ///
+    /// `NewDst` must have the same validity - as implemented by
+    /// [`TryFromBytes::is_bit_valid`] - as `Dst`.
+    pub(crate) unsafe fn with_dst<NewDst: TryFromBytes>(self) -> ValidityError<Src, NewDst> {
+        // SAFETY: There is currently no invariant required of `dst`, so this
+        // method's safety precondition is unnecessary. However, we require it
+        // to be forwards-compatible with a point in time where we add an
+        // invariant to the `Dst` type.
+        ValidityError { src: self.src, dst: SendSyncPhantomData::default() }
+    }
+
     /// Converts the error into a general [`ConvertError`].
     pub(crate) const fn into<A, S>(self) -> ConvertError<A, S, Self> {
         ConvertError::Validity(self)
