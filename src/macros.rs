@@ -249,8 +249,8 @@ macro_rules! transmute_ref {
 /// const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst
 /// where
 ///     'src: 'dst,
-///     Src: FromBytes + IntoBytes + Immutable,
-///     Dst: FromBytes + IntoBytes + Immutable,
+///     Src: FromBytes + IntoBytes,
+///     Dst: FromBytes + IntoBytes,
 ///     size_of::<Src>() == size_of::<Dst>(),
 ///     align_of::<Src>() >= align_of::<Dst>(),
 /// {
@@ -325,9 +325,9 @@ macro_rules! transmute_mut {
         #[allow(unused, clippy::diverging_sub_expression)]
         if false {
             // This branch, though never taken, ensures that the type of `e` is
-            // `&mut T` where `T: 't + Sized + FromBytes + IntoBytes + Immutable`
-            // and that the type of this macro expression is `&mut U` where `U:
-            // 'u + Sized + FromBytes + IntoBytes + Immutable`.
+            // `&mut T` where `T: 't + Sized + FromBytes + IntoBytes` and that
+            // the type of this macro expression is `&mut U` where `U: 'u +
+            // Sized + FromBytes + IntoBytes`.
 
             // We use immutable references here rather than mutable so that, if
             // this macro is used in a const context (in which, as of this
@@ -578,7 +578,7 @@ macro_rules! try_transmute_ref {
 /// fn try_transmute_mut<Src, Dst>(src: &mut Src) -> Result<&mut Dst, ValidityError<&mut Src, Dst>>
 /// where
 ///     Src: FromBytes + IntoBytes,
-///     Dst: TryFromBytes,
+///     Dst: TryFromBytes + IntoBytes,
 ///     size_of::<Src>() == size_of::<Dst>(),
 ///     align_of::<Src>() >= align_of::<Dst>(),
 /// {
