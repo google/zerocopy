@@ -684,7 +684,7 @@ where
 pub fn try_transmute_mut<Src, Dst>(src: &mut Src) -> Result<&mut Dst, ValidityError<&mut Src, Dst>>
 where
     Src: FromBytes + IntoBytes,
-    Dst: TryFromBytes,
+    Dst: TryFromBytes + IntoBytes,
 {
     match try_cast_or_pme::<Src, Dst, _, BecauseExclusive>(Ptr::from_mut(src)) {
         Ok(ptr) => {
