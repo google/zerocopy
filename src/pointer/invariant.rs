@@ -10,48 +10,42 @@
 
 //! The parameterized invariants of a [`Ptr`][super::Ptr].
 //!
-//! Invariants are encoded as ([`Aliasing`], [`Alignment`], [`Validity`])
-//! triples implementing the [`Invariants`] trait.
+//! A `Ptr<V, I>` has the following invariants:
+//! - [`V: Validity`][validity-trait] encodes the bit validity of `Ptr`'s
+//!   referent, which is of type [`V::Inner`][validity-inner]
+//! - [`I: Invariants`][invariants-trait], where
+//!   [`I::Aliasing`][invariants-aliasing] and
+//!   [`I::Alignment`][invariants-alignment] encode the `Ptr`'s aliasing and
+//!   alignment invariants respectively
+//!
+//! [validity-trait]: Validity
+//! [validity-inner]: Validity::Inner
+//! [invariants-trait]: Invariants
+//! [invariants-aliasing]: Invariants::Aliasing
+//! [invariants-alignment]: Invariants::Alignment
 
-/// The invariants of a [`Ptr`][super::Ptr].
+use core::marker::PhantomData;
+
+/// The aliasing and alignment invariants of a [`Ptr`][super::Ptr].
 pub trait Invariants: Sealed {
     type Aliasing: Aliasing;
     type Alignment: Alignment;
-    type Validity: Validity;
 
     /// Invariants identical to `Self` except with a different aliasing
     /// invariant.
-    type WithAliasing<A: Aliasing>: Invariants<
-        Aliasing = A,
-        Alignment = Self::Alignment,
-        Validity = Self::Validity,
-    >;
+    type WithAliasing<A: Aliasing>: Invariants<Aliasing = A, Alignment = Self::Alignment>;
 
     /// Invariants identical to `Self` except with a different alignment
     /// invariant.
-    type WithAlignment<A: Alignment>: Invariants<
-        Aliasing = Self::Aliasing,
-        Alignment = A,
-        Validity = Self::Validity,
-    >;
-
-    /// Invariants identical to `Self` except with a different validity
-    /// invariant.
-    type WithValidity<V: Validity>: Invariants<
-        Aliasing = Self::Aliasing,
-        Alignment = Self::Alignment,
-        Validity = V,
-    >;
+    type WithAlignment<A: Alignment>: Invariants<Aliasing = Self::Aliasing, Alignment = A>;
 }
 
-impl<A: Aliasing, AA: Alignment, V: Validity> Invariants for (A, AA, V) {
+impl<A: Aliasing, AA: Alignment> Invariants for (A, AA) {
     type Aliasing = A;
     type Alignment = AA;
-    type Validity = V;
 
-    type WithAliasing<AB: Aliasing> = (AB, AA, V);
-    type WithAlignment<AB: Alignment> = (A, AB, V);
-    type WithValidity<VB: Validity> = (A, AA, VB);
+    type WithAliasing<AB: Aliasing> = (AB, AA);
+    type WithAlignment<AB: Alignment> = (A, AB);
 }
 
 /// The aliasing invariant of a [`Ptr`][super::Ptr].
@@ -79,7 +73,24 @@ pub trait Alignment: Sealed {
 }
 
 /// The validity invariant of a [`Ptr`][super::Ptr].
+///
+/// A `V: Validity` defines both the referent type of a `Ptr<V>`
+/// ([`V::Inner`](Validity::Inner)) and the bit validity of the referent value.
+/// Bit validity specifies a set, `S`, of possible values which may exist at the
+/// `Ptr`'s referent. Code operating on a `Ptr` may assume that bit validity
+/// holds - namely, that it will only observe referent values in `S`. It must
+/// also uphold bit validity - namely, it must only write values in `S` to the
+/// referent.
+///
+/// The specific definition of `S` for a given validity type (i.e., `V:
+/// Validity`) is documented on that type.
+///
+/// The available validities are [`Uninit`], [`AsInitialized`], [`Initialized`],
+/// and [`Valid`].
 pub trait Validity: Sealed {
+    type Inner: ?Sized;
+    type WithInner<T: ?Sized>: Validity<Inner = T>;
+
     #[doc(hidden)]
     type MappedTo<M: ValidityMapping>: Validity;
 }
@@ -98,8 +109,16 @@ pub enum Unknown {}
 impl Alignment for Unknown {
     type MappedTo<M: AlignmentMapping> = M::FromUnknown;
 }
-impl Validity for Unknown {
-    type MappedTo<M: ValidityMapping> = M::FromUnknown;
+
+/// A validity which permits arbitrary bytes - including uninitialized bytes -
+/// at any byte offset.
+pub struct Uninit<T: ?Sized = ()>(PhantomData<T>);
+
+impl<T: ?Sized> Validity for Uninit<T> {
+    type Inner = T;
+    type WithInner<U: ?Sized> = Uninit<U>;
+
+    type MappedTo<M: ValidityMapping> = M::FromUninit<T>;
 }
 
 /// The `Ptr<'a, T>` adheres to the aliasing rules of a `&'a T`.
@@ -138,11 +157,11 @@ impl Alignment for Aligned {
 
 /// The byte ranges initialized in `T` are also initialized in the referent.
 ///
-/// Formally: uninitialized bytes may only be present in `Ptr<T>`'s referent
-/// where they are guaranteed to be present in `T`. This is a dynamic property:
-/// if, at a particular byte offset, a valid enum discriminant is set, the
-/// subsequent bytes may only have uninitialized bytes as specificed by the
-/// corresponding enum.
+/// Formally: uninitialized bytes may only be present in
+/// `Ptr<AsInitialized<T>>`'s referent where they are guaranteed to be present
+/// in `T`. This is a dynamic property: if, at a particular byte offset, a valid
+/// enum discriminant is set, the subsequent bytes may only have uninitialized
+/// bytes as specificed by the corresponding enum.
 ///
 /// Formally, given `len = size_of_val_raw(ptr)`, at every byte offset, `b`, in
 /// the range `[0, len)`:
@@ -162,22 +181,28 @@ impl Alignment for Aligned {
 ///   variant's bit validity (although note that the variant may contain another
 ///   enum type, in which case the same rules apply depending on the state of
 ///   its discriminant, and so on recursively).
-pub enum AsInitialized {}
-impl Validity for AsInitialized {
-    type MappedTo<M: ValidityMapping> = M::FromAsInitialized;
+pub struct AsInitialized<T: ?Sized = ()>(PhantomData<T>);
+impl<T: ?Sized> Validity for AsInitialized<T> {
+    type Inner = T;
+    type WithInner<U: ?Sized> = AsInitialized<U>;
+    type MappedTo<M: ValidityMapping> = M::FromAsInitialized<T>;
 }
 
 /// The byte ranges in the referent are fully initialized. In other words, if
 /// the referent is `N` bytes long, then it contains a bit-valid `[u8; N]`.
-pub enum Initialized {}
-impl Validity for Initialized {
-    type MappedTo<M: ValidityMapping> = M::FromInitialized;
+pub struct Initialized<T: ?Sized = ()>(PhantomData<T>);
+impl<T: ?Sized> Validity for Initialized<T> {
+    type Inner = T;
+    type WithInner<U: ?Sized> = Initialized<U>;
+    type MappedTo<M: ValidityMapping> = M::FromInitialized<T>;
 }
 
 /// The referent is bit-valid for `T`.
-pub enum Valid {}
-impl Validity for Valid {
-    type MappedTo<M: ValidityMapping> = M::FromValid;
+pub struct Valid<T: ?Sized = ()>(PhantomData<T>);
+impl<T: ?Sized> Validity for Valid<T> {
+    type Inner = T;
+    type WithInner<U: ?Sized> = Valid<U>;
+    type MappedTo<M: ValidityMapping> = M::FromValid<T>;
 }
 
 /// [`Ptr`](crate::Ptr) referents that permit unsynchronized read operations.
@@ -224,16 +249,18 @@ mod sealed {
 
     impl Sealed for Unknown {}
 
+    impl<T: ?Sized> Sealed for Uninit<T> {}
+
     impl Sealed for Shared {}
     impl Sealed for Exclusive {}
 
     impl Sealed for Aligned {}
 
-    impl Sealed for AsInitialized {}
-    impl Sealed for Initialized {}
-    impl Sealed for Valid {}
+    impl<T: ?Sized> Sealed for AsInitialized<T> {}
+    impl<T: ?Sized> Sealed for Initialized<T> {}
+    impl<T: ?Sized> Sealed for Valid<T> {}
 
-    impl<A: Sealed, AA: Sealed, V: Sealed> Sealed for (A, AA, V) {}
+    impl<A: Sealed, AA: Sealed> Sealed for (A, AA) {}
 }
 
 pub use mapping::*;
@@ -268,10 +295,10 @@ mod mapping {
     /// Mappings are used by [`Ptr`](crate::Ptr) conversion methods to preserve
     /// or modify invariants as required by each method's semantics.
     pub trait ValidityMapping {
-        type FromUnknown: Validity;
-        type FromAsInitialized: Validity;
-        type FromInitialized: Validity;
-        type FromValid: Validity;
+        type FromUninit<T: ?Sized>: Validity;
+        type FromAsInitialized<T: ?Sized>: Validity;
+        type FromInitialized<T: ?Sized>: Validity;
+        type FromValid<T: ?Sized>: Validity;
     }
 
     /// The application of the [`AlignmentMapping`] `M` to the [`Alignment`] `A`.
@@ -280,7 +307,8 @@ mod mapping {
 
     /// The application of the [`ValidityMapping`] `M` to the [`Validity`] `A`.
     #[allow(type_alias_bounds)]
-    pub type MappedValidity<V: Validity, M: ValidityMapping> = V::MappedTo<M>;
+    pub type MappedValidity<V: Validity, U: ?Sized, M: ValidityMapping> =
+        <V::MappedTo<M> as Validity>::WithInner<U>;
 
     impl<FromUnknown: Alignment, FromAligned: Alignment> AlignmentMapping
         for ((Unknown, FromUnknown), (Shared, FromAligned))
@@ -290,28 +318,28 @@ mod mapping {
     }
 
     impl<
-            FromUnknown: Validity,
+            FromUninit: Validity,
             FromAsInitialized: Validity,
             FromInitialized: Validity,
             FromValid: Validity,
         > ValidityMapping
         for (
-            (Unknown, FromUnknown),
+            (Unknown, FromUninit),
             (AsInitialized, FromAsInitialized),
             (Initialized, FromInitialized),
             (Valid, FromValid),
         )
     {
-        type FromUnknown = FromUnknown;
-        type FromAsInitialized = FromAsInitialized;
-        type FromInitialized = FromInitialized;
-        type FromValid = FromValid;
+        type FromUninit<T: ?Sized> = FromUninit::WithInner<T>;
+        type FromAsInitialized<T: ?Sized> = FromAsInitialized::WithInner<T>;
+        type FromInitialized<T: ?Sized> = FromInitialized::WithInner<T>;
+        type FromValid<T: ?Sized> = FromValid::WithInner<T>;
     }
 
     impl<FromInitialized: Validity> ValidityMapping for (Initialized, FromInitialized) {
-        type FromUnknown = Unknown;
-        type FromAsInitialized = Unknown;
-        type FromInitialized = FromInitialized;
-        type FromValid = Unknown;
+        type FromUninit<T: ?Sized> = Uninit<T>;
+        type FromAsInitialized<T: ?Sized> = Uninit<T>;
+        type FromInitialized<T: ?Sized> = FromInitialized::WithInner<T>;
+        type FromValid<T: ?Sized> = Uninit<T>;
     }
 }
