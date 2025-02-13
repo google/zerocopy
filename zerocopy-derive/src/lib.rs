@@ -403,6 +403,19 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
 
                 #[inline(always)]
                 fn pointer_to_metadata(_ptr: *mut Self) -> () {}
+
+                unsafe fn destroy(
+                    ptr: ::zerocopy::MaybeAligned<
+                        '_,
+                        Self,
+                        ::zerocopy::pointer::invariant::Exclusive,
+                    >,
+                ) {
+                    // SAFETY: The preconditions of `destroy_sized` are
+                    // identical to that of `destroy` and are ensured by the
+                    // caller.
+                    unsafe { ::zerocopy::util::destroy::destroy_sized(ptr) }
+                }
             ),
             None,
         )

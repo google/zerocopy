@@ -583,6 +583,14 @@ macro_rules! impl_known_layout {
                 #[inline(always)]
                 fn pointer_to_metadata(_ptr: *mut Self) -> () {
                 }
+
+                #[inline]
+                unsafe fn destroy(ptr: crate::MaybeAligned<'_, Self, crate::invariant::Exclusive>) {
+                    // SAFETY: The preconditions of `destroy_sized` are
+                    // identical to that of `destroy` and are ensured by the
+                    // caller.
+                    unsafe { crate::util::destroy::destroy_sized(ptr) }
+                }
             }
         };
     };
@@ -600,7 +608,7 @@ macro_rules! impl_known_layout {
 /// - It must be valid to perform an `as` cast from `*mut $repr` to `*mut $ty`,
 ///   and this operation must preserve referent size (ie, `size_of_val_raw`).
 macro_rules! unsafe_impl_known_layout {
-    ($($tyvar:ident: ?Sized + KnownLayout =>)? #[repr($repr:ty)] $ty:ty) => {
+    ($($tyvar:ident: ?Sized + KnownLayout =>)? #[repr($(packed,)? $repr:ty)] $ty:ty) => {
         const _: () = {
             use core::ptr::NonNull;
 
@@ -621,7 +629,7 @@ macro_rules! unsafe_impl_known_layout {
                 // TODO(#429): Add documentation to `NonNull::new_unchecked`
                 // that it preserves provenance.
                 #[inline(always)]
-                fn raw_from_ptr_len(bytes: NonNull<u8>, meta: <$repr as KnownLayout>::PointerMetadata) -> NonNull<Self> {
+                fn raw_from_ptr_len(bytes: NonNull<u8>, meta: Self::PointerMetadata) -> NonNull<Self> {
                     #[allow(clippy::as_conversions)]
                     let ptr = <$repr>::raw_from_ptr_len(bytes, meta).as_ptr() as *mut Self;
                     // SAFETY: `ptr` was converted from `bytes`, which is non-null.

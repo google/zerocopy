@@ -23,7 +23,7 @@ use core::{
 use crate::{
     error::AlignmentError,
     pointer::invariant::{self, Invariants},
-    Unalign,
+    KnownLayout, Unalign, UnalignUnsized,
 };
 
 /// A type which has the same layout as the type it wraps.
@@ -293,11 +293,11 @@ unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for UnsafeCell<T> {
     // SAFETY: Since we set this to `Invariant`, we make no safety claims.
     type UnsafeCellVariance = Invariant;
 
-    // SAFETY: Per [1] (from comment on impl), `Unalign<T>` has the same
+    // SAFETY: Per [1] (from comment on impl), `UnsafeCell<T>` has the same
     // representation as `T`, and thus has the same alignment as `T`.
     type AlignmentVariance = Covariant;
 
-    // SAFETY: Per [1], `Unalign<T>` has the same bit validity as `T`.
+    // SAFETY: Per [1], `UnsafeCell<T>` has the same bit validity as `T`.
     // Technically the term "representation" doesn't guarantee this, but the
     // subsequent sentence in the documentation makes it clear that this is the
     // intention.
@@ -364,6 +364,45 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Unalign<T> {
         //
         // This cast trivially preserves provenance.
         ptr.cast::<Unalign<T>>()
+    }
+}
+
+// SAFETY: `UnalignUnsized<T>` promises to have the same size as `T`.
+//
+// See inline comments for other safety justifications.
+unsafe impl<T: ?Sized + KnownLayout, I: Invariants> TransparentWrapper<I> for UnalignUnsized<T> {
+    type Inner = T;
+
+    // SAFETY: `UnalignUnsized<T>` promises to have `UnsafeCell`s covering the
+    // same byte ranges as `Inner = T`.
+    type UnsafeCellVariance = Covariant;
+
+    // SAFETY: Since `UnalignUnsized<T>` promises to have alignment 1 regardless
+    // of `T`'s alignment. Thus, an aligned pointer to `UnalignUnsized<T>` is
+    // not necessarily an aligned pointer to `T`.
+    type AlignmentVariance = Invariant;
+
+    // SAFETY: `UnalignUnsized<T>` promises to have the same validity as `T`.
+    type ValidityVariance = Covariant;
+
+    #[inline(always)]
+    fn cast_into_inner(ptr: *mut Self) -> *mut T {
+        // SAFETY: Per the safety comment on the impl block, `UnalignUnsized<T>`
+        // has the same representation as `T`. Thus, this cast preserves size.
+        //
+        // This cast trivially preserves provenance.
+        #[allow(clippy::as_conversions)]
+        return ptr as *mut T;
+    }
+
+    #[inline(always)]
+    fn cast_from_inner(ptr: *mut T) -> *mut Self {
+        // SAFETY: Per the safety comment on the impl block, `UnalignUnsized<T>`
+        // has the same representation as `T`. Thus, this cast preserves size.
+        //
+        // This cast trivially preserves provenance.
+        #[allow(clippy::as_conversions)]
+        return ptr as *mut Self;
     }
 }
 
@@ -678,6 +717,8 @@ pub(crate) unsafe fn copy_unchecked(src: &[u8], dst: &mut [u8]) {
     //   bytes does not overlap with the region of memory beginning at `dst`
     //   with the same size, because `dst` is derived from an exclusive
     //   reference.
+    //
+    // [1] https://doc.rust-lang.org/1.81.0/core/ptr/fn.copy_nonoverlapping.html#safety
     unsafe {
         core::ptr::copy_nonoverlapping(src.as_ptr(), dst.as_mut_ptr(), src.len());
     };
@@ -820,6 +861,226 @@ where
     // allocator).
     #[allow(clippy::undocumented_unsafe_blocks)]
     Ok(unsafe { alloc::boxed::Box::from_raw(ptr.as_ptr()) })
+}
+
+#[doc(hidden)]
+pub mod destroy {
+    use crate::{invariant, KnownLayout, MaybeAligned};
+
+    /// Run `T`'s destructor.
+    ///
+    /// # Safety
+    ///
+    /// See `KnownLayout::destroy`.
+    #[cfg(feature = "alloc")]
+    #[inline]
+    pub unsafe fn destroy_unsized<T: ?Sized + KnownLayout>(
+        ptr: MaybeAligned<'_, T, invariant::Exclusive>,
+    ) {
+        use crate::MaybeUninit;
+        use crate::Ptr;
+
+        // If `T` has a trivial destructor, simply return.
+        if !T::NEEDS_DROP {
+            return;
+        }
+
+        match ptr.try_recall_trivially_aligned() {
+            // If `T` is trivially aligned, it can simply be dropped in place.
+            Ok(ptr) => {
+                // SAFETY: By contract on the caller, this function is only
+                // invoked from the destructor of an transitive owner `ptr`'s
+                // referent, and `ptr`'s referent is never subsequently
+                // re-accessed.
+                unsafe {
+                    ptr.drop_in_place();
+                }
+            }
+            // Otherwise, can destroy an arbitrarily-aligned [`[T]`] by:
+            // 1. allocating a well-aligned `aligned: Box<MaybeUninit<[T]>>`
+            // 2. copying `ptr`'s referent to `aligned`
+            // 3. casting `aligned` to `Box<[T]>`
+            // 4. dropping `aligned`
+            Err(ptr) => {
+                // First, we allocate `aligned`.
+                let ptr = ptr.as_non_null().as_ptr();
+                let meta = KnownLayout::pointer_to_metadata(ptr);
+                let aligned = match MaybeUninit::<T>::new_boxed_uninit(meta) {
+                    Ok(ptr) => ptr,
+                    Err(_) => {
+                        // `MaybeUninit::new_boxed_uninit` returns an `Err` on
+                        // allocation failure. In this unfortunate case, we
+                        // cannot run the referent's destructor.
+                        return;
+                    }
+                };
+
+                // Next, we copy `ptr`'s referent to `aligned`.
+                let aligned = Ptr::from_box(aligned);
+                let size = aligned.size();
+
+                // SAFETY: This invocation satisfies the safety contract of
+                // copy_nonoverlapping [1]:
+                // - `ptr as *mut u8` is valid for reads of `size` bytes,
+                //   because it is derived from a `Ptr` whose referent is
+                //   exclusively-aliased. This is sufficent, since
+                //   `copy_nonoverlapping` does not require its source referent
+                //   to be valid or even initialized [1].
+                // - `aligned as *mut u8` is valid for writes of `size` bytes,
+                //   because `aligned`'s referent is greater-than-or-equal in
+                //   size to that of `slf`, because `aligned` might include
+                //   trailing padding.
+                // - `src` and `dst` are, trivially, properly aligned
+                // - the region of memory beginning at `src` with a size of
+                //   `size` bytes does not overlap with the region of memory
+                //   beginning at `aligned` with the same size, because
+                //   `aligned` is derived from a fresh allocation.
+                //
+                // [1] https://doc.rust-lang.org/1.81.0/core/ptr/fn.copy_nonoverlapping.html#safety
+                unsafe {
+                    #[allow(clippy::as_conversions)]
+                    core::ptr::copy_nonoverlapping(
+                        ptr as *mut u8,
+                        aligned.as_non_null().as_ptr() as *mut u8,
+                        size,
+                    );
+                }
+
+                // Finally, we reconstitute `aligned` as a `Box<T>` and
+                // immediately drop it.
+
+                // SAFETY: Because `aligned` carries `invariant::Exclusive`,
+                // there are no safety preconditions.
+                let aligned = match unsafe { aligned.try_cast::<T>() } {
+                    Ok(ptr) => ptr,
+                    Err(_) => {
+                        // SAFETY: By postcondition on `Ptr::try_cast`, `Err` is
+                        // only produced if the resulting cast would reference
+                        // more bytes than referenced the input `aligned`. This
+                        // is impossible, since, by invariant on `MaybeUninit`,
+                        // `T` and `MaybeUninit<T>` are guaranteed to have the
+                        // same size.
+                        unsafe { core::hint::unreachable_unchecked() }
+                    }
+                };
+
+                // SAFETY: By invariant on `MaybeUninit`, `T` and
+                // `MaybeUninit<T>` are guaranteed to have the same size.
+                let aligned = unsafe { aligned.assume_alignment::<invariant::Aligned>() };
+
+                // SAFETY: Because we have entirely overwritten the referent of
+                // `aligned` with a valid `T`, the referent of `aligned` is a
+                // valid `T`.
+                let aligned = unsafe { aligned.assume_validity::<invariant::Valid>() };
+
+                // SAFETY: This invocation satisfies the safety contract of
+                // `Box::from_raw` [1], because `aligned` is directly derived from
+                // `Box::into_raw`. By LEMMA 1, `aligned`'s referent is additionally
+                // a valid instance of `T`. The layouts of `T` and `MaybeUninit<T>`
+                // are the same, by invariant on `MaybeUninit<T>`.
+                //
+                // [1] Per https://doc.rust-lang.org/1.81.0/alloc/boxed/struct.Box.html#method.from_raw:
+                //
+                //   It is valid to convert both ways between a `Box`` and a raw
+                //   pointer allocated with the `Global`` allocator, given that
+                //   the `Layout` used with the allocator is correct for the
+                //   type.
+                let _ = unsafe { Ptr::into_box(aligned) };
+            }
+        }
+    }
+
+    /// Run `T`'s destructor.
+    ///
+    /// # Safety
+    ///
+    /// See `KnownLayout::destroy`.
+    ///
+    /// # Tests
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// use zerocopy_derive::*;
+    ///
+    /// #[derive(KnownLayout)]
+    /// #[repr(C, align(2))]
+    /// struct NeedsDrop(u16);
+    ///
+    /// impl Drop for NeedsDrop {
+    ///     fn drop(&mut self) {}
+    /// }
+    ///
+    /// let mut val = NeedsDrop(42);
+    /// let ptr = Ptr::from_mut(&mut val).forget_aligned();
+    /// let _ = unsafe { util::destroy::destroy_unsized::<NeedsDrop>(ptr) };
+    /// ```
+    #[cfg(not(feature = "alloc"))]
+    #[inline]
+    pub unsafe fn destroy_unsized<T: ?Sized + KnownLayout>(
+        ptr: MaybeAligned<'_, T, invariant::Exclusive>,
+    ) {
+        // In environments without allocators, we cannot run `T`'s non-trivial
+        // destructor if `T` is non-trivially aligned, since it is presently
+        // impossible to statically allocate a well-aligned (and, thus,
+        // droppable) buffer of dynamic size.
+        //
+        // Rather than panic or forgetting `T` (which might be unexpected) in
+        // such cases, we emit a post-monomorphization error; the user can
+        // explicitly choose to forget their type by wrapping it in
+        // `ManuallyDrop`.
+        #[cfg(zerocopy_unsized_needs_drop_1_63_0)]
+        static_assert!(
+            T: ?Sized + KnownLayout =>
+                !T::NEEDS_DROP || T::LAYOUT.is_trivially_aligned()
+        );
+        // Prior to 1.63.0, `core::mem::needs_drop` requires `T: Sized`, so on
+        // earlier versions we cannot relax the alignment check for trivially
+        // droppable types.
+        #[cfg(not(zerocopy_unsized_needs_drop_1_63_0))]
+        static_assert!(
+            T: ?Sized + KnownLayout => T::LAYOUT.is_trivially_aligned()
+        );
+
+        // We can run the destructor of well-aligned `T`.
+        if let Ok(ptr) = ptr.try_recall_trivially_aligned() {
+            // SAFETY: By contract on the caller, this function is only invoked
+            // from the destructor of an transitive owner `ptr`'s referent, and
+            // `ptr`'s referent is never subsequently re-accessed.
+            unsafe {
+                ptr.drop_in_place();
+            }
+        }
+    }
+
+    /// Run `T`'s destructor.
+    ///
+    /// # Safety
+    ///
+    /// See `KnownLayout::destroy`.
+    #[inline]
+    pub unsafe fn destroy_sized<T: KnownLayout>(ptr: MaybeAligned<'_, T, invariant::Exclusive>) {
+        match ptr.try_recall_trivially_aligned() {
+            // If `T` is trivially aligned, it can simply be dropped in place.
+            Ok(ptr) => {
+                // SAFETY: By contract on the caller, this function
+                // is only invoked from the destructor of an
+                // transitive owner `ptr`'s referent, and `ptr`'s
+                // referent is never subsequently re-accessed.
+                unsafe {
+                    ptr.drop_in_place();
+                }
+            }
+            // If `T` is not trivially-aligned, read it onto the stack (so it is
+            // well-aligned) and drop it.
+            Err(ptr) => {
+                // SAFETY: By contract on the caller, this function is only
+                // invoked from the destructor of an transitive owner `ptr`'s
+                // referent, and `ptr`'s referent is never subsequently
+                // re-accessed.
+                let _ = unsafe { ptr.read_unaligned_unchecked::<crate::BecauseExclusive>() };
+            }
+        }
+    }
 }
 
 /// Since we support multiple versions of Rust, there are often features which
@@ -1022,6 +1283,46 @@ mod tests {
     #[should_panic]
     fn test_round_down_to_next_multiple_of_alignment_zerocopy_panic_in_const_and_vec_try_reserve() {
         round_down_to_next_multiple_of_alignment(0, NonZeroUsize::new(3).unwrap());
+    }
+
+    #[test]
+    #[should_panic]
+    fn destroy_sized() {
+        use zerocopy::*;
+        use zerocopy_derive::*;
+
+        #[derive(KnownLayout, FromZeros)]
+        #[repr(C, align(2))]
+        struct NeedsDrop(u8);
+
+        impl Drop for NeedsDrop {
+            fn drop(&mut self) {
+                panic!("dropped successfully")
+            }
+        }
+
+        let val = UnalignUnsized::<[NeedsDrop]>::new_box_zeroed_with_elems(42);
+        drop(val)
+    }
+
+    #[test]
+    #[should_panic]
+    fn destroy_sized() {
+        use crate::*;
+        use zerocopy_derive::*;
+
+        #[derive(KnownLayout, FromZeros)]
+        #[repr(align(2))]
+        struct NeedsDrop(u8);
+
+        impl Drop for NeedsDrop {
+            fn drop(&mut self) {
+                panic!("dropped successfully")
+            }
+        }
+
+        let val = UnalignUnsized::<NeedsDrop>::new_box_zeroed();
+        drop(val)
     }
 }
 
