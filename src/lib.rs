@@ -4567,7 +4567,8 @@ pub unsafe trait FromBytes: FromZeros {
         Self: Sized,
         R: io::Read,
     {
-        let mut buf = CoreMaybeUninit::<Self>::zeroed();
+        let mut buf = CoreMaybeUninit::<Self>::uninit();
+        buf.zero();
         let ptr = Ptr::from_mut(&mut buf);
         // SAFETY: `buf` consists entirely of initialized, zeroed bytes.
         let ptr = unsafe { ptr.assume_validity::<invariant::Initialized>() };
@@ -6077,6 +6078,29 @@ mod tests {
         assert_eq!(VAL.write_to_suffix(&mut bytes[..]), Ok(()));
         let want: [u8; 16] = transmute!([[0; 8], VAL_BYTES]);
         assert_eq!(bytes, want);
+    }
+
+    #[test]
+    #[cfg(feature = "std")]
+    fn test_read_io_with_padding_soundness() {
+        #[derive(FromBytes)]
+        #[repr(C)]
+        struct WithPadding {
+            x: u8,
+            y: u16,
+        }
+        struct ReadsInRead;
+        impl std::io::Read for ReadsInRead {
+            fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+                if buf.iter().all(|&x| x == 0) {
+                    Ok(buf.len())
+                } else {
+                    buf.iter_mut().for_each(|x| *x = 0);
+                    Ok(buf.len())
+                }
+            }
+        }
+        assert!(matches!(WithPadding::read_from_io(ReadsInRead), Ok(WithPadding { x: 0, y: 0 })));
     }
 
     #[test]
