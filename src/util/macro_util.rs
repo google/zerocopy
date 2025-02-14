@@ -25,7 +25,7 @@ use core::mem::{self, ManuallyDrop};
 use core::ptr::{self, NonNull};
 
 use crate::{
-    pointer::invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
+    pointer::invariant::{self, BecauseExclusive, BecauseImmutable, Invariants, Valid},
     FromBytes, Immutable, IntoBytes, Ptr, TryFromBytes, Unalign, ValidityError,
 };
 
@@ -532,17 +532,17 @@ pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
 #[doc(hidden)]
 #[inline]
 fn try_cast_or_pme<Src, Dst, I, R>(
-    src: Ptr<'_, Src, I>,
+    src: Ptr<'_, Valid<Src>, I>,
 ) -> Result<
-    Ptr<'_, Dst, (I::Aliasing, invariant::Unknown, invariant::Valid)>,
-    ValidityError<Ptr<'_, Src, I>, Dst>,
+    Ptr<'_, Valid<Dst>, (I::Aliasing, invariant::Unknown)>,
+    ValidityError<Ptr<'_, Valid<Src>, I>, Dst>,
 >
 where
     // TODO(#2226): There should be a `Src: FromBytes` bound here, but doing so
     // requires deeper surgery.
     Src: IntoBytes + invariant::Read<I::Aliasing, R>,
     Dst: TryFromBytes + invariant::Read<I::Aliasing, R>,
-    I: Invariants<Validity = invariant::Valid>,
+    I: Invariants,
     I::Aliasing: invariant::Reference,
 {
     static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
@@ -576,7 +576,7 @@ where
             // SAFETY: `ptr` is `src`, and has the same alignment invariant.
             let ptr = unsafe { ptr.assume_alignment::<I::Alignment>() };
             // SAFETY: `ptr` is `src` and has the same validity invariant.
-            let ptr = unsafe { ptr.assume_validity::<I::Validity>() };
+            let ptr = unsafe { ptr.assume_validity::<Valid>() };
             Err(ValidityError::new(ptr.unify_invariants()))
         }
     }
