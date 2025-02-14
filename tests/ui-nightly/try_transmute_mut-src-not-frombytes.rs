@@ -10,7 +10,7 @@ extern crate zerocopy;
 
 use zerocopy::transmute_mut;
 
-#[derive(zerocopy::FromBytes)]
+#[derive(zerocopy::IntoBytes)]
 #[repr(C)]
 struct Src;
 
@@ -19,6 +19,6 @@ struct Src;
 struct Dst;
 
 fn main() {
-    // `try_transmute_mut` requires that the source type implements `IntoBytes`
+    // `try_transmute_mut` requires that the source type implements `FromBytes`
     let src_not_from_bytes: &mut Dst = transmute_mut!(&mut Src);
 }

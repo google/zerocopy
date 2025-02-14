@@ -1164,6 +1164,24 @@ mod tests {
                 }
             }
 
+            pub(super) trait TestTryFromMut<T: ?Sized> {
+                #[allow(clippy::needless_lifetimes)]
+                fn test_try_from_mut<'bytes>(
+                    &self,
+                    bytes: &'bytes mut [u8],
+                ) -> Option<Option<&'bytes mut T>>;
+            }
+
+            impl<T: TryFromBytes + IntoBytes + KnownLayout + ?Sized> TestTryFromMut<T> for AutorefWrapper<T> {
+                #[allow(clippy::needless_lifetimes)]
+                fn test_try_from_mut<'bytes>(
+                    &self,
+                    bytes: &'bytes mut [u8],
+                ) -> Option<Option<&'bytes mut T>> {
+                    Some(T::try_mut_from_bytes(bytes).ok())
+                }
+            }
+
             pub(super) trait TestTryReadFrom<T> {
                 fn test_try_read_from(&self, bytes: &[u8]) -> Option<Option<T>>;
             }
@@ -1250,6 +1268,25 @@ mod tests {
                         assert_on_allowlist!(
                             test_try_from_ref($ty):
                             ManuallyDrop<[UnsafeCell<bool>]>
+                        );
+
+                        None
+                    }
+
+                    #[allow(clippy::needless_lifetimes)]
+                    fn test_try_from_mut<'bytes>(&mut self, _bytes: &'bytes mut [u8]) -> Option<Option<&'bytes mut $ty>> {
+                        assert_on_allowlist!(
+                            test_try_from_mut($ty):
+                            Option<Box<UnsafeCell<NotZerocopy>>>,
+                            Option<&'static UnsafeCell<NotZerocopy>>,
+                            Option<&'static mut UnsafeCell<NotZerocopy>>,
+                            Option<NonNull<UnsafeCell<NotZerocopy>>>,
+                            Option<fn()>,
+                            Option<FnManyArgs>,
+                            Option<extern "C" fn()>,
+                            Option<ECFnManyArgs>,
+                            *const NotZerocopy,
+                            *mut NotZerocopy
                         );
 
                         None
@@ -1363,8 +1400,10 @@ mod tests {
                         let bytes_mut = &mut vec.as_mut_slice()[offset..offset+size];
                         bytes_mut.copy_from_slice(bytes);
 
-                        let res = <$ty as TryFromBytes>::try_mut_from_bytes(bytes_mut);
-                        assert!(res.is_ok(), "{}::try_mut_from_bytes({:?}): got `Err`, expected `Ok`", stringify!($ty), val);
+                        let res = ww.test_try_from_mut(bytes_mut);
+                        if let Some(res) = res {
+                            assert!(res.is_some(), "{}::try_mut_from_bytes({:?}): got `None`, expected `Some`", stringify!($ty), val);
+                        }
                     }
 
                     let res = bytes.and_then(|bytes| ww.test_try_read_from(bytes));
@@ -1384,8 +1423,11 @@ mod tests {
                         assert!(res.is_none(), "{}::try_ref_from_bytes({:?}): got Some, expected None", stringify!($ty), c);
                     }
 
-                    let res = <$ty as TryFromBytes>::try_mut_from_bytes(c);
-                    assert!(res.is_err(), "{}::try_mut_from_bytes({:?}): got Ok, expected Err", stringify!($ty), c);
+                    let res = w.test_try_from_mut(c);
+                    if let Some(res) = res {
+                        assert!(res.is_none(), "{}::try_mut_from_bytes({:?}): got Some, expected None", stringify!($ty), c);
+                    }
+
 
                     let res = w.test_try_read_from(c);
                     if let Some(res) = res {

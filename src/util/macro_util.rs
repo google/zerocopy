@@ -26,7 +26,7 @@ use core::ptr::{self, NonNull};
 
 use crate::{
     pointer::invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
-    Immutable, IntoBytes, Ptr, TryFromBytes, Unalign, ValidityError,
+    FromBytes, Immutable, IntoBytes, Ptr, TryFromBytes, Unalign, ValidityError,
 };
 
 /// Projects the type of the field at `Index` in `Self`.
@@ -538,6 +538,8 @@ fn try_cast_or_pme<Src, Dst, I, R>(
     ValidityError<Ptr<'_, Src, I>, Dst>,
 >
 where
+    // TODO(#2226): There should be a `Src: FromBytes` bound here, but doing so
+    // requires deeper surgery.
     Src: IntoBytes + invariant::Read<I::Aliasing, R>,
     Dst: TryFromBytes + invariant::Read<I::Aliasing, R>,
     I: Invariants<Validity = invariant::Valid>,
@@ -658,8 +660,8 @@ where
 #[inline(always)]
 pub fn try_transmute_mut<Src, Dst>(src: &mut Src) -> Result<&mut Dst, ValidityError<&mut Src, Dst>>
 where
-    Src: IntoBytes,
-    Dst: TryFromBytes,
+    Src: FromBytes + IntoBytes,
+    Dst: TryFromBytes + IntoBytes,
 {
     match try_cast_or_pme::<Src, Dst, _, BecauseExclusive>(Ptr::from_mut(src)) {
         Ok(ptr) => {
