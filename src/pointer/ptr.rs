@@ -397,7 +397,7 @@ mod _conversions {
     {
         /// Constructs a `Ptr` from an exclusive reference.
         #[inline]
-        pub(crate) fn from_mut(ptr: &'a mut T) -> Self {
+        pub fn from_mut(ptr: &'a mut T) -> Self {
             let ptr = NonNull::from(ptr);
             // SAFETY:
             // 0.  If `ptr`'s referent is not zero sized, then `ptr`, by
@@ -421,6 +421,93 @@ mod _conversions {
             // 8. `ptr`, by invariant on `&'a mut T`, conforms to the validity
             //    invariant of `Valid`.
             unsafe { Self::new(ptr) }
+        }
+    }
+
+    /// `Box<mut T>` → `Ptr<'static, T>`
+    #[cfg(feature = "alloc")]
+    impl<'a, T> Ptr<'a, T, (Exclusive, Aligned, Valid)>
+    where
+        T: 'a + ?Sized,
+    {
+        /// Constructs a `Ptr` from a `Box`.
+        ///
+        /// This leaks the `Box`.
+        #[inline]
+        pub(crate) fn from_box(ptr: alloc::boxed::Box<T>) -> Self {
+            let ptr = alloc::boxed::Box::into_raw(ptr);
+            // SAFETY: LEMMA 1: The referent of a `Box` is well-aligned and
+            // non-null [1].
+            //
+            // [1] Per https://doc.rust-lang.org/1.82.0/alloc/boxed/struct.Box.html#method.into_raw:
+            //
+            //   The pointer will be properly aligned and non-null.
+            let mut ptr = unsafe { NonNull::new_unchecked(ptr) };
+            // SAFETY: `ptr` is convertible to an exclusive reference [1][2]:
+            // 0. `ptr` is properly aligned, by LEMMA 1.
+            // 1. `ptr` is non-null, by LEMMA 1.
+            // 2. `ptr` dereferenceable, in the sense that the memory range of
+            //    the given size starting at the pointer are within the bounds
+            //    of a single allocated object [3], because it derived from
+            //    `Box::into_raw`.
+            // 3. The resulting `&mut T` adheres to Rust's aliasing rules. `ptr`
+            //    is the sole reference to its referent, because the `Box` that
+            //    owned its referent was consumed by `Box::into_raw`. Its
+            //    referent lives for at least `'a`, because this impl is bounded
+            //    by `T: 'a`.
+            //
+            // [1] https://doc.rust-lang.org/1.82.0/core/ptr/struct.NonNull.html#method.as_mut
+            // [2] https://doc.rust-lang.org/1.82.0/core/ptr/index.html#pointer-to-reference-conversion
+            // [3] https://doc.rust-lang.org/1.82.0/core/ptr/index.html#safety
+            let ptr = unsafe { ptr.as_mut() };
+            Self::from_mut(ptr)
+        }
+
+        /// Constructs a `Box` from a `Ptr`.
+        ///
+        /// # Safety
+        ///
+        /// `ptr` must be derived from `Ptr::from_box`. Its referent's size and
+        /// alignment must be equal to that of the referent of the originating
+        /// `Box`.
+        #[inline]
+        pub(crate) unsafe fn into_box(ptr: Self) -> alloc::boxed::Box<T> {
+            #[allow(clippy::as_conversions)]
+            let ptr = ptr.as_mut() as *mut _;
+            // SAFETY: It is valid to convert from `ptr` to `Box<T>` because if
+            // `ptr`'s referent is non-zero-sized, it was allocated with the
+            // global allocator (LEMMA 1) with `Layout` correct a referent of
+            // `T` (LEMMA 2) [1][2]. If `ptr`'s referent is zero-sized, it is
+            // valid for reads and well-aligned (LEMMA 3). Regardless of the
+            // size of `ptr`'s referent, it is a valid and well-aligned `T`
+            // (LEMMA 3). It is the sole pointer its referent (LEMMA 4).
+            //
+            // LEMMA 1: If non-zero-sized, `ptr`'s referent was allocated with
+            // the global allocator. By contract on the caller, `ptr` is derived
+            // from `Ptr::from_box`, which consumes a `Box` using the global
+            // allocator and returns a unique `Ptr` to its referent.
+            //
+            // LEMMA 2: If non-zero-sized, `ptr`'s referent was allocated with a
+            // `Layout` correct for `T`. Although the originating `Box` may not
+            // have had a referent of type `T`, by contract on the caller, its
+            // size and alignment (which are the two defining components of a
+            // `Layout`) are equal to that of the referent of the originating
+            // `Box`.
+            //
+            // LEMMA 3: If the `ptr`'s referent is zero-sized, it is valid for
+            // reads and well-aligned. By contract on the caller, `Ptr` is
+            // derived from `Box::into_raw`, whose referent is always valid for
+            // reads and well-aligned. Although the originating `Box` may not
+            // have had a referent of type `T`, `ptr`'s is a valid `T` because
+            // `ptr` carries `invariant::Valid`.
+            //
+            // LEMMA 4: `ptr` is the sole pointer to its referent because, by
+            // contract on the caller, it's derived from `Ptr::from_box` which
+            // consumes the originating `Box`.
+            //
+            // [1] https://doc.rust-lang.org/1.82.0/std/boxed/struct.Box.html#method.from_raw
+            // [2] https://doc.rust-lang.org/1.82.0/std/boxed/index.html#memory-layout
+            unsafe { alloc::boxed::Box::from_raw(ptr) }
         }
     }
 
@@ -815,6 +902,25 @@ mod _transitions {
             unsafe { self.assume_alignment::<Aligned>() }
         }
 
+        /// Attempt to recall that `self`'s referent is trivially aligned.
+        #[inline]
+        // TODO(#859): Reconsider the name of this method before making it
+        // public.
+        pub(crate) fn try_recall_trivially_aligned(
+            self,
+        ) -> Result<Ptr<'a, T, (I::Aliasing, Aligned, I::Validity)>, Self>
+        where
+            T: KnownLayout,
+        {
+            if T::LAYOUT.is_trivially_aligned() {
+                // SAFETY: The above check ensures that `T` has no non-trivial
+                // alignment requirement.
+                Ok(unsafe { self.assume_alignment::<Aligned>() })
+            } else {
+                Err(self)
+            }
+        }
+
         /// Assumes that `self`'s referent conforms to the validity requirement
         /// of `V`.
         ///
@@ -954,6 +1060,54 @@ mod _casts {
         T: 'a + ?Sized,
         I: Invariants,
     {
+        /// Casts to a different (unsized) target type.
+        ///
+        /// Produces `Err(self)` iff the `Ptr` produced by the cast would
+        /// reference a strict superset of the bytes referenced by `self`.
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that if `I::Aliasing` is [`Any`] or [`Shared`],
+        /// `UnsafeCell`s in the returned `Ptr`'s referent must exist at ranges
+        /// identical to those at which `UnsafeCell`s exist in `self`'s
+        /// referent.
+        ///
+        /// Callers may assume the documented behavior of `try_cast to be a
+        /// safety postcondition.
+        #[inline]
+        pub unsafe fn try_cast<U>(self) -> Result<Ptr<'a, U, (I::Aliasing, Any, Any)>, Self>
+        where
+            T: KnownLayout<PointerMetadata = U::PointerMetadata>,
+            U: 'a + ?Sized + KnownLayout,
+        {
+            let ptr = self.as_non_null();
+            let meta = T::pointer_to_metadata(ptr.as_ptr());
+            if meta.size_for_metadata(U::LAYOUT) <= T::size_of_val_raw(ptr) {
+                // SAFETY:
+                // - The returned pointer addresses a subset of the bytes
+                //   addressed by `ptr`, because of the above conditional.
+                // - The returned pointer has the same provenance as `p` because
+                //   `NonNull::cast` is presumed to preserve provenance and
+                //   `U::raw_from_ptr_len` is documented to preserve provenance.
+                // - By contract on the caller, if `I::Aliasing` is `Any` or
+                //   `Shared`, `UnsafeCell`s in `*u` must exist at ranges
+                //   identical to those at which `UnsafeCell`s exist in `*p`
+                Ok(unsafe {
+                    self.cast_unsized(|ptr| {
+                        // SAFETY: `ptr` is derived from `self`'s referent,
+                        // which is non-null by invariant on `Ptr`.
+                        let ptr = NonNull::new_unchecked(ptr);
+                        let bytes = ptr.cast::<u8>();
+                        U::raw_from_ptr_len(bytes, meta).as_ptr()
+                    })
+                })
+            } else {
+                // The `Ptr` produced by the cast would reference a strict
+                // superset of the bytes referenced by `self`.
+                Err(self)
+            }
+        }
+
         /// Casts to a different (unsized) target type.
         ///
         /// # Safety
@@ -1641,6 +1795,65 @@ mod _project {
     }
 }
 
+mod _misc {
+    use super::*;
+
+    impl<T, I> Ptr<'_, T, I>
+    where
+        T: ?Sized,
+        I: Invariants<Aliasing = Exclusive, Alignment = Aligned, Validity = Valid>,
+    {
+        /// Executes the referent's destructor.
+        ///
+        /// # Safety
+        ///
+        /// This function may only be invoked from the destructor of an
+        /// transitive owner `ptr`'s referent. After invoking this function, it
+        /// is forbidden to re-use `ptr`'s referent.
+        pub(crate) unsafe fn drop_in_place(self) {
+            let ptr = self.as_non_null().as_ptr();
+            // SAFETY: This invocation satisfies `drop_in_place`'s safety
+            // invariants [1]:
+            // - `ptr` is valid for both reads and writes, because it derived
+            //   from a `Ptr` whose referent is exclusively aliased,
+            //   well-aligned, and valid.
+            // - `ptr` is well-aligned; see above.
+            // - `ptr` is non-null; see above.
+            // - `ptr`'s referent is presumed to be a library-valid
+            // - `ptr` is exclusively aliased and thus is the sole pointer to
+            //   its referent.
+            //
+            // [1] https://doc.rust-lang.org/1.82.0/std/ptr/fn.drop_in_place.html#safety
+            unsafe { core::ptr::drop_in_place(ptr) }
+        }
+    }
+
+    impl<T, I> Ptr<'_, T, I>
+    where
+        T: ?Sized + KnownLayout,
+        I: Invariants,
+    {
+        /// Produces the referent's size, in bytes.
+        #[doc(hidden)]
+        #[must_use]
+        #[inline]
+        pub fn size(&self) -> usize {
+            use crate::PointerMetadata;
+            let meta = KnownLayout::pointer_to_metadata(self.as_non_null().as_ptr());
+            match meta.size_for_metadata(T::LAYOUT) {
+                Some(size) => size,
+                None => {
+                    // SAFETY: `size_for_metadata` promises to only return
+                    // `None` if the resulting size would not fit in a `usize`.
+                    // This is impossible here, since by invariant on `Ptr`,
+                    // `self` references no more than `isize::MAX` bytes.
+                    unsafe { core::hint::unreachable_unchecked() }
+                }
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use core::mem::{self, MaybeUninit};
@@ -1664,6 +1877,29 @@ mod tests {
             assert_eq!(l_sum, i);
             assert_eq!(r_sum, N - i);
             assert_eq!(l_sum + r_sum, N);
+        }
+    }
+
+    #[cfg(feature = "alloc")]
+    mod alloc {
+        use super::*;
+
+        #[test]
+        fn sized() {
+            let boxed = Box::new(42);
+            let ptr = Ptr::from_box(boxed);
+            // SAFETY: `ptr` is derived from `Ptr::from_box`.
+            let boxed = unsafe { Ptr::into_box(ptr) };
+            let _ = boxed;
+        }
+
+        #[test]
+        fn boxed_slice() {
+            let boxed = vec![1, 2, 3, 4].into_boxed_slice();
+            let ptr = Ptr::from_box(boxed);
+            // SAFETY: `ptr` is derived from `Ptr::from_box`.
+            let boxed = unsafe { Ptr::into_box(ptr) };
+            let _ = boxed;
         }
     }
 

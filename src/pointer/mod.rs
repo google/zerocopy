@@ -55,6 +55,28 @@ where
         unsafe { core::ptr::read_unaligned(raw) }
     }
 
+    /// Reads the value from `MaybeAligned`.
+    ///
+    /// # Safety
+    ///
+    /// If `T` has a non-trivial destructor, using the returned `T` (including
+    /// dropping it) and the original referent may cause undefined behavior. The
+    /// caller ensures this does not occur.
+    #[must_use]
+    #[inline]
+    pub(crate) unsafe fn read_unaligned_unchecked<R>(self) -> T
+    where
+        R: AliasingSafeReason,
+        T: AliasingSafe<T, Aliasing, R> + Sized,
+    {
+        let raw = self.as_non_null().as_ptr();
+        // SAFETY: By invariant on `MaybeAligned`, `raw` contains
+        // validly-initialized data for `T`. By `T: AliasingSafe`, we are
+        // permitted to perform a read of `raw`'s referent. The caller ensures
+        // that subsequent uses of `T` do not induce UB.
+        unsafe { core::ptr::read_unaligned(raw) }
+    }
+
     /// Views the value as an aligned reference.
     ///
     /// This is only available if `T` is [`Unaligned`].

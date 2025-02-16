@@ -127,6 +127,16 @@ fn test_known_layout() {
 
                 #[inline(always)]
                 fn pointer_to_metadata(_ptr: *mut Self) -> () {}
+
+                unsafe fn destroy(
+                    ptr: ::zerocopy::MaybeAligned<
+                        '_,
+                        Self,
+                        ::zerocopy::pointer::invariant::Exclusive,
+                    >,
+                ) {
+                    unsafe { ::zerocopy::util::destroy::destroy_sized(ptr) }
+                }
             }
         } no_build
     }
