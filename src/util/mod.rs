@@ -22,7 +22,7 @@ use core::{
 
 use crate::{
     error::AlignmentError,
-    pointer::invariant::{self, Invariants},
+    pointer::invariant::{self, Validity},
     Unalign,
 };
 
@@ -46,12 +46,12 @@ use crate::{
 /// [`T::AlignmentVariance`]: TransparentWrapper::AlignmentVariance
 /// [`T::ValidityVariance`]: TransparentWrapper::ValidityVariance
 #[doc(hidden)]
-pub unsafe trait TransparentWrapper<I: Invariants> {
+pub unsafe trait TransparentWrapper {
     type Inner: ?Sized;
 
     type UnsafeCellVariance;
-    type AlignmentVariance: AlignmentVariance<I::Alignment>;
-    type ValidityVariance: ValidityVariance<I::Validity>;
+    type AlignmentVariance: AlignmentVariance;
+    type ValidityVariance: ValidityVariance;
 
     /// Casts a wrapper pointer to an inner pointer.
     ///
@@ -72,38 +72,38 @@ pub unsafe trait TransparentWrapper<I: Invariants> {
 
 #[allow(unreachable_pub)]
 #[doc(hidden)]
-pub trait AlignmentVariance<I: invariant::Alignment> {
-    type Applied: invariant::Alignment;
+pub trait AlignmentVariance {
+    type Applied<A: invariant::Alignment>: invariant::Alignment;
 }
 
 #[allow(unreachable_pub)]
 #[doc(hidden)]
-pub trait ValidityVariance<I: invariant::Validity> {
-    type Applied: invariant::Validity;
+pub trait ValidityVariance {
+    type Applied<V: Validity, T: ?Sized>: invariant::Validity<Inner = T>;
 }
 
 #[doc(hidden)]
 #[allow(missing_copy_implementations, missing_debug_implementations)]
 pub enum Covariant {}
 
-impl<I: invariant::Alignment> AlignmentVariance<I> for Covariant {
-    type Applied = I;
+impl AlignmentVariance for Covariant {
+    type Applied<A: invariant::Alignment> = A;
 }
 
-impl<I: invariant::Validity> ValidityVariance<I> for Covariant {
-    type Applied = I;
+impl ValidityVariance for Covariant {
+    type Applied<V: Validity, T: ?Sized> = V::WithInner<T>;
 }
 
 #[doc(hidden)]
 #[allow(missing_copy_implementations, missing_debug_implementations)]
 pub enum Invariant {}
 
-impl<I: invariant::Alignment> AlignmentVariance<I> for Invariant {
-    type Applied = invariant::Unknown;
+impl AlignmentVariance for Invariant {
+    type Applied<A: invariant::Alignment> = invariant::Unknown;
 }
 
-impl<I: invariant::Validity> ValidityVariance<I> for Invariant {
-    type Applied = invariant::Unknown;
+impl ValidityVariance for Invariant {
+    type Applied<V: Validity, T: ?Sized> = invariant::Uninit<T>;
 }
 
 // SAFETY:
@@ -114,7 +114,7 @@ impl<I: invariant::Validity> ValidityVariance<I> for Invariant {
 //
 //   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and ABI as
 //   `T`
-unsafe impl<T, I: Invariants> TransparentWrapper<I> for MaybeUninit<T> {
+unsafe impl<T> TransparentWrapper for MaybeUninit<T> {
     type Inner = T;
 
     // SAFETY: `MaybeUninit<T>` has `UnsafeCell`s covering the same byte ranges
@@ -170,7 +170,7 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for MaybeUninit<T> {
 //
 //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
 //   `T`
-unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for ManuallyDrop<T> {
+unsafe impl<T: ?Sized> TransparentWrapper for ManuallyDrop<T> {
     type Inner = T;
 
     // SAFETY: Per [1], `ManuallyDrop<T>` has `UnsafeCell`s covering the same
@@ -224,7 +224,7 @@ unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for ManuallyDrop<T> 
 // [1] Per https://doc.rust-lang.org/1.81.0/std/num/struct.Wrapping.html#layout-1:
 //
 //   `Wrapping<T>` is guaranteed to have the same layout and ABI as `T`.
-unsafe impl<T, I: Invariants> TransparentWrapper<I> for Wrapping<T> {
+unsafe impl<T> TransparentWrapper for Wrapping<T> {
     type Inner = T;
 
     // SAFETY: Per [1], `Wrapping<T>` has the same layout as `T`. Since its
@@ -287,7 +287,7 @@ unsafe impl<T, I: Invariants> TransparentWrapper<I> for Wrapping<T> {
 //
 //   `UnsafeCell<T>` has the same in-memory representation as its inner type
 //   `T`.
-unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for UnsafeCell<T> {
+unsafe impl<T: ?Sized> TransparentWrapper for UnsafeCell<T> {
     type Inner = T;
 
     // SAFETY: Since we set this to `Invariant`, we make no safety claims.
@@ -333,7 +333,7 @@ unsafe impl<T: ?Sized, I: Invariants> TransparentWrapper<I> for UnsafeCell<T> {
 // SAFETY: `Unalign<T>` promises to have the same size as `T`.
 //
 // See inline comments for other safety justifications.
-unsafe impl<T, I: Invariants> TransparentWrapper<I> for Unalign<T> {
+unsafe impl<T> TransparentWrapper for Unalign<T> {
     type Inner = T;
 
     // SAFETY: `Unalign<T>` promises to have `UnsafeCell`s covering the same
@@ -385,7 +385,7 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
     ($(#[$attr:meta])* $atomic:ty [$native:ty], $($atomics:ty [$natives:ty]),* $(,)?) => {
         $(#[$attr])*
         // SAFETY: See safety comment in next match arm.
-        unsafe impl<I: crate::invariant::Invariants> crate::util::TransparentWrapper<I> for $atomic {
+        unsafe impl crate::util::TransparentWrapper for $atomic {
             unsafe_impl_transparent_wrapper_for_atomic!(@inner $atomic [$native]);
         }
         unsafe_impl_transparent_wrapper_for_atomic!($(#[$attr])* $($atomics [$natives],)*);
@@ -401,7 +401,7 @@ macro_rules! unsafe_impl_transparent_wrapper_for_atomic {
         //   This type has the same size and bit validity as the underlying
         //   integer type
         $(#[$attr])*
-        unsafe impl<$tyvar, I: crate::invariant::Invariants> crate::util::TransparentWrapper<I> for $atomic {
+        unsafe impl<$tyvar> crate::util::TransparentWrapper for $atomic {
             unsafe_impl_transparent_wrapper_for_atomic!(@inner $atomic [$native]);
         }
     };

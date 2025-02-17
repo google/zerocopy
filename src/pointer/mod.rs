@@ -25,14 +25,14 @@ use crate::Unaligned;
 ///
 /// [`TryFromBytes::is_bit_valid`]: crate::TryFromBytes::is_bit_valid
 pub type Maybe<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Unknown> =
-    Ptr<'a, T, (Aliasing, Alignment, invariant::Initialized)>;
+    Ptr<'a, invariant::Initialized<T>, (Aliasing, Alignment)>;
 
 /// A semi-user-facing wrapper type representing a maybe-aligned reference, for
 /// use in [`TryFromBytes::is_bit_valid`].
 ///
 /// [`TryFromBytes::is_bit_valid`]: crate::TryFromBytes::is_bit_valid
 pub type MaybeAligned<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Unknown> =
-    Ptr<'a, T, (Aliasing, Alignment, invariant::Valid)>;
+    Ptr<'a, invariant::Valid<T>, (Aliasing, Alignment)>;
 
 // These methods are defined on the type alias, `MaybeAligned`, so as to bring
 // them to the forefront of the rendered rustdoc for that type alias.
@@ -77,10 +77,10 @@ where
 }
 
 /// Checks if the referent is zeroed.
-pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
+pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, invariant::Initialized<T>, I>) -> bool
 where
     T: crate::Immutable + crate::KnownLayout,
-    I: invariant::Invariants<Validity = invariant::Initialized>,
+    I: invariant::Invariants,
     I::Aliasing: invariant::Reference,
 {
     ptr.as_bytes::<BecauseImmutable>().as_ref().iter().all(|&byte| byte == 0)

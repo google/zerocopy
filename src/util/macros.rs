@@ -266,13 +266,13 @@ macro_rules! impl_for_transparent_wrapper {
             #[allow(dead_code, clippy::missing_inline_in_public_items)]
             #[cfg_attr(coverage_nightly, coverage(off))]
             fn only_derive_is_allowed_to_implement_this_trait() {
-                use crate::{pointer::invariant::Invariants, util::*};
+                use crate::util::*;
 
                 impl_for_transparent_wrapper!(@define_is_transparent_wrapper $trait);
 
                 #[cfg_attr(coverage_nightly, coverage(off))]
-                const fn f<I: Invariants, $($tyvar $(: $(? $optbound +)* $($bound +)*)?)?>() {
-                    is_transparent_wrapper::<I, $ty>();
+                const fn f<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?>() {
+                    is_transparent_wrapper::<$ty>();
                 }
             }
 
@@ -343,7 +343,7 @@ macro_rules! impl_for_transparent_wrapper {
     };
     (@define_is_transparent_wrapper $trait:ident, $variance:ident) => {
         #[cfg_attr(coverage_nightly, coverage(off))]
-        const fn is_transparent_wrapper<I: Invariants, W: TransparentWrapper<I, $variance = Covariant> + ?Sized>()
+        const fn is_transparent_wrapper<W: TransparentWrapper<$variance = Covariant> + ?Sized>()
         where
             W::Inner: $trait,
         {}
