@@ -89,7 +89,7 @@ where
     Dst: Validity,
     Src::Inner: Read<A, R>,
     Dst::Inner: Read<A, R> + CastFrom<Src::Inner>,
-    A: Aliasing,
+    A: Reference,
 {
 }
 
@@ -112,7 +112,7 @@ where
 //   UnsafeCellsAgree<Src>`.
 unsafe impl<Src, Dst, A> TryTransmuteFromPtr<Src, A, BecauseBidirectional> for Dst
 where
-    A: Aliasing,
+    A: Reference,
     Src: Validity + TransmuteFrom<Dst>,
     Dst: Validity + TransmuteFrom<Src>,
     Src::Inner: UnsafeCellsAgree<Dst::Inner>,
@@ -130,7 +130,7 @@ where
 // - `UnsafeCell` agreement guaranteed by `Src: Immutable + Dst: Immutable`.
 unsafe impl<Src, Dst, A> TryTransmuteFromPtr<Src, A, BecauseFoo> for Dst
 where
-    A: Aliasing,
+    A: Reference,
     Src: Validity + TransmuteFrom<Dst>,
     Dst: Validity,
     Src::Inner: Immutable,
