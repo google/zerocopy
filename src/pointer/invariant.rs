@@ -58,12 +58,6 @@ pub trait Aliasing: Sealed {
     /// Is `Self` [`Exclusive`]?
     #[doc(hidden)]
     const IS_EXCLUSIVE: bool;
-
-    /// A type which has the correct variance over `'a` and `T` for this
-    /// aliasing invariant. `Ptr` stores a `<I::Aliasing as
-    /// Aliasing>::Variance<'a, T>` to inherit this variance.
-    #[doc(hidden)]
-    type Variance<'a, T: 'a + ?Sized>;
 }
 
 /// The alignment invariant of a [`Ptr`][super::Ptr].
@@ -132,7 +126,6 @@ impl<T: ?Sized> Validity for Uninit<T> {
 pub enum Shared {}
 impl Aliasing for Shared {
     const IS_EXCLUSIVE: bool = false;
-    type Variance<'a, T: 'a + ?Sized> = &'a T;
 }
 impl Reference for Shared {}
 
@@ -144,7 +137,6 @@ impl Reference for Shared {}
 pub enum Exclusive {}
 impl Aliasing for Exclusive {
     const IS_EXCLUSIVE: bool = true;
-    type Variance<'a, T: 'a + ?Sized> = &'a mut T;
 }
 impl Reference for Exclusive {}
 
