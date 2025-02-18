@@ -26,6 +26,9 @@
 
 use core::marker::PhantomData;
 
+#[cfg(feature = "alloc")]
+use crate::pointer::inner::PtrInner;
+
 /// The aliasing and alignment invariants of a [`Ptr`][super::Ptr].
 pub trait Invariants: Sealed {
     type Aliasing: Aliasing;
@@ -87,6 +90,11 @@ pub trait Validity: Sealed {
 
     #[doc(hidden)]
     type MappedTo<M: ValidityMapping>: Validity;
+
+    #[cfg(feature = "alloc")]
+    unsafe fn drop_box<'a>(ptr: PtrInner<'a, Self::Inner>);
+    #[cfg(feature = "std")]
+    unsafe fn drop_arc<'a>(ptr: PtrInner<'a, Self::Inner>);
 }
 
 /// An [`Aliasing`] invariant which is either [`Shared`] or [`Exclusive`].
@@ -113,6 +121,11 @@ impl<T: ?Sized> Validity for Uninit<T> {
     type WithInner<U: ?Sized> = Uninit<U>;
 
     type MappedTo<M: ValidityMapping> = M::FromUninit<T>;
+
+    #[cfg(feature = "alloc")]
+    unsafe fn drop_box<'a>(_ptr: PtrInner<'a, T>) {}
+    #[cfg(feature = "std")]
+    unsafe fn drop_arc<'a>(_ptr: PtrInner<'a, T>) {}
 }
 
 /// The `Ptr<'a, T>` adheres to the aliasing rules of a `&'a T`.
@@ -139,6 +152,20 @@ impl Aliasing for Exclusive {
     const IS_EXCLUSIVE: bool = true;
 }
 impl Reference for Exclusive {}
+
+#[cfg(feature = "alloc")]
+pub enum Box {}
+#[cfg(feature = "alloc")]
+impl Aliasing for Box {
+    const IS_EXCLUSIVE: bool = false;
+}
+
+#[cfg(feature = "std")]
+pub enum Arc {}
+#[cfg(feature = "std")]
+impl Aliasing for Arc {
+    const IS_EXCLUSIVE: bool = false;
+}
 
 /// The referent is aligned: for `Ptr<T>`, the referent's address is a
 /// multiple of the `T`'s alignment.
@@ -178,6 +205,11 @@ impl<T: ?Sized> Validity for AsInitialized<T> {
     type Inner = T;
     type WithInner<U: ?Sized> = AsInitialized<U>;
     type MappedTo<M: ValidityMapping> = M::FromAsInitialized<T>;
+
+    #[cfg(feature = "alloc")]
+    unsafe fn drop_box<'a>(_ptr: PtrInner<'a, T>) {}
+    #[cfg(feature = "std")]
+    unsafe fn drop_arc<'a>(_ptr: PtrInner<'a, T>) {}
 }
 
 /// The byte ranges in the referent are fully initialized. In other words, if
@@ -187,6 +219,11 @@ impl<T: ?Sized> Validity for Initialized<T> {
     type Inner = T;
     type WithInner<U: ?Sized> = Initialized<U>;
     type MappedTo<M: ValidityMapping> = M::FromInitialized<T>;
+
+    #[cfg(feature = "alloc")]
+    unsafe fn drop_box<'a>(_ptr: PtrInner<'a, T>) {}
+    #[cfg(feature = "std")]
+    unsafe fn drop_arc<'a>(_ptr: PtrInner<'a, T>) {}
 }
 
 /// The referent is bit-valid for `T`.
@@ -195,18 +232,29 @@ impl<T: ?Sized> Validity for Valid<T> {
     type Inner = T;
     type WithInner<U: ?Sized> = Valid<U>;
     type MappedTo<M: ValidityMapping> = M::FromValid<T>;
+
+    #[cfg(feature = "alloc")]
+    unsafe fn drop_box<'a>(ptr: PtrInner<'a, T>) {
+        drop(unsafe { alloc::boxed::Box::from_raw(ptr.as_non_null().as_ptr()) });
+    }
+
+    #[cfg(feature = "std")]
+    unsafe fn drop_arc<'a>(ptr: PtrInner<'a, T>) {
+        drop(unsafe { std::sync::Arc::from_raw(ptr.as_non_null().as_ptr()) });
+    }
 }
 
 /// [`Ptr`](crate::Ptr) referents that permit unsynchronized read operations.
 ///
 /// `T: Read<A, R>` implies that a pointer to `T` with aliasing `A` permits
-/// unsynchronized read oeprations. This can be because `A` is [`Exclusive`] or
-/// because `T` does not permit interior mutation.
+/// unsynchronized read oeprations. This can be because `A` is an exclusive
+/// aliasing mode (i.e., [`Exclusive`] or [`Box`]) or because `T` does not
+/// permit interior mutation.
 ///
 /// # Safety
 ///
 /// `T: Read<A, R>` if either of the following conditions holds:
-/// - `A` is [`Exclusive`]
+/// - `A` is [`Exclusive`] or [`Box`]
 /// - `T` implements [`Immutable`](crate::Immutable)
 ///
 /// As a consequence, if `T: Read<A, R>`, then any `Ptr<T, (A, ...)>` is
@@ -223,6 +271,9 @@ define_because!(
 );
 // SAFETY: The aliasing parameter is `Exclusive`.
 unsafe impl<T: ?Sized> Read<Exclusive, BecauseExclusive> for T {}
+// SAFETY: The aliasing parameter is `Box`.
+#[cfg(feature = "alloc")]
+unsafe impl<T: ?Sized> Read<Box, BecauseExclusive> for T {}
 
 define_because!(
     /// Unsynchronized reads are permitted because no live [`Ptr`](crate::Ptr)s
@@ -245,6 +296,10 @@ mod sealed {
 
     impl Sealed for Shared {}
     impl Sealed for Exclusive {}
+    #[cfg(feature = "alloc")]
+    impl Sealed for Box {}
+    #[cfg(feature = "std")]
+    impl Sealed for Arc {}
 
     impl Sealed for Aligned {}
 

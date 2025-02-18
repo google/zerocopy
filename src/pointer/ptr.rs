@@ -331,7 +331,7 @@ mod _conversions {
             //    `Valid<T>`.
             //
             // 4. You must enforce Rust’s aliasing rules. This is ensured by
-            //    contract on `Ptr`, because the `ALIASING_INVARIANT` is
+            //    contract on `Ptr`, because the aliasing invariant is
             //    `Exclusive`.
             //
             // [1]: https://doc.rust-lang.org/std/ptr/struct.NonNull.html#method.as_mut
@@ -838,6 +838,9 @@ mod _casts {
         V: Validity,
         I: Invariants,
     {
+        // TODO: This (and callers) needs more safety preconditions related to
+        // preserving size and alignment in Box and Arc.
+
         /// Casts to a different (unsized) target type without checking interior
         /// mutability.
         ///
@@ -920,7 +923,8 @@ mod _casts {
             //        pointer will permit mutation of this byte during `'a`, by
             //        invariant on `self`, no other code assumes that this will
             //        not happen.
-            //    - `Inaccessible`: There are no restrictions we need to uphold.
+            //    - `Box`: TODO
+            //    - `Arc`: TODO
             // 8. `ptr`, trivially, conforms to the alignment invariant of
             //    `Unknown`.
             unsafe { Ptr::new(ptr) }
@@ -947,7 +951,7 @@ mod _casts {
         {
             // SAFETY: Because `T::Inner` and `W` both implement
             // `Read<I::Aliasing, _>`, either:
-            // - `I::Aliasing` is `Exclusive`
+            // - `I::Aliasing` is `Exclusive` or `Box`
             // - `V::Inner` and `W` are both `Immutable`, in which case they
             //   trivially contain `UnsafeCell`s at identical locations
             //
@@ -1075,8 +1079,10 @@ mod _casts {
             //    initialized, so `ptr` conforms to the validity invariant of
             //    `Initialized`.
             // 1. Since `W: Read<I::Aliasing, _>`, either:
-            //    - `I::Aliasing` is `Exclusive`, in which case both `src` and
-            //      `ptr` conform to `Exclusive`
+            //    - `I::Aliasing` is `Exclusive` or `Box`. `I::Aliasing:
+            //      Reference` only permits `Exclusive`, so `I::Aliasing` is
+            //      `Exclusive`. In this case, both `src` and `ptr` conform to
+            //      `Exclusive`
             //    - `I::Aliasing` is `Shared` or `Inaccessible` and `W` is
             //      `Immutable` (we already know that `[u8]: Immutable`). In
             //      this case, neither `W` nor `[u8]` permit mutation, and so
