@@ -22,7 +22,7 @@ mod _def {
     use super::*;
     /// The inner pointer stored inside a [`Ptr`][crate::Ptr].
     ///
-    /// `Ptr<'a, T>` is [covariant] in `'a` and `T`.
+    /// `PtrInner<'a, T>` is [covariant] in `'a` and invariant in `T`.
     ///
     /// [covariant]: https://doc.rust-lang.org/reference/subtyping.html
     pub(crate) struct PtrInner<'a, T>
@@ -42,14 +42,13 @@ mod _def {
         ///     address space.
         /// 5. If `ptr`'s referent is not zero sized,`A` is guaranteed to live
         ///    for at least `'a`.
-        // SAFETY: `NonNull<T>` is covariant over `T` [1].
-        //
-        // [1]: https://doc.rust-lang.org/std/ptr/struct.NonNull.html
         ptr: NonNull<T>,
-        // SAFETY: `&'a T` is covariant over `'a` [1].
+        // SAFETY: `&'a UnsafeCell<T>` is covariant in `'a` and invariant in `T`
+        // [1]. We use this construction rather than the equivalent `&mut T`,
+        // because our MSRV of 1.65 prohibits `&mut` types in const contexts.
         //
         // [1] https://doc.rust-lang.org/1.81.0/reference/subtyping.html#variance
-        _marker: PhantomData<&'a T>,
+        _marker: PhantomData<&'a core::cell::UnsafeCell<T>>,
     }
 
     impl<'a, T: 'a + ?Sized> Copy for PtrInner<'a, T> {}

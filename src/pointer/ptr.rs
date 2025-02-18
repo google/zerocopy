@@ -37,7 +37,7 @@ mod def {
     /// - `ptr` conforms to the alignment invariant of
     ///   [`I::Alignment`](invariant::Alignment).
     ///
-    /// `Ptr<'a, T>` is [covariant] in `'a` and `T`.
+    /// `Ptr<'a, T>` is [covariant] in `'a` and invariant in `T`.
     ///
     /// [covariant]: https://doc.rust-lang.org/reference/subtyping.html
     pub struct Ptr<'a, V, I>
@@ -54,9 +54,8 @@ mod def {
         ///    [`I::Aliasing`](invariant::Aliasing).
         /// 2. `ptr` conforms to the alignment invariant of
         ///    [`I::Alignment`](invariant::Alignment).
-        // SAFETY: `PtrInner<'a, T>` is covariant over `'a` and `T`.
+        // SAFETY: `PtrInner<'a, T>` is covariant in `'a` and invariant in `T`.
         ptr: PtrInner<'a, V::Inner>,
-        _variance: PhantomData<<I::Aliasing as Aliasing>::Variance<'a, V::Inner>>,
         _invariants: PhantomData<I>,
     }
 
@@ -94,7 +93,7 @@ mod def {
             let ptr = unsafe { PtrInner::new(ptr) };
             // SAFETY: The caller has promised (in 6 - 8) to satisfy all safety
             // invariants of `Ptr`.
-            Self { ptr, _variance: PhantomData, _invariants: PhantomData }
+            Self { ptr, _invariants: PhantomData }
         }
 
         /// Constructs a new `Ptr` from a [`PtrInner`].
@@ -112,7 +111,7 @@ mod def {
         pub(super) const unsafe fn from_inner(ptr: PtrInner<'a, V::Inner>) -> Ptr<'a, V, I> {
             // SAFETY: The caller has promised to satisfy all safety invariants
             // of `Ptr`.
-            Self { ptr, _variance: PhantomData, _invariants: PhantomData }
+            Self { ptr, _invariants: PhantomData }
         }
 
         /// Converts this `Ptr<T>` to a [`PtrInner<T>`].
