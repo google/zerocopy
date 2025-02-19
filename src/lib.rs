@@ -4546,9 +4546,17 @@ pub unsafe trait FromBytes: FromZeros {
         Self: Sized,
         R: io::Read,
     {
-        let mut buf = CoreMaybeUninit::<Self>::zeroed();
+        // NOTE(#2319, #2320): We do `buf.zero()` separately rather than
+        // constructing `let buf = CoreMaybeUninit::zeroed()` because, if `Self`
+        // contains padding bytes, then a typed copy of `CoreMaybeUninit<Self>`
+        // will not necessarily preserve zeros written to those padding byte
+        // locations, and so `buf` could contain uninitialized bytes.
+        let mut buf = CoreMaybeUninit::<Self>::uninit();
+        buf.zero();
+
         let ptr = Ptr::from_mut(&mut buf);
-        // SAFETY: `buf` consists entirely of initialized, zeroed bytes.
+        // SAFETY: After `buf.zero()`, `buf` consists entirely of initialized,
+        // zeroed bytes.
         let ptr = unsafe { ptr.assume_validity::<invariant::Initialized>() };
         let ptr = ptr.as_bytes::<BecauseExclusive>();
         src.read_exact(ptr.as_mut())?;
@@ -5903,6 +5911,36 @@ mod tests {
         assert_eq!(VAL.write_to_suffix(&mut bytes[..]), Ok(()));
         let want: [u8; 16] = transmute!([[0; 8], VAL_BYTES]);
         assert_eq!(bytes, want);
+    }
+
+    #[test]
+    #[cfg(feature = "std")]
+    fn test_read_io_with_padding_soundness() {
+        // This test is designed to exhibit potential UB in
+        // `FromBytes::read_from_io`. (see #2319, #2320).
+
+        // On most platforms (where `align_of::<u16>() == 2`), `WithPadding`
+        // will have inter-field padding between `x` and `y`.
+        #[derive(FromBytes)]
+        #[repr(C)]
+        struct WithPadding {
+            x: u8,
+            y: u16,
+        }
+        struct ReadsInRead;
+        impl std::io::Read for ReadsInRead {
+            fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+                // This body branches on every byte of `buf`, ensuring that it
+                // exhibits UB if any byte of `buf` is uninitialized.
+                if buf.iter().all(|&x| x == 0) {
+                    Ok(buf.len())
+                } else {
+                    buf.iter_mut().for_each(|x| *x = 0);
+                    Ok(buf.len())
+                }
+            }
+        }
+        assert!(matches!(WithPadding::read_from_io(ReadsInRead), Ok(WithPadding { x: 0, y: 0 })));
     }
 
     #[test]
