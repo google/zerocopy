@@ -16,7 +16,7 @@ on:
       branch:
         description: 'Branch to update'
         required: true
-        default: 'main'
+        default: 'v0.8.x'
 
 permissions: read-all
 
