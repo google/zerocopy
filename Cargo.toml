@@ -16,7 +16,7 @@
 edition = "2021"
 name = "zerocopy"
 version = "0.8.19"
-authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
+authors = ["Joshua Liebow-Feeser <joshlf@google.com>", "Jack Wrenn <jswrenn@amazon.com>"]
 description = "Zerocopy makes zero-cost memory manipulation effortless. We write \"unsafe\" so you don't have to."
 categories = ["embedded", "encoding", "no-std::no-alloc", "parsing", "rust-patterns"]
 keywords = ["cast", "convert", "transmute", "transmutation", "type-punning"]
