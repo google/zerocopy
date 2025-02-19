@@ -15,14 +15,15 @@
 members = ["unsafe-fields", "zerocopy-derive"]
 
 [workspace.package]
-# Inherited by zerocopy and unsafe-fields.
+# Inherited by workspace members.
 rust-version = "1.65.0"
+authors = ["Joshua Liebow-Feeser <joshlf@google.com>", "Jack Wrenn <jswrenn@amazon.com>"]
 
 [package]
 edition = "2021"
 name = "zerocopy"
 version = "0.9.0-alpha.0"
-authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
+authors = { workspace = true }
 description = "Zerocopy makes zero-cost memory manipulation effortless. We write \"unsafe\" so you don't have to."
 categories = ["embedded", "encoding", "no-std::no-alloc", "parsing", "rust-patterns"]
 keywords = ["cast", "convert", "transmute", "transmutation", "type-punning"]

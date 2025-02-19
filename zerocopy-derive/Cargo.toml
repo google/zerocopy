@@ -10,7 +10,7 @@
 edition = "2021"
 name = "zerocopy-derive"
 version = "0.9.0-alpha.0"
-authors = ["Joshua Liebow-Feeser <joshlf@google.com>"]
+authors = { workspace = true }
 description = "Custom derive for traits from the zerocopy crate"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"

@@ -203,6 +203,14 @@ Zerocopy uses [GitHub Releases].
 
 [GitHub Releases]: https://github.com/google/zerocopy/releases
 
+## Thanks
+
+Zerocopy is maintained by engineers at Google and Amazon with help from
+[many wonderful contributors][contributors]. Thank you to everyone who has
+lent a hand in making Rust a little more secure!
+
+[contributors]: https://github.com/google/zerocopy/graphs/contributors
+
 ## Disclaimer
 
 Disclaimer: This is not an officially supported Google product.
