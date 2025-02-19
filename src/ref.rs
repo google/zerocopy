@@ -80,6 +80,21 @@ mod def {
             // validly-aligned and has a valid size.
             Ref(bytes, PhantomData)
         }
+
+        /// Access the storage backing this `Ref`.
+        pub(crate) fn storage(self) -> B {
+            self.0
+        }
+    }
+
+    impl<B> Ref<B, [u8]> {
+        /// Constructs a new `Ref`.
+        pub(crate) fn new_bytes(bytes: B) -> Ref<B, [u8]> {
+            // SAFETY: `bytes` dereferences (via [`deref`], [`deref_mut`], and
+            // [`into`]) to a byte slice which is, trivially, well-aligned and
+            // well-sized for `[u8]`.`
+            Ref(bytes, PhantomData)
+        }
     }
 
     impl<B: ByteSlice, T: ?Sized> Ref<B, T> {
@@ -102,6 +117,18 @@ mod def {
             // SAFETY: By invariant on `self.0`, the alignment and size
             // post-conditions are upheld.
             &self.0
+        }
+
+        /// The number of bytes in `B`.
+        ///
+        /// # Safety
+        ///
+        /// Unsafe code my rely on `len` satisfying the above contract.
+        pub(crate) fn len(&self) -> usize {
+            // SAFETY: We don't call any methods on `b` other than those provided by
+            // `ByteSlice`.
+            let b = unsafe { self.as_byte_slice() };
+            b.len()
         }
     }
 
@@ -260,7 +287,7 @@ where
 impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
-    T: KnownLayout + Immutable + ?Sized,
+    T: KnownLayout + ?Sized,
 {
     /// Constructs a `Ref` from a byte slice.
     ///
@@ -299,20 +326,14 @@ where
     #[inline]
     pub fn from_bytes(source: B) -> Result<Ref<B, T>, CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
-        if let Err(e) =
-            Ptr::from_ref(source.deref()).try_cast_into_no_leftover::<T, BecauseImmutable>(None)
-        {
-            return Err(e.with_src(()).with_src(source));
-        }
-        // SAFETY: `try_cast_into_no_leftover` validates size and alignment.
-        Ok(unsafe { Ref::new_unchecked(source) })
+        Ref::cast(Ref::new_bytes(source)).map_err(|err| err.map_src(Ref::storage))
     }
 }
 
 impl<B, T> Ref<B, T>
 where
     B: SplitByteSlice,
-    T: KnownLayout + Immutable + ?Sized,
+    T: KnownLayout + ?Sized,
 {
     /// Constructs a `Ref` from the prefix of a byte slice.
     ///
@@ -353,29 +374,7 @@ where
     #[inline]
     pub fn from_prefix(source: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
-        let remainder = match Ptr::from_ref(source.deref())
-            .try_cast_into::<T, BecauseImmutable>(CastType::Prefix, None)
-        {
-            Ok((_, remainder)) => remainder,
-            Err(e) => {
-                return Err(e.with_src(()).with_src(source));
-            }
-        };
-
-        // SAFETY: `remainder` is constructed as a subset of `source`, and so it
-        // cannot have a larger size than `source`. Both of their `len` methods
-        // measure bytes (`source` deref's to `[u8]`, and `remainder` is a
-        // `Ptr<[u8]>`), so `source.len() >= remainder.len()`. Thus, this cannot
-        // underflow.
-        #[allow(unstable_name_collisions, clippy::incompatible_msrv)]
-        let split_at = unsafe { source.len().unchecked_sub(remainder.len()) };
-        let (bytes, suffix) = source.split_at(split_at).map_err(|b| SizeError::new(b).into())?;
-        // SAFETY: `try_cast_into` validates size and alignment, and returns a
-        // `split_at` that indicates how many bytes of `source` correspond to a
-        // valid `T`. By safety postcondition on `SplitByteSlice::split_at` we
-        // can rely on `split_at` to produce the correct `source` and `suffix`.
-        let r = unsafe { Ref::new_unchecked(bytes) };
-        Ok((r, suffix))
+        Ref::cast_prefix(Ref::new_bytes(source)).map_err(|err| err.map_src(Ref::storage))
     }
 
     /// Constructs a `Ref` from the suffix of a byte slice.
@@ -418,24 +417,7 @@ where
     #[inline]
     pub fn from_suffix(source: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
-        let remainder = match Ptr::from_ref(source.deref())
-            .try_cast_into::<T, BecauseImmutable>(CastType::Suffix, None)
-        {
-            Ok((_, remainder)) => remainder,
-            Err(e) => {
-                let e = e.with_src(());
-                return Err(e.with_src(source));
-            }
-        };
-
-        let split_at = remainder.len();
-        let (prefix, bytes) = source.split_at(split_at).map_err(|b| SizeError::new(b).into())?;
-        // SAFETY: `try_cast_into` validates size and alignment, and returns a
-        // `split_at` that indicates how many bytes of `source` correspond to a
-        // valid `T`. By safety postcondition on `SplitByteSlice::split_at` we
-        // can rely on `split_at` to produce the correct `prefix` and `bytes`.
-        let r = unsafe { Ref::new_unchecked(bytes) };
-        Ok((prefix, r))
+        Ref::cast_suffix(Ref::new_bytes(source)).map_err(|err| err.map_src(Ref::storage))
     }
 }
 
@@ -487,6 +469,341 @@ where
             return Err(SizeError::new(source).into());
         }
         Self::from_bytes(source)
+    }
+}
+
+impl<B, T> Ref<B, T>
+where
+    B: ByteSlice,
+    T: ?Sized + KnownLayout,
+{
+    /// Casts `Ref<B, T>`'s to `Ref<B, U>`.
+    ///
+    /// If the length of `source` is not a [valid size of `U`][valid-size], or
+    /// if `source` is not appropriately aligned for `U`, this returns `Err`. If
+    /// [`U: Unaligned`][u-unaligned], you can [infallibly discard the alignment
+    /// error][size-error-from].
+    ///
+    /// `U` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
+    /// [u-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let source = Ref::<_, [u8]>::from_bytes(&b"UU"[..]).unwrap();
+    /// let _ = Ref::cast::<ZSTy>(source); // ⚠ Compile Error!
+    /// ```
+    #[inline]
+    pub fn cast<U>(source: Self) -> Result<Ref<B, U>, CastError<Self, U>>
+    where
+        U: ?Sized + KnownLayout,
+    {
+        static_assert_dst_is_not_zst!(U);
+
+        // PANICS: By invariant, the byte range addressed by `source` does not
+        // wrap around the address space. This implies that the sum of the
+        // address (represented as a `usize`) and length do not overflow
+        // `usize`, as required by `validate_cast_and_convert_metadata`. Thus,
+        // this call to `validate_cast_and_convert_metadata` will only panic if
+        // `U` is a DST whose trailing slice element is zero-sized (which it
+        // cannot be due to the above assertion).
+        let maybe_metadata = U::LAYOUT.validate_cast_and_convert_metadata(
+            util::AsAddress::addr(Ref::bytes(&source)),
+            source.len(),
+            CastType::Prefix,
+        );
+
+        let split_at = match maybe_metadata {
+            Ok((_elems, split_at)) => split_at,
+            Err(MetadataCastError::Alignment) => {
+                // SAFETY: Since `validate_cast_and_convert_metadata`
+                // returned an alignment error, `U` must have an alignment
+                // requirement greater than one.
+                let err = unsafe { AlignmentError::<_, U>::new_unchecked(source) };
+                return Err(CastError::Alignment(err));
+            }
+            Err(MetadataCastError::Size) => return Err(CastError::Size(SizeError::new(source))),
+        };
+
+        if split_at == source.len() {
+            // SAFETY: `validate_cast_and_convert_metadata` validates size and
+            // alignment, and returns a `split_at` that indicates how many bytes
+            // of `source` correspond to a valid `T`. The above condition
+            // ensures that all bytes of `source` correspond to a valid `T`.
+            Ok(unsafe { Ref::new_unchecked(source.storage()) })
+        } else {
+            Err(CastError::Size(SizeError::new(source)))
+        }
+    }
+}
+
+impl<B, T> Ref<B, T>
+where
+    B: SplitByteSlice,
+    T: ?Sized + KnownLayout,
+{
+    #[inline(always)]
+    fn cast_into<U>(
+        source: Self,
+        cast_type: CastType,
+        meta: Option<U::PointerMetadata>,
+    ) -> Result<(Ref<B, U>, B), CastError<Self, U>>
+    where
+        U: ?Sized + KnownLayout,
+    {
+        let layout = match meta {
+            None => U::LAYOUT,
+            // This can return `None` if the metadata describes an object
+            // which can't fit in an `isize`.
+            Some(meta) => {
+                let size = match meta.size_for_metadata(U::LAYOUT) {
+                    Some(size) => size,
+                    None => return Err(CastError::Size(SizeError::new(source))),
+                };
+                DstLayout { align: U::LAYOUT.align, size_info: crate::SizeInfo::Sized { size } }
+            }
+        };
+
+        // PANICS: By invariant, the byte range addressed by `source` does not
+        // wrap around the address space. This implies that the sum of the
+        // address (represented as a `usize`) and length do not overflow
+        // `usize`, as required by `validate_cast_and_convert_metadata`. Thus,
+        // this call to `validate_cast_and_convert_metadata` will only panic if
+        // `U` is a DST whose trailing slice element is zero-sized.
+        let maybe_metadata = layout.validate_cast_and_convert_metadata(
+            util::AsAddress::addr(Ref::bytes(&source)),
+            source.len(),
+            cast_type,
+        );
+
+        let split_at = match maybe_metadata {
+            Ok((_elems, split_at)) => split_at,
+            Err(MetadataCastError::Alignment) => {
+                // SAFETY: Since `validate_cast_and_convert_metadata`
+                // returned an alignment error, `U` must have an alignment
+                // requirement greater than one.
+                let err = unsafe { AlignmentError::<_, U>::new_unchecked(source) };
+                return Err(CastError::Alignment(err));
+            }
+            Err(MetadataCastError::Size) => return Err(CastError::Size(SizeError::new(source))),
+        };
+
+        let source = source.storage();
+
+        // SAFETY: `validate_cast_and_convert_metadata` promises to return
+        // `split_at <= self.len()`.
+        let (l_storage, r_storage) = unsafe { source.split_at_unchecked(split_at) };
+
+        let (target, remainder) = match cast_type {
+            CastType::Prefix => (l_storage, r_storage),
+            CastType::Suffix => (r_storage, l_storage),
+        };
+
+        // SAFETY: `validate_cast_and_convert_metadata` validates size and
+        // alignment, and returns a `split_at` that indicates how many bytes of
+        // `source` correspond to a valid `T`. By safety postcondition on
+        // `SplitByteSlice::split_at` we can rely on `split_at` to produce the
+        // correct `target` and `remainder`.
+        Ok((unsafe { Ref::new_unchecked(target) }, remainder))
+    }
+
+    /// Casts `Ref<B, T>`'s prefix to `Ref<B, U>`.
+    ///
+    /// This method computes the [largest possible size of `U`][valid-size] that
+    /// can fit in the leading bytes of `source`, then attempts to return both a
+    /// `Ref` to those bytes, and a reference to the remaining bytes. If there
+    /// are insufficient bytes, or if `source` is not appropriately aligned,
+    /// this returns `Err`. If [`U: Unaligned`][u-unaligned], you can
+    /// [infallibly discard the alignment error][size-error-from].
+    ///
+    /// `U` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
+    /// [u-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let source = Ref::<_, [u8]>::from_bytes(&b"UU"[..]).unwrap();
+    /// let _ = Ref::cast_prefix::<ZSTy>(source); // ⚠ Compile Error!
+    /// ```
+    #[inline]
+    pub fn cast_prefix<U>(source: Self) -> Result<(Ref<B, U>, B), CastError<Self, U>>
+    where
+        U: ?Sized + KnownLayout,
+    {
+        static_assert_dst_is_not_zst!(U);
+        Self::cast_into(source, CastType::Prefix, None)
+    }
+
+    /// Casts `Ref<B, T>`'s prefix to `Ref<B, U>` with length equal to `count`.
+    ///
+    /// This method attempts to return a `Ref` to the prefix of `source`
+    /// interpreted as a `U` with `count` trailing elements, and a reference to
+    /// the remaining bytes. If there are insufficient bytes, or if `source` is
+    /// not appropriately aligned, this returns `Err`. If [`U:
+    /// Unaligned`][u-unaligned], you can [infallibly discard the alignment
+    /// error][size-error-from].
+    ///
+    /// [u-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let source = Ref::<_, [u8]>::from_bytes(&b"UU"[..]).unwrap();
+    /// let _ = Ref::cast_prefix_with_elems::<ZSTy>(source, 42); // ⚠ Compile Error!
+    /// ```
+    #[inline]
+    pub fn cast_prefix_with_elems<U>(
+        source: Self,
+        elems: usize,
+    ) -> Result<(Ref<B, U>, B), CastError<Self, U>>
+    where
+        U: ?Sized + KnownLayout<PointerMetadata = usize>,
+    {
+        static_assert_dst_is_not_zst!(U);
+        Self::cast_into(source, CastType::Prefix, Some(elems))
+    }
+
+    /// Casts `Ref<B, T>`'s suffix to `Ref<B, U>`.
+    ///
+    /// This method computes the [largest possible size of `U`][valid-size] that
+    /// can fit in the trailing bytes of `source`, then attempts to return both
+    /// a `Ref` to those bytes, and a reference to the preceding bytes. If there
+    /// are insufficient bytes, or if that suffix of `source` is not
+    /// appropriately aligned, this returns `Err`. If [`U:
+    /// Unaligned`][u-unaligned], you can [infallibly discard the alignment
+    /// error][size-error-from].
+    ///
+    /// `U` may be a sized type, a slice, or a [slice DST][slice-dst].
+    ///
+    /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
+    /// [u-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
+    /// [slice-dst]: KnownLayout#dynamically-sized-types
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let source = Ref::<_, [u8]>::from_bytes(&b"UU"[..]).unwrap();
+    /// let _ = Ref::cast_suffix::<ZSTy>(source); // ⚠ Compile Error!
+    /// ```
+    #[inline]
+    pub fn cast_suffix<U>(source: Self) -> Result<(B, Ref<B, U>), CastError<Self, U>>
+    where
+        U: ?Sized + KnownLayout,
+    {
+        static_assert_dst_is_not_zst!(U);
+        let (target, remainder) = Self::cast_into(source, CastType::Suffix, None)?;
+        Ok((remainder, target))
+    }
+
+    /// Casts `Ref<B, T>`'s suffix to `Ref<B, U>` with length equal to `count`.
+    ///
+    /// This method attempts to return a `Ref` to the suffix of `source`
+    /// interpreted as a `U` with `count` trailing elements, and a reference to
+    /// the preceding bytes. If there are insufficient bytes, or if that suffix
+    /// of `source` is not appropriately aligned, this returns `Err`. If [`U:
+    /// Unaligned`][u-unaligned], you can [infallibly discard the alignment
+    /// error][size-error-from].
+    ///
+    /// [u-unaligned]: Unaligned
+    /// [size-error-from]: error/struct.SizeError.html#method.from-1
+    ///
+    /// # Compile-Time Assertions
+    ///
+    /// This method cannot yet be used on unsized types whose dynamically-sized
+    /// component is zero-sized. Attempting to use this method on such types
+    /// results in a compile-time assertion error; e.g.:
+    ///
+    /// ```compile_fail,E0080
+    /// use zerocopy::*;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(Immutable, KnownLayout)]
+    /// #[repr(C)]
+    /// struct ZSTy {
+    ///     leading_sized: u16,
+    ///     trailing_dst: [()],
+    /// }
+    ///
+    /// let source = Ref::<_, [u8]>::from_bytes(&b"UU"[..]).unwrap();
+    /// let _ = Ref::cast_suffix_with_elems::<ZSTy>(source, 42); // ⚠ Compile Error!
+    /// ```
+    #[inline]
+    pub fn cast_suffix_with_elems<U>(
+        source: Self,
+        elems: usize,
+    ) -> Result<(B, Ref<B, U>), CastError<Self, U>>
+    where
+        U: ?Sized + KnownLayout<PointerMetadata = usize>,
+    {
+        static_assert_dst_is_not_zst!(U);
+        let (target, remainder) = Self::cast_into(source, CastType::Suffix, Some(elems))?;
+        Ok((remainder, target))
     }
 }
 
