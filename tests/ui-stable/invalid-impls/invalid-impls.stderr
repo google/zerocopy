@@ -21,7 +21,7 @@ note: required by a bound in `_::Subtrait`
 26 | impl_or_verify!(T => TryFromBytes for Foo<T>);
    | --------------------------------------------- in this macro invocation
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `impl_or_verify` (in Nightly builds, run with -Z macro-backtrace for more info)
-help: consider restricting type parameter `T`
+help: consider restricting type parameter `T` with trait `TryFromBytes`
    |
 26 | impl_or_verify!(T: zerocopy::TryFromBytes => TryFromBytes for Foo<T>);
    |                  ++++++++++++++++++++++++
@@ -49,7 +49,7 @@ note: required by a bound in `_::Subtrait`
 27 | impl_or_verify!(T => FromZeros for Foo<T>);
    | ------------------------------------------ in this macro invocation
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `impl_or_verify` (in Nightly builds, run with -Z macro-backtrace for more info)
-help: consider restricting type parameter `T`
+help: consider restricting type parameter `T` with trait `FromZeros`
    |
 27 | impl_or_verify!(T: zerocopy::FromZeros => FromZeros for Foo<T>);
    |                  +++++++++++++++++++++
@@ -77,7 +77,7 @@ note: required by a bound in `_::Subtrait`
 28 | impl_or_verify!(T => FromBytes for Foo<T>);
    | ------------------------------------------ in this macro invocation
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `impl_or_verify` (in Nightly builds, run with -Z macro-backtrace for more info)
-help: consider restricting type parameter `T`
+help: consider restricting type parameter `T` with trait `FromBytes`
    |
 28 | impl_or_verify!(T: zerocopy::FromBytes => FromBytes for Foo<T>);
    |                  +++++++++++++++++++++
@@ -105,7 +105,7 @@ note: required by a bound in `_::Subtrait`
 29 | impl_or_verify!(T => IntoBytes for Foo<T>);
    | ------------------------------------------ in this macro invocation
    = note: this error originates in the derive macro `IntoBytes` which comes from the expansion of the macro `impl_or_verify` (in Nightly builds, run with -Z macro-backtrace for more info)
-help: consider restricting type parameter `T`
+help: consider restricting type parameter `T` with trait `IntoBytes`
    |
 29 | impl_or_verify!(T: zerocopy::IntoBytes => IntoBytes for Foo<T>);
    |                  +++++++++++++++++++++
@@ -133,7 +133,7 @@ note: required by a bound in `_::Subtrait`
 30 | impl_or_verify!(T => Unaligned for Foo<T>);
    | ------------------------------------------ in this macro invocation
    = note: this error originates in the derive macro `Unaligned` which comes from the expansion of the macro `impl_or_verify` (in Nightly builds, run with -Z macro-backtrace for more info)
-help: consider restricting type parameter `T`
+help: consider restricting type parameter `T` with trait `Unaligned`
    |
 30 | impl_or_verify!(T: zerocopy::Unaligned => Unaligned for Foo<T>);
    |                  +++++++++++++++++++++
