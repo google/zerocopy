@@ -176,7 +176,7 @@ macro_rules! unsafe_impl {
             #[allow(clippy::as_conversions)]
             let candidate = unsafe { candidate.cast_unsized_unchecked::<$repr, _>(|p| p as *mut _) };
 
-            let $candidate = candidate.bikeshed_recall_valid();
+            let $candidate = candidate.bikeshed_recall_valid::<(BecauseRead, _)>();
             $is_bit_valid
         }
     };
