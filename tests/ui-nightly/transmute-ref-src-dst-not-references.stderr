@@ -83,8 +83,8 @@ warning: this function depends on never type fallback being `()`
 17 | const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #123748 <https://github.com/rust-lang/rust/issues/123748>
+   = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in Rust 2024 and in a future release in all editions!
+   = note: for more information, see <https://doc.rust-lang.org/nightly/edition-guide/rust-2024/never-type-fallback.html>
    = help: specify the types explicitly
 note: in edition 2024, the requirement `!: IntoBytes` will fail
   --> tests/ui-nightly/transmute-ref-src-dst-not-references.rs:17:39
@@ -93,11 +93,6 @@ note: in edition 2024, the requirement `!: IntoBytes` will fail
    |                                       ^^^^^^^^^^^^^^^^^^^^^^
    = note: `#[warn(dependency_on_unit_never_type_fallback)]` on by default
    = note: this warning originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
-help: use `()` annotations to avoid fallback changes
-  --> src/macros.rs
-   |
-   |         let e: &() = $e;
-   |                 ~~
 
 warning: never type fallback affects this call to an `unsafe` function
   --> tests/ui-nightly/transmute-ref-src-dst-not-references.rs:17:39
@@ -105,8 +100,8 @@ warning: never type fallback affects this call to an `unsafe` function
 17 | const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
    |                                       ^^^^^^^^^^^^^^^^^^^^^^
    |
-   = warning: this will change its meaning in a future release!
-   = note: for more information, see issue #123748 <https://github.com/rust-lang/rust/issues/123748>
+   = warning: this changes meaning in Rust 2024 and in a future release in all editions!
+   = note: for more information, see <https://doc.rust-lang.org/nightly/edition-guide/rust-2024/never-type-fallback.html>
    = help: specify the type explicitly
    = note: `#[warn(never_type_fallback_flowing_into_unsafe)]` on by default
    = note: this warning originates in the macro `$crate::assert_size_eq` which comes from the expansion of the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -117,7 +112,7 @@ warning: never type fallback affects this call to an `unsafe` function
 17 | const SRC_DST_NOT_REFERENCES: usize = transmute_ref!(0usize);
    |                                       ^^^^^^^^^^^^^^^^^^^^^^
    |
-   = warning: this will change its meaning in a future release!
-   = note: for more information, see issue #123748 <https://github.com/rust-lang/rust/issues/123748>
+   = warning: this changes meaning in Rust 2024 and in a future release in all editions!
+   = note: for more information, see <https://doc.rust-lang.org/nightly/edition-guide/rust-2024/never-type-fallback.html>
    = help: specify the type explicitly
    = note: this warning originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
