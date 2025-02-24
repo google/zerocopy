@@ -178,7 +178,7 @@ macro_rules! unsafe_impl {
             // - The caller has promised that the destination type has
             //   `UnsafeCell`s at the same byte ranges as the source type.
             #[allow(clippy::as_conversions)]
-            let candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
+            let candidate = unsafe { candidate.cast_unsized_unchecked::<$repr, _>(|p| p as *mut _) };
 
             // SAFETY: The caller has promised that the referenced memory region
             // will contain a valid `$repr`.
@@ -202,7 +202,7 @@ macro_rules! unsafe_impl {
             // - The caller has promised that the destination type has
             //   `UnsafeCell`s at the same byte ranges as the source type.
             #[allow(clippy::as_conversions)]
-            let $candidate = unsafe { candidate.cast_unsized::<$repr, _>(|p| p as *mut _) };
+            let $candidate = unsafe { candidate.cast_unsized_unchecked::<$repr, _>(|p| p as *mut _) };
 
             // Restore the invariant that the referent bytes are initialized.
             // SAFETY: The above cast does not uninitialize any referent bytes;

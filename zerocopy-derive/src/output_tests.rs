@@ -748,13 +748,13 @@ fn test_try_from_bytes_enum() {
                     }
                     let tag = {
                         let tag_ptr = unsafe {
-                            candidate.reborrow().cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyTagPrimitive })
+                            candidate.reborrow().cast_unsized_unchecked(|p: *mut Self| { p as *mut ___ZerocopyTagPrimitive })
                         };
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
                         tag_ptr.bikeshed_recall_valid().read_unaligned::<::zerocopy::BecauseImmutable>()
                     };
                     let raw_enum = unsafe {
-                        candidate.cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<'a, N, X, Y> })
+                        candidate.cast_unsized_unchecked(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<'a, N, X, Y> })
                     };
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let variants = unsafe {
@@ -767,7 +767,7 @@ fn test_try_from_bytes_enum() {
                         ___ZEROCOPY_TAG_UnitLike => true,
                         ___ZEROCOPY_TAG_StructLike => {
                             let variant = unsafe {
-                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
+                                variants.cast_unsized_unchecked(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
                                     p as *mut ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>
                                 })
                             };
@@ -777,7 +777,7 @@ fn test_try_from_bytes_enum() {
                         }
                         ___ZEROCOPY_TAG_TupleLike => {
                             let variant = unsafe {
-                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
+                                variants.cast_unsized_unchecked(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
                                     p as *mut ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>
                                 })
                             };
@@ -1042,13 +1042,13 @@ fn test_try_from_bytes_enum() {
                     }
                     let tag = {
                         let tag_ptr = unsafe {
-                            candidate.reborrow().cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyTagPrimitive })
+                            candidate.reborrow().cast_unsized_unchecked(|p: *mut Self| { p as *mut ___ZerocopyTagPrimitive })
                         };
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
                         tag_ptr.bikeshed_recall_valid().read_unaligned::<::zerocopy::BecauseImmutable>()
                     };
                     let raw_enum = unsafe {
-                        candidate.cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<'a, N, X, Y> })
+                        candidate.cast_unsized_unchecked(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<'a, N, X, Y> })
                     };
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let variants = unsafe {
@@ -1061,7 +1061,7 @@ fn test_try_from_bytes_enum() {
                         ___ZEROCOPY_TAG_UnitLike => true,
                         ___ZEROCOPY_TAG_StructLike => {
                             let variant = unsafe {
-                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
+                                variants.cast_unsized_unchecked(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
                                     p as *mut ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>
                                 })
                             };
@@ -1071,7 +1071,7 @@ fn test_try_from_bytes_enum() {
                         }
                         ___ZEROCOPY_TAG_TupleLike => {
                             let variant = unsafe {
-                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
+                                variants.cast_unsized_unchecked(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
                                     p as *mut ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>
                                 })
                             };
@@ -1336,13 +1336,13 @@ fn test_try_from_bytes_enum() {
                     }
                     let tag = {
                         let tag_ptr = unsafe {
-                            candidate.reborrow().cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyTagPrimitive })
+                            candidate.reborrow().cast_unsized_unchecked(|p: *mut Self| { p as *mut ___ZerocopyTagPrimitive })
                         };
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
                         tag_ptr.bikeshed_recall_valid().read_unaligned::<::zerocopy::BecauseImmutable>()
                     };
                     let raw_enum = unsafe {
-                        candidate.cast_unsized(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<'a, N, X, Y> })
+                        candidate.cast_unsized_unchecked(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<'a, N, X, Y> })
                     };
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let variants = unsafe {
@@ -1355,7 +1355,7 @@ fn test_try_from_bytes_enum() {
                         ___ZEROCOPY_TAG_UnitLike => true,
                         ___ZEROCOPY_TAG_StructLike => {
                             let variant = unsafe {
-                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
+                                variants.cast_unsized_unchecked(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
                                     p as *mut ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>
                                 })
                             };
@@ -1365,7 +1365,7 @@ fn test_try_from_bytes_enum() {
                         }
                         ___ZEROCOPY_TAG_TupleLike => {
                             let variant = unsafe {
-                                variants.cast_unsized(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
+                                variants.cast_unsized_unchecked(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
                                     p as *mut ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>
                                 })
                             };

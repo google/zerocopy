@@ -123,78 +123,41 @@ impl Validity for Initialized {}
 pub enum Valid {}
 impl Validity for Valid {}
 
-pub mod aliasing_safety {
-    use super::*;
-    use crate::Immutable;
+/// [`Ptr`](crate::Ptr) referents that permit unsynchronized read operations.
+///
+/// `T: Read<A, R>` implies that a pointer to `T` with aliasing `A` permits
+/// unsynchronized read oeprations. This can be because `A` is [`Exclusive`] or
+/// because `T` does not permit interior mutation.
+///
+/// # Safety
+///
+/// `T: Read<A, R>` if either of the following conditions holds:
+/// - `A` is [`Exclusive`]
+/// - `T` implements [`Immutable`](crate::Immutable)
+///
+/// As a consequence, if `T: Read<A, R>`, then any `Ptr<T, (A, ...)>` is
+/// permitted to perform unsynchronized reads from its referent.
+pub trait Read<A: Aliasing, R: ReadReason> {}
 
-    /// Pointer conversions which do not violate aliasing.
-    ///
-    /// `U: AliasingSafe<T, A, R>` implies that a pointer conversion from `T` to
-    /// `U` does not violate the aliasing invariant, `A`. This can be because
-    /// `A` is [`Exclusive`] or because neither `T` nor `U` permit interior
-    /// mutability.
-    ///
-    /// # Safety
-    ///
-    /// `U: AliasingSafe<T, A, R>` if either of the following conditions holds:
-    /// - `A` is [`Exclusive`]
-    /// - `T` and `U` both implement [`Immutable`]
-    #[doc(hidden)]
-    pub unsafe trait AliasingSafe<T: ?Sized, A: Aliasing, R: AliasingSafeReason> {}
+impl<A: Reference, T: ?Sized + crate::Immutable> Read<A, BecauseImmutable> for T {}
+impl<T: ?Sized> Read<Exclusive, BecauseExclusive> for T {}
 
-    #[doc(hidden)]
-    pub trait AliasingSafeReason: sealed::Sealed {}
-    impl<R: AliasingSafeReason> AliasingSafeReason for (R,) {}
+/// Used to disambiguate [`Read`] impls.
+pub trait ReadReason: Sealed {}
 
-    /// The conversion is safe because only one live `Ptr` or reference may exist to
-    /// the referent bytes at a time.
-    #[derive(Copy, Clone, Debug)]
-    #[doc(hidden)]
-    pub enum BecauseExclusive {}
-    impl AliasingSafeReason for BecauseExclusive {}
+/// Unsynchronized reads are permitted because only one live [`Ptr`](crate::Ptr)
+/// or reference may exist to the referent bytes at a time.
+#[derive(Copy, Clone, Debug)]
+#[doc(hidden)]
+pub enum BecauseExclusive {}
+impl ReadReason for BecauseExclusive {}
 
-    /// The conversion is safe because no live `Ptr`s or references permit mutation.
-    #[derive(Copy, Clone, Debug)]
-    #[doc(hidden)]
-    pub enum BecauseImmutable {}
-    impl AliasingSafeReason for BecauseImmutable {}
-
-    /// SAFETY: `T: AliasingSafe<Exclusive, BecauseExclusive>` because for all
-    /// `Ptr<'a, T, I>` such that `I::Aliasing = Exclusive`, there cannot exist
-    /// other live references to the memory referenced by `Ptr`.
-    unsafe impl<T: ?Sized, U: ?Sized> AliasingSafe<T, Exclusive, BecauseExclusive> for U {}
-
-    /// SAFETY: `U: AliasingSafe<T, A, BecauseNoCell>` because for all `Ptr<'a, T,
-    /// I>` and `Ptr<'a, U, I>` such that `I::Aliasing = A`, all live references and
-    /// live `Ptr`s agree, by invariant on `Immutable`, that the referenced bytes
-    /// contain no `UnsafeCell`s, and thus do not permit mutation except via
-    /// exclusive aliasing.
-    unsafe impl<A, T: ?Sized, U: ?Sized> AliasingSafe<T, A, BecauseImmutable> for U
-    where
-        A: Aliasing,
-        T: Immutable,
-        U: Immutable,
-    {
-    }
-
-    /// This ensures that `U: AliasingSafe<T, A>` implies `T: AliasingSafe<U, A>` in
-    /// a manner legible to rustc, which in turn means we can write simpler bounds in
-    /// some places.
-    ///
-    /// SAFETY: Per `U: AliasingSafe<T, A, R>`, either:
-    /// - `A` is `Exclusive`
-    /// - `T` and `U` both implement `Immutable`
-    ///
-    /// Neither property depends on which of `T` and `U` are in the `Self` position
-    /// vs the first type parameter position.
-    unsafe impl<A, T: ?Sized, U: ?Sized, R> AliasingSafe<U, A, (R,)> for T
-    where
-        A: Aliasing,
-        R: AliasingSafeReason,
-        U: AliasingSafe<T, A, R>,
-    {
-    }
-}
+/// Unsynchronized reads are permitted because no live [`Ptr`](crate::Ptr)s or
+/// references permit interior mutation.
+#[derive(Copy, Clone, Debug)]
+#[doc(hidden)]
+pub enum BecauseImmutable {}
+impl ReadReason for BecauseImmutable {}
 
 use sealed::Sealed;
 mod sealed {
@@ -215,7 +178,6 @@ mod sealed {
 
     impl<A: Sealed, AA: Sealed, V: Sealed> Sealed for (A, AA, V) {}
 
-    impl Sealed for super::aliasing_safety::BecauseExclusive {}
-    impl Sealed for super::aliasing_safety::BecauseImmutable {}
-    impl<S: Sealed> Sealed for (S,) {}
+    impl Sealed for BecauseImmutable {}
+    impl Sealed for BecauseExclusive {}
 }
