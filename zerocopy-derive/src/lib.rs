@@ -651,8 +651,7 @@ fn derive_try_from_bytes_struct(
                 mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
             ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
             where
-                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                    + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
             {
                 true #(&& {
                     // SAFETY:
@@ -710,8 +709,7 @@ fn derive_try_from_bytes_union(
                 mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>
             ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
             where
-                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                    + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
             {
                 false #(|| {
                     // SAFETY:
@@ -806,8 +804,7 @@ fn try_gen_trivial_is_bit_valid(
                 _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
             ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
             where
-                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                    + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
             {
                 if false {
                     fn assert_is_from_bytes<T>()
@@ -850,8 +847,7 @@ unsafe fn gen_trivial_is_bit_valid_unchecked() -> proc_macro2::TokenStream {
             _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
         ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
         where
-            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Aliasing
-                + ::zerocopy::pointer::invariant::AtLeast<::zerocopy::pointer::invariant::Shared>,
+            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
         {
             true
         }

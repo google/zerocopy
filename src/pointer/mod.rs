@@ -35,7 +35,7 @@ pub type MaybeAligned<'a, T, Aliasing = invariant::Shared, Alignment = invariant
 impl<'a, T, Aliasing, Alignment> MaybeAligned<'a, T, Aliasing, Alignment>
 where
     T: 'a + ?Sized,
-    Aliasing: invariant::Aliasing + invariant::AtLeast<invariant::Shared>,
+    Aliasing: invariant::Reference,
     Alignment: invariant::Alignment,
 {
     /// Reads the value from `MaybeAligned`.
@@ -49,12 +49,20 @@ where
     {
         let raw = self.as_non_null().as_ptr();
         // SAFETY: By invariant on `MaybeAligned`, `raw` contains
-        // validly-initialized data for `T`. By `T: AliasingSafe`, we are
-        // permitted to perform a read of `raw`'s referent. The value is safe to
-        // read and return, because `T` is copy.
+        // validly-initialized data for `T`. By `Aliasing: Reference`,
+        // `Aliasing` is either `Shared` or `Exclusive`, both of which ensure
+        // that it is sound to perform this read. By `T: Copy`, the value is
+        // safe to return.
         unsafe { core::ptr::read_unaligned(raw) }
     }
+}
 
+impl<'a, T, Aliasing, Alignment> MaybeAligned<'a, T, Aliasing, Alignment>
+where
+    T: 'a + ?Sized,
+    Aliasing: invariant::Reference,
+    Alignment: invariant::Alignment,
+{
     /// Views the value as an aligned reference.
     ///
     /// This is only available if `T` is [`Unaligned`].
@@ -73,7 +81,7 @@ pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
 where
     T: crate::Immutable + crate::KnownLayout,
     I: invariant::Invariants<Validity = invariant::Initialized>,
-    I::Aliasing: invariant::AtLeast<invariant::Shared>,
+    I::Aliasing: invariant::Reference,
 {
     ptr.as_bytes::<BecauseImmutable>().as_ref().iter().all(|&byte| byte == 0)
 }
