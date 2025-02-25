@@ -39,7 +39,7 @@ mod _def {
         ///    byte range which is entirely contained in `A`.
         /// 3. `ptr` addresses a byte range whose length fits in an `isize`.
         /// 4. `ptr` addresses a byte range which does not wrap around the
-        ///     address space.
+        ///    address space.
         /// 5. If `ptr`'s referent is not zero sized,`A` is guaranteed to live
         ///    for at least `'a`.
         ptr: NonNull<T>,
