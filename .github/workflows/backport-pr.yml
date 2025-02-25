@@ -1,0 +1,63 @@
+# Copyright 2024 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: Backport PR
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: "Commit to backport"
+        required: true
+      target_branch:
+        description: "Target branch for the new PR"
+        required: true
+        default: 'main'
+
+permissions: read-all
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: Backport PR
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.inputs.target_branch }}
+          # Check out the entire repository so that the target commit is checked
+          # out (by default, only fetches the single commit identified by the
+          # `ref` argument).
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Cherry-pick commit
+        run: |
+          set -eo pipefail
+
+          AUTHOR_NAME="$(git log -1 --pretty='%an' ${{ github.event.inputs.commit }})"
+          AUTHOR_EMAIL="$(git log -1 --pretty='%ae' ${{ github.event.inputs.commit }})"
+
+          git config --global user.name "$AUTHOR_NAME"
+          git config --global user.email "$AUTHOR_EMAIL"
+
+          git cherry-pick ${{ github.event.inputs.commit }}
+
+          PR_TITLE="$(git log -1 --pretty=%s)"
+          echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
+
+          AUTHOR="$AUTHOR_NAME <$AUTHOR_EMAIL>"
+          echo "AUTHOR=$AUTHOR" >> $GITHUB_ENV
+
+      - name: Submit PR
+        uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f # v7.0.5
+        with:
+          author: "${{ env.AUTHOR }}"
+          committer: "${{ env.AUTHOR }}"
+          title: "${{ env.PR_TITLE }}"
+          branch: backport-${{ github.event.inputs.commit }}
+          push-to-fork: google-pr-creation-bot/zerocopy
+          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
