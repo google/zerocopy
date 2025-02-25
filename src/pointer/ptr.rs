@@ -684,8 +684,8 @@ mod _transitions {
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        pub fn forget_aligned(self) -> Ptr<'a, T, (I::Aliasing, Any, I::Validity)> {
-            // SAFETY: `Any` is less restrictive than `Aligned`.
+        pub fn forget_aligned(self) -> Ptr<'a, T, (I::Aliasing, Unknown, I::Validity)> {
+            // SAFETY: `Unknown` is less restrictive than `Aligned`.
             unsafe { self.assume_invariants() }
         }
     }
@@ -714,15 +714,14 @@ mod _casts {
         /// following properties:
         /// - `u` addresses a subset of the bytes addressed by `p`
         /// - `u` has the same provenance as `p`
-        /// - If `I::Aliasing` is [`Any`] or [`Shared`], `UnsafeCell`s in `*u`
-        ///   must exist at ranges identical to those at which `UnsafeCell`s
-        ///   exist in `*p`
+        /// - If `I::Aliasing` is [`Shared`], `UnsafeCell`s in `*u` must exist
+        ///   at ranges identical to those at which `UnsafeCell`s exist in `*p`
         #[doc(hidden)]
         #[inline]
         pub unsafe fn cast_unsized_unchecked<U: 'a + ?Sized, F: FnOnce(*mut T) -> *mut U>(
             self,
             cast: F,
-        ) -> Ptr<'a, U, (I::Aliasing, Any, Any)> {
+        ) -> Ptr<'a, U, (I::Aliasing, Unknown, Unknown)> {
             let ptr = cast(self.as_inner().as_non_null().as_ptr());
 
             // SAFETY: Caller promises that `cast` returns a pointer whose
@@ -776,9 +775,11 @@ mod _casts {
             //        pointer will permit mutation of this byte during `'a`, by
             //        invariant on `self`, no other code assumes that this will
             //        not happen.
+            //    - `Inaccessible`: There are no restrictions we need to uphold.
             // 7. `ptr`, trivially, conforms to the alignment invariant of
-            //    `Any`.
-            // 8. `ptr`, trivially, conforms to the validity invariant of `Any`.
+            //    `Unknown`.
+            // 8. `ptr`, trivially, conforms to the validity invariant of
+            //    `Unknown`.
             unsafe { Ptr::new(ptr) }
         }
 
@@ -792,7 +793,10 @@ mod _casts {
         /// - `u` has the same provenance as `p`
         #[doc(hidden)]
         #[inline]
-        pub unsafe fn cast_unsized<U, F, R, S>(self, cast: F) -> Ptr<'a, U, (I::Aliasing, Any, Any)>
+        pub unsafe fn cast_unsized<U, F, R, S>(
+            self,
+            cast: F,
+        ) -> Ptr<'a, U, (I::Aliasing, Unknown, Unknown)>
         where
             T: Read<I::Aliasing, R>,
             U: 'a + ?Sized + Read<I::Aliasing, S>,
@@ -936,10 +940,11 @@ mod _casts {
             // 0. Since `U: Read<I::Aliasing, _>`, either:
             //    - `I::Aliasing` is `Exclusive`, in which case both `src` and
             //      `ptr` conform to `Exclusive`
-            //    - `I::Aliasing` is `Shared` or `Any` and `U` is `Immutable`
-            //      (we already know that `[u8]: Immutable`). In this case,
-            //      neither `U` nor `[u8]` permit mutation, and so `Shared`
-            //      aliasing is satisfied.
+            //    - `I::Aliasing` is `Shared` or `Inaccessible` and `U` is
+            //      `Immutable` (we already know that `[u8]: Immutable`). In
+            //      this case, neither `U` nor `[u8]` permit mutation, and so
+            //      `Shared` aliasing is satisfied. `Inaccessible` is trivially
+            //      satisfied since it imposes no requirements.
             // 1. `ptr` conforms to the alignment invariant of `Aligned` because
             //    it is derived from `try_cast_into`, which promises that the
             //    object described by `target` is validly aligned for `U`.
@@ -1082,7 +1087,7 @@ mod _project {
         pub unsafe fn project<U: 'a + ?Sized>(
             self,
             projector: impl FnOnce(*mut T) -> *mut U,
-        ) -> Ptr<'a, U, (I::Aliasing, Any, Initialized)> {
+        ) -> Ptr<'a, U, (I::Aliasing, Unknown, Initialized)> {
             // TODO(#1122): If `cast_unsized` were able to reason that, when
             // casting from an `Initialized` pointer, the result is another
             // `Initialized` pointer, we could remove this method entirely.

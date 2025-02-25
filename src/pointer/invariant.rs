@@ -47,13 +47,18 @@ pub trait Validity: Sealed {}
 /// Exclusive`.
 pub trait Reference: Aliasing + Sealed {}
 
-/// No requirement - any invariant is allowed.
-pub enum Any {}
-impl Aliasing for Any {
+/// It is unknown whether any invariant holds.
+pub enum Unknown {}
+
+impl Alignment for Unknown {}
+impl Validity for Unknown {}
+
+/// The `Ptr<'a, T>` does not permit any reads or writes from or to its referent.
+pub enum Inaccessible {}
+
+impl Aliasing for Inaccessible {
     const IS_EXCLUSIVE: bool = false;
 }
-impl Alignment for Any {}
-impl Validity for Any {}
 
 /// The `Ptr<'a, T>` adheres to the aliasing rules of a `&'a T`.
 ///
@@ -165,8 +170,9 @@ mod sealed {
 
     pub trait Sealed {}
 
-    impl Sealed for Any {}
+    impl Sealed for Unknown {}
 
+    impl Sealed for Inaccessible {}
     impl Sealed for Shared {}
     impl Sealed for Exclusive {}
 
