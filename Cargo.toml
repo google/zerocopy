@@ -48,7 +48,7 @@ zerocopy-diagnostic-on-unimplemented = "1.78.0"
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.
 pinned-stable = "1.85.0"
-pinned-nightly = "nightly-2024-11-06"
+pinned-nightly = "nightly-2025-02-25"
 
 [package.metadata.docs.rs]
 all-features = true
