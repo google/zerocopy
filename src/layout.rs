@@ -813,16 +813,15 @@ mod tests {
 
         /// This macro accepts arguments in the form of:
         ///
-        ///           layout(_, _, _).validate(_, _, _), Ok(Some((_, _)))
-        ///                  |  |  |           |  |  |            |  |
-        ///    base_size ----+  |  |           |  |  |            |  |
-        ///    align -----------+  |           |  |  |            |  |
-        ///    trailing_size ------+           |  |  |            |  |
-        ///    addr ---------------------------+  |  |            |  |
-        ///    bytes_len -------------------------+  |            |  |
-        ///    cast_type ----------------------------+            |  |
-        ///    elems ---------------------------------------------+  |
-        ///    split_at ---------------------------------------------+
+        ///           layout(_, _).validate(_, _, _), Ok(Some((_, _)))
+        ///                  |  |           |  |  |            |  |
+        ///    size ---------+  |           |  |  |            |  |
+        ///    align -----------+           |  |  |            |  |
+        ///    addr ------------------------+  |  |            |  |
+        ///    bytes_len ----------------------+  |            |  |
+        ///    cast_type -------------------------+            |  |
+        ///    elems ------------------------------------------+  |
+        ///    split_at ------------------------------------------+
         ///
         /// `.validate` is shorthand for `.validate_cast_and_convert_metadata`
         /// for brevity.
@@ -855,7 +854,7 @@ mod tests {
         /// `a..b`). In this case, wrap the expression in parentheses, and it
         /// will become valid `tt`.
         macro_rules! test {
-                ($(:$sizes:expr =>)?
+                (
                     layout($size:tt, $align:tt)
                     .validate($addr:tt, $bytes_len:tt, $cast_type:tt), $expect:pat $(,)?
                 ) => {
