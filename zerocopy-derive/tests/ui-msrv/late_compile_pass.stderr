@@ -69,29 +69,29 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfie
    = help: see issue #48214
    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
+error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
   --> tests/ui-msrv/late_compile_pass.rs:65:10
    |
 65 | #[derive(Unaligned)]
-   |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
+   |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
+error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
   --> tests/ui-msrv/late_compile_pass.rs:73:10
    |
 73 | #[derive(Unaligned)]
-   |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
+   |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
+error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
   --> tests/ui-msrv/late_compile_pass.rs:80:10
    |
 80 | #[derive(Unaligned)]
-   |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
+   |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)

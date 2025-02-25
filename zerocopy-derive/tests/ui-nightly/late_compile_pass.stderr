@@ -174,14 +174,14 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
 9  + #![feature(trivial_bounds)]
    |
 
-error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
+error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:65:10
    |
 65 | #[derive(Unaligned)]
-   |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
+   |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
    |
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
-   = help: the following other types implement trait `Unaligned`:
+   = help: the following other types implement trait `zerocopy::Unaligned`:
              ()
              AtomicBool
              AtomicI8
@@ -198,14 +198,14 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
 9  + #![feature(trivial_bounds)]
    |
 
-error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
+error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:73:10
    |
 73 | #[derive(Unaligned)]
-   |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
+   |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
    |
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
-   = help: the following other types implement trait `Unaligned`:
+   = help: the following other types implement trait `zerocopy::Unaligned`:
              ()
              AtomicBool
              AtomicI8
@@ -222,14 +222,14 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
 9  + #![feature(trivial_bounds)]
    |
 
-error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
+error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
   --> tests/ui-nightly/late_compile_pass.rs:80:10
    |
 80 | #[derive(Unaligned)]
-   |          ^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
+   |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
    |
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
-   = help: the following other types implement trait `Unaligned`:
+   = help: the following other types implement trait `zerocopy::Unaligned`:
              ()
              AtomicBool
              AtomicI8

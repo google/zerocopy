@@ -114,14 +114,14 @@ note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
    = note: this error originates in the derive macro `IntoBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotZerocopy: Unaligned` is not satisfied
+error[E0277]: the trait bound `NotZerocopy: zerocopy::Unaligned` is not satisfied
   --> tests/ui-stable/derive_transparent.rs:38:23
    |
 38 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
-   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Unaligned` is not implemented for `NotZerocopy`
+   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `NotZerocopy`
    |
    = note: Consider adding `#[derive(Unaligned)]` to `NotZerocopy`
-   = help: the following other types implement trait `Unaligned`:
+   = help: the following other types implement trait `zerocopy::Unaligned`:
              ()
              AtomicBool
              AtomicI8
@@ -131,7 +131,7 @@ error[E0277]: the trait bound `NotZerocopy: Unaligned` is not satisfied
              I128<O>
              I16<O>
            and $N others
-note: required for `TransparentStruct<NotZerocopy>` to implement `Unaligned`
+note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::Unaligned`
   --> tests/ui-stable/derive_transparent.rs:24:32
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]

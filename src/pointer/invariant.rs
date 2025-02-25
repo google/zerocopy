@@ -52,19 +52,6 @@ pub trait Validity: Sealed {}
 /// Exclusive`.
 pub trait Reference: Aliasing + Sealed {}
 
-/// It is unknown whether any invariant holds.
-pub enum Unknown {}
-
-impl Alignment for Unknown {}
-impl Validity for Unknown {}
-
-/// The `Ptr<'a, T>` does not permit any reads or writes from or to its referent.
-pub enum Inaccessible {}
-
-impl Aliasing for Inaccessible {
-    const IS_EXCLUSIVE: bool = false;
-}
-
 /// The `Ptr<'a, T>` adheres to the aliasing rules of a `&'a T`.
 ///
 /// The referent of a shared-aliased `Ptr` may be concurrently referenced by any
@@ -90,10 +77,20 @@ impl Aliasing for Exclusive {
 }
 impl Reference for Exclusive {}
 
+/// It is unknown whether the pointer is aligned.
+pub enum Unaligned {}
+
+impl Alignment for Unaligned {}
+
 /// The referent is aligned: for `Ptr<T>`, the referent's address is a multiple
 /// of the `T`'s alignment.
 pub enum Aligned {}
 impl Alignment for Aligned {}
+
+/// Any bit pattern is allowed in the `Ptr`'s referent, including uninitialized
+/// bytes.
+pub enum Uninit {}
+impl Validity for Uninit {}
 
 /// The byte ranges initialized in `T` are also initialized in the referent.
 ///
@@ -132,6 +129,17 @@ impl Validity for Initialized {}
 /// The referent is bit-valid for `T`.
 pub enum Valid {}
 impl Validity for Valid {}
+
+/// # Safety
+///
+/// `DT: CastableFrom<ST, SV, DV>` is sound if `SV = DV = Uninit` or `SV = DV =
+/// Initialized`.
+pub unsafe trait CastableFrom<ST: ?Sized, SV, DV> {}
+
+// SAFETY: `SV = DV = Uninit`.
+unsafe impl<ST: ?Sized, DT: ?Sized> CastableFrom<ST, Uninit, Uninit> for DT {}
+// SAFETY: `SV = DV = Initialized`.
+unsafe impl<ST: ?Sized, DT: ?Sized> CastableFrom<ST, Initialized, Initialized> for DT {}
 
 /// [`Ptr`](crate::Ptr) referents that permit unsynchronized read operations.
 ///
@@ -175,14 +183,13 @@ mod sealed {
 
     pub trait Sealed {}
 
-    impl Sealed for Unknown {}
-
-    impl Sealed for Inaccessible {}
     impl Sealed for Shared {}
     impl Sealed for Exclusive {}
 
+    impl Sealed for Unaligned {}
     impl Sealed for Aligned {}
 
+    impl Sealed for Uninit {}
     impl Sealed for AsInitialized {}
     impl Sealed for Initialized {}
     impl Sealed for Valid {}
