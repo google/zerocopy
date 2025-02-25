@@ -1285,6 +1285,26 @@ pub unsafe trait Immutable {
 /// }
 /// ```
 ///
+/// # Portability
+///
+/// To ensure consistent endianness for enums with multi-byte representations,
+/// explicitly specify and convert each discriminant using `.to_le()` or
+/// `.to_be()`; e.g.:
+///
+/// ```
+/// # use zerocopy_derive::TryFromBytes;
+/// // `DataStoreVersion` is encoded in little-endian.
+/// #[derive(TryFromBytes)]
+/// #[repr(u32)]
+/// pub enum DataStoreVersion {
+///     /// Version 1 of the data store.
+///     V1 = 9u32.to_le(),
+///
+///     /// Version 2 of the data store.
+///     V2 = 10u32.to_le(),
+/// }
+/// ```
+///
 /// [safety conditions]: trait@TryFromBytes#safety
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
