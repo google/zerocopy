@@ -38,7 +38,7 @@ mod def {
     /// - `ptr` conforms to the validity invariant of
     ///   [`I::Validity`](invariant::Validity).
     ///
-    /// `Ptr<'a, T>` is [covariant] in `'a` and `T`.
+    /// `Ptr<'a, T>` is [covariant] in `'a` and invariant in `T`.
     ///
     /// [covariant]: https://doc.rust-lang.org/reference/subtyping.html
     pub struct Ptr<'a, T, I>
@@ -54,7 +54,7 @@ mod def {
         ///    [`I::Alignment`](invariant::Alignment).
         /// 2. `ptr` conforms to the validity invariant of
         ///    [`I::Validity`](invariant::Validity).
-        // SAFETY: `PtrInner<'a, T>` is covariant over `'a` and `T`.
+        // SAFETY: `PtrInner<'a, T>` is covariant in `'a` and invariant in `T`.
         ptr: PtrInner<'a, T>,
         _invariants: PhantomData<I>,
     }
