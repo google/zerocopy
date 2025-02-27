@@ -98,6 +98,7 @@ impl<T, U> MaxAlignsOf<T, U> {
     }
 }
 
+#[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 const _64K: usize = 1 << 16;
 
 // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this

@@ -117,7 +117,15 @@ impl DstLayout {
     ///   The alignment value must be a power of two from 1 up to
     ///   2<sup>29</sup>.
     #[cfg(not(kani))]
+    #[cfg(not(target_pointer_width = "16"))]
     pub(crate) const CURRENT_MAX_ALIGN: NonZeroUsize = match NonZeroUsize::new(1 << 28) {
+        Some(max_align) => max_align,
+        None => const_unreachable!(),
+    };
+
+    #[cfg(not(kani))]
+    #[cfg(target_pointer_width = "16")]
+    pub(crate) const CURRENT_MAX_ALIGN: NonZeroUsize = match NonZeroUsize::new(1 << 15) {
         Some(max_align) => max_align,
         None => const_unreachable!(),
     };
