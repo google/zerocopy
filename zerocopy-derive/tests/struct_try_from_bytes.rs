@@ -157,6 +157,7 @@ fn test_maybe_from_bytes() {
     // that we *don't* spuriously do that when generic parameters are present.
 
     let candidate = ::zerocopy::Ptr::from_ref(&[2u8][..]);
+    let candidate = candidate.bikeshed_recall_initialized_from_bytes();
 
     // SAFETY:
     // - The cast preserves address and size. As a result, the cast will address

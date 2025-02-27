@@ -118,11 +118,12 @@ pub mod util {
 
         let buf = super::imp::MaybeUninit::<T>::uninit();
         let ptr = super::imp::Ptr::from_ref(&buf);
+        // SAFETY: This is intentionally unsound; see the preceding comment.
+        let ptr = unsafe { ptr.assume_initialized() };
+
         // SAFETY: `T` and `MaybeUninit<T>` have the same layout, so this is a
         // size-preserving cast. It is also a provenance-preserving cast.
         let ptr = unsafe { ptr.cast_unsized_unchecked(|p| p as *mut T) };
-        // SAFETY: This is intentionally unsound; see the preceding comment.
-        let ptr = unsafe { ptr.assume_initialized() };
         assert!(<T as super::imp::TryFromBytes>::is_bit_valid(ptr));
     }
 }

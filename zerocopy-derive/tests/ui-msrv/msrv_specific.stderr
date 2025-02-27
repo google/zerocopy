@@ -6,11 +6,11 @@ warning: unused `#[macro_use]` import
    |
    = note: `#[warn(unused_imports)]` on by default
 
-error[E0277]: the trait bound `AU16: Unaligned` is not satisfied
+error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
   --> tests/ui-msrv/msrv_specific.rs:35:9
    |
 35 |         is_into_bytes_1::<IntoBytes1<AU16>>();
-   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Unaligned` is not implemented for `AU16`
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
    |
 note: required because of the requirements on the impl of `zerocopy::IntoBytes` for `IntoBytes1<AU16>`
   --> tests/ui-msrv/msrv_specific.rs:24:10
