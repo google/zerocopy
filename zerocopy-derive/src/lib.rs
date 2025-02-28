@@ -653,6 +653,8 @@ fn derive_try_from_bytes_struct(
             where
                 ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
             {
+                use ::zerocopy::util::macro_util::core_reexport;
+
                 true #(&& {
                     // SAFETY:
                     // - `project` is a field projection, and so it addresses a
@@ -662,8 +664,18 @@ fn derive_try_from_bytes_struct(
                     //   the same byte ranges in the returned pointer's referent
                     //   as they do in `*slf`
                     let field_candidate = unsafe {
-                        let project = |slf: *mut Self|
-                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
+                        let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                            let slf = slf.as_ptr();
+                            let field = core_reexport::ptr::addr_of_mut!((*slf).#field_names);
+                            // SAFETY: `cast_unsized_unchecked` promises that
+                            // `slf` will either reference a zero-sized byte
+                            // range, or else will reference a byte range that
+                            // is entirely contained withing an allocated
+                            // object. In either case, this guarantees that
+                            // field projection will not wrap around the address
+                            // space, and so `field` will be non-null.
+                            unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
+                        };
 
                         candidate.reborrow().cast_unsized_unchecked(project)
                     };
@@ -711,6 +723,8 @@ fn derive_try_from_bytes_union(
             where
                 ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
             {
+                use ::zerocopy::util::macro_util::core_reexport;
+
                 false #(|| {
                     // SAFETY:
                     // - `project` is a field projection, and so it addresses a
@@ -720,8 +734,18 @@ fn derive_try_from_bytes_union(
                     //   `self_type_trait_bounds`, neither `*slf` nor the
                     //   returned pointer's referent contain any `UnsafeCell`s
                     let field_candidate = unsafe {
-                        let project = |slf: *mut Self|
-                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
+                        let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                            let slf = slf.as_ptr();
+                            let field = core_reexport::ptr::addr_of_mut!((*slf).#field_names);
+                            // SAFETY: `cast_unsized_unchecked` promises that
+                            // `slf` will either reference a zero-sized byte
+                            // range, or else will reference a byte range that
+                            // is entirely contained withing an allocated
+                            // object. In either case, this guarantees that
+                            // field projection will not wrap around the address
+                            // space, and so `field` will be non-null.
+                            unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
+                        };
 
                         candidate.reborrow().cast_unsized_unchecked(project)
                     };

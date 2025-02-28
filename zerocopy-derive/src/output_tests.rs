@@ -302,6 +302,7 @@ fn test_try_from_bytes() {
                 where
                     ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                 {
+                    use ::zerocopy::util::macro_util::core_reexport;
                     true
                 }
             }
@@ -326,6 +327,7 @@ fn test_from_zeros() {
                 where
                     ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                 {
+                    use ::zerocopy::util::macro_util::core_reexport;
                     true
                 }
             }
@@ -589,10 +591,14 @@ fn test_try_from_bytes_enum() {
                         where
                             ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                         {
+                            use ::zerocopy::util::macro_util::core_reexport;
+
                             true && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).0)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).0);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
@@ -601,48 +607,60 @@ fn test_try_from_bytes_enum() {
                                     > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).1)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).1);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).2)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).2);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <X as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).3)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).3);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).4)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).4);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).5)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).5);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <[(X, Y); N] as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).6)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).6);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
@@ -683,10 +701,14 @@ fn test_try_from_bytes_enum() {
                         where
                             ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                         {
+                            use ::zerocopy::util::macro_util::core_reexport;
+
                             true && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).0)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).0);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
@@ -695,24 +717,30 @@ fn test_try_from_bytes_enum() {
                                     > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).1)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).1);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <bool as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).2)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).2);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <Y as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).3)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).3);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
@@ -721,8 +749,10 @@ fn test_try_from_bytes_enum() {
                                 )
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).4)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).4);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
@@ -748,18 +778,20 @@ fn test_try_from_bytes_enum() {
                     }
                     let tag = {
                         let tag_ptr = unsafe {
-                            candidate.reborrow().cast_unsized_unchecked(|p: *mut Self| { p as *mut ___ZerocopyTagPrimitive })
+                            candidate.reborrow().cast_unsized_unchecked(|p: core_reexport::ptr::NonNull<Self>| { p.cast::<___ZerocopyTagPrimitive>() })
                         };
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                        tag_ptr.bikeshed_recall_valid().read_unaligned::<::zerocopy::BecauseImmutable>()
+                        tag_ptr.recall_validity().read_unaligned::<::zerocopy::BecauseImmutable>()
                     };
                     let raw_enum = unsafe {
-                        candidate.cast_unsized_unchecked(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<'a, N, X, Y> })
+                        candidate.cast_unsized_unchecked(|p: core_reexport::ptr::NonNull<Self>| { p.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() })
                     };
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let variants = unsafe {
-                        raw_enum.cast_unsized_unchecked(|p: *mut ___ZerocopyRawEnum<'a, N, X, Y>| {
-                            core_reexport::ptr::addr_of_mut!((*p).variants)
+                        raw_enum.cast_unsized_unchecked(|p: core_reexport::ptr::NonNull<___ZerocopyRawEnum<'a, N, X, Y>>| {
+                            let p = p.as_ptr();
+                            let ptr = core_reexport::ptr::addr_of_mut!((*p).variants);
+                            unsafe { core_reexport::ptr::NonNull::new_unchecked(ptr) }
                         })
                     };
                     #[allow(non_upper_case_globals)]
@@ -767,8 +799,8 @@ fn test_try_from_bytes_enum() {
                         ___ZEROCOPY_TAG_UnitLike => true,
                         ___ZEROCOPY_TAG_StructLike => {
                             let variant = unsafe {
-                                variants.cast_unsized_unchecked(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
-                                    p as *mut ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>
+                                variants.cast_unsized_unchecked(|p: core_reexport::ptr::NonNull<___ZerocopyVariants<'a, N, X, Y>>| {
+                                    p.cast::<___ZerocopyVariantStruct_StructLike<'a, N, X, Y>>()
                                 })
                             };
                             let variant = unsafe { variant.assume_initialized() };
@@ -777,8 +809,8 @@ fn test_try_from_bytes_enum() {
                         }
                         ___ZEROCOPY_TAG_TupleLike => {
                             let variant = unsafe {
-                                variants.cast_unsized_unchecked(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
-                                    p as *mut ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>
+                                variants.cast_unsized_unchecked(|p: core_reexport::ptr::NonNull<___ZerocopyVariants<'a, N, X, Y>>| {
+                                    p.cast::<___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>>()
                                 })
                             };
                             let variant = unsafe { variant.assume_initialized() };
@@ -883,10 +915,14 @@ fn test_try_from_bytes_enum() {
                         where
                             ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                         {
+                            use ::zerocopy::util::macro_util::core_reexport;
+
                             true && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).0)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).0);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
@@ -895,48 +931,60 @@ fn test_try_from_bytes_enum() {
                                     > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).1)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).1);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).2)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).2);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <X as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).3)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).3);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).4)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).4);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).5)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).5);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <[(X, Y); N] as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).6)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).6);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
@@ -977,10 +1025,14 @@ fn test_try_from_bytes_enum() {
                         where
                             ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                         {
+                            use ::zerocopy::util::macro_util::core_reexport;
+
                             true && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).0)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).0);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
@@ -989,24 +1041,30 @@ fn test_try_from_bytes_enum() {
                                     > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).1)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).1);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <bool as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).2)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).2);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <Y as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).3)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).3);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
@@ -1015,8 +1073,10 @@ fn test_try_from_bytes_enum() {
                                 )
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).4)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).4);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
@@ -1042,18 +1102,20 @@ fn test_try_from_bytes_enum() {
                     }
                     let tag = {
                         let tag_ptr = unsafe {
-                            candidate.reborrow().cast_unsized_unchecked(|p: *mut Self| { p as *mut ___ZerocopyTagPrimitive })
+                            candidate.reborrow().cast_unsized_unchecked(|p: core_reexport::ptr::NonNull<Self>| { p.cast::<___ZerocopyTagPrimitive> ()})
                         };
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                        tag_ptr.bikeshed_recall_valid().read_unaligned::<::zerocopy::BecauseImmutable>()
+                        tag_ptr.recall_validity().read_unaligned::<::zerocopy::BecauseImmutable>()
                     };
                     let raw_enum = unsafe {
-                        candidate.cast_unsized_unchecked(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<'a, N, X, Y> })
+                        candidate.cast_unsized_unchecked(|p: core_reexport::ptr::NonNull<Self>| { p.cast::<___ZerocopyRawEnum<'a, N, X, Y>> ()})
                     };
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let variants = unsafe {
-                        raw_enum.cast_unsized_unchecked(|p: *mut ___ZerocopyRawEnum<'a, N, X, Y>| {
-                            core_reexport::ptr::addr_of_mut!((*p).variants)
+                        raw_enum.cast_unsized_unchecked(|p: core_reexport::ptr::NonNull<___ZerocopyRawEnum<'a, N, X, Y>>| {
+                            let p = p.as_ptr();
+                            let ptr = core_reexport::ptr::addr_of_mut!((*p).variants);
+                            unsafe { core_reexport::ptr::NonNull::new_unchecked(ptr) }
                         })
                     };
                     #[allow(non_upper_case_globals)]
@@ -1061,8 +1123,8 @@ fn test_try_from_bytes_enum() {
                         ___ZEROCOPY_TAG_UnitLike => true,
                         ___ZEROCOPY_TAG_StructLike => {
                             let variant = unsafe {
-                                variants.cast_unsized_unchecked(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
-                                    p as *mut ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>
+                                variants.cast_unsized_unchecked(|p: core_reexport::ptr::NonNull<___ZerocopyVariants<'a, N, X, Y>>| {
+                                    p.cast::<___ZerocopyVariantStruct_StructLike<'a, N, X, Y>>()
                                 })
                             };
                             let variant = unsafe { variant.assume_initialized() };
@@ -1071,8 +1133,8 @@ fn test_try_from_bytes_enum() {
                         }
                         ___ZEROCOPY_TAG_TupleLike => {
                             let variant = unsafe {
-                                variants.cast_unsized_unchecked(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
-                                    p as *mut ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>
+                                variants.cast_unsized_unchecked(|p: core_reexport::ptr::NonNull<___ZerocopyVariants<'a, N, X, Y>>| {
+                                    p.cast::<___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>>()
                                 })
                             };
                             let variant = unsafe { variant.assume_initialized() };
@@ -1177,10 +1239,14 @@ fn test_try_from_bytes_enum() {
                         where
                             ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                         {
+                            use ::zerocopy::util::macro_util::core_reexport;
+
                             true && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).0)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).0);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
@@ -1189,48 +1255,60 @@ fn test_try_from_bytes_enum() {
                                     > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).1)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).1);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).2)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).2);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <X as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).3)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).3);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).4)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).4);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).5)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).5);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <[(X, Y); N] as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).6)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).6);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
@@ -1271,10 +1349,14 @@ fn test_try_from_bytes_enum() {
                         where
                             ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                         {
+                            use ::zerocopy::util::macro_util::core_reexport;
+
                             true && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).0)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).0);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
@@ -1283,24 +1365,30 @@ fn test_try_from_bytes_enum() {
                                     > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).1)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).1);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <bool as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).2)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).2);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <Y as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).3)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).3);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
@@ -1309,8 +1397,10 @@ fn test_try_from_bytes_enum() {
                                 )
                             } && {
                                 let field_candidate = unsafe {
-                                    let project = |slf: *mut Self| {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).4)
+                                    let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                        let slf = slf.as_ptr();
+                                        let field = core_reexport::ptr::addr_of_mut!((*slf).4);
+                                        unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
                                     };
                                     candidate.reborrow().cast_unsized_unchecked(project)
                                 };
@@ -1336,18 +1426,20 @@ fn test_try_from_bytes_enum() {
                     }
                     let tag = {
                         let tag_ptr = unsafe {
-                            candidate.reborrow().cast_unsized_unchecked(|p: *mut Self| { p as *mut ___ZerocopyTagPrimitive })
+                            candidate.reborrow().cast_unsized_unchecked(|p: core_reexport::ptr::NonNull<Self>| { p.cast::<___ZerocopyTagPrimitive> ()})
                         };
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                        tag_ptr.bikeshed_recall_valid().read_unaligned::<::zerocopy::BecauseImmutable>()
+                        tag_ptr.recall_validity().read_unaligned::<::zerocopy::BecauseImmutable>()
                     };
                     let raw_enum = unsafe {
-                        candidate.cast_unsized_unchecked(|p: *mut Self| { p as *mut ___ZerocopyRawEnum<'a, N, X, Y> })
+                        candidate.cast_unsized_unchecked(|p: core_reexport::ptr::NonNull<Self>| { p.cast::<___ZerocopyRawEnum<'a, N, X, Y>> ()})
                     };
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let variants = unsafe {
-                        raw_enum.cast_unsized_unchecked(|p: *mut ___ZerocopyRawEnum<'a, N, X, Y>| {
-                            core_reexport::ptr::addr_of_mut!((*p).variants)
+                        raw_enum.cast_unsized_unchecked(|p: core_reexport::ptr::NonNull<___ZerocopyRawEnum<'a, N, X, Y>>| {
+                            let p = p.as_ptr();
+                            let ptr = core_reexport::ptr::addr_of_mut!((*p).variants);
+                            unsafe { core_reexport::ptr::NonNull::new_unchecked(ptr) }
                         })
                     };
                     #[allow(non_upper_case_globals)]
@@ -1355,8 +1447,8 @@ fn test_try_from_bytes_enum() {
                         ___ZEROCOPY_TAG_UnitLike => true,
                         ___ZEROCOPY_TAG_StructLike => {
                             let variant = unsafe {
-                                variants.cast_unsized_unchecked(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
-                                    p as *mut ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>
+                                variants.cast_unsized_unchecked(|p: core_reexport::ptr::NonNull<___ZerocopyVariants<'a, N, X, Y>>| {
+                                    p.cast::<___ZerocopyVariantStruct_StructLike<'a, N, X, Y>>()
                                 })
                             };
                             let variant = unsafe { variant.assume_initialized() };
@@ -1365,8 +1457,8 @@ fn test_try_from_bytes_enum() {
                         }
                         ___ZEROCOPY_TAG_TupleLike => {
                             let variant = unsafe {
-                                variants.cast_unsized_unchecked(|p: *mut ___ZerocopyVariants<'a, N, X, Y>| {
-                                    p as *mut ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>
+                                variants.cast_unsized_unchecked(|p: core_reexport::ptr::NonNull<___ZerocopyVariants<'a, N, X, Y>>| {
+                                    p.cast::<___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>>()
                                 })
                             };
                             let variant = unsafe { variant.assume_initialized() };

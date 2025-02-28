@@ -488,34 +488,6 @@ impl<'a> PtrInner<'a, [u8]> {
     }
 }
 
-#[allow(clippy::needless_lifetimes)]
-impl<'a, T> PtrInner<'a, T> {
-    /// Performs an unaligned read of `self`'s referent.
-    ///
-    /// # Safety
-    ///
-    /// `self` must point to a properly initialized value of type `T`, and
-    /// reading a copy of `T` must not violate `T`'s safety invariants.
-    ///
-    /// `self`'s referent must not be concurrently modified during this call.
-    pub(crate) unsafe fn read_unaligned(self) -> T {
-        let raw = self.as_non_null().as_ptr();
-        // SAFETY: The caller promises that `self` points to a bit-valid `T` and
-        // that reading a copy of it won't violate `T`'s safety invariants. The
-        // caller promises that `self`'s referent won't be concurrently modified
-        // during this operation.
-        //
-        // `raw` is valid for reads:
-        // - `self.as_non_null()` returns a `NonNull`, which is guaranteed to be
-        //   non-null.
-        // - By invariant on `PtrInner`, `raw` is is either zero-sized or:
-        //   - ...is within bounds of a single allocated object which lives for
-        //     at least `'a`.
-        //   - ...has valid provenance for that object.
-        unsafe { core::ptr::read_unaligned(raw) }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -530,9 +502,17 @@ mod tests {
             // SAFETY: `i` is in bounds by construction.
             let (l, r) = unsafe { ptr.split_at(i) };
             // SAFETY: Points to a valid value by construction.
-            let l_sum: usize = l.iter().map(|ptr| unsafe { ptr.read_unaligned() }).sum();
+            #[allow(clippy::undocumented_unsafe_blocks)] // Clippy false positive
+            let l_sum: usize = l
+                .iter()
+                .map(|ptr| unsafe { core::ptr::read_unaligned(ptr.as_non_null().as_ptr()) })
+                .sum();
             // SAFETY: Points to a valid value by construction.
-            let r_sum: usize = r.iter().map(|ptr| unsafe { ptr.read_unaligned() }).sum();
+            #[allow(clippy::undocumented_unsafe_blocks)] // Clippy false positive
+            let r_sum: usize = r
+                .iter()
+                .map(|ptr| unsafe { core::ptr::read_unaligned(ptr.as_non_null().as_ptr()) })
+                .sum();
             assert_eq!(l_sum, i);
             assert_eq!(r_sum, N - i);
             assert_eq!(l_sum + r_sum, N);
