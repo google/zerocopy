@@ -12,8 +12,8 @@ use core::{
     ptr::NonNull,
 };
 
-use super::{inner::PtrInner, invariant::*};
 use crate::{
+    pointer::{inner::PtrInner, invariant::*, transmute::TransmuteFromPtr},
     util::{AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance},
     AlignmentError, CastError, CastType, KnownLayout, SizeError, TryFromBytes, ValidityError,
 };
@@ -391,7 +391,7 @@ mod _conversions {
     {
         /// Converts `self` to a transparent wrapper type into a `Ptr` to the
         /// wrapped inner type.
-        pub(crate) fn transparent_wrapper_into_inner(
+        fn transparent_wrapper_into_inner(
             self,
         ) -> Ptr<
             'a,
@@ -430,6 +430,17 @@ mod _conversions {
     where
         I: Invariants,
     {
+        pub fn transmute<U, V, F, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
+        where
+            T: KnownLayout,
+            V: Validity,
+            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R>
+                + KnownLayout<PointerMetadata = T::PointerMetadata>
+                + ?Sized,
+        {
+            self.transmute_unchecked(|t: NonNull<T>| U::cast_from_raw(t))
+        }
+
         /// Casts to a different (unsized) target type without checking interior
         /// mutability.
         ///
@@ -460,14 +471,14 @@ mod _conversions {
         ) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
             V: Validity,
-            F: FnOnce(*mut T) -> *mut U,
+            F: FnOnce(NonNull<T>) -> NonNull<U>,
         {
-            let ptr = cast(self.as_inner().as_non_null().as_ptr());
+            let ptr = cast(self.as_inner().as_non_null());
 
-            // SAFETY: Caller promises that `cast` returns a pointer whose
-            // address is in the range of `self.as_inner().as_non_null()`'s referent. By
-            // invariant, none of these addresses are null.
-            let ptr = unsafe { NonNull::new_unchecked(ptr) };
+            // // SAFETY: Caller promises that `cast` returns a pointer whose
+            // // address is in the range of `self.as_inner().as_non_null()`'s referent. By
+            // // invariant, none of these addresses are null.
+            // let ptr = unsafe { NonNull::new_unchecked(ptr) };
 
             // SAFETY:
             //
@@ -552,7 +563,7 @@ mod _conversions {
             //   validity of the other.
             let ptr = unsafe {
                 #[allow(clippy::as_conversions)]
-                self.transmute_unchecked(|p: *mut T| p as *mut crate::Unalign<T>)
+                self.transmute_unchecked(NonNull::cast::<crate::Unalign<T>>)
             };
             ptr.bikeshed_recall_aligned()
         }
@@ -561,6 +572,8 @@ mod _conversions {
 
 /// State transitions between invariants.
 mod _transitions {
+    use crate::pointer::transmute::TryTransmuteFromPtr;
+
     use super::*;
 
     impl<'a, T, I> Ptr<'a, T, I>
@@ -819,14 +832,11 @@ mod _transitions {
         #[inline]
         // TODO(#859): Reconsider the name of this method before making it
         // public.
-        pub fn bikeshed_recall_valid(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>
+        pub fn bikeshed_recall_valid<R>(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>
         where
-            T: crate::FromBytes,
+            T: crate::FromBytes + TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, R>,
             I: Invariants<Validity = Initialized>,
         {
-            // TODO(#1866): Fix this unsoundness.
-
-            // SAFETY: This is unsound!
             unsafe { self.assume_valid() }
         }
 
@@ -843,11 +853,13 @@ mod _transitions {
         /// On error, unsafe code may rely on this method's returned
         /// `ValidityError` containing `self`.
         #[inline]
-        pub(crate) fn try_into_valid<R>(
+        pub(crate) fn try_into_valid<R, S>(
             mut self,
         ) -> Result<Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>, ValidityError<Self, T>>
         where
-            T: TryFromBytes + Read<I::Aliasing, R>,
+            T: TryFromBytes
+                + Read<I::Aliasing, R>
+                + TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, S>,
             I::Aliasing: Reference,
             I: Invariants<Validity = Initialized>,
         {
@@ -855,12 +867,10 @@ mod _transitions {
             // issues, as we have not generated any invalid state which we need to
             // fix before returning.
             if T::is_bit_valid(self.reborrow().forget_aligned()) {
-                // SAFETY: If `T::is_bit_valid`, code may assume that `self`
-                // contains a bit-valid instance of `Self`.
+                // TODO: Complete this safety comment.
                 //
-                // TODO(#1866): This is unsound! The returned `Ptr` may permit
-                // writing referents which do not satisfy the `Initialized`
-                // validity invariant of `self`.
+                // If `T::is_bit_valid`, code may assume that `self` contains a
+                // bit-valid instance of `Self`.
                 Ok(unsafe { self.assume_valid() })
             } else {
                 Err(ValidityError::new(self))
@@ -904,7 +914,7 @@ mod _casts {
         ///   at ranges identical to those at which `UnsafeCell`s exist in `*p`
         #[doc(hidden)]
         #[inline]
-        pub unsafe fn cast_unsized_unchecked<U, F: FnOnce(*mut T) -> *mut U>(
+        pub unsafe fn cast_unsized_unchecked<U, F: FnOnce(NonNull<T>) -> NonNull<U>>(
             self,
             cast: F,
         ) -> Ptr<'a, U, (I::Aliasing, Unaligned, I::Validity)>
@@ -947,7 +957,7 @@ mod _casts {
         where
             T: Read<I::Aliasing, R>,
             U: 'a + ?Sized + Read<I::Aliasing, S> + CastableFrom<T, I::Validity, I::Validity>,
-            F: FnOnce(*mut T) -> *mut U,
+            F: FnOnce(NonNull<T>) -> NonNull<U>,
         {
             // SAFETY: Because `T` and `U` both implement `Read<I::Aliasing, _>`,
             // either:
@@ -988,9 +998,8 @@ mod _casts {
             //   returned pointer addresses the same bytes as `p`
             // - `slice_from_raw_parts_mut` and `.cast` both preserve provenance
             let ptr: Ptr<'a, [u8], _> = unsafe {
-                self.cast_unsized(|p: *mut T| {
-                    #[allow(clippy::as_conversions)]
-                    core::ptr::slice_from_raw_parts_mut(p.cast::<u8>(), bytes)
+                self.cast_unsized(|p: NonNull<T>| {
+                    core::ptr::NonNull::slice_from_raw_parts(p.cast::<u8>(), bytes)
                 })
             };
 
@@ -1214,7 +1223,7 @@ mod _casts {
             //   inner type `T`. A consequence of this guarantee is that it is
             //   possible to convert between `T` and `UnsafeCell<T>`.
             #[allow(clippy::as_conversions)]
-            let ptr = unsafe { self.transmute_unchecked(|p| p as *mut T) };
+            let ptr = unsafe { self.transmute_unchecked(|p| cast!(p => NonNull<T>)) };
 
             // SAFETY: `UnsafeCell<T>` has the same alignment as `T` [1],
             // and so if `self` is guaranteed to be aligned, then so is the
@@ -1321,10 +1330,12 @@ mod tests {
                     };
 
                     // SAFETY: The bytes in `slf` must be initialized.
-                    unsafe fn validate_and_get_len<T: ?Sized + KnownLayout + FromBytes>(
+                    unsafe fn validate_and_get_len<
+                        T: ?Sized + KnownLayout + FromBytes + Immutable,
+                    >(
                         slf: Ptr<'_, T, (Shared, Aligned, Initialized)>,
                     ) -> usize {
-                        let t = slf.bikeshed_recall_valid().as_ref();
+                        let t = slf.bikeshed_recall_valid::<BecauseImmutable>().as_ref();
 
                         let bytes = {
                             let len = mem::size_of_val(t);

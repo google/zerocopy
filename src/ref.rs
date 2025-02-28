@@ -799,7 +799,7 @@ where
         let ptr = Ptr::from_mut(b.deref_mut())
             .try_cast_into_no_leftover::<T, BecauseExclusive>(None)
             .expect("zerocopy internal error: DerefMut::deref_mut should be infallible");
-        let ptr = ptr.bikeshed_recall_valid();
+        let ptr = ptr.bikeshed_recall_valid::<(crate::pointer::BecauseRead, BecauseExclusive)>();
         ptr.as_mut()
     }
 }

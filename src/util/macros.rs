@@ -174,7 +174,7 @@ macro_rules! unsafe_impl {
             // - The caller has promised that the destination type has
             //   `UnsafeCell`s at the same byte ranges as the source type.
             #[allow(clippy::as_conversions)]
-            let candidate = unsafe { candidate.cast_unsized_unchecked::<$repr, _>(|p| p as *mut _) };
+            let candidate = unsafe { candidate.cast_unsized_unchecked::<$repr, _>(|p| cast!(p => NonNull<_>)) };
 
             // TODO(#1866): Currently, `bikeshed_recall_valid` has a known
             // soundness hole. Eventually this will need to be fixed by
@@ -204,7 +204,7 @@ macro_rules! unsafe_impl {
             // - The caller has promised that the destination type has
             //   `UnsafeCell`s at the same byte ranges as the source type.
             #[allow(clippy::as_conversions)]
-            let $candidate = unsafe { candidate.cast_unsized_unchecked::<$repr, _>(|p| p as *mut _) };
+            let $candidate = unsafe { candidate.cast_unsized_unchecked::<$repr, _>(|p| cast!(p => NonNull<_>)) };
 
             $is_bit_valid
         }
@@ -223,6 +223,48 @@ macro_rules! unsafe_impl {
     (@method $trait:ident; |$_candidate:ident $(: &$_ref_repr:ty)? $(: NonNull<$_ptr_repr:ty>)?| $_is_bit_valid:expr) => {
         compile_error!("Can't provide `is_bit_valid` impl for trait other than `TryFromBytes`");
     };
+}
+
+macro_rules! unsafe_impl_transmute_from_for_atomic {
+    ($($atomic:ty [$prim:ty]),*) => {
+        const _: () = {
+            use crate::pointer::{TransmuteFrom, invariant::Valid};
+
+            $(
+                unsafe impl TransmuteFrom<$atomic, Valid, Valid> for $prim {}
+                unsafe impl TransmuteFrom<$prim, Valid, Valid> for $atomic {}
+            )*
+        }; 
+    };
+    ($($tyvar:ident => $atomic:ty [$prim:ty]),*) => {
+        const _: () = {
+            use crate::pointer::{TransmuteFrom, invariant::Valid};
+
+            $(
+                unsafe impl<$tyvar> TransmuteFrom<$atomic, Valid, Valid> for $prim {}
+                unsafe impl<$tyvar> TransmuteFrom<$prim, Valid, Valid> for $atomic {}
+            )*
+        }; 
+    }
+}
+
+macro_rules! impl_for_transmute_from {
+    (
+        $(#[$attr:meta])*
+        $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?)?
+        => TryFromBytes for $ty:ty [$repr:ty]
+    ) => {
+        unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> crate::TryFromBytes for $ty {
+            #[inline]
+            fn is_bit_valid<A: crate::pointer::invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
+                let c: Maybe<'_, $repr, A> = candidate.transmute();
+                <$repr as TryFromBytes>::is_bit_valid(c)
+            }
+
+            #[allow(clippy::missing_inline_in_public_items)]
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+    }
 }
 
 /// Implements `$trait` for a type which implements `TransparentWrapper`.
@@ -366,7 +408,7 @@ macro_rules! impl_for_transparent_wrapper {
         // implementation of `is_bit_valid`.
         #[inline]
         fn is_bit_valid<A: crate::pointer::invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
-            TryFromBytes::is_bit_valid(candidate.transparent_wrapper_into_inner())
+            <Self::Inner as TryFromBytes>::is_bit_valid(candidate.transmute())
         }
     };
     (
@@ -802,4 +844,12 @@ macro_rules! static_assert_dst_is_not_zst {
             !dst_is_zst
         }, "cannot call this method on a dynamically-sized type whose trailing slice element is zero-sized");
     }}
+}
+
+macro_rules! cast {
+    ($e:expr => NonNull<$t:ty>) => {
+        // SAFETY: `NonNull::as_ptr` returns a non-null pointer, so the argument
+        // to `NonNull::new_unchecked` is also non-null.
+        unsafe { core::ptr::NonNull::new_unchecked(core::ptr::NonNull::as_ptr($e) as *mut $t) }
+    };
 }

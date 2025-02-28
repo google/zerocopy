@@ -375,7 +375,10 @@ use core::{
 #[cfg(feature = "std")]
 use std::io;
 
-use crate::pointer::invariant::{self, BecauseExclusive};
+use crate::pointer::{
+    invariant::{self, BecauseExclusive},
+    BecauseRead,
+};
 
 #[cfg(any(feature = "alloc", test))]
 extern crate alloc;
@@ -804,6 +807,14 @@ pub unsafe trait KnownLayout {
         // SAFETY: `size_for_metadata` promises to only return `None` if the
         // resulting size would not fit in a `usize`.
         meta.size_for_metadata(Self::LAYOUT)
+    }
+
+    fn cast_from_raw<P: KnownLayout<PointerMetadata = Self::PointerMetadata> + ?Sized>(
+        ptr: NonNull<P>,
+    ) -> NonNull<Self> {
+        let data = ptr.cast::<u8>();
+        let meta = P::pointer_to_metadata(ptr.as_ptr());
+        Self::raw_from_ptr_len(data, meta)
     }
 }
 
@@ -2843,7 +2854,7 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
     // We use `from_mut` despite not mutating via `c_ptr` so that we don't need
     // to add a `T: Immutable` bound.
     let c_ptr = Ptr::from_mut(&mut candidate);
-    let c_ptr = c_ptr.transparent_wrapper_into_inner();
+    let c_ptr = c_ptr.transmute();
     // SAFETY: `c_ptr` has no uninitialized sub-ranges because it derived from
     // `candidate`, which the caller promises is entirely initialized. Since
     // `candidate` is a `MaybeUninit`, it has no validity requirements, and so
@@ -2861,7 +2872,7 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
     // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
     // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
     // condition will not happen.
-    if !T::is_bit_valid(c_ptr.forget_aligned()) {
+    if !util::SizedKnownLayout::<T>::is_bit_valid(c_ptr.forget_aligned()) {
         return Err(ValidityError::new(source).into());
     }
 
@@ -4258,7 +4269,7 @@ pub unsafe trait FromBytes: FromZeros {
         let source = Ptr::from_mut(source);
         let maybe_slf = source.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
         match maybe_slf {
-            Ok(slf) => Ok(slf.bikeshed_recall_valid().as_mut()),
+            Ok(slf) => Ok(slf.bikeshed_recall_valid::<(BecauseRead, BecauseExclusive)>().as_mut()),
             Err(err) => Err(err.map_src(|s| s.as_mut())),
         }
     }
@@ -4728,7 +4739,7 @@ fn ref_from_prefix_suffix<T: FromBytes + KnownLayout + Immutable + ?Sized>(
 /// If there are insufficient bytes, or if that affix of `source` is not
 /// appropriately aligned, this returns `Err`.
 #[inline(always)]
-fn mut_from_prefix_suffix<T: FromBytes + KnownLayout + ?Sized>(
+fn mut_from_prefix_suffix<T: FromBytes + IntoBytes + KnownLayout + ?Sized>(
     source: &mut [u8],
     meta: Option<T::PointerMetadata>,
     cast_type: CastType,

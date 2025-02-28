@@ -439,7 +439,8 @@ mod atomics {
 
         impl_known_layout!(AtomicBool);
 
-        impl_for_transparent_wrapper!(=> TryFromBytes for AtomicBool);
+        // impl_for_transparent_wrapper!(=> TryFromBytes for AtomicBool);
+        impl_for_transmute_from!(=> TryFromBytes for AtomicBool [bool]);
         impl_for_transparent_wrapper!(=> FromZeros for AtomicBool);
         impl_for_transparent_wrapper!(=> IntoBytes for AtomicBool);
 
@@ -472,6 +473,7 @@ mod atomics {
             /// All of these pass an atomic type and that type's native equivalent, as
             /// required by the macro safety preconditions.
             unsafe_impl_transparent_wrapper_for_atomic!(AtomicU8 [u8], AtomicI8 [i8], AtomicBool [bool]);
+            unsafe_impl_transmute_from_for_atomic!(AtomicU8 [u8], AtomicI8 [i8], AtomicBool [bool]);
         }
     }
 
@@ -489,6 +491,7 @@ mod atomics {
             /// All of these pass an atomic type and that type's native equivalent, as
             /// required by the macro safety preconditions.
             unsafe_impl_transparent_wrapper_for_atomic!(AtomicU16 [u16], AtomicI16 [i16]);
+            unsafe_impl_transmute_from_for_atomic!(AtomicU16 [u16], AtomicI16 [i16]);
         }
     }
 
@@ -506,6 +509,7 @@ mod atomics {
             /// All of these pass an atomic type and that type's native equivalent, as
             /// required by the macro safety preconditions.
             unsafe_impl_transparent_wrapper_for_atomic!(AtomicU32 [u32], AtomicI32 [i32]);
+            unsafe_impl_transmute_from_for_atomic!(AtomicU32 [u32], AtomicI32 [i32]);
         }
     }
 
@@ -523,6 +527,7 @@ mod atomics {
             /// All of these pass an atomic type and that type's native equivalent, as
             /// required by the macro safety preconditions.
             unsafe_impl_transparent_wrapper_for_atomic!(AtomicU64 [u64], AtomicI64 [i64]);
+            unsafe_impl_transmute_from_for_atomic!(AtomicU64 [u64], AtomicI64 [i64]);
         }
     }
 
@@ -548,6 +553,9 @@ mod atomics {
             /// required by the macro safety preconditions.
             unsafe_impl_transparent_wrapper_for_atomic!(AtomicUsize [usize], AtomicIsize [isize]);
             unsafe_impl_transparent_wrapper_for_atomic!(T => AtomicPtr<T> [*mut T]);
+
+            unsafe_impl_transmute_from_for_atomic!(AtomicUsize [usize], AtomicIsize [isize]);
+            unsafe_impl_transmute_from_for_atomic!(T => AtomicPtr<T> [*mut T]);
         }
     }
 }
