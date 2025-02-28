@@ -14,7 +14,7 @@ pub mod invariant;
 mod ptr;
 
 #[doc(hidden)]
-pub use invariant::{BecauseExclusive, BecauseImmutable, Read, ReadReason};
+pub use invariant::{BecauseExclusive, BecauseImmutable, Read};
 #[doc(hidden)]
 pub use ptr::Ptr;
 
@@ -48,7 +48,6 @@ where
     pub fn read_unaligned<R>(self) -> T
     where
         T: Copy,
-        R: invariant::ReadReason,
         T: invariant::Read<Aliasing, R>,
     {
         // SAFETY: By invariant on `MaybeAligned`, `raw` contains
