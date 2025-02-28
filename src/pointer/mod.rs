@@ -12,11 +12,15 @@ mod inner;
 #[doc(hidden)]
 pub mod invariant;
 mod ptr;
+mod transmute;
 
 #[doc(hidden)]
-pub use invariant::{BecauseExclusive, BecauseImmutable, Read};
+pub(crate) use transmute::*;
 #[doc(hidden)]
-pub use ptr::Ptr;
+pub use {
+    invariant::{BecauseExclusive, BecauseImmutable, Read},
+    ptr::Ptr,
+};
 
 use crate::Unaligned;
 
