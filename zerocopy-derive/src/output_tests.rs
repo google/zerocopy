@@ -594,7 +594,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).0)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <core_reexport::mem::MaybeUninit<
                                         ___ZerocopyInnerTag,
@@ -604,7 +604,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).1)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -612,7 +612,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).2)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <X as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -620,7 +620,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).3)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -628,7 +628,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).4)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -636,7 +636,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).5)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <[(X, Y); N] as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -644,7 +644,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).6)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <core_reexport::marker::PhantomData<
                                         ComplexWithGenerics<'a, N, X, Y>,
@@ -688,7 +688,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).0)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <core_reexport::mem::MaybeUninit<
                                         ___ZerocopyInnerTag,
@@ -698,7 +698,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).1)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <bool as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -706,7 +706,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).2)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <Y as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -714,7 +714,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).3)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <PhantomData<&'a [(X, Y); N]> as ::zerocopy::TryFromBytes>::is_bit_valid(
                                     field_candidate,
@@ -724,7 +724,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).4)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <core_reexport::marker::PhantomData<
                                         ComplexWithGenerics<'a, N, X, Y>,
@@ -758,7 +758,7 @@ fn test_try_from_bytes_enum() {
                     };
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let variants = unsafe {
-                        raw_enum.project(|p: *mut ___ZerocopyRawEnum<'a, N, X, Y>| {
+                        raw_enum.cast_unsized_unchecked(|p: *mut ___ZerocopyRawEnum<'a, N, X, Y>| {
                             core_reexport::ptr::addr_of_mut!((*p).variants)
                         })
                     };
@@ -888,7 +888,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).0)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <core_reexport::mem::MaybeUninit<
                                         ___ZerocopyInnerTag,
@@ -898,7 +898,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).1)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -906,7 +906,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).2)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <X as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -914,7 +914,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).3)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -922,7 +922,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).4)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -930,7 +930,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).5)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <[(X, Y); N] as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -938,7 +938,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).6)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <core_reexport::marker::PhantomData<
                                         ComplexWithGenerics<'a, N, X, Y>,
@@ -982,7 +982,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).0)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <core_reexport::mem::MaybeUninit<
                                         ___ZerocopyInnerTag,
@@ -992,7 +992,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).1)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <bool as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -1000,7 +1000,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).2)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <Y as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -1008,7 +1008,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).3)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <PhantomData<&'a [(X, Y); N]> as ::zerocopy::TryFromBytes>::is_bit_valid(
                                     field_candidate,
@@ -1018,7 +1018,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).4)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <core_reexport::marker::PhantomData<
                                         ComplexWithGenerics<'a, N, X, Y>,
@@ -1052,7 +1052,7 @@ fn test_try_from_bytes_enum() {
                     };
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let variants = unsafe {
-                        raw_enum.project(|p: *mut ___ZerocopyRawEnum<'a, N, X, Y>| {
+                        raw_enum.cast_unsized_unchecked(|p: *mut ___ZerocopyRawEnum<'a, N, X, Y>| {
                             core_reexport::ptr::addr_of_mut!((*p).variants)
                         })
                     };
@@ -1182,7 +1182,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).0)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <core_reexport::mem::MaybeUninit<
                                         ___ZerocopyInnerTag,
@@ -1192,7 +1192,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).1)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -1200,7 +1200,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).2)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <X as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -1208,7 +1208,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).3)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -1216,7 +1216,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).4)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -1224,7 +1224,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).5)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <[(X, Y); N] as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -1232,7 +1232,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).6)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <core_reexport::marker::PhantomData<
                                         ComplexWithGenerics<'a, N, X, Y>,
@@ -1276,7 +1276,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).0)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <core_reexport::mem::MaybeUninit<
                                         ___ZerocopyInnerTag,
@@ -1286,7 +1286,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).1)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <bool as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -1294,7 +1294,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).2)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <Y as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             } && {
@@ -1302,7 +1302,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).3)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <PhantomData<&'a [(X, Y); N]> as ::zerocopy::TryFromBytes>::is_bit_valid(
                                     field_candidate,
@@ -1312,7 +1312,7 @@ fn test_try_from_bytes_enum() {
                                     let project = |slf: *mut Self| {
                                         ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).4)
                                     };
-                                    candidate.reborrow().project(project)
+                                    candidate.reborrow().cast_unsized_unchecked(project)
                                 };
                                 <core_reexport::marker::PhantomData<
                                         ComplexWithGenerics<'a, N, X, Y>,
@@ -1346,7 +1346,7 @@ fn test_try_from_bytes_enum() {
                     };
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let variants = unsafe {
-                        raw_enum.project(|p: *mut ___ZerocopyRawEnum<'a, N, X, Y>| {
+                        raw_enum.cast_unsized_unchecked(|p: *mut ___ZerocopyRawEnum<'a, N, X, Y>| {
                             core_reexport::ptr::addr_of_mut!((*p).variants)
                         })
                     };

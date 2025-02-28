@@ -665,7 +665,7 @@ fn derive_try_from_bytes_struct(
                         let project = |slf: *mut Self|
                             ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
 
-                        candidate.reborrow().project(project)
+                        candidate.reborrow().cast_unsized_unchecked(project)
                     };
 
                     <#field_tys as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
@@ -723,7 +723,7 @@ fn derive_try_from_bytes_union(
                         let project = |slf: *mut Self|
                             ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#field_names);
 
-                        candidate.reborrow().project(project)
+                        candidate.reborrow().cast_unsized_unchecked(project)
                     };
 
                     <#field_tys as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
