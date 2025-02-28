@@ -25,7 +25,7 @@ use core::mem::{self, ManuallyDrop};
 use core::ptr::{self, NonNull};
 
 use crate::{
-    pointer::invariant::{self, BecauseExclusive, BecauseImmutable, Invariants, ReadReason},
+    pointer::invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
     FromBytes, Immutable, IntoBytes, Ptr, TryFromBytes, ValidityError,
 };
 
@@ -561,7 +561,6 @@ where
     Dst: TryFromBytes + invariant::Read<I::Aliasing, R>,
     I: Invariants<Validity = invariant::Initialized>,
     I::Aliasing: invariant::Reference,
-    R: ReadReason,
 {
     static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
 

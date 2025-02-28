@@ -805,7 +805,6 @@ mod _transitions {
             T: TryFromBytes + Read<I::Aliasing, R>,
             I::Aliasing: Reference,
             I: Invariants<Validity = Initialized>,
-            R: crate::pointer::ReadReason,
         {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
@@ -897,8 +896,6 @@ mod _casts {
         where
             T: Read<I::Aliasing, R>,
             U: 'a + ?Sized + Read<I::Aliasing, S> + CastableFrom<T, I::Validity, I::Validity>,
-            R: ReadReason,
-            S: ReadReason,
             F: FnOnce(*mut T) -> *mut U,
         {
             // SAFETY: Because `T` and `U` both implement `Read<I::Aliasing, _>`,
@@ -921,7 +918,6 @@ mod _casts {
         #[allow(clippy::wrong_self_convention)]
         pub(crate) fn as_bytes<R>(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Valid)>
         where
-            R: ReadReason,
             T: Read<I::Aliasing, R>,
             I::Aliasing: Reference,
         {
@@ -1019,7 +1015,6 @@ mod _casts {
             CastError<Self, U>,
         >
         where
-            R: ReadReason,
             I::Aliasing: Reference,
             U: 'a + ?Sized + KnownLayout + Read<I::Aliasing, R>,
         {
@@ -1082,7 +1077,6 @@ mod _casts {
         where
             I::Aliasing: Reference,
             U: 'a + ?Sized + KnownLayout + Read<I::Aliasing, R>,
-            R: ReadReason,
         {
             // TODO(#67): Remove this allow. See NonNulSlicelExt for more
             // details.

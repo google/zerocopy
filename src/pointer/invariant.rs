@@ -155,27 +155,22 @@ unsafe impl<ST: ?Sized, DT: ?Sized> CastableFrom<ST, Initialized, Initialized> f
 ///
 /// As a consequence, if `T: Read<A, R>`, then any `Ptr<T, (A, ...)>` is
 /// permitted to perform unsynchronized reads from its referent.
-pub trait Read<A: Aliasing, R: ReadReason> {}
+pub trait Read<A: Aliasing, R> {}
 
 impl<A: Aliasing, T: ?Sized + crate::Immutable> Read<A, BecauseImmutable> for T {}
 impl<T: ?Sized> Read<Exclusive, BecauseExclusive> for T {}
-
-/// Used to disambiguate [`Read`] impls.
-pub trait ReadReason: Sealed {}
 
 /// Unsynchronized reads are permitted because only one live [`Ptr`](crate::Ptr)
 /// or reference may exist to the referent bytes at a time.
 #[derive(Copy, Clone, Debug)]
 #[doc(hidden)]
 pub enum BecauseExclusive {}
-impl ReadReason for BecauseExclusive {}
 
 /// Unsynchronized reads are permitted because no live [`Ptr`](crate::Ptr)s or
 /// references permit interior mutation.
 #[derive(Copy, Clone, Debug)]
 #[doc(hidden)]
 pub enum BecauseImmutable {}
-impl ReadReason for BecauseImmutable {}
 
 use sealed::Sealed;
 mod sealed {
