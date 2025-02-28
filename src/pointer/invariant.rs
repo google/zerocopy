@@ -17,13 +17,13 @@
 pub trait Invariants: Sealed {
     type Aliasing: Aliasing;
     type Alignment: Alignment;
-    type Validity: Validity;
+    // type Validity: Validity;
 }
 
-impl<A: Aliasing, AA: Alignment, V: Validity> Invariants for (A, AA, V) {
+impl<A: Aliasing, AA: Alignment> Invariants for (A, AA) {
     type Aliasing = A;
     type Alignment = AA;
-    type Validity = V;
+    // type Validity = V;
 }
 
 /// The aliasing invariant of a [`Ptr`][super::Ptr].
@@ -83,7 +83,17 @@ pub trait Alignment: Sealed {}
 ///   mechanism (e.g. a `&` reference used to derive `src`) to write `x` where
 ///   `x ∈ S(T, V)` but `x ∉ S(U, W)`, which would violate the guarantee that
 ///   `dst`'s referent may only contain values in `S(U, W)`.
-pub unsafe trait Validity: Sealed {}
+pub unsafe trait Validity: Sealed {
+    type Inner: ?Sized;
+}
+
+/// Does `V` have the same validity invariant as `Self`?
+///
+/// # Safety
+///
+/// Unsafe code may assume that `W: SameValidity<V>` guarantees that `V` and `W`
+/// have the same validity invariant.
+pub unsafe trait SameValidity<V>: Sealed {}
 
 /// An [`Aliasing`] invariant which is either [`Shared`] or [`Exclusive`].
 ///
@@ -130,14 +140,24 @@ impl Alignment for Unaligned {}
 pub enum Aligned {}
 impl Alignment for Aligned {}
 
+struct NeverPhantomData<T: ?Sized> {
+    _marker: core::marker::PhantomData<T>,
+    _never: core::convert::Infallible,
+}
+
 /// Any bit pattern is allowed in the `Ptr`'s referent, including uninitialized
 /// bytes.
-pub enum Uninit {}
+pub struct Uninit<T: ?Sized>(NeverPhantomData<T>);
 // SAFETY: `Uninit`'s validity is well-defined for all `T: ?Sized`, and is not a
 // function of any property of `T` other than its bit validity (in fact, it's
 // not even a property of `T`'s bit validity, but this is more than we are
 // required to uphold).
-unsafe impl Validity for Uninit {}
+unsafe impl<T: ?Sized> Validity for Uninit<T> {
+    type Inner = T;
+}
+
+// SAFETY: The same validity (`Uninit`) is used for both types.
+unsafe impl<T: ?Sized, U: ?Sized> SameValidity<Uninit<T>> for Uninit<U> {}
 
 /// The byte ranges initialized in `T` are also initialized in the referent of a
 /// `Ptr<T>`.
@@ -166,37 +186,49 @@ unsafe impl Validity for Uninit {}
 ///   variant's bit validity (although note that the variant may contain another
 ///   enum type, in which case the same rules apply depending on the state of
 ///   its discriminant, and so on recursively).
-pub enum AsInitialized {}
+pub struct AsInitialized<T: ?Sized>(NeverPhantomData<T>);
 // SAFETY: `AsInitialized`'s validity is well-defined for all `T: ?Sized`, and
 // is not a function of any property of `T` other than its bit validity.
-unsafe impl Validity for AsInitialized {}
+unsafe impl<T: ?Sized> Validity for AsInitialized<T> {
+    type Inner = T;
+}
+// SAFETY: The same validity (`AsInitialized`) is used for both types.
+unsafe impl<T: ?Sized, U: ?Sized> SameValidity<AsInitialized<T>> for AsInitialized<U> {}
 
 /// The byte ranges in the referent are fully initialized. In other words, if
 /// the referent is `N` bytes long, then it contains a bit-valid `[u8; N]`.
-pub enum Initialized {}
+pub struct Initialized<T: ?Sized>(NeverPhantomData<T>);
 // SAFETY: `Initialized`'s validity is well-defined for all `T: ?Sized`, and is
 // not a function of any property of `T` other than its bit validity (in fact,
 // it's not even a property of `T`'s bit validity, but this is more than we are
 // required to uphold).
-unsafe impl Validity for Initialized {}
+unsafe impl<T: ?Sized> Validity for Initialized<T> {
+    type Inner = T;
+}
+// SAFETY: The same validity (`Initialized`) is used for both types.
+unsafe impl<T: ?Sized, U: ?Sized> SameValidity<Initialized<T>> for Initialized<U> {}
 
 /// The referent of a `Ptr<T>` is valid for `T`, upholding bit validity and any
 /// library safety invariants.
-pub enum Valid {}
+pub struct Valid<T: ?Sized>(NeverPhantomData<T>);
 // SAFETY: `Valid`'s validity is well-defined for all `T: ?Sized`, and is not a
 // function of any property of `T` other than its bit validity.
-unsafe impl Validity for Valid {}
+unsafe impl<T: ?Sized> Validity for Valid<T> {
+    type Inner = T;
+}
+// SAFETY: The same validity (`Valid`) is used for both types.
+unsafe impl<T: ?Sized, U: ?Sized> SameValidity<Valid<T>> for Valid<U> {}
 
 /// # Safety
 ///
-/// `DT: CastableFrom<ST, SV, DV>` is sound if `SV = DV = Uninit` or `SV = DV =
-/// Initialized`.
-pub unsafe trait CastableFrom<ST: ?Sized, SV, DV> {}
+/// `U: CastableFrom<T>` is sound if `T` and `U` have the same validity, and
+/// that validity is either [`Uninit`] or [`Initialized`].
+pub unsafe trait CastableFrom<T: ?Sized> {}
 
-// SAFETY: `SV = DV = Uninit`.
-unsafe impl<ST: ?Sized, DT: ?Sized> CastableFrom<ST, Uninit, Uninit> for DT {}
-// SAFETY: `SV = DV = Initialized`.
-unsafe impl<ST: ?Sized, DT: ?Sized> CastableFrom<ST, Initialized, Initialized> for DT {}
+// SAFETY: Both types have validity `Uninit`.
+unsafe impl<T: ?Sized, U: ?Sized> CastableFrom<Uninit<T>> for Uninit<U> {}
+// SAFETY: Both types have validity `Initialized`.
+unsafe impl<T: ?Sized, U: ?Sized> CastableFrom<Initialized<T>> for Initialized<U> {}
 
 /// [`Ptr`](crate::Ptr) referents that permit unsynchronized read operations.
 ///
@@ -241,12 +273,12 @@ mod sealed {
     impl Sealed for Unaligned {}
     impl Sealed for Aligned {}
 
-    impl Sealed for Uninit {}
-    impl Sealed for AsInitialized {}
-    impl Sealed for Initialized {}
-    impl Sealed for Valid {}
+    impl<T: ?Sized> Sealed for Uninit<T> {}
+    impl<T: ?Sized> Sealed for AsInitialized<T> {}
+    impl<T: ?Sized> Sealed for Initialized<T> {}
+    impl<T: ?Sized> Sealed for Valid<T> {}
 
-    impl<A: Sealed, AA: Sealed, V: Sealed> Sealed for (A, AA, V) {}
+    impl<A: Sealed, AA: Sealed> Sealed for (A, AA) {}
 
     impl Sealed for BecauseImmutable {}
     impl Sealed for BecauseExclusive {}

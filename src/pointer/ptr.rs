@@ -30,9 +30,9 @@ mod def {
 
     /// A raw pointer with more restrictions.
     ///
-    /// `Ptr<T>` is similar to [`NonNull<T>`], but it is more restrictive in the
-    /// following ways (note that these requirements only hold of non-zero-sized
-    /// referents):
+    /// `Ptr<V>` is similar to [`NonNull<V::Inner>`], but it is more restrictive
+    /// in the following ways (note that these requirements only hold of
+    /// non-zero-sized referents):
     /// - It must derive from a valid allocation.
     /// - It must reference a byte range which is contained inside the
     ///   allocation from which it derives.
@@ -46,14 +46,14 @@ mod def {
     /// - `ptr` conforms to the alignment invariant of
     ///   [`I::Alignment`](invariant::Alignment).
     /// - `ptr` conforms to the validity invariant of
-    ///   [`I::Validity`](invariant::Validity).
+    ///   [`V`](invariant::Validity).
     ///
-    /// `Ptr<'a, T>` is [covariant] in `'a` and invariant in `T`.
+    /// `Ptr<'a, V>` is [covariant] in `'a` and invariant in `V::Inner`.
     ///
     /// [covariant]: https://doc.rust-lang.org/reference/subtyping.html
-    pub struct Ptr<'a, T, I>
+    pub struct Ptr<'a, V, I>
     where
-        T: ?Sized,
+        V: ?Sized + Validity,
         I: Invariants,
     {
         /// # Invariants
@@ -63,15 +63,16 @@ mod def {
         /// 1. `ptr` conforms to the alignment invariant of
         ///    [`I::Alignment`](invariant::Alignment).
         /// 2. `ptr` conforms to the validity invariant of
-        ///    [`I::Validity`](invariant::Validity).
-        // SAFETY: `PtrInner<'a, T>` is covariant in `'a` and invariant in `T`.
-        ptr: PtrInner<'a, T>,
+        ///    [`V`](invariant::Validity).
+        // SAFETY: `PtrInner<'a, T::Inner>` is covariant in `'a` and invariant
+        // in `T::Inner`.
+        ptr: PtrInner<'a, V::Inner>,
         _invariants: PhantomData<I>,
     }
 
-    impl<'a, T, I> Ptr<'a, T, I>
+    impl<'a, V, I> Ptr<'a, V, I>
     where
-        T: 'a + ?Sized,
+        V: Validity,
         I: Invariants,
     {
         /// Constructs a `Ptr` from a [`NonNull`].
@@ -96,8 +97,8 @@ mod def {
         /// 7. `ptr` conforms to the alignment invariant of
         ///    [`I::Alignment`](invariant::Alignment).
         /// 8. `ptr` conforms to the validity invariant of
-        ///    [`I::Validity`](invariant::Validity).
-        pub(super) unsafe fn new(ptr: NonNull<T>) -> Ptr<'a, T, I> {
+        ///    [`V`](invariant::Validity).
+        pub(super) unsafe fn new(ptr: NonNull<V::Inner>) -> Ptr<'a, V, I> {
             // SAFETY: The caller has promised (in 0 - 5) to satisfy all safety
             // invariants of `PtrInner::new`.
             let ptr = unsafe { PtrInner::new(ptr) };
@@ -117,19 +118,19 @@ mod def {
         /// 1. `ptr` conforms to the alignment invariant of
         ///    [`I::Alignment`](invariant::Alignment).
         /// 2. `ptr` conforms to the validity invariant of
-        ///    [`I::Validity`](invariant::Validity).
-        pub(super) unsafe fn from_inner(ptr: PtrInner<'a, T>) -> Ptr<'a, T, I> {
+        ///    [`V`](invariant::Validity).
+        pub(super) unsafe fn from_inner(ptr: PtrInner<'a, V::Inner>) -> Ptr<'a, V, I> {
             // SAFETY: The caller has promised to satisfy all safety invariants
             // of `Ptr`.
             Self { ptr, _invariants: PhantomData }
         }
 
-        /// Converts this `Ptr<T>` to a [`PtrInner<T>`].
+        /// Converts this `Ptr<V>` to a [`PtrInner<V::Inner>`].
         ///
         /// Note that this method does not consume `self`. The caller should
         /// watch out for `unsafe` code which uses the returned value in a way
         /// that violates the safety invariants of `self`.
-        pub(crate) fn as_inner(&self) -> PtrInner<'a, T> {
+        pub(crate) fn as_inner(&self) -> PtrInner<'a, V::Inner> {
             self.ptr
         }
     }
@@ -159,17 +160,17 @@ mod _external {
     ///   cannot be violated by the original `Ptr`, and thus the original `Ptr`
     ///   cannot be used to violate this invariant on the copy. The inverse
     ///   holds as well.
-    impl<'a, T, I> Copy for Ptr<'a, T, I>
+    impl<'a, V, I> Copy for Ptr<'a, V, I>
     where
-        T: 'a + ?Sized,
+        V: 'a + Validity,
         I: Invariants<Aliasing = Shared>,
     {
     }
 
     /// SAFETY: See the safety comment on `Copy`.
-    impl<'a, T, I> Clone for Ptr<'a, T, I>
+    impl<'a, V, I> Clone for Ptr<'a, V, I>
     where
-        T: 'a + ?Sized,
+        V: Validity,
         I: Invariants<Aliasing = Shared>,
     {
         #[inline]
@@ -178,9 +179,9 @@ mod _external {
         }
     }
 
-    impl<'a, T, I> Debug for Ptr<'a, T, I>
+    impl<'a, V, I> Debug for Ptr<'a, V, I>
     where
-        T: 'a + ?Sized,
+        V: Validity,
         I: Invariants,
     {
         #[inline]
@@ -195,9 +196,10 @@ mod _conversions {
     use super::*;
 
     /// `&'a T` → `Ptr<'a, T>`
-    impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
+    impl<'a, T, I> Ptr<'a, Valid<T>, I>
     where
         T: 'a + ?Sized,
+        I: Invariants<Aliasing = Shared, Alignment = Aligned>,
     {
         /// Constructs a `Ptr` from a shared reference.
         #[doc(hidden)]
@@ -223,9 +225,10 @@ mod _conversions {
     }
 
     /// `&'a mut T` → `Ptr<'a, T>`
-    impl<'a, T> Ptr<'a, T, (Exclusive, Aligned, Valid)>
+    impl<'a, T, I> Ptr<'a, Valid<T>, I>
     where
         T: 'a + ?Sized,
+        I: Invariants<Aliasing = Exclusive, Alignment = Aligned>,
     {
         /// Constructs a `Ptr` from an exclusive reference.
         #[inline]
@@ -248,10 +251,10 @@ mod _conversions {
     }
 
     /// `Ptr<'a, T>` → `&'a T`
-    impl<'a, T, I> Ptr<'a, T, I>
+    impl<'a, T, I> Ptr<'a, Valid<T>, I>
     where
         T: 'a + ?Sized,
-        I: Invariants<Alignment = Aligned, Validity = Valid>,
+        I: Invariants<Alignment = Aligned>,
         I::Aliasing: Reference,
     {
         /// Converts `self` to a shared reference.
@@ -294,9 +297,9 @@ mod _conversions {
         }
     }
 
-    impl<'a, T, I> Ptr<'a, T, I>
+    impl<'a, V, I> Ptr<'a, V, I>
     where
-        T: 'a + ?Sized,
+        V: Validity,
         I: Invariants,
         I::Aliasing: Reference,
     {
@@ -308,7 +311,7 @@ mod _conversions {
         #[doc(hidden)]
         #[inline]
         #[allow(clippy::needless_lifetimes)] // Allows us to name the lifetime in the safety comment below.
-        pub fn reborrow<'b>(&'b mut self) -> Ptr<'b, T, I>
+        pub fn reborrow<'b>(&'b mut self) -> Ptr<'b, V, I>
         where
             'a: 'b,
         {
@@ -348,9 +351,10 @@ mod _conversions {
     }
 
     /// `Ptr<'a, T>` → `&'a mut T`
-    impl<'a, T> Ptr<'a, T, (Exclusive, Aligned, Valid)>
+    impl<'a, T, I> Ptr<'a, Valid<T>, I>
     where
         T: 'a + ?Sized,
+        I: Invariants<Aliasing = Exclusive, Alignment = Aligned>,
     {
         /// Converts `self` to a mutable reference.
         #[allow(clippy::wrong_self_convention)]
@@ -387,8 +391,9 @@ mod _conversions {
     }
 
     /// `Ptr<'a, T>` → `Ptr<'a, U>`
-    impl<'a, T: ?Sized, I> Ptr<'a, T, I>
+    impl<'a, V, I> Ptr<'a, V, I>
     where
+        V: Validity,
         I: Invariants,
     {
         pub(crate) fn transmute<U, V, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
@@ -448,13 +453,13 @@ mod _conversions {
         ///   and/or `U`. See [`Validity`] for more details.
         #[doc(hidden)]
         #[inline]
-        pub unsafe fn transmute_unchecked<U: ?Sized, V, F>(
+        pub unsafe fn transmute_unchecked<W, F>(
             self,
             cast: F,
-        ) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
+        ) -> Ptr<'a, W, (I::Aliasing, Unaligned)>
         where
-            V: Validity,
-            F: FnOnce(NonNull<T>) -> NonNull<U>,
+            W: Validity,
+            F: FnOnce(NonNull<V::Inner>) -> NonNull<W::Inner>,
         {
             let ptr = cast(self.as_inner().as_non_null());
 
@@ -506,7 +511,7 @@ mod _conversions {
     }
 
     /// `Ptr<'a, T, (_, _, _)>` → `Ptr<'a, Unalign<T>, (_, Aligned, _)>`
-    impl<'a, T, I> Ptr<'a, T, I>
+    impl<'a, T, I> Ptr<'a, Valid<T>, I>
     where
         I: Invariants,
     {
@@ -514,7 +519,7 @@ mod _conversions {
         /// `Unalign<T>`.
         pub(crate) fn into_unalign(
             self,
-        ) -> Ptr<'a, crate::Unalign<T>, (I::Aliasing, Aligned, I::Validity)> {
+        ) -> Ptr<'a, Valid<crate::Unalign<T>>, (I::Aliasing, Aligned)> {
             // SAFETY:
             // - This cast preserves provenance.
             // - This cast preserves address. `Unalign<T>` promises to have the
@@ -524,14 +529,13 @@ mod _conversions {
             //   `UnsafeCell`s at the same locations as `p`.
             // - `Unalign<T>` promises to have the same bit validity as `T`. By
             //   invariant on `Validity`, the set of bit patterns allowed in the
-            //   referent of a `Ptr<X, (_, _, V)>` is only a function of the
-            //   validity of `X` and of `V`. Thus, the set of bit patterns
-            //   allowed in the referent of a `Ptr<T, (_, _, I::Validity)>` is
-            //   the same as the set of bit patterns allowed in the referent of
-            //   a `Ptr<Unalign<T>, (_, _, I::Validity)>`. As a result, `self`
-            //   and the returned `Ptr` permit the same set of bit patterns in
-            //   their referents, and so neither can be used to violate the
-            //   validity of the other.
+            //   referent of a `Ptr<V<X>, _>` is only a function of the validity
+            //   of `X` and of `V`. Thus, the set of bit patterns allowed in the
+            //   referent of a `Ptr<Valid<T>, _>` is the same as the set of bit
+            //   patterns allowed in the referent of a `Ptr<Valid<Unalign<T>>,
+            //   _>`. As a result, `self` and the returned `Ptr` permit the same
+            //   set of bit patterns in their referents, and so neither can be
+            //   used to violate the validity of the other.
             let ptr = unsafe {
                 #[allow(clippy::as_conversions)]
                 self.transmute_unchecked(NonNull::cast::<crate::Unalign<T>>)
@@ -577,9 +581,9 @@ mod _transitions {
 
     use super::*;
 
-    impl<'a, T, I> Ptr<'a, T, I>
+    impl<'a, V, I> Ptr<'a, V, I>
     where
-        T: 'a + ?Sized,
+        V: Validity,
         I: Invariants,
     {
         /// Returns a `Ptr` with [`Exclusive`] aliasing if `self` already has
@@ -590,9 +594,7 @@ mod _transitions {
         ///
         /// [`Exclusive`]: crate::pointer::invariant::Exclusive
         #[inline]
-        pub(crate) fn into_exclusive_or_pme(
-            self,
-        ) -> Ptr<'a, T, (Exclusive, I::Alignment, I::Validity)> {
+        pub(crate) fn into_exclusive_or_pme(self) -> Ptr<'a, V, (Exclusive, I::Alignment)> {
             // NOTE(https://github.com/rust-lang/rust/issues/131625): We do this
             // rather than just having `Aliasing::IS_EXCLUSIVE` have the panic
             // behavior because doing it that way causes rustdoc to fail while
@@ -624,7 +626,7 @@ mod _transitions {
         /// # Safety
         ///
         /// The caller promises that `self` satisfies the invariants `H`.
-        unsafe fn assume_invariants<H: Invariants>(self) -> Ptr<'a, T, H> {
+        unsafe fn assume_invariants<H: Invariants>(self) -> Ptr<'a, V, H> {
             // SAFETY: The caller has promised to satisfy all parameterized
             // invariants of `Ptr`. `Ptr`'s other invariants are satisfied
             // by-contract by the source `Ptr`.
@@ -634,10 +636,10 @@ mod _transitions {
         /// Helps the type system unify two distinct invariant types which are
         /// actually the same.
         pub(crate) fn unify_invariants<
-            H: Invariants<Aliasing = I::Aliasing, Alignment = I::Alignment, Validity = I::Validity>,
+            H: Invariants<Aliasing = I::Aliasing, Alignment = I::Alignment>,
         >(
             self,
-        ) -> Ptr<'a, T, H> {
+        ) -> Ptr<'a, V, H> {
             // SAFETY: The associated type bounds on `H` ensure that the
             // invariants are unchanged.
             unsafe { self.assume_invariants::<H>() }
@@ -650,9 +652,7 @@ mod _transitions {
         /// The caller promises that `self` satisfies the aliasing requirement
         /// of `A`.
         #[inline]
-        pub(crate) unsafe fn assume_aliasing<A: Aliasing>(
-            self,
-        ) -> Ptr<'a, T, (A, I::Alignment, I::Validity)> {
+        pub(crate) unsafe fn assume_aliasing<A: Aliasing>(self) -> Ptr<'a, V, (A, I::Alignment)> {
             // SAFETY: The caller promises that `self` satisfies the aliasing
             // requirements of `A`.
             unsafe { self.assume_invariants() }
@@ -667,9 +667,7 @@ mod _transitions {
         ///
         /// [`Exclusive`]: crate::pointer::invariant::Exclusive
         #[inline]
-        pub(crate) unsafe fn assume_exclusive(
-            self,
-        ) -> Ptr<'a, T, (Exclusive, I::Alignment, I::Validity)> {
+        pub(crate) unsafe fn assume_exclusive(self) -> Ptr<'a, V, (Exclusive, I::Alignment)> {
             // SAFETY: The caller promises that `self` satisfies the aliasing
             // requirements of `Exclusive`.
             unsafe { self.assume_aliasing::<Exclusive>() }
@@ -683,9 +681,7 @@ mod _transitions {
         /// The caller promises that `self`'s referent conforms to the alignment
         /// invariant of `T` if required by `A`.
         #[inline]
-        pub(crate) unsafe fn assume_alignment<A: Alignment>(
-            self,
-        ) -> Ptr<'a, T, (I::Aliasing, A, I::Validity)> {
+        pub(crate) unsafe fn assume_alignment<A: Alignment>(self) -> Ptr<'a, V, (I::Aliasing, A)> {
             // SAFETY: The caller promises that `self`'s referent is
             // well-aligned for `T` if required by `A` .
             unsafe { self.assume_invariants() }
@@ -695,12 +691,12 @@ mod _transitions {
         /// on success.
         pub(crate) fn bikeshed_try_into_aligned(
             self,
-        ) -> Result<Ptr<'a, T, (I::Aliasing, Aligned, I::Validity)>, AlignmentError<Self, T>>
+        ) -> Result<Ptr<'a, V, (I::Aliasing, Aligned)>, AlignmentError<Self, V::Inner>>
         where
-            T: Sized,
+            V::Inner: Sized,
         {
             if let Err(err) =
-                crate::util::validate_aligned_to::<_, T>(self.as_inner().as_non_null())
+                crate::util::validate_aligned_to::<_, V::Inner>(self.as_inner().as_non_null())
             {
                 return Err(err.with_src(self));
             }
@@ -713,11 +709,9 @@ mod _transitions {
         #[inline]
         // TODO(#859): Reconsider the name of this method before making it
         // public.
-        pub(crate) fn bikeshed_recall_aligned(
-            self,
-        ) -> Ptr<'a, T, (I::Aliasing, Aligned, I::Validity)>
+        pub(crate) fn bikeshed_recall_aligned(self) -> Ptr<'a, V, (I::Aliasing, Aligned)>
         where
-            T: crate::Unaligned,
+            V::Inner: crate::Unaligned,
         {
             // SAFETY: The bound `T: Unaligned` ensures that `T` has no
             // non-trivial alignment requirement.
@@ -725,18 +719,18 @@ mod _transitions {
         }
 
         /// Assumes that `self`'s referent conforms to the validity requirement
-        /// of `V`.
+        /// of `W`.
         ///
         /// # Safety
         ///
         /// The caller promises that `self`'s referent conforms to the validity
-        /// requirement of `V`.
+        /// requirement of `W`.
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        pub unsafe fn assume_validity<V: Validity>(
+        pub unsafe fn assume_validity<W: Validity<Inner = V::Inner>>(
             self,
-        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, V)> {
+        ) -> Ptr<'a, W, (I::Aliasing, I::Alignment)> {
             // SAFETY: The caller promises that `self`'s referent conforms to
             // the validity requirement of `V`.
             unsafe { self.assume_invariants() }
@@ -753,10 +747,10 @@ mod _transitions {
         #[inline]
         pub unsafe fn assume_initialized(
             self,
-        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Initialized)> {
+        ) -> Ptr<'a, Initialized<V::Inner>, (I::Aliasing, I::Alignment)> {
             // SAFETY: The caller has promised to uphold the safety
             // preconditions.
-            unsafe { self.assume_validity::<Initialized>() }
+            unsafe { self.assume_validity::<Initialized<V::Inner>>() }
         }
 
         /// A shorthand for `self.assume_validity<Valid>()`.
@@ -768,12 +762,27 @@ mod _transitions {
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        pub unsafe fn assume_valid(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)> {
+        pub unsafe fn assume_valid(self) -> Ptr<'a, Valid<V::Inner>, (I::Aliasing, I::Alignment)> {
             // SAFETY: The caller has promised to uphold the safety
             // preconditions.
-            unsafe { self.assume_validity::<Valid>() }
+            unsafe { self.assume_validity::<Valid<V::Inner>>() }
         }
 
+        /// Forgets that `self`'s referent is validly-aligned for `T`.
+        #[doc(hidden)]
+        #[must_use]
+        #[inline]
+        pub fn forget_aligned(self) -> Ptr<'a, V, (I::Aliasing, Unaligned)> {
+            // SAFETY: `Unaligned` is less restrictive than `Aligned`.
+            unsafe { self.assume_invariants() }
+        }
+    }
+
+    impl<'a, T, I> Ptr<'a, Valid<T>, I>
+    where
+        T: ?Sized,
+        I: Invariants,
+    {
         /// Recalls that `self`'s referent is initialized.
         #[doc(hidden)]
         #[must_use]
@@ -782,10 +791,9 @@ mod _transitions {
         // public.
         pub fn bikeshed_recall_initialized_from_bytes(
             self,
-        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Initialized)>
+        ) -> Ptr<'a, Initialized<T>, (I::Aliasing, I::Alignment)>
         where
             T: crate::IntoBytes + crate::FromBytes,
-            I: Invariants<Validity = Valid>,
         {
             // SAFETY: The `T: IntoBytes + FromBytes` bound ensures that `T`'s
             // bit validity is equivalent to `[u8]`. In other words, the set of
@@ -804,10 +812,10 @@ mod _transitions {
         // public.
         pub fn bikeshed_recall_initialized_immutable(
             self,
-        ) -> Ptr<'a, T, (Shared, I::Alignment, Initialized)>
+        ) -> Ptr<'a, Initialized<T>, (Shared, I::Alignment)>
         where
             T: crate::IntoBytes + crate::Immutable,
-            I: Invariants<Aliasing = Shared, Validity = Valid>,
+            I: Invariants<Aliasing = Shared>,
         {
             // SAFETY: Let `O` (for "old") be the set of allowed bit patterns in
             // `self`'s referent, and let `N` (for "new") be the set of allowed
@@ -826,7 +834,13 @@ mod _transitions {
             // returned `Ptr` (even if `O` is a strict subset of `N`).
             unsafe { self.assume_initialized() }
         }
+    }
 
+    impl<'a, T, I> Ptr<'a, Initialized<T>, I>
+    where
+        T: ?Sized,
+        I: Invariants,
+    {
         /// Checks that `self`'s referent is validly initialized for `T`,
         /// returning a `Ptr` with `Valid` on success.
         ///
@@ -842,13 +856,12 @@ mod _transitions {
         #[inline]
         pub(crate) fn try_into_valid<R, S>(
             mut self,
-        ) -> Result<Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>, ValidityError<Self, T>>
+        ) -> Result<Ptr<'a, Valid<T>, (I::Aliasing, I::Alignment)>, ValidityError<Self, T>>
         where
             T: TryFromBytes
                 + Read<I::Aliasing, R>
                 + TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, S>,
             I::Aliasing: Reference,
-            I: Invariants<Validity = Initialized>,
         {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
@@ -865,15 +878,6 @@ mod _transitions {
                 Err(ValidityError::new(self))
             }
         }
-
-        /// Forgets that `self`'s referent is validly-aligned for `T`.
-        #[doc(hidden)]
-        #[must_use]
-        #[inline]
-        pub fn forget_aligned(self) -> Ptr<'a, T, (I::Aliasing, Unaligned, I::Validity)> {
-            // SAFETY: `Unaligned` is less restrictive than `Aligned`.
-            unsafe { self.assume_invariants() }
-        }
     }
 }
 
@@ -881,9 +885,9 @@ mod _transitions {
 mod _casts {
     use super::*;
 
-    impl<'a, T, I> Ptr<'a, T, I>
+    impl<'a, V, I> Ptr<'a, V, I>
     where
-        T: 'a + ?Sized,
+        V: Validity,
         I: Invariants,
     {
         /// Casts to a different (unsized) target type without checking interior
@@ -904,12 +908,15 @@ mod _casts {
         ///   simultaneously, to cause undefined behavior
         #[doc(hidden)]
         #[inline]
-        pub(crate) unsafe fn cast_unsized_unchecked<U, F: FnOnce(NonNull<T>) -> NonNull<U>>(
+        pub(crate) unsafe fn cast_unsized_unchecked<
+            U,
+            F: FnOnce(NonNull<V::Inner>) -> NonNull<W::Inner>,
+        >(
             self,
             cast: F,
-        ) -> Ptr<'a, U, (I::Aliasing, Unaligned, I::Validity)>
+        ) -> Ptr<'a, W, (I::Aliasing, Unaligned)>
         where
-            U: 'a + CastableFrom<T, I::Validity, I::Validity> + ?Sized,
+            W: Validity + CastableFrom<V>,
         {
             // SAFETY:
             // - The caller promises that `u = cast(p)` is a pointer which
@@ -940,14 +947,11 @@ mod _casts {
         /// - `u` has the same provenance as `p`
         #[doc(hidden)]
         #[inline]
-        pub unsafe fn cast_unsized<U, F, R>(
-            self,
-            cast: F,
-        ) -> Ptr<'a, U, (I::Aliasing, Unaligned, I::Validity)>
+        pub unsafe fn cast_unsized<W, F, R>(self, cast: F) -> Ptr<'a, W, (I::Aliasing, Unaligned)>
         where
-            T: MutationCompatible<U, I::Aliasing, I::Validity, I::Validity, R>,
-            U: 'a + ?Sized + CastableFrom<T, I::Validity, I::Validity>,
-            F: FnOnce(NonNull<T>) -> NonNull<U>,
+            V::Inner: MutationCompatible<W::Inner, I::Aliasing, R>,
+            W: Validity + CastableFrom<V>,
+            F: FnOnce(NonNull<V::Inner>) -> NonNull<W::Inner>,
         {
             // SAFETY: Because `T: MutationCompatible<U, I::Aliasing, R>`, one
             // of the following holds:
@@ -963,14 +967,14 @@ mod _casts {
         }
     }
 
-    impl<'a, T, I> Ptr<'a, T, I>
+    impl<'a, T, I> Ptr<'a, Initialized<T>, I>
     where
         T: 'a + KnownLayout + ?Sized,
-        I: Invariants<Validity = Initialized>,
+        I: Invariants,
     {
         /// Casts this pointer-to-initialized into a pointer-to-bytes.
         #[allow(clippy::wrong_self_convention)]
-        pub(crate) fn as_bytes<R>(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Valid)>
+        pub(crate) fn as_bytes<R>(self) -> Ptr<'a, Valid<[u8]>, (I::Aliasing, Aligned)>
         where
             T: Read<I::Aliasing, R>,
             I::Aliasing: Reference,
@@ -1001,15 +1005,20 @@ mod _casts {
         }
     }
 
-    impl<'a, T, I, const N: usize> Ptr<'a, [T; N], I>
+    impl<'a, T, V, I, const N: usize> Ptr<'a, V, I>
     where
         T: 'a,
+        V: Validity<Inner = [T; N]>,
         I: Invariants,
     {
         /// Casts this pointer-to-array into a slice.
         #[allow(clippy::wrong_self_convention)]
-        pub(crate) fn as_slice(self) -> Ptr<'a, [T], I> {
+        pub(crate) fn as_slice<W>(self) -> Ptr<'a, W, I>
+        where
+            W: Validity<Inner = [T]> + SameValidity<W>,
+        {
             let slice = self.as_inner().as_slice();
+
             // SAFETY: Note that, by post-condition on `PtrInner::as_slice`,
             // `slice` refers to the same byte range as `self.as_inner()`.
             //
@@ -1045,9 +1054,9 @@ mod _casts {
     /// For caller convenience, these methods are generic over alignment
     /// invariant. In practice, the referent is always well-aligned, because the
     /// alignment of `[u8]` is 1.
-    impl<'a, I> Ptr<'a, [u8], I>
+    impl<'a, I> Ptr<'a, Valid<[u8]>, I>
     where
-        I: Invariants<Validity = Valid>,
+        I: Invariants,
     {
         /// Attempts to cast `self` to a `U` using the given cast type.
         ///
@@ -1077,7 +1086,7 @@ mod _casts {
             cast_type: CastType,
             meta: Option<U::PointerMetadata>,
         ) -> Result<
-            (Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, Ptr<'a, [u8], I>),
+            (Ptr<'a, Initialized<U>, (I::Aliasing, Aligned)>, Ptr<'a, Valid<[u8]>, I>),
             CastError<Self, U>,
         >
         where
@@ -1142,7 +1151,7 @@ mod _casts {
         pub(crate) fn try_cast_into_no_leftover<U, R>(
             self,
             meta: Option<U::PointerMetadata>,
-        ) -> Result<Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, CastError<Self, U>>
+        ) -> Result<Ptr<'a, Initialized<U>, (I::Aliasing, Aligned)>, CastError<Self, U>>
         where
             I::Aliasing: Reference,
             U: 'a + ?Sized + KnownLayout + Read<I::Aliasing, R>,
@@ -1176,9 +1185,10 @@ mod _casts {
         }
     }
 
-    impl<'a, T, I> Ptr<'a, core::cell::UnsafeCell<T>, I>
+    impl<'a, T, V, I> Ptr<'a, V, I>
     where
-        T: 'a + ?Sized,
+        T: ?Sized,
+        V: Validity<Inner = core::cell::UnsafeCell<T>>,
         I: Invariants<Aliasing = Exclusive>,
     {
         /// Converts this `Ptr` into a pointer to the underlying data.
@@ -1191,7 +1201,10 @@ mod _casts {
         /// [`UnsafeCell::get_mut`]: core::cell::UnsafeCell::get_mut
         #[must_use]
         #[inline(always)]
-        pub fn get_mut(self) -> Ptr<'a, T, I> {
+        pub fn get_mut<U>(self) -> Ptr<'a, U, I>
+        where
+            U: Validity<Inner = T> + SameValidity<V>,
+        {
             // SAFETY:
             // - The closure uses an `as` cast, which preserves address range
             //   and provenance.
@@ -1237,9 +1250,9 @@ mod _casts {
 mod _project {
     use super::*;
 
-    impl<'a, T, I> Ptr<'a, [T], I>
+    impl<'a, T, V, I> Ptr<'a, V, I>
     where
-        T: 'a,
+        V: Validity<Inner = [T]>,
         I: Invariants,
     {
         /// The number of slice elements in the object referenced by `self`.
@@ -1250,16 +1263,13 @@ mod _project {
         pub(crate) fn len(&self) -> usize {
             self.as_inner().len()
         }
-    }
 
-    impl<'a, T, I> Ptr<'a, [T], I>
-    where
-        T: 'a,
-        I: Invariants,
-        I::Aliasing: Reference,
-    {
         /// Iteratively projects the elements `Ptr<T>` from `Ptr<[T]>`.
-        pub(crate) fn iter(&self) -> impl Iterator<Item = Ptr<'a, T, I>> {
+        pub(crate) fn iter<W>(&self) -> impl Iterator<Item = Ptr<'a, W, I>>
+        where
+            W: Validity<Inner = T> + SameValidity<W>,
+            I::Aliasing: Reference,
+        {
             // SAFETY:
             // 0. `elem` conforms to the aliasing invariant of `I::Aliasing`
             //    because projection does not impact the aliasing invariant.
@@ -1326,7 +1336,7 @@ mod tests {
                     unsafe fn validate_and_get_len<
                         T: ?Sized + KnownLayout + FromBytes + Immutable,
                     >(
-                        slf: Ptr<'_, T, (Shared, Aligned, Initialized)>,
+                        slf: Ptr<'_, Initialized<T>, (Shared, Aligned)>,
                     ) -> usize {
                         let t = slf.recall_validity().as_ref();
 
