@@ -6,10 +6,17 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use core::{marker::PhantomData, ptr::NonNull};
+use core::{
+    fmt::{Debug, Formatter},
+    marker::PhantomData,
+    ptr::NonNull,
+};
 
 use super::{inner::PtrInner, invariant::*};
-use crate::{CastType, KnownLayout};
+use crate::{
+    util::{AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance},
+    AlignmentError, CastError, CastType, KnownLayout, SizeError, TryFromBytes, ValidityError,
+};
 
 /// Module used to gate access to [`Ptr`]'s fields.
 mod def {
@@ -131,7 +138,6 @@ pub use def::Ptr;
 /// External trait implementations on [`Ptr`].
 mod _external {
     use super::*;
-    use core::fmt::{Debug, Formatter};
 
     /// SAFETY: Shared pointers are safely `Copy`. `Ptr`'s other invariants
     /// (besides aliasing) are unaffected by the number of references that exist
@@ -172,7 +178,6 @@ mod _external {
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
     use super::*;
-    use crate::util::{AlignmentVariance, Covariant, TransparentWrapper, ValidityVariance};
 
     /// `&'a T` → `Ptr<'a, T>`
     impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
@@ -518,7 +523,6 @@ mod _conversions {
 /// State transitions between invariants.
 mod _transitions {
     use super::*;
-    use crate::{AlignmentError, TryFromBytes, ValidityError};
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
@@ -829,7 +833,6 @@ mod _transitions {
 /// Casts of the referent type.
 mod _casts {
     use super::*;
-    use crate::{CastError, SizeError};
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
