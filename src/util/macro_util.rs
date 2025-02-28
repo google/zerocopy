@@ -17,15 +17,21 @@
 
 #![allow(missing_debug_implementations)]
 
-use core::mem::{self, ManuallyDrop};
+use core::{
+    mem::{self, ManuallyDrop},
+    ptr::NonNull,
+};
 
 // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
 // `cfg` when `size_of_val_raw` is stabilized.
 #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
-use core::ptr::{self, NonNull};
+use core::ptr;
 
 use crate::{
-    pointer::invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
+    pointer::{
+        invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
+        TryTransmuteFromPtr,
+    },
     FromBytes, Immutable, IntoBytes, Ptr, TryFromBytes, ValidityError,
 };
 
@@ -548,7 +554,7 @@ pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
 /// [`is_bit_valid`]: TryFromBytes::is_bit_valid
 #[doc(hidden)]
 #[inline]
-fn try_cast_or_pme<Src, Dst, I, R>(
+fn try_cast_or_pme<Src, Dst, I, R, S>(
     src: Ptr<'_, Src, I>,
 ) -> Result<
     Ptr<'_, Dst, (I::Aliasing, invariant::Unaligned, invariant::Valid)>,
@@ -558,7 +564,9 @@ where
     // TODO(#2226): There should be a `Src: FromBytes` bound here, but doing so
     // requires deeper surgery.
     Src: invariant::Read<I::Aliasing, R>,
-    Dst: TryFromBytes + invariant::Read<I::Aliasing, R>,
+    Dst: TryFromBytes
+        + invariant::Read<I::Aliasing, R>
+        + TryTransmuteFromPtr<Dst, I::Aliasing, invariant::Initialized, invariant::Valid, S>,
     I: Invariants<Validity = invariant::Initialized>,
     I::Aliasing: invariant::Reference,
 {
@@ -570,7 +578,7 @@ where
     //   `Src`.
     // - `p as *mut Dst` is a provenance-preserving cast
     #[allow(clippy::as_conversions)]
-    let c_ptr = unsafe { src.cast_unsized(|p| p as *mut Dst) };
+    let c_ptr = unsafe { src.cast_unsized(NonNull::cast::<Dst>) };
 
     match c_ptr.try_into_valid() {
         Ok(ptr) => Ok(ptr),
@@ -584,7 +592,7 @@ where
             //   to the size of `Src`.
             // - `p as *mut Src` is a provenance-preserving cast
             #[allow(clippy::as_conversions)]
-            let ptr = unsafe { ptr.cast_unsized(|p| p as *mut Src) };
+            let ptr = unsafe { ptr.cast_unsized(NonNull::cast::<Src>) };
             // SAFETY: `ptr` is `src`, and has the same alignment invariant.
             let ptr = unsafe { ptr.assume_alignment::<I::Alignment>() };
             // SAFETY: `ptr` is `src` and has the same validity invariant.
@@ -637,8 +645,7 @@ where
     //
     //   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and
     //   ABI as `T`
-    let ptr: Ptr<'_, Dst, _> =
-        unsafe { ptr.cast_unsized(|mu: *mut mem::MaybeUninit<Dst>| mu.cast()) };
+    let ptr: Ptr<'_, Dst, _> = unsafe { ptr.cast_unsized(NonNull::<mem::MaybeUninit<Dst>>::cast) };
 
     if Dst::is_bit_valid(ptr.forget_aligned()) {
         // SAFETY: Since `Dst::is_bit_valid`, we know that `ptr`'s referent is
@@ -672,7 +679,7 @@ where
 {
     let ptr = Ptr::from_ref(src);
     let ptr = ptr.bikeshed_recall_initialized_immutable();
-    match try_cast_or_pme::<Src, Dst, _, BecauseImmutable>(ptr) {
+    match try_cast_or_pme::<Src, Dst, _, BecauseImmutable, _>(ptr) {
         Ok(ptr) => {
             static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
             // SAFETY: We have checked that `Dst` does not have a stricter
@@ -716,7 +723,7 @@ where
 {
     let ptr = Ptr::from_mut(src);
     let ptr = ptr.bikeshed_recall_initialized_from_bytes();
-    match try_cast_or_pme::<Src, Dst, _, BecauseExclusive>(ptr) {
+    match try_cast_or_pme::<Src, Dst, _, BecauseExclusive, _>(ptr) {
         Ok(ptr) => {
             static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
             // SAFETY: We have checked that `Dst` does not have a stricter
@@ -724,7 +731,7 @@ where
             let ptr = unsafe { ptr.assume_alignment::<invariant::Aligned>() };
             Ok(ptr.as_mut())
         }
-        Err(err) => Err(err.map_src(|ptr| ptr.bikeshed_recall_valid().as_mut())),
+        Err(err) => Err(err.map_src(|ptr| ptr.recall_validity().as_mut())),
     }
 }
 

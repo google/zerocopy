@@ -122,8 +122,15 @@ safety_comment! {
     ///   bit pattern 0x01.
     ///
     /// [3] TODO(#429): Justify this claim.
-    unsafe_impl!(bool: TryFromBytes; |byte: MaybeAligned<u8>| *byte.unaligned_as_ref() < 2);
+    unsafe_impl!(=> TryFromBytes for bool; |byte| {
+        let byte = byte.transmute::<u8, invariant::Valid, _>();
+        *byte.unaligned_as_ref() < 2
+    });
 }
+
+unsafe impl pointer::SizeEq<bool> for u8 {}
+unsafe impl pointer::SizeEq<u8> for bool {}
+
 safety_comment! {
     /// SAFETY:
     /// - `Immutable`: `char` self-evidently does not contain any `UnsafeCell`s.
@@ -159,11 +166,16 @@ safety_comment! {
     ///   a `char`.
     ///
     /// [3] TODO(#429): Justify this claim.
-    unsafe_impl!(char: TryFromBytes; |candidate: MaybeAligned<u32>| {
-        let candidate = candidate.read_unaligned::<BecauseImmutable>();
-        char::from_u32(candidate).is_some()
+    unsafe_impl!(=> TryFromBytes for char; |c| {
+        let c = c.transmute::<Unalign<u32>, invariant::Valid, _>();
+        let c = c.read_unaligned().into_inner();
+        char::from_u32(c).is_some()
     });
 }
+
+unsafe impl pointer::SizeEq<char> for Unalign<u32> {}
+unsafe impl pointer::SizeEq<Unalign<u32>> for char {}
+
 safety_comment! {
     /// SAFETY:
     /// Per the Reference [1], `str` has the same layout as `[u8]`.
@@ -200,10 +212,28 @@ safety_comment! {
     /// [2] Per https://doc.rust-lang.org/core/str/fn.from_utf8.html#errors:
     ///
     ///   Returns `Err` if the slice is not UTF-8.
-    unsafe_impl!(str: TryFromBytes; |candidate: MaybeAligned<[u8]>| {
-        let candidate = candidate.unaligned_as_ref();
-        core::str::from_utf8(candidate).is_ok()
+    unsafe_impl!(=> TryFromBytes for str; |c| {
+        let c = c.transmute::<[u8], invariant::Valid, _>();
+        let c = c.unaligned_as_ref();
+        core::str::from_utf8(c).is_ok()
     });
+}
+
+unsafe impl pointer::SizeEq<str> for [u8] {}
+unsafe impl pointer::SizeEq<[u8]> for str {}
+
+macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
+    ($($nonzero:ident[$prim:ty]),*) => {
+        $(
+            unsafe_impl!(=> TryFromBytes for $nonzero; |n| {
+                unsafe impl pointer::SizeEq<$nonzero> for Unalign<$prim> {}
+                unsafe impl pointer::SizeEq<Unalign<$prim>> for $nonzero {}
+
+                let n = n.transmute::<Unalign<$prim>, invariant::Valid, _>();
+                $nonzero::new(n.read_unaligned().into_inner()).is_some()
+            });
+        )*
+    }
 }
 
 safety_comment! {
@@ -271,18 +301,20 @@ safety_comment! {
     ///
     /// [2] `NonZeroXxx` self-evidently does not contain `UnsafeCell`s. This is
     ///     not a proof, but we are accepting this as a known risk per #1358.
-    unsafe_impl!(NonZeroU8: TryFromBytes; |n: MaybeAligned<u8>| NonZeroU8::new(n.read_unaligned::<BecauseImmutable>()).is_some());
-    unsafe_impl!(NonZeroI8: TryFromBytes; |n: MaybeAligned<i8>| NonZeroI8::new(n.read_unaligned::<BecauseImmutable>()).is_some());
-    unsafe_impl!(NonZeroU16: TryFromBytes; |n: MaybeAligned<u16>| NonZeroU16::new(n.read_unaligned::<BecauseImmutable>()).is_some());
-    unsafe_impl!(NonZeroI16: TryFromBytes; |n: MaybeAligned<i16>| NonZeroI16::new(n.read_unaligned::<BecauseImmutable>()).is_some());
-    unsafe_impl!(NonZeroU32: TryFromBytes; |n: MaybeAligned<u32>| NonZeroU32::new(n.read_unaligned::<BecauseImmutable>()).is_some());
-    unsafe_impl!(NonZeroI32: TryFromBytes; |n: MaybeAligned<i32>| NonZeroI32::new(n.read_unaligned::<BecauseImmutable>()).is_some());
-    unsafe_impl!(NonZeroU64: TryFromBytes; |n: MaybeAligned<u64>| NonZeroU64::new(n.read_unaligned::<BecauseImmutable>()).is_some());
-    unsafe_impl!(NonZeroI64: TryFromBytes; |n: MaybeAligned<i64>| NonZeroI64::new(n.read_unaligned::<BecauseImmutable>()).is_some());
-    unsafe_impl!(NonZeroU128: TryFromBytes; |n: MaybeAligned<u128>| NonZeroU128::new(n.read_unaligned::<BecauseImmutable>()).is_some());
-    unsafe_impl!(NonZeroI128: TryFromBytes; |n: MaybeAligned<i128>| NonZeroI128::new(n.read_unaligned::<BecauseImmutable>()).is_some());
-    unsafe_impl!(NonZeroUsize: TryFromBytes; |n: MaybeAligned<usize>| NonZeroUsize::new(n.read_unaligned::<BecauseImmutable>()).is_some());
-    unsafe_impl!(NonZeroIsize: TryFromBytes; |n: MaybeAligned<isize>| NonZeroIsize::new(n.read_unaligned::<BecauseImmutable>()).is_some());
+    unsafe_impl_try_from_bytes_for_nonzero!(
+        NonZeroU8[u8],
+        NonZeroI8[i8],
+        NonZeroU16[u16],
+        NonZeroI16[i16],
+        NonZeroU32[u32],
+        NonZeroI32[i32],
+        NonZeroU64[u64],
+        NonZeroI64[i64],
+        NonZeroU128[u128],
+        NonZeroI128[i128],
+        NonZeroUsize[usize],
+        NonZeroIsize[isize]
+    );
 }
 safety_comment! {
     /// SAFETY:
@@ -358,8 +390,7 @@ safety_comment! {
     #[cfg(feature = "alloc")]
     unsafe_impl!(
         #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
-        T => TryFromBytes for Option<Box<T>>;
-        |c: Maybe<Option<Box<T>>>| pointer::is_zeroed(c)
+        T => TryFromBytes for Option<Box<T>>; |c| pointer::is_zeroed(c)
     );
     #[cfg(feature = "alloc")]
     unsafe_impl!(
@@ -367,29 +398,26 @@ safety_comment! {
         T => FromZeros for Option<Box<T>>
     );
     unsafe_impl!(
-        T => TryFromBytes for Option<&'_ T>;
-        |c: Maybe<Option<&'_ T>>| pointer::is_zeroed(c)
+        T => TryFromBytes for Option<&'_ T>; |c| pointer::is_zeroed(c)
     );
     unsafe_impl!(T => FromZeros for Option<&'_ T>);
     unsafe_impl!(
-            T => TryFromBytes for Option<&'_ mut T>;
-            |c: Maybe<Option<&'_ mut T>>| pointer::is_zeroed(c)
+            T => TryFromBytes for Option<&'_ mut T>; |c| pointer::is_zeroed(c)
     );
     unsafe_impl!(T => FromZeros for Option<&'_ mut T>);
     unsafe_impl!(
-        T => TryFromBytes for Option<NonNull<T>>;
-        |c: Maybe<Option<NonNull<T>>>| pointer::is_zeroed(c)
+        T => TryFromBytes for Option<NonNull<T>>; |c| pointer::is_zeroed(c)
     );
     unsafe_impl!(T => FromZeros for Option<NonNull<T>>);
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_fn!(...));
     unsafe_impl_for_power_set!(
         A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_fn!(...);
-        |c: Maybe<Self>| pointer::is_zeroed(c)
+        |c| pointer::is_zeroed(c)
     );
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_extern_c_fn!(...));
     unsafe_impl_for_power_set!(
         A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_extern_c_fn!(...);
-        |c: Maybe<Self>| pointer::is_zeroed(c)
+        |c| pointer::is_zeroed(c)
     );
 }
 
@@ -417,13 +445,13 @@ mod atomics {
     use super::*;
 
     macro_rules! impl_traits_for_atomics {
-        ($($atomics:ident),* $(,)?) => {
+        ($($atomics:ident [$primitives:ident]),* $(,)?) => {
             $(
                 impl_known_layout!($atomics);
-                impl_for_transparent_wrapper!(=> TryFromBytes for $atomics);
-                impl_for_transparent_wrapper!(=> FromZeros for $atomics);
-                impl_for_transparent_wrapper!(=> FromBytes for $atomics);
-                impl_for_transparent_wrapper!(=> IntoBytes for $atomics);
+                impl_for_transmute_from!(=> TryFromBytes for $atomics [UnsafeCell<$primitives>]);
+                impl_for_transmute_from!(=> FromZeros for $atomics [UnsafeCell<$primitives>]);
+                impl_for_transmute_from!(=> FromBytes for $atomics [UnsafeCell<$primitives>]);
+                impl_for_transmute_from!(=> IntoBytes for $atomics [UnsafeCell<$primitives>]);
             )*
         };
     }
@@ -435,13 +463,13 @@ mod atomics {
 
         use super::*;
 
-        impl_traits_for_atomics!(AtomicU8, AtomicI8);
+        impl_traits_for_atomics!(AtomicU8[u8], AtomicI8[i8]);
 
         impl_known_layout!(AtomicBool);
 
-        impl_for_transparent_wrapper!(=> TryFromBytes for AtomicBool);
-        impl_for_transparent_wrapper!(=> FromZeros for AtomicBool);
-        impl_for_transparent_wrapper!(=> IntoBytes for AtomicBool);
+        impl_for_transmute_from!(=> TryFromBytes for AtomicBool [UnsafeCell<bool>]);
+        impl_for_transmute_from!(=> FromZeros for AtomicBool [UnsafeCell<bool>]);
+        impl_for_transmute_from!(=> IntoBytes for AtomicBool [UnsafeCell<bool>]);
 
         safety_comment! {
             /// SAFETY:
@@ -469,9 +497,28 @@ mod atomics {
             assert_unaligned!(AtomicBool, AtomicU8, AtomicI8);
 
             /// SAFETY:
-            /// All of these pass an atomic type and that type's native equivalent, as
-            /// required by the macro safety preconditions.
-            unsafe_impl_transparent_wrapper_for_atomic!(AtomicU8 [u8], AtomicI8 [i8], AtomicBool [bool]);
+            /// `AtomicU8`, `AtomicI8`, and `AtomicBool` have the same size and
+            /// bit validity as `u8`, `i8`, and `bool` respectively [1][2][3].
+            ///
+            /// [1] Per https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU8.html:
+            ///
+            ///   This type has the same size, alignment, and bit validity as
+            ///   the underlying integer type, `u8`.
+            ///
+            /// [2] Per https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI8.html:
+            ///
+            ///   This type has the same size, alignment, and bit validity as
+            ///   the underlying integer type, `i8`.
+            ///
+            /// [3] Per https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicBool.html:
+            ///
+            ///   This type has the same size, alignment, and bit validity a
+            ///   `bool`.
+            unsafe_impl_transmute_from_for_atomic!(
+                => AtomicU8 [u8],
+                => AtomicI8 [i8],
+                => AtomicBool [bool]
+            );
         }
     }
 
@@ -482,13 +529,23 @@ mod atomics {
 
         use super::*;
 
-        impl_traits_for_atomics!(AtomicU16, AtomicI16);
+        impl_traits_for_atomics!(AtomicU16[u16], AtomicI16[i16]);
 
         safety_comment! {
             /// SAFETY:
-            /// All of these pass an atomic type and that type's native equivalent, as
-            /// required by the macro safety preconditions.
-            unsafe_impl_transparent_wrapper_for_atomic!(AtomicU16 [u16], AtomicI16 [i16]);
+            /// `AtomicU16` and `AtomicI16` have the same size and bit validity
+            /// as `u16` and `i16` respectively [1][2].
+            ///
+            /// [1] Per https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU16.html:
+            ///
+            ///   This type has the same size and bit validity as the underlying
+            ///   integer type, `u16`.
+            ///
+            /// [2] Per https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI16.html:
+            ///
+            ///   This type has the same size and bit validity as the underlying
+            ///   integer type, `i16`.
+            unsafe_impl_transmute_from_for_atomic!(=> AtomicU16 [u16], => AtomicI16 [i16]);
         }
     }
 
@@ -499,13 +556,23 @@ mod atomics {
 
         use super::*;
 
-        impl_traits_for_atomics!(AtomicU32, AtomicI32);
+        impl_traits_for_atomics!(AtomicU32[u32], AtomicI32[i32]);
 
         safety_comment! {
             /// SAFETY:
-            /// All of these pass an atomic type and that type's native equivalent, as
-            /// required by the macro safety preconditions.
-            unsafe_impl_transparent_wrapper_for_atomic!(AtomicU32 [u32], AtomicI32 [i32]);
+            /// `AtomicU32` and `AtomicI32` have the same size and bit validity
+            /// as `u32` and `i32` respectively [1][2].
+            ///
+            /// [1] Per https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU32.html:
+            ///
+            ///   This type has the same size and bit validity as the underlying
+            ///   integer type, `u32`.
+            ///
+            /// [2] Per https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI32.html:
+            ///
+            ///   This type has the same size and bit validity as the underlying
+            ///   integer type, `i32`.
+            unsafe_impl_transmute_from_for_atomic!(=> AtomicU32 [u32], => AtomicI32 [i32]);
         }
     }
 
@@ -516,13 +583,23 @@ mod atomics {
 
         use super::*;
 
-        impl_traits_for_atomics!(AtomicU64, AtomicI64);
+        impl_traits_for_atomics!(AtomicU64[u64], AtomicI64[i64]);
 
         safety_comment! {
             /// SAFETY:
-            /// All of these pass an atomic type and that type's native equivalent, as
-            /// required by the macro safety preconditions.
-            unsafe_impl_transparent_wrapper_for_atomic!(AtomicU64 [u64], AtomicI64 [i64]);
+            /// `AtomicU64` and `AtomicI64` have the same size and bit validity
+            /// as `u64` and `i64` respectively [1][2].
+            ///
+            /// [1] Per https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU64.html:
+            ///
+            ///   This type has the same size and bit validity as the underlying
+            ///   integer type, `u64`.
+            ///
+            /// [2] Per https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI64.html:
+            ///
+            ///   This type has the same size and bit validity as the underlying
+            ///   integer type, `i64`.
+            unsafe_impl_transmute_from_for_atomic!(=> AtomicU64 [u64], => AtomicI64 [i64]);
         }
     }
 
@@ -533,21 +610,34 @@ mod atomics {
 
         use super::*;
 
-        impl_traits_for_atomics!(AtomicUsize, AtomicIsize);
+        impl_traits_for_atomics!(AtomicUsize[usize], AtomicIsize[isize]);
 
         impl_known_layout!(T => AtomicPtr<T>);
 
         // TODO(#170): Implement `FromBytes` and `IntoBytes` once we implement
         // those traits for `*mut T`.
-        impl_for_transparent_wrapper!(T => TryFromBytes for AtomicPtr<T>);
-        impl_for_transparent_wrapper!(T => FromZeros for AtomicPtr<T>);
+        impl_for_transmute_from!(T => TryFromBytes for AtomicPtr<T> [UnsafeCell<*mut T>]);
 
         safety_comment! {
             /// SAFETY:
-            /// This passes an atomic type and that type's native equivalent, as
-            /// required by the macro safety preconditions.
-            unsafe_impl_transparent_wrapper_for_atomic!(AtomicUsize [usize], AtomicIsize [isize]);
-            unsafe_impl_transparent_wrapper_for_atomic!(T => AtomicPtr<T> [*mut T]);
+            /// `AtomicUsize` and `AtomicIsize` have the same size and bit
+            /// validity as `usize` and `isize` respectively [1][2].
+            ///
+            /// [1] Per https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicUsize.html:
+            ///
+            ///   This type has the same size and bit validity as the underlying
+            ///   integer type, `usize`.
+            ///
+            /// [2] Per https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicIsize.html:
+            ///
+            ///   This type has the same size and bit validity as the underlying
+            ///   integer type, `isize`.
+            unsafe_impl_transmute_from_for_atomic!(=> AtomicUsize [usize], => AtomicIsize [isize]);
+            /// SAFETY:
+            /// Per https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicPtr.html:
+            ///
+            ///   This type has the same size and bit validity as a `*mut T`.
+            unsafe_impl_transmute_from_for_atomic!(T => AtomicPtr<T> [*mut T]);
         }
     }
 }
@@ -577,13 +667,30 @@ safety_comment! {
     assert_unaligned!(PhantomData<()>, PhantomData<u8>, PhantomData<u64>);
 }
 
-impl_for_transparent_wrapper!(T: Immutable => Immutable for Wrapping<T>);
-impl_for_transparent_wrapper!(T: TryFromBytes => TryFromBytes for Wrapping<T>);
-impl_for_transparent_wrapper!(T: FromZeros => FromZeros for Wrapping<T>);
-impl_for_transparent_wrapper!(T: FromBytes => FromBytes for Wrapping<T>);
-impl_for_transparent_wrapper!(T: IntoBytes => IntoBytes for Wrapping<T>);
-impl_for_transparent_wrapper!(T: Unaligned => Unaligned for Wrapping<T>);
+impl_for_transmute_from!(T: TryFromBytes => TryFromBytes for Wrapping<T>[<T>]);
+impl_for_transmute_from!(T: FromZeros => FromZeros for Wrapping<T>[<T>]);
+impl_for_transmute_from!(T: FromBytes => FromBytes for Wrapping<T>[<T>]);
+impl_for_transmute_from!(T: IntoBytes => IntoBytes for Wrapping<T>[<T>]);
 assert_unaligned!(Wrapping<()>, Wrapping<u8>);
+
+safety_comment! {
+    /// SAFETY:
+    /// Per [1], `Wrapping<T>` has the same layout as `T`. Since its single
+    /// field (of type `T`) is public, it would be a breaking change to add or
+    /// remove fields. Thus, we know that `Wrapping<T>` contains a `T` (as
+    /// opposed to just having the same size and alignment as `T`) with no pre-
+    /// or post-padding. Thus, `Wrapping<T>` must have `UnsafeCell`s covering
+    /// the same byte ranges as `Inner = T`.
+    ///
+    /// [1] Per https://doc.rust-lang.org/1.81.0/std/num/struct.Wrapping.html#layout-1:
+    ///
+    ///   `Wrapping<T>` is guaranteed to have the same layout and ABI as `T`
+    unsafe_impl!(T: Immutable => Immutable for Wrapping<T>);
+    /// SAFETY:
+    /// Per [1] in the preceding safety comment, `Wrapping<T>` has the same
+    /// alignment as `T`.
+    unsafe_impl!(T: Unaligned => Unaligned for Wrapping<T>);
+}
 
 safety_comment! {
     /// SAFETY:
@@ -592,24 +699,115 @@ safety_comment! {
     unsafe_impl!(T => TryFromBytes for CoreMaybeUninit<T>);
     unsafe_impl!(T => FromZeros for CoreMaybeUninit<T>);
     unsafe_impl!(T => FromBytes for CoreMaybeUninit<T>);
+    /// SAFETY:
+    /// `MaybeUninit<T>` has `UnsafeCell`s covering the same byte ranges as
+    /// `Inner = T`. This is not explicitly documented, but it can be inferred.
+    /// Per [1], `MaybeUninit<T>` has the same size as `T`. Further, note the
+    /// signature of `MaybeUninit::assume_init_ref` [2]:
+    ///
+    ///   pub unsafe fn assume_init_ref(&self) -> &T
+    ///
+    /// If the argument `&MaybeUninit<T>` and the returned `&T` had
+    /// `UnsafeCell`s at different offsets, this would be unsound. Its existence
+    /// is proof that this is not the case.
+    ///
+    /// [1] Per https://doc.rust-lang.org/1.81.0/std/mem/union.MaybeUninit.html#layout-1:
+    ///
+    /// `MaybeUninit<T>` is guaranteed to have the same size, alignment, and ABI
+    /// as `T`.
+    ///
+    /// [2] https://doc.rust-lang.org/1.81.0/std/mem/union.MaybeUninit.html#method.assume_init_ref
+    unsafe_impl!(T: Immutable => Immutable for CoreMaybeUninit<T>);
+    /// SAFETY:
+    /// Per [1] in the preceding safety comment, `MaybeUninit<T>` has the same
+    /// alignment as `T`.
+    unsafe_impl!(T: Unaligned => Unaligned for CoreMaybeUninit<T>);
 }
-
-impl_for_transparent_wrapper!(T: Immutable => Immutable for CoreMaybeUninit<T>);
-impl_for_transparent_wrapper!(T: Unaligned => Unaligned for CoreMaybeUninit<T>);
 assert_unaligned!(CoreMaybeUninit<()>, CoreMaybeUninit<u8>);
 
-impl_for_transparent_wrapper!(T: ?Sized + Immutable => Immutable for ManuallyDrop<T>);
-impl_for_transparent_wrapper!(T: ?Sized + TryFromBytes => TryFromBytes for ManuallyDrop<T>);
-impl_for_transparent_wrapper!(T: ?Sized + FromZeros => FromZeros for ManuallyDrop<T>);
-impl_for_transparent_wrapper!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>);
-impl_for_transparent_wrapper!(T: ?Sized + IntoBytes => IntoBytes for ManuallyDrop<T>);
-impl_for_transparent_wrapper!(T: ?Sized + Unaligned => Unaligned for ManuallyDrop<T>);
+safety_comment! {
+    /// SAFETY:
+    /// `ManuallyDrop<T>` has the same layout as `T` [1]. This strongly implies,
+    /// but does not guarantee, that it contains `UnsafeCell`s covering the same
+    /// byte ranges as in `T`. However, it also implements `Defer<Target = T>`
+    /// [2], which provides the ability to convert `&ManuallyDrop<T> -> &T`.
+    /// This, combined with having the same size as `T`, implies that
+    /// `ManuallyDrop<T>` exactly contains a `T` with the same fields and
+    /// `UnsafeCell`s covering the same byte ranges, or else the `Deref` impl
+    /// would permit safe code to obtain different shared references to the same
+    /// region of memory with different `UnsafeCell` coverage, which would in
+    /// turn permit interior mutation that would violate the invariants of a
+    /// shared reference.
+    ///
+    /// [1] Per https://doc.rust-lang.org/1.85.0/std/mem/struct.ManuallyDrop.html:
+    ///
+    ///   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
+    ///   validity as `T`
+    ///
+    /// [2] https://doc.rust-lang.org/1.85.0/std/mem/struct.ManuallyDrop.html#impl-Deref-for-ManuallyDrop%3CT%3E
+    unsafe_impl!(T: ?Sized + Immutable => Immutable for ManuallyDrop<T>);
+}
+
+// SAFETY: See inline safety comment justifying that the implementation of
+// `is_bit_valid`is sound.
+unsafe impl<T: ?Sized + TryFromBytes> TryFromBytes for ManuallyDrop<T> {
+    #[allow(clippy::missing_inline_in_public_items)]
+    fn only_derive_is_allowed_to_implement_this_trait() {}
+
+    #[inline(always)]
+    fn is_bit_valid<A: crate::pointer::invariant::Reference>(
+        candidate: Maybe<'_, Self, A>,
+    ) -> bool {
+        // SAFETY: `ManuallyDrop<T>` and `T` have the same size [1], so this
+        // cast preserves size. It also preserves provenance.
+        //
+        // [1] Per https://doc.rust-lang.org/1.85.0/std/mem/struct.ManuallyDrop.html:
+        //
+        //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
+        //   validity as `T`
+        let c: Maybe<'_, T, A> = unsafe { candidate.cast_unsized(cast!()) };
+
+        // SAFETY: `ManuallyDrop<T>` and `T` have the same bit validity [1], so
+        // this is a sound implementation of `ManuallyDrop::is_bit_valid`.
+        //
+        // [1] Per https://doc.rust-lang.org/1.85.0/std/mem/struct.ManuallyDrop.html:
+        //
+        //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
+        //   validity as `T`
+        <T as TryFromBytes>::is_bit_valid(c)
+    }
+}
+
+impl_for_transmute_from!(T: ?Sized + FromZeros => FromZeros for ManuallyDrop<T>[<T>]);
+impl_for_transmute_from!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>[<T>]);
+impl_for_transmute_from!(T: ?Sized + IntoBytes => IntoBytes for ManuallyDrop<T>[<T>]);
+safety_comment! {
+    /// SAFETY:
+    /// `ManuallyDrop<T>` has the same layout as `T` [1], and thus has the same
+    /// alignment as `T`.
+    ///
+    /// [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
+    ///
+    ///   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
+    ///   validity as `T`
+    unsafe_impl!(T: ?Sized + Unaligned => Unaligned for ManuallyDrop<T>);
+}
 assert_unaligned!(ManuallyDrop<()>, ManuallyDrop<u8>);
 
-impl_for_transparent_wrapper!(T: ?Sized + FromZeros => FromZeros for UnsafeCell<T>);
-impl_for_transparent_wrapper!(T: ?Sized + FromBytes => FromBytes for UnsafeCell<T>);
-impl_for_transparent_wrapper!(T: ?Sized + IntoBytes => IntoBytes for UnsafeCell<T>);
-impl_for_transparent_wrapper!(T: ?Sized + Unaligned => Unaligned for UnsafeCell<T>);
+impl_for_transmute_from!(T: ?Sized + FromZeros => FromZeros for UnsafeCell<T>[<T>]);
+impl_for_transmute_from!(T: ?Sized + FromBytes => FromBytes for UnsafeCell<T>[<T>]);
+impl_for_transmute_from!(T: ?Sized + IntoBytes => IntoBytes for UnsafeCell<T>[<T>]);
+safety_comment! {
+    /// SAFETY:
+    /// `UnsafeCell<T>` has the same in-memory representation as `T` [1], and
+    /// thus has the same alignment as `T`.
+    ///
+    /// [1] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout:
+    ///
+    ///   `UnsafeCell<T>` has the same in-memory representation as its inner
+    ///   type `T`.
+    unsafe_impl!(T: ?Sized + Unaligned => Unaligned for UnsafeCell<T>);
+}
 assert_unaligned!(UnsafeCell<()>, UnsafeCell<u8>);
 
 // SAFETY: See safety comment in `is_bit_valid` impl.
@@ -673,7 +871,7 @@ safety_comment! {
     ///
     /// [1] https://doc.rust-lang.org/1.81.0/reference/type-layout.html#array-layout
     unsafe_impl!(const N: usize, T: Immutable => Immutable for [T; N]);
-    unsafe_impl!(const N: usize, T: TryFromBytes => TryFromBytes for [T; N]; |c: Maybe<[T; N]>| {
+    unsafe_impl!(const N: usize, T: TryFromBytes => TryFromBytes for [T; N]; |c| {
         // Note that this call may panic, but it would still be sound even if it
         // did. `is_bit_valid` does not promise that it will not panic (in fact,
         // it explicitly warns that it's a possibility), and we have not
@@ -686,7 +884,7 @@ safety_comment! {
     unsafe_impl!(const N: usize, T: Unaligned => Unaligned for [T; N]);
     assert_unaligned!([(); 0], [(); 1], [u8; 0], [u8; 1]);
     unsafe_impl!(T: Immutable => Immutable for [T]);
-    unsafe_impl!(T: TryFromBytes => TryFromBytes for [T]; |c: Maybe<[T]>| {
+    unsafe_impl!(T: TryFromBytes => TryFromBytes for [T]; |c| {
         // SAFETY: Per the reference [1]:
         //
         //   An array of `[T; N]` has a size of `size_of::<T>() * N` and the
@@ -733,13 +931,9 @@ safety_comment! {
     /// documentation once this PR lands.
     unsafe_impl!(T: ?Sized => Immutable for *const T);
     unsafe_impl!(T: ?Sized => Immutable for *mut T);
-    unsafe_impl!(T => TryFromBytes for *const T; |c: Maybe<*const T>| {
-        pointer::is_zeroed(c)
-    });
+    unsafe_impl!(T => TryFromBytes for *const T; |c| pointer::is_zeroed(c));
     unsafe_impl!(T => FromZeros for *const T);
-    unsafe_impl!(T => TryFromBytes for *mut T; |c: Maybe<*const T>| {
-        pointer::is_zeroed(c)
-    });
+    unsafe_impl!(T => TryFromBytes for *mut T; |c| pointer::is_zeroed(c));
     unsafe_impl!(T => FromZeros for *mut T);
 }
 

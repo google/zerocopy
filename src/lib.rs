@@ -387,7 +387,7 @@ use core::alloc::Layout;
 
 // Used by `TryFromBytes::is_bit_valid`.
 #[doc(hidden)]
-pub use crate::pointer::{invariant::BecauseImmutable, Maybe, MaybeAligned, Ptr};
+pub use crate::pointer::{invariant::BecauseImmutable, Maybe, Ptr};
 // Used by `KnownLayout`.
 #[doc(hidden)]
 pub use crate::layout::*;
@@ -804,6 +804,17 @@ pub unsafe trait KnownLayout {
         // SAFETY: `size_for_metadata` promises to only return `None` if the
         // resulting size would not fit in a `usize`.
         meta.size_for_metadata(Self::LAYOUT)
+    }
+
+    #[doc(hidden)]
+    #[must_use]
+    #[inline(always)]
+    fn cast_from_raw<P: KnownLayout<PointerMetadata = Self::PointerMetadata> + ?Sized>(
+        ptr: NonNull<P>,
+    ) -> NonNull<Self> {
+        let data = ptr.cast::<u8>();
+        let meta = P::pointer_to_metadata(ptr.as_ptr());
+        Self::raw_from_ptr_len(data, meta)
     }
 }
 
@@ -2843,29 +2854,43 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
     // We use `from_mut` despite not mutating via `c_ptr` so that we don't need
     // to add a `T: Immutable` bound.
     let c_ptr = Ptr::from_mut(&mut candidate);
-    let c_ptr = c_ptr.transparent_wrapper_into_inner();
     // SAFETY: `c_ptr` has no uninitialized sub-ranges because it derived from
     // `candidate`, which the caller promises is entirely initialized. Since
     // `candidate` is a `MaybeUninit`, it has no validity requirements, and so
-    // no values written to `c_ptr` can violate its validity. Since `c_ptr` has
-    // `Exclusive` aliasing, no mutations may happen except via `c_ptr` so long
-    // as it is live, so we don't need to worry about the fact that `c_ptr` may
-    // have more restricted validity than `candidate`.
+    // no values written to an `Initialized` `c_ptr` can violate its validity.
+    // Since `c_ptr` has `Exclusive` aliasing, no mutations may happen except
+    // via `c_ptr` so long as it is live, so we don't need to worry about the
+    // fact that `c_ptr` may have more restricted validity than `candidate`.
     let c_ptr = unsafe { c_ptr.assume_validity::<invariant::Initialized>() };
+    let c_ptr = c_ptr.transmute();
 
-    // This call may panic. If that happens, it doesn't cause any soundness
-    // issues, as we have not generated any invalid state which we need to
-    // fix before returning.
+    // Since we don't have `T: KnownLayout`, we hack around that by using
+    // `Wrapping<T>`, which implements `KnownLayout` even if `T` doesn't.
     //
-    // Note that one panic or post-monomorphization error condition is
-    // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
-    // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
-    // condition will not happen.
-    if !T::is_bit_valid(c_ptr.forget_aligned()) {
+    // This call may panic. If that happens, it doesn't cause any soundness
+    // issues, as we have not generated any invalid state which we need to fix
+    // before returning.
+    //
+    // Note that one panic or post-monomorphization error condition is calling
+    // `try_into_valid` (and thus `is_bit_valid`) with a shared pointer when
+    // `Self: !Immutable`. Since `Self: Immutable`, this panic condition will
+    // not happen.
+    if !Wrapping::<T>::is_bit_valid(c_ptr.forget_aligned()) {
         return Err(ValidityError::new(source).into());
     }
 
-    // SAFETY: We just validated that `candidate` contains a valid `T`.
+    fn _assert_same_size_and_validity<T>()
+    where
+        Wrapping<T>: pointer::TransmuteFrom<T, invariant::Valid, invariant::Valid>,
+        T: pointer::TransmuteFrom<Wrapping<T>, invariant::Valid, invariant::Valid>,
+    {
+    }
+
+    _assert_same_size_and_validity::<T>();
+
+    // SAFETY: We just validated that `candidate` contains a valid
+    // `Wrapping<T>`, which has the same size and bit validity as `T`, as
+    // guaranteed by the preceding type assertion.
     Ok(unsafe { candidate.assume_init() })
 }
 
@@ -3552,7 +3577,7 @@ pub unsafe trait FromBytes: FromZeros {
     {
         static_assert_dst_is_not_zst!(Self);
         match Ptr::from_ref(source).try_cast_into_no_leftover::<_, BecauseImmutable>(None) {
-            Ok(ptr) => Ok(ptr.bikeshed_recall_valid().as_ref()),
+            Ok(ptr) => Ok(ptr.recall_validity().as_ref()),
             Err(err) => Err(err.map_src(|src| src.as_ref())),
         }
     }
@@ -3788,7 +3813,7 @@ pub unsafe trait FromBytes: FromZeros {
     {
         static_assert_dst_is_not_zst!(Self);
         match Ptr::from_mut(source).try_cast_into_no_leftover::<_, BecauseExclusive>(None) {
-            Ok(ptr) => Ok(ptr.bikeshed_recall_valid().as_mut()),
+            Ok(ptr) => Ok(ptr.recall_validity().as_mut()),
             Err(err) => Err(err.map_src(|src| src.as_mut())),
         }
     }
@@ -4027,7 +4052,7 @@ pub unsafe trait FromBytes: FromZeros {
         let source = Ptr::from_ref(source);
         let maybe_slf = source.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
         match maybe_slf {
-            Ok(slf) => Ok(slf.bikeshed_recall_valid().as_ref()),
+            Ok(slf) => Ok(slf.recall_validity().as_ref()),
             Err(err) => Err(err.map_src(|s| s.as_ref())),
         }
     }
@@ -4258,7 +4283,9 @@ pub unsafe trait FromBytes: FromZeros {
         let source = Ptr::from_mut(source);
         let maybe_slf = source.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
         match maybe_slf {
-            Ok(slf) => Ok(slf.bikeshed_recall_valid().as_mut()),
+            Ok(slf) => Ok(slf
+                .recall_validity::<_, (_, (_, (BecauseExclusive, BecauseExclusive)))>()
+                .as_mut()),
             Err(err) => Err(err.map_src(|s| s.as_mut())),
         }
     }
@@ -4716,7 +4743,7 @@ fn ref_from_prefix_suffix<T: FromBytes + KnownLayout + Immutable + ?Sized>(
     let (slf, prefix_suffix) = Ptr::from_ref(source)
         .try_cast_into::<_, BecauseImmutable>(cast_type, meta)
         .map_err(|err| err.map_src(|s| s.as_ref()))?;
-    Ok((slf.bikeshed_recall_valid().as_ref(), prefix_suffix.as_ref()))
+    Ok((slf.recall_validity().as_ref(), prefix_suffix.as_ref()))
 }
 
 /// Interprets the given affix of the given bytes as a `&mut Self` without
@@ -4728,7 +4755,7 @@ fn ref_from_prefix_suffix<T: FromBytes + KnownLayout + Immutable + ?Sized>(
 /// If there are insufficient bytes, or if that affix of `source` is not
 /// appropriately aligned, this returns `Err`.
 #[inline(always)]
-fn mut_from_prefix_suffix<T: FromBytes + KnownLayout + ?Sized>(
+fn mut_from_prefix_suffix<T: FromBytes + IntoBytes + KnownLayout + ?Sized>(
     source: &mut [u8],
     meta: Option<T::PointerMetadata>,
     cast_type: CastType,
@@ -4736,7 +4763,7 @@ fn mut_from_prefix_suffix<T: FromBytes + KnownLayout + ?Sized>(
     let (slf, prefix_suffix) = Ptr::from_mut(source)
         .try_cast_into::<_, BecauseExclusive>(cast_type, meta)
         .map_err(|err| err.map_src(|s| s.as_mut()))?;
-    Ok((slf.bikeshed_recall_valid().as_mut(), prefix_suffix.as_mut()))
+    Ok((slf.recall_validity().as_mut(), prefix_suffix.as_mut()))
 }
 
 /// Analyzes whether a type is [`IntoBytes`].

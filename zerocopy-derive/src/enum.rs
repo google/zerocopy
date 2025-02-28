@@ -329,7 +329,7 @@ pub(crate) fn derive_is_bit_valid(
                 // is `Initialized`. Since we have not written uninitialized
                 // bytes into the referent, `tag_ptr` is also `Initialized`.
                 let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                tag_ptr.bikeshed_recall_valid().read_unaligned::<::zerocopy::BecauseImmutable>()
+                tag_ptr.recall_validity().read_unaligned::<::zerocopy::BecauseImmutable>()
             };
 
             // SAFETY:
