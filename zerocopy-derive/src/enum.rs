@@ -361,7 +361,7 @@ pub(crate) fn derive_is_bit_valid(
             //   subfield pointer just points to a smaller portion of the
             //   overall struct.
             let variants = unsafe {
-                raw_enum.project(|p: *mut ___ZerocopyRawEnum #ty_generics| {
+                raw_enum.cast_unsized_unchecked(|p: *mut ___ZerocopyRawEnum #ty_generics| {
                     core_reexport::ptr::addr_of_mut!((*p).variants)
                 })
             };

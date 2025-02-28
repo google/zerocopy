@@ -1164,38 +1164,6 @@ mod _casts {
 mod _project {
     use super::*;
 
-    impl<'a, T, I> Ptr<'a, T, I>
-    where
-        T: 'a + ?Sized,
-        I: Invariants<Validity = Initialized>,
-    {
-        /// Projects a field from `self`.
-        ///
-        /// # Safety
-        ///
-        /// `project` has the same safety preconditions as
-        /// `cast_unsized_unchecked`.
-        #[doc(hidden)]
-        #[inline]
-        pub unsafe fn project<U: 'a + ?Sized>(
-            self,
-            projector: impl FnOnce(*mut T) -> *mut U,
-        ) -> Ptr<'a, U, (I::Aliasing, Unaligned, Initialized)> {
-            // TODO(#1122): If `cast_unsized` were able to reason that, when
-            // casting from an `Initialized` pointer, the result is another
-            // `Initialized` pointer, we could remove this method entirely.
-
-            // SAFETY: This method has the same safety preconditions as
-            // `cast_unsized_unchecked`.
-            let ptr = unsafe { self.cast_unsized_unchecked(projector) };
-
-            // SAFETY: If all of the bytes of `self` are initialized (as
-            // promised by `I: Invariants<Validity = Initialized>`), then any
-            // subset of those bytes are also all initialized.
-            unsafe { ptr.assume_validity::<Initialized>() }
-        }
-    }
-
     impl<'a, T, I> Ptr<'a, [T], I>
     where
         T: 'a,
