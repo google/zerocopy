@@ -555,10 +555,10 @@ pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
 #[doc(hidden)]
 #[inline]
 fn try_cast_or_pme<Src, Dst, I, R, S>(
-    src: Ptr<'_, Src, I>,
+    src: Ptr<'_, invariant::Initialized<Src>, I>,
 ) -> Result<
-    Ptr<'_, Dst, (I::Aliasing, invariant::Unaligned, invariant::Valid)>,
-    ValidityError<Ptr<'_, Src, I>, Dst>,
+    Ptr<'_, invariant::Valid<Dst>, (I::Aliasing, invariant::Unaligned)>,
+    ValidityError<Ptr<'_, invariant::Initialized<Src>, I>, Dst>,
 >
 where
     // TODO(#2226): There should be a `Src: FromBytes` bound here, but doing so

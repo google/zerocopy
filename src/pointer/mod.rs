@@ -17,10 +17,7 @@ mod transmute;
 #[doc(hidden)]
 pub(crate) use transmute::*;
 #[doc(hidden)]
-pub use {
-    invariant::{BecauseExclusive, BecauseImmutable, Read},
-    ptr::Ptr,
-};
+pub use {invariant::*, ptr::Ptr};
 
 use crate::Unaligned;
 
@@ -28,44 +25,43 @@ use crate::Unaligned;
 /// to [`TryFromBytes::is_bit_valid`].
 ///
 /// [`TryFromBytes::is_bit_valid`]: crate::TryFromBytes::is_bit_valid
-pub type Maybe<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Unaligned> =
-    Ptr<'a, T, (Aliasing, Alignment, invariant::Initialized)>;
+pub type Maybe<'a, T, Aliasing = Shared, Alignment = Unaligned> =
+    Ptr<'a, Initialized<T>, (Aliasing, Alignment)>;
 
 /// A semi-user-facing wrapper type representing a maybe-aligned reference, for
 /// use in [`TryFromBytes::is_bit_valid`].
 ///
 /// [`TryFromBytes::is_bit_valid`]: crate::TryFromBytes::is_bit_valid
-pub type MaybeAligned<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Unaligned> =
-    Ptr<'a, T, (Aliasing, Alignment, invariant::Valid)>;
+pub type MaybeAligned<'a, T, Aliasing = Shared, Alignment = Unaligned> =
+    Ptr<'a, Valid<T>, (Aliasing, Alignment)>;
 
 // These methods are defined on the type alias, `MaybeAligned`, so as to bring
 // them to the forefront of the rendered rustdoc for that type alias.
-impl<'a, T, Aliasing, Alignment> MaybeAligned<'a, T, Aliasing, Alignment>
+impl<'a, T, A, AA> MaybeAligned<'a, T, A, AA>
 where
     T: 'a + ?Sized,
-    Aliasing: invariant::Aliasing,
-    Alignment: invariant::Alignment,
+    A: Aliasing,
+    AA: Alignment,
 {
     /// Reads the value from `MaybeAligned`.
     #[must_use]
     #[inline]
     pub fn read_unaligned<R>(self) -> T
     where
-        T: Copy,
-        T: invariant::Read<Aliasing, R>,
+        T: Read<A, R> + Copy,
     {
         // SAFETY: By invariant on `MaybeAligned`, `self` contains
-        // validly-initialized data for `T`. By `T: Read<Aliasing>`, we are
-        // permitted to perform a read of `self`'s referent.
+        // validly-initialized data for `T`. By `T: Read<A>`, we are permitted
+        // to perform a read of `self`'s referent.
         unsafe { self.as_inner().read_unaligned() }
     }
 }
 
-impl<'a, T, Aliasing, Alignment> MaybeAligned<'a, T, Aliasing, Alignment>
+impl<'a, T, A, AA> MaybeAligned<'a, T, A, AA>
 where
     T: 'a + ?Sized,
-    Aliasing: invariant::Reference,
-    Alignment: invariant::Alignment,
+    A: Reference,
+    AA: Alignment,
 {
     /// Views the value as an aligned reference.
     ///
@@ -74,18 +70,18 @@ where
     #[inline]
     pub fn unaligned_as_ref(self) -> &'a T
     where
-        T: Unaligned,
+        T: crate::Unaligned,
     {
         self.bikeshed_recall_aligned().as_ref()
     }
 }
 
 /// Checks if the referent is zeroed.
-pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
+pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, Initialized<T>, I>) -> bool
 where
-    T: crate::Immutable + crate::KnownLayout,
-    I: invariant::Invariants<Validity = invariant::Initialized>,
-    I::Aliasing: invariant::Reference,
+    T: crate::Immutable + crate::KnownLayout + ?Sized,
+    I: Invariants,
+    I::Aliasing: Reference,
 {
     ptr.as_bytes::<BecauseImmutable>().as_ref().iter().all(|&byte| byte == 0)
 }

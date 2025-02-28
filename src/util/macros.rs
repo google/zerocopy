@@ -234,7 +234,7 @@ macro_rules! unsafe_impl_transmute_from_for_atomic {
                 unsafe impl TransmuteFrom<$atomic, Valid, Valid> for $prim {}
                 unsafe impl TransmuteFrom<$prim, Valid, Valid> for $atomic {}
             )*
-        }; 
+        };
     };
     ($($tyvar:ident => $atomic:ty [$prim:ty]),*) => {
         const _: () = {
@@ -244,7 +244,7 @@ macro_rules! unsafe_impl_transmute_from_for_atomic {
                 unsafe impl<$tyvar> TransmuteFrom<$atomic, Valid, Valid> for $prim {}
                 unsafe impl<$tyvar> TransmuteFrom<$prim, Valid, Valid> for $atomic {}
             )*
-        }; 
+        };
     }
 }
 

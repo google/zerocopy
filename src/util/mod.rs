@@ -24,7 +24,7 @@ use zerocopy_derive::TryFromBytes;
 
 use crate::{
     error::AlignmentError,
-    pointer::invariant::{self, Invariants},
+    pointer::invariant::{self, Invariants, Validity},
     KnownLayout, Unalign,
 };
 
@@ -49,11 +49,11 @@ use crate::{
 /// [`T::ValidityVariance`]: TransparentWrapper::ValidityVariance
 #[doc(hidden)]
 pub unsafe trait TransparentWrapper<I: Invariants> {
-    type Inner: ?Sized;
+    type Inner: Validity;
 
     type UnsafeCellVariance;
     type AlignmentVariance: AlignmentVariance<I::Alignment>;
-    type ValidityVariance: ValidityVariance<I::Validity>;
+    type ValidityVariance: ValidityVariance<Self::Inner>;
 
     /// Casts a wrapper pointer to an inner pointer.
     ///
@@ -61,7 +61,7 @@ pub unsafe trait TransparentWrapper<I: Invariants> {
     ///
     /// The resulting pointer has the same address and provenance as `ptr`, and
     /// addresses the same number of bytes.
-    fn cast_into_inner(ptr: NonNull<Self>) -> NonNull<Self::Inner>;
+    fn cast_into_inner(ptr: NonNull<Self>) -> NonNull<<Self::Inner as Validity>::Inner>;
 
     /// Casts an inner pointer to a wrapper pointer.
     ///
@@ -69,7 +69,7 @@ pub unsafe trait TransparentWrapper<I: Invariants> {
     ///
     /// The resulting pointer has the same address and provenance as `ptr`, and
     /// addresses the same number of bytes.
-    fn cast_from_inner(ptr: NonNull<Self::Inner>) -> NonNull<Self>;
+    fn cast_from_inner(ptr: NonNull<<Self::Inner as Validity>::Inner>) -> NonNull<Self>;
 }
 
 #[allow(unreachable_pub)]
@@ -81,7 +81,7 @@ pub trait AlignmentVariance<I: invariant::Alignment> {
 #[allow(unreachable_pub)]
 #[doc(hidden)]
 pub trait ValidityVariance<I: invariant::Validity> {
-    type Applied: invariant::Validity;
+    type Applied: invariant::Validity<Inner = I::Inner>;
 }
 
 #[doc(hidden)]
@@ -105,7 +105,7 @@ impl<I: invariant::Alignment> AlignmentVariance<I> for Invariant {
 }
 
 impl<I: invariant::Validity> ValidityVariance<I> for Invariant {
-    type Applied = invariant::Uninit;
+    type Applied = invariant::Uninit<I::Inner>;
 }
 
 // SAFETY:
