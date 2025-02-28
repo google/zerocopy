@@ -42,7 +42,48 @@ pub trait Aliasing: Sealed {
 pub trait Alignment: Sealed {}
 
 /// The validity invariant of a [`Ptr`][super::Ptr].
-pub trait Validity: Sealed {}
+///
+/// # Safety
+///
+/// In this section, we will use `Ptr<T, V>` as a shorthand for `Ptr<T, I:
+/// Invariants<Validity = V>>` for brevity.
+///
+/// Each `V: Validity` defines a set of bit values which may appear in the
+/// referent of a `Ptr<T, V>`, denoted `S(T, V)`. Each `V: Validity`, in its
+/// documentation, provides a definition of `S(T, V)` which must be valid for
+/// all `T: ?Sized`. Any `V: Validity` must guarantee that this set is only a
+/// function of the *bit validity* of the referent type, `T`, and not of any
+/// other property of `T`. As a consequence, given `V: Validity`, `T`, and `U`
+/// where `T` and `U` have the same bit validity, `S(V, T) = S(V, U)`.
+///
+/// It is guaranteed that the referent of any `ptr: Ptr<T, V>` is a member of
+/// `S(T, V)`. Unsafe code must ensure that this guarantee will be upheld for
+/// any existing `Ptr`s or any `Ptr`s that that code creates.
+///
+/// An important implication of this guarantee is that it restricts what
+/// transmutes are sound, where "transmute" is used in this context to refer to
+/// changing the referent type or validity invariant of a `Ptr`, as either
+/// change may change the set of bit values permitted to appear in the referent.
+/// In particular, the following are necessary (but not sufficient) conditions
+/// in order for a transmute from `src: Ptr<T, V>` to `dst: Ptr<U, W>` to be
+/// sound:
+/// - If `S(T, V) = S(U, W)`, then no restrictions apply; otherwise,
+/// - If `dst` permits mutation of its referent (e.g. via `Exclusive` aliasing
+///   or interior mutation under `Shared` aliasing), then it must hold that
+///   `S(T, V) ⊇ S(U, W)` - in other words, the transmute must not expand the
+///   set of allowed referent bit patterns. A violation of this requirement
+///   would permit using `dst` to write `x` where `x ∈ S(U, W)` but `x ∉ S(T,
+///   V)`, which would violate the guarantee that `src`'s referent may only
+///   contain values in `S(T, V)`.
+/// - If the referent may be mutated without going through `dst` while `dst` is
+///   live (e.g. via interior mutation on a `Shared`-aliased `Ptr` or `&`
+///   reference), then it must hold that `S(T, V) ⊆ S(U, W)` - in other words,
+///   the transmute must not shrink the set of allowed referent bit patterns. A
+///   violation of this requirement would permit using `src` or another
+///   mechanism (e.g. a `&` reference used to derive `src`) to write `x` where
+///   `x ∈ S(T, V)` but `x ∉ S(U, W)`, which would violate the guarantee that
+///   `dst`'s referent may only contain values in `S(U, W)`.
+pub unsafe trait Validity: Sealed {}
 
 /// An [`Aliasing`] invariant which is either [`Shared`] or [`Exclusive`].
 ///
@@ -90,9 +131,14 @@ impl Alignment for Aligned {}
 /// Any bit pattern is allowed in the `Ptr`'s referent, including uninitialized
 /// bytes.
 pub enum Uninit {}
-impl Validity for Uninit {}
+// SAFETY: `Uninit`'s validity is well-defined for all `T: ?Sized`, and is not a
+// function of any property of `T` other than its bit validity (in fact, it's
+// not even a property of `T`'s bit validity, but this is more than we are
+// required to uphold).
+unsafe impl Validity for Uninit {}
 
-/// The byte ranges initialized in `T` are also initialized in the referent.
+/// The byte ranges initialized in `T` are also initialized in the referent of a
+/// `Ptr<T>`.
 ///
 /// Formally: uninitialized bytes may only be present in `Ptr<T>`'s referent
 /// where they are guaranteed to be present in `T`. This is a dynamic property:
@@ -119,16 +165,24 @@ impl Validity for Uninit {}
 ///   enum type, in which case the same rules apply depending on the state of
 ///   its discriminant, and so on recursively).
 pub enum AsInitialized {}
-impl Validity for AsInitialized {}
+// SAFETY: `AsInitialized`'s validity is well-defined for all `T: ?Sized`, and
+// is not a function of any property of `T` other than its bit validity.
+unsafe impl Validity for AsInitialized {}
 
 /// The byte ranges in the referent are fully initialized. In other words, if
 /// the referent is `N` bytes long, then it contains a bit-valid `[u8; N]`.
 pub enum Initialized {}
-impl Validity for Initialized {}
+// SAFETY: `Initialized`'s validity is well-defined for all `T: ?Sized`, and is
+// not a function of any property of `T` other than its bit validity (in fact,
+// it's not even a property of `T`'s bit validity, but this is more than we are
+// required to uphold).
+unsafe impl Validity for Initialized {}
 
-/// The referent is bit-valid for `T`.
+/// The referent of a `Ptr<T>` is bit-valid for `T`.
 pub enum Valid {}
-impl Validity for Valid {}
+// SAFETY: `Valid`'s validity is well-defined for all `T: ?Sized`, and is not a
+// function of any property of `T` other than its bit validity.
+unsafe impl Validity for Valid {}
 
 /// # Safety
 ///

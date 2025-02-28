@@ -101,19 +101,11 @@ safety_comment! {
     ///   - Given `t: *mut bool` and `let r = *mut u8`, `r` refers to an object
     ///     of the same size as that referred to by `t`. This is true because
     ///     `bool` and `u8` have the same size (1 byte) [1]. Neither `r` nor `t`
-    ///     contain `UnsafeCell`s because neither `bool` nor `u8` do [4].
-    ///   - Since the closure takes a `&u8` argument, given a `Maybe<'a,
-    ///     bool>` which satisfies the preconditions of
-    ///     `TryFromBytes::<bool>::is_bit_valid`, it must be guaranteed that the
-    ///     memory referenced by that `MaybeValid` always contains a valid `u8`.
-    ///     Since `bool`'s single byte is always initialized, `is_bit_valid`'s
-    ///     precondition requires that the same is true of its argument. Since
-    ///     `u8`'s only bit validity invariant is that its single byte must be
-    ///     initialized, this memory is guaranteed to contain a valid `u8`.
+    ///     contain `UnsafeCell`s because neither `bool` nor `u8` do [3].
     ///   - The impl must only return `true` for its argument if the original
-    ///     `Maybe<bool>` refers to a valid `bool`. We only return true if
-    ///     the `u8` value is 0 or 1, and both of these are valid values for
-    ///     `bool`. [3]
+    ///     `Maybe<bool>` refers to a valid `bool`. We only return true if the
+    ///     `u8` value is 0 or 1, and both of these are valid values for `bool`.
+    ///     [2]
     ///
     /// [1] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#primitive-data-layout:
     ///
@@ -124,16 +116,12 @@ safety_comment! {
     ///   | `bool`    | 1                    |
     ///   | `u8`/`i8` | 1                    |
     ///
-    /// [2] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#size-and-alignment:
-    ///
-    ///   The size of a value is always a multiple of its alignment.
-    ///
-    /// [3] Per https://doc.rust-lang.org/1.81.0/reference/types/boolean.html:
+    /// [2] Per https://doc.rust-lang.org/1.81.0/reference/types/boolean.html:
     ///
     ///   The value false has the bit pattern 0x00 and the value true has the
     ///   bit pattern 0x01.
     ///
-    /// [4] TODO(#429): Justify this claim.
+    /// [3] TODO(#429): Justify this claim.
     unsafe_impl!(bool: TryFromBytes; |byte: MaybeAligned<u8>| *byte.unaligned_as_ref() < 2);
 }
 safety_comment! {
@@ -155,20 +143,10 @@ safety_comment! {
     ///   - Given `t: *mut char` and `let r = *mut u32`, `r` refers to an object
     ///     of the same size as that referred to by `t`. This is true because
     ///     `char` and `u32` have the same size [1]. Neither `r` nor `t` contain
-    ///     `UnsafeCell`s because neither `char` nor `u32` do [4].
-    ///   - Since the closure takes a `&u32` argument, given a `Maybe<'a,
-    ///     char>` which satisfies the preconditions of
-    ///     `TryFromBytes::<char>::is_bit_valid`, it must be guaranteed that the
-    ///     memory referenced by that `MaybeValid` always contains a valid
-    ///     `u32`. Since `char`'s bytes are always initialized [2],
-    ///     `is_bit_valid`'s precondition requires that the same is true of its
-    ///     argument. Since `u32`'s only bit validity invariant is that its
-    ///     bytes must be initialized, this memory is guaranteed to contain a
-    ///     valid `u32`.
+    ///     `UnsafeCell`s because neither `char` nor `u32` do [3].
     ///   - The impl must only return `true` for its argument if the original
-    ///     `Maybe<char>` refers to a valid `char`. `char::from_u32`
-    ///     guarantees that it returns `None` if its input is not a valid
-    ///     `char`. [3]
+    ///     `Maybe<char>` refers to a valid `char`. `char::from_u32` guarantees
+    ///     that it returns `None` if its input is not a valid `char`. [2]
     ///
     /// [1] Per https://doc.rust-lang.org/nightly/reference/types/textual.html#layout-and-bit-validity:
     ///
@@ -177,14 +155,10 @@ safety_comment! {
     ///
     /// [2] Per https://doc.rust-lang.org/core/primitive.char.html#method.from_u32:
     ///
-    ///   Every byte of a `char` is guaranteed to be initialized.
-    ///
-    /// [3] Per https://doc.rust-lang.org/core/primitive.char.html#method.from_u32:
-    ///
     ///   `from_u32()` will return `None` if the input is not a valid value for
     ///   a `char`.
     ///
-    /// [4] TODO(#429): Justify this claim.
+    /// [3] TODO(#429): Justify this claim.
     unsafe_impl!(char: TryFromBytes; |candidate: MaybeAligned<u32>| {
         let candidate = candidate.read_unaligned::<BecauseImmutable>();
         char::from_u32(candidate).is_some()
@@ -215,19 +189,9 @@ safety_comment! {
     ///     `str` and `[u8]` have the same representation. [1] Neither `t` nor
     ///     `r` contain `UnsafeCell`s because `[u8]` doesn't, and both `t` and
     ///     `r` have that representation.
-    ///   - Since the closure takes a `&[u8]` argument, given a `Maybe<'a,
-    ///     str>` which satisfies the preconditions of
-    ///     `TryFromBytes::<str>::is_bit_valid`, it must be guaranteed that the
-    ///     memory referenced by that `MaybeValid` always contains a valid
-    ///     `[u8]`. Since `str`'s bytes are always initialized [1],
-    ///     `is_bit_valid`'s precondition requires that the same is true of its
-    ///     argument. Since `[u8]`'s only bit validity invariant is that its
-    ///     bytes must be initialized, this memory is guaranteed to contain a
-    ///     valid `[u8]`.
     ///   - The impl must only return `true` for its argument if the original
-    ///     `Maybe<str>` refers to a valid `str`. `str::from_utf8`
-    ///     guarantees that it returns `Err` if its input is not a valid `str`.
-    ///     [2]
+    ///     `Maybe<str>` refers to a valid `str`. `str::from_utf8` guarantees
+    ///     that it returns `Err` if its input is not a valid `str`. [2]
     ///
     /// [1] Per https://doc.rust-lang.org/1.81.0/reference/types/textual.html:
     ///
@@ -296,18 +260,9 @@ safety_comment! {
     ///     because `NonZeroXxx` and `xxx` have the same size. [1] Neither `r`
     ///     nor `t` refer to any `UnsafeCell`s because neither `NonZeroXxx` [2]
     ///     nor `xxx` do.
-    ///   - Since the closure takes a `&xxx` argument, given a `Maybe<'a,
-    ///     NonZeroXxx>` which satisfies the preconditions of
-    ///     `TryFromBytes::<NonZeroXxx>::is_bit_valid`, it must be guaranteed
-    ///     that the memory referenced by that `MabyeValid` always contains a
-    ///     valid `xxx`. Since `NonZeroXxx`'s bytes are always initialized [1],
-    ///     `is_bit_valid`'s precondition requires that the same is true of its
-    ///     argument. Since `xxx`'s only bit validity invariant is that its
-    ///     bytes must be initialized, this memory is guaranteed to contain a
-    ///     valid `xxx`.
     ///   - The impl must only return `true` for its argument if the original
-    ///     `Maybe<NonZeroXxx>` refers to a valid `NonZeroXxx`. The only
-    ///     `xxx` which is not also a valid `NonZeroXxx` is 0. [1]
+    ///     `Maybe<NonZeroXxx>` refers to a valid `NonZeroXxx`. The only `xxx`
+    ///     which is not also a valid `NonZeroXxx` is 0. [1]
     ///
     /// [1] Per https://doc.rust-lang.org/1.81.0/core/num/type.NonZeroU16.html:
     ///
