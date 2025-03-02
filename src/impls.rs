@@ -683,7 +683,7 @@ unsafe impl<T: TryFromBytes + ?Sized> TryFromBytes for UnsafeCell<T> {
         // that if we make a mistake, it will cause downstream code to fail to
         // compile, which will immediately surface the mistake and give us a
         // chance to fix it quickly.
-        let c = candidate.into_exclusive_or_post_monomorphization_error();
+        let c = candidate.into_exclusive_or_pme();
 
         // SAFETY: Since `UnsafeCell<T>` and `T` have the same layout and bit
         // validity, `UnsafeCell<T>` is bit-valid exactly when its wrapped `T`
