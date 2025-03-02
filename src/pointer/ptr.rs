@@ -530,14 +530,14 @@ mod _transitions {
         I: Invariants,
     {
         /// Returns a `Ptr` with [`Exclusive`] aliasing if `self` already has
-        /// `Exclusive` aliasing.
+        /// `Exclusive` aliasing, or generates a compile-time assertion failure.
         ///
         /// This allows code which is generic over aliasing to down-cast to a
         /// concrete aliasing.
         ///
         /// [`Exclusive`]: crate::pointer::invariant::Exclusive
         #[inline]
-        pub(crate) fn into_exclusive_or_post_monomorphization_error(
+        pub(crate) fn into_exclusive_or_pme(
             self,
         ) -> Ptr<'a, T, (Exclusive, I::Alignment, I::Validity)> {
             // NOTE(https://github.com/rust-lang/rust/issues/131625): We do this
