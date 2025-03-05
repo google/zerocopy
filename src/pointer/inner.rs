@@ -394,6 +394,7 @@ impl<'a> PtrInner<'a, [u8]> {
     /// `self`. Finally:
     /// - If this is a prefix cast, `ptr` has the same address as `self`.
     /// - If this is a suffix cast, `remainder` has the same address as `self`.
+    #[inline]
     pub(crate) fn try_cast_into<U>(
         self,
         cast_type: CastType,
