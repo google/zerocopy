@@ -17,24 +17,21 @@ mod transmute;
 #[doc(hidden)]
 pub(crate) use transmute::*;
 #[doc(hidden)]
-pub use {
-    invariant::{BecauseExclusive, BecauseImmutable, Read},
-    ptr::Ptr,
-};
+pub use {invariant::*, ptr::Ptr};
 
 /// A shorthand for a maybe-valid, maybe-aligned reference. Used as the argument
 /// to [`TryFromBytes::is_bit_valid`].
 ///
 /// [`TryFromBytes::is_bit_valid`]: crate::TryFromBytes::is_bit_valid
-pub type Maybe<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Unaligned> =
-    Ptr<'a, T, (Aliasing, Alignment, invariant::Initialized)>;
+pub type Maybe<'a, T, Aliasing = Shared, Alignment = Unaligned> =
+    Ptr<'a, Initialized<T>, (Aliasing, Alignment)>;
 
 /// Checks if the referent is zeroed.
-pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
+pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, Initialized<T>, I>) -> bool
 where
-    T: crate::Immutable + crate::KnownLayout,
-    I: invariant::Invariants<Validity = invariant::Initialized>,
-    I::Aliasing: invariant::Reference,
+    T: crate::Immutable + crate::KnownLayout + ?Sized,
+    I: Invariants,
+    I::Aliasing: Reference,
 {
     ptr.as_bytes::<BecauseImmutable>().as_ref().iter().all(|&byte| byte == 0)
 }
