@@ -50,7 +50,7 @@ where
         T: Copy,
         T: invariant::Read<Aliasing, R>,
     {
-        // SAFETY: By invariant on `MaybeAligned`, `raw` contains
+        // SAFETY: By invariant on `MaybeAligned`, `self` contains
         // validly-initialized data for `T`. By `T: Read<Aliasing>`, we are
         // permitted to perform a read of `self`'s referent.
         unsafe { self.as_inner().read_unaligned() }

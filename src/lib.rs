@@ -2845,7 +2845,12 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
     let c_ptr = Ptr::from_mut(&mut candidate);
     let c_ptr = c_ptr.transparent_wrapper_into_inner();
     // SAFETY: `c_ptr` has no uninitialized sub-ranges because it derived from
-    // `candidate`, which the caller promises is entirely initialized.
+    // `candidate`, which the caller promises is entirely initialized. Since
+    // `candidate` is a `MaybeUninit`, it has no validity requirements, and so
+    // no values written to `c_ptr` can violate its validity. Since `c_ptr` has
+    // `Exclusive` aliasing, no mutations may happen except via `c_ptr` so long
+    // as it is live, so we don't need to worry about the fact that `c_ptr` may
+    // have more restricted validity than `candidate`.
     let c_ptr = unsafe { c_ptr.assume_validity::<invariant::Initialized>() };
 
     // This call may panic. If that happens, it doesn't cause any soundness
@@ -4603,7 +4608,12 @@ pub unsafe trait FromBytes: FromZeros {
 
         let ptr = Ptr::from_mut(&mut buf);
         // SAFETY: After `buf.zero()`, `buf` consists entirely of initialized,
-        // zeroed bytes.
+        // zeroed bytes. Since `MaybeUninit` has no validity requirements, `ptr`
+        // cannot be used to write values which will violate `buf`'s bit
+        // validity. Since `ptr` has `Exclusive` aliasing, nothing other than
+        // `ptr` may be used to mutate `ptr`'s referent, and so its bit validity
+        // cannot be violated even though `buf` may have more permissive bit
+        // validity than `ptr`.
         let ptr = unsafe { ptr.assume_validity::<invariant::Initialized>() };
         let ptr = ptr.as_bytes::<BecauseExclusive>();
         src.read_exact(ptr.as_mut())?;
