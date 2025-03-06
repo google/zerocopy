@@ -733,6 +733,268 @@ macro_rules! include_value {
     };
 }
 
+#[doc(hidden)]
+#[macro_export]
+macro_rules! cryptocorrosion_derive_traits {
+    (
+        #[repr($repr:ident)]
+        $(#[$attr:meta])*
+        $vis:vis struct $name:ident $(<$($tyvar:ident),*>)?
+        $(
+            (
+                $($tuple_field_vis:vis $tuple_field_ty:ty),*
+            );
+        )?
+
+        $(
+            {
+                $($field_vis:vis $field_name:ident: $field_ty:ty,)*
+            }
+        )?
+    ) => {
+        $crate::cryptocorrosion_derive_traits!(@assert_allowed_struct_repr #[repr($repr)]);
+
+        $(#[$attr])*
+        #[repr($repr)]
+        $vis struct $name $(<$($tyvar),*>)?
+        $(
+            (
+                $($tuple_field_vis $tuple_field_ty),*
+            );
+        )?
+
+        $(
+            {
+                $($field_vis $field_name: $field_ty,)*
+            }
+        )?
+
+        // SAFETY: See inline.
+        unsafe impl $(<$($tyvar),*>)? $crate::TryFromBytes for $name$(<$($tyvar),*>)?
+        where
+            $(
+                $($tuple_field_ty: $crate::FromBytes,)*
+            )?
+
+            $(
+                $($field_ty: $crate::FromBytes,)*
+            )?
+        {
+            fn is_bit_valid<A>(_c: $crate::Maybe<'_, Self, A>) -> bool
+            where
+                A: $crate::pointer::invariant::Reference
+            {
+                // SAFETY: This macro only accepts `#[repr(C)]` and
+                // `#[repr(transparent)]` structs, and this `impl` block
+                // requires all field types to be `FromBytes`. Thus, all
+                // initialized byte sequences constitutes valid instances of
+                // `Self`.
+                true
+            }
+
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+
+        // SAFETY: This macro only accepts `#[repr(C)]` and
+        // `#[repr(transparent)]` structs, and this `impl` block requires all
+        // field types to be `FromBytes`, which is a sub-trait of `FromZeros`.
+        unsafe impl $(<$($tyvar),*>)? $crate::FromZeros for $name$(<$($tyvar),*>)?
+        where
+            $(
+                $($tuple_field_ty: $crate::FromBytes,)*
+            )?
+
+            $(
+                $($field_ty: $crate::FromBytes,)*
+            )?
+        {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+
+        // SAFETY: This macro only accepts `#[repr(C)]` and
+        // `#[repr(transparent)]` structs, and this `impl` block requires all
+        // field types to be `FromBytes`.
+        unsafe impl $(<$($tyvar),*>)? $crate::FromBytes for $name$(<$($tyvar),*>)?
+        where
+            $(
+                $($tuple_field_ty: $crate::FromBytes,)*
+            )?
+
+            $(
+                $($field_ty: $crate::FromBytes,)*
+            )?
+        {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+
+        // SAFETY: This macro only accepts `#[repr(C)]` and
+        // `#[repr(transparent)]` structs, this `impl` block requires all field
+        // types to be `IntoBytes`, and a padding check is used to ensures that
+        // there are no padding bytes.
+        unsafe impl $(<$($tyvar),*>)? $crate::IntoBytes for $name$(<$($tyvar),*>)?
+        where
+            $(
+                $($tuple_field_ty: $crate::IntoBytes,)*
+            )?
+
+            $(
+                $($field_ty: $crate::IntoBytes,)*
+            )?
+
+            (): $crate::util::macro_util::PaddingFree<
+                Self,
+                {
+                    $crate::cryptocorrosion_derive_traits!(
+                        @struct_padding_check #[repr($repr)]
+                        $(($($tuple_field_ty),*))?
+                        $({$($field_ty),*})?
+                    )
+                },
+            >,
+        {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+
+        // SAFETY: This macro only accepts `#[repr(C)]` and
+        // `#[repr(transparent)]` structs, and this `impl` block requires all
+        // field types to be `Immutable`.
+        unsafe impl $(<$($tyvar),*>)? $crate::Immutable for $name$(<$($tyvar),*>)?
+        where
+            $(
+                $($tuple_field_ty: $crate::Immutable,)*
+            )?
+
+            $(
+                $($field_ty: $crate::Immutable,)*
+            )?
+        {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+    };
+    (@assert_allowed_struct_repr #[repr(transparent)]) => {};
+    (@assert_allowed_struct_repr #[repr(C)]) => {};
+    (@assert_allowed_struct_repr #[$_attr:meta]) => {
+        compile_error!("repr must be `#[repr(transparent)]` or `#[repr(C)]`");
+    };
+    (
+        @struct_padding_check #[repr(transparent)]
+        $(($($tuple_field_ty:ty),*))?
+        $({$($field_ty:ty),*})?
+    ) => {
+        // SAFETY: `#[repr(transparent)]` structs cannot have the same layout as
+        // their single non-zero-sized field, and so cannot have any padding
+        // outside of that field.
+        false
+    };
+    (
+        @struct_padding_check #[repr(C)]
+        $(($($tuple_field_ty:ty),*))?
+        $({$($field_ty:ty),*})?
+    ) => {
+        $crate::struct_has_padding!(
+            Self,
+            [
+                $($($tuple_field_ty),*)?
+                $($($field_ty),*)?
+            ]
+        )
+    };
+    (
+        #[repr(C)]
+        $(#[$attr:meta])*
+        $vis:vis union $name:ident {
+            $(
+                $field_name:ident: $field_ty:ty,
+            )*
+        }
+    ) => {
+        $(#[$attr])*
+        #[repr(C)]
+        $vis union $name {
+            $(
+                $field_name: $field_ty,
+            )*
+        }
+
+        // SAFETY: See inline.
+        unsafe impl $crate::TryFromBytes for $name
+        where
+            $(
+                $field_ty: $crate::FromBytes,
+            )*
+        {
+            fn is_bit_valid<A>(_c: $crate::Maybe<'_, Self, A>) -> bool
+            where
+                A: $crate::pointer::invariant::Reference
+            {
+                // SAFETY: This macro only accepts `#[repr(C)]` unions, and this
+                // `impl` block requires all field types to be `FromBytes`.
+                // Thus, all initialized byte sequences constitutes valid
+                // instances of `Self`.
+                true
+            }
+
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+
+        // SAFETY: This macro only accepts `#[repr(C)]` unions, and this `impl`
+        // block requires all field types to be `FromBytes`, which is a
+        // sub-trait of `FromZeros`.
+        unsafe impl $crate::FromZeros for $name
+        where
+            $(
+                $field_ty: $crate::FromBytes,
+            )*
+        {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+
+        // SAFETY: This macro only accepts `#[repr(C)]` unions, and this `impl`
+        // block requires all field types to be `FromBytes`.
+        unsafe impl $crate::FromBytes for $name
+        where
+            $(
+                $field_ty: $crate::FromBytes,
+            )*
+        {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+
+        // SAFETY: This macro only accepts `#[repr(C)]` unions, this `impl`
+        // block requires all field types to be `IntoBytes`, and a padding check
+        // is used to ensures that there are no padding bytes before or after
+        // any field.
+        unsafe impl $crate::IntoBytes for $name
+        where
+            $(
+                $field_ty: $crate::IntoBytes,
+            )*
+            (): $crate::util::macro_util::PaddingFree<
+                Self,
+                {
+                    $crate::union_has_padding!(
+                        Self,
+                        [$($field_ty),*]
+                    )
+                },
+            >,
+        {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+
+        // SAFETY: This macro only accepts `#[repr(C)]` unions, and this `impl`
+        // block requires all field types to be `Immutable`.
+        unsafe impl $crate::Immutable for $name
+        where
+            $(
+                $field_ty: $crate::Immutable,
+            )*
+        {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+    };
+}
+
 #[cfg(test)]
 mod tests {
     use crate::util::testutil::*;
@@ -989,5 +1251,135 @@ mod tests {
         assert_eq!(AS_U32, u32::from_ne_bytes([b'a', b'b', b'c', b'd']));
         const AS_I32: i32 = include_value!("../testdata/include_value/data");
         assert_eq!(AS_I32, i32::from_ne_bytes([b'a', b'b', b'c', b'd']));
+    }
+
+    #[test]
+    #[allow(non_camel_case_types, unreachable_pub, dead_code)]
+    fn test_cryptocorrosion_derive_traits() {
+        // Test the set of invocations added in
+        // https://github.com/cryptocorrosion/cryptocorrosion/pull/85
+
+        fn assert_impls<T: FromBytes + IntoBytes + Immutable>() {}
+
+        cryptocorrosion_derive_traits! {
+            #[repr(C)]
+            #[derive(Clone, Copy)]
+            pub union vec128_storage {
+                d: [u32; 4],
+                q: [u64; 2],
+            }
+        }
+
+        assert_impls::<vec128_storage>();
+
+        cryptocorrosion_derive_traits! {
+            #[repr(transparent)]
+            #[derive(Copy, Clone, Debug, PartialEq)]
+            pub struct u32x4_generic([u32; 4]);
+        }
+
+        assert_impls::<u32x4_generic>();
+
+        cryptocorrosion_derive_traits! {
+            #[repr(transparent)]
+            #[derive(Copy, Clone, Debug, PartialEq)]
+            pub struct u64x2_generic([u64; 2]);
+        }
+
+        assert_impls::<u64x2_generic>();
+
+        cryptocorrosion_derive_traits! {
+            #[repr(transparent)]
+            #[derive(Copy, Clone, Debug, PartialEq)]
+            pub struct u128x1_generic([u128; 1]);
+        }
+
+        assert_impls::<u128x1_generic>();
+
+        cryptocorrosion_derive_traits! {
+            #[repr(transparent)]
+            #[derive(Copy, Clone, Default)]
+            #[allow(non_camel_case_types)]
+            pub struct x2<W, G>(pub [W; 2], PhantomData<G>);
+        }
+
+        enum NotZerocopy {}
+        assert_impls::<x2<(), NotZerocopy>>();
+
+        cryptocorrosion_derive_traits! {
+            #[repr(transparent)]
+            #[derive(Copy, Clone, Default)]
+            #[allow(non_camel_case_types)]
+            pub struct x4<W>(pub [W; 4]);
+        }
+
+        assert_impls::<x4<()>>();
+
+        #[cfg(feature = "simd")]
+        #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+        {
+            #[cfg(target_arch = "x86")]
+            use core::arch::x86::{__m128i, __m256i};
+            #[cfg(target_arch = "x86_64")]
+            use core::arch::x86_64::{__m128i, __m256i};
+
+            cryptocorrosion_derive_traits! {
+                #[repr(C)]
+                #[derive(Copy, Clone)]
+                pub struct X4(__m128i, __m128i, __m128i, __m128i);
+            }
+
+            assert_impls::<X4>();
+
+            cryptocorrosion_derive_traits! {
+                #[repr(C)]
+                /// Generic wrapper for unparameterized storage of any of the possible impls.
+                /// Converting into and out of this type should be essentially free, although it may be more
+                /// aligned than a particular impl requires.
+                #[allow(non_camel_case_types)]
+                #[derive(Copy, Clone)]
+                pub union vec128_storage {
+                    u32x4: [u32; 4],
+                    u64x2: [u64; 2],
+                    u128x1: [u128; 1],
+                    sse2: __m128i,
+                }
+            }
+
+            assert_impls::<vec128_storage>();
+
+            cryptocorrosion_derive_traits! {
+                #[repr(transparent)]
+                #[allow(non_camel_case_types)]
+                #[derive(Copy, Clone)]
+                pub struct vec<S3, S4, NI> {
+                    x: __m128i,
+                    s3: PhantomData<S3>,
+                    s4: PhantomData<S4>,
+                    ni: PhantomData<NI>,
+                }
+            }
+
+            assert_impls::<vec<NotZerocopy, NotZerocopy, NotZerocopy>>();
+
+            cryptocorrosion_derive_traits! {
+                #[repr(transparent)]
+                #[derive(Copy, Clone)]
+                pub struct u32x4x2_avx2<NI> {
+                    x: __m256i,
+                    ni: PhantomData<NI>,
+                }
+            }
+
+            assert_impls::<u32x4x2_avx2<NotZerocopy>>();
+        }
+
+        // Make sure that our derive works for `#[repr(C)]` structs even though
+        // cryptocorrosion doesn't currently have any.
+        cryptocorrosion_derive_traits! {
+            #[repr(C)]
+            #[derive(Copy, Clone, Debug, PartialEq)]
+            pub struct ReprC(u8, u8, u16);
+        }
     }
 }
