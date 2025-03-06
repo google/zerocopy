@@ -129,12 +129,6 @@ safety_comment! {
     ///   `UnsafeCell`s exactly when `T` does.
     /// - `TryFromBytes`: `Unalign<T>` has the same the same bit validity as
     ///   `T`, so `T::is_bit_valid` is a sound implementation of `is_bit_valid`.
-    ///   Furthermore:
-    ///   - Since `T` and `Unalign<T>` have the same layout, they have the same
-    ///     size (as required by `unsafe_impl!`).
-    ///   - Since `T` and `Unalign<T>` have the same fields, they have
-    ///     `UnsafeCell`s at the same byte ranges (as required by
-    ///     `unsafe_impl!`).
     impl_or_verify!(T => Unaligned for Unalign<T>);
     impl_or_verify!(T: Immutable => Immutable for Unalign<T>);
     impl_or_verify!(
