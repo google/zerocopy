@@ -96,9 +96,11 @@ pub trait Reference: Aliasing + Sealed {}
 /// The `Ptr<'a, T>` adheres to the aliasing rules of a `&'a T`.
 ///
 /// The referent of a shared-aliased `Ptr` may be concurrently referenced by any
-/// number of shared-aliased `Ptr` or `&T` references, and may not be
-/// concurrently referenced by any exclusively-aliased `Ptr`s or `&mut T`
-/// references. The referent must not be mutated, except via [`UnsafeCell`]s.
+/// number of shared-aliased `Ptr` or `&T` references, or by any number of
+/// `Ptr<U>` or `&U` references as permitted by `T`'s library safety invariants,
+/// and may not be concurrently referenced by any exclusively-aliased `Ptr`s or
+/// `&mut` references. The referent must not be mutated, except via
+/// [`UnsafeCell`]s, and only when permitted by `T`'s library safety invariants.
 ///
 /// [`UnsafeCell`]: core::cell::UnsafeCell
 pub enum Shared {}
@@ -178,7 +180,8 @@ pub enum Initialized {}
 // required to uphold).
 unsafe impl Validity for Initialized {}
 
-/// The referent of a `Ptr<T>` is bit-valid for `T`.
+/// The referent of a `Ptr<T>` is valid for `T`, upholding bit validity and any
+/// library safety invariants.
 pub enum Valid {}
 // SAFETY: `Valid`'s validity is well-defined for all `T: ?Sized`, and is not a
 // function of any property of `T` other than its bit validity.
