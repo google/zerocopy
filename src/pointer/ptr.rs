@@ -393,12 +393,8 @@ mod _conversions {
     {
         pub(crate) fn transmute<U, V, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
-            T: KnownLayout,
             V: Validity,
-            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R>
-                + KnownLayout<PointerMetadata = T::PointerMetadata>
-                + SizeEq<T>
-                + ?Sized,
+            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + SizeEq<T> + ?Sized,
         {
             // SAFETY:
             // - This cast preserves address and provenance
@@ -414,28 +410,6 @@ mod _conversions {
             // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
             //   sound to perform this transmute.
             unsafe { self.transmute_unchecked(|t: NonNull<T>| U::cast_from_raw(t)) }
-        }
-
-        pub(crate) fn transmute_sized<U, V, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
-        where
-            T: Sized,
-            V: Validity,
-            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + SizeEq<T>,
-        {
-            // SAFETY:
-            // - This cast preserves address and provenance
-            // - `U: SizeEq<T>` guarantees that this cast preserves the number
-            //   of bytes in the referent
-            // - If aliasing is `Shared`, then by `U: TransmuteFromPtr<T>`, at
-            //   least one of the following holds:
-            //   - `T: Immutable` and `U: Immutable`, in which case it is
-            //     trivially sound for shared code to operate on a `&T` and `&U`
-            //     at the same time, as neither can perform interior mutation
-            //   - It is directly guaranteed that it is sound for shared code to
-            //     operate on these references simultaneously
-            // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
-            //   sound to perform this transmute.
-            unsafe { self.transmute_unchecked(cast!()) }
         }
 
         #[doc(hidden)]

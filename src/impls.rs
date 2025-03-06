@@ -7,7 +7,7 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use core::mem::MaybeUninit as CoreMaybeUninit;
+use core::{cell::UnsafeCell, mem::MaybeUninit as CoreMaybeUninit, ptr::NonNull};
 
 use super::*;
 
@@ -223,16 +223,32 @@ safety_comment! {
 //
 //   String slices are a UTF-8 representation of characters that have the same
 //   layout as slices of type `[u8]`.
-unsafe impl pointer::SizeEq<str> for [u8] {}
+unsafe impl pointer::SizeEq<str> for [u8] {
+    fn cast_from_raw(s: NonNull<str>) -> NonNull<[u8]> {
+        cast!(s)
+    }
+}
 // SAFETY: See previous safety comment.
-unsafe impl pointer::SizeEq<[u8]> for str {}
+unsafe impl pointer::SizeEq<[u8]> for str {
+    fn cast_from_raw(bytes: NonNull<[u8]>) -> NonNull<str> {
+        cast!(bytes)
+    }
+}
 
 macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
     ($($nonzero:ident[$prim:ty]),*) => {
         $(
             unsafe_impl!(=> TryFromBytes for $nonzero; |n| {
-                unsafe impl pointer::SizeEq<$nonzero> for Unalign<$prim> {}
-                unsafe impl pointer::SizeEq<Unalign<$prim>> for $nonzero {}
+                unsafe impl pointer::SizeEq<$nonzero> for Unalign<$prim> {
+                    fn cast_from_raw(n: NonNull<$nonzero>) -> NonNull<Unalign<$prim>> {
+                        cast!(n)
+                    }
+                }
+                unsafe impl pointer::SizeEq<Unalign<$prim>> for $nonzero {
+                    fn cast_from_raw(p: NonNull<Unalign<$prim>>) -> NonNull<$nonzero> {
+                        cast!(p)
+                    }
+                }
 
                 let n = n.transmute::<Unalign<$prim>, invariant::Valid, _>();
                 $nonzero::new(n.read_unaligned().into_inner()).is_some()
@@ -470,6 +486,7 @@ mod atomics {
     macro_rules! unsafe_impl_transmute_from_for_atomic {
         ($($($tyvar:ident)? => $atomic:ty [$prim:ty]),*) => {
             const _: () = {
+                use core::{cell::UnsafeCell, ptr::NonNull};
                 use crate::pointer::{TransmuteFrom, SizeEq, invariant::Valid};
 
                 $(
@@ -485,10 +502,18 @@ mod atomics {
 
                     // SAFETY: THe caller promised that `$atomic` and `$prim`
                     // have the same size.
-                    unsafe impl<$($tyvar)?> SizeEq<$atomic> for $prim {}
+                    unsafe impl<$($tyvar)?> SizeEq<$atomic> for $prim {
+                        fn cast_from_raw(a: NonNull<$atomic>) -> NonNull<$prim> {
+                            cast!(a)
+                        }
+                    }
                     // SAFETY: THe caller promised that `$atomic` and `$prim`
                     // have the same size.
-                    unsafe impl<$($tyvar)?> SizeEq<$prim> for $atomic {}
+                    unsafe impl<$($tyvar)?> SizeEq<$prim> for $atomic {
+                        fn cast_from_raw(p: NonNull<$prim>) -> NonNull<$atomic> {
+                            cast!(p)
+                        }
+                    }
                     // SAFETY: The caller promised that `$atomic` and `$prim`
                     // have the same size. `UnsafeCell<T>` has the same size as
                     // `T` [1].
@@ -498,9 +523,17 @@ mod atomics {
                     //   `UnsafeCell<T>` has the same in-memory representation as
                     //   its inner type `T`. A consequence of this guarantee is that
                     //   it is possible to convert between `T` and `UnsafeCell<T>`.
-                    unsafe impl<$($tyvar)?> SizeEq<$atomic> for core::cell::UnsafeCell<$prim> {}
+                    unsafe impl<$($tyvar)?> SizeEq<$atomic> for UnsafeCell<$prim> {
+                        fn cast_from_raw(a: NonNull<$atomic>) -> NonNull<UnsafeCell<$prim>> {
+                            cast!(a)
+                        }
+                    }
                     // SAFETY: See previous safety comment.
-                    unsafe impl<$($tyvar)?> SizeEq<core::cell::UnsafeCell<$prim>> for $atomic {}
+                    unsafe impl<$($tyvar)?> SizeEq<UnsafeCell<$prim>> for $atomic {
+                        fn cast_from_raw(p: NonNull<UnsafeCell<$prim>>) -> NonNull<$atomic> {
+                            cast!(p)
+                        }
+                    }
 
                     // SAFETY: The caller promised that `$atomic` and `$prim`
                     // have the same bit validity. `UnsafeCell<T>` has the same
@@ -812,36 +845,7 @@ safety_comment! {
     unsafe_impl!(T: ?Sized + Immutable => Immutable for ManuallyDrop<T>);
 }
 
-// SAFETY: See inline safety comment justifying that the implementation of
-// `is_bit_valid`is sound.
-unsafe impl<T: ?Sized + TryFromBytes> TryFromBytes for ManuallyDrop<T> {
-    #[allow(clippy::missing_inline_in_public_items)]
-    fn only_derive_is_allowed_to_implement_this_trait() {}
-
-    #[inline(always)]
-    fn is_bit_valid<A: crate::pointer::invariant::Reference>(
-        candidate: Maybe<'_, Self, A>,
-    ) -> bool {
-        // SAFETY: `ManuallyDrop<T>` and `T` have the same size [1], so this
-        // cast preserves size. It also preserves provenance.
-        //
-        // [1] Per https://doc.rust-lang.org/1.85.0/std/mem/struct.ManuallyDrop.html:
-        //
-        //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
-        //   validity as `T`
-        let c: Maybe<'_, T, A> = unsafe { candidate.cast_unsized(cast!()) };
-
-        // SAFETY: `ManuallyDrop<T>` and `T` have the same bit validity [1], so
-        // this is a sound implementation of `ManuallyDrop::is_bit_valid`.
-        //
-        // [1] Per https://doc.rust-lang.org/1.85.0/std/mem/struct.ManuallyDrop.html:
-        //
-        //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
-        //   validity as `T`
-        <T as TryFromBytes>::is_bit_valid(c)
-    }
-}
-
+impl_for_transmute_from!(T: ?Sized + TryFromBytes => TryFromBytes for ManuallyDrop<T>[<T>]);
 impl_for_transmute_from!(T: ?Sized + FromZeros => FromZeros for ManuallyDrop<T>[<T>]);
 impl_for_transmute_from!(T: ?Sized + FromBytes => FromBytes for ManuallyDrop<T>[<T>]);
 impl_for_transmute_from!(T: ?Sized + IntoBytes => IntoBytes for ManuallyDrop<T>[<T>]);
