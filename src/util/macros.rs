@@ -254,7 +254,7 @@ macro_rules! impl_for_transmute_from {
             // SAFETY: This macro ensures that `$repr` and `Self` have the same
             // size and bit validity. Thus, a bit-valid instance of `$repr` is
             // also a bit-valid instance of `Self`.
-            <$repr as TryFromBytes>::is_bit_valid(candidate.transmute_sized())
+            <$repr as TryFromBytes>::is_bit_valid(candidate.transmute())
         }
     };
     (
@@ -694,12 +694,18 @@ macro_rules! static_assert_dst_is_not_zst {
 
 macro_rules! cast {
     () => {
-        // SAFETY: `NonNull::as_ptr` returns a non-null pointer, so the argument
-        // to `NonNull::new_unchecked` is also non-null.
         |p| {
-            #[allow(clippy::as_conversions)]
-            return core::ptr::NonNull::new_unchecked(core::ptr::NonNull::as_ptr(p) as *mut _);
+            // SAFETY: `NonNull::as_ptr` returns a non-null pointer, so the
+            // argument to `NonNull::new_unchecked` is also non-null.
+            #[allow(clippy::as_conversions, unused_unsafe)]
+            #[allow(clippy::undocumented_unsafe_blocks)] // Clippy false positive
+            return unsafe {
+                core::ptr::NonNull::new_unchecked(core::ptr::NonNull::as_ptr(p) as *mut _)
+            };
         }
+    };
+    ($p:ident) => {
+        cast!()($p)
     };
 }
 
@@ -712,7 +718,9 @@ macro_rules! cast {
 macro_rules! unsafe_impl_for_transparent_wrapper {
     (T $(: ?$optbound:ident)? => $wrapper:ident<T>) => {
         const _: () = {
+            use core::ptr::NonNull;
             use crate::pointer::{TransmuteFrom, SizeEq, invariant::Valid};
+
             // SAFETY: The caller promises that `T` and `$wrapper<T>` have the
             // same bit validity.
             unsafe impl<T $(: ?$optbound)?> TransmuteFrom<T, Valid, Valid> for $wrapper<T> {}
@@ -720,9 +728,17 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
             unsafe impl<T $(: ?$optbound)?> TransmuteFrom<$wrapper<T>, Valid, Valid> for T {}
             // SAFETY: The caller promises that `T` and `$wrapper<T>` satisfy
             // `SizeEq`.
-            unsafe impl<T $(: ?$optbound)?> SizeEq<T> for $wrapper<T> {}
+            unsafe impl<T $(: ?$optbound)?> SizeEq<T> for $wrapper<T> {
+                fn cast_from_raw(t: NonNull<T>) -> NonNull<$wrapper<T>> {
+                    cast!(t)
+                }
+            }
             // SAFETY: See previous safety comment.
-            unsafe impl<T $(: ?$optbound)?> SizeEq<$wrapper<T>> for T {}
+            unsafe impl<T $(: ?$optbound)?> SizeEq<$wrapper<T>> for T {
+                fn cast_from_raw(t: NonNull<$wrapper<T>>) -> NonNull<T> {
+                    cast!(t)
+                }
+            }
         };
 
         // So that this macro must be invoked inside `safety_comment!` or else
@@ -732,17 +748,57 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
     };
 }
 
+macro_rules! impl_transitive_transmute_from {
+    ($($tyvar:ident $(: ?$optbound:ident)?)? => $t:ty => $u:ty => $v:ty) => {
+        const _: () = {
+            use core::ptr::NonNull;
+            use crate::pointer::{TransmuteFrom, SizeEq, invariant::Valid};
+
+            // SAFETY: Since `$u: SizeEq<$t>` and `$v: SizeEq<U>`, this impl is
+            // transitively sound.
+            unsafe impl<$($tyvar $(: ?$optbound)?)?> SizeEq<$t> for $v
+            where
+                $u: SizeEq<$t>,
+                $v: SizeEq<$u>,
+            {
+                fn cast_from_raw(t: NonNull<$t>) -> NonNull<$v> {
+                    cast!(t)
+                }
+            }
+
+            // SAFETY: Since `$u: TransmuteFrom<$t, Valid, Valid>`, it is sound
+            // to transmute a bit-valid `$t` to a bit-valid `$u`. Since `$v:
+            // TransmuteFrom<$u, Valid, Valid>`, it is sound to transmute that
+            // bit-valid `$u` to a bit-valid `$v`.
+            unsafe impl<$($tyvar $(: ?$optbound)?)?> TransmuteFrom<$t, Valid, Valid> for $v
+            where
+                $u: TransmuteFrom<$t, Valid, Valid>,
+                $v: TransmuteFrom<$u, Valid, Valid>,
+            {}
+        };
+    };
+}
+
 macro_rules! impl_size_eq {
     ($t:ty, $u:ty) => {
         const _: () = {
             use crate::pointer::SizeEq;
+            use core::ptr::NonNull;
 
     static_assert!(=> mem::size_of::<$t>() == mem::size_of::<$u>());
 
             // SAFETY: We've asserted that their sizes are equal.
-            unsafe impl SizeEq<$t> for $u {}
+            unsafe impl SizeEq<$t> for $u {
+                fn cast_from_raw(t: NonNull<$t>) -> NonNull<$u> {
+                    cast!(t)
+                }
+            }
             // SAFETY: We've asserted that their sizes are equal.
-            unsafe impl SizeEq<$u> for $t {}
+            unsafe impl SizeEq<$u> for $t {
+                fn cast_from_raw(u: NonNull<$u>) -> NonNull<$t> {
+                    cast!(u)
+                }
+            }
         };
     };
 }

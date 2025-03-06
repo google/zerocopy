@@ -139,7 +139,7 @@ safety_comment! {
     impl_or_verify!(T: Immutable => Immutable for Unalign<T>);
     impl_or_verify!(
         T: TryFromBytes => TryFromBytes for Unalign<T>;
-        |c| T::is_bit_valid(c.transmute_sized())
+        |c| T::is_bit_valid(c.transmute())
     );
     impl_or_verify!(T: FromZeros => FromZeros for Unalign<T>);
     impl_or_verify!(T: FromBytes => FromBytes for Unalign<T>);
@@ -188,7 +188,7 @@ impl<T> Unalign<T> {
     /// may prefer [`Deref::deref`], which is infallible.
     #[inline(always)]
     pub fn try_deref(&self) -> Result<&T, AlignmentError<&Self, T>> {
-        let inner = Ptr::from_ref(self).transmute_sized();
+        let inner = Ptr::from_ref(self).transmute();
         match inner.bikeshed_try_into_aligned() {
             Ok(aligned) => Ok(aligned.as_ref()),
             Err(err) => Err(err.map_src(|src| src.into_unalign().as_ref())),
@@ -205,7 +205,7 @@ impl<T> Unalign<T> {
     /// callers may prefer [`DerefMut::deref_mut`], which is infallible.
     #[inline(always)]
     pub fn try_deref_mut(&mut self) -> Result<&mut T, AlignmentError<&mut Self, T>> {
-        let inner = Ptr::from_mut(self).transmute_sized::<_, _, (_, (_, _))>();
+        let inner = Ptr::from_mut(self).transmute::<_, _, (_, (_, _))>();
         match inner.bikeshed_try_into_aligned() {
             Ok(aligned) => Ok(aligned.as_mut()),
             Err(err) => Err(err.map_src(|src| src.into_unalign().as_mut())),
@@ -394,17 +394,14 @@ impl<T: Unaligned> Deref for Unalign<T> {
 
     #[inline(always)]
     fn deref(&self) -> &T {
-        Ptr::from_ref(self).transmute_sized().bikeshed_recall_aligned().as_ref()
+        Ptr::from_ref(self).transmute().bikeshed_recall_aligned().as_ref()
     }
 }
 
 impl<T: Unaligned> DerefMut for Unalign<T> {
     #[inline(always)]
     fn deref_mut(&mut self) -> &mut T {
-        Ptr::from_mut(self)
-            .transmute_sized::<_, _, (_, (_, _))>()
-            .bikeshed_recall_aligned()
-            .as_mut()
+        Ptr::from_mut(self).transmute::<_, _, (_, (_, _))>().bikeshed_recall_aligned().as_mut()
     }
 }
 

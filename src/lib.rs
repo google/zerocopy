@@ -805,17 +805,6 @@ pub unsafe trait KnownLayout {
         // resulting size would not fit in a `usize`.
         meta.size_for_metadata(Self::LAYOUT)
     }
-
-    #[doc(hidden)]
-    #[must_use]
-    #[inline(always)]
-    fn cast_from_raw<P: KnownLayout<PointerMetadata = Self::PointerMetadata> + ?Sized>(
-        ptr: NonNull<P>,
-    ) -> NonNull<Self> {
-        let data = ptr.cast::<u8>();
-        let meta = P::pointer_to_metadata(ptr.as_ptr());
-        Self::raw_from_ptr_len(data, meta)
-    }
 }
 
 /// The metadata associated with a [`KnownLayout`] type.
