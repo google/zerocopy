@@ -680,6 +680,7 @@ mod atomics {
         // TODO(#170): Implement `FromBytes` and `IntoBytes` once we implement
         // those traits for `*mut T`.
         impl_for_transmute_from!(T => TryFromBytes for AtomicPtr<T> [UnsafeCell<*mut T>]);
+        impl_for_transmute_from!(T => FromZeros for AtomicPtr<T> [UnsafeCell<*mut T>]);
 
         safety_comment! {
             /// SAFETY:
