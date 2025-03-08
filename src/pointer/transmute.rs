@@ -10,6 +10,7 @@ use core::{
     cell::UnsafeCell,
     mem::{ManuallyDrop, MaybeUninit},
     num::Wrapping,
+    ptr::NonNull,
 };
 
 use crate::{pointer::invariant::*, FromBytes, Immutable, IntoBytes, Unalign};
@@ -227,20 +228,8 @@ macro_rules! unsafe_impl_invariants_eq {
     };
 }
 
-// SAFETY: See bounds.
-unsafe impl<T> SizeEq<MaybeUninit<T>> for Wrapping<T>
-where
-    T: SizeEq<Wrapping<T>>,
-    T: SizeEq<MaybeUninit<T>>,
-{
-}
-// SAFETY: See bounds.
-unsafe impl<T> SizeEq<Wrapping<T>> for MaybeUninit<T>
-where
-    T: SizeEq<Wrapping<T>>,
-    T: SizeEq<MaybeUninit<T>>,
-{
-}
+impl_transitive_transmute_from!(T => MaybeUninit<T> => T => Wrapping<T>);
+impl_transitive_transmute_from!(T => Wrapping<T> => T => MaybeUninit<T>);
 
 // SAFETY: `ManuallyDrop<T>` has the same size and bit validity as `T` [1], and
 // implements `Deref<Target = T>` [2]. Thus, it is already possible for safe
@@ -298,12 +287,18 @@ pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV>: SizeEq<Src> {}
 /// - If `T: ?Sized` and `Self: ?Sized`, then it must be the case that, given
 ///   any `t: *mut T`, `t as *mut Self` produces a pointer which addresses the
 ///   same number of bytes as `t`.
-pub unsafe trait SizeEq<T: ?Sized> {}
+pub unsafe trait SizeEq<T: ?Sized> {
+    fn cast_from_raw(t: NonNull<T>) -> NonNull<Self>;
+}
 
 // SAFETY: `T` trivially has the same size and vtable kind as `T`, and since
 // pointer `*mut T -> *mut T` pointer casts are no-ops, this cast trivially
 // preserves referent size (when `T: ?Sized`).
-unsafe impl<T: ?Sized> SizeEq<T> for T {}
+unsafe impl<T: ?Sized> SizeEq<T> for T {
+    fn cast_from_raw(t: NonNull<T>) -> NonNull<T> {
+        t
+    }
+}
 
 // SAFETY: Since `Src: IntoBytes`, the set of valid `Src`'s is the set of
 // initialized bit patterns, which is exactly the set allowed in the referent of
@@ -436,6 +431,15 @@ unsafe impl<T> TransmuteFrom<T, Uninit, Valid> for MaybeUninit<T> {}
 //
 //   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and ABI as
 //   `T`
-unsafe impl<T> SizeEq<T> for MaybeUninit<T> {}
+unsafe impl<T> SizeEq<T> for MaybeUninit<T> {
+    fn cast_from_raw(t: NonNull<T>) -> NonNull<MaybeUninit<T>> {
+        cast!(t)
+    }
+}
+
 // SAFETY: See previous safety comment.
-unsafe impl<T> SizeEq<MaybeUninit<T>> for T {}
+unsafe impl<T> SizeEq<MaybeUninit<T>> for T {
+    fn cast_from_raw(t: NonNull<MaybeUninit<T>>) -> NonNull<T> {
+        cast!(t)
+    }
+}
