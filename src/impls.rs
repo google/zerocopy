@@ -100,32 +100,14 @@ safety_comment! {
     unsafe_impl!(bool: Immutable, FromZeros, IntoBytes, Unaligned);
     assert_unaligned!(bool);
     /// SAFETY:
-    /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
-    ///   closure:
-    ///   - Given `t: *mut bool` and `let r = *mut u8`, `r` refers to an object
-    ///     of the same size as that referred to by `t`. This is true because
-    ///     `bool` and `u8` have the same size (1 byte) [1]. Neither `r` nor `t`
-    ///     contain `UnsafeCell`s because neither `bool` nor `u8` do [3].
-    ///   - The impl must only return `true` for its argument if the original
-    ///     `Maybe<bool>` refers to a valid `bool`. We only return true if the
-    ///     `u8` value is 0 or 1, and both of these are valid values for `bool`.
-    ///     [2]
+    /// The impl must only return `true` for its argument if the original
+    /// `Maybe<bool>` refers to a valid `bool`. We only return true if the `u8`
+    /// value is 0 or 1, and both of these are valid values for `bool` [1].
     ///
-    /// [1] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#primitive-data-layout:
-    ///
-    ///   The size of most primitives is given in this table.
-    ///
-    ///   | Type      | `size_of::<Type>() ` |
-    ///   |-----------|----------------------|
-    ///   | `bool`    | 1                    |
-    ///   | `u8`/`i8` | 1                    |
-    ///
-    /// [2] Per https://doc.rust-lang.org/1.81.0/reference/types/boolean.html:
+    /// [1] Per https://doc.rust-lang.org/1.81.0/reference/types/boolean.html:
     ///
     ///   The value false has the bit pattern 0x00 and the value true has the
     ///   bit pattern 0x01.
-    ///
-    /// [3] TODO(#429): Justify this claim.
     unsafe_impl!(=> TryFromBytes for bool; |byte| {
         let byte = byte.transmute::<u8, invariant::Valid, _>();
         *byte.unaligned_as_ref() < 2
@@ -148,27 +130,14 @@ safety_comment! {
     /// [1] https://doc.rust-lang.org/1.81.0/reference/types/textual.html
     unsafe_impl!(char: Immutable, FromZeros, IntoBytes);
     /// SAFETY:
-    /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
-    ///   closure:
-    ///   - Given `t: *mut char` and `let r = *mut u32`, `r` refers to an object
-    ///     of the same size as that referred to by `t`. This is true because
-    ///     `char` and `u32` have the same size [1]. Neither `r` nor `t` contain
-    ///     `UnsafeCell`s because neither `char` nor `u32` do [3].
-    ///   - The impl must only return `true` for its argument if the original
-    ///     `Maybe<char>` refers to a valid `char`. `char::from_u32` guarantees
-    ///     that it returns `None` if its input is not a valid `char`. [2]
+    /// The impl must only return `true` for its argument if the original
+    /// `Maybe<char>` refers to a valid `char`. `char::from_u32` guarantees that
+    /// it returns `None` if its input is not a valid `char` [1].
     ///
-    /// [1] Per https://doc.rust-lang.org/nightly/reference/types/textual.html#layout-and-bit-validity:
-    ///
-    ///   `char` is guaranteed to have the same size and alignment as `u32` on
-    ///   all platforms.
-    ///
-    /// [2] Per https://doc.rust-lang.org/core/primitive.char.html#method.from_u32:
+    /// [1] Per https://doc.rust-lang.org/core/primitive.char.html#method.from_u32:
     ///
     ///   `from_u32()` will return `None` if the input is not a valid value for
     ///   a `char`.
-    ///
-    /// [3] TODO(#429): Justify this claim.
     unsafe_impl!(=> TryFromBytes for char; |c| {
         let c = c.transmute::<Unalign<u32>, invariant::Valid, _>();
         let c = c.read_unaligned().into_inner();
@@ -196,20 +165,9 @@ safety_comment! {
     /// [1] https://doc.rust-lang.org/1.81.0/reference/type-layout.html#str-layout
     unsafe_impl!(str: Immutable, FromZeros, IntoBytes, Unaligned);
     /// SAFETY:
-    /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
-    ///   closure:
-    ///   - Given `t: *mut str` and `let r = *mut [u8]`, `r` refers to an object
-    ///     of the same size as that referred to by `t`. This is true because
-    ///     `str` and `[u8]` have the same representation. [1] Neither `t` nor
-    ///     `r` contain `UnsafeCell`s because `[u8]` doesn't, and both `t` and
-    ///     `r` have that representation.
-    ///   - The impl must only return `true` for its argument if the original
-    ///     `Maybe<str>` refers to a valid `str`. `str::from_utf8` guarantees
-    ///     that it returns `Err` if its input is not a valid `str`. [2]
-    ///
-    /// [1] Per https://doc.rust-lang.org/1.81.0/reference/types/textual.html:
-    ///
-    ///   A value of type `str` is represented the same was as `[u8]`.
+    /// The impl must only return `true` for its argument if the original
+    /// `Maybe<str>` refers to a valid `str`. `str::from_utf8` guarantees that
+    /// it returns `Err` if its input is not a valid `str` [1].
     ///
     /// [2] Per https://doc.rust-lang.org/core/str/fn.from_utf8.html#errors:
     ///
@@ -307,25 +265,6 @@ safety_comment! {
     unsafe_impl!(NonZeroI128: Immutable, IntoBytes);
     unsafe_impl!(NonZeroUsize: Immutable, IntoBytes);
     unsafe_impl!(NonZeroIsize: Immutable, IntoBytes);
-    /// SAFETY:
-    /// - The safety requirements for `unsafe_impl!` with an `is_bit_valid`
-    ///   closure:
-    ///   - Given `t: *mut NonZeroXxx` and `let r = *mut xxx`, `r` refers to an
-    ///     object of the same size as that referred to by `t`. This is true
-    ///     because `NonZeroXxx` and `xxx` have the same size. [1] Neither `r`
-    ///     nor `t` refer to any `UnsafeCell`s because neither `NonZeroXxx` [2]
-    ///     nor `xxx` do.
-    ///   - The impl must only return `true` for its argument if the original
-    ///     `Maybe<NonZeroXxx>` refers to a valid `NonZeroXxx`. The only `xxx`
-    ///     which is not also a valid `NonZeroXxx` is 0. [1]
-    ///
-    /// [1] Per https://doc.rust-lang.org/1.81.0/core/num/type.NonZeroU16.html:
-    ///
-    ///   `NonZeroU16` is guaranteed to have the same layout and bit validity as
-    ///   `u16` with the exception that `0` is not a valid instance.
-    ///
-    /// [2] `NonZeroXxx` self-evidently does not contain `UnsafeCell`s. This is
-    ///     not a proof, but we are accepting this as a known risk per #1358.
     unsafe_impl_try_from_bytes_for_nonzero!(
         NonZeroU8[u8],
         NonZeroI8[i8],
