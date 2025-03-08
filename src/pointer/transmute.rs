@@ -7,7 +7,7 @@
 // those terms.
 
 use core::{
-    cell::UnsafeCell,
+    cell::{Cell, UnsafeCell},
     mem::{ManuallyDrop, MaybeUninit},
     num::Wrapping,
     ptr::NonNull,
@@ -405,19 +405,43 @@ safety_comment! {
     unsafe_impl_invariants_eq!(T => T, Wrapping<T>);
 
     /// SAFETY:
-    /// - `Unalign<T>` has the same size as `T` [1].
-    /// - Per [1], `Unalign<T>` has the same bit validity as `T`. Technically
+    /// - `UnsafeCell<T>` has the same size as `T` [1].
+    /// - Per [1], `UnsafeCell<T>` has the same bit validity as `T`. Technically
     ///   the term "representation" doesn't guarantee this, but the subsequent
     ///   sentence in the documentation makes it clear that this is the
     ///   intention.
     ///
     /// [1] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout:
     ///
-    ///   `UnsafeCell<T>` has the same in-memory representation as its inner type
-    ///   `T`. A consequence of this guarantee is that it is possible to convert
-    ///   between `T` and `UnsafeCell<T>`.
+    ///   `UnsafeCell<T>` has the same in-memory representation as its inner
+    ///   type `T`. A consequence of this guarantee is that it is possible to
+    ///   convert between `T` and `UnsafeCell<T>`.
     unsafe_impl_for_transparent_wrapper!(T: ?Sized => UnsafeCell<T>);
+
+    /// SAFETY:
+    /// - `Cell<T>` has the same size as `T` [1].
+    /// - Per [1], `Cell<T>` has the same bit validity as `T`. Technically the
+    ///   term "representation" doesn't guarantee this, but it does promise to
+    ///   have the "same memory layout and caveats as `UnsafeCell<T>`." The
+    ///   `UnsafeCell` docs [2] make it clear that bit validity is the intention
+    ///   even if that phrase isn't used.
+    ///
+    /// [1] Per https://doc.rust-lang.org/1.85.0/std/cell/struct.Cell.html#memory-layout:
+    ///
+    ///   `Cell<T>` has the same memory layout and caveats as `UnsafeCell<T>`.
+    ///   In particular, this means that `Cell<T>` has the same in-memory
+    ///   representation as its inner type `T`.
+    ///
+    /// [2] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout:
+    ///
+    ///   `UnsafeCell<T>` has the same in-memory representation as its inner
+    ///   type `T`. A consequence of this guarantee is that it is possible to
+    ///   convert between `T` and `UnsafeCell<T>`.
+    unsafe_impl_for_transparent_wrapper!(T: ?Sized => Cell<T>);
 }
+
+impl_transitive_transmute_from!(T: ?Sized => Cell<T> => T => UnsafeCell<T>);
+impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
 
 // SAFETY: `MaybeUninit<T>` has no validity requirements. Currently this is not
 // explicitly guaranteed, but it's obvious from `MaybeUninit`'s documentation

@@ -7,7 +7,11 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use core::{cell::UnsafeCell, mem::MaybeUninit as CoreMaybeUninit, ptr::NonNull};
+use core::{
+    cell::{Cell, UnsafeCell},
+    mem::MaybeUninit as CoreMaybeUninit,
+    ptr::NonNull,
+};
 
 use super::*;
 
@@ -861,6 +865,21 @@ safety_comment! {
     unsafe_impl!(T: ?Sized + Unaligned => Unaligned for ManuallyDrop<T>);
 }
 assert_unaligned!(ManuallyDrop<()>, ManuallyDrop<u8>);
+
+impl_for_transmute_from!(T: ?Sized + TryFromBytes => TryFromBytes for Cell<T>[UnsafeCell<T>]);
+impl_for_transmute_from!(T: ?Sized + FromZeros => FromZeros for Cell<T>[UnsafeCell<T>]);
+impl_for_transmute_from!(T: ?Sized + FromBytes => FromBytes for Cell<T>[UnsafeCell<T>]);
+impl_for_transmute_from!(T: ?Sized + IntoBytes => IntoBytes for Cell<T>[UnsafeCell<T>]);
+safety_comment! {
+    /// SAFETY:
+    /// `Cell<T>` has the same in-memory representation as `T` [1], and thus has
+    /// the same alignment as `T`.
+    ///
+    /// [1] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.Cell.html#memory-layout:
+    ///
+    ///   `Cell<T>` has the same in-memory representation as its inner type `T`.
+    unsafe_impl!(T: ?Sized + Unaligned => Unaligned for Cell<T>);
+}
 
 impl_for_transmute_from!(T: ?Sized + FromZeros => FromZeros for UnsafeCell<T>[<T>]);
 impl_for_transmute_from!(T: ?Sized + FromBytes => FromBytes for UnsafeCell<T>[<T>]);
