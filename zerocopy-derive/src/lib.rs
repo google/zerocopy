@@ -109,6 +109,7 @@ derive!(IntoBytes => derive_into_bytes => derive_into_bytes_inner);
 derive!(Unaligned => derive_unaligned => derive_unaligned_inner);
 derive!(ByteHash => derive_hash => derive_hash_inner);
 derive!(ByteEq => derive_eq => derive_eq_inner);
+derive!(SplitAt => derive_split_at => derive_split_at_inner);
 
 /// Deprecated: prefer [`FromZeros`] instead.
 #[deprecated(since = "0.8.0", note = "`FromZeroes` was renamed to `FromZeros`")]
@@ -628,6 +629,43 @@ fn derive_eq_inner(ast: &DeriveInput, _top_level: Trait) -> Result<TokenStream, 
         {
         }
     })
+}
+
+fn derive_split_at_inner(ast: &DeriveInput, _top_level: Trait) -> Result<TokenStream, Error> {
+    let repr = StructUnionRepr::from_attrs(&ast.attrs)?;
+
+    match &ast.data {
+        Data::Struct(_) => {}
+        Data::Enum(_) | Data::Union(_) => {
+            return Err(Error::new(Span::call_site(), "can only be applied to structs"));
+        }
+    };
+
+    if repr.get_packed().is_some() {
+        return Err(Error::new(Span::call_site(), "must not have #[repr(packed)] attribute"));
+    }
+
+    let fields = ast.data.fields();
+    let trailing_field = if let Some(((_, _, trailing_field), _)) = fields.split_last() {
+        trailing_field
+    } else {
+        return Err(Error::new(Span::call_site(), "must at least one field"));
+    };
+
+    // SAFETY: `#ty`, per the above check, is not packed; its trailing slice
+    // field is guaranteed to be well-aligned for its type.
+    Ok(impl_block(
+        ast,
+        &ast.data,
+        Trait::SplitAt,
+        FieldBounds::TRAILING_SELF,
+        SelfBounds::None,
+        None,
+        Some(quote! {
+            type Elem = <#trailing_field as ::zerocopy::SplitAt>::Elem;
+        }),
+        None,
+    ))
 }
 
 /// A struct is `TryFromBytes` if:
@@ -1434,6 +1472,7 @@ enum Trait {
     Sized,
     ByteHash,
     ByteEq,
+    SplitAt,
 }
 
 impl ToTokens for Trait {
@@ -1458,6 +1497,7 @@ impl ToTokens for Trait {
             Trait::Sized => "Sized",
             Trait::ByteHash => "ByteHash",
             Trait::ByteEq => "ByteEq",
+            Trait::SplitAt => "SplitAt",
         };
         let ident = Ident::new(s, Span::call_site());
         tokens.extend(core::iter::once(TokenTree::Ident(ident)));
