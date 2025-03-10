@@ -183,7 +183,7 @@ impl<T> Unalign<T> {
     #[inline(always)]
     pub fn try_deref(&self) -> Result<&T, AlignmentError<&Self, T>> {
         let inner = Ptr::from_ref(self).transmute();
-        match inner.bikeshed_try_into_aligned() {
+        match inner.try_into_aligned() {
             Ok(aligned) => Ok(aligned.as_ref()),
             Err(err) => Err(err.map_src(|src| src.into_unalign().as_ref())),
         }
@@ -200,7 +200,7 @@ impl<T> Unalign<T> {
     #[inline(always)]
     pub fn try_deref_mut(&mut self) -> Result<&mut T, AlignmentError<&mut Self, T>> {
         let inner = Ptr::from_mut(self).transmute::<_, _, (_, (_, _))>();
-        match inner.bikeshed_try_into_aligned() {
+        match inner.try_into_aligned() {
             Ok(aligned) => Ok(aligned.as_mut()),
             Err(err) => Err(err.map_src(|src| src.into_unalign().as_mut())),
         }

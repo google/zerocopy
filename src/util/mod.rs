@@ -397,6 +397,186 @@ where
     Ok(unsafe { alloc::boxed::Box::from_raw(ptr.as_ptr()) })
 }
 
+mod len_of {
+    use super::*;
+
+    /// A witness type for metadata of a valid instance of `&T`.
+    pub(crate) struct MetadataOf<T: ?Sized + KnownLayout> {
+        /// # Safety
+        ///
+        /// The size of an instance of `&T` with the given metadata is not
+        /// larger than `isize::MAX`.
+        meta: T::PointerMetadata,
+        _p: PhantomData<T>,
+    }
+
+    impl<T: ?Sized + KnownLayout> Copy for MetadataOf<T> {}
+    impl<T: ?Sized + KnownLayout> Clone for MetadataOf<T> {
+        fn clone(&self) -> Self {
+            *self
+        }
+    }
+
+    impl<T: ?Sized> MetadataOf<T>
+    where
+        T: KnownLayout,
+    {
+        /// Returns `None` if `meta` is greater than `t`'s metadata.
+        pub(crate) fn new_in_bounds(t: &T, meta: usize) -> Option<Self>
+        where
+            T: KnownLayout<PointerMetadata = usize>,
+        {
+            if meta <= Ptr::from_ref(t).len() {
+                // SAFETY: We have checked that `meta` is not greater than `t`'s
+                // metadata, which, by invariant on `&T`, addresses no more than
+                // `isize::MAX` bytes [1][2].
+                //
+                // [1] Per https://doc.rust-lang.org/1.85.0/std/primitive.reference.html#safety:
+                //
+                //    For all types, `T: ?Sized`, and for all `t: &T` or `t:
+                //    &mut T`, when such values cross an API boundary, the
+                //    following invariants must generally be upheld:
+                //
+                //    * `t` is non-null
+                //    * `t` is aligned to `align_of_val(t)`
+                //    * if `size_of_val(t) > 0`, then `t` is dereferenceable for
+                //      `size_of_val(t)` many bytes
+                //
+                //    If `t` points at address `a`, being "dereferenceable" for
+                //    N bytes means that the memory range `[a, a + N)` is all
+                //    contained within a single allocated object.
+                //
+                // [2] Per https://doc.rust-lang.org/1.85.0/std/ptr/index.html#allocated-object:
+                //
+                //    For any allocated object with `base` address, `size`, and
+                //    a set of `addresses`, the following are guaranteed:
+                //    - For all addresses `a` in `addresses`, `a` is in the
+                //      range `base .. (base + size)` (note that this requires
+                //      `a < base + size`, not `a <= base + size`)
+                //    - `base` is not equal to [`null()`] (i.e., the address
+                //      with the numerical value 0)
+                //    - `base + size <= usize::MAX`
+                //    - `size <= isize::MAX`
+                Some(unsafe { Self::new_unchecked(meta) })
+            } else {
+                None
+            }
+        }
+
+        /// # Safety
+        ///
+        /// The size of an instance of `&T` with the given metadata is not
+        /// larger than `isize::MAX`.
+        pub(crate) unsafe fn new_unchecked(meta: T::PointerMetadata) -> Self {
+            // SAFETY: The caller has promised that the size of an instance of
+            // `&T` with the given metadata is not larger than `isize::MAX`.
+            Self { meta, _p: PhantomData }
+        }
+
+        pub(crate) fn get(&self) -> T::PointerMetadata
+        where
+            T::PointerMetadata: Copy,
+        {
+            self.meta
+        }
+
+        #[inline]
+        pub(crate) fn padding_needed_for(&self) -> usize
+        where
+            T: KnownLayout<PointerMetadata = usize>,
+        {
+            let trailing_slice_layout = crate::trailing_slice_layout::<T>();
+            // SAFETY: By invariant on `self`, a `&T` with metadata `self.meta`
+            // describes an object of size `<= isize::MAX`. This computes the
+            // size of such a `&T` without any trailing padding, and so neither
+            // the multiplication nor the addition will overflow.
+            //
+            // TODO(#67): Remove this allow. See NumExt for more details.
+            #[allow(unstable_name_collisions, clippy::incompatible_msrv)]
+            let unpadded_size = unsafe {
+                let trailing_size = self.meta.unchecked_mul(trailing_slice_layout.elem_size);
+                trailing_size.unchecked_add(trailing_slice_layout.offset)
+            };
+
+            util::padding_needed_for(unpadded_size, T::LAYOUT.align)
+        }
+
+        #[inline(always)]
+        pub(crate) fn validate_cast_and_convert_metadata(
+            addr: usize,
+            bytes_len: MetadataOf<[u8]>,
+            cast_type: CastType,
+            meta: Option<T::PointerMetadata>,
+        ) -> Result<(MetadataOf<T>, MetadataOf<[u8]>), MetadataCastError> {
+            let layout = match meta {
+                None => T::LAYOUT,
+                // This can return `None` if the metadata describes an object
+                // which can't fit in an `isize`.
+                Some(meta) => {
+                    let size = match meta.size_for_metadata(T::LAYOUT) {
+                        Some(size) => size,
+                        None => return Err(MetadataCastError::Size),
+                    };
+                    DstLayout { align: T::LAYOUT.align, size_info: crate::SizeInfo::Sized { size } }
+                }
+            };
+            // Lemma 0: By contract on `validate_cast_and_convert_metadata`, if
+            // the result is `Ok(..)`, then a `&T` with `elems` trailing slice
+            // elements is no larger in size than `bytes_len.get()`.
+            let (elems, split_at) =
+                layout.validate_cast_and_convert_metadata(addr, bytes_len.get(), cast_type)?;
+            let elems = T::PointerMetadata::from_elem_count(elems);
+
+            // For a slice DST type, if `meta` is `Some(elems)`, then we
+            // synthesize `layout` to describe a sized type whose size is equal
+            // to the size of the instance that we are asked to cast. For sized
+            // types, `validate_cast_and_convert_metadata` returns `elems == 0`.
+            // Thus, in this case, we need to use the `elems` passed by the
+            // caller, not the one returned by
+            // `validate_cast_and_convert_metadata`.
+            //
+            // Lemma 1: A `&T` with `elems` trailing slice elements is no larger
+            // in size than `bytes_len.get()`. Proof:
+            // - If `meta` is `None`, then `elems` satisfies this condition by
+            //   Lemma 0.
+            // - If `meta` is `Some(meta)`, then `layout` describes an object
+            //   whose size is equal to the size of an `&T` with `meta`
+            //   metadata. By Lemma 0, that size is not larger than
+            //   `bytes_len.get()`.
+            //
+            // Lemma 2: A `&T` with `elems` trailing slice elements is no larger
+            // than `isize::MAX` bytes. Proof: By Lemma 1, a `&T` with metadata
+            // `elems` is not larger in size than `bytes_len.get()`. By
+            // invariant on `MetadataOf<[u8]>`, a `&[u8]` with metadata
+            // `bytes_len` is not larger than `isize::MAX`. Because
+            // `size_of::<u8>()` is `1`, a `&[u8]` with metadata `bytes_len` has
+            // size `bytes_len.get()` bytes. Therefore, a `&T` with metadata
+            // `elems` has size not larger than `isize::MAX`.
+            let elems = meta.unwrap_or(elems);
+
+            // SAFETY: See Lemma 2.
+            let elems = unsafe { MetadataOf::new_unchecked(elems) };
+
+            // SAFETY: Let `size` be the size of a `&T` with metadata `elems`.
+            // By post-condition on `validate_cast_and_convert_metadata`, one of
+            // the following conditions holds:
+            // - `split_at == size`, in which case, by Lemma 2, `split_at <=
+            //   isize::MAX`. Since `size_of::<u8>() == 1`, a `[u8]` with
+            //   `split_at` elems has size not larger than `isize::MAX`.
+            // - `split_at == bytes_len - size`. Since `bytes_len:
+            //   MetadataOf<u8>`, and since `size` is non-negative, `split_at`
+            //   addresses no more bytes than `bytes_len` does. Since
+            //   `bytes_len: MetadataOf<u8>`, `bytes_len` describes a `[u8]`
+            //   which has no more than `isize::MAX` bytes, and thus so does
+            //   `split_at`.
+            let split_at = unsafe { MetadataOf::<[u8]>::new_unchecked(split_at) };
+            Ok((elems, split_at))
+        }
+    }
+}
+
+pub(crate) use len_of::MetadataOf;
+
 /// Since we support multiple versions of Rust, there are often features which
 /// have been stabilized in the most recent stable release which do not yet
 /// exist (stably) on our MSRV. This module provides polyfills for those
@@ -455,6 +635,20 @@ pub(crate) mod polyfills {
         ///
         /// The caller promises that the subtraction will not underflow.
         unsafe fn unchecked_sub(self, rhs: Self) -> Self;
+
+        /// Add without checking for overflow.
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that the addition will not overflow.
+        unsafe fn unchecked_add(self, rhs: Self) -> Self;
+
+        /// Multiply without checking for overflow.
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that the multiplication will not overflow.
+        unsafe fn unchecked_mul(self, rhs: Self) -> Self;
     }
 
     impl NumExt for usize {
@@ -472,6 +666,44 @@ pub(crate) mod polyfills {
                 None => {
                     // SAFETY: The caller promises that the subtraction will not
                     // underflow.
+                    unsafe { core::hint::unreachable_unchecked() }
+                }
+            }
+        }
+
+        // NOTE on coverage: this will never be tested in nightly since it's a
+        // polyfill for a feature which has been stabilized on our nightly
+        // toolchain.
+        #[cfg_attr(
+            all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
+            coverage(off)
+        )]
+        #[inline(always)]
+        unsafe fn unchecked_add(self, rhs: usize) -> usize {
+            match self.checked_add(rhs) {
+                Some(x) => x,
+                None => {
+                    // SAFETY: The caller promises that the addition will not
+                    // overflow.
+                    unsafe { core::hint::unreachable_unchecked() }
+                }
+            }
+        }
+
+        // NOTE on coverage: this will never be tested in nightly since it's a
+        // polyfill for a feature which has been stabilized on our nightly
+        // toolchain.
+        #[cfg_attr(
+            all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
+            coverage(off)
+        )]
+        #[inline(always)]
+        unsafe fn unchecked_mul(self, rhs: usize) -> usize {
+            match self.checked_mul(rhs) {
+                Some(x) => x,
+                None => {
+                    // SAFETY: The caller promises that the multiplication will
+                    // not overflow.
                     unsafe { core::hint::unreachable_unchecked() }
                 }
             }

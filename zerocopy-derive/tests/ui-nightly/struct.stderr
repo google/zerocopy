@@ -374,6 +374,48 @@ error[E0587]: type has conflicting packed and align representation hints
 188 | struct Unaligned3;
     | ^^^^^^^^^^^^^^^^^
 
+error[E0277]: the trait bound `SplitAtNotKnownLayout: zerocopy::KnownLayout` is not satisfied
+   --> tests/ui-nightly/struct.rs:214:10
+    |
+214 | #[derive(SplitAt)]
+    |          ^^^^^^^ the trait `zerocopy::KnownLayout` is not implemented for `SplitAtNotKnownLayout`
+    |
+    = note: Consider adding `#[derive(KnownLayout)]` to `SplitAtNotKnownLayout`
+    = help: the following other types implement trait `zerocopy::KnownLayout`:
+              &T
+              &mut T
+              ()
+              *const T
+              *mut T
+              AU16
+              AtomicBool
+              AtomicI16
+            and $N others
+note: required by a bound in `SplitAt`
+   --> $WORKSPACE/src/lib.rs
+    |
+    |     pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
+    |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `SplitAt`
+    = note: this error originates in the derive macro `SplitAt` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `u8: SplitAt` is not satisfied
+   --> tests/ui-nightly/struct.rs:217:10
+    |
+217 | #[derive(SplitAt, KnownLayout)]
+    |          ^^^^^^^ the trait `SplitAt` is not implemented for `u8`
+    |
+    = note: Consider adding `#[derive(SplitAt)]` to `u8`
+    = help: the following other types implement trait `SplitAt`:
+              SplitAtNotKnownLayout
+              SplitAtSized
+              [T]
+    = help: see issue #48214
+    = note: this error originates in the derive macro `SplitAt` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
+    |
+9   + #![feature(trivial_bounds)]
+    |
+
 error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
    --> tests/ui-nightly/struct.rs:161:28
     |
