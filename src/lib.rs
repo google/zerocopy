@@ -381,6 +381,7 @@ use crate::pointer::invariant::{self, BecauseExclusive};
 extern crate alloc;
 #[cfg(any(feature = "alloc", test))]
 use alloc::{boxed::Box, vec::Vec};
+use util::MetadataOf;
 
 #[cfg(any(feature = "alloc", test, kani))]
 use core::alloc::Layout;
@@ -1019,6 +1020,162 @@ safety_comment! {
     ///   perform an `as` cast from `*mut T` and `*mut T::MaybeUninit`, and this
     ///   operation preserves referent size (ie, `size_of_val_raw`).
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T::MaybeUninit)] MaybeUninit<T>);
+}
+
+/// DSTs that can be split in two.
+///
+/// # Safety
+///
+/// The trailing slice is well-aligned for its element type.
+pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
+    /// The element type of the trailing slice.
+    type Elem;
+
+    /// Splits `T` in two.
+    ///
+    /// # Safety
+    ///
+    /// The caller promises that:
+    /// 0. `l_len.get()` is not greater than the length of `self`'s trailing
+    ///    slice.
+    /// 1. if `I::Aliasing` is [`Exclusive`], then `l_len.padding_needed_for()
+    ///    == 0`.
+    #[doc(hidden)]
+    unsafe fn ptr_split_at_unchecked<'a, I, R>(
+        ptr: Ptr<'a, Self, I>,
+        l_len: MetadataOf<Self>,
+    ) -> (Ptr<'a, Self, I>, Ptr<'a, [Self::Elem], I>)
+    where
+        I: invariant::Invariants,
+        Self: pointer::Read<I::Aliasing, R>,
+    {
+        let inner = ptr.as_inner();
+
+        // SAFETY: The caller promises that `l_len.get()` is not greater than
+        // the length of `self`'s trailing slice.
+        let (left, right) = unsafe { inner.split_at_unchecked(l_len) };
+
+        // Lemma 0: `left` and `right` conform to the aliasing invariant
+        // `I::Aliasing`. Proof: If `I::Aliasing` is `Exclusive`, the caller
+        // promises that `l_len.padding_needed_for() == 0`. Consequently,
+        // there is no trailing padding after `left`'s final element that would
+        // overlap into `right`. If `I::Aliasing` is shared, then overlap
+        // between their referents is permissible.
+
+        // SAFETY:
+        // 0. `left` conforms to the aliasing invariant of `I::Aliasing, by
+        //    Lemma 0.
+        // 1. `left` conforms to the alignment invariant of `I::Alignment,
+        //    because the referents of `left` and `Self` have the same address
+        //    and type (and, thus, alignment requirement).
+        // 2. `left` conforms to the validity invariant of `I::Validity``,
+        //    because TODO.
+        let left = unsafe { Ptr::from_inner(left) };
+
+        // SAFETY:
+        // 0. `right` conforms to the aliasing invariant of `I::Aliasing, by
+        //    Lemma 0.
+        // 1. `right` conforms to the alignment invariant of `I::Alignment,
+        //    because TODO. (this is a tricky one)
+        // 2. `right` conforms to the validity invariant of `I::Validity``,
+        //    because TODO. (this is a tricky one).
+        let right = unsafe { Ptr::from_inner(right) };
+
+        (left, right)
+    }
+
+    /// Unsafely splits `self` in two.
+    ///
+    /// # Safety
+    ///
+    /// The caller promises that `l_len` is not greater than the length of
+    /// `self`'s trailing slice.
+    unsafe fn split_at_unchecked(&self, l_len: usize) -> (&Self, &[Self::Elem])
+    where
+        Self: Immutable,
+    {
+        // SAFETY: `&self` is an instance of `&Self` for which the caller has
+        // promised that `l_len` is not greater than the length of `self`'s
+        // trailing slice.
+        let l_len = unsafe { MetadataOf::new_unchecked(l_len) };
+        let ptr = Ptr::from_ref(self);
+        // SAFETY:
+        // 0. The caller promises that `l_len` is not greater than the length of
+        //    `self`'s trailing slice.
+        // 1. `ptr`'s aliasing is `Shared`
+        // 2. By contract on `SplitAt`, the trailing slice is well aligned for
+        //    its element type.
+        let (left, right) = unsafe { Self::ptr_split_at_unchecked(ptr, l_len) };
+        (left.as_ref(), right.as_ref())
+    }
+
+    /// Attempts to split `self` into two.
+    ///
+    /// Returns `None` if `l_len` is greater than the length of `self`'s
+    /// trailing slice.
+    fn split_at(&self, l_len: usize) -> Option<(&Self, &[Self::Elem])>
+    where
+        Self: Immutable,
+    {
+        if l_len <= Ptr::from_ref(self).len() {
+            // SAFETY: We have checked that `l_len` is not greater than the
+            // length of `self`'s trailing slice.
+            Some(unsafe { self.split_at_unchecked(l_len) })
+        } else {
+            None
+        }
+    }
+
+    /// Unsafely splits `self` in two.
+    ///
+    /// # Safety
+    ///
+    /// The caller promises that:
+    /// 0. `l_len` is not greater than the length of `self`'s trailing slice.
+    /// 1. The trailing padding bytes of the left portion will not overlap the
+    ///    right portion. For some dynamically sized types, the padding that
+    ///    appears after the trailing slice field [is a dynamic function of the
+    ///    trailing slice length](KnownLayout#slice-dst-layout). Thus for some
+    ///    types this condition is dependent on the value of `l_len`.
+    unsafe fn split_at_mut_unchecked(&mut self, l_len: usize) -> (&mut Self, &mut [Self::Elem]) {
+        // SAFETY: `&mut self` is an instance of `&mut Self` for which the
+        // caller has promised that `l_len` is not greater than the length of
+        // `self`'s trailing slice.
+        let l_len = unsafe { MetadataOf::new_unchecked(l_len) };
+        let ptr = Ptr::from_mut(self);
+        // SAFETY:
+        // 0. The caller promises that `l_len` is not greater than the length of
+        //    `self`'s trailing slice.
+        // 1. `ptr`'s aliasing is `Exclusive`; the caller promises that
+        //    `l_len.padding_needed_for() == 0`.
+        // 2. By contract on `SplitAt`, the trailing slice is well aligned for
+        //    its element type.
+        let (left, right) = unsafe { Self::ptr_split_at_unchecked(ptr, l_len) };
+        (left.as_mut(), right.as_mut())
+    }
+
+    /// Attempts to split `self` into two.
+    ///
+    /// Returns `None` if `l_len` is greater than the length of `self`'s
+    /// trailing slice, or if the given `l_len` would result in [the trailing
+    /// padding](KnownLayout#slice-dst-layout) of the left portion overlapping
+    /// the right portion.
+    fn split_at_mut(&mut self, l_len: usize) -> Option<(&mut Self, &mut [Self::Elem])> {
+        match MetadataOf::new(self, l_len) {
+            Some(l_len) if l_len.padding_needed_for() == 0 => {
+                // SAFETY: We have ensured both that:
+                // 0. `l_len <= self.len()`
+                // 1. `l_len.padding_needed_for() == 0
+                Some(unsafe { self.split_at_mut_unchecked(l_len.get()) })
+            }
+            _ => None,
+        }
+    }
+}
+
+// SAFETY: TODO
+unsafe impl<T> SplitAt for [T] {
+    type Elem = T;
 }
 
 /// Analyzes whether a type is [`FromZeros`].

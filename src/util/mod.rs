@@ -366,6 +366,108 @@ where
     Ok(unsafe { alloc::boxed::Box::from_raw(ptr.as_ptr()) })
 }
 
+mod len_of {
+    use super::*;
+
+    /// A witness type for metadata of a valid instance of `&T`.
+    pub(crate) struct MetadataOf<T: ?Sized + KnownLayout> {
+        /// # Safety
+        ///
+        /// The size of an instance of `&T` with the given metadata is not
+        /// larger than `isize::MAX`.
+        meta: T::PointerMetadata,
+        _p: PhantomData<T>,
+    }
+
+    impl<T: ?Sized + KnownLayout> Copy for MetadataOf<T> {}
+    impl<T: ?Sized + KnownLayout> Clone for MetadataOf<T> {
+        fn clone(&self) -> Self {
+            *self
+        }
+    }
+
+    impl<T: ?Sized> MetadataOf<T>
+    where
+        T: KnownLayout,
+    {
+        /// Returns `None` if `meta` is greater than `t`'s metadata.
+        pub(crate) fn new(t: &T, meta: usize) -> Option<Self>
+        where
+            T: KnownLayout<PointerMetadata = usize>,
+        {
+            if meta <= Ptr::from_ref(t).len() {
+                //
+                Some(unsafe { Self::new_unchecked(meta) })
+            } else {
+                None
+            }
+        }
+
+        /// # Safety
+        ///
+        /// The size of an instance of `&T` with the given metadata is not
+        /// larger than `isize::MAX`.
+        pub(crate) unsafe fn new_unchecked(meta: T::PointerMetadata) -> Self {
+            // SAFETY: The caller has promised that the size of an instance of
+            // `&T` with the given metadata is not larger than `isize::MAX`.
+            Self { meta, _p: PhantomData }
+        }
+
+        pub(crate) fn get(&self) -> T::PointerMetadata
+        where
+            T::PointerMetadata: Copy,
+        {
+            self.meta
+        }
+
+        #[inline]
+        pub(crate) fn padding_needed_for(&self) -> usize
+        where
+            T: KnownLayout<PointerMetadata = usize>,
+        {
+            trait LayoutFacts {
+                const SIZE_INFO: TrailingSliceLayout;
+            }
+
+            impl<T: ?Sized> LayoutFacts for T
+            where
+                T: KnownLayout<PointerMetadata = usize>,
+            {
+                const SIZE_INFO: TrailingSliceLayout = match T::LAYOUT.size_info {
+                    crate::SizeInfo::Sized { .. } => const_panic!("unreachable"),
+                    crate::SizeInfo::SliceDst(info) => info,
+                };
+            }
+            // SAFETY: By invariant on `self.meta`, `meta`
+            let trailing_size = unsafe { self.meta.unchecked_mul(T::SIZE_INFO.elem_size) };
+            // SAFETY: TODO
+            let unpadded_size = unsafe { trailing_size.unchecked_add(T::SIZE_INFO.offset) };
+            util::padding_needed_for(unpadded_size, T::LAYOUT.align)
+        }
+
+        #[inline(always)]
+        pub(crate) fn validate_cast_and_convert_metadata(
+            addr: usize,
+            bytes_len: usize,
+            cast_type: CastType,
+        ) -> Result<(MetadataOf<T>, MetadataOf<[u8]>), MetadataCastError> {
+            let (elems, split_at) =
+                T::LAYOUT.validate_cast_and_convert_metadata(addr, bytes_len, cast_type)?;
+            let elems = T::PointerMetadata::from_elem_count(elems);
+            let elems = unsafe { MetadataOf::new_unchecked(elems) };
+            let split_at = unsafe { MetadataOf::new_unchecked(split_at) };
+            Ok((elems, split_at))
+        }
+
+        pub(crate) fn size_of(&self) -> usize {
+            // TODO: gotta go fast(er)
+            self.meta.size_for_metadata(T::LAYOUT).unwrap()
+        }
+    }
+}
+
+pub(crate) use len_of::MetadataOf;
+
 /// Since we support multiple versions of Rust, there are often features which
 /// have been stabilized in the most recent stable release which do not yet
 /// exist (stably) on our MSRV. This module provides polyfills for those

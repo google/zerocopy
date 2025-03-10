@@ -18,7 +18,8 @@ use crate::{
         invariant::*,
         transmute::{MutationCompatible, SizeEq, TransmuteFromPtr},
     },
-    AlignmentError, CastError, CastType, KnownLayout, SizeError, TryFromBytes, ValidityError,
+    AlignmentError, CastError, CastType, KnownLayout, SizeError, SplitAt, TryFromBytes,
+    ValidityError,
 };
 
 /// Module used to gate access to [`Ptr`]'s fields.
@@ -118,7 +119,7 @@ mod def {
         ///    [`I::Alignment`](invariant::Alignment).
         /// 2. `ptr` conforms to the validity invariant of
         ///    [`I::Validity`](invariant::Validity).
-        pub(super) unsafe fn from_inner(ptr: PtrInner<'a, T>) -> Ptr<'a, T, I> {
+        pub(crate) unsafe fn from_inner(ptr: PtrInner<'a, T>) -> Ptr<'a, T, I> {
             // SAFETY: The caller has promised to satisfy all safety invariants
             // of `Ptr`.
             Self { ptr, _invariants: PhantomData }
@@ -713,7 +714,7 @@ mod _transitions {
 
         /// Checks the `self`'s alignment at runtime, returning an aligned `Ptr`
         /// on success.
-        pub(crate) fn bikeshed_try_into_aligned(
+        pub(crate) fn try_into_aligned(
             self,
         ) -> Result<Ptr<'a, T, (I::Aliasing, Aligned, I::Validity)>, AlignmentError<Self, T>>
         where
@@ -1109,7 +1110,7 @@ mod _casts {
         pub(crate) fn try_cast_into<U, R>(
             self,
             cast_type: CastType,
-            meta: Option<U::PointerMetadata>,
+            meta: Option<crate::MetadataOf<U>>,
         ) -> Result<
             (Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, Ptr<'a, [u8], I>),
             CastError<Self, U>,
@@ -1175,7 +1176,7 @@ mod _casts {
         #[inline(always)]
         pub(crate) fn try_cast_into_no_leftover<U, R>(
             self,
-            meta: Option<U::PointerMetadata>,
+            meta: Option<crate::MetadataOf<U>>,
         ) -> Result<Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, CastError<Self, U>>
         where
             I::Aliasing: Reference,
@@ -1267,24 +1268,49 @@ mod _casts {
     }
 }
 
-/// Projections through the referent.
-mod _project {
+mod _meta {
     use super::*;
 
-    impl<'a, T, I> Ptr<'a, [T], I>
+    #[allow(clippy::needless_lifetimes)]
+    impl<'a, T, I> Ptr<'a, T, I>
     where
-        T: 'a,
+        T: 'a + ?Sized + KnownLayout,
         I: Invariants,
     {
-        /// The number of slice elements in the object referenced by `self`.
+        /// Produces the metadata of this `ptr`.
         ///
         /// # Safety
         ///
-        /// Unsafe code my rely on `len` satisfying the above contract.
-        pub(crate) fn len(&self) -> usize {
-            self.as_inner().len()
+        /// Unsafe code my rely on `meta` satisfying the above contract.
+        pub(crate) fn meta(self) -> T::PointerMetadata {
+            self.as_inner().meta()
+        }
+
+        /// Produces a `PtrInner` with the same address and provenance as `self` but
+        /// the given `meta`.
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that if `self`'s referent is not zero sized, then
+        /// a pointer constructed from its address with the given `meta` metadata
+        /// will address a subset of the allocation pointed to by `self`.
+        #[inline]
+        pub(crate) unsafe fn with_meta(self, meta: T::PointerMetadata) -> Self
+        where
+            T: KnownLayout,
+        {
+            // SAFETY: TODO
+            let inner = unsafe { self.as_inner().with_meta(meta) };
+
+            // SAFETY: TODO
+            unsafe { Self::from_inner(inner) }
         }
     }
+}
+
+/// Projections through the referent.
+mod _project {
+    use super::*;
 
     impl<'a, T, I> Ptr<'a, [T], I>
     where
@@ -1303,6 +1329,22 @@ mod _project {
             // 2. TODO: Need to cite facts about `[T]`'s layout (same for the
             //    preceding points)
             self.as_inner().iter().map(|elem| unsafe { Ptr::from_inner(elem) })
+        }
+    }
+
+    #[allow(clippy::needless_lifetimes)]
+    impl<'a, T, I> Ptr<'a, T, I>
+    where
+        T: 'a + ?Sized + KnownLayout<PointerMetadata = usize>,
+        I: Invariants,
+    {
+        /// The number of slice elements in the object referenced by `self`.
+        ///
+        /// # Safety
+        ///
+        /// Unsafe code my rely on `len` satisfying the above contract.
+        pub(crate) fn len(&self) -> usize {
+            self.as_inner().len()
         }
     }
 }
