@@ -53,7 +53,7 @@ help: the return type of this call is `&_` due to the type of the argument passe
   --> tests/ui-nightly/transmute-ref-dst-not-a-reference.rs:17:36
    |
 17 | const DST_NOT_A_REFERENCE: usize = transmute_ref!(&0u8);
-   |                                    ^^^^^^^^^^^^^^^^^^^^ this argument influences the return type of `$crate`
+   |                                    ^^^^^^^^^^^^^^^^^^^^ this argument influences the return type of `must_use`
 note: function defined here
   --> src/util/macro_util.rs
    |
