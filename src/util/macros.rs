@@ -802,3 +802,83 @@ macro_rules! impl_size_eq {
         };
     };
 }
+
+macro_rules! const_fn {
+    (
+        $vis:vis $name:ident $(< $($tyvar:ident),* >)?
+        ( $($arg:ident: $argty:ty),* ) -> $retty:ty
+        $(
+            where $($wheretyvar:ident: $wherebound:path,)*
+        )?
+        $body:block
+    ) => {
+        #[allow(non_camel_case_types)]
+        $vis trait $name $(< $($tyvar),* >)?
+        where Self: crate::util::macros::HasArgs<($($argty,)*), Args = ($($argty,)*)>,
+        $(
+            $($wheretyvar: $wherebound),*
+        )?
+        {
+            const ARGS: Self::Args;
+
+            const __RETURN: $retty = {
+                let ($($arg),*) = Self::ARGS;
+                loop {
+                    break $body;
+                }
+            };
+        }
+    };
+}
+
+macro_rules! call_const_fn {
+    (
+        $name:ident $(:: $names:ident)* $(:: < $($ty:ty),* >)? ($($arg:expr),*)
+    ) => {
+        {
+            enum Call {}
+
+            impl $name $(:: $names)* $(< $($ty),* >)? for Call {
+                const ARGS: Self::Args = ($($arg,)*);
+            }
+
+            <Call as $name $(:: $names)* $(:: < $($ty),* >)?>::__RETURN
+        }
+    };
+}
+
+// Used in the implementation of `const_fn!`.
+pub(crate) trait HasArgs<A> {
+    type Args;
+}
+
+impl<A, T> HasArgs<A> for T {
+    type Args = A;
+}
+
+mod tests {
+    #[test]
+    fn test_const_fn() {
+        trait Foo {
+            const N: usize;
+        }
+
+        impl Foo for () {
+            const N: usize = 5;
+        }
+
+        const_fn!(foobar<T>(_t: T, n: usize) -> usize
+        where
+            T: Foo,
+            T: Copy,
+        {
+            T::N * n
+        });
+
+        const BLAH: usize = call_const_fn!(foobar::<()>((), 4));
+
+        const _: () = {
+            static_assert!(=> BLAH == 20);
+        };
+    }
+}
