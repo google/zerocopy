@@ -92,6 +92,141 @@ pub(crate) enum MetadataCastError {
     Size,
 }
 
+/// Parameters necessary to perform an infallible reference cast on slice DSTs.
+///
+/// # Safety
+///
+/// Given `Src: KnownLayout` and `Dst: KnownLayout`, it is only possible to
+/// produce `CastParams` via
+/// `Src::LAYOUT.try_compute_cast_params(&Dst::LAYOUT)`, and that method will
+/// only return `Some` if it is possible to perform an infallible reference cast
+/// from `&Src` to `&Dst`.
+#[derive(Copy, Clone)]
+pub(crate) struct CastParams {
+    // TODO: Also need the invariant that `Src`'s alignment is not smaller than
+    // `Dst`'s alignment, or else, once unsized locals are supported, a
+    // conversion could permit `*dst = ...` to write padding past the end of
+    // `*src`.
+    /// Given `sl: TrailingSliceLayout` (source layout) and `dl:
+    /// TrailingSliceLayout` (destination layout), this is computed as:
+    ///
+    /// `(sl.offset - dl.offset) / dl.elem_size`
+    ///
+    /// INVARIANT: `CastParams` can only be constructed if `sl.offset -
+    /// dl.offset` is an integer multiple of `dl.elem_size`.
+    offset_delta_elems: usize,
+    /// `sl.elem_size / dl.elem_size`
+    ///
+    /// INVARIANT: `CastParams` can only be constructed if `sl.elem_size` is an
+    /// integer multiple of `dl.elem_size`, and if `dl.elem_size > 0`.
+    elem_multiple: usize,
+}
+
+impl CastParams {
+    /// Given the metadata from `src: &Src`, computes the metadata required in
+    /// order for `dst: &Dst` with the same address to reference the same number
+    /// of bytes as `src`.
+    ///
+    /// # Safety
+    ///
+    /// If `Src: KnownLayout` and `Dst: KnownLayout`, and if `self` was computed
+    /// as `Src::LAYOUT.try_compute_cast_params(&Dst::LAYOUT)`, then the
+    /// following is guaranteed:
+    ///
+    /// Let `src_meta` be the pointer metadata from a `src: &Src`, and compute
+    /// `let dst_meta = self.compute_cast(src_meta)`. If `dst: &Dst` is
+    /// constructed using the address of `src` and using `dst_meta` as its
+    /// pointer metadata, then `dst` will address the same bytes as `src`.
+    ///
+    /// TODO: Mention that post-padding may not be preserved.
+    ///
+    /// # Panics
+    ///
+    /// If the safety preconditions do not hold, then `compute_cast` may panic
+    /// due to arithmetic overflow. Note that, as `compute_cast` is a safe
+    /// function, failing to uphold the safety preconditions cannot cause
+    /// immediate undefined behavior.
+    pub(crate) const fn compute_cast(self, src_meta: usize) -> usize {
+        // PANICS: This function is permitted to panic if its safety
+        // preconditions are not upheld.
+        //
+        // SAFETY/PANICS: If `Src: KnownLayout`, `Dst: KnownLayout`, and `self`
+        // was computed as `Src::LAYOUT.try_compute_cast_params(&Dst::LAYOUT)`,
+        // then `self` is a witness to the infallibility of casts from `&Src` to
+        // `&Dst`, and the internal invariants hold with respect to `Src` and
+        // `Dst`. Given `sl: Src::LAYOUT` and `dl: Dst::LAYOUT`, these
+        // invariants guarantee that:
+        //
+        // (1) `self.offset_delta_elems = (sl.offset - dl.offset) /
+        //     dl.elem_size`
+        //
+        // (2) `self.elem_multiple = sl.elem_size / dl.elem_size` where
+        //     `sl.elem_size` is an integer multiple of `dl.elem_size`
+        //
+        // If the safety preconditions are upheld, then the caller has promised
+        // that `src_meta` is the pointer metadata from some `src: &Src`. By
+        // invariant on `&Src`, `src` cannot address more than `isize::MAX`
+        // bytes [1]. Thus:
+        //
+        // (3)  `sl.offset + (sl.elem_size * src_meta) = src_len <= isize::MAX`
+        //
+        // (4)  `self.offset_delta_elems * dl.elem_size = sl.offset - dl.offset`
+        //      (rearranging (1))
+        //
+        // (5)  `sl.offset = (self.offset_delta_elems * dl.elem_size) +
+        //      dl.offset`
+        //
+        // (6)  `(self.offset_delta_elems * dl.elem_size) + dl.offset +
+        //      (sl.elem_size * src_meta) = src_len <= isize::MAX` (substituting
+        //      (5) into (3))
+        //
+        // (7)  `sl.elem_size = self.elem_multiple * dl.elem_size` (rearranging
+        //      (2))
+        //
+        // (8)  `(self.offset_delta_elems * dl.elem_size) + dl.offset +
+        //      (self.elem_multiple * dl.elem_size * src_meta) = src_len <=
+        //      isize::MAX` (substituting (7) into (6))
+        //
+        // (9)  `(self.offset_delta_elems * dl.elem_size) + (self.elem_multiple
+        //      * dl.elem_size * src_meta) = src_len - dl.offset <= isize::MAX -
+        //      dl.offset`
+        //
+        // (10) `self.offset_delta_elems + (self.elem_multiple * src_meta) =
+        //      (src_len - dl.offset) / dl.elem_size <= (isize::MAX - dl.offset)
+        //      / dl.elem_size`
+        //
+        // The left-hand side of (10) is the expression we compute and return
+        // from this method. Since `dl.offset >= 0` and `dl.elem_size > 1`, the
+        // right-hand side is not greater than `usize::MAX`, and thus this
+        // computation will not overflow, and thus it will not panic.
+        //
+        // We further need to prove that, if the caller takes this resulting
+        // value as `dst_meta` and uses it to synthesize a `dst &Dst`, this will
+        // be address the same number of bytes as `src`. The number of bytes is
+        // given by:
+        //
+        // (11) `dst_len = dl.offset + (dl.elem_size * dst_meta)`
+        //
+        // (12) `dst_len = dl.offset + (dl.elem_size * (self.offset_delta_elems
+        //      + (self.elem_multiple * src_meta)))` (substituing this method's
+        //      return value)
+        //
+        // (13) `dst_len = dl.offset + (dl.elem_size * ((src_len - dl.offset) /
+        //      dl.elem_size))` (substituting (10))
+        //
+        // (14) `dst_len = dl.offset + (src_len - dl.offset)`
+        //
+        // (15) `dst_len = src_len`
+        //
+        // [1] TODO
+        //
+        // TODO: Clarify that this algorithm is agnostic to post-padding, and
+        // justify that this is acceptable.
+        #[allow(clippy::arithmetic_side_effects)]
+        return self.offset_delta_elems + (self.elem_multiple * src_meta);
+    }
+}
+
 impl DstLayout {
     /// The minimum possible alignment of a type.
     const MIN_ALIGN: NonZeroUsize = match NonZeroUsize::new(1) {
@@ -200,6 +335,79 @@ impl DstLayout {
                 elem_size: mem::size_of::<T>(),
             }),
         }
+    }
+
+    #[cfg(not(zerocopy_generic_bounds_in_const_fn_1_61_0))]
+    pub(crate) const fn try_compute_cast_params<Src: ?Sized, Dst: ?Sized>(
+        self,
+        dst: &DstLayout,
+    ) -> Option<CastParams> {
+        unsafe { self.try_compute_cast_params_inner(dst) }
+    }
+
+    #[cfg(zerocopy_generic_bounds_in_const_fn_1_61_0)]
+    pub(crate) const fn try_compute_cast_params<Src, Dst>(
+        self,
+        dst: &DstLayout,
+    ) -> Option<CastParams>
+    where
+        Src: crate::KnownLayout + ?Sized,
+        Dst: crate::KnownLayout + ?Sized,
+    {
+        // TODO: Assert that `self` and `dst` are equal to `Src::LAYOUT` and
+        // `Dst::LAYOUT`.
+        unsafe { Src::LAYOUT.try_compute_cast_params_inner(&Dst::LAYOUT) }
+    }
+
+    const unsafe fn try_compute_cast_params_inner(self, dst: &DstLayout) -> Option<CastParams> {
+        // TODO: Check alignment in order to guarantee that a `&Src` to `&Dst`
+        // conversion will never result in a larger referent (including trailing
+        // padding).
+        let src = self;
+
+        if src.align.get() < dst.align.get() {
+            return None;
+        }
+
+        let (src, dst) = if let (SizeInfo::SliceDst(src), SizeInfo::SliceDst(dst)) =
+            (src.size_info, dst.size_info)
+        {
+            (src, dst)
+        } else {
+            return None;
+        };
+
+        let offset_delta = if let Some(od) = src.offset.checked_sub(dst.offset) {
+            od
+        } else {
+            return None;
+        };
+
+        let delta_mod_other_elem = offset_delta.checked_rem(dst.elem_size);
+        let elem_remainder = src.elem_size.checked_rem(dst.elem_size);
+
+        let (delta_mod_other_elem, elem_remainder) =
+            if let (Some(dmoe), Some(em)) = (delta_mod_other_elem, elem_remainder) {
+                (dmoe, em)
+            } else {
+                return None;
+            };
+
+        if delta_mod_other_elem != 0 || src.elem_size < dst.elem_size || elem_remainder != 0 {
+            return None;
+        }
+
+        // PANICS: The preceding `src.elem_size.checked_rem(dst.elem_size)`
+        // could only return `Some` if `dst.elem_size > 0`, so this division
+        // will not divide by zero.
+        #[allow(clippy::arithmetic_side_effects)]
+        let offset_delta_elems = offset_delta / dst.elem_size;
+        // PANICS: See previous panics comment.
+        #[allow(clippy::arithmetic_side_effects)]
+        let elem_multiple = src.elem_size / dst.elem_size;
+
+        // INVARIANTS: TODO
+        Some(CastParams { offset_delta_elems, elem_multiple })
     }
 
     /// Like `Layout::extend`, this creates a layout that describes a record
@@ -1432,7 +1640,9 @@ mod tests {
 
 #[cfg(kani)]
 mod proofs {
-    use core::alloc::Layout;
+    use core::{alloc::Layout, f32::consts::E};
+
+    use crate::util::padding_needed_for;
 
     use super::*;
 
@@ -1452,7 +1662,7 @@ mod proofs {
                 match size_info {
                     SizeInfo::Sized { size } => Layout::from_size_align(size, align.get()),
                     SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size: _ }) => {
-                        // `SliceDst`` cannot encode an exact size, but we know
+                        // `SliceDst` cannot encode an exact size, but we know
                         // it is at least `offset` bytes.
                         Layout::from_size_align(offset, align.get())
                     }
@@ -1491,6 +1701,75 @@ mod proofs {
 
             TrailingSliceLayout { elem_size, offset }
         }
+    }
+
+    #[kani::proof]
+    fn prove_try_compute_cast_params() {
+        let src: DstLayout = kani::any();
+        let dst: DstLayout = kani::any();
+
+        let Some(params) = src.try_compute_cast_params(&dst) else {
+            // TODO: Is there a better way to say "assume that this branch is
+            // unreachable"?
+            kani::assume(false);
+            return;
+        };
+
+        let SizeInfo::SliceDst(src_size_info) = src.size_info else {
+            kani::assume(false);
+            return;
+        };
+
+        let SizeInfo::SliceDst(dst_size_info) = dst.size_info else {
+            kani::assume(false);
+            return;
+        };
+
+        // Returns `Some(size)` only if `meta` is valid metadata for the given
+        // type layout - it describes an object which would fit in a valid Rust
+        // allocation.
+        fn size_for_meta(
+            size_info: TrailingSliceLayout,
+            align: NonZeroUsize,
+            meta: usize,
+        ) -> Option<usize> {
+            let Some(slice_bytes) = size_info.elem_size.checked_mul(meta) else {
+                kani::assume(false);
+                return None;
+            };
+
+            let Some(size_no_trailing_padding) = size_info.offset.checked_add(slice_bytes) else {
+                kani::assume(false);
+                return None;
+            };
+
+            let padding = padding_needed_for(size_no_trailing_padding, align);
+
+            let Some(src_size) = size_no_trailing_padding.checked_add(padding) else {
+                kani::assume(false);
+                return None;
+            };
+
+            if src_size > isize::MAX as usize {
+                kani::assume(false);
+                return None;
+            }
+
+            Some(src_size)
+        }
+
+        let src_meta: usize = kani::any();
+
+        let Some(src_size) = size_for_meta(src_size_info, src.align, src_meta) else {
+            kani::assume(false);
+            return;
+        };
+
+        let dst_meta = params.compute_cast(src_meta);
+
+        let dst_size = size_for_meta(dst_size_info, dst.align, dst_meta).unwrap();
+
+        assert!(dst_size <= src_size);
     }
 
     #[kani::proof]
