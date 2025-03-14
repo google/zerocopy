@@ -53,7 +53,7 @@ help: the return type of this call is `&_` due to the type of the argument passe
   --> tests/ui-nightly/transmute-ref-dst-mutable.rs:18:22
    |
 18 |     let _: &mut u8 = transmute_ref!(&0u8);
-   |                      ^^^^^^^^^^^^^^^^^^^^ this argument influences the return type of `$crate`
+   |                      ^^^^^^^^^^^^^^^^^^^^ this argument influences the return type of `must_use`
 note: function defined here
   --> src/util/macro_util.rs
    |
