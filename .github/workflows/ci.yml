@@ -68,7 +68,7 @@ jobs:
           "s390x-unknown-linux-gnu",
           "x86_64-pc-windows-msvc",
           "thumbv6m-none-eabi",
-          "wasm32-wasi"
+          "wasm32-unknown-unknown"
         ]
         features: [
           "--no-default-features",
@@ -124,7 +124,7 @@ jobs:
           # Exclude stable/wasm since wasm is no longer provided via rustup on
           # stable.
           - toolchain: "stable"
-            target: "wasm32-wasi"
+            target: "wasm32-unknown-unknown"
           # Exclude non-aarch64 targets from the `zerocopy-aarch64-simd-1-59-0`
           # toolchain.
           - toolchain: "zerocopy-aarch64-simd-1-59-0"
@@ -146,7 +146,7 @@ jobs:
           - toolchain: "zerocopy-aarch64-simd-1-59-0"
             target: "thumbv6m-none-eabi"
           - toolchain: "zerocopy-aarch64-simd-1-59-0"
-            target: "wasm32-wasi"
+            target: "wasm32-unknown-unknown"
           # Exclude most targets targets from the `zerocopy-core-error-1-81-0`
           # toolchain since the `zerocopy-core-error-1-81-0` feature is unrelated to
           # compilation target. This only leaves i686 and x86_64 targets.
@@ -167,7 +167,7 @@ jobs:
           - toolchain: "zerocopy-core-error-1-81-0"
             target: "thumbv6m-none-eabi"
           - toolchain: "zerocopy-core-error-1-81-0"
-            target: "wasm32-wasi"
+            target: "wasm32-unknown-unknown"
           # Exclude most targets targets from the
           # `zerocopy-diagnostic-on-unimplemented-1-78-0` toolchain since the
           # `zerocopy-diagnostic-on-unimplemented-1-78-0` feature is unrelated to
@@ -189,7 +189,7 @@ jobs:
           - toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
             target: "thumbv6m-none-eabi"
           - toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
-            target: "wasm32-wasi"
+            target: "wasm32-unknown-unknown"
           # Exclude most targets targets from the
           # `zerocopy-generic-bounds-in-const-fn-1-61-0` toolchain since the
           # `zerocopy-generic-bounds-in-const-fn-1-61-0` feature is unrelated to
@@ -211,7 +211,7 @@ jobs:
           - toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
             target: "thumbv6m-none-eabi"
           - toolchain: "zerocopy-generic-bounds-in-const-fn-1-61-0"
-            target: "wasm32-wasi"
+            target: "wasm32-unknown-unknown"
           # Exclude `thumbv6m-none-eabi` combined with any feature that implies
           # the `std` feature since `thumbv6m-none-eabi` does not include a
           # pre-compiled std.
@@ -237,7 +237,7 @@ jobs:
             event_name: "pull_request"
           - target: "thumbv6m-none-eabi"
             event_name: "pull_request"
-          - target: "wasm32-wasi"
+          - target: "wasm32-unknown-unknown"
             event_name: "pull_request"
 
     name: Build & Test (${{ matrix.crate }} / ${{ matrix.toolchain }} / ${{ matrix.features }} / ${{ matrix.target }})
@@ -447,12 +447,12 @@ jobs:
       # Miri can catch any errors before a PR is merged into main.
       #
       # TODO(#22): Re-enable testing on riscv64gc-unknown-linux-gnu and/or
-      # wasm32-wasi once those work.
+      # wasm32-unknown-unknown once those work.
       if: |
         matrix.toolchain == 'nightly' &&
         matrix.target != 'riscv64gc-unknown-linux-gnu' &&
         matrix.target != 'thumbv6m-none-eabi' &&
-        matrix.target != 'wasm32-wasi' &&
+        matrix.target != 'wasm32-unknown-unknown' &&
         github.event_name != 'pull_request'
 
     # On the `thumbv6m-none-eabi` target, we can't run `cargo clippy --tests`
@@ -526,13 +526,12 @@ jobs:
         features: __internal_use_only_features_that_work_on_stable
         rust-toolchain: ${{ env.ZC_TOOLCHAIN }}
         rust-target: ${{ matrix.target }}
-      # TODO(#1565): Run on wasm32-wasi. As of this writing, this target fails:
-      # https://github.com/google/zerocopy/actions/runs/9944220377/job/27469879712
+      # TODO(#1565): Run on wasm32-unknown-unknown.
       if: |
         matrix.crate == 'zerocopy' &&
         matrix.features == '--features __internal_use_only_features_that_work_on_stable' &&
         matrix.toolchain == 'stable' &&
-        matrix.target != 'wasm32-wasi' &&
+        matrix.target != 'wasm32-unknown-unknown' &&
         env.ZC_SKIP_CARGO_SEMVER_CHECKS != '1'
 
     # TODO(#453): Doing this as a matrix step is a hack that allows us to depend
