@@ -595,7 +595,7 @@ jobs:
           args: "--package zerocopy --features __internal_use_only_features_that_work_on_stable --output-format=terse -Zfunction-contracts --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
           # This version is automatically rolled by
           # `roll-pinned-toolchain-versions.yml`.
-          kani-version: 0.55.0
+          kani-version: 0.60.0
 
   # NEON intrinsics are currently broken on big-endian platforms. [1] This test ensures
   # that we don't accidentally attempt to compile these intrinsics on such platforms. We
