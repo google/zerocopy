@@ -25,6 +25,7 @@ use core::{
 // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
 // `cfg` when `size_of_val_raw` is stabilized.
 #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
+#[cfg(not(target_pointer_width = "16"))]
 use core::ptr;
 
 use crate::{
@@ -105,11 +106,13 @@ impl<T, U> MaxAlignsOf<T, U> {
 }
 
 #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
+#[cfg(not(target_pointer_width = "16"))]
 const _64K: usize = 1 << 16;
 
 // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
 // `cfg` when `size_of_val_raw` is stabilized.
 #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
+#[cfg(not(target_pointer_width = "16"))]
 #[repr(C, align(65536))]
 struct Aligned64kAllocation([u8; _64K]);
 
@@ -122,6 +125,7 @@ struct Aligned64kAllocation([u8; _64K]);
 // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
 // `cfg` when `size_of_val_raw` is stabilized.
 #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
+#[cfg(not(target_pointer_width = "16"))]
 pub const ALIGNED_64K_ALLOCATION: NonNull<[u8]> = {
     const REF: &Aligned64kAllocation = &Aligned64kAllocation([0; _64K]);
     let ptr: *const Aligned64kAllocation = REF;
