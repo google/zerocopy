@@ -6,6 +6,9 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+#[cfg(kani)]
+use crate::{FromBytes, Immutable, IntoBytes, KnownLayout};
+
 /// Documents multiple unsafe blocks with a single safety comment.
 ///
 /// Invoked as:
@@ -801,4 +804,59 @@ macro_rules! impl_size_eq {
             }
         };
     };
+}
+
+// On 64-bit targets, Rust uses 2^61 - 1 rather than 2^63 - 1 as the maximum
+// object size [1].
+//
+// [1] https://github.com/rust-lang/rust/blob/493c38ba371929579fe136df26eccd9516347c7a/compiler/rustc_abi/src/lib.rs#L410
+#[cfg(kani)]
+pub(crate) const MAX_OBJ_SIZE: usize = (1 << 61) - 1;
+
+#[cfg(kani)]
+#[derive(KnownLayout, Immutable, IntoBytes, FromBytes)]
+#[repr(C)]
+pub(crate) struct SliceDst<T, U: ?Sized> {
+    t: T,
+    u: U,
+}
+
+#[cfg(kani)]
+macro_rules! for_many_types {
+    ($fn:ident) => {{
+        use crate::util::macros::{SliceDst, MAX_OBJ_SIZE};
+
+        $fn::<()>();
+        $fn::<[()]>();
+        $fn::<SliceDst<(), [()]>>();
+        $fn::<SliceDst<u8, [()]>>();
+        $fn::<SliceDst<u16, [()]>>();
+        $fn::<u8>();
+        $fn::<[u8]>();
+        $fn::<SliceDst<(), [u8]>>();
+        $fn::<SliceDst<u8, [u8]>>();
+        $fn::<SliceDst<u16, [u8]>>();
+        $fn::<u16>();
+        $fn::<[u16]>();
+        $fn::<[u8; MAX_OBJ_SIZE]>();
+        $fn::<[u8; MAX_OBJ_SIZE / 2]>();
+        $fn::<[u16; MAX_OBJ_SIZE / 2]>();
+        $fn::<[u16; MAX_OBJ_SIZE / 4]>();
+        $fn::<[[u8; MAX_OBJ_SIZE]]>();
+        $fn::<SliceDst<(), [[u8; MAX_OBJ_SIZE]]>>();
+        $fn::<SliceDst<u8, [[u8; MAX_OBJ_SIZE]]>>();
+        $fn::<SliceDst<u16, [[u8; MAX_OBJ_SIZE]]>>();
+        $fn::<[[u8; MAX_OBJ_SIZE / 2]]>();
+        $fn::<SliceDst<(), [[u8; MAX_OBJ_SIZE / 2]]>>();
+        $fn::<SliceDst<u8, [[u8; MAX_OBJ_SIZE / 2]]>>();
+        $fn::<SliceDst<u16, [[u8; MAX_OBJ_SIZE / 2]]>>();
+        $fn::<[[u16; MAX_OBJ_SIZE / 2]]>();
+        $fn::<SliceDst<(), [[u16; MAX_OBJ_SIZE / 2]]>>();
+        $fn::<SliceDst<u8, [[u16; MAX_OBJ_SIZE / 2]]>>();
+        $fn::<SliceDst<u16, [[u16; MAX_OBJ_SIZE / 2]]>>();
+        $fn::<[[u16; MAX_OBJ_SIZE / 4]]>();
+        $fn::<SliceDst<(), [[u16; MAX_OBJ_SIZE / 4]]>>();
+        $fn::<SliceDst<u8, [[u16; MAX_OBJ_SIZE / 4]]>>();
+        $fn::<SliceDst<u16, [[u16; MAX_OBJ_SIZE / 4]]>>();
+    }};
 }

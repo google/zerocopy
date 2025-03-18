@@ -78,7 +78,32 @@ mod _def {
         ///    address space.
         /// 5. If `ptr`'s referent is not zero sized, then `A` is guaranteed to
         ///    live for at least `'a`.
+        #[cfg_attr(
+            kani,
+            // TODO: Use `is_inbounds` once it's public. `can_write_unaligned`
+            // is technically stronger than we need.
+            kani::requires(kani::mem::can_write_unaligned(ptr.as_ptr())),
+            kani::ensures(|p| kani::mem::can_write_unaligned(p.as_non_null().as_ptr())),
+            kani::ensures(|p| {
+                #[allow(ambiguous_wide_pointer_comparisons)]
+                return p.as_non_null() == ptr;
+            }),
+            kani::ensures(|p| {
+                kani::mem::checked_size_of_raw(ptr.as_ptr()).unwrap() == 0 ||
+                kani::mem::same_allocation(p.as_non_null().as_ptr(), ptr.as_ptr())
+            }),
+        )]
         pub(crate) const unsafe fn new(ptr: NonNull<T>) -> PtrInner<'a, T> {
+            #[cfg(kani)]
+            #[kani::proof_for_contract(PtrInner::new)]
+            fn proof() {
+                fn new<T: ?Sized + KnownLayout>() {
+                    unsafe { PtrInner::<T>::new(proofs::any_nonnull()) };
+                }
+
+                for_many_types!(new);
+            }
+
             // SAFETY: The caller has promised to satisfy all safety invariants
             // of `PtrInner`.
             Self { ptr, _marker: PhantomData }
@@ -146,6 +171,16 @@ impl<'a, T> PtrInner<'a, [T]> {
     /// # Safety
     ///
     /// `range` is a valid range (`start <= end`) and `end <= self.len()`.
+    #[cfg_attr(
+        kani,
+        kani::requires(range.start <= range.end && range.end <= self.len()),
+        kani::ensures(|r| r.len() == range.end - range.start),
+        kani::ensures(|r| {
+            let begin = unsafe { r.as_non_null().cast::<T>().sub(range.start) };
+            let ptr = self.as_non_null().cast::<T>();
+            begin == ptr
+        })
+    )]
     pub(crate) unsafe fn slice_unchecked(self, range: Range<usize>) -> Self {
         let base = self.as_non_null().cast::<T>().as_ptr();
 
@@ -206,8 +241,23 @@ impl<'a, T> PtrInner<'a, [T]> {
     ///
     /// The caller promises that `l_len <= self.len()`.
     ///
-    /// Given `let (left, right) = ptr.split_at(l_len)`, it is guaranteed
-    /// that `left` and `right` are contiguous and non-overlapping.
+    /// Given `let (left, right) = ptr.split_at(l_len)`, it is guaranteed that:
+    /// - `left.len() == l_len`
+    /// - `left` and `right` are contiguous and non-overlapping
+    /// - Together, `left` and `right` cover the exact same byte range as `self`
+    #[cfg_attr(
+        kani,
+        kani::requires(l_len <= self.len()),
+        kani::ensures(|(l, r)| l.len() == l_len && r.len() == self.len() - l_len),
+        kani::ensures(|(l, _)| {
+            l.as_non_null().cast::<T>() == self.as_non_null().cast::<T>()
+        }),
+        kani::ensures(|(l, r)| {
+            let l = l.as_non_null().cast::<T>();
+            let r = r.as_non_null().cast::<T>();
+            unsafe { l.add(l_len) == r }
+        })
+    )]
     pub(crate) unsafe fn split_at(self, l_len: usize) -> (Self, Self) {
         // SAFETY: The caller promises that `l_len <= self.len()`.
         // Trivially, `0 <= l_len`.
@@ -333,6 +383,11 @@ impl<'a, T, const N: usize> PtrInner<'a, [T; N]> {
     /// Callers may assume that the returned `PtrInner` references the same
     /// address and length as `self`.
     #[allow(clippy::wrong_self_convention)]
+    #[cfg_attr(
+        kani,
+        kani::ensures(|slc| slc.len() == N),
+        kani::ensures(|slc| self.as_non_null().cast::<T>() == slc.as_non_null().cast::<T>())
+    )]
     pub(crate) fn as_slice(self) -> PtrInner<'a, [T]> {
         let start = self.as_non_null().cast::<T>().as_ptr();
         let slice = core::ptr::slice_from_raw_parts_mut(start, N);
@@ -395,6 +450,38 @@ impl<'a> PtrInner<'a, [u8]> {
     /// - If this is a prefix cast, `ptr` has the same address as `self`.
     /// - If this is a suffix cast, `remainder` has the same address as `self`.
     #[inline]
+    #[cfg_attr(
+        kani,
+        kani::ensures(|r| match r {
+            Ok((t, rest)) => {
+                let ptr_u8 = self.as_non_null().cast::<u8>();
+                let t_u8 = t.as_non_null().cast::<u8>();
+                let rest_u8 = rest.as_non_null().cast::<u8>();
+                match cast_type {
+                    CastType::Prefix => {
+                        t_u8 == ptr_u8
+                        // TODO: Assert that `t` and `rest` are contiguous and
+                        // non-overlapping.
+                    }
+                    CastType::Suffix => {
+                        // The second condition asserts that `rest` and `t` are
+                        // contiguous and non-overlapping.
+                        rest_u8 == ptr_u8 && unsafe { rest_u8.add(rest.len()) == t_u8 }
+                    }
+                }
+            }
+            Err(CastError::Alignment(_)) => {
+                true
+                // TODO: Prove that there would have been an alignment problem.
+            }
+            Err(CastError::Size(_)) => {
+                true
+                // TODO: Prove that there would have been a size problem.
+            }
+            // Unreachable because this error variant is uninhabited.
+            Err(CastError::Validity(_)) => false,
+        })
+    )]
     pub(crate) fn try_cast_into<U>(
         self,
         cast_type: CastType,
@@ -516,6 +603,237 @@ mod tests {
             assert_eq!(l_sum, i);
             assert_eq!(r_sum, N - i);
             assert_eq!(l_sum + r_sum, N);
+        }
+    }
+}
+
+#[cfg(kani)]
+mod proofs {
+    use crate::{SizeInfo, TrailingSliceLayout};
+
+    use super::*;
+
+    pub(super) fn any_nonnull<T: ?Sized + KnownLayout>() -> NonNull<T> {
+        let (size, meta) = match T::LAYOUT.size_info {
+            SizeInfo::Sized { size } => (size, T::PointerMetadata::from_elem_count(0)),
+            SizeInfo::SliceDst(TrailingSliceLayout { .. }) => {
+                let meta = T::PointerMetadata::from_elem_count(kani::any());
+                let size = meta.size_for_metadata(T::LAYOUT);
+                kani::assume(size.is_some());
+                let size = size.unwrap();
+                kani::assume(size <= isize::MAX as usize);
+
+                (size, meta)
+            }
+        };
+
+        let layout = alloc::alloc::Layout::from_size_align(size, T::LAYOUT.align.get()).unwrap();
+
+        let ptr = if layout.size() == 0 {
+            NonNull::dangling()
+        } else {
+            let ptr = unsafe { alloc::alloc::alloc(layout) };
+            NonNull::new(ptr).unwrap_or_else(|| alloc::alloc::handle_alloc_error(layout))
+        };
+
+        T::raw_from_ptr_len(ptr, meta)
+    }
+
+    impl<T> kani::Arbitrary for PtrInner<'static, T>
+    where
+        T: ?Sized + KnownLayout,
+    {
+        fn any() -> Self {
+            unsafe { PtrInner::new(any_nonnull()) }
+        }
+    }
+
+    impl<'a, T> PtrInner<'a, T>
+    where
+        T: ?Sized + KnownLayout,
+    {
+        fn assert_invariants(&self) {
+            let ptr = self.as_non_null();
+            let size = T::size_of_val_raw(ptr).unwrap();
+            assert!(size <= isize::MAX as usize);
+
+            let addr = ptr.addr().get();
+            // Assert that the referent doesn't wrap around the address space.
+            assert!(addr.checked_add(size).is_some());
+        }
+    }
+
+    macro_rules! prove_foreach {
+        ($generic:ident { $($concrete:ident = $ty:ty,)* }) => {
+            $(
+                #[kani::proof]
+                fn $concrete() {
+                    $generic::<$ty>();
+                }
+            )*
+        };
+    }
+
+    fn prove_arbitrary<T: 'static + ?Sized + KnownLayout>() {
+        let ptr: PtrInner<'static, T> = kani::any();
+        ptr.assert_invariants();
+    }
+
+    // On 64-bit targets, Rust uses 2^61 - 1 rather than 2^63 - 1 as the maximum
+    // object size [1].
+    //
+    // [1] https://github.com/rust-lang/rust/blob/493c38ba371929579fe136df26eccd9516347c7a/compiler/rustc_abi/src/lib.rs#L410
+    pub(super) const MAX_SIZE: usize = 1 << 61 - 1;
+
+    prove_foreach! {
+        prove_arbitrary {
+            prove_arbitrary_empty_tuple = (),
+            prove_arbitrary_u8 = u8,
+            prove_arbitrary_u16 = u16,
+            prove_arbitrary_slice_u8 = [u8],
+            prove_arbitrary_slice_u16 = [u16],
+            prove_arbitrary_large_u8 = [u8; MAX_SIZE],
+            prove_arbitrary_large_slice_u8 = [[u8; MAX_SIZE]],
+            prove_arbitrary_large_u16 = [u16; (MAX_SIZE)/2],
+            prove_arbitrary_large_slice_u16 = [[u16; (MAX_SIZE)/2]],
+        }
+    }
+
+    fn prove_slice_unchecked<T: 'static>() {
+        let ptr: PtrInner<'static, [T]> = kani::any();
+        let start = kani::any();
+        let end = kani::any();
+
+        kani::assume(start <= end);
+        kani::assume(end <= ptr.len());
+
+        let slc = unsafe { ptr.slice_unchecked(Range { start, end }) };
+        slc.assert_invariants();
+
+        assert_eq!(slc.len(), end - start);
+
+        let begin = unsafe { slc.as_non_null().cast::<T>().sub(start) };
+        assert_eq!(begin, ptr.as_non_null().cast::<T>());
+    }
+
+    prove_foreach! {
+        prove_slice_unchecked {
+            prove_slice_unchecked_empty_tuple = (),
+            prove_slice_unchecked_u8 = u8,
+            prove_slice_unchecked_u16 = u16,
+            prove_slice_unchecked_large_u8 = [u8; MAX_SIZE],
+            prove_slice_unchecked_large_u16 = [u16; (MAX_SIZE)/2],
+        }
+    }
+
+    fn prove_split_at<T: 'static>() {
+        let ptr: PtrInner<'static, [T]> = kani::any();
+        let l_len = kani::any();
+
+        kani::assume(l_len <= ptr.len());
+
+        let (left, right) = unsafe { ptr.split_at(l_len) };
+        left.assert_invariants();
+        right.assert_invariants();
+
+        assert_eq!(left.len(), l_len);
+        assert_eq!(left.len() + right.len(), ptr.len());
+        assert_eq!(left.as_non_null().cast::<T>(), ptr.as_non_null().cast::<T>());
+    }
+
+    prove_foreach! {
+        prove_split_at {
+            prove_split_at_empty_tuple = (),
+            prove_split_at_u8 = u8,
+            prove_split_at_u16 = u16,
+            prove_split_at_large_u8 = [u8; MAX_SIZE],
+            prove_split_at_large_u16 = [u16; (MAX_SIZE)/2],
+        }
+    }
+
+    #[kani::proof]
+    fn prove_as_slice() {
+        fn inner<T: 'static, const N: usize>() {
+            let ptr: PtrInner<'static, [T; N]> = kani::any();
+            let slc = ptr.as_slice();
+            slc.assert_invariants();
+
+            assert_eq!(ptr.as_non_null().cast::<T>(), slc.as_non_null().cast::<T>());
+            assert_eq!(slc.len(), N);
+        }
+
+        inner::<(), 0>();
+        inner::<(), 1>();
+        inner::<(), MAX_SIZE>();
+
+        inner::<u8, 0>();
+        inner::<u8, 1>();
+        inner::<u8, MAX_SIZE>();
+
+        inner::<[u8; MAX_SIZE / 2], 0>();
+        inner::<[u8; MAX_SIZE / 2], 1>();
+        inner::<[u8; MAX_SIZE / 2], 2>();
+
+        inner::<[u8; MAX_SIZE], 0>();
+        inner::<[u8; MAX_SIZE], 1>();
+    }
+
+    impl kani::Arbitrary for CastType {
+        fn any() -> CastType {
+            if kani::any() {
+                CastType::Prefix
+            } else {
+                CastType::Suffix
+            }
+        }
+    }
+
+    fn prove_try_cast_into<T: 'static + ?Sized + KnownLayout>() {
+        let ptr: PtrInner<'static, [u8]> = kani::any();
+        let cast_type = kani::any();
+        let meta = kani::any();
+
+        match ptr.try_cast_into::<T>(cast_type, meta) {
+            Ok((t, rest)) => {
+                t.assert_invariants();
+
+                let ptr_u8 = ptr.as_non_null().cast::<u8>();
+                let t_u8 = t.as_non_null().cast::<u8>();
+                let rest_u8 = rest.as_non_null().cast::<u8>();
+                match cast_type {
+                    CastType::Prefix => {
+                        assert_eq!(t_u8, ptr_u8);
+                        // TODO: Assert that `t` and `rest` are contiguous and
+                        // non-overlapping.
+                    }
+                    CastType::Suffix => {
+                        assert_eq!(rest_u8, ptr_u8);
+                        // Asserts that `rest` and `t` are contiguous and
+                        // non-overlapping.
+                        assert_eq!(unsafe { rest_u8.add(rest.len()) }, t_u8);
+                    }
+                }
+            }
+            Err(CastError::Alignment(_)) => {
+                // TODO: Prove that there would have been an alignment problem.
+            }
+            Err(CastError::Size(_)) => {
+                // TODO: Prove that there would have been a size problem.
+            }
+        }
+    }
+
+    prove_foreach! {
+        prove_try_cast_into {
+            prove_try_cast_into_empty_tuple = (),
+            prove_try_cast_into_u8 = u8,
+            prove_try_cast_into_u16 = u16,
+            prove_try_cast_into_slice_u8 = [u8],
+            prove_try_cast_into_slice_u16 = [u16],
+            prove_try_cast_into_large_u8 = [u8; MAX_SIZE],
+            prove_try_cast_into_large_slice_u8 = [[u8; MAX_SIZE]],
+            prove_try_cast_into_large_u16 = [u16; (MAX_SIZE)/2],
+            prove_try_cast_into_large_slice_u16 = [[u16; (MAX_SIZE)/2]],
         }
     }
 }

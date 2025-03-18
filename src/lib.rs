@@ -738,7 +738,12 @@ pub unsafe trait KnownLayout {
     /// The type of metadata stored in a pointer to `Self`.
     ///
     /// This is `()` for sized types and `usize` for slice DSTs.
+    #[cfg(not(kani))]
     type PointerMetadata: PointerMetadata;
+
+    #[cfg(kani)]
+    #[allow(missing_docs)]
+    type PointerMetadata: PointerMetadata + kani::Arbitrary;
 
     /// A maybe-uninitialized analog of `Self`
     ///
