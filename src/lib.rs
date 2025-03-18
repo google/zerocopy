@@ -382,7 +382,7 @@ extern crate alloc;
 #[cfg(any(feature = "alloc", test))]
 use alloc::{boxed::Box, vec::Vec};
 
-#[cfg(any(feature = "alloc", test, kani))]
+#[cfg(any(feature = "alloc", test))]
 use core::alloc::Layout;
 
 // Used by `TryFromBytes::is_bit_valid`.

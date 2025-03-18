@@ -116,7 +116,21 @@ pub(crate) fn validate_aligned_to<T: AsAddress, U>(t: T) -> Result<(), Alignment
 ///
 /// This function assumes that align is a power of two; there are no guarantees
 /// on the answer it gives if this is not the case.
+#[cfg_attr(
+    kani,
+    kani::requires(len <= isize::MAX as usize),
+    kani::requires(align.is_power_of_two()),
+    kani::ensures(|&p| (len + p) % align.get() == 0),
+    // Ensures that we add the minimum required padding.
+    kani::ensures(|&p| p < align.get()),
+)]
 pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize {
+    #[cfg(kani)]
+    #[kani::proof_for_contract(padding_needed_for)]
+    fn proof() {
+        padding_needed_for(kani::any(), kani::any());
+    }
+
     // Abstractly, we want to compute:
     //   align - (len % align).
     // Handling the case where len%align is 0.
@@ -178,10 +192,27 @@ pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize
 /// May panic if `align` is not a power of two. Even if it doesn't panic in this
 /// case, it will produce nonsense results.
 #[inline(always)]
+#[cfg_attr(
+    kani,
+    kani::requires(align.is_power_of_two()),
+    kani::ensures(|&m| m <= n && m % align.get() == 0),
+    // Guarantees that `m` is the *largest* value such that `m % align == 0`.
+    kani::ensures(|&m| {
+        // If this `checked_add` fails, then the next multiple would wrap
+        // around, which trivially satisfies the "largest value" requirement.
+        m.checked_add(align.get()).map(|next_mul| next_mul > n).unwrap_or(true)
+    })
+)]
 pub(crate) const fn round_down_to_next_multiple_of_alignment(
     n: usize,
     align: NonZeroUsize,
 ) -> usize {
+    #[cfg(kani)]
+    #[kani::proof_for_contract(round_down_to_next_multiple_of_alignment)]
+    fn proof() {
+        round_down_to_next_multiple_of_alignment(kani::any(), kani::any());
+    }
+
     let align = align.get();
     #[cfg(zerocopy_panic_in_const_and_vec_try_reserve_1_57_0)]
     debug_assert!(align.is_power_of_two());
@@ -566,55 +597,5 @@ mod tests {
     #[should_panic]
     fn test_round_down_to_next_multiple_of_alignment_zerocopy_panic_in_const_and_vec_try_reserve() {
         round_down_to_next_multiple_of_alignment(0, NonZeroUsize::new(3).unwrap());
-    }
-}
-
-#[cfg(kani)]
-mod proofs {
-    use super::*;
-
-    #[kani::proof]
-    fn prove_round_down_to_next_multiple_of_alignment() {
-        fn model_impl(n: usize, align: NonZeroUsize) -> usize {
-            assert!(align.get().is_power_of_two());
-            let mul = n / align.get();
-            mul * align.get()
-        }
-
-        let align: NonZeroUsize = kani::any();
-        kani::assume(align.get().is_power_of_two());
-        let n: usize = kani::any();
-
-        let expected = model_impl(n, align);
-        let actual = round_down_to_next_multiple_of_alignment(n, align);
-        assert_eq!(expected, actual, "round_down_to_next_multiple_of_alignment({}, {})", n, align);
-    }
-
-    // Restricted to nightly since we use the unstable `usize::next_multiple_of`
-    // in our model implementation.
-    #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
-    #[kani::proof]
-    fn prove_padding_needed_for() {
-        fn model_impl(len: usize, align: NonZeroUsize) -> usize {
-            let padded = len.next_multiple_of(align.get());
-            let padding = padded - len;
-            padding
-        }
-
-        let align: NonZeroUsize = kani::any();
-        kani::assume(align.get().is_power_of_two());
-        let len: usize = kani::any();
-        // Constrain `len` to valid Rust lengths, since our model implementation
-        // isn't robust to overflow.
-        kani::assume(len <= isize::MAX as usize);
-        kani::assume(align.get() < 1 << 29);
-
-        let expected = model_impl(len, align);
-        let actual = padding_needed_for(len, align);
-        assert_eq!(expected, actual, "padding_needed_for({}, {})", len, align);
-
-        let padded_len = actual + len;
-        assert_eq!(padded_len % align, 0);
-        assert!(padded_len / align >= len / align);
     }
 }
