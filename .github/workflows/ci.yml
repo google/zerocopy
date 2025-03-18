@@ -592,7 +592,7 @@ jobs:
           # TODO(https://github.com/model-checking/kani-github-action/issues/56):
           # Go back to testing all features once the Kani GitHub Action supports
           # specifying a particular toolchain.
-          args: "--package zerocopy --features __internal_use_only_features_that_work_on_stable --output-format=terse --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
+          args: "--package zerocopy --features __internal_use_only_features_that_work_on_stable --output-format=terse -Zfunction-contracts --randomize-layout --memory-safety-checks --overflow-checks --undefined-function-checks --unwinding-checks"
           # This version is automatically rolled by
           # `roll-pinned-toolchain-versions.yml`.
           kani-version: 0.55.0
