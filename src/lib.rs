@@ -302,7 +302,7 @@
     clippy::arithmetic_side_effects,
     clippy::indexing_slicing,
 ))]
-#![cfg_attr(not(any(test, feature = "std")), no_std)]
+#![cfg_attr(not(any(test, kani, feature = "std")), no_std)]
 #![cfg_attr(
     all(feature = "simd-nightly", any(target_arch = "x86", target_arch = "x86_64")),
     feature(stdarch_x86_avx512)
@@ -377,7 +377,7 @@ use std::io;
 
 use crate::pointer::invariant::{self, BecauseExclusive};
 
-#[cfg(any(feature = "alloc", test))]
+#[cfg(any(feature = "alloc", test, kani))]
 extern crate alloc;
 #[cfg(any(feature = "alloc", test))]
 use alloc::{boxed::Box, vec::Vec};
