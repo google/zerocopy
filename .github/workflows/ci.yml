@@ -553,6 +553,7 @@ jobs:
           --package ${{ matrix.crate }}              \
           --target ${{ matrix.target }}              \
           ${{ matrix.features }}                     \
+          --doctests                                 \
           --lcov                                     \
           --output-path lcov.info                    \
           --verbose                                  \
