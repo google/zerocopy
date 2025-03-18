@@ -31,17 +31,32 @@ mod _def {
     {
         /// # Invariants
         ///
-        /// 0. If `ptr`'s referent is not zero sized, then `ptr` is derived from
-        ///    some valid Rust allocation, `A`.
-        /// 1. If `ptr`'s referent is not zero sized, then `ptr` has valid
-        ///    provenance for `A`.
-        /// 2. If `ptr`'s referent is not zero sized, then `ptr` addresses a
-        ///    byte range which is entirely contained in `A`.
-        /// 3. `ptr` addresses a byte range whose length fits in an `isize`.
-        /// 4. `ptr` addresses a byte range which does not wrap around the
-        ///    address space.
-        /// 5. If `ptr`'s referent is not zero sized,`A` is guaranteed to live
+        /// 0. If `ptr`'s referent is not zero sized, then `ptr` has valid
+        ///    provenance for its referent, which is entirely contained in some
+        ///    Rust allocation, `A`.
+        /// 1. If `ptr`'s referent is not zero sized, `A` is guaranteed to live
         ///    for at least `'a`.
+        ///
+        /// # Postconditions
+        ///
+        /// By virtue of these invariants, code may assume the following, which
+        /// are logical implications of the invariants:
+        /// - `ptr`'s referent is not larger than `isize::MAX` bytes \[1\]
+        /// - `ptr`'s referent does not wrap around the address space \[1\]
+        ///
+        /// \[1\] Per <https://doc.rust-lang.org/1.85.0/std/ptr/index.html#allocated-object>:
+        ///
+        ///   For any allocated object with `base` address, `size`, and a set of
+        ///   `addresses`, the following are guaranteed:
+        ///   ...
+        ///   - `size <= isize::MAX`
+        ///
+        ///   As a consequence of these guarantees, given any address `a` within
+        ///   the set of addresses of an allocated object:
+        ///   ...
+        ///   - It is guaranteed that, given `o = a - base` (i.e., the offset of
+        ///     `a` within the allocated object), `base + o` will not wrap around
+        ///     the address space (in other words, will not overflow `usize`)
         ptr: NonNull<T>,
         // SAFETY: `&'a UnsafeCell<T>` is covariant in `'a` and invariant in `T`
         // [1]. We use this construction rather than the equivalent `&mut T`,
@@ -67,17 +82,11 @@ mod _def {
         ///
         /// The caller promises that:
         ///
-        /// 0. If `ptr`'s referent is not zero sized, then `ptr` is derived from
-        ///    some valid Rust allocation, `A`.
-        /// 1. If `ptr`'s referent is not zero sized, then `ptr` has valid
-        ///    provenance for `A`.
-        /// 2. If `ptr`'s referent is not zero sized, then `ptr` addresses a
-        ///    byte range which is entirely contained in `A`.
-        /// 3. `ptr` addresses a byte range whose length fits in an `isize`.
-        /// 4. `ptr` addresses a byte range which does not wrap around the
-        ///    address space.
-        /// 5. If `ptr`'s referent is not zero sized, then `A` is guaranteed to
-        ///    live for at least `'a`.
+        /// 0. If `ptr`'s referent is not zero sized, then `ptr` has valid
+        ///    provenance for its referent, which is entirely contained in some
+        ///    Rust allocation, `A`.
+        /// 1. If `ptr`'s referent is not zero sized, `A` is guaranteed to live
+        ///    for at least `'a`.
         pub(crate) const unsafe fn new(ptr: NonNull<T>) -> PtrInner<'a, T> {
             // SAFETY: The caller has promised to satisfy all safety invariants
             // of `PtrInner`.
@@ -102,18 +111,23 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
         let ptr = NonNull::from(ptr);
         // SAFETY:
         // 0. If `ptr`'s referent is not zero sized, then `ptr`, by invariant on
-        //    `&'a T`, is derived from some valid Rust allocation, `A`.
-        // 1. If `ptr`'s referent is not zero sized, then `ptr`, by invariant on
-        //    `&'a T`, has valid provenance for `A`.
-        // 2. If `ptr`'s referent is not zero sized, then `ptr`, by invariant on
-        //    `&'a T`, addresses a byte range which is entirely contained in
-        //    `A`.
-        // 3. `ptr`, by invariant on `&'a T`, addresses a byte range whose
-        //    length fits in an `isize`.
-        // 4. `ptr`, by invariant on `&'a T`, addresses a byte range which does
-        //    not wrap around the address space.
-        // 5. If `ptr`'s referent is not zero sized, then `A`, by invariant on
+        //    `&'a T` [1], has valid provenance for its referent, which is
+        //    entirely contained in some Rust allocation, `A`.
+        // 1. If `ptr`'s referent is not zero sized, then `A`, by invariant on
         //    `&'a T`, is guaranteed to live for at least `'a`.
+        //
+        // [1] Per https://doc.rust-lang.org/1.85.0/std/primitive.reference.html#safety:
+        //
+        //   For all types, `T: ?Sized`, and for all `t: &T` or `t: &mut T`,
+        //   when such values cross an API boundary, the following invariants
+        //   must generally be upheld:
+        //   ...
+        //   - if `size_of_val(t) > 0`, then `t` is dereferenceable for
+        //     `size_of_val(t)` many bytes
+        //
+        //   If `t` points at address `a`, being “dereferenceable” for N bytes
+        //   means that the memory range `[a, a + N)` is all contained within a
+        //   single allocated object.
         unsafe { Self::new(ptr) }
     }
 
@@ -123,18 +137,23 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
         let ptr = NonNull::from(ptr);
         // SAFETY:
         // 0. If `ptr`'s referent is not zero sized, then `ptr`, by invariant on
-        //    `&'a mut T`, is derived from some valid Rust allocation, `A`.
-        // 1. If `ptr`'s referent is not zero sized, then `ptr`, by invariant on
-        //    `&'a mut T`, has valid provenance for `A`.
-        // 2. If `ptr`'s referent is not zero sized, then `ptr`, by invariant on
-        //    `&'a mut T`, addresses a byte range which is entirely contained in
-        //    `A`.
-        // 3. `ptr`, by invariant on `&'a mut T`, addresses a byte range whose
-        //    length fits in an `isize`.
-        // 4. `ptr`, by invariant on `&'a mut T`, addresses a byte range which
-        //    does not wrap around the address space.
-        // 5. If `ptr`'s referent is not zero sized, then `A`, by invariant on
+        //    `&'a mut T` [1], has valid provenance for its referent, which is
+        //    entirely contained in some Rust allocation, `A`.
+        // 1. If `ptr`'s referent is not zero sized, then `A`, by invariant on
         //    `&'a mut T`, is guaranteed to live for at least `'a`.
+        //
+        // [1] Per https://doc.rust-lang.org/1.85.0/std/primitive.reference.html#safety:
+        //
+        //   For all types, `T: ?Sized`, and for all `t: &T` or `t: &mut T`,
+        //   when such values cross an API boundary, the following invariants
+        //   must generally be upheld:
+        //   ...
+        //   - if `size_of_val(t) > 0`, then `t` is dereferenceable for
+        //     `size_of_val(t)` many bytes
+        //
+        //   If `t` points at address `a`, being “dereferenceable” for N bytes
+        //   means that the memory range `[a, a + N)` is all contained within a
+        //   single allocated object.
         unsafe { Self::new(ptr) }
     }
 }
@@ -168,34 +187,24 @@ impl<'a, T> PtrInner<'a, [T]> {
 
         let ptr = core::ptr::slice_from_raw_parts_mut(base, len);
 
-        // SAFETY: By invariant, `self`'s address is non-null and its range does
-        // not wrap around the address space. Since, by the preceding lemma,
-        // `ptr` addresses a range within that addressed by `self`, `ptr` is
-        // non-null.
+        // SAFETY: By invariant, `self`'s referent is either a ZST or lives
+        // entirely in an allocation. `ptr` points inside of or one byte past
+        // the end of that referent. Thus, in either case, `ptr` is non-null.
         let ptr = unsafe { NonNull::new_unchecked(ptr) };
 
         // SAFETY:
         //
         // Lemma 0: `ptr` addresses a subset of the bytes addressed by `self`,
         //          and has the same provenance. Proof: The caller guarantees
-        // that `start <= end <= self.len()`. Thus, `base` is in-bounds of
-        //        `self`, and `base + (end - start)` is also in-bounds of self.
-        //        Finally, `ptr` is constructed using provenance-preserving
-        //        operations.
+        //          that `start <= end <= self.len()`. Thus, `base` is in-bounds
+        //          of `self`, and `base + (end - start)` is also in-bounds of
+        //          self. Finally, `ptr` is constructed using
+        //          provenance-preserving operations.
         //
         // 0. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is not
-        //    zero sized, then `ptr` is derived from some valid Rust allocation,
-        //    `A`.
+        //    zero sized, then `ptr` has valid provenance for its referent,
+        //    which is entirely contained in some Rust allocation, `A`.
         // 1. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is not
-        //    zero sized, then `ptr` has valid provenance for `A`.
-        // 2. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is not
-        //    zero sized, then `ptr` addresses a byte range which is entirely
-        //    contained in `A`.
-        // 3. Per Lemma 0 and by invariant on `self`, `ptr` addresses a byte
-        //    range whose length fits in an `isize`.
-        // 4. Per Lemma 0 and by invariant on `self`, `ptr` addresses a byte
-        //    range which does not wrap around the address space.
-        // 5. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is not
         //    zero sized, then `A` is guaranteed to live for at least `'a`.
         unsafe { PtrInner::new(ptr) }
     }
@@ -267,10 +276,9 @@ impl<'a, T> PtrInner<'a, [T]> {
             // provenance, cite those docs.
             let elem = unsafe { base.add(i) };
 
-            // SAFETY:
-            //  - `elem` must not be null. `base` is constructed from a
-            //    `NonNull` pointer, and the addition that produces `elem` must
-            //    not overflow or wrap around, so `elem >= base > 0`.
+            // SAFETY: `elem` must not be null. `base` is constructed from a
+            // `NonNull` pointer, and the addition that produces `elem` must not
+            // overflow or wrap around, so `elem >= base > 0`.
             //
             // TODO(#429): Once `NonNull::new_unchecked` documents that it
             // preserves provenance, cite those docs.
@@ -278,19 +286,13 @@ impl<'a, T> PtrInner<'a, [T]> {
 
             // SAFETY: The safety invariants of `Ptr::new` (see definition) are
             // satisfied:
-            // 0. If `elem`'s referent is not zero sized, then `elem` is derived
-            //    from a valid Rust allocation, because `self` is derived from a
-            //    valid Rust allocation, by invariant on `Ptr`.
-            // 1. If `elem`'s referent is not zero sized, then `elem` has valid
-            //    provenance for `self`, because it derived from `self` using a
-            //    series of provenance-preserving operations.
-            // 2. If `elem`'s referent is not zero sized, then `elem` is
-            //    entirely contained in the allocation of `self` (see above).
-            // 3. `elem` addresses a byte range whose length fits in an `isize`
-            //    (see above).
-            // 4. `elem` addresses a byte range which does not wrap around the
-            //    address space (see above).
-            // 5. If `elem`'s referent is not zero sized, then the allocation of
+            // 0. If `elem`'s referent is not zero sized, then `elem` has valid
+            //    provenance for its referent, because it derived from `self`
+            //    using a series of provenance-preserving operations, and
+            //    because `self` has valid provenance for its referent. By the
+            //    same argument, `elem`'s referent is entirely contained within
+            //    the same allocated object as `self`'s referent.
+            // 1. If `elem`'s referent is not zero sized, then the allocation of
             //    `elem` is guaranteed to live for at least `'a`, because `elem`
             //    is entirely contained in `self`, which lives for at least `'a`
             //    by invariant on `Ptr`.
@@ -346,25 +348,11 @@ impl<'a, T, const N: usize> PtrInner<'a, [T; N]> {
         // same allocation as `self`, if any.
         //
         // 0. By the above lemma, if `slice`'s referent is not zero sized, then
-        //    `slice` is derived from the same allocation as `self`, which, by
-        //    invariant on `Ptr`, is valid.
+        //    `slice` has the same referent as `self`. By invariant on `self`,
+        //    this referent is entirely contained within some allocation, `A`.
+        //    Because `slice` was constructed using provenance-preserving
+        //    operations, it has provenance for its entire referent.
         // 1. By the above lemma, if `slice`'s referent is not zero sized, then
-        //    , `slice` has valid provenance for `A`, since it is derived from
-        //    the pointer `self`, which, by invariant on `Ptr`, has valid
-        //    provenance for `A`.
-        // 2. By the above lemma, if `slice`'s referent is not zero sized, then
-        //    `slice` addresses a byte range which is entirely contained in `A`,
-        //    because it references exactly the same byte range as `self`,
-        //    which, by invariant on `Ptr`, is entirely contained in `A`.
-        // 3. By the above lemma, `slice` addresses a byte range whose length
-        //    fits in an `isize`, since it addresses exactly the same byte range
-        //    as `self`, which, by invariant on `Ptr`, has a length that fits in
-        //    an `isize`.
-        // 4. By the above lemma, `slice` addresses a byte range which does not
-        //    wrap around the address space, since it addresses exactly the same
-        //    byte range as `self`, which, by invariant on `Ptr`, does not wrap
-        //    around the address space.
-        // 5. By the above lemma, if `slice`'s referent is not zero sized, then
         //    `A` is guaranteed to live for at least `'a`, because it is derived
         //    from the same allocation as `self`, which, by invariant on `Ptr`,
         //    lives for at least `'a`.
@@ -464,26 +452,16 @@ impl<'a> PtrInner<'a, [u8]> {
 
         // SAFETY:
         // 0. By invariant, if `target`'s referent is not zero sized, then
-        //    `target` is derived from some valid Rust allocation, `A`. By
-        //    contract on `cast`, `ptr` is derived from `self`, and thus from
-        //    the same valid Rust allocation, `A`.
-        // 1. By invariant, if `target`'s referent is not zero sized, then
         //    `target` has provenance valid for some Rust allocation, `A`.
         //    Because `ptr` is derived from `target` via provenance-preserving
-        //    operations, `ptr` will also have provenance valid for `A`.
-        // -  `validate_cast_and_convert_metadata` promises that the object
+        //    operations, `ptr` will also have provenance valid for its entire
+        //    referent.
+        // 1. `validate_cast_and_convert_metadata` promises that the object
         //    described by `elems` and `split_at` lives at a byte range which is
-        //    a subset of the input byte range. Thus:
-        //    2. Since, by invariant, if `target`'s referent is not zero sized,
-        //       then `target` addresses a byte range which is entirely
-        //       contained in `A`, so does `ptr`.
-        //    3. Since, by invariant, `target` addresses a byte range whose
-        //       length fits in an `isize`, so does `ptr`.
-        //    4. Since, by invariant, `target` addresses a byte range which does
-        //       not wrap around the address space, so does `ptr`.
-        //    5. Since, by invariant, if `target`'s referent is not zero sized,
-        //       then `target` refers to an allocation which is guaranteed to
-        //       live for at least `'a`, so does `ptr`.
+        //    a subset of the input byte range. Thus, by invariant, if
+        //    `target`'s referent is not zero sized, then `target` refers to an
+        //    allocation which is guaranteed to live for at least `'a`, and thus
+        //    so does `ptr`.
         Ok((unsafe { PtrInner::new(ptr) }, remainder))
     }
 }
