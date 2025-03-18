@@ -1127,10 +1127,6 @@ mod simd {
             uint8x16x2_t, uint8x16x3_t, uint8x16x4_t, uint16x4_t, uint16x8_t, uint32x2_t, uint32x4_t,
             uint64x1_t, uint64x2_t
         );
-        simd_arch_mod!(
-            #[cfg(all(feature = "simd-nightly", target_arch = "arm"))]
-            arm, arm, int8x4_t, uint8x4_t
-        );
     };
 }
 
@@ -2130,9 +2126,6 @@ mod tests {
                 uint8x16x2_t, uint8x16x3_t, uint8x16x4_t, uint16x4_t, uint16x8_t, uint32x2_t, uint32x4_t,
                 uint64x1_t, uint64x2_t
             );
-            #[cfg(all(feature = "simd-nightly", target_arch = "arm"))]
-            #[rustfmt::skip]
-            test_simd_arch_mod!(arm, int8x4_t, uint8x4_t);
         }
     }
 }

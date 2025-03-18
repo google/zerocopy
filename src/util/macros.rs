@@ -150,7 +150,7 @@ macro_rules! unsafe_impl {
     };
 
     (@method TryFromBytes ; |$candidate:ident| $is_bit_valid:expr) => {
-        #[allow(clippy::missing_inline_in_public_items)]
+        #[allow(clippy::missing_inline_in_public_items, dead_code)]
         #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
 
@@ -166,7 +166,7 @@ macro_rules! unsafe_impl {
         #[inline(always)] fn is_bit_valid<AA: crate::pointer::invariant::Reference>(_: Maybe<'_, Self, AA>) -> bool { true }
     };
     (@method $trait:ident) => {
-        #[allow(clippy::missing_inline_in_public_items)]
+        #[allow(clippy::missing_inline_in_public_items, dead_code)]
         #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
     };
@@ -491,7 +491,7 @@ macro_rules! unsafe_impl_known_layout {
 
             #[allow(non_local_definitions)]
             unsafe impl<$($tyvar: ?Sized + KnownLayout)?> KnownLayout for $ty {
-                #[allow(clippy::missing_inline_in_public_items)]
+                #[allow(clippy::missing_inline_in_public_items, dead_code)]
                 #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
                 fn only_derive_is_allowed_to_implement_this_trait() {}
 
