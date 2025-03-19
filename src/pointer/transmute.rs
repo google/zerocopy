@@ -70,14 +70,9 @@ use crate::{pointer::invariant::*, FromBytes, Immutable, IntoBytes, Unalign};
 ///
 /// First, all of `src`'s `PtrInner` invariants are upheld. `src`'s address and
 /// metadata are unchanged, so:
-/// - If its referent is not zero sized, then it is still derived from a valid
-///   allocation, `A`
 /// - If its referent is not zero sized, then it still has valid provenance for
+///   its referent, which is still entirely contained in some Rust allocation,
 ///   `A`
-/// - If its referent is not zero sized, then it addresses a byte range entirely
-///   contained in `A`
-/// - The length of its referent fits in an `isize`
-/// - Its referent does not wrap around the address space
 /// - If its referent is not zero sized, `A` is guaranteed to live for at least
 ///   `'a`
 ///
