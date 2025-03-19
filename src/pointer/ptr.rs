@@ -80,28 +80,22 @@ mod def {
         ///
         /// The caller promises that:
         ///
-        /// 0. If `ptr`'s referent is not zero sized, then `ptr` is derived from
-        ///    some valid Rust allocation, `A`.
-        /// 1. If `ptr`'s referent is not zero sized, then `ptr` has valid
-        ///    provenance for `A`.
-        /// 2. If `ptr`'s referent is not zero sized, then `ptr` addresses a
-        ///    byte range which is entirely contained in `A`.
-        /// 3. `ptr` addresses a byte range whose length fits in an `isize`.
-        /// 4. `ptr` addresses a byte range which does not wrap around the
-        ///    address space.
-        /// 5. If `ptr`'s referent is not zero sized, then `A` is guaranteed to
-        ///    live for at least `'a`.
-        /// 6. `ptr` conforms to the aliasing invariant of
+        /// 0. If `ptr`'s referent is not zero sized, then `ptr` has valid
+        ///    provenance for its referent, which is entirely contained in some
+        ///    Rust allocation, `A`.
+        /// 1. If `ptr`'s referent is not zero sized, `A` is guaranteed to live
+        ///    for at least `'a`.
+        /// 2. `ptr` conforms to the aliasing invariant of
         ///    [`I::Aliasing`](invariant::Aliasing).
-        /// 7. `ptr` conforms to the alignment invariant of
+        /// 3. `ptr` conforms to the alignment invariant of
         ///    [`I::Alignment`](invariant::Alignment).
-        /// 8. `ptr` conforms to the validity invariant of
+        /// 4. `ptr` conforms to the validity invariant of
         ///    [`I::Validity`](invariant::Validity).
         pub(super) unsafe fn new(ptr: NonNull<T>) -> Ptr<'a, T, I> {
-            // SAFETY: The caller has promised (in 0 - 5) to satisfy all safety
+            // SAFETY: The caller has promised (in 0 - 1) to satisfy all safety
             // invariants of `PtrInner::new`.
             let ptr = unsafe { PtrInner::new(ptr) };
-            // SAFETY: The caller has promised (in 6 - 8) to satisfy all safety
+            // SAFETY: The caller has promised (in 2 - 4) to satisfy all safety
             // invariants of `Ptr`.
             Self { ptr, _invariants: PhantomData }
         }
@@ -484,24 +478,12 @@ mod _conversions {
             // promises that `cast` preserves provenance, and we call it with
             // `self.as_inner().as_non_null()`.
             //
-            // 0. By invariant,  if `self`'s referent is not zero sized, then
-            //    `self` is derived from some valid Rust allocation, `A`. By
-            //    Lemma 1, `ptr` has the same provenance as `self`. Thus, `ptr`
-            //    is derived from `A`.
-            // 1. By invariant, if `self`'s referent is not zero sized, then
-            //    `self` has valid provenance for `A`. By Lemma 1, so does
-            //    `ptr`.
-            // 2. By invariant on `self` and caller precondition, if `ptr`'s
-            //    referent is not zero sized, then `ptr` addresses a byte range
-            //    which is entirely contained in `A`.
-            // 3. By invariant on `self` and caller precondition, `ptr`
-            //    addresses a byte range whose length fits in an `isize`.
-            // 4. By invariant on `self` and caller precondition, `ptr`
-            //    addresses a byte range which does not wrap around the address
-            //    space.
-            // 5. By invariant on `self`, if `self`'s referent is not zero
+            // 0. By invariant, if `self`'s referent is not zero sized, then
+            //    `self` has valid provenance for its entire referent, which is
+            //    entirely contained in `A`. By Lemma 1, so does `ptr`.
+            // 1. By invariant on `self`, if `self`'s referent is not zero
             //    sized, then `A` is guaranteed to live for at least `'a`.
-            // 6. `ptr` conforms to the aliasing invariant of `I::Aliasing`:
+            // 2. `ptr` conforms to the aliasing invariant of `I::Aliasing`:
             //    - `Exclusive`: `self` is the only `Ptr` or reference which is
             //      permitted to read or modify the referent for the lifetime
             //      `'a`. Since we consume `self` by value, the returned pointer
@@ -518,8 +500,8 @@ mod _conversions {
             //      of `UnsafeCell`s is unsound, this must be impossible using
             //      `&T` and `&U`.
             //    - `Inaccessible`: There are no restrictions we need to uphold.
-            // 7. `ptr` trivially satisfies the alignment invariant `Unaligned`.
-            // 8. The caller promises that `ptr` conforms to the validity
+            // 3. `ptr` trivially satisfies the alignment invariant `Unaligned`.
+            // 4. The caller promises that `ptr` conforms to the validity
             //    invariant `V` with respect to its referent type, `U`.
             unsafe { Ptr::new(ptr) }
         }
@@ -1047,11 +1029,11 @@ mod _casts {
             // SAFETY: Note that, by post-condition on `PtrInner::as_slice`,
             // `slice` refers to the same byte range as `self.as_inner()`.
             //
-            // 6. Thus, `slice` conforms to the aliasing invariant of
+            // 0. Thus, `slice` conforms to the aliasing invariant of
             //    `I::Aliasing` because `self` does.
-            // 7. By the above lemma, `slice` conforms to the alignment
+            // 1. By the above lemma, `slice` conforms to the alignment
             //    invariant of `I::Alignment` because `self` does.
-            // 8. Since `[T; N]` and `[T]` have the same bit validity [1][2],
+            // 2. Since `[T; N]` and `[T]` have the same bit validity [1][2],
             //    and since `self` and the returned `Ptr` have the same validity
             //    invariant, neither `self` nor the returned `Ptr` can be used
             //    to write a value to the referent which violates the other's
