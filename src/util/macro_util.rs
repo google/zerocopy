@@ -357,7 +357,7 @@ pub use core::mem::size_of;
 #[macro_export]
 macro_rules! struct_has_padding {
     ($t:ty, [$($ts:ty),*]) => {
-        ::zerocopy::util::macro_util::size_of::<$t>() > 0 $(+ ::zerocopy::util::macro_util::size_of::<$ts>())*
+        $crate::util::macro_util::size_of::<$t>() > 0 $(+ $crate::util::macro_util::size_of::<$ts>())*
     };
 }
 
@@ -377,7 +377,7 @@ macro_rules! struct_has_padding {
 #[macro_export]
 macro_rules! union_has_padding {
     ($t:ty, [$($ts:ty),*]) => {
-        false $(|| ::zerocopy::util::macro_util::size_of::<$t>() != ::zerocopy::util::macro_util::size_of::<$ts>())*
+        false $(|| $crate::util::macro_util::size_of::<$t>() != $crate::util::macro_util::size_of::<$ts>())*
     };
 }
 
@@ -402,10 +402,10 @@ macro_rules! union_has_padding {
 macro_rules! enum_has_padding {
     ($t:ty, $disc:ty, $([$($ts:ty),*]),*) => {
         false $(
-            || ::zerocopy::util::macro_util::size_of::<$t>()
+            || $crate::util::macro_util::size_of::<$t>()
                 != (
-                    ::zerocopy::util::macro_util::size_of::<$disc>()
-                    $(+ ::zerocopy::util::macro_util::size_of::<$ts>())*
+                    $crate::util::macro_util::size_of::<$disc>()
+                    $(+ $crate::util::macro_util::size_of::<$ts>())*
                 )
         )*
     }

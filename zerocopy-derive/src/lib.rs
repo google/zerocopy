@@ -41,8 +41,8 @@ use {
     proc_macro2::Span,
     quote::quote,
     syn::{
-        parse_quote, Data, DataEnum, DataStruct, DataUnion, DeriveInput, Error, Expr, ExprLit,
-        ExprUnary, GenericParam, Ident, Lit, Path, Type, UnOp, WherePredicate,
+        parse_quote, Attribute, Data, DataEnum, DataStruct, DataUnion, DeriveInput, Error, Expr,
+        ExprLit, ExprUnary, GenericParam, Ident, Lit, Meta, Path, Type, UnOp, WherePredicate,
     },
 };
 
@@ -73,10 +73,14 @@ use {crate::ext::*, crate::repr::*};
 /// specify the name in order to avoid name collisions.
 macro_rules! derive {
     ($trait:ident => $outer:ident => $inner:ident) => {
-        #[proc_macro_derive($trait)]
+        #[proc_macro_derive($trait, attributes(zerocopy))]
         pub fn $outer(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
             let ast = syn::parse_macro_input!(ts as DeriveInput);
-            $inner(&ast, Trait::$trait).into_ts().into()
+            let zerocopy_crate = match extract_zerocopy_crate(&ast.attrs) {
+                Ok(zerocopy_crate) => zerocopy_crate,
+                Err(e) => return e.into_compile_error().into(),
+            };
+            $inner(&ast, Trait::$trait, &zerocopy_crate).into_ts().into()
         }
     };
 }
@@ -98,6 +102,42 @@ impl IntoTokenStream for Result<TokenStream, Error> {
             Err(err) => err.to_compile_error(),
         }
     }
+}
+
+/// Attempt to extract a crate path from the provided attributes. Defaults to `::zerocopy` if not
+/// found.
+fn extract_zerocopy_crate(attrs: &[Attribute]) -> Result<Path, Error> {
+    let mut path = parse_quote!(::zerocopy);
+
+    for attr in attrs {
+        if let Meta::List(ref meta_list) = attr.meta {
+            if meta_list.path.is_ident("zerocopy") {
+                attr.parse_nested_meta(|meta| {
+                    if meta.path.is_ident("crate") {
+                        let expr = meta.value().and_then(|value| value.parse());
+                        if let Ok(Expr::Lit(ExprLit { lit: Lit::Str(lit), .. })) = expr {
+                            if let Ok(path_lit) = lit.parse() {
+                                path = path_lit;
+                                return Ok(());
+                            }
+                        }
+
+                        return Err(Error::new(
+                            Span::call_site(),
+                            "`crate` attribute requires a path as the value",
+                        ));
+                    }
+
+                    Err(Error::new(
+                        Span::call_site(),
+                        format!("unknown attribute encountered: {}", meta.path.into_token_stream()),
+                    ))
+                })?;
+            }
+        }
+    }
+
+    Ok(path)
 }
 
 derive!(KnownLayout => derive_known_layout => derive_known_layout_inner);
@@ -126,7 +166,11 @@ pub fn derive_as_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     derive_into_bytes(ts)
 }
 
-fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<TokenStream, Error> {
+fn derive_known_layout_inner(
+    ast: &DeriveInput,
+    _top_level: Trait,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
     let is_repr_c_struct = match &ast.data {
         Data::Struct(..) => {
             let repr = StructUnionRepr::from_attrs(&ast.attrs)?;
@@ -149,7 +193,7 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
         let (_vis, trailing_field_name, trailing_field_ty) = trailing_field;
         let leading_fields_tys = leading_fields.iter().map(|(_vis, _name, ty)| ty);
 
-        let core_path = quote!(::zerocopy::util::macro_util::core_reexport);
+        let core_path = quote!(#zerocopy_crate::util::macro_util::core_reexport);
         let repr_align = repr
             .get_align()
             .map(|align| {
@@ -198,14 +242,14 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                 //       slice type, such as struct `Foo(i32, [u8])` or `(u64, Foo)`.
                 #[inline(always)]
                 fn raw_from_ptr_len(
-                    bytes: ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<u8>,
+                    bytes: #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<u8>,
                     meta: Self::PointerMetadata,
-                ) -> ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<Self> {
-                    use ::zerocopy::KnownLayout;
+                ) -> #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<Self> {
+                    use #zerocopy_crate::KnownLayout;
                     let trailing = <#trailing_field_ty as KnownLayout>::raw_from_ptr_len(bytes, meta);
                     let slf = trailing.as_ptr() as *mut Self;
                     // SAFETY: Constructed from `trailing`, which is non-null.
-                    unsafe { ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(slf) }
+                    unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(slf) }
                 }
 
                 #[inline(always)]
@@ -221,7 +265,7 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
             let (_, ty_generics, _) = ast.generics.split_for_impl();
 
             quote!(
-                type PointerMetadata = <#trailing_field_ty as ::zerocopy::KnownLayout>::PointerMetadata;
+                type PointerMetadata = <#trailing_field_ty as #zerocopy_crate::KnownLayout>::PointerMetadata;
 
                 type MaybeUninit = __ZerocopyKnownLayoutMaybeUninit #ty_generics;
 
@@ -239,9 +283,9 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                 // expansion is only used if `is_repr_c_struct`, we enumerate
                 // the fields in order, and we extract the values of `align(N)`
                 // and `packed(N)`.
-                const LAYOUT: ::zerocopy::DstLayout = {
-                    use ::zerocopy::util::macro_util::core_reexport::num::NonZeroUsize;
-                    use ::zerocopy::{DstLayout, KnownLayout};
+                const LAYOUT: #zerocopy_crate::DstLayout = {
+                    use #zerocopy_crate::util::macro_util::core_reexport::num::NonZeroUsize;
+                    use #zerocopy_crate::{DstLayout, KnownLayout};
 
                     let repr_align = #repr_align;
                     let repr_packed = #repr_packed;
@@ -286,7 +330,7 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
 
             let field_impls = field_indices.iter().zip(&fields).map(|(idx, (_, _, ty))| quote! {
                 // SAFETY: `#ty` is the type of `#ident`'s field at `#idx`.
-                unsafe impl #impl_generics ::zerocopy::util::macro_util::Field<#idx> for #ident #ty_generics
+                unsafe impl #impl_generics #zerocopy_crate::util::macro_util::Field<#idx> for #ident #ty_generics
                 where
                     #predicates
                 {
@@ -300,12 +344,12 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
 
             let trailing_field_ty = quote! {
                 <#ident #ty_generics as
-                    ::zerocopy::util::macro_util::Field<#trailing_field_index>
+                    #zerocopy_crate::util::macro_util::Field<#trailing_field_index>
                 >::Type
             };
 
             let methods = make_methods(&parse_quote! {
-                <#trailing_field_ty as ::zerocopy::KnownLayout>::MaybeUninit
+                <#trailing_field_ty as #zerocopy_crate::KnownLayout>::MaybeUninit
             });
 
             quote! {
@@ -327,9 +371,9 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                 // structs that are generated by macros. See #2177 for details.
                 #[allow(private_bounds)]
                 #vis struct __ZerocopyKnownLayoutMaybeUninit<#params> (
-                    #(::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
+                    #(#zerocopy_crate::util::macro_util::core_reexport::mem::MaybeUninit<
                         <#ident #ty_generics as
-                            ::zerocopy::util::macro_util::Field<#leading_field_indices>
+                            #zerocopy_crate::util::macro_util::Field<#leading_field_indices>
                         >::Type
                     >,)*
                     // NOTE(#2302): We wrap in `ManuallyDrop` here in case the
@@ -338,12 +382,12 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                     // type is *either* `Sized` or has a trivial `Drop`.
                     // `ManuallyDrop` has a trivial `Drop`, and so satisfies
                     // this requirement.
-                    ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
-                        <#trailing_field_ty as ::zerocopy::KnownLayout>::MaybeUninit
+                    #zerocopy_crate::util::macro_util::core_reexport::mem::ManuallyDrop<
+                        <#trailing_field_ty as #zerocopy_crate::KnownLayout>::MaybeUninit
                     >
                 )
                 where
-                    #trailing_field_ty: ::zerocopy::KnownLayout,
+                    #trailing_field_ty: #zerocopy_crate::KnownLayout,
                     #predicates;
 
                 // SAFETY: We largely defer to the `KnownLayout` implementation on
@@ -352,19 +396,19 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                 // since  `__ZerocopyKnownLayoutMaybeUninit` is guaranteed to
                 // have the same layout as the derive target type, except that
                 // `__ZerocopyKnownLayoutMaybeUninit` admits uninit bytes.
-                unsafe impl #impl_generics ::zerocopy::KnownLayout for __ZerocopyKnownLayoutMaybeUninit #ty_generics
+                unsafe impl #impl_generics #zerocopy_crate::KnownLayout for __ZerocopyKnownLayoutMaybeUninit #ty_generics
                 where
-                    #trailing_field_ty: ::zerocopy::KnownLayout,
+                    #trailing_field_ty: #zerocopy_crate::KnownLayout,
                     #predicates
                 {
                     #[allow(clippy::missing_inline_in_public_items)]
                     fn only_derive_is_allowed_to_implement_this_trait() {}
 
-                    type PointerMetadata = <#ident #ty_generics as ::zerocopy::KnownLayout>::PointerMetadata;
+                    type PointerMetadata = <#ident #ty_generics as #zerocopy_crate::KnownLayout>::PointerMetadata;
 
                     type MaybeUninit = Self;
 
-                    const LAYOUT: ::zerocopy::DstLayout = <#ident #ty_generics as ::zerocopy::KnownLayout>::LAYOUT;
+                    const LAYOUT: #zerocopy_crate::DstLayout = <#ident #ty_generics as #zerocopy_crate::KnownLayout>::LAYOUT;
 
                     #methods
                 }
@@ -381,12 +425,12 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
             quote!(
                 type PointerMetadata = ();
                 type MaybeUninit =
-                    ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<Self>;
+                    #zerocopy_crate::util::macro_util::core_reexport::mem::MaybeUninit<Self>;
 
                 // SAFETY: `LAYOUT` is guaranteed to accurately describe the
                 // layout of `Self`, because that is the documented safety
                 // contract of `DstLayout::for_type`.
-                const LAYOUT: ::zerocopy::DstLayout = ::zerocopy::DstLayout::for_type::<Self>();
+                const LAYOUT: #zerocopy_crate::DstLayout = #zerocopy_crate::DstLayout::for_type::<Self>();
 
                 // SAFETY: `.cast` preserves address and provenance.
                 //
@@ -394,9 +438,9 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                 // it preserves provenance.
                 #[inline(always)]
                 fn raw_from_ptr_len(
-                    bytes: ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<u8>,
+                    bytes: #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<u8>,
                     _meta: (),
-                ) -> ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<Self>
+                ) -> #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<Self>
                 {
                     bytes.cast::<Self>()
                 }
@@ -425,6 +469,7 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
                 strct,
                 Trait::KnownLayout,
                 require_trait_bound_on_field_types,
+                zerocopy_crate,
             )
             .self_type_trait_bounds(self_bounds)
             .inner_extras(inner_extras)
@@ -434,7 +479,7 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
         Data::Enum(enm) => {
             // A bound on the trailing field is not required, since enums cannot
             // currently be unsized.
-            ImplBlockBuilder::new(ast, enm, Trait::KnownLayout, FieldBounds::None)
+            ImplBlockBuilder::new(ast, enm, Trait::KnownLayout, FieldBounds::None, zerocopy_crate)
                 .self_type_trait_bounds(SelfBounds::SIZED)
                 .inner_extras(inner_extras)
                 .outer_extras(outer_extras)
@@ -443,7 +488,7 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
         Data::Union(unn) => {
             // A bound on the trailing field is not required, since unions
             // cannot currently be unsized.
-            ImplBlockBuilder::new(ast, unn, Trait::KnownLayout, FieldBounds::None)
+            ImplBlockBuilder::new(ast, unn, Trait::KnownLayout, FieldBounds::None, zerocopy_crate)
                 .self_type_trait_bounds(SelfBounds::SIZED)
                 .inner_extras(inner_extras)
                 .outer_extras(outer_extras)
@@ -452,66 +497,101 @@ fn derive_known_layout_inner(ast: &DeriveInput, _top_level: Trait) -> Result<Tok
     })
 }
 
-fn derive_no_cell_inner(ast: &DeriveInput, _top_level: Trait) -> TokenStream {
+fn derive_no_cell_inner(
+    ast: &DeriveInput,
+    _top_level: Trait,
+    zerocopy_crate: &Path,
+) -> TokenStream {
     match &ast.data {
-        Data::Struct(strct) => {
-            ImplBlockBuilder::new(ast, strct, Trait::Immutable, FieldBounds::ALL_SELF).build()
-        }
+        Data::Struct(strct) => ImplBlockBuilder::new(
+            ast,
+            strct,
+            Trait::Immutable,
+            FieldBounds::ALL_SELF,
+            zerocopy_crate,
+        )
+        .build(),
         Data::Enum(enm) => {
-            ImplBlockBuilder::new(ast, enm, Trait::Immutable, FieldBounds::ALL_SELF).build()
+            ImplBlockBuilder::new(ast, enm, Trait::Immutable, FieldBounds::ALL_SELF, zerocopy_crate)
+                .build()
         }
         Data::Union(unn) => {
-            ImplBlockBuilder::new(ast, unn, Trait::Immutable, FieldBounds::ALL_SELF).build()
+            ImplBlockBuilder::new(ast, unn, Trait::Immutable, FieldBounds::ALL_SELF, zerocopy_crate)
+                .build()
         }
     }
 }
 
-fn derive_try_from_bytes_inner(ast: &DeriveInput, top_level: Trait) -> Result<TokenStream, Error> {
+fn derive_try_from_bytes_inner(
+    ast: &DeriveInput,
+    top_level: Trait,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
     match &ast.data {
-        Data::Struct(strct) => derive_try_from_bytes_struct(ast, strct, top_level),
-        Data::Enum(enm) => derive_try_from_bytes_enum(ast, enm, top_level),
-        Data::Union(unn) => Ok(derive_try_from_bytes_union(ast, unn, top_level)),
+        Data::Struct(strct) => derive_try_from_bytes_struct(ast, strct, top_level, zerocopy_crate),
+        Data::Enum(enm) => derive_try_from_bytes_enum(ast, enm, top_level, zerocopy_crate),
+        Data::Union(unn) => Ok(derive_try_from_bytes_union(ast, unn, top_level, zerocopy_crate)),
     }
 }
 
-fn derive_from_zeros_inner(ast: &DeriveInput, top_level: Trait) -> Result<TokenStream, Error> {
-    let try_from_bytes = derive_try_from_bytes_inner(ast, top_level)?;
+fn derive_from_zeros_inner(
+    ast: &DeriveInput,
+    top_level: Trait,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
+    let try_from_bytes = derive_try_from_bytes_inner(ast, top_level, zerocopy_crate)?;
     let from_zeros = match &ast.data {
-        Data::Struct(strct) => derive_from_zeros_struct(ast, strct),
-        Data::Enum(enm) => derive_from_zeros_enum(ast, enm)?,
-        Data::Union(unn) => derive_from_zeros_union(ast, unn),
+        Data::Struct(strct) => derive_from_zeros_struct(ast, strct, zerocopy_crate),
+        Data::Enum(enm) => derive_from_zeros_enum(ast, enm, zerocopy_crate)?,
+        Data::Union(unn) => derive_from_zeros_union(ast, unn, zerocopy_crate),
     };
     Ok(IntoIterator::into_iter([try_from_bytes, from_zeros]).collect())
 }
 
-fn derive_from_bytes_inner(ast: &DeriveInput, top_level: Trait) -> Result<TokenStream, Error> {
-    let from_zeros = derive_from_zeros_inner(ast, top_level)?;
+fn derive_from_bytes_inner(
+    ast: &DeriveInput,
+    top_level: Trait,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
+    let from_zeros = derive_from_zeros_inner(ast, top_level, zerocopy_crate)?;
     let from_bytes = match &ast.data {
-        Data::Struct(strct) => derive_from_bytes_struct(ast, strct),
-        Data::Enum(enm) => derive_from_bytes_enum(ast, enm)?,
-        Data::Union(unn) => derive_from_bytes_union(ast, unn),
+        Data::Struct(strct) => derive_from_bytes_struct(ast, strct, zerocopy_crate),
+        Data::Enum(enm) => derive_from_bytes_enum(ast, enm, zerocopy_crate)?,
+        Data::Union(unn) => derive_from_bytes_union(ast, unn, zerocopy_crate),
     };
 
     Ok(IntoIterator::into_iter([from_zeros, from_bytes]).collect())
 }
 
-fn derive_into_bytes_inner(ast: &DeriveInput, _top_level: Trait) -> Result<TokenStream, Error> {
+fn derive_into_bytes_inner(
+    ast: &DeriveInput,
+    _top_level: Trait,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
     match &ast.data {
-        Data::Struct(strct) => derive_into_bytes_struct(ast, strct),
-        Data::Enum(enm) => derive_into_bytes_enum(ast, enm),
-        Data::Union(unn) => derive_into_bytes_union(ast, unn),
+        Data::Struct(strct) => derive_into_bytes_struct(ast, strct, zerocopy_crate),
+        Data::Enum(enm) => derive_into_bytes_enum(ast, enm, zerocopy_crate),
+        Data::Union(unn) => derive_into_bytes_union(ast, unn, zerocopy_crate),
     }
 }
 
-fn derive_unaligned_inner(ast: &DeriveInput, _top_level: Trait) -> Result<TokenStream, Error> {
+fn derive_unaligned_inner(
+    ast: &DeriveInput,
+    _top_level: Trait,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
     match &ast.data {
-        Data::Struct(strct) => derive_unaligned_struct(ast, strct),
-        Data::Enum(enm) => derive_unaligned_enum(ast, enm),
-        Data::Union(unn) => derive_unaligned_union(ast, unn),
+        Data::Struct(strct) => derive_unaligned_struct(ast, strct, zerocopy_crate),
+        Data::Enum(enm) => derive_unaligned_enum(ast, enm, zerocopy_crate),
+        Data::Union(unn) => derive_unaligned_union(ast, unn, zerocopy_crate),
     }
 }
 
-fn derive_hash_inner(ast: &DeriveInput, _top_level: Trait) -> Result<TokenStream, Error> {
+fn derive_hash_inner(
+    ast: &DeriveInput,
+    _top_level: Trait,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
     // This doesn't delegate to `impl_block` because `impl_block` assumes it is deriving a
     // `zerocopy`-defined trait, and these trait impls share a common shape that `Hash` does not.
     // In particular, `zerocopy` traits contain a method that only `zerocopy_derive` macros
@@ -527,35 +607,39 @@ fn derive_hash_inner(ast: &DeriveInput, _top_level: Trait) -> Result<TokenStream
         // While there are not currently any warnings that this suppresses (that
         // we're aware of), it's good future-proofing hygiene.
         #[automatically_derived]
-        impl #impl_generics ::zerocopy::util::macro_util::core_reexport::hash::Hash for #type_ident #ty_generics
+        impl #impl_generics #zerocopy_crate::util::macro_util::core_reexport::hash::Hash for #type_ident #ty_generics
         where
-            Self: ::zerocopy::IntoBytes + ::zerocopy::Immutable,
+            Self: #zerocopy_crate::IntoBytes + #zerocopy_crate::Immutable,
             #where_predicates
         {
             fn hash<H>(&self, state: &mut H)
             where
-                H: ::zerocopy::util::macro_util::core_reexport::hash::Hasher,
+                H: #zerocopy_crate::util::macro_util::core_reexport::hash::Hasher,
             {
-                ::zerocopy::util::macro_util::core_reexport::hash::Hasher::write(
+                #zerocopy_crate::util::macro_util::core_reexport::hash::Hasher::write(
                     state,
-                    ::zerocopy::IntoBytes::as_bytes(self)
+                    #zerocopy_crate::IntoBytes::as_bytes(self)
                 )
             }
 
             fn hash_slice<H>(data: &[Self], state: &mut H)
             where
-                H: ::zerocopy::util::macro_util::core_reexport::hash::Hasher,
+                H: #zerocopy_crate::util::macro_util::core_reexport::hash::Hasher,
             {
-                ::zerocopy::util::macro_util::core_reexport::hash::Hasher::write(
+                #zerocopy_crate::util::macro_util::core_reexport::hash::Hasher::write(
                     state,
-                    ::zerocopy::IntoBytes::as_bytes(data)
+                    #zerocopy_crate::IntoBytes::as_bytes(data)
                 )
             }
         }
     })
 }
 
-fn derive_eq_inner(ast: &DeriveInput, _top_level: Trait) -> Result<TokenStream, Error> {
+fn derive_eq_inner(
+    ast: &DeriveInput,
+    _top_level: Trait,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
     // This doesn't delegate to `impl_block` because `impl_block` assumes it is deriving a
     // `zerocopy`-defined trait, and these trait impls share a common shape that `Eq` does not.
     // In particular, `zerocopy` traits contain a method that only `zerocopy_derive` macros
@@ -571,15 +655,15 @@ fn derive_eq_inner(ast: &DeriveInput, _top_level: Trait) -> Result<TokenStream, 
         // While there are not currently any warnings that this suppresses (that
         // we're aware of), it's good future-proofing hygiene.
         #[automatically_derived]
-        impl #impl_generics ::zerocopy::util::macro_util::core_reexport::cmp::PartialEq for #type_ident #ty_generics
+        impl #impl_generics #zerocopy_crate::util::macro_util::core_reexport::cmp::PartialEq for #type_ident #ty_generics
         where
-            Self: ::zerocopy::IntoBytes + ::zerocopy::Immutable,
+            Self: #zerocopy_crate::IntoBytes + #zerocopy_crate::Immutable,
             #where_predicates
         {
             fn eq(&self, other: &Self) -> bool {
-                ::zerocopy::util::macro_util::core_reexport::cmp::PartialEq::eq(
-                    ::zerocopy::IntoBytes::as_bytes(self),
-                    ::zerocopy::IntoBytes::as_bytes(other),
+                #zerocopy_crate::util::macro_util::core_reexport::cmp::PartialEq::eq(
+                    #zerocopy_crate::IntoBytes::as_bytes(self),
+                    #zerocopy_crate::IntoBytes::as_bytes(other),
                 )
             }
         }
@@ -590,9 +674,9 @@ fn derive_eq_inner(ast: &DeriveInput, _top_level: Trait) -> Result<TokenStream, 
         // While there are not currently any warnings that this suppresses (that
         // we're aware of), it's good future-proofing hygiene.
         #[automatically_derived]
-        impl #impl_generics ::zerocopy::util::macro_util::core_reexport::cmp::Eq for #type_ident #ty_generics
+        impl #impl_generics #zerocopy_crate::util::macro_util::core_reexport::cmp::Eq for #type_ident #ty_generics
         where
-            Self: ::zerocopy::IntoBytes + ::zerocopy::Immutable,
+            Self: #zerocopy_crate::IntoBytes + #zerocopy_crate::Immutable,
             #where_predicates
         {
         }
@@ -605,58 +689,66 @@ fn derive_try_from_bytes_struct(
     ast: &DeriveInput,
     strct: &DataStruct,
     top_level: Trait,
+    zerocopy_crate: &Path,
 ) -> Result<TokenStream, Error> {
-    let extras = try_gen_trivial_is_bit_valid(ast, top_level).unwrap_or_else(|| {
-        let fields = strct.fields();
-        let field_names = fields.iter().map(|(_vis, name, _ty)| name);
-        let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
-        quote!(
-            // SAFETY: We use `is_bit_valid` to validate that each field is
-            // bit-valid, and only return `true` if all of them are. The bit
-            // validity of a struct is just the composition of the bit
-            // validities of its fields, so this is a sound implementation of
-            // `is_bit_valid`.
-            fn is_bit_valid<___ZerocopyAliasing>(
-                mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
-            where
-                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
-            {
-                use ::zerocopy::util::macro_util::core_reexport;
+    let extras =
+        try_gen_trivial_is_bit_valid(ast, top_level, zerocopy_crate).unwrap_or_else(|| {
+            let fields = strct.fields();
+            let field_names = fields.iter().map(|(_vis, name, _ty)| name);
+            let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
+            quote!(
+                // SAFETY: We use `is_bit_valid` to validate that each field is
+                // bit-valid, and only return `true` if all of them are. The bit
+                // validity of a struct is just the composition of the bit
+                // validities of its fields, so this is a sound implementation of
+                // `is_bit_valid`.
+                fn is_bit_valid<___ZerocopyAliasing>(
+                    mut candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
+                ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
+                where
+                    ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
+                {
+                    use #zerocopy_crate::util::macro_util::core_reexport;
 
-                true #(&& {
-                    // SAFETY:
-                    // - `project` is a field projection, and so it addresses a
-                    //   subset of the bytes addressed by `slf`
-                    // - ..., and so it preserves provenance
-                    // - ..., and `*slf` is a struct, so `UnsafeCell`s exist at
-                    //   the same byte ranges in the returned pointer's referent
-                    //   as they do in `*slf`
-                    let field_candidate = unsafe {
-                        let project = |slf: core_reexport::ptr::NonNull<Self>| {
-                            let slf = slf.as_ptr();
-                            let field = core_reexport::ptr::addr_of_mut!((*slf).#field_names);
-                            // SAFETY: `cast_unsized_unchecked` promises that
-                            // `slf` will either reference a zero-sized byte
-                            // range, or else will reference a byte range that
-                            // is entirely contained withing an allocated
-                            // object. In either case, this guarantees that
-                            // field projection will not wrap around the address
-                            // space, and so `field` will be non-null.
-                            unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
+                    true #(&& {
+                        // SAFETY:
+                        // - `project` is a field projection, and so it addresses a
+                        //   subset of the bytes addressed by `slf`
+                        // - ..., and so it preserves provenance
+                        // - ..., and `*slf` is a struct, so `UnsafeCell`s exist at
+                        //   the same byte ranges in the returned pointer's referent
+                        //   as they do in `*slf`
+                        let field_candidate = unsafe {
+                            let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                let slf = slf.as_ptr();
+                                let field = core_reexport::ptr::addr_of_mut!((*slf).#field_names);
+                                // SAFETY: `cast_unsized_unchecked` promises that
+                                // `slf` will either reference a zero-sized byte
+                                // range, or else will reference a byte range that
+                                // is entirely contained withing an allocated
+                                // object. In either case, this guarantees that
+                                // field projection will not wrap around the address
+                                // space, and so `field` will be non-null.
+                                unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
+                            };
+
+                            candidate.reborrow().cast_unsized_unchecked(project)
                         };
 
-                        candidate.reborrow().cast_unsized_unchecked(project)
-                    };
-
-                    <#field_tys as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                })*
-            }
-        )
-    });
-    Ok(ImplBlockBuilder::new(ast, strct, Trait::TryFromBytes, FieldBounds::ALL_SELF)
-        .inner_extras(extras)
-        .build())
+                        <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
+                    })*
+                }
+            )
+        });
+    Ok(ImplBlockBuilder::new(
+        ast,
+        strct,
+        Trait::TryFromBytes,
+        FieldBounds::ALL_SELF,
+        zerocopy_crate,
+    )
+    .inner_extras(extras)
+    .build())
 }
 
 /// A union is `TryFromBytes` if:
@@ -665,59 +757,61 @@ fn derive_try_from_bytes_union(
     ast: &DeriveInput,
     unn: &DataUnion,
     top_level: Trait,
+    zerocopy_crate: &Path,
 ) -> TokenStream {
     // TODO(#5): Remove the `Immutable` bound.
     let field_type_trait_bounds =
         FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
-    let extras = try_gen_trivial_is_bit_valid(ast, top_level).unwrap_or_else(|| {
-        let fields = unn.fields();
-        let field_names = fields.iter().map(|(_vis, name, _ty)| name);
-        let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
-        quote!(
-            // SAFETY: We use `is_bit_valid` to validate that any field is
-            // bit-valid; we only return `true` if at least one of them is. The
-            // bit validity of a union is not yet well defined in Rust, but it
-            // is guaranteed to be no more strict than this definition. See #696
-            // for a more in-depth discussion.
-            fn is_bit_valid<___ZerocopyAliasing>(
-                mut candidate: ::zerocopy::Maybe<'_, Self,___ZerocopyAliasing>
-            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
-            where
-                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
-            {
-                use ::zerocopy::util::macro_util::core_reexport;
+    let extras =
+        try_gen_trivial_is_bit_valid(ast, top_level, zerocopy_crate).unwrap_or_else(|| {
+            let fields = unn.fields();
+            let field_names = fields.iter().map(|(_vis, name, _ty)| name);
+            let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
+            quote!(
+                // SAFETY: We use `is_bit_valid` to validate that any field is
+                // bit-valid; we only return `true` if at least one of them is. The
+                // bit validity of a union is not yet well defined in Rust, but it
+                // is guaranteed to be no more strict than this definition. See #696
+                // for a more in-depth discussion.
+                fn is_bit_valid<___ZerocopyAliasing>(
+                    mut candidate: #zerocopy_crate::Maybe<'_, Self,___ZerocopyAliasing>
+                ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
+                where
+                    ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
+                {
+                    use #zerocopy_crate::util::macro_util::core_reexport;
 
-                false #(|| {
-                    // SAFETY:
-                    // - `project` is a field projection, and so it addresses a
-                    //   subset of the bytes addressed by `slf`
-                    // - ..., and so it preserves provenance
-                    // - Since `Self: Immutable` is enforced by
-                    //   `self_type_trait_bounds`, neither `*slf` nor the
-                    //   returned pointer's referent contain any `UnsafeCell`s
-                    let field_candidate = unsafe {
-                        let project = |slf: core_reexport::ptr::NonNull<Self>| {
-                            let slf = slf.as_ptr();
-                            let field = core_reexport::ptr::addr_of_mut!((*slf).#field_names);
-                            // SAFETY: `cast_unsized_unchecked` promises that
-                            // `slf` will either reference a zero-sized byte
-                            // range, or else will reference a byte range that
-                            // is entirely contained withing an allocated
-                            // object. In either case, this guarantees that
-                            // field projection will not wrap around the address
-                            // space, and so `field` will be non-null.
-                            unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
+                    false #(|| {
+                        // SAFETY:
+                        // - `project` is a field projection, and so it addresses a
+                        //   subset of the bytes addressed by `slf`
+                        // - ..., and so it preserves provenance
+                        // - Since `Self: Immutable` is enforced by
+                        //   `self_type_trait_bounds`, neither `*slf` nor the
+                        //   returned pointer's referent contain any `UnsafeCell`s
+                        let field_candidate = unsafe {
+                            let project = |slf: core_reexport::ptr::NonNull<Self>| {
+                                let slf = slf.as_ptr();
+                                let field = core_reexport::ptr::addr_of_mut!((*slf).#field_names);
+                                // SAFETY: `cast_unsized_unchecked` promises that
+                                // `slf` will either reference a zero-sized byte
+                                // range, or else will reference a byte range that
+                                // is entirely contained withing an allocated
+                                // object. In either case, this guarantees that
+                                // field projection will not wrap around the address
+                                // space, and so `field` will be non-null.
+                                unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
+                            };
+
+                            candidate.reborrow().cast_unsized_unchecked(project)
                         };
 
-                        candidate.reborrow().cast_unsized_unchecked(project)
-                    };
-
-                    <#field_tys as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                })*
-            }
-        )
-    });
-    ImplBlockBuilder::new(ast, unn, Trait::TryFromBytes, field_type_trait_bounds)
+                        <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
+                    })*
+                }
+            )
+        });
+    ImplBlockBuilder::new(ast, unn, Trait::TryFromBytes, field_type_trait_bounds, zerocopy_crate)
         .inner_extras(extras)
         .build()
 }
@@ -726,6 +820,7 @@ fn derive_try_from_bytes_enum(
     ast: &DeriveInput,
     enm: &DataEnum,
     top_level: Trait,
+    zerocopy_crate: &Path,
 ) -> Result<TokenStream, Error> {
     let repr = EnumRepr::from_attrs(&ast.attrs)?;
 
@@ -738,16 +833,18 @@ fn derive_try_from_bytes_enum(
         .map(|size| enm.fields().is_empty() && enm.variants.len() == 1usize << size)
         .unwrap_or(false);
 
-    let trivial_is_bit_valid = try_gen_trivial_is_bit_valid(ast, top_level);
+    let trivial_is_bit_valid = try_gen_trivial_is_bit_valid(ast, top_level, zerocopy_crate);
     let extra = match (trivial_is_bit_valid, could_be_from_bytes) {
         (Some(is_bit_valid), _) => is_bit_valid,
         // SAFETY: It would be sound for the enum to implement `FomBytes`, as
         // required by `gen_trivial_is_bit_valid_unchecked`.
-        (None, true) => unsafe { gen_trivial_is_bit_valid_unchecked() },
-        (None, false) => r#enum::derive_is_bit_valid(&ast.ident, &repr, &ast.generics, enm)?,
+        (None, true) => unsafe { gen_trivial_is_bit_valid_unchecked(zerocopy_crate) },
+        (None, false) => {
+            r#enum::derive_is_bit_valid(&ast.ident, &repr, &ast.generics, enm, zerocopy_crate)?
+        }
     };
 
-    Ok(ImplBlockBuilder::new(ast, enm, Trait::TryFromBytes, FieldBounds::ALL_SELF)
+    Ok(ImplBlockBuilder::new(ast, enm, Trait::TryFromBytes, FieldBounds::ALL_SELF, zerocopy_crate)
         .inner_extras(extra)
         .build())
 }
@@ -776,6 +873,7 @@ fn derive_try_from_bytes_enum(
 fn try_gen_trivial_is_bit_valid(
     ast: &DeriveInput,
     top_level: Trait,
+    zerocopy_crate: &Path,
 ) -> Option<proc_macro2::TokenStream> {
     // If the top-level trait is `FromBytes` and `Self` has no type parameters,
     // then the `FromBytes` derive will fail compilation if `Self` is not
@@ -789,16 +887,16 @@ fn try_gen_trivial_is_bit_valid(
         Some(quote!(
             // SAFETY: See inline.
             fn is_bit_valid<___ZerocopyAliasing>(
-                _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                _candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
+            ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
             where
-                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
             {
                 if false {
                     fn assert_is_from_bytes<T>()
                     where
-                        T: ::zerocopy::FromBytes,
-                        T: ?::zerocopy::util::macro_util::core_reexport::marker::Sized,
+                        T: #zerocopy_crate::FromBytes,
+                        T: ?#zerocopy_crate::util::macro_util::core_reexport::marker::Sized,
                     {
                     }
 
@@ -827,15 +925,15 @@ fn try_gen_trivial_is_bit_valid(
 ///
 /// The caller must ensure that all initialized bit patterns are valid for
 /// `Self`.
-unsafe fn gen_trivial_is_bit_valid_unchecked() -> proc_macro2::TokenStream {
+unsafe fn gen_trivial_is_bit_valid_unchecked(zerocopy_crate: &Path) -> proc_macro2::TokenStream {
     quote!(
         // SAFETY: The caller of `gen_trivial_is_bit_valid_unchecked` has
         // promised that all initialized bit patterns are valid for `Self`.
         fn is_bit_valid<___ZerocopyAliasing>(
-            _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+            _candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
+        ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
         where
-            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+            ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
         {
             true
         }
@@ -844,8 +942,13 @@ unsafe fn gen_trivial_is_bit_valid_unchecked() -> proc_macro2::TokenStream {
 
 /// A struct is `FromZeros` if:
 /// - all fields are `FromZeros`
-fn derive_from_zeros_struct(ast: &DeriveInput, strct: &DataStruct) -> TokenStream {
-    ImplBlockBuilder::new(ast, strct, Trait::FromZeros, FieldBounds::ALL_SELF).build()
+fn derive_from_zeros_struct(
+    ast: &DeriveInput,
+    strct: &DataStruct,
+    zerocopy_crate: &Path,
+) -> TokenStream {
+    ImplBlockBuilder::new(ast, strct, Trait::FromZeros, FieldBounds::ALL_SELF, zerocopy_crate)
+        .build()
 }
 
 /// Returns `Ok(index)` if variant `index` of the enum has a discriminant of
@@ -929,7 +1032,11 @@ fn find_zero_variant(enm: &DataEnum) -> Result<usize, bool> {
 /// An enum is `FromZeros` if:
 /// - one of the variants has a discriminant of `0`
 /// - that variant's fields are all `FromZeros`
-fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<TokenStream, Error> {
+fn derive_from_zeros_enum(
+    ast: &DeriveInput,
+    enm: &DataEnum,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
     let repr = EnumRepr::from_attrs(&ast.attrs)?;
 
     // We don't actually care what the repr is; we just care that it's one of
@@ -969,28 +1076,44 @@ fn derive_from_zeros_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<TokenStre
         .iter()
         .map(|field| {
             let ty = &field.ty;
-            parse_quote! { #ty: ::zerocopy::FromZeros }
+            parse_quote! { #ty: #zerocopy_crate::FromZeros }
         })
         .collect::<Vec<WherePredicate>>();
 
-    Ok(ImplBlockBuilder::new(ast, enm, Trait::FromZeros, FieldBounds::Explicit(explicit_bounds))
-        .build())
+    Ok(ImplBlockBuilder::new(
+        ast,
+        enm,
+        Trait::FromZeros,
+        FieldBounds::Explicit(explicit_bounds),
+        zerocopy_crate,
+    )
+    .build())
 }
 
 /// Unions are `FromZeros` if
 /// - all fields are `FromZeros` and `Immutable`
-fn derive_from_zeros_union(ast: &DeriveInput, unn: &DataUnion) -> TokenStream {
+fn derive_from_zeros_union(
+    ast: &DeriveInput,
+    unn: &DataUnion,
+    zerocopy_crate: &Path,
+) -> TokenStream {
     // TODO(#5): Remove the `Immutable` bound. It's only necessary for
     // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
     let field_type_trait_bounds =
         FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
-    ImplBlockBuilder::new(ast, unn, Trait::FromZeros, field_type_trait_bounds).build()
+    ImplBlockBuilder::new(ast, unn, Trait::FromZeros, field_type_trait_bounds, zerocopy_crate)
+        .build()
 }
 
 /// A struct is `FromBytes` if:
 /// - all fields are `FromBytes`
-fn derive_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> TokenStream {
-    ImplBlockBuilder::new(ast, strct, Trait::FromBytes, FieldBounds::ALL_SELF).build()
+fn derive_from_bytes_struct(
+    ast: &DeriveInput,
+    strct: &DataStruct,
+    zerocopy_crate: &Path,
+) -> TokenStream {
+    ImplBlockBuilder::new(ast, strct, Trait::FromBytes, FieldBounds::ALL_SELF, zerocopy_crate)
+        .build()
 }
 
 /// An enum is `FromBytes` if:
@@ -1007,7 +1130,11 @@ fn derive_from_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> TokenStrea
 ///   platform-specific and, b) even on Rust's smallest bit width platform (32),
 ///   this would require ~4 billion enum variants, which obviously isn't a thing.
 /// - All fields of all variants are `FromBytes`.
-fn derive_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<TokenStream, Error> {
+fn derive_from_bytes_enum(
+    ast: &DeriveInput,
+    enm: &DataEnum,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
     let repr = EnumRepr::from_attrs(&ast.attrs)?;
 
     let variants_required = 1usize << enum_size_from_repr(&repr)?;
@@ -1022,7 +1149,8 @@ fn derive_from_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<TokenStre
         ));
     }
 
-    Ok(ImplBlockBuilder::new(ast, enm, Trait::FromBytes, FieldBounds::ALL_SELF).build())
+    Ok(ImplBlockBuilder::new(ast, enm, Trait::FromBytes, FieldBounds::ALL_SELF, zerocopy_crate)
+        .build())
 }
 
 // Returns `None` if the enum's size is not guaranteed by the repr.
@@ -1041,15 +1169,24 @@ fn enum_size_from_repr(repr: &EnumRepr) -> Result<usize, Error> {
 
 /// Unions are `FromBytes` if
 /// - all fields are `FromBytes` and `Immutable`
-fn derive_from_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> TokenStream {
+fn derive_from_bytes_union(
+    ast: &DeriveInput,
+    unn: &DataUnion,
+    zerocopy_crate: &Path,
+) -> TokenStream {
     // TODO(#5): Remove the `Immutable` bound. It's only necessary for
     // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
     let field_type_trait_bounds =
         FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
-    ImplBlockBuilder::new(ast, unn, Trait::FromBytes, field_type_trait_bounds).build()
+    ImplBlockBuilder::new(ast, unn, Trait::FromBytes, field_type_trait_bounds, zerocopy_crate)
+        .build()
 }
 
-fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> Result<TokenStream, Error> {
+fn derive_into_bytes_struct(
+    ast: &DeriveInput,
+    strct: &DataStruct,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
     let repr = StructUnionRepr::from_attrs(&ast.attrs)?;
 
     let is_transparent = repr.is_transparent();
@@ -1114,7 +1251,7 @@ fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> Result<Tok
         FieldBounds::ALL_SELF
     };
 
-    Ok(ImplBlockBuilder::new(ast, strct, Trait::IntoBytes, field_bounds)
+    Ok(ImplBlockBuilder::new(ast, strct, Trait::IntoBytes, field_bounds, zerocopy_crate)
         .padding_check(padding_check)
         .build())
 }
@@ -1124,14 +1261,18 @@ fn derive_into_bytes_struct(ast: &DeriveInput, strct: &DataStruct) -> Result<Tok
 ///   `u64`, `usize`, `i8`, `i16`, `i32`, `i64`, or `isize`).
 /// - It must have no padding bytes.
 /// - Its fields must be `IntoBytes`.
-fn derive_into_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<TokenStream, Error> {
+fn derive_into_bytes_enum(
+    ast: &DeriveInput,
+    enm: &DataEnum,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
     let repr = EnumRepr::from_attrs(&ast.attrs)?;
     if !repr.is_c() && !repr.is_primitive() {
         return Err(Error::new(Span::call_site(), "must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout"));
     }
 
     let tag_type_definition = r#enum::generate_tag_enum(&repr, enm);
-    Ok(ImplBlockBuilder::new(ast, enm, Trait::IntoBytes, FieldBounds::ALL_SELF)
+    Ok(ImplBlockBuilder::new(ast, enm, Trait::IntoBytes, FieldBounds::ALL_SELF, zerocopy_crate)
         .padding_check(PaddingCheck::Enum { tag_type_definition })
         .build())
 }
@@ -1140,7 +1281,11 @@ fn derive_into_bytes_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<TokenStre
 /// - all fields are `IntoBytes`
 /// - `repr(C)`, `repr(transparent)`, or `repr(packed)`
 /// - no padding (size of union equals size of each field type)
-fn derive_into_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> Result<TokenStream, Error> {
+fn derive_into_bytes_union(
+    ast: &DeriveInput,
+    unn: &DataUnion,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
     // See #1792 for more context.
     //
     // By checking for `zerocopy_derive_union_into_bytes` both here and in the
@@ -1152,13 +1297,12 @@ fn derive_into_bytes_union(ast: &DeriveInput, unn: &DataUnion) -> Result<TokenSt
     let cfg_compile_error = if cfg!(zerocopy_derive_union_into_bytes) {
         quote!()
     } else {
+        let error_message = "requires --cfg zerocopy_derive_union_into_bytes;
+please let us know you use this feature: https://github.com/google/zerocopy/discussions/1802";
         quote!(
             const _: () = {
                 #[cfg(not(zerocopy_derive_union_into_bytes))]
-                ::zerocopy::util::macro_util::core_reexport::compile_error!(
-                    "requires --cfg zerocopy_derive_union_into_bytes;
-please let us know you use this feature: https://github.com/google/zerocopy/discussions/1802"
-                );
+                #zerocopy_crate::util::macro_util::core_reexport::compile_error!(#error_message);
             };
         )
     };
@@ -1180,9 +1324,10 @@ please let us know you use this feature: https://github.com/google/zerocopy/disc
         ));
     }
 
-    let impl_block = ImplBlockBuilder::new(ast, unn, Trait::IntoBytes, FieldBounds::ALL_SELF)
-        .padding_check(PaddingCheck::Union)
-        .build();
+    let impl_block =
+        ImplBlockBuilder::new(ast, unn, Trait::IntoBytes, FieldBounds::ALL_SELF, zerocopy_crate)
+            .padding_check(PaddingCheck::Union)
+            .build();
     Ok(quote!(#cfg_compile_error #impl_block))
 }
 
@@ -1191,7 +1336,11 @@ please let us know you use this feature: https://github.com/google/zerocopy/disc
 ///   - `repr(C)` or `repr(transparent)` and
 ///     - all fields `Unaligned`
 ///   - `repr(packed)`
-fn derive_unaligned_struct(ast: &DeriveInput, strct: &DataStruct) -> Result<TokenStream, Error> {
+fn derive_unaligned_struct(
+    ast: &DeriveInput,
+    strct: &DataStruct,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
     let repr = StructUnionRepr::from_attrs(&ast.attrs)?;
     repr.unaligned_validate_no_align_gt_1()?;
 
@@ -1203,13 +1352,17 @@ fn derive_unaligned_struct(ast: &DeriveInput, strct: &DataStruct) -> Result<Toke
         return Err(Error::new(Span::call_site(), "must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment"));
     };
 
-    Ok(ImplBlockBuilder::new(ast, strct, Trait::Unaligned, field_bounds).build())
+    Ok(ImplBlockBuilder::new(ast, strct, Trait::Unaligned, field_bounds, zerocopy_crate).build())
 }
 
 /// An enum is `Unaligned` if:
 /// - No `repr(align(N > 1))`
 /// - `repr(u8)` or `repr(i8)`
-fn derive_unaligned_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<TokenStream, Error> {
+fn derive_unaligned_enum(
+    ast: &DeriveInput,
+    enm: &DataEnum,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
     let repr = EnumRepr::from_attrs(&ast.attrs)?;
     repr.unaligned_validate_no_align_gt_1()?;
 
@@ -1217,7 +1370,8 @@ fn derive_unaligned_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<TokenStrea
         return Err(Error::new(Span::call_site(), "must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment"));
     }
 
-    Ok(ImplBlockBuilder::new(ast, enm, Trait::Unaligned, FieldBounds::ALL_SELF).build())
+    Ok(ImplBlockBuilder::new(ast, enm, Trait::Unaligned, FieldBounds::ALL_SELF, zerocopy_crate)
+        .build())
 }
 
 /// Like structs, a union is `Unaligned` if:
@@ -1225,7 +1379,11 @@ fn derive_unaligned_enum(ast: &DeriveInput, enm: &DataEnum) -> Result<TokenStrea
 ///   - `repr(C)` or `repr(transparent)` and
 ///     - all fields `Unaligned`
 ///   - `repr(packed)`
-fn derive_unaligned_union(ast: &DeriveInput, unn: &DataUnion) -> Result<TokenStream, Error> {
+fn derive_unaligned_union(
+    ast: &DeriveInput,
+    unn: &DataUnion,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
     let repr = StructUnionRepr::from_attrs(&ast.attrs)?;
     repr.unaligned_validate_no_align_gt_1()?;
 
@@ -1237,7 +1395,8 @@ fn derive_unaligned_union(ast: &DeriveInput, unn: &DataUnion) -> Result<TokenStr
         return Err(Error::new(Span::call_site(), "must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment"));
     };
 
-    Ok(ImplBlockBuilder::new(ast, unn, Trait::Unaligned, field_type_trait_bounds).build())
+    Ok(ImplBlockBuilder::new(ast, unn, Trait::Unaligned, field_type_trait_bounds, zerocopy_crate)
+        .build())
 }
 
 /// This enum describes what kind of padding check needs to be generated for the
@@ -1321,10 +1480,12 @@ impl ToTokens for Trait {
 }
 
 impl Trait {
-    fn crate_path(&self) -> Path {
+    fn crate_path(&self, zerocopy_crate: &Path) -> Path {
         match self {
-            Self::Sized => parse_quote!(::zerocopy::util::macro_util::core_reexport::marker::#self),
-            _ => parse_quote!(::zerocopy::#self),
+            Self::Sized => {
+                parse_quote!(#zerocopy_crate::util::macro_util::core_reexport::marker::#self)
+            }
+            _ => parse_quote!(#zerocopy_crate::#self),
         }
     }
 }
@@ -1373,6 +1534,7 @@ struct ImplBlockBuilder<'a, D: DataExt> {
     data: &'a D,
     trt: Trait,
     field_type_trait_bounds: FieldBounds<'a>,
+    zerocopy_crate: &'a Path,
     self_type_trait_bounds: SelfBounds<'a>,
     padding_check: Option<PaddingCheck>,
     inner_extras: Option<TokenStream>,
@@ -1385,12 +1547,14 @@ impl<'a, D: DataExt> ImplBlockBuilder<'a, D> {
         data: &'a D,
         trt: Trait,
         field_type_trait_bounds: FieldBounds<'a>,
+        zerocopy_crate: &'a Path,
     ) -> Self {
         Self {
             input,
             data,
             trt,
             field_type_trait_bounds,
+            zerocopy_crate,
             self_type_trait_bounds: SelfBounds::None,
             padding_check: None,
             inner_extras: None,
@@ -1479,23 +1643,30 @@ impl<'a, D: DataExt> ImplBlockBuilder<'a, D> {
         //       = note: required by `zerocopy::Unaligned`
 
         let type_ident = &self.input.ident;
-        let trait_path = self.trt.crate_path();
+        let trait_path = self.trt.crate_path(self.zerocopy_crate);
         let fields = self.data.fields();
         let variants = self.data.variants();
         let tag = self.data.tag();
+        let zerocopy_crate = self.zerocopy_crate;
 
-        fn bound_tt(ty: &Type, traits: impl Iterator<Item = Trait>) -> WherePredicate {
-            let traits = traits.map(|t| t.crate_path());
+        fn bound_tt(
+            ty: &Type,
+            traits: impl Iterator<Item = Trait>,
+            zerocopy_crate: &Path,
+        ) -> WherePredicate {
+            let traits = traits.map(|t| t.crate_path(zerocopy_crate));
             parse_quote!(#ty: #(#traits)+*)
         }
         let field_type_bounds: Vec<_> = match (self.field_type_trait_bounds, &fields[..]) {
             (FieldBounds::All(traits), _) => fields
                 .iter()
-                .map(|(_vis, _name, ty)| bound_tt(ty, normalize_bounds(self.trt, traits)))
+                .map(|(_vis, _name, ty)| {
+                    bound_tt(ty, normalize_bounds(self.trt, traits), zerocopy_crate)
+                })
                 .collect(),
             (FieldBounds::None, _) | (FieldBounds::Trailing(..), []) => vec![],
             (FieldBounds::Trailing(traits), [.., last]) => {
-                vec![bound_tt(last.2, normalize_bounds(self.trt, traits))]
+                vec![bound_tt(last.2, normalize_bounds(self.trt, traits), zerocopy_crate)]
             }
             (FieldBounds::Explicit(bounds), _) => bounds,
         };
@@ -1516,11 +1687,11 @@ impl<'a, D: DataExt> ImplBlockBuilder<'a, D> {
                 let validator_macro = check.validator_macro_ident();
                 let t = tag.iter();
                 parse_quote! {
-                    (): ::zerocopy::util::macro_util::PaddingFree<
+                    (): #zerocopy_crate::util::macro_util::PaddingFree<
                         Self,
                         {
                             #validator_context
-                            ::zerocopy::#validator_macro!(Self, #(#t,)* #(#variant_types),*)
+                            #zerocopy_crate::#validator_macro!(Self, #(#t,)* #(#variant_types),*)
                         }
                     >
                 }
@@ -1528,7 +1699,9 @@ impl<'a, D: DataExt> ImplBlockBuilder<'a, D> {
 
         let self_bounds: Option<WherePredicate> = match self.self_type_trait_bounds {
             SelfBounds::None => None,
-            SelfBounds::All(traits) => Some(bound_tt(&parse_quote!(Self), traits.iter().copied())),
+            SelfBounds::All(traits) => {
+                Some(bound_tt(&parse_quote!(Self), traits.iter().copied(), zerocopy_crate))
+            }
         };
 
         let bounds = self
