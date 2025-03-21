@@ -805,6 +805,14 @@ pub unsafe trait KnownLayout {
         // resulting size would not fit in a `usize`.
         meta.size_for_metadata(Self::LAYOUT)
     }
+
+    #[doc(hidden)]
+    #[must_use]
+    #[inline(always)]
+    fn raw_dangling() -> NonNull<Self> {
+        let meta = Self::PointerMetadata::from_elem_count(0);
+        Self::raw_from_ptr_len(NonNull::dangling(), meta)
+    }
 }
 
 /// The metadata associated with a [`KnownLayout`] type.
@@ -829,7 +837,9 @@ pub trait PointerMetadata: Copy + Eq + Debug {
     ///
     /// `size_for_metadata` promises to only return `None` if the resulting size
     /// would not fit in a `usize`.
-    fn size_for_metadata(&self, layout: DstLayout) -> Option<usize>;
+    fn size_for_metadata(self, layout: DstLayout) -> Option<usize>;
+
+    fn foo(self, mul: usize) -> usize;
 }
 
 impl PointerMetadata for () {
@@ -838,13 +848,18 @@ impl PointerMetadata for () {
     fn from_elem_count(_elems: usize) -> () {}
 
     #[inline]
-    fn size_for_metadata(&self, layout: DstLayout) -> Option<usize> {
+    fn size_for_metadata(self, layout: DstLayout) -> Option<usize> {
         match layout.size_info {
             SizeInfo::Sized { size } => Some(size),
             // NOTE: This branch is unreachable, but we return `None` rather
             // than `unreachable!()` to avoid generating panic paths.
             SizeInfo::SliceDst(_) => None,
         }
+    }
+
+    #[inline(always)]
+    fn foo(self, mul: usize) -> usize {
+        mul
     }
 }
 
@@ -855,10 +870,10 @@ impl PointerMetadata for usize {
     }
 
     #[inline]
-    fn size_for_metadata(&self, layout: DstLayout) -> Option<usize> {
+    fn size_for_metadata(self, layout: DstLayout) -> Option<usize> {
         match layout.size_info {
             SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
-                let slice_len = elem_size.checked_mul(*self)?;
+                let slice_len = elem_size.checked_mul(self)?;
                 let without_padding = offset.checked_add(slice_len)?;
                 without_padding.checked_add(util::padding_needed_for(without_padding, layout.align))
             }
@@ -866,6 +881,11 @@ impl PointerMetadata for usize {
             // than `unreachable!()` to avoid generating panic paths.
             SizeInfo::Sized { .. } => None,
         }
+    }
+
+    #[inline(always)]
+    fn foo(self, mul: usize) -> usize {
+        self * mul
     }
 }
 
@@ -3800,7 +3820,7 @@ pub unsafe trait FromBytes: FromZeros {
     {
         static_assert_dst_is_not_zst!(Self);
         match Ptr::from_mut(source).try_cast_into_no_leftover::<_, BecauseExclusive>(None) {
-            Ok(ptr) => Ok(ptr.recall_validity().as_mut()),
+            Ok(ptr) => Ok(ptr.recall_validity::<_, (_, (_, _))>().as_mut()),
             Err(err) => Err(err.map_src(|src| src.as_mut())),
         }
     }
@@ -4750,7 +4770,7 @@ fn mut_from_prefix_suffix<T: FromBytes + IntoBytes + KnownLayout + ?Sized>(
     let (slf, prefix_suffix) = Ptr::from_mut(source)
         .try_cast_into::<_, BecauseExclusive>(cast_type, meta)
         .map_err(|err| err.map_src(|s| s.as_mut()))?;
-    Ok((slf.recall_validity().as_mut(), prefix_suffix.as_mut()))
+    Ok((slf.recall_validity::<_, (_, (_, _))>().as_mut(), prefix_suffix.as_mut()))
 }
 
 /// Analyzes whether a type is [`IntoBytes`].

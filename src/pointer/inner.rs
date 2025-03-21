@@ -25,7 +25,8 @@ mod _def {
     /// `PtrInner<'a, T>` is [covariant] in `'a` and invariant in `T`.
     ///
     /// [covariant]: https://doc.rust-lang.org/reference/subtyping.html
-    pub(crate) struct PtrInner<'a, T>
+    #[allow(missing_debug_implementations)]
+    pub struct PtrInner<'a, T>
     where
         T: ?Sized,
     {

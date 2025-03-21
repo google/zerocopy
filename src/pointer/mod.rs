@@ -15,7 +15,7 @@ mod ptr;
 mod transmute;
 
 #[doc(hidden)]
-pub(crate) use transmute::*;
+pub(crate) use {inner::PtrInner, transmute::*};
 #[doc(hidden)]
 pub use {
     invariant::{BecauseExclusive, BecauseImmutable, Read},

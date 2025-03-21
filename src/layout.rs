@@ -608,6 +608,277 @@ impl DstLayout {
     }
 }
 
+pub(crate) use cast_from_raw::cast_from_raw;
+mod cast_from_raw {
+    use crate::{pointer::PtrInner, *};
+
+    /// Implements [`<Dst as SizeCompat<Src>>::cast_from_raw`][cast_from_raw].
+    ///
+    /// # PME
+    ///
+    /// Generates a post-monomorphization error if it is not possible to satisfy
+    /// the soundness conditions of [`SizeCompat::cast_from_raw`] for `Src` and
+    /// `Dst`.
+    ///
+    /// [cast_from_raw]: crate::pointer::SizeCompat::cast_from_raw
+    //
+    // TODO: Support Sized->Unsized and Unsized->Sized casts
+    pub(crate) fn cast_from_raw<Src, Dst>(src: PtrInner<'_, Src>) -> PtrInner<'_, Dst>
+    where
+        Src: KnownLayout + ?Sized,
+        Dst: KnownLayout<PointerMetadata = usize> + ?Sized,
+    {
+        /// The parameters required in order to perform a pointer cast from
+        /// `Src` to `Dst`.
+        ///
+        /// These are a compile-time function of the layouts of `Src` and `Dst`.
+        ///
+        /// # Safety
+        ///
+        /// `Src`'s alignment must not be smaller than `Dst`'s alignment.
+        #[derive(Copy, Clone)]
+        struct CastParams {
+            /// # Safety
+            ///
+            /// The difference between `Src::LAYOUT.size_info.offset` and
+            /// `Dst::LAYOUT.size_info.offset`, measured in units of
+            /// `Dst::LAYOUT.size_info.elem_size`.
+            offset_delta_elems: usize,
+            /// # Safety
+            ///
+            /// The ratio of `Src::LAYOUT.size_info.elem_size /
+            /// Dst::LAYOUT.size_info.elem_size`
+            elem_multiple: usize,
+        }
+
+        const fn try_compute_cast_params(src: &DstLayout, dst: &DstLayout) -> Option<CastParams> {
+            if src.align.get() < dst.align.get() {
+                return None;
+            }
+
+            let (src, dst) = if let (SizeInfo::SliceDst(src), SizeInfo::SliceDst(dst)) =
+                (src.size_info, dst.size_info)
+            {
+                (src, dst)
+            } else {
+                return None;
+            };
+
+            let offset_delta = if let Some(od) = src.offset.checked_sub(dst.offset) {
+                od
+            } else {
+                return None;
+            };
+
+            let dst_elem_size = if let Some(e) = NonZeroUsize::new(dst.elem_size) {
+                e
+            } else {
+                return None;
+            };
+
+            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't div by zero.
+            #[allow(clippy::arithmetic_side_effects)]
+            let delta_mod_other_elem = offset_delta % dst_elem_size.get();
+
+            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't div by zero.
+            #[allow(clippy::arithmetic_side_effects)]
+            let elem_remainder = src.elem_size % dst_elem_size.get();
+
+            if delta_mod_other_elem != 0 || src.elem_size < dst.elem_size || elem_remainder != 0 {
+                return None;
+            }
+
+            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't div by zero.
+            #[allow(clippy::arithmetic_side_effects)]
+            let offset_delta_elems = offset_delta / dst_elem_size.get();
+
+            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't div by zero.
+            #[allow(clippy::arithmetic_side_effects)]
+            let elem_multiple = src.elem_size / dst_elem_size.get();
+
+            // SAFETY: We checked above that `src.align >= dst.align`.
+            Some(CastParams {
+                // SAFETY: We checked above that this is an exact ratio.
+                offset_delta_elems,
+                // SAFETY: We checked above that this is an exact ratio.
+                elem_multiple,
+            })
+        }
+
+        trait Params<Src: ?Sized> {
+            const CAST_PARAMS: CastParams;
+        }
+
+        impl<Src, Dst> Params<Src> for Dst
+        where
+            Src: KnownLayout + ?Sized,
+            Dst: KnownLayout<PointerMetadata = usize> + ?Sized,
+        {
+            const CAST_PARAMS: CastParams =
+                match try_compute_cast_params(&Src::LAYOUT, &Dst::LAYOUT) {
+                    Some(params) => params,
+                    None => const_panic!(
+                        "cannot `transmute_ref!` or `transmute_mut!` between incompatible types"
+                    ),
+                };
+        }
+
+        let src_meta = <Src as KnownLayout>::pointer_to_metadata(src.as_non_null().as_ptr());
+
+        // SAFETY/PANICS: Given `sl: Src::LAYOUT` and `dl: Dst::LAYOUT`, the
+        // invariants on `CastParams` guarantee that:
+        //
+        // (1) `self.offset_delta_elems = (sl.offset - dl.offset) /
+        //     dl.elem_size`
+        //
+        // (2) `self.elem_multiple = sl.elem_size / dl.elem_size` where
+        //     `sl.elem_size` is an integer multiple of `dl.elem_size`
+        //
+        // `src_meta` is the pointer metadata from `src: PtrInner`. By invariant
+        // on `PtrInner`, `src` cannot address more than `isize::MAX` bytes.
+        // Thus:
+        //
+        // (3)  `sl.offset + (sl.elem_size * src_meta) = src_len <= isize::MAX`
+        //
+        // (4)  `self.offset_delta_elems * dl.elem_size = sl.offset - dl.offset`
+        //      (rearranging (1))
+        //
+        // (5)  `sl.offset = (self.offset_delta_elems * dl.elem_size) +
+        //      dl.offset`
+        //
+        // (6)  `(self.offset_delta_elems * dl.elem_size) + dl.offset +
+        //      (sl.elem_size * src_meta) = src_len <= isize::MAX` (substituting
+        //      (5) into (3))
+        //
+        // (7)  `sl.elem_size = self.elem_multiple * dl.elem_size` (rearranging
+        //      (2))
+        //
+        // (8)  `(self.offset_delta_elems * dl.elem_size) + dl.offset +
+        //      (self.elem_multiple * dl.elem_size * src_meta) = src_len <=
+        //      isize::MAX` (substituting (7) into (6))
+        //
+        // (9)  `(self.offset_delta_elems * dl.elem_size) + (self.elem_multiple
+        //      * dl.elem_size * src_meta) = src_len - dl.offset <= isize::MAX -
+        //      dl.offset`
+        //
+        // (10) `self.offset_delta_elems + (self.elem_multiple * src_meta) =
+        //      (src_len - dl.offset) / dl.elem_size <= (isize::MAX - dl.offset)
+        //      / dl.elem_size`
+        //
+        // The left-hand side of (10) is the expression we compute and return
+        // from this method. Since `dl.offset >= 0` and `dl.elem_size > 1`, the
+        // right-hand side is not greater than `usize::MAX`, and thus this
+        // computation will not overflow, and thus it will not panic.
+        //
+        // We further need to prove that the `dst: PtrInner<Dst>` constructed
+        // using this metadata will be address no more bytes than `src`. The
+        // number of bytes, not including trailing padding, is given by:
+        //
+        // (11) `dst_len = dl.offset + (dl.elem_size * dst_meta)`
+        //
+        // (12) `dst_len = dl.offset + (dl.elem_size * (self.offset_delta_elems
+        //      + (self.elem_multiple * src_meta)))` (substituing this method's
+        //      return value)
+        //
+        // (13) `dst_len = dl.offset + (dl.elem_size * ((src_len - dl.offset) /
+        //      dl.elem_size))` (substituting (10))
+        //
+        // (14) `dst_len = dl.offset + (src_len - dl.offset)`
+        //
+        // (15) `dst_len = src_len`
+        //
+        // Lastly, we guarantee (by invariant on `CastParams`) that `Src`'s
+        // alignment is at least as large as `Dst`'s alignment. Thus, `Dst` will
+        // have no more trailing padding than `Src` for the same pre-padding
+        // size.
+        let params = <Dst as Params<Src>>::CAST_PARAMS;
+        #[allow(clippy::arithmetic_side_effects)]
+        let meta = params.offset_delta_elems + src_meta.foo(params.elem_multiple);
+
+        let dst = <Dst as KnownLayout>::raw_from_ptr_len(src.as_non_null().cast(), meta);
+        // SAFETY: As proven above, `dst` addresses no more bytes than `src`.
+        // Since `src: PtrInner`, `src` has provenance for its entire referent,
+        // which lives inside of a single allocation. Since `dst` has the same
+        // address as `src` and was constructed using provenance-preserving
+        // operations, it addresses a subset of those bytes, and has provenance
+        // for those bytes.
+        #[allow(clippy::needless_return)]
+        #[allow(clippy::undocumented_unsafe_blocks)] // Clippy false positive
+        return unsafe { PtrInner::new(dst) };
+
+        #[cfg(kani)]
+        #[kani::proof]
+        fn prove_try_compute_cast_params() {
+            let src: DstLayout = kani::any();
+            let dst: DstLayout = kani::any();
+
+            let Some(params) = try_compute_cast_params(&src, &dst) else {
+                // TODO: Is there a better way to say "assume that this branch
+                // is unreachable"?
+                kani::assume(false);
+                return;
+            };
+
+            let SizeInfo::SliceDst(src_size_info) = src.size_info else {
+                kani::assume(false);
+                return;
+            };
+
+            let SizeInfo::SliceDst(dst_size_info) = dst.size_info else {
+                kani::assume(false);
+                return;
+            };
+
+            // Returns `Some(size)` only if `meta` is valid metadata for the
+            // given type layout - it describes an object which would fit in a
+            // valid Rust allocation.
+            fn size_for_meta(
+                size_info: TrailingSliceLayout,
+                align: NonZeroUsize,
+                meta: usize,
+            ) -> Option<usize> {
+                let Some(slice_bytes) = size_info.elem_size.checked_mul(meta) else {
+                    kani::assume(false);
+                    return None;
+                };
+
+                let Some(size_no_trailing_padding) = size_info.offset.checked_add(slice_bytes)
+                else {
+                    kani::assume(false);
+                    return None;
+                };
+
+                let padding = crate::util::padding_needed_for(size_no_trailing_padding, align);
+
+                let Some(src_size) = size_no_trailing_padding.checked_add(padding) else {
+                    kani::assume(false);
+                    return None;
+                };
+
+                if src_size > isize::MAX as usize {
+                    kani::assume(false);
+                    return None;
+                }
+
+                Some(src_size)
+            }
+
+            let src_meta: usize = kani::any();
+
+            let Some(src_size) = size_for_meta(src_size_info, src.align, src_meta) else {
+                kani::assume(false);
+                return;
+            };
+
+            let dst_meta = compute_cast(params, src_meta);
+
+            let dst_size = size_for_meta(dst_size_info, dst.align, dst_meta).unwrap();
+
+            assert!(dst_size <= src_size);
+        }
+    }
+}
+
 // TODO(#67): For some reason, on our MSRV toolchain, this `allow` isn't
 // enforced despite having `#![allow(unknown_lints)]` at the crate root, but
 // putting it here works. Once our MSRV is high enough that this bug has been
@@ -1452,7 +1723,7 @@ mod proofs {
                 match size_info {
                     SizeInfo::Sized { size } => Layout::from_size_align(size, align.get()),
                     SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size: _ }) => {
-                        // `SliceDst`` cannot encode an exact size, but we know
+                        // `SliceDst` cannot encode an exact size, but we know
                         // it is at least `offset` bytes.
                         Layout::from_size_align(offset, align.get())
                     }

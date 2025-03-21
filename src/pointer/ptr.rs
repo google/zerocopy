@@ -16,7 +16,7 @@ use crate::{
     pointer::{
         inner::PtrInner,
         invariant::*,
-        transmute::{MutationCompatible, SizeEq, TransmuteFromPtr},
+        transmute::{MutationCompatible, SizeCompat, TransmuteFromPtr},
     },
     AlignmentError, CastError, CastType, KnownLayout, SizeError, TryFromBytes, ValidityError,
 };
@@ -388,12 +388,16 @@ mod _conversions {
         pub(crate) fn transmute<U, V, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
             V: Validity,
-            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + SizeEq<T> + ?Sized,
+            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + SizeCompat<T> + ?Sized,
         {
+            let cast = |p| {
+                // SAFETY: TODO
+                let ptr = unsafe { PtrInner::new(p) };
+                SizeCompat::cast_from_raw(ptr).as_non_null()
+            };
             // SAFETY:
-            // - This cast preserves address and provenance
-            // - `U: SizeEq<T>` guarantees that this cast preserves the number
-            //   of bytes in the referent
+            // - `SizeCompat::cast_from_raw` promises to preserve address,
+            //   provenance, and the number of bytes in the referent
             // - If aliasing is `Shared`, then by `U: TransmuteFromPtr<T>`, at
             //   least one of the following holds:
             //   - `T: Immutable` and `U: Immutable`, in which case it is
@@ -403,7 +407,7 @@ mod _conversions {
             //     operate on these references simultaneously
             // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
             //   sound to perform this transmute.
-            unsafe { self.transmute_unchecked(|t: NonNull<T>| U::cast_from_raw(t)) }
+            unsafe { self.transmute_unchecked(cast) }
         }
 
         #[doc(hidden)]
@@ -1013,7 +1017,7 @@ mod _casts {
             };
 
             let ptr = ptr.bikeshed_recall_aligned();
-            ptr.recall_validity()
+            ptr.recall_validity::<_, (_, (_, _))>()
         }
     }
 
