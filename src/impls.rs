@@ -1066,9 +1066,10 @@ mod simd {
                             // target/feature combinations don't emit any impls
                             // and thus don't use this macro.
     macro_rules! simd_arch_mod {
-        (#[cfg $cfg:tt] $arch:ident, $mod:ident, $($typ:ident),*) => {
-            #[cfg $cfg]
-            #[cfg_attr(doc_cfg, doc(cfg $cfg))]
+        ($(#[cfg $cfg:tt])* $(#[cfg_attr $cfg_attr:tt])? $arch:ident, $mod:ident, $($typ:ident),*) => {
+            $(#[cfg $cfg])*
+            #[cfg_attr(doc_cfg, doc(cfg $($cfg)*))]
+            $(#[cfg_attr $cfg_attr])?
             mod $mod {
                 use core::arch::$arch::{$($typ),*};
 
@@ -1113,12 +1114,12 @@ mod simd {
             #[cfg(all(feature = "simd-nightly", target_arch = "powerpc64"))]
             powerpc64, powerpc64, vector_bool_long, vector_double, vector_signed_long, vector_unsigned_long
         );
-        #[cfg(zerocopy_aarch64_simd_1_59_0)]
-        #[cfg_attr(doc_cfg, doc(cfg(rust = "1.59.0")))]
         simd_arch_mod!(
             // NOTE(https://github.com/rust-lang/stdarch/issues/1484): NEON intrinsics are currently
             // broken on big-endian platforms.
             #[cfg(all(target_arch = "aarch64", target_endian = "little"))]
+            #[cfg(zerocopy_aarch64_simd_1_59_0)]
+            #[cfg_attr(doc_cfg, doc(cfg(rust = "1.59.0")))]
             aarch64, aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,
             int8x8x3_t, int8x8x4_t, int8x16_t, int8x16x2_t, int8x16x3_t, int8x16x4_t, int16x4_t,
             int16x8_t, int32x2_t, int32x4_t, int64x1_t, int64x2_t, poly8x8_t, poly8x8x2_t, poly8x8x3_t,
