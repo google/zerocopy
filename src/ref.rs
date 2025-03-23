@@ -367,7 +367,7 @@ where
         // measure bytes (`source` deref's to `[u8]`, and `remainder` is a
         // `Ptr<[u8]>`), so `source.len() >= remainder.len()`. Thus, this cannot
         // underflow.
-        #[allow(unstable_name_collisions, clippy::incompatible_msrv)]
+        #[allow(unstable_name_collisions)]
         let split_at = unsafe { source.len().unchecked_sub(remainder.len()) };
         let (bytes, suffix) = source.split_at(split_at).map_err(|b| SizeError::new(b).into())?;
         // SAFETY: `try_cast_into` validates size and alignment, and returns a

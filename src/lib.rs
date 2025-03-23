@@ -278,7 +278,10 @@
     clippy::unwrap_used,
     clippy::use_debug
 )]
-#![allow(clippy::type_complexity)]
+// `clippy::incompatible_msrv` (implied by `clippy::suspicious`): This sometimes
+// has false positives, and we test on our MSRV in CI, so it doesn't help us
+// anyway.
+#![allow(clippy::type_complexity, clippy::incompatible_msrv)]
 #![deny(
     rustdoc::bare_urls,
     rustdoc::broken_intra_doc_links,
@@ -3231,7 +3234,6 @@ pub unsafe trait FromZeros: TryFromBytes {
         assert!(position <= v.len());
         // We only conditionally compile on versions on which `try_reserve` is
         // stable; the Clippy lint is a false positive.
-        #[allow(clippy::incompatible_msrv)]
         v.try_reserve(additional).map_err(|_| AllocError)?;
         // SAFETY: The `try_reserve` call guarantees that these cannot overflow:
         // * `ptr.add(position)`
