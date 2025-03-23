@@ -162,8 +162,6 @@ macro_rules! trailing_field_offset {
         let min_size = {
             let zero_elems: *const [()] =
                 $crate::util::macro_util::core_reexport::ptr::slice_from_raw_parts(
-                    // Work around https://github.com/rust-lang/rust-clippy/issues/12280
-                    #[allow(clippy::incompatible_msrv)]
                     $crate::util::macro_util::core_reexport::ptr::NonNull::<()>::dangling()
                         .as_ptr()
                         .cast_const(),

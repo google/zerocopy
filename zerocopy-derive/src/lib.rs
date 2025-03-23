@@ -1673,8 +1673,6 @@ impl<'a, D: DataExt> ImplBlockBuilder<'a, D> {
 
         // Don't bother emitting a padding check if there are no fields.
         #[allow(unstable_name_collisions)] // See `BoolExt` below
-        // Work around https://github.com/rust-lang/rust-clippy/issues/12280
-        #[allow(clippy::incompatible_msrv)]
         let padding_check_bound = self
             .padding_check
             .and_then(|check| (!fields.is_empty()).then_some(check))

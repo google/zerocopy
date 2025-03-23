@@ -255,7 +255,7 @@ unsafe impl SplitByteSlice for &mut [u8] {
         // `self.len()`.
         //
         // TODO(#67): Remove this allow. See NumExt for more details.
-        #[allow(unstable_name_collisions, clippy::incompatible_msrv)]
+        #[allow(unstable_name_collisions)]
         let r_len = unsafe { self.len().unchecked_sub(mid) };
 
         // SAFETY: These invocations of `from_raw_parts_mut` satisfy its
