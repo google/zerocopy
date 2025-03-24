@@ -210,3 +210,10 @@ struct Unaligned7;
 #[derive(Unaligned)]
 #[repr(C, packed(2))]
 struct WeirdReprSpan;
+
+#[derive(SplitAt)]
+struct SplitAtNotKnownLayout([u8]);
+
+#[derive(SplitAt, KnownLayout)]
+#[repr(C)]
+struct SplitAtSized(u8);

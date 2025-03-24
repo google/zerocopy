@@ -28,6 +28,7 @@ use_as_trait_name!(
     Unaligned => derive_unaligned_inner,
     ByteHash => derive_hash_inner,
     ByteEq => derive_eq_inner,
+    SplitAt => derive_split_at_inner,
 );
 
 /// Test that the given derive input expands to the expected output.
@@ -2129,6 +2130,68 @@ fn test_eq() {
                 Self: ::zerocopy::IntoBytes + ::zerocopy::Immutable,
                 Self: Sized,
             {
+            }
+        } no_build
+    }
+}
+
+#[test]
+fn test_split_at() {
+    test! {
+        SplitAt {
+            struct Foo<T: ?Sized + Copy>(T) where Self: Copy;
+        } expands to {
+            #[allow(deprecated)]
+            #[automatically_derived]
+            unsafe impl<T: ?Sized + Copy> ::zerocopy::SplitAt for Foo<T>
+            where
+                Self: Copy,
+                T: ::zerocopy::SplitAt,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Elem = <T as ::zerocopy::SplitAt>::Elem;
+            }
+        } no_build
+    }
+
+    test! {
+        SplitAt {
+            #[repr(packed)]
+            struct Foo<T: ?Sized + Copy>(T) where Self: Copy;
+        } expands to {
+            ::core::compile_error! {
+                "must not have #[repr(packed)] attribute"
+            }
+        } no_build
+    }
+
+    test! {
+        SplitAt {
+            #[repr(packed(2))]
+            struct Foo<T: ?Sized + Copy>(T) where Self: Copy;
+        } expands to {
+            ::core::compile_error! {
+                "must not have #[repr(packed)] attribute"
+            }
+        } no_build
+    }
+
+    test! {
+        SplitAt {
+            enum Foo {}
+        } expands to {
+            ::core::compile_error! {
+                "can only be applied to structs"
+            }
+        } no_build
+    }
+
+    test! {
+        SplitAt {
+            union Foo { a: () }
+        } expands to {
+            ::core::compile_error! {
+                "can only be applied to structs"
             }
         } no_build
     }
