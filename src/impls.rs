@@ -173,40 +173,13 @@ const _: () = unsafe {
     })
 };
 
-// SAFETY: `str` and `[u8]` have the same layout [1].
-//
-// [1] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#str-layout:
-//
-//   String slices are a UTF-8 representation of characters that have the same
-//   layout as slices of type `[u8]`.
-unsafe impl pointer::SizeEq<str> for [u8] {
-    fn cast_from_raw(s: NonNull<str>) -> NonNull<[u8]> {
-        cast!(s)
-    }
-}
-// SAFETY: See previous safety comment.
-unsafe impl pointer::SizeEq<[u8]> for str {
-    fn cast_from_raw(bytes: NonNull<[u8]>) -> NonNull<str> {
-        cast!(bytes)
-    }
-}
+impl_size_eq!(str, [u8]);
 
 macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
     ($($nonzero:ident[$prim:ty]),*) => {
         $(
             unsafe_impl!(=> TryFromBytes for $nonzero; |n| {
-                // SAFETY: The caller promises that this is sound.
-                unsafe impl pointer::SizeEq<$nonzero> for Unalign<$prim> {
-                    fn cast_from_raw(n: NonNull<$nonzero>) -> NonNull<Unalign<$prim>> {
-                        cast!(n)
-                    }
-                }
-                // SAFETY: The caller promises that this is sound.
-                unsafe impl pointer::SizeEq<Unalign<$prim>> for $nonzero {
-                    fn cast_from_raw(p: NonNull<Unalign<$prim>>) -> NonNull<$nonzero> {
-                        cast!(p)
-                    }
-                }
+                impl_size_eq!($nonzero, Unalign<$prim>);
 
                 let n = n.transmute::<Unalign<$prim>, invariant::Valid, _>();
                 $nonzero::new(n.read_unaligned().into_inner()).is_some()
@@ -423,8 +396,8 @@ mod atomics {
         ($($($tyvar:ident)? => $atomic:ty [$prim:ty]),*) => {{
             crate::util::macros::__unsafe();
 
-            use core::{cell::UnsafeCell, ptr::NonNull};
-            use crate::pointer::{TransmuteFrom, SizeEq, invariant::Valid};
+            use core::cell::UnsafeCell;
+            use crate::pointer::{PtrInner, SizeEq, TransmuteFrom, invariant::Valid};
 
             $(
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
@@ -437,15 +410,20 @@ mod atomics {
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
                 // the same size.
                 unsafe impl<$($tyvar)?> SizeEq<$atomic> for $prim {
-                    fn cast_from_raw(a: NonNull<$atomic>) -> NonNull<$prim> {
-                        cast!(a)
+                    #[inline]
+                    fn cast_from_raw(a: PtrInner<'_, $atomic>) -> PtrInner<'_, $prim> {
+                        // SAFETY: The caller promised that `$atomic` and
+                        // `$prim` have the same size. Thus, this cast preserves
+                        // address, referent size, and provenance.
+                        unsafe { cast!(a) }
                     }
                 }
-                // SAFETY: The caller promised that `$atomic` and `$prim` have
-                // the same size.
+                // SAFETY: See previous safety comment.
                 unsafe impl<$($tyvar)?> SizeEq<$prim> for $atomic {
-                    fn cast_from_raw(p: NonNull<$prim>) -> NonNull<$atomic> {
-                        cast!(p)
+                    #[inline]
+                    fn cast_from_raw(p: PtrInner<'_, $prim>) -> PtrInner<'_, $atomic> {
+                        // SAFETY: See previous safety comment.
+                        unsafe { cast!(p) }
                     }
                 }
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
@@ -457,14 +435,18 @@ mod atomics {
                 //   its inner type `T`. A consequence of this guarantee is that
                 //   it is possible to convert between `T` and `UnsafeCell<T>`.
                 unsafe impl<$($tyvar)?> SizeEq<$atomic> for UnsafeCell<$prim> {
-                    fn cast_from_raw(a: NonNull<$atomic>) -> NonNull<UnsafeCell<$prim>> {
-                        cast!(a)
+                    #[inline]
+                    fn cast_from_raw(a: PtrInner<'_, $atomic>) -> PtrInner<'_, UnsafeCell<$prim>> {
+                        // SAFETY: See previous safety comment.
+                        unsafe { cast!(a) }
                     }
                 }
                 // SAFETY: See previous safety comment.
                 unsafe impl<$($tyvar)?> SizeEq<UnsafeCell<$prim>> for $atomic {
-                    fn cast_from_raw(p: NonNull<UnsafeCell<$prim>>) -> NonNull<$atomic> {
-                        cast!(p)
+                    #[inline]
+                    fn cast_from_raw(p: PtrInner<'_, UnsafeCell<$prim>>) -> PtrInner<'_, $atomic> {
+                        // SAFETY: See previous safety comment.
+                        unsafe { cast!(p) }
                     }
                 }
 
