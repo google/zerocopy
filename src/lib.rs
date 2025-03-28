@@ -3470,6 +3470,44 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: Sized;
 
+    /// Zeroes the bytes of `self` and returns them as a `&mut [u8]`.
+    ///
+    /// This permits accessing the bytes of a type which may not implement
+    /// [`IntoBytes`] by first zeroing any padding bytes which would be unsound
+    /// to expose via [`IntoBytes::as_bytes`].
+    ///
+    /// # Examples
+    ///
+    /// TODO
+    #[inline]
+    fn zero_and_get_bytes(&mut self) -> &mut [u8] {
+        self.zero();
+
+        let len = mem::size_of_val(self);
+        let data: *mut Self = self;
+        let data = data.cast::<u8>();
+
+        // SAFETY:
+        // - `data` is non-null by invariant on `&mut self`.
+        // - `data` is valid for reads and writes of `len` bytes:
+        //   - `data` refers to a block of `len` bytes within a single allocated
+        //     object by invariant on `&mut self`
+        //   - TODO: Others? https://doc.rust-lang.org/std/ptr/index.html#safety
+        // - Thanks to the preceding `self.zero()`, it is guaranteed that `data`
+        //   points to `len` bytes with the value `0u8`, which is a valid value
+        //   for `u8`
+        // - Because `self: &mut Self`, `self` is guaranteed to be the only live
+        //   reference to this data. Because `self` and the returned `&mut [u8]`
+        //   have the same lifetime, `self` is guaranteed not to be live so long
+        //   as the returned `&mut [u8]` is live, and thus it is the only
+        //   reference which is permitted to access the referent bytes for the
+        //   duration of its lifetime.
+        // - By invariant on `&mut self`, the referent is not larger than
+        //   `isize::MAX` bytes, and the referent does not wrap around the
+        //   address space
+        unsafe { core::slice::from_raw_parts_mut(data, len) }
+    }
+
     /// Interprets the given `source` as a `&Self`.
     ///
     /// This method attempts to return a reference to `source` interpreted as a
