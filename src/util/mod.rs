@@ -422,6 +422,7 @@ mod len_of {
         T: KnownLayout,
     {
         /// Returns `None` if `meta` is greater than `t`'s metadata.
+        #[inline(always)]
         pub(crate) fn new_in_bounds(t: &T, meta: usize) -> Option<Self>
         where
             T: KnownLayout<PointerMetadata = usize>,
