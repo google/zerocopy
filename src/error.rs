@@ -572,6 +572,13 @@ impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
         self.src
     }
 
+    pub(crate) fn with_src<NewSrc>(self, new_src: NewSrc) -> ValidityError<NewSrc, Dst> {
+        // INVARIANT: `with_src` doesn't change the type of `Dst`, so the
+        // invariant that `Dst`'s alignment requirement is greater than one is
+        // preserved.
+        ValidityError { src: new_src, dst: SendSyncPhantomData::default() }
+    }
+
     /// Maps the source value associated with the conversion error.
     ///
     /// This can help mitigate [issues with `Send`, `Sync` and `'static`
