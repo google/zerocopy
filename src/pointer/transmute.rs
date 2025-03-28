@@ -296,14 +296,9 @@ where
 /// ## By-value transmutation
 ///
 /// If `Src: Sized` and `Dst: Sized`, then it must be sound to transmute an
-/// `SV`-valid `Src` into a `DV`-valid `Dst` by value via union transmute. In
-/// particular:
-/// - If `size_of::<Src>() >= size_of::<Dst>()`, then the first
-///   `size_of::<Dst>()` bytes of any `SV`-valid `Src` must be a `DV`-valid
-///   `Dst`.
-/// - If `size_of::<Src>() < size_of::<Dst>()`, then any `SV`-valid `Src`
-///   followed by `size_of::<Dst>() - size_of::<Src>()` uninitialized bytes must
-///   be a `DV`-valid `Dst`.
+/// `SV`-valid `Src` into a `DV`-valid `Dst` by value via size-preserving or
+/// size-shrinking transmute. In particular, the first `size_of::<Dst>()` bytes
+/// of any `SV`-valid `Src` must be a `DV`-valid `Dst`.
 ///
 /// If either `Src: !Sized` or `Dst: !Sized`, then this condition does not need
 /// to hold.
@@ -372,12 +367,18 @@ unsafe impl<T: ?Sized> SizeCompat<T> for T {
     }
 }
 
-// TODO: Update all `TransmuteFrom` safety proofs.
-
 /// `Valid<Src: IntoBytes> → Initialized<Dst>`
-// SAFETY: Since `Src: IntoBytes`, the set of valid `Src`'s is the set of
-// initialized bit patterns, which is exactly the set allowed in the referent of
-// any `Initialized` `Ptr`.
+// SAFETY:
+// - By-value: Since `Src: IntoBytes`, the set of valid `Src`'s is the set of
+//   initialized bit patterns, which is exactly the set allowed in the referent
+//   of any `Initialized` `Ptr`. This holds for both size-preserving and
+//   size-shrinking transmutes.
+// - By-reference:
+//   - Shrinking: See above.
+//   - Tearing: Let `src` be a `Valid` `Src` and `dst` be an `Initialized`
+//     `Dst`. The trailing bytes of `dst` have bit validity `[u8; N]`. `src` has
+//     bit validity `[u8; M]`. Thus, `dst' = src + trailing_bytes_of(dst)` has
+//     bit validity `[u8; N + M]`, which is a valid `Initialized` value.
 unsafe impl<Src, Dst> TransmuteFrom<Src, Valid, Initialized> for Dst
 where
     Src: IntoBytes + ?Sized,
@@ -389,6 +390,8 @@ where
 // SAFETY: Since `Dst: FromBytes`, any initialized bit pattern may appear in the
 // referent of a `Ptr<Dst, (_, _, Valid)>`. This is exactly equal to the set of
 // bit patterns which may appear in the referent of any `Initialized` `Ptr`.
+//
+// TODO: Prove `TransmuteFrom` reference transmutation conditions.
 unsafe impl<Src, Dst> TransmuteFrom<Src, Initialized, Valid> for Dst
 where
     Src: ?Sized,
@@ -403,6 +406,8 @@ where
 /// `Initialized<Src> → Initialized<Dst>`
 // SAFETY: The set of allowed bit patterns in the referent of any `Initialized`
 // `Ptr` is the same regardless of referent type.
+//
+// TODO: Prove `TransmuteFrom` reference transmutation conditions.
 unsafe impl<Src, Dst> TransmuteFrom<Src, Initialized, Initialized> for Dst
 where
     Src: ?Sized,
@@ -417,6 +422,8 @@ where
 /// `V<Src> → Uninit<Dst>`
 // SAFETY: A `Dst` with validity `Uninit` permits any byte sequence, and
 // therefore can be transmuted from any value.
+//
+// TODO: Prove `TransmuteFrom` reference transmutation conditions.
 unsafe impl<Src, Dst, V> TransmuteFrom<Src, V, Uninit> for Dst
 where
     Src: ?Sized,
@@ -520,6 +527,8 @@ impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
 // explicitly guaranteed, but it's obvious from `MaybeUninit`'s documentation
 // that this is the intention:
 // https://doc.rust-lang.org/1.85.0/core/mem/union.MaybeUninit.html
+//
+// TODO: Prove `TransmuteFrom` reference transmutation conditions.
 unsafe impl<Src, Dst> TransmuteFrom<Src, Uninit, Valid> for MaybeUninit<Dst> {}
 
 // SAFETY: `MaybeUninit<T>` has the same size as `T` [1]. Thus, a pointer cast
