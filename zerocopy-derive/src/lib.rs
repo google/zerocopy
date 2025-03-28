@@ -702,6 +702,10 @@ fn derive_split_at_inner(
         return Err(Error::new(Span::call_site(), "must not have #[repr(packed)] attribute"));
     }
 
+    if !(repr.is_c() || repr.is_transparent()) {
+        return Err(Error::new(Span::call_site(), "must have #[repr(C)] or #[repr(transparent)] in order to guarantee this type's layout is splitable"));
+    }
+
     let fields = ast.data.fields();
     let trailing_field = if let Some(((_, _, trailing_field), _)) = fields.split_last() {
         trailing_field
@@ -709,8 +713,10 @@ fn derive_split_at_inner(
         return Err(Error::new(Span::call_site(), "must at least one field"));
     };
 
-    // SAFETY: `#ty`, per the above check, is not packed; its trailing slice
-    // field is guaranteed to be well-aligned for its type.
+    // SAFETY: `#ty`, per the above checks, is `repr(C)` or `repr(transparent)`
+    // and is not packed; its trailing field is guaranteed to be well-aligned
+    // for its type. By invariant on `FieldBounds::TRAILING_SELF`, the trailing
+    // slice of the trailing field is also well-aligned for its type.
     Ok(ImplBlockBuilder::new(
         ast,
         &ast.data,
