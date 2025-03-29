@@ -78,7 +78,7 @@ fn two_bad() {
     //   the same bytes as `c`.
     // - The cast preserves provenance.
     // - Neither the input nor output types contain any `UnsafeCell`s.
-    let candidate = unsafe { candidate.cast_unsized_unchecked(|p| p.cast::<Two>()) };
+    let candidate = unsafe { candidate.cast_unsized_unchecked(|p| p.as_non_null().cast::<Two>()) };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
     let candidate = unsafe { candidate.assume_initialized() };
@@ -110,7 +110,7 @@ fn un_sized() {
     // - Neither the input nor output types contain any `UnsafeCell`s.
     let candidate = unsafe {
         candidate.cast_unsized_unchecked(|p| {
-            imp::core::ptr::NonNull::new_unchecked(p.as_ptr() as *mut Unsized)
+            imp::core::ptr::NonNull::new_unchecked(p.as_non_null().as_ptr() as *mut Unsized)
         })
     };
 
@@ -168,8 +168,9 @@ fn test_maybe_from_bytes() {
     //   the same bytes as `c`.
     // - The cast preserves provenance.
     // - Neither the input nor output types contain any `UnsafeCell`s.
-    let candidate =
-        unsafe { candidate.cast_unsized_unchecked(|p| p.cast::<MaybeFromBytes<bool>>()) };
+    let candidate = unsafe {
+        candidate.cast_unsized_unchecked(|p| p.as_non_null().cast::<MaybeFromBytes<bool>>())
+    };
 
     // SAFETY: `[u8]` consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
