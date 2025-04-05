@@ -7,7 +7,7 @@
 // those terms.
 
 #[macro_use]
-mod macros;
+pub(crate) mod macros;
 
 #[doc(hidden)]
 pub mod macro_util;
