@@ -217,10 +217,13 @@ where
 pub(crate) enum BecauseInvariantsEq {}
 
 macro_rules! unsafe_impl_invariants_eq {
-    ($tyvar:ident => $t:ty, $u:ty) => {
+    ($tyvar:ident => $t:ty, $u:ty) => {{
+        crate::util::macros::__unsafe();
+        // SAFETY: The caller promises that this is sound.
         unsafe impl<$tyvar> InvariantsEq<$t> for $u {}
+        // SAFETY: The caller promises that this is sound.
         unsafe impl<$tyvar> InvariantsEq<$u> for $t {}
-    };
+    }};
 }
 
 impl_transitive_transmute_from!(T => MaybeUninit<T> => T => Wrapping<T>);
@@ -342,98 +345,92 @@ where
 {
 }
 
-safety_comment! {
-    /// SAFETY:
-    /// - `ManuallyDrop<T>` has the same size as `T` [1]
-    /// - `ManuallyDrop<T>` has the same validity as `T` [1]
-    ///
-    /// [1] Per https://doc.rust-lang.org/1.81.0/std/mem/struct.ManuallyDrop.html:
-    ///
-    ///   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
-    ///   validity as `T`
-    unsafe_impl_for_transparent_wrapper!(T: ?Sized => ManuallyDrop<T>);
+// SAFETY:
+// - `ManuallyDrop<T>` has the same size as `T` [1]
+// - `ManuallyDrop<T>` has the same validity as `T` [1]
+//
+// [1] Per https://doc.rust-lang.org/1.81.0/std/mem/struct.ManuallyDrop.html:
+//
+//   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
+//   `T`
+const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T: ?Sized => ManuallyDrop<T>) };
 
-    /// SAFETY:
-    /// - `Unalign<T>` promises to have the same size as `T`.
-    /// - `Unalign<T>` promises to have the same validity as `T`.
-    unsafe_impl_for_transparent_wrapper!(T => Unalign<T>);
-    /// SAFETY:
-    /// `Unalign<T>` promises to have the same size and validity as `T`. Given
-    /// `u: &Unalign<T>`, it is already possible to obtain `let t =
-    /// u.try_deref().unwrap()`. Because `Unalign<T>` has the same size as `T`,
-    /// the returned `&T` must point to the same referent as `u`, and thus it
-    /// must be sound for these two references to exist at the same time since
-    /// it's already possible for safe code to get into this state.
-    unsafe_impl_invariants_eq!(T => T, Unalign<T>);
+// SAFETY:
+// - `Unalign<T>` promises to have the same size as `T`.
+// - `Unalign<T>` promises to have the same validity as `T`.
+const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T => Unalign<T>) };
+// SAFETY: `Unalign<T>` promises to have the same size and validity as `T`.
+// Given `u: &Unalign<T>`, it is already possible to obtain `let t =
+// u.try_deref().unwrap()`. Because `Unalign<T>` has the same size as `T`, the
+// returned `&T` must point to the same referent as `u`, and thus it must be
+// sound for these two references to exist at the same time since it's already
+// possible for safe code to get into this state.
+const _: () = unsafe { unsafe_impl_invariants_eq!(T => T, Unalign<T>) };
 
-    /// SAFETY:
-    /// - `Wrapping<T>` has the same size as `T` [1].
-    /// - `Wrapping<T>` has only one field, which is `pub` [2]. We are also
-    ///   guaranteed per that `Wrapping<T>` has the same layout as `T` [1]. The
-    ///   only way for both of these to be true simultaneously is for
-    ///   `Wrapping<T>` to have the same bit validity as `T`. In particular, in
-    ///   order to change the bit validity, one of the following would need to
-    ///   happen:
-    ///   - `Wrapping` could change its `repr`, but this would violate the
-    ///     layout guarantee.
-    ///   - `Wrapping` could add or change its fields, but this would be a
-    ///     stability-breaking change.
-    ///
-    /// [1] Per https://doc.rust-lang.org/1.85.0/core/num/struct.Wrapping.html#layout-1:
-    ///
-    ///   `Wrapping<T>` is guaranteed to have the same layout and ABI as `T`.
-    ///
-    /// [2] Definition from https://doc.rust-lang.org/1.85.0/core/num/struct.Wrapping.html:
-    ///
-    ///   ```
-    ///   #[repr(transparent)]
-    ///   pub struct Wrapping<T>(pub T);
-    ///   ```
-    unsafe_impl_for_transparent_wrapper!(T => Wrapping<T>);
-    /// SAFETY:
-    /// By the preceding safety proof, `Wrapping<T>` and `T` have the same
-    /// layout and bit validity. Since a `Wrapping<T>`'s `T` field is `pub`,
-    /// given `w: &Wrapping<T>`, it's possible to do `let t = &w.t`, which means
-    /// that it's already possible for safe code to obtain a `&Wrapping<T>` and
-    /// a `&T` pointing to the same referent at the same time. Thus, this must
-    /// be sound.
-    unsafe_impl_invariants_eq!(T => T, Wrapping<T>);
+// SAFETY:
+// - `Wrapping<T>` has the same size as `T` [1].
+// - `Wrapping<T>` has only one field, which is `pub` [2]. We are also
+//   guaranteed per that `Wrapping<T>` has the same layout as `T` [1]. The only
+//   way for both of these to be true simultaneously is for `Wrapping<T>` to
+//   have the same bit validity as `T`. In particular, in order to change the
+//   bit validity, one of the following would need to happen:
+//   - `Wrapping` could change its `repr`, but this would violate the layout
+//     guarantee.
+//   - `Wrapping` could add or change its fields, but this would be a
+//     stability-breaking change.
+//
+// [1] Per https://doc.rust-lang.org/1.85.0/core/num/struct.Wrapping.html#layout-1:
+//
+//   `Wrapping<T>` is guaranteed to have the same layout and ABI as `T`.
+//
+// [2] Definition from https://doc.rust-lang.org/1.85.0/core/num/struct.Wrapping.html:
+//
+//   ```
+//   #[repr(transparent)]
+//   pub struct Wrapping<T>(pub T);
+//   ```
+const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T => Wrapping<T>) };
 
-    /// SAFETY:
-    /// - `UnsafeCell<T>` has the same size as `T` [1].
-    /// - Per [1], `UnsafeCell<T>` has the same bit validity as `T`. Technically
-    ///   the term "representation" doesn't guarantee this, but the subsequent
-    ///   sentence in the documentation makes it clear that this is the
-    ///   intention.
-    ///
-    /// [1] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout:
-    ///
-    ///   `UnsafeCell<T>` has the same in-memory representation as its inner
-    ///   type `T`. A consequence of this guarantee is that it is possible to
-    ///   convert between `T` and `UnsafeCell<T>`.
-    unsafe_impl_for_transparent_wrapper!(T: ?Sized => UnsafeCell<T>);
+// SAFETY: By the preceding safety proof, `Wrapping<T>` and `T` have the same
+// layout and bit validity. Since a `Wrapping<T>`'s `T` field is `pub`, given
+// `w: &Wrapping<T>`, it's possible to do `let t = &w.t`, which means that it's
+// already possible for safe code to obtain a `&Wrapping<T>` and a `&T` pointing
+// to the same referent at the same time. Thus, this must be sound.
+const _: () = unsafe { unsafe_impl_invariants_eq!(T => T, Wrapping<T>) };
 
-    /// SAFETY:
-    /// - `Cell<T>` has the same size as `T` [1].
-    /// - Per [1], `Cell<T>` has the same bit validity as `T`. Technically the
-    ///   term "representation" doesn't guarantee this, but it does promise to
-    ///   have the "same memory layout and caveats as `UnsafeCell<T>`." The
-    ///   `UnsafeCell` docs [2] make it clear that bit validity is the intention
-    ///   even if that phrase isn't used.
-    ///
-    /// [1] Per https://doc.rust-lang.org/1.85.0/std/cell/struct.Cell.html#memory-layout:
-    ///
-    ///   `Cell<T>` has the same memory layout and caveats as `UnsafeCell<T>`.
-    ///   In particular, this means that `Cell<T>` has the same in-memory
-    ///   representation as its inner type `T`.
-    ///
-    /// [2] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout:
-    ///
-    ///   `UnsafeCell<T>` has the same in-memory representation as its inner
-    ///   type `T`. A consequence of this guarantee is that it is possible to
-    ///   convert between `T` and `UnsafeCell<T>`.
-    unsafe_impl_for_transparent_wrapper!(T: ?Sized => Cell<T>);
-}
+// SAFETY:
+// - `UnsafeCell<T>` has the same size as `T` [1].
+// - Per [1], `UnsafeCell<T>` has the same bit validity as `T`. Technically the
+//   term "representation" doesn't guarantee this, but the subsequent sentence
+//   in the documentation makes it clear that this is the intention.
+//
+// [1] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout:
+//
+//   `UnsafeCell<T>` has the same in-memory representation as its inner type
+//   `T`. A consequence of this guarantee is that it is possible to convert
+//   between `T` and `UnsafeCell<T>`.
+const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T: ?Sized => UnsafeCell<T>) };
+
+// SAFETY:
+// - `Cell<T>` has the same size as `T` [1].
+// - Per [1], `Cell<T>` has the same bit validity as `T`. Technically the term
+//   "representation" doesn't guarantee this, but it does promise to have the
+//   "same memory layout and caveats as `UnsafeCell<T>`." The `UnsafeCell` docs
+//   [2] make it clear that bit validity is the intention even if that phrase
+//   isn't used.
+//
+// [1] Per https://doc.rust-lang.org/1.85.0/std/cell/struct.Cell.html#memory-layout:
+//
+//   `Cell<T>` has the same memory layout and caveats as `UnsafeCell<T>`. In
+//   particular, this means that `Cell<T>` has the same in-memory representation
+//   as its inner type `T`.
+//
+// [2] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout:
+//
+//   `UnsafeCell<T>` has the same in-memory representation as its inner type
+//   `T`. A consequence of this guarantee is that it is possible to convert
+//   between `T` and `UnsafeCell<T>`.
+const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T: ?Sized => Cell<T>) };
 
 impl_transitive_transmute_from!(T: ?Sized => Cell<T> => T => UnsafeCell<T>);
 impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);

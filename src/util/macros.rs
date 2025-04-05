@@ -6,32 +6,6 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-/// Documents multiple unsafe blocks with a single safety comment.
-///
-/// Invoked as:
-///
-/// ```rust,ignore
-/// safety_comment! {
-///     // Non-doc comments come first.
-///     /// SAFETY:
-///     /// Safety comment starts on its own line.
-///     macro_1!(args);
-///     macro_2! { args };
-///     /// SAFETY:
-///     /// Subsequent safety comments are allowed but not required.
-///     macro_3! { args };
-/// }
-/// ```
-///
-/// The macro invocations are emitted, each decorated with the following
-/// attribute: `#[allow(clippy::undocumented_unsafe_blocks)]`.
-macro_rules! safety_comment {
-    (#[doc = r" SAFETY:"] $($(#[$attr:meta])* $macro:ident!$args:tt;)*) => {
-        #[allow(clippy::undocumented_unsafe_blocks, unused_attributes)]
-        const _: () = { $($(#[$attr])* $macro!$args;)* };
-    }
-}
-
 /// Unsafely implements trait(s) for a type.
 ///
 /// # Safety
@@ -47,12 +21,15 @@ macro_rules! safety_comment {
 ///   must only return `true` if its argument refers to a valid `$ty`.
 macro_rules! unsafe_impl {
     // Implement `$trait` for `$ty` with no bounds.
-    ($(#[$attr:meta])* $ty:ty: $trait:ident $(; |$candidate:ident| $is_bit_valid:expr)?) => {
+    ($(#[$attr:meta])* $ty:ty: $trait:ident $(; |$candidate:ident| $is_bit_valid:expr)?) => {{
+        crate::util::macros::__unsafe();
+
         $(#[$attr])*
+        // SAFETY: The caller promises that this is sound.
         unsafe impl $trait for $ty {
             unsafe_impl!(@method $trait $(; |$candidate| $is_bit_valid)?);
         }
-    };
+    }};
 
     // Implement all `$traits` for `$ty` with no bounds.
     //
@@ -76,9 +53,9 @@ macro_rules! unsafe_impl {
         unsafe_impl!(@impl_traits_with_packed_attrs { $(#[$attrs])* } $ty: $($traits),*)
     };
 
-    (@impl_traits_with_packed_attrs $attrs:tt $ty:ty: $($traits:ident),*) => {
+    (@impl_traits_with_packed_attrs $attrs:tt $ty:ty: $($traits:ident),*) => {{
         $( unsafe_impl!(@unpack_attrs $attrs $ty: $traits); )*
-    };
+    }};
 
     (@unpack_attrs { $(#[$attrs:meta])* } $ty:ty: $traits:ident) => {
         unsafe_impl!($(#[$attrs])* $ty: $traits);
@@ -127,27 +104,30 @@ macro_rules! unsafe_impl {
         $(#[$attr:meta])*
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
         => $trait:ident for $ty:ty $(; |$candidate:ident| $is_bit_valid:expr)?
-    ) => {
+    ) => {{
         unsafe_impl!(
             @inner
             $(#[$attr])*
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
             => $trait for $ty $(; |$candidate| $is_bit_valid)?
         );
-    };
+    }};
     (
         @inner
         $(#[$attr:meta])*
         $(@const $constname:ident : $constty:ident,)*
         $($tyvar:ident $(: $(? $optbound:ident +)* + $($bound:ident +)* )?,)*
         => $trait:ident for $ty:ty $(; |$candidate:ident| $is_bit_valid:expr)?
-    ) => {
+    ) => {{
+        crate::util::macros::__unsafe();
+
         $(#[$attr])*
         #[allow(non_local_definitions)]
+        // SAFETY: The caller promises that this is sound.
         unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),* $(, const $constname: $constty,)*> $trait for $ty {
             unsafe_impl!(@method $trait $(; |$candidate| $is_bit_valid)?);
         }
-    };
+    }};
 
     (@method TryFromBytes ; |$candidate:ident| $is_bit_valid:expr) => {
         #[allow(clippy::missing_inline_in_public_items, dead_code)]
@@ -186,44 +166,47 @@ macro_rules! impl_for_transmute_from {
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?)?
         => $trait:ident for $ty:ty [$($unsafe_cell:ident)? <$repr:ty>]
     ) => {
-        $(#[$attr])*
-        #[allow(non_local_definitions)]
+        const _: () = {
+            $(#[$attr])*
+            #[allow(non_local_definitions)]
 
-        // SAFETY: `is_trait<T, R>` (defined and used below) requires `T:
-        // TransmuteFrom<R>`, `R: TransmuteFrom<T>`, and `R: $trait`. It is
-        // called using `$ty` and `$repr`, ensuring that `$ty` and `$repr` have
-        // equivalent bit validity, and ensuring that `$repr: $trait`. The
-        // supported traits - `TryFromBytes`, `FromZeros`, `FromBytes`, and
-        // `IntoBytes` - are defined only in terms of the bit validity of a
-        // type. Therefore, `$repr: $trait` ensures that `$ty: $trait` is sound.
-        unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> $trait for $ty {
-            #[allow(dead_code, clippy::missing_inline_in_public_items)]
-            #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
-            fn only_derive_is_allowed_to_implement_this_trait() {
-                use crate::pointer::{*, invariant::Valid};
-
-                impl_for_transmute_from!(@assert_is_supported_trait $trait);
-
-                fn is_trait<T, R>()
-                where
-                    T: TransmuteFrom<R, Valid, Valid> + ?Sized,
-                    R: TransmuteFrom<T, Valid, Valid> + ?Sized,
-                    R: $trait,
-                {
-                }
-
+            // SAFETY: `is_trait<T, R>` (defined and used below) requires `T:
+            // TransmuteFrom<R>`, `R: TransmuteFrom<T>`, and `R: $trait`. It is
+            // called using `$ty` and `$repr`, ensuring that `$ty` and `$repr`
+            // have equivalent bit validity, and ensuring that `$repr: $trait`.
+            // The supported traits - `TryFromBytes`, `FromZeros`, `FromBytes`,
+            // and `IntoBytes` - are defined only in terms of the bit validity
+            // of a type. Therefore, `$repr: $trait` ensures that `$ty: $trait`
+            // is sound.
+            unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> $trait for $ty {
+                #[allow(dead_code, clippy::missing_inline_in_public_items)]
                 #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
-                fn f<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?>() {
-                    is_trait::<$ty, $repr>();
-                }
-            }
+                fn only_derive_is_allowed_to_implement_this_trait() {
+                    use crate::pointer::{*, invariant::Valid};
 
-            impl_for_transmute_from!(
-                @is_bit_valid
-                $(<$tyvar $(: $(? $optbound +)* $($bound +)*)?>)?
-                $trait for $ty [$($unsafe_cell)? <$repr>]
-            );
-        }
+                    impl_for_transmute_from!(@assert_is_supported_trait $trait);
+
+                    fn is_trait<T, R>()
+                    where
+                        T: TransmuteFrom<R, Valid, Valid> + ?Sized,
+                        R: TransmuteFrom<T, Valid, Valid> + ?Sized,
+                        R: $trait,
+                    {
+                    }
+
+                    #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
+                    fn f<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?>() {
+                        is_trait::<$ty, $repr>();
+                    }
+                }
+
+                impl_for_transmute_from!(
+                    @is_bit_valid
+                    $(<$tyvar $(: $(? $optbound +)* $($bound +)*)?>)?
+                    $trait for $ty [$($unsafe_cell)? <$repr>]
+                );
+            }
+        };
     };
     (@assert_is_supported_trait TryFromBytes) => {};
     (@assert_is_supported_trait FromZeros) => {};
@@ -347,7 +330,7 @@ macro_rules! opt_fn {
 /// assumption that the impl emitted by the custom derive is sound).
 ///
 /// The caller is still required to provide a safety comment (e.g. using the
-/// `safety_comment!` macro) . The reason for this restriction is that, while
+/// `const _: () = unsafe` macro) . The reason for this restriction is that, while
 /// `impl_or_verify!` can guarantee that the provided impl is sound when it is
 /// compiled with the appropriate cfgs, there is no way to guarantee that it is
 /// ever compiled with those cfgs. In particular, it would be possible to
@@ -369,7 +352,7 @@ macro_rules! opt_fn {
 /// #[repr(transparent)]
 /// struct Wrapper<T>(T);
 ///
-/// safety_comment! {
+/// const _: () = unsafe {
 ///     /// SAFETY:
 ///     /// `Wrapper<T>` is `repr(transparent)`, so it is sound to implement any
 ///     /// zerocopy trait if `T` implements that trait.
@@ -409,11 +392,11 @@ macro_rules! impl_or_verify {
     };
     (@impl $impl_block:tt) => {
         #[cfg(not(any(feature = "derive", test)))]
-        const _: () = { $impl_block };
+        { $impl_block };
     };
     (@verify $trait:ident, $impl_block:tt) => {
         #[cfg(any(feature = "derive", test))]
-        const _: () = {
+        {
             trait Subtrait: $trait {}
             $impl_block
         };
@@ -485,43 +468,44 @@ macro_rules! impl_known_layout {
 /// - It must be valid to perform an `as` cast from `*mut $repr` to `*mut $ty`,
 ///   and this operation must preserve referent size (ie, `size_of_val_raw`).
 macro_rules! unsafe_impl_known_layout {
-    ($($tyvar:ident: ?Sized + KnownLayout =>)? #[repr($repr:ty)] $ty:ty) => {
-        const _: () = {
-            use core::ptr::NonNull;
+    ($($tyvar:ident: ?Sized + KnownLayout =>)? #[repr($repr:ty)] $ty:ty) => {{
+        use core::ptr::NonNull;
 
-            #[allow(non_local_definitions)]
-            unsafe impl<$($tyvar: ?Sized + KnownLayout)?> KnownLayout for $ty {
-                #[allow(clippy::missing_inline_in_public_items, dead_code)]
-                #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
-                fn only_derive_is_allowed_to_implement_this_trait() {}
+        crate::util::macros::__unsafe();
 
-                type PointerMetadata = <$repr as KnownLayout>::PointerMetadata;
-                type MaybeUninit = <$repr as KnownLayout>::MaybeUninit;
+        #[allow(non_local_definitions)]
+        // SAFETY: The caller promises that this is sound.
+        unsafe impl<$($tyvar: ?Sized + KnownLayout)?> KnownLayout for $ty {
+            #[allow(clippy::missing_inline_in_public_items, dead_code)]
+            #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
+            fn only_derive_is_allowed_to_implement_this_trait() {}
 
-                const LAYOUT: DstLayout = <$repr as KnownLayout>::LAYOUT;
+            type PointerMetadata = <$repr as KnownLayout>::PointerMetadata;
+            type MaybeUninit = <$repr as KnownLayout>::MaybeUninit;
 
-                // SAFETY: All operations preserve address and provenance.
-                // Caller has promised that the `as` cast preserves size.
-                //
-                // TODO(#429): Add documentation to `NonNull::new_unchecked`
-                // that it preserves provenance.
-                #[inline(always)]
-                fn raw_from_ptr_len(bytes: NonNull<u8>, meta: <$repr as KnownLayout>::PointerMetadata) -> NonNull<Self> {
-                    #[allow(clippy::as_conversions)]
-                    let ptr = <$repr>::raw_from_ptr_len(bytes, meta).as_ptr() as *mut Self;
-                    // SAFETY: `ptr` was converted from `bytes`, which is non-null.
-                    unsafe { NonNull::new_unchecked(ptr) }
-                }
+            const LAYOUT: DstLayout = <$repr as KnownLayout>::LAYOUT;
 
-                #[inline(always)]
-                fn pointer_to_metadata(ptr: *mut Self) -> Self::PointerMetadata {
-                    #[allow(clippy::as_conversions)]
-                    let ptr = ptr as *mut $repr;
-                    <$repr>::pointer_to_metadata(ptr)
-                }
+            // SAFETY: All operations preserve address and provenance.
+            // Caller has promised that the `as` cast preserves size.
+            //
+            // TODO(#429): Add documentation to `NonNull::new_unchecked`
+            // that it preserves provenance.
+            #[inline(always)]
+            fn raw_from_ptr_len(bytes: NonNull<u8>, meta: <$repr as KnownLayout>::PointerMetadata) -> NonNull<Self> {
+                #[allow(clippy::as_conversions)]
+                let ptr = <$repr>::raw_from_ptr_len(bytes, meta).as_ptr() as *mut Self;
+                // SAFETY: `ptr` was converted from `bytes`, which is non-null.
+                unsafe { NonNull::new_unchecked(ptr) }
             }
-        };
-    };
+
+            #[inline(always)]
+            fn pointer_to_metadata(ptr: *mut Self) -> Self::PointerMetadata {
+                #[allow(clippy::as_conversions)]
+                let ptr = ptr as *mut $repr;
+                <$repr>::pointer_to_metadata(ptr)
+            }
+        }
+    }};
 }
 
 /// Uses `align_of` to confirm that a type or set of types have alignment 1.
@@ -716,36 +700,31 @@ macro_rules! cast {
 /// `T` and `$wrapper<T>` must have the same bit validity, and must have the
 /// same size in the sense of `SizeEq`.
 macro_rules! unsafe_impl_for_transparent_wrapper {
-    (T $(: ?$optbound:ident)? => $wrapper:ident<T>) => {
-        const _: () = {
-            use core::ptr::NonNull;
-            use crate::pointer::{TransmuteFrom, SizeEq, invariant::Valid};
+    (T $(: ?$optbound:ident)? => $wrapper:ident<T>) => {{
+        use core::ptr::NonNull;
+        use crate::pointer::{TransmuteFrom, SizeEq, invariant::Valid};
 
-            // SAFETY: The caller promises that `T` and `$wrapper<T>` have the
-            // same bit validity.
-            unsafe impl<T $(: ?$optbound)?> TransmuteFrom<T, Valid, Valid> for $wrapper<T> {}
-            // SAFETY: See previous safety comment.
-            unsafe impl<T $(: ?$optbound)?> TransmuteFrom<$wrapper<T>, Valid, Valid> for T {}
-            // SAFETY: The caller promises that `T` and `$wrapper<T>` satisfy
-            // `SizeEq`.
-            unsafe impl<T $(: ?$optbound)?> SizeEq<T> for $wrapper<T> {
-                fn cast_from_raw(t: NonNull<T>) -> NonNull<$wrapper<T>> {
-                    cast!(t)
-                }
-            }
-            // SAFETY: See previous safety comment.
-            unsafe impl<T $(: ?$optbound)?> SizeEq<$wrapper<T>> for T {
-                fn cast_from_raw(t: NonNull<$wrapper<T>>) -> NonNull<T> {
-                    cast!(t)
-                }
-            }
-        };
+        crate::util::macros::__unsafe();
 
-        // So that this macro must be invoked inside `safety_comment!` or else
-        // it will generate a `clippy::undocumented_unsafe_blocks` warning.
-        #[allow(unused_unsafe)]
-        const _: () = unsafe {};
-    };
+        // SAFETY: The caller promises that `T` and `$wrapper<T>` have the
+        // same bit validity.
+        unsafe impl<T $(: ?$optbound)?> TransmuteFrom<T, Valid, Valid> for $wrapper<T> {}
+        // SAFETY: See previous safety comment.
+        unsafe impl<T $(: ?$optbound)?> TransmuteFrom<$wrapper<T>, Valid, Valid> for T {}
+        // SAFETY: The caller promises that `T` and `$wrapper<T>` satisfy
+        // `SizeEq`.
+        unsafe impl<T $(: ?$optbound)?> SizeEq<T> for $wrapper<T> {
+            fn cast_from_raw(t: NonNull<T>) -> NonNull<$wrapper<T>> {
+                cast!(t)
+            }
+        }
+        // SAFETY: See previous safety comment.
+        unsafe impl<T $(: ?$optbound)?> SizeEq<$wrapper<T>> for T {
+            fn cast_from_raw(t: NonNull<$wrapper<T>>) -> NonNull<T> {
+                cast!(t)
+            }
+        }
+    }};
 }
 
 macro_rules! impl_transitive_transmute_from {
@@ -802,3 +781,9 @@ macro_rules! impl_size_eq {
         };
     };
 }
+
+/// A no-op `unsafe fn` for use in macro expansions.
+///
+/// Calling this function in a macro expansion ensures that the macro's caller
+/// must wrap the call in `unsafe { ... }`.
+pub(crate) const unsafe fn __unsafe() {}

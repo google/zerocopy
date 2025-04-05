@@ -1010,45 +1010,45 @@ impl_known_layout!(
 );
 impl_known_layout!(const N: usize, T => [T; N]);
 
-safety_comment! {
-    /// SAFETY:
-    /// `str` has the same representation as `[u8]`. `ManuallyDrop<T>` [1],
-    /// `UnsafeCell<T>` [2], and `Cell<T>` [3] have the same representation as
-    /// `T`.
-    ///
-    /// [1] Per https://doc.rust-lang.org/1.85.0/std/mem/struct.ManuallyDrop.html:
-    ///
-    ///   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
-    ///   validity as `T`
-    ///
-    /// [2] Per https://doc.rust-lang.org/1.85.0/core/cell/struct.UnsafeCell.html#memory-layout:
-    ///
-    ///   `UnsafeCell<T>` has the same in-memory representation as its inner
-    ///   type `T`.
-    ///
-    /// [3] Per https://doc.rust-lang.org/1.85.0/core/cell/struct.Cell.html#memory-layout:
-    ///
-    ///   `Cell<T>` has the same in-memory representation as `T`.
-    unsafe_impl_known_layout!(#[repr([u8])] str);
+// SAFETY: `str` has the same representation as `[u8]`. `ManuallyDrop<T>` [1],
+// `UnsafeCell<T>` [2], and `Cell<T>` [3] have the same representation as `T`.
+//
+// [1] Per https://doc.rust-lang.org/1.85.0/std/mem/struct.ManuallyDrop.html:
+//
+//   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
+//   `T`
+//
+// [2] Per https://doc.rust-lang.org/1.85.0/core/cell/struct.UnsafeCell.html#memory-layout:
+//
+//   `UnsafeCell<T>` has the same in-memory representation as its inner type
+//   `T`.
+//
+// [3] Per https://doc.rust-lang.org/1.85.0/core/cell/struct.Cell.html#memory-layout:
+//
+//   `Cell<T>` has the same in-memory representation as `T`.
+const _: () = unsafe {
+    unsafe_impl_known_layout!(
+        #[repr([u8])]
+        str
+    );
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] ManuallyDrop<T>);
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] UnsafeCell<T>);
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] Cell<T>);
-}
+};
 
-safety_comment! {
-    /// SAFETY:
-    /// - By consequence of the invariant on `T::MaybeUninit` that `T::LAYOUT`
-    ///   and `T::MaybeUninit::LAYOUT` are equal, `T` and `T::MaybeUninit`
-    ///   have the same:
-    ///   - Fixed prefix size
-    ///   - Alignment
-    ///   - (For DSTs) trailing slice element size
-    /// - By consequence of the above, referents `T::MaybeUninit` and `T` have
-    ///   the require the same kind of pointer metadata, and thus it is valid to
-    ///   perform an `as` cast from `*mut T` and `*mut T::MaybeUninit`, and this
-    ///   operation preserves referent size (ie, `size_of_val_raw`).
-    unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T::MaybeUninit)] MaybeUninit<T>);
-}
+// SAFETY:
+// - By consequence of the invariant on `T::MaybeUninit` that `T::LAYOUT` and
+//   `T::MaybeUninit::LAYOUT` are equal, `T` and `T::MaybeUninit` have the same:
+//   - Fixed prefix size
+//   - Alignment
+//   - (For DSTs) trailing slice element size
+// - By consequence of the above, referents `T::MaybeUninit` and `T` have the
+//   require the same kind of pointer metadata, and thus it is valid to perform
+//   an `as` cast from `*mut T` and `*mut T::MaybeUninit`, and this operation
+//   preserves referent size (ie, `size_of_val_raw`).
+const _: () = unsafe {
+    unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T::MaybeUninit)] MaybeUninit<T>)
+};
 
 /// Analyzes whether a type is [`FromZeros`].
 ///
