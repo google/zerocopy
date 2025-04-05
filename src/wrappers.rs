@@ -119,16 +119,17 @@ pub struct Unalign<T>(T);
 // `KnownLayout` impl bounded on `T: KnownLayout.` This is overly restrictive.
 impl_known_layout!(T => Unalign<T>);
 
-safety_comment! {
-    /// SAFETY:
-    /// - `Unalign<T>` promises to have alignment 1, and so we don't require
-    ///   that `T: Unaligned`.
-    /// - `Unalign<T>` has the same bit validity as `T`, and so it is
-    ///   `FromZeros`, `FromBytes`, or `IntoBytes` exactly when `T` is as well.
-    /// - `Immutable`: `Unalign<T>` has the same fields as `T`, so it contains
-    ///   `UnsafeCell`s exactly when `T` does.
-    /// - `TryFromBytes`: `Unalign<T>` has the same the same bit validity as
-    ///   `T`, so `T::is_bit_valid` is a sound implementation of `is_bit_valid`.
+// SAFETY:
+// - `Unalign<T>` promises to have alignment 1, and so we don't require that `T:
+//   Unaligned`.
+// - `Unalign<T>` has the same bit validity as `T`, and so it is `FromZeros`,
+//   `FromBytes`, or `IntoBytes` exactly when `T` is as well.
+// - `Immutable`: `Unalign<T>` has the same fields as `T`, so it contains
+//   `UnsafeCell`s exactly when `T` does.
+// - `TryFromBytes`: `Unalign<T>` has the same the same bit validity as `T`, so
+//   `T::is_bit_valid` is a sound implementation of `is_bit_valid`.
+#[allow(unused_unsafe)] // Unused when `feature = "derive"`.
+const _: () = unsafe {
     impl_or_verify!(T => Unaligned for Unalign<T>);
     impl_or_verify!(T: Immutable => Immutable for Unalign<T>);
     impl_or_verify!(
@@ -138,7 +139,7 @@ safety_comment! {
     impl_or_verify!(T: FromZeros => FromZeros for Unalign<T>);
     impl_or_verify!(T: FromBytes => FromBytes for Unalign<T>);
     impl_or_verify!(T: IntoBytes => IntoBytes for Unalign<T>);
-}
+};
 
 // Note that `Unalign: Clone` only if `T: Copy`. Since the inner `T` may not be
 // aligned, there's no way to safely call `T::clone`, and so a `T: Clone` bound
