@@ -623,11 +623,15 @@ mod cast_from_raw {
     /// [cast_from_raw]: crate::pointer::SizeFrom::cast_from_raw
     //
     // FIXME(#1817): Support Sized->Unsized and Unsized->Sized casts
-    pub(crate) fn cast_from_raw<Src, Dst>(src: PtrInner<'_, Src>) -> PtrInner<'_, Dst>
+    pub(crate) fn cast_from_raw<Src, Dst, const ALLOW_SHRINK: bool>(
+        src: PtrInner<'_, Src>,
+    ) -> PtrInner<'_, Dst>
     where
         Src: KnownLayout<PointerMetadata = usize> + ?Sized,
         Dst: KnownLayout<PointerMetadata = usize> + ?Sized,
     {
+        // TODO: Update this comment.
+        //
         // At compile time (specifically, post-monomorphization time), we need
         // to compute two things:
         // - Whether, given *any* `*Src`, it is possible to construct a `*Dst`
@@ -694,12 +698,19 @@ mod cast_from_raw {
         /// `Src`'s alignment must not be smaller than `Dst`'s alignment.
         #[derive(Copy, Clone)]
         struct CastParams {
-            offset_delta_elems: usize,
-            elem_multiple: usize,
+            // `offset_delta / dst.elem_size = offset_delta_elems_num / denom`
+            offset_delta_elems_num: usize,
+            // `src.elem_size / dst.elem_size = elem_multiple_num / denom`
+            elem_multiple_num: usize,
+            denom: NonZeroUsize,
         }
 
         impl CastParams {
-            const fn try_compute(src: &DstLayout, dst: &DstLayout) -> Option<CastParams> {
+            const fn try_compute(
+                src: &DstLayout,
+                dst: &DstLayout,
+                allow_shrink: bool,
+            ) -> Option<CastParams> {
                 if src.align.get() < dst.align.get() {
                     return None;
                 }
@@ -724,33 +735,44 @@ mod cast_from_raw {
                     return None;
                 };
 
-                // PANICS: `dst_elem_size: NonZeroUsize`, so this won't div by zero.
-                #[allow(clippy::arithmetic_side_effects)]
-                let delta_mod_other_elem = offset_delta % dst_elem_size.get();
-
-                // PANICS: `dst_elem_size: NonZeroUsize`, so this won't div by zero.
-                #[allow(clippy::arithmetic_side_effects)]
-                let elem_remainder = src.elem_size % dst_elem_size.get();
-
-                if delta_mod_other_elem != 0 || src.elem_size < dst.elem_size || elem_remainder != 0
-                {
-                    return None;
+                const fn gcd(a: usize, b: usize) -> usize {
+                    if a == 0 {
+                        b
+                    } else {
+                        #[allow(clippy::arithmetic_side_effects)]
+                        gcd(b % a, a)
+                    }
                 }
 
-                // PANICS: `dst_elem_size: NonZeroUsize`, so this won't div by zero.
-                #[allow(clippy::arithmetic_side_effects)]
-                let offset_delta_elems = offset_delta / dst_elem_size.get();
+                let gcd = gcd(gcd(offset_delta, src.elem_size), dst_elem_size.get());
 
-                // PANICS: `dst_elem_size: NonZeroUsize`, so this won't div by zero.
+                // PANICS: `gcd` is non-zero.
                 #[allow(clippy::arithmetic_side_effects)]
-                let elem_multiple = src.elem_size / dst_elem_size.get();
+                let offset_delta_elems_num = offset_delta / gcd;
+
+                // PANICS: `gcd` is non-zero.
+                #[allow(clippy::arithmetic_side_effects)]
+                let elem_multiple_num = src.elem_size / gcd;
+
+                // PANICS: `dst_elem_size` is non-zero, and `gcd` is no greater
+                // than it by construction. Thus, this should be at least 1.
+                #[allow(clippy::arithmetic_side_effects)]
+                let denom = match NonZeroUsize::new(dst_elem_size.get() / gcd) {
+                    Some(d) => d,
+                    None => const_panic!("CastParams::try_compute: denom should be non-zero"),
+                };
+
+                if denom.get() != 1 && !allow_shrink {
+                    return None;
+                }
 
                 // SAFETY: We checked above that `src.align >= dst.align`.
                 Some(CastParams {
                     // SAFETY: We checked above that this is an exact ratio.
-                    offset_delta_elems,
+                    offset_delta_elems_num,
                     // SAFETY: We checked above that this is an exact ratio.
-                    elem_multiple,
+                    elem_multiple_num,
+                    denom,
                 })
             }
 
@@ -759,12 +781,17 @@ mod cast_from_raw {
             /// `src_meta` describes a `Src` whose size is no larger than
             /// `isize::MAX`.
             ///
-            /// The returned metadata describes a `Dst` of the same size as the
-            /// original `Src`.
+            /// If `self.denom == 1`, then the returned metadata describes a
+            /// `Dst` of the same size as the original `Src`. Otherwise, the
+            /// returned metadata describes a `Dst` whose size is no greater
+            /// than the size of the original `Src`.
             unsafe fn cast_metadata(self, src_meta: usize) -> usize {
                 #[allow(unused)]
                 use crate::util::polyfills::*;
 
+                // TODO: Update this safety comment. Make sure that even if
+                // `denom > 1`, these arithmetic operations will not overflow.
+                //
                 // SAFETY: `self` is a witness that the following equation
                 // holds:
                 //
@@ -774,24 +801,25 @@ mod cast_from_raw {
                 // metadata, this math will not overflow, and the returned value
                 // will describe a `Dst` of the same size.
                 #[allow(unstable_name_collisions)]
-                unsafe {
-                    self.offset_delta_elems
-                        .unchecked_add(src_meta.unchecked_mul(self.elem_multiple))
-                }
+                let num = unsafe {
+                    self.offset_delta_elems_num
+                        .unchecked_add(src_meta.unchecked_mul(self.elem_multiple_num))
+                };
+                num / self.denom
             }
         }
 
-        trait Params<Src: ?Sized> {
+        trait Params<Src: ?Sized, const ALLOW_SHRINK: bool> {
             const CAST_PARAMS: CastParams;
         }
 
-        impl<Src, Dst> Params<Src> for Dst
+        impl<Src, Dst, const ALLOW_SHRINK: bool> Params<Src, ALLOW_SHRINK> for Dst
         where
             Src: KnownLayout + ?Sized,
             Dst: KnownLayout<PointerMetadata = usize> + ?Sized,
         {
             const CAST_PARAMS: CastParams =
-                match CastParams::try_compute(&Src::LAYOUT, &Dst::LAYOUT) {
+                match CastParams::try_compute(&Src::LAYOUT, &Dst::LAYOUT, ALLOW_SHRINK) {
                     Some(params) => params,
                     None => const_panic!(
                         "cannot `transmute_ref!` or `transmute_mut!` between incompatible types"
@@ -800,7 +828,7 @@ mod cast_from_raw {
         }
 
         let src_meta = <Src as KnownLayout>::pointer_to_metadata(src.as_non_null().as_ptr());
-        let params = <Dst as Params<Src>>::CAST_PARAMS;
+        let params = <Dst as Params<Src, ALLOW_SHRINK>>::CAST_PARAMS;
 
         // SAFETY: `src: PtrInner`, and so by invariant on `PtrInner`, `src`'s
         // referent is no larger than `isize::MAX`.
@@ -809,11 +837,11 @@ mod cast_from_raw {
         let dst = <Dst as KnownLayout>::raw_from_ptr_len(src.as_non_null().cast(), dst_meta);
 
         // SAFETY: By post-condition on `params.cast_metadata`, `dst` addresses
-        // the same number of bytes as `src`. Since `src: PtrInner`, `src` has
-        // provenance for its entire referent, which lives inside of a single
-        // allocation. Since `dst` has the same address as `src` and was
-        // constructed using provenance-preserving operations, it addresses a
-        // subset of those bytes, and has provenance for those bytes.
+        // no more bytes than `src`. Since `src: PtrInner`, `src` has provenance
+        // for its entire referent, which lives inside of a single allocation.
+        // Since `dst` has the same address as `src` and was constructed using
+        // provenance-preserving operations, it addresses a subset of those
+        // bytes, and has provenance for those bytes.
         unsafe { PtrInner::new(dst) }
     }
 }
