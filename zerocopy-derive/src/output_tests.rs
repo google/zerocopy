@@ -2139,6 +2139,25 @@ fn test_eq() {
 fn test_split_at() {
     test! {
         SplitAt {
+            #[repr(C)]
+            struct Foo<T: ?Sized + Copy>(T) where Self: Copy;
+        } expands to {
+            #[allow(deprecated)]
+            #[automatically_derived]
+            unsafe impl<T: ?Sized + Copy> ::zerocopy::SplitAt for Foo<T>
+            where
+                Self: Copy,
+                T: ::zerocopy::SplitAt,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Elem = <T as ::zerocopy::SplitAt>::Elem;
+            }
+        } no_build
+    }
+
+    test! {
+        SplitAt {
+            #[repr(transparent)]
             struct Foo<T: ?Sized + Copy>(T) where Self: Copy;
         } expands to {
             #[allow(deprecated)]
@@ -2192,6 +2211,16 @@ fn test_split_at() {
         } expands to {
             ::core::compile_error! {
                 "can only be applied to structs"
+            }
+        } no_build
+    }
+
+    test! {
+        SplitAt {
+            struct Foo<T: ?Sized + Copy>(T) where Self: Copy;
+        } expands to {
+            ::core::compile_error! {
+                "must have #[repr(C)] or #[repr(transparent)] in order to guarantee this type's layout is splitable"
             }
         } no_build
     }

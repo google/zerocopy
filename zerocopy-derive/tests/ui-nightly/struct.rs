@@ -212,6 +212,7 @@ struct Unaligned7;
 struct WeirdReprSpan;
 
 #[derive(SplitAt)]
+#[repr(C)]
 struct SplitAtNotKnownLayout([u8]);
 
 #[derive(SplitAt, KnownLayout)]

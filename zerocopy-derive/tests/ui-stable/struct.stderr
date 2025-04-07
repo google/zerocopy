@@ -360,9 +360,9 @@ note: required by a bound in `SplitAt`
     = note: this error originates in the derive macro `SplitAt` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `u8: SplitAt` is not satisfied
-   --> tests/ui-stable/struct.rs:217:10
+   --> tests/ui-stable/struct.rs:218:10
     |
-217 | #[derive(SplitAt, KnownLayout)]
+218 | #[derive(SplitAt, KnownLayout)]
     |          ^^^^^^^ the trait `SplitAt` is not implemented for `u8`
     |
     = note: Consider adding `#[derive(SplitAt)]` to `u8`

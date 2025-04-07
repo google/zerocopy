@@ -358,7 +358,7 @@ pub use crate::byte_slice::*;
 pub use crate::byteorder::*;
 pub use crate::error::*;
 pub use crate::r#ref::*;
-pub use crate::split_at::SplitAt;
+pub use crate::split_at::{Split, SplitAt};
 pub use crate::wrappers::*;
 
 use core::{

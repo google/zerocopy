@@ -8,8 +8,7 @@
 // those terms.
 
 use super::*;
-#[cfg(doc)]
-use invariant::Exclusive;
+use crate::pointer::invariant::{Aligned, Exclusive, Invariants, Shared, Valid};
 
 /// Types that can be split in two.
 ///
@@ -54,7 +53,8 @@ use invariant::Exclusive;
 )]
 // # Safety
 //
-// The trailing slice is well-aligned for its element type.
+// The trailing slice is well-aligned for its element type. `Self` is `[T]`, or
+// a `repr(C)` or `repr(transparent)` slice DST.
 pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
     /// The element type of the trailing slice.
     type Elem;
@@ -72,22 +72,9 @@ pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
     /// `self`'s trailing slice.
     #[inline]
     #[must_use]
-    unsafe fn split_at_unchecked(&self, l_len: usize) -> (&Self, &[Self::Elem])
-    where
-        Self: Immutable,
-    {
-        // SAFETY: `&self` is an instance of `&Self` for which the caller has
-        // promised that `l_len` is not greater than the length of `self`'s
-        // trailing slice.
-        let l_len = unsafe { MetadataOf::new_unchecked(l_len) };
-        let ptr = Ptr::from_ref(self);
-        // SAFETY:
-        // 0. The caller promises that `l_len` is not greater than the length of
-        //    `self`'s trailing slice.
-        // 1. `ptr`'s aliasing is `Shared` and does not permit interior mutation
-        //    because `Self: Immutable`.
-        let (left, right) = unsafe { ptr_split_at_unchecked(ptr, l_len) };
-        (left.as_ref(), right.as_ref())
+    unsafe fn split_at_unchecked(&self, l_len: usize) -> Split<&Self> {
+        // SAFETY: By precondition on the caller, `l_len <= self.len()`.
+        unsafe { Split::<&Self>::new(self, l_len) }
     }
 
     /// Attempts to split `self` in two.
@@ -116,52 +103,41 @@ pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
     /// assert_eq!(packet.length, 4);
     /// assert_eq!(packet.body, [1, 2, 3, 4, 5, 6, 7, 8, 9]);
     ///
-    /// let (packet, rest) = packet.split_at(packet.length as usize).unwrap();
+    /// // Attempt to split `packet` at `length`.
+    /// let split = packet.split_at(packet.length as usize).unwrap();
+    ///
+    /// // Use the `Immutable` bound on `Packet` to prove that it's okay to
+    /// // return concurrent references to `packet` and `rest`.
+    /// let (packet, rest) = split.via_immutable();
+    ///
     /// assert_eq!(packet.length, 4);
     /// assert_eq!(packet.body, [1, 2, 3, 4]);
     /// assert_eq!(rest, [5, 6, 7, 8, 9]);
     /// ```
     #[inline]
     #[must_use = "has no side effects"]
-    fn split_at(&self, l_len: usize) -> Option<(&Self, &[Self::Elem])>
-    where
-        Self: Immutable,
-    {
-        if l_len <= Ptr::from_ref(self).len() {
-            // SAFETY: We have checked that `l_len` is not greater than the
-            // length of `self`'s trailing slice.
-            Some(unsafe { self.split_at_unchecked(l_len) })
-        } else {
-            None
-        }
+    fn split_at(&self, l_len: usize) -> Option<Split<&Self>> {
+        MetadataOf::new_in_bounds(self, l_len).map(
+            #[inline(always)]
+            |l_len| {
+                // SAFETY: We have ensured that `l_len <= self.len()` (by
+                // post-condition on `MetadataOf::new_in_bounds`)
+                unsafe { Split::new(self, l_len.get()) }
+            },
+        )
     }
 
     /// Unsafely splits `self` in two.
     ///
     /// # Safety
     ///
-    /// The caller promises that:
-    /// 0. `l_len` is not greater than the length of `self`'s trailing slice.
-    /// 1. The trailing padding bytes of the left portion will not overlap the
-    ///    right portion. For some dynamically sized types, the padding that
-    ///    appears after the trailing slice field [is a dynamic function of the
-    ///    trailing slice length](KnownLayout#slice-dst-layout). Thus, for some
-    ///    types, this condition is dependent on the value of `l_len`.
+    /// The caller promises that `l_len` is not greater than the length of
+    /// `self`'s trailing slice.
     #[inline]
     #[must_use]
-    unsafe fn split_at_mut_unchecked(&mut self, l_len: usize) -> (&mut Self, &mut [Self::Elem]) {
-        // SAFETY: `&mut self` is an instance of `&mut Self` for which the
-        // caller has promised that `l_len` is not greater than the length of
-        // `self`'s trailing slice.
-        let l_len = unsafe { MetadataOf::new_unchecked(l_len) };
-        let ptr = Ptr::from_mut(self);
-        // SAFETY:
-        // 0. The caller promises that `l_len` is not greater than the length of
-        //    `self`'s trailing slice.
-        // 1. `ptr`'s aliasing is `Exclusive`; the caller promises that
-        //    `l_len.padding_needed_for() == 0`.
-        let (left, right) = unsafe { ptr_split_at_unchecked(ptr, l_len) };
-        (left.as_mut(), right.as_mut())
+    unsafe fn split_at_mut_unchecked(&mut self, l_len: usize) -> Split<&mut Self> {
+        // SAFETY: By precondition on the caller, `l_len <= self.len()`.
+        unsafe { Split::<&mut Self>::new(self, l_len) }
     }
 
     /// Attempts to split `self` in two.
@@ -178,7 +154,7 @@ pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
     /// use zerocopy::{SplitAt, FromBytes};
     /// # use zerocopy_derive::*;
     ///
-    /// #[derive(SplitAt, FromBytes, KnownLayout, Immutable, IntoBytes)]
+    /// #[derive(SplitAt, FromBytes, KnownLayout, IntoBytes)]
     /// #[repr(C)]
     /// struct Packet<B: ?Sized> {
     ///     length: u8,
@@ -194,7 +170,13 @@ pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
     /// assert_eq!(packet.body, [1, 2, 3, 4, 5, 6, 7, 8, 9]);
     ///
     /// {
-    ///     let (packet, rest) = packet.split_at_mut(packet.length as usize).unwrap();
+    ///     // Attempt to split `packet` at `length`.
+    ///     let split = packet.split_at_mut(packet.length as usize).unwrap();
+    ///
+    ///     // Use the `IntoBytes` bound on `Packet` to prove that it's okay to
+    ///     // return concurrent references to `packet` and `rest`.
+    ///     let (packet, rest) = split.via_into_bytes();
+    ///
     ///     assert_eq!(packet.length, 4);
     ///     assert_eq!(packet.body, [1, 2, 3, 4]);
     ///     assert_eq!(rest, [5, 6, 7, 8, 9]);
@@ -206,17 +188,15 @@ pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
     /// assert_eq!(packet.body, [1, 2, 3, 4, 0, 0, 0, 0, 0]);
     /// ```
     #[inline]
-    fn split_at_mut(&mut self, l_len: usize) -> Option<(&mut Self, &mut [Self::Elem])> {
-        match MetadataOf::new_in_bounds(self, l_len) {
-            Some(l_len) if l_len.padding_needed_for() == 0 => {
-                // SAFETY: We have ensured both that:
-                // 0. `l_len <= self.len()` (by post-condition on
-                //    `MetadataOf::new_in_bounds`)
-                // 1. `l_len.padding_needed_for() == 0` (by guard on match arm)
-                Some(unsafe { self.split_at_mut_unchecked(l_len.get()) })
-            }
-            _ => None,
-        }
+    fn split_at_mut(&mut self, l_len: usize) -> Option<Split<&mut Self>> {
+        MetadataOf::new_in_bounds(self, l_len).map(
+            #[inline(always)]
+            |l_len| {
+                // SAFETY: We have ensured that `l_len <= self.len()` (by
+                // post-condition on `MetadataOf::new_in_bounds`)
+                unsafe { Split::new(self, l_len.get()) }
+            },
+        )
     }
 }
 
@@ -233,59 +213,614 @@ unsafe impl<T> SplitAt for [T] {
     }
 }
 
-/// Splits `T` in two.
+/// A `T` that has been split into two possibly-overlapping parts.
 ///
-/// # Safety
-///
-/// The caller promises that:
-/// 0. `l_len.get()` is not greater than the length of `ptr`'s trailing slice.
-/// 1. if `I::Aliasing` is [`Exclusive`] or `T` permits interior mutation, then
-///    `l_len.padding_needed_for() == 0`.
-#[inline(always)]
-unsafe fn ptr_split_at_unchecked<'a, T, I, R>(
-    ptr: Ptr<'a, T, I>,
-    l_len: MetadataOf<T>,
-) -> (Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>)
+/// For some dynamically sized types, the padding that appears after the
+/// trailing slice field [is a dynamic function of the trailing slice
+/// length](KnownLayout#slice-dst-layout). If `T` is split at a length that
+/// requires trailing padding, the trailing padding of the left part of the
+/// split `T` will overlap the right part. If `T` is a mutable reference or
+/// permits interior mutation, you must ensure that the left and right parts do
+/// not overlap. You can do this at zero-cost using using
+/// [`Self::via_immutable`], [`Self::via_into_bytes`], or
+/// [`Self::via_unaligned`], or with a dynamic check by using
+/// [`Self::via_runtime_check`].
+#[derive(Debug)]
+pub struct Split<T> {
+    /// A pointer to the source slice DST.
+    source: T,
+    /// The length of the future left half of `source`.
+    ///
+    /// # Safety
+    ///
+    /// If `source` is a pointer to a slice DST, `l_len` is no greater than
+    /// `source`'s length.
+    l_len: usize,
+}
+
+impl<T> Split<T> {
+    /// Produces a `Split` of `source` with `l_len`.
+    ///
+    /// # Safety
+    ///
+    /// `l_len` is no greater than `source`'s length.
+    #[inline(always)]
+    unsafe fn new(source: T, l_len: usize) -> Self {
+        Self { source, l_len }
+    }
+}
+
+impl<'a, T> Split<&'a T>
 where
-    I: invariant::Invariants,
-    T: ?Sized + pointer::Read<I::Aliasing, R> + SplitAt,
+    T: ?Sized + SplitAt,
 {
-    let inner = ptr.as_inner();
+    #[inline(always)]
+    fn into_ptr(self) -> Split<Ptr<'a, T, (Shared, Aligned, Valid)>> {
+        let source = Ptr::from_ref(self.source);
+        // SAFETY: `Ptr::from_ref(self.source)` points to exactly `self.source`
+        // and thus maintains the invariants of `self` with respect to `l_len`.
+        unsafe { Split::new(source, self.l_len) }
+    }
 
-    // SAFETY: The caller promises that `l_len.get()` is not greater than the
-    // length of `self`'s trailing slice.
-    let (left, right) = unsafe { inner.split_at_unchecked(l_len) };
+    /// Produces the split parts of `self`, using [`Immutable`] to ensure that
+    /// it is sound to have concurrent references to both parts.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::{SplitAt, FromBytes};
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(SplitAt, FromBytes, KnownLayout, Immutable)]
+    /// #[repr(C)]
+    /// struct Packet {
+    ///     length: u8,
+    ///     body: [u8],
+    /// }
+    ///
+    /// // These bytes encode a `Packet`.
+    /// let bytes = &[4, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
+    ///
+    /// let packet = Packet::ref_from_bytes(bytes).unwrap();
+    ///
+    /// assert_eq!(packet.length, 4);
+    /// assert_eq!(packet.body, [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    ///
+    /// // Attempt to split `packet` at `length`.
+    /// let split = packet.split_at(packet.length as usize).unwrap();
+    ///
+    /// // Use the `Immutable` bound on `Packet` to prove that it's okay to
+    /// // return concurrent references to `packet` and `rest`.
+    /// let (packet, rest) = split.via_immutable();
+    ///
+    /// assert_eq!(packet.length, 4);
+    /// assert_eq!(packet.body, [1, 2, 3, 4]);
+    /// assert_eq!(rest, [5, 6, 7, 8, 9]);
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn via_immutable(self) -> (&'a T, &'a [T::Elem])
+    where
+        T: Immutable,
+    {
+        let (l, r) = self.into_ptr().via_immutable();
+        (l.as_ref(), r.as_ref())
+    }
 
-    // Lemma 0: `left` and `right` conform to the aliasing invariant
-    // `I::Aliasing`. Proof: If `I::Aliasing` is `Exclusive` or `T` permits
-    // interior mutation, the caller promises that `l_len.padding_needed_for()
-    // == 0`. Consequently, by post-condition on `PtrInner::split_at_unchecked`,
-    // there is no trailing padding after `left`'s final element that would
-    // overlap into `right`. If `I::Aliasing` is shared and `T` forbids interior
-    // mutation, then overlap between their referents is permissible.
+    /// Produces the split parts of `self`, using [`IntoBytes`] to ensure that
+    /// it is sound to have concurrent references to both parts.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::{SplitAt, FromBytes};
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(SplitAt, FromBytes, KnownLayout, Immutable, IntoBytes)]
+    /// #[repr(C)]
+    /// struct Packet<B: ?Sized> {
+    ///     length: u8,
+    ///     body: B,
+    /// }
+    ///
+    /// // These bytes encode a `Packet`.
+    /// let bytes = &[4, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
+    ///
+    /// let packet = Packet::<[u8]>::ref_from_bytes(bytes).unwrap();
+    ///
+    /// assert_eq!(packet.length, 4);
+    /// assert_eq!(packet.body, [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    ///
+    /// // Attempt to split `packet` at `length`.
+    /// let split = packet.split_at(packet.length as usize).unwrap();
+    ///
+    /// // Use the `IntoBytes` bound on `Packet` to prove that it's okay to
+    /// // return concurrent references to `packet` and `rest`.
+    /// let (packet, rest) = split.via_into_bytes();
+    ///
+    /// assert_eq!(packet.length, 4);
+    /// assert_eq!(packet.body, [1, 2, 3, 4]);
+    /// assert_eq!(rest, [5, 6, 7, 8, 9]);
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn via_into_bytes(self) -> (&'a T, &'a [T::Elem])
+    where
+        T: IntoBytes,
+    {
+        let (l, r) = self.into_ptr().via_into_bytes();
+        (l.as_ref(), r.as_ref())
+    }
 
-    // SAFETY:
-    // 0. `left` conforms to the aliasing invariant of `I::Aliasing, by Lemma 0.
-    // 1. `left` conforms to the alignment invariant of `I::Alignment, because
-    //    the referents of `left` and `Self` have the same address and type
-    //    (and, thus, alignment requirement).
-    // 2. `left` conforms to the validity invariant of `I::Validity`, neither
-    //    the type nor bytes of `left`'s referent have been changed.
-    let left = unsafe { Ptr::from_inner(left) };
+    /// Produces the split parts of `self`, using [`Unaligned`] to ensure that
+    /// it is sound to have concurrent references to both parts.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::{SplitAt, FromBytes};
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(SplitAt, FromBytes, KnownLayout, Immutable, Unaligned)]
+    /// #[repr(C)]
+    /// struct Packet {
+    ///     length: u8,
+    ///     body: [u8],
+    /// }
+    ///
+    /// // These bytes encode a `Packet`.
+    /// let bytes = &[4, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
+    ///
+    /// let packet = Packet::ref_from_bytes(bytes).unwrap();
+    ///
+    /// assert_eq!(packet.length, 4);
+    /// assert_eq!(packet.body, [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    ///
+    /// // Attempt to split `packet` at `length`.
+    /// let split = packet.split_at(packet.length as usize).unwrap();
+    ///
+    /// // Use the `Unaligned` bound on `Packet` to prove that it's okay to
+    /// // return concurrent references to `packet` and `rest`.
+    /// let (packet, rest) = split.via_unaligned();
+    ///
+    /// assert_eq!(packet.length, 4);
+    /// assert_eq!(packet.body, [1, 2, 3, 4]);
+    /// assert_eq!(rest, [5, 6, 7, 8, 9]);
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn via_unaligned(self) -> (&'a T, &'a [T::Elem])
+    where
+        T: Unaligned,
+    {
+        let (l, r) = self.into_ptr().via_unaligned();
+        (l.as_ref(), r.as_ref())
+    }
 
-    // SAFETY:
-    // 0. `right` conforms to the aliasing invariant of `I::Aliasing, by Lemma
-    //    0.
-    // 1. `right` conforms to the alignment invariant of `I::Alignment, because
-    //    if `ptr` with `I::Alignment = Aligned`, then by invariant on `T:
-    //    SplitAt`, the trailing slice of `ptr` (from which `right` is derived)
-    //    will also be well-aligned.
-    // 2. `right` conforms to the validity invariant of `I::Validity`, because
-    //    `right: [T::Elem]` is derived from the trailing slice of `ptr`, which,
-    //    by contract on `T: SplitAt::Elem`, has type `[T::Elem]`.
-    let right = unsafe { Ptr::from_inner(right) };
+    /// Produces the split parts of `self`, using a dynamic check to ensure that
+    /// it is sound to have concurrent references to both parts. You should
+    /// prefer using [`Self::via_immutable`], [`Self::via_into_bytes`], or
+    /// [`Self::via_unaligned`], which have no runtime cost.
+    ///
+    /// Note that this check is overly conservative if `T` is [`Immutable`]; for
+    /// some types, this check will reject some splits which
+    /// [`Self::via_immutable`] will accept.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::{SplitAt, FromBytes, IntoBytes, network_endian::U16};
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(SplitAt, FromBytes, KnownLayout, Immutable, Debug)]
+    /// #[repr(C, align(2))]
+    /// struct Packet {
+    ///     length: U16,
+    ///     body: [u8],
+    /// }
+    ///
+    /// // These bytes encode a `Packet`.
+    /// let bytes = [
+    ///     4u16.to_be(),
+    ///     1u16.to_be(),
+    ///     2u16.to_be(),
+    ///     3u16.to_be(),
+    ///     4u16.to_be()
+    /// ];
+    ///
+    /// let packet = Packet::ref_from_bytes(bytes.as_bytes()).unwrap();
+    ///
+    /// assert_eq!(packet.length, 4);
+    /// assert_eq!(packet.body, [0, 1, 0, 2, 0, 3, 0, 4]);
+    ///
+    /// // Attempt to split `packet` at `length`.
+    /// let split = packet.split_at(packet.length.into()).unwrap();
+    ///
+    /// // Use a dynamic check to prove that it's okay to return concurrent
+    /// // references to `packet` and `rest`.
+    /// let (packet, rest) = split.via_runtime_check().unwrap();
+    ///
+    /// assert_eq!(packet.length, 4);
+    /// assert_eq!(packet.body, [0, 1, 0, 2]);
+    /// assert_eq!(rest, [0, 3, 0, 4]);
+    ///
+    /// // Attempt to split `packet` at `length - 1`.
+    /// let idx = packet.length.get() - 1;
+    /// let split = packet.split_at(idx as usize).unwrap();
+    ///
+    /// // Attempt (and fail) to use a dynamic check to prove that it's okay
+    /// // to return concurrent references to `packet` and `rest`. Note that
+    /// // this is a case of `via_runtime_check` being overly conservative.
+    /// // Although the left and right parts indeed overlap, the `Immutable`
+    /// // bound ensures that concurrently referencing these overlapping
+    /// // parts is sound.
+    /// assert!(split.via_runtime_check().is_err());
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn via_runtime_check(self) -> Result<(&'a T, &'a [T::Elem]), Self> {
+        match self.into_ptr().via_runtime_check() {
+            Ok((l, r)) => Ok((l.as_ref(), r.as_ref())),
+            Err(s) => Err(s.into_ref()),
+        }
+    }
 
-    (left, right)
+    /// Unsafely produces the split parts of `self`.
+    ///
+    /// # Safety
+    ///
+    /// If `T` permits interior mutation, the trailing padding bytes of the left
+    /// portion must not overlap the right portion. For some dynamically sized
+    /// types, the padding that appears after the trailing slice field [is a
+    /// dynamic function of the trailing slice
+    /// length](KnownLayout#slice-dst-layout). Thus, for some types, this
+    /// condition is dependent on the length of the left portion.
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub unsafe fn via_unchecked(self) -> (&'a T, &'a [T::Elem]) {
+        // SAFETY: The aliasing of `self.into_ptr()` is not `Exclusive`, but the
+        // caller has promised that if `T` permits interior mutation then the
+        // left and right portions of `self` split at `l_len` do not overlap.
+        let (l, r) = unsafe { self.into_ptr().via_unchecked() };
+        (l.as_ref(), r.as_ref())
+    }
+}
+
+impl<'a, T> Split<&'a mut T>
+where
+    T: ?Sized + SplitAt,
+{
+    #[inline(always)]
+    fn into_ptr(self) -> Split<Ptr<'a, T, (Exclusive, Aligned, Valid)>> {
+        let source = Ptr::from_mut(self.source);
+        // SAFETY: `Ptr::from_mut(self.source)` points to exactly `self.source`,
+        // and thus maintains the invariants of `self` with respect to `l_len`.
+        unsafe { Split::new(source, self.l_len) }
+    }
+
+    /// Produces the split parts of `self`, using [`IntoBytes`] to ensure that
+    /// it is sound to have concurrent references to both parts.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::{SplitAt, FromBytes};
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(SplitAt, FromBytes, KnownLayout, IntoBytes)]
+    /// #[repr(C)]
+    /// struct Packet<B: ?Sized> {
+    ///     length: u8,
+    ///     body: B,
+    /// }
+    ///
+    /// // These bytes encode a `Packet`.
+    /// let mut bytes = &mut [4, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
+    ///
+    /// let packet = Packet::<[u8]>::mut_from_bytes(bytes).unwrap();
+    ///
+    /// assert_eq!(packet.length, 4);
+    /// assert_eq!(packet.body, [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    ///
+    /// {
+    ///     // Attempt to split `packet` at `length`.
+    ///     let split = packet.split_at_mut(packet.length as usize).unwrap();
+    ///
+    ///     // Use the `IntoBytes` bound on `Packet` to prove that it's okay to
+    ///     // return concurrent references to `packet` and `rest`.
+    ///     let (packet, rest) = split.via_into_bytes();
+    ///
+    ///     assert_eq!(packet.length, 4);
+    ///     assert_eq!(packet.body, [1, 2, 3, 4]);
+    ///     assert_eq!(rest, [5, 6, 7, 8, 9]);
+    ///
+    ///     rest.fill(0);
+    /// }
+    ///
+    /// assert_eq!(packet.length, 4);
+    /// assert_eq!(packet.body, [1, 2, 3, 4, 0, 0, 0, 0, 0]);
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn via_into_bytes(self) -> (&'a mut T, &'a mut [T::Elem])
+    where
+        T: IntoBytes,
+    {
+        let (l, r) = self.into_ptr().via_into_bytes();
+        (l.as_mut(), r.as_mut())
+    }
+
+    /// Produces the split parts of `self`, using [`Unaligned`] to ensure that
+    /// it is sound to have concurrent references to both parts.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::{SplitAt, FromBytes};
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(SplitAt, FromBytes, KnownLayout, IntoBytes, Unaligned)]
+    /// #[repr(C)]
+    /// struct Packet<B: ?Sized> {
+    ///     length: u8,
+    ///     body: B,
+    /// }
+    ///
+    /// // These bytes encode a `Packet`.
+    /// let mut bytes = &mut [4, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
+    ///
+    /// let packet = Packet::<[u8]>::mut_from_bytes(bytes).unwrap();
+    ///
+    /// assert_eq!(packet.length, 4);
+    /// assert_eq!(packet.body, [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    ///
+    /// {
+    ///     // Attempt to split `packet` at `length`.
+    ///     let split = packet.split_at_mut(packet.length as usize).unwrap();
+    ///
+    ///     // Use the `Unaligned` bound on `Packet` to prove that it's okay to
+    ///     // return concurrent references to `packet` and `rest`.
+    ///     let (packet, rest) = split.via_unaligned();
+    ///
+    ///     assert_eq!(packet.length, 4);
+    ///     assert_eq!(packet.body, [1, 2, 3, 4]);
+    ///     assert_eq!(rest, [5, 6, 7, 8, 9]);
+    ///
+    ///     rest.fill(0);
+    /// }
+    ///
+    /// assert_eq!(packet.length, 4);
+    /// assert_eq!(packet.body, [1, 2, 3, 4, 0, 0, 0, 0, 0]);
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn via_unaligned(self) -> (&'a mut T, &'a mut [T::Elem])
+    where
+        T: Unaligned,
+    {
+        let (l, r) = self.into_ptr().via_unaligned();
+        (l.as_mut(), r.as_mut())
+    }
+
+    /// Produces the split parts of `self`, using a dynamic check to ensure that
+    /// it is sound to have concurrent references to both parts. You should
+    /// prefer using [`Self::via_into_bytes`] or [`Self::via_unaligned`], which
+    /// have no runtime cost.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::{SplitAt, FromBytes};
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(SplitAt, FromBytes, KnownLayout, IntoBytes, Debug)]
+    /// #[repr(C)]
+    /// struct Packet<B: ?Sized> {
+    ///     length: u8,
+    ///     body: B,
+    /// }
+    ///
+    /// // These bytes encode a `Packet`.
+    /// let mut bytes = &mut [4, 1, 2, 3, 4, 5, 6, 7, 8, 9][..];
+    ///
+    /// let packet = Packet::<[u8]>::mut_from_bytes(bytes).unwrap();
+    ///
+    /// assert_eq!(packet.length, 4);
+    /// assert_eq!(packet.body, [1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    ///
+    /// {
+    ///     // Attempt to split `packet` at `length`.
+    ///     let split = packet.split_at_mut(packet.length as usize).unwrap();
+    ///
+    ///     // Use a dynamic check to prove that it's okay to return concurrent
+    ///     // references to `packet` and `rest`.
+    ///     let (packet, rest) = split.via_runtime_check().unwrap();
+    ///
+    ///     assert_eq!(packet.length, 4);
+    ///     assert_eq!(packet.body, [1, 2, 3, 4]);
+    ///     assert_eq!(rest, [5, 6, 7, 8, 9]);
+    ///
+    ///     rest.fill(0);
+    /// }
+    ///
+    /// assert_eq!(packet.length, 4);
+    /// assert_eq!(packet.body, [1, 2, 3, 4, 0, 0, 0, 0, 0]);
+    /// ```
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub fn via_runtime_check(self) -> Result<(&'a mut T, &'a mut [T::Elem]), Self> {
+        match self.into_ptr().via_runtime_check() {
+            Ok((l, r)) => Ok((l.as_mut(), r.as_mut())),
+            Err(s) => Err(s.into_mut()),
+        }
+    }
+
+    /// Unsafely produces the split parts of `self`.
+    ///
+    /// # Safety
+    ///
+    /// The trailing padding bytes of the left portion must not overlap the
+    /// right portion. For some dynamically sized types, the padding that
+    /// appears after the trailing slice field [is a dynamic function of the
+    /// trailing slice length](KnownLayout#slice-dst-layout). Thus, for some
+    /// types, this condition is dependent on the length of the left portion.
+    #[must_use = "has no side effects"]
+    #[inline(always)]
+    pub unsafe fn via_unchecked(self) -> (&'a mut T, &'a mut [T::Elem]) {
+        // SAFETY: The aliasing of `self.into_ptr()` is `Exclusive`, and the
+        // caller has promised that the left and right portions of `self` split
+        // at `l_len` do not overlap.
+        let (l, r) = unsafe { self.into_ptr().via_unchecked() };
+        (l.as_mut(), r.as_mut())
+    }
+}
+
+impl<'a, T, I> Split<Ptr<'a, T, I>>
+where
+    T: ?Sized + SplitAt,
+    I: Invariants<Alignment = Aligned, Validity = Valid>,
+{
+    fn into_ref(self) -> Split<&'a T>
+    where
+        I: Invariants<Aliasing = Shared>,
+    {
+        // SAFETY: `self.source.as_ref()` points to exactly the same referent as
+        // `self.source` and thus maintains the invariants of `self` with
+        // respect to `l_len`.
+        unsafe { Split::new(self.source.as_ref(), self.l_len) }
+    }
+
+    fn into_mut(self) -> Split<&'a mut T>
+    where
+        I: Invariants<Aliasing = Exclusive>,
+    {
+        // SAFETY: `self.source.as_mut()` points to exactly the same referent as
+        // `self.source` and thus maintains the invariants of `self` with
+        // respect to `l_len`.
+        unsafe { Split::new(self.source.unify_invariants().as_mut(), self.l_len) }
+    }
+
+    /// Produces the length of `self`'s left part.
+    #[inline(always)]
+    fn l_len(&self) -> MetadataOf<T> {
+        // SAFETY: By invariant on `Split`, `self.l_len` is not greater than the
+        // length of `self.source`.
+        unsafe { MetadataOf::<T>::new_unchecked(self.l_len) }
+    }
+
+    /// Produces the split parts of `self`, using [`Immutable`] to ensure that
+    /// it is sound to have concurrent references to both parts.
+    #[inline(always)]
+    fn via_immutable(self) -> (Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>)
+    where
+        T: Immutable,
+        I: Invariants<Aliasing = Shared>,
+    {
+        // SAFETY: `Aliasing = Shared` and `T: Immutable`.
+        unsafe { self.via_unchecked() }
+    }
+
+    /// Produces the split parts of `self`, using [`IntoBytes`] to ensure that
+    /// it is sound to have concurrent references to both parts.
+    #[inline(always)]
+    fn via_into_bytes(self) -> (Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>)
+    where
+        T: IntoBytes,
+    {
+        // SAFETY: By `T: IntoBytes`, `T` has no padding for any length.
+        // Consequently, `T` can be split into non-overlapping parts at any
+        // index.
+        unsafe { self.via_unchecked() }
+    }
+
+    /// Produces the split parts of `self`, using [`Unaligned`] to ensure that
+    /// it is sound to have concurrent references to both parts.
+    #[inline(always)]
+    fn via_unaligned(self) -> (Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>)
+    where
+        T: Unaligned,
+    {
+        // SAFETY: By `T: SplitAt + Unaligned`, `T` is either a slice or a
+        // `repr(C)` or `repr(transparent)` slice DST that is well-aligned at
+        // any address and length. If `T` is a slice DST with alignment 1,
+        // `repr(C)` or `repr(transparent)` ensures that no padding is placed
+        // after the final element of the trailing slice. Consequently, `T` can
+        // be split into strictly non-overlapping parts any any index.
+        unsafe { self.via_unchecked() }
+    }
+
+    /// Produces the split parts of `self`, using a dynamic check to ensure that
+    /// it is sound to have concurrent references to both parts. You should
+    /// prefer using [`Self::via_immutable`], [`Self::via_into_bytes`], or
+    /// [`Self::via_unaligned`], which have no runtime cost.
+    #[inline(always)]
+    fn via_runtime_check(self) -> Result<(Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>), Self> {
+        let l_len = self.l_len();
+        // TODO(#1290): Once we require `KnownLayout` on all fields, add an
+        // `IS_IMMUTABLE` associated const, and add `T::IS_IMMUTABLE ||` to the
+        // below check.
+        if l_len.padding_needed_for() == 0 {
+            // SAFETY: By `T: SplitAt`, `T` is either `[T]`, or a `repr(C)` or
+            // `repr(transparent)` slice DST, for which the trailing padding
+            // needed to accomodate `l_len` trailing elements is
+            // `l_len.padding_needed_for()`. If no trailing padding is required,
+            // the left and right parts are strictly non-overlapping.
+            Ok(unsafe { self.via_unchecked() })
+        } else {
+            Err(self)
+        }
+    }
+
+    /// Unsafely produces the split parts of `self`.
+    ///
+    /// # Safety
+    ///
+    /// The caller promises that if `I::Aliasing` is [`Exclusive`] or `T`
+    /// permits interior mutation, then `l_len.padding_needed_for() == 0`.
+    #[inline(always)]
+    unsafe fn via_unchecked(self) -> (Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>) {
+        let l_len = self.l_len();
+        let inner = self.source.as_inner();
+
+        // SAFETY: By invariant on `Self::l_len`, `l_len` is not greater than
+        // the length of `inner`'s trailing slice.
+        let (left, right) = unsafe { inner.split_at_unchecked(l_len) };
+
+        // Lemma 0: `left` and `right` conform to the aliasing invariant
+        // `I::Aliasing`. Proof: If `I::Aliasing` is `Exclusive` or `T` permits
+        // interior mutation, the caller promises that `l_len.padding_needed_for()
+        // == 0`. Consequently, by post-condition on `PtrInner::split_at_unchecked`,
+        // there is no trailing padding after `left`'s final element that would
+        // overlap into `right`. If `I::Aliasing` is shared and `T` forbids interior
+        // mutation, then overlap between their referents is permissible.
+
+        // SAFETY:
+        // 0. `left` conforms to the aliasing invariant of `I::Aliasing`, by Lemma 0.
+        // 1. `left` conforms to the alignment invariant of `I::Alignment, because
+        //    the referents of `left` and `Self` have the same address and type
+        //    (and, thus, alignment requirement).
+        // 2. `left` conforms to the validity invariant of `I::Validity`, neither
+        //    the type nor bytes of `left`'s referent have been changed.
+        let left = unsafe { Ptr::from_inner(left) };
+
+        // SAFETY:
+        // 0. `right` conforms to the aliasing invariant of `I::Aliasing`, by Lemma
+        //    0.
+        // 1. `right` conforms to the alignment invariant of `I::Alignment, because
+        //    if `ptr` with `I::Alignment = Aligned`, then by invariant on `T:
+        //    SplitAt`, the trailing slice of `ptr` (from which `right` is derived)
+        //    will also be well-aligned.
+        // 2. `right` conforms to the validity invariant of `I::Validity`,
+        //    because `right: [T::Elem]` is derived from the trailing slice of
+        //    `ptr`, which, by contract on `T: SplitAt::Elem`, has type
+        //    `[T::Elem]`. The `left` part cannot be used to invalidate `right`,
+        //    because the caller promises that if `I::Aliasing` is `Exclusive`
+        //    or `T` permits interior mutation, then `l_len.padding_needed_for()
+        //    == 0` and thus the parts will be non-overlapping.
+        let right = unsafe { Ptr::from_inner(right) };
+
+        (left, right)
+    }
 }
 
 #[cfg(test)]
@@ -295,7 +830,7 @@ mod tests {
     fn test_split_at() {
         use crate::{FromBytes, Immutable, IntoBytes, KnownLayout, SplitAt};
 
-        #[derive(FromBytes, KnownLayout, SplitAt, IntoBytes, Immutable)]
+        #[derive(FromBytes, KnownLayout, SplitAt, IntoBytes, Immutable, Debug)]
         #[repr(C)]
         struct SliceDst<const OFFSET: usize> {
             prefix: [u8; OFFSET],
@@ -309,7 +844,7 @@ mod tests {
             let arr = [1; BUFFER_SIZE];
             let dst = SliceDst::<OFFSET>::ref_from_bytes(&arr[..]).unwrap();
             for i in 0..=n {
-                let (l, r) = dst.split_at(i).unwrap();
+                let (l, r) = dst.split_at(i).unwrap().via_runtime_check().unwrap();
                 let l_sum: u8 = l.trailing.iter().sum();
                 let r_sum: u8 = r.iter().sum();
                 assert_eq!(l_sum, i as u8);
@@ -322,7 +857,7 @@ mod tests {
             let mut arr = [1; BUFFER_SIZE];
             let dst = SliceDst::<OFFSET>::mut_from_bytes(&mut arr[..]).unwrap();
             for i in 0..=n {
-                let (l, r) = dst.split_at_mut(i).unwrap();
+                let (l, r) = dst.split_at_mut(i).unwrap().via_runtime_check().unwrap();
                 let l_sum: u8 = l.trailing.iter().sum();
                 let r_sum: u8 = r.iter().sum();
                 assert_eq!(l_sum, i as u8);
@@ -334,5 +869,33 @@ mod tests {
         test_split_at::<0, 16>();
         test_split_at::<1, 17>();
         test_split_at::<2, 18>();
+    }
+
+    #[cfg(feature = "derive")]
+    #[test]
+    #[allow(clippy::as_conversions)]
+    fn test_split_at_overlapping() {
+        use crate::{FromBytes, Immutable, IntoBytes, KnownLayout, SplitAt};
+
+        #[derive(FromBytes, KnownLayout, SplitAt, Immutable)]
+        #[repr(C, align(2))]
+        struct SliceDst {
+            prefix: u8,
+            trailing: [u8],
+        }
+
+        const N: usize = 16;
+
+        let arr = [1u16; N];
+        let dst = SliceDst::ref_from_bytes(arr.as_bytes()).unwrap();
+
+        for i in 0..N {
+            let split = dst.split_at(i).unwrap().via_runtime_check();
+            if i % 2 == 1 {
+                assert!(split.is_ok());
+            } else {
+                assert!(split.is_err());
+            }
+        }
     }
 }
