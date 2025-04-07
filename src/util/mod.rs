@@ -119,7 +119,6 @@ pub(crate) fn validate_aligned_to<T: AsAddress, U>(t: T) -> Result<(), Alignment
 /// on the answer it gives if this is not the case.
 #[cfg_attr(
     kani,
-    kani::requires(len <= isize::MAX as usize),
     kani::requires(align.is_power_of_two()),
     kani::ensures(|&p| (len + p) % align.get() == 0),
     // Ensures that we add the minimum required padding.
