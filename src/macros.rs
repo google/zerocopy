@@ -224,7 +224,18 @@ macro_rules! transmute {
 /// `Dst: Sized`.
 #[macro_export]
 macro_rules! transmute_ref {
-    ($e:expr) => {{
+    (#![allow(shrink)] $e:expr) => {
+        $crate::__transmute_ref_inner!(true, $e)
+    };
+    ($e:expr) => {
+        $crate::__transmute_ref_inner!(false, $e)
+    };
+}
+
+#[macro_export]
+#[doc(hidden)]
+macro_rules! __transmute_ref_inner {
+    ($allow_shrink:literal, $e:expr) => {{
         // NOTE: This must be a macro (rather than a function with trait bounds)
         // because there's no way, in a generic context, to enforce that two
         // types have the same size or alignment.
@@ -263,10 +274,10 @@ macro_rules! transmute_ref {
             // - `Src: IntoBytes + Immutable`
             // - `Dst: FromBytes + Immutable`
             unsafe {
-                t.transmute_ref()
+                t.transmute_ref::<$allow_shrink>()
             }
         }
-    }}
+    }};
 }
 
 /// Safely transmutes a mutable reference of one type to a mutable reference of
@@ -400,7 +411,18 @@ macro_rules! transmute_ref {
 /// ```
 #[macro_export]
 macro_rules! transmute_mut {
-    ($e:expr) => {{
+    (#![allow(shrink)] $e:expr) => {
+        $crate::__transmute_mut_inner!(true, $e)
+    };
+    ($e:expr) => {
+        $crate::__transmute_mut_inner!(false, $e)
+    };
+}
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __transmute_mut_inner {
+    ($allow_shrink:literal, $e:expr) => {{
         // NOTE: This must be a macro (rather than a function with trait bounds)
         // because, for backwards-compatibility on v0.8.x, we use the autoref
         // specialization trick to dispatch to different `transmute_mut`
@@ -414,7 +436,7 @@ macro_rules! transmute_mut {
         #[allow(unused)]
         use $crate::util::macro_util::TransmuteMutDst as _;
         let t = $crate::util::macro_util::Wrap::new(e);
-        t.transmute_mut()
+        t.transmute_mut::<$allow_shrink>()
     }}
 }
 
@@ -1162,6 +1184,15 @@ mod tests {
         let x: &SliceDst<U16, u8> = transmute_ref!(slice_dst_big);
         assert_eq!(x, slice_dst_small);
 
+        let bytes = &[0, 1, 2, 3, 4, 5, 6, 7][..];
+        let slice_dst_big = SliceDst::<[u8; 4], [u8; 4]>::ref_from_bytes(bytes).unwrap();
+        let slice_dst_small = SliceDst::<[u8; 3], [u8; 3]>::ref_from_bytes(&bytes[..6]).unwrap();
+        let x: &SliceDst<[u8; 3], [u8; 3]> = transmute_ref!(
+            #![allow(shrink)]
+            slice_dst_big
+        );
+        assert_eq!(x, slice_dst_small);
+
         // Test that it's legal to transmute a reference while shrinking the
         // lifetime (note that `X` has the lifetime `'static`).
         let x: &[u8; 8] = transmute_ref!(X);
@@ -1349,6 +1380,16 @@ mod tests {
         let mut bytes = [0, 1, 2, 3, 4, 5, 6, 7];
         let slice_dst_small = SliceDst::<U16, u8>::mut_from_bytes(&mut bytes[..]).unwrap();
         let x: &mut SliceDst<U16, u8> = transmute_mut!(slice_dst_big);
+        assert_eq!(x, slice_dst_small);
+
+        let mut bytes = [0, 1, 2, 3, 4, 5, 6, 7];
+        let slice_dst_big = SliceDst::<[u8; 4], [u8; 4]>::mut_from_bytes(&mut bytes[..]).unwrap();
+        let mut bytes = [0, 1, 2, 3, 4, 5];
+        let slice_dst_small = SliceDst::<[u8; 3], [u8; 3]>::mut_from_bytes(&mut bytes[..]).unwrap();
+        let x: &mut SliceDst<[u8; 3], [u8; 3]> = transmute_mut!(
+            #![allow(shrink)]
+            slice_dst_big
+        );
         assert_eq!(x, slice_dst_small);
     }
 
