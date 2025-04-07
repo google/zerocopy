@@ -16,7 +16,7 @@ use crate::{
     AlignmentError, CastError, KnownLayout, MetadataOf, SizeError, SplitAt,
 };
 
-pub(crate) use _def::PtrInner;
+pub use _def::PtrInner;
 
 mod _def {
     use super::*;
@@ -25,7 +25,8 @@ mod _def {
     /// `PtrInner<'a, T>` is [covariant] in `'a` and invariant in `T`.
     ///
     /// [covariant]: https://doc.rust-lang.org/reference/subtyping.html
-    pub(crate) struct PtrInner<'a, T>
+    #[allow(missing_debug_implementations)]
+    pub struct PtrInner<'a, T>
     where
         T: ?Sized,
     {
@@ -68,6 +69,7 @@ mod _def {
 
     impl<'a, T: 'a + ?Sized> Copy for PtrInner<'a, T> {}
     impl<'a, T: 'a + ?Sized> Clone for PtrInner<'a, T> {
+        #[inline(always)]
         fn clone(&self) -> PtrInner<'a, T> {
             // SAFETY: None of the invariants on `ptr` are affected by having
             // multiple copies of a `PtrInner`.
@@ -98,7 +100,9 @@ mod _def {
         /// Note that this method does not consume `self`. The caller should
         /// watch out for `unsafe` code which uses the returned `NonNull` in a
         /// way that violates the safety invariants of `self`.
-        pub(crate) const fn as_non_null(&self) -> NonNull<T> {
+        #[inline(always)]
+        #[must_use]
+        pub const fn as_non_null(&self) -> NonNull<T> {
             self.ptr
         }
     }
