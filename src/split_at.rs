@@ -12,6 +12,9 @@ use crate::pointer::invariant::{Aligned, Exclusive, Invariants, Shared, Valid};
 
 /// Types that can be split in two.
 ///
+/// This trait generalizes Rust's existing support for splitting slices to
+/// support slices and slice-based dynamically-sized types ("slice DSTs").
+///
 /// # Implementation
 ///
 /// **Do not implement this trait yourself!** Instead, use
