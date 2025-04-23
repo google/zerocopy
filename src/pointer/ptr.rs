@@ -391,9 +391,8 @@ mod _conversions {
             U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + SizeEq<T> + ?Sized,
         {
             // SAFETY:
-            // - This cast preserves address and provenance
-            // - `U: SizeEq<T>` guarantees that this cast preserves the number
-            //   of bytes in the referent
+            // - `SizeEq::cast_from_raw` promises to preserve address,
+            //   provenance, and the number of bytes in the referent
             // - If aliasing is `Shared`, then by `U: TransmuteFromPtr<T>`, at
             //   least one of the following holds:
             //   - `T: Immutable` and `U: Immutable`, in which case it is
@@ -403,7 +402,7 @@ mod _conversions {
             //     operate on these references simultaneously
             // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
             //   sound to perform this transmute.
-            unsafe { self.transmute_unchecked(|t: NonNull<T>| U::cast_from_raw(t)) }
+            unsafe { self.transmute_unchecked(|ptr| SizeEq::cast_from_raw(ptr).as_non_null()) }
         }
 
         #[doc(hidden)]
@@ -421,7 +420,7 @@ mod _conversions {
             //   referent simultaneously
             // - By `T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
             //   sound to perform this transmute.
-            let ptr = unsafe { self.transmute_unchecked(|t| t) };
+            let ptr = unsafe { self.transmute_unchecked(|t| t.as_non_null()) };
             // SAFETY: `self` and `ptr` have the same address and referent type.
             // Therefore, if `self` satisfies `I::Alignment`, then so does
             // `ptr`.
@@ -465,12 +464,12 @@ mod _conversions {
         ) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
             V: Validity,
-            F: FnOnce(NonNull<T>) -> NonNull<U>,
+            F: FnOnce(PtrInner<'_, T>) -> NonNull<U>,
         {
             // SAFETY: By invariant on `self`, `self.as_inner().as_non_null()`
             // either references a zero-sized byte range, or else it references
             // a byte range contained inside of a single allocated objection.
-            let ptr = cast(self.as_inner().as_non_null());
+            let ptr = cast(self.as_inner());
 
             // SAFETY:
             //
@@ -536,7 +535,7 @@ mod _conversions {
             //   validity of the other.
             let ptr = unsafe {
                 #[allow(clippy::as_conversions)]
-                self.transmute_unchecked(NonNull::cast::<crate::Unalign<T>>)
+                self.transmute_unchecked(|ptr| ptr.as_non_null().cast::<crate::Unalign<T>>())
             };
             ptr.bikeshed_recall_aligned()
         }
@@ -912,7 +911,7 @@ mod _casts {
         /// around the address space.
         #[doc(hidden)]
         #[inline]
-        pub unsafe fn cast_unsized_unchecked<U, F: FnOnce(NonNull<T>) -> NonNull<U>>(
+        pub unsafe fn cast_unsized_unchecked<U, F: FnOnce(PtrInner<'_, T>) -> NonNull<U>>(
             self,
             cast: F,
         ) -> Ptr<'a, U, (I::Aliasing, Unaligned, I::Validity)>
@@ -960,7 +959,7 @@ mod _casts {
         where
             T: MutationCompatible<U, I::Aliasing, I::Validity, I::Validity, R>,
             U: 'a + ?Sized + CastableFrom<T, I::Validity, I::Validity>,
-            F: FnOnce(NonNull<T>) -> NonNull<U>,
+            F: FnOnce(PtrInner<'_, T>) -> NonNull<U>,
         {
             // SAFETY: Because `T: MutationCompatible<U, I::Aliasing, R>`, one
             // of the following holds:
@@ -1004,8 +1003,11 @@ mod _casts {
             //   returned pointer addresses the same bytes as `p`
             // - `slice_from_raw_parts_mut` and `.cast` both preserve provenance
             let ptr: Ptr<'a, [u8], _> = unsafe {
-                self.cast_unsized(|p: NonNull<T>| {
-                    let ptr = core::ptr::slice_from_raw_parts_mut(p.cast::<u8>().as_ptr(), bytes);
+                self.cast_unsized(|p: PtrInner<'_, T>| {
+                    let ptr = core::ptr::slice_from_raw_parts_mut(
+                        p.as_non_null().cast::<u8>().as_ptr(),
+                        bytes,
+                    );
                     // SAFETY: `ptr` has the same address as `p`, which is
                     // non-null.
                     core::ptr::NonNull::new_unchecked(ptr)
@@ -1013,7 +1015,7 @@ mod _casts {
             };
 
             let ptr = ptr.bikeshed_recall_aligned();
-            ptr.recall_validity()
+            ptr.recall_validity::<_, (_, (_, _))>()
         }
     }
 
@@ -1232,7 +1234,7 @@ mod _casts {
             //   inner type `T`. A consequence of this guarantee is that it is
             //   possible to convert between `T` and `UnsafeCell<T>`.
             #[allow(clippy::as_conversions)]
-            let ptr = unsafe { self.transmute_unchecked(cast!()) };
+            let ptr = unsafe { self.transmute_unchecked(|ptr| cast!(ptr).as_non_null()) };
 
             // SAFETY: `UnsafeCell<T>` has the same alignment as `T` [1],
             // and so if `self` is guaranteed to be aligned, then so is the
