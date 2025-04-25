@@ -76,7 +76,7 @@ fn main() {
         for version_cfg in &version_cfgs {
             println!("cargo:rustc-check-cfg=cfg({})", version_cfg.cfg_name);
         }
-        // TODO(https://github.com/rust-lang/rust/issues/124816): Remove these
+        // FIXME(https://github.com/rust-lang/rust/issues/124816): Remove these
         // once they're no longer needed.
         println!("cargo:rustc-check-cfg=cfg(doc_cfg)");
         println!("cargo:rustc-check-cfg=cfg(kani)");

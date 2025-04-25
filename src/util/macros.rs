@@ -441,7 +441,7 @@ macro_rules! impl_known_layout {
 
                 // SAFETY: `.cast` preserves address and provenance.
                 //
-                // TODO(#429): Add documentation to `.cast` that promises that
+                // FIXME(#429): Add documentation to `.cast` that promises that
                 // it preserves provenance.
                 #[inline(always)]
                 fn raw_from_ptr_len(bytes: NonNull<u8>, _meta: ()) -> NonNull<Self> {
@@ -485,11 +485,11 @@ macro_rules! unsafe_impl_known_layout {
 
             const LAYOUT: DstLayout = <$repr as KnownLayout>::LAYOUT;
 
-            // SAFETY: All operations preserve address and provenance.
-            // Caller has promised that the `as` cast preserves size.
+            // SAFETY: All operations preserve address and provenance. Caller
+            // has promised that the `as` cast preserves size.
             //
-            // TODO(#429): Add documentation to `NonNull::new_unchecked`
-            // that it preserves provenance.
+            // FIXME(#429): Add documentation to `NonNull::new_unchecked` that
+            // it preserves provenance.
             #[inline(always)]
             fn raw_from_ptr_len(bytes: NonNull<u8>, meta: <$repr as KnownLayout>::PointerMetadata) -> NonNull<Self> {
                 #[allow(clippy::as_conversions)]

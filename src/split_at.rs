@@ -759,7 +759,7 @@ where
     #[inline(always)]
     fn via_runtime_check(self) -> Result<(Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>), Self> {
         let l_len = self.l_len();
-        // TODO(#1290): Once we require `KnownLayout` on all fields, add an
+        // FIXME(#1290): Once we require `KnownLayout` on all fields, add an
         // `IS_IMMUTABLE` associated const, and add `T::IS_IMMUTABLE ||` to the
         // below check.
         if l_len.padding_needed_for() == 0 {

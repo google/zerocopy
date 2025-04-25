@@ -351,7 +351,7 @@ mod macros;
 pub mod pointer;
 mod r#ref;
 mod split_at;
-// TODO(#252): If we make this pub, come up with a better name.
+// FIXME(#252): If we make this pub, come up with a better name.
 mod wrappers;
 
 pub use crate::byte_slice::*;
@@ -948,7 +948,7 @@ unsafe impl<T> KnownLayout for [T] {
     // refers to an object with `elems` elements by construction.
     #[inline(always)]
     fn raw_from_ptr_len(data: NonNull<u8>, elems: usize) -> NonNull<Self> {
-        // TODO(#67): Remove this allow. See NonNullExt for more details.
+        // FIXME(#67): Remove this allow. See NonNullExt for more details.
         #[allow(unstable_name_collisions)]
         NonNull::slice_from_raw_parts(data.cast::<T>(), elems)
     }
@@ -1138,7 +1138,7 @@ const _: () = unsafe {
 ///
 /// Whether a struct is soundly `FromZeros` therefore solely depends on whether
 /// its fields are `FromZeros`.
-// TODO(#146): Document why we don't require an enum to have an explicit `repr`
+// FIXME(#146): Document why we don't require an enum to have an explicit `repr`
 // attribute.
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
@@ -3045,7 +3045,7 @@ pub unsafe trait FromZeros: TryFromBytes {
         // - Since `Self: FromZeros`, the all-zeros instance is a valid instance
         //   of `Self.`
         //
-        // TODO(#429): Add references to docs and quotes.
+        // FIXME(#429): Add references to docs and quotes.
         unsafe { ptr::write_bytes(slf.cast::<u8>(), 0, len) };
     }
 
@@ -3132,13 +3132,13 @@ pub unsafe trait FromZeros: TryFromBytes {
             return Ok(unsafe { Box::from_raw(NonNull::dangling().as_ptr()) });
         }
 
-        // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+        // FIXME(#429): Add a "SAFETY" comment and remove this `allow`.
         #[allow(clippy::undocumented_unsafe_blocks)]
         let ptr = unsafe { alloc::alloc::alloc_zeroed(layout).cast::<Self>() };
         if ptr.is_null() {
             return Err(AllocError);
         }
-        // TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+        // FIXME(#429): Add a "SAFETY" comment and remove this `allow`.
         #[allow(clippy::undocumented_unsafe_blocks)]
         Ok(unsafe { Box::from_raw(ptr) })
     }
@@ -3386,7 +3386,7 @@ pub unsafe trait FromZeros: TryFromBytes {
 ///
 /// Whether a struct is soundly `FromBytes` therefore solely depends on whether
 /// its fields are `FromBytes`.
-// TODO(#146): Document why we don't require an enum to have an explicit `repr`
+// FIXME(#146): Document why we don't require an enum to have an explicit `repr`
 // attribute.
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
@@ -5032,7 +5032,7 @@ pub unsafe trait IntoBytes {
         //   `isize::MAX` because no allocation produced by safe code can be
         //   larger than `isize::MAX`.
         //
-        // TODO(#429): Add references to docs and quotes.
+        // FIXME(#429): Add references to docs and quotes.
         unsafe { slice::from_raw_parts(slf.cast::<u8>(), len) }
     }
 
@@ -5104,7 +5104,7 @@ pub unsafe trait IntoBytes {
         //   `isize::MAX` because no allocation produced by safe code can be
         //   larger than `isize::MAX`.
         //
-        // TODO(#429): Add references to docs and quotes.
+        // FIXME(#429): Add references to docs and quotes.
         unsafe { slice::from_raw_parts_mut(slf.cast::<u8>(), len) }
     }
 

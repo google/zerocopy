@@ -48,7 +48,7 @@ use {
 
 use {crate::ext::*, crate::repr::*};
 
-// TODO(https://github.com/rust-lang/rust/issues/54140): Some errors could be
+// FIXME(https://github.com/rust-lang/rust/issues/54140): Some errors could be
 // made better if we could add multiple lines of error output like this:
 //
 // error: unsupported representation
@@ -435,7 +435,7 @@ fn derive_known_layout_inner(
 
                 // SAFETY: `.cast` preserves address and provenance.
                 //
-                // TODO(#429): Add documentation to `.cast` that promises that
+                // FIXME(#429): Add documentation to `.cast` that promises that
                 // it preserves provenance.
                 #[inline(always)]
                 fn raw_from_ptr_len(
@@ -602,7 +602,7 @@ fn derive_hash_inner(
     let (impl_generics, ty_generics, where_clause) = ast.generics.split_for_impl();
     let where_predicates = where_clause.map(|clause| &clause.predicates);
     Ok(quote! {
-        // TODO(#553): Add a test that generates a warning when
+        // FIXME(#553): Add a test that generates a warning when
         // `#[allow(deprecated)]` isn't present.
         #[allow(deprecated)]
         // While there are not currently any warnings that this suppresses (that
@@ -650,7 +650,7 @@ fn derive_eq_inner(
     let (impl_generics, ty_generics, where_clause) = ast.generics.split_for_impl();
     let where_predicates = where_clause.map(|clause| &clause.predicates);
     Ok(quote! {
-        // TODO(#553): Add a test that generates a warning when
+        // FIXME(#553): Add a test that generates a warning when
         // `#[allow(deprecated)]` isn't present.
         #[allow(deprecated)]
         // While there are not currently any warnings that this suppresses (that
@@ -669,7 +669,7 @@ fn derive_eq_inner(
             }
         }
 
-        // TODO(#553): Add a test that generates a warning when
+        // FIXME(#553): Add a test that generates a warning when
         // `#[allow(deprecated)]` isn't present.
         #[allow(deprecated)]
         // While there are not currently any warnings that this suppresses (that
@@ -806,7 +806,7 @@ fn derive_try_from_bytes_union(
     top_level: Trait,
     zerocopy_crate: &Path,
 ) -> TokenStream {
-    // TODO(#5): Remove the `Immutable` bound.
+    // FIXME(#5): Remove the `Immutable` bound.
     let field_type_trait_bounds =
         FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
     let extras =
@@ -1144,7 +1144,7 @@ fn derive_from_zeros_union(
     unn: &DataUnion,
     zerocopy_crate: &Path,
 ) -> TokenStream {
-    // TODO(#5): Remove the `Immutable` bound. It's only necessary for
+    // FIXME(#5): Remove the `Immutable` bound. It's only necessary for
     // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
     let field_type_trait_bounds =
         FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
@@ -1221,7 +1221,7 @@ fn derive_from_bytes_union(
     unn: &DataUnion,
     zerocopy_crate: &Path,
 ) -> TokenStream {
-    // TODO(#5): Remove the `Immutable` bound. It's only necessary for
+    // FIXME(#5): Remove the `Immutable` bound. It's only necessary for
     // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
     let field_type_trait_bounds =
         FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
@@ -1285,7 +1285,7 @@ fn derive_into_bytes_struct(
         // padding unless #[repr(align)] explicitly adds padding, which we check
         // for in this branch's condition.
         //
-        // TODO(#10): Support type parameters for non-transparent, non-packed
+        // FIXME(#10): Support type parameters for non-transparent, non-packed
         // structs without requiring `Unaligned`.
         (None, true)
     } else {
@@ -1354,7 +1354,7 @@ please let us know you use this feature: https://github.com/google/zerocopy/disc
         )
     };
 
-    // TODO(#10): Support type parameters.
+    // FIXME(#10): Support type parameters.
     if !ast.generics.params.is_empty() {
         return Err(Error::new(Span::call_site(), "unsupported on types with type parameters"));
     }
@@ -1563,8 +1563,8 @@ enum SelfBounds<'a> {
     All(&'a [Trait]),
 }
 
-// TODO(https://github.com/rust-lang/rust-clippy/issues/12908): This is a false positive.
-// Explicit lifetimes are actually necessary here.
+// FIXME(https://github.com/rust-lang/rust-clippy/issues/12908): This is a false
+// positive. Explicit lifetimes are actually necessary here.
 #[allow(clippy::needless_lifetimes)]
 impl<'a> SelfBounds<'a> {
     const SIZED: Self = Self::All(&[Trait::Sized]);
@@ -1792,7 +1792,7 @@ impl<'a, D: DataExt> ImplBlockBuilder<'a, D> {
 
         let inner_extras = self.inner_extras;
         let impl_tokens = quote! {
-            // TODO(#553): Add a test that generates a warning when
+            // FIXME(#553): Add a test that generates a warning when
             // `#[allow(deprecated)]` isn't present.
             #[allow(deprecated)]
             // While there are not currently any warnings that this suppresses
@@ -1830,7 +1830,7 @@ impl<'a, D: DataExt> ImplBlockBuilder<'a, D> {
 // versions, `b.then_some(...)` resolves to the inherent method rather than to
 // this trait, and so this trait is considered unused.
 //
-// TODO(#67): Remove this once our MSRV is >= 1.62.
+// FIXME(#67): Remove this once our MSRV is >= 1.62.
 #[allow(unused)]
 trait BoolExt {
     fn then_some<T>(self, t: T) -> Option<T>;

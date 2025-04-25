@@ -168,7 +168,7 @@ impl<T> Unalign<T> {
         // `Unalign`'s `Drop::drop` from being run, since dropping is not
         // supported in `const fn`s.
         //
-        // TODO(https://github.com/rust-lang/rust/issues/73255): Destructure
+        // FIXME(https://github.com/rust-lang/rust/issues/73255): Destructure
         // instead of using unsafe.
         unsafe { crate::util::transmute_unchecked(self) }
     }
@@ -287,14 +287,14 @@ impl<T> Unalign<T> {
     /// such as [`read_unaligned`].
     ///
     /// [`read_unaligned`]: core::ptr::read_unaligned
-    // TODO(https://github.com/rust-lang/rust/issues/57349): Make this `const`.
+    // FIXME(https://github.com/rust-lang/rust/issues/57349): Make this `const`.
     #[inline(always)]
     pub fn get_mut_ptr(&mut self) -> *mut T {
         ptr::addr_of_mut!(self.0)
     }
 
     /// Sets the inner `T`, dropping the previous value.
-    // TODO(https://github.com/rust-lang/rust/issues/57349): Make this `const`.
+    // FIXME(https://github.com/rust-lang/rust/issues/57349): Make this `const`.
     #[inline(always)]
     pub fn set(&mut self, t: T) {
         *self = Unalign::new(t);
@@ -376,7 +376,7 @@ impl<T> Unalign<T> {
 
 impl<T: Copy> Unalign<T> {
     /// Gets a copy of the inner `T`.
-    // TODO(https://github.com/rust-lang/rust/issues/57349): Make this `const`.
+    // FIXME(https://github.com/rust-lang/rust/issues/57349): Make this `const`.
     #[inline(always)]
     pub fn get(&self) -> T {
         let Unalign(val) = *self;
@@ -630,7 +630,7 @@ mod tests {
         const _U64: u64 = _UNALIGN.into_inner();
         // Make sure all code is considered "used".
         //
-        // TODO(https://github.com/rust-lang/rust/issues/104084): Remove this
+        // FIXME(https://github.com/rust-lang/rust/issues/104084): Remove this
         // attribute.
         #[allow(dead_code)]
         const _: () = {

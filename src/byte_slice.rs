@@ -194,15 +194,15 @@ pub unsafe trait IntoByteSliceMut<'a>: IntoByteSlice<'a> + ByteSliceMut {
     fn into_byte_slice_mut(self) -> &'a mut [u8];
 }
 
-// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+// FIXME(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl ByteSlice for &[u8] {}
 
-// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+// FIXME(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl CopyableByteSlice for &[u8] {}
 
-// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+// FIXME(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl CloneableByteSlice for &[u8] {}
 
@@ -229,7 +229,7 @@ unsafe impl<'a> IntoByteSlice<'a> for &'a [u8] {
     }
 }
 
-// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+// FIXME(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl ByteSlice for &mut [u8] {}
 
@@ -254,7 +254,7 @@ unsafe impl SplitByteSlice for &mut [u8] {
         // SAFETY: By contract on caller, `mid` is not greater than
         // `self.len()`.
         //
-        // TODO(#67): Remove this allow. See NumExt for more details.
+        // FIXME(#67): Remove this allow. See NumExt for more details.
         #[allow(unstable_name_collisions)]
         let r_len = unsafe { self.len().unchecked_sub(mid) };
 
@@ -314,7 +314,7 @@ unsafe impl<'a> IntoByteSliceMut<'a> for &'a mut [u8] {
     }
 }
 
-// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+// FIXME(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl ByteSlice for cell::Ref<'_, [u8]> {}
 
@@ -334,7 +334,7 @@ unsafe impl SplitByteSlice for cell::Ref<'_, [u8]> {
     }
 }
 
-// TODO(#429): Add a "SAFETY" comment and remove this `allow`.
+// FIXME(#429): Add a "SAFETY" comment and remove this `allow`.
 #[allow(clippy::undocumented_unsafe_blocks)]
 unsafe impl ByteSlice for cell::RefMut<'_, [u8]> {}
 

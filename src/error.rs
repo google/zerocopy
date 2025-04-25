@@ -797,9 +797,9 @@ impl<Src, Dst: ?Sized + Unaligned> From<CastError<Src, Dst>> for SizeError<Src, 
 pub type TryCastError<Src, Dst: ?Sized + TryFromBytes> =
     ConvertError<AlignmentError<Src, Dst>, SizeError<Src, Dst>, ValidityError<Src, Dst>>;
 
-// TODO(#1139): Remove the `TryFromBytes` here and in other downstream locations
-// (all the way to `ValidityError`) if we determine it's not necessary for rich
-// validity errors.
+// FIXME(#1139): Remove the `TryFromBytes` here and in other downstream
+// locations (all the way to `ValidityError`) if we determine it's not necessary
+// for rich validity errors.
 impl<Src, Dst: ?Sized + TryFromBytes> TryCastError<Src, Dst> {
     /// Produces the source underlying the failed conversion.
     #[inline]

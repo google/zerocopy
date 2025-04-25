@@ -318,7 +318,7 @@ where
 {
 }
 
-// TODO(#2354): This seems like a smell - the soundness of this bound has
+// FIXME(#2354): This seems like a smell - the soundness of this bound has
 // nothing to do with `Src` or `Dst` - we're basically just saying `[u8; N]` is
 // transmutable into `[u8; N]`.
 
@@ -331,7 +331,7 @@ where
 {
 }
 
-// TODO(#2354): This seems like a smell - the soundness of this bound has
+// FIXME(#2354): This seems like a smell - the soundness of this bound has
 // nothing to do with `Dst` - we're basically just saying that any type is
 // transmutable into `MaybeUninit<[u8; N]>`.
 
