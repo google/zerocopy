@@ -16,6 +16,8 @@ set -euo pipefail
 # would mean that we couldn't use XODO comments in this script.
 KEYWORD=$(echo XODO | sed -e 's/X/T/')
 
+# TODO
+
 # Make sure `rg` is installed (if this fails, `set -e` above will cause the
 # script to exit).
 rg --version >/dev/null
@@ -29,6 +31,26 @@ if [ -n "$output" ]; then
   echo "Found $KEYWORD markers in the codebase." >&2
   echo "$KEYWORD is used for tasks that should be done before merging a PR; if you want to leave a message in the codebase, use FIXME." >&2
   echo "" >&2
-  echo "$output" >&2
+  if [ "${GITHUB_ACTIONS:-false}" == "true" ]; then
+    echo "$output" | while IFS= read -r output; do
+      # Parse format `file:line: message`
+      file=$(echo "$output" | cut -d : -f 1)
+      line=$(echo "$output" | cut -d : -f 2)
+      message=$(echo "$output" | cut -d : -f 3-)
+
+      # Escape message for workflow command: % -> %25, \r -> %0D, \n -> %0A
+      message="${message//'%'/'%25'}"
+      message="${message//$'\r'/'%0D'}"
+      message="${message//$'\n'/'%0A'}"
+
+      # Output the workflow command for GitHub Actions annotations. Use `::notice`
+      # rather than `::error` so that the output is less visually distracting (the
+      # `exit 1` below will still ensure that this causes CI to fail).
+      echo "::notice file=${file},line=${line},endLine=${line},title=$KEYWORD Found::${message}"
+    done
+  else
+    echo "$output" >&2
+  fi
+
   exit 1
 fi
