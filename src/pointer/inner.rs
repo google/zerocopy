@@ -371,11 +371,11 @@ impl<'a, T> PtrInner<'a, [T]> {
 
     /// Iteratively projects the elements `PtrInner<T>` from `PtrInner<[T]>`.
     pub(crate) fn iter(&self) -> impl Iterator<Item = PtrInner<'a, T>> {
-        // TODO(#429): Once `NonNull::cast` documents that it preserves
+        // FIXME(#429): Once `NonNull::cast` documents that it preserves
         // provenance, cite those docs.
         let base = self.as_non_null().cast::<T>().as_ptr();
         (0..self.meta().get()).map(move |i| {
-            // TODO(https://github.com/rust-lang/rust/issues/74265): Use
+            // FIXME(https://github.com/rust-lang/rust/issues/74265): Use
             // `NonNull::get_unchecked_mut`.
 
             // SAFETY: If the following conditions are not satisfied
@@ -407,7 +407,7 @@ impl<'a, T> PtrInner<'a, [T]> {
             //     contained in `self`, the computed offset of `elem` must wrap
             //     around the address space.
             //
-            // TODO(#429): Once `pointer::add` documents that it preserves
+            // FIXME(#429): Once `pointer::add` documents that it preserves
             // provenance, cite those docs.
             let elem = unsafe { base.add(i) };
 
@@ -415,7 +415,7 @@ impl<'a, T> PtrInner<'a, [T]> {
             // `NonNull` pointer, and the addition that produces `elem` must not
             // overflow or wrap around, so `elem >= base > 0`.
             //
-            // TODO(#429): Once `NonNull::new_unchecked` documents that it
+            // FIXME(#429): Once `NonNull::new_unchecked` documents that it
             // preserves provenance, cite those docs.
             let elem = unsafe { NonNull::new_unchecked(elem) };
 

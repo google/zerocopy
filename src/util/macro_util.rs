@@ -22,8 +22,8 @@ use core::{
     ptr::NonNull,
 };
 
-// TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
-// `cfg` when `size_of_val_raw` is stabilized.
+// FIXME(#29), FIXME(https://github.com/rust-lang/rust/issues/69835): Remove
+// this `cfg` when `size_of_val_raw` is stabilized.
 #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 #[cfg(not(target_pointer_width = "16"))]
 use core::ptr;
@@ -109,8 +109,8 @@ impl<T, U> MaxAlignsOf<T, U> {
 #[cfg(not(target_pointer_width = "16"))]
 const _64K: usize = 1 << 16;
 
-// TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
-// `cfg` when `size_of_val_raw` is stabilized.
+// FIXME(#29), FIXME(https://github.com/rust-lang/rust/issues/69835): Remove
+// this `cfg` when `size_of_val_raw` is stabilized.
 #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 #[cfg(not(target_pointer_width = "16"))]
 #[repr(C, align(65536))]
@@ -122,8 +122,8 @@ struct Aligned64kAllocation([u8; _64K]);
 ///
 /// `ALIGNED_64K_ALLOCATION` is guaranteed to point to the entirety of an
 /// allocation with size and alignment 2^16, and to have valid provenance.
-// TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
-// `cfg` when `size_of_val_raw` is stabilized.
+// FIXME(#29), FIXME(https://github.com/rust-lang/rust/issues/69835): Remove
+// this `cfg` when `size_of_val_raw` is stabilized.
 #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 #[cfg(not(target_pointer_width = "16"))]
 pub const ALIGNED_64K_ALLOCATION: NonNull<[u8]> = {
@@ -139,9 +139,9 @@ pub const ALIGNED_64K_ALLOCATION: NonNull<[u8]> = {
     // - `ptr` is derived from a Rust reference, which is guaranteed to have
     //   valid provenance.
     //
-    // TODO(#429): Once `NonNull::new_unchecked` docs document that it preserves
-    // provenance, cite those docs.
-    // TODO: Replace this `as` with `ptr.cast_mut()` once our MSRV >= 1.65
+    // FIXME(#429): Once `NonNull::new_unchecked` docs document that it
+    // preserves provenance, cite those docs.
+    // FIXME: Replace this `as` with `ptr.cast_mut()` once our MSRV >= 1.65
     #[allow(clippy::as_conversions)]
     unsafe {
         NonNull::new_unchecked(ptr as *mut _)
@@ -152,8 +152,8 @@ pub const ALIGNED_64K_ALLOCATION: NonNull<[u8]> = {
 /// the type `$ty`.
 ///
 /// `trailing_field_offset!` produces code which is valid in a `const` context.
-// TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
-// `cfg` when `size_of_val_raw` is stabilized.
+// FIXME(#29), FIXME(https://github.com/rust-lang/rust/issues/69835): Remove
+// this `cfg` when `size_of_val_raw` is stabilized.
 #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
@@ -232,7 +232,7 @@ macro_rules! trailing_field_offset {
         //   address space. This is guaranteed because the same is guaranteed of
         //   allocated objects. [1]
         //
-        // [1] TODO(#429), TODO(https://github.com/rust-lang/rust/pull/116675):
+        // [1] FIXME(#429), FIXME(https://github.com/rust-lang/rust/pull/116675):
         //     Once these are guaranteed in the Reference, cite it.
         let offset = unsafe { field.cast::<u8>().offset_from(ptr.cast::<u8>()) };
         // Guaranteed not to be lossy: `field` comes after `ptr`, so the offset
@@ -250,8 +250,8 @@ macro_rules! trailing_field_offset {
 /// Computes alignment of `$ty: ?Sized`.
 ///
 /// `align_of!` produces code which is valid in a `const` context.
-// TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove this
-// `cfg` when `size_of_val_raw` is stabilized.
+// FIXME(#29), FIXME(https://github.com/rust-lang/rust/issues/69835): Remove
+// this `cfg` when `size_of_val_raw` is stabilized.
 #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
@@ -496,7 +496,7 @@ pub const unsafe fn transmute_ref<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
     // - We know that the returned lifetime will not outlive the input lifetime
     //   thanks to the lifetime bounds on this function.
     //
-    // TODO(#67): Once our MSRV is 1.58, replace this `transmute` with `&*dst`.
+    // FIXME(#67): Once our MSRV is 1.58, replace this `transmute` with `&*dst`.
     #[allow(clippy::transmute_ptr_to_ref)]
     unsafe {
         mem::transmute(dst)
@@ -513,7 +513,7 @@ pub const unsafe fn transmute_ref<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
 /// - `Dst: FromBytes + IntoBytes`
 /// - `size_of::<Src>() == size_of::<Dst>()`
 /// - `align_of::<Src>() >= align_of::<Dst>()`
-// TODO(#686): Consider removing the `Immutable` requirement.
+// FIXME(#686): Consider removing the `Immutable` requirement.
 #[inline(always)]
 pub unsafe fn transmute_mut<'dst, 'src: 'dst, Src: 'src, Dst: 'dst>(
     src: &'src mut Src,
@@ -563,7 +563,7 @@ fn try_cast_or_pme<Src, Dst, I, R, S>(
     ValidityError<Ptr<'_, Src, I>, Dst>,
 >
 where
-    // TODO(#2226): There should be a `Src: FromBytes` bound here, but doing so
+    // FIXME(#2226): There should be a `Src: FromBytes` bound here, but doing so
     // requires deeper surgery.
     Src: invariant::Read<I::Aliasing, R>,
     Dst: TryFromBytes
@@ -812,7 +812,7 @@ mod tests {
         assert_t_align_gteq_u_align!(u8, AU64, false);
     }
 
-    // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove
+    // FIXME(#29), FIXME(https://github.com/rust-lang/rust/issues/69835): Remove
     // this `cfg` when `size_of_val_raw` is stabilized.
     #[allow(clippy::decimal_literal_representation)]
     #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
@@ -914,7 +914,7 @@ mod tests {
         */
     }
 
-    // TODO(#29), TODO(https://github.com/rust-lang/rust/issues/69835): Remove
+    // FIXME(#29), FIXME(https://github.com/rust-lang/rust/issues/69835): Remove
     // this `cfg` when `size_of_val_raw` is stabilized.
     #[allow(clippy::decimal_literal_representation)]
     #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]

@@ -713,7 +713,7 @@ mod _transitions {
 
         /// Recalls that `self`'s referent is validly-aligned for `T`.
         #[inline]
-        // TODO(#859): Reconsider the name of this method before making it
+        // FIXME(#859): Reconsider the name of this method before making it
         // public.
         pub(crate) fn bikeshed_recall_aligned(
             self,
@@ -780,7 +780,7 @@ mod _transitions {
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        // TODO(#859): Reconsider the name of this method before making it
+        // FIXME(#859): Reconsider the name of this method before making it
         // public.
         pub fn bikeshed_recall_initialized_from_bytes(
             self,
@@ -802,7 +802,7 @@ mod _transitions {
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        // TODO(#859): Reconsider the name of this method before making it
+        // FIXME(#859): Reconsider the name of this method before making it
         // public.
         pub fn bikeshed_recall_initialized_immutable(
             self,
@@ -1163,7 +1163,7 @@ mod _casts {
             I::Aliasing: Reference,
             U: 'a + ?Sized + KnownLayout + Read<I::Aliasing, R>,
         {
-            // TODO(#67): Remove this allow. See NonNulSlicelExt for more
+            // FIXME(#67): Remove this allow. See NonNulSlicelExt for more
             // details.
             #[allow(unstable_name_collisions)]
             match self.try_cast_into(CastType::Prefix, meta) {
@@ -1267,7 +1267,7 @@ mod _project {
             // 1. `elem`, conditionally, conforms to the validity invariant of
             //    `I::Alignment`. If `elem` is projected from data well-aligned
             //    for `[T]`, `elem` will be valid for `T`.
-            // 2. TODO: Need to cite facts about `[T]`'s layout (same for the
+            // 2. FIXME: Need to cite facts about `[T]`'s layout (same for the
             //    preceding points)
             self.as_inner().iter().map(|elem| unsafe { Ptr::from_inner(elem) })
         }

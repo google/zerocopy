@@ -57,7 +57,7 @@ const _: () = unsafe {
 //
 //     The size of a value is always a multiple of its alignment.
 //
-// TODO(#278): Once we've updated the trait docs to refer to `u8`s rather than
+// FIXME(#278): Once we've updated the trait docs to refer to `u8`s rather than
 // bits or bytes, update this comment, especially the reference to [1].
 const _: () = unsafe {
     unsafe_impl!(u8: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
@@ -150,7 +150,7 @@ impl_size_eq!(char, Unalign<u32>);
 // Note that we don't `assert_unaligned!(str)` because `assert_unaligned!` uses
 // `align_of`, which only works for `Sized` types.
 //
-// TODO(#429):
+// FIXME(#429):
 // - Add quotes from documentation.
 // - Improve safety proof for `FromZeros` and `IntoBytes`; having the same
 //   layout as `[u8]` isn't sufficient.
@@ -231,7 +231,7 @@ macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
 //   multiple states, so they cannot be 0 bytes, which means that they must be 1
 //   byte. The only valid alignment for a 1-byte type is 1.
 //
-// TODO(#429):
+// FIXME(#429):
 // - Add quotes from documentation.
 // - Add safety comment for `Immutable`. How can we prove that `NonZeroXxx`
 //   doesn't contain any `UnsafeCell`s? It's obviously true, but it's not clear
@@ -245,8 +245,8 @@ macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
 //
 // [2] https://doc.rust-lang.org/1.81.0/std/num/type.NonZeroI8.html
 //
-// TODO(https://github.com/rust-lang/rust/pull/104082): Cite documentation
-// that layout is the same as primitive layout.
+// FIXME(https://github.com/rust-lang/rust/pull/104082): Cite documentation that
+// layout is the same as primitive layout.
 const _: () = unsafe {
     unsafe_impl!(NonZeroU8: Immutable, IntoBytes, Unaligned);
     unsafe_impl!(NonZeroI8: Immutable, IntoBytes, Unaligned);
@@ -288,13 +288,13 @@ const _: () = unsafe {
 //   purpose of those types, it's virtually unthinkable that that would ever
 //   change. The only valid alignment for a 1-byte type is 1.
 //
-// TODO(#429): Add quotes from documentation.
+// FIXME(#429): Add quotes from documentation.
 //
 // [1] https://doc.rust-lang.org/stable/std/num/struct.NonZeroU8.html
 // [2] https://doc.rust-lang.org/stable/std/num/struct.NonZeroI8.html
 //
-// TODO(https://github.com/rust-lang/rust/pull/104082): Cite documentation
-// for layout guarantees.
+// FIXME(https://github.com/rust-lang/rust/pull/104082): Cite documentation for
+// layout guarantees.
 const _: () = unsafe {
     unsafe_impl!(Option<NonZeroU8>: TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
     unsafe_impl!(Option<NonZeroI8>: TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
@@ -342,7 +342,7 @@ const _: () = unsafe {
 //   | [`ptr::NonNull<U>`]   | when `U: Sized`                                           |
 //   | `fn`, `extern "C" fn` | always                                                    |
 //
-// TODO(#429), TODO(https://github.com/rust-lang/rust/pull/115333): Cite the
+// FIXME(#429), FIXME(https://github.com/rust-lang/rust/pull/115333): Cite the
 // Stable docs once they're available.
 const _: () = unsafe {
     #[cfg(feature = "alloc")]
@@ -638,7 +638,7 @@ mod atomics {
 
         impl_known_layout!(T => AtomicPtr<T>);
 
-        // TODO(#170): Implement `FromBytes` and `IntoBytes` once we implement
+        // FIXME(#170): Implement `FromBytes` and `IntoBytes` once we implement
         // those traits for `*mut T`.
         impl_for_transmute_from!(T => TryFromBytes for AtomicPtr<T> [UnsafeCell<*mut T>]);
         impl_for_transmute_from!(T => FromZeros for AtomicPtr<T> [UnsafeCell<*mut T>]);
@@ -914,7 +914,7 @@ const _: () = unsafe {
 // `IntoBytes` for raw pointers eventually, but we are holding off until we can
 // figure out how to address those footguns.
 //
-// [1] TODO(https://github.com/rust-lang/rust/pull/116988): Cite the
+// [1] FIXME(https://github.com/rust-lang/rust/pull/116988): Cite the
 // documentation once this PR lands.
 const _: () = unsafe {
     unsafe_impl!(T: ?Sized => Immutable for *const T);
@@ -1474,7 +1474,7 @@ mod tests {
                 }
 
                 <$ty as TryFromBytesTestable>::with_passing_test_cases(|mut val| {
-                    // TODO(#494): These tests only get exercised for types
+                    // FIXME(#494): These tests only get exercised for types
                     // which are `IntoBytes`. Once we implement #494, we should
                     // be able to support non-`IntoBytes` types by zeroing
                     // padding.
@@ -1492,7 +1492,7 @@ mod tests {
 
                     let c = Ptr::from_ref(&*val);
                     let c = c.forget_aligned();
-                    // SAFETY: TODO(#899): This is unsound. `$ty` is not
+                    // SAFETY: FIXME(#899): This is unsound. `$ty` is not
                     // necessarily `IntoBytes`, but that's the corner we've
                     // backed ourselves into by using `Ptr::from_ref`.
                     let c = unsafe { c.assume_initialized() };
@@ -1503,7 +1503,7 @@ mod tests {
 
                     let c = Ptr::from_mut(&mut *val);
                     let c = c.forget_aligned();
-                    // SAFETY: TODO(#899): This is unsound. `$ty` is not
+                    // SAFETY: FIXME(#899): This is unsound. `$ty` is not
                     // necessarily `IntoBytes`, but that's the corner we've
                     // backed ourselves into by using `Ptr::from_ref`.
                     let c = unsafe { c.assume_initialized() };

@@ -76,9 +76,10 @@ impl<T: ?Sized> AsAddress for NonNull<T> {
 impl<T: ?Sized> AsAddress for *const T {
     #[inline(always)]
     fn addr(self) -> usize {
-        // TODO(#181), TODO(https://github.com/rust-lang/rust/issues/95228): Use
-        // `.addr()` instead of `as usize` once it's stable, and get rid of this
-        // `allow`. Currently, `as usize` is the only way to accomplish this.
+        // FIXME(#181), FIXME(https://github.com/rust-lang/rust/issues/95228):
+        // Use `.addr()` instead of `as usize` once it's stable, and get rid of
+        // this `allow`. Currently, `as usize` is the only way to accomplish
+        // this.
         #[allow(clippy::as_conversions)]
         #[cfg_attr(
             __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS,
@@ -333,14 +334,14 @@ where
     // alignment, overflow `isize`) are not rejected, which can cause undefined
     // behavior. See #64 for details.
     //
-    // TODO(#67): Once our MSRV is > 1.64.0, remove this assertion.
+    // FIXME(#67): Once our MSRV is > 1.64.0, remove this assertion.
     #[allow(clippy::as_conversions)]
     let max_alloc = (isize::MAX as usize).saturating_sub(align);
     if size > max_alloc {
         return Err(AllocError);
     }
 
-    // TODO(https://github.com/rust-lang/rust/issues/55724): Use
+    // FIXME(https://github.com/rust-lang/rust/issues/55724): Use
     // `Layout::repeat` once it's stabilized.
     let layout = Layout::from_size_align(size, align).or(Err(AllocError))?;
 
@@ -378,7 +379,7 @@ where
         // zero, but it does require a non-null dangling pointer for its
         // allocation.
         //
-        // TODO(https://github.com/rust-lang/rust/issues/95228): Use
+        // FIXME(https://github.com/rust-lang/rust/issues/95228): Use
         // `std::ptr::without_provenance` once it's stable. That may optimize
         // better. As written, Rust may assume that this consumes "exposed"
         // provenance, and thus Rust may have to assume that this may consume
@@ -388,7 +389,7 @@ where
 
     let ptr = T::raw_from_ptr_len(ptr, meta);
 
-    // TODO(#429): Add a "SAFETY" comment and remove this `allow`. Make sure to
+    // FIXME(#429): Add a "SAFETY" comment and remove this `allow`. Make sure to
     // include a justification that `ptr.as_ptr()` is validly-aligned in the ZST
     // case (in which we manually construct a dangling pointer) and to justify
     // why `Box` is safe to drop (it's because `allocate` uses the system
@@ -492,7 +493,7 @@ mod len_of {
             // size of such a `&T` without any trailing padding, and so neither
             // the multiplication nor the addition will overflow.
             //
-            // TODO(#67): Remove this allow. See NumExt for more details.
+            // FIXME(#67): Remove this allow. See NumExt for more details.
             #[allow(unstable_name_collisions, clippy::incompatible_msrv)]
             let unpadded_size = unsafe {
                 let trailing_size = self.meta.unchecked_mul(trailing_slice_layout.elem_size);
@@ -583,7 +584,7 @@ pub(crate) use len_of::MetadataOf;
 /// exist (stably) on our MSRV. This module provides polyfills for those
 /// features so that we can write more "modern" code, and just remove the
 /// polyfill once our MSRV supports the corresponding feature. Without this,
-/// we'd have to write worse/more verbose code and leave TODO comments sprinkled
+/// we'd have to write worse/more verbose code and leave FIXME comments sprinkled
 /// throughout the codebase to update to the new pattern once it's stabilized.
 ///
 /// Each trait is imported as `_` at the crate root; each polyfill should "just
@@ -598,7 +599,7 @@ pub(crate) mod polyfills {
     // toolchain versions, `ptr.slice_from_raw_parts()` resolves to the inherent
     // method rather than to this trait, and so this trait is considered unused.
     //
-    // TODO(#67): Once our MSRV is 1.70, remove this.
+    // FIXME(#67): Once our MSRV is 1.70, remove this.
     #[allow(unused)]
     pub(crate) trait NonNullExt<T> {
         fn slice_from_raw_parts(data: Self, len: usize) -> NonNull<[T]>;
@@ -627,7 +628,7 @@ pub(crate) mod polyfills {
     // toolchain versions, `ptr.slice_from_raw_parts()` resolves to the inherent
     // method rather than to this trait, and so this trait is considered unused.
     //
-    // TODO(#67): Once our MSRV is high enough, remove this.
+    // FIXME(#67): Once our MSRV is high enough, remove this.
     #[allow(unused)]
     pub(crate) trait NumExt {
         /// Subtract without checking for underflow.

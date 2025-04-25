@@ -484,7 +484,7 @@ impl DstLayout {
         // would have failed anyway for runtime reasons (such as a too-small
         // memory region).
         //
-        // TODO(#67): Once our MSRV is 1.65, use let-else:
+        // FIXME(#67): Once our MSRV is 1.65, use let-else:
         // https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html#let-else-statements
         let size_info = match self.size_info.try_to_nonzero_elem_size() {
             Some(size_info) => size_info,
@@ -544,7 +544,7 @@ impl DstLayout {
                 // Calculate the maximum number of bytes that could be consumed
                 // by the trailing slice.
                 //
-                // TODO(#67): Once our MSRV is 1.65, use let-else:
+                // FIXME(#67): Once our MSRV is 1.65, use let-else:
                 // https://blog.rust-lang.org/2022/11/03/Rust-1.65.0.html#let-else-statements
                 let max_slice_and_padding_bytes = match max_total_bytes.checked_sub(offset) {
                     Some(max) => max,
@@ -608,7 +608,7 @@ impl DstLayout {
     }
 }
 
-// TODO(#67): For some reason, on our MSRV toolchain, this `allow` isn't
+// FIXME(#67): For some reason, on our MSRV toolchain, this `allow` isn't
 // enforced despite having `#![allow(unknown_lints)]` at the crate root, but
 // putting it here works. Once our MSRV is high enough that this bug has been
 // fixed, remove this `allow`.

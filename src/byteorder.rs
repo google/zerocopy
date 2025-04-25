@@ -868,7 +868,7 @@ define_type!(
     []
 );
 
-// TODO(https://github.com/rust-lang/rust/issues/72447): Use the endianness
+// FIXME(https://github.com/rust-lang/rust/issues/72447): Use the endianness
 // conversion methods directly once those are const-stable.
 macro_rules! define_float_conversion {
     ($ty:ty, $bits:ident, $bytes:expr, $mod:ident) => {
