@@ -5156,6 +5156,7 @@ pub unsafe trait IntoBytes {
     /// ```
     #[must_use = "callers should check the return value to see if the operation succeeded"]
     #[inline]
+    #[allow(clippy::mut_from_ref)] // False positive: `&self -> &mut [u8]`
     fn write_to(&self, dst: &mut [u8]) -> Result<(), SizeError<&Self, &mut [u8]>>
     where
         Self: Immutable,
@@ -5222,6 +5223,7 @@ pub unsafe trait IntoBytes {
     /// ```
     #[must_use = "callers should check the return value to see if the operation succeeded"]
     #[inline]
+    #[allow(clippy::mut_from_ref)] // False positive: `&self -> &mut [u8]`
     fn write_to_prefix(&self, dst: &mut [u8]) -> Result<(), SizeError<&Self, &mut [u8]>>
     where
         Self: Immutable,
@@ -5297,6 +5299,7 @@ pub unsafe trait IntoBytes {
     /// ```
     #[must_use = "callers should check the return value to see if the operation succeeded"]
     #[inline]
+    #[allow(clippy::mut_from_ref)] // False positive: `&self -> &mut [u8]`
     fn write_to_suffix(&self, dst: &mut [u8]) -> Result<(), SizeError<&Self, &mut [u8]>>
     where
         Self: Immutable,
