@@ -16,6 +16,10 @@ set -euo pipefail
 # would mean that we couldn't use XODO comments in this script.
 KEYWORD=$(echo XODO | sed -e 's/X/T/')
 
+# Make sure `rg` is installed (if this fails, `set -e` above will cause the
+# script to exit).
+rg --version >/dev/null
+
 # -H: Print filename (default for multiple files/recursive)
 # -n: Print line number
 # -w: Match whole words
