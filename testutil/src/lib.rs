@@ -6,6 +6,9 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+// Inlining format args isn't supported on our MSRV.
+#![allow(clippy::uninlined_format_args)]
+
 use rustc_version::{Channel, Version};
 use std::{env, error::Error, fs};
 
