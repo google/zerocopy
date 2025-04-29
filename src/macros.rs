@@ -87,7 +87,7 @@ macro_rules! transmute {
             let u = unsafe {
                 // Clippy: We can't annotate the types; this macro is designed
                 // to infer the types from the calling context.
-                #[allow(clippy::missing_transmute_annotations)]
+                #[allow(clippy::missing_transmute_annotations, unnecessary_transmutes)]
                 $crate::util::macro_util::core_reexport::mem::transmute(e)
             };
             $crate::util::macro_util::must_use(u)
