@@ -808,6 +808,8 @@ unsafe impl<T: TryFromBytes + ?Sized> TryFromBytes for UnsafeCell<T> {
     {
     }
 
+    const IS_IMMUTABLE: bool = false;
+
     #[inline]
     fn is_bit_valid<A: invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
         // The only way to implement this function is using an exclusive-aliased
