@@ -134,6 +134,9 @@ macro_rules! unsafe_impl {
         #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
 
+        // TODO: THIS IS UNSOUND. We are just using it to unblock ourselves.
+        const IS_IMMUTABLE: bool = true;
+
         #[inline]
         fn is_bit_valid<AA: crate::pointer::invariant::Reference>($candidate: Maybe<'_, Self, AA>) -> bool {
             $is_bit_valid
@@ -143,6 +146,10 @@ macro_rules! unsafe_impl {
         #[allow(clippy::missing_inline_in_public_items)]
         #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
+
+        // TODO: THIS IS UNSOUND. We are just using it to unblock ourselves.
+        const IS_IMMUTABLE: bool = true;
+
         #[inline(always)] fn is_bit_valid<AA: crate::pointer::invariant::Reference>(_: Maybe<'_, Self, AA>) -> bool { true }
     };
     (@method $trait:ident) => {
@@ -217,6 +224,10 @@ macro_rules! impl_for_transmute_from {
         $(<$tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?>)?
         TryFromBytes for $ty:ty [UnsafeCell<$repr:ty>]
     ) => {
+        // TODO: THIS IS UNSOUND because we don't know that `$ty` and `$repr`
+        // have the same interior mutability.
+        const IS_IMMUTABLE: bool = <$repr as TryFromBytes>::IS_IMMUTABLE;
+
         #[inline]
         fn is_bit_valid<A: crate::pointer::invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
             let c: Maybe<'_, Self, crate::pointer::invariant::Exclusive> = candidate.into_exclusive_or_pme();
@@ -232,6 +243,10 @@ macro_rules! impl_for_transmute_from {
         $(<$tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?>)?
         TryFromBytes for $ty:ty [<$repr:ty>]
     ) => {
+        // TODO: THIS IS UNSOUND because we don't know that `$ty` and `$repr`
+        // have the same interior mutability.
+        const IS_IMMUTABLE: bool = <$repr as TryFromBytes>::IS_IMMUTABLE;
+
         #[inline]
         fn is_bit_valid<A: crate::pointer::invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
             // SAFETY: This macro ensures that `$repr` and `Self` have the same

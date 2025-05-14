@@ -1448,6 +1448,9 @@ pub unsafe trait TryFromBytes {
     where
         Self: Sized;
 
+    #[doc(hidden)]
+    const IS_IMMUTABLE: bool;
+
     /// Does a given memory range contain a valid instance of `Self`?
     ///
     /// # Safety
