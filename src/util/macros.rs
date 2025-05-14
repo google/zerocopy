@@ -21,13 +21,17 @@
 ///   must only return `true` if its argument refers to a valid `$ty`.
 macro_rules! unsafe_impl {
     // Implement `$trait` for `$ty` with no bounds.
-    ($(#[$attr:meta])* $ty:ty: $trait:ident $(; |$candidate:ident| $is_bit_valid:expr)?) => {{
+    (
+        $(#[$attr:meta])* $ty:ty: $trait:ident
+            $(;)? $(|$candidate:ident| $is_bit_valid:expr)?
+            $(; IS_IMMUTABLE = $is_immutable:expr)?
+    ) => {{
         crate::util::macros::__unsafe();
 
         $(#[$attr])*
         // SAFETY: The caller promises that this is sound.
         unsafe impl $trait for $ty {
-            unsafe_impl!(@method $trait $(; |$candidate| $is_bit_valid)?);
+            unsafe_impl!(@items $trait $(; |$candidate| $is_bit_valid)? $(; IS_IMMUTABLE = $is_immutable)?);
         }
     }};
 
@@ -49,16 +53,16 @@ macro_rules! unsafe_impl {
     // 1. Pack the attributes into a single token tree fragment we can match over.
     // 2. Expand the traits.
     // 3. Unpack and expand the attributes.
-    ($(#[$attrs:meta])* $ty:ty: $($traits:ident),*) => {
-        unsafe_impl!(@impl_traits_with_packed_attrs { $(#[$attrs])* } $ty: $($traits),*)
+    ($(#[$attrs:meta])* $ty:ty: $($traits:ident $(; IS_IMMUTABLE = $is_immutable:expr)?),*) => {
+        unsafe_impl!(@impl_traits_with_packed_attrs { $(#[$attrs])* } $ty: $($traits $(; IS_IMMUTABLE = $is_immutable)?),*)
     };
 
-    (@impl_traits_with_packed_attrs $attrs:tt $ty:ty: $($traits:ident),*) => {{
-        $( unsafe_impl!(@unpack_attrs $attrs $ty: $traits); )*
+    (@impl_traits_with_packed_attrs $attrs:tt $ty:ty: $($traits:ident $(; IS_IMMUTABLE = $is_immutable:expr)?),*) => {{
+        $( unsafe_impl!(@unpack_attrs $attrs $ty: $traits $(; IS_IMMUTABLE = $is_immutable)?); )*
     }};
 
-    (@unpack_attrs { $(#[$attrs:meta])* } $ty:ty: $traits:ident) => {
-        unsafe_impl!($(#[$attrs])* $ty: $traits);
+    (@unpack_attrs { $(#[$attrs:meta])* } $ty:ty: $traits:ident $(; IS_IMMUTABLE = $is_immutable:expr)?) => {
+        unsafe_impl!($(#[$attrs])* $ty: $traits $(; IS_IMMUTABLE = $is_immutable)?);
     };
 
     // This arm is identical to the following one, except it contains a
@@ -90,26 +94,30 @@ macro_rules! unsafe_impl {
         $(#[$attr:meta])*
         const $constname:ident : $constty:ident $(,)?
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty $(; |$candidate:ident| $is_bit_valid:expr)?
+        => $trait:ident for $ty:ty
+           $(;)? $(|$candidate:ident| $is_bit_valid:expr)?
+           $(; IS_IMMUTABLE = $is_immutable:expr)?
     ) => {
         unsafe_impl!(
             @inner
             $(#[$attr])*
             @const $constname: $constty,
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
-            => $trait for $ty $(; |$candidate| $is_bit_valid)?
+            => $trait for $ty $(; |$candidate| $is_bit_valid)? $(; IS_IMMUTABLE = $is_immutable)?
         );
     };
     (
         $(#[$attr:meta])*
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?),*
-        => $trait:ident for $ty:ty $(; |$candidate:ident| $is_bit_valid:expr)?
+        => $trait:ident for $ty:ty
+           $(;)? $(|$candidate:ident| $is_bit_valid:expr)?
+           $(; IS_IMMUTABLE = $is_immutable:expr)?
     ) => {{
         unsafe_impl!(
             @inner
             $(#[$attr])*
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
-            => $trait for $ty $(; |$candidate| $is_bit_valid)?
+            => $trait for $ty $(; |$candidate| $is_bit_valid)? $(; IS_IMMUTABLE = $is_immutable)?
         );
     }};
     (
@@ -117,7 +125,9 @@ macro_rules! unsafe_impl {
         $(#[$attr:meta])*
         $(@const $constname:ident : $constty:ident,)*
         $($tyvar:ident $(: $(? $optbound:ident +)* + $($bound:ident +)* )?,)*
-        => $trait:ident for $ty:ty $(; |$candidate:ident| $is_bit_valid:expr)?
+        => $trait:ident for $ty:ty
+           $(;)? $(|$candidate:ident| $is_bit_valid:expr)?
+           $(; IS_IMMUTABLE = $is_immutable:expr)?
     ) => {{
         crate::util::macros::__unsafe();
 
@@ -125,32 +135,42 @@ macro_rules! unsafe_impl {
         #[allow(non_local_definitions)]
         // SAFETY: The caller promises that this is sound.
         unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),* $(, const $constname: $constty,)*> $trait for $ty {
-            unsafe_impl!(@method $trait $(; |$candidate| $is_bit_valid)?);
+            unsafe_impl!(@items $trait $(; |$candidate| $is_bit_valid)? $(; IS_IMMUTABLE = $is_immutable)?);
         }
     }};
 
-    (@method TryFromBytes ; |$candidate:ident| $is_bit_valid:expr) => {
+    (@items TryFromBytes ; |$candidate:ident| $is_bit_valid:expr ; IS_IMMUTABLE = $is_immutable:expr) => {
         #[allow(clippy::missing_inline_in_public_items, dead_code)]
         #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
+
+        // TODO: THIS IS UNSOUND. We are just using it to unblock ourselves.
+        const IS_IMMUTABLE: bool = $is_immutable;
 
         #[inline]
         fn is_bit_valid<AA: crate::pointer::invariant::Reference>($candidate: Maybe<'_, Self, AA>) -> bool {
             $is_bit_valid
         }
     };
-    (@method TryFromBytes) => {
+    (@items TryFromBytes ; IS_IMMUTABLE = $is_immutable:expr) => {
         #[allow(clippy::missing_inline_in_public_items)]
         #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
+
+        // TODO: THIS IS UNSOUND. We are just using it to unblock ourselves.
+        const IS_IMMUTABLE: bool = $is_immutable;
+
         #[inline(always)] fn is_bit_valid<AA: crate::pointer::invariant::Reference>(_: Maybe<'_, Self, AA>) -> bool { true }
     };
-    (@method $trait:ident) => {
+    (@items TryFromBytes; |$_candidate:ident| $_is_bit_valid:expr) => {
+        compile_error!("Must provide `IS_IMMUTABLE` for `TryFromBytes`");
+    };
+    (@items $trait:ident) => {
         #[allow(clippy::missing_inline_in_public_items, dead_code)]
         #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
     };
-    (@method $trait:ident; |$_candidate:ident| $_is_bit_valid:expr) => {
+    (@items $trait:ident; |$_candidate:ident| $_is_bit_valid:expr ; IS_IMMUTABLE = $_is_immutable:expr) => {
         compile_error!("Can't provide `is_bit_valid` impl for trait other than `TryFromBytes`");
     };
 }
@@ -217,6 +237,10 @@ macro_rules! impl_for_transmute_from {
         $(<$tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?>)?
         TryFromBytes for $ty:ty [UnsafeCell<$repr:ty>]
     ) => {
+        // TODO: THIS IS UNSOUND because we don't know that `$ty` and `$repr`
+        // have the same interior mutability.
+        const IS_IMMUTABLE: bool = <$repr as TryFromBytes>::IS_IMMUTABLE;
+
         #[inline]
         fn is_bit_valid<A: crate::pointer::invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
             let c: Maybe<'_, Self, crate::pointer::invariant::Exclusive> = candidate.into_exclusive_or_pme();
@@ -232,6 +256,10 @@ macro_rules! impl_for_transmute_from {
         $(<$tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?>)?
         TryFromBytes for $ty:ty [<$repr:ty>]
     ) => {
+        // TODO: THIS IS UNSOUND because we don't know that `$ty` and `$repr`
+        // have the same interior mutability.
+        const IS_IMMUTABLE: bool = <$repr as TryFromBytes>::IS_IMMUTABLE;
+
         #[inline]
         fn is_bit_valid<A: crate::pointer::invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
             // SAFETY: This macro ensures that `$repr` and `Self` have the same
@@ -270,33 +298,40 @@ macro_rules! impl_for_transmute_from {
 macro_rules! unsafe_impl_for_power_set {
     (
         $first:ident $(, $rest:ident)* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
-        $(; |$candidate:ident| $is_bit_valid:expr)?
+        $(;)? $(|$candidate:ident| $is_bit_valid:expr)?
+        $(; IS_IMMUTABLE = $is_immutable:expr)?
     ) => {
         unsafe_impl_for_power_set!(
             $($rest),* $(-> $ret)? => $trait for $macro!(...)
             $(; |$candidate| $is_bit_valid)?
+            $(; IS_IMMUTABLE = $is_immutable)?
         );
         unsafe_impl_for_power_set!(
             @impl $first $(, $rest)* $(-> $ret)? => $trait for $macro!(...)
             $(; |$candidate| $is_bit_valid)?
+            $(; IS_IMMUTABLE = $is_immutable)?
         );
     };
     (
         $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
-        $(; |$candidate:ident| $is_bit_valid:expr)?
+        $(;)? $(|$candidate:ident| $is_bit_valid:expr)?
+        $(; IS_IMMUTABLE = $is_immutable:expr)?
     ) => {
         unsafe_impl_for_power_set!(
             @impl $(-> $ret)? => $trait for $macro!(...)
             $(; |$candidate| $is_bit_valid)?
+            $(; IS_IMMUTABLE = $is_immutable)?
         );
     };
     (
         @impl $($vars:ident),* $(-> $ret:ident)? => $trait:ident for $macro:ident!(...)
-        $(; |$candidate:ident| $is_bit_valid:expr)?
+        $(;)? $(|$candidate:ident| $is_bit_valid:expr)?
+        $(; IS_IMMUTABLE = $is_immutable:expr)?
     ) => {
         unsafe_impl!(
             $($vars,)* $($ret)? => $trait for $macro!($($vars),* $(-> $ret)?)
             $(; |$candidate| $is_bit_valid)?
+            $(; IS_IMMUTABLE = $is_immutable)?
         );
     };
 }

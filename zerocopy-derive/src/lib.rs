@@ -745,7 +745,11 @@ fn derive_try_from_bytes_struct(
             let fields = strct.fields();
             let field_names = fields.iter().map(|(_vis, name, _ty)| name);
             let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
+
+            let is_immutable = gen_is_immutable(ast, zerocopy_crate);
             quote!(
+                #is_immutable
+
                 // SAFETY: We use `is_bit_valid` to validate that each field is
                 // bit-valid, and only return `true` if all of them are. The bit
                 // validity of a struct is just the composition of the bit
@@ -808,15 +812,15 @@ fn derive_try_from_bytes_union(
     top_level: Trait,
     zerocopy_crate: &Path,
 ) -> TokenStream {
-    // FIXME(#5): Remove the `Immutable` bound.
-    let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
     let extras =
         try_gen_trivial_is_bit_valid(ast, top_level, zerocopy_crate).unwrap_or_else(|| {
             let fields = unn.fields();
             let field_names = fields.iter().map(|(_vis, name, _ty)| name);
             let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
+            let is_immutable = gen_is_immutable(ast, zerocopy_crate);
             quote!(
+                #is_immutable
+
                 // SAFETY: We use `is_bit_valid` to validate that any field is
                 // bit-valid; we only return `true` if at least one of them is. The
                 // bit validity of a union is not yet well defined in Rust, but it
@@ -828,16 +832,35 @@ fn derive_try_from_bytes_union(
                 where
                     ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
                 {
-                    use #zerocopy_crate::util::macro_util::core_reexport;
+                    use #zerocopy_crate::{
+                        util::macro_util::core_reexport,
+                        pointer::invariant::Aliasing
+                    };
+
+                    trait ConstAssert {
+                        const IS_READ: bool;
+                    }
+
+                    // TODO: What do we name `TryFromBytes`?
+                    impl<T: #zerocopy_crate::TryFromBytes, A: #zerocopy_crate::pointer::invariant::Aliasing> ConstAssert for (T, A) {
+                        const IS_READ: bool = {
+                            assert!(T::IS_IMMUTABLE || A::IS_EXCLUSIVE);
+                            true
+                        };
+                    }
+
+                    assert!(<(Self, ___ZerocopyAliasing) as ConstAssert>::IS_READ);
 
                     false #(|| {
                         // SAFETY:
                         // - `project` is a field projection, and so it addresses a
                         //   subset of the bytes addressed by `slf`
                         // - ..., and so it preserves provenance
-                        // - Since `Self: Immutable` is enforced by
-                        //   `self_type_trait_bounds`, neither `*slf` nor the
-                        //   returned pointer's referent contain any `UnsafeCell`s
+                        // - By the preceding assert, it is either the case that
+                        //   `Self: Immutable` or that `___ZerocopyAliasing` is
+                        //   `Exclusive`. In the former case, `Self: Immutable`
+                        //   ensures that `*slf` nor the returned pointer's
+                        //   referent contain any `UnsafeCell`s.
                         let field_candidate = unsafe {
                             let project = |slf: core_reexport::ptr::NonNull<Self>| {
                                 let slf = slf.as_ptr();
@@ -860,7 +883,7 @@ fn derive_try_from_bytes_union(
                 }
             )
         });
-    ImplBlockBuilder::new(ast, unn, Trait::TryFromBytes, field_type_trait_bounds, zerocopy_crate)
+    ImplBlockBuilder::new(ast, unn, Trait::TryFromBytes, FieldBounds::ALL_SELF, zerocopy_crate)
         .inner_extras(extras)
         .build()
 }
@@ -887,9 +910,9 @@ fn derive_try_from_bytes_enum(
         (Some(is_bit_valid), _) => is_bit_valid,
         // SAFETY: It would be sound for the enum to implement `FomBytes`, as
         // required by `gen_trivial_is_bit_valid_unchecked`.
-        (None, true) => unsafe { gen_trivial_is_bit_valid_unchecked(zerocopy_crate) },
+        (None, true) => unsafe { gen_trivial_is_bit_valid_unchecked(ast, zerocopy_crate) },
         (None, false) => {
-            r#enum::derive_is_bit_valid(&ast.ident, &repr, &ast.generics, enm, zerocopy_crate)?
+            r#enum::derive_is_bit_valid(ast, &ast.ident, &repr, &ast.generics, enm, zerocopy_crate)?
         }
     };
 
@@ -932,8 +955,12 @@ fn try_gen_trivial_is_bit_valid(
     // make this no longer true. To hedge against these, we include an explicit
     // `Self: FromBytes` check in the generated `is_bit_valid`, which is
     // bulletproof.
+
+    let is_immutable = gen_is_immutable(ast, zerocopy_crate);
     if top_level == Trait::FromBytes && ast.generics.params.is_empty() {
         Some(quote!(
+            #is_immutable
+
             // SAFETY: See inline.
             fn is_bit_valid<___ZerocopyAliasing>(
                 _candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
@@ -963,6 +990,21 @@ fn try_gen_trivial_is_bit_valid(
     }
 }
 
+fn gen_is_immutable(ast: &DeriveInput, zerocopy_crate: &Path) -> proc_macro2::TokenStream {
+    let fields = match &ast.data {
+        Data::Struct(strct) => strct.fields(),
+        Data::Enum(enm) => enm.fields(),
+        Data::Union(unn) => unn.fields(),
+    };
+    let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
+
+    quote!(
+        const IS_IMMUTABLE: bool = true #(
+            && <#field_tys as #zerocopy_crate::TryFromBytes>::IS_IMMUTABLE
+        )*;
+    )
+}
+
 /// Generates a `TryFromBytes::is_bit_valid` instance that unconditionally
 /// returns true.
 ///
@@ -974,8 +1016,14 @@ fn try_gen_trivial_is_bit_valid(
 ///
 /// The caller must ensure that all initialized bit patterns are valid for
 /// `Self`.
-unsafe fn gen_trivial_is_bit_valid_unchecked(zerocopy_crate: &Path) -> proc_macro2::TokenStream {
+unsafe fn gen_trivial_is_bit_valid_unchecked(
+    ast: &DeriveInput,
+    zerocopy_crate: &Path,
+) -> proc_macro2::TokenStream {
+    let is_immutable = gen_is_immutable(ast, zerocopy_crate);
     quote!(
+        #is_immutable
+
         // SAFETY: The caller of `gen_trivial_is_bit_valid_unchecked` has
         // promised that all initialized bit patterns are valid for `Self`.
         fn is_bit_valid<___ZerocopyAliasing>(
@@ -1146,12 +1194,7 @@ fn derive_from_zeros_union(
     unn: &DataUnion,
     zerocopy_crate: &Path,
 ) -> TokenStream {
-    // FIXME(#5): Remove the `Immutable` bound. It's only necessary for
-    // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
-    let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
-    ImplBlockBuilder::new(ast, unn, Trait::FromZeros, field_type_trait_bounds, zerocopy_crate)
-        .build()
+    ImplBlockBuilder::new(ast, unn, Trait::FromZeros, FieldBounds::ALL_SELF, zerocopy_crate).build()
 }
 
 /// A struct is `FromBytes` if:
@@ -1223,12 +1266,7 @@ fn derive_from_bytes_union(
     unn: &DataUnion,
     zerocopy_crate: &Path,
 ) -> TokenStream {
-    // FIXME(#5): Remove the `Immutable` bound. It's only necessary for
-    // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
-    let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
-    ImplBlockBuilder::new(ast, unn, Trait::FromBytes, field_type_trait_bounds, zerocopy_crate)
-        .build()
+    ImplBlockBuilder::new(ast, unn, Trait::FromBytes, FieldBounds::ALL_SELF, zerocopy_crate).build()
 }
 
 fn derive_into_bytes_struct(

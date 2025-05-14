@@ -780,6 +780,10 @@ macro_rules! cryptocorrosion_derive_traits {
                 $($field_ty: $crate::FromBytes,)*
             )?
         {
+            const IS_IMMUTABLE: bool = true $(
+                && <$field_ty as $crate::TryFromBytes>::IS_IMMUTABLE
+            )*;
+
             fn is_bit_valid<A>(_c: $crate::Maybe<'_, Self, A>) -> bool
             where
                 A: $crate::pointer::invariant::Reference
@@ -923,6 +927,10 @@ macro_rules! cryptocorrosion_derive_traits {
                 $field_ty: $crate::FromBytes,
             )*
         {
+            const IS_IMMUTABLE: bool = true $(
+                && <$field_ty as $crate::TryFromBytes>::IS_IMMUTABLE
+            )*;
+
             fn is_bit_valid<A>(_c: $crate::Maybe<'_, Self, A>) -> bool
             where
                 A: $crate::pointer::invariant::Reference

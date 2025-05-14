@@ -25,7 +25,7 @@ use super::*;
 //
 // [1] https://doc.rust-lang.org/1.81.0/reference/type-layout.html#tuple-layout
 const _: () = unsafe {
-    unsafe_impl!((): Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+    unsafe_impl!((): Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes, Unaligned);
     assert_unaligned!(());
 };
 
@@ -60,25 +60,31 @@ const _: () = unsafe {
 // FIXME(#278): Once we've updated the trait docs to refer to `u8`s rather than
 // bits or bytes, update this comment, especially the reference to [1].
 const _: () = unsafe {
-    unsafe_impl!(u8: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-    unsafe_impl!(i8: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+    unsafe_impl!(u8: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes, Unaligned);
+    unsafe_impl!(i8: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes, Unaligned);
     assert_unaligned!(u8, i8);
-    unsafe_impl!(u16: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(i16: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(u32: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(i32: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(u64: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(i64: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(u128: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(i128: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(usize: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(isize: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(f32: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(f64: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(u16: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(i16: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(u32: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(i32: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(u64: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(i64: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(u128: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(i128: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(usize: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(isize: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(f32: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(f64: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
     #[cfg(feature = "float-nightly")]
-    unsafe_impl!(#[cfg_attr(doc_cfg, doc(cfg(feature = "float-nightly")))] f16: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(
+        #[cfg_attr(doc_cfg, doc(cfg(feature = "float-nightly")))]
+        f16: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes
+    );
     #[cfg(feature = "float-nightly")]
-    unsafe_impl!(#[cfg_attr(doc_cfg, doc(cfg(feature = "float-nightly")))] f128: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(
+        #[cfg_attr(doc_cfg, doc(cfg(feature = "float-nightly")))]
+        f128: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes
+    );
 };
 
 // SAFETY:
@@ -107,7 +113,7 @@ const _: () = unsafe {
     unsafe_impl!(=> TryFromBytes for bool; |byte| {
         let byte = byte.transmute::<u8, invariant::Valid, _>();
         *byte.unaligned_as_ref() < 2
-    })
+    }; IS_IMMUTABLE = true)
 };
 impl_size_eq!(bool, u8);
 
@@ -137,7 +143,7 @@ const _: () = unsafe {
         let c = c.transmute::<Unalign<u32>, invariant::Valid, _>();
         let c = c.read_unaligned().into_inner();
         char::from_u32(c).is_some()
-    });
+    }; IS_IMMUTABLE = true);
 };
 
 impl_size_eq!(char, Unalign<u32>);
@@ -170,7 +176,7 @@ const _: () = unsafe {
         let c = c.transmute::<[u8], invariant::Valid, _>();
         let c = c.unaligned_as_ref();
         core::str::from_utf8(c).is_ok()
-    })
+    }; IS_IMMUTABLE = true)
 };
 
 // SAFETY: `str` and `[u8]` have the same layout [1].
@@ -210,7 +216,7 @@ macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
 
                 let n = n.transmute::<Unalign<$prim>, invariant::Valid, _>();
                 $nonzero::new(n.read_unaligned().into_inner()).is_some()
-            });
+            }; IS_IMMUTABLE = true);
         )*
     }
 }
@@ -296,19 +302,19 @@ const _: () = unsafe {
 // FIXME(https://github.com/rust-lang/rust/pull/104082): Cite documentation for
 // layout guarantees.
 const _: () = unsafe {
-    unsafe_impl!(Option<NonZeroU8>: TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-    unsafe_impl!(Option<NonZeroI8>: TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+    unsafe_impl!(Option<NonZeroU8>: TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes, Unaligned);
+    unsafe_impl!(Option<NonZeroI8>: TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes, Unaligned);
     assert_unaligned!(Option<NonZeroU8>, Option<NonZeroI8>);
-    unsafe_impl!(Option<NonZeroU16>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroI16>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroU32>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroI32>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroU64>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroI64>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroU128>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroI128>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroUsize>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroIsize>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(Option<NonZeroU16>: TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(Option<NonZeroI16>: TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(Option<NonZeroU32>: TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(Option<NonZeroI32>: TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(Option<NonZeroU64>: TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(Option<NonZeroI64>: TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(Option<NonZeroU128>: TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(Option<NonZeroI128>: TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(Option<NonZeroUsize>: TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
+    unsafe_impl!(Option<NonZeroIsize>: TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes);
 };
 
 // SAFETY: While it's not fully documented, the consensus is that `Box<T>` does
@@ -348,7 +354,7 @@ const _: () = unsafe {
     #[cfg(feature = "alloc")]
     unsafe_impl!(
         #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
-        T => TryFromBytes for Option<Box<T>>; |c| pointer::is_zeroed(c)
+        T => TryFromBytes for Option<Box<T>>; |c| pointer::is_zeroed(c); IS_IMMUTABLE = true
     );
     #[cfg(feature = "alloc")]
     unsafe_impl!(
@@ -356,26 +362,26 @@ const _: () = unsafe {
         T => FromZeros for Option<Box<T>>
     );
     unsafe_impl!(
-        T => TryFromBytes for Option<&'_ T>; |c| pointer::is_zeroed(c)
+        T => TryFromBytes for Option<&'_ T>; |c| pointer::is_zeroed(c); IS_IMMUTABLE = true
     );
     unsafe_impl!(T => FromZeros for Option<&'_ T>);
     unsafe_impl!(
-            T => TryFromBytes for Option<&'_ mut T>; |c| pointer::is_zeroed(c)
+            T => TryFromBytes for Option<&'_ mut T>; |c| pointer::is_zeroed(c); IS_IMMUTABLE = true
     );
     unsafe_impl!(T => FromZeros for Option<&'_ mut T>);
     unsafe_impl!(
-        T => TryFromBytes for Option<NonNull<T>>; |c| pointer::is_zeroed(c)
+        T => TryFromBytes for Option<NonNull<T>>; |c| pointer::is_zeroed(c); IS_IMMUTABLE = true
     );
     unsafe_impl!(T => FromZeros for Option<NonNull<T>>);
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_fn!(...));
     unsafe_impl_for_power_set!(
         A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_fn!(...);
-        |c| pointer::is_zeroed(c)
+        |c| pointer::is_zeroed(c); IS_IMMUTABLE = true
     );
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_extern_c_fn!(...));
     unsafe_impl_for_power_set!(
         A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_extern_c_fn!(...);
-        |c| pointer::is_zeroed(c)
+        |c| pointer::is_zeroed(c); IS_IMMUTABLE = true
     );
 };
 
@@ -679,7 +685,7 @@ mod atomics {
 // [1] https://doc.rust-lang.org/1.81.0/std/marker/struct.PhantomData.html#layout-1
 const _: () = unsafe {
     unsafe_impl!(T: ?Sized => Immutable for PhantomData<T>);
-    unsafe_impl!(T: ?Sized => TryFromBytes for PhantomData<T>);
+    unsafe_impl!(T: ?Sized => TryFromBytes for PhantomData<T>; IS_IMMUTABLE = true);
     unsafe_impl!(T: ?Sized => FromZeros for PhantomData<T>);
     unsafe_impl!(T: ?Sized => FromBytes for PhantomData<T>);
     unsafe_impl!(T: ?Sized => IntoBytes for PhantomData<T>);
@@ -712,7 +718,7 @@ const _: () = unsafe { unsafe_impl!(T: Unaligned => Unaligned for Wrapping<T>) }
 // SAFETY: `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`:
 // `MaybeUninit<T>` has no restrictions on its contents.
 const _: () = unsafe {
-    unsafe_impl!(T => TryFromBytes for CoreMaybeUninit<T>);
+    unsafe_impl!(T => TryFromBytes for CoreMaybeUninit<T>; IS_IMMUTABLE = T::IS_IMMUTABLE);
     unsafe_impl!(T => FromZeros for CoreMaybeUninit<T>);
     unsafe_impl!(T => FromBytes for CoreMaybeUninit<T>);
 };
@@ -808,6 +814,8 @@ unsafe impl<T: TryFromBytes + ?Sized> TryFromBytes for UnsafeCell<T> {
     {
     }
 
+    const IS_IMMUTABLE: bool = false;
+
     #[inline]
     fn is_bit_valid<A: invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
         // The only way to implement this function is using an exclusive-aliased
@@ -864,7 +872,7 @@ const _: () = unsafe {
         // it explicitly warns that it's a possibility), and we have not
         // violated any safety invariants that we must fix before returning.
         <[T] as TryFromBytes>::is_bit_valid(c.as_slice())
-    });
+    }; IS_IMMUTABLE = T::IS_IMMUTABLE);
     unsafe_impl!(const N: usize, T: FromZeros => FromZeros for [T; N]);
     unsafe_impl!(const N: usize, T: FromBytes => FromBytes for [T; N]);
     unsafe_impl!(const N: usize, T: IntoBytes => IntoBytes for [T; N]);
@@ -893,7 +901,7 @@ const _: () = unsafe {
         // we have not violated any safety invariants that we must fix before
         // returning.
         c.iter().all(<T as TryFromBytes>::is_bit_valid)
-    });
+    }; IS_IMMUTABLE = T::IS_IMMUTABLE);
     unsafe_impl!(T: FromZeros => FromZeros for [T]);
     unsafe_impl!(T: FromBytes => FromBytes for [T]);
     unsafe_impl!(T: IntoBytes => IntoBytes for [T]);
@@ -919,9 +927,9 @@ const _: () = unsafe {
 const _: () = unsafe {
     unsafe_impl!(T: ?Sized => Immutable for *const T);
     unsafe_impl!(T: ?Sized => Immutable for *mut T);
-    unsafe_impl!(T => TryFromBytes for *const T; |c| pointer::is_zeroed(c));
+    unsafe_impl!(T => TryFromBytes for *const T; |c| pointer::is_zeroed(c); IS_IMMUTABLE = true);
     unsafe_impl!(T => FromZeros for *const T);
-    unsafe_impl!(T => TryFromBytes for *mut T; |c| pointer::is_zeroed(c));
+    unsafe_impl!(T => TryFromBytes for *mut T; |c| pointer::is_zeroed(c); IS_IMMUTABLE = true);
     unsafe_impl!(T => FromZeros for *mut T);
 };
 
@@ -1032,7 +1040,7 @@ mod simd {
                 impl_known_layout!($($typ),*);
                 // SAFETY: See comment on module definition for justification.
                 const _: () = unsafe {
-                    $( unsafe_impl!($typ: Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes); )*
+                    $( unsafe_impl!($typ: Immutable, TryFromBytes; IS_IMMUTABLE = true, FromZeros, FromBytes, IntoBytes); )*
                 };
             }
         };
