@@ -274,10 +274,10 @@ error: generic parameters may not be used in const operations
     = note: type parameters may not be used in const expressions
 
 error[E0565]: meta item in `repr` must be an identifier
-  --> tests/ui-stable/enum.rs:19:8
+  --> tests/ui-stable/enum.rs:19:1
    |
 19 | #[repr("foo")]
-   |        ^^^^^
+   | ^^^^^^^^^^^^^^
 
 error[E0552]: unrecognized representation hint
   --> tests/ui-stable/enum.rs:25:8
