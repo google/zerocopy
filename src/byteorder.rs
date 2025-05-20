@@ -882,7 +882,7 @@ macro_rules! define_float_conversion {
     ($ty:ty, $bits:ident, $bytes:expr, $from:ident, $to:ident) => {
         // Clippy: The suggestion of using `from_bits()` instead doesn't work
         // because `from_bits` is not const-stable on our MSRV.
-        #[allow(clippy::transmute_int_to_float)]
+        #[allow(clippy::unnecessary_transmutes)]
         pub(crate) const fn $from(bytes: [u8; $bytes]) -> $ty {
             transmute!($bits::$from(bytes))
         }
@@ -890,7 +890,7 @@ macro_rules! define_float_conversion {
         pub(crate) const fn $to(f: $ty) -> [u8; $bytes] {
             // Clippy: The suggestion of using `f.to_bits()` instead doesn't
             // work because `to_bits` is not const-stable on our MSRV.
-            #[allow(clippy::transmute_float_to_int)]
+            #[allow(clippy::unnecessary_transmutes)]
             let bits: $bits = transmute!(f);
             bits.$to()
         }
