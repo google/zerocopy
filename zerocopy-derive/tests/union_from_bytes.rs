@@ -15,7 +15,7 @@ include!("include.rs");
 // A union is `imp::FromBytes` if:
 // - all fields are `imp::FromBytes`
 
-#[derive(Clone, Copy, imp::Immutable, imp::FromBytes)]
+#[derive(Clone, Copy, imp::FromBytes)]
 union Zst {
     a: (),
 }
@@ -23,7 +23,7 @@ union Zst {
 util_assert_impl_all!(Zst: imp::FromBytes);
 test_trivial_is_bit_valid!(Zst => test_zst_trivial_is_bit_valid);
 
-#[derive(imp::Immutable, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 union One {
     a: u8,
 }
@@ -31,7 +31,7 @@ union One {
 util_assert_impl_all!(One: imp::FromBytes);
 test_trivial_is_bit_valid!(One => test_one_trivial_is_bit_valid);
 
-#[derive(imp::Immutable, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 union Two {
     a: u8,
     b: Zst,
@@ -40,7 +40,7 @@ union Two {
 util_assert_impl_all!(Two: imp::FromBytes);
 test_trivial_is_bit_valid!(Two => test_two_trivial_is_bit_valid);
 
-#[derive(imp::Immutable, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 union TypeParams<'a, T: imp::Copy, I: imp::Iterator>
 where
     I::Item: imp::Copy,
@@ -58,7 +58,7 @@ test_trivial_is_bit_valid!(TypeParams<'static, (), imp::IntoIter<()>> => test_ty
 
 // Deriving `imp::FromBytes` should work if the union has bounded parameters.
 
-#[derive(imp::Immutable, imp::FromBytes)]
+#[derive(imp::FromBytes)]
 #[repr(C)]
 union WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::FromBytes, const N: usize>
 where
