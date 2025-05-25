@@ -112,7 +112,7 @@ pub unsafe trait SplitByteSlice: ByteSlice {
         if mid <= self.deref().len() {
             // SAFETY: Above, we ensure that `mid <= self.deref().len()`. By
             // invariant on `ByteSlice`, a supertrait of `SplitByteSlice`,
-            // `.deref()` is guranteed to be "stable"; i.e., it will always
+            // `.deref()` is guaranteed to be "stable"; i.e., it will always
             // dereference to a byte slice of the same address and length. Thus,
             // we can be sure that the above precondition remains satisfied
             // through the call to `split_at_unchecked`.

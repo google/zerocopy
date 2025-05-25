@@ -739,7 +739,7 @@ pub(crate) mod testutil {
     /// A `T` which is guaranteed not to satisfy `align_of::<A>()`.
     ///
     /// It must be the case that `align_of::<T>() < align_of::<A>()` in order
-    /// fot this type to work properly.
+    /// for this type to work properly.
     #[repr(C)]
     pub(crate) struct ForceUnalign<T: Unaligned, A> {
         // The outer struct is aligned to `A`, and, thanks to `repr(C)`, `t` is

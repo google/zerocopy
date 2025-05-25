@@ -299,7 +299,7 @@ impl DstLayout {
                     SizeInfo::Sized { size: field_size } => {
                         // If the trailing field is sized, the resulting layout
                         // will be sized. Its size will be the sum of the
-                        // preceeding layout, the size of the new field, and the
+                        // preceding layout, the size of the new field, and the
                         // size of inter-field padding between the two.
                         //
                         // This will not panic (and is proven with Kani to not
@@ -1050,7 +1050,7 @@ mod tests {
                 };
 
                 // If a cast is invalid, it is either because...
-                // 1. there are insufficent bytes at the given region for type:
+                // 1. there are insufficient bytes at the given region for type:
                 let insufficient_bytes = bytes_len < min_size;
                 // 2. performing the cast would misalign type:
                 let base = match cast_type {
