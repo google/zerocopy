@@ -8,7 +8,7 @@
 
 edition = "2021"
 
-# The "Default" setting has a heuristic which splits lines too aggresively.
+# The "Default" setting has a heuristic which splits lines too aggressively.
 # We are willing to revisit this setting in future versions of rustfmt.
 # Bugs:
 #   * https://github.com/rust-lang/rustfmt/issues/3119

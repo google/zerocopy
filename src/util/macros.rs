@@ -249,7 +249,7 @@ macro_rules! impl_for_transmute_from {
     };
 }
 
-/// Implements a trait for a type, bounding on each memeber of the power set of
+/// Implements a trait for a type, bounding on each member of the power set of
 /// a set of type variables. This is useful for implementing traits for tuples
 /// or `fn` types.
 ///

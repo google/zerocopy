@@ -264,7 +264,7 @@ macro_rules! align_of {
         // correctly-align the entire struct.
         //
         // This macro computes the alignment of `$ty` by counting the number of
-        // bytes preceeding `_trailing`. For instance, if the alignment of `$ty`
+        // bytes preceding `_trailing`. For instance, if the alignment of `$ty`
         // is `1`, then no padding is required align `_trailing` and it will be
         // located immediately after `_byte` at offset 1. If the alignment of
         // `$ty` is 2, then a single padding byte is required before

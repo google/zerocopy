@@ -276,7 +276,7 @@ fn derive_known_layout_inner(
                 // The layout of `Self` is reflected using a sequence of
                 // invocations of `DstLayout::{new_zst,extend,pad_to_align}`.
                 // The documentation of these items vows that invocations in
-                // this manner will acurately describe a type, so long as:
+                // this manner will accurately describe a type, so long as:
                 //
                 //  - that type is `repr(C)`,
                 //  - its fields are enumerated in the order they appear,
@@ -774,7 +774,7 @@ fn derive_try_from_bytes_struct(
                                 // SAFETY: `cast_unsized_unchecked` promises that
                                 // `slf` will either reference a zero-sized byte
                                 // range, or else will reference a byte range that
-                                // is entirely contained withing an allocated
+                                // is entirely contained within an allocated
                                 // object. In either case, this guarantees that
                                 // field projection will not wrap around the address
                                 // space, and so `field` will be non-null.
@@ -845,7 +845,7 @@ fn derive_try_from_bytes_union(
                                 // SAFETY: `cast_unsized_unchecked` promises that
                                 // `slf` will either reference a zero-sized byte
                                 // range, or else will reference a byte range that
-                                // is entirely contained withing an allocated
+                                // is entirely contained within an allocated
                                 // object. In either case, this guarantees that
                                 // field projection will not wrap around the address
                                 // space, and so `field` will be non-null.
@@ -885,7 +885,7 @@ fn derive_try_from_bytes_enum(
     let trivial_is_bit_valid = try_gen_trivial_is_bit_valid(ast, top_level, zerocopy_crate);
     let extra = match (trivial_is_bit_valid, could_be_from_bytes) {
         (Some(is_bit_valid), _) => is_bit_valid,
-        // SAFETY: It would be sound for the enum to implement `FomBytes`, as
+        // SAFETY: It would be sound for the enum to implement `FromBytes`, as
         // required by `gen_trivial_is_bit_valid_unchecked`.
         (None, true) => unsafe { gen_trivial_is_bit_valid_unchecked(zerocopy_crate) },
         (None, false) => {
@@ -1507,7 +1507,7 @@ impl ToTokens for Trait {
         // stable and therefore not guaranteed to represent the variant names.
         // Indeed with the (unstable) `fmt-debug` compiler flag [2], it can
         // return only a minimalized output or empty string. To make sure this
-        // code will work in the future and independet of the compiler flag, we
+        // code will work in the future and independent of the compiler flag, we
         // translate the variants to their names manually here.
         //
         // [1] https://doc.rust-lang.org/1.81.0/std/fmt/trait.Debug.html#stability

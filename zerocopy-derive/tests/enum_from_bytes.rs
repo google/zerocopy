@@ -27,7 +27,7 @@ include!("include.rs");
 // - An enum with `repr(u16)` and 65536 variants
 // - An enum with `repr(i16)` and 65536 variants
 //
-// For the `i8` and `i16` enums, we have to explicitly set the descriminant of
+// For the `i8` and `i16` enums, we have to explicitly set the discriminant of
 // the first variant whose discriminant needs to be negative (e.g., `FooI8`'s
 // `Variant128` has a discriminant of -128) since Rust won't automatically wrap
 // a signed discriminant around without you explicitly telling it to.

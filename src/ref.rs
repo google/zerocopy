@@ -588,7 +588,7 @@ where
         } else {
             return Err(SizeError::new(source).into());
         };
-        // SAFETY: The preceeding `source.len().checked_sub(expected_len)`
+        // SAFETY: The preceding `source.len().checked_sub(expected_len)`
         // guarantees that `split_at` is in-bounds.
         let (bytes, suffix) = unsafe { source.split_at_unchecked(split_at) };
         Self::from_bytes(suffix).map(move |l| (bytes, l))
@@ -883,7 +883,7 @@ mod tests {
     #[test]
     fn test_mut_slice_into_ref() {
         // Prior to #1260/#1299, calling `into_ref` on a `&mut [u8]`-backed
-        // `Ref` was not supportd.
+        // `Ref` was not supported.
         let mut buf = [0u8];
         let r = Ref::<&mut [u8], u8>::from_bytes(&mut buf).unwrap();
         assert_eq!(Ref::into_ref(r), &0);

@@ -765,7 +765,7 @@ where
         if l_len.padding_needed_for() == 0 {
             // SAFETY: By `T: SplitAt`, `T` is either `[T]`, or a `repr(C)` or
             // `repr(transparent)` slice DST, for which the trailing padding
-            // needed to accomodate `l_len` trailing elements is
+            // needed to accommodate `l_len` trailing elements is
             // `l_len.padding_needed_for()`. If no trailing padding is required,
             // the left and right parts are strictly non-overlapping.
             Ok(unsafe { self.via_unchecked() })
