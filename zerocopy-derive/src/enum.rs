@@ -8,7 +8,7 @@
 
 use proc_macro2::{Span, TokenStream};
 use quote::quote;
-use syn::{parse_quote, DataEnum, Error, Fields, Generics, Ident, Path};
+use syn::{parse_quote, DataEnum, DeriveInput, Error, Fields, Generics, Ident, Path};
 
 use crate::{derive_try_from_bytes_inner, repr::EnumRepr, Trait};
 
@@ -210,6 +210,7 @@ fn generate_variants_union(generics: &Generics, data: &DataEnum) -> TokenStream 
 /// - `repr(int)`: <https://doc.rust-lang.org/reference/type-layout.html#primitive-representation-of-enums-with-fields>
 /// - `repr(C, int)`: <https://doc.rust-lang.org/reference/type-layout.html#combining-primitive-representations-of-enums-with-fields-and-reprc>
 pub(crate) fn derive_is_bit_valid(
+    ast: &DeriveInput,
     enum_ident: &Ident,
     repr: &EnumRepr,
     generics: &Generics,
@@ -280,7 +281,10 @@ pub(crate) fn derive_is_bit_valid(
         }
     });
 
+    let is_immutable = crate::gen_is_immutable(ast, zerocopy_crate);
     Ok(quote! {
+        #is_immutable
+
         // SAFETY: We use `is_bit_valid` to validate that the bit pattern of the
         // enum's tag corresponds to one of the enum's discriminants. Then, we
         // check the bit validity of each field of the corresponding variant.
