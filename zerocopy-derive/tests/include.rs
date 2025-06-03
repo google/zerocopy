@@ -123,7 +123,7 @@ pub mod util {
 
         // SAFETY: `T` and `MaybeUninit<T>` have the same layout, so this is a
         // size-preserving cast. It is also a provenance-preserving cast.
-        let ptr = unsafe { ptr.cast_unsized_unchecked(|p| p.cast()) };
+        let ptr = unsafe { ptr.cast_unsized_unchecked(|p| p.as_non_null().cast()) };
         assert!(<T as super::imp::TryFromBytes>::is_bit_valid(ptr));
     }
 }

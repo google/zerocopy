@@ -768,8 +768,8 @@ fn derive_try_from_bytes_struct(
                         //   the same byte ranges in the returned pointer's referent
                         //   as they do in `*slf`
                         let field_candidate = unsafe {
-                            let project = |slf: core_reexport::ptr::NonNull<Self>| {
-                                let slf = slf.as_ptr();
+                            let project = |slf: #zerocopy_crate::pointer::PtrInner<'_, Self>| {
+                                let slf = slf.as_non_null().as_ptr();
                                 let field = core_reexport::ptr::addr_of_mut!((*slf).#field_names);
                                 // SAFETY: `cast_unsized_unchecked` promises that
                                 // `slf` will either reference a zero-sized byte
@@ -839,8 +839,8 @@ fn derive_try_from_bytes_union(
                         //   `self_type_trait_bounds`, neither `*slf` nor the
                         //   returned pointer's referent contain any `UnsafeCell`s
                         let field_candidate = unsafe {
-                            let project = |slf: core_reexport::ptr::NonNull<Self>| {
-                                let slf = slf.as_ptr();
+                            let project = |slf: #zerocopy_crate::pointer::PtrInner<'_, Self>| {
+                                let slf = slf.as_non_null().as_ptr();
                                 let field = core_reexport::ptr::addr_of_mut!((*slf).#field_names);
                                 // SAFETY: `cast_unsized_unchecked` promises that
                                 // `slf` will either reference a zero-sized byte
