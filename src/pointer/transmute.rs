@@ -291,8 +291,11 @@ pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV> {}
 /// etc) and have the same size. In particular:
 /// - If `T: Sized` and `Self: Sized`, then their sizes must be equal
 /// - If `T: ?Sized` and `Self: ?Sized`, then it must be the case that, given
-///   any `t: *mut T`, `t as *mut Self` produces a pointer which addresses the
-///   same number of bytes as `t`.
+///   any `t: PtrInner<'_, T>`, `<Self as SizeEq<T>>::cast_from_raw(t)` produces
+///   a pointer which addresses the same number of bytes as `t`. *Note that it
+///   is **not** guaranteed that an `as` cast preserves referent size: it may be
+///   the case that `cast_from_raw` modifies the pointer's metadata in order to
+///   preserve referent size, which an `as` cast does not do.*
 pub unsafe trait SizeEq<T: ?Sized> {
     fn cast_from_raw(t: PtrInner<'_, T>) -> PtrInner<'_, Self>;
 }
