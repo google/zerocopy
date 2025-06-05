@@ -1,8 +1,17 @@
 {
-    "rust-analyzer.cargo.cfgs": {
-        // This adds an extra cfg to rust-analyzer so we can prevent it from
-        // analyzing tests with a lot of generated code. These can cause it to
-        // hang or run slowly in general, which is bad for workflows.
-        "rust_analyzer": null,
+    // Extra cfgs added to rust-analyzer.
+    "rust-analyzer.cargo.cfgs": [
+        // Expensive-to-compile tests can `cfg(not(rust_analyzer))` to avoid
+        // slowing developers down.
+        "rust_analyzer",
+        // Converting unions to bytes currently requires a `cfg` feature.
+        // Used in some tests.
+        // See https://github.com/google/zerocopy/discussions/1802.
+        "zerocopy_derive_union_into_bytes"
+    ],
+    // The above list is duplicated so that the `cfg`s are also used in `cargo check`.
+    // See https://github.com/rust-lang/rust-analyzer/issues/19926.
+    "rust-analyzer.cargo.extraEnv": {
+        "RUSTFLAGS": "--cfg rust_analyzer --cfg zerocopy_derive_union_into_bytes"
     }
 }
