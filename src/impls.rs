@@ -105,12 +105,13 @@ assert_unaligned!(bool);
 //   pattern 0x01.
 const _: () = unsafe {
     unsafe_impl!(=> TryFromBytes for bool; |byte| {
-        let byte = byte.transmute::<u8, invariant::Valid, _>();
+        let mut byte = byte;
+        let byte = byte.reborrow().into_shared().transmute::<u8, invariant::Valid, _>();
         *byte.unaligned_as_ref() < 2
     })
 };
 
-impl_size_compat!(bool, u8);
+impl_size_from!(bool, u8);
 
 // SAFETY:
 // - `Immutable`: `char` self-evidently does not contain any `UnsafeCell`s.
@@ -135,13 +136,14 @@ const _: () = unsafe { unsafe_impl!(char: Immutable, FromZeros, IntoBytes) };
 //   `char`.
 const _: () = unsafe {
     unsafe_impl!(=> TryFromBytes for char; |c| {
-        let c = c.transmute::<Unalign<u32>, invariant::Valid, _>();
+        let mut c = c;
+        let c = c.reborrow().into_shared().transmute::<Unalign<u32>, invariant::Valid, _>();
         let c = c.read_unaligned().into_inner();
         char::from_u32(c).is_some()
     });
 };
 
-impl_size_compat!(char, Unalign<u32>);
+impl_size_from!(char, Unalign<u32>);
 
 // SAFETY: Per the Reference [1], `str` has the same layout as `[u8]`.
 // - `Immutable`: `[u8]` does not contain any `UnsafeCell`s.
@@ -168,20 +170,22 @@ const _: () = unsafe { unsafe_impl!(str: Immutable, FromZeros, IntoBytes, Unalig
 //   Returns `Err` if the slice is not UTF-8.
 const _: () = unsafe {
     unsafe_impl!(=> TryFromBytes for str; |c| {
-        let c = c.transmute::<[u8], invariant::Valid, _>();
+        let mut c = c;
+        let c = c.reborrow().into_shared().transmute::<[u8], invariant::Valid, _>();
         let c = c.unaligned_as_ref();
         core::str::from_utf8(c).is_ok()
     })
 };
 
-impl_size_compat!(str, [u8]);
+impl_size_from!(str, [u8]);
 
 macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
     ($($nonzero:ident[$prim:ty]),*) => {
         $(
             unsafe_impl!(=> TryFromBytes for $nonzero; |n| {
-                impl_size_compat!($nonzero, Unalign<$prim>);
-                let n = n.transmute::<Unalign<$prim>, invariant::Valid, _>();
+                impl_size_from!($nonzero, Unalign<$prim>);
+                let mut n = n;
+                let n = n.reborrow().into_shared().transmute::<Unalign<$prim>, invariant::Valid, _>();
                 $nonzero::new(n.read_unaligned().into_inner()).is_some()
             });
         )*
@@ -397,22 +401,22 @@ mod atomics {
             crate::util::macros::__unsafe();
 
             use core::{cell::UnsafeCell};
-            use crate::pointer::{TransmuteFrom, PtrInner, SizeCompat, invariant::Valid};
+            use crate::pointer::{TransmuteFrom, PtrInner, SizeFrom, invariant::Valid};
 
             $(
-                // SAFETY: The caller promised that `$atomic` and `$prim`
-                // have the same size and bit validity. As a result of size
-                // equality, both impls of `SizeCompat::cast_from_raw`
-                // preserve referent size exactly.
+                // SAFETY: The caller promised that `$atomic` and `$prim` have
+                // the same size and bit validity. As a result of size equality,
+                // both impls of `SizeFrom::cast_from_raw` preserve referent
+                // size exactly.
                 unsafe impl<$($tyvar)?> TransmuteFrom<$atomic, Valid, Valid> for $prim {}
-                // SAFETY: The caller promised that `$atomic` and `$prim`
-                // have the same size and bit validity. As a result of size
-                // equality, both impls of `SizeCompat::cast_from_raw`
-                // preserve referent size exactly.
+                // SAFETY: The caller promised that `$atomic` and `$prim` have
+                // the same size and bit validity. As a result of size equality,
+                // both impls of `SizeFrom::cast_from_raw` preserve referent
+                // size exactly.
                 unsafe impl<$($tyvar)?> TransmuteFrom<$prim, Valid, Valid> for $atomic {}
 
                 // SAFETY: See inline safety comment.
-                unsafe impl<$($tyvar)?> SizeCompat<$atomic> for $prim {
+                unsafe impl<$($tyvar)?> SizeFrom<$atomic> for $prim {
                     #[inline]
                     fn cast_from_raw(a: PtrInner<'_, $atomic>) -> PtrInner<'_, $prim> {
                         // SAFETY: The caller promised that `$atomic` and `$prim`
@@ -422,7 +426,7 @@ mod atomics {
                     }
                 }
                 // SAFETY: See previous safety comment.
-                unsafe impl<$($tyvar)?> SizeCompat<$prim> for $atomic {
+                unsafe impl<$($tyvar)?> SizeFrom<$prim> for $atomic {
                     #[inline]
                     fn cast_from_raw(p: PtrInner<'_, $prim>) -> PtrInner<'_, $atomic> {
                         // SAFETY: See previous safety comment.
@@ -440,7 +444,7 @@ mod atomics {
                 //   `UnsafeCell<T>` has the same in-memory representation as
                 //   its inner type `T`. A consequence of this guarantee is that
                 //   it is possible to convert between `T` and `UnsafeCell<T>`.
-                unsafe impl<$($tyvar)?> SizeCompat<$atomic> for UnsafeCell<$prim> {
+                unsafe impl<$($tyvar)?> SizeFrom<$atomic> for UnsafeCell<$prim> {
                     #[inline]
                     fn cast_from_raw(a: PtrInner<'_, $atomic>) -> PtrInner<'_, UnsafeCell<$prim>> {
                         // SAFETY: See previous safety comment.
@@ -448,7 +452,7 @@ mod atomics {
                     }
                 }
                 // SAFETY: See previous safety comment.
-                unsafe impl<$($tyvar)?> SizeCompat<UnsafeCell<$prim>> for $atomic {
+                unsafe impl<$($tyvar)?> SizeFrom<UnsafeCell<$prim>> for $atomic {
                     #[inline]
                     fn cast_from_raw(p: PtrInner<'_, UnsafeCell<$prim>>) -> PtrInner<'_, $atomic> {
                         // SAFETY: See previous safety comment.
@@ -456,12 +460,11 @@ mod atomics {
                     }
                 }
 
-                // SAFETY: The caller promised that `$atomic` and `$prim`
-                // have the same bit validity. `UnsafeCell<T>` has the same
-                // bit validity as `T` [1]. `UnsafeCell<T>` also has the
-                // same size as `T` [1], and so both impls of
-                // `SizeCompat::cast_from_raw` preserve referent size
-                // exactly.
+                // SAFETY: The caller promised that `$atomic` and `$prim` have
+                // the same bit validity. `UnsafeCell<T>` has the same bit
+                // validity as `T` [1]. `UnsafeCell<T>` also has the same size
+                // as `T` [1], and so both impls of `SizeFrom::cast_from_raw`
+                // preserve referent size exactly.
                 //
                 // [1] Per https://doc.rust-lang.org/1.85.0/std/cell/struct.UnsafeCell.html#memory-layout:
                 //

@@ -30,8 +30,8 @@ use core::ptr::{self, NonNull};
 
 use crate::{
     pointer::{
-        invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
-        BecauseInvariantsEq, InvariantsEq, SizeCompat, TryTransmuteFromPtr,
+        invariant::{self, BecauseImmutable, Invariants},
+        BecauseBidirectional, InvariantsEq, MutationCompatible, SizeFrom, TryTransmuteFromPtr,
     },
     FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, Ptr, TryFromBytes, ValidityError,
 };
@@ -502,10 +502,11 @@ fn try_cast_or_pme<Src, Dst, I, R, S>(
 where
     // FIXME(#2226): There should be a `Src: FromBytes` bound here, but doing so
     // requires deeper surgery.
-    Src: invariant::Read<I::Aliasing, R>,
+    Src: MutationCompatible<Dst, I::Aliasing, invariant::Initialized, invariant::Initialized, R>,
     Dst: TryFromBytes
-        + invariant::Read<I::Aliasing, R>
-        + TryTransmuteFromPtr<Dst, I::Aliasing, invariant::Initialized, invariant::Valid, S>,
+        + invariant::Read<I::Aliasing, S>
+        + MutationCompatible<Src, I::Aliasing, invariant::Initialized, invariant::Initialized, R>
+        + TryTransmuteFromPtr<Dst, I::Aliasing, invariant::Initialized, invariant::Valid, R>,
     I: Invariants<Validity = invariant::Initialized>,
     I::Aliasing: invariant::Reference,
 {
@@ -664,7 +665,7 @@ where
 {
     let ptr = Ptr::from_mut(src);
     let ptr = ptr.bikeshed_recall_initialized_from_bytes();
-    match try_cast_or_pme::<Src, Dst, _, BecauseExclusive, _>(ptr) {
+    match try_cast_or_pme::<Src, Dst, _, _, _>(ptr) {
         Ok(ptr) => {
             static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
             // SAFETY: We have checked that `Dst` does not have a stricter
@@ -673,7 +674,7 @@ where
             Ok(ptr.as_mut())
         }
         Err(err) => {
-            Err(err.map_src(|ptr| ptr.recall_validity::<_, (_, BecauseInvariantsEq)>().as_mut()))
+            Err(err.map_src(|ptr| ptr.recall_validity::<_, BecauseBidirectional>().as_mut()))
         }
     }
 }
@@ -793,11 +794,11 @@ where
 
         // SAFETY: We only use `S` as `S<Src>` and `D` as `D<Dst>`.
         unsafe {
-            unsafe_with_size_compat!(<S<Src>, D<Dst>> {
+            unsafe_with_size_from!(<S<Src>, D<Dst>> {
                 let ptr = Ptr::from_ref(self.0)
-                    .transmute::<S<Src>, invariant::Valid, BecauseImmutable>()
+                    .transmute::<S<Src>, invariant::Valid, _>()
                     .recall_validity::<invariant::Initialized, _>()
-                    .transmute::<D<Dst>, invariant::Initialized, (crate::pointer::BecauseMutationCompatible, _)>()
+                    .transmute::<D<Dst>, invariant::Initialized, _>()
                     .recall_validity::<invariant::Valid, _>();
 
                 #[allow(unused_unsafe)]
@@ -833,12 +834,12 @@ where
 
         // SAFETY: We only use `S` as `S<Src>` and `D` as `D<Dst>`.
         unsafe {
-            unsafe_with_size_compat!(<S<Src>, D<Dst>> {
+            unsafe_with_size_from!(<S<Src>, D<Dst>> {
                 let ptr = Ptr::from_mut(self.0)
                     .transmute::<S<Src>, invariant::Valid, _>()
-                    .recall_validity::<invariant::Initialized, (_, (_, _))>()
+                    .recall_validity::<invariant::Initialized, BecauseBidirectional>()
                     .transmute::<D<Dst>, invariant::Initialized, _>()
-                    .recall_validity::<invariant::Valid, (_, (_, _))>();
+                    .recall_validity::<invariant::Valid, BecauseBidirectional>();
 
                 #[allow(unused_unsafe)]
                 // SAFETY: The preceding `static_assert!` ensures that

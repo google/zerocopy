@@ -656,9 +656,9 @@ where
         // `b.into_byte_slice_mut()` produces a byte slice with identical
         // address and length to that produced by `b.deref_mut()`.
         let ptr = Ptr::from_mut(b.into_byte_slice_mut())
-            .try_cast_into_no_leftover::<T, BecauseExclusive>(None)
+            .try_cast_into_no_leftover(None)
             .expect("zerocopy internal error: into_ref should be infallible");
-        let ptr = ptr.recall_validity::<_, (_, (_, _))>();
+        let ptr = ptr.recall_validity::<_, BecauseBidirectional>();
         ptr.as_mut()
     }
 }
@@ -797,9 +797,9 @@ where
         // are preserved through `.deref_mut()`, so this `unwrap` will not
         // panic.
         let ptr = Ptr::from_mut(b.deref_mut())
-            .try_cast_into_no_leftover::<T, BecauseExclusive>(None)
+            .try_cast_into_no_leftover(None)
             .expect("zerocopy internal error: DerefMut::deref_mut should be infallible");
-        let ptr = ptr.recall_validity::<_, (_, (_, (BecauseExclusive, BecauseExclusive)))>();
+        let ptr = ptr.recall_validity::<_, BecauseBidirectional>();
         ptr.as_mut()
     }
 }
