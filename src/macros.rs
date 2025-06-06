@@ -51,39 +51,58 @@
 /// This macro can be invoked in `const` contexts.
 #[macro_export]
 macro_rules! transmute {
-    ($e:expr) => {{
-        // NOTE: This must be a macro (rather than a function with trait bounds)
-        // because there's no way, in a generic context, to enforce that two
-        // types have the same size. `core::mem::transmute` uses compiler magic
-        // to enforce this so long as the types are concrete.
+    // NOTE: This must be a macro (rather than a function with trait bounds)
+    // because there's no way, in a generic context, to enforce that two types
+    // have the same size. `core::mem::transmute` uses compiler magic to enforce
+    // this so long as the types are concrete.
+    (#![allow(shrink)] $e:expr) => {{
+        let mut e = $e;
+        if false {
+            $crate::__transmute_inner!(@assert_into_bytes_from_bytes e)
+        } else {
+            use $crate::util::macro_util::core_reexport::mem::ManuallyDrop;
 
+            #[repr(C)]
+            union Transmute<Src, Dst> {
+                src: ManuallyDrop<Src>,
+                dst: ManuallyDrop<Dst>,
+            }
+
+            // TODO: Update this safety comment.
+            //
+            // SAFETY: `core::mem::transmute` ensures that the type of `e` and
+            // the type of this macro invocation expression have the same size.
+            // We know this transmute is safe thanks to the `IntoBytes` and
+            // `FromBytes` bounds enforced by the `false` branch.
+            let u: Transmute<_, _> = unsafe {
+                // Clippy: We can't annotate the types; this macro is designed
+                // to infer the types from the calling context.
+                #[allow(clippy::missing_transmute_annotations, unnecessary_transmutes)]
+                $crate::util::macro_util::core_reexport::mem::transmute(e)
+            };
+
+            if false {
+                // SAFETY: This code is never executed.
+                e = ManuallyDrop::into_inner(unsafe { u.src });
+                // Suppress the `unused_assignments` lint on the previous line.
+                let _ = e;
+                loop {}
+            } else {
+                // TODO: Safety comment
+                let dst = unsafe { u.dst };
+                $crate::util::macro_util::must_use(ManuallyDrop::into_inner(dst))
+            }
+        }
+    }};
+    ($e:expr) => {{
         let e = $e;
         if false {
-            // This branch, though never taken, ensures that the type of `e` is
-            // `IntoBytes` and that the type of this macro invocation expression
-            // is `FromBytes`.
-
-            struct AssertIsIntoBytes<T: $crate::IntoBytes>(T);
-            let _ = AssertIsIntoBytes(e);
-
-            struct AssertIsFromBytes<U: $crate::FromBytes>(U);
-            #[allow(unused, unreachable_code)]
-            let u = AssertIsFromBytes(loop {});
-            u.0
+            $crate::__transmute_inner!(@assert_into_bytes_from_bytes e)
         } else {
             // SAFETY: `core::mem::transmute` ensures that the type of `e` and
             // the type of this macro invocation expression have the same size.
             // We know this transmute is safe thanks to the `IntoBytes` and
             // `FromBytes` bounds enforced by the `false` branch.
-            //
-            // We use this reexport of `core::mem::transmute` because we know it
-            // will always be available for crates which are using the 2015
-            // edition of Rust. By contrast, if we were to use
-            // `std::mem::transmute`, this macro would not work for such crates
-            // in `no_std` contexts, and if we were to use
-            // `core::mem::transmute`, this macro would not work in `std`
-            // contexts in which `core` was not manually imported. This is not a
-            // problem for 2018 edition crates.
             let u = unsafe {
                 // Clippy: We can't annotate the types; this macro is designed
                 // to infer the types from the calling context.
@@ -92,7 +111,29 @@ macro_rules! transmute {
             };
             $crate::util::macro_util::must_use(u)
         }
-    }}
+    }};
+}
+
+#[macro_export]
+#[doc(hidden)]
+macro_rules! __transmute_inner {
+    (@assert_into_bytes_from_bytes $e:expr) => {{
+        // This branch, though never taken, ensures that the type of `e` is
+        // `IntoBytes` and that the type of the  outer macro invocation
+        // expression is `FromBytes`.
+
+        fn transmute<Src, Dst>(src: Src) -> Dst
+        where
+            Src: $crate::IntoBytes,
+            Dst: $crate::FromBytes,
+        {
+            let _ = src;
+            loop {}
+        }
+        loop {}
+        #[allow(unreachable_code)]
+        transmute($e)
+    }};
 }
 
 /// Safely transmutes a mutable or immutable reference of one type to an
@@ -1046,6 +1087,10 @@ mod tests {
         let x: [u8; 8] = transmute!(array_of_arrays);
         assert_eq!(x, array_of_u8s);
 
+        // Test that memory is transmuted as expected when shrinking.
+        let x: [[u8; 2]; 3] = transmute!(#![allow(shrink)] array_of_u8s);
+        assert_eq!(x, [[0u8, 1], [2, 3], [4, 5]]);
+
         // Test that the source expression's value is forgotten rather than
         // dropped.
         #[derive(IntoBytes)]
@@ -1058,12 +1103,16 @@ mod tests {
         }
         #[allow(clippy::let_unit_value)]
         let _: () = transmute!(PanicOnDrop(()));
+        #[allow(clippy::let_unit_value)]
+        let _: () = transmute!(#![allow(shrink)] PanicOnDrop(()));
 
         // Test that `transmute!` is legal in a const context.
         const ARRAY_OF_U8S: [u8; 8] = [0u8, 1, 2, 3, 4, 5, 6, 7];
         const ARRAY_OF_ARRAYS: [[u8; 2]; 4] = [[0, 1], [2, 3], [4, 5], [6, 7]];
         const X: [[u8; 2]; 4] = transmute!(ARRAY_OF_U8S);
         assert_eq!(X, ARRAY_OF_ARRAYS);
+        const X_SHRINK: [[u8; 2]; 3] = transmute!(#![allow(shrink)] ARRAY_OF_U8S);
+        assert_eq!(X_SHRINK, [[0u8, 1], [2, 3], [4, 5]]);
 
         // Test that `transmute!` works with `!Immutable` types.
         let x: usize = transmute!(UnsafeCell::new(1usize));
