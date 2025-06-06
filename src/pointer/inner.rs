@@ -169,7 +169,7 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
     where
         T: Sized,
     {
-        static_assert!(T, U => size_of::<T>() >= size_of::<U>());
+        static_assert!(T, U => core::mem::size_of::<T>() >= core::mem::size_of::<U>());
         let ptr = self.as_non_null().cast::<U>();
 
         // SAFETY: By the preceding assert, `U` is no larger than `T`. Thus,

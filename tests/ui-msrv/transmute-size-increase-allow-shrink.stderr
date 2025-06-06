@@ -1,0 +1,8 @@
+error[E0308]: mismatched types
+ --> tests/ui-msrv/../../zerocopy-derive/tests/include.rs
+  |
+  |         let ptr = unsafe { ptr.cast_unsized_unchecked(|p| p.as_non_null().cast()) };
+  |                                                           ^^^^^^^^^^^^^^^^^^^^^^ expected struct `PtrInner`, found struct `NonNull`
+  |
+  = note: expected struct `PtrInner<'_, _>`
+             found struct `NonNull<_>`
