@@ -612,15 +612,15 @@ pub(crate) use cast_from_raw::cast_from_raw;
 mod cast_from_raw {
     use crate::{pointer::PtrInner, *};
 
-    /// Implements [`<Dst as SizeEq<Src>>::cast_from_raw`][cast_from_raw].
+    /// Implements [`<Dst as SizeCompat<Src>>::cast_from_raw`][cast_from_raw].
     ///
     /// # PME
     ///
     /// Generates a post-monomorphization error if it is not possible to satisfy
-    /// the soundness conditions of [`SizeEq::cast_from_raw`][cast_from_raw]
+    /// the soundness conditions of [`SizeCompat::cast_from_raw`][cast_from_raw]
     /// for `Src` and `Dst`.
     ///
-    /// [cast_from_raw]: crate::pointer::SizeEq::cast_from_raw
+    /// [cast_from_raw]: crate::pointer::SizeCompat::cast_from_raw
     //
     // FIXME(#1817): Support Sized->Unsized and Unsized->Sized casts
     pub(crate) fn cast_from_raw<Src, Dst>(src: PtrInner<'_, Src>) -> PtrInner<'_, Dst>
