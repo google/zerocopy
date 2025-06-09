@@ -50,6 +50,7 @@ jobs:
           # These are the names of specific Rust versions detected in
           # `build.rs`. Each of these represents the minimum Rust version for
           # which a particular feature is supported.
+          "zerocopy-simd-x86-avx12-1-89-0",
           "zerocopy-core-error-1-81-0",
           "zerocopy-diagnostic-on-unimplemented-1-78-0",
           "zerocopy-generic-bounds-in-const-fn-1-61-0",
@@ -85,6 +86,8 @@ jobs:
             features: "--all-features"
           - toolchain: "stable"
             features: "--all-features"
+          - toolchain: "zerocopy-simd-x86-avx12-1-89-0"
+            features: "--all-features"
           - toolchain: "zerocopy-core-error-1-81-0"
             features: "--all-features"
           - toolchain: "zerocopy-diagnostic-on-unimplemented-1-78-0"
@@ -108,7 +111,9 @@ jobs:
           # Exclue any combination of zerocopy-derive and any toolchain version
           # other than "msrv", "stable", and "nightly". These other versions
           # exist to exercise zerocopy behavior which differs by toolchain;
-          # zerocopy-derive doesn't behave different on these toolchains.
+          # zerocopy-derive doesn't behave differently on these toolchains.
+          - crate: "zerocopy-derive"
+            toolchain: "zerocopy-simd-x86-avx12-1-89-0"
           - crate: "zerocopy-derive"
             toolchain: "zerocopy-core-error-1-81-0"
           - crate: "zerocopy-derive"

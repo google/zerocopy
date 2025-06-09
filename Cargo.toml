@@ -36,6 +36,10 @@ exclude = [".*"]
 # used in the codebase to make it less likely for us to make mistakes when
 # writing `doc_cfg` attributes.
 
+# From 1.89.0, Rust supports x86 AVX-12 SIMD types (previously gated by the
+# `stdarch_x86_avx512` feature).
+zerocopy-simd-x86-avx12-1-89-0 = "1.89.0"
+
 # From 1.81.0, Rust supports the `core::error::Error` trait.
 zerocopy-core-error-1-81-0 = "1.81.0"
 
@@ -60,7 +64,7 @@ zerocopy-panic-in-const-and-vec-try-reserve-1-57-0 = "1.57.0"
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.
 pinned-stable = "1.87.0"
-pinned-nightly = "nightly-2025-06-07"
+pinned-nightly = "nightly-2025-06-08"
 
 [package.metadata.docs.rs]
 all-features = true
