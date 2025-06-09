@@ -677,22 +677,21 @@ macro_rules! static_assert_dst_is_not_zst {
     }}
 }
 
+/// # Safety
+///
+/// The caller must ensure that the cast does not grow the size of the referent.
+/// Preserving or shrinking the size of the referent are both acceptable.
 macro_rules! cast {
-    () => {
-        |p| {
-            // SAFETY: `NonNull::as_ptr` returns a non-null pointer, so the
-            // argument to `NonNull::new_unchecked` is also non-null.
-            #[allow(clippy::as_conversions, unused_unsafe)]
-            #[allow(clippy::undocumented_unsafe_blocks)] // Clippy false positive
-            return unsafe {
-                core::ptr::NonNull::new_unchecked(core::ptr::NonNull::as_ptr(p) as *mut _)
-            };
-        }
-    };
     ($p:expr) => {{
         let ptr: crate::pointer::PtrInner<'_, _> = $p;
         let ptr = ptr.as_non_null();
-        let ptr = cast!()(ptr);
+        let ptr = ptr.as_ptr();
+        #[allow(clippy::as_conversions)]
+        let ptr = ptr as *mut _;
+        #[allow(unused_unsafe)]
+        // SAFETY: `NonNull::as_ptr` returns a non-null pointer, so the argument
+        // to `NonNull::new_unchecked` is also non-null.
+        let ptr = unsafe { core::ptr::NonNull::new_unchecked(ptr) };
         // SAFETY: The caller promises that the cast preserves or shrinks
         // referent size. By invariant on `$p: PtrInner` (guaranteed by type
         // annotation above), `$p` refers to a byte range entirely contained

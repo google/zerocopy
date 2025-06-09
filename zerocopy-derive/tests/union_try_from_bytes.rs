@@ -73,7 +73,7 @@ fn two_bad() {
     //   the same bytes as `c`.
     // - The cast preserves provenance.
     // - Neither the input nor output types contain any `UnsafeCell`s.
-    let candidate = unsafe { candidate.cast_unsized_unchecked(|p| p.as_non_null().cast::<Two>()) };
+    let candidate = unsafe { candidate.cast_unsized_unchecked(|p| p.cast::<Two>()) };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
     let candidate = unsafe { candidate.assume_initialized() };
@@ -102,8 +102,7 @@ fn bool_and_zst() {
     //   the same bytes as `c`.
     // - The cast preserves provenance.
     // - Neither the input nor output types contain any `UnsafeCell`s.
-    let candidate =
-        unsafe { candidate.cast_unsized_unchecked(|p| p.as_non_null().cast::<BoolAndZst>()) };
+    let candidate = unsafe { candidate.cast_unsized_unchecked(|p| p.cast::<BoolAndZst>()) };
 
     // SAFETY: `candidate`'s referent is fully initialized.
     let candidate = unsafe { candidate.assume_initialized() };
@@ -132,9 +131,8 @@ fn test_maybe_from_bytes() {
     //   the same bytes as `c`.
     // - The cast preserves provenance.
     // - Neither the input nor output types contain any `UnsafeCell`s.
-    let candidate = unsafe {
-        candidate.cast_unsized_unchecked(|p| p.as_non_null().cast::<MaybeFromBytes<bool>>())
-    };
+    let candidate =
+        unsafe { candidate.cast_unsized_unchecked(|p| p.cast::<MaybeFromBytes<bool>>()) };
 
     // SAFETY: `[u8]` consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };

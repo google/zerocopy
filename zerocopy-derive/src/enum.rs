@@ -264,7 +264,7 @@ pub(crate) fn derive_is_bit_valid(
                     let variant = unsafe {
                         variants.cast_unsized_unchecked(
                             |p: #zerocopy_crate::pointer::PtrInner<'_, ___ZerocopyVariants #ty_generics>| {
-                                p.as_non_null().cast::<#variant_struct_ident #ty_generics>()
+                                p.cast_sized::<#variant_struct_ident #ty_generics>()
                             }
                         )
                     };
@@ -325,7 +325,7 @@ pub(crate) fn derive_is_bit_valid(
                 //   primitive integer.
                 let tag_ptr = unsafe {
                     candidate.reborrow().cast_unsized_unchecked(|p: #zerocopy_crate::pointer::PtrInner<'_, Self>| {
-                        p.as_non_null().cast::<___ZerocopyTagPrimitive>()
+                        p.cast_sized::<___ZerocopyTagPrimitive>()
                     })
                 };
                 // SAFETY: `tag_ptr` is casted from `candidate`, whose referent
@@ -347,7 +347,7 @@ pub(crate) fn derive_is_bit_valid(
             //   `UnsafeCell`s.
             let raw_enum = unsafe {
                 candidate.cast_unsized_unchecked(|p: #zerocopy_crate::pointer::PtrInner<'_, Self>| {
-                    p.as_non_null().cast::<___ZerocopyRawEnum #ty_generics>()
+                    p.cast_sized::<___ZerocopyRawEnum #ty_generics>()
                 })
             };
             // SAFETY: `cast_unsized_unchecked` removes the initialization
@@ -364,13 +364,15 @@ pub(crate) fn derive_is_bit_valid(
             //   subfield pointer just points to a smaller portion of the
             //   overall struct.
             let variants = unsafe {
-                raw_enum.cast_unsized_unchecked( |p: #zerocopy_crate::pointer::PtrInner<'_, ___ZerocopyRawEnum #ty_generics>| {
+                use #zerocopy_crate::pointer::PtrInner;
+                raw_enum.cast_unsized_unchecked(|p: PtrInner<'_, ___ZerocopyRawEnum #ty_generics>| {
                     let p = p.as_non_null().as_ptr();
                     let ptr = core_reexport::ptr::addr_of_mut!((*p).variants);
                     // SAFETY: `ptr` is a projection into `p`, which is
                     // `NonNull`, and guaranteed not to wrap around the address
                     // space. Thus, `ptr` cannot be null.
-                    unsafe { core_reexport::ptr::NonNull::new_unchecked(ptr) }
+                    let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(ptr) };
+                    unsafe { PtrInner::new(ptr) }
                 })
             };
 
