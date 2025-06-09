@@ -758,6 +758,7 @@ fn derive_try_from_bytes_struct(
                     ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
                 {
                     use #zerocopy_crate::util::macro_util::core_reexport;
+                    use #zerocopy_crate::pointer::PtrInner;
 
                     true #(&& {
                         // SAFETY:
@@ -768,7 +769,7 @@ fn derive_try_from_bytes_struct(
                         //   the same byte ranges in the returned pointer's referent
                         //   as they do in `*slf`
                         let field_candidate = unsafe {
-                            let project = |slf: #zerocopy_crate::pointer::PtrInner<'_, Self>| {
+                            let project = |slf: PtrInner<'_, Self>| {
                                 let slf = slf.as_non_null().as_ptr();
                                 let field = core_reexport::ptr::addr_of_mut!((*slf).#field_names);
                                 // SAFETY: `cast_unsized_unchecked` promises that
@@ -778,7 +779,18 @@ fn derive_try_from_bytes_struct(
                                 // object. In either case, this guarantees that
                                 // field projection will not wrap around the address
                                 // space, and so `field` will be non-null.
-                                unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
+                                let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
+                                // SAFETY:
+                                // 0. `ptr` addresses a subset of the bytes of
+                                //    `slf`, so by invariant on `slf: PtrInner`,
+                                //    if `ptr`'s referent is not zero sized,
+                                //    then `ptr` has valid provenance for its
+                                //    referent, which is entirely contained in
+                                //    some Rust allocation, `A`.
+                                // 1. By invariant on `slf: PtrInner`, if
+                                //    `ptr`'s referent is not zero sized, `A` is
+                                //    guaranteed to live for at least `'a`.
+                                unsafe { PtrInner::new(ptr) }
                             };
 
                             candidate.reborrow().cast_unsized_unchecked(project)
@@ -829,6 +841,7 @@ fn derive_try_from_bytes_union(
                     ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
                 {
                     use #zerocopy_crate::util::macro_util::core_reexport;
+                    use #zerocopy_crate::pointer::PtrInner;
 
                     false #(|| {
                         // SAFETY:
@@ -839,7 +852,7 @@ fn derive_try_from_bytes_union(
                         //   `self_type_trait_bounds`, neither `*slf` nor the
                         //   returned pointer's referent contain any `UnsafeCell`s
                         let field_candidate = unsafe {
-                            let project = |slf: #zerocopy_crate::pointer::PtrInner<'_, Self>| {
+                            let project = |slf: PtrInner<'_, Self>| {
                                 let slf = slf.as_non_null().as_ptr();
                                 let field = core_reexport::ptr::addr_of_mut!((*slf).#field_names);
                                 // SAFETY: `cast_unsized_unchecked` promises that
@@ -849,7 +862,18 @@ fn derive_try_from_bytes_union(
                                 // object. In either case, this guarantees that
                                 // field projection will not wrap around the address
                                 // space, and so `field` will be non-null.
-                                unsafe { core_reexport::ptr::NonNull::new_unchecked(field) }
+                                let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
+                                // SAFETY:
+                                // 0. `ptr` addresses a subset of the bytes of
+                                //    `slf`, so by invariant on `slf: PtrInner`,
+                                //    if `ptr`'s referent is not zero sized,
+                                //    then `ptr` has valid provenance for its
+                                //    referent, which is entirely contained in
+                                //    some Rust allocation, `A`.
+                                // 1. By invariant on `slf: PtrInner`, if
+                                //    `ptr`'s referent is not zero sized, `A` is
+                                //    guaranteed to live for at least `'a`.
+                                unsafe { PtrInner::new(ptr) }
                             };
 
                             candidate.reborrow().cast_unsized_unchecked(project)
