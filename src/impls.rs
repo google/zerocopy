@@ -1026,16 +1026,20 @@ mod simd {
             #[cfg(target_arch = "x86")]
             x86, x86, __m128, __m128d, __m128i, __m256, __m256d, __m256i
         );
+        #[cfg(zerocopy_simd_x86_avx12_1_89_0)]
         simd_arch_mod!(
-            #[cfg(all(feature = "simd-nightly", target_arch = "x86"))]
+            #[cfg(target_arch = "x86")]
+            #[cfg_attr(doc_cfg, doc(cfg(rust = "1.89.0")))]
             x86, x86_nightly, __m512bh, __m512, __m512d, __m512i
         );
         simd_arch_mod!(
             #[cfg(target_arch = "x86_64")]
             x86_64, x86_64, __m128, __m128d, __m128i, __m256, __m256d, __m256i
         );
+        #[cfg(zerocopy_simd_x86_avx12_1_89_0)]
         simd_arch_mod!(
-            #[cfg(all(feature = "simd-nightly", target_arch = "x86_64"))]
+            #[cfg(target_arch = "x86_64")]
+            #[cfg_attr(doc_cfg, doc(cfg(rust = "1.89.0")))]
             x86_64, x86_64_nightly, __m512bh, __m512, __m512d, __m512i
         );
         simd_arch_mod!(
@@ -1050,11 +1054,11 @@ mod simd {
             #[cfg(all(feature = "simd-nightly", target_arch = "powerpc64"))]
             powerpc64, powerpc64, vector_bool_long, vector_double, vector_signed_long, vector_unsigned_long
         );
+        #[cfg(zerocopy_aarch64_simd_1_59_0)]
         simd_arch_mod!(
             // NOTE(https://github.com/rust-lang/stdarch/issues/1484): NEON intrinsics are currently
             // broken on big-endian platforms.
             #[cfg(all(target_arch = "aarch64", target_endian = "little"))]
-            #[cfg(zerocopy_aarch64_simd_1_59_0)]
             #[cfg_attr(doc_cfg, doc(cfg(rust = "1.59.0")))]
             aarch64, aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,
             int8x8x3_t, int8x8x4_t, int8x16_t, int8x16x2_t, int8x16x3_t, int8x16x4_t, int16x4_t,
@@ -2023,19 +2027,19 @@ mod tests {
             #[cfg(target_arch = "x86")]
             test_simd_arch_mod!(x86, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
 
-            #[cfg(all(feature = "simd-nightly", target_arch = "x86"))]
+            #[cfg(all(zerocopy_simd_x86_avx12_1_89_0, target_arch = "x86"))]
             test_simd_arch_mod!(x86, __m512bh, __m512, __m512d, __m512i);
 
             #[cfg(target_arch = "x86_64")]
             test_simd_arch_mod!(x86_64, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
 
-            #[cfg(all(feature = "simd-nightly", target_arch = "x86_64"))]
+            #[cfg(all(zerocopy_simd_x86_avx12_1_89_0, target_arch = "x86_64"))]
             test_simd_arch_mod!(x86_64, __m512bh, __m512, __m512d, __m512i);
 
             #[cfg(target_arch = "wasm32")]
             test_simd_arch_mod!(wasm32, v128);
 
-            #[cfg(all(feature = "simd-nightly", target_arch = "powerpc"))]
+            #[cfg(all(zerocopy_simd_x86_avx12_1_89_0, target_arch = "powerpc"))]
             test_simd_arch_mod!(
                 powerpc,
                 vector_bool_long,
@@ -2044,7 +2048,7 @@ mod tests {
                 vector_unsigned_long
             );
 
-            #[cfg(all(feature = "simd-nightly", target_arch = "powerpc64"))]
+            #[cfg(all(zerocopy_simd_x86_avx12_1_89_0, target_arch = "powerpc64"))]
             test_simd_arch_mod!(
                 powerpc64,
                 vector_bool_long,
