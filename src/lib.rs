@@ -303,6 +303,19 @@
     clippy::indexing_slicing,
 ))]
 #![cfg_attr(not(any(test, kani, feature = "std")), no_std)]
+// NOTE: This attribute should have the effect of causing CI to fail if
+// `stdarch_x86_avx512` - which is currently stable in 1.89.0-nightly as of this
+// writing on 2025-06-10 - has its stabilization rolled back.
+//
+// FIXME(#2583): Remove once `stdarch_x86_avx512` is stabilized in 1.89.0, and
+// 1.89.0 has been released as stable.
+#![cfg_attr(
+    all(feature = "simd-nightly", any(target_arch = "x86", target_arch = "x86_64")),
+    expect(stable_features)
+)]
+// FIXME(#2583): Remove once `stdarch_x86_avx512` is stabilized in 1.89.0, and
+// 1.89.0 has been released as stable. Replace with version detection for 1.89.0
+// (see #2574 for a draft implementation).
 #![cfg_attr(
     all(feature = "simd-nightly", any(target_arch = "x86", target_arch = "x86_64")),
     feature(stdarch_x86_avx512)
