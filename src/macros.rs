@@ -38,7 +38,7 @@
 /// # `#![allow(shrink)]`
 ///
 /// If `#![allow(shrink)]` is provided, `transmute!` additionally supports
-/// transmutations that shrink the size of the referent; e.g.:
+/// transmutations that shrink the size of the value; e.g.:
 ///
 /// ```
 /// # use zerocopy::transmute;
