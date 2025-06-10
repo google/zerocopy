@@ -711,8 +711,12 @@ impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst> {
     /// - `mem::align_of::<Dst>() <= mem::align_of::<Src>()`
     #[inline(always)]
     #[must_use]
-    pub const unsafe fn transmute_ref(self) -> &'a Dst {
-        static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
+    pub const unsafe fn transmute_ref<const ALLOW_SHRINK: bool>(self) -> &'a Dst {
+        static_assert!(Src, Dst, @const ALLOW_SHRINK: bool => if ALLOW_SHRINK {
+            mem::size_of::<Dst>() <= mem::size_of::<Src>()
+        } else {
+            mem::size_of::<Dst>() == mem::size_of::<Src>()
+        });
         static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
 
         let src: *const Src = self.0;
@@ -748,12 +752,16 @@ impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
     /// - `mem::align_of::<Dst>() <= mem::align_of::<Src>()`
     #[inline(always)]
     #[must_use]
-    pub fn transmute_mut(self) -> &'a mut Dst
+    pub fn transmute_mut<const ALLOW_SHRINK: bool>(self) -> &'a mut Dst
     where
         Src: FromBytes + IntoBytes,
         Dst: FromBytes + IntoBytes,
     {
-        static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
+        static_assert!(Src, Dst, @const ALLOW_SHRINK: bool => if ALLOW_SHRINK {
+            mem::size_of::<Dst>() <= mem::size_of::<Src>()
+        } else {
+            mem::size_of::<Dst>() == mem::size_of::<Src>()
+        });
         static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
 
         let src: *mut Src = self.0;
@@ -775,7 +783,7 @@ pub trait TransmuteRefDst<'a> {
     type Dst: ?Sized;
 
     #[must_use]
-    fn transmute_ref(self) -> &'a Self::Dst;
+    fn transmute_ref<const ALLOW_SHRINK: bool>(self) -> &'a Self::Dst;
 }
 
 impl<'a, Src: ?Sized, Dst: ?Sized> TransmuteRefDst<'a> for Wrap<&'a Src, &'a Dst>
@@ -786,18 +794,18 @@ where
     type Dst = Dst;
 
     #[inline(always)]
-    fn transmute_ref(self) -> &'a Dst {
+    fn transmute_ref<const ALLOW_SHRINK: bool>(self) -> &'a Dst {
         static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
             Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
         }, "cannot transmute reference when destination type has higher alignment than source type");
 
         // SAFETY: We only use `S` as `S<Src>` and `D` as `D<Dst>`.
         unsafe {
-            unsafe_with_size_from!(<S<Src>, D<Dst>> {
+            unsafe_with_size_from!(<S<Src>, D<Dst, {ALLOW_SHRINK}>>, {
                 let ptr = Ptr::from_ref(self.0)
                     .transmute::<S<Src>, invariant::Valid, _>()
                     .recall_validity::<invariant::Initialized, _>()
-                    .transmute::<D<Dst>, invariant::Initialized, _>()
+                    .transmute::<D<Dst, {ALLOW_SHRINK}>, invariant::Initialized, _>()
                     .recall_validity::<invariant::Valid, _>();
 
                 #[allow(unused_unsafe)]
@@ -815,7 +823,7 @@ where
 pub trait TransmuteMutDst<'a> {
     type Dst: ?Sized;
     #[must_use]
-    fn transmute_mut(self) -> &'a mut Self::Dst;
+    fn transmute_mut<const ALLOW_SHRINK: bool>(self) -> &'a mut Self::Dst;
 }
 
 impl<'a, Src: ?Sized, Dst: ?Sized> TransmuteMutDst<'a> for Wrap<&'a mut Src, &'a mut Dst>
@@ -826,18 +834,18 @@ where
     type Dst = Dst;
 
     #[inline(always)]
-    fn transmute_mut(self) -> &'a mut Dst {
+    fn transmute_mut<const ALLOW_SHRINK: bool>(self) -> &'a mut Dst {
         static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
             Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
         }, "cannot transmute reference when destination type has higher alignment than source type");
 
         // SAFETY: We only use `S` as `S<Src>` and `D` as `D<Dst>`.
         unsafe {
-            unsafe_with_size_from!(<S<Src>, D<Dst>> {
+            unsafe_with_size_from!(<S<Src>, D<Dst, {ALLOW_SHRINK}>>, {
                 let ptr = Ptr::from_mut(self.0)
                     .transmute::<S<Src>, invariant::Valid, _>()
                     .recall_validity::<invariant::Initialized, BecauseBidirectional>()
-                    .transmute::<D<Dst>, invariant::Initialized, _>()
+                    .transmute::<D<Dst, {ALLOW_SHRINK}>, invariant::Initialized, _>()
                     .recall_validity::<invariant::Valid, BecauseBidirectional>();
 
                 #[allow(unused_unsafe)]
