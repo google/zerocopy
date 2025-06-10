@@ -15,7 +15,7 @@ use crate::{
     pointer::{
         inner::PtrInner,
         invariant::*,
-        transmute::{MutationCompatible, SizeEq, TransmuteFromPtr},
+        transmute::{MutationCompatible, SizeFrom, TransmuteFromPtr},
     },
     AlignmentError, CastError, CastType, KnownLayout, SizeError, TryFromBytes, ValidityError,
 };
@@ -270,9 +270,8 @@ mod _conversions {
     {
         /// Reborrows `self`, producing another `Ptr`.
         ///
-        /// Since `self` is borrowed immutably, this prevents any mutable
-        /// methods from being called on `self` as long as the returned `Ptr`
-        /// exists.
+        /// Since `self` is borrowed mutably, this prevents `self` from being
+        /// used as long as the returned `Ptr` exists.
         #[doc(hidden)]
         #[inline]
         #[allow(clippy::needless_lifetimes)] // Allows us to name the lifetime in the safety comment below.
@@ -312,6 +311,24 @@ mod _conversions {
             //   exists, no other references or `Ptr`s which refer to the same
             //   memory may be live.
             unsafe { Ptr::from_inner(self.as_inner()) }
+        }
+
+        /// Converts `self` to a shared `Ptr`.
+        #[doc(hidden)]
+        #[inline]
+        #[must_use]
+        #[allow(clippy::needless_lifetimes)] // Allows us to name the lifetime in the safety comment below.
+        pub fn into_shared(self) -> Ptr<'a, T, (Shared, I::Alignment, I::Validity)> {
+            // SAFETY: Since `I::Aliasing: Reference`, there are two cases for
+            // `I::Aliasing`:
+            // - For `invariant::Shared`, the returned `Ptr` is identical, so no
+            //   new proof obligations are introduced.
+            // - For `invariant::Exclusive`: Since `self` has `Exclusive`
+            //   aliasing, it is guaranteed that no other `Ptr`s or references
+            //   permit concurrent access to the referent. Thus, the returned
+            //   `Ptr` is the only reference to the referent which may read or
+            //   write the referent during `'a`.
+            unsafe { self.assume_aliasing() }
         }
     }
 
@@ -362,11 +379,11 @@ mod _conversions {
         pub(crate) fn transmute<U, V, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
             V: Validity,
-            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + SizeEq<T> + ?Sized,
+            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + SizeFrom<T> + ?Sized,
         {
             // SAFETY:
-            // - `SizeEq::cast_from_raw` promises to preserve address,
-            //   provenance, and the number of bytes in the referent
+            // - `SizeFrom::cast_from_raw` promises to preserve address and to
+            //   address a prefix of the bytes addressed by its argument
             // - If aliasing is `Shared`, then by `U: TransmuteFromPtr<T>`, at
             //   least one of the following holds:
             //   - `T: Immutable` and `U: Immutable`, in which case it is
@@ -376,7 +393,7 @@ mod _conversions {
             //     operate on these references simultaneously
             // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
             //   sound to perform this transmute.
-            unsafe { self.transmute_unchecked(SizeEq::cast_from_raw) }
+            unsafe { self.transmute_unchecked(SizeFrom::cast_from_raw) }
         }
 
         #[doc(hidden)]
@@ -394,7 +411,7 @@ mod _conversions {
             //   referent simultaneously
             // - By `T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
             //   sound to perform this transmute.
-            let ptr = unsafe { self.transmute_unchecked(SizeEq::cast_from_raw) };
+            let ptr = unsafe { self.transmute_unchecked(SizeFrom::cast_from_raw) };
             // SAFETY: `self` and `ptr` have the same address and referent type.
             // Therefore, if `self` satisfies `I::Alignment`, then so does
             // `ptr`.
@@ -412,8 +429,7 @@ mod _conversions {
         ///
         /// The caller promises that `u = cast(p)` is a pointer cast with the
         /// following properties:
-        /// - `u` addresses a subset of the bytes addressed by `p`
-        /// - `u` has the same provenance as `p`
+        /// - `u` addresses a prefix of the bytes addressed by `p`
         /// - If `I::Aliasing` is [`Shared`], it must not be possible for safe
         ///   code, operating on a `&T` and `&U` with the same referent
         ///   simultaneously, to cause undefined behavior
@@ -511,7 +527,6 @@ mod _conversions {
         pub fn read_unaligned<R>(self) -> T
         where
             T: Copy,
-            T: Read<I::Aliasing, R>,
         {
             (*self.into_unalign().as_ref()).into_inner()
         }
@@ -799,13 +814,11 @@ mod _transitions {
         /// On error, unsafe code may rely on this method's returned
         /// `ValidityError` containing `self`.
         #[inline]
-        pub(crate) fn try_into_valid<R, S>(
+        pub(crate) fn try_into_valid<R>(
             mut self,
         ) -> Result<Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>, ValidityError<Self, T>>
         where
-            T: TryFromBytes
-                + Read<I::Aliasing, R>
-                + TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, S>,
+            T: TryFromBytes + TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, R>,
             I::Aliasing: Reference,
             I: Invariants<Validity = Initialized>,
         {
@@ -816,9 +829,13 @@ mod _transitions {
                 // SAFETY: If `T::is_bit_valid`, code may assume that `self`
                 // contains a bit-valid instance of `T`. By `T:
                 // TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid>`, so
-                // long as `self`'s referent conforms to the `Valid` validity
-                // for `T` (which we just confired), then this transmute is
-                // sound.
+                // long as `SizeFrom::cast_from_raw(self.into_inner)`'s referent
+                // conforms to the `Valid` validity for `T`, then this transmute
+                // is sound. Since `<T as SizeFrom<T>>::cast_from_raw` is
+                // guaranteed to be the identity function, this is equivalent to
+                // the statement that `self`'s referent conforms to the `Valid`
+                // validity for `T`, which we just confirmed using
+                // `T::is_bit_valid`.
                 Ok(unsafe { self.assume_valid() })
             } else {
                 Err(ValidityError::new(self))
@@ -915,16 +932,16 @@ mod _casts {
             cast: F,
         ) -> Ptr<'a, U, (I::Aliasing, Unaligned, I::Validity)>
         where
-            T: MutationCompatible<U, I::Aliasing, I::Validity, I::Validity, R>,
-            U: 'a + ?Sized + CastableFrom<T, I::Validity, I::Validity>,
+            U: 'a
+                + MutationCompatible<T, I::Aliasing, I::Validity, I::Validity, R>
+                + CastableFrom<T, I::Validity, I::Validity>
+                + ?Sized,
             F: FnOnce(PtrInner<'a, T>) -> PtrInner<'a, U>,
         {
             // SAFETY: Because `T: MutationCompatible<U, I::Aliasing, R>`, one
             // of the following holds:
-            // - `T: Read<I::Aliasing>` and `U: Read<I::Aliasing>`, in which
-            //   case one of the following holds:
-            //   - `I::Aliasing` is `Exclusive`
-            //   - `T` and `U` are both `Immutable`
+            // - `I::Aliasing` is `Exclusive`
+            // - `T` and `U` are both `Immutable`
             // - It is sound for safe code to operate on `&T` and `&U` with the
             //   same referent simultaneously
             //
@@ -944,14 +961,14 @@ mod _casts {
         #[inline]
         pub fn as_bytes<R>(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Valid)>
         where
-            T: Read<I::Aliasing, R>,
+            [u8]: MutationCompatible<T, I::Aliasing, I::Validity, I::Validity, R>,
             I::Aliasing: Reference,
         {
             // SAFETY: `PtrInner::as_bytes` returns a pointer which addresses
             // the same byte range as its argument, and which has the same
             // provenance.
             let ptr = unsafe { self.cast_unsized(PtrInner::as_bytes) };
-            ptr.bikeshed_recall_aligned().recall_validity::<Valid, (_, (_, _))>()
+            ptr.bikeshed_recall_aligned().recall_validity()
         }
     }
 
@@ -1036,7 +1053,8 @@ mod _casts {
         >
         where
             I::Aliasing: Reference,
-            U: 'a + ?Sized + KnownLayout + Read<I::Aliasing, R>,
+            U: 'a + ?Sized + KnownLayout,
+            [u8]: MutationCompatible<U, I::Aliasing, Initialized, Initialized, R>,
         {
             let (inner, remainder) =
                 self.as_inner().try_cast_into(cast_type, meta).map_err(|err| {
@@ -1049,13 +1067,16 @@ mod _casts {
                 })?;
 
             // SAFETY:
-            // 0. Since `U: Read<I::Aliasing, _>`, either:
-            //    - `I::Aliasing` is `Exclusive`, in which case both `src` and
-            //      `ptr` conform to `Exclusive`
+            // 0. Since `[u8]: MutationCompatible<U, I::Aliasing, ...>`, either:
+            //    - `I::Aliasing` is `Exclusive`, in which case both `self` and
+            //      `inner` conform to `Exclusive`
             //    - `I::Aliasing` is `Shared` and `U` is `Immutable` (we already
             //      know that `[u8]: Immutable`). In this case, neither `U` nor
             //      `[u8]` permit mutation, and so `Shared` aliasing is
             //      satisfied.
+            //    - `I::Aliasing` is `Shared` and `[u8]: InvariantsEq<U>`, in
+            //      which case it is sound for `self` and `inner` to exist at
+            //      the same time.
             // 1. `ptr` conforms to the alignment invariant of `Aligned` because
             //    it is derived from `try_cast_into`, which promises that the
             //    object described by `target` is validly aligned for `U`.
@@ -1099,7 +1120,8 @@ mod _casts {
         ) -> Result<Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, CastError<Self, U>>
         where
             I::Aliasing: Reference,
-            U: 'a + ?Sized + KnownLayout + Read<I::Aliasing, R>,
+            U: 'a + ?Sized + KnownLayout,
+            [u8]: MutationCompatible<U, I::Aliasing, Initialized, Initialized, R>,
         {
             // FIXME(#67): Remove this allow. See NonNulSlicelExt for more
             // details.
@@ -1231,7 +1253,7 @@ mod tests {
     use super::*;
     #[allow(unused)] // Needed on our MSRV, but considered unused on later toolchains.
     use crate::util::AsAddress;
-    use crate::{pointer::BecauseImmutable, util::testutil::AU64, FromBytes, Immutable};
+    use crate::{pointer::invariant::BecauseImmutable, util::testutil::AU64, FromBytes, Immutable};
 
     mod test_ptr_try_cast_into_soundness {
         use super::*;
