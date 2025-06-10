@@ -35,6 +35,17 @@
 /// original `Src` will be forgotten, and the value of type `Dst` will be
 /// returned.
 ///
+/// # `#![allow(shrink)]`
+///
+/// If `#![allow(shrink)]` is provided, `transmute!` additionally supports
+/// transmutations that shrink the size of the value; e.g.:
+///
+/// ```
+/// # use zerocopy::transmute;
+/// let u: u32 = transmute!(#![allow(shrink)] 0u64);
+/// assert_eq!(u, 0u32);
+/// ```
+///
 /// # Examples
 ///
 /// ```
@@ -51,39 +62,117 @@
 /// This macro can be invoked in `const` contexts.
 #[macro_export]
 macro_rules! transmute {
-    ($e:expr) => {{
-        // NOTE: This must be a macro (rather than a function with trait bounds)
-        // because there's no way, in a generic context, to enforce that two
-        // types have the same size. `core::mem::transmute` uses compiler magic
-        // to enforce this so long as the types are concrete.
+    // NOTE: This must be a macro (rather than a function with trait bounds)
+    // because there's no way, in a generic context, to enforce that two types
+    // have the same size. `core::mem::transmute` uses compiler magic to enforce
+    // this so long as the types are concrete.
+    (#![allow(shrink)] $e:expr) => {{
+        let mut e = $e;
+        if false {
+            // This branch, though never taken, ensures that the type of `e` is
+            // `IntoBytes` and that the type of the  outer macro invocation
+            // expression is `FromBytes`.
 
+            fn transmute<Src, Dst>(src: Src) -> Dst
+            where
+                Src: $crate::IntoBytes,
+                Dst: $crate::FromBytes,
+            {
+                let _ = src;
+                loop {}
+            }
+            loop {}
+            #[allow(unreachable_code)]
+            transmute(e)
+        } else {
+            use $crate::util::macro_util::core_reexport::mem::ManuallyDrop;
+
+            // NOTE: `repr(packed)` is important! It ensures that the size of
+            // `Transmute` won't be rounded up to accomodate `Src`'s or `Dst`'s
+            // alignment, which would break the size comparison logic below.
+            //
+            // As an example of why this is problematic, consider `Src = [u8;
+            // 5]`, `Dst = u32`. The total size of `Transmute<Src, Dst>` would
+            // be 8, and so we would reject a `[u8; 5]` to `u32` transmute as
+            // being size-increasing, which it isn't.
+            #[repr(C, packed)]
+            union Transmute<Src, Dst> {
+                src: ManuallyDrop<Src>,
+                dst: ManuallyDrop<Dst>,
+            }
+
+            // SAFETY: `Transmute` is a `reper(C)` union whose `src` field has
+            // type `ManuallyDrop<Src>`. Thus, the `src` field starts at byte
+            // offset 0 within `Transmute` [1]. `ManuallyDrop<T>` has the same
+            // layout and bit validity as `T`, so it is sound to transmute `Src`
+            // to `Transmute`.
+            //
+            // [1] https://doc.rust-lang.org/1.85.0/reference/type-layout.html#reprc-unions
+            //
+            // [2] Per https://doc.rust-lang.org/1.85.0/std/mem/struct.ManuallyDrop.html:
+            //
+            //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
+            //   validity as `T`
+            let u: Transmute<_, _> = unsafe {
+                // Clippy: We can't annotate the types; this macro is designed
+                // to infer the types from the calling context.
+                #[allow(clippy::missing_transmute_annotations)]
+                $crate::util::macro_util::core_reexport::mem::transmute(e)
+            };
+
+            if false {
+                // SAFETY: This code is never executed.
+                e = ManuallyDrop::into_inner(unsafe { u.src });
+                // Suppress the `unused_assignments` lint on the previous line.
+                let _ = e;
+                loop {}
+            } else {
+                // SAFETY: Per the safety comment on `let u` above, the `dst`
+                // field in `Transmute` starts at byte offset 0, and has the
+                // same layout and bit validity as `Dst`.
+                //
+                // Transmuting `Src` to `Transmute<Src, Dst>` above using
+                // `core::mem::transmute` ensures that `size_of::<Src>() ==
+                // size_of::<Transmute<Src, Dst>>()`. A `#[repr(C, packed)]`
+                // union has the maximum size of all of its fields [1], so this
+                // is equivalent to `size_of::<Src>() >= size_of::<Dst>()`.
+                //
+                // The outer `if`'s `false` branch ensures that `Src: IntoBytes`
+                // and `Dst: FromBytes`. This, combined with the size bound,
+                // ensures that this transmute is sound.
+                //
+                // [1] Per https://doc.rust-lang.org/1.85.0/reference/type-layout.html#reprc-unions:
+                //
+                //   The union will have a size of the maximum size of all of
+                //   its fields rounded to its alignment
+                let dst = unsafe { u.dst };
+                $crate::util::macro_util::must_use(ManuallyDrop::into_inner(dst))
+            }
+        }
+    }};
+    ($e:expr) => {{
         let e = $e;
         if false {
             // This branch, though never taken, ensures that the type of `e` is
-            // `IntoBytes` and that the type of this macro invocation expression
-            // is `FromBytes`.
+            // `IntoBytes` and that the type of the  outer macro invocation
+            // expression is `FromBytes`.
 
-            struct AssertIsIntoBytes<T: $crate::IntoBytes>(T);
-            let _ = AssertIsIntoBytes(e);
-
-            struct AssertIsFromBytes<U: $crate::FromBytes>(U);
-            #[allow(unused, unreachable_code)]
-            let u = AssertIsFromBytes(loop {});
-            u.0
+            fn transmute<Src, Dst>(src: Src) -> Dst
+            where
+                Src: $crate::IntoBytes,
+                Dst: $crate::FromBytes,
+            {
+                let _ = src;
+                loop {}
+            }
+            loop {}
+            #[allow(unreachable_code)]
+            transmute(e)
         } else {
             // SAFETY: `core::mem::transmute` ensures that the type of `e` and
             // the type of this macro invocation expression have the same size.
             // We know this transmute is safe thanks to the `IntoBytes` and
             // `FromBytes` bounds enforced by the `false` branch.
-            //
-            // We use this reexport of `core::mem::transmute` because we know it
-            // will always be available for crates which are using the 2015
-            // edition of Rust. By contrast, if we were to use
-            // `std::mem::transmute`, this macro would not work for such crates
-            // in `no_std` contexts, and if we were to use
-            // `core::mem::transmute`, this macro would not work in `std`
-            // contexts in which `core` was not manually imported. This is not a
-            // problem for 2018 edition crates.
             let u = unsafe {
                 // Clippy: We can't annotate the types; this macro is designed
                 // to infer the types from the calling context.
@@ -92,7 +181,7 @@ macro_rules! transmute {
             };
             $crate::util::macro_util::must_use(u)
         }
-    }}
+    }};
 }
 
 /// Safely transmutes a mutable or immutable reference of one type to an
@@ -1046,6 +1135,10 @@ mod tests {
         let x: [u8; 8] = transmute!(array_of_arrays);
         assert_eq!(x, array_of_u8s);
 
+        // Test that memory is transmuted as expected when shrinking.
+        let x: [[u8; 2]; 3] = transmute!(#![allow(shrink)] array_of_u8s);
+        assert_eq!(x, [[0u8, 1], [2, 3], [4, 5]]);
+
         // Test that the source expression's value is forgotten rather than
         // dropped.
         #[derive(IntoBytes)]
@@ -1058,12 +1151,16 @@ mod tests {
         }
         #[allow(clippy::let_unit_value)]
         let _: () = transmute!(PanicOnDrop(()));
+        #[allow(clippy::let_unit_value)]
+        let _: () = transmute!(#![allow(shrink)] PanicOnDrop(()));
 
         // Test that `transmute!` is legal in a const context.
         const ARRAY_OF_U8S: [u8; 8] = [0u8, 1, 2, 3, 4, 5, 6, 7];
         const ARRAY_OF_ARRAYS: [[u8; 2]; 4] = [[0, 1], [2, 3], [4, 5], [6, 7]];
         const X: [[u8; 2]; 4] = transmute!(ARRAY_OF_U8S);
         assert_eq!(X, ARRAY_OF_ARRAYS);
+        const X_SHRINK: [[u8; 2]; 3] = transmute!(#![allow(shrink)] ARRAY_OF_U8S);
+        assert_eq!(X_SHRINK, [[0u8, 1], [2, 3], [4, 5]]);
 
         // Test that `transmute!` works with `!Immutable` types.
         let x: usize = transmute!(UnsafeCell::new(1usize));
