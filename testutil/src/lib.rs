@@ -9,8 +9,9 @@
 // Inlining format args isn't supported on our MSRV.
 #![allow(clippy::uninlined_format_args)]
 
-use rustc_version::{Channel, Version};
 use std::{env, error::Error, fs};
+
+use rustc_version::{Channel, Version};
 
 struct PinnedVersions {
     msrv: String,

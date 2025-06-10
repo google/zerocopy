@@ -1,15 +1,15 @@
 warning: unused import: `zerocopy::KnownLayout`
-  --> tests/ui-nightly/late_compile_pass.rs:16:5
+  --> tests/ui-nightly/late_compile_pass.rs:15:5
    |
-16 | use zerocopy::KnownLayout;
+15 | use zerocopy::KnownLayout;
    |     ^^^^^^^^^^^^^^^^^^^^^
    |
    = note: `#[warn(unused_imports)]` on by default
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
-  --> tests/ui-nightly/late_compile_pass.rs:28:10
+  --> tests/ui-nightly/late_compile_pass.rs:29:10
    |
-28 | #[derive(TryFromBytes)]
+29 | #[derive(TryFromBytes)]
    |          ^^^^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
    |
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
@@ -31,9 +31,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
-  --> tests/ui-nightly/late_compile_pass.rs:37:10
+  --> tests/ui-nightly/late_compile_pass.rs:38:10
    |
-37 | #[derive(FromZeros)]
+38 | #[derive(FromZeros)]
    |          ^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
    |
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
@@ -55,9 +55,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
-  --> tests/ui-nightly/late_compile_pass.rs:37:10
+  --> tests/ui-nightly/late_compile_pass.rs:38:10
    |
-37 | #[derive(FromZeros)]
+38 | #[derive(FromZeros)]
    |          ^^^^^^^^^ the trait `FromZeros` is not implemented for `NotZerocopy`
    |
    = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
@@ -79,9 +79,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
-  --> tests/ui-nightly/late_compile_pass.rs:46:10
+  --> tests/ui-nightly/late_compile_pass.rs:47:10
    |
-46 | #[derive(FromBytes)]
+47 | #[derive(FromBytes)]
    |          ^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
    |
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
@@ -103,9 +103,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
-  --> tests/ui-nightly/late_compile_pass.rs:46:10
+  --> tests/ui-nightly/late_compile_pass.rs:47:10
    |
-46 | #[derive(FromBytes)]
+47 | #[derive(FromBytes)]
    |          ^^^^^^^^^ the trait `FromZeros` is not implemented for `NotZerocopy`
    |
    = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
@@ -127,9 +127,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfied
-  --> tests/ui-nightly/late_compile_pass.rs:46:10
+  --> tests/ui-nightly/late_compile_pass.rs:47:10
    |
-46 | #[derive(FromBytes)]
+47 | #[derive(FromBytes)]
    |          ^^^^^^^^^ the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
    |
    = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
@@ -151,9 +151,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfied
-  --> tests/ui-nightly/late_compile_pass.rs:55:10
+  --> tests/ui-nightly/late_compile_pass.rs:56:10
    |
-55 | #[derive(IntoBytes)]
+56 | #[derive(IntoBytes)]
    |          ^^^^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy`
    |
    = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy`
@@ -175,9 +175,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
-  --> tests/ui-nightly/late_compile_pass.rs:65:10
+  --> tests/ui-nightly/late_compile_pass.rs:66:10
    |
-65 | #[derive(Unaligned)]
+66 | #[derive(Unaligned)]
    |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
    |
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
@@ -199,9 +199,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
-  --> tests/ui-nightly/late_compile_pass.rs:73:10
+  --> tests/ui-nightly/late_compile_pass.rs:74:10
    |
-73 | #[derive(Unaligned)]
+74 | #[derive(Unaligned)]
    |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
    |
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
@@ -223,9 +223,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
-  --> tests/ui-nightly/late_compile_pass.rs:80:10
+  --> tests/ui-nightly/late_compile_pass.rs:81:10
    |
-80 | #[derive(Unaligned)]
+81 | #[derive(Unaligned)]
    |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
    |
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
@@ -247,9 +247,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfied
-  --> tests/ui-nightly/late_compile_pass.rs:46:10
+  --> tests/ui-nightly/late_compile_pass.rs:47:10
    |
-46 | #[derive(FromBytes)]
+47 | #[derive(FromBytes)]
    |          ^^^^^^^^^ the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
    |
    = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
@@ -264,13 +264,13 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfie
              AtomicU16
            and $N others
 note: required for `FromBytes1` to implement `zerocopy::FromBytes`
-  --> tests/ui-nightly/late_compile_pass.rs:46:10
+  --> tests/ui-nightly/late_compile_pass.rs:47:10
    |
-46 | #[derive(FromBytes)]
+47 | #[derive(FromBytes)]
    |          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `<FromBytes1 as zerocopy::TryFromBytes>::is_bit_valid::assert_is_from_bytes`
-  --> tests/ui-nightly/late_compile_pass.rs:46:10
+  --> tests/ui-nightly/late_compile_pass.rs:47:10
    |
-46 | #[derive(FromBytes)]
+47 | #[derive(FromBytes)]
    |          ^^^^^^^^^ required by this bound in `assert_is_from_bytes`
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)

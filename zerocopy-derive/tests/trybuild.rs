@@ -9,6 +9,7 @@
 #![allow(clippy::uninlined_format_args)]
 
 use std::env;
+
 use testutil::set_rustflags_w_warnings;
 
 fn test(subdir: &str) {

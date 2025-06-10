@@ -15,9 +15,6 @@ use core::{
     ops::{Deref, DerefMut},
 };
 
-#[cfg(doc)]
-use crate::Ref;
-
 // For each trait polyfill, as soon as the corresponding feature is stable, the
 // polyfill import will be unused because method/function resolution will prefer
 // the inherent method/function over a trait method/function. Thus, we suppress
@@ -26,6 +23,8 @@ use crate::Ref;
 // See the documentation on `util::polyfills` for more information.
 #[allow(unused_imports)]
 use crate::util::polyfills::{self, NonNullExt as _, NumExt as _};
+#[cfg(doc)]
+use crate::Ref;
 
 /// A mutable or immutable reference to a byte slice.
 ///

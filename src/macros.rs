@@ -1112,10 +1112,10 @@ macro_rules! cryptocorrosion_derive_traits {
 
 #[cfg(test)]
 mod tests {
-    use crate::*;
     use crate::{
         byteorder::native_endian::{U16, U32},
         util::testutil::*,
+        *,
     };
 
     #[derive(KnownLayout, Immutable, FromBytes, IntoBytes, PartialEq, Debug)]

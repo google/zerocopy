@@ -115,14 +115,13 @@
 //!         .map_err(|err| err.to_string())
 //! }).join().unwrap();
 //! ```
+#[cfg(zerocopy_core_error_1_81_0)]
+use core::error::Error;
 use core::{
     convert::Infallible,
     fmt::{self, Debug, Write},
     ops::Deref,
 };
-
-#[cfg(zerocopy_core_error_1_81_0)]
-use core::error::Error;
 #[cfg(all(not(zerocopy_core_error_1_81_0), any(feature = "std", test)))]
 use std::error::Error;
 

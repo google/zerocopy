@@ -22,10 +22,9 @@ use crate::{
 
 /// Module used to gate access to [`Ptr`]'s fields.
 mod def {
-    use super::*;
-
     #[cfg(doc)]
     use super::super::invariant;
+    use super::*;
 
     /// A raw pointer with more restrictions.
     ///
@@ -532,9 +531,8 @@ mod _conversions {
 
 /// State transitions between invariants.
 mod _transitions {
-    use crate::pointer::transmute::TryTransmuteFromPtr;
-
     use super::*;
+    use crate::pointer::transmute::TryTransmuteFromPtr;
 
     impl<'a, T, I> Ptr<'a, T, I>
     where

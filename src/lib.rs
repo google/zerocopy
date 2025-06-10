@@ -368,13 +368,6 @@ mod split_at;
 // FIXME(#252): If we make this pub, come up with a better name.
 mod wrappers;
 
-pub use crate::byte_slice::*;
-pub use crate::byteorder::*;
-pub use crate::error::*;
-pub use crate::r#ref::*;
-pub use crate::split_at::{Split, SplitAt};
-pub use crate::wrappers::*;
-
 use core::{
     cell::{Cell, UnsafeCell},
     cmp::Ordering,
@@ -390,28 +383,34 @@ use core::{
     ptr::{self, NonNull},
     slice,
 };
-
 #[cfg(feature = "std")]
 use std::io;
 
 use crate::pointer::invariant::{self, BecauseExclusive};
+pub use crate::{
+    byte_slice::*,
+    byteorder::*,
+    error::*,
+    r#ref::*,
+    split_at::{Split, SplitAt},
+    wrappers::*,
+};
 
 #[cfg(any(feature = "alloc", test, kani))]
 extern crate alloc;
 #[cfg(any(feature = "alloc", test))]
 use alloc::{boxed::Box, vec::Vec};
-use util::MetadataOf;
-
 #[cfg(any(feature = "alloc", test))]
 use core::alloc::Layout;
 
-// Used by `TryFromBytes::is_bit_valid`.
-#[doc(hidden)]
-pub use crate::pointer::{invariant::BecauseImmutable, Maybe, Ptr};
+use util::MetadataOf;
+
 // Used by `KnownLayout`.
 #[doc(hidden)]
 pub use crate::layout::*;
-
+// Used by `TryFromBytes::is_bit_valid`.
+#[doc(hidden)]
+pub use crate::pointer::{invariant::BecauseImmutable, Maybe, Ptr};
 // For each trait polyfill, as soon as the corresponding feature is stable, the
 // polyfill import will be unused because method/function resolution will prefer
 // the inherent method/function over a trait method/function. Thus, we suppress
@@ -448,9 +447,6 @@ const _: () = {
 //
 // The "note" provides enough context to make it easy to figure out how to fix
 // the error.
-#[allow(unused)]
-use {FromZeros as FromZeroes, IntoBytes as AsBytes, Ref as LayoutVerified};
-
 /// Implements [`KnownLayout`].
 ///
 /// This derive analyzes various aspects of a type's layout that are needed for
@@ -553,6 +549,8 @@ use {FromZeros as FromZeroes, IntoBytes as AsBytes, Ref as LayoutVerified};
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::KnownLayout;
+#[allow(unused)]
+use {FromZeros as FromZeroes, IntoBytes as AsBytes, Ref as LayoutVerified};
 
 /// Indicates that zerocopy can reason about certain aspects of a type's layout.
 ///
@@ -1165,7 +1163,6 @@ const _: () = unsafe {
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::FromZeros;
-
 /// Analyzes whether a type is [`Immutable`].
 ///
 /// This derive analyzes, at compile time, whether the annotated type satisfies
@@ -5550,6 +5547,39 @@ pub unsafe trait Unaligned {
         Self: Sized;
 }
 
+/// Derives optimized [`PartialEq`] and [`Eq`] implementations.
+///
+/// This derive can be applied to structs and enums implementing both
+/// [`Immutable`] and [`IntoBytes`]; e.g.:
+///
+/// ```
+/// # use zerocopy_derive::{ByteEq, Immutable, IntoBytes};
+/// #[derive(ByteEq, Immutable, IntoBytes)]
+/// #[repr(C)]
+/// struct MyStruct {
+/// # /*
+///     ...
+/// # */
+/// }
+///
+/// #[derive(ByteEq, Immutable, IntoBytes)]
+/// #[repr(u8)]
+/// enum MyEnum {
+/// #   Variant,
+/// # /*
+///     ...
+/// # */
+/// }
+/// ```
+///
+/// The standard library's [`derive(Eq, PartialEq)`][derive@PartialEq] computes
+/// equality by individually comparing each field. Instead, the implementation
+/// of [`PartialEq::eq`] emitted by `derive(ByteHash)` converts the entirety of
+/// `self` and `other` to byte slices and compares those slices for equality.
+/// This may have performance advantages.
+#[cfg(any(feature = "derive", test))]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+pub use zerocopy_derive::ByteEq;
 /// Derives an optimized [`Hash`] implementation.
 ///
 /// This derive can be applied to structs and enums implementing both
@@ -5588,41 +5618,6 @@ pub unsafe trait Unaligned {
 #[cfg(any(feature = "derive", test))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
 pub use zerocopy_derive::ByteHash;
-
-/// Derives optimized [`PartialEq`] and [`Eq`] implementations.
-///
-/// This derive can be applied to structs and enums implementing both
-/// [`Immutable`] and [`IntoBytes`]; e.g.:
-///
-/// ```
-/// # use zerocopy_derive::{ByteEq, Immutable, IntoBytes};
-/// #[derive(ByteEq, Immutable, IntoBytes)]
-/// #[repr(C)]
-/// struct MyStruct {
-/// # /*
-///     ...
-/// # */
-/// }
-///
-/// #[derive(ByteEq, Immutable, IntoBytes)]
-/// #[repr(u8)]
-/// enum MyEnum {
-/// #   Variant,
-/// # /*
-///     ...
-/// # */
-/// }
-/// ```
-///
-/// The standard library's [`derive(Eq, PartialEq)`][derive@PartialEq] computes
-/// equality by individually comparing each field. Instead, the implementation
-/// of [`PartialEq::eq`] emitted by `derive(ByteHash)` converts the entirety of
-/// `self` and `other` to byte slices and compares those slices for equality.
-/// This may have performance advantages.
-#[cfg(any(feature = "derive", test))]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
-pub use zerocopy_derive::ByteEq;
-
 /// Implements [`SplitAt`].
 ///
 /// This derive can be applied to structs; e.g.:
