@@ -36,19 +36,14 @@ mod ext;
 mod output_tests;
 mod repr;
 
-use proc_macro2::{TokenStream, TokenTree};
-use quote::ToTokens;
-
-use {
-    proc_macro2::Span,
-    quote::quote,
-    syn::{
-        parse_quote, Attribute, Data, DataEnum, DataStruct, DataUnion, DeriveInput, Error, Expr,
-        ExprLit, ExprUnary, GenericParam, Ident, Lit, Meta, Path, Type, UnOp, WherePredicate,
-    },
+use proc_macro2::{Span, TokenStream, TokenTree};
+use quote::{quote, ToTokens};
+use syn::{
+    parse_quote, Attribute, Data, DataEnum, DataStruct, DataUnion, DeriveInput, Error, Expr,
+    ExprLit, ExprUnary, GenericParam, Ident, Lit, Meta, Path, Type, UnOp, WherePredicate,
 };
 
-use {crate::ext::*, crate::repr::*};
+use crate::{ext::*, repr::*};
 
 // FIXME(https://github.com/rust-lang/rust/issues/54140): Some errors could be
 // made better if we could add multiple lines of error output like this:
@@ -1228,7 +1223,9 @@ fn derive_from_bytes_enum(
 
 // Returns `None` if the enum's size is not guaranteed by the repr.
 fn enum_size_from_repr(repr: &EnumRepr) -> Result<usize, Error> {
-    use {CompoundRepr::*, PrimitiveRepr::*, Repr::*};
+    use CompoundRepr::*;
+    use PrimitiveRepr::*;
+    use Repr::*;
     match repr {
         Transparent(span)
         | Compound(

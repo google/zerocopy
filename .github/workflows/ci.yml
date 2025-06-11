@@ -676,7 +676,13 @@ jobs:
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
       - name: Check Rust formatting
-        run: ./ci/check_fmt.sh
+        run: |
+          set -eo pipefail
+
+          # Required by `ci/check_fmt.sh` as of this writing.
+          rustup install $(./cargo.sh --version nightly) -c rust-src,rustfmt
+
+          ./ci/check_fmt.sh
 
   check_readme:
     needs: generate_cache
@@ -804,7 +810,13 @@ jobs:
         # is `pre-push`. Running all hooks ensures that, if a new hook is added
         # which can't run in CI (at least not using this naive setup), we'll
         # notice and it will remind us to update this test.
-        run: set -e; for hook in ./githooks/*; do $hook; done
+        run: |
+          set -eo pipefail
+
+          # Required by `ci/check_fmt.sh` as of this writing.
+          rustup install $(./cargo.sh --version nightly) -c rust-src,rustfmt
+
+          for hook in ./githooks/*; do $hook; done
 
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:

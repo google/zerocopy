@@ -1289,11 +1289,12 @@ mod tests {
     #[test]
     #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
     fn test_validate_rust_layout() {
-        use crate::util::testutil::*;
         use core::{
             convert::TryInto as _,
             ptr::{self, NonNull},
         };
+
+        use crate::util::testutil::*;
 
         // This test synthesizes pointers with various metadata and uses Rust's
         // built-in APIs to confirm that Rust makes decisions about type layout

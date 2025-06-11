@@ -6,9 +6,10 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use crate::IntoTokenStream;
 use dissimilar::Chunk;
 use proc_macro2::TokenStream;
+
+use crate::IntoTokenStream;
 
 macro_rules! use_as_trait_name {
     ($($alias:ident => $derive:ident),* $(,)?) => {

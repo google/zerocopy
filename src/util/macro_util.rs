@@ -17,16 +17,15 @@
 
 #![allow(missing_debug_implementations)]
 
-use core::{
-    marker::PhantomData,
-    mem::{self, ManuallyDrop},
-};
-
 // FIXME(#29), FIXME(https://github.com/rust-lang/rust/issues/69835): Remove
 // this `cfg` when `size_of_val_raw` is stabilized.
 #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 #[cfg(not(target_pointer_width = "16"))]
 use core::ptr::{self, NonNull};
+use core::{
+    marker::PhantomData,
+    mem::{self, ManuallyDrop},
+};
 
 use crate::{
     pointer::{
@@ -334,10 +333,11 @@ mod __size_of {
     }
 }
 
-#[cfg(zerocopy_diagnostic_on_unimplemented_1_78_0)]
-pub use __size_of::size_of;
 #[cfg(not(zerocopy_diagnostic_on_unimplemented_1_78_0))]
 pub use core::mem::size_of;
+
+#[cfg(zerocopy_diagnostic_on_unimplemented_1_78_0)]
+pub use __size_of::size_of;
 
 /// Does the struct type `$t` have padding?
 ///

@@ -79,7 +79,9 @@ impl<Prim, Packed> Repr<Prim, Packed> {
     where
         Prim: Copy + With<PrimitiveRepr>,
     {
-        use {CompoundRepr::*, PrimitiveRepr::*, Repr::*};
+        use CompoundRepr::*;
+        use PrimitiveRepr::*;
+        use Repr::*;
         match self {
             Transparent(_span) => "repr(transparent)",
             Compound(Spanned { t: repr, span: _ }, _align) => match repr {
@@ -116,7 +118,8 @@ impl<Prim, Packed> Repr<Prim, Packed> {
     }
 
     pub(crate) fn get_packed(&self) -> Option<&Packed> {
-        use {AlignRepr::*, Repr::*};
+        use AlignRepr::*;
+        use Repr::*;
         if let Compound(_, Some(Spanned { t: Packed(p), span: _ })) = self {
             Some(p)
         } else {
@@ -125,7 +128,8 @@ impl<Prim, Packed> Repr<Prim, Packed> {
     }
 
     pub(crate) fn get_align(&self) -> Option<Spanned<NonZeroU32>> {
-        use {AlignRepr::*, Repr::*};
+        use AlignRepr::*;
+        use Repr::*;
         if let Compound(_, Some(Spanned { t: Align(n), span })) = self {
             Some(Spanned::new(*n, *span))
         } else {
@@ -162,7 +166,8 @@ impl<Prim> Repr<Prim, NonZeroU32> {
 
 impl<Packed> Repr<PrimitiveRepr, Packed> {
     fn get_primitive(&self) -> Option<&PrimitiveRepr> {
-        use {CompoundRepr::*, Repr::*};
+        use CompoundRepr::*;
+        use Repr::*;
         if let Compound(Spanned { t: Primitive(p), span: _ }, _align) = self {
             Some(p)
         } else {
@@ -659,8 +664,9 @@ mod util {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use syn::parse_quote;
+
+    use super::*;
 
     impl<T> From<T> for Spanned<T> {
         fn from(t: T) -> Spanned<T> {
@@ -718,7 +724,9 @@ mod tests {
             };
         }
 
-        use {AlignRepr::*, CompoundRepr::*, PrimitiveRepr::*};
+        use AlignRepr::*;
+        use CompoundRepr::*;
+        use PrimitiveRepr::*;
         let nz = |n: u32| NonZeroU32::new(n).unwrap();
 
         test!(#[repr(transparent)] => StructUnionRepr::Transparent(s()));
@@ -762,7 +770,8 @@ mod tests {
             isize => Primitive(Isize)
         );
 
-        use {FromAttrsError::*, FromRawReprsError::*};
+        use FromAttrsError::*;
+        use FromRawReprsError::*;
 
         // Run failure tests which are valid for both `StructUnionRepr` and
         // `EnumRepr`.

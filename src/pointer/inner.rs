@@ -8,6 +8,8 @@
 
 use core::{marker::PhantomData, mem, ops::Range, ptr::NonNull};
 
+pub use _def::PtrInner;
+
 #[allow(unused_imports)]
 use crate::util::polyfills::NumExt as _;
 use crate::{
@@ -15,8 +17,6 @@ use crate::{
     util::AsAddress,
     AlignmentError, CastError, KnownLayout, MetadataOf, SizeError, SplitAt,
 };
-
-pub use _def::PtrInner;
 
 mod _def {
     use super::*;
