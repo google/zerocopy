@@ -397,6 +397,9 @@ macro_rules! impl_or_verify {
     (@verify $trait:ident, $impl_block:tt) => {
         #[cfg(any(feature = "derive", test))]
         {
+            // On some toolchains, `Subtrait` triggers the `dead_code` lint
+            // because it is implemented but never used.
+            #[allow(dead_code)]
             trait Subtrait: $trait {}
             $impl_block
         };
