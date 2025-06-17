@@ -88,7 +88,7 @@ macro_rules! transmute {
             use $crate::util::macro_util::core_reexport::mem::ManuallyDrop;
 
             // NOTE: `repr(packed)` is important! It ensures that the size of
-            // `Transmute` won't be rounded up to accomodate `Src`'s or `Dst`'s
+            // `Transmute` won't be rounded up to accommodate `Src`'s or `Dst`'s
             // alignment, which would break the size comparison logic below.
             //
             // As an example of why this is problematic, consider `Src = [u8;
@@ -1177,7 +1177,7 @@ mod tests {
     // This permits us to test that `transmute_ref!` and `transmute_mut!` work
     // for types which are `Sized + !KnownLayout`. When we added support for
     // slice DSTs in #1924, this new support relied on `KnownLayout`, but we
-    // need to make sure to remain backwards-compatible with code which ueses
+    // need to make sure to remain backwards-compatible with code which uses
     // these macros with types which are `!KnownLayout`.
     #[derive(FromBytes, IntoBytes, Immutable, PartialEq, Eq, Debug)]
     #[repr(transparent)]
