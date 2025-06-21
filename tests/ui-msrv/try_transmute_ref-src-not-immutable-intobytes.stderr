@@ -15,7 +15,7 @@ error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::Immutable` is not sa
   --> tests/ui-msrv/try_transmute_ref-src-not-immutable-intobytes.rs:19:48
    |
 19 |     let src_not_into_bytes: Result<&AU16, _> = try_transmute_ref!(&NotZerocopy(AU16(0)));
-   |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected an implementor of trait `zerocopy::Immutable`
+   |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected an implementer of trait `zerocopy::Immutable`
    |
 note: required by a bound in `try_transmute_ref`
   --> src/util/macro_util.rs
