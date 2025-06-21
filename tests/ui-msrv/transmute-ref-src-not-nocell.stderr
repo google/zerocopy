@@ -2,7 +2,7 @@ error[E0277]: the trait bound `Src: zerocopy::Immutable` is not satisfied
   --> tests/ui-msrv/transmute-ref-src-not-nocell.rs:23:34
    |
 23 | const SRC_NOT_IMMUTABLE: &AU16 = transmute_ref!(&Src(AU16(0)));
-   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected an implementor of trait `zerocopy::Immutable`
+   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected an implementer of trait `zerocopy::Immutable`
    |
 note: required by `AssertSrcIsImmutable`
   --> tests/ui-msrv/transmute-ref-src-not-nocell.rs:23:34
