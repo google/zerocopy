@@ -2821,6 +2821,40 @@ pub unsafe trait TryFromBytes {
         // its bytes are initialized.
         unsafe { try_read_from(source, candidate).map(|slf| (prefix, slf)) }
     }
+
+    // TODO: Write tests for this method
+    #[cfg(feature = "std")]
+    #[inline(always)]
+    fn try_read_from_io<R>(mut src: R) -> io::Result<Self>
+    where
+        Self: Sized,
+        R: io::Read,
+    {
+        // NOTE(#2319, #2320): We do `buf.zero()` separately rather than
+        // constructing `let buf = CoreMaybeUninit::zeroed()` because, if `Self`
+        // contains padding bytes, then a typed copy of `CoreMaybeUninit<Self>`
+        // will not necessarily preserve zeros written to those padding byte
+        // locations, and so `buf` could contain uninitialized bytes.
+        let mut buf = CoreMaybeUninit::<Self>::uninit();
+        buf.zero();
+
+        let ptr = Ptr::from_mut(&mut buf);
+        // SAFETY: After `buf.zero()`, `buf` consists entirely of initialized,
+        // zeroed bytes. Since `MaybeUninit` has no validity requirements, `ptr`
+        // cannot be used to write values which will violate `buf`'s bit
+        // validity. Since `ptr` has `Exclusive` aliasing, nothing other than
+        // `ptr` may be used to mutate `ptr`'s referent, and so its bit validity
+        // cannot be violated even though `buf` may have more permissive bit
+        // validity than `ptr`.
+        let ptr = unsafe { ptr.assume_validity::<invariant::Initialized>() };
+        let ptr = ptr.as_bytes::<BecauseExclusive>();
+        src.read_exact(ptr.as_mut())?;
+
+        // SAFETY: `buf` entirely consists of initialized bytes.
+        //
+        // TODO: What error type should we return from this method?
+        unsafe { try_read_from((), buf).map_err(|err| todo!()) }
+    }
 }
 
 #[inline(always)]
