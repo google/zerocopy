@@ -924,6 +924,207 @@ const _: () = unsafe {
 // [1] https://doc.rust-lang.org/core/option/enum.Option.html
 const _: () = unsafe { unsafe_impl!(T: Immutable => Immutable for Option<T>) };
 
+macro_rules! impl_traits_for_tuples {
+    ($(($($i:tt : $t:ident,)*),)*) => {
+        $(
+            // SAFETY: todo
+            unsafe impl<$($t),*: ?Sized> TryFromBytes for ($($t,)*)
+            where
+                $($t: TryFromBytes,)*
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+
+                // SAFETY: We use `is_bit_valid` to validate that each field is
+                // bit-valid, and only return `true` if all of them are. The bit
+                // validity of a struct is just the composition of the bit
+                // validities of its fields, so this is a sound implementation of
+                // `is_bit_valid`.
+                fn is_bit_valid<___ZerocopyAliasing>(
+                    mut candidate: Maybe<'_, Self, ___ZerocopyAliasing>,
+                ) -> bool
+                where
+                    ___ZerocopyAliasing: invariant::Reference,
+                {
+                    use crate::pointer::PtrInner;
+
+                    true $(&& {
+                        // SAFETY:
+                        // - `project` is a field projection, and so it addresses a
+                        //   subset of the bytes addressed by `slf`
+                        // - ..., and so it preserves provenance
+                        // - ..., and `*slf` is a struct, so `UnsafeCell`s exist at
+                        //   the same byte ranges in the returned pointer's referent
+                        //   as they do in `*slf`
+                        let field_candidate = unsafe {
+                            let project = |slf: PtrInner<'_, Self>| {
+                                let slf = slf.as_non_null().as_ptr();
+                                let field = ptr::addr_of_mut!((*slf).$i);
+                                // SAFETY: `cast_unsized_unchecked` promises that
+                                // `slf` will either reference a zero-sized byte
+                                // range, or else will reference a byte range that
+                                // is entirely contained within an allocated
+                                // object. In either case, this guarantees that
+                                // field projection will not wrap around the address
+                                // space, and so `field` will be non-null.
+                                let ptr = unsafe { NonNull::new_unchecked(field) };
+                                // SAFETY:
+                                // 0. `ptr` addresses a subset of the bytes of
+                                //    `slf`, so by invariant on `slf: PtrInner`,
+                                //    if `ptr`'s referent is not zero sized,
+                                //    then `ptr` has valid provenance for its
+                                //    referent, which is entirely contained in
+                                //    some Rust allocation, `A`.
+                                // 1. By invariant on `slf: PtrInner`, if
+                                //    `ptr`'s referent is not zero sized, `A` is
+                                //    guaranteed to live for at least `'a`.
+                                unsafe { PtrInner::new(ptr) }
+                            };
+
+                            candidate.reborrow().cast_unsized_unchecked(project)
+                        };
+
+                        <$t as TryFromBytes>::is_bit_valid(field_candidate)
+                    })*
+                }
+            }
+
+            // TODO: Can we get these to parse?
+            /*
+                // SAFETY: TODO
+                const _: () = {
+                    unsafe_impl!($($t: FromZeros),* + ?Sized => FromZeros for ($($t,)*));
+                    unsafe_impl!($($t: FromBytes),* + ?Sized => FromBytes for ($($t,)*));
+                    unsafe_impl!($($t: Immutable),* + ?Sized => Immutable for ($($t,)*));
+                };
+            */
+
+            impl_known_layout!(
+                $($t),* => ($($t,)*)
+            );
+        )*
+    };
+}
+
+impl_traits_for_tuples!(
+    (
+        0: A,
+    ),
+    (
+        0: A,
+        1: B,
+    ),
+    (
+        0: A,
+        1: B,
+        2: C,
+    ),
+    (
+        0: A,
+        1: B,
+        2: C,
+        3: D,
+    ),
+    (
+        0: A,
+        1: B,
+        2: C,
+        3: D,
+        4: E,
+    ),
+    (
+        0: A,
+        1: B,
+        2: C,
+        3: D,
+        4: E,
+        5: F,
+    ),
+    (
+        0: A,
+        1: B,
+        2: C,
+        3: D,
+        4: E,
+        5: F,
+        6: G,
+    ),
+    (
+        0: A,
+        1: B,
+        2: C,
+        3: D,
+        4: E,
+        5: F,
+        6: G,
+        7: H,
+    ),
+    (
+        0: A,
+        1: B,
+        2: C,
+        3: D,
+        4: E,
+        5: F,
+        6: G,
+        7: H,
+        8: I,
+    ),
+    (
+        0: A,
+        1: B,
+        2: C,
+        3: D,
+        4: E,
+        5: F,
+        6: G,
+        7: H,
+        8: I,
+        9: J,
+    ),
+    (
+        0: A,
+        1: B,
+        2: C,
+        3: D,
+        4: E,
+        5: F,
+        6: G,
+        7: H,
+        8: I,
+        9: J,
+        10: K,
+    ),
+    (
+        0: A,
+        1: B,
+        2: C,
+        3: D,
+        4: E,
+        5: F,
+        6: G,
+        7: H,
+        8: I,
+        9: J,
+        10: K,
+        11: L,
+    ),
+    (
+        0: A,
+        1: B,
+        2: C,
+        3: D,
+        4: E,
+        5: F,
+        6: G,
+        7: H,
+        8: I,
+        9: J,
+        10: K,
+        11: L,
+        12: M,
+    ),
+);
+
 // SIMD support
 //
 // Per the Unsafe Code Guidelines Reference [1]:
