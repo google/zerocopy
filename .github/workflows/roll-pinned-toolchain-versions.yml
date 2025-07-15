@@ -170,6 +170,7 @@ jobs:
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           title: "[ci] Roll pinned Kani version"
+          labels: hide-from-release-notes
           branch: roll-pinned-kani-to-${{ env.ZC_KANI_LATEST }}-for-${{ matrix.branch }}
           push-to-fork: google-pr-creation-bot/zerocopy
           token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
