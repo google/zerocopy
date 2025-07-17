@@ -299,35 +299,13 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
 125 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ doesn't have a size known at compile-time
     |
-    = help: within `IntoBytes4`, the trait `Sized` is not implemented for `[u8]`
-note: required because it appears within the type `IntoBytes4`
-   --> tests/ui-stable/struct.rs:127:8
-    |
-127 | struct IntoBytes4 {
-    |        ^^^^^^^^^^
-    = note: required for `IntoBytes4` to implement `macro_util::__size_of::Sized`
-note: required by a bound in `macro_util::__size_of::size_of`
-   --> $WORKSPACE/src/util/macro_util.rs
-    |
-    |     pub const fn size_of<T: Sized + ?core::marker::Sized>() -> usize {
-    |                             ^^^^^ required by this bound in `size_of`
-    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0277]: `[u8]` is unsized
-   --> tests/ui-stable/struct.rs:129:8
-    |
-129 |     b: [u8],
-    |        ^^^^ `IntoBytes` needs all field types to be `Sized` in order to determine whether there is inter-field padding
-    |
     = help: the trait `Sized` is not implemented for `[u8]`
-    = note: consider using `#[repr(packed)]` to remove inter-field padding
-    = note: `IntoBytes` does not require the fields of `#[repr(packed)]` types to be `Sized`
-    = note: required for `[u8]` to implement `macro_util::__size_of::Sized`
-note: required by a bound in `macro_util::__size_of::size_of`
-   --> $WORKSPACE/src/util/macro_util.rs
+note: required by an implicit `Sized` bound in `DstLayout::for_type`
+   --> $WORKSPACE/src/layout.rs
     |
-    |     pub const fn size_of<T: Sized + ?core::marker::Sized>() -> usize {
-    |                             ^^^^^ required by this bound in `size_of`
+    |     pub const fn for_type<T>() -> DstLayout {
+    |                           ^ required by the implicit `Sized` requirement on this type parameter in `DstLayout::for_type`
+    = note: this error originates in the macro `$crate::cstruct_has_padding` which comes from the expansion of the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0587]: type has conflicting packed and align representation hints
    --> tests/ui-stable/struct.rs:188:1

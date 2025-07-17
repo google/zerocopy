@@ -5955,8 +5955,11 @@ mod tests {
 
         let expected = DstLayout::new_zst(None)
             .extend(DstLayout::for_type::<NotKnownLayout<AU32>>(), None)
+            .1
             .extend(<[u8] as KnownLayout>::LAYOUT, None)
-            .pad_to_align();
+            .1
+            .pad_to_align()
+            .1;
 
         assert_eq!(<KL10 as KnownLayout>::LAYOUT, expected);
         assert_eq!(<KL10 as KnownLayout>::LAYOUT, unsized_layout(4, 1, 4));
@@ -5971,8 +5974,11 @@ mod tests {
 
         let expected = DstLayout::new_zst(repr_align)
             .extend(DstLayout::for_type::<NotKnownLayout<AU32>>(), None)
+            .1
             .extend(<[u8] as KnownLayout>::LAYOUT, None)
-            .pad_to_align();
+            .1
+            .pad_to_align()
+            .1;
 
         assert_eq!(<KL10Align as KnownLayout>::LAYOUT, expected);
         assert_eq!(<KL10Align as KnownLayout>::LAYOUT, unsized_layout(64, 1, 4));
@@ -5987,8 +5993,11 @@ mod tests {
 
         let expected = DstLayout::new_zst(None)
             .extend(DstLayout::for_type::<NotKnownLayout<AU32>>(), repr_packed)
+            .1
             .extend(<[u8] as KnownLayout>::LAYOUT, repr_packed)
-            .pad_to_align();
+            .1
+            .pad_to_align()
+            .1;
 
         assert_eq!(<KL10Packed as KnownLayout>::LAYOUT, expected);
         assert_eq!(<KL10Packed as KnownLayout>::LAYOUT, unsized_layout(1, 1, 4));
@@ -6003,8 +6012,11 @@ mod tests {
 
         let expected = DstLayout::new_zst(None)
             .extend(DstLayout::for_type::<NotKnownLayout<AU32>>(), repr_packed)
+            .1
             .extend(<[u8] as KnownLayout>::LAYOUT, repr_packed)
-            .pad_to_align();
+            .1
+            .pad_to_align()
+            .1;
 
         assert_eq!(<KL10PackedN as KnownLayout>::LAYOUT, expected);
         assert_eq!(<KL10PackedN as KnownLayout>::LAYOUT, unsized_layout(2, 1, 4));
@@ -6018,8 +6030,11 @@ mod tests {
 
         let expected = DstLayout::new_zst(None)
             .extend(DstLayout::for_type::<NotKnownLayout<AU64>>(), None)
+            .1
             .extend(<u8 as KnownLayout>::LAYOUT, None)
-            .pad_to_align();
+            .1
+            .pad_to_align()
+            .1;
 
         assert_eq!(<KL11 as KnownLayout>::LAYOUT, expected);
         assert_eq!(<KL11 as KnownLayout>::LAYOUT, sized_layout(8, 16));
@@ -6034,8 +6049,11 @@ mod tests {
 
         let expected = DstLayout::new_zst(repr_align)
             .extend(DstLayout::for_type::<NotKnownLayout<AU64>>(), None)
+            .1
             .extend(<u8 as KnownLayout>::LAYOUT, None)
-            .pad_to_align();
+            .1
+            .pad_to_align()
+            .1;
 
         assert_eq!(<KL11Align as KnownLayout>::LAYOUT, expected);
         assert_eq!(<KL11Align as KnownLayout>::LAYOUT, sized_layout(64, 64));
@@ -6050,8 +6068,11 @@ mod tests {
 
         let expected = DstLayout::new_zst(None)
             .extend(DstLayout::for_type::<NotKnownLayout<AU64>>(), repr_packed)
+            .1
             .extend(<u8 as KnownLayout>::LAYOUT, repr_packed)
-            .pad_to_align();
+            .1
+            .pad_to_align()
+            .1;
 
         assert_eq!(<KL11Packed as KnownLayout>::LAYOUT, expected);
         assert_eq!(<KL11Packed as KnownLayout>::LAYOUT, sized_layout(1, 9));
@@ -6066,8 +6087,11 @@ mod tests {
 
         let expected = DstLayout::new_zst(None)
             .extend(DstLayout::for_type::<NotKnownLayout<AU64>>(), repr_packed)
+            .1
             .extend(<u8 as KnownLayout>::LAYOUT, repr_packed)
-            .pad_to_align();
+            .1
+            .pad_to_align()
+            .1;
 
         assert_eq!(<KL11PackedN as KnownLayout>::LAYOUT, expected);
         assert_eq!(<KL11PackedN as KnownLayout>::LAYOUT, sized_layout(2, 10));
