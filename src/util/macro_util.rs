@@ -62,6 +62,24 @@ pub unsafe trait Field<Index> {
 pub trait PaddingFree<T: ?Sized, const PADDING_BYTES: usize> {}
 impl<T: ?Sized> PaddingFree<T, 0> for () {}
 
+// FIXME(#1112): In the slice DST case, we should delegate to *both*
+// `PaddingFree` *and* `DynamicPaddingFree` (and probably rename `PaddingFree`
+// to `StaticPaddingFree` or something - or introduce a third trait with that
+// name) so that we can have more clear error messages.
+
+#[cfg_attr(
+    zerocopy_diagnostic_on_unimplemented_1_78_0,
+    diagnostic::on_unimplemented(
+        message = "`{T}` has one or more padding bytes",
+        label = "types with padding cannot implement `IntoBytes`",
+        note = "consider using `zerocopy::Unalign` to lower the alignment of individual fields",
+        note = "consider adding explicit fields where padding would be",
+        note = "consider using `#[repr(packed)]` to remove padding"
+    )
+)]
+pub trait DynamicPaddingFree<T: ?Sized, const HAS_PADDING: bool> {}
+impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
+
 /// A type whose size is equal to `align_of::<T>()`.
 #[repr(C)]
 pub struct AlignOf<T> {
@@ -359,7 +377,31 @@ macro_rules! struct_padding {
     };
 }
 
-/// How many padding bytes does the union type `$t` have?
+/// Does the `repr(C)` struct type `$t` have padding?
+///
+/// `$ts` is the list of the type of every field in `$t`. `$t` must be a
+/// `repr(C)` struct type, or else `struct_has_padding!`'s result may be
+/// meaningless.
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! repr_c_struct_has_padding {
+    ($t:ty, [$($ts:tt),*]) => {{
+        let layout = $crate::DstLayout::for_repr_c_struct(
+            $crate::util::macro_util::core_reexport::option::Option::None,
+            $crate::util::macro_util::core_reexport::option::Option::None,
+            &[$($crate::repr_c_struct_has_padding!(@field $ts),)*]
+        );
+        layout.requires_static_padding() || layout.requires_dynamic_padding()
+    }};
+    (@field [$t:ty]) => {
+        <[$t] as $crate::KnownLayout>::LAYOUT
+    };
+    (@field $t:ty) => {
+        $crate::DstLayout::for_unpadded_type::<$t>()
+    };
+}
+
+/// Does the union type `$t` have padding?
 ///
 /// `$ts` is the list of the type of every field in `$t`. `$t` must be a union
 /// type, or else `union_padding!`'s result may be meaningless.
@@ -1129,7 +1171,8 @@ mod tests {
         macro_rules! test {
             (#[$cfg:meta] ($($ts:ty),*) => $expect:expr) => {{
                 #[$cfg]
-                struct Test($(#[allow(dead_code)] $ts),*);
+                #[allow(dead_code)]
+                struct Test($($ts),*);
                 assert_eq!(struct_padding!(Test, [$($ts),*]), $expect);
             }};
             (#[$cfg:meta] $(#[$cfgs:meta])* ($($ts:ty),*) => $expect:expr) => {
@@ -1150,6 +1193,42 @@ mod tests {
         // targets, and this isn't a particularly complex macro we're testing
         // anyway.
         test!(#[repr(packed)] (u8, u64) => 0);
+    }
+
+    #[test]
+    fn test_repr_c_struct_padding() {
+        // Test that, for each provided repr, `repr_c_struct_padding!` reports
+        // the expected value.
+        macro_rules! test {
+            (($($ts:tt),*) => $expect:expr) => {{
+                #[repr(C)]
+                #[allow(dead_code)]
+                struct Test($($ts),*);
+                assert_eq!(repr_c_struct_has_padding!(Test, [$($ts),*]), $expect);
+            }};
+        }
+
+        // Test static padding
+        test!(() => false);
+        test!(([u8]) => false);
+        test!((u8) => false);
+        test!((u8, [u8]) => false);
+        test!((u8, ()) => false);
+        test!((u8, (), [u8]) => false);
+        test!((u8, u8) => false);
+        test!((u8, u8, [u8]) => false);
+
+        test!((u8, AU64) => true);
+        test!((u8, AU64, [u8]) => true);
+
+        // Test dynamic padding
+        test!((AU64, [AU64]) => false);
+        test!((u8, [AU64]) => true);
+
+        #[repr(align(4))]
+        struct AU32(#[allow(unused)] u32);
+        test!((AU64, [AU64]) => false);
+        test!((AU64, [AU32]) => true);
     }
 
     #[test]
