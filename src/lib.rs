@@ -386,7 +386,7 @@ use core::{
 #[cfg(feature = "std")]
 use std::io;
 
-use crate::pointer::invariant::{self, BecauseExclusive};
+use crate::pointer::{invariant, BecauseBidirectional};
 pub use crate::{
     byte_slice::*,
     byteorder::*,
@@ -1850,7 +1850,7 @@ pub unsafe trait TryFromBytes {
         Self: KnownLayout + IntoBytes,
     {
         static_assert_dst_is_not_zst!(Self);
-        match Ptr::from_mut(bytes).try_cast_into_no_leftover::<Self, BecauseExclusive>(None) {
+        match Ptr::from_mut(bytes).try_cast_into_no_leftover(None) {
             Ok(source) => {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
@@ -1862,9 +1862,7 @@ pub unsafe trait TryFromBytes {
                 // condition will not happen.
                 match source.try_into_valid() {
                     Ok(source) => Ok(source.as_mut()),
-                    Err(e) => {
-                        Err(e.map_src(|src| src.as_bytes::<BecauseExclusive>().as_mut()).into())
-                    }
+                    Err(e) => Err(e.map_src(|src| src.as_bytes().as_mut()).into()),
                 }
             }
             Err(e) => Err(e.map_src(Ptr::as_mut).into()),
@@ -2431,8 +2429,7 @@ pub unsafe trait TryFromBytes {
     where
         Self: KnownLayout<PointerMetadata = usize> + IntoBytes,
     {
-        match Ptr::from_mut(source).try_cast_into_no_leftover::<Self, BecauseExclusive>(Some(count))
-        {
+        match Ptr::from_mut(source).try_cast_into_no_leftover(Some(count)) {
             Ok(source) => {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
@@ -2444,9 +2441,7 @@ pub unsafe trait TryFromBytes {
                 // condition will not happen.
                 match source.try_into_valid() {
                     Ok(source) => Ok(source.as_mut()),
-                    Err(e) => {
-                        Err(e.map_src(|src| src.as_bytes::<BecauseExclusive>().as_mut()).into())
-                    }
+                    Err(e) => Err(e.map_src(|src| src.as_bytes().as_mut()).into()),
                 }
             }
             Err(e) => Err(e.map_src(Ptr::as_mut).into()),
@@ -2854,7 +2849,7 @@ fn try_mut_from_prefix_suffix<T: IntoBytes + TryFromBytes + KnownLayout + ?Sized
     cast_type: CastType,
     meta: Option<T::PointerMetadata>,
 ) -> Result<(&mut T, &mut [u8]), TryCastError<&mut [u8], T>> {
-    match Ptr::from_mut(candidate).try_cast_into::<T, BecauseExclusive>(cast_type, meta) {
+    match Ptr::from_mut(candidate).try_cast_into(cast_type, meta) {
         Ok((candidate, prefix_suffix)) => {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
@@ -2866,7 +2861,7 @@ fn try_mut_from_prefix_suffix<T: IntoBytes + TryFromBytes + KnownLayout + ?Sized
             // condition will not happen.
             match candidate.try_into_valid() {
                 Ok(valid) => Ok((valid.as_mut(), prefix_suffix.as_mut())),
-                Err(e) => Err(e.map_src(|src| src.as_bytes::<BecauseExclusive>().as_mut()).into()),
+                Err(e) => Err(e.map_src(|src| src.as_bytes().as_mut()).into()),
             }
         }
         Err(e) => Err(e.map_src(Ptr::as_mut).into()),
@@ -3842,8 +3837,8 @@ pub unsafe trait FromBytes: FromZeros {
         Self: IntoBytes + KnownLayout,
     {
         static_assert_dst_is_not_zst!(Self);
-        match Ptr::from_mut(source).try_cast_into_no_leftover::<_, BecauseExclusive>(None) {
-            Ok(ptr) => Ok(ptr.recall_validity::<_, (_, (_, _))>().as_mut()),
+        match Ptr::from_mut(source).try_cast_into_no_leftover(None) {
+            Ok(ptr) => Ok(ptr.recall_validity::<_, BecauseBidirectional>().as_mut()),
             Err(err) => Err(err.map_src(|src| src.as_mut())),
         }
     }
@@ -4311,11 +4306,9 @@ pub unsafe trait FromBytes: FromZeros {
         Self: IntoBytes + KnownLayout<PointerMetadata = usize> + Immutable,
     {
         let source = Ptr::from_mut(source);
-        let maybe_slf = source.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
+        let maybe_slf = source.try_cast_into_no_leftover(Some(count));
         match maybe_slf {
-            Ok(slf) => Ok(slf
-                .recall_validity::<_, (_, (_, (BecauseExclusive, BecauseExclusive)))>()
-                .as_mut()),
+            Ok(slf) => Ok(slf.recall_validity::<_, BecauseBidirectional>().as_mut()),
             Err(err) => Err(err.map_src(|s| s.as_mut())),
         }
     }
@@ -4672,7 +4665,7 @@ pub unsafe trait FromBytes: FromZeros {
         // cannot be violated even though `buf` may have more permissive bit
         // validity than `ptr`.
         let ptr = unsafe { ptr.assume_validity::<invariant::Initialized>() };
-        let ptr = ptr.as_bytes::<BecauseExclusive>();
+        let ptr = ptr.as_bytes();
         src.read_exact(ptr.as_mut())?;
         // SAFETY: `buf` entirely consists of initialized bytes, and `Self` is
         // `FromBytes`.
@@ -4791,9 +4784,9 @@ fn mut_from_prefix_suffix<T: FromBytes + IntoBytes + KnownLayout + ?Sized>(
     cast_type: CastType,
 ) -> Result<(&mut T, &mut [u8]), CastError<&mut [u8], T>> {
     let (slf, prefix_suffix) = Ptr::from_mut(source)
-        .try_cast_into::<_, BecauseExclusive>(cast_type, meta)
+        .try_cast_into(cast_type, meta)
         .map_err(|err| err.map_src(|s| s.as_mut()))?;
-    Ok((slf.recall_validity::<_, (_, (_, _))>().as_mut(), prefix_suffix.as_mut()))
+    Ok((slf.recall_validity::<_, BecauseBidirectional>().as_mut(), prefix_suffix.as_mut()))
 }
 
 /// Analyzes whether a type is [`IntoBytes`].
