@@ -268,14 +268,14 @@ fn derive_known_layout_inner(
                 type MaybeUninit = __ZerocopyKnownLayoutMaybeUninit #ty_generics;
 
                 // SAFETY: `LAYOUT` accurately describes the layout of `Self`.
-                // The layout of `Self` is reflected using a sequence of
-                // invocations of `DstLayout::{new_zst,extend,pad_to_align}`.
-                // The documentation of these items vows that invocations in
-                // this manner will accurately describe a type, so long as:
+                // The documentation of `DstLayout::for_repr_c_struct` vows that
+                // invocations in this manner will accurately describe a type,
+                // so long as:
                 //
                 //  - that type is `repr(C)`,
                 //  - its fields are enumerated in the order they appear,
-                //  - the presence of `repr_align` and `repr_packed` are correctly accounted for.
+                //  - the presence of `repr_align` and `repr_packed` are
+                //    correctly accounted for.
                 //
                 // We respect all three of these preconditions here. This
                 // expansion is only used if `is_repr_c_struct`, we enumerate
@@ -285,13 +285,14 @@ fn derive_known_layout_inner(
                     use #zerocopy_crate::util::macro_util::core_reexport::num::NonZeroUsize;
                     use #zerocopy_crate::{DstLayout, KnownLayout};
 
-                    let repr_align = #repr_align;
-                    let repr_packed = #repr_packed;
-
-                    DstLayout::new_zst(repr_align)
-                        #(.extend(DstLayout::for_type::<#leading_fields_tys>(), repr_packed))*
-                        .extend(<#trailing_field_ty as KnownLayout>::LAYOUT, repr_packed)
-                        .pad_to_align()
+                    DstLayout::for_repr_c_struct(
+                        #repr_align,
+                        #repr_packed,
+                        &[
+                            #(DstLayout::for_type::<#leading_fields_tys>(),)*
+                            <#trailing_field_ty as KnownLayout>::LAYOUT
+                        ],
+                    ).1
                 };
 
                 #methods

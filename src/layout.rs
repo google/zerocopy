@@ -26,7 +26,8 @@ const POINTER_WIDTH_BITS: usize = mem::size_of::<usize>() * 8;
 /// the layout of real Rust types or instances of types.
 #[doc(hidden)]
 #[allow(missing_debug_implementations, missing_copy_implementations)]
-#[cfg_attr(any(kani, test), derive(Copy, Clone, Debug, PartialEq, Eq))]
+#[cfg_attr(any(kani, test), derive(Debug, PartialEq, Eq))]
+#[derive(Copy, Clone)]
 pub struct DstLayout {
     pub(crate) align: NonZeroUsize,
     pub(crate) size_info: SizeInfo,
@@ -202,9 +203,66 @@ impl DstLayout {
         }
     }
 
+    /// Constructs a complete `DstLayout` reflecting a `repr(C)` struct with the
+    /// given alignment modifiers and fields.
+    ///
+    /// The accompanying boolean is `true` if the resulting composition of
+    /// fields necessitated static (as opposed to dynamic) padding; otherwise
+    /// false.
+    ///
+    /// This method cannot be used to match the layout of a record with the
+    /// default representation, as that representation is mostly unspecified.
+    ///
+    /// # Safety
+    ///
+    /// For any definition `repr(C)` struct, if this method is invoked with
+    /// alignment modifiers and fields corresponding to that definition, the
+    /// resulting `DstLayout` will correctly encode the layout of that struct,
+    /// and the accompanying boolean will correctly encode if that layout
+    /// includes static interfield or trailing padding.
+    ///
+    /// We make no guarantees to the behavior of this method when it is invoked
+    /// with arguments that cannot correspond to a valid `repr(C)` struct.
+    pub const fn for_repr_c_struct(
+        repr_align: Option<NonZeroUsize>,
+        repr_packed: Option<NonZeroUsize>,
+        fields: &[DstLayout],
+    ) -> (bool, DstLayout) {
+        let (mut static_padding, mut layout) = (false, DstLayout::new_zst(repr_align));
+
+        let mut i = 0;
+        while i < fields.len() {
+            let field = fields[i];
+            let (interfield_padding, extended_layout) = layout.extend(field, repr_packed);
+            static_padding |= interfield_padding;
+            layout = extended_layout;
+            i += 1;
+        }
+
+        let (trailing_padding, layout) = layout.pad_to_align();
+
+        // SAFETY: `layout` accurately describes the layout of a `repr(C)`
+        // struct with `repr_align` or `repr_packed` alignment modifications and
+        // the given `fields`. The `layout` is constructed using a sequence of
+        // invocations of `DstLayout::{new_zst,extend,pad_to_align}`. The
+        // documentation of these items vows that invocations in this manner
+        // will accurately describe a type, so long as:
+        //
+        //  - that type is `repr(C)`,
+        //  - its fields are enumerated in the order they appear,
+        //  - the presence of `repr_align` and `repr_packed` are correctly accounted for.
+        //
+        // We respect all three of these preconditions above.
+        (static_padding || trailing_padding, layout)
+    }
+
     /// Like `Layout::extend`, this creates a layout that describes a record
     /// whose layout consists of `self` followed by `next` that includes the
     /// necessary inter-field padding, but not any trailing padding.
+    ///
+    /// The accompanying boolean is `true` if the resulting composition of
+    /// fields necessitated static (as opposed to dynamic) padding; otherwise
+    /// false.
     ///
     /// In order to match the layout of a `#[repr(C)]` struct, this method
     /// should be invoked for each field in declaration order. To add trailing
@@ -230,7 +288,7 @@ impl DstLayout {
     #[doc(hidden)]
     #[must_use]
     #[inline]
-    pub const fn extend(self, field: DstLayout, repr_packed: Option<NonZeroUsize>) -> Self {
+    pub const fn extend(self, field: DstLayout, repr_packed: Option<NonZeroUsize>) -> (bool, Self) {
         use util::{max, min, padding_needed_for};
 
         // If `repr_packed` is `None`, there are no alignment constraints, and
@@ -268,7 +326,7 @@ impl DstLayout {
         // `field_align`.
         let align = max(self.align, field_align);
 
-        let size_info = match self.size_info {
+        let (interfield_padding, size_info) = match self.size_info {
             // If the layout is already a DST, we panic; DSTs cannot be extended
             // with additional fields.
             SizeInfo::SliceDst(..) => const_panic!("Cannot extend a DST with additional fields."),
@@ -295,58 +353,65 @@ impl DstLayout {
                     None => const_panic!("Adding padding to `self`'s size overflows `usize`."),
                 };
 
-                match field.size_info {
-                    SizeInfo::Sized { size: field_size } => {
-                        // If the trailing field is sized, the resulting layout
-                        // will be sized. Its size will be the sum of the
-                        // preceding layout, the size of the new field, and the
-                        // size of inter-field padding between the two.
-                        //
-                        // This will not panic (and is proven with Kani to not
-                        // panic) if the layout components can correspond to a
-                        // leading layout fragment of a valid Rust type, but may
-                        // panic otherwise (e.g., combining or aligning the
-                        // components would create a size exceeding
-                        // `usize::MAX`).
-                        let size = match offset.checked_add(field_size) {
+                (
+                    padding,
+                    match field.size_info {
+                        SizeInfo::Sized { size: field_size } => {
+                            // If the trailing field is sized, the resulting layout
+                            // will be sized. Its size will be the sum of the
+                            // preceding layout, the size of the new field, and the
+                            // size of inter-field padding between the two.
+                            //
+                            // This will not panic (and is proven with Kani to not
+                            // panic) if the layout components can correspond to a
+                            // leading layout fragment of a valid Rust type, but may
+                            // panic otherwise (e.g., combining or aligning the
+                            // components would create a size exceeding
+                            // `usize::MAX`).
+                            let size = match offset.checked_add(field_size) {
                             Some(size) => size,
                             None => const_panic!("`field` cannot be appended without the total size overflowing `usize`"),
                         };
-                        SizeInfo::Sized { size }
-                    }
-                    SizeInfo::SliceDst(TrailingSliceLayout {
-                        offset: trailing_offset,
-                        elem_size,
-                    }) => {
-                        // If the trailing field is dynamically sized, so too
-                        // will the resulting layout. The offset of the trailing
-                        // slice component is the sum of the offset of the
-                        // trailing field and the trailing slice offset within
-                        // that field.
-                        //
-                        // This will not panic (and is proven with Kani to not
-                        // panic) if the layout components can correspond to a
-                        // leading layout fragment of a valid Rust type, but may
-                        // panic otherwise (e.g., combining or aligning the
-                        // components would create a size exceeding
-                        // `usize::MAX`).
-                        let offset = match offset.checked_add(trailing_offset) {
+                            SizeInfo::Sized { size }
+                        }
+                        SizeInfo::SliceDst(TrailingSliceLayout {
+                            offset: trailing_offset,
+                            elem_size,
+                        }) => {
+                            // If the trailing field is dynamically sized, so too
+                            // will the resulting layout. The offset of the trailing
+                            // slice component is the sum of the offset of the
+                            // trailing field and the trailing slice offset within
+                            // that field.
+                            //
+                            // This will not panic (and is proven with Kani to not
+                            // panic) if the layout components can correspond to a
+                            // leading layout fragment of a valid Rust type, but may
+                            // panic otherwise (e.g., combining or aligning the
+                            // components would create a size exceeding
+                            // `usize::MAX`).
+                            let offset = match offset.checked_add(trailing_offset) {
                             Some(offset) => offset,
                             None => const_panic!("`field` cannot be appended without the total size overflowing `usize`"),
                         };
-                        SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size })
-                    }
-                }
+                            SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size })
+                        }
+                    },
+                )
             }
         };
 
-        DstLayout { align, size_info }
+        (interfield_padding > 0, DstLayout { align, size_info })
     }
 
     /// Like `Layout::pad_to_align`, this routine rounds the size of this layout
     /// up to the nearest multiple of this type's alignment or `repr_packed`
     /// (whichever is less). This method leaves DST layouts unchanged, since the
     /// trailing padding of DSTs is computed at runtime.
+    ///
+    /// The accompanying boolean is `true` if the resulting composition of
+    /// fields necessitated static (as opposed to dynamic) padding; otherwise
+    /// false.
     ///
     /// In order to match the layout of a `#[repr(C)]` struct, this method
     /// should be invoked after the invocations of [`DstLayout::extend`]. If
@@ -370,10 +435,10 @@ impl DstLayout {
     #[doc(hidden)]
     #[must_use]
     #[inline]
-    pub const fn pad_to_align(self) -> Self {
+    pub const fn pad_to_align(self) -> (bool, Self) {
         use util::padding_needed_for;
 
-        let size_info = match self.size_info {
+        let (static_padding, size_info) = match self.size_info {
             // For sized layouts, we add the minimum amount of trailing padding
             // needed to satisfy alignment.
             SizeInfo::Sized { size: unpadded_size } => {
@@ -382,16 +447,30 @@ impl DstLayout {
                     Some(size) => size,
                     None => const_panic!("Adding padding caused size to overflow `usize`."),
                 };
-                SizeInfo::Sized { size }
+                (padding > 0, SizeInfo::Sized { size })
             }
             // For DST layouts, trailing padding depends on the length of the
             // trailing DST and is computed at runtime. This does not alter the
             // offset or element size of the layout, so we leave `size_info`
             // unchanged.
-            size_info @ SizeInfo::SliceDst(_) => size_info,
+            size_info @ SizeInfo::SliceDst(_) => (false, size_info),
         };
 
-        DstLayout { align: self.align, size_info }
+        (static_padding, DstLayout { align: self.align, size_info })
+    }
+
+    /// Produces `true` if there exists any metadata for which a type of layout
+    /// `self` would require dynamic trailing padding; otherwise `false`.
+    pub const fn requires_dynamic_padding(self) -> bool {
+        match self.size_info {
+            SizeInfo::Sized { .. } => false,
+            SizeInfo::SliceDst(trailing_slice_layout) => {
+                // SAFETY: This predicate is formally proved sound by
+                // `proofs::prove_requires_dynamic_padding`.
+                trailing_slice_layout.offset % self.align.get() != 0
+                    || trailing_slice_layout.elem_size % self.align.get() != 0
+            }
+        }
     }
 
     /// Validates that a cast is sound from a layout perspective.
@@ -844,7 +923,7 @@ mod tests {
                     core::iter::once(None).chain((0..29).map(|p| NonZeroUsize::new(2usize.pow(p))));
 
                 for pack in packs {
-                    let composite = base.extend(trailing_field, pack);
+                    let composite = base.extend(trailing_field, pack).1;
                     let max_align = pack.unwrap_or(DstLayout::CURRENT_MAX_ALIGN);
                     let align = $n.min(max_align.get());
                     assert_eq!(
@@ -912,7 +991,7 @@ mod tests {
                     size_info: SizeInfo::SliceDst(TrailingSliceLayout { elem_size, offset: 11 }),
                 };
 
-                let composite = base.extend(trailing_field, pack);
+                let composite = base.extend(trailing_field, pack).1;
 
                 let max_align = pack.unwrap_or(DstLayout::CURRENT_MAX_ALIGN).get();
 
@@ -943,7 +1022,7 @@ mod tests {
             let layout = DstLayout { align, size_info: SizeInfo::Sized { size: 1 } };
 
             assert_eq!(
-                layout.pad_to_align(),
+                layout.pad_to_align().1,
                 DstLayout { align, size_info: SizeInfo::Sized { size: align.get() } }
             );
         }
@@ -958,7 +1037,7 @@ mod tests {
                     align: NonZeroUsize::new($unpadded_align).unwrap(),
                     size_info: SizeInfo::Sized { size: $unpadded_size },
                 };
-                let padded = unpadded.pad_to_align();
+                let padded = unpadded.pad_to_align().1;
 
                 assert_eq!(
                     padded,
@@ -999,7 +1078,7 @@ mod tests {
                         align,
                         size_info: SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }),
                     };
-                    assert_eq!(layout.pad_to_align(), layout);
+                    assert_eq!(layout.pad_to_align().1, layout);
                 }
             }
         }
@@ -1704,6 +1783,44 @@ mod proofs {
     }
 
     #[kani::proof]
+    fn prove_requires_dynamic_padding() {
+        let layout: DstLayout = kani::any();
+
+        let SizeInfo::SliceDst(size_info) = layout.size_info else {
+            kani::assume(false);
+            loop {}
+        };
+
+        //kani::assume(!layout.requires_dynamic_padding());
+
+        let meta: usize = kani::any();
+
+        let Some(trailing_slice_size) = size_info.elem_size.checked_mul(meta) else {
+            // The `trailing_slice_size` exceeds `usize::MAX`; `meta` is invalid.
+            kani::assume(false);
+            loop {}
+        };
+
+        let Some(unpadded_size) = size_info.offset.checked_add(trailing_slice_size) else {
+            // The `unpadded_size` exceeds `usize::MAX`; `meta`` is invalid.
+            kani::assume(false);
+            loop {}
+        };
+
+        if unpadded_size >= isize::MAX as usize {
+            // The `unpadded_size` exceeds `isize::MAX`; `meta` is invalid.
+            kani::assume(false);
+            loop {}
+        }
+
+        let trailing_padding = util::padding_needed_for(unpadded_size, layout.align);
+
+        if !layout.requires_dynamic_padding() {
+            assert!(trailing_padding == 0);
+        }
+    }
+
+    #[kani::proof]
     fn prove_dst_layout_extend() {
         use crate::util::{max, min, padding_needed_for};
 
@@ -1725,7 +1842,7 @@ mod proofs {
         };
 
         // Under the above conditions, `DstLayout::extend` will not panic.
-        let composite = base.extend(field, packed);
+        let (_padding, composite) = base.extend(field, packed);
 
         // The field's alignment is clamped by `max_align` (i.e., the
         // `packed` attribute, if any) [1].
@@ -1850,7 +1967,7 @@ mod proofs {
 
         let layout: DstLayout = kani::any();
 
-        let padded: DstLayout = layout.pad_to_align();
+        let (_, padded) = layout.pad_to_align();
 
         // Calling `pad_to_align` does not alter the `DstLayout`'s alignment.
         assert_eq!(padded.align, layout.align);
