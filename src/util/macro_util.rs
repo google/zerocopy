@@ -359,6 +359,31 @@ macro_rules! struct_has_padding {
     };
 }
 
+/// Does the struct type `$t` have padding?
+///
+/// `$ts` is the list of the type of every field in `$t`. `$t` must be a
+/// `repr(C)` struct type, or else `struct_has_padding!`'s result may be
+/// meaningless.
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! cstruct_has_padding {
+    ($t:ty, [$($ts:tt),*]) => {{
+        let (static_padding, layout) = $crate::DstLayout::for_repr_c_struct(
+            None,
+            None,
+            &[$($crate::util::macro_util::cstruct_has_padding!(@field $ts),)*]
+        );
+        static_padding || layout.requires_dynamic_padding()
+    }};
+    (@field [$t:ty]) => {
+        <$t as $crate::KnownLayout>::LAYOUT
+    };
+    (@field $t:ty) => {
+        $crate::DstLayout::for_type::<[$t]>()
+    };
+
+}
+
 /// Does the union type `$t` have padding?
 ///
 /// `$ts` is the list of the type of every field in `$t`. `$t` must be a
