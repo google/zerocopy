@@ -268,14 +268,14 @@ fn derive_known_layout_inner(
                 type MaybeUninit = __ZerocopyKnownLayoutMaybeUninit #ty_generics;
 
                 // SAFETY: `LAYOUT` accurately describes the layout of `Self`.
-                // The layout of `Self` is reflected using a sequence of
-                // invocations of `DstLayout::{new_zst,extend,pad_to_align}`.
-                // The documentation of these items vows that invocations in
-                // this manner will accurately describe a type, so long as:
+                // The documentation of `DstLayout::for_repr_c_struct` vows that
+                // invocations in this manner will accurately describe a type,
+                // so long as:
                 //
                 //  - that type is `repr(C)`,
                 //  - its fields are enumerated in the order they appear,
-                //  - the presence of `repr_align` and `repr_packed` are correctly accounted for.
+                //  - the presence of `repr_align` and `repr_packed` are
+                //    correctly accounted for.
                 //
                 // We respect all three of these preconditions here. This
                 // expansion is only used if `is_repr_c_struct`, we enumerate
@@ -285,13 +285,14 @@ fn derive_known_layout_inner(
                     use #zerocopy_crate::util::macro_util::core_reexport::num::NonZeroUsize;
                     use #zerocopy_crate::{DstLayout, KnownLayout};
 
-                    let repr_align = #repr_align;
-                    let repr_packed = #repr_packed;
-
-                    DstLayout::new_zst(repr_align)
-                        #(.extend(DstLayout::for_type::<#leading_fields_tys>(), repr_packed))*
-                        .extend(<#trailing_field_ty as KnownLayout>::LAYOUT, repr_packed)
-                        .pad_to_align()
+                    DstLayout::for_repr_c_struct(
+                        #repr_align,
+                        #repr_packed,
+                        &[
+                            #(DstLayout::for_type::<#leading_fields_tys>(),)*
+                            <#trailing_field_ty as KnownLayout>::LAYOUT
+                        ],
+                    )
                 };
 
                 #methods
@@ -1288,6 +1289,9 @@ fn derive_into_bytes_struct(
         // check for in this branch's condition.
         (None, false)
     } else if ast.generics.params.is_empty() {
+        // Is the last field a syntactic slice, i.e., `[SomeType]`.
+        let is_syntactic_dst =
+            strct.fields().last().map(|(_, _, ty)| matches!(ty, Type::Slice(_))).unwrap_or(false);
         // Since there are no generics, we can emit a padding check. All reprs
         // guarantee that fields won't overlap [1], so the padding check is
         // sound. This is more permissive than the next case, which requires
@@ -1300,7 +1304,11 @@ fn derive_into_bytes_struct(
         //   ...
         //   2. The fields do not overlap.
         //   ...
-        (Some(PaddingCheck::Struct), false)
+        if is_c && is_syntactic_dst {
+            (Some(PaddingCheck::ReprCStruct), false)
+        } else {
+            (Some(PaddingCheck::Struct), false)
+        }
     } else if is_c && !repr.is_align_gt_1() {
         // We can't use a padding check since there are generic type arguments.
         // Instead, we require all field types to implement `Unaligned`. This
@@ -1475,6 +1483,8 @@ enum PaddingCheck {
     /// Check that the sum of the fields' sizes exactly equals the struct's
     /// size.
     Struct,
+    /// Check that a `repr(C)` struct has no padding.
+    ReprCStruct,
     /// Check that the size of each field exactly equals the union's size.
     Union,
     /// Check that every variant of the enum contains no padding.
@@ -1485,23 +1495,26 @@ enum PaddingCheck {
 }
 
 impl PaddingCheck {
-    /// Returns the ident of the macro to call in order to validate that a type
-    /// passes the padding check encoded by `PaddingCheck`.
-    fn validator_macro_ident(&self) -> Ident {
-        let s = match self {
-            PaddingCheck::Struct => "struct_padding",
-            PaddingCheck::Union => "union_padding",
-            PaddingCheck::Enum { .. } => "enum_padding",
+    /// Returns the idents of the trait to use and the macro to call in order to
+    /// validate that a type passes the relevant padding check.
+    fn validator_trait_and_macro_idents(&self) -> (Ident, Ident) {
+        let (trt, mcro) = match self {
+            PaddingCheck::Struct => ("PaddingFree", "struct_padding"),
+            PaddingCheck::ReprCStruct => ("DynamicPaddingFree", "repr_c_struct_has_padding"),
+            PaddingCheck::Union => ("PaddingFree", "union_padding"),
+            PaddingCheck::Enum { .. } => ("PaddingFree", "enum_padding"),
         };
 
-        Ident::new(s, Span::call_site())
+        let trt = Ident::new(trt, Span::call_site());
+        let mcro = Ident::new(mcro, Span::call_site());
+        (trt, mcro)
     }
 
     /// Sometimes performing the padding check requires some additional
     /// "context" code. For enums, this is the definition of the tag enum.
     fn validator_macro_context(&self) -> Option<&TokenStream> {
         match self {
-            PaddingCheck::Struct | PaddingCheck::Union => None,
+            PaddingCheck::Struct | PaddingCheck::ReprCStruct | PaddingCheck::Union => None,
             PaddingCheck::Enum { tag_type_definition } => Some(tag_type_definition),
         }
     }
@@ -1754,10 +1767,10 @@ impl<'a, D: DataExt> ImplBlockBuilder<'a, D> {
                     quote!([#(#types),*])
                 });
                 let validator_context = check.validator_macro_context();
-                let validator_macro = check.validator_macro_ident();
+                let (trt, validator_macro) = check.validator_trait_and_macro_idents();
                 let t = tag.iter();
                 parse_quote! {
-                    (): #zerocopy_crate::util::macro_util::PaddingFree<
+                    (): #zerocopy_crate::util::macro_util::#trt<
                         Self,
                         {
                             #validator_context
