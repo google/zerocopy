@@ -339,7 +339,7 @@ pub use core::mem::size_of;
 #[cfg(zerocopy_diagnostic_on_unimplemented_1_78_0)]
 pub use __size_of::size_of;
 
-/// Does the struct type `$t` have padding?
+/// Does the `repr(C)` struct type `$t` have padding?
 ///
 /// `$ts` is the list of the type of every field in `$t`. `$t` must be a
 /// struct type, or else `struct_has_padding!`'s result may be meaningless.
@@ -357,6 +357,32 @@ macro_rules! struct_has_padding {
     ($t:ty, [$($ts:ty),*]) => {
         $crate::util::macro_util::size_of::<$t>() > 0 $(+ $crate::util::macro_util::size_of::<$ts>())*
     };
+}
+
+/// Does the `repr(C)` struct type `$t` have padding?
+///
+/// `$ts` is the list of the type of every field in `$t`. `$t` must be a
+/// `repr(C)` struct type, or else `struct_has_padding!`'s result may be
+/// meaningless.
+// TODO: test!
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! repr_c_struct_has_padding {
+    ($t:ty, [$($ts:tt),*]) => {{
+        let layout = $crate::DstLayout::for_repr_c_struct(
+            $crate::util::macro_util::core_reexport::option::Option::None,
+            $crate::util::macro_util::core_reexport::option::Option::None,
+            &[$($crate::repr_c_struct_has_padding!(@field $ts),)*]
+        );
+        layout.requires_static_padding() || layout.requires_dynamic_padding()
+    }};
+    (@field [$t:ty]) => {
+        <[$t] as $crate::KnownLayout>::LAYOUT
+    };
+    (@field $t:ty) => {
+        $crate::DstLayout::for_unpadded_type::<$t>()
+    };
+
 }
 
 /// Does the union type `$t` have padding?

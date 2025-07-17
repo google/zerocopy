@@ -1,89 +1,89 @@
 error: this conflicts with another representation hint
-   --> tests/ui-stable/struct.rs:133:11
+   --> tests/ui-stable/struct.rs:135:11
     |
-133 | #[repr(C, C)] // zerocopy-derive conservatively treats these as conflicting reprs
+135 | #[repr(C, C)] // zerocopy-derive conservatively treats these as conflicting reprs
     |           ^
 
 error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
-   --> tests/ui-stable/struct.rs:138:10
+   --> tests/ui-stable/struct.rs:140:10
     |
-138 | #[derive(IntoBytes)]
+140 | #[derive(IntoBytes)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
-   --> tests/ui-stable/struct.rs:143:10
+   --> tests/ui-stable/struct.rs:145:10
     |
-143 | #[derive(IntoBytes)]
+145 | #[derive(IntoBytes)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
-   --> tests/ui-stable/struct.rs:166:10
+   --> tests/ui-stable/struct.rs:168:10
     |
-166 | #[derive(IntoBytes)]
+168 | #[derive(IntoBytes)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: cannot derive `Unaligned` on type with alignment greater than 1
-   --> tests/ui-stable/struct.rs:177:11
+   --> tests/ui-stable/struct.rs:179:11
     |
-177 | #[repr(C, align(2))]
+179 | #[repr(C, align(2))]
     |           ^^^^^
 
 error: this conflicts with another representation hint
-   --> tests/ui-stable/struct.rs:181:8
+   --> tests/ui-stable/struct.rs:183:8
     |
-181 | #[repr(transparent, align(2))]
+183 | #[repr(transparent, align(2))]
     |        ^^^^^^^^^^^
 
 error: this conflicts with another representation hint
-   --> tests/ui-stable/struct.rs:187:16
+   --> tests/ui-stable/struct.rs:189:16
     |
-187 | #[repr(packed, align(2))]
+189 | #[repr(packed, align(2))]
     |                ^^^^^
 
 error: this conflicts with another representation hint
-   --> tests/ui-stable/struct.rs:191:18
+   --> tests/ui-stable/struct.rs:193:18
     |
-191 | #[repr(align(1), align(2))]
+193 | #[repr(align(1), align(2))]
     |                  ^^^^^
 
 error: this conflicts with another representation hint
-   --> tests/ui-stable/struct.rs:195:18
+   --> tests/ui-stable/struct.rs:197:18
     |
-195 | #[repr(align(2), align(4))]
+197 | #[repr(align(2), align(4))]
     |                  ^^^^^
 
 error: must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment
-   --> tests/ui-stable/struct.rs:198:10
+   --> tests/ui-stable/struct.rs:200:10
     |
-198 | #[derive(Unaligned)]
+200 | #[derive(Unaligned)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute in order to guarantee this type's alignment
-   --> tests/ui-stable/struct.rs:201:10
+   --> tests/ui-stable/struct.rs:203:10
     |
-201 | #[derive(Unaligned)]
+203 | #[derive(Unaligned)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: this conflicts with another representation hint
-   --> tests/ui-stable/struct.rs:211:8
+   --> tests/ui-stable/struct.rs:213:8
     |
-211 | #[repr(C, packed(2))]
+213 | #[repr(C, packed(2))]
     |        ^
 
 error[E0692]: transparent struct cannot have other repr hints
-   --> tests/ui-stable/struct.rs:181:8
+   --> tests/ui-stable/struct.rs:183:8
     |
-181 | #[repr(transparent, align(2))]
+183 | #[repr(transparent, align(2))]
     |        ^^^^^^^^^^^  ^^^^^^^^
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
@@ -294,16 +294,16 @@ error[E0277]: `IntoBytes3` has inter-field padding
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-   --> tests/ui-stable/struct.rs:125:10
+   --> tests/ui-stable/struct.rs:127:10
     |
-125 | #[derive(IntoBytes)]
+127 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ doesn't have a size known at compile-time
     |
     = help: within `IntoBytes4`, the trait `Sized` is not implemented for `[u8]`
 note: required because it appears within the type `IntoBytes4`
-   --> tests/ui-stable/struct.rs:127:8
+   --> tests/ui-stable/struct.rs:129:8
     |
-127 | struct IntoBytes4 {
+129 | struct IntoBytes4 {
     |        ^^^^^^^^^^
     = note: required for `IntoBytes4` to implement `macro_util::__size_of::Sized`
 note: required by a bound in `macro_util::__size_of::size_of`
@@ -314,10 +314,10 @@ note: required by a bound in `macro_util::__size_of::size_of`
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: `[u8]` is unsized
-   --> tests/ui-stable/struct.rs:129:8
+   --> tests/ui-stable/struct.rs:131:8
     |
-129 |     b: [u8],
-    |        ^^^^ `IntoBytes` needs all field types to be `Sized` in order to determine whether there is inter-field padding
+131 |     b: SliceU8,
+    |        ^^^^^^^ `IntoBytes` needs all field types to be `Sized` in order to determine whether there is inter-field padding
     |
     = help: the trait `Sized` is not implemented for `[u8]`
     = note: consider using `#[repr(packed)]` to remove inter-field padding
@@ -330,15 +330,15 @@ note: required by a bound in `macro_util::__size_of::size_of`
     |                             ^^^^^ required by this bound in `size_of`
 
 error[E0587]: type has conflicting packed and align representation hints
-   --> tests/ui-stable/struct.rs:188:1
+   --> tests/ui-stable/struct.rs:190:1
     |
-188 | struct Unaligned3;
+190 | struct Unaligned3;
     | ^^^^^^^^^^^^^^^^^
 
 error[E0277]: the trait bound `SplitAtNotKnownLayout: zerocopy::KnownLayout` is not satisfied
-   --> tests/ui-stable/struct.rs:214:10
+   --> tests/ui-stable/struct.rs:216:10
     |
-214 | #[derive(SplitAt)]
+216 | #[derive(SplitAt)]
     |          ^^^^^^^ the trait `zerocopy::KnownLayout` is not implemented for `SplitAtNotKnownLayout`
     |
     = note: Consider adding `#[derive(KnownLayout)]` to `SplitAtNotKnownLayout`
@@ -360,9 +360,9 @@ note: required by a bound in `SplitAt`
     = note: this error originates in the derive macro `SplitAt` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `u8: SplitAt` is not satisfied
-   --> tests/ui-stable/struct.rs:218:10
+   --> tests/ui-stable/struct.rs:220:10
     |
-218 | #[derive(SplitAt, KnownLayout)]
+220 | #[derive(SplitAt, KnownLayout)]
     |          ^^^^^^^ the trait `SplitAt` is not implemented for `u8`
     |
     = note: Consider adding `#[derive(SplitAt)]` to `u8`
@@ -374,9 +374,9 @@ error[E0277]: the trait bound `u8: SplitAt` is not satisfied
     = note: this error originates in the derive macro `SplitAt` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
-   --> tests/ui-stable/struct.rs:161:28
+   --> tests/ui-stable/struct.rs:163:28
     |
-161 |         is_into_bytes_11::<IntoBytes11<AU16>>();
+163 |         is_into_bytes_11::<IntoBytes11<AU16>>();
     |                            ^^^^^^^^^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
     |
     = note: Consider adding `#[derive(Unaligned)]` to `AU16`
@@ -391,13 +391,13 @@ error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
               I128<O>
             and $N others
 note: required for `IntoBytes11<AU16>` to implement `zerocopy::IntoBytes`
-   --> tests/ui-stable/struct.rs:150:10
+   --> tests/ui-stable/struct.rs:152:10
     |
-150 | #[derive(IntoBytes)]
+152 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `is_into_bytes_11`
-   --> tests/ui-stable/struct.rs:159:24
+   --> tests/ui-stable/struct.rs:161:24
     |
-159 | fn is_into_bytes_11<T: IntoBytes>() {
+161 | fn is_into_bytes_11<T: IntoBytes>() {
     |                        ^^^^^^^^^ required by this bound in `is_into_bytes_11`
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
