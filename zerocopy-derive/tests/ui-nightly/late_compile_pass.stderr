@@ -27,7 +27,7 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satis
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
-9  + #![feature(trivial_bounds)]
+ 9 + #![feature(trivial_bounds)]
    |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
@@ -51,7 +51,7 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satis
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
-9  + #![feature(trivial_bounds)]
+ 9 + #![feature(trivial_bounds)]
    |
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
@@ -75,7 +75,7 @@ error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
-9  + #![feature(trivial_bounds)]
+ 9 + #![feature(trivial_bounds)]
    |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
@@ -99,7 +99,7 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satis
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
-9  + #![feature(trivial_bounds)]
+ 9 + #![feature(trivial_bounds)]
    |
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
@@ -123,7 +123,7 @@ error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
-9  + #![feature(trivial_bounds)]
+ 9 + #![feature(trivial_bounds)]
    |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfied
@@ -147,7 +147,7 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfie
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
-9  + #![feature(trivial_bounds)]
+ 9 + #![feature(trivial_bounds)]
    |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfied
@@ -171,7 +171,7 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfie
    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
-9  + #![feature(trivial_bounds)]
+ 9 + #![feature(trivial_bounds)]
    |
 
 error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
@@ -195,7 +195,7 @@ error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
-9  + #![feature(trivial_bounds)]
+ 9 + #![feature(trivial_bounds)]
    |
 
 error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
@@ -219,7 +219,7 @@ error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
-9  + #![feature(trivial_bounds)]
+ 9 + #![feature(trivial_bounds)]
    |
 
 error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
@@ -243,7 +243,7 @@ error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
-9  + #![feature(trivial_bounds)]
+ 9 + #![feature(trivial_bounds)]
    |
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfied
