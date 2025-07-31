@@ -105,7 +105,7 @@ note: required because it appears within the type `KL00`
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
-9  + #![feature(trivial_bounds)]
+ 9 + #![feature(trivial_bounds)]
    |
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
@@ -124,7 +124,7 @@ note: required because it appears within the type `KL02`
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
-9  + #![feature(trivial_bounds)]
+ 9 + #![feature(trivial_bounds)]
    |
 
 error[E0277]: the trait bound `NotKnownLayoutDst: zerocopy::KnownLayout` is not satisfied
@@ -148,7 +148,7 @@ error[E0277]: the trait bound `NotKnownLayoutDst: zerocopy::KnownLayout` is not 
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
-9  + #![feature(trivial_bounds)]
+ 9 + #![feature(trivial_bounds)]
    |
 
 error[E0277]: the trait bound `NotKnownLayout: zerocopy::KnownLayout` is not satisfied
@@ -172,7 +172,7 @@ error[E0277]: the trait bound `NotKnownLayout: zerocopy::KnownLayout` is not sat
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
-9  + #![feature(trivial_bounds)]
+ 9 + #![feature(trivial_bounds)]
    |
 
 error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::Immutable` is not satisfied
@@ -196,7 +196,7 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::Immutable` is not satis
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
-9  + #![feature(trivial_bounds)]
+ 9 + #![feature(trivial_bounds)]
    |
 
 error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy::Immutable` is not satisfied
@@ -221,7 +221,7 @@ error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy::Immutable` is not satis
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
-9  + #![feature(trivial_bounds)]
+ 9 + #![feature(trivial_bounds)]
    |
 
 error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
@@ -293,7 +293,7 @@ error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
-9   + #![feature(trivial_bounds)]
+  9 + #![feature(trivial_bounds)]
     |
 
 error[E0277]: `IntoBytes2` has inter-field padding
@@ -311,7 +311,7 @@ error[E0277]: `IntoBytes2` has inter-field padding
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
-9   + #![feature(trivial_bounds)]
+  9 + #![feature(trivial_bounds)]
     |
 
 error[E0277]: `IntoBytes3` has inter-field padding
@@ -329,7 +329,7 @@ error[E0277]: `IntoBytes3` has inter-field padding
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
-9   + #![feature(trivial_bounds)]
+  9 + #![feature(trivial_bounds)]
     |
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
@@ -394,7 +394,7 @@ error[E0277]: the trait bound `SplitAtNotKnownLayout: zerocopy::KnownLayout` is 
 note: required by a bound in `SplitAt`
    --> $WORKSPACE/src/split_at.rs
     |
-    | pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
+ 61 | pub unsafe trait SplitAt: KnownLayout<PointerMetadata = usize> {
     |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `SplitAt`
     = note: this error originates in the derive macro `SplitAt` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -413,7 +413,7 @@ error[E0277]: the trait bound `u8: SplitAt` is not satisfied
     = note: this error originates in the derive macro `SplitAt` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
-9   + #![feature(trivial_bounds)]
+  9 + #![feature(trivial_bounds)]
     |
 
 error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
