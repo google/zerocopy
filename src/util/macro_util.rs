@@ -956,6 +956,16 @@ mod tests {
         test!(#[repr(C)] (; [AU64]) => Some(0));
         test!(#[repr(C)] (u8; AU64) => Some(8));
         test!(#[repr(C)] (u8; [AU64]) => Some(8));
+
+        #[derive(
+            Immutable, FromBytes, Eq, PartialEq, Ord, PartialOrd, Default, Debug, Copy, Clone,
+        )]
+        #[repr(C)]
+        pub(crate) struct Nested<T, U: ?Sized> {
+            _t: T,
+            _u: U,
+        }
+
         test!(#[repr(C)] (; Nested<u8, AU64>) => Some(0));
         test!(#[repr(C)] (; Nested<u8, [AU64]>) => Some(0));
         test!(#[repr(C)] (u8; Nested<u8, AU64>) => Some(8));
