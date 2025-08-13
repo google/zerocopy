@@ -323,7 +323,7 @@ pub(crate) unsafe fn new_box<T>(
 where
     T: ?Sized + crate::KnownLayout,
 {
-    let size = match meta.size_for_metadata(T::LAYOUT) {
+    let size = match T::size_for_metadata(meta) {
         Some(size) => size,
         None => return Err(AllocError),
     };
@@ -515,7 +515,7 @@ mod len_of {
                 // This can return `None` if the metadata describes an object
                 // which can't fit in an `isize`.
                 Some(meta) => {
-                    let size = match meta.size_for_metadata(T::LAYOUT) {
+                    let size = match T::size_for_metadata(meta) {
                         Some(size) => size,
                         None => return Err(MetadataCastError::Size),
                     };

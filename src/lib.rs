@@ -821,7 +821,7 @@ pub unsafe trait KnownLayout {
         let meta = Self::pointer_to_metadata(ptr.as_ptr());
         // SAFETY: `size_for_metadata` promises to only return `None` if the
         // resulting size would not fit in a `usize`.
-        meta.size_for_metadata(Self::LAYOUT)
+        Self::size_for_metadata(meta)
     }
 
     #[doc(hidden)]
@@ -830,6 +830,37 @@ pub unsafe trait KnownLayout {
     fn raw_dangling() -> NonNull<Self> {
         let meta = Self::PointerMetadata::from_elem_count(0);
         Self::raw_from_ptr_len(NonNull::dangling(), meta)
+    }
+
+    /// Computes the size of an object of type `Self` with the given pointer
+    /// metadata.
+    ///
+    /// # Safety
+    ///
+    /// `size_for_metadata` promises to return `None` if and only if the
+    /// resulting size would not fit in a `usize`. Note that the returned size
+    /// could exceed the actual maximum valid size of an allocated object,
+    /// `isize::MAX`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::KnownLayout;
+    ///
+    /// assert_eq!(u8::size_for_metadata(()), Some(1));
+    /// assert_eq!(u16::size_for_metadata(()), Some(2));
+    /// assert_eq!(<[u8]>::size_for_metadata(42), Some(42));
+    /// assert_eq!(<[u16]>::size_for_metadata(42), Some(84));
+    ///
+    /// // This size exceeds the maximum valid object size (`isize::MAX`):
+    /// assert_eq!(<[u8]>::size_for_metadata(usize::MAX), Some(usize::MAX));
+    ///
+    /// // This size, if computed, would exceed `usize::MAX`:
+    /// assert_eq!(<[u16]>::size_for_metadata(usize::MAX), None);
+    /// ```
+    #[inline(always)]
+    fn size_for_metadata(meta: Self::PointerMetadata) -> Option<usize> {
+        meta.size_for_metadata(Self::LAYOUT)
     }
 }
 
