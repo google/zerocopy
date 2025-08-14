@@ -479,7 +479,7 @@ where
     #[inline]
     pub fn from_bytes_with_elems(source: B, count: usize) -> Result<Ref<B, T>, CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
-        let expected_len = match count.size_for_metadata(T::LAYOUT) {
+        let expected_len = match T::size_for_metadata(count) {
             Some(len) => len,
             None => return Err(SizeError::new(source).into()),
         };
@@ -533,7 +533,7 @@ where
         count: usize,
     ) -> Result<(Ref<B, T>, B), CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
-        let expected_len = match count.size_for_metadata(T::LAYOUT) {
+        let expected_len = match T::size_for_metadata(count) {
             Some(len) => len,
             None => return Err(SizeError::new(source).into()),
         };
@@ -579,7 +579,7 @@ where
         count: usize,
     ) -> Result<(B, Ref<B, T>), CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
-        let expected_len = match count.size_for_metadata(T::LAYOUT) {
+        let expected_len = match T::size_for_metadata(count) {
             Some(len) => len,
             None => return Err(SizeError::new(source).into()),
         };
