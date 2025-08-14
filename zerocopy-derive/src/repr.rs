@@ -48,11 +48,13 @@ pub(crate) enum PrimitiveRepr {
     U16,
     U32,
     U64,
+    U128,
     Usize,
     I8,
     I16,
     I32,
     I64,
+    I128,
     Isize,
 }
 
@@ -92,11 +94,13 @@ impl<Prim, Packed> Repr<Prim, Packed> {
                     U16 => "repr(u16)",
                     U32 => "repr(u32)",
                     U64 => "repr(u64)",
+                    U128 => "repr(u128)",
                     Usize => "repr(usize)",
                     I8 => "repr(i8)",
                     I16 => "repr(i16)",
                     I32 => "repr(i32)",
                     I64 => "repr(i64)",
+                    I128 => "repr(i128)",
                     Isize => "repr(isize)",
                 }),
             },
@@ -224,11 +228,13 @@ impl ToTokens for Spanned<PrimitiveRepr> {
             U16 => ts.append_all(quote_spanned! { self.span => #[repr(u16)] }),
             U32 => ts.append_all(quote_spanned! { self.span => #[repr(u32)] }),
             U64 => ts.append_all(quote_spanned! { self.span => #[repr(u64)] }),
+            U128 => ts.append_all(quote_spanned! { self.span => #[repr(u128)] }),
             Usize => ts.append_all(quote_spanned! { self.span => #[repr(usize)] }),
             I8 => ts.append_all(quote_spanned! { self.span => #[repr(i8)] }),
             I16 => ts.append_all(quote_spanned! { self.span => #[repr(i16)] }),
             I32 => ts.append_all(quote_spanned! { self.span => #[repr(i32)] }),
             I64 => ts.append_all(quote_spanned! { self.span => #[repr(i64)] }),
+            I128 => ts.append_all(quote_spanned! { self.span => #[repr(i128)] }),
             Isize => ts.append_all(quote_spanned! { self.span => #[repr(isize)] }),
         }
     }
@@ -267,11 +273,13 @@ pub(crate) enum RawRepr {
     U16,
     U32,
     U64,
+    U128,
     Usize,
     I8,
     I16,
     I32,
     I64,
+    I128,
     Isize,
     Align(NonZeroU32),
     PackedN(NonZeroU32),
@@ -302,18 +310,20 @@ impl<Prim: With<PrimitiveRepr>> TryFrom<RawRepr> for CompoundRepr<Prim> {
         match raw {
             C => Ok(CompoundRepr::C),
             Rust => Ok(CompoundRepr::Rust),
-            raw @ (U8 | U16 | U32 | U64 | Usize | I8 | I16 | I32 | I64 | Isize) => {
+            raw @ (U8 | U16 | U32 | U64 | U128 | Usize | I8 | I16 | I32 | I64 | I128 | Isize) => {
                 Prim::try_with_or(
                     || match raw {
                         U8 => Ok(PrimitiveRepr::U8),
                         U16 => Ok(PrimitiveRepr::U16),
                         U32 => Ok(PrimitiveRepr::U32),
                         U64 => Ok(PrimitiveRepr::U64),
+                        U128 => Ok(PrimitiveRepr::U128),
                         Usize => Ok(PrimitiveRepr::Usize),
                         I8 => Ok(PrimitiveRepr::I8),
                         I16 => Ok(PrimitiveRepr::I16),
                         I32 => Ok(PrimitiveRepr::I32),
                         I64 => Ok(PrimitiveRepr::I64),
+                        I128 => Ok(PrimitiveRepr::I128),
                         Isize => Ok(PrimitiveRepr::Isize),
                         Transparent | C | Rust | Align(_) | PackedN(_) | Packed => {
                             Err(UnsupportedReprError)
@@ -338,16 +348,16 @@ impl<Pcked: With<NonZeroU32>> TryFrom<RawRepr> for AlignRepr<Pcked> {
                 || match raw {
                     Packed => Ok(NonZeroU32::new(1).unwrap()),
                     PackedN(n) => Ok(n),
-                    U8 | U16 | U32 | U64 | Usize | I8 | I16 | I32 | I64 | Isize | Transparent
-                    | C | Rust | Align(_) => Err(UnsupportedReprError),
+                    U8 | U16 | U32 | U64 | U128 | Usize | I8 | I16 | I32 | I64 | I128 | Isize
+                    | Transparent | C | Rust | Align(_) => Err(UnsupportedReprError),
                 },
                 UnsupportedReprError,
             )
             .map(AlignRepr::Packed)
             .map_err(FromRawReprError::Err),
             Align(n) => Ok(AlignRepr::Align(n)),
-            U8 | U16 | U32 | U64 | Usize | I8 | I16 | I32 | I64 | Isize | Transparent | C
-            | Rust => Err(FromRawReprError::None),
+            U8 | U16 | U32 | U64 | U128 | Usize | I8 | I16 | I32 | I64 | I128 | Isize
+            | Transparent | C | Rust => Err(FromRawReprError::None),
         }
     }
 }
@@ -571,11 +581,13 @@ impl RawRepr {
             ("u16", None) => U16,
             ("u32", None) => U32,
             ("u64", None) => U64,
+            ("u128", None) => U128,
             ("usize", None) => Usize,
             ("i8", None) => I8,
             ("i16", None) => I16,
             ("i32", None) => I32,
             ("i64", None) => I64,
+            ("i128", None) => I128,
             ("isize", None) => Isize,
             ("C", None) => C,
             ("transparent", None) => Transparent,
