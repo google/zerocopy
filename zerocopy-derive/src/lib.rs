@@ -1229,7 +1229,7 @@ fn enum_size_from_repr(repr: &EnumRepr) -> Result<usize, Error> {
     match repr {
         Transparent(span)
         | Compound(
-            Spanned { t: C | Rust | Primitive(U32 | I32 | U64 | I64 | Usize | Isize), span },
+            Spanned { t: C | Rust | Primitive(U32 | I32 | U64 | I64 | U128 | I128 | Usize | Isize), span },
             _,
         ) => Err(Error::new(*span, "`FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`")),
         Compound(Spanned { t: Primitive(U8 | I8), span: _ }, _align) => Ok(8),
