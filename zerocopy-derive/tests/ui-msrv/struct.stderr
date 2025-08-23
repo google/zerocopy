@@ -190,31 +190,13 @@ error[E0277]: the size for values of type `[u8]` cannot be known at compilation 
 125 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ doesn't have a size known at compile-time
     |
-    = help: within `IntoBytes4`, the trait `Sized` is not implemented for `[u8]`
-note: required because it appears within the type `IntoBytes4`
-   --> tests/ui-msrv/struct.rs:127:8
-    |
-127 | struct IntoBytes4 {
-    |        ^^^^^^^^^^
-note: required by a bound in `std::mem::size_of`
-   --> $RUST/core/src/mem/mod.rs
-    |
-    | pub const fn size_of<T>() -> usize {
-    |                      ^ required by this bound in `std::mem::size_of`
-    = note: this error originates in the macro `::zerocopy::struct_has_padding` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
-   --> tests/ui-msrv/struct.rs:129:8
-    |
-129 |     b: [u8],
-    |        ^^^^ doesn't have a size known at compile-time
-    |
     = help: the trait `Sized` is not implemented for `[u8]`
-note: required by a bound in `std::mem::size_of`
-   --> $RUST/core/src/mem/mod.rs
+note: required by a bound in `DstLayout::for_type`
+   --> $WORKSPACE/src/layout.rs
     |
-    | pub const fn size_of<T>() -> usize {
-    |                      ^ required by this bound in `std::mem::size_of`
+    |     pub const fn for_type<T>() -> DstLayout {
+    |                           ^ required by this bound in `DstLayout::for_type`
+    = note: this error originates in the macro `$crate::cstruct_has_padding` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `SplitAtNotKnownLayout: zerocopy::KnownLayout` is not satisfied
    --> tests/ui-msrv/struct.rs:214:10
