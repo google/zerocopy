@@ -2,8 +2,13 @@ error[E0277]: the trait bound `Dst: IntoBytes` is not satisfied
  --> tests/ui-nightly/transmute-mut-dst-not-intobytes.rs:24:36
   |
  24 | const DST_NOT_AS_BYTES: &mut Dst = transmute_mut!(&mut Src);
-    |                                    ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `Dst`
+    |                                    ^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
+help: the trait `IntoBytes` is not implemented for `Dst`
+   --> tests/ui-nightly/transmute-mut-dst-not-intobytes.rs:21:1
+    |
+ 21 | struct Dst;
+    | ^^^^^^^^^^
     = note: Consider adding `#[derive(IntoBytes)]` to `Dst`
     = help: the following other types implement trait `IntoBytes`:
               ()

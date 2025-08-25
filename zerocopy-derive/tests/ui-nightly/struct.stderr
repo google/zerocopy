@@ -131,8 +131,13 @@ error[E0277]: the trait bound `NotKnownLayoutDst: zerocopy::KnownLayout` is not 
   --> tests/ui-nightly/struct.rs:41:10
    |
 41 | #[derive(KnownLayout)]
-   |          ^^^^^^^^^^^ the trait `zerocopy::KnownLayout` is not implemented for `NotKnownLayoutDst`
+   |          ^^^^^^^^^^^ unsatisfied trait bound
    |
+help: the trait `zerocopy::KnownLayout` is not implemented for `NotKnownLayoutDst`
+  --> tests/ui-nightly/struct.rs:27:1
+   |
+27 | struct NotKnownLayoutDst([u8]);
+   | ^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(KnownLayout)]` to `NotKnownLayoutDst`
    = help: the following other types implement trait `zerocopy::KnownLayout`:
              &T
@@ -155,8 +160,13 @@ error[E0277]: the trait bound `NotKnownLayout: zerocopy::KnownLayout` is not sat
   --> tests/ui-nightly/struct.rs:47:10
    |
 47 | #[derive(KnownLayout)]
-   |          ^^^^^^^^^^^ the trait `zerocopy::KnownLayout` is not implemented for `NotKnownLayout`
+   |          ^^^^^^^^^^^ unsatisfied trait bound
    |
+help: the trait `zerocopy::KnownLayout` is not implemented for `NotKnownLayout`
+  --> tests/ui-nightly/struct.rs:25:1
+   |
+25 | struct NotKnownLayout;
+   | ^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(KnownLayout)]` to `NotKnownLayout`
    = help: the following other types implement trait `zerocopy::KnownLayout`:
              &T
@@ -276,8 +286,13 @@ error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
    --> tests/ui-nightly/struct.rs:100:10
     |
 100 | #[derive(IntoBytes)]
-    |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
+    |          ^^^^^^^^^ unsatisfied trait bound
     |
+help: the trait `zerocopy::Unaligned` is not implemented for `AU16`
+   --> tests/ui-nightly/../include.rs
+    |
+ 63 |     pub struct AU16(pub u16);
+    |     ^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(Unaligned)]` to `AU16`
     = help: the following other types implement trait `zerocopy::Unaligned`:
               ()
@@ -378,8 +393,13 @@ error[E0277]: the trait bound `SplitAtNotKnownLayout: zerocopy::KnownLayout` is 
    --> tests/ui-nightly/struct.rs:214:10
     |
 214 | #[derive(SplitAt)]
-    |          ^^^^^^^ the trait `zerocopy::KnownLayout` is not implemented for `SplitAtNotKnownLayout`
+    |          ^^^^^^^ unsatisfied trait bound
     |
+help: the trait `zerocopy::KnownLayout` is not implemented for `SplitAtNotKnownLayout`
+   --> tests/ui-nightly/struct.rs:216:1
+    |
+216 | struct SplitAtNotKnownLayout([u8]);
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(KnownLayout)]` to `SplitAtNotKnownLayout`
     = help: the following other types implement trait `zerocopy::KnownLayout`:
               &T
@@ -420,8 +440,13 @@ error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
    --> tests/ui-nightly/struct.rs:161:28
     |
 161 |         is_into_bytes_11::<IntoBytes11<AU16>>();
-    |                            ^^^^^^^^^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
+    |                            ^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
+help: the trait `zerocopy::Unaligned` is not implemented for `AU16`
+   --> tests/ui-nightly/../include.rs
+    |
+ 63 |     pub struct AU16(pub u16);
+    |     ^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(Unaligned)]` to `AU16`
     = help: the following other types implement trait `zerocopy::Unaligned`:
               ()
