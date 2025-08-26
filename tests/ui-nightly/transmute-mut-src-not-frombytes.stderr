@@ -2,8 +2,13 @@ error[E0277]: the trait bound `Src: FromBytes` is not satisfied
  --> tests/ui-nightly/transmute-mut-src-not-frombytes.rs:24:38
   |
  24 | const SRC_NOT_FROM_BYTES: &mut Dst = transmute_mut!(&mut Src);
-    |                                      ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `Src`
+    |                                      ^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
+help: the trait `FromBytes` is not implemented for `Src`
+   --> tests/ui-nightly/transmute-mut-src-not-frombytes.rs:17:1
+    |
+ 17 | struct Src;
+    | ^^^^^^^^^^
     = note: Consider adding `#[derive(FromBytes)]` to `Src`
     = help: the following other types implement trait `FromBytes`:
               ()

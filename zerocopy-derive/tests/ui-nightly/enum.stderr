@@ -351,8 +351,13 @@ error[E0277]: the trait bound `NotTryFromBytes: TryFromBytes` is not satisfied
   --> tests/ui-nightly/enum.rs:82:10
    |
 82 | #[derive(TryFromBytes)]
-   |          ^^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotTryFromBytes`
+   |          ^^^^^^^^^^^^ unsatisfied trait bound
    |
+help: the trait `TryFromBytes` is not implemented for `NotTryFromBytes`
+  --> tests/ui-nightly/enum.rs:80:1
+   |
+80 | struct NotTryFromBytes;
+   | ^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotTryFromBytes`
    = help: the following other types implement trait `TryFromBytes`:
              ()
@@ -375,8 +380,13 @@ error[E0277]: the trait bound `NotFromZeros: TryFromBytes` is not satisfied
    --> tests/ui-nightly/enum.rs:127:10
     |
 127 | #[derive(FromZeros)]
-    |          ^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotFromZeros`
+    |          ^^^^^^^^^ unsatisfied trait bound
     |
+help: the trait `TryFromBytes` is not implemented for `NotFromZeros`
+   --> tests/ui-nightly/enum.rs:125:1
+    |
+125 | struct NotFromZeros;
+    | ^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(TryFromBytes)]` to `NotFromZeros`
     = help: the following other types implement trait `TryFromBytes`:
               ()
@@ -399,8 +409,13 @@ error[E0277]: the trait bound `NotFromZeros: FromZeros` is not satisfied
    --> tests/ui-nightly/enum.rs:127:10
     |
 127 | #[derive(FromZeros)]
-    |          ^^^^^^^^^ the trait `FromZeros` is not implemented for `NotFromZeros`
+    |          ^^^^^^^^^ unsatisfied trait bound
     |
+help: the trait `FromZeros` is not implemented for `NotFromZeros`
+   --> tests/ui-nightly/enum.rs:125:1
+    |
+125 | struct NotFromZeros;
+    | ^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(FromZeros)]` to `NotFromZeros`
     = help: the following other types implement trait `FromZeros`:
               ()

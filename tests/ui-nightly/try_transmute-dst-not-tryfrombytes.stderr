@@ -2,8 +2,13 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satis
  --> tests/ui-nightly/try_transmute-dst-not-tryfrombytes.rs:17:33
   |
  17 |     let dst_not_try_from_bytes: Result<NotZerocopy, _> = try_transmute!(AU16(0));
-    |                                 ^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
+help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+   --> tests/ui-nightly/../../zerocopy-derive/tests/include.rs
+    |
+ 48 |     pub struct NotZerocopy<T = ()>(pub T);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
     = help: the following other types implement trait `zerocopy::TryFromBytes`:
               ()
@@ -25,8 +30,13 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satis
  --> tests/ui-nightly/try_transmute-dst-not-tryfrombytes.rs:17:58
   |
  17 |     let dst_not_try_from_bytes: Result<NotZerocopy, _> = try_transmute!(AU16(0));
-    |                                                          ^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+    |                                                          ^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
+help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+   --> tests/ui-nightly/../../zerocopy-derive/tests/include.rs
+    |
+ 48 |     pub struct NotZerocopy<T = ()>(pub T);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
     = help: the following other types implement trait `zerocopy::TryFromBytes`:
               ()
@@ -52,8 +62,13 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satis
  --> tests/ui-nightly/try_transmute-dst-not-tryfrombytes.rs:17:58
   |
  17 |     let dst_not_try_from_bytes: Result<NotZerocopy, _> = try_transmute!(AU16(0));
-    |                                                          ^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+    |                                                          ^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
+help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+   --> tests/ui-nightly/../../zerocopy-derive/tests/include.rs
+    |
+ 48 |     pub struct NotZerocopy<T = ()>(pub T);
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
     = help: the following other types implement trait `zerocopy::TryFromBytes`:
               ()
