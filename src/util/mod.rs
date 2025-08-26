@@ -370,7 +370,8 @@ where
         //
         // SAFETY: any initialized bit sequence is a bit-valid `*mut u8`. All
         // bits of a `usize` are initialized.
-        #[allow(clippy::useless_transmute)]
+        #[allow(unknown_lints)] // For `integer_to_ptr_transmutes`
+        #[allow(clippy::useless_transmute, integer_to_ptr_transmutes)]
         let dangling = unsafe { mem::transmute::<usize, *mut u8>(align) };
         // SAFETY: `dangling` is constructed from `T::LAYOUT.align`, which is a
         // `NonZeroUsize`, which is guaranteed to be non-zero.

@@ -2,8 +2,13 @@ error[E0277]: the trait bound `NotZerocopy<u32>: zerocopy::FromBytes` is not sat
   --> tests/ui-nightly/include_value_not_from_bytes.rs:19:42
    |
 19 | const NOT_FROM_BYTES: NotZerocopy<u32> = include_value!("../../testdata/include_value/data");
-   |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy<u32>`
+   |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
    |
+help: the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy<u32>`
+  --> tests/ui-nightly/../../zerocopy-derive/tests/include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy<u32>`
    = help: the following other types implement trait `zerocopy::FromBytes`:
              ()
