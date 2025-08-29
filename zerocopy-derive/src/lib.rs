@@ -1489,9 +1489,9 @@ impl PaddingCheck {
     /// passes the padding check encoded by `PaddingCheck`.
     fn validator_macro_ident(&self) -> Ident {
         let s = match self {
-            PaddingCheck::Struct => "struct_has_padding",
-            PaddingCheck::Union => "union_has_padding",
-            PaddingCheck::Enum { .. } => "enum_has_padding",
+            PaddingCheck::Struct => "struct_padding",
+            PaddingCheck::Union => "union_padding",
+            PaddingCheck::Enum { .. } => "enum_padding",
         };
 
         Ident::new(s, Span::call_site())

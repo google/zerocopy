@@ -162,25 +162,25 @@ error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `(): PaddingFree<IntoBytes2, true>` is not satisfied
+error[E0277]: the trait bound `(): PaddingFree<IntoBytes2, 1_usize>` is not satisfied
    --> tests/ui-msrv/struct.rs:107:10
     |
 107 | #[derive(IntoBytes)]
-    |          ^^^^^^^^^ the trait `PaddingFree<IntoBytes2, true>` is not implemented for `()`
+    |          ^^^^^^^^^ the trait `PaddingFree<IntoBytes2, 1_usize>` is not implemented for `()`
     |
     = help: the following implementations were found:
-              <() as PaddingFree<T, false>>
+              <() as PaddingFree<T, 0_usize>>
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `(): PaddingFree<IntoBytes3, true>` is not satisfied
+error[E0277]: the trait bound `(): PaddingFree<IntoBytes3, 1_usize>` is not satisfied
    --> tests/ui-msrv/struct.rs:114:10
     |
 114 | #[derive(IntoBytes)]
-    |          ^^^^^^^^^ the trait `PaddingFree<IntoBytes3, true>` is not implemented for `()`
+    |          ^^^^^^^^^ the trait `PaddingFree<IntoBytes3, 1_usize>` is not implemented for `()`
     |
     = help: the following implementations were found:
-              <() as PaddingFree<T, false>>
+              <() as PaddingFree<T, 0_usize>>
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -201,7 +201,7 @@ note: required by a bound in `std::mem::size_of`
     |
     | pub const fn size_of<T>() -> usize {
     |                      ^ required by this bound in `std::mem::size_of`
-    = note: this error originates in the macro `::zerocopy::struct_has_padding` (in Nightly builds, run with -Z macro-backtrace for more info)
+    = note: this error originates in the macro `::zerocopy::struct_padding` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
    --> tests/ui-msrv/struct.rs:129:8
