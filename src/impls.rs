@@ -299,7 +299,7 @@ const _: () = unsafe {
 
 // SAFETY: The following types can be transmuted from `[0u8; size_of::<T>()]`. [1]
 //
-// [1] Per https://doc.rust-lang.org/nightly/core/option/index.html#representation:
+// [1] Per https://doc.rust-lang.org/1.89.0/core/option/index.html#representation:
 //
 //   Rust guarantees to optimize the following types `T` such that [`Option<T>`]
 //   has the same size and alignment as `T`. In some of these cases, Rust
@@ -307,16 +307,17 @@ const _: () = unsafe {
 //   is sound and produces `Option::<T>::None`. These cases are identified by
 //   the second column:
 //
-//   | `T`                   | `transmute::<_, Option<T>>([0u8; size_of::<T>()])` sound? |
-//   |-----------------------|-----------------------------------------------------------|
-//   | [`Box<U>`]            | when `U: Sized`                                           |
-//   | `&U`                  | when `U: Sized`                                           |
-//   | `&mut U`              | when `U: Sized`                                           |
-//   | [`ptr::NonNull<U>`]   | when `U: Sized`                                           |
-//   | `fn`, `extern "C" fn` | always                                                    |
+//   | `T`                               | `transmute::<_, Option<T>>([0u8; size_of::<T>()])` sound? |
+//   |-----------------------------------|-----------------------------------------------------------|
+//   | [`Box<U>`]                        | when `U: Sized`                                           |
+//   | `&U`                              | when `U: Sized`                                           |
+//   | `&mut U`                          | when `U: Sized`                                           |
+//   | [`ptr::NonNull<U>`]               | when `U: Sized`                                           |
+//   | `fn`, `extern "C" fn`[^extern_fn] | always                                                    |
 //
-// FIXME(#429), FIXME(https://github.com/rust-lang/rust/pull/115333): Cite the
-// Stable docs once they're available.
+//   [^extern_fn]: this remains true for `unsafe` variants, any argument/return
+//     types, and any other ABI: `[unsafe] extern "abi" fn` (_e.g._, `extern
+//     "system" fn`)
 const _: () = unsafe {
     #[cfg(feature = "alloc")]
     unsafe_impl!(
@@ -345,19 +346,31 @@ const _: () = unsafe {
         A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_fn!(...);
         |c| pointer::is_zeroed(c)
     );
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_unsafe_fn!(...));
+    unsafe_impl_for_power_set!(
+        A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_unsafe_fn!(...);
+        |c| pointer::is_zeroed(c)
+    );
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_extern_c_fn!(...));
     unsafe_impl_for_power_set!(
         A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_extern_c_fn!(...);
         |c| pointer::is_zeroed(c)
     );
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_unsafe_extern_c_fn!(...));
+    unsafe_impl_for_power_set!(
+        A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_unsafe_extern_c_fn!(...);
+        |c| pointer::is_zeroed(c)
+    );
 };
 
-// SAFETY: `fn()` and `extern "C" fn()` self-evidently do not contain
+// SAFETY: `[unsafe] [extern "C"] fn()` self-evidently do not contain
 // `UnsafeCell`s. This is not a proof, but we are accepting this as a known risk
 // per #1358.
 const _: () = unsafe {
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => Immutable for opt_fn!(...));
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => Immutable for opt_unsafe_fn!(...));
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => Immutable for opt_extern_c_fn!(...));
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => Immutable for opt_unsafe_extern_c_fn!(...));
 };
 
 #[cfg(all(
