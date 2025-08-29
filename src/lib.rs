@@ -3398,11 +3398,10 @@ pub unsafe trait FromZeros: TryFromBytes {
 ///
 /// - If the type is a struct, all of its fields must be `FromBytes`.
 /// - If the type is an enum:
-///   - It must have a defined representation (`repr`s `u8`, `u16`, `u32`,
-///     `u64`, `usize`, `i8`, `i16`, `i32`, `i64`, or `isize`).
+///   - It must have a defined representation which is one of `u8`, `u16`, `i8`,
+///     or `i16`.
 ///   - The maximum number of discriminants must be used (so that every possible
-///     bit pattern is a valid one). Be very careful when using the `usize` or
-///     `isize` representations, as their size is platform-dependent.
+///     bit pattern is a valid one).
 ///   - Its fields must be `FromBytes`.
 ///
 /// This analysis is subject to change. Unsafe code may *only* rely on the
