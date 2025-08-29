@@ -999,14 +999,14 @@ macro_rules! cryptocorrosion_derive_traits {
         // SAFETY: `#[repr(transparent)]` structs cannot have the same layout as
         // their single non-zero-sized field, and so cannot have any padding
         // outside of that field.
-        false
+        0
     };
     (
         @struct_padding_check #[repr(C)]
         $(($($tuple_field_ty:ty),*))?
         $({$($field_ty:ty),*})?
     ) => {
-        $crate::struct_has_padding!(
+        $crate::struct_padding!(
             Self,
             [
                 $($($tuple_field_ty),*)?
@@ -1087,7 +1087,7 @@ macro_rules! cryptocorrosion_derive_traits {
             (): $crate::util::macro_util::PaddingFree<
                 Self,
                 {
-                    $crate::union_has_padding!(
+                    $crate::union_padding!(
                         Self,
                         [$($field_ty),*]
                     )

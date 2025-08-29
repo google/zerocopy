@@ -52,15 +52,15 @@ pub unsafe trait Field<Index> {
 #[cfg_attr(
     zerocopy_diagnostic_on_unimplemented_1_78_0,
     diagnostic::on_unimplemented(
-        message = "`{T}` has inter-field padding",
+        message = "`{T}` has {PADDING_BYTES} total byte(s) of padding",
         label = "types with padding cannot implement `IntoBytes`",
         note = "consider using `zerocopy::Unalign` to lower the alignment of individual fields",
         note = "consider adding explicit fields where padding would be",
-        note = "consider using `#[repr(packed)]` to remove inter-field padding"
+        note = "consider using `#[repr(packed)]` to remove padding"
     )
 )]
-pub trait PaddingFree<T: ?Sized, const HAS_PADDING: bool> {}
-impl<T: ?Sized> PaddingFree<T, false> for () {}
+pub trait PaddingFree<T: ?Sized, const PADDING_BYTES: usize> {}
+impl<T: ?Sized> PaddingFree<T, 0> for () {}
 
 /// A type whose size is equal to `align_of::<T>()`.
 #[repr(C)]
@@ -318,8 +318,8 @@ pub type SizeToTag<const SIZE: usize> = <() as size_to_tag::SizeToTag<SIZE>>::Ta
 mod __size_of {
     #[diagnostic::on_unimplemented(
         message = "`{Self}` is unsized",
-        label = "`IntoBytes` needs all field types to be `Sized` in order to determine whether there is inter-field padding",
-        note = "consider using `#[repr(packed)]` to remove inter-field padding",
+        label = "`IntoBytes` needs all field types to be `Sized` in order to determine whether there is padding",
+        note = "consider using `#[repr(packed)]` to remove padding",
         note = "`IntoBytes` does not require the fields of `#[repr(packed)]` types to be `Sized`"
     )]
     pub trait Sized: core::marker::Sized {}
@@ -339,74 +339,86 @@ pub use core::mem::size_of;
 #[cfg(zerocopy_diagnostic_on_unimplemented_1_78_0)]
 pub use __size_of::size_of;
 
-/// Does the struct type `$t` have padding?
+/// How many padding bytes does the struct type `$t` have?
 ///
-/// `$ts` is the list of the type of every field in `$t`. `$t` must be a
-/// struct type, or else `struct_has_padding!`'s result may be meaningless.
+/// `$ts` is the list of the type of every field in `$t`. `$t` must be a struct
+/// type, or else `struct_padding!`'s result may be meaningless.
 ///
-/// Note that `struct_has_padding!`'s results are independent of `repcr` since
-/// they only consider the size of the type and the sizes of the fields.
-/// Whatever the repr, the size of the type already takes into account any
-/// padding that the compiler has decided to add. Structs with well-defined
-/// representations (such as `repr(C)`) can use this macro to check for padding.
-/// Note that while this may yield some consistent value for some `repr(Rust)`
-/// structs, it is not guaranteed across platforms or compilations.
+/// Note that `struct_padding!`'s results are independent of `repcr` since they
+/// only consider the size of the type and the sizes of the fields. Whatever the
+/// repr, the size of the type already takes into account any padding that the
+/// compiler has decided to add. Structs with well-defined representations (such
+/// as `repr(C)`) can use this macro to check for padding. Note that while this
+/// may yield some consistent value for some `repr(Rust)` structs, it is not
+/// guaranteed across platforms or compilations.
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
-macro_rules! struct_has_padding {
+macro_rules! struct_padding {
     ($t:ty, [$($ts:ty),*]) => {
-        $crate::util::macro_util::size_of::<$t>() > 0 $(+ $crate::util::macro_util::size_of::<$ts>())*
+        $crate::util::macro_util::size_of::<$t>() - (0 $(+ $crate::util::macro_util::size_of::<$ts>())*)
     };
 }
 
-/// Does the union type `$t` have padding?
+/// How many padding bytes does the union type `$t` have?
 ///
-/// `$ts` is the list of the type of every field in `$t`. `$t` must be a
-/// union type, or else `union_has_padding!`'s result may be meaningless.
+/// `$ts` is the list of the type of every field in `$t`. `$t` must be a union
+/// type, or else `union_padding!`'s result may be meaningless.
 ///
-/// Note that `union_has_padding!`'s results are independent of `repr` since
-/// they only consider the size of the type and the sizes of the fields.
-/// Whatever the repr, the size of the type already takes into account any
-/// padding that the compiler has decided to add. Unions with well-defined
-/// representations (such as `repr(C)`) can use this macro to check for padding.
-/// Note that while this may yield some consistent value for some `repr(Rust)`
-/// unions, it is not guaranteed across platforms or compilations.
+/// Note that `union_padding!`'s results are independent of `repr` since they
+/// only consider the size of the type and the sizes of the fields. Whatever the
+/// repr, the size of the type already takes into account any padding that the
+/// compiler has decided to add. Unions with well-defined representations (such
+/// as `repr(C)`) can use this macro to check for padding. Note that while this
+/// may yield some consistent value for some `repr(Rust)` unions, it is not
+/// guaranteed across platforms or compilations.
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
-macro_rules! union_has_padding {
-    ($t:ty, [$($ts:ty),*]) => {
-        false $(|| $crate::util::macro_util::size_of::<$t>() != $crate::util::macro_util::size_of::<$ts>())*
-    };
+macro_rules! union_padding {
+    ($t:ty, [$($ts:ty),*]) => {{
+        let mut max = 0;
+        $({
+            let padding = $crate::util::macro_util::size_of::<$t>() - $crate::util::macro_util::size_of::<$ts>();
+            if padding > max {
+                max = padding;
+            }
+        })*
+        max
+    }};
 }
 
-/// Does the enum type `$t` have padding?
+/// How many padding bytes does the enum type `$t` have?
 ///
 /// `$disc` is the type of the enum tag, and `$ts` is a list of fields in each
 /// square-bracket-delimited variant. `$t` must be an enum, or else
-/// `enum_has_padding!`'s result may be meaningless. An enum has padding if any
-/// of its variant structs [1][2] contain padding, and so all of the variants of
-/// an enum must be "full" in order for the enum to not have padding.
+/// `enum_padding!`'s result may be meaningless. An enum has padding if any of
+/// its variant structs [1][2] contain padding, and so all of the variants of an
+/// enum must be "full" in order for the enum to not have padding.
 ///
-/// The results of `enum_has_padding!` require that the enum is not
-/// `repr(Rust)`, as `repr(Rust)` enums may niche the enum's tag and reduce the
-/// total number of bytes required to represent the enum as a result. As long as
-/// the enum is `repr(C)`, `repr(int)`, or `repr(C, int)`, this will
-/// consistently return whether the enum contains any padding bytes.
+/// The results of `enum_padding!` require that the enum is not `repr(Rust)`, as
+/// `repr(Rust)` enums may niche the enum's tag and reduce the total number of
+/// bytes required to represent the enum as a result. As long as the enum is
+/// `repr(C)`, `repr(int)`, or `repr(C, int)`, this will consistently return
+/// whether the enum contains any padding bytes.
 ///
 /// [1]: https://doc.rust-lang.org/1.81.0/reference/type-layout.html#reprc-enums-with-fields
 /// [2]: https://doc.rust-lang.org/1.81.0/reference/type-layout.html#primitive-representation-of-enums-with-fields
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
-macro_rules! enum_has_padding {
-    ($t:ty, $disc:ty, $([$($ts:ty),*]),*) => {
-        false $(
-            || $crate::util::macro_util::size_of::<$t>()
-                != (
+macro_rules! enum_padding {
+    ($t:ty, $disc:ty, $([$($ts:ty),*]),*) => {{
+        let mut max = 0;
+        $({
+            let padding = $crate::util::macro_util::size_of::<$t>()
+                - (
                     $crate::util::macro_util::size_of::<$disc>()
                     $(+ $crate::util::macro_util::size_of::<$ts>())*
-                )
-        )*
-    }
+                );
+            if padding > max {
+                max = padding;
+            }
+        })*
+        max
+    }};
 }
 
 /// Does `t` have alignment greater than or equal to `u`?  If not, this macro
@@ -1111,14 +1123,14 @@ mod tests {
     }
 
     #[test]
-    fn test_struct_has_padding() {
-        // Test that, for each provided repr, `struct_has_padding!` reports the
+    fn test_struct_padding() {
+        // Test that, for each provided repr, `struct_padding!` reports the
         // expected value.
         macro_rules! test {
             (#[$cfg:meta] ($($ts:ty),*) => $expect:expr) => {{
                 #[$cfg]
                 struct Test($(#[allow(dead_code)] $ts),*);
-                assert_eq!(struct_has_padding!(Test, [$($ts),*]), $expect);
+                assert_eq!(struct_padding!(Test, [$($ts),*]), $expect);
             }};
             (#[$cfg:meta] $(#[$cfgs:meta])* ($($ts:ty),*) => $expect:expr) => {
                 test!(#[$cfg] ($($ts),*) => $expect);
@@ -1126,30 +1138,30 @@ mod tests {
             };
         }
 
-        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)] () => false);
-        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)] (u8) => false);
-        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)] (u8, ()) => false);
-        test!(#[repr(C)] #[repr(packed)] (u8, u8) => false);
+        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)] () => 0);
+        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)] (u8) => 0);
+        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)] (u8, ()) => 0);
+        test!(#[repr(C)] #[repr(packed)] (u8, u8) => 0);
 
-        test!(#[repr(C)] (u8, AU64) => true);
+        test!(#[repr(C)] (u8, AU64) => 7);
         // Rust won't let you put `#[repr(packed)]` on a type which contains a
         // `#[repr(align(n > 1))]` type (`AU64`), so we have to use `u64` here.
         // It's not ideal, but it definitely has align > 1 on /some/ of our CI
         // targets, and this isn't a particularly complex macro we're testing
         // anyway.
-        test!(#[repr(packed)] (u8, u64) => false);
+        test!(#[repr(packed)] (u8, u64) => 0);
     }
 
     #[test]
-    fn test_union_has_padding() {
-        // Test that, for each provided repr, `union_has_padding!` reports the
+    fn test_union_padding() {
+        // Test that, for each provided repr, `union_padding!` reports the
         // expected value.
         macro_rules! test {
             (#[$cfg:meta] {$($fs:ident: $ts:ty),*} => $expect:expr) => {{
                 #[$cfg]
                 #[allow(unused)] // fields are never read
                 union Test{ $($fs: $ts),* }
-                assert_eq!(union_has_padding!(Test, [$($ts),*]), $expect);
+                assert_eq!(union_padding!(Test, [$($ts),*]), $expect);
             }};
             (#[$cfg:meta] $(#[$cfgs:meta])* {$($fs:ident: $ts:ty),*} => $expect:expr) => {
                 test!(#[$cfg] {$($fs: $ts),*} => $expect);
@@ -1157,19 +1169,19 @@ mod tests {
             };
         }
 
-        test!(#[repr(C)] #[repr(packed)] {a: u8} => false);
-        test!(#[repr(C)] #[repr(packed)] {a: u8, b: u8} => false);
+        test!(#[repr(C)] #[repr(packed)] {a: u8} => 0);
+        test!(#[repr(C)] #[repr(packed)] {a: u8, b: u8} => 0);
 
         // Rust won't let you put `#[repr(packed)]` on a type which contains a
         // `#[repr(align(n > 1))]` type (`AU64`), so we have to use `u64` here.
         // It's not ideal, but it definitely has align > 1 on /some/ of our CI
         // targets, and this isn't a particularly complex macro we're testing
         // anyway.
-        test!(#[repr(C)] #[repr(packed)] {a: u8, b: u64} => true);
+        test!(#[repr(C)] #[repr(packed)] {a: u8, b: u64} => 7);
     }
 
     #[test]
-    fn test_enum_has_padding() {
+    fn test_enum_padding() {
         // Test that, for each provided repr, `enum_has_padding!` reports the
         // expected value.
         macro_rules! test {
@@ -1188,7 +1200,7 @@ mod tests {
                     $($vs ($($ts),*),)*
                 }
                 assert_eq!(
-                    enum_has_padding!(Test, $disc, $([$($ts),*]),*),
+                    enum_padding!(Test, $disc, $([$($ts),*]),*),
                     $expect
                 );
             }};
@@ -1204,41 +1216,41 @@ mod tests {
 
         test!(#[repr(u8)] #[repr(C)] {
             A(u8),
-        } => false);
+        } => 0);
         test!(#[repr(u16)] #[repr(C)] {
             A(u8, u8),
             B(U16),
-        } => false);
+        } => 0);
         test!(#[repr(u32)] #[repr(C)] {
             A(u8, u8, u8, u8),
             B(U16, u8, u8),
             C(u8, u8, U16),
             D(U16, U16),
             E(U32),
-        } => false);
+        } => 0);
 
         // `repr(int)` can pack the discriminant more efficiently
         test!(#[repr(u8)] {
             A(u8, U16),
-        } => false);
+        } => 0);
         test!(#[repr(u8)] {
             A(u8, U16, U32),
-        } => false);
+        } => 0);
 
         // `repr(C)` cannot
         test!(#[repr(u8, C)] {
             A(u8, U16),
-        } => true);
+        } => 2);
         test!(#[repr(u8, C)] {
             A(u8, u8, u8, U32),
-        } => true);
+        } => 4);
 
         // And field ordering can always cause problems
         test!(#[repr(u8)] #[repr(C)] {
             A(U16, u8),
-        } => true);
+        } => 2);
         test!(#[repr(u8)] #[repr(C)] {
             A(U32, u8, u8, u8),
-        } => true);
+        } => 4);
     }
 }
