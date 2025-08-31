@@ -9,6 +9,10 @@
 use core::{fmt, hash::Hash};
 
 use super::*;
+use crate::pointer::{
+    invariant::{Valid, Validity},
+    InvariantsEq, MutationCompatible, SizeEq, TransmuteFrom,
+};
 
 /// A type with no alignment requirement.
 ///
@@ -579,6 +583,97 @@ impl<T: ?Sized + KnownLayout> fmt::Debug for MaybeUninit<T> {
         f.pad(core::any::type_name::<Self>())
     }
 }
+
+#[cfg_attr(any(feature = "derive", test), derive(FromBytes, IntoBytes, Unaligned))]
+#[repr(transparent)]
+pub struct ReadOnly<T: ?Sized>(T);
+
+const _: () = unsafe {
+    unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] ReadOnly<T>);
+};
+
+// SAFETY:
+// - `ReadOnly<T>` has the same alignment as `T`, and so it is `Unaligned`
+//   exactly when `T` is as well.
+// - `ReadOnly<T>` has the same bit validity as `T`, and so it is `FromZeros`,
+//   `FromBytes`, or `IntoBytes` exactly when `T` is as well.
+// - `TryFromBytes`: `ReadOnly<T>` has the same the same bit validity as `T`, so
+//   `T::is_bit_valid` is a sound implementation of `is_bit_valid`.
+#[allow(unused_unsafe)] // Unused when `feature = "derive"`.
+const _: () = unsafe {
+    impl_or_verify!(T: ?Sized + Unaligned => Unaligned for ReadOnly<T>);
+    impl_or_verify!(
+        T: TryFromBytes => TryFromBytes for ReadOnly<T>;
+        |c| T::is_bit_valid(c.transmute())
+    );
+    impl_or_verify!(T: ?Sized + FromZeros => FromZeros for ReadOnly<T>);
+    impl_or_verify!(T: ?Sized + FromBytes => FromBytes for ReadOnly<T>);
+    impl_or_verify!(T: ?Sized + IntoBytes => IntoBytes for ReadOnly<T>);
+};
+
+// unsafe impl<T: ?Sized, U: ?Sized> InvariantsEq<ReadOnly<T>> for ReadOnly<U> {}
+// unsafe impl<T: ?Sized> InvariantsEq<ReadOnly<ManuallyDrop<T>>> for ReadOnly<T> {}
+// unsafe impl<T: ?Sized> InvariantsEq<ReadOnly<T>> for ReadOnly<ManuallyDrop<T>> {}
+
+const _: () = unsafe {
+    unsafe_impl!(T: ?Sized => Immutable for ReadOnly<T>);
+};
+
+// unsafe impl<T: ?Sized> TransmuteFrom<T, Valid, Valid> for ReadOnly<T> {}
+// unsafe impl<T: ?Sized> TransmuteFrom<ReadOnly<T>, Valid, Valid> for T {}
+
+unsafe impl<Src: ?Sized, Dst: ?Sized> TransmuteFrom<ReadOnly<Src>, Valid, Valid> for ReadOnly<Dst> where
+    Dst: TransmuteFrom<Src, Valid, Valid>
+{
+}
+
+// unsafe impl<T: ?Sized, U: ?Sized> SizeEq<ReadOnly<T>> for U where T: SizeEq<U> {}
+
+unsafe impl<T: ?Sized> SizeEq<ReadOnly<ManuallyDrop<T>>> for ReadOnly<T> {
+    fn cast_from_raw(
+        t: pointer::PtrInner<'_, ReadOnly<ManuallyDrop<T>>>,
+    ) -> pointer::PtrInner<'_, Self> {
+        todo!()
+    }
+}
+
+impl<T: ?Sized + Immutable> Deref for ReadOnly<T> {
+    type Target = T;
+
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<T: ?Sized + Immutable> DerefMut for ReadOnly<T> {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
+impl<'a, T: ?Sized + Immutable> From<&'a T> for &'a ReadOnly<T> {
+    fn from(t: &'a T) -> &'a ReadOnly<T> {
+        todo!()
+    }
+}
+
+// unsafe_impl!(T: ?Sized => Immutable for ReadOnly<T>);
+
+// // Demo: This would be required in order to implement `TryFromBytes for
+// // ManuallyDrop<T>` if we had `TryFromBytes::<X>::is_bit_valid` take an argument
+// // of type `Ptr<ReadOnly<X>, (Shared, Unaligned, Initialized)>`.
+// fn is_bit_valid<T: ?Sized>(src: 
+    
+//     // &ReadOnly<ManuallyDrop<T>>
+//     Ptr<'_, ReadOnly<ManuallyDrop<T>>, (Shared, Unaligned, Initialized)>,
+// ) -> &ReadOnly<T> {
+//     let src = Ptr::from_ref(src);
+//     let dst: Ptr<'_, ReadOnly<T>, (_, _, Valid)> = src.transmute::<_, _, BecauseImmutable>();
+//     let dst = unsafe { dst.assume_alignment() };
+//     dst.as_ref()
+// }
 
 #[cfg(test)]
 mod tests {
