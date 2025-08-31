@@ -386,7 +386,7 @@ use core::{
 #[cfg(feature = "std")]
 use std::io;
 
-use crate::pointer::invariant::{self, BecauseExclusive};
+use crate::pointer::invariant::{self, BecauseExclusive, Initialized};
 pub use crate::{
     byte_slice::*,
     byteorder::*,
@@ -1520,7 +1520,7 @@ pub unsafe trait TryFromBytes {
     /// [`UnsafeCell`]: core::cell::UnsafeCell
     /// [`Shared`]: invariant::Shared
     #[doc(hidden)]
-    fn is_bit_valid<A: invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool;
+    fn is_bit_valid(candidate: Maybe<'_, Self>) -> bool;
 
     /// Attempts to interpret the given `source` as a `&Self`.
     ///
@@ -2928,7 +2928,12 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
     // via `c_ptr` so long as it is live, so we don't need to worry about the
     // fact that `c_ptr` may have more restricted validity than `candidate`.
     let c_ptr = unsafe { c_ptr.assume_validity::<invariant::Initialized>() };
-    let c_ptr = c_ptr.transmute();
+    let c_ptr = c_ptr.transmute::<T, _, _>();
+    // unsafe { impl_size_eq!(T => T, Wrapping<T>) };
+    impl_transitive_transmute_from!(T => T => Wrapping<T> => ReadOnly<Wrapping<T>>);
+    let c_ptr: Ptr<'_, _, (invariant::Exclusive, invariant::Aligned, Initialized)> = todo!();
+    // let c_ptr = c_ptr.transmute::<ReadOnly<Wrapping<T>>, Initialized, BecauseExclusive>();
+    // let c_ptr = c_ptr.transmute();
 
     // Since we don't have `T: KnownLayout`, we hack around that by using
     // `Wrapping<T>`, which implements `KnownLayout` even if `T` doesn't.
@@ -2941,7 +2946,8 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
     // `try_into_valid` (and thus `is_bit_valid`) with a shared pointer when
     // `Self: !Immutable`. Since `Self: Immutable`, this panic condition will
     // not happen.
-    if !Wrapping::<T>::is_bit_valid(c_ptr.forget_aligned()) {
+    let shared = unsafe { c_ptr.assume_aliasing::<invariant::Shared>() };
+    if !Wrapping::<T>::is_bit_valid(shared.forget_aligned()) {
         return Err(ValidityError::new(source).into());
     }
 

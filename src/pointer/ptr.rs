@@ -532,7 +532,7 @@ mod _conversions {
 /// State transitions between invariants.
 mod _transitions {
     use super::*;
-    use crate::pointer::transmute::TryTransmuteFromPtr;
+    use crate::{pointer::transmute::TryTransmuteFromPtr, ReadOnly};
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
@@ -807,10 +807,12 @@ mod _transitions {
             I::Aliasing: Reference,
             I: Invariants<Validity = Initialized>,
         {
+            let ro: Ptr<'_, ReadOnly<T>, _> = self.reborrow().transmute();
+            let shared = unsafe { ro.assume_aliasing::<Shared>() };
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
             // fix before returning.
-            if T::is_bit_valid(self.reborrow().forget_aligned()) {
+            if T::is_bit_valid(shared) {
                 // SAFETY: If `T::is_bit_valid`, code may assume that `self`
                 // contains a bit-valid instance of `T`. By `T:
                 // TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid>`, so

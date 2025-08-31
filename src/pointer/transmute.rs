@@ -231,7 +231,6 @@ macro_rules! unsafe_impl_invariants_eq {
 }
 
 impl_transitive_transmute_from!(T => MaybeUninit<T> => T => Wrapping<T>);
-impl_transitive_transmute_from!(T => Wrapping<T> => T => MaybeUninit<T>);
 
 // SAFETY: `ManuallyDrop<T>` has the same size and bit validity as `T` [1], and
 // implements `Deref<Target = T>` [2]. Thus, it is already possible for safe
@@ -445,7 +444,6 @@ const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T: ?Sized => UnsafeC
 const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T: ?Sized => Cell<T>) };
 
 impl_transitive_transmute_from!(T: ?Sized => Cell<T> => T => UnsafeCell<T>);
-impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
 
 // SAFETY: `MaybeUninit<T>` has no validity requirements. Currently this is not
 // explicitly guaranteed, but it's obvious from `MaybeUninit`'s documentation

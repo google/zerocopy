@@ -29,10 +29,11 @@ use core::{
 
 use crate::{
     pointer::{
-        invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
+        invariant::{self, BecauseExclusive, BecauseImmutable, Exclusive, Invariants},
         BecauseInvariantsEq, InvariantsEq, SizeEq, TryTransmuteFromPtr,
     },
-    FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, Ptr, TryFromBytes, ValidityError,
+    FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, Ptr, ReadOnly, TryFromBytes,
+    ValidityError,
 };
 
 /// Projects the type of the field at `Index` in `Self`.
@@ -587,19 +588,22 @@ where
     // initialized.
     let ptr = unsafe { ptr.assume_validity::<invariant::Initialized>() };
 
-    // SAFETY: `MaybeUninit<T>` and `T` have the same size [1], so this cast
-    // preserves the referent's size. This cast preserves provenance.
+    // SAFETY: `MaybeUninit<T>` and `T` have the same size [1], and
+    // `ReadOnly<T>` and `T` have the same size, so this cast preserves the
+    // referent's size. This cast preserves provenance.
     //
     // [1] Per https://doc.rust-lang.org/1.81.0/std/mem/union.MaybeUninit.html#layout-1:
     //
     //   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and
     //   ABI as `T`
-    let ptr: Ptr<'_, Dst, _> = unsafe {
-        ptr.cast_unsized(|ptr: crate::pointer::PtrInner<'_, mem::MaybeUninit<Dst>>| {
-            ptr.cast_sized()
-        })
+    let ptr: Ptr<'_, ReadOnly<Dst>, (Exclusive, _, _)> = unsafe {
+        ptr.cast_unsized::<_, _, (_, (BecauseExclusive, _))>(
+            |ptr: crate::pointer::PtrInner<'_, mem::MaybeUninit<Dst>>| ptr.cast_sized(),
+        )
     };
 
+    // TODO: Replace this with `ptr.into_shared()` or something.
+    let ptr = unsafe { ptr.assume_aliasing() };
     if Dst::is_bit_valid(ptr.forget_aligned()) {
         // SAFETY: Since `Dst::is_bit_valid`, we know that `ptr`'s referent is
         // bit-valid for `Dst`. `ptr` points to `mu_dst`, and no intervening

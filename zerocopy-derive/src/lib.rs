@@ -746,14 +746,12 @@ fn derive_try_from_bytes_struct(
                 // validity of a struct is just the composition of the bit
                 // validities of its fields, so this is a sound implementation of
                 // `is_bit_valid`.
-                fn is_bit_valid<___ZerocopyAliasing>(
-                    mut candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
-                ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
-                where
-                    ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
-                {
+                fn is_bit_valid(
+                    mut candidate: #zerocopy_crate::Maybe<Self>,
+                ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool {
                     use #zerocopy_crate::util::macro_util::core_reexport;
                     use #zerocopy_crate::pointer::PtrInner;
+                    use #zerocopy_crate::ReadOnly;
 
                     true #(&& {
                         // SAFETY:
@@ -764,9 +762,11 @@ fn derive_try_from_bytes_struct(
                         //   the same byte ranges in the returned pointer's referent
                         //   as they do in `*slf`
                         let field_candidate = unsafe {
-                            let project = |slf: PtrInner<'_, Self>| {
+                            let project = |slf: PtrInner<'_, ReadOnly<Self>>| -> PtrInner<'_, ReadOnly<#field_tys>>  {
                                 let slf = slf.as_non_null().as_ptr();
+                                let slf = slf as *mut Self;
                                 let field = core_reexport::ptr::addr_of_mut!((*slf).#field_names);
+                                let field = field as *mut ReadOnly<_>;
                                 // SAFETY: `cast_unsized_unchecked` promises that
                                 // `slf` will either reference a zero-sized byte
                                 // range, or else will reference a byte range that
@@ -829,14 +829,12 @@ fn derive_try_from_bytes_union(
                 // bit validity of a union is not yet well defined in Rust, but it
                 // is guaranteed to be no more strict than this definition. See #696
                 // for a more in-depth discussion.
-                fn is_bit_valid<___ZerocopyAliasing>(
-                    mut candidate: #zerocopy_crate::Maybe<'_, Self,___ZerocopyAliasing>
-                ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
-                where
-                    ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
-                {
+                fn is_bit_valid(
+                    mut candidate: #zerocopy_crate::Maybe<'_, Self>
+                ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool {
                     use #zerocopy_crate::util::macro_util::core_reexport;
                     use #zerocopy_crate::pointer::PtrInner;
+                    use #zerocopy_crate::ReadOnly;
 
                     false #(|| {
                         // SAFETY:
@@ -847,9 +845,11 @@ fn derive_try_from_bytes_union(
                         //   `self_type_trait_bounds`, neither `*slf` nor the
                         //   returned pointer's referent contain any `UnsafeCell`s
                         let field_candidate = unsafe {
-                            let project = |slf: PtrInner<'_, Self>| {
+                            let project = |slf: PtrInner<'_, ReadOnly<Self>>| -> PtrInner<'_, ReadOnly<#field_tys>> {
                                 let slf = slf.as_non_null().as_ptr();
+                                let slf = slf as *mut Self;
                                 let field = core_reexport::ptr::addr_of_mut!((*slf).#field_names);
+                                let field = field as *mut ReadOnly<_>;
                                 // SAFETY: `cast_unsized_unchecked` promises that
                                 // `slf` will either reference a zero-sized byte
                                 // range, or else will reference a byte range that
@@ -954,12 +954,9 @@ fn try_gen_trivial_is_bit_valid(
     if top_level == Trait::FromBytes && ast.generics.params.is_empty() {
         Some(quote!(
             // SAFETY: See inline.
-            fn is_bit_valid<___ZerocopyAliasing>(
-                _candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
-            ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
-            where
-                ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
-            {
+            fn is_bit_valid(
+                _candidate: #zerocopy_crate::Maybe<Self>,
+            ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool {
                 if false {
                     fn assert_is_from_bytes<T>()
                     where
@@ -997,12 +994,9 @@ unsafe fn gen_trivial_is_bit_valid_unchecked(zerocopy_crate: &Path) -> proc_macr
     quote!(
         // SAFETY: The caller of `gen_trivial_is_bit_valid_unchecked` has
         // promised that all initialized bit patterns are valid for `Self`.
-        fn is_bit_valid<___ZerocopyAliasing>(
-            _candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
-        ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
-        where
-            ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
-        {
+        fn is_bit_valid(
+            _candidate: #zerocopy_crate::Maybe<Self>,
+        ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool {
             true
         }
     )
