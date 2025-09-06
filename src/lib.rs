@@ -5758,6 +5758,7 @@ mod tests {
                 None => SizeInfo::Sized { size: offset },
                 Some(elem_size) => SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }),
             },
+            statically_unpadded: false,
         };
 
         test!((), layout(0, 1, None));
@@ -5826,11 +5827,13 @@ mod tests {
         let sized_layout = |align, size| DstLayout {
             align: NonZeroUsize::new(align).unwrap(),
             size_info: SizeInfo::Sized { size },
+            statically_unpadded: false,
         };
 
         let unsized_layout = |align, elem_size, offset| DstLayout {
             align: NonZeroUsize::new(align).unwrap(),
             size_info: SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }),
+            statically_unpadded: false,
         };
 
         // | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
