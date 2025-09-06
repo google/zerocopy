@@ -135,7 +135,7 @@ macro_rules! unsafe_impl {
         fn only_derive_is_allowed_to_implement_this_trait() {}
 
         #[inline]
-        fn is_bit_valid<AA: crate::pointer::invariant::Reference>($candidate: Maybe<'_, Self, AA>) -> bool {
+        fn is_bit_valid($candidate: Maybe<'_, Self>) -> bool {
             $is_bit_valid
         }
     };
@@ -143,7 +143,7 @@ macro_rules! unsafe_impl {
         #[allow(clippy::missing_inline_in_public_items)]
         #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
-        #[inline(always)] fn is_bit_valid<AA: crate::pointer::invariant::Reference>(_: Maybe<'_, Self, AA>) -> bool { true }
+        #[inline(always)] fn is_bit_valid(_: Maybe<'_, Self>) -> bool { true }
     };
     (@method $trait:ident) => {
         #[allow(clippy::missing_inline_in_public_items, dead_code)]
@@ -166,6 +166,13 @@ macro_rules! impl_for_transmute_from {
         $($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?)?
         => $trait:ident for $ty:ty [$($unsafe_cell:ident)? <$repr:ty>]
     ) => {
+        // SAFETY: TODO
+        const _: () = unsafe {
+            impl_size_eq!(
+                @inner [$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?] ReadOnly<$ty>, ReadOnly<$repr>
+            );
+        };
+
         const _: () = {
             $(#[$attr])*
             #[allow(non_local_definitions)]
@@ -218,9 +225,9 @@ macro_rules! impl_for_transmute_from {
         TryFromBytes for $ty:ty [UnsafeCell<$repr:ty>]
     ) => {
         #[inline]
-        fn is_bit_valid<A: crate::pointer::invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
-            let c: Maybe<'_, Self, crate::pointer::invariant::Exclusive> = candidate.into_exclusive_or_pme();
-            let c: Maybe<'_, $repr, _> = c.transmute::<_, _, (_, (_, (BecauseExclusive, BecauseExclusive)))>();
+        fn is_bit_valid(candidate: Maybe<'_, Self>) -> bool {
+            // let c: Maybe<'_, Self, crate::pointer::invariant::Exclusive> = candidate.into_exclusive_or_pme();
+            let c: Maybe<'_, $repr, _> = candidate.transmute::<_, _, (_, (_, (BecauseImmutable, BecauseImmutable)))>();
             // SAFETY: This macro ensures that `$repr` and `Self` have the same
             // size and bit validity. Thus, a bit-valid instance of `$repr` is
             // also a bit-valid instance of `Self`.
@@ -233,11 +240,11 @@ macro_rules! impl_for_transmute_from {
         TryFromBytes for $ty:ty [<$repr:ty>]
     ) => {
         #[inline]
-        fn is_bit_valid<A: crate::pointer::invariant::Reference>(candidate: $crate::Maybe<'_, Self, A>) -> bool {
+        fn is_bit_valid(candidate: $crate::Maybe<'_, Self>) -> bool {
             // SAFETY: This macro ensures that `$repr` and `Self` have the same
             // size and bit validity. Thus, a bit-valid instance of `$repr` is
             // also a bit-valid instance of `Self`.
-            <$repr as TryFromBytes>::is_bit_valid(candidate.transmute())
+            <$repr as TryFromBytes>::is_bit_valid(candidate.transmute::<_, _, BecauseImmutable>())
         }
     };
     (
@@ -788,44 +795,56 @@ macro_rules! impl_transitive_transmute_from {
 
 #[rustfmt::skip]
 macro_rules! impl_size_eq {
-    ($t:ty, $u:ty) => {
-        const _: () = {
-            use crate::{KnownLayout, pointer::{PtrInner, SizeEq}};
-
-            static_assert!(=> {
-                let t = <$t as KnownLayout>::LAYOUT;
-                let u = <$u as KnownLayout>::LAYOUT;
-                t.align.get() >= u.align.get() && match (t.size_info, u.size_info) {
-                    (SizeInfo::Sized { size: t }, SizeInfo::Sized { size: u }) => t == u,
-                    (
-                        SizeInfo::SliceDst(TrailingSliceLayout { offset: t_offset, elem_size: t_elem_size }),
-                        SizeInfo::SliceDst(TrailingSliceLayout { offset: u_offset, elem_size: u_elem_size })
-                    ) => t_offset == u_offset && t_elem_size == u_elem_size,
-                    _ => false,
-                }
-            });
-
-            // SAFETY: See inline.
-            unsafe impl SizeEq<$t> for $u {
-                #[inline(always)]
-                fn cast_from_raw(t: PtrInner<'_, $t>) -> PtrInner<'_, $u> {
-                    // SAFETY: We've asserted that their
-                    // `KnownLayout::LAYOUT.size_info`s are equal, and so this
-                    // cast is guaranteed to preserve address and referent size.
-                    // It trivially preserves provenance.
-                    unsafe { cast!(t) }
-                }
+    ($t:ty, $u:ty) => { 
+        const _: () = { static_assert!(=> {
+            let t = <$t as KnownLayout>::LAYOUT;
+            let u = <$u as KnownLayout>::LAYOUT;
+            t.align.get() >= u.align.get() && match (t.size_info, u.size_info) {
+                (SizeInfo::Sized { size: t }, SizeInfo::Sized { size: u }) => t == u,
+                (
+                    SizeInfo::SliceDst(TrailingSliceLayout { offset: t_offset, elem_size: t_elem_size }),
+                    SizeInfo::SliceDst(TrailingSliceLayout { offset: u_offset, elem_size: u_elem_size })
+                ) => t_offset == u_offset && t_elem_size == u_elem_size,
+                _ => false,
             }
-            // SAFETY: See previous safety comment.
-            unsafe impl SizeEq<$u> for $t {
-                #[inline(always)]
-                fn cast_from_raw(u: PtrInner<'_, $u>) -> PtrInner<'_, $t> {
-                    // SAFETY: See previous safety comment.
-                    unsafe { cast!(u) }
-                }
-            }
-        };
+        }) };
+
+        const _: () = unsafe { impl_size_eq!(@inner [] $t, $u); };
     };
+    (
+        $tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )? =>
+        $t:ty, $u:ty
+    ) => {
+        impl_size_eq!(@inner [$tyvar $(: $(? $optbound)* $($bound)* )?] $t, $u);
+    };
+    (
+        @inner [$($tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?)?]
+        $t:ty, $u:ty
+    ) => {{
+        $crate::util::macros::__unsafe();
+        
+        use crate::{KnownLayout, pointer::{PtrInner, SizeEq}, layout::{SizeInfo, TrailingSliceLayout}};
+
+        // SAFETY: See inline.
+        unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> SizeEq<$t> for $u {
+            #[inline(always)]
+            fn cast_from_raw(t: PtrInner<'_, $t>) -> PtrInner<'_, $u> {
+                // SAFETY: We've asserted that their
+                // `KnownLayout::LAYOUT.size_info`s are equal, and so this
+                // cast is guaranteed to preserve address and referent size.
+                // It trivially preserves provenance.
+                unsafe { cast!(t) }
+            }
+        }
+        // SAFETY: See previous safety comment.
+        unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> SizeEq<$u> for $t {
+            #[inline(always)]
+            fn cast_from_raw(u: PtrInner<'_, $u>) -> PtrInner<'_, $t> {
+                // SAFETY: See previous safety comment.
+                unsafe { cast!(u) }
+            }
+        }
+    }};
 }
 
 /// Invokes `$blk` in a context in which `$src<$t>` and `$dst<$u>` implement

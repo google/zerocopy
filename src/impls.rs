@@ -13,6 +13,8 @@ use core::{
     ptr::NonNull,
 };
 
+use crate::pointer::SizeEq;
+
 use super::*;
 
 // SAFETY: Per the reference [1], "the unit tuple (`()`) ... is guaranteed as a
@@ -105,7 +107,8 @@ assert_unaligned!(bool);
 //   pattern 0x01.
 const _: () = unsafe {
     unsafe_impl!(=> TryFromBytes for bool; |byte| {
-        let byte = byte.transmute::<u8, invariant::Valid, _>();
+        impl_size_eq!(ReadOnly<bool>, u8);
+        let byte = byte.transmute::<u8, invariant::Valid, BecauseImmutable>();
         *byte.unaligned_as_ref() < 2
     })
 };
@@ -134,7 +137,8 @@ const _: () = unsafe { unsafe_impl!(char: Immutable, FromZeros, IntoBytes) };
 //   `char`.
 const _: () = unsafe {
     unsafe_impl!(=> TryFromBytes for char; |c| {
-        let c = c.transmute::<Unalign<u32>, invariant::Valid, _>();
+        impl_size_eq!(ReadOnly<char>, Unalign<u32>);
+        let c = c.transmute::<Unalign<u32>, invariant::Valid, BecauseImmutable>();
         let c = c.read_unaligned().into_inner();
         char::from_u32(c).is_some()
     });
@@ -167,7 +171,8 @@ const _: () = unsafe { unsafe_impl!(str: Immutable, FromZeros, IntoBytes, Unalig
 //   Returns `Err` if the slice is not UTF-8.
 const _: () = unsafe {
     unsafe_impl!(=> TryFromBytes for str; |c| {
-        let c = c.transmute::<[u8], invariant::Valid, _>();
+        impl_size_eq!(ReadOnly<str>, [u8]);
+        let c = c.transmute::<[u8], invariant::Valid, BecauseImmutable>();
         let c = c.unaligned_as_ref();
         core::str::from_utf8(c).is_ok()
     })
@@ -179,9 +184,10 @@ macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
     ($($nonzero:ident[$prim:ty]),*) => {
         $(
             unsafe_impl!(=> TryFromBytes for $nonzero; |n| {
-                impl_size_eq!($nonzero, Unalign<$prim>);
+                // impl_size_eq!($nonzero, Unalign<$prim>);
+                impl_size_eq!(ReadOnly<$nonzero>, Unalign<$prim>);
 
-                let n = n.transmute::<Unalign<$prim>, invariant::Valid, _>();
+                let n = n.transmute::<Unalign<$prim>, invariant::Valid, BecauseImmutable>();
                 $nonzero::new(n.read_unaligned().into_inner()).is_some()
             });
         )*
@@ -804,29 +810,16 @@ unsafe impl<T: TryFromBytes + ?Sized> TryFromBytes for UnsafeCell<T> {
     }
 
     #[inline]
-    fn is_bit_valid<A: invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
-        // The only way to implement this function is using an exclusive-aliased
-        // pointer. `UnsafeCell`s cannot be read via shared-aliased pointers
-        // (other than by using `unsafe` code, which we can't use since we can't
-        // guarantee how our users are accessing or modifying the `UnsafeCell`).
-        //
-        // `is_bit_valid` is documented as panicking or failing to monomorphize
-        // if called with a shared-aliased pointer on a type containing an
-        // `UnsafeCell`. In practice, it will always be a monorphization error.
-        // Since `is_bit_valid` is `#[doc(hidden)]` and only called directly
-        // from this crate, we only need to worry about our own code incorrectly
-        // calling `UnsafeCell::is_bit_valid`. The post-monomorphization error
-        // makes it easier to test that this is truly the case, and also means
-        // that if we make a mistake, it will cause downstream code to fail to
-        // compile, which will immediately surface the mistake and give us a
-        // chance to fix it quickly.
-        let c = candidate.into_exclusive_or_pme();
-
-        // SAFETY: Since `UnsafeCell<T>` and `T` have the same layout and bit
-        // validity, `UnsafeCell<T>` is bit-valid exactly when its wrapped `T`
-        // is. Thus, this is a sound implementation of
-        // `UnsafeCell::is_bit_valid`.
-        T::is_bit_valid(c.get_mut())
+    fn is_bit_valid(candidate: Maybe<'_, Self>) -> bool {
+        impl_transitive_transmute_from!(T: ?Sized => ReadOnly<UnsafeCell<T>> => UnsafeCell<T> => T);
+        impl_transitive_transmute_from!(T: ?Sized => ReadOnly<UnsafeCell<T>> => T => ReadOnly<T>);
+        // impl_size_eq!(T: ?Sized => ReadOnly<UnsafeCell<T>>, ReadOnly<T>);
+        // unsafe impl<T: ?Sized> SizeEq<ReadOnly<UnsafeCell<T>>> for ReadOnly<T> {
+        //     fn cast_from_raw(t: pointer::PtrInner<'_, ReadOnly<UnsafeCell<T>>>) -> pointer::PtrInner<'_, Self> {
+        //         todo!()
+        //     }
+        // }
+        T::is_bit_valid(candidate.transmute::<_, _, BecauseImmutable>())
     }
 }
 
