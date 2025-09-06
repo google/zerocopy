@@ -520,7 +520,11 @@ mod len_of {
                         Some(size) => size,
                         None => return Err(MetadataCastError::Size),
                     };
-                    DstLayout { align: T::LAYOUT.align, size_info: crate::SizeInfo::Sized { size } }
+                    DstLayout {
+                        align: T::LAYOUT.align,
+                        size_info: crate::SizeInfo::Sized { size },
+                        statically_shallow_unpadded: false,
+                    }
                 }
             };
             // Lemma 0: By contract on `validate_cast_and_convert_metadata`, if

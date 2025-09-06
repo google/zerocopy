@@ -152,14 +152,13 @@ fn test_known_layout() {
                     const LAYOUT: ::zerocopy::DstLayout = {
                         use ::zerocopy::util::macro_util::core_reexport::num::NonZeroUsize;
                         use ::zerocopy::{DstLayout, KnownLayout};
-                        let repr_align = ::zerocopy::util::macro_util::core_reexport::num::NonZeroUsize::new(
-                            2u32 as usize,
-                        );
-                        let repr_packed = ::zerocopy::util::macro_util::core_reexport::option::Option::None;
-                        DstLayout::new_zst(repr_align)
-                            .extend(DstLayout::for_type::<T>(), repr_packed)
-                            .extend(<U as KnownLayout>::LAYOUT, repr_packed)
-                            .pad_to_align()
+                        DstLayout::for_repr_c_struct(
+                            ::zerocopy::util::macro_util::core_reexport::num::NonZeroUsize::new(
+                                2u32 as usize,
+                            ),
+                            ::zerocopy::util::macro_util::core_reexport::option::Option::None,
+                            &[DstLayout::for_type::<T>(), <U as KnownLayout>::LAYOUT],
+                        )
                     };
                     #[inline(always)]
                     fn raw_from_ptr_len(
@@ -206,7 +205,7 @@ fn test_known_layout() {
                             U,
                         > as ::zerocopy::util::macro_util::Field<
                             __Zerocopy_Field_1,
-                        >>::Type as ::zerocopy::KnownLayout>::MaybeUninit
+                        >>::Type as ::zerocopy::KnownLayout>::MaybeUninit,
                     >,
                 )
                 where
@@ -499,9 +498,9 @@ fn test_into_bytes_struct() {
             where
                 u8: ::zerocopy::IntoBytes,
                 [Trailing]: ::zerocopy::IntoBytes,
-                (): ::zerocopy::util::macro_util::PaddingFree<
+                (): ::zerocopy::util::macro_util::DynamicPaddingFree<
                     Self,
-                    { ::zerocopy::struct_padding!(Self, [u8, [Trailing]]) },
+                    { ::zerocopy::repr_c_struct_has_padding!(Self, [u8, [Trailing]]) },
                 >,
             {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
