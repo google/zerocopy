@@ -246,7 +246,7 @@ where
 pub struct AlignmentError<Src, Dst: ?Sized> {
     /// The source value involved in the conversion.
     src: Src,
-    /// The inner destination type inolved in the conversion.
+    /// The inner destination type involved in the conversion.
     ///
     /// INVARIANT: An `AlignmentError` may only be constructed if `Dst`'s
     /// alignment requirement is greater than one.
@@ -412,7 +412,7 @@ impl<Src, Dst: ?Sized, S, V> From<AlignmentError<Src, Dst>>
 pub struct SizeError<Src, Dst: ?Sized> {
     /// The source value involved in the conversion.
     src: Src,
-    /// The inner destination type inolved in the conversion.
+    /// The inner destination type involved in the conversion.
     dst: SendSyncPhantomData<Dst>,
 }
 
@@ -556,7 +556,7 @@ impl<Src, Dst: ?Sized, A, V> From<SizeError<Src, Dst>> for ConvertError<A, SizeE
 pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
     /// The source value involved in the conversion.
     pub(crate) src: Src,
-    /// The inner destination type inolved in the conversion.
+    /// The inner destination type involved in the conversion.
     dst: SendSyncPhantomData<Dst>,
 }
 
