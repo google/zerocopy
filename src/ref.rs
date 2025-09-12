@@ -717,7 +717,7 @@ where
         let b = unsafe { r.as_byte_slice() };
 
         // SAFETY: By postcondition on `as_byte_slice`, we know that `b` is a
-        // valid size and ailgnment for `T`. By safety invariant on `ByteSlice`,
+        // valid size and alignment for `T`. By safety invariant on `ByteSlice`,
         // we know that this is preserved via `.deref()`. Because `T:
         // FromBytes`, it is sound to interpret these bytes as a `T`.
         unsafe { ptr::read(b.deref().as_ptr().cast::<T>()) }
@@ -741,7 +741,7 @@ where
         let b = unsafe { r.as_byte_slice_mut() };
 
         // SAFETY: By postcondition on `as_byte_slice_mut`, we know that `b` is
-        // a valid size and ailgnment for `T`. By safety invariant on
+        // a valid size and alignment for `T`. By safety invariant on
         // `ByteSlice`, we know that this is preserved via `.deref()`. Writing
         // `t` to the buffer will allow all of the bytes of `t` to be accessed
         // as a `[u8]`, but because `T: IntoBytes`, we know that this is sound.
