@@ -630,7 +630,7 @@ use {FromZeros as FromZeroes, IntoBytes as AsBytes, Ref as LayoutVerified};
 /// example.
 ///
 /// A `#[repr(C)]` slice DST is laid out [just like sized `#[repr(C)]`
-/// types][repr-c-structs], but the presenence of a variable-length field
+/// types][repr-c-structs], but the presence of a variable-length field
 /// introduces the possibility of *dynamic padding*. In particular, it may be
 /// necessary to add trailing padding *after* the trailing slice field in order
 /// to satisfy the outer type's alignment, and the amount of padding required
