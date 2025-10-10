@@ -126,5 +126,5 @@ error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
 note: `AU16` has a `#[repr(align)]` attribute
    --> tests/ui-stable/../include.rs
     |
-    |     pub struct AU16(pub u16);
+ 63 |     pub struct AU16(pub u16);
     |     ^^^^^^^^^^^^^^^
