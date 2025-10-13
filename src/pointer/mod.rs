@@ -17,10 +17,7 @@ mod transmute;
 #[doc(hidden)]
 pub use {inner::PtrInner, transmute::*};
 #[doc(hidden)]
-pub use {
-    invariant::{BecauseExclusive, BecauseImmutable, Read},
-    ptr::Ptr,
-};
+pub use {invariant::BecauseExclusive, ptr::Ptr};
 
 /// A shorthand for a maybe-valid, maybe-aligned reference. Used as the argument
 /// to [`TryFromBytes::is_bit_valid`].
@@ -30,11 +27,11 @@ pub type Maybe<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Unali
     Ptr<'a, T, (Aliasing, Alignment, invariant::Initialized)>;
 
 /// Checks if the referent is zeroed.
-pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
+pub(crate) fn is_zeroed<T, I>(mut ptr: Ptr<'_, T, I>) -> bool
 where
     T: crate::Immutable + crate::KnownLayout,
     I: invariant::Invariants<Validity = invariant::Initialized>,
     I::Aliasing: invariant::Reference,
 {
-    ptr.as_bytes::<BecauseImmutable>().as_ref().iter().all(|&byte| byte == 0)
+    ptr.reborrow().into_shared().as_bytes().as_ref().iter().all(|&byte| byte == 0)
 }
