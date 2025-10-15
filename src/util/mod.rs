@@ -281,7 +281,7 @@ pub(crate) const unsafe fn transmute_unchecked<Src, Dst>(src: Src) -> Dst {
     // SAFETY: Since `Transmute<Src, Dst>` is `#[repr(C)]`, its `src` and `dst`
     // fields both start at the same offset and the types of those fields are
     // transparent wrappers around `Src` and `Dst` [1]. Consequently,
-    // initializng `Transmute` with with `src` and then reading out `dst` is
+    // initializing `Transmute` with with `src` and then reading out `dst` is
     // equivalent to transmuting from `Src` to `Dst` [2]. Transmuting from `src`
     // to `Dst` is valid because — by contract on the caller — `src` is a valid
     // instance of `Dst`.
