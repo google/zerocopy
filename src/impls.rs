@@ -812,7 +812,7 @@ unsafe impl<T: TryFromBytes + ?Sized> TryFromBytes for UnsafeCell<T> {
         //
         // `is_bit_valid` is documented as panicking or failing to monomorphize
         // if called with a shared-aliased pointer on a type containing an
-        // `UnsafeCell`. In practice, it will always be a monorphization error.
+        // `UnsafeCell`. In practice, it will always be a monomorphization error.
         // Since `is_bit_valid` is `#[doc(hidden)]` and only called directly
         // from this crate, we only need to worry about our own code incorrectly
         // calling `UnsafeCell::is_bit_valid`. The post-monomorphization error
