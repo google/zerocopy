@@ -249,7 +249,7 @@ where
 pub struct AlignmentError<Src, Dst: ?Sized> {
     /// The source value involved in the conversion.
     src: Src,
-    /// The inner destination type inolved in the conversion.
+    /// The inner destination type involved in the conversion.
     ///
     /// INVARIANT: An `AlignmentError` may only be constructed if `Dst`'s
     /// alignment requirement is greater than one.

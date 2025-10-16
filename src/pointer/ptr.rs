@@ -815,7 +815,7 @@ mod _transitions {
                 // contains a bit-valid instance of `T`. By `T:
                 // TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid>`, so
                 // long as `self`'s referent conforms to the `Valid` validity
-                // for `T` (which we just confired), then this transmute is
+                // for `T` (which we just confirmed), then this transmute is
                 // sound.
                 Ok(unsafe { self.assume_valid() })
             } else {

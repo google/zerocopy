@@ -101,7 +101,7 @@ macro_rules! transmute {
                 dst: ManuallyDrop<Dst>,
             }
 
-            // SAFETY: `Transmute` is a `reper(C)` union whose `src` field has
+            // SAFETY: `Transmute` is a `repr(C)` union whose `src` field has
             // type `ManuallyDrop<Src>`. Thus, the `src` field starts at byte
             // offset 0 within `Transmute` [1]. `ManuallyDrop<T>` has the same
             // layout and bit validity as `T`, so it is sound to transmute `Src`
