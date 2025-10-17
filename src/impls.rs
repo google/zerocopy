@@ -1039,16 +1039,20 @@ mod simd {
             #[cfg(target_arch = "x86")]
             x86, x86, __m128, __m128d, __m128i, __m256, __m256d, __m256i
         );
+        #[cfg(zerocopy_simd_x86_avx12_1_89_0)]
         simd_arch_mod!(
-            #[cfg(all(feature = "simd-nightly", target_arch = "x86"))]
+            #[cfg(target_arch = "x86")]
+            #[cfg_attr(doc_cfg, doc(cfg(rust = "1.89.0")))]
             x86, x86_nightly, __m512bh, __m512, __m512d, __m512i
         );
         simd_arch_mod!(
             #[cfg(target_arch = "x86_64")]
             x86_64, x86_64, __m128, __m128d, __m128i, __m256, __m256d, __m256i
         );
+        #[cfg(zerocopy_simd_x86_avx12_1_89_0)]
         simd_arch_mod!(
-            #[cfg(all(feature = "simd-nightly", target_arch = "x86_64"))]
+            #[cfg(target_arch = "x86_64")]
+            #[cfg_attr(doc_cfg, doc(cfg(rust = "1.89.0")))]
             x86_64, x86_64_nightly, __m512bh, __m512, __m512d, __m512i
         );
         simd_arch_mod!(
@@ -2036,19 +2040,19 @@ mod tests {
             #[cfg(target_arch = "x86")]
             test_simd_arch_mod!(x86, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
 
-            #[cfg(all(feature = "simd-nightly", target_arch = "x86"))]
+            #[cfg(all(zerocopy_simd_x86_avx12_1_89_0, target_arch = "x86"))]
             test_simd_arch_mod!(x86, __m512bh, __m512, __m512d, __m512i);
 
             #[cfg(target_arch = "x86_64")]
             test_simd_arch_mod!(x86_64, __m128, __m128d, __m128i, __m256, __m256d, __m256i);
 
-            #[cfg(all(feature = "simd-nightly", target_arch = "x86_64"))]
+            #[cfg(all(zerocopy_simd_x86_avx12_1_89_0, target_arch = "x86_64"))]
             test_simd_arch_mod!(x86_64, __m512bh, __m512, __m512d, __m512i);
 
             #[cfg(target_arch = "wasm32")]
             test_simd_arch_mod!(wasm32, v128);
 
-            #[cfg(all(feature = "simd-nightly", target_arch = "powerpc"))]
+            #[cfg(all(zerocopy_simd_x86_avx12_1_89_0, target_arch = "powerpc"))]
             test_simd_arch_mod!(
                 powerpc,
                 vector_bool_long,
@@ -2057,7 +2061,7 @@ mod tests {
                 vector_unsigned_long
             );
 
-            #[cfg(all(feature = "simd-nightly", target_arch = "powerpc64"))]
+            #[cfg(all(zerocopy_simd_x86_avx12_1_89_0, target_arch = "powerpc64"))]
             test_simd_arch_mod!(
                 powerpc64,
                 vector_bool_long,
