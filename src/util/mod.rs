@@ -281,7 +281,7 @@ pub(crate) const unsafe fn transmute_unchecked<Src, Dst>(src: Src) -> Dst {
     // SAFETY: Since `Transmute<Src, Dst>` is `#[repr(C)]`, its `src` and `dst`
     // fields both start at the same offset and the types of those fields are
     // transparent wrappers around `Src` and `Dst` [1]. Consequently,
-    // initializng `Transmute` with with `src` and then reading out `dst` is
+    // initializing `Transmute` with with `src` and then reading out `dst` is
     // equivalent to transmuting from `Src` to `Dst` [2]. Transmuting from `src`
     // to `Dst` is valid because — by contract on the caller — `src` is a valid
     // instance of `Dst`.
@@ -323,7 +323,7 @@ pub(crate) unsafe fn new_box<T>(
 where
     T: ?Sized + crate::KnownLayout,
 {
-    let size = match meta.size_for_metadata(T::LAYOUT) {
+    let size = match T::size_for_metadata(meta) {
         Some(size) => size,
         None => return Err(AllocError),
     };
@@ -370,7 +370,8 @@ where
         //
         // SAFETY: any initialized bit sequence is a bit-valid `*mut u8`. All
         // bits of a `usize` are initialized.
-        #[allow(clippy::useless_transmute)]
+        #[allow(unknown_lints)] // For `integer_to_ptr_transmutes`
+        #[allow(clippy::useless_transmute, integer_to_ptr_transmutes)]
         let dangling = unsafe { mem::transmute::<usize, *mut u8>(align) };
         // SAFETY: `dangling` is constructed from `T::LAYOUT.align`, which is a
         // `NonZeroUsize`, which is guaranteed to be non-zero.
@@ -515,11 +516,15 @@ mod len_of {
                 // This can return `None` if the metadata describes an object
                 // which can't fit in an `isize`.
                 Some(meta) => {
-                    let size = match meta.size_for_metadata(T::LAYOUT) {
+                    let size = match T::size_for_metadata(meta) {
                         Some(size) => size,
                         None => return Err(MetadataCastError::Size),
                     };
-                    DstLayout { align: T::LAYOUT.align, size_info: crate::SizeInfo::Sized { size } }
+                    DstLayout {
+                        align: T::LAYOUT.align,
+                        size_info: crate::SizeInfo::Sized { size },
+                        statically_shallow_unpadded: false,
+                    }
                 }
             };
             // Lemma 0: By contract on `validate_cast_and_convert_metadata`, if
@@ -631,19 +636,19 @@ pub(crate) mod polyfills {
     // FIXME(#67): Once our MSRV is high enough, remove this.
     #[allow(unused)]
     pub(crate) trait NumExt {
-        /// Subtract without checking for underflow.
-        ///
-        /// # Safety
-        ///
-        /// The caller promises that the subtraction will not underflow.
-        unsafe fn unchecked_sub(self, rhs: Self) -> Self;
-
         /// Add without checking for overflow.
         ///
         /// # Safety
         ///
         /// The caller promises that the addition will not overflow.
         unsafe fn unchecked_add(self, rhs: Self) -> Self;
+
+        /// Subtract without checking for underflow.
+        ///
+        /// # Safety
+        ///
+        /// The caller promises that the subtraction will not underflow.
+        unsafe fn unchecked_sub(self, rhs: Self) -> Self;
 
         /// Multiply without checking for overflow.
         ///
@@ -653,10 +658,26 @@ pub(crate) mod polyfills {
         unsafe fn unchecked_mul(self, rhs: Self) -> Self;
     }
 
+    // NOTE on coverage: these will never be tested in nightly since they're
+    // polyfills for a feature which has been stabilized on our nightly
+    // toolchain.
     impl NumExt for usize {
-        // NOTE on coverage: this will never be tested in nightly since it's a
-        // polyfill for a feature which has been stabilized on our nightly
-        // toolchain.
+        #[cfg_attr(
+            all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
+            coverage(off)
+        )]
+        #[inline(always)]
+        unsafe fn unchecked_add(self, rhs: usize) -> usize {
+            match self.checked_add(rhs) {
+                Some(x) => x,
+                None => {
+                    // SAFETY: The caller promises that the addition will not
+                    // underflow.
+                    unsafe { core::hint::unreachable_unchecked() }
+                }
+            }
+        }
+
         #[cfg_attr(
             all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
             coverage(off)
@@ -673,28 +694,6 @@ pub(crate) mod polyfills {
             }
         }
 
-        // NOTE on coverage: this will never be tested in nightly since it's a
-        // polyfill for a feature which has been stabilized on our nightly
-        // toolchain.
-        #[cfg_attr(
-            all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
-            coverage(off)
-        )]
-        #[inline(always)]
-        unsafe fn unchecked_add(self, rhs: usize) -> usize {
-            match self.checked_add(rhs) {
-                Some(x) => x,
-                None => {
-                    // SAFETY: The caller promises that the addition will not
-                    // overflow.
-                    unsafe { core::hint::unreachable_unchecked() }
-                }
-            }
-        }
-
-        // NOTE on coverage: this will never be tested in nightly since it's a
-        // polyfill for a feature which has been stabilized on our nightly
-        // toolchain.
         #[cfg_attr(
             all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
             coverage(off)
@@ -739,7 +738,7 @@ pub(crate) mod testutil {
     /// A `T` which is guaranteed not to satisfy `align_of::<A>()`.
     ///
     /// It must be the case that `align_of::<T>() < align_of::<A>()` in order
-    /// fot this type to work properly.
+    /// for this type to work properly.
     #[repr(C)]
     pub(crate) struct ForceUnalign<T: Unaligned, A> {
         // The outer struct is aligned to `A`, and, thanks to `repr(C)`, `t` is
@@ -795,13 +794,6 @@ pub(crate) mod testutil {
         fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
             Display::fmt(&self.0, f)
         }
-    }
-
-    #[derive(Immutable, FromBytes, Eq, PartialEq, Ord, PartialOrd, Default, Debug, Copy, Clone)]
-    #[repr(C)]
-    pub(crate) struct Nested<T, U: ?Sized> {
-        _t: T,
-        _u: U,
     }
 }
 

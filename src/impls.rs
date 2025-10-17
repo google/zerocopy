@@ -173,40 +173,13 @@ const _: () = unsafe {
     })
 };
 
-// SAFETY: `str` and `[u8]` have the same layout [1].
-//
-// [1] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#str-layout:
-//
-//   String slices are a UTF-8 representation of characters that have the same
-//   layout as slices of type `[u8]`.
-unsafe impl pointer::SizeEq<str> for [u8] {
-    fn cast_from_raw(s: NonNull<str>) -> NonNull<[u8]> {
-        cast!(s)
-    }
-}
-// SAFETY: See previous safety comment.
-unsafe impl pointer::SizeEq<[u8]> for str {
-    fn cast_from_raw(bytes: NonNull<[u8]>) -> NonNull<str> {
-        cast!(bytes)
-    }
-}
+impl_size_eq!(str, [u8]);
 
 macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
     ($($nonzero:ident[$prim:ty]),*) => {
         $(
             unsafe_impl!(=> TryFromBytes for $nonzero; |n| {
-                // SAFETY: The caller promises that this is sound.
-                unsafe impl pointer::SizeEq<$nonzero> for Unalign<$prim> {
-                    fn cast_from_raw(n: NonNull<$nonzero>) -> NonNull<Unalign<$prim>> {
-                        cast!(n)
-                    }
-                }
-                // SAFETY: The caller promises that this is sound.
-                unsafe impl pointer::SizeEq<Unalign<$prim>> for $nonzero {
-                    fn cast_from_raw(p: NonNull<Unalign<$prim>>) -> NonNull<$nonzero> {
-                        cast!(p)
-                    }
-                }
+                impl_size_eq!($nonzero, Unalign<$prim>);
 
                 let n = n.transmute::<Unalign<$prim>, invariant::Valid, _>();
                 $nonzero::new(n.read_unaligned().into_inner()).is_some()
@@ -326,7 +299,7 @@ const _: () = unsafe {
 
 // SAFETY: The following types can be transmuted from `[0u8; size_of::<T>()]`. [1]
 //
-// [1] Per https://doc.rust-lang.org/nightly/core/option/index.html#representation:
+// [1] Per https://doc.rust-lang.org/1.89.0/core/option/index.html#representation:
 //
 //   Rust guarantees to optimize the following types `T` such that [`Option<T>`]
 //   has the same size and alignment as `T`. In some of these cases, Rust
@@ -334,16 +307,17 @@ const _: () = unsafe {
 //   is sound and produces `Option::<T>::None`. These cases are identified by
 //   the second column:
 //
-//   | `T`                   | `transmute::<_, Option<T>>([0u8; size_of::<T>()])` sound? |
-//   |-----------------------|-----------------------------------------------------------|
-//   | [`Box<U>`]            | when `U: Sized`                                           |
-//   | `&U`                  | when `U: Sized`                                           |
-//   | `&mut U`              | when `U: Sized`                                           |
-//   | [`ptr::NonNull<U>`]   | when `U: Sized`                                           |
-//   | `fn`, `extern "C" fn` | always                                                    |
+//   | `T`                               | `transmute::<_, Option<T>>([0u8; size_of::<T>()])` sound? |
+//   |-----------------------------------|-----------------------------------------------------------|
+//   | [`Box<U>`]                        | when `U: Sized`                                           |
+//   | `&U`                              | when `U: Sized`                                           |
+//   | `&mut U`                          | when `U: Sized`                                           |
+//   | [`ptr::NonNull<U>`]               | when `U: Sized`                                           |
+//   | `fn`, `extern "C" fn`[^extern_fn] | always                                                    |
 //
-// FIXME(#429), FIXME(https://github.com/rust-lang/rust/pull/115333): Cite the
-// Stable docs once they're available.
+//   [^extern_fn]: this remains true for `unsafe` variants, any argument/return
+//     types, and any other ABI: `[unsafe] extern "abi" fn` (_e.g._, `extern
+//     "system" fn`)
 const _: () = unsafe {
     #[cfg(feature = "alloc")]
     unsafe_impl!(
@@ -372,19 +346,31 @@ const _: () = unsafe {
         A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_fn!(...);
         |c| pointer::is_zeroed(c)
     );
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_unsafe_fn!(...));
+    unsafe_impl_for_power_set!(
+        A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_unsafe_fn!(...);
+        |c| pointer::is_zeroed(c)
+    );
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_extern_c_fn!(...));
     unsafe_impl_for_power_set!(
         A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_extern_c_fn!(...);
         |c| pointer::is_zeroed(c)
     );
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_unsafe_extern_c_fn!(...));
+    unsafe_impl_for_power_set!(
+        A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_unsafe_extern_c_fn!(...);
+        |c| pointer::is_zeroed(c)
+    );
 };
 
-// SAFETY: `fn()` and `extern "C" fn()` self-evidently do not contain
+// SAFETY: `[unsafe] [extern "C"] fn()` self-evidently do not contain
 // `UnsafeCell`s. This is not a proof, but we are accepting this as a known risk
 // per #1358.
 const _: () = unsafe {
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => Immutable for opt_fn!(...));
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => Immutable for opt_unsafe_fn!(...));
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => Immutable for opt_extern_c_fn!(...));
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => Immutable for opt_unsafe_extern_c_fn!(...));
 };
 
 #[cfg(all(
@@ -423,8 +409,8 @@ mod atomics {
         ($($($tyvar:ident)? => $atomic:ty [$prim:ty]),*) => {{
             crate::util::macros::__unsafe();
 
-            use core::{cell::UnsafeCell, ptr::NonNull};
-            use crate::pointer::{TransmuteFrom, SizeEq, invariant::Valid};
+            use core::cell::UnsafeCell;
+            use crate::pointer::{PtrInner, SizeEq, TransmuteFrom, invariant::Valid};
 
             $(
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
@@ -437,15 +423,20 @@ mod atomics {
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
                 // the same size.
                 unsafe impl<$($tyvar)?> SizeEq<$atomic> for $prim {
-                    fn cast_from_raw(a: NonNull<$atomic>) -> NonNull<$prim> {
-                        cast!(a)
+                    #[inline]
+                    fn cast_from_raw(a: PtrInner<'_, $atomic>) -> PtrInner<'_, $prim> {
+                        // SAFETY: The caller promised that `$atomic` and
+                        // `$prim` have the same size. Thus, this cast preserves
+                        // address, referent size, and provenance.
+                        unsafe { cast!(a) }
                     }
                 }
-                // SAFETY: The caller promised that `$atomic` and `$prim` have
-                // the same size.
+                // SAFETY: See previous safety comment.
                 unsafe impl<$($tyvar)?> SizeEq<$prim> for $atomic {
-                    fn cast_from_raw(p: NonNull<$prim>) -> NonNull<$atomic> {
-                        cast!(p)
+                    #[inline]
+                    fn cast_from_raw(p: PtrInner<'_, $prim>) -> PtrInner<'_, $atomic> {
+                        // SAFETY: See previous safety comment.
+                        unsafe { cast!(p) }
                     }
                 }
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
@@ -457,14 +448,18 @@ mod atomics {
                 //   its inner type `T`. A consequence of this guarantee is that
                 //   it is possible to convert between `T` and `UnsafeCell<T>`.
                 unsafe impl<$($tyvar)?> SizeEq<$atomic> for UnsafeCell<$prim> {
-                    fn cast_from_raw(a: NonNull<$atomic>) -> NonNull<UnsafeCell<$prim>> {
-                        cast!(a)
+                    #[inline]
+                    fn cast_from_raw(a: PtrInner<'_, $atomic>) -> PtrInner<'_, UnsafeCell<$prim>> {
+                        // SAFETY: See previous safety comment.
+                        unsafe { cast!(a) }
                     }
                 }
                 // SAFETY: See previous safety comment.
                 unsafe impl<$($tyvar)?> SizeEq<UnsafeCell<$prim>> for $atomic {
-                    fn cast_from_raw(p: NonNull<UnsafeCell<$prim>>) -> NonNull<$atomic> {
-                        cast!(p)
+                    #[inline]
+                    fn cast_from_raw(p: PtrInner<'_, UnsafeCell<$prim>>) -> PtrInner<'_, $atomic> {
+                        // SAFETY: See previous safety comment.
+                        unsafe { cast!(p) }
                     }
                 }
 
@@ -1068,11 +1063,11 @@ mod simd {
             #[cfg(all(feature = "simd-nightly", target_arch = "powerpc64"))]
             powerpc64, powerpc64, vector_bool_long, vector_double, vector_signed_long, vector_unsigned_long
         );
+        #[cfg(zerocopy_aarch64_simd_1_59_0)]
         simd_arch_mod!(
             // NOTE(https://github.com/rust-lang/stdarch/issues/1484): NEON intrinsics are currently
             // broken on big-endian platforms.
             #[cfg(all(target_arch = "aarch64", target_endian = "little"))]
-            #[cfg(zerocopy_aarch64_simd_1_59_0)]
             #[cfg_attr(doc_cfg, doc(cfg(rust = "1.59.0")))]
             aarch64, aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,
             int8x8x3_t, int8x8x4_t, int8x16_t, int8x16x2_t, int8x16x3_t, int8x16x4_t, int16x4_t,

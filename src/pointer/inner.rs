@@ -6,7 +6,9 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use core::{marker::PhantomData, ops::Range, ptr::NonNull};
+use core::{marker::PhantomData, mem, ops::Range, ptr::NonNull};
+
+pub use _def::PtrInner;
 
 #[allow(unused_imports)]
 use crate::util::polyfills::NumExt as _;
@@ -16,8 +18,6 @@ use crate::{
     AlignmentError, CastError, KnownLayout, MetadataOf, SizeError, SplitAt,
 };
 
-pub(crate) use _def::PtrInner;
-
 mod _def {
     use super::*;
     /// The inner pointer stored inside a [`Ptr`][crate::Ptr].
@@ -25,7 +25,8 @@ mod _def {
     /// `PtrInner<'a, T>` is [covariant] in `'a` and invariant in `T`.
     ///
     /// [covariant]: https://doc.rust-lang.org/reference/subtyping.html
-    pub(crate) struct PtrInner<'a, T>
+    #[allow(missing_debug_implementations)]
+    pub struct PtrInner<'a, T>
     where
         T: ?Sized,
     {
@@ -68,6 +69,7 @@ mod _def {
 
     impl<'a, T: 'a + ?Sized> Copy for PtrInner<'a, T> {}
     impl<'a, T: 'a + ?Sized> Clone for PtrInner<'a, T> {
+        #[inline(always)]
         fn clone(&self) -> PtrInner<'a, T> {
             // SAFETY: None of the invariants on `ptr` are affected by having
             // multiple copies of a `PtrInner`.
@@ -87,7 +89,9 @@ mod _def {
         ///    Rust allocation, `A`.
         /// 1. If `ptr`'s referent is not zero sized, `A` is guaranteed to live
         ///    for at least `'a`.
-        pub(crate) const unsafe fn new(ptr: NonNull<T>) -> PtrInner<'a, T> {
+        #[inline(always)]
+        #[must_use]
+        pub const unsafe fn new(ptr: NonNull<T>) -> PtrInner<'a, T> {
             // SAFETY: The caller has promised to satisfy all safety invariants
             // of `PtrInner`.
             Self { ptr, _marker: PhantomData }
@@ -98,7 +102,9 @@ mod _def {
         /// Note that this method does not consume `self`. The caller should
         /// watch out for `unsafe` code which uses the returned `NonNull` in a
         /// way that violates the safety invariants of `self`.
-        pub(crate) const fn as_non_null(&self) -> NonNull<T> {
+        #[inline(always)]
+        #[must_use]
+        pub const fn as_non_null(&self) -> NonNull<T> {
             self.ptr
         }
     }
@@ -156,6 +162,39 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
         //   single allocated object.
         unsafe { Self::new(ptr) }
     }
+
+    #[must_use]
+    #[inline(always)]
+    pub fn cast_sized<U>(self) -> PtrInner<'a, U>
+    where
+        T: Sized,
+    {
+        static_assert!(T, U => mem::size_of::<T>() >= mem::size_of::<U>());
+        // SAFETY: By the preceding assert, `U` is no larger than `T`, which is
+        // the size of `self`'s referent.
+        unsafe { self.cast() }
+    }
+
+    /// # Safety
+    ///
+    /// `U` must not be larger than the size of `self`'s referent.
+    #[must_use]
+    #[inline(always)]
+    pub unsafe fn cast<U>(self) -> PtrInner<'a, U> {
+        let ptr = self.as_non_null().cast::<U>();
+
+        // SAFETY: The caller promises that `U` is no larger than `self`'s
+        // referent. Thus, `ptr` addresses a subset of the bytes addressed by
+        // `self`.
+        //
+        // 0. By invariant on `self`, if `self`'s referent is not zero sized,
+        //    then `self` has valid provenance for its referent, which is
+        //    entirely contained in some Rust allocation, `A`. Thus, the same
+        //    holds of `ptr`.
+        // 1. By invariant on `self`, if `self`'s referent is not zero sized,
+        //    then `A` is guaranteed to live for at least `'a`.
+        unsafe { PtrInner::new(ptr) }
+    }
 }
 
 #[allow(clippy::needless_lifetimes)]
@@ -211,6 +250,37 @@ where
         // 5. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is not
         //    zero sized, then `A` is guaranteed to live for at least `'a`.
         unsafe { PtrInner::new(raw) }
+    }
+
+    pub(crate) fn as_bytes(self) -> PtrInner<'a, [u8]> {
+        let ptr = self.as_non_null();
+        let bytes = match T::size_of_val_raw(ptr) {
+            Some(bytes) => bytes,
+            // SAFETY: `KnownLayout::size_of_val_raw` promises to always
+            // return `Some` so long as the resulting size fits in a
+            // `usize`. By invariant on `PtrInner`, `self` refers to a range
+            // of bytes whose size fits in an `isize`, which implies that it
+            // also fits in a `usize`.
+            None => unsafe { core::hint::unreachable_unchecked() },
+        };
+
+        let ptr = core::ptr::slice_from_raw_parts_mut(ptr.cast::<u8>().as_ptr(), bytes);
+
+        // SAFETY: `ptr` has the same address as `ptr = self.as_non_null()`,
+        // which is non-null by construction.
+        let ptr = unsafe { NonNull::new_unchecked(ptr) };
+
+        // SAFETY: `ptr` points to `bytes` `u8`s starting at the same address as
+        // `self`'s referent. Since `bytes` is the length of `self`'s referent,
+        // `ptr` addresses the same byte range as `self`. Thus, by invariant on
+        // `self` (as a `PtrInner`):
+        //
+        // 0. If `ptr`'s referent is not zero sized, then `ptr` has valid
+        //    provenance for its referent, which is entirely contained in some
+        //    Rust allocation, `A`.
+        // 1. If `ptr`'s referent is not zero sized, `A` is guaranteed to live
+        //    for at least `'a`.
+        unsafe { PtrInner::new(ptr) }
     }
 }
 

@@ -9,7 +9,7 @@
 [package]
 edition = "2021"
 name = "zerocopy-derive"
-version = "0.8.25"
+version = "0.8.27"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>", "Jack Wrenn <jswrenn@amazon.com>"]
 description = "Custom derive for traits from the zerocopy crate"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
@@ -31,7 +31,7 @@ proc-macro = true
 
 [dependencies]
 proc-macro2 = "1.0.1"
-quote = "1.0.10"
+quote = "1.0.40"
 syn = { version = "2.0.46", features = ["full"] }
 
 [dev-dependencies]
@@ -45,6 +45,7 @@ libc = "=0.2.163"
 # This is the latest version which is compatible with `syn` 2.0.46, which we pin
 # to in CI for MSRV compatibility reasons.
 prettyplease = "=0.2.17"
+quote = "=1.0.40"
 rustversion = "1.0"
 static_assertions = "1.1"
 testutil = { path = "../testutil" }

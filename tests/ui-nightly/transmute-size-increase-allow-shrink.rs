@@ -6,14 +6,15 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+include!("../../zerocopy-derive/tests/include.rs");
+
 extern crate zerocopy;
 
-use zerocopy::{transmute_ref, FromBytes, Immutable, IntoBytes};
+use util::AU16;
+use zerocopy::transmute;
 
 fn main() {}
 
-fn transmute_ref<T: IntoBytes + Immutable, U: FromBytes + Immutable>(t: &T) -> &U {
-    // `transmute_ref!` requires the source and destination types to be
-    // concrete.
-    transmute_ref!(t)
-}
+// `transmute!` does not support transmuting from a smaller type to a larger
+// one.
+const INCREASE_SIZE: AU16 = transmute!(#![allow(shrink)] 0u8);

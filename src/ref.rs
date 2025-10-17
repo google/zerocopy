@@ -479,7 +479,7 @@ where
     #[inline]
     pub fn from_bytes_with_elems(source: B, count: usize) -> Result<Ref<B, T>, CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
-        let expected_len = match count.size_for_metadata(T::LAYOUT) {
+        let expected_len = match T::size_for_metadata(count) {
             Some(len) => len,
             None => return Err(SizeError::new(source).into()),
         };
@@ -533,7 +533,7 @@ where
         count: usize,
     ) -> Result<(Ref<B, T>, B), CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
-        let expected_len = match count.size_for_metadata(T::LAYOUT) {
+        let expected_len = match T::size_for_metadata(count) {
             Some(len) => len,
             None => return Err(SizeError::new(source).into()),
         };
@@ -579,7 +579,7 @@ where
         count: usize,
     ) -> Result<(B, Ref<B, T>), CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
-        let expected_len = match count.size_for_metadata(T::LAYOUT) {
+        let expected_len = match T::size_for_metadata(count) {
             Some(len) => len,
             None => return Err(SizeError::new(source).into()),
         };
@@ -588,7 +588,7 @@ where
         } else {
             return Err(SizeError::new(source).into());
         };
-        // SAFETY: The preceeding `source.len().checked_sub(expected_len)`
+        // SAFETY: The preceding `source.len().checked_sub(expected_len)`
         // guarantees that `split_at` is in-bounds.
         let (bytes, suffix) = unsafe { source.split_at_unchecked(split_at) };
         Self::from_bytes(suffix).map(move |l| (bytes, l))
@@ -658,7 +658,7 @@ where
         let ptr = Ptr::from_mut(b.into_byte_slice_mut())
             .try_cast_into_no_leftover::<T, BecauseExclusive>(None)
             .expect("zerocopy internal error: into_ref should be infallible");
-        let ptr = ptr.recall_validity();
+        let ptr = ptr.recall_validity::<_, (_, (_, _))>();
         ptr.as_mut()
     }
 }
@@ -717,7 +717,7 @@ where
         let b = unsafe { r.as_byte_slice() };
 
         // SAFETY: By postcondition on `as_byte_slice`, we know that `b` is a
-        // valid size and ailgnment for `T`. By safety invariant on `ByteSlice`,
+        // valid size and alignment for `T`. By safety invariant on `ByteSlice`,
         // we know that this is preserved via `.deref()`. Because `T:
         // FromBytes`, it is sound to interpret these bytes as a `T`.
         unsafe { ptr::read(b.deref().as_ptr().cast::<T>()) }
@@ -741,7 +741,7 @@ where
         let b = unsafe { r.as_byte_slice_mut() };
 
         // SAFETY: By postcondition on `as_byte_slice_mut`, we know that `b` is
-        // a valid size and ailgnment for `T`. By safety invariant on
+        // a valid size and alignment for `T`. By safety invariant on
         // `ByteSlice`, we know that this is preserved via `.deref()`. Writing
         // `t` to the buffer will allow all of the bytes of `t` to be accessed
         // as a `[u8]`, but because `T: IntoBytes`, we know that this is sound.
@@ -883,7 +883,7 @@ mod tests {
     #[test]
     fn test_mut_slice_into_ref() {
         // Prior to #1260/#1299, calling `into_ref` on a `&mut [u8]`-backed
-        // `Ref` was not supportd.
+        // `Ref` was not supported.
         let mut buf = [0u8];
         let r = Ref::<&mut [u8], u8>::from_bytes(&mut buf).unwrap();
         assert_eq!(Ref::into_ref(r), &0);

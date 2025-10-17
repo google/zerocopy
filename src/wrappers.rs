@@ -474,7 +474,7 @@ pub struct MaybeUninit<T: ?Sized + KnownLayout>(
     // on `T::MaybeUninit`) `T::MaybeUninit` has `T::LAYOUT` identical to `T`,
     // and because (invariant on `T::LAYOUT`) we can trust that `LAYOUT`
     // accurately reflects the layout of `T`. By invariant on `T::MaybeUninit`,
-    // it admits uninitialized bytes in all positions. Because `MabyeUninit` is
+    // it admits uninitialized bytes in all positions. Because `MaybeUninit` is
     // marked `repr(transparent)`, these properties additionally hold true for
     // `Self`.
     T::MaybeUninit,
