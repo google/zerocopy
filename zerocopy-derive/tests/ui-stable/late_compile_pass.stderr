@@ -4,14 +4,19 @@ warning: unused import: `zerocopy::KnownLayout`
 15 | use zerocopy::KnownLayout;
    |     ^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: `#[warn(unused_imports)]` on by default
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
   --> tests/ui-stable/late_compile_pass.rs:29:10
    |
 29 | #[derive(TryFromBytes)]
-   |          ^^^^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+   |          ^^^^^^^^^^^^ unsatisfied trait bound
    |
+help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::TryFromBytes`:
              ()
@@ -30,8 +35,13 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satis
   --> tests/ui-stable/late_compile_pass.rs:38:10
    |
 38 | #[derive(FromZeros)]
-   |          ^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+   |          ^^^^^^^^^ unsatisfied trait bound
    |
+help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::TryFromBytes`:
              ()
@@ -50,8 +60,13 @@ error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
   --> tests/ui-stable/late_compile_pass.rs:38:10
    |
 38 | #[derive(FromZeros)]
-   |          ^^^^^^^^^ the trait `FromZeros` is not implemented for `NotZerocopy`
+   |          ^^^^^^^^^ unsatisfied trait bound
    |
+help: the trait `FromZeros` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
    = help: the following other types implement trait `FromZeros`:
              ()
@@ -70,8 +85,13 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satis
   --> tests/ui-stable/late_compile_pass.rs:47:10
    |
 47 | #[derive(FromBytes)]
-   |          ^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+   |          ^^^^^^^^^ unsatisfied trait bound
    |
+help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::TryFromBytes`:
              ()
@@ -90,8 +110,13 @@ error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
   --> tests/ui-stable/late_compile_pass.rs:47:10
    |
 47 | #[derive(FromBytes)]
-   |          ^^^^^^^^^ the trait `FromZeros` is not implemented for `NotZerocopy`
+   |          ^^^^^^^^^ unsatisfied trait bound
    |
+help: the trait `FromZeros` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
    = help: the following other types implement trait `FromZeros`:
              ()
@@ -110,8 +135,13 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfie
   --> tests/ui-stable/late_compile_pass.rs:47:10
    |
 47 | #[derive(FromBytes)]
-   |          ^^^^^^^^^ the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
+   |          ^^^^^^^^^ unsatisfied trait bound
    |
+help: the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::FromBytes`:
              ()
@@ -130,8 +160,13 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfie
   --> tests/ui-stable/late_compile_pass.rs:56:10
    |
 56 | #[derive(IntoBytes)]
-   |          ^^^^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy`
+   |          ^^^^^^^^^ unsatisfied trait bound
    |
+help: the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::IntoBytes`:
              ()
@@ -150,8 +185,13 @@ error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
   --> tests/ui-stable/late_compile_pass.rs:66:10
    |
 66 | #[derive(Unaligned)]
-   |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
+   |          ^^^^^^^^^ unsatisfied trait bound
    |
+help: the trait `zerocopy::Unaligned` is not implemented for `AU16`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct AU16(pub u16);
+   |     ^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
    = help: the following other types implement trait `zerocopy::Unaligned`:
              ()
@@ -170,8 +210,13 @@ error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
   --> tests/ui-stable/late_compile_pass.rs:74:10
    |
 74 | #[derive(Unaligned)]
-   |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
+   |          ^^^^^^^^^ unsatisfied trait bound
    |
+help: the trait `zerocopy::Unaligned` is not implemented for `AU16`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct AU16(pub u16);
+   |     ^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
    = help: the following other types implement trait `zerocopy::Unaligned`:
              ()
@@ -190,8 +235,13 @@ error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
   --> tests/ui-stable/late_compile_pass.rs:81:10
    |
 81 | #[derive(Unaligned)]
-   |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
+   |          ^^^^^^^^^ unsatisfied trait bound
    |
+help: the trait `zerocopy::Unaligned` is not implemented for `AU16`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct AU16(pub u16);
+   |     ^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
    = help: the following other types implement trait `zerocopy::Unaligned`:
              ()
@@ -210,8 +260,13 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfie
   --> tests/ui-stable/late_compile_pass.rs:47:10
    |
 47 | #[derive(FromBytes)]
-   |          ^^^^^^^^^ the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
+   |          ^^^^^^^^^ unsatisfied trait bound
    |
+help: the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::FromBytes`:
              ()
