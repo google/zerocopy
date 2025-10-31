@@ -2,8 +2,13 @@ error[E0277]: the trait bound `Dst: FromBytes` is not satisfied
  --> tests/ui-stable/transmute-mut-dst-not-frombytes.rs:24:38
   |
  24 | const DST_NOT_FROM_BYTES: &mut Dst = transmute_mut!(&mut Src);
-    |                                      ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `Dst`
+    |                                      ^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
+help: the trait `FromBytes` is not implemented for `Dst`
+   --> tests/ui-stable/transmute-mut-dst-not-frombytes.rs:21:1
+    |
+ 21 | struct Dst;
+    | ^^^^^^^^^^
     = note: Consider adding `#[derive(FromBytes)]` to `Dst`
     = help: the following other types implement trait `FromBytes`:
               ()
