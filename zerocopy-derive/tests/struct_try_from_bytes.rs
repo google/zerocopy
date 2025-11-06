@@ -18,7 +18,7 @@ include!("include.rs");
 #[test]
 fn zst() {
     // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let candidate = ::zerocopy::Ptr::from_ref(&());
+    let candidate = ::zerocopy::Ptr::from_ref(&const { imp::ReadOnly::new(()) });
     let candidate = candidate.forget_aligned();
     // SAFETY: `&()` trivially consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
@@ -37,7 +37,7 @@ util_assert_impl_all!(One: imp::TryFromBytes);
 #[test]
 fn one() {
     // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let candidate = ::zerocopy::Ptr::from_ref(&One { a: 42 });
+    let candidate = ::zerocopy::Ptr::from_ref(&const { imp::ReadOnly::new(One { a: 42 }) });
     let candidate = candidate.forget_aligned();
     // SAFETY: `&One` consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
@@ -57,7 +57,8 @@ util_assert_impl_all!(Two: imp::TryFromBytes);
 #[test]
 fn two() {
     // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let candidate = ::zerocopy::Ptr::from_ref(&Two { a: false, b: () });
+    let candidate =
+        ::zerocopy::Ptr::from_ref(&const { imp::ReadOnly::new(Two { a: false, b: () }) });
     let candidate = candidate.forget_aligned();
     // SAFETY: `&Two` consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
@@ -78,7 +79,7 @@ fn two_bad() {
     //   the same bytes as `c`.
     // - The cast preserves provenance.
     // - Neither the input nor output types contain any `UnsafeCell`s.
-    let candidate = unsafe { candidate.cast_unsized_unchecked(|p| p.cast::<Two>()) };
+    let candidate = unsafe { candidate.cast_unsized_unchecked(|p| p.cast::<imp::ReadOnly<Two>>()) };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
     let candidate = unsafe { candidate.assume_initialized() };
@@ -110,8 +111,9 @@ fn un_sized() {
     // - Neither the input nor output types contain any `UnsafeCell`s.
     let candidate = unsafe {
         candidate.cast_unsized_unchecked(|p| {
-            let ptr =
-                imp::core::ptr::NonNull::new_unchecked(p.as_non_null().as_ptr() as *mut Unsized);
+            let ptr = imp::core::ptr::NonNull::new_unchecked(
+                p.as_non_null().as_ptr() as *mut imp::ReadOnly<Unsized>
+            );
             ::zerocopy::pointer::PtrInner::new(ptr)
         })
     };
@@ -170,8 +172,9 @@ fn test_maybe_from_bytes() {
     //   the same bytes as `c`.
     // - The cast preserves provenance.
     // - Neither the input nor output types contain any `UnsafeCell`s.
-    let candidate =
-        unsafe { candidate.cast_unsized_unchecked(|p| p.cast::<MaybeFromBytes<bool>>()) };
+    let candidate = unsafe {
+        candidate.cast_unsized_unchecked(|p| p.cast::<imp::ReadOnly<MaybeFromBytes<bool>>>())
+    };
 
     // SAFETY: `[u8]` consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };

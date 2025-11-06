@@ -263,8 +263,8 @@ pub(crate) fn derive_is_bit_valid(
                     //   original type.
                     let variant = unsafe {
                         variants.cast_unsized_unchecked(
-                            |p: #zerocopy_crate::pointer::PtrInner<'_, ___ZerocopyVariants #ty_generics>| {
-                                p.cast_sized::<#variant_struct_ident #ty_generics>()
+                            |p: #zerocopy_crate::pointer::PtrInner<'_, ReadOnly<___ZerocopyVariants #ty_generics>>| {
+                                p.cast_sized::<ReadOnly<#variant_struct_ident #ty_generics>>()
                             }
                         )
                     };
@@ -285,13 +285,11 @@ pub(crate) fn derive_is_bit_valid(
         // enum's tag corresponds to one of the enum's discriminants. Then, we
         // check the bit validity of each field of the corresponding variant.
         // Thus, this is a sound implementation of `is_bit_valid`.
-        fn is_bit_valid<___ZerocopyAliasing>(
-            mut candidate: #zerocopy_crate::Maybe<'_, Self, ___ZerocopyAliasing>,
-        ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
-        where
-            ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
-        {
+        fn is_bit_valid(
+            mut candidate: #zerocopy_crate::Maybe<'_, Self>,
+        ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool {
             use #zerocopy_crate::util::macro_util::core_reexport;
+            use #zerocopy_crate::ReadOnly;
 
             #tag_enum
 
@@ -324,7 +322,7 @@ pub(crate) fn derive_is_bit_valid(
                 // - There are no `UnsafeCell`s in the tag because it is a
                 //   primitive integer.
                 let tag_ptr = unsafe {
-                    candidate.reborrow().cast_unsized_unchecked(|p: #zerocopy_crate::pointer::PtrInner<'_, Self>| {
+                    candidate.reborrow().cast_unsized_unchecked(|p: #zerocopy_crate::pointer::PtrInner<'_, ReadOnly<Self>>| {
                         p.cast_sized::<___ZerocopyTagPrimitive>()
                     })
                 };
@@ -346,8 +344,8 @@ pub(crate) fn derive_is_bit_valid(
             //   original enum, and so preserves the locations of any
             //   `UnsafeCell`s.
             let raw_enum = unsafe {
-                candidate.cast_unsized_unchecked(|p: #zerocopy_crate::pointer::PtrInner<'_, Self>| {
-                    p.cast_sized::<___ZerocopyRawEnum #ty_generics>()
+                candidate.cast_unsized_unchecked(|p: #zerocopy_crate::pointer::PtrInner<'_, ReadOnly<Self>>| {
+                    p.cast_sized::<ReadOnly<___ZerocopyRawEnum #ty_generics>>()
                 })
             };
             // SAFETY: `cast_unsized_unchecked` removes the initialization
@@ -365,15 +363,20 @@ pub(crate) fn derive_is_bit_valid(
             //   overall struct.
             let variants = unsafe {
                 use #zerocopy_crate::pointer::PtrInner;
-                raw_enum.cast_unsized_unchecked(|p: PtrInner<'_, ___ZerocopyRawEnum #ty_generics>| {
-                    let p = p.as_non_null().as_ptr();
-                    let ptr = core_reexport::ptr::addr_of_mut!((*p).variants);
-                    // SAFETY: `ptr` is a projection into `p`, which is
-                    // `NonNull`, and guaranteed not to wrap around the address
-                    // space. Thus, `ptr` cannot be null.
-                    let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(ptr) };
-                    unsafe { PtrInner::new(ptr) }
-                })
+                raw_enum.cast_unsized_unchecked(|
+                    p: PtrInner<'_, ReadOnly<___ZerocopyRawEnum #ty_generics>>
+                    | -> PtrInner<'_, ReadOnly<___ZerocopyVariants #ty_generics>> {
+                        let p = p.as_non_null().as_ptr();
+                        let p = p as *mut ___ZerocopyRawEnum #ty_generics;
+                        let ptr = core_reexport::ptr::addr_of_mut!((*p).variants);
+                        let ptr = ptr as *mut ReadOnly<_>;
+                        // SAFETY: `ptr` is a projection into `p`, which is
+                        // `NonNull`, and guaranteed not to wrap around the address
+                        // space. Thus, `ptr` cannot be null.
+                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(ptr) };
+                        unsafe { PtrInner::new(ptr) }
+                    }
+                )
             };
 
             #[allow(non_upper_case_globals)]
