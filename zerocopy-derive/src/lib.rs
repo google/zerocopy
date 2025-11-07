@@ -39,8 +39,9 @@ mod repr;
 use proc_macro2::{Span, TokenStream, TokenTree};
 use quote::{quote, ToTokens};
 use syn::{
-    parse_quote, Attribute, Data, DataEnum, DataStruct, DataUnion, DeriveInput, Error, Expr,
-    ExprLit, ExprUnary, GenericParam, Ident, Lit, Meta, Path, Type, UnOp, WherePredicate,
+    parse_quote, spanned::Spanned as _, Attribute, Data, DataEnum, DataStruct, DataUnion,
+    DeriveInput, Error, Expr, ExprLit, ExprUnary, GenericParam, Ident, Lit, Meta, Path, Type, UnOp,
+    WherePredicate,
 };
 
 use crate::{ext::*, repr::*};
@@ -137,6 +138,7 @@ fn extract_zerocopy_crate(attrs: &[Attribute]) -> Result<Path, Error> {
     Ok(path)
 }
 
+derive!(Inhabited => derive_inhabited => derive_inhabited_inner);
 derive!(KnownLayout => derive_known_layout => derive_known_layout_inner);
 derive!(Immutable => derive_no_cell => derive_no_cell_inner);
 derive!(TryFromBytes => derive_try_from_bytes => derive_try_from_bytes_inner);
@@ -162,6 +164,78 @@ pub fn derive_from_zeroes(ts: proc_macro::TokenStream) -> proc_macro::TokenStrea
 #[proc_macro_derive(AsBytes)]
 pub fn derive_as_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     derive_into_bytes(ts)
+}
+
+fn derive_inhabited_inner(
+    ast: &DeriveInput,
+    _top_level: Trait,
+    zerocopy_crate: &Path,
+) -> Result<TokenStream, Error> {
+    let Data::Struct(strct) = &ast.data else {
+        return Err(Error::new_spanned(ast, "Only supported on structs"));
+    };
+
+    let fields = &strct.fields;
+    // TODO: What to do about visibility? By default, this will "expose" field
+    // names and types because HasField can't distinguish who's asking about
+    // whether a type has a field with a particular name. One option would be to
+    // permit the user to only derive HasField on `pub` fields.
+    let outer_name = &ast.ident;
+    let outer_names = core::iter::repeat(outer_name);
+
+    let field_hashes = fields.iter().enumerate().map(|(i, field)| match &field.ident {
+        Some(name) => {
+            // For named fields, we hash the stringified field name.
+            let name = name.to_string();
+            quote!(init::macro_util::hash_field_name(#name))
+        }
+        None => {
+            // For unnamed fields, we simply treat the field index as the hash.
+            let i = u128::try_from(i).unwrap();
+            quote!(#i)
+        }
+    });
+    let field_names = fields.iter().enumerate().map(|(i, field)| match &field.ident {
+        Some(name) => quote!(#name),
+        None => {
+            let i = syn::Index { index: i.try_into().unwrap(), span: field.span() };
+            quote!(#i)
+        }
+    });
+    let field_tys = fields.iter().map(|field| &field.ty);
+    let field_tys_2 = field_tys.clone();
+    let field_tys_3 = field_tys.clone();
+    let indexes =
+        fields.iter().enumerate().map(|(i, field)| Ident::new(&format!("Index{i}"), field.span()));
+    let replaces = fields
+        .iter()
+        .enumerate()
+        .map(|(i, field)| Ident::new(&format!("Replace{i}"), field.span()));
+
+    // TODO: Support generics
+    Ok(quote!(
+        const _: () = {
+            use #zerocopy_crate as zerocopy;
+            use zerocopy::{init, util::macro_util::core_reexport::ptr::{addr_of_mut, NonNull}};
+
+            #(
+                unsafe impl<I> zerocopy::init::HasField<0, { #field_hashes }, I> for #outer_names {
+                    type Type = #field_tys;
+                    type FieldInit<OuterInit: init::Tuple> = OuterInit::#indexes;
+                    type Overwrite<OuterInit: init::Tuple, This> = OuterInit::#replaces<This>;
+
+                    fn project(outer: NonNull<Self>) -> NonNull<Self::Type> {
+                        unsafe { NonNull::new_unchecked(addr_of_mut!((*outer.as_ptr()).#field_names)) }
+                    }
+                }
+            )*
+
+            unsafe impl init::Inhabited for #outer_name {
+                type Uninit = (#(<#field_tys_2 as init::Inhabited>::Uninit,)*);
+                // type Init = (#(<#field_tys_3 as init::Inhabited>::Init,)*);
+            }
+        };
+    ))
 }
 
 fn derive_known_layout_inner(
@@ -461,7 +535,7 @@ fn derive_known_layout_inner(
 
             // A bound on the trailing field is required, since structs are
             // unsized if their trailing field is unsized. Reflecting the layout
-            // of an usized trailing field requires that the field is
+            // of an unsized trailing field requires that the field is
             // `KnownLayout`.
             ImplBlockBuilder::new(
                 ast,
@@ -1522,6 +1596,7 @@ impl PaddingCheck {
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum Trait {
+    Inhabited,
     KnownLayout,
     Immutable,
     TryFromBytes,
@@ -1547,6 +1622,7 @@ impl ToTokens for Trait {
         // [1] https://doc.rust-lang.org/1.81.0/std/fmt/trait.Debug.html#stability
         // [2] https://doc.rust-lang.org/beta/unstable-book/compiler-flags/fmt-debug.html
         let s = match self {
+            Trait::Inhabited => "Inhabited",
             Trait::KnownLayout => "KnownLayout",
             Trait::Immutable => "Immutable",
             Trait::TryFromBytes => "TryFromBytes",

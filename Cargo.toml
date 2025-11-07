@@ -16,9 +16,18 @@
 edition = "2021"
 name = "zerocopy"
 version = "0.8.27"
-authors = ["Joshua Liebow-Feeser <joshlf@google.com>", "Jack Wrenn <jswrenn@amazon.com>"]
+authors = [
+    "Joshua Liebow-Feeser <joshlf@google.com>",
+    "Jack Wrenn <jswrenn@amazon.com>",
+]
 description = "Zerocopy makes zero-cost memory manipulation effortless. We write \"unsafe\" so you don't have to."
-categories = ["embedded", "encoding", "no-std::no-alloc", "parsing", "rust-patterns"]
+categories = [
+    "embedded",
+    "encoding",
+    "no-std::no-alloc",
+    "parsing",
+    "rust-patterns",
+]
 keywords = ["cast", "convert", "transmute", "transmutation", "type-punning"]
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 repository = "https://github.com/google/zerocopy"
@@ -76,10 +85,19 @@ simd = []
 simd-nightly = ["simd"]
 float-nightly = []
 std = ["alloc"]
+
+init-unstable = []
+
 # This feature depends on all other features that work on the stable compiler.
 # We make no stability guarantees about this feature; it may be modified or
 # removed at any time.
-__internal_use_only_features_that_work_on_stable = ["alloc", "derive", "simd", "std"]
+__internal_use_only_features_that_work_on_stable = [
+    "alloc",
+    "derive",
+    "init-unstable",
+    "simd",
+    "std",
+]
 
 [dependencies]
 zerocopy-derive = { version = "=0.8.27", path = "zerocopy-derive", optional = true }
