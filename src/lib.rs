@@ -259,6 +259,7 @@
     clippy::indexing_slicing,
     clippy::missing_inline_in_public_items,
     clippy::missing_safety_doc,
+    clippy::multiple_unsafe_ops_per_block,
     clippy::must_use_candidate,
     clippy::must_use_unit,
     clippy::obfuscated_if_else,
