@@ -202,9 +202,9 @@
 //!
 //! # Thanks
 //!
-//! Zerocopy is maintained by engineers at Google and Amazon with help from
-//! [many wonderful contributors][contributors]. Thank you to everyone who has
-//! lent a hand in making Rust a little more secure!
+//! Zerocopy is maintained by engineers at Google with help from [many wonderful
+//! contributors][contributors]. Thank you to everyone who has lent a hand in
+//! making Rust a little more secure!
 //!
 //! [contributors]: https://github.com/google/zerocopy/graphs/contributors
 
