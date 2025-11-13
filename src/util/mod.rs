@@ -39,12 +39,18 @@ impl<T: ?Sized> Default for SendSyncPhantomData<T> {
 }
 
 impl<T: ?Sized> PartialEq for SendSyncPhantomData<T> {
-    fn eq(&self, other: &Self) -> bool {
-        self.0.eq(&other.0)
+    fn eq(&self, _other: &Self) -> bool {
+        true
     }
 }
 
 impl<T: ?Sized> Eq for SendSyncPhantomData<T> {}
+
+impl<T: ?Sized> Clone for SendSyncPhantomData<T> {
+    fn clone(&self) -> Self {
+        SendSyncPhantomData(PhantomData)
+    }
+}
 
 pub(crate) trait AsAddress {
     fn addr(self) -> usize;

@@ -149,7 +149,7 @@ use crate::{FromBytes, Ref};
 /// - [`CastError`]: the error type of reference conversions
 /// - [`TryCastError`]: the error type of fallible reference conversions
 /// - [`TryReadError`]: the error type of fallible read conversions
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone)]
 pub enum ConvertError<A, S, V> {
     /// The conversion source was improperly aligned.
     Alignment(A),
@@ -245,7 +245,6 @@ where
 }
 
 /// The error emitted if the conversion source is improperly aligned.
-#[derive(PartialEq, Eq)]
 pub struct AlignmentError<Src, Dst: ?Sized> {
     /// The source value involved in the conversion.
     src: Src,
@@ -253,7 +252,7 @@ pub struct AlignmentError<Src, Dst: ?Sized> {
     ///
     /// INVARIANT: An `AlignmentError` may only be constructed if `Dst`'s
     /// alignment requirement is greater than one.
-    dst: SendSyncPhantomData<Dst>,
+    _dst: SendSyncPhantomData<Dst>,
 }
 
 impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
@@ -264,7 +263,7 @@ impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
     pub(crate) unsafe fn new_unchecked(src: Src) -> Self {
         // INVARIANT: The caller guarantees that `Dst`'s alignment requirement
         // is greater than one.
-        Self { src, dst: SendSyncPhantomData::default() }
+        Self { src, _dst: SendSyncPhantomData::default() }
     }
 
     /// Produces the source underlying the failed conversion.
@@ -277,7 +276,7 @@ impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
         // INVARIANT: `with_src` doesn't change the type of `Dst`, so the
         // invariant that `Dst`'s alignment requirement is greater than one is
         // preserved.
-        AlignmentError { src: new_src, dst: SendSyncPhantomData::default() }
+        AlignmentError { src: new_src, _dst: SendSyncPhantomData::default() }
     }
 
     /// Maps the source value associated with the conversion error.
@@ -302,7 +301,7 @@ impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
     /// ```
     #[inline]
     pub fn map_src<NewSrc>(self, f: impl FnOnce(Src) -> NewSrc) -> AlignmentError<NewSrc, Dst> {
-        AlignmentError { src: f(self.src), dst: SendSyncPhantomData::default() }
+        AlignmentError { src: f(self.src), _dst: SendSyncPhantomData::default() }
     }
 
     pub(crate) fn into<S, V>(self) -> ConvertError<Self, S, V> {
@@ -339,6 +338,22 @@ impl<Src, Dst: ?Sized> AlignmentError<Src, Dst> {
         Ok(())
     }
 }
+
+impl<Src: Clone, Dst: ?Sized> Clone for AlignmentError<Src, Dst> {
+    #[inline]
+    fn clone(&self) -> Self {
+        Self { src: self.src.clone(), _dst: SendSyncPhantomData::default() }
+    }
+}
+
+impl<Src: PartialEq, Dst: ?Sized> PartialEq for AlignmentError<Src, Dst> {
+    #[inline]
+    fn eq(&self, other: &Self) -> bool {
+        self.src == other.src
+    }
+}
+
+impl<Src: Eq, Dst: ?Sized> Eq for AlignmentError<Src, Dst> {}
 
 impl<Src, Dst: ?Sized + Unaligned> From<AlignmentError<Src, Dst>> for Infallible {
     #[inline(always)]
@@ -411,17 +426,16 @@ impl<Src, Dst: ?Sized, S, V> From<AlignmentError<Src, Dst>>
 }
 
 /// The error emitted if the conversion source is of incorrect size.
-#[derive(PartialEq, Eq)]
 pub struct SizeError<Src, Dst: ?Sized> {
     /// The source value involved in the conversion.
     src: Src,
-    /// The inner destination type inolved in the conversion.
-    dst: SendSyncPhantomData<Dst>,
+    /// The inner destination type involved in the conversion.
+    _dst: SendSyncPhantomData<Dst>,
 }
 
 impl<Src, Dst: ?Sized> SizeError<Src, Dst> {
     pub(crate) fn new(src: Src) -> Self {
-        Self { src, dst: SendSyncPhantomData::default() }
+        Self { src, _dst: SendSyncPhantomData::default() }
     }
 
     /// Produces the source underlying the failed conversion.
@@ -432,7 +446,7 @@ impl<Src, Dst: ?Sized> SizeError<Src, Dst> {
 
     /// Sets the source value associated with the conversion error.
     pub(crate) fn with_src<NewSrc>(self, new_src: NewSrc) -> SizeError<NewSrc, Dst> {
-        SizeError { src: new_src, dst: SendSyncPhantomData::default() }
+        SizeError { src: new_src, _dst: SendSyncPhantomData::default() }
     }
 
     /// Maps the source value associated with the conversion error.
@@ -458,12 +472,12 @@ impl<Src, Dst: ?Sized> SizeError<Src, Dst> {
     /// ```
     #[inline]
     pub fn map_src<NewSrc>(self, f: impl FnOnce(Src) -> NewSrc) -> SizeError<NewSrc, Dst> {
-        SizeError { src: f(self.src), dst: SendSyncPhantomData::default() }
+        SizeError { src: f(self.src), _dst: SendSyncPhantomData::default() }
     }
 
     /// Sets the destination type associated with the conversion error.
     pub(crate) fn with_dst<NewDst: ?Sized>(self) -> SizeError<Src, NewDst> {
-        SizeError { src: self.src, dst: SendSyncPhantomData::default() }
+        SizeError { src: self.src, _dst: SendSyncPhantomData::default() }
     }
 
     /// Converts the error into a general [`ConvertError`].
@@ -510,6 +524,22 @@ impl<Src, Dst: ?Sized> SizeError<Src, Dst> {
     }
 }
 
+impl<Src: Clone, Dst: ?Sized> Clone for SizeError<Src, Dst> {
+    #[inline]
+    fn clone(&self) -> Self {
+        Self { src: self.src.clone(), _dst: SendSyncPhantomData::default() }
+    }
+}
+
+impl<Src: PartialEq, Dst: ?Sized> PartialEq for SizeError<Src, Dst> {
+    #[inline]
+    fn eq(&self, other: &Self) -> bool {
+        self.src == other.src
+    }
+}
+
+impl<Src: Eq, Dst: ?Sized> Eq for SizeError<Src, Dst> {}
+
 impl<Src, Dst: ?Sized> fmt::Debug for SizeError<Src, Dst> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -555,17 +585,16 @@ impl<Src, Dst: ?Sized, A, V> From<SizeError<Src, Dst>> for ConvertError<A, SizeE
 }
 
 /// The error emitted if the conversion source contains invalid data.
-#[derive(PartialEq, Eq)]
 pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
     /// The source value involved in the conversion.
     pub(crate) src: Src,
-    /// The inner destination type inolved in the conversion.
-    dst: SendSyncPhantomData<Dst>,
+    /// The inner destination type involved in the conversion.
+    _dst: SendSyncPhantomData<Dst>,
 }
 
 impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
     pub(crate) fn new(src: Src) -> Self {
-        Self { src, dst: SendSyncPhantomData::default() }
+        Self { src, _dst: SendSyncPhantomData::default() }
     }
 
     /// Produces the source underlying the failed conversion.
@@ -596,7 +625,7 @@ impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
     /// ```
     #[inline]
     pub fn map_src<NewSrc>(self, f: impl FnOnce(Src) -> NewSrc) -> ValidityError<NewSrc, Dst> {
-        ValidityError { src: f(self.src), dst: SendSyncPhantomData::default() }
+        ValidityError { src: f(self.src), _dst: SendSyncPhantomData::default() }
     }
 
     /// Converts the error into a general [`ConvertError`].
@@ -616,6 +645,22 @@ impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
         Ok(())
     }
 }
+
+impl<Src: Clone, Dst: ?Sized + TryFromBytes> Clone for ValidityError<Src, Dst> {
+    #[inline]
+    fn clone(&self) -> Self {
+        Self { src: self.src.clone(), _dst: SendSyncPhantomData::default() }
+    }
+}
+
+impl<Src: PartialEq, Dst: ?Sized + TryFromBytes> PartialEq for ValidityError<Src, Dst> {
+    #[inline]
+    fn eq(&self, other: &Self) -> bool {
+        self.src == other.src
+    }
+}
+
+impl<Src: Eq, Dst: ?Sized + TryFromBytes> Eq for ValidityError<Src, Dst> {}
 
 impl<Src, Dst: ?Sized + TryFromBytes> fmt::Debug for ValidityError<Src, Dst> {
     #[inline]
@@ -993,6 +1038,48 @@ mod tests {
             >,
         ) {
             is_send_sync(err)
+        }
+    }
+
+    #[test]
+    fn test_eq_partial_eq_clone() {
+        // Test that all error types implement `Eq`, `PartialEq`
+        // and `Clone` if src does
+        // even if `Dst: !Eq`, `!PartialEq`, `!Clone`.
+
+        #[allow(dead_code)]
+        fn is_eq_partial_eq_clone<T: Eq + PartialEq + Clone>(_t: T) {}
+
+        #[allow(dead_code)]
+        fn alignment_err_is_eq_partial_eq_clone<Src: Eq + PartialEq + Clone, Dst>(
+            err: AlignmentError<Src, Dst>,
+        ) {
+            is_eq_partial_eq_clone(err)
+        }
+
+        #[allow(dead_code)]
+        fn size_err_is_eq_partial_eq_clone<Src: Eq + PartialEq + Clone, Dst>(
+            err: SizeError<Src, Dst>,
+        ) {
+            is_eq_partial_eq_clone(err)
+        }
+
+        #[allow(dead_code)]
+        fn validity_err_is_eq_partial_eq_clone<Src: Eq + PartialEq + Clone, Dst: TryFromBytes>(
+            err: ValidityError<Src, Dst>,
+        ) {
+            is_eq_partial_eq_clone(err)
+        }
+
+        #[allow(dead_code)]
+        fn convert_error_is_eq_partial_eq_clone<Src: Eq + PartialEq + Clone, Dst: TryFromBytes>(
+            err: ConvertError<
+                AlignmentError<Src, Dst>,
+                SizeError<Src, Dst>,
+                ValidityError<Src, Dst>,
+            >,
+        ) {
+            is_eq_partial_eq_clone(err)
         }
     }
 

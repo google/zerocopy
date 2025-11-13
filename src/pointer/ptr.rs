@@ -118,7 +118,7 @@ mod _external {
     ///   referent of a `Ptr<T, I: Invariants<Validity = V>>`. Since this copy
     ///   does not change `I::Validity` or `T`, `S(T, I::Validity)` is also
     ///   unchanged.
-    ///   
+    ///
     ///   We are required to guarantee that the referents of the original `Ptr`
     ///   and of the copy (which, of course, are actually the same since they
     ///   live in the same byte address range) both remain in the set `S(T,
