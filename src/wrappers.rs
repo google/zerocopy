@@ -119,6 +119,19 @@ pub struct Unalign<T>(T);
 // `KnownLayout` impl bounded on `T: KnownLayout.` This is overly restrictive.
 impl_known_layout!(T => Unalign<T>);
 
+// FIXME(https://github.com/rust-lang/rust-clippy/issues/16087): Move these
+// attributes below the comment once this Clippy bug is fixed.
+#[cfg_attr(
+    all(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS, any(feature = "derive", test)),
+    expect(unused_unsafe)
+)]
+#[cfg_attr(
+    all(
+        not(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
+        any(feature = "derive", test)
+    ),
+    allow(unused_unsafe)
+)]
 // SAFETY:
 // - `Unalign<T>` promises to have alignment 1, and so we don't require that `T:
 //   Unaligned`.
@@ -128,7 +141,7 @@ impl_known_layout!(T => Unalign<T>);
 //   `UnsafeCell`s exactly when `T` does.
 // - `TryFromBytes`: `Unalign<T>` has the same the same bit validity as `T`, so
 //   `T::is_bit_valid` is a sound implementation of `is_bit_valid`.
-#[allow(unused_unsafe)] // Unused when `feature = "derive"`.
+//
 const _: () = unsafe {
     impl_or_verify!(T => Unaligned for Unalign<T>);
     impl_or_verify!(T: Immutable => Immutable for Unalign<T>);
