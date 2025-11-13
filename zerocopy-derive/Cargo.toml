@@ -45,6 +45,7 @@ libc = "=0.2.163"
 # This is the latest version which is compatible with `syn` 2.0.46, which we pin
 # to in CI for MSRV compatibility reasons.
 prettyplease = "=0.2.17"
+proc-macro2 = "=1.0.80"
 quote = "=1.0.40"
 rustversion = "1.0"
 static_assertions = "1.1"
