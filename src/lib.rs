@@ -322,7 +322,7 @@
 )]
 #![cfg_attr(
     all(feature = "simd-nightly", target_arch = "arm"),
-    feature(stdarch_arm_dsp, stdarch_arm_neon_intrinsics)
+    feature(stdarch_arm_neon_intrinsics)
 )]
 #![cfg_attr(
     all(feature = "simd-nightly", any(target_arch = "powerpc", target_arch = "powerpc64")),
