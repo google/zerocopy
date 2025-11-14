@@ -2,8 +2,13 @@ error[E0277]: the trait bound `Src: IntoBytes` is not satisfied
  --> tests/ui-stable/try_transmute_mut-src-not-intobytes.rs:23:40
   |
  23 |     let src_not_from_bytes: &mut Dst = transmute_mut!(&mut Src);
-    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `Src`
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
+help: the trait `IntoBytes` is not implemented for `Src`
+   --> tests/ui-stable/try_transmute_mut-src-not-intobytes.rs:15:1
+    |
+ 15 | struct Src;
+    | ^^^^^^^^^^
     = note: Consider adding `#[derive(IntoBytes)]` to `Src`
     = help: the following other types implement trait `IntoBytes`:
               ()
@@ -29,8 +34,13 @@ error[E0277]: the trait bound `Dst: FromBytes` is not satisfied
  --> tests/ui-stable/try_transmute_mut-src-not-intobytes.rs:23:40
   |
  23 |     let src_not_from_bytes: &mut Dst = transmute_mut!(&mut Src);
-    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `FromBytes` is not implemented for `Dst`
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
+help: the trait `FromBytes` is not implemented for `Dst`
+   --> tests/ui-stable/try_transmute_mut-src-not-intobytes.rs:19:1
+    |
+ 19 | struct Dst;
+    | ^^^^^^^^^^
     = note: Consider adding `#[derive(FromBytes)]` to `Dst`
     = help: the following other types implement trait `FromBytes`:
               ()
@@ -56,8 +66,13 @@ error[E0277]: the trait bound `Dst: IntoBytes` is not satisfied
  --> tests/ui-stable/try_transmute_mut-src-not-intobytes.rs:23:40
   |
  23 |     let src_not_from_bytes: &mut Dst = transmute_mut!(&mut Src);
-    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `Dst`
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
+help: the trait `IntoBytes` is not implemented for `Dst`
+   --> tests/ui-stable/try_transmute_mut-src-not-intobytes.rs:19:1
+    |
+ 19 | struct Dst;
+    | ^^^^^^^^^^
     = note: Consider adding `#[derive(IntoBytes)]` to `Dst`
     = help: the following other types implement trait `IntoBytes`:
               ()
