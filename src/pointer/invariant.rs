@@ -39,7 +39,11 @@ pub trait Aliasing: Sealed {
 }
 
 /// The alignment invariant of a [`Ptr`][super::Ptr].
-pub trait Alignment: Sealed {}
+pub trait Alignment: Sealed {
+    /// Is `Self` [`Aligned`]?
+    #[doc(hidden)]
+    const IS_ALIGNED: bool;
+}
 
 /// The validity invariant of a [`Ptr`][super::Ptr].
 ///
@@ -83,7 +87,11 @@ pub trait Alignment: Sealed {}
 ///   mechanism (e.g. a `&` reference used to derive `src`) to write `x` where
 ///   `x ∈ S(T, V)` but `x ∉ S(U, W)`, which would violate the guarantee that
 ///   `dst`'s referent may only contain values in `S(U, W)`.
-pub unsafe trait Validity: Sealed {}
+pub unsafe trait Validity: Sealed {
+    /// Is `Self` [`Valid`]?
+    #[doc(hidden)]
+    const IS_VALID: bool;
+}
 
 /// An [`Aliasing`] invariant which is either [`Shared`] or [`Exclusive`].
 ///
@@ -123,12 +131,16 @@ impl Reference for Exclusive {}
 /// It is unknown whether the pointer is aligned.
 pub enum Unaligned {}
 
-impl Alignment for Unaligned {}
+impl Alignment for Unaligned {
+    const IS_ALIGNED: bool = false;
+}
 
 /// The referent is aligned: for `Ptr<T>`, the referent's address is a multiple
 /// of the `T`'s alignment.
 pub enum Aligned {}
-impl Alignment for Aligned {}
+impl Alignment for Aligned {
+    const IS_ALIGNED: bool = true;
+}
 
 /// Any bit pattern is allowed in the `Ptr`'s referent, including uninitialized
 /// bytes.
@@ -137,7 +149,9 @@ pub enum Uninit {}
 // function of any property of `T` other than its bit validity (in fact, it's
 // not even a property of `T`'s bit validity, but this is more than we are
 // required to uphold).
-unsafe impl Validity for Uninit {}
+unsafe impl Validity for Uninit {
+    const IS_VALID: bool = false;
+}
 
 /// The byte ranges initialized in `T` are also initialized in the referent of a
 /// `Ptr<T>`.
@@ -169,7 +183,9 @@ unsafe impl Validity for Uninit {}
 pub enum AsInitialized {}
 // SAFETY: `AsInitialized`'s validity is well-defined for all `T: ?Sized`, and
 // is not a function of any property of `T` other than its bit validity.
-unsafe impl Validity for AsInitialized {}
+unsafe impl Validity for AsInitialized {
+    const IS_VALID: bool = false;
+}
 
 /// The byte ranges in the referent are fully initialized. In other words, if
 /// the referent is `N` bytes long, then it contains a bit-valid `[u8; N]`.
@@ -178,14 +194,18 @@ pub enum Initialized {}
 // not a function of any property of `T` other than its bit validity (in fact,
 // it's not even a property of `T`'s bit validity, but this is more than we are
 // required to uphold).
-unsafe impl Validity for Initialized {}
+unsafe impl Validity for Initialized {
+    const IS_VALID: bool = false;
+}
 
 /// The referent of a `Ptr<T>` is valid for `T`, upholding bit validity and any
 /// library safety invariants.
 pub enum Valid {}
 // SAFETY: `Valid`'s validity is well-defined for all `T: ?Sized`, and is not a
 // function of any property of `T` other than its bit validity.
-unsafe impl Validity for Valid {}
+unsafe impl Validity for Valid {
+    const IS_VALID: bool = true;
+}
 
 /// # Safety
 ///

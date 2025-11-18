@@ -104,10 +104,13 @@ assert_unaligned!(bool);
 //   The value false has the bit pattern 0x00 and the value true has the bit
 //   pattern 0x01.
 const _: () = unsafe {
-    unsafe_impl!(=> TryFromBytes for bool; |byte| {
-        let byte = byte.transmute::<u8, invariant::Valid, _>();
-        *byte.unaligned_as_ref() < 2
-    })
+    unsafe_impl!(=> TryFromBytes for bool;
+        type Uninit = crate::init::Uninit;
+        |byte| {
+            let byte = byte.transmute::<u8, invariant::Valid, _>();
+            *byte.unaligned_as_ref() < 2
+        }
+    )
 };
 impl_size_eq!(bool, u8);
 
@@ -133,11 +136,14 @@ const _: () = unsafe { unsafe_impl!(char: Immutable, FromZeros, IntoBytes) };
 //   `from_u32()` will return `None` if the input is not a valid value for a
 //   `char`.
 const _: () = unsafe {
-    unsafe_impl!(=> TryFromBytes for char; |c| {
-        let c = c.transmute::<Unalign<u32>, invariant::Valid, _>();
-        let c = c.read_unaligned().into_inner();
-        char::from_u32(c).is_some()
-    });
+    unsafe_impl!(=> TryFromBytes for char;
+        type Uninit = crate::init::Uninit;
+        |c| {
+            let c = c.transmute::<Unalign<u32>, invariant::Valid, _>();
+            let c = c.read_unaligned().into_inner();
+            char::from_u32(c).is_some()
+        }
+    );
 };
 
 impl_size_eq!(char, Unalign<u32>);
@@ -166,11 +172,15 @@ const _: () = unsafe { unsafe_impl!(str: Immutable, FromZeros, IntoBytes, Unalig
 //
 //   Returns `Err` if the slice is not UTF-8.
 const _: () = unsafe {
-    unsafe_impl!(=> TryFromBytes for str; |c| {
-        let c = c.transmute::<[u8], invariant::Valid, _>();
-        let c = c.unaligned_as_ref();
-        core::str::from_utf8(c).is_ok()
-    })
+    unsafe_impl!(=> TryFromBytes for str;
+        // TODO: Is this the best we can do?
+        type Uninit = crate::init::Uninit;
+        |c| {
+            let c = c.transmute::<[u8], invariant::Valid, _>();
+            let c = c.unaligned_as_ref();
+            core::str::from_utf8(c).is_ok()
+        }
+    )
 };
 
 impl_size_eq!(str, [u8]);
@@ -178,12 +188,15 @@ impl_size_eq!(str, [u8]);
 macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
     ($($nonzero:ident[$prim:ty]),*) => {
         $(
-            unsafe_impl!(=> TryFromBytes for $nonzero; |n| {
-                impl_size_eq!($nonzero, Unalign<$prim>);
+            unsafe_impl!(=> TryFromBytes for $nonzero;
+                type Uninit = crate::init::Uninit;
+                    |n| {
+                    impl_size_eq!($nonzero, Unalign<$prim>);
 
-                let n = n.transmute::<Unalign<$prim>, invariant::Valid, _>();
-                $nonzero::new(n.read_unaligned().into_inner()).is_some()
-            });
+                    let n = n.transmute::<Unalign<$prim>, invariant::Valid, _>();
+                    $nonzero::new(n.read_unaligned().into_inner()).is_some()
+                }
+            );
         )*
     }
 }
@@ -322,7 +335,9 @@ const _: () = unsafe {
     #[cfg(feature = "alloc")]
     unsafe_impl!(
         #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
-        T => TryFromBytes for Option<Box<T>>; |c| pointer::is_zeroed(c)
+        T => TryFromBytes for Option<Box<T>>;
+            type Uninit = crate::init::Uninit;
+            |c| pointer::is_zeroed(c)
     );
     #[cfg(feature = "alloc")]
     unsafe_impl!(
@@ -330,15 +345,21 @@ const _: () = unsafe {
         T => FromZeros for Option<Box<T>>
     );
     unsafe_impl!(
-        T => TryFromBytes for Option<&'_ T>; |c| pointer::is_zeroed(c)
+        T => TryFromBytes for Option<&'_ T>;
+            type Uninit = crate::init::Uninit;
+            |c| pointer::is_zeroed(c)
     );
     unsafe_impl!(T => FromZeros for Option<&'_ T>);
     unsafe_impl!(
-            T => TryFromBytes for Option<&'_ mut T>; |c| pointer::is_zeroed(c)
+            T => TryFromBytes for Option<&'_ mut T>;
+                type Uninit = crate::init::Uninit;
+                |c| pointer::is_zeroed(c)
     );
     unsafe_impl!(T => FromZeros for Option<&'_ mut T>);
     unsafe_impl!(
-        T => TryFromBytes for Option<NonNull<T>>; |c| pointer::is_zeroed(c)
+        T => TryFromBytes for Option<NonNull<T>>;
+            type Uninit = crate::init::Uninit;
+            |c| pointer::is_zeroed(c)
     );
     unsafe_impl!(T => FromZeros for Option<NonNull<T>>);
     unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_fn!(...));
@@ -796,6 +817,8 @@ assert_unaligned!(UnsafeCell<()>, UnsafeCell<u8>);
 
 // SAFETY: See safety comment in `is_bit_valid` impl.
 unsafe impl<T: TryFromBytes + ?Sized> TryFromBytes for UnsafeCell<T> {
+    type Uninit = T::Uninit;
+
     #[allow(clippy::missing_inline_in_public_items)]
     fn only_derive_is_allowed_to_implement_this_trait()
     where
@@ -853,42 +876,48 @@ unsafe impl<T: TryFromBytes + ?Sized> TryFromBytes for UnsafeCell<T> {
 // [1] https://doc.rust-lang.org/1.81.0/reference/type-layout.html#array-layout
 const _: () = unsafe {
     unsafe_impl!(const N: usize, T: Immutable => Immutable for [T; N]);
-    unsafe_impl!(const N: usize, T: TryFromBytes => TryFromBytes for [T; N]; |c| {
-        // Note that this call may panic, but it would still be sound even if it
-        // did. `is_bit_valid` does not promise that it will not panic (in fact,
-        // it explicitly warns that it's a possibility), and we have not
-        // violated any safety invariants that we must fix before returning.
-        <[T] as TryFromBytes>::is_bit_valid(c.as_slice())
-    });
+    unsafe_impl!(const N: usize, T: TryFromBytes => TryFromBytes for [T; N];
+        type Uninit = T::Uninit;
+        |c| {
+            // Note that this call may panic, but it would still be sound even if it
+            // did. `is_bit_valid` does not promise that it will not panic (in fact,
+            // it explicitly warns that it's a possibility), and we have not
+            // violated any safety invariants that we must fix before returning.
+            <[T] as TryFromBytes>::is_bit_valid(c.as_slice())
+        }
+    );
     unsafe_impl!(const N: usize, T: FromZeros => FromZeros for [T; N]);
     unsafe_impl!(const N: usize, T: FromBytes => FromBytes for [T; N]);
     unsafe_impl!(const N: usize, T: IntoBytes => IntoBytes for [T; N]);
     unsafe_impl!(const N: usize, T: Unaligned => Unaligned for [T; N]);
     assert_unaligned!([(); 0], [(); 1], [u8; 0], [u8; 1]);
     unsafe_impl!(T: Immutable => Immutable for [T]);
-    unsafe_impl!(T: TryFromBytes => TryFromBytes for [T]; |c| {
-        // SAFETY: Per the reference [1]:
-        //
-        //   An array of `[T; N]` has a size of `size_of::<T>() * N` and the
-        //   same alignment of `T`. Arrays are laid out so that the zero-based
-        //   `nth` element of the array is offset from the start of the array by
-        //   `n * size_of::<T>()` bytes.
-        //
-        //   ...
-        //
-        //   Slices have the same layout as the section of the array they slice.
-        //
-        // In other words, the layout of a `[T] is a sequence of `T`s laid out
-        // back-to-back with no bytes in between. If all elements in `candidate`
-        // are `is_bit_valid`, so too is `candidate`.
-        //
-        // Note that any of the below calls may panic, but it would still be
-        // sound even if it did. `is_bit_valid` does not promise that it will
-        // not panic (in fact, it explicitly warns that it's a possibility), and
-        // we have not violated any safety invariants that we must fix before
-        // returning.
-        c.iter().all(<T as TryFromBytes>::is_bit_valid)
-    });
+    unsafe_impl!(T: TryFromBytes => TryFromBytes for [T];
+        type Uninit = T::Uninit;
+        |c| {
+            // SAFETY: Per the reference [1]:
+            //
+            //   An array of `[T; N]` has a size of `size_of::<T>() * N` and the
+            //   same alignment of `T`. Arrays are laid out so that the zero-based
+            //   `nth` element of the array is offset from the start of the array by
+            //   `n * size_of::<T>()` bytes.
+            //
+            //   ...
+            //
+            //   Slices have the same layout as the section of the array they slice.
+            //
+            // In other words, the layout of a `[T] is a sequence of `T`s laid out
+            // back-to-back with no bytes in between. If all elements in `candidate`
+            // are `is_bit_valid`, so too is `candidate`.
+            //
+            // Note that any of the below calls may panic, but it would still be
+            // sound even if it did. `is_bit_valid` does not promise that it will
+            // not panic (in fact, it explicitly warns that it's a possibility), and
+            // we have not violated any safety invariants that we must fix before
+            // returning.
+            c.iter().all(<T as TryFromBytes>::is_bit_valid)
+        }
+    );
     unsafe_impl!(T: FromZeros => FromZeros for [T]);
     unsafe_impl!(T: FromBytes => FromBytes for [T]);
     unsafe_impl!(T: IntoBytes => IntoBytes for [T]);
@@ -914,9 +943,15 @@ const _: () = unsafe {
 const _: () = unsafe {
     unsafe_impl!(T: ?Sized => Immutable for *const T);
     unsafe_impl!(T: ?Sized => Immutable for *mut T);
-    unsafe_impl!(T => TryFromBytes for *const T; |c| pointer::is_zeroed(c));
+    unsafe_impl!(T => TryFromBytes for *const T;
+        type Uninit = crate::init::Uninit;
+        |c| pointer::is_zeroed(c)
+    );
     unsafe_impl!(T => FromZeros for *const T);
-    unsafe_impl!(T => TryFromBytes for *mut T; |c| pointer::is_zeroed(c));
+    unsafe_impl!(T => TryFromBytes for *mut T;
+        type Uninit = crate::init::Uninit;
+        |c| pointer::is_zeroed(c)
+    );
     unsafe_impl!(T => FromZeros for *mut T);
 };
 

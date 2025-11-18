@@ -640,11 +640,11 @@ mod util {
         }
     }
 
-    // Used to permit implementing `With<T> for T: Inhabited` and for
+    // Used to permit implementing `With<T> for T: TryFromBytes` and for
     // `Infallible` without a blanket impl conflict.
-    pub(crate) trait Inhabited {}
-    impl Inhabited for PrimitiveRepr {}
-    impl Inhabited for NonZeroU32 {}
+    pub(crate) trait TryFromBytes {}
+    impl TryFromBytes for PrimitiveRepr {}
+    impl TryFromBytes for NonZeroU32 {}
 
     pub(crate) trait With<T> {
         fn with<O, F: FnOnce(T) -> O>(self, f: F) -> O;
@@ -653,7 +653,7 @@ mod util {
             Self: Sized;
     }
 
-    impl<T: Inhabited> With<T> for T {
+    impl<T: TryFromBytes> With<T> for T {
         fn with<O, F: FnOnce(T) -> O>(self, f: F) -> O {
             f(self)
         }

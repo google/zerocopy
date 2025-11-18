@@ -10,6 +10,7 @@
 target
 Cargo.lock
 lcov.info
+examples
 
 # VSCode workspace files
 *.code-workspace
