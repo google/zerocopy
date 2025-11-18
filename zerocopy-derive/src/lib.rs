@@ -187,7 +187,7 @@ fn derive_inhabited_inner(
         Some(name) => {
             // For named fields, we hash the stringified field name.
             let name = name.to_string();
-            quote!(init::macro_util::hash_field_name(#name))
+            quote!(init::macro_util::hash_name(#name))
         }
         None => {
             // For unnamed fields, we simply treat the field index as the hash.
@@ -202,9 +202,16 @@ fn derive_inhabited_inner(
             quote!(#i)
         }
     });
+    let field_init_tyvars =
+        fields.iter().enumerate().map(|(i, _)| Ident::new(&format!("I{i}"), Span::call_site()));
+    let field_init_tyvars_2 = field_init_tyvars.clone();
+    let initialized_where_bounds =
+        fields.iter().zip(field_init_tyvars.clone()).map(|(field, tyvar)| {
+            let field_ty = &field.ty;
+            quote!(#field_ty: init::Initialized<#tyvar>)
+        });
     let field_tys = fields.iter().map(|field| &field.ty);
     let field_tys_2 = field_tys.clone();
-    let field_tys_3 = field_tys.clone();
     let indexes =
         fields.iter().enumerate().map(|(i, field)| Ident::new(&format!("Index{i}"), field.span()));
     let replaces = fields
@@ -219,14 +226,16 @@ fn derive_inhabited_inner(
             use zerocopy::{init, util::macro_util::core_reexport::ptr::{addr_of_mut, NonNull}};
 
             #(
-                unsafe impl<I> zerocopy::init::HasField<0, { #field_hashes }, I> for #outer_names {
+                unsafe impl<I: init::State> zerocopy::init::HasField<0, { #field_hashes }, I> for #outer_names {
                     type Type = #field_tys;
-                    type FieldInit<OuterInit: init::Tuple> = OuterInit::#indexes;
-                    type Overwrite<OuterInit: init::Tuple, This> = OuterInit::#replaces<This>;
+                    type FieldInit = I::#indexes;
+                    type Overwrite<This> = I::#replaces<This>;
 
                     fn project(outer: NonNull<Self>) -> NonNull<Self::Type> {
                         unsafe { NonNull::new_unchecked(addr_of_mut!((*outer.as_ptr()).#field_names)) }
                     }
+
+                    unsafe fn init_tag(_outer: NonNull<Self>) {}
                 }
             )*
 
@@ -234,6 +243,12 @@ fn derive_inhabited_inner(
                 type Uninit = (#(<#field_tys_2 as init::Inhabited>::Uninit,)*);
                 // type Init = (#(<#field_tys_3 as init::Inhabited>::Init,)*);
             }
+
+            unsafe impl<#(#field_init_tyvars),*> init::Initialized<(#(#field_init_tyvars_2),*)> for #outer_name
+            where #(#initialized_where_bounds),*
+            {}
+
+            unsafe impl init::Initialized<init::Init> for #outer_name {}
         };
     ))
 }
