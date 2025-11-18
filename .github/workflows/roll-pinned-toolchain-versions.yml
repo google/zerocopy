@@ -6,7 +6,7 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-# Once a day, attempt to roll the pinned nightly and stable toolchain versions
+# Once a week, attempt to roll the pinned nightly and stable toolchain versions
 # and update the codebase as necessary (in particular, by regenerating the files
 # which store expected compiler output for UI tests; this output is not stable
 # and may change between compiler versions). On success, submit the changes as a
@@ -19,7 +19,7 @@
 name: Roll pinned toolchain versions
 on:
   schedule:
-    - cron: '29 12 * * *'
+    - cron: '29 09 * * 1'
   workflow_dispatch:
 
 permissions: read-all
@@ -137,6 +137,7 @@ jobs:
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           title: "[ci] Roll pinned ${{ matrix.toolchain }} toolchain"
+          body: "${{ matrix.toolchain == 'nightly' && 'On failure, consider [manually creating roll PRs](https://github.com/google/zerocopy/actions/workflows/roll-pinned-toolchain-versions.yml) for previous nightlies to bisect the failure.' || '' }}"
           branch: roll-pinned-${{ matrix.toolchain }}-toolchain-to-${{ env.ZC_VERSION_FOR_BRANCH_NAME }}-for-${{ matrix.branch }}
           push-to-fork: google-pr-creation-bot/zerocopy
           token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
