@@ -248,7 +248,7 @@ impl<T> Split<T> {
     ///
     /// `l_len` is no greater than `source`'s length.
     #[inline(always)]
-    unsafe fn new(source: T, l_len: usize) -> Self {
+    pub(crate) unsafe fn new(source: T, l_len: usize) -> Self {
         Self { source, l_len }
     }
 }
@@ -307,6 +307,8 @@ where
         T: Immutable,
     {
         let (l, r) = self.into_ptr().via_immutable();
+        // ~safety: by invariant on `T: SplitAt`
+        let r = unsafe { r.assume_alignment() };
         (l.as_ref(), r.as_ref())
     }
 
@@ -352,6 +354,8 @@ where
         T: IntoBytes,
     {
         let (l, r) = self.into_ptr().via_into_bytes();
+        // ~safety: by invariant on `T: SplitAt`
+        let r = unsafe { r.assume_alignment() };
         (l.as_ref(), r.as_ref())
     }
 
@@ -397,6 +401,8 @@ where
         T: Unaligned,
     {
         let (l, r) = self.into_ptr().via_unaligned();
+        // ~safety: by invariant on `T: SplitAt`
+        let r = unsafe { r.assume_alignment() };
         (l.as_ref(), r.as_ref())
     }
 
@@ -463,7 +469,11 @@ where
     #[inline(always)]
     pub fn via_runtime_check(self) -> Result<(&'a T, &'a [T::Elem]), Self> {
         match self.into_ptr().via_runtime_check() {
-            Ok((l, r)) => Ok((l.as_ref(), r.as_ref())),
+            Ok((l, r)) => {
+                // ~safety: by invariant on `T: SplitAt`
+                let r = unsafe { r.assume_alignment() };
+                Ok((l.as_ref(), r.as_ref()))
+            }
             Err(s) => Err(s.into_ref()),
         }
     }
@@ -485,6 +495,8 @@ where
         // caller has promised that if `T` permits interior mutation then the
         // left and right portions of `self` split at `l_len` do not overlap.
         let (l, r) = unsafe { self.into_ptr().via_unchecked() };
+        // ~safety: by invariant on `T: SplitAt`
+        let r = unsafe { r.assume_alignment() };
         (l.as_ref(), r.as_ref())
     }
 }
@@ -550,6 +562,8 @@ where
         T: IntoBytes,
     {
         let (l, r) = self.into_ptr().via_into_bytes();
+        // ~safety: by invariant on `T: SplitAt`
+        let r = unsafe { r.assume_alignment() };
         (l.as_mut(), r.as_mut())
     }
 
@@ -602,6 +616,8 @@ where
         T: Unaligned,
     {
         let (l, r) = self.into_ptr().via_unaligned();
+        // ~safety: by invariant on `T: SplitAt`
+        let r = unsafe { r.assume_alignment() };
         (l.as_mut(), r.as_mut())
     }
 
@@ -653,7 +669,11 @@ where
     #[inline(always)]
     pub fn via_runtime_check(self) -> Result<(&'a mut T, &'a mut [T::Elem]), Self> {
         match self.into_ptr().via_runtime_check() {
-            Ok((l, r)) => Ok((l.as_mut(), r.as_mut())),
+            Ok((l, r)) => {
+                // ~safety: by invariant on `T: SplitAt`
+                let r = unsafe { r.assume_alignment() };
+                Ok((l.as_mut(), r.as_mut()))
+            }
             Err(s) => Err(s.into_mut()),
         }
     }
@@ -674,6 +694,8 @@ where
         // caller has promised that the left and right portions of `self` split
         // at `l_len` do not overlap.
         let (l, r) = unsafe { self.into_ptr().via_unchecked() };
+        // ~safety: by invariant on `T: SplitAt`
+        let r = unsafe { r.assume_alignment() };
         (l.as_mut(), r.as_mut())
     }
 }
@@ -681,11 +703,11 @@ where
 impl<'a, T, I> Split<Ptr<'a, T, I>>
 where
     T: ?Sized + SplitAt,
-    I: Invariants<Alignment = Aligned, Validity = Valid>,
+    I: Invariants,
 {
     fn into_ref(self) -> Split<&'a T>
     where
-        I: Invariants<Aliasing = Shared>,
+        I: Invariants<Aliasing = Shared, Alignment = Aligned, Validity = Valid>,
     {
         // SAFETY: `self.source.as_ref()` points to exactly the same referent as
         // `self.source` and thus maintains the invariants of `self` with
@@ -695,7 +717,7 @@ where
 
     fn into_mut(self) -> Split<&'a mut T>
     where
-        I: Invariants<Aliasing = Exclusive>,
+        I: Invariants<Aliasing = Exclusive, Alignment = Aligned, Validity = Valid>,
     {
         // SAFETY: `self.source.as_mut()` points to exactly the same referent as
         // `self.source` and thus maintains the invariants of `self` with
@@ -714,7 +736,9 @@ where
     /// Produces the split parts of `self`, using [`Immutable`] to ensure that
     /// it is sound to have concurrent references to both parts.
     #[inline(always)]
-    fn via_immutable(self) -> (Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>)
+    fn via_immutable(
+        self,
+    ) -> (Ptr<'a, T, I>, Ptr<'a, [T::Elem], (I::Aliasing, invariant::Unaligned, I::Validity)>)
     where
         T: Immutable,
         I: Invariants<Aliasing = Shared>,
@@ -726,7 +750,9 @@ where
     /// Produces the split parts of `self`, using [`IntoBytes`] to ensure that
     /// it is sound to have concurrent references to both parts.
     #[inline(always)]
-    fn via_into_bytes(self) -> (Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>)
+    fn via_into_bytes(
+        self,
+    ) -> (Ptr<'a, T, I>, Ptr<'a, [T::Elem], (I::Aliasing, invariant::Unaligned, I::Validity)>)
     where
         T: IntoBytes,
     {
@@ -739,7 +765,9 @@ where
     /// Produces the split parts of `self`, using [`Unaligned`] to ensure that
     /// it is sound to have concurrent references to both parts.
     #[inline(always)]
-    fn via_unaligned(self) -> (Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>)
+    fn via_unaligned(
+        self,
+    ) -> (Ptr<'a, T, I>, Ptr<'a, [T::Elem], (I::Aliasing, invariant::Unaligned, I::Validity)>)
     where
         T: Unaligned,
     {
@@ -757,7 +785,12 @@ where
     /// prefer using [`Self::via_immutable`], [`Self::via_into_bytes`], or
     /// [`Self::via_unaligned`], which have no runtime cost.
     #[inline(always)]
-    fn via_runtime_check(self) -> Result<(Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>), Self> {
+    fn via_runtime_check(
+        self,
+    ) -> Result<
+        (Ptr<'a, T, I>, Ptr<'a, [T::Elem], (I::Aliasing, invariant::Unaligned, I::Validity)>),
+        Self,
+    > {
         let l_len = self.l_len();
         // FIXME(#1290): Once we require `KnownLayout` on all fields, add an
         // `IS_IMMUTABLE` associated const, and add `T::IS_IMMUTABLE ||` to the
@@ -781,7 +814,9 @@ where
     /// The caller promises that if `I::Aliasing` is [`Exclusive`] or `T`
     /// permits interior mutation, then `l_len.padding_needed_for() == 0`.
     #[inline(always)]
-    unsafe fn via_unchecked(self) -> (Ptr<'a, T, I>, Ptr<'a, [T::Elem], I>) {
+    pub(crate) unsafe fn via_unchecked(
+        self,
+    ) -> (Ptr<'a, T, I>, Ptr<'a, [T::Elem], (I::Aliasing, invariant::Unaligned, I::Validity)>) {
         let l_len = self.l_len();
         let inner = self.source.as_inner();
 
@@ -806,6 +841,7 @@ where
         //    the type nor bytes of `left`'s referent have been changed.
         let left = unsafe { Ptr::from_inner(left) };
 
+        // TODO: Revise the alignment proof.
         // SAFETY:
         // 0. `right` conforms to the aliasing invariant of `I::Aliasing`, by Lemma
         //    0.

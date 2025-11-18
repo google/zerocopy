@@ -7,10 +7,12 @@
 // those terms.
 
 use proc_macro2::{Span, TokenStream};
-use quote::quote;
-use syn::{parse_quote, DataEnum, Error, Fields, Generics, Ident, Path};
+use quote::{quote, ToTokens};
+use syn::{DataEnum, DeriveInput, Error, Field, Fields, Generics, Ident, LitInt, Path, parse_quote, spanned::Spanned};
 
-use crate::{derive_try_from_bytes_inner, repr::EnumRepr, Trait};
+use crate::{
+    derive_try_from_bytes_inner, repr::EnumRepr, DataExt, FieldBounds, ImplBlockBuilder, Trait,
+};
 
 /// Generates a tag enum for the given enum. This generates an enum with the
 /// same non-align `repr`s, variants, and corresponding discriminants, but none
@@ -87,6 +89,12 @@ fn variant_struct_ident(variant_ident: &Ident) -> Ident {
     Ident::new(&format!("___ZerocopyVariantStruct_{}", variant_ident), variant_ident.span())
 }
 
+fn variant_field_ident(idx: usize, field: &Field) -> Ident {
+    field.ident.clone().unwrap_or_else(||
+        Ident::new(&format!("ẓ{idx}"), field.span())
+    )
+}
+
 /// Generates variant structs for the given enum variant.
 ///
 /// These are structs associated with each variant of an enum. They are
@@ -121,16 +129,27 @@ fn generate_variant_structs(
         }
 
         let variant_struct_ident = variant_struct_ident(&variant.ident);
+        let fields = &variant.fields;
         let field_types = variant.fields.iter().map(|f| &f.ty);
+
+        let fields = variant.fields.iter().enumerate().map(|(idx, field)| {
+            let field_ty = &field.ty;
+            let field_ident = variant_field_ident(idx, field);
+            quote!{
+                #field_ident: #field_ty,
+            }
+        });
 
         let variant_struct = parse_quote! {
             #[repr(C)]
             #[allow(non_snake_case)]
-            struct #variant_struct_ident #impl_generics (
-                core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
-                #(#field_types,)*
-                #phantom_ty,
-            ) #where_clause;
+            struct #variant_struct_ident #impl_generics
+            #where_clause
+            {
+                ẓtag: core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
+                #(#fields)*
+                ẓcapture: #phantom_ty,
+            }
         };
 
         // We do this rather than emitting `#[derive(::zerocopy::TryFromBytes)]`
@@ -162,7 +181,9 @@ fn generate_variants_union(generics: &Generics, data: &DataEnum) -> TokenStream 
 
         // Field names are prefixed with `__field_` to prevent name collision with
         // the `__nonempty` field.
-        let field_name = Ident::new(&format!("__field_{}", &variant.ident), variant.ident.span());
+        // let field_name = Ident::new(&format!("__field_{}", &variant.ident), variant.ident.span());
+        // Alternatively, we just give the nonempty field a weird name.
+        let field_name = &variant.ident;
         let variant_struct_ident = variant_struct_ident(&variant.ident);
 
         Some(quote! {
@@ -210,6 +231,7 @@ fn generate_variants_union(generics: &Generics, data: &DataEnum) -> TokenStream 
 /// - `repr(int)`: <https://doc.rust-lang.org/reference/type-layout.html#primitive-representation-of-enums-with-fields>
 /// - `repr(C, int)`: <https://doc.rust-lang.org/reference/type-layout.html#combining-primitive-representations-of-enums-with-fields-and-reprc>
 pub(crate) fn derive_is_bit_valid(
+    ast: &DeriveInput,
     enum_ident: &Ident,
     repr: &EnumRepr,
     generics: &Generics,
@@ -234,7 +256,106 @@ pub(crate) fn derive_is_bit_valid(
     let variant_structs = generate_variant_structs(enum_ident, generics, data, zerocopy_crate);
     let variants_union = generate_variants_union(generics, data);
 
-    let (_, ty_generics, _) = generics.split_for_impl();
+    let (impl_generics, ty_generics, _) = generics.split_for_impl();
+
+    let has_fields = data.variants.iter().map(|variant| {
+        let variant_ident = &variant.ident;
+        let variant_struct_ident = variant_struct_ident(variant_ident);
+        let impl_generics = &impl_generics;
+
+        variant.fields.iter().enumerate().map(move |(idx, field)| {
+            // Rust does not presently support explicit visibility modifiers on
+            // enum fields, but we guard against the possibility to ensure this
+            // derive remains sound.
+            assert!(matches!(field.vis, syn::Visibility::Inherited));
+            let field_ident: TokenStream = field.ident.as_ref().map(ToTokens::to_token_stream).unwrap_or_else(||
+                LitInt::new(&idx.to_string(), Span::call_site()).to_token_stream());
+            let variant_field_ident = variant_field_ident(idx, field);
+            let field_id = crate::field_id(idx, field, zerocopy_crate);
+            let field_ty = &field.ty;
+
+
+            let has_field_uninit = ImplBlockBuilder::new(
+                ast,
+                data,
+                Some(Trait::HasField {
+                    variant_id: parse_quote!({ ::zerocopy::field_id!(#variant_ident) }),
+                    // Since Rust does not presently support explicit visibility
+                    // modifiers on enum fields, any public type is suitable
+                    // here; we use `()`.
+                    field: parse_quote!(()),
+                    field_id: parse_quote!({#field_id}),
+                    outer_state: parse_quote!(#zerocopy_crate::init::Uninit),
+                }),
+                FieldBounds::None,
+                zerocopy_crate,
+            ).inner_extras(quote!(
+                type Type = #field_ty;
+                type State = #zerocopy_crate::init::Uninit;
+                type MapState<Replacement> = Replacement;
+
+                fn project(slf: #zerocopy_crate::PtrInner<'_, Self>) ->  #zerocopy_crate::PtrInner<'_, Self::Type> {
+                    // SAFETY: TODO
+                    let slf = unsafe { slf.cast::<___ZerocopyRawEnum>() };
+                    let slf = slf.as_non_null().as_ptr();
+                    // SAFETY: TODO
+                    let variant = unsafe {
+                        #zerocopy_crate::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).variants.#variant_ident)
+                    };
+                    let variant = variant as *mut #variant_struct_ident #impl_generics;      
+                    // SAFETY: TODO
+                    let field = unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::addr_of_mut!((*variant).#variant_field_ident) };
+                    // SAFETY: TODO
+                    let ptr = unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(field) };
+                    // SAFETY: TODO
+                    unsafe { #zerocopy_crate::PtrInner::new(ptr) }
+                }
+            )).build();
+
+            let has_field_init = ImplBlockBuilder::new(
+                ast,
+                data,
+                Some(Trait::HasField {
+                    variant_id: parse_quote!({ ::zerocopy::field_id!(#variant_ident) }),
+                    // Since Rust does not presently support explicit visibility
+                    // modifiers on enum fields, any public type is suitable
+                    // here; we use `()`.
+                    field: parse_quote!(()),
+                    field_id: parse_quote!({#field_id}),
+                    outer_state: parse_quote!((#variant_field_ident, ())),
+                }),
+                FieldBounds::None,
+                zerocopy_crate,
+            ).outer_extras({
+                quote! {
+                    pub struct #variant_field_ident;
+                }
+            })
+            .inner_extras(quote!(
+                type Type = #field_ty;
+                type State = #zerocopy_crate::init::Uninit;
+                type MapState<Replacement> = Replacement;
+
+                fn project(slf: #zerocopy_crate::PtrInner<'_, Self>) ->  #zerocopy_crate::PtrInner<'_, Self::Type> {
+                    // SAFETY: TODO
+                    let slf = unsafe { slf.cast::<___ZerocopyRawEnum>() };
+                    let slf = slf.as_non_null().as_ptr();
+                    // SAFETY: TODO
+                    let variant = unsafe {
+                        #zerocopy_crate::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).variants.#variant_ident)
+                    };
+                    let variant = variant as *mut #variant_struct_ident #impl_generics;      
+                    // SAFETY: TODO
+                    let field = unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::addr_of_mut!((*variant).#variant_field_ident) };
+                    // SAFETY: TODO
+                    let ptr = unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(field) };
+                    // SAFETY: TODO
+                    unsafe { #zerocopy_crate::PtrInner::new(ptr) }
+                }
+            )).build();
+            [has_field_uninit, has_field_init].into_iter()
+        }).flatten()
+    }).flatten();
 
     let match_arms = data.variants.iter().map(|variant| {
         let tag_ident = tag_ident(&variant.ident);
@@ -313,6 +434,8 @@ pub(crate) fn derive_is_bit_valid(
                 tag: ___ZerocopyOuterTag,
                 variants: ___ZerocopyVariants #ty_generics,
             }
+
+            #(#has_fields)*
 
             let tag = {
                 // SAFETY:

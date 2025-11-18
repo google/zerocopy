@@ -895,6 +895,8 @@ macro_rules! cryptocorrosion_derive_traits {
                 $($field_ty: $crate::FromBytes,)*
             )?
         {
+            type Uninit = crate::init::Uninit;
+
             fn is_bit_valid<A>(_c: $crate::Maybe<'_, Self, A>) -> bool
             where
                 A: $crate::pointer::invariant::Reference
@@ -1038,6 +1040,8 @@ macro_rules! cryptocorrosion_derive_traits {
                 $field_ty: $crate::FromBytes,
             )*
         {
+            type Uninit = crate::init::Uninit;
+
             fn is_bit_valid<A>(_c: $crate::Maybe<'_, Self, A>) -> bool
             where
                 A: $crate::pointer::invariant::Reference

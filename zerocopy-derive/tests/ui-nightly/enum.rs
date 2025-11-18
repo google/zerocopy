@@ -59,7 +59,7 @@ enum Never {}
 #[derive(Immutable)]
 enum Immutable2 {
     Uninhabited(Never, core::cell::UnsafeCell<u8>),
-    Inhabited(u8),
+    TryFromBytes(u8),
 }
 
 //
