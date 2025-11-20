@@ -1,0 +1,293 @@
+    Checking serde_json v1.0.143
+    Checking semver v1.0.26
+    Checking camino v1.1.12
+    Checking cargo-platform v0.1.5
+    Checking basic-toml v0.1.10
+    Checking rustc_version v0.4.1
+    Checking toml v0.5.11
+   Compiling zerocopy-derive v0.8.28 (/app/zerocopy-derive)
+    Checking cargo_metadata v0.18.1
+    Checking trybuild v1.0.89
+    Checking zerocopy v0.8.28 (/app)
+    Checking testutil v0.0.0 (/app/testutil)
+error: unsafe block missing a safety comment
+   --> src/util/mod.rs:512:33
+    |
+512 |             let unpadded_size = unsafe {
+    |                                 ^^^^^^^^
+    |
+    = help: consider adding a safety comment on the preceding line
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#undocumented_unsafe_blocks
+note: the lint level is defined here
+   --> src/lib.rs:273:5
+    |
+273 |     clippy::undocumented_unsafe_blocks,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: this `unsafe` block contains 2 unsafe operations, expected only one
+   --> src/util/macros.rs:816:21
+    |
+816 |                     unsafe { cast!(t) }
+    |                     ^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:115:1
+    |
+115 | impl_size_eq!(bool, u8);
+    | ----------------------- in this macro invocation
+    |
+note: unsafe function call occurs here
+   --> src/util/macros.rs:709:28
+    |
+709 |         let ptr = unsafe { core::ptr::NonNull::new_unchecked(ptr) };
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:115:1
+    |
+115 | impl_size_eq!(bool, u8);
+    | ----------------------- in this macro invocation
+note: unsafe function call occurs here
+   --> src/util/macros.rs:716:9
+    |
+716 |         crate::pointer::PtrInner::new(ptr)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:115:1
+    |
+115 | impl_size_eq!(bool, u8);
+    | ----------------------- in this macro invocation
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#multiple_unsafe_ops_per_block
+note: the lint level is defined here
+   --> src/lib.rs:262:5
+    |
+262 |     clippy::multiple_unsafe_ops_per_block,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: this error originates in the macro `impl_size_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: this `unsafe` block contains 2 unsafe operations, expected only one
+   --> src/util/macros.rs:824:21
+    |
+824 |                     unsafe { cast!(u) }
+    |                     ^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:115:1
+    |
+115 | impl_size_eq!(bool, u8);
+    | ----------------------- in this macro invocation
+    |
+note: unsafe function call occurs here
+   --> src/util/macros.rs:709:28
+    |
+709 |         let ptr = unsafe { core::ptr::NonNull::new_unchecked(ptr) };
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:115:1
+    |
+115 | impl_size_eq!(bool, u8);
+    | ----------------------- in this macro invocation
+note: unsafe function call occurs here
+   --> src/util/macros.rs:716:9
+    |
+716 |         crate::pointer::PtrInner::new(ptr)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:115:1
+    |
+115 | impl_size_eq!(bool, u8);
+    | ----------------------- in this macro invocation
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#multiple_unsafe_ops_per_block
+    = note: this error originates in the macro `impl_size_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: this `unsafe` block contains 2 unsafe operations, expected only one
+   --> src/util/macros.rs:816:21
+    |
+816 |                     unsafe { cast!(t) }
+    |                     ^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:147:1
+    |
+147 | impl_size_eq!(char, Unalign<u32>);
+    | --------------------------------- in this macro invocation
+    |
+note: unsafe function call occurs here
+   --> src/util/macros.rs:709:28
+    |
+709 |         let ptr = unsafe { core::ptr::NonNull::new_unchecked(ptr) };
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:147:1
+    |
+147 | impl_size_eq!(char, Unalign<u32>);
+    | --------------------------------- in this macro invocation
+note: unsafe function call occurs here
+   --> src/util/macros.rs:716:9
+    |
+716 |         crate::pointer::PtrInner::new(ptr)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:147:1
+    |
+147 | impl_size_eq!(char, Unalign<u32>);
+    | --------------------------------- in this macro invocation
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#multiple_unsafe_ops_per_block
+    = note: this error originates in the macro `impl_size_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: this `unsafe` block contains 2 unsafe operations, expected only one
+   --> src/util/macros.rs:824:21
+    |
+824 |                     unsafe { cast!(u) }
+    |                     ^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:147:1
+    |
+147 | impl_size_eq!(char, Unalign<u32>);
+    | --------------------------------- in this macro invocation
+    |
+note: unsafe function call occurs here
+   --> src/util/macros.rs:709:28
+    |
+709 |         let ptr = unsafe { core::ptr::NonNull::new_unchecked(ptr) };
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:147:1
+    |
+147 | impl_size_eq!(char, Unalign<u32>);
+    | --------------------------------- in this macro invocation
+note: unsafe function call occurs here
+   --> src/util/macros.rs:716:9
+    |
+716 |         crate::pointer::PtrInner::new(ptr)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:147:1
+    |
+147 | impl_size_eq!(char, Unalign<u32>);
+    | --------------------------------- in this macro invocation
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#multiple_unsafe_ops_per_block
+    = note: this error originates in the macro `impl_size_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: this `unsafe` block contains 2 unsafe operations, expected only one
+   --> src/util/macros.rs:816:21
+    |
+816 |                     unsafe { cast!(t) }
+    |                     ^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:181:1
+    |
+181 | impl_size_eq!(str, [u8]);
+    | ------------------------ in this macro invocation
+    |
+note: unsafe function call occurs here
+   --> src/util/macros.rs:709:28
+    |
+709 |         let ptr = unsafe { core::ptr::NonNull::new_unchecked(ptr) };
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:181:1
+    |
+181 | impl_size_eq!(str, [u8]);
+    | ------------------------ in this macro invocation
+note: unsafe function call occurs here
+   --> src/util/macros.rs:716:9
+    |
+716 |         crate::pointer::PtrInner::new(ptr)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:181:1
+    |
+181 | impl_size_eq!(str, [u8]);
+    | ------------------------ in this macro invocation
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#multiple_unsafe_ops_per_block
+    = note: this error originates in the macro `impl_size_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: this `unsafe` block contains 2 unsafe operations, expected only one
+   --> src/util/macros.rs:824:21
+    |
+824 |                     unsafe { cast!(u) }
+    |                     ^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:181:1
+    |
+181 | impl_size_eq!(str, [u8]);
+    | ------------------------ in this macro invocation
+    |
+note: unsafe function call occurs here
+   --> src/util/macros.rs:709:28
+    |
+709 |         let ptr = unsafe { core::ptr::NonNull::new_unchecked(ptr) };
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:181:1
+    |
+181 | impl_size_eq!(str, [u8]);
+    | ------------------------ in this macro invocation
+note: unsafe function call occurs here
+   --> src/util/macros.rs:716:9
+    |
+716 |         crate::pointer::PtrInner::new(ptr)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/impls.rs:181:1
+    |
+181 | impl_size_eq!(str, [u8]);
+    | ------------------------ in this macro invocation
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#multiple_unsafe_ops_per_block
+    = note: this error originates in the macro `impl_size_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: this `unsafe` block contains 3 unsafe operations, expected only one
+    --> src/pointer/ptr.rs:1174:23
+     |
+1174 |             let ptr = unsafe { self.transmute_unchecked(|ptr| cast!(ptr)) };
+     |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+note: unsafe method call occurs here
+    --> src/pointer/ptr.rs:1174:32
+     |
+1174 |             let ptr = unsafe { self.transmute_unchecked(|ptr| cast!(ptr)) };
+     |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: unsafe function call occurs here
+    --> src/util/macros.rs:709:28
+     |
+ 709 |         let ptr = unsafe { core::ptr::NonNull::new_unchecked(ptr) };
+     |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+    ::: src/pointer/ptr.rs:1174:63
+     |
+1174 |             let ptr = unsafe { self.transmute_unchecked(|ptr| cast!(ptr)) };
+     |                                                               ---------- in this macro invocation
+note: unsafe function call occurs here
+    --> src/util/macros.rs:716:9
+     |
+ 716 |         crate::pointer::PtrInner::new(ptr)
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+    ::: src/pointer/ptr.rs:1174:63
+     |
+1174 |             let ptr = unsafe { self.transmute_unchecked(|ptr| cast!(ptr)) };
+     |                                                               ---------- in this macro invocation
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#multiple_unsafe_ops_per_block
+     = note: this error originates in the macro `cast` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: could not compile `zerocopy` (lib) due to 8 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: this `unsafe` block contains 2 unsafe operations, expected only one
+    --> src/layout.rs:1507:37
+     |
+1507 |                   let (size, align) = unsafe {
+     |  _____________________________________^
+1508 | |                     (mem::size_of_val_raw(ptr.as_ptr()), mem::align_of_val_raw(ptr.as_ptr()))
+1509 | |                 };
+     | |_________________^
+     |
+note: unsafe function call occurs here
+    --> src/layout.rs:1508:22
+     |
+1508 |                     (mem::size_of_val_raw(ptr.as_ptr()), mem::align_of_val_raw(ptr.as_ptr()))
+     |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: unsafe function call occurs here
+    --> src/layout.rs:1508:58
+     |
+1508 |                     (mem::size_of_val_raw(ptr.as_ptr()), mem::align_of_val_raw(ptr.as_ptr()))
+     |                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#multiple_unsafe_ops_per_block
+
+error: could not compile `zerocopy` (lib test) due to 9 previous errors

@@ -813,6 +813,7 @@ macro_rules! impl_size_eq {
                     // `KnownLayout::LAYOUT.size_info`s are equal, and so this
                     // cast is guaranteed to preserve address and referent size.
                     // It trivially preserves provenance.
+                    #[allow(clippy::multiple_unsafe_ops_per_block)]
                     unsafe { cast!(t) }
                 }
             }
@@ -821,6 +822,7 @@ macro_rules! impl_size_eq {
                 #[inline(always)]
                 fn cast_from_raw(u: PtrInner<'_, $u>) -> PtrInner<'_, $t> {
                     // SAFETY: See previous safety comment.
+                    #[allow(clippy::multiple_unsafe_ops_per_block)]
                     unsafe { cast!(u) }
                 }
             }
@@ -891,10 +893,12 @@ macro_rules! unsafe_with_size_eq {
 
                 // SAFETY: By the preceding safety comment, this cast preserves
                 // referent size.
+                #[allow(clippy::multiple_unsafe_ops_per_block)]
                 let src: PtrInner<'_, T> = unsafe { cast!(src) };
                 let dst: PtrInner<'_, U> = crate::layout::cast_from_raw(src);
                 // SAFETY: By the preceding safety comment, this cast preserves
                 // referent size.
+                #[allow(clippy::multiple_unsafe_ops_per_block)]
                 unsafe { cast!(dst) }
             }
         }
@@ -905,9 +909,11 @@ macro_rules! unsafe_with_size_eq {
             let ptr = <$t as KnownLayout>::raw_dangling();
             #[allow(unused_unsafe)]
             // SAFETY: This call is never executed.
+            #[allow(clippy::multiple_unsafe_ops_per_block)]
             let ptr = unsafe { crate::pointer::PtrInner::new(ptr) };
             #[allow(unused_unsafe)]
             // SAFETY: This call is never executed.
+            #[allow(clippy::multiple_unsafe_ops_per_block)]
             let ptr = unsafe { cast!(ptr) };
             let _ = <$dst<$u> as SizeEq<$src<$t>>>::cast_from_raw(ptr);
         }

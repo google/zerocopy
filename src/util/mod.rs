@@ -498,13 +498,17 @@ mod len_of {
             T: KnownLayout<PointerMetadata = usize>,
         {
             let trailing_slice_layout = crate::trailing_slice_layout::<T>();
+
+            // FIXME(#67): Remove this allow. See NumExt for more details.
+            #[allow(
+                unstable_name_collisions,
+                clippy::incompatible_msrv,
+                clippy::multiple_unsafe_ops_per_block
+            )]
             // SAFETY: By invariant on `self`, a `&T` with metadata `self.meta`
             // describes an object of size `<= isize::MAX`. This computes the
             // size of such a `&T` without any trailing padding, and so neither
             // the multiplication nor the addition will overflow.
-            //
-            // FIXME(#67): Remove this allow. See NumExt for more details.
-            #[allow(unstable_name_collisions, clippy::incompatible_msrv)]
             let unpadded_size = unsafe {
                 let trailing_size = self.meta.unchecked_mul(trailing_slice_layout.elem_size);
                 trailing_size.unchecked_add(trailing_slice_layout.offset)

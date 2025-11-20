@@ -259,6 +259,7 @@
     clippy::indexing_slicing,
     clippy::missing_inline_in_public_items,
     clippy::missing_safety_doc,
+    clippy::multiple_unsafe_ops_per_block,
     clippy::must_use_candidate,
     clippy::must_use_unit,
     clippy::obfuscated_if_else,
@@ -1077,6 +1078,7 @@ impl_known_layout!(const N: usize, T => [T; N]);
 // [3] Per https://doc.rust-lang.org/1.85.0/core/cell/struct.Cell.html#memory-layout:
 //
 //   `Cell<T>` has the same in-memory representation as `T`.
+#[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
     unsafe_impl_known_layout!(
         #[repr([u8])]
@@ -3317,6 +3319,7 @@ pub unsafe trait FromZeros: TryFromBytes {
         //
         // `v.len() - position` cannot overflow because we asserted that
         // `position <= v.len()`.
+        #[allow(clippy::multiple_unsafe_ops_per_block)]
         unsafe {
             // This is a potentially overlapping copy.
             let ptr = v.as_mut_ptr();

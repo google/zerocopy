@@ -16,7 +16,12 @@
 // our MSRV.
 #![allow(unknown_lints)]
 #![deny(renamed_and_removed_lints)]
-#![deny(clippy::all, clippy::missing_safety_doc, clippy::undocumented_unsafe_blocks)]
+#![deny(
+    clippy::all,
+    clippy::missing_safety_doc,
+    clippy::multiple_unsafe_ops_per_block,
+    clippy::undocumented_unsafe_blocks
+)]
 // Inlining format args isn't supported on our MSRV.
 #![allow(clippy::uninlined_format_args)]
 #![deny(

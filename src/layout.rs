@@ -903,7 +903,7 @@ mod cast_from_raw {
                 // Since the caller promises that `src_meta` is valid `Src`
                 // metadata, this math will not overflow, and the returned value
                 // will describe a `Dst` of the same size.
-                #[allow(unstable_name_collisions)]
+                #[allow(unstable_name_collisions, clippy::multiple_unsafe_ops_per_block)]
                 unsafe {
                     self.offset_delta_elems
                         .unchecked_add(src_meta.unchecked_mul(self.elem_multiple))
