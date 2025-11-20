@@ -22,7 +22,9 @@ on:
     - cron: '29 09 * * 1'
   workflow_dispatch:
 
-permissions: read-all
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
   roll_rust:
@@ -131,6 +133,7 @@ jobs:
           fi
 
       - name: Submit PR
+        id: submit-pr
         uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f # v7.0.5
         with:
           commit-message: "[ci] Roll pinned ${{ matrix.toolchain }} toolchain"
@@ -141,6 +144,13 @@ jobs:
           branch: roll-pinned-${{ matrix.toolchain }}-toolchain-to-${{ env.ZC_VERSION_FOR_BRANCH_NAME }}-for-${{ matrix.branch }}
           push-to-fork: google-pr-creation-bot/zerocopy
           token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
+
+      - name: Add labels
+        if: steps.submit-pr.outputs.pull-request-operation == 'created'
+        run: gh pr edit "${{ steps.submit-pr.outputs.pull-request-number }}" --add-label "hide-from-release-notes"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
   roll_kani:
     runs-on: ubuntu-latest
     strategy:
@@ -165,13 +175,19 @@ jobs:
           # Update the `kani-version:` argument in-place.
           sed -i -E -e "s/^( *kani-version:)( [0-9]+\.[0-9]+\.[0-9]+)/\1 $KANI_LATEST/" .github/workflows/ci.yml
       - name: Submit PR
+        id: submit-pr
         uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f # v7.0.5
         with:
           commit-message: "[ci] Roll pinned Kani version"
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           title: "[ci] Roll pinned Kani version"
-          labels: hide-from-release-notes
           branch: roll-pinned-kani-to-${{ env.ZC_KANI_LATEST }}-for-${{ matrix.branch }}
           push-to-fork: google-pr-creation-bot/zerocopy
           token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
+
+      - name: Add labels
+        if: steps.submit-pr.outputs.pull-request-operation == 'created'
+        run: gh pr edit "${{ steps.submit-pr.outputs.pull-request-number }}" --add-label "hide-from-release-notes"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
