@@ -1504,6 +1504,7 @@ mod tests {
                 }
 
                 // SAFETY: `ptr` points to a valid `T`.
+                #[allow(clippy::multiple_unsafe_ops_per_block)]
                 let (size, align) = unsafe {
                     (mem::size_of_val_raw(ptr.as_ptr()), mem::align_of_val_raw(ptr.as_ptr()))
                 };
