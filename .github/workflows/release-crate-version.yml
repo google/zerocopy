@@ -18,7 +18,9 @@ on:
         required: true
         default: 'main'
 
-permissions: read-all
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
   release:
@@ -34,13 +36,19 @@ jobs:
         run: ./ci/release_crate_version.sh ${{ github.event.inputs.version }}
 
       - name: Submit PR
+        id: submit-pr
         uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f # v7.0.5
         with:
           commit-message: "Release ${{ github.event.inputs.version }}"
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
           title: "Release ${{ github.event.inputs.version }}"
-          labels: hide-from-release-notes
           branch: release-${{ github.event.inputs.version }}
           push-to-fork: google-pr-creation-bot/zerocopy
           token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
+
+      - name: Add labels
+        if: steps.submit-pr.outputs.pull-request-operation == 'created'
+        run: gh pr edit "${{ steps.submit-pr.outputs.pull-request-number }}" --add-label "hide-from-release-notes"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
