@@ -1,5 +1,0 @@
-[cargo-zerocopy] missing either toolchain 'nightly' or component 'rust-src'
-[cargo-zerocopy] would you like to install toolchain 'nightly' and component 'rust-src' via 'rustup' (y/n)?
-thread 'main' (4932) panicked at cargo-zerocopy/src/main.rs:152:44:
-called `Result::unwrap()` on an `Err` value: Error { kind: UnexpectedEof, message: "failed to fill whole buffer" }
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
