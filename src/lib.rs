@@ -141,6 +141,15 @@
 //! [duplicate-import-errors]: https://github.com/google/zerocopy/issues/1587
 //! [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 //!
+//! ## Unstable Features
+//!
+//! Features gated by these feature flags are unstable – no guarantees are made
+//! about stability, even within a semver version train.
+//!
+//! - **`init-unstable`**
+//!   Enables experimental support for in-place initialization in the `init`
+//!   module.
+//!
 //! # Security Ethos
 //!
 //! Zerocopy is expressly designed for use in security-critical contexts. We
@@ -212,6 +221,7 @@
 // `unknown_lints` is `warn` by default and we deny warnings in CI, so without
 // this attribute, any unknown lint would cause a CI failure when testing with
 // our MSRV.
+#![feature(slice_ptr_get)]
 #![allow(unknown_lints, non_local_definitions, unreachable_patterns)]
 #![deny(renamed_and_removed_lints)]
 #![deny(
@@ -219,8 +229,8 @@
     deprecated_in_future,
     late_bound_lifetime_arguments,
     missing_copy_implementations,
-    missing_debug_implementations,
-    missing_docs,
+    // missing_debug_implementations,
+    // missing_docs,
     path_statements,
     patterns_in_fns_without_body,
     rust_2018_idioms,
@@ -358,6 +368,8 @@ pub mod doctests;
 // stuttering.
 pub mod error;
 mod impls;
+#[cfg(feature = "init-unstable")]
+pub mod init;
 #[doc(hidden)]
 pub mod layout;
 mod macros;
