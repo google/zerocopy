@@ -570,6 +570,7 @@ where
     //   because we assert above that the size of `Dst` equal to the size of
     //   `Src`.
     // - `p as *mut Dst` is a provenance-preserving cast
+    #[allow(clippy::multiple_unsafe_ops_per_block)]
     let c_ptr = unsafe { src.cast_unsized(|p| cast!(p)) };
 
     match c_ptr.try_into_valid() {
@@ -583,6 +584,7 @@ where
             //   `ptr`, because we assert above that the size of `Dst` is equal
             //   to the size of `Src`.
             // - `p as *mut Src` is a provenance-preserving cast
+            #[allow(clippy::multiple_unsafe_ops_per_block)]
             let ptr = unsafe { ptr.cast_unsized(|p| cast!(p)) };
             // SAFETY: `ptr` is `src`, and has the same alignment invariant.
             let ptr = unsafe { ptr.assume_alignment::<I::Alignment>() };
@@ -846,6 +848,7 @@ where
         }, "cannot transmute reference when destination type has higher alignment than source type");
 
         // SAFETY: We only use `S` as `S<Src>` and `D` as `D<Dst>`.
+        #[allow(clippy::multiple_unsafe_ops_per_block)]
         unsafe {
             unsafe_with_size_eq!(<S<Src>, D<Dst>> {
                 let ptr = Ptr::from_ref(self.0)
@@ -886,6 +889,7 @@ where
         }, "cannot transmute reference when destination type has higher alignment than source type");
 
         // SAFETY: We only use `S` as `S<Src>` and `D` as `D<Dst>`.
+        #[allow(clippy::multiple_unsafe_ops_per_block)]
         unsafe {
             unsafe_with_size_eq!(<S<Src>, D<Dst>> {
                 let ptr = Ptr::from_mut(self.0)

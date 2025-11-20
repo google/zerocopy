@@ -895,7 +895,10 @@ mod _casts {
             // to `cast` which either reference a zero-sized byte range or
             // reference a byte range which is entirely contained inside of an
             // allocated object.
-            unsafe { self.transmute_unchecked(cast) }
+            #[allow(clippy::multiple_unsafe_ops_per_block)]
+            unsafe {
+                self.transmute_unchecked(cast)
+            }
         }
 
         /// Casts to a different (unsized) target type.
@@ -1168,6 +1171,7 @@ mod _casts {
             //   inner type `T`. A consequence of this guarantee is that it is
             //   possible to convert between `T` and `UnsafeCell<T>`.
             #[allow(clippy::as_conversions)]
+            #[allow(clippy::multiple_unsafe_ops_per_block)]
             let ptr = unsafe { self.transmute_unchecked(|ptr| cast!(ptr)) };
 
             // SAFETY: `UnsafeCell<T>` has the same alignment as `T` [1],

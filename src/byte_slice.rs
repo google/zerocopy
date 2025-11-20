@@ -212,7 +212,10 @@ unsafe impl SplitByteSlice for &[u8] {
     unsafe fn split_at_unchecked(self, mid: usize) -> (Self, Self) {
         // SAFETY: By contract on caller, `mid` is not greater than
         // `bytes.len()`.
-        unsafe { (<[u8]>::get_unchecked(self, ..mid), <[u8]>::get_unchecked(self, mid..)) }
+        #[allow(clippy::multiple_unsafe_ops_per_block)]
+        unsafe {
+            (<[u8]>::get_unchecked(self, ..mid), <[u8]>::get_unchecked(self, mid..))
+        }
     }
 }
 
@@ -285,7 +288,10 @@ unsafe impl SplitByteSlice for &mut [u8] {
         //   `isize::MAX`, by invariant on `self`.
         //
         // [1] https://doc.rust-lang.org/std/slice/fn.from_raw_parts_mut.html#safety
-        unsafe { (from_raw_parts_mut(l_ptr, l_len), from_raw_parts_mut(r_ptr, r_len)) }
+        #[allow(clippy::multiple_unsafe_ops_per_block)]
+        unsafe {
+            (from_raw_parts_mut(l_ptr, l_len), from_raw_parts_mut(r_ptr, r_len))
+        }
     }
 }
 

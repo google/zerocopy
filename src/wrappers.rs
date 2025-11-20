@@ -142,6 +142,7 @@ impl_known_layout!(T => Unalign<T>);
 // - `TryFromBytes`: `Unalign<T>` has the same the same bit validity as `T`, so
 //   `T::is_bit_valid` is a sound implementation of `is_bit_valid`.
 //
+#[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
     impl_or_verify!(T => Unaligned for Unalign<T>);
     impl_or_verify!(T: Immutable => Immutable for Unalign<T>);
