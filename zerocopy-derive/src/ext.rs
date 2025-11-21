@@ -112,3 +112,12 @@ fn map_fields<'a>(
         })
         .collect()
 }
+
+pub(crate) fn to_ident_str(t: &impl ToString) -> String {
+    let s = t.to_string();
+    if let Some(stripped) = s.strip_prefix("r#") {
+        stripped.to_string()
+    } else {
+        s
+    }
+}

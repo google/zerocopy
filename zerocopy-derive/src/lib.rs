@@ -319,8 +319,7 @@ fn derive_known_layout_inner(
             // Generate a valid ident for a type-level handle to a field of a
             // given `name`.
             let field_index = |name: &TokenStream| {
-                let name = name.to_string();
-                let name = name.strip_prefix("r#").unwrap_or(&name);
+                let name = to_ident_str(name);
                 Ident::new(&format!("__Zerocopy_Field_{}", name), ident.span())
             };
 
