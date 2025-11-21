@@ -342,9 +342,10 @@ macro_rules! opt_unsafe_fn {
 /// assumption that the impl emitted by the custom derive is sound).
 ///
 /// The caller is still required to provide a safety comment (e.g. using the
-/// `const _: () = unsafe` macro) . The reason for this restriction is that, while
-/// `impl_or_verify!` can guarantee that the provided impl is sound when it is
-/// compiled with the appropriate cfgs, there is no way to guarantee that it is
+/// `const _: () = unsafe` macro). The reason for this restriction is that,
+/// while `impl_or_verify!` can guarantee that the provided impl is sound when
+/// it is compiled with the appropriate cfgs, there is no way to guarantee that
+/// it is
 /// ever compiled with those cfgs. In particular, it would be possible to
 /// accidentally place an `impl_or_verify!` call in a context that is only ever
 /// compiled when the `derive` feature is disabled. If that were to happen,

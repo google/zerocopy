@@ -774,18 +774,19 @@ impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst> {
         let src: *const Src = self.0;
         let dst = src.cast::<Dst>();
         // SAFETY:
-        // - We know that it is sound to view the target type of the input reference
-        //   (`Src`) as the target type of the output reference (`Dst`) because the
-        //   caller has guaranteed that `Src: IntoBytes`, `Dst: FromBytes`, and
-        //   `size_of::<Src>() == size_of::<Dst>()`.
+        // - We know that it is sound to view the target type of the input
+        //   reference (`Src`) as the target type of the output reference
+        //   (`Dst`) because the caller has guaranteed that `Src: IntoBytes`,
+        //   `Dst: FromBytes`, and `size_of::<Src>() == size_of::<Dst>()`.
         // - We know that there are no `UnsafeCell`s, and thus we don't have to
-        //   worry about `UnsafeCell` overlap, because `Src: Immutable` and `Dst:
-        //   Immutable`.
+        //   worry about `UnsafeCell` overlap, because `Src: Immutable` and
+        //   `Dst: Immutable`.
         // - The caller has guaranteed that alignment is not increased.
-        // - We know that the returned lifetime will not outlive the input lifetime
-        //   thanks to the lifetime bounds on this function.
+        // - We know that the returned lifetime will not outlive the input
+        //   lifetime thanks to the lifetime bounds on this function.
         //
-        // FIXME(#67): Once our MSRV is 1.58, replace this `transmute` with `&*dst`.
+        // FIXME(#67): Once our MSRV is 1.58, replace this `transmute` with
+        // `&*dst`.
         #[allow(clippy::transmute_ptr_to_ref)]
         unsafe {
             mem::transmute(dst)
@@ -794,8 +795,8 @@ impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst> {
 }
 
 impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
-    /// Transmutes a mutable reference of one type to a mutable reference of another
-    /// type.
+    /// Transmutes a mutable reference of one type to a mutable reference of
+    /// another type.
     ///
     /// # PME
     ///

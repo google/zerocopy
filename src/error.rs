@@ -897,8 +897,9 @@ impl<Src, Dst: ?Sized + TryFromBytes> From<CastError<Src, Dst>> for TryCastError
 
 /// The error type of fallible read-conversions.
 ///
-/// Fallible read-conversions, like [`TryFromBytes::try_read_from_bytes`] may emit
-/// [size](SizeError) and [validity](ValidityError) errors, but not alignment errors.
+/// Fallible read-conversions, like [`TryFromBytes::try_read_from_bytes`] may
+/// emit [size](SizeError) and [validity](ValidityError) errors, but not
+/// alignment errors.
 // Bounds on generic parameters are not enforced in type aliases, but they do
 // appear in rustdoc.
 #[allow(type_alias_bounds)]

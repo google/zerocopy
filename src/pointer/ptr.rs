@@ -389,8 +389,8 @@ mod _conversions {
             // SAFETY:
             // - This cast is a no-op, and so trivially preserves address,
             //   referent size, and provenance
-            // - It is trivially sound to have multiple `&T` referencing the same
-            //   referent simultaneously
+            // - It is trivially sound to have multiple `&T` referencing the
+            //   same referent simultaneously
             // - By `T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
             //   sound to perform this transmute.
             let ptr = unsafe { self.transmute_unchecked(SizeEq::cast_from_raw) };
@@ -807,9 +807,9 @@ mod _transitions {
             I::Aliasing: Reference,
             I: Invariants<Validity = Initialized>,
         {
-            // This call may panic. If that happens, it doesn't cause any soundness
-            // issues, as we have not generated any invalid state which we need to
-            // fix before returning.
+            // This call may panic. If that happens, it doesn't cause any
+            // soundness issues, as we have not generated any invalid state
+            // which we need to fix before returning.
             if T::is_bit_valid(self.reborrow().forget_aligned()) {
                 // SAFETY: If `T::is_bit_valid`, code may assume that `self`
                 // contains a bit-valid instance of `T`. By `T:

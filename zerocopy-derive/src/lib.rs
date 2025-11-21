@@ -106,8 +106,8 @@ impl IntoTokenStream for Result<TokenStream, Error> {
     }
 }
 
-/// Attempt to extract a crate path from the provided attributes. Defaults to `::zerocopy` if not
-/// found.
+/// Attempt to extract a crate path from the provided attributes. Defaults to
+/// `::zerocopy` if not found.
 fn extract_zerocopy_crate(attrs: &[Attribute]) -> Result<Path, Error> {
     let mut path = parse_quote!(::zerocopy);
 
@@ -242,7 +242,8 @@ fn derive_known_layout_inner(
                 //       For instance, a cast from `*const [T]` to `*const [U]`
                 //       preserves the number of elements. ... The same holds
                 //       for str and any compound type whose unsized tail is a
-                //       slice type, such as struct `Foo(i32, [u8])` or `(u64, Foo)`.
+                //       slice type, such as struct `Foo(i32, [u8])` or
+                //       `(u64, Foo)`.
                 #[inline(always)]
                 fn raw_from_ptr_len(
                     bytes: #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<u8>,
@@ -396,12 +397,12 @@ fn derive_known_layout_inner(
                     #trailing_field_ty: #zerocopy_crate::KnownLayout,
                     #predicates;
 
-                // SAFETY: We largely defer to the `KnownLayout` implementation on
-                // the derive target type (both by using the same tokens, and by
-                // deferring to impl via type-level indirection). This is sound,
-                // since  `__ZerocopyKnownLayoutMaybeUninit` is guaranteed to
-                // have the same layout as the derive target type, except that
-                // `__ZerocopyKnownLayoutMaybeUninit` admits uninit bytes.
+                // SAFETY: We largely defer to the `KnownLayout` implementation
+                // on the derive target type (both by using the same tokens, and
+                // by deferring to impl via type-level indirection). This is
+                // sound, since `__ZerocopyKnownLayoutMaybeUninit` is guaranteed
+                // to have the same layout as the derive target type, except
+                // that `__ZerocopyKnownLayoutMaybeUninit` admits uninit bytes.
                 unsafe impl #impl_generics #zerocopy_crate::KnownLayout for __ZerocopyKnownLayoutMaybeUninit #ty_generics
                 where
                     #trailing_field_ty: #zerocopy_crate::KnownLayout,
@@ -598,11 +599,11 @@ fn derive_hash_inner(
     _top_level: Trait,
     zerocopy_crate: &Path,
 ) -> Result<TokenStream, Error> {
-    // This doesn't delegate to `impl_block` because `impl_block` assumes it is deriving a
-    // `zerocopy`-defined trait, and these trait impls share a common shape that `Hash` does not.
-    // In particular, `zerocopy` traits contain a method that only `zerocopy_derive` macros
-    // are supposed to implement, and `impl_block` generating this trait method is incompatible
-    // with `Hash`.
+    // This doesn't delegate to `impl_block` because `impl_block` assumes it is
+    // deriving a `zerocopy`-defined trait, and these trait impls share a common
+    // shape that `Hash` does not. In particular, `zerocopy` traits contain a
+    // method that only `zerocopy_derive` macros are supposed to implement, and
+    // `impl_block` generating this trait method is incompatible with `Hash`.
     let type_ident = &ast.ident;
     let (impl_generics, ty_generics, where_clause) = ast.generics.split_for_impl();
     let where_predicates = where_clause.map(|clause| &clause.predicates);
@@ -646,11 +647,11 @@ fn derive_eq_inner(
     _top_level: Trait,
     zerocopy_crate: &Path,
 ) -> Result<TokenStream, Error> {
-    // This doesn't delegate to `impl_block` because `impl_block` assumes it is deriving a
-    // `zerocopy`-defined trait, and these trait impls share a common shape that `Eq` does not.
-    // In particular, `zerocopy` traits contain a method that only `zerocopy_derive` macros
-    // are supposed to implement, and `impl_block` generating this trait method is incompatible
-    // with `Eq`.
+    // This doesn't delegate to `impl_block` because `impl_block` assumes it is
+    // deriving a `zerocopy`-defined trait, and these trait impls share a common
+    // shape that `Eq` does not. In particular, `zerocopy` traits contain a
+    // method that only `zerocopy_derive` macros are supposed to implement, and
+    // `impl_block` generating this trait method is incompatible with `Eq`.
     let type_ident = &ast.ident;
     let (impl_generics, ty_generics, where_clause) = ast.generics.split_for_impl();
     let where_predicates = where_clause.map(|clause| &clause.predicates);
@@ -752,8 +753,8 @@ fn derive_try_from_bytes_struct(
                 // SAFETY: We use `is_bit_valid` to validate that each field is
                 // bit-valid, and only return `true` if all of them are. The bit
                 // validity of a struct is just the composition of the bit
-                // validities of its fields, so this is a sound implementation of
-                // `is_bit_valid`.
+                // validities of its fields, so this is a sound implementation
+                // of `is_bit_valid`.
                 fn is_bit_valid<___ZerocopyAliasing>(
                     mut candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
                 ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
@@ -765,23 +766,24 @@ fn derive_try_from_bytes_struct(
 
                     true #(&& {
                         // SAFETY:
-                        // - `project` is a field projection, and so it addresses a
-                        //   subset of the bytes addressed by `slf`
+                        // - `project` is a field projection, and so it
+                        //   addresses a subset of the bytes addressed by `slf`
                         // - ..., and so it preserves provenance
-                        // - ..., and `*slf` is a struct, so `UnsafeCell`s exist at
-                        //   the same byte ranges in the returned pointer's referent
-                        //   as they do in `*slf`
+                        // - ..., and `*slf` is a struct, so `UnsafeCell`s exist
+                        //   at the same byte ranges in the returned pointer's
+                        //   referent as they do in `*slf`
                         let field_candidate = unsafe {
                             let project = |slf: PtrInner<'_, Self>| {
                                 let slf = slf.as_non_null().as_ptr();
                                 let field = core_reexport::ptr::addr_of_mut!((*slf).#field_names);
-                                // SAFETY: `cast_unsized_unchecked` promises that
-                                // `slf` will either reference a zero-sized byte
-                                // range, or else will reference a byte range that
-                                // is entirely contained within an allocated
-                                // object. In either case, this guarantees that
-                                // field projection will not wrap around the address
-                                // space, and so `field` will be non-null.
+                                // SAFETY: `cast_unsized_unchecked` promises
+                                // that `slf` will either reference a zero-sized
+                                // byte range, or else will reference a byte
+                                // range that is entirely contained within an
+                                // allocated object. In either case, this
+                                // guarantees that field projection will not
+                                // wrap around the address space, and so `field`
+                                // will be non-null.
                                 let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
                                 // SAFETY:
                                 // 0. `ptr` addresses a subset of the bytes of
@@ -833,10 +835,10 @@ fn derive_try_from_bytes_union(
             let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
             quote!(
                 // SAFETY: We use `is_bit_valid` to validate that any field is
-                // bit-valid; we only return `true` if at least one of them is. The
-                // bit validity of a union is not yet well defined in Rust, but it
-                // is guaranteed to be no more strict than this definition. See #696
-                // for a more in-depth discussion.
+                // bit-valid; we only return `true` if at least one of them is.
+                // The bit validity of a union is not yet well defined in Rust,
+                // but it is guaranteed to be no more strict than this
+                // definition. See #696 for a more in-depth discussion.
                 fn is_bit_valid<___ZerocopyAliasing>(
                     mut candidate: #zerocopy_crate::Maybe<'_, Self,___ZerocopyAliasing>
                 ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
@@ -848,23 +850,25 @@ fn derive_try_from_bytes_union(
 
                     false #(|| {
                         // SAFETY:
-                        // - `project` is a field projection, and so it addresses a
-                        //   subset of the bytes addressed by `slf`
+                        // - `project` is a field projection, and so it
+                        //   addresses a subset of the bytes addressed by `slf`
                         // - ..., and so it preserves provenance
                         // - Since `Self: Immutable` is enforced by
                         //   `self_type_trait_bounds`, neither `*slf` nor the
-                        //   returned pointer's referent contain any `UnsafeCell`s
+                        //   returned pointer's referent contain any
+                        //   `UnsafeCell`s
                         let field_candidate = unsafe {
                             let project = |slf: PtrInner<'_, Self>| {
                                 let slf = slf.as_non_null().as_ptr();
                                 let field = core_reexport::ptr::addr_of_mut!((*slf).#field_names);
-                                // SAFETY: `cast_unsized_unchecked` promises that
-                                // `slf` will either reference a zero-sized byte
-                                // range, or else will reference a byte range that
-                                // is entirely contained within an allocated
-                                // object. In either case, this guarantees that
-                                // field projection will not wrap around the address
-                                // space, and so `field` will be non-null.
+                                // SAFETY: `cast_unsized_unchecked` promises
+                                // that `slf` will either reference a zero-sized
+                                // byte range, or else will reference a byte
+                                // range that is entirely contained within an
+                                // allocated object. In either case, this
+                                // guarantees that field projection will not
+                                // wrap around the address space, and so `field`
+                                // will be non-null.
                                 let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
                                 // SAFETY:
                                 // 0. `ptr` addresses a subset of the bytes of
@@ -1197,14 +1201,15 @@ fn derive_from_bytes_struct(
 ///   pattern must correspond to a different enum variant. Thus, for an enum
 ///   whose layout takes up N bytes, there must be 2^N variants.
 /// - Since we must know N, only representations which guarantee the layout's
-///   size are allowed. These are `repr(uN)` and `repr(iN)` (`repr(C)` implies an
-///   implementation-defined size). `usize` and `isize` technically guarantee the
-///   layout's size, but would require us to know how large those are on the
+///   size are allowed. These are `repr(uN)` and `repr(iN)` (`repr(C)` implies
+///   an implementation-defined size). `usize` and `isize` technically guarantee
+///   the layout's size, but would require us to know how large those are on the
 ///   target platform. This isn't terribly difficult - we could emit a const
 ///   expression that could call `core::mem::size_of` in order to determine the
 ///   size and check against the number of enum variants, but a) this would be
 ///   platform-specific and, b) even on Rust's smallest bit width platform (32),
-///   this would require ~4 billion enum variants, which obviously isn't a thing.
+///   this would require ~4 billion enum variants, which obviously isn't a
+///   thing.
 /// - All fields of all variants are `FromBytes`.
 fn derive_from_bytes_enum(
     ast: &DeriveInput,

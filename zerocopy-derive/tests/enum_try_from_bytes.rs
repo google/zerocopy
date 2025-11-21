@@ -631,7 +631,8 @@ fn test_trivial_is_bit_valid() {
 mod issue_2051 {
     use super::*;
 
-    // Test that the `non_camel_case_types` lint isn't triggered by generated code.
+    // Test that the `non_camel_case_types` lint isn't triggered by generated
+    // code.
     // Prevents regressions of #2051.
     #[repr(u32)]
     #[derive(imp::TryFromBytes)]
