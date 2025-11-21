@@ -41,3 +41,26 @@ Clippy should **always** be run on the `nightly` toolchain.
 # Run a specific test on stable
 ./cargo.sh +stable test -- test_name
 ```
+
+## Workflow
+
+### Pre-submission Checks
+
+Before submitting code, run `./githooks/pre-push` to confirm that all pre-push hooks succeed.
+
+### Pull Requests and Commit Messages
+
+When a PR resolves an issue, the PR description and commit message should include a line like `Closes #123`.
+When a PR makes progress on, but does not close, an issue, the PR description and commit message should include a line like `Makes progress on #123`.
+
+## Code Style
+
+### Comments
+
+All comments (including `//`, `///`, and `//!`) should be wrapped at 80 columns.
+
+**Exceptions:**
+- Markdown tables
+- Inline ASCII diagrams
+- Long URLs
+- Other cases where wrapping would significantly degrade readability (use your judgment).

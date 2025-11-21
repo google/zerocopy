@@ -137,7 +137,8 @@ util_assert_impl_all!(TypeParams<'static, (), imp::IntoIter<()>>: imp::TryFromBy
 util_assert_impl_all!(TypeParams<'static, util::AU16, imp::IntoIter<()>>: imp::TryFromBytes);
 util_assert_impl_all!(TypeParams<'static, [util::AU16], imp::IntoIter<()>>: imp::TryFromBytes);
 
-// Deriving `imp::TryFromBytes` should work if the struct has bounded parameters.
+// Deriving `imp::TryFromBytes` should work if the struct has bounded
+// parameters.
 
 #[derive(imp::TryFromBytes)]
 #[repr(transparent)]

@@ -56,8 +56,9 @@ mod _def {
         ///   the set of addresses of an allocated object:
         ///   ...
         ///   - It is guaranteed that, given `o = a - base` (i.e., the offset of
-        ///     `a` within the allocated object), `base + o` will not wrap around
-        ///     the address space (in other words, will not overflow `usize`)
+        ///     `a` within the allocated object), `base + o` will not wrap
+        ///     around the address space (in other words, will not overflow
+        ///     `usize`)
         ptr: NonNull<T>,
         // SAFETY: `&'a UnsafeCell<T>` is covariant in `'a` and invariant in `T`
         // [1]. We use this construction rather than the equivalent `&mut T`,

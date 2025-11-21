@@ -616,12 +616,14 @@ impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
     /// let source: u8 = 42;
     ///
     /// // Try to transmute the `source` to a `bool`. This will fail.
-    /// let maybe_bool: Result<bool, ValidityError<u8, bool>> = try_transmute!(source);
+    /// let maybe_bool: Result<bool, ValidityError<u8, bool>> =
+    ///     try_transmute!(source);
     ///
     /// // Drop the error's source.
-    /// let maybe_bool: Result<bool, ValidityError<(), bool>> = maybe_bool.map_err(|err| {
-    ///     err.map_src(drop)
-    /// });
+    /// let maybe_bool: Result<bool, ValidityError<(), bool>> =
+    ///     maybe_bool.map_err(|err| {
+    ///         err.map_src(drop)
+    ///     });
     /// ```
     #[inline]
     pub fn map_src<NewSrc>(self, f: impl FnOnce(Src) -> NewSrc) -> ValidityError<NewSrc, Dst> {
@@ -744,14 +746,16 @@ impl<Src, Dst: ?Sized> CastError<Src, Dst> {
     ///
     /// let source: [u8; 3] = [0, 1, 2];
     ///
-    /// // Try to read a `u32` from `source`. This will fail because there are insufficient
-    /// // bytes in `source`.
-    /// let maybe_u32: Result<&u32, CastError<&[u8], u32>> = u32::ref_from_bytes(&source[..]);
+    /// // Try to read a `u32` from `source`. This will fail because there are
+    /// // insufficient bytes in `source`.
+    /// let maybe_u32: Result<&u32, CastError<&[u8], u32>> =
+    ///     u32::ref_from_bytes(&source[..]);
     ///
     /// // Map the error's source to its size and address.
-    /// let maybe_u32: Result<&u32, CastError<(usize, usize), u32>> = maybe_u32.map_err(|err| {
-    ///     err.map_src(|src| (src.len(), src.as_ptr() as usize))
-    /// });
+    /// let maybe_u32: Result<&u32, CastError<(usize, usize), u32>> =
+    ///     maybe_u32.map_err(|err| {
+    ///         err.map_src(|src| (src.len(), src.as_ptr() as usize))
+    ///     });
     /// ```
     #[inline]
     pub fn map_src<NewSrc>(self, f: impl FnOnce(Src) -> NewSrc) -> CastError<NewSrc, Dst> {
@@ -810,7 +814,8 @@ impl<Src, Dst: ?Sized + Unaligned> From<CastError<Src, Dst>> for SizeError<Src, 
     ///
     /// impl UdpPacket {
     ///     pub fn parse(bytes: &[u8]) -> Result<&UdpPacket, SizeError<&[u8], UdpPacket>> {
-    ///         // Since `UdpPacket: Unaligned`, we can map the `CastError` to a `SizeError`.
+    ///         // Since `UdpPacket: Unaligned`, we can map the `CastError` to a
+    ///         // `SizeError`.
     ///         UdpPacket::ref_from_bytes(bytes).map_err(Into::into)
     ///     }
     /// }
@@ -869,10 +874,12 @@ impl<Src, Dst: ?Sized + TryFromBytes> TryCastError<Src, Dst> {
     ///     = NonZeroU32::try_ref_from_bytes(&source[..]);
     ///
     /// // Map the error's source to its size and address.
-    /// let maybe_u32: Result<&NonZeroU32, TryCastError<(usize, usize), NonZeroU32>> =
-    ///     maybe_u32.map_err(|err| {
-    ///         err.map_src(|src| (src.len(), src.as_ptr() as usize))
-    ///     });
+    /// let maybe_u32: Result<
+    ///     &NonZeroU32,
+    ///     TryCastError<(usize, usize), NonZeroU32>
+    /// > = maybe_u32.map_err(|err| {
+    ///     err.map_src(|src| (src.len(), src.as_ptr() as usize))
+    /// });
     /// ```
     #[inline]
     pub fn map_src<NewSrc>(self, f: impl FnOnce(Src) -> NewSrc) -> TryCastError<NewSrc, Dst> {
@@ -897,8 +904,9 @@ impl<Src, Dst: ?Sized + TryFromBytes> From<CastError<Src, Dst>> for TryCastError
 
 /// The error type of fallible read-conversions.
 ///
-/// Fallible read-conversions, like [`TryFromBytes::try_read_from_bytes`] may emit
-/// [size](SizeError) and [validity](ValidityError) errors, but not alignment errors.
+/// Fallible read-conversions, like [`TryFromBytes::try_read_from_bytes`] may
+/// emit [size](SizeError) and [validity](ValidityError) errors, but not
+/// alignment errors.
 // Bounds on generic parameters are not enforced in type aliases, but they do
 // appear in rustdoc.
 #[allow(type_alias_bounds)]
@@ -976,8 +984,8 @@ impl<Src, Dst: ?Sized + TryFromBytes> TryReadError<Src, Dst> {
 ///
 /// impl Bools {
 ///     fn parse(bytes: &[u8]) -> Result<&Bools, AlignedTryCastError<&[u8], Bools>> {
-///         // Since `Bools: Unaligned`, we can infallibly discard
-///         // the alignment error.
+    ///         // Since `Bools: Unaligned`, we can infallibly discard the
+    ///         // alignment error.
 ///         Bools::try_ref_from_bytes(bytes).map_err(Into::into)
 ///     }
 /// }

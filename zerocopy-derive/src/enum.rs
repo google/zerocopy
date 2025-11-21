@@ -162,8 +162,8 @@ fn generate_variants_union(generics: &Generics, data: &DataEnum) -> TokenStream 
             return None;
         }
 
-        // Field names are prefixed with `__field_` to prevent name collision with
-        // the `__nonempty` field.
+        // Field names are prefixed with `__field_` to prevent name collision
+        // with the `__nonempty` field.
         let field_name_str = crate::ext::to_ident_str(&variant.ident);
         let field_name = Ident::new(&format!("__field_{}", field_name_str), variant.ident.span());
         let variant_struct_ident = variant_struct_ident(&variant.ident);

@@ -87,7 +87,8 @@ enum TransmuteRefMutSizeDecrease {}
 /// ```compile_fail,E0080
 /// use zerocopy::doctests::SliceDst;
 /// let src: &mut SliceDst<u8, u8> = SliceDst::new_mut();
-/// let increase_offset: &mut SliceDst<[u8; 2], u8> = zerocopy::transmute_mut!(src);
+/// let increase_offset: &mut SliceDst<[u8; 2], u8> =
+///     zerocopy::transmute_mut!(src);
 /// ```
 enum TransmuteRefMutDstOffsetIncrease {}
 
