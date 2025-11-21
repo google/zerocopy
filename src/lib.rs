@@ -4682,6 +4682,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// let header = BitmapFileHeader::read_from_io(&mut file).unwrap();
     /// ```
     #[cfg(feature = "std")]
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
     #[inline(always)]
     fn read_from_io<R>(mut src: R) -> io::Result<Self>
     where
@@ -5418,6 +5419,7 @@ pub unsafe trait IntoBytes {
     /// assert_eq!(dst, [255, 255]);
     /// ```
     #[cfg(feature = "std")]
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
     #[inline(always)]
     fn write_to_io<W>(&self, mut dst: W) -> io::Result<()>
     where
