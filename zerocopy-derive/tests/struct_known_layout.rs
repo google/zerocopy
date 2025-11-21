@@ -112,3 +112,11 @@ struct Packet<P> {
 }
 
 util_assert_impl_all!(Packet<imp::u8>: imp::KnownLayout);
+
+#[derive(imp::KnownLayout)]
+#[repr(C)]
+struct RawIdentifier {
+    r#type: u8,
+}
+
+util_assert_impl_all!(RawIdentifier: imp::KnownLayout);
