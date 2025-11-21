@@ -1731,8 +1731,7 @@ impl<'a, D: DataExt> ImplBlockBuilder<'a, D> {
         //         b: PhantomData<&'b u8>,
         //     }
         //
-        //     error[E0283]: type annotations required: cannot resolve
-        //     `core::marker::PhantomData<&'a u8>: zerocopy::Unaligned`
+        //     error[E0283]: type annotations required: cannot resolve `core::marker::PhantomData<&'a u8>: zerocopy::Unaligned`
         //      --> src/main.rs:6:10
         //       |
         //     6 | #[derive(Unaligned)]
