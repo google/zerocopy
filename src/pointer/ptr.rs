@@ -274,8 +274,7 @@ mod _conversions {
         /// exists.
         #[doc(hidden)]
         #[inline]
-        // Allows us to name the lifetime in the safety comment below.
-        #[allow(clippy::needless_lifetimes)]
+        #[allow(clippy::needless_lifetimes)] // Allows us to name the lifetime in the safety comment below.
         pub fn reborrow<'b>(&'b mut self) -> Ptr<'b, T, I>
         where
             'a: 'b,
@@ -1232,8 +1231,7 @@ mod tests {
     use core::mem::{self, MaybeUninit};
 
     use super::*;
-    // Needed on our MSRV, but considered unused on later toolchains.
-    #[allow(unused)]
+    #[allow(unused)] // Needed on our MSRV, but considered unused on later toolchains.
     use crate::util::AsAddress;
     use crate::{pointer::BecauseImmutable, util::testutil::AU64, FromBytes, Immutable};
 

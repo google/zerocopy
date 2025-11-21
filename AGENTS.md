@@ -68,4 +68,5 @@ All comments (including `//`, `///`, and `//!`) should be wrapped at 80 columns.
 - Inline ASCII diagrams
 - Long URLs
 - Comments inside of code blocks
+- Comments which trail non-comment code
 - Other cases where wrapping would significantly degrade readability (use your judgment).

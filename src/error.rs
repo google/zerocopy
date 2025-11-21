@@ -977,8 +977,8 @@ impl<Src, Dst: ?Sized + TryFromBytes> TryReadError<Src, Dst> {
 ///
 /// impl Bools {
 ///     fn parse(bytes: &[u8]) -> Result<&Bools, AlignedTryCastError<&[u8], Bools>> {
-    ///         // Since `Bools: Unaligned`, we can infallibly discard
-    ///         // the alignment error.
+///         // Since `Bools: Unaligned`, we can infallibly discard
+///         // the alignment error.
 ///         Bools::try_ref_from_bytes(bytes).map_err(Into::into)
 ///     }
 /// }
