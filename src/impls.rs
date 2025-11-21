@@ -682,8 +682,9 @@ impl_known_layout!(core::convert::Infallible);
 
 // SAFETY: `Infallible` is an uninhabited enum, which has size 0 and alignment 1
 // [1].
-// - `Immutable`: It is uninhabited, so it cannot contain `UnsafeCell`s.
-// - `IntoBytes`: It is uninhabited, so it has no padding.
+// - `Immutable`: It is uninhabited and has size 0, so it cannot contain
+//   `UnsafeCell`s.
+// - `IntoBytes`: It is uninhabited and has size 0, so it has no padding.
 // - `Unaligned`: It has alignment 1.
 //
 // [1] https://doc.rust-lang.org/1.81.0/reference/type-layout.html#enum-layout
