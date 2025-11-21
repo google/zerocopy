@@ -1202,7 +1202,7 @@ mod tests {
 
         // Before 1.61.0, we can't define the `const fn transmute_ref` function
         // that we do on and after 1.61.0.
-        #[cfg(not(zerocopy_generic_bounds_in_const_fn_1_61_0))]
+        #[cfg(no_zerocopy_generic_bounds_in_const_fn_1_61_0)]
         {
             // Test that `transmute_ref!` supports non-`KnownLayout` `Sized` types.
             const ARRAY_OF_NKL_U8S: Nkl<[u8; 8]> = Nkl([0u8, 1, 2, 3, 4, 5, 6, 7]);
@@ -1211,7 +1211,7 @@ mod tests {
             assert_eq!(*X_NKL, ARRAY_OF_NKL_ARRAYS);
         }
 
-        #[cfg(zerocopy_generic_bounds_in_const_fn_1_61_0)]
+        #[cfg(not(no_zerocopy_generic_bounds_in_const_fn_1_61_0))]
         {
             // Call through a generic function to make sure our autoref
             // specialization trick works even when types are generic.

@@ -383,7 +383,7 @@ const _: () = unsafe {
 };
 
 #[cfg(all(
-    zerocopy_target_has_atomics_1_60_0,
+    not(no_zerocopy_target_has_atomics_1_60_0),
     any(
         target_has_atomic = "8",
         target_has_atomic = "16",
@@ -1085,7 +1085,7 @@ mod simd {
             #[cfg(all(feature = "simd-nightly", target_arch = "powerpc64"))]
             powerpc64, powerpc64, vector_bool_long, vector_double, vector_signed_long, vector_unsigned_long
         );
-        #[cfg(zerocopy_aarch64_simd_1_59_0)]
+        #[cfg(not(no_zerocopy_aarch64_simd_1_59_0))]
         simd_arch_mod!(
             // NOTE(https://github.com/rust-lang/stdarch/issues/1484): NEON intrinsics are currently
             // broken on big-endian platforms.
@@ -2087,7 +2087,7 @@ mod tests {
                 vector_signed_long,
                 vector_unsigned_long
             );
-            #[cfg(all(target_arch = "aarch64", zerocopy_aarch64_simd_1_59_0))]
+            #[cfg(all(target_arch = "aarch64", not(no_zerocopy_aarch64_simd_1_59_0)))]
             #[rustfmt::skip]
             test_simd_arch_mod!(
                 aarch64, float32x2_t, float32x4_t, float64x1_t, float64x2_t, int8x8_t, int8x8x2_t,

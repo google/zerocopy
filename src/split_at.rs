@@ -51,7 +51,7 @@ use crate::pointer::invariant::{Aligned, Exclusive, Invariants, Shared, Valid};
     doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.SplitAt.html"),
 )]
 #[cfg_attr(
-    zerocopy_diagnostic_on_unimplemented_1_78_0,
+    not(no_zerocopy_diagnostic_on_unimplemented_1_78_0),
     diagnostic::on_unimplemented(note = "Consider adding `#[derive(SplitAt)]` to `{Self}`")
 )]
 // # Safety

@@ -95,7 +95,7 @@ fn main() {
     }
 
     for version_cfg in version_cfgs {
-        if rustc_version >= version_cfg.version {
+        if rustc_version < version_cfg.version {
             println!("cargo:rustc-cfg={}", version_cfg.cfg_name);
         }
     }
