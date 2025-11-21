@@ -361,10 +361,7 @@ macro_rules! opt_unsafe_fn {
 ///
 /// ```rust,ignore
 /// // Note that these derives are gated by `feature = "derive"`
-/// #[cfg_attr(
-///     any(feature = "derive", test),
-///     derive(FromZeros, FromBytes, IntoBytes, Unaligned)
-/// )]
+/// #[cfg_attr(any(feature = "derive", test), derive(FromZeros, FromBytes, IntoBytes, Unaligned))]
 /// #[repr(transparent)]
 /// struct Wrapper<T>(T);
 ///

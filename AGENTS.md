@@ -48,6 +48,10 @@ Clippy should **always** be run on the `nightly` toolchain.
 
 Before submitting code, run `./githooks/pre-push` to confirm that all pre-push hooks succeed.
 
+### UI Tests
+
+When updating UI test files (in `tests/ui*` or `zerocopy-derive/tests/ui*`), run `./tools/update-ui-test-files.sh` to update the corresponding stderr files.
+
 ### Pull Requests and Commit Messages
 
 When a PR resolves an issue, the PR description and commit message should include a line like `Closes #123`.
@@ -63,4 +67,5 @@ All comments (including `//`, `///`, and `//!`) should be wrapped at 80 columns.
 - Markdown tables
 - Inline ASCII diagrams
 - Long URLs
+- Comments inside of code blocks
 - Other cases where wrapping would significantly degrade readability (use your judgment).

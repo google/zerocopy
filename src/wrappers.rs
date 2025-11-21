@@ -51,9 +51,7 @@ use super::*;
 /// ```rust
 /// use zerocopy::*;
 /// # use zerocopy_derive::*;
-/// # #[derive(FromBytes, KnownLayout, Immutable, Unaligned)]
-/// # #[repr(C)]
-/// # struct Mac([u8; 6]);
+/// # #[derive(FromBytes, KnownLayout, Immutable, Unaligned)] #[repr(C)] struct Mac([u8; 6]);
 ///
 /// # #[derive(PartialEq, Copy, Clone, Debug)]
 /// #[derive(TryFromBytes, KnownLayout, Immutable)]

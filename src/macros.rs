@@ -364,9 +364,7 @@ macro_rules! transmute_ref {
 /// This macro behaves like an invocation of this function:
 ///
 /// ```ignore
-/// const fn transmute_mut<'src, 'dst, Src, Dst>(
-///     src: &'src mut Src
-/// ) -> &'dst mut Dst
+/// const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst
 /// where
 ///     'src: 'dst,
 ///     Src: FromBytes + IntoBytes,
@@ -452,8 +450,7 @@ macro_rules! transmute_ref {
 /// # use zerocopy::transmute_mut;
 /// let mut one_dimensional: [u8; 8] = [0, 1, 2, 3, 4, 5, 6, 7];
 ///
-/// let two_dimensional: &mut [[u8; 4]; 2] =
-///     transmute_mut!(&mut one_dimensional);
+/// let two_dimensional: &mut [[u8; 4]; 2] = transmute_mut!(&mut one_dimensional);
 ///
 /// assert_eq!(two_dimensional, &[[0, 1, 2, 3], [4, 5, 6, 7]]);
 ///
@@ -587,9 +584,7 @@ macro_rules! try_transmute {
 /// This macro behaves like an invocation of this function:
 ///
 /// ```ignore
-/// fn try_transmute_ref<Src, Dst>(
-///     src: &Src
-/// ) -> Result<&Dst, ValidityError<&Src, Dst>>
+/// fn try_transmute_ref<Src, Dst>(src: &Src) -> Result<&Dst, ValidityError<&Src, Dst>>
 /// where
 ///     Src: IntoBytes + Immutable,
 ///     Dst: TryFromBytes + Immutable,
@@ -632,8 +627,7 @@ macro_rules! try_transmute {
 /// code:
 ///
 /// ```compile_fail
-/// let increase_alignment: Result<&u16, _> =
-///     zerocopy::try_transmute_ref!(&[0u8; 2]);
+/// let increase_alignment: Result<&u16, _> = zerocopy::try_transmute_ref!(&[0u8; 2]);
 /// ```
 ///
 /// ...generates the following error:
@@ -642,16 +636,12 @@ macro_rules! try_transmute {
 /// error[E0512]: cannot transmute between types of different sizes, or dependently-sized types
 ///  --> example.rs:1:47
 ///   |
-/// 1 |     let increase_alignment: Result<&u16, _> =
-///   |         zerocopy::try_transmute_ref!(&[0u8; 2]);
-///   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/// 1 |     let increase_alignment: Result<&u16, _> = zerocopy::try_transmute_ref!(&[0u8; 2]);
+///   |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ///   |
 ///   = note: source type: `AlignOf<[u8; 2]>` (8 bits)
 ///   = note: target type: `MaxAlignsOf<[u8; 2], u16>` (16 bits)
-///   = note: this error originates in the macro `$crate::assert_align_gt_eq`
-///           which comes from the expansion of the macro
-///           `zerocopy::try_transmute_ref` (in Nightly builds, run with -Z
-///           macro-backtrace for more info)
+///   = note: this error originates in the macro `$crate::assert_align_gt_eq` which comes from the expansion of the macro `zerocopy::try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)/// ```
 /// ```
 ///
 /// This is saying that `max(align_of::<T>(), align_of::<U>()) !=
@@ -700,9 +690,7 @@ macro_rules! try_transmute_ref {
 /// This macro behaves like an invocation of this function:
 ///
 /// ```ignore
-/// fn try_transmute_mut<Src, Dst>(
-///     src: &mut Src
-/// ) -> Result<&mut Dst, ValidityError<&mut Src, Dst>>
+/// fn try_transmute_mut<Src, Dst>(src: &mut Src) -> Result<&mut Dst, ValidityError<&mut Src, Dst>>
 /// where
 ///     Src: FromBytes + IntoBytes,
 ///     Dst: TryFromBytes + IntoBytes,
@@ -749,8 +737,7 @@ macro_rules! try_transmute_ref {
 ///
 /// ```compile_fail
 /// let src = &mut [0u8; 2];
-/// let increase_alignment: Result<&mut u16, _> =
-///     zerocopy::try_transmute_mut!(src);
+/// let increase_alignment: Result<&mut u16, _> = zerocopy::try_transmute_mut!(src);
 /// ```
 ///
 /// ...generates the following error:
@@ -759,16 +746,12 @@ macro_rules! try_transmute_ref {
 /// error[E0512]: cannot transmute between types of different sizes, or dependently-sized types
 ///  --> example.rs:2:51
 ///   |
-/// 2 |     let increase_alignment: Result<&mut u16, _> =
-///   |         zerocopy::try_transmute_mut!(src);
-///   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/// 2 |     let increase_alignment: Result<&mut u16, _> = zerocopy::try_transmute_mut!(src);
+///   |                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ///   |
 ///   = note: source type: `AlignOf<[u8; 2]>` (8 bits)
 ///   = note: target type: `MaxAlignsOf<[u8; 2], u16>` (16 bits)
-///   = note: this error originates in the macro `$crate::assert_align_gt_eq`
-///           which comes from the expansion of the macro
-///           `zerocopy::try_transmute_mut` (in Nightly builds, run with -Z
-///           macro-backtrace for more info)
+///   = note: this error originates in the macro `$crate::assert_align_gt_eq` which comes from the expansion of the macro `zerocopy::try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 /// ```
 ///
 /// This is saying that `max(align_of::<T>(), align_of::<U>()) !=
@@ -843,9 +826,7 @@ macro_rules! try_transmute_mut {
 /// ```rust
 /// use zerocopy::include_value;
 /// # macro_rules! include_value {
-/// # ($file:expr) => {
-/// #     zerocopy::include_value!(concat!("../testdata/include_value/", $file))
-/// # };
+/// # ($file:expr) => { zerocopy::include_value!(concat!("../testdata/include_value/", $file)) };
 /// # }
 ///
 /// fn main() {

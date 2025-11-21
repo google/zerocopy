@@ -400,10 +400,9 @@ fn derive_known_layout_inner(
                 // SAFETY: We largely defer to the `KnownLayout` implementation
                 // on the derive target type (both by using the same tokens, and
                 // by deferring to impl via type-level indirection). This is
-                // sound,
-                // since  `__ZerocopyKnownLayoutMaybeUninit` is guaranteed to
-                // have the same layout as the derive target type, except that
-                // `__ZerocopyKnownLayoutMaybeUninit` admits uninit bytes.
+                // sound, since `__ZerocopyKnownLayoutMaybeUninit` is guaranteed
+                // to have the same layout as the derive target type, except
+                // that `__ZerocopyKnownLayoutMaybeUninit` admits uninit bytes.
                 unsafe impl #impl_generics #zerocopy_crate::KnownLayout for __ZerocopyKnownLayoutMaybeUninit #ty_generics
                 where
                     #trailing_field_ty: #zerocopy_crate::KnownLayout,
