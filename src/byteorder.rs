@@ -27,6 +27,7 @@
 //!
 //! Type aliases are provided for common byte orders in the [`big_endian`],
 //! [`little_endian`], [`network_endian`], and [`native_endian`] submodules.
+//! Note that network-endian is a synonym for big-endian.
 //!
 //! # Example
 //!
