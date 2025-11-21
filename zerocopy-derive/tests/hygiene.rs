@@ -51,7 +51,7 @@ mod issue_2177 {
             #[derive(_zerocopy::KnownLayout)]
             #[repr(C)]
             pub struct $name($repr);
-        }
+        };
     }
 
     define!(Foo, u8);
