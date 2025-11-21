@@ -146,7 +146,8 @@ pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize
     #[allow(clippy::arithmetic_side_effects)]
     let mask = align.get() - 1;
 
-    // To efficiently subtract this value from align, we can use the bitwise complement.
+    // To efficiently subtract this value from align, we can use the bitwise
+    // complement.
     // Note that ((!len) & (align-1)) gives us a number that with (len &
     // (align-1)) sums to align-1. So subtracting 1 from x before taking the
     // complement subtracts `len` from `align`. Some quick inspection of
@@ -177,7 +178,8 @@ pub(crate) const fn padding_needed_for(len: usize, align: NonZeroUsize) -> usize
     //
     // (declare-const len (_ BitVec 32))
     // (declare-const align (_ BitVec 32))
-    // ; Search for a case where align is a power of two and padding2 disagrees with padding1
+    // ; Search for a case where align is a power of two and padding2 disagrees
+    // ; with padding1
     // (assert (and (is-power-of-two align)
     //              (not (= (padding1 len align) (padding2 len align)))))
     // (simplify (padding1 (_ bv300 32) (_ bv32 32))) ; 20
@@ -602,8 +604,9 @@ pub(crate) use len_of::MetadataOf;
 /// exist (stably) on our MSRV. This module provides polyfills for those
 /// features so that we can write more "modern" code, and just remove the
 /// polyfill once our MSRV supports the corresponding feature. Without this,
-/// we'd have to write worse/more verbose code and leave FIXME comments sprinkled
-/// throughout the codebase to update to the new pattern once it's stabilized.
+/// we'd have to write worse/more verbose code and leave FIXME comments
+/// sprinkled throughout the codebase to update to the new pattern once it's
+/// stabilized.
 ///
 /// Each trait is imported as `_` at the crate root; each polyfill should "just
 /// work" at usage sites.
