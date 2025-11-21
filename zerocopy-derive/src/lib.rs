@@ -318,8 +318,10 @@ fn derive_known_layout_inner(
 
             // Generate a valid ident for a type-level handle to a field of a
             // given `name`.
-            let field_index =
-                |name| Ident::new(&format!("__Zerocopy_Field_{}", name), ident.span());
+            let field_index = |name: &TokenStream| {
+                let name = to_ident_str(name);
+                Ident::new(&format!("__Zerocopy_Field_{}", name), ident.span())
+            };
 
             let field_indices: Vec<_> =
                 fields.iter().map(|(_vis, name, _ty)| field_index(name)).collect();

@@ -642,3 +642,11 @@ mod issue_2051 {
         I32_MUL,
     }
 }
+
+#[derive(imp::TryFromBytes)]
+#[repr(u8)]
+enum RawIdentifierVariant {
+    r#type,
+}
+
+util_assert_impl_all!(RawIdentifierVariant: imp::TryFromBytes);
