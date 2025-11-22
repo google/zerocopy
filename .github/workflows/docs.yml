@@ -16,8 +16,8 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
+  pages: write # zizmor: ignore[excessive-permissions]
+  id-token: write # zizmor: ignore[excessive-permissions]
 concurrency:
   group: deploy
   cancel-in-progress: false
@@ -28,6 +28,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - name: Configure environment variables
         run: |
           set -eo pipefail
@@ -92,7 +94,7 @@ jobs:
             export RUSTDOCFLAGS="-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS"
 
             # TODO: Use `./cargo.sh` instead once we've debugged why it won't work.
-            cargo +${{ env.ZC_NIGHTLY_TOOLCHAIN }} doc --document-private-items --package zerocopy --all-features
+            cargo +$ZC_NIGHTLY_TOOLCHAIN doc --document-private-items --package zerocopy --all-features
 
       - name: Add HTML redirect to doc root
         # By default, Rustdoc doesn't redirect to the documentation root, so we

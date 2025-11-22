@@ -24,7 +24,7 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
+  pull-requests: write # zizmor: ignore[excessive-permissions]
 
 jobs:
   roll_rust:
@@ -147,9 +147,10 @@ jobs:
 
       - name: Add labels
         if: steps.submit-pr.outputs.pull-request-operation == 'created'
-        run: gh pr edit "${{ steps.submit-pr.outputs.pull-request-number }}" --add-label "hide-from-release-notes"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.submit-pr.outputs.pull-request-number }}
+        run: gh pr edit "$PR_NUMBER" --add-label "hide-from-release-notes"
           
   roll_kani:
     runs-on: ubuntu-latest
@@ -188,6 +189,7 @@ jobs:
 
       - name: Add labels
         if: steps.submit-pr.outputs.pull-request-operation == 'created'
-        run: gh pr edit "${{ steps.submit-pr.outputs.pull-request-number }}" --add-label "hide-from-release-notes"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.submit-pr.outputs.pull-request-number }}
+        run: gh pr edit "$PR_NUMBER" --add-label "hide-from-release-notes"

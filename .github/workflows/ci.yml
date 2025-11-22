@@ -12,7 +12,8 @@ on:
   pull_request:
   merge_group:
 
-permissions: read-all
+permissions:
+  contents: read
 
 env:
   CARGO_TERM_COLOR: always
@@ -251,6 +252,7 @@ jobs:
     - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
       with:
         fetch-depth: 2
+        persist-credentials: false
 
     - name: Populate cache
       uses: ./.github/actions/cache
@@ -570,7 +572,7 @@ jobs:
         matrix.target == 'x86_64-unknown-linux-gnu'
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4.6.0
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: lcov.info
@@ -585,6 +587,8 @@ jobs:
     name: 'Run tests under Kani'
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - uses: model-checking/kani-github-action@f838096619a707b0f6b2118cf435eaccfa33e51f # v1.1
         with:
           # Use `--features __internal_use_only_features_that_work_on_stable`
@@ -613,6 +617,8 @@ jobs:
     name: Build (zerocopy / nightly / --simd / aarch64_be-unknown-linux-gnu)
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - name: Configure environment variables
         run: |
           set -eo pipefail
@@ -643,6 +649,8 @@ jobs:
     name: Build (zerocopy / nightly / --simd / avr-none)
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - name: Configure environment variables
         run: |
           set -eo pipefail
@@ -680,6 +688,8 @@ jobs:
     name: Check Rust formatting
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - name: Check Rust formatting
         run: |
           set -eo pipefail
@@ -695,6 +705,8 @@ jobs:
     name: Check README.md
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
 
       - name: Populate cache
         uses: ./.github/actions/cache
@@ -708,6 +720,8 @@ jobs:
     name: Check crate versions match
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
 
       - name: Populate cache
         uses: ./.github/actions/cache
@@ -723,6 +737,8 @@ jobs:
     name: Generate cache
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
 
       - id: populate-cache
         uses: ./.github/actions/cache
@@ -772,6 +788,8 @@ jobs:
       - name: Install yq (for YAML parsing)
         run: go install github.com/mikefarah/yq/v4@latest
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - name: Run check
         run: ./ci/check_all_toolchains_tested.sh
 
@@ -782,6 +800,8 @@ jobs:
       - name: Install yq (for YAML parsing)
         run: go install github.com/mikefarah/yq/v4@latest
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - name: Run dependency check
         run: ./ci/check_job_dependencies.sh
 
@@ -794,6 +814,8 @@ jobs:
          sudo apt-get update
          sudo apt-get install ripgrep
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - name: Run todo check
         run: ./ci/check_todo.sh
 
@@ -808,6 +830,8 @@ jobs:
          sudo apt-get update
          sudo apt-get install ripgrep
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - name: Run dependency check
         # Ensure that Git hooks execute successfully.
         #
@@ -823,6 +847,22 @@ jobs:
 
           for hook in ./githooks/*; do $hook; done
 
+  zizmor:
+    runs-on: ubuntu-latest
+    name: zizmor
+    steps:
+      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
+      - uses: zizmorcore/zizmor-action@e673c3917a1aef3c65c972347ed84ccd013ecda4 # v0.2.0
+        with:
+          # We don't want to use GitHub Advanced Security because we want to
+          # block the merge on zizmor failure, and the only way to do that
+          # (without manually configuring a ruleset) is to fail the job, which
+          # the action only does if advanced-security is false.
+          advanced-security: false
+          persona: pedantic
+
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
       name: All checks succeeded
@@ -833,7 +873,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, kani, check_be_aarch64, check_avr_artmega, check_fmt, check_readme, check_versions, generate_cache, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks]
+      needs: [build_test, kani, check_be_aarch64, check_avr_artmega, check_fmt, check_readme, check_versions, generate_cache, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor]
       steps:
         - name: Mark the job as failed
           run: exit 1

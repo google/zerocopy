@@ -16,3 +16,5 @@ updates:
       # The trailing space instructs dependabot not to insert a colon between
       # the prefix and the rest of the message.
       prefix: "[CI] "
+    cooldown:
+      default-days: 7
