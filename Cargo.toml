@@ -40,6 +40,9 @@ exclude = [".*"]
 # `stdarch_x86_avx512` feature).
 zerocopy-simd-x86-avx12-1-89-0 = "1.89.0"
 
+# From 1.85.0, Rust supports the `#[diagnostic::do_not_recommend]` attribute.
+zerocopy-diagnostic-do-not-recommend-1-85-0 = "1.85.0"
+
 # From 1.81.0, Rust supports the `core::error::Error` trait.
 zerocopy-core-error-1-81-0 = "1.81.0"
 
