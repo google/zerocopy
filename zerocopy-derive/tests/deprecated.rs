@@ -54,7 +54,9 @@ mod enum_hash_eq {
         #[deprecated = "do not use"]
         #[derive(imp::ByteHash, imp::IntoBytes, imp::Immutable)]
         #[repr(u8)]
-        enum Enum { A, }
+        enum Enum {
+            A,
+        }
 
         #[allow(deprecated)]
         fn _allow_deprecated() {
@@ -66,7 +68,9 @@ mod enum_hash_eq {
         #[deprecated = "do not use"]
         #[derive(imp::ByteEq, imp::IntoBytes, imp::Immutable)]
         #[repr(u8)]
-        enum Enum { A, }
+        enum Enum {
+            A,
+        }
 
         #[allow(deprecated)]
         fn _allow_deprecated() {
