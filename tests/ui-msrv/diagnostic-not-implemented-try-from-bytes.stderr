@@ -9,3 +9,7 @@ note: required by a bound in `takes_try_from_bytes`
    |
 21 | fn takes_try_from_bytes<T: TryFromBytes>() {}
    |                            ^^^^^^^^^^^^ required by this bound in `takes_try_from_bytes`
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0277`.

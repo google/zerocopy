@@ -13,3 +13,7 @@ help: consider mutably borrowing here
    |
 17 | const SRC_NOT_A_REFERENCE: &mut u8 = transmute_mut!(&mut 0usize);
    |                                                     ++++
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0308`.

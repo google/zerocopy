@@ -14,7 +14,14 @@ extern crate zerocopy_derive;
 
 include!("../../../src/util/macros.rs");
 
-use zerocopy::*;
+// TEST UPDATE
+pub mod util {
+    pub mod macros {
+        pub(crate) use crate::__unsafe;
+    }
+}
+
+pub use zerocopy::*;
 use zerocopy_derive::*;
 
 fn main() {}

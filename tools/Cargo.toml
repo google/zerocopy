@@ -10,6 +10,7 @@
 members = [
     "cargo-zerocopy",
     "generate-readme",
+    "ui-runner",
 ]
 resolver = "2"
 

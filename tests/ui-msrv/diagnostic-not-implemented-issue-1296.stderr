@@ -9,3 +9,7 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfie
    |
 52 |     Foo.write_obj(NotZerocopy(()));
    |                   ^^^^^^^^^^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy`
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0277`.

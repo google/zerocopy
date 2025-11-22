@@ -15,3 +15,7 @@ error[E0623]: lifetime mismatch
 ...
 17 |     _small = big;
    |              ^^^ ...but data from `big` flows into `big` here
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0623`.

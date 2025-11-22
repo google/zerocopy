@@ -1,6 +1,6 @@
 error: lifetime may not live long enough
- --> tests/ui-stable/ptr-is-invariant-over-v.rs:10:5
-  |
+  --> tests/ui-stable/ptr-is-invariant-over-v.rs:10:5
+   |
  6 | fn _when_exclusive<'big: 'small, 'small>(
    |                    ----          ------ lifetime `'small` defined here
    |                    |
@@ -29,3 +29,5 @@ error: lifetime may not live long enough
    = note: requirement occurs because of the type `Ptr<'_, &u32, (Shared, Aligned, Valid)>`, which makes the generic argument `&u32` invariant
    = note: the struct `Ptr<'a, T, I>` is invariant over the parameter `T`
    = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
+
+error: aborting due to 2 previous errors

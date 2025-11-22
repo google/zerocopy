@@ -10,3 +10,7 @@ note: required by `AssertDstIsImmutable`
 23 | const DST_NOT_IMMUTABLE: &Dst = transmute_ref!(&AU16(0));
    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0277`.

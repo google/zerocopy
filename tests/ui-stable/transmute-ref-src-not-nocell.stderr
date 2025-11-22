@@ -20,9 +20,9 @@ help: the trait `zerocopy::Immutable` is not implemented for `Src`
              *const T
              *mut T
              AU16
-             Box<T>
              F32<O>
-           and $N others
+             F64<O>
+           and 101 others
 note: required by a bound in `AssertSrcIsImmutable`
   --> tests/ui-stable/transmute-ref-src-not-nocell.rs:23:34
    |
@@ -49,12 +49,16 @@ help: the trait `zerocopy::Immutable` is not implemented for `Src`
              *const T
              *mut T
              AU16
-             Box<T>
              F32<O>
-           and $N others
+             F64<O>
+           and 101 others
 note: required by a bound in `AssertSrcIsImmutable`
   --> tests/ui-stable/transmute-ref-src-not-nocell.rs:23:34
    |
 23 | const SRC_NOT_IMMUTABLE: &AU16 = transmute_ref!(&Src(AU16(0)));
    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertSrcIsImmutable`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0277`.
