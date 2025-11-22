@@ -1,3 +1,11 @@
+<!-- Copyright 2025 The Fuchsia Authors
+
+Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+<LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+This file may not be copied, modified, or distributed except according to
+those terms. -->
+
 # Development Instructions
 
 This repository uses a wrapper script around Cargo to ensure consistent toolchain usage and configuration.
@@ -75,6 +83,10 @@ When a PR makes progress on, but does not close, an issue, the PR description an
   [rust#56604](https://github.com/rust-lang/rust/issues/56604).
 
 ## Code Style
+
+### File Headers
+
+Each file should contain a copyright header (excluding auto-generated files such as `.stderr` files). The header should follow the format found in existing files (e.g. `src/lib.rs`), using the appropriate comment syntax for the file type.
 
 ### Formatting
 
