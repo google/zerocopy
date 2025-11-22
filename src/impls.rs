@@ -272,9 +272,15 @@ const _: () = unsafe {
 //
 //     `Option<NonZeroU8>` is guaranteed to be compatible with `u8`, including in FFI.
 //
+//     Thanks to the null pointer optimization, `NonZeroU8` and `Option<NonZeroU8>`
+//     are guaranteed to have the same size and alignment:
+//
 // [2] Per https://doc.rust-lang.org/1.81.0/std/num/type.NonZeroI8.html:
 //
 //     `Option<NonZeroI8>` is guaranteed to be compatible with `i8`, including in FFI.
+//
+//     Thanks to the null pointer optimization, `NonZeroI8` and `Option<NonZeroI8>`
+//     are guaranteed to have the same size and alignment:
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
     unsafe_impl!(Option<NonZeroU8>: TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
