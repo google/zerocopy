@@ -9,6 +9,7 @@
 
 use core::{
     cell::{Cell, UnsafeCell},
+    convert::Infallible,
     mem::MaybeUninit as CoreMaybeUninit,
     ptr::NonNull,
 };
@@ -678,7 +679,7 @@ mod atomics {
     }
 }
 
-impl_known_layout!(core::convert::Infallible);
+impl_known_layout!(Infallible);
 
 // SAFETY: `Infallible` is an uninhabited enum, which has size 0 and alignment 1
 // [1].
@@ -690,8 +691,8 @@ impl_known_layout!(core::convert::Infallible);
 // [1] https://doc.rust-lang.org/1.81.0/reference/type-layout.html#enum-layout
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
-    unsafe_impl!(core::convert::Infallible: Immutable, IntoBytes, Unaligned);
-    assert_unaligned!(core::convert::Infallible);
+    unsafe_impl!(Infallible: Immutable, IntoBytes, Unaligned);
+    assert_unaligned!(Infallible);
 };
 
 // SAFETY: Per reference [1]: "For all T, the following are guaranteed:
@@ -1970,7 +1971,7 @@ mod tests {
         assert_impls!(PhantomData<[u8]>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
 
         assert_impls!(
-            core::convert::Infallible: KnownLayout,
+            Infallible: KnownLayout,
             Immutable,
             IntoBytes,
             Unaligned,
