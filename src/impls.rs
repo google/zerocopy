@@ -217,12 +217,12 @@ macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
 //   how we'd prove it short of adding text to the stdlib docs that says so
 //   explicitly, which likely wouldn't be accepted.
 //
-// [1] Per https://doc.rust-lang.org/1.81.0/std/num/struct.NonZeroU8.html:
+// [1] Per https://doc.rust-lang.org/1.81.0/std/num/type.NonZeroU8.html:
 //
 //     `NonZeroU8` is guaranteed to have the same layout and bit validity as `u8` with
 //     the exception that 0 is not a valid instance.
 //
-// [2] Per https://doc.rust-lang.org/1.81.0/std/num/struct.NonZeroI8.html:
+// [2] Per https://doc.rust-lang.org/1.81.0/std/num/type.NonZeroI8.html:
 //
 //     `NonZeroI8` is guaranteed to have the same layout and bit validity as `i8` with
 //     the exception that 0 is not a valid instance.
@@ -268,11 +268,11 @@ const _: () = unsafe {
 //   purpose of those types, it's virtually unthinkable that that would ever
 //   change. The only valid alignment for a 1-byte type is 1.
 //
-// [1] Per https://doc.rust-lang.org/1.81.0/std/num/struct.NonZeroU8.html:
+// [1] Per https://doc.rust-lang.org/1.81.0/std/num/type.NonZeroU8.html:
 //
 //     `Option<NonZeroU8>` is guaranteed to be compatible with `u8`, including in FFI.
 //
-// [2] Per https://doc.rust-lang.org/1.81.0/std/num/struct.NonZeroI8.html:
+// [2] Per https://doc.rust-lang.org/1.81.0/std/num/type.NonZeroI8.html:
 //
 //     `Option<NonZeroI8>` is guaranteed to be compatible with `i8`, including in FFI.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
