@@ -1225,8 +1225,10 @@ mod _project {
             // 1. `elem`, conditionally, conforms to the validity invariant of
             //    `I::Alignment`. If `elem` is projected from data well-aligned
             //    for `[T]`, `elem` will be valid for `T`.
-            // 2. FIXME: Need to cite facts about `[T]`'s layout (same for the
-            //    preceding points)
+            // 2. Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#array-layout:
+            //
+            //      Slices have the same layout as the section of the array they
+            //      slice.
             self.as_inner().iter().map(|elem| unsafe { Ptr::from_inner(elem) })
         }
     }

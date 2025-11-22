@@ -3158,7 +3158,7 @@ pub unsafe trait FromZeros: TryFromBytes {
             // is sufficiently aligned. Since the produced pointer is a
             // `NonNull`, it is non-null.
             //
-            // [1] Per https://doc.rust-lang.org/nightly/std/boxed/index.html#memory-layout:
+            // [1] Per https://doc.rust-lang.org/1.81.0/std/boxed/index.html#memory-layout:
             //
             //   For zero-sized values, the `Box` pointer has to be non-null and sufficiently aligned.
             //

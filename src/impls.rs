@@ -154,12 +154,13 @@ impl_size_eq!(char, Unalign<u32>);
 // Note that we don't `assert_unaligned!(str)` because `assert_unaligned!` uses
 // `align_of`, which only works for `Sized` types.
 //
-// FIXME(#429):
-// - Add quotes from documentation.
-// - Improve safety proof for `FromZeros` and `IntoBytes`; having the same
-//   layout as `[u8]` isn't sufficient.
+// FIXME(#429): Improve safety proof for `FromZeros` and `IntoBytes`; having the same
+// layout as `[u8]` isn't sufficient.
 //
-// [1] https://doc.rust-lang.org/1.81.0/reference/type-layout.html#str-layout
+// [1] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#str-layout:
+//
+//   String slices are a UTF-8 representation of characters that have the same
+//   layout as slices of type `[u8]`.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe { unsafe_impl!(str: Immutable, FromZeros, IntoBytes, Unaligned) };
 
@@ -216,15 +217,15 @@ macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
 //   how we'd prove it short of adding text to the stdlib docs that says so
 //   explicitly, which likely wouldn't be accepted.
 //
-// [1] https://doc.rust-lang.org/1.81.0/std/num/type.NonZeroU8.html
+// [1] Per https://doc.rust-lang.org/1.81.0/std/num/struct.NonZeroU8.html:
 //
 //     `NonZeroU8` is guaranteed to have the same layout and bit validity as `u8` with
-//     the exception that 0 is not a valid instance
+//     the exception that 0 is not a valid instance.
 //
-// [2] https://doc.rust-lang.org/1.81.0/std/num/type.NonZeroI8.html
+// [2] Per https://doc.rust-lang.org/1.81.0/std/num/struct.NonZeroI8.html:
 //
-// FIXME(https://github.com/rust-lang/rust/pull/104082): Cite documentation that
-// layout is the same as primitive layout.
+//     `NonZeroI8` is guaranteed to have the same layout and bit validity as `i8` with
+//     the exception that 0 is not a valid instance.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
     unsafe_impl!(NonZeroU8: Immutable, IntoBytes, Unaligned);
@@ -267,13 +268,13 @@ const _: () = unsafe {
 //   purpose of those types, it's virtually unthinkable that that would ever
 //   change. The only valid alignment for a 1-byte type is 1.
 //
-// FIXME(#429): Add quotes from documentation.
+// [1] Per https://doc.rust-lang.org/1.81.0/std/num/struct.NonZeroU8.html:
 //
-// [1] https://doc.rust-lang.org/stable/std/num/struct.NonZeroU8.html
-// [2] https://doc.rust-lang.org/stable/std/num/struct.NonZeroI8.html
+//     `Option<NonZeroU8>` is guaranteed to be compatible with `u8`, including in FFI.
 //
-// FIXME(https://github.com/rust-lang/rust/pull/104082): Cite documentation for
-// layout guarantees.
+// [2] Per https://doc.rust-lang.org/1.81.0/std/num/struct.NonZeroI8.html:
+//
+//     `Option<NonZeroI8>` is guaranteed to be compatible with `i8`, including in FFI.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
     unsafe_impl!(Option<NonZeroU8>: TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
@@ -780,7 +781,7 @@ impl_for_transmute_from!(T: ?Sized + IntoBytes => IntoBytes for ManuallyDrop<T>[
 // SAFETY: `ManuallyDrop<T>` has the same layout as `T` [1], and thus has the
 // same alignment as `T`.
 //
-// [1] Per https://doc.rust-lang.org/nightly/core/mem/struct.ManuallyDrop.html:
+// [1] Per https://doc.rust-lang.org/1.81.0/std/mem/struct.ManuallyDrop.html:
 //
 //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
 //   `T`
@@ -928,8 +929,14 @@ const _: () = unsafe {
 // `IntoBytes` for raw pointers eventually, but we are holding off until we can
 // figure out how to address those footguns.
 //
-// [1] FIXME(https://github.com/rust-lang/rust/pull/116988): Cite the
-// documentation once this PR lands.
+// [1] Per https://doc.rust-lang.org/1.81.0/std/ptr/fn.null.html:
+//
+//   Creates a null raw pointer.
+//
+//   This function is equivalent to zero-initializing the pointer:
+//   `MaybeUninit::<*const T>::zeroed().assume_init()`.
+//
+//   The resulting pointer has the address 0.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
     unsafe_impl!(T: ?Sized => Immutable for *const T);
