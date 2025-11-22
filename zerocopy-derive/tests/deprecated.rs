@@ -46,3 +46,76 @@ test!(Enum => #[repr(u8)] enum Enum { A, } => TryFromBytes, FromZeros, KnownLayo
 test!(Struct => #[repr(C)] struct Struct; => TryFromBytes, FromZeros, FromBytes, KnownLayout, Immutable, IntoBytes, Unaligned);
 
 test!(Union => #[repr(C)] union Union{ a: (), } => TryFromBytes, FromZeros, FromBytes, KnownLayout, Immutable, IntoBytes, Unaligned);
+
+// Tests for ByteHash and ByteEq which require IntoBytes + Immutable
+mod enum_hash_eq {
+    mod ByteHash {
+        use super::super::*;
+        #[deprecated = "do not use"]
+        #[derive(imp::ByteHash, imp::IntoBytes, imp::Immutable)]
+        #[repr(u8)]
+        enum Enum { A, }
+
+        #[allow(deprecated)]
+        fn _allow_deprecated() {
+            util_assert_impl_all!(Enum: ::core::hash::Hash);
+        }
+    }
+    mod ByteEq {
+        use super::super::*;
+        #[deprecated = "do not use"]
+        #[derive(imp::ByteEq, imp::IntoBytes, imp::Immutable)]
+        #[repr(u8)]
+        enum Enum { A, }
+
+        #[allow(deprecated)]
+        fn _allow_deprecated() {
+            util_assert_impl_all!(Enum: ::core::cmp::PartialEq, ::core::cmp::Eq);
+        }
+    }
+}
+
+mod struct_hash_eq {
+    mod ByteHash {
+        use super::super::*;
+        #[deprecated = "do not use"]
+        #[derive(imp::ByteHash, imp::IntoBytes, imp::Immutable)]
+        #[repr(C)]
+        struct Struct;
+
+        #[allow(deprecated)]
+        fn _allow_deprecated() {
+            util_assert_impl_all!(Struct: ::core::hash::Hash);
+        }
+    }
+    mod ByteEq {
+        use super::super::*;
+        #[deprecated = "do not use"]
+        #[derive(imp::ByteEq, imp::IntoBytes, imp::Immutable)]
+        #[repr(C)]
+        struct Struct;
+
+        #[allow(deprecated)]
+        fn _allow_deprecated() {
+            util_assert_impl_all!(Struct: ::core::cmp::PartialEq, ::core::cmp::Eq);
+        }
+    }
+}
+
+// Tests for SplitAt which requires repr(C) and at least one field
+mod split_at_test {
+    mod SplitAt {
+        use super::super::*;
+        #[deprecated = "do not use"]
+        #[derive(imp::SplitAt, imp::KnownLayout)]
+        #[repr(C)]
+        struct Struct {
+            a: [u8],
+        }
+
+        #[allow(deprecated)]
+        fn _allow_deprecated() {
+            util_assert_impl_all!(Struct: imp::SplitAt);
+        }
+    }
+}
