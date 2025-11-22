@@ -57,6 +57,23 @@ When updating UI test files (in `tests/ui*` or `zerocopy-derive/tests/ui*`), run
 When a PR resolves an issue, the PR description and commit message should include a line like `Closes #123`.
 When a PR makes progress on, but does not close, an issue, the PR description and commit message should include a line like `Makes progress on #123`.
 
+## Safety
+
+### Pointer Casts
+
+- **Avoid `&slice[0] as *const T` or `&slice[0] as *mut T`.**
+  Instead, use `slice.as_ptr()` or `slice.as_mut_ptr()`. Casting a reference to
+  a single element creates a raw pointer that is only valid for that element.
+  Accessing subsequent elements via pointer arithmetic is Undefined Behavior.
+  See [unsafe-code-guidelines#134](https://github.com/rust-lang/unsafe-code-guidelines/issues/134).
+
+- **Avoid converting `&mut T` to `*const T` (or `*const U`)**.
+  This advice applies if you intend to later cast the pointer to `*mut T` and
+  mutate the data. This conversion reborrows `&mut T` as a shared reference
+  `&T`, which may restrict permissions under Stacked Borrows. Instead, cast
+  `&mut T` directly to `*mut T` first, then to `*const T` if necessary. See
+  [rust#56604](https://github.com/rust-lang/rust/issues/56604).
+
 ## Code Style
 
 ### Comments
