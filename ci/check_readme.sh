@@ -10,10 +10,12 @@
 
 set -eo pipefail
 
-# Install again in case the installation failed during the
-# `generate_cache` step. We treat that step as best-effort and
-# suppress all errors from it.
-cargo install -q cargo-readme --version 3.2.0
+yes | ./cargo.sh +nightly install -q cargo-doc2readme --version 0.6.3
 
-diff <(cargo -q run --manifest-path tools/Cargo.toml -p generate-readme) README.md >&2
-exit $?
+# We run `cargo-doc2readme` with the nightly toolchain and `--expand-macros` so
+# that intra-doc links to feature-gated items (like `simd` or `alloc` types)
+# are correctly resolved.
+#
+# We use `yes | ...` because `cargo.sh` is interactive and prompts for
+# toolchain installation if it's missing (which is common in CI environments).
+yes | ./cargo.sh +nightly doc2readme --expand-macros --all-features --check --template README.j2

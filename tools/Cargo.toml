@@ -9,7 +9,6 @@
 [workspace]
 members = [
     "cargo-zerocopy",
-    "generate-readme",
 ]
 resolver = "2"
 
