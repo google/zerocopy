@@ -229,6 +229,15 @@ mod _conversions {
         #[allow(clippy::wrong_self_convention)]
         pub(crate) fn as_ref(self) -> &'a T {
             let raw = self.as_inner().as_non_null();
+            // SAFETY: `self` satisfies the `Aligned` invariant, so we know that
+            // `raw` is validly-aligned for `T`.
+            #[cfg(miri)]
+            unsafe {
+                crate::util::miri_promise_symbolic_alignment(
+                    raw.as_ptr().cast(),
+                    core::mem::align_of_val_raw(raw.as_ptr()),
+                );
+            }
             // SAFETY: This invocation of `NonNull::as_ref` satisfies its
             // documented safety preconditions:
             //
@@ -323,6 +332,15 @@ mod _conversions {
         #[allow(clippy::wrong_self_convention)]
         pub(crate) fn as_mut(self) -> &'a mut T {
             let mut raw = self.as_inner().as_non_null();
+            // SAFETY: `self` satisfies the `Aligned` invariant, so we know that
+            // `raw` is validly-aligned for `T`.
+            #[cfg(miri)]
+            unsafe {
+                crate::util::miri_promise_symbolic_alignment(
+                    raw.as_ptr().cast(),
+                    core::mem::align_of_val_raw(raw.as_ptr()),
+                );
+            }
             // SAFETY: This invocation of `NonNull::as_mut` satisfies its
             // documented safety preconditions:
             //
