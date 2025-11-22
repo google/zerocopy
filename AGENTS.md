@@ -76,6 +76,10 @@ When a PR makes progress on, but does not close, an issue, the PR description an
 
 ## Code Style
 
+### Formatting
+
+To determine how to format code, read the formatting checker script in `ci/check_fmt.sh`.
+
 ### Comments
 
 All comments (including `//`, `///`, and `//!`) should be wrapped at 80 columns.
