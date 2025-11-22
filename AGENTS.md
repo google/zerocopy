@@ -12,10 +12,10 @@ This repository uses a wrapper script around Cargo to ensure consistent toolchai
 
 ## Build and Test
 
-**IMPORTANT:** You must **NEVER** run `cargo` directly. Instead, you must **ALWAYS** use the `./cargo.sh` wrapper script for all `cargo` sub-commands (e.g., `check`, `test`, `build`).
+**IMPORTANT:** You must **NEVER** run `cargo` directly. Instead, you must **ALWAYS** use `yes | ./cargo.sh` for all `cargo` sub-commands (e.g., `check`, `test`, `build`). Using `yes |` is required to bypass interactive prompts for toolchain installation.
 
 ### Syntax
-`./cargo.sh +<toolchain> <command> [args]`
+`yes | ./cargo.sh +<toolchain> <command> [args]`
 
 ### Toolchains
 The `<toolchain>` argument is mandatory and can be one of the following:
@@ -31,8 +31,8 @@ The `<toolchain>` argument is mandatory and can be one of the following:
 Clippy should **always** be run on the `nightly` toolchain.
 
 ```bash
-./cargo.sh +nightly clippy
-./cargo.sh +nightly clippy --tests
+yes | ./cargo.sh +nightly clippy
+yes | ./cargo.sh +nightly clippy --tests
 ```
 
 ### Examples
@@ -40,14 +40,14 @@ Clippy should **always** be run on the `nightly` toolchain.
 ```bash
 # Check the code using the nightly toolchain
 # DO NOT RUN: cargo check
-./cargo.sh +nightly check
+yes | ./cargo.sh +nightly check
 
 # Run tests on all supported toolchains
 # DO NOT RUN: cargo test
-./cargo.sh +all test
+yes | ./cargo.sh +all test
 
 # Run a specific test on stable
-./cargo.sh +stable test -- test_name
+yes | ./cargo.sh +stable test -- test_name
 ```
 
 ## Workflow
@@ -65,11 +65,32 @@ When updating UI test files (in `tests/ui*` or `zerocopy-derive/tests/ui*`), run
 When a PR resolves an issue, the PR description and commit message should include a line like `Closes #123`.
 When a PR makes progress on, but does not close, an issue, the PR description and commit message should include a line like `Makes progress on #123`.
 
+## Safety
+
+### Pointer Casts
+
+- **Avoid `&slice[0] as *const T` or `&slice[0] as *mut T`.**
+  Instead, use `slice.as_ptr()` or `slice.as_mut_ptr()`. Casting a reference to
+  a single element creates a raw pointer that is only valid for that element.
+  Accessing subsequent elements via pointer arithmetic is Undefined Behavior.
+  See [unsafe-code-guidelines#134](https://github.com/rust-lang/unsafe-code-guidelines/issues/134).
+
+- **Avoid converting `&mut T` to `*const T` (or `*const U`)**.
+  This advice applies if you intend to later cast the pointer to `*mut T` and
+  mutate the data. This conversion reborrows `&mut T` as a shared reference
+  `&T`, which may restrict permissions under Stacked Borrows. Instead, cast
+  `&mut T` directly to `*mut T` first, then to `*const T` if necessary. See
+  [rust#56604](https://github.com/rust-lang/rust/issues/56604).
+
 ## Code Style
 
 ### File Headers
 
 Each file should contain a copyright header (excluding auto-generated files such as `.stderr` files). The header should follow the format found in existing files (e.g. `src/lib.rs`), using the appropriate comment syntax for the file type.
+
+### Formatting
+
+To determine how to format code, read the formatting checker script in `ci/check_fmt.sh`.
 
 ### Comments
 

@@ -52,6 +52,19 @@ impl<T: ?Sized> Clone for SendSyncPhantomData<T> {
     }
 }
 
+#[cfg(miri)]
+extern "Rust" {
+    /// Miri-provided intrinsic that marks the pointer `ptr` as aligned to
+    /// `align`.
+    ///
+    /// This intrinsic is used to inform Miri's symbolic alignment checker that
+    /// a pointer is aligned, even if Miri cannot statically deduce that fact.
+    /// This is often required when performing raw pointer arithmetic or casts
+    /// where the alignment is guaranteed by runtime checks or invariants that
+    /// Miri is not aware of.
+    pub(crate) fn miri_promise_symbolic_alignment(ptr: *const (), align: usize);
+}
+
 pub(crate) trait AsAddress {
     fn addr(self) -> usize;
 }
