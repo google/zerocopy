@@ -1,13 +1,21 @@
+<!-- Copyright 2025 The Fuchsia Authors
+
+Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+<LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+This file may not be copied, modified, or distributed except according to
+those terms. -->
+
 # Development Instructions
 
 This repository uses a wrapper script around Cargo to ensure consistent toolchain usage and configuration.
 
 ## Build and Test
 
-**IMPORTANT:** You must **NEVER** run `cargo` directly. Instead, you must **ALWAYS** use the `./cargo.sh` wrapper script for all `cargo` sub-commands (e.g., `check`, `test`, `build`).
+**IMPORTANT:** You must **NEVER** run `cargo` directly. Instead, you must **ALWAYS** use `yes | ./cargo.sh` for all `cargo` sub-commands (e.g., `check`, `test`, `build`). Using `yes |` is required to bypass interactive prompts for toolchain installation.
 
 ### Syntax
-`./cargo.sh +<toolchain> <command> [args]`
+`yes | ./cargo.sh +<toolchain> <command> [args]`
 
 ### Toolchains
 The `<toolchain>` argument is mandatory and can be one of the following:
@@ -23,8 +31,8 @@ The `<toolchain>` argument is mandatory and can be one of the following:
 Clippy should **always** be run on the `nightly` toolchain.
 
 ```bash
-./cargo.sh +nightly clippy
-./cargo.sh +nightly clippy --tests
+yes | ./cargo.sh +nightly clippy
+yes | ./cargo.sh +nightly clippy --tests
 ```
 
 ### Examples
@@ -32,14 +40,14 @@ Clippy should **always** be run on the `nightly` toolchain.
 ```bash
 # Check the code using the nightly toolchain
 # DO NOT RUN: cargo check
-./cargo.sh +nightly check
+yes | ./cargo.sh +nightly check
 
 # Run tests on all supported toolchains
 # DO NOT RUN: cargo test
-./cargo.sh +all test
+yes | ./cargo.sh +all test
 
 # Run a specific test on stable
-./cargo.sh +stable test -- test_name
+yes | ./cargo.sh +stable test -- test_name
 ```
 
 ## Workflow
@@ -75,6 +83,14 @@ When a PR makes progress on, but does not close, an issue, the PR description an
   [rust#56604](https://github.com/rust-lang/rust/issues/56604).
 
 ## Code Style
+
+### File Headers
+
+Each file should contain a copyright header (excluding auto-generated files such as `.stderr` files). The header should follow the format found in existing files (e.g. `src/lib.rs`), using the appropriate comment syntax for the file type.
+
+### Formatting
+
+To determine how to format code, read the formatting checker script in `ci/check_fmt.sh`.
 
 ### Comments
 

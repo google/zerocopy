@@ -1,27 +1,15 @@
-error[E0603]: module `macros` is private
-   --> tests/ui-msrv/invalid-impls/../../../src/util/macros.rs:122:22
-    |
-122 |         crate::util::macros::__unsafe();
-    |                      ^^^^^^ private module
-    |
-note: the module `macros` is defined here
-   --> /app/src/util/mod.rs:10:1
-    |
-10  | pub(crate) mod macros;
-    | ^^^^^^^^^^^^^^^^^^^^^^
-
 error[E0119]: conflicting implementations of trait `zerocopy::TryFromBytes` for type `Foo<_>`
    --> tests/ui-msrv/invalid-impls/../../../src/util/macros.rs:127:9
     |
 127 |         unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),* $(, const $constname: $constty,)*> $trait for $ty {
     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `Foo<_>`
     |
-   ::: tests/ui-msrv/invalid-impls/invalid-impls.rs:22:10
+   ::: tests/ui-msrv/invalid-impls/invalid-impls.rs:29:10
     |
-22  | #[derive(FromBytes, IntoBytes, Unaligned)]
+29  | #[derive(FromBytes, IntoBytes, Unaligned)]
     |          --------- first implementation here
 ...
-27  |     impl_or_verify!(T => TryFromBytes for Foo<T>);
+34  |     impl_or_verify!(T => TryFromBytes for Foo<T>);
     |     ---------------------------------------------- in this macro invocation
     |
     = note: this error originates in the macro `unsafe_impl` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -32,12 +20,12 @@ error[E0119]: conflicting implementations of trait `zerocopy::FromZeros` for typ
 127 |         unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),* $(, const $constname: $constty,)*> $trait for $ty {
     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `Foo<_>`
     |
-   ::: tests/ui-msrv/invalid-impls/invalid-impls.rs:22:10
+   ::: tests/ui-msrv/invalid-impls/invalid-impls.rs:29:10
     |
-22  | #[derive(FromBytes, IntoBytes, Unaligned)]
+29  | #[derive(FromBytes, IntoBytes, Unaligned)]
     |          --------- first implementation here
 ...
-28  |     impl_or_verify!(T => FromZeros for Foo<T>);
+35  |     impl_or_verify!(T => FromZeros for Foo<T>);
     |     ------------------------------------------- in this macro invocation
     |
     = note: this error originates in the macro `unsafe_impl` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -48,12 +36,12 @@ error[E0119]: conflicting implementations of trait `zerocopy::FromBytes` for typ
 127 |         unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),* $(, const $constname: $constty,)*> $trait for $ty {
     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `Foo<_>`
     |
-   ::: tests/ui-msrv/invalid-impls/invalid-impls.rs:22:10
+   ::: tests/ui-msrv/invalid-impls/invalid-impls.rs:29:10
     |
-22  | #[derive(FromBytes, IntoBytes, Unaligned)]
+29  | #[derive(FromBytes, IntoBytes, Unaligned)]
     |          --------- first implementation here
 ...
-29  |     impl_or_verify!(T => FromBytes for Foo<T>);
+36  |     impl_or_verify!(T => FromBytes for Foo<T>);
     |     ------------------------------------------- in this macro invocation
     |
     = note: this error originates in the macro `unsafe_impl` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -64,12 +52,12 @@ error[E0119]: conflicting implementations of trait `zerocopy::IntoBytes` for typ
 127 |         unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),* $(, const $constname: $constty,)*> $trait for $ty {
     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `Foo<_>`
     |
-   ::: tests/ui-msrv/invalid-impls/invalid-impls.rs:22:21
+   ::: tests/ui-msrv/invalid-impls/invalid-impls.rs:29:21
     |
-22  | #[derive(FromBytes, IntoBytes, Unaligned)]
+29  | #[derive(FromBytes, IntoBytes, Unaligned)]
     |                     --------- first implementation here
 ...
-30  |     impl_or_verify!(T => IntoBytes for Foo<T>);
+37  |     impl_or_verify!(T => IntoBytes for Foo<T>);
     |     ------------------------------------------- in this macro invocation
     |
     = note: this error originates in the macro `unsafe_impl` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -80,17 +68,16 @@ error[E0119]: conflicting implementations of trait `zerocopy::Unaligned` for typ
 127 |         unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),* $(, const $constname: $constty,)*> $trait for $ty {
     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `Foo<_>`
     |
-   ::: tests/ui-msrv/invalid-impls/invalid-impls.rs:22:32
+   ::: tests/ui-msrv/invalid-impls/invalid-impls.rs:29:32
     |
-22  | #[derive(FromBytes, IntoBytes, Unaligned)]
+29  | #[derive(FromBytes, IntoBytes, Unaligned)]
     |                                --------- first implementation here
 ...
-31  |     impl_or_verify!(T => Unaligned for Foo<T>);
+38  |     impl_or_verify!(T => Unaligned for Foo<T>);
     |     ------------------------------------------- in this macro invocation
     |
     = note: this error originates in the macro `unsafe_impl` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: aborting due to 6 previous errors
+error: aborting due to 5 previous errors
 
-Some errors have detailed explanations: E0119, E0603.
-For more information about an error, try `rustc --explain E0119`.
+For more information about this error, try `rustc --explain E0119`.
