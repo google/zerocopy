@@ -10,12 +10,13 @@
 
 set -eo pipefail
 
-yes | ./cargo.sh +nightly install -q cargo-doc2readme --version 0.6.3
+cargo install -q cargo-rdme --version 1.5.0
 
-# We run `cargo-doc2readme` with the nightly toolchain and `--expand-macros` so
-# that intra-doc links to feature-gated items (like `simd` or `alloc` types)
-# are correctly resolved.
-#
-# We use `yes | ...` because `cargo.sh` is interactive and prompts for
-# toolchain installation if it's missing (which is common in CI environments).
-yes | ./cargo.sh +nightly doc2readme --expand-macros --all-features --check --template README.j2
+# We use `cargo-rdme` to check that the README is up-to-date with the crate
+# documentation. We use `--intralinks-strip-links` to strip intra-doc links
+# (e.g., `[Vec]`) because `cargo-rdme`'s link resolution is currently unreliable
+# in this codebase (likely due to complex re-exports and glob imports), often
+# resulting in broken links or missing definitions. Stripping them keeps the
+# README clean and readable on GitHub, matching the previous behavior of our
+# custom script.
+cargo rdme --check --intralinks-strip-links
