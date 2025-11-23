@@ -297,7 +297,7 @@ jobs:
         echo "Found that the '$TOOLCHAIN' toolchain is $ZC_TOOLCHAIN" | tee -a $GITHUB_STEP_SUMMARY
         echo "ZC_TOOLCHAIN=$ZC_TOOLCHAIN" >> $GITHUB_ENV
 
-        if [[ '$TOOLCHAIN' == 'nightly' ]]; then
+        if [[ "$TOOLCHAIN" == 'nightly' ]]; then
           RUSTFLAGS="$RUSTFLAGS $ZC_NIGHTLY_RUSTFLAGS"
           MIRIFLAGS="$MIRIFLAGS $ZC_NIGHTLY_MIRIFLAGS"
           echo "Using nightly toolchain; setting RUSTFLAGS='$RUSTFLAGS' and MIRIFLAGS='$MIRIFLAGS'" | tee -a $GITHUB_STEP_SUMMARY
@@ -532,14 +532,15 @@ jobs:
         TOOLCHAIN: ${{ matrix.toolchain }}
         CRATE: ${{ matrix.crate }}
         FEATURES: ${{ matrix.features }}
-        NIGHTLY_FLAG: ${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS'|| '' }}
       run: |
         # Include arguments passed during docs.rs deployments to make sure those
         # work properly.
         set -eo pipefail
         METADATA_DOCS_RS_RUSTDOC_ARGS="$(cargo metadata --format-version 1 | \
           jq -r ".packages[] | select(.name == \"zerocopy\").metadata.docs.rs.\"rustdoc-args\"[]" | tr '\n' ' ')"
-        export RUSTDOCFLAGS="$NIGHTLY_FLAG $RUSTDOCFLAGS"
+        if [[ "$TOOLCHAIN" == "nightly" ]]; then
+          export RUSTDOCFLAGS="-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS $RUSTDOCFLAGS"
+        fi
         ./cargo.sh +$TOOLCHAIN doc --document-private-items --package $CRATE $FEATURES
 
     # If the commit message contains the line `SKIP_CARGO_SEMVER_CHECKS=1`, then
