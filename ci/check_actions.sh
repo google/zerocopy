@@ -13,16 +13,13 @@ set -eo pipefail
 script_name="ci/check_actions.sh"
 
 # Ensure action-validator is installed
-if ! command -v action-validator >/dev/null; then
-    if [ -x "$HOME/.cargo/bin/action-validator" ]; then
-        export PATH="$HOME/.cargo/bin:$PATH"
-    else
-        echo "$script_name: action-validator not found, installing..." >&2
-        # Install specific version to ensure reproducibility
-        cargo install -q action-validator --version 0.8.0 --locked
-        export PATH="$HOME/.cargo/bin:$PATH"
-    fi
+# simplified logic as suggested by code review
+if [ ! -x "$HOME/.cargo/bin/action-validator" ]; then
+    echo "$script_name: action-validator not found, installing..." >&2
+    # Install specific version to ensure reproducibility
+    cargo install -q action-validator --version 0.8.0 --locked
 fi
+export PATH="$HOME/.cargo/bin:$PATH"
 
 # Files to exclude from validation (e.g., because they are not Actions/Workflows)
 # Use relative paths matching `find .github` output
@@ -32,9 +29,9 @@ EXCLUDE_FILES=(
 )
 
 failed=0
-files=$(find .github -type f \( -iname '*.yml' -o -iname '*.yaml' \))
 
-for file in $files; do
+# Use process substitution and while loop to handle filenames with spaces robustly
+while IFS= read -r -d '' file; do
     # Check if file is in exclusion list
     excluded=0
     for exclude in "${EXCLUDE_FILES[@]}"; do
@@ -53,7 +50,7 @@ for file in $files; do
         echo "$output" | sed "s|^|$script_name:   |" >&2
         failed=1
     fi
-done
+done < <(find .github -type f \( -iname '*.yml' -o -iname '*.yaml' \) -print0)
 
 if [[ $failed -ne 0 ]]; then
     echo "$script_name: One or more files failed validation." >&2
