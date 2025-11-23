@@ -50,9 +50,10 @@ jobs:
           ref: ${{ matrix.branch }}
           persist-credentials: false
       - name: Calculate target version
-        # zizmor: ignore[template-injection]
+        env:
+          TOOLCHAIN: ${{ matrix.toolchain }}
         run: |
-          if [ "${{ matrix.toolchain }}" == stable ]; then
+          if [ "$TOOLCHAIN" == stable ]; then
             # Install whatever the latest stable release is. This has the side
             # effect of determining the latest stable release so that we can
             # update `Cargo.toml`.
@@ -73,7 +74,8 @@ jobs:
             # https://github.com/rust-lang/rust/issues/116433.
             components: rust-src
       - name: Update files
-        # zizmor: ignore[template-injection]
+        env:
+          TOOLCHAIN: ${{ matrix.toolchain }}
         run: |
           set -eo pipefail
 
@@ -127,8 +129,7 @@ jobs:
             TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package file:///home/runner/work/zerocopy/zerocopy/zerocopy-derive
           }
 
-          # zizmor: ignore[template-injection]
-          if [ "${{ matrix.toolchain }}" == stable ]; then
+          if [ "$TOOLCHAIN" == stable ]; then
             STABLE_VERSION="$(cargo +stable version | sed -e 's/^cargo \([0-9\.]*\) .*/\1/')"
             update-pinned-version stable "$STABLE_VERSION" stable '--features __internal_use_only_features_that_work_on_stable'
 

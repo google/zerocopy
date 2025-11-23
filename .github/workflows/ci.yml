@@ -275,7 +275,8 @@ jobs:
         cargo add -p zerocopy-derive 'syn@=2.0.46'
 
     - name: Configure environment variables
-      # zizmor: ignore[template-injection]
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
       run: |
         set -eo pipefail
 
@@ -292,11 +293,11 @@ jobs:
         # ...to:
         #
         #   toolchain: $ {{ ./cargo.sh --version matrix.toolchain }} # hypothetical syntax
-        ZC_TOOLCHAIN="$(./cargo.sh --version ${{ matrix.toolchain }})"
-        echo "Found that the '${{ matrix.toolchain }}' toolchain is $ZC_TOOLCHAIN" | tee -a $GITHUB_STEP_SUMMARY
+        ZC_TOOLCHAIN="$(./cargo.sh --version $TOOLCHAIN)"
+        echo "Found that the '$TOOLCHAIN' toolchain is $ZC_TOOLCHAIN" | tee -a $GITHUB_STEP_SUMMARY
         echo "ZC_TOOLCHAIN=$ZC_TOOLCHAIN" >> $GITHUB_ENV
 
-        if [[ '${{ matrix.toolchain }}' == 'nightly' ]]; then
+        if [[ '$TOOLCHAIN' == 'nightly' ]]; then
           RUSTFLAGS="$RUSTFLAGS $ZC_NIGHTLY_RUSTFLAGS"
           MIRIFLAGS="$MIRIFLAGS $ZC_NIGHTLY_MIRIFLAGS"
           echo "Using nightly toolchain; setting RUSTFLAGS='$RUSTFLAGS' and MIRIFLAGS='$MIRIFLAGS'" | tee -a $GITHUB_STEP_SUMMARY
@@ -342,18 +343,30 @@ jobs:
     # On the `thumbv6m-none-eabi` target, we can't run `cargo check --tests` due
     # to the `memchr` crate, so we just do `cargo check` instead.
     - name: Check
-      # zizmor: ignore[template-injection]
-      run: ./cargo.sh +${{ matrix.toolchain }} check --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
+      run: ./cargo.sh +$TOOLCHAIN check --package $CRATE --target $TARGET $FEATURES --verbose
       if: matrix.target == 'thumbv6m-none-eabi'
 
     - name: Check tests
-      # zizmor: ignore[template-injection]
-      run: ./cargo.sh +${{ matrix.toolchain }} check --tests --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
+      run: ./cargo.sh +$TOOLCHAIN check --tests --package $CRATE --target $TARGET $FEATURES --verbose
       if: matrix.target != 'thumbv6m-none-eabi'
 
     - name: Build
-      # zizmor: ignore[template-injection]
-      run: ./cargo.sh +${{ matrix.toolchain }} build --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
+      run: ./cargo.sh +$TOOLCHAIN build --package $CRATE --target $TARGET $FEATURES --verbose
       if: matrix.target != 'thumbv6m-none-eabi'
 
     # When building tests for the i686 target, we need certain libraries which
@@ -372,12 +385,16 @@ jobs:
       if: contains(matrix.target, 'i686')
 
     - name: Run tests
-      # zizmor: ignore[template-injection]
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
       run: |
-        ./cargo.sh +${{ matrix.toolchain }} test \
-          --package ${{ matrix.crate }} \
-          --target ${{ matrix.target }} \
-          ${{ matrix.features }} \
+        ./cargo.sh +$TOOLCHAIN test \
+          --package $CRATE \
+          --target $TARGET \
+          $FEATURES \
           --verbose \
           -- \
           --skip ui
@@ -390,7 +407,11 @@ jobs:
       if: contains(matrix.target, 'linux') && (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686'))
 
     - name: Run UI tests
-      # zizmor: ignore[template-injection]
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
       run: |
         # Run UI tests separately, treating warnings as warnings (rather than
         # as errors, as we do everywhere else in our CI tests). This allows
@@ -401,10 +422,10 @@ jobs:
         #
         # TODO(#560), TODO(#187): Once we migrate to the ui-test crate, we
         # likely won't have to special-case the UI tests like this.
-        RUSTFLAGS="$RUSTFLAGS -Wwarnings" ./cargo.sh +${{ matrix.toolchain }} test \
-          --package ${{ matrix.crate }} \
-          --target ${{ matrix.target }} \
-          ${{ matrix.features }} \
+        RUSTFLAGS="$RUSTFLAGS -Wwarnings" ./cargo.sh +$TOOLCHAIN test \
+          --package $CRATE \
+          --target $TARGET \
+          $FEATURES \
           --verbose \
           ui
 
@@ -431,12 +452,16 @@ jobs:
           (matrix.toolchain == 'msrv' || matrix.toolchain == 'stable' || matrix.toolchain == 'nightly')
 
     - name: Run tests under Miri
-      # zizmor: ignore[template-injection]
+      env:
+        TARGET: ${{ matrix.target }}
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        FEATURES: ${{ matrix.features }}
       run: |
         set -eo pipefail
 
         # Work around https://github.com/rust-lang/miri/issues/3125
-        [ "${{ matrix.target }}" == "aarch64-unknown-linux-gnu" ] && cargo clean
+        [ "$TARGET" == "aarch64-unknown-linux-gnu" ] && cargo clean
 
         # Spawn twice the number of workers as there are CPU cores.
         THREADS=$(echo "$(nproc) * 2" | bc)
@@ -447,12 +472,12 @@ jobs:
         # Run under both the stacked borrows model (default) and under the tree 
         # borrows model to ensure we're compliant with both.
         for EXTRA_FLAGS in "" "-Zmiri-tree-borrows"; do
-          MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" ./cargo.sh +${{ matrix.toolchain }} \
+          MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" ./cargo.sh +$TOOLCHAIN \
             miri nextest run \
             --test-threads "$THREADS" \
-            --package ${{ matrix.crate }} \
-            --target ${{ matrix.target }} \
-            ${{ matrix.features }}
+            --package $CRATE \
+            --target $TARGET \
+            $FEATURES
         done
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
@@ -476,13 +501,21 @@ jobs:
     # On the `thumbv6m-none-eabi` target, we can't run `cargo clippy --tests`
     # due to the `memchr` crate, so we just do `cargo clippy` instead.
     - name: Clippy
-      # zizmor: ignore[template-injection]
-      run: ./cargo.sh +${{ matrix.toolchain }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
+      run: ./cargo.sh +$TOOLCHAIN clippy --package $CRATE --target $TARGET $FEATURES --verbose
       if: matrix.toolchain == 'nightly' && matrix.target == 'thumbv6m-none-eabi'
 
     - name: Clippy tests
-      # zizmor: ignore[template-injection]
-      run: ./cargo.sh +${{ matrix.toolchain }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --tests --verbose
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
+      run: ./cargo.sh +$TOOLCHAIN clippy --package $CRATE --target $TARGET $FEATURES --tests --verbose
       # Clippy improves the accuracy of lints over time, and fixes bugs. Only
       # running Clippy on nightly allows us to avoid having to write code which
       # is compatible with older versions of Clippy, which sometimes requires
@@ -495,29 +528,36 @@ jobs:
       # make those items public/non-hidden more painless. Note that 
       # --document-hidden-items is unstable; if a future release breaks or removes it,
       # we can just update CI to no longer pass that flag.
-      # zizmor: ignore[template-injection]
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        FEATURES: ${{ matrix.features }}
+        NIGHTLY_FLAG: ${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS'|| '' }}
       run: |
         # Include arguments passed during docs.rs deployments to make sure those
         # work properly.
         set -eo pipefail
         METADATA_DOCS_RS_RUSTDOC_ARGS="$(cargo metadata --format-version 1 | \
           jq -r ".packages[] | select(.name == \"zerocopy\").metadata.docs.rs.\"rustdoc-args\"[]" | tr '\n' ' ')"
-        export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS'|| '' }} $RUSTDOCFLAGS"
-        ./cargo.sh +${{ matrix.toolchain }} doc --document-private-items --package ${{ matrix.crate }} ${{ matrix.features }}
+        export RUSTDOCFLAGS="$NIGHTLY_FLAG $RUSTDOCFLAGS"
+        ./cargo.sh +$TOOLCHAIN doc --document-private-items --package $CRATE $FEATURES
 
     # If the commit message contains the line `SKIP_CARGO_SEMVER_CHECKS=1`, then
     # skip the cargo-semver-checks step.
     - name: Check whether to skip cargo-semver-checks
-      # zizmor: ignore[template-injection]
+      env:
+        EVENT_NAME: ${{ github.event_name }}
+        HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        SHA: ${{ github.sha }}
       run: |
         set -eo pipefail
 
-        if [ "${{ github.event_name }}" == "pull_request" ]; then
+        if [ "$EVENT_NAME" == "pull_request" ]; then
           # Invoked from a PR - get the PR body directly
-          MESSAGE="$(git log -1 --pretty=%B ${{ github.event.pull_request.head.sha }})"
+          MESSAGE="$(git log -1 --pretty=%B $HEAD_SHA)"
         else
           # Invoked from the merge queue - get the commit message
-          MESSAGE="$(git log -1 --pretty=%B ${{ github.sha }})"
+          MESSAGE="$(git log -1 --pretty=%B $SHA)"
         fi
 
         if echo "$MESSAGE" | grep '^\s*SKIP_CARGO_SEMVER_CHECKS=1\s*$' > /dev/null; then
@@ -566,15 +606,19 @@ jobs:
     # - Support multiple matrix combinations (which we intend to do as part of
     #   #453 eventually anyway) so that this location is justified
     - name: Generate code coverage
-      # zizmor: ignore[template-injection]
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
       run: |
         set -eo pipefail
         ./cargo.sh +nightly install cargo-llvm-cov
 
-        ./cargo.sh +${{ matrix.toolchain }} llvm-cov \
-          --package ${{ matrix.crate }}              \
-          --target ${{ matrix.target }}              \
-          ${{ matrix.features }}                     \
+        ./cargo.sh +$TOOLCHAIN llvm-cov \
+          --package $CRATE              \
+          --target $TARGET              \
+          $FEATURES                     \
           --doctests                                 \
           --lcov                                     \
           --output-path lcov.info                    \
