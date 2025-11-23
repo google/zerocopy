@@ -15,6 +15,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   CARGO_TERM_COLOR: always
   RUSTFLAGS: -Dwarnings
@@ -271,6 +275,7 @@ jobs:
         cargo add -p zerocopy-derive 'syn@=2.0.46'
 
     - name: Configure environment variables
+      # zizmor: ignore[template-injection]
       run: |
         set -eo pipefail
 
@@ -337,14 +342,17 @@ jobs:
     # On the `thumbv6m-none-eabi` target, we can't run `cargo check --tests` due
     # to the `memchr` crate, so we just do `cargo check` instead.
     - name: Check
+      # zizmor: ignore[template-injection]
       run: ./cargo.sh +${{ matrix.toolchain }} check --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
       if: matrix.target == 'thumbv6m-none-eabi'
 
     - name: Check tests
+      # zizmor: ignore[template-injection]
       run: ./cargo.sh +${{ matrix.toolchain }} check --tests --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
       if: matrix.target != 'thumbv6m-none-eabi'
 
     - name: Build
+      # zizmor: ignore[template-injection]
       run: ./cargo.sh +${{ matrix.toolchain }} build --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
       if: matrix.target != 'thumbv6m-none-eabi'
 
@@ -364,6 +372,7 @@ jobs:
       if: contains(matrix.target, 'i686')
 
     - name: Run tests
+      # zizmor: ignore[template-injection]
       run: |
         ./cargo.sh +${{ matrix.toolchain }} test \
           --package ${{ matrix.crate }} \
@@ -381,6 +390,7 @@ jobs:
       if: contains(matrix.target, 'linux') && (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686'))
 
     - name: Run UI tests
+      # zizmor: ignore[template-injection]
       run: |
         # Run UI tests separately, treating warnings as warnings (rather than
         # as errors, as we do everywhere else in our CI tests). This allows
@@ -421,6 +431,7 @@ jobs:
           (matrix.toolchain == 'msrv' || matrix.toolchain == 'stable' || matrix.toolchain == 'nightly')
 
     - name: Run tests under Miri
+      # zizmor: ignore[template-injection]
       run: |
         set -eo pipefail
 
@@ -465,10 +476,12 @@ jobs:
     # On the `thumbv6m-none-eabi` target, we can't run `cargo clippy --tests`
     # due to the `memchr` crate, so we just do `cargo clippy` instead.
     - name: Clippy
+      # zizmor: ignore[template-injection]
       run: ./cargo.sh +${{ matrix.toolchain }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
       if: matrix.toolchain == 'nightly' && matrix.target == 'thumbv6m-none-eabi'
 
     - name: Clippy tests
+      # zizmor: ignore[template-injection]
       run: ./cargo.sh +${{ matrix.toolchain }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --tests --verbose
       # Clippy improves the accuracy of lints over time, and fixes bugs. Only
       # running Clippy on nightly allows us to avoid having to write code which
@@ -482,6 +495,7 @@ jobs:
       # make those items public/non-hidden more painless. Note that 
       # --document-hidden-items is unstable; if a future release breaks or removes it,
       # we can just update CI to no longer pass that flag.
+      # zizmor: ignore[template-injection]
       run: |
         # Include arguments passed during docs.rs deployments to make sure those
         # work properly.
@@ -494,6 +508,7 @@ jobs:
     # If the commit message contains the line `SKIP_CARGO_SEMVER_CHECKS=1`, then
     # skip the cargo-semver-checks step.
     - name: Check whether to skip cargo-semver-checks
+      # zizmor: ignore[template-injection]
       run: |
         set -eo pipefail
 
@@ -551,6 +566,7 @@ jobs:
     # - Support multiple matrix combinations (which we intend to do as part of
     #   #453 eventually anyway) so that this location is justified
     - name: Generate code coverage
+      # zizmor: ignore[template-injection]
       run: |
         set -eo pipefail
         ./cargo.sh +nightly install cargo-llvm-cov

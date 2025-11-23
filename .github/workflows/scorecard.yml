@@ -23,7 +23,12 @@ on:
     branches: [ "main" ]
 
 # Declare default permissions as read only.
-permissions: read-all
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   analysis:
@@ -31,9 +36,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       # Needed to upload the results to code-scanning dashboard.
-      security-events: write
+      security-events: write # zizmor: ignore[undocumented-permissions]
       # Needed to publish results and get a badge (see publish_results below).
-      id-token: write
+      id-token: write # zizmor: ignore[undocumented-permissions]
+      # Needed for actions/checkout
+      contents: read
 
     steps:
       - name: "Checkout code"

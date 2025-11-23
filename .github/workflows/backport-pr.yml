@@ -18,10 +18,18 @@ on:
         required: true
         default: 'main'
 
-permissions: read-all
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   release:
+    permissions:
+      contents: write # Need to write to repo to cherry-pick
+      pull-requests: write # Need to create PR
     runs-on: ubuntu-latest
     name: Backport PR
     steps:

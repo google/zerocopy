@@ -8,7 +8,7 @@
 
 version: 2
 updates:
-  - package-ecosystem: github-actions
+  - package-ecosystem: github-actions # zizmor: ignore[dependabot-cooldown]
     directory: /
     schedule:
       interval: daily
@@ -16,5 +16,3 @@ updates:
       # The trailing space instructs dependabot not to insert a colon between
       # the prefix and the rest of the message.
       prefix: "[CI] "
-    cooldown:
-      default-days: 7

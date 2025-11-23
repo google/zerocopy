@@ -26,6 +26,10 @@ permissions:
   contents: read
   pull-requests: write # zizmor: ignore[excessive-permissions]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   roll_rust:
     runs-on: ubuntu-latest
@@ -46,6 +50,7 @@ jobs:
           ref: ${{ matrix.branch }}
           persist-credentials: false
       - name: Calculate target version
+        # zizmor: ignore[template-injection]
         run: |
           if [ "${{ matrix.toolchain }}" == stable ]; then
             # Install whatever the latest stable release is. This has the side
@@ -68,6 +73,7 @@ jobs:
             # https://github.com/rust-lang/rust/issues/116433.
             components: rust-src
       - name: Update files
+        # zizmor: ignore[template-injection]
         run: |
           set -eo pipefail
 
@@ -121,6 +127,7 @@ jobs:
             TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package file:///home/runner/work/zerocopy/zerocopy/zerocopy-derive
           }
 
+          # zizmor: ignore[template-injection]
           if [ "${{ matrix.toolchain }}" == stable ]; then
             STABLE_VERSION="$(cargo +stable version | sed -e 's/^cargo \([0-9\.]*\) .*/\1/')"
             update-pinned-version stable "$STABLE_VERSION" stable '--features __internal_use_only_features_that_work_on_stable'
