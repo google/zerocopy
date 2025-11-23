@@ -13,7 +13,6 @@ set -eo pipefail
 script_name="ci/check_actions.sh"
 
 # Ensure action-validator is installed
-# simplified logic as suggested by code review
 if [ ! -x "$HOME/.cargo/bin/action-validator" ]; then
     echo "$script_name: action-validator not found, installing..." >&2
     # Install specific version to ensure reproducibility
