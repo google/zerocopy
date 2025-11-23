@@ -20,4 +20,4 @@ TRYBUILD=overwrite ./cargo.sh +stable  test ui --test trybuild -p zerocopy --fea
 # versions of these crates that have a lower MSRV.
 rm Cargo.lock && TRYBUILD=overwrite ./cargo.sh +msrv    test ui --test trybuild -p zerocopy --features=__internal_use_only_features_that_work_on_stable
 
-TRYBUILD=overwrite ./cargo.sh +all test ui --test trybuild -p zerocopy-derive
+./cargo.sh +all test -p zerocopy-derive --test ui -- --bless

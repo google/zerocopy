@@ -1,0 +1,15 @@
+[package]
+name = "ui-runner"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[workspace]
+
+[dependencies]
+ui_test = "0.25"
+regex = "1"
+
+[features]
+default = ["ui-tests"]
+ui-tests = []

@@ -12,8 +12,6 @@ extern crate zerocopy;
 #[path = "../include.rs"]
 mod util;
 
-use zerocopy::KnownLayout;
-
 use self::util::util::{NotZerocopy, AU16};
 
 fn main() {}
@@ -36,6 +34,7 @@ struct TryFromBytes1 {
 //
 
 #[derive(FromZeros)]
+
 struct FromZeros1 {
     value: NotZerocopy,
 }
@@ -45,6 +44,7 @@ struct FromZeros1 {
 //
 
 #[derive(FromBytes)]
+
 struct FromBytes1 {
     value: NotZerocopy,
 }

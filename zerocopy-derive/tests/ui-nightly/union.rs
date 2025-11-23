@@ -60,7 +60,6 @@ union IntoBytes4 {
 //
 // Unaligned errors
 //
-
 #[derive(Unaligned)]
 #[repr(C, align(2))]
 union Unaligned1 {
