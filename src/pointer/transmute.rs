@@ -365,13 +365,11 @@ where
 //
 //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
 //   `T`
-#[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T: ?Sized => ManuallyDrop<T>) };
 
 // SAFETY:
 // - `Unalign<T>` promises to have the same size as `T`.
 // - `Unalign<T>` promises to have the same validity as `T`.
-#[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T => Unalign<T>) };
 // SAFETY: `Unalign<T>` promises to have the same size and validity as `T`.
 // Given `u: &Unalign<T>`, it is already possible to obtain `let t =
@@ -379,7 +377,6 @@ const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T => Unalign<T>) };
 // returned `&T` must point to the same referent as `u`, and thus it must be
 // sound for these two references to exist at the same time since it's already
 // possible for safe code to get into this state.
-#[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe { unsafe_impl_invariants_eq!(T => T, Unalign<T>) };
 
 // SAFETY:
@@ -404,7 +401,6 @@ const _: () = unsafe { unsafe_impl_invariants_eq!(T => T, Unalign<T>) };
 //   #[repr(transparent)]
 //   pub struct Wrapping<T>(pub T);
 //   ```
-#[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T => Wrapping<T>) };
 
 // SAFETY: By the preceding safety proof, `Wrapping<T>` and `T` have the same
@@ -412,7 +408,6 @@ const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T => Wrapping<T>) };
 // `w: &Wrapping<T>`, it's possible to do `let t = &w.t`, which means that it's
 // already possible for safe code to obtain a `&Wrapping<T>` and a `&T` pointing
 // to the same referent at the same time. Thus, this must be sound.
-#[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe { unsafe_impl_invariants_eq!(T => T, Wrapping<T>) };
 
 // SAFETY:
@@ -426,7 +421,6 @@ const _: () = unsafe { unsafe_impl_invariants_eq!(T => T, Wrapping<T>) };
 //   `UnsafeCell<T>` has the same in-memory representation as its inner type
 //   `T`. A consequence of this guarantee is that it is possible to convert
 //   between `T` and `UnsafeCell<T>`.
-#[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T: ?Sized => UnsafeCell<T>) };
 
 // SAFETY:
@@ -448,7 +442,6 @@ const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T: ?Sized => UnsafeC
 //   `UnsafeCell<T>` has the same in-memory representation as its inner type
 //   `T`. A consequence of this guarantee is that it is possible to convert
 //   between `T` and `UnsafeCell<T>`.
-#[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T: ?Sized => Cell<T>) };
 
 impl_transitive_transmute_from!(T: ?Sized => Cell<T> => T => UnsafeCell<T>);
