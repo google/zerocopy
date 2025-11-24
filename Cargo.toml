@@ -28,9 +28,9 @@ exclude = [".*"]
 
 [package.metadata.build-rs]
 # These key/value pairs are parsed by `build.rs`. Each entry names a `--cfg`
-# which will be emitted if zerocopy is built with a toolchain version at least
-# as high as the specified version. In the emitted `--cfg`, dashes are replaced
-# by underscores.
+# which will be emitted if zerocopy is built with a toolchain version *lower*
+# than the specified version. In the emitted `--cfg`, dashes are replaced by
+# underscores.
 #
 # Each name is suffixed with the version it corresponds to. This is a convention
 # used in the codebase to make it less likely for us to make mistakes when
@@ -38,28 +38,28 @@ exclude = [".*"]
 
 # From 1.89.0, Rust supports x86 AVX-12 SIMD types (previously gated by the
 # `stdarch_x86_avx512` feature).
-zerocopy-simd-x86-avx12-1-89-0 = "1.89.0"
+no-zerocopy-simd-x86-avx12-1-89-0 = "1.89.0"
 
 # From 1.81.0, Rust supports the `core::error::Error` trait.
-zerocopy-core-error-1-81-0 = "1.81.0"
+no-zerocopy-core-error-1-81-0 = "1.81.0"
 
 # From 1.78.0, Rust supports the `#[diagnostic::on_unimplemented]` attribute.
-zerocopy-diagnostic-on-unimplemented-1-78-0 = "1.78.0"
+no-zerocopy-diagnostic-on-unimplemented-1-78-0 = "1.78.0"
 
 # From 1.61.0, Rust supports generic types with trait bounds in `const fn`.
-zerocopy-generic-bounds-in-const-fn-1-61-0 = "1.61.0"
+no-zerocopy-generic-bounds-in-const-fn-1-61-0 = "1.61.0"
 
 # From 1.60.0, Rust supports `cfg(target_has_atomics)`, which allows us to
 # detect whether a target supports particular sets of atomics.
-zerocopy-target-has-atomics-1-60-0 = "1.60.0"
+no-zerocopy-target-has-atomics-1-60-0 = "1.60.0"
 
 # When the "simd" feature is enabled, include SIMD types from the
 # `core::arch::aarch64` module, which was stabilized in 1.59.0. On earlier Rust
 # versions, these types require the "simd-nightly" feature.
-zerocopy-aarch64-simd-1-59-0 = "1.59.0"
+no-zerocopy-aarch64-simd-1-59-0 = "1.59.0"
 
 # Permit panicking in `const fn`s and calling `Vec::try_reserve`.
-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0 = "1.57.0"
+no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0 = "1.57.0"
 
 [package.metadata.ci]
 # The versions of the stable and nightly compiler toolchains to use in CI.

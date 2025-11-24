@@ -50,7 +50,7 @@ pub unsafe trait Field<Index> {
 }
 
 #[cfg_attr(
-    zerocopy_diagnostic_on_unimplemented_1_78_0,
+    not(no_zerocopy_diagnostic_on_unimplemented_1_78_0),
     diagnostic::on_unimplemented(
         message = "`{T}` has {PADDING_BYTES} total byte(s) of padding",
         label = "types with padding cannot implement `IntoBytes`",
@@ -68,7 +68,7 @@ impl<T: ?Sized> PaddingFree<T, 0> for () {}
 // name) so that we can have more clear error messages.
 
 #[cfg_attr(
-    zerocopy_diagnostic_on_unimplemented_1_78_0,
+    not(no_zerocopy_diagnostic_on_unimplemented_1_78_0),
     diagnostic::on_unimplemented(
         message = "`{T}` has one or more padding bytes",
         label = "types with padding cannot implement `IntoBytes`",
@@ -332,7 +332,7 @@ pub type SizeToTag<const SIZE: usize> = <() as size_to_tag::SizeToTag<SIZE>>::Ta
 
 // We put `Sized` in its own module so it can have the same name as the standard
 // library `Sized` without shadowing it in the parent module.
-#[cfg(zerocopy_diagnostic_on_unimplemented_1_78_0)]
+#[cfg(not(no_zerocopy_diagnostic_on_unimplemented_1_78_0))]
 mod __size_of {
     #[diagnostic::on_unimplemented(
         message = "`{Self}` is unsized",
@@ -351,10 +351,10 @@ mod __size_of {
     }
 }
 
-#[cfg(not(zerocopy_diagnostic_on_unimplemented_1_78_0))]
+#[cfg(no_zerocopy_diagnostic_on_unimplemented_1_78_0)]
 pub use core::mem::size_of;
 
-#[cfg(zerocopy_diagnostic_on_unimplemented_1_78_0)]
+#[cfg(not(no_zerocopy_diagnostic_on_unimplemented_1_78_0))]
 pub use __size_of::size_of;
 
 /// How many padding bytes does the struct type `$t` have?
