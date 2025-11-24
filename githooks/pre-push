@@ -20,6 +20,7 @@ echo "Running pre-push git hook: $0"
 ./ci/check_readme.sh                >/dev/null & README_PID=$!
 ./ci/check_todo.sh                  >/dev/null & XODO_PID=$!
 ./ci/check_versions.sh              >/dev/null & VERSIONS_PID=$!
+./ci/check_msrv_is_minimal.sh       >/dev/null & MSRV_PID=$!
 
 # `wait <pid>` exits with the same status code as the job it's waiting for.
 # Since we `set -e` above, this will have the effect of causing the entire
@@ -33,6 +34,7 @@ wait $JOB_DEPS_PID
 wait $README_PID
 wait $XODO_PID
 wait $VERSIONS_PID
+wait $MSRV_PID
 
 # Ensure that this script calls all scripts in `ci/*`. This isn't a foolproof
 # check since it just checks for the string in this script (e.g., it could be in
