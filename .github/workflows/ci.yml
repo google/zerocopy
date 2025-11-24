@@ -12,7 +12,12 @@ on:
   pull_request:
   merge_group:
 
-permissions: read-all
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   CARGO_TERM_COLOR: always
@@ -251,6 +256,7 @@ jobs:
     - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
       with:
         fetch-depth: 2
+        persist-credentials: false
 
     - name: Populate cache
       uses: ./.github/actions/cache
@@ -269,6 +275,8 @@ jobs:
         cargo add -p zerocopy-derive 'syn@=2.0.46'
 
     - name: Configure environment variables
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
       run: |
         set -eo pipefail
 
@@ -285,11 +293,11 @@ jobs:
         # ...to:
         #
         #   toolchain: $ {{ ./cargo.sh --version matrix.toolchain }} # hypothetical syntax
-        ZC_TOOLCHAIN="$(./cargo.sh --version ${{ matrix.toolchain }})"
-        echo "Found that the '${{ matrix.toolchain }}' toolchain is $ZC_TOOLCHAIN" | tee -a $GITHUB_STEP_SUMMARY
+        ZC_TOOLCHAIN="$(./cargo.sh --version $TOOLCHAIN)"
+        echo "Found that the '$TOOLCHAIN' toolchain is $ZC_TOOLCHAIN" | tee -a $GITHUB_STEP_SUMMARY
         echo "ZC_TOOLCHAIN=$ZC_TOOLCHAIN" >> $GITHUB_ENV
 
-        if [[ '${{ matrix.toolchain }}' == 'nightly' ]]; then
+        if [[ "$TOOLCHAIN" == 'nightly' ]]; then
           RUSTFLAGS="$RUSTFLAGS $ZC_NIGHTLY_RUSTFLAGS"
           MIRIFLAGS="$MIRIFLAGS $ZC_NIGHTLY_MIRIFLAGS"
           echo "Using nightly toolchain; setting RUSTFLAGS='$RUSTFLAGS' and MIRIFLAGS='$MIRIFLAGS'" | tee -a $GITHUB_STEP_SUMMARY
@@ -306,12 +314,12 @@ jobs:
     # (more recent) stable toolchain to be installed. As of this writing, this
     # toolchain is not used for anything else.
     - name: Install stable Rust for use in 'cargo.sh'
-      uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
+      uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
       with:
         toolchain: stable
 
     - name: Install Rust with ${{ matrix.toolchain }} toolchain (${{ env.ZC_TOOLCHAIN }}) and target ${{ matrix.target }}
-      uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
+      uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
       with:
           toolchain: ${{ env.ZC_TOOLCHAIN }}
           targets: ${{ matrix.target }}
@@ -335,15 +343,30 @@ jobs:
     # On the `thumbv6m-none-eabi` target, we can't run `cargo check --tests` due
     # to the `memchr` crate, so we just do `cargo check` instead.
     - name: Check
-      run: ./cargo.sh +${{ matrix.toolchain }} check --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
+      run: ./cargo.sh +$TOOLCHAIN check --package $CRATE --target $TARGET $FEATURES --verbose
       if: matrix.target == 'thumbv6m-none-eabi'
 
     - name: Check tests
-      run: ./cargo.sh +${{ matrix.toolchain }} check --tests --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
+      run: ./cargo.sh +$TOOLCHAIN check --tests --package $CRATE --target $TARGET $FEATURES --verbose
       if: matrix.target != 'thumbv6m-none-eabi'
 
     - name: Build
-      run: ./cargo.sh +${{ matrix.toolchain }} build --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
+      run: ./cargo.sh +$TOOLCHAIN build --package $CRATE --target $TARGET $FEATURES --verbose
       if: matrix.target != 'thumbv6m-none-eabi'
 
     # When building tests for the i686 target, we need certain libraries which
@@ -362,11 +385,16 @@ jobs:
       if: contains(matrix.target, 'i686')
 
     - name: Run tests
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
       run: |
-        ./cargo.sh +${{ matrix.toolchain }} test \
-          --package ${{ matrix.crate }} \
-          --target ${{ matrix.target }} \
-          ${{ matrix.features }} \
+        ./cargo.sh +$TOOLCHAIN test \
+          --package $CRATE \
+          --target $TARGET \
+          $FEATURES \
           --verbose \
           -- \
           --skip ui
@@ -379,6 +407,11 @@ jobs:
       if: contains(matrix.target, 'linux') && (contains(matrix.target, 'x86_64') || contains(matrix.target, 'i686'))
 
     - name: Run UI tests
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
       run: |
         # Run UI tests separately, treating warnings as warnings (rather than
         # as errors, as we do everywhere else in our CI tests). This allows
@@ -389,10 +422,10 @@ jobs:
         #
         # TODO(#560), TODO(#187): Once we migrate to the ui-test crate, we
         # likely won't have to special-case the UI tests like this.
-        RUSTFLAGS="$RUSTFLAGS -Wwarnings" ./cargo.sh +${{ matrix.toolchain }} test \
-          --package ${{ matrix.crate }} \
-          --target ${{ matrix.target }} \
-          ${{ matrix.features }} \
+        RUSTFLAGS="$RUSTFLAGS -Wwarnings" ./cargo.sh +$TOOLCHAIN test \
+          --package $CRATE \
+          --target $TARGET \
+          $FEATURES \
           --verbose \
           ui
 
@@ -419,11 +452,16 @@ jobs:
           (matrix.toolchain == 'msrv' || matrix.toolchain == 'stable' || matrix.toolchain == 'nightly')
 
     - name: Run tests under Miri
+      env:
+        TARGET: ${{ matrix.target }}
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        FEATURES: ${{ matrix.features }}
       run: |
         set -eo pipefail
 
         # Work around https://github.com/rust-lang/miri/issues/3125
-        [ "${{ matrix.target }}" == "aarch64-unknown-linux-gnu" ] && cargo clean
+        [ "$TARGET" == "aarch64-unknown-linux-gnu" ] && cargo clean
 
         # Spawn twice the number of workers as there are CPU cores.
         THREADS=$(echo "$(nproc) * 2" | bc)
@@ -434,12 +472,12 @@ jobs:
         # Run under both the stacked borrows model (default) and under the tree 
         # borrows model to ensure we're compliant with both.
         for EXTRA_FLAGS in "" "-Zmiri-tree-borrows"; do
-          MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" ./cargo.sh +${{ matrix.toolchain }} \
+          MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" ./cargo.sh +$TOOLCHAIN \
             miri nextest run \
             --test-threads "$THREADS" \
-            --package ${{ matrix.crate }} \
-            --target ${{ matrix.target }} \
-            ${{ matrix.features }}
+            --package $CRATE \
+            --target $TARGET \
+            $FEATURES
         done
       # Only nightly has a working Miri, so we skip installing on all other
       # toolchains.
@@ -463,11 +501,21 @@ jobs:
     # On the `thumbv6m-none-eabi` target, we can't run `cargo clippy --tests`
     # due to the `memchr` crate, so we just do `cargo clippy` instead.
     - name: Clippy
-      run: ./cargo.sh +${{ matrix.toolchain }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --verbose
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
+      run: ./cargo.sh +$TOOLCHAIN clippy --package $CRATE --target $TARGET $FEATURES --verbose
       if: matrix.toolchain == 'nightly' && matrix.target == 'thumbv6m-none-eabi'
 
     - name: Clippy tests
-      run: ./cargo.sh +${{ matrix.toolchain }} clippy --package ${{ matrix.crate }} --target ${{ matrix.target }} ${{ matrix.features }} --tests --verbose
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
+      run: ./cargo.sh +$TOOLCHAIN clippy --package $CRATE --target $TARGET $FEATURES --tests --verbose
       # Clippy improves the accuracy of lints over time, and fixes bugs. Only
       # running Clippy on nightly allows us to avoid having to write code which
       # is compatible with older versions of Clippy, which sometimes requires
@@ -480,27 +528,38 @@ jobs:
       # make those items public/non-hidden more painless. Note that 
       # --document-hidden-items is unstable; if a future release breaks or removes it,
       # we can just update CI to no longer pass that flag.
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        FEATURES: ${{ matrix.features }}
+        NIGHTLY_FLAG: ${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS'|| '' }}
       run: |
         # Include arguments passed during docs.rs deployments to make sure those
         # work properly.
         set -eo pipefail
         METADATA_DOCS_RS_RUSTDOC_ARGS="$(cargo metadata --format-version 1 | \
           jq -r ".packages[] | select(.name == \"zerocopy\").metadata.docs.rs.\"rustdoc-args\"[]" | tr '\n' ' ')"
-        export RUSTDOCFLAGS="${{ matrix.toolchain == 'nightly' && '-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS'|| '' }} $RUSTDOCFLAGS"
-        ./cargo.sh +${{ matrix.toolchain }} doc --document-private-items --package ${{ matrix.crate }} ${{ matrix.features }}
+        if [[ "$TOOLCHAIN" == "nightly" ]]; then
+          export RUSTDOCFLAGS="-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS $RUSTDOCFLAGS"
+        fi
+        ./cargo.sh +$TOOLCHAIN doc --document-private-items --package $CRATE $FEATURES
 
     # If the commit message contains the line `SKIP_CARGO_SEMVER_CHECKS=1`, then
     # skip the cargo-semver-checks step.
     - name: Check whether to skip cargo-semver-checks
+      env:
+        EVENT_NAME: ${{ github.event_name }}
+        HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        SHA: ${{ github.sha }}
       run: |
         set -eo pipefail
 
-        if [ "${{ github.event_name }}" == "pull_request" ]; then
+        if [ "$EVENT_NAME" == "pull_request" ]; then
           # Invoked from a PR - get the PR body directly
-          MESSAGE="$(git log -1 --pretty=%B ${{ github.event.pull_request.head.sha }})"
+          MESSAGE="$(git log -1 --pretty=%B $HEAD_SHA)"
         else
           # Invoked from the merge queue - get the commit message
-          MESSAGE="$(git log -1 --pretty=%B ${{ github.sha }})"
+          MESSAGE="$(git log -1 --pretty=%B $SHA)"
         fi
 
         if echo "$MESSAGE" | grep '^\s*SKIP_CARGO_SEMVER_CHECKS=1\s*$' > /dev/null; then
@@ -549,14 +608,19 @@ jobs:
     # - Support multiple matrix combinations (which we intend to do as part of
     #   #453 eventually anyway) so that this location is justified
     - name: Generate code coverage
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        CRATE: ${{ matrix.crate }}
+        TARGET: ${{ matrix.target }}
+        FEATURES: ${{ matrix.features }}
       run: |
         set -eo pipefail
         ./cargo.sh +nightly install cargo-llvm-cov
 
-        ./cargo.sh +${{ matrix.toolchain }} llvm-cov \
-          --package ${{ matrix.crate }}              \
-          --target ${{ matrix.target }}              \
-          ${{ matrix.features }}                     \
+        ./cargo.sh +$TOOLCHAIN llvm-cov \
+          --package $CRATE              \
+          --target $TARGET              \
+          $FEATURES                     \
           --doctests                                 \
           --lcov                                     \
           --output-path lcov.info                    \
@@ -570,7 +634,7 @@ jobs:
         matrix.target == 'x86_64-unknown-linux-gnu'
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4.6.0
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: lcov.info
@@ -585,6 +649,8 @@ jobs:
     name: 'Run tests under Kani'
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - uses: model-checking/kani-github-action@f838096619a707b0f6b2118cf435eaccfa33e51f # v1.1
         with:
           # Use `--features __internal_use_only_features_that_work_on_stable`
@@ -613,6 +679,8 @@ jobs:
     name: Build (zerocopy / nightly / --simd / aarch64_be-unknown-linux-gnu)
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - name: Configure environment variables
         run: |
           set -eo pipefail
@@ -625,11 +693,11 @@ jobs:
         with:
           key: aarch64_be-unknown-linux-gnu
       - name: Install stable Rust for use in 'cargo.sh'
-        uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
         with:
           toolchain: stable
       - name: Install Rust with nightly toolchain (${{ env.ZC_TOOLCHAIN }}) and target aarch64_be-unknown-linux-gnu
-        uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
         with:
             toolchain: ${{ env.ZC_TOOLCHAIN }}
             components: clippy, rust-src
@@ -643,6 +711,8 @@ jobs:
     name: Build (zerocopy / nightly / --simd / avr-none)
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - name: Configure environment variables
         run: |
           set -eo pipefail
@@ -655,11 +725,11 @@ jobs:
         with:
           key: avr-none
       - name: Install stable Rust for use in 'cargo.sh'
-        uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
         with:
           toolchain: stable
       - name: Install Rust with nightly toolchain (${{ env.ZC_TOOLCHAIN }})
-        uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
         with:
             toolchain: ${{ env.ZC_TOOLCHAIN }}
             components: clippy, rust-src
@@ -680,6 +750,8 @@ jobs:
     name: Check Rust formatting
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - name: Check Rust formatting
         run: |
           set -eo pipefail
@@ -695,6 +767,8 @@ jobs:
     name: Check GitHub Actions
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
 
       - name: Populate cache
         uses: ./.github/actions/cache
@@ -708,6 +782,8 @@ jobs:
     name: Check README.md
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
 
       - name: Populate cache
         uses: ./.github/actions/cache
@@ -721,6 +797,8 @@ jobs:
     name: Check crate versions match
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
 
       - name: Populate cache
         uses: ./.github/actions/cache
@@ -738,6 +816,8 @@ jobs:
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
 
+        with:
+          persist-credentials: false
       - name: Populate cache
         uses: ./.github/actions/cache
 
@@ -749,6 +829,8 @@ jobs:
     name: Generate cache
     steps:
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
 
       - id: populate-cache
         uses: ./.github/actions/cache
@@ -799,6 +881,8 @@ jobs:
       - name: Install yq (for YAML parsing)
         run: go install github.com/mikefarah/yq/v4@latest
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - name: Run check
         run: ./ci/check_all_toolchains_tested.sh
 
@@ -809,6 +893,8 @@ jobs:
       - name: Install yq (for YAML parsing)
         run: go install github.com/mikefarah/yq/v4@latest
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - name: Run dependency check
         run: ./ci/check_job_dependencies.sh
 
@@ -821,6 +907,8 @@ jobs:
          sudo apt-get update
          sudo apt-get install ripgrep
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - name: Run todo check
         run: ./ci/check_todo.sh
 
@@ -835,6 +923,8 @@ jobs:
          sudo apt-get update
          sudo apt-get install ripgrep
       - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
       - name: Run dependency check
         # Ensure that Git hooks execute successfully.
         #
@@ -850,6 +940,22 @@ jobs:
 
           for hook in ./githooks/*; do $hook; done
 
+  zizmor:
+    runs-on: ubuntu-latest
+    name: zizmor
+    steps:
+      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        with:
+          persist-credentials: false
+      - uses: zizmorcore/zizmor-action@e673c3917a1aef3c65c972347ed84ccd013ecda4 # v0.2.0
+        with:
+          # We don't want to use GitHub Advanced Security because we want to
+          # block the merge on zizmor failure, and the only way to do that
+          # (without manually configuring a ruleset) is to fail the job, which
+          # the action only does if advanced-security is false.
+          advanced-security: false
+          persona: pedantic
+
   # Used to signal to branch protections that all other jobs have succeeded.
   all-jobs-succeed:
       name: All checks succeeded
@@ -860,7 +966,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, kani, check_be_aarch64, check_avr_artmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, generate_cache, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks]
+      needs: [build_test, kani, check_be_aarch64, check_avr_artmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, generate_cache, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor]
       steps:
         - name: Mark the job as failed
           run: exit 1
