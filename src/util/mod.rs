@@ -372,7 +372,7 @@ where
         // check ensures their shared safety precondition: that the supplied
         // layout is not zero-sized type [1].
         //
-        // [1] Per https://doc.rust-lang.org/stable/std/alloc/trait.GlobalAlloc.html#tymethod.alloc:
+        // [1] Per https://doc.rust-lang.org/1.81.0/std/alloc/trait.GlobalAlloc.html#tymethod.alloc:
         //
         //     This function is unsafe because undefined behavior can result if
         //     the caller does not ensure that layout has non-zero size.

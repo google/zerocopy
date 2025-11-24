@@ -71,8 +71,14 @@ fn generate_tag_consts(data: &DataEnum) -> TokenStream {
             // Because these are the same size, this is defined to be a no-op
             // and therefore is a lossless conversion [2].
             //
-            // [1]: https://doc.rust-lang.org/stable/reference/expressions/operator-expr.html#enum-cast
-            // [2]: https://doc.rust-lang.org/stable/reference/expressions/operator-expr.html#numeric-cast
+            // [1] Per https://doc.rust-lang.org/1.81.0/reference/expressions/operator-expr.html#enum-cast:
+            //
+            //   Casts an enum to its discriminant.
+            //
+            // [2] Per https://doc.rust-lang.org/1.81.0/reference/expressions/operator-expr.html#numeric-cast:
+            //
+            //   Casting between two integers of the same size (e.g. i32 -> u32)
+            //   is a no-op.
             #[allow(non_upper_case_globals)]
             const #tag_ident: ___ZerocopyTagPrimitive =
                 ___ZerocopyTag::#variant_ident as ___ZerocopyTagPrimitive;
