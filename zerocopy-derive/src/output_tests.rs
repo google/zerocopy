@@ -183,10 +183,12 @@ fn test_known_layout() {
                 struct __Zerocopy_Field_0;
                 #[allow(non_camel_case_types)]
                 struct __Zerocopy_Field_1;
+                #[allow(deprecated)]
                 unsafe impl<T, U> ::zerocopy::util::macro_util::Field<__Zerocopy_Field_0>
                 for Foo<T, U> {
                     type Type = T;
                 }
+                #[allow(deprecated)]
                 unsafe impl<T, U> ::zerocopy::util::macro_util::Field<__Zerocopy_Field_1>
                 for Foo<T, U> {
                     type Type = U;
@@ -195,6 +197,7 @@ fn test_known_layout() {
                 #[repr(align(2))]
                 #[doc(hidden)]
                 #[allow(private_bounds)]
+                #[allow(deprecated)]
                 struct __ZerocopyKnownLayoutMaybeUninit<T, U>(
                     ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                         <Foo<T, U> as ::zerocopy::util::macro_util::Field<__Zerocopy_Field_0>>::Type,
@@ -215,6 +218,7 @@ fn test_known_layout() {
                     > as ::zerocopy::util::macro_util::Field<
                         __Zerocopy_Field_1,
                     >>::Type: ::zerocopy::KnownLayout;
+                #[allow(deprecated)]
                 unsafe impl<T, U> ::zerocopy::KnownLayout for __ZerocopyKnownLayoutMaybeUninit<T, U>
                 where
                     <Foo<
