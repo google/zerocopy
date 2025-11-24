@@ -14,6 +14,7 @@ echo "Running pre-push git hook: $0"
 # `cargo fmt` is useful (and the good stuff is not delivered by stderr).
 #
 # Background all jobs and wait for them so they can run in parallel.
+./ci/check_actions.sh                          & ACTIONS_PID=$!
 ./ci/check_fmt.sh                              & FMT_PID=$!
 ./ci/check_all_toolchains_tested.sh >/dev/null & TOOLCHAINS_PID=$!
 ./ci/check_job_dependencies.sh      >/dev/null & JOB_DEPS_PID=$!
@@ -28,6 +29,7 @@ echo "Running pre-push git hook: $0"
 # Note that, while `wait` (with no PID argument) waits for all backgrounded
 # jobs, it exits with code 0 even if one of the backgrounded jobs does not, so
 # we can't use it here.
+wait $ACTIONS_PID
 wait $FMT_PID
 wait $TOOLCHAINS_PID
 wait $JOB_DEPS_PID
