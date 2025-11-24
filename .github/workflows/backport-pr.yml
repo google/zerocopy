@@ -18,10 +18,17 @@ on:
         required: true
         default: 'main'
 
-permissions: read-all
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   release:
+    permissions:
+      contents: write # Need to write to repo to cherry-pick
+      pull-requests: write # zizmor: ignore[excessive-permissions] (Needed to create pull requests)
     runs-on: ubuntu-latest
     name: Backport PR
     steps:
@@ -35,16 +42,18 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Cherry-pick commit
+        env:
+          COMMIT: ${{ github.event.inputs.commit }}
         run: |
           set -eo pipefail
 
-          AUTHOR_NAME="$(git log -1 --pretty='%an' ${{ github.event.inputs.commit }})"
-          AUTHOR_EMAIL="$(git log -1 --pretty='%ae' ${{ github.event.inputs.commit }})"
+          AUTHOR_NAME="$(git log -1 --pretty='%an' "$COMMIT")"
+          AUTHOR_EMAIL="$(git log -1 --pretty='%ae' "$COMMIT")"
 
           git config --global user.name "$AUTHOR_NAME"
           git config --global user.email "$AUTHOR_EMAIL"
 
-          git cherry-pick ${{ github.event.inputs.commit }}
+          git cherry-pick "$COMMIT"
 
           PR_TITLE="$(git log -1 --pretty=%s)"
           echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV

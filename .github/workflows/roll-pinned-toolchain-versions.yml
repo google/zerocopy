@@ -22,13 +22,18 @@ on:
     - cron: '29 09 * * 1'
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pull-requests: write
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   roll_rust:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write # zizmor: ignore[excessive-permissions] (Needed to create pull requests)
     strategy:
       # By default, this is set to `true`, which means that a single CI job
       # failure will cause all outstanding jobs to be canceled. This means that
@@ -46,8 +51,10 @@ jobs:
           ref: ${{ matrix.branch }}
           persist-credentials: false
       - name: Calculate target version
+        env:
+          TOOLCHAIN: ${{ matrix.toolchain }}
         run: |
-          if [ "${{ matrix.toolchain }}" == stable ]; then
+          if [ "$TOOLCHAIN" == stable ]; then
             # Install whatever the latest stable release is. This has the side
             # effect of determining the latest stable release so that we can
             # update `Cargo.toml`.
@@ -59,7 +66,7 @@ jobs:
             echo "ZC_TARGET_TOOLCHAIN=nightly-$(date -d '-1 day' +%Y-%m-%d)" >> $GITHUB_ENV
           fi
       - name: Install Rust with ${{ env.ZC_TARGET_TOOLCHAIN }} toolchain
-        uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
         with:
             toolchain: ${{ env.ZC_TARGET_TOOLCHAIN }}
             # We require the `rust-src` component to ensure that the compiler
@@ -68,6 +75,8 @@ jobs:
             # https://github.com/rust-lang/rust/issues/116433.
             components: rust-src
       - name: Update files
+        env:
+          TOOLCHAIN: ${{ matrix.toolchain }}
         run: |
           set -eo pipefail
 
@@ -121,7 +130,7 @@ jobs:
             TRYBUILD=overwrite cargo "+$VERSION_FOR_CARGO" test --package file:///home/runner/work/zerocopy/zerocopy/zerocopy-derive
           }
 
-          if [ "${{ matrix.toolchain }}" == stable ]; then
+          if [ "$TOOLCHAIN" == stable ]; then
             STABLE_VERSION="$(cargo +stable version | sed -e 's/^cargo \([0-9\.]*\) .*/\1/')"
             update-pinned-version stable "$STABLE_VERSION" stable '--features __internal_use_only_features_that_work_on_stable'
 
@@ -147,12 +156,16 @@ jobs:
 
       - name: Add labels
         if: steps.submit-pr.outputs.pull-request-operation == 'created'
-        run: gh pr edit "${{ steps.submit-pr.outputs.pull-request-number }}" --add-label "hide-from-release-notes"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.submit-pr.outputs.pull-request-number }}
+        run: gh pr edit "$PR_NUMBER" --add-label "hide-from-release-notes"
           
   roll_kani:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write # zizmor: ignore[excessive-permissions] (Needed to create pull requests)
     strategy:
       matrix:
         branch: ["main", "v0.7.x"]
@@ -188,6 +201,7 @@ jobs:
 
       - name: Add labels
         if: steps.submit-pr.outputs.pull-request-operation == 'created'
-        run: gh pr edit "${{ steps.submit-pr.outputs.pull-request-number }}" --add-label "hide-from-release-notes"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.submit-pr.outputs.pull-request-number }}
+        run: gh pr edit "$PR_NUMBER" --add-label "hide-from-release-notes"
