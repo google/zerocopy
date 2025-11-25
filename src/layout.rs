@@ -957,6 +957,19 @@ mod cast_from_raw {
 mod tests {
     use super::*;
 
+    #[test]
+    fn test_dst_layout_for_slice() {
+        let layout = DstLayout::for_slice::<u32>();
+        match layout.size_info {
+            SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
+                assert_eq!(offset, 0);
+                assert_eq!(elem_size, 4);
+            }
+            _ => panic!("Expected SliceDst"),
+        }
+        assert_eq!(layout.align.get(), 4);
+    }
+
     /// Tests of when a sized `DstLayout` is extended with a sized field.
     #[allow(clippy::decimal_literal_representation)]
     #[test]

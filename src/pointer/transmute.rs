@@ -490,3 +490,91 @@ unsafe impl<T> SizeEq<MaybeUninit<T>> for T {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use core::ptr::NonNull;
+
+    use super::*;
+
+    #[test]
+    fn test_transmute_coverage() {
+        // SAFETY: The calls to `cast_from_raw` are safe because we are casting between
+        // types that have the same size and are compatible for the purposes of `SizeEq`.
+        // Specifically, both types are `Sized` and have the same size, satisfying the
+        // preconditions of `SizeEq::cast_from_raw`.
+        //
+        // The pointers passed are valid and properly aligned for the source type,
+        // and thus for the destination type.
+        //
+        // We are only performing pointer casts, not accessing memory.
+        unsafe {
+            // SizeEq<T> for MaybeUninit<T>
+            let mut t = 0u8;
+            let ptr = PtrInner::new(NonNull::from(&mut t));
+            let _ = <MaybeUninit<u8> as SizeEq<u8>>::cast_from_raw(ptr);
+
+            // SizeEq<MaybeUninit<T>> for T
+            let mut mu = MaybeUninit::<u8>::new(0);
+            let ptr = PtrInner::new(NonNull::from(&mut mu));
+            let _ = <u8 as SizeEq<MaybeUninit<u8>>>::cast_from_raw(ptr);
+
+            // Transitive: MaybeUninit<T> -> Wrapping<T>
+            // T => MaybeUninit<T> => T => Wrapping<T>
+            let mut mu = MaybeUninit::<u8>::new(0);
+            let ptr = PtrInner::new(NonNull::from(&mut mu));
+            let _ = <Wrapping<u8> as SizeEq<MaybeUninit<u8>>>::cast_from_raw(ptr);
+
+            // T => Wrapping<T> => T => MaybeUninit<T>
+            let mut w = Wrapping(0u8);
+            let ptr = PtrInner::new(NonNull::from(&mut w));
+            let _ = <MaybeUninit<u8> as SizeEq<Wrapping<u8>>>::cast_from_raw(ptr);
+
+            // T: ?Sized => Cell<T> => T => UnsafeCell<T>
+            let mut c = Cell::new(0u8);
+            let ptr = PtrInner::new(NonNull::from(&mut c));
+            let _ = <UnsafeCell<u8> as SizeEq<Cell<u8>>>::cast_from_raw(ptr);
+
+            // T: ?Sized => UnsafeCell<T> => T => Cell<T>
+            let mut uc = UnsafeCell::new(0u8);
+            let ptr = PtrInner::new(NonNull::from(&mut uc));
+            let _ = <Cell<u8> as SizeEq<UnsafeCell<u8>>>::cast_from_raw(ptr);
+        }
+    }
+
+    #[cfg(target_has_atomic = "8")]
+    #[test]
+    fn test_atomic_u8_transmutes() {
+        use core::sync::atomic::AtomicU8;
+        // SAFETY: The calls to `cast_from_raw` are safe because we are casting between
+        // types that have the same size and are compatible for the purposes of `SizeEq`.
+        // Specifically, both types are `Sized` and have the same size, satisfying the
+        // preconditions of `SizeEq::cast_from_raw`.
+        //
+        // The pointers passed are valid and properly aligned for the source type,
+        // and thus for the destination type.
+        //
+        // We are only performing pointer casts, not accessing memory.
+        unsafe {
+            // 1. Atomic -> Prim (SizeEq<Atomic> for Prim)
+            let mut a = AtomicU8::new(0);
+            let ptr = PtrInner::new(NonNull::from(&mut a));
+            let _ = <u8 as SizeEq<AtomicU8>>::cast_from_raw(ptr);
+
+            // 2. Prim -> Atomic (SizeEq<Prim> for Atomic)
+            let mut p = 0u8;
+            let ptr = PtrInner::new(NonNull::from(&mut p));
+            let _ = <AtomicU8 as SizeEq<u8>>::cast_from_raw(ptr);
+
+            // 3. Atomic -> UnsafeCell<Prim> (SizeEq<Atomic> for UnsafeCell<Prim>)
+            let mut a = AtomicU8::new(0);
+            let ptr = PtrInner::new(NonNull::from(&mut a));
+            let _ = <UnsafeCell<u8> as SizeEq<AtomicU8>>::cast_from_raw(ptr);
+
+            // 4. UnsafeCell<Prim> -> Atomic (SizeEq<UnsafeCell<Prim>> for Atomic)
+            let mut uc = UnsafeCell::new(0u8);
+            let ptr = PtrInner::new(NonNull::from(&mut uc));
+            let _ = <AtomicU8 as SizeEq<UnsafeCell<u8>>>::cast_from_raw(ptr);
+        }
+    }
+}
