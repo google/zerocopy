@@ -157,7 +157,7 @@ jobs:
             target: "thumbv6m-none-eabi"
           - toolchain: "no-zerocopy-aarch64-simd-1-59-0"
             target: "wasm32-unknown-unknown"
-          # Exclude most targets targets from the `no-zerocopy-core-error-1-81-0`
+          # Exclude most targets from the `no-zerocopy-core-error-1-81-0`
           # toolchain since the `no-zerocopy-core-error-1-81-0` feature is unrelated to
           # compilation target. This only leaves i686 and x86_64 targets.
           - toolchain: "no-zerocopy-core-error-1-81-0"
@@ -178,7 +178,7 @@ jobs:
             target: "thumbv6m-none-eabi"
           - toolchain: "no-zerocopy-core-error-1-81-0"
             target: "wasm32-unknown-unknown"
-          # Exclude most targets targets from the
+          # Exclude most targets from the
           # `no-zerocopy-diagnostic-on-unimplemented-1-78-0` toolchain since the
           # `no-zerocopy-diagnostic-on-unimplemented-1-78-0` feature is unrelated to
           # compilation target. This only leaves i686 and x86_64 targets.
@@ -200,7 +200,7 @@ jobs:
             target: "thumbv6m-none-eabi"
           - toolchain: "no-zerocopy-diagnostic-on-unimplemented-1-78-0"
             target: "wasm32-unknown-unknown"
-          # Exclude most targets targets from the
+          # Exclude most targets from the
           # `no-zerocopy-generic-bounds-in-const-fn-1-61-0` toolchain since the
           # `no-zerocopy-generic-bounds-in-const-fn-1-61-0` feature is unrelated to
           # compilation target. This only leaves i686 and x86_64 targets.
@@ -706,7 +706,7 @@ jobs:
 
   # We can't use this as part of the build matrix because rustup doesn't support
   # the `avr-none` target.
-  check_avr_artmega:
+  check_avr_atmega:
     runs-on: ubuntu-latest
     name: Build (zerocopy / nightly / --simd / avr-none)
     steps:
@@ -966,7 +966,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, kani, check_be_aarch64, check_avr_artmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, generate_cache, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor]
+      needs: [build_test, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, generate_cache, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor]
       steps:
         - name: Mark the job as failed
           run: exit 1
