@@ -15,21 +15,35 @@ inputs:
   run:
     description: "Commands to run to populate cache (only for generate mode)"
     default: ""
+  toolchain:
+    description: "Toolchain to restore target cache for"
+    required: false
+    default: ""
+
 runs:
   using: composite
   steps:
-    - name: Restore Cache
+    - name: Restore Base Cache
       if: inputs.mode == 'restore'
-      uses: actions/cache@v4
-      id: cache
+      uses: actions/cache/restore@v4
       with:
         path: |
-          ~/.cargo/
-          ~/.rustup/
-          target/
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
         restore-keys: |
           ${{ runner.os }}-cargo-
+
+    - name: Restore Target Cache
+      if: inputs.mode == 'restore' && inputs.toolchain != ''
+      uses: actions/cache/restore@v4
+      with:
+        path: target/by-toolchain/${{ inputs.toolchain }}
+        key: ${{ runner.os }}-target-by-toolchain-${{ inputs.toolchain }}-${{ hashFiles('**/Cargo.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-target-by-toolchain-${{ inputs.toolchain }}-
 
     - name: Check Cache (Generate Mode)
       if: inputs.mode == 'generate'
@@ -56,12 +70,83 @@ runs:
         echo "$RUN_COMMANDS" > run_commands.sh
         source run_commands.sh
 
-    - name: Save Cache (Generate Mode)
+    - name: Save Base Cache (Generate Mode)
       if: inputs.mode == 'generate' && steps.check.outputs.cache-hit != 'true'
       uses: actions/cache/save@v4
       with:
         path: |
-          ~/.cargo/
-          ~/.rustup/
-          target/
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
+
+    - name: Save msrv Cache (Generate Mode)
+      if: inputs.mode == 'generate' && steps.check.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: target/by-toolchain/msrv
+        key: ${{ runner.os }}-target-by-toolchain-msrv-${{ hashFiles('**/Cargo.toml') }}
+
+    - name: Save stable Cache (Generate Mode)
+      if: inputs.mode == 'generate' && steps.check.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: target/by-toolchain/stable
+        key: ${{ runner.os }}-target-by-toolchain-stable-${{ hashFiles('**/Cargo.toml') }}
+
+    - name: Save nightly Cache (Generate Mode)
+      if: inputs.mode == 'generate' && steps.check.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: target/by-toolchain/nightly
+        key: ${{ runner.os }}-target-by-toolchain-nightly-${{ hashFiles('**/Cargo.toml') }}
+
+    - name: Save no-zerocopy-simd-x86-avx12-1-89-0 Cache (Generate Mode)
+      if: inputs.mode == 'generate' && steps.check.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: target/by-toolchain/no-zerocopy-simd-x86-avx12-1-89-0
+        key: ${{ runner.os }}-target-by-toolchain-no-zerocopy-simd-x86-avx12-1-89-0-${{ hashFiles('**/Cargo.toml') }}
+
+    - name: Save no-zerocopy-core-error-1-81-0 Cache (Generate Mode)
+      if: inputs.mode == 'generate' && steps.check.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: target/by-toolchain/no-zerocopy-core-error-1-81-0
+        key: ${{ runner.os }}-target-by-toolchain-no-zerocopy-core-error-1-81-0-${{ hashFiles('**/Cargo.toml') }}
+
+    - name: Save no-zerocopy-diagnostic-on-unimplemented-1-78-0 Cache (Generate Mode)
+      if: inputs.mode == 'generate' && steps.check.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: target/by-toolchain/no-zerocopy-diagnostic-on-unimplemented-1-78-0
+        key: ${{ runner.os }}-target-by-toolchain-no-zerocopy-diagnostic-on-unimplemented-1-78-0-${{ hashFiles('**/Cargo.toml') }}
+
+    - name: Save no-zerocopy-generic-bounds-in-const-fn-1-61-0 Cache (Generate Mode)
+      if: inputs.mode == 'generate' && steps.check.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: target/by-toolchain/no-zerocopy-generic-bounds-in-const-fn-1-61-0
+        key: ${{ runner.os }}-target-by-toolchain-no-zerocopy-generic-bounds-in-const-fn-1-61-0-${{ hashFiles('**/Cargo.toml') }}
+
+    - name: Save no-zerocopy-target-has-atomics-1-60-0 Cache (Generate Mode)
+      if: inputs.mode == 'generate' && steps.check.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: target/by-toolchain/no-zerocopy-target-has-atomics-1-60-0
+        key: ${{ runner.os }}-target-by-toolchain-no-zerocopy-target-has-atomics-1-60-0-${{ hashFiles('**/Cargo.toml') }}
+
+    - name: Save no-zerocopy-aarch64-simd-1-59-0 Cache (Generate Mode)
+      if: inputs.mode == 'generate' && steps.check.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: target/by-toolchain/no-zerocopy-aarch64-simd-1-59-0
+        key: ${{ runner.os }}-target-by-toolchain-no-zerocopy-aarch64-simd-1-59-0-${{ hashFiles('**/Cargo.toml') }}
+
+    - name: Save no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0 Cache (Generate Mode)
+      if: inputs.mode == 'generate' && steps.check.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: target/by-toolchain/no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0
+        key: ${{ runner.os }}-target-by-toolchain-no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0-${{ hashFiles('**/Cargo.toml') }}
