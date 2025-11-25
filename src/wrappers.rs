@@ -763,4 +763,21 @@ mod tests {
             assert_eq!(input, *output);
         }
     }
+    #[test]
+    fn test_maybe_uninit_uninit() {
+        let _uninit = MaybeUninit::<u8>::uninit();
+        // Cannot check value, but can check it compiles and runs
+    }
+
+    #[test]
+    #[cfg(feature = "alloc")]
+    fn test_maybe_uninit_new_boxed_uninit() {
+        let _boxed = MaybeUninit::<u8>::new_boxed_uninit(()).unwrap();
+    }
+
+    #[test]
+    fn test_maybe_uninit_debug() {
+        let uninit = MaybeUninit::<u8>::uninit();
+        assert!(format!("{:?}", uninit).contains("MaybeUninit"));
+    }
 }

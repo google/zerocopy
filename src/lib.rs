@@ -6772,4 +6772,76 @@ mod tests {
             );
         }
     }
+
+    #[test]
+    #[allow(deprecated)]
+    fn test_deprecated_from_bytes() {
+        let val = 0u32;
+        let bytes = val.as_bytes();
+
+        assert!(u32::ref_from(bytes).is_some());
+        // mut_from needs mut bytes
+        let mut val = 0u32;
+        let mut_bytes = val.as_mut_bytes();
+        assert!(u32::mut_from(mut_bytes).is_some());
+
+        assert!(u32::read_from(bytes).is_some());
+
+        let (slc, rest) = <u32>::slice_from_prefix(bytes, 0).unwrap();
+        assert!(slc.is_empty());
+        assert_eq!(rest.len(), 4);
+
+        let (rest, slc) = <u32>::slice_from_suffix(bytes, 0).unwrap();
+        assert!(slc.is_empty());
+        assert_eq!(rest.len(), 4);
+
+        let (slc, rest) = <u32>::mut_slice_from_prefix(mut_bytes, 0).unwrap();
+        assert!(slc.is_empty());
+        assert_eq!(rest.len(), 4);
+
+        let (rest, slc) = <u32>::mut_slice_from_suffix(mut_bytes, 0).unwrap();
+        assert!(slc.is_empty());
+        assert_eq!(rest.len(), 4);
+    }
+
+    #[test]
+    fn test_try_ref_from_prefix_suffix() {
+        use crate::util::testutil::Align;
+        let bytes = &Align::<[u8; 4], u32>::new([0u8; 4]).t[..];
+        let (r, rest): (&u32, &[u8]) = u32::try_ref_from_prefix(bytes).unwrap();
+        assert_eq!(*r, 0);
+        assert_eq!(rest.len(), 0);
+
+        let (rest, r): (&[u8], &u32) = u32::try_ref_from_suffix(bytes).unwrap();
+        assert_eq!(*r, 0);
+        assert_eq!(rest.len(), 0);
+    }
+
+    #[test]
+    fn test_raw_dangling() {
+        use crate::util::AsAddress;
+        let ptr: NonNull<u32> = u32::raw_dangling();
+        assert_eq!(AsAddress::addr(ptr), 1);
+
+        let ptr: NonNull<[u32]> = <[u32]>::raw_dangling();
+        assert_eq!(AsAddress::addr(ptr), 1);
+    }
+
+    #[test]
+    fn test_try_ref_from_prefix_with_elems() {
+        use crate::util::testutil::Align;
+        let bytes = &Align::<[u8; 8], u32>::new([0u8; 8]).t[..];
+        let (r, rest): (&[u32], &[u8]) = <[u32]>::try_ref_from_prefix_with_elems(bytes, 2).unwrap();
+        assert_eq!(r.len(), 2);
+        assert_eq!(rest.len(), 0);
+    }
+
+    #[test]
+    fn test_try_ref_from_suffix_with_elems() {
+        use crate::util::testutil::Align;
+        let bytes = &Align::<[u8; 8], u32>::new([0u8; 8]).t[..];
+        let (rest, r): (&[u8], &[u32]) = <[u32]>::try_ref_from_suffix_with_elems(bytes, 2).unwrap();
+        assert_eq!(r.len(), 2);
+        assert_eq!(rest.len(), 0);
+    }
 }
