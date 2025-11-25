@@ -838,14 +838,14 @@ jobs:
       - name: Download dependencies
         if: steps.populate-cache.outputs.cache-hit != 'true'
         run: |
-          # Ensure all dependencies are downloaded - both for our crates and for
-          # tools we use in CI. We don't care about these tools succeeding for
-          # two reasons: First, this entire job is best-effort since it's just a
-          # performance optimization. Second, there may be failures due to
-          # issues other than failing to download dependencies (e.g., `cargo
-          # metadata` called with a malformed `Cargo.toml`, build failure in our
-          # own crate or in dependencies, etc). For those reasons, we discard
-          # stderr and ignore status codes.
+          # Ensure all dependencies and toolchains are downloaded - both for our
+          # crates and for tools we use in CI. We don't care about these tools
+          # succeeding for two reasons: First, this entire job is best-effort
+          # since it's just a performance optimization. Second, there may be
+          # failures due to issues other than failing to download dependencies
+          # (e.g., `cargo metadata` called with a malformed `Cargo.toml`, build
+          # failure in our own crate or in dependencies, etc). For those
+          # reasons, we discard stderr and ignore status codes.
           #
           # For downloading our crates' dependencies in particular, note that
           # there is no support for doing this directly [1], so we just check
@@ -866,7 +866,7 @@ jobs:
 
           cargo check --workspace --tests                         &> /dev/null &
           # On our MSRV toolchain, updating the Cargo index takes a long time,
-          # and so it's worth specifically caching the MSRV index.
+          # so it's worth specifically caching the MSRV index.
           ./cargo.sh +msrv check --workspace --tests              &> /dev/null &
           cargo metadata                                          &> /dev/null &
           cargo install cargo-readme --version 3.2.0              &> /dev/null &
@@ -874,6 +874,10 @@ jobs:
           cargo install --locked kani-verifier                    &> /dev/null &
           cargo install cargo-nextest                             &> /dev/null &
           cargo kani setup                                        &> /dev/null &
+
+          rustup toolchain install $(./cargo.sh --version msrv)    &> /dev/null &
+          rustup toolchain install $(./cargo.sh --version stable)  &> /dev/null &
+          rustup toolchain install $(./cargo.sh --version nightly) &> /dev/null &
 
           wait
 
