@@ -102,7 +102,7 @@ jobs:
         run: echo '<meta http-equiv="refresh" content="0;url=zerocopy/index.html">' > target/doc/index.html
 
       - name: Upload Cargo doc output to GitHub Pages
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: target/doc
   deploy:
