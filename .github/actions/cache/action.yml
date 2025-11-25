@@ -26,6 +26,7 @@ runs:
         path: |
           ~/.cargo/
           ~/.rustup/
+          target/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
         restore-keys: |
           ${{ runner.os }}-cargo-
@@ -62,4 +63,5 @@ runs:
         path: |
           ~/.cargo/
           ~/.rustup/
+          target/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}

@@ -872,9 +872,13 @@ jobs:
             cargo install cargo-nextest                             &> /dev/null &
             cargo kani setup                                        &> /dev/null &
 
-            rustup toolchain install $(./cargo.sh --version msrv)    &> /dev/null &
-            rustup toolchain install $(./cargo.sh --version stable)  &> /dev/null &
-            rustup toolchain install $(./cargo.sh --version nightly) &> /dev/null &
+            # Install all toolchains and pre-compute build artifacts in
+            # per-toolchain target directories.
+            go install github.com/mikefarah/yq/v4@latest || exit $?
+            TOOLCHAINS=$(PATH=$(go env GOPATH)/bin yq '.jobs.build_test.strategy.matrix.toolchain[]' .github/workflows/ci.yml)
+            for toolchain in $TOOLCHAINS; do
+              ./cargo.sh +$toolchain check --tests --features __internal_use_only_features_that_work_on_stable &> /dev/null &
+            done
 
             wait
 
