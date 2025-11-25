@@ -1,0 +1,13 @@
+[package]
+name = "ui-runner"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+ui_test = "0.25"
+
+[features]
+default = ["ui-tests", "derive"]
+ui-tests = []
+derive = []

@@ -1,11 +1,11 @@
 error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::IntoBytes` is not satisfied
- --> tests/ui-stable/try_transmute-src-not-intobytes.rs:18:47
-  |
+   --> tests/ui-stable/try_transmute-src-not-intobytes.rs:18:47
+    |
  18 |     let src_not_into_bytes: Result<AU16, _> = try_transmute!(NotZerocopy(AU16(0)));
     |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
 help: the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy<AU16>`
-   --> tests/ui-stable/../../zerocopy-derive/tests/include.rs
+   --> tests/ui-stable/../../zerocopy-derive/tests/include.rs:48:5
     |
  48 |     pub struct NotZerocopy<T = ()>(pub T);
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -19,13 +19,17 @@ help: the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy<AU16>`
               AtomicI64
               AtomicI8
               AtomicIsize
-            and $N others
+            and 67 others
 note: required by a bound in `try_transmute`
-   --> src/util/macro_util.rs
+   --> /app/src/util/macro_util.rs:612:10
     |
-    | pub fn try_transmute<Src, Dst>(src: Src) -> Result<Dst, ValidityError<Src, Dst>>
+610 | pub fn try_transmute<Src, Dst>(src: Src) -> Result<Dst, ValidityError<Src, Dst>>
     |        ------------- required by a bound in this function
-    | where
-    |     Src: IntoBytes,
+611 | where
+612 |     Src: IntoBytes,
     |          ^^^^^^^^^ required by this bound in `try_transmute`
     = note: this error originates in the macro `try_transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0277`.

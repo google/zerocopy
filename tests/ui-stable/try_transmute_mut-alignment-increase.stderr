@@ -7,3 +7,7 @@ error[E0512]: cannot transmute between types of different sizes, or dependently-
    = note: source type: `AlignOf<[u8; 2]>` (8 bits)
    = note: target type: `MaxAlignsOf<[u8; 2], AU16>` (16 bits)
    = note: this error originates in the macro `$crate::assert_align_gt_eq` which comes from the expansion of the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0512`.
