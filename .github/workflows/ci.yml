@@ -865,6 +865,9 @@ jobs:
           cargo add -p zerocopy-derive 'syn@=2.0.46' &> /dev/null
 
           cargo check --workspace --tests                         &> /dev/null &
+          # On our MSRV toolchain, updating the Cargo index takes a long time,
+          # and so it's worth specifically caching the MSRV index.
+          ./cargo.sh +msrv check --workspace --tests              &> /dev/null &
           cargo metadata                                          &> /dev/null &
           cargo install cargo-readme --version 3.2.0              &> /dev/null &
           cargo install --locked action-validator --version 0.8.0 &> /dev/null &
