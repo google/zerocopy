@@ -7,15 +7,20 @@
 # those terms.
 
 name: Cache
-description: 'Caches cargo dependencies'
-outputs:
-  cache-hit:
-    description: "Cache Hit"
-    value: ${{ steps.cache.outputs.cache-hit }}
+description: "Caches cargo and rustup dependencies"
+inputs:
+  mode:
+    description: "restore or generate"
+    default: "restore"
+  run:
+    description: "Commands to run to populate cache (only for generate mode)"
+    default: ""
 runs:
   using: composite
   steps:
-    - uses: actions/cache@v4
+    - name: Restore Cache
+      if: inputs.mode == 'restore'
+      uses: actions/cache@v4
       id: cache
       with:
         path: |
@@ -24,3 +29,36 @@ runs:
         restore-keys: |
           ${{ runner.os }}-cargo-
 
+    - name: Check Cache (Generate Mode)
+      if: inputs.mode == 'generate'
+      id: check
+      shell: bash
+      env:
+        RUNNER_OS: ${{ runner.os }}
+        CARGO_TOML_HASH: ${{ hashFiles('**/Cargo.toml') }}
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        CACHE_KEY="${RUNNER_OS}-cargo-${CARGO_TOML_HASH}"
+        if gh cache list --key "$CACHE_KEY" --limit 1 | grep -q "$CACHE_KEY"; then
+          echo "cache-hit=true" >> $GITHUB_OUTPUT
+        else
+          echo "cache-hit=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Run Commands (Generate Mode)
+      if: inputs.mode == 'generate' && steps.check.outputs.cache-hit != 'true'
+      shell: bash
+      env:
+        RUN_COMMANDS: ${{ inputs.run }}
+      run: |
+        echo "$RUN_COMMANDS" > run_commands.sh
+        source run_commands.sh
+
+    - name: Save Cache (Generate Mode)
+      if: inputs.mode == 'generate' && steps.check.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: |
+          ~/.cargo/
+          ~/.rustup/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
