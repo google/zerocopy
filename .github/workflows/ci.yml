@@ -608,10 +608,6 @@ jobs:
           persist-credentials: false
       - name: Populate cache
         uses: ./.github/actions/cache
-      - name: Install nightly toolchain
-        run: |
-          TOOLCHAIN=$(./cargo.sh --version nightly)
-          rustup toolchain install $TOOLCHAIN -c rust-src
       - name: Generate code coverage
         run: |
           set -eo pipefail

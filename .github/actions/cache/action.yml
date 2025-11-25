@@ -23,8 +23,7 @@ runs:
       uses: actions/cache@v4
       id: cache
       with:
-        path: |
-          ~/.cargo/
+        path: ~/.cargo/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
         restore-keys: |
           ${{ runner.os }}-cargo-
@@ -58,7 +57,5 @@ runs:
       if: inputs.mode == 'generate' && steps.check.outputs.cache-hit != 'true'
       uses: actions/cache/save@v4
       with:
-        path: |
-          ~/.cargo/
-          ~/.rustup/
+        path: ~/.cargo/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
