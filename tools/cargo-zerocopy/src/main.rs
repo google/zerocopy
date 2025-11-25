@@ -141,19 +141,17 @@ fn is_toolchain_installed(versions: &Versions, name: &str) -> Result<bool, Error
 fn install_toolchain_or_exit(versions: &Versions, name: &str) -> Result<(), Error> {
     eprintln!("[cargo-zerocopy] missing either toolchain '{name}' or component 'rust-src'");
     if env::vars().any(|v| v.0 == "GITHUB_RUN_ID") {
-        // If we're running in a GitHub action, then it's better to bail than to
-        // hang waiting for input we're never going to get.
-        process::exit(1);
-    }
-
-    loop {
-        eprint!("[cargo-zerocopy] would you like to install toolchain '{name}' and component 'rust-src' via 'rustup' (y/n)? ");
-        let mut input = [0];
-        io::stdin().read_exact(&mut input).unwrap();
-        match input[0] as char {
-            'y' | 'Y' => break,
-            'n' | 'N' => process::exit(1),
-            _ => (),
+        eprint!("[cargo-zerocopy] detected GitHub Actions environment; auto-installing without waiting for confirmation");
+    } else {
+        loop {
+            eprint!("[cargo-zerocopy] would you like to install toolchain '{name}' and component 'rust-src' via 'rustup' (y/n)? ");
+            let mut input = [0];
+            io::stdin().read_exact(&mut input).unwrap();
+            match input[0] as char {
+                'y' | 'Y' => break,
+                'n' | 'N' => process::exit(1),
+                _ => (),
+            }
         }
     }
 
@@ -234,6 +232,12 @@ fn delegate_cargo() -> Result<(), Error> {
                 );
 
                 let mut cmd = rustup(["run", version, "cargo"], Some(("RUSTFLAGS", &rustflags)));
+
+                if env::var("CARGO_TARGET_DIR").is_ok() {
+                    eprintln!("[cargo-zerocopy] WARNING: `CARGO_TARGET_DIR` is set - this may cause `cargo-zerocopy` to behave unexpectedly");
+                } else {
+                    cmd.env("CARGO_TARGET_DIR", format!("target/by-toolchain/{}", name));
+                }
 
                 // Computes the fully-qualified package name of workspace package `p`.
                 let fqpn = |p| {

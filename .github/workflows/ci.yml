@@ -598,51 +598,34 @@ jobs:
         matrix.target != 'wasm32-unknown-unknown' &&
         env.ZC_SKIP_CARGO_SEMVER_CHECKS != '1'
 
-    # TODO(#453): Doing this as a matrix step is a hack that allows us to depend
-    # on the fact that toolchains have already been installed. We currently only
-    # run this on a single matrix combination, but doing it outside of the
-    # matrix would require us to replicate the toolchain resolution and
-    # installation logic. We should either:
-    # - Figure out how to factor out the toolchain resolution and installation
-    #   logic (see #1275) for an attempt
-    # - Support multiple matrix combinations (which we intend to do as part of
-    #   #453 eventually anyway) so that this location is justified
-    - name: Generate code coverage
-      env:
-        TOOLCHAIN: ${{ matrix.toolchain }}
-        CRATE: ${{ matrix.crate }}
-        TARGET: ${{ matrix.target }}
-        FEATURES: ${{ matrix.features }}
-      run: |
-        set -eo pipefail
-        ./cargo.sh +nightly install cargo-llvm-cov
-
-        ./cargo.sh +$TOOLCHAIN llvm-cov \
-          --package $CRATE              \
-          --target $TARGET              \
-          $FEATURES                     \
-          --doctests                                 \
-          --lcov                                     \
-          --output-path lcov.info                    \
-          --verbose                                  \
-          --                                         \
-          --skip ui
-      if: |
-        matrix.crate == 'zerocopy'          &&
-        matrix.features == '--all-features' &&
-        matrix.toolchain == 'nightly'       &&
-        matrix.target == 'x86_64-unknown-linux-gnu'
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        files: lcov.info
-      if: |
-        matrix.crate == 'zerocopy'          &&
-        matrix.features == '--all-features' &&
-        matrix.toolchain == 'nightly'       &&
-        matrix.target == 'x86_64-unknown-linux-gnu'
+  coverage:
+    runs-on: ubuntu-latest
+    name: Generate code coverage
+    needs: generate_cache
+    steps:
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          persist-credentials: false
+      - name: Populate cache
+        uses: ./.github/actions/cache
+      - name: Generate code coverage
+        run: |
+          set -eo pipefail
+          ./cargo.sh +nightly install cargo-llvm-cov
+          ./cargo.sh +nightly llvm-cov \
+            --package zerocopy \
+            --target x86_64-unknown-linux-gnu \
+            --all-features \
+            --doctests \
+            --lcov \
+            --output-path lcov.info \
+            --verbose \
+            -- --skip ui
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: lcov.info
 
   kani:
     runs-on: ubuntu-latest        
@@ -832,47 +815,49 @@ jobs:
         with:
           persist-credentials: false
 
-      - id: populate-cache
+      - name: Populate cache
         uses: ./.github/actions/cache
+        with:
+          mode: generate
+          run: |
+            # Ensure all dependencies are downloaded - both for our crates and for
+            # tools we use in CI. We don't care about these tools succeeding for
+            # two reasons: First, this entire job is best-effort since it's just a
+            # performance optimization. Second, there may be failures due to
+            # issues other than failing to download dependencies (e.g., `cargo
+            # metadata` called with a malformed `Cargo.toml`, build failure in our
+            # own crate or in dependencies, etc). For those reasons, we discard
+            # stderr and ignore status codes.
+            #
+            # For downloading our crates' dependencies in particular, note that
+            # there is no support for doing this directly [1], so we just check
+            # all crates using --tests.
+            #
+            # We background all jobs and then wait for them so that they can run
+            # in parallel.
+            #
+            # [1]  https://stackoverflow.com/a/42139535/836390
 
-      - name: Download dependencies
-        if: steps.populate-cache.outputs.cache-hit != 'true'
-        run: |
-          # Ensure all dependencies are downloaded - both for our crates and for
-          # tools we use in CI. We don't care about these tools succeeding for
-          # two reasons: First, this entire job is best-effort since it's just a
-          # performance optimization. Second, there may be failures due to
-          # issues other than failing to download dependencies (e.g., `cargo
-          # metadata` called with a malformed `Cargo.toml`, build failure in our
-          # own crate or in dependencies, etc). For those reasons, we discard
-          # stderr and ignore status codes.
-          #
-          # For downloading our crates' dependencies in particular, note that
-          # there is no support for doing this directly [1], so we just check
-          # all crates using --tests.
-          #
-          # We background all jobs and then wait for them so that they can run
-          # in parallel.
-          #
-          # [1]  https://stackoverflow.com/a/42139535/836390
+            # See comment on "Pin syn dependency" job for why we do this. It needs
+            # to happen before the subsequent `cargo check`, so we don't
+            # background it.
+            #
+            # TODO(#1595): Debug why this step is still necessary after #1564 and
+            # maybe remove it.
+            cargo add -p zerocopy-derive 'syn@=2.0.46' &> /dev/null
 
-          # See comment on "Pin syn dependency" job for why we do this. It needs
-          # to happen before the subsequent `cargo check`, so we don't
-          # background it.
-          #
-          # TODO(#1595): Debug why this step is still necessary after #1564 and
-          # maybe remove it.
-          cargo add -p zerocopy-derive 'syn@=2.0.46' &> /dev/null
+            cargo check --workspace --tests                         &> /dev/null &
+            # On our MSRV toolchain, updating the Cargo index takes a long time, so
+            # it is worth specifically caching the MSRV index.
+            ./cargo.sh +msrv check --workspace --tests              &> /dev/null &
+            cargo metadata                                          &> /dev/null &
+            cargo install cargo-readme --version 3.2.0              &> /dev/null &
+            cargo install --locked action-validator --version 0.8.0 &> /dev/null &
+            cargo install --locked kani-verifier                    &> /dev/null &
+            cargo install cargo-nextest                             &> /dev/null &
+            cargo kani setup                                        &> /dev/null &
 
-          cargo check --workspace --tests                         &> /dev/null &
-          cargo metadata                                          &> /dev/null &
-          cargo install cargo-readme --version 3.2.0              &> /dev/null &
-          cargo install --locked action-validator --version 0.8.0 &> /dev/null &
-          cargo install --locked kani-verifier                    &> /dev/null &
-          cargo install cargo-nextest                             &> /dev/null &
-          cargo kani setup                                        &> /dev/null &
-
-          wait
+            wait
 
   check-all-toolchains-tested:
     runs-on: ubuntu-latest
@@ -966,7 +951,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, generate_cache, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor]
+      needs: [build_test, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, generate_cache, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor]
       steps:
         - name: Mark the job as failed
           run: exit 1
