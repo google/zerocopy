@@ -21,15 +21,14 @@
 ///   must only return `true` if its argument refers to a valid `$ty`.
 macro_rules! unsafe_impl {
     // Implement `$trait` for `$ty` with no bounds.
-    ($(#[$attr:meta])* $ty:ty: $trait:ident $(; |$candidate:ident| $is_bit_valid:expr)?) => {{
-        crate::util::macros::__unsafe();
-
-        $(#[$attr])*
-        // SAFETY: The caller promises that this is sound.
-        unsafe impl $trait for $ty {
-            unsafe_impl!(@method $trait $(; |$candidate| $is_bit_valid)?);
-        }
-    }};
+    ($(#[$attr:meta])* $ty:ty: $trait:ident $(; |$candidate:ident| $is_bit_valid:expr)?) => {
+        unsafe_impl!(
+            @inner
+            check
+            $(#[$attr])*
+            => $trait for $ty $(; |$candidate| $is_bit_valid)?
+        );
+    };
 
     // Implement all `$traits` for `$ty` with no bounds.
     //
@@ -54,11 +53,17 @@ macro_rules! unsafe_impl {
     };
 
     (@impl_traits_with_packed_attrs $attrs:tt $ty:ty: $($traits:ident),*) => {{
-        $( unsafe_impl!(@unpack_attrs $attrs $ty: $traits); )*
+        crate::util::macros::__unsafe();
+        $( unsafe_impl!(@unpack_attrs_no_check $attrs $ty: $traits); )*
     }};
 
-    (@unpack_attrs { $(#[$attrs:meta])* } $ty:ty: $traits:ident) => {
-        unsafe_impl!($(#[$attrs])* $ty: $traits);
+    (@unpack_attrs_no_check { $(#[$attrs:meta])* } $ty:ty: $traits:ident) => {
+        unsafe_impl!(
+            @inner
+            no_check
+            $(#[$attrs])*
+            => $traits for $ty
+        );
     };
 
     // This arm is identical to the following one, except it contains a
@@ -94,6 +99,7 @@ macro_rules! unsafe_impl {
     ) => {
         unsafe_impl!(
             @inner
+            check
             $(#[$attr])*
             @const $constname: $constty,
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
@@ -107,6 +113,7 @@ macro_rules! unsafe_impl {
     ) => {{
         unsafe_impl!(
             @inner
+            check
             $(#[$attr])*
             $($tyvar $(: $(? $optbound +)* + $($bound +)*)?,)*
             => $trait for $ty $(; |$candidate| $is_bit_valid)?
@@ -114,12 +121,13 @@ macro_rules! unsafe_impl {
     }};
     (
         @inner
+        $check:tt
         $(#[$attr:meta])*
         $(@const $constname:ident : $constty:ident,)*
         $($tyvar:ident $(: $(? $optbound:ident +)* + $($bound:ident +)* )?,)*
         => $trait:ident for $ty:ty $(; |$candidate:ident| $is_bit_valid:expr)?
     ) => {{
-        crate::util::macros::__unsafe();
+        unsafe_impl!(@unsafe_check $check);
 
         $(#[$attr])*
         #[allow(non_local_definitions)]
@@ -128,6 +136,9 @@ macro_rules! unsafe_impl {
             unsafe_impl!(@method $trait $(; |$candidate| $is_bit_valid)?);
         }
     }};
+
+    (@unsafe_check check) => { crate::util::macros::__unsafe(); };
+    (@unsafe_check no_check) => {};
 
     (@method TryFromBytes ; |$candidate:ident| $is_bit_valid:expr) => {
         #[allow(clippy::missing_inline_in_public_items, dead_code)]
@@ -741,6 +752,7 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
             #[inline(always)]
             fn cast_from_raw(t: PtrInner<'_, T>) -> PtrInner<'_, $wrapper<T>> {
                 // SAFETY: See previous safety comment.
+                #[allow(clippy::multiple_unsafe_ops_per_block)]
                 unsafe { cast!(t) }
             }
         }
@@ -749,6 +761,7 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
             #[inline(always)]
             fn cast_from_raw(t: PtrInner<'_, $wrapper<T>>) -> PtrInner<'_, T> {
                 // SAFETY: See previous safety comment.
+                #[allow(clippy::multiple_unsafe_ops_per_block)]
                 unsafe { cast!(t) }
             }
         }
