@@ -572,7 +572,7 @@ jobs:
     # gets run on different targets. Some of our API is target-specific (e.g.,
     # SIMD type impls), and so we need to run on each target.
     - name: Check semver compatibility
-      uses: obi1kenobi/cargo-semver-checks-action@7272cc2caa468d3e009a2b0a9cc366839348237b # v2.6
+      uses: obi1kenobi/cargo-semver-checks-action@5b298c9520f7096a4683c0bd981a7ac5a7e249ae # v2.8
       with:
         # Don't semver check zerocopy-derive; as a proc macro, it doesn't have
         # an API that cargo-semver-checks can understand.
