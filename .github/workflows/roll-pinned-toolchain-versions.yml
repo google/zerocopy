@@ -143,7 +143,7 @@ jobs:
 
       - name: Submit PR
         id: submit-pr
-        uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f # v7.0.5
+        uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7.0.9
         with:
           commit-message: "[ci] Roll pinned ${{ matrix.toolchain }} toolchain"
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
@@ -189,7 +189,7 @@ jobs:
           sed -i -E -e "s/^( *kani-version:)( [0-9]+\.[0-9]+\.[0-9]+)/\1 $KANI_LATEST/" .github/workflows/ci.yml
       - name: Submit PR
         id: submit-pr
-        uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f # v7.0.5
+        uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7.0.9
         with:
           commit-message: "[ci] Roll pinned Kani version"
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
