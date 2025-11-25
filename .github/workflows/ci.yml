@@ -598,51 +598,38 @@ jobs:
         matrix.target != 'wasm32-unknown-unknown' &&
         env.ZC_SKIP_CARGO_SEMVER_CHECKS != '1'
 
-    # TODO(#453): Doing this as a matrix step is a hack that allows us to depend
-    # on the fact that toolchains have already been installed. We currently only
-    # run this on a single matrix combination, but doing it outside of the
-    # matrix would require us to replicate the toolchain resolution and
-    # installation logic. We should either:
-    # - Figure out how to factor out the toolchain resolution and installation
-    #   logic (see #1275) for an attempt
-    # - Support multiple matrix combinations (which we intend to do as part of
-    #   #453 eventually anyway) so that this location is justified
-    - name: Generate code coverage
-      env:
-        TOOLCHAIN: ${{ matrix.toolchain }}
-        CRATE: ${{ matrix.crate }}
-        TARGET: ${{ matrix.target }}
-        FEATURES: ${{ matrix.features }}
-      run: |
-        set -eo pipefail
-        ./cargo.sh +nightly install cargo-llvm-cov
-
-        ./cargo.sh +$TOOLCHAIN llvm-cov \
-          --package $CRATE              \
-          --target $TARGET              \
-          $FEATURES                     \
-          --doctests                                 \
-          --lcov                                     \
-          --output-path lcov.info                    \
-          --verbose                                  \
-          --                                         \
-          --skip ui
-      if: |
-        matrix.crate == 'zerocopy'          &&
-        matrix.features == '--all-features' &&
-        matrix.toolchain == 'nightly'       &&
-        matrix.target == 'x86_64-unknown-linux-gnu'
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        files: lcov.info
-      if: |
-        matrix.crate == 'zerocopy'          &&
-        matrix.features == '--all-features' &&
-        matrix.toolchain == 'nightly'       &&
-        matrix.target == 'x86_64-unknown-linux-gnu'
+  coverage:
+    runs-on: ubuntu-latest
+    name: Generate code coverage
+    needs: generate_cache
+    steps:
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          persist-credentials: false
+      - name: Populate cache
+        uses: ./.github/actions/cache
+      - name: Install nightly toolchain
+        run: |
+          TOOLCHAIN=$(./cargo.sh --version nightly)
+          rustup toolchain install $TOOLCHAIN -c rust-src
+      - name: Generate code coverage
+        run: |
+          set -eo pipefail
+          ./cargo.sh +nightly install cargo-llvm-cov
+          ./cargo.sh +nightly llvm-cov \
+            --package zerocopy \
+            --target x86_64-unknown-linux-gnu \
+            --all-features \
+            --doctests \
+            --lcov \
+            --output-path lcov.info \
+            --verbose \
+            -- --skip ui
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5.5.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: lcov.info
 
   kani:
     runs-on: ubuntu-latest        
@@ -968,7 +955,7 @@ jobs:
       # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
       if: failure()
       runs-on: ubuntu-latest
-      needs: [build_test, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, generate_cache, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor]
+      needs: [build_test, coverage, kani, check_be_aarch64, check_avr_atmega, check_fmt, check_actions, check_readme, check_versions, check_msrv_is_minimal, generate_cache, check-all-toolchains-tested, check-job-dependencies, check-todo, run-git-hooks, zizmor]
       steps:
         - name: Mark the job as failed
           run: exit 1
