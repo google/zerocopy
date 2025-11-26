@@ -192,6 +192,9 @@ mod def {
 
 #[allow(unreachable_pub)] // This is a false positive on our MSRV toolchain.
 pub use def::Ref;
+use crate::pointer::{BecauseRead, BecauseMutationCompatible, PtrInner, invariant::{
+    Aligned, BecauseExclusive, Exclusive, Initialized, Shared, Unaligned, Valid
+}};
 
 impl<B, T> Ref<B, T>
 where
@@ -616,6 +619,39 @@ where
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `IntoByteSlice`.
         let b = unsafe { r.into_byte_slice() };
+        let b = b.into_byte_slice();
+
+        if let crate::layout::SizeInfo::Sized { .. } = T::LAYOUT.size_info {
+            let ptr = Ptr::from_ref(b);
+            let ptr: Ptr<'_, [u8], (Shared, Unaligned, Initialized)> = ptr.transmute::<_, _, (_, (_, _))>();
+            // SAFETY: `T::raw_from_ptr_len` promises to preserve address and provenance in the referent.
+            let ptr: Ptr<'_, T, (Shared, Unaligned, Initialized)> = unsafe {
+                ptr.cast_unsized(|ptr| {
+                    let ptr = T::raw_from_ptr_len(
+                        ptr.as_non_null().cast(),
+                        <T::PointerMetadata as crate::PointerMetadata>::from_elem_count(0),
+                    );
+                    // SAFETY: The safety invariants of `Ptr::new` (see definition) are
+                    // satisfied:
+                    // 0. If `ptr`'s referent is not zero sized, then `ptr` has valid
+                    //    provenance for its referent, because it derived from `self`
+                    //    using a series of provenance-preserving operations, and
+                    //    because `self` has valid provenance for its referent. By the
+                    //    same argument, `ptr`'s referent is entirely contained within
+                    //    the same allocated object as `self`'s referent.
+                    // 1. If `ptr`'s referent is not zero sized, then the allocation of
+                    //    `ptr` is guaranteed to live for at least `'a`, because `ptr`
+                    //    is entirely contained in `self`, which lives for at least `'a`
+                    //    by invariant on `Ptr`.
+                    unsafe { PtrInner::new(ptr) }
+                })
+            };
+
+            // SAFETY: By invariant on `r`, we know that alignment is valid.
+            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+            let ptr = ptr.recall_validity::<Valid, _>();
+            return ptr.as_ref();
+        }
 
         // PANICS: By post-condition on `into_byte_slice`, `b`'s size and
         // alignment are valid for `T`. By post-condition, `b.into_byte_slice()`
@@ -650,6 +686,58 @@ where
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `IntoByteSliceMut`.
         let b = unsafe { r.into_byte_slice_mut() };
+        let b = b.into_byte_slice_mut();
+
+        if let crate::layout::SizeInfo::Sized { .. } = T::LAYOUT.size_info {
+            let ptr = Ptr::from_mut(b);
+            let ptr: Ptr<'_, [u8], (Exclusive, Unaligned, Initialized)> = ptr.transmute::<
+                [u8],
+                Initialized,
+                (
+                    BecauseMutationCompatible,
+                    (
+                        BecauseRead,
+                        (BecauseExclusive, BecauseExclusive),
+                    ),
+                ),
+            >();
+            // SAFETY: `T::raw_from_ptr_len` promises to preserve address and provenance in the referent.
+            let ptr: Ptr<'_, T, (Exclusive, Unaligned, Initialized)> = unsafe {
+                ptr.cast_unsized::<_, _, (BecauseRead, (BecauseExclusive, BecauseExclusive))>(|ptr| {
+                    let ptr = T::raw_from_ptr_len(
+                        ptr.as_non_null().cast(),
+                        <T::PointerMetadata as crate::PointerMetadata>::from_elem_count(0),
+                    );
+                    // SAFETY: The safety invariants of `Ptr::new` (see definition) are
+                    // satisfied:
+                    // 0. If `ptr`'s referent is not zero sized, then `ptr` has valid
+                    //    provenance for its referent, because it derived from `self`
+                    //    using a series of provenance-preserving operations, and
+                    //    because `self` has valid provenance for its referent. By the
+                    //    same argument, `ptr`'s referent is entirely contained within
+                    //    the same allocated object as `self`'s referent.
+                    // 1. If `ptr`'s referent is not zero sized, then the allocation of
+                    //    `ptr` is guaranteed to live for at least `'a`, because `ptr`
+                    //    is entirely contained in `self`, which lives for at least `'a`
+                    //    by invariant on `Ptr`.
+                    unsafe { PtrInner::new(ptr) }
+                })
+            };
+
+            // SAFETY: By invariant on `r`, we know that alignment is valid.
+            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+            let ptr = ptr.recall_validity::<
+                Valid,
+                (
+                    BecauseMutationCompatible,
+                    (
+                        BecauseRead,
+                        (BecauseExclusive, BecauseExclusive),
+                    ),
+                ),
+            >();
+            return ptr.as_mut();
+        }
 
         // PANICS: By post-condition on `into_byte_slice_mut`, `b`'s size and
         // alignment are valid for `T`. By post-condition,
@@ -763,11 +851,44 @@ where
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `ByteSlice`.
         let b = unsafe { self.as_byte_slice() };
+        let b = b.deref();
+
+        if let crate::layout::SizeInfo::Sized { .. } = T::LAYOUT.size_info {
+            let ptr = Ptr::from_ref(b);
+            let ptr: Ptr<'_, [u8], (Shared, Unaligned, Initialized)> = ptr.transmute::<_, _, (_, (_, _))>();
+            // SAFETY: `T::raw_from_ptr_len` promises to preserve address and provenance in the referent.
+            let ptr: Ptr<'_, T, (Shared, Unaligned, Initialized)> = unsafe {
+                ptr.cast_unsized(|ptr| {
+                    let ptr = T::raw_from_ptr_len(
+                        ptr.as_non_null().cast(),
+                        <T::PointerMetadata as crate::PointerMetadata>::from_elem_count(0),
+                    );
+                    // SAFETY: The safety invariants of `Ptr::new` (see definition) are
+                    // satisfied:
+                    // 0. If `ptr`'s referent is not zero sized, then `ptr` has valid
+                    //    provenance for its referent, because it derived from `self`
+                    //    using a series of provenance-preserving operations, and
+                    //    because `self` has valid provenance for its referent. By the
+                    //    same argument, `ptr`'s referent is entirely contained within
+                    //    the same allocated object as `self`'s referent.
+                    // 1. If `ptr`'s referent is not zero sized, then the allocation of
+                    //    `ptr` is guaranteed to live for at least `'a`, because `ptr`
+                    //    is entirely contained in `self`, which lives for at least `'a`
+                    //    by invariant on `Ptr`.
+                    unsafe { PtrInner::new(ptr) }
+                })
+            };
+
+            // SAFETY: By invariant on `r`, we know that alignment is valid.
+            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+            let ptr = ptr.recall_validity::<Valid, _>();
+            return ptr.as_ref();
+        }
 
         // PANICS: By postcondition on `as_byte_slice`, `b`'s size and alignment
         // are valid for `T`, and by invariant on `ByteSlice`, these are
         // preserved through `.deref()`, so this `unwrap` will not panic.
-        let ptr = Ptr::from_ref(b.deref())
+        let ptr = Ptr::from_ref(b)
             .try_cast_into_no_leftover::<T, BecauseImmutable>(None)
             .expect("zerocopy internal error: Deref::deref should be infallible");
         let ptr = ptr.recall_validity();
@@ -791,12 +912,64 @@ where
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `ByteSliceMut`.
         let b = unsafe { self.as_byte_slice_mut() };
+        let b = b.deref_mut();
+
+        if let crate::layout::SizeInfo::Sized { .. } = T::LAYOUT.size_info {
+            let ptr = Ptr::from_mut(b);
+            let ptr: Ptr<'_, [u8], (Exclusive, Unaligned, Initialized)> = ptr.transmute::<
+                [u8],
+                Initialized,
+                (
+                    BecauseMutationCompatible,
+                    (
+                        BecauseRead,
+                        (BecauseExclusive, BecauseExclusive),
+                    ),
+                ),
+            >();
+            // SAFETY: `T::raw_from_ptr_len` promises to preserve address and provenance in the referent.
+            let ptr: Ptr<'_, T, (Exclusive, Unaligned, Initialized)> = unsafe {
+                ptr.cast_unsized::<_, _, (BecauseRead, (BecauseExclusive, BecauseExclusive))>(|ptr| {
+                    let ptr = T::raw_from_ptr_len(
+                        ptr.as_non_null().cast(),
+                        <T::PointerMetadata as crate::PointerMetadata>::from_elem_count(0),
+                    );
+                    // SAFETY: The safety invariants of `Ptr::new` (see definition) are
+                    // satisfied:
+                    // 0. If `ptr`'s referent is not zero sized, then `ptr` has valid
+                    //    provenance for its referent, because it derived from `self`
+                    //    using a series of provenance-preserving operations, and
+                    //    because `self` has valid provenance for its referent. By the
+                    //    same argument, `ptr`'s referent is entirely contained within
+                    //    the same allocated object as `self`'s referent.
+                    // 1. If `ptr`'s referent is not zero sized, then the allocation of
+                    //    `ptr` is guaranteed to live for at least `'a`, because `ptr`
+                    //    is entirely contained in `self`, which lives for at least `'a`
+                    //    by invariant on `Ptr`.
+                    unsafe { PtrInner::new(ptr) }
+                })
+            };
+
+            // SAFETY: By invariant on `r`, we know that alignment is valid.
+            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+            let ptr = ptr.recall_validity::<
+                Valid,
+                (
+                    BecauseMutationCompatible,
+                    (
+                        BecauseRead,
+                        (BecauseExclusive, BecauseExclusive),
+                    ),
+                ),
+            >();
+            return ptr.as_mut();
+        }
 
         // PANICS: By postcondition on `as_byte_slice_mut`, `b`'s size and
         // alignment are valid for `T`, and by invariant on `ByteSlice`, these
         // are preserved through `.deref_mut()`, so this `unwrap` will not
         // panic.
-        let ptr = Ptr::from_mut(b.deref_mut())
+        let ptr = Ptr::from_mut(b)
             .try_cast_into_no_leftover::<T, BecauseExclusive>(None)
             .expect("zerocopy internal error: DerefMut::deref_mut should be infallible");
         let ptr = ptr.recall_validity::<_, (_, (_, (BecauseExclusive, BecauseExclusive)))>();
@@ -879,6 +1052,61 @@ mod tests {
 
     use super::*;
     use crate::util::testutil::*;
+    use test::{self, Bencher};
+
+    #[bench]
+    fn bench_from_bytes_sized(b: &mut Bencher) {
+        let buf = Align::<[u8; 8], AU64>::default();
+        // `buf.t` should be aligned to 8, so this should always succeed.
+        let bytes = &buf.t[..];
+        b.iter(|| test::black_box(Ref::<_, AU64>::from_bytes(test::black_box(bytes)).unwrap()));
+    }
+
+    #[bench]
+    fn bench_into_ref_sized(b: &mut Bencher) {
+        let buf = Align::<[u8; 8], AU64>::default();
+        let bytes = &buf.t[..];
+        let r = Ref::<_, AU64>::from_bytes(bytes).unwrap();
+        b.iter(|| {
+            test::black_box(Ref::into_ref(test::black_box(r)))
+        });
+    }
+
+    #[bench]
+    fn bench_into_mut_sized(b: &mut Bencher) {
+        let mut buf = Align::<[u8; 8], AU64>::default();
+        let _ = Ref::<_, AU64>::from_bytes(&mut buf.t[..]).unwrap();
+        b.iter(move || {
+            // SAFETY: The preceding `from_bytes` succeeded, and so we know that
+            // `&mut buf.t[.]   
+            let r = unsafe { Ref::<&mut [u8], AU64>::new_unchecked(&mut buf.t[..]) };
+            test::black_box(Ref::into_mut(test::black_box(r)));
+        });
+    }
+
+    #[bench]
+    fn bench_deref_sized(b: &mut Bencher) {
+        let buf = Align::<[u8; 8], AU64>::default();
+        let bytes = &buf.t[..];
+        let r = Ref::<_, AU64>::from_bytes(bytes).unwrap();
+        b.iter(|| {
+            let temp = test::black_box(r);
+            test::black_box(temp.deref());
+      });
+    }
+
+    #[bench]
+    fn bench_deref_mut_sized(b: &mut Bencher) {
+        let mut buf = Align::<[u8; 8], AU64>::default();
+        let _ = Ref::<_, AU64>::from_bytes(&mut buf.t[..]).unwrap();
+        b.iter(|| {
+            // SAFETY: The preceding `from_bytes` succeeded, and so we know that
+            // `&mut buf.t[.]            
+            let r = unsafe { Ref::<&mut [u8], AU64>::new_unchecked(&mut buf.t[..]) };
+            let mut temp = test::black_box(r);
+            test::black_box(temp.deref_mut());
+        });
+    }
 
     #[test]
     fn test_mut_slice_into_ref() {
