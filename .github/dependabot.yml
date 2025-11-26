@@ -11,10 +11,15 @@ updates:
   - package-ecosystem: github-actions # zizmor: ignore[dependabot-cooldown] (Dependabot cooldown not desired)
     directory: /
     schedule:
-      interval: daily
+      interval: "cron"
+      cronjob: "29 09 * * 1"
     labels:
       - "hide-from-release-notes"
     commit-message:
       # The trailing space instructs dependabot not to insert a colon between
       # the prefix and the rest of the message.
       prefix: "[CI] "
+    groups:
+      all-actions:
+        patterns:
+          - "*"
