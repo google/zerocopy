@@ -1,21 +1,13 @@
-warning: unused import: `zerocopy::KnownLayout`
-  --> tests/ui-stable/late_compile_pass.rs:15:5
-   |
-15 | use zerocopy::KnownLayout;
-   |     ^^^^^^^^^^^^^^^^^^^^^
-   |
-   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
-
 error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
-  --> tests/ui-stable/late_compile_pass.rs:29:10
+  --> /zerocopy-derive/tests/ui-stable/late_compile_pass.rs:27:10
    |
-29 | #[derive(TryFromBytes)]
+27 | #[derive(TryFromBytes)]
    |          ^^^^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
-  --> tests/ui-stable/../include.rs
+  --> /zerocopy-derive/tests/ui-stable/../include.rs:48:5
    |
-   |     pub struct NotZerocopy<T = ()>(pub T);
+48 |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::TryFromBytes`:
@@ -27,20 +19,20 @@ help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
              AtomicI16
              AtomicI32
              AtomicI64
-           and $N others
+           and 129 others
    = help: see issue #48214
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
-  --> tests/ui-stable/late_compile_pass.rs:38:10
+  --> /zerocopy-derive/tests/ui-stable/late_compile_pass.rs:36:10
    |
-38 | #[derive(FromZeros)]
+36 | #[derive(FromZeros)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
-  --> tests/ui-stable/../include.rs
+  --> /zerocopy-derive/tests/ui-stable/../include.rs:48:5
    |
-   |     pub struct NotZerocopy<T = ()>(pub T);
+48 |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::TryFromBytes`:
@@ -52,20 +44,20 @@ help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
              AtomicI16
              AtomicI32
              AtomicI64
-           and $N others
+           and 129 others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
-  --> tests/ui-stable/late_compile_pass.rs:38:10
+  --> /zerocopy-derive/tests/ui-stable/late_compile_pass.rs:36:10
    |
-38 | #[derive(FromZeros)]
+36 | #[derive(FromZeros)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `FromZeros` is not implemented for `NotZerocopy`
-  --> tests/ui-stable/../include.rs
+  --> /zerocopy-derive/tests/ui-stable/../include.rs:48:5
    |
-   |     pub struct NotZerocopy<T = ()>(pub T);
+48 |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
    = help: the following other types implement trait `FromZeros`:
@@ -77,20 +69,20 @@ help: the trait `FromZeros` is not implemented for `NotZerocopy`
              AtomicI16
              AtomicI32
              AtomicI64
-           and $N others
+           and 116 others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
-  --> tests/ui-stable/late_compile_pass.rs:47:10
+  --> /zerocopy-derive/tests/ui-stable/late_compile_pass.rs:46:10
    |
-47 | #[derive(FromBytes)]
+46 | #[derive(FromBytes)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
-  --> tests/ui-stable/../include.rs
+  --> /zerocopy-derive/tests/ui-stable/../include.rs:48:5
    |
-   |     pub struct NotZerocopy<T = ()>(pub T);
+48 |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::TryFromBytes`:
@@ -102,20 +94,20 @@ help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
              AtomicI16
              AtomicI32
              AtomicI64
-           and $N others
+           and 129 others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
-  --> tests/ui-stable/late_compile_pass.rs:47:10
+  --> /zerocopy-derive/tests/ui-stable/late_compile_pass.rs:46:10
    |
-47 | #[derive(FromBytes)]
+46 | #[derive(FromBytes)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `FromZeros` is not implemented for `NotZerocopy`
-  --> tests/ui-stable/../include.rs
+  --> /zerocopy-derive/tests/ui-stable/../include.rs:48:5
    |
-   |     pub struct NotZerocopy<T = ()>(pub T);
+48 |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
    = help: the following other types implement trait `FromZeros`:
@@ -127,20 +119,20 @@ help: the trait `FromZeros` is not implemented for `NotZerocopy`
              AtomicI16
              AtomicI32
              AtomicI64
-           and $N others
+           and 116 others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfied
-  --> tests/ui-stable/late_compile_pass.rs:47:10
+  --> /zerocopy-derive/tests/ui-stable/late_compile_pass.rs:46:10
    |
-47 | #[derive(FromBytes)]
+46 | #[derive(FromBytes)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
-  --> tests/ui-stable/../include.rs
+  --> /zerocopy-derive/tests/ui-stable/../include.rs:48:5
    |
-   |     pub struct NotZerocopy<T = ()>(pub T);
+48 |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::FromBytes`:
@@ -152,20 +144,20 @@ help: the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
              AtomicI8
              AtomicIsize
              AtomicU16
-           and $N others
+           and 53 others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfied
-  --> tests/ui-stable/late_compile_pass.rs:56:10
+  --> /zerocopy-derive/tests/ui-stable/late_compile_pass.rs:56:10
    |
 56 | #[derive(IntoBytes)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy`
-  --> tests/ui-stable/../include.rs
+  --> /zerocopy-derive/tests/ui-stable/../include.rs:48:5
    |
-   |     pub struct NotZerocopy<T = ()>(pub T);
+48 |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::IntoBytes`:
@@ -177,20 +169,20 @@ help: the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy`
              AtomicI64
              AtomicI8
              AtomicIsize
-           and $N others
+           and 68 others
    = help: see issue #48214
    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
-  --> tests/ui-stable/late_compile_pass.rs:66:10
+  --> /zerocopy-derive/tests/ui-stable/late_compile_pass.rs:66:10
    |
 66 | #[derive(Unaligned)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy::Unaligned` is not implemented for `AU16`
-  --> tests/ui-stable/../include.rs
+  --> /zerocopy-derive/tests/ui-stable/../include.rs:63:5
    |
-   |     pub struct AU16(pub u16);
+63 |     pub struct AU16(pub u16);
    |     ^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
    = help: the following other types implement trait `zerocopy::Unaligned`:
@@ -202,20 +194,20 @@ help: the trait `zerocopy::Unaligned` is not implemented for `AU16`
              F32<O>
              F64<O>
              I128<O>
-           and $N others
+           and 28 others
    = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
-  --> tests/ui-stable/late_compile_pass.rs:74:10
+  --> /zerocopy-derive/tests/ui-stable/late_compile_pass.rs:74:10
    |
 74 | #[derive(Unaligned)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy::Unaligned` is not implemented for `AU16`
-  --> tests/ui-stable/../include.rs
+  --> /zerocopy-derive/tests/ui-stable/../include.rs:63:5
    |
-   |     pub struct AU16(pub u16);
+63 |     pub struct AU16(pub u16);
    |     ^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
    = help: the following other types implement trait `zerocopy::Unaligned`:
@@ -227,20 +219,20 @@ help: the trait `zerocopy::Unaligned` is not implemented for `AU16`
              F32<O>
              F64<O>
              I128<O>
-           and $N others
+           and 28 others
    = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
-  --> tests/ui-stable/late_compile_pass.rs:81:10
+  --> /zerocopy-derive/tests/ui-stable/late_compile_pass.rs:81:10
    |
 81 | #[derive(Unaligned)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy::Unaligned` is not implemented for `AU16`
-  --> tests/ui-stable/../include.rs
+  --> /zerocopy-derive/tests/ui-stable/../include.rs:63:5
    |
-   |     pub struct AU16(pub u16);
+63 |     pub struct AU16(pub u16);
    |     ^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
    = help: the following other types implement trait `zerocopy::Unaligned`:
@@ -252,20 +244,20 @@ help: the trait `zerocopy::Unaligned` is not implemented for `AU16`
              F32<O>
              F64<O>
              I128<O>
-           and $N others
+           and 28 others
    = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfied
-  --> tests/ui-stable/late_compile_pass.rs:47:10
+  --> /zerocopy-derive/tests/ui-stable/late_compile_pass.rs:46:10
    |
-47 | #[derive(FromBytes)]
+46 | #[derive(FromBytes)]
    |          ^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
-  --> tests/ui-stable/../include.rs
+  --> /zerocopy-derive/tests/ui-stable/../include.rs:48:5
    |
-   |     pub struct NotZerocopy<T = ()>(pub T);
+48 |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::FromBytes`:
@@ -277,15 +269,19 @@ help: the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
              AtomicI8
              AtomicIsize
              AtomicU16
-           and $N others
+           and 53 others
 note: required for `FromBytes1` to implement `zerocopy::FromBytes`
-  --> tests/ui-stable/late_compile_pass.rs:47:10
+  --> /zerocopy-derive/tests/ui-stable/late_compile_pass.rs:46:10
    |
-47 | #[derive(FromBytes)]
+46 | #[derive(FromBytes)]
    |          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `<FromBytes1 as zerocopy::TryFromBytes>::is_bit_valid::assert_is_from_bytes`
-  --> tests/ui-stable/late_compile_pass.rs:47:10
+  --> /zerocopy-derive/tests/ui-stable/late_compile_pass.rs:46:10
    |
-47 | #[derive(FromBytes)]
+46 | #[derive(FromBytes)]
    |          ^^^^^^^^^ required by this bound in `assert_is_from_bytes`
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 11 previous errors
+
+For more information about this error, try `rustc --explain E0277`.

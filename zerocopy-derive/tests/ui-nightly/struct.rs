@@ -26,24 +26,24 @@ struct NotKnownLayout;
 
 struct NotKnownLayoutDst([u8]);
 
-// | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
-// |          N |        N |              N |        N |      KL00 |
+//  | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+//  |          N |        N |              N |        N |      KL00 |
 #[derive(KnownLayout)]
 struct KL00(u8, NotKnownLayoutDst);
 
-// | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
-// |          N |        N |              Y |        N |      KL02 |
+//  | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+//  |          N |        N |              Y |        N |      KL02 |
 #[derive(KnownLayout)]
 struct KL02(u8, [u8]);
 
-// | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
-// |          Y |        N |              N |        N |      KL08 |
+//  | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+//  |          Y |        N |              N |        N |      KL08 |
 #[derive(KnownLayout)]
 #[repr(C)]
 struct KL08(u8, NotKnownLayoutDst);
 
-// | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
-// |          Y |        N |              N |        Y |      KL09 |
+//  | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+//  |          Y |        N |              N |        Y |      KL09 |
 #[derive(KnownLayout)]
 #[repr(C)]
 struct KL09(NotKnownLayout, NotKnownLayout);
@@ -213,6 +213,7 @@ struct Unaligned1;
 
 #[derive(Unaligned)]
 #[repr(transparent, align(2))]
+
 struct Unaligned2 {
     foo: u8,
 }

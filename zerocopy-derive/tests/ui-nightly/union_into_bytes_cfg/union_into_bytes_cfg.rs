@@ -17,10 +17,15 @@ extern crate zerocopy;
 
 use zerocopy::IntoBytes;
 
+#[deprecated]
+pub trait Deprecated {}
+
 #[derive(IntoBytes)]
 #[repr(C)]
 union Foo {
     a: u8,
 }
+
+impl Deprecated for Foo {}
 
 fn main() {}

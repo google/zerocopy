@@ -1,22 +1,22 @@
-error: requires --cfg zerocopy_derive_union_into_bytes;
-       please let us know you use this feature: https://github.com/google/zerocopy/discussions/1802
-  --> tests/ui-stable/union_into_bytes_cfg/union_into_bytes_cfg.rs:20:10
+error: use of deprecated trait `Deprecated`
+  --> /zerocopy-derive/tests/ui-stable/union_into_bytes_cfg/union_into_bytes_cfg.rs:29:6
    |
-20 | #[derive(IntoBytes)]
-   |          ^^^^^^^^^
+29 | impl Deprecated for Foo {}
+   |      ^^^^^^^^^^
    |
-   = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+note: the lint level is defined here
+  --> /zerocopy-derive/tests/ui-stable/union_into_bytes_cfg/union_into_bytes_cfg.rs:14:9
+   |
+14 | #![deny(deprecated)]
+   |         ^^^^^^^^^^
 
-warning: unexpected `cfg` condition name: `zerocopy_derive_union_into_bytes`
-  --> tests/ui-stable/union_into_bytes_cfg/union_into_bytes_cfg.rs:20:10
+warning: union `Foo` is never used
+  --> /zerocopy-derive/tests/ui-stable/union_into_bytes_cfg/union_into_bytes_cfg.rs:25:7
    |
-20 | #[derive(IntoBytes)]
-   |          ^^^^^^^^^
+25 | union Foo {
+   |       ^^^
    |
-   = help: expected names are: `docsrs`, `feature`, and `test` and 31 more
-   = note: using a cfg inside a derive macro will use the cfgs from the destination crate and not the ones from the defining crate
-   = help: try referring to `IntoBytes` crate for guidance on how handle this unexpected cfg
-   = help: the derive macro `IntoBytes` may come from an old version of the `zerocopy_derive` crate, try updating your dependency with `cargo update -p zerocopy_derive`
-   = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
-   = note: `#[warn(unexpected_cfgs)]` on by default
-   = note: this warning originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+error: aborting due to 1 previous error; 1 warning emitted
+
