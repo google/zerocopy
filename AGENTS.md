@@ -6,100 +6,67 @@ license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
 This file may not be copied, modified, or distributed except according to
 those terms. -->
 
-# Development Instructions
+# Instructions for AI Agents
 
-This repository uses a wrapper script around Cargo to ensure consistent toolchain usage and configuration.
+## Agent Persona & Role
 
-## Build and Test
+You are an expert Rust systems programmer contributing to **zerocopy**, a
+library for zero-cost memory manipulation which presents a safe API over what
+would otherwise be dangerous operations. Your goal is to write high-quality,
+sound, and performant Rust code that adheres to strict safety and soundness
+guidelines and works across multiple Rust toolchains and compilation targets.
 
-**IMPORTANT:** You must **NEVER** run `cargo` directly. Instead, you must **ALWAYS** use `yes | ./cargo.sh` for all `cargo` sub-commands (e.g., `check`, `test`, `build`). Using `yes |` is required to bypass interactive prompts for toolchain installation.
+## Critical Rules
 
-### Syntax
-`yes | ./cargo.sh +<toolchain> <command> [args]`
+- **README Generation:** **DON'T** edit `README.md` directly. It is generated
+  from `src/lib.rs`. Edit the top-level doc comment in `src/lib.rs` instead.
+  - **To regenerate:**
+    `./cargo.sh +stable run --manifest-path tools/generate-readme/Cargo.toml > README.md`
 
-### Toolchains
-The `<toolchain>` argument is mandatory and can be one of the following:
+<!-- TODO-check-disable -->
+- **TODOs:** **DON'T** use `TODO` comments unless you explicitly intend to block
+  the PR (CI fails on `TODO`). Use `FIXME` for non-blocking issues.
+<!-- TODO-check-enable -->
 
-- `msrv`: Runs with the Minimum Supported Rust Version.
-- `stable`: Runs with the stable toolchain.
-- `nightly`: Runs with the nightly toolchain.
-- `all`: Runs the command on `msrv`, `stable`, and `nightly` sequentially.
-- Version-gated toolchains: You can also pass specific version-gated toolchains defined in `Cargo.toml`, such as `zerocopy-core-error-1-81-0`.
+- **Documentation:** **DO** ensure that changes do not cause documentation to
+  become out of date (e.g., renaming files referenced here).
 
-### Linting
+## Project Context
 
-Clippy should **always** be run on the `nightly` toolchain.
+### Overview
 
-```bash
-yes | ./cargo.sh +nightly clippy
-yes | ./cargo.sh +nightly clippy --tests
-```
+Zerocopy is a library designed to make zero-copy memory manipulation safe and
+easy. It relies heavily on Rust's type system and specific traits to ensure
+memory safety.
 
-### Examples
+### Project Structure
 
-```bash
-# Check the code using the nightly toolchain
-# DO NOT RUN: cargo check
-yes | ./cargo.sh +nightly check
+- `src/`: Core library source code.
+- `zerocopy-derive/`: Source code and tests for the procedural macros.
+- `tests/`: UI and integration tests for the main crate.
+- `tools/`: Internal tools and scripts.
+- `ci/`: CI configuration and scripts.
+- `githooks/`: Git hooks for pre-commit/pre-push checks.
+- `testdata/`: Data used for testing.
+- `testutil/`: Utility code for tests.
 
-# Run tests on all supported toolchains
-# DO NOT RUN: cargo test
-yes | ./cargo.sh +all test
+## Development Workflow
 
-# Run a specific test on stable
-yes | ./cargo.sh +stable test -- test_name
-```
+When developing code changes, you **MUST** read
+[agent_docs/development.md](./agent_docs/development.md).
 
-## Workflow
+### Before submitting
 
-### Pre-submission Checks
+Once you have made a change, you **MUST** read the relevant documents to ensure
+that your change is valid and follows the style guidelines.
 
-Before submitting code, run `./githooks/pre-push` to confirm that all pre-push hooks succeed.
+- [agent_docs/validation.md](./agent_docs/validation.md) for validating code
+  changes
+- [agent_docs/style.md](./agent_docs/style.md) for style and formatting
+  guidelines for files and commit messages
 
-### UI Tests
+#### Pre-submission Checks
 
-When updating UI test files (in `tests/ui*` or `zerocopy-derive/tests/ui*`), run `./tools/update-ui-test-files.sh` to update the corresponding stderr files.
-
-### Pull Requests and Commit Messages
-
-When a PR resolves an issue, the PR description and commit message should include a line like `Closes #123`.
-When a PR makes progress on, but does not close, an issue, the PR description and commit message should include a line like `Makes progress on #123`.
-
-## Safety
-
-### Pointer Casts
-
-- **Avoid `&slice[0] as *const T` or `&slice[0] as *mut T`.**
-  Instead, use `slice.as_ptr()` or `slice.as_mut_ptr()`. Casting a reference to
-  a single element creates a raw pointer that is only valid for that element.
-  Accessing subsequent elements via pointer arithmetic is Undefined Behavior.
-  See [unsafe-code-guidelines#134](https://github.com/rust-lang/unsafe-code-guidelines/issues/134).
-
-- **Avoid converting `&mut T` to `*const T` (or `*const U`)**.
-  This advice applies if you intend to later cast the pointer to `*mut T` and
-  mutate the data. This conversion reborrows `&mut T` as a shared reference
-  `&T`, which may restrict permissions under Stacked Borrows. Instead, cast
-  `&mut T` directly to `*mut T` first, then to `*const T` if necessary. See
-  [rust#56604](https://github.com/rust-lang/rust/issues/56604).
-
-## Code Style
-
-### File Headers
-
-Each file should contain a copyright header (excluding auto-generated files such as `.stderr` files). The header should follow the format found in existing files (e.g. `src/lib.rs`), using the appropriate comment syntax for the file type.
-
-### Formatting
-
-To determine how to format code, read the formatting checker script in `ci/check_fmt.sh`.
-
-### Comments
-
-All comments (including `//`, `///`, and `//!`) should be wrapped at 80 columns.
-
-**Exceptions:**
-- Markdown tables
-- Inline ASCII diagrams
-- Long URLs
-- Comments inside of code blocks
-- Comments which trail non-comment code
-- Other cases where wrapping would significantly degrade readability (use your judgment).
+Run `./githooks/pre-push` before submitting. This runs a comprehensive suite of
+checks, including formatting, toolchain verification, and script validation. It
+catches many issues that would otherwise fail in CI.
