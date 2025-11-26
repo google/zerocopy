@@ -8,4 +8,5 @@ those terms. -->
 
 # Coding Guidelines
 
-Please follow the development instructions and coding guidelines defined in `AGENTS.md` located in the root of this repository.
+Please follow the development instructions and coding guidelines defined in
+`AGENTS.md` and `CONTRIBUTING.md` files located in the root of this repository.
