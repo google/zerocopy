@@ -480,7 +480,7 @@ fn test_into_bytes_struct() {
                 u8: ::zerocopy::IntoBytes,
                 (): ::zerocopy::util::macro_util::PaddingFree<
                     Self,
-                    { ::zerocopy::struct_padding!(Self, [u8, u8]) },
+                    { ::zerocopy::struct_padding!(Self, [(u8), (u8)]) },
                 >,
             {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -504,7 +504,7 @@ fn test_into_bytes_struct() {
                 [Trailing]: ::zerocopy::IntoBytes,
                 (): ::zerocopy::util::macro_util::DynamicPaddingFree<
                     Self,
-                    { ::zerocopy::repr_c_struct_has_padding!(Self, [u8, [Trailing]]) },
+                    { ::zerocopy::repr_c_struct_has_padding!(Self, [(u8), ([Trailing])]) },
                 >,
             {
                 fn only_derive_is_allowed_to_implement_this_trait() {}

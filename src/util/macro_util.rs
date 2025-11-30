@@ -393,6 +393,12 @@ macro_rules! repr_c_struct_has_padding {
         );
         layout.requires_static_padding() || layout.requires_dynamic_padding()
     }};
+    (@field ([$t:ty])) => {
+        <[$t] as $crate::KnownLayout>::LAYOUT
+    };
+    (@field ($t:ty)) => {
+        $crate::DstLayout::for_unpadded_type::<$t>()
+    };
     (@field [$t:ty]) => {
         <[$t] as $crate::KnownLayout>::LAYOUT
     };

@@ -1777,7 +1777,7 @@ impl<'a, D: DataExt> ImplBlockBuilder<'a, D> {
             .map(|check| {
                 let variant_types = variants.iter().map(|var| {
                     let types = var.iter().map(|(_vis, _name, ty)| ty);
-                    quote!([#(#types),*])
+                    quote!([#((#types)),*])
                 });
                 let validator_context = check.validator_macro_context();
                 let (trt, validator_macro) = check.validator_trait_and_macro_idents();
