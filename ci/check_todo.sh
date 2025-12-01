@@ -24,7 +24,7 @@ rg --version >/dev/null
 # -n: Print line number
 # -w: Match whole words
 # Match TODO, TODO-check-disable, and TODO-check-enable
-output=$(rg -H -n -w --no-ignore "$KEYWORD|$KEYWORD-check-disable|$KEYWORD-check-enable" "$@" || true)
+output=$(rg -H -n -w "$KEYWORD|$KEYWORD-check-disable|$KEYWORD-check-enable" "$@" || true)
 
 if [ -z "$output" ]; then
   exit 0
