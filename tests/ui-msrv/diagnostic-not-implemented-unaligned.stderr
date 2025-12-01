@@ -9,3 +9,7 @@ note: required by a bound in `takes_unaligned`
    |
 21 | fn takes_unaligned<T: Unaligned>() {}
    |                       ^^^^^^^^^ required by this bound in `takes_unaligned`
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0277`.
