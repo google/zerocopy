@@ -424,18 +424,18 @@ macro_rules! impl_known_layout {
     ($(const $constvar:ident : $constty:ty, $tyvar:ident $(: ?$optbound:ident)? => $ty:ty),* $(,)?) => {
         $(impl_known_layout!(@inner const $constvar: $constty, $tyvar $(: ?$optbound)? => $ty);)*
     };
-    ($($tyvar:ident $(: ?$optbound:ident)? => $ty:ty),* $(,)?) => {
-        $(impl_known_layout!(@inner , $tyvar $(: ?$optbound)? => $ty);)*
+    ($($($tyvar:ident $(: ?$optbound:ident)?),* => $ty:ty),* $(,)?) => {
+        $(impl_known_layout!(@inner , $($tyvar $(: ?$optbound)?),* => $ty);)*
     };
     ($($(#[$attrs:meta])* $ty:ty),*) => { $(impl_known_layout!(@inner , => $(#[$attrs])* $ty);)* };
-    (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?)? => $(#[$attrs:meta])* $ty:ty) => {
+    (@inner $(const $constvar:ident : $constty:ty)? , $($tyvar:ident $(: ?$optbound:ident)?),* => $(#[$attrs:meta])* $ty:ty) => {
         const _: () = {
             use core::ptr::NonNull;
 
             #[allow(non_local_definitions)]
             $(#[$attrs])*
             // SAFETY: Delegates safety to `DstLayout::for_type`.
-            unsafe impl<$($tyvar $(: ?$optbound)?)? $(, const $constvar : $constty)?> KnownLayout for $ty {
+            unsafe impl<$($tyvar $(: ?$optbound)?,)* $(const $constvar : $constty)?> KnownLayout for $ty {
                 #[allow(clippy::missing_inline_in_public_items)]
                 #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
                 fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized {}
