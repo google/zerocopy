@@ -913,10 +913,7 @@ mod _casts {
             // to `cast` which either reference a zero-sized byte range or
             // reference a byte range which is entirely contained inside of an
             // allocated object.
-            #[allow(clippy::multiple_unsafe_ops_per_block)]
-            unsafe {
-                self.transmute_unchecked(cast)
-            }
+            unsafe { self.transmute_unchecked(cast) }
         }
 
         /// Casts to a different (unsized) target type.
