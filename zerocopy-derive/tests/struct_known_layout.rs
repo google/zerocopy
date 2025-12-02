@@ -120,3 +120,47 @@ struct RawIdentifier {
 }
 
 util_assert_impl_all!(RawIdentifier: imp::KnownLayout);
+
+// Deriving `KnownLayout` should work for `repr(transparent)` structs with
+// unsized fields.
+
+#[derive(imp::KnownLayout)]
+#[repr(transparent)]
+struct TransparentUnsized {
+    a: [u8],
+}
+
+util_assert_impl_all!(TransparentUnsized: imp::KnownLayout);
+
+#[derive(imp::KnownLayout)]
+#[repr(transparent)]
+struct TransparentGeneric<T: ?imp::Sized> {
+    a: T,
+}
+
+util_assert_impl_all!(TransparentGeneric<[u8]>: imp::KnownLayout);
+
+#[derive(imp::KnownLayout)]
+#[repr(transparent)]
+struct TransparentZsts {
+    a: (),
+    c: imp::PhantomData<u8>,
+    b: [u8],
+}
+
+util_assert_impl_all!(TransparentZsts: imp::KnownLayout);
+
+// `repr(transparent)` allows ZSTs with the same or smaller alignment than the
+// non-ZST field.
+#[derive(imp::KnownLayout)]
+#[repr(align(1))]
+struct Align1;
+
+#[derive(imp::KnownLayout)]
+#[repr(transparent)]
+struct TransparentMaxAlignZst {
+    a: Align1,
+    b: u16,
+}
+
+util_assert_impl_all!(TransparentMaxAlignZst: imp::KnownLayout);
