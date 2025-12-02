@@ -84,14 +84,14 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::Immutable` is not satis
    |
    = note: Consider adding `#[derive(Immutable)]` to `UnsafeCell<()>`
    = help: the following other types implement trait `zerocopy::Immutable`:
-             &T
-             &mut T
              ()
              *const T
              *mut T
              AU16
              F32<O>
              F64<O>
+             I128<O>
+             I16<O>
            and $N others
    = note: required for `ManuallyDrop<UnsafeCell<()>>` to implement `zerocopy::Immutable`
    = help: see issue #48214
