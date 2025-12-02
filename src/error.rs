@@ -1003,6 +1003,8 @@ pub struct AllocError;
 
 #[cfg(test)]
 mod tests {
+    use core::convert::Infallible;
+
     use super::*;
 
     #[test]
@@ -1168,5 +1170,147 @@ mod tests {
             \n\
             Destination type: bool"
         );
+    }
+
+    #[test]
+    fn test_convert_error_debug() {
+        let err: ConvertError<
+            AlignmentError<&[u8], u16>,
+            SizeError<&[u8], u16>,
+            ValidityError<&[u8], bool>,
+        > = ConvertError::Alignment(AlignmentError::new_checked(&[0u8]));
+        assert_eq!(format!("{:?}", err), "Alignment(AlignmentError)");
+
+        let err: ConvertError<
+            AlignmentError<&[u8], u16>,
+            SizeError<&[u8], u16>,
+            ValidityError<&[u8], bool>,
+        > = ConvertError::Size(SizeError::new(&[0u8]));
+        assert_eq!(format!("{:?}", err), "Size(SizeError)");
+
+        let err: ConvertError<
+            AlignmentError<&[u8], u16>,
+            SizeError<&[u8], u16>,
+            ValidityError<&[u8], bool>,
+        > = ConvertError::Validity(ValidityError::new(&[0u8]));
+        assert_eq!(format!("{:?}", err), "Validity(ValidityError)");
+    }
+
+    #[test]
+    fn test_convert_error_from_unaligned() {
+        // u8 is Unaligned
+        let err: ConvertError<
+            AlignmentError<&[u8], u8>,
+            SizeError<&[u8], u8>,
+            ValidityError<&[u8], bool>,
+        > = ConvertError::Size(SizeError::new(&[0u8]));
+        let converted: ConvertError<Infallible, SizeError<&[u8], u8>, ValidityError<&[u8], bool>> =
+            ConvertError::from(err);
+        match converted {
+            ConvertError::Size(_) => {}
+            _ => panic!("Expected Size error"),
+        }
+    }
+
+    #[test]
+    fn test_alignment_error_display_debug() {
+        let err: AlignmentError<&[u8], u16> = AlignmentError::new_checked(&[0u8]);
+        assert!(format!("{:?}", err).contains("AlignmentError"));
+        assert!(format!("{}", err).contains("address of the source is not a multiple"));
+    }
+
+    #[test]
+    fn test_size_error_display_debug() {
+        let err: SizeError<&[u8], u16> = SizeError::new(&[0u8]);
+        assert!(format!("{:?}", err).contains("SizeError"));
+        assert!(format!("{}", err).contains("source was incorrectly sized"));
+    }
+
+    #[test]
+    fn test_validity_error_display_debug() {
+        let err: ValidityError<&[u8], bool> = ValidityError::new(&[0u8]);
+        assert!(format!("{:?}", err).contains("ValidityError"));
+        assert!(format!("{}", err).contains("source bytes are not a valid value"));
+    }
+
+    #[test]
+    fn test_convert_error_display_debug_more() {
+        let err: ConvertError<
+            AlignmentError<&[u8], u16>,
+            SizeError<&[u8], u16>,
+            ValidityError<&[u8], bool>,
+        > = ConvertError::Alignment(AlignmentError::new_checked(&[0u8]));
+        assert!(format!("{}", err).contains("address of the source is not a multiple"));
+
+        let err: ConvertError<
+            AlignmentError<&[u8], u16>,
+            SizeError<&[u8], u16>,
+            ValidityError<&[u8], bool>,
+        > = ConvertError::Size(SizeError::new(&[0u8]));
+        assert!(format!("{}", err).contains("source was incorrectly sized"));
+
+        let err: ConvertError<
+            AlignmentError<&[u8], u16>,
+            SizeError<&[u8], u16>,
+            ValidityError<&[u8], bool>,
+        > = ConvertError::Validity(ValidityError::new(&[0u8]));
+        assert!(format!("{}", err).contains("source bytes are not a valid value"));
+    }
+
+    #[test]
+    fn test_alignment_error_methods() {
+        let err: AlignmentError<&[u8], u16> = AlignmentError::new_checked(&[0u8]);
+
+        // into_src
+        let src = err.clone().into_src();
+        assert_eq!(src, &[0u8]);
+
+        // into
+        let converted: ConvertError<
+            AlignmentError<&[u8], u16>,
+            SizeError<&[u8], u16>,
+            ValidityError<&[u8], bool>,
+        > = err.clone().into();
+        match converted {
+            ConvertError::Alignment(_) => {}
+            _ => panic!("Expected Alignment error"),
+        }
+
+        // clone
+        let cloned = err.clone();
+        assert_eq!(err, cloned);
+
+        // eq
+        assert_eq!(err, cloned);
+        let err2: AlignmentError<&[u8], u16> = AlignmentError::new_checked(&[1u8]);
+        assert_ne!(err, err2);
+    }
+
+    #[test]
+    fn test_convert_error_from_unaligned_variants() {
+        // u8 is Unaligned
+        let err: ConvertError<
+            AlignmentError<&[u8], u8>,
+            SizeError<&[u8], u8>,
+            ValidityError<&[u8], bool>,
+        > = ConvertError::Validity(ValidityError::new(&[0u8]));
+        let converted: ConvertError<Infallible, SizeError<&[u8], u8>, ValidityError<&[u8], bool>> =
+            ConvertError::from(err);
+        match converted {
+            ConvertError::Validity(_) => {}
+            _ => panic!("Expected Validity error"),
+        }
+
+        let err: ConvertError<
+            AlignmentError<&[u8], u8>,
+            SizeError<&[u8], u8>,
+            ValidityError<&[u8], bool>,
+        > = ConvertError::Size(SizeError::new(&[0u8]));
+        let converted: ConvertError<Infallible, SizeError<&[u8], u8>, ValidityError<&[u8], bool>> =
+            ConvertError::from(err);
+        match converted {
+            ConvertError::Size(_) => {}
+            _ => panic!("Expected Size error"),
+        }
     }
 }

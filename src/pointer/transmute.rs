@@ -490,3 +490,81 @@ unsafe impl<T> SizeEq<MaybeUninit<T>> for T {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use core::ptr::NonNull;
+
+    use super::*;
+
+    #[test]
+    fn test_transmute_coverage() {
+        // SizeEq<T> for MaybeUninit<T>
+        let mut t = 0u8;
+        // SAFETY: `ptr` is valid for `t`, which lives for the duration of this block.
+        let ptr = unsafe { PtrInner::new(NonNull::from(&mut t)) };
+        <MaybeUninit<u8> as SizeEq<u8>>::cast_from_raw(ptr);
+
+        // SizeEq<MaybeUninit<T>> for T
+        let mut mu = MaybeUninit::<u8>::new(0);
+        // SAFETY: `ptr` is valid for `mu`, which lives for the duration of this block.
+        let ptr = unsafe { PtrInner::new(NonNull::from(&mut mu)) };
+        <u8 as SizeEq<MaybeUninit<u8>>>::cast_from_raw(ptr);
+
+        // Transitive: MaybeUninit<T> -> Wrapping<T>
+        // T => MaybeUninit<T> => T => Wrapping<T>
+        let mut mu = MaybeUninit::<u8>::new(0);
+        // SAFETY: `ptr` is valid for `mu`, which lives for the duration of this block.
+        let ptr = unsafe { PtrInner::new(NonNull::from(&mut mu)) };
+        <Wrapping<u8> as SizeEq<MaybeUninit<u8>>>::cast_from_raw(ptr);
+
+        // T => Wrapping<T> => T => MaybeUninit<T>
+        let mut w = Wrapping(0u8);
+        // SAFETY: `ptr` is valid for `w`, which lives for the duration of this block.
+        let ptr = unsafe { PtrInner::new(NonNull::from(&mut w)) };
+        <MaybeUninit<u8> as SizeEq<Wrapping<u8>>>::cast_from_raw(ptr);
+
+        // T: ?Sized => Cell<T> => T => UnsafeCell<T>
+        let mut c = Cell::new(0u8);
+        // SAFETY: `ptr` is valid for `c`, which lives for the duration of this block.
+        let ptr = unsafe { PtrInner::new(NonNull::from(&mut c)) };
+        <UnsafeCell<u8> as SizeEq<Cell<u8>>>::cast_from_raw(ptr);
+
+        // T: ?Sized => UnsafeCell<T> => T => Cell<T>
+        let mut uc = UnsafeCell::new(0u8);
+        // SAFETY: `ptr` is valid for `uc`, which lives for the duration of this block.
+        let ptr = unsafe { PtrInner::new(NonNull::from(&mut uc)) };
+        <Cell<u8> as SizeEq<UnsafeCell<u8>>>::cast_from_raw(ptr);
+    }
+
+    #[cfg(not(no_zerocopy_target_has_atomics_1_60_0))]
+    #[cfg(target_has_atomic = "8")]
+    #[test]
+    fn test_atomic_u8_transmutes() {
+        use core::sync::atomic::AtomicU8;
+
+        // 1. Atomic -> Prim (SizeEq<Atomic> for Prim)
+        let mut a = AtomicU8::new(0);
+        // SAFETY: `ptr` is valid for `a`, which lives for the duration of this block.
+        let ptr = unsafe { PtrInner::new(NonNull::from(&mut a)) };
+        <u8 as SizeEq<AtomicU8>>::cast_from_raw(ptr);
+
+        // 2. Prim -> Atomic (SizeEq<Prim> for Atomic)
+        let mut p = 0u8;
+        // SAFETY: `ptr` is valid for `p`, which lives for the duration of this block.
+        let ptr = unsafe { PtrInner::new(NonNull::from(&mut p)) };
+        <AtomicU8 as SizeEq<u8>>::cast_from_raw(ptr);
+
+        // 3. Atomic -> UnsafeCell<Prim> (SizeEq<Atomic> for UnsafeCell<Prim>)
+        let mut a = AtomicU8::new(0);
+        // SAFETY: `ptr` is valid for `a`, which lives for the duration of this block.
+        let ptr = unsafe { PtrInner::new(NonNull::from(&mut a)) };
+        <UnsafeCell<u8> as SizeEq<AtomicU8>>::cast_from_raw(ptr);
+
+        // 4. UnsafeCell<Prim> -> Atomic (SizeEq<UnsafeCell<Prim>> for Atomic)
+        let mut uc = UnsafeCell::new(0u8);
+        // SAFETY: `ptr` is valid for `uc`, which lives for the duration of this block.
+        let ptr = unsafe { PtrInner::new(NonNull::from(&mut uc)) };
+        <AtomicU8 as SizeEq<UnsafeCell<u8>>>::cast_from_raw(ptr);
+    }
+}

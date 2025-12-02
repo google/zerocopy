@@ -745,4 +745,12 @@ mod tests {
         test_trailing_slice::<1, 17>();
         test_trailing_slice::<2, 18>();
     }
+    #[test]
+    fn test_ptr_inner_clone() {
+        let mut x = 0u8;
+        let p = PtrInner::from_mut(&mut x);
+        #[allow(clippy::clone_on_copy)]
+        let p2 = p.clone();
+        assert_eq!(p.as_non_null(), p2.as_non_null());
+    }
 }

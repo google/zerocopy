@@ -901,4 +901,66 @@ mod tests {
             }
         }
     }
+    #[test]
+    fn test_split_at_unchecked() {
+        use crate::SplitAt;
+        let mut arr = [1, 2, 3, 4];
+        let slice = &arr[..];
+        // SAFETY: 2 <= arr.len() (4)
+        let split = unsafe { SplitAt::split_at_unchecked(slice, 2) };
+        // SAFETY: SplitAt::split_at_unchecked guarantees that the split is valid.
+        let (l, r) = unsafe { split.via_unchecked() };
+        assert_eq!(l, &[1, 2]);
+        assert_eq!(r, &[3, 4]);
+
+        let slice_mut = &mut arr[..];
+        // SAFETY: 2 <= arr.len() (4)
+        let split = unsafe { SplitAt::split_at_mut_unchecked(slice_mut, 2) };
+        // SAFETY: SplitAt::split_at_mut_unchecked guarantees that the split is valid.
+        let (l, r) = unsafe { split.via_unchecked() };
+        assert_eq!(l, &mut [1, 2]);
+        assert_eq!(r, &mut [3, 4]);
+    }
+
+    #[test]
+    fn test_split_at_via_methods() {
+        use crate::{FromBytes, Immutable, IntoBytes, KnownLayout, SplitAt};
+        #[derive(FromBytes, KnownLayout, SplitAt, IntoBytes, Immutable, Debug)]
+        #[repr(C)]
+        struct Packet {
+            length: u8,
+            body: [u8],
+        }
+
+        let arr = [1, 2, 3, 4];
+        let packet = Packet::ref_from_bytes(&arr[..]).unwrap();
+
+        let split1 = packet.split_at(2).unwrap();
+        let (l, r) = split1.via_immutable();
+        assert_eq!(l.length, 1);
+        assert_eq!(r, &[4]);
+
+        let split2 = packet.split_at(2).unwrap();
+        let (l, r) = split2.via_into_bytes();
+        assert_eq!(l.length, 1);
+        assert_eq!(r, &[4]);
+    }
+    #[test]
+    fn test_split_at_via_unaligned() {
+        use crate::{FromBytes, Immutable, IntoBytes, KnownLayout, SplitAt, Unaligned};
+        #[derive(FromBytes, KnownLayout, SplitAt, IntoBytes, Immutable, Unaligned)]
+        #[repr(C)]
+        struct Packet {
+            length: u8,
+            body: [u8],
+        }
+
+        let arr = [1, 2, 3, 4];
+        let packet = Packet::ref_from_bytes(&arr[..]).unwrap();
+
+        let split = packet.split_at(2).unwrap();
+        let (l, r) = split.via_unaligned();
+        assert_eq!(l.length, 1);
+        assert_eq!(r, &[4]);
+    }
 }
