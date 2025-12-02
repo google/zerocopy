@@ -140,9 +140,12 @@ fn is_toolchain_installed(versions: &Versions, name: &str) -> Result<bool, Error
 
 fn install_toolchain_or_exit(versions: &Versions, name: &str) -> Result<(), Error> {
     eprintln!("[cargo-zerocopy] missing either toolchain '{name}' or component 'rust-src'");
-    if env::vars().any(|v| v.0 == "GITHUB_RUN_ID") {
-        eprint!("[cargo-zerocopy] detected GitHub Actions environment; auto-installing without waiting for confirmation");
+    if env::var("GITHUB_RUN_ID").is_ok() {
+        eprintln!("[cargo-zerocopy] detected GitHub Actions environment; auto-installing without waiting for confirmation");
+    } else if env::var("CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN").is_ok() {
+        eprintln!("[cargo-zerocopy] detected CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN environment variable; auto-installing without waiting for confirmation");
     } else {
+        eprintln!("[cargo-zerocopy] set CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN=1 to always install toolchains without prompting");
         loop {
             eprint!("[cargo-zerocopy] would you like to install toolchain '{name}' and component 'rust-src' via 'rustup' (y/n)? ");
             let mut input = [0];
