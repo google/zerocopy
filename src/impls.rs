@@ -682,17 +682,17 @@ mod atomics {
 impl_known_layout!(Infallible);
 
 // SAFETY: `Infallible` is an uninhabited enum, which has size 0 and alignment 1
-// [1].
+// (checked by the `static_assertions` assertions below).
 // - `Immutable`: It is uninhabited and has size 0, so it cannot contain
 //   `UnsafeCell`s.
 // - `IntoBytes`: It is uninhabited and has size 0, so it has no padding.
 // - `Unaligned`: It has alignment 1.
-//
-// [1] https://doc.rust-lang.org/1.81.0/reference/type-layout.html#enum-layout
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
     unsafe_impl!(Infallible: Immutable, IntoBytes, Unaligned);
     assert_unaligned!(Infallible);
+    #[cfg(test)]
+    static_assertions::const_assert_eq!(core::mem::size_of::<Infallible>(), 0);
 };
 
 // SAFETY: Per reference [1]: "For all T, the following are guaranteed:
