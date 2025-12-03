@@ -6,11 +6,15 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use proc_macro2::{Span, TokenStream};
+use proc_macro2::TokenStream;
 use quote::quote;
-use syn::{parse_quote, DataEnum, Error, Fields, Generics, Ident, Path};
+use syn::{
+    parse_quote, spanned::Spanned as _, DataEnum, DeriveInput, Error, Fields, Generics, Ident, Path,
+};
 
-use crate::{derive_try_from_bytes_inner, repr::EnumRepr, Trait};
+use crate::{
+    derive_try_from_bytes_inner, repr::EnumRepr, DataExt, FieldBounds, ImplBlockBuilder, Trait,
+};
 
 /// Generates a tag enum for the given enum. This generates an enum with the
 /// same non-align `repr`s, variants, and corresponding discriminants, but none
@@ -219,6 +223,7 @@ fn generate_variants_union(generics: &Generics, data: &DataEnum) -> TokenStream 
 /// - `repr(int)`: <https://doc.rust-lang.org/reference/type-layout.html#primitive-representation-of-enums-with-fields>
 /// - `repr(C, int)`: <https://doc.rust-lang.org/reference/type-layout.html#combining-primitive-representations-of-enums-with-fields-and-reprc>
 pub(crate) fn derive_is_bit_valid(
+    ast: &DeriveInput,
     enum_ident: &Ident,
     repr: &EnumRepr,
     generics: &Generics,
@@ -235,7 +240,7 @@ pub(crate) fn derive_is_bit_valid(
         (quote! { () }, quote! { ___ZerocopyTag })
     } else {
         return Err(Error::new(
-            Span::call_site(),
+            ast.span(),
             "must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout",
         ));
     };
@@ -244,6 +249,35 @@ pub(crate) fn derive_is_bit_valid(
     let variants_union = generate_variants_union(generics, data);
 
     let (_, ty_generics, _) = generics.split_for_impl();
+
+    let has_fields = data.variants().into_iter().flat_map(|(variant, fields)| {
+        let variant_ident = &variant.unwrap().ident;
+        let field: Box<syn::Type> = parse_quote!(());
+        fields.into_iter().map(move |(vis, ident, ty)| {
+            // Rust does not presently support explicit visibility modifiers on
+            // enum fields, but we guard against the possibility to ensure this
+            // derive remains sound.
+            assert!(matches!(vis, syn::Visibility::Inherited));
+            ImplBlockBuilder::new(
+                ast,
+                data,
+                Trait::HasField {
+                    variant_id: parse_quote!({ #zerocopy_crate::ident_id!(#variant_ident) }),
+                    // Since Rust does not presently support explicit visibility
+                    // modifiers on enum fields, any public type is suitable
+                    // here; we use `()`.
+                    field: field.clone(),
+                    field_id: parse_quote!({ #zerocopy_crate::ident_id!(#ident) }),
+                },
+                FieldBounds::None,
+                zerocopy_crate,
+            )
+            .inner_extras(quote! {
+                type Type = #ty;
+            })
+            .build()
+        })
+    });
 
     let match_arms = data.variants.iter().map(|variant| {
         let tag_ident = tag_ident(&variant.ident);
@@ -322,6 +356,8 @@ pub(crate) fn derive_is_bit_valid(
                 tag: ___ZerocopyOuterTag,
                 variants: ___ZerocopyVariants #ty_generics,
             }
+
+            #(#has_fields)*
 
             let tag = {
                 // SAFETY:
