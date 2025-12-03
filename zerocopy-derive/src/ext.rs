@@ -8,7 +8,7 @@
 
 use proc_macro2::{Span, TokenStream};
 use quote::ToTokens;
-use syn::{Data, DataEnum, DataStruct, DataUnion, Field, Ident, Index, Type, Visibility};
+use syn::{Data, DataEnum, DataStruct, DataUnion, Field, Ident, Index, Type, Variant, Visibility};
 
 pub(crate) trait DataExt {
     /// Extracts the names and types of all fields. For enums, extracts the
@@ -21,7 +21,7 @@ pub(crate) trait DataExt {
     /// generating is_bit_valid, which cares about where they live.
     fn fields(&self) -> Vec<(&Visibility, TokenStream, &Type)>;
 
-    fn variants(&self) -> Vec<Vec<(&Visibility, TokenStream, &Type)>>;
+    fn variants(&self) -> Vec<(Option<&Variant>, Vec<(&Visibility, TokenStream, &Type)>)>;
 
     fn tag(&self) -> Option<Ident>;
 }
@@ -35,7 +35,7 @@ impl DataExt for Data {
         }
     }
 
-    fn variants(&self) -> Vec<Vec<(&Visibility, TokenStream, &Type)>> {
+    fn variants(&self) -> Vec<(Option<&Variant>, Vec<(&Visibility, TokenStream, &Type)>)> {
         match self {
             Data::Struct(strc) => strc.variants(),
             Data::Enum(enm) => enm.variants(),
@@ -57,8 +57,8 @@ impl DataExt for DataStruct {
         map_fields(&self.fields)
     }
 
-    fn variants(&self) -> Vec<Vec<(&Visibility, TokenStream, &Type)>> {
-        vec![self.fields()]
+    fn variants(&self) -> Vec<(Option<&Variant>, Vec<(&Visibility, TokenStream, &Type)>)> {
+        vec![(None, self.fields())]
     }
 
     fn tag(&self) -> Option<Ident> {
@@ -71,8 +71,8 @@ impl DataExt for DataEnum {
         map_fields(self.variants.iter().flat_map(|var| &var.fields))
     }
 
-    fn variants(&self) -> Vec<Vec<(&Visibility, TokenStream, &Type)>> {
-        self.variants.iter().map(|var| map_fields(&var.fields)).collect()
+    fn variants(&self) -> Vec<(Option<&Variant>, Vec<(&Visibility, TokenStream, &Type)>)> {
+        self.variants.iter().map(|var| (Some(var), map_fields(&var.fields))).collect()
     }
 
     fn tag(&self) -> Option<Ident> {
@@ -85,8 +85,8 @@ impl DataExt for DataUnion {
         map_fields(&self.fields.named)
     }
 
-    fn variants(&self) -> Vec<Vec<(&Visibility, TokenStream, &Type)>> {
-        vec![self.fields()]
+    fn variants(&self) -> Vec<(Option<&Variant>, Vec<(&Visibility, TokenStream, &Type)>)> {
+        vec![(None, self.fields())]
     }
 
     fn tag(&self) -> Option<Ident> {

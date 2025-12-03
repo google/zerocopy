@@ -33,44 +33,34 @@ error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-  --> tests/ui-msrv/enum.rs:69:10
+  --> tests/ui-msrv/enum.rs:70:1
    |
-69 | #[derive(TryFromBytes)]
-   |          ^^^^^^^^^^^^
-   |
-   = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+70 | enum TryFromBytes1 {
+   | ^^^^
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-  --> tests/ui-msrv/enum.rs:74:10
+  --> tests/ui-msrv/enum.rs:75:1
    |
-74 | #[derive(TryFromBytes)]
-   |          ^^^^^^^^^^^^
-   |
-   = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+75 | enum TryFromBytes2 {
+   | ^^^^
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-  --> tests/ui-msrv/enum.rs:92:10
+  --> tests/ui-msrv/enum.rs:93:1
    |
-92 | #[derive(FromZeros)]
-   |          ^^^^^^^^^
-   |
-   = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
+93 | enum FromZeros1 {
+   | ^^^^
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-  --> tests/ui-msrv/enum.rs:97:10
+  --> tests/ui-msrv/enum.rs:98:1
    |
-97 | #[derive(FromZeros)]
-   |          ^^^^^^^^^
-   |
-   = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
+98 | enum FromZeros2 {
+   | ^^^^
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-   --> tests/ui-msrv/enum.rs:103:10
+   --> tests/ui-msrv/enum.rs:104:1
     |
-103 | #[derive(FromZeros)]
-    |          ^^^^^^^^^
-    |
-    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
+104 | enum FromZeros3 {
+    | ^^^^
 
 error: FromZeros only supported on enums with a variant that has a discriminant of `0`
    --> tests/ui-msrv/enum.rs:110:1
