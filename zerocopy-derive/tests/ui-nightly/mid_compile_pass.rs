@@ -7,6 +7,7 @@
 // those terms.
 
 extern crate zerocopy;
+//@no-rustfix
 
 use zerocopy::KnownLayout;
 
@@ -22,8 +23,8 @@ fn main() {}
 
 fn assert_kl<T: ?Sized + KnownLayout>(_: &T) {}
 
-// | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
-// |          N |        Y |              N |        N |      KL04 |
+//  | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+//  |          N |        Y |              N |        N |      KL04 |
 #[derive(KnownLayout)]
 struct KL04<T: ?Sized>(u8, T);
 
@@ -31,8 +32,8 @@ fn test_kl04<T: ?Sized>(kl: &KL04<T>) {
     assert_kl(kl);
 }
 
-// | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
-// |          N |        Y |              Y |        N |      KL06 |
+//  | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+//  |          N |        Y |              Y |        N |      KL06 |
 #[derive(KnownLayout)]
 struct KL06<T: ?Sized + KnownLayout>(u8, T);
 
@@ -40,8 +41,8 @@ fn test_kl06<T: ?Sized + KnownLayout>(kl: &KL06<T>) {
     assert_kl(kl);
 }
 
-// | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
-// |          Y |        Y |              N |        N |      KL12 |
+//  | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+//  |          Y |        Y |              N |        N |      KL12 |
 #[derive(KnownLayout)]
 #[repr(C)]
 struct KL12<T: ?Sized>(u8, T);
@@ -50,8 +51,8 @@ fn test_kl12<T: ?Sized>(kl: &KL12<T>) {
     assert_kl(kl)
 }
 
-// | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
-// |          Y |        Y |              N |        Y |      KL13 |
+//  | `repr(C)`? | generic? | `KnownLayout`? | `Sized`? | Type Name |
+//  |          Y |        Y |              N |        Y |      KL13 |
 #[derive(KnownLayout)]
 #[repr(C)]
 struct KL13<T>(u8, T);
