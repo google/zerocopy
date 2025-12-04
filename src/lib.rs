@@ -372,6 +372,8 @@ use core::{
 use std::io;
 
 use crate::pointer::invariant::{self, BecauseExclusive};
+#[doc(hidden)]
+pub use crate::pointer::PtrInner;
 pub use crate::{
     byte_slice::*,
     byteorder::*,
@@ -1109,6 +1111,9 @@ pub unsafe trait HasField<Field, const VARIANT_ID: u128, const FIELD_ID: u128> {
 
     /// The type of the field.
     type Type: ?Sized;
+
+    /// Projects from `slf` to the field.
+    fn project(slf: PtrInner<'_, Self>) -> PtrInner<'_, Self::Type>;
 }
 
 /// Analyzes whether a type is [`FromZeros`].

@@ -9,11 +9,13 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 use syn::{
-    parse_quote, spanned::Spanned as _, DataEnum, DeriveInput, Error, Fields, Generics, Ident, Path,
+    parse_quote, spanned::Spanned as _, DataEnum, DeriveInput, Error, Fields, Generics, Ident,
+    Index, Path,
 };
 
 use crate::{
-    derive_try_from_bytes_inner, repr::EnumRepr, DataExt, FieldBounds, ImplBlockBuilder, Trait,
+    derive_has_field_struct_union, derive_try_from_bytes_inner, repr::EnumRepr, DataExt,
+    FieldBounds, ImplBlockBuilder, Trait,
 };
 
 /// Generates a tag enum for the given enum. This generates an enum with the
@@ -162,7 +164,18 @@ fn generate_variant_structs(
     }
 }
 
-fn generate_variants_union(generics: &Generics, data: &DataEnum) -> TokenStream {
+fn variants_union_field_ident(ident: &Ident) -> Ident {
+    let variant_ident_str = crate::ext::to_ident_str(ident);
+    // Field names are prefixed with `__field_` to prevent name collision
+    // with the `__nonempty` field.
+    Ident::new(&format!("__field_{}", variant_ident_str), ident.span())
+}
+
+fn generate_variants_union(
+    generics: &Generics,
+    data: &DataEnum,
+    zerocopy_crate: &Path,
+) -> TokenStream {
     let (_, ty_generics, _) = generics.split_for_impl();
 
     let fields = data.variants.iter().filter_map(|variant| {
@@ -172,10 +185,7 @@ fn generate_variants_union(generics: &Generics, data: &DataEnum) -> TokenStream 
             return None;
         }
 
-        // Field names are prefixed with `__field_` to prevent name collision
-        // with the `__nonempty` field.
-        let field_name_str = crate::ext::to_ident_str(&variant.ident);
-        let field_name = Ident::new(&format!("__field_{}", field_name_str), variant.ident.span());
+        let field_name = variants_union_field_ident(&variant.ident);
         let variant_struct_ident = variant_struct_ident(&variant.ident);
 
         Some(quote! {
@@ -185,7 +195,7 @@ fn generate_variants_union(generics: &Generics, data: &DataEnum) -> TokenStream 
         })
     });
 
-    quote! {
+    let variants_union = parse_quote! {
         #[repr(C)]
         #[allow(non_snake_case)]
         union ___ZerocopyVariants #generics {
@@ -197,6 +207,14 @@ fn generate_variants_union(generics: &Generics, data: &DataEnum) -> TokenStream 
             // affect the layout.
             __nonempty: (),
         }
+    };
+
+    let has_field =
+        derive_has_field_struct_union(&variants_union, &variants_union.data, zerocopy_crate);
+
+    quote! {
+        #variants_union
+        #has_field
     }
 }
 
@@ -246,18 +264,20 @@ pub(crate) fn derive_is_bit_valid(
     };
 
     let variant_structs = generate_variant_structs(enum_ident, generics, data, zerocopy_crate);
-    let variants_union = generate_variants_union(generics, data);
+    let variants_union = generate_variants_union(generics, data, zerocopy_crate);
 
-    let (_, ty_generics, _) = generics.split_for_impl();
+    let (_, ref ty_generics, _) = generics.split_for_impl();
 
     let has_fields = data.variants().into_iter().flat_map(|(variant, fields)| {
         let variant_ident = &variant.unwrap().ident;
+        let variants_union_field_ident = variants_union_field_ident(variant_ident);
         let field: Box<syn::Type> = parse_quote!(());
-        fields.into_iter().map(move |(vis, ident, ty)| {
+        fields.into_iter().enumerate().map(move |(idx, (vis, ident, ty))| {
             // Rust does not presently support explicit visibility modifiers on
             // enum fields, but we guard against the possibility to ensure this
             // derive remains sound.
             assert!(matches!(vis, syn::Visibility::Inherited));
+            let variant_struct_field_index = Index::from(idx + 1);
             ImplBlockBuilder::new(
                 ast,
                 data,
@@ -274,6 +294,18 @@ pub(crate) fn derive_is_bit_valid(
             )
             .inner_extras(quote! {
                 type Type = #ty;
+
+                #[inline(always)]
+                fn project(slf: #zerocopy_crate::PtrInner<'_, Self>) -> #zerocopy_crate::PtrInner<'_, Self::Type> {
+                    // SAFETY: By invariant on `___ZerocopyRawEnum`,
+                    // `___ZerocopyRawEnum` has the same layout as `Self`.
+                    let slf = unsafe { slf.cast::<___ZerocopyRawEnum #ty_generics>() };
+
+                    slf.project::<_, 0, { #zerocopy_crate::ident_id!(variants) }>()
+                        .project::<_, 0, { #zerocopy_crate::ident_id!(#variants_union_field_ident) }>()
+                        .project::<_, 0, { #zerocopy_crate::ident_id!(value) }>()
+                        .project::<_, 0, { #zerocopy_crate::ident_id!(#variant_struct_field_index) }>()
+                }
             })
             .build()
         })
@@ -323,6 +355,22 @@ pub(crate) fn derive_is_bit_valid(
         }
     });
 
+    let raw_enum = parse_quote! {
+        #[repr(C)]
+        struct ___ZerocopyRawEnum #generics {
+            tag: ___ZerocopyOuterTag,
+            variants: ___ZerocopyVariants #ty_generics,
+        }
+    };
+
+    let raw_enum_projections =
+        derive_has_field_struct_union(&raw_enum, &raw_enum.data, zerocopy_crate);
+
+    let raw_enum = quote! {
+        #raw_enum
+        #raw_enum_projections
+    };
+
     Ok(quote! {
         // SAFETY: We use `is_bit_valid` to validate that the bit pattern of the
         // enum's tag corresponds to one of the enum's discriminants. Then, we
@@ -351,11 +399,7 @@ pub(crate) fn derive_is_bit_valid(
 
             #variants_union
 
-            #[repr(C)]
-            struct ___ZerocopyRawEnum #generics {
-                tag: ___ZerocopyOuterTag,
-                variants: ___ZerocopyVariants #ty_generics,
-            }
+            #raw_enum
 
             #(#has_fields)*
 
@@ -399,26 +443,19 @@ pub(crate) fn derive_is_bit_valid(
             // invariant from `p`, so we re-assert that all of the bytes are
             // initialized.
             let raw_enum = unsafe { raw_enum.assume_initialized() };
+
             // SAFETY:
-            // - This projection returns a subfield of `this` using
-            //   `addr_of_mut!`.
-            // - Because the subfield pointer is derived from `this`, it has the
-            //   same provenance.
+            // - This projection returns a subfield of `raw_enum` using
+            //   `project`.
+            // - Because the subfield pointer is derived from `raw_enum`, it has
+            //   the same provenance.
             // - The locations of `UnsafeCell`s in the subfield match the
-            //   locations of `UnsafeCell`s in `this`. This is because the
+            //   locations of `UnsafeCell`s in `raw_enum`. This is because the
             //   subfield pointer just points to a smaller portion of the
             //   overall struct.
+            let project = #zerocopy_crate::pointer::PtrInner::project::<_, _, { #zerocopy_crate::ident_id!(variants) }>;
             let variants = unsafe {
-                use #zerocopy_crate::pointer::PtrInner;
-                raw_enum.cast_unsized_unchecked(|p: PtrInner<'_, ___ZerocopyRawEnum #ty_generics>| {
-                    let p = p.as_non_null().as_ptr();
-                    let ptr = core_reexport::ptr::addr_of_mut!((*p).variants);
-                    // SAFETY: `ptr` is a projection into `p`, which is
-                    // `NonNull`, and guaranteed not to wrap around the address
-                    // space. Thus, `ptr` cannot be null.
-                    let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(ptr) };
-                    unsafe { PtrInner::new(ptr) }
-                })
+                raw_enum.cast_unsized_unchecked(project)
             };
 
             #[allow(non_upper_case_globals)]
