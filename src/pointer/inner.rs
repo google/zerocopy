@@ -15,7 +15,7 @@ use crate::util::polyfills::NumExt as _;
 use crate::{
     layout::{CastType, MetadataCastError},
     util::AsAddress,
-    AlignmentError, CastError, KnownLayout, MetadataOf, SizeError, SplitAt,
+    AlignmentError, CastError, HasField, KnownLayout, MetadataOf, SizeError, SplitAt,
 };
 
 mod _def {
@@ -195,6 +195,16 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
         // 1. By invariant on `self`, if `self`'s referent is not zero sized,
         //    then `A` is guaranteed to live for at least `'a`.
         unsafe { PtrInner::new(ptr) }
+    }
+
+    /// Projects a field.
+    #[must_use]
+    #[inline(always)]
+    pub fn project<F, const VARIANT_ID: u128, const FIELD_ID: u128>(self) -> PtrInner<'a, T::Type>
+    where
+        T: HasField<F, VARIANT_ID, FIELD_ID>,
+    {
+        <T as HasField<F, VARIANT_ID, FIELD_ID>>::project(self)
     }
 }
 
