@@ -9,7 +9,8 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 use syn::{
-    parse_quote, spanned::Spanned as _, DataEnum, DeriveInput, Error, Fields, Generics, Ident, Path,
+    parse_quote, spanned::Spanned as _, DataEnum, DeriveInput, Error, Fields, Generics, Ident,
+    Index, Path,
 };
 
 use crate::{
@@ -162,6 +163,13 @@ fn generate_variant_structs(
     }
 }
 
+fn variants_union_field_ident(ident: &Ident) -> Ident {
+    let variant_ident_str = crate::ext::to_ident_str(ident);
+    // Field names are prefixed with `__field_` to prevent name collision
+    // with the `__nonempty` field.
+    Ident::new(&format!("__field_{}", variant_ident_str), ident.span())
+}
+
 fn generate_variants_union(generics: &Generics, data: &DataEnum) -> TokenStream {
     let (_, ty_generics, _) = generics.split_for_impl();
 
@@ -172,10 +180,7 @@ fn generate_variants_union(generics: &Generics, data: &DataEnum) -> TokenStream 
             return None;
         }
 
-        // Field names are prefixed with `__field_` to prevent name collision
-        // with the `__nonempty` field.
-        let field_name_str = crate::ext::to_ident_str(&variant.ident);
-        let field_name = Ident::new(&format!("__field_{}", field_name_str), variant.ident.span());
+        let field_name = variants_union_field_ident(&variant.ident);
         let variant_struct_ident = variant_struct_ident(&variant.ident);
 
         Some(quote! {
@@ -248,16 +253,19 @@ pub(crate) fn derive_is_bit_valid(
     let variant_structs = generate_variant_structs(enum_ident, generics, data, zerocopy_crate);
     let variants_union = generate_variants_union(generics, data);
 
-    let (_, ty_generics, _) = generics.split_for_impl();
+    let (_, ref ty_generics, _) = generics.split_for_impl();
 
     let has_fields = data.variants().into_iter().flat_map(|(variant, fields)| {
         let variant_ident = &variant.unwrap().ident;
+        let variant_struct_ident = variant_struct_ident(variant_ident);
+        let variants_union_field_ident = variants_union_field_ident(variant_ident);
         let field: Box<syn::Type> = parse_quote!(());
-        fields.into_iter().map(move |(vis, ident, ty)| {
+        fields.into_iter().enumerate().map(move |(idx, (vis, ident, ty))| {
             // Rust does not presently support explicit visibility modifiers on
             // enum fields, but we guard against the possibility to ensure this
             // derive remains sound.
             assert!(matches!(vis, syn::Visibility::Inherited));
+            let variant_struct_field_index = Index::from(idx + 1);
             ImplBlockBuilder::new(
                 ast,
                 data,
@@ -274,6 +282,63 @@ pub(crate) fn derive_is_bit_valid(
             )
             .inner_extras(quote! {
                 type Type = #ty;
+
+                #[inline(always)]
+                fn project(slf: #zerocopy_crate::PtrInner<'_, Self>) -> #zerocopy_crate::PtrInner<'_, Self::Type> {
+                    // SAFETY: By invariant on `___ZerocopyRawEnum`,
+                    // `___ZerocopyRawEnum` has the same layout as `Self`.
+                    let slf = unsafe { slf.cast::<___ZerocopyRawEnum #ty_generics>() };
+                    let slf = slf.as_non_null().as_ptr();
+
+                    // Project into the variant. SAFETY: `PtrInner` promises it
+                    // references either a zero-sized byte range, or else will
+                    // reference a byte range that is entirely contained within
+                    // an allocated object. In either case, this guarantees that
+                    // `(*slf).variants.#variants_union_field_ident` is
+                    // in-bounds of `slf`, and `variant` will maintain these
+                    // same invariants for its referent type.
+                    let variant = unsafe {
+                        #zerocopy_crate::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).variants.#variants_union_field_ident)
+                    };
+
+                    // Unwrap the variant from `ManuallyDrop`. This cast is
+                    // size-preserving; by invariant on `ManuallyDrop<T>`,
+                    // `ManuallyDrop<T>` and `T` have identical layouts and
+                    // maintains the referent invariants of `variant`.
+                    let variant = variant as *mut #variant_struct_ident #ty_generics;
+
+                    // Project the field. SAFETY: `variant` promises it
+                    // references either a zero-sized byte range, or else will
+                    // reference a byte range that is entirely contained within
+                    // an allocated object. In either case, this guarantees that
+                    // `(*variant).#variant_struct_field_index` is in-bounds of
+                    // `variant`, and `field` will maintain these same
+                    // invariants for its referent type.
+                    let field = unsafe {
+                        #zerocopy_crate::util::macro_util::core_reexport::ptr::addr_of_mut!((*variant).#variant_struct_field_index)
+                    };
+
+                    // SAFETY: `field` promises it references either a
+                    // zero-sized byte range, or else will reference a byte
+                    // range that is entirely contained within an allocated
+                    // object. In either case, this guarantees that
+                    // `(*variant).#variant_struct_field_index` is in-bounds of
+                    // `variant`, and does not wrap around the address space.
+                    // Consequently, `field` is non-null, and `ptr` inherits
+                    // these same invariants.
+                    let ptr = unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(field) };
+
+                    // SAFETY:
+                    // 0. `ptr` addresses a subset of the bytes of `slf`, so by
+                    //    invariant on `slf: PtrInner`, if `ptr`'s referent is
+                    //    not zero sized, then `ptr` has valid provenance for
+                    //    its referent, which is entirely contained in some Rust
+                    //    allocation, `A`.
+                    // 1. By invariant on `slf: PtrInner`, if `ptr`'s referent
+                    //    is not zero sized, `A` is guaranteed to live for at
+                    //    least `'a`.
+                    unsafe { #zerocopy_crate::PtrInner::new(ptr) }
+                }
             })
             .build()
         })
