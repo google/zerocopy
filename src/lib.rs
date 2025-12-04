@@ -1087,6 +1087,30 @@ const _: () = unsafe {
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T::MaybeUninit)] MaybeUninit<T>)
 };
 
+/// Projects a given field from `Self`.
+///
+/// All implementations of `HasField` for a particular field `f` in `Self`
+/// should use the same `Field` type; this ensures that `Field` is inferable
+/// given an explicit `VARIANT_ID` and `FIELD_ID`.
+///
+/// # Safety
+///
+/// A field `f` is `HasField` for `Self` if and only if:
+///
+/// - if `f` has name `n`, `FIELD_ID` is `zerocopy::ident_id!(n)`; otherwise, if
+///   `f` is at index `i`, `FIELD_ID` is `zerocopy::ident_id!(i)`.
+/// - `Field` is a type with the same visibility as `f`.
+/// - `Type` has the same type as `f`.
+#[doc(hidden)]
+pub unsafe trait HasField<Field, const VARIANT_ID: u128, const FIELD_ID: u128> {
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized;
+
+    /// The type of the field.
+    type Type: ?Sized;
+}
+
 /// Analyzes whether a type is [`FromZeros`].
 ///
 /// This derive analyzes, at compile time, whether the annotated type satisfies

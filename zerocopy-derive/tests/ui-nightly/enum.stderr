@@ -33,44 +33,47 @@ error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-  --> tests/ui-nightly/enum.rs:69:10
+  --> tests/ui-nightly/enum.rs:70:1
    |
-69 | #[derive(TryFromBytes)]
-   |          ^^^^^^^^^^^^
-   |
-   = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+70 | / enum TryFromBytes1 {
+71 | |     A,
+72 | | }
+   | |_^
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-  --> tests/ui-nightly/enum.rs:74:10
+  --> tests/ui-nightly/enum.rs:75:1
    |
-74 | #[derive(TryFromBytes)]
-   |          ^^^^^^^^^^^^
-   |
-   = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+75 | / enum TryFromBytes2 {
+76 | |     A,
+77 | |     B(u8),
+78 | | }
+   | |_^
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-  --> tests/ui-nightly/enum.rs:92:10
+  --> tests/ui-nightly/enum.rs:93:1
    |
-92 | #[derive(FromZeros)]
-   |          ^^^^^^^^^
-   |
-   = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
+93 | / enum FromZeros1 {
+94 | |     A(u8),
+95 | | }
+   | |_^
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-  --> tests/ui-nightly/enum.rs:97:10
-   |
-97 | #[derive(FromZeros)]
-   |          ^^^^^^^^^
-   |
-   = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
+ --> tests/ui-nightly/enum.rs:98:1
+  |
+ 98 | / enum FromZeros2 {
+ 99 | |     A,
+100 | |     B(u8),
+101 | | }
+    | |_^
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-   --> tests/ui-nightly/enum.rs:103:10
+   --> tests/ui-nightly/enum.rs:104:1
     |
-103 | #[derive(FromZeros)]
-    |          ^^^^^^^^^
-    |
-    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
+104 | / enum FromZeros3 {
+105 | |     A = 1,
+106 | |     B,
+107 | | }
+    | |_^
 
 error: FromZeros only supported on enums with a variant that has a discriminant of `0`
    --> tests/ui-nightly/enum.rs:110:1
@@ -471,7 +474,7 @@ help: the trait `PaddingFree<IntoBytes1, 1>` is not implemented for `()`
       but trait `PaddingFree<IntoBytes1, 0>` is implemented for it
    --> $WORKSPACE/src/util/macro_util.rs
     |
- 63 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
+ 64 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -493,7 +496,7 @@ help: the trait `PaddingFree<IntoBytes2, 3>` is not implemented for `()`
       but trait `PaddingFree<IntoBytes2, 0>` is implemented for it
    --> $WORKSPACE/src/util/macro_util.rs
     |
- 63 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
+ 64 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -515,7 +518,7 @@ help: the trait `PaddingFree<IntoBytes3, 2>` is not implemented for `()`
       but trait `PaddingFree<IntoBytes3, 0>` is implemented for it
    --> $WORKSPACE/src/util/macro_util.rs
     |
- 63 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
+ 64 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
