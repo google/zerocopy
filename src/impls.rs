@@ -794,6 +794,42 @@ impl_for_transmute_from!(T: ?Sized + IntoBytes => IntoBytes for ManuallyDrop<T>[
 const _: () = unsafe { unsafe_impl!(T: ?Sized + Unaligned => Unaligned for ManuallyDrop<T>) };
 assert_unaligned!(ManuallyDrop<()>, ManuallyDrop<u8>);
 
+const _: () = {
+    #[allow(non_camel_case_types, missing_copy_implementations, missing_debug_implementations, missing_docs)]
+    pub enum value {}
+
+    // SAFETY: This projection is unusual in that the `value` field of
+    // `ManuallyDrop` is private. However, the inner thing of a `ManuallyDrop`
+    // consistently named `value` in the docs, access is provided to it via a
+    // comprehensive set of accessors, and `ManuallyDrop` is guaranteed to be a
+    // transparent wrapper around it [1].
+    // 
+    // [1] Per https://doc.rust-lang.org/1.85.0/std/mem/struct.ManuallyDrop.html:
+    //
+    //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
+    //   `T`
+    unsafe impl<T> HasField<value, 0, { crate::ident_id!(value) }> for ManuallyDrop<T> {
+        type Type = T;
+
+        #[inline]
+        fn only_derive_is_allowed_to_implement_this_trait()
+        where
+            Self: Sized
+        {}
+
+        #[inline(always)]
+        fn project(slf: PtrInner<'_, Self>) -> PtrInner<'_, T> {
+            // SAFETY: `ManuallyDrop<T>` has the same layout as `T` [1].
+            //
+            // [1] Per https://doc.rust-lang.org/1.85.0/std/mem/struct.ManuallyDrop.html:
+            //
+            //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
+            //   `T`
+            unsafe { slf.cast() }
+        }
+    }
+};
+
 impl_for_transmute_from!(T: ?Sized + TryFromBytes => TryFromBytes for Cell<T>[UnsafeCell<T>]);
 impl_for_transmute_from!(T: ?Sized + FromZeros => FromZeros for Cell<T>[UnsafeCell<T>]);
 impl_for_transmute_from!(T: ?Sized + FromBytes => FromBytes for Cell<T>[UnsafeCell<T>]);
