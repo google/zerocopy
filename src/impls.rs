@@ -794,6 +794,54 @@ impl_for_transmute_from!(T: ?Sized + IntoBytes => IntoBytes for ManuallyDrop<T>[
 const _: () = unsafe { unsafe_impl!(T: ?Sized + Unaligned => Unaligned for ManuallyDrop<T>) };
 assert_unaligned!(ManuallyDrop<()>, ManuallyDrop<u8>);
 
+const _: () = {
+    #[allow(
+        non_camel_case_types,
+        missing_copy_implementations,
+        missing_debug_implementations,
+        missing_docs
+    )]
+    pub enum value {}
+
+    // SAFETY: `ManuallyDrop<T>` has a field of type `T` at offset `0` without
+    // any safety invariants beyond those of `T`.  Its existence is not
+    // explicitly documented, but it can be inferred; per [1] `ManuallyDrop<T>`
+    // has the same size and bit validity as `T`. This field is not literally
+    // public, but is effectively so; the field can be transparently:
+    //
+    //  - initialized via `ManuallyDrop::new`
+    //  - moved via `ManuallyDrop::into_inner`
+    //  - referenced via `ManuallyDrop::deref`
+    //  - exclusively referenced via `ManuallyDrop::deref_mut`
+    //
+    // We call this field `value`, both because that is both the name of this
+    // private field, and because it is the name it is referred to in the public
+    // documentation of `ManuallyDrop::new`, `ManuallyDrop::into_inner`,
+    // `ManuallyDrop::take` and `ManuallyDrop::drop`.
+    unsafe impl<T> HasField<value, 0, { crate::ident_id!(value) }> for ManuallyDrop<T> {
+        type Type = T;
+
+        #[inline]
+        fn only_derive_is_allowed_to_implement_this_trait()
+        where
+            Self: Sized,
+        {
+        }
+
+        #[inline(always)]
+        fn project(slf: PtrInner<'_, Self>) -> PtrInner<'_, T> {
+            // SAFETY: `ManuallyDrop<T>` has the same layout and bit validity as
+            // `T` [1].
+            //
+            // [1] Per https://doc.rust-lang.org/1.85.0/std/mem/struct.ManuallyDrop.html:
+            //
+            //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
+            //   validity as `T`
+            unsafe { slf.cast() }
+        }
+    }
+};
+
 impl_for_transmute_from!(T: ?Sized + TryFromBytes => TryFromBytes for Cell<T>[UnsafeCell<T>]);
 impl_for_transmute_from!(T: ?Sized + FromZeros => FromZeros for Cell<T>[UnsafeCell<T>]);
 impl_for_transmute_from!(T: ?Sized + FromBytes => FromBytes for Cell<T>[UnsafeCell<T>]);
