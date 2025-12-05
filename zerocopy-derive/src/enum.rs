@@ -264,9 +264,8 @@ pub(crate) fn derive_is_bit_valid(
             // derive remains sound.
             assert!(matches!(vis, syn::Visibility::Inherited));
             let variant_struct_field_index = Index::from(idx + 1);
-            ImplBlockBuilder::new(
+            ImplBlockBuilder::from_derive_input(
                 ast,
-                data,
                 Trait::HasField {
                     variant_id: parse_quote!({ #zerocopy_crate::ident_id!(#variant_ident) }),
                     // Since Rust does not presently support explicit visibility
