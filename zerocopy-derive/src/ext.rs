@@ -8,7 +8,10 @@
 
 use proc_macro2::{Span, TokenStream};
 use quote::ToTokens;
-use syn::{Data, DataEnum, DataStruct, DataUnion, Field, Ident, Index, Type, Variant, Visibility};
+use syn::{
+    parse_quote, Data, DataEnum, DataStruct, DataUnion, Field, Ident, Index, Type, Variant,
+    Visibility,
+};
 
 pub(crate) trait DataExt {
     /// Extracts the names and types of all fields. For enums, extracts the
@@ -83,6 +86,34 @@ impl DataExt for DataEnum {
 impl DataExt for DataUnion {
     fn fields(&self) -> Vec<(&Visibility, TokenStream, &Type)> {
         map_fields(&self.fields.named)
+    }
+
+    fn variants(&self) -> Vec<(Option<&Variant>, Vec<(&Visibility, TokenStream, &Type)>)> {
+        vec![(None, self.fields())]
+    }
+
+    fn tag(&self) -> Option<Ident> {
+        None
+    }
+}
+
+#[cfg(test)]
+pub(crate) struct Tuple {
+    fields: Vec<Field>,
+}
+
+#[cfg(test)]
+impl Tuple {
+    pub fn new<'a>(tys: impl 'a + IntoIterator<Item = &'a Type>) -> Self {
+        let fields = tys.into_iter().map(|ty| parse_quote!(pub #ty)).collect();
+        Tuple { fields }
+    }
+}
+
+#[cfg(test)]
+impl DataExt for Tuple {
+    fn fields(&self) -> Vec<(&Visibility, TokenStream, &Type)> {
+        map_fields(&self.fields)
     }
 
     fn variants(&self) -> Vec<(Option<&Variant>, Vec<(&Visibility, TokenStream, &Type)>)> {
