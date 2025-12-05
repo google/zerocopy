@@ -55,4 +55,5 @@ testutil = { path = "../testutil" }
 # sometimes change the output format slightly, so a version mismatch can cause
 # CI test failures.
 trybuild = { version = "=1.0.89", features = ["diff"] }
+# TODO: This dependency makes recovery from buggy codegen annoying.
 zerocopy = { path = "../", features = ["derive"] }
