@@ -342,6 +342,7 @@ pub mod doctests;
 // expect most users to use the re-export of `error`'s items to avoid identifier
 // stuttering.
 pub mod error;
+mod generated;
 mod impls;
 #[doc(hidden)]
 pub mod layout;
