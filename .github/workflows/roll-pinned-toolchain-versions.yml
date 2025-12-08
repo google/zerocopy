@@ -46,7 +46,7 @@ jobs:
     name: Roll pinned toolchain ${{ matrix.toolchain }} version on ${{ matrix.branch }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           ref: ${{ matrix.branch }}
           persist-credentials: false
@@ -143,7 +143,7 @@ jobs:
 
       - name: Submit PR
         id: submit-pr
-        uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7.0.9
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7.0.11
         with:
           commit-message: "[ci] Roll pinned ${{ matrix.toolchain }} toolchain"
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
@@ -172,7 +172,7 @@ jobs:
     name: Roll pinned Kani version
     steps:
       - name: Checkout code
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           ref: ${{ matrix.branch }}
           persist-credentials: false
@@ -189,7 +189,7 @@ jobs:
           sed -i -E -e "s/^( *kani-version:)( [0-9]+\.[0-9]+\.[0-9]+)/\1 $KANI_LATEST/" .github/workflows/ci.yml
       - name: Submit PR
         id: submit-pr
-        uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7.0.9
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7.0.11
         with:
           commit-message: "[ci] Roll pinned Kani version"
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
