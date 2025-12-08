@@ -6,6 +6,8 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+#![allow(non_camel_case_types)]
+
 #[macro_use]
 extern crate zerocopy;
 
@@ -17,24 +19,26 @@ fn main() {}
 
 #[derive(FromBytes)]
 #[repr("foo")]
+
 enum Generic1 {
     A,
 }
 
 #[derive(FromBytes)]
 #[repr(foo)]
+
 enum Generic2 {
     A,
 }
 
 #[derive(FromBytes)]
-#[repr(transparent)]
 enum Generic3 {
     A,
 }
 
 #[derive(FromBytes)]
 #[repr(u8, u16)]
+
 enum Generic4 {
     A,
 }
