@@ -13,3 +13,7 @@ note: required by a bound in `SRC_NOT_AS_BYTES::transmute`
    |                                required by a bound in this
    |                                required by this bound in `SRC_NOT_AS_BYTES::transmute`
    = note: this error originates in the macro `transmute` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0277`.
