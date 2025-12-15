@@ -26,10 +26,15 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::TryF
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
    |                     ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
-  --> tests/ui-nightly/derive_transparent.rs:34:1
+  --> tests/ui-nightly/../include.rs
+   |
+   |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   |
+  ::: tests/ui-nightly/derive_transparent.rs:34:1
    |
 34 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   | ------------------------------------------------------------------- in this macro invocation
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
@@ -60,10 +65,15 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `FromZeros`
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
    |                     ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
-  --> tests/ui-nightly/derive_transparent.rs:35:1
+  --> tests/ui-nightly/../include.rs
+   |
+   |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   |
+  ::: tests/ui-nightly/derive_transparent.rs:35:1
    |
 35 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   | ---------------------------------------------------------------- in this macro invocation
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfied
@@ -94,10 +104,15 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::From
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
    |                     ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
-  --> tests/ui-nightly/derive_transparent.rs:36:1
+  --> tests/ui-nightly/../include.rs
+   |
+   |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   |
+  ::: tests/ui-nightly/derive_transparent.rs:36:1
    |
 36 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   | ---------------------------------------------------------------- in this macro invocation
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfied
@@ -128,10 +143,15 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::Into
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
    |          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
-  --> tests/ui-nightly/derive_transparent.rs:37:1
+  --> tests/ui-nightly/../include.rs
+   |
+   |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   |
+  ::: tests/ui-nightly/derive_transparent.rs:37:1
    |
 37 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: IntoBytes);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   | ---------------------------------------------------------------- in this macro invocation
    = note: this error originates in the derive macro `IntoBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::Unaligned` is not satisfied
@@ -162,8 +182,13 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::Unal
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
    |                                ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
-  --> tests/ui-nightly/derive_transparent.rs:38:1
+  --> tests/ui-nightly/../include.rs
+   |
+   |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   |
+  ::: tests/ui-nightly/derive_transparent.rs:38:1
    |
 38 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
+   | ---------------------------------------------------------------- in this macro invocation
    = note: this error originates in the derive macro `Unaligned` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
