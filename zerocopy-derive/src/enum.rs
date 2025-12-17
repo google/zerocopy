@@ -297,11 +297,8 @@ pub(crate) fn derive_is_bit_valid(
 
                 #[inline(always)]
                 fn project(slf: #zerocopy_crate::PtrInner<'_, Self>) -> #zerocopy_crate::PtrInner<'_, Self::Type> {
-                    // SAFETY: By invariant on `___ZerocopyRawEnum`,
-                    // `___ZerocopyRawEnum` has the same layout as `Self`.
-                    let slf = unsafe { slf.cast::<___ZerocopyRawEnum #ty_generics>() };
-
-                    slf.project::<_, 0, { #zerocopy_crate::ident_id!(variants) }>()
+                    slf.cast_sized::<___ZerocopyRawEnum #ty_generics>()
+                        .project::<_, 0, { #zerocopy_crate::ident_id!(variants) }>()
                         .project::<_, 0, { #zerocopy_crate::ident_id!(#variants_union_field_ident) }>()
                         .project::<_, 0, { #zerocopy_crate::ident_id!(value) }>()
                         .project::<_, 0, { #zerocopy_crate::ident_id!(#variant_struct_field_index) }>()
@@ -336,14 +333,8 @@ pub(crate) fn derive_is_bit_valid(
                     //   types and locations of all fields. Therefore, any
                     //   `UnsafeCell`s will have the same location as in the
                     //   original type.
-                    let variant = unsafe {
-                        variants.cast_unsized_unchecked(
-                            |p: #zerocopy_crate::pointer::PtrInner<'_, ___ZerocopyVariants #ty_generics>| {
-                                p.cast_sized::<#variant_struct_ident #ty_generics>()
-                            }
-                        )
-                    };
-                    // SAFETY: `cast_unsized_unchecked` removes the
+                    let variant = unsafe { variants.cast_unchecked::<#variant_struct_ident #ty_generics, #zerocopy_crate::pointer::cast::CastSized>() };
+                    // SAFETY: `cast_unchecked` removes the
                     // initialization invariant from `p`, so we re-assert that
                     // all of the bytes are initialized.
                     let variant = unsafe { variant.assume_initialized() };
@@ -412,11 +403,7 @@ pub(crate) fn derive_is_bit_valid(
                 //   same provenance as it.
                 // - There are no `UnsafeCell`s in the tag because it is a
                 //   primitive integer.
-                let tag_ptr = unsafe {
-                    candidate.reborrow().cast_unsized_unchecked(|p: #zerocopy_crate::pointer::PtrInner<'_, Self>| {
-                        p.cast_sized::<___ZerocopyTagPrimitive>()
-                    })
-                };
+                let tag_ptr = unsafe { candidate.reborrow().cast_unchecked::<___ZerocopyTagPrimitive, #zerocopy_crate::pointer::cast::CastSized>() };
                 // SAFETY: `tag_ptr` is casted from `candidate`, whose referent
                 // is `Initialized`. Since we have not written uninitialized
                 // bytes into the referent, `tag_ptr` is also `Initialized`.
@@ -434,12 +421,8 @@ pub(crate) fn derive_is_bit_valid(
             // - The raw enum has the same types at the same locations as the
             //   original enum, and so preserves the locations of any
             //   `UnsafeCell`s.
-            let raw_enum = unsafe {
-                candidate.cast_unsized_unchecked(|p: #zerocopy_crate::pointer::PtrInner<'_, Self>| {
-                    p.cast_sized::<___ZerocopyRawEnum #ty_generics>()
-                })
-            };
-            // SAFETY: `cast_unsized_unchecked` removes the initialization
+            let raw_enum = unsafe { candidate.cast_unchecked::<___ZerocopyRawEnum #ty_generics, #zerocopy_crate::pointer::cast::CastSized>() };
+            // SAFETY: `cast_unchecked` removes the initialization
             // invariant from `p`, so we re-assert that all of the bytes are
             // initialized.
             let raw_enum = unsafe { raw_enum.assume_initialized() };
@@ -453,14 +436,16 @@ pub(crate) fn derive_is_bit_valid(
             //   locations of `UnsafeCell`s in `raw_enum`. This is because the
             //   subfield pointer just points to a smaller portion of the
             //   overall struct.
-            let project = #zerocopy_crate::pointer::PtrInner::project::<
+            // let project = #zerocopy_crate::pointer::PtrInner::project::<
+            //     _,
+            //     0,
+            //     { #zerocopy_crate::ident_id!(variants) }
+            // >;
+            let variants = raw_enum.cast::<
                 _,
-                0,
-                { #zerocopy_crate::ident_id!(variants) }
-            >;
-            let variants = unsafe {
-                raw_enum.cast_unsized_unchecked(project)
-            };
+                #zerocopy_crate::pointer::cast::ProjectCast<0, { #zerocopy_crate::ident_id!(variants) }, _>,
+                _
+            >();
 
             #[allow(non_upper_case_globals)]
             match tag {
