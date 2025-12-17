@@ -147,6 +147,11 @@ fn generate_variant_structs(
             ) #where_clause;
         };
 
+        let invariants_eq_impl: TokenStream = parse_quote! {
+            // SAFETY: TODO
+            unsafe impl #impl_generics #zerocopy_crate::pointer::InvariantsEq<#variant_struct_ident #ty_generics> for ___ZerocopyVariants #where_clause {}
+        };
+
         // We do this rather than emitting `#[derive(::zerocopy::TryFromBytes)]`
         // because that is not hygienic, and this is also more performant.
         let try_from_bytes_impl =
@@ -156,6 +161,7 @@ fn generate_variant_structs(
         Some(quote! {
             #variant_struct
             #try_from_bytes_impl
+            #invariants_eq_impl
         })
     });
 
@@ -266,7 +272,7 @@ pub(crate) fn derive_is_bit_valid(
     let variant_structs = generate_variant_structs(enum_ident, generics, data, zerocopy_crate);
     let variants_union = generate_variants_union(generics, data, zerocopy_crate);
 
-    let (_, ref ty_generics, _) = generics.split_for_impl();
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
 
     let has_fields = data.variants().into_iter().flat_map(|(variant, fields)| {
         let variant_ident = &variant.unwrap().ident;
@@ -278,6 +284,7 @@ pub(crate) fn derive_is_bit_valid(
             // derive remains sound.
             assert!(matches!(vis, syn::Visibility::Inherited));
             let variant_struct_field_index = Index::from(idx + 1);
+            let (_, ty_generics, _) = generics.split_for_impl();
             ImplBlockBuilder::new(
                 ast,
                 data,
@@ -296,15 +303,16 @@ pub(crate) fn derive_is_bit_valid(
                 type Type = #ty;
 
                 #[inline(always)]
-                fn project(slf: #zerocopy_crate::PtrInner<'_, Self>) -> #zerocopy_crate::PtrInner<'_, Self::Type> {
-                    // SAFETY: By invariant on `___ZerocopyRawEnum`,
-                    // `___ZerocopyRawEnum` has the same layout as `Self`.
-                    let slf = unsafe { slf.cast::<___ZerocopyRawEnum #ty_generics>() };
-
-                    slf.project::<_, { #zerocopy_crate::STRUCT_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(variants) }>()
-                        .project::<_, { #zerocopy_crate::STRUCT_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variants_union_field_ident) }>()
-                        .project::<_, { #zerocopy_crate::STRUCT_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(value) }>()
-                        .project::<_, { #zerocopy_crate::STRUCT_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variant_struct_field_index) }>()
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum #ty_generics;
+                    // TODO: With this change, does it make sense to keep
+                    // `HasField` impls which are really casts, or can we
+                    // replace them with `Cast`s?
+                    let slf = <___ZerocopyRawEnum #ty_generics as #zerocopy_crate::HasField<_, { #zerocopy_crate::STRUCT_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(variants) }>>::project(slf);
+                    let slf = <_ as #zerocopy_crate::HasField<_, { #zerocopy_crate::STRUCT_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variants_union_field_ident) }>>::project(slf);
+                    let slf = <_ as #zerocopy_crate::HasField<_, { #zerocopy_crate::STRUCT_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(value) }>>::project(slf);
+                    let slf = <_ as #zerocopy_crate::HasField<_, { #zerocopy_crate::STRUCT_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variant_struct_field_index) }>>::project(slf);
+                    slf
                 }
             })
             .build()
@@ -324,29 +332,11 @@ pub(crate) fn derive_is_bit_valid(
         } else {
             quote! {
                 #tag_ident => {
-                    // SAFETY:
-                    // - This cast is from a `repr(C)` union which has a field
-                    //   of type `variant_struct_ident` to that variant struct
-                    //   type itself. This addresses a subset of the bytes
-                    //   addressed by `variants`.
-                    // - The returned pointer is cast from `p`, and so has the
-                    //   same provenance as `p`.
-                    // - We checked that the tag of the enum matched the
-                    //   constant for this variant, so this cast preserves
-                    //   types and locations of all fields. Therefore, any
-                    //   `UnsafeCell`s will have the same location as in the
-                    //   original type.
-                    let variant = unsafe {
-                        variants.cast_unsized_unchecked(
-                            |p: #zerocopy_crate::pointer::PtrInner<'_, ___ZerocopyVariants #ty_generics>| {
-                                p.cast_sized::<#variant_struct_ident #ty_generics>()
-                            }
-                        )
-                    };
-                    // SAFETY: `cast_unsized_unchecked` removes the
-                    // initialization invariant from `p`, so we re-assert that
-                    // all of the bytes are initialized.
-                    let variant = unsafe { variant.assume_initialized() };
+                    let variant = variants.cast::<
+                        #variant_struct_ident #ty_generics,
+                        #zerocopy_crate::pointer::cast::CastSized,
+                        #zerocopy_crate::pointer::BecauseInvariantsEq
+                    >();
                     <
                         #variant_struct_ident #ty_generics as #trait_path
                     >::is_bit_valid(variant)
@@ -355,7 +345,7 @@ pub(crate) fn derive_is_bit_valid(
         }
     });
 
-    let raw_enum = parse_quote! {
+    let raw_enum: DeriveInput = parse_quote! {
         #[repr(C)]
         struct ___ZerocopyRawEnum #generics {
             tag: ___ZerocopyOuterTag,
@@ -363,110 +353,107 @@ pub(crate) fn derive_is_bit_valid(
         }
     };
 
+    let self_ident = &ast.ident;
+    let invariants_eq_impl = quote! {
+        // SAFETY: TODO
+        unsafe impl #impl_generics #zerocopy_crate::pointer::InvariantsEq<___ZerocopyRawEnum #ty_generics> for #self_ident #where_clause {}
+    };
+
     let raw_enum_projections =
         derive_has_field_struct_union(&raw_enum, &raw_enum.data, zerocopy_crate);
 
     let raw_enum = quote! {
         #raw_enum
+        #invariants_eq_impl
         #raw_enum_projections
     };
 
     Ok(quote! {
-        // SAFETY: We use `is_bit_valid` to validate that the bit pattern of the
-        // enum's tag corresponds to one of the enum's discriminants. Then, we
-        // check the bit validity of each field of the corresponding variant.
-        // Thus, this is a sound implementation of `is_bit_valid`.
-        fn is_bit_valid<___ZerocopyAliasing>(
-            mut candidate: #zerocopy_crate::Maybe<'_, Self, ___ZerocopyAliasing>,
-        ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
-        where
-            ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
-        {
-            use #zerocopy_crate::util::macro_util::core_reexport;
+            // SAFETY: We use `is_bit_valid` to validate that the bit pattern of the
+            // enum's tag corresponds to one of the enum's discriminants. Then, we
+            // check the bit validity of each field of the corresponding variant.
+            // Thus, this is a sound implementation of `is_bit_valid`.
+            fn is_bit_valid<___ZerocopyAliasing>(
+                mut candidate: #zerocopy_crate::Maybe<'_, Self, ___ZerocopyAliasing>,
+            ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
+            where
+                ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
+            {
+                use #zerocopy_crate::util::macro_util::core_reexport;
 
-            #tag_enum
+                #tag_enum
 
-            type ___ZerocopyTagPrimitive = #zerocopy_crate::util::macro_util::SizeToTag<
-                { core_reexport::mem::size_of::<___ZerocopyTag>() },
-            >;
+                // SAFETY: TODO
+                unsafe impl ::zerocopy::Immutable for ___ZerocopyTag {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                }
 
-            #tag_consts
+                type ___ZerocopyTagPrimitive = #zerocopy_crate::util::macro_util::SizeToTag<
+                    { core_reexport::mem::size_of::<___ZerocopyTag>() },
+                >;
 
-            type ___ZerocopyOuterTag = #outer_tag_type;
-            type ___ZerocopyInnerTag = #inner_tag_type;
+                // SAFETY: TODO
+                unsafe impl #impl_generics #zerocopy_crate::pointer::InvariantsEq<___ZerocopyTag> for #self_ident #where_clause {}
 
-            #variant_structs
+                #tag_consts
 
-            #variants_union
+                type ___ZerocopyOuterTag = #outer_tag_type;
+                type ___ZerocopyInnerTag = #inner_tag_type;
 
-            #raw_enum
+                #variant_structs
 
-            #(#has_fields)*
+                #variants_union
 
-            let tag = {
-                // SAFETY:
-                // - The provided cast addresses a subset of the bytes addressed
-                //   by `candidate` because it addresses the starting tag of the
-                //   enum.
-                // - Because the pointer is cast from `candidate`, it has the
-                //   same provenance as it.
-                // - There are no `UnsafeCell`s in the tag because it is a
-                //   primitive integer.
-                let tag_ptr = unsafe {
-                    candidate.reborrow().cast_unsized_unchecked(|p: #zerocopy_crate::pointer::PtrInner<'_, Self>| {
-                        p.cast_sized::<___ZerocopyTagPrimitive>()
-                    })
+                #raw_enum
+
+                #(#has_fields)*
+
+                let tag = {
+                    let tag_ptr = candidate.reborrow().cast::<
+                        ___ZerocopyTag,
+                        #zerocopy_crate::pointer::cast::CastSized,
+                        #zerocopy_crate::pointer::BecauseInvariantsEq
+                    >().cast::<
+                        ___ZerocopyTagPrimitive,
+                        #zerocopy_crate::pointer::cast::CastSized,
+                        _
+                    >();
+                    tag_ptr.recall_validity::<_, (_, (_, _))>().read_unaligned::<#zerocopy_crate::BecauseImmutable>()
                 };
-                // SAFETY: `tag_ptr` is casted from `candidate`, whose referent
-                // is `Initialized`. Since we have not written uninitialized
-                // bytes into the referent, `tag_ptr` is also `Initialized`.
-                let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                tag_ptr.recall_validity::<_, (_, (_, _))>().read_unaligned::<#zerocopy_crate::BecauseImmutable>()
-            };
 
-            // SAFETY:
-            // - The raw enum has the same fields in the same locations as the
-            //   input enum, and may have a lower alignment. This guarantees
-            //   that it addresses a subset of the bytes addressed by
-            //   `candidate`.
-            // - The returned pointer is cast from `p`, and so has the same
-            //   provenance as `p`.
-            // - The raw enum has the same types at the same locations as the
-            //   original enum, and so preserves the locations of any
-            //   `UnsafeCell`s.
-            let raw_enum = unsafe {
-                candidate.cast_unsized_unchecked(|p: #zerocopy_crate::pointer::PtrInner<'_, Self>| {
-                    p.cast_sized::<___ZerocopyRawEnum #ty_generics>()
-                })
-            };
-            // SAFETY: `cast_unsized_unchecked` removes the initialization
-            // invariant from `p`, so we re-assert that all of the bytes are
-            // initialized.
-            let raw_enum = unsafe { raw_enum.assume_initialized() };
+                let raw_enum = candidate.cast::<
+                    ___ZerocopyRawEnum #ty_generics,
+                    #zerocopy_crate::pointer::cast::CastSized,
+                    #zerocopy_crate::pointer::BecauseInvariantsEq
+                >();
 
-            // SAFETY:
-            // - This projection returns a subfield of `raw_enum` using
-            //   `project`.
-            // - Because the subfield pointer is derived from `raw_enum`, it has
-            //   the same provenance.
-            // - The locations of `UnsafeCell`s in the subfield match the
-            //   locations of `UnsafeCell`s in `raw_enum`. This is because the
-            //   subfield pointer just points to a smaller portion of the
-            //   overall struct.
-            let project = #zerocopy_crate::pointer::PtrInner::project::<
-                _,
-                { #zerocopy_crate::STRUCT_UNION_VARIANT_ID },
-                { #zerocopy_crate::ident_id!(variants) }
-            >;
-            let variants = unsafe {
-                raw_enum.cast_unsized_unchecked(project)
-            };
+                // SAFETY:
+                // - This projection returns a subfield of `raw_enum` using
+                //   `project`.
+                // - Because the subfield pointer is derived from `raw_enum`, it has
+                //   the same provenance.
+                // - The locations of `UnsafeCell`s in the subfield match the
+                //   locations of `UnsafeCell`s in `raw_enum`. This is because the
+                //   subfield pointer just points to a smaller portion of the
+                //   overall struct.
+    <<<<<<< HEAD
+                let project = #zerocopy_crate::pointer::PtrInner::project::<
+                    _,
+                    { #zerocopy_crate::STRUCT_UNION_VARIANT_ID },
+                    { #zerocopy_crate::ident_id!(variants) }
+                >;
+                let variants = unsafe {
+                    raw_enum.cast_unsized_unchecked(project)
+                };
+    =======
+                let variants = unsafe { raw_enum.project::<_, 0, { #zerocopy_crate::ident_id!(variants) }>() };
+    >>>>>>> 05313a66 ([pointer] Add generic projection/cast framework)
 
-            #[allow(non_upper_case_globals)]
-            match tag {
-                #(#match_arms,)*
-                _ => false,
+                #[allow(non_upper_case_globals)]
+                match tag {
+                    #(#match_arms,)*
+                    _ => false,
+                }
             }
-        }
-    })
+        })
 }
