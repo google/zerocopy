@@ -1113,7 +1113,7 @@ pub unsafe trait HasField<Field, const VARIANT_ID: u128, const FIELD_ID: u128> {
     type Type: ?Sized;
 
     /// Projects from `slf` to the field.
-    fn project(slf: PtrInner<'_, Self>) -> PtrInner<'_, Self::Type>;
+    fn project(slf: *mut Self) -> *mut Self::Type;
 }
 
 /// Analyzes whether a type is [`FromZeros`].
