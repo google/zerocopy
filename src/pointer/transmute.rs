@@ -471,10 +471,7 @@ unsafe impl<T> SizeEq<T> for MaybeUninit<T> {
     fn cast_from_raw(t: PtrInner<'_, T>) -> PtrInner<'_, MaybeUninit<T>> {
         // SAFETY: Per preceding safety comment, `MaybeUninit<T>` and `T` have
         // the same size, and so this cast preserves referent size.
-        #[allow(clippy::multiple_unsafe_ops_per_block)]
-        unsafe {
-            cast!(t)
-        }
+        unsafe { cast!(t => _) }
     }
 }
 
@@ -484,10 +481,7 @@ unsafe impl<T> SizeEq<MaybeUninit<T>> for T {
     fn cast_from_raw(t: PtrInner<'_, MaybeUninit<T>>) -> PtrInner<'_, T> {
         // SAFETY: Per preceding safety comment, `MaybeUninit<T>` and `T` have
         // the same size, and so this cast preserves referent size.
-        #[allow(clippy::multiple_unsafe_ops_per_block)]
-        unsafe {
-            cast!(t)
-        }
+        unsafe { cast!(t => _) }
     }
 }
 

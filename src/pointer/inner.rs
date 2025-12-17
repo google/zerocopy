@@ -170,31 +170,7 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
     where
         T: Sized,
     {
-        static_assert!(T, U => mem::size_of::<T>() >= mem::size_of::<U>());
-        // SAFETY: By the preceding assert, `U` is no larger than `T`, which is
-        // the size of `self`'s referent.
-        unsafe { self.cast() }
-    }
-
-    /// # Safety
-    ///
-    /// `U` must not be larger than the size of `self`'s referent.
-    #[must_use]
-    #[inline(always)]
-    pub unsafe fn cast<U>(self) -> PtrInner<'a, U> {
-        let ptr = self.as_non_null().cast::<U>();
-
-        // SAFETY: The caller promises that `U` is no larger than `self`'s
-        // referent. Thus, `ptr` addresses a subset of the bytes addressed by
-        // `self`.
-        //
-        // 0. By invariant on `self`, if `self`'s referent is not zero sized,
-        //    then `self` has valid provenance for its referent, which is
-        //    entirely contained in some Rust allocation, `A`. Thus, the same
-        //    holds of `ptr`.
-        // 1. By invariant on `self`, if `self`'s referent is not zero sized,
-        //    then `A` is guaranteed to live for at least `'a`.
-        unsafe { PtrInner::new(ptr) }
+        self.cast(CastSized::new())
     }
 
     /// Projects a field.
@@ -206,6 +182,123 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
     {
         <T as HasField<F, VARIANT_ID, FIELD_ID>>::project(self)
     }
+
+    pub fn cast<C: Cast<T>>(self, cast: C) -> PtrInner<'a, C::Dst> {
+        let non_null = self.as_non_null();
+        let raw = non_null.as_ptr();
+
+        // SAFETY: By invariant on `self`, `raw`'s referent is zero-sized or
+        // lives in a single allocation.
+        let projected_raw = unsafe { cast.cast(raw) };
+
+        // SAFETY: `self`'s referent lives at a `NonNull` address, and is either
+        // zero-sized or lives in an allocation. In either case, it does not
+        // wrap around the address space [1], and so none of the addresses
+        // contained in it or one-past-the-end of it are null.
+        //
+        // By invariant on `C: Cast`, `C::cast` is a provenance-preserving cast
+        // which preserves or shrinks the set of referent bytes, so
+        // `projected_raw` references a subset of `self`'s referent, and so it
+        // cannot be null.
+        //
+        // [1] https://doc.rust-lang.org/1.92.0/std/ptr/index.html#allocation
+        let projected_non_null = unsafe { NonNull::new_unchecked(projected_raw) };
+
+        // SAFETY: As described in the preceding safety comment, `projected_raw`,
+        // and thus `projected_non_null`, addresses a subset of `self`'s
+        // referent. Thus, `projected_non_null` either:
+        // - Addresses zero bytes or,
+        // - Addresses a subset of the referent of `self`. In this case, `self`
+        //   has provenance for its referent, which lives in an allocation.
+        //   Since `projected_non_null` was constructed using a sequence of
+        //   provenance-preserving operations, it also has provenance for its
+        //   referent and that referent lives in an allocation. By invariant on
+        //   `self`, that allocation lives for `'a`.
+        unsafe { PtrInner::new(projected_non_null) }
+    }
+}
+
+// TODO: Migrate other casts to this:
+// - `Ptr`'s various cast methods
+// - `SizeEq`
+
+/// # Safety
+///
+/// `cast` must be a provenance-preserving cast which preserves or shrinks the
+/// set of referent bytes.
+pub unsafe trait Cast<Src: ?Sized> {
+    type Dst: ?Sized;
+
+    /// # Safety
+    ///
+    /// `src` must have provenance for its entire referent, which must be
+    /// zero-sized or live in a single allocation.
+    unsafe fn cast(self, src: *mut Src) -> *mut Self::Dst;
+}
+
+#[allow(missing_debug_implementations)]
+pub struct FnCast<F>(F);
+
+impl<F> FnCast<F> {
+    pub const unsafe fn new(f: F) -> Self {
+        Self(f)
+    }
+}
+
+unsafe impl<F, Src: ?Sized, Dst: ?Sized> Cast<Src> for FnCast<F>
+where
+    F: Fn(*mut Src) -> *mut Dst,
+{
+    type Dst = Dst;
+
+    unsafe fn cast(self, src: *mut Src) -> *mut Self::Dst {
+        (self.0)(src)
+    }
+}
+struct CastSized<Dst>(PhantomData<Dst>);
+
+impl<Dst> Default for CastSized<Dst> {
+    fn default() -> Self {
+        Self(PhantomData)
+    }
+}
+
+impl<Dst> CastSized<Dst> {
+    const fn new() -> Self {
+        Self(PhantomData)
+    }
+}
+
+// SAFETY: By the `static_assert!`, `Dst` is no larger than `Src`,
+// and `<*mut Src>::cast` is a provenance-preserving cast.
+unsafe impl<Src, Dst> Cast<Src> for CastSized<Dst> {
+    type Dst = Dst;
+
+    unsafe fn cast(self, src: *mut Src) -> *mut Self::Dst {
+        static_assert!(Src, Dst => mem::size_of::<Src>() >= mem::size_of::<Dst>());
+        src.cast::<Dst>()
+    }
+}
+
+/// Constructs a [`Cast`] which projects from a type to one of its fields.
+#[macro_export]
+#[doc(hidden)]
+macro_rules! project_cast {
+    ($src:ty => $field_name:tt) => {
+        $crate::pointer::__project_cast::<$src, _, _>(|src| {
+            $crate::util::macro_util::core_reexport::ptr::addr_of_mut!((*src).$field_name)
+        })
+    };
+}
+
+#[doc(hidden)]
+pub const unsafe fn __project_cast<Src: ?Sized, Dst: ?Sized, F>(
+    cast: F,
+) -> impl Cast<Src, Dst = Dst>
+where
+    F: Fn(*mut Src) -> *mut Dst,
+{
+    unsafe { FnCast::new(cast) }
 }
 
 #[allow(clippy::needless_lifetimes)]

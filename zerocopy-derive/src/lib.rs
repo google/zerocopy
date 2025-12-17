@@ -777,30 +777,8 @@ fn derive_has_field_struct_union(
 
             #[inline(always)]
             fn project(slf: #zerocopy_crate::PtrInner<'_, Self>) -> #zerocopy_crate::PtrInner<'_, Self::Type> {
-                let slf = slf.as_non_null().as_ptr();
-                // SAFETY: `PtrInner` promises it references either a zero-sized
-                // byte range, or else will reference a byte range that is
-                // entirely contained within an allocated object. In either
-                // case, this guarantees that `(*slf).#ident` is in-bounds of
-                // `slf`.
-                let field = unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#ident) };
-                // SAFETY: `PtrInner` promises it references either a zero-sized
-                // byte range, or else will reference a byte range that is
-                // entirely contained within an allocated object. In either
-                // case, this guarantees that field projection will not wrap
-                // around the address space, and so `field` will be non-null.
-                let ptr = unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(field) };
-                // SAFETY:
-                // 0. `ptr` addresses a subset of the bytes of
-                //    `slf`, so by invariant on `slf: PtrInner`,
-                //    if `ptr`'s referent is not zero sized,
-                //    then `ptr` has valid provenance for its
-                //    referent, which is entirely contained in
-                //    some Rust allocation, `A`.
-                // 1. By invariant on `slf: PtrInner`, if
-                //    `ptr`'s referent is not zero sized, `A` is
-                //    guaranteed to live for at least `'a`.
-                unsafe { #zerocopy_crate::PtrInner::new(ptr) }
+                let cast = unsafe { #zerocopy_crate::project_cast!(Self => #ident) };
+                slf.cast(cast)
             }
         })
         .build()
