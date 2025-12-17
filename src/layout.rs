@@ -738,213 +738,231 @@ impl DstLayout {
     }
 }
 
-pub(crate) use cast_from_raw::cast_from_raw;
+pub(crate) use cast_from_raw::CastFromRaw;
 mod cast_from_raw {
-    use crate::{pointer::PtrInner, *};
+    use crate::*;
 
-    /// Implements [`<Dst as SizeEq<Src>>::cast_from_raw`][cast_from_raw].
-    ///
-    /// # PME
-    ///
-    /// Generates a post-monomorphization error if it is not possible to satisfy
-    /// the soundness conditions of [`SizeEq::cast_from_raw`][cast_from_raw]
-    /// for `Src` and `Dst`.
-    ///
-    /// [cast_from_raw]: crate::pointer::SizeEq::cast_from_raw
-    //
-    // FIXME(#1817): Support Sized->Unsized and Unsized->Sized casts
-    pub(crate) fn cast_from_raw<Src, Dst>(src: PtrInner<'_, Src>) -> PtrInner<'_, Dst>
+    pub(crate) struct CastFromRaw<Dst: ?Sized> {
+        _never: core::convert::Infallible,
+        _marker: PhantomData<Dst>,
+    }
+
+    // SAFETY: The implementation of `Project::project` preserves the address
+    // of the referent – it only modifies pointer metadata.
+    unsafe impl<Src, Dst> crate::pointer::cast::Cast<Src, Dst> for CastFromRaw<Dst>
     where
         Src: KnownLayout<PointerMetadata = usize> + ?Sized,
         Dst: KnownLayout<PointerMetadata = usize> + ?Sized,
     {
-        // At compile time (specifically, post-monomorphization time), we need
-        // to compute two things:
-        // - Whether, given *any* `*Src`, it is possible to construct a `*Dst`
-        //   which addresses the same number of bytes (ie, whether, for any
-        //   `Src` pointer metadata, there exists `Dst` pointer metadata that
-        //   addresses the same number of bytes)
-        // - If this is possible, any information necessary to perform the
-        //   `Src`->`Dst` metadata conversion at runtime.
-        //
-        // Assume that `Src` and `Dst` are slice DSTs, and define:
-        // - `S_OFF = Src::LAYOUT.size_info.offset`
-        // - `S_ELEM = Src::LAYOUT.size_info.elem_size`
-        // - `D_OFF = Dst::LAYOUT.size_info.offset`
-        // - `D_ELEM = Dst::LAYOUT.size_info.elem_size`
-        //
-        // We are trying to solve the following equation:
-        //
-        //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
-        //
-        // At runtime, we will be attempting to compute `d_meta`, given `s_meta`
-        // (a runtime value) and all other parameters (which are compile-time
-        // values). We can solve like so:
-        //
-        //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
-        //
-        //   d_meta * D_ELEM = S_OFF - D_OFF + s_meta * S_ELEM
-        //
-        //   d_meta = (S_OFF - D_OFF + s_meta * S_ELEM)/D_ELEM
-        //
-        // Since `d_meta` will be a `usize`, we need the right-hand side to be
-        // an integer, and this needs to hold for *any* value of `s_meta` (in
-        // order for our conversion to be infallible - ie, to not have to reject
-        // certain values of `s_meta` at runtime). This means that:
-        // - `s_meta * S_ELEM` must be a multiple of `D_ELEM`
-        // - Since this must hold for any value of `s_meta`, `S_ELEM` must be a
-        //   multiple of `D_ELEM`
-        // - `S_OFF - D_OFF` must be a multiple of `D_ELEM`
-        //
-        // Thus, let `OFFSET_DELTA_ELEMS = (S_OFF - D_OFF)/D_ELEM` and
-        // `ELEM_MULTIPLE = S_ELEM/D_ELEM`. We can rewrite the above expression
-        // as:
-        //
-        //   d_meta = (S_OFF - D_OFF + s_meta * S_ELEM)/D_ELEM
-        //
-        //   d_meta = OFFSET_DELTA_ELEMS + s_meta * ELEM_MULTIPLE
-        //
-        // Thus, we just need to compute the following and confirm that they
-        // have integer solutions in order to both a) determine whether
-        // infallible `Src` -> `Dst` casts are possible and, b) pre-compute the
-        // parameters necessary to perform those casts at runtime. These
-        // parameters are encapsulated in `CastParams`, which acts as a witness
-        // that such infallible casts are possible.
+    }
 
-        /// The parameters required in order to perform a pointer cast from
-        /// `Src` to `Dst` as described above.
+    // SAFETY: `project` produces a pointer which refers to the same referent
+    // bytes as its input, or to a subset of them (see inline comments for a
+    // more detailed proof of this). It does this using provenance-preserving
+    // operations.
+    unsafe impl<Src, Dst> crate::pointer::cast::Project<Src, Dst> for CastFromRaw<Dst>
+    where
+        Src: KnownLayout<PointerMetadata = usize> + ?Sized,
+        Dst: KnownLayout<PointerMetadata = usize> + ?Sized,
+    {
+        /// # PME
         ///
-        /// These are a compile-time function of the layouts of `Src` and `Dst`.
-        ///
-        /// # Safety
-        ///
-        /// `offset_delta_elems` and `elem_multiple` must be valid as described
-        /// above.
-        ///
-        /// `Src`'s alignment must not be smaller than `Dst`'s alignment.
-        #[derive(Copy, Clone)]
-        struct CastParams {
-            offset_delta_elems: usize,
-            elem_multiple: usize,
-        }
+        /// Generates a post-monomorphization error if it is not possible to
+        /// implement soundly.
+        //
+        // FIXME(#1817): Support Sized->Unsized and Unsized->Sized casts
+        fn project(src: PtrInner<'_, Src>) -> *mut Dst {
+            // At compile time (specifically, post-monomorphization time), we
+            // need to compute two things:
+            // - Whether, given *any* `*Src`, it is possible to construct a
+            //   `*Dst` which addresses the same number of bytes (ie, whether,
+            //   for any `Src` pointer metadata, there exists `Dst` pointer
+            //   metadata that addresses the same number of bytes)
+            // - If this is possible, any information necessary to perform the
+            //   `Src`->`Dst` metadata conversion at runtime.
+            //
+            // Assume that `Src` and `Dst` are slice DSTs, and define:
+            // - `S_OFF = Src::LAYOUT.size_info.offset`
+            // - `S_ELEM = Src::LAYOUT.size_info.elem_size`
+            // - `D_OFF = Dst::LAYOUT.size_info.offset`
+            // - `D_ELEM = Dst::LAYOUT.size_info.elem_size`
+            //
+            // We are trying to solve the following equation:
+            //
+            //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
+            //
+            // At runtime, we will be attempting to compute `d_meta`, given
+            // `s_meta` (a runtime value) and all other parameters (which are
+            // compile-time values). We can solve like so:
+            //
+            //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
+            //
+            //   d_meta * D_ELEM = S_OFF - D_OFF + s_meta * S_ELEM
+            //
+            //   d_meta = (S_OFF - D_OFF + s_meta * S_ELEM)/D_ELEM
+            //
+            // Since `d_meta` will be a `usize`, we need the right-hand side to
+            // be an integer, and this needs to hold for *any* value of `s_meta`
+            // (in order for our conversion to be infallible - ie, to not have
+            // to reject certain values of `s_meta` at runtime). This means
+            // that:
+            // - `s_meta * S_ELEM` must be a multiple of `D_ELEM`
+            // - Since this must hold for any value of `s_meta`, `S_ELEM` must
+            //   be a multiple of `D_ELEM`
+            // - `S_OFF - D_OFF` must be a multiple of `D_ELEM`
+            //
+            // Thus, let `OFFSET_DELTA_ELEMS = (S_OFF - D_OFF)/D_ELEM` and
+            // `ELEM_MULTIPLE = S_ELEM/D_ELEM`. We can rewrite the above
+            // expression as:
+            //
+            //   d_meta = (S_OFF - D_OFF + s_meta * S_ELEM)/D_ELEM
+            //
+            //   d_meta = OFFSET_DELTA_ELEMS + s_meta * ELEM_MULTIPLE
+            //
+            // Thus, we just need to compute the following and confirm that they
+            // have integer solutions in order to both a) determine whether
+            // infallible `Src` -> `Dst` casts are possible and, b) pre-compute
+            // the parameters necessary to perform those casts at runtime. These
+            // parameters are encapsulated in `CastParams`, which acts as a
+            // witness that such infallible casts are possible.
 
-        impl CastParams {
-            const fn try_compute(src: &DstLayout, dst: &DstLayout) -> Option<CastParams> {
-                if src.align.get() < dst.align.get() {
-                    return None;
-                }
-
-                let (src, dst) = if let (SizeInfo::SliceDst(src), SizeInfo::SliceDst(dst)) =
-                    (src.size_info, dst.size_info)
-                {
-                    (src, dst)
-                } else {
-                    return None;
-                };
-
-                let offset_delta = if let Some(od) = src.offset.checked_sub(dst.offset) {
-                    od
-                } else {
-                    return None;
-                };
-
-                let dst_elem_size = if let Some(e) = NonZeroUsize::new(dst.elem_size) {
-                    e
-                } else {
-                    return None;
-                };
-
-                // PANICS: `dst_elem_size: NonZeroUsize`, so this won't div by zero.
-                #[allow(clippy::arithmetic_side_effects)]
-                let delta_mod_other_elem = offset_delta % dst_elem_size.get();
-
-                // PANICS: `dst_elem_size: NonZeroUsize`, so this won't div by zero.
-                #[allow(clippy::arithmetic_side_effects)]
-                let elem_remainder = src.elem_size % dst_elem_size.get();
-
-                if delta_mod_other_elem != 0 || src.elem_size < dst.elem_size || elem_remainder != 0
-                {
-                    return None;
-                }
-
-                // PANICS: `dst_elem_size: NonZeroUsize`, so this won't div by zero.
-                #[allow(clippy::arithmetic_side_effects)]
-                let offset_delta_elems = offset_delta / dst_elem_size.get();
-
-                // PANICS: `dst_elem_size: NonZeroUsize`, so this won't div by zero.
-                #[allow(clippy::arithmetic_side_effects)]
-                let elem_multiple = src.elem_size / dst_elem_size.get();
-
-                // SAFETY: We checked above that `src.align >= dst.align`.
-                Some(CastParams {
-                    // SAFETY: We checked above that this is an exact ratio.
-                    offset_delta_elems,
-                    // SAFETY: We checked above that this is an exact ratio.
-                    elem_multiple,
-                })
-            }
-
+            /// The parameters required in order to perform a pointer cast from
+            /// `Src` to `Dst` as described above.
+            ///
+            /// These are a compile-time function of the layouts of `Src` and
+            /// `Dst`.
+            ///
             /// # Safety
             ///
-            /// `src_meta` describes a `Src` whose size is no larger than
-            /// `isize::MAX`.
+            /// `offset_delta_elems` and `elem_multiple` must be valid as
+            /// described above.
             ///
-            /// The returned metadata describes a `Dst` of the same size as the
-            /// original `Src`.
-            unsafe fn cast_metadata(self, src_meta: usize) -> usize {
-                #[allow(unused)]
-                use crate::util::polyfills::*;
+            /// `Src`'s alignment must not be smaller than `Dst`'s alignment.
+            #[derive(Copy, Clone)]
+            struct CastParams {
+                offset_delta_elems: usize,
+                elem_multiple: usize,
+            }
 
-                // SAFETY: `self` is a witness that the following equation
-                // holds:
-                //
-                //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
-                //
-                // Since the caller promises that `src_meta` is valid `Src`
-                // metadata, this math will not overflow, and the returned value
-                // will describe a `Dst` of the same size.
-                #[allow(unstable_name_collisions, clippy::multiple_unsafe_ops_per_block)]
-                unsafe {
-                    self.offset_delta_elems
-                        .unchecked_add(src_meta.unchecked_mul(self.elem_multiple))
+            impl CastParams {
+                const fn try_compute(src: &DstLayout, dst: &DstLayout) -> Option<CastParams> {
+                    if src.align.get() < dst.align.get() {
+                        return None;
+                    }
+
+                    let (src, dst) = if let (SizeInfo::SliceDst(src), SizeInfo::SliceDst(dst)) =
+                        (src.size_info, dst.size_info)
+                    {
+                        (src, dst)
+                    } else {
+                        return None;
+                    };
+
+                    let offset_delta = if let Some(od) = src.offset.checked_sub(dst.offset) {
+                        od
+                    } else {
+                        return None;
+                    };
+
+                    let dst_elem_size = if let Some(e) = NonZeroUsize::new(dst.elem_size) {
+                        e
+                    } else {
+                        return None;
+                    };
+
+                    // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
+                    // divide by zero.
+                    #[allow(clippy::arithmetic_side_effects)]
+                    let delta_mod_other_elem = offset_delta % dst_elem_size.get();
+
+                    // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
+                    // divide by zero.
+                    #[allow(clippy::arithmetic_side_effects)]
+                    let elem_remainder = src.elem_size % dst_elem_size.get();
+
+                    if delta_mod_other_elem != 0
+                        || src.elem_size < dst.elem_size
+                        || elem_remainder != 0
+                    {
+                        return None;
+                    }
+
+                    // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
+                    // divide by zero.
+                    #[allow(clippy::arithmetic_side_effects)]
+                    let offset_delta_elems = offset_delta / dst_elem_size.get();
+
+                    // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
+                    // divide by zero.
+                    #[allow(clippy::arithmetic_side_effects)]
+                    let elem_multiple = src.elem_size / dst_elem_size.get();
+
+                    // SAFETY: We checked above that `src.align >= dst.align`.
+                    Some(CastParams {
+                        // SAFETY: We checked above that this is an exact ratio.
+                        offset_delta_elems,
+                        // SAFETY: We checked above that this is an exact ratio.
+                        elem_multiple,
+                    })
+                }
+
+                /// # Safety
+                ///
+                /// `src_meta` describes a `Src` whose size is no larger than
+                /// `isize::MAX`.
+                ///
+                /// The returned metadata describes a `Dst` of the same size as
+                /// the original `Src`.
+                unsafe fn cast_metadata(self, src_meta: usize) -> usize {
+                    #[allow(unused)]
+                    use crate::util::polyfills::*;
+
+                    // SAFETY: `self` is a witness that the following equation
+                    // holds:
+                    //
+                    //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
+                    //
+                    // Since the caller promises that `src_meta` is valid `Src`
+                    // metadata, this math will not overflow, and the returned
+                    // value will describe a `Dst` of the same size.
+                    #[allow(unstable_name_collisions, clippy::multiple_unsafe_ops_per_block)]
+                    unsafe {
+                        self.offset_delta_elems
+                            .unchecked_add(src_meta.unchecked_mul(self.elem_multiple))
+                    }
                 }
             }
-        }
 
-        trait Params<Src: ?Sized> {
-            const CAST_PARAMS: CastParams;
-        }
+            trait Params<Src: ?Sized> {
+                const CAST_PARAMS: CastParams;
+            }
 
-        impl<Src, Dst> Params<Src> for Dst
-        where
-            Src: KnownLayout + ?Sized,
-            Dst: KnownLayout<PointerMetadata = usize> + ?Sized,
-        {
-            const CAST_PARAMS: CastParams =
-                match CastParams::try_compute(&Src::LAYOUT, &Dst::LAYOUT) {
-                    Some(params) => params,
-                    None => const_panic!(
+            impl<Src, Dst> Params<Src> for Dst
+            where
+                Src: KnownLayout + ?Sized,
+                Dst: KnownLayout<PointerMetadata = usize> + ?Sized,
+            {
+                const CAST_PARAMS: CastParams =
+                    match CastParams::try_compute(&Src::LAYOUT, &Dst::LAYOUT) {
+                        Some(params) => params,
+                        None => const_panic!(
                         "cannot `transmute_ref!` or `transmute_mut!` between incompatible types"
                     ),
-                };
+                    };
+            }
+
+            let src_meta = <Src as KnownLayout>::pointer_to_metadata(src.as_ptr());
+            let params = <Dst as Params<Src>>::CAST_PARAMS;
+
+            // SAFETY: `src: PtrInner` guarantees that `src`'s referent is zero
+            // bytes or lives in a single allocation, which means that it is no
+            // larger than `isize::MAX` bytes [1].
+            //
+            // [1] https://doc.rust-lang.org/1.92.0/std/ptr/index.html#allocation
+            let dst_meta = unsafe { params.cast_metadata(src_meta) };
+
+            <Dst as KnownLayout>::raw_from_ptr_len(src.as_non_null().cast(), dst_meta).as_ptr()
         }
-
-        let src_meta = <Src as KnownLayout>::pointer_to_metadata(src.as_non_null().as_ptr());
-        let params = <Dst as Params<Src>>::CAST_PARAMS;
-
-        // SAFETY: `src: PtrInner`, and so by invariant on `PtrInner`, `src`'s
-        // referent is no larger than `isize::MAX`.
-        let dst_meta = unsafe { params.cast_metadata(src_meta) };
-
-        let dst = <Dst as KnownLayout>::raw_from_ptr_len(src.as_non_null().cast(), dst_meta);
-
-        // SAFETY: By post-condition on `params.cast_metadata`, `dst` addresses
-        // the same number of bytes as `src`. Since `src: PtrInner`, `src` has
-        // provenance for its entire referent, which lives inside of a single
-        // allocation. Since `dst` has the same address as `src` and was
-        // constructed using provenance-preserving operations, it addresses a
-        // subset of those bytes, and has provenance for those bytes.
-        unsafe { PtrInner::new(dst) }
     }
 }
 
