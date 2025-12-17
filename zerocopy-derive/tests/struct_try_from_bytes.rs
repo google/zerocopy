@@ -78,7 +78,13 @@ fn two_bad() {
     //   the same bytes as `c`.
     // - The cast preserves provenance.
     // - Neither the input nor output types contain any `UnsafeCell`s.
-    let candidate = unsafe { candidate.cast_unsized_unchecked(|p| p.cast::<Two>()) };
+    let candidate = {
+        ::zerocopy::define_cast!(unsafe { CastToTwo = [u8] => Two });
+        unsafe {
+            candidate
+                .transmute_unchecked::<Two, ::zerocopy::pointer::invariant::Uninit, CastToTwo>()
+        }
+    };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
     let candidate = unsafe { candidate.assume_initialized() };
@@ -108,12 +114,11 @@ fn un_sized() {
     //   the same bytes as `c`.
     // - The cast preserves provenance.
     // - Neither the input nor output types contain any `UnsafeCell`s.
-    let candidate = unsafe {
-        candidate.cast_unsized_unchecked(|p| {
-            let ptr =
-                imp::core::ptr::NonNull::new_unchecked(p.as_non_null().as_ptr() as *mut Unsized);
-            ::zerocopy::pointer::PtrInner::new(ptr)
-        })
+    let candidate = {
+        ::zerocopy::define_cast!(unsafe { CastToUnsized = [u8] => Unsized });
+        unsafe {
+            candidate.transmute_unchecked::<Unsized, ::zerocopy::pointer::invariant::Uninit, CastToUnsized>()
+        }
     };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
@@ -171,8 +176,12 @@ fn test_maybe_from_bytes() {
     //   the same bytes as `c`.
     // - The cast preserves provenance.
     // - Neither the input nor output types contain any `UnsafeCell`s.
-    let candidate =
-        unsafe { candidate.cast_unsized_unchecked(|p| p.cast::<MaybeFromBytes<bool>>()) };
+    let candidate = {
+        ::zerocopy::define_cast!(unsafe { CastToMaybeFromBytes = [u8] => MaybeFromBytes<bool> });
+        unsafe {
+            candidate.transmute_unchecked::<MaybeFromBytes<bool>, ::zerocopy::pointer::invariant::Uninit, CastToMaybeFromBytes>()
+        }
+    };
 
     // SAFETY: `[u8]` consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
