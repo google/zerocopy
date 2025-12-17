@@ -22,7 +22,7 @@
 macro_rules! unsafe_impl {
     // Implement `$trait` for `$ty` with no bounds.
     ($(#[$attr:meta])* $ty:ty: $trait:ident $(; |$candidate:ident| $is_bit_valid:expr)?) => {{
-        crate::util::macros::__unsafe();
+        crate::util::macro_util::__unsafe();
 
         $(#[$attr])*
         // SAFETY: The caller promises that this is sound.
@@ -119,7 +119,7 @@ macro_rules! unsafe_impl {
         $($tyvar:ident $(: $(? $optbound:ident +)* + $($bound:ident +)* )?,)*
         => $trait:ident for $ty:ty $(; |$candidate:ident| $is_bit_valid:expr)?
     ) => {{
-        crate::util::macros::__unsafe();
+        crate::util::macro_util::__unsafe();
 
         $(#[$attr])*
         #[allow(non_local_definitions)]
@@ -487,7 +487,7 @@ macro_rules! unsafe_impl_known_layout {
     ($($tyvar:ident: ?Sized + KnownLayout =>)? #[repr($repr:ty)] $ty:ty) => {{
         use core::ptr::NonNull;
 
-        crate::util::macros::__unsafe();
+        crate::util::macro_util::__unsafe();
 
         #[allow(non_local_definitions)]
         // SAFETY: The caller promises that this is sound.
@@ -693,29 +693,28 @@ macro_rules! static_assert_dst_is_not_zst {
     }}
 }
 
-/// # Safety
-///
-/// The caller must ensure that the cast does not grow the size of the referent.
-/// Preserving or shrinking the size of the referent are both acceptable.
+// /// # Safety
+// ///
+// /// The caller must ensure that the cast does not grow the size of the referent.
+// /// Preserving or shrinking the size of the referent are both acceptable.
+// macro_rules! cast {
+//     ($p:expr) => {{
+//         let ptr: crate::pointer::PtrInner<'_, _> = $p;
+//         // TODO: Safety comment
+//         ptr.cast_unchecked(|raw| raw as *mut _)
+//     }};
+// }
+
 macro_rules! cast {
-    ($p:expr) => {{
-        let ptr: crate::pointer::PtrInner<'_, _> = $p;
-        let ptr = ptr.as_non_null();
-        let ptr = ptr.as_ptr();
-        #[allow(clippy::as_conversions)]
-        let ptr = ptr as *mut _;
-        #[allow(unused_unsafe)]
-        // SAFETY: `NonNull::as_ptr` returns a non-null pointer, so the argument
-        // to `NonNull::new_unchecked` is also non-null.
-        let ptr = unsafe { core::ptr::NonNull::new_unchecked(ptr) };
-        // SAFETY: The caller promises that the cast preserves or shrinks
-        // referent size. By invariant on `$p: PtrInner` (guaranteed by type
-        // annotation above), `$p` refers to a byte range entirely contained
-        // inside of a single allocation, has provenance for that whole byte
-        // range, and will not outlive the allocation. All of these conditions
-        // are preserved when preserving or shrinking referent size.
-        crate::pointer::PtrInner::new(ptr)
-    }};
+    ($dst:ty) => {
+        $crate::pointer::FnCast::new(|src| {
+            #[allow(clippy::as_conversions)]
+            return src as *mut $dst;
+        })
+    };
+    ($src:expr => $dst:ty) => {
+        $src.cast(cast!($dst))
+    };
 }
 
 /// Implements `TransmuteFrom` and `SizeEq` for `T` and `$wrapper<T>`.
@@ -726,7 +725,7 @@ macro_rules! cast {
 /// same size in the sense of `SizeEq`.
 macro_rules! unsafe_impl_for_transparent_wrapper {
     (T $(: ?$optbound:ident)? => $wrapper:ident<T>) => {{
-        crate::util::macros::__unsafe();
+        crate::util::macro_util::__unsafe();
 
         use crate::pointer::{TransmuteFrom, PtrInner, SizeEq, invariant::Valid};
 
@@ -741,7 +740,7 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
             #[inline(always)]
             fn cast_from_raw(t: PtrInner<'_, T>) -> PtrInner<'_, $wrapper<T>> {
                 // SAFETY: See previous safety comment.
-                unsafe { cast!(t) }
+                unsafe { cast!(t => $wrapper<T>) }
             }
         }
         // SAFETY: See previous safety comment.
@@ -749,7 +748,7 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
             #[inline(always)]
             fn cast_from_raw(t: PtrInner<'_, $wrapper<T>>) -> PtrInner<'_, T> {
                 // SAFETY: See previous safety comment.
-                unsafe { cast!(t) }
+                unsafe { cast!(t => _) }
             }
         }
     }};
@@ -815,7 +814,7 @@ macro_rules! impl_size_eq {
                     // cast is guaranteed to preserve address and referent size.
                     // It trivially preserves provenance.
                     #[allow(clippy::multiple_unsafe_ops_per_block)]
-                    unsafe { cast!(t) }
+                    unsafe { cast!(t => _) }
                 }
             }
             // SAFETY: See previous safety comment.
@@ -824,7 +823,7 @@ macro_rules! impl_size_eq {
                 fn cast_from_raw(u: PtrInner<'_, $u>) -> PtrInner<'_, $t> {
                     // SAFETY: See previous safety comment.
                     #[allow(clippy::multiple_unsafe_ops_per_block)]
-                    unsafe { cast!(u) }
+                    unsafe { cast!(u => _) }
                 }
             }
         };
@@ -844,7 +843,7 @@ macro_rules! impl_size_eq {
 /// types.
 macro_rules! unsafe_with_size_eq {
     (<$src:ident<$t:ident>, $dst:ident<$u:ident>> $blk:expr) => {{
-        crate::util::macros::__unsafe();
+        crate::util::macro_util::__unsafe();
 
         use crate::{KnownLayout, pointer::PtrInner};
 
@@ -895,12 +894,12 @@ macro_rules! unsafe_with_size_eq {
                 // SAFETY: By the preceding safety comment, this cast preserves
                 // referent size.
                 #[allow(clippy::multiple_unsafe_ops_per_block)]
-                let src: PtrInner<'_, T> = unsafe { cast!(src) };
+                let src: PtrInner<'_, T> = unsafe { cast!(src => _) };
                 let dst: PtrInner<'_, U> = crate::layout::cast_from_raw(src);
                 // SAFETY: By the preceding safety comment, this cast preserves
                 // referent size.
                 #[allow(clippy::multiple_unsafe_ops_per_block)]
-                unsafe { cast!(dst) }
+                unsafe { cast!(dst => _) }
             }
         }
 
@@ -915,7 +914,7 @@ macro_rules! unsafe_with_size_eq {
             #[allow(unused_unsafe)]
             // SAFETY: This call is never executed.
             #[allow(clippy::multiple_unsafe_ops_per_block)]
-            let ptr = unsafe { cast!(ptr) };
+            let ptr = unsafe { cast!(ptr => _) };
             let _ = <$dst<$u> as SizeEq<$src<$t>>>::cast_from_raw(ptr);
         }
 
@@ -940,9 +939,3 @@ macro_rules! unsafe_with_size_eq {
         $blk
     }};
 }
-
-/// A no-op `unsafe fn` for use in macro expansions.
-///
-/// Calling this function in a macro expansion ensures that the macro's caller
-/// must wrap the call in `unsafe { ... }`.
-pub(crate) const unsafe fn __unsafe() {}

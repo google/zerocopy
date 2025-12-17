@@ -170,32 +170,29 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
     where
         T: Sized,
     {
-        static_assert!(T, U => mem::size_of::<T>() >= mem::size_of::<U>());
-        // SAFETY: By the preceding assert, `U` is no larger than `T`, which is
-        // the size of `self`'s referent.
-        unsafe { self.cast() }
+        self.cast(CastSized::new())
     }
 
-    /// # Safety
-    ///
-    /// `U` must not be larger than the size of `self`'s referent.
-    #[must_use]
-    #[inline(always)]
-    pub unsafe fn cast<U>(self) -> PtrInner<'a, U> {
-        let ptr = self.as_non_null().cast::<U>();
+    // /// # Safety
+    // ///
+    // /// `U` must not be larger than the size of `self`'s referent.
+    // #[must_use]
+    // #[inline(always)]
+    // pub unsafe fn cast<U>(self) -> PtrInner<'a, U> {
+    //     let ptr = self.as_non_null().cast::<U>();
 
-        // SAFETY: The caller promises that `U` is no larger than `self`'s
-        // referent. Thus, `ptr` addresses a subset of the bytes addressed by
-        // `self`.
-        //
-        // 0. By invariant on `self`, if `self`'s referent is not zero sized,
-        //    then `self` has valid provenance for its referent, which is
-        //    entirely contained in some Rust allocation, `A`. Thus, the same
-        //    holds of `ptr`.
-        // 1. By invariant on `self`, if `self`'s referent is not zero sized,
-        //    then `A` is guaranteed to live for at least `'a`.
-        unsafe { PtrInner::new(ptr) }
-    }
+    //     // SAFETY: The caller promises that `U` is no larger than `self`'s
+    //     // referent. Thus, `ptr` addresses a subset of the bytes addressed by
+    //     // `self`.
+    //     //
+    //     // 0. By invariant on `self`, if `self`'s referent is not zero sized,
+    //     //    then `self` has valid provenance for its referent, which is
+    //     //    entirely contained in some Rust allocation, `A`. Thus, the same
+    //     //    holds of `ptr`.
+    //     // 1. By invariant on `self`, if `self`'s referent is not zero sized,
+    //     //    then `A` is guaranteed to live for at least `'a`.
+    //     unsafe { PtrInner::new(ptr) }
+    // }
 
     /// Projects a field.
     #[must_use]
@@ -206,7 +203,178 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
     {
         <T as HasField<F, VARIANT_ID, FIELD_ID>>::project(self)
     }
+
+    // /// Projects a pointer to a field of the referent, possibly performing a
+    // /// transmute at the same time.
+    // ///
+    // /// # Safety
+    // ///
+    // /// `cast` must be a provenance-preserving cast which preserves or shrinks
+    // /// the set of referent bytes.
+    // pub unsafe fn cast_unchecked<U: ?Sized>(
+    //     self,
+    //     cast: impl FnOnce(*mut T) -> *mut U,
+    // ) -> PtrInner<'a, U> {
+    //     let non_null = self.as_non_null();
+    //     let raw = non_null.as_ptr();
+
+    //     // TODO: Do we need to do the following?
+    //     // - Guarantee to the caller certain preconditions on `cast` that allow
+    //     //   the *implementation* of `cast` to be sound
+    //     // - Prove here that we uphold those preconditions
+    //     let projected_raw = cast(raw);
+
+    //     // SAFETY: `self`'s referent lives at a `NonNull` address, and is either
+    //     // zero-sized or lives in a Rust allocation. In either case, it does not
+    //     // wrap around the address space [1], and so none of the addresses
+    //     // contained in it or one-past-the-end of it are null.
+    //     //
+    //     // The caller promises that `cast` is a provenance-preserving cast which
+    //     // preserves or shrinks the set of referent bytes, so `projected_raw`
+    //     // references a subset of `self`'s referent, and so it cannot be null.
+    //     //
+    //     // [1] https://doc.rust-lang.org/1.92.0/std/ptr/index.html#allocation
+    //     let projected_non_null = unsafe { NonNull::new_unchecked(projected_raw) };
+
+    //     // SAFETY: As described in the preceding safety comment, `projected_raw`,
+    //     // and thus `projected_non_null`, addresses a subset of `self`'s
+    //     // referent. Thus, `projected_non_null` either:
+    //     // - Addresses zero bytes or,
+    //     // - Addresses a subset of the referent of `self`. In this case, `self`
+    //     //   has provenance for its referent, which lives in a Rust allocation.
+    //     //   Since `projected_non_null` was constructed using a sequence of
+    //     //   provenance-preserving operations, it also has provenance for its
+    //     //   referent and that referent lives in a Rust allocation. By invariant
+    //     //   on `self`, that allocation lives for `'a`.
+    //     unsafe { PtrInner::new(projected_non_null) }
+    // }
+
+    pub fn cast<C: Cast<T>>(self, cast: C) -> PtrInner<'a, C::Dst> {
+        let non_null = self.as_non_null();
+        let raw = non_null.as_ptr();
+
+        // SAFETY: By invariant on `self`, `raw`'s referent is zero-sized or
+        // lives in a single allocation.
+        let projected_raw = unsafe { cast.cast(raw) };
+
+        // SAFETY: `self`'s referent lives at a `NonNull` address, and is either
+        // zero-sized or lives in an allocation. In either case, it does not
+        // wrap around the address space [1], and so none of the addresses
+        // contained in it or one-past-the-end of it are null.
+        //
+        // By invariant on `C: Cast`, `C::cast` is a provenance-preserving cast
+        // which preserves or shrinks the set of referent bytes, so
+        // `projected_raw` references a subset of `self`'s referent, and so it
+        // cannot be null.
+        //
+        // [1] https://doc.rust-lang.org/1.92.0/std/ptr/index.html#allocation
+        let projected_non_null = unsafe { NonNull::new_unchecked(projected_raw) };
+
+        // SAFETY: As described in the preceding safety comment, `projected_raw`,
+        // and thus `projected_non_null`, addresses a subset of `self`'s
+        // referent. Thus, `projected_non_null` either:
+        // - Addresses zero bytes or,
+        // - Addresses a subset of the referent of `self`. In this case, `self`
+        //   has provenance for its referent, which lives in an allocation.
+        //   Since `projected_non_null` was constructed using a sequence of
+        //   provenance-preserving operations, it also has provenance for its
+        //   referent and that referent lives in an allocation. By invariant on
+        //   `self`, that allocation lives for `'a`.
+        unsafe { PtrInner::new(projected_non_null) }
+    }
 }
+
+// TODO: Migrate other casts to this:
+// - `Ptr`'s various cast methods
+// - `SizeEq`
+
+/// # Safety
+///
+/// `cast` must be a provenance-preserving cast which preserves or shrinks the
+/// set of referent bytes.
+pub unsafe trait Cast<Src: ?Sized> {
+    type Dst: ?Sized;
+
+    /// # Safety
+    ///
+    /// `src` must have provenance for its entire referent, which must be
+    /// zero-sized or live in a single allocation.
+    unsafe fn cast(self, src: *mut Src) -> *mut Self::Dst;
+}
+
+#[allow(missing_debug_implementations)]
+pub struct FnCast<F>(F);
+
+impl<F> FnCast<F> {
+    pub const unsafe fn new(f: F) -> Self {
+        Self(f)
+    }
+}
+
+unsafe impl<F, Src: ?Sized, Dst: ?Sized> Cast<Src> for FnCast<F>
+where
+    F: Fn(*mut Src) -> *mut Dst,
+{
+    type Dst = Dst;
+
+    unsafe fn cast(self, src: *mut Src) -> *mut Self::Dst {
+        (self.0)(src)
+    }
+}
+struct CastSized<Dst>(PhantomData<Dst>);
+
+impl<Dst> Default for CastSized<Dst> {
+    fn default() -> Self {
+        Self(PhantomData)
+    }
+}
+
+impl<Dst> CastSized<Dst> {
+    const fn new() -> Self {
+        Self(PhantomData)
+    }
+}
+
+// SAFETY: By the `static_assert!`, `Dst` is no larger than `Src`,
+// and `<*mut Src>::cast` is a provenance-preserving cast.
+unsafe impl<Src, Dst> Cast<Src> for CastSized<Dst> {
+    type Dst = Dst;
+
+    unsafe fn cast(self, src: *mut Src) -> *mut Self::Dst {
+        static_assert!(Src, Dst => mem::size_of::<Src>() >= mem::size_of::<Dst>());
+        src.cast::<Dst>()
+    }
+}
+
+/// Constructs a [`Cast`] which projects from a type to one of its fields.
+#[macro_export]
+#[doc(hidden)]
+macro_rules! project_cast {
+    ($src:ty => $field_name:tt) => {
+        $crate::pointer::__project_cast::<$src, _, _>(|src| {
+            $crate::util::macro_util::core_reexport::ptr::addr_of_mut!((*src).$field_name)
+        })
+    };
+}
+
+#[doc(hidden)]
+pub const unsafe fn __project_cast<Src: ?Sized, Dst: ?Sized, F>(
+    cast: F,
+) -> impl Cast<Src, Dst = Dst>
+where
+    F: Fn(*mut Src) -> *mut Dst,
+{
+    unsafe { FnCast::new(cast) }
+}
+
+//         $crate::pointer::inner::__project_ptr_inner_cast(ptr, |src| {
+//             let field_raw = ptr::addr_of_mut!((*src).$field_name);
+//             $(
+//                 #[allow(clippy::as_conversions)]
+//                 let field_raw = field_raw as *mut $field_ty;
+//             )?
+//             field_raw
+//         })
 
 #[allow(clippy::needless_lifetimes)]
 impl<'a, T> PtrInner<'a, T>
@@ -640,6 +808,110 @@ impl<'a> PtrInner<'a, [u8]> {
     }
 }
 
+// TODO: Maybe we could convert this to a `cast` method which accepts a callback
+// which performs the actual `addr_of_mut!` cast? This would let us:
+// - More cleanly solve the lifetime bounding issue
+// - Replace or simplify the `cast!` macro
+
+// /// Projects a pointer to a field of the referent, possibly performing a
+// /// transmute at the same time.
+// ///
+// /// # Safety
+// ///
+// /// If `$ptr: PtrInner<T>`, then:
+// /// - `T` must be a union or struct type
+// /// - `$field_name` must be a field of `T` of type `F`
+// /// - For all `f: *mut F`, `f as *mut $field_ty` must preserve or shrink
+// ///   the size of the referent
+// #[doc(hidden)]
+// #[macro_export]
+// macro_rules! project_ptr_inner {
+//     ($ptr:expr, $field_name:tt $(: $field_ty:ty)?) => {{
+//         use $crate::{pointer::PtrInner, util::macro_util::core_reexport::ptr};
+//         let ptr: PtrInner<'_, _> = $ptr;
+
+//         $crate::pointer::inner::__project_ptr_inner_cast(ptr, |src| {
+//             let field_raw = ptr::addr_of_mut!((*src).$field_name);
+//             $(
+//                 #[allow(clippy::as_conversions)]
+//                 let field_raw = field_raw as *mut $field_ty;
+//             )?
+//             field_raw
+//         })
+
+//         // $crate::util::macro_util::__unsafe();
+
+//         // let ptr: PtrInner<'_, _> = $ptr;
+//         // if false {
+//         //     // Thsi branch, though never taken, guarantees that the input and
+//         //     // output `PtrInner`s have the same lifetime.
+//         //     let project = |_: PtrInner<'_, _>| -> PtrInner<'_, _> { loop {} };
+//         //     project(ptr)
+//         // } else {
+//         //     let non_null = ptr.as_non_null();
+//         //     let raw = non_null.as_ptr();
+
+//         //     // SAFETY: The caller promises that `$field_name` is a struct or union
+//         //     // field of `$ptr`'s referent, which guarantees that `field_raw` is
+//         //     // in-bounds of `$ptr`'s referent.
+//         //     #[allow(unused_unsafe)]
+//         //     let field_raw = unsafe { ptr::addr_of_mut!((*raw).$field_name) };
+//         //     let field_raw_transmuted = field_raw;
+//         //     $(
+//         //         #[allow(clippy::as_conversions)]
+//         //         let field_raw_transmuted = field_raw_transmuted as *mut $field_ty;
+//         //     )?
+
+//         //     // LEMMA: `field_raw_transmuted` references a subset of the referent of
+//         //     // `$ptr`.
+//         //     //
+//         //     // PROOF: The caller promises that `$field_name` is a struct or union
+//         //     // field of `$ptr`'s referent type. Thus, `field_raw` addresses a
+//         //     // subset of `$ptr`'s referent, and has type `*mut F` for that field
+//         //     // type. The caller further promises that a `*mut F as *mut $field_ty`
+//         //     // cast preserves or shrinks referent size, and so
+//         //     // `field_raw_transmuted` *also* addresses a subset of `$ptr`'s
+//         //     // referent.
+
+//         //     // SAFETY: `$ptr`'s referent lives at a `NonNull` address, and is either
+//         //     // zero-sized or lives in a Rust allocation. In either case, it does not
+//         //     // wrap around the address space [1], and so none of the addresses
+//         //     // contained in it or one-past-the-end of it are null.
+//         //     //
+//         //     // By the preceding lemma, `field_raw_transmuted` references a subset of
+//         //     // `$ptr`'s referent, and so it cannot be null.
+//         //     //
+//         //     // [1] https://doc.rust-lang.org/1.92.0/std/ptr/index.html#allocation
+//         //     #[allow(unused_unsafe)]
+//         //     let field_non_null = unsafe { ptr::NonNull::new_unchecked(field_raw_transmuted) };
+
+//         //     // SAFETY: By the preceding lemma, `field_non_null` either:
+//         //     // - Addresses zero bytes or,
+//         //     // - Addresses a subset of the referent of `$ptr`. In this case, `$ptr`
+//         //     //   has provenance for its referent, which lives in a Rust allocation.
+//         //     //   Since `field_non_null` was constructed using a sequence of
+//         //     //   provenance-preserving operations, it also has provenance for its
+//         //     //   referent and (by the lemma) that referent lives in a Rust
+//         //     //   allocation. That allocation lives for `'a`, as guaranteed by
+//         //     //   the `if` branch above.
+//         //     #[allow(unused_unsafe)]
+//         //     unsafe { PtrInner::new(field_non_null) }
+//         // }
+//     }};
+// }
+
+// #[doc(hidden)]
+// pub unsafe fn __project_ptr_inner_cast<Src: ?Sized, Dst: ?Sized, F>(
+//     ptr: PtrInner<'_, Src>,
+//     cast: F,
+// ) -> PtrInner<'_, Dst>
+// where
+//     F: Fn(*mut Src) -> *mut Dst,
+// {
+//     let cast = unsafe { FnCast::new(cast) };
+//     ptr.cast_foo(cast)
+// }
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -763,4 +1035,165 @@ mod tests {
         let p2 = p.clone();
         assert_eq!(p.as_non_null(), p2.as_non_null());
     }
+
+    // #[allow(clippy::undocumented_unsafe_blocks)]
+    // mod project_ptr_inner_tests {
+    //     use super::*;
+
+    //     #[test]
+    //     fn test_struct_sized_field() {
+    //         #[repr(C)]
+    //         struct Foo {
+    //             a: u8,
+    //             b: u16,
+    //             c: u32,
+    //         }
+
+    //         let mut foo = Foo { a: 1, b: 2, c: 3 };
+    //         let ptr = PtrInner::from_mut(&mut foo);
+
+    //         // No annotation
+    //         let a_ptr = unsafe { project_ptr_inner!(ptr, a) };
+    //         let b_ptr = unsafe { project_ptr_inner!(ptr, b) };
+    //         let c_ptr = unsafe { project_ptr_inner!(ptr, c) };
+
+    //         unsafe { assert_eq!(a_ptr.as_non_null().as_ref(), &1) };
+    //         unsafe { assert_eq!(b_ptr.as_non_null().as_ref(), &2) };
+    //         unsafe { assert_eq!(c_ptr.as_non_null().as_ref(), &3) };
+
+    //         // With annotation (correct)
+    //         let a_ptr = unsafe { project_ptr_inner!(ptr, a: u8) };
+    //         let b_ptr = unsafe { project_ptr_inner!(ptr, b: u16) };
+    //         let c_ptr = unsafe { project_ptr_inner!(ptr, c: u32) };
+
+    //         unsafe { assert_eq!(a_ptr.as_non_null().as_ref(), &1) };
+    //         unsafe { assert_eq!(b_ptr.as_non_null().as_ref(), &2) };
+    //         unsafe { assert_eq!(c_ptr.as_non_null().as_ref(), &3) };
+
+    //         // With annotation (compatible transmute: u32 -> [u8; 4])
+    //         let c_bytes_ptr = unsafe { project_ptr_inner!(ptr, c: [u8; 4]) };
+    //         let expect = if cfg!(target_endian = "little") { [3, 0, 0, 0] } else { [0, 0, 0, 3] };
+    //         unsafe { assert_eq!(&*c_bytes_ptr.as_non_null().as_ptr(), &expect) };
+
+    //         // With annotation (shrinking transmute: u32 -> [u8; 2])
+    //         let c_short_ptr = unsafe { project_ptr_inner!(ptr, c: [u8; 2]) };
+    //         let expect_short = if cfg!(target_endian = "little") { [3, 0] } else { [0, 0] };
+    //         unsafe { assert_eq!(&*c_short_ptr.as_non_null().as_ptr(), &expect_short) };
+    //     }
+
+    //     #[test]
+    //     fn test_struct_unsized_field() {
+    //         #[repr(C)]
+    //         struct Foo {
+    //             a: u8,
+    //             b: [u8],
+    //         }
+
+    //         let mut buf = [1u8, 2, 3, 4, 5];
+    //         let len = buf.len() - 1;
+    //         let ptr = buf.as_mut_ptr();
+    //         // Synthesize fat pointer
+    //         #[allow(clippy::as_conversions)]
+    //         let foo_ptr: *mut Foo = core::ptr::slice_from_raw_parts_mut(ptr, len) as *mut Foo;
+    //         #[allow(clippy::multiple_unsafe_ops_per_block)]
+    //         let ptr = unsafe { PtrInner::new(NonNull::new_unchecked(foo_ptr)) };
+
+    //         // No annotation (DST field preservation)
+    //         let b_ptr = unsafe { project_ptr_inner!(ptr, b) };
+    //         let b_ref = unsafe { b_ptr.as_non_null().as_ref() };
+    //         assert_eq!(b_ref.len(), 4);
+    //         assert_eq!(b_ref, &[2, 3, 4, 5]);
+
+    //         // With annotation (compatible transmute: [u8] -> [u8])
+    //         let b_ptr = unsafe { project_ptr_inner!(ptr, b: [u8]) };
+    //         unsafe { assert_eq!(b_ptr.as_non_null().as_ref(), &[2, 3, 4, 5]) };
+
+    //         // With annotation (shrinking transmute: [u8] -> [()])
+    //         let b_prefix_ptr = unsafe { project_ptr_inner!(ptr, b: [()]) };
+    //         unsafe { assert_eq!(b_prefix_ptr.as_non_null().as_ref(), &[(), (), (), ()]) };
+    //     }
+
+    //     #[test]
+    //     fn test_struct_zst_field() {
+    //         #[repr(C)]
+    //         struct Foo {
+    //             a: u8,
+    //             b: (),
+    //             c: PhantomData<u64>,
+    //         }
+
+    //         let mut foo = Foo { a: 1, b: (), c: PhantomData };
+    //         let ptr = PtrInner::from_mut(&mut foo);
+
+    //         let b_ptr = unsafe { project_ptr_inner!(ptr, b) };
+    //         let c_ptr = unsafe { project_ptr_inner!(ptr, c) };
+
+    //         unsafe { assert_eq!(b_ptr.as_non_null().as_ref(), &()) };
+    //         unsafe { assert_eq!(c_ptr.as_non_null().as_ref(), &PhantomData) };
+    //     }
+
+    //     #[test]
+    //     fn test_zst_struct() {
+    //         #[repr(C)]
+    //         struct Foo {
+    //             a: (),
+    //             b: [u8; 0],
+    //         }
+    //         let mut foo = Foo { a: (), b: [] };
+    //         let ptr = PtrInner::from_mut(&mut foo);
+
+    //         let a_ptr = unsafe { project_ptr_inner!(ptr, a) };
+    //         let b_ptr = unsafe { project_ptr_inner!(ptr, b) };
+
+    //         unsafe { assert_eq!(a_ptr.as_non_null().as_ref(), &()) };
+    //         unsafe { assert_eq!(b_ptr.as_non_null().as_ref(), &[]) };
+    //     }
+
+    //     #[test]
+    //     fn test_union() {
+    //         #[repr(C)]
+    //         union Bar {
+    //             a: u32,
+    //             b: u16,
+    //         }
+
+    //         let mut bar = Bar { a: 0xDEADBEEF };
+    //         let ptr = PtrInner::from_mut(&mut bar);
+
+    //         let a_ptr = unsafe { project_ptr_inner!(ptr, a) };
+    //         let b_ptr = unsafe { project_ptr_inner!(ptr, b) };
+
+    //         unsafe { assert_eq!(a_ptr.as_non_null().as_ref(), &0xDEADBEEF) };
+    //         let expect_b = if cfg!(target_endian = "little") { 0xBEEF } else { 0xDEAD };
+    //         unsafe { assert_eq!(b_ptr.as_non_null().as_ref(), &expect_b) };
+    //     }
+    //     #[test]
+    //     fn test_tuple_struct() {
+    //         let mut x = (42u8, 123u16);
+    //         let ptr = PtrInner::from_mut(&mut x);
+
+    //         let field_ptr = unsafe { project_ptr_inner!(ptr, 0) };
+    //         unsafe { assert_eq!(field_ptr.as_non_null().as_ref(), &42) };
+
+    //         let field_ptr = unsafe { project_ptr_inner!(ptr, 1) };
+    //         unsafe { assert_eq!(field_ptr.as_non_null().as_ref(), &123) };
+    //     }
+
+    //     #[test]
+    //     fn test_closure_inference() {
+    //         struct Wrapper(u8);
+
+    //         fn shim<'a, T, U, F>(ptr: PtrInner<'a, T>, f: F) -> PtrInner<'a, U>
+    //         where
+    //             F: FnOnce(PtrInner<'a, T>) -> PtrInner<'a, U>,
+    //         {
+    //             f(ptr)
+    //         }
+
+    //         let mut w = Wrapper(42);
+    //         let ptr = PtrInner::from_mut(&mut w);
+    //         let p2 = shim(ptr, |p| unsafe { project_ptr_inner!(p, 0) });
+    //         unsafe { assert_eq!(p2.as_non_null().as_ref(), &42) };
+    //     }
+    // }
 }

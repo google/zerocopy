@@ -635,7 +635,7 @@ where
     //   `Src`.
     // - `p as *mut Dst` is a provenance-preserving cast
     #[allow(clippy::multiple_unsafe_ops_per_block)]
-    let c_ptr = unsafe { src.cast_unsized(|p| cast!(p)) };
+    let c_ptr = unsafe { src.cast_unsized(|p| cast!(p => _)) };
 
     match c_ptr.try_into_valid() {
         Ok(ptr) => Ok(ptr),
@@ -649,7 +649,7 @@ where
             //   to the size of `Src`.
             // - `p as *mut Src` is a provenance-preserving cast
             #[allow(clippy::multiple_unsafe_ops_per_block)]
-            let ptr = unsafe { ptr.cast_unsized(|p| cast!(p)) };
+            let ptr = unsafe { ptr.cast_unsized(|p| cast!(p => _)) };
             // SAFETY: `ptr` is `src`, and has the same alignment invariant.
             let ptr = unsafe { ptr.assume_alignment::<I::Alignment>() };
             // SAFETY: `ptr` is `src` and has the same validity invariant.
@@ -981,6 +981,13 @@ where
 pub const fn must_use<T>(t: T) -> T {
     t
 }
+
+/// A no-op `unsafe fn` for use in macro expansions.
+///
+/// Calling this function in a macro expansion ensures that the macro's caller
+/// must wrap the call in `unsafe { ... }`.
+#[inline(always)]
+pub const unsafe fn __unsafe() {}
 
 // NOTE: We can't change this to a `pub use core as core_reexport` until [1] is
 // fixed or we update to a semver-breaking version (as of this writing, 0.8.0)
