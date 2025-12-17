@@ -437,21 +437,13 @@ fn test_from_bytes_union() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = u8;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = slf.as_non_null().as_ptr();
-                            let field = unsafe {
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
                                 ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
                                     (* slf).a
                                 )
-                            };
-                            let ptr = unsafe {
-                                ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                    field,
-                                )
-                            };
-                            unsafe { ::zerocopy::PtrInner::new(ptr) }
+
+                            }
                         }
                     }
                 };
@@ -628,948 +620,255 @@ fn test_try_from_bytes_enum() {
                 TupleLike(bool, Y, PhantomData<&'a [(X, Y); N]>),
             }
         } expands to {
-            #[allow(deprecated, non_local_definitions)]
-            #[automatically_derived]
-            unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
-            for ComplexWithGenerics<'a, { N }, X, Y>
+    #[allow(deprecated, non_local_definitions)]
+    #[automatically_derived]
+    unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
+    for ComplexWithGenerics<'a, { N }, X, Y>
+    where
+        X: Deref<Target = &'a [(X, Y); N]>,
+        u8: ::zerocopy::TryFromBytes,
+        X: ::zerocopy::TryFromBytes,
+        X::Target: ::zerocopy::TryFromBytes,
+        Y::Target: ::zerocopy::TryFromBytes,
+        [(X, Y); N]: ::zerocopy::TryFromBytes,
+        bool: ::zerocopy::TryFromBytes,
+        Y: ::zerocopy::TryFromBytes,
+        PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
+    {
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+        fn is_bit_valid<___ZerocopyAliasing>(
+            mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>,
+        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+        where
+            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+        {
+            use ::zerocopy::util::macro_util::core_reexport;
+            #[repr(u8)]
+            #[allow(dead_code, non_camel_case_types)]
+            enum ___ZerocopyTag {
+                UnitLike,
+                StructLike,
+                TupleLike,
+            }
+            unsafe impl ::zerocopy::Immutable for ___ZerocopyTag {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+            }
+            type ___ZerocopyTagPrimitive = ::zerocopy::util::macro_util::SizeToTag<
+                { core_reexport::mem::size_of::<___ZerocopyTag>() },
+            >;
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::pointer::InvariantsEq<___ZerocopyTag>
+            for ComplexWithGenerics<'a, N, X, Y>
             where
                 X: Deref<Target = &'a [(X, Y); N]>,
-                u8: ::zerocopy::TryFromBytes,
-                X: ::zerocopy::TryFromBytes,
-                X::Target: ::zerocopy::TryFromBytes,
-                Y::Target: ::zerocopy::TryFromBytes,
-                [(X, Y); N]: ::zerocopy::TryFromBytes,
-                bool: ::zerocopy::TryFromBytes,
-                Y: ::zerocopy::TryFromBytes,
-                PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
-            {
-                fn only_derive_is_allowed_to_implement_this_trait() {}
-                fn is_bit_valid<___ZerocopyAliasing>(
-                    mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>,
-                ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+            {}
+            #[allow(non_upper_case_globals)]
+            const ___ZEROCOPY_TAG_UnitLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::UnitLike
+                as ___ZerocopyTagPrimitive;
+            #[allow(non_upper_case_globals)]
+            const ___ZEROCOPY_TAG_StructLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::StructLike
+                as ___ZerocopyTagPrimitive;
+            #[allow(non_upper_case_globals)]
+            const ___ZEROCOPY_TAG_TupleLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::TupleLike
+                as ___ZerocopyTagPrimitive;
+            type ___ZerocopyOuterTag = ();
+            type ___ZerocopyInnerTag = ___ZerocopyTag;
+            #[repr(C)]
+            #[allow(non_snake_case)]
+            struct ___ZerocopyVariantStruct_StructLike<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            >(
+                core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
+                u8,
+                X,
+                X::Target,
+                Y::Target,
+                [(X, Y); N],
+                core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
+            )
+            where
+                X: Deref<Target = &'a [(X, Y); N]>;
+            const _: () = {
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::TryFromBytes
+                for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                 where
-                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                    core_reexport::mem::MaybeUninit<
+                        ___ZerocopyInnerTag,
+                    >: ::zerocopy::TryFromBytes,
+                    u8: ::zerocopy::TryFromBytes,
+                    X: ::zerocopy::TryFromBytes,
+                    X::Target: ::zerocopy::TryFromBytes,
+                    Y::Target: ::zerocopy::TryFromBytes,
+                    [(X, Y); N]: ::zerocopy::TryFromBytes,
+                    core_reexport::marker::PhantomData<
+                        ComplexWithGenerics<'a, N, X, Y>,
+                    >: ::zerocopy::TryFromBytes,
                 {
-                    use ::zerocopy::util::macro_util::core_reexport;
-                    #[repr(u8)]
-                    #[allow(dead_code, non_camel_case_types)]
-                    enum ___ZerocopyTag {
-                        UnitLike,
-                        StructLike,
-                        TupleLike,
-                    }
-                    type ___ZerocopyTagPrimitive = ::zerocopy::util::macro_util::SizeToTag<
-                        { core_reexport::mem::size_of::<___ZerocopyTag>() },
-                    >;
-                    #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_UnitLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::UnitLike
-                        as ___ZerocopyTagPrimitive;
-                    #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_StructLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::StructLike
-                        as ___ZerocopyTagPrimitive;
-                    #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_TupleLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::TupleLike
-                        as ___ZerocopyTagPrimitive;
-                    type ___ZerocopyOuterTag = ();
-                    type ___ZerocopyInnerTag = ___ZerocopyTag;
-                    #[repr(C)]
-                    #[allow(non_snake_case)]
-                    struct ___ZerocopyVariantStruct_StructLike<
-                        'a: 'static,
-                        const N: usize,
-                        X,
-                        Y: Deref,
-                    >(
-                        core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
-                        u8,
-                        X,
-                        X::Target,
-                        Y::Target,
-                        [(X, Y); N],
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
-                    )
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    fn is_bit_valid<___ZerocopyAliasing>(
+                        mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                     where
-                        X: Deref<Target = &'a [(X, Y); N]>;
-                    const _: () = {
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::TryFromBytes
-                        for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                            core_reexport::mem::MaybeUninit<
-                                ___ZerocopyInnerTag,
-                            >: ::zerocopy::TryFromBytes,
-                            u8: ::zerocopy::TryFromBytes,
-                            X: ::zerocopy::TryFromBytes,
-                            X::Target: ::zerocopy::TryFromBytes,
-                            Y::Target: ::zerocopy::TryFromBytes,
-                            [(X, Y); N]: ::zerocopy::TryFromBytes,
-                            core_reexport::marker::PhantomData<
-                                ComplexWithGenerics<'a, N, X, Y>,
-                            >: ::zerocopy::TryFromBytes,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            fn is_bit_valid<___ZerocopyAliasing>(
-                                mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-                            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
-                            where
-                                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
-                            {
-                                use ::zerocopy::util::macro_util::core_reexport;
-                                use ::zerocopy::pointer::PtrInner;
-                                true
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
+                        ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                    {
+                        use ::zerocopy::util::macro_util::core_reexport;
+                        use ::zerocopy::pointer::PtrInner;
+                        true
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(0) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::mem::MaybeUninit<
-                                            ___ZerocopyInnerTag,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(1) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(0) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <core_reexport::mem::MaybeUninit<
+                                    ___ZerocopyInnerTag,
+                                > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(2) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <X as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(3) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(1) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(4) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(5) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <[(
-                                            X,
-                                            Y,
-                                        ); N] as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(2) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <X as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(6) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::marker::PhantomData<
-                                            ComplexWithGenerics<'a, N, X, Y>,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(3) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
                             }
-                        }
-                        #[allow(non_camel_case_types)]
-                        const _: () = {
-                            enum ẕ0 {}
-                            enum ẕ1 {}
-                            enum ẕ2 {}
-                            enum ẕ3 {}
-                            enum ẕ4 {}
-                            enum ẕ5 {}
-                            enum ẕ6 {}
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ0,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(0) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).0
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(4) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
                             }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ1,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(1) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = u8;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).1
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(5) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <[(
+                                    X,
+                                    Y,
+                                ); N] as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
                             }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ2,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(2) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = X;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).2
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ3,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(3) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = X::Target;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).3
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ4,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(4) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = Y::Target;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).4
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ5,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(5) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = [(X, Y); N];
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).5
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ6,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(6) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = core_reexport::marker::PhantomData<
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(6) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <core_reexport::marker::PhantomData<
                                     ComplexWithGenerics<'a, N, X, Y>,
-                                >;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).6
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
+                                > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             }
-                        };
-                    };
-                    #[repr(C)]
-                    #[allow(non_snake_case)]
-                    struct ___ZerocopyVariantStruct_TupleLike<
-                        'a: 'static,
-                        const N: usize,
-                        X,
-                        Y: Deref,
-                    >(
-                        core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
-                        bool,
-                        Y,
-                        PhantomData<&'a [(X, Y); N]>,
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
-                    )
-                    where
-                        X: Deref<Target = &'a [(X, Y); N]>;
-                    const _: () = {
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::TryFromBytes
-                        for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                            core_reexport::mem::MaybeUninit<
-                                ___ZerocopyInnerTag,
-                            >: ::zerocopy::TryFromBytes,
-                            bool: ::zerocopy::TryFromBytes,
-                            Y: ::zerocopy::TryFromBytes,
-                            PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
-                            core_reexport::marker::PhantomData<
-                                ComplexWithGenerics<'a, N, X, Y>,
-                            >: ::zerocopy::TryFromBytes,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            fn is_bit_valid<___ZerocopyAliasing>(
-                                mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-                            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
-                            where
-                                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
-                            {
-                                use ::zerocopy::util::macro_util::core_reexport;
-                                use ::zerocopy::pointer::PtrInner;
-                                true
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(0) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::mem::MaybeUninit<
-                                            ___ZerocopyInnerTag,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(1) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <bool as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(2) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <Y as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(3) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <PhantomData<
-                                            &'a [(X, Y); N],
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(4) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::marker::PhantomData<
-                                            ComplexWithGenerics<'a, N, X, Y>,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                            }
-                        }
-                        #[allow(non_camel_case_types)]
-                        const _: () = {
-                            enum ẕ0 {}
-                            enum ẕ1 {}
-                            enum ẕ2 {}
-                            enum ẕ3 {}
-                            enum ẕ4 {}
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ0,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(0) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).0
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ1,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(1) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = bool;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).1
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ2,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(2) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = Y;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).2
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ3,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(3) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = PhantomData<&'a [(X, Y); N]>;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).3
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ4,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(4) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = core_reexport::marker::PhantomData<
-                                    ComplexWithGenerics<'a, N, X, Y>,
-                                >;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).4
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                        };
-                    };
-                    #[repr(C)]
-                    #[allow(non_snake_case)]
-                    union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref> {
-                        __field_StructLike: core_reexport::mem::ManuallyDrop<
-                            ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
-                        >,
-                        __field_TupleLike: core_reexport::mem::ManuallyDrop<
-                            ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
-                        >,
-                        __nonempty: (),
                     }
-                    #[allow(non_camel_case_types)]
-                    const _: () = {
-                        enum ẕ__field_StructLike {}
-                        enum ẕ__field_TupleLike {}
-                        enum ẕ__nonempty {}
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::HasField<
-                            ẕ__field_StructLike,
-                            { ::zerocopy::UNION_VARIANT_ID },
-                            { ::zerocopy::ident_id!(__field_StructLike) },
-                        > for ___ZerocopyVariants<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = core_reexport::mem::ManuallyDrop<
-                                ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
-                            >;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::PtrInner<'_, Self>,
-                            ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).__field_StructLike
-                                    )
-                                };
-                                let ptr = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                        field,
-                                    )
-                                };
-                                unsafe { ::zerocopy::PtrInner::new(ptr) }
-                            }
-                        }
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::HasField<
-                            ẕ__field_TupleLike,
-                            { ::zerocopy::UNION_VARIANT_ID },
-                            { ::zerocopy::ident_id!(__field_TupleLike) },
-                        > for ___ZerocopyVariants<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = core_reexport::mem::ManuallyDrop<
-                                ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
-                            >;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::PtrInner<'_, Self>,
-                            ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).__field_TupleLike
-                                    )
-                                };
-                                let ptr = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                        field,
-                                    )
-                                };
-                                unsafe { ::zerocopy::PtrInner::new(ptr) }
-                            }
-                        }
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::HasField<
-                            ẕ__nonempty,
-                            { ::zerocopy::UNION_VARIANT_ID },
-                            { ::zerocopy::ident_id!(__nonempty) },
-                        > for ___ZerocopyVariants<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = ();
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::PtrInner<'_, Self>,
-                            ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).__nonempty
-                                    )
-                                };
-                                let ptr = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                        field,
-                                    )
-                                };
-                                unsafe { ::zerocopy::PtrInner::new(ptr) }
-                            }
-                        }
-                    };
-                    #[repr(C)]
-                    struct ___ZerocopyRawEnum<'a: 'static, const N: usize, X, Y: Deref> {
-                        tag: ___ZerocopyOuterTag,
-                        variants: ___ZerocopyVariants<'a, N, X, Y>,
-                    }
-                    #[allow(non_camel_case_types)]
-                    const _: () = {
-                        enum ẕtag {}
-                        enum ẕvariants {}
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::HasField<
-                            ẕtag,
-                            { ::zerocopy::STRUCT_VARIANT_ID },
-                            { ::zerocopy::ident_id!(tag) },
-                        > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = ___ZerocopyOuterTag;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::PtrInner<'_, Self>,
-                            ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).tag
-                                    )
-                                };
-                                let ptr = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                        field,
-                                    )
-                                };
-                                unsafe { ::zerocopy::PtrInner::new(ptr) }
-                            }
-                        }
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::HasField<
-                            ẕvariants,
-                            { ::zerocopy::STRUCT_VARIANT_ID },
-                            { ::zerocopy::ident_id!(variants) },
-                        > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = ___ZerocopyVariants<'a, N, X, Y>;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::PtrInner<'_, Self>,
-                            ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).variants
-                                    )
-                                };
-                                let ptr = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                        field,
-                                    )
-                                };
-                                unsafe { ::zerocopy::PtrInner::new(ptr) }
-                            }
-                        }
-                    };
+                }
+                #[allow(non_camel_case_types)]
+                const _: () = {
+                    enum ẕ0 {}
+                    enum ẕ1 {}
+                    enum ẕ2 {}
+                    enum ẕ3 {}
+                    enum ẕ4 {}
+                    enum ẕ5 {}
+                    enum ẕ6 {}
                     #[allow(deprecated, non_local_definitions)]
                     #[automatically_derived]
                     unsafe impl<
@@ -1578,24 +877,48 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(StructLike) },
-                        { ::zerocopy::ident_id!(a) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ0,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(0) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
+                        #[inline(always)]
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).0
+                                )
+                            }
+                        }
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        ẕ1,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = u8;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).1
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1606,24 +929,22 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(StructLike) },
-                        { ::zerocopy::ident_id!(b) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ2,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = X;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).2
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1634,24 +955,22 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(StructLike) },
-                        { ::zerocopy::ident_id!(c) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ3,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = X::Target;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).3
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1662,24 +981,22 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(StructLike) },
-                        { ::zerocopy::ident_id!(d) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ4,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = Y::Target;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(4) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).4
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1690,24 +1007,22 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(StructLike) },
-                        { ::zerocopy::ident_id!(e) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ5,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(5) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = [(X, Y); N];
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(5) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).5
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1718,24 +1033,236 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(TupleLike) },
+                        ẕ6,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(6) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = core_reexport::marker::PhantomData<
+                            ComplexWithGenerics<'a, N, X, Y>,
+                        >;
+                        #[inline(always)]
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).6
+                                )
+                            }
+                        }
+                    }
+                };
+            };
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::pointer::InvariantsEq<
+                ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+            > for ___ZerocopyVariants<'a, N, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {}
+            #[repr(C)]
+            #[allow(non_snake_case)]
+            struct ___ZerocopyVariantStruct_TupleLike<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            >(
+                core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
+                bool,
+                Y,
+                PhantomData<&'a [(X, Y); N]>,
+                core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
+            )
+            where
+                X: Deref<Target = &'a [(X, Y); N]>;
+            const _: () = {
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::TryFromBytes
+                for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                    core_reexport::mem::MaybeUninit<
+                        ___ZerocopyInnerTag,
+                    >: ::zerocopy::TryFromBytes,
+                    bool: ::zerocopy::TryFromBytes,
+                    Y: ::zerocopy::TryFromBytes,
+                    PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
+                    core_reexport::marker::PhantomData<
+                        ComplexWithGenerics<'a, N, X, Y>,
+                    >: ::zerocopy::TryFromBytes,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    fn is_bit_valid<___ZerocopyAliasing>(
+                        mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                    where
+                        ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                    {
+                        use ::zerocopy::util::macro_util::core_reexport;
+                        use ::zerocopy::pointer::PtrInner;
+                        true
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(0) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <core_reexport::mem::MaybeUninit<
+                                    ___ZerocopyInnerTag,
+                                > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(1) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <bool as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(2) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <Y as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(3) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <PhantomData<
+                                    &'a [(X, Y); N],
+                                > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(4) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <core_reexport::marker::PhantomData<
+                                    ComplexWithGenerics<'a, N, X, Y>,
+                                > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            }
+                    }
+                }
+                #[allow(non_camel_case_types)]
+                const _: () = {
+                    enum ẕ0 {}
+                    enum ẕ1 {}
+                    enum ẕ2 {}
+                    enum ẕ3 {}
+                    enum ẕ4 {}
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        ẕ0,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(0) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
+                        #[inline(always)]
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).0
+                                )
+                            }
+                        }
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        ẕ1,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = bool;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).1
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1746,24 +1273,22 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(TupleLike) },
-                        { ::zerocopy::ident_id!(1) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ2,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = Y;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).2
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1774,103 +1299,665 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(TupleLike) },
-                        { ::zerocopy::ident_id!(2) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ3,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = PhantomData<&'a [(X, Y); N]>;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).3
+                                )
+                            }
                         }
                     }
-                    let tag = {
-                        let tag_ptr = unsafe {
-                            candidate
-                                .reborrow()
-                                .cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| {
-                                    p.cast_sized::<___ZerocopyTagPrimitive>()
-                                })
-                        };
-                        let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                        tag_ptr
-                            .recall_validity::<_, (_, (_, _))>()
-                            .read_unaligned::<::zerocopy::BecauseImmutable>()
-                    };
-                    let raw_enum = unsafe {
-                        candidate
-                            .cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| {
-                                p.cast_sized::<___ZerocopyRawEnum<'a, N, X, Y>>()
-                            })
-                    };
-                    let raw_enum = unsafe { raw_enum.assume_initialized() };
-                    let project = ::zerocopy::pointer::PtrInner::project::<
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        ẕ4,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = core_reexport::marker::PhantomData<
+                            ComplexWithGenerics<'a, N, X, Y>,
+                        >;
+                        #[inline(always)]
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).4
+                                )
+                            }
+                        }
+                    }
+                };
+            };
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::pointer::InvariantsEq<
+                ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+            > for ___ZerocopyVariants<'a, N, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {}
+            #[repr(C)]
+            #[allow(non_snake_case)]
+            union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref> {
+                __field_StructLike: core_reexport::mem::ManuallyDrop<
+                    ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                >,
+                __field_TupleLike: core_reexport::mem::ManuallyDrop<
+                    ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                >,
+                __nonempty: (),
+            }
+            #[allow(non_camel_case_types)]
+            const _: () = {
+                enum ẕ__field_StructLike {}
+                enum ẕ__field_TupleLike {}
+                enum ẕ__nonempty {}
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::HasField<
+                    ẕ__field_StructLike,
+                    { ::zerocopy::UNION_VARIANT_ID },
+                    { ::zerocopy::ident_id!(__field_StructLike) },
+                > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Type = core_reexport::mem::ManuallyDrop<
+                        ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                    >;
+                    #[inline(always)]
+                    unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                        unsafe {
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                (* slf).__field_StructLike
+                            )
+                        }
+                    }
+                }
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::HasField<
+                    ẕ__field_TupleLike,
+                    { ::zerocopy::UNION_VARIANT_ID },
+                    { ::zerocopy::ident_id!(__field_TupleLike) },
+                > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Type = core_reexport::mem::ManuallyDrop<
+                        ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                    >;
+                    #[inline(always)]
+                    unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                        unsafe {
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                (* slf).__field_TupleLike
+                            )
+                        }
+                    }
+                }
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::HasField<
+                    ẕ__nonempty,
+                    { ::zerocopy::UNION_VARIANT_ID },
+                    { ::zerocopy::ident_id!(__nonempty) },
+                > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Type = ();
+                    #[inline(always)]
+                    unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                        unsafe {
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                (* slf).__nonempty
+                            )
+                        }
+                    }
+                }
+            };
+            #[repr(C)]
+            struct ___ZerocopyRawEnum<'a: 'static, const N: usize, X, Y: Deref> {
+                tag: ___ZerocopyOuterTag,
+                variants: ___ZerocopyVariants<'a, N, X, Y>,
+            }
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::pointer::InvariantsEq<___ZerocopyRawEnum<'a, N, X, Y>>
+            for ComplexWithGenerics<'a, N, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {}
+            #[allow(non_camel_case_types)]
+            const _: () = {
+                enum ẕtag {}
+                enum ẕvariants {}
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::HasField<
+                    ẕtag,
+                    { ::zerocopy::STRUCT_VARIANT_ID },
+                    { ::zerocopy::ident_id!(tag) },
+                > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Type = ___ZerocopyOuterTag;
+                    #[inline(always)]
+                    unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                        unsafe {
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                (* slf).tag
+                            )
+                        }
+                    }
+                }
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::HasField<
+                    ẕvariants,
+                    { ::zerocopy::STRUCT_VARIANT_ID },
+                    { ::zerocopy::ident_id!(variants) },
+                > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Type = ___ZerocopyVariants<'a, N, X, Y>;
+                    #[inline(always)]
+                    unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                        unsafe {
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                (* slf).variants
+                            )
+                        }
+                    }
+                }
+            };
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(StructLike) },
+                { ::zerocopy::ident_id!(a) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = u8;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
                         _,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(variants) },
-                    >;
-                    let variants = unsafe { raw_enum.cast_unsized_unchecked(project) };
-                    #[allow(non_upper_case_globals)]
-                    match tag {
-                        ___ZEROCOPY_TAG_UnitLike => true,
-                        ___ZEROCOPY_TAG_StructLike => {
-                            let variant = unsafe {
-                                variants
-                                    .cast_unsized_unchecked(|
-                                        p: ::zerocopy::pointer::PtrInner<
-                                            '_,
-                                            ___ZerocopyVariants<'a, N, X, Y>,
-                                        >|
-                                    {
-                                        p.cast_sized::<
-                                                ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
-                                            >()
-                                    })
-                            };
-                            let variant = unsafe { variant.assume_initialized() };
-                            <___ZerocopyVariantStruct_StructLike<
-                                'a,
-                                N,
-                                X,
-                                Y,
-                            > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
-                        }
-                        ___ZEROCOPY_TAG_TupleLike => {
-                            let variant = unsafe {
-                                variants
-                                    .cast_unsized_unchecked(|
-                                        p: ::zerocopy::pointer::PtrInner<
-                                            '_,
-                                            ___ZerocopyVariants<'a, N, X, Y>,
-                                        >|
-                                    {
-                                        p.cast_sized::<
-                                                ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
-                                            >()
-                                    })
-                            };
-                            let variant = unsafe { variant.assume_initialized() };
-                            <___ZerocopyVariantStruct_TupleLike<
-                                'a,
-                                N,
-                                X,
-                                Y,
-                            > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
-                        }
-                        _ => false,
-                    }
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    >>::project(slf);
+                    slf
                 }
             }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(StructLike) },
+                { ::zerocopy::ident_id!(b) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = X;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(StructLike) },
+                { ::zerocopy::ident_id!(c) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = X::Target;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(StructLike) },
+                { ::zerocopy::ident_id!(d) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = Y::Target;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(StructLike) },
+                { ::zerocopy::ident_id!(e) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = [(X, Y); N];
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(5) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(TupleLike) },
+                { ::zerocopy::ident_id!(0) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = bool;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_TupleLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(TupleLike) },
+                { ::zerocopy::ident_id!(1) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = Y;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_TupleLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(TupleLike) },
+                { ::zerocopy::ident_id!(2) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = PhantomData<&'a [(X, Y); N]>;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_TupleLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            let tag = {
+                let tag_ptr = candidate
+                    .reborrow()
+                    .cast::<
+                        ___ZerocopyTag,
+                        ::zerocopy::pointer::cast::CastSized,
+                        ::zerocopy::pointer::BecauseInvariantsEq,
+                    >()
+                    .cast::<
+                        ___ZerocopyTagPrimitive,
+                        ::zerocopy::pointer::cast::CastSized,
+                        _,
+                    >();
+                tag_ptr
+                    .recall_validity::<_, (_, (_, _))>()
+                    .read_unaligned::<::zerocopy::BecauseImmutable>()
+            };
+            let raw_enum = candidate
+                .cast::<
+                    ___ZerocopyRawEnum<'a, N, X, Y>,
+                    ::zerocopy::pointer::cast::CastSized,
+                    ::zerocopy::pointer::BecauseInvariantsEq,
+                >();
+            let variants = raw_enum.project::<_, { ::zerocopy::ident_id!(variants) }>();
+            #[allow(non_upper_case_globals)]
+            match tag {
+                ___ZEROCOPY_TAG_UnitLike => true,
+                ___ZEROCOPY_TAG_StructLike => {
+                    let variant = variants
+                        .cast::<
+                            ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                            ::zerocopy::pointer::cast::CastSized,
+                            ::zerocopy::pointer::BecauseInvariantsEq,
+                        >();
+                    <___ZerocopyVariantStruct_StructLike<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
+                }
+                ___ZEROCOPY_TAG_TupleLike => {
+                    let variant = variants
+                        .cast::<
+                            ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                            ::zerocopy::pointer::cast::CastSized,
+                            ::zerocopy::pointer::BecauseInvariantsEq,
+                        >();
+                    <___ZerocopyVariantStruct_TupleLike<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
+                }
+                _ => false,
+            }
+        }
+    }
+
         } no_build
     }
 
@@ -1886,948 +1973,255 @@ fn test_try_from_bytes_enum() {
                 TupleLike(bool, Y, PhantomData<&'a [(X, Y); N]>),
             }
         } expands to {
-            #[allow(deprecated, non_local_definitions)]
-            #[automatically_derived]
-            unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
-            for ComplexWithGenerics<'a, { N }, X, Y>
+    #[allow(deprecated, non_local_definitions)]
+    #[automatically_derived]
+    unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
+    for ComplexWithGenerics<'a, { N }, X, Y>
+    where
+        X: Deref<Target = &'a [(X, Y); N]>,
+        u8: ::zerocopy::TryFromBytes,
+        X: ::zerocopy::TryFromBytes,
+        X::Target: ::zerocopy::TryFromBytes,
+        Y::Target: ::zerocopy::TryFromBytes,
+        [(X, Y); N]: ::zerocopy::TryFromBytes,
+        bool: ::zerocopy::TryFromBytes,
+        Y: ::zerocopy::TryFromBytes,
+        PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
+    {
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+        fn is_bit_valid<___ZerocopyAliasing>(
+            mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>,
+        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+        where
+            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+        {
+            use ::zerocopy::util::macro_util::core_reexport;
+            #[repr(u32)]
+            #[allow(dead_code, non_camel_case_types)]
+            enum ___ZerocopyTag {
+                UnitLike,
+                StructLike,
+                TupleLike,
+            }
+            unsafe impl ::zerocopy::Immutable for ___ZerocopyTag {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+            }
+            type ___ZerocopyTagPrimitive = ::zerocopy::util::macro_util::SizeToTag<
+                { core_reexport::mem::size_of::<___ZerocopyTag>() },
+            >;
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::pointer::InvariantsEq<___ZerocopyTag>
+            for ComplexWithGenerics<'a, N, X, Y>
             where
                 X: Deref<Target = &'a [(X, Y); N]>,
-                u8: ::zerocopy::TryFromBytes,
-                X: ::zerocopy::TryFromBytes,
-                X::Target: ::zerocopy::TryFromBytes,
-                Y::Target: ::zerocopy::TryFromBytes,
-                [(X, Y); N]: ::zerocopy::TryFromBytes,
-                bool: ::zerocopy::TryFromBytes,
-                Y: ::zerocopy::TryFromBytes,
-                PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
-            {
-                fn only_derive_is_allowed_to_implement_this_trait() {}
-                fn is_bit_valid<___ZerocopyAliasing>(
-                    mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>,
-                ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+            {}
+            #[allow(non_upper_case_globals)]
+            const ___ZEROCOPY_TAG_UnitLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::UnitLike
+                as ___ZerocopyTagPrimitive;
+            #[allow(non_upper_case_globals)]
+            const ___ZEROCOPY_TAG_StructLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::StructLike
+                as ___ZerocopyTagPrimitive;
+            #[allow(non_upper_case_globals)]
+            const ___ZEROCOPY_TAG_TupleLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::TupleLike
+                as ___ZerocopyTagPrimitive;
+            type ___ZerocopyOuterTag = ();
+            type ___ZerocopyInnerTag = ___ZerocopyTag;
+            #[repr(C)]
+            #[allow(non_snake_case)]
+            struct ___ZerocopyVariantStruct_StructLike<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            >(
+                core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
+                u8,
+                X,
+                X::Target,
+                Y::Target,
+                [(X, Y); N],
+                core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
+            )
+            where
+                X: Deref<Target = &'a [(X, Y); N]>;
+            const _: () = {
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::TryFromBytes
+                for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                 where
-                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                    core_reexport::mem::MaybeUninit<
+                        ___ZerocopyInnerTag,
+                    >: ::zerocopy::TryFromBytes,
+                    u8: ::zerocopy::TryFromBytes,
+                    X: ::zerocopy::TryFromBytes,
+                    X::Target: ::zerocopy::TryFromBytes,
+                    Y::Target: ::zerocopy::TryFromBytes,
+                    [(X, Y); N]: ::zerocopy::TryFromBytes,
+                    core_reexport::marker::PhantomData<
+                        ComplexWithGenerics<'a, N, X, Y>,
+                    >: ::zerocopy::TryFromBytes,
                 {
-                    use ::zerocopy::util::macro_util::core_reexport;
-                    #[repr(u32)]
-                    #[allow(dead_code, non_camel_case_types)]
-                    enum ___ZerocopyTag {
-                        UnitLike,
-                        StructLike,
-                        TupleLike,
-                    }
-                    type ___ZerocopyTagPrimitive = ::zerocopy::util::macro_util::SizeToTag<
-                        { core_reexport::mem::size_of::<___ZerocopyTag>() },
-                    >;
-                    #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_UnitLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::UnitLike
-                        as ___ZerocopyTagPrimitive;
-                    #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_StructLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::StructLike
-                        as ___ZerocopyTagPrimitive;
-                    #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_TupleLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::TupleLike
-                        as ___ZerocopyTagPrimitive;
-                    type ___ZerocopyOuterTag = ();
-                    type ___ZerocopyInnerTag = ___ZerocopyTag;
-                    #[repr(C)]
-                    #[allow(non_snake_case)]
-                    struct ___ZerocopyVariantStruct_StructLike<
-                        'a: 'static,
-                        const N: usize,
-                        X,
-                        Y: Deref,
-                    >(
-                        core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
-                        u8,
-                        X,
-                        X::Target,
-                        Y::Target,
-                        [(X, Y); N],
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
-                    )
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    fn is_bit_valid<___ZerocopyAliasing>(
+                        mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                     where
-                        X: Deref<Target = &'a [(X, Y); N]>;
-                    const _: () = {
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::TryFromBytes
-                        for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                            core_reexport::mem::MaybeUninit<
-                                ___ZerocopyInnerTag,
-                            >: ::zerocopy::TryFromBytes,
-                            u8: ::zerocopy::TryFromBytes,
-                            X: ::zerocopy::TryFromBytes,
-                            X::Target: ::zerocopy::TryFromBytes,
-                            Y::Target: ::zerocopy::TryFromBytes,
-                            [(X, Y); N]: ::zerocopy::TryFromBytes,
-                            core_reexport::marker::PhantomData<
-                                ComplexWithGenerics<'a, N, X, Y>,
-                            >: ::zerocopy::TryFromBytes,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            fn is_bit_valid<___ZerocopyAliasing>(
-                                mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-                            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
-                            where
-                                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
-                            {
-                                use ::zerocopy::util::macro_util::core_reexport;
-                                use ::zerocopy::pointer::PtrInner;
-                                true
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
+                        ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                    {
+                        use ::zerocopy::util::macro_util::core_reexport;
+                        use ::zerocopy::pointer::PtrInner;
+                        true
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(0) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::mem::MaybeUninit<
-                                            ___ZerocopyInnerTag,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(1) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(0) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <core_reexport::mem::MaybeUninit<
+                                    ___ZerocopyInnerTag,
+                                > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(2) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <X as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(3) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(1) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(4) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(5) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <[(
-                                            X,
-                                            Y,
-                                        ); N] as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(2) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <X as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(6) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::marker::PhantomData<
-                                            ComplexWithGenerics<'a, N, X, Y>,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(3) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
                             }
-                        }
-                        #[allow(non_camel_case_types)]
-                        const _: () = {
-                            enum ẕ0 {}
-                            enum ẕ1 {}
-                            enum ẕ2 {}
-                            enum ẕ3 {}
-                            enum ẕ4 {}
-                            enum ẕ5 {}
-                            enum ẕ6 {}
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ0,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(0) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).0
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(4) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
                             }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ1,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(1) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = u8;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).1
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(5) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <[(
+                                    X,
+                                    Y,
+                                ); N] as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
                             }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ2,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(2) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = X;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).2
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ3,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(3) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = X::Target;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).3
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ4,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(4) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = Y::Target;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).4
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ5,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(5) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = [(X, Y); N];
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).5
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ6,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(6) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = core_reexport::marker::PhantomData<
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(6) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <core_reexport::marker::PhantomData<
                                     ComplexWithGenerics<'a, N, X, Y>,
-                                >;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).6
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
+                                > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             }
-                        };
-                    };
-                    #[repr(C)]
-                    #[allow(non_snake_case)]
-                    struct ___ZerocopyVariantStruct_TupleLike<
-                        'a: 'static,
-                        const N: usize,
-                        X,
-                        Y: Deref,
-                    >(
-                        core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
-                        bool,
-                        Y,
-                        PhantomData<&'a [(X, Y); N]>,
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
-                    )
-                    where
-                        X: Deref<Target = &'a [(X, Y); N]>;
-                    const _: () = {
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::TryFromBytes
-                        for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                            core_reexport::mem::MaybeUninit<
-                                ___ZerocopyInnerTag,
-                            >: ::zerocopy::TryFromBytes,
-                            bool: ::zerocopy::TryFromBytes,
-                            Y: ::zerocopy::TryFromBytes,
-                            PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
-                            core_reexport::marker::PhantomData<
-                                ComplexWithGenerics<'a, N, X, Y>,
-                            >: ::zerocopy::TryFromBytes,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            fn is_bit_valid<___ZerocopyAliasing>(
-                                mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-                            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
-                            where
-                                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
-                            {
-                                use ::zerocopy::util::macro_util::core_reexport;
-                                use ::zerocopy::pointer::PtrInner;
-                                true
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(0) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::mem::MaybeUninit<
-                                            ___ZerocopyInnerTag,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(1) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <bool as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(2) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <Y as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(3) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <PhantomData<
-                                            &'a [(X, Y); N],
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(4) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::marker::PhantomData<
-                                            ComplexWithGenerics<'a, N, X, Y>,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                            }
-                        }
-                        #[allow(non_camel_case_types)]
-                        const _: () = {
-                            enum ẕ0 {}
-                            enum ẕ1 {}
-                            enum ẕ2 {}
-                            enum ẕ3 {}
-                            enum ẕ4 {}
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ0,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(0) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).0
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ1,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(1) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = bool;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).1
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ2,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(2) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = Y;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).2
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ3,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(3) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = PhantomData<&'a [(X, Y); N]>;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).3
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ4,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(4) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = core_reexport::marker::PhantomData<
-                                    ComplexWithGenerics<'a, N, X, Y>,
-                                >;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).4
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                        };
-                    };
-                    #[repr(C)]
-                    #[allow(non_snake_case)]
-                    union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref> {
-                        __field_StructLike: core_reexport::mem::ManuallyDrop<
-                            ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
-                        >,
-                        __field_TupleLike: core_reexport::mem::ManuallyDrop<
-                            ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
-                        >,
-                        __nonempty: (),
                     }
-                    #[allow(non_camel_case_types)]
-                    const _: () = {
-                        enum ẕ__field_StructLike {}
-                        enum ẕ__field_TupleLike {}
-                        enum ẕ__nonempty {}
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::HasField<
-                            ẕ__field_StructLike,
-                            { ::zerocopy::UNION_VARIANT_ID },
-                            { ::zerocopy::ident_id!(__field_StructLike) },
-                        > for ___ZerocopyVariants<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = core_reexport::mem::ManuallyDrop<
-                                ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
-                            >;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::PtrInner<'_, Self>,
-                            ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).__field_StructLike
-                                    )
-                                };
-                                let ptr = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                        field,
-                                    )
-                                };
-                                unsafe { ::zerocopy::PtrInner::new(ptr) }
-                            }
-                        }
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::HasField<
-                            ẕ__field_TupleLike,
-                            { ::zerocopy::UNION_VARIANT_ID },
-                            { ::zerocopy::ident_id!(__field_TupleLike) },
-                        > for ___ZerocopyVariants<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = core_reexport::mem::ManuallyDrop<
-                                ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
-                            >;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::PtrInner<'_, Self>,
-                            ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).__field_TupleLike
-                                    )
-                                };
-                                let ptr = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                        field,
-                                    )
-                                };
-                                unsafe { ::zerocopy::PtrInner::new(ptr) }
-                            }
-                        }
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::HasField<
-                            ẕ__nonempty,
-                            { ::zerocopy::UNION_VARIANT_ID },
-                            { ::zerocopy::ident_id!(__nonempty) },
-                        > for ___ZerocopyVariants<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = ();
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::PtrInner<'_, Self>,
-                            ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).__nonempty
-                                    )
-                                };
-                                let ptr = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                        field,
-                                    )
-                                };
-                                unsafe { ::zerocopy::PtrInner::new(ptr) }
-                            }
-                        }
-                    };
-                    #[repr(C)]
-                    struct ___ZerocopyRawEnum<'a: 'static, const N: usize, X, Y: Deref> {
-                        tag: ___ZerocopyOuterTag,
-                        variants: ___ZerocopyVariants<'a, N, X, Y>,
-                    }
-                    #[allow(non_camel_case_types)]
-                    const _: () = {
-                        enum ẕtag {}
-                        enum ẕvariants {}
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::HasField<
-                            ẕtag,
-                            { ::zerocopy::STRUCT_VARIANT_ID },
-                            { ::zerocopy::ident_id!(tag) },
-                        > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = ___ZerocopyOuterTag;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::PtrInner<'_, Self>,
-                            ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).tag
-                                    )
-                                };
-                                let ptr = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                        field,
-                                    )
-                                };
-                                unsafe { ::zerocopy::PtrInner::new(ptr) }
-                            }
-                        }
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::HasField<
-                            ẕvariants,
-                            { ::zerocopy::STRUCT_VARIANT_ID },
-                            { ::zerocopy::ident_id!(variants) },
-                        > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = ___ZerocopyVariants<'a, N, X, Y>;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::PtrInner<'_, Self>,
-                            ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).variants
-                                    )
-                                };
-                                let ptr = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                        field,
-                                    )
-                                };
-                                unsafe { ::zerocopy::PtrInner::new(ptr) }
-                            }
-                        }
-                    };
+                }
+                #[allow(non_camel_case_types)]
+                const _: () = {
+                    enum ẕ0 {}
+                    enum ẕ1 {}
+                    enum ẕ2 {}
+                    enum ẕ3 {}
+                    enum ẕ4 {}
+                    enum ẕ5 {}
+                    enum ẕ6 {}
                     #[allow(deprecated, non_local_definitions)]
                     #[automatically_derived]
                     unsafe impl<
@@ -2836,24 +2230,48 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(StructLike) },
-                        { ::zerocopy::ident_id!(a) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ0,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(0) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
+                        #[inline(always)]
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).0
+                                )
+                            }
+                        }
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        ẕ1,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = u8;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).1
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -2864,24 +2282,22 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(StructLike) },
-                        { ::zerocopy::ident_id!(b) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ2,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = X;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).2
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -2892,24 +2308,22 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(StructLike) },
-                        { ::zerocopy::ident_id!(c) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ3,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = X::Target;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).3
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -2920,24 +2334,22 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(StructLike) },
-                        { ::zerocopy::ident_id!(d) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ4,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = Y::Target;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(4) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).4
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -2948,24 +2360,22 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(StructLike) },
-                        { ::zerocopy::ident_id!(e) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ5,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(5) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = [(X, Y); N];
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(5) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).5
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -2976,24 +2386,236 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(TupleLike) },
+                        ẕ6,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(6) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = core_reexport::marker::PhantomData<
+                            ComplexWithGenerics<'a, N, X, Y>,
+                        >;
+                        #[inline(always)]
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).6
+                                )
+                            }
+                        }
+                    }
+                };
+            };
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::pointer::InvariantsEq<
+                ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+            > for ___ZerocopyVariants<'a, N, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {}
+            #[repr(C)]
+            #[allow(non_snake_case)]
+            struct ___ZerocopyVariantStruct_TupleLike<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            >(
+                core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
+                bool,
+                Y,
+                PhantomData<&'a [(X, Y); N]>,
+                core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
+            )
+            where
+                X: Deref<Target = &'a [(X, Y); N]>;
+            const _: () = {
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::TryFromBytes
+                for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                    core_reexport::mem::MaybeUninit<
+                        ___ZerocopyInnerTag,
+                    >: ::zerocopy::TryFromBytes,
+                    bool: ::zerocopy::TryFromBytes,
+                    Y: ::zerocopy::TryFromBytes,
+                    PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
+                    core_reexport::marker::PhantomData<
+                        ComplexWithGenerics<'a, N, X, Y>,
+                    >: ::zerocopy::TryFromBytes,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    fn is_bit_valid<___ZerocopyAliasing>(
+                        mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                    where
+                        ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                    {
+                        use ::zerocopy::util::macro_util::core_reexport;
+                        use ::zerocopy::pointer::PtrInner;
+                        true
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(0) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <core_reexport::mem::MaybeUninit<
+                                    ___ZerocopyInnerTag,
+                                > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(1) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <bool as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(2) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <Y as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(3) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <PhantomData<
+                                    &'a [(X, Y); N],
+                                > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(4) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <core_reexport::marker::PhantomData<
+                                    ComplexWithGenerics<'a, N, X, Y>,
+                                > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            }
+                    }
+                }
+                #[allow(non_camel_case_types)]
+                const _: () = {
+                    enum ẕ0 {}
+                    enum ẕ1 {}
+                    enum ẕ2 {}
+                    enum ẕ3 {}
+                    enum ẕ4 {}
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        ẕ0,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(0) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
+                        #[inline(always)]
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).0
+                                )
+                            }
+                        }
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        ẕ1,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = bool;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).1
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -3004,24 +2626,22 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(TupleLike) },
-                        { ::zerocopy::ident_id!(1) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ2,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = Y;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).2
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -3032,103 +2652,665 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(TupleLike) },
-                        { ::zerocopy::ident_id!(2) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ3,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = PhantomData<&'a [(X, Y); N]>;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).3
+                                )
+                            }
                         }
                     }
-                    let tag = {
-                        let tag_ptr = unsafe {
-                            candidate
-                                .reborrow()
-                                .cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| {
-                                    p.cast_sized::<___ZerocopyTagPrimitive>()
-                                })
-                        };
-                        let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                        tag_ptr
-                            .recall_validity::<_, (_, (_, _))>()
-                            .read_unaligned::<::zerocopy::BecauseImmutable>()
-                    };
-                    let raw_enum = unsafe {
-                        candidate
-                            .cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| {
-                                p.cast_sized::<___ZerocopyRawEnum<'a, N, X, Y>>()
-                            })
-                    };
-                    let raw_enum = unsafe { raw_enum.assume_initialized() };
-                    let project = ::zerocopy::pointer::PtrInner::project::<
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        ẕ4,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = core_reexport::marker::PhantomData<
+                            ComplexWithGenerics<'a, N, X, Y>,
+                        >;
+                        #[inline(always)]
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).4
+                                )
+                            }
+                        }
+                    }
+                };
+            };
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::pointer::InvariantsEq<
+                ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+            > for ___ZerocopyVariants<'a, N, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {}
+            #[repr(C)]
+            #[allow(non_snake_case)]
+            union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref> {
+                __field_StructLike: core_reexport::mem::ManuallyDrop<
+                    ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                >,
+                __field_TupleLike: core_reexport::mem::ManuallyDrop<
+                    ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                >,
+                __nonempty: (),
+            }
+            #[allow(non_camel_case_types)]
+            const _: () = {
+                enum ẕ__field_StructLike {}
+                enum ẕ__field_TupleLike {}
+                enum ẕ__nonempty {}
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::HasField<
+                    ẕ__field_StructLike,
+                    { ::zerocopy::UNION_VARIANT_ID },
+                    { ::zerocopy::ident_id!(__field_StructLike) },
+                > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Type = core_reexport::mem::ManuallyDrop<
+                        ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                    >;
+                    #[inline(always)]
+                    unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                        unsafe {
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                (* slf).__field_StructLike
+                            )
+                        }
+                    }
+                }
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::HasField<
+                    ẕ__field_TupleLike,
+                    { ::zerocopy::UNION_VARIANT_ID },
+                    { ::zerocopy::ident_id!(__field_TupleLike) },
+                > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Type = core_reexport::mem::ManuallyDrop<
+                        ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                    >;
+                    #[inline(always)]
+                    unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                        unsafe {
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                (* slf).__field_TupleLike
+                            )
+                        }
+                    }
+                }
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::HasField<
+                    ẕ__nonempty,
+                    { ::zerocopy::UNION_VARIANT_ID },
+                    { ::zerocopy::ident_id!(__nonempty) },
+                > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Type = ();
+                    #[inline(always)]
+                    unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                        unsafe {
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                (* slf).__nonempty
+                            )
+                        }
+                    }
+                }
+            };
+            #[repr(C)]
+            struct ___ZerocopyRawEnum<'a: 'static, const N: usize, X, Y: Deref> {
+                tag: ___ZerocopyOuterTag,
+                variants: ___ZerocopyVariants<'a, N, X, Y>,
+            }
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::pointer::InvariantsEq<___ZerocopyRawEnum<'a, N, X, Y>>
+            for ComplexWithGenerics<'a, N, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {}
+            #[allow(non_camel_case_types)]
+            const _: () = {
+                enum ẕtag {}
+                enum ẕvariants {}
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::HasField<
+                    ẕtag,
+                    { ::zerocopy::STRUCT_VARIANT_ID },
+                    { ::zerocopy::ident_id!(tag) },
+                > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Type = ___ZerocopyOuterTag;
+                    #[inline(always)]
+                    unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                        unsafe {
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                (* slf).tag
+                            )
+                        }
+                    }
+                }
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::HasField<
+                    ẕvariants,
+                    { ::zerocopy::STRUCT_VARIANT_ID },
+                    { ::zerocopy::ident_id!(variants) },
+                > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Type = ___ZerocopyVariants<'a, N, X, Y>;
+                    #[inline(always)]
+                    unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                        unsafe {
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                (* slf).variants
+                            )
+                        }
+                    }
+                }
+            };
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(StructLike) },
+                { ::zerocopy::ident_id!(a) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = u8;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
                         _,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(variants) },
-                    >;
-                    let variants = unsafe { raw_enum.cast_unsized_unchecked(project) };
-                    #[allow(non_upper_case_globals)]
-                    match tag {
-                        ___ZEROCOPY_TAG_UnitLike => true,
-                        ___ZEROCOPY_TAG_StructLike => {
-                            let variant = unsafe {
-                                variants
-                                    .cast_unsized_unchecked(|
-                                        p: ::zerocopy::pointer::PtrInner<
-                                            '_,
-                                            ___ZerocopyVariants<'a, N, X, Y>,
-                                        >|
-                                    {
-                                        p.cast_sized::<
-                                                ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
-                                            >()
-                                    })
-                            };
-                            let variant = unsafe { variant.assume_initialized() };
-                            <___ZerocopyVariantStruct_StructLike<
-                                'a,
-                                N,
-                                X,
-                                Y,
-                            > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
-                        }
-                        ___ZEROCOPY_TAG_TupleLike => {
-                            let variant = unsafe {
-                                variants
-                                    .cast_unsized_unchecked(|
-                                        p: ::zerocopy::pointer::PtrInner<
-                                            '_,
-                                            ___ZerocopyVariants<'a, N, X, Y>,
-                                        >|
-                                    {
-                                        p.cast_sized::<
-                                                ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
-                                            >()
-                                    })
-                            };
-                            let variant = unsafe { variant.assume_initialized() };
-                            <___ZerocopyVariantStruct_TupleLike<
-                                'a,
-                                N,
-                                X,
-                                Y,
-                            > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
-                        }
-                        _ => false,
-                    }
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    >>::project(slf);
+                    slf
                 }
             }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(StructLike) },
+                { ::zerocopy::ident_id!(b) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = X;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(StructLike) },
+                { ::zerocopy::ident_id!(c) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = X::Target;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(StructLike) },
+                { ::zerocopy::ident_id!(d) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = Y::Target;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(StructLike) },
+                { ::zerocopy::ident_id!(e) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = [(X, Y); N];
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(5) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(TupleLike) },
+                { ::zerocopy::ident_id!(0) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = bool;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_TupleLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(TupleLike) },
+                { ::zerocopy::ident_id!(1) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = Y;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_TupleLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(TupleLike) },
+                { ::zerocopy::ident_id!(2) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = PhantomData<&'a [(X, Y); N]>;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_TupleLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            let tag = {
+                let tag_ptr = candidate
+                    .reborrow()
+                    .cast::<
+                        ___ZerocopyTag,
+                        ::zerocopy::pointer::cast::CastSized,
+                        ::zerocopy::pointer::BecauseInvariantsEq,
+                    >()
+                    .cast::<
+                        ___ZerocopyTagPrimitive,
+                        ::zerocopy::pointer::cast::CastSized,
+                        _,
+                    >();
+                tag_ptr
+                    .recall_validity::<_, (_, (_, _))>()
+                    .read_unaligned::<::zerocopy::BecauseImmutable>()
+            };
+            let raw_enum = candidate
+                .cast::<
+                    ___ZerocopyRawEnum<'a, N, X, Y>,
+                    ::zerocopy::pointer::cast::CastSized,
+                    ::zerocopy::pointer::BecauseInvariantsEq,
+                >();
+            let variants = raw_enum.project::<_, { ::zerocopy::ident_id!(variants) }>();
+            #[allow(non_upper_case_globals)]
+            match tag {
+                ___ZEROCOPY_TAG_UnitLike => true,
+                ___ZEROCOPY_TAG_StructLike => {
+                    let variant = variants
+                        .cast::<
+                            ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                            ::zerocopy::pointer::cast::CastSized,
+                            ::zerocopy::pointer::BecauseInvariantsEq,
+                        >();
+                    <___ZerocopyVariantStruct_StructLike<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
+                }
+                ___ZEROCOPY_TAG_TupleLike => {
+                    let variant = variants
+                        .cast::<
+                            ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                            ::zerocopy::pointer::cast::CastSized,
+                            ::zerocopy::pointer::BecauseInvariantsEq,
+                        >();
+                    <___ZerocopyVariantStruct_TupleLike<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
+                }
+                _ => false,
+            }
+        }
+    }
+
         } no_build
     }
 
@@ -3144,948 +3326,255 @@ fn test_try_from_bytes_enum() {
                 TupleLike(bool, Y, PhantomData<&'a [(X, Y); N]>),
             }
         } expands to {
-            #[allow(deprecated, non_local_definitions)]
-            #[automatically_derived]
-            unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
-            for ComplexWithGenerics<'a, { N }, X, Y>
+    #[allow(deprecated, non_local_definitions)]
+    #[automatically_derived]
+    unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
+    for ComplexWithGenerics<'a, { N }, X, Y>
+    where
+        X: Deref<Target = &'a [(X, Y); N]>,
+        u8: ::zerocopy::TryFromBytes,
+        X: ::zerocopy::TryFromBytes,
+        X::Target: ::zerocopy::TryFromBytes,
+        Y::Target: ::zerocopy::TryFromBytes,
+        [(X, Y); N]: ::zerocopy::TryFromBytes,
+        bool: ::zerocopy::TryFromBytes,
+        Y: ::zerocopy::TryFromBytes,
+        PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
+    {
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+        fn is_bit_valid<___ZerocopyAliasing>(
+            mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>,
+        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+        where
+            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+        {
+            use ::zerocopy::util::macro_util::core_reexport;
+            #[repr(C)]
+            #[allow(dead_code, non_camel_case_types)]
+            enum ___ZerocopyTag {
+                UnitLike,
+                StructLike,
+                TupleLike,
+            }
+            unsafe impl ::zerocopy::Immutable for ___ZerocopyTag {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+            }
+            type ___ZerocopyTagPrimitive = ::zerocopy::util::macro_util::SizeToTag<
+                { core_reexport::mem::size_of::<___ZerocopyTag>() },
+            >;
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::pointer::InvariantsEq<___ZerocopyTag>
+            for ComplexWithGenerics<'a, N, X, Y>
             where
                 X: Deref<Target = &'a [(X, Y); N]>,
-                u8: ::zerocopy::TryFromBytes,
-                X: ::zerocopy::TryFromBytes,
-                X::Target: ::zerocopy::TryFromBytes,
-                Y::Target: ::zerocopy::TryFromBytes,
-                [(X, Y); N]: ::zerocopy::TryFromBytes,
-                bool: ::zerocopy::TryFromBytes,
-                Y: ::zerocopy::TryFromBytes,
-                PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
-            {
-                fn only_derive_is_allowed_to_implement_this_trait() {}
-                fn is_bit_valid<___ZerocopyAliasing>(
-                    mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>,
-                ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+            {}
+            #[allow(non_upper_case_globals)]
+            const ___ZEROCOPY_TAG_UnitLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::UnitLike
+                as ___ZerocopyTagPrimitive;
+            #[allow(non_upper_case_globals)]
+            const ___ZEROCOPY_TAG_StructLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::StructLike
+                as ___ZerocopyTagPrimitive;
+            #[allow(non_upper_case_globals)]
+            const ___ZEROCOPY_TAG_TupleLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::TupleLike
+                as ___ZerocopyTagPrimitive;
+            type ___ZerocopyOuterTag = ___ZerocopyTag;
+            type ___ZerocopyInnerTag = ();
+            #[repr(C)]
+            #[allow(non_snake_case)]
+            struct ___ZerocopyVariantStruct_StructLike<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            >(
+                core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
+                u8,
+                X,
+                X::Target,
+                Y::Target,
+                [(X, Y); N],
+                core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
+            )
+            where
+                X: Deref<Target = &'a [(X, Y); N]>;
+            const _: () = {
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::TryFromBytes
+                for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                 where
-                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                    core_reexport::mem::MaybeUninit<
+                        ___ZerocopyInnerTag,
+                    >: ::zerocopy::TryFromBytes,
+                    u8: ::zerocopy::TryFromBytes,
+                    X: ::zerocopy::TryFromBytes,
+                    X::Target: ::zerocopy::TryFromBytes,
+                    Y::Target: ::zerocopy::TryFromBytes,
+                    [(X, Y); N]: ::zerocopy::TryFromBytes,
+                    core_reexport::marker::PhantomData<
+                        ComplexWithGenerics<'a, N, X, Y>,
+                    >: ::zerocopy::TryFromBytes,
                 {
-                    use ::zerocopy::util::macro_util::core_reexport;
-                    #[repr(C)]
-                    #[allow(dead_code, non_camel_case_types)]
-                    enum ___ZerocopyTag {
-                        UnitLike,
-                        StructLike,
-                        TupleLike,
-                    }
-                    type ___ZerocopyTagPrimitive = ::zerocopy::util::macro_util::SizeToTag<
-                        { core_reexport::mem::size_of::<___ZerocopyTag>() },
-                    >;
-                    #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_UnitLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::UnitLike
-                        as ___ZerocopyTagPrimitive;
-                    #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_StructLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::StructLike
-                        as ___ZerocopyTagPrimitive;
-                    #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_TupleLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::TupleLike
-                        as ___ZerocopyTagPrimitive;
-                    type ___ZerocopyOuterTag = ___ZerocopyTag;
-                    type ___ZerocopyInnerTag = ();
-                    #[repr(C)]
-                    #[allow(non_snake_case)]
-                    struct ___ZerocopyVariantStruct_StructLike<
-                        'a: 'static,
-                        const N: usize,
-                        X,
-                        Y: Deref,
-                    >(
-                        core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
-                        u8,
-                        X,
-                        X::Target,
-                        Y::Target,
-                        [(X, Y); N],
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
-                    )
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    fn is_bit_valid<___ZerocopyAliasing>(
+                        mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                     where
-                        X: Deref<Target = &'a [(X, Y); N]>;
-                    const _: () = {
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::TryFromBytes
-                        for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                            core_reexport::mem::MaybeUninit<
-                                ___ZerocopyInnerTag,
-                            >: ::zerocopy::TryFromBytes,
-                            u8: ::zerocopy::TryFromBytes,
-                            X: ::zerocopy::TryFromBytes,
-                            X::Target: ::zerocopy::TryFromBytes,
-                            Y::Target: ::zerocopy::TryFromBytes,
-                            [(X, Y); N]: ::zerocopy::TryFromBytes,
-                            core_reexport::marker::PhantomData<
-                                ComplexWithGenerics<'a, N, X, Y>,
-                            >: ::zerocopy::TryFromBytes,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            fn is_bit_valid<___ZerocopyAliasing>(
-                                mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-                            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
-                            where
-                                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
-                            {
-                                use ::zerocopy::util::macro_util::core_reexport;
-                                use ::zerocopy::pointer::PtrInner;
-                                true
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
+                        ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                    {
+                        use ::zerocopy::util::macro_util::core_reexport;
+                        use ::zerocopy::pointer::PtrInner;
+                        true
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(0) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::mem::MaybeUninit<
-                                            ___ZerocopyInnerTag,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(1) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(0) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <core_reexport::mem::MaybeUninit<
+                                    ___ZerocopyInnerTag,
+                                > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(2) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <X as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(3) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(1) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(4) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(5) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <[(
-                                            X,
-                                            Y,
-                                        ); N] as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(2) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <X as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
                                             _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(6) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::marker::PhantomData<
-                                            ComplexWithGenerics<'a, N, X, Y>,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(3) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
                             }
-                        }
-                        #[allow(non_camel_case_types)]
-                        const _: () = {
-                            enum ẕ0 {}
-                            enum ẕ1 {}
-                            enum ẕ2 {}
-                            enum ẕ3 {}
-                            enum ẕ4 {}
-                            enum ẕ5 {}
-                            enum ẕ6 {}
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ0,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(0) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).0
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(4) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
                             }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ1,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(1) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = u8;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).1
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(5) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <[(
+                                    X,
+                                    Y,
+                                ); N] as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
                             }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ2,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(2) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = X;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).2
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ3,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(3) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = X::Target;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).3
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ4,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(4) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = Y::Target;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).4
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ5,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(5) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = [(X, Y); N];
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).5
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ6,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(6) },
-                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = core_reexport::marker::PhantomData<
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(6) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <core_reexport::marker::PhantomData<
                                     ComplexWithGenerics<'a, N, X, Y>,
-                                >;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).6
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
+                                > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
                             }
-                        };
-                    };
-                    #[repr(C)]
-                    #[allow(non_snake_case)]
-                    struct ___ZerocopyVariantStruct_TupleLike<
-                        'a: 'static,
-                        const N: usize,
-                        X,
-                        Y: Deref,
-                    >(
-                        core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
-                        bool,
-                        Y,
-                        PhantomData<&'a [(X, Y); N]>,
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
-                    )
-                    where
-                        X: Deref<Target = &'a [(X, Y); N]>;
-                    const _: () = {
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::TryFromBytes
-                        for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                        where
-                            X: Deref<Target = &'a [(X, Y); N]>,
-                            core_reexport::mem::MaybeUninit<
-                                ___ZerocopyInnerTag,
-                            >: ::zerocopy::TryFromBytes,
-                            bool: ::zerocopy::TryFromBytes,
-                            Y: ::zerocopy::TryFromBytes,
-                            PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
-                            core_reexport::marker::PhantomData<
-                                ComplexWithGenerics<'a, N, X, Y>,
-                            >: ::zerocopy::TryFromBytes,
-                        {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            fn is_bit_valid<___ZerocopyAliasing>(
-                                mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-                            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
-                            where
-                                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
-                            {
-                                use ::zerocopy::util::macro_util::core_reexport;
-                                use ::zerocopy::pointer::PtrInner;
-                                true
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(0) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::mem::MaybeUninit<
-                                            ___ZerocopyInnerTag,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(1) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <bool as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(2) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <Y as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(3) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <PhantomData<
-                                            &'a [(X, Y); N],
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(4) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::marker::PhantomData<
-                                            ComplexWithGenerics<'a, N, X, Y>,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                            }
-                        }
-                        #[allow(non_camel_case_types)]
-                        const _: () = {
-                            enum ẕ0 {}
-                            enum ẕ1 {}
-                            enum ẕ2 {}
-                            enum ẕ3 {}
-                            enum ẕ4 {}
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ0,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(0) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).0
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ1,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(1) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = bool;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).1
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ2,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(2) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = Y;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).2
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ3,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(3) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = PhantomData<&'a [(X, Y); N]>;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).3
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                            #[allow(deprecated, non_local_definitions)]
-                            #[automatically_derived]
-                            unsafe impl<
-                                'a: 'static,
-                                const N: usize,
-                                X,
-                                Y: Deref,
-                            > ::zerocopy::HasField<
-                                ẕ4,
-                                { ::zerocopy::STRUCT_VARIANT_ID },
-                                { ::zerocopy::ident_id!(4) },
-                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                            where
-                                X: Deref<Target = &'a [(X, Y); N]>,
-                            {
-                                fn only_derive_is_allowed_to_implement_this_trait() {}
-                                type Type = core_reexport::marker::PhantomData<
-                                    ComplexWithGenerics<'a, N, X, Y>,
-                                >;
-                                #[inline(always)]
-                                fn project(
-                                    slf: ::zerocopy::PtrInner<'_, Self>,
-                                ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                    let slf = slf.as_non_null().as_ptr();
-                                    let field = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                            (* slf).4
-                                        )
-                                    };
-                                    let ptr = unsafe {
-                                        ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                            field,
-                                        )
-                                    };
-                                    unsafe { ::zerocopy::PtrInner::new(ptr) }
-                                }
-                            }
-                        };
-                    };
-                    #[repr(C)]
-                    #[allow(non_snake_case)]
-                    union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref> {
-                        __field_StructLike: core_reexport::mem::ManuallyDrop<
-                            ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
-                        >,
-                        __field_TupleLike: core_reexport::mem::ManuallyDrop<
-                            ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
-                        >,
-                        __nonempty: (),
                     }
-                    #[allow(non_camel_case_types)]
-                    const _: () = {
-                        enum ẕ__field_StructLike {}
-                        enum ẕ__field_TupleLike {}
-                        enum ẕ__nonempty {}
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::HasField<
-                            ẕ__field_StructLike,
-                            { ::zerocopy::UNION_VARIANT_ID },
-                            { ::zerocopy::ident_id!(__field_StructLike) },
-                        > for ___ZerocopyVariants<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = core_reexport::mem::ManuallyDrop<
-                                ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
-                            >;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::PtrInner<'_, Self>,
-                            ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).__field_StructLike
-                                    )
-                                };
-                                let ptr = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                        field,
-                                    )
-                                };
-                                unsafe { ::zerocopy::PtrInner::new(ptr) }
-                            }
-                        }
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::HasField<
-                            ẕ__field_TupleLike,
-                            { ::zerocopy::UNION_VARIANT_ID },
-                            { ::zerocopy::ident_id!(__field_TupleLike) },
-                        > for ___ZerocopyVariants<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = core_reexport::mem::ManuallyDrop<
-                                ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
-                            >;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::PtrInner<'_, Self>,
-                            ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).__field_TupleLike
-                                    )
-                                };
-                                let ptr = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                        field,
-                                    )
-                                };
-                                unsafe { ::zerocopy::PtrInner::new(ptr) }
-                            }
-                        }
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::HasField<
-                            ẕ__nonempty,
-                            { ::zerocopy::UNION_VARIANT_ID },
-                            { ::zerocopy::ident_id!(__nonempty) },
-                        > for ___ZerocopyVariants<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = ();
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::PtrInner<'_, Self>,
-                            ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).__nonempty
-                                    )
-                                };
-                                let ptr = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                        field,
-                                    )
-                                };
-                                unsafe { ::zerocopy::PtrInner::new(ptr) }
-                            }
-                        }
-                    };
-                    #[repr(C)]
-                    struct ___ZerocopyRawEnum<'a: 'static, const N: usize, X, Y: Deref> {
-                        tag: ___ZerocopyOuterTag,
-                        variants: ___ZerocopyVariants<'a, N, X, Y>,
-                    }
-                    #[allow(non_camel_case_types)]
-                    const _: () = {
-                        enum ẕtag {}
-                        enum ẕvariants {}
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::HasField<
-                            ẕtag,
-                            { ::zerocopy::STRUCT_VARIANT_ID },
-                            { ::zerocopy::ident_id!(tag) },
-                        > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = ___ZerocopyOuterTag;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::PtrInner<'_, Self>,
-                            ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).tag
-                                    )
-                                };
-                                let ptr = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                        field,
-                                    )
-                                };
-                                unsafe { ::zerocopy::PtrInner::new(ptr) }
-                            }
-                        }
-                        #[allow(deprecated, non_local_definitions)]
-                        #[automatically_derived]
-                        unsafe impl<
-                            'a: 'static,
-                            const N: usize,
-                            X,
-                            Y: Deref,
-                        > ::zerocopy::HasField<
-                            ẕvariants,
-                            { ::zerocopy::STRUCT_VARIANT_ID },
-                            { ::zerocopy::ident_id!(variants) },
-                        > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
-                            fn only_derive_is_allowed_to_implement_this_trait() {}
-                            type Type = ___ZerocopyVariants<'a, N, X, Y>;
-                            #[inline(always)]
-                            fn project(
-                                slf: ::zerocopy::PtrInner<'_, Self>,
-                            ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
-                                        (* slf).variants
-                                    )
-                                };
-                                let ptr = unsafe {
-                                    ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
-                                        field,
-                                    )
-                                };
-                                unsafe { ::zerocopy::PtrInner::new(ptr) }
-                            }
-                        }
-                    };
+                }
+                #[allow(non_camel_case_types)]
+                const _: () = {
+                    enum ẕ0 {}
+                    enum ẕ1 {}
+                    enum ẕ2 {}
+                    enum ẕ3 {}
+                    enum ẕ4 {}
+                    enum ẕ5 {}
+                    enum ẕ6 {}
                     #[allow(deprecated, non_local_definitions)]
                     #[automatically_derived]
                     unsafe impl<
@@ -4094,24 +3583,48 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(StructLike) },
-                        { ::zerocopy::ident_id!(a) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ0,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(0) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
+                        #[inline(always)]
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).0
+                                )
+                            }
+                        }
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        ẕ1,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = u8;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).1
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4122,24 +3635,22 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(StructLike) },
-                        { ::zerocopy::ident_id!(b) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ2,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = X;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).2
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4150,24 +3661,22 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(StructLike) },
-                        { ::zerocopy::ident_id!(c) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ3,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = X::Target;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).3
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4178,24 +3687,22 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(StructLike) },
-                        { ::zerocopy::ident_id!(d) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ4,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = Y::Target;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(4) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).4
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4206,24 +3713,22 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(StructLike) },
-                        { ::zerocopy::ident_id!(e) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ5,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(5) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = [(X, Y); N];
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(5) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).5
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4234,24 +3739,236 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(TupleLike) },
+                        ẕ6,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(6) },
+                    > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = core_reexport::marker::PhantomData<
+                            ComplexWithGenerics<'a, N, X, Y>,
+                        >;
+                        #[inline(always)]
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).6
+                                )
+                            }
+                        }
+                    }
+                };
+            };
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::pointer::InvariantsEq<
+                ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+            > for ___ZerocopyVariants<'a, N, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {}
+            #[repr(C)]
+            #[allow(non_snake_case)]
+            struct ___ZerocopyVariantStruct_TupleLike<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            >(
+                core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
+                bool,
+                Y,
+                PhantomData<&'a [(X, Y); N]>,
+                core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
+            )
+            where
+                X: Deref<Target = &'a [(X, Y); N]>;
+            const _: () = {
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::TryFromBytes
+                for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                    core_reexport::mem::MaybeUninit<
+                        ___ZerocopyInnerTag,
+                    >: ::zerocopy::TryFromBytes,
+                    bool: ::zerocopy::TryFromBytes,
+                    Y: ::zerocopy::TryFromBytes,
+                    PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
+                    core_reexport::marker::PhantomData<
+                        ComplexWithGenerics<'a, N, X, Y>,
+                    >: ::zerocopy::TryFromBytes,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    fn is_bit_valid<___ZerocopyAliasing>(
+                        mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                    where
+                        ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                    {
+                        use ::zerocopy::util::macro_util::core_reexport;
+                        use ::zerocopy::pointer::PtrInner;
+                        true
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(0) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <core_reexport::mem::MaybeUninit<
+                                    ___ZerocopyInnerTag,
+                                > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(1) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <bool as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(2) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <Y as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                    field_candidate,
+                                )
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(3) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <PhantomData<
+                                    &'a [(X, Y); N],
+                                > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            }
+                            && {
+                                let field_candidate = unsafe {
+                                    candidate
+                                        .reborrow()
+                                        .transmute_unchecked::<
+                                            _,
+                                            _,
+                                            ::zerocopy::pointer::cast::Projection<
+                                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                                { ::zerocopy::ident_id!(4) },
+                                                _,
+                                            >,
+                                        >()
+                                };
+                                <core_reexport::marker::PhantomData<
+                                    ComplexWithGenerics<'a, N, X, Y>,
+                                > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            }
+                    }
+                }
+                #[allow(non_camel_case_types)]
+                const _: () = {
+                    enum ẕ0 {}
+                    enum ẕ1 {}
+                    enum ẕ2 {}
+                    enum ẕ3 {}
+                    enum ẕ4 {}
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        ẕ0,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(0) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
+                        #[inline(always)]
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).0
+                                )
+                            }
+                        }
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        ẕ1,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = bool;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).1
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4262,24 +3979,22 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(TupleLike) },
-                        { ::zerocopy::ident_id!(1) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ2,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = Y;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).2
+                                )
+                            }
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4290,103 +4005,665 @@ fn test_try_from_bytes_enum() {
                         X,
                         Y: Deref,
                     > ::zerocopy::HasField<
-                        (),
-                        { ::zerocopy::ident_id!(TupleLike) },
-                        { ::zerocopy::ident_id!(2) },
-                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                        ẕ3,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                     where
                         X: Deref<Target = &'a [(X, Y); N]>,
                     {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = PhantomData<&'a [(X, Y); N]>;
                         #[inline(always)]
-                        fn project(
-                            slf: ::zerocopy::PtrInner<'_, Self>,
-                        ) -> ::zerocopy::PtrInner<'_, Self::Type> {
-                            let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).3
+                                )
+                            }
                         }
                     }
-                    let tag = {
-                        let tag_ptr = unsafe {
-                            candidate
-                                .reborrow()
-                                .cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| {
-                                    p.cast_sized::<___ZerocopyTagPrimitive>()
-                                })
-                        };
-                        let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                        tag_ptr
-                            .recall_validity::<_, (_, (_, _))>()
-                            .read_unaligned::<::zerocopy::BecauseImmutable>()
-                    };
-                    let raw_enum = unsafe {
-                        candidate
-                            .cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| {
-                                p.cast_sized::<___ZerocopyRawEnum<'a, N, X, Y>>()
-                            })
-                    };
-                    let raw_enum = unsafe { raw_enum.assume_initialized() };
-                    let project = ::zerocopy::pointer::PtrInner::project::<
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        ẕ4,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = core_reexport::marker::PhantomData<
+                            ComplexWithGenerics<'a, N, X, Y>,
+                        >;
+                        #[inline(always)]
+                        unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                            unsafe {
+                                ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                    (* slf).4
+                                )
+                            }
+                        }
+                    }
+                };
+            };
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::pointer::InvariantsEq<
+                ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+            > for ___ZerocopyVariants<'a, N, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {}
+            #[repr(C)]
+            #[allow(non_snake_case)]
+            union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref> {
+                __field_StructLike: core_reexport::mem::ManuallyDrop<
+                    ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                >,
+                __field_TupleLike: core_reexport::mem::ManuallyDrop<
+                    ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                >,
+                __nonempty: (),
+            }
+            #[allow(non_camel_case_types)]
+            const _: () = {
+                enum ẕ__field_StructLike {}
+                enum ẕ__field_TupleLike {}
+                enum ẕ__nonempty {}
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::HasField<
+                    ẕ__field_StructLike,
+                    { ::zerocopy::UNION_VARIANT_ID },
+                    { ::zerocopy::ident_id!(__field_StructLike) },
+                > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Type = core_reexport::mem::ManuallyDrop<
+                        ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                    >;
+                    #[inline(always)]
+                    unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                        unsafe {
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                (* slf).__field_StructLike
+                            )
+                        }
+                    }
+                }
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::HasField<
+                    ẕ__field_TupleLike,
+                    { ::zerocopy::UNION_VARIANT_ID },
+                    { ::zerocopy::ident_id!(__field_TupleLike) },
+                > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Type = core_reexport::mem::ManuallyDrop<
+                        ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                    >;
+                    #[inline(always)]
+                    unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                        unsafe {
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                (* slf).__field_TupleLike
+                            )
+                        }
+                    }
+                }
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::HasField<
+                    ẕ__nonempty,
+                    { ::zerocopy::UNION_VARIANT_ID },
+                    { ::zerocopy::ident_id!(__nonempty) },
+                > for ___ZerocopyVariants<'a, { N }, X, Y> {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Type = ();
+                    #[inline(always)]
+                    unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                        unsafe {
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                (* slf).__nonempty
+                            )
+                        }
+                    }
+                }
+            };
+            #[repr(C)]
+            struct ___ZerocopyRawEnum<'a: 'static, const N: usize, X, Y: Deref> {
+                tag: ___ZerocopyOuterTag,
+                variants: ___ZerocopyVariants<'a, N, X, Y>,
+            }
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::pointer::InvariantsEq<___ZerocopyRawEnum<'a, N, X, Y>>
+            for ComplexWithGenerics<'a, N, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {}
+            #[allow(non_camel_case_types)]
+            const _: () = {
+                enum ẕtag {}
+                enum ẕvariants {}
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::HasField<
+                    ẕtag,
+                    { ::zerocopy::STRUCT_VARIANT_ID },
+                    { ::zerocopy::ident_id!(tag) },
+                > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Type = ___ZerocopyOuterTag;
+                    #[inline(always)]
+                    unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                        unsafe {
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                (* slf).tag
+                            )
+                        }
+                    }
+                }
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl<
+                    'a: 'static,
+                    const N: usize,
+                    X,
+                    Y: Deref,
+                > ::zerocopy::HasField<
+                    ẕvariants,
+                    { ::zerocopy::STRUCT_VARIANT_ID },
+                    { ::zerocopy::ident_id!(variants) },
+                > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Type = ___ZerocopyVariants<'a, N, X, Y>;
+                    #[inline(always)]
+                    unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                        unsafe {
+                            ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
+                                (* slf).variants
+                            )
+                        }
+                    }
+                }
+            };
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(StructLike) },
+                { ::zerocopy::ident_id!(a) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = u8;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
                         _,
                         { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(variants) },
-                    >;
-                    let variants = unsafe { raw_enum.cast_unsized_unchecked(project) };
-                    #[allow(non_upper_case_globals)]
-                    match tag {
-                        ___ZEROCOPY_TAG_UnitLike => true,
-                        ___ZEROCOPY_TAG_StructLike => {
-                            let variant = unsafe {
-                                variants
-                                    .cast_unsized_unchecked(|
-                                        p: ::zerocopy::pointer::PtrInner<
-                                            '_,
-                                            ___ZerocopyVariants<'a, N, X, Y>,
-                                        >|
-                                    {
-                                        p.cast_sized::<
-                                                ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
-                                            >()
-                                    })
-                            };
-                            let variant = unsafe { variant.assume_initialized() };
-                            <___ZerocopyVariantStruct_StructLike<
-                                'a,
-                                N,
-                                X,
-                                Y,
-                            > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
-                        }
-                        ___ZEROCOPY_TAG_TupleLike => {
-                            let variant = unsafe {
-                                variants
-                                    .cast_unsized_unchecked(|
-                                        p: ::zerocopy::pointer::PtrInner<
-                                            '_,
-                                            ___ZerocopyVariants<'a, N, X, Y>,
-                                        >|
-                                    {
-                                        p.cast_sized::<
-                                                ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
-                                            >()
-                                    })
-                            };
-                            let variant = unsafe { variant.assume_initialized() };
-                            <___ZerocopyVariantStruct_TupleLike<
-                                'a,
-                                N,
-                                X,
-                                Y,
-                            > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
-                        }
-                        _ => false,
-                    }
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    >>::project(slf);
+                    slf
                 }
             }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(StructLike) },
+                { ::zerocopy::ident_id!(b) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = X;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(StructLike) },
+                { ::zerocopy::ident_id!(c) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = X::Target;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(StructLike) },
+                { ::zerocopy::ident_id!(d) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = Y::Target;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(4) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(StructLike) },
+                { ::zerocopy::ident_id!(e) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = [(X, Y); N];
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_StructLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(5) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(TupleLike) },
+                { ::zerocopy::ident_id!(0) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = bool;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_TupleLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(1) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(TupleLike) },
+                { ::zerocopy::ident_id!(1) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = Y;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_TupleLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(2) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            #[allow(deprecated, non_local_definitions)]
+            #[automatically_derived]
+            unsafe impl<
+                'a: 'static,
+                const N: usize,
+                X,
+                Y: Deref,
+            > ::zerocopy::HasField<
+                (),
+                { ::zerocopy::ident_id!(TupleLike) },
+                { ::zerocopy::ident_id!(2) },
+            > for ComplexWithGenerics<'a, { N }, X, Y>
+            where
+                X: Deref<Target = &'a [(X, Y); N]>,
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+                type Type = PhantomData<&'a [(X, Y); N]>;
+                #[inline(always)]
+                unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                    let slf = slf as *mut ___ZerocopyRawEnum<'a, N, X, Y>;
+                    let slf = <___ZerocopyRawEnum<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(variants) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::UNION_VARIANT_ID },
+                        { ::zerocopy::ident_id!(__field_TupleLike) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(value) },
+                    >>::project(slf);
+                    let slf = <_ as ::zerocopy::HasField<
+                        _,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
+                        { ::zerocopy::ident_id!(3) },
+                    >>::project(slf);
+                    slf
+                }
+            }
+            let tag = {
+                let tag_ptr = candidate
+                    .reborrow()
+                    .cast::<
+                        ___ZerocopyTag,
+                        ::zerocopy::pointer::cast::CastSized,
+                        ::zerocopy::pointer::BecauseInvariantsEq,
+                    >()
+                    .cast::<
+                        ___ZerocopyTagPrimitive,
+                        ::zerocopy::pointer::cast::CastSized,
+                        _,
+                    >();
+                tag_ptr
+                    .recall_validity::<_, (_, (_, _))>()
+                    .read_unaligned::<::zerocopy::BecauseImmutable>()
+            };
+            let raw_enum = candidate
+                .cast::<
+                    ___ZerocopyRawEnum<'a, N, X, Y>,
+                    ::zerocopy::pointer::cast::CastSized,
+                    ::zerocopy::pointer::BecauseInvariantsEq,
+                >();
+            let variants = raw_enum.project::<_, { ::zerocopy::ident_id!(variants) }>();
+            #[allow(non_upper_case_globals)]
+            match tag {
+                ___ZEROCOPY_TAG_UnitLike => true,
+                ___ZEROCOPY_TAG_StructLike => {
+                    let variant = variants
+                        .cast::<
+                            ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                            ::zerocopy::pointer::cast::CastSized,
+                            ::zerocopy::pointer::BecauseInvariantsEq,
+                        >();
+                    <___ZerocopyVariantStruct_StructLike<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
+                }
+                ___ZEROCOPY_TAG_TupleLike => {
+                    let variant = variants
+                        .cast::<
+                            ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                            ::zerocopy::pointer::cast::CastSized,
+                            ::zerocopy::pointer::BecauseInvariantsEq,
+                        >();
+                    <___ZerocopyVariantStruct_TupleLike<
+                        'a,
+                        N,
+                        X,
+                        Y,
+                    > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
+                }
+                _ => false,
+            }
+        }
+    }
+
         } no_build
     }
 }
