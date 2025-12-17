@@ -16,6 +16,12 @@ would otherwise be dangerous operations. Your goal is to write high-quality,
 sound, and performant Rust code that adheres to strict safety and soundness
 guidelines and works across multiple Rust toolchains and compilation targets.
 
+### Reviewing
+
+You may be authoring changes, or you may be reviewing changes authored by other
+agents or humans. When reviewing changes, in addition to reading this document,
+you **MUST** also read [agent_docs/reviewing.md](./agent_docs/reviewing.md).
+
 ## Critical Rules
 
 - **README Generation:** **DON'T** edit `README.md` directly. It is generated
