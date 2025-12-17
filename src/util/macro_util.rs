@@ -635,7 +635,7 @@ where
     //   `Src`.
     // - `p as *mut Dst` is a provenance-preserving cast
     #[allow(clippy::multiple_unsafe_ops_per_block)]
-    let c_ptr = unsafe { src.cast_unsized(|p| cast!(p)) };
+    let c_ptr = unsafe { src.cast_unsized::<_, crate::pointer::cast::CastSized, _>() };
 
     match c_ptr.try_into_valid() {
         Ok(ptr) => Ok(ptr),
@@ -649,7 +649,7 @@ where
             //   to the size of `Src`.
             // - `p as *mut Src` is a provenance-preserving cast
             #[allow(clippy::multiple_unsafe_ops_per_block)]
-            let ptr = unsafe { ptr.cast_unsized(|p| cast!(p)) };
+            let ptr = unsafe { ptr.cast_unsized::<_, crate::pointer::cast::CastSized, _>() };
             // SAFETY: `ptr` is `src`, and has the same alignment invariant.
             let ptr = unsafe { ptr.assume_alignment::<I::Alignment>() };
             // SAFETY: `ptr` is `src` and has the same validity invariant.
@@ -702,11 +702,8 @@ where
     //
     //   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and
     //   ABI as `T`
-    let ptr: Ptr<'_, Dst, _> = unsafe {
-        ptr.cast_unsized(|ptr: crate::pointer::PtrInner<'_, mem::MaybeUninit<Dst>>| {
-            ptr.cast_sized()
-        })
-    };
+    let ptr: Ptr<'_, Dst, _> =
+        unsafe { ptr.cast_unsized::<_, crate::pointer::cast::CastSized, _>() };
 
     if Dst::is_bit_valid(ptr.forget_aligned()) {
         // SAFETY: Since `Dst::is_bit_valid`, we know that `ptr`'s referent is
