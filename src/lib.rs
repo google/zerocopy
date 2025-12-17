@@ -1118,8 +1118,10 @@ pub const UNION_VARIANT_ID: i128 = -2;
 ///   if `f` is at index `i`, `FIELD_ID` is `zerocopy::ident_id!(i)`.
 /// - `Field` is a type with the same visibility as `f`.
 /// - `Type` has the same type as `f`.
+///
+/// The implementation of `project` must satisfy its safety post-condition.
 #[doc(hidden)]
-pub unsafe trait HasField<Field, const VARIANT_ID: i128, const FIELD_ID: i128> {
+pub unsafe trait HasField<Field: ?Sized, const VARIANT_ID: i128, const FIELD_ID: i128> {
     fn only_derive_is_allowed_to_implement_this_trait()
     where
         Self: Sized;
@@ -1128,7 +1130,12 @@ pub unsafe trait HasField<Field, const VARIANT_ID: i128, const FIELD_ID: i128> {
     type Type: ?Sized;
 
     /// Projects from `slf` to the field.
-    fn project(slf: PtrInner<'_, Self>) -> PtrInner<'_, Self::Type>;
+    ///
+    /// # Safety
+    ///
+    /// The returned pointer refers to a non-strict subset of the bytes of
+    /// `slf`'s referent, and has the same provenance as `slf`.
+    fn project(slf: PtrInner<'_, Self>) -> *mut Self::Type;
 }
 
 /// Analyzes whether a type is [`FromZeros`].

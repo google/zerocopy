@@ -1,3 +1,19 @@
+warning: ambiguous glob re-exports
+ --> tests/ui-stable/invalid-impls/../../../src/util/macros.rs
+  |
+  | / macro_rules! define_cast {
+... |
+  | |     };
+  | | }
+  | |_^ the name `define_cast` in the macro namespace is first re-exported here
+  |
+ ::: tests/ui-stable/invalid-impls/invalid-impls.rs:17:5
+  |
+ 17 |   use zerocopy::*;
+    |       ----------- but the name `define_cast` in the macro namespace is also re-exported here
+    |
+    = note: `#[warn(ambiguous_glob_reexports)]` on by default
+
 error[E0277]: the trait bound `T: zerocopy::TryFromBytes` is not satisfied
  --> tests/ui-stable/invalid-impls/invalid-impls.rs:27:43
   |
