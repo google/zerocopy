@@ -222,7 +222,7 @@ pub(crate) enum BecauseInvariantsEq {}
 
 macro_rules! unsafe_impl_invariants_eq {
     ($tyvar:ident => $t:ty, $u:ty) => {{
-        crate::util::macros::__unsafe();
+        crate::util::macro_util::__unsafe();
         // SAFETY: The caller promises that this is sound.
         unsafe impl<$tyvar> InvariantsEq<$t> for $u {}
         // SAFETY: The caller promises that this is sound.
