@@ -781,31 +781,13 @@ fn derive_has_field_struct_union(
             type Type = #ty;
 
             #[inline(always)]
-            fn project(slf: #zerocopy_crate::PtrInner<'_, Self>) -> #zerocopy_crate::PtrInner<'_, Self::Type> {
-                let slf = slf.as_non_null().as_ptr();
-                // SAFETY: `PtrInner` promises it references either a zero-sized
-                // byte range, or else will reference a byte range that is
-                // entirely contained within an allocated object. In either
-                // case, this guarantees that `(*slf).#ident` is in-bounds of
-                // `slf`.
-                let field = unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#ident) };
-                // SAFETY: `PtrInner` promises it references either a zero-sized
-                // byte range, or else will reference a byte range that is
-                // entirely contained within an allocated object. In either
-                // case, this guarantees that field projection will not wrap
-                // around the address space, and so `field` will be non-null.
-                let ptr = unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(field) };
-                // SAFETY:
-                // 0. `ptr` addresses a subset of the bytes of
-                //    `slf`, so by invariant on `slf: PtrInner`,
-                //    if `ptr`'s referent is not zero sized,
-                //    then `ptr` has valid provenance for its
-                //    referent, which is entirely contained in
-                //    some Rust allocation, `A`.
-                // 1. By invariant on `slf: PtrInner`, if
-                //    `ptr`'s referent is not zero sized, `A` is
-                //    guaranteed to live for at least `'a`.
-                unsafe { #zerocopy_crate::PtrInner::new(ptr) }
+            unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                // SAFETY: The caller promises that `slf` is a non-null pointer
+                // whose referent is zero-sized or lives in a valid allocation.
+                // Since `#ident` is a struct or union field of `Self`, this
+                // projection preserves or shrinks the referent size, and so the
+                // resulting referent also fits in the same allocation.
+                unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#ident) }
             }
         })
         .build()
@@ -849,21 +831,10 @@ fn derive_try_from_bytes_struct(
                     use #zerocopy_crate::pointer::PtrInner;
 
                     true #(&& {
-                        let project = <Self as #zerocopy_crate::HasField<
+                        let field_candidate = candidate.reborrow().project::<
                             _,
-                            { #zerocopy_crate::STRUCT_VARIANT_ID },
                             { #zerocopy_crate::ident_id!(#field_names) }
-                        >>::project;
-                        // SAFETY:
-                        // - `project` is a field projection, and so it
-                        //   addresses a subset of the bytes addressed by `slf`
-                        // - ..., and so it preserves provenance
-                        // - ..., and `*slf` is a struct, so `UnsafeCell`s exist
-                        //   at the same byte ranges in the returned pointer's
-                        //   referent as they do in `*slf`
-                        let field_candidate = unsafe {
-                            candidate.reborrow().cast_unsized_unchecked(project)
-                        };
+                        >();
 
                         <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
                     })*
@@ -914,11 +885,6 @@ fn derive_try_from_bytes_union(
                     use #zerocopy_crate::pointer::PtrInner;
 
                     false #(|| {
-                        let project = <Self as #zerocopy_crate::HasField<
-                            _,
-                            { #zerocopy_crate::UNION_VARIANT_ID },
-                            { #zerocopy_crate::ident_id!(#field_names) }
-                        >>::project;
                         // SAFETY:
                         // - `project` is a field projection, and so it
                         //   addresses a subset of the bytes addressed by `slf`
@@ -928,7 +894,11 @@ fn derive_try_from_bytes_union(
                         //   returned pointer's referent contain any
                         //   `UnsafeCell`s
                         let field_candidate = unsafe {
-                            candidate.reborrow().cast_unsized_unchecked(project)
+                            candidate.reborrow().transmute_unchecked::<
+                                _,
+                                _,
+                                #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#field_names) }>
+                            >()
                         };
 
                         <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
