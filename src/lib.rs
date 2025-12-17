@@ -1104,7 +1104,7 @@ const _: () = unsafe {
 /// - `Field` is a type with the same visibility as `f`.
 /// - `Type` has the same type as `f`.
 #[doc(hidden)]
-pub unsafe trait HasField<Field, const VARIANT_ID: u128, const FIELD_ID: u128> {
+pub unsafe trait HasField<Field: ?Sized, const VARIANT_ID: u128, const FIELD_ID: u128> {
     fn only_derive_is_allowed_to_implement_this_trait()
     where
         Self: Sized;
@@ -1113,7 +1113,11 @@ pub unsafe trait HasField<Field, const VARIANT_ID: u128, const FIELD_ID: u128> {
     type Type: ?Sized;
 
     /// Projects from `slf` to the field.
-    fn project(slf: PtrInner<'_, Self>) -> PtrInner<'_, Self::Type>;
+    ///
+    /// # Safety
+    ///
+    /// `slf`'s referent must be zero bytes or live in a single allocation.
+    unsafe fn project(slf: *mut Self) -> *mut Self::Type;
 }
 
 /// Analyzes whether a type is [`FromZeros`].
