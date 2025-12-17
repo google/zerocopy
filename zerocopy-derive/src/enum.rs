@@ -297,11 +297,8 @@ pub(crate) fn derive_is_bit_valid(
 
                 #[inline(always)]
                 fn project(slf: #zerocopy_crate::PtrInner<'_, Self>) -> #zerocopy_crate::PtrInner<'_, Self::Type> {
-                    // SAFETY: By invariant on `___ZerocopyRawEnum`,
-                    // `___ZerocopyRawEnum` has the same layout as `Self`.
-                    let slf = unsafe { slf.cast::<___ZerocopyRawEnum #ty_generics>() };
-
-                    slf.project::<_, 0, { #zerocopy_crate::ident_id!(variants) }>()
+                    slf.cast_sized::<___ZerocopyRawEnum #ty_generics>()
+                        .project::<_, 0, { #zerocopy_crate::ident_id!(variants) }>()
                         .project::<_, 0, { #zerocopy_crate::ident_id!(#variants_union_field_ident) }>()
                         .project::<_, 0, { #zerocopy_crate::ident_id!(value) }>()
                         .project::<_, 0, { #zerocopy_crate::ident_id!(#variant_struct_field_index) }>()
