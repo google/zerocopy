@@ -22,6 +22,8 @@
     clippy::multiple_unsafe_ops_per_block,
     clippy::undocumented_unsafe_blocks
 )]
+// We defer to own discretion on type complexity.
+#![allow(clippy::type_complexity)]
 // Inlining format args isn't supported on our MSRV.
 #![allow(clippy::uninlined_format_args)]
 #![deny(
@@ -41,11 +43,12 @@ mod ext;
 mod output_tests;
 mod repr;
 
-use proc_macro2::{Span, TokenStream, TokenTree};
+use proc_macro2::{Span, TokenStream};
 use quote::{quote, ToTokens};
 use syn::{
-    parse_quote, Attribute, Data, DataEnum, DataStruct, DataUnion, DeriveInput, Error, Expr,
-    ExprLit, ExprUnary, GenericParam, Ident, Lit, Meta, Path, Type, UnOp, WherePredicate,
+    parse_quote, spanned::Spanned as _, Attribute, Data, DataEnum, DataStruct, DataUnion,
+    DeriveInput, Error, Expr, ExprLit, ExprUnary, GenericParam, Ident, Lit, Meta, Path, Type, UnOp,
+    WherePredicate,
 };
 
 use crate::{ext::*, repr::*};
@@ -464,11 +467,12 @@ fn derive_known_layout_inner(
 
     Ok(match &ast.data {
         Data::Struct(strct) => {
-            let require_trait_bound_on_field_types = if self_bounds == SelfBounds::SIZED {
-                FieldBounds::None
-            } else {
-                FieldBounds::TRAILING_SELF
-            };
+            let require_trait_bound_on_field_types =
+                if matches!(self_bounds, SelfBounds::All(&[Trait::Sized])) {
+                    FieldBounds::None
+                } else {
+                    FieldBounds::TRAILING_SELF
+                };
 
             // A bound on the trailing field is required, since structs are
             // unsized if their trailing field is unsized. Reflecting the layout
@@ -737,6 +741,52 @@ fn derive_split_at_inner(
     .build())
 }
 
+fn derive_has_field_struct_union(
+    ast: &DeriveInput,
+    data: &dyn DataExt,
+    zerocopy_crate: &Path,
+) -> TokenStream {
+    let fields = ast.data.fields();
+    if fields.is_empty() {
+        return quote! {};
+    }
+
+    let field_tokens = fields.iter().map(|(vis, ident, _)| {
+        let ident = Ident::new(&format!("ẕ{}", ident), ident.span());
+        quote!(
+            #vis enum #ident {}
+        )
+    });
+
+    let has_fields = fields.iter().map(|(_, ident, ty)| {
+        let field_token = Ident::new(&format!("ẕ{}", ident), ident.span());
+        ImplBlockBuilder::new(
+            ast,
+            data,
+            Trait::HasField {
+                // Use `0` to denote the sole 'variant' of structs and unions.
+                variant_id: parse_quote!({ #zerocopy_crate::ident_id!(0) }),
+                field: parse_quote!(#field_token),
+                field_id: parse_quote!({ #zerocopy_crate::ident_id!(#ident) }),
+            },
+            FieldBounds::None,
+            zerocopy_crate,
+        )
+        .inner_extras(quote! {
+            type Type = #ty;
+        })
+        .build()
+    });
+
+    quote! {
+        #[allow(non_camel_case_types)]
+        const _: () = {
+            #(#field_tokens)*
+            #(#has_fields)*
+        };
+    }
+}
+
 /// A struct is `TryFromBytes` if:
 /// - all fields are `TryFromBytes`
 fn derive_try_from_bytes_struct(
@@ -815,6 +865,7 @@ fn derive_try_from_bytes_struct(
         zerocopy_crate,
     )
     .inner_extras(extras)
+    .outer_extras(derive_has_field_struct_union(ast, strct, zerocopy_crate))
     .build())
 }
 
@@ -894,6 +945,7 @@ fn derive_try_from_bytes_union(
         });
     ImplBlockBuilder::new(ast, unn, Trait::TryFromBytes, field_type_trait_bounds, zerocopy_crate)
         .inner_extras(extras)
+        .outer_extras(derive_has_field_struct_union(ast, unn, zerocopy_crate))
         .build()
 }
 
@@ -921,7 +973,7 @@ fn derive_try_from_bytes_enum(
         // required by `gen_trivial_is_bit_valid_unchecked`.
         (None, true) => unsafe { gen_trivial_is_bit_valid_unchecked(zerocopy_crate) },
         (None, false) => {
-            r#enum::derive_is_bit_valid(&ast.ident, &repr, &ast.generics, enm, zerocopy_crate)?
+            r#enum::derive_is_bit_valid(ast, &ast.ident, &repr, &ast.generics, enm, zerocopy_crate)?
         }
     };
 
@@ -964,7 +1016,7 @@ fn try_gen_trivial_is_bit_valid(
     // make this no longer true. To hedge against these, we include an explicit
     // `Self: FromBytes` check in the generated `is_bit_valid`, which is
     // bulletproof.
-    if top_level == Trait::FromBytes && ast.generics.params.is_empty() {
+    if matches!(top_level, Trait::FromBytes) && ast.generics.params.is_empty() {
         Some(quote!(
             // SAFETY: See inline.
             fn is_bit_valid<___ZerocopyAliasing>(
@@ -1533,9 +1585,10 @@ impl PaddingCheck {
     }
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Clone)]
 enum Trait {
     KnownLayout,
+    HasField { variant_id: Box<Expr>, field: Box<Type>, field_id: Box<Expr> },
     Immutable,
     TryFromBytes,
     FromZeros,
@@ -1560,6 +1613,7 @@ impl ToTokens for Trait {
         // [1] https://doc.rust-lang.org/1.81.0/std/fmt/trait.Debug.html#stability
         // [2] https://doc.rust-lang.org/beta/unstable-book/compiler-flags/fmt-debug.html
         let s = match self {
+            Trait::HasField { .. } => "HasField",
             Trait::KnownLayout => "KnownLayout",
             Trait::Immutable => "Immutable",
             Trait::TryFromBytes => "TryFromBytes",
@@ -1573,7 +1627,23 @@ impl ToTokens for Trait {
             Trait::SplitAt => "SplitAt",
         };
         let ident = Ident::new(s, Span::call_site());
-        tokens.extend(core::iter::once(TokenTree::Ident(ident)));
+        let arguments: Option<syn::AngleBracketedGenericArguments> = match self {
+            Trait::HasField { variant_id, field, field_id } => {
+                Some(parse_quote!(<#field, #variant_id, #field_id>))
+            }
+            Trait::KnownLayout
+            | Trait::Immutable
+            | Trait::TryFromBytes
+            | Trait::FromZeros
+            | Trait::FromBytes
+            | Trait::IntoBytes
+            | Trait::Unaligned
+            | Trait::Sized
+            | Trait::ByteHash
+            | Trait::ByteEq
+            | Trait::SplitAt => None,
+        };
+        tokens.extend(quote!(#ident #arguments));
     }
 }
 
@@ -1588,7 +1658,6 @@ impl Trait {
     }
 }
 
-#[derive(Debug, Eq, PartialEq)]
 enum TraitBound {
     Slf,
     Other(Trait),
@@ -1606,7 +1675,6 @@ impl<'a> FieldBounds<'a> {
     const TRAILING_SELF: FieldBounds<'a> = FieldBounds::Trailing(&[TraitBound::Slf]);
 }
 
-#[derive(Debug, Eq, PartialEq)]
 enum SelfBounds<'a> {
     None,
     All(&'a [Trait]),
@@ -1620,16 +1688,19 @@ impl<'a> SelfBounds<'a> {
 }
 
 /// Normalizes a slice of bounds by replacing [`TraitBound::Slf`] with `slf`.
-fn normalize_bounds(slf: Trait, bounds: &[TraitBound]) -> impl '_ + Iterator<Item = Trait> {
+fn normalize_bounds<'a>(
+    slf: &'a Trait,
+    bounds: &'a [TraitBound],
+) -> impl 'a + Iterator<Item = Trait> {
     bounds.iter().map(move |bound| match bound {
-        TraitBound::Slf => slf,
-        TraitBound::Other(trt) => *trt,
+        TraitBound::Slf => slf.clone(),
+        TraitBound::Other(trt) => trt.clone(),
     })
 }
 
-struct ImplBlockBuilder<'a, D: DataExt> {
+struct ImplBlockBuilder<'a> {
     input: &'a DeriveInput,
-    data: &'a D,
+    data: &'a dyn DataExt,
     trt: Trait,
     field_type_trait_bounds: FieldBounds<'a>,
     zerocopy_crate: &'a Path,
@@ -1639,10 +1710,10 @@ struct ImplBlockBuilder<'a, D: DataExt> {
     outer_extras: Option<TokenStream>,
 }
 
-impl<'a, D: DataExt> ImplBlockBuilder<'a, D> {
+impl<'a> ImplBlockBuilder<'a> {
     fn new(
         input: &'a DeriveInput,
-        data: &'a D,
+        data: &'a dyn DataExt,
         trt: Trait,
         field_type_trait_bounds: FieldBounds<'a>,
         zerocopy_crate: &'a Path,
@@ -1759,12 +1830,12 @@ impl<'a, D: DataExt> ImplBlockBuilder<'a, D> {
             (FieldBounds::All(traits), _) => fields
                 .iter()
                 .map(|(_vis, _name, ty)| {
-                    bound_tt(ty, normalize_bounds(self.trt, traits), zerocopy_crate)
+                    bound_tt(ty, normalize_bounds(&self.trt, traits), zerocopy_crate)
                 })
                 .collect(),
             (FieldBounds::None, _) | (FieldBounds::Trailing(..), []) => vec![],
             (FieldBounds::Trailing(traits), [.., last]) => {
-                vec![bound_tt(last.2, normalize_bounds(self.trt, traits), zerocopy_crate)]
+                vec![bound_tt(last.2, normalize_bounds(&self.trt, traits), zerocopy_crate)]
             }
             (FieldBounds::Explicit(bounds), _) => bounds,
         };
@@ -1775,8 +1846,8 @@ impl<'a, D: DataExt> ImplBlockBuilder<'a, D> {
             .padding_check
             .and_then(|check| (!fields.is_empty()).then_some(check))
             .map(|check| {
-                let variant_types = variants.iter().map(|var| {
-                    let types = var.iter().map(|(_vis, _name, ty)| ty);
+                let variant_types = variants.iter().map(|(_, fields)| {
+                    let types = fields.iter().map(|(_vis, _name, ty)| ty);
                     quote!([#((#types)),*])
                 });
                 let validator_context = check.validator_macro_context();
@@ -1796,7 +1867,7 @@ impl<'a, D: DataExt> ImplBlockBuilder<'a, D> {
         let self_bounds: Option<WherePredicate> = match self.self_type_trait_bounds {
             SelfBounds::None => None,
             SelfBounds::All(traits) => {
-                Some(bound_tt(&parse_quote!(Self), traits.iter().copied(), zerocopy_crate))
+                Some(bound_tt(&parse_quote!(Self), traits.iter().cloned(), zerocopy_crate))
             }
         };
 
@@ -1841,7 +1912,7 @@ impl<'a, D: DataExt> ImplBlockBuilder<'a, D> {
 
         let inner_extras = self.inner_extras;
         let impl_tokens = quote! {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             // While there are not currently any warnings that this suppresses
             // (that we're aware of), it's good future-proofing hygiene.
             #[automatically_derived]
@@ -1855,7 +1926,7 @@ impl<'a, D: DataExt> ImplBlockBuilder<'a, D> {
             }
         };
 
-        if let Some(outer_extras) = self.outer_extras {
+        if let Some(outer_extras) = self.outer_extras.filter(|e| !e.is_empty()) {
             // So that any items defined in `#outer_extras` don't conflict with
             // existing names defined in this scope.
             quote! {

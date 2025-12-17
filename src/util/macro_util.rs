@@ -35,7 +35,8 @@ use crate::{
     FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, Ptr, TryFromBytes, ValidityError,
 };
 
-/// Projects the type of the field at `Index` in `Self`.
+/// Projects the type of the field at `Index` in `Self` without regard for field
+/// privacy.
 ///
 /// The `Index` parameter is any sort of handle that identifies the field; its
 /// definition is the obligation of the implementer.
@@ -527,6 +528,63 @@ macro_rules! assert_size_eq {
             loop {}
         }
     }};
+}
+
+/// Translates an identifier or tuple index into a numeric identifier.
+#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
+#[macro_export]
+macro_rules! ident_id {
+    ($field:ident) => {
+        $crate::util::macro_util::hash_name(stringify!($field))
+    };
+    ($field:literal) => {
+        $field
+    };
+}
+
+/// Computes the hash of a string.
+///
+/// NOTE(#2749) on hash collisions: This function's output only needs to be
+/// deterministic within a particular compilation. Thus, if a user ever reports
+/// a hash collision (very unlikely given the <= 16-byte special case), we can
+/// strengthen the hash function at that point and publish a new version. Since
+/// this is computed at compile time on small strings, we can easily use more
+/// expensive and higher-quality hash functions if need be.
+#[inline(always)]
+#[must_use]
+#[allow(clippy::as_conversions, clippy::indexing_slicing, clippy::arithmetic_side_effects)]
+pub const fn hash_name(name: &str) -> u128 {
+    let name = name.as_bytes();
+
+    // We guarantee freedom from hash collisions between any two strings of
+    // length 16 or less by having the hashes of such strings be equal to
+    // their value. There is still a possibility that such strings will have
+    // the same value as the hash of a string of length > 16.
+    if name.len() <= size_of::<u128>() {
+        let mut bytes = [0u8; 16];
+
+        let mut i = 0;
+        while i < name.len() {
+            bytes[i] = name[i];
+            i += 1;
+        }
+
+        return u128::from_ne_bytes(bytes);
+    };
+
+    // An implementation of FxHasher, although returning a u128. Probably
+    // not as strong as it could be, but probably more collision resistant
+    // than normal 64-bit FxHasher.
+    let mut hash = 0u128;
+    let mut i = 0;
+    while i < name.len() {
+        // This is just FxHasher's `0x517cc1b727220a95` constant
+        // concatenated back-to-back.
+        const K: u128 = 0x517cc1b727220a95517cc1b727220a95;
+        hash = (hash.rotate_left(5) ^ (name[i] as u128)).wrapping_mul(K);
+        i += 1;
+    }
+    hash
 }
 
 /// Is a given source a valid instance of `Dst`?

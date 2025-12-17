@@ -105,7 +105,7 @@ fn test_known_layout() {
         KnownLayout {
             struct Foo;
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::KnownLayout for Foo
             where
@@ -140,7 +140,7 @@ fn test_known_layout() {
         }
         expands to {
             const _: () = {
-                #[allow(deprecated)]
+                #[allow(deprecated, non_local_definitions)]
                 #[automatically_derived]
                 unsafe impl<T, U> ::zerocopy::KnownLayout for Foo<T, U>
                 where
@@ -281,7 +281,7 @@ fn test_immutable() {
         Immutable {
             struct Foo;
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::Immutable for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -296,7 +296,7 @@ fn test_try_from_bytes() {
         TryFromBytes {
             struct Foo;
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::TryFromBytes for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -322,11 +322,10 @@ fn test_from_zeros() {
         FromZeros {
             struct Foo;
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::TryFromBytes for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
-
                 fn is_bit_valid<___ZerocopyAliasing>(
                     mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
                 ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
@@ -338,8 +337,7 @@ fn test_from_zeros() {
                     true
                 }
             }
-
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::FromZeros for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -354,7 +352,7 @@ fn test_from_bytes_struct() {
         FromBytes {
             struct Foo;
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::TryFromBytes for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -378,13 +376,13 @@ fn test_from_bytes_struct() {
                 }
             }
 
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::FromZeros for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
             }
 
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::FromBytes for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -401,34 +399,47 @@ fn test_from_bytes_union() {
                 a: u8,
             }
         } expands to {
-            #[allow(deprecated)]
-            #[automatically_derived]
-            unsafe impl ::zerocopy::TryFromBytes for Foo
-            where
-                u8: ::zerocopy::TryFromBytes + ::zerocopy::Immutable,
-            {
-                fn only_derive_is_allowed_to_implement_this_trait() {}
-
-                fn is_bit_valid<___ZerocopyAliasing>(
-                    _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-                ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+            const _: () = {
+                #[allow(deprecated, non_local_definitions)]
+                #[automatically_derived]
+                unsafe impl ::zerocopy::TryFromBytes for Foo
                 where
-                    ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                    u8: ::zerocopy::TryFromBytes + ::zerocopy::Immutable,
                 {
-                    if false {
-                        fn assert_is_from_bytes<T>()
-                        where
-                            T: ::zerocopy::FromBytes,
-                            T: ?::zerocopy::util::macro_util::core_reexport::marker::Sized,
-                        {}
-                        assert_is_from_bytes::<Self>();
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    fn is_bit_valid<___ZerocopyAliasing>(
+                        _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                    where
+                        ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                    {
+                        if false {
+                            fn assert_is_from_bytes<T>()
+                            where
+                                T: ::zerocopy::FromBytes,
+                                T: ?::zerocopy::util::macro_util::core_reexport::marker::Sized,
+                            {}
+                            assert_is_from_bytes::<Self>();
+                        }
+                        true
                     }
-
-                    true
                 }
-            }
-
-            #[allow(deprecated)]
+                #[allow(non_camel_case_types)]
+                const _: () = {
+                    enum ẕa {}
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl ::zerocopy::HasField<
+                        ẕa,
+                        { ::zerocopy::ident_id!(0) },
+                        { ::zerocopy::ident_id!(a) },
+                    > for Foo {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = u8;
+                    }
+                };
+            };
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::FromZeros for Foo
             where
@@ -436,8 +447,7 @@ fn test_from_bytes_union() {
             {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
             }
-
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::FromBytes for Foo
             where
@@ -456,7 +466,7 @@ fn test_into_bytes_struct() {
             #[repr(C)]
             struct Foo;
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::IntoBytes for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -472,7 +482,7 @@ fn test_into_bytes_struct() {
                 b: u8,
             }
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::IntoBytes for Foo
             where
@@ -496,7 +506,7 @@ fn test_into_bytes_struct() {
                 b: [Trailing],
             }
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::IntoBytes for Foo
             where
@@ -520,7 +530,7 @@ fn test_into_bytes_struct() {
                 b: [Trailing],
             }
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl<Trailing> ::zerocopy::IntoBytes for Foo<Trailing>
             where
@@ -544,7 +554,7 @@ fn test_into_bytes_enum() {
                         Bar,
                     }
                 } expands to {
-                    #[allow(deprecated)]
+                    #[allow(deprecated, non_local_definitions)]
                     #[automatically_derived]
                     unsafe impl ::zerocopy::IntoBytes for Foo {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -578,7 +588,7 @@ fn test_unaligned() {
             #[repr(C)]
             struct Foo;
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::Unaligned for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -601,10 +611,10 @@ fn test_try_from_bytes_enum() {
                 TupleLike(bool, Y, PhantomData<&'a [(X, Y); N]>),
             }
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
-                for ComplexWithGenerics<'a, { N }, X, Y>
+            for ComplexWithGenerics<'a, { N }, X, Y>
             where
                 X: Deref<Target = &'a [(X, Y); N]>,
                 u8: ::zerocopy::TryFromBytes,
@@ -624,7 +634,6 @@ fn test_try_from_bytes_enum() {
                     ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                 {
                     use ::zerocopy::util::macro_util::core_reexport;
-
                     #[repr(u8)]
                     #[allow(dead_code, non_camel_case_types)]
                     enum ___ZerocopyTag {
@@ -636,19 +645,24 @@ fn test_try_from_bytes_enum() {
                         { core_reexport::mem::size_of::<___ZerocopyTag>() },
                     >;
                     #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_UnitLike: ___ZerocopyTagPrimitive =
-                        ___ZerocopyTag::UnitLike as ___ZerocopyTagPrimitive;
+                    const ___ZEROCOPY_TAG_UnitLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::UnitLike
+                        as ___ZerocopyTagPrimitive;
                     #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_StructLike: ___ZerocopyTagPrimitive =
-                        ___ZerocopyTag::StructLike as ___ZerocopyTagPrimitive;
+                    const ___ZEROCOPY_TAG_StructLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::StructLike
+                        as ___ZerocopyTagPrimitive;
                     #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_TupleLike: ___ZerocopyTagPrimitive =
-                        ___ZerocopyTag::TupleLike as ___ZerocopyTagPrimitive;
+                    const ___ZEROCOPY_TAG_TupleLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::TupleLike
+                        as ___ZerocopyTagPrimitive;
                     type ___ZerocopyOuterTag = ();
                     type ___ZerocopyInnerTag = ___ZerocopyTag;
                     #[repr(C)]
                     #[allow(non_snake_case)]
-                    struct ___ZerocopyVariantStruct_StructLike<'a: 'static, const N: usize, X, Y: Deref>(
+                    struct ___ZerocopyVariantStruct_StructLike<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    >(
                         core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                         u8,
                         X,
@@ -659,118 +673,304 @@ fn test_try_from_bytes_enum() {
                     )
                     where
                         X: Deref<Target = &'a [(X, Y); N]>;
-                    #[allow(deprecated)]
-                    #[automatically_derived]
-                    unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
+                    const _: () = {
+                        #[allow(deprecated, non_local_definitions)]
+                        #[automatically_derived]
+                        unsafe impl<
+                            'a: 'static,
+                            const N: usize,
+                            X,
+                            Y: Deref,
+                        > ::zerocopy::TryFromBytes
                         for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                    where
-                        X: Deref<Target = &'a [(X, Y); N]>,
-                        core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>: ::zerocopy::TryFromBytes,
-                        u8: ::zerocopy::TryFromBytes,
-                        X: ::zerocopy::TryFromBytes,
-                        X::Target: ::zerocopy::TryFromBytes,
-                        Y::Target: ::zerocopy::TryFromBytes,
-                        [(X, Y); N]: ::zerocopy::TryFromBytes,
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>:
-                            ::zerocopy::TryFromBytes,
-                    {
-                        fn only_derive_is_allowed_to_implement_this_trait() {}
-                        fn is_bit_valid<___ZerocopyAliasing>(
-                            mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-                        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                         where
-                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                            X: Deref<Target = &'a [(X, Y); N]>,
+                            core_reexport::mem::MaybeUninit<
+                                ___ZerocopyInnerTag,
+                            >: ::zerocopy::TryFromBytes,
+                            u8: ::zerocopy::TryFromBytes,
+                            X: ::zerocopy::TryFromBytes,
+                            X::Target: ::zerocopy::TryFromBytes,
+                            Y::Target: ::zerocopy::TryFromBytes,
+                            [(X, Y); N]: ::zerocopy::TryFromBytes,
+                            core_reexport::marker::PhantomData<
+                                ComplexWithGenerics<'a, N, X, Y>,
+                            >: ::zerocopy::TryFromBytes,
                         {
-                            use ::zerocopy::util::macro_util::core_reexport;
-                            use ::zerocopy::pointer::PtrInner;
-
-                            true && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).0);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <core_reexport::mem::MaybeUninit<
-                                        ___ZerocopyInnerTag,
-                                    > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).1);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).2);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <X as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).3);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).4);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).5);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <[(X, Y); N] as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).6);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <core_reexport::marker::PhantomData<
-                                        ComplexWithGenerics<'a, N, X, Y>,
-                                    > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            fn only_derive_is_allowed_to_implement_this_trait() {}
+                            fn is_bit_valid<___ZerocopyAliasing>(
+                                mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                            where
+                                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                            {
+                                use ::zerocopy::util::macro_util::core_reexport;
+                                use ::zerocopy::pointer::PtrInner;
+                                true
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).0);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <core_reexport::mem::MaybeUninit<
+                                            ___ZerocopyInnerTag,
+                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).1);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).2);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <X as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).3);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).4);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).5);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <[(
+                                            X,
+                                            Y,
+                                        ); N] as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).6);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <core_reexport::marker::PhantomData<
+                                            ComplexWithGenerics<'a, N, X, Y>,
+                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                                    }
                             }
                         }
-                    }
+                        #[allow(non_camel_case_types)]
+                        const _: () = {
+                            enum ẕ0 {}
+                            enum ẕ1 {}
+                            enum ẕ2 {}
+                            enum ẕ3 {}
+                            enum ẕ4 {}
+                            enum ẕ5 {}
+                            enum ẕ6 {}
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ0,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(0) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ1,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(1) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = u8;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ2,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(2) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = X;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ3,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(3) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = X::Target;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ4,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(4) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = Y::Target;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ5,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(5) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = [(X, Y); N];
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ6,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(6) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = core_reexport::marker::PhantomData<
+                                    ComplexWithGenerics<'a, N, X, Y>,
+                                >;
+                            }
+                        };
+                    };
                     #[repr(C)]
                     #[allow(non_snake_case)]
-                    struct ___ZerocopyVariantStruct_TupleLike<'a: 'static, const N: usize, X, Y: Deref>(
+                    struct ___ZerocopyVariantStruct_TupleLike<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    >(
                         core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                         bool,
                         Y,
@@ -779,100 +979,230 @@ fn test_try_from_bytes_enum() {
                     )
                     where
                         X: Deref<Target = &'a [(X, Y); N]>;
-                    #[allow(deprecated)]
-                    #[automatically_derived]
-                    unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
+                    const _: () = {
+                        #[allow(deprecated, non_local_definitions)]
+                        #[automatically_derived]
+                        unsafe impl<
+                            'a: 'static,
+                            const N: usize,
+                            X,
+                            Y: Deref,
+                        > ::zerocopy::TryFromBytes
                         for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                    where
-                        X: Deref<Target = &'a [(X, Y); N]>,
-                        core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>: ::zerocopy::TryFromBytes,
-                        bool: ::zerocopy::TryFromBytes,
-                        Y: ::zerocopy::TryFromBytes,
-                        PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>:
-                            ::zerocopy::TryFromBytes,
-                    {
-                        fn only_derive_is_allowed_to_implement_this_trait() {}
-                        fn is_bit_valid<___ZerocopyAliasing>(
-                            mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-                        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                         where
-                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                            X: Deref<Target = &'a [(X, Y); N]>,
+                            core_reexport::mem::MaybeUninit<
+                                ___ZerocopyInnerTag,
+                            >: ::zerocopy::TryFromBytes,
+                            bool: ::zerocopy::TryFromBytes,
+                            Y: ::zerocopy::TryFromBytes,
+                            PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
+                            core_reexport::marker::PhantomData<
+                                ComplexWithGenerics<'a, N, X, Y>,
+                            >: ::zerocopy::TryFromBytes,
                         {
-                            use ::zerocopy::util::macro_util::core_reexport;
-                            use ::zerocopy::pointer::PtrInner;
-
-                            true && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).0);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <core_reexport::mem::MaybeUninit<
-                                        ___ZerocopyInnerTag,
-                                    > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).1);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <bool as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).2);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <Y as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).3);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <PhantomData<&'a [(X, Y); N]> as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                    field_candidate,
-                                )
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).4);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <core_reexport::marker::PhantomData<
-                                        ComplexWithGenerics<'a, N, X, Y>,
-                                    > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            fn only_derive_is_allowed_to_implement_this_trait() {}
+                            fn is_bit_valid<___ZerocopyAliasing>(
+                                mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                            where
+                                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                            {
+                                use ::zerocopy::util::macro_util::core_reexport;
+                                use ::zerocopy::pointer::PtrInner;
+                                true
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).0);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <core_reexport::mem::MaybeUninit<
+                                            ___ZerocopyInnerTag,
+                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).1);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <bool as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).2);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <Y as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).3);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <PhantomData<
+                                            &'a [(X, Y); N],
+                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).4);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <core_reexport::marker::PhantomData<
+                                            ComplexWithGenerics<'a, N, X, Y>,
+                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                                    }
                             }
                         }
-                    }
+                        #[allow(non_camel_case_types)]
+                        const _: () = {
+                            enum ẕ0 {}
+                            enum ẕ1 {}
+                            enum ẕ2 {}
+                            enum ẕ3 {}
+                            enum ẕ4 {}
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ0,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(0) },
+                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ1,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(1) },
+                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = bool;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ2,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(2) },
+                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = Y;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ3,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(3) },
+                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = PhantomData<&'a [(X, Y); N]>;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ4,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(4) },
+                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = core_reexport::marker::PhantomData<
+                                    ComplexWithGenerics<'a, N, X, Y>,
+                                >;
+                            }
+                        };
+                    };
                     #[repr(C)]
                     #[allow(non_snake_case)]
                     union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref> {
-                        __field_StructLike:
-                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_StructLike<'a, N, X, Y>>,
-                        __field_TupleLike:
-                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>>,
+                        __field_StructLike: core_reexport::mem::ManuallyDrop<
+                            ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                        >,
+                        __field_TupleLike: core_reexport::mem::ManuallyDrop<
+                            ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                        >,
                         __nonempty: (),
                     }
                     #[repr(C)]
@@ -880,48 +1210,228 @@ fn test_try_from_bytes_enum() {
                         tag: ___ZerocopyOuterTag,
                         variants: ___ZerocopyVariants<'a, N, X, Y>,
                     }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(a) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = u8;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(b) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = X;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(c) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = X::Target;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(d) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = Y::Target;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(e) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = [(X, Y); N];
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(TupleLike) },
+                        { ::zerocopy::ident_id!(0) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = bool;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(TupleLike) },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = Y;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(TupleLike) },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = PhantomData<&'a [(X, Y); N]>;
+                    }
                     let tag = {
                         let tag_ptr = unsafe {
-                            candidate.reborrow().cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| { p.cast_sized::<___ZerocopyTagPrimitive>() })
+                            candidate
+                                .reborrow()
+                                .cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| {
+                                    p.cast_sized::<___ZerocopyTagPrimitive>()
+                                })
                         };
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                        tag_ptr.recall_validity::<_, (_, (_, _))>().read_unaligned::<::zerocopy::BecauseImmutable>()
+                        tag_ptr
+                            .recall_validity::<_, (_, (_, _))>()
+                            .read_unaligned::<::zerocopy::BecauseImmutable>()
                     };
                     let raw_enum = unsafe {
-                        candidate.cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| { p.cast_sized::<___ZerocopyRawEnum<'a, N, X, Y>>() })
+                        candidate
+                            .cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| {
+                                p.cast_sized::<___ZerocopyRawEnum<'a, N, X, Y>>()
+                            })
                     };
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let variants = unsafe {
                         use ::zerocopy::pointer::PtrInner;
-                        raw_enum.cast_unsized_unchecked(|p: PtrInner<'_, ___ZerocopyRawEnum<'a, N, X, Y>>| {
-                            let p = p.as_non_null().as_ptr();
-                            let ptr = core_reexport::ptr::addr_of_mut!((*p).variants);
-                            let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(ptr) };
-                            unsafe { PtrInner::new(ptr) }
-                        })
+                        raw_enum
+                            .cast_unsized_unchecked(|
+                                p: PtrInner<'_, ___ZerocopyRawEnum<'a, N, X, Y>>|
+                            {
+                                let p = p.as_non_null().as_ptr();
+                                let ptr = core_reexport::ptr::addr_of_mut!((* p).variants);
+                                let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(ptr) };
+                                unsafe { PtrInner::new(ptr) }
+                            })
                     };
                     #[allow(non_upper_case_globals)]
                     match tag {
                         ___ZEROCOPY_TAG_UnitLike => true,
                         ___ZEROCOPY_TAG_StructLike => {
                             let variant = unsafe {
-                                variants.cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, ___ZerocopyVariants<'a, N, X, Y>>| {
-                                    p.cast_sized::<___ZerocopyVariantStruct_StructLike<'a, N, X, Y>>()
-                                })
+                                variants
+                                    .cast_unsized_unchecked(|
+                                        p: ::zerocopy::pointer::PtrInner<
+                                            '_,
+                                            ___ZerocopyVariants<'a, N, X, Y>,
+                                        >|
+                                    {
+                                        p.cast_sized::<
+                                                ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                                            >()
+                                    })
                             };
                             let variant = unsafe { variant.assume_initialized() };
-                        <___ZerocopyVariantStruct_StructLike<'a, N, X, Y> as ::zerocopy ::TryFromBytes>::is_bit_valid (
-                                            variant)
+                            <___ZerocopyVariantStruct_StructLike<
+                                'a,
+                                N,
+                                X,
+                                Y,
+                            > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
                         }
                         ___ZEROCOPY_TAG_TupleLike => {
                             let variant = unsafe {
-                                variants.cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, ___ZerocopyVariants<'a, N, X, Y>>| {
-                                    p.cast_sized::<___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>>()
-                                })
+                                variants
+                                    .cast_unsized_unchecked(|
+                                        p: ::zerocopy::pointer::PtrInner<
+                                            '_,
+                                            ___ZerocopyVariants<'a, N, X, Y>,
+                                        >|
+                                    {
+                                        p.cast_sized::<
+                                                ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                                            >()
+                                    })
                             };
                             let variant = unsafe { variant.assume_initialized() };
-                        <___ZerocopyVariantStruct_TupleLike<'a, N, X, Y> as ::zerocopy ::TryFromBytes>::is_bit_valid (
-                                            variant)
+                            <___ZerocopyVariantStruct_TupleLike<
+                                'a,
+                                N,
+                                X,
+                                Y,
+                            > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
                         }
                         _ => false,
                     }
@@ -942,10 +1452,10 @@ fn test_try_from_bytes_enum() {
                 TupleLike(bool, Y, PhantomData<&'a [(X, Y); N]>),
             }
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
-                for ComplexWithGenerics<'a, { N }, X, Y>
+            for ComplexWithGenerics<'a, { N }, X, Y>
             where
                 X: Deref<Target = &'a [(X, Y); N]>,
                 u8: ::zerocopy::TryFromBytes,
@@ -965,7 +1475,6 @@ fn test_try_from_bytes_enum() {
                     ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                 {
                     use ::zerocopy::util::macro_util::core_reexport;
-
                     #[repr(u32)]
                     #[allow(dead_code, non_camel_case_types)]
                     enum ___ZerocopyTag {
@@ -977,19 +1486,24 @@ fn test_try_from_bytes_enum() {
                         { core_reexport::mem::size_of::<___ZerocopyTag>() },
                     >;
                     #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_UnitLike: ___ZerocopyTagPrimitive =
-                        ___ZerocopyTag::UnitLike as ___ZerocopyTagPrimitive;
+                    const ___ZEROCOPY_TAG_UnitLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::UnitLike
+                        as ___ZerocopyTagPrimitive;
                     #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_StructLike: ___ZerocopyTagPrimitive =
-                        ___ZerocopyTag::StructLike as ___ZerocopyTagPrimitive;
+                    const ___ZEROCOPY_TAG_StructLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::StructLike
+                        as ___ZerocopyTagPrimitive;
                     #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_TupleLike: ___ZerocopyTagPrimitive =
-                        ___ZerocopyTag::TupleLike as ___ZerocopyTagPrimitive;
+                    const ___ZEROCOPY_TAG_TupleLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::TupleLike
+                        as ___ZerocopyTagPrimitive;
                     type ___ZerocopyOuterTag = ();
                     type ___ZerocopyInnerTag = ___ZerocopyTag;
                     #[repr(C)]
                     #[allow(non_snake_case)]
-                    struct ___ZerocopyVariantStruct_StructLike<'a: 'static, const N: usize, X, Y: Deref>(
+                    struct ___ZerocopyVariantStruct_StructLike<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    >(
                         core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                         u8,
                         X,
@@ -1000,118 +1514,304 @@ fn test_try_from_bytes_enum() {
                     )
                     where
                         X: Deref<Target = &'a [(X, Y); N]>;
-                    #[allow(deprecated)]
-                    #[automatically_derived]
-                    unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
+                    const _: () = {
+                        #[allow(deprecated, non_local_definitions)]
+                        #[automatically_derived]
+                        unsafe impl<
+                            'a: 'static,
+                            const N: usize,
+                            X,
+                            Y: Deref,
+                        > ::zerocopy::TryFromBytes
                         for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                    where
-                        X: Deref<Target = &'a [(X, Y); N]>,
-                        core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>: ::zerocopy::TryFromBytes,
-                        u8: ::zerocopy::TryFromBytes,
-                        X: ::zerocopy::TryFromBytes,
-                        X::Target: ::zerocopy::TryFromBytes,
-                        Y::Target: ::zerocopy::TryFromBytes,
-                        [(X, Y); N]: ::zerocopy::TryFromBytes,
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>:
-                            ::zerocopy::TryFromBytes,
-                    {
-                        fn only_derive_is_allowed_to_implement_this_trait() {}
-                        fn is_bit_valid<___ZerocopyAliasing>(
-                            mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-                        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                         where
-                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                            X: Deref<Target = &'a [(X, Y); N]>,
+                            core_reexport::mem::MaybeUninit<
+                                ___ZerocopyInnerTag,
+                            >: ::zerocopy::TryFromBytes,
+                            u8: ::zerocopy::TryFromBytes,
+                            X: ::zerocopy::TryFromBytes,
+                            X::Target: ::zerocopy::TryFromBytes,
+                            Y::Target: ::zerocopy::TryFromBytes,
+                            [(X, Y); N]: ::zerocopy::TryFromBytes,
+                            core_reexport::marker::PhantomData<
+                                ComplexWithGenerics<'a, N, X, Y>,
+                            >: ::zerocopy::TryFromBytes,
                         {
-                            use ::zerocopy::util::macro_util::core_reexport;
-                            use ::zerocopy::pointer::PtrInner;
-
-                            true && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).0);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <core_reexport::mem::MaybeUninit<
-                                        ___ZerocopyInnerTag,
-                                    > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).1);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).2);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <X as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).3);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).4);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).5);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <[(X, Y); N] as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).6);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <core_reexport::marker::PhantomData<
-                                        ComplexWithGenerics<'a, N, X, Y>,
-                                    > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            fn only_derive_is_allowed_to_implement_this_trait() {}
+                            fn is_bit_valid<___ZerocopyAliasing>(
+                                mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                            where
+                                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                            {
+                                use ::zerocopy::util::macro_util::core_reexport;
+                                use ::zerocopy::pointer::PtrInner;
+                                true
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).0);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <core_reexport::mem::MaybeUninit<
+                                            ___ZerocopyInnerTag,
+                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).1);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).2);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <X as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).3);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).4);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).5);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <[(
+                                            X,
+                                            Y,
+                                        ); N] as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).6);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <core_reexport::marker::PhantomData<
+                                            ComplexWithGenerics<'a, N, X, Y>,
+                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                                    }
                             }
                         }
-                    }
+                        #[allow(non_camel_case_types)]
+                        const _: () = {
+                            enum ẕ0 {}
+                            enum ẕ1 {}
+                            enum ẕ2 {}
+                            enum ẕ3 {}
+                            enum ẕ4 {}
+                            enum ẕ5 {}
+                            enum ẕ6 {}
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ0,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(0) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ1,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(1) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = u8;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ2,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(2) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = X;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ3,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(3) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = X::Target;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ4,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(4) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = Y::Target;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ5,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(5) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = [(X, Y); N];
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ6,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(6) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = core_reexport::marker::PhantomData<
+                                    ComplexWithGenerics<'a, N, X, Y>,
+                                >;
+                            }
+                        };
+                    };
                     #[repr(C)]
                     #[allow(non_snake_case)]
-                    struct ___ZerocopyVariantStruct_TupleLike<'a: 'static, const N: usize, X, Y: Deref>(
+                    struct ___ZerocopyVariantStruct_TupleLike<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    >(
                         core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                         bool,
                         Y,
@@ -1120,100 +1820,230 @@ fn test_try_from_bytes_enum() {
                     )
                     where
                         X: Deref<Target = &'a [(X, Y); N]>;
-                    #[allow(deprecated)]
-                    #[automatically_derived]
-                    unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
+                    const _: () = {
+                        #[allow(deprecated, non_local_definitions)]
+                        #[automatically_derived]
+                        unsafe impl<
+                            'a: 'static,
+                            const N: usize,
+                            X,
+                            Y: Deref,
+                        > ::zerocopy::TryFromBytes
                         for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                    where
-                        X: Deref<Target = &'a [(X, Y); N]>,
-                        core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>: ::zerocopy::TryFromBytes,
-                        bool: ::zerocopy::TryFromBytes,
-                        Y: ::zerocopy::TryFromBytes,
-                        PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>:
-                            ::zerocopy::TryFromBytes,
-                    {
-                        fn only_derive_is_allowed_to_implement_this_trait() {}
-                        fn is_bit_valid<___ZerocopyAliasing>(
-                            mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-                        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                         where
-                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                            X: Deref<Target = &'a [(X, Y); N]>,
+                            core_reexport::mem::MaybeUninit<
+                                ___ZerocopyInnerTag,
+                            >: ::zerocopy::TryFromBytes,
+                            bool: ::zerocopy::TryFromBytes,
+                            Y: ::zerocopy::TryFromBytes,
+                            PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
+                            core_reexport::marker::PhantomData<
+                                ComplexWithGenerics<'a, N, X, Y>,
+                            >: ::zerocopy::TryFromBytes,
                         {
-                            use ::zerocopy::util::macro_util::core_reexport;
-                            use ::zerocopy::pointer::PtrInner;
-
-                            true && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).0);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <core_reexport::mem::MaybeUninit<
-                                        ___ZerocopyInnerTag,
-                                    > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).1);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <bool as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).2);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <Y as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).3);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <PhantomData<&'a [(X, Y); N]> as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                    field_candidate,
-                                )
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).4);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <core_reexport::marker::PhantomData<
-                                        ComplexWithGenerics<'a, N, X, Y>,
-                                    > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            fn only_derive_is_allowed_to_implement_this_trait() {}
+                            fn is_bit_valid<___ZerocopyAliasing>(
+                                mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                            where
+                                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                            {
+                                use ::zerocopy::util::macro_util::core_reexport;
+                                use ::zerocopy::pointer::PtrInner;
+                                true
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).0);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <core_reexport::mem::MaybeUninit<
+                                            ___ZerocopyInnerTag,
+                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).1);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <bool as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).2);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <Y as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).3);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <PhantomData<
+                                            &'a [(X, Y); N],
+                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).4);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <core_reexport::marker::PhantomData<
+                                            ComplexWithGenerics<'a, N, X, Y>,
+                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                                    }
                             }
                         }
-                    }
+                        #[allow(non_camel_case_types)]
+                        const _: () = {
+                            enum ẕ0 {}
+                            enum ẕ1 {}
+                            enum ẕ2 {}
+                            enum ẕ3 {}
+                            enum ẕ4 {}
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ0,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(0) },
+                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ1,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(1) },
+                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = bool;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ2,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(2) },
+                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = Y;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ3,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(3) },
+                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = PhantomData<&'a [(X, Y); N]>;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ4,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(4) },
+                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = core_reexport::marker::PhantomData<
+                                    ComplexWithGenerics<'a, N, X, Y>,
+                                >;
+                            }
+                        };
+                    };
                     #[repr(C)]
                     #[allow(non_snake_case)]
                     union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref> {
-                        __field_StructLike:
-                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_StructLike<'a, N, X, Y>>,
-                        __field_TupleLike:
-                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>>,
+                        __field_StructLike: core_reexport::mem::ManuallyDrop<
+                            ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                        >,
+                        __field_TupleLike: core_reexport::mem::ManuallyDrop<
+                            ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                        >,
                         __nonempty: (),
                     }
                     #[repr(C)]
@@ -1221,48 +2051,228 @@ fn test_try_from_bytes_enum() {
                         tag: ___ZerocopyOuterTag,
                         variants: ___ZerocopyVariants<'a, N, X, Y>,
                     }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(a) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = u8;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(b) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = X;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(c) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = X::Target;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(d) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = Y::Target;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(e) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = [(X, Y); N];
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(TupleLike) },
+                        { ::zerocopy::ident_id!(0) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = bool;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(TupleLike) },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = Y;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(TupleLike) },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = PhantomData<&'a [(X, Y); N]>;
+                    }
                     let tag = {
                         let tag_ptr = unsafe {
-                            candidate.reborrow().cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| { p.cast_sized::<___ZerocopyTagPrimitive> ()})
+                            candidate
+                                .reborrow()
+                                .cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| {
+                                    p.cast_sized::<___ZerocopyTagPrimitive>()
+                                })
                         };
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                        tag_ptr.recall_validity::<_, (_, (_, _))>().read_unaligned::<::zerocopy::BecauseImmutable>()
+                        tag_ptr
+                            .recall_validity::<_, (_, (_, _))>()
+                            .read_unaligned::<::zerocopy::BecauseImmutable>()
                     };
                     let raw_enum = unsafe {
-                        candidate.cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| { p.cast_sized::<___ZerocopyRawEnum<'a, N, X, Y>> ()})
+                        candidate
+                            .cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| {
+                                p.cast_sized::<___ZerocopyRawEnum<'a, N, X, Y>>()
+                            })
                     };
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let variants = unsafe {
                         use ::zerocopy::pointer::PtrInner;
-                        raw_enum.cast_unsized_unchecked(|p: PtrInner<'_, ___ZerocopyRawEnum<'a, N, X, Y>>| {
-                            let p = p.as_non_null().as_ptr();
-                            let ptr = core_reexport::ptr::addr_of_mut!((*p).variants);
-                            let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(ptr) };
-                            unsafe { PtrInner::new(ptr) }
-                        })
+                        raw_enum
+                            .cast_unsized_unchecked(|
+                                p: PtrInner<'_, ___ZerocopyRawEnum<'a, N, X, Y>>|
+                            {
+                                let p = p.as_non_null().as_ptr();
+                                let ptr = core_reexport::ptr::addr_of_mut!((* p).variants);
+                                let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(ptr) };
+                                unsafe { PtrInner::new(ptr) }
+                            })
                     };
                     #[allow(non_upper_case_globals)]
                     match tag {
                         ___ZEROCOPY_TAG_UnitLike => true,
                         ___ZEROCOPY_TAG_StructLike => {
                             let variant = unsafe {
-                                variants.cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, ___ZerocopyVariants<'a, N, X, Y>>| {
-                                    p.cast_sized::<___ZerocopyVariantStruct_StructLike<'a, N, X, Y>>()
-                                })
+                                variants
+                                    .cast_unsized_unchecked(|
+                                        p: ::zerocopy::pointer::PtrInner<
+                                            '_,
+                                            ___ZerocopyVariants<'a, N, X, Y>,
+                                        >|
+                                    {
+                                        p.cast_sized::<
+                                                ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                                            >()
+                                    })
                             };
                             let variant = unsafe { variant.assume_initialized() };
-                        <___ZerocopyVariantStruct_StructLike<'a, N, X, Y> as ::zerocopy ::TryFromBytes>::is_bit_valid (
-                                            variant)
+                            <___ZerocopyVariantStruct_StructLike<
+                                'a,
+                                N,
+                                X,
+                                Y,
+                            > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
                         }
                         ___ZEROCOPY_TAG_TupleLike => {
                             let variant = unsafe {
-                                variants.cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, ___ZerocopyVariants<'a, N, X, Y>>| {
-                                    p.cast_sized::<___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>>()
-                                })
+                                variants
+                                    .cast_unsized_unchecked(|
+                                        p: ::zerocopy::pointer::PtrInner<
+                                            '_,
+                                            ___ZerocopyVariants<'a, N, X, Y>,
+                                        >|
+                                    {
+                                        p.cast_sized::<
+                                                ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                                            >()
+                                    })
                             };
                             let variant = unsafe { variant.assume_initialized() };
-                        <___ZerocopyVariantStruct_TupleLike<'a, N, X, Y> as ::zerocopy ::TryFromBytes>::is_bit_valid (
-                                            variant)
+                            <___ZerocopyVariantStruct_TupleLike<
+                                'a,
+                                N,
+                                X,
+                                Y,
+                            > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
                         }
                         _ => false,
                     }
@@ -1283,10 +2293,10 @@ fn test_try_from_bytes_enum() {
                 TupleLike(bool, Y, PhantomData<&'a [(X, Y); N]>),
             }
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
-                for ComplexWithGenerics<'a, { N }, X, Y>
+            for ComplexWithGenerics<'a, { N }, X, Y>
             where
                 X: Deref<Target = &'a [(X, Y); N]>,
                 u8: ::zerocopy::TryFromBytes,
@@ -1306,7 +2316,6 @@ fn test_try_from_bytes_enum() {
                     ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                 {
                     use ::zerocopy::util::macro_util::core_reexport;
-
                     #[repr(C)]
                     #[allow(dead_code, non_camel_case_types)]
                     enum ___ZerocopyTag {
@@ -1318,19 +2327,24 @@ fn test_try_from_bytes_enum() {
                         { core_reexport::mem::size_of::<___ZerocopyTag>() },
                     >;
                     #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_UnitLike: ___ZerocopyTagPrimitive =
-                        ___ZerocopyTag::UnitLike as ___ZerocopyTagPrimitive;
+                    const ___ZEROCOPY_TAG_UnitLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::UnitLike
+                        as ___ZerocopyTagPrimitive;
                     #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_StructLike: ___ZerocopyTagPrimitive =
-                        ___ZerocopyTag::StructLike as ___ZerocopyTagPrimitive;
+                    const ___ZEROCOPY_TAG_StructLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::StructLike
+                        as ___ZerocopyTagPrimitive;
                     #[allow(non_upper_case_globals)]
-                    const ___ZEROCOPY_TAG_TupleLike: ___ZerocopyTagPrimitive =
-                        ___ZerocopyTag::TupleLike as ___ZerocopyTagPrimitive;
+                    const ___ZEROCOPY_TAG_TupleLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::TupleLike
+                        as ___ZerocopyTagPrimitive;
                     type ___ZerocopyOuterTag = ___ZerocopyTag;
                     type ___ZerocopyInnerTag = ();
                     #[repr(C)]
                     #[allow(non_snake_case)]
-                    struct ___ZerocopyVariantStruct_StructLike<'a: 'static, const N: usize, X, Y: Deref>(
+                    struct ___ZerocopyVariantStruct_StructLike<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    >(
                         core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                         u8,
                         X,
@@ -1341,118 +2355,304 @@ fn test_try_from_bytes_enum() {
                     )
                     where
                         X: Deref<Target = &'a [(X, Y); N]>;
-                    #[allow(deprecated)]
-                    #[automatically_derived]
-                    unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
+                    const _: () = {
+                        #[allow(deprecated, non_local_definitions)]
+                        #[automatically_derived]
+                        unsafe impl<
+                            'a: 'static,
+                            const N: usize,
+                            X,
+                            Y: Deref,
+                        > ::zerocopy::TryFromBytes
                         for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
-                    where
-                        X: Deref<Target = &'a [(X, Y); N]>,
-                        core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>: ::zerocopy::TryFromBytes,
-                        u8: ::zerocopy::TryFromBytes,
-                        X: ::zerocopy::TryFromBytes,
-                        X::Target: ::zerocopy::TryFromBytes,
-                        Y::Target: ::zerocopy::TryFromBytes,
-                        [(X, Y); N]: ::zerocopy::TryFromBytes,
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>:
-                            ::zerocopy::TryFromBytes,
-                    {
-                        fn only_derive_is_allowed_to_implement_this_trait() {}
-                        fn is_bit_valid<___ZerocopyAliasing>(
-                            mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-                        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                         where
-                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                            X: Deref<Target = &'a [(X, Y); N]>,
+                            core_reexport::mem::MaybeUninit<
+                                ___ZerocopyInnerTag,
+                            >: ::zerocopy::TryFromBytes,
+                            u8: ::zerocopy::TryFromBytes,
+                            X: ::zerocopy::TryFromBytes,
+                            X::Target: ::zerocopy::TryFromBytes,
+                            Y::Target: ::zerocopy::TryFromBytes,
+                            [(X, Y); N]: ::zerocopy::TryFromBytes,
+                            core_reexport::marker::PhantomData<
+                                ComplexWithGenerics<'a, N, X, Y>,
+                            >: ::zerocopy::TryFromBytes,
                         {
-                            use ::zerocopy::util::macro_util::core_reexport;
-                            use ::zerocopy::pointer::PtrInner;
-
-                            true && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).0);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <core_reexport::mem::MaybeUninit<
-                                        ___ZerocopyInnerTag,
-                                    > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).1);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).2);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <X as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).3);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).4);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).5);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <[(X, Y); N] as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).6);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <core_reexport::marker::PhantomData<
-                                        ComplexWithGenerics<'a, N, X, Y>,
-                                    > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            fn only_derive_is_allowed_to_implement_this_trait() {}
+                            fn is_bit_valid<___ZerocopyAliasing>(
+                                mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                            where
+                                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                            {
+                                use ::zerocopy::util::macro_util::core_reexport;
+                                use ::zerocopy::pointer::PtrInner;
+                                true
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).0);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <core_reexport::mem::MaybeUninit<
+                                            ___ZerocopyInnerTag,
+                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).1);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).2);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <X as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).3);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).4);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).5);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <[(
+                                            X,
+                                            Y,
+                                        ); N] as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).6);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <core_reexport::marker::PhantomData<
+                                            ComplexWithGenerics<'a, N, X, Y>,
+                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                                    }
                             }
                         }
-                    }
+                        #[allow(non_camel_case_types)]
+                        const _: () = {
+                            enum ẕ0 {}
+                            enum ẕ1 {}
+                            enum ẕ2 {}
+                            enum ẕ3 {}
+                            enum ẕ4 {}
+                            enum ẕ5 {}
+                            enum ẕ6 {}
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ0,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(0) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ1,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(1) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = u8;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ2,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(2) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = X;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ3,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(3) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = X::Target;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ4,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(4) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = Y::Target;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ5,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(5) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = [(X, Y); N];
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ6,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(6) },
+                            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = core_reexport::marker::PhantomData<
+                                    ComplexWithGenerics<'a, N, X, Y>,
+                                >;
+                            }
+                        };
+                    };
                     #[repr(C)]
                     #[allow(non_snake_case)]
-                    struct ___ZerocopyVariantStruct_TupleLike<'a: 'static, const N: usize, X, Y: Deref>(
+                    struct ___ZerocopyVariantStruct_TupleLike<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    >(
                         core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                         bool,
                         Y,
@@ -1461,100 +2661,230 @@ fn test_try_from_bytes_enum() {
                     )
                     where
                         X: Deref<Target = &'a [(X, Y); N]>;
-                    #[allow(deprecated)]
-                    #[automatically_derived]
-                    unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
+                    const _: () = {
+                        #[allow(deprecated, non_local_definitions)]
+                        #[automatically_derived]
+                        unsafe impl<
+                            'a: 'static,
+                            const N: usize,
+                            X,
+                            Y: Deref,
+                        > ::zerocopy::TryFromBytes
                         for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
-                    where
-                        X: Deref<Target = &'a [(X, Y); N]>,
-                        core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>: ::zerocopy::TryFromBytes,
-                        bool: ::zerocopy::TryFromBytes,
-                        Y: ::zerocopy::TryFromBytes,
-                        PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
-                        core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>:
-                            ::zerocopy::TryFromBytes,
-                    {
-                        fn only_derive_is_allowed_to_implement_this_trait() {}
-                        fn is_bit_valid<___ZerocopyAliasing>(
-                            mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-                        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                         where
-                            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                            X: Deref<Target = &'a [(X, Y); N]>,
+                            core_reexport::mem::MaybeUninit<
+                                ___ZerocopyInnerTag,
+                            >: ::zerocopy::TryFromBytes,
+                            bool: ::zerocopy::TryFromBytes,
+                            Y: ::zerocopy::TryFromBytes,
+                            PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
+                            core_reexport::marker::PhantomData<
+                                ComplexWithGenerics<'a, N, X, Y>,
+                            >: ::zerocopy::TryFromBytes,
                         {
-                            use ::zerocopy::util::macro_util::core_reexport;
-                            use ::zerocopy::pointer::PtrInner;
-
-                            true && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).0);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <core_reexport::mem::MaybeUninit<
-                                        ___ZerocopyInnerTag,
-                                    > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).1);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <bool as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).2);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <Y as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).3);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <PhantomData<&'a [(X, Y); N]> as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                    field_candidate,
-                                )
-                            } && {
-                                let field_candidate = unsafe {
-                                    let project = |slf: PtrInner<'_, Self>| {
-                                        let slf = slf.as_non_null().as_ptr();
-                                        let field = core_reexport::ptr::addr_of_mut!((*slf).4);
-                                        let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                        unsafe { PtrInner::new(ptr) }
-                                    };
-                                    candidate.reborrow().cast_unsized_unchecked(project)
-                                };
-                                <core_reexport::marker::PhantomData<
-                                        ComplexWithGenerics<'a, N, X, Y>,
-                                    > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                            fn only_derive_is_allowed_to_implement_this_trait() {}
+                            fn is_bit_valid<___ZerocopyAliasing>(
+                                mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+                            ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+                            where
+                                ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+                            {
+                                use ::zerocopy::util::macro_util::core_reexport;
+                                use ::zerocopy::pointer::PtrInner;
+                                true
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).0);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <core_reexport::mem::MaybeUninit<
+                                            ___ZerocopyInnerTag,
+                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).1);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <bool as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).2);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <Y as ::zerocopy::TryFromBytes>::is_bit_valid(
+                                            field_candidate,
+                                        )
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).3);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <PhantomData<
+                                            &'a [(X, Y); N],
+                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                                    }
+                                    && {
+                                        let field_candidate = unsafe {
+                                            let project = |slf: PtrInner<'_, Self>| {
+                                                let slf = slf.as_non_null().as_ptr();
+                                                let field = core_reexport::ptr::addr_of_mut!((* slf).4);
+                                                let ptr = unsafe {
+                                                    core_reexport::ptr::NonNull::new_unchecked(field)
+                                                };
+                                                unsafe { PtrInner::new(ptr) }
+                                            };
+                                            candidate.reborrow().cast_unsized_unchecked(project)
+                                        };
+                                        <core_reexport::marker::PhantomData<
+                                            ComplexWithGenerics<'a, N, X, Y>,
+                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
+                                    }
                             }
                         }
-                    }
+                        #[allow(non_camel_case_types)]
+                        const _: () = {
+                            enum ẕ0 {}
+                            enum ẕ1 {}
+                            enum ẕ2 {}
+                            enum ẕ3 {}
+                            enum ẕ4 {}
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ0,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(0) },
+                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ1,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(1) },
+                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = bool;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ2,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(2) },
+                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = Y;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ3,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(3) },
+                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = PhantomData<&'a [(X, Y); N]>;
+                            }
+                            #[allow(deprecated, non_local_definitions)]
+                            #[automatically_derived]
+                            unsafe impl<
+                                'a: 'static,
+                                const N: usize,
+                                X,
+                                Y: Deref,
+                            > ::zerocopy::HasField<
+                                ẕ4,
+                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::ident_id!(4) },
+                            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                            where
+                                X: Deref<Target = &'a [(X, Y); N]>,
+                            {
+                                fn only_derive_is_allowed_to_implement_this_trait() {}
+                                type Type = core_reexport::marker::PhantomData<
+                                    ComplexWithGenerics<'a, N, X, Y>,
+                                >;
+                            }
+                        };
+                    };
                     #[repr(C)]
                     #[allow(non_snake_case)]
                     union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref> {
-                        __field_StructLike:
-                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_StructLike<'a, N, X, Y>>,
-                        __field_TupleLike:
-                            core_reexport::mem::ManuallyDrop<___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>>,
+                        __field_StructLike: core_reexport::mem::ManuallyDrop<
+                            ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                        >,
+                        __field_TupleLike: core_reexport::mem::ManuallyDrop<
+                            ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                        >,
                         __nonempty: (),
                     }
                     #[repr(C)]
@@ -1562,48 +2892,228 @@ fn test_try_from_bytes_enum() {
                         tag: ___ZerocopyOuterTag,
                         variants: ___ZerocopyVariants<'a, N, X, Y>,
                     }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(a) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = u8;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(b) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = X;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(c) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = X::Target;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(d) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = Y::Target;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(e) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = [(X, Y); N];
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(TupleLike) },
+                        { ::zerocopy::ident_id!(0) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = bool;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(TupleLike) },
+                        { ::zerocopy::ident_id!(1) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = Y;
+                    }
+                    #[allow(deprecated, non_local_definitions)]
+                    #[automatically_derived]
+                    unsafe impl<
+                        'a: 'static,
+                        const N: usize,
+                        X,
+                        Y: Deref,
+                    > ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(TupleLike) },
+                        { ::zerocopy::ident_id!(2) },
+                    > for ComplexWithGenerics<'a, { N }, X, Y>
+                    where
+                        X: Deref<Target = &'a [(X, Y); N]>,
+                    {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Type = PhantomData<&'a [(X, Y); N]>;
+                    }
                     let tag = {
                         let tag_ptr = unsafe {
-                            candidate.reborrow().cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| { p.cast_sized::<___ZerocopyTagPrimitive> ()})
+                            candidate
+                                .reborrow()
+                                .cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| {
+                                    p.cast_sized::<___ZerocopyTagPrimitive>()
+                                })
                         };
                         let tag_ptr = unsafe { tag_ptr.assume_initialized() };
-                        tag_ptr.recall_validity::<_, (_, (_, _))>().read_unaligned::<::zerocopy::BecauseImmutable>()
+                        tag_ptr
+                            .recall_validity::<_, (_, (_, _))>()
+                            .read_unaligned::<::zerocopy::BecauseImmutable>()
                     };
                     let raw_enum = unsafe {
-                        candidate.cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| { p.cast_sized::<___ZerocopyRawEnum<'a, N, X, Y>> ()})
+                        candidate
+                            .cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, Self>| {
+                                p.cast_sized::<___ZerocopyRawEnum<'a, N, X, Y>>()
+                            })
                     };
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let variants = unsafe {
                         use ::zerocopy::pointer::PtrInner;
-                        raw_enum.cast_unsized_unchecked(|p: PtrInner<'_, ___ZerocopyRawEnum<'a, N, X, Y>>| {
-                            let p = p.as_non_null().as_ptr();
-                            let ptr = core_reexport::ptr::addr_of_mut!((*p).variants);
-                            let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(ptr) };
-                            unsafe { PtrInner::new(ptr) }
-                        })
+                        raw_enum
+                            .cast_unsized_unchecked(|
+                                p: PtrInner<'_, ___ZerocopyRawEnum<'a, N, X, Y>>|
+                            {
+                                let p = p.as_non_null().as_ptr();
+                                let ptr = core_reexport::ptr::addr_of_mut!((* p).variants);
+                                let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(ptr) };
+                                unsafe { PtrInner::new(ptr) }
+                            })
                     };
                     #[allow(non_upper_case_globals)]
                     match tag {
                         ___ZEROCOPY_TAG_UnitLike => true,
                         ___ZEROCOPY_TAG_StructLike => {
                             let variant = unsafe {
-                                variants.cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, ___ZerocopyVariants<'a, N, X, Y>>| {
-                                    p.cast_sized::<___ZerocopyVariantStruct_StructLike<'a, N, X, Y>>()
-                                })
+                                variants
+                                    .cast_unsized_unchecked(|
+                                        p: ::zerocopy::pointer::PtrInner<
+                                            '_,
+                                            ___ZerocopyVariants<'a, N, X, Y>,
+                                        >|
+                                    {
+                                        p.cast_sized::<
+                                                ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                                            >()
+                                    })
                             };
                             let variant = unsafe { variant.assume_initialized() };
-                        <___ZerocopyVariantStruct_StructLike<'a, N, X, Y> as ::zerocopy ::TryFromBytes>::is_bit_valid (
-                                            variant)
+                            <___ZerocopyVariantStruct_StructLike<
+                                'a,
+                                N,
+                                X,
+                                Y,
+                            > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
                         }
                         ___ZEROCOPY_TAG_TupleLike => {
                             let variant = unsafe {
-                                variants.cast_unsized_unchecked(|p: ::zerocopy::pointer::PtrInner<'_, ___ZerocopyVariants<'a, N, X, Y>>| {
-                                    p.cast_sized::<___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>>()
-                                })
+                                variants
+                                    .cast_unsized_unchecked(|
+                                        p: ::zerocopy::pointer::PtrInner<
+                                            '_,
+                                            ___ZerocopyVariants<'a, N, X, Y>,
+                                        >|
+                                    {
+                                        p.cast_sized::<
+                                                ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                                            >()
+                                    })
                             };
                             let variant = unsafe { variant.assume_initialized() };
-                        <___ZerocopyVariantStruct_TupleLike<'a, N, X, Y> as ::zerocopy ::TryFromBytes>::is_bit_valid (
-                                            variant)
+                            <___ZerocopyVariantStruct_TupleLike<
+                                'a,
+                                N,
+                                X,
+                                Y,
+                            > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
                         }
                         _ => false,
                     }
@@ -1879,7 +3389,7 @@ fn test_from_bytes_enum() {
                 Variant255,
             }
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::TryFromBytes for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -1903,13 +3413,13 @@ fn test_from_bytes_enum() {
                 }
             }
 
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::FromZeros for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
             }
 
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::FromBytes for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -2186,7 +3696,7 @@ fn test_try_from_bytes_trivial_is_bit_valid_enum() {
                 Variant255,
             }
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl ::zerocopy::TryFromBytes for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -2281,7 +3791,7 @@ fn test_split_at() {
             #[repr(C)]
             struct Foo<T: ?Sized + Copy>(T) where Self: Copy;
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl<T: ?Sized + Copy> ::zerocopy::SplitAt for Foo<T>
             where
@@ -2299,7 +3809,7 @@ fn test_split_at() {
             #[repr(transparent)]
             struct Foo<T: ?Sized + Copy>(T) where Self: Copy;
         } expands to {
-            #[allow(deprecated)]
+            #[allow(deprecated, non_local_definitions)]
             #[automatically_derived]
             unsafe impl<T: ?Sized + Copy> ::zerocopy::SplitAt for Foo<T>
             where

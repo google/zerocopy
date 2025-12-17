@@ -283,7 +283,7 @@ note: required for `FromBytes1` to implement `zerocopy::FromBytes`
    |
 47 | #[derive(FromBytes)]
    |          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
-note: required by a bound in `<FromBytes1 as zerocopy::TryFromBytes>::is_bit_valid::assert_is_from_bytes`
+note: required by a bound in `_::<impl zerocopy::TryFromBytes for FromBytes1>::is_bit_valid::assert_is_from_bytes`
   --> tests/ui-stable/late_compile_pass.rs:47:10
    |
 47 | #[derive(FromBytes)]
