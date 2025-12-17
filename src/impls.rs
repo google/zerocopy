@@ -423,7 +423,7 @@ mod atomics {
     /// `$atomic` must have the same size and bit validity as `$prim`.
     macro_rules! unsafe_impl_transmute_from_for_atomic {
         ($($($tyvar:ident)? => $atomic:ty [$prim:ty]),*) => {{
-            crate::util::macros::__unsafe();
+            crate::util::macro_util::__unsafe();
 
             use core::cell::UnsafeCell;
             use crate::pointer::{PtrInner, SizeEq, TransmuteFrom, invariant::Valid};

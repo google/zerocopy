@@ -22,7 +22,7 @@
 macro_rules! unsafe_impl {
     // Implement `$trait` for `$ty` with no bounds.
     ($(#[$attr:meta])* $ty:ty: $trait:ident $(; |$candidate:ident| $is_bit_valid:expr)?) => {{
-        crate::util::macros::__unsafe();
+        crate::util::macro_util::__unsafe();
 
         $(#[$attr])*
         // SAFETY: The caller promises that this is sound.
@@ -119,7 +119,7 @@ macro_rules! unsafe_impl {
         $($tyvar:ident $(: $(? $optbound:ident +)* + $($bound:ident +)* )?,)*
         => $trait:ident for $ty:ty $(; |$candidate:ident| $is_bit_valid:expr)?
     ) => {{
-        crate::util::macros::__unsafe();
+        crate::util::macro_util::__unsafe();
 
         $(#[$attr])*
         #[allow(non_local_definitions)]
@@ -487,7 +487,7 @@ macro_rules! unsafe_impl_known_layout {
     ($($tyvar:ident: ?Sized + KnownLayout =>)? #[repr($repr:ty)] $ty:ty) => {{
         use core::ptr::NonNull;
 
-        crate::util::macros::__unsafe();
+        crate::util::macro_util::__unsafe();
 
         #[allow(non_local_definitions)]
         // SAFETY: The caller promises that this is sound.
@@ -700,21 +700,8 @@ macro_rules! static_assert_dst_is_not_zst {
 macro_rules! cast {
     ($p:expr) => {{
         let ptr: crate::pointer::PtrInner<'_, _> = $p;
-        let ptr = ptr.as_non_null();
-        let ptr = ptr.as_ptr();
-        #[allow(clippy::as_conversions)]
-        let ptr = ptr as *mut _;
-        #[allow(unused_unsafe)]
-        // SAFETY: `NonNull::as_ptr` returns a non-null pointer, so the argument
-        // to `NonNull::new_unchecked` is also non-null.
-        let ptr = unsafe { core::ptr::NonNull::new_unchecked(ptr) };
-        // SAFETY: The caller promises that the cast preserves or shrinks
-        // referent size. By invariant on `$p: PtrInner` (guaranteed by type
-        // annotation above), `$p` refers to a byte range entirely contained
-        // inside of a single allocation, has provenance for that whole byte
-        // range, and will not outlive the allocation. All of these conditions
-        // are preserved when preserving or shrinking referent size.
-        crate::pointer::PtrInner::new(ptr)
+        // TODO: Safety comment
+        ptr.cast_unchecked(|raw| raw as *mut _)
     }};
 }
 
@@ -726,7 +713,7 @@ macro_rules! cast {
 /// same size in the sense of `SizeEq`.
 macro_rules! unsafe_impl_for_transparent_wrapper {
     (T $(: ?$optbound:ident)? => $wrapper:ident<T>) => {{
-        crate::util::macros::__unsafe();
+        crate::util::macro_util::__unsafe();
 
         use crate::pointer::{TransmuteFrom, PtrInner, SizeEq, invariant::Valid};
 
@@ -844,7 +831,7 @@ macro_rules! impl_size_eq {
 /// types.
 macro_rules! unsafe_with_size_eq {
     (<$src:ident<$t:ident>, $dst:ident<$u:ident>> $blk:expr) => {{
-        crate::util::macros::__unsafe();
+        crate::util::macro_util::__unsafe();
 
         use crate::{KnownLayout, pointer::PtrInner};
 
@@ -940,9 +927,3 @@ macro_rules! unsafe_with_size_eq {
         $blk
     }};
 }
-
-/// A no-op `unsafe fn` for use in macro expansions.
-///
-/// Calling this function in a macro expansion ensures that the macro's caller
-/// must wrap the call in `unsafe { ... }`.
-pub(crate) const unsafe fn __unsafe() {}

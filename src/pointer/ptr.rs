@@ -451,6 +451,9 @@ mod _conversions {
             V: Validity,
             F: FnOnce(PtrInner<'a, T>) -> PtrInner<'a, U>,
         {
+            // TODO: Should this accept a `*mut -> *mut` rather than `PtrInner ->
+            // PtrInner` and then use `PtrInner::cast_unchecked`? Would that allow
+            // us to simplify downstream callers of `transmute_unchecked`?
             let ptr = cast(self.as_inner());
 
             // SAFETY:
