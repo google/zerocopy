@@ -6,7 +6,7 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use core::{marker::PhantomData, mem, ops::Range, ptr::NonNull};
+use core::{marker::PhantomData, ops::Range, ptr::NonNull};
 
 pub use _def::PtrInner;
 
@@ -14,8 +14,9 @@ pub use _def::PtrInner;
 use crate::util::polyfills::NumExt as _;
 use crate::{
     layout::{CastType, MetadataCastError},
+    pointer::cast,
     util::AsAddress,
-    AlignmentError, CastError, HasField, KnownLayout, MetadataOf, SizeError, SplitAt,
+    AlignmentError, CastError, KnownLayout, MetadataOf, SizeError, SplitAt,
 };
 
 mod _def {
@@ -108,6 +109,17 @@ mod _def {
         pub const fn as_non_null(&self) -> NonNull<T> {
             self.ptr
         }
+
+        /// Converts this `PtrInner<T>` to a [`*mut T`].
+        ///
+        /// Note that this method does not consume `self`. The caller should
+        /// watch out for `unsafe` code which uses the returned `*mut T` in a
+        /// way that violates the safety invariants of `self`.
+        #[inline(always)]
+        #[must_use]
+        pub const fn as_ptr(&self) -> *mut T {
+            self.ptr.as_ptr()
+        }
     }
 }
 
@@ -166,45 +178,33 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
 
     #[must_use]
     #[inline(always)]
-    pub fn cast_sized<U>(self) -> PtrInner<'a, U>
-    where
-        T: Sized,
-    {
-        static_assert!(T, U => mem::size_of::<T>() >= mem::size_of::<U>());
-        // SAFETY: By the preceding assert, `U` is no larger than `T`, which is
-        // the size of `self`'s referent.
-        unsafe { self.cast() }
-    }
+    pub fn project<U: ?Sized, C: cast::Project<T, U>>(self) -> PtrInner<'a, U> {
+        let projected_raw = C::project(self);
 
-    /// # Safety
-    ///
-    /// `U` must not be larger than the size of `self`'s referent.
-    #[must_use]
-    #[inline(always)]
-    pub unsafe fn cast<U>(self) -> PtrInner<'a, U> {
-        let ptr = self.as_non_null().cast::<U>();
-
-        // SAFETY: The caller promises that `U` is no larger than `self`'s
-        // referent. Thus, `ptr` addresses a subset of the bytes addressed by
-        // `self`.
+        // SAFETY: `self`'s referent lives at a `NonNull` address, and is either
+        // zero-sized or lives in an allocation. In either case, it does not
+        // wrap around the address space [1], and so none of the addresses
+        // contained in it or one-past-the-end of it are null.
         //
-        // 0. By invariant on `self`, if `self`'s referent is not zero sized,
-        //    then `self` has valid provenance for its referent, which is
-        //    entirely contained in some Rust allocation, `A`. Thus, the same
-        //    holds of `ptr`.
-        // 1. By invariant on `self`, if `self`'s referent is not zero sized,
-        //    then `A` is guaranteed to live for at least `'a`.
-        unsafe { PtrInner::new(ptr) }
-    }
+        // By invariant on `C: Project`, `C::project` is a provenance-preserving
+        // projection which preserves or shrinks the set of referent bytes, so
+        // `projected_raw` references a subset of `self`'s referent, and so it
+        // cannot be null.
+        //
+        // [1] https://doc.rust-lang.org/1.92.0/std/ptr/index.html#allocation
+        let projected_non_null = unsafe { NonNull::new_unchecked(projected_raw) };
 
-    /// Projects a field.
-    #[must_use]
-    #[inline(always)]
-    pub fn project<F, const VARIANT_ID: i128, const FIELD_ID: i128>(self) -> PtrInner<'a, T::Type>
-    where
-        T: HasField<F, VARIANT_ID, FIELD_ID>,
-    {
-        <T as HasField<F, VARIANT_ID, FIELD_ID>>::project(self)
+        // SAFETY: As described in the preceding safety comment, `projected_raw`,
+        // and thus `projected_non_null`, addresses a subset of `self`'s
+        // referent. Thus, `projected_non_null` either:
+        // - Addresses zero bytes or,
+        // - Addresses a subset of the referent of `self`. In this case, `self`
+        //   has provenance for its referent, which lives in an allocation.
+        //   Since `projected_non_null` was constructed using a sequence of
+        //   provenance-preserving operations, it also has provenance for its
+        //   referent and that referent lives in an allocation. By invariant on
+        //   `self`, that allocation lives for `'a`.
+        unsafe { PtrInner::new(projected_non_null) }
     }
 }
 
@@ -215,7 +215,7 @@ where
 {
     /// Extracts the metadata of this `ptr`.
     pub(crate) fn meta(self) -> MetadataOf<T> {
-        let meta = T::pointer_to_metadata(self.as_non_null().as_ptr());
+        let meta = T::pointer_to_metadata(self.as_ptr());
         // SAFETY: By invariant on `PtrInner`, `self.as_non_null()` addresses no
         // more than `isize::MAX` bytes.
         unsafe { MetadataOf::new_unchecked(meta) }
@@ -261,37 +261,6 @@ where
         // 5. Per Lemma 0 and by invariant on `self`, if `ptr`'s referent is not
         //    zero sized, then `A` is guaranteed to live for at least `'a`.
         unsafe { PtrInner::new(raw) }
-    }
-
-    pub(crate) fn as_bytes(self) -> PtrInner<'a, [u8]> {
-        let ptr = self.as_non_null();
-        let bytes = match T::size_of_val_raw(ptr) {
-            Some(bytes) => bytes,
-            // SAFETY: `KnownLayout::size_of_val_raw` promises to always
-            // return `Some` so long as the resulting size fits in a
-            // `usize`. By invariant on `PtrInner`, `self` refers to a range
-            // of bytes whose size fits in an `isize`, which implies that it
-            // also fits in a `usize`.
-            None => unsafe { core::hint::unreachable_unchecked() },
-        };
-
-        let ptr = core::ptr::slice_from_raw_parts_mut(ptr.cast::<u8>().as_ptr(), bytes);
-
-        // SAFETY: `ptr` has the same address as `ptr = self.as_non_null()`,
-        // which is non-null by construction.
-        let ptr = unsafe { NonNull::new_unchecked(ptr) };
-
-        // SAFETY: `ptr` points to `bytes` `u8`s starting at the same address as
-        // `self`'s referent. Since `bytes` is the length of `self`'s referent,
-        // `ptr` addresses the same byte range as `self`. Thus, by invariant on
-        // `self` (as a `PtrInner`):
-        //
-        // 0. If `ptr`'s referent is not zero sized, then `ptr` has valid
-        //    provenance for its referent, which is entirely contained in some
-        //    Rust allocation, `A`.
-        // 1. If `ptr`'s referent is not zero sized, `A` is guaranteed to live
-        //    for at least `'a`.
-        unsafe { PtrInner::new(ptr) }
     }
 }
 
@@ -589,7 +558,7 @@ impl<'a> PtrInner<'a, [u8]> {
         // `validate_cast_and_convert_metadata` will only panic if `U` is a DST
         // whose trailing slice element is zero-sized.
         let maybe_metadata = MetadataOf::<U>::validate_cast_and_convert_metadata(
-            AsAddress::addr(self.as_non_null().as_ptr()),
+            AsAddress::addr(self.as_ptr()),
             self.meta(),
             cast_type,
             meta,
@@ -684,16 +653,14 @@ mod tests {
                 let l_sum: usize = l
                     .trailing_slice()
                     .iter()
-                    .map(|ptr| unsafe { core::ptr::read_unaligned(ptr.as_non_null().as_ptr()) }
-                        as usize)
+                    .map(|ptr| unsafe { core::ptr::read_unaligned(ptr.as_ptr()) } as usize)
                     .sum();
                 // SAFETY: Points to a valid value by construction.
                 #[allow(clippy::undocumented_unsafe_blocks, clippy::as_conversions)]
                 // Clippy false positive
                 let r_sum: usize = r
                     .iter()
-                    .map(|ptr| unsafe { core::ptr::read_unaligned(ptr.as_non_null().as_ptr()) }
-                        as usize)
+                    .map(|ptr| unsafe { core::ptr::read_unaligned(ptr.as_ptr()) } as usize)
                     .sum();
                 assert_eq!(l_sum, i.get());
                 assert_eq!(r_sum, n - i.get());
@@ -731,8 +698,7 @@ mod tests {
                 // `offset_of` is not satisfied.
                 unsafe {
                     #[allow(clippy::as_conversions)]
-                    let offset = (trailing.as_non_null().as_ptr() as *mut u8)
-                        .offset_from(ptr.as_non_null().as_ptr() as *mut _);
+                    let offset = (trailing.as_ptr() as *mut u8).offset_from(ptr.as_ptr() as *mut _);
                     offset
                 },
                 isize::try_from(OFFSET).unwrap(),
@@ -741,12 +707,10 @@ mod tests {
             // SAFETY: Points to a valid value by construction.
             #[allow(clippy::undocumented_unsafe_blocks, clippy::as_conversions)]
             // Clippy false positive
-            let trailing: usize =
-                trailing
-                    .iter()
-                    .map(|ptr| unsafe { core::ptr::read_unaligned(ptr.as_non_null().as_ptr()) }
-                        as usize)
-                    .sum();
+            let trailing: usize = trailing
+                .iter()
+                .map(|ptr| unsafe { core::ptr::read_unaligned(ptr.as_ptr()) } as usize)
+                .sum();
 
             assert_eq!(trailing, n);
         }
