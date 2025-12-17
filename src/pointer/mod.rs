@@ -15,7 +15,10 @@ mod ptr;
 mod transmute;
 
 #[doc(hidden)]
-pub use {inner::PtrInner, transmute::*};
+pub use {
+    inner::{FnCast, PtrInner, __project_cast},
+    transmute::*,
+};
 #[doc(hidden)]
 pub use {
     invariant::{BecauseExclusive, BecauseImmutable, Read},

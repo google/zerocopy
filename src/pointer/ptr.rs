@@ -451,6 +451,9 @@ mod _conversions {
             V: Validity,
             F: FnOnce(PtrInner<'a, T>) -> PtrInner<'a, U>,
         {
+            // TODO: Should this accept a `*mut -> *mut` rather than `PtrInner ->
+            // PtrInner` and then use `PtrInner::cast_unchecked`? Would that allow
+            // us to simplify downstream callers of `transmute_unchecked`?
             let ptr = cast(self.as_inner());
 
             // SAFETY:
@@ -1188,9 +1191,7 @@ mod _casts {
             //   `UnsafeCell<T>` has the same in-memory representation as its
             //   inner type `T`. A consequence of this guarantee is that it is
             //   possible to convert between `T` and `UnsafeCell<T>`.
-            #[allow(clippy::as_conversions)]
-            #[allow(clippy::multiple_unsafe_ops_per_block)]
-            let ptr = unsafe { self.transmute_unchecked(|ptr| cast!(ptr)) };
+            let ptr = unsafe { self.transmute_unchecked(|ptr| cast!(ptr => _)) };
 
             // SAFETY: `UnsafeCell<T>` has the same alignment as `T` [1],
             // and so if `self` is guaranteed to be aligned, then so is the

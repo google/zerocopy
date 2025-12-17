@@ -444,7 +444,7 @@ mod atomics {
                         // SAFETY: The caller promised that `$atomic` and
                         // `$prim` have the same size. Thus, this cast preserves
                         // address, referent size, and provenance.
-                        unsafe { cast!(a) }
+                        unsafe { cast!(a => _) }
                     }
                 }
                 // SAFETY: See previous safety comment.
@@ -452,7 +452,7 @@ mod atomics {
                     #[inline]
                     fn cast_from_raw(p: PtrInner<'_, $prim>) -> PtrInner<'_, $atomic> {
                         // SAFETY: See previous safety comment.
-                        unsafe { cast!(p) }
+                        unsafe { cast!(p => _) }
                     }
                 }
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
@@ -467,7 +467,7 @@ mod atomics {
                     #[inline]
                     fn cast_from_raw(a: PtrInner<'_, $atomic>) -> PtrInner<'_, UnsafeCell<$prim>> {
                         // SAFETY: See previous safety comment.
-                        unsafe { cast!(a) }
+                        unsafe { cast!(a => _) }
                     }
                 }
                 // SAFETY: See previous safety comment.
@@ -475,7 +475,7 @@ mod atomics {
                     #[inline]
                     fn cast_from_raw(p: PtrInner<'_, UnsafeCell<$prim>>) -> PtrInner<'_, $atomic> {
                         // SAFETY: See previous safety comment.
-                        unsafe { cast!(p) }
+                        unsafe { cast!(p => _) }
                     }
                 }
 
@@ -813,7 +813,7 @@ const _: () = {
     //
     //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
     //   `T`
-    unsafe impl<T> HasField<value, 0, { crate::ident_id!(value) }> for ManuallyDrop<T> {
+    unsafe impl<T: ?Sized> HasField<value, 0, { crate::ident_id!(value) }> for ManuallyDrop<T> {
         type Type = T;
 
         #[inline]
@@ -831,7 +831,7 @@ const _: () = {
             //
             //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
             //   `T`
-            unsafe { slf.cast() }
+            unsafe { cast!(slf => _) }
         }
     }
 };
