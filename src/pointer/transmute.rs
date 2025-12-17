@@ -13,7 +13,7 @@ use core::{
 };
 
 use crate::{
-    pointer::{invariant::*, PtrInner},
+    pointer::{cast, invariant::*},
     FromBytes, Immutable, IntoBytes, Unalign,
 };
 
@@ -297,17 +297,14 @@ pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV> {}
 ///   the case that `cast_from_raw` modifies the pointer's metadata in order to
 ///   preserve referent size, which an `as` cast does not do.*
 pub unsafe trait SizeEq<T: ?Sized> {
-    fn cast_from_raw(t: PtrInner<'_, T>) -> PtrInner<'_, Self>;
+    type CastFrom: cast::Cast<T, Self> + Default;
 }
 
 // SAFETY: `T` trivially has the same size and vtable kind as `T`, and since
 // pointer `*mut T -> *mut T` pointer casts are no-ops, this cast trivially
 // preserves referent size (when `T: ?Sized`).
 unsafe impl<T: ?Sized> SizeEq<T> for T {
-    #[inline(always)]
-    fn cast_from_raw(t: PtrInner<'_, T>) -> PtrInner<'_, T> {
-        t
-    }
+    type CastFrom = cast::IdCast;
 }
 
 // SAFETY: Since `Src: IntoBytes`, the set of valid `Src`'s is the set of
@@ -366,13 +363,13 @@ where
 //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
 //   `T`
 #[allow(clippy::multiple_unsafe_ops_per_block)]
-const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T: ?Sized => ManuallyDrop<T>) };
+const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T: ?Sized => ManuallyDrop<T>) };
 
 // SAFETY:
 // - `Unalign<T>` promises to have the same size as `T`.
 // - `Unalign<T>` promises to have the same validity as `T`.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
-const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T => Unalign<T>) };
+const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T => Unalign<T>) };
 // SAFETY: `Unalign<T>` promises to have the same size and validity as `T`.
 // Given `u: &Unalign<T>`, it is already possible to obtain `let t =
 // u.try_deref().unwrap()`. Because `Unalign<T>` has the same size as `T`, the
@@ -405,7 +402,7 @@ const _: () = unsafe { unsafe_impl_invariants_eq!(T => T, Unalign<T>) };
 //   pub struct Wrapping<T>(pub T);
 //   ```
 #[allow(clippy::multiple_unsafe_ops_per_block)]
-const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T => Wrapping<T>) };
+const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T => Wrapping<T>) };
 
 // SAFETY: By the preceding safety proof, `Wrapping<T>` and `T` have the same
 // layout and bit validity. Since a `Wrapping<T>`'s `T` field is `pub`, given
@@ -427,7 +424,7 @@ const _: () = unsafe { unsafe_impl_invariants_eq!(T => T, Wrapping<T>) };
 //   `T`. A consequence of this guarantee is that it is possible to convert
 //   between `T` and `UnsafeCell<T>`.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
-const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T: ?Sized => UnsafeCell<T>) };
+const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T: ?Sized => UnsafeCell<T>) };
 
 // SAFETY:
 // - `Cell<T>` has the same size as `T` [1].
@@ -449,7 +446,7 @@ const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T: ?Sized => UnsafeC
 //   `T`. A consequence of this guarantee is that it is possible to convert
 //   between `T` and `UnsafeCell<T>`.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
-const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(T: ?Sized => Cell<T>) };
+const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T: ?Sized => Cell<T>) };
 
 impl_transitive_transmute_from!(T: ?Sized => Cell<T> => T => UnsafeCell<T>);
 impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
@@ -467,28 +464,12 @@ unsafe impl<T> TransmuteFrom<T, Uninit, Valid> for MaybeUninit<T> {}
 //   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and ABI as
 //   `T`
 unsafe impl<T> SizeEq<T> for MaybeUninit<T> {
-    #[inline(always)]
-    fn cast_from_raw(t: PtrInner<'_, T>) -> PtrInner<'_, MaybeUninit<T>> {
-        // SAFETY: Per preceding safety comment, `MaybeUninit<T>` and `T` have
-        // the same size, and so this cast preserves referent size.
-        #[allow(clippy::multiple_unsafe_ops_per_block)]
-        unsafe {
-            cast!(t)
-        }
-    }
+    type CastFrom = cast::CastSized;
 }
 
 // SAFETY: See previous safety comment.
 unsafe impl<T> SizeEq<MaybeUninit<T>> for T {
-    #[inline(always)]
-    fn cast_from_raw(t: PtrInner<'_, MaybeUninit<T>>) -> PtrInner<'_, T> {
-        // SAFETY: Per preceding safety comment, `MaybeUninit<T>` and `T` have
-        // the same size, and so this cast preserves referent size.
-        #[allow(clippy::multiple_unsafe_ops_per_block)]
-        unsafe {
-            cast!(t)
-        }
-    }
+    type CastFrom = cast::CastSized;
 }
 
 #[cfg(test)]

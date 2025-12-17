@@ -776,31 +776,8 @@ fn derive_has_field_struct_union(
             type Type = #ty;
 
             #[inline(always)]
-            fn project(slf: #zerocopy_crate::PtrInner<'_, Self>) -> #zerocopy_crate::PtrInner<'_, Self::Type> {
-                let slf = slf.as_non_null().as_ptr();
-                // SAFETY: `PtrInner` promises it references either a zero-sized
-                // byte range, or else will reference a byte range that is
-                // entirely contained within an allocated object. In either
-                // case, this guarantees that `(*slf).#ident` is in-bounds of
-                // `slf`.
-                let field = unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#ident) };
-                // SAFETY: `PtrInner` promises it references either a zero-sized
-                // byte range, or else will reference a byte range that is
-                // entirely contained within an allocated object. In either
-                // case, this guarantees that field projection will not wrap
-                // around the address space, and so `field` will be non-null.
-                let ptr = unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(field) };
-                // SAFETY:
-                // 0. `ptr` addresses a subset of the bytes of
-                //    `slf`, so by invariant on `slf: PtrInner`,
-                //    if `ptr`'s referent is not zero sized,
-                //    then `ptr` has valid provenance for its
-                //    referent, which is entirely contained in
-                //    some Rust allocation, `A`.
-                // 1. By invariant on `slf: PtrInner`, if
-                //    `ptr`'s referent is not zero sized, `A` is
-                //    guaranteed to live for at least `'a`.
-                unsafe { #zerocopy_crate::PtrInner::new(ptr) }
+            fn project(slf: *mut Self) -> *mut Self::Type {
+                unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#ident) }
             }
         })
         .build()
@@ -841,10 +818,11 @@ fn derive_try_from_bytes_struct(
                     ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
                 {
                     use #zerocopy_crate::util::macro_util::core_reexport;
-                    use #zerocopy_crate::pointer::PtrInner;
+                    use #zerocopy_crate::pointer::{cast::FnCast, PtrInner};
 
                     true #(&& {
                         let project = <Self as #zerocopy_crate::HasField<_, 0, { #zerocopy_crate::ident_id!(#field_names) }>>::project;
+                        let project = unsafe { FnCast::new(project) };
                         // SAFETY:
                         // - `project` is a field projection, and so it
                         //   addresses a subset of the bytes addressed by `slf`
@@ -902,10 +880,11 @@ fn derive_try_from_bytes_union(
                     ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
                 {
                     use #zerocopy_crate::util::macro_util::core_reexport;
-                    use #zerocopy_crate::pointer::PtrInner;
+                    use #zerocopy_crate::pointer::{cast::FnCast, PtrInner};
 
                     false #(|| {
                         let project = <Self as #zerocopy_crate::HasField<_, 0, { #zerocopy_crate::ident_id!(#field_names) }>>::project;
+                        let project = unsafe { FnCast::new(project) };
                         // SAFETY:
                         // - `project` is a field projection, and so it
                         //   addresses a subset of the bytes addressed by `slf`
