@@ -924,6 +924,13 @@ pub const fn must_use<T>(t: T) -> T {
     t
 }
 
+/// A no-op `unsafe fn` for use in macro expansions.
+///
+/// Calling this function in a macro expansion ensures that the macro's caller
+/// must wrap the call in `unsafe { ... }`.
+#[inline(always)]
+pub const unsafe fn __unsafe() {}
+
 // NOTE: We can't change this to a `pub use core as core_reexport` until [1] is
 // fixed or we update to a semver-breaking version (as of this writing, 0.8.0)
 // on the `main` branch.

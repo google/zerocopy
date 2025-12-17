@@ -123,3 +123,16 @@ enum TransmuteRefMutDstOffsetNotMultiple {}
 /// let _: &mut SliceDst<(), [u8; 2]> = zerocopy::transmute_mut!(src);
 /// ```
 enum TransmuteRefMutDstElemSizeNotMultiple {}
+
+/// `project_ptr_inner!` doesn't permit extending lifetime.
+///
+/// ```compile_fail
+/// use zerocopy::pointer::PtrInner;
+/// use zerocopy::project_ptr_inner;
+/// use core::ptr::NonNull;
+///
+/// fn project<'a, T>(p: PtrInner<'a, T>) -> PtrInner<'static, T> {
+///     project_ptr_inner!(p, 0: T)
+/// }
+/// ```
+enum ProjectPtrInnerLifetimeGenerics {}

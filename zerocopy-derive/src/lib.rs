@@ -775,28 +775,8 @@ fn derive_try_from_bytes_struct(
                         //   referent as they do in `*slf`
                         let field_candidate = unsafe {
                             let project = |slf: PtrInner<'_, Self>| {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = core_reexport::ptr::addr_of_mut!((*slf).#field_names);
-                                // SAFETY: `cast_unsized_unchecked` promises
-                                // that `slf` will either reference a zero-sized
-                                // byte range, or else will reference a byte
-                                // range that is entirely contained within an
-                                // allocated object. In either case, this
-                                // guarantees that field projection will not
-                                // wrap around the address space, and so `field`
-                                // will be non-null.
-                                let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                // SAFETY:
-                                // 0. `ptr` addresses a subset of the bytes of
-                                //    `slf`, so by invariant on `slf: PtrInner`,
-                                //    if `ptr`'s referent is not zero sized,
-                                //    then `ptr` has valid provenance for its
-                                //    referent, which is entirely contained in
-                                //    some Rust allocation, `A`.
-                                // 1. By invariant on `slf: PtrInner`, if
-                                //    `ptr`'s referent is not zero sized, `A` is
-                                //    guaranteed to live for at least `'a`.
-                                unsafe { PtrInner::new(ptr) }
+                                // TODO: Safety comment
+                                #zerocopy_crate::project_ptr_inner!(slf, #field_names)
                             };
 
                             candidate.reborrow().cast_unsized_unchecked(project)
@@ -860,28 +840,7 @@ fn derive_try_from_bytes_union(
                         //   `UnsafeCell`s
                         let field_candidate = unsafe {
                             let project = |slf: PtrInner<'_, Self>| {
-                                let slf = slf.as_non_null().as_ptr();
-                                let field = core_reexport::ptr::addr_of_mut!((*slf).#field_names);
-                                // SAFETY: `cast_unsized_unchecked` promises
-                                // that `slf` will either reference a zero-sized
-                                // byte range, or else will reference a byte
-                                // range that is entirely contained within an
-                                // allocated object. In either case, this
-                                // guarantees that field projection will not
-                                // wrap around the address space, and so `field`
-                                // will be non-null.
-                                let ptr = unsafe { core_reexport::ptr::NonNull::new_unchecked(field) };
-                                // SAFETY:
-                                // 0. `ptr` addresses a subset of the bytes of
-                                //    `slf`, so by invariant on `slf: PtrInner`,
-                                //    if `ptr`'s referent is not zero sized,
-                                //    then `ptr` has valid provenance for its
-                                //    referent, which is entirely contained in
-                                //    some Rust allocation, `A`.
-                                // 1. By invariant on `slf: PtrInner`, if
-                                //    `ptr`'s referent is not zero sized, `A` is
-                                //    guaranteed to live for at least `'a`.
-                                unsafe { PtrInner::new(ptr) }
+                                #zerocopy_crate::project_ptr_inner!(slf, #field_names)
                             };
 
                             candidate.reborrow().cast_unsized_unchecked(project)
