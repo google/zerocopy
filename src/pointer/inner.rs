@@ -630,6 +630,83 @@ impl<'a> PtrInner<'a, [u8]> {
     }
 }
 
+/// Projects a pointer to a field of the referent, possibly performing a
+/// transmute at the same time.
+///
+/// # Safety
+///
+/// If `$ptr: PtrInner<T>`, then:
+/// - `T` must be a union or struct type
+/// - `$field_name` must be a field of `T` of type `F`
+/// - For all `f: *mut F`, `f as *mut $field_ty` must preserve or shrink
+///   the size of the referent
+#[doc(hidden)]
+#[macro_export]
+macro_rules! project_ptr_inner {
+    ($ptr:expr, $field_name:tt $(: $field_ty:ty)?) => {{
+        use $crate::{pointer::PtrInner, util::macro_util::core_reexport::ptr};
+
+        $crate::util::macro_util::__unsafe();
+
+        let ptr: PtrInner<'_, _> = $ptr;
+        if false {
+            // Thsi branch, though never taken, guarantees that the input and
+            // output `PtrInner`s have the same lifetime.
+            let project = |_: PtrInner<'_, _>| -> PtrInner<'_, _> { loop {} };
+            project(ptr)
+        } else {
+            let non_null = ptr.as_non_null();
+            let raw = non_null.as_ptr();
+
+            // SAFETY: The caller promises that `$field_name` is a struct or union
+            // field of `$ptr`'s referent, which guarantees that `field_raw` is
+            // in-bounds of `$ptr`'s referent.
+            #[allow(unused_unsafe)]
+            let field_raw = unsafe { ptr::addr_of_mut!((*raw).$field_name) };
+            let field_raw_transmuted = field_raw;
+            $(
+                #[allow(clippy::as_conversions)]
+                let field_raw_transmuted = field_raw_transmuted as *mut $field_ty;
+            )?
+
+            // LEMMA: `field_raw_transmuted` references a subset of the referent of
+            // `$ptr`.
+            //
+            // PROOF: The caller promises that `$field_name` is a struct or union
+            // field of `$ptr`'s referent type. Thus, `field_raw` addresses a
+            // subset of `$ptr`'s referent, and has type `*mut F` for that field
+            // type. The caller further promises that a `*mut F as *mut $field_ty`
+            // cast preserves or shrinks referent size, and so
+            // `field_raw_transmuted` *also* addresses a subset of `$ptr`'s
+            // referent.
+
+            // SAFETY: `$ptr`'s referent lives at a `NonNull` address, and is either
+            // zero-sized or lives in a Rust allocation. In either case, it does not
+            // wrap around the address space [1], and so none of the addresses
+            // contained in it or one-past-the-end of it are null.
+            //
+            // By the preceding lemma, `field_raw_transmuted` references a subset of
+            // `$ptr`'s referent, and so it cannot be null.
+            //
+            // [1] https://doc.rust-lang.org/1.92.0/std/ptr/index.html#allocation
+            #[allow(unused_unsafe)]
+            let field_non_null = unsafe { ptr::NonNull::new_unchecked(field_raw_transmuted) };
+
+            // SAFETY: By the preceding lemma, `field_non_null` either:
+            // - Addresses zero bytes or,
+            // - Addresses a subset of the referent of `$ptr`. In this case, `$ptr`
+            //   has provenance for its referent, which lives in a Rust allocation.
+            //   Since `field_non_null` was constructed using a sequence of
+            //   provenance-preserving operations, it also has provenance for its
+            //   referent and (by the lemma) that referent lives in a Rust
+            //   allocation. That allocation lives for `'a`, as guaranteed by
+            //   the `if` branch above.
+            #[allow(unused_unsafe)]
+            unsafe { PtrInner::new(field_non_null) }
+        }
+    }};
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -752,5 +829,166 @@ mod tests {
         #[allow(clippy::clone_on_copy)]
         let p2 = p.clone();
         assert_eq!(p.as_non_null(), p2.as_non_null());
+    }
+
+    #[allow(clippy::undocumented_unsafe_blocks)]
+    mod project_ptr_inner_tests {
+        use super::*;
+
+        #[test]
+        fn test_struct_sized_field() {
+            #[repr(C)]
+            struct Foo {
+                a: u8,
+                b: u16,
+                c: u32,
+            }
+
+            let mut foo = Foo { a: 1, b: 2, c: 3 };
+            let ptr = PtrInner::from_mut(&mut foo);
+
+            // No annotation
+            let a_ptr = unsafe { project_ptr_inner!(ptr, a) };
+            let b_ptr = unsafe { project_ptr_inner!(ptr, b) };
+            let c_ptr = unsafe { project_ptr_inner!(ptr, c) };
+
+            unsafe { assert_eq!(a_ptr.as_non_null().as_ref(), &1) };
+            unsafe { assert_eq!(b_ptr.as_non_null().as_ref(), &2) };
+            unsafe { assert_eq!(c_ptr.as_non_null().as_ref(), &3) };
+
+            // With annotation (correct)
+            let a_ptr = unsafe { project_ptr_inner!(ptr, a: u8) };
+            let b_ptr = unsafe { project_ptr_inner!(ptr, b: u16) };
+            let c_ptr = unsafe { project_ptr_inner!(ptr, c: u32) };
+
+            unsafe { assert_eq!(a_ptr.as_non_null().as_ref(), &1) };
+            unsafe { assert_eq!(b_ptr.as_non_null().as_ref(), &2) };
+            unsafe { assert_eq!(c_ptr.as_non_null().as_ref(), &3) };
+
+            // With annotation (compatible transmute: u32 -> [u8; 4])
+            let c_bytes_ptr = unsafe { project_ptr_inner!(ptr, c: [u8; 4]) };
+            let expect = if cfg!(target_endian = "little") { [3, 0, 0, 0] } else { [0, 0, 0, 3] };
+            unsafe { assert_eq!(&*c_bytes_ptr.as_non_null().as_ptr(), &expect) };
+
+            // With annotation (shrinking transmute: u32 -> [u8; 2])
+            let c_short_ptr = unsafe { project_ptr_inner!(ptr, c: [u8; 2]) };
+            let expect_short = if cfg!(target_endian = "little") { [3, 0] } else { [0, 0] };
+            unsafe { assert_eq!(&*c_short_ptr.as_non_null().as_ptr(), &expect_short) };
+        }
+
+        #[test]
+        fn test_struct_unsized_field() {
+            #[repr(C)]
+            struct Foo {
+                a: u8,
+                b: [u8],
+            }
+
+            let mut buf = [1u8, 2, 3, 4, 5];
+            let len = buf.len() - 1;
+            let ptr = buf.as_mut_ptr();
+            // Synthesize fat pointer
+            #[allow(clippy::as_conversions)]
+            let foo_ptr: *mut Foo = core::ptr::slice_from_raw_parts_mut(ptr, len) as *mut Foo;
+            #[allow(clippy::multiple_unsafe_ops_per_block)]
+            let ptr = unsafe { PtrInner::new(NonNull::new_unchecked(foo_ptr)) };
+
+            // No annotation (DST field preservation)
+            let b_ptr = unsafe { project_ptr_inner!(ptr, b) };
+            let b_ref = unsafe { b_ptr.as_non_null().as_ref() };
+            assert_eq!(b_ref.len(), 4);
+            assert_eq!(b_ref, &[2, 3, 4, 5]);
+
+            // With annotation (compatible transmute: [u8] -> [u8])
+            let b_ptr = unsafe { project_ptr_inner!(ptr, b: [u8]) };
+            unsafe { assert_eq!(b_ptr.as_non_null().as_ref(), &[2, 3, 4, 5]) };
+
+            // With annotation (shrinking transmute: [u8] -> [()])
+            let b_prefix_ptr = unsafe { project_ptr_inner!(ptr, b: [()]) };
+            unsafe { assert_eq!(b_prefix_ptr.as_non_null().as_ref(), &[(), (), (), ()]) };
+        }
+
+        #[test]
+        fn test_struct_zst_field() {
+            #[repr(C)]
+            struct Foo {
+                a: u8,
+                b: (),
+                c: PhantomData<u64>,
+            }
+
+            let mut foo = Foo { a: 1, b: (), c: PhantomData };
+            let ptr = PtrInner::from_mut(&mut foo);
+
+            let b_ptr = unsafe { project_ptr_inner!(ptr, b) };
+            let c_ptr = unsafe { project_ptr_inner!(ptr, c) };
+
+            unsafe { assert_eq!(b_ptr.as_non_null().as_ref(), &()) };
+            unsafe { assert_eq!(c_ptr.as_non_null().as_ref(), &PhantomData) };
+        }
+
+        #[test]
+        fn test_zst_struct() {
+            #[repr(C)]
+            struct Foo {
+                a: (),
+                b: [u8; 0],
+            }
+            let mut foo = Foo { a: (), b: [] };
+            let ptr = PtrInner::from_mut(&mut foo);
+
+            let a_ptr = unsafe { project_ptr_inner!(ptr, a) };
+            let b_ptr = unsafe { project_ptr_inner!(ptr, b) };
+
+            unsafe { assert_eq!(a_ptr.as_non_null().as_ref(), &()) };
+            unsafe { assert_eq!(b_ptr.as_non_null().as_ref(), &[]) };
+        }
+
+        #[test]
+        fn test_union() {
+            #[repr(C)]
+            union Bar {
+                a: u32,
+                b: u16,
+            }
+
+            let mut bar = Bar { a: 0xDEADBEEF };
+            let ptr = PtrInner::from_mut(&mut bar);
+
+            let a_ptr = unsafe { project_ptr_inner!(ptr, a) };
+            let b_ptr = unsafe { project_ptr_inner!(ptr, b) };
+
+            unsafe { assert_eq!(a_ptr.as_non_null().as_ref(), &0xDEADBEEF) };
+            let expect_b = if cfg!(target_endian = "little") { 0xBEEF } else { 0xDEAD };
+            unsafe { assert_eq!(b_ptr.as_non_null().as_ref(), &expect_b) };
+        }
+        #[test]
+        fn test_tuple_struct() {
+            let mut x = (42u8, 123u16);
+            let ptr = PtrInner::from_mut(&mut x);
+
+            let field_ptr = unsafe { project_ptr_inner!(ptr, 0) };
+            unsafe { assert_eq!(field_ptr.as_non_null().as_ref(), &42) };
+
+            let field_ptr = unsafe { project_ptr_inner!(ptr, 1) };
+            unsafe { assert_eq!(field_ptr.as_non_null().as_ref(), &123) };
+        }
+
+        #[test]
+        fn test_closure_inference() {
+            struct Wrapper(u8);
+
+            fn shim<'a, T, U, F>(ptr: PtrInner<'a, T>, f: F) -> PtrInner<'a, U>
+            where
+                F: FnOnce(PtrInner<'a, T>) -> PtrInner<'a, U>,
+            {
+                f(ptr)
+            }
+
+            let mut w = Wrapper(42);
+            let ptr = PtrInner::from_mut(&mut w);
+            let p2 = shim(ptr, |p| unsafe { project_ptr_inner!(p, 0) });
+            unsafe { assert_eq!(p2.as_non_null().as_ref(), &42) };
+        }
     }
 }
