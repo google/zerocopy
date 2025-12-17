@@ -629,27 +629,14 @@ where
 {
     static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
 
-    // SAFETY: This is a pointer cast, satisfying the following properties:
-    // - `p as *mut Dst` addresses a subset of the `bytes` addressed by `src`,
-    //   because we assert above that the size of `Dst` equal to the size of
-    //   `Src`.
-    // - `p as *mut Dst` is a provenance-preserving cast
-    #[allow(clippy::multiple_unsafe_ops_per_block)]
-    let c_ptr = unsafe { src.cast_unsized(|p| cast!(p)) };
+    let c_ptr = src.cast_unsized::<_, crate::pointer::cast::CastSized, _>();
 
     match c_ptr.try_into_valid() {
         Ok(ptr) => Ok(ptr),
         Err(err) => {
             // Re-cast `Ptr<Dst>` to `Ptr<Src>`.
             let ptr = err.into_src();
-            // SAFETY: This is a pointer cast, satisfying the following
-            // properties:
-            // - `p as *mut Src` addresses a subset of the `bytes` addressed by
-            //   `ptr`, because we assert above that the size of `Dst` is equal
-            //   to the size of `Src`.
-            // - `p as *mut Src` is a provenance-preserving cast
-            #[allow(clippy::multiple_unsafe_ops_per_block)]
-            let ptr = unsafe { ptr.cast_unsized(|p| cast!(p)) };
+            let ptr = ptr.cast_unsized::<_, crate::pointer::cast::CastSized, _>();
             // SAFETY: `ptr` is `src`, and has the same alignment invariant.
             let ptr = unsafe { ptr.assume_alignment::<I::Alignment>() };
             // SAFETY: `ptr` is `src` and has the same validity invariant.
@@ -695,18 +682,7 @@ where
     // initialized.
     let ptr = unsafe { ptr.assume_validity::<invariant::Initialized>() };
 
-    // SAFETY: `MaybeUninit<T>` and `T` have the same size [1], so this cast
-    // preserves the referent's size. This cast preserves provenance.
-    //
-    // [1] Per https://doc.rust-lang.org/1.81.0/std/mem/union.MaybeUninit.html#layout-1:
-    //
-    //   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and
-    //   ABI as `T`
-    let ptr: Ptr<'_, Dst, _> = unsafe {
-        ptr.cast_unsized(|ptr: crate::pointer::PtrInner<'_, mem::MaybeUninit<Dst>>| {
-            ptr.cast_sized()
-        })
-    };
+    let ptr: Ptr<'_, Dst, _> = ptr.cast_unsized::<_, crate::pointer::cast::CastSized, _>();
 
     if Dst::is_bit_valid(ptr.forget_aligned()) {
         // SAFETY: Since `Dst::is_bit_valid`, we know that `ptr`'s referent is
