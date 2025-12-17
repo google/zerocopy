@@ -764,15 +764,21 @@ fn derive_has_field_struct_union(
         _ => unreachable!(),
     };
 
+    let is_repr_c_union = match &ast.data {
+        Data::Union(..) => StructUnionRepr::from_attrs(&ast.attrs).is_ok_and(|repr| repr.is_c()),
+        Data::Enum(..) | Data::Struct(..) => false,
+    };
     let has_fields = fields.iter().map(move |(_, ident, ty)| {
         let field_token = Ident::new(&format!("ẕ{}", ident), ident.span());
+        let field: Box<Type> = parse_quote!(#field_token);
+        let field_id: Box<Expr> = parse_quote!({ #zerocopy_crate::ident_id!(#ident) });
         ImplBlockBuilder::new(
             ast,
             data,
             Trait::HasField {
                 variant_id: variant_id.clone(),
-                field: parse_quote!(#field_token),
-                field_id: parse_quote!({ #zerocopy_crate::ident_id!(#ident) }),
+                field: field.clone(),
+                field_id: field_id.clone(),
             },
             FieldBounds::None,
             zerocopy_crate,
@@ -781,32 +787,46 @@ fn derive_has_field_struct_union(
             type Type = #ty;
 
             #[inline(always)]
-            fn project(slf: #zerocopy_crate::PtrInner<'_, Self>) -> #zerocopy_crate::PtrInner<'_, Self::Type> {
-                let slf = slf.as_non_null().as_ptr();
-                // SAFETY: `PtrInner` promises it references either a zero-sized
-                // byte range, or else will reference a byte range that is
-                // entirely contained within an allocated object. In either
-                // case, this guarantees that `(*slf).#ident` is in-bounds of
-                // `slf`.
-                let field = unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#ident) };
-                // SAFETY: `PtrInner` promises it references either a zero-sized
-                // byte range, or else will reference a byte range that is
-                // entirely contained within an allocated object. In either
-                // case, this guarantees that field projection will not wrap
-                // around the address space, and so `field` will be non-null.
-                let ptr = unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(field) };
-                // SAFETY:
-                // 0. `ptr` addresses a subset of the bytes of
-                //    `slf`, so by invariant on `slf: PtrInner`,
-                //    if `ptr`'s referent is not zero sized,
-                //    then `ptr` has valid provenance for its
-                //    referent, which is entirely contained in
-                //    some Rust allocation, `A`.
-                // 1. By invariant on `slf: PtrInner`, if
-                //    `ptr`'s referent is not zero sized, `A` is
-                //    guaranteed to live for at least `'a`.
-                unsafe { #zerocopy_crate::PtrInner::new(ptr) }
+            unsafe fn project(slf: *mut Self) -> *mut Self::Type {
+                // SAFETY: The caller promises that `slf` is a non-null pointer
+                // whose referent is zero-sized or lives in a valid allocation.
+                // Since `#ident` is a struct or union field of `Self`, this
+                // projection preserves or shrinks the referent size, and so the
+                // resulting referent also fits in the same allocation.
+                unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#ident) }
             }
+        }).outer_extras(if is_repr_c_union {
+            let ident = &ast.ident;
+            let (impl_generics, ty_generics, where_clause) = ast.generics.split_for_impl();
+            quote! {
+                // SAFETY: All `repr(C)` union fields exist at offset 0 within
+                // the union [1], and so any union projection is actually a cast
+                // (ie, preserves address).
+                //
+                // [1] Per
+                //     https://doc.rust-lang.org/1.92.0/reference/type-layout.html#reprc-unions,
+                //     it's not *technically* guaranteed that non-maximally-
+                //     sized fields are at offset 0, but it's clear that this is
+                //     the intention of `repr(C)` unions. It says:
+                //
+                //     > A union declared with `#[repr(C)]` will have the same
+                //     > size and alignment as an equivalent C union declaration
+                //     > in the C language for the target platform.
+                //
+                //     Note that this only mentions size and alignment, not layout.
+                //     However, C unions *do* guarantee that all fields start at
+                //     offset 0.
+                //
+                // TODO(https://github.com/rust-lang/unsafe-code-guidelines/issues/595):
+                // Cite the documentation once it's updated.
+                unsafe impl #impl_generics #zerocopy_crate::pointer::cast::Cast<#ident #ty_generics, #ty>
+                    for #zerocopy_crate::pointer::cast::Projection<#field, { #zerocopy_crate::UNION_VARIANT_ID }, #field_id>
+                #where_clause
+                {
+                }
+            }
+        } else {
+            quote! {}
         })
         .build()
     });
@@ -849,21 +869,10 @@ fn derive_try_from_bytes_struct(
                     use #zerocopy_crate::pointer::PtrInner;
 
                     true #(&& {
-                        let project = <Self as #zerocopy_crate::HasField<
+                        let field_candidate = candidate.reborrow().project::<
                             _,
-                            { #zerocopy_crate::STRUCT_VARIANT_ID },
                             { #zerocopy_crate::ident_id!(#field_names) }
-                        >>::project;
-                        // SAFETY:
-                        // - `project` is a field projection, and so it
-                        //   addresses a subset of the bytes addressed by `slf`
-                        // - ..., and so it preserves provenance
-                        // - ..., and `*slf` is a struct, so `UnsafeCell`s exist
-                        //   at the same byte ranges in the returned pointer's
-                        //   referent as they do in `*slf`
-                        let field_candidate = unsafe {
-                            candidate.reborrow().cast_unsized_unchecked(project)
-                        };
+                        >();
 
                         <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
                     })*
@@ -914,11 +923,6 @@ fn derive_try_from_bytes_union(
                     use #zerocopy_crate::pointer::PtrInner;
 
                     false #(|| {
-                        let project = <Self as #zerocopy_crate::HasField<
-                            _,
-                            { #zerocopy_crate::UNION_VARIANT_ID },
-                            { #zerocopy_crate::ident_id!(#field_names) }
-                        >>::project;
                         // SAFETY:
                         // - `project` is a field projection, and so it
                         //   addresses a subset of the bytes addressed by `slf`
@@ -928,7 +932,11 @@ fn derive_try_from_bytes_union(
                         //   returned pointer's referent contain any
                         //   `UnsafeCell`s
                         let field_candidate = unsafe {
-                            candidate.reborrow().cast_unsized_unchecked(project)
+                            candidate.reborrow().transmute_unchecked::<
+                                _,
+                                _,
+                                #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#field_names) }>
+                            >()
                         };
 
                         <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
@@ -1923,6 +1931,10 @@ impl<'a> ImplBlockBuilder<'a> {
             // So that any items defined in `#outer_extras` don't conflict with
             // existing names defined in this scope.
             quote! {
+                #[allow(deprecated, non_local_definitions)]
+                // While there are not currently any warnings that this suppresses
+                // (that we're aware of), it's good future-proofing hygiene.
+                #[automatically_derived]
                 const _: () = {
                     #impl_tokens
 
