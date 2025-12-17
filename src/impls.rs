@@ -426,7 +426,7 @@ mod atomics {
             crate::util::macros::__unsafe();
 
             use core::cell::UnsafeCell;
-            use crate::pointer::{PtrInner, SizeEq, TransmuteFrom, invariant::Valid};
+            use crate::pointer::{SizeEq, TransmuteFrom, invariant::Valid};
 
             $(
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
@@ -439,21 +439,11 @@ mod atomics {
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
                 // the same size.
                 unsafe impl<$($tyvar)?> SizeEq<$atomic> for $prim {
-                    #[inline]
-                    fn cast_from_raw(a: PtrInner<'_, $atomic>) -> PtrInner<'_, $prim> {
-                        // SAFETY: The caller promised that `$atomic` and
-                        // `$prim` have the same size. Thus, this cast preserves
-                        // address, referent size, and provenance.
-                        unsafe { cast!(a) }
-                    }
+                    type CastFrom = $crate::pointer::cast::CastSized;
                 }
                 // SAFETY: See previous safety comment.
                 unsafe impl<$($tyvar)?> SizeEq<$prim> for $atomic {
-                    #[inline]
-                    fn cast_from_raw(p: PtrInner<'_, $prim>) -> PtrInner<'_, $atomic> {
-                        // SAFETY: See previous safety comment.
-                        unsafe { cast!(p) }
-                    }
+                    type CastFrom = $crate::pointer::cast::CastSized;
                 }
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
                 // the same size. `UnsafeCell<T>` has the same size as `T` [1].
@@ -464,19 +454,11 @@ mod atomics {
                 //   its inner type `T`. A consequence of this guarantee is that
                 //   it is possible to convert between `T` and `UnsafeCell<T>`.
                 unsafe impl<$($tyvar)?> SizeEq<$atomic> for UnsafeCell<$prim> {
-                    #[inline]
-                    fn cast_from_raw(a: PtrInner<'_, $atomic>) -> PtrInner<'_, UnsafeCell<$prim>> {
-                        // SAFETY: See previous safety comment.
-                        unsafe { cast!(a) }
-                    }
+                    type CastFrom = $crate::pointer::cast::CastSized;
                 }
                 // SAFETY: See previous safety comment.
                 unsafe impl<$($tyvar)?> SizeEq<UnsafeCell<$prim>> for $atomic {
-                    #[inline]
-                    fn cast_from_raw(p: PtrInner<'_, UnsafeCell<$prim>>) -> PtrInner<'_, $atomic> {
-                        // SAFETY: See previous safety comment.
-                        unsafe { cast!(p) }
-                    }
+                    type CastFrom = $crate::pointer::cast::CastSized;
                 }
 
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
@@ -818,7 +800,8 @@ const _: () = {
     // private field, and because it is the name it is referred to in the public
     // documentation of `ManuallyDrop::new`, `ManuallyDrop::into_inner`,
     // `ManuallyDrop::take` and `ManuallyDrop::drop`.
-    unsafe impl<T> HasField<value, { crate::STRUCT_UNION_VARIANT_ID }, { crate::ident_id!(value) }>
+    unsafe impl<T: ?Sized>
+        HasField<value, { crate::STRUCT_UNION_VARIANT_ID }, { crate::ident_id!(value) }>
         for ManuallyDrop<T>
     {
         type Type = T;
@@ -831,7 +814,7 @@ const _: () = {
         }
 
         #[inline(always)]
-        fn project(slf: PtrInner<'_, Self>) -> PtrInner<'_, T> {
+        unsafe fn project(slf: *mut Self) -> *mut T {
             // SAFETY: `ManuallyDrop<T>` has the same layout and bit validity as
             // `T` [1].
             //
@@ -839,7 +822,8 @@ const _: () = {
             //
             //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit
             //   validity as `T`
-            unsafe { slf.cast() }
+            #[allow(clippy::as_conversions)]
+            return slf as *mut T;
         }
     }
 };
