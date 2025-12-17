@@ -13,6 +13,7 @@ use core::{
 
 use crate::{
     pointer::{
+        cast::Cast,
         inner::PtrInner,
         invariant::*,
         transmute::{MutationCompatible, SizeEq, TransmuteFromPtr},
@@ -160,6 +161,7 @@ mod _external {
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
     use super::*;
+    use crate::pointer::cast::CastSized;
 
     /// `&'a T` → `Ptr<'a, T>`
     impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
@@ -393,7 +395,7 @@ mod _conversions {
             //     operate on these references simultaneously
             // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
             //   sound to perform this transmute.
-            unsafe { self.transmute_unchecked(SizeEq::cast_from_raw) }
+            unsafe { self.transmute_unchecked(<U as SizeEq<T>>::CastFrom::default()) }
         }
 
         #[doc(hidden)]
@@ -411,7 +413,7 @@ mod _conversions {
             //   same referent simultaneously
             // - By `T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
             //   sound to perform this transmute.
-            let ptr = unsafe { self.transmute_unchecked(SizeEq::cast_from_raw) };
+            let ptr = unsafe { self.transmute_unchecked(<T as SizeEq<T>>::CastFrom::default()) };
             // SAFETY: `self` and `ptr` have the same address and referent type.
             // Therefore, if `self` satisfies `I::Alignment`, then so does
             // `ptr`.
@@ -449,9 +451,12 @@ mod _conversions {
         ) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
             V: Validity,
-            F: FnOnce(PtrInner<'a, T>) -> PtrInner<'a, U>,
+            F: Cast<T, U>,
         {
-            let ptr = cast(self.as_inner());
+            // TODO: Should this accept a `*mut -> *mut` rather than `PtrInner ->
+            // PtrInner` and then use `PtrInner::cast_unchecked`? Would that allow
+            // us to simplify downstream callers of `transmute_unchecked`?
+            let ptr = self.as_inner().cast(cast);
 
             // SAFETY:
             //
@@ -511,7 +516,7 @@ mod _conversions {
             //   and the returned `Ptr` permit the same set of bit patterns in
             //   their referents, and so neither can be used to violate the
             //   validity of the other.
-            let ptr = unsafe { self.transmute_unchecked(PtrInner::cast_sized) };
+            let ptr = unsafe { self.transmute_unchecked(CastSized::new()) };
             ptr.bikeshed_recall_aligned()
         }
     }
@@ -854,7 +859,10 @@ mod _transitions {
 
 /// Casts of the referent type.
 mod _casts {
+    use core::cell::UnsafeCell;
+
     use super::*;
+    use crate::pointer::cast::{AsBytesCast, Cast, FnCast};
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
@@ -885,7 +893,7 @@ mod _casts {
         /// around the address space.
         #[doc(hidden)]
         #[inline]
-        pub unsafe fn cast_unsized_unchecked<U, F: FnOnce(PtrInner<'a, T>) -> PtrInner<'a, U>>(
+        pub unsafe fn cast_unsized_unchecked<U, F: Cast<T, U>>(
             self,
             cast: F,
         ) -> Ptr<'a, U, (I::Aliasing, Unaligned, I::Validity)>
@@ -936,7 +944,7 @@ mod _casts {
         where
             T: MutationCompatible<U, I::Aliasing, I::Validity, I::Validity, R>,
             U: 'a + ?Sized + CastableFrom<T, I::Validity, I::Validity>,
-            F: FnOnce(PtrInner<'a, T>) -> PtrInner<'a, U>,
+            F: Cast<T, U>,
         {
             // SAFETY: Because `T: MutationCompatible<U, I::Aliasing, R>`, one
             // of the following holds:
@@ -969,7 +977,7 @@ mod _casts {
             // SAFETY: `PtrInner::as_bytes` returns a pointer which addresses
             // the same byte range as its argument, and which has the same
             // provenance.
-            let ptr = unsafe { self.cast_unsized(PtrInner::as_bytes) };
+            let ptr = unsafe { self.cast_unsized(AsBytesCast) };
             ptr.bikeshed_recall_aligned().recall_validity::<Valid, (_, (_, _))>()
         }
     }
@@ -1149,7 +1157,7 @@ mod _casts {
         }
     }
 
-    impl<'a, T, I> Ptr<'a, core::cell::UnsafeCell<T>, I>
+    impl<'a, T, I> Ptr<'a, UnsafeCell<T>, I>
     where
         T: 'a + ?Sized,
         I: Invariants<Aliasing = Exclusive>,
@@ -1165,6 +1173,12 @@ mod _casts {
         #[must_use]
         #[inline(always)]
         pub fn get_mut(self) -> Ptr<'a, T, I> {
+            unsafe {
+                define_cast!(Cast<T: ?Sized> = UnsafeCell<T> => T);
+            }
+
+            let cast = unsafe { FnCast::new(|p| p as *mut _) };
+
             // SAFETY:
             // - The closure uses an `as` cast, which preserves address range
             //   and provenance.
@@ -1188,9 +1202,7 @@ mod _casts {
             //   `UnsafeCell<T>` has the same in-memory representation as its
             //   inner type `T`. A consequence of this guarantee is that it is
             //   possible to convert between `T` and `UnsafeCell<T>`.
-            #[allow(clippy::as_conversions)]
-            #[allow(clippy::multiple_unsafe_ops_per_block)]
-            let ptr = unsafe { self.transmute_unchecked(|ptr| cast!(ptr)) };
+            let ptr = unsafe { self.transmute_unchecked(cast) };
 
             // SAFETY: `UnsafeCell<T>` has the same alignment as `T` [1],
             // and so if `self` is guaranteed to be aligned, then so is the
