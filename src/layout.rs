@@ -738,9 +738,25 @@ impl DstLayout {
     }
 }
 
-pub(crate) use cast_from_raw::cast_from_raw;
+pub(crate) use cast_from_raw::CastFromRaw;
 mod cast_from_raw {
     use crate::{pointer::PtrInner, *};
+
+    pub(crate) struct CastFromRaw<Dst: ?Sized> {
+        _never: core::convert::Infallible,
+        _marker: PhantomData<Dst>,
+    }
+
+    unsafe impl<Src, Dst> crate::pointer::cast::Cast<Src, Dst> for CastFromRaw<Dst>
+    where
+        Src: KnownLayout<PointerMetadata = usize> + ?Sized,
+        Dst: KnownLayout<PointerMetadata = usize> + ?Sized,
+    {
+        unsafe fn cast(src: *mut Src) -> *mut Dst {
+            let src = unsafe { PtrInner::new(NonNull::new_unchecked(src)) };
+            cast_from_raw(src).as_non_null().as_ptr()
+        }
+    }
 
     /// Implements [`<Dst as SizeEq<Src>>::cast_from_raw`][cast_from_raw].
     ///
@@ -753,7 +769,7 @@ mod cast_from_raw {
     /// [cast_from_raw]: crate::pointer::SizeEq::cast_from_raw
     //
     // FIXME(#1817): Support Sized->Unsized and Unsized->Sized casts
-    pub(crate) fn cast_from_raw<Src, Dst>(src: PtrInner<'_, Src>) -> PtrInner<'_, Dst>
+    fn cast_from_raw<Src, Dst>(src: PtrInner<'_, Src>) -> PtrInner<'_, Dst>
     where
         Src: KnownLayout<PointerMetadata = usize> + ?Sized,
         Dst: KnownLayout<PointerMetadata = usize> + ?Sized,
