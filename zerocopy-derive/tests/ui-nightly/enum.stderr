@@ -315,9 +315,9 @@ error[E0277]: the trait bound `UnsafeCell<()>: Immutable` is not satisfied
              ()
              *const T
              *mut T
+             <FromZeros6 as TryFromBytes>::is_bit_valid::___ZerocopyTag
+             <TryFromBytes3 as TryFromBytes>::is_bit_valid::___ZerocopyTag
              F32<O>
-             F64<O>
-             I128<O>
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -339,9 +339,9 @@ error[E0277]: the trait bound `UnsafeCell<u8>: Immutable` is not satisfied
              ()
              *const T
              *mut T
+             <FromZeros6 as TryFromBytes>::is_bit_valid::___ZerocopyTag
+             <TryFromBytes3 as TryFromBytes>::is_bit_valid::___ZerocopyTag
              F32<O>
-             F64<O>
-             I128<O>
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -367,12 +367,14 @@ help: the trait `TryFromBytes` is not implemented for `NotTryFromBytes`
              *const T
              *mut T
              <FromZeros6 as TryFromBytes>::is_bit_valid::___ZerocopyVariantStruct_A
-             <TryFromBytes3 as TryFromBytes>::is_bit_valid::___ZerocopyVariantStruct_A
+             ___ZerocopyVariantStruct_A
              AtomicBool
              AtomicI16
              AtomicI32
            and $N others
    = help: see issue #48214
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/nightly/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-bdab6aa76df77861.long-type-3936065173844421708.txt'
+   = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
@@ -396,12 +398,14 @@ help: the trait `TryFromBytes` is not implemented for `NotFromZeros`
               *const T
               *mut T
               <FromZeros6 as TryFromBytes>::is_bit_valid::___ZerocopyVariantStruct_A
-              <TryFromBytes3 as TryFromBytes>::is_bit_valid::___ZerocopyVariantStruct_A
+              ___ZerocopyVariantStruct_A
               AtomicBool
               AtomicI16
               AtomicI32
             and $N others
     = help: see issue #48214
+    = note: the full name for the type has been written to '$DIR/target/by-toolchain/nightly/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-bdab6aa76df77861.long-type-3936065173844421708.txt'
+    = note: consider using `--verbose` to print the full type name to the console
     = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
