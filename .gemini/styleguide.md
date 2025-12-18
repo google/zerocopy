@@ -8,10 +8,5 @@ those terms. -->
 
 # Coding Guidelines
 
-Please follow the development instructions and coding guidelines defined in
-`AGENTS.md` and `CONTRIBUTING.md` files located in the root of this repository.
-
-> [!IMPORTANT]
-> **READ `AGENTS.md` FIRST.**
-> All critical instructions, including build commands, safety rules, and code
-> style, are defined in `AGENTS.md`. You must read and follow them.
+Please follow the development instructions and coding guidelines defined in the
+`agent_docs/reviewing.md` and `AGENTS.md` files located in this repository.
