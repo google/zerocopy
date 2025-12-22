@@ -818,7 +818,9 @@ const _: () = {
     // private field, and because it is the name it is referred to in the public
     // documentation of `ManuallyDrop::new`, `ManuallyDrop::into_inner`,
     // `ManuallyDrop::take` and `ManuallyDrop::drop`.
-    unsafe impl<T> HasField<value, 0, { crate::ident_id!(value) }> for ManuallyDrop<T> {
+    unsafe impl<T> HasField<value, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!(value) }>
+        for ManuallyDrop<T>
+    {
         type Type = T;
 
         #[inline]
