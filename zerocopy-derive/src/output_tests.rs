@@ -431,7 +431,7 @@ fn test_from_bytes_union() {
                     #[automatically_derived]
                     unsafe impl ::zerocopy::HasField<
                         ẕa,
-                        { ::zerocopy::ident_id!(0) },
+                        { ::zerocopy::UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(a) },
                     > for Foo {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -727,7 +727,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(0) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -740,7 +740,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(1) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -753,7 +753,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(2) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -766,7 +766,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(3) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -779,7 +779,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(4) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -792,7 +792,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(5) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -808,7 +808,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(6) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -838,7 +838,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ0,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(0) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -873,7 +873,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ1,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(1) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -908,7 +908,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ2,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(2) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -943,7 +943,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ3,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(3) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -978,7 +978,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ4,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(4) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -1013,7 +1013,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ5,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(5) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -1048,7 +1048,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ6,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(6) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -1129,7 +1129,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(0) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -1142,7 +1142,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(1) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -1155,7 +1155,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(2) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -1168,7 +1168,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(3) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -1181,7 +1181,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(4) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -1209,7 +1209,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ0,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(0) },
                             > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
@@ -1244,7 +1244,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ1,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(1) },
                             > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
@@ -1279,7 +1279,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ2,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(2) },
                             > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
@@ -1314,7 +1314,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ3,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(3) },
                             > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
@@ -1349,7 +1349,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ4,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(4) },
                             > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
@@ -1404,7 +1404,7 @@ fn test_try_from_bytes_enum() {
                             Y: Deref,
                         > ::zerocopy::HasField<
                             ẕ__field_StructLike,
-                            { ::zerocopy::ident_id!(0) },
+                            { ::zerocopy::UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__field_StructLike) },
                         > for ___ZerocopyVariants<'a, { N }, X, Y> {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -1438,7 +1438,7 @@ fn test_try_from_bytes_enum() {
                             Y: Deref,
                         > ::zerocopy::HasField<
                             ẕ__field_TupleLike,
-                            { ::zerocopy::ident_id!(0) },
+                            { ::zerocopy::UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__field_TupleLike) },
                         > for ___ZerocopyVariants<'a, { N }, X, Y> {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -1472,7 +1472,7 @@ fn test_try_from_bytes_enum() {
                             Y: Deref,
                         > ::zerocopy::HasField<
                             ẕ__nonempty,
-                            { ::zerocopy::ident_id!(0) },
+                            { ::zerocopy::UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__nonempty) },
                         > for ___ZerocopyVariants<'a, { N }, X, Y> {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -1514,7 +1514,7 @@ fn test_try_from_bytes_enum() {
                             Y: Deref,
                         > ::zerocopy::HasField<
                             ẕtag,
-                            { ::zerocopy::ident_id!(0) },
+                            { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(tag) },
                         > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -1546,7 +1546,7 @@ fn test_try_from_bytes_enum() {
                             Y: Deref,
                         > ::zerocopy::HasField<
                             ẕvariants,
-                            { ::zerocopy::ident_id!(0) },
+                            { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(variants) },
                         > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -1592,10 +1592,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(1) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1620,10 +1620,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(2) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1648,10 +1648,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(3) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1676,10 +1676,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(4) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(4) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1704,10 +1704,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(5) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(5) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1732,10 +1732,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(1) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1760,10 +1760,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(2) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1788,10 +1788,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(3) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
                         }
                     }
                     let tag = {
@@ -1816,7 +1816,7 @@ fn test_try_from_bytes_enum() {
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let project = ::zerocopy::pointer::PtrInner::project::<
                         _,
-                        0,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(variants) },
                     >;
                     let variants = unsafe { raw_enum.cast_unsized_unchecked(project) };
@@ -1985,7 +1985,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(0) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -1998,7 +1998,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(1) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -2011,7 +2011,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(2) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -2024,7 +2024,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(3) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -2037,7 +2037,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(4) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -2050,7 +2050,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(5) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -2066,7 +2066,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(6) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -2096,7 +2096,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ0,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(0) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -2131,7 +2131,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ1,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(1) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -2166,7 +2166,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ2,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(2) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -2201,7 +2201,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ3,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(3) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -2236,7 +2236,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ4,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(4) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -2271,7 +2271,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ5,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(5) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -2306,7 +2306,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ6,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(6) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -2387,7 +2387,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(0) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -2400,7 +2400,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(1) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -2413,7 +2413,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(2) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -2426,7 +2426,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(3) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -2439,7 +2439,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(4) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -2467,7 +2467,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ0,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(0) },
                             > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
@@ -2502,7 +2502,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ1,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(1) },
                             > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
@@ -2537,7 +2537,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ2,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(2) },
                             > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
@@ -2572,7 +2572,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ3,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(3) },
                             > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
@@ -2607,7 +2607,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ4,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(4) },
                             > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
@@ -2662,7 +2662,7 @@ fn test_try_from_bytes_enum() {
                             Y: Deref,
                         > ::zerocopy::HasField<
                             ẕ__field_StructLike,
-                            { ::zerocopy::ident_id!(0) },
+                            { ::zerocopy::UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__field_StructLike) },
                         > for ___ZerocopyVariants<'a, { N }, X, Y> {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -2696,7 +2696,7 @@ fn test_try_from_bytes_enum() {
                             Y: Deref,
                         > ::zerocopy::HasField<
                             ẕ__field_TupleLike,
-                            { ::zerocopy::ident_id!(0) },
+                            { ::zerocopy::UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__field_TupleLike) },
                         > for ___ZerocopyVariants<'a, { N }, X, Y> {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -2730,7 +2730,7 @@ fn test_try_from_bytes_enum() {
                             Y: Deref,
                         > ::zerocopy::HasField<
                             ẕ__nonempty,
-                            { ::zerocopy::ident_id!(0) },
+                            { ::zerocopy::UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__nonempty) },
                         > for ___ZerocopyVariants<'a, { N }, X, Y> {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -2772,7 +2772,7 @@ fn test_try_from_bytes_enum() {
                             Y: Deref,
                         > ::zerocopy::HasField<
                             ẕtag,
-                            { ::zerocopy::ident_id!(0) },
+                            { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(tag) },
                         > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -2804,7 +2804,7 @@ fn test_try_from_bytes_enum() {
                             Y: Deref,
                         > ::zerocopy::HasField<
                             ẕvariants,
-                            { ::zerocopy::ident_id!(0) },
+                            { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(variants) },
                         > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -2850,10 +2850,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(1) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -2878,10 +2878,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(2) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -2906,10 +2906,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(3) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -2934,10 +2934,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(4) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(4) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -2962,10 +2962,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(5) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(5) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -2990,10 +2990,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(1) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -3018,10 +3018,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(2) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -3046,10 +3046,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(3) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
                         }
                     }
                     let tag = {
@@ -3074,7 +3074,7 @@ fn test_try_from_bytes_enum() {
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let project = ::zerocopy::pointer::PtrInner::project::<
                         _,
-                        0,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(variants) },
                     >;
                     let variants = unsafe { raw_enum.cast_unsized_unchecked(project) };
@@ -3243,7 +3243,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(0) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -3256,7 +3256,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(1) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -3269,7 +3269,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(2) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -3282,7 +3282,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(3) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -3295,7 +3295,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(4) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -3308,7 +3308,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(5) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -3324,7 +3324,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(6) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -3354,7 +3354,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ0,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(0) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -3389,7 +3389,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ1,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(1) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -3424,7 +3424,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ2,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(2) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -3459,7 +3459,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ3,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(3) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -3494,7 +3494,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ4,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(4) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -3529,7 +3529,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ5,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(5) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -3564,7 +3564,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ6,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(6) },
                             > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
@@ -3645,7 +3645,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(0) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -3658,7 +3658,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(1) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -3671,7 +3671,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(2) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -3684,7 +3684,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(3) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -3697,7 +3697,7 @@ fn test_try_from_bytes_enum() {
                                     && {
                                         let project = <Self as ::zerocopy::HasField<
                                             _,
-                                            0,
+                                            { ::zerocopy::STRUCT_VARIANT_ID },
                                             { ::zerocopy::ident_id!(4) },
                                         >>::project;
                                         let field_candidate = unsafe {
@@ -3725,7 +3725,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ0,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(0) },
                             > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
@@ -3760,7 +3760,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ1,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(1) },
                             > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
@@ -3795,7 +3795,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ2,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(2) },
                             > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
@@ -3830,7 +3830,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ3,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(3) },
                             > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
@@ -3865,7 +3865,7 @@ fn test_try_from_bytes_enum() {
                                 Y: Deref,
                             > ::zerocopy::HasField<
                                 ẕ4,
-                                { ::zerocopy::ident_id!(0) },
+                                { ::zerocopy::STRUCT_VARIANT_ID },
                                 { ::zerocopy::ident_id!(4) },
                             > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
@@ -3920,7 +3920,7 @@ fn test_try_from_bytes_enum() {
                             Y: Deref,
                         > ::zerocopy::HasField<
                             ẕ__field_StructLike,
-                            { ::zerocopy::ident_id!(0) },
+                            { ::zerocopy::UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__field_StructLike) },
                         > for ___ZerocopyVariants<'a, { N }, X, Y> {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -3954,7 +3954,7 @@ fn test_try_from_bytes_enum() {
                             Y: Deref,
                         > ::zerocopy::HasField<
                             ẕ__field_TupleLike,
-                            { ::zerocopy::ident_id!(0) },
+                            { ::zerocopy::UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__field_TupleLike) },
                         > for ___ZerocopyVariants<'a, { N }, X, Y> {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -3988,7 +3988,7 @@ fn test_try_from_bytes_enum() {
                             Y: Deref,
                         > ::zerocopy::HasField<
                             ẕ__nonempty,
-                            { ::zerocopy::ident_id!(0) },
+                            { ::zerocopy::UNION_VARIANT_ID },
                             { ::zerocopy::ident_id!(__nonempty) },
                         > for ___ZerocopyVariants<'a, { N }, X, Y> {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -4030,7 +4030,7 @@ fn test_try_from_bytes_enum() {
                             Y: Deref,
                         > ::zerocopy::HasField<
                             ẕtag,
-                            { ::zerocopy::ident_id!(0) },
+                            { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(tag) },
                         > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -4062,7 +4062,7 @@ fn test_try_from_bytes_enum() {
                             Y: Deref,
                         > ::zerocopy::HasField<
                             ẕvariants,
-                            { ::zerocopy::ident_id!(0) },
+                            { ::zerocopy::STRUCT_VARIANT_ID },
                             { ::zerocopy::ident_id!(variants) },
                         > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
@@ -4108,10 +4108,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(1) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4136,10 +4136,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(2) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4164,10 +4164,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(3) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4192,10 +4192,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(4) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(4) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4220,10 +4220,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(5) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(5) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4248,10 +4248,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(1) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4276,10 +4276,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(2) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4304,10 +4304,10 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, 0, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, 0, { ::zerocopy::ident_id!(3) }>()
+                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
+                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
+                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
                         }
                     }
                     let tag = {
@@ -4332,7 +4332,7 @@ fn test_try_from_bytes_enum() {
                     let raw_enum = unsafe { raw_enum.assume_initialized() };
                     let project = ::zerocopy::pointer::PtrInner::project::<
                         _,
-                        0,
+                        { ::zerocopy::STRUCT_VARIANT_ID },
                         { ::zerocopy::ident_id!(variants) },
                     >;
                     let variants = unsafe { raw_enum.cast_unsized_unchecked(project) };
