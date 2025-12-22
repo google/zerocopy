@@ -301,10 +301,10 @@ pub(crate) fn derive_is_bit_valid(
                     // `___ZerocopyRawEnum` has the same layout as `Self`.
                     let slf = unsafe { slf.cast::<___ZerocopyRawEnum #ty_generics>() };
 
-                    slf.project::<_, 0, { #zerocopy_crate::ident_id!(variants) }>()
-                        .project::<_, 0, { #zerocopy_crate::ident_id!(#variants_union_field_ident) }>()
-                        .project::<_, 0, { #zerocopy_crate::ident_id!(value) }>()
-                        .project::<_, 0, { #zerocopy_crate::ident_id!(#variant_struct_field_index) }>()
+                    slf.project::<_, { #zerocopy_crate::STRUCT_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(variants) }>()
+                        .project::<_, { #zerocopy_crate::STRUCT_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variants_union_field_ident) }>()
+                        .project::<_, { #zerocopy_crate::STRUCT_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(value) }>()
+                        .project::<_, { #zerocopy_crate::STRUCT_UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#variant_struct_field_index) }>()
                 }
             })
             .build()
@@ -455,7 +455,7 @@ pub(crate) fn derive_is_bit_valid(
             //   overall struct.
             let project = #zerocopy_crate::pointer::PtrInner::project::<
                 _,
-                0,
+                { #zerocopy_crate::STRUCT_UNION_VARIANT_ID },
                 { #zerocopy_crate::ident_id!(variants) }
             >;
             let variants = unsafe {

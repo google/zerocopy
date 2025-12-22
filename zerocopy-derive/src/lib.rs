@@ -758,14 +758,19 @@ fn derive_has_field_struct_union(
         )
     });
 
-    let has_fields = fields.iter().map(|(_, ident, ty)| {
+    let variant_id: Box<Expr> = match &ast.data {
+        Data::Struct(_) => parse_quote!({ #zerocopy_crate::STRUCT_VARIANT_ID }),
+        Data::Union(_) => parse_quote!({ #zerocopy_crate::UNION_VARIANT_ID }),
+        _ => unreachable!(),
+    };
+
+    let has_fields = fields.iter().map(move |(_, ident, ty)| {
         let field_token = Ident::new(&format!("ẕ{}", ident), ident.span());
         ImplBlockBuilder::new(
             ast,
             data,
             Trait::HasField {
-                // Use `0` to denote the sole 'variant' of structs and unions.
-                variant_id: parse_quote!({ #zerocopy_crate::ident_id!(0) }),
+                variant_id: variant_id.clone(),
                 field: parse_quote!(#field_token),
                 field_id: parse_quote!({ #zerocopy_crate::ident_id!(#ident) }),
             },
@@ -844,7 +849,11 @@ fn derive_try_from_bytes_struct(
                     use #zerocopy_crate::pointer::PtrInner;
 
                     true #(&& {
-                        let project = <Self as #zerocopy_crate::HasField<_, 0, { #zerocopy_crate::ident_id!(#field_names) }>>::project;
+                        let project = <Self as #zerocopy_crate::HasField<
+                            _,
+                            { #zerocopy_crate::STRUCT_VARIANT_ID },
+                            { #zerocopy_crate::ident_id!(#field_names) }
+                        >>::project;
                         // SAFETY:
                         // - `project` is a field projection, and so it
                         //   addresses a subset of the bytes addressed by `slf`
@@ -905,7 +914,11 @@ fn derive_try_from_bytes_union(
                     use #zerocopy_crate::pointer::PtrInner;
 
                     false #(|| {
-                        let project = <Self as #zerocopy_crate::HasField<_, 0, { #zerocopy_crate::ident_id!(#field_names) }>>::project;
+                        let project = <Self as #zerocopy_crate::HasField<
+                            _,
+                            { #zerocopy_crate::UNION_VARIANT_ID },
+                            { #zerocopy_crate::ident_id!(#field_names) }
+                        >>::project;
                         // SAFETY:
                         // - `project` is a field projection, and so it
                         //   addresses a subset of the bytes addressed by `slf`

@@ -1089,6 +1089,20 @@ const _: () = unsafe {
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T::MaybeUninit)] MaybeUninit<T>)
 };
 
+// FIXME(#196, #2856): Eventually, we'll want to support enums variants and
+// union fields being treated uniformly since they behave similarly to each
+// other in terms of projecting validity – specifically, for a type `T` with
+// validity `V`, if `T` is a struct type, then its fields straightforwardly also
+// have validity `V`. By contrast, if `T` is an enum or union type, then
+// validity is not straightforwardly recursive in this way.
+//
+// In order to support this, we'll need to use `HasField`'s `VARIANT_ID` to keep
+// track of union fields instead of using `FIELD_ID`, as we do currently.
+#[doc(hidden)]
+pub const STRUCT_VARIANT_ID: i128 = -1;
+#[doc(hidden)]
+pub const UNION_VARIANT_ID: i128 = -2;
+
 /// Projects a given field from `Self`.
 ///
 /// All implementations of `HasField` for a particular field `f` in `Self`
@@ -1099,12 +1113,16 @@ const _: () = unsafe {
 ///
 /// A field `f` is `HasField` for `Self` if and only if:
 ///
+/// - if `Self` is a struct or union type, `VARIANT_ID` is
+///   `STRUCT_UNION_VARIANT_ID`; otherwise, if `Self` is an enum type,
+///   `VARIANT_ID` is the numerical index of the enum variant in which `f`
+///   appears.
 /// - if `f` has name `n`, `FIELD_ID` is `zerocopy::ident_id!(n)`; otherwise, if
 ///   `f` is at index `i`, `FIELD_ID` is `zerocopy::ident_id!(i)`.
 /// - `Field` is a type with the same visibility as `f`.
 /// - `Type` has the same type as `f`.
 #[doc(hidden)]
-pub unsafe trait HasField<Field, const VARIANT_ID: u128, const FIELD_ID: u128> {
+pub unsafe trait HasField<Field, const VARIANT_ID: i128, const FIELD_ID: i128> {
     fn only_derive_is_allowed_to_implement_this_trait()
     where
         Self: Sized;
