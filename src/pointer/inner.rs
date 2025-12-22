@@ -200,7 +200,7 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
     /// Projects a field.
     #[must_use]
     #[inline(always)]
-    pub fn project<F, const VARIANT_ID: u128, const FIELD_ID: u128>(self) -> PtrInner<'a, T::Type>
+    pub fn project<F, const VARIANT_ID: i128, const FIELD_ID: i128>(self) -> PtrInner<'a, T::Type>
     where
         T: HasField<F, VARIANT_ID, FIELD_ID>,
     {
