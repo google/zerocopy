@@ -553,7 +553,7 @@ macro_rules! ident_id {
 #[inline(always)]
 #[must_use]
 #[allow(clippy::as_conversions, clippy::indexing_slicing, clippy::arithmetic_side_effects)]
-pub const fn hash_name(name: &str) -> u128 {
+pub const fn hash_name(name: &str) -> i128 {
     let name = name.as_bytes();
 
     // We guarantee freedom from hash collisions between any two strings of
@@ -569,7 +569,7 @@ pub const fn hash_name(name: &str) -> u128 {
             i += 1;
         }
 
-        return u128::from_ne_bytes(bytes);
+        return i128::from_ne_bytes(bytes);
     };
 
     // An implementation of FxHasher, although returning a u128. Probably
@@ -584,7 +584,7 @@ pub const fn hash_name(name: &str) -> u128 {
         hash = (hash.rotate_left(5) ^ (name[i] as u128)).wrapping_mul(K);
         i += 1;
     }
-    hash
+    i128::from_ne_bytes(hash.to_ne_bytes())
 }
 
 /// Is a given source a valid instance of `Dst`?
