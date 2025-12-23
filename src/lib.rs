@@ -319,12 +319,16 @@
     any(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS, miri),
     feature(layout_for_ptr)
 )]
+#![cfg_attr(all(test, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), feature(test))]
 
 // This is a hack to allow zerocopy-derive derives to work in this crate. They
 // assume that zerocopy is linked as an extern crate, so they access items from
 // it as `zerocopy::Xxx`. This makes that still work.
 #[cfg(any(feature = "derive", test))]
 extern crate self as zerocopy;
+
+#[cfg(all(test, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS))]
+extern crate test;
 
 #[doc(hidden)]
 #[macro_use]
