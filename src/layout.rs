@@ -903,10 +903,12 @@ mod cast_from_raw {
                 // Since the caller promises that `src_meta` is valid `Src`
                 // metadata, this math will not overflow, and the returned value
                 // will describe a `Dst` of the same size.
-                #[allow(unstable_name_collisions, clippy::multiple_unsafe_ops_per_block)]
+                #[allow(unstable_name_collisions)]
+                let product = unsafe { src_meta.unchecked_mul(self.elem_multiple) };
+                // SAFETY: See above.
+                #[allow(unstable_name_collisions)]
                 unsafe {
-                    self.offset_delta_elems
-                        .unchecked_add(src_meta.unchecked_mul(self.elem_multiple))
+                    self.offset_delta_elems.unchecked_add(product)
                 }
             }
         }
@@ -1517,10 +1519,9 @@ mod tests {
                 }
 
                 // SAFETY: `ptr` points to a valid `T`.
-                #[allow(clippy::multiple_unsafe_ops_per_block)]
-                let (size, align) = unsafe {
-                    (mem::size_of_val_raw(ptr.as_ptr()), mem::align_of_val_raw(ptr.as_ptr()))
-                };
+                let size = unsafe { mem::size_of_val_raw(ptr.as_ptr()) };
+                // SAFETY: See above.
+                let align = unsafe { mem::align_of_val_raw(ptr.as_ptr()) };
 
                 // Avoid expensive allocation when running under Miri.
                 let assert_msg = if !cfg!(miri) {
