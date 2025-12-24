@@ -1010,8 +1010,14 @@ const _: () = unsafe { unsafe_impl!(T: ?Sized => Immutable for NonNull<T>) };
 // SAFETY: Reference types do not contain any `UnsafeCell`s.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
-    unsafe_impl!(T: ?Sized => Immutable for &'_ T);
-    unsafe_impl!(T: ?Sized => Immutable for &'_ mut T);
+    unsafe_impl!(
+        #[cfg_attr(zerocopy_diagnostic_do_not_recommend_1_85_0, diagnostic::do_not_recommend)]
+        T: ?Sized => Immutable for &'_ T
+    );
+    unsafe_impl!(
+        #[cfg_attr(zerocopy_diagnostic_do_not_recommend_1_85_0, diagnostic::do_not_recommend)]
+        T: ?Sized => Immutable for &'_ mut T
+    );
 };
 
 // SAFETY: `Option` is not `#[non_exhaustive]` [1], which means that the types
