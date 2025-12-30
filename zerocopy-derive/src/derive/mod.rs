@@ -13,7 +13,7 @@ use crate::{
     util::{Ctx, DataExt, FieldBounds, ImplBlockBuilder, Trait},
 };
 
-pub(crate) fn derive_no_cell(ctx: &Ctx, _top_level: Trait) -> TokenStream {
+pub(crate) fn derive_immutable(ctx: &Ctx, _top_level: Trait) -> TokenStream {
     match &ctx.ast.data {
         Data::Struct(strct) => {
             ImplBlockBuilder::new(ctx, strct, Trait::Immutable, FieldBounds::ALL_SELF).build()
