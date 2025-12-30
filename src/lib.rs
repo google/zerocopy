@@ -1447,14 +1447,12 @@ pub use zerocopy_derive::Immutable;
 // # Safety (Internal)
 //
 // If `T: Immutable`, unsafe code *inside of this crate* may assume that, given
-// `t: &T`, `t` does not contain any [`UnsafeCell`]s at any byte location
-// within the byte range addressed by `t`. This includes ranges of length 0
-// (e.g., `UnsafeCell<()>` and `[UnsafeCell<u8>; 0]`). If a type implements
-// `Immutable` which violates this assumptions, it may cause this crate to
-// exhibit [undefined behavior].
+// `t: &T`, `t` does not permit interior mutation of its referent. Because
+// [`UnsafeCell`] is the only type which permits interior mutation, it is
+// sufficient (though not necessary) to guarantee that `T` contains no
+// `UnsafeCell`s.
 //
 // [`UnsafeCell`]: core::cell::UnsafeCell
-// [undefined behavior]: https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html
 #[cfg_attr(
     feature = "derive",
     doc = "[derive]: zerocopy_derive::Immutable",
@@ -5219,10 +5217,8 @@ pub unsafe trait IntoBytes {
         //   initialized.
         // - Since `slf` is derived from `self`, and `self` is an immutable
         //   reference, the only other references to this memory region that
-        //   could exist are other immutable references, and those don't allow
-        //   mutation. `Self: Immutable` prohibits types which contain
-        //   `UnsafeCell`s, which are the only types for which this rule
-        //   wouldn't be sufficient.
+        //   could exist are other immutable references, which by `Self:
+        //   Immutable` don't permit mutation.
         // - The total size of the resulting slice is no larger than
         //   `isize::MAX` because no allocation produced by safe code can be
         //   larger than `isize::MAX`.
@@ -6333,7 +6329,7 @@ mod tests {
 
     #[test]
     fn test_object_safety() {
-        fn _takes_no_cell(_: &dyn Immutable) {}
+        fn _takes_immutable(_: &dyn Immutable) {}
         fn _takes_unaligned(_: &dyn Unaligned) {}
     }
 

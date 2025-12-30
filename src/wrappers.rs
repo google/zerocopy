@@ -9,6 +9,7 @@
 use core::{fmt, hash::Hash};
 
 use super::*;
+use crate::pointer::{invariant::Valid, SizeEq, TransmuteFrom};
 
 /// A type with no alignment requirement.
 ///
@@ -137,8 +138,8 @@ impl_known_layout!(T => Unalign<T>);
 //   Unaligned`.
 // - `Unalign<T>` has the same bit validity as `T`, and so it is `FromZeros`,
 //   `FromBytes`, or `IntoBytes` exactly when `T` is as well.
-// - `Immutable`: `Unalign<T>` has the same fields as `T`, so it contains
-//   `UnsafeCell`s exactly when `T` does.
+// - `Immutable`: `Unalign<T>` has the same fields as `T`, so it permits
+//   interior mutation exactly when `T` does.
 // - `TryFromBytes`: `Unalign<T>` has the same the same bit validity as `T`, so
 //   `T::is_bit_valid` is a sound implementation of `is_bit_valid`.
 //
@@ -591,6 +592,140 @@ impl<T: ?Sized + KnownLayout> fmt::Debug for MaybeUninit<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.pad(core::any::type_name::<Self>())
+    }
+}
+
+#[allow(unreachable_pub)] // False positive on MSRV
+#[doc(hidden)]
+pub use read_only_def::*;
+mod read_only_def {
+    /// A read-only wrapper.
+    ///
+    /// A `ReadOnly<T>` disables any interior mutability in `T`, ensuring that
+    /// a `&ReadOnly<T>` is genuinely read-only. Thus, `ReadOnly<T>` is
+    /// [`Immutable`] regardless of whether `T` is.
+    ///
+    /// Note that `&mut ReadOnly<T>` still permits mutation – the read-only
+    /// property only applies to shared references.
+    ///
+    /// [`Immutable`]: crate::Immutable
+    #[repr(transparent)]
+    pub struct ReadOnly<T: ?Sized> {
+        // INVARIANT: `inner` is never mutated through a `&ReadOnly<T>`
+        // reference.
+        inner: T,
+    }
+
+    impl<T> ReadOnly<T> {
+        /// Creates a new `ReadOnly`.
+        #[inline(always)]
+        pub const fn new(t: T) -> ReadOnly<T> {
+            ReadOnly { inner: t }
+        }
+    }
+
+    impl<T: ?Sized> ReadOnly<T> {
+        #[inline(always)]
+        pub(crate) fn as_mut(r: &mut ReadOnly<T>) -> &mut T {
+            // SAFETY: `r: &mut ReadOnly`, so this doesn't violate the invariant
+            // that `inner` is never mutated through a `&ReadOnly<T>` reference.
+            &mut r.inner
+        }
+
+        /// # Safety
+        ///
+        /// The caller promises not to mutate the referent (i.e., via interior
+        /// mutation).
+        pub(crate) const unsafe fn as_ref_unchecked(r: &ReadOnly<T>) -> &T {
+            // SAFETY: The caller promises not to mutate the referent.
+            &r.inner
+        }
+    }
+}
+
+// SAFETY: `ReadOnly<T>` is a `#[repr(transparent)` wrapper around `T`.
+const _: () = unsafe {
+    unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] ReadOnly<T>);
+};
+
+#[allow(clippy::multiple_unsafe_ops_per_block)]
+// SAFETY:
+// - `ReadOnly<T>` has the same alignment as `T`, and so it is `Unaligned`
+//   exactly when `T` is as well.
+// - `ReadOnly<T>` has the same bit validity as `T`, and so it is `IntoBytes`
+//   exactly when `T` is as well.
+const _: () = unsafe {
+    unsafe_impl!(T: ?Sized + Unaligned => Unaligned for ReadOnly<T>);
+    unsafe_impl!(T: ?Sized + IntoBytes => IntoBytes for ReadOnly<T>);
+};
+
+// SAFETY: By invariant, `inner` is never mutated through a `&ReadOnly<T>`
+// reference.
+const _: () = unsafe {
+    unsafe_impl!(T: ?Sized => Immutable for ReadOnly<T>);
+};
+
+const _: () = {
+    use crate::pointer::cast::CastExact;
+
+    // SAFETY: `ReadOnly<T>` has the same layout as `T`.
+    define_cast!(unsafe { pub CastFromReadOnly<T: ?Sized> = ReadOnly<T> => T});
+    // SAFETY: `ReadOnly<T>` has the same layout as `T`.
+    unsafe impl<T: ?Sized> CastExact<ReadOnly<T>, T> for CastFromReadOnly {}
+    // SAFETY: `ReadOnly<T>` has the same layout as `T`.
+    define_cast!(unsafe { pub CastToReadOnly<T: ?Sized> = T => ReadOnly<T>});
+    // SAFETY: `ReadOnly<T>` has the same layout as `T`.
+    unsafe impl<T: ?Sized> CastExact<T, ReadOnly<T>> for CastToReadOnly {}
+
+    impl<T: ?Sized> SizeEq<ReadOnly<T>> for T {
+        type CastFrom = CastFromReadOnly;
+    }
+
+    impl<T: ?Sized> SizeEq<T> for ReadOnly<T> {
+        type CastFrom = CastToReadOnly;
+    }
+};
+
+// SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
+// it has the same bit validity as `T`.
+unsafe impl<T: ?Sized> TransmuteFrom<T, Valid, Valid> for ReadOnly<T> {}
+
+// SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
+// it has the same bit validity as `T`.
+unsafe impl<T: ?Sized> TransmuteFrom<ReadOnly<T>, Valid, Valid> for T {}
+
+impl<'a, T: ?Sized + Immutable> From<&'a T> for &'a ReadOnly<T> {
+    #[inline(always)]
+    fn from(t: &'a T) -> &'a ReadOnly<T> {
+        let ro = Ptr::from_ref(t).transmute::<_, _, (_, _)>();
+        // SAFETY: `ReadOnly<T>` has the same alignment as `T`, and
+        // `Ptr::from_ref` produces an aligned `Ptr`.
+        let ro = unsafe { ro.assume_alignment() };
+        ro.as_ref()
+    }
+}
+
+impl<T: ?Sized + Immutable> Deref for ReadOnly<T> {
+    type Target = T;
+
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        // SAFETY: By `T: Immutable`, `&T` doesn't permit interior mutation.
+        unsafe { ReadOnly::as_ref_unchecked(self) }
+    }
+}
+
+impl<T: ?Sized + Immutable> DerefMut for ReadOnly<T> {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        ReadOnly::as_mut(self)
+    }
+}
+
+impl<T: ?Sized + Immutable + Debug> Debug for ReadOnly<T> {
+    #[inline(always)]
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        self.deref().fmt(f)
     }
 }
 
