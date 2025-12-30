@@ -580,8 +580,8 @@ fn derive_try_from_bytes_union(ctx: &Ctx, unn: &DataUnion, top_level: Trait) -> 
                         // SAFETY:
                         // - Since `Self: Immutable` is enforced by
                         //   `self_type_trait_bounds`, neither `*slf` nor the
-                        //   returned pointer's referent contain any
-                        //   `UnsafeCell`s
+                        //   returned pointer's referent permit interior
+                        //   mutation.
                         // - Both source and destination validity are
                         //   `Initialized`, which is always a sound
                         //   transmutation.

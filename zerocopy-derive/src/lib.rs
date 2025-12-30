@@ -114,7 +114,7 @@ impl IntoTokenStream for Result<proc_macro2::TokenStream, Error> {
 }
 
 derive!(KnownLayout => derive_known_layout => crate::derive::known_layout::derive);
-derive!(Immutable => derive_no_cell => crate::derive::derive_no_cell);
+derive!(Immutable => derive_immutable => crate::derive::derive_immutable);
 derive!(TryFromBytes => derive_try_from_bytes => crate::derive::try_from_bytes::derive_try_from_bytes);
 derive!(FromZeros => derive_from_zeros => crate::derive::from_bytes::derive_from_zeros);
 derive!(FromBytes => derive_from_bytes => crate::derive::from_bytes::derive_from_bytes);
