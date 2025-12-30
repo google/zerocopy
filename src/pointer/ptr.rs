@@ -830,7 +830,13 @@ mod _transitions {
             // This call may panic. If that happens, it doesn't cause any
             // soundness issues, as we have not generated any invalid state
             // which we need to fix before returning.
-            if T::is_bit_valid(self.reborrow().forget_aligned()) {
+            let candidate = unsafe {
+                self.reborrow()
+                    .forget_aligned()
+                    .transmute_unchecked::<crate::wrappers::ReadOnly<T>, _, crate::pointer::cast::CastUnsized>()
+                    .assume_aliasing::<crate::pointer::invariant::Shared>()
+            };
+            if T::is_bit_valid(candidate) {
                 // SAFETY: If `T::is_bit_valid`, code may assume that `self`
                 // contains a bit-valid instance of `T`. By `T:
                 // TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid>`, so
