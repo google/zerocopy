@@ -884,7 +884,6 @@ fn derive_try_from_bytes_struct(
         try_gen_trivial_is_bit_valid(ast, top_level, zerocopy_crate).unwrap_or_else(|| {
             let fields = strct.fields();
             let field_names = fields.iter().map(|(_vis, name, _ty)| name);
-            let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
             quote!(
                 // SAFETY: We use `is_bit_valid` to validate that each field is
                 // bit-valid, and only return `true` if all of them are. The bit
@@ -897,16 +896,12 @@ fn derive_try_from_bytes_struct(
                 where
                     ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
                 {
-                    use #zerocopy_crate::util::macro_util::core_reexport;
-                    use #zerocopy_crate::pointer::PtrInner;
-
                     true #(&& {
                         let field_candidate = candidate.reborrow().project::<
                             _,
                             { #zerocopy_crate::ident_id!(#field_names) }
                         >();
-
-                        <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
+                        #zerocopy_crate::TryFromBytes::is_bit_valid(field_candidate)
                     })*
                 }
             )
