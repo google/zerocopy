@@ -82,8 +82,8 @@ use crate::{
 ///   inaccessible so long as `dst` is alive, and no other live `Ptr`s or
 ///   references may reference the same referent.
 /// - If it is `Shared`, then either:
-///   - `Src: Immutable` and `Dst: Immutable`, and so `UnsafeCell`s trivially
-///     cover the same byte ranges in both types.
+///   - `Src: Immutable` and `Dst: Immutable`, and so neither `src` nor `dst`
+///     permit interior mutation.
 ///   - It is explicitly sound for safe code to operate on a `&Src` and a `&Dst`
 ///     pointing to the same byte range at the same time.
 ///
@@ -131,7 +131,7 @@ pub enum BecauseMutationCompatible {}
 //   - `A` is `Exclusive`
 //   - `Src: Immutable` and `Dst: Immutable`
 //   - `Dst: InvariantsEq<Src>`, which guarantees that `Src` and `Dst` have the
-//     same invariants, and have `UnsafeCell`s covering the same byte ranges
+//     same invariants, and permit interior mutation on the same byte ranges
 unsafe impl<Src, Dst, SV, DV, A, R>
     TryTransmuteFromPtr<Src, A, SV, DV, (BecauseMutationCompatible, R)> for Dst
 where

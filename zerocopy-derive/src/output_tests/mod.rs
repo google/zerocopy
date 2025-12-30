@@ -23,7 +23,7 @@ macro_rules! use_as_trait_name {
 // the trait under test rather than the name of the inner derive function.
 use_as_trait_name!(
     KnownLayout => super::derive::known_layout::derive,
-    Immutable => super::derive::derive_no_cell,
+    Immutable => super::derive::derive_immutable,
     TryFromBytes => super::derive::try_from_bytes::derive_try_from_bytes,
     FromZeros => super::derive::from_bytes::derive_from_zeros,
     FromBytes => super::derive::from_bytes::derive_from_bytes,
