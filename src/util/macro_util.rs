@@ -32,7 +32,8 @@ use crate::{
         invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
         BecauseInvariantsEq, InvariantsEq, SizeEq, TryTransmuteFromPtr,
     },
-    FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, Ptr, TryFromBytes, ValidityError,
+    FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, Ptr, TryFromBytes,
+    ValidityError,
 };
 
 /// Projects the type of the field at `Index` in `Self` without regard for field
