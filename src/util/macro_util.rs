@@ -29,10 +29,11 @@ use core::{
 
 use crate::{
     pointer::{
-        invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
+        invariant::{self, BecauseExclusive, BecauseImmutable, Invariants, Reference},
         BecauseInvariantsEq, InvariantsEq, SizeEq, TryTransmuteFromPtr,
     },
-    FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, Ptr, TryFromBytes, ValidityError,
+    FromBytes, FromZeros, HasField, Immutable, IntoBytes, KnownLayout, Ptr, TryFromBytes,
+    ValidityError,
 };
 
 /// Projects the type of the field at `Index` in `Self` without regard for field
@@ -48,6 +49,26 @@ use crate::{
 pub unsafe trait Field<Index> {
     /// The type of the field at `Index`.
     type Type: ?Sized;
+}
+
+#[doc(hidden)]
+#[must_use]
+#[inline(always)]
+pub fn is_field_valid<T, A, Field, const FIELD_ID: i128>(c: crate::Maybe<'_, T, A>) -> bool
+where
+    A: Reference,
+    T: ?Sized + HasField<Field, { crate::STRUCT_VARIANT_ID }, FIELD_ID>,
+    T::Type: TryFromBytes,
+{
+    let project = <T as crate::HasField<_, { crate::STRUCT_VARIANT_ID }, FIELD_ID>>::project;
+    // SAFETY:
+    // - `project` is a field projection, and so it addresses a subset of the
+    //   bytes addressed by `slf`
+    // - ..., and so it preserves provenance
+    // - ..., and `*slf` is a struct, so `UnsafeCell`s exist at the same byte
+    //   ranges in the returned pointer's referent as they do in `*slf`
+    let field_candidate = unsafe { c.cast_unsized_unchecked(project) };
+    TryFromBytes::is_bit_valid(field_candidate)
 }
 
 #[cfg_attr(
