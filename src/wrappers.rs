@@ -9,6 +9,7 @@
 use core::{fmt, hash::Hash};
 
 use super::*;
+use crate::pointer::{invariant::Valid, SizeEq, TransmuteFrom};
 
 /// A type with no alignment requirement.
 ///
@@ -591,6 +592,94 @@ impl<T: ?Sized + KnownLayout> fmt::Debug for MaybeUninit<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.pad(core::any::type_name::<Self>())
+    }
+}
+
+/// TODO
+#[cfg_attr(any(feature = "derive", test), derive(FromBytes, IntoBytes, Unaligned))]
+#[repr(transparent)]
+pub struct ReadOnly<T: ?Sized>(T);
+
+const _: () = unsafe {
+    unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] ReadOnly<T>);
+};
+
+// SAFETY:
+// - `ReadOnly<T>` has the same alignment as `T`, and so it is `Unaligned`
+//   exactly when `T` is as well.
+// - `ReadOnly<T>` has the same bit validity as `T`, and so it is `FromZeros`,
+//   `FromBytes`, or `IntoBytes` exactly when `T` is as well.
+// - `TryFromBytes`: `ReadOnly<T>` has the same the same bit validity as `T`, so
+//   `T::is_bit_valid` is a sound implementation of `is_bit_valid`.
+#[allow(unused_unsafe)] // Unused when `feature = "derive"`.
+const _: () = unsafe {
+    impl_or_verify!(T: ?Sized + Unaligned => Unaligned for ReadOnly<T>);
+    impl_or_verify!(
+        T: ?Sized + TryFromBytes => TryFromBytes for ReadOnly<T>;
+        |c| T::is_bit_valid(c.transmute::<_, _, BecauseImmutable>())
+    );
+    impl_or_verify!(T: ?Sized + FromZeros => FromZeros for ReadOnly<T>);
+    impl_or_verify!(T: ?Sized + FromBytes => FromBytes for ReadOnly<T>);
+    impl_or_verify!(T: ?Sized + IntoBytes => IntoBytes for ReadOnly<T>);
+};
+
+const _: () = unsafe {
+    unsafe_impl!(T: ?Sized => Immutable for ReadOnly<T>);
+};
+
+const _: () = {
+    // SAFETY: TODO
+    define_cast!(unsafe { pub CastFromReadOnly<T: ?Sized> = ReadOnly<T> => T});
+    // SAFETY: TODO
+    define_cast!(unsafe { pub CastToReadOnly<T: ?Sized> = T => ReadOnly<T>});
+
+    unsafe impl<T: ?Sized> SizeEq<ReadOnly<T>> for T {
+        type CastFrom = CastFromReadOnly;
+    }
+
+    unsafe impl<T: ?Sized> SizeEq<T> for ReadOnly<T> {
+        type CastFrom = CastToReadOnly;
+    }
+};
+
+unsafe impl<T: ?Sized> TransmuteFrom<T, Valid, Valid> for ReadOnly<T> {}
+unsafe impl<T: ?Sized> TransmuteFrom<ReadOnly<T>, Valid, Valid> for T {}
+
+impl<T> ReadOnly<T> {
+    /// TODO
+    #[inline(always)]
+    pub const fn new(t: T) -> ReadOnly<T> {
+        ReadOnly(t)
+    }
+}
+
+impl<T: ?Sized + Immutable> Deref for ReadOnly<T> {
+    type Target = T;
+
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<T: ?Sized + Immutable> DerefMut for ReadOnly<T> {
+    #[inline(always)]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
+impl<'a, T: ?Sized + Immutable> From<&'a T> for &'a ReadOnly<T> {
+    #[inline(always)]
+    fn from(t: &'a T) -> &'a ReadOnly<T> {
+        todo!()
+    }
+}
+
+impl<T: ?Sized + Immutable + Debug> Debug for ReadOnly<T> {
+    #[inline(always)]
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        self.deref().fmt(f)
     }
 }
 
