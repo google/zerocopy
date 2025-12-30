@@ -41,7 +41,11 @@ where
 
 #[doc(hidden)]
 pub mod cast {
-    use core::{marker::PhantomData, mem};
+    use core::{
+        marker::PhantomData,
+        mem::{self, MaybeUninit},
+        num::Wrapping,
+    };
 
     use crate::{
         layout::{SizeInfo, TrailingSliceLayout},
@@ -254,6 +258,67 @@ pub mod cast {
             T::project(src)
         }
     }
+
+    // TODO: Do these need to be unsafe? The casts they carry have their own
+    // safety invariants by trait bound. Perhaps we need them to also carry
+    // *validity* implications when we use them later for projection on `Ptr`s?
+
+    /// TODO
+    ///
+    /// # Safety
+    ///
+    /// TODO
+    pub unsafe trait Wrapped {
+        type Unwrapped: ?Sized;
+        type CastToUnwrapped: CastExact<Self, Self::Unwrapped>;
+        type CastFromUnwrapped: CastExact<Self::Unwrapped, Self>;
+    }
+
+    /// TODO
+    ///
+    /// # Safety
+    ///
+    /// TODO
+    pub unsafe trait HasWrappedField<F: ?Sized>: Wrapped {
+        type WrappedField: ?Sized + Wrapped<Unwrapped = F>;
+    }
+
+    // SAFETY: TODO
+    unsafe impl<T> Wrapped for MaybeUninit<T> {
+        type Unwrapped = T;
+        type CastToUnwrapped = CastSizedExact;
+        type CastFromUnwrapped = CastSizedExact;
+    }
+
+    // SAFETY: TODO
+    unsafe impl<T, F> HasWrappedField<F> for MaybeUninit<T> {
+        type WrappedField = MaybeUninit<F>;
+    }
+
+    // SAFETY: TODO
+    unsafe impl<T> Wrapped for Wrapping<T> {
+        type Unwrapped = T;
+        type CastToUnwrapped = CastSizedExact;
+        type CastFromUnwrapped = CastSizedExact;
+    }
+
+    // SAFETY: TODO
+    unsafe impl<T, F> HasWrappedField<F> for Wrapping<T> {
+        type WrappedField = Wrapping<F>;
+    }
+
+    pub type WrappedProjection<W, F, const VARIANT_ID: i128, const FIELD_ID: i128> =
+        TransitiveProject<
+            <<W as Wrapped>::Unwrapped as HasField<F, VARIANT_ID, FIELD_ID>>::Type,
+            TransitiveProject<
+                <W as Wrapped>::Unwrapped,
+                <W as Wrapped>::CastToUnwrapped,
+                Projection<F, VARIANT_ID, FIELD_ID>,
+            >,
+            <<W as HasWrappedField<
+                <<W as Wrapped>::Unwrapped as HasField<F, VARIANT_ID, FIELD_ID>>::Type,
+            >>::WrappedField as Wrapped>::CastFromUnwrapped,
+        >;
 
     /// A transitive sequence of projections.
     ///
