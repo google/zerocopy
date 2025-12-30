@@ -456,7 +456,8 @@ mod _conversions {
         ///   subtle soundness requirement that is a function of `T`, `U`,
         ///   `I::Aliasing`, `I::Validity`, and `V`, and may depend upon the
         ///   presence, absence, or specific location of `UnsafeCell`s in `T`
-        ///   and/or `U`. See [`Validity`] for more details.
+        ///   and/or `U`, and on whether interior mutation is ever permitted via
+        ///   those `UnsafeCell`s. See [`Validity`] for more details.
         #[doc(hidden)]
         #[inline(always)]
         #[must_use]
