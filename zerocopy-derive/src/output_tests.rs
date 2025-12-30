@@ -300,15 +300,12 @@ fn test_try_from_bytes() {
             #[automatically_derived]
             unsafe impl ::zerocopy::TryFromBytes for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
-
                 fn is_bit_valid<___ZerocopyAliasing>(
                     mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
                 ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
                 where
                     ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                 {
-                    use ::zerocopy::util::macro_util::core_reexport;
-                    use ::zerocopy::pointer::PtrInner;
                     true
                 }
             }
@@ -332,8 +329,6 @@ fn test_from_zeros() {
                 where
                     ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                 {
-                    use ::zerocopy::util::macro_util::core_reexport;
-                    use ::zerocopy::pointer::PtrInner;
                     true
                 }
             }
@@ -721,103 +716,49 @@ fn test_try_from_bytes_enum() {
                             where
                                 ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                             {
-                                use ::zerocopy::util::macro_util::core_reexport;
-                                use ::zerocopy::pointer::PtrInner;
                                 true
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(0) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::mem::MaybeUninit<
-                                            ___ZerocopyInnerTag,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(1) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(2) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <X as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(3) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(4) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(5) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <[(
-                                            X,
-                                            Y,
-                                        ); N] as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(6) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::marker::PhantomData<
-                                            ComplexWithGenerics<'a, N, X, Y>,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(0) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(1) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(2) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(3) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(4) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(5) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(6) },
+                                    >(candidate.reborrow())
                             }
                         }
                         #[allow(non_camel_case_types)]
@@ -1123,74 +1064,37 @@ fn test_try_from_bytes_enum() {
                             where
                                 ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                             {
-                                use ::zerocopy::util::macro_util::core_reexport;
-                                use ::zerocopy::pointer::PtrInner;
                                 true
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(0) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::mem::MaybeUninit<
-                                            ___ZerocopyInnerTag,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(1) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <bool as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(2) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <Y as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(3) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <PhantomData<
-                                            &'a [(X, Y); N],
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(4) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::marker::PhantomData<
-                                            ComplexWithGenerics<'a, N, X, Y>,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(0) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(1) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(2) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(3) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(4) },
+                                    >(candidate.reborrow())
                             }
                         }
                         #[allow(non_camel_case_types)]
@@ -1592,10 +1496,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_StructLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(1) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1620,10 +1540,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_StructLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(2) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1648,10 +1584,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_StructLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(3) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1676,10 +1628,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(4) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_StructLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(4) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1704,10 +1672,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(5) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_StructLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(5) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1732,10 +1716,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_TupleLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(1) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1760,10 +1760,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_TupleLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(2) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -1788,10 +1804,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_TupleLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(3) },
+                                >()
                         }
                     }
                     let tag = {
@@ -1979,103 +2011,49 @@ fn test_try_from_bytes_enum() {
                             where
                                 ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                             {
-                                use ::zerocopy::util::macro_util::core_reexport;
-                                use ::zerocopy::pointer::PtrInner;
                                 true
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(0) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::mem::MaybeUninit<
-                                            ___ZerocopyInnerTag,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(1) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(2) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <X as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(3) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(4) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(5) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <[(
-                                            X,
-                                            Y,
-                                        ); N] as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(6) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::marker::PhantomData<
-                                            ComplexWithGenerics<'a, N, X, Y>,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(0) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(1) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(2) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(3) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(4) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(5) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(6) },
+                                    >(candidate.reborrow())
                             }
                         }
                         #[allow(non_camel_case_types)]
@@ -2381,74 +2359,37 @@ fn test_try_from_bytes_enum() {
                             where
                                 ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                             {
-                                use ::zerocopy::util::macro_util::core_reexport;
-                                use ::zerocopy::pointer::PtrInner;
                                 true
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(0) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::mem::MaybeUninit<
-                                            ___ZerocopyInnerTag,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(1) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <bool as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(2) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <Y as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(3) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <PhantomData<
-                                            &'a [(X, Y); N],
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(4) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::marker::PhantomData<
-                                            ComplexWithGenerics<'a, N, X, Y>,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(0) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(1) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(2) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(3) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(4) },
+                                    >(candidate.reborrow())
                             }
                         }
                         #[allow(non_camel_case_types)]
@@ -2850,10 +2791,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_StructLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(1) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -2878,10 +2835,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_StructLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(2) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -2906,10 +2879,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_StructLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(3) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -2934,10 +2923,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(4) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_StructLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(4) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -2962,10 +2967,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(5) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_StructLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(5) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -2990,10 +3011,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_TupleLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(1) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -3018,10 +3055,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_TupleLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(2) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -3046,10 +3099,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_TupleLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(3) },
+                                >()
                         }
                     }
                     let tag = {
@@ -3237,103 +3306,49 @@ fn test_try_from_bytes_enum() {
                             where
                                 ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                             {
-                                use ::zerocopy::util::macro_util::core_reexport;
-                                use ::zerocopy::pointer::PtrInner;
                                 true
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(0) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::mem::MaybeUninit<
-                                            ___ZerocopyInnerTag,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(1) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(2) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <X as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(3) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(4) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(5) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <[(
-                                            X,
-                                            Y,
-                                        ); N] as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(6) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::marker::PhantomData<
-                                            ComplexWithGenerics<'a, N, X, Y>,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(0) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(1) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(2) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(3) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(4) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(5) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(6) },
+                                    >(candidate.reborrow())
                             }
                         }
                         #[allow(non_camel_case_types)]
@@ -3639,74 +3654,37 @@ fn test_try_from_bytes_enum() {
                             where
                                 ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                             {
-                                use ::zerocopy::util::macro_util::core_reexport;
-                                use ::zerocopy::pointer::PtrInner;
                                 true
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(0) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::mem::MaybeUninit<
-                                            ___ZerocopyInnerTag,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(1) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <bool as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(2) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <Y as ::zerocopy::TryFromBytes>::is_bit_valid(
-                                            field_candidate,
-                                        )
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(3) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <PhantomData<
-                                            &'a [(X, Y); N],
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
-                                    && {
-                                        let project = <Self as ::zerocopy::HasField<
-                                            _,
-                                            { ::zerocopy::STRUCT_VARIANT_ID },
-                                            { ::zerocopy::ident_id!(4) },
-                                        >>::project;
-                                        let field_candidate = unsafe {
-                                            candidate.reborrow().cast_unsized_unchecked(project)
-                                        };
-                                        <core_reexport::marker::PhantomData<
-                                            ComplexWithGenerics<'a, N, X, Y>,
-                                        > as ::zerocopy::TryFromBytes>::is_bit_valid(field_candidate)
-                                    }
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(0) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(1) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(2) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(3) },
+                                    >(candidate.reborrow())
+                                    && ::zerocopy::util::macro_util::is_field_valid::<
+                                        _,
+                                        _,
+                                        _,
+                                        { crate::ident_id!(4) },
+                                    >(candidate.reborrow())
                             }
                         }
                         #[allow(non_camel_case_types)]
@@ -4108,10 +4086,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_StructLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(1) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4136,10 +4130,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_StructLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(2) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4164,10 +4174,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_StructLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(3) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4192,10 +4218,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(4) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_StructLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(4) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4220,10 +4262,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_StructLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(5) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_StructLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(5) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4248,10 +4306,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(1) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_TupleLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(1) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4276,10 +4350,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(2) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_TupleLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(2) },
+                                >()
                         }
                     }
                     #[allow(deprecated, non_local_definitions)]
@@ -4304,10 +4394,26 @@ fn test_try_from_bytes_enum() {
                             slf: ::zerocopy::PtrInner<'_, Self>,
                         ) -> ::zerocopy::PtrInner<'_, Self::Type> {
                             let slf = unsafe { slf.cast::<___ZerocopyRawEnum<'a, N, X, Y>>() };
-                            slf.project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(variants) }>()
-                                .project::<_, { ::zerocopy::UNION_VARIANT_ID }, { ::zerocopy::ident_id!(__field_TupleLike) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(value) }>()
-                                .project::<_, { ::zerocopy::STRUCT_VARIANT_ID }, { ::zerocopy::ident_id!(3) }>()
+                            slf.project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(variants) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::UNION_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(__field_TupleLike) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(value) },
+                                >()
+                                .project::<
+                                    _,
+                                    { ::zerocopy::STRUCT_VARIANT_ID },
+                                    { ::zerocopy::ident_id!(3) },
+                                >()
                         }
                     }
                     let tag = {
