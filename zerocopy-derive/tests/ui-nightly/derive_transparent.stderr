@@ -12,13 +12,13 @@ help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::TryFromBytes`:
              ()
-             *const T
-             *mut T
-             AU16
-             AtomicBool
-             AtomicI16
-             AtomicI32
-             AtomicI64
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::TryFromBytes`
   --> tests/ui-nightly/derive_transparent.rs:24:21
@@ -35,6 +35,8 @@ note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
    |
 34 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
    | ------------------------------------------------------------------- in this macro invocation
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/nightly/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-1bffa25dfff1511d.long-type-9144557120924231428.txt'
+   = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
@@ -51,13 +53,13 @@ help: the trait `FromZeros` is not implemented for `NotZerocopy`
    = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
    = help: the following other types implement trait `FromZeros`:
              ()
-             *const T
-             *mut T
-             AU16
-             AtomicBool
-             AtomicI16
-             AtomicI32
-             AtomicI64
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `FromZeros`
   --> tests/ui-nightly/derive_transparent.rs:24:21
@@ -74,6 +76,8 @@ note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
    |
 35 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
    | ---------------------------------------------------------------- in this macro invocation
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/nightly/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-1bffa25dfff1511d.long-type-9144557120924231428.txt'
+   = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfied
@@ -90,13 +94,13 @@ help: the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
    = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::FromBytes`:
              ()
-             AU16
-             AtomicI16
-             AtomicI32
-             AtomicI64
-             AtomicI8
-             AtomicIsize
-             AtomicU16
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
            and $N others
 note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::FromBytes`
   --> tests/ui-nightly/derive_transparent.rs:24:21
@@ -113,6 +117,8 @@ note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
    |
 36 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
    | ---------------------------------------------------------------- in this macro invocation
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/nightly/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-1bffa25dfff1511d.long-type-9144557120924231428.txt'
+   = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfied
