@@ -41,7 +41,11 @@ where
 
 #[doc(hidden)]
 pub mod cast {
-    use core::{marker::PhantomData, mem};
+    use core::{
+        marker::PhantomData,
+        mem::{self, MaybeUninit},
+        num::Wrapping,
+    };
 
     use crate::{
         layout::{SizeInfo, TrailingSliceLayout},
@@ -287,6 +291,73 @@ pub mod cast {
         #[inline(always)]
         fn project_inner(src: PtrInner<'_, T>) -> *mut T::Type {
             T::project(src)
+        }
+    }
+
+    /// TODO
+    ///
+    /// # Safety
+    ///
+    /// TODO
+    pub unsafe trait Wrapped {
+        type Unwrapped: ?Sized;
+        type CastToUnwrapped: CastExact<Self, Self::Unwrapped>;
+        type CastFromUnwrapped: CastExact<Self::Unwrapped, Self>;
+    }
+
+    /// TODO
+    ///
+    /// # Safety
+    ///
+    /// TODO
+    pub unsafe trait HasWrappedField<F: ?Sized>: Wrapped {
+        type WrappedField: ?Sized + Wrapped<Unwrapped = F>;
+    }
+
+    // SAFETY: TODO
+    unsafe impl<T> Wrapped for MaybeUninit<T> {
+        type Unwrapped = T;
+        type CastToUnwrapped = CastSizedExact;
+        type CastFromUnwrapped = CastSizedExact;
+    }
+
+    // SAFETY: TODO
+    unsafe impl<T, F> HasWrappedField<F> for MaybeUninit<T> {
+        type WrappedField = MaybeUninit<F>;
+    }
+
+    // SAFETY: TODO
+    unsafe impl<T> Wrapped for Wrapping<T> {
+        type Unwrapped = T;
+        type CastToUnwrapped = CastSizedExact;
+        type CastFromUnwrapped = CastSizedExact;
+    }
+
+    // SAFETY: TODO
+    unsafe impl<T, F> HasWrappedField<F> for Wrapping<T> {
+        type WrappedField = Wrapping<F>;
+    }
+
+    #[allow(missing_debug_implementations, missing_copy_implementations)]
+    pub struct WrappedProjection<W: ?Sized, F, const VARIANT_ID: i128, const FIELD_ID: i128> {
+        _never: core::convert::Infallible,
+        _phantom: PhantomData<(F, W)>,
+    }
+
+    // SAFETY: TODO
+    unsafe impl<W: ?Sized, F, const VARIANT_ID: i128, const FIELD_ID: i128>
+        Project<W, W::WrappedField> for WrappedProjection<W, F, VARIANT_ID, FIELD_ID>
+    where
+        W: Wrapped
+            + HasWrappedField<<<W as Wrapped>::Unwrapped as HasField<F, VARIANT_ID, FIELD_ID>>::Type>,
+        W::Unwrapped: HasField<F, VARIANT_ID, FIELD_ID>,
+    {
+        #[inline(always)]
+        fn project_inner(src: PtrInner<'_, W>) -> *mut W::WrappedField {
+            src.project::<_, W::CastToUnwrapped>()
+                .project::<_, Projection<F, VARIANT_ID, FIELD_ID>>()
+                .project::<_, <W::WrappedField as Wrapped>::CastFromUnwrapped>()
+                .as_ptr()
         }
     }
 
