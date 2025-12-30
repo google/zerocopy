@@ -135,7 +135,7 @@ macro_rules! unsafe_impl {
         fn only_derive_is_allowed_to_implement_this_trait() {}
 
         #[inline]
-        fn is_bit_valid<AA: crate::pointer::invariant::Reference>($candidate: Maybe<'_, Self, AA>) -> bool {
+        fn is_bit_valid($candidate: Maybe<'_, Self>) -> bool {
             $is_bit_valid
         }
     };
@@ -143,7 +143,7 @@ macro_rules! unsafe_impl {
         #[allow(clippy::missing_inline_in_public_items)]
         #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
         fn only_derive_is_allowed_to_implement_this_trait() {}
-        #[inline(always)] fn is_bit_valid<AA: crate::pointer::invariant::Reference>(_: Maybe<'_, Self, AA>) -> bool { true }
+        #[inline(always)] fn is_bit_valid(_: Maybe<'_, Self>) -> bool { true }
     };
     (@method $trait:ident) => {
         #[allow(clippy::missing_inline_in_public_items, dead_code)]
@@ -218,12 +218,15 @@ macro_rules! impl_for_transmute_from {
         TryFromBytes for $ty:ty [UnsafeCell<$repr:ty>]
     ) => {
         #[inline]
-        fn is_bit_valid<A: crate::pointer::invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
-            let c: Maybe<'_, Self, crate::pointer::invariant::Exclusive> = candidate.into_exclusive_or_pme();
-            let c: Maybe<'_, $repr, _> = c.transmute::<_, _, (_, (_, (BecauseExclusive, BecauseExclusive)))>();
-            // SAFETY: This macro ensures that `$repr` and `Self` have the same
-            // size and bit validity. Thus, a bit-valid instance of `$repr` is
-            // also a bit-valid instance of `Self`.
+        #[inline]
+        fn is_bit_valid(candidate: Maybe<'_, Self>) -> bool {
+            let c = unsafe {
+                candidate.transmute_unchecked::<
+                    crate::wrappers::ReadOnly<$repr>,
+                    _,
+                    crate::pointer::cast::CastUnsized
+                >()
+            };
             <$repr as TryFromBytes>::is_bit_valid(c)
         }
     };
@@ -233,11 +236,14 @@ macro_rules! impl_for_transmute_from {
         TryFromBytes for $ty:ty [<$repr:ty>]
     ) => {
         #[inline]
-        fn is_bit_valid<A: crate::pointer::invariant::Reference>(candidate: $crate::Maybe<'_, Self, A>) -> bool {
-            // SAFETY: This macro ensures that `$repr` and `Self` have the same
-            // size and bit validity. Thus, a bit-valid instance of `$repr` is
-            // also a bit-valid instance of `Self`.
-            <$repr as TryFromBytes>::is_bit_valid(candidate.transmute())
+        fn is_bit_valid(candidate: $crate::Maybe<'_, Self>) -> bool {
+            <$repr as TryFromBytes>::is_bit_valid(unsafe {
+                candidate.transmute_unchecked::<
+                    crate::wrappers::ReadOnly<$repr>,
+                    _,
+                    crate::pointer::cast::CastUnsized
+                >()
+            })
         }
     };
     (

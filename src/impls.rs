@@ -863,29 +863,16 @@ unsafe impl<T: TryFromBytes + ?Sized> TryFromBytes for UnsafeCell<T> {
     }
 
     #[inline]
-    fn is_bit_valid<A: invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool {
-        // The only way to implement this function is using an exclusive-aliased
-        // pointer. `UnsafeCell`s cannot be read via shared-aliased pointers
-        // (other than by using `unsafe` code, which we can't use since we can't
-        // guarantee how our users are accessing or modifying the `UnsafeCell`).
-        //
-        // `is_bit_valid` is documented as panicking or failing to monomorphize
-        // if called with a shared-aliased pointer on a type containing an
-        // `UnsafeCell`. In practice, it will always be a monomorphization error.
-        // Since `is_bit_valid` is `#[doc(hidden)]` and only called directly
-        // from this crate, we only need to worry about our own code incorrectly
-        // calling `UnsafeCell::is_bit_valid`. The post-monomorphization error
-        // makes it easier to test that this is truly the case, and also means
-        // that if we make a mistake, it will cause downstream code to fail to
-        // compile, which will immediately surface the mistake and give us a
-        // chance to fix it quickly.
-        let c = candidate.into_exclusive_or_pme();
-
-        // SAFETY: Since `UnsafeCell<T>` and `T` have the same layout and bit
-        // validity, `UnsafeCell<T>` is bit-valid exactly when its wrapped `T`
-        // is. Thus, this is a sound implementation of
-        // `UnsafeCell::is_bit_valid`.
-        T::is_bit_valid(c.get_mut())
+    #[inline]
+    fn is_bit_valid(candidate: Maybe<'_, Self>) -> bool {
+        let candidate = unsafe {
+            candidate.transmute_unchecked::<
+                crate::wrappers::ReadOnly<T>,
+                _,
+                crate::pointer::cast::CastUnsized
+            >()
+        };
+        T::is_bit_valid(candidate)
     }
 }
 
@@ -1339,17 +1326,17 @@ mod tests {
 
             pub(super) trait TestIsBitValidShared<T: ?Sized> {
                 #[allow(clippy::needless_lifetimes)]
-                fn test_is_bit_valid_shared<'ptr, A: invariant::Reference>(
+                fn test_is_bit_valid_shared<'ptr>(
                     &self,
-                    candidate: Maybe<'ptr, T, A>,
+                    candidate: Maybe<'ptr, T>,
                 ) -> Option<bool>;
             }
 
             impl<T: TryFromBytes + Immutable + ?Sized> TestIsBitValidShared<T> for AutorefWrapper<T> {
                 #[allow(clippy::needless_lifetimes)]
-                fn test_is_bit_valid_shared<'ptr, A: invariant::Reference>(
+                fn test_is_bit_valid_shared<'ptr>(
                     &self,
-                    candidate: Maybe<'ptr, T, A>,
+                    candidate: Maybe<'ptr, T>,
                 ) -> Option<bool> {
                     Some(T::is_bit_valid(candidate))
                 }
@@ -1455,9 +1442,9 @@ mod tests {
                 #[allow(unused, non_local_definitions)]
                 impl AutorefWrapper<$ty> {
                     #[allow(clippy::needless_lifetimes)]
-                    fn test_is_bit_valid_shared<'ptr, A: invariant::Reference>(
+                    fn test_is_bit_valid_shared<'ptr>(
                         &mut self,
-                        candidate: Maybe<'ptr, $ty, A>,
+                        candidate: Maybe<'ptr, $ty>,
                     ) -> Option<bool> {
                         assert_on_allowlist!(
                             test_is_bit_valid_shared($ty):
@@ -1564,6 +1551,13 @@ mod tests {
                     // necessarily `IntoBytes`, but that's the corner we've
                     // backed ourselves into by using `Ptr::from_ref`.
                     let c = unsafe { c.assume_initialized() };
+                    let c = unsafe {
+                        c.transmute_unchecked::<
+                            crate::wrappers::ReadOnly<$ty>,
+                            _,
+                            crate::pointer::cast::CastUnsized
+                        >()
+                    };
                     let res = w.test_is_bit_valid_shared(c);
                     if let Some(res) = res {
                         assert!(res, "{}::is_bit_valid({:?}) (shared `Ptr`): got false, expected true", stringify!($ty), val);
@@ -1575,6 +1569,13 @@ mod tests {
                     // necessarily `IntoBytes`, but that's the corner we've
                     // backed ourselves into by using `Ptr::from_ref`.
                     let c = unsafe { c.assume_initialized() };
+                    let c = unsafe {
+                        c.transmute_unchecked::<
+                            crate::wrappers::ReadOnly<$ty>,
+                            _,
+                            crate::pointer::cast::CastUnsized
+                        >().assume_aliasing::<crate::pointer::invariant::Shared>()
+                    };
                     let res = <$ty as TryFromBytes>::is_bit_valid(c);
                     assert!(res, "{}::is_bit_valid({:?}) (exclusive `Ptr`): got false, expected true", stringify!($ty), val);
 

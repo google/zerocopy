@@ -148,8 +148,14 @@ const _: () = unsafe {
     impl_or_verify!(T => Unaligned for Unalign<T>);
     impl_or_verify!(T: Immutable => Immutable for Unalign<T>);
     impl_or_verify!(
-        T: TryFromBytes => TryFromBytes for Unalign<T>;
-        |c| T::is_bit_valid(c.transmute())
+        T: TryFromBytes + KnownLayout => TryFromBytes for Unalign<T>;
+        |c| T::is_bit_valid(unsafe {
+            c.transmute_unchecked::<
+                crate::wrappers::ReadOnly<T>,
+                _,
+                crate::pointer::cast::CastUnsized
+            >()
+        })
     );
     impl_or_verify!(T: FromZeros => FromZeros for Unalign<T>);
     impl_or_verify!(T: FromBytes => FromBytes for Unalign<T>);
@@ -615,7 +621,7 @@ const _: () = unsafe {
 const _: () = unsafe {
     impl_or_verify!(T: ?Sized + Unaligned => Unaligned for ReadOnly<T>);
     impl_or_verify!(
-        T: ?Sized + TryFromBytes => TryFromBytes for ReadOnly<T>;
+        T: ?Sized + TryFromBytes + KnownLayout => TryFromBytes for ReadOnly<T>;
         |c| T::is_bit_valid(c.transmute::<_, _, BecauseImmutable>())
     );
     impl_or_verify!(T: ?Sized + FromZeros => FromZeros for ReadOnly<T>);
