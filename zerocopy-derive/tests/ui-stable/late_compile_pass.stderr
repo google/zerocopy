@@ -20,13 +20,13 @@ help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::TryFromBytes`:
              ()
-             *const T
-             *mut T
-             AU16
-             AtomicBool
-             AtomicI16
-             AtomicI32
-             AtomicI64
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -45,13 +45,13 @@ help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::TryFromBytes`:
              ()
-             *const T
-             *mut T
-             AU16
-             AtomicBool
-             AtomicI16
-             AtomicI32
-             AtomicI64
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -70,13 +70,13 @@ help: the trait `FromZeros` is not implemented for `NotZerocopy`
    = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
    = help: the following other types implement trait `FromZeros`:
              ()
-             *const T
-             *mut T
-             AU16
-             AtomicBool
-             AtomicI16
-             AtomicI32
-             AtomicI64
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -95,13 +95,13 @@ help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::TryFromBytes`:
              ()
-             *const T
-             *mut T
-             AU16
-             AtomicBool
-             AtomicI16
-             AtomicI32
-             AtomicI64
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -120,13 +120,13 @@ help: the trait `FromZeros` is not implemented for `NotZerocopy`
    = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
    = help: the following other types implement trait `FromZeros`:
              ()
-             *const T
-             *mut T
-             AU16
-             AtomicBool
-             AtomicI16
-             AtomicI32
-             AtomicI64
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -145,13 +145,13 @@ help: the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
    = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::FromBytes`:
              ()
-             AU16
-             AtomicI16
-             AtomicI32
-             AtomicI64
-             AtomicI8
-             AtomicIsize
-             AtomicU16
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
            and $N others
    = help: see issue #48214
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -270,13 +270,13 @@ help: the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
    = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
    = help: the following other types implement trait `zerocopy::FromBytes`:
              ()
-             AU16
-             AtomicI16
-             AtomicI32
-             AtomicI64
-             AtomicI8
-             AtomicIsize
-             AtomicU16
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
            and $N others
 note: required for `FromBytes1` to implement `zerocopy::FromBytes`
   --> tests/ui-stable/late_compile_pass.rs:47:10

@@ -87,11 +87,11 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy::Immutable` is not satis
              &T
              &mut T
              ()
-             *const T
-             *mut T
-             AU16
-             F32<O>
-             F64<O>
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
            and $N others
    = note: required for `ManuallyDrop<UnsafeCell<()>>` to implement `zerocopy::Immutable`
    = help: see issue #48214

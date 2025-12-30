@@ -832,7 +832,6 @@ fn derive_try_from_bytes_struct(
         try_gen_trivial_is_bit_valid(ast, top_level, zerocopy_crate).unwrap_or_else(|| {
             let fields = strct.fields();
             let field_names = fields.iter().map(|(_vis, name, _ty)| name);
-            let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
             quote!(
                 // SAFETY: We use `is_bit_valid` to validate that each field is
                 // bit-valid, and only return `true` if all of them are. The bit
@@ -845,28 +844,8 @@ fn derive_try_from_bytes_struct(
                 where
                     ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
                 {
-                    use #zerocopy_crate::util::macro_util::core_reexport;
-                    use #zerocopy_crate::pointer::PtrInner;
-
-                    true #(&& {
-                        let project = <Self as #zerocopy_crate::HasField<
-                            _,
-                            { #zerocopy_crate::STRUCT_VARIANT_ID },
-                            { #zerocopy_crate::ident_id!(#field_names) }
-                        >>::project;
-                        // SAFETY:
-                        // - `project` is a field projection, and so it
-                        //   addresses a subset of the bytes addressed by `slf`
-                        // - ..., and so it preserves provenance
-                        // - ..., and `*slf` is a struct, so `UnsafeCell`s exist
-                        //   at the same byte ranges in the returned pointer's
-                        //   referent as they do in `*slf`
-                        let field_candidate = unsafe {
-                            candidate.reborrow().cast_unsized_unchecked(project)
-                        };
-
-                        <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
-                    })*
+                    true
+                        #(&& #zerocopy_crate::util::macro_util::is_field_valid::<_, _, _, { #zerocopy_crate::ident_id!(#field_names) }>(candidate.reborrow()))*
                 }
             )
         });
