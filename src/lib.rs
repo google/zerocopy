@@ -4386,9 +4386,7 @@ pub unsafe trait FromBytes: FromZeros {
         let source = Ptr::from_mut(source);
         let maybe_slf = source.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
         match maybe_slf {
-            Ok(slf) => Ok(slf
-                .recall_validity::<_, (_, (_, (BecauseExclusive, BecauseExclusive)))>()
-                .as_mut()),
+            Ok(slf) => Ok(slf.recall_validity::<_, (_, (_, BecauseExclusive))>().as_mut()),
             Err(err) => Err(err.map_src(|s| s.as_mut())),
         }
     }
