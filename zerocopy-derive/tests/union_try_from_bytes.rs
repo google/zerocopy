@@ -71,7 +71,7 @@ fn two_bad() {
 
     let candidate = {
         use imp::pointer::{cast::CastSized, BecauseExclusive};
-        candidate.cast::<Two, CastSized, (_, (BecauseExclusive, BecauseExclusive))>()
+        candidate.cast::<Two, CastSized, (_, BecauseExclusive)>()
     };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
@@ -99,7 +99,7 @@ fn bool_and_zst() {
 
     let candidate = {
         use imp::pointer::{cast::CastSized, BecauseExclusive};
-        candidate.cast::<BoolAndZst, CastSized, (_, (BecauseExclusive, BecauseExclusive))>()
+        candidate.cast::<BoolAndZst, CastSized, (_, BecauseExclusive)>()
     };
 
     // SAFETY: `candidate`'s referent is fully initialized.
@@ -127,8 +127,7 @@ fn test_maybe_from_bytes() {
 
     let candidate = {
         use imp::pointer::{cast::CastSized, BecauseExclusive};
-        candidate
-            .cast::<MaybeFromBytes<bool>, CastSized, (_, (BecauseExclusive, BecauseExclusive))>()
+        candidate.cast::<MaybeFromBytes<bool>, CastSized, (_, BecauseExclusive)>()
     };
 
     // SAFETY: `[u8]` consists entirely of initialized bytes.
