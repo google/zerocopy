@@ -116,14 +116,12 @@ pub mod util {
         // spuriously generating non-trivial `is_bit_valid` impls, this should
         // cause UB which may be caught by Miri.
 
-        let buf = super::imp::MaybeUninit::<T>::uninit();
-        let ptr = super::imp::Ptr::from_ref(&buf);
+        let mut buf = super::imp::MaybeUninit::<T>::uninit();
+        let ptr = super::imp::Ptr::from_mut(&mut buf);
         // SAFETY: This is intentionally unsound; see the preceding comment.
         let ptr = unsafe { ptr.assume_initialized() };
 
-        // SAFETY: `T` and `MaybeUninit<T>` have the same layout, so this is a
-        // size-preserving cast. It is also a provenance-preserving cast.
-        let ptr = unsafe { ptr.cast_unsized_unchecked(|p| p.cast_sized()) };
+        let ptr = ptr.cast::<_, ::zerocopy::pointer::cast::CastSized, _>();
         assert!(<T as super::imp::TryFromBytes>::is_bit_valid(ptr));
     }
 }

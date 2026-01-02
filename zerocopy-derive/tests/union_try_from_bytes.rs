@@ -63,17 +63,16 @@ fn two() {
 #[test]
 fn two_bad() {
     // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let candidate = ::zerocopy::Ptr::from_ref(&[2u8][..]);
+    let mut buf = [2u8];
+    let candidate = ::zerocopy::Ptr::from_mut(&mut buf);
     let candidate = candidate.forget_aligned();
     // SAFETY: `&[u8]` consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
 
-    // SAFETY:
-    // - The cast preserves address and size. As a result, the cast will address
-    //   the same bytes as `c`.
-    // - The cast preserves provenance.
-    // - Neither the input nor output types contain any `UnsafeCell`s.
-    let candidate = unsafe { candidate.cast_unsized_unchecked(|p| p.cast::<Two>()) };
+    let candidate = {
+        use imp::pointer::{cast::CastSized, BecauseExclusive};
+        candidate.cast::<Two, CastSized, (_, (BecauseExclusive, BecauseExclusive))>()
+    };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
     let candidate = unsafe { candidate.assume_initialized() };
@@ -92,17 +91,16 @@ union BoolAndZst {
 #[test]
 fn bool_and_zst() {
     // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let candidate = ::zerocopy::Ptr::from_ref(&[2u8][..]);
+    let mut buf = [2u8];
+    let candidate = ::zerocopy::Ptr::from_mut(&mut buf);
     let candidate = candidate.forget_aligned();
     // SAFETY: `&[u8]` consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
 
-    // SAFETY:
-    // - The cast preserves address and size. As a result, the cast will address
-    //   the same bytes as `c`.
-    // - The cast preserves provenance.
-    // - Neither the input nor output types contain any `UnsafeCell`s.
-    let candidate = unsafe { candidate.cast_unsized_unchecked(|p| p.cast::<BoolAndZst>()) };
+    let candidate = {
+        use imp::pointer::{cast::CastSized, BecauseExclusive};
+        candidate.cast::<BoolAndZst, CastSized, (_, (BecauseExclusive, BecauseExclusive))>()
+    };
 
     // SAFETY: `candidate`'s referent is fully initialized.
     let candidate = unsafe { candidate.assume_initialized() };
@@ -123,16 +121,15 @@ fn test_maybe_from_bytes() {
     // trivial `is_bit_valid` impl that always returns true. This test confirms
     // that we *don't* spuriously do that when generic parameters are present.
 
-    let candidate = ::zerocopy::Ptr::from_ref(&[2u8][..]);
+    let mut buf = [2u8];
+    let candidate = ::zerocopy::Ptr::from_mut(&mut buf);
     let candidate = candidate.bikeshed_recall_initialized_from_bytes();
 
-    // SAFETY:
-    // - The cast preserves address and size. As a result, the cast will address
-    //   the same bytes as `c`.
-    // - The cast preserves provenance.
-    // - Neither the input nor output types contain any `UnsafeCell`s.
-    let candidate =
-        unsafe { candidate.cast_unsized_unchecked(|p| p.cast::<MaybeFromBytes<bool>>()) };
+    let candidate = {
+        use imp::pointer::{cast::CastSized, BecauseExclusive};
+        candidate
+            .cast::<MaybeFromBytes<bool>, CastSized, (_, (BecauseExclusive, BecauseExclusive))>()
+    };
 
     // SAFETY: `[u8]` consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
