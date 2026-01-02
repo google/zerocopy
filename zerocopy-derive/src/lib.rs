@@ -340,6 +340,14 @@ fn derive_known_layout_inner(
 
             let field_impls = field_indices.iter().zip(&fields).map(|(idx, (_, _, ty))| quote! {
                 // SAFETY: `#ty` is the type of `#ident`'s field at `#idx`.
+                //
+                // We implement `Field` for each field of the struct to create a
+                // projection from the field index to its type. This allows us
+                // to refer to the field's type in a way that respects `Self`
+                // hygiene. If we just copy-pasted the tokens of `#ty`, we
+                // would not respect `Self` hygiene, as `Self` would refer to
+                // the helper struct we are generating, not the derive target
+                // type.
                 #[allow(deprecated)]
                 unsafe impl #impl_generics #zerocopy_crate::util::macro_util::Field<#idx> for #ident #ty_generics
                 where
@@ -353,6 +361,10 @@ fn derive_known_layout_inner(
             let leading_field_indices =
                 leading_fields.iter().map(|(_vis, name, _ty)| field_index(name));
 
+            // We use `Field` to project the type of the trailing field. This is
+            // required to ensure that if the field type uses `Self`, it
+            // resolves to the derive target type, not the helper struct we are
+            // generating.
             let trailing_field_ty = quote! {
                 <#ident #ty_generics as
                     #zerocopy_crate::util::macro_util::Field<#trailing_field_index>
