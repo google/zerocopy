@@ -876,7 +876,7 @@ where
         let ptr = Ptr::from_mut(b)
             .try_cast_into_no_leftover::<T, BecauseExclusive>(None)
             .expect("zerocopy internal error: DerefMut::deref_mut should be infallible");
-        let ptr = ptr.recall_validity::<_, (_, (_, (BecauseExclusive, BecauseExclusive)))>();
+        let ptr = ptr.recall_validity::<_, (_, (_, BecauseExclusive))>();
         ptr.as_mut()
     }
 }
