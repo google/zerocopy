@@ -1532,7 +1532,7 @@ pub use zerocopy_derive::TryFromBytes;
     not(no_zerocopy_diagnostic_on_unimplemented_1_78_0),
     diagnostic::on_unimplemented(note = "Consider adding `#[derive(TryFromBytes)]` to `{Self}`")
 )]
-pub unsafe trait TryFromBytes {
+pub unsafe trait TryFromBytes: KnownLayout {
     // The `Self: Sized` bound makes it so that `TryFromBytes` is still object
     // safe.
     #[doc(hidden)]
@@ -1562,7 +1562,7 @@ pub unsafe trait TryFromBytes {
     /// [`UnsafeCell`]: core::cell::UnsafeCell
     /// [`Shared`]: invariant::Shared
     #[doc(hidden)]
-    fn is_bit_valid<A: invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool;
+    fn is_bit_valid(candidate: Maybe<'_, Self>) -> bool;
 
     /// Attempts to interpret the given `source` as a `&Self`.
     ///
