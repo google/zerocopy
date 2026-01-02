@@ -179,11 +179,11 @@ pub unsafe trait MutationCompatible<Src: ?Sized, A: Aliasing, SV, DV, R> {}
 pub enum BecauseRead {}
 
 // SAFETY: `Src: Read<A, _>` and `Dst: Read<A, _>`.
-unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R, S>
-    MutationCompatible<Src, A, SV, DV, (BecauseRead, (R, S))> for Dst
+unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R>
+    MutationCompatible<Src, A, SV, DV, (BecauseRead, R)> for Dst
 where
     Src: Read<A, R>,
-    Dst: Read<A, S>,
+    Dst: Read<A, R>,
 {
 }
 
