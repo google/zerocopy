@@ -12,13 +12,13 @@ help: the trait `FromZeros` is not implemented for `NotZerocopy`
    = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
    = help: the following other types implement trait `FromZeros`:
              ()
-             *const T
-             *mut T
-             AU16
-             AtomicBool
-             AtomicI16
-             AtomicI32
-             AtomicI64
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
            and $N others
 note: required by a bound in `takes_from_zeros`
   --> tests/ui-nightly/diagnostic-not-implemented-from-zeros.rs:21:24
