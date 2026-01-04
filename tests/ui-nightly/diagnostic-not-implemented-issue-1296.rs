@@ -45,10 +45,10 @@ fn main() {
     //   Taking the compiler's suggestion results in a different error with a
     //   recommendation to remove the reference (back to the original code).
     //
-    // As of this writing, the described problem is still happening thanks to
-    // https://github.com/rust-lang/rust/issues/130563. We include this test so
-    // that we can capture the current behavior, but we will update it once that
-    // Rust issue is fixed.
+    // This problem was mitigated in Rust 1.85.0 with the stabilization of
+    // `#[diagnostic::do_not_recommend]`. We apply this attribute to the
+    // `Immutable` impls for `&T` and `&mut T` on supported versions, which
+    // suppresses the "consider borrowing here" recommendation.
     Foo.write_obj(NotZerocopy(()));
 }
 
