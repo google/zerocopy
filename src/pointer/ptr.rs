@@ -160,6 +160,7 @@ mod _external {
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
     use super::*;
+    use crate::pointer::cast::CastSized;
 
     /// `&'a T` → `Ptr<'a, T>`
     impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
@@ -168,7 +169,7 @@ mod _conversions {
     {
         /// Constructs a `Ptr` from a shared reference.
         #[doc(hidden)]
-        #[inline]
+        #[inline(always)]
         pub fn from_ref(ptr: &'a T) -> Self {
             let inner = PtrInner::from_ref(ptr);
             // SAFETY:
@@ -195,8 +196,9 @@ mod _conversions {
         T: 'a + ?Sized,
     {
         /// Constructs a `Ptr` from an exclusive reference.
-        #[inline]
-        pub(crate) fn from_mut(ptr: &'a mut T) -> Self {
+        #[doc(hidden)]
+        #[inline(always)]
+        pub fn from_mut(ptr: &'a mut T) -> Self {
             let inner = PtrInner::from_mut(ptr);
             // SAFETY:
             // 0. `ptr`, by invariant on `&'a mut T`, conforms to the aliasing
@@ -382,8 +384,9 @@ mod _conversions {
             U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + SizeEq<T> + ?Sized,
         {
             // SAFETY:
-            // - `SizeEq::cast_from_raw` promises to preserve address,
-            //   provenance, and the number of bytes in the referent
+            // - By `SizeEq::CastFrom: Cast`, `SizeEq::CastFrom` preserves
+            //   referent address, and so we don't need to consider projections
+            //   in the following safety arguments.
             // - If aliasing is `Shared`, then by `U: TransmuteFromPtr<T>`, at
             //   least one of the following holds:
             //   - `T: Immutable` and `U: Immutable`, in which case it is
@@ -393,7 +396,7 @@ mod _conversions {
             //     operate on these references simultaneously
             // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
             //   sound to perform this transmute.
-            unsafe { self.transmute_unchecked(SizeEq::cast_from_raw) }
+            unsafe { self.project_transmute_unchecked::<_, _, <U as SizeEq<T>>::CastFrom>() }
         }
 
         #[doc(hidden)]
@@ -405,60 +408,62 @@ mod _conversions {
             T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R>,
         {
             // SAFETY:
-            // - This cast is a no-op, and so trivially preserves address,
-            //   referent size, and provenance
+            // - By `SizeEq::CastFrom: Cast`, `SizeEq::CastFrom` preserves
+            //   referent address, and so we don't need to consider projections
+            //   in the following safety arguments.
             // - It is trivially sound to have multiple `&T` referencing the
             //   same referent simultaneously
             // - By `T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
             //   sound to perform this transmute.
-            let ptr = unsafe { self.transmute_unchecked(SizeEq::cast_from_raw) };
+            let ptr =
+                unsafe { self.project_transmute_unchecked::<_, _, <T as SizeEq<T>>::CastFrom>() };
             // SAFETY: `self` and `ptr` have the same address and referent type.
             // Therefore, if `self` satisfies `I::Alignment`, then so does
             // `ptr`.
             unsafe { ptr.assume_alignment::<I::Alignment>() }
         }
 
-        /// Casts to a different (unsized) target type without checking interior
-        /// mutability.
+        /// Projects and/or transmutes to a different (unsized) referent type
+        /// without checking interior mutability.
         ///
-        /// Callers should prefer [`cast_unsized`] where possible.
+        /// Callers should prefer [`cast`] or [`project`] where possible.
         ///
-        /// [`cast_unsized`]: Ptr::cast_unsized
+        /// [`cast`]: Ptr::cast
+        /// [`project`]: Ptr::project
         ///
         /// # Safety
         ///
-        /// The caller promises that `u = cast(p)` is a pointer cast with the
-        /// following properties:
-        /// - `u` addresses a subset of the bytes addressed by `p`
-        /// - `u` has the same provenance as `p`
+        /// The caller promises that:
         /// - If `I::Aliasing` is [`Shared`], it must not be possible for safe
-        ///   code, operating on a `&T` and `&U` with the same referent
-        ///   simultaneously, to cause undefined behavior
-        /// - It is sound to transmute a pointer of type `T` with aliasing
-        ///   `I::Aliasing` and validity `I::Validity` to a pointer of type `U`
-        ///   with aliasing `I::Aliasing` and validity `V`. This is a subtle
-        ///   soundness requirement that is a function of `T`, `U`,
+        ///   code, operating on a `&T` and `&U`, with the referents of `self`
+        ///   and `self.project_transmute_unchecked()`, respectively, to cause
+        ///   undefined behavior.
+        /// - It is sound to project and/or transmute a pointer of type `T` with
+        ///   aliasing `I::Aliasing` and validity `I::Validity` to a pointer of
+        ///   type `U` with aliasing `I::Aliasing` and validity `V`. This is a
+        ///   subtle soundness requirement that is a function of `T`, `U`,
         ///   `I::Aliasing`, `I::Validity`, and `V`, and may depend upon the
         ///   presence, absence, or specific location of `UnsafeCell`s in `T`
         ///   and/or `U`. See [`Validity`] for more details.
         #[doc(hidden)]
-        #[inline]
-        pub unsafe fn transmute_unchecked<U: ?Sized, V, F>(
+        #[inline(always)]
+        #[must_use]
+        pub unsafe fn project_transmute_unchecked<U: ?Sized, V, P>(
             self,
-            cast: F,
         ) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
             V: Validity,
-            F: FnOnce(PtrInner<'a, T>) -> PtrInner<'a, U>,
+            P: crate::pointer::cast::Project<T, U>,
         {
-            let ptr = cast(self.as_inner());
+            let ptr = self.as_inner().project::<_, P>();
 
             // SAFETY:
             //
-            // The following safety arguments rely on the fact that the caller
-            // promises that `cast` returns a `PtrInner` which addresses a
-            // prefix of the bytes of `*self`, and so properties that hold of
-            // `*self` also hold of `*ptr`.
+            // The following safety arguments rely on the fact that `P: Project`
+            // guarantees that `P` is a referent-preserving or -shrinking
+            // projection. Thus, `ptr` addresses a subset of the bytes of
+            // `*self`, and so certain properties that hold of `*self` also hold
+            // of `*ptr`.
             //
             // 0. `ptr` conforms to the aliasing invariant of `I::Aliasing`:
             //    - `Exclusive`: `self` is the only `Ptr` or reference which is
@@ -478,8 +483,8 @@ mod _conversions {
             //      `&T` and `&U`.
             //    - `Inaccessible`: There are no restrictions we need to uphold.
             // 1. `ptr` trivially satisfies the alignment invariant `Unaligned`.
-            // 2. The caller promises that `ptr` conforms to the validity
-            //    invariant `V` with respect to its referent type, `U`.
+            // 2. The caller promises that the returned pointer satisfies the
+            //    validity invariant `V` with respect to its referent type, `U`.
             unsafe { Ptr::from_inner(ptr) }
         }
     }
@@ -495,12 +500,12 @@ mod _conversions {
             self,
         ) -> Ptr<'a, crate::Unalign<T>, (I::Aliasing, Aligned, I::Validity)> {
             // SAFETY:
-            // - This cast preserves provenance.
-            // - This cast preserves address. `Unalign<T>` promises to have the
-            //   same size as `T`, and so the cast returns a pointer addressing
-            //   the same byte range as `p`.
-            // - By the same argument, the returned pointer refers to
-            //   `UnsafeCell`s at the same locations as `p`.
+            // - By `CastSized: Cast`, `CastSized` preserves referent address,
+            //   and so we don't need to consider projections in the following
+            //   safety arguments.
+            // - Since `Unalign<T>` has the same layout as `T`, the returned
+            //   pointer refers to `UnsafeCell`s at the same locations as
+            //   `self`.
             // - `Unalign<T>` promises to have the same bit validity as `T`. By
             //   invariant on `Validity`, the set of bit patterns allowed in the
             //   referent of a `Ptr<X, (_, _, V)>` is only a function of the
@@ -511,7 +516,7 @@ mod _conversions {
             //   and the returned `Ptr` permit the same set of bit patterns in
             //   their referents, and so neither can be used to violate the
             //   validity of the other.
-            let ptr = unsafe { self.transmute_unchecked(PtrInner::cast_sized) };
+            let ptr = unsafe { self.project_transmute_unchecked::<_, _, CastSized>() };
             ptr.bikeshed_recall_aligned()
         }
     }
@@ -854,52 +859,44 @@ mod _transitions {
 
 /// Casts of the referent type.
 mod _casts {
+    use core::cell::UnsafeCell;
+
     use super::*;
+    use crate::{
+        pointer::cast::{AsBytesCast, Cast},
+        HasField,
+    };
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
         T: 'a + ?Sized,
         I: Invariants,
     {
-        /// Casts to a different (unsized) target type without checking interior
+        /// Casts to a different referent type without checking interior
         /// mutability.
         ///
-        /// Callers should prefer [`cast_unsized`] where possible.
-        ///
-        /// [`cast_unsized`]: Ptr::cast_unsized
+        /// Callers should prefer [`cast`][Ptr::cast] where possible.
         ///
         /// # Safety
         ///
-        /// The caller promises that `u = cast(p)` is a pointer cast with the
-        /// following properties:
-        /// - `u` addresses a subset of the bytes addressed by `p`
-        /// - `u` has the same provenance as `p`
-        /// - If `I::Aliasing` is [`Shared`], it must not be possible for safe
-        ///   code, operating on a `&T` and `&U` with the same referent
-        ///   simultaneously, to cause undefined behavior
-        ///
-        /// `cast_unsized_unchecked` guarantees that the pointer passed to
-        /// `cast` will reference a byte sequence which is either contained
-        /// inside a single allocated object or is zero sized. In either case,
-        /// this means that its size will fit in an `isize` and it will not wrap
-        /// around the address space.
+        /// If `I::Aliasing` is [`Shared`], it must not be possible for safe
+        /// code, operating on a `&T` and `&U` with the same referent
+        /// simultaneously, to cause undefined behavior.
         #[doc(hidden)]
-        #[inline]
-        pub unsafe fn cast_unsized_unchecked<U, F: FnOnce(PtrInner<'a, T>) -> PtrInner<'a, U>>(
+        #[inline(always)]
+        #[must_use]
+        pub unsafe fn cast_unchecked<U, C: Cast<T, U>>(
             self,
-            cast: F,
         ) -> Ptr<'a, U, (I::Aliasing, Unaligned, I::Validity)>
         where
             U: 'a + CastableFrom<T, I::Validity, I::Validity> + ?Sized,
         {
             // SAFETY:
-            // - The caller promises that `u = cast(p)` is a pointer which
-            //   satisfies:
-            //   - `u` addresses a subset of the bytes addressed by `p`
-            //   - `u` has the same provenance as `p`
-            //   - If `I::Aliasing` is [`Shared`], it must not be possible for
-            //     safe code, operating on a `&T` and `&U` with the same
-            //     referent simultaneously, to cause undefined behavior
+            // - By `C: Cast`, `C` preserves the address of the referent.
+            // - If `I::Aliasing` is [`Shared`], the caller promises that it
+            //   is not possible for safe code, operating on a `&T` and `&U`
+            //   with the same referent simultaneously, to cause undefined
+            //   behavior.
             // - By `U: CastableFrom<T, I::Validity, I::Validity>`,
             //   `I::Validity` is either `Uninit` or `Initialized`. In both
             //   cases, the bit validity `I::Validity` has the same semantics
@@ -908,35 +905,18 @@ mod _casts {
             //   (_, _, I::Validity)>` are identical. As a consequence, neither
             //   `self` nor the returned `Ptr` can be used to write values which
             //   are invalid for the other.
-            //
-            // `transmute_unchecked` guarantees that it will only pass pointers
-            // to `cast` which either reference a zero-sized byte range or
-            // reference a byte range which is entirely contained inside of an
-            // allocated object.
-            #[allow(clippy::multiple_unsafe_ops_per_block)]
-            unsafe {
-                self.transmute_unchecked(cast)
-            }
+            unsafe { self.project_transmute_unchecked::<_, _, C>() }
         }
 
-        /// Casts to a different (unsized) target type.
-        ///
-        /// # Safety
-        ///
-        /// The caller promises that `u = cast(p)` is a pointer cast with the
-        /// following properties:
-        /// - `u` addresses a subset of the bytes addressed by `p`
-        /// - `u` has the same provenance as `p`
+        /// Casts to a different referent type.
         #[doc(hidden)]
-        #[inline]
-        pub unsafe fn cast_unsized<U, F, R>(
-            self,
-            cast: F,
-        ) -> Ptr<'a, U, (I::Aliasing, Unaligned, I::Validity)>
+        #[inline(always)]
+        #[must_use]
+        pub fn cast<U, C, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, I::Validity)>
         where
             T: MutationCompatible<U, I::Aliasing, I::Validity, I::Validity, R>,
             U: 'a + ?Sized + CastableFrom<T, I::Validity, I::Validity>,
-            F: FnOnce(PtrInner<'a, T>) -> PtrInner<'a, U>,
+            C: Cast<T, U>,
         {
             // SAFETY: Because `T: MutationCompatible<U, I::Aliasing, R>`, one
             // of the following holds:
@@ -945,10 +925,39 @@ mod _casts {
             //   - `I::Aliasing` is `Exclusive`
             //   - `T` and `U` are both `Immutable`
             // - It is sound for safe code to operate on `&T` and `&U` with the
-            //   same referent simultaneously
-            //
-            // The caller promises all other safety preconditions.
-            unsafe { self.cast_unsized_unchecked(cast) }
+            //   same referent simultaneously.
+            unsafe { self.cast_unchecked::<_, C>() }
+        }
+
+        // FIXME(#196): Support all validity invariants (not just those that are
+        // `CastableFrom`).
+        #[must_use]
+        #[inline(always)]
+        pub fn project<F, const FIELD_ID: i128>(
+            self,
+        ) -> Ptr<'a, T::Type, (I::Aliasing, Unaligned, I::Validity)>
+        where
+            T: HasField<F, { crate::STRUCT_VARIANT_ID }, FIELD_ID>,
+            T::Type: 'a + CastableFrom<T, I::Validity, I::Validity>,
+        {
+            let ptr = self.as_inner().project::<_, crate::pointer::cast::Projection<
+                F,
+                { crate::STRUCT_VARIANT_ID },
+                FIELD_ID,
+            >>();
+
+            // SAFETY:
+            // 0. `PtrInner::project` promises that it produces a pointer which
+            //    references a subset of its argument's referent. Since, by
+            //    invariant on `Ptr`, its argument (`self.as_inner()`) satisfies
+            //    the aliasing invariant `I::Aliasing`, so does `ptr`.
+            // 1. The `Ptr` has alignment `Unaligned`, which is trivially
+            //    satisfied.
+            // 2. By `CastableFrom<T, I::Validity, I::Validity>`, `I::Validity`
+            //    is `Uninit` or `Initialized`. In either case, if `I::Validity`
+            //    holds of `self`'s referent, then it holds any subset of its
+            //    referent.
+            unsafe { Ptr::from_inner(ptr) }
         }
     }
 
@@ -966,10 +975,7 @@ mod _casts {
             T: Read<I::Aliasing, R>,
             I::Aliasing: Reference,
         {
-            // SAFETY: `PtrInner::as_bytes` returns a pointer which addresses
-            // the same byte range as its argument, and which has the same
-            // provenance.
-            let ptr = unsafe { self.cast_unsized(PtrInner::as_bytes) };
+            let ptr = self.cast::<_, AsBytesCast, _>();
             ptr.bikeshed_recall_aligned().recall_validity::<Valid, (_, (_, _))>()
         }
     }
@@ -1149,7 +1155,7 @@ mod _casts {
         }
     }
 
-    impl<'a, T, I> Ptr<'a, core::cell::UnsafeCell<T>, I>
+    impl<'a, T, I> Ptr<'a, UnsafeCell<T>, I>
     where
         T: 'a + ?Sized,
         I: Invariants<Aliasing = Exclusive>,
@@ -1165,9 +1171,12 @@ mod _casts {
         #[must_use]
         #[inline(always)]
         pub fn get_mut(self) -> Ptr<'a, T, I> {
+            // SAFETY: As described below, `UnsafeCell<T>` has the same size
+            // as `T: ?Sized` (same static size or same DST layout). Thus,
+            // `*const UnsafeCell<T> as *const T` is a size-preserving cast.
+            define_cast!(unsafe { Cast<T: ?Sized> = UnsafeCell<T> => T });
+
             // SAFETY:
-            // - The closure uses an `as` cast, which preserves address range
-            //   and provenance.
             // - Aliasing is `Exclusive`, and so we are not required to promise
             //   anything about the locations of `UnsafeCell`s.
             // - `UnsafeCell<T>` has the same bit validity as `T` [1].
@@ -1188,9 +1197,7 @@ mod _casts {
             //   `UnsafeCell<T>` has the same in-memory representation as its
             //   inner type `T`. A consequence of this guarantee is that it is
             //   possible to convert between `T` and `UnsafeCell<T>`.
-            #[allow(clippy::as_conversions)]
-            #[allow(clippy::multiple_unsafe_ops_per_block)]
-            let ptr = unsafe { self.transmute_unchecked(|ptr| cast!(ptr)) };
+            let ptr = unsafe { self.project_transmute_unchecked::<_, _, Cast>() };
 
             // SAFETY: `UnsafeCell<T>` has the same alignment as `T` [1],
             // and so if `self` is guaranteed to be aligned, then so is the
@@ -1349,8 +1356,7 @@ mod tests {
                                 #[allow(unstable_name_collisions)]
                                 let bytes_addr = bytes.as_ptr().addr();
                                 #[allow(unstable_name_collisions)]
-                                let remaining_addr =
-                                    remaining.as_inner().as_non_null().as_ptr().addr();
+                                let remaining_addr = remaining.as_inner().as_ptr().addr();
                                 match cast_type {
                                     CastType::Prefix => {
                                         assert_eq!(remaining_addr, bytes_addr + len)
@@ -1359,9 +1365,8 @@ mod tests {
                                 }
 
                                 if let Some(want) = meta {
-                                    let got = KnownLayout::pointer_to_metadata(
-                                        slf.as_inner().as_non_null().as_ptr(),
-                                    );
+                                    let got =
+                                        KnownLayout::pointer_to_metadata(slf.as_inner().as_ptr());
                                     assert_eq!(got, want);
                                 }
                             }
@@ -1376,9 +1381,7 @@ mod tests {
                             assert_eq!(len, bytes.len());
 
                             if let Some(want) = meta {
-                                let got = KnownLayout::pointer_to_metadata(
-                                    slf.as_inner().as_non_null().as_ptr(),
-                                );
+                                let got = KnownLayout::pointer_to_metadata(slf.as_inner().as_ptr());
                                 assert_eq!(got, want);
                             }
                         }
@@ -1447,10 +1450,7 @@ mod tests {
                     ptr.try_cast_into::<$ty, BecauseImmutable>(CastType::Prefix, Some($elems));
                 if let Some(expect) = $expect {
                     let (ptr, _) = res.unwrap();
-                    assert_eq!(
-                        KnownLayout::pointer_to_metadata(ptr.as_inner().as_non_null().as_ptr()),
-                        expect
-                    );
+                    assert_eq!(KnownLayout::pointer_to_metadata(ptr.as_inner().as_ptr()), expect);
                 } else {
                     let _ = res.unwrap_err();
                 }
