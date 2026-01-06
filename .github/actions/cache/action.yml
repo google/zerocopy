@@ -20,7 +20,7 @@ runs:
   steps:
     - name: Restore Cache
       if: inputs.mode == 'restore'
-      uses: actions/cache@v4
+      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
       id: cache
       with:
         path: ~/.cargo/
@@ -55,7 +55,7 @@ runs:
 
     - name: Save Cache (Generate Mode)
       if: inputs.mode == 'generate' && steps.check.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v4
+      uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
       with:
         path: ~/.cargo/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
