@@ -436,29 +436,17 @@ mod atomics {
                 // the same size and bit validity.
                 unsafe impl<$($tyvar)?> TransmuteFrom<$prim, Valid, Valid> for $atomic {}
 
-                // SAFETY: The caller promised that `$atomic` and `$prim` have
-                // the same size.
-                unsafe impl<$($tyvar)?> SizeEq<$atomic> for $prim {
-                    type CastFrom = $crate::pointer::cast::CastSized;
+                impl<$($tyvar)?> SizeEq<$atomic> for $prim {
+                    type CastFrom = $crate::pointer::cast::CastSizedExact;
                 }
-                // SAFETY: See previous safety comment.
-                unsafe impl<$($tyvar)?> SizeEq<$prim> for $atomic {
-                    type CastFrom = $crate::pointer::cast::CastSized;
+                impl<$($tyvar)?> SizeEq<$prim> for $atomic {
+                    type CastFrom = $crate::pointer::cast::CastSizedExact;
                 }
-                // SAFETY: The caller promised that `$atomic` and `$prim` have
-                // the same size. `UnsafeCell<T>` has the same size as `T` [1].
-                //
-                // [1] Per https://doc.rust-lang.org/1.85.0/std/cell/struct.UnsafeCell.html#memory-layout:
-                //
-                //   `UnsafeCell<T>` has the same in-memory representation as
-                //   its inner type `T`. A consequence of this guarantee is that
-                //   it is possible to convert between `T` and `UnsafeCell<T>`.
-                unsafe impl<$($tyvar)?> SizeEq<$atomic> for UnsafeCell<$prim> {
-                    type CastFrom = $crate::pointer::cast::CastSized;
+                impl<$($tyvar)?> SizeEq<$atomic> for UnsafeCell<$prim> {
+                    type CastFrom = $crate::pointer::cast::CastSizedExact;
                 }
-                // SAFETY: See previous safety comment.
-                unsafe impl<$($tyvar)?> SizeEq<UnsafeCell<$prim>> for $atomic {
-                    type CastFrom = $crate::pointer::cast::CastSized;
+                impl<$($tyvar)?> SizeEq<UnsafeCell<$prim>> for $atomic {
+                    type CastFrom = $crate::pointer::cast::CastSizedExact;
                 }
 
                 // SAFETY: The caller promised that `$atomic` and `$prim` have

@@ -287,24 +287,11 @@ where
 /// DV>` conveys no safety guarantee.
 pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV> {}
 
-/// # Safety
-///
-/// `T` and `Self` must have the same vtable kind (`Sized`, slice DST, `dyn`,
-/// etc) and have the same size. In particular:
-/// - If `T: Sized` and `Self: Sized`, then their sizes must be equal
-/// - If `T: ?Sized` and `Self: ?Sized`, then `Self::CastFrom` must be a
-///   size-preserving cast. *Note that it is **not** guaranteed that an `as`
-///   cast preserves referent size: it may be the case that `Self::CastFrom`
-///   modifies the pointer's metadata in order to preserve referent size, which
-///   an `as` cast does not do.*
-pub unsafe trait SizeEq<T: ?Sized> {
-    type CastFrom: cast::Cast<T, Self>;
+pub trait SizeEq<T: ?Sized> {
+    type CastFrom: cast::CastExact<T, Self>;
 }
 
-// SAFETY: `T` trivially has the same size and vtable kind as `T`, and since
-// pointer `*mut T -> *mut T` pointer casts are no-ops, this cast trivially
-// preserves referent size (when `T: ?Sized`).
-unsafe impl<T: ?Sized> SizeEq<T> for T {
+impl<T: ?Sized> SizeEq<T> for T {
     type CastFrom = cast::IdCast;
 }
 
@@ -458,19 +445,12 @@ impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
 // https://doc.rust-lang.org/1.85.0/core/mem/union.MaybeUninit.html
 unsafe impl<T> TransmuteFrom<T, Uninit, Valid> for MaybeUninit<T> {}
 
-// SAFETY: `MaybeUninit<T>` has the same size as `T` [1].
-//
-// [1] Per https://doc.rust-lang.org/1.81.0/std/mem/union.MaybeUninit.html#layout-1:
-//
-//   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and ABI as
-//   `T`
-unsafe impl<T> SizeEq<T> for MaybeUninit<T> {
-    type CastFrom = cast::CastSized;
+impl<T> SizeEq<T> for MaybeUninit<T> {
+    type CastFrom = cast::CastSizedExact;
 }
 
-// SAFETY: See previous safety comment.
-unsafe impl<T> SizeEq<MaybeUninit<T>> for T {
-    type CastFrom = cast::CastSized;
+impl<T> SizeEq<MaybeUninit<T>> for T {
+    type CastFrom = cast::CastSizedExact;
 }
 
 #[cfg(test)]
