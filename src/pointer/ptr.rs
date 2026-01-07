@@ -15,7 +15,7 @@ use crate::{
     pointer::{
         inner::PtrInner,
         invariant::*,
-        transmute::{MutationCompatible, SizeEq, TransmuteFromPtr},
+        transmute::{MutationCompatible, SizeCompat, TransmuteFromPtr},
     },
     AlignmentError, CastError, CastType, KnownLayout, SizeError, TryFromBytes, ValidityError,
 };
@@ -381,10 +381,10 @@ mod _conversions {
         pub(crate) fn transmute<U, V, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
             V: Validity,
-            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + SizeEq<T> + ?Sized,
+            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + SizeCompat<T> + ?Sized,
         {
             // SAFETY:
-            // - By `SizeEq::CastFrom: Cast`, `SizeEq::CastFrom` preserves
+            // - By `SizeCompat::CastFrom: Cast`, `SizeCompat::CastFrom` preserves
             //   referent address, and so we don't need to consider projections
             //   in the following safety arguments.
             // - If aliasing is `Shared`, then by `U: TransmuteFromPtr<T>`, at
@@ -396,7 +396,7 @@ mod _conversions {
             //     operate on these references simultaneously
             // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
             //   sound to perform this transmute.
-            unsafe { self.project_transmute_unchecked::<_, _, <U as SizeEq<T>>::CastFrom>() }
+            unsafe { self.project_transmute_unchecked::<_, _, <U as SizeCompat<T>>::CastFrom>() }
         }
 
         #[doc(hidden)]
@@ -408,15 +408,16 @@ mod _conversions {
             T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R>,
         {
             // SAFETY:
-            // - By `SizeEq::CastFrom: Cast`, `SizeEq::CastFrom` preserves
-            //   referent address, and so we don't need to consider projections
-            //   in the following safety arguments.
+            // - By `SizeCompat::CastFrom: Cast`, `SizeCompat::CastFrom`
+            //   preserves referent address, and so we don't need to consider
+            //   projections in the following safety arguments.
             // - It is trivially sound to have multiple `&T` referencing the
             //   same referent simultaneously
             // - By `T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
             //   sound to perform this transmute.
-            let ptr =
-                unsafe { self.project_transmute_unchecked::<_, _, <T as SizeEq<T>>::CastFrom>() };
+            let ptr = unsafe {
+                self.project_transmute_unchecked::<_, _, <T as SizeCompat<T>>::CastFrom>()
+            };
             // SAFETY: `self` and `ptr` have the same address and referent type.
             // Therefore, if `self` satisfies `I::Alignment`, then so does
             // `ptr`.
