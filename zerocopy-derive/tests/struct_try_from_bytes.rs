@@ -18,7 +18,7 @@ include!("include.rs");
 #[test]
 fn zst() {
     // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let candidate = ::zerocopy::Ptr::from_ref(&());
+    let candidate = ::zerocopy::Ptr::from_ref(&imp::ReadOnly::new(()));
     let candidate = candidate.forget_aligned();
     // SAFETY: `&()` trivially consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
@@ -37,7 +37,7 @@ util_assert_impl_all!(One: imp::TryFromBytes);
 #[test]
 fn one() {
     // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let candidate = ::zerocopy::Ptr::from_ref(&One { a: 42 });
+    let candidate = ::zerocopy::Ptr::from_ref(&imp::ReadOnly::new(One { a: 42 }));
     let candidate = candidate.forget_aligned();
     // SAFETY: `&One` consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
@@ -57,7 +57,7 @@ util_assert_impl_all!(Two: imp::TryFromBytes);
 #[test]
 fn two() {
     // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let candidate = ::zerocopy::Ptr::from_ref(&Two { a: false, b: () });
+    let candidate = ::zerocopy::Ptr::from_ref(&imp::ReadOnly::new(Two { a: false, b: () }));
     let candidate = candidate.forget_aligned();
     // SAFETY: `&Two` consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
