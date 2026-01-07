@@ -756,6 +756,20 @@ mod cast_from {
     {
     }
 
+    // SAFETY: FIXME(#1818, #2701): THIS IS UNSOUND. However, given how it's
+    // used today, it can't cause UB. In particular, the static assertions below
+    // only check that source alignment is not less than destination alignment,
+    // but not that they are equal. This means that a pointer cast could result
+    // in a referent with less trailing padding. This technically violates the
+    // safety invariant of `CastExact`, but can only result in UB if the padding
+    // bytes are read, which they never are. Obviously we should still fix this.
+    unsafe impl<Src, Dst> crate::pointer::cast::CastExact<Src, Dst> for CastFrom<Dst>
+    where
+        Src: KnownLayout<PointerMetadata = usize> + ?Sized,
+        Dst: KnownLayout<PointerMetadata = usize> + ?Sized,
+    {
+    }
+
     // SAFETY: `project` produces a pointer which refers to the same referent
     // bytes as its input, or to a subset of them (see inline comments for a
     // more detailed proof of this). It does this using provenance-preserving
@@ -771,7 +785,7 @@ mod cast_from {
         /// implement soundly.
         //
         // FIXME(#1817): Support Sized->Unsized and Unsized->Sized casts
-        fn project(src: PtrInner<'_, Src>) -> *mut Dst {
+        fn project_inner(src: PtrInner<'_, Src>) -> *mut Dst {
             // At compile time (specifically, post-monomorphization time), we
             // need to compute two things:
             // - Whether, given *any* `*Src`, it is possible to construct a
