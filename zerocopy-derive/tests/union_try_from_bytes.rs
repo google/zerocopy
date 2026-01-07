@@ -25,7 +25,7 @@ util_assert_impl_all!(One: imp::TryFromBytes);
 #[test]
 fn one() {
     // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let candidate = ::zerocopy::Ptr::from_ref(&One { a: 42 });
+    let candidate = ::zerocopy::Ptr::from_ref(&imp::ReadOnly::new(One { a: 42 }));
     let candidate = candidate.forget_aligned();
     // SAFETY: `&One` consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
@@ -45,14 +45,14 @@ util_assert_impl_all!(Two: imp::TryFromBytes);
 #[test]
 fn two() {
     // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let candidate_a = ::zerocopy::Ptr::from_ref(&Two { a: false });
+    let candidate_a = ::zerocopy::Ptr::from_ref(&imp::ReadOnly::new(Two { a: false }));
     let candidate_a = candidate_a.forget_aligned();
     // SAFETY: `&Two` consists entirely of initialized bytes.
     let candidate_a = unsafe { candidate_a.assume_initialized() };
     let is_bit_valid = <Two as imp::TryFromBytes>::is_bit_valid(candidate_a);
     assert!(is_bit_valid);
 
-    let candidate_b = ::zerocopy::Ptr::from_ref(&Two { b: true });
+    let candidate_b = ::zerocopy::Ptr::from_ref(&imp::ReadOnly::new(Two { b: true }));
     let candidate_b = candidate_b.forget_aligned();
     // SAFETY: `&Two` consists entirely of initialized bytes.
     let candidate_b = unsafe { candidate_b.assume_initialized() };

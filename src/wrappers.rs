@@ -149,7 +149,7 @@ const _: () = unsafe {
     impl_or_verify!(T: Immutable => Immutable for Unalign<T>);
     impl_or_verify!(
         T: TryFromBytes => TryFromBytes for Unalign<T>;
-        |c| T::is_bit_valid(c.transmute())
+        |c| T::is_bit_valid(c.transmute::<_, _, BecauseImmutable>())
     );
     impl_or_verify!(T: FromZeros => FromZeros for Unalign<T>);
     impl_or_verify!(T: FromBytes => FromBytes for Unalign<T>);
@@ -605,14 +605,15 @@ const _: () = unsafe {
     unsafe_impl_known_layout!(T: ?Sized + KnownLayout => #[repr(T)] ReadOnly<T>);
 };
 
-#[allow(unused_unsafe)] // Unused when `feature = "derive"`.
-                        // SAFETY:
-                        // - `ReadOnly<T>` has the same alignment as `T`, and so it is `Unaligned`
-                        //   exactly when `T` is as well.
-                        // - `ReadOnly<T>` has the same bit validity as `T`, and so it is `FromZeros`,
-                        //   `FromBytes`, or `IntoBytes` exactly when `T` is as well.
-                        // - `TryFromBytes`: `ReadOnly<T>` has the same the same bit validity as `T`, so
-                        //   `T::is_bit_valid` is a sound implementation of `is_bit_valid`.
+// Unused when `feature = "derive"`.
+#[allow(unused_unsafe, clippy::multiple_unsafe_ops_per_block)]
+// SAFETY:
+// - `ReadOnly<T>` has the same alignment as `T`, and so it is `Unaligned`
+//   exactly when `T` is as well.
+// - `ReadOnly<T>` has the same bit validity as `T`, and so it is `FromZeros`,
+//   `FromBytes`, or `IntoBytes` exactly when `T` is as well.
+// - `TryFromBytes`: `ReadOnly<T>` has the same the same bit validity as `T`, so
+//   `T::is_bit_valid` is a sound implementation of `is_bit_valid`.
 const _: () = unsafe {
     impl_or_verify!(T: ?Sized + Unaligned => Unaligned for ReadOnly<T>);
     impl_or_verify!(
@@ -668,11 +669,44 @@ unsafe impl<T: ?Sized> TransmuteFrom<T, Valid, Valid> for ReadOnly<T> {}
 // SAFETY: TODO
 unsafe impl<T: ?Sized> TransmuteFrom<ReadOnly<T>, Valid, Valid> for T {}
 
+// enum BecauseReadOnly {}
+
+// /// Denotes that `src: Ptr<Src, (A, _, SV)>` and `dst: Ptr<Self, (A, _, DV)>`,
+// /// referencing the same referent at the same time, cannot be used by safe code
+// /// to break library safety invariants of `Src` or `Self`.
+// ///
+// /// # Safety
+// ///
+// /// At least one of the following must hold:
+// /// - `Src: Read<A, _>` and `Self: Read<A, _>`
+// /// - `Self: InvariantsEq<Src>`, and, for some `V`:
+// ///   - `Dst: TransmuteFrom<Src, V, V>`
+// ///   - `Src: TransmuteFrom<Dst, V, V>`
+
+// // SAFETY: TODO
+// unsafe impl<T: ?Sized, A: Aliasing, V> MutationCompatible<T, A, V, V, BecauseReadOnly>
+//     for ReadOnly<T>
+// {
+// }
+
 impl<T> ReadOnly<T> {
     /// TODO
     #[inline(always)]
     pub const fn new(t: T) -> ReadOnly<T> {
         ReadOnly(t)
+    }
+
+    /// Returns the inner value.
+    #[inline(always)]
+    pub fn into_inner(r: ReadOnly<T>) -> T {
+        r.0
+    }
+}
+
+impl<T: ?Sized> AsMut<T> for ReadOnly<T> {
+    #[inline(always)]
+    fn as_mut(&mut self) -> &mut T {
+        &mut self.0
     }
 }
 

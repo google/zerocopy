@@ -22,12 +22,14 @@ pub use {
     ptr::Ptr,
 };
 
+use crate::wrappers::ReadOnly;
+
 /// A shorthand for a maybe-valid, maybe-aligned reference. Used as the argument
 /// to [`TryFromBytes::is_bit_valid`].
 ///
 /// [`TryFromBytes::is_bit_valid`]: crate::TryFromBytes::is_bit_valid
 pub type Maybe<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Unaligned> =
-    Ptr<'a, T, (Aliasing, Alignment, invariant::Initialized)>;
+    Ptr<'a, ReadOnly<T>, (Aliasing, Alignment, invariant::Initialized)>;
 
 /// Checks if the referent is zeroed.
 pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
@@ -49,7 +51,7 @@ pub mod cast {
 
     use crate::{
         layout::{SizeInfo, TrailingSliceLayout},
-        HasField, KnownLayout, PtrInner,
+        HasField, KnownLayout, PtrInner, REPR_C_UNION_VARIANT_ID,
     };
 
     /// A pointer cast or projection.
@@ -353,13 +355,22 @@ pub mod cast {
         W::Unwrapped: HasField<F, VARIANT_ID, FIELD_ID>,
     {
         #[inline(always)]
-        fn project(src: PtrInner<'_, W>) -> *mut W::WrappedField {
+        fn project_inner(src: PtrInner<'_, W>) -> *mut W::WrappedField {
             src.project::<_, W::CastToUnwrapped>()
                 .project::<_, Projection<F, VARIANT_ID, FIELD_ID>>()
                 .project::<_, <W::WrappedField as Wrapped>::CastFromUnwrapped>()
                 .as_ptr()
         }
     }
+
+    // SAFETY: TODO
+    unsafe impl<W: ?Sized, F, const FIELD_ID: i128>
+        Cast<W, W::WrappedField> for WrappedProjection<W, F, { REPR_C_UNION_VARIANT_ID }, FIELD_ID>
+    where
+        W: Wrapped
+            + HasWrappedField<<<W as Wrapped>::Unwrapped as HasField<F, { REPR_C_UNION_VARIANT_ID }, FIELD_ID>>::Type>,
+        W::Unwrapped: HasField<F, { REPR_C_UNION_VARIANT_ID }, FIELD_ID>,
+    {}
 
     #[allow(missing_debug_implementations, missing_copy_implementations)]
     pub struct TransposeProjection<W: ?Sized, V: ?Sized> {
@@ -390,7 +401,7 @@ pub mod cast {
         V: Wrapped + HasWrappedField<<W as HasWrappedField<<V as Wrapped>::Unwrapped>>::WrappedField>,
     {
         #[inline(always)]
-        fn project(src: PtrInner<'_, W>) -> *mut <V as HasWrappedField<<W as HasWrappedField<V::Unwrapped>>::WrappedField>>::WrappedField {
+        fn project_inner(src: PtrInner<'_, W>) -> *mut <V as HasWrappedField<<W as HasWrappedField<V::Unwrapped>>::WrappedField>>::WrappedField {
             src.project::<_, W::CastToUnwrapped>()
                 .project::<_, V::CastToUnwrapped>()
                 .project::<_, <<W as HasWrappedField<V::Unwrapped>>::WrappedField as Wrapped>::CastFromUnwrapped>()
