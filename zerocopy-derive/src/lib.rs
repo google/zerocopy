@@ -774,18 +774,16 @@ fn derive_has_field_struct_union(
         )
     });
 
-    let variant_id: Box<Expr> = match &ast.data {
-        Data::Struct(_) => parse_quote!({ #zerocopy_crate::STRUCT_VARIANT_ID }),
-        Data::Union(_) => parse_quote!({ #zerocopy_crate::UNION_VARIANT_ID }),
+    let (variant_id, is_repr_c_union): (Box<Expr>, _) = match &ast.data {
+        Data::Struct(_) => (parse_quote!({ #zerocopy_crate::STRUCT_VARIANT_ID }), false),
+        Data::Union(_) => {
+            let is_repr_c =
+                StructUnionRepr::from_attrs(&ast.attrs).map(|repr| repr.is_c()).unwrap_or(false);
+            (parse_quote!({ #zerocopy_crate::UNION_VARIANT_ID }), is_repr_c)
+        }
         _ => unreachable!(),
     };
 
-    let is_repr_c_union = match &ast.data {
-        Data::Union(..) => {
-            StructUnionRepr::from_attrs(&ast.attrs).map(|repr| repr.is_c()).unwrap_or(false)
-        }
-        Data::Enum(..) | Data::Struct(..) => false,
-    };
     let has_fields = fields.iter().map(move |(_, ident, ty)| {
         let field_token = ident!(("ẕ{}", ident), ident.span());
         let field: Box<Type> = parse_quote!(#field_token);
@@ -895,14 +893,11 @@ fn derive_try_from_bytes_struct(
                 // validity of a struct is just the composition of the bit
                 // validities of its fields, so this is a sound implementation
                 // of `is_bit_valid`.
-                fn is_bit_valid<___ZerocopyAliasing>(
-                    mut candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
-                ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
-                where
-                    ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
-                {
+                fn is_bit_valid(
+                    mut candidate: #zerocopy_crate::Maybe<Self>,
+                ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool {
                     true #(&& {
-                        let field_candidate = candidate.reborrow().project::<
+                        let field_candidate = candidate.reborrow().project_wrapped::<
                             _,
                             { #zerocopy_crate::ident_id!(#field_names) }
                         >();
@@ -939,20 +934,16 @@ fn derive_try_from_bytes_union(
             let fields = unn.fields();
             let field_names = fields.iter().map(|(_vis, name, _ty)| name);
             let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
+
             quote!(
                 // SAFETY: We use `is_bit_valid` to validate that any field is
                 // bit-valid; we only return `true` if at least one of them is.
                 // The bit validity of a union is not yet well defined in Rust,
                 // but it is guaranteed to be no more strict than this
                 // definition. See #696 for a more in-depth discussion.
-                fn is_bit_valid<___ZerocopyAliasing>(
-                    mut candidate: #zerocopy_crate::Maybe<'_, Self,___ZerocopyAliasing>
-                ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
-                where
-                    ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
-                {
-                    use #zerocopy_crate::util::macro_util::core_reexport;
-                    use #zerocopy_crate::pointer::PtrInner;
+                fn is_bit_valid(
+                    mut candidate: #zerocopy_crate::Maybe<'_, Self>
+                ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool {
 
                     false #(|| {
                         // SAFETY:
@@ -967,7 +958,12 @@ fn derive_try_from_bytes_union(
                             candidate.reborrow().project_transmute_unchecked::<
                                 _,
                                 _,
-                                #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#field_names) }>
+                                #zerocopy_crate::pointer::cast::WrappedProjection<
+                                    #zerocopy_crate::ReadOnly<_>,
+                                    _,
+                                    { #zerocopy_crate::UNION_VARIANT_ID },
+                                    { #zerocopy_crate::ident_id!(#field_names) }
+                                >
                             >()
                         };
 
@@ -1052,12 +1048,9 @@ fn try_gen_trivial_is_bit_valid(
     if matches!(top_level, Trait::FromBytes) && ast.generics.params.is_empty() {
         Some(quote!(
             // SAFETY: See inline.
-            fn is_bit_valid<___ZerocopyAliasing>(
-                _candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
-            ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
-            where
-                ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
-            {
+            fn is_bit_valid(
+                _candidate: #zerocopy_crate::Maybe<Self>,
+            ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool {
                 if false {
                     fn assert_is_from_bytes<T>()
                     where
@@ -1095,12 +1088,9 @@ unsafe fn gen_trivial_is_bit_valid_unchecked(zerocopy_crate: &Path) -> proc_macr
     quote!(
         // SAFETY: The caller of `gen_trivial_is_bit_valid_unchecked` has
         // promised that all initialized bit patterns are valid for `Self`.
-        fn is_bit_valid<___ZerocopyAliasing>(
-            _candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
-        ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
-        where
-            ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
-        {
+        fn is_bit_valid(
+            _candidate: #zerocopy_crate::Maybe<Self>,
+        ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool {
             true
         }
     )

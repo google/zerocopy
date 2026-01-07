@@ -17,8 +17,10 @@ include!("include.rs");
 
 #[test]
 fn zst() {
+    use imp::From;
+
     // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let candidate = ::zerocopy::Ptr::from_ref(&());
+    let candidate = ::zerocopy::Ptr::from_ref(<&imp::ReadOnly<_>>::from(&(())));
     let candidate = candidate.forget_aligned();
     // SAFETY: `&()` trivially consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
@@ -26,7 +28,7 @@ fn zst() {
     imp::assert!(is_bit_valid);
 }
 
-#[derive(imp::TryFromBytes)]
+#[derive(imp::TryFromBytes, imp::Immutable)]
 #[repr(C)]
 struct One {
     a: u8,
@@ -36,8 +38,10 @@ util_assert_impl_all!(One: imp::TryFromBytes);
 
 #[test]
 fn one() {
+    use imp::From;
+
     // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let candidate = ::zerocopy::Ptr::from_ref(&One { a: 42 });
+    let candidate = ::zerocopy::Ptr::from_ref(<&imp::ReadOnly<_>>::from(&One { a: 42 }));
     let candidate = candidate.forget_aligned();
     // SAFETY: `&One` consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
@@ -45,7 +49,7 @@ fn one() {
     imp::assert!(is_bit_valid);
 }
 
-#[derive(imp::TryFromBytes)]
+#[derive(imp::TryFromBytes, imp::Immutable)]
 #[repr(C)]
 struct Two {
     a: bool,
@@ -56,8 +60,10 @@ util_assert_impl_all!(Two: imp::TryFromBytes);
 
 #[test]
 fn two() {
+    use imp::From;
+
     // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let candidate = ::zerocopy::Ptr::from_ref(&Two { a: false, b: () });
+    let candidate = ::zerocopy::Ptr::from_ref(<&imp::ReadOnly<_>>::from(&Two { a: false, b: () }));
     let candidate = candidate.forget_aligned();
     // SAFETY: `&Two` consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
@@ -80,9 +86,9 @@ fn two_bad() {
     };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
-    let candidate = unsafe { candidate.assume_initialized() };
+    let mut candidate = unsafe { candidate.assume_initialized() };
 
-    let is_bit_valid = <Two as imp::TryFromBytes>::is_bit_valid(candidate);
+    let is_bit_valid = <Two as imp::TryFromBytes>::is_bit_valid(candidate.reborrow_shared());
     imp::assert!(!is_bit_valid);
 }
 
@@ -109,8 +115,8 @@ fn un_sized() {
     };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
-    let candidate = unsafe { candidate.assume_initialized() };
-    let is_bit_valid = <Unsized as imp::TryFromBytes>::is_bit_valid(candidate);
+    let mut candidate = unsafe { candidate.assume_initialized() };
+    let is_bit_valid = <Unsized as imp::TryFromBytes>::is_bit_valid(candidate.reborrow_shared());
     imp::assert!(is_bit_valid);
 }
 
@@ -166,7 +172,11 @@ fn test_maybe_from_bytes() {
 
     // SAFETY: `[u8]` consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
-    let is_bit_valid = <MaybeFromBytes<bool> as imp::TryFromBytes>::is_bit_valid(candidate);
+    let mut candidate =
+        candidate.cast::<_, imp::pointer::cast::CastSized, (_, imp::pointer::BecauseExclusive)>();
+
+    let is_bit_valid =
+        <MaybeFromBytes<bool> as imp::TryFromBytes>::is_bit_valid(candidate.reborrow_shared());
     imp::assert!(!is_bit_valid);
 }
 
