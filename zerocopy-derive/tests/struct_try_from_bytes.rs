@@ -249,3 +249,11 @@ struct A;
 struct B {
     a: A,
 }
+
+#[derive(imp::TryFromBytes)]
+#[repr(C)]
+struct RawIdent {
+    r#type: u8,
+}
+
+util_assert_impl_all!(RawIdent: imp::TryFromBytes);

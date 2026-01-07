@@ -37,6 +37,12 @@
 )]
 #![recursion_limit = "128"]
 
+macro_rules! ident {
+    (($fmt:literal $(, $arg:expr)*), $span:expr) => {
+        syn::Ident::new(&format!($fmt $(, crate::ext::to_ident_str($arg))*), $span)
+    };
+}
+
 mod r#enum;
 mod ext;
 #[cfg(test)]
@@ -322,10 +328,8 @@ fn derive_known_layout_inner(
 
             // Generate a valid ident for a type-level handle to a field of a
             // given `name`.
-            let field_index = |name: &TokenStream| {
-                let name = to_ident_str(name);
-                Ident::new(&format!("__Zerocopy_Field_{}", name), ident.span())
-            };
+            let field_index =
+                |name: &TokenStream| ident!(("__Zerocopy_Field_{}", name), ident.span());
 
             let field_indices: Vec<_> =
                 fields.iter().map(|(_vis, name, _ty)| field_index(name)).collect();
@@ -764,7 +768,7 @@ fn derive_has_field_struct_union(
     }
 
     let field_tokens = fields.iter().map(|(vis, ident, _)| {
-        let ident = Ident::new(&format!("ẕ{}", ident), ident.span());
+        let ident = ident!(("ẕ{}", ident), ident.span());
         quote!(
             #vis enum #ident {}
         )
@@ -783,7 +787,7 @@ fn derive_has_field_struct_union(
         Data::Enum(..) | Data::Struct(..) => false,
     };
     let has_fields = fields.iter().map(move |(_, ident, ty)| {
-        let field_token = Ident::new(&format!("ẕ{}", ident), ident.span());
+        let field_token = ident!(("ẕ{}", ident), ident.span());
         let field: Box<Type> = parse_quote!(#field_token);
         let field_id: Box<Expr> = parse_quote!({ #zerocopy_crate::ident_id!(#ident) });
         ImplBlockBuilder::new(
