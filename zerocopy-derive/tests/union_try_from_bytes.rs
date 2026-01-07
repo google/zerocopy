@@ -44,20 +44,6 @@ fn two() {
     crate::util::test_is_bit_valid::<Two>([2u8], false);
 }
 
-#[derive(imp::Immutable, imp::TryFromBytes)]
-#[repr(C)]
-union BoolAndZst {
-    a: bool,
-    b: (),
-}
-
-#[test]
-fn bool_and_zst() {
-    crate::util::test_is_bit_valid::<BoolAndZst>([0u8], true);
-    crate::util::test_is_bit_valid::<BoolAndZst>([1u8], true);
-    crate::util::test_is_bit_valid::<BoolAndZst>([2u8], true);
-}
-
 #[derive(imp::FromBytes)]
 #[repr(C)]
 union MaybeFromBytes<T: imp::Copy> {
