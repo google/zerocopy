@@ -521,6 +521,24 @@ mod _conversions {
         }
     }
 
+    // /// `Ptr<'a, T, (_, _, _)>` → `Ptr<'a, ReadOnly<T>, (_, _, _)>`
+    // impl<'a, T, I> Ptr<'a, T, I>
+    // where
+    //     T: ?Sized,
+    //     I: Invariants,
+    // {
+    //     /// TODO
+    //     pub(crate) fn into_read_only<R>(
+    //         self,
+    //     ) -> Ptr<'a, crate::ReadOnly<T>, (I::Aliasing, I::Alignment, I::Validity)>
+    //     where
+    //         T: Read<I::Aliasing, R>,
+    //     {
+    //         let ro = self.transmute::<_, _, (_, _)>();
+    //         unsafe { ro.assume_alignment() }
+    //     }
+    // }
+
     impl<'a, T, I> Ptr<'a, T, I>
     where
         T: ?Sized,
@@ -562,42 +580,42 @@ mod _transitions {
         T: 'a + ?Sized,
         I: Invariants,
     {
-        /// Returns a `Ptr` with [`Exclusive`] aliasing if `self` already has
-        /// `Exclusive` aliasing, or generates a compile-time assertion failure.
-        ///
-        /// This allows code which is generic over aliasing to down-cast to a
-        /// concrete aliasing.
-        ///
-        /// [`Exclusive`]: crate::pointer::invariant::Exclusive
-        #[inline]
-        pub(crate) fn into_exclusive_or_pme(
-            self,
-        ) -> Ptr<'a, T, (Exclusive, I::Alignment, I::Validity)> {
-            // NOTE(https://github.com/rust-lang/rust/issues/131625): We do this
-            // rather than just having `Aliasing::IS_EXCLUSIVE` have the panic
-            // behavior because doing it that way causes rustdoc to fail while
-            // attempting to document hidden items (since it evaluates the
-            // constant - and thus panics).
-            trait AliasingExt: Aliasing {
-                const IS_EXCL: bool;
-            }
+        // /// Returns a `Ptr` with [`Exclusive`] aliasing if `self` already has
+        // /// `Exclusive` aliasing, or generates a compile-time assertion failure.
+        // ///
+        // /// This allows code which is generic over aliasing to down-cast to a
+        // /// concrete aliasing.
+        // ///
+        // /// [`Exclusive`]: crate::pointer::invariant::Exclusive
+        // #[inline]
+        // pub(crate) fn into_exclusive_or_pme(
+        //     self,
+        // ) -> Ptr<'a, T, (Exclusive, I::Alignment, I::Validity)> {
+        //     // NOTE(https://github.com/rust-lang/rust/issues/131625): We do this
+        //     // rather than just having `Aliasing::IS_EXCLUSIVE` have the panic
+        //     // behavior because doing it that way causes rustdoc to fail while
+        //     // attempting to document hidden items (since it evaluates the
+        //     // constant - and thus panics).
+        //     trait AliasingExt: Aliasing {
+        //         const IS_EXCL: bool;
+        //     }
 
-            impl<A: Aliasing> AliasingExt for A {
-                const IS_EXCL: bool = {
-                    const_assert!(Self::IS_EXCLUSIVE);
-                    true
-                };
-            }
+        //     impl<A: Aliasing> AliasingExt for A {
+        //         const IS_EXCL: bool = {
+        //             const_assert!(Self::IS_EXCLUSIVE);
+        //             true
+        //         };
+        //     }
 
-            assert!(I::Aliasing::IS_EXCL);
+        //     assert!(I::Aliasing::IS_EXCL);
 
-            // SAFETY: We've confirmed that `self` already has the aliasing
-            // `Exclusive`. If it didn't, either the preceding assert would fail
-            // or evaluating `I::Aliasing::IS_EXCL` would fail. We're *pretty*
-            // sure that it's guaranteed to fail const eval, but the `assert!`
-            // provides a backstop in case that doesn't work.
-            unsafe { self.assume_exclusive() }
-        }
+        //     // SAFETY: We've confirmed that `self` already has the aliasing
+        //     // `Exclusive`. If it didn't, either the preceding assert would fail
+        //     // or evaluating `I::Aliasing::IS_EXCL` would fail. We're *pretty*
+        //     // sure that it's guaranteed to fail const eval, but the `assert!`
+        //     // provides a backstop in case that doesn't work.
+        //     unsafe { self.assume_exclusive() }
+        // }
 
         /// Assumes that `self` satisfies the invariants `H`.
         ///
@@ -623,37 +641,37 @@ mod _transitions {
             unsafe { self.assume_invariants::<H>() }
         }
 
-        /// Assumes that `self` satisfies the aliasing requirement of `A`.
-        ///
-        /// # Safety
-        ///
-        /// The caller promises that `self` satisfies the aliasing requirement
-        /// of `A`.
-        #[inline]
-        pub(crate) unsafe fn assume_aliasing<A: Aliasing>(
-            self,
-        ) -> Ptr<'a, T, (A, I::Alignment, I::Validity)> {
-            // SAFETY: The caller promises that `self` satisfies the aliasing
-            // requirements of `A`.
-            unsafe { self.assume_invariants() }
-        }
+        // /// Assumes that `self` satisfies the aliasing requirement of `A`.
+        // ///
+        // /// # Safety
+        // ///
+        // /// The caller promises that `self` satisfies the aliasing requirement
+        // /// of `A`.
+        // #[inline]
+        // pub(crate) unsafe fn assume_aliasing<A: Aliasing>(
+        //     self,
+        // ) -> Ptr<'a, T, (A, I::Alignment, I::Validity)> {
+        //     // SAFETY: The caller promises that `self` satisfies the aliasing
+        //     // requirements of `A`.
+        //     unsafe { self.assume_invariants() }
+        // }
 
-        /// Assumes `self` satisfies the aliasing requirement of [`Exclusive`].
-        ///
-        /// # Safety
-        ///
-        /// The caller promises that `self` satisfies the aliasing requirement
-        /// of `Exclusive`.
-        ///
-        /// [`Exclusive`]: crate::pointer::invariant::Exclusive
-        #[inline]
-        pub(crate) unsafe fn assume_exclusive(
-            self,
-        ) -> Ptr<'a, T, (Exclusive, I::Alignment, I::Validity)> {
-            // SAFETY: The caller promises that `self` satisfies the aliasing
-            // requirements of `Exclusive`.
-            unsafe { self.assume_aliasing::<Exclusive>() }
-        }
+        // /// Assumes `self` satisfies the aliasing requirement of [`Exclusive`].
+        // ///
+        // /// # Safety
+        // ///
+        // /// The caller promises that `self` satisfies the aliasing requirement
+        // /// of `Exclusive`.
+        // ///
+        // /// [`Exclusive`]: crate::pointer::invariant::Exclusive
+        // #[inline]
+        // pub(crate) unsafe fn assume_exclusive(
+        //     self,
+        // ) -> Ptr<'a, T, (Exclusive, I::Alignment, I::Validity)> {
+        //     // SAFETY: The caller promises that `self` satisfies the aliasing
+        //     // requirements of `Exclusive`.
+        //     unsafe { self.assume_aliasing::<Exclusive>() }
+        // }
 
         /// Assumes that `self`'s referent is validly-aligned for `T` if
         /// required by `A`.
@@ -820,20 +838,31 @@ mod _transitions {
         /// On error, unsafe code may rely on this method's returned
         /// `ValidityError` containing `self`.
         #[inline]
-        pub(crate) fn try_into_valid<R, S>(
+        pub(crate) fn try_into_valid<R, S, TT>(
             mut self,
         ) -> Result<Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>, ValidityError<Self, T>>
         where
             T: TryFromBytes
                 + Read<I::Aliasing, R>
-                + TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, S>,
+                + TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, S>
+                + MutationCompatible<
+                    crate::wrappers::ReadOnly<T>,
+                    I::Aliasing,
+                    Initialized,
+                    Initialized,
+                    TT,
+                >,
+            // T: MutationCompatible<U, I::Aliasing, I::Validity, I::Validity, R>,
             I::Aliasing: Reference,
             I: Invariants<Validity = Initialized>,
         {
             // This call may panic. If that happens, it doesn't cause any
             // soundness issues, as we have not generated any invalid state
             // which we need to fix before returning.
-            if T::is_bit_valid(self.reborrow().forget_aligned()) {
+            if T::is_bit_valid(
+                self.reborrow()
+                    .cast::<_, <crate::wrappers::ReadOnly<T> as SizeEq<T>>::CastFrom, _>(),
+            ) {
                 // SAFETY: If `T::is_bit_valid`, code may assume that `self`
                 // contains a bit-valid instance of `T`. By `T:
                 // TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid>`, so

@@ -30,9 +30,10 @@ use core::{
 use crate::{
     pointer::{
         invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
-        BecauseInvariantsEq, InvariantsEq, SizeEq, TryTransmuteFromPtr,
+        BecauseInvariantsEq, InvariantsEq, MutationCompatible, SizeEq, TryTransmuteFromPtr,
     },
-    FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, Ptr, TryFromBytes, ValidityError,
+    FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, Ptr, ReadOnly, TryFromBytes,
+    ValidityError,
 };
 
 /// Projects the type of the field at `Index` in `Self` without regard for field
@@ -611,7 +612,7 @@ pub const fn hash_name(name: &str) -> i128 {
 /// [`is_bit_valid`]: TryFromBytes::is_bit_valid
 #[doc(hidden)]
 #[inline]
-fn try_cast_or_pme<Src, Dst, I, R, S>(
+fn try_cast_or_pme<Src, Dst, I, R, S, TT, U>(
     src: Ptr<'_, Src, I>,
 ) -> Result<
     Ptr<'_, Dst, (I::Aliasing, invariant::Unaligned, invariant::Valid)>,
@@ -623,7 +624,14 @@ where
     Src: invariant::Read<I::Aliasing, R>,
     Dst: TryFromBytes
         + invariant::Read<I::Aliasing, R>
-        + TryTransmuteFromPtr<Dst, I::Aliasing, invariant::Initialized, invariant::Valid, S>,
+        + TryTransmuteFromPtr<Dst, I::Aliasing, invariant::Initialized, invariant::Valid, S>
+        + MutationCompatible<
+            ReadOnly<Dst>,
+            I::Aliasing,
+            invariant::Initialized,
+            invariant::Initialized,
+            TT,
+        > + MutationCompatible<Src, I::Aliasing, invariant::Initialized, invariant::Initialized, U>,
     I: Invariants<Validity = invariant::Initialized>,
     I::Aliasing: invariant::Reference,
 {
@@ -636,7 +644,7 @@ where
         Err(err) => {
             // Re-cast `Ptr<Dst>` to `Ptr<Src>`.
             let ptr = err.into_src();
-            let ptr = ptr.cast::<_, crate::pointer::cast::CastSized, _>();
+            let ptr: Ptr<'_, Src, _> = ptr.cast::<_, crate::pointer::cast::CastSized, _>();
             // SAFETY: `ptr` is `src`, and has the same alignment invariant.
             let ptr = unsafe { ptr.assume_alignment::<I::Alignment>() };
             // SAFETY: `ptr` is `src` and has the same validity invariant.
@@ -684,7 +692,7 @@ where
 
     let ptr: Ptr<'_, Dst, _> = ptr.cast::<_, crate::pointer::cast::CastSized, _>();
 
-    if Dst::is_bit_valid(ptr.forget_aligned()) {
+    if Dst::is_bit_valid(ptr.transmute::<_, _, (_, (_, BecauseExclusive))>().forget_aligned()) {
         // SAFETY: Since `Dst::is_bit_valid`, we know that `ptr`'s referent is
         // bit-valid for `Dst`. `ptr` points to `mu_dst`, and no intervening
         // operations have mutated it, so it is a bit-valid `Dst`.
@@ -716,7 +724,7 @@ where
 {
     let ptr = Ptr::from_ref(src);
     let ptr = ptr.bikeshed_recall_initialized_immutable();
-    match try_cast_or_pme::<Src, Dst, _, BecauseImmutable, _>(ptr) {
+    match try_cast_or_pme::<Src, Dst, _, BecauseImmutable, _, _, _>(ptr) {
         Ok(ptr) => {
             static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
             // SAFETY: We have checked that `Dst` does not have a stricter
@@ -760,7 +768,7 @@ where
 {
     let ptr = Ptr::from_mut(src);
     let ptr = ptr.bikeshed_recall_initialized_from_bytes();
-    match try_cast_or_pme::<Src, Dst, _, BecauseExclusive, _>(ptr) {
+    match try_cast_or_pme::<Src, Dst, _, BecauseExclusive, _, _, _>(ptr) {
         Ok(ptr) => {
             static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
             // SAFETY: We have checked that `Dst` does not have a stricter

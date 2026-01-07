@@ -2974,7 +2974,7 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
     // via `c_ptr` so long as it is live, so we don't need to worry about the
     // fact that `c_ptr` may have more restricted validity than `candidate`.
     let c_ptr = unsafe { c_ptr.assume_validity::<invariant::Initialized>() };
-    let c_ptr = c_ptr.transmute();
+    let c_ptr = c_ptr.cast::<_, crate::pointer::cast::CastSized, _>();
 
     // Since we don't have `T: KnownLayout`, we hack around that by using
     // `Wrapping<T>`, which implements `KnownLayout` even if `T` doesn't.
