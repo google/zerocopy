@@ -55,8 +55,7 @@ pub(crate) fn generate_tag_enum(repr: &EnumRepr, data: &DataEnum) -> TokenStream
 }
 
 fn tag_ident(variant_ident: &Ident) -> Ident {
-    let variant_ident_str = crate::ext::to_ident_str(variant_ident);
-    Ident::new(&format!("___ZEROCOPY_TAG_{}", variant_ident_str), variant_ident.span())
+    ident!(("___ZEROCOPY_TAG_{}", variant_ident), variant_ident.span())
 }
 
 /// Generates a constant for the tag associated with each variant of the enum.
@@ -103,8 +102,7 @@ fn generate_tag_consts(data: &DataEnum) -> TokenStream {
 }
 
 fn variant_struct_ident(variant_ident: &Ident) -> Ident {
-    let variant_ident_str = crate::ext::to_ident_str(variant_ident);
-    Ident::new(&format!("___ZerocopyVariantStruct_{}", variant_ident_str), variant_ident.span())
+    ident!(("___ZerocopyVariantStruct_{}", variant_ident), variant_ident.span())
 }
 
 /// Generates variant structs for the given enum variant.
@@ -171,10 +169,9 @@ fn generate_variant_structs(
 }
 
 fn variants_union_field_ident(ident: &Ident) -> Ident {
-    let variant_ident_str = crate::ext::to_ident_str(ident);
     // Field names are prefixed with `__field_` to prevent name collision
     // with the `__nonempty` field.
-    Ident::new(&format!("__field_{}", variant_ident_str), ident.span())
+    ident!(("__field_{}", ident), ident.span())
 }
 
 fn generate_variants_union(
