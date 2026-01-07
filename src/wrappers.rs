@@ -9,7 +9,7 @@
 use core::{fmt, hash::Hash};
 
 use super::*;
-use crate::pointer::{invariant::Valid, SizeEq, TransmuteFrom};
+use crate::pointer::{invariant::Valid, SizeCompat, TransmuteFrom};
 
 /// A type with no alignment requirement.
 ///
@@ -149,7 +149,7 @@ const _: () = unsafe {
     impl_or_verify!(T: Immutable => Immutable for Unalign<T>);
     impl_or_verify!(
         T: TryFromBytes => TryFromBytes for Unalign<T>;
-        |c| T::is_bit_valid(c.transmute())
+        |c| T::is_bit_valid(c.transmute::<_, _, BecauseImmutable>())
     );
     impl_or_verify!(T: FromZeros => FromZeros for Unalign<T>);
     impl_or_verify!(T: FromBytes => FromBytes for Unalign<T>);
@@ -595,6 +595,7 @@ impl<T: ?Sized + KnownLayout> fmt::Debug for MaybeUninit<T> {
     }
 }
 
+#[allow(unreachable_pub)] // False positive on MSRV
 pub use read_only_def::*;
 mod read_only_def {
     use super::*;
@@ -619,15 +620,23 @@ mod read_only_def {
 
     impl<T> ReadOnly<T> {
         /// Creates a new `ReadOnly`.
+        #[must_use]
         #[inline(always)]
         pub const fn new(t: T) -> ReadOnly<T> {
             ReadOnly { inner: t }
+        }
+
+        /// Returns the inner value.
+        #[must_use]
+        #[inline(always)]
+        pub fn into_inner(r: ReadOnly<T>) -> T {
+            r.inner
         }
     }
 
     impl<T: ?Sized> ReadOnly<T> {
         #[inline(always)]
-        pub(crate) const fn as_mut(r: &mut ReadOnly<T>) -> &mut T {
+        pub(crate) fn as_mut(r: &mut ReadOnly<T>) -> &mut T {
             // SAFETY: `r: &mut ReadOnly`, so this doesn't violate the invariant
             // that `inner` is never mutated through a `&ReadOnly<T>` reference.
             &mut r.inner
@@ -650,7 +659,7 @@ const _: () = unsafe {
 };
 
 // Unused when `feature = "derive"`.
-#[allow(unused_unsafe)]
+#[allow(unused_unsafe, clippy::multiple_unsafe_ops_per_block)]
 // SAFETY:
 // - `ReadOnly<T>` has the same alignment as `T`, and so it is `Unaligned`
 //   exactly when `T` is as well.
@@ -687,11 +696,11 @@ const _: () = {
     // SAFETY: `ReadOnly<T>` has the same layout as `T`.
     unsafe impl<T: ?Sized> CastExact<T, ReadOnly<T>> for CastToReadOnly {}
 
-    impl<T: ?Sized> SizeEq<ReadOnly<T>> for T {
+    impl<T: ?Sized> SizeCompat<ReadOnly<T>> for T {
         type CastFrom = CastFromReadOnly;
     }
 
-    impl<T: ?Sized> SizeEq<T> for ReadOnly<T> {
+    impl<T: ?Sized> SizeCompat<T> for ReadOnly<T> {
         type CastFrom = CastToReadOnly;
     }
 

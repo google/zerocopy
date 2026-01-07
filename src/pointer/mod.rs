@@ -22,12 +22,14 @@ pub use {
     ptr::Ptr,
 };
 
+use crate::wrappers::ReadOnly;
+
 /// A shorthand for a maybe-valid, maybe-aligned reference. Used as the argument
 /// to [`TryFromBytes::is_bit_valid`].
 ///
 /// [`TryFromBytes::is_bit_valid`]: crate::TryFromBytes::is_bit_valid
 pub type Maybe<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Unaligned> =
-    Ptr<'a, T, (Aliasing, Alignment, invariant::Initialized)>;
+    Ptr<'a, ReadOnly<T>, (Aliasing, Alignment, invariant::Initialized)>;
 
 /// Checks if the referent is zeroed.
 pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
@@ -334,28 +336,18 @@ pub mod cast {
         type WrappedField = Wrapping<F>;
     }
 
-    #[allow(missing_debug_implementations, missing_copy_implementations)]
-    pub struct WrappedProjection<W: ?Sized, F, const VARIANT_ID: i128, const FIELD_ID: i128> {
-        _never: core::convert::Infallible,
-        _phantom: PhantomData<(F, W)>,
-    }
-
-    // SAFETY: TODO
-    unsafe impl<W: ?Sized, F, const VARIANT_ID: i128, const FIELD_ID: i128>
-        Project<W, W::WrappedField> for WrappedProjection<W, F, VARIANT_ID, FIELD_ID>
-    where
-        W: Wrapped
-            + HasWrappedField<<<W as Wrapped>::Unwrapped as HasField<F, VARIANT_ID, FIELD_ID>>::Type>,
-        W::Unwrapped: HasField<F, VARIANT_ID, FIELD_ID>,
-    {
-        #[inline(always)]
-        fn project_raw(src: PtrInner<'_, W>) -> *mut W::WrappedField {
-            src.project::<_, W::CastToUnwrapped>()
-                .project::<_, Projection<F, VARIANT_ID, FIELD_ID>>()
-                .project::<_, <W::WrappedField as Wrapped>::CastFromUnwrapped>()
-                .as_ptr()
-        }
-    }
+    pub type WrappedProjection<W, F, const VARIANT_ID: i128, const FIELD_ID: i128> =
+        TransitiveProject<
+            <<W as Wrapped>::Unwrapped as HasField<F, VARIANT_ID, FIELD_ID>>::Type,
+            TransitiveProject<
+                <W as Wrapped>::Unwrapped,
+                <W as Wrapped>::CastToUnwrapped,
+                Projection<F, VARIANT_ID, FIELD_ID>,
+            >,
+            <<W as HasWrappedField<
+                <<W as Wrapped>::Unwrapped as HasField<F, VARIANT_ID, FIELD_ID>>::Type,
+            >>::WrappedField as Wrapped>::CastFromUnwrapped,
+        >;
 
     /// A transitive sequence of projections.
     ///
