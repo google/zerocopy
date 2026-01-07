@@ -716,7 +716,7 @@ macro_rules! define_cast {
         // preserving or size-shrinking cast. All operations preserve
         // provenance.
         unsafe impl $(<$tyvar $(: ?$optbound)?>)? $crate::pointer::cast::Project<$src, $dst> for $name {
-            fn project(src: $crate::pointer::PtrInner<'_, $src>) -> *mut $dst {
+            fn project_raw(src: $crate::pointer::PtrInner<'_, $src>) -> *mut $dst {
                 #[allow(clippy::as_conversions)]
                 return src.as_ptr() as *mut $dst;
             }
@@ -732,7 +732,8 @@ macro_rules! define_cast {
 /// # Safety
 ///
 /// `T` and `$wrapper<T>` must have the same bit validity, and must have the
-/// same size in the sense of `SizeEq`.
+/// same size (specifically, both a `T`-to-`$wrapper<T>` cast and a
+/// `$wrapper<T>`-to-`T` cast must be size-preserving).
 macro_rules! unsafe_impl_for_transparent_wrapper {
     ($vis:vis T $(: ?$optbound:ident)? => $wrapper:ident<T>) => {{
         crate::util::macros::__unsafe();
@@ -744,15 +745,16 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
         unsafe impl<T $(: ?$optbound)?> TransmuteFrom<T, Valid, Valid> for $wrapper<T> {}
         // SAFETY: See previous safety comment.
         unsafe impl<T $(: ?$optbound)?> TransmuteFrom<$wrapper<T>, Valid, Valid> for T {}
+        // SAFETY: The caller promises that a `T` to `$wrapper<T>` cast is
+        // size-preserving.
         define_cast!(unsafe { $vis CastA<T $(: ?$optbound)? > = T => $wrapper<T> });
-        // SAFETY: The caller promises that `T` and `$wrapper<T>` satisfy
-        // `SizeEq`.
-        unsafe impl<T $(: ?$optbound)?> SizeEq<T> for $wrapper<T> {
+        impl<T $(: ?$optbound)?> SizeEq<T> for $wrapper<T> {
             type CastFrom = CastA;
         }
+        // SAFETY: The caller promises that a `$wrapper<T>` to `T` cast is
+        // size-preserving.
         define_cast!(unsafe { $vis CastB<T $(: ?$optbound)? > = $wrapper<T> => T });
-        // SAFETY: See previous safety comment.
-        unsafe impl<T $(: ?$optbound)?> SizeEq<$wrapper<T>> for T {
+        impl<T $(: ?$optbound)?> SizeEq<$wrapper<T>> for T {
             type CastFrom = CastB;
         }
     }};
@@ -763,9 +765,7 @@ macro_rules! impl_transitive_transmute_from {
         const _: () = {
             use crate::pointer::{TransmuteFrom, SizeEq, invariant::Valid};
 
-            // SAFETY: Since `$u: SizeEq<$t>` and `$v: SizeEq<U>`, this impl is
-            // transitively sound.
-            unsafe impl<$($tyvar $(: ?$optbound)?)?> SizeEq<$t> for $v
+            impl<$($tyvar $(: ?$optbound)?)?> SizeEq<$t> for $v
             where
                 $u: SizeEq<$t>,
                 $v: SizeEq<$u>,
@@ -796,12 +796,10 @@ macro_rules! impl_size_eq {
         const _: () = {
             use $crate::{pointer::{cast::CastUnsized, SizeEq}};
 
-            // SAFETY: See inline.
-            unsafe impl SizeEq<$t> for $u {
+            impl SizeEq<$t> for $u {
                 type CastFrom = CastUnsized;
             }
-            // SAFETY: See previous safety comment.
-            unsafe impl SizeEq<$u> for $t {
+            impl SizeEq<$u> for $t {
                 type CastFrom = CastUnsized;
             }
         };
@@ -847,7 +845,11 @@ macro_rules! unsafe_with_size_eq {
         // no added semantics.
         unsafe impl<T: ?Sized> InvariantsEq<$dst<T>> for T {}
 
+        // SAFETY: `$src<T>` is a `#[repr(transparent)]` wrapper around `T`, and
+        // so this cast exactly preserves the set of referent bytes.
         define_cast!(unsafe { SrcCast<T: ?Sized> = $src<T> => T });
+        // SAFETY: `$dst<U>` is a `#[repr(transparent)]` wrapper around `U`, and
+        // so this cast exactly preserves the set of referent bytes.
         define_cast!(unsafe { DstCast<U: ?Sized> = U => $dst<U> });
 
         // SAFETY: See inline for the soundness of this impl when
@@ -857,7 +859,7 @@ macro_rules! unsafe_with_size_eq {
         // We manually instantiate `CastFrom::project` below to ensure that this
         // PME can be triggered, and the caller promises not to use `$src` and
         // `$dst` with any wrapped types other than `$t` and `$u` respectively.
-        unsafe impl<T: ?Sized, U: ?Sized> SizeEq<$src<T>> for $dst<U>
+        impl<T: ?Sized, U: ?Sized> SizeEq<$src<T>> for $dst<U>
         where
             T: KnownLayout<PointerMetadata = usize>,
             U: KnownLayout<PointerMetadata = usize>,
@@ -878,7 +880,7 @@ macro_rules! unsafe_with_size_eq {
             // SAFETY: This call is never executed.
             #[allow(unused_unsafe, clippy::missing_transmute_annotations)]
             let ptr = unsafe { core::mem::transmute(ptr) };
-            let _ = <$dst<$u> as SizeEq<$src<$t>>>::CastFrom::project(ptr);
+            let _ = <$dst<$u> as SizeEq<$src<$t>>>::CastFrom::project_inner(ptr);
         }
 
         impl_for_transmute_from!(T: ?Sized + TryFromBytes => TryFromBytes for $src<T>[<T>]);

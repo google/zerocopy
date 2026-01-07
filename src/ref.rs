@@ -972,7 +972,7 @@ where
     // provenance.
     unsafe impl<T: ?Sized + KnownLayout> Project<[u8], T> for CastForSized {
         #[inline(always)]
-        fn project(src: PtrInner<'_, [u8]>) -> *mut T {
+        fn project_raw(src: PtrInner<'_, [u8]>) -> *mut T {
             T::raw_from_ptr_len(
                 src.as_non_null().cast(),
                 <T::PointerMetadata as crate::PointerMetadata>::from_elem_count(0),

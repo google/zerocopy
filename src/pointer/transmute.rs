@@ -35,7 +35,7 @@ use crate::{
 ///
 /// Given `src: Ptr<'a, Src, (A, _, SV)>`, if the referent of `src` is
 /// `DV`-valid for `Dst`, then it is sound to transmute `src` into `dst: Ptr<'a,
-/// Dst, (A, Unaligned, DV)>` by preserving pointer address and metadata.
+/// Dst, (A, Unaligned, DV)>` using `<Dst as SizeEq<Src>>::CastFrom::project`.
 ///
 /// ## Pre-conditions
 ///
@@ -64,30 +64,17 @@ use crate::{
 /// - `src`'s referent is `DV`-valid for `Dst`
 /// - `Dst: SizeEq<Src>`
 ///
-/// We are trying to prove that it is sound to perform a pointer address- and
-/// metadata-preserving transmute from `src` to a `dst: Ptr<'a, Dst, (A,
+/// We are trying to prove that it is sound to cast using `<Dst as
+/// SizeEq<Src>>::CastFrom::project` from `src` to a `dst: Ptr<'a, Dst, (A,
 /// Unaligned, DV)>`. We need to prove that such a transmute does not violate
 /// any of `src`'s invariants, and that it satisfies all invariants of the
 /// destination `Ptr` type.
 ///
-/// First, all of `src`'s `PtrInner` invariants are upheld. `src`'s address and
-/// metadata are unchanged, so:
-/// - If its referent is not zero sized, then it still has valid provenance for
-///   its referent, which is still entirely contained in some Rust allocation,
-///   `A`
-/// - If its referent is not zero sized, `A` is guaranteed to live for at least
-///   `'a`
+/// First, by `SizeEq::CastFrom: Cast`, `src`'s address is unchanged, so it
+/// still satisfies its alignment. Since `dst`'s alignment is `Unaligned`, it
+/// trivially satisfies its alignment.
 ///
-/// Since `Dst: SizeEq<Src>`, and since `dst` has the same address and metadata
-/// as `src`, `dst` addresses the same byte range as `src`. `dst` also has the
-/// same lifetime as `src`. Therefore, all of the `PtrInner` invariants
-/// mentioned above also hold for `dst`.
-///
-/// Second, since `src`'s address is unchanged, it still satisfies its
-/// alignment. Since `dst`'s alignment is `Unaligned`, it trivially satisfies
-/// its alignment.
-///
-/// Third, aliasing is either `Exclusive` or `Shared`:
+/// Second, aliasing is either `Exclusive` or `Shared`:
 /// - If it is `Exclusive`, then both `src` and `dst` satisfy `Exclusive`
 ///   aliasing trivially: since `src` and `dst` have the same lifetime, `src` is
 ///   inaccessible so long as `dst` is alive, and no other live `Ptr`s or
@@ -98,7 +85,7 @@ use crate::{
 ///   - It is explicitly sound for safe code to operate on a `&Src` and a `&Dst`
 ///     pointing to the same byte range at the same time.
 ///
-/// Fourth, `src`'s validity is satisfied. By invariant, `src`'s referent began
+/// Third, `src`'s validity is satisfied. By invariant, `src`'s referent began
 /// as an `SV`-valid `Src`. It is guaranteed to remain so, as either of the
 /// following hold:
 /// - `dst` does not permit mutation of its referent.
@@ -106,7 +93,7 @@ use crate::{
 ///   `Src`s. Thus, any value written via `dst` is guaranteed to be `SV`-valid
 ///   for `Src`.
 ///
-/// Fifth, `dst`'s validity is satisfied. It is a given of this proof that the
+/// Fourth, `dst`'s validity is satisfied. It is a given of this proof that the
 /// referent is `DV`-valid for `Dst`. It is guaranteed to remain so, as either
 /// of the following hold:
 /// - So long as `dst` is active, no mutation of the referent is allowed except
@@ -121,6 +108,10 @@ pub unsafe trait TryTransmuteFromPtr<Src: ?Sized, A: Aliasing, SV: Validity, DV:
 
 #[allow(missing_copy_implementations, missing_debug_implementations)]
 pub enum BecauseMutationCompatible {}
+
+// TODO: Update this comment to not rely on `SizeEq` implying size equality
+// (but instead rely on *runtime execution* of `SizeEq::CastFrom::project`
+// guaranteeing size equality).
 
 // SAFETY:
 // - Forwards transmutation: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, we
@@ -287,24 +278,11 @@ where
 /// DV>` conveys no safety guarantee.
 pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV> {}
 
-/// # Safety
-///
-/// `T` and `Self` must have the same vtable kind (`Sized`, slice DST, `dyn`,
-/// etc) and have the same size. In particular:
-/// - If `T: Sized` and `Self: Sized`, then their sizes must be equal
-/// - If `T: ?Sized` and `Self: ?Sized`, then `Self::CastFrom` must be a
-///   size-preserving cast. *Note that it is **not** guaranteed that an `as`
-///   cast preserves referent size: it may be the case that `Self::CastFrom`
-///   modifies the pointer's metadata in order to preserve referent size, which
-///   an `as` cast does not do.*
-pub unsafe trait SizeEq<T: ?Sized> {
+pub trait SizeEq<T: ?Sized> {
     type CastFrom: cast::Cast<T, Self>;
 }
 
-// SAFETY: `T` trivially has the same size and vtable kind as `T`, and since
-// pointer `*mut T -> *mut T` pointer casts are no-ops, this cast trivially
-// preserves referent size (when `T: ?Sized`).
-unsafe impl<T: ?Sized> SizeEq<T> for T {
+impl<T: ?Sized> SizeEq<T> for T {
     type CastFrom = cast::IdCast;
 }
 
@@ -458,19 +436,12 @@ impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
 // https://doc.rust-lang.org/1.85.0/core/mem/union.MaybeUninit.html
 unsafe impl<T> TransmuteFrom<T, Uninit, Valid> for MaybeUninit<T> {}
 
-// SAFETY: `MaybeUninit<T>` has the same size as `T` [1].
-//
-// [1] Per https://doc.rust-lang.org/1.81.0/std/mem/union.MaybeUninit.html#layout-1:
-//
-//   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and ABI as
-//   `T`
-unsafe impl<T> SizeEq<T> for MaybeUninit<T> {
-    type CastFrom = cast::CastSized;
+impl<T> SizeEq<T> for MaybeUninit<T> {
+    type CastFrom = cast::CastSizedExact;
 }
 
-// SAFETY: See previous safety comment.
-unsafe impl<T> SizeEq<MaybeUninit<T>> for T {
-    type CastFrom = cast::CastSized;
+impl<T> SizeEq<MaybeUninit<T>> for T {
+    type CastFrom = cast::CastSizedExact;
 }
 
 #[cfg(test)]
@@ -479,8 +450,9 @@ mod tests {
     use crate::pointer::cast::Project as _;
 
     fn test_size_eq<Src, Dst: SizeEq<Src>>(mut src: Src) {
-        let _: *mut Dst =
-            <Dst as SizeEq<Src>>::CastFrom::project(crate::pointer::PtrInner::from_mut(&mut src));
+        let _: *mut Dst = <Dst as SizeEq<Src>>::CastFrom::project_raw(
+            crate::pointer::PtrInner::from_mut(&mut src),
+        );
     }
 
     #[test]
