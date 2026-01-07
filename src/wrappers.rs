@@ -149,7 +149,7 @@ const _: () = unsafe {
     impl_or_verify!(T: Immutable => Immutable for Unalign<T>);
     impl_or_verify!(
         T: TryFromBytes => TryFromBytes for Unalign<T>;
-        |c| T::is_bit_valid(c.transmute())
+        |c| T::is_bit_valid(c.transmute::<_, _, BecauseImmutable>())
     );
     impl_or_verify!(T: FromZeros => FromZeros for Unalign<T>);
     impl_or_verify!(T: FromBytes => FromBytes for Unalign<T>);
@@ -595,6 +595,7 @@ impl<T: ?Sized + KnownLayout> fmt::Debug for MaybeUninit<T> {
     }
 }
 
+#[allow(unreachable_pub)] // False positive on MSRV
 pub use read_only_def::*;
 mod read_only_def {
     #[cfg(any(feature = "derive", test))]
@@ -613,7 +614,7 @@ mod read_only_def {
     /// property only applies to shared references.
     ///
     /// [immutable]: crate::Immutable
-    #[cfg_attr(any(feature = "derive", test), derive(IntoBytes, Unaligned))]
+    #[cfg_attr(any(feature = "derive", test), derive(FromBytes, IntoBytes, Unaligned))]
     #[repr(transparent)]
     pub struct ReadOnly<T: ?Sized> {
         // INVARIANT: `inner` is never mutated through a `&ReadOnly<T>`
@@ -623,15 +624,23 @@ mod read_only_def {
 
     impl<T> ReadOnly<T> {
         /// Creates a new `ReadOnly`.
+        #[must_use]
         #[inline(always)]
         pub const fn new(t: T) -> ReadOnly<T> {
             ReadOnly { inner: t }
+        }
+
+        /// Returns the inner value.
+        #[must_use]
+        #[inline(always)]
+        pub fn into_inner(r: ReadOnly<T>) -> T {
+            r.inner
         }
     }
 
     impl<T: ?Sized> ReadOnly<T> {
         #[inline(always)]
-        pub(crate) const fn as_mut(r: &mut ReadOnly<T>) -> &mut T {
+        pub(crate) fn as_mut(r: &mut ReadOnly<T>) -> &mut T {
             // SAFETY: `r: &mut ReadOnly`, so this doesn't violate the invariant
             // that `inner` is never mutated through a `&ReadOnly<T>` reference.
             &mut r.inner
@@ -654,7 +663,7 @@ const _: () = unsafe {
 };
 
 // Unused when `feature = "derive"`.
-#[allow(unused_unsafe)]
+#[allow(unused_unsafe, clippy::multiple_unsafe_ops_per_block)]
 // SAFETY:
 // - `ReadOnly<T>` has the same alignment as `T`, and so it is `Unaligned`
 //   exactly when `T` is as well.
@@ -662,9 +671,14 @@ const _: () = unsafe {
 //   `FromBytes`, or `IntoBytes` exactly when `T` is as well.
 // - `TryFromBytes`: `ReadOnly<T>` has the same the same bit validity as `T`, so
 //   `T::is_bit_valid` is a sound implementation of `is_bit_valid`.
-#[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
     impl_or_verify!(T: ?Sized + Unaligned => Unaligned for ReadOnly<T>);
+    impl_or_verify!(
+        T: ?Sized + TryFromBytes => TryFromBytes for ReadOnly<T>;
+        |c| T::is_bit_valid(c.cast::<_, <ReadOnly<T> as SizeEq<ReadOnly<ReadOnly<T>>>>::CastFrom, _>())
+    );
+    impl_or_verify!(T: ?Sized + FromZeros => FromZeros for ReadOnly<T>);
+    impl_or_verify!(T: ?Sized + FromBytes => FromBytes for ReadOnly<T>);
     impl_or_verify!(T: ?Sized + IntoBytes => IntoBytes for ReadOnly<T>);
 };
 
