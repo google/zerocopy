@@ -764,7 +764,8 @@ fn derive_has_field_struct_union(
     }
 
     let field_tokens = fields.iter().map(|(vis, ident, _)| {
-        let ident = Ident::new(&format!("ẕ{}", ident), ident.span());
+        let ident_str = to_ident_str(ident);
+        let ident = Ident::new(&format!("ẕ{}", ident_str), ident.span());
         quote!(
             #vis enum #ident {}
         )
@@ -783,7 +784,8 @@ fn derive_has_field_struct_union(
         Data::Enum(..) | Data::Struct(..) => false,
     };
     let has_fields = fields.iter().map(move |(_, ident, ty)| {
-        let field_token = Ident::new(&format!("ẕ{}", ident), ident.span());
+        let ident_str = to_ident_str(ident);
+        let field_token = Ident::new(&format!("ẕ{}", ident_str), ident.span());
         let field: Box<Type> = parse_quote!(#field_token);
         let field_id: Box<Expr> = parse_quote!({ #zerocopy_crate::ident_id!(#ident) });
         ImplBlockBuilder::new(
