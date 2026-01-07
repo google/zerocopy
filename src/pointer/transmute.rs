@@ -35,7 +35,8 @@ use crate::{
 ///
 /// Given `src: Ptr<'a, Src, (A, _, SV)>`, if the referent of `src` is
 /// `DV`-valid for `Dst`, then it is sound to transmute `src` into `dst: Ptr<'a,
-/// Dst, (A, Unaligned, DV)>` by preserving pointer address and metadata.
+/// Dst, (A, Unaligned, DV)>` using`<Dst as
+/// SizeCompat<Src>>::CastFrom::project_inner`.
 ///
 /// ## Pre-conditions
 ///
@@ -62,32 +63,19 @@ use crate::{
 /// Given:
 /// - `src: Ptr<'a, Src, (A, _, SV)>`
 /// - `src`'s referent is `DV`-valid for `Dst`
-/// - `Dst: SizeEq<Src>`
+/// - `Dst: SizeCompat<Src>`
 ///
-/// We are trying to prove that it is sound to perform a pointer address- and
-/// metadata-preserving transmute from `src` to a `dst: Ptr<'a, Dst, (A,
+/// We are trying to prove that it is sound to cast using `<Dst as
+/// SizeCompat<Src>>::CastFrom::project` from `src` to a `dst: Ptr<'a, Dst, (A,
 /// Unaligned, DV)>`. We need to prove that such a transmute does not violate
 /// any of `src`'s invariants, and that it satisfies all invariants of the
 /// destination `Ptr` type.
 ///
-/// First, all of `src`'s `PtrInner` invariants are upheld. `src`'s address and
-/// metadata are unchanged, so:
-/// - If its referent is not zero sized, then it still has valid provenance for
-///   its referent, which is still entirely contained in some Rust allocation,
-///   `A`
-/// - If its referent is not zero sized, `A` is guaranteed to live for at least
-///   `'a`
+/// First, by `SizeCompat::CastFrom: Cast`, `src`'s address is unchanged, so it
+/// still satisfies its alignment. Since `dst`'s alignment is `Unaligned`, it
+/// trivially satisfies its alignment.
 ///
-/// Since `Dst: SizeEq<Src>`, and since `dst` has the same address and metadata
-/// as `src`, `dst` addresses the same byte range as `src`. `dst` also has the
-/// same lifetime as `src`. Therefore, all of the `PtrInner` invariants
-/// mentioned above also hold for `dst`.
-///
-/// Second, since `src`'s address is unchanged, it still satisfies its
-/// alignment. Since `dst`'s alignment is `Unaligned`, it trivially satisfies
-/// its alignment.
-///
-/// Third, aliasing is either `Exclusive` or `Shared`:
+/// Second, aliasing is either `Exclusive` or `Shared`:
 /// - If it is `Exclusive`, then both `src` and `dst` satisfy `Exclusive`
 ///   aliasing trivially: since `src` and `dst` have the same lifetime, `src` is
 ///   inaccessible so long as `dst` is alive, and no other live `Ptr`s or
@@ -98,7 +86,7 @@ use crate::{
 ///   - It is explicitly sound for safe code to operate on a `&Src` and a `&Dst`
 ///     pointing to the same byte range at the same time.
 ///
-/// Fourth, `src`'s validity is satisfied. By invariant, `src`'s referent began
+/// Third, `src`'s validity is satisfied. By invariant, `src`'s referent began
 /// as an `SV`-valid `Src`. It is guaranteed to remain so, as either of the
 /// following hold:
 /// - `dst` does not permit mutation of its referent.
@@ -106,7 +94,7 @@ use crate::{
 ///   `Src`s. Thus, any value written via `dst` is guaranteed to be `SV`-valid
 ///   for `Src`.
 ///
-/// Fifth, `dst`'s validity is satisfied. It is a given of this proof that the
+/// Fourth, `dst`'s validity is satisfied. It is a given of this proof that the
 /// referent is `DV`-valid for `Dst`. It is guaranteed to remain so, as either
 /// of the following hold:
 /// - So long as `dst` is active, no mutation of the referent is allowed except
@@ -115,12 +103,16 @@ use crate::{
 ///   `Src`s. Thus, any value written via `src` is guaranteed to be a `DV`-valid
 ///   `Dst`.
 pub unsafe trait TryTransmuteFromPtr<Src: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R>:
-    SizeEq<Src>
+    SizeCompat<Src>
 {
 }
 
 #[allow(missing_copy_implementations, missing_debug_implementations)]
 pub enum BecauseMutationCompatible {}
+
+// TODO: Update this comment to not rely on `SizeCompat` implying size equality
+// (but instead rely on *runtime execution* of `SizeCompat::CastFrom_inner`
+// guaranteeing size equality).
 
 // SAFETY:
 // - Forwards transmutation: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, we
@@ -131,12 +123,12 @@ pub enum BecauseMutationCompatible {}
 //       exists, no mutation is permitted except via that `Ptr`
 //     - Aliasing is `Shared`, `Src: Immutable`, and `Dst: Immutable`, in which
 //       case no mutation is possible via either `Ptr`
-//   - `Dst: TransmuteFrom<Src, SV, DV>`. Since `Dst: SizeEq<Src>`, this bound
-//     guarantees that the set of `DV`-valid `Dst`s is a supserset of the set of
-//     `SV`-valid `Src`s.
+//   - `Dst: TransmuteFrom<Src, SV, DV>`. Since `Dst: SizeCompat<Src>`, this
+//     bound guarantees that the set of `DV`-valid `Dst`s is a supserset of the
+//     set of `SV`-valid `Src`s.
 // - Reverse transmutation: `Src: TransmuteFrom<Dst, DV, SV>`. Since `Dst:
-//   SizeEq<Src>`, this guarantees that the set of `DV`-valid `Dst`s is a subset
-//   of the set of `SV`-valid `Src`s.
+//   SizeCompat<Src>`, this guarantees that the set of `DV`-valid `Dst`s is a
+//   subset of the set of `SV`-valid `Src`s.
 // - No safe code, given access to `src` and `dst`, can cause undefined
 //   behavior: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, at least one of
 //   the following holds:
@@ -151,7 +143,7 @@ where
     SV: Validity,
     DV: Validity,
     Src: TransmuteFrom<Dst, DV, SV> + ?Sized,
-    Dst: MutationCompatible<Src, A, SV, DV, R> + SizeEq<Src> + ?Sized,
+    Dst: MutationCompatible<Src, A, SV, DV, R> + SizeCompat<Src> + ?Sized,
 {
 }
 
@@ -167,7 +159,7 @@ where
     SV: Validity,
     DV: Validity,
     Src: Immutable + ?Sized,
-    Dst: Immutable + SizeEq<Src> + ?Sized,
+    Dst: Immutable + SizeCompat<Src> + ?Sized,
 {
 }
 
@@ -287,24 +279,26 @@ where
 /// DV>` conveys no safety guarantee.
 pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV> {}
 
+/// Carries the ability to perform a size-preserving or size-shrinking cast or
+/// conversion from a raw pointer to `Src` to a raw pointer to `Self`.
+///
+/// The cast/conversion is carried by the associated [`CastFrom`] type, and
+/// may be a no-op cast (without updating pointer metadata) or a conversion
+/// which updates pointer metadata.
+///
 /// # Safety
 ///
-/// `T` and `Self` must have the same vtable kind (`Sized`, slice DST, `dyn`,
-/// etc) and have the same size. In particular:
-/// - If `T: Sized` and `Self: Sized`, then their sizes must be equal
-/// - If `T: ?Sized` and `Self: ?Sized`, then `Self::CastFrom` must be a
-///   size-preserving cast. *Note that it is **not** guaranteed that an `as`
-///   cast preserves referent size: it may be the case that `Self::CastFrom`
-///   modifies the pointer's metadata in order to preserve referent size, which
-///   an `as` cast does not do.*
-pub unsafe trait SizeEq<T: ?Sized> {
-    type CastFrom: cast::Cast<T, Self>;
+/// `SizeCompat` on its own conveys no safety guarantee. Any safety guarantees
+/// come from the safety invariants on the associated [`CastFrom`] type,
+/// specifically the [`Cast`] bound.
+///
+/// [`CastFrom`]: SizeCompat::CastFrom
+/// [`Cast`]: cast::Cast
+pub trait SizeCompat<Src: ?Sized> {
+    type CastFrom: cast::Cast<Src, Self>;
 }
 
-// SAFETY: `T` trivially has the same size and vtable kind as `T`, and since
-// pointer `*mut T -> *mut T` pointer casts are no-ops, this cast trivially
-// preserves referent size (when `T: ?Sized`).
-unsafe impl<T: ?Sized> SizeEq<T> for T {
+impl<T: ?Sized> SizeCompat<T> for T {
     type CastFrom = cast::IdCast;
 }
 
@@ -458,18 +452,11 @@ impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
 // https://doc.rust-lang.org/1.85.0/core/mem/union.MaybeUninit.html
 unsafe impl<T> TransmuteFrom<T, Uninit, Valid> for MaybeUninit<T> {}
 
-// SAFETY: `MaybeUninit<T>` has the same size as `T` [1].
-//
-// [1] Per https://doc.rust-lang.org/1.81.0/std/mem/union.MaybeUninit.html#layout-1:
-//
-//   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and ABI as
-//   `T`
-unsafe impl<T> SizeEq<T> for MaybeUninit<T> {
+impl<T> SizeCompat<T> for MaybeUninit<T> {
     type CastFrom = cast::CastSized;
 }
 
-// SAFETY: See previous safety comment.
-unsafe impl<T> SizeEq<MaybeUninit<T>> for T {
+impl<T> SizeCompat<MaybeUninit<T>> for T {
     type CastFrom = cast::CastSized;
 }
 
@@ -478,31 +465,32 @@ mod tests {
     use super::*;
     use crate::pointer::cast::Project as _;
 
-    fn test_size_eq<Src, Dst: SizeEq<Src>>(mut src: Src) {
-        let _: *mut Dst =
-            <Dst as SizeEq<Src>>::CastFrom::project(crate::pointer::PtrInner::from_mut(&mut src));
+    fn test_size_compat<Src, Dst: SizeCompat<Src>>(mut src: Src) {
+        let _: *mut Dst = <Dst as SizeCompat<Src>>::CastFrom::project_raw(
+            crate::pointer::PtrInner::from_mut(&mut src),
+        );
     }
 
     #[test]
     fn test_transmute_coverage() {
-        // SizeEq<T> for MaybeUninit<T>
-        test_size_eq::<u8, MaybeUninit<u8>>(0u8);
+        // SizeCompat<T> for MaybeUninit<T>
+        test_size_compat::<u8, MaybeUninit<u8>>(0u8);
 
-        // SizeEq<MaybeUninit<T>> for T
-        test_size_eq::<MaybeUninit<u8>, u8>(MaybeUninit::<u8>::new(0));
+        // SizeCompat<MaybeUninit<T>> for T
+        test_size_compat::<MaybeUninit<u8>, u8>(MaybeUninit::<u8>::new(0));
 
         // Transitive: MaybeUninit<T> -> Wrapping<T>
         // T => MaybeUninit<T> => T => Wrapping<T>
-        test_size_eq::<u8, Wrapping<u8>>(0u8);
+        test_size_compat::<u8, Wrapping<u8>>(0u8);
 
         // T => Wrapping<T> => T => MaybeUninit<T>
-        test_size_eq::<Wrapping<u8>, MaybeUninit<u8>>(Wrapping(0u8));
+        test_size_compat::<Wrapping<u8>, MaybeUninit<u8>>(Wrapping(0u8));
 
         // T: ?Sized => Cell<T> => T => UnsafeCell<T>
-        test_size_eq::<Cell<u8>, UnsafeCell<u8>>(Cell::new(0u8));
+        test_size_compat::<Cell<u8>, UnsafeCell<u8>>(Cell::new(0u8));
 
         // T: ?Sized => UnsafeCell<T> => T => Cell<T>
-        test_size_eq::<UnsafeCell<u8>, Cell<u8>>(UnsafeCell::new(0u8));
+        test_size_compat::<UnsafeCell<u8>, Cell<u8>>(UnsafeCell::new(0u8));
     }
 
     #[cfg(not(no_zerocopy_target_has_atomics_1_60_0))]
@@ -511,16 +499,16 @@ mod tests {
     fn test_atomic_u8_transmutes() {
         use core::sync::atomic::AtomicU8;
 
-        // 1. Atomic -> Prim (SizeEq<Atomic> for Prim)
-        test_size_eq::<AtomicU8, u8>(AtomicU8::new(0));
+        // 1. Atomic -> Prim (SizeCompat<Atomic> for Prim)
+        test_size_compat::<AtomicU8, u8>(AtomicU8::new(0));
 
-        // 2. Prim -> Atomic (SizeEq<Prim> for Atomic)
-        test_size_eq::<u8, AtomicU8>(0u8);
+        // 2. Prim -> Atomic (SizeCompat<Prim> for Atomic)
+        test_size_compat::<u8, AtomicU8>(0u8);
 
-        // 3. Atomic -> UnsafeCell<Prim> (SizeEq<Atomic> for UnsafeCell<Prim>)
-        test_size_eq::<AtomicU8, UnsafeCell<u8>>(AtomicU8::new(0));
+        // 3. Atomic -> UnsafeCell<Prim> (SizeCompat<Atomic> for UnsafeCell<Prim>)
+        test_size_compat::<AtomicU8, UnsafeCell<u8>>(AtomicU8::new(0));
 
-        // 4. UnsafeCell<Prim> -> Atomic (SizeEq<UnsafeCell<Prim>> for Atomic)
-        test_size_eq::<UnsafeCell<u8>, AtomicU8>(UnsafeCell::new(0u8));
+        // 4. UnsafeCell<Prim> -> Atomic (SizeCompat<UnsafeCell<Prim>> for Atomic)
+        test_size_compat::<UnsafeCell<u8>, AtomicU8>(UnsafeCell::new(0u8));
     }
 }
