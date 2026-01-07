@@ -112,7 +112,7 @@ const _: () = unsafe {
         *byte.unaligned_as_ref() < 2
     })
 };
-impl_size_eq!(bool, u8);
+impl_size_compat!(bool, u8);
 
 // SAFETY:
 // - `Immutable`: `char` self-evidently does not contain any `UnsafeCell`s.
@@ -144,7 +144,7 @@ const _: () = unsafe {
     });
 };
 
-impl_size_eq!(char, Unalign<u32>);
+impl_size_compat!(char, Unalign<u32>);
 
 // SAFETY: Per the Reference [1], `str` has the same layout as `[u8]`.
 // - `Immutable`: `[u8]` does not contain any `UnsafeCell`s.
@@ -179,13 +179,13 @@ const _: () = unsafe {
     })
 };
 
-impl_size_eq!(str, [u8]);
+impl_size_compat!(str, [u8]);
 
 macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
     ($($nonzero:ident[$prim:ty]),*) => {
         $(
             unsafe_impl!(=> TryFromBytes for $nonzero; |n| {
-                impl_size_eq!($nonzero, Unalign<$prim>);
+                impl_size_compat!($nonzero, Unalign<$prim>);
 
                 let n = n.transmute::<Unalign<$prim>, invariant::Valid, _>();
                 $nonzero::new(n.read_unaligned().into_inner()).is_some()
@@ -426,7 +426,7 @@ mod atomics {
             crate::util::macros::__unsafe();
 
             use core::cell::UnsafeCell;
-            use crate::pointer::{SizeEq, TransmuteFrom, invariant::Valid};
+            use crate::pointer::{SizeCompat, TransmuteFrom, invariant::Valid};
 
             $(
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
@@ -436,29 +436,17 @@ mod atomics {
                 // the same size and bit validity.
                 unsafe impl<$($tyvar)?> TransmuteFrom<$prim, Valid, Valid> for $atomic {}
 
-                // SAFETY: The caller promised that `$atomic` and `$prim` have
-                // the same size.
-                unsafe impl<$($tyvar)?> SizeEq<$atomic> for $prim {
-                    type CastFrom = $crate::pointer::cast::CastSized;
+                impl<$($tyvar)?> SizeCompat<$atomic> for $prim {
+                    type CastFrom = $crate::pointer::cast::CastSizedExact;
                 }
-                // SAFETY: See previous safety comment.
-                unsafe impl<$($tyvar)?> SizeEq<$prim> for $atomic {
-                    type CastFrom = $crate::pointer::cast::CastSized;
+                impl<$($tyvar)?> SizeCompat<$prim> for $atomic {
+                    type CastFrom = $crate::pointer::cast::CastSizedExact;
                 }
-                // SAFETY: The caller promised that `$atomic` and `$prim` have
-                // the same size. `UnsafeCell<T>` has the same size as `T` [1].
-                //
-                // [1] Per https://doc.rust-lang.org/1.85.0/std/cell/struct.UnsafeCell.html#memory-layout:
-                //
-                //   `UnsafeCell<T>` has the same in-memory representation as
-                //   its inner type `T`. A consequence of this guarantee is that
-                //   it is possible to convert between `T` and `UnsafeCell<T>`.
-                unsafe impl<$($tyvar)?> SizeEq<$atomic> for UnsafeCell<$prim> {
-                    type CastFrom = $crate::pointer::cast::CastSized;
+                impl<$($tyvar)?> SizeCompat<$atomic> for UnsafeCell<$prim> {
+                    type CastFrom = $crate::pointer::cast::CastSizedExact;
                 }
-                // SAFETY: See previous safety comment.
-                unsafe impl<$($tyvar)?> SizeEq<UnsafeCell<$prim>> for $atomic {
-                    type CastFrom = $crate::pointer::cast::CastSized;
+                impl<$($tyvar)?> SizeCompat<UnsafeCell<$prim>> for $atomic {
+                    type CastFrom = $crate::pointer::cast::CastSizedExact;
                 }
 
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
