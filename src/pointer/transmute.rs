@@ -73,8 +73,8 @@ use crate::{
 /// any of `src`'s invariants, and that it satisfies all invariants of the
 /// destination `Ptr` type.
 ///
-/// First, by invariant on `SizeEq`, `src`'s address is unchanged, so it still
-/// satisfies its alignment. Since `dst`'s alignment is `Unaligned`, it
+/// First, by `SizeEq::CastFrom: CastExact`, `src`'s address is unchanged, so it
+/// still satisfies its alignment. Since `dst`'s alignment is `Unaligned`, it
 /// trivially satisfies its alignment.
 ///
 /// Second, aliasing is either `Exclusive` or `Shared`:
@@ -288,17 +288,17 @@ pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV> {}
 ///
 /// # Safety
 ///
-/// The associated [`CastFrom`] must preserve referent size.
+/// `SizeEq` on its own conveys no safety guarantee. Any safety guarantees come
+/// from the safety invariants on the associated [`CastFrom`] type, specifically
+/// the [`CastExact`] bound.
 ///
 /// [`CastFrom`]: SizeEq::CastFrom
-pub unsafe trait SizeEq<Src: ?Sized> {
-    type CastFrom: cast::Cast<Src, Self>;
+/// [`CastExact`]: cast::CastExact
+pub trait SizeEq<Src: ?Sized> {
+    type CastFrom: cast::CastExact<Src, Self>;
 }
 
-// SAFETY: `T` trivially has the same size and vtable kind as `T`, and since
-// pointer `*mut T -> *mut T` pointer casts are no-ops, this cast trivially
-// preserves referent size (when `T: ?Sized`).
-unsafe impl<T: ?Sized> SizeEq<T> for T {
+impl<T: ?Sized> SizeEq<T> for T {
     type CastFrom = cast::IdCast;
 }
 
@@ -452,19 +452,12 @@ impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
 // https://doc.rust-lang.org/1.85.0/core/mem/union.MaybeUninit.html
 unsafe impl<T> TransmuteFrom<T, Uninit, Valid> for MaybeUninit<T> {}
 
-// SAFETY: `MaybeUninit<T>` has the same size as `T` [1].
-//
-// [1] Per https://doc.rust-lang.org/1.81.0/std/mem/union.MaybeUninit.html#layout-1:
-//
-//   `MaybeUninit<T>` is guaranteed to have the same size, alignment, and ABI as
-//   `T`
-unsafe impl<T> SizeEq<T> for MaybeUninit<T> {
-    type CastFrom = cast::CastSized;
+impl<T> SizeEq<T> for MaybeUninit<T> {
+    type CastFrom = cast::CastSizedExact;
 }
 
-// SAFETY: See previous safety comment.
-unsafe impl<T> SizeEq<MaybeUninit<T>> for T {
-    type CastFrom = cast::CastSized;
+impl<T> SizeEq<MaybeUninit<T>> for T {
+    type CastFrom = cast::CastSizedExact;
 }
 
 #[cfg(test)]
