@@ -60,7 +60,45 @@ pub mod cast {
         ///
         /// The returned pointer refers to a non-strict subset of the bytes of
         /// `src`'s referent, and has the same provenance as `src`.
-        fn project(src: PtrInner<'_, Src>) -> *mut Dst;
+        #[must_use]
+        fn project_raw(src: PtrInner<'_, Src>) -> *mut Dst;
+
+        /// Projects a [`PtrInner`] from `Src` to `Dst`.
+        ///
+        /// # Safety
+        ///
+        /// The caller may assume that the resulting `PtrInner` addresses a
+        /// subset of the bytes of `src`'s referent.
+        #[must_use]
+        #[inline(always)]
+        fn project_inner(src: PtrInner<'_, Src>) -> PtrInner<'_, Dst> {
+            let projected_raw = Self::project_raw(src);
+
+            // SAFETY: `src`'s referent lives at a `NonNull` address, and is
+            // either zero-sized or lives in an allocation. In either case, it
+            // does not wrap around the address space [1], and so none of the
+            // addresses contained in it or one-past-the-end of it are null.
+            //
+            // By invariant on `Self: Project`, `Self::project` is a
+            // provenance-preserving projection which preserves or shrinks the
+            // set of referent bytes, so `projected_raw` references a subset of
+            // `src`'s referent, and so it cannot be null.
+            //
+            // [1] https://doc.rust-lang.org/1.92.0/std/ptr/index.html#allocation
+            let projected_non_null = unsafe { core::ptr::NonNull::new_unchecked(projected_raw) };
+
+            // SAFETY: As described in the preceding safety comment, `projected_raw`,
+            // and thus `projected_non_null`, addresses a subset of `src`'s
+            // referent. Thus, `projected_non_null` either:
+            // - Addresses zero bytes or,
+            // - Addresses a subset of the referent of `src`. In this case, `src`
+            //   has provenance for its referent, which lives in an allocation.
+            //   Since `projected_non_null` was constructed using a sequence of
+            //   provenance-preserving operations, it also has provenance for its
+            //   referent and that referent lives in an allocation. By invariant on
+            //   `src`, that allocation lives for `'a`.
+            unsafe { PtrInner::new(projected_non_null) }
+        }
     }
 
     /// A [`Project`] which preserves the address of the referent – a pointer
@@ -82,7 +120,7 @@ pub mod cast {
     // bytes.
     unsafe impl<T: ?Sized> Project<T, T> for IdCast {
         #[inline(always)]
-        fn project(src: PtrInner<'_, T>) -> *mut T {
+        fn project_raw(src: PtrInner<'_, T>) -> *mut T {
             src.as_ptr()
         }
     }
@@ -107,7 +145,7 @@ pub mod cast {
     // operations preserve provenance.
     unsafe impl<Src, Dst> Project<Src, Dst> for CastSized {
         #[inline(always)]
-        fn project(src: PtrInner<'_, Src>) -> *mut Dst {
+        fn project_raw(src: PtrInner<'_, Src>) -> *mut Dst {
             static_assert!(Src, Dst => mem::size_of::<Src>() >= mem::size_of::<Dst>());
             src.as_ptr().cast::<Dst>()
         }
@@ -115,6 +153,33 @@ pub mod cast {
 
     // SAFETY: The `Project::project` impl preserves referent address.
     unsafe impl<Src, Dst> Cast<Src, Dst> for CastSized {}
+
+    /// A pointer cast which preserves the set of referent bytes of a
+    /// statically-sized referent.
+    ///
+    /// # Safety
+    ///
+    /// The implementation of [`Project`] uses a compile-time assertion to
+    /// guarantee that `Dst` has the same size as `Src`. Thus, `CastSizedExact`
+    /// has a sound implementation of [`Project`] for all `Src` and `Dst` – the
+    /// caller may pass any `Src` and `Dst` without being responsible for
+    /// soundness.
+    #[allow(missing_debug_implementations, missing_copy_implementations)]
+    pub enum CastSizedExact {}
+
+    // SAFETY: By the `static_assert!`, `Dst` has the same size as `Src`,
+    // and so all casts preserve the set of referent bytes. All operations
+    // preserve provenance.
+    unsafe impl<Src, Dst> Project<Src, Dst> for CastSizedExact {
+        #[inline(always)]
+        fn project_raw(src: PtrInner<'_, Src>) -> *mut Dst {
+            static_assert!(Src, Dst => mem::size_of::<Src>() == mem::size_of::<Dst>());
+            src.as_ptr().cast::<Dst>()
+        }
+    }
+
+    // SAFETY: The `Project::project` impl preserves referent address.
+    unsafe impl<Src, Dst> Cast<Src, Dst> for CastSizedExact {}
 
     /// A pointer cast which preserves or shrinks the set of referent bytes of
     /// a dynamically-sized referent.
@@ -141,7 +206,7 @@ pub mod cast {
         Dst: ?Sized + KnownLayout<PointerMetadata = Src::PointerMetadata>,
     {
         #[inline(always)]
-        fn project(src: PtrInner<'_, Src>) -> *mut Dst {
+        fn project_raw(src: PtrInner<'_, Src>) -> *mut Dst {
             // FIXME: Do we want this to support shrinking casts as well?
             static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
                 let t = <Src as KnownLayout>::LAYOUT;
@@ -187,7 +252,7 @@ pub mod cast {
         T: HasField<F, VARIANT_ID, FIELD_ID>,
     {
         #[inline(always)]
-        fn project(src: PtrInner<'_, T>) -> *mut T::Type {
+        fn project_raw(src: PtrInner<'_, T>) -> *mut T::Type {
             T::project(src)
         }
     }
@@ -220,7 +285,7 @@ pub mod cast {
         UV: Project<U, V>,
     {
         #[inline(always)]
-        fn project(t: PtrInner<'_, T>) -> *mut V {
+        fn project_raw(t: PtrInner<'_, T>) -> *mut V {
             t.project::<_, TU>().project::<_, UV>().as_ptr()
         }
     }
@@ -250,7 +315,7 @@ pub mod cast {
     // true of other proofs in this codebase). Is this guaranteed anywhere?
     unsafe impl<T: ?Sized + KnownLayout> Project<T, [u8]> for AsBytesCast {
         #[inline(always)]
-        fn project(src: PtrInner<'_, T>) -> *mut [u8] {
+        fn project_raw(src: PtrInner<'_, T>) -> *mut [u8] {
             let bytes = match T::size_of_val_raw(src.as_non_null()) {
                 Some(bytes) => bytes,
                 // SAFETY: `KnownLayout::size_of_val_raw` promises to always
