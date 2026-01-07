@@ -175,6 +175,10 @@ pub unsafe trait MutationCompatible<Src: ?Sized, A: Aliasing, SV, DV, R> {}
 #[allow(missing_copy_implementations, missing_debug_implementations)]
 pub enum BecauseRead {}
 
+// TODO: Maybe use the same reason for both? There shouldn't be any situation in
+// which the reasons are different (one is BecauseExclusive and the other is
+// BecauseImmutable).
+
 // SAFETY: `Src: Read<A, _>` and `Dst: Read<A, _>`.
 unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R>
     MutationCompatible<Src, A, SV, DV, (BecauseRead, R)> for Dst
