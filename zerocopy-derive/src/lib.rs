@@ -895,17 +895,13 @@ fn derive_try_from_bytes_struct(
                 // validity of a struct is just the composition of the bit
                 // validities of its fields, so this is a sound implementation
                 // of `is_bit_valid`.
-                fn is_bit_valid<___ZerocopyAliasing>(
-                    mut candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
-                ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
-                where
-                    ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
-                {
+                fn is_bit_valid(
+                    mut candidate: #zerocopy_crate::Maybe<Self>,
+                ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool {
                     use #zerocopy_crate::util::macro_util::core_reexport;
-                    use #zerocopy_crate::pointer::PtrInner;
 
                     true #(&& {
-                        let field_candidate = candidate.reborrow().project::<
+                        let field_candidate = candidate.reborrow().project_wrapped::<
                             _,
                             { #zerocopy_crate::ident_id!(#field_names) }
                         >();
@@ -949,14 +945,9 @@ fn derive_try_from_bytes_union(
                 // The bit validity of a union is not yet well defined in Rust,
                 // but it is guaranteed to be no more strict than this
                 // definition. See #696 for a more in-depth discussion.
-                fn is_bit_valid<___ZerocopyAliasing>(
-                    mut candidate: #zerocopy_crate::Maybe<'_, Self,___ZerocopyAliasing>
-                ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
-                where
-                    ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
-                {
-                    use #zerocopy_crate::util::macro_util::core_reexport;
-                    use #zerocopy_crate::pointer::PtrInner;
+                fn is_bit_valid(
+                    mut candidate: #zerocopy_crate::Maybe<'_, Self>
+                ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool {
 
                     false #(|| {
                         // SAFETY:
@@ -1056,12 +1047,9 @@ fn try_gen_trivial_is_bit_valid(
     if matches!(top_level, Trait::FromBytes) && ast.generics.params.is_empty() {
         Some(quote!(
             // SAFETY: See inline.
-            fn is_bit_valid<___ZerocopyAliasing>(
-                _candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
-            ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
-            where
-                ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
-            {
+            fn is_bit_valid(
+                _candidate: #zerocopy_crate::Maybe<Self>,
+            ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool {
                 if false {
                     fn assert_is_from_bytes<T>()
                     where
@@ -1099,12 +1087,9 @@ unsafe fn gen_trivial_is_bit_valid_unchecked(zerocopy_crate: &Path) -> proc_macr
     quote!(
         // SAFETY: The caller of `gen_trivial_is_bit_valid_unchecked` has
         // promised that all initialized bit patterns are valid for `Self`.
-        fn is_bit_valid<___ZerocopyAliasing>(
-            _candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
-        ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
-        where
-            ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
-        {
+        fn is_bit_valid(
+            _candidate: #zerocopy_crate::Maybe<Self>,
+        ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool {
             true
         }
     )
