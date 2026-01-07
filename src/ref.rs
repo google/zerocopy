@@ -6,8 +6,10 @@
 // license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
 // This file may not be copied, modified, or distributed except according to
 // those terms.
-
 use super::*;
+use crate::pointer::{
+    BecauseInvariantsEq, BecauseMutationCompatible, MutationCompatible, TransmuteFromPtr,
+};
 
 mod def {
     use core::marker::PhantomData;
@@ -193,6 +195,11 @@ mod def {
 #[allow(unreachable_pub)] // This is a false positive on our MSRV toolchain.
 pub use def::Ref;
 
+use crate::pointer::{
+    invariant::{Aligned, BecauseExclusive, Initialized, Unaligned, Valid},
+    BecauseRead, PtrInner,
+};
+
 impl<B, T> Ref<B, T>
 where
     B: ByteSlice,
@@ -272,7 +279,7 @@ where
     /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
-    /// [t-unaligned]: Unaligned
+    /// [t-unaligned]: crate::Unaligned
     /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
@@ -326,7 +333,7 @@ where
     /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
-    /// [t-unaligned]: Unaligned
+    /// [t-unaligned]: crate::Unaligned
     /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
@@ -391,7 +398,7 @@ where
     /// `T` may be a sized type, a slice, or a [slice DST][slice-dst].
     ///
     /// [valid-size]: crate::KnownLayout#what-is-a-valid-size
-    /// [t-unaligned]: Unaligned
+    /// [t-unaligned]: crate::Unaligned
     /// [size-error-from]: error/struct.SizeError.html#method.from-1
     /// [slice-dst]: KnownLayout#dynamically-sized-types
     ///
@@ -454,7 +461,7 @@ where
     /// aligned, this returns `Err`. If [`T: Unaligned`][t-unaligned], you can
     /// [infallibly discard the alignment error][size-error-from].
     ///
-    /// [t-unaligned]: Unaligned
+    /// [t-unaligned]: crate::Unaligned
     /// [size-error-from]: error/struct.SizeError.html#method.from-1
     ///
     /// # Compile-Time Assertions
@@ -505,7 +512,7 @@ where
     /// Unaligned`][t-unaligned], you can [infallibly discard the alignment
     /// error][size-error-from].
     ///
-    /// [t-unaligned]: Unaligned
+    /// [t-unaligned]: crate::Unaligned
     /// [size-error-from]: error/struct.SizeError.html#method.from-1
     ///
     /// # Compile-Time Assertions
@@ -551,7 +558,7 @@ where
     /// Unaligned`][t-unaligned], you can [infallibly discard the alignment
     /// error][size-error-from].
     ///
-    /// [t-unaligned]: Unaligned
+    /// [t-unaligned]: crate::Unaligned
     /// [size-error-from]: error/struct.SizeError.html#method.from-1
     ///
     /// # Compile-Time Assertions
@@ -616,6 +623,20 @@ where
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `IntoByteSlice`.
         let b = unsafe { r.into_byte_slice() };
+        let b = b.into_byte_slice();
+
+        if let crate::layout::SizeInfo::Sized { .. } = T::LAYOUT.size_info {
+            let ptr = Ptr::from_ref(b);
+            // SAFETY: We just checked that `T: Sized`. By invariant on `r`,
+            // `b`'s size is equal to `size_of::<T>()`.
+            let ptr = unsafe { cast_for_sized::<T, _, _, _>(ptr) };
+
+            // SAFETY: None of the preceding transformations modifies the
+            // address of the pointer, and by invariant on `r`, we know that it
+            // is validly-aligned.
+            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+            return ptr.as_ref();
+        }
 
         // PANICS: By post-condition on `into_byte_slice`, `b`'s size and
         // alignment are valid for `T`. By post-condition, `b.into_byte_slice()`
@@ -650,6 +671,27 @@ where
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `IntoByteSliceMut`.
         let b = unsafe { r.into_byte_slice_mut() };
+        let b = b.into_byte_slice_mut();
+
+        if let crate::layout::SizeInfo::Sized { .. } = T::LAYOUT.size_info {
+            let ptr = Ptr::from_mut(b);
+            // SAFETY: We just checked that `T: Sized`. By invariant on `r`,
+            // `b`'s size is equal to `size_of::<T>()`.
+            let ptr = unsafe {
+                cast_for_sized::<
+                    T,
+                    _,
+                    (BecauseRead, (BecauseExclusive, BecauseExclusive)),
+                    (BecauseMutationCompatible, BecauseInvariantsEq),
+                >(ptr)
+            };
+
+            // SAFETY: None of the preceding transformations modifies the
+            // address of the pointer, and by invariant on `r`, we know that it
+            // is validly-aligned.
+            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+            return ptr.as_mut();
+        }
 
         // PANICS: By post-condition on `into_byte_slice_mut`, `b`'s size and
         // alignment are valid for `T`. By post-condition,
@@ -763,11 +805,25 @@ where
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `ByteSlice`.
         let b = unsafe { self.as_byte_slice() };
+        let b = b.deref();
+
+        if let crate::layout::SizeInfo::Sized { .. } = T::LAYOUT.size_info {
+            let ptr = Ptr::from_ref(b);
+            // SAFETY: We just checked that `T: Sized`. By invariant on `r`,
+            // `b`'s size is equal to `size_of::<T>()`.
+            let ptr = unsafe { cast_for_sized::<T, _, _, _>(ptr) };
+
+            // SAFETY: None of the preceding transformations modifies the
+            // address of the pointer, and by invariant on `r`, we know that it
+            // is validly-aligned.
+            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+            return ptr.as_ref();
+        }
 
         // PANICS: By postcondition on `as_byte_slice`, `b`'s size and alignment
         // are valid for `T`, and by invariant on `ByteSlice`, these are
         // preserved through `.deref()`, so this `unwrap` will not panic.
-        let ptr = Ptr::from_ref(b.deref())
+        let ptr = Ptr::from_ref(b)
             .try_cast_into_no_leftover::<T, BecauseImmutable>(None)
             .expect("zerocopy internal error: Deref::deref should be infallible");
         let ptr = ptr.recall_validity();
@@ -791,12 +847,33 @@ where
         // SAFETY: We don't call any methods on `b` other than those provided by
         // `ByteSliceMut`.
         let b = unsafe { self.as_byte_slice_mut() };
+        let b = b.deref_mut();
+
+        if let crate::layout::SizeInfo::Sized { .. } = T::LAYOUT.size_info {
+            let ptr = Ptr::from_mut(b);
+            // SAFETY: We just checked that `T: Sized`. By invariant on `r`,
+            // `b`'s size is equal to `size_of::<T>()`.
+            let ptr = unsafe {
+                cast_for_sized::<
+                    T,
+                    _,
+                    (BecauseRead, (BecauseExclusive, BecauseExclusive)),
+                    (BecauseMutationCompatible, BecauseInvariantsEq),
+                >(ptr)
+            };
+
+            // SAFETY: None of the preceding transformations modifies the
+            // address of the pointer, and by invariant on `r`, we know that it
+            // is validly-aligned.
+            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+            return ptr.as_mut();
+        }
 
         // PANICS: By postcondition on `as_byte_slice_mut`, `b`'s size and
         // alignment are valid for `T`, and by invariant on `ByteSlice`, these
         // are preserved through `.deref_mut()`, so this `unwrap` will not
         // panic.
-        let ptr = Ptr::from_mut(b.deref_mut())
+        let ptr = Ptr::from_mut(b)
             .try_cast_into_no_leftover::<T, BecauseExclusive>(None)
             .expect("zerocopy internal error: DerefMut::deref_mut should be infallible");
         let ptr = ptr.recall_validity::<_, (_, (_, (BecauseExclusive, BecauseExclusive)))>();
@@ -870,6 +947,46 @@ where
         let other_inner: &T = other;
         inner.partial_cmp(other_inner)
     }
+}
+
+/// # Safety
+///
+/// `T: Sized` and `ptr`'s referent must have size `size_of::<T>()`.
+#[inline(always)]
+unsafe fn cast_for_sized<'a, T, A, R, S>(
+    ptr: Ptr<'a, [u8], (A, Aligned, Valid)>,
+) -> Ptr<'a, T, (A, Unaligned, Valid)>
+where
+    T: FromBytes + KnownLayout + ?Sized,
+    A: crate::invariant::Aliasing,
+    [u8]: MutationCompatible<T, A, Initialized, Initialized, R>,
+    T: TransmuteFromPtr<T, A, Initialized, Valid, S>,
+{
+    use crate::pointer::cast::{Cast, Project};
+
+    enum CastForSized {}
+
+    // SAFETY: `CastForSized` is only used below with the input `ptr`, which the
+    // caller promises has size `size_of::<T>()`. Thus, the referent produced in
+    // this cast has the same size as `ptr`'s referent. All operations preserve
+    // provenance.
+    unsafe impl<T: ?Sized + KnownLayout> Project<[u8], T> for CastForSized {
+        #[inline(always)]
+        fn project(src: PtrInner<'_, [u8]>) -> *mut T {
+            T::raw_from_ptr_len(
+                src.as_non_null().cast(),
+                <T::PointerMetadata as crate::PointerMetadata>::from_elem_count(0),
+            )
+            .as_ptr()
+        }
+    }
+
+    // SAFETY: The `Project::project` impl preserves referent address.
+    unsafe impl<T: ?Sized + KnownLayout> Cast<[u8], T> for CastForSized {}
+
+    ptr.recall_validity::<Initialized, (_, (_, _))>()
+        .cast::<_, CastForSized, _>()
+        .recall_validity::<Valid, _>()
 }
 
 #[cfg(test)]
@@ -1171,5 +1288,67 @@ mod tests {
         assert!(r1 < r2);
         assert_eq!(PartialOrd::partial_cmp(&r1, &r2), Some(Ordering::Less));
         assert_eq!(Ord::cmp(&r1, &r2), Ordering::Less);
+    }
+}
+
+#[cfg(all(test, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS))]
+mod benches {
+    use test::{self, Bencher};
+
+    use super::*;
+    use crate::util::testutil::*;
+
+    #[bench]
+    fn bench_from_bytes_sized(b: &mut Bencher) {
+        let buf = Align::<[u8; 8], AU64>::default();
+        // `buf.t` should be aligned to 8, so this should always succeed.
+        let bytes = &buf.t[..];
+        b.iter(|| test::black_box(Ref::<_, AU64>::from_bytes(test::black_box(bytes)).unwrap()));
+    }
+
+    #[bench]
+    fn bench_into_ref_sized(b: &mut Bencher) {
+        let buf = Align::<[u8; 8], AU64>::default();
+        let bytes = &buf.t[..];
+        let r = Ref::<_, AU64>::from_bytes(bytes).unwrap();
+        b.iter(|| test::black_box(Ref::into_ref(test::black_box(r))));
+    }
+
+    #[bench]
+    fn bench_into_mut_sized(b: &mut Bencher) {
+        let mut buf = Align::<[u8; 8], AU64>::default();
+        let buf = &mut buf.t[..];
+        let _ = Ref::<_, AU64>::from_bytes(&mut *buf).unwrap();
+        b.iter(move || {
+            // SAFETY: The preceding `from_bytes` succeeded, and so we know that
+            // `buf` is validly-aligned and has the correct length.
+            let r = unsafe { Ref::<&mut [u8], AU64>::new_unchecked(&mut *buf) };
+            test::black_box(Ref::into_mut(test::black_box(r)));
+        });
+    }
+
+    #[bench]
+    fn bench_deref_sized(b: &mut Bencher) {
+        let buf = Align::<[u8; 8], AU64>::default();
+        let bytes = &buf.t[..];
+        let r = Ref::<_, AU64>::from_bytes(bytes).unwrap();
+        b.iter(|| {
+            let temp = test::black_box(r);
+            test::black_box(temp.deref());
+        });
+    }
+
+    #[bench]
+    fn bench_deref_mut_sized(b: &mut Bencher) {
+        let mut buf = Align::<[u8; 8], AU64>::default();
+        let buf = &mut buf.t[..];
+        let _ = Ref::<_, AU64>::from_bytes(&mut *buf).unwrap();
+        b.iter(|| {
+            // SAFETY: The preceding `from_bytes` succeeded, and so we know that
+            // `buf` is validly-aligned and has the correct length.
+            let r = unsafe { Ref::<&mut [u8], AU64>::new_unchecked(&mut *buf) };
+            let mut temp = test::black_box(r);
+            test::black_box(temp.deref_mut());
+        });
     }
 }
