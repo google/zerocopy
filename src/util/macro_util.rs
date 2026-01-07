@@ -684,7 +684,7 @@ where
 
     let ptr: Ptr<'_, Dst, _> = ptr.cast::<_, crate::pointer::cast::CastSized, _>();
 
-    if Dst::is_bit_valid(ptr.forget_aligned()) {
+    if Dst::is_bit_valid(ptr.transmute::<_, _, (_, (_, BecauseExclusive))>().forget_aligned()) {
         // SAFETY: Since `Dst::is_bit_valid`, we know that `ptr`'s referent is
         // bit-valid for `Dst`. `ptr` points to `mu_dst`, and no intervening
         // operations have mutated it, so it is a bit-valid `Dst`.

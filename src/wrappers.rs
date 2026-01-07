@@ -9,7 +9,10 @@
 use core::{fmt, hash::Hash};
 
 use super::*;
-use crate::pointer::{invariant::Valid, SizeEq, TransmuteFrom};
+use crate::pointer::{
+    invariant::{Aliasing, Valid},
+    MutationCompatible, SizeEq, TransmuteFrom,
+};
 
 /// A type with no alignment requirement.
 ///
@@ -630,18 +633,22 @@ const _: () = unsafe {
 };
 
 const _: () = {
+    use crate::pointer::cast::CastExact;
+
     // SAFETY: TODO
     define_cast!(unsafe { pub CastFromReadOnly<T: ?Sized> = ReadOnly<T> => T});
     // SAFETY: TODO
-    define_cast!(unsafe { pub CastToReadOnly<T: ?Sized> = T => ReadOnly<T>});
-
+    unsafe impl<T: ?Sized> CastExact<ReadOnly<T>, T> for CastFromReadOnly {}
     // SAFETY: TODO
-    unsafe impl<T: ?Sized> SizeEq<ReadOnly<T>> for T {
+    define_cast!(unsafe { pub CastToReadOnly<T: ?Sized> = T => ReadOnly<T>});
+    // SAFETY: TODO
+    unsafe impl<T: ?Sized> CastExact<T, ReadOnly<T>> for CastToReadOnly {}
+
+    impl<T: ?Sized> SizeEq<ReadOnly<T>> for T {
         type CastFrom = CastFromReadOnly;
     }
 
-    // SAFETY: TODO
-    unsafe impl<T: ?Sized> SizeEq<T> for ReadOnly<T> {
+    impl<T: ?Sized> SizeEq<T> for ReadOnly<T> {
         type CastFrom = CastToReadOnly;
     }
 
@@ -663,6 +670,26 @@ unsafe impl<T: ?Sized> TransmuteFrom<T, Valid, Valid> for ReadOnly<T> {}
 
 // SAFETY: TODO
 unsafe impl<T: ?Sized> TransmuteFrom<ReadOnly<T>, Valid, Valid> for T {}
+
+// enum BecauseReadOnly {}
+
+// /// Denotes that `src: Ptr<Src, (A, _, SV)>` and `dst: Ptr<Self, (A, _, DV)>`,
+// /// referencing the same referent at the same time, cannot be used by safe code
+// /// to break library safety invariants of `Src` or `Self`.
+// ///
+// /// # Safety
+// ///
+// /// At least one of the following must hold:
+// /// - `Src: Read<A, _>` and `Self: Read<A, _>`
+// /// - `Self: InvariantsEq<Src>`, and, for some `V`:
+// ///   - `Dst: TransmuteFrom<Src, V, V>`
+// ///   - `Src: TransmuteFrom<Dst, V, V>`
+
+// // SAFETY: TODO
+// unsafe impl<T: ?Sized, A: Aliasing, V> MutationCompatible<T, A, V, V, BecauseReadOnly>
+//     for ReadOnly<T>
+// {
+// }
 
 impl<T> ReadOnly<T> {
     /// TODO

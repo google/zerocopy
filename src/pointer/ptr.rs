@@ -521,6 +521,24 @@ mod _conversions {
         }
     }
 
+    // /// `Ptr<'a, T, (_, _, _)>` → `Ptr<'a, ReadOnly<T>, (_, _, _)>`
+    // impl<'a, T, I> Ptr<'a, T, I>
+    // where
+    //     T: ?Sized,
+    //     I: Invariants,
+    // {
+    //     /// TODO
+    //     pub(crate) fn into_read_only<R>(
+    //         self,
+    //     ) -> Ptr<'a, crate::ReadOnly<T>, (I::Aliasing, I::Alignment, I::Validity)>
+    //     where
+    //         T: Read<I::Aliasing, R>,
+    //     {
+    //         let ro = self.transmute::<_, _, (_, _)>();
+    //         unsafe { ro.assume_alignment() }
+    //     }
+    // }
+
     impl<'a, T, I> Ptr<'a, T, I>
     where
         T: ?Sized,
@@ -833,7 +851,7 @@ mod _transitions {
             // This call may panic. If that happens, it doesn't cause any
             // soundness issues, as we have not generated any invalid state
             // which we need to fix before returning.
-            if T::is_bit_valid(self.reborrow().forget_aligned()) {
+            if T::is_bit_valid(self.reborrow().transmute()) {
                 // SAFETY: If `T::is_bit_valid`, code may assume that `self`
                 // contains a bit-valid instance of `T`. By `T:
                 // TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid>`, so
