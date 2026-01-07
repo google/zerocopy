@@ -756,6 +756,14 @@ mod cast_from {
     {
     }
 
+    // SAFETY: TODO
+    unsafe impl<Src, Dst> crate::pointer::cast::CastExact<Src, Dst> for CastFrom<Dst>
+    where
+        Src: KnownLayout<PointerMetadata = usize> + ?Sized,
+        Dst: KnownLayout<PointerMetadata = usize> + ?Sized,
+    {
+    }
+
     // SAFETY: `project` produces a pointer which refers to the same referent
     // bytes as its input, or to a subset of them (see inline comments for a
     // more detailed proof of this). It does this using provenance-preserving

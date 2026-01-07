@@ -408,9 +408,9 @@ mod _conversions {
             T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R>,
         {
             // SAFETY:
-            // - By `SizeEq::CastFrom: Cast`, `SizeEq::CastFrom` preserves
-            //   referent address, and so we don't need to consider projections
-            //   in the following safety arguments.
+            // - By `SizeEq::CastFrom: Cast`, `SizeEq::CastFrom`
+            //   preserves referent address, and so we don't need to consider
+            //   projections in the following safety arguments.
             // - It is trivially sound to have multiple `&T` referencing the
             //   same referent simultaneously
             // - By `T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
