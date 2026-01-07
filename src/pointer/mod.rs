@@ -60,6 +60,7 @@ pub mod cast {
         ///
         /// The returned pointer refers to a non-strict subset of the bytes of
         /// `src`'s referent, and has the same provenance as `src`.
+        #[must_use]
         fn project_raw(src: PtrInner<'_, Src>) -> *mut Dst;
 
         /// Projects a [`PtrInner`] from `Src` to `Dst`.
