@@ -322,18 +322,20 @@ pub(crate) fn derive_is_bit_valid(
                     // SAFETY: Since we know that the tag is `#tag_ident`, we
                     // know that no other `&`s exist which refer to this enum
                     // as any other variant.
-                    let variant_md = unsafe { variants.cast_unchecked::<
-                        #core::mem::ManuallyDrop<#variant_struct_ident #ty_generics>,
-                        #zerocopy_crate::pointer::cast::Projection<
+                    let variant_md = variants.cast::<
+                        _,
+                        #zerocopy_crate::pointer::cast::WrappedProjection<
+                            #zerocopy_crate::ReadOnly<_>,
                             _,
                             { #zerocopy_crate::UNION_VARIANT_ID },
                             { #zerocopy_crate::ident_id!(#variants_union_field_ident) }
-                        >
-                    >() };
+                        >,
+                        _
+                    >();
                     let variant = variant_md.cast::<
-                        #variant_struct_ident #ty_generics,
+                        #zerocopy_crate::ReadOnly<#variant_struct_ident #ty_generics>,
                         #zerocopy_crate::pointer::cast::CastSized,
-                        #zerocopy_crate::pointer::BecauseInvariantsEq
+                        (#zerocopy_crate::pointer::BecauseRead, _)
                     >();
                     <
                         #variant_struct_ident #ty_generics as #trait_path
@@ -373,12 +375,9 @@ pub(crate) fn derive_is_bit_valid(
         // enum's tag corresponds to one of the enum's discriminants. Then, we
         // check the bit validity of each field of the corresponding variant.
         // Thus, this is a sound implementation of `is_bit_valid`.
-        fn is_bit_valid<___ZerocopyAliasing>(
-            candidate: #zerocopy_crate::Maybe<'_, Self, ___ZerocopyAliasing>,
-        ) -> #core::primitive::bool
-        where
-            ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
-        {
+        fn is_bit_valid(
+            candidate: #zerocopy_crate::Maybe<'_, Self>,
+        ) -> #core::primitive::bool {
             #tag_enum
 
             type ___ZerocopyTagPrimitive = #zerocopy_crate::util::macro_util::SizeToTag<
@@ -416,13 +415,13 @@ pub(crate) fn derive_is_bit_valid(
             #(#has_fields)*
 
             let mut raw_enum = candidate.cast::<
-                ___ZerocopyRawEnum #ty_generics,
+                #zerocopy_crate::ReadOnly<___ZerocopyRawEnum #ty_generics>,
                 #zerocopy_crate::pointer::cast::CastSized,
-                #zerocopy_crate::pointer::BecauseInvariantsEq
+                (#zerocopy_crate::pointer::BecauseRead, _)
             >();
 
             let tag = {
-                let tag_ptr = raw_enum.reborrow().project::<
+                let tag_ptr = raw_enum.reborrow().project_wrapped::<
                     (),
                     { #zerocopy_crate::ident_id!(tag) }
                 >().cast::<
@@ -433,7 +432,10 @@ pub(crate) fn derive_is_bit_valid(
                 tag_ptr.recall_validity::<_, (_, (_, _))>().read_unaligned::<#zerocopy_crate::BecauseImmutable>()
             };
 
-            let variants = raw_enum.project::<_, { #zerocopy_crate::ident_id!(variants) }>();
+            let variants = raw_enum.project_wrapped::<
+                _,
+                { #zerocopy_crate::ident_id!(variants) }
+            >();
 
             match tag {
                 #(#match_arms,)*
