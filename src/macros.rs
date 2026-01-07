@@ -895,10 +895,8 @@ macro_rules! cryptocorrosion_derive_traits {
                 $($field_ty: $crate::FromBytes,)*
             )?
         {
-            fn is_bit_valid<A>(_c: $crate::Maybe<'_, Self, A>) -> bool
-            where
-                A: $crate::pointer::invariant::Reference
-            {
+            #[inline]
+            fn is_bit_valid(_c: $crate::Maybe<'_, Self>) -> bool {
                 // SAFETY: This macro only accepts `#[repr(C)]` and
                 // `#[repr(transparent)]` structs, and this `impl` block
                 // requires all field types to be `FromBytes`. Thus, all
@@ -1038,10 +1036,8 @@ macro_rules! cryptocorrosion_derive_traits {
                 $field_ty: $crate::FromBytes,
             )*
         {
-            fn is_bit_valid<A>(_c: $crate::Maybe<'_, Self, A>) -> bool
-            where
-                A: $crate::pointer::invariant::Reference
-            {
+            #[inline]
+            fn is_bit_valid(_c: $crate::Maybe<'_, Self>) -> bool {
                 // SAFETY: This macro only accepts `#[repr(C)]` unions, and this
                 // `impl` block requires all field types to be `FromBytes`.
                 // Thus, all initialized byte sequences constitutes valid
