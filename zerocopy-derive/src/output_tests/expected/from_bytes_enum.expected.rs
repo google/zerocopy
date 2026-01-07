@@ -13,12 +13,9 @@
 const _: () = {
     unsafe impl ::zerocopy::TryFromBytes for Foo {
         fn only_derive_is_allowed_to_implement_this_trait() {}
-        fn is_bit_valid<___ZerocopyAliasing>(
-            _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
-        where
-            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
-        {
+        fn is_bit_valid(
+            _candidate: ::zerocopy::Maybe<Self>,
+        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool {
             if false {
                 fn assert_is_from_bytes<T>()
                 where
