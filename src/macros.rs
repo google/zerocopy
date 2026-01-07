@@ -674,7 +674,7 @@ macro_rules! try_transmute_ref {
             // the value returned from this branch.
             let u;
 
-            $crate::assert_size_eq!(t, u);
+            $crate::assert_size_compat!(t, u);
             $crate::assert_align_gt_eq!(t, u);
 
             Ok(&u)
@@ -783,7 +783,7 @@ macro_rules! try_transmute_mut {
             // u)` as the value returned from this branch.
             let u;
 
-            $crate::assert_size_eq!(t, u);
+            $crate::assert_size_compat!(t, u);
             $crate::assert_align_gt_eq!(t, u);
 
             Ok(&mut u)
