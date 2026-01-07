@@ -905,10 +905,19 @@ fn derive_try_from_bytes_struct(
                     use #zerocopy_crate::pointer::PtrInner;
 
                     true #(&& {
-                        let field_candidate = candidate.reborrow().project::<
-                            _,
-                            { #zerocopy_crate::ident_id!(#field_names) }
-                        >();
+                        let field_candidate = unsafe {
+                            candidate.reborrow().project_transmute_unchecked::<
+                                _,
+                                _,
+                                // WrappedProjection<W, F, VARIANT_ID, FIELD_ID>
+                                #zerocopy_crate::pointer::cast::WrappedProjection<_, _, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(#field_names) }>
+                            >()
+                        };
+
+                        // let field_candidate = candidate.reborrow().project::<
+                        //     _,
+                        //     { #zerocopy_crate::ident_id!(#field_names) }
+                        // >();
 
                         <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
                     })*
@@ -971,7 +980,8 @@ fn derive_try_from_bytes_union(
                             candidate.reborrow().project_transmute_unchecked::<
                                 _,
                                 _,
-                                #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#field_names) }>
+                                // WrappedProjection<W, F, VARIANT_ID, FIELD_ID>
+                                #zerocopy_crate::pointer::cast::WrappedProjection<_, _, { #zerocopy_crate::UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#field_names) }>
                             >()
                         };
 

@@ -332,16 +332,18 @@ pub(crate) fn derive_is_bit_valid(
                     // SAFETY: Since we know that the tag is `#tag_ident`, we
                     // know that no other `&`s exist which refer to this enum
                     // as any other variant.
-                    let variant_md = unsafe { variants.cast_unchecked::<
-                        core_reexport::mem::ManuallyDrop<#variant_struct_ident #ty_generics>,
-                        #zerocopy_crate::pointer::cast::Projection<
+                    let variant_md = variants.cast::<
+                        ReadOnly<core_reexport::mem::ManuallyDrop<#variant_struct_ident #ty_generics>>,
+                        #zerocopy_crate::pointer::cast::WrappedProjection<
+                            _,
                             _,
                             { #zerocopy_crate::UNION_VARIANT_ID },
                             { #zerocopy_crate::ident_id!(#variants_union_field_ident) }
-                        >
-                    >() };
+                        >,
+                        (_, _),
+                    >();
                     let variant = variant_md.cast::<
-                        #variant_struct_ident #ty_generics,
+                        ReadOnly<#variant_struct_ident #ty_generics>,
                         #zerocopy_crate::pointer::cast::CastSized,
                         #zerocopy_crate::pointer::BecauseInvariantsEq
                     >();
@@ -388,7 +390,7 @@ pub(crate) fn derive_is_bit_valid(
         where
             ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
         {
-            use #zerocopy_crate::util::macro_util::core_reexport;
+            use #zerocopy_crate::{pointer::cast::WrappedProjection, ReadOnly, util::macro_util::core_reexport};
 
             #tag_enum
 
@@ -427,16 +429,22 @@ pub(crate) fn derive_is_bit_valid(
             #(#has_fields)*
 
             let mut raw_enum = candidate.cast::<
-                ___ZerocopyRawEnum #ty_generics,
+                ReadOnly<___ZerocopyRawEnum #ty_generics>,
                 #zerocopy_crate::pointer::cast::CastSized,
                 #zerocopy_crate::pointer::BecauseInvariantsEq
             >();
 
             let tag = {
-                let tag_ptr = raw_enum.reborrow().project::<
-                    (),
-                    { #zerocopy_crate::ident_id!(tag) }
-                >().cast::<
+                let tag_ptr = raw_enum.reborrow().cast::<
+                    _,
+                    WrappedProjection<_, _, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(tag) }>,
+                    _,
+                >()
+                // let tag_ptr = raw_enum.reborrow().project::<
+                //     (),
+                //     { #zerocopy_crate::ident_id!(tag) }
+                // >()
+                .cast::<
                     ___ZerocopyTagPrimitive,
                     #zerocopy_crate::pointer::cast::CastSized,
                     _
@@ -444,7 +452,12 @@ pub(crate) fn derive_is_bit_valid(
                 tag_ptr.recall_validity::<_, (_, (_, _))>().read_unaligned::<#zerocopy_crate::BecauseImmutable>()
             };
 
-            let variants = raw_enum.project::<_, { #zerocopy_crate::ident_id!(variants) }>();
+            let variants = raw_enum.cast::<
+                _,
+                WrappedProjection<_, _, { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(variants) }>,
+                _,
+            >();
+            // let variants = raw_enum.project::<_, { #zerocopy_crate::ident_id!(variants) }>();
 
             #[allow(non_upper_case_globals)]
             match tag {
