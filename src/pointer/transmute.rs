@@ -179,6 +179,10 @@ pub unsafe trait MutationCompatible<Src: ?Sized, A: Aliasing, SV, DV, R> {}
 #[allow(missing_copy_implementations, missing_debug_implementations)]
 pub enum BecauseRead {}
 
+// TODO: Maybe use the same reason for both? There shouldn't be any situation in
+// which the reasons are different (one is BecauseExclusive and the other is
+// BecauseImmutable).
+
 // SAFETY: `Src: Read<A, _>` and `Dst: Read<A, _>`.
 unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R>
     MutationCompatible<Src, A, SV, DV, (BecauseRead, R)> for Dst
@@ -281,17 +285,17 @@ pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV> {}
 
 /// Carries the ability to perform a size-preserving or size-shrinking cast or
 /// conversion from a raw pointer to `Src` to a raw pointer to `Self`.
-/// 
+///
 /// The cast/conversion is carried by the associated [`CastFrom`] type, and
 /// may be a no-op cast (without updating pointer metadata) or a conversion
 /// which updates pointer metadata.
-/// 
+///
 /// # Safety
-/// 
+///
 /// `SizeCompat` on its own conveys no safety guarantee. Any safety guarantees
 /// come from the safety invariants on the associated [`CastFrom`] type,
 /// specifically the [`Cast`] bound.
-/// 
+///
 /// [`CastFrom`]: SizeCompat::CastFrom
 /// [`Cast`]: cast::Cast
 pub trait SizeCompat<Src: ?Sized> {
