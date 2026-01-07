@@ -727,32 +727,34 @@ macro_rules! define_cast {
     };
 }
 
-/// Implements `TransmuteFrom` and `SizeEq` for `T` and `$wrapper<T>`.
+/// Implements `TransmuteFrom` and `SizeCompat` for `T` and `$wrapper<T>`.
 ///
 /// # Safety
 ///
 /// `T` and `$wrapper<T>` must have the same bit validity, and must have the
-/// same size in the sense of `SizeEq`.
+/// same size (specifically, both a `T`-to-`$wrapper<T>` cast and a
+/// `$wrapper<T>`-to-`T` cast must be size-preserving).
 macro_rules! unsafe_impl_for_transparent_wrapper {
     ($vis:vis T $(: ?$optbound:ident)? => $wrapper:ident<T>) => {{
         crate::util::macros::__unsafe();
 
-        use crate::pointer::{TransmuteFrom, SizeEq, invariant::Valid};
+        use crate::pointer::{TransmuteFrom, SizeCompat, invariant::Valid};
 
         // SAFETY: The caller promises that `T` and `$wrapper<T>` have the same
         // bit validity.
         unsafe impl<T $(: ?$optbound)?> TransmuteFrom<T, Valid, Valid> for $wrapper<T> {}
         // SAFETY: See previous safety comment.
         unsafe impl<T $(: ?$optbound)?> TransmuteFrom<$wrapper<T>, Valid, Valid> for T {}
+        // SAFETY: The caller promises that a `T` to `$wrapper<T>` cast is
+        // size-preserving.
         define_cast!(unsafe { $vis CastA<T $(: ?$optbound)? > = T => $wrapper<T> });
-        // SAFETY: The caller promises that `T` and `$wrapper<T>` satisfy
-        // `SizeEq`.
-        unsafe impl<T $(: ?$optbound)?> SizeEq<T> for $wrapper<T> {
+        impl<T $(: ?$optbound)?> SizeCompat<T> for $wrapper<T> {
             type CastFrom = CastA;
         }
+        // SAFETY: The caller promises that a `$wrapper<T>` to `T` cast is
+        // size-preserving.
         define_cast!(unsafe { $vis CastB<T $(: ?$optbound)? > = $wrapper<T> => T });
-        // SAFETY: See previous safety comment.
-        unsafe impl<T $(: ?$optbound)?> SizeEq<$wrapper<T>> for T {
+        impl<T $(: ?$optbound)?> SizeCompat<$wrapper<T>> for T {
             type CastFrom = CastB;
         }
     }};
@@ -761,19 +763,17 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
 macro_rules! impl_transitive_transmute_from {
     ($($tyvar:ident $(: ?$optbound:ident)?)? => $t:ty => $u:ty => $v:ty) => {
         const _: () = {
-            use crate::pointer::{TransmuteFrom, SizeEq, invariant::Valid};
+            use crate::pointer::{TransmuteFrom, SizeCompat, invariant::Valid};
 
-            // SAFETY: Since `$u: SizeEq<$t>` and `$v: SizeEq<U>`, this impl is
-            // transitively sound.
-            unsafe impl<$($tyvar $(: ?$optbound)?)?> SizeEq<$t> for $v
+            impl<$($tyvar $(: ?$optbound)?)?> SizeCompat<$t> for $v
             where
-                $u: SizeEq<$t>,
-                $v: SizeEq<$u>,
+                $u: SizeCompat<$t>,
+                $v: SizeCompat<$u>,
             {
                 type CastFrom = cast::TransitiveProject<
                     $u,
-                    <$u as SizeEq<$t>>::CastFrom,
-                    <$v as SizeEq<$u>>::CastFrom
+                    <$u as SizeCompat<$t>>::CastFrom,
+                    <$v as SizeCompat<$u>>::CastFrom
                 >;
             }
 
@@ -791,17 +791,15 @@ macro_rules! impl_transitive_transmute_from {
 }
 
 #[rustfmt::skip]
-macro_rules! impl_size_eq {
+macro_rules! impl_size_compat {
     ($t:ty, $u:ty) => {
         const _: () = {
-            use $crate::{pointer::{cast::CastUnsized, SizeEq}};
+            use $crate::{pointer::{cast::CastUnsized, SizeCompat}};
 
-            // SAFETY: See inline.
-            unsafe impl SizeEq<$t> for $u {
+            impl SizeCompat<$t> for $u {
                 type CastFrom = CastUnsized;
             }
-            // SAFETY: See previous safety comment.
-            unsafe impl SizeEq<$u> for $t {
+            impl SizeCompat<$u> for $t {
                 type CastFrom = CastUnsized;
             }
         };
@@ -809,17 +807,17 @@ macro_rules! impl_size_eq {
 }
 
 /// Invokes `$blk` in a context in which `$src<$t>` and `$dst<$u>` implement
-/// `SizeEq`.
+/// `SizeCompat`.
 ///
-/// This macro emits code which implements `SizeEq`, and ensures that the impl
-/// is sound via PME.
+/// This macro emits code which implements `SizeCompat`, and ensures that the
+/// impl is sound via PME.
 ///
 /// # Safety
 ///
 /// Inside of `$blk`, the caller must only use `$src` and `$dst` as `$src<$t>`
 /// and `$dst<$u>`. The caller must not use `$src` or `$dst` to wrap any other
 /// types.
-macro_rules! unsafe_with_size_eq {
+macro_rules! unsafe_with_size_compat {
     (<$src:ident<$t:ident>, $dst:ident<$u:ident>> $blk:expr) => {{
         crate::util::macros::__unsafe();
 
@@ -847,7 +845,11 @@ macro_rules! unsafe_with_size_eq {
         // no added semantics.
         unsafe impl<T: ?Sized> InvariantsEq<$dst<T>> for T {}
 
+        // SAFETY: `$src<T>` is a `#[repr(transparent)]` wrapper around `T`, and
+        // so this cast exactly preserves the set of referent bytes.
         define_cast!(unsafe { SrcCast<T: ?Sized> = $src<T> => T });
+        // SAFETY: `$dst<U>` is a `#[repr(transparent)]` wrapper around `U`, and
+        // so this cast exactly preserves the set of referent bytes.
         define_cast!(unsafe { DstCast<U: ?Sized> = U => $dst<U> });
 
         // SAFETY: See inline for the soundness of this impl when
@@ -857,7 +859,7 @@ macro_rules! unsafe_with_size_eq {
         // We manually instantiate `CastFrom::project` below to ensure that this
         // PME can be triggered, and the caller promises not to use `$src` and
         // `$dst` with any wrapped types other than `$t` and `$u` respectively.
-        unsafe impl<T: ?Sized, U: ?Sized> SizeEq<$src<T>> for $dst<U>
+        impl<T: ?Sized, U: ?Sized> SizeCompat<$src<T>> for $dst<U>
         where
             T: KnownLayout<PointerMetadata = usize>,
             U: KnownLayout<PointerMetadata = usize>,
@@ -878,7 +880,7 @@ macro_rules! unsafe_with_size_eq {
             // SAFETY: This call is never executed.
             #[allow(unused_unsafe, clippy::missing_transmute_annotations)]
             let ptr = unsafe { core::mem::transmute(ptr) };
-            let _ = <$dst<$u> as SizeEq<$src<$t>>>::CastFrom::project(ptr);
+            let _ = <$dst<$u> as SizeCompat<$src<$t>>>::CastFrom::project(ptr);
         }
 
         impl_for_transmute_from!(T: ?Sized + TryFromBytes => TryFromBytes for $src<T>[<T>]);
