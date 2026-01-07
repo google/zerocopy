@@ -60,7 +60,45 @@ pub mod cast {
         ///
         /// The returned pointer refers to a non-strict subset of the bytes of
         /// `src`'s referent, and has the same provenance as `src`.
-        fn project(src: PtrInner<'_, Src>) -> *mut Dst;
+        #[must_use]
+        fn project_inner(src: PtrInner<'_, Src>) -> *mut Dst;
+
+        /// Projects a [`PtrInner`] from `Src` to `Dst`.
+        ///
+        /// # Safety
+        ///
+        /// The caller may assume that the resulting `PtrInner` addresses a
+        /// subset of the bytes of `src`'s referent.
+        #[must_use]
+        #[inline(always)]
+        fn project(src: PtrInner<'_, Src>) -> PtrInner<'_, Dst> {
+            let projected_raw = Self::project_inner(src);
+
+            // SAFETY: `src`'s referent lives at a `NonNull` address, and is
+            // either zero-sized or lives in an allocation. In either case, it
+            // does not wrap around the address space [1], and so none of the
+            // addresses contained in it or one-past-the-end of it are null.
+            //
+            // By invariant on `Self: Project`, `Self::project` is a
+            // provenance-preserving projection which preserves or shrinks the
+            // set of referent bytes, so `projected_raw` references a subset of
+            // `src`'s referent, and so it cannot be null.
+            //
+            // [1] https://doc.rust-lang.org/1.92.0/std/ptr/index.html#allocation
+            let projected_non_null = unsafe { core::ptr::NonNull::new_unchecked(projected_raw) };
+
+            // SAFETY: As described in the preceding safety comment, `projected_raw`,
+            // and thus `projected_non_null`, addresses a subset of `src`'s
+            // referent. Thus, `projected_non_null` either:
+            // - Addresses zero bytes or,
+            // - Addresses a subset of the referent of `src`. In this case, `src`
+            //   has provenance for its referent, which lives in an allocation.
+            //   Since `projected_non_null` was constructed using a sequence of
+            //   provenance-preserving operations, it also has provenance for its
+            //   referent and that referent lives in an allocation. By invariant on
+            //   `src`, that allocation lives for `'a`.
+            unsafe { PtrInner::new(projected_non_null) }
+        }
     }
 
     /// A [`Project`] which preserves the address of the referent – a pointer
@@ -72,6 +110,13 @@ pub mod cast {
     /// shrink the set of referent bytes, and it may change the referent's type.
     pub unsafe trait Cast<Src: ?Sized, Dst: ?Sized>: Project<Src, Dst> {}
 
+    /// A [`Cast`] which does not shrink the set of referent bytes.
+    ///
+    /// # Safety
+    ///
+    /// A `CastExact` projection must preserve the set of referent bytes.
+    pub unsafe trait CastExact<Src: ?Sized, Dst: ?Sized>: Cast<Src, Dst> {}
+
     /// A no-op pointer cast.
     #[derive(Default, Copy, Clone)]
     #[allow(missing_debug_implementations)]
@@ -82,13 +127,16 @@ pub mod cast {
     // bytes.
     unsafe impl<T: ?Sized> Project<T, T> for IdCast {
         #[inline(always)]
-        fn project(src: PtrInner<'_, T>) -> *mut T {
+        fn project_inner(src: PtrInner<'_, T>) -> *mut T {
             src.as_ptr()
         }
     }
 
     // SAFETY: The `Project::project` impl preserves referent address.
     unsafe impl<T: ?Sized> Cast<T, T> for IdCast {}
+
+    // SAFETY: The `Project::project` impl preserves referent size.
+    unsafe impl<T: ?Sized> CastExact<T, T> for IdCast {}
 
     /// A pointer cast which preserves or shrinks the set of referent bytes of
     /// a statically-sized referent.
@@ -107,7 +155,7 @@ pub mod cast {
     // operations preserve provenance.
     unsafe impl<Src, Dst> Project<Src, Dst> for CastSized {
         #[inline(always)]
-        fn project(src: PtrInner<'_, Src>) -> *mut Dst {
+        fn project_inner(src: PtrInner<'_, Src>) -> *mut Dst {
             static_assert!(Src, Dst => mem::size_of::<Src>() >= mem::size_of::<Dst>());
             src.as_ptr().cast::<Dst>()
         }
@@ -115,6 +163,37 @@ pub mod cast {
 
     // SAFETY: The `Project::project` impl preserves referent address.
     unsafe impl<Src, Dst> Cast<Src, Dst> for CastSized {}
+
+    /// A pointer cast which preserves the set of referent bytes of a
+    /// statically-sized referent.
+    ///
+    /// # Safety
+    ///
+    /// The implementation of [`Project`] uses a compile-time assertion to
+    /// guarantee that `Dst` has the same size as `Src`. Thus, `CastSizedExact`
+    /// has a sound implementation of [`Project`] for all `Src` and `Dst` – the
+    /// caller may pass any `Src` and `Dst` without being responsible for
+    /// soundness.
+    #[allow(missing_debug_implementations, missing_copy_implementations)]
+    pub enum CastSizedExact {}
+
+    // SAFETY: By the `static_assert!`, `Dst` has the same size as `Src`,
+    // and so all casts preserve the set of referent bytes. All operations
+    // preserve provenance.
+    unsafe impl<Src, Dst> Project<Src, Dst> for CastSizedExact {
+        #[inline(always)]
+        fn project_inner(src: PtrInner<'_, Src>) -> *mut Dst {
+            static_assert!(Src, Dst => mem::size_of::<Src>() == mem::size_of::<Dst>());
+            src.as_ptr().cast::<Dst>()
+        }
+    }
+
+    // SAFETY: The `Project::project` impl preserves referent address.
+    unsafe impl<Src, Dst> Cast<Src, Dst> for CastSizedExact {}
+
+    // SAFETY: By the `static_assert!`, `Project::project` impl preserves
+    // referent size.
+    unsafe impl<Src, Dst> CastExact<Src, Dst> for CastSizedExact {}
 
     /// A pointer cast which preserves or shrinks the set of referent bytes of
     /// a dynamically-sized referent.
@@ -129,30 +208,34 @@ pub mod cast {
     #[allow(missing_debug_implementations, missing_copy_implementations)]
     pub enum CastUnsized {}
 
-    // SAFETY: The `static_assert!` ensures that `Src` and `Dst` have the same
-    // `SizeInfo`. Thus, casting preserves the set of referent bytes. All
-    // operations are provenance-preserving.
+    // SAFETY: By the `static_assert!`, `Src` and `Dst` are either:
+    // - Both sized and equal in size
+    // - Both slice DSTs with the same alignment, trailing slice offset, and
+    //   element size. These ensure that any given pointer metadata encodes the
+    //   same size for both `Src` and `Dst` (note that the alignment is required
+    //   as it affects the amount of trailing padding).
     unsafe impl<Src, Dst> Project<Src, Dst> for CastUnsized
     where
         Src: ?Sized + KnownLayout,
         Dst: ?Sized + KnownLayout<PointerMetadata = Src::PointerMetadata>,
     {
         #[inline(always)]
-        fn project(src: PtrInner<'_, Src>) -> *mut Dst {
+        fn project_inner(src: PtrInner<'_, Src>) -> *mut Dst {
             // FIXME:
             // - Is the alignment check necessary for soundness? It's not
             //   necessary for the soundness of the `Project` impl, but what
             //   about the soundness of particular use sites?
-            // - Do we want this to support shrinking casts as well?
+            // - Do we want this to support shrinking casts as well? If so,
+            //   we'll need to remove the `CastExact` impl.
             static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
                 let t = <Src as KnownLayout>::LAYOUT;
                 let u = <Dst as KnownLayout>::LAYOUT;
-                t.align.get() >= u.align.get() && match (t.size_info, u.size_info) {
+                match (t.size_info, u.size_info) {
                     (SizeInfo::Sized { size: t }, SizeInfo::Sized { size: u }) => t == u,
                     (
                         SizeInfo::SliceDst(TrailingSliceLayout { offset: t_offset, elem_size: t_elem_size }),
                         SizeInfo::SliceDst(TrailingSliceLayout { offset: u_offset, elem_size: u_elem_size })
-                    ) => t_offset == u_offset && t_elem_size == u_elem_size,
+                    ) => t.align.get() >= u.align.get() && t_offset == u_offset && t_elem_size == u_elem_size,
                     _ => false,
                 }
             });
@@ -164,6 +247,20 @@ pub mod cast {
 
     // SAFETY: The `Project::project` impl preserves referent address.
     unsafe impl<Src, Dst> Cast<Src, Dst> for CastUnsized
+    where
+        Src: ?Sized + KnownLayout,
+        Dst: ?Sized + KnownLayout<PointerMetadata = Src::PointerMetadata>,
+    {
+    }
+
+    // SAFETY: By the `static_assert!` in `Project::project`, `Src` and `Dst`
+    // are either:
+    // - Both sized and equal in size
+    // - Both slice DSTs with the same alignment, trailing slice offset, and
+    //   element size. These ensure that any given pointer metadata encodes the
+    //   same size for both `Src` and `Dst` (note that the alignment is required
+    //   as it affects the amount of trailing padding).
+    unsafe impl<Src, Dst> CastExact<Src, Dst> for CastUnsized
     where
         Src: ?Sized + KnownLayout,
         Dst: ?Sized + KnownLayout<PointerMetadata = Src::PointerMetadata>,
@@ -188,7 +285,7 @@ pub mod cast {
         T: HasField<F, VARIANT_ID, FIELD_ID>,
     {
         #[inline(always)]
-        fn project(src: PtrInner<'_, T>) -> *mut T::Type {
+        fn project_inner(src: PtrInner<'_, T>) -> *mut T::Type {
             T::project(src)
         }
     }
@@ -221,7 +318,7 @@ pub mod cast {
         UV: Project<U, V>,
     {
         #[inline(always)]
-        fn project(t: PtrInner<'_, T>) -> *mut V {
+        fn project_inner(t: PtrInner<'_, T>) -> *mut V {
             t.project::<_, TU>().project::<_, UV>().as_ptr()
         }
     }
@@ -239,6 +336,19 @@ pub mod cast {
     {
     }
 
+    // SAFETY: Since the `Project::project` impl delegates to `TU::project` and
+    // `UV::project`, and since `TU` and `UV` are `CastExact`, the `Project::project`
+    // impl preserves the set of referent bytes.
+    unsafe impl<T, U, V, TU, UV> CastExact<T, V> for TransitiveProject<U, TU, UV>
+    where
+        T: ?Sized,
+        U: ?Sized,
+        V: ?Sized,
+        TU: CastExact<T, U>,
+        UV: CastExact<U, V>,
+    {
+    }
+
     /// A cast from `T` to `[u8]`.
     pub(crate) struct AsBytesCast;
 
@@ -251,7 +361,7 @@ pub mod cast {
     // true of other proofs in this codebase). Is this guaranteed anywhere?
     unsafe impl<T: ?Sized + KnownLayout> Project<T, [u8]> for AsBytesCast {
         #[inline(always)]
-        fn project(src: PtrInner<'_, T>) -> *mut [u8] {
+        fn project_inner(src: PtrInner<'_, T>) -> *mut [u8] {
             let bytes = match T::size_of_val_raw(src.as_non_null()) {
                 Some(bytes) => bytes,
                 // SAFETY: `KnownLayout::size_of_val_raw` promises to always
@@ -268,4 +378,7 @@ pub mod cast {
 
     // SAFETY: The `Project::project` impl preserves referent address.
     unsafe impl<T: ?Sized + KnownLayout> Cast<T, [u8]> for AsBytesCast {}
+
+    // SAFETY: The `Project::project` impl preserves the set of referent bytes.
+    unsafe impl<T: ?Sized + KnownLayout> CastExact<T, [u8]> for AsBytesCast {}
 }
