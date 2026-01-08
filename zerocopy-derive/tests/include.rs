@@ -128,4 +128,24 @@ pub mod util {
         let ptr = ptr.cast::<_, ::zerocopy::pointer::cast::CastSized, _>();
         assert!(<T as super::imp::TryFromBytes>::is_bit_valid(ptr));
     }
+
+    pub fn test_is_bit_valid<T: super::imp::TryFromBytes>(
+        mut val: impl super::imp::IntoBytes,
+        is_bit_valid: bool,
+    ) {
+        let candidate = ::zerocopy::Ptr::from_mut(&mut val);
+        let candidate = candidate.forget_aligned();
+        // SAFETY: by `val: impl IntoBytes`, `val` consists entirely of
+        // initialized bytes. It's still unsound because this might let us
+        // overwrite `val` with initialized-but-invalid bytes, but we don't do
+        // that, so no UB is ever exercised.
+        let candidate = unsafe { candidate.assume_initialized() };
+
+        let mut candidate = {
+            use super::imp::pointer::{cast::CastSized, BecauseExclusive};
+            candidate.cast::<super::imp::ReadOnly<T>, CastSized, (_, BecauseExclusive)>()
+        };
+
+        super::imp::assert_eq!(T::is_bit_valid(candidate.reborrow_shared()), is_bit_valid);
+    }
 }
