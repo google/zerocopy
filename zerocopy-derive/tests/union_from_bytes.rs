@@ -72,3 +72,12 @@ where
 
 util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::FromBytes);
 test_trivial_is_bit_valid!(WithParams<'static, 'static, u8, 42> => test_with_params_trivial_is_bit_valid);
+
+#[derive(imp::FromBytes)]
+#[repr(C)]
+union UnsafeCellUnion {
+    a: imp::ManuallyDrop<imp::UnsafeCell<u8>>,
+}
+
+util_assert_impl_all!(UnsafeCellUnion: imp::FromBytes);
+test_trivial_is_bit_valid!(UnsafeCellUnion => test_unsafe_cell_union_trivial_is_bit_valid);
