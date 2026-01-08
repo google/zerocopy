@@ -125,7 +125,7 @@ util_assert_impl_all!(UnsafeCellUnion: imp::TryFromBytes);
 
 #[test]
 fn unsafe_cell_union() {
-    crate::util::test_is_bit_valid::<UnsafeCellUnion>([0u8], true);
-    crate::util::test_is_bit_valid::<UnsafeCellUnion>([1u8], true);
-    crate::util::test_is_bit_valid::<UnsafeCellUnion>([2u8], false);
+    crate::util::test_is_bit_valid::<UnsafeCellUnion, _>([0u8], true);
+    crate::util::test_is_bit_valid::<UnsafeCellUnion, _>([1u8], true);
+    crate::util::test_is_bit_valid::<UnsafeCellUnion, _>([2u8], false);
 }
