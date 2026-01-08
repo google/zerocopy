@@ -901,15 +901,11 @@ fn derive_try_from_bytes_struct(
                 where
                     ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
                 {
-                    use #zerocopy_crate::util::macro_util::core_reexport;
-                    use #zerocopy_crate::pointer::PtrInner;
-
                     true #(&& {
                         let field_candidate = candidate.reborrow().project::<
                             _,
                             { #zerocopy_crate::ident_id!(#field_names) }
                         >();
-
                         <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
                     })*
                 }

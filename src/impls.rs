@@ -1005,6 +1005,137 @@ const _: () = unsafe {
 // [1] https://doc.rust-lang.org/core/option/enum.Option.html
 const _: () = unsafe { unsafe_impl!(T: Immutable => Immutable for Option<T>) };
 
+mod tuples {
+    use super::*;
+
+    /// Generates various trait implementations for tuples.
+    ///
+    /// # Safety
+    ///
+    /// `impl_tuple!` should be provided name-number pairs, where each number is
+    /// the ordinal of the preceding type name.
+    macro_rules! impl_tuple {
+        // Entry point.
+        ($($T:ident $I:tt),+ $(,)?) => {
+            crate::util::macros::__unsafe();
+            impl_tuple!(@all [] [$($T $I)+]);
+        };
+
+        // Build up the set of tuple types (i.e., `(A,)`, `(A, B)`, `(A, B, C)`,
+        // etc.) Trait implementations that do not depend on field index may be
+        // added to this branch.
+        (@all [$($head_T:ident $head_I:tt)*] [$next_T:ident $next_I:tt $($tail:tt)*]) => {
+            // SAFETY: If all fields of the tuple `Self` are `Immutable`, so too is `Self`.
+            unsafe_impl!($($head_T: Immutable,)* $next_T: Immutable => Immutable for ($($head_T,)* $next_T,));
+
+            // SAFETY: If all fields in `c` are `is_bit_valid`, so too is `c`.
+            unsafe_impl!($($head_T: TryFromBytes,)* $next_T: TryFromBytes => TryFromBytes for ($($head_T,)* $next_T,); |c| {
+                let mut c = c;
+                $(TryFromBytes::is_bit_valid(c.reborrow().project::<_, { crate::ident_id!($head_I) }>()) &&)*
+                    TryFromBytes::is_bit_valid(c.reborrow().project::<_, { crate::ident_id!($next_I) }>())
+            });
+
+            // SAFETY: If all fields in `Self` are `FromZeros`, so too is `Self`.
+            unsafe_impl!($($head_T: FromZeros,)* $next_T: FromZeros => FromZeros for ($($head_T,)* $next_T,));
+
+            // SAFETY: If all fields in `Self` are `FromBytes`, so too is `Self`.
+            unsafe_impl!($($head_T: FromBytes,)* $next_T: FromBytes => FromBytes for ($($head_T,)* $next_T,));
+
+            // Generate impls that depend on tuple index.
+            impl_tuple!(@variants
+                [$($head_T $head_I)* $next_T $next_I]
+                []
+                [$($head_T $head_I)* $next_T $next_I]
+            );
+
+            // Recurse to next tuple size
+            impl_tuple!(@all [$($head_T $head_I)* $next_T $next_I] [$($tail)*]);
+        };
+        (@all [$($head_T:ident $head_I:tt)*] []) => {};
+
+        // Emit trait implementations that depend on field index.
+        (@variants
+            // The full tuple definition in type–index pairs.
+            [$($AllT:ident $AllI:tt)+]
+            // Types before the current index.
+            [$($BeforeT:ident)*]
+            // The types and indices at and after the current index.
+            [$CurrT:ident $CurrI:tt $($AfterT:ident $AfterI:tt)*]
+        ) => {
+            // SAFETY:
+            // - `Self` is a struct (albeit anonymous), so `VARIANT_ID` is
+            //   `STRUCT_VARIANT_ID`.
+            // - `$CurrI` is the field at index `$CurrI`, so `FIELD_ID` is
+            //   `zerocopy::ident_id!($CurrI)`
+            // - `()` has the same visibility as the `.$CurrI` field (ie, `.0`,
+            //   `.1`, etc)
+            // - `Type` has the same type as `$CurrI`; i.e., `$CurrT`.
+            unsafe impl<$($AllT),+> crate::HasField<
+                (),
+                { crate::STRUCT_VARIANT_ID },
+                { crate::ident_id!($CurrI)}
+            > for ($($AllT,)+) {
+                #[inline]
+                fn only_derive_is_allowed_to_implement_this_trait()
+                where
+                    Self: Sized
+                {}
+
+                type Type = $CurrT;
+
+                #[inline(always)]
+                fn project(slf: crate::PtrInner<'_, Self>) -> *mut Self::Type {
+                    let slf = slf.as_non_null().as_ptr();
+                    // SAFETY: `PtrInner` promises it references either a zero-sized
+                    // byte range, or else will reference a byte range that is
+                    // entirely contained within an allocated object. In either
+                    // case, this guarantees that `(*slf).$CurrI` is in-bounds of
+                    // `slf`.
+                    unsafe { core::ptr::addr_of_mut!((*slf).$CurrI) }
+                }
+            }
+
+            // Recurse to the next index.
+            impl_tuple!(@variants [$($AllT $AllI)+] [$($BeforeT)* $CurrT] [$($AfterT $AfterI)*]);
+        };
+        (@variants [$($AllT:ident $AllI:tt)+] [$($BeforeT:ident)*] []) => {};
+    }
+
+    // SAFETY: `impl_tuple` is provided name-number pairs, where number is the
+    // ordinal of the name.
+    #[allow(clippy::multiple_unsafe_ops_per_block)]
+    const _: () = unsafe {
+        impl_tuple! {
+            A 0,
+            B 1,
+            C 2,
+            D 3,
+            E 4,
+            F 5,
+            G 6,
+            H 7,
+            I 8,
+            J 9,
+            K 10,
+            L 11,
+            M 12,
+            N 13,
+            O 14,
+            P 15,
+            Q 16,
+            R 17,
+            S 18,
+            T 19,
+            U 20,
+            V 21,
+            W 22,
+            X 23,
+            Y 24,
+            Z 25,
+        };
+    };
+}
+
 // SIMD support
 //
 // Per the Unsafe Code Guidelines Reference [1]:
