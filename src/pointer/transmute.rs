@@ -17,6 +17,12 @@ use crate::{
     FromBytes, Immutable, IntoBytes, Unalign,
 };
 
+// TODO: We've removed the `SizeEq` super-trait bound.
+// - Update this safety documentation to not rely on `SizeEq`.
+// - Consider unifying `Ptr::cast` and `Ptr::transmute` - all that separates
+//   them now is that `transmute` assumes `SizeEq::CastFrom`, while `cast` takes
+//   an explicit cast argument.
+
 /// Transmutations which are sound to attempt, conditional on validating the bit
 /// validity of the destination type.
 ///
@@ -102,13 +108,10 @@ use crate::{
 /// - The set of `DV`-valid `Dst`s is a superset of the set of `SV`-valid
 ///   `Src`s. Thus, any value written via `src` is guaranteed to be a `DV`-valid
 ///   `Dst`.
-pub unsafe trait TryTransmuteFromPtr<Src: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R>:
-    SizeCompat<Src>
-{
-}
+pub unsafe trait TryTransmuteFromPtr<Src: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R> {}
 
-#[allow(missing_copy_implementations, missing_debug_implementations)]
-pub enum BecauseMutationCompatible {}
+// #[allow(missing_copy_implementations, missing_debug_implementations)]
+// pub enum BecauseMutationCompatible {}
 
 // TODO: Update this comment to not rely on `SizeCompat` implying size equality
 // (but instead rely on *runtime execution* of `SizeCompat::CastFrom_inner`
@@ -136,16 +139,17 @@ pub enum BecauseMutationCompatible {}
 //   - `Src: Immutable` and `Dst: Immutable`
 //   - `Dst: InvariantsEq<Src>`, which guarantees that `Src` and `Dst` have the
 //     same invariants, and have `UnsafeCell`s covering the same byte ranges
-unsafe impl<Src, Dst, SV, DV, A, R>
-    TryTransmuteFromPtr<Src, A, SV, DV, (BecauseMutationCompatible, R)> for Dst
-where
-    A: Aliasing,
-    SV: Validity,
-    DV: Validity,
-    Src: TransmuteFrom<Dst, DV, SV> + ?Sized,
-    Dst: MutationCompatible<Src, A, SV, DV, R> + SizeCompat<Src> + ?Sized,
-{
-}
+
+// unsafe impl<Src, Dst, SV, DV, A, R>
+//     TryTransmuteFromPtr<Src, A, SV, DV, (BecauseMutationCompatible, R)> for Dst
+// where
+//     A: Aliasing,
+//     SV: Validity,
+//     DV: Validity,
+//     Src: TransmuteFrom<Dst, DV, SV> + ?Sized,
+//     Dst: MutationCompatible<Src, A, SV, DV, R> + SizeEq<Src> + ?Sized,
+// {
+// }
 
 // SAFETY:
 // - Forwards transmutation: Since aliasing is `Shared` and `Src: Immutable`,
@@ -154,43 +158,61 @@ where
 //   `dst` does not permit mutation of its referent.
 // - No safe code, given access to `src` and `dst`, can cause undefined
 //   behavior: `Src: Immutable` and `Dst: Immutable`
-unsafe impl<Src, Dst, SV, DV> TryTransmuteFromPtr<Src, Shared, SV, DV, BecauseImmutable> for Dst
+unsafe impl<Src, Dst, SV, DV, A> TryTransmuteFromPtr<Src, A, SV, DV, BecauseImmutable> for Dst
 where
+    A: Aliasing,
     SV: Validity,
     DV: Validity,
     Src: Immutable + ?Sized,
-    Dst: Immutable + SizeCompat<Src> + ?Sized,
+    Dst: Immutable + ?Sized,
 {
 }
 
-/// Denotes that `src: Ptr<Src, (A, _, SV)>` and `dst: Ptr<Self, (A, _, DV)>`,
-/// referencing the same referent at the same time, cannot be used by safe code
-/// to break library safety invariants of `Src` or `Self`.
-///
-/// # Safety
-///
-/// At least one of the following must hold:
-/// - `Src: Read<A, _>` and `Self: Read<A, _>`
-/// - `Self: InvariantsEq<Src>`, and, for some `V`:
-///   - `Dst: TransmuteFrom<Src, V, V>`
-///   - `Src: TransmuteFrom<Dst, V, V>`
-pub unsafe trait MutationCompatible<Src: ?Sized, A: Aliasing, SV, DV, R> {}
-
-#[allow(missing_copy_implementations, missing_debug_implementations)]
-pub enum BecauseRead {}
-
-// TODO: Maybe use the same reason for both? There shouldn't be any situation in
-// which the reasons are different (one is BecauseExclusive and the other is
-// BecauseImmutable).
-
-// SAFETY: `Src: Read<A, _>` and `Dst: Read<A, _>`.
-unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R>
-    MutationCompatible<Src, A, SV, DV, (BecauseRead, R)> for Dst
+// SAFETY: TODO
+unsafe impl<Src, Dst, SV, DV> TryTransmuteFromPtr<Src, Exclusive, SV, DV, BecauseExclusive> for Dst
 where
-    Src: Read<A, R>,
-    Dst: Read<A, R>,
+    SV: Validity,
+    DV: Validity,
+    Src: TransmuteFrom<Dst, DV, SV> + ?Sized,
+    Dst: ?Sized,
 {
 }
+
+// SAFETY: TODO
+unsafe impl<Src, Dst, SV, DV, A> TryTransmuteFromPtr<Src, A, SV, DV, BecauseInvariantsEq> for Dst
+where
+    A: Aliasing,
+    SV: Validity,
+    DV: Validity,
+    Src: TransmuteFrom<Dst, DV, SV> + ?Sized,
+    Dst: TransmuteFrom<Src, SV, DV> + InvariantsEq<Src> + ?Sized,
+{
+}
+
+// / Denotes that `src: Ptr<Src, (A, _, SV)>` and `dst: Ptr<Self, (A, _, DV)>`,
+// / referencing the same referent at the same time, cannot be used by safe code
+// / to break library safety invariants of `Src` or `Self`.
+// /
+// / # Safety
+// /
+// / At least one of the following must hold:
+// / - `Src: Read<A, _>` and `Self: Read<A, _>`
+// / - `Self: InvariantsEq<Src>`, and, for some `V`:
+// /   - `Dst: TransmuteFrom<Src, V, V>`
+// /   - `Src: TransmuteFrom<Dst, V, V>`
+// pub unsafe trait MutationCompatible<Src: ?Sized, A: Aliasing, SV, DV, R> {}
+
+// #[allow(missing_copy_implementations, missing_debug_implementations)]
+// pub enum BecauseRead {}
+
+// // SAFETY: `Src: Read<A, _>` and `Dst: Read<A, _>`.
+// unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R>
+//     MutationCompatible<Src, A, SV, DV, (BecauseRead, R)> for Dst
+// where
+//     Src: Read<A, R>,
+//     Dst: Read<A, R>,
+// {
+// }
 
 /// Denotes that two types have the same invariants.
 ///
@@ -204,15 +226,15 @@ pub unsafe trait InvariantsEq<T: ?Sized> {}
 // SAFETY: Trivially sound to have multiple `&T` pointing to the same referent.
 unsafe impl<T: ?Sized> InvariantsEq<T> for T {}
 
-// SAFETY: `Dst: InvariantsEq<Src> + TransmuteFrom<Src, SV, DV>`, and `Src:
-// TransmuteFrom<Dst, DV, SV>`.
-unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing, SV: Validity, DV: Validity>
-    MutationCompatible<Src, A, SV, DV, BecauseInvariantsEq> for Dst
-where
-    Src: TransmuteFrom<Dst, DV, SV>,
-    Dst: TransmuteFrom<Src, SV, DV> + InvariantsEq<Src>,
-{
-}
+// // SAFETY: `Dst: InvariantsEq<Src> + TransmuteFrom<Src, SV, DV>`, and `Src:
+// // TransmuteFrom<Dst, DV, SV>`.
+// unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing, SV: Validity, DV: Validity>
+//     MutationCompatible<Src, A, SV, DV, BecauseInvariantsEq> for Dst
+// where
+//     Src: TransmuteFrom<Dst, DV, SV>,
+//     Dst: TransmuteFrom<Src, SV, DV> + InvariantsEq<Src>,
+// {
+// }
 
 #[allow(missing_debug_implementations, missing_copy_implementations)]
 #[doc(hidden)]
