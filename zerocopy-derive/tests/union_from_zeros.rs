@@ -72,3 +72,12 @@ where
 }
 
 util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::FromZeros);
+
+#[derive(imp::FromZeros)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+union UnsafeCellUnion {
+    a: imp::ManuallyDrop<imp::UnsafeCell<u8>>,
+}
+
+util_assert_impl_all!(UnsafeCellUnion: imp::FromZeros);
