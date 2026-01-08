@@ -15,7 +15,7 @@ use crate::{
     pointer::{
         inner::PtrInner,
         invariant::*,
-        transmute::{MutationCompatible, SizeCompat, TransmuteFromPtr},
+        transmute::{SizeCompat, TransmuteFromPtr},
     },
     AlignmentError, CastError, CastType, KnownLayout, SizeError, TryFromBytes, ValidityError,
 };
@@ -581,10 +581,9 @@ mod _conversions {
         /// Reads the referent.
         #[must_use]
         #[inline]
-        pub fn read_unaligned<R>(self) -> T
+        pub fn read_unaligned(self) -> T
         where
             T: Copy,
-            T: Read<I::Aliasing, R>,
         {
             (*self.into_unalign().as_ref()).into_inner()
         }
@@ -802,21 +801,19 @@ mod _transitions {
         /// On error, unsafe code may rely on this method's returned
         /// `ValidityError` containing `self`.
         #[inline]
-        pub(crate) fn try_into_valid<R, S>(
+        pub(crate) fn try_into_valid<R>(
             mut self,
         ) -> Result<Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>, ValidityError<Self, T>>
         where
-            T: TryFromBytes
-                + Read<I::Aliasing, R>
-                + TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, S>,
-            ReadOnly<T>: Read<I::Aliasing, R>,
+            T: TryFromBytes + TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, R>,
+            ReadOnly<T>: TransmuteFromPtr<T, I::Aliasing, Initialized, Initialized, R>,
             I::Aliasing: Reference,
             I: Invariants<Validity = Initialized>,
         {
             // This call may panic. If that happens, it doesn't cause any
             // soundness issues, as we have not generated any invalid state
             // which we need to fix before returning.
-            if T::is_bit_valid(self.reborrow().transmute::<_, _, _>().reborrow_shared()) {
+            if T::is_bit_valid(self.reborrow().transmute().reborrow_shared()) {
                 // SAFETY: If `T::is_bit_valid`, code may assume that `self`
                 // contains a bit-valid instance of `T`. By `T:
                 // TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid>`, so
@@ -846,7 +843,10 @@ mod _casts {
 
     use super::*;
     use crate::{
-        pointer::cast::{AsBytesCast, Cast, HasWrappedField, Wrapped},
+        pointer::{
+            cast::{AsBytesCast, Cast, HasWrappedField, Wrapped},
+            TryTransmuteFromPtr,
+        },
         HasField,
     };
 
@@ -897,7 +897,8 @@ mod _casts {
         #[must_use]
         pub fn cast<U, C, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, I::Validity)>
         where
-            T: MutationCompatible<U, I::Aliasing, I::Validity, I::Validity, R>,
+            // T: MutationCompatible<U, I::Aliasing, I::Validity, I::Validity, R>,
+            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, I::Validity, R>,
             U: 'a + ?Sized + CastableFrom<T, I::Validity, I::Validity>,
             C: Cast<T, U>,
         {
@@ -993,12 +994,11 @@ mod _casts {
         #[inline]
         pub fn as_bytes<R>(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Valid)>
         where
-            T: Read<I::Aliasing, R>,
-            [u8]: Read<I::Aliasing, R>,
+            [u8]: TransmuteFromPtr<T, I::Aliasing, Initialized, Initialized, R>,
             I::Aliasing: Reference,
         {
             let ptr = self.cast::<_, AsBytesCast, _>();
-            ptr.bikeshed_recall_aligned().recall_validity::<Valid, (_, (_, _))>()
+            ptr.bikeshed_recall_aligned().recall_validity::<Valid, BecauseImmutable>()
         }
     }
 
@@ -1083,7 +1083,10 @@ mod _casts {
         >
         where
             I::Aliasing: Reference,
-            U: 'a + ?Sized + KnownLayout + Read<I::Aliasing, R>,
+            U: 'a
+                + ?Sized
+                + KnownLayout
+                + TryTransmuteFromPtr<[u8], I::Aliasing, Initialized, Initialized, R>,
         {
             let (inner, remainder) =
                 self.as_inner().try_cast_into(cast_type, meta).map_err(|err| {
@@ -1094,6 +1097,8 @@ mod _casts {
                     // `Ptr`'s invariants.
                     unsafe { Ptr::from_inner(inner) })
                 })?;
+
+            // TODO: Update this safety comment for `TryTransmuteFromPtr`.
 
             // SAFETY:
             // 0. Since `U: Read<I::Aliasing, _>`, either:
@@ -1146,8 +1151,11 @@ mod _casts {
         ) -> Result<Ptr<'a, U, (I::Aliasing, Aligned, Initialized)>, CastError<Self, U>>
         where
             I::Aliasing: Reference,
-            U: 'a + ?Sized + KnownLayout + Read<I::Aliasing, R>,
-            [u8]: Read<I::Aliasing, R>,
+            U: 'a
+                + ?Sized
+                + KnownLayout
+                + TryTransmuteFromPtr<[u8], I::Aliasing, Initialized, Initialized, R>,
+            [u8]: TransmuteFromPtr<U, I::Aliasing, Initialized, Initialized, R>,
         {
             // FIXME(#67): Remove this allow. See NonNulSlicelExt for more
             // details.
