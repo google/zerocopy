@@ -794,51 +794,49 @@ fn derive_try_from_bytes_struct(
 }
 
 /// A union is `TryFromBytes` if:
-/// - all of its fields are `TryFromBytes` and `Immutable`
+/// - all of its fields are `TryFromBytes`
 fn derive_try_from_bytes_union(ctx: &Ctx, unn: &DataUnion, top_level: Trait) -> TokenStream {
-    // FIXME(#5): Remove the `Immutable` bound.
-    let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
+    let field_type_trait_bounds = FieldBounds::All(&[TraitBound::Slf]);
     let extras = try_gen_trivial_is_bit_valid(ctx, top_level).unwrap_or_else(|| {
-        let zerocopy_crate = &ctx.zerocopy_crate;
         let fields = unn.fields();
         let field_names = fields.iter().map(|(_vis, name, _ty)| name);
         let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
+        let zerocopy_crate = &ctx.zerocopy_crate;
         let core = ctx.core_path();
+
         quote!(
-            // SAFETY: We use `is_bit_valid` to validate that any field is
-            // bit-valid; we only return `true` if at least one of them is.
-            // The bit validity of a union is not yet well defined in Rust,
-            // but it is guaranteed to be no more strict than this
-            // definition. See #696 for a more in-depth discussion.
-            fn is_bit_valid(
-                mut candidate: #zerocopy_crate::Maybe<'_, Self>
-            ) -> #core::primitive::bool {
+                // SAFETY: We use `is_bit_valid` to validate that any field is
+                // bit-valid; we only return `true` if at least one of them is.
+                // The bit validity of a union is not yet well defined in Rust,
+                // but it is guaranteed to be no more strict than this
+                // definition. See #696 for a more in-depth discussion.
+                fn is_bit_valid(
+                    mut candidate: #zerocopy_crate::Maybe<'_, Self>
+                ) -> #core::primitive::bool {
 
-                false #(|| {
-                    // SAFETY:
-                    // - Since `Self: Immutable` is enforced by
-                    //   `self_type_trait_bounds`, neither `*slf` nor the
-                    //   returned pointer's referent contain any
-                    //   `UnsafeCell`s
-                    // - Both source and destination validity are
-                    //   `Initialized`, which is always a sound
-                    //   transmutation.
-                    let field_candidate = unsafe {
-                        candidate.reborrow().project_transmute_unchecked::<
-                            _,
-                            _,
-                            #zerocopy_crate::pointer::cast::WrappedProjection<
-                                #zerocopy_crate::ReadOnly<_>,
+                    false #(|| {
+                        // SAFETY:
+                        // - Since `ReadOnly<Self>: Immutable` unconditionally,
+                        //   neither `*slf` nor the returned pointer's referent
+                        //   permit interior mutation.
+                        // - Both source and destination validity are
+                        //   `Initialized`, which is always a sound
+                        //   transmutation.
+                        let field_candidate = unsafe {
+                            candidate.reborrow().project_transmute_unchecked::<
                                 _,
-                                { #zerocopy_crate::UNION_VARIANT_ID },
-                                { #zerocopy_crate::ident_id!(#field_names) }
-                            >
-                        >()
-                    };
+                                _,
+                                #zerocopy_crate::pointer::cast::WrappedProjection<
+                                    #zerocopy_crate::ReadOnly<_>,
+                                    _,
+                                    { #zerocopy_crate::UNION_VARIANT_ID },
+                                    { #zerocopy_crate::ident_id!(#field_names) }
+                                >
+                            >()
+                        };
 
-                    <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
-                })*
+                        <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
+                    })*
             }
         )
     });
@@ -1024,12 +1022,9 @@ fn derive_from_zeros_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Erro
 }
 
 /// Unions are `FromZeros` if
-/// - all fields are `FromZeros` and `Immutable`
+/// - all fields are `FromZeros`
 fn derive_from_zeros_union(ctx: &Ctx, unn: &DataUnion) -> TokenStream {
-    // FIXME(#5): Remove the `Immutable` bound. It's only necessary for
-    // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
-    let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
+    let field_type_trait_bounds = FieldBounds::All(&[TraitBound::Slf]);
     ImplBlockBuilder::new(ctx, unn, Trait::FromZeros, field_type_trait_bounds).build()
 }
 
@@ -1095,12 +1090,9 @@ fn enum_size_from_repr(repr: &EnumRepr) -> Result<usize, Error> {
 }
 
 /// Unions are `FromBytes` if
-/// - all fields are `FromBytes` and `Immutable`
+/// - all fields are `FromBytes`
 fn derive_from_bytes_union(ctx: &Ctx, unn: &DataUnion) -> TokenStream {
-    // FIXME(#5): Remove the `Immutable` bound. It's only necessary for
-    // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
-    let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
+    let field_type_trait_bounds = FieldBounds::All(&[TraitBound::Slf]);
     ImplBlockBuilder::new(ctx, unn, Trait::FromBytes, field_type_trait_bounds).build()
 }
 
