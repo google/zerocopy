@@ -3920,7 +3920,7 @@ pub unsafe trait FromBytes: FromZeros {
     {
         static_assert_dst_is_not_zst!(Self);
         match Ptr::from_mut(source).try_cast_into_no_leftover::<_, BecauseExclusive>(None) {
-            Ok(ptr) => Ok(ptr.recall_validity::<_, (_, (_, _))>().as_mut()),
+            Ok(ptr) => Ok(ptr.recall_validity::<_, BecauseExclusive>().as_mut()),
             Err(err) => Err(err.map_src(|src| src.as_mut())),
         }
     }
@@ -4390,7 +4390,7 @@ pub unsafe trait FromBytes: FromZeros {
         let source = Ptr::from_mut(source);
         let maybe_slf = source.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
         match maybe_slf {
-            Ok(slf) => Ok(slf.recall_validity::<_, (_, (_, BecauseExclusive))>().as_mut()),
+            Ok(slf) => Ok(slf.recall_validity::<_, BecauseExclusive>().as_mut()),
             Err(err) => Err(err.map_src(|s| s.as_mut())),
         }
     }
@@ -4869,7 +4869,7 @@ fn mut_from_prefix_suffix<T: FromBytes + IntoBytes + KnownLayout + ?Sized>(
     let (slf, prefix_suffix) = Ptr::from_mut(source)
         .try_cast_into::<_, BecauseExclusive>(cast_type, meta)
         .map_err(|err| err.map_src(|s| s.as_mut()))?;
-    Ok((slf.recall_validity::<_, (_, (_, _))>().as_mut(), prefix_suffix.as_mut()))
+    Ok((slf.recall_validity::<_, BecauseExclusive>().as_mut(), prefix_suffix.as_mut()))
 }
 
 /// Analyzes whether a type is [`IntoBytes`].
