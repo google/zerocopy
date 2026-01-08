@@ -24,16 +24,11 @@ util_assert_impl_all!(One: imp::TryFromBytes);
 
 #[test]
 fn one() {
-    // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let candidate = ::zerocopy::Ptr::from_ref(&One { a: 42 });
-    let candidate = candidate.forget_aligned();
-    // SAFETY: `&One` consists entirely of initialized bytes.
-    let candidate = unsafe { candidate.assume_initialized() };
-    let is_bit_valid = <One as imp::TryFromBytes>::is_bit_valid(candidate);
-    assert!(is_bit_valid);
+    crate::util::test_is_bit_valid::<One, _>([42u8], true);
+    crate::util::test_is_bit_valid::<One, _>([43u8], true);
 }
 
-#[derive(imp::Immutable, imp::TryFromBytes)]
+#[derive(imp::Immutable, imp::TryFromBytes, imp::IntoBytes)]
 #[repr(C)]
 union Two {
     a: bool,
@@ -44,41 +39,9 @@ util_assert_impl_all!(Two: imp::TryFromBytes);
 
 #[test]
 fn two() {
-    // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let candidate_a = ::zerocopy::Ptr::from_ref(&Two { a: false });
-    let candidate_a = candidate_a.forget_aligned();
-    // SAFETY: `&Two` consists entirely of initialized bytes.
-    let candidate_a = unsafe { candidate_a.assume_initialized() };
-    let is_bit_valid = <Two as imp::TryFromBytes>::is_bit_valid(candidate_a);
-    assert!(is_bit_valid);
-
-    let candidate_b = ::zerocopy::Ptr::from_ref(&Two { b: true });
-    let candidate_b = candidate_b.forget_aligned();
-    // SAFETY: `&Two` consists entirely of initialized bytes.
-    let candidate_b = unsafe { candidate_b.assume_initialized() };
-    let is_bit_valid = <Two as imp::TryFromBytes>::is_bit_valid(candidate_b);
-    assert!(is_bit_valid);
-}
-
-#[test]
-fn two_bad() {
-    // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let mut buf = [2u8];
-    let candidate = ::zerocopy::Ptr::from_mut(&mut buf);
-    let candidate = candidate.forget_aligned();
-    // SAFETY: `&[u8]` consists entirely of initialized bytes.
-    let candidate = unsafe { candidate.assume_initialized() };
-
-    let candidate = {
-        use imp::pointer::{cast::CastSized, BecauseExclusive};
-        candidate.cast::<Two, CastSized, (_, BecauseExclusive)>()
-    };
-
-    // SAFETY: `candidate`'s referent is as-initialized as `Two`.
-    let candidate = unsafe { candidate.assume_initialized() };
-
-    let is_bit_valid = <Two as imp::TryFromBytes>::is_bit_valid(candidate);
-    assert!(!is_bit_valid);
+    crate::util::test_is_bit_valid::<Two, _>(Two { a: false }, true);
+    crate::util::test_is_bit_valid::<Two, _>(Two { b: true }, true);
+    crate::util::test_is_bit_valid::<Two, _>([2u8], false);
 }
 
 #[derive(imp::Immutable, imp::TryFromBytes)]
@@ -90,23 +53,9 @@ union BoolAndZst {
 
 #[test]
 fn bool_and_zst() {
-    // FIXME(#5): Use `try_transmute` in this test once it's available.
-    let mut buf = [2u8];
-    let candidate = ::zerocopy::Ptr::from_mut(&mut buf);
-    let candidate = candidate.forget_aligned();
-    // SAFETY: `&[u8]` consists entirely of initialized bytes.
-    let candidate = unsafe { candidate.assume_initialized() };
-
-    let candidate = {
-        use imp::pointer::{cast::CastSized, BecauseExclusive};
-        candidate.cast::<BoolAndZst, CastSized, (_, BecauseExclusive)>()
-    };
-
-    // SAFETY: `candidate`'s referent is fully initialized.
-    let candidate = unsafe { candidate.assume_initialized() };
-
-    let is_bit_valid = <BoolAndZst as imp::TryFromBytes>::is_bit_valid(candidate);
-    assert!(is_bit_valid);
+    crate::util::test_is_bit_valid::<BoolAndZst, _>([0u8], true);
+    crate::util::test_is_bit_valid::<BoolAndZst, _>([1u8], true);
+    crate::util::test_is_bit_valid::<BoolAndZst, _>([2u8], true);
 }
 
 #[derive(imp::FromBytes)]
@@ -121,19 +70,7 @@ fn test_maybe_from_bytes() {
     // trivial `is_bit_valid` impl that always returns true. This test confirms
     // that we *don't* spuriously do that when generic parameters are present.
 
-    let mut buf = [2u8];
-    let candidate = ::zerocopy::Ptr::from_mut(&mut buf);
-    let candidate = candidate.bikeshed_recall_initialized_from_bytes();
-
-    let candidate = {
-        use imp::pointer::{cast::CastSized, BecauseExclusive};
-        candidate.cast::<MaybeFromBytes<bool>, CastSized, (_, BecauseExclusive)>()
-    };
-
-    // SAFETY: `[u8]` consists entirely of initialized bytes.
-    let candidate = unsafe { candidate.assume_initialized() };
-    let is_bit_valid = <MaybeFromBytes<bool> as imp::TryFromBytes>::is_bit_valid(candidate);
-    imp::assert!(!is_bit_valid);
+    crate::util::test_is_bit_valid::<MaybeFromBytes<bool>, _>([2u8], false);
 }
 
 #[derive(imp::Immutable, imp::TryFromBytes)]
