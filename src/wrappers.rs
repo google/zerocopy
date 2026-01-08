@@ -215,7 +215,7 @@ impl<T> Unalign<T> {
     /// callers may prefer [`DerefMut::deref_mut`], which is infallible.
     #[inline(always)]
     pub fn try_deref_mut(&mut self) -> Result<&mut T, AlignmentError<&mut Self, T>> {
-        let inner = Ptr::from_mut(self).transmute::<_, _, (_, (_, _))>();
+        let inner = Ptr::from_mut(self).transmute::<_, _, BecauseExclusive>();
         match inner.try_into_aligned() {
             Ok(aligned) => Ok(aligned.as_mut()),
             Err(err) => Err(err.map_src(|src| src.into_unalign().as_mut())),
@@ -411,7 +411,7 @@ impl<T: Unaligned> Deref for Unalign<T> {
 impl<T: Unaligned> DerefMut for Unalign<T> {
     #[inline(always)]
     fn deref_mut(&mut self) -> &mut T {
-        Ptr::from_mut(self).transmute::<_, _, (_, (_, _))>().bikeshed_recall_aligned().as_mut()
+        Ptr::from_mut(self).transmute::<_, _, BecauseExclusive>().bikeshed_recall_aligned().as_mut()
     }
 }
 
@@ -727,7 +727,7 @@ unsafe impl<T: ?Sized> TransmuteFrom<ReadOnly<T>, Valid, Valid> for T {}
 impl<'a, T: ?Sized + Immutable> From<&'a T> for &'a ReadOnly<T> {
     #[inline(always)]
     fn from(t: &'a T) -> &'a ReadOnly<T> {
-        let ro = Ptr::from_ref(t).transmute::<_, _, (_, _)>();
+        let ro = Ptr::from_ref(t).transmute();
         // SAFETY: `ReadOnly<T>` has the same alignment as `T`, and
         // `Ptr::from_ref` produces an aligned `Ptr`.
         let ro = unsafe { ro.assume_alignment() };
