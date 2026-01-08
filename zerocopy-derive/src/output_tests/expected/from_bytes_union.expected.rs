@@ -12,7 +12,7 @@
 const _: () = {
     unsafe impl ::zerocopy::TryFromBytes for Foo
     where
-        u8: ::zerocopy::TryFromBytes + ::zerocopy::Immutable,
+        u8: ::zerocopy::TryFromBytes,
     {
         fn only_derive_is_allowed_to_implement_this_trait() {}
         fn is_bit_valid(
@@ -90,7 +90,7 @@ const _: () = {
 const _: () = {
     unsafe impl ::zerocopy::FromZeros for Foo
     where
-        u8: ::zerocopy::FromZeros + ::zerocopy::Immutable,
+        u8: ::zerocopy::FromZeros,
     {
         fn only_derive_is_allowed_to_implement_this_trait() {}
     }
@@ -109,7 +109,7 @@ const _: () = {
 const _: () = {
     unsafe impl ::zerocopy::FromBytes for Foo
     where
-        u8: ::zerocopy::FromBytes + ::zerocopy::Immutable,
+        u8: ::zerocopy::FromBytes,
     {
         fn only_derive_is_allowed_to_implement_this_trait() {}
     }
