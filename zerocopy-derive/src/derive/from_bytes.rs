@@ -159,10 +159,7 @@ fn derive_from_zeros_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Erro
         .build())
 }
 fn derive_from_zeros_union(ctx: &Ctx, unn: &DataUnion) -> TokenStream {
-    // FIXME(#5): Remove the `Immutable` bound. It's only necessary for
-    // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
-    let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
+    let field_type_trait_bounds = FieldBounds::All(&[TraitBound::Slf]);
     ImplBlockBuilder::new(ctx, unn, Trait::FromZeros, field_type_trait_bounds).build()
 }
 fn derive_from_bytes_struct(ctx: &Ctx, strct: &DataStruct) -> TokenStream {
@@ -186,9 +183,6 @@ fn derive_from_bytes_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Erro
     Ok(ImplBlockBuilder::new(ctx, enm, Trait::FromBytes, FieldBounds::ALL_SELF).build())
 }
 fn derive_from_bytes_union(ctx: &Ctx, unn: &DataUnion) -> TokenStream {
-    // FIXME(#5): Remove the `Immutable` bound. It's only necessary for
-    // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
-    let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
+    let field_type_trait_bounds = FieldBounds::All(&[TraitBound::Slf]);
     ImplBlockBuilder::new(ctx, unn, Trait::FromBytes, field_type_trait_bounds).build()
 }
