@@ -142,7 +142,7 @@ pub mod util {
         let ro = ReadOnly::new(val);
         let candidate = ::zerocopy_renamed::Ptr::from_ref(&ro);
         let candidate = candidate.bikeshed_recall_initialized_immutable();
-        let candidate = candidate.cast::<ReadOnly<T>, CastSized, (_, BecauseImmutable)>();
+        let candidate = candidate.cast::<ReadOnly<T>, CastSized, BecauseImmutable>();
 
         super::imp::assert_eq!(T::is_bit_valid(candidate), is_bit_valid);
     }
