@@ -7,9 +7,7 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 use super::*;
-use crate::pointer::{
-    BecauseInvariantsEq, BecauseMutationCompatible, MutationCompatible, TransmuteFromPtr,
-};
+use crate::pointer::TransmuteFromPtr;
 
 mod def {
     use core::marker::PhantomData;
@@ -197,7 +195,7 @@ pub use def::Ref;
 
 use crate::pointer::{
     invariant::{Aligned, BecauseExclusive, Initialized, Unaligned, Valid},
-    BecauseRead, PtrInner,
+    PtrInner,
 };
 
 impl<B, T> Ref<B, T>
@@ -629,7 +627,7 @@ where
             let ptr = Ptr::from_ref(b);
             // SAFETY: We just checked that `T: Sized`. By invariant on `r`,
             // `b`'s size is equal to `size_of::<T>()`.
-            let ptr = unsafe { cast_for_sized::<T, _, _, _>(ptr) };
+            let ptr = unsafe { cast_for_sized::<T, _, _>(ptr) };
 
             // SAFETY: None of the preceding transformations modifies the
             // address of the pointer, and by invariant on `r`, we know that it
@@ -677,14 +675,7 @@ where
             let ptr = Ptr::from_mut(b);
             // SAFETY: We just checked that `T: Sized`. By invariant on `r`,
             // `b`'s size is equal to `size_of::<T>()`.
-            let ptr = unsafe {
-                cast_for_sized::<
-                    T,
-                    _,
-                    (BecauseRead, BecauseExclusive),
-                    (BecauseMutationCompatible, BecauseInvariantsEq),
-                >(ptr)
-            };
+            let ptr = unsafe { cast_for_sized::<T, _, _>(ptr) };
 
             // SAFETY: None of the preceding transformations modifies the
             // address of the pointer, and by invariant on `r`, we know that it
@@ -700,7 +691,7 @@ where
         let ptr = Ptr::from_mut(b.into_byte_slice_mut())
             .try_cast_into_no_leftover::<T, BecauseExclusive>(None)
             .expect("zerocopy internal error: into_ref should be infallible");
-        let ptr = ptr.recall_validity::<_, (_, (_, _))>();
+        let ptr = ptr.recall_validity::<_, BecauseExclusive>();
         ptr.as_mut()
     }
 }
@@ -811,7 +802,7 @@ where
             let ptr = Ptr::from_ref(b);
             // SAFETY: We just checked that `T: Sized`. By invariant on `r`,
             // `b`'s size is equal to `size_of::<T>()`.
-            let ptr = unsafe { cast_for_sized::<T, _, _, _>(ptr) };
+            let ptr = unsafe { cast_for_sized::<T, _, _>(ptr) };
 
             // SAFETY: None of the preceding transformations modifies the
             // address of the pointer, and by invariant on `r`, we know that it
@@ -853,14 +844,7 @@ where
             let ptr = Ptr::from_mut(b);
             // SAFETY: We just checked that `T: Sized`. By invariant on `r`,
             // `b`'s size is equal to `size_of::<T>()`.
-            let ptr = unsafe {
-                cast_for_sized::<
-                    T,
-                    _,
-                    (BecauseRead, BecauseExclusive),
-                    (BecauseMutationCompatible, BecauseInvariantsEq),
-                >(ptr)
-            };
+            let ptr = unsafe { cast_for_sized::<T, _, BecauseExclusive>(ptr) };
 
             // SAFETY: None of the preceding transformations modifies the
             // address of the pointer, and by invariant on `r`, we know that it
@@ -876,7 +860,7 @@ where
         let ptr = Ptr::from_mut(b)
             .try_cast_into_no_leftover::<T, BecauseExclusive>(None)
             .expect("zerocopy internal error: DerefMut::deref_mut should be infallible");
-        let ptr = ptr.recall_validity::<_, (_, (_, BecauseExclusive))>();
+        let ptr = ptr.recall_validity::<_, BecauseExclusive>();
         ptr.as_mut()
     }
 }
@@ -953,14 +937,16 @@ where
 ///
 /// `T: Sized` and `ptr`'s referent must have size `size_of::<T>()`.
 #[inline(always)]
-unsafe fn cast_for_sized<'a, T, A, R, S>(
+unsafe fn cast_for_sized<'a, T, A, R>(
     ptr: Ptr<'a, [u8], (A, Aligned, Valid)>,
 ) -> Ptr<'a, T, (A, Unaligned, Valid)>
 where
-    T: FromBytes + KnownLayout + ?Sized,
     A: crate::invariant::Aliasing,
-    [u8]: MutationCompatible<T, A, Initialized, Initialized, R>,
-    T: TransmuteFromPtr<T, A, Initialized, Valid, S>,
+    T: FromBytes
+        + KnownLayout
+        + TransmuteFromPtr<T, A, Initialized, Valid, R>
+        + TransmuteFromPtr<[u8], A, Initialized, Initialized, R>
+        + ?Sized,
 {
     use crate::pointer::cast::{Cast, Project};
 
@@ -984,7 +970,7 @@ where
     // SAFETY: The `Project::project` impl preserves referent address.
     unsafe impl<T: ?Sized + KnownLayout> Cast<[u8], T> for CastForSized {}
 
-    ptr.recall_validity::<Initialized, (_, (_, _))>()
+    ptr.recall_validity::<Initialized, BecauseImmutable>()
         .cast::<_, CastForSized, _>()
         .recall_validity::<Valid, _>()
 }
