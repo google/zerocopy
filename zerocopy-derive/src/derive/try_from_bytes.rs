@@ -619,9 +619,7 @@ fn derive_try_from_bytes_struct(
         .build())
 }
 fn derive_try_from_bytes_union(ctx: &Ctx, unn: &DataUnion, top_level: Trait) -> TokenStream {
-    // FIXME(#5): Remove the `Immutable` bound.
-    let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
+    let field_type_trait_bounds = FieldBounds::All(&[TraitBound::Slf]);
     let extras = try_gen_trivial_is_bit_valid(ctx, top_level).unwrap_or_else(|| {
         let zerocopy_crate = &ctx.zerocopy_crate;
         let fields = unn.fields();
@@ -639,10 +637,9 @@ fn derive_try_from_bytes_union(ctx: &Ctx, unn: &DataUnion, top_level: Trait) -> 
             ) -> #core::primitive::bool {
                 false #(|| {
                     // SAFETY:
-                    // - Since `Self: Immutable` is enforced by
-                    //   `self_type_trait_bounds`, neither `*slf` nor the
-                    //   returned pointer's referent permit interior
-                    //   mutation.
+                    // - Since `ReadOnly<Self>: Immutable` unconditionally,
+                    //   neither `*slf` nor the returned pointer's referent
+                    //   permit interior mutation.
                     // - Both source and destination validity are
                     //   `Initialized`, which is always a sound
                     //   transmutation.
