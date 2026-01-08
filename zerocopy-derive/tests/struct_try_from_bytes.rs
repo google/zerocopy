@@ -68,7 +68,7 @@ fn un_sized() {
 
     let mut candidate = {
         use imp::pointer::{cast::CastUnsized, BecauseExclusive};
-        candidate.cast::<_, CastUnsized, (_, BecauseExclusive)>()
+        candidate.cast::<_, CastUnsized, BecauseExclusive>()
     };
 
     let is_bit_valid = <Unsized as imp::TryFromBytes>::is_bit_valid(candidate.reborrow_shared());

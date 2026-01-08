@@ -143,7 +143,7 @@ pub mod util {
 
         let mut candidate = {
             use super::imp::pointer::{cast::CastSized, BecauseExclusive};
-            candidate.cast::<super::imp::ReadOnly<T>, CastSized, (_, BecauseExclusive)>()
+            candidate.cast::<super::imp::ReadOnly<T>, CastSized, BecauseExclusive>()
         };
 
         super::imp::assert_eq!(T::is_bit_valid(candidate.reborrow_shared()), is_bit_valid);
