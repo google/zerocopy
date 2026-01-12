@@ -41,7 +41,7 @@ pub(crate) fn generate_tag_enum(repr: &EnumRepr, data: &DataEnum) -> TokenStream
 
     quote! {
         #repr
-        #[allow(dead_code, non_camel_case_types)]
+        #[allow(dead_code)]
         enum ___ZerocopyTag {
             #(#variants,)*
         }
@@ -90,7 +90,6 @@ fn generate_tag_consts(data: &DataEnum) -> TokenStream {
             //
             //   Casting between two integers of the same size (e.g. i32 -> u32)
             //   is a no-op.
-            #[allow(non_upper_case_globals)]
             const #tag_ident: ___ZerocopyTagPrimitive =
                 ___ZerocopyTag::#variant_ident as ___ZerocopyTagPrimitive;
         }
@@ -143,7 +142,6 @@ fn generate_variant_structs(
 
         let variant_struct = parse_quote! {
             #[repr(C)]
-            #[allow(non_snake_case)]
             struct #variant_struct_ident #impl_generics (
                 core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                 #(#field_types,)*
@@ -200,7 +198,6 @@ fn generate_variants_union(
 
     let variants_union = parse_quote! {
         #[repr(C)]
-        #[allow(non_snake_case)]
         union ___ZerocopyVariants #generics {
             #(#fields)*
             // Enums can have variants with no fields, but unions must
@@ -446,7 +443,6 @@ pub(crate) fn derive_is_bit_valid(
 
             let variants = raw_enum.project::<_, { #zerocopy_crate::ident_id!(variants) }>();
 
-            #[allow(non_upper_case_globals)]
             match tag {
                 #(#match_arms,)*
                 _ => false,
