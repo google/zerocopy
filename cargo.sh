@@ -10,6 +10,6 @@ set -eo pipefail
 
 # Build `cargo-zerocopy` without any RUSTFLAGS or CARGO_TARGET_DIR set in the
 # environment
-env -u RUSTFLAGS -u CARGO_TARGET_DIR cargo +stable build --manifest-path tools/Cargo.toml -p cargo-zerocopy -q
+env -u RUSTFLAGS -u CARGO_TARGET_DIR cargo +stable build --config tools/.cargo/config.toml --manifest-path tools/Cargo.toml -p cargo-zerocopy -q
 # Thin wrapper around the `cargo-zerocopy` binary in `tools/cargo-zerocopy`
 ./tools/target/debug/cargo-zerocopy $@

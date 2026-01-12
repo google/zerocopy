@@ -1,0 +1,17 @@
+[package]
+name = "time-macros"
+version = "0.2.0"
+authors = ["Jacob Pratt <open-source@jhpratt.dev>", "Time contributors"]
+edition = "2018"
+repository = "https://github.com/time-rs/time"
+keywords = ["date", "time", "calendar", "duration"]
+categories = ["date-and-time"]
+readme = "../README.md"
+license = "MIT OR Apache-2.0"
+description = "Procedural macros for the time crate."
+
+[features]
+large-dates = []
+
+[lib]
+proc-macro = true
