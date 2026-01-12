@@ -261,19 +261,6 @@ jobs:
     - name: Populate cache
       uses: ./.github/actions/cache
 
-    # Ensure that Cargo resolves the minimum possible syn version so that if we
-    # accidentally make a change which depends upon features added in more
-    # recent versions of syn, we'll catch it in CI.
-    #
-    # TODO(#1595): Debug why this step is still necessary after #1564 and maybe
-    # remove it.
-    - name: Pin syn dependency
-      run: |
-        set -eo pipefail
-        # Override the exising `syn` dependency with one which requires an exact
-        # version.
-        cargo add -p zerocopy-derive 'syn@=2.0.46'
-
     - name: Configure environment variables
       env:
         TOOLCHAIN: ${{ matrix.toolchain }}
@@ -685,7 +672,10 @@ jobs:
             toolchain: ${{ env.ZC_TOOLCHAIN }}
             components: clippy, rust-src
       - name: Check big endian for aarch64_be-unknown-linux-gnu target
-        run: ./cargo.sh +nightly build --target=aarch64_be-unknown-linux-gnu -Zbuild-std --features simd
+        run: |
+          set -eo pipefail
+          rm .cargo/config.toml
+          ./cargo.sh +nightly build --target=aarch64_be-unknown-linux-gnu -Zbuild-std --features simd
 
   # We can't use this as part of the build matrix because rustup doesn't support
   # the `avr-none` target.
@@ -838,14 +828,6 @@ jobs:
             #
             # [1]  https://stackoverflow.com/a/42139535/836390
 
-            # See comment on "Pin syn dependency" job for why we do this. It needs
-            # to happen before the subsequent `cargo check`, so we don't
-            # background it.
-            #
-            # TODO(#1595): Debug why this step is still necessary after #1564 and
-            # maybe remove it.
-            cargo add -p zerocopy-derive 'syn@=2.0.46' &> /dev/null
-
             cargo check --workspace --tests                         &> /dev/null &
             # On our MSRV toolchain, updating the Cargo index takes a long time, so
             # it is worth specifically caching the MSRV index.
@@ -934,6 +916,8 @@ jobs:
           persist-credentials: false
       - uses: zizmorcore/zizmor-action@e639db99335bc9038abc0e066dfcd72e23d26fb4 # v0.3.0
         with:
+          # Only scan the .github directory to avoid scanning vendored dependencies
+          inputs: .github
           # We don't want to use GitHub Advanced Security because we want to
           # block the merge on zizmor failure, and the only way to do that
           # (without manually configuring a ruleset) is to fail the job, which
