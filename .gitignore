@@ -13,3 +13,6 @@ lcov.info
 
 # VSCode workspace files
 *.code-workspace
+
+# Unconditionally commit everything inside vendor/ (overrides previous rules)
+!vendor/**
