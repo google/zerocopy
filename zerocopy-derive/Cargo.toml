@@ -36,15 +36,6 @@ syn = { version = "2.0.46", features = ["full"] }
 
 [dev-dependencies]
 dissimilar = "1.0.9"
-# We don't use this directly, but trybuild does. On the MSRV toolchain, the
-# version resolver fails to select any version for once_cell unless we
-# depend on it directly.
-once_cell = "=1.9"
-# Same MSRV issue as above.
-libc = "=0.2.163"
-# This is the latest version which is compatible with `syn` 2.0.46, which we pin
-# to in CI for MSRV compatibility reasons.
-prettyplease = "=0.2.17"
 proc-macro2 = "=1.0.80"
 quote = "=1.0.40"
 rustversion = "1.0"
