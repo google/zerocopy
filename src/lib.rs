@@ -375,7 +375,8 @@ use core::{
 #[cfg(feature = "std")]
 use std::io;
 
-use crate::pointer::invariant::{self, BecauseExclusive};
+#[doc(hidden)]
+pub use crate::pointer::invariant::{self, BecauseExclusive};
 #[doc(hidden)]
 pub use crate::pointer::PtrInner;
 pub use crate::{
@@ -1149,6 +1150,46 @@ pub unsafe trait HasField<Field, const VARIANT_ID: i128, const FIELD_ID: i128> {
     /// `slf`'s referent, and has the same provenance as `slf`.
     #[must_use]
     fn project(slf: PtrInner<'_, Self>) -> *mut Self::Type;
+}
+
+/// Projects a given field from `Self`.
+///
+/// # Safety
+///
+/// `T: ProjectField<Field, I, VARIANT_ID, FIELD_ID>` if, for a
+/// `ptr: Ptr<'_, T, I>` such that `T::is_projectable(ptr)`,
+/// `T::project(ptr.as_inner())` conforms to `T::Invariants`.
+#[doc(hidden)]
+pub unsafe trait ProjectField<Field, I, const VARIANT_ID: i128, const FIELD_ID: i128>:
+    HasField<Field, VARIANT_ID, FIELD_ID>
+where
+    I: invariant::Invariants,
+{
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized;
+
+    /// The invariants of the projected field pointer, with respect to the
+    /// invariants, `I` of the containing pointer. The aliasing dimension of the
+    /// invariants is guaranteed to remain unchanged.
+    type Invariants: invariant::Invariants<Aliasing = I::Aliasing>;
+
+    /// The failure mode of projection. `()` if the projection is fallible,
+    /// otherwise [`core::convert::Infallible`].
+    type Error;
+
+    /// Is the given field projectable from `ptr`?
+    ///
+    /// A default, infallible implementation is provided for structs and unions.
+    /// This method must be overriden if the field's projectability depends on
+    /// the value of the bytes in `ptr` (e.g., enums).
+    #[inline(always)]
+    fn is_projectable<'a>(ptr: Ptr<'a, Self, I>) -> Result<Ptr<'a, Self, I>, Self::Error> {
+        // SAFETY: The projectability of structs and unions generally does not
+        // depend on the data in `ptr`.
+        const_assert!(matches!(VARIANT_ID, crate::STRUCT_VARIANT_ID | crate::UNION_VARIANT_ID));
+        Ok(ptr)
+    }
 }
 
 /// Analyzes whether a type is [`FromZeros`].

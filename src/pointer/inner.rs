@@ -178,8 +178,8 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
 
     /// # Safety
     ///
-    /// The caller may assume that the resulting `PtrInner` addresses a subset
-    /// of the bytes of `self`'s referent.
+    /// The caller may assume that the resulting `PtrInner` addresses the subset
+    /// of the bytes of `self`'s referent addressed by `C::project(self)`.
     #[must_use]
     #[inline(always)]
     pub fn project<U: ?Sized, C: cast::Project<T, U>>(self) -> PtrInner<'a, U> {
