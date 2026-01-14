@@ -279,7 +279,7 @@ pub(crate) fn derive_is_bit_valid(
             assert!(matches!(vis, syn::Visibility::Inherited));
             let variant_struct_field_index = Index::from(idx + 1);
             let (_, ty_generics, _) = generics.split_for_impl();
-            ImplBlockBuilder::new(
+            let has_field = ImplBlockBuilder::new(
                 ast,
                 data,
                 Trait::HasField {
@@ -308,7 +308,37 @@ pub(crate) fn derive_is_bit_valid(
                         .as_ptr()
                 }
             })
-            .build()
+            .build();
+
+            let project = ImplBlockBuilder::new(
+                ast,
+                data,
+                Trait::ProjectField {
+                    variant_id: parse_quote!({ #zerocopy_crate::ident_id!(#variant_ident) }),
+                    // Since Rust does not presently support explicit visibility
+                    // modifiers on enum fields, any public type is suitable
+                    // here; we use `()`.
+                    field: field.clone(),
+                    field_id: parse_quote!({ #zerocopy_crate::ident_id!(#ident) }),
+                    invariants: parse_quote!((Aliasing, Alignment, #zerocopy_crate::invariant::Initialized)),
+                },
+                FieldBounds::None,
+                zerocopy_crate,
+            )
+            .param_extras(vec![
+                parse_quote!(Aliasing: #zerocopy_crate::invariant::Aliasing),
+                parse_quote!(Alignment: #zerocopy_crate::invariant::Alignment),
+            ])
+            .inner_extras(quote! {
+                type Error = #zerocopy_crate::util::macro_util::core_reexport::convert::Infallible;
+                type Invariants = (Aliasing, Alignment, #zerocopy_crate::invariant::Initialized);
+            })
+            .build();
+
+            quote! {
+                #has_field
+                #project
+            }
         })
     });
 
@@ -430,10 +460,10 @@ pub(crate) fn derive_is_bit_valid(
             >();
 
             let tag = {
-                let tag_ptr = raw_enum.reborrow().project::<
-                    (),
+                let tag_ptr = #zerocopy_crate::i!(raw_enum.reborrow().project::<
+                    _,
                     { #zerocopy_crate::ident_id!(tag) }
-                >().cast::<
+                >()).cast::<
                     ___ZerocopyTagPrimitive,
                     #zerocopy_crate::pointer::cast::CastSized,
                     _
@@ -441,7 +471,7 @@ pub(crate) fn derive_is_bit_valid(
                 tag_ptr.recall_validity::<_, (_, (_, _))>().read_unaligned::<#zerocopy_crate::BecauseImmutable>()
             };
 
-            let variants = raw_enum.project::<_, { #zerocopy_crate::ident_id!(variants) }>();
+            let variants = #zerocopy_crate::i!(raw_enum.project::<_, { #zerocopy_crate::ident_id!(variants) }>());
 
             match tag {
                 #(#match_arms,)*
