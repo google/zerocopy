@@ -1095,6 +1095,96 @@ mod tuples {
                 }
             }
 
+            // SAFETY: See comments on items.
+            unsafe impl<Aliasing, Alignment, $($AllT),+> crate::ProjectField<
+                (),
+                (Aliasing, Alignment, crate::invariant::Uninit),
+                { crate::STRUCT_VARIANT_ID },
+                { crate::ident_id!($CurrI)}
+            > for ($($AllT,)+)
+            where
+                Aliasing: crate::invariant::Aliasing,
+                Alignment: crate::invariant::Alignment,
+            {
+                #[inline]
+                fn only_derive_is_allowed_to_implement_this_trait()
+                where
+                    Self: Sized
+                {}
+
+                // SAFETY: TODO
+                type Invariants = (Aliasing, Alignment, crate::invariant::Uninit);
+
+                // SAFETY: TODO
+                type Error = core::convert::Infallible;
+
+                // SAFETY: TODO
+                #[inline(always)]
+                fn is_projectable<'a>(ptr: Ptr<'a, Self, Self::Invariants>) -> Result<Ptr<'a, Self, Self::Invariants>, Self::Error> {
+                    Ok(ptr)
+                }
+            }
+
+            // SAFETY: See comments on items.
+            unsafe impl<Aliasing, Alignment, $($AllT),+> crate::ProjectField<
+                (),
+                (Aliasing, Alignment, crate::invariant::Initialized),
+                { crate::STRUCT_VARIANT_ID },
+                { crate::ident_id!($CurrI)}
+            > for ($($AllT,)+)
+            where
+                Aliasing: crate::invariant::Aliasing,
+                Alignment: crate::invariant::Alignment,
+            {
+                #[inline]
+                fn only_derive_is_allowed_to_implement_this_trait()
+                where
+                    Self: Sized
+                {}
+
+                // SAFETY: TODO
+                type Invariants = (Aliasing, Alignment, crate::invariant::Initialized);
+
+                // SAFETY: TODO
+                type Error = core::convert::Infallible;
+
+                // SAFETY: TODO
+                #[inline(always)]
+                fn is_projectable<'a>(ptr: Ptr<'a, Self, Self::Invariants>) -> Result<Ptr<'a, Self, Self::Invariants>, Self::Error> {
+                    Ok(ptr)
+                }
+            }
+
+            // SAFETY: See comments on items.
+            unsafe impl<Aliasing, Alignment, $($AllT),+> crate::ProjectField<
+                (),
+                (Aliasing, Alignment, crate::invariant::Valid),
+                { crate::STRUCT_VARIANT_ID },
+                { crate::ident_id!($CurrI)}
+            > for ($($AllT,)+)
+            where
+                Aliasing: crate::invariant::Aliasing,
+                Alignment: crate::invariant::Alignment,
+            {
+                #[inline]
+                fn only_derive_is_allowed_to_implement_this_trait()
+                where
+                    Self: Sized
+                {}
+
+                // SAFETY: TODO
+                type Invariants = (Aliasing, Alignment, crate::invariant::Valid);
+
+                // SAFETY: TODO
+                type Error = core::convert::Infallible;
+
+                // SAFETY: TODO
+                #[inline(always)]
+                fn is_projectable<'a>(ptr: Ptr<'a, Self, Self::Invariants>) -> Result<Ptr<'a, Self, Self::Invariants>, Self::Error> {
+                    Ok(ptr)
+                }
+            }
+
             // Recurse to the next index.
             impl_tuple!(@variants [$($AllT $AllI)+] [$($BeforeT)* $CurrT] [$($AfterT $AfterI)*]);
         };

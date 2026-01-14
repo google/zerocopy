@@ -1182,6 +1182,55 @@ pub unsafe trait HasField<Field, const VARIANT_ID: i128, const FIELD_ID: i128> {
     }
 }
 
+/// Projects a given field from `Self`.
+///
+/// # Safety
+///
+/// Implementations of this trait must adhere to the documented invariants of
+/// the trait's items.
+#[doc(hidden)]
+pub unsafe trait ProjectField<Field, I, const VARIANT_ID: i128, const FIELD_ID: i128>:
+    HasField<Field, VARIANT_ID, FIELD_ID>
+where
+    I: invariant::Invariants,
+{
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized;
+
+    /// The projected field's pointer's invariants.
+    type Invariants: invariant::Invariants<Aliasing = I::Aliasing>;
+
+    /// The failure mode of projection. `()` if the projection is fallible,
+    /// otherwise [`core::convert::Infallible`].
+    type Error;
+
+    /// TODO
+    fn is_projectable<'a>(ptr: Ptr<'a, Self, I>,) -> Result<Ptr<'a, Self, I>, Self::Error>;
+
+    /// Projects from `slf` to the field.
+    ///
+    /// # Safety
+    ///
+    /// The returned pointer refers to a non-strict subset of the bytes of
+    /// `slf`'s referent, and has the same provenance as `slf`.
+    #[must_use]
+    #[inline(always)]
+    fn project<'a>(
+        ptr: Ptr<'a, Self, I>,
+    ) -> Result<Ptr<'a, Self::Type, Self::Invariants>, Self::Error> {
+        match Self::is_projectable(ptr) {
+            Ok(ptr) => {
+                let inner = ptr.as_inner();
+                let projected = Self::project_inner(inner);
+                // SAFETY: TODO
+                Ok(unsafe { Ptr::from_inner(projected) } )
+            },
+            Err(err) => Err(err),
+        }
+    }
+}
+
 /// Analyzes whether a type is [`FromZeros`].
 ///
 /// This derive analyzes, at compile time, whether the annotated type satisfies
