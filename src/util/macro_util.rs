@@ -530,6 +530,18 @@ macro_rules! assert_size_eq {
     }};
 }
 
+/// Unwraps an infallible `Result`.
+#[doc(hidden)]
+#[macro_export]
+macro_rules! i {
+    ($e:expr) => {
+        match $e {
+            $crate::util::macro_util::core_reexport::result::Result::Ok(e) => e,
+            $crate::util::macro_util::core_reexport::result::Result::Err(i) => match i {},
+        }
+    };
+}
+
 /// Translates an identifier or tuple index into a numeric identifier.
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
