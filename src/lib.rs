@@ -375,7 +375,8 @@ use core::{
 #[cfg(feature = "std")]
 use std::io;
 
-use crate::pointer::invariant::{self, BecauseExclusive};
+#[doc(hidden)]
+pub use crate::pointer::invariant::{self, BecauseExclusive};
 #[doc(hidden)]
 pub use crate::pointer::PtrInner;
 pub use crate::{
@@ -1179,6 +1180,40 @@ pub unsafe trait HasField<Field, const VARIANT_ID: i128, const FIELD_ID: i128> {
         //   referent and that referent lives in an allocation. By invariant on
         //   `slf`, that allocation lives for `'a`.
         unsafe { PtrInner::new(projected_non_null) }
+    }
+}
+
+/// Projects a given field from `Self`.
+///
+/// # Safety
+///
+/// Implementations of this trait must adhere to the documented invariants of
+/// the trait's items.
+#[doc(hidden)]
+pub unsafe trait ProjectField<Field, I, const VARIANT_ID: i128, const FIELD_ID: i128>:
+    HasField<Field, VARIANT_ID, FIELD_ID>
+where
+    I: invariant::Invariants,
+{
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized;
+
+    /// The invariants of the projected field pointer, with respect to the
+    /// invariants, `I` of the containing pointer. The aliasing dimension of the
+    /// invariants is guaranteed to remain unchanged.
+    type Invariants: invariant::Invariants<Aliasing = I::Aliasing>;
+
+    /// The failure mode of projection. `()` if the projection is fallible,
+    /// otherwise [`core::convert::Infallible`].
+    type Error;
+
+    /// TODO
+    // SAFETY: Struct and union projection is infallible.
+    #[inline(always)]
+    fn is_projectable<'a>(ptr: Ptr<'a, Self, I>) -> Result<Ptr<'a, Self, I>, Self::Error> {
+        const_assert!(matches!(VARIANT_ID, crate::STRUCT_VARIANT_ID | crate::UNION_VARIANT_ID));
+        Ok(ptr)
     }
 }
 

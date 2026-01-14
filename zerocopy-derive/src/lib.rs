@@ -840,6 +840,29 @@ fn derive_has_field_struct_union(
                 {
                 }
             }
+        } else if matches!(&ast.data, Data::Struct(..)) {
+            // SAFETY: TODO
+            ImplBlockBuilder::new(
+                ast,
+                data,
+                Trait::ProjectField {
+                    variant_id: variant_id.clone(),
+                    field: field.clone(),
+                    field_id: field_id.clone(),
+                    invariants: parse_quote!((Aliasing, Alignment, #zerocopy_crate::invariant::Initialized)),
+                },
+                FieldBounds::None,
+                zerocopy_crate,
+            )
+            .param_extras(vec![
+                parse_quote!(Aliasing: #zerocopy_crate::invariant::Aliasing),
+                parse_quote!(Alignment: #zerocopy_crate::invariant::Alignment),
+            ])
+            .inner_extras(quote! {
+                type Error = #zerocopy_crate::util::macro_util::core_reexport::convert::Infallible;
+                type Invariants = (Aliasing, Alignment, #zerocopy_crate::invariant::Initialized);
+            })
+            .build()
         } else {
             quote! {}
         })
@@ -875,11 +898,15 @@ fn derive_try_from_bytes_struct(
                     ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
                 {
                     true #(&& {
-                        let field_candidate = candidate.reborrow().project::<
-                            _,
-                            { #zerocopy_crate::ident_id!(#field_names) }
-                        >();
-                        <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
+                        match candidate
+                            .reborrow()
+                            .project::<_, { #zerocopy_crate::ident_id!(#field_names) }>()
+                        {
+                            Ok(field_candidate) => {
+                                <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
+                            }
+                            Err(infallible) => match infallible {}
+                        }
                     })*
                 }
             )
@@ -1594,7 +1621,17 @@ impl PaddingCheck {
 #[derive(Clone)]
 enum Trait {
     KnownLayout,
-    HasField { variant_id: Box<Expr>, field: Box<Type>, field_id: Box<Expr> },
+    HasField {
+        variant_id: Box<Expr>,
+        field: Box<Type>,
+        field_id: Box<Expr>,
+    },
+    ProjectField {
+        variant_id: Box<Expr>,
+        field: Box<Type>,
+        field_id: Box<Expr>,
+        invariants: Box<Type>,
+    },
     Immutable,
     TryFromBytes,
     FromZeros,
@@ -1620,6 +1657,7 @@ impl ToTokens for Trait {
         // [2] https://doc.rust-lang.org/beta/unstable-book/compiler-flags/fmt-debug.html
         let s = match self {
             Trait::HasField { .. } => "HasField",
+            Trait::ProjectField { .. } => "ProjectField",
             Trait::KnownLayout => "KnownLayout",
             Trait::Immutable => "Immutable",
             Trait::TryFromBytes => "TryFromBytes",
@@ -1636,6 +1674,9 @@ impl ToTokens for Trait {
         let arguments: Option<syn::AngleBracketedGenericArguments> = match self {
             Trait::HasField { variant_id, field, field_id } => {
                 Some(parse_quote!(<#field, #variant_id, #field_id>))
+            }
+            Trait::ProjectField { variant_id, field, field_id, invariants } => {
+                Some(parse_quote!(<#field, #invariants, #variant_id, #field_id>))
             }
             Trait::KnownLayout
             | Trait::Immutable
@@ -1712,6 +1753,7 @@ struct ImplBlockBuilder<'a> {
     zerocopy_crate: &'a Path,
     self_type_trait_bounds: SelfBounds<'a>,
     padding_check: Option<PaddingCheck>,
+    param_extras: Vec<GenericParam>,
     inner_extras: Option<TokenStream>,
     outer_extras: Option<TokenStream>,
 }
@@ -1732,6 +1774,7 @@ impl<'a> ImplBlockBuilder<'a> {
             zerocopy_crate,
             self_type_trait_bounds: SelfBounds::None,
             padding_check: None,
+            param_extras: Vec::new(),
             inner_extras: None,
             outer_extras: None,
         }
@@ -1744,6 +1787,11 @@ impl<'a> ImplBlockBuilder<'a> {
 
     fn padding_check<P: Into<Option<PaddingCheck>>>(mut self, padding_check: P) -> Self {
         self.padding_check = padding_check.into();
+        self
+    }
+
+    fn param_extras(mut self, param_extras: Vec<GenericParam>) -> Self {
+        self.param_extras.extend(param_extras.into_iter());
         self
     }
 
@@ -1890,14 +1938,21 @@ impl<'a> ImplBlockBuilder<'a> {
             .chain(self_bounds.iter());
 
         // The parameters with trait bounds, but without type defaults.
-        let params = self.input.generics.params.clone().into_iter().map(|mut param| {
-            match &mut param {
-                GenericParam::Type(ty) => ty.default = None,
-                GenericParam::Const(cnst) => cnst.default = None,
-                GenericParam::Lifetime(_) => {}
-            }
-            quote!(#param)
-        });
+        let params = self
+            .input
+            .generics
+            .params
+            .clone()
+            .into_iter()
+            .map(|mut param| {
+                match &mut param {
+                    GenericParam::Type(ty) => ty.default = None,
+                    GenericParam::Const(cnst) => cnst.default = None,
+                    GenericParam::Lifetime(_) => {}
+                }
+                quote!(#param)
+            })
+            .chain(self.param_extras.iter().map(ToTokens::to_token_stream));
 
         // The identifiers of the parameters without trait bounds or type
         // defaults.
