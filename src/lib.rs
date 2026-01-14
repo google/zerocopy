@@ -1144,7 +1144,7 @@ pub unsafe trait HasField<Field, const VARIANT_ID: i128, const FIELD_ID: i128> {
     ///
     /// The returned pointer refers to a non-strict subset of the bytes of
     /// `slf`'s referent, and has the same provenance as `slf`.
-    fn project(slf: PtrInner<'_, Self>) -> *mut Self::Type;
+    fn project_raw(slf: PtrInner<'_, Self>) -> *mut Self::Type;
 }
 
 /// Analyzes whether a type is [`FromZeros`].

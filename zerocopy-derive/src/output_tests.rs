@@ -437,7 +437,7 @@ fn test_from_bytes_union() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = u8;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             let slf = slf.as_ptr();
                             unsafe {
                                 ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -681,7 +681,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = ___ZerocopyTag;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             slf.as_ptr().cast()
                         }
                     }
@@ -825,7 +825,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -854,7 +854,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = u8;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -883,7 +883,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = X;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -912,7 +912,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = X::Target;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -941,7 +941,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = Y::Target;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -970,7 +970,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = [(X, Y); N];
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -1001,7 +1001,7 @@ fn test_try_from_bytes_enum() {
                                     ComplexWithGenerics<'a, N, X, Y>,
                                 >;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -1129,7 +1129,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -1158,7 +1158,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = bool;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -1187,7 +1187,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = Y;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -1216,7 +1216,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = PhantomData<&'a [(X, Y); N]>;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -1247,7 +1247,7 @@ fn test_try_from_bytes_enum() {
                                     ComplexWithGenerics<'a, N, X, Y>,
                                 >;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -1296,7 +1296,7 @@ fn test_try_from_bytes_enum() {
                                     ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                                 >;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -1344,7 +1344,7 @@ fn test_try_from_bytes_enum() {
                                     ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
                                 >;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -1390,7 +1390,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = ();
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -1448,7 +1448,7 @@ fn test_try_from_bytes_enum() {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                             type Type = ___ZerocopyOuterTag;
                             #[inline(always)]
-                            fn project(
+                            fn project_raw(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut Self::Type {
                                 let slf = slf.as_ptr();
@@ -1474,7 +1474,7 @@ fn test_try_from_bytes_enum() {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                             type Type = ___ZerocopyVariants<'a, N, X, Y>;
                             #[inline(always)]
-                            fn project(
+                            fn project_raw(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut Self::Type {
                                 let slf = slf.as_ptr();
@@ -1504,7 +1504,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = u8;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -1560,7 +1560,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = X;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -1616,7 +1616,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = X::Target;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -1672,7 +1672,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = Y::Target;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -1728,7 +1728,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = [(X, Y); N];
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -1784,7 +1784,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = bool;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -1840,7 +1840,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = Y;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -1896,7 +1896,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = PhantomData<&'a [(X, Y); N]>;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -2090,7 +2090,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = ___ZerocopyTag;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             slf.as_ptr().cast()
                         }
                     }
@@ -2234,7 +2234,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -2263,7 +2263,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = u8;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -2292,7 +2292,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = X;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -2321,7 +2321,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = X::Target;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -2350,7 +2350,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = Y::Target;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -2379,7 +2379,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = [(X, Y); N];
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -2410,7 +2410,7 @@ fn test_try_from_bytes_enum() {
                                     ComplexWithGenerics<'a, N, X, Y>,
                                 >;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -2538,7 +2538,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -2567,7 +2567,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = bool;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -2596,7 +2596,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = Y;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -2625,7 +2625,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = PhantomData<&'a [(X, Y); N]>;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -2656,7 +2656,7 @@ fn test_try_from_bytes_enum() {
                                     ComplexWithGenerics<'a, N, X, Y>,
                                 >;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -2705,7 +2705,7 @@ fn test_try_from_bytes_enum() {
                                     ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                                 >;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -2753,7 +2753,7 @@ fn test_try_from_bytes_enum() {
                                     ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
                                 >;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -2799,7 +2799,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = ();
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -2857,7 +2857,7 @@ fn test_try_from_bytes_enum() {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                             type Type = ___ZerocopyOuterTag;
                             #[inline(always)]
-                            fn project(
+                            fn project_raw(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut Self::Type {
                                 let slf = slf.as_ptr();
@@ -2883,7 +2883,7 @@ fn test_try_from_bytes_enum() {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                             type Type = ___ZerocopyVariants<'a, N, X, Y>;
                             #[inline(always)]
-                            fn project(
+                            fn project_raw(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut Self::Type {
                                 let slf = slf.as_ptr();
@@ -2913,7 +2913,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = u8;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -2969,7 +2969,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = X;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -3025,7 +3025,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = X::Target;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -3081,7 +3081,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = Y::Target;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -3137,7 +3137,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = [(X, Y); N];
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -3193,7 +3193,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = bool;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -3249,7 +3249,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = Y;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -3305,7 +3305,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = PhantomData<&'a [(X, Y); N]>;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -3499,7 +3499,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = ___ZerocopyTag;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             slf.as_ptr().cast()
                         }
                     }
@@ -3643,7 +3643,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -3672,7 +3672,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = u8;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -3701,7 +3701,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = X;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -3730,7 +3730,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = X::Target;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -3759,7 +3759,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = Y::Target;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -3788,7 +3788,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = [(X, Y); N];
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -3819,7 +3819,7 @@ fn test_try_from_bytes_enum() {
                                     ComplexWithGenerics<'a, N, X, Y>,
                                 >;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -3947,7 +3947,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -3976,7 +3976,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = bool;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -4005,7 +4005,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = Y;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -4034,7 +4034,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = PhantomData<&'a [(X, Y); N]>;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -4065,7 +4065,7 @@ fn test_try_from_bytes_enum() {
                                     ComplexWithGenerics<'a, N, X, Y>,
                                 >;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -4114,7 +4114,7 @@ fn test_try_from_bytes_enum() {
                                     ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                                 >;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -4162,7 +4162,7 @@ fn test_try_from_bytes_enum() {
                                     ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
                                 >;
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -4208,7 +4208,7 @@ fn test_try_from_bytes_enum() {
                                 fn only_derive_is_allowed_to_implement_this_trait() {}
                                 type Type = ();
                                 #[inline(always)]
-                                fn project(
+                                fn project_raw(
                                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                                 ) -> *mut Self::Type {
                                     let slf = slf.as_ptr();
@@ -4266,7 +4266,7 @@ fn test_try_from_bytes_enum() {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                             type Type = ___ZerocopyOuterTag;
                             #[inline(always)]
-                            fn project(
+                            fn project_raw(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut Self::Type {
                                 let slf = slf.as_ptr();
@@ -4292,7 +4292,7 @@ fn test_try_from_bytes_enum() {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                             type Type = ___ZerocopyVariants<'a, N, X, Y>;
                             #[inline(always)]
-                            fn project(
+                            fn project_raw(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
                             ) -> *mut Self::Type {
                                 let slf = slf.as_ptr();
@@ -4322,7 +4322,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = u8;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -4378,7 +4378,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = X;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -4434,7 +4434,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = X::Target;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -4490,7 +4490,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = Y::Target;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -4546,7 +4546,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = [(X, Y); N];
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -4602,7 +4602,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = bool;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -4658,7 +4658,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = Y;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
@@ -4714,7 +4714,7 @@ fn test_try_from_bytes_enum() {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = PhantomData<&'a [(X, Y); N]>;
                         #[inline(always)]
-                        fn project(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                        fn project_raw(slf: ::zerocopy::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                             use ::zerocopy::pointer::cast::{CastSized, Projection};
                             slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                                 .project::<
