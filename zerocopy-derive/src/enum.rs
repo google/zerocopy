@@ -271,7 +271,7 @@ pub(crate) fn derive_is_bit_valid(
             assert!(matches!(vis, syn::Visibility::Inherited));
             let variant_struct_field_index = Index::from(idx + 1);
             let (_, ty_generics, _) = ctx.ast.generics.split_for_impl();
-            ImplBlockBuilder::new(
+            let has_field = ImplBlockBuilder::new(
                 ctx,
                 data,
                 Trait::HasField {
@@ -299,7 +299,36 @@ pub(crate) fn derive_is_bit_valid(
                         .as_ptr()
                 }
             })
-            .build()
+            .build();
+
+            let project = ImplBlockBuilder::new(
+                ctx,
+                data,
+                Trait::ProjectField {
+                    variant_id: parse_quote!({ #zerocopy_crate::ident_id!(#variant_ident) }),
+                    // Since Rust does not presently support explicit visibility
+                    // modifiers on enum fields, any public type is suitable
+                    // here; we use `()`.
+                    field: field.clone(),
+                    field_id: parse_quote!({ #zerocopy_crate::ident_id!(#ident) }),
+                    invariants: parse_quote!((Aliasing, Alignment, #zerocopy_crate::invariant::Initialized)),
+                },
+                FieldBounds::None,
+            )
+            .param_extras(vec![
+                parse_quote!(Aliasing: #zerocopy_crate::invariant::Aliasing),
+                parse_quote!(Alignment: #zerocopy_crate::invariant::Alignment),
+            ])
+            .inner_extras(quote! {
+                type Error = #zerocopy_crate::util::macro_util::core_reexport::convert::Infallible;
+                type Invariants = (Aliasing, Alignment, #zerocopy_crate::invariant::Initialized);
+            })
+            .build();
+
+            quote! {
+                #has_field
+                #project
+            }
         })
     });
 
@@ -390,23 +419,6 @@ pub(crate) fn derive_is_bit_valid(
             type ___ZerocopyOuterTag = #outer_tag_type;
             type ___ZerocopyInnerTag = #inner_tag_type;
 
-            // SAFETY: `___ZerocopyRawEnum` is designed to match the layout of
-            // the `Self` enum, which has a `___ZerocopyTag` tag as its first
-            // field.
-            //
-            // `project` is implemented using a cast which preserves or shrinks
-            // the set of referent bytes and preserves provenance.
-            unsafe impl #generics #zerocopy_crate::HasField<(), { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(tag) }> for ___ZerocopyRawEnum #ty_generics {
-                fn only_derive_is_allowed_to_implement_this_trait() {}
-
-                type Type = ___ZerocopyTag;
-
-                #[inline(always)]
-                fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
-                    slf.as_ptr().cast()
-                }
-            }
-
             #variant_structs
 
             #variants_union
@@ -415,25 +427,35 @@ pub(crate) fn derive_is_bit_valid(
 
             #(#has_fields)*
 
+            let tag = {
+                // SAFETY: TODO (revise)
+                // - The provided cast addresses a subset of the bytes addressed
+                //   by `candidate` because it addresses the starting tag of the
+                //   enum.
+                // - Because the pointer is cast from `candidate`, it has the
+                //   same provenance as it.
+                // - There are no `UnsafeCell`s in the tag because it is a
+                //   primitive integer.
+                // - `tag_ptr` is casted from `candidate`, whose referent is
+                //   `Initialized`. Since we have not written uninitialized
+                //   bytes into the referent, `tag_ptr` is also `Initialized`.
+                let tag_ptr = unsafe {
+                    candidate.reborrow().project_transmute_unchecked::<
+                        _,
+                        #zerocopy_crate::invariant::Initialized,
+                        #zerocopy_crate::pointer::cast::CastSized
+                    >()
+                };
+                tag_ptr.recall_validity::<_, (_, (_, _))>().read_unaligned::<#zerocopy_crate::BecauseImmutable>()
+            };
+
             let mut raw_enum = candidate.cast::<
                 ___ZerocopyRawEnum #ty_generics,
                 #zerocopy_crate::pointer::cast::CastSized,
                 #zerocopy_crate::pointer::BecauseInvariantsEq
             >();
 
-            let tag = {
-                let tag_ptr = raw_enum.reborrow().project::<
-                    (),
-                    { #zerocopy_crate::ident_id!(tag) }
-                >().cast::<
-                    ___ZerocopyTagPrimitive,
-                    #zerocopy_crate::pointer::cast::CastSized,
-                    _
-                >();
-                tag_ptr.recall_validity::<_, (_, (_, _))>().read_unaligned::<#zerocopy_crate::BecauseImmutable>()
-            };
-
-            let variants = raw_enum.project::<_, { #zerocopy_crate::ident_id!(variants) }>();
+            let variants = #zerocopy_crate::i!(raw_enum.project::<_, { #zerocopy_crate::ident_id!(variants) }>());
 
             match tag {
                 #(#match_arms,)*

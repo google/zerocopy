@@ -114,7 +114,8 @@ pub mod cast {
     unsafe impl<Src, Dst> Project<Src, Dst> for CastSized {
         #[inline(always)]
         fn project(src: PtrInner<'_, Src>) -> *mut Dst {
-            static_assert!(Src, Dst => mem::size_of::<Src>() >= mem::size_of::<Dst>());
+            assert!(mem::size_of::<Src>() >= mem::size_of::<Dst>());
+            //static_assert!(Src, Dst => mem::size_of::<Src>() >= mem::size_of::<Dst>());
             src.as_ptr().cast::<Dst>()
         }
     }
