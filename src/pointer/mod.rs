@@ -189,7 +189,7 @@ pub mod cast {
     {
         #[inline(always)]
         fn project(src: PtrInner<'_, T>) -> *mut T::Type {
-            T::project(src)
+            T::project_raw(src)
         }
     }
 
