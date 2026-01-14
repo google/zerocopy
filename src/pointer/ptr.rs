@@ -864,7 +864,7 @@ mod _casts {
     use super::*;
     use crate::{
         pointer::cast::{AsBytesCast, Cast},
-        HasField,
+        ProjectField,
     };
 
     impl<'a, T, I> Ptr<'a, T, I>
@@ -935,29 +935,19 @@ mod _casts {
         #[inline(always)]
         pub fn project<F, const FIELD_ID: i128>(
             self,
-        ) -> Ptr<'a, T::Type, (I::Aliasing, Unaligned, I::Validity)>
+        ) -> Result<Ptr<'a, T::Type, T::Invariants>, T::Error>
         where
-            T: HasField<F, { crate::STRUCT_VARIANT_ID }, FIELD_ID>,
-            T::Type: 'a + CastableFrom<T, I::Validity, I::Validity>,
+            T: ProjectField<F, I, { crate::STRUCT_VARIANT_ID }, FIELD_ID>,
         {
-            let ptr = self.as_inner().project::<_, crate::pointer::cast::Projection<
-                F,
-                { crate::STRUCT_VARIANT_ID },
-                FIELD_ID,
-            >>();
-
-            // SAFETY:
-            // 0. `PtrInner::project` promises that it produces a pointer which
-            //    references a subset of its argument's referent. Since, by
-            //    invariant on `Ptr`, its argument (`self.as_inner()`) satisfies
-            //    the aliasing invariant `I::Aliasing`, so does `ptr`.
-            // 1. The `Ptr` has alignment `Unaligned`, which is trivially
-            //    satisfied.
-            // 2. By `CastableFrom<T, I::Validity, I::Validity>`, `I::Validity`
-            //    is `Uninit` or `Initialized`. In either case, if `I::Validity`
-            //    holds of `self`'s referent, then it holds any subset of its
-            //    referent.
-            unsafe { Ptr::from_inner(ptr) }
+            match T::is_projectable(self) {
+                Ok(ptr) => {
+                    let inner = ptr.as_inner();
+                    let projected = T::project_inner(inner);
+                    // SAFETY: TODO
+                    Ok(unsafe { Ptr::from_inner(projected) })
+                }
+                Err(err) => Err(err),
+            }
         }
     }
 
