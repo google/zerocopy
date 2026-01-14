@@ -864,7 +864,7 @@ mod _casts {
     use super::*;
     use crate::{
         pointer::cast::{AsBytesCast, Cast},
-        HasField,
+        ProjectField,
     };
 
     impl<'a, T, I> Ptr<'a, T, I>
@@ -931,33 +931,35 @@ mod _casts {
 
         // FIXME(#196): Support all validity invariants (not just those that are
         // `CastableFrom`).
-        #[must_use]
         #[inline(always)]
-        pub fn project<F, const FIELD_ID: i128>(
+        pub fn project<F, const VARIANT_ID: i128, const FIELD_ID: i128>(
             self,
-        ) -> Ptr<'a, T::Type, (I::Aliasing, Unaligned, I::Validity)>
+        ) -> Result<Ptr<'a, T::Type, T::Invariants>, T::Error>
         where
-            T: HasField<F, { crate::STRUCT_VARIANT_ID }, FIELD_ID>,
-            T::Type: 'a + CastableFrom<T, I::Validity, I::Validity>,
+            T: ProjectField<F, I, VARIANT_ID, FIELD_ID>,
         {
-            let ptr = self.as_inner().project::<_, crate::pointer::cast::Projection<
-                F,
-                { crate::STRUCT_VARIANT_ID },
-                FIELD_ID,
-            >>();
-
-            // SAFETY:
-            // 0. `PtrInner::project` promises that it produces a pointer which
-            //    references a subset of its argument's referent. Since, by
-            //    invariant on `Ptr`, its argument (`self.as_inner()`) satisfies
-            //    the aliasing invariant `I::Aliasing`, so does `ptr`.
-            // 1. The `Ptr` has alignment `Unaligned`, which is trivially
-            //    satisfied.
-            // 2. By `CastableFrom<T, I::Validity, I::Validity>`, `I::Validity`
-            //    is `Uninit` or `Initialized`. In either case, if `I::Validity`
-            //    holds of `self`'s referent, then it holds any subset of its
-            //    referent.
-            unsafe { Ptr::from_inner(ptr) }
+            use crate::pointer::cast::Projection;
+            match T::is_projectable(self) {
+                Ok(ptr) => {
+                    let inner = ptr.as_inner();
+                    let projected = inner.project::<_, Projection<F, VARIANT_ID, FIELD_ID>>();
+                    // SAFETY: By `T: ProjectField<F, I, VARIANT_ID, FIELD_ID>`,
+                    // for `self: Ptr<'_, T, I>` such that `T::is_projectable`
+                    // (which we've verified in this match arm),
+                    // `T::project(self.as_inner())` conforms to
+                    // `T::Invariants`. The `projected` pointer satisfies these
+                    // invariants because it is produced by way of an
+                    // abstraction that is equivalent to
+                    // `T::project(ptr.as_inner())`: by invariant on
+                    // `PtrInner::project`, `projected` is guaranteed to address
+                    // the subset of the bytes of `inner`'s referent addressed
+                    // by `Projection::project(inner)`, and by invariant on
+                    // `Projection`, `Projection::project` is implemented by
+                    // delegating to an implementation of `HasField::project`.
+                    Ok(unsafe { Ptr::from_inner(projected) })
+                }
+                Err(err) => Err(err),
+            }
         }
     }
 
