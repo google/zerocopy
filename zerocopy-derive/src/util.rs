@@ -228,7 +228,17 @@ impl PaddingCheck {
 #[derive(Clone)]
 pub(crate) enum Trait {
     KnownLayout,
-    HasField { variant_id: Box<Expr>, field: Box<Type>, field_id: Box<Expr> },
+    HasField {
+        variant_id: Box<Expr>,
+        field: Box<Type>,
+        field_id: Box<Expr>,
+    },
+    ProjectField {
+        variant_id: Box<Expr>,
+        field: Box<Type>,
+        field_id: Box<Expr>,
+        invariants: Box<Type>,
+    },
     Immutable,
     TryFromBytes,
     FromZeros,
@@ -254,6 +264,7 @@ impl ToTokens for Trait {
         // [2] https://doc.rust-lang.org/beta/unstable-book/compiler-flags/fmt-debug.html
         let s = match self {
             Trait::HasField { .. } => "HasField",
+            Trait::ProjectField { .. } => "ProjectField",
             Trait::KnownLayout => "KnownLayout",
             Trait::Immutable => "Immutable",
             Trait::TryFromBytes => "TryFromBytes",
@@ -270,6 +281,9 @@ impl ToTokens for Trait {
         let arguments: Option<syn::AngleBracketedGenericArguments> = match self {
             Trait::HasField { variant_id, field, field_id } => {
                 Some(parse_quote!(<#field, #variant_id, #field_id>))
+            }
+            Trait::ProjectField { variant_id, field, field_id, invariants } => {
+                Some(parse_quote!(<#field, #invariants, #variant_id, #field_id>))
             }
             Trait::KnownLayout
             | Trait::Immutable
@@ -345,6 +359,7 @@ pub(crate) struct ImplBlockBuilder<'a> {
     field_type_trait_bounds: FieldBounds<'a>,
     self_type_trait_bounds: SelfBounds<'a>,
     padding_check: Option<PaddingCheck>,
+    param_extras: Vec<GenericParam>,
     inner_extras: Option<TokenStream>,
     outer_extras: Option<TokenStream>,
 }
@@ -363,6 +378,7 @@ impl<'a> ImplBlockBuilder<'a> {
             field_type_trait_bounds,
             self_type_trait_bounds: SelfBounds::None,
             padding_check: None,
+            param_extras: Vec::new(),
             inner_extras: None,
             outer_extras: None,
         }
@@ -375,6 +391,11 @@ impl<'a> ImplBlockBuilder<'a> {
 
     pub(crate) fn padding_check<P: Into<Option<PaddingCheck>>>(mut self, padding_check: P) -> Self {
         self.padding_check = padding_check.into();
+        self
+    }
+
+    pub(crate) fn param_extras(mut self, param_extras: Vec<GenericParam>) -> Self {
+        self.param_extras.extend(param_extras);
         self
     }
 
@@ -518,13 +539,30 @@ impl<'a> ImplBlockBuilder<'a> {
             .chain(self_bounds.iter());
 
         // The parameters with trait bounds, but without type defaults.
-        let params = self.ctx.ast.generics.params.clone().into_iter().map(|mut param| {
-            match &mut param {
-                GenericParam::Type(ty) => ty.default = None,
-                GenericParam::Const(cnst) => cnst.default = None,
-                GenericParam::Lifetime(_) => {}
-            }
-            quote!(#param)
+        let mut params: Vec<_> = self
+            .ctx
+            .ast
+            .generics
+            .params
+            .clone()
+            .into_iter()
+            .map(|mut param| {
+                match &mut param {
+                    GenericParam::Type(ty) => ty.default = None,
+                    GenericParam::Const(cnst) => cnst.default = None,
+                    GenericParam::Lifetime(_) => {}
+                }
+                parse_quote!(#param)
+            })
+            .chain(self.param_extras)
+            .collect();
+
+        // For MSRV purposes, ensure that lifetimes precede types precede const
+        // generics.
+        params.sort_by_cached_key(|param| match param {
+            GenericParam::Lifetime(_) => 0,
+            GenericParam::Type(_) => 1,
+            GenericParam::Const(_) => 2,
         });
 
         // The identifiers of the parameters without trait bounds or type
