@@ -1031,8 +1031,15 @@ mod tuples {
             // SAFETY: If all fields in `c` are `is_bit_valid`, so too is `c`.
             unsafe_impl!($($head_T: TryFromBytes,)* $next_T: TryFromBytes => TryFromBytes for ($($head_T,)* $next_T,); |c| {
                 let mut c = c;
-                $(TryFromBytes::is_bit_valid(c.reborrow().project::<_, { crate::ident_id!($head_I) }>()) &&)*
-                    TryFromBytes::is_bit_valid(c.reborrow().project::<_, { crate::ident_id!($next_I) }>())
+                $(
+                    (match c.reborrow().project::<_, { crate::ident_id!($head_I) }>() {
+                        Ok(field_candidate) => TryFromBytes::is_bit_valid(field_candidate),
+                        Err(infallible) => match infallible {}
+                    }) &&
+                )* (match c.reborrow().project::<_, { crate::ident_id!($next_I) }>() {
+                    Ok(field_candidate) => TryFromBytes::is_bit_valid(field_candidate),
+                    Err(infallible) => match infallible {}
+                })
             });
 
             // SAFETY: If all fields in `Self` are `FromZeros`, so too is `Self`.
@@ -1093,6 +1100,84 @@ mod tuples {
                     // `slf`.
                     unsafe { core::ptr::addr_of_mut!((*slf).$CurrI) }
                 }
+            }
+
+            // SAFETY: See comments on items.
+            unsafe impl<Aliasing, Alignment, $($AllT),+> crate::ProjectField<
+                (),
+                (Aliasing, Alignment, crate::invariant::Uninit),
+                { crate::STRUCT_VARIANT_ID },
+                { crate::ident_id!($CurrI)}
+            > for ($($AllT,)+)
+            where
+                Aliasing: crate::invariant::Aliasing,
+                Alignment: crate::invariant::Alignment,
+            {
+                #[inline]
+                fn only_derive_is_allowed_to_implement_this_trait()
+                where
+                    Self: Sized
+                {}
+
+                // SAFETY: Tuples are product types whose fields are
+                // well-aligned, so projection preserves both the alignment and
+                // validity invariants of the outer pointer.
+                type Invariants = (Aliasing, Alignment, crate::invariant::Uninit);
+
+                // SAFETY: Tuples are product types and so projection is infallible;
+                type Error = core::convert::Infallible;
+            }
+
+            // SAFETY: See comments on items.
+            unsafe impl<Aliasing, Alignment, $($AllT),+> crate::ProjectField<
+                (),
+                (Aliasing, Alignment, crate::invariant::Initialized),
+                { crate::STRUCT_VARIANT_ID },
+                { crate::ident_id!($CurrI)}
+            > for ($($AllT,)+)
+            where
+                Aliasing: crate::invariant::Aliasing,
+                Alignment: crate::invariant::Alignment,
+            {
+                #[inline]
+                fn only_derive_is_allowed_to_implement_this_trait()
+                where
+                    Self: Sized
+                {}
+
+                // SAFETY: Tuples are product types whose fields are
+                // well-aligned, so projection preserves both the alignment and
+                // validity invariants of the outer pointer.
+                type Invariants = (Aliasing, Alignment, crate::invariant::Initialized);
+
+                // SAFETY: Tuples are product types and so projection is infallible;
+                type Error = core::convert::Infallible;
+            }
+
+            // SAFETY: See comments on items.
+            unsafe impl<Aliasing, Alignment, $($AllT),+> crate::ProjectField<
+                (),
+                (Aliasing, Alignment, crate::invariant::Valid),
+                { crate::STRUCT_VARIANT_ID },
+                { crate::ident_id!($CurrI)}
+            > for ($($AllT,)+)
+            where
+                Aliasing: crate::invariant::Aliasing,
+                Alignment: crate::invariant::Alignment,
+            {
+                #[inline]
+                fn only_derive_is_allowed_to_implement_this_trait()
+                where
+                    Self: Sized
+                {}
+
+                // SAFETY: Tuples are product types whose fields are
+                // well-aligned, so projection preserves both the alignment and
+                // validity invariants of the outer pointer.
+                type Invariants = (Aliasing, Alignment, crate::invariant::Valid);
+
+                // SAFETY: Tuples are product types and so projection is infallible;
+                type Error = core::convert::Infallible;
             }
 
             // Recurse to the next index.
