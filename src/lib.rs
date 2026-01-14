@@ -375,7 +375,8 @@ use core::{
 #[cfg(feature = "std")]
 use std::io;
 
-use crate::pointer::invariant::{self, BecauseExclusive};
+#[doc(hidden)]
+pub use crate::pointer::invariant::{self, BecauseExclusive};
 #[doc(hidden)]
 pub use crate::pointer::PtrInner;
 pub use crate::{
@@ -1149,6 +1150,100 @@ pub unsafe trait HasField<Field, const VARIANT_ID: i128, const FIELD_ID: i128> {
     /// `slf`'s referent, and has the same provenance as `slf`.
     #[must_use]
     fn project(slf: PtrInner<'_, Self>) -> *mut Self::Type;
+}
+
+/// Projects a given field from `Self`.
+///
+/// Implementations of this trait encode the conditions under which a field can
+/// be projected from a `Ptr<'_, Self, I>` how the invariants of that [`Ptr`]
+/// (`I`) determine the invariants of pointers projected from it. In other
+/// words, it is a type-level function over invariants; `I` goes in,
+/// `Self::Invariants` comes out.
+///
+/// # Safety
+///
+/// `T: ProjectField<Field, I, VARIANT_ID, FIELD_ID>` if, for a
+/// `ptr: Ptr<'_, T, I>` such that `T::is_projectable(ptr).is_ok()`,
+/// `<T as HasField<Field, VARIANT_ID, FIELD_ID>>::project(ptr.as_inner())`
+/// conforms to `T::Invariants`.
+#[doc(hidden)]
+pub unsafe trait ProjectField<Field, I, const VARIANT_ID: i128, const FIELD_ID: i128>:
+    HasField<Field, VARIANT_ID, FIELD_ID>
+where
+    I: invariant::Invariants,
+{
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized;
+
+    /// The invariants of the projected field pointer, with respect to the
+    /// invariants, `I`, of the containing pointer. The aliasing dimension of
+    /// the invariants is guaranteed to remain unchanged.
+    type Invariants: invariant::Invariants<Aliasing = I::Aliasing>;
+
+    /// The failure mode of projection. `()` if the projection is fallible,
+    /// otherwise [`core::convert::Infallible`].
+    type Error;
+
+    /// Is the given field projectable from `ptr`?
+    ///
+    /// This method must be overriden if the field's projectability depends on
+    /// the value of the bytes in `ptr`.
+    #[inline(always)]
+    fn is_projectable<'a>(ptr: Ptr<'a, Self, I>) -> Result<Ptr<'a, Self, I>, Self::Error> {
+        trait IsInfallible {
+            const IS_INFALLIBLE: bool;
+        }
+
+        struct Projection<T, Field, I, const VARIANT_ID: i128, const FIELD_ID: i128>(
+            PhantomData<(Field, I, T)>,
+        )
+        where
+            T: ?Sized + HasField<Field, VARIANT_ID, FIELD_ID>,
+            I: invariant::Invariants;
+
+        impl<T, Field, I, const VARIANT_ID: i128, const FIELD_ID: i128> IsInfallible
+            for Projection<T, Field, I, VARIANT_ID, FIELD_ID>
+        where
+            T: ?Sized + HasField<Field, VARIANT_ID, FIELD_ID>,
+            I: invariant::Invariants,
+        {
+            const IS_INFALLIBLE: bool = {
+                let is_infallible = match VARIANT_ID {
+                    // For nondestructive projections of struct and union
+                    // fields, the projected field's satisfaction of
+                    // `Invariants` does not depend on the value of the
+                    // referent. This default implementation of `is_projectable`
+                    // is non-destructive, as it does not overwrite any part of
+                    // the referent.
+                    crate::STRUCT_VARIANT_ID | crate::UNION_VARIANT_ID => true,
+                    _enum_variant => {
+                        use crate::invariant::{Validity, ValidityKind};
+                        match I::Validity::KIND {
+                            // The projectability of a field from an `Uninit` or
+                            // `Initialized` union cannot generally depend on
+                            // the referent's value, because the union's
+                            // discriminant is not in a valid state, and thus
+                            // cannot be used to discriminate between variants.
+                            ValidityKind::Uninit | ValidityKind::Initialized => true,
+                            // The projectability of an enum field from an
+                            // `AsInitialized` or `Valid` state is a dynamic
+                            // property of its tag.
+                            ValidityKind::AsInitialized | ValidityKind::Valid => false,
+                        }
+                    }
+                };
+                const_assert!(is_infallible);
+                is_infallible
+            };
+        }
+
+        const_assert!(
+            <Projection<Self, Field, I, VARIANT_ID, FIELD_ID> as IsInfallible>::IS_INFALLIBLE
+        );
+
+        Ok(ptr)
+    }
 }
 
 /// Analyzes whether a type is [`FromZeros`].
