@@ -430,10 +430,10 @@ pub(crate) fn derive_is_bit_valid(
             >();
 
             let tag = {
-                let tag_ptr = raw_enum.reborrow().project::<
+                let tag_ptr = #zerocopy_crate::i!(raw_enum.reborrow().project::<
                     (),
                     { #zerocopy_crate::ident_id!(tag) }
-                >().cast::<
+                >()).cast::<
                     ___ZerocopyTagPrimitive,
                     #zerocopy_crate::pointer::cast::CastSized,
                     _
@@ -441,7 +441,7 @@ pub(crate) fn derive_is_bit_valid(
                 tag_ptr.recall_validity::<_, (_, (_, _))>().read_unaligned::<#zerocopy_crate::BecauseImmutable>()
             };
 
-            let variants = raw_enum.project::<_, { #zerocopy_crate::ident_id!(variants) }>();
+            let variants = #zerocopy_crate::i!(raw_enum.project::<_, { #zerocopy_crate::ident_id!(variants) }>());
 
             match tag {
                 #(#match_arms,)*
