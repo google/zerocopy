@@ -479,8 +479,9 @@ mod tests {
     use crate::pointer::cast::Project as _;
 
     fn test_size_eq<Src, Dst: SizeEq<Src>>(mut src: Src) {
-        let _: *mut Dst =
-            <Dst as SizeEq<Src>>::CastFrom::project(crate::pointer::PtrInner::from_mut(&mut src));
+        let _: *mut Dst = <Dst as SizeEq<Src>>::CastFrom::project_raw(
+            crate::pointer::PtrInner::from_mut(&mut src),
+        );
     }
 
     #[test]
