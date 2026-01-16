@@ -94,7 +94,7 @@ diff (expected vs got):
 ```
 {}
 ```\n",
-            res, "diff"
+            res, diff
         );
     }
 }
