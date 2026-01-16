@@ -1372,7 +1372,6 @@ mod tests {
             FNT: Fn(T::Native, T) -> T,
             FNN: Fn(T::Native, T::Native) -> T::Native,
             FNNChecked: Fn(T::Native, T::Native) -> Option<T::Native>,
-
             FATT: Fn(&mut T, T),
             FATN: Fn(&mut T, T::Native),
             FANT: Fn(&mut T::Native, T),
