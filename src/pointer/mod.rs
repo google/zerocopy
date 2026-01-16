@@ -129,9 +129,12 @@ pub mod cast {
     #[allow(missing_debug_implementations, missing_copy_implementations)]
     pub enum CastUnsized {}
 
-    // SAFETY: The `static_assert!` ensures that `Src` and `Dst` have the same
-    // `SizeInfo`. Thus, casting preserves the set of referent bytes. All
-    // operations are provenance-preserving.
+    // SAFETY: By the `static_assert!`, `Src` and `Dst` are either:
+    // - Both sized and equal in size
+    // - Both slice DSTs with the same alignment, trailing slice offset, and
+    //   element size. These ensure that any given pointer metadata encodes the
+    //   same size for both `Src` and `Dst` (note that the alignment is required
+    //   as it affects the amount of trailing padding).
     unsafe impl<Src, Dst> Project<Src, Dst> for CastUnsized
     where
         Src: ?Sized + KnownLayout,
@@ -139,20 +142,16 @@ pub mod cast {
     {
         #[inline(always)]
         fn project(src: PtrInner<'_, Src>) -> *mut Dst {
-            // FIXME:
-            // - Is the alignment check necessary for soundness? It's not
-            //   necessary for the soundness of the `Project` impl, but what
-            //   about the soundness of particular use sites?
-            // - Do we want this to support shrinking casts as well?
+            // FIXME: Do we want this to support shrinking casts as well?
             static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
                 let t = <Src as KnownLayout>::LAYOUT;
                 let u = <Dst as KnownLayout>::LAYOUT;
-                t.align.get() >= u.align.get() && match (t.size_info, u.size_info) {
+                match (t.size_info, u.size_info) {
                     (SizeInfo::Sized { size: t }, SizeInfo::Sized { size: u }) => t == u,
                     (
                         SizeInfo::SliceDst(TrailingSliceLayout { offset: t_offset, elem_size: t_elem_size }),
                         SizeInfo::SliceDst(TrailingSliceLayout { offset: u_offset, elem_size: u_elem_size })
-                    ) => t_offset == u_offset && t_elem_size == u_elem_size,
+                    ) => t.align.get() >= u.align.get() && t_offset == u_offset && t_elem_size == u_elem_size,
                     _ => false,
                 }
             });
