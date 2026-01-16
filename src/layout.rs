@@ -771,7 +771,7 @@ mod cast_from {
         /// implement soundly.
         //
         // FIXME(#1817): Support Sized->Unsized and Unsized->Sized casts
-        fn project(src: PtrInner<'_, Src>) -> *mut Dst {
+        fn project_raw(src: PtrInner<'_, Src>) -> *mut Dst {
             // At compile time (specifically, post-monomorphization time), we
             // need to compute two things:
             // - Whether, given *any* `*Src`, it is possible to construct a

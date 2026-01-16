@@ -716,7 +716,7 @@ macro_rules! define_cast {
         // preserving or size-shrinking cast. All operations preserve
         // provenance.
         unsafe impl $(<$tyvar $(: ?$optbound)?>)? $crate::pointer::cast::Project<$src, $dst> for $name {
-            fn project(src: $crate::pointer::PtrInner<'_, $src>) -> *mut $dst {
+            fn project_raw(src: $crate::pointer::PtrInner<'_, $src>) -> *mut $dst {
                 #[allow(clippy::as_conversions)]
                 return src.as_ptr() as *mut $dst;
             }
@@ -878,7 +878,7 @@ macro_rules! unsafe_with_size_eq {
             // SAFETY: This call is never executed.
             #[allow(unused_unsafe, clippy::missing_transmute_annotations)]
             let ptr = unsafe { core::mem::transmute(ptr) };
-            let _ = <$dst<$u> as SizeEq<$src<$t>>>::CastFrom::project(ptr);
+            let _ = <$dst<$u> as SizeEq<$src<$t>>>::CastFrom::project_inner(ptr);
         }
 
         impl_for_transmute_from!(T: ?Sized + TryFromBytes => TryFromBytes for $src<T>[<T>]);

@@ -176,39 +176,11 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
         unsafe { Self::new(ptr) }
     }
 
-    /// # Safety
-    ///
-    /// The caller may assume that the resulting `PtrInner` addresses a subset
-    /// of the bytes of `self`'s referent.
+    /// A shorthand for `C::project_inner(self)`.
     #[must_use]
     #[inline(always)]
     pub fn project<U: ?Sized, C: cast::Project<T, U>>(self) -> PtrInner<'a, U> {
-        let projected_raw = C::project(self);
-
-        // SAFETY: `self`'s referent lives at a `NonNull` address, and is either
-        // zero-sized or lives in an allocation. In either case, it does not
-        // wrap around the address space [1], and so none of the addresses
-        // contained in it or one-past-the-end of it are null.
-        //
-        // By invariant on `C: Project`, `C::project` is a provenance-preserving
-        // projection which preserves or shrinks the set of referent bytes, so
-        // `projected_raw` references a subset of `self`'s referent, and so it
-        // cannot be null.
-        //
-        // [1] https://doc.rust-lang.org/1.92.0/std/ptr/index.html#allocation
-        let projected_non_null = unsafe { NonNull::new_unchecked(projected_raw) };
-
-        // SAFETY: As described in the preceding safety comment, `projected_raw`,
-        // and thus `projected_non_null`, addresses a subset of `self`'s
-        // referent. Thus, `projected_non_null` either:
-        // - Addresses zero bytes or,
-        // - Addresses a subset of the referent of `self`. In this case, `self`
-        //   has provenance for its referent, which lives in an allocation.
-        //   Since `projected_non_null` was constructed using a sequence of
-        //   provenance-preserving operations, it also has provenance for its
-        //   referent and that referent lives in an allocation. By invariant on
-        //   `self`, that allocation lives for `'a`.
-        unsafe { PtrInner::new(projected_non_null) }
+        C::project_inner(self)
     }
 }
 

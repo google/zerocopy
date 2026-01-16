@@ -1145,41 +1145,6 @@ pub unsafe trait HasField<Field, const VARIANT_ID: i128, const FIELD_ID: i128> {
     /// The returned pointer refers to a non-strict subset of the bytes of
     /// `slf`'s referent, and has the same provenance as `slf`.
     fn project_raw(slf: PtrInner<'_, Self>) -> *mut Self::Type;
-
-    /// Projects from `slf` to the field.
-    ///
-    /// # Safety
-    ///
-    /// The returned pointer refers to a non-strict subset of the bytes of
-    /// `slf`'s referent, and has the same provenance as `slf`.
-    #[must_use]
-    #[inline(always)]
-    fn project_inner(slf: PtrInner<'_, Self>) -> PtrInner<'_, Self::Type> {
-        let projected_raw = Self::project_raw(slf);
-        // SAFETY: `slf`'s referent lives at a `NonNull` address, and is either
-        // zero-sized or lives in an allocation. In either case, it does not
-        // wrap around the address space [1], and so none of the addresses
-        // contained in it or one-past-the-end of it are null.
-        //
-        // By invariant on `project_raw`, `project_raw` is a
-        // provenance-preserving projection which preserves or shrinks the set
-        // of referent bytes, so `projected_raw` references a subset of `slf`'s
-        // referent, and so it cannot be null.
-        //
-        // [1] https://doc.rust-lang.org/1.92.0/std/ptr/index.html#allocation
-        let projected_non_null = unsafe { NonNull::new_unchecked(projected_raw) };
-        // SAFETY: As described in the preceding safety comment,
-        // `projected_raw`, and thus `projected_non_null`, addresses a subset of
-        // `slf`'s referent. Thus, `projected_non_null` either:
-        // - Addresses zero bytes or,
-        // - Addresses a subset of the referent of `slf`. In this case, `slf`
-        //   has provenance for its referent, which lives in an allocation.
-        //   Since `projected_non_null` was constructed using a sequence of
-        //   provenance-preserving operations, it also has provenance for its
-        //   referent and that referent lives in an allocation. By invariant on
-        //   `slf`, that allocation lives for `'a`.
-        unsafe { PtrInner::new(projected_non_null) }
-    }
 }
 
 /// Analyzes whether a type is [`FromZeros`].
