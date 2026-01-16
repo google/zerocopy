@@ -8,7 +8,60 @@
 
 use proc_macro2::{Span, TokenStream};
 use quote::ToTokens;
-use syn::{Data, DataEnum, DataStruct, DataUnion, Field, Ident, Index, Type, Variant, Visibility};
+use syn::{
+    parse_quote, Data, DataEnum, DataStruct, DataUnion, DeriveInput, Error, Expr, ExprLit, Field,
+    Ident, Index, Lit, Meta, Path, Type, Variant, Visibility,
+};
+
+pub(crate) struct Ctx {
+    pub(crate) ast: DeriveInput,
+    pub(crate) zerocopy_crate: Path,
+}
+
+impl Ctx {
+    /// Attempt to extract a crate path from the provided attributes. Defaults to
+    /// `::zerocopy` if not found.
+    pub(crate) fn try_from_derive_input(ast: DeriveInput) -> Result<Self, Error> {
+        let mut path = parse_quote!(::zerocopy);
+
+        for attr in &ast.attrs {
+            if let Meta::List(ref meta_list) = attr.meta {
+                if meta_list.path.is_ident("zerocopy") {
+                    attr.parse_nested_meta(|meta| {
+                        if meta.path.is_ident("crate") {
+                            let expr = meta.value().and_then(|value| value.parse());
+                            if let Ok(Expr::Lit(ExprLit { lit: Lit::Str(lit), .. })) = expr {
+                                if let Ok(path_lit) = lit.parse() {
+                                    path = path_lit;
+                                    return Ok(());
+                                }
+                            }
+
+                            return Err(Error::new(
+                                Span::call_site(),
+                                "`crate` attribute requires a path as the value",
+                            ));
+                        }
+
+                        Err(Error::new(
+                            Span::call_site(),
+                            format!(
+                                "unknown attribute encountered: {}",
+                                meta.path.into_token_stream()
+                            ),
+                        ))
+                    })?;
+                }
+            }
+        }
+
+        Ok(Self { ast, zerocopy_crate: path })
+    }
+
+    pub(crate) fn with_input(&self, input: &DeriveInput) -> Self {
+        Self { ast: input.clone(), zerocopy_crate: self.zerocopy_crate.clone() }
+    }
+}
 
 pub(crate) trait DataExt {
     /// Extracts the names and types of all fields. For enums, extracts the
