@@ -297,7 +297,7 @@ pub(crate) fn derive_is_bit_valid(
                 type Type = #ty;
 
                 #[inline(always)]
-                fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                fn project_raw(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                     use #zerocopy_crate::pointer::cast::{CastSized, Projection};
 
                     slf.project::<___ZerocopyRawEnum #ty_generics, CastSized>()
@@ -410,7 +410,7 @@ pub(crate) fn derive_is_bit_valid(
                 type Type = ___ZerocopyTag;
 
                 #[inline(always)]
-                fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                fn project_raw(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                     slf.as_ptr().cast()
                 }
             }

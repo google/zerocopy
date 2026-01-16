@@ -784,7 +784,7 @@ fn derive_has_field_struct_union(
             type Type = #ty;
 
             #[inline(always)]
-            fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+            fn project_raw(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
                 let slf = slf.as_ptr();
                 // SAFETY: By invariant on `PtrInner`, `slf` is a non-null
                 // pointer whose referent is zero-sized or lives in a valid

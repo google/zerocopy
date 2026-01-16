@@ -173,7 +173,7 @@ pub mod cast {
     /// A field projection
     ///
     /// A `Projection` is a [`Project`] which implements projection by
-    /// delegating to an implementation of [`HasField::project`].
+    /// delegating to an implementation of [`HasField::project_raw`].
     #[allow(missing_debug_implementations, missing_copy_implementations)]
     pub struct Projection<F: ?Sized, const VARIANT_ID: i128, const FIELD_ID: i128> {
         _never: core::convert::Infallible,
@@ -189,7 +189,7 @@ pub mod cast {
     {
         #[inline(always)]
         fn project(src: PtrInner<'_, T>) -> *mut T::Type {
-            T::project(src)
+            T::project_raw(src)
         }
     }
 
