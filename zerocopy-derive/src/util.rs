@@ -10,7 +10,8 @@ use proc_macro2::{Span, TokenStream};
 use quote::{quote, ToTokens};
 use syn::{
     parse_quote, Data, DataEnum, DataStruct, DataUnion, DeriveInput, Error, Expr, ExprLit, Field,
-    Ident, Index, Lit, Meta, Path, Type, Variant, Visibility,
+    Ident, ImplGenerics, Index, Lit, Meta, Path, Type, TypeGenerics, Variant, Visibility,
+    WhereClause,
 };
 
 pub(crate) struct Ctx {
@@ -65,6 +66,60 @@ impl Ctx {
     pub(crate) fn core_path(&self) -> TokenStream {
         let zerocopy_crate = &self.zerocopy_crate;
         quote!(#zerocopy_crate::util::macro_util::core_reexport)
+    }
+}
+
+pub(crate) struct ImplBlockBuilder<'a> {
+    impl_generics: ImplGenerics<'a>,
+
+    trait_name: Path,
+    trait_generics: Option<TypeGenerics<'a>>,
+
+    self_name: Ident,
+    self_generics: TypeGenerics<'a>,
+
+    where_clause: Option<&'a WhereClause>,
+
+    ctx: &'a Ctx,
+}
+
+impl<'a> ImplBlockBuilder<'a> {
+    pub(crate) fn from_derive_input(
+        ctx: &'a Ctx,
+        input: &'a DeriveInput,
+        trait_name: Path,
+    ) -> ImplBlockBuilder<'a> {
+        let (impl_generics, self_generics, where_clause) = input.generics.split_for_impl();
+
+        Self {
+            impl_generics,
+            trait_name,
+            trait_generics: None,
+            self_name: input.ident.clone(),
+            self_generics,
+            where_clause,
+            ctx,
+        }
+    }
+
+    pub(crate) fn build(self) -> TokenStream {
+        let Self {
+            impl_generics,
+            trait_name,
+            trait_generics,
+            self_name,
+            self_generics,
+            where_clause,
+            ctx,
+        } = self;
+
+        let zerocopy_crate = &ctx.zerocopy_crate;
+
+        quote! {
+            unsafe impl #impl_generics #trait_name #trait_generics for #self_name #self_generics #where_clause {
+                fn only_derive_is_allowed_to_implement_this_trait() where Self: #zerocopy_crate::util::macro_util::core_reexport::marker::Sized {}
+            }
+        }
     }
 }
 
