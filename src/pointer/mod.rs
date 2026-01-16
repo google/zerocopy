@@ -56,6 +56,10 @@ pub mod cast {
     pub unsafe trait Project<Src: ?Sized, Dst: ?Sized> {
         /// Projects a pointer from `Src` to `Dst`.
         ///
+        /// Users should generally not call `project` directly, and instead
+        /// should use high-level APIs like [`PtrInner::project`] or
+        /// [`Ptr::project`].
+        ///
         /// # Safety
         ///
         /// The returned pointer refers to a non-strict subset of the bytes of
@@ -189,7 +193,7 @@ pub mod cast {
     {
         #[inline(always)]
         fn project(src: PtrInner<'_, T>) -> *mut T::Type {
-            T::project_raw(src)
+            T::project(src)
         }
     }
 
