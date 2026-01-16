@@ -10,11 +10,11 @@ use proc_macro2::TokenStream;
 use quote::quote;
 use syn::{
     parse_quote, spanned::Spanned as _, DataEnum, DeriveInput, Error, Expr, ExprLit, ExprUnary,
-    Fields, Generics, Ident, Index, Lit, Path, UnOp,
+    Fields, Ident, Index, Lit, UnOp,
 };
 
 use crate::{
-    derive_has_field_struct_union, derive_try_from_bytes_inner, repr::EnumRepr, DataExt,
+    derive_has_field_struct_union, derive_try_from_bytes_inner, repr::EnumRepr, Ctx, DataExt,
     FieldBounds, ImplBlockBuilder, Trait,
 };
 
@@ -115,13 +115,10 @@ fn variant_struct_ident(variant_ident: &Ident) -> Ident {
 /// outer tag. Depending on the repr, we will set one of these tags to the tag
 /// type and the other to `()`. This lets us generate the same code but put the
 /// tags in different locations.
-fn generate_variant_structs(
-    enum_name: &Ident,
-    generics: &Generics,
-    data: &DataEnum,
-    zerocopy_crate: &Path,
-) -> TokenStream {
-    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
+fn generate_variant_structs(ctx: &Ctx, data: &DataEnum) -> TokenStream {
+    let (impl_generics, ty_generics, where_clause) = ctx.ast.generics.split_for_impl();
+
+    let enum_name = &ctx.ast.ident;
 
     // All variant structs have a `PhantomData<MyEnum<...>>` field because we
     // don't know which generic parameters each variant will use, and unused
@@ -152,7 +149,7 @@ fn generate_variant_structs(
         // We do this rather than emitting `#[derive(::zerocopy::TryFromBytes)]`
         // because that is not hygienic, and this is also more performant.
         let try_from_bytes_impl =
-            derive_try_from_bytes_inner(&variant_struct, Trait::TryFromBytes, zerocopy_crate)
+            derive_try_from_bytes_inner(&ctx.with_input(&variant_struct), Trait::TryFromBytes)
                 .expect("derive_try_from_bytes_inner should not fail on synthesized type");
 
         Some(quote! {
@@ -172,11 +169,8 @@ fn variants_union_field_ident(ident: &Ident) -> Ident {
     ident!(("__field_{}", ident), ident.span())
 }
 
-fn generate_variants_union(
-    generics: &Generics,
-    data: &DataEnum,
-    zerocopy_crate: &Path,
-) -> TokenStream {
+fn generate_variants_union(ctx: &Ctx, data: &DataEnum) -> TokenStream {
+    let generics = &ctx.ast.generics;
     let (_, ty_generics, _) = generics.split_for_impl();
 
     let fields = data.variants.iter().filter_map(|variant| {
@@ -210,7 +204,7 @@ fn generate_variants_union(
     };
 
     let has_field =
-        derive_has_field_struct_union(&variants_union, &variants_union.data, zerocopy_crate);
+        derive_has_field_struct_union(&ctx.with_input(&variants_union), &variants_union.data);
 
     quote! {
         #variants_union
@@ -241,14 +235,11 @@ fn generate_variants_union(
 /// - `repr(int)`: <https://doc.rust-lang.org/reference/type-layout.html#primitive-representation-of-enums-with-fields>
 /// - `repr(C, int)`: <https://doc.rust-lang.org/reference/type-layout.html#combining-primitive-representations-of-enums-with-fields-and-reprc>
 pub(crate) fn derive_is_bit_valid(
-    ast: &DeriveInput,
-    enum_ident: &Ident,
-    repr: &EnumRepr,
-    generics: &Generics,
+    ctx: &Ctx,
     data: &DataEnum,
-    zerocopy_crate: &Path,
+    repr: &EnumRepr,
 ) -> Result<TokenStream, Error> {
-    let trait_path = Trait::TryFromBytes.crate_path(zerocopy_crate);
+    let trait_path = Trait::TryFromBytes.crate_path(&ctx.zerocopy_crate);
     let tag_enum = generate_tag_enum(repr, data);
     let tag_consts = generate_tag_consts(data);
 
@@ -258,16 +249,17 @@ pub(crate) fn derive_is_bit_valid(
         (quote! { () }, quote! { ___ZerocopyTag })
     } else {
         return Err(Error::new(
-            ast.span(),
+            ctx.ast.span(),
             "must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout",
         ));
     };
 
-    let variant_structs = generate_variant_structs(enum_ident, generics, data, zerocopy_crate);
-    let variants_union = generate_variants_union(generics, data, zerocopy_crate);
+    let variant_structs = generate_variant_structs(ctx, data);
+    let variants_union = generate_variants_union(ctx, data);
 
-    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
+    let (impl_generics, ty_generics, where_clause) = ctx.ast.generics.split_for_impl();
 
+    let zerocopy_crate = &ctx.zerocopy_crate;
     let has_fields = data.variants().into_iter().flat_map(|(variant, fields)| {
         let variant_ident = &variant.unwrap().ident;
         let variants_union_field_ident = variants_union_field_ident(variant_ident);
@@ -278,9 +270,9 @@ pub(crate) fn derive_is_bit_valid(
             // derive remains sound.
             assert!(matches!(vis, syn::Visibility::Inherited));
             let variant_struct_field_index = Index::from(idx + 1);
-            let (_, ty_generics, _) = generics.split_for_impl();
+            let (_, ty_generics, _) = ctx.ast.generics.split_for_impl();
             ImplBlockBuilder::new(
-                ast,
+                ctx,
                 data,
                 Trait::HasField {
                     variant_id: parse_quote!({ #zerocopy_crate::ident_id!(#variant_ident) }),
@@ -291,7 +283,6 @@ pub(crate) fn derive_is_bit_valid(
                     field_id: parse_quote!({ #zerocopy_crate::ident_id!(#ident) }),
                 },
                 FieldBounds::None,
-                zerocopy_crate,
             )
             .inner_extras(quote! {
                 type Type = #ty;
@@ -350,6 +341,7 @@ pub(crate) fn derive_is_bit_valid(
         }
     });
 
+    let generics = &ctx.ast.generics;
     let raw_enum: DeriveInput = parse_quote! {
         #[repr(C)]
         struct ___ZerocopyRawEnum #generics {
@@ -358,7 +350,7 @@ pub(crate) fn derive_is_bit_valid(
         }
     };
 
-    let self_ident = &ast.ident;
+    let self_ident = &ctx.ast.ident;
     let invariants_eq_impl = quote! {
         // SAFETY: `___ZerocopyRawEnum` is designed to have the same layout,
         // validity, and invariants as `Self`.
@@ -366,7 +358,7 @@ pub(crate) fn derive_is_bit_valid(
     };
 
     let raw_enum_projections =
-        derive_has_field_struct_union(&raw_enum, &raw_enum.data, zerocopy_crate);
+        derive_has_field_struct_union(&ctx.with_input(&raw_enum), &raw_enum.data);
 
     let raw_enum = quote! {
         #raw_enum
