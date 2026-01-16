@@ -9,8 +9,8 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 use syn::{
-    parse_quote, spanned::Spanned as _, DataEnum, DeriveInput, Error, Fields, Generics, Ident,
-    Index, Path,
+    parse_quote, spanned::Spanned as _, DataEnum, DeriveInput, Error, Expr, ExprLit, ExprUnary,
+    Fields, Generics, Ident, Index, Lit, Path, UnOp,
 };
 
 use crate::{
@@ -449,4 +449,82 @@ pub(crate) fn derive_is_bit_valid(
             }
         }
     })
+}
+
+/// Returns `Ok(index)` if variant `index` of the enum has a discriminant of
+/// zero. If `Err(bool)` is returned, the boolean is true if the enum has
+/// unknown discriminants (e.g. discriminants set to const expressions which we
+/// can't evaluate in a proc macro). If the enum has unknown discriminants, then
+/// it might have a zero variant that we just can't detect.
+pub(crate) fn find_zero_variant(enm: &DataEnum) -> Result<usize, bool> {
+    // Discriminants can be anywhere in the range [i128::MIN, u128::MAX] because
+    // the discriminant type may be signed or unsigned. Since we only care about
+    // tracking the discriminant when it's less than or equal to zero, we can
+    // avoid u128 -> i128 conversions and bounds checking by making the "next
+    // discriminant" value implicitly negative.
+    // Technically 64 bits is enough, but 128 is better for future compatibility
+    // with https://github.com/rust-lang/rust/issues/56071
+    let mut next_negative_discriminant = Some(0);
+
+    // Sometimes we encounter explicit discriminants that we can't know the
+    // value of (e.g. a constant expression that requires evaluation). These
+    // could evaluate to zero or a negative number, but we can't assume that
+    // they do (no false positives allowed!). So we treat them like strictly-
+    // positive values that can't result in any zero variants, and track whether
+    // we've encountered any unknown discriminants.
+    let mut has_unknown_discriminants = false;
+
+    for (i, v) in enm.variants.iter().enumerate() {
+        match v.discriminant.as_ref() {
+            // Implicit discriminant
+            None => {
+                match next_negative_discriminant.as_mut() {
+                    Some(0) => return Ok(i),
+                    // n is nonzero so subtraction is always safe
+                    Some(n) => *n -= 1,
+                    None => (),
+                }
+            }
+            // Explicit positive discriminant
+            Some((_, Expr::Lit(ExprLit { lit: Lit::Int(int), .. }))) => {
+                match int.base10_parse::<u128>().ok() {
+                    Some(0) => return Ok(i),
+                    Some(_) => next_negative_discriminant = None,
+                    None => {
+                        // Numbers should never fail to parse, but just in case:
+                        has_unknown_discriminants = true;
+                        next_negative_discriminant = None;
+                    }
+                }
+            }
+            // Explicit negative discriminant
+            Some((_, Expr::Unary(ExprUnary { op: UnOp::Neg(_), expr, .. }))) => match &**expr {
+                Expr::Lit(ExprLit { lit: Lit::Int(int), .. }) => {
+                    match int.base10_parse::<u128>().ok() {
+                        Some(0) => return Ok(i),
+                        // x is nonzero so subtraction is always safe
+                        Some(x) => next_negative_discriminant = Some(x - 1),
+                        None => {
+                            // Numbers should never fail to parse, but just in
+                            // case:
+                            has_unknown_discriminants = true;
+                            next_negative_discriminant = None;
+                        }
+                    }
+                }
+                // Unknown negative discriminant (e.g. const repr)
+                _ => {
+                    has_unknown_discriminants = true;
+                    next_negative_discriminant = None;
+                }
+            },
+            // Unknown discriminant (e.g. const expr)
+            _ => {
+                has_unknown_discriminants = true;
+                next_negative_discriminant = None;
+            }
+        }
+    }
+
+    Err(has_unknown_discriminants)
 }
