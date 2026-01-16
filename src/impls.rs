@@ -814,7 +814,7 @@ const _: () = {
         }
 
         #[inline(always)]
-        fn project_raw(slf: PtrInner<'_, Self>) -> *mut T {
+        fn project(slf: PtrInner<'_, Self>) -> *mut T {
             // SAFETY: `ManuallyDrop<T>` has the same layout and bit validity as
             // `T` [1].
             //
@@ -1084,7 +1084,7 @@ mod tuples {
                 type Type = $CurrT;
 
                 #[inline(always)]
-                fn project_raw(slf: crate::PtrInner<'_, Self>) -> *mut Self::Type {
+                fn project(slf: crate::PtrInner<'_, Self>) -> *mut Self::Type {
                     let slf = slf.as_non_null().as_ptr();
                     // SAFETY: `PtrInner` promises it references either a zero-sized
                     // byte range, or else will reference a byte range that is

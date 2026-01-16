@@ -56,6 +56,12 @@ pub mod cast {
     pub unsafe trait Project<Src: ?Sized, Dst: ?Sized> {
         /// Projects a pointer from `Src` to `Dst`.
         ///
+        /// Users should generally not call `project` directly, and instead
+        /// should use high-level APIs like [`PtrInner::project`] or
+        /// [`Ptr::project`].
+        ///
+        /// [`Ptr::project`]: crate::pointer::Ptr::project
+        ///
         /// # Safety
         ///
         /// The returned pointer refers to a non-strict subset of the bytes of
@@ -173,7 +179,7 @@ pub mod cast {
     /// A field projection
     ///
     /// A `Projection` is a [`Project`] which implements projection by
-    /// delegating to an implementation of [`HasField::project_raw`].
+    /// delegating to an implementation of [`HasField::project`].
     #[allow(missing_debug_implementations, missing_copy_implementations)]
     pub struct Projection<F: ?Sized, const VARIANT_ID: i128, const FIELD_ID: i128> {
         _never: core::convert::Infallible,
@@ -189,7 +195,7 @@ pub mod cast {
     {
         #[inline(always)]
         fn project(src: PtrInner<'_, T>) -> *mut T::Type {
-            T::project_raw(src)
+            T::project(src)
         }
     }
 
