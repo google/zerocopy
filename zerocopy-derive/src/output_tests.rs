@@ -55,7 +55,8 @@ macro_rules! test {
         {
             let ts: proc_macro2::TokenStream = quote::quote!( $($i)* );
             let ast = syn::parse2::<syn::DeriveInput>(ts).unwrap();
-            let res = $name(&ast, crate::Trait::$name, &syn::parse_quote!(::zerocopy));
+            let ctx = crate::Ctx::try_from_derive_input(ast).unwrap();
+            let res = $name(&ctx, crate::Trait::$name);
             let expected_toks = quote::quote!( $($o)* );
             assert_eq_streams(expected_toks.into(), res.into_ts().into());
         }
