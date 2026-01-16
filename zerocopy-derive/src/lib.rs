@@ -39,15 +39,15 @@
 
 macro_rules! ident {
     (($fmt:literal $(, $arg:expr)*), $span:expr) => {
-        syn::Ident::new(&format!($fmt $(, crate::ext::to_ident_str($arg))*), $span)
+        syn::Ident::new(&format!($fmt $(, crate::util::to_ident_str($arg))*), $span)
     };
 }
 
 mod r#enum;
-mod ext;
 #[cfg(test)]
 mod output_tests;
 mod repr;
+mod util;
 
 use proc_macro2::{Span, TokenStream};
 use quote::{quote, ToTokens};
@@ -57,7 +57,7 @@ use syn::{
     WherePredicate,
 };
 
-use crate::{ext::*, repr::*};
+use crate::{repr::*, util::*};
 
 // FIXME(https://github.com/rust-lang/rust/issues/54140): Some errors could be
 // made better if we could add multiple lines of error output like this:
