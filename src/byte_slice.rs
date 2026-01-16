@@ -211,7 +211,7 @@ unsafe impl SplitByteSlice for &[u8] {
     #[inline]
     unsafe fn split_at_unchecked(self, mid: usize) -> (Self, Self) {
         // SAFETY: By contract on caller, `mid` is not greater than
-        // `bytes.len()`.
+        // `self.len()`.
         #[allow(clippy::multiple_unsafe_ops_per_block)]
         unsafe {
             (<[u8]>::get_unchecked(self, ..mid), <[u8]>::get_unchecked(self, mid..))

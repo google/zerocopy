@@ -4393,8 +4393,8 @@ pub unsafe trait FromBytes: FromZeros {
     /// ```
     ///
     /// Since an explicit `count` is provided, this method supports types with
-    /// zero-sized trailing slice elements. Methods such as [`mut_from`] which
-    /// do not take an explicit count do not support such types.
+    /// zero-sized trailing slice elements. Methods such as [`mut_from_bytes`]
+    /// which do not take an explicit count do not support such types.
     ///
     /// ```
     /// use zerocopy::*;
@@ -4412,7 +4412,7 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(zsty.trailing_dst.len(), 42);
     /// ```
     ///
-    /// [`mut_from`]: FromBytes::mut_from
+    /// [`mut_from_bytes`]: FromBytes::mut_from_bytes
     #[must_use = "has no side effects"]
     #[inline]
     fn mut_from_bytes_with_elems(
@@ -6481,9 +6481,9 @@ mod tests {
 
     #[test]
     fn test_ref_from_mut_from() {
-        // Test `FromBytes::{ref_from, mut_from}{,_prefix,Suffix}` success cases
-        // Exhaustive coverage for these methods is covered by the `Ref` tests above,
-        // which these helper methods defer to.
+        // Test `FromBytes::{ref_from_bytes, mut_from_bytes}{,_prefix,Suffix}`
+        // success cases. Exhaustive coverage for these methods is covered by
+        // the `Ref` tests above, which these helper methods defer to.
 
         let mut buf =
             Align::<[u8; 16], AU64>::new([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
@@ -6516,7 +6516,8 @@ mod tests {
 
     #[test]
     fn test_ref_from_mut_from_error() {
-        // Test `FromBytes::{ref_from, mut_from}{,_prefix,Suffix}` error cases.
+        // Test `FromBytes::{ref_from_bytes, mut_from_bytes}{,_prefix,Suffix}`
+        // error cases.
 
         // Fail because the buffer is too large.
         let mut buf = Align::<[u8; 16], AU64>::default();

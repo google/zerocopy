@@ -168,7 +168,7 @@ const _: () = unsafe { unsafe_impl!(str: Immutable, FromZeros, IntoBytes, Unalig
 // `Maybe<str>` refers to a valid `str`. `str::from_utf8` guarantees that it
 // returns `Err` if its input is not a valid `str` [1].
 //
-// [2] Per https://doc.rust-lang.org/core/str/fn.from_utf8.html#errors:
+// [1] Per https://doc.rust-lang.org/core/str/fn.from_utf8.html#errors:
 //
 //   Returns `Err` if the slice is not UTF-8.
 const _: () = unsafe {
