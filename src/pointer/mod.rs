@@ -18,7 +18,7 @@ mod transmute;
 pub use {inner::PtrInner, transmute::*};
 #[doc(hidden)]
 pub use {
-    invariant::{BecauseExclusive, BecauseImmutable, Read},
+    invariant::{BecauseExclusive, BecauseImmutable},
     ptr::Ptr,
 };
 

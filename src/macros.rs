@@ -572,7 +572,7 @@ macro_rules! try_transmute {
                 $crate::util::macro_util::core_reexport::mem::transmute(e)
             })
         } else {
-            $crate::util::macro_util::try_transmute::<_, _>(e)
+            $crate::util::macro_util::try_transmute(e)
         }
     }}
 }
@@ -679,7 +679,7 @@ macro_rules! try_transmute_ref {
 
             Ok(&u)
         } else {
-            $crate::util::macro_util::try_transmute_ref::<_, _>(e)
+            $crate::util::macro_util::try_transmute_ref(e)
         }
     }}
 }
@@ -788,7 +788,7 @@ macro_rules! try_transmute_mut {
 
             Ok(&mut u)
         } else {
-            $crate::util::macro_util::try_transmute_mut::<_, _>(e)
+            $crate::util::macro_util::try_transmute_mut(e)
         }
     }}
 }

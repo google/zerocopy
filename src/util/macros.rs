@@ -219,7 +219,7 @@ macro_rules! impl_for_transmute_from {
     ) => {
         #[inline]
         fn is_bit_valid(candidate: Maybe<'_, Self>) -> bool {
-            let c: Maybe<'_, $repr, _> = candidate.transmute::<_, _, (_, _)>();
+            let c: Maybe<'_, $repr, _> = candidate.transmute();
             // SAFETY: This macro ensures that `$repr` and `Self` have the same
             // size and bit validity. Thus, a bit-valid instance of `$repr` is
             // also a bit-valid instance of `Self`.
