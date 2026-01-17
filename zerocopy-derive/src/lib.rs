@@ -182,12 +182,257 @@ pub fn derive_as_bytes(ts: proc_macro::TokenStream) -> proc_macro::TokenStream {
     derive_into_bytes(ts)
 }
 
+fn derive_known_layout_for_repr_c_struct<'a>(
+    ast: &'a DeriveInput,
+    repr: &StructUnionRepr,
+    fields: &[(&'a syn::Visibility, TokenStream, &'a Type)],
+    zerocopy_crate: &Path,
+) -> Option<(SelfBounds<'a>, TokenStream, Option<TokenStream>)> {
+    let (trailing_field, leading_fields) = fields.split_last()?;
+
+    let (_vis, trailing_field_name, trailing_field_ty) = trailing_field;
+    let leading_fields_tys = leading_fields.iter().map(|(_vis, _name, ty)| ty);
+
+    let core_path = quote!(#zerocopy_crate::util::macro_util::core_reexport);
+    let repr_align = repr
+        .get_align()
+        .map(|align| {
+            let align = align.t.get();
+            quote!(#core_path::num::NonZeroUsize::new(#align as usize))
+        })
+        .unwrap_or_else(|| quote!(#core_path::option::Option::None));
+    let repr_packed = repr
+        .get_packed()
+        .map(|packed| {
+            let packed = packed.get();
+            quote!(#core_path::num::NonZeroUsize::new(#packed as usize))
+        })
+        .unwrap_or_else(|| quote!(#core_path::option::Option::None));
+
+    let make_methods = |trailing_field_ty| {
+        quote! {
+            // SAFETY:
+            // - The returned pointer has the same address and provenance as
+            //   `bytes`:
+            //   - The recursive call to `raw_from_ptr_len` preserves both
+            //     address and provenance.
+            //   - The `as` cast preserves both address and provenance.
+            //   - `NonNull::new_unchecked` preserves both address and
+            //     provenance.
+            // - If `Self` is a slice DST, the returned pointer encodes
+            //   `elems` elements in the trailing slice:
+            //   - This is true of the recursive call to `raw_from_ptr_len`.
+            //   - `trailing.as_ptr() as *mut Self` preserves trailing slice
+            //     element count [1].
+            //   - `NonNull::new_unchecked` preserves trailing slice element
+            //     count.
+            //
+            // [1] Per https://doc.rust-lang.org/reference/expressions/operator-expr.html#pointer-to-pointer-cast:
+            //
+            //   `*const T`` / `*mut T` can be cast to `*const U` / `*mut U`
+            //   with the following behavior:
+            //     ...
+            //     - If `T` and `U` are both unsized, the pointer is also
+            //       returned unchanged. In particular, the metadata is
+            //       preserved exactly.
+            //
+            //       For instance, a cast from `*const [T]` to `*const [U]`
+            //       preserves the number of elements. ... The same holds
+            //       for str and any compound type whose unsized tail is a
+            //       slice type, such as struct `Foo(i32, [u8])` or
+            //       `(u64, Foo)`.
+            #[inline(always)]
+            fn raw_from_ptr_len(
+                bytes: #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<u8>,
+                meta: Self::PointerMetadata,
+            ) -> #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<Self> {
+                use #zerocopy_crate::KnownLayout;
+                let trailing = <#trailing_field_ty as KnownLayout>::raw_from_ptr_len(bytes, meta);
+                let slf = trailing.as_ptr() as *mut Self;
+                // SAFETY: Constructed from `trailing`, which is non-null.
+                unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(slf) }
+            }
+
+            #[inline(always)]
+            fn pointer_to_metadata(ptr: *mut Self) -> Self::PointerMetadata {
+                <#trailing_field_ty>::pointer_to_metadata(ptr as *mut _)
+            }
+        }
+    };
+
+    let inner_extras = {
+        let leading_fields_tys = leading_fields_tys.clone();
+        let methods = make_methods(*trailing_field_ty);
+        let (_, ty_generics, _) = ast.generics.split_for_impl();
+
+        quote!(
+            type PointerMetadata = <#trailing_field_ty as #zerocopy_crate::KnownLayout>::PointerMetadata;
+
+            type MaybeUninit = __ZerocopyKnownLayoutMaybeUninit #ty_generics;
+
+            // SAFETY: `LAYOUT` accurately describes the layout of `Self`.
+            // The documentation of `DstLayout::for_repr_c_struct` vows that
+            // invocations in this manner will accurately describe a type,
+            // so long as:
+            //
+            //  - that type is `repr(C)`,
+            //  - its fields are enumerated in the order they appear,
+            //  - the presence of `repr_align` and `repr_packed` are
+            //    correctly accounted for.
+            //
+            // We respect all three of these preconditions here. This
+            // expansion is only used if `is_repr_c_struct`, we enumerate
+            // the fields in order, and we extract the values of `align(N)`
+            // and `packed(N)`.
+            const LAYOUT: #zerocopy_crate::DstLayout = {
+                use #zerocopy_crate::util::macro_util::core_reexport::num::NonZeroUsize;
+                use #zerocopy_crate::{DstLayout, KnownLayout};
+
+                DstLayout::for_repr_c_struct(
+                    #repr_align,
+                    #repr_packed,
+                    &[
+                        #(DstLayout::for_type::<#leading_fields_tys>(),)*
+                        <#trailing_field_ty as KnownLayout>::LAYOUT
+                    ],
+                )
+            };
+
+            #methods
+        )
+    };
+
+    let outer_extras = {
+        let ident = &ast.ident;
+        let vis = &ast.vis;
+        let params = &ast.generics.params;
+        let (impl_generics, ty_generics, where_clause) = ast.generics.split_for_impl();
+
+        let predicates = if let Some(where_clause) = where_clause {
+            where_clause.predicates.clone()
+        } else {
+            Default::default()
+        };
+
+        // Generate a valid ident for a type-level handle to a field of a
+        // given `name`.
+        let field_index = |name: &TokenStream| ident!(("__Zerocopy_Field_{}", name), ident.span());
+
+        let field_indices: Vec<_> =
+            fields.iter().map(|(_vis, name, _ty)| field_index(name)).collect();
+
+        // Define the collection of type-level field handles.
+        let field_defs = field_indices.iter().zip(fields).map(|(idx, (vis, _, _))| {
+            quote! {
+                #vis struct #idx;
+            }
+        });
+
+        let field_impls = field_indices.iter().zip(fields).map(|(idx, (_, _, ty))| quote! {
+            // SAFETY: `#ty` is the type of `#ident`'s field at `#idx`.
+            //
+            // We implement `Field` for each field of the struct to create a
+            // projection from the field index to its type. This allows us
+            // to refer to the field's type in a way that respects `Self`
+            // hygiene. If we just copy-pasted the tokens of `#ty`, we
+            // would not respect `Self` hygiene, as `Self` would refer to
+            // the helper struct we are generating, not the derive target
+            // type.
+            unsafe impl #impl_generics #zerocopy_crate::util::macro_util::Field<#idx> for #ident #ty_generics
+            where
+                #predicates
+            {
+                type Type = #ty;
+            }
+        });
+
+        let trailing_field_index = field_index(trailing_field_name);
+        let leading_field_indices =
+            leading_fields.iter().map(|(_vis, name, _ty)| field_index(name));
+
+        // We use `Field` to project the type of the trailing field. This is
+        // required to ensure that if the field type uses `Self`, it
+        // resolves to the derive target type, not the helper struct we are
+        // generating.
+        let trailing_field_ty = quote! {
+            <#ident #ty_generics as
+                #zerocopy_crate::util::macro_util::Field<#trailing_field_index>
+            >::Type
+        };
+
+        let methods = make_methods(&parse_quote! {
+            <#trailing_field_ty as #zerocopy_crate::KnownLayout>::MaybeUninit
+        });
+
+        quote! {
+            #(#field_defs)*
+
+            #(#field_impls)*
+
+            // SAFETY: This has the same layout as the derive target type,
+            // except that it admits uninit bytes. This is ensured by using
+            // the same repr as the target type, and by using field types
+            // which have the same layout as the target type's fields,
+            // except that they admit uninit bytes. We indirect through
+            // `Field` to ensure that occurrences of `Self` resolve to
+            // `#ty`, not `__ZerocopyKnownLayoutMaybeUninit` (see #2116).
+            #repr
+            #[doc(hidden)]
+            #vis struct __ZerocopyKnownLayoutMaybeUninit<#params> (
+                #(#zerocopy_crate::util::macro_util::core_reexport::mem::MaybeUninit<
+                    <#ident #ty_generics as
+                        #zerocopy_crate::util::macro_util::Field<#leading_field_indices>
+                    >::Type
+                >,)*
+                // NOTE(#2302): We wrap in `ManuallyDrop` here in case the
+                // type we're operating on is both generic and
+                // `repr(packed)`. In that case, Rust needs to know that the
+                // type is *either* `Sized` or has a trivial `Drop`.
+                // `ManuallyDrop` has a trivial `Drop`, and so satisfies
+                // this requirement.
+                #zerocopy_crate::util::macro_util::core_reexport::mem::ManuallyDrop<
+                    <#trailing_field_ty as #zerocopy_crate::KnownLayout>::MaybeUninit
+                >
+            )
+            where
+                #trailing_field_ty: #zerocopy_crate::KnownLayout,
+                #predicates;
+
+            // SAFETY: We largely defer to the `KnownLayout` implementation
+            // on the derive target type (both by using the same tokens, and
+            // by deferring to impl via type-level indirection). This is
+            // sound, since `__ZerocopyKnownLayoutMaybeUninit` is guaranteed
+            // to have the same layout as the derive target type, except
+            // that `__ZerocopyKnownLayoutMaybeUninit` admits uninit bytes.
+            unsafe impl #impl_generics #zerocopy_crate::KnownLayout for __ZerocopyKnownLayoutMaybeUninit #ty_generics
+            where
+                #trailing_field_ty: #zerocopy_crate::KnownLayout,
+                #predicates
+            {
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+
+                type PointerMetadata = <#ident #ty_generics as #zerocopy_crate::KnownLayout>::PointerMetadata;
+
+                type MaybeUninit = Self;
+
+                const LAYOUT: #zerocopy_crate::DstLayout = <#ident #ty_generics as #zerocopy_crate::KnownLayout>::LAYOUT;
+
+                #methods
+            }
+        }
+    };
+
+    Some((SelfBounds::None, inner_extras, Some(outer_extras)))
+}
+
 fn derive_known_layout_inner(
     ast: &DeriveInput,
     _top_level: Trait,
     zerocopy_crate: &Path,
 ) -> Result<TokenStream, Error> {
-    let is_repr_c_struct = match &ast.data {
+    // If this is a `repr(C)` struct, then `c_struct_repr` contains the entire
+    // `repr` attribute.
+    let c_struct_repr = match &ast.data {
         Data::Struct(..) => {
             let repr = StructUnionRepr::from_attrs(&ast.attrs)?;
             if repr.is_c() {
@@ -201,281 +446,46 @@ fn derive_known_layout_inner(
 
     let fields = ast.data.fields();
 
-    let (self_bounds, inner_extras, outer_extras) = if let (
-        Some(repr),
-        Some((trailing_field, leading_fields)),
-    ) = (is_repr_c_struct, fields.split_last())
-    {
-        let (_vis, trailing_field_name, trailing_field_ty) = trailing_field;
-        let leading_fields_tys = leading_fields.iter().map(|(_vis, _name, ty)| ty);
+    let (self_bounds, inner_extras, outer_extras) = c_struct_repr
+        .as_ref()
+        .and_then(|repr| {
+            derive_known_layout_for_repr_c_struct(ast, repr, &fields, zerocopy_crate)
+        })
+        .unwrap_or_else(|| {
+            // For enums, unions, and non-`repr(C)` structs, we require that
+            // `Self` is sized, and as a result don't need to reason about the
+            // internals of the type.
+            (
+                SelfBounds::SIZED,
+                quote!(
+                    type PointerMetadata = ();
+                    type MaybeUninit =
+                        #zerocopy_crate::util::macro_util::core_reexport::mem::MaybeUninit<Self>;
 
-        let core_path = quote!(#zerocopy_crate::util::macro_util::core_reexport);
-        let repr_align = repr
-            .get_align()
-            .map(|align| {
-                let align = align.t.get();
-                quote!(#core_path::num::NonZeroUsize::new(#align as usize))
-            })
-            .unwrap_or_else(|| quote!(#core_path::option::Option::None));
-        let repr_packed = repr
-            .get_packed()
-            .map(|packed| {
-                let packed = packed.get();
-                quote!(#core_path::num::NonZeroUsize::new(#packed as usize))
-            })
-            .unwrap_or_else(|| quote!(#core_path::option::Option::None));
+                    // SAFETY: `LAYOUT` is guaranteed to accurately describe the
+                    // layout of `Self`, because that is the documented safety
+                    // contract of `DstLayout::for_type`.
+                    const LAYOUT: #zerocopy_crate::DstLayout = #zerocopy_crate::DstLayout::for_type::<Self>();
 
-        let make_methods = |trailing_field_ty| {
-            quote! {
-                // SAFETY:
-                // - The returned pointer has the same address and provenance as
-                //   `bytes`:
-                //   - The recursive call to `raw_from_ptr_len` preserves both
-                //     address and provenance.
-                //   - The `as` cast preserves both address and provenance.
-                //   - `NonNull::new_unchecked` preserves both address and
-                //     provenance.
-                // - If `Self` is a slice DST, the returned pointer encodes
-                //   `elems` elements in the trailing slice:
-                //   - This is true of the recursive call to `raw_from_ptr_len`.
-                //   - `trailing.as_ptr() as *mut Self` preserves trailing slice
-                //     element count [1].
-                //   - `NonNull::new_unchecked` preserves trailing slice element
-                //     count.
-                //
-                // [1] Per https://doc.rust-lang.org/reference/expressions/operator-expr.html#pointer-to-pointer-cast:
-                //
-                //   `*const T`` / `*mut T` can be cast to `*const U` / `*mut U`
-                //   with the following behavior:
-                //     ...
-                //     - If `T` and `U` are both unsized, the pointer is also
-                //       returned unchanged. In particular, the metadata is
-                //       preserved exactly.
-                //
-                //       For instance, a cast from `*const [T]` to `*const [U]`
-                //       preserves the number of elements. ... The same holds
-                //       for str and any compound type whose unsized tail is a
-                //       slice type, such as struct `Foo(i32, [u8])` or
-                //       `(u64, Foo)`.
-                #[inline(always)]
-                fn raw_from_ptr_len(
-                    bytes: #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<u8>,
-                    meta: Self::PointerMetadata,
-                ) -> #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<Self> {
-                    use #zerocopy_crate::KnownLayout;
-                    let trailing = <#trailing_field_ty as KnownLayout>::raw_from_ptr_len(bytes, meta);
-                    let slf = trailing.as_ptr() as *mut Self;
-                    // SAFETY: Constructed from `trailing`, which is non-null.
-                    unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(slf) }
-                }
+                    // SAFETY: `.cast` preserves address and provenance.
+                    //
+                    // FIXME(#429): Add documentation to `.cast` that promises that
+                    // it preserves provenance.
+                    #[inline(always)]
+                    fn raw_from_ptr_len(
+                        bytes: #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<u8>,
+                        _meta: (),
+                    ) -> #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<Self>
+                    {
+                        bytes.cast::<Self>()
+                    }
 
-                #[inline(always)]
-                fn pointer_to_metadata(ptr: *mut Self) -> Self::PointerMetadata {
-                    <#trailing_field_ty>::pointer_to_metadata(ptr as *mut _)
-                }
-            }
-        };
-
-        let inner_extras = {
-            let leading_fields_tys = leading_fields_tys.clone();
-            let methods = make_methods(*trailing_field_ty);
-            let (_, ty_generics, _) = ast.generics.split_for_impl();
-
-            quote!(
-                type PointerMetadata = <#trailing_field_ty as #zerocopy_crate::KnownLayout>::PointerMetadata;
-
-                type MaybeUninit = __ZerocopyKnownLayoutMaybeUninit #ty_generics;
-
-                // SAFETY: `LAYOUT` accurately describes the layout of `Self`.
-                // The documentation of `DstLayout::for_repr_c_struct` vows that
-                // invocations in this manner will accurately describe a type,
-                // so long as:
-                //
-                //  - that type is `repr(C)`,
-                //  - its fields are enumerated in the order they appear,
-                //  - the presence of `repr_align` and `repr_packed` are
-                //    correctly accounted for.
-                //
-                // We respect all three of these preconditions here. This
-                // expansion is only used if `is_repr_c_struct`, we enumerate
-                // the fields in order, and we extract the values of `align(N)`
-                // and `packed(N)`.
-                const LAYOUT: #zerocopy_crate::DstLayout = {
-                    use #zerocopy_crate::util::macro_util::core_reexport::num::NonZeroUsize;
-                    use #zerocopy_crate::{DstLayout, KnownLayout};
-
-                    DstLayout::for_repr_c_struct(
-                        #repr_align,
-                        #repr_packed,
-                        &[
-                            #(DstLayout::for_type::<#leading_fields_tys>(),)*
-                            <#trailing_field_ty as KnownLayout>::LAYOUT
-                        ],
-                    )
-                };
-
-                #methods
+                    #[inline(always)]
+                    fn pointer_to_metadata(_ptr: *mut Self) -> () {}
+                ),
+                None,
             )
-        };
-
-        let outer_extras = {
-            let ident = &ast.ident;
-            let vis = &ast.vis;
-            let params = &ast.generics.params;
-            let (impl_generics, ty_generics, where_clause) = ast.generics.split_for_impl();
-
-            let predicates = if let Some(where_clause) = where_clause {
-                where_clause.predicates.clone()
-            } else {
-                Default::default()
-            };
-
-            // Generate a valid ident for a type-level handle to a field of a
-            // given `name`.
-            let field_index =
-                |name: &TokenStream| ident!(("__Zerocopy_Field_{}", name), ident.span());
-
-            let field_indices: Vec<_> =
-                fields.iter().map(|(_vis, name, _ty)| field_index(name)).collect();
-
-            // Define the collection of type-level field handles.
-            let field_defs = field_indices.iter().zip(&fields).map(|(idx, (vis, _, _))| {
-                quote! {
-                    #vis struct #idx;
-                }
-            });
-
-            let field_impls = field_indices.iter().zip(&fields).map(|(idx, (_, _, ty))| quote! {
-                // SAFETY: `#ty` is the type of `#ident`'s field at `#idx`.
-                //
-                // We implement `Field` for each field of the struct to create a
-                // projection from the field index to its type. This allows us
-                // to refer to the field's type in a way that respects `Self`
-                // hygiene. If we just copy-pasted the tokens of `#ty`, we
-                // would not respect `Self` hygiene, as `Self` would refer to
-                // the helper struct we are generating, not the derive target
-                // type.
-                unsafe impl #impl_generics #zerocopy_crate::util::macro_util::Field<#idx> for #ident #ty_generics
-                where
-                    #predicates
-                {
-                    type Type = #ty;
-                }
-            });
-
-            let trailing_field_index = field_index(trailing_field_name);
-            let leading_field_indices =
-                leading_fields.iter().map(|(_vis, name, _ty)| field_index(name));
-
-            // We use `Field` to project the type of the trailing field. This is
-            // required to ensure that if the field type uses `Self`, it
-            // resolves to the derive target type, not the helper struct we are
-            // generating.
-            let trailing_field_ty = quote! {
-                <#ident #ty_generics as
-                    #zerocopy_crate::util::macro_util::Field<#trailing_field_index>
-                >::Type
-            };
-
-            let methods = make_methods(&parse_quote! {
-                <#trailing_field_ty as #zerocopy_crate::KnownLayout>::MaybeUninit
-            });
-
-            quote! {
-                #(#field_defs)*
-
-                #(#field_impls)*
-
-                // SAFETY: This has the same layout as the derive target type,
-                // except that it admits uninit bytes. This is ensured by using
-                // the same repr as the target type, and by using field types
-                // which have the same layout as the target type's fields,
-                // except that they admit uninit bytes. We indirect through
-                // `Field` to ensure that occurrences of `Self` resolve to
-                // `#ty`, not `__ZerocopyKnownLayoutMaybeUninit` (see #2116).
-                #repr
-                #[doc(hidden)]
-                #vis struct __ZerocopyKnownLayoutMaybeUninit<#params> (
-                    #(#zerocopy_crate::util::macro_util::core_reexport::mem::MaybeUninit<
-                        <#ident #ty_generics as
-                            #zerocopy_crate::util::macro_util::Field<#leading_field_indices>
-                        >::Type
-                    >,)*
-                    // NOTE(#2302): We wrap in `ManuallyDrop` here in case the
-                    // type we're operating on is both generic and
-                    // `repr(packed)`. In that case, Rust needs to know that the
-                    // type is *either* `Sized` or has a trivial `Drop`.
-                    // `ManuallyDrop` has a trivial `Drop`, and so satisfies
-                    // this requirement.
-                    #zerocopy_crate::util::macro_util::core_reexport::mem::ManuallyDrop<
-                        <#trailing_field_ty as #zerocopy_crate::KnownLayout>::MaybeUninit
-                    >
-                )
-                where
-                    #trailing_field_ty: #zerocopy_crate::KnownLayout,
-                    #predicates;
-
-                // SAFETY: We largely defer to the `KnownLayout` implementation
-                // on the derive target type (both by using the same tokens, and
-                // by deferring to impl via type-level indirection). This is
-                // sound, since `__ZerocopyKnownLayoutMaybeUninit` is guaranteed
-                // to have the same layout as the derive target type, except
-                // that `__ZerocopyKnownLayoutMaybeUninit` admits uninit bytes.
-                unsafe impl #impl_generics #zerocopy_crate::KnownLayout for __ZerocopyKnownLayoutMaybeUninit #ty_generics
-                where
-                    #trailing_field_ty: #zerocopy_crate::KnownLayout,
-                    #predicates
-                {
-                    fn only_derive_is_allowed_to_implement_this_trait() {}
-
-                    type PointerMetadata = <#ident #ty_generics as #zerocopy_crate::KnownLayout>::PointerMetadata;
-
-                    type MaybeUninit = Self;
-
-                    const LAYOUT: #zerocopy_crate::DstLayout = <#ident #ty_generics as #zerocopy_crate::KnownLayout>::LAYOUT;
-
-                    #methods
-                }
-            }
-        };
-
-        (SelfBounds::None, inner_extras, Some(outer_extras))
-    } else {
-        // For enums, unions, and non-`repr(C)` structs, we require that
-        // `Self` is sized, and as a result don't need to reason about the
-        // internals of the type.
-        (
-            SelfBounds::SIZED,
-            quote!(
-                type PointerMetadata = ();
-                type MaybeUninit =
-                    #zerocopy_crate::util::macro_util::core_reexport::mem::MaybeUninit<Self>;
-
-                // SAFETY: `LAYOUT` is guaranteed to accurately describe the
-                // layout of `Self`, because that is the documented safety
-                // contract of `DstLayout::for_type`.
-                const LAYOUT: #zerocopy_crate::DstLayout = #zerocopy_crate::DstLayout::for_type::<Self>();
-
-                // SAFETY: `.cast` preserves address and provenance.
-                //
-                // FIXME(#429): Add documentation to `.cast` that promises that
-                // it preserves provenance.
-                #[inline(always)]
-                fn raw_from_ptr_len(
-                    bytes: #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<u8>,
-                    _meta: (),
-                ) -> #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<Self>
-                {
-                    bytes.cast::<Self>()
-                }
-
-                #[inline(always)]
-                fn pointer_to_metadata(_ptr: *mut Self) -> () {}
-            ),
-            None,
-        )
-    };
-
+        });
     Ok(match &ast.data {
         Data::Struct(strct) => {
             let require_trait_bound_on_field_types =
