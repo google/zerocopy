@@ -30,7 +30,7 @@ use core::{
 use crate::{
     pointer::{
         invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
-        BecauseInvariantsEq, InvariantsEq, SizeEq, TryTransmuteFromPtr,
+        BecauseInvariantsEq, InvariantsEq, SizeCompat, TryTransmuteFromPtr,
     },
     FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, Ptr, TryFromBytes, ValidityError,
 };
@@ -510,7 +510,7 @@ macro_rules! assert_align_gt_eq {
 /// `transmute_ref!` and `transmute_mut!`.
 #[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
 #[macro_export]
-macro_rules! assert_size_eq {
+macro_rules! assert_size_compat {
     ($t:ident, $u: ident) => {{
         // The comments here should be read in the context of this macro's
         // invocations in `transmute_ref!` and `transmute_mut!`.
@@ -891,7 +891,7 @@ where
         // SAFETY: We only use `S` as `S<Src>` and `D` as `D<Dst>`.
         #[allow(clippy::multiple_unsafe_ops_per_block)]
         unsafe {
-            unsafe_with_size_eq!(<S<Src>, D<Dst>> {
+            unsafe_with_size_compat!(<S<Src>, D<Dst>> {
                 let ptr = Ptr::from_ref(self.0)
                     .transmute::<S<Src>, invariant::Valid, BecauseImmutable>()
                     .recall_validity::<invariant::Initialized, _>()
@@ -932,7 +932,7 @@ where
         // SAFETY: We only use `S` as `S<Src>` and `D` as `D<Dst>`.
         #[allow(clippy::multiple_unsafe_ops_per_block)]
         unsafe {
-            unsafe_with_size_eq!(<S<Src>, D<Dst>> {
+            unsafe_with_size_compat!(<S<Src>, D<Dst>> {
                 let ptr = Ptr::from_mut(self.0)
                     .transmute::<S<Src>, invariant::Valid, _>()
                     .recall_validity::<invariant::Initialized, (_, (_, _))>()
