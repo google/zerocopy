@@ -892,16 +892,14 @@ fn derive_try_from_bytes_struct(
 }
 
 /// A union is `TryFromBytes` if:
-/// - all of its fields are `TryFromBytes` and `Immutable`
+/// - all of its fields are `TryFromBytes`
 fn derive_try_from_bytes_union(
     ast: &DeriveInput,
     unn: &DataUnion,
     top_level: Trait,
     zerocopy_crate: &Path,
 ) -> TokenStream {
-    // FIXME(#5): Remove the `Immutable` bound.
-    let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
+    let field_type_trait_bounds = FieldBounds::All(&[TraitBound::Slf]);
     let extras =
         try_gen_trivial_is_bit_valid(ast, top_level, zerocopy_crate).unwrap_or_else(|| {
             let fields = unn.fields();
@@ -920,10 +918,9 @@ fn derive_try_from_bytes_union(
 
                     false #(|| {
                         // SAFETY:
-                        // - Since `Self: Immutable` is enforced by
-                        //   `self_type_trait_bounds`, neither `*slf` nor the
-                        //   returned pointer's referent contain any
-                        //   `UnsafeCell`s
+                        // - Since `ReadOnly<Self>: Immutable` unconditionally,
+                        //   neither `*slf` nor the returned pointer's referent
+                        //   permit interior mutation.
                         // - Both source and destination validity are
                         //   `Initialized`, which is always a sound
                         //   transmutation.
@@ -1220,16 +1217,13 @@ fn derive_from_zeros_enum(
 }
 
 /// Unions are `FromZeros` if
-/// - all fields are `FromZeros` and `Immutable`
+/// - all fields are `FromZeros`
 fn derive_from_zeros_union(
     ast: &DeriveInput,
     unn: &DataUnion,
     zerocopy_crate: &Path,
 ) -> TokenStream {
-    // FIXME(#5): Remove the `Immutable` bound. It's only necessary for
-    // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
-    let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
+    let field_type_trait_bounds = FieldBounds::All(&[TraitBound::Slf]);
     ImplBlockBuilder::new(ast, unn, Trait::FromZeros, field_type_trait_bounds, zerocopy_crate)
         .build()
 }
@@ -1300,16 +1294,13 @@ fn enum_size_from_repr(repr: &EnumRepr) -> Result<usize, Error> {
 }
 
 /// Unions are `FromBytes` if
-/// - all fields are `FromBytes` and `Immutable`
+/// - all fields are `FromBytes`
 fn derive_from_bytes_union(
     ast: &DeriveInput,
     unn: &DataUnion,
     zerocopy_crate: &Path,
 ) -> TokenStream {
-    // FIXME(#5): Remove the `Immutable` bound. It's only necessary for
-    // compatibility with `derive(TryFromBytes)` on unions; not for soundness.
-    let field_type_trait_bounds =
-        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
+    let field_type_trait_bounds = FieldBounds::All(&[TraitBound::Slf]);
     ImplBlockBuilder::new(ast, unn, Trait::FromBytes, field_type_trait_bounds, zerocopy_crate)
         .build()
 }
