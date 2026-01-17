@@ -1131,8 +1131,7 @@ mod _casts {
             U: 'a + ?Sized + KnownLayout + Read<I::Aliasing, R>,
             [u8]: Read<I::Aliasing, R>,
         {
-            // FIXME(#67): Remove this allow. See NonNulSlicelExt for more
-            // details.
+            // FIXME(#67): Remove this allow. See NonNullExt for more details.
             #[allow(unstable_name_collisions)]
             match self.try_cast_into(CastType::Prefix, meta) {
                 Ok((slf, remainder)) => {
