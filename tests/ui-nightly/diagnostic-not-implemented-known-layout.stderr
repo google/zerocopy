@@ -1,16 +1,16 @@
-error[E0277]: the trait bound `NotZerocopy: zerocopy::KnownLayout` is not satisfied
-  --> tests/ui-nightly/diagnostic-not-implemented-known-layout.rs:18:26
+error[E0277]: the trait bound `NotZerocopy: KnownLayout` is not satisfied
+  --> tests/ui-nightly/diagnostic-not-implemented-known-layout.rs:16:26
    |
-18 |     takes_known_layout::<NotZerocopy>();
+16 |     takes_known_layout::<NotZerocopy>();
    |                          ^^^^^^^^^^^ unsatisfied trait bound
    |
-help: the trait `zerocopy::KnownLayout` is not implemented for `NotZerocopy`
-  --> tests/ui-nightly/../../zerocopy-derive/tests/include.rs
+help: the trait `KnownLayout` is not implemented for `NotZerocopy`
+  --> tests/ui-nightly/../include.rs
    |
    |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(KnownLayout)]` to `NotZerocopy`
-   = help: the following other types implement trait `zerocopy::KnownLayout`:
+   = help: the following other types implement trait `KnownLayout`:
              &T
              &mut T
              ()
@@ -21,7 +21,7 @@ help: the trait `zerocopy::KnownLayout` is not implemented for `NotZerocopy`
              AtomicI16
            and $N others
 note: required by a bound in `takes_known_layout`
-  --> tests/ui-nightly/diagnostic-not-implemented-known-layout.rs:21:26
+  --> tests/ui-nightly/diagnostic-not-implemented-known-layout.rs:19:26
    |
-21 | fn takes_known_layout<T: KnownLayout>() {}
+19 | fn takes_known_layout<T: KnownLayout>() {}
    |                          ^^^^^^^^^^^ required by this bound in `takes_known_layout`

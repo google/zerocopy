@@ -8,8 +8,8 @@
 // those terms.
 
 use zerocopy::pointer::{
-    invariant::{Aligned, Exclusive, Shared, Valid},
     Ptr,
+    invariant::{Aligned, Exclusive, Shared, Valid},
 };
 
 fn _when_exclusive<'big: 'small, 'small>(

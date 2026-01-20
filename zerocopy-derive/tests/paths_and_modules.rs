@@ -18,12 +18,14 @@ mod foo {
     use super::*;
 
     #[derive(imp::FromBytes, imp::IntoBytes, imp::Unaligned)]
+    #[zerocopy(crate = "zerocopy_renamed")]
     #[repr(C)]
     pub struct Foo {
         foo: u8,
     }
 
     #[derive(imp::FromBytes, imp::IntoBytes, imp::Unaligned)]
+    #[zerocopy(crate = "zerocopy_renamed")]
     #[repr(C)]
     pub struct Bar {
         bar: u8,
@@ -33,6 +35,7 @@ mod foo {
 use foo::Foo;
 
 #[derive(imp::FromBytes, imp::IntoBytes, imp::Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct Baz {
     foo: Foo,
