@@ -13,6 +13,7 @@
 include!("include.rs");
 
 #[derive(imp::IntoBytes, imp::Immutable, imp::ByteHash)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct Struct {
     a: u64,
@@ -25,8 +26,8 @@ util_assert_impl_all!(Struct: imp::IntoBytes, imp::hash::Hash);
 #[test]
 fn test_hash() {
     use imp::{
-        hash::{Hash, Hasher},
         DefaultHasher,
+        hash::{Hash, Hasher},
     };
     fn hash(val: impl Hash) -> u64 {
         let mut hasher = DefaultHasher::new();

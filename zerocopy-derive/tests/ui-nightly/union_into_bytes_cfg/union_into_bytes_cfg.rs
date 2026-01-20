@@ -13,11 +13,12 @@
 //! test will fail because more than one compile error will be generated.
 #![deny(deprecated)]
 
-extern crate zerocopy;
+extern crate zerocopy_renamed;
 
-use zerocopy::IntoBytes;
+use zerocopy_renamed::IntoBytes;
 
 #[derive(IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 union Foo {
     a: u8,

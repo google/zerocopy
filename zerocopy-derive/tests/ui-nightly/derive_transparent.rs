@@ -6,14 +6,14 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-extern crate zerocopy;
+extern crate zerocopy_renamed;
 
 #[path = "../include.rs"]
 mod util;
 
 use core::marker::PhantomData;
 
-use zerocopy::{FromBytes, FromZeros, IntoBytes, TryFromBytes, Unaligned};
+use zerocopy_renamed::{FromBytes, FromZeros, IntoBytes, TryFromBytes, Unaligned};
 
 use self::util::util::NotZerocopy;
 
@@ -22,6 +22,7 @@ fn main() {}
 // Test generic transparent structs
 
 #[derive(IntoBytes, FromBytes, Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(transparent)]
 struct TransparentStruct<T> {
     inner: T,

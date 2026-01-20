@@ -31,8 +31,8 @@ impl Ctx {
                         if meta.path.is_ident("crate") {
                             let expr = meta.value().and_then(|value| value.parse());
                             if let Ok(Expr::Lit(ExprLit { lit: Lit::Str(lit), .. })) = expr {
-                                if let Ok(path_lit) = lit.parse() {
-                                    path = path_lit;
+                                if let Ok(path_lit) = lit.parse::<Ident>() {
+                                    path = parse_quote!(::#path_lit);
                                     return Ok(());
                                 }
                             }
