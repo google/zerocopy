@@ -1,13 +1,13 @@
 error[E0277]: the trait bound `Src: IntoBytes` is not satisfied
- --> tests/ui-stable/transmute-mut-src-not-intobytes.rs:24:36
+ --> tests/ui-stable/transmute-mut-src-not-intobytes.rs:22:36
   |
- 24 | const SRC_NOT_AS_BYTES: &mut Dst = transmute_mut!(&mut Src);
+ 22 | const SRC_NOT_AS_BYTES: &mut Dst = transmute_mut!(&mut Src);
     |                                    ^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
 help: the trait `IntoBytes` is not implemented for `Src`
-   --> tests/ui-stable/transmute-mut-src-not-intobytes.rs:17:1
+   --> tests/ui-stable/transmute-mut-src-not-intobytes.rs:15:1
     |
- 17 | struct Src;
+ 15 | struct Src;
     | ^^^^^^^^^^
     = note: Consider adding `#[derive(IntoBytes)]` to `Src`
     = help: the following other types implement trait `IntoBytes`:

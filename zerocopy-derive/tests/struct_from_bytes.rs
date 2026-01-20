@@ -16,12 +16,14 @@ include!("include.rs");
 // - all fields are `FromBytes`
 
 #[derive(imp::FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 struct Zst;
 
 util_assert_impl_all!(Zst: imp::FromBytes);
 test_trivial_is_bit_valid!(Zst => test_zst_trivial_is_bit_valid);
 
 #[derive(imp::FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 struct One {
     a: u8,
 }
@@ -30,6 +32,7 @@ util_assert_impl_all!(One: imp::FromBytes);
 test_trivial_is_bit_valid!(One => test_one_trivial_is_bit_valid);
 
 #[derive(imp::FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 struct Two {
     a: u8,
     b: Zst,
@@ -39,6 +42,7 @@ util_assert_impl_all!(Two: imp::FromBytes);
 test_trivial_is_bit_valid!(Two => test_two_trivial_is_bit_valid);
 
 #[derive(imp::FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 struct Unsized {
     a: [u8],
 }
@@ -46,6 +50,7 @@ struct Unsized {
 util_assert_impl_all!(Unsized: imp::FromBytes);
 
 #[derive(imp::FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 struct TypeParams<'a, T: ?imp::Sized, I: imp::Iterator> {
     a: I::Item,
     b: u8,
@@ -63,6 +68,7 @@ test_trivial_is_bit_valid!(TypeParams<'static, (), imp::IntoIter<()>> => test_ty
 // Deriving `FromBytes` should work if the struct has bounded parameters.
 
 #[derive(imp::FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(transparent)]
 struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::FromBytes, const N: usize>(
     [T; N],

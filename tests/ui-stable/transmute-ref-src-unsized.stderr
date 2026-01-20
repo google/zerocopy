@@ -1,7 +1,7 @@
 error[E0271]: type mismatch resolving `<[u8; 1] as KnownLayout>::PointerMetadata == usize`
-  --> tests/ui-stable/transmute-ref-src-unsized.rs:16:31
+  --> tests/ui-stable/transmute-ref-src-unsized.rs:14:31
    |
-16 | const SRC_UNSIZED: &[u8; 1] = transmute_ref!(&[0u8][..]);
+14 | const SRC_UNSIZED: &[u8; 1] = transmute_ref!(&[0u8][..]);
    |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `()`
    |
    = note: required for `Wrap<&[u8], &[u8; 1]>` to implement `TransmuteRefDst<'_>`

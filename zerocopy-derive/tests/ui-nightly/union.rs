@@ -7,7 +7,7 @@
 // those terms.
 
 #[macro_use]
-extern crate zerocopy;
+extern crate zerocopy_renamed;
 
 #[path = "../include.rs"]
 mod util;
@@ -23,6 +23,7 @@ fn main() {}
 //
 
 #[derive(Immutable)]
+#[zerocopy(crate = "zerocopy_renamed")]
 union Immutable1 {
     a: ManuallyDrop<core::cell::UnsafeCell<()>>,
 }
@@ -32,12 +33,14 @@ union Immutable1 {
 //
 
 #[derive(IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 union IntoBytes1<T> {
     foo: ManuallyDrop<T>,
 }
 
 #[derive(IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 union IntoBytes2 {
     foo: u8,
@@ -46,12 +49,14 @@ union IntoBytes2 {
 
 // Need a `repr` attribute
 #[derive(IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 union IntoBytes3 {
     foo: u8,
 }
 
 // `repr(packed(2))` isn't equivalent to `repr(packed)`
 #[derive(IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(packed(2))]
 union IntoBytes4 {
     foo: u8,
@@ -62,6 +67,7 @@ union IntoBytes4 {
 //
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C, align(2))]
 union Unaligned1 {
     foo: i16,
@@ -78,30 +84,35 @@ union Unaligned1 {
 // }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(packed, align(2))]
 union Unaligned3 {
     foo: u8,
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(align(1), align(2))]
 struct Unaligned4 {
     foo: u8,
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(align(2), align(4))]
 struct Unaligned5 {
     foo: u8,
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 union Unaligned6 {
     foo: i16,
     bar: AU16,
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(packed(2))]
 union Unaligned7 {
     foo: i16,

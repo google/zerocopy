@@ -21,6 +21,7 @@ fn zst() {
 }
 
 #[derive(imp::TryFromBytes, imp::Immutable, imp::IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct One {
     a: u8,
@@ -35,6 +36,7 @@ fn one() {
 }
 
 #[derive(imp::TryFromBytes, imp::Immutable, imp::IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct Two {
     a: bool,
@@ -51,6 +53,7 @@ fn two() {
 }
 
 #[derive(imp::KnownLayout, imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct Unsized {
     a: [u8],
@@ -62,7 +65,7 @@ util_assert_impl_all!(Unsized: imp::TryFromBytes);
 fn un_sized() {
     // FIXME(#5): Use `try_transmute` in this test once it's available.
     let mut buf = [16u8, 12, 42];
-    let candidate = ::zerocopy::Ptr::from_mut(&mut buf[..]);
+    let candidate = ::zerocopy_renamed::Ptr::from_mut(&mut buf[..]);
     // SAFETY: `&Unsized` consists entirely of initialized bytes.
     let candidate = unsafe { candidate.assume_initialized() };
 
@@ -78,6 +81,7 @@ fn un_sized() {
 }
 
 #[derive(imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct TypeParams<'a, T: ?imp::Sized, I: imp::Iterator> {
     a: I::Item,
@@ -96,6 +100,7 @@ util_assert_impl_all!(TypeParams<'static, [util::AU16], imp::IntoIter<()>>: imp:
 // parameters.
 
 #[derive(imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(transparent)]
 struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::TryFromBytes, const N: usize>(
     imp::PhantomData<&'a &'b ()>,
@@ -109,6 +114,7 @@ where
 util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::TryFromBytes);
 
 #[derive(imp::FromBytes, imp::IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct MaybeFromBytes<T>(T);
 
@@ -124,6 +130,7 @@ fn test_maybe_from_bytes() {
 }
 
 #[derive(Debug, PartialEq, Eq, imp::TryFromBytes, imp::Immutable, imp::KnownLayout)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C, packed)]
 struct CPacked {
     a: u8,
@@ -145,6 +152,7 @@ fn c_packed() {
 }
 
 #[derive(imp::TryFromBytes, imp::KnownLayout, imp::Immutable)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C, packed)]
 struct CPackedUnsized {
     a: u8,
@@ -166,6 +174,7 @@ fn c_packed_unsized() {
 }
 
 #[derive(imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(packed)]
 struct PackedUnsized {
     a: u8,
@@ -195,14 +204,17 @@ fn packed_unsized() {
 }
 
 #[derive(imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 struct A;
 
 #[derive(imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 struct B {
     a: A,
 }
 
 #[derive(imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct RawIdent {
     r#type: u8,
