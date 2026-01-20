@@ -1,16 +1,16 @@
-error[E0277]: the trait bound `NotZerocopy: zerocopy::KnownLayout` is not satisfied
+error[E0277]: the trait bound `NotZerocopy: KnownLayout` is not satisfied
   --> tests/ui-stable/diagnostic-not-implemented-known-layout.rs:18:26
    |
 18 |     takes_known_layout::<NotZerocopy>();
    |                          ^^^^^^^^^^^ unsatisfied trait bound
    |
-help: the trait `zerocopy::KnownLayout` is not implemented for `NotZerocopy`
-  --> tests/ui-stable/../../zerocopy-derive/tests/include.rs
+help: the trait `KnownLayout` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
    |
    |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(KnownLayout)]` to `NotZerocopy`
-   = help: the following other types implement trait `zerocopy::KnownLayout`:
+   = help: the following other types implement trait `KnownLayout`:
              &T
              &mut T
              ()

@@ -1,16 +1,16 @@
-error[E0277]: the trait bound `NotZerocopy: zerocopy::Immutable` is not satisfied
+error[E0277]: the trait bound `NotZerocopy: Immutable` is not satisfied
   --> tests/ui-nightly/diagnostic-not-implemented-immutable.rs:18:23
    |
 18 |     takes_immutable::<NotZerocopy>();
    |                       ^^^^^^^^^^^ unsatisfied trait bound
    |
-help: the trait `zerocopy::Immutable` is not implemented for `NotZerocopy`
-  --> tests/ui-nightly/../../zerocopy-derive/tests/include.rs
+help: the trait `Immutable` is not implemented for `NotZerocopy`
+  --> tests/ui-nightly/../include.rs
    |
    |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(Immutable)]` to `NotZerocopy`
-   = help: the following other types implement trait `zerocopy::Immutable`:
+   = help: the following other types implement trait `Immutable`:
              &T
              &mut T
              ()

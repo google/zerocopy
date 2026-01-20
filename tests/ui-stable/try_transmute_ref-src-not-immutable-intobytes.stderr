@@ -1,16 +1,16 @@
-error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::IntoBytes` is not satisfied
+error[E0277]: the trait bound `NotZerocopy<AU16>: IntoBytes` is not satisfied
  --> tests/ui-stable/try_transmute_ref-src-not-immutable-intobytes.rs:19:48
   |
  19 |     let src_not_into_bytes: Result<&AU16, _> = try_transmute_ref!(&NotZerocopy(AU16(0)));
     |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
-help: the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy<AU16>`
-   --> tests/ui-stable/../../zerocopy-derive/tests/include.rs
+help: the trait `IntoBytes` is not implemented for `NotZerocopy<AU16>`
+   --> tests/ui-stable/../include.rs
     |
- 48 |     pub struct NotZerocopy<T = ()>(pub T);
+ 14 |     pub struct NotZerocopy<T = ()>(pub T);
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy<AU16>`
-    = help: the following other types implement trait `zerocopy::IntoBytes`:
+    = help: the following other types implement trait `IntoBytes`:
               ()
               AU16
               AtomicBool
@@ -30,19 +30,19 @@ note: required by a bound in `try_transmute_ref`
     |          ^^^^^^^^^ required by this bound in `try_transmute_ref`
     = note: this error originates in the macro `try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::Immutable` is not satisfied
+error[E0277]: the trait bound `NotZerocopy<AU16>: Immutable` is not satisfied
  --> tests/ui-stable/try_transmute_ref-src-not-immutable-intobytes.rs:19:48
   |
  19 |     let src_not_into_bytes: Result<&AU16, _> = try_transmute_ref!(&NotZerocopy(AU16(0)));
     |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
-help: the trait `zerocopy::Immutable` is not implemented for `NotZerocopy<AU16>`
-   --> tests/ui-stable/../../zerocopy-derive/tests/include.rs
+help: the trait `Immutable` is not implemented for `NotZerocopy<AU16>`
+   --> tests/ui-stable/../include.rs
     |
- 48 |     pub struct NotZerocopy<T = ()>(pub T);
+ 14 |     pub struct NotZerocopy<T = ()>(pub T);
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(Immutable)]` to `NotZerocopy<AU16>`
-    = help: the following other types implement trait `zerocopy::Immutable`:
+    = help: the following other types implement trait `Immutable`:
               &T
               &mut T
               ()

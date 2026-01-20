@@ -1,4 +1,4 @@
-error[E0277]: the trait bound `Dst: zerocopy::Immutable` is not satisfied
+error[E0277]: the trait bound `Dst: Immutable` is not satisfied
   --> tests/ui-stable/transmute-ref-dst-not-nocell.rs:23:33
    |
 23 | const DST_NOT_IMMUTABLE: &Dst = transmute_ref!(&AU16(0));
@@ -7,13 +7,13 @@ error[E0277]: the trait bound `Dst: zerocopy::Immutable` is not satisfied
    |                                 unsatisfied trait bound
    |                                 required by a bound introduced by this call
    |
-help: the trait `zerocopy::Immutable` is not implemented for `Dst`
+help: the trait `Immutable` is not implemented for `Dst`
   --> tests/ui-stable/transmute-ref-dst-not-nocell.rs:20:1
    |
 20 | struct Dst(AU16);
    | ^^^^^^^^^^
    = note: Consider adding `#[derive(Immutable)]` to `Dst`
-   = help: the following other types implement trait `zerocopy::Immutable`:
+   = help: the following other types implement trait `Immutable`:
              &T
              &mut T
              ()

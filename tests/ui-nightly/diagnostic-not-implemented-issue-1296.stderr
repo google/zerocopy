@@ -1,8 +1,8 @@
-error[E0277]: the trait bound `NotZerocopy: zerocopy::Immutable` is not satisfied
+error[E0277]: the trait bound `NotZerocopy: Immutable` is not satisfied
   --> tests/ui-nightly/diagnostic-not-implemented-issue-1296.rs:52:19
    |
 52 |     Foo.write_obj(NotZerocopy(()));
-   |         --------- ^^^^^^^^^^^^^^^ the trait `zerocopy::Immutable` is not implemented for `NotZerocopy`
+   |         --------- ^^^^^^^^^^^^^^^ the trait `Immutable` is not implemented for `NotZerocopy`
    |         |
    |         required by a bound introduced by this call
    |
@@ -18,7 +18,7 @@ help: consider borrowing here
 52 |     Foo.write_obj(&mut NotZerocopy(()));
    |                   ++++
 
-error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfied
+error[E0277]: the trait bound `NotZerocopy: IntoBytes` is not satisfied
   --> tests/ui-nightly/diagnostic-not-implemented-issue-1296.rs:52:19
    |
 52 |     Foo.write_obj(NotZerocopy(()));
@@ -26,13 +26,13 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfie
    |         |
    |         required by a bound introduced by this call
    |
-help: the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy`
-  --> tests/ui-nightly/../../zerocopy-derive/tests/include.rs
+help: the trait `IntoBytes` is not implemented for `NotZerocopy`
+  --> tests/ui-nightly/../include.rs
    |
    |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy`
-   = help: the following other types implement trait `zerocopy::IntoBytes`:
+   = help: the following other types implement trait `IntoBytes`:
              ()
              AU16
              AtomicBool

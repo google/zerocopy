@@ -5,7 +5,7 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy::Unaligned` is not satisfie
    |                       ^^^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy::Unaligned` is not implemented for `NotZerocopy`
-  --> tests/ui-nightly/../../zerocopy-derive/tests/include.rs
+  --> tests/ui-nightly/../include.rs
    |
    |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
