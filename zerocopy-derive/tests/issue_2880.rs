@@ -16,18 +16,21 @@ include!("include.rs");
 // idents.
 
 #[derive(imp::KnownLayout, imp::IntoBytes, imp::Immutable)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct TestStruct {
     a: u8,
 }
 
 #[derive(imp::KnownLayout, imp::IntoBytes, imp::Immutable)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 union TestUnion {
     a: u8,
 }
 
 #[derive(imp::KnownLayout, imp::FromBytes, imp::IntoBytes, imp::Immutable)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum FooU8 {
     Variant0,

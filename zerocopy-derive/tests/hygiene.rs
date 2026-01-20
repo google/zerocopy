@@ -16,9 +16,10 @@
 
 include!("include.rs");
 
-extern crate zerocopy as _zerocopy;
+extern crate zerocopy_renamed as _zerocopy;
 
 #[derive(_zerocopy::KnownLayout, _zerocopy::FromBytes, _zerocopy::Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct TypeParams<'a, T, I: imp::Iterator> {
     a: T,
@@ -49,6 +50,7 @@ mod issue_2177 {
     macro_rules! define {
         ($name:ident, $repr:ty) => {
             #[derive(_zerocopy::KnownLayout)]
+            #[zerocopy(crate = "zerocopy_renamed")]
             #[repr(C)]
             pub struct $name($repr);
         };

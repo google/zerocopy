@@ -1,143 +1,143 @@
 error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:74:60
+  --> tests/ui-msrv/privacy.rs:78:68
    |
-74 |     let _: <StructWithNamedFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(a) }>>::Type =
-   |                                                            ^
-   |
-   = help: const arguments cannot yet be inferred with `_`
-
-error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:76:60
-   |
-76 |     let _: <StructWithNamedFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(b) }>>::Type =
-   |                                                            ^
+78 |     let _: <StructWithNamedFields as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type =
+   |                                                                    ^
    |
    = help: const arguments cannot yet be inferred with `_`
 
 error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:81:59
+  --> tests/ui-msrv/privacy.rs:80:68
    |
-81 |     let _: <StructWithAnonFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(0) }>>::Type =
-   |                                                           ^
-   |
-   = help: const arguments cannot yet be inferred with `_`
-
-error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:83:59
-   |
-83 |     let _: <StructWithAnonFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(1) }>>::Type =
-   |                                                           ^
+80 |     let _: <StructWithNamedFields as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type =
+   |                                                                    ^
    |
    = help: const arguments cannot yet be inferred with `_`
 
 error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:88:44
+  --> tests/ui-msrv/privacy.rs:85:67
    |
-88 |     let _: <Union as zerocopy::HasField<_, _, { zerocopy::ident_id!(a) }>>::Type = 0u8;
-   |                                            ^
-   |
-   = help: const arguments cannot yet be inferred with `_`
-
-error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:89:44
-   |
-89 |     let _: <Union as zerocopy::HasField<_, _, { zerocopy::ident_id!(b) }>>::Type = 0u16;
-   |                                            ^
+85 |     let _: <StructWithAnonFields as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(0) }>>::Type =
+   |                                                                   ^
    |
    = help: const arguments cannot yet be inferred with `_`
 
 error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:93:43
+  --> tests/ui-msrv/privacy.rs:87:67
    |
-93 |     let _: <Enum as zerocopy::HasField<_, _, { zerocopy::ident_id!(0) }>>::Type = 0u8;
-   |                                           ^
-   |
-   = help: const arguments cannot yet be inferred with `_`
-
-error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:94:43
-   |
-94 |     let _: <Enum as zerocopy::HasField<_, _, { zerocopy::ident_id!(1) }>>::Type = 0u16;
-   |                                           ^
+87 |     let _: <StructWithAnonFields as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(1) }>>::Type =
+   |                                                                   ^
    |
    = help: const arguments cannot yet be inferred with `_`
 
 error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:96:43
+  --> tests/ui-msrv/privacy.rs:92:52
    |
-96 |     let _: <Enum as zerocopy::HasField<_, _, { zerocopy::ident_id!(a) }>>::Type = 0u8;
-   |                                           ^
-   |
-   = help: const arguments cannot yet be inferred with `_`
-
-error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:28:64
-   |
-28 |         let _: <StructWithNamedFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(a) }>>::Type = 0u8;
-   |                                                                ^
+92 |     let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type = 0u8;
+   |                                                    ^
    |
    = help: const arguments cannot yet be inferred with `_`
 
 error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:29:64
+  --> tests/ui-msrv/privacy.rs:93:52
    |
-29 |         let _: <StructWithNamedFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(b) }>>::Type = 0u16;
-   |                                                                ^
-   |
-   = help: const arguments cannot yet be inferred with `_`
-
-error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:36:63
-   |
-36 |         let _: <StructWithAnonFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(0) }>>::Type = 0u8;
-   |                                                               ^
+93 |     let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type = 0u16;
+   |                                                    ^
    |
    = help: const arguments cannot yet be inferred with `_`
 
 error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:37:63
+  --> tests/ui-msrv/privacy.rs:97:51
    |
-37 |         let _: <StructWithAnonFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(1) }>>::Type = 0u16;
-   |                                                               ^
-   |
-   = help: const arguments cannot yet be inferred with `_`
-
-error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:47:48
-   |
-47 |         let _: <Union as zerocopy::HasField<_, _, { zerocopy::ident_id!(a) }>>::Type = 0u8;
-   |                                                ^
+97 |     let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(0) }>>::Type = 0u8;
+   |                                                   ^
    |
    = help: const arguments cannot yet be inferred with `_`
 
 error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:48:48
+  --> tests/ui-msrv/privacy.rs:98:51
    |
-48 |         let _: <Union as zerocopy::HasField<_, _, { zerocopy::ident_id!(b) }>>::Type = 0u16;
-   |                                                ^
-   |
-   = help: const arguments cannot yet be inferred with `_`
-
-error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:59:47
-   |
-59 |         let _: <Enum as zerocopy::HasField<_, _, { zerocopy::ident_id!(0) }>>::Type = 0u8;
-   |                                               ^
+98 |     let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(1) }>>::Type = 0u16;
+   |                                                   ^
    |
    = help: const arguments cannot yet be inferred with `_`
 
 error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:60:47
+   --> tests/ui-msrv/privacy.rs:100:51
+    |
+100 |     let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type = 0u8;
+    |                                                   ^
+    |
+    = help: const arguments cannot yet be inferred with `_`
+
+error[E0747]: type provided when a constant was expected
+  --> tests/ui-msrv/privacy.rs:29:72
    |
-60 |         let _: <Enum as zerocopy::HasField<_, _, { zerocopy::ident_id!(1) }>>::Type = 0u16;
-   |                                               ^
+29 |         let _: <StructWithNamedFields as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type = 0u8;
+   |                                                                        ^
    |
    = help: const arguments cannot yet be inferred with `_`
 
 error[E0747]: type provided when a constant was expected
-  --> tests/ui-msrv/privacy.rs:62:47
+  --> tests/ui-msrv/privacy.rs:30:72
    |
-62 |         let _: <Enum as zerocopy::HasField<_, _, { zerocopy::ident_id!(a) }>>::Type = 0u8;
-   |                                               ^
+30 |         let _: <StructWithNamedFields as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type = 0u16;
+   |                                                                        ^
+   |
+   = help: const arguments cannot yet be inferred with `_`
+
+error[E0747]: type provided when a constant was expected
+  --> tests/ui-msrv/privacy.rs:38:71
+   |
+38 |         let _: <StructWithAnonFields as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(0) }>>::Type = 0u8;
+   |                                                                       ^
+   |
+   = help: const arguments cannot yet be inferred with `_`
+
+error[E0747]: type provided when a constant was expected
+  --> tests/ui-msrv/privacy.rs:39:71
+   |
+39 |         let _: <StructWithAnonFields as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(1) }>>::Type = 0u16;
+   |                                                                       ^
+   |
+   = help: const arguments cannot yet be inferred with `_`
+
+error[E0747]: type provided when a constant was expected
+  --> tests/ui-msrv/privacy.rs:50:56
+   |
+50 |         let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type = 0u8;
+   |                                                        ^
+   |
+   = help: const arguments cannot yet be inferred with `_`
+
+error[E0747]: type provided when a constant was expected
+  --> tests/ui-msrv/privacy.rs:51:56
+   |
+51 |         let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type = 0u16;
+   |                                                        ^
+   |
+   = help: const arguments cannot yet be inferred with `_`
+
+error[E0747]: type provided when a constant was expected
+  --> tests/ui-msrv/privacy.rs:63:55
+   |
+63 |         let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(0) }>>::Type = 0u8;
+   |                                                       ^
+   |
+   = help: const arguments cannot yet be inferred with `_`
+
+error[E0747]: type provided when a constant was expected
+  --> tests/ui-msrv/privacy.rs:64:55
+   |
+64 |         let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(1) }>>::Type = 0u16;
+   |                                                       ^
+   |
+   = help: const arguments cannot yet be inferred with `_`
+
+error[E0747]: type provided when a constant was expected
+  --> tests/ui-msrv/privacy.rs:66:55
+   |
+66 |         let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type = 0u8;
+   |                                                       ^
    |
    = help: const arguments cannot yet be inferred with `_`

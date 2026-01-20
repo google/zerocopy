@@ -1,17 +1,17 @@
 error: type `private::_::_::_::ẕb` is private
-  --> tests/ui-nightly/privacy.rs:76:57
+  --> tests/ui-nightly/privacy.rs:80:65
    |
-76 |     let _: <StructWithNamedFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(b) }>>::Type =
-   |                                                         ^ private type
+80 |     let _: <StructWithNamedFields as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type =
+   |                                                                 ^ private type
 
 error: type `private::_::_::_::ẕ1` is private
-  --> tests/ui-nightly/privacy.rs:83:56
+  --> tests/ui-nightly/privacy.rs:87:64
    |
-83 |     let _: <StructWithAnonFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(1) }>>::Type =
-   |                                                        ^ private type
+87 |     let _: <StructWithAnonFields as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(1) }>>::Type =
+   |                                                                ^ private type
 
 error: type `private::_::_::_::ẕb` is private
-  --> tests/ui-nightly/privacy.rs:89:41
+  --> tests/ui-nightly/privacy.rs:93:49
    |
-89 |     let _: <Union as zerocopy::HasField<_, _, { zerocopy::ident_id!(b) }>>::Type = 0u16;
-   |                                         ^ private type
+93 |     let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type = 0u16;
+   |                                                 ^ private type
