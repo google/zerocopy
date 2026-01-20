@@ -1,16 +1,16 @@
-error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfied
-  --> tests/ui-nightly/diagnostic-not-implemented-into-bytes.rs:18:24
+error[E0277]: the trait bound `NotZerocopy: IntoBytes` is not satisfied
+  --> tests/ui-nightly/diagnostic-not-implemented-into-bytes.rs:16:24
    |
-18 |     takes_into_bytes::<NotZerocopy>();
+16 |     takes_into_bytes::<NotZerocopy>();
    |                        ^^^^^^^^^^^ unsatisfied trait bound
    |
-help: the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy`
-  --> tests/ui-nightly/../../zerocopy-derive/tests/include.rs
+help: the trait `IntoBytes` is not implemented for `NotZerocopy`
+  --> tests/ui-nightly/../include.rs
    |
    |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy`
-   = help: the following other types implement trait `zerocopy::IntoBytes`:
+   = help: the following other types implement trait `IntoBytes`:
              ()
              AU16
              AtomicBool
@@ -21,7 +21,7 @@ help: the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy`
              AtomicIsize
            and $N others
 note: required by a bound in `takes_into_bytes`
-  --> tests/ui-nightly/diagnostic-not-implemented-into-bytes.rs:21:24
+  --> tests/ui-nightly/diagnostic-not-implemented-into-bytes.rs:19:24
    |
-21 | fn takes_into_bytes<T: IntoBytes>() {}
+19 | fn takes_into_bytes<T: IntoBytes>() {}
    |                        ^^^^^^^^^ required by this bound in `takes_into_bytes`

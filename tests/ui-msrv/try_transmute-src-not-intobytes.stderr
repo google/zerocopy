@@ -1,8 +1,8 @@
-error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::IntoBytes` is not satisfied
-  --> tests/ui-msrv/try_transmute-src-not-intobytes.rs:18:47
+error[E0277]: the trait bound `NotZerocopy<AU16>: IntoBytes` is not satisfied
+  --> tests/ui-msrv/try_transmute-src-not-intobytes.rs:16:47
    |
-18 |     let src_not_into_bytes: Result<AU16, _> = try_transmute!(NotZerocopy(AU16(0)));
-   |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy<AU16>`
+16 |     let src_not_into_bytes: Result<AU16, _> = try_transmute!(NotZerocopy(AU16(0)));
+   |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `NotZerocopy<AU16>`
    |
 note: required by a bound in `try_transmute`
   --> src/util/macro_util.rs
