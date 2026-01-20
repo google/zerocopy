@@ -55,4 +55,8 @@ testutil = { path = "../testutil" }
 # sometimes change the output format slightly, so a version mismatch can cause
 # CI test failures.
 trybuild = { version = "=1.0.89", features = ["diff"] }
-zerocopy = { path = "../", features = ["derive"] }
+# We import as `zerocopy-renamed` so that we can refer to the crate as
+# `zerocopy-renamed` in the generated code, which allows us to test that the
+# `crate` attribute works correctly, and ensures that we never accidentally
+# hard-code the name `zerocopy` in the generated code.
+zerocopy-renamed = { package = "zerocopy", path = "../", features = ["derive"] }

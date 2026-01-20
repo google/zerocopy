@@ -7,12 +7,12 @@
 // those terms.
 
 #[macro_use]
-extern crate zerocopy;
+extern crate zerocopy_renamed;
 
 #[path = "../include.rs"]
 mod util;
 
-use zerocopy::KnownLayout;
+use zerocopy_renamed::KnownLayout;
 
 use self::util::util::{NotZerocopy, AU16};
 
@@ -27,6 +27,7 @@ fn main() {}
 //
 
 #[derive(TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 struct TryFromBytes1 {
     value: NotZerocopy,
 }
@@ -36,6 +37,7 @@ struct TryFromBytes1 {
 //
 
 #[derive(FromZeros)]
+#[zerocopy(crate = "zerocopy_renamed")]
 struct FromZeros1 {
     value: NotZerocopy,
 }
@@ -45,6 +47,7 @@ struct FromZeros1 {
 //
 
 #[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 struct FromBytes1 {
     value: NotZerocopy,
 }
@@ -54,6 +57,7 @@ struct FromBytes1 {
 //
 
 #[derive(IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct IntoBytes1 {
     value: NotZerocopy,
@@ -64,6 +68,7 @@ struct IntoBytes1 {
 //
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct Unaligned1 {
     aligned: AU16,
@@ -72,6 +77,7 @@ struct Unaligned1 {
 // This specifically tests a bug we had in an old version of the code in which
 // the trait bound would only be enforced for the first field's type.
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct Unaligned2 {
     unaligned: u8,
@@ -79,6 +85,7 @@ struct Unaligned2 {
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(transparent)]
 struct Unaligned3 {
     aligned: AU16,
