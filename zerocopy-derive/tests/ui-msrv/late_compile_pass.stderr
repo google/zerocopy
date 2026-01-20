@@ -1,97 +1,97 @@
-warning: unused import: `zerocopy::KnownLayout`
+warning: unused import: `zerocopy_renamed::KnownLayout`
   --> tests/ui-msrv/late_compile_pass.rs:15:5
    |
-15 | use zerocopy::KnownLayout;
-   |     ^^^^^^^^^^^^^^^^^^^^^
+15 | use zerocopy_renamed::KnownLayout;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: `#[warn(unused_imports)]` on by default
 
-error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
+error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
   --> tests/ui-msrv/late_compile_pass.rs:29:10
    |
 29 | #[derive(TryFromBytes)]
-   |          ^^^^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+   |          ^^^^^^^^^^^^ the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZerocopy`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
-  --> tests/ui-msrv/late_compile_pass.rs:38:10
+error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
+  --> tests/ui-msrv/late_compile_pass.rs:39:10
    |
-38 | #[derive(FromZeros)]
-   |          ^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+39 | #[derive(FromZeros)]
+   |          ^^^^^^^^^ the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZerocopy`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
-  --> tests/ui-msrv/late_compile_pass.rs:38:10
+  --> tests/ui-msrv/late_compile_pass.rs:39:10
    |
-38 | #[derive(FromZeros)]
+39 | #[derive(FromZeros)]
    |          ^^^^^^^^^ the trait `FromZeros` is not implemented for `NotZerocopy`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
-  --> tests/ui-msrv/late_compile_pass.rs:47:10
+error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
+  --> tests/ui-msrv/late_compile_pass.rs:49:10
    |
-47 | #[derive(FromBytes)]
-   |          ^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+49 | #[derive(FromBytes)]
+   |          ^^^^^^^^^ the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZerocopy`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
-  --> tests/ui-msrv/late_compile_pass.rs:47:10
+  --> tests/ui-msrv/late_compile_pass.rs:49:10
    |
-47 | #[derive(FromBytes)]
+49 | #[derive(FromBytes)]
    |          ^^^^^^^^^ the trait `FromZeros` is not implemented for `NotZerocopy`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfied
-  --> tests/ui-msrv/late_compile_pass.rs:47:10
+error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
+  --> tests/ui-msrv/late_compile_pass.rs:49:10
    |
-47 | #[derive(FromBytes)]
-   |          ^^^^^^^^^ the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
+49 | #[derive(FromBytes)]
+   |          ^^^^^^^^^ the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocopy`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfied
-  --> tests/ui-msrv/late_compile_pass.rs:56:10
+error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::IntoBytes` is not satisfied
+  --> tests/ui-msrv/late_compile_pass.rs:59:10
    |
-56 | #[derive(IntoBytes)]
-   |          ^^^^^^^^^ the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy`
+59 | #[derive(IntoBytes)]
+   |          ^^^^^^^^^ the trait `zerocopy_renamed::IntoBytes` is not implemented for `NotZerocopy`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
-  --> tests/ui-msrv/late_compile_pass.rs:66:10
+error[E0277]: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
+  --> tests/ui-msrv/late_compile_pass.rs:70:10
    |
-66 | #[derive(Unaligned)]
-   |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
-   |
-   = help: see issue #48214
-   = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
-  --> tests/ui-msrv/late_compile_pass.rs:74:10
-   |
-74 | #[derive(Unaligned)]
-   |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
+70 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `AU16: zerocopy::Unaligned` is not satisfied
-  --> tests/ui-msrv/late_compile_pass.rs:81:10
+error[E0277]: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
+  --> tests/ui-msrv/late_compile_pass.rs:79:10
    |
-81 | #[derive(Unaligned)]
-   |          ^^^^^^^^^ the trait `zerocopy::Unaligned` is not implemented for `AU16`
+79 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
+   |
+   = help: see issue #48214
+   = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
+  --> tests/ui-msrv/late_compile_pass.rs:87:10
+   |
+87 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
    |
    = help: see issue #48214
    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)

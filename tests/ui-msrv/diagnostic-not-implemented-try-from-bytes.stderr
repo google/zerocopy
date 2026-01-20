@@ -1,11 +1,11 @@
-error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
-  --> tests/ui-msrv/diagnostic-not-implemented-try-from-bytes.rs:18:28
+error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
+  --> tests/ui-msrv/diagnostic-not-implemented-try-from-bytes.rs:16:28
    |
-18 |     takes_try_from_bytes::<NotZerocopy>();
-   |                            ^^^^^^^^^^^ the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+16 |     takes_try_from_bytes::<NotZerocopy>();
+   |                            ^^^^^^^^^^^ the trait `TryFromBytes` is not implemented for `NotZerocopy`
    |
 note: required by a bound in `takes_try_from_bytes`
-  --> tests/ui-msrv/diagnostic-not-implemented-try-from-bytes.rs:21:28
+  --> tests/ui-msrv/diagnostic-not-implemented-try-from-bytes.rs:19:28
    |
-21 | fn takes_try_from_bytes<T: TryFromBytes>() {}
+19 | fn takes_try_from_bytes<T: TryFromBytes>() {}
    |                            ^^^^^^^^^^^^ required by this bound in `takes_try_from_bytes`
