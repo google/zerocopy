@@ -48,6 +48,7 @@ fn test_trivial_is_bit_valid() {
 // Make sure no deprecation warning is generated from our derive (see #553).
 #[deprecated = "do not use"]
 #[derive(imp::FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum FooU8 {
     Variant0,
@@ -309,6 +310,7 @@ enum FooU8 {
 }
 
 #[derive(imp::FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum FooU8WithData {
     Variant0(u32),
@@ -575,6 +577,7 @@ fn _allow_deprecated() {
 }
 
 #[derive(imp::FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(i8)]
 enum FooI8 {
     Variant0,
@@ -838,6 +841,7 @@ enum FooI8 {
 util_assert_impl_all!(FooI8: imp::FromBytes);
 
 #[derive(imp::FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8, align(2))]
 enum FooU8Align {
     Variant0,
@@ -1101,6 +1105,7 @@ enum FooU8Align {
 util_assert_impl_all!(FooU8Align: imp::FromBytes);
 
 #[derive(imp::FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(i8, align(2))]
 enum FooI8Align {
     Variant0,
@@ -1364,6 +1369,7 @@ enum FooI8Align {
 util_assert_impl_all!(FooI8Align: imp::FromBytes);
 
 #[derive(imp::FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u16)]
 enum FooU16 {
     Variant0,
@@ -66907,6 +66913,7 @@ enum FooU16 {
 util_assert_impl_all!(FooU16: imp::FromBytes);
 
 #[derive(imp::FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(i16)]
 enum FooI16 {
     Variant0,

@@ -13,12 +13,13 @@
 //! test will fail because more than one compile error will be generated.
 #![deny(deprecated)]
 
-extern crate zerocopy;
+extern crate zerocopy_renamed;
 
-use zerocopy::IntoBytes;
+use zerocopy_renamed::IntoBytes;
 
 #[deprecated = "Do not use"]
 #[derive(IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct OldHeader {
     field_a: usize,

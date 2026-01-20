@@ -1,16 +1,16 @@
-error[E0277]: the trait bound `NotZerocopy: zerocopy::TryFromBytes` is not satisfied
-  --> tests/ui-nightly/derive_transparent.rs:34:23
+error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
+  --> tests/ui-nightly/derive_transparent.rs:35:23
    |
-34 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
+35 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
    |
-help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
+help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZerocopy`
   --> tests/ui-nightly/../include.rs
    |
    |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
-   = help: the following other types implement trait `zerocopy::TryFromBytes`:
+   = help: the following other types implement trait `zerocopy_renamed::TryFromBytes`:
              ()
              (A, B)
              (A, B, C)
@@ -20,7 +20,7 @@ help: the trait `zerocopy::TryFromBytes` is not implemented for `NotZerocopy`
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
            and $N others
-note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::TryFromBytes`
+note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renamed::TryFromBytes`
   --> tests/ui-nightly/derive_transparent.rs:24:21
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
@@ -31,16 +31,16 @@ note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
    |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
    |
-  ::: tests/ui-nightly/derive_transparent.rs:34:1
+  ::: tests/ui-nightly/derive_transparent.rs:35:1
    |
-34 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
+35 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
    | ------------------------------------------------------------------- in this macro invocation
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
-  --> tests/ui-nightly/derive_transparent.rs:35:23
+  --> tests/ui-nightly/derive_transparent.rs:36:23
    |
-35 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
+36 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `FromZeros` is not implemented for `NotZerocopy`
@@ -70,25 +70,25 @@ note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
    |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
    |
-  ::: tests/ui-nightly/derive_transparent.rs:35:1
+  ::: tests/ui-nightly/derive_transparent.rs:36:1
    |
-35 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
+36 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
    | ---------------------------------------------------------------- in this macro invocation
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotZerocopy: zerocopy::FromBytes` is not satisfied
-  --> tests/ui-nightly/derive_transparent.rs:36:23
+error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
+  --> tests/ui-nightly/derive_transparent.rs:37:23
    |
-36 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
+37 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
    |
-help: the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
+help: the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocopy`
   --> tests/ui-nightly/../include.rs
    |
    |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
-   = help: the following other types implement trait `zerocopy::FromBytes`:
+   = help: the following other types implement trait `zerocopy_renamed::FromBytes`:
              ()
              (A, B)
              (A, B, C)
@@ -98,7 +98,7 @@ help: the trait `zerocopy::FromBytes` is not implemented for `NotZerocopy`
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
            and $N others
-note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::FromBytes`
+note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renamed::FromBytes`
   --> tests/ui-nightly/derive_transparent.rs:24:21
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
@@ -109,25 +109,25 @@ note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
    |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
    |
-  ::: tests/ui-nightly/derive_transparent.rs:36:1
+  ::: tests/ui-nightly/derive_transparent.rs:37:1
    |
-36 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
+37 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
    | ---------------------------------------------------------------- in this macro invocation
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotZerocopy: zerocopy::IntoBytes` is not satisfied
-  --> tests/ui-nightly/derive_transparent.rs:37:23
+error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::IntoBytes` is not satisfied
+  --> tests/ui-nightly/derive_transparent.rs:38:23
    |
-37 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: IntoBytes);
+38 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: IntoBytes);
    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
    |
-help: the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy`
+help: the trait `zerocopy_renamed::IntoBytes` is not implemented for `NotZerocopy`
   --> tests/ui-nightly/../include.rs
    |
    |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy`
-   = help: the following other types implement trait `zerocopy::IntoBytes`:
+   = help: the following other types implement trait `zerocopy_renamed::IntoBytes`:
              ()
              AU16
              AtomicBool
@@ -137,7 +137,7 @@ help: the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy`
              AtomicI8
              AtomicIsize
            and $N others
-note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::IntoBytes`
+note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renamed::IntoBytes`
   --> tests/ui-nightly/derive_transparent.rs:24:10
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
@@ -148,25 +148,25 @@ note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
    |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
    |
-  ::: tests/ui-nightly/derive_transparent.rs:37:1
+  ::: tests/ui-nightly/derive_transparent.rs:38:1
    |
-37 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: IntoBytes);
+38 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: IntoBytes);
    | ---------------------------------------------------------------- in this macro invocation
    = note: this error originates in the derive macro `IntoBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `NotZerocopy: zerocopy::Unaligned` is not satisfied
-  --> tests/ui-nightly/derive_transparent.rs:38:23
+error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::Unaligned` is not satisfied
+  --> tests/ui-nightly/derive_transparent.rs:39:23
    |
-38 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
+39 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
    |
-help: the trait `zerocopy::Unaligned` is not implemented for `NotZerocopy`
+help: the trait `zerocopy_renamed::Unaligned` is not implemented for `NotZerocopy`
   --> tests/ui-nightly/../include.rs
    |
    |     pub struct NotZerocopy<T = ()>(pub T);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(Unaligned)]` to `NotZerocopy`
-   = help: the following other types implement trait `zerocopy::Unaligned`:
+   = help: the following other types implement trait `zerocopy_renamed::Unaligned`:
              ()
              AtomicBool
              AtomicI8
@@ -176,7 +176,7 @@ help: the trait `zerocopy::Unaligned` is not implemented for `NotZerocopy`
              F64<O>
              I128<O>
            and $N others
-note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy::Unaligned`
+note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renamed::Unaligned`
   --> tests/ui-nightly/derive_transparent.rs:24:32
    |
 24 | #[derive(IntoBytes, FromBytes, Unaligned)]
@@ -187,8 +187,8 @@ note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
    |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
    |
-  ::: tests/ui-nightly/derive_transparent.rs:38:1
+  ::: tests/ui-nightly/derive_transparent.rs:39:1
    |
-38 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
+39 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: Unaligned);
    | ---------------------------------------------------------------- in this macro invocation
    = note: this error originates in the derive macro `Unaligned` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)

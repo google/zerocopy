@@ -7,11 +7,12 @@
 // those terms.
 
 #[macro_use]
-extern crate zerocopy;
+extern crate zerocopy_renamed;
 
 fn main() {}
 
 #[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum Foo {
     Variant0,
