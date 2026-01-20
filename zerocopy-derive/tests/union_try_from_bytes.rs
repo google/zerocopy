@@ -16,6 +16,7 @@ include!("include.rs");
 // - any of its fields are `imp::TryFromBytes`
 
 #[derive(imp::Immutable, imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 union One {
     a: u8,
 }
@@ -29,6 +30,7 @@ fn one() {
 }
 
 #[derive(imp::Immutable, imp::TryFromBytes, imp::IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 union Two {
     a: bool,
@@ -45,6 +47,7 @@ fn two() {
 }
 
 #[derive(imp::Immutable, imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 union BoolAndZst {
     a: bool,
@@ -59,6 +62,7 @@ fn bool_and_zst() {
 }
 
 #[derive(imp::FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 union MaybeFromBytes<T: imp::Copy> {
     t: T,
@@ -74,6 +78,7 @@ fn test_maybe_from_bytes() {
 }
 
 #[derive(imp::Immutable, imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 union TypeParams<'a, T: imp::Copy, I: imp::Iterator>
 where
@@ -94,6 +99,7 @@ util_assert_impl_all!(TypeParams<'static, [util::AU16; 2], imp::IntoIter<()>>: i
 // Deriving `imp::TryFromBytes` should work if the union has bounded parameters.
 
 #[derive(imp::Immutable, imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 union WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::TryFromBytes, const N: usize>
 where
@@ -108,9 +114,11 @@ where
 util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::TryFromBytes);
 
 #[derive(Clone, Copy, imp::TryFromBytes, imp::Immutable)]
+#[zerocopy(crate = "zerocopy_renamed")]
 struct A;
 
 #[derive(imp::TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 union B {
     a: A,
 }

@@ -1,221 +1,189 @@
 error: unrecognized representation hint
-  --> tests/ui-nightly/enum.rs:19:8
+  --> tests/ui-nightly/enum.rs:20:8
    |
-19 | #[repr("foo")]
+20 | #[repr("foo")]
    |        ^^^^^
 
 error: unrecognized representation hint
-  --> tests/ui-nightly/enum.rs:25:8
+  --> tests/ui-nightly/enum.rs:27:8
    |
-25 | #[repr(foo)]
+27 | #[repr(foo)]
    |        ^^^
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-  --> tests/ui-nightly/enum.rs:30:10
+  --> tests/ui-nightly/enum.rs:32:10
    |
-30 | #[derive(FromBytes)]
+32 | #[derive(FromBytes)]
    |          ^^^^^^^^^
    |
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: this conflicts with another representation hint
-  --> tests/ui-nightly/enum.rs:37:8
+  --> tests/ui-nightly/enum.rs:41:8
    |
-37 | #[repr(u8, u16)]
+41 | #[repr(u8, u16)]
    |        ^^^^^^^
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-  --> tests/ui-nightly/enum.rs:42:10
+  --> tests/ui-nightly/enum.rs:46:10
    |
-42 | #[derive(FromBytes)]
+46 | #[derive(FromBytes)]
    |          ^^^^^^^^^
    |
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-  --> tests/ui-nightly/enum.rs:70:1
+  --> tests/ui-nightly/enum.rs:78:1
    |
-70 | / enum TryFromBytes1 {
-71 | |     A,
-72 | | }
+78 | / #[zerocopy(crate = "zerocopy_renamed")]
+79 | | enum TryFromBytes1 {
+80 | |     A,
+81 | | }
    | |_^
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-  --> tests/ui-nightly/enum.rs:75:1
+  --> tests/ui-nightly/enum.rs:84:1
    |
-75 | / enum TryFromBytes2 {
-76 | |     A,
-77 | |     B(u8),
-78 | | }
+84 | / #[zerocopy(crate = "zerocopy_renamed")]
+85 | | enum TryFromBytes2 {
+86 | |     A,
+87 | |     B(u8),
+88 | | }
    | |_^
-
-error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-  --> tests/ui-nightly/enum.rs:93:1
-   |
-93 | / enum FromZeros1 {
-94 | |     A(u8),
-95 | | }
-   | |_^
-
-error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
- --> tests/ui-nightly/enum.rs:98:1
-  |
- 98 | / enum FromZeros2 {
- 99 | |     A,
-100 | |     B(u8),
-101 | | }
-    | |_^
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
    --> tests/ui-nightly/enum.rs:104:1
     |
-104 | / enum FromZeros3 {
-105 | |     A = 1,
-106 | |     B,
+104 | / #[zerocopy(crate = "zerocopy_renamed")]
+105 | | enum FromZeros1 {
+106 | |     A(u8),
 107 | | }
     | |_^
 
-error: FromZeros only supported on enums with a variant that has a discriminant of `0`
+error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
    --> tests/ui-nightly/enum.rs:110:1
     |
-110 | / #[repr(u8)]
-111 | | enum FromZeros4 {
-112 | |     A = 1,
-113 | |     B = 2,
+110 | / #[zerocopy(crate = "zerocopy_renamed")]
+111 | | enum FromZeros2 {
+112 | |     A,
+113 | |     B(u8),
 114 | | }
+    | |_^
+
+error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
+   --> tests/ui-nightly/enum.rs:117:1
+    |
+117 | / #[zerocopy(crate = "zerocopy_renamed")]
+118 | | enum FromZeros3 {
+119 | |     A = 1,
+120 | |     B,
+121 | | }
+    | |_^
+
+error: FromZeros only supported on enums with a variant that has a discriminant of `0`
+   --> tests/ui-nightly/enum.rs:124:1
+    |
+124 | / #[zerocopy(crate = "zerocopy_renamed")]
+125 | | #[repr(u8)]
+126 | | enum FromZeros4 {
+127 | |     A = 1,
+128 | |     B = 2,
+129 | | }
     | |_^
 
 error: FromZeros only supported on enums with a variant that has a discriminant of `0`
        help: This enum has discriminants which are not literal integers. One of those may define or imply which variant has a discriminant of zero. Use a literal integer to define or imply the variant with a discriminant of zero.
-   --> tests/ui-nightly/enum.rs:119:1
+   --> tests/ui-nightly/enum.rs:134:1
     |
-119 | / #[repr(i8)]
-120 | | enum FromZeros5 {
-121 | |     A = NEGATIVE_ONE,
-122 | |     B,
-123 | | }
+134 | / #[zerocopy(crate = "zerocopy_renamed")]
+135 | | #[repr(i8)]
+136 | | enum FromZeros5 {
+137 | |     A = NEGATIVE_ONE,
+138 | |     B,
+139 | | }
     | |_^
 
 error: FromZeros only supported on enums with a variant that has a discriminant of `0`
-   --> tests/ui-nightly/enum.rs:134:1
+   --> tests/ui-nightly/enum.rs:151:1
     |
-134 | / #[repr(u8)]
-135 | | enum FromZeros7 {
-136 | |     A = 1,
-137 | |     B(NotFromZeros),
-138 | | }
+151 | / #[zerocopy(crate = "zerocopy_renamed")]
+152 | | #[repr(u8)]
+153 | | enum FromZeros7 {
+154 | |     A = 1,
+155 | |     B(NotFromZeros),
+156 | | }
     | |_^
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-   --> tests/ui-nightly/enum.rs:144:10
+   --> tests/ui-nightly/enum.rs:162:10
     |
-144 | #[derive(FromBytes)]
+162 | #[derive(FromBytes)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
-   --> tests/ui-nightly/enum.rs:150:8
+   --> tests/ui-nightly/enum.rs:170:8
     |
-150 | #[repr(C)]
+170 | #[repr(C)]
     |        ^
 
 error: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
-   --> tests/ui-nightly/enum.rs:156:8
+   --> tests/ui-nightly/enum.rs:177:8
     |
-156 | #[repr(usize)]
+177 | #[repr(usize)]
     |        ^^^^^
 
 error: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
-   --> tests/ui-nightly/enum.rs:162:8
+   --> tests/ui-nightly/enum.rs:184:8
     |
-162 | #[repr(isize)]
+184 | #[repr(isize)]
     |        ^^^^^
 
 error: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
-   --> tests/ui-nightly/enum.rs:168:8
+   --> tests/ui-nightly/enum.rs:191:8
     |
-168 | #[repr(u32)]
+191 | #[repr(u32)]
     |        ^^^
 
 error: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
-   --> tests/ui-nightly/enum.rs:174:8
+   --> tests/ui-nightly/enum.rs:198:8
     |
-174 | #[repr(i32)]
+198 | #[repr(i32)]
     |        ^^^
 
 error: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
-   --> tests/ui-nightly/enum.rs:180:8
+   --> tests/ui-nightly/enum.rs:205:8
     |
-180 | #[repr(u64)]
+205 | #[repr(u64)]
     |        ^^^
 
 error: `FromBytes` only supported on enums with `#[repr(...)]` attributes `u8`, `i8`, `u16`, or `i16`
-   --> tests/ui-nightly/enum.rs:186:8
+   --> tests/ui-nightly/enum.rs:212:8
     |
-186 | #[repr(i64)]
+212 | #[repr(i64)]
     |        ^^^
 
 error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
-   --> tests/ui-nightly/enum.rs:456:10
+   --> tests/ui-nightly/enum.rs:483:10
     |
-456 | #[derive(Unaligned)]
+483 | #[derive(Unaligned)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
-   --> tests/ui-nightly/enum.rs:462:10
+   --> tests/ui-nightly/enum.rs:490:10
     |
-462 | #[derive(Unaligned)]
+490 | #[derive(Unaligned)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
-   --> tests/ui-nightly/enum.rs:468:10
+   --> tests/ui-nightly/enum.rs:497:10
     |
-468 | #[derive(Unaligned)]
-    |          ^^^^^^^^^
-    |
-    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
-   --> tests/ui-nightly/enum.rs:474:10
-    |
-474 | #[derive(Unaligned)]
-    |          ^^^^^^^^^
-    |
-    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
-   --> tests/ui-nightly/enum.rs:480:10
-    |
-480 | #[derive(Unaligned)]
-    |          ^^^^^^^^^
-    |
-    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
-   --> tests/ui-nightly/enum.rs:486:10
-    |
-486 | #[derive(Unaligned)]
-    |          ^^^^^^^^^
-    |
-    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
-   --> tests/ui-nightly/enum.rs:492:10
-    |
-492 | #[derive(Unaligned)]
-    |          ^^^^^^^^^
-    |
-    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
-   --> tests/ui-nightly/enum.rs:498:10
-    |
-498 | #[derive(Unaligned)]
+497 | #[derive(Unaligned)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -228,74 +196,114 @@ error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this
     |
     = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: cannot derive `Unaligned` on type with alignment greater than 1
-   --> tests/ui-nightly/enum.rs:511:12
+error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
+   --> tests/ui-nightly/enum.rs:511:10
     |
-511 | #[repr(u8, align(2))]
+511 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
+   --> tests/ui-nightly/enum.rs:518:10
+    |
+518 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
+   --> tests/ui-nightly/enum.rs:525:10
+    |
+525 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
+   --> tests/ui-nightly/enum.rs:532:10
+    |
+532 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have #[repr(u8)] or #[repr(i8)] attribute in order to guarantee this type's alignment
+   --> tests/ui-nightly/enum.rs:539:10
+    |
+539 | #[derive(Unaligned)]
+    |          ^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: cannot derive `Unaligned` on type with alignment greater than 1
+   --> tests/ui-nightly/enum.rs:548:12
+    |
+548 | #[repr(u8, align(2))]
     |            ^^^^^^^^
 
 error: cannot derive `Unaligned` on type with alignment greater than 1
-   --> tests/ui-nightly/enum.rs:517:12
+   --> tests/ui-nightly/enum.rs:555:12
     |
-517 | #[repr(i8, align(2))]
+555 | #[repr(i8, align(2))]
     |            ^^^^^^^^
 
 error: this conflicts with another representation hint
-   --> tests/ui-nightly/enum.rs:523:8
+   --> tests/ui-nightly/enum.rs:562:8
     |
-523 | #[repr(align(1), align(2))]
+562 | #[repr(align(1), align(2))]
     |        ^^^^^^^^^^^^^^^^^^
 
 error: this conflicts with another representation hint
-   --> tests/ui-nightly/enum.rs:529:8
+   --> tests/ui-nightly/enum.rs:569:8
     |
-529 | #[repr(align(2), align(4))]
+569 | #[repr(align(2), align(4))]
     |        ^^^^^^^^^^^^^^^^^^
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-   --> tests/ui-nightly/enum.rs:562:10
+   --> tests/ui-nightly/enum.rs:606:10
     |
-562 | #[derive(IntoBytes)]
+606 | #[derive(IntoBytes)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: must have #[repr(C)] or #[repr(Int)] attribute in order to guarantee this type's memory layout
-   --> tests/ui-nightly/enum.rs:568:10
+   --> tests/ui-nightly/enum.rs:613:10
     |
-568 | #[derive(IntoBytes)]
+613 | #[derive(IntoBytes)]
     |          ^^^^^^^^^
     |
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: generic parameters may not be used in const operations
-   --> tests/ui-nightly/enum.rs:576:7
+   --> tests/ui-nightly/enum.rs:623:7
     |
-576 |     A(T),
+623 |     A(T),
     |       ^ cannot perform const operation using `T`
     |
     = note: type parameters may not be used in const expressions
     = help: add `#![feature(generic_const_exprs)]` to allow generic const expressions
 
 error[E0565]: meta item in `repr` must be an identifier
-  --> tests/ui-nightly/enum.rs:19:1
+  --> tests/ui-nightly/enum.rs:20:1
    |
-19 | #[repr("foo")]
+20 | #[repr("foo")]
    | ^^^^^^^^^^^^^^
 
 error[E0552]: unrecognized representation hint
-  --> tests/ui-nightly/enum.rs:25:8
+  --> tests/ui-nightly/enum.rs:27:8
    |
-25 | #[repr(foo)]
+27 | #[repr(foo)]
    |        ^^^
    |
    = help: valid reprs are `Rust` (default), `C`, `align`, `packed`, `transparent`, `simd`, `i8`, `u8`, `i16`, `u16`, `i32`, `u32`, `i64`, `u64`, `i128`, `u128`, `isize`, `usize`
    = note: for more information, visit <https://doc.rust-lang.org/reference/type-layout.html?highlight=repr#representations>
 
 error[E0566]: conflicting representation hints
-  --> tests/ui-nightly/enum.rs:37:8
+  --> tests/ui-nightly/enum.rs:41:8
    |
-37 | #[repr(u8, u16)]
+41 | #[repr(u8, u16)]
    |        ^^  ^^^
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
@@ -303,9 +311,9 @@ error[E0566]: conflicting representation hints
    = note: `#[deny(conflicting_repr_hints)]` (part of `#[deny(future_incompatible)]`) on by default
 
 error[E0277]: the trait bound `UnsafeCell<()>: Immutable` is not satisfied
-  --> tests/ui-nightly/enum.rs:51:10
+  --> tests/ui-nightly/enum.rs:56:10
    |
-51 | #[derive(Immutable)]
+56 | #[derive(Immutable)]
    |          ^^^^^^^^^ the trait `Immutable` is not implemented for `UnsafeCell<()>`
    |
    = note: Consider adding `#[derive(Immutable)]` to `UnsafeCell<()>`
@@ -327,9 +335,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `UnsafeCell<u8>: Immutable` is not satisfied
-  --> tests/ui-nightly/enum.rs:59:10
+  --> tests/ui-nightly/enum.rs:66:10
    |
-59 | #[derive(Immutable)]
+66 | #[derive(Immutable)]
    |          ^^^^^^^^^ the trait `Immutable` is not implemented for `UnsafeCell<u8>`
    |
    = note: Consider adding `#[derive(Immutable)]` to `UnsafeCell<u8>`
@@ -351,15 +359,15 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotTryFromBytes: TryFromBytes` is not satisfied
-  --> tests/ui-nightly/enum.rs:82:10
+  --> tests/ui-nightly/enum.rs:92:10
    |
-82 | #[derive(TryFromBytes)]
+92 | #[derive(TryFromBytes)]
    |          ^^^^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `TryFromBytes` is not implemented for `NotTryFromBytes`
-  --> tests/ui-nightly/enum.rs:80:1
+  --> tests/ui-nightly/enum.rs:90:1
    |
-80 | struct NotTryFromBytes;
+90 | struct NotTryFromBytes;
    | ^^^^^^^^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(TryFromBytes)]` to `NotTryFromBytes`
    = help: the following other types implement trait `TryFromBytes`:
@@ -380,15 +388,15 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
    |
 
 error[E0277]: the trait bound `NotFromZeros: TryFromBytes` is not satisfied
-   --> tests/ui-nightly/enum.rs:127:10
+   --> tests/ui-nightly/enum.rs:143:10
     |
-127 | #[derive(FromZeros)]
+143 | #[derive(FromZeros)]
     |          ^^^^^^^^^ unsatisfied trait bound
     |
 help: the trait `TryFromBytes` is not implemented for `NotFromZeros`
-   --> tests/ui-nightly/enum.rs:125:1
+   --> tests/ui-nightly/enum.rs:141:1
     |
-125 | struct NotFromZeros;
+141 | struct NotFromZeros;
     | ^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(TryFromBytes)]` to `NotFromZeros`
     = help: the following other types implement trait `TryFromBytes`:
@@ -409,15 +417,15 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
 
 error[E0277]: the trait bound `NotFromZeros: FromZeros` is not satisfied
-   --> tests/ui-nightly/enum.rs:127:10
+   --> tests/ui-nightly/enum.rs:143:10
     |
-127 | #[derive(FromZeros)]
+143 | #[derive(FromZeros)]
     |          ^^^^^^^^^ unsatisfied trait bound
     |
 help: the trait `FromZeros` is not implemented for `NotFromZeros`
-   --> tests/ui-nightly/enum.rs:125:1
+   --> tests/ui-nightly/enum.rs:141:1
     |
-125 | struct NotFromZeros;
+141 | struct NotFromZeros;
     | ^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(FromZeros)]` to `NotFromZeros`
     = help: the following other types implement trait `FromZeros`:
@@ -438,9 +446,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
 
 error[E0277]: the trait bound `bool: FromBytes` is not satisfied
-   --> tests/ui-nightly/enum.rs:191:10
+   --> tests/ui-nightly/enum.rs:217:10
     |
-191 | #[derive(FromBytes)]
+217 | #[derive(FromBytes)]
     |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `bool`
     |
     = note: Consider adding `#[derive(FromBytes)]` to `bool`
@@ -462,9 +470,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
 
 error[E0277]: `IntoBytes1` has 1 total byte(s) of padding
-   --> tests/ui-nightly/enum.rs:538:10
+   --> tests/ui-nightly/enum.rs:578:10
     |
-538 | #[derive(IntoBytes)]
+578 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ types with padding cannot implement `IntoBytes`
     |
     = note: consider using `zerocopy::Unalign` to lower the alignment of individual fields
@@ -484,9 +492,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
 
 error[E0277]: `IntoBytes2` has 3 total byte(s) of padding
-   --> tests/ui-nightly/enum.rs:549:10
+   --> tests/ui-nightly/enum.rs:591:10
     |
-549 | #[derive(IntoBytes)]
+591 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ types with padding cannot implement `IntoBytes`
     |
     = note: consider using `zerocopy::Unalign` to lower the alignment of individual fields
@@ -506,9 +514,9 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
 
 error[E0277]: `IntoBytes3` has 2 total byte(s) of padding
-   --> tests/ui-nightly/enum.rs:555:10
+   --> tests/ui-nightly/enum.rs:598:10
     |
-555 | #[derive(IntoBytes)]
+598 | #[derive(IntoBytes)]
     |          ^^^^^^^^^ types with padding cannot implement `IntoBytes`
     |
     = note: consider using `zerocopy::Unalign` to lower the alignment of individual fields
@@ -528,22 +536,22 @@ help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
     |
 
 error: generic `Self` types are currently not permitted in anonymous constants
-   --> tests/ui-nightly/enum.rs:573:10
+   --> tests/ui-nightly/enum.rs:619:10
     |
-573 | #[derive(IntoBytes)]
+619 | #[derive(IntoBytes)]
     |          ^^^^^^^^^
     |
 note: not a concrete type
-   --> tests/ui-nightly/enum.rs:573:10
+   --> tests/ui-nightly/enum.rs:619:10
     |
-573 | #[derive(IntoBytes)]
+619 | #[derive(IntoBytes)]
     |          ^^^^^^^^^
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `bool: FromBytes` is not satisfied
-   --> tests/ui-nightly/enum.rs:191:10
+   --> tests/ui-nightly/enum.rs:217:10
     |
-191 | #[derive(FromBytes)]
+217 | #[derive(FromBytes)]
     |          ^^^^^^^^^ the trait `FromBytes` is not implemented for `bool`
     |
     = note: Consider adding `#[derive(FromBytes)]` to `bool`
@@ -558,13 +566,13 @@ error[E0277]: the trait bound `bool: FromBytes` is not satisfied
               (A, B, C, D, E, F, G, H)
             and $N others
 note: required for `FooU8` to implement `FromBytes`
-   --> tests/ui-nightly/enum.rs:191:10
+   --> tests/ui-nightly/enum.rs:217:10
     |
-191 | #[derive(FromBytes)]
+217 | #[derive(FromBytes)]
     |          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `assert_is_from_bytes`
-   --> tests/ui-nightly/enum.rs:191:10
+   --> tests/ui-nightly/enum.rs:217:10
     |
-191 | #[derive(FromBytes)]
+217 | #[derive(FromBytes)]
     |          ^^^^^^^^^ required by this bound in `assert_is_from_bytes`
     = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)

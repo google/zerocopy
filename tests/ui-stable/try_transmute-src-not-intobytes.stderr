@@ -1,16 +1,16 @@
-error[E0277]: the trait bound `NotZerocopy<AU16>: zerocopy::IntoBytes` is not satisfied
- --> tests/ui-stable/try_transmute-src-not-intobytes.rs:18:47
+error[E0277]: the trait bound `NotZerocopy<AU16>: IntoBytes` is not satisfied
+ --> tests/ui-stable/try_transmute-src-not-intobytes.rs:16:47
   |
- 18 |     let src_not_into_bytes: Result<AU16, _> = try_transmute!(NotZerocopy(AU16(0)));
+ 16 |     let src_not_into_bytes: Result<AU16, _> = try_transmute!(NotZerocopy(AU16(0)));
     |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
-help: the trait `zerocopy::IntoBytes` is not implemented for `NotZerocopy<AU16>`
-   --> tests/ui-stable/../../zerocopy-derive/tests/include.rs
+help: the trait `IntoBytes` is not implemented for `NotZerocopy<AU16>`
+   --> tests/ui-stable/../include.rs
     |
- 48 |     pub struct NotZerocopy<T = ()>(pub T);
+ 15 |     pub struct NotZerocopy<T = ()>(pub T);
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy<AU16>`
-    = help: the following other types implement trait `zerocopy::IntoBytes`:
+    = help: the following other types implement trait `IntoBytes`:
               ()
               AU16
               AtomicBool

@@ -1,25 +1,25 @@
-error[E0277]: the trait bound `Src: zerocopy::Immutable` is not satisfied
-  --> tests/ui-msrv/transmute-ref-src-not-nocell.rs:23:34
+error[E0277]: the trait bound `Src: Immutable` is not satisfied
+  --> tests/ui-msrv/transmute-ref-src-not-nocell.rs:21:34
    |
-23 | const SRC_NOT_IMMUTABLE: &AU16 = transmute_ref!(&Src(AU16(0)));
-   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected an implementor of trait `zerocopy::Immutable`
+21 | const SRC_NOT_IMMUTABLE: &AU16 = transmute_ref!(&Src(AU16(0)));
+   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected an implementor of trait `Immutable`
    |
 note: required by `AssertSrcIsImmutable`
-  --> tests/ui-msrv/transmute-ref-src-not-nocell.rs:23:34
+  --> tests/ui-msrv/transmute-ref-src-not-nocell.rs:21:34
    |
-23 | const SRC_NOT_IMMUTABLE: &AU16 = transmute_ref!(&Src(AU16(0)));
+21 | const SRC_NOT_IMMUTABLE: &AU16 = transmute_ref!(&Src(AU16(0)));
    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: the trait bound `Src: zerocopy::Immutable` is not satisfied
-  --> tests/ui-msrv/transmute-ref-src-not-nocell.rs:23:34
+error[E0277]: the trait bound `Src: Immutable` is not satisfied
+  --> tests/ui-msrv/transmute-ref-src-not-nocell.rs:21:34
    |
-23 | const SRC_NOT_IMMUTABLE: &AU16 = transmute_ref!(&Src(AU16(0)));
-   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `zerocopy::Immutable` is not implemented for `Src`
+21 | const SRC_NOT_IMMUTABLE: &AU16 = transmute_ref!(&Src(AU16(0)));
+   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Immutable` is not implemented for `Src`
    |
 note: required by a bound in `AssertSrcIsImmutable`
-  --> tests/ui-msrv/transmute-ref-src-not-nocell.rs:23:34
+  --> tests/ui-msrv/transmute-ref-src-not-nocell.rs:21:34
    |
-23 | const SRC_NOT_IMMUTABLE: &AU16 = transmute_ref!(&Src(AU16(0)));
+21 | const SRC_NOT_IMMUTABLE: &AU16 = transmute_ref!(&Src(AU16(0)));
    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `AssertSrcIsImmutable`
    = note: this error originates in the macro `transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)

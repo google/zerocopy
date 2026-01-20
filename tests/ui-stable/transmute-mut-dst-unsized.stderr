@@ -1,7 +1,7 @@
 error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
- --> tests/ui-stable/transmute-mut-dst-unsized.rs:17:32
+ --> tests/ui-stable/transmute-mut-dst-unsized.rs:15:32
   |
- 17 | const DST_UNSIZED: &mut [u8] = transmute_mut!(&mut [0u8; 1]);
+ 15 | const DST_UNSIZED: &mut [u8] = transmute_mut!(&mut [0u8; 1]);
     |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
     |
     = help: the trait `Sized` is not implemented for `[u8]`
