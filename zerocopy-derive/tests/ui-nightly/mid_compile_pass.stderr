@@ -1,37 +1,37 @@
 error[E0277]: the trait bound `T: KnownLayout` is not satisfied
-  --> tests/ui-nightly/mid_compile_pass.rs:59:26
+  --> tests/ui-nightly/mid_compile_pass.rs:63:26
    |
-59 | fn test_kl13<T>(t: T) -> impl KnownLayout {
+63 | fn test_kl13<T>(t: T) -> impl KnownLayout {
    |                          ^^^^^^^^^^^^^^^^ the trait `KnownLayout` is not implemented for `T`
-60 |     KL13(0u8, t)
+64 |     KL13(0u8, t)
    |     ------------ return type was inferred to be `KL13<T>` here
    |
    = note: Consider adding `#[derive(KnownLayout)]` to `T`
 note: required for `KL13<T>` to implement `KnownLayout`
-  --> tests/ui-nightly/mid_compile_pass.rs:55:10
+  --> tests/ui-nightly/mid_compile_pass.rs:58:10
    |
-55 | #[derive(KnownLayout)]
+58 | #[derive(KnownLayout)]
    |          ^^^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider restricting type parameter `T` with trait `KnownLayout`
    |
-59 | fn test_kl13<T: zerocopy::KnownLayout>(t: T) -> impl KnownLayout {
-   |               +++++++++++++++++++++++
+63 | fn test_kl13<T: zerocopy_renamed::KnownLayout>(t: T) -> impl KnownLayout {
+   |               +++++++++++++++++++++++++++++++
 
 error[E0277]: the size for values of type `T` cannot be known at compilation time
-  --> tests/ui-nightly/mid_compile_pass.rs:31:15
+  --> tests/ui-nightly/mid_compile_pass.rs:32:15
    |
-30 | fn test_kl04<T: ?Sized>(kl: &KL04<T>) {
+31 | fn test_kl04<T: ?Sized>(kl: &KL04<T>) {
    |              - this type parameter needs to be `Sized`
-31 |     assert_kl(kl);
+32 |     assert_kl(kl);
    |     --------- ^^ doesn't have a size known at compile-time
    |     |
    |     required by a bound introduced by this call
    |
 note: required because it appears within the type `KL04<T>`
-  --> tests/ui-nightly/mid_compile_pass.rs:28:8
+  --> tests/ui-nightly/mid_compile_pass.rs:29:8
    |
-28 | struct KL04<T: ?Sized>(u8, T);
+29 | struct KL04<T: ?Sized>(u8, T);
    |        ^^^^
 note: required for `KL04<T>` to implement `KnownLayout`
   --> tests/ui-nightly/mid_compile_pass.rs:27:10
@@ -46,29 +46,29 @@ note: required by a bound in `assert_kl`
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider removing the `?Sized` bound to make the type parameter `Sized`
    |
-30 - fn test_kl04<T: ?Sized>(kl: &KL04<T>) {
-30 + fn test_kl04<T>(kl: &KL04<T>) {
+31 - fn test_kl04<T: ?Sized>(kl: &KL04<T>) {
+31 + fn test_kl04<T>(kl: &KL04<T>) {
    |
 
 error[E0277]: the size for values of type `T` cannot be known at compilation time
-  --> tests/ui-nightly/mid_compile_pass.rs:40:15
+  --> tests/ui-nightly/mid_compile_pass.rs:42:15
    |
-39 | fn test_kl06<T: ?Sized + KnownLayout>(kl: &KL06<T>) {
+41 | fn test_kl06<T: ?Sized + KnownLayout>(kl: &KL06<T>) {
    |              - this type parameter needs to be `Sized`
-40 |     assert_kl(kl);
+42 |     assert_kl(kl);
    |     --------- ^^ doesn't have a size known at compile-time
    |     |
    |     required by a bound introduced by this call
    |
 note: required because it appears within the type `KL06<T>`
-  --> tests/ui-nightly/mid_compile_pass.rs:37:8
+  --> tests/ui-nightly/mid_compile_pass.rs:39:8
    |
-37 | struct KL06<T: ?Sized + KnownLayout>(u8, T);
+39 | struct KL06<T: ?Sized + KnownLayout>(u8, T);
    |        ^^^^
 note: required for `KL06<T>` to implement `KnownLayout`
-  --> tests/ui-nightly/mid_compile_pass.rs:36:10
+  --> tests/ui-nightly/mid_compile_pass.rs:37:10
    |
-36 | #[derive(KnownLayout)]
+37 | #[derive(KnownLayout)]
    |          ^^^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `assert_kl`
   --> tests/ui-nightly/mid_compile_pass.rs:23:26
@@ -78,22 +78,22 @@ note: required by a bound in `assert_kl`
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider removing the `?Sized` bound to make the type parameter `Sized`
    |
-39 - fn test_kl06<T: ?Sized + KnownLayout>(kl: &KL06<T>) {
-39 + fn test_kl06<T: KnownLayout>(kl: &KL06<T>) {
+41 - fn test_kl06<T: ?Sized + KnownLayout>(kl: &KL06<T>) {
+41 + fn test_kl06<T: KnownLayout>(kl: &KL06<T>) {
    |
 
 error[E0277]: the trait bound `KL12<T>: KnownLayout` is not satisfied
-  --> tests/ui-nightly/mid_compile_pass.rs:50:15
+  --> tests/ui-nightly/mid_compile_pass.rs:53:15
    |
-50 |     assert_kl(kl)
+53 |     assert_kl(kl)
    |     --------- ^^ the trait `KnownLayout` is not implemented for `KL12<T>`
    |     |
    |     required by a bound introduced by this call
    |
 note: required for `KL12<T>` to implement `KnownLayout`
-  --> tests/ui-nightly/mid_compile_pass.rs:45:10
+  --> tests/ui-nightly/mid_compile_pass.rs:47:10
    |
-45 | #[derive(KnownLayout)]
+47 | #[derive(KnownLayout)]
    |          ^^^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
 note: required by a bound in `assert_kl`
   --> tests/ui-nightly/mid_compile_pass.rs:23:26
@@ -103,7 +103,7 @@ note: required by a bound in `assert_kl`
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider borrowing here
    |
-50 |     assert_kl(&kl)
+53 |     assert_kl(&kl)
    |               +
-50 |     assert_kl(&mut kl)
+53 |     assert_kl(&mut kl)
    |               ++++

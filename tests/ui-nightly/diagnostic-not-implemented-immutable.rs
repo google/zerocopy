@@ -6,9 +6,7 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-include!("../../zerocopy-derive/tests/include.rs");
-
-extern crate zerocopy;
+include!("../include.rs");
 
 use util::NotZerocopy;
 use zerocopy::Immutable;

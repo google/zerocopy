@@ -15,11 +15,13 @@ extern crate rustversion;
 include!("include.rs");
 
 #[derive(imp::KnownLayout)]
+#[zerocopy(crate = "zerocopy_renamed")]
 struct Zst;
 
 util_assert_impl_all!(Zst: imp::KnownLayout);
 
 #[derive(imp::KnownLayout)]
+#[zerocopy(crate = "zerocopy_renamed")]
 struct One {
     a: bool,
 }
@@ -27,6 +29,7 @@ struct One {
 util_assert_impl_all!(One: imp::KnownLayout);
 
 #[derive(imp::KnownLayout)]
+#[zerocopy(crate = "zerocopy_renamed")]
 struct Two {
     a: bool,
     b: Zst,
@@ -35,6 +38,7 @@ struct Two {
 util_assert_impl_all!(Two: imp::KnownLayout);
 
 #[derive(imp::KnownLayout)]
+#[zerocopy(crate = "zerocopy_renamed")]
 struct TypeParams<'a, T, I: imp::Iterator> {
     a: I::Item,
     b: u8,
@@ -55,6 +59,7 @@ util_assert_impl_all!(TypeParams<'static, util::AU16, imp::IntoIter<()>>: imp::K
 #[rustversion::since(1.62)]
 const _: () = {
     #[derive(imp::KnownLayout)]
+    #[zerocopy(crate = "zerocopy_renamed")]
     #[repr(C)]
     struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::KnownLayout, const N: usize>(
         [T; N],
@@ -73,6 +78,7 @@ const _: () = {
     // only static lifetimes. This is exercisable on all supported toolchains.
 
     #[derive(imp::KnownLayout)]
+    #[zerocopy(crate = "zerocopy_renamed")]
     #[repr(C)]
     struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::KnownLayout, const N: usize>(
         &'a &'b [T; N],
@@ -90,6 +96,7 @@ const _: () = {
 // #2116.
 
 #[derive(imp::KnownLayout)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct WithSelfReference {
     leading: [u8; Self::N],
@@ -106,6 +113,7 @@ util_assert_impl_all!(WithSelfReference: imp::KnownLayout);
 // #2302.
 
 #[derive(imp::KnownLayout)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C, packed)]
 struct Packet<P> {
     payload: P,
@@ -114,6 +122,7 @@ struct Packet<P> {
 util_assert_impl_all!(Packet<imp::u8>: imp::KnownLayout);
 
 #[derive(imp::KnownLayout)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct RawIdentifier {
     r#type: u8,

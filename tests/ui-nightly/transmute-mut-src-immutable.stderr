@@ -1,7 +1,7 @@
 error[E0308]: mismatched types
-  --> tests/ui-nightly/transmute-mut-src-immutable.rs:17:37
+  --> tests/ui-nightly/transmute-mut-src-immutable.rs:15:37
    |
-17 |     let _: &mut u8 = transmute_mut!(&0u8);
+15 |     let _: &mut u8 = transmute_mut!(&0u8);
    |                      ---------------^^^^-
    |                      |              |
    |                      |              types differ in mutability

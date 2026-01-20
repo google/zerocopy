@@ -9,7 +9,7 @@
 #![allow(unused_braces)]
 
 #[macro_use]
-extern crate zerocopy;
+extern crate zerocopy_renamed;
 
 fn main() {}
 
@@ -19,36 +19,56 @@ fn main() {}
 
 mod private {
     #[derive(TryFromBytes)]
+    #[zerocopy(crate = "zerocopy_renamed")]
     pub struct StructWithNamedFields {
         pub a: u8,
         pub(self) b: u16,
     }
 
     const _: () = {
-        let _: <StructWithNamedFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(a) }>>::Type = 0u8;
-        let _: <StructWithNamedFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(b) }>>::Type = 0u16;
+        let _: <StructWithNamedFields as zerocopy_renamed::HasField<
+            _,
+            _,
+            { zerocopy_renamed::ident_id!(a) },
+        >>::Type = 0u8;
+        let _: <StructWithNamedFields as zerocopy_renamed::HasField<
+            _,
+            _,
+            { zerocopy_renamed::ident_id!(b) },
+        >>::Type = 0u16;
     };
 
     #[derive(TryFromBytes)]
+    #[zerocopy(crate = "zerocopy_renamed")]
     pub struct StructWithAnonFields(pub u8, pub(self) u16);
 
     const _: () = {
-        let _: <StructWithAnonFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(0) }>>::Type = 0u8;
-        let _: <StructWithAnonFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(1) }>>::Type = 0u16;
+        let _: <StructWithAnonFields as zerocopy_renamed::HasField<
+            _,
+            _,
+            { zerocopy_renamed::ident_id!(0) },
+        >>::Type = 0u8;
+        let _: <StructWithAnonFields as zerocopy_renamed::HasField<
+            _,
+            _,
+            { zerocopy_renamed::ident_id!(1) },
+        >>::Type = 0u16;
     };
 
     #[derive(TryFromBytes)]
+    #[zerocopy(crate = "zerocopy_renamed")]
     pub struct Union {
         pub a: u8,
         pub(self) b: u16,
     }
 
     const _: () = {
-        let _: <Union as zerocopy::HasField<_, _, { zerocopy::ident_id!(a) }>>::Type = 0u8;
-        let _: <Union as zerocopy::HasField<_, _, { zerocopy::ident_id!(b) }>>::Type = 0u16;
+        let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type = 0u8;
+        let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type = 0u16;
     };
 
     #[derive(TryFromBytes)]
+    #[zerocopy(crate = "zerocopy_renamed")]
     #[repr(C)]
     pub enum Enum {
         A(u8, u16),
@@ -56,14 +76,14 @@ mod private {
     }
 
     const _: () = {
-        let _: <Enum as zerocopy::HasField<_, _, { zerocopy::ident_id!(0) }>>::Type = 0u8;
-        let _: <Enum as zerocopy::HasField<_, _, { zerocopy::ident_id!(1) }>>::Type = 0u16;
+        let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(0) }>>::Type = 0u8;
+        let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(1) }>>::Type = 0u16;
 
-        let _: <Enum as zerocopy::HasField<_, _, { zerocopy::ident_id!(a) }>>::Type = 0u8;
-        let _: <Enum as zerocopy::HasField<
+        let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type = 0u8;
+        let _: <Enum as zerocopy_renamed::HasField<
             _,
-            { zerocopy::ident_id!(B) },
-            { zerocopy::ident_id!(b) },
+            { zerocopy_renamed::ident_id!(B) },
+            { zerocopy_renamed::ident_id!(b) },
         >>::Type = 0u16;
     };
 }
@@ -71,32 +91,49 @@ mod private {
 use private::*;
 
 const _: () = {
-    let _: <StructWithNamedFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(a) }>>::Type =
-        0u8;
-    let _: <StructWithNamedFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(b) }>>::Type =
-        0u16;
-};
-
-const _: () = {
-    let _: <StructWithAnonFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(0) }>>::Type =
-        0u8;
-    let _: <StructWithAnonFields as zerocopy::HasField<_, _, { zerocopy::ident_id!(1) }>>::Type =
-        0u16;
-};
-
-const _: () = {
-    let _: <Union as zerocopy::HasField<_, _, { zerocopy::ident_id!(a) }>>::Type = 0u8;
-    let _: <Union as zerocopy::HasField<_, _, { zerocopy::ident_id!(b) }>>::Type = 0u16;
-};
-
-const _: () = {
-    let _: <Enum as zerocopy::HasField<_, _, { zerocopy::ident_id!(0) }>>::Type = 0u8;
-    let _: <Enum as zerocopy::HasField<_, _, { zerocopy::ident_id!(1) }>>::Type = 0u16;
-
-    let _: <Enum as zerocopy::HasField<_, _, { zerocopy::ident_id!(a) }>>::Type = 0u8;
-    let _: <Enum as zerocopy::HasField<
+    let _: <StructWithNamedFields as zerocopy_renamed::HasField<
         _,
-        { zerocopy::ident_id!(B) },
-        { zerocopy::ident_id!(b) },
+        _,
+        { zerocopy_renamed::ident_id!(a) },
+    >>::Type = 0u8;
+    let _: <StructWithNamedFields as zerocopy_renamed::HasField<
+        _,
+        _,
+        { zerocopy_renamed::ident_id!(b) },
+    >>::Type = 0u16;
+};
+
+const _: () = {
+    let _: <StructWithAnonFields as zerocopy_renamed::HasField<
+        _,
+        _,
+        { zerocopy_renamed::ident_id!(0) },
+    >>::Type = 0u8;
+    let _: <StructWithAnonFields as zerocopy_renamed::HasField<
+        _,
+        _,
+        { zerocopy_renamed::ident_id!(1) },
+    >>::Type = 0u16;
+};
+
+const _: () = {
+    let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type =
+        0u8;
+    let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type =
+        0u16;
+};
+
+const _: () = {
+    let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(0) }>>::Type =
+        0u8;
+    let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(1) }>>::Type =
+        0u16;
+
+    let _: <Enum as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(a) }>>::Type =
+        0u8;
+    let _: <Enum as zerocopy_renamed::HasField<
+        _,
+        { zerocopy_renamed::ident_id!(B) },
+        { zerocopy_renamed::ident_id!(b) },
     >>::Type = 0u16;
 };

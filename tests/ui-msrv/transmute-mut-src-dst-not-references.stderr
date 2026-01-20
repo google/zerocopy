@@ -1,7 +1,7 @@
 error[E0308]: mismatched types
-  --> tests/ui-msrv/transmute-mut-src-dst-not-references.rs:17:59
+  --> tests/ui-msrv/transmute-mut-src-dst-not-references.rs:15:59
    |
-17 | const SRC_DST_NOT_REFERENCES: &mut usize = transmute_mut!(0usize);
+15 | const SRC_DST_NOT_REFERENCES: &mut usize = transmute_mut!(0usize);
    |                                            ---------------^^^^^^-
    |                                            |              |
    |                                            |              expected `&mut _`, found `usize`

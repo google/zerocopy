@@ -10,12 +10,12 @@
 // compiler pass compared to the stable or nightly toolchains.
 
 #[macro_use]
-extern crate zerocopy;
+extern crate zerocopy_renamed;
 
 #[path = "../include.rs"]
 mod util;
 
-use zerocopy::IntoBytes;
+use zerocopy_renamed::IntoBytes;
 
 use self::util::util::AU16;
 
@@ -23,6 +23,7 @@ fn main() {}
 
 // `repr(C, packed(2))` is not equivalent to `repr(C, packed)`.
 #[derive(IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C, packed(2))]
 struct IntoBytes1<T> {
     t0: T,

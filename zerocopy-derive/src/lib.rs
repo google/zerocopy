@@ -651,13 +651,14 @@ fn derive_split_at_inner(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream, Er
         return Err(Error::new(Span::call_site(), "must at least one field"));
     };
 
+    let zerocopy_crate = &ctx.zerocopy_crate;
     // SAFETY: `#ty`, per the above checks, is `repr(C)` or `repr(transparent)`
     // and is not packed; its trailing field is guaranteed to be well-aligned
     // for its type. By invariant on `FieldBounds::TRAILING_SELF`, the trailing
     // slice of the trailing field is also well-aligned for its type.
     Ok(ImplBlockBuilder::new(ctx, &ctx.ast.data, Trait::SplitAt, FieldBounds::TRAILING_SELF)
         .inner_extras(quote! {
-            type Elem = <#trailing_field as ::zerocopy::SplitAt>::Elem;
+            type Elem = <#trailing_field as #zerocopy_crate::SplitAt>::Elem;
         })
         .build())
 }
@@ -1219,7 +1220,7 @@ fn derive_into_bytes_enum(ctx: &Ctx, enm: &DataEnum) -> Result<TokenStream, Erro
         ));
     }
 
-    let tag_type_definition = r#enum::generate_tag_enum(&repr, enm);
+    let tag_type_definition = r#enum::generate_tag_enum(ctx, &repr, enm);
     Ok(ImplBlockBuilder::new(ctx, enm, Trait::IntoBytes, FieldBounds::ALL_SELF)
         .padding_check(PaddingCheck::Enum { tag_type_definition })
         .build())

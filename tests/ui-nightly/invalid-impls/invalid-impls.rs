@@ -9,7 +9,6 @@
 // Since some macros from `macros.rs` are unused.
 #![allow(unused)]
 
-extern crate zerocopy;
 extern crate zerocopy_derive;
 
 include!("../../../src/util/macros.rs");
