@@ -7,7 +7,7 @@
 // those terms.
 
 #[macro_use]
-extern crate zerocopy;
+extern crate zerocopy_renamed;
 
 fn main() {}
 
@@ -16,30 +16,35 @@ fn main() {}
 //
 
 #[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr("foo")]
 enum Generic1 {
     A,
 }
 
 #[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(foo)]
 enum Generic2 {
     A,
 }
 
 #[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(transparent)]
 enum Generic3 {
     A,
 }
 
 #[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8, u16)]
 enum Generic4 {
     A,
 }
 
 #[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 enum Generic5 {
     A,
 }
@@ -49,14 +54,17 @@ enum Generic5 {
 //
 
 #[derive(Immutable)]
+#[zerocopy(crate = "zerocopy_renamed")]
 enum Immutable1 {
     A(core::cell::UnsafeCell<()>),
 }
 
 #[derive(Immutable)]
+#[zerocopy(crate = "zerocopy_renamed")]
 enum Never {}
 
 #[derive(Immutable)]
+#[zerocopy(crate = "zerocopy_renamed")]
 enum Immutable2 {
     Uninhabited(Never, core::cell::UnsafeCell<u8>),
     Inhabited(u8),
@@ -67,11 +75,13 @@ enum Immutable2 {
 //
 
 #[derive(TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 enum TryFromBytes1 {
     A,
 }
 
 #[derive(TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 enum TryFromBytes2 {
     A,
     B(u8),
@@ -80,6 +90,7 @@ enum TryFromBytes2 {
 struct NotTryFromBytes;
 
 #[derive(TryFromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum TryFromBytes3 {
     A(NotTryFromBytes),
@@ -90,23 +101,27 @@ enum TryFromBytes3 {
 //
 
 #[derive(FromZeros)]
+#[zerocopy(crate = "zerocopy_renamed")]
 enum FromZeros1 {
     A(u8),
 }
 
 #[derive(FromZeros)]
+#[zerocopy(crate = "zerocopy_renamed")]
 enum FromZeros2 {
     A,
     B(u8),
 }
 
 #[derive(FromZeros)]
+#[zerocopy(crate = "zerocopy_renamed")]
 enum FromZeros3 {
     A = 1,
     B,
 }
 
 #[derive(FromZeros)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum FromZeros4 {
     A = 1,
@@ -116,6 +131,7 @@ enum FromZeros4 {
 const NEGATIVE_ONE: i8 = -1;
 
 #[derive(FromZeros)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(i8)]
 enum FromZeros5 {
     A = NEGATIVE_ONE,
@@ -125,12 +141,14 @@ enum FromZeros5 {
 struct NotFromZeros;
 
 #[derive(FromZeros)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum FromZeros6 {
     A(NotFromZeros),
 }
 
 #[derive(FromZeros)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum FromZeros7 {
     A = 1,
@@ -142,53 +160,62 @@ enum FromZeros7 {
 //
 
 #[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 enum FromBytes1 {
     A,
 }
 
 #[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 enum FromBytes2 {
     A,
 }
 
 #[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(usize)]
 enum FromBytes3 {
     A,
 }
 
 #[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(isize)]
 enum FromBytes4 {
     A,
 }
 
 #[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u32)]
 enum FromBytes5 {
     A,
 }
 
 #[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(i32)]
 enum FromBytes6 {
     A,
 }
 
 #[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u64)]
 enum FromBytes7 {
     A,
 }
 
 #[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(i64)]
 enum FromBytes8 {
     A,
 }
 
 #[derive(FromBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum FooU8 {
     Variant0,
@@ -454,78 +481,91 @@ enum FooU8 {
 //
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 enum Unaligned1 {
     A,
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u16)]
 enum Unaligned2 {
     A,
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(i16)]
 enum Unaligned3 {
     A,
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u32)]
 enum Unaligned4 {
     A,
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(i32)]
 enum Unaligned5 {
     A,
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u64)]
 enum Unaligned6 {
     A,
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(i64)]
 enum Unaligned7 {
     A,
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(usize)]
 enum Unaligned8 {
     A,
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(isize)]
 enum Unaligned9 {
     A,
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8, align(2))]
 enum Unaligned10 {
     A,
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(i8, align(2))]
 enum Unaligned11 {
     A,
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(align(1), align(2))]
 enum Unaligned12 {
     A,
 }
 
 #[derive(Unaligned)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(align(2), align(4))]
 enum Unaligned13 {
     A,
@@ -536,6 +576,7 @@ enum Unaligned13 {
 //
 
 #[derive(IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum IntoBytes1 {
     A,
@@ -543,16 +584,19 @@ enum IntoBytes1 {
 }
 
 #[derive(IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C, align(4))]
 struct Align4IntoBytes(u32);
 
 #[derive(IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum IntoBytes2 {
     A(Align4IntoBytes),
 }
 
 #[derive(IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u32)]
 enum IntoBytes3 {
     A(u32),
@@ -560,17 +604,20 @@ enum IntoBytes3 {
 }
 
 #[derive(IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 enum IntoBytes4 {
     A(u32),
     B(u16),
 }
 
 #[derive(IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 enum IntoBytes5 {
     A(u32),
 }
 
 #[derive(IntoBytes)]
+#[zerocopy(crate = "zerocopy_renamed")]
 #[repr(u8)]
 enum IntoBytes6<T> {
     A(T),
