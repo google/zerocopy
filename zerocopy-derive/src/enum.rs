@@ -21,7 +21,8 @@ use crate::{
 /// Generates a tag enum for the given enum. This generates an enum with the
 /// same non-align `repr`s, variants, and corresponding discriminants, but none
 /// of the fields.
-pub(crate) fn generate_tag_enum(repr: &EnumRepr, data: &DataEnum) -> TokenStream {
+pub(crate) fn generate_tag_enum(ctx: &Ctx, repr: &EnumRepr, data: &DataEnum) -> TokenStream {
+    let zerocopy_crate = &ctx.zerocopy_crate;
     let variants = data.variants.iter().map(|v| {
         let ident = &v.ident;
         if let Some((eq, discriminant)) = &v.discriminant {
@@ -48,7 +49,7 @@ pub(crate) fn generate_tag_enum(repr: &EnumRepr, data: &DataEnum) -> TokenStream
 
         // SAFETY: `___ZerocopyTag` has no fields, and so it does not permit
         // interior mutation.
-        unsafe impl ::zerocopy::Immutable for ___ZerocopyTag {
+        unsafe impl #zerocopy_crate::Immutable for ___ZerocopyTag {
             fn only_derive_is_allowed_to_implement_this_trait() {}
         }
     }
@@ -240,7 +241,7 @@ pub(crate) fn derive_is_bit_valid(
     repr: &EnumRepr,
 ) -> Result<TokenStream, Error> {
     let trait_path = Trait::TryFromBytes.crate_path(&ctx.zerocopy_crate);
-    let tag_enum = generate_tag_enum(repr, data);
+    let tag_enum = generate_tag_enum(ctx, repr, data);
     let tag_consts = generate_tag_consts(data);
 
     let (outer_tag_type, inner_tag_type) = if repr.is_c() {
