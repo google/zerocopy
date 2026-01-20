@@ -124,8 +124,9 @@ fn generate_variant_structs(ctx: &Ctx, data: &DataEnum) -> TokenStream {
     // All variant structs have a `PhantomData<MyEnum<...>>` field because we
     // don't know which generic parameters each variant will use, and unused
     // generic parameters are a compile error.
+    let core = ctx.core_path();
     let phantom_ty = quote! {
-        core_reexport::marker::PhantomData<#enum_name #ty_generics>
+        #core::marker::PhantomData<#enum_name #ty_generics>
     };
 
     let variant_structs = data.variants.iter().filter_map(|variant| {
@@ -141,7 +142,7 @@ fn generate_variant_structs(ctx: &Ctx, data: &DataEnum) -> TokenStream {
         let variant_struct = parse_quote! {
             #[repr(C)]
             struct #variant_struct_ident #impl_generics (
-                core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
+                #core::mem::MaybeUninit<___ZerocopyInnerTag>,
                 #(#field_types,)*
                 #phantom_ty,
             ) #where_clause;
@@ -184,10 +185,9 @@ fn generate_variants_union(ctx: &Ctx, data: &DataEnum) -> TokenStream {
         let field_name = variants_union_field_ident(&variant.ident);
         let variant_struct_ident = variant_struct_ident(&variant.ident);
 
+        let core = ctx.core_path();
         Some(quote! {
-            #field_name: core_reexport::mem::ManuallyDrop<
-                #variant_struct_ident #ty_generics
-            >,
+            #field_name: #core::mem::ManuallyDrop<#variant_struct_ident #ty_generics>,
         })
     });
 
@@ -240,7 +240,7 @@ pub(crate) fn derive_is_bit_valid(
     data: &DataEnum,
     repr: &EnumRepr,
 ) -> Result<TokenStream, Error> {
-    let trait_path = Trait::TryFromBytes.crate_path(&ctx.zerocopy_crate);
+    let trait_path = Trait::TryFromBytes.crate_path(ctx);
     let tag_enum = generate_tag_enum(ctx, repr, data);
     let tag_consts = generate_tag_consts(data);
 
@@ -304,6 +304,7 @@ pub(crate) fn derive_is_bit_valid(
         })
     });
 
+    let core = ctx.core_path();
     let match_arms = data.variants.iter().map(|variant| {
         let tag_ident = tag_ident(&variant.ident);
         let variant_struct_ident = variant_struct_ident(&variant.ident);
@@ -322,7 +323,7 @@ pub(crate) fn derive_is_bit_valid(
                     // know that no other `&`s exist which refer to this enum
                     // as any other variant.
                     let variant_md = unsafe { variants.cast_unchecked::<
-                        core_reexport::mem::ManuallyDrop<#variant_struct_ident #ty_generics>,
+                        #core::mem::ManuallyDrop<#variant_struct_ident #ty_generics>,
                         #zerocopy_crate::pointer::cast::Projection<
                             _,
                             { #zerocopy_crate::UNION_VARIANT_ID },
@@ -374,16 +375,14 @@ pub(crate) fn derive_is_bit_valid(
         // Thus, this is a sound implementation of `is_bit_valid`.
         fn is_bit_valid<___ZerocopyAliasing>(
             candidate: #zerocopy_crate::Maybe<'_, Self, ___ZerocopyAliasing>,
-        ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
+        ) -> #core::primitive::bool
         where
             ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
         {
-            use #zerocopy_crate::util::macro_util::core_reexport;
-
             #tag_enum
 
             type ___ZerocopyTagPrimitive = #zerocopy_crate::util::macro_util::SizeToTag<
-                { core_reexport::mem::size_of::<___ZerocopyTag>() },
+                { #core::mem::size_of::<___ZerocopyTag>() },
             >;
 
             #tag_consts

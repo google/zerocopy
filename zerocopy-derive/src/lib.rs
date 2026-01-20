@@ -155,23 +155,23 @@ fn derive_known_layout_for_repr_c_struct<'a>(
     let (_vis, trailing_field_name, trailing_field_ty) = trailing_field;
     let leading_fields_tys = leading_fields.iter().map(|(_vis, _name, ty)| ty);
 
-    let zerocopy_crate = &ctx.zerocopy_crate;
-    let core_path = quote!(#zerocopy_crate::util::macro_util::core_reexport);
+    let core = ctx.core_path();
     let repr_align = repr
         .get_align()
         .map(|align| {
             let align = align.t.get();
-            quote!(#core_path::num::NonZeroUsize::new(#align as usize))
+            quote!(#core::num::NonZeroUsize::new(#align as usize))
         })
-        .unwrap_or_else(|| quote!(#core_path::option::Option::None));
+        .unwrap_or_else(|| quote!(#core::option::Option::None));
     let repr_packed = repr
         .get_packed()
         .map(|packed| {
             let packed = packed.get();
-            quote!(#core_path::num::NonZeroUsize::new(#packed as usize))
+            quote!(#core::num::NonZeroUsize::new(#packed as usize))
         })
-        .unwrap_or_else(|| quote!(#core_path::option::Option::None));
+        .unwrap_or_else(|| quote!(#core::option::Option::None));
 
+    let zerocopy_crate = &ctx.zerocopy_crate;
     let make_methods = |trailing_field_ty| {
         quote! {
             // SAFETY:
@@ -206,14 +206,13 @@ fn derive_known_layout_for_repr_c_struct<'a>(
             //       `(u64, Foo)`.
             #[inline(always)]
             fn raw_from_ptr_len(
-                bytes: #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<u8>,
+                bytes: #core::ptr::NonNull<u8>,
                 meta: Self::PointerMetadata,
-            ) -> #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<Self> {
-                use #zerocopy_crate::KnownLayout;
-                let trailing = <#trailing_field_ty as KnownLayout>::raw_from_ptr_len(bytes, meta);
+            ) -> #core::ptr::NonNull<Self> {
+                let trailing = <#trailing_field_ty as #zerocopy_crate::KnownLayout>::raw_from_ptr_len(bytes, meta);
                 let slf = trailing.as_ptr() as *mut Self;
                 // SAFETY: Constructed from `trailing`, which is non-null.
-                unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(slf) }
+                unsafe { #core::ptr::NonNull::new_unchecked(slf) }
             }
 
             #[inline(always)]
@@ -247,19 +246,14 @@ fn derive_known_layout_for_repr_c_struct<'a>(
             // expansion is only used if `is_repr_c_struct`, we enumerate
             // the fields in order, and we extract the values of `align(N)`
             // and `packed(N)`.
-            const LAYOUT: #zerocopy_crate::DstLayout = {
-                use #zerocopy_crate::util::macro_util::core_reexport::num::NonZeroUsize;
-                use #zerocopy_crate::{DstLayout, KnownLayout};
-
-                DstLayout::for_repr_c_struct(
-                    #repr_align,
-                    #repr_packed,
-                    &[
-                        #(DstLayout::for_type::<#leading_fields_tys>(),)*
-                        <#trailing_field_ty as KnownLayout>::LAYOUT
-                    ],
-                )
-            };
+            const LAYOUT: #zerocopy_crate::DstLayout = #zerocopy_crate::DstLayout::for_repr_c_struct(
+                #repr_align,
+                #repr_packed,
+                &[
+                    #(#zerocopy_crate::DstLayout::for_type::<#leading_fields_tys>(),)*
+                    <#trailing_field_ty as #zerocopy_crate::KnownLayout>::LAYOUT
+                ],
+            );
 
             #methods
         )
@@ -327,6 +321,8 @@ fn derive_known_layout_for_repr_c_struct<'a>(
             <#trailing_field_ty as #zerocopy_crate::KnownLayout>::MaybeUninit
         });
 
+        let core = ctx.core_path();
+
         quote! {
             #(#field_defs)*
 
@@ -342,7 +338,7 @@ fn derive_known_layout_for_repr_c_struct<'a>(
             #repr
             #[doc(hidden)]
             #vis struct __ZerocopyKnownLayoutMaybeUninit<#params> (
-                #(#zerocopy_crate::util::macro_util::core_reexport::mem::MaybeUninit<
+                #(#core::mem::MaybeUninit<
                     <#ident #ty_generics as
                         #zerocopy_crate::util::macro_util::Field<#leading_field_indices>
                     >::Type
@@ -353,7 +349,7 @@ fn derive_known_layout_for_repr_c_struct<'a>(
                 // type is *either* `Sized` or has a trivial `Drop`.
                 // `ManuallyDrop` has a trivial `Drop`, and so satisfies
                 // this requirement.
-                #zerocopy_crate::util::macro_util::core_reexport::mem::ManuallyDrop<
+                #core::mem::ManuallyDrop<
                     <#trailing_field_ty as #zerocopy_crate::KnownLayout>::MaybeUninit
                 >
             )
@@ -412,6 +408,7 @@ fn derive_known_layout_inner(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream
         })
         .unwrap_or_else(|| {
             let zerocopy_crate = &ctx.zerocopy_crate;
+            let core = ctx.core_path();
 
             // For enums, unions, and non-`repr(C)` structs, we require that
             // `Self` is sized, and as a result don't need to reason about the
@@ -421,7 +418,7 @@ fn derive_known_layout_inner(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream
                 quote!(
                     type PointerMetadata = ();
                     type MaybeUninit =
-                        #zerocopy_crate::util::macro_util::core_reexport::mem::MaybeUninit<Self>;
+                        #core::mem::MaybeUninit<Self>;
 
                     // SAFETY: `LAYOUT` is guaranteed to accurately describe the
                     // layout of `Self`, because that is the documented safety
@@ -433,11 +430,7 @@ fn derive_known_layout_inner(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream
                     // FIXME(#429): Add documentation to `.cast` that promises that
                     // it preserves provenance.
                     #[inline(always)]
-                    fn raw_from_ptr_len(
-                        bytes: #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<u8>,
-                        _meta: (),
-                    ) -> #zerocopy_crate::util::macro_util::core_reexport::ptr::NonNull<Self>
-                    {
+                    fn raw_from_ptr_len(bytes: #core::ptr::NonNull<u8>, _meta: ()) -> #core::ptr::NonNull<Self> {
                         bytes.cast::<Self>()
                     }
 
@@ -561,30 +554,19 @@ fn derive_hash_inner(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream, Error>
     let (impl_generics, ty_generics, where_clause) = ctx.ast.generics.split_for_impl();
     let where_predicates = where_clause.map(|clause| &clause.predicates);
     let zerocopy_crate = &ctx.zerocopy_crate;
+    let core = ctx.core_path();
     Ok(quote! {
-        impl #impl_generics #zerocopy_crate::util::macro_util::core_reexport::hash::Hash for #type_ident #ty_generics
+        impl #impl_generics #core::hash::Hash for #type_ident #ty_generics
         where
             Self: #zerocopy_crate::IntoBytes + #zerocopy_crate::Immutable,
             #where_predicates
         {
-            fn hash<H>(&self, state: &mut H)
-            where
-                H: #zerocopy_crate::util::macro_util::core_reexport::hash::Hasher,
-            {
-                #zerocopy_crate::util::macro_util::core_reexport::hash::Hasher::write(
-                    state,
-                    #zerocopy_crate::IntoBytes::as_bytes(self)
-                )
+            fn hash<H: #core::hash::Hasher>(&self, state: &mut H) {
+                #core::hash::Hasher::write(state, #zerocopy_crate::IntoBytes::as_bytes(self))
             }
 
-            fn hash_slice<H>(data: &[Self], state: &mut H)
-            where
-                H: #zerocopy_crate::util::macro_util::core_reexport::hash::Hasher,
-            {
-                #zerocopy_crate::util::macro_util::core_reexport::hash::Hasher::write(
-                    state,
-                    #zerocopy_crate::IntoBytes::as_bytes(data)
-                )
+            fn hash_slice<H: #core::hash::Hasher>(data: &[Self], state: &mut H) {
+                #core::hash::Hasher::write(state, #zerocopy_crate::IntoBytes::as_bytes(data))
             }
         }
     })
@@ -600,21 +582,22 @@ fn derive_eq_inner(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream, Error> {
     let (impl_generics, ty_generics, where_clause) = ctx.ast.generics.split_for_impl();
     let where_predicates = where_clause.map(|clause| &clause.predicates);
     let zerocopy_crate = &ctx.zerocopy_crate;
+    let core = ctx.core_path();
     Ok(quote! {
-        impl #impl_generics #zerocopy_crate::util::macro_util::core_reexport::cmp::PartialEq for #type_ident #ty_generics
+        impl #impl_generics #core::cmp::PartialEq for #type_ident #ty_generics
         where
             Self: #zerocopy_crate::IntoBytes + #zerocopy_crate::Immutable,
             #where_predicates
         {
             fn eq(&self, other: &Self) -> bool {
-                #zerocopy_crate::util::macro_util::core_reexport::cmp::PartialEq::eq(
+                #core::cmp::PartialEq::eq(
                     #zerocopy_crate::IntoBytes::as_bytes(self),
                     #zerocopy_crate::IntoBytes::as_bytes(other),
                 )
             }
         }
 
-        impl #impl_generics #zerocopy_crate::util::macro_util::core_reexport::cmp::Eq for #type_ident #ty_generics
+        impl #impl_generics #core::cmp::Eq for #type_ident #ty_generics
         where
             Self: #zerocopy_crate::IntoBytes + #zerocopy_crate::Immutable,
             #where_predicates
@@ -689,6 +672,7 @@ fn derive_has_field_struct_union(ctx: &Ctx, data: &dyn DataExt) -> TokenStream {
         }
         Data::Enum(..) | Data::Struct(..) => false,
     };
+    let core = ctx.core_path();
     let has_fields = fields.iter().map(move |(_, ident, ty)| {
         let field_token = ident!(("ẕ{}", ident), ident.span());
         let field: Box<Type> = parse_quote!(#field_token);
@@ -715,7 +699,7 @@ fn derive_has_field_struct_union(ctx: &Ctx, data: &dyn DataExt) -> TokenStream {
                 // `Self`, this projection preserves or shrinks the referent
                 // size, and so the resulting referent also fits in the same
                 // allocation.
-                unsafe { #zerocopy_crate::util::macro_util::core_reexport::ptr::addr_of_mut!((*slf).#ident) }
+                unsafe { #core::ptr::addr_of_mut!((*slf).#ident) }
             }
         }).outer_extras(if is_repr_c_union {
             let ident = &ctx.ast.ident;
@@ -784,6 +768,7 @@ fn derive_try_from_bytes_struct(
         let fields = strct.fields();
         let field_names = fields.iter().map(|(_vis, name, _ty)| name);
         let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
+        let core = ctx.core_path();
         quote!(
             // SAFETY: We use `is_bit_valid` to validate that each field is
             // bit-valid, and only return `true` if all of them are. The bit
@@ -792,7 +777,7 @@ fn derive_try_from_bytes_struct(
             // of `is_bit_valid`.
             fn is_bit_valid<___ZerocopyAliasing>(
                 mut candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
-            ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
+            ) -> #core::primitive::bool
             where
                 ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
             {
@@ -824,6 +809,7 @@ fn derive_try_from_bytes_union(ctx: &Ctx, unn: &DataUnion, top_level: Trait) -> 
             let fields = unn.fields();
             let field_names = fields.iter().map(|(_vis, name, _ty)| name);
             let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
+            let core = ctx.core_path();
             quote!(
                 // SAFETY: We use `is_bit_valid` to validate that any field is
                 // bit-valid; we only return `true` if at least one of them is.
@@ -832,13 +818,10 @@ fn derive_try_from_bytes_union(ctx: &Ctx, unn: &DataUnion, top_level: Trait) -> 
                 // definition. See #696 for a more in-depth discussion.
                 fn is_bit_valid<___ZerocopyAliasing>(
                     mut candidate: #zerocopy_crate::Maybe<'_, Self,___ZerocopyAliasing>
-                ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
+                ) -> #core::primitive::bool
                 where
                     ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
                 {
-                    use #zerocopy_crate::util::macro_util::core_reexport;
-                    use #zerocopy_crate::pointer::PtrInner;
-
                     false #(|| {
                         // SAFETY:
                         // - Since `Self: Immutable` is enforced by
@@ -888,7 +871,7 @@ fn derive_try_from_bytes_enum(
         (Some(is_bit_valid), _) => is_bit_valid,
         // SAFETY: It would be sound for the enum to implement `FromBytes`, as
         // required by `gen_trivial_is_bit_valid_unchecked`.
-        (None, true) => unsafe { gen_trivial_is_bit_valid_unchecked(&ctx.zerocopy_crate) },
+        (None, true) => unsafe { gen_trivial_is_bit_valid_unchecked(ctx) },
         (None, false) => r#enum::derive_is_bit_valid(ctx, enm, &repr)?,
     };
 
@@ -929,11 +912,12 @@ fn try_gen_trivial_is_bit_valid(ctx: &Ctx, top_level: Trait) -> Option<proc_macr
     // bulletproof.
     if matches!(top_level, Trait::FromBytes) && ctx.ast.generics.params.is_empty() {
         let zerocopy_crate = &ctx.zerocopy_crate;
+        let core = ctx.core_path();
         Some(quote!(
             // SAFETY: See inline.
             fn is_bit_valid<___ZerocopyAliasing>(
                 _candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
-            ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
+            ) -> #core::primitive::bool
             where
                 ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
             {
@@ -941,7 +925,7 @@ fn try_gen_trivial_is_bit_valid(ctx: &Ctx, top_level: Trait) -> Option<proc_macr
                     fn assert_is_from_bytes<T>()
                     where
                         T: #zerocopy_crate::FromBytes,
-                        T: ?#zerocopy_crate::util::macro_util::core_reexport::marker::Sized,
+                        T: ?#core::marker::Sized,
                     {
                     }
 
@@ -970,13 +954,15 @@ fn try_gen_trivial_is_bit_valid(ctx: &Ctx, top_level: Trait) -> Option<proc_macr
 ///
 /// The caller must ensure that all initialized bit patterns are valid for
 /// `Self`.
-unsafe fn gen_trivial_is_bit_valid_unchecked(zerocopy_crate: &Path) -> proc_macro2::TokenStream {
+unsafe fn gen_trivial_is_bit_valid_unchecked(ctx: &Ctx) -> proc_macro2::TokenStream {
+    let zerocopy_crate = &ctx.zerocopy_crate;
+    let core = ctx.core_path();
     quote!(
         // SAFETY: The caller of `gen_trivial_is_bit_valid_unchecked` has
         // promised that all initialized bit patterns are valid for `Self`.
         fn is_bit_valid<___ZerocopyAliasing>(
             _candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
-        ) -> #zerocopy_crate::util::macro_util::core_reexport::primitive::bool
+        ) -> #core::primitive::bool
         where
             ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
         {
@@ -1242,13 +1228,13 @@ fn derive_into_bytes_union(ctx: &Ctx, unn: &DataUnion) -> Result<TokenStream, Er
     let cfg_compile_error = if cfg!(zerocopy_derive_union_into_bytes) {
         quote!()
     } else {
-        let zerocopy_crate = &ctx.zerocopy_crate;
+        let core = ctx.core_path();
         let error_message = "requires --cfg zerocopy_derive_union_into_bytes;
 please let us know you use this feature: https://github.com/google/zerocopy/discussions/1802";
         quote!(
             const _: () = {
                 #[cfg(not(zerocopy_derive_union_into_bytes))]
-                #zerocopy_crate::util::macro_util::core_reexport::compile_error!(#error_message);
+                #core::compile_error!(#error_message);
             };
         )
     };
@@ -1445,11 +1431,11 @@ impl ToTokens for Trait {
 }
 
 impl Trait {
-    fn crate_path(&self, zerocopy_crate: &Path) -> Path {
+    fn crate_path(&self, ctx: &Ctx) -> Path {
+        let zerocopy_crate = &ctx.zerocopy_crate;
+        let core = ctx.core_path();
         match self {
-            Self::Sized => {
-                parse_quote!(#zerocopy_crate::util::macro_util::core_reexport::marker::#self)
-            }
+            Self::Sized => parse_quote!(#core::marker::#self),
             _ => parse_quote!(#zerocopy_crate::#self),
         }
     }
@@ -1606,30 +1592,26 @@ impl<'a> ImplBlockBuilder<'a> {
         //       = note: required by `zerocopy::Unaligned`
 
         let type_ident = &self.ctx.ast.ident;
-        let trait_path = self.trt.crate_path(&self.ctx.zerocopy_crate);
+        let trait_path = self.trt.crate_path(self.ctx);
         let fields = self.data.fields();
         let variants = self.data.variants();
         let tag = self.data.tag();
         let zerocopy_crate = &self.ctx.zerocopy_crate;
 
-        fn bound_tt(
-            ty: &Type,
-            traits: impl Iterator<Item = Trait>,
-            zerocopy_crate: &Path,
-        ) -> WherePredicate {
-            let traits = traits.map(|t| t.crate_path(zerocopy_crate));
+        fn bound_tt(ty: &Type, traits: impl Iterator<Item = Trait>, ctx: &Ctx) -> WherePredicate {
+            let traits = traits.map(|t| t.crate_path(ctx));
             parse_quote!(#ty: #(#traits)+*)
         }
         let field_type_bounds: Vec<_> = match (self.field_type_trait_bounds, &fields[..]) {
             (FieldBounds::All(traits), _) => fields
                 .iter()
                 .map(|(_vis, _name, ty)| {
-                    bound_tt(ty, normalize_bounds(&self.trt, traits), zerocopy_crate)
+                    bound_tt(ty, normalize_bounds(&self.trt, traits), self.ctx)
                 })
                 .collect(),
             (FieldBounds::None, _) | (FieldBounds::Trailing(..), []) => vec![],
             (FieldBounds::Trailing(traits), [.., last]) => {
-                vec![bound_tt(last.2, normalize_bounds(&self.trt, traits), zerocopy_crate)]
+                vec![bound_tt(last.2, normalize_bounds(&self.trt, traits), self.ctx)]
             }
             (FieldBounds::Explicit(bounds), _) => bounds,
         };
@@ -1661,7 +1643,7 @@ impl<'a> ImplBlockBuilder<'a> {
         let self_bounds: Option<WherePredicate> = match self.self_type_trait_bounds {
             SelfBounds::None => None,
             SelfBounds::All(traits) => {
-                Some(bound_tt(&parse_quote!(Self), traits.iter().cloned(), zerocopy_crate))
+                Some(bound_tt(&parse_quote!(Self), traits.iter().cloned(), self.ctx))
             }
         };
 

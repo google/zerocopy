@@ -7,7 +7,7 @@
 // those terms.
 
 use proc_macro2::{Span, TokenStream};
-use quote::ToTokens;
+use quote::{quote, ToTokens};
 use syn::{
     parse_quote, Data, DataEnum, DataStruct, DataUnion, DeriveInput, Error, Expr, ExprLit, Field,
     Ident, Index, Lit, Meta, Path, Type, Variant, Visibility,
@@ -60,6 +60,11 @@ impl Ctx {
 
     pub(crate) fn with_input(&self, input: &DeriveInput) -> Self {
         Self { ast: input.clone(), zerocopy_crate: self.zerocopy_crate.clone() }
+    }
+
+    pub(crate) fn core_path(&self) -> TokenStream {
+        let zerocopy_crate = &self.zerocopy_crate;
+        quote!(#zerocopy_crate::util::macro_util::core_reexport)
     }
 }
 
