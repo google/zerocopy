@@ -2777,7 +2777,7 @@ pub unsafe trait TryFromBytes {
         };
         // SAFETY: `candidate` was copied from from `source: &[u8]`, so all of
         // its bytes are initialized.
-        unsafe { try_read_from(source, candidate) }
+        unsafe { try_read_from(source, candidate) }.map_err(TryReadError::Validity)
     }
 
     /// Attempts to read a `Self` from the prefix of the given `source`.
@@ -2838,7 +2838,10 @@ pub unsafe trait TryFromBytes {
         };
         // SAFETY: `candidate` was copied from from `source: &[u8]`, so all of
         // its bytes are initialized.
-        unsafe { try_read_from(source, candidate).map(|slf| (slf, suffix)) }
+        match unsafe { try_read_from(source, candidate) } {
+            Ok(slf) => Ok((slf, suffix)),
+            Err(err) => Err(TryReadError::Validity(err)),
+        }
     }
 
     /// Attempts to read a `Self` from the suffix of the given `source`.
@@ -2900,7 +2903,77 @@ pub unsafe trait TryFromBytes {
         };
         // SAFETY: `candidate` was copied from from `source: &[u8]`, so all of
         // its bytes are initialized.
-        unsafe { try_read_from(source, candidate).map(|slf| (prefix, slf)) }
+        match unsafe { try_read_from(source, candidate) } {
+            Ok(slf) => Ok((prefix, slf)),
+            Err(err) => Err(TryReadError::Validity(err)),
+        }
+    }
+
+    /// Attempts to read a copy of `self` from an `io::Read`.
+    ///
+    /// This is useful for interfacing with operating system byte sinks (files,
+    /// sockets, etc.).
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use zerocopy::{byteorder::big_endian::*, TryFromBytes, Unalign};
+    /// use std::fs::File;
+    /// # use zerocopy_derive::*;
+    ///
+    /// #[derive(TryFromBytes)]
+    /// #[repr(C)]
+    /// struct BitmapFileHeader {
+    ///     signature: Unalign<Signature>,
+    ///     size: U32,
+    ///     reserved: U64,
+    ///     offset: U64,
+    /// }
+    ///
+    /// #[derive(TryFromBytes)]
+    /// #[repr(u16)]
+    /// enum Signature {
+    ///     BM = u16::from_ne_bytes(*b"BM")
+    /// }
+    ///
+    /// let mut file = File::open("image.bin").unwrap();
+    /// let header = BitmapFileHeader::try_read_from_io(&mut file)
+    ///     .expect("read failed")
+    ///     .expect("invalid header");
+    /// ```
+    // TODO: Write tests for this method
+    #[cfg(feature = "std")]
+    #[inline(always)]
+    fn try_read_from_io<R>(mut src: R) -> io::Result<Result<Self, ValidityError<&'static (), Self>>>
+    where
+        Self: Sized,
+        R: io::Read,
+    {
+        // NOTE(#2319, #2320): We do `buf.zero()` separately rather than
+        // constructing `let buf = CoreMaybeUninit::zeroed()` because, if `Self`
+        // contains padding bytes, then a typed copy of `CoreMaybeUninit<Self>`
+        // will not necessarily preserve zeros written to those padding byte
+        // locations, and so `buf` could contain uninitialized bytes.
+        let mut buf = CoreMaybeUninit::<Self>::uninit();
+        buf.zero();
+
+        let ptr = Ptr::from_mut(&mut buf);
+        // SAFETY: After `buf.zero()`, `buf` consists entirely of initialized,
+        // zeroed bytes. Since `MaybeUninit` has no validity requirements, `ptr`
+        // cannot be used to write values which will violate `buf`'s bit
+        // validity. Since `ptr` has `Exclusive` aliasing, nothing other than
+        // `ptr` may be used to mutate `ptr`'s referent, and so its bit validity
+        // cannot be violated even though `buf` may have more permissive bit
+        // validity than `ptr`.
+        let ptr = unsafe { ptr.assume_validity::<invariant::Initialized>() };
+        let ptr = ptr.as_bytes::<BecauseExclusive>();
+        src.read_exact(ptr.as_mut())?;
+
+        // SAFETY: `buf` entirely consists of initialized bytes.
+        Ok(match unsafe { try_read_from((), buf) } {
+            Ok(slf) => Ok(slf),
+            Err(err) => Err(err.map_src(|_| &())),
+        })
     }
 }
 
@@ -2966,7 +3039,7 @@ fn swap<T, U>((t, u): (T, U)) -> (U, T) {
 unsafe fn try_read_from<S, T: TryFromBytes>(
     source: S,
     mut candidate: CoreMaybeUninit<T>,
-) -> Result<T, TryReadError<S, T>> {
+) -> Result<T, ValidityError<S, T>> {
     // We use `from_mut` despite not mutating via `c_ptr` so that we don't need
     // to add a `T: Immutable` bound.
     let c_ptr = Ptr::from_mut(&mut candidate);
@@ -2992,7 +3065,7 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
     // `Self: !Immutable`. Since `Self: Immutable`, this panic condition will
     // not happen.
     if !Wrapping::<T>::is_bit_valid(c_ptr.forget_aligned()) {
-        return Err(ValidityError::new(source).into());
+        return Err(ValidityError::new(source));
     }
 
     fn _assert_same_size_and_validity<T>()
