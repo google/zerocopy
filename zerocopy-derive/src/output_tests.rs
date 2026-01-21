@@ -167,24 +167,22 @@ fn test_known_layout() {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type PointerMetadata = <U as ::zerocopy::KnownLayout>::PointerMetadata;
                     type MaybeUninit = __ZerocopyKnownLayoutMaybeUninit<T, U>;
-                    const LAYOUT: ::zerocopy::DstLayout = {
-                        use ::zerocopy::util::macro_util::core_reexport::num::NonZeroUsize;
-                        use ::zerocopy::{DstLayout, KnownLayout};
-                        DstLayout::for_repr_c_struct(
-                            ::zerocopy::util::macro_util::core_reexport::num::NonZeroUsize::new(
-                                2u32 as usize,
-                            ),
-                            ::zerocopy::util::macro_util::core_reexport::option::Option::None,
-                            &[DstLayout::for_type::<T>(), <U as KnownLayout>::LAYOUT],
-                        )
-                    };
+                    const LAYOUT: ::zerocopy::DstLayout = ::zerocopy::DstLayout::for_repr_c_struct(
+                        ::zerocopy::util::macro_util::core_reexport::num::NonZeroUsize::new(
+                            2u32 as usize,
+                        ),
+                        ::zerocopy::util::macro_util::core_reexport::option::Option::None,
+                        &[
+                            ::zerocopy::DstLayout::for_type::<T>(),
+                            <U as ::zerocopy::KnownLayout>::LAYOUT,
+                        ],
+                    );
                     #[inline(always)]
                     fn raw_from_ptr_len(
                         bytes: ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<u8>,
                         meta: Self::PointerMetadata,
                     ) -> ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<Self> {
-                        use ::zerocopy::KnownLayout;
-                        let trailing = <U as KnownLayout>::raw_from_ptr_len(bytes, meta);
+                        let trailing = <U as ::zerocopy::KnownLayout>::raw_from_ptr_len(bytes, meta);
                         let slf = trailing.as_ptr() as *mut Self;
                         unsafe {
                             ::zerocopy::util::macro_util::core_reexport::ptr::NonNull::new_unchecked(
@@ -251,13 +249,12 @@ fn test_known_layout() {
                         bytes: ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<u8>,
                         meta: Self::PointerMetadata,
                     ) -> ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<Self> {
-                        use ::zerocopy::KnownLayout;
                         let trailing = <<<Foo<
                             T,
                             U,
                         > as ::zerocopy::util::macro_util::Field<
                             __Zerocopy_Field_1,
-                        >>::Type as ::zerocopy::KnownLayout>::MaybeUninit as KnownLayout>::raw_from_ptr_len(
+                        >>::Type as ::zerocopy::KnownLayout>::MaybeUninit as ::zerocopy::KnownLayout>::raw_from_ptr_len(
                             bytes,
                             meta,
                         );
@@ -855,7 +852,6 @@ fn test_try_from_bytes_enum() {
                     where
                         ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                     {
-                        use ::zerocopy::util::macro_util::core_reexport;
                         #[repr(u8)]
                         #[allow(dead_code)]
                         enum ___ZerocopyTag {
@@ -867,7 +863,7 @@ fn test_try_from_bytes_enum() {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                         }
                         type ___ZerocopyTagPrimitive = ::zerocopy::util::macro_util::SizeToTag<
-                            { core_reexport::mem::size_of::<___ZerocopyTag>() },
+                            { ::zerocopy::util::macro_util::core_reexport::mem::size_of::<___ZerocopyTag>() },
                         >;
                         const ___ZEROCOPY_TAG_UnitLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::UnitLike
                             as ___ZerocopyTagPrimitive;
@@ -903,13 +899,13 @@ fn test_try_from_bytes_enum() {
                             X,
                             Y: Deref,
                         >(
-                            core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
+                            ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                             u8,
                             X,
                             X::Target,
                             Y::Target,
                             [(X, Y); N],
-                            core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
+                            ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
                         )
                         where
                             X: Deref<Target = &'a [(X, Y); N]>;
@@ -934,7 +930,7 @@ fn test_try_from_bytes_enum() {
                             for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
                                 X: Deref<Target = &'a [(X, Y); N]>,
-                                core_reexport::mem::MaybeUninit<
+                                ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                     ___ZerocopyInnerTag,
                                 >: ::zerocopy::TryFromBytes,
                                 u8: ::zerocopy::TryFromBytes,
@@ -942,7 +938,7 @@ fn test_try_from_bytes_enum() {
                                 X::Target: ::zerocopy::TryFromBytes,
                                 Y::Target: ::zerocopy::TryFromBytes,
                                 [(X, Y); N]: ::zerocopy::TryFromBytes,
-                                core_reexport::marker::PhantomData<
+                                ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                     ComplexWithGenerics<'a, N, X, Y>,
                                 >: ::zerocopy::TryFromBytes,
                             {
@@ -958,7 +954,7 @@ fn test_try_from_bytes_enum() {
                                             let field_candidate = candidate
                                                 .reborrow()
                                                 .project::<_, { ::zerocopy::ident_id!(0) }>();
-                                            <core_reexport::mem::MaybeUninit<
+                                            <::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                                 ___ZerocopyInnerTag,
                                             > as ::zerocopy::TryFromBytes>::is_bit_valid(
                                                 field_candidate,
@@ -1011,7 +1007,7 @@ fn test_try_from_bytes_enum() {
                                             let field_candidate = candidate
                                                 .reborrow()
                                                 .project::<_, { ::zerocopy::ident_id!(6) }>();
-                                            <core_reexport::marker::PhantomData<
+                                            <::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                                 ComplexWithGenerics<'a, N, X, Y>,
                                             > as ::zerocopy::TryFromBytes>::is_bit_valid(
                                                 field_candidate,
@@ -1064,7 +1060,7 @@ fn test_try_from_bytes_enum() {
                                         X: Deref<Target = &'a [(X, Y); N]>,
                                     {
                                         fn only_derive_is_allowed_to_implement_this_trait() {}
-                                        type Type = core_reexport::mem::MaybeUninit<
+                                        type Type = ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                             ___ZerocopyInnerTag,
                                         >;
                                         #[inline(always)]
@@ -1306,7 +1302,7 @@ fn test_try_from_bytes_enum() {
                                         X: Deref<Target = &'a [(X, Y); N]>,
                                     {
                                         fn only_derive_is_allowed_to_implement_this_trait() {}
-                                        type Type = core_reexport::marker::PhantomData<
+                                        type Type = ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                             ComplexWithGenerics<'a, N, X, Y>,
                                         >;
                                         #[inline(always)]
@@ -1331,11 +1327,11 @@ fn test_try_from_bytes_enum() {
                             X,
                             Y: Deref,
                         >(
-                            core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
+                            ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                             bool,
                             Y,
                             PhantomData<&'a [(X, Y); N]>,
-                            core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
+                            ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
                         )
                         where
                             X: Deref<Target = &'a [(X, Y); N]>;
@@ -1360,13 +1356,13 @@ fn test_try_from_bytes_enum() {
                             for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
                                 X: Deref<Target = &'a [(X, Y); N]>,
-                                core_reexport::mem::MaybeUninit<
+                                ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                     ___ZerocopyInnerTag,
                                 >: ::zerocopy::TryFromBytes,
                                 bool: ::zerocopy::TryFromBytes,
                                 Y: ::zerocopy::TryFromBytes,
                                 PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
-                                core_reexport::marker::PhantomData<
+                                ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                     ComplexWithGenerics<'a, N, X, Y>,
                                 >: ::zerocopy::TryFromBytes,
                             {
@@ -1382,7 +1378,7 @@ fn test_try_from_bytes_enum() {
                                             let field_candidate = candidate
                                                 .reborrow()
                                                 .project::<_, { ::zerocopy::ident_id!(0) }>();
-                                            <core_reexport::mem::MaybeUninit<
+                                            <::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                                 ___ZerocopyInnerTag,
                                             > as ::zerocopy::TryFromBytes>::is_bit_valid(
                                                 field_candidate,
@@ -1418,7 +1414,7 @@ fn test_try_from_bytes_enum() {
                                             let field_candidate = candidate
                                                 .reborrow()
                                                 .project::<_, { ::zerocopy::ident_id!(4) }>();
-                                            <core_reexport::marker::PhantomData<
+                                            <::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                                 ComplexWithGenerics<'a, N, X, Y>,
                                             > as ::zerocopy::TryFromBytes>::is_bit_valid(
                                                 field_candidate,
@@ -1469,7 +1465,7 @@ fn test_try_from_bytes_enum() {
                                         X: Deref<Target = &'a [(X, Y); N]>,
                                     {
                                         fn only_derive_is_allowed_to_implement_this_trait() {}
-                                        type Type = core_reexport::mem::MaybeUninit<
+                                        type Type = ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                             ___ZerocopyInnerTag,
                                         >;
                                         #[inline(always)]
@@ -1631,7 +1627,7 @@ fn test_try_from_bytes_enum() {
                                         X: Deref<Target = &'a [(X, Y); N]>,
                                     {
                                         fn only_derive_is_allowed_to_implement_this_trait() {}
-                                        type Type = core_reexport::marker::PhantomData<
+                                        type Type = ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                             ComplexWithGenerics<'a, N, X, Y>,
                                         >;
                                         #[inline(always)]
@@ -1651,10 +1647,10 @@ fn test_try_from_bytes_enum() {
                         };
                         #[repr(C)]
                         union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref> {
-                            __field_StructLike: core_reexport::mem::ManuallyDrop<
+                            __field_StructLike: ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                 ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                             >,
-                            __field_TupleLike: core_reexport::mem::ManuallyDrop<
+                            __field_TupleLike: ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                 ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
                             >,
                             __nonempty: (),
@@ -1697,7 +1693,7 @@ fn test_try_from_bytes_enum() {
                                     { ::zerocopy::ident_id!(__field_StructLike) },
                                 > for ___ZerocopyVariants<'a, { N }, X, Y> {
                                     fn only_derive_is_allowed_to_implement_this_trait() {}
-                                    type Type = core_reexport::mem::ManuallyDrop<
+                                    type Type = ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                         ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                                     >;
                                     #[inline(always)]
@@ -1719,7 +1715,7 @@ fn test_try_from_bytes_enum() {
                                     Y: Deref,
                                 > ::zerocopy::pointer::cast::Cast<
                                     ___ZerocopyVariants<'a, N, X, Y>,
-                                    core_reexport::mem::ManuallyDrop<
+                                    ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                         ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                                     >,
                                 >
@@ -1752,7 +1748,7 @@ fn test_try_from_bytes_enum() {
                                     { ::zerocopy::ident_id!(__field_TupleLike) },
                                 > for ___ZerocopyVariants<'a, { N }, X, Y> {
                                     fn only_derive_is_allowed_to_implement_this_trait() {}
-                                    type Type = core_reexport::mem::ManuallyDrop<
+                                    type Type = ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                         ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
                                     >;
                                     #[inline(always)]
@@ -1774,7 +1770,7 @@ fn test_try_from_bytes_enum() {
                                     Y: Deref,
                                 > ::zerocopy::pointer::cast::Cast<
                                     ___ZerocopyVariants<'a, N, X, Y>,
-                                    core_reexport::mem::ManuallyDrop<
+                                    ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                         ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
                                     >,
                                 >
@@ -2518,7 +2514,7 @@ fn test_try_from_bytes_enum() {
                                 let variant_md = unsafe {
                                     variants
                                         .cast_unchecked::<
-                                            core_reexport::mem::ManuallyDrop<
+                                            ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                                 ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                                             >,
                                             ::zerocopy::pointer::cast::Projection<
@@ -2545,7 +2541,7 @@ fn test_try_from_bytes_enum() {
                                 let variant_md = unsafe {
                                     variants
                                         .cast_unchecked::<
-                                            core_reexport::mem::ManuallyDrop<
+                                            ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                                 ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
                                             >,
                                             ::zerocopy::pointer::cast::Projection<
@@ -2620,7 +2616,6 @@ fn test_try_from_bytes_enum() {
                     where
                         ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                     {
-                        use ::zerocopy::util::macro_util::core_reexport;
                         #[repr(u32)]
                         #[allow(dead_code)]
                         enum ___ZerocopyTag {
@@ -2632,7 +2627,7 @@ fn test_try_from_bytes_enum() {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                         }
                         type ___ZerocopyTagPrimitive = ::zerocopy::util::macro_util::SizeToTag<
-                            { core_reexport::mem::size_of::<___ZerocopyTag>() },
+                            { ::zerocopy::util::macro_util::core_reexport::mem::size_of::<___ZerocopyTag>() },
                         >;
                         const ___ZEROCOPY_TAG_UnitLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::UnitLike
                             as ___ZerocopyTagPrimitive;
@@ -2668,13 +2663,13 @@ fn test_try_from_bytes_enum() {
                             X,
                             Y: Deref,
                         >(
-                            core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
+                            ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                             u8,
                             X,
                             X::Target,
                             Y::Target,
                             [(X, Y); N],
-                            core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
+                            ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
                         )
                         where
                             X: Deref<Target = &'a [(X, Y); N]>;
@@ -2699,7 +2694,7 @@ fn test_try_from_bytes_enum() {
                             for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
                                 X: Deref<Target = &'a [(X, Y); N]>,
-                                core_reexport::mem::MaybeUninit<
+                                ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                     ___ZerocopyInnerTag,
                                 >: ::zerocopy::TryFromBytes,
                                 u8: ::zerocopy::TryFromBytes,
@@ -2707,7 +2702,7 @@ fn test_try_from_bytes_enum() {
                                 X::Target: ::zerocopy::TryFromBytes,
                                 Y::Target: ::zerocopy::TryFromBytes,
                                 [(X, Y); N]: ::zerocopy::TryFromBytes,
-                                core_reexport::marker::PhantomData<
+                                ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                     ComplexWithGenerics<'a, N, X, Y>,
                                 >: ::zerocopy::TryFromBytes,
                             {
@@ -2723,7 +2718,7 @@ fn test_try_from_bytes_enum() {
                                             let field_candidate = candidate
                                                 .reborrow()
                                                 .project::<_, { ::zerocopy::ident_id!(0) }>();
-                                            <core_reexport::mem::MaybeUninit<
+                                            <::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                                 ___ZerocopyInnerTag,
                                             > as ::zerocopy::TryFromBytes>::is_bit_valid(
                                                 field_candidate,
@@ -2776,7 +2771,7 @@ fn test_try_from_bytes_enum() {
                                             let field_candidate = candidate
                                                 .reborrow()
                                                 .project::<_, { ::zerocopy::ident_id!(6) }>();
-                                            <core_reexport::marker::PhantomData<
+                                            <::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                                 ComplexWithGenerics<'a, N, X, Y>,
                                             > as ::zerocopy::TryFromBytes>::is_bit_valid(
                                                 field_candidate,
@@ -2829,7 +2824,7 @@ fn test_try_from_bytes_enum() {
                                         X: Deref<Target = &'a [(X, Y); N]>,
                                     {
                                         fn only_derive_is_allowed_to_implement_this_trait() {}
-                                        type Type = core_reexport::mem::MaybeUninit<
+                                        type Type = ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                             ___ZerocopyInnerTag,
                                         >;
                                         #[inline(always)]
@@ -3071,7 +3066,7 @@ fn test_try_from_bytes_enum() {
                                         X: Deref<Target = &'a [(X, Y); N]>,
                                     {
                                         fn only_derive_is_allowed_to_implement_this_trait() {}
-                                        type Type = core_reexport::marker::PhantomData<
+                                        type Type = ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                             ComplexWithGenerics<'a, N, X, Y>,
                                         >;
                                         #[inline(always)]
@@ -3096,11 +3091,11 @@ fn test_try_from_bytes_enum() {
                             X,
                             Y: Deref,
                         >(
-                            core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
+                            ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                             bool,
                             Y,
                             PhantomData<&'a [(X, Y); N]>,
-                            core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
+                            ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
                         )
                         where
                             X: Deref<Target = &'a [(X, Y); N]>;
@@ -3125,13 +3120,13 @@ fn test_try_from_bytes_enum() {
                             for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
                                 X: Deref<Target = &'a [(X, Y); N]>,
-                                core_reexport::mem::MaybeUninit<
+                                ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                     ___ZerocopyInnerTag,
                                 >: ::zerocopy::TryFromBytes,
                                 bool: ::zerocopy::TryFromBytes,
                                 Y: ::zerocopy::TryFromBytes,
                                 PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
-                                core_reexport::marker::PhantomData<
+                                ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                     ComplexWithGenerics<'a, N, X, Y>,
                                 >: ::zerocopy::TryFromBytes,
                             {
@@ -3147,7 +3142,7 @@ fn test_try_from_bytes_enum() {
                                             let field_candidate = candidate
                                                 .reborrow()
                                                 .project::<_, { ::zerocopy::ident_id!(0) }>();
-                                            <core_reexport::mem::MaybeUninit<
+                                            <::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                                 ___ZerocopyInnerTag,
                                             > as ::zerocopy::TryFromBytes>::is_bit_valid(
                                                 field_candidate,
@@ -3183,7 +3178,7 @@ fn test_try_from_bytes_enum() {
                                             let field_candidate = candidate
                                                 .reborrow()
                                                 .project::<_, { ::zerocopy::ident_id!(4) }>();
-                                            <core_reexport::marker::PhantomData<
+                                            <::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                                 ComplexWithGenerics<'a, N, X, Y>,
                                             > as ::zerocopy::TryFromBytes>::is_bit_valid(
                                                 field_candidate,
@@ -3234,7 +3229,7 @@ fn test_try_from_bytes_enum() {
                                         X: Deref<Target = &'a [(X, Y); N]>,
                                     {
                                         fn only_derive_is_allowed_to_implement_this_trait() {}
-                                        type Type = core_reexport::mem::MaybeUninit<
+                                        type Type = ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                             ___ZerocopyInnerTag,
                                         >;
                                         #[inline(always)]
@@ -3396,7 +3391,7 @@ fn test_try_from_bytes_enum() {
                                         X: Deref<Target = &'a [(X, Y); N]>,
                                     {
                                         fn only_derive_is_allowed_to_implement_this_trait() {}
-                                        type Type = core_reexport::marker::PhantomData<
+                                        type Type = ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                             ComplexWithGenerics<'a, N, X, Y>,
                                         >;
                                         #[inline(always)]
@@ -3416,10 +3411,10 @@ fn test_try_from_bytes_enum() {
                         };
                         #[repr(C)]
                         union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref> {
-                            __field_StructLike: core_reexport::mem::ManuallyDrop<
+                            __field_StructLike: ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                 ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                             >,
-                            __field_TupleLike: core_reexport::mem::ManuallyDrop<
+                            __field_TupleLike: ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                 ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
                             >,
                             __nonempty: (),
@@ -3462,7 +3457,7 @@ fn test_try_from_bytes_enum() {
                                     { ::zerocopy::ident_id!(__field_StructLike) },
                                 > for ___ZerocopyVariants<'a, { N }, X, Y> {
                                     fn only_derive_is_allowed_to_implement_this_trait() {}
-                                    type Type = core_reexport::mem::ManuallyDrop<
+                                    type Type = ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                         ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                                     >;
                                     #[inline(always)]
@@ -3484,7 +3479,7 @@ fn test_try_from_bytes_enum() {
                                     Y: Deref,
                                 > ::zerocopy::pointer::cast::Cast<
                                     ___ZerocopyVariants<'a, N, X, Y>,
-                                    core_reexport::mem::ManuallyDrop<
+                                    ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                         ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                                     >,
                                 >
@@ -3517,7 +3512,7 @@ fn test_try_from_bytes_enum() {
                                     { ::zerocopy::ident_id!(__field_TupleLike) },
                                 > for ___ZerocopyVariants<'a, { N }, X, Y> {
                                     fn only_derive_is_allowed_to_implement_this_trait() {}
-                                    type Type = core_reexport::mem::ManuallyDrop<
+                                    type Type = ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                         ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
                                     >;
                                     #[inline(always)]
@@ -3539,7 +3534,7 @@ fn test_try_from_bytes_enum() {
                                     Y: Deref,
                                 > ::zerocopy::pointer::cast::Cast<
                                     ___ZerocopyVariants<'a, N, X, Y>,
-                                    core_reexport::mem::ManuallyDrop<
+                                    ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                         ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
                                     >,
                                 >
@@ -4283,7 +4278,7 @@ fn test_try_from_bytes_enum() {
                                 let variant_md = unsafe {
                                     variants
                                         .cast_unchecked::<
-                                            core_reexport::mem::ManuallyDrop<
+                                            ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                                 ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                                             >,
                                             ::zerocopy::pointer::cast::Projection<
@@ -4310,7 +4305,7 @@ fn test_try_from_bytes_enum() {
                                 let variant_md = unsafe {
                                     variants
                                         .cast_unchecked::<
-                                            core_reexport::mem::ManuallyDrop<
+                                            ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                                 ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
                                             >,
                                             ::zerocopy::pointer::cast::Projection<
@@ -4385,7 +4380,6 @@ fn test_try_from_bytes_enum() {
                     where
                         ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
                     {
-                        use ::zerocopy::util::macro_util::core_reexport;
                         #[repr(C)]
                         #[allow(dead_code)]
                         enum ___ZerocopyTag {
@@ -4397,7 +4391,7 @@ fn test_try_from_bytes_enum() {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                         }
                         type ___ZerocopyTagPrimitive = ::zerocopy::util::macro_util::SizeToTag<
-                            { core_reexport::mem::size_of::<___ZerocopyTag>() },
+                            { ::zerocopy::util::macro_util::core_reexport::mem::size_of::<___ZerocopyTag>() },
                         >;
                         const ___ZEROCOPY_TAG_UnitLike: ___ZerocopyTagPrimitive = ___ZerocopyTag::UnitLike
                             as ___ZerocopyTagPrimitive;
@@ -4433,13 +4427,13 @@ fn test_try_from_bytes_enum() {
                             X,
                             Y: Deref,
                         >(
-                            core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
+                            ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                             u8,
                             X,
                             X::Target,
                             Y::Target,
                             [(X, Y); N],
-                            core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
+                            ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
                         )
                         where
                             X: Deref<Target = &'a [(X, Y); N]>;
@@ -4464,7 +4458,7 @@ fn test_try_from_bytes_enum() {
                             for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
                             where
                                 X: Deref<Target = &'a [(X, Y); N]>,
-                                core_reexport::mem::MaybeUninit<
+                                ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                     ___ZerocopyInnerTag,
                                 >: ::zerocopy::TryFromBytes,
                                 u8: ::zerocopy::TryFromBytes,
@@ -4472,7 +4466,7 @@ fn test_try_from_bytes_enum() {
                                 X::Target: ::zerocopy::TryFromBytes,
                                 Y::Target: ::zerocopy::TryFromBytes,
                                 [(X, Y); N]: ::zerocopy::TryFromBytes,
-                                core_reexport::marker::PhantomData<
+                                ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                     ComplexWithGenerics<'a, N, X, Y>,
                                 >: ::zerocopy::TryFromBytes,
                             {
@@ -4488,7 +4482,7 @@ fn test_try_from_bytes_enum() {
                                             let field_candidate = candidate
                                                 .reborrow()
                                                 .project::<_, { ::zerocopy::ident_id!(0) }>();
-                                            <core_reexport::mem::MaybeUninit<
+                                            <::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                                 ___ZerocopyInnerTag,
                                             > as ::zerocopy::TryFromBytes>::is_bit_valid(
                                                 field_candidate,
@@ -4541,7 +4535,7 @@ fn test_try_from_bytes_enum() {
                                             let field_candidate = candidate
                                                 .reborrow()
                                                 .project::<_, { ::zerocopy::ident_id!(6) }>();
-                                            <core_reexport::marker::PhantomData<
+                                            <::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                                 ComplexWithGenerics<'a, N, X, Y>,
                                             > as ::zerocopy::TryFromBytes>::is_bit_valid(
                                                 field_candidate,
@@ -4594,7 +4588,7 @@ fn test_try_from_bytes_enum() {
                                         X: Deref<Target = &'a [(X, Y); N]>,
                                     {
                                         fn only_derive_is_allowed_to_implement_this_trait() {}
-                                        type Type = core_reexport::mem::MaybeUninit<
+                                        type Type = ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                             ___ZerocopyInnerTag,
                                         >;
                                         #[inline(always)]
@@ -4836,7 +4830,7 @@ fn test_try_from_bytes_enum() {
                                         X: Deref<Target = &'a [(X, Y); N]>,
                                     {
                                         fn only_derive_is_allowed_to_implement_this_trait() {}
-                                        type Type = core_reexport::marker::PhantomData<
+                                        type Type = ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                             ComplexWithGenerics<'a, N, X, Y>,
                                         >;
                                         #[inline(always)]
@@ -4861,11 +4855,11 @@ fn test_try_from_bytes_enum() {
                             X,
                             Y: Deref,
                         >(
-                            core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
+                            ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<___ZerocopyInnerTag>,
                             bool,
                             Y,
                             PhantomData<&'a [(X, Y); N]>,
-                            core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
+                            ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<ComplexWithGenerics<'a, N, X, Y>>,
                         )
                         where
                             X: Deref<Target = &'a [(X, Y); N]>;
@@ -4890,13 +4884,13 @@ fn test_try_from_bytes_enum() {
                             for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
                             where
                                 X: Deref<Target = &'a [(X, Y); N]>,
-                                core_reexport::mem::MaybeUninit<
+                                ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                     ___ZerocopyInnerTag,
                                 >: ::zerocopy::TryFromBytes,
                                 bool: ::zerocopy::TryFromBytes,
                                 Y: ::zerocopy::TryFromBytes,
                                 PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
-                                core_reexport::marker::PhantomData<
+                                ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                     ComplexWithGenerics<'a, N, X, Y>,
                                 >: ::zerocopy::TryFromBytes,
                             {
@@ -4912,7 +4906,7 @@ fn test_try_from_bytes_enum() {
                                             let field_candidate = candidate
                                                 .reborrow()
                                                 .project::<_, { ::zerocopy::ident_id!(0) }>();
-                                            <core_reexport::mem::MaybeUninit<
+                                            <::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                                 ___ZerocopyInnerTag,
                                             > as ::zerocopy::TryFromBytes>::is_bit_valid(
                                                 field_candidate,
@@ -4948,7 +4942,7 @@ fn test_try_from_bytes_enum() {
                                             let field_candidate = candidate
                                                 .reborrow()
                                                 .project::<_, { ::zerocopy::ident_id!(4) }>();
-                                            <core_reexport::marker::PhantomData<
+                                            <::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                                 ComplexWithGenerics<'a, N, X, Y>,
                                             > as ::zerocopy::TryFromBytes>::is_bit_valid(
                                                 field_candidate,
@@ -4999,7 +4993,7 @@ fn test_try_from_bytes_enum() {
                                         X: Deref<Target = &'a [(X, Y); N]>,
                                     {
                                         fn only_derive_is_allowed_to_implement_this_trait() {}
-                                        type Type = core_reexport::mem::MaybeUninit<
+                                        type Type = ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                             ___ZerocopyInnerTag,
                                         >;
                                         #[inline(always)]
@@ -5161,7 +5155,7 @@ fn test_try_from_bytes_enum() {
                                         X: Deref<Target = &'a [(X, Y); N]>,
                                     {
                                         fn only_derive_is_allowed_to_implement_this_trait() {}
-                                        type Type = core_reexport::marker::PhantomData<
+                                        type Type = ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                             ComplexWithGenerics<'a, N, X, Y>,
                                         >;
                                         #[inline(always)]
@@ -5181,10 +5175,10 @@ fn test_try_from_bytes_enum() {
                         };
                         #[repr(C)]
                         union ___ZerocopyVariants<'a: 'static, const N: usize, X, Y: Deref> {
-                            __field_StructLike: core_reexport::mem::ManuallyDrop<
+                            __field_StructLike: ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                 ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                             >,
-                            __field_TupleLike: core_reexport::mem::ManuallyDrop<
+                            __field_TupleLike: ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                 ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
                             >,
                             __nonempty: (),
@@ -5227,7 +5221,7 @@ fn test_try_from_bytes_enum() {
                                     { ::zerocopy::ident_id!(__field_StructLike) },
                                 > for ___ZerocopyVariants<'a, { N }, X, Y> {
                                     fn only_derive_is_allowed_to_implement_this_trait() {}
-                                    type Type = core_reexport::mem::ManuallyDrop<
+                                    type Type = ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                         ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                                     >;
                                     #[inline(always)]
@@ -5249,7 +5243,7 @@ fn test_try_from_bytes_enum() {
                                     Y: Deref,
                                 > ::zerocopy::pointer::cast::Cast<
                                     ___ZerocopyVariants<'a, N, X, Y>,
-                                    core_reexport::mem::ManuallyDrop<
+                                    ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                         ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                                     >,
                                 >
@@ -5282,7 +5276,7 @@ fn test_try_from_bytes_enum() {
                                     { ::zerocopy::ident_id!(__field_TupleLike) },
                                 > for ___ZerocopyVariants<'a, { N }, X, Y> {
                                     fn only_derive_is_allowed_to_implement_this_trait() {}
-                                    type Type = core_reexport::mem::ManuallyDrop<
+                                    type Type = ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                         ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
                                     >;
                                     #[inline(always)]
@@ -5304,7 +5298,7 @@ fn test_try_from_bytes_enum() {
                                     Y: Deref,
                                 > ::zerocopy::pointer::cast::Cast<
                                     ___ZerocopyVariants<'a, N, X, Y>,
-                                    core_reexport::mem::ManuallyDrop<
+                                    ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                         ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
                                     >,
                                 >
@@ -6048,7 +6042,7 @@ fn test_try_from_bytes_enum() {
                                 let variant_md = unsafe {
                                     variants
                                         .cast_unchecked::<
-                                            core_reexport::mem::ManuallyDrop<
+                                            ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                                 ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                                             >,
                                             ::zerocopy::pointer::cast::Projection<
@@ -6075,7 +6069,7 @@ fn test_try_from_bytes_enum() {
                                 let variant_md = unsafe {
                                     variants
                                         .cast_unchecked::<
-                                            core_reexport::mem::ManuallyDrop<
+                                            ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                                                 ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
                                             >,
                                             ::zerocopy::pointer::cast::Projection<
@@ -6754,23 +6748,22 @@ fn test_hash() {
                 Self: ::zerocopy::IntoBytes + ::zerocopy::Immutable,
                 Self: Sized,
             {
-                fn hash<H>(&self, state: &mut H)
-                where
-                    H: ::zerocopy::util::macro_util::core_reexport::hash::Hasher,
-                {
+                fn hash<H: ::zerocopy::util::macro_util::core_reexport::hash::Hasher>(
+                    &self,
+                    state: &mut H,
+                ) {
                     ::zerocopy::util::macro_util::core_reexport::hash::Hasher::write(
                         state,
-                        ::zerocopy::IntoBytes::as_bytes(self)
+                        ::zerocopy::IntoBytes::as_bytes(self),
                     )
                 }
-
-                fn hash_slice<H>(data: &[Self], state: &mut H)
-                where
-                    H: ::zerocopy::util::macro_util::core_reexport::hash::Hasher,
-                {
+                fn hash_slice<H: ::zerocopy::util::macro_util::core_reexport::hash::Hasher>(
+                    data: &[Self],
+                    state: &mut H,
+                ) {
                     ::zerocopy::util::macro_util::core_reexport::hash::Hasher::write(
                         state,
-                        ::zerocopy::IntoBytes::as_bytes(data)
+                        ::zerocopy::IntoBytes::as_bytes(data),
                     )
                 }
             }
