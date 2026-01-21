@@ -12,7 +12,6 @@
 const _: () = {
     unsafe impl ::zerocopy::TryFromBytes for Foo {
         fn only_derive_is_allowed_to_implement_this_trait() {}
-
         fn is_bit_valid<___ZerocopyAliasing>(
             _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
         ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
@@ -24,16 +23,13 @@ const _: () = {
                 where
                     T: ::zerocopy::FromBytes,
                     T: ?::zerocopy::util::macro_util::core_reexport::marker::Sized,
-                {
-                }
+                {}
                 assert_is_from_bytes::<Self>();
             }
-
             true
         }
     }
 };
-
 #[allow(
     deprecated,
     private_bounds,
@@ -50,7 +46,6 @@ const _: () = {
         fn only_derive_is_allowed_to_implement_this_trait() {}
     }
 };
-
 #[allow(
     deprecated,
     private_bounds,
