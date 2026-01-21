@@ -6,6 +6,8 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
+use std::path::Path;
+
 use dissimilar::Chunk;
 use proc_macro2::TokenStream;
 
@@ -58,7 +60,9 @@ macro_rules! test {
             let ctx = crate::Ctx::try_from_derive_input(ast).unwrap();
             let res = $name(&ctx, crate::util::Trait::$name);
             let expected_toks = quote::quote!( $($o)* );
-            assert_eq_streams(expected_toks.into(), res.into_ts().into());
+            let expected = pretty_print(expected_toks);
+            let actual = pretty_print(res.into_ts().into());
+            assert_eq_or_diff(&expected, &actual);
         }
     };
 
@@ -72,22 +76,31 @@ macro_rules! test {
             let ast = syn::parse2::<syn::DeriveInput>(ts).unwrap();
             let ctx = crate::Ctx::try_from_derive_input(ast).unwrap();
             let res = $name(&ctx, crate::util::Trait::$name);
-            let expected_str = include_str!($path);
-            let expected_toks: proc_macro2::TokenStream = expected_str.parse().expect("failed to parse expected output");
-            assert_eq_streams(expected_toks.into(), res.into_ts().into());
+            let actual = pretty_print(res.into_ts().into());
+
+            if std::env::var("ZEROCOPY_BLESS").is_ok() {
+                let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+                    .join("src/output_tests")
+                    .join($path);
+                std::fs::write(&path, &actual).expect("failed to bless output");
+            } else {
+                let expected_str = include_str!($path);
+                let expected_ts: proc_macro2::TokenStream = expected_str.parse().expect("failed to parse expected output");
+                let expected = pretty_print(expected_ts);
+                assert_eq_or_diff(&expected, &actual);
+            }
         }
     };
 }
 
-#[track_caller]
-fn assert_eq_streams(expect: TokenStream, res: TokenStream) {
-    let pretty =
-        |ts: TokenStream| prettyplease::unparse(&syn::parse_file(&ts.to_string()).unwrap());
+fn pretty_print(ts: TokenStream) -> String {
+    prettyplease::unparse(&syn::parse_file(&ts.to_string()).unwrap())
+}
 
-    let expect = pretty(expect.clone());
-    let res = pretty(res.clone());
-    if expect != res {
-        let diff = dissimilar::diff(&expect, &res)
+#[track_caller]
+fn assert_eq_or_diff(expected: &str, actual: &str) {
+    if expected != actual {
+        let diff = dissimilar::diff(expected, actual)
             .into_iter()
             .flat_map(|chunk| {
                 let (prefix, chunk) = match chunk {
@@ -111,7 +124,7 @@ diff (expected vs got):
 ```
 {}
 ```\n",
-            res, diff
+            actual, diff
         );
     }
 }
