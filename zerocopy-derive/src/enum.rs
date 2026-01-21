@@ -335,7 +335,7 @@ pub(crate) fn derive_is_bit_valid(
                     let variant = variant_md.cast::<
                         #zerocopy_crate::ReadOnly<#variant_struct_ident #ty_generics>,
                         #zerocopy_crate::pointer::cast::CastSized,
-                        (#zerocopy_crate::pointer::BecauseRead, _)
+                        _
                     >();
                     <
                         #variant_struct_ident #ty_generics as #trait_path
@@ -359,6 +359,9 @@ pub(crate) fn derive_is_bit_valid(
         // SAFETY: `___ZerocopyRawEnum` is designed to have the same layout,
         // validity, and invariants as `Self`.
         unsafe impl #impl_generics #zerocopy_crate::pointer::InvariantsEq<___ZerocopyRawEnum #ty_generics> for #self_ident #ty_generics #where_clause {}
+        // SAFETY: `___ZerocopyRawEnum` is designed to have the same layout,
+        // validity, and invariants as `Self`.
+        unsafe impl #impl_generics #zerocopy_crate::pointer::InvariantsEq<#self_ident #ty_generics> for ___ZerocopyRawEnum #ty_generics #where_clause {}
     };
 
     let raw_enum_projections =
@@ -417,7 +420,7 @@ pub(crate) fn derive_is_bit_valid(
             let mut raw_enum = candidate.cast::<
                 #zerocopy_crate::ReadOnly<___ZerocopyRawEnum #ty_generics>,
                 #zerocopy_crate::pointer::cast::CastSized,
-                (#zerocopy_crate::pointer::BecauseRead, _)
+                _
             >();
 
             let tag = {
@@ -429,7 +432,7 @@ pub(crate) fn derive_is_bit_valid(
                     #zerocopy_crate::pointer::cast::CastSized,
                     _
                 >();
-                tag_ptr.recall_validity::<_, (_, (_, _))>().read_unaligned::<#zerocopy_crate::BecauseImmutable>()
+                tag_ptr.recall_validity::<_, #zerocopy_crate::BecauseImmutable>().read_unaligned()
             };
 
             let variants = raw_enum.project_wrapped::<

@@ -71,7 +71,7 @@ fn un_sized() {
 
     let mut candidate = {
         use imp::pointer::{cast::CastUnsized, BecauseExclusive};
-        candidate.cast::<_, CastUnsized, (_, BecauseExclusive)>()
+        candidate.cast::<_, CastUnsized, BecauseExclusive>()
     };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
