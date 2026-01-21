@@ -12,24 +12,24 @@ use proc_macro2::TokenStream;
 use crate::IntoTokenStream;
 
 macro_rules! use_as_trait_name {
-    ($($alias:ident => $derive:ident),* $(,)?) => {
-        $(use super::$derive as $alias;)*
+    ($($alias:ident => $derive:path),* $(,)?) => {
+        $(use $derive as $alias;)*
     };
 }
 
 // This permits invocations of `test!` to be more ergonomic, passing the name of
 // the trait under test rather than the name of the inner derive function.
 use_as_trait_name!(
-    KnownLayout => derive_known_layout_inner,
-    Immutable => derive_no_cell_inner,
-    TryFromBytes => derive_try_from_bytes_inner,
-    FromZeros => derive_from_zeros_inner,
-    FromBytes => derive_from_bytes_inner,
-    IntoBytes => derive_into_bytes_inner,
-    Unaligned => derive_unaligned_inner,
-    ByteHash => derive_hash_inner,
-    ByteEq => derive_eq_inner,
-    SplitAt => derive_split_at_inner,
+    KnownLayout => super::derive::known_layout::derive,
+    Immutable => super::derive::derive_no_cell,
+    TryFromBytes => super::derive::try_from_bytes::derive_try_from_bytes,
+    FromZeros => super::derive::from_bytes::derive_from_zeros,
+    FromBytes => super::derive::from_bytes::derive_from_bytes,
+    IntoBytes => super::derive::into_bytes::derive_into_bytes,
+    Unaligned => super::derive::unaligned::derive_unaligned,
+    ByteHash => super::derive::derive_hash,
+    ByteEq => super::derive::derive_eq,
+    SplitAt => super::derive::derive_split_at,
 );
 
 /// Test that the given derive input expands to the expected output.
@@ -56,7 +56,7 @@ macro_rules! test {
             let ts: proc_macro2::TokenStream = quote::quote!( $($i)* );
             let ast = syn::parse2::<syn::DeriveInput>(ts).unwrap();
             let ctx = crate::Ctx::try_from_derive_input(ast).unwrap();
-            let res = $name(&ctx, crate::Trait::$name);
+            let res = $name(&ctx, crate::util::Trait::$name);
             let expected_toks = quote::quote!( $($o)* );
             assert_eq_streams(expected_toks.into(), res.into_ts().into());
         }
