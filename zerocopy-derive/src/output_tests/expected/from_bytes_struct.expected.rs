@@ -11,28 +11,25 @@
 #[automatically_derived]
 const _: () = {
     unsafe impl ::zerocopy::TryFromBytes for Foo {
-    fn only_derive_is_allowed_to_implement_this_trait() {}
-
-    fn is_bit_valid<___ZerocopyAliasing>(
-        _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
-    where
-        ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
-    {
-        if false {
-            fn assert_is_from_bytes<T>()
-            where
-                T: ::zerocopy::FromBytes,
-                T: ?::zerocopy::util::macro_util::core_reexport::marker::Sized,
-            {}
-            assert_is_from_bytes::<Self>();
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+        fn is_bit_valid<___ZerocopyAliasing>(
+            _candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
+        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
+        where
+            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
+        {
+            if false {
+                fn assert_is_from_bytes<T>()
+                where
+                    T: ::zerocopy::FromBytes,
+                    T: ?::zerocopy::util::macro_util::core_reexport::marker::Sized,
+                {}
+                assert_is_from_bytes::<Self>();
+            }
+            true
         }
-
-        true
     }
-}
 };
-
 #[allow(
     deprecated,
     private_bounds,
@@ -46,10 +43,9 @@ const _: () = {
 #[automatically_derived]
 const _: () = {
     unsafe impl ::zerocopy::FromZeros for Foo {
-    fn only_derive_is_allowed_to_implement_this_trait() {}
-}
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+    }
 };
-
 #[allow(
     deprecated,
     private_bounds,
@@ -63,6 +59,6 @@ const _: () = {
 #[automatically_derived]
 const _: () = {
     unsafe impl ::zerocopy::FromBytes for Foo {
-    fn only_derive_is_allowed_to_implement_this_trait() {}
-}
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+    }
 };

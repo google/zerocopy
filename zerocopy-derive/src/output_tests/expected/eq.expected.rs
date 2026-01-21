@@ -1,4 +1,3 @@
-
 impl<T: Clone> ::zerocopy::util::macro_util::core_reexport::cmp::PartialEq for Foo<T>
 where
     Self: ::zerocopy::IntoBytes + ::zerocopy::Immutable,
@@ -11,11 +10,8 @@ where
         )
     }
 }
-
-
 impl<T: Clone> ::zerocopy::util::macro_util::core_reexport::cmp::Eq for Foo<T>
 where
     Self: ::zerocopy::IntoBytes + ::zerocopy::Immutable,
     Self: Sized,
-{
-}
+{}

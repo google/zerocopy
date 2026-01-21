@@ -6,11 +6,11 @@ license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
 This file may not be copied, modified, or distributed except according to
 those terms. -->
 
-# UI Tests
+# UI & Output Tests
 
 When updating UI test files (`tests/ui-*` or `zerocopy-derive/tests/ui-*`) or
-functionality which could affect compiler error output, run:
-`./tools/update-ui-test-files.sh`.
+functionality which could affect compiler error output or derive output, run:
+`./tools/update-expected-test-output.sh`.
 
 **Note:** We maintain separate UI tests for different toolchains (`ui-msrv`,
 `ui-stable`, `ui-nightly`) because compiler output varies. The script handles
@@ -34,10 +34,10 @@ we use a symlink pattern:
     1.  Create the `.rs` file in `ui-nightly`.
     2.  Create relative symlinks in `ui-stable` and `ui-msrv` pointing to the
         new file in `ui-nightly`.
-    3.  Run `./tools/update-ui-test-files.sh` to generate the `.stderr` files.
+    3.  Run `./tools/update-expected-test-output.sh` to generate the `.stderr` files.
 - **Modifying a Test:**
     1.  Edit the `.rs` file in `ui-nightly`.
-    2.  Run `./tools/update-ui-test-files.sh` to update the `.stderr` files.
+    2.  Run `./tools/update-expected-test-output.sh` to update the `.stderr` files.
 - **Removing a Test:**
     1.  Delete the `.rs` file from `ui-nightly`.
     2.  Delete the symlinks from `ui-stable` and `ui-msrv`.
