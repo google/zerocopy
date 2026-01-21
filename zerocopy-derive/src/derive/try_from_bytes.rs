@@ -1,60 +1,17 @@
-// Copyright 2024 The Fuchsia Authors
-//
-// Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
-// <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
-// license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
-// This file may not be copied, modified, or distributed except according to
-// those terms.
-
 use proc_macro2::TokenStream;
 use quote::quote;
 use syn::{
-    parse_quote, spanned::Spanned as _, DataEnum, DeriveInput, Error, Expr, ExprLit, ExprUnary,
-    Fields, Ident, Index, Lit, UnOp,
+    parse_quote, spanned::Spanned as _, Data, DataEnum, DataStruct, DataUnion, DeriveInput, Error,
+    Expr, Fields, Ident, Index, Type,
 };
 
 use crate::{
-    derive_has_field_struct_union, derive_try_from_bytes_inner, repr::EnumRepr, Ctx, DataExt,
-    FieldBounds, ImplBlockBuilder, Trait,
+    repr::{EnumRepr, StructUnionRepr},
+    util::{
+        const_block, enum_size_from_repr, generate_tag_enum, Ctx, DataExt, FieldBounds,
+        ImplBlockBuilder, Trait, TraitBound,
+    },
 };
-
-/// Generates a tag enum for the given enum. This generates an enum with the
-/// same non-align `repr`s, variants, and corresponding discriminants, but none
-/// of the fields.
-pub(crate) fn generate_tag_enum(ctx: &Ctx, repr: &EnumRepr, data: &DataEnum) -> TokenStream {
-    let zerocopy_crate = &ctx.zerocopy_crate;
-    let variants = data.variants.iter().map(|v| {
-        let ident = &v.ident;
-        if let Some((eq, discriminant)) = &v.discriminant {
-            quote! { #ident #eq #discriminant }
-        } else {
-            quote! { #ident }
-        }
-    });
-
-    // Don't include any `repr(align)` when generating the tag enum, as that
-    // could add padding after the tag but before any variants, which is not the
-    // correct behavior.
-    let repr = match repr {
-        EnumRepr::Transparent(span) => quote::quote_spanned! { *span => #[repr(transparent)] },
-        EnumRepr::Compound(c, _) => quote! { #c },
-    };
-
-    quote! {
-        #repr
-        #[allow(dead_code)]
-        enum ___ZerocopyTag {
-            #(#variants,)*
-        }
-
-        // SAFETY: `___ZerocopyTag` has no fields, and so it does not permit
-        // interior mutation.
-        unsafe impl #zerocopy_crate::Immutable for ___ZerocopyTag {
-            fn only_derive_is_allowed_to_implement_this_trait() {}
-        }
-    }
-}
-
 fn tag_ident(variant_ident: &Ident) -> Ident {
     ident!(("___ZEROCOPY_TAG_{}", variant_ident), variant_ident.span())
 }
@@ -151,8 +108,8 @@ fn generate_variant_structs(ctx: &Ctx, data: &DataEnum) -> TokenStream {
         // We do this rather than emitting `#[derive(::zerocopy::TryFromBytes)]`
         // because that is not hygienic, and this is also more performant.
         let try_from_bytes_impl =
-            derive_try_from_bytes_inner(&ctx.with_input(&variant_struct), Trait::TryFromBytes)
-                .expect("derive_try_from_bytes_inner should not fail on synthesized type");
+            derive_try_from_bytes(&ctx.with_input(&variant_struct), Trait::TryFromBytes)
+                .expect("derive_try_from_bytes should not fail on synthesized type");
 
         Some(quote! {
             #variant_struct
@@ -442,81 +399,293 @@ pub(crate) fn derive_is_bit_valid(
         }
     })
 }
-
-/// Returns `Ok(index)` if variant `index` of the enum has a discriminant of
-/// zero. If `Err(bool)` is returned, the boolean is true if the enum has
-/// unknown discriminants (e.g. discriminants set to const expressions which we
-/// can't evaluate in a proc macro). If the enum has unknown discriminants, then
-/// it might have a zero variant that we just can't detect.
-pub(crate) fn find_zero_variant(enm: &DataEnum) -> Result<usize, bool> {
-    // Discriminants can be anywhere in the range [i128::MIN, u128::MAX] because
-    // the discriminant type may be signed or unsigned. Since we only care about
-    // tracking the discriminant when it's less than or equal to zero, we can
-    // avoid u128 -> i128 conversions and bounds checking by making the "next
-    // discriminant" value implicitly negative.
-    // Technically 64 bits is enough, but 128 is better for future compatibility
-    // with https://github.com/rust-lang/rust/issues/56071
-    let mut next_negative_discriminant = Some(0);
-
-    // Sometimes we encounter explicit discriminants that we can't know the
-    // value of (e.g. a constant expression that requires evaluation). These
-    // could evaluate to zero or a negative number, but we can't assume that
-    // they do (no false positives allowed!). So we treat them like strictly-
-    // positive values that can't result in any zero variants, and track whether
-    // we've encountered any unknown discriminants.
-    let mut has_unknown_discriminants = false;
-
-    for (i, v) in enm.variants.iter().enumerate() {
-        match v.discriminant.as_ref() {
-            // Implicit discriminant
-            None => {
-                match next_negative_discriminant.as_mut() {
-                    Some(0) => return Ok(i),
-                    // n is nonzero so subtraction is always safe
-                    Some(n) => *n -= 1,
-                    None => (),
-                }
-            }
-            // Explicit positive discriminant
-            Some((_, Expr::Lit(ExprLit { lit: Lit::Int(int), .. }))) => {
-                match int.base10_parse::<u128>().ok() {
-                    Some(0) => return Ok(i),
-                    Some(_) => next_negative_discriminant = None,
-                    None => {
-                        // Numbers should never fail to parse, but just in case:
-                        has_unknown_discriminants = true;
-                        next_negative_discriminant = None;
-                    }
-                }
-            }
-            // Explicit negative discriminant
-            Some((_, Expr::Unary(ExprUnary { op: UnOp::Neg(_), expr, .. }))) => match &**expr {
-                Expr::Lit(ExprLit { lit: Lit::Int(int), .. }) => {
-                    match int.base10_parse::<u128>().ok() {
-                        Some(0) => return Ok(i),
-                        // x is nonzero so subtraction is always safe
-                        Some(x) => next_negative_discriminant = Some(x - 1),
-                        None => {
-                            // Numbers should never fail to parse, but just in
-                            // case:
-                            has_unknown_discriminants = true;
-                            next_negative_discriminant = None;
-                        }
-                    }
-                }
-                // Unknown negative discriminant (e.g. const repr)
-                _ => {
-                    has_unknown_discriminants = true;
-                    next_negative_discriminant = None;
-                }
-            },
-            // Unknown discriminant (e.g. const expr)
-            _ => {
-                has_unknown_discriminants = true;
-                next_negative_discriminant = None;
-            }
-        }
+pub(crate) fn derive_try_from_bytes(ctx: &Ctx, top_level: Trait) -> Result<TokenStream, Error> {
+    match &ctx.ast.data {
+        Data::Struct(strct) => derive_try_from_bytes_struct(ctx, strct, top_level),
+        Data::Enum(enm) => derive_try_from_bytes_enum(ctx, enm, top_level),
+        Data::Union(unn) => Ok(derive_try_from_bytes_union(ctx, unn, top_level)),
+    }
+}
+fn derive_has_field_struct_union(ctx: &Ctx, data: &dyn DataExt) -> TokenStream {
+    let fields = ctx.ast.data.fields();
+    if fields.is_empty() {
+        return quote! {};
     }
 
-    Err(has_unknown_discriminants)
+    let field_tokens = fields.iter().map(|(vis, ident, _)| {
+        let ident = ident!(("ẕ{}", ident), ident.span());
+        quote!(
+            #vis enum #ident {}
+        )
+    });
+
+    let zerocopy_crate = &ctx.zerocopy_crate;
+    let variant_id: Box<Expr> = match &ctx.ast.data {
+        Data::Struct(_) => parse_quote!({ #zerocopy_crate::STRUCT_VARIANT_ID }),
+        Data::Union(_) => parse_quote!({ #zerocopy_crate::UNION_VARIANT_ID }),
+        _ => unreachable!(),
+    };
+
+    let is_repr_c_union = match &ctx.ast.data {
+        Data::Union(..) => {
+            StructUnionRepr::from_attrs(&ctx.ast.attrs).map(|repr| repr.is_c()).unwrap_or(false)
+        }
+        Data::Enum(..) | Data::Struct(..) => false,
+    };
+    let core = ctx.core_path();
+    let has_fields = fields.iter().map(move |(_, ident, ty)| {
+        let field_token = ident!(("ẕ{}", ident), ident.span());
+        let field: Box<Type> = parse_quote!(#field_token);
+        let field_id: Box<Expr> = parse_quote!({ #zerocopy_crate::ident_id!(#ident) });
+        ImplBlockBuilder::new(
+            ctx,
+            data,
+            Trait::HasField {
+                variant_id: variant_id.clone(),
+                field: field.clone(),
+                field_id: field_id.clone(),
+            },
+            FieldBounds::None,
+        )
+        .inner_extras(quote! {
+            type Type = #ty;
+
+            #[inline(always)]
+            fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                let slf = slf.as_ptr();
+                // SAFETY: By invariant on `PtrInner`, `slf` is a non-null
+                // pointer whose referent is zero-sized or lives in a valid
+                // allocation. Since `#ident` is a struct or union field of
+                // `Self`, this projection preserves or shrinks the referent
+                // size, and so the resulting referent also fits in the same
+                // allocation.
+                unsafe { #core::ptr::addr_of_mut!((*slf).#ident) }
+            }
+        }).outer_extras(if is_repr_c_union {
+            let ident = &ctx.ast.ident;
+            let (impl_generics, ty_generics, where_clause) = ctx.ast.generics.split_for_impl();
+            quote! {
+                // SAFETY: All `repr(C)` union fields exist at offset 0 within
+                // the union [1], and so any union projection is actually a cast
+                // (ie, preserves address).
+                //
+                // [1] Per
+                //     https://doc.rust-lang.org/1.92.0/reference/type-layout.html#reprc-unions,
+                //     it's not *technically* guaranteed that non-maximally-
+                //     sized fields are at offset 0, but it's clear that this is
+                //     the intention of `repr(C)` unions. It says:
+                //
+                //     > A union declared with `#[repr(C)]` will have the same
+                //     > size and alignment as an equivalent C union declaration
+                //     > in the C language for the target platform.
+                //
+                //     Note that this only mentions size and alignment, not layout.
+                //     However, C unions *do* guarantee that all fields start at
+                //     offset 0. [2]
+                //
+                //     This is also reinforced by
+                //     https://doc.rust-lang.org/1.92.0/reference/items/unions.html#r-items.union.fields.offset:
+                //
+                //     > Fields might have a non-zero offset (except when the C
+                //     > representation is used); in that case the bits starting
+                //     > at the offset of the fields are read
+                //
+                // [2] Per https://port70.net/~nsz/c/c11/n1570.html#6.7.2.1p16:
+                //
+                //     > The size of a union is sufficient to contain the
+                //     > largest of its members. The value of at most one of the
+                //     > members can be stored in a union object at any time. A
+                //     > pointer to a union object, suitably converted, points
+                //     > to each of its members (or if a member is a bit- field,
+                //     > then to the unit in which it resides), and vice versa.
+                //
+                // FIXME(https://github.com/rust-lang/unsafe-code-guidelines/issues/595):
+                // Cite the documentation once it's updated.
+                unsafe impl #impl_generics #zerocopy_crate::pointer::cast::Cast<#ident #ty_generics, #ty>
+                    for #zerocopy_crate::pointer::cast::Projection<#field, { #zerocopy_crate::UNION_VARIANT_ID }, #field_id>
+                #where_clause
+                {
+                }
+            }
+        } else {
+            quote! {}
+        })
+        .build()
+    });
+
+    const_block(field_tokens.into_iter().chain(has_fields).map(Some))
+}
+fn derive_try_from_bytes_struct(
+    ctx: &Ctx,
+    strct: &DataStruct,
+    top_level: Trait,
+) -> Result<TokenStream, Error> {
+    let extras = try_gen_trivial_is_bit_valid(ctx, top_level).unwrap_or_else(|| {
+        let zerocopy_crate = &ctx.zerocopy_crate;
+        let fields = strct.fields();
+        let field_names = fields.iter().map(|(_vis, name, _ty)| name);
+        let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
+        let core = ctx.core_path();
+        quote!(
+            // SAFETY: We use `is_bit_valid` to validate that each field is
+            // bit-valid, and only return `true` if all of them are. The bit
+            // validity of a struct is just the composition of the bit
+            // validities of its fields, so this is a sound implementation
+            // of `is_bit_valid`.
+            fn is_bit_valid<___ZerocopyAliasing>(
+                mut candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
+            ) -> #core::primitive::bool
+            where
+                ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
+            {
+                true #(&& {
+                    let field_candidate = candidate.reborrow().project::<
+                        _,
+                        { #zerocopy_crate::ident_id!(#field_names) }
+                    >();
+                    <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
+                })*
+            }
+        )
+    });
+    Ok(ImplBlockBuilder::new(ctx, strct, Trait::TryFromBytes, FieldBounds::ALL_SELF)
+        .inner_extras(extras)
+        .outer_extras(derive_has_field_struct_union(ctx, strct))
+        .build())
+}
+fn derive_try_from_bytes_union(ctx: &Ctx, unn: &DataUnion, top_level: Trait) -> TokenStream {
+    // FIXME(#5): Remove the `Immutable` bound.
+    let field_type_trait_bounds =
+        FieldBounds::All(&[TraitBound::Slf, TraitBound::Other(Trait::Immutable)]);
+    let extras =
+        try_gen_trivial_is_bit_valid(ctx, top_level).unwrap_or_else(|| {
+            let zerocopy_crate = &ctx.zerocopy_crate;
+            let fields = unn.fields();
+            let field_names = fields.iter().map(|(_vis, name, _ty)| name);
+            let field_tys = fields.iter().map(|(_vis, _name, ty)| ty);
+            let core = ctx.core_path();
+            quote!(
+                // SAFETY: We use `is_bit_valid` to validate that any field is
+                // bit-valid; we only return `true` if at least one of them is.
+                // The bit validity of a union is not yet well defined in Rust,
+                // but it is guaranteed to be no more strict than this
+                // definition. See #696 for a more in-depth discussion.
+                fn is_bit_valid<___ZerocopyAliasing>(
+                    mut candidate: #zerocopy_crate::Maybe<'_, Self,___ZerocopyAliasing>
+                ) -> #core::primitive::bool
+                where
+                    ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
+                {
+                    false #(|| {
+                        // SAFETY:
+                        // - Since `Self: Immutable` is enforced by
+                        //   `self_type_trait_bounds`, neither `*slf` nor the
+                        //   returned pointer's referent contain any
+                        //   `UnsafeCell`s
+                        // - Both source and destination validity are
+                        //   `Initialized`, which is always a sound
+                        //   transmutation.
+                        let field_candidate = unsafe {
+                            candidate.reborrow().project_transmute_unchecked::<
+                                _,
+                                _,
+                                #zerocopy_crate::pointer::cast::Projection<_, { #zerocopy_crate::UNION_VARIANT_ID }, { #zerocopy_crate::ident_id!(#field_names) }>
+                            >()
+                        };
+
+                        <#field_tys as #zerocopy_crate::TryFromBytes>::is_bit_valid(field_candidate)
+                    })*
+                }
+            )
+        });
+    ImplBlockBuilder::new(ctx, unn, Trait::TryFromBytes, field_type_trait_bounds)
+        .inner_extras(extras)
+        .outer_extras(derive_has_field_struct_union(ctx, unn))
+        .build()
+}
+fn derive_try_from_bytes_enum(
+    ctx: &Ctx,
+    enm: &DataEnum,
+    top_level: Trait,
+) -> Result<TokenStream, Error> {
+    let repr = EnumRepr::from_attrs(&ctx.ast.attrs)?;
+
+    // If an enum has no fields, it has a well-defined integer representation,
+    // and every possible bit pattern corresponds to a valid discriminant tag,
+    // then it *could* be `FromBytes` (even if the user hasn't derived
+    // `FromBytes`). This holds if, for `repr(uN)` or `repr(iN)`, there are 2^N
+    // variants.
+    let could_be_from_bytes = enum_size_from_repr(&repr)
+        .map(|size| enm.fields().is_empty() && enm.variants.len() == 1usize << size)
+        .unwrap_or(false);
+
+    let trivial_is_bit_valid = try_gen_trivial_is_bit_valid(ctx, top_level);
+    let extra = match (trivial_is_bit_valid, could_be_from_bytes) {
+        (Some(is_bit_valid), _) => is_bit_valid,
+        // SAFETY: It would be sound for the enum to implement `FromBytes`, as
+        // required by `gen_trivial_is_bit_valid_unchecked`.
+        (None, true) => unsafe { gen_trivial_is_bit_valid_unchecked(ctx) },
+        (None, false) => derive_is_bit_valid(ctx, enm, &repr)?,
+    };
+
+    Ok(ImplBlockBuilder::new(ctx, enm, Trait::TryFromBytes, FieldBounds::ALL_SELF)
+        .inner_extras(extra)
+        .build())
+}
+fn try_gen_trivial_is_bit_valid(ctx: &Ctx, top_level: Trait) -> Option<proc_macro2::TokenStream> {
+    // If the top-level trait is `FromBytes` and `Self` has no type parameters,
+    // then the `FromBytes` derive will fail compilation if `Self` is not
+    // actually soundly `FromBytes`, and so we can rely on that for our
+    // `is_bit_valid` impl. It's plausible that we could make changes - or Rust
+    // could make changes (such as the "trivial bounds" language feature) - that
+    // make this no longer true. To hedge against these, we include an explicit
+    // `Self: FromBytes` check in the generated `is_bit_valid`, which is
+    // bulletproof.
+    if matches!(top_level, Trait::FromBytes) && ctx.ast.generics.params.is_empty() {
+        let zerocopy_crate = &ctx.zerocopy_crate;
+        let core = ctx.core_path();
+        Some(quote!(
+            // SAFETY: See inline.
+            fn is_bit_valid<___ZerocopyAliasing>(
+                _candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
+            ) -> #core::primitive::bool
+            where
+                ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
+            {
+                if false {
+                    fn assert_is_from_bytes<T>()
+                    where
+                        T: #zerocopy_crate::FromBytes,
+                        T: ?#core::marker::Sized,
+                    {
+                    }
+
+                    assert_is_from_bytes::<Self>();
+                }
+
+                // SAFETY: The preceding code only compiles if `Self:
+                // FromBytes`. Thus, this code only compiles if all initialized
+                // byte sequences represent valid instances of `Self`.
+                true
+            }
+        ))
+    } else {
+        None
+    }
+}
+unsafe fn gen_trivial_is_bit_valid_unchecked(ctx: &Ctx) -> proc_macro2::TokenStream {
+    let zerocopy_crate = &ctx.zerocopy_crate;
+    let core = ctx.core_path();
+    quote!(
+        // SAFETY: The caller of `gen_trivial_is_bit_valid_unchecked` has
+        // promised that all initialized bit patterns are valid for `Self`.
+        fn is_bit_valid<___ZerocopyAliasing>(
+            _candidate: #zerocopy_crate::Maybe<Self, ___ZerocopyAliasing>,
+        ) -> #core::primitive::bool
+        where
+            ___ZerocopyAliasing: #zerocopy_crate::pointer::invariant::Reference,
+        {
+            true
+        }
+    )
 }
