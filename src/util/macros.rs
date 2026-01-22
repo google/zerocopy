@@ -850,13 +850,9 @@ macro_rules! unsafe_with_size_eq {
         define_cast!(unsafe { SrcCast<T: ?Sized> = $src<T> => T });
         define_cast!(unsafe { DstCast<U: ?Sized> = U => $dst<U> });
 
-        // SAFETY: See inline for the soundness of this impl when
-        // `CastFrom::project` is actually instantiated (otherwise, PMEs may not
-        // be triggered).
-        //
-        // We manually instantiate `CastFrom::project` below to ensure that this
-        // PME can be triggered, and the caller promises not to use `$src` and
-        // `$dst` with any wrapped types other than `$t` and `$u` respectively.
+        // SAFETY: `crate::layout::CastFrom` preserves the set of referent
+        // bytes, as does `SrcCast`, and so this `TransitiveProject` preserves
+        // the set of referent bytes.
         unsafe impl<T: ?Sized, U: ?Sized> SizeEq<$src<T>> for $dst<U>
         where
             T: KnownLayout<PointerMetadata = usize>,
@@ -867,18 +863,6 @@ macro_rules! unsafe_with_size_eq {
                 SrcCast,
                 crate::layout::CastFrom<U>,
             >, DstCast>;
-        }
-
-        // See safety comment on the preceding `unsafe impl` block for an
-        // explanation of why we need this block.
-        if 1 == 0 {
-            use crate::pointer::cast::Project as _;
-
-            let ptr = <$t as KnownLayout>::raw_dangling();
-            // SAFETY: This call is never executed.
-            #[allow(unused_unsafe, clippy::missing_transmute_annotations)]
-            let ptr = unsafe { core::mem::transmute(ptr) };
-            let _ = <$dst<$u> as SizeEq<$src<$t>>>::CastFrom::project(ptr);
         }
 
         impl_for_transmute_from!(T: ?Sized + TryFromBytes => TryFromBytes for $src<T>[<T>]);
