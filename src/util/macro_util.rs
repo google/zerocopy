@@ -626,7 +626,7 @@ pub const fn hash_name(name: &str) -> i128 {
 fn try_cast_or_pme<Src, Dst, I, R, S>(
     src: Ptr<'_, Src, I>,
 ) -> Result<
-    Ptr<'_, Dst, (I::Aliasing, invariant::Unaligned, invariant::Valid)>,
+    Ptr<'_, Dst, (I::Aliasing, invariant::Unaligned, invariant::Safe)>,
     ValidityError<Ptr<'_, Src, I>, Dst>,
 >
 where
@@ -635,7 +635,7 @@ where
     Src: invariant::Read<I::Aliasing, R>,
     Dst: TryFromBytes
         + invariant::Read<I::Aliasing, R>
-        + TryTransmuteFromPtr<Dst, I::Aliasing, invariant::Initialized, invariant::Valid, S>,
+        + TryTransmuteFromPtr<Dst, I::Aliasing, invariant::Initialized, invariant::Safe, S>,
     I: Invariants<Validity = invariant::Initialized>,
     I::Aliasing: invariant::Reference,
 {
@@ -746,7 +746,7 @@ where
             // `try_cast_or_pme` promises to return its original argument, and
             // so we know that we are getting back the same `ptr` that we
             // originally passed, and that `ptr` was a bit-valid `Src`.
-            let ptr = unsafe { ptr.assume_valid() };
+            let ptr = unsafe { ptr.assume_safe() };
             ptr.as_ref()
         })),
     }
@@ -905,10 +905,10 @@ where
         unsafe {
             unsafe_with_size_eq!(<S<Src>, D<Dst>> {
                 let ptr = Ptr::from_ref(self.0)
-                    .transmute::<S<Src>, invariant::Valid, BecauseImmutable>()
+                    .transmute::<S<Src>, invariant::Safe, BecauseImmutable>()
                     .recall_validity::<invariant::Initialized, _>()
                     .transmute::<D<Dst>, invariant::Initialized, (crate::pointer::BecauseMutationCompatible, _)>()
-                    .recall_validity::<invariant::Valid, _>();
+                    .recall_validity::<invariant::Safe, _>();
 
                 #[allow(unused_unsafe)]
                 // SAFETY: The preceding `static_assert!` ensures that
@@ -946,10 +946,10 @@ where
         unsafe {
             unsafe_with_size_eq!(<S<Src>, D<Dst>> {
                 let ptr = Ptr::from_mut(self.0)
-                    .transmute::<S<Src>, invariant::Valid, _>()
+                    .transmute::<S<Src>, invariant::Safe, _>()
                     .recall_validity::<invariant::Initialized, (_, (_, _))>()
                     .transmute::<D<Dst>, invariant::Initialized, _>()
-                    .recall_validity::<invariant::Valid, (_, (_, _))>();
+                    .recall_validity::<invariant::Safe, (_, (_, _))>();
 
                 #[allow(unused_unsafe)]
                 // SAFETY: The preceding `static_assert!` ensures that
