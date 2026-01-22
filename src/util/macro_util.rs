@@ -27,7 +27,7 @@ use core::{marker::PhantomData, mem, num::Wrapping};
 use crate::{
     pointer::{
         cast::CastSized,
-        invariant::{Aligned, Initialized, Valid},
+        invariant::{Aligned, Initialized, Safe},
         BecauseImmutable,
     },
     FromBytes, Immutable, IntoBytes, KnownLayout, Ptr, ReadOnly, TryFromBytes, ValidityError,
@@ -857,7 +857,7 @@ where
         let ptr = Ptr::from_ref(self.0)
             .recall_validity::<Initialized, _>()
             .transmute_with::<Dst, Initialized, crate::layout::CastFrom<Dst>, (crate::pointer::BecauseMutationCompatible, _)>()
-            .recall_validity::<Valid, _>();
+            .recall_validity::<Safe, _>();
 
         static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
             Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
@@ -890,7 +890,7 @@ where
         let ptr = Ptr::from_mut(self.0)
             .recall_validity::<Initialized, (_, (_, _))>()
             .transmute_with::<Dst, Initialized, crate::layout::CastFrom<Dst>, _>()
-            .recall_validity::<Valid, (_, (_, _))>();
+            .recall_validity::<Safe, (_, (_, _))>();
 
         static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
             Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()

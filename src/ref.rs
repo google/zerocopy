@@ -196,7 +196,7 @@ mod def {
 pub use def::Ref;
 
 use crate::pointer::{
-    invariant::{Aligned, BecauseExclusive, Initialized, Unaligned, Valid},
+    invariant::{Aligned, BecauseExclusive, Initialized, Safe, Unaligned},
     BecauseRead, PtrInner,
 };
 
@@ -954,13 +954,13 @@ where
 /// `T: Sized` and `ptr`'s referent must have size `size_of::<T>()`.
 #[inline(always)]
 unsafe fn cast_for_sized<'a, T, A, R, S>(
-    ptr: Ptr<'a, [u8], (A, Aligned, Valid)>,
-) -> Ptr<'a, T, (A, Unaligned, Valid)>
+    ptr: Ptr<'a, [u8], (A, Aligned, Safe)>,
+) -> Ptr<'a, T, (A, Unaligned, Safe)>
 where
     T: FromBytes + KnownLayout + ?Sized,
     A: crate::invariant::Aliasing,
     [u8]: MutationCompatible<T, A, Initialized, Initialized, R>,
-    T: TransmuteFromPtr<T, A, Initialized, Valid, crate::pointer::cast::IdCast, S>,
+    T: TransmuteFromPtr<T, A, Initialized, Safe, crate::pointer::cast::IdCast, S>,
 {
     use crate::pointer::cast::{Cast, Project};
 
@@ -986,7 +986,7 @@ where
 
     ptr.recall_validity::<Initialized, (_, (_, _))>()
         .cast::<_, CastForSized, _>()
-        .recall_validity::<Valid, _>()
+        .recall_validity::<Safe, _>()
 }
 
 #[cfg(test)]
