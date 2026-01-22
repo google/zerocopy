@@ -311,7 +311,7 @@ unsafe impl<T: ?Sized> SizeEq<T> for T {
 // SAFETY: Since `Src: IntoBytes`, the set of valid `Src`'s is the set of
 // initialized bit patterns, which is exactly the set allowed in the referent of
 // any `Initialized` `Ptr`.
-unsafe impl<Src, Dst> TransmuteFrom<Src, Valid, Initialized> for Dst
+unsafe impl<Src, Dst> TransmuteFrom<Src, Safe, Initialized> for Dst
 where
     Src: IntoBytes + ?Sized,
     Dst: ?Sized,
@@ -319,9 +319,9 @@ where
 }
 
 // SAFETY: Since `Dst: FromBytes`, any initialized bit pattern may appear in the
-// referent of a `Ptr<Dst, (_, _, Valid)>`. This is exactly equal to the set of
+// referent of a `Ptr<Dst, (_, _, Safe)>`. This is exactly equal to the set of
 // bit patterns which may appear in the referent of any `Initialized` `Ptr`.
-unsafe impl<Src, Dst> TransmuteFrom<Src, Initialized, Valid> for Dst
+unsafe impl<Src, Dst> TransmuteFrom<Src, Initialized, Safe> for Dst
 where
     Src: ?Sized,
     Dst: FromBytes + ?Sized,
@@ -456,7 +456,7 @@ impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
 // explicitly guaranteed, but it's obvious from `MaybeUninit`'s documentation
 // that this is the intention:
 // https://doc.rust-lang.org/1.85.0/core/mem/union.MaybeUninit.html
-unsafe impl<T> TransmuteFrom<T, Uninit, Valid> for MaybeUninit<T> {}
+unsafe impl<T> TransmuteFrom<T, Uninit, Safe> for MaybeUninit<T> {}
 
 // SAFETY: `MaybeUninit<T>` has the same size as `T` [1].
 //
