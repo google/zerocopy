@@ -13,5 +13,5 @@ error: type `private::_::_::_::ẕ1` is private
 error: type `private::_::_::_::ẕb` is private
    --> tests/ui-stable/privacy.rs:122:49
     |
-122 |     let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type =
+122 |     let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b)...
     |                                                 ^ private type

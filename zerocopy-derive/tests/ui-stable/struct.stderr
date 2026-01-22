@@ -137,7 +137,78 @@ help: the trait `zerocopy_renamed::KnownLayout` is not implemented for `NotKnown
              AU16
              AtomicBool
              AtomicI16
-           and $N others
+             AtomicI32
+             AtomicI64
+             AtomicI8
+             AtomicIsize
+             AtomicPtr<T>
+             AtomicU16
+             AtomicU32
+             AtomicU64
+             AtomicU8
+             AtomicUsize
+             Cell<T>
+             F32<O>
+             F64<O>
+             I128<O>
+             I16<O>
+             I32<O>
+             I64<O>
+             Isize<O>
+             KL00
+             KL02
+             KL08
+             KL09
+             ManuallyDrop<T>
+             NonZero<i128>
+             NonZero<i16>
+             NonZero<i32>
+             NonZero<i64>
+             NonZero<i8>
+             NonZero<isize>
+             NonZero<u128>
+             NonZero<u16>
+             NonZero<u32>
+             NonZero<u64>
+             NonZero<u8>
+             NonZero<usize>
+             Option<T>
+             PhantomData<T>
+             ReadOnly<T>
+             SplitAtSized
+             U128<O>
+             U16<O>
+             U32<O>
+             U64<O>
+             Unalign<T>
+             UnsafeCell<T>
+             Usize<O>
+             Wrapping<T>
+             [T; N]
+             [T]
+             _::_::__ZerocopyKnownLayoutMaybeUninit
+             _::_::__ZerocopyKnownLayoutMaybeUninit
+             _::_::__ZerocopyKnownLayoutMaybeUninit
+             bool
+             char
+             doctests::_::_::__ZerocopyKnownLayoutMaybeUninit<T, U>
+             f32
+             f64
+             i128
+             i16
+             i32
+             i64
+             i8
+             isize
+             std::mem::MaybeUninit<T>
+             str
+             u128
+             u16
+             u32
+             u64
+             u8
+             usize
+             util::util::_::_::__ZerocopyKnownLayoutMaybeUninit
    = help: see issue #48214
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -162,7 +233,78 @@ help: the trait `zerocopy_renamed::KnownLayout` is not implemented for `NotKnown
              AU16
              AtomicBool
              AtomicI16
-           and $N others
+             AtomicI32
+             AtomicI64
+             AtomicI8
+             AtomicIsize
+             AtomicPtr<T>
+             AtomicU16
+             AtomicU32
+             AtomicU64
+             AtomicU8
+             AtomicUsize
+             Cell<T>
+             F32<O>
+             F64<O>
+             I128<O>
+             I16<O>
+             I32<O>
+             I64<O>
+             Isize<O>
+             KL00
+             KL02
+             KL08
+             KL09
+             ManuallyDrop<T>
+             NonZero<i128>
+             NonZero<i16>
+             NonZero<i32>
+             NonZero<i64>
+             NonZero<i8>
+             NonZero<isize>
+             NonZero<u128>
+             NonZero<u16>
+             NonZero<u32>
+             NonZero<u64>
+             NonZero<u8>
+             NonZero<usize>
+             Option<T>
+             PhantomData<T>
+             ReadOnly<T>
+             SplitAtSized
+             U128<O>
+             U16<O>
+             U32<O>
+             U64<O>
+             Unalign<T>
+             UnsafeCell<T>
+             Usize<O>
+             Wrapping<T>
+             [T; N]
+             [T]
+             _::_::__ZerocopyKnownLayoutMaybeUninit
+             _::_::__ZerocopyKnownLayoutMaybeUninit
+             _::_::__ZerocopyKnownLayoutMaybeUninit
+             bool
+             char
+             doctests::_::_::__ZerocopyKnownLayoutMaybeUninit<T, U>
+             f32
+             f64
+             i128
+             i16
+             i32
+             i64
+             i8
+             isize
+             std::mem::MaybeUninit<T>
+             str
+             u128
+             u16
+             u32
+             u64
+             u8
+             usize
+             util::util::_::_::__ZerocopyKnownLayoutMaybeUninit
    = help: see issue #48214
    = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -182,7 +324,135 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy_renamed::Immutable` is n
              (A, B, C, D)
              (A, B, C, D, E)
              (A, B, C, D, E, F)
-           and $N others
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+             (A, B, C, D, E, F, G, H, I)
+             (A, B, C, D, E, F, G, H, I, J)
+             (A, B, C, D, E, F, G, H, I, J, K)
+             (A, B, C, D, E, F, G, H, I, J, K, L)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)
+             (A,)
+             *const T
+             *mut T
+             AU16
+             F32<O>
+             F64<O>
+             I128<O>
+             I16<O>
+             I32<O>
+             I64<O>
+             Immutable1
+             Immutable2
+             Isize<O>
+             ManuallyDrop<T>
+             NonNull<T>
+             NonZero<i128>
+             NonZero<i16>
+             NonZero<i32>
+             NonZero<i64>
+             NonZero<i8>
+             NonZero<isize>
+             NonZero<u128>
+             NonZero<u16>
+             NonZero<u32>
+             NonZero<u64>
+             NonZero<u8>
+             NonZero<usize>
+             Option<T>
+             Option<extern "C" fn() -> M>
+             Option<extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(H, I, J, K, L) -> M>
+             Option<extern "C" fn(I, J, K, L) -> M>
+             Option<extern "C" fn(J, K, L) -> M>
+             Option<extern "C" fn(K, L) -> M>
+             Option<extern "C" fn(L) -> M>
+             Option<fn() -> M>
+             Option<fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(E, F, G, H, I, J, K, L) -> M>
+             Option<fn(F, G, H, I, J, K, L) -> M>
+             Option<fn(G, H, I, J, K, L) -> M>
+             Option<fn(H, I, J, K, L) -> M>
+             Option<fn(I, J, K, L) -> M>
+             Option<fn(J, K, L) -> M>
+             Option<fn(K, L) -> M>
+             Option<fn(L) -> M>
+             Option<unsafe extern "C" fn() -> M>
+             Option<unsafe extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(J, K, L) -> M>
+             Option<unsafe extern "C" fn(K, L) -> M>
+             Option<unsafe extern "C" fn(L) -> M>
+             Option<unsafe fn() -> M>
+             Option<unsafe fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(G, H, I, J, K, L) -> M>
+             Option<unsafe fn(H, I, J, K, L) -> M>
+             Option<unsafe fn(I, J, K, L) -> M>
+             Option<unsafe fn(J, K, L) -> M>
+             Option<unsafe fn(K, L) -> M>
+             Option<unsafe fn(L) -> M>
+             PhantomData<T>
+             ReadOnly<T>
+             U128<O>
+             U16<O>
+             U32<O>
+             U64<O>
+             Unalign<T>
+             Usize<O>
+             Wrapping<T>
+             [T; N]
+             [T]
+             bool
+             char
+             f32
+             f64
+             i128
+             i16
+             i32
+             i64
+             i8
+             isize
+             std::mem::MaybeUninit<T>
+             str
+             u128
+             u16
+             u32
+             u64
+             u8
+             usize
    = help: see issue #48214
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -202,7 +472,135 @@ error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy_renamed::Immutable` is n
              (A, B, C, D)
              (A, B, C, D, E)
              (A, B, C, D, E, F)
-           and $N others
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+             (A, B, C, D, E, F, G, H, I)
+             (A, B, C, D, E, F, G, H, I, J)
+             (A, B, C, D, E, F, G, H, I, J, K)
+             (A, B, C, D, E, F, G, H, I, J, K, L)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)
+             (A,)
+             *const T
+             *mut T
+             AU16
+             F32<O>
+             F64<O>
+             I128<O>
+             I16<O>
+             I32<O>
+             I64<O>
+             Immutable1
+             Immutable2
+             Isize<O>
+             ManuallyDrop<T>
+             NonNull<T>
+             NonZero<i128>
+             NonZero<i16>
+             NonZero<i32>
+             NonZero<i64>
+             NonZero<i8>
+             NonZero<isize>
+             NonZero<u128>
+             NonZero<u16>
+             NonZero<u32>
+             NonZero<u64>
+             NonZero<u8>
+             NonZero<usize>
+             Option<T>
+             Option<extern "C" fn() -> M>
+             Option<extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(H, I, J, K, L) -> M>
+             Option<extern "C" fn(I, J, K, L) -> M>
+             Option<extern "C" fn(J, K, L) -> M>
+             Option<extern "C" fn(K, L) -> M>
+             Option<extern "C" fn(L) -> M>
+             Option<fn() -> M>
+             Option<fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(E, F, G, H, I, J, K, L) -> M>
+             Option<fn(F, G, H, I, J, K, L) -> M>
+             Option<fn(G, H, I, J, K, L) -> M>
+             Option<fn(H, I, J, K, L) -> M>
+             Option<fn(I, J, K, L) -> M>
+             Option<fn(J, K, L) -> M>
+             Option<fn(K, L) -> M>
+             Option<fn(L) -> M>
+             Option<unsafe extern "C" fn() -> M>
+             Option<unsafe extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(J, K, L) -> M>
+             Option<unsafe extern "C" fn(K, L) -> M>
+             Option<unsafe extern "C" fn(L) -> M>
+             Option<unsafe fn() -> M>
+             Option<unsafe fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(G, H, I, J, K, L) -> M>
+             Option<unsafe fn(H, I, J, K, L) -> M>
+             Option<unsafe fn(I, J, K, L) -> M>
+             Option<unsafe fn(J, K, L) -> M>
+             Option<unsafe fn(K, L) -> M>
+             Option<unsafe fn(L) -> M>
+             PhantomData<T>
+             ReadOnly<T>
+             U128<O>
+             U16<O>
+             U32<O>
+             U64<O>
+             Unalign<T>
+             Usize<O>
+             Wrapping<T>
+             [T; N]
+             [T]
+             bool
+             char
+             f32
+             f64
+             i128
+             i16
+             i32
+             i64
+             i8
+             isize
+             std::mem::MaybeUninit<T>
+             str
+             u128
+             u16
+             u32
+             u64
+             u8
+             usize
    = note: required for `[UnsafeCell<u8>; 0]` to implement `zerocopy_renamed::Immutable`
    = help: see issue #48214
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -276,7 +674,32 @@ help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
               F32<O>
               F64<O>
               I128<O>
-            and $N others
+              I16<O>
+              I32<O>
+              I64<O>
+              Isize<O>
+              ManuallyDrop<T>
+              NonZero<i8>
+              NonZero<u8>
+              Option<NonZero<i8>>
+              Option<NonZero<u8>>
+              PhantomData<T>
+              ReadOnly<T>
+              U128<O>
+              U16<O>
+              U32<O>
+              U64<O>
+              Unalign<T>
+              UnsafeCell<T>
+              Usize<O>
+              Wrapping<T>
+              [T; N]
+              [T]
+              bool
+              i8
+              std::mem::MaybeUninit<T>
+              str
+              u8
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -433,7 +856,78 @@ help: the trait `zerocopy_renamed::KnownLayout` is not implemented for `SplitAtN
               AU16
               AtomicBool
               AtomicI16
-            and $N others
+              AtomicI32
+              AtomicI64
+              AtomicI8
+              AtomicIsize
+              AtomicPtr<T>
+              AtomicU16
+              AtomicU32
+              AtomicU64
+              AtomicU8
+              AtomicUsize
+              Cell<T>
+              F32<O>
+              F64<O>
+              I128<O>
+              I16<O>
+              I32<O>
+              I64<O>
+              Isize<O>
+              KL00
+              KL02
+              KL08
+              KL09
+              ManuallyDrop<T>
+              NonZero<i128>
+              NonZero<i16>
+              NonZero<i32>
+              NonZero<i64>
+              NonZero<i8>
+              NonZero<isize>
+              NonZero<u128>
+              NonZero<u16>
+              NonZero<u32>
+              NonZero<u64>
+              NonZero<u8>
+              NonZero<usize>
+              Option<T>
+              PhantomData<T>
+              ReadOnly<T>
+              SplitAtSized
+              U128<O>
+              U16<O>
+              U32<O>
+              U64<O>
+              Unalign<T>
+              UnsafeCell<T>
+              Usize<O>
+              Wrapping<T>
+              [T; N]
+              [T]
+              _::_::__ZerocopyKnownLayoutMaybeUninit
+              _::_::__ZerocopyKnownLayoutMaybeUninit
+              _::_::__ZerocopyKnownLayoutMaybeUninit
+              bool
+              char
+              doctests::_::_::__ZerocopyKnownLayoutMaybeUninit<T, U>
+              f32
+              f64
+              i128
+              i16
+              i32
+              i64
+              i8
+              isize
+              std::mem::MaybeUninit<T>
+              str
+              u128
+              u16
+              u32
+              u64
+              u8
+              usize
+              util::util::_::_::__ZerocopyKnownLayoutMaybeUninit
 note: required by a bound in `SplitAt`
    --> $WORKSPACE/src/split_at.rs
     |
@@ -485,7 +979,32 @@ help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
               F32<O>
               F64<O>
               I128<O>
-            and $N others
+              I16<O>
+              I32<O>
+              I64<O>
+              Isize<O>
+              ManuallyDrop<T>
+              NonZero<i8>
+              NonZero<u8>
+              Option<NonZero<i8>>
+              Option<NonZero<u8>>
+              PhantomData<T>
+              ReadOnly<T>
+              U128<O>
+              U16<O>
+              U32<O>
+              U64<O>
+              Unalign<T>
+              UnsafeCell<T>
+              Usize<O>
+              Wrapping<T>
+              [T; N]
+              [T]
+              bool
+              i8
+              std::mem::MaybeUninit<T>
+              str
+              u8
 note: required for `IntoBytes11<AU16>` to implement `zerocopy_renamed::IntoBytes`
    --> tests/ui-stable/struct.rs:204:10
     |
