@@ -49,10 +49,9 @@ use crate::{
 ///     `Src`s
 /// - Reverse transmutation: Either of the following hold:
 ///   - `dst` does not permit mutation of its referent
-///   - The set of `DV`-valid referents of `dst` is a subset of the set of
-///     `SV`-valid referents of `src` (NOTE: this condition effectively bans
-///     shrinking or overwriting transmutes, which cannot satisfy this
-///     condition)
+///   - `<Dst as SizeEq<Src>>::CastFrom: CastExact`, and the set of `DV`-valid
+///     referents of `dst` is a subset of the set of `SV`-valid referents of
+///     `src`
 /// - No safe code, given access to `src` and `dst`, can cause undefined
 ///   behavior: Any of the following hold:
 ///   - `A` is `Exclusive`
@@ -92,9 +91,11 @@ use crate::{
 /// as an `SV`-valid `Src`. It is guaranteed to remain so, as either of the
 /// following hold:
 /// - `dst` does not permit mutation of its referent.
-/// - The set of `DV`-valid referents of `dst` is a subset of the set of
-///   `SV`-valid referents of `src`. Thus, any value written via `dst` is
-///   guaranteed to be an `SV`-valid referent of `src`.
+/// - `<Dst as SizeEq<Src>>::CastFrom: CastExact`, and the set of `DV`-valid
+///   referents of `dst` is a subset of the set of `SV`-valid referents of
+///   `src`. By `CastExact`, `src` and `dst` address the same number of bytes.
+///   Thus, any value written via `dst` is guaranteed to be an `SV`-valid
+///   referent of `src`.
 ///
 /// Fourth, `dst`'s validity is satisfied. It is a given of this proof that the
 /// referent is `DV`-valid for `Dst`. It is guaranteed to remain so, as either
@@ -125,10 +126,11 @@ pub enum BecauseMutationCompatible {}
 //     guarantees that the set of `DV`-valid `Dst`s is a supserset of the set of
 //     `SV`-valid `Src`s.
 // - Reverse transmutation: Since the underlying cast is performed using `<Dst
-//   as SizeEq<Src>>::CastFrom::project`, `dst` addresses the same bytes as
-//   `src`. By `Src: TransmuteFrom<Dst, DV, SV>`, the set of `DV`-valid `Dst`s
-//   is a subset of the set of `SV`-valid `Src`s. Thus, the set of `DV`-valid
-//   referents of `dst` is a subset of the set of `SV`-valid referents of `src`.
+//   as SizeEq<Src>>::CastFrom::project`, and since `Dst::CastFrom: CastExact`,
+//   `dst` addresses the same bytes as `src`. By `Src: TransmuteFrom<Dst, DV,
+//   SV>`, the set of `DV`-valid `Dst`s is a subset of the set of `SV`-valid
+//   `Src`s. Thus, the set of `DV`-valid referents of `dst` is a subset of the
+//   set of `SV`-valid referents of `src`.
 // - No safe code, given access to `src` and `dst`, can cause undefined
 //   behavior: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, at least one of
 //   the following holds:
@@ -144,6 +146,7 @@ where
     DV: Validity,
     Src: TransmuteFrom<Dst, DV, SV> + ?Sized,
     Dst: MutationCompatible<Src, A, SV, DV, R> + SizeEq<Src> + ?Sized,
+    Dst::CastFrom: cast::CastExact<Src, Dst>,
 {
 }
 
@@ -290,12 +293,12 @@ pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV> {}
 ///
 /// `SizeEq` on its own conveys no safety guarantee. Any safety guarantees come
 /// from the safety invariants on the associated [`CastFrom`] type, specifically
-/// the [`CastExact`] bound.
+/// the [`Cast`] bound.
 ///
 /// [`CastFrom`]: SizeEq::CastFrom
-/// [`CastExact`]: cast::CastExact
+/// [`Cast`]: cast::Cast
 pub trait SizeEq<Src: ?Sized> {
-    type CastFrom: cast::CastExact<Src, Self>;
+    type CastFrom: cast::Cast<Src, Self>;
 }
 
 impl<T: ?Sized> SizeEq<T> for T {
