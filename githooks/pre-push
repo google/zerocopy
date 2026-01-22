@@ -19,6 +19,7 @@ echo "Running pre-push git hook: $0"
 ./ci/check_all_toolchains_tested.sh >/dev/null & TOOLCHAINS_PID=$!
 ./ci/check_job_dependencies.sh      >/dev/null & JOB_DEPS_PID=$!
 ./ci/check_readme.sh                >/dev/null & README_PID=$!
+./ci/check_stale_stderr.sh          >/dev/null & STALE_STDERR_PID=$!
 ./ci/check_todo.sh                  >/dev/null & XODO_PID=$!
 ./ci/check_versions.sh              >/dev/null & VERSIONS_PID=$!
 ./ci/check_msrv_is_minimal.sh       >/dev/null & MSRV_PID=$!
@@ -34,6 +35,7 @@ wait $FMT_PID
 wait $TOOLCHAINS_PID
 wait $JOB_DEPS_PID
 wait $README_PID
+wait $STALE_STDERR_PID
 wait $XODO_PID
 wait $VERSIONS_PID
 wait $MSRV_PID
