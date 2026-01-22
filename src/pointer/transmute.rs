@@ -13,7 +13,10 @@ use core::{
 };
 
 use crate::{
-    pointer::{cast, invariant::*},
+    pointer::{
+        cast::{self, Cast, CastExact},
+        invariant::*,
+    },
     FromBytes, Immutable, IntoBytes, Unalign,
 };
 
@@ -30,31 +33,29 @@ use crate::{
 ///
 /// ## Post-conditions
 ///
-/// Given `Dst: TryTransmuteFromPtr<Src, A, SV, DV, _>`, callers may assume the
-/// following:
+/// Given `Dst: TryTransmuteFromPtr<Src, A, SV, DV, C, _>`, callers may assume
+/// the following:
 ///
 /// Given `src: Ptr<'a, Src, (A, _, SV)>`, if the referent of `src` is
 /// `DV`-valid for `Dst`, then it is sound to transmute `src` into `dst: Ptr<'a,
-/// Dst, (A, Unaligned, DV)>` using a address- and size-preserving cast.
+/// Dst, (A, Unaligned, DV)>` using `C`.
 ///
 /// ## Pre-conditions
 ///
 /// Given `src: Ptr<Src, (A, _, SV)>` and `dst: Ptr<Dst, (A, Unaligned, DV)>`,
-/// `Dst: TryTransmuteFromPtr<Src, A, SV, DV, _>` is sound if all of the
+/// `Dst: TryTransmuteFromPtr<Src, A, SV, DV, C, _>` is sound if all of the
 /// following hold:
 /// - Forwards transmutation: Either of the following hold:
 ///   - So long as `dst` is active, no mutation of `dst`'s referent is allowed
 ///     except via `dst` itself
 ///   - The set of `DV`-valid referents of `dst` is a superset of the set of
-///     `SV`-valid referents of `src` (NOTE: this condition effectively bans
-///     shrinking or overwriting transmutes, which cannot satisfy this
-///     condition)
+///     (the prefixes of) `SV`-valid referents of `src`. The "prefix" caveat is
+///     necessary since this may be a shrinking transmute – ie, `dst` addresses
+///     a smaller referent than `src`.
 /// - Reverse transmutation: Either of the following hold:
 ///   - `dst` does not permit mutation of its referent
-///   - The set of `DV`-valid referents of `dst` is a subset of the set of
-///     `SV`-valid referents of `src` (NOTE: this condition effectively bans
-///     shrinking or overwriting transmutes, which cannot satisfy this
-///     condition)
+///   - `C: CastExact`, and the set of `DV`-valid referents of `dst` is a
+///     subset of the set of `SV`-valid referents of `src`
 /// - No safe code, given access to `src` and `dst`, can cause undefined
 ///   behavior: Any of the following hold:
 ///   - `A` is `Exclusive`
@@ -68,13 +69,14 @@ use crate::{
 /// - `src: Ptr<'a, Src, (A, _, SV)>`
 /// - `src`'s referent is `DV`-valid for `Dst`
 ///
-/// We are trying to prove that it is sound to perform a size-preserving cast
-/// from `src` to a `dst: Ptr<'a, Dst, (A, Unaligned, DV)>`. We need to prove
-/// that such a cast does not violate any of `src`'s invariants, and that it
-/// satisfies all invariants of the destination `Ptr` type.
+/// We are trying to prove that it is sound to perform a cast from `src` to a
+/// `dst: Ptr<'a, Dst, (A, Unaligned, DV)>` using `C`. We need to prove that
+/// such a cast does not violate any of `src`'s invariants, and that it satisfies
+/// all invariants of the destination `Ptr` type.
 ///
-/// First, `src`'s address is unchanged, so it still satisfies its alignment.
-/// Since `dst`'s alignment is `Unaligned`, it trivially satisfies its alignment.
+/// First, by `C: Cast`, `src`'s address is unchanged, so it still satisfies its
+/// alignment. Since `dst`'s alignment is `Unaligned`, it trivially satisfies its
+/// alignment.
 ///
 /// Second, aliasing is either `Exclusive` or `Shared`:
 /// - If it is `Exclusive`, then both `src` and `dst` satisfy `Exclusive`
@@ -91,8 +93,9 @@ use crate::{
 /// as an `SV`-valid `Src`. It is guaranteed to remain so, as either of the
 /// following hold:
 /// - `dst` does not permit mutation of its referent.
-/// - The set of `DV`-valid referents of `dst` is a subset of the set of
-///   `SV`-valid referents of `src`. Thus, any value written via `dst` is
+/// - `C: CastExact`, and the set of `DV`-valid referents of `dst` is a subset
+///   of the set of `SV`-valid referents of `src`. By `CastExact`, `src` and
+///   `dst` address the same referent. Thus, any value written via `dst` is
 ///   guaranteed to be an `SV`-valid referent of `src`.
 ///
 /// Fourth, `dst`'s validity is satisfied. It is a given of this proof that the
@@ -101,9 +104,19 @@ use crate::{
 /// - So long as `dst` is active, no mutation of the referent is allowed except
 ///   via `dst` itself.
 /// - The set of `DV`-valid referents of `dst` is a superset of the set of
-///   `SV`-valid referents of `src`. Thus, any value written via `src` is
-///   guaranteed to be a `DV`-valid referent of `dst`.
-pub unsafe trait TryTransmuteFromPtr<Src: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R> {}
+///   (the prefixes of) `SV`-valid referents of `src`. Thus, (the prefix of) any
+///   value written via `src` is guaranteed to be a `DV`-valid referent of
+///   `dst`.
+pub unsafe trait TryTransmuteFromPtr<
+    Src: ?Sized,
+    A: Aliasing,
+    SV: Validity,
+    DV: Validity,
+    C: Cast<Src, Self>,
+    R,
+>
+{
+}
 
 #[allow(missing_copy_implementations, missing_debug_implementations)]
 pub enum BecauseMutationCompatible {}
@@ -117,14 +130,13 @@ pub enum BecauseMutationCompatible {}
 //       exists, no mutation is permitted except via that `Ptr`
 //     - Aliasing is `Shared`, `Src: Immutable`, and `Dst: Immutable`, in which
 //       case no mutation is possible via either `Ptr`
-//   - Since the underlying cast is size-preserving, `dst` addresses the same
-//     bytes as `src`. By `Dst: TransmuteFrom<Src, SV, DV>`, the set of
-//     `DV`-valid referents of `dst` is a superset of the set of `SV`-valid
-//     referents of `src`.
-// - Reverse transmutation: Since the underlying cast is size-preserving, `dst`
-//   addresses the same bytes as `src`. By `Src: TransmuteFrom<Dst, DV, SV>`, the
-//   set of `DV`-valid referents of `src` is a subset of the set of `SV`-valid
-//   referents of `dst`.
+//   - By `Dst: TransmuteFrom<Src, SV, DV>`, the set of `DV`-valid referents of
+//     `dst` is a supserset of the set of (the prefixes of) `SV`-valid referents
+//     of `src`.
+// - Reverse transmutation: Since `C: CastExact`, `dst` addresses the same
+//   referent as `src`. By `Src: TransmuteFrom<Dst, DV, SV>`, the set of
+//   `DV`-valid referents of `dst` is a subset of the set of `SV`-valid referents
+//   of `src`.
 // - No safe code, given access to `src` and `dst`, can cause undefined
 //   behavior: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, at least one of
 //   the following holds:
@@ -132,7 +144,7 @@ pub enum BecauseMutationCompatible {}
 //   - `Src: Immutable` and `Dst: Immutable`
 //   - `Dst: InvariantsEq<Src>`, which guarantees that `Src` and `Dst` have the
 //     same invariants, and have `UnsafeCell`s covering the same byte ranges
-unsafe impl<Src, Dst, SV, DV, A, R>
+unsafe impl<Src, Dst, SV, DV, A, C, R>
     TryTransmuteFromPtr<Src, A, SV, DV, (BecauseMutationCompatible, R)> for Dst
 where
     A: Aliasing,
@@ -140,6 +152,7 @@ where
     DV: Validity,
     Src: TransmuteFrom<Dst, DV, SV> + ?Sized,
     Dst: MutationCompatible<Src, A, SV, DV, R> + ?Sized,
+    C: CastExact<Src, Dst>,
 {
 }
 
@@ -150,12 +163,13 @@ where
 //   `dst` does not permit mutation of its referent.
 // - No safe code, given access to `src` and `dst`, can cause undefined
 //   behavior: `Src: Immutable` and `Dst: Immutable`
-unsafe impl<Src, Dst, SV, DV> TryTransmuteFromPtr<Src, Shared, SV, DV, BecauseImmutable> for Dst
+unsafe impl<Src, Dst, SV, DV, C> TryTransmuteFromPtr<Src, Shared, SV, DV, BecauseImmutable> for Dst
 where
     SV: Validity,
     DV: Validity,
     Src: Immutable + ?Sized,
     Dst: Immutable + ?Sized,
+    C: Cast<Src, Dst>,
 {
 }
 
@@ -247,19 +261,31 @@ unsafe impl<T: ?Sized> InvariantsEq<ManuallyDrop<T>> for T {}
 ///
 /// `Dst: TransmuteFromPtr<Src, A, SV, DV, _>` is equivalent to `Dst:
 /// TryTransmuteFromPtr<Src, A, SV, DV, _> + TransmuteFrom<Src, SV, DV>`.
-pub unsafe trait TransmuteFromPtr<Src: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R>:
-    TryTransmuteFromPtr<Src, A, SV, DV, R> + TransmuteFrom<Src, SV, DV>
+pub unsafe trait TransmuteFromPtr<
+    Src: ?Sized,
+    A: Aliasing,
+    SV: Validity,
+    DV: Validity,
+    C: Cast<Src, Self>,
+    R,
+>: TryTransmuteFromPtr<Src, A, SV, DV, C, R> + TransmuteFrom<Src, SV, DV>
 {
 }
 
 // SAFETY: The `where` bounds are equivalent to the safety invariant on
 // `TransmuteFromPtr`.
-unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R>
-    TransmuteFromPtr<Src, A, SV, DV, R> for Dst
+unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing, SV: Validity, DV: Validity, C: Cast<Src, Dst>, R>
+    TransmuteFromPtr<Src, A, SV, DV, C, R> for Dst
 where
-    Dst: TransmuteFrom<Src, SV, DV> + TryTransmuteFromPtr<Src, A, SV, DV, R>,
+    Dst: TransmuteFrom<Src, SV, DV> + TryTransmuteFromPtr<Src, A, SV, DV, C, R>,
 {
 }
+
+// TODO: We need to update the invariant of `TransmuteFrom` in order to make the
+// "reverse transmutation" impl of `TryTransmuteFromPtr` sound – currently, it
+// says that `Dst: TransmuteFrom<Src>` guarantees transmutation *even in the
+// case of a shrinking transmute*, but that's not currently guaranteed by
+// `TransmuteFrom`'s safety invariant.
 
 /// Denotes that any `SV`-valid `Src` may soundly be transmuted into a
 /// `DV`-valid `Self`.
@@ -286,12 +312,12 @@ pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV> {}
 ///
 /// `SizeEq` on its own conveys no safety guarantee. Any safety guarantees come
 /// from the safety invariants on the associated [`CastFrom`] type, specifically
-/// the [`CastExact`] bound.
+/// the [`Cast`] bound.
 ///
 /// [`CastFrom`]: SizeEq::CastFrom
-/// [`CastExact`]: cast::CastExact
+/// [`Cast`]: cast::Cast
 pub trait SizeEq<Src: ?Sized> {
-    type CastFrom: cast::CastExact<Src, Self>;
+    type CastFrom: cast::Cast<Src, Self>;
 }
 
 impl<T: ?Sized> SizeEq<T> for T {

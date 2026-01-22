@@ -381,7 +381,9 @@ mod _conversions {
         pub(crate) fn transmute<U, V, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
             V: Validity,
-            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + SizeEq<T> + ?Sized,
+            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, <U as SizeEq<T>>::CastFrom, R>
+                + SizeEq<T>
+                + ?Sized,
         {
             self.transmute_with::<U, V, <U as SizeEq<T>>::CastFrom, R>()
         }
@@ -389,13 +391,12 @@ mod _conversions {
         pub(crate) fn transmute_with<U, V, C, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
             V: Validity,
-            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + ?Sized,
-            C: crate::pointer::cast::CastExact<T, U>,
+            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, C, R> + ?Sized,
+            C: crate::pointer::cast::Cast<T, U>,
         {
             // SAFETY:
-            // - By `C: CastExact`, `C` preserves referent address, and so we
-            //   don't need to consider projections in the following safety
-            //   arguments.
+            // - By `C: Cast`, `C` preserves referent address, and so we don't
+            //   need to consider projections in the following safety arguments.
             // - If aliasing is `Shared`, then by `U: TransmuteFromPtr<T>`, at
             //   least one of the following holds:
             //   - `T: Immutable` and `U: Immutable`, in which case it is
@@ -403,10 +404,8 @@ mod _conversions {
             //     at the same time, as neither can perform interior mutation
             //   - It is directly guaranteed that it is sound for shared code to
             //     operate on these references simultaneously
-            // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
-            //   sound to perform this transmute using an address- and
-            //   size-preserving cast. By `C: CastExact`, `C` is address- and
-            //   size-preserving.
+            // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, C, V>`, it
+            //   is sound to perform this transmute using `C`.
             unsafe { self.project_transmute_unchecked::<_, _, C>() }
         }
 
