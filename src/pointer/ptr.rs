@@ -160,7 +160,7 @@ mod _external {
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
     use super::*;
-    use crate::pointer::cast::{CastExact, CastSized, IdCast};
+    use crate::pointer::cast::{Cast, CastSized, IdCast};
 
     /// `&'a T` → `Ptr<'a, T>`
     impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
@@ -392,12 +392,11 @@ mod _conversions {
         where
             V: Validity,
             U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, C, R> + ?Sized,
-            C: CastExact<T, U>,
+            C: Cast<T, U>,
         {
             // SAFETY:
-            // - By `C: CastExact`, `C` preserves referent address, and so we
-            //   don't need to consider projections in the following safety
-            //   arguments.
+            // - By `C: Cast`, `C` preserves referent address, and so we don't
+            //   need to consider projections in the following safety arguments.
             // - If aliasing is `Shared`, then by `U: TransmuteFromPtr<T>`, at
             //   least one of the following holds:
             //   - `T: Immutable` and `U: Immutable`, in which case it is
@@ -419,9 +418,9 @@ mod _conversions {
             T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, IdCast, R>,
         {
             // SAFETY:
-            // - By `SizeEq::CastFrom: Cast`, `SizeEq::CastFrom` preserves
-            //   referent address, and so we don't need to consider projections
-            //   in the following safety arguments.
+            // - By `IdCast: Cast`, `IdCast` preserves referent address, and so
+            //   we don't need to consider projections in the following safety
+            //   arguments.
             // - It is trivially sound to have multiple `&T` referencing the
             //   same referent simultaneously
             // - By `T: TransmuteFromPtr<T, I::Aliasing, I::Validity, IdCast,
@@ -976,21 +975,15 @@ mod _casts {
         T: 'a + KnownLayout + ?Sized,
         I: Invariants<Validity = Initialized>,
     {
-        // FIXME: Is there any way to teach Rust that, for all `T, A, R`, `T:
-        // Read<A, R>` implies `[u8]: Read<A, R>`?
-
         /// Casts this pointer-to-initialized into a pointer-to-bytes.
         #[allow(clippy::wrong_self_convention)]
         #[must_use]
         #[inline]
         pub fn as_bytes<R>(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Valid)>
         where
-            T: Read<I::Aliasing, R>,
-            [u8]: Read<I::Aliasing, R>,
-            I::Aliasing: Reference,
+            [u8]: TransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, AsBytesCast, R>,
         {
-            let ptr = self.cast::<_, AsBytesCast, _>();
-            ptr.bikeshed_recall_aligned().recall_validity::<Valid, (_, (_, _))>()
+            self.transmute_with::<[u8], Valid, AsBytesCast, _>().bikeshed_recall_aligned()
         }
     }
 
