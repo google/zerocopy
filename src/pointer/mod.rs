@@ -139,9 +139,10 @@ pub mod cast {
     // - Both sized and equal in size
     // - Both slice DSTs with the same trailing slice offset and element size
     //   and with align_of::<Src>() >= align_of::<Dst>(). These ensure that any
-    //   given pointer metadata encodes the same size for both `Src` and `Dst`
-    //   (note that the alignment is required as it affects the amount of
-    //   trailing padding).
+    //   given pointer metadata encodes the the same size or more size for `Src`
+    //   than for `Dst` (note that the alignment is required as it affects the
+    //   amount of trailing padding). Thus, `project` preserves or shrinks the
+    //   set of referent bytes.
     unsafe impl<Src, Dst> Project<Src, Dst> for CastUnsized
     where
         Src: ?Sized + KnownLayout,
