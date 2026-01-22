@@ -28,6 +28,8 @@ note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
     |     where
     |         Src: FromBytes + IntoBytes,
     |              ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::transmute_mut`
+    = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-f55a64d5bde52f24.long-type-18068695426725541387.txt'
+    = note: consider using `--verbose` to print the full type name to the console
     = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `Dst: FromBytes` is not satisfied
@@ -60,6 +62,8 @@ note: required by a bound in `Wrap::<&'a mut Src, &'a mut Dst>::transmute_mut`
 ...
     |         Dst: FromBytes + IntoBytes,
     |              ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::transmute_mut`
+    = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-f55a64d5bde52f24.long-type-18068695426725541387.txt'
+    = note: consider using `--verbose` to print the full type name to the console
     = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `Dst: IntoBytes` is not satisfied
