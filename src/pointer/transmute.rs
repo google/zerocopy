@@ -35,7 +35,7 @@ use crate::{
 ///
 /// Given `src: Ptr<'a, Src, (A, _, SV)>`, if the referent of `src` is
 /// `DV`-valid for `Dst`, then it is sound to transmute `src` into `dst: Ptr<'a,
-/// Dst, (A, Unaligned, DV)>` by preserving pointer address and metadata.
+/// Dst, (A, Unaligned, DV)>` using `<Dst as SizeEq<Src>>::CastFrom::project`.
 ///
 /// ## Pre-conditions
 ///
@@ -49,7 +49,10 @@ use crate::{
 ///     `Src`s
 /// - Reverse transmutation: Either of the following hold:
 ///   - `dst` does not permit mutation of its referent
-///   - The set of `DV`-valid `Dst`s is a subset of the set of `SV`-valid `Src`s
+///   - The set of `DV`-valid referents of `dst` is a subset of the set of
+///     `SV`-valid referents of `src` (NOTE: this condition effectively bans
+///     shrinking or overwriting transmutes, which cannot satisfy this
+///     condition)
 /// - No safe code, given access to `src` and `dst`, can cause undefined
 ///   behavior: Any of the following hold:
 ///   - `A` is `Exclusive`
@@ -64,30 +67,17 @@ use crate::{
 /// - `src`'s referent is `DV`-valid for `Dst`
 /// - `Dst: SizeEq<Src>`
 ///
-/// We are trying to prove that it is sound to perform a pointer address- and
-/// metadata-preserving transmute from `src` to a `dst: Ptr<'a, Dst, (A,
+/// We are trying to prove that it is sound to cast using `<Dst as
+/// SizeEq<Src>>::CastFrom::project` from `src` to a `dst: Ptr<'a, Dst, (A,
 /// Unaligned, DV)>`. We need to prove that such a transmute does not violate
 /// any of `src`'s invariants, and that it satisfies all invariants of the
 /// destination `Ptr` type.
 ///
-/// First, all of `src`'s `PtrInner` invariants are upheld. `src`'s address and
-/// metadata are unchanged, so:
-/// - If its referent is not zero sized, then it still has valid provenance for
-///   its referent, which is still entirely contained in some Rust allocation,
-///   `A`
-/// - If its referent is not zero sized, `A` is guaranteed to live for at least
-///   `'a`
+/// First, by invariant on `SizeEq`, `src`'s address is unchanged, so it still
+/// satisfies its alignment. Since `dst`'s alignment is `Unaligned`, it
+/// trivially satisfies its alignment.
 ///
-/// Since `Dst: SizeEq<Src>`, and since `dst` has the same address and metadata
-/// as `src`, `dst` addresses the same byte range as `src`. `dst` also has the
-/// same lifetime as `src`. Therefore, all of the `PtrInner` invariants
-/// mentioned above also hold for `dst`.
-///
-/// Second, since `src`'s address is unchanged, it still satisfies its
-/// alignment. Since `dst`'s alignment is `Unaligned`, it trivially satisfies
-/// its alignment.
-///
-/// Third, aliasing is either `Exclusive` or `Shared`:
+/// Second, aliasing is either `Exclusive` or `Shared`:
 /// - If it is `Exclusive`, then both `src` and `dst` satisfy `Exclusive`
 ///   aliasing trivially: since `src` and `dst` have the same lifetime, `src` is
 ///   inaccessible so long as `dst` is alive, and no other live `Ptr`s or
@@ -98,15 +88,15 @@ use crate::{
 ///   - It is explicitly sound for safe code to operate on a `&Src` and a `&Dst`
 ///     pointing to the same byte range at the same time.
 ///
-/// Fourth, `src`'s validity is satisfied. By invariant, `src`'s referent began
+/// Third, `src`'s validity is satisfied. By invariant, `src`'s referent began
 /// as an `SV`-valid `Src`. It is guaranteed to remain so, as either of the
 /// following hold:
 /// - `dst` does not permit mutation of its referent.
-/// - The set of `DV`-valid `Dst`s is a superset of the set of `SV`-valid
-///   `Src`s. Thus, any value written via `dst` is guaranteed to be `SV`-valid
-///   for `Src`.
+/// - The set of `DV`-valid referents of `dst` is a subset of the set of
+///   `SV`-valid referents of `src`. Thus, any value written via `dst` is
+///   guaranteed to be an `SV`-valid referent of `src`.
 ///
-/// Fifth, `dst`'s validity is satisfied. It is a given of this proof that the
+/// Fourth, `dst`'s validity is satisfied. It is a given of this proof that the
 /// referent is `DV`-valid for `Dst`. It is guaranteed to remain so, as either
 /// of the following hold:
 /// - So long as `dst` is active, no mutation of the referent is allowed except
@@ -134,9 +124,11 @@ pub enum BecauseMutationCompatible {}
 //   - `Dst: TransmuteFrom<Src, SV, DV>`. Since `Dst: SizeEq<Src>`, this bound
 //     guarantees that the set of `DV`-valid `Dst`s is a supserset of the set of
 //     `SV`-valid `Src`s.
-// - Reverse transmutation: `Src: TransmuteFrom<Dst, DV, SV>`. Since `Dst:
-//   SizeEq<Src>`, this guarantees that the set of `DV`-valid `Dst`s is a subset
-//   of the set of `SV`-valid `Src`s.
+// - Reverse transmutation: Since the underlying cast is performed using `<Dst
+//   as SizeEq<Src>>::CastFrom::project`, `dst` addresses the same bytes as
+//   `src`. By `Src: TransmuteFrom<Dst, DV, SV>`, the set of `DV`-valid `Dst`s
+//   is a subset of the set of `SV`-valid `Src`s. Thus, the set of `DV`-valid
+//   referents of `dst` is a subset of the set of `SV`-valid referents of `src`.
 // - No safe code, given access to `src` and `dst`, can cause undefined
 //   behavior: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, at least one of
 //   the following holds:
@@ -287,18 +279,20 @@ where
 /// DV>` conveys no safety guarantee.
 pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV> {}
 
+/// Carries the ability to perform a size-preserving cast or conversion from a
+/// raw pointer to `Src` to a raw pointer to `Self`.
+///
+/// The cast/conversion is carried by the associated [`CastFrom`] type, and
+/// may be a no-op cast (without updating pointer metadata) or a conversion
+/// which updates pointer metadata.
+///
 /// # Safety
 ///
-/// `T` and `Self` must have the same vtable kind (`Sized`, slice DST, `dyn`,
-/// etc) and have the same size. In particular:
-/// - If `T: Sized` and `Self: Sized`, then their sizes must be equal
-/// - If `T: ?Sized` and `Self: ?Sized`, then `Self::CastFrom` must be a
-///   size-preserving cast. *Note that it is **not** guaranteed that an `as`
-///   cast preserves referent size: it may be the case that `Self::CastFrom`
-///   modifies the pointer's metadata in order to preserve referent size, which
-///   an `as` cast does not do.*
-pub unsafe trait SizeEq<T: ?Sized> {
-    type CastFrom: cast::Cast<T, Self>;
+/// The associated [`CastFrom`] must preserve referent size.
+///
+/// [`CastFrom`]: SizeEq::CastFrom
+pub unsafe trait SizeEq<Src: ?Sized> {
+    type CastFrom: cast::Cast<Src, Self>;
 }
 
 // SAFETY: `T` trivially has the same size and vtable kind as `T`, and since
