@@ -160,7 +160,7 @@ mod _external {
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
     use super::*;
-    use crate::pointer::cast::{CastExact, CastSized, IdCast};
+    use crate::pointer::cast::{Cast, CastSized, IdCast};
 
     /// `&'a T` → `Ptr<'a, T>`
     impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
@@ -392,12 +392,11 @@ mod _conversions {
         where
             V: Validity,
             U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, C, R> + ?Sized,
-            C: CastExact<T, U>,
+            C: Cast<T, U>,
         {
             // SAFETY:
-            // - By `C: CastExact`, `C` preserves referent address, and so we
-            //   don't need to consider projections in the following safety
-            //   arguments.
+            // - By `C: Cast`, `C` preserves referent address, and so we don't
+            //   need to consider projections in the following safety arguments.
             // - If aliasing is `Shared`, then by `U: TransmuteFromPtr<T>`, at
             //   least one of the following holds:
             //   - `T: Immutable` and `U: Immutable`, in which case it is
@@ -419,9 +418,9 @@ mod _conversions {
             T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, IdCast, R>,
         {
             // SAFETY:
-            // - By `SizeEq::CastFrom: Cast`, `SizeEq::CastFrom` preserves
-            //   referent address, and so we don't need to consider projections
-            //   in the following safety arguments.
+            // - By `IdCast: Cast`, `IdCast` preserves referent address, and so
+            //   we don't need to consider projections in the following safety
+            //   arguments.
             // - It is trivially sound to have multiple `&T` referencing the
             //   same referent simultaneously
             // - By `T: TransmuteFromPtr<T, I::Aliasing, I::Validity, IdCast,
