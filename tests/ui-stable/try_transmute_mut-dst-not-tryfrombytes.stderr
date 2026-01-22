@@ -25,6 +25,8 @@ note: required by a bound in `ValidityError`
     |
     | pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
     |                                             ^^^^^^^^^^^^ required by this bound in `ValidityError`
+    = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-d11e3300a1923443.long-type-17924470280166915568.txt'
+    = note: consider using `--verbose` to print the full type name to the console
 
 error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
  --> tests/ui-stable/try_transmute_mut-dst-not-tryfrombytes.rs:18:63
@@ -56,6 +58,8 @@ note: required by a bound in `try_transmute_mut`
 ...
     |     Dst: TryFromBytes + IntoBytes,
     |          ^^^^^^^^^^^^ required by this bound in `try_transmute_mut`
+    = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-d11e3300a1923443.long-type-17924470280166915568.txt'
+    = note: consider using `--verbose` to print the full type name to the console
     = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: IntoBytes` is not satisfied
@@ -117,4 +121,6 @@ note: required by a bound in `ValidityError`
     |
     | pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
     |                                             ^^^^^^^^^^^^ required by this bound in `ValidityError`
+    = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-d11e3300a1923443.long-type-17924470280166915568.txt'
+    = note: consider using `--verbose` to print the full type name to the console
     = note: this error originates in the macro `try_transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)

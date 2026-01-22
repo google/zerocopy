@@ -8,20 +8,20 @@
 // those terms.
 
 use zerocopy::pointer::{
-    invariant::{Aligned, Exclusive, Shared, Valid},
+    invariant::{Aligned, Exclusive, Safe, Shared},
     Ptr,
 };
 
 fn _when_exclusive<'big: 'small, 'small>(
-    big: Ptr<'small, &'big u32, (Exclusive, Aligned, Valid)>,
-    mut _small: Ptr<'small, &'small u32, (Exclusive, Aligned, Valid)>,
+    big: Ptr<'small, &'big u32, (Exclusive, Aligned, Safe)>,
+    mut _small: Ptr<'small, &'small u32, (Exclusive, Aligned, Safe)>,
 ) {
     _small = big;
 }
 
 fn _when_shared<'big: 'small, 'small>(
-    big: Ptr<'small, &'big u32, (Shared, Aligned, Valid)>,
-    mut _small: Ptr<'small, &'small u32, (Shared, Aligned, Valid)>,
+    big: Ptr<'small, &'big u32, (Shared, Aligned, Safe)>,
+    mut _small: Ptr<'small, &'small u32, (Shared, Aligned, Safe)>,
 ) {
     _small = big;
 }
