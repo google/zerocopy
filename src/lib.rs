@@ -1231,9 +1231,9 @@ where
                             // cannot be used to discriminate between variants.
                             ValidityKind::Uninit | ValidityKind::Initialized => true,
                             // The projectability of an enum field from an
-                            // `AsInitialized` or `Valid` state is a dynamic
+                            // `AsInitialized` or `Safe` state is a dynamic
                             // property of its tag.
-                            ValidityKind::AsInitialized | ValidityKind::Valid => false,
+                            ValidityKind::AsInitialized | ValidityKind::Safe => false,
                         }
                     }
                 };
@@ -3096,8 +3096,8 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
 
     fn _assert_same_size_and_validity<T>()
     where
-        Wrapping<T>: pointer::TransmuteFrom<T, invariant::Valid, invariant::Valid>,
-        T: pointer::TransmuteFrom<Wrapping<T>, invariant::Valid, invariant::Valid>,
+        Wrapping<T>: pointer::TransmuteFrom<T, invariant::Safe, invariant::Safe>,
+        T: pointer::TransmuteFrom<Wrapping<T>, invariant::Safe, invariant::Safe>,
     {
     }
 
