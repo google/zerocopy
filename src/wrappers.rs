@@ -684,6 +684,18 @@ const _: () = {
     impl<T: ?Sized> SizeEq<T> for ReadOnly<T> {
         type CastFrom = CastToReadOnly;
     }
+
+    // SAFETY: TODO
+    unsafe impl<T: ?Sized> crate::pointer::cast::Wrapped for ReadOnly<T> {
+        type Unwrapped = T;
+        type CastToUnwrapped = CastFromReadOnly;
+        type CastFromUnwrapped = CastToReadOnly;
+    }
+
+    // SAFETY: TODO
+    unsafe impl<T: ?Sized, F: ?Sized> crate::pointer::cast::HasWrappedField<F> for ReadOnly<T> {
+        type WrappedField = ReadOnly<F>;
+    }
 };
 
 // SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
