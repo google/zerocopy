@@ -2040,9 +2040,7 @@ pub unsafe trait TryFromBytes {
                 // condition will not happen.
                 match source.try_into_valid() {
                     Ok(source) => Ok(source.as_mut()),
-                    Err(e) => {
-                        Err(e.map_src(|src| src.as_bytes::<BecauseExclusive>().as_mut()).into())
-                    }
+                    Err(e) => Err(e.map_src(|src| src.as_bytes().as_mut()).into()),
                 }
             }
             Err(e) => Err(e.map_src(Ptr::as_mut).into()),
@@ -2622,9 +2620,7 @@ pub unsafe trait TryFromBytes {
                 // condition will not happen.
                 match source.try_into_valid() {
                     Ok(source) => Ok(source.as_mut()),
-                    Err(e) => {
-                        Err(e.map_src(|src| src.as_bytes::<BecauseExclusive>().as_mut()).into())
-                    }
+                    Err(e) => Err(e.map_src(|src| src.as_bytes().as_mut()).into()),
                 }
             }
             Err(e) => Err(e.map_src(Ptr::as_mut).into()),
@@ -3044,7 +3040,7 @@ fn try_mut_from_prefix_suffix<T: IntoBytes + TryFromBytes + KnownLayout + ?Sized
             // condition will not happen.
             match candidate.try_into_valid() {
                 Ok(valid) => Ok((valid.as_mut(), prefix_suffix.as_mut())),
-                Err(e) => Err(e.map_src(|src| src.as_bytes::<BecauseExclusive>().as_mut()).into()),
+                Err(e) => Err(e.map_src(|src| src.as_bytes().as_mut()).into()),
             }
         }
         Err(e) => Err(e.map_src(Ptr::as_mut).into()),
@@ -4849,7 +4845,7 @@ pub unsafe trait FromBytes: FromZeros {
         // cannot be violated even though `buf` may have more permissive bit
         // validity than `ptr`.
         let ptr = unsafe { ptr.assume_validity::<invariant::Initialized>() };
-        let ptr = ptr.as_bytes::<BecauseExclusive>();
+        let ptr = ptr.as_bytes();
         src.read_exact(ptr.as_mut())?;
         // SAFETY: `buf` entirely consists of initialized bytes, and `Self` is
         // `FromBytes`.
