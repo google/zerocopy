@@ -29,6 +29,7 @@ use core::{
 
 use crate::{
     pointer::{
+        cast::{CastSized, IdCast},
         invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
         BecauseInvariantsEq, TryTransmuteFromPtr,
     },
@@ -623,20 +624,17 @@ where
     Src: invariant::Read<I::Aliasing, R>,
     Dst: TryFromBytes
         + invariant::Read<I::Aliasing, R>
-        + TryTransmuteFromPtr<Dst, I::Aliasing, invariant::Initialized, invariant::Valid, S>,
+        + TryTransmuteFromPtr<Dst, I::Aliasing, invariant::Initialized, invariant::Valid, IdCast, S>,
     I: Invariants<Validity = invariant::Initialized>,
     I::Aliasing: invariant::Reference,
 {
-    static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
-
-    let c_ptr = src.cast::<_, crate::pointer::cast::CastSized, _>();
-
+    let c_ptr = src.cast::<_, CastSized, _>();
     match c_ptr.try_into_valid() {
         Ok(ptr) => Ok(ptr),
         Err(err) => {
             // Re-cast `Ptr<Dst>` to `Ptr<Src>`.
             let ptr = err.into_src();
-            let ptr = ptr.cast::<_, crate::pointer::cast::CastSized, _>();
+            let ptr = ptr.cast::<_, CastSized, _>();
             // SAFETY: `ptr` is `src`, and has the same alignment invariant.
             let ptr = unsafe { ptr.assume_alignment::<I::Alignment>() };
             // SAFETY: `ptr` is `src` and has the same validity invariant.
