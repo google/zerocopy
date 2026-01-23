@@ -31,9 +31,9 @@ use crate::{
     pointer::{
         cast::{CastSized, IdCast},
         invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
-        BecauseInvariantsEq, TryTransmuteFromPtr,
+        BecauseInvariantsEq, Read, TryTransmuteFromPtr,
     },
-    FromBytes, Immutable, IntoBytes, KnownLayout, Ptr, TryFromBytes, ValidityError,
+    FromBytes, Immutable, IntoBytes, KnownLayout, Ptr, ReadOnly, TryFromBytes, ValidityError,
 };
 
 /// Projects the type of the field at `Index` in `Self` without regard for field
@@ -637,6 +637,7 @@ where
     Dst: TryFromBytes
         + invariant::Read<I::Aliasing, R>
         + TryTransmuteFromPtr<Dst, I::Aliasing, invariant::Initialized, invariant::Valid, IdCast, S>,
+    ReadOnly<Dst>: Read<I::Aliasing, R>,
     I: Invariants<Validity = invariant::Initialized>,
     I::Aliasing: invariant::Reference,
 {
@@ -682,23 +683,23 @@ where
     // - `&mu_src`'s referent is bit-valid
     let mu_src_copy = unsafe { core::ptr::read(&mu_src) };
     // SAFETY: `MaybeUninit` has no validity constraints.
-    let mut mu_dst: mem::MaybeUninit<Dst> =
+    let mu_dst: mem::MaybeUninit<ReadOnly<Dst>> =
         unsafe { crate::util::transmute_unchecked(mu_src_copy) };
 
-    let ptr = Ptr::from_mut(&mut mu_dst);
+    let ptr = Ptr::from_ref(&mu_dst);
 
     // SAFETY: Since `Src: IntoBytes`, and since `size_of::<Src>() ==
     // size_of::<Dst>()` by the preceding assertion, all of `mu_dst`'s bytes are
     // initialized.
     let ptr = unsafe { ptr.assume_validity::<invariant::Initialized>() };
 
-    let ptr: Ptr<'_, Dst, _> = ptr.cast::<_, crate::pointer::cast::CastSized, _>();
+    let ptr: Ptr<'_, ReadOnly<Dst>, _> = ptr.cast::<_, crate::pointer::cast::CastSized, _>();
 
-    if Dst::is_bit_valid(ptr.forget_aligned()) {
+    if Dst::is_bit_valid(ptr.transmute::<_, _, BecauseImmutable>().forget_aligned()) {
         // SAFETY: Since `Dst::is_bit_valid`, we know that `ptr`'s referent is
         // bit-valid for `Dst`. `ptr` points to `mu_dst`, and no intervening
         // operations have mutated it, so it is a bit-valid `Dst`.
-        Ok(unsafe { mu_dst.assume_init() })
+        Ok(ReadOnly::into_inner(unsafe { mu_dst.assume_init() }))
     } else {
         // SAFETY: `mu_src` was constructed from `src` and never modified, so it
         // is still bit-valid.
