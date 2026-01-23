@@ -160,7 +160,7 @@ mod _external {
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
     use super::*;
-    use crate::pointer::cast::CastSized;
+    use crate::pointer::cast::{CastExact, CastSized, IdCast};
 
     /// `&'a T` → `Ptr<'a, T>`
     impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
@@ -381,7 +381,9 @@ mod _conversions {
         pub(crate) fn transmute<U, V, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
             V: Validity,
-            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + SizeEq<T> + ?Sized,
+            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, <U as SizeEq<T>>::CastFrom, R>
+                + SizeEq<T>
+                + ?Sized,
         {
             self.transmute_with::<U, V, <U as SizeEq<T>>::CastFrom, R>()
         }
@@ -389,8 +391,8 @@ mod _conversions {
         pub(crate) fn transmute_with<U, V, C, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
             V: Validity,
-            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + ?Sized,
-            C: crate::pointer::cast::CastExact<T, U>,
+            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, C, R> + ?Sized,
+            C: CastExact<T, U>,
         {
             // SAFETY:
             // - By `C: CastExact`, `C` preserves referent address, and so we
@@ -403,10 +405,8 @@ mod _conversions {
             //     at the same time, as neither can perform interior mutation
             //   - It is directly guaranteed that it is sound for shared code to
             //     operate on these references simultaneously
-            // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
-            //   sound to perform this transmute using an address- and
-            //   size-preserving cast. By `C: CastExact`, `C` is address- and
-            //   size-preserving.
+            // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, C, V>`, it
+            //   is sound to perform this transmute using `C`.
             unsafe { self.project_transmute_unchecked::<_, _, C>() }
         }
 
@@ -416,7 +416,7 @@ mod _conversions {
         pub fn recall_validity<V, R>(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, V)>
         where
             V: Validity,
-            T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R>,
+            T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, IdCast, R>,
         {
             // SAFETY:
             // - By `SizeEq::CastFrom: Cast`, `SizeEq::CastFrom` preserves
@@ -424,11 +424,9 @@ mod _conversions {
             //   in the following safety arguments.
             // - It is trivially sound to have multiple `&T` referencing the
             //   same referent simultaneously
-            // - By `T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
-            //   sound to perform this transmute using an address- and
-            //   size-preserving cast (which `IdCast` is).
-            let ptr =
-                unsafe { self.project_transmute_unchecked::<_, _, crate::pointer::cast::IdCast>() };
+            // - By `T: TransmuteFromPtr<T, I::Aliasing, I::Validity, IdCast,
+            //   V>`, it is sound to perform this transmute using `IdCast`.
+            let ptr = unsafe { self.project_transmute_unchecked::<_, _, IdCast>() };
             // SAFETY: `self` and `ptr` have the same address and referent type.
             // Therefore, if `self` satisfies `I::Alignment`, then so does
             // `ptr`.
@@ -567,7 +565,7 @@ mod _conversions {
 /// State transitions between invariants.
 mod _transitions {
     use super::*;
-    use crate::pointer::transmute::TryTransmuteFromPtr;
+    use crate::pointer::{cast::IdCast, transmute::TryTransmuteFromPtr};
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
@@ -838,7 +836,7 @@ mod _transitions {
         where
             T: TryFromBytes
                 + Read<I::Aliasing, R>
-                + TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, S>,
+                + TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, IdCast, S>,
             I::Aliasing: Reference,
             I: Invariants<Validity = Initialized>,
         {
@@ -976,23 +974,17 @@ mod _casts {
     impl<'a, T, I> Ptr<'a, T, I>
     where
         T: 'a + KnownLayout + ?Sized,
-        I: Invariants<Validity = Initialized>,
+        I: Invariants,
     {
-        // FIXME: Is there any way to teach Rust that, for all `T, A, R`, `T:
-        // Read<A, R>` implies `[u8]: Read<A, R>`?
-
         /// Casts this pointer-to-initialized into a pointer-to-bytes.
         #[allow(clippy::wrong_self_convention)]
         #[must_use]
         #[inline]
         pub fn as_bytes<R>(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Valid)>
         where
-            T: Read<I::Aliasing, R>,
-            [u8]: Read<I::Aliasing, R>,
-            I::Aliasing: Reference,
+            [u8]: TransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, AsBytesCast, R>,
         {
-            let ptr = self.cast::<_, AsBytesCast, _>();
-            ptr.bikeshed_recall_aligned().recall_validity::<Valid, (_, (_, _))>()
+            self.transmute_with::<[u8], Valid, AsBytesCast, _>().bikeshed_recall_aligned()
         }
     }
 
