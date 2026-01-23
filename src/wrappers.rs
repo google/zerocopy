@@ -149,7 +149,7 @@ const _: () = unsafe {
     impl_or_verify!(T: Immutable => Immutable for Unalign<T>);
     impl_or_verify!(
         T: TryFromBytes => TryFromBytes for Unalign<T>;
-        |c| T::is_bit_valid(c.transmute())
+        |c| T::is_bit_valid(c.transmute::<_, _, BecauseImmutable>())
     );
     impl_or_verify!(T: FromZeros => FromZeros for Unalign<T>);
     impl_or_verify!(T: FromBytes => FromBytes for Unalign<T>);
@@ -618,9 +618,17 @@ mod read_only_def {
 
     impl<T> ReadOnly<T> {
         /// Creates a new `ReadOnly`.
+        #[must_use]
         #[inline(always)]
         pub const fn new(t: T) -> ReadOnly<T> {
             ReadOnly { inner: t }
+        }
+
+        /// Returns the inner value.
+        #[must_use]
+        #[inline(always)]
+        pub fn into_inner(r: ReadOnly<T>) -> T {
+            r.inner
         }
     }
 
@@ -652,10 +660,18 @@ const _: () = unsafe {
 // SAFETY:
 // - `ReadOnly<T>` has the same alignment as `T`, and so it is `Unaligned`
 //   exactly when `T` is as well.
-// - `ReadOnly<T>` has the same bit validity as `T`, and so it is `IntoBytes`
-//   exactly when `T` is as well.
+// - `ReadOnly<T>` has the same bit validity as `T`, and so this `is_bit_valid`
+//   implementation is correct, and thus the `TryFromBytes` impl is sound.
+// - `ReadOnly<T>` has the same bit validity as `T`, and so it is `FromZeros`,
+//   `FromBytes`, and `IntoBytes` exactly when `T` is as well.
 const _: () = unsafe {
     unsafe_impl!(T: ?Sized + Unaligned => Unaligned for ReadOnly<T>);
+    unsafe_impl!(
+        T: ?Sized + TryFromBytes => TryFromBytes for ReadOnly<T>;
+        |c| T::is_bit_valid(c.cast::<_, <ReadOnly<T> as SizeEq<ReadOnly<ReadOnly<T>>>>::CastFrom, _>())
+    );
+    unsafe_impl!(T: ?Sized + FromZeros => FromZeros for ReadOnly<T>);
+    unsafe_impl!(T: ?Sized + FromBytes => FromBytes for ReadOnly<T>);
     unsafe_impl!(T: ?Sized + IntoBytes => IntoBytes for ReadOnly<T>);
 };
 
@@ -683,6 +699,16 @@ const _: () = {
 
     impl<T: ?Sized> SizeEq<T> for ReadOnly<T> {
         type CastFrom = CastToReadOnly;
+    }
+
+    impl<T: ?Sized> crate::pointer::cast::Wrapped for ReadOnly<T> {
+        type Unwrapped = T;
+        type CastToUnwrapped = CastFromReadOnly;
+        type CastFromUnwrapped = CastToReadOnly;
+    }
+
+    impl<T: ?Sized, F: ?Sized> crate::pointer::cast::HasWrappedField<F> for ReadOnly<T> {
+        type WrappedField = ReadOnly<F>;
     }
 };
 
@@ -728,6 +754,138 @@ impl<T: ?Sized + Immutable + Debug> Debug for ReadOnly<T> {
         self.deref().fmt(f)
     }
 }
+
+// SAFETY: TODO
+unsafe impl<T, Field, const FIELD_ID: i128> HasField<Field, { crate::STRUCT_VARIANT_ID }, FIELD_ID>
+    for ReadOnly<T>
+where
+    T: HasField<Field, { crate::STRUCT_VARIANT_ID }, FIELD_ID> + ?Sized,
+{
+    #[allow(clippy::missing_inline_in_public_items)]
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized,
+    {
+    }
+
+    type Type = ReadOnly<T::Type>;
+
+    #[inline(always)]
+    fn project(slf: PtrInner<'_, Self>) -> *mut ReadOnly<T::Type> {
+        slf.project::<_, <T as SizeEq<ReadOnly<T>>>::CastFrom>()
+            .project::<_, crate::pointer::cast::Projection<Field, { crate::STRUCT_VARIANT_ID }, FIELD_ID>>()
+            .project::<_, <ReadOnly<T::Type> as SizeEq<T::Type>>::CastFrom>()
+            .as_non_null()
+            .as_ptr()
+    }
+}
+
+// SAFETY: TODO
+unsafe impl<T, Field, I, const FIELD_ID: i128>
+    ProjectField<Field, I, { crate::STRUCT_VARIANT_ID }, FIELD_ID> for ReadOnly<T>
+where
+    T: ProjectField<Field, I, { crate::STRUCT_VARIANT_ID }, FIELD_ID> + ?Sized,
+    I: invariant::Invariants,
+{
+    #[allow(clippy::missing_inline_in_public_items)]
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized,
+    {
+    }
+
+    type Invariants = T::Invariants;
+
+    type Error = T::Error;
+
+    #[inline(always)]
+    fn is_projectable<'a>(ptr: Ptr<'a, Self, I>) -> Result<Ptr<'a, Self, I>, Self::Error> {
+        Ok(ptr)
+    }
+}
+
+// pub unsafe trait ProjectField<Field, I, const VARIANT_ID: i128, const FIELD_ID: i128>:
+//     HasField<Field, VARIANT_ID, FIELD_ID>
+// where
+//     I: invariant::Invariants,
+// {
+//     fn only_derive_is_allowed_to_implement_this_trait()
+//     where
+//         Self: Sized;
+
+//     /// The invariants of the projected field pointer, with respect to the
+//     /// invariants, `I`, of the containing pointer. The aliasing dimension of
+//     /// the invariants is guaranteed to remain unchanged.
+//     type Invariants: invariant::Invariants<Aliasing = I::Aliasing>;
+
+//     /// The failure mode of projection. `()` if the projection is fallible,
+//     /// otherwise [`core::convert::Infallible`].
+//     type Error;
+
+//     /// Is the given field projectable from `ptr`?
+//     ///
+//     /// If a field with [`Self::Invariants`] is projectable from the referent,
+//     /// this function produces an `Ok(ptr)` from which the projection can be
+//     /// made; otherwise `Err`.
+//     ///
+//     /// This method must be overriden if the field's projectability depends on
+//     /// the value of the bytes in `ptr`.
+//     #[inline(always)]
+//     fn is_projectable<'a>(ptr: Ptr<'a, Self, I>) -> Result<Ptr<'a, Self, I>, Self::Error> {
+//         trait IsInfallible {
+//             const IS_INFALLIBLE: bool;
+//         }
+
+//         struct Projection<T, Field, I, const VARIANT_ID: i128, const FIELD_ID: i128>(
+//             PhantomData<(Field, I, T)>,
+//         )
+//         where
+//             T: ?Sized + HasField<Field, VARIANT_ID, FIELD_ID>,
+//             I: invariant::Invariants;
+
+//         impl<T, Field, I, const VARIANT_ID: i128, const FIELD_ID: i128> IsInfallible
+//             for Projection<T, Field, I, VARIANT_ID, FIELD_ID>
+//         where
+//             T: ?Sized + HasField<Field, VARIANT_ID, FIELD_ID>,
+//             I: invariant::Invariants,
+//         {
+//             const IS_INFALLIBLE: bool = {
+//                 let is_infallible = match VARIANT_ID {
+//                     // For nondestructive projections of struct and union
+//                     // fields, the projected field's satisfaction of
+//                     // `Invariants` does not depend on the value of the
+//                     // referent. This default implementation of `is_projectable`
+//                     // is non-destructive, as it does not overwrite any part of
+//                     // the referent.
+//                     crate::STRUCT_VARIANT_ID | crate::UNION_VARIANT_ID => true,
+//                     _enum_variant => {
+//                         use crate::invariant::{Validity, ValidityKind};
+//                         match I::Validity::KIND {
+//                             // The projectability of a field from an `Uninit` or
+//                             // `Initialized` union cannot generally depend on
+//                             // the referent's value, because the union's
+//                             // discriminant is not in a valid state, and thus
+//                             // cannot be used to discriminate between variants.
+//                             ValidityKind::Uninit | ValidityKind::Initialized => true,
+//                             // The projectability of an enum field from an
+//                             // `AsInitialized` or `Valid` state is a dynamic
+//                             // property of its tag.
+//                             ValidityKind::AsInitialized | ValidityKind::Valid => false,
+//                         }
+//                     }
+//                 };
+//                 const_assert!(is_infallible);
+//                 is_infallible
+//             };
+//         }
+
+//         const_assert!(
+//             <Projection<Self, Field, I, VARIANT_ID, FIELD_ID> as IsInfallible>::IS_INFALLIBLE
+//         );
+
+//         Ok(ptr)
+//     }
+// }
 
 #[cfg(test)]
 mod tests {
