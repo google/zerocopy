@@ -149,7 +149,7 @@ const _: () = unsafe {
     impl_or_verify!(T: Immutable => Immutable for Unalign<T>);
     impl_or_verify!(
         T: TryFromBytes => TryFromBytes for Unalign<T>;
-        |c| T::is_bit_valid(c.transmute())
+        |c| T::is_bit_valid(c.transmute::<_, _, BecauseImmutable>())
     );
     impl_or_verify!(T: FromZeros => FromZeros for Unalign<T>);
     impl_or_verify!(T: FromBytes => FromBytes for Unalign<T>);
@@ -618,9 +618,17 @@ mod read_only_def {
 
     impl<T> ReadOnly<T> {
         /// Creates a new `ReadOnly`.
+        #[must_use]
         #[inline(always)]
         pub const fn new(t: T) -> ReadOnly<T> {
             ReadOnly { inner: t }
+        }
+
+        /// Returns the inner value.
+        #[must_use]
+        #[inline(always)]
+        pub fn into_inner(r: ReadOnly<T>) -> T {
+            r.inner
         }
     }
 
@@ -652,10 +660,18 @@ const _: () = unsafe {
 // SAFETY:
 // - `ReadOnly<T>` has the same alignment as `T`, and so it is `Unaligned`
 //   exactly when `T` is as well.
-// - `ReadOnly<T>` has the same bit validity as `T`, and so it is `IntoBytes`
-//   exactly when `T` is as well.
+// - `ReadOnly<T>` has the same bit validity as `T`, and so this `is_bit_valid`
+//   implementation is correct, and thus the `TryFromBytes` impl is sound.
+// - `ReadOnly<T>` has the same bit validity as `T`, and so it is `FromZeros`,
+//   `FromBytes`, and `IntoBytes` exactly when `T` is as well.
 const _: () = unsafe {
     unsafe_impl!(T: ?Sized + Unaligned => Unaligned for ReadOnly<T>);
+    unsafe_impl!(
+        T: ?Sized + TryFromBytes => TryFromBytes for ReadOnly<T>;
+        |c| T::is_bit_valid(c.cast::<_, <ReadOnly<T> as SizeEq<ReadOnly<ReadOnly<T>>>>::CastFrom, _>())
+    );
+    unsafe_impl!(T: ?Sized + FromZeros => FromZeros for ReadOnly<T>);
+    unsafe_impl!(T: ?Sized + FromBytes => FromBytes for ReadOnly<T>);
     unsafe_impl!(T: ?Sized + IntoBytes => IntoBytes for ReadOnly<T>);
 };
 
@@ -726,6 +742,94 @@ impl<T: ?Sized + Immutable + Debug> Debug for ReadOnly<T> {
     #[inline(always)]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         self.deref().fmt(f)
+    }
+}
+
+trait StructOrUnionVariantId<const VARIANT_ID: i128> {}
+
+impl StructOrUnionVariantId<{ crate::STRUCT_VARIANT_ID }> for () {}
+impl StructOrUnionVariantId<{ crate::UNION_VARIANT_ID }> for () {}
+impl StructOrUnionVariantId<{ crate::REPR_C_UNION_VARIANT_ID }> for () {}
+
+// TODO: Update this safety comment to support `UNION_VARIANT_ID` too.
+
+// SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
+// has the same fields at the same offsets. Thus, it satisfies the safety
+// invariants of `HasField<Field, STRUCT_VARIANT_ID, FIELD_ID>` for field `f`
+// exactly when `T` does, as guaranteed by the `T: HasField` bound:
+// - `ReadOnly` and `T` are both struct types, so `VARIANT_ID` is
+//   `STRUCT_VARIANT_ID`.
+// - By `T: HasField<_, _, FIELD_ID>`:
+//   - `T` has a field `f` with name `n` such that
+//     `FIELD_ID = zerocopy::ident_id!(n)` or at index `i` such that
+//     `FIELD_ID = zerocopy::ident_id!(i)`.
+//   - `Field` has the same visibility as `f`.
+//   - `T::Type` has the same type as `f`. Thus, `ReadOnly<T::Type>` has the
+//     same type as `f`, wrapped in `ReadOnly`.
+//
+// `project` satisfies its post-condition – namely, that the returned pointer
+// refers to a non-strict subset of the bytes of `slf`'s referent, and has the
+// same provenance as `slf` – because all intermediate operations satisfy those
+// same conditions.
+unsafe impl<T, Field, const VARIANT_ID: i128, const FIELD_ID: i128>
+    HasField<Field, VARIANT_ID, FIELD_ID> for ReadOnly<T>
+where
+    T: HasField<Field, VARIANT_ID, FIELD_ID> + ?Sized,
+    (): StructOrUnionVariantId<VARIANT_ID>,
+{
+    #[allow(clippy::missing_inline_in_public_items)]
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized,
+    {
+    }
+
+    type Type = ReadOnly<T::Type>;
+
+    type Tag = T::Tag;
+
+    type ProjectToTag = crate::pointer::cast::TransitiveProject<
+        T,
+        <T as SizeEq<ReadOnly<T>>>::CastFrom,
+        T::ProjectToTag,
+    >;
+
+    #[inline(always)]
+    fn project(slf: PtrInner<'_, Self>) -> *mut ReadOnly<T::Type> {
+        slf.project::<_, <T as SizeEq<ReadOnly<T>>>::CastFrom>()
+            .project::<_, crate::pointer::cast::Projection<Field, VARIANT_ID, FIELD_ID>>()
+            .project::<_, <ReadOnly<T::Type> as SizeEq<T::Type>>::CastFrom>()
+            .as_non_null()
+            .as_ptr()
+    }
+}
+
+// SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
+// has the same fields at the same offsets. `is_projectable` always returns
+// `Ok`, and so it must always be sound to project a `Ptr<'_, ReadOnly<T>, I>`
+// to a `Ptr<'_, ReadOnly<T::Type>, T::Invariants>` via `<ReadOnly<T> as
+// HasField<...>>::project`. TODO...
+unsafe impl<T, Field, I, const VARIANT_ID: i128, const FIELD_ID: i128>
+    ProjectField<Field, I, VARIANT_ID, FIELD_ID> for ReadOnly<T>
+where
+    T: ProjectField<Field, I, VARIANT_ID, FIELD_ID> + ?Sized,
+    I: invariant::Invariants,
+    (): StructOrUnionVariantId<VARIANT_ID>,
+{
+    #[allow(clippy::missing_inline_in_public_items)]
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized,
+    {
+    }
+
+    type Invariants = T::Invariants;
+
+    type Error = T::Error;
+
+    #[inline(always)]
+    fn is_projectable<'a>(ptr: Ptr<'a, Self::Tag, I>) -> Result<(), Self::Error> {
+        T::is_projectable(ptr)
     }
 }
 
