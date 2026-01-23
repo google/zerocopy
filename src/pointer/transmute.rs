@@ -35,7 +35,7 @@ use crate::{
 ///
 /// Given `src: Ptr<'a, Src, (A, _, SV)>`, if the referent of `src` is
 /// `DV`-valid for `Dst`, then it is sound to transmute `src` into `dst: Ptr<'a,
-/// Dst, (A, Unaligned, DV)>` using `<Dst as SizeEq<Src>>::CastFrom::project`.
+/// Dst, (A, Unaligned, DV)>` using a address- and size-preserving cast.
 ///
 /// ## Pre-conditions
 ///
@@ -67,17 +67,14 @@ use crate::{
 /// Given:
 /// - `src: Ptr<'a, Src, (A, _, SV)>`
 /// - `src`'s referent is `DV`-valid for `Dst`
-/// - `Dst: SizeEq<Src>`
 ///
-/// We are trying to prove that it is sound to cast using `<Dst as
-/// SizeEq<Src>>::CastFrom::project` from `src` to a `dst: Ptr<'a, Dst, (A,
-/// Unaligned, DV)>`. We need to prove that such a transmute does not violate
-/// any of `src`'s invariants, and that it satisfies all invariants of the
-/// destination `Ptr` type.
+/// We are trying to prove that it is sound to perform a size-preserving cast
+/// from `src` to a `dst: Ptr<'a, Dst, (A, Unaligned, DV)>`. We need to prove
+/// that such a cast does not violate any of `src`'s invariants, and that it
+/// satisfies all invariants of the destination `Ptr` type.
 ///
-/// First, by `SizeEq::CastFrom: CastExact`, `src`'s address is unchanged, so it
-/// still satisfies its alignment. Since `dst`'s alignment is `Unaligned`, it
-/// trivially satisfies its alignment.
+/// First, `src`'s address is unchanged, so it still satisfies its alignment.
+/// Since `dst`'s alignment is `Unaligned`, it trivially satisfies its alignment.
 ///
 /// Second, aliasing is either `Exclusive` or `Shared`:
 /// - If it is `Exclusive`, then both `src` and `dst` satisfy `Exclusive`
@@ -106,10 +103,7 @@ use crate::{
 /// - The set of `DV`-valid referents of `dst` is a superset of the set of
 ///   `SV`-valid referents of `src`. Thus, any value written via `src` is
 ///   guaranteed to be a `DV`-valid referent of `dst`.
-pub unsafe trait TryTransmuteFromPtr<Src: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R>:
-    SizeEq<Src>
-{
-}
+pub unsafe trait TryTransmuteFromPtr<Src: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R> {}
 
 #[allow(missing_copy_implementations, missing_debug_implementations)]
 pub enum BecauseMutationCompatible {}
@@ -123,14 +117,14 @@ pub enum BecauseMutationCompatible {}
 //       exists, no mutation is permitted except via that `Ptr`
 //     - Aliasing is `Shared`, `Src: Immutable`, and `Dst: Immutable`, in which
 //       case no mutation is possible via either `Ptr`
-//   - Since the underlying cast is performed using `<Dst as SizeEq<Src>>
-//     ::CastFrom::project`, `dst` addresses the same bytes as `src`. By `Dst:
-//     TransmuteFrom<Src, SV, DV>`, the set of `DV`-valid referents of `dst` is a
-//     supserset of the set of `SV`-valid referents of `src`.
-// - Reverse transmutation: Since the underlying cast is performed using `<Dst
-//   as SizeEq<Src>>::CastFrom::project`, `dst` addresses the same bytes as
-//   `src`. By `Src: TransmuteFrom<Dst, DV, SV>`, the set of `DV`-valid
-//   referents of `dst` is a subset of the set of `SV`-valid referents of `src`.
+//   - Since the underlying cast is size-preserving, `dst` addresses the same
+//     bytes as `src`. By `Dst: TransmuteFrom<Src, SV, DV>`, the set of
+//     `DV`-valid referents of `dst` is a superset of the set of `SV`-valid
+//     referents of `src`.
+// - Reverse transmutation: Since the underlying cast is size-preserving, `dst`
+//   addresses the same bytes as `src`. By `Src: TransmuteFrom<Dst, DV, SV>`, the
+//   set of `DV`-valid referents of `src` is a subset of the set of `SV`-valid
+//   referents of `dst`.
 // - No safe code, given access to `src` and `dst`, can cause undefined
 //   behavior: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, at least one of
 //   the following holds:
@@ -145,7 +139,7 @@ where
     SV: Validity,
     DV: Validity,
     Src: TransmuteFrom<Dst, DV, SV> + ?Sized,
-    Dst: MutationCompatible<Src, A, SV, DV, R> + SizeEq<Src> + ?Sized,
+    Dst: MutationCompatible<Src, A, SV, DV, R> + ?Sized,
 {
 }
 
@@ -161,7 +155,7 @@ where
     SV: Validity,
     DV: Validity,
     Src: Immutable + ?Sized,
-    Dst: Immutable + SizeEq<Src> + ?Sized,
+    Dst: Immutable + ?Sized,
 {
 }
 
