@@ -36,7 +36,7 @@ where
     I: invariant::Invariants<Validity = invariant::Initialized>,
     I::Aliasing: invariant::Reference,
 {
-    ptr.as_bytes::<BecauseImmutable>().as_ref().iter().all(|&byte| byte == 0)
+    ptr.as_bytes().as_ref().iter().all(|&byte| byte == 0)
 }
 
 #[doc(hidden)]
@@ -315,7 +315,8 @@ pub mod cast {
     }
 
     /// A cast from `T` to `[u8]`.
-    pub(crate) struct AsBytesCast;
+    #[allow(missing_copy_implementations, missing_debug_implementations)]
+    pub struct AsBytesCast;
 
     // SAFETY: `project` constructs a pointer with the same address as `src`
     // and with a referent of the same size as `*src`. It does this using
