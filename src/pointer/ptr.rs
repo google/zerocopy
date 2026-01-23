@@ -383,10 +383,19 @@ mod _conversions {
             V: Validity,
             U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + SizeEq<T> + ?Sized,
         {
+            self.transmute_with::<U, V, <U as SizeEq<T>>::CastFrom, R>()
+        }
+
+        pub(crate) fn transmute_with<U, V, C, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
+        where
+            V: Validity,
+            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + ?Sized,
+            C: crate::pointer::cast::CastExact<T, U>,
+        {
             // SAFETY:
-            // - By `SizeEq::CastFrom: Cast`, `SizeEq::CastFrom` preserves
-            //   referent address, and so we don't need to consider projections
-            //   in the following safety arguments.
+            // - By `C: CastExact`, `C` preserves referent address, and so we
+            //   don't need to consider projections in the following safety
+            //   arguments.
             // - If aliasing is `Shared`, then by `U: TransmuteFromPtr<T>`, at
             //   least one of the following holds:
             //   - `T: Immutable` and `U: Immutable`, in which case it is
@@ -395,8 +404,10 @@ mod _conversions {
             //   - It is directly guaranteed that it is sound for shared code to
             //     operate on these references simultaneously
             // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
-            //   sound to perform this transmute.
-            unsafe { self.project_transmute_unchecked::<_, _, <U as SizeEq<T>>::CastFrom>() }
+            //   sound to perform this transmute using an address- and
+            //   size-preserving cast. By `C: CastExact`, `C` is address- and
+            //   size-preserving.
+            unsafe { self.project_transmute_unchecked::<_, _, C>() }
         }
 
         #[doc(hidden)]
@@ -414,9 +425,10 @@ mod _conversions {
             // - It is trivially sound to have multiple `&T` referencing the
             //   same referent simultaneously
             // - By `T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
-            //   sound to perform this transmute.
+            //   sound to perform this transmute using an address- and
+            //   size-preserving cast (which `IdCast` is).
             let ptr =
-                unsafe { self.project_transmute_unchecked::<_, _, <T as SizeEq<T>>::CastFrom>() };
+                unsafe { self.project_transmute_unchecked::<_, _, crate::pointer::cast::IdCast>() };
             // SAFETY: `self` and `ptr` have the same address and referent type.
             // Therefore, if `self` satisfies `I::Alignment`, then so does
             // `ptr`.
