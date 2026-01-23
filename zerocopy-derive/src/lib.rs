@@ -89,7 +89,10 @@ macro_rules! derive {
             // We wrap in `const_block` as a backstop in case any derive fails
             // to wrap its output in `const_block` (and thus fails to annotate)
             // with the full set of `#[allow(...)]` attributes).
-            const_block([Some(ts)]).into()
+            let ts = const_block([Some(ts)]);
+            #[cfg(test)]
+            crate::util::testutil::check_hygiene(ts.clone());
+            ts.into()
         }
     };
 }

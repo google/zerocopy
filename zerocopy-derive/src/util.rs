@@ -663,3 +663,54 @@ pub(crate) fn enum_size_from_repr(repr: &EnumRepr) -> Result<usize, Error> {
         Compound(Spanned { t: Primitive(U16 | I16), span: _ }, _align) => Ok(16),
     }
 }
+
+#[cfg(test)]
+pub(crate) mod testutil {
+    use proc_macro2::TokenStream;
+    use syn::visit::{self, Visit};
+
+    /// Checks for hygiene violations in the generated code.
+    ///
+    /// # Panics
+    ///
+    /// Panics if a hygiene violation is found.
+    pub(crate) fn check_hygiene(ts: TokenStream) {
+        struct AmbiguousItemVisitor;
+
+        impl<'ast> Visit<'ast> for AmbiguousItemVisitor {
+            fn visit_path(&mut self, i: &'ast syn::Path) {
+                if i.segments.len() > 1 && i.segments.first().unwrap().ident == "Self" {
+                    panic!(
+                    "Found ambiguous path `{}` in generated output. \
+                     All associated item access must be fully qualified (e.g., `<Self as Trait>::Item`) \
+                     to prevent hygiene issues.",
+                    quote::quote!(#i)
+                );
+                }
+                visit::visit_path(self, i);
+            }
+        }
+
+        let file = syn::parse2::<syn::File>(ts).expect("failed to parse generated output as File");
+        AmbiguousItemVisitor.visit_file(&file);
+    }
+
+    #[test]
+    fn test_check_hygiene_success() {
+        check_hygiene(quote::quote! {
+            fn foo() {
+                let _ = <Self as Trait>::Item;
+            }
+        });
+    }
+
+    #[test]
+    #[should_panic(expected = "Found ambiguous path `Self :: Ambiguous`")]
+    fn test_check_hygiene_failure() {
+        check_hygiene(quote::quote! {
+            fn foo() {
+                let _ = Self::Ambiguous;
+            }
+        });
+    }
+}
