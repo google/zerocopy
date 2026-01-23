@@ -1667,7 +1667,7 @@ pub unsafe trait TryFromBytes {
     /// [`UnsafeCell`]: core::cell::UnsafeCell
     /// [`Shared`]: invariant::Shared
     #[doc(hidden)]
-    fn is_bit_valid<A: invariant::Reference>(candidate: Maybe<'_, Self, A>) -> bool;
+    fn is_bit_valid(candidate: Maybe<'_, Self>) -> bool;
 
     /// Attempts to interpret the given `source` as a `&Self`.
     ///
@@ -1754,11 +1754,6 @@ pub unsafe trait TryFromBytes {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
                 // fix before returning.
-                //
-                // Note that one panic or post-monomorphization error condition is
-                // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
-                // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
-                // condition will not happen.
                 match source.try_into_valid() {
                     Ok(valid) => Ok(valid.as_ref()),
                     Err(e) => {
@@ -2033,11 +2028,6 @@ pub unsafe trait TryFromBytes {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
                 // fix before returning.
-                //
-                // Note that one panic or post-monomorphization error condition is
-                // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
-                // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
-                // condition will not happen.
                 match source.try_into_valid() {
                     Ok(source) => Ok(source.as_mut()),
                     Err(e) => Err(e.map_src(|src| src.as_bytes().as_mut()).into()),
@@ -2326,11 +2316,6 @@ pub unsafe trait TryFromBytes {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
                 // fix before returning.
-                //
-                // Note that one panic or post-monomorphization error condition is
-                // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
-                // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
-                // condition will not happen.
                 match source.try_into_valid() {
                     Ok(source) => Ok(source.as_ref()),
                     Err(e) => {
@@ -2613,11 +2598,6 @@ pub unsafe trait TryFromBytes {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
                 // fix before returning.
-                //
-                // Note that one panic or post-monomorphization error condition is
-                // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
-                // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
-                // condition will not happen.
                 match source.try_into_valid() {
                     Ok(source) => Ok(source.as_mut()),
                     Err(e) => Err(e.map_src(|src| src.as_bytes().as_mut()).into()),
@@ -3008,11 +2988,6 @@ fn try_ref_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
             // fix before returning.
-            //
-            // Note that one panic or post-monomorphization error condition is
-            // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
-            // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
-            // condition will not happen.
             match source.try_into_valid() {
                 Ok(valid) => Ok((valid.as_ref(), prefix_suffix.as_ref())),
                 Err(e) => Err(e.map_src(|src| src.as_bytes::<BecauseImmutable>().as_ref()).into()),
@@ -3033,11 +3008,6 @@ fn try_mut_from_prefix_suffix<T: IntoBytes + TryFromBytes + KnownLayout + ?Sized
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
             // fix before returning.
-            //
-            // Note that one panic or post-monomorphization error condition is
-            // calling `try_into_valid` (and thus `is_bit_valid`) with a shared
-            // pointer when `Self: !Immutable`. Since `Self: Immutable`, this panic
-            // condition will not happen.
             match candidate.try_into_valid() {
                 Ok(valid) => Ok((valid.as_mut(), prefix_suffix.as_mut())),
                 Err(e) => Err(e.map_src(|src| src.as_bytes().as_mut()).into()),
@@ -3071,7 +3041,7 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
     // via `c_ptr` so long as it is live, so we don't need to worry about the
     // fact that `c_ptr` may have more restricted validity than `candidate`.
     let c_ptr = unsafe { c_ptr.assume_validity::<invariant::Initialized>() };
-    let c_ptr = c_ptr.transmute();
+    let mut c_ptr = c_ptr.cast::<_, crate::pointer::cast::CastSized, _>();
 
     // Since we don't have `T: KnownLayout`, we hack around that by using
     // `Wrapping<T>`, which implements `KnownLayout` even if `T` doesn't.
@@ -3079,12 +3049,7 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
     // This call may panic. If that happens, it doesn't cause any soundness
     // issues, as we have not generated any invalid state which we need to fix
     // before returning.
-    //
-    // Note that one panic or post-monomorphization error condition is calling
-    // `try_into_valid` (and thus `is_bit_valid`) with a shared pointer when
-    // `Self: !Immutable`. Since `Self: Immutable`, this panic condition will
-    // not happen.
-    if !Wrapping::<T>::is_bit_valid(c_ptr.forget_aligned()) {
+    if !Wrapping::<T>::is_bit_valid(c_ptr.reborrow_shared().forget_aligned()) {
         return Err(ValidityError::new(source).into());
     }
 
