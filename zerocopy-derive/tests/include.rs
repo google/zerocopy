@@ -108,6 +108,8 @@ pub mod util {
     // As of this writing, this happens when deriving `TryFromBytes` thanks to a
     // top-level `#[derive(FromBytes)]`.
     pub fn test_trivial_is_bit_valid<T: super::imp::TryFromBytes>() {
+        use super::imp::{MaybeUninit, Ptr, ReadOnly};
+
         // This test works based on the insight that a trivial `is_bit_valid`
         // impl should never load any bytes from memory. Thus, while it is
         // technically a violation of `is_bit_valid`'s safety precondition to
@@ -117,29 +119,30 @@ pub mod util {
         // spuriously generating non-trivial `is_bit_valid` impls, this should
         // cause UB which may be caught by Miri.
 
-        let mut buf = super::imp::MaybeUninit::<T>::uninit();
-        let ptr = super::imp::Ptr::from_mut(&mut buf);
+        let mut buf = MaybeUninit::<T>::uninit();
+        let ptr = Ptr::from_mut(&mut buf);
         // SAFETY: This is intentionally unsound; see the preceding comment.
         let ptr = unsafe { ptr.assume_initialized() };
+        let mut ptr = ptr.transmute::<ReadOnly<MaybeUninit<T>>, _, _>();
+        let ptr = ptr.reborrow_shared();
 
         let ptr = ptr.cast::<_, ::zerocopy_renamed::pointer::cast::CastSized, _>();
         assert!(<T as super::imp::TryFromBytes>::is_bit_valid(ptr));
     }
 
     pub fn test_is_bit_valid<T: super::imp::TryFromBytes, V: super::imp::IntoBytes>(
-        mut val: V,
+        val: V,
         is_bit_valid: bool,
     ) {
-        use super::imp::pointer::{cast::CastSized, BecauseExclusive};
+        use super::imp::{
+            pointer::{cast::CastSized, BecauseImmutable},
+            ReadOnly,
+        };
 
-        let candidate = ::zerocopy_renamed::Ptr::from_mut(&mut val);
-        let candidate = candidate.forget_aligned();
-        // SAFETY: by `val: impl IntoBytes`, `val` consists entirely of
-        // initialized bytes. It's still unsound because this might let us
-        // overwrite `val` with initialized-but-invalid bytes, but we don't do
-        // that, so no UB is ever exercised.
-        let candidate = unsafe { candidate.assume_initialized() };
-        let candidate = candidate.cast::<T, CastSized, (_, BecauseExclusive)>();
+        let ro = ReadOnly::new(val);
+        let candidate = ::zerocopy_renamed::Ptr::from_ref(&ro);
+        let candidate = candidate.recall_validity();
+        let candidate = candidate.cast::<ReadOnly<T>, CastSized, (_, BecauseImmutable)>();
 
         super::imp::assert_eq!(T::is_bit_valid(candidate), is_bit_valid);
     }

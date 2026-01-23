@@ -22,12 +22,14 @@ pub use {
     ptr::Ptr,
 };
 
+use crate::wrappers::ReadOnly;
+
 /// A shorthand for a maybe-valid, maybe-aligned reference. Used as the argument
 /// to [`TryFromBytes::is_bit_valid`].
 ///
 /// [`TryFromBytes::is_bit_valid`]: crate::TryFromBytes::is_bit_valid
 pub type Maybe<'a, T, Aliasing = invariant::Shared, Alignment = invariant::Unaligned> =
-    Ptr<'a, T, (Aliasing, Alignment, invariant::Initialized)>;
+    Ptr<'a, ReadOnly<T>, (Aliasing, Alignment, invariant::Initialized)>;
 
 /// Checks if the referent is zeroed.
 pub(crate) fn is_zeroed<T, I>(ptr: Ptr<'_, T, I>) -> bool
@@ -254,6 +256,36 @@ pub mod cast {
             T::project(src)
         }
     }
+
+    /// A transparent wrapper around another type.
+    pub trait Wrapped {
+        /// The inner, unwrapped type.
+        type Unwrapped: ?Sized;
+        /// A cast from `Self` to `Self::Unwrapped`.
+        type CastToUnwrapped: CastExact<Self, Self::Unwrapped>;
+        /// A cast from `Self::Unwrapped` to `Self`.
+        type CastFromUnwrapped: CastExact<Self::Unwrapped, Self>;
+    }
+
+    /// A transparent wrapper whose inner type has a field of type `F`.
+    pub trait HasWrappedField<F: ?Sized>: Wrapped {
+        /// This transparent wrapper around the field `F`.
+        type WrappedField: ?Sized + Wrapped<Unwrapped = F>;
+    }
+
+    /// A projection from a wrapped type to a wrapped field.
+    pub type WrappedProjection<W, F, const VARIANT_ID: i128, const FIELD_ID: i128> =
+        TransitiveProject<
+            <<W as Wrapped>::Unwrapped as HasField<F, VARIANT_ID, FIELD_ID>>::Type,
+            TransitiveProject<
+                <W as Wrapped>::Unwrapped,
+                <W as Wrapped>::CastToUnwrapped,
+                Projection<F, VARIANT_ID, FIELD_ID>,
+            >,
+            <<W as HasWrappedField<
+                <<W as Wrapped>::Unwrapped as HasField<F, VARIANT_ID, FIELD_ID>>::Type,
+            >>::WrappedField as Wrapped>::CastFromUnwrapped,
+        >;
 
     /// A transitive sequence of projections.
     ///
