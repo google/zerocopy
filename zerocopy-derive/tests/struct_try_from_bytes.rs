@@ -75,8 +75,8 @@ fn un_sized() {
     };
 
     // SAFETY: `candidate`'s referent is as-initialized as `Two`.
-    let candidate = unsafe { candidate.assume_initialized() };
-    let is_bit_valid = <Unsized as imp::TryFromBytes>::is_bit_valid(candidate);
+    let mut candidate = unsafe { candidate.assume_initialized() };
+    let is_bit_valid = <Unsized as imp::TryFromBytes>::is_bit_valid(candidate.reborrow_shared());
     imp::assert!(is_bit_valid);
 }
 
