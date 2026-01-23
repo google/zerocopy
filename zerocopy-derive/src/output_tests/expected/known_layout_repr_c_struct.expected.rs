@@ -8,6 +8,7 @@
     non_ascii_idents,
     clippy::missing_inline_in_public_items,
 )]
+#[deny(ambiguous_associated_items)]
 #[automatically_derived]
 const _: () = {
     unsafe impl<T, U> ::zerocopy::KnownLayout for Foo<T, U>
@@ -30,7 +31,7 @@ const _: () = {
         #[inline(always)]
         fn raw_from_ptr_len(
             bytes: ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<u8>,
-            meta: Self::PointerMetadata,
+            meta: <Self as ::zerocopy::KnownLayout>::PointerMetadata,
         ) -> ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<Self> {
             let trailing = <U as ::zerocopy::KnownLayout>::raw_from_ptr_len(bytes, meta);
             let slf = trailing.as_ptr() as *mut Self;
@@ -41,7 +42,9 @@ const _: () = {
             }
         }
         #[inline(always)]
-        fn pointer_to_metadata(ptr: *mut Self) -> Self::PointerMetadata {
+        fn pointer_to_metadata(
+            ptr: *mut Self,
+        ) -> <Self as ::zerocopy::KnownLayout>::PointerMetadata {
             <U>::pointer_to_metadata(ptr as *mut _)
         }
     }
@@ -97,7 +100,7 @@ const _: () = {
         #[inline(always)]
         fn raw_from_ptr_len(
             bytes: ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<u8>,
-            meta: Self::PointerMetadata,
+            meta: <Self as ::zerocopy::KnownLayout>::PointerMetadata,
         ) -> ::zerocopy::util::macro_util::core_reexport::ptr::NonNull<Self> {
             let trailing = <<<Foo<
                 T,
@@ -116,7 +119,9 @@ const _: () = {
             }
         }
         #[inline(always)]
-        fn pointer_to_metadata(ptr: *mut Self) -> Self::PointerMetadata {
+        fn pointer_to_metadata(
+            ptr: *mut Self,
+        ) -> <Self as ::zerocopy::KnownLayout>::PointerMetadata {
             <<<Foo<
                 T,
                 U,

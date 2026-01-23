@@ -601,6 +601,7 @@ pub(crate) fn const_block(items: impl IntoIterator<Item = Option<TokenStream>>) 
             non_ascii_idents,
             clippy::missing_inline_in_public_items,
         )]
+        #[deny(ambiguous_associated_items)]
         // While there are not currently any warnings that this suppresses
         // (that we're aware of), it's good future-proofing hygiene.
         #[automatically_derived]
