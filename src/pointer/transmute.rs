@@ -191,6 +191,10 @@ pub unsafe trait MutationCompatible<Src: ?Sized, A: Aliasing, SV, DV, R> {}
 #[allow(missing_copy_implementations, missing_debug_implementations)]
 pub enum BecauseRead {}
 
+// TODO: Maybe use the same reason for both? There shouldn't be any situation in
+// which the reasons are different (one is BecauseExclusive and the other is
+// BecauseImmutable).
+
 // SAFETY: `Src: Read<A, _>` and `Dst: Read<A, _>`.
 unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing, SV: Validity, DV: Validity, R>
     MutationCompatible<Src, A, SV, DV, (BecauseRead, R)> for Dst
@@ -515,18 +519,5 @@ mod tests {
 
         // T: ?Sized => UnsafeCell<T> => T => Cell<T>
         test_size_eq::<UnsafeCell<u8>, Cell<u8>>(UnsafeCell::new(0u8));
-    }
-
-    #[cfg(not(no_zerocopy_target_has_atomics_1_60_0))]
-    #[cfg(target_has_atomic = "8")]
-    #[test]
-    fn test_atomic_u8_transmutes() {
-        use core::sync::atomic::AtomicU8;
-
-        // 1. Atomic -> Prim (SizeEq<Atomic> for Prim)
-        test_size_eq::<AtomicU8, u8>(AtomicU8::new(0));
-
-        // 2. Prim -> Atomic (SizeEq<Prim> for Atomic)
-        test_size_eq::<u8, AtomicU8>(0u8);
     }
 }

@@ -25,12 +25,9 @@ const _: () = {
         PhantomData<&'a [(X, Y); N]>: ::zerocopy::TryFromBytes,
     {
         fn only_derive_is_allowed_to_implement_this_trait() {}
-        fn is_bit_valid<___ZerocopyAliasing>(
-            mut candidate: ::zerocopy::Maybe<'_, Self, ___ZerocopyAliasing>,
-        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
-        where
-            ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
-        {
+        fn is_bit_valid(
+            mut candidate: ::zerocopy::Maybe<'_, Self>,
+        ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool {
             #[repr(u8)]
             #[allow(dead_code)]
             enum ___ZerocopyTag {
@@ -112,24 +109,18 @@ const _: () = {
                     >: ::zerocopy::TryFromBytes,
                 {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
-                    fn is_bit_valid<___ZerocopyAliasing>(
-                        mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
-                    where
-                        ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
-                    {
+                    fn is_bit_valid(
+                        mut candidate: ::zerocopy::Maybe<Self>,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool {
                         true
                             && {
                                 let field_candidate = candidate
                                     .reborrow()
-                                    .project::<
+                                    .project_wrapped::<
                                         _,
-                                        { ::zerocopy::STRUCT_VARIANT_ID },
+                                        ::zerocopy::pointer::invariant::Initialized,
                                         { ::zerocopy::ident_id!(0) },
                                     >();
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    field_candidate
-                                );
                                 <::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                     ___ZerocopyInnerTag,
                                 > as ::zerocopy::TryFromBytes>::is_bit_valid(
@@ -139,14 +130,11 @@ const _: () = {
                             && {
                                 let field_candidate = candidate
                                     .reborrow()
-                                    .project::<
+                                    .project_wrapped::<
                                         _,
-                                        { ::zerocopy::STRUCT_VARIANT_ID },
+                                        ::zerocopy::pointer::invariant::Initialized,
                                         { ::zerocopy::ident_id!(1) },
                                     >();
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    field_candidate
-                                );
                                 <u8 as ::zerocopy::TryFromBytes>::is_bit_valid(
                                     field_candidate,
                                 )
@@ -154,14 +142,11 @@ const _: () = {
                             && {
                                 let field_candidate = candidate
                                     .reborrow()
-                                    .project::<
+                                    .project_wrapped::<
                                         _,
-                                        { ::zerocopy::STRUCT_VARIANT_ID },
+                                        ::zerocopy::pointer::invariant::Initialized,
                                         { ::zerocopy::ident_id!(2) },
                                     >();
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    field_candidate
-                                );
                                 <X as ::zerocopy::TryFromBytes>::is_bit_valid(
                                     field_candidate,
                                 )
@@ -169,14 +154,11 @@ const _: () = {
                             && {
                                 let field_candidate = candidate
                                     .reborrow()
-                                    .project::<
+                                    .project_wrapped::<
                                         _,
-                                        { ::zerocopy::STRUCT_VARIANT_ID },
+                                        ::zerocopy::pointer::invariant::Initialized,
                                         { ::zerocopy::ident_id!(3) },
                                     >();
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    field_candidate
-                                );
                                 <X::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
                                     field_candidate,
                                 )
@@ -184,14 +166,11 @@ const _: () = {
                             && {
                                 let field_candidate = candidate
                                     .reborrow()
-                                    .project::<
+                                    .project_wrapped::<
                                         _,
-                                        { ::zerocopy::STRUCT_VARIANT_ID },
+                                        ::zerocopy::pointer::invariant::Initialized,
                                         { ::zerocopy::ident_id!(4) },
                                     >();
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    field_candidate
-                                );
                                 <Y::Target as ::zerocopy::TryFromBytes>::is_bit_valid(
                                     field_candidate,
                                 )
@@ -199,14 +178,11 @@ const _: () = {
                             && {
                                 let field_candidate = candidate
                                     .reborrow()
-                                    .project::<
+                                    .project_wrapped::<
                                         _,
-                                        { ::zerocopy::STRUCT_VARIANT_ID },
+                                        ::zerocopy::pointer::invariant::Initialized,
                                         { ::zerocopy::ident_id!(5) },
                                     >();
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    field_candidate
-                                );
                                 <[(
                                     X,
                                     Y,
@@ -217,14 +193,11 @@ const _: () = {
                             && {
                                 let field_candidate = candidate
                                     .reborrow()
-                                    .project::<
+                                    .project_wrapped::<
                                         _,
-                                        { ::zerocopy::STRUCT_VARIANT_ID },
+                                        ::zerocopy::pointer::invariant::Initialized,
                                         { ::zerocopy::ident_id!(6) },
                                     >();
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    field_candidate
-                                );
                                 <::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                     ComplexWithGenerics<'a, N, X, Y>,
                                 > as ::zerocopy::TryFromBytes>::is_bit_valid(
@@ -892,24 +865,18 @@ const _: () = {
                     >: ::zerocopy::TryFromBytes,
                 {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
-                    fn is_bit_valid<___ZerocopyAliasing>(
-                        mut candidate: ::zerocopy::Maybe<Self, ___ZerocopyAliasing>,
-                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool
-                    where
-                        ___ZerocopyAliasing: ::zerocopy::pointer::invariant::Reference,
-                    {
+                    fn is_bit_valid(
+                        mut candidate: ::zerocopy::Maybe<Self>,
+                    ) -> ::zerocopy::util::macro_util::core_reexport::primitive::bool {
                         true
                             && {
                                 let field_candidate = candidate
                                     .reborrow()
-                                    .project::<
+                                    .project_wrapped::<
                                         _,
-                                        { ::zerocopy::STRUCT_VARIANT_ID },
+                                        ::zerocopy::pointer::invariant::Initialized,
                                         { ::zerocopy::ident_id!(0) },
                                     >();
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    field_candidate
-                                );
                                 <::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                     ___ZerocopyInnerTag,
                                 > as ::zerocopy::TryFromBytes>::is_bit_valid(
@@ -919,14 +886,11 @@ const _: () = {
                             && {
                                 let field_candidate = candidate
                                     .reborrow()
-                                    .project::<
+                                    .project_wrapped::<
                                         _,
-                                        { ::zerocopy::STRUCT_VARIANT_ID },
+                                        ::zerocopy::pointer::invariant::Initialized,
                                         { ::zerocopy::ident_id!(1) },
                                     >();
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    field_candidate
-                                );
                                 <bool as ::zerocopy::TryFromBytes>::is_bit_valid(
                                     field_candidate,
                                 )
@@ -934,14 +898,11 @@ const _: () = {
                             && {
                                 let field_candidate = candidate
                                     .reborrow()
-                                    .project::<
+                                    .project_wrapped::<
                                         _,
-                                        { ::zerocopy::STRUCT_VARIANT_ID },
+                                        ::zerocopy::pointer::invariant::Initialized,
                                         { ::zerocopy::ident_id!(2) },
                                     >();
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    field_candidate
-                                );
                                 <Y as ::zerocopy::TryFromBytes>::is_bit_valid(
                                     field_candidate,
                                 )
@@ -949,14 +910,11 @@ const _: () = {
                             && {
                                 let field_candidate = candidate
                                     .reborrow()
-                                    .project::<
+                                    .project_wrapped::<
                                         _,
-                                        { ::zerocopy::STRUCT_VARIANT_ID },
+                                        ::zerocopy::pointer::invariant::Initialized,
                                         { ::zerocopy::ident_id!(3) },
                                     >();
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    field_candidate
-                                );
                                 <PhantomData<
                                     &'a [(X, Y); N],
                                 > as ::zerocopy::TryFromBytes>::is_bit_valid(
@@ -966,14 +924,11 @@ const _: () = {
                             && {
                                 let field_candidate = candidate
                                     .reborrow()
-                                    .project::<
+                                    .project_wrapped::<
                                         _,
-                                        { ::zerocopy::STRUCT_VARIANT_ID },
+                                        ::zerocopy::pointer::invariant::Initialized,
                                         { ::zerocopy::ident_id!(4) },
                                     >();
-                                let field_candidate = ::zerocopy::into_inner!(
-                                    field_candidate
-                                );
                                 <::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                     ComplexWithGenerics<'a, N, X, Y>,
                                 > as ::zerocopy::TryFromBytes>::is_bit_valid(
@@ -2721,35 +2676,37 @@ const _: () = {
             };
             let mut raw_enum = candidate
                 .cast::<
-                    ___ZerocopyRawEnum<'a, N, X, Y>,
+                    ::zerocopy::ReadOnly<___ZerocopyRawEnum<'a, N, X, Y>>,
                     ::zerocopy::pointer::cast::CastSized,
-                    ::zerocopy::pointer::BecauseInvariantsEq,
+                    (::zerocopy::pointer::BecauseRead, _),
                 >();
-            let variants = ::zerocopy::into_inner!(
-                raw_enum.project:: < _, { ::zerocopy::STRUCT_VARIANT_ID }, {
-                ::zerocopy::ident_id!(variants) } > ()
-            );
+            let variants = raw_enum
+                .project_wrapped::<
+                    _,
+                    ::zerocopy::pointer::invariant::Initialized,
+                    { ::zerocopy::ident_id!(variants) },
+                >();
             match tag {
                 ___ZEROCOPY_TAG_UnitLike => true,
                 ___ZEROCOPY_TAG_StructLike => {
-                    let variant_md = unsafe {
-                        variants
-                            .cast_unchecked::<
-                                ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
-                                    ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
-                                >,
-                                ::zerocopy::pointer::cast::Projection<
-                                    _,
-                                    { ::zerocopy::UNION_VARIANT_ID },
-                                    { ::zerocopy::ident_id!(__field_StructLike) },
-                                >,
-                            >()
-                    };
+                    let variant_md = variants
+                        .cast::<
+                            _,
+                            ::zerocopy::pointer::cast::WrappedProjection<
+                                ::zerocopy::ReadOnly<_>,
+                                _,
+                                { ::zerocopy::UNION_VARIANT_ID },
+                                { ::zerocopy::ident_id!(__field_StructLike) },
+                            >,
+                            _,
+                        >();
                     let variant = variant_md
                         .cast::<
-                            ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                            ::zerocopy::ReadOnly<
+                                ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
+                            >,
                             ::zerocopy::pointer::cast::CastSized,
-                            ::zerocopy::pointer::BecauseInvariantsEq,
+                            (::zerocopy::pointer::BecauseRead, _),
                         >();
                     <___ZerocopyVariantStruct_StructLike<
                         'a,
@@ -2759,24 +2716,24 @@ const _: () = {
                     > as ::zerocopy::TryFromBytes>::is_bit_valid(variant)
                 }
                 ___ZEROCOPY_TAG_TupleLike => {
-                    let variant_md = unsafe {
-                        variants
-                            .cast_unchecked::<
-                                ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
-                                    ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
-                                >,
-                                ::zerocopy::pointer::cast::Projection<
-                                    _,
-                                    { ::zerocopy::UNION_VARIANT_ID },
-                                    { ::zerocopy::ident_id!(__field_TupleLike) },
-                                >,
-                            >()
-                    };
+                    let variant_md = variants
+                        .cast::<
+                            _,
+                            ::zerocopy::pointer::cast::WrappedProjection<
+                                ::zerocopy::ReadOnly<_>,
+                                _,
+                                { ::zerocopy::UNION_VARIANT_ID },
+                                { ::zerocopy::ident_id!(__field_TupleLike) },
+                            >,
+                            _,
+                        >();
                     let variant = variant_md
                         .cast::<
-                            ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                            ::zerocopy::ReadOnly<
+                                ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
+                            >,
                             ::zerocopy::pointer::cast::CastSized,
-                            ::zerocopy::pointer::BecauseInvariantsEq,
+                            (::zerocopy::pointer::BecauseRead, _),
                         >();
                     <___ZerocopyVariantStruct_TupleLike<
                         'a,
