@@ -160,7 +160,7 @@ mod _external {
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
     use super::*;
-    use crate::pointer::cast::CastSized;
+    use crate::pointer::cast::{CastExact, CastSized, IdCast};
 
     /// `&'a T` → `Ptr<'a, T>`
     impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
@@ -381,7 +381,9 @@ mod _conversions {
         pub(crate) fn transmute<U, V, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
             V: Validity,
-            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + SizeEq<T> + ?Sized,
+            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, <U as SizeEq<T>>::CastFrom, R>
+                + SizeEq<T>
+                + ?Sized,
         {
             self.transmute_with::<U, V, <U as SizeEq<T>>::CastFrom, R>()
         }
@@ -389,8 +391,8 @@ mod _conversions {
         pub(crate) fn transmute_with<U, V, C, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
             V: Validity,
-            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R> + ?Sized,
-            C: crate::pointer::cast::CastExact<T, U>,
+            U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, C, R> + ?Sized,
+            C: CastExact<T, U>,
         {
             // SAFETY:
             // - By `C: CastExact`, `C` preserves referent address, and so we
@@ -403,10 +405,8 @@ mod _conversions {
             //     at the same time, as neither can perform interior mutation
             //   - It is directly guaranteed that it is sound for shared code to
             //     operate on these references simultaneously
-            // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
-            //   sound to perform this transmute using an address- and
-            //   size-preserving cast. By `C: CastExact`, `C` is address- and
-            //   size-preserving.
+            // - By `U: TransmuteFromPtr<T, I::Aliasing, I::Validity, C, V>`, it
+            //   is sound to perform this transmute using `C`.
             unsafe { self.project_transmute_unchecked::<_, _, C>() }
         }
 
@@ -416,19 +416,9 @@ mod _conversions {
         pub fn recall_validity<V, R>(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, V)>
         where
             V: Validity,
-            T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R>,
+            T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, IdCast, R>,
         {
-            // SAFETY:
-            // - By `SizeEq::CastFrom: Cast`, `SizeEq::CastFrom` preserves
-            //   referent address, and so we don't need to consider projections
-            //   in the following safety arguments.
-            // - It is trivially sound to have multiple `&T` referencing the
-            //   same referent simultaneously
-            // - By `T: TransmuteFromPtr<T, I::Aliasing, I::Validity, V>`, it is
-            //   sound to perform this transmute using an address- and
-            //   size-preserving cast (which `IdCast` is).
-            let ptr =
-                unsafe { self.project_transmute_unchecked::<_, _, crate::pointer::cast::IdCast>() };
+            let ptr = self.transmute_with::<T, V, IdCast, R>();
             // SAFETY: `self` and `ptr` have the same address and referent type.
             // Therefore, if `self` satisfies `I::Alignment`, then so does
             // `ptr`.
@@ -511,6 +501,11 @@ mod _conversions {
         pub(crate) fn into_unalign(
             self,
         ) -> Ptr<'a, crate::Unalign<T>, (I::Aliasing, Aligned, I::Validity)> {
+            // FIXME(#1359): This should be a `transmute_with` call.
+            // Unfortunately, to avoid blanket impl conflicts, we only implement
+            // `TransmuteFrom<T>` for `Unalign<T>` (and vice versa) specifically
+            // for `Valid` validity, not for all validity types.
+
             // SAFETY:
             // - By `CastSized: Cast`, `CastSized` preserves referent address,
             //   and so we don't need to consider projections in the following
@@ -567,7 +562,7 @@ mod _conversions {
 /// State transitions between invariants.
 mod _transitions {
     use super::*;
-    use crate::pointer::transmute::TryTransmuteFromPtr;
+    use crate::pointer::{cast::IdCast, transmute::TryTransmuteFromPtr};
 
     impl<'a, T, I> Ptr<'a, T, I>
     where
@@ -766,59 +761,6 @@ mod _transitions {
             unsafe { self.assume_validity::<Valid>() }
         }
 
-        /// Recalls that `self`'s referent is initialized.
-        #[doc(hidden)]
-        #[must_use]
-        #[inline]
-        // FIXME(#859): Reconsider the name of this method before making it
-        // public.
-        pub fn bikeshed_recall_initialized_from_bytes(
-            self,
-        ) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Initialized)>
-        where
-            T: crate::IntoBytes + crate::FromBytes,
-            I: Invariants<Validity = Valid>,
-        {
-            // SAFETY: The `T: IntoBytes + FromBytes` bound ensures that `T`'s
-            // bit validity is equivalent to `[u8]`. In other words, the set of
-            // allowed referents for a `Ptr<T, (_, _, Valid)>` is the set of
-            // initialized bit patterns. The same is true of the set of allowed
-            // referents for any `Ptr<_, (_, _, Initialized)>`. Thus, this call
-            // does not change the set of allowed values in the referent.
-            unsafe { self.assume_initialized() }
-        }
-
-        /// Recalls that `self`'s referent is initialized.
-        #[doc(hidden)]
-        #[must_use]
-        #[inline]
-        // FIXME(#859): Reconsider the name of this method before making it
-        // public.
-        pub fn bikeshed_recall_initialized_immutable(
-            self,
-        ) -> Ptr<'a, T, (Shared, I::Alignment, Initialized)>
-        where
-            T: crate::IntoBytes + crate::Immutable,
-            I: Invariants<Aliasing = Shared, Validity = Valid>,
-        {
-            // SAFETY: Let `O` (for "old") be the set of allowed bit patterns in
-            // `self`'s referent, and let `N` (for "new") be the set of allowed
-            // bit patterns in the referent of the returned `Ptr`. `T:
-            // IntoBytes` and `I: Invariants<Validity = Valid>` ensures that `O`
-            // cannot contain any uninitialized bit patterns. Since the returned
-            // `Ptr` has validity `Initialized`, `N` is equal to the set of all
-            // initialized bit patterns. Thus, `O` is a subset of `N`, and so
-            // the returned `Ptr`'s validity invariant is upheld.
-            //
-            // Since `T: Immutable` and aliasing is `Shared`, the returned `Ptr`
-            // cannot be used to modify the referent. Before this call, `self`'s
-            // referent is guaranteed by invariant on `Ptr` to satisfy `self`'s
-            // validity invariant. Since the returned `Ptr` cannot be used to
-            // modify the referent, this guarantee cannot be violated by the
-            // returned `Ptr` (even if `O` is a strict subset of `N`).
-            unsafe { self.assume_initialized() }
-        }
-
         /// Checks that `self`'s referent is validly initialized for `T`,
         /// returning a `Ptr` with `Valid` on success.
         ///
@@ -838,7 +780,7 @@ mod _transitions {
         where
             T: TryFromBytes
                 + Read<I::Aliasing, R>
-                + TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, S>,
+                + TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, IdCast, S>,
             I::Aliasing: Reference,
             I: Invariants<Validity = Initialized>,
         {
@@ -976,23 +918,17 @@ mod _casts {
     impl<'a, T, I> Ptr<'a, T, I>
     where
         T: 'a + KnownLayout + ?Sized,
-        I: Invariants<Validity = Initialized>,
+        I: Invariants,
     {
-        // FIXME: Is there any way to teach Rust that, for all `T, A, R`, `T:
-        // Read<A, R>` implies `[u8]: Read<A, R>`?
-
         /// Casts this pointer-to-initialized into a pointer-to-bytes.
         #[allow(clippy::wrong_self_convention)]
         #[must_use]
         #[inline]
         pub fn as_bytes<R>(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Valid)>
         where
-            T: Read<I::Aliasing, R>,
-            [u8]: Read<I::Aliasing, R>,
-            I::Aliasing: Reference,
+            [u8]: TransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, AsBytesCast, R>,
         {
-            let ptr = self.cast::<_, AsBytesCast, _>();
-            ptr.bikeshed_recall_aligned().recall_validity::<Valid, (_, (_, _))>()
+            self.transmute_with::<[u8], Valid, AsBytesCast, _>().bikeshed_recall_aligned()
         }
     }
 
