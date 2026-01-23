@@ -8,6 +8,7 @@
     non_ascii_idents,
     clippy::missing_inline_in_public_items,
 )]
+#[deny(ambiguous_associated_items)]
 #[automatically_derived]
 const _: () = {
     unsafe impl ::zerocopy::IntoBytes for Foo {

@@ -229,24 +229,26 @@ pub(crate) fn derive_is_bit_valid(
             assert!(matches!(vis, syn::Visibility::Inherited));
             let variant_struct_field_index = Index::from(idx + 1);
             let (_, ty_generics, _) = ctx.ast.generics.split_for_impl();
+            let has_field_trait = Trait::HasField {
+                variant_id: parse_quote!({ #zerocopy_crate::ident_id!(#variant_ident) }),
+                // Since Rust does not presently support explicit visibility
+                // modifiers on enum fields, any public type is suitable here;
+                // we use `()`.
+                field: field.clone(),
+                field_id: parse_quote!({ #zerocopy_crate::ident_id!(#ident) }),
+            };
+            let has_field_path = has_field_trait.crate_path(ctx);
             ImplBlockBuilder::new(
                 ctx,
                 data,
-                Trait::HasField {
-                    variant_id: parse_quote!({ #zerocopy_crate::ident_id!(#variant_ident) }),
-                    // Since Rust does not presently support explicit visibility
-                    // modifiers on enum fields, any public type is suitable
-                    // here; we use `()`.
-                    field: field.clone(),
-                    field_id: parse_quote!({ #zerocopy_crate::ident_id!(#ident) }),
-                },
+                has_field_trait,
                 FieldBounds::None,
             )
             .inner_extras(quote! {
                 type Type = #ty;
 
                 #[inline(always)]
-                fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut <Self as #has_field_path>::Type {
                     use #zerocopy_crate::pointer::cast::{CastSized, Projection};
 
                     slf.project::<___ZerocopyRawEnum #ty_generics, CastSized>()
@@ -359,7 +361,7 @@ pub(crate) fn derive_is_bit_valid(
                 type Type = ___ZerocopyTag;
 
                 #[inline(always)]
-                fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
+                fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut <Self as #zerocopy_crate::HasField<(), { #zerocopy_crate::STRUCT_VARIANT_ID }, { #zerocopy_crate::ident_id!(tag) }>>::Type {
                     slf.as_ptr().cast()
                 }
             }
@@ -437,31 +439,33 @@ fn derive_has_field_struct_union(ctx: &Ctx, data: &dyn DataExt) -> TokenStream {
         let field_token = ident!(("ẕ{}", ident), ident.span());
         let field: Box<Type> = parse_quote!(#field_token);
         let field_id: Box<Expr> = parse_quote!({ #zerocopy_crate::ident_id!(#ident) });
-        ImplBlockBuilder::new(
-            ctx,
-            data,
-            Trait::HasField {
+        let has_field_trait = Trait::HasField {
                 variant_id: variant_id.clone(),
                 field: field.clone(),
                 field_id: field_id.clone(),
-            },
-            FieldBounds::None,
-        )
-        .inner_extras(quote! {
-            type Type = #ty;
+            };
+            let has_field_path = has_field_trait.crate_path(ctx);
+            ImplBlockBuilder::new(
+                ctx,
+                data,
+                has_field_trait,
+                FieldBounds::None,
+            )
+            .inner_extras(quote! {
+                type Type = #ty;
 
-            #[inline(always)]
-            fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut Self::Type {
-                let slf = slf.as_ptr();
-                // SAFETY: By invariant on `PtrInner`, `slf` is a non-null
-                // pointer whose referent is zero-sized or lives in a valid
-                // allocation. Since `#ident` is a struct or union field of
-                // `Self`, this projection preserves or shrinks the referent
-                // size, and so the resulting referent also fits in the same
-                // allocation.
-                unsafe { #core::ptr::addr_of_mut!((*slf).#ident) }
-            }
-        }).outer_extras(if is_repr_c_union {
+                #[inline(always)]
+                fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut <Self as #has_field_path>::Type {
+                    let slf = slf.as_ptr();
+                    // SAFETY: By invariant on `PtrInner`, `slf` is a non-null
+                    // pointer whose referent is zero-sized or lives in a valid
+                    // allocation. Since `#ident` is a struct or union field of
+                    // `Self`, this projection preserves or shrinks the referent
+                    // size, and so the resulting referent also fits in the same
+                    // allocation.
+                    unsafe { #core::ptr::addr_of_mut!((*slf).#ident) }
+                }
+            }).outer_extras(if is_repr_c_union {
             let ident = &ctx.ast.ident;
             let (impl_generics, ty_generics, where_clause) = ctx.ast.generics.split_for_impl();
             quote! {
