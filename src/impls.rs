@@ -14,6 +14,7 @@ use core::{
 };
 
 use super::*;
+use crate::pointer::cast::{CastSizedExact, CastUnsized};
 
 // SAFETY: Per the reference [1], "the unit tuple (`()`) ... is guaranteed as a
 // zero-sized type to have a size of 0 and an alignment of 1."
@@ -108,11 +109,10 @@ assert_unaligned!(bool);
 //   pattern 0x01.
 const _: () = unsafe {
     unsafe_impl!(=> TryFromBytes for bool; |byte| {
-        let byte = byte.transmute::<u8, invariant::Valid, _>();
+        let byte = byte.transmute_with::<u8, invariant::Valid, CastSizedExact, _>();
         *byte.unaligned_as_ref() < 2
     })
 };
-impl_size_eq!(bool, u8);
 
 // SAFETY:
 // - `Immutable`: `char` self-evidently does not contain any `UnsafeCell`s.
@@ -138,13 +138,11 @@ const _: () = unsafe { unsafe_impl!(char: Immutable, FromZeros, IntoBytes) };
 //   `char`.
 const _: () = unsafe {
     unsafe_impl!(=> TryFromBytes for char; |c| {
-        let c = c.transmute::<Unalign<u32>, invariant::Valid, _>();
+        let c = c.transmute_with::<Unalign<u32>, invariant::Valid, CastSizedExact, _>();
         let c = c.read_unaligned().into_inner();
         char::from_u32(c).is_some()
     });
 };
-
-impl_size_eq!(char, Unalign<u32>);
 
 // SAFETY: Per the Reference [1], `str` has the same layout as `[u8]`.
 // - `Immutable`: `[u8]` does not contain any `UnsafeCell`s.
@@ -173,21 +171,17 @@ const _: () = unsafe { unsafe_impl!(str: Immutable, FromZeros, IntoBytes, Unalig
 //   Returns `Err` if the slice is not UTF-8.
 const _: () = unsafe {
     unsafe_impl!(=> TryFromBytes for str; |c| {
-        let c = c.transmute::<[u8], invariant::Valid, _>();
+        let c = c.transmute_with::<[u8], invariant::Valid, CastUnsized, _>();
         let c = c.unaligned_as_ref();
         core::str::from_utf8(c).is_ok()
     })
 };
 
-impl_size_eq!(str, [u8]);
-
 macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
     ($($nonzero:ident[$prim:ty]),*) => {
         $(
             unsafe_impl!(=> TryFromBytes for $nonzero; |n| {
-                impl_size_eq!($nonzero, Unalign<$prim>);
-
-                let n = n.transmute::<Unalign<$prim>, invariant::Valid, _>();
+                let n = n.transmute_with::<Unalign<$prim>, invariant::Valid, CastSizedExact, _>();
                 $nonzero::new(n.read_unaligned().into_inner()).is_some()
             });
         )*
@@ -425,7 +419,6 @@ mod atomics {
         ($($($tyvar:ident)? => $atomic:ty [$prim:ty]),*) => {{
             crate::util::macros::__unsafe();
 
-            use core::cell::UnsafeCell;
             use crate::pointer::{SizeEq, TransmuteFrom, invariant::Valid};
 
             $(
@@ -440,12 +433,6 @@ mod atomics {
                     type CastFrom = $crate::pointer::cast::CastSizedExact;
                 }
                 impl<$($tyvar)?> SizeEq<$prim> for $atomic {
-                    type CastFrom = $crate::pointer::cast::CastSizedExact;
-                }
-                impl<$($tyvar)?> SizeEq<$atomic> for UnsafeCell<$prim> {
-                    type CastFrom = $crate::pointer::cast::CastSizedExact;
-                }
-                impl<$($tyvar)?> SizeEq<UnsafeCell<$prim>> for $atomic {
                     type CastFrom = $crate::pointer::cast::CastSizedExact;
                 }
 

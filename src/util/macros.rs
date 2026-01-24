@@ -797,22 +797,6 @@ macro_rules! impl_transitive_transmute_from {
     };
 }
 
-#[rustfmt::skip]
-macro_rules! impl_size_eq {
-    ($t:ty, $u:ty) => {
-        const _: () = {
-            use $crate::{pointer::{cast::CastUnsized, SizeEq}};
-
-            impl SizeEq<$t> for $u {
-                type CastFrom = CastUnsized;
-            }
-            impl SizeEq<$u> for $t {
-                type CastFrom = CastUnsized;
-            }
-        };
-    };
-}
-
 /// Invokes `$blk` in a context in which `$src<$t>` and `$dst<$u>` implement
 /// `SizeEq`.
 ///
