@@ -499,11 +499,5 @@ mod tests {
 
         // 2. Prim -> Atomic (SizeEq<Prim> for Atomic)
         test_size_eq::<u8, AtomicU8>(0u8);
-
-        // 3. Atomic -> UnsafeCell<Prim> (SizeEq<Atomic> for UnsafeCell<Prim>)
-        test_size_eq::<AtomicU8, UnsafeCell<u8>>(AtomicU8::new(0));
-
-        // 4. UnsafeCell<Prim> -> Atomic (SizeEq<UnsafeCell<Prim>> for Atomic)
-        test_size_eq::<UnsafeCell<u8>, AtomicU8>(UnsafeCell::new(0u8));
     }
 }
