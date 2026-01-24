@@ -764,6 +764,7 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
         impl<T $(: ?$optbound)?> SizeEq<$wrapper<T>> for T {
             type CastFrom = CastB;
         }
+
     }};
 }
 
@@ -771,7 +772,6 @@ macro_rules! impl_transitive_transmute_from {
     ($($tyvar:ident $(: ?$optbound:ident)?)? => $t:ty => $u:ty => $v:ty) => {
         const _: () = {
             use crate::pointer::{TransmuteFrom, SizeEq, invariant::Valid};
-
             impl<$($tyvar $(: ?$optbound)?)?> SizeEq<$t> for $v
             where
                 $u: SizeEq<$t>,
@@ -793,22 +793,6 @@ macro_rules! impl_transitive_transmute_from {
                 $u: TransmuteFrom<$t, Valid, Valid>,
                 $v: TransmuteFrom<$u, Valid, Valid>,
             {}
-        };
-    };
-}
-
-#[rustfmt::skip]
-macro_rules! impl_size_eq {
-    ($t:ty, $u:ty) => {
-        const _: () = {
-            use $crate::{pointer::{cast::CastUnsized, SizeEq}};
-
-            impl SizeEq<$t> for $u {
-                type CastFrom = CastUnsized;
-            }
-            impl SizeEq<$u> for $t {
-                type CastFrom = CastUnsized;
-            }
         };
     };
 }
