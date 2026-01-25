@@ -468,8 +468,13 @@ jobs:
         # Run under both the stacked borrows model (default) and under the tree 
         # borrows model to ensure we're compliant with both.
         for EXTRA_FLAGS in "" "-Zmiri-tree-borrows"; do
+          # FIXME(https://github.com/nextest-rs/nextest/issues/2990): Once
+          # the fix [1] for this `cargo miri nextest` bug is published, go back
+          # to running `cargo miri nextest run` instead of `cargo miri test`.
+          #
+          # [1] https://github.com/nextest-rs/nextest/pull/2991
           MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" ./cargo.sh +$TOOLCHAIN \
-            miri nextest run \
+            miri test \
             --test-threads "$THREADS" \
             --package $CRATE \
             --target $TARGET \
@@ -621,7 +626,9 @@ jobs:
       - name: Generate code coverage
         run: |
           set -eo pipefail
-          ./cargo.sh +nightly install cargo-llvm-cov
+          # FIXME(https://github.com/taiki-e/cargo-llvm-cov/issues/475): Use
+          # latest version of `cargo-llvm-cov` once this bug is fixed.
+          ./cargo.sh +nightly install --version 0.6.24 cargo-llvm-cov
           ./cargo.sh +nightly llvm-cov \
             --package zerocopy \
             --target x86_64-unknown-linux-gnu \
