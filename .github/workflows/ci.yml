@@ -463,18 +463,19 @@ jobs:
         THREADS=$(echo "$(nproc) * 2" | bc)
         echo "Running Miri tests with $THREADS threads" | tee -a $GITHUB_STEP_SUMMARY
 
-        cargo install cargo-nextest
+        # FIXME(https://github.com/nextest-rs/nextest/issues/2990): Once the fix
+        # [1] for this `cargo miri nextest` bug is published, either go back to
+        # installing the latest version of `cargo-nextest` or pin and set up a
+        # roller.
+        #
+        # [1] https://github.com/nextest-rs/nextest/pull/2991
+        cargo install --version 0.9.122 cargo-nextest
 
         # Run under both the stacked borrows model (default) and under the tree 
         # borrows model to ensure we're compliant with both.
         for EXTRA_FLAGS in "" "-Zmiri-tree-borrows"; do
-          # FIXME(https://github.com/nextest-rs/nextest/issues/2990): Once
-          # the fix [1] for this `cargo miri nextest` bug is published, go back
-          # to running `cargo miri nextest run` instead of `cargo miri test`.
-          #
-          # [1] https://github.com/nextest-rs/nextest/pull/2991
           MIRIFLAGS="$MIRIFLAGS $EXTRA_FLAGS" ./cargo.sh +$TOOLCHAIN \
-            miri test \
+            miri nextest run \
             --test-threads "$THREADS" \
             --package $CRATE \
             --target $TARGET \
