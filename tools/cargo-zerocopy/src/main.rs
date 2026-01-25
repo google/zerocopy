@@ -252,7 +252,7 @@ fn delegate_cargo() -> Result<(), Error> {
                     let output = rustup(["run", version, "cargo", "pkgid", "-p"], None)
                         .arg(p)
                         .output_or_exit();
-                    String::from_utf8(output.stdout).unwrap()
+                    String::from_utf8(output.stdout).unwrap().trim().to_string()
                 };
 
                 // Replace `-p<package>`, `-p <package>` and `--package <package`
