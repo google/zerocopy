@@ -368,8 +368,8 @@ note: required because it appears within the type `IntoBytes4`
     |
 146 | struct IntoBytes4 {
     |        ^^^^^^^^^^
-    = note: required for `IntoBytes4` to implement `macro_util::__size_of::Sized`
-note: required by a bound in `macro_util::__size_of::size_of`
+    = note: required for `IntoBytes4` to implement `zerocopy_renamed::util::macro_util::__size_of::Sized`
+note: required by a bound in `zerocopy_renamed::util::macro_util::__size_of::size_of`
    --> $WORKSPACE/src/util/macro_util.rs
     |
     |     pub const fn size_of<T: Sized + ?core::marker::Sized>() -> usize {
@@ -385,8 +385,8 @@ error[E0277]: `[u8]` is unsized
     = help: the trait `Sized` is not implemented for `[u8]`
     = note: consider using `#[repr(packed)]` to remove padding
     = note: `IntoBytes` does not require the fields of `#[repr(packed)]` types to be `Sized`
-    = note: required for `[u8]` to implement `macro_util::__size_of::Sized`
-note: required by a bound in `macro_util::__size_of::size_of`
+    = note: required for `[u8]` to implement `zerocopy_renamed::util::macro_util::__size_of::Sized`
+note: required by a bound in `zerocopy_renamed::util::macro_util::__size_of::size_of`
    --> $WORKSPACE/src/util/macro_util.rs
     |
     |     pub const fn size_of<T: Sized + ?core::marker::Sized>() -> usize {
