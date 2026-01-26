@@ -627,9 +627,7 @@ jobs:
       - name: Generate code coverage
         run: |
           set -eo pipefail
-          # FIXME(https://github.com/taiki-e/cargo-llvm-cov/issues/475): Use
-          # latest version of `cargo-llvm-cov` once this bug is fixed.
-          ./cargo.sh +nightly install --version 0.6.24 cargo-llvm-cov
+          ./cargo.sh +nightly install --version 0.8.0 cargo-llvm-cov
           ./cargo.sh +nightly llvm-cov \
             --package zerocopy \
             --target x86_64-unknown-linux-gnu \
