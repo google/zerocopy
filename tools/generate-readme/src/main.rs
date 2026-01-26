@@ -37,15 +37,23 @@ fn main() {
 
     let readme = String::from_utf8(output.stdout).unwrap();
 
-    // This regex is used to strip code links like:
+    // This regex is used to strip code links without url after, like:
     //
     //   /// Here is a link to [`Vec`].
     //
     // These links don't work in a Markdown file, and so we remove the `[` and `]`
     // characters to convert them to non-link code snippets.
-    let body = Regex::new(r"\[(`[^`]*`)\]")
-        .unwrap()
-        .replace_all(&readme, |caps: &Captures| caps[1].to_string());
+    let re = Regex::new(r"\[(`[^`]*`)\](\([^)]*\))?").unwrap();
+
+    let body = re.replace_all(&readme, |caps: &Captures| {
+        if caps.get(2).is_some() {
+            // There is a following `(...)`: keep the whole original text
+            caps[0].to_string()
+        } else {
+            // No `(...)`: strip the surrounding [ ]
+            caps[1].to_string()
+        }
+    });
 
     println!("{}\n\n{}\n{}", COPYRIGHT_HEADER, body, DISCLAIMER_FOOTER);
 }
