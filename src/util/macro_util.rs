@@ -627,7 +627,7 @@ pub const fn hash_name(name: &str) -> i128 {
 fn try_cast_or_pme<Src, Dst, I, R, S>(
     src: Ptr<'_, Src, I>,
 ) -> Result<
-    Ptr<'_, Dst, (I::Aliasing, invariant::Unaligned, invariant::Valid)>,
+    Ptr<'_, Dst, (I::Aliasing, invariant::Unaligned, invariant::Safe)>,
     ValidityError<Ptr<'_, Src, I>, Dst>,
 >
 where
@@ -636,7 +636,7 @@ where
     Src: invariant::Read<I::Aliasing, R>,
     Dst: TryFromBytes
         + invariant::Read<I::Aliasing, R>
-        + TryTransmuteFromPtr<Dst, I::Aliasing, invariant::Initialized, invariant::Valid, IdCast, S>,
+        + TryTransmuteFromPtr<Dst, I::Aliasing, invariant::Initialized, invariant::Safe, IdCast, S>,
     I: Invariants<Validity = invariant::Initialized>,
     I::Aliasing: invariant::Reference,
 {
@@ -744,7 +744,7 @@ where
             // `try_cast_or_pme` promises to return its original argument, and
             // so we know that we are getting back the same `ptr` that we
             // originally passed, and that `ptr` was a bit-valid `Src`.
-            let ptr = unsafe { ptr.assume_valid() };
+            let ptr = unsafe { ptr.assume_safe() };
             ptr.as_ref()
         })),
     }
@@ -901,7 +901,7 @@ where
         let ptr = Ptr::from_ref(self.0)
             .recall_validity::<invariant::Initialized, _>()
             .transmute_with::<Dst, invariant::Initialized, crate::layout::CastFrom<Dst>, (crate::pointer::BecauseMutationCompatible, _)>()
-            .recall_validity::<invariant::Valid, _>();
+            .recall_validity::<invariant::Safe, _>();
 
         // SAFETY: The preceding `static_assert!` ensures that
         // `Src::LAYOUT.align >= Dst::LAYOUT.align`. Since `self` is
@@ -934,7 +934,7 @@ where
         let ptr = Ptr::from_mut(self.0)
             .recall_validity::<invariant::Initialized, (_, (_, _))>()
             .transmute_with::<Dst, invariant::Initialized, crate::layout::CastFrom<Dst>, _>()
-            .recall_validity::<invariant::Valid, (_, (_, _))>();
+            .recall_validity::<invariant::Safe, (_, (_, _))>();
 
         #[allow(unused_unsafe)]
         // SAFETY: The preceding `static_assert!` ensures that

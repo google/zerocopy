@@ -19,7 +19,80 @@ help: the trait `KnownLayout` is not implemented for `NotZerocopy`
              AU16
              AtomicBool
              AtomicI16
-           and $N others
+             AtomicI32
+             AtomicI64
+             AtomicI8
+             AtomicIsize
+             AtomicPtr<T>
+             AtomicU16
+             AtomicU32
+             AtomicU64
+             AtomicU8
+             AtomicUsize
+             Cell<T>
+             F32<O>
+             F64<O>
+             I128<O>
+             I16<O>
+             I32<O>
+             I64<O>
+             Isize<O>
+             ManuallyDrop<T>
+             NonZero<i128>
+             NonZero<i16>
+             NonZero<i32>
+             NonZero<i64>
+             NonZero<i8>
+             NonZero<isize>
+             NonZero<u128>
+             NonZero<u16>
+             NonZero<u32>
+             NonZero<u64>
+             NonZero<u8>
+             NonZero<usize>
+             Option<T>
+             PhantomData<T>
+             ReadOnly<T>
+             U128<O>
+             U16<O>
+             U32<O>
+             U64<O>
+             Unalign<T>
+             UnsafeCell<T>
+             Usize<O>
+             Wrapping<T>
+             [T; N]
+             [T]
+             __ZerocopyKnownLayoutMaybeUninit
+             __m128
+             __m128d
+             __m128i
+             __m256
+             __m256d
+             __m256i
+             __m512
+             __m512bh
+             __m512d
+             __m512i
+             bool
+             char
+             doctests::_::_::__ZerocopyKnownLayoutMaybeUninit<T, U>
+             f32
+             f64
+             i128
+             i16
+             i32
+             i64
+             i8
+             isize
+             std::mem::MaybeUninit<T>
+             str
+             u128
+             u16
+             u32
+             u64
+             u8
+             usize
 note: required by a bound in `takes_known_layout`
   --> tests/ui-stable/diagnostic-not-implemented-known-layout.rs:19:26
    |

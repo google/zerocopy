@@ -182,14 +182,14 @@ macro_rules! impl_for_transmute_from {
                 #[allow(dead_code, clippy::missing_inline_in_public_items)]
                 #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
                 fn only_derive_is_allowed_to_implement_this_trait() {
-                    use crate::pointer::{*, invariant::Valid};
+                    use crate::pointer::{*, invariant::Safe};
 
                     impl_for_transmute_from!(@assert_is_supported_trait $trait);
 
                     fn is_trait<T, R>()
                     where
-                        T: TransmuteFrom<R, Valid, Valid> + ?Sized,
-                        R: TransmuteFrom<T, Valid, Valid> + ?Sized,
+                        T: TransmuteFrom<R, Safe, Safe> + ?Sized,
+                        R: TransmuteFrom<T, Safe, Safe> + ?Sized,
                         R: $trait,
                     {
                     }
@@ -739,13 +739,13 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
     ($vis:vis T $(: ?$optbound:ident)? => $wrapper:ident<T>) => {{
         crate::util::macros::__unsafe();
 
-        use crate::pointer::{cast::CastExact, TransmuteFrom, SizeEq, invariant::Valid};
+        use crate::pointer::{cast::CastExact, TransmuteFrom, SizeEq, invariant::Safe};
 
         // SAFETY: The caller promises that `T` and `$wrapper<T>` have the same
         // bit validity.
-        unsafe impl<T $(: ?$optbound)?> TransmuteFrom<T, Valid, Valid> for $wrapper<T> {}
+        unsafe impl<T $(: ?$optbound)?> TransmuteFrom<T, Safe, Safe> for $wrapper<T> {}
         // SAFETY: See previous safety comment.
-        unsafe impl<T $(: ?$optbound)?> TransmuteFrom<$wrapper<T>, Valid, Valid> for T {}
+        unsafe impl<T $(: ?$optbound)?> TransmuteFrom<$wrapper<T>, Safe, Safe> for T {}
         // SAFETY: The caller promises that a `T` to `$wrapper<T>` cast is
         // size-preserving.
         define_cast!(unsafe { $vis CastA<T $(: ?$optbound)? > = T => $wrapper<T> });
@@ -770,7 +770,7 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
 macro_rules! impl_transitive_transmute_from {
     ($($tyvar:ident $(: ?$optbound:ident)?)? => $t:ty => $u:ty => $v:ty) => {
         const _: () = {
-            use crate::pointer::{TransmuteFrom, SizeEq, invariant::Valid};
+            use crate::pointer::{TransmuteFrom, SizeEq, invariant::Safe};
 
             impl<$($tyvar $(: ?$optbound)?)?> SizeEq<$t> for $v
             where
@@ -784,14 +784,14 @@ macro_rules! impl_transitive_transmute_from {
                 >;
             }
 
-            // SAFETY: Since `$u: TransmuteFrom<$t, Valid, Valid>`, it is sound
+            // SAFETY: Since `$u: TransmuteFrom<$t, Safe, Safe>`, it is sound
             // to transmute a bit-valid `$t` to a bit-valid `$u`. Since `$v:
-            // TransmuteFrom<$u, Valid, Valid>`, it is sound to transmute that
+            // TransmuteFrom<$u, Safe, Safe>`, it is sound to transmute that
             // bit-valid `$u` to a bit-valid `$v`.
-            unsafe impl<$($tyvar $(: ?$optbound)?)?> TransmuteFrom<$t, Valid, Valid> for $v
+            unsafe impl<$($tyvar $(: ?$optbound)?)?> TransmuteFrom<$t, Safe, Safe> for $v
             where
-                $u: TransmuteFrom<$t, Valid, Valid>,
-                $v: TransmuteFrom<$u, Valid, Valid>,
+                $u: TransmuteFrom<$t, Safe, Safe>,
+                $v: TransmuteFrom<$u, Safe, Safe>,
             {}
         };
     };

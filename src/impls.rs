@@ -109,7 +109,7 @@ assert_unaligned!(bool);
 //   pattern 0x01.
 const _: () = unsafe {
     unsafe_impl!(=> TryFromBytes for bool; |byte| {
-        let byte = byte.transmute_with::<u8, invariant::Valid, CastSizedExact, _>();
+        let byte = byte.transmute_with::<u8, invariant::Safe, CastSizedExact, _>();
         *byte.unaligned_as_ref() < 2
     })
 };
@@ -138,7 +138,7 @@ const _: () = unsafe { unsafe_impl!(char: Immutable, FromZeros, IntoBytes) };
 //   `char`.
 const _: () = unsafe {
     unsafe_impl!(=> TryFromBytes for char; |c| {
-        let c = c.transmute_with::<Unalign<u32>, invariant::Valid, CastSizedExact, _>();
+        let c = c.transmute_with::<Unalign<u32>, invariant::Safe, CastSizedExact, _>();
         let c = c.read_unaligned().into_inner();
         char::from_u32(c).is_some()
     });
@@ -171,7 +171,7 @@ const _: () = unsafe { unsafe_impl!(str: Immutable, FromZeros, IntoBytes, Unalig
 //   Returns `Err` if the slice is not UTF-8.
 const _: () = unsafe {
     unsafe_impl!(=> TryFromBytes for str; |c| {
-        let c = c.transmute_with::<[u8], invariant::Valid, CastUnsized, _>();
+        let c = c.transmute_with::<[u8], invariant::Safe, CastUnsized, _>();
         let c = c.unaligned_as_ref();
         core::str::from_utf8(c).is_ok()
     })
@@ -181,7 +181,7 @@ macro_rules! unsafe_impl_try_from_bytes_for_nonzero {
     ($($nonzero:ident[$prim:ty]),*) => {
         $(
             unsafe_impl!(=> TryFromBytes for $nonzero; |n| {
-                let n = n.transmute_with::<Unalign<$prim>, invariant::Valid, CastSizedExact, _>();
+                let n = n.transmute_with::<Unalign<$prim>, invariant::Safe, CastSizedExact, _>();
                 $nonzero::new(n.read_unaligned().into_inner()).is_some()
             });
         )*
@@ -419,15 +419,15 @@ mod atomics {
         ($($($tyvar:ident)? => $atomic:ty [$prim:ty]),*) => {{
             crate::util::macros::__unsafe();
 
-            use crate::pointer::{SizeEq, TransmuteFrom, invariant::Valid};
+            use crate::pointer::{SizeEq, TransmuteFrom, invariant::Safe};
 
             $(
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
                 // the same size and bit validity.
-                unsafe impl<$($tyvar)?> TransmuteFrom<$atomic, Valid, Valid> for $prim {}
+                unsafe impl<$($tyvar)?> TransmuteFrom<$atomic, Safe, Safe> for $prim {}
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
                 // the same size and bit validity.
-                unsafe impl<$($tyvar)?> TransmuteFrom<$prim, Valid, Valid> for $atomic {}
+                unsafe impl<$($tyvar)?> TransmuteFrom<$prim, Safe, Safe> for $atomic {}
 
                 impl<$($tyvar)?> SizeEq<$atomic> for $prim {
                     type CastFrom = $crate::pointer::cast::CastSizedExact;
@@ -445,9 +445,9 @@ mod atomics {
                 //   `UnsafeCell<T>` has the same in-memory representation as
                 //   its inner type `T`. A consequence of this guarantee is that
                 //   it is possible to convert between `T` and `UnsafeCell<T>`.
-                unsafe impl<$($tyvar)?> TransmuteFrom<$atomic, Valid, Valid> for core::cell::UnsafeCell<$prim> {}
+                unsafe impl<$($tyvar)?> TransmuteFrom<$atomic, Safe, Safe> for core::cell::UnsafeCell<$prim> {}
                 // SAFETY: See previous safety comment.
-                unsafe impl<$($tyvar)?> TransmuteFrom<core::cell::UnsafeCell<$prim>, Valid, Valid> for $atomic {}
+                unsafe impl<$($tyvar)?> TransmuteFrom<core::cell::UnsafeCell<$prim>, Safe, Safe> for $atomic {}
             )*
         }};
     }
@@ -1125,7 +1125,7 @@ mod tuples {
             // SAFETY: See comments on items.
             unsafe impl<Aliasing, Alignment, $($AllT),+> crate::ProjectField<
                 (),
-                (Aliasing, Alignment, crate::invariant::Valid),
+                (Aliasing, Alignment, crate::invariant::Safe),
                 { crate::STRUCT_VARIANT_ID },
                 { crate::ident_id!($CurrI)}
             > for ($($AllT,)+)
@@ -1142,7 +1142,7 @@ mod tuples {
                 // SAFETY: Tuples are product types whose fields are
                 // well-aligned, so projection preserves both the alignment and
                 // validity invariants of the outer pointer.
-                type Invariants = (Aliasing, Alignment, crate::invariant::Valid);
+                type Invariants = (Aliasing, Alignment, crate::invariant::Safe);
 
                 // SAFETY: Tuples are product types and so projection is infallible;
                 type Error = core::convert::Infallible;

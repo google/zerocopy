@@ -9,7 +9,7 @@
 use core::{fmt, hash::Hash};
 
 use super::*;
-use crate::pointer::{invariant::Valid, SizeEq, TransmuteFrom};
+use crate::pointer::{invariant::Safe, SizeEq, TransmuteFrom};
 
 /// A type with no alignment requirement.
 ///
@@ -688,11 +688,11 @@ const _: () = {
 
 // SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
 // it has the same bit validity as `T`.
-unsafe impl<T: ?Sized> TransmuteFrom<T, Valid, Valid> for ReadOnly<T> {}
+unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe> for ReadOnly<T> {}
 
 // SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
 // it has the same bit validity as `T`.
-unsafe impl<T: ?Sized> TransmuteFrom<ReadOnly<T>, Valid, Valid> for T {}
+unsafe impl<T: ?Sized> TransmuteFrom<ReadOnly<T>, Safe, Safe> for T {}
 
 impl<'a, T: ?Sized + Immutable> From<&'a T> for &'a ReadOnly<T> {
     #[inline(always)]

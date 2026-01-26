@@ -326,7 +326,141 @@ error[E0277]: the trait bound `UnsafeCell<()>: Immutable` is not satisfied
              (A, B, C, D)
              (A, B, C, D, E)
              (A, B, C, D, E, F)
-           and $N others
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+             (A, B, C, D, E, F, G, H, I)
+             (A, B, C, D, E, F, G, H, I, J)
+             (A, B, C, D, E, F, G, H, I, J, K)
+             (A, B, C, D, E, F, G, H, I, J, K, L)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)
+             (A,)
+             *const T
+             *mut T
+             F32<O>
+             F64<O>
+             I128<O>
+             I16<O>
+             I32<O>
+             I64<O>
+             Immutable1
+             Immutable2
+             Isize<O>
+             ManuallyDrop<T>
+             MaybeUninit<T>
+             Never
+             NonNull<T>
+             NonZero<i128>
+             NonZero<i16>
+             NonZero<i32>
+             NonZero<i64>
+             NonZero<i8>
+             NonZero<isize>
+             NonZero<u128>
+             NonZero<u16>
+             NonZero<u32>
+             NonZero<u64>
+             NonZero<u8>
+             NonZero<usize>
+             Option<T>
+             Option<extern "C" fn() -> M>
+             Option<extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(H, I, J, K, L) -> M>
+             Option<extern "C" fn(I, J, K, L) -> M>
+             Option<extern "C" fn(J, K, L) -> M>
+             Option<extern "C" fn(K, L) -> M>
+             Option<extern "C" fn(L) -> M>
+             Option<fn() -> M>
+             Option<fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(E, F, G, H, I, J, K, L) -> M>
+             Option<fn(F, G, H, I, J, K, L) -> M>
+             Option<fn(G, H, I, J, K, L) -> M>
+             Option<fn(H, I, J, K, L) -> M>
+             Option<fn(I, J, K, L) -> M>
+             Option<fn(J, K, L) -> M>
+             Option<fn(K, L) -> M>
+             Option<fn(L) -> M>
+             Option<unsafe extern "C" fn() -> M>
+             Option<unsafe extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(J, K, L) -> M>
+             Option<unsafe extern "C" fn(K, L) -> M>
+             Option<unsafe extern "C" fn(L) -> M>
+             Option<unsafe fn() -> M>
+             Option<unsafe fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(G, H, I, J, K, L) -> M>
+             Option<unsafe fn(H, I, J, K, L) -> M>
+             Option<unsafe fn(I, J, K, L) -> M>
+             Option<unsafe fn(J, K, L) -> M>
+             Option<unsafe fn(K, L) -> M>
+             Option<unsafe fn(L) -> M>
+             PhantomData<T>
+             ReadOnly<T>
+             U128<O>
+             U16<O>
+             U32<O>
+             U64<O>
+             Unalign<T>
+             Usize<O>
+             Wrapping<T>
+             [T; N]
+             [T]
+             _::_::<impl IntoBytes for IntoBytes1>::{constant#0}::___ZerocopyTag
+             _::_::<impl IntoBytes for IntoBytes2>::{constant#0}::___ZerocopyTag
+             _::_::<impl IntoBytes for IntoBytes3>::{constant#0}::___ZerocopyTag
+             _::_::<impl IntoBytes for IntoBytes6<T>>::{constant#0}::___ZerocopyTag
+             _::_::<impl TryFromBytes for FromZeros6>::is_bit_valid::___ZerocopyTag
+             _::_::<impl TryFromBytes for TryFromBytes3>::is_bit_valid::___ZerocopyTag
+             bool
+             char
+             f32
+             f64
+             i128
+             i16
+             i32
+             i64
+             i8
+             isize
+             str
+             u128
+             u16
+             u32
+             u64
+             u8
+             usize
    = help: see issue #48214
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
@@ -350,7 +484,141 @@ error[E0277]: the trait bound `UnsafeCell<u8>: Immutable` is not satisfied
              (A, B, C, D)
              (A, B, C, D, E)
              (A, B, C, D, E, F)
-           and $N others
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+             (A, B, C, D, E, F, G, H, I)
+             (A, B, C, D, E, F, G, H, I, J)
+             (A, B, C, D, E, F, G, H, I, J, K)
+             (A, B, C, D, E, F, G, H, I, J, K, L)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)
+             (A,)
+             *const T
+             *mut T
+             F32<O>
+             F64<O>
+             I128<O>
+             I16<O>
+             I32<O>
+             I64<O>
+             Immutable1
+             Immutable2
+             Isize<O>
+             ManuallyDrop<T>
+             MaybeUninit<T>
+             Never
+             NonNull<T>
+             NonZero<i128>
+             NonZero<i16>
+             NonZero<i32>
+             NonZero<i64>
+             NonZero<i8>
+             NonZero<isize>
+             NonZero<u128>
+             NonZero<u16>
+             NonZero<u32>
+             NonZero<u64>
+             NonZero<u8>
+             NonZero<usize>
+             Option<T>
+             Option<extern "C" fn() -> M>
+             Option<extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(H, I, J, K, L) -> M>
+             Option<extern "C" fn(I, J, K, L) -> M>
+             Option<extern "C" fn(J, K, L) -> M>
+             Option<extern "C" fn(K, L) -> M>
+             Option<extern "C" fn(L) -> M>
+             Option<fn() -> M>
+             Option<fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(E, F, G, H, I, J, K, L) -> M>
+             Option<fn(F, G, H, I, J, K, L) -> M>
+             Option<fn(G, H, I, J, K, L) -> M>
+             Option<fn(H, I, J, K, L) -> M>
+             Option<fn(I, J, K, L) -> M>
+             Option<fn(J, K, L) -> M>
+             Option<fn(K, L) -> M>
+             Option<fn(L) -> M>
+             Option<unsafe extern "C" fn() -> M>
+             Option<unsafe extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(J, K, L) -> M>
+             Option<unsafe extern "C" fn(K, L) -> M>
+             Option<unsafe extern "C" fn(L) -> M>
+             Option<unsafe fn() -> M>
+             Option<unsafe fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(G, H, I, J, K, L) -> M>
+             Option<unsafe fn(H, I, J, K, L) -> M>
+             Option<unsafe fn(I, J, K, L) -> M>
+             Option<unsafe fn(J, K, L) -> M>
+             Option<unsafe fn(K, L) -> M>
+             Option<unsafe fn(L) -> M>
+             PhantomData<T>
+             ReadOnly<T>
+             U128<O>
+             U16<O>
+             U32<O>
+             U64<O>
+             Unalign<T>
+             Usize<O>
+             Wrapping<T>
+             [T; N]
+             [T]
+             _::_::<impl IntoBytes for IntoBytes1>::{constant#0}::___ZerocopyTag
+             _::_::<impl IntoBytes for IntoBytes2>::{constant#0}::___ZerocopyTag
+             _::_::<impl IntoBytes for IntoBytes3>::{constant#0}::___ZerocopyTag
+             _::_::<impl IntoBytes for IntoBytes6<T>>::{constant#0}::___ZerocopyTag
+             _::_::<impl TryFromBytes for FromZeros6>::is_bit_valid::___ZerocopyTag
+             _::_::<impl TryFromBytes for TryFromBytes3>::is_bit_valid::___ZerocopyTag
+             bool
+             char
+             f32
+             f64
+             i128
+             i16
+             i32
+             i64
+             i8
+             isize
+             str
+             u128
+             u16
+             u32
+             u64
+             u8
+             usize
    = help: see issue #48214
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
@@ -379,7 +647,161 @@ help: the trait `TryFromBytes` is not implemented for `NotTryFromBytes`
              (A, B, C, D, E, F)
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
-           and $N others
+             (A, B, C, D, E, F, G, H, I)
+             (A, B, C, D, E, F, G, H, I, J)
+             (A, B, C, D, E, F, G, H, I, J, K)
+             (A, B, C, D, E, F, G, H, I, J, K, L)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)
+             (A,)
+             *const T
+             *mut T
+             AtomicBool
+             AtomicI16
+             AtomicI32
+             AtomicI64
+             AtomicI8
+             AtomicIsize
+             AtomicPtr<T>
+             AtomicU16
+             AtomicU32
+             AtomicU64
+             AtomicU8
+             AtomicUsize
+             Cell<T>
+             F32<O>
+             F64<O>
+             FooU8
+             FromZeros6
+             I128<O>
+             I16<O>
+             I32<O>
+             I64<O>
+             Isize<O>
+             ManuallyDrop<T>
+             MaybeUninit<T>
+             NonZero<i128>
+             NonZero<i16>
+             NonZero<i32>
+             NonZero<i64>
+             NonZero<i8>
+             NonZero<isize>
+             NonZero<u128>
+             NonZero<u16>
+             NonZero<u32>
+             NonZero<u64>
+             NonZero<u8>
+             NonZero<usize>
+             Option<&T>
+             Option<&mut T>
+             Option<NonNull<T>>
+             Option<NonZero<i128>>
+             Option<NonZero<i16>>
+             Option<NonZero<i32>>
+             Option<NonZero<i64>>
+             Option<NonZero<i8>>
+             Option<NonZero<isize>>
+             Option<NonZero<u128>>
+             Option<NonZero<u16>>
+             Option<NonZero<u32>>
+             Option<NonZero<u64>>
+             Option<NonZero<u8>>
+             Option<NonZero<usize>>
+             Option<extern "C" fn() -> M>
+             Option<extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(F, G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(G, H, I, J, K, L) -> M>
+             Option<extern "C" fn(H, I, J, K, L) -> M>
+             Option<extern "C" fn(I, J, K, L) -> M>
+             Option<extern "C" fn(J, K, L) -> M>
+             Option<extern "C" fn(K, L) -> M>
+             Option<extern "C" fn(L) -> M>
+             Option<fn() -> M>
+             Option<fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<fn(E, F, G, H, I, J, K, L) -> M>
+             Option<fn(F, G, H, I, J, K, L) -> M>
+             Option<fn(G, H, I, J, K, L) -> M>
+             Option<fn(H, I, J, K, L) -> M>
+             Option<fn(I, J, K, L) -> M>
+             Option<fn(J, K, L) -> M>
+             Option<fn(K, L) -> M>
+             Option<fn(L) -> M>
+             Option<unsafe extern "C" fn() -> M>
+             Option<unsafe extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(F, G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(G, H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(H, I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(I, J, K, L) -> M>
+             Option<unsafe extern "C" fn(J, K, L) -> M>
+             Option<unsafe extern "C" fn(K, L) -> M>
+             Option<unsafe extern "C" fn(L) -> M>
+             Option<unsafe fn() -> M>
+             Option<unsafe fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(C, D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(D, E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(E, F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(F, G, H, I, J, K, L) -> M>
+             Option<unsafe fn(G, H, I, J, K, L) -> M>
+             Option<unsafe fn(H, I, J, K, L) -> M>
+             Option<unsafe fn(I, J, K, L) -> M>
+             Option<unsafe fn(J, K, L) -> M>
+             Option<unsafe fn(K, L) -> M>
+             Option<unsafe fn(L) -> M>
+             PhantomData<T>
+             TryFromBytes3
+             U128<O>
+             U16<O>
+             U32<O>
+             U64<O>
+             Unalign<T>
+             UnsafeCell<T>
+             Usize<O>
+             Wrapping<T>
+             [T; N]
+             [T]
+             _::_::<impl TryFromBytes for FromZeros6>::is_bit_valid::___ZerocopyVariantStruct_A
+             _::_::<impl TryFromBytes for TryFromBytes3>::is_bit_valid::___ZerocopyVariantStruct_A
+             bool
+             char
+             f32
+             f64
+             i128
+             i16
+             i32
+             i64
+             i8
+             isize
+             str
+             u128
+             u16
+             u32
+             u64
+             u8
+             usize
    = help: see issue #48214
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
@@ -408,7 +830,161 @@ help: the trait `TryFromBytes` is not implemented for `NotFromZeros`
               (A, B, C, D, E, F)
               (A, B, C, D, E, F, G)
               (A, B, C, D, E, F, G, H)
-            and $N others
+              (A, B, C, D, E, F, G, H, I)
+              (A, B, C, D, E, F, G, H, I, J)
+              (A, B, C, D, E, F, G, H, I, J, K)
+              (A, B, C, D, E, F, G, H, I, J, K, L)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)
+              (A,)
+              *const T
+              *mut T
+              AtomicBool
+              AtomicI16
+              AtomicI32
+              AtomicI64
+              AtomicI8
+              AtomicIsize
+              AtomicPtr<T>
+              AtomicU16
+              AtomicU32
+              AtomicU64
+              AtomicU8
+              AtomicUsize
+              Cell<T>
+              F32<O>
+              F64<O>
+              FooU8
+              FromZeros6
+              I128<O>
+              I16<O>
+              I32<O>
+              I64<O>
+              Isize<O>
+              ManuallyDrop<T>
+              MaybeUninit<T>
+              NonZero<i128>
+              NonZero<i16>
+              NonZero<i32>
+              NonZero<i64>
+              NonZero<i8>
+              NonZero<isize>
+              NonZero<u128>
+              NonZero<u16>
+              NonZero<u32>
+              NonZero<u64>
+              NonZero<u8>
+              NonZero<usize>
+              Option<&T>
+              Option<&mut T>
+              Option<NonNull<T>>
+              Option<NonZero<i128>>
+              Option<NonZero<i16>>
+              Option<NonZero<i32>>
+              Option<NonZero<i64>>
+              Option<NonZero<i8>>
+              Option<NonZero<isize>>
+              Option<NonZero<u128>>
+              Option<NonZero<u16>>
+              Option<NonZero<u32>>
+              Option<NonZero<u64>>
+              Option<NonZero<u8>>
+              Option<NonZero<usize>>
+              Option<extern "C" fn() -> M>
+              Option<extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+              Option<extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+              Option<extern "C" fn(F, G, H, I, J, K, L) -> M>
+              Option<extern "C" fn(G, H, I, J, K, L) -> M>
+              Option<extern "C" fn(H, I, J, K, L) -> M>
+              Option<extern "C" fn(I, J, K, L) -> M>
+              Option<extern "C" fn(J, K, L) -> M>
+              Option<extern "C" fn(K, L) -> M>
+              Option<extern "C" fn(L) -> M>
+              Option<fn() -> M>
+              Option<fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<fn(C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<fn(D, E, F, G, H, I, J, K, L) -> M>
+              Option<fn(E, F, G, H, I, J, K, L) -> M>
+              Option<fn(F, G, H, I, J, K, L) -> M>
+              Option<fn(G, H, I, J, K, L) -> M>
+              Option<fn(H, I, J, K, L) -> M>
+              Option<fn(I, J, K, L) -> M>
+              Option<fn(J, K, L) -> M>
+              Option<fn(K, L) -> M>
+              Option<fn(L) -> M>
+              Option<unsafe extern "C" fn() -> M>
+              Option<unsafe extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(F, G, H, I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(G, H, I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(H, I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(J, K, L) -> M>
+              Option<unsafe extern "C" fn(K, L) -> M>
+              Option<unsafe extern "C" fn(L) -> M>
+              Option<unsafe fn() -> M>
+              Option<unsafe fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe fn(C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe fn(D, E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe fn(E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe fn(F, G, H, I, J, K, L) -> M>
+              Option<unsafe fn(G, H, I, J, K, L) -> M>
+              Option<unsafe fn(H, I, J, K, L) -> M>
+              Option<unsafe fn(I, J, K, L) -> M>
+              Option<unsafe fn(J, K, L) -> M>
+              Option<unsafe fn(K, L) -> M>
+              Option<unsafe fn(L) -> M>
+              PhantomData<T>
+              TryFromBytes3
+              U128<O>
+              U16<O>
+              U32<O>
+              U64<O>
+              Unalign<T>
+              UnsafeCell<T>
+              Usize<O>
+              Wrapping<T>
+              [T; N]
+              [T]
+              _::_::<impl TryFromBytes for FromZeros6>::is_bit_valid::___ZerocopyVariantStruct_A
+              _::_::<impl TryFromBytes for TryFromBytes3>::is_bit_valid::___ZerocopyVariantStruct_A
+              bool
+              char
+              f32
+              f64
+              i128
+              i16
+              i32
+              i64
+              i8
+              isize
+              str
+              u128
+              u16
+              u32
+              u64
+              u8
+              usize
     = help: see issue #48214
     = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
@@ -437,7 +1013,146 @@ help: the trait `FromZeros` is not implemented for `NotFromZeros`
               (A, B, C, D, E, F)
               (A, B, C, D, E, F, G)
               (A, B, C, D, E, F, G, H)
-            and $N others
+              (A, B, C, D, E, F, G, H, I)
+              (A, B, C, D, E, F, G, H, I, J)
+              (A, B, C, D, E, F, G, H, I, J, K)
+              (A, B, C, D, E, F, G, H, I, J, K, L)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)
+              (A,)
+              *const T
+              *mut T
+              AtomicBool
+              AtomicI16
+              AtomicI32
+              AtomicI64
+              AtomicI8
+              AtomicIsize
+              AtomicPtr<T>
+              AtomicU16
+              AtomicU32
+              AtomicU64
+              AtomicU8
+              AtomicUsize
+              Cell<T>
+              F32<O>
+              F64<O>
+              FooU8
+              FromZeros6
+              I128<O>
+              I16<O>
+              I32<O>
+              I64<O>
+              Isize<O>
+              ManuallyDrop<T>
+              MaybeUninit<T>
+              Option<&T>
+              Option<&mut T>
+              Option<NonNull<T>>
+              Option<NonZero<i128>>
+              Option<NonZero<i16>>
+              Option<NonZero<i32>>
+              Option<NonZero<i64>>
+              Option<NonZero<i8>>
+              Option<NonZero<isize>>
+              Option<NonZero<u128>>
+              Option<NonZero<u16>>
+              Option<NonZero<u32>>
+              Option<NonZero<u64>>
+              Option<NonZero<u8>>
+              Option<NonZero<usize>>
+              Option<extern "C" fn() -> M>
+              Option<extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+              Option<extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+              Option<extern "C" fn(F, G, H, I, J, K, L) -> M>
+              Option<extern "C" fn(G, H, I, J, K, L) -> M>
+              Option<extern "C" fn(H, I, J, K, L) -> M>
+              Option<extern "C" fn(I, J, K, L) -> M>
+              Option<extern "C" fn(J, K, L) -> M>
+              Option<extern "C" fn(K, L) -> M>
+              Option<extern "C" fn(L) -> M>
+              Option<fn() -> M>
+              Option<fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<fn(C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<fn(D, E, F, G, H, I, J, K, L) -> M>
+              Option<fn(E, F, G, H, I, J, K, L) -> M>
+              Option<fn(F, G, H, I, J, K, L) -> M>
+              Option<fn(G, H, I, J, K, L) -> M>
+              Option<fn(H, I, J, K, L) -> M>
+              Option<fn(I, J, K, L) -> M>
+              Option<fn(J, K, L) -> M>
+              Option<fn(K, L) -> M>
+              Option<fn(L) -> M>
+              Option<unsafe extern "C" fn() -> M>
+              Option<unsafe extern "C" fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(D, E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(F, G, H, I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(G, H, I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(H, I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(I, J, K, L) -> M>
+              Option<unsafe extern "C" fn(J, K, L) -> M>
+              Option<unsafe extern "C" fn(K, L) -> M>
+              Option<unsafe extern "C" fn(L) -> M>
+              Option<unsafe fn() -> M>
+              Option<unsafe fn(A, B, C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe fn(B, C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe fn(C, D, E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe fn(D, E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe fn(E, F, G, H, I, J, K, L) -> M>
+              Option<unsafe fn(F, G, H, I, J, K, L) -> M>
+              Option<unsafe fn(G, H, I, J, K, L) -> M>
+              Option<unsafe fn(H, I, J, K, L) -> M>
+              Option<unsafe fn(I, J, K, L) -> M>
+              Option<unsafe fn(J, K, L) -> M>
+              Option<unsafe fn(K, L) -> M>
+              Option<unsafe fn(L) -> M>
+              PhantomData<T>
+              U128<O>
+              U16<O>
+              U32<O>
+              U64<O>
+              Unalign<T>
+              UnsafeCell<T>
+              Usize<O>
+              Wrapping<T>
+              [T; N]
+              [T]
+              bool
+              char
+              f32
+              f64
+              i128
+              i16
+              i32
+              i64
+              i8
+              isize
+              str
+              u128
+              u16
+              u32
+              u64
+              u8
+              usize
     = help: see issue #48214
     = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
@@ -461,7 +1176,83 @@ error[E0277]: the trait bound `bool: FromBytes` is not satisfied
               (A, B, C, D, E, F)
               (A, B, C, D, E, F, G)
               (A, B, C, D, E, F, G, H)
-            and $N others
+              (A, B, C, D, E, F, G, H, I)
+              (A, B, C, D, E, F, G, H, I, J)
+              (A, B, C, D, E, F, G, H, I, J, K)
+              (A, B, C, D, E, F, G, H, I, J, K, L)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)
+              (A,)
+              AtomicI16
+              AtomicI32
+              AtomicI64
+              AtomicI8
+              AtomicIsize
+              AtomicU16
+              AtomicU32
+              AtomicU64
+              AtomicU8
+              AtomicUsize
+              Cell<T>
+              F32<O>
+              F64<O>
+              FooU8
+              I128<O>
+              I16<O>
+              I32<O>
+              I64<O>
+              Isize<O>
+              ManuallyDrop<T>
+              MaybeUninit<T>
+              Option<NonZero<i128>>
+              Option<NonZero<i16>>
+              Option<NonZero<i32>>
+              Option<NonZero<i64>>
+              Option<NonZero<i8>>
+              Option<NonZero<isize>>
+              Option<NonZero<u128>>
+              Option<NonZero<u16>>
+              Option<NonZero<u32>>
+              Option<NonZero<u64>>
+              Option<NonZero<u8>>
+              Option<NonZero<usize>>
+              PhantomData<T>
+              U128<O>
+              U16<O>
+              U32<O>
+              U64<O>
+              Unalign<T>
+              UnsafeCell<T>
+              Usize<O>
+              Wrapping<T>
+              [T; N]
+              [T]
+              f32
+              f64
+              i128
+              i16
+              i32
+              i64
+              i8
+              isize
+              u128
+              u16
+              u32
+              u64
+              u8
+              usize
     = help: see issue #48214
     = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: add `#![feature(trivial_bounds)]` to the crate attributes to enable
@@ -564,7 +1355,83 @@ error[E0277]: the trait bound `bool: FromBytes` is not satisfied
               (A, B, C, D, E, F)
               (A, B, C, D, E, F, G)
               (A, B, C, D, E, F, G, H)
-            and $N others
+              (A, B, C, D, E, F, G, H, I)
+              (A, B, C, D, E, F, G, H, I, J)
+              (A, B, C, D, E, F, G, H, I, J, K)
+              (A, B, C, D, E, F, G, H, I, J, K, L)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)
+              (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)
+              (A,)
+              AtomicI16
+              AtomicI32
+              AtomicI64
+              AtomicI8
+              AtomicIsize
+              AtomicU16
+              AtomicU32
+              AtomicU64
+              AtomicU8
+              AtomicUsize
+              Cell<T>
+              F32<O>
+              F64<O>
+              FooU8
+              I128<O>
+              I16<O>
+              I32<O>
+              I64<O>
+              Isize<O>
+              ManuallyDrop<T>
+              MaybeUninit<T>
+              Option<NonZero<i128>>
+              Option<NonZero<i16>>
+              Option<NonZero<i32>>
+              Option<NonZero<i64>>
+              Option<NonZero<i8>>
+              Option<NonZero<isize>>
+              Option<NonZero<u128>>
+              Option<NonZero<u16>>
+              Option<NonZero<u32>>
+              Option<NonZero<u64>>
+              Option<NonZero<u8>>
+              Option<NonZero<usize>>
+              PhantomData<T>
+              U128<O>
+              U16<O>
+              U32<O>
+              U64<O>
+              Unalign<T>
+              UnsafeCell<T>
+              Usize<O>
+              Wrapping<T>
+              [T; N]
+              [T]
+              f32
+              f64
+              i128
+              i16
+              i32
+              i64
+              i8
+              isize
+              u128
+              u16
+              u32
+              u64
+              u8
+              usize
 note: required for `FooU8` to implement `FromBytes`
    --> tests/ui-nightly/enum.rs:217:10
     |
