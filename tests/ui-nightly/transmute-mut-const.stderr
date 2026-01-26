@@ -13,7 +13,7 @@ note: `const` item defined here
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
    = note: `#[warn(const_item_mutation)]` on by default
 
-error[E0015]: cannot call non-const method `Wrap::<&mut [u8; 2], &mut [u8; 2]>::transmute_mut` in constants
+error[E0015]: cannot call non-const method `zerocopy::util::macro_util::Wrap::<&mut [u8; 2], &mut [u8; 2]>::transmute_mut` in constants
   --> tests/ui-nightly/transmute-mut-const.rs:18:37
    |
 18 | const CONST_CONTEXT: &mut [u8; 2] = transmute_mut!(&mut ARRAY_OF_U8S);
