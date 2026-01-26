@@ -960,7 +960,7 @@ where
     T: FromBytes + KnownLayout + ?Sized,
     A: crate::invariant::Aliasing,
     [u8]: MutationCompatible<T, A, Initialized, Initialized, R>,
-    T: TransmuteFromPtr<T, A, Initialized, Valid, S>,
+    T: TransmuteFromPtr<T, A, Initialized, Valid, crate::pointer::cast::IdCast, S>,
 {
     use crate::pointer::cast::{Cast, Project};
 
