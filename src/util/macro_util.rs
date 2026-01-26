@@ -30,9 +30,9 @@ use core::{
 use crate::{
     pointer::{
         invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
-        BecauseInvariantsEq, InvariantsEq, SizeEq, TryTransmuteFromPtr,
+        BecauseInvariantsEq, TryTransmuteFromPtr,
     },
-    FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, Ptr, TryFromBytes, ValidityError,
+    FromBytes, Immutable, IntoBytes, KnownLayout, Ptr, TryFromBytes, ValidityError,
 };
 
 /// Projects the type of the field at `Index` in `Self` without regard for field
@@ -900,25 +900,17 @@ where
             Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
         }, "cannot transmute reference when destination type has higher alignment than source type");
 
-        // SAFETY: We only use `S` as `S<Src>` and `D` as `D<Dst>`.
-        #[allow(clippy::multiple_unsafe_ops_per_block)]
-        unsafe {
-            unsafe_with_size_eq!(<S<Src>, D<Dst>> {
-                let ptr = Ptr::from_ref(self.0)
-                    .transmute::<S<Src>, invariant::Valid, BecauseImmutable>()
-                    .recall_validity::<invariant::Initialized, _>()
-                    .transmute::<D<Dst>, invariant::Initialized, (crate::pointer::BecauseMutationCompatible, _)>()
-                    .recall_validity::<invariant::Valid, _>();
+        let ptr = Ptr::from_ref(self.0)
+            .recall_validity::<invariant::Initialized, _>()
+            .transmute_with::<Dst, invariant::Initialized, crate::layout::CastFrom<Dst>, (crate::pointer::BecauseMutationCompatible, _)>()
+            .recall_validity::<invariant::Valid, _>();
 
-                #[allow(unused_unsafe)]
-                // SAFETY: The preceding `static_assert!` ensures that
-                // `T::LAYOUT.align >= U::LAYOUT.align`. Since `self.0` is
-                // validly-aligned for `T`, it is also validly-aligned for `U`.
-                let ptr = unsafe { ptr.assume_alignment() };
+        // SAFETY: The preceding `static_assert!` ensures that
+        // `Src::LAYOUT.align >= Dst::LAYOUT.align`. Since `self` is
+        // validly-aligned for `Src`, it is also validly-aligned for `Dst`.
+        let ptr = unsafe { ptr.assume_alignment() };
 
-                &ptr.as_ref().0
-            })
-        }
+        ptr.as_ref()
     }
 }
 
@@ -941,25 +933,18 @@ where
             Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
         }, "cannot transmute reference when destination type has higher alignment than source type");
 
-        // SAFETY: We only use `S` as `S<Src>` and `D` as `D<Dst>`.
-        #[allow(clippy::multiple_unsafe_ops_per_block)]
-        unsafe {
-            unsafe_with_size_eq!(<S<Src>, D<Dst>> {
-                let ptr = Ptr::from_mut(self.0)
-                    .transmute::<S<Src>, invariant::Valid, _>()
-                    .recall_validity::<invariant::Initialized, (_, (_, _))>()
-                    .transmute::<D<Dst>, invariant::Initialized, _>()
-                    .recall_validity::<invariant::Valid, (_, (_, _))>();
+        let ptr = Ptr::from_mut(self.0)
+            .recall_validity::<invariant::Initialized, (_, (_, _))>()
+            .transmute_with::<Dst, invariant::Initialized, crate::layout::CastFrom<Dst>, _>()
+            .recall_validity::<invariant::Valid, (_, (_, _))>();
 
-                #[allow(unused_unsafe)]
-                // SAFETY: The preceding `static_assert!` ensures that
-                // `T::LAYOUT.align >= U::LAYOUT.align`. Since `self.0` is
-                // validly-aligned for `T`, it is also validly-aligned for `U`.
-                let ptr = unsafe { ptr.assume_alignment() };
+        #[allow(unused_unsafe)]
+        // SAFETY: The preceding `static_assert!` ensures that
+        // `Src::LAYOUT.align >= Dst::LAYOUT.align`. Since `self` is
+        // validly-aligned for `Src`, it is also validly-aligned for `Dst`.
+        let ptr = unsafe { ptr.assume_alignment() };
 
-                &mut ptr.as_mut().0
-            })
-        }
+        ptr.as_mut()
     }
 }
 
