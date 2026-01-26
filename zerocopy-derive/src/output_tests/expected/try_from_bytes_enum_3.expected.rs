@@ -8,6 +8,7 @@
     non_ascii_idents,
     clippy::missing_inline_in_public_items,
 )]
+#[deny(ambiguous_associated_items)]
 #[automatically_derived]
 const _: () = {
     unsafe impl<'a: 'static, const N: usize, X, Y: Deref> ::zerocopy::TryFromBytes
@@ -70,7 +71,11 @@ const _: () = {
                 #[inline(always)]
                 fn project(
                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                ) -> *mut Self::Type {
+                ) -> *mut <Self as ::zerocopy::HasField<
+                    (),
+                    { ::zerocopy::STRUCT_VARIANT_ID },
+                    { ::zerocopy::ident_id!(tag) },
+                >>::Type {
                     slf.as_ptr().cast()
                 }
             }
@@ -105,6 +110,7 @@ const _: () = {
                 non_ascii_idents,
                 clippy::missing_inline_in_public_items,
             )]
+            #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
                 unsafe impl<
@@ -211,6 +217,7 @@ const _: () = {
                     non_ascii_idents,
                     clippy::missing_inline_in_public_items,
                 )]
+                #[deny(ambiguous_associated_items)]
                 #[automatically_derived]
                 const _: () = {
                     enum ẕ0 {}
@@ -230,6 +237,7 @@ const _: () = {
                         non_ascii_idents,
                         clippy::missing_inline_in_public_items,
                     )]
+                    #[deny(ambiguous_associated_items)]
                     #[automatically_derived]
                     const _: () = {
                         unsafe impl<
@@ -252,7 +260,11 @@ const _: () = {
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut Self::Type {
+                            ) -> *mut <Self as ::zerocopy::HasField<
+                                ẕ0,
+                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                { ::zerocopy::ident_id!(0) },
+                            >>::Type {
                                 let slf = slf.as_ptr();
                                 unsafe {
                                     ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -272,6 +284,7 @@ const _: () = {
                         non_ascii_idents,
                         clippy::missing_inline_in_public_items,
                     )]
+                    #[deny(ambiguous_associated_items)]
                     #[automatically_derived]
                     const _: () = {
                         unsafe impl<
@@ -292,7 +305,11 @@ const _: () = {
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut Self::Type {
+                            ) -> *mut <Self as ::zerocopy::HasField<
+                                ẕ1,
+                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                { ::zerocopy::ident_id!(1) },
+                            >>::Type {
                                 let slf = slf.as_ptr();
                                 unsafe {
                                     ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -312,6 +329,7 @@ const _: () = {
                         non_ascii_idents,
                         clippy::missing_inline_in_public_items,
                     )]
+                    #[deny(ambiguous_associated_items)]
                     #[automatically_derived]
                     const _: () = {
                         unsafe impl<
@@ -332,7 +350,11 @@ const _: () = {
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut Self::Type {
+                            ) -> *mut <Self as ::zerocopy::HasField<
+                                ẕ2,
+                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                { ::zerocopy::ident_id!(2) },
+                            >>::Type {
                                 let slf = slf.as_ptr();
                                 unsafe {
                                     ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -352,6 +374,7 @@ const _: () = {
                         non_ascii_idents,
                         clippy::missing_inline_in_public_items,
                     )]
+                    #[deny(ambiguous_associated_items)]
                     #[automatically_derived]
                     const _: () = {
                         unsafe impl<
@@ -372,7 +395,11 @@ const _: () = {
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut Self::Type {
+                            ) -> *mut <Self as ::zerocopy::HasField<
+                                ẕ3,
+                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                { ::zerocopy::ident_id!(3) },
+                            >>::Type {
                                 let slf = slf.as_ptr();
                                 unsafe {
                                     ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -392,6 +419,7 @@ const _: () = {
                         non_ascii_idents,
                         clippy::missing_inline_in_public_items,
                     )]
+                    #[deny(ambiguous_associated_items)]
                     #[automatically_derived]
                     const _: () = {
                         unsafe impl<
@@ -412,7 +440,11 @@ const _: () = {
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut Self::Type {
+                            ) -> *mut <Self as ::zerocopy::HasField<
+                                ẕ4,
+                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                { ::zerocopy::ident_id!(4) },
+                            >>::Type {
                                 let slf = slf.as_ptr();
                                 unsafe {
                                     ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -432,6 +464,7 @@ const _: () = {
                         non_ascii_idents,
                         clippy::missing_inline_in_public_items,
                     )]
+                    #[deny(ambiguous_associated_items)]
                     #[automatically_derived]
                     const _: () = {
                         unsafe impl<
@@ -452,7 +485,11 @@ const _: () = {
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut Self::Type {
+                            ) -> *mut <Self as ::zerocopy::HasField<
+                                ẕ5,
+                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                { ::zerocopy::ident_id!(5) },
+                            >>::Type {
                                 let slf = slf.as_ptr();
                                 unsafe {
                                     ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -472,6 +509,7 @@ const _: () = {
                         non_ascii_idents,
                         clippy::missing_inline_in_public_items,
                     )]
+                    #[deny(ambiguous_associated_items)]
                     #[automatically_derived]
                     const _: () = {
                         unsafe impl<
@@ -494,7 +532,11 @@ const _: () = {
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut Self::Type {
+                            ) -> *mut <Self as ::zerocopy::HasField<
+                                ẕ6,
+                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                { ::zerocopy::ident_id!(6) },
+                            >>::Type {
                                 let slf = slf.as_ptr();
                                 unsafe {
                                     ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -535,6 +577,7 @@ const _: () = {
                 non_ascii_idents,
                 clippy::missing_inline_in_public_items,
             )]
+            #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
                 unsafe impl<
@@ -622,6 +665,7 @@ const _: () = {
                     non_ascii_idents,
                     clippy::missing_inline_in_public_items,
                 )]
+                #[deny(ambiguous_associated_items)]
                 #[automatically_derived]
                 const _: () = {
                     enum ẕ0 {}
@@ -639,6 +683,7 @@ const _: () = {
                         non_ascii_idents,
                         clippy::missing_inline_in_public_items,
                     )]
+                    #[deny(ambiguous_associated_items)]
                     #[automatically_derived]
                     const _: () = {
                         unsafe impl<
@@ -661,7 +706,11 @@ const _: () = {
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut Self::Type {
+                            ) -> *mut <Self as ::zerocopy::HasField<
+                                ẕ0,
+                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                { ::zerocopy::ident_id!(0) },
+                            >>::Type {
                                 let slf = slf.as_ptr();
                                 unsafe {
                                     ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -681,6 +730,7 @@ const _: () = {
                         non_ascii_idents,
                         clippy::missing_inline_in_public_items,
                     )]
+                    #[deny(ambiguous_associated_items)]
                     #[automatically_derived]
                     const _: () = {
                         unsafe impl<
@@ -701,7 +751,11 @@ const _: () = {
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut Self::Type {
+                            ) -> *mut <Self as ::zerocopy::HasField<
+                                ẕ1,
+                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                { ::zerocopy::ident_id!(1) },
+                            >>::Type {
                                 let slf = slf.as_ptr();
                                 unsafe {
                                     ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -721,6 +775,7 @@ const _: () = {
                         non_ascii_idents,
                         clippy::missing_inline_in_public_items,
                     )]
+                    #[deny(ambiguous_associated_items)]
                     #[automatically_derived]
                     const _: () = {
                         unsafe impl<
@@ -741,7 +796,11 @@ const _: () = {
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut Self::Type {
+                            ) -> *mut <Self as ::zerocopy::HasField<
+                                ẕ2,
+                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                { ::zerocopy::ident_id!(2) },
+                            >>::Type {
                                 let slf = slf.as_ptr();
                                 unsafe {
                                     ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -761,6 +820,7 @@ const _: () = {
                         non_ascii_idents,
                         clippy::missing_inline_in_public_items,
                     )]
+                    #[deny(ambiguous_associated_items)]
                     #[automatically_derived]
                     const _: () = {
                         unsafe impl<
@@ -781,7 +841,11 @@ const _: () = {
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut Self::Type {
+                            ) -> *mut <Self as ::zerocopy::HasField<
+                                ẕ3,
+                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                { ::zerocopy::ident_id!(3) },
+                            >>::Type {
                                 let slf = slf.as_ptr();
                                 unsafe {
                                     ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -801,6 +865,7 @@ const _: () = {
                         non_ascii_idents,
                         clippy::missing_inline_in_public_items,
                     )]
+                    #[deny(ambiguous_associated_items)]
                     #[automatically_derived]
                     const _: () = {
                         unsafe impl<
@@ -823,7 +888,11 @@ const _: () = {
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                            ) -> *mut Self::Type {
+                            ) -> *mut <Self as ::zerocopy::HasField<
+                                ẕ4,
+                                { ::zerocopy::STRUCT_VARIANT_ID },
+                                { ::zerocopy::ident_id!(4) },
+                            >>::Type {
                                 let slf = slf.as_ptr();
                                 unsafe {
                                     ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -855,6 +924,7 @@ const _: () = {
                 non_ascii_idents,
                 clippy::missing_inline_in_public_items,
             )]
+            #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
                 enum ẕ__field_StructLike {}
@@ -870,6 +940,7 @@ const _: () = {
                     non_ascii_idents,
                     clippy::missing_inline_in_public_items,
                 )]
+                #[deny(ambiguous_associated_items)]
                 #[automatically_derived]
                 const _: () = {
                     unsafe impl<
@@ -889,7 +960,11 @@ const _: () = {
                         #[inline(always)]
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                        ) -> *mut Self::Type {
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ẕ__field_StructLike,
+                            { ::zerocopy::UNION_VARIANT_ID },
+                            { ::zerocopy::ident_id!(__field_StructLike) },
+                        >>::Type {
                             let slf = slf.as_ptr();
                             unsafe {
                                 ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -925,6 +1000,7 @@ const _: () = {
                     non_ascii_idents,
                     clippy::missing_inline_in_public_items,
                 )]
+                #[deny(ambiguous_associated_items)]
                 #[automatically_derived]
                 const _: () = {
                     unsafe impl<
@@ -944,7 +1020,11 @@ const _: () = {
                         #[inline(always)]
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                        ) -> *mut Self::Type {
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ẕ__field_TupleLike,
+                            { ::zerocopy::UNION_VARIANT_ID },
+                            { ::zerocopy::ident_id!(__field_TupleLike) },
+                        >>::Type {
                             let slf = slf.as_ptr();
                             unsafe {
                                 ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -980,6 +1060,7 @@ const _: () = {
                     non_ascii_idents,
                     clippy::missing_inline_in_public_items,
                 )]
+                #[deny(ambiguous_associated_items)]
                 #[automatically_derived]
                 const _: () = {
                     unsafe impl<
@@ -997,7 +1078,11 @@ const _: () = {
                         #[inline(always)]
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                        ) -> *mut Self::Type {
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ẕ__nonempty,
+                            { ::zerocopy::UNION_VARIANT_ID },
+                            { ::zerocopy::ident_id!(__nonempty) },
+                        >>::Type {
                             let slf = slf.as_ptr();
                             unsafe {
                                 ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -1047,6 +1132,7 @@ const _: () = {
                 non_ascii_idents,
                 clippy::missing_inline_in_public_items,
             )]
+            #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
                 enum ẕtag {}
@@ -1061,6 +1147,7 @@ const _: () = {
                     non_ascii_idents,
                     clippy::missing_inline_in_public_items,
                 )]
+                #[deny(ambiguous_associated_items)]
                 #[automatically_derived]
                 const _: () = {
                     unsafe impl<
@@ -1078,7 +1165,11 @@ const _: () = {
                         #[inline(always)]
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                        ) -> *mut Self::Type {
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ẕtag,
+                            { ::zerocopy::STRUCT_VARIANT_ID },
+                            { ::zerocopy::ident_id!(tag) },
+                        >>::Type {
                             let slf = slf.as_ptr();
                             unsafe {
                                 ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -1098,6 +1189,7 @@ const _: () = {
                     non_ascii_idents,
                     clippy::missing_inline_in_public_items,
                 )]
+                #[deny(ambiguous_associated_items)]
                 #[automatically_derived]
                 const _: () = {
                     unsafe impl<
@@ -1115,7 +1207,11 @@ const _: () = {
                         #[inline(always)]
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                        ) -> *mut Self::Type {
+                        ) -> *mut <Self as ::zerocopy::HasField<
+                            ẕvariants,
+                            { ::zerocopy::STRUCT_VARIANT_ID },
+                            { ::zerocopy::ident_id!(variants) },
+                        >>::Type {
                             let slf = slf.as_ptr();
                             unsafe {
                                 ::zerocopy::util::macro_util::core_reexport::ptr::addr_of_mut!(
@@ -1136,6 +1232,7 @@ const _: () = {
                 non_ascii_idents,
                 clippy::missing_inline_in_public_items,
             )]
+            #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
                 unsafe impl<
@@ -1156,7 +1253,11 @@ const _: () = {
                     #[inline(always)]
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                    ) -> *mut Self::Type {
+                    ) -> *mut <Self as ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(a) },
+                    >>::Type {
                         use ::zerocopy::pointer::cast::{CastSized, Projection};
                         slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                             .project::<
@@ -1205,6 +1306,7 @@ const _: () = {
                 non_ascii_idents,
                 clippy::missing_inline_in_public_items,
             )]
+            #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
                 unsafe impl<
@@ -1225,7 +1327,11 @@ const _: () = {
                     #[inline(always)]
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                    ) -> *mut Self::Type {
+                    ) -> *mut <Self as ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(b) },
+                    >>::Type {
                         use ::zerocopy::pointer::cast::{CastSized, Projection};
                         slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                             .project::<
@@ -1274,6 +1380,7 @@ const _: () = {
                 non_ascii_idents,
                 clippy::missing_inline_in_public_items,
             )]
+            #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
                 unsafe impl<
@@ -1294,7 +1401,11 @@ const _: () = {
                     #[inline(always)]
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                    ) -> *mut Self::Type {
+                    ) -> *mut <Self as ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(c) },
+                    >>::Type {
                         use ::zerocopy::pointer::cast::{CastSized, Projection};
                         slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                             .project::<
@@ -1343,6 +1454,7 @@ const _: () = {
                 non_ascii_idents,
                 clippy::missing_inline_in_public_items,
             )]
+            #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
                 unsafe impl<
@@ -1363,7 +1475,11 @@ const _: () = {
                     #[inline(always)]
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                    ) -> *mut Self::Type {
+                    ) -> *mut <Self as ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(d) },
+                    >>::Type {
                         use ::zerocopy::pointer::cast::{CastSized, Projection};
                         slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                             .project::<
@@ -1412,6 +1528,7 @@ const _: () = {
                 non_ascii_idents,
                 clippy::missing_inline_in_public_items,
             )]
+            #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
                 unsafe impl<
@@ -1432,7 +1549,11 @@ const _: () = {
                     #[inline(always)]
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                    ) -> *mut Self::Type {
+                    ) -> *mut <Self as ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(StructLike) },
+                        { ::zerocopy::ident_id!(e) },
+                    >>::Type {
                         use ::zerocopy::pointer::cast::{CastSized, Projection};
                         slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                             .project::<
@@ -1481,6 +1602,7 @@ const _: () = {
                 non_ascii_idents,
                 clippy::missing_inline_in_public_items,
             )]
+            #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
                 unsafe impl<
@@ -1501,7 +1623,11 @@ const _: () = {
                     #[inline(always)]
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                    ) -> *mut Self::Type {
+                    ) -> *mut <Self as ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(TupleLike) },
+                        { ::zerocopy::ident_id!(0) },
+                    >>::Type {
                         use ::zerocopy::pointer::cast::{CastSized, Projection};
                         slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                             .project::<
@@ -1550,6 +1676,7 @@ const _: () = {
                 non_ascii_idents,
                 clippy::missing_inline_in_public_items,
             )]
+            #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
                 unsafe impl<
@@ -1570,7 +1697,11 @@ const _: () = {
                     #[inline(always)]
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                    ) -> *mut Self::Type {
+                    ) -> *mut <Self as ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(TupleLike) },
+                        { ::zerocopy::ident_id!(1) },
+                    >>::Type {
                         use ::zerocopy::pointer::cast::{CastSized, Projection};
                         slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                             .project::<
@@ -1619,6 +1750,7 @@ const _: () = {
                 non_ascii_idents,
                 clippy::missing_inline_in_public_items,
             )]
+            #[deny(ambiguous_associated_items)]
             #[automatically_derived]
             const _: () = {
                 unsafe impl<
@@ -1639,7 +1771,11 @@ const _: () = {
                     #[inline(always)]
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
-                    ) -> *mut Self::Type {
+                    ) -> *mut <Self as ::zerocopy::HasField<
+                        (),
+                        { ::zerocopy::ident_id!(TupleLike) },
+                        { ::zerocopy::ident_id!(2) },
+                    >>::Type {
                         use ::zerocopy::pointer::cast::{CastSized, Projection};
                         slf.project::<___ZerocopyRawEnum<'a, N, X, Y>, CastSized>()
                             .project::<

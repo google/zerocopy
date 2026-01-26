@@ -69,7 +69,7 @@ fn derive_known_layout_for_repr_c_struct<'a>(
             #[inline(always)]
             fn raw_from_ptr_len(
                 bytes: #core::ptr::NonNull<u8>,
-                meta: Self::PointerMetadata,
+                meta: <Self as #zerocopy_crate::KnownLayout>::PointerMetadata,
             ) -> #core::ptr::NonNull<Self> {
                 let trailing = <#trailing_field_ty as #zerocopy_crate::KnownLayout>::raw_from_ptr_len(bytes, meta);
                 let slf = trailing.as_ptr() as *mut Self;
@@ -78,7 +78,7 @@ fn derive_known_layout_for_repr_c_struct<'a>(
             }
 
             #[inline(always)]
-            fn pointer_to_metadata(ptr: *mut Self) -> Self::PointerMetadata {
+            fn pointer_to_metadata(ptr: *mut Self) -> <Self as #zerocopy_crate::KnownLayout>::PointerMetadata {
                 <#trailing_field_ty>::pointer_to_metadata(ptr as *mut _)
             }
         }
