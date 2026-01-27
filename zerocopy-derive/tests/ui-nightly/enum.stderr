@@ -482,7 +482,7 @@ help: the trait `PaddingFree<IntoBytes1, 1>` is not implemented for `()`
       but trait `PaddingFree<IntoBytes1, 0>` is implemented for it
    --> $WORKSPACE/src/util/macro_util.rs
     |
- 68 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
+ 65 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -504,7 +504,7 @@ help: the trait `PaddingFree<IntoBytes2, 3>` is not implemented for `()`
       but trait `PaddingFree<IntoBytes2, 0>` is implemented for it
    --> $WORKSPACE/src/util/macro_util.rs
     |
- 68 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
+ 65 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -526,7 +526,7 @@ help: the trait `PaddingFree<IntoBytes3, 2>` is not implemented for `()`
       but trait `PaddingFree<IntoBytes3, 0>` is implemented for it
    --> $WORKSPACE/src/util/macro_util.rs
     |
- 68 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
+ 65 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
