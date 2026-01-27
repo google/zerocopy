@@ -4,22 +4,12 @@ error[E0277]: the trait bound `NotZerocopy<AU16>: IntoBytes` is not satisfied
 17 |     let src_not_into_bytes: Result<&AU16, _> = try_transmute_ref!(&NotZerocopy(AU16(0)));
    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `IntoBytes` is not implemented for `NotZerocopy<AU16>`
    |
-note: required by a bound in `try_transmute_ref`
-  --> src/util/macro_util.rs
-   |
-   |     Src: IntoBytes + Immutable,
-   |          ^^^^^^^^^ required by this bound in `try_transmute_ref`
    = note: this error originates in the macro `try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy<AU16>: Immutable` is not satisfied
   --> tests/ui-msrv/try_transmute_ref-src-not-immutable-intobytes.rs:17:48
    |
 17 |     let src_not_into_bytes: Result<&AU16, _> = try_transmute_ref!(&NotZerocopy(AU16(0)));
-   |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected an implementor of trait `Immutable`
+   |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Immutable` is not implemented for `NotZerocopy<AU16>`
    |
-note: required by a bound in `try_transmute_ref`
-  --> src/util/macro_util.rs
-   |
-   |     Src: IntoBytes + Immutable,
-   |                      ^^^^^^^^^ required by this bound in `try_transmute_ref`
    = note: this error originates in the macro `try_transmute_ref` (in Nightly builds, run with -Z macro-backtrace for more info)
