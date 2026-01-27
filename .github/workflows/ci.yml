@@ -322,11 +322,6 @@ jobs:
           # [1] https://github.com/actions/runner/issues/409#issuecomment-752775072
           components: clippy, rust-src ${{ matrix.toolchain == 'nightly' && ', miri' || '' }}
 
-    - name: Rust Cache
-      uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2.8.2
-      with:
-        key: "${{ matrix.target }}"
-
     # On the `thumbv6m-none-eabi` target, we can't run `cargo check --tests` due
     # to the `memchr` crate, so we just do `cargo check` instead.
     - name: Check
@@ -676,10 +671,13 @@ jobs:
   check_be_aarch64:
     runs-on: ubuntu-latest
     name: Build (zerocopy / nightly / --simd / aarch64_be-unknown-linux-gnu)
+    needs: generate_cache
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
+      - name: Populate cache
+        uses: ./.github/actions/cache
       - name: Configure environment variables
         run: |
           set -eo pipefail
@@ -687,10 +685,6 @@ jobs:
           RUSTFLAGS="$RUSTFLAGS $ZC_NIGHTLY_RUSTFLAGS"
           echo "RUSTFLAGS=$RUSTFLAGS" >> $GITHUB_ENV
           echo "ZC_TOOLCHAIN=$ZC_TOOLCHAIN" >> $GITHUB_ENV
-      - name: Rust Cache
-        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2.8.2
-        with:
-          key: aarch64_be-unknown-linux-gnu
       - name: Install stable Rust for use in 'cargo.sh'
         uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
         with:
@@ -720,10 +714,13 @@ jobs:
   check_avr_atmega:
     runs-on: ubuntu-latest
     name: Build (zerocopy / nightly / --simd / avr-none)
+    needs: generate_cache
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
+      - name: Populate cache
+        uses: ./.github/actions/cache
       - name: Configure environment variables
         run: |
           set -eo pipefail
@@ -731,10 +728,6 @@ jobs:
           RUSTFLAGS="$RUSTFLAGS $ZC_NIGHTLY_RUSTFLAGS"
           echo "RUSTFLAGS=$RUSTFLAGS" >> $GITHUB_ENV
           echo "ZC_TOOLCHAIN=$ZC_TOOLCHAIN" >> $GITHUB_ENV
-      - name: Rust Cache
-        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2.8.2
-        with:
-          key: avr-none
       - name: Install stable Rust for use in 'cargo.sh'
         uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
         with:
@@ -768,10 +761,13 @@ jobs:
   check_fmt:
     runs-on: ubuntu-latest
     name: Check Rust formatting
+    needs: generate_cache
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
+      - name: Populate cache
+        uses: ./.github/actions/cache
       - name: Check Rust formatting
         run: |
           set -eo pipefail
@@ -802,10 +798,8 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
-
       - name: Populate cache
         uses: ./.github/actions/cache
-
       - name: Check Actions
         run: ./ci/check_actions.sh
 
@@ -817,10 +811,8 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
-
       - name: Populate cache
         uses: ./.github/actions/cache
-      
       - name: Check README.md
         run: ./ci/check_readme.sh
 
@@ -832,10 +824,8 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
-
       - name: Populate cache
         uses: ./.github/actions/cache
-
       # Make sure that both crates are at the same version, and that zerocopy
       # depends exactly upon the current version of zerocopy-derive. See
       # `INTERNAL.md` for an explanation of why we do this.
@@ -848,12 +838,10 @@ jobs:
     name: Check MSRV is minimal
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-
         with:
           persist-credentials: false
       - name: Populate cache
         uses: ./.github/actions/cache
-
       - name: Check MSRV is minimal
         run: ./ci/check_msrv_is_minimal.sh
 
@@ -864,7 +852,6 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
-
       - name: Populate cache
         uses: ./.github/actions/cache
         with:
