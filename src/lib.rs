@@ -888,6 +888,12 @@ pub trait PointerMetadata: Copy + Eq + Debug {
     /// `elems`. No other types are currently supported.
     fn from_elem_count(elems: usize) -> Self;
 
+    /// Converts `self` to an element count.
+    ///
+    /// If `Self = ()`, this returns `0`. If `Self = usize`, this returns
+    /// `self`. No other types are currently supported.
+    fn to_elem_count(self) -> usize;
+
     /// Computes the size of the object with the given layout and pointer
     /// metadata.
     ///
@@ -910,6 +916,11 @@ impl PointerMetadata for () {
     fn from_elem_count(_elems: usize) -> () {}
 
     #[inline]
+    fn to_elem_count(self) -> usize {
+        0
+    }
+
+    #[inline]
     fn size_for_metadata(self, layout: DstLayout) -> Option<usize> {
         match layout.size_info {
             SizeInfo::Sized { size } => Some(size),
@@ -924,6 +935,11 @@ impl PointerMetadata for usize {
     #[inline]
     fn from_elem_count(elems: usize) -> usize {
         elems
+    }
+
+    #[inline]
+    fn to_elem_count(self) -> usize {
+        self
     }
 
     #[inline]
