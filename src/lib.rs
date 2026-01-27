@@ -1105,6 +1105,14 @@ pub const STRUCT_VARIANT_ID: i128 = -1;
 #[doc(hidden)]
 pub const UNION_VARIANT_ID: i128 = -2;
 
+#[doc(hidden)]
+pub const ENUM_TAG_VARIANT_ID: i128 = -3;
+#[doc(hidden)]
+pub const ENUM_TAG_FIELD_ID: i128 = 0;
+#[doc(hidden)]
+#[allow(missing_copy_implementations, missing_debug_implementations)]
+pub enum Tag {}
+
 /// Projects a given field from `Self`.
 ///
 /// All implementations of `HasField` for a particular field `f` in `Self`
@@ -1138,6 +1146,17 @@ pub unsafe trait HasField<Field, const VARIANT_ID: i128, const FIELD_ID: i128> {
 
     /// The type of the field.
     type Type: ?Sized;
+
+    /// The type's enum tag, or `()` for non-enum types.
+    type Tag: Immutable;
+
+    /// A pointer projection from `Self` to its tag.
+    ///
+    /// # Safety
+    ///
+    /// It must be the case that, for all `slf: Ptr<'_, Self, I>`, it is sound
+    /// to project from `slf` to `Ptr<'_, Self::Tag, I>` using this projection.
+    type ProjectToTag: pointer::cast::Project<Self, Self::Tag>;
 
     /// Projects from `slf` to the field.
     ///
@@ -1185,6 +1204,18 @@ where
     /// otherwise [`core::convert::Infallible`].
     type Error;
 
+    #[must_use]
+    #[inline(always)]
+    fn project_tag<'a>(ptr: Ptr<'a, Self, I>) -> Ptr<'a, Self::Tag, I> {
+        // SAFETY: By invariant on `Self::ProjectToTag`, this is a sound
+        // projection.
+        let tag = unsafe { ptr.project_transmute_unchecked::<_, _, Self::ProjectToTag>() };
+        // SAFETY: By invariant on `Self::ProjectToTag`, the projected pointer
+        // has the same alignment as `ptr`.
+        let tag = unsafe { tag.assume_alignment() };
+        tag.unify_invariants()
+    }
+
     /// Is the given field projectable from `ptr`?
     ///
     /// If a field with [`Self::Invariants`] is projectable from the referent,
@@ -1194,7 +1225,7 @@ where
     /// This method must be overriden if the field's projectability depends on
     /// the value of the bytes in `ptr`.
     #[inline(always)]
-    fn is_projectable<'a>(ptr: Ptr<'a, Self, I>) -> Result<Ptr<'a, Self, I>, Self::Error> {
+    fn is_projectable<'a>(_ptr: Ptr<'a, Self::Tag, I>) -> Result<(), Self::Error> {
         trait IsInfallible {
             const IS_INFALLIBLE: bool;
         }
@@ -1248,7 +1279,7 @@ where
             <Projection<Self, Field, I, VARIANT_ID, FIELD_ID> as IsInfallible>::IS_INFALLIBLE
         );
 
-        Ok(ptr)
+        Ok(())
     }
 }
 

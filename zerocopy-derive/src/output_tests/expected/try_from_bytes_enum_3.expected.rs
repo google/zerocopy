@@ -33,7 +33,7 @@ const _: () = {
         {
             #[repr(C)]
             #[allow(dead_code)]
-            enum ___ZerocopyTag {
+            pub enum ___ZerocopyTag {
                 UnitLike,
                 StructLike,
                 TupleLike,
@@ -283,6 +283,8 @@ const _: () = {
                             type Type = ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                 ___ZerocopyInnerTag,
                             >;
+                            type Tag = ();
+                            type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -366,6 +368,8 @@ const _: () = {
                         {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                             type Type = u8;
+                            type Tag = ();
+                            type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -449,6 +453,8 @@ const _: () = {
                         {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                             type Type = X;
+                            type Tag = ();
+                            type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -532,6 +538,8 @@ const _: () = {
                         {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                             type Type = X::Target;
+                            type Tag = ();
+                            type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -615,6 +623,8 @@ const _: () = {
                         {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                             type Type = Y::Target;
+                            type Tag = ();
+                            type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -698,6 +708,8 @@ const _: () = {
                         {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                             type Type = [(X, Y); N];
+                            type Tag = ();
+                            type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -783,6 +795,8 @@ const _: () = {
                             type Type = ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                 ComplexWithGenerics<'a, N, X, Y>,
                             >;
+                            type Tag = ();
+                            type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -1030,6 +1044,8 @@ const _: () = {
                             type Type = ::zerocopy::util::macro_util::core_reexport::mem::MaybeUninit<
                                 ___ZerocopyInnerTag,
                             >;
+                            type Tag = ();
+                            type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -1113,6 +1129,8 @@ const _: () = {
                         {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                             type Type = bool;
+                            type Tag = ();
+                            type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -1196,6 +1214,8 @@ const _: () = {
                         {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                             type Type = Y;
+                            type Tag = ();
+                            type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -1279,6 +1299,8 @@ const _: () = {
                         {
                             fn only_derive_is_allowed_to_implement_this_trait() {}
                             type Type = PhantomData<&'a [(X, Y); N]>;
+                            type Tag = ();
+                            type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -1364,6 +1386,8 @@ const _: () = {
                             type Type = ::zerocopy::util::macro_util::core_reexport::marker::PhantomData<
                                 ComplexWithGenerics<'a, N, X, Y>,
                             >;
+                            type Tag = ();
+                            type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                             #[inline(always)]
                             fn project(
                                 slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -1474,6 +1498,8 @@ const _: () = {
                         type Type = ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                             ___ZerocopyVariantStruct_StructLike<'a, N, X, Y>,
                         >;
+                        type Tag = ();
+                        type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                         #[inline(always)]
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -1534,6 +1560,8 @@ const _: () = {
                         type Type = ::zerocopy::util::macro_util::core_reexport::mem::ManuallyDrop<
                             ___ZerocopyVariantStruct_TupleLike<'a, N, X, Y>,
                         >;
+                        type Tag = ();
+                        type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                         #[inline(always)]
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -1592,6 +1620,8 @@ const _: () = {
                     > for ___ZerocopyVariants<'a, { N }, X, Y> {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = ();
+                        type Tag = ();
+                        type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                         #[inline(always)]
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -1679,6 +1709,8 @@ const _: () = {
                     > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = ___ZerocopyOuterTag;
+                        type Tag = ();
+                        type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                         #[inline(always)]
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -1756,6 +1788,8 @@ const _: () = {
                     > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Type = ___ZerocopyVariants<'a, N, X, Y>;
+                        type Tag = ();
+                        type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                         #[inline(always)]
                         fn project(
                             slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -1837,6 +1871,8 @@ const _: () = {
                 {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Type = u8;
+                    type Tag = ___ZerocopyTag;
+                    type ProjectToTag = ::zerocopy::pointer::cast::CastSized;
                     #[inline(always)]
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -1949,6 +1985,8 @@ const _: () = {
                 {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Type = X;
+                    type Tag = ___ZerocopyTag;
+                    type ProjectToTag = ::zerocopy::pointer::cast::CastSized;
                     #[inline(always)]
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -2061,6 +2099,8 @@ const _: () = {
                 {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Type = X::Target;
+                    type Tag = ___ZerocopyTag;
+                    type ProjectToTag = ::zerocopy::pointer::cast::CastSized;
                     #[inline(always)]
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -2173,6 +2213,8 @@ const _: () = {
                 {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Type = Y::Target;
+                    type Tag = ___ZerocopyTag;
+                    type ProjectToTag = ::zerocopy::pointer::cast::CastSized;
                     #[inline(always)]
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -2285,6 +2327,8 @@ const _: () = {
                 {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Type = [(X, Y); N];
+                    type Tag = ___ZerocopyTag;
+                    type ProjectToTag = ::zerocopy::pointer::cast::CastSized;
                     #[inline(always)]
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -2397,6 +2441,8 @@ const _: () = {
                 {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Type = bool;
+                    type Tag = ___ZerocopyTag;
+                    type ProjectToTag = ::zerocopy::pointer::cast::CastSized;
                     #[inline(always)]
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -2509,6 +2555,8 @@ const _: () = {
                 {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Type = Y;
+                    type Tag = ___ZerocopyTag;
+                    type ProjectToTag = ::zerocopy::pointer::cast::CastSized;
                     #[inline(always)]
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,
@@ -2621,6 +2669,8 @@ const _: () = {
                 {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Type = PhantomData<&'a [(X, Y); N]>;
+                    type Tag = ___ZerocopyTag;
+                    type ProjectToTag = ::zerocopy::pointer::cast::CastSized;
                     #[inline(always)]
                     fn project(
                         slf: ::zerocopy::pointer::PtrInner<'_, Self>,

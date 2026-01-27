@@ -67,6 +67,8 @@ const _: () = {
             > for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
                 type Type = u8;
+                type Tag = ();
+                type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
                 #[inline(always)]
                 fn project(
                     slf: ::zerocopy::pointer::PtrInner<'_, Self>,

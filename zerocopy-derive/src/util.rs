@@ -670,7 +670,7 @@ pub(crate) fn generate_tag_enum(ctx: &Ctx, repr: &EnumRepr, data: &DataEnum) -> 
     quote! {
         #repr
         #[allow(dead_code)]
-        enum ___ZerocopyTag {
+        pub enum ___ZerocopyTag {
             #(#variants,)*
         }
 

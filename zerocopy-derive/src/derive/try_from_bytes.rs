@@ -247,6 +247,10 @@ pub(crate) fn derive_is_bit_valid(
             .inner_extras(quote! {
                 type Type = #ty;
 
+                type Tag = ___ZerocopyTag;
+
+                type ProjectToTag = #zerocopy_crate::pointer::cast::CastSized;
+
                 #[inline(always)]
                 fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut <Self as #has_field_path>::Type {
                     use #zerocopy_crate::pointer::cast::{CastSized, Projection};
@@ -482,6 +486,10 @@ fn derive_has_field_struct_union(ctx: &Ctx, data: &dyn DataExt) -> TokenStream {
             )
             .inner_extras(quote! {
                 type Type = #ty;
+
+                type Tag = ();
+
+                type ProjectToTag = #zerocopy_crate::pointer::cast::CastToUnit;
 
                 #[inline(always)]
                 fn project(slf: #zerocopy_crate::pointer::PtrInner<'_, Self>) -> *mut <Self as #has_field_path>::Type {

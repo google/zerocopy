@@ -781,6 +781,20 @@ const _: () = {
     {
         type Type = T;
 
+        type Tag = ();
+
+        // SAFETY: It is trivially sound to project any pointer to a pointer to
+        // a type of size zero and alignment 1 (which `()` is [1]). Such a
+        // pointer will trivially satisfy its aliasing and validity requirements
+        // (since it has a zero-sized referent), and its alignment requirement
+        // (since it is aligned to 1).
+        //
+        // [1] Per https://doc.rust-lang.org/1.92.0/reference/type-layout.html#r-layout.tuple.unit:
+        //
+        //     [T]he unit tuple (`()`)... is guaranteed as a zero-sized type to
+        //     have a size of 0 and an alignment of 1.
+        type ProjectToTag = crate::pointer::cast::CastToUnit;
+
         #[inline]
         fn only_derive_is_allowed_to_implement_this_trait()
         where
@@ -1057,6 +1071,21 @@ mod tuples {
                 {}
 
                 type Type = $CurrT;
+
+                type Tag = ();
+
+
+                // SAFETY: It is trivially sound to project any pointer to a
+                // pointer to a type of size zero and alignment 1 (which `()` is
+                // [1]). Such a pointer will trivially satisfy its aliasing and
+                // validity requirements (since it has a zero-sized referent),
+                // and its alignment requirement (since it is aligned to 1).
+                //
+                // [1] Per https://doc.rust-lang.org/1.92.0/reference/type-layout.html#r-layout.tuple.unit:
+                //
+                //     [T]he unit tuple (`()`)... is guaranteed as a zero-sized
+                //     type to have a size of 0 and an alignment of 1.
+                type ProjectToTag = crate::pointer::cast::CastToUnit;
 
                 #[inline(always)]
                 fn project(slf: crate::PtrInner<'_, Self>) -> *mut Self::Type {
