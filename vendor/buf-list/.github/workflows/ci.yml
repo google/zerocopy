@@ -1,0 +1,76 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+name: CI
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: -D warnings
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: taiki-e/install-action@cargo-hack
+      - uses: Swatinem/rust-cache@v2
+      - name: Lint (rustfmt)
+        run: cargo xfmt --check
+      - name: Update Cargo.lock
+        run: |
+          cargo update
+          git config --global user.email "test-user@example.com"
+          git config --global user.name "Test User"
+          git commit -am "Update Cargo.lock for clippy"
+      - name: Lint (clippy)
+        run: cargo hack clippy --all-targets --feature-powerset
+      - name: Install cargo readme
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-readme
+      - name: Run cargo readme
+        run: ./scripts/regenerate-readmes.sh
+      - name: Check for differences
+        run: git diff --exit-code
+
+  build:
+    name: Build and test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        # 1.70 is the MSRV
+        rust-version:
+          - "1.70"
+          - stable
+      fail-fast: false
+    env:
+      RUSTFLAGS: -D warnings
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust-version }}
+          components: rustfmt, clippy
+      - uses: taiki-e/install-action@cargo-hack
+      - uses: Swatinem/rust-cache@v2
+      - name: Build
+        run: |
+          cargo hack build --feature-powerset
+      - name: Test
+        # Dev dependencies have an MSRV > 1.70.
+        if: ${{ matrix.rust-version.version == 'stable' }}
+        run: cargo hack test --feature-powerset
+      - name: Test with updated Cargo.lock
+        # Dev dependencies have an MSRV > 1.70.
+        if: ${{ matrix.rust-version.version == 'stable' }}
+        run: |
+          cargo update
+          cargo hack test --feature-powerset

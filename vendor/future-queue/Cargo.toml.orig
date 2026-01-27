@@ -1,0 +1,27 @@
+[package]
+name = "future-queue"
+version = "0.4.0"
+description = "Adapters to manage a queue of futures, where each future can have a different weight."
+edition = "2021"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/nextest-rs/future-queue"
+documentation = "https://docs.rs/future-queue"
+resolver = "2"
+rust-version = "1.70"
+categories = ["asynchronous"]
+keywords = ["stream", "futures", "async", "buffer_unordered"]
+
+[dependencies]
+debug-ignore = "1.0.5"
+fnv = "1.0.7"
+futures-util = { version = "0.3.31", default-features = false, features = ["std"] }
+pin-project-lite = "0.2.15"
+
+[dev-dependencies]
+futures = "0.3.31"
+maplit = "1.0.2"
+proptest = { version = "1.6.0", features = ["timeout"] }
+proptest-derive = "0.5.1"
+tokio = { version = "1.21.2", features = ["macros", "sync", "test-util", "time"] }
+tokio-stream = { version = "0.1.16" }

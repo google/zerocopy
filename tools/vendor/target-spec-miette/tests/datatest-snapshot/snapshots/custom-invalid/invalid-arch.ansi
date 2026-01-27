@@ -1,0 +1,8 @@
+  [31m×[0m error deserializing custom target JSON for `my-target`
+   ╭─[2:13]
+ [2m1[0m │ {
+ [2m2[0m │   "arch": 123,
+   · [35;1m            ▲[0m
+   ·             [35;1m╰── [35;1minvalid type: integer `123`, expected a string[0m[0m
+ [2m3[0m │   "cpu": "x86-64",
+   ╰────

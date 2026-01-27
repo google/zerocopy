@@ -1,0 +1,8 @@
+  [31m×[0m error deserializing custom target JSON for `my-target`
+    ╭─[32:29]
+ [2m31[0m │     },
+ [2m32[0m │     "target-endian": "middle",
+    · [35;1m                            ▲[0m
+    ·                             [35;1m╰── [35;1munknown variant `middle`, expected `little` or `big`[0m[0m
+ [2m33[0m │     "target-family": ["unix"],
+    ╰────

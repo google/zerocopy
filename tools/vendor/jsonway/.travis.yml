@@ -1,0 +1,10 @@
+language: rust
+env:
+  global:
+    - secure: DMUPF6w4ASOlNRZfKcUrbOmwneF2VLQzev0TRfeDKwRSCK0XVTR6ljTfMouGMGVM8mA9rDhanfFah3+WAk6ZafbrKBm4lYQD0biuE2FfUJCe9Jh3j8akCtLzJ4nsUYL9Oh4dyczXlb8xszMIciL/7utY7yFH8kO5NFXMIhD0Lp0=
+script:
+  - cargo build --verbose
+  - cargo test --verbose
+  - cargo doc
+after_script:
+  - curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN | sh

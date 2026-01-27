@@ -1,0 +1,18 @@
+[package]
+name = "nested"
+version = "0.1.1"
+authors = ["Johann Tuffe <tafia973@gmail.com>"]
+description = "A memory efficient container for nested collections (like `Vec<String>` or `Vec<Vec<T>>`)"
+
+documentation = "https://docs.rs/nested"
+repository = "https://github.com/tafia/nested"
+
+readme = "README.md"
+keywords = ["vec", "packed", "heap", "collection", "container"]
+categories = ["caching", "data-structures"]
+license = "MIT"
+
+[badges]
+travis-ci = { repository = "tafia/nested" }
+
+[dependencies]

@@ -1,0 +1,35 @@
+[package]
+name = "finl_unicode"
+version = "1.4.0"
+edition = "2021"
+license = "(MIT OR Apache-2.0) AND Unicode-DFS-2016"
+keywords = ["unicode", "segmentation", "graphemes"]
+categories = ["text-processing", "internationalization"]
+description = "Library for handling Unicode functionality for finl (categories and grapheme segmentation)"
+homepage = "https://finl.xyz"
+repository = "https://github.com/dahosek/finl_unicode"
+exclude = ["resources"]
+
+[dependencies]
+
+[dev-dependencies]
+criterion = { version = "0.5.1", features=["html_reports"]}
+unicode_categories = "0.1.1"
+finl_unicode = {path=".", features=["grapheme_clusters", "categories"]}
+unicode-segmentation = "1.12.0"
+bstr = "1.10.0"
+
+[features]
+default = ["categories", "grapheme_clusters"]
+categories = []
+grapheme_clusters = []
+
+[build-dependencies]
+
+[[bench]]
+name = "categories"
+harness = false
+
+[[bench]]
+name = "grapheme_clusters"
+harness = false

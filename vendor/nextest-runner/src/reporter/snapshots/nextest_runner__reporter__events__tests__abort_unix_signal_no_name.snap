@@ -1,0 +1,9 @@
+---
+source: nextest-runner/src/reporter/events.rs
+expression: json
+---
+{
+  "kind": "unix-signal",
+  "signal": 42,
+  "name": null
+}

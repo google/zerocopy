@@ -1,0 +1,52 @@
+#
+# Configuration for GitHub-based CI, based on the stock GitHub Rust config.
+#
+name: Rust
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -D warnings
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+      - name: Check style
+        run: cargo fmt -- --check
+      - name: cargo clippy
+        run: cargo clippy --workspace --locked --all-targets --all-features
+
+  build-and-test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        # Run tests on MSRV and stable, excluding UI tests
+        version: ["1.75.0", "stable"]
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+      - uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: ${{ matrix.version }}
+      - name: Set Rust version
+        run: rustup override set ${{ matrix.version }}
+      - name: Build
+        run: cargo build --workspace --locked --all-targets --verbose
+      - name: Run most tests
+        run: cargo test --workspace  --exclude ui-tests --locked --verbose
+
+  trybuild-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+      # This will automatically use the Rust version specified in
+      # `rust-toolchain.toml`.
+      - name: Run trybuild tests
+        run: cargo test --package ui-tests --locked --verbose

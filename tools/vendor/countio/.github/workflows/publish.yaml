@@ -1,0 +1,23 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cd:
+    name: CD
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out
+        uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+
+      - name: Publish
+        run: cargo publish --token ${CRATES_TOKEN}
+        env:
+          CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}

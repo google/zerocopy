@@ -1,0 +1,25 @@
+[package]
+name = "cargo-readme"
+version = "3.3.1"
+edition = "2021"
+authors = ["Livio Ribeiro <livioribeiro@outlook.com>"]
+description = "A cargo subcommand to generate README.md content from doc comments"
+repository = "https://github.com/webern/cargo-readme"
+readme = "README.md"
+keywords = ["readme", "documentation", "cargo", "subcommand"]
+categories = ["development-tools::cargo-plugins"]
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+clap = { version = "4", features = [ "derive" ] }
+toml = "0.8"
+regex = "1"
+serde = { version = "1", features = ["derive"] }
+percent-encoding = "2"
+lazy_static = "1"
+
+[dev-dependencies]
+assert_cli = "0.6"
+
+[badges]
+github = { repository = "webern/cargo-readme" }

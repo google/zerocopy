@@ -1,0 +1,118 @@
+// There are a lot of repetitive configuration files for CI and Rustup, we
+// deduplicate this using RCL version 0.5.0. <https://github.com/ruuda/rcl>
+// Rebuild the files by running `rcl build`.
+
+// The minimum supported Rust version (MSRV).
+let msrv = "1.71.0";
+
+// All of the Rust versions that we want to test on CI.
+// We pick the MSRV, beta and nightly, and one version somewhat in between.
+let rust_versions = [msrv, "1.81.0", "beta", "nightly"];
+
+let banner = "# This file is generated from build.rcl.";
+
+// Steps for GitHub Actions job.
+let gha_steps = args => [
+  { uses = "actions/checkout@v4.2.1" },
+  {
+    name = "Install toolchain",
+    run =
+      f"""
+      rustup toolchain install {args.rust_version}
+      rustup target add {args.target} --toolchain {args.rust_version}
+      """,
+  },
+  {
+    name = "Build",
+    run = f"cargo +{args.rust_version} build --target {args.target} --verbose",
+  },
+  if args.do_test:
+  {
+    name = "Run tests",
+    run = f"cargo +{args.rust_version} test --target {args.target} --verbose",
+  },
+];
+
+let gha_jobs = [
+  for rust_version in rust_versions:
+  {
+    // Dots are not allowed in job names.
+    name = f"linux-{rust_version.replace(".", "-")}",
+    rust_version = rust_version,
+    target = "x86_64-unknown-linux-gnu",
+    image = "ubuntu-latest",
+    do_test = true,
+  },
+
+  for rust_version in rust_versions:
+  for arch in ["x86_64", "i686"]:
+  {
+    name = f"windows-msvc-{rust_version.replace(".", "-")}-{arch}",
+    rust_version = rust_version,
+    target = f"{arch}-pc-windows-msvc",
+    image = "windows-latest",
+    do_test = true,
+  },
+
+  // We also test GNU in addition to MSVC. We do this only on beta to not have
+  // combinatorial explosion. We test only x86_64 and not i686, because the
+  // linker i686-w64-mingw32-gcc is not available on GitHub Actions.
+  {
+    name = "windows-gnu-beta-x86_64",
+    rust_version = "beta",
+    target = "x86_64-pc-windows-gnu",
+    image = "windows-latest",
+    do_test = true,
+  },
+
+  // Finally, we have two more exotic platforms where we only test MSRV, and
+  // where we can't run the tests because it's not the native platform.
+  {
+    name = "wasm-msrv",
+    rust_version = msrv,
+    target = "wasm32-unknown-unknown",
+    image = "ubuntu-latest",
+    do_test = false,
+  },
+  {
+    name = "sgx-msrv",
+    rust_version = msrv,
+    target = "x86_64-fortanix-unknown-sgx",
+    image = "ubuntu-latest",
+    do_test = false,
+  },
+];
+
+let github_actions_config = {
+  name = "Build",
+  on = {
+    push = { branches = ["*"] },
+    pull_request = { branches = ["master"] },
+  },
+  env = {
+    CARGO_TERM_COLOR = "always",
+  },
+  jobs = {
+    for job in gha_jobs:
+    job.name: {
+      runs-on = job.image,
+      steps = gha_steps(job),
+    }
+  },
+};
+
+{
+  ".github/workflows/build.yml": {
+    banner = banner,
+    format = "json",
+    contents = github_actions_config,
+  },
+
+  "rust-toolchain.toml": {
+    banner = banner,
+    format = "toml",
+    // For local development, we test with the MSRV by default, to not
+    // accidentally break things.
+    contents = { toolchain = { channel = msrv } },
+  },
+}

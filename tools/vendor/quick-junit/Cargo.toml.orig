@@ -1,0 +1,45 @@
+[package]
+name = "quick-junit"
+description = "Data model, serializer, and deserializer for JUnit/XUnit XML"
+version = "0.5.2"
+readme = "README.md"
+license = "Apache-2.0 OR MIT"
+repository = "https://github.com/nextest-rs/quick-junit"
+documentation = "https://docs.rs/quick-junit"
+keywords = ["junit", "xunit", "xml", "serializer", "flaky-tests"]
+categories = ["encoding", "development-tools"]
+edition = "2021"
+rust-version = "1.70"
+
+[[bin]]
+name = "generate-junit-corpus"
+required-features = ["internal-testing"]
+path = "src/bin/generate-junit-corpus.rs"
+
+[dependencies]
+chrono = { version = "0.4.42", default-features = false, features = ["std"] }
+indexmap = "2.11.4"
+newtype-uuid = "1.2.4"
+proptest = { version = "1.7.0", optional = true }
+quick-xml = "0.38.3"
+strip-ansi-escapes = "0.2.1"
+test-strategy = { version = "0.4.3", optional = true }
+thiserror = "2.0.17"
+uuid = "1.17.0"
+xxhash-rust = { version = "0.8.13", features = ["xxh3"], optional = true }
+
+[dev-dependencies]
+goldenfile = "1.7.3"
+newtype-uuid = { version = "1.2.4", features = ["proptest1"] }
+owo-colors = "4.1.0"
+pretty_assertions = "1.4.1"
+proptest = "1.7.0"
+test-strategy = "0.4.3"
+
+[features]
+proptest = ["dep:proptest", "dep:test-strategy", "newtype-uuid/proptest1"]
+# Note: Not part of the public API.
+internal-testing = ["proptest", "dep:xxhash-rust"]
+
+[profile.dev.package.proptest]
+opt-level = 3

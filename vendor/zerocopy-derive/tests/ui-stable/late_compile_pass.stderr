@@ -1,0 +1,291 @@
+warning: unused import: `zerocopy_renamed::KnownLayout`
+  --> tests/ui-stable/late_compile_pass.rs:15:5
+   |
+15 | use zerocopy_renamed::KnownLayout;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
+  --> tests/ui-stable/late_compile_pass.rs:29:10
+   |
+29 | #[derive(TryFromBytes)]
+   |          ^^^^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
+   = help: the following other types implement trait `zerocopy_renamed::TryFromBytes`:
+             ()
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+           and $N others
+   = help: see issue #48214
+   = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
+  --> tests/ui-stable/late_compile_pass.rs:39:10
+   |
+39 | #[derive(FromZeros)]
+   |          ^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
+   = help: the following other types implement trait `zerocopy_renamed::TryFromBytes`:
+             ()
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+           and $N others
+   = help: see issue #48214
+   = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
+  --> tests/ui-stable/late_compile_pass.rs:39:10
+   |
+39 | #[derive(FromZeros)]
+   |          ^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `FromZeros` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
+   = help: the following other types implement trait `FromZeros`:
+             ()
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+           and $N others
+   = help: see issue #48214
+   = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is not satisfied
+  --> tests/ui-stable/late_compile_pass.rs:49:10
+   |
+49 | #[derive(FromBytes)]
+   |          ^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
+   = help: the following other types implement trait `zerocopy_renamed::TryFromBytes`:
+             ()
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+           and $N others
+   = help: see issue #48214
+   = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
+  --> tests/ui-stable/late_compile_pass.rs:49:10
+   |
+49 | #[derive(FromBytes)]
+   |          ^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `FromZeros` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
+   = help: the following other types implement trait `FromZeros`:
+             ()
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+           and $N others
+   = help: see issue #48214
+   = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
+  --> tests/ui-stable/late_compile_pass.rs:49:10
+   |
+49 | #[derive(FromBytes)]
+   |          ^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
+   = help: the following other types implement trait `zerocopy_renamed::FromBytes`:
+             ()
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+           and $N others
+   = help: see issue #48214
+   = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::IntoBytes` is not satisfied
+  --> tests/ui-stable/late_compile_pass.rs:59:10
+   |
+59 | #[derive(IntoBytes)]
+   |          ^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `zerocopy_renamed::IntoBytes` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy`
+   = help: the following other types implement trait `zerocopy_renamed::IntoBytes`:
+             ()
+             AU16
+             AtomicBool
+             AtomicI16
+             AtomicI32
+             AtomicI64
+             AtomicI8
+             AtomicIsize
+           and $N others
+   = help: see issue #48214
+   = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
+  --> tests/ui-stable/late_compile_pass.rs:70:10
+   |
+70 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct AU16(pub u16);
+   |     ^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(Unaligned)]` to `AU16`
+   = help: the following other types implement trait `zerocopy_renamed::Unaligned`:
+             ()
+             AtomicBool
+             AtomicI8
+             AtomicU8
+             Cell<T>
+             F32<O>
+             F64<O>
+             I128<O>
+           and $N others
+   = help: see issue #48214
+   = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
+  --> tests/ui-stable/late_compile_pass.rs:79:10
+   |
+79 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct AU16(pub u16);
+   |     ^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(Unaligned)]` to `AU16`
+   = help: the following other types implement trait `zerocopy_renamed::Unaligned`:
+             ()
+             AtomicBool
+             AtomicI8
+             AtomicU8
+             Cell<T>
+             F32<O>
+             F64<O>
+             I128<O>
+           and $N others
+   = help: see issue #48214
+   = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfied
+  --> tests/ui-stable/late_compile_pass.rs:87:10
+   |
+87 | #[derive(Unaligned)]
+   |          ^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct AU16(pub u16);
+   |     ^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(Unaligned)]` to `AU16`
+   = help: the following other types implement trait `zerocopy_renamed::Unaligned`:
+             ()
+             AtomicBool
+             AtomicI8
+             AtomicU8
+             Cell<T>
+             F32<O>
+             F64<O>
+             I128<O>
+           and $N others
+   = help: see issue #48214
+   = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
+  --> tests/ui-stable/late_compile_pass.rs:49:10
+   |
+49 | #[derive(FromBytes)]
+   |          ^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocopy`
+  --> tests/ui-stable/../include.rs
+   |
+   |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
+   = help: the following other types implement trait `zerocopy_renamed::FromBytes`:
+             ()
+             (A, B)
+             (A, B, C)
+             (A, B, C, D)
+             (A, B, C, D, E)
+             (A, B, C, D, E, F)
+             (A, B, C, D, E, F, G)
+             (A, B, C, D, E, F, G, H)
+           and $N others
+note: required for `FromBytes1` to implement `zerocopy_renamed::FromBytes`
+  --> tests/ui-stable/late_compile_pass.rs:49:10
+   |
+49 | #[derive(FromBytes)]
+   |          ^^^^^^^^^ unsatisfied trait bound introduced in this `derive` macro
+note: required by a bound in `_::_::<impl zerocopy_renamed::TryFromBytes for FromBytes1>::is_bit_valid::assert_is_from_bytes`
+  --> tests/ui-stable/late_compile_pass.rs:49:10
+   |
+49 | #[derive(FromBytes)]
+   |          ^^^^^^^^^ required by this bound in `assert_is_from_bytes`
+   = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)

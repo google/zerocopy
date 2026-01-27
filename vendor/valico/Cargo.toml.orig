@@ -1,0 +1,37 @@
+[package]
+name = "valico"
+version = "4.0.0"
+authors = ["Stanislav Panferov <fnight.m@gmail.com>"]
+description = "JSON Schema validator and JSON coercer"
+keywords = ["json", "validator", "json-schema"]
+license = "MIT"
+documentation = "http://rustless.org/valico/doc/valico/"
+homepage = "https://github.com/rustless/valico"
+build = "build.rs"
+edition = "2018"
+
+[dependencies]
+fancy-regex = "0.11"
+url = "2"
+jsonway = "2"
+uuid = { version = "1", features = ["v4"] }
+phf = "0.11"
+serde = "1"
+serde_json = "1"
+chrono = { version = "0.4.23", default-features = false, features = ["clock", "std"] }
+addr = "0.15.6"
+percent-encoding = "2.2.0"
+json-pointer = "0.3.4"
+uritemplate-next = "0.2.0"
+base64 = "0.21.0"
+erased-serde = "0.3"
+downcast-rs = "1"
+
+[build-dependencies]
+phf_codegen= "0.11.1"
+
+[[test]]
+name = "tests"
+
+[features]
+js = ["uuid/js"]

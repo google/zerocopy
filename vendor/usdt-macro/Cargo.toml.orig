@@ -1,0 +1,18 @@
+[package]
+name = "usdt-macro"
+version = "0.6.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Procedural macro for generating Rust macros for USDT probes"
+repository = "https://github.com/oxidecomputer/usdt.git"
+
+[dependencies]
+dtrace-parser = { path = "../dtrace-parser", version = "=0.3.0" }
+proc-macro2 = "1"
+serde_tokenstream = "0.2"
+syn = { version = "2", features = ["full"] }
+quote = "1"
+usdt-impl = { path = "../usdt-impl", default-features = false, version = "=0.6.0" }
+
+[lib]
+proc-macro = true

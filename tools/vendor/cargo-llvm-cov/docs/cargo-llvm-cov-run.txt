@@ -1,0 +1,237 @@
+cargo-llvm-cov-run
+Run a binary or example and generate coverage report
+
+USAGE:
+    cargo llvm-cov run [OPTIONS] [-- <args>...]
+
+ARGS:
+    <args>...
+            Arguments for the binary
+
+OPTIONS:
+        --json
+            Export coverage data in "json" format
+
+            If --output-path is not specified, the report will be printed to stdout.
+
+            This internally calls `llvm-cov export -format=text`. See
+            <https://llvm.org/docs/CommandGuide/llvm-cov.html#llvm-cov-export> for more.
+
+        --lcov
+            Export coverage data in "lcov" format
+
+            If --output-path is not specified, the report will be printed to stdout.
+
+            This internally calls `llvm-cov export -format=lcov`. See
+            <https://llvm.org/docs/CommandGuide/llvm-cov.html#llvm-cov-export> for more.
+
+        --cobertura
+            Export coverage data in "cobertura" XML format
+
+            If --output-path is not specified, the report will be printed to stdout.
+
+            This internally calls `llvm-cov export -format=lcov` and then converts to cobertura.xml.
+            See <https://llvm.org/docs/CommandGuide/llvm-cov.html#llvm-cov-export> for more.
+
+        --codecov
+            Export coverage data in "Codecov Custom Coverage" format
+
+            If --output-path is not specified, the report will be printed to stdout.
+
+            This internally calls `llvm-cov export -format=json` and then converts to codecov.json.
+            See <https://llvm.org/docs/CommandGuide/llvm-cov.html#llvm-cov-export> for more.
+
+        --text
+            Generate coverage report in "text" format
+
+            If --output-path or --output-dir is not specified, the report will be printed to stdout.
+
+            This internally calls `llvm-cov show -format=text`. See
+            <https://llvm.org/docs/CommandGuide/llvm-cov.html#llvm-cov-show> for more.
+
+        --html
+            Generate coverage report in "html" format
+
+            If --output-dir is not specified, the report will be generated in `target/llvm-cov/html`
+            directory.
+
+            This internally calls `llvm-cov show -format=html`. See
+            <https://llvm.org/docs/CommandGuide/llvm-cov.html#llvm-cov-show> for more.
+
+        --open
+            Generate coverage reports in "html" format and open them in a browser after the
+            operation.
+
+            See --html for more.
+
+        --summary-only
+            Export only summary information for each file in the coverage data
+
+            This flag can only be used together with --json, --lcov, or --cobertura.
+
+        --output-path <PATH>
+            Specify a file to write coverage data into.
+
+            This flag can only be used together with --json, --lcov, --cobertura, or --text.
+            See --output-dir for --html and --open.
+
+        --output-dir <DIRECTORY>
+            Specify a directory to write coverage report into (default to `target/llvm-cov`).
+
+            This flag can only be used together with --text, --html, or --open. See also
+            --output-path.
+
+        --failure-mode <any|all>
+            Fail if `any` or `all` profiles cannot be merged (default to `any`)
+
+        --ignore-filename-regex <PATTERN>
+            Skip source code files with file paths that match the given regular expression
+
+        --show-instantiations
+            Show instantiations in report
+
+        --no-cfg-coverage
+            Unset cfg(coverage), which is enabled when code is built using cargo-llvm-cov
+
+        --no-cfg-coverage-nightly
+            Unset cfg(coverage_nightly), which is enabled when code is built using cargo-llvm-cov
+            and nightly compiler
+
+        --no-report
+            Run tests, but don't generate coverage report
+
+        --no-clean
+            Build without cleaning any old build artifacts
+
+        --fail-under-functions <MIN>
+            Exit with a status of 1 if the total function coverage is less than MIN percent
+
+        --fail-under-lines <MIN>
+            Exit with a status of 1 if the total line coverage is less than MIN percent
+
+        --fail-under-regions <MIN>
+            Exit with a status of 1 if the total region coverage is less than MIN percent
+
+        --fail-uncovered-lines <MAX>
+            Exit with a status of 1 if the uncovered lines are greater than MAX
+
+        --fail-uncovered-regions <MAX>
+            Exit with a status of 1 if the uncovered regions are greater than MAX
+
+        --fail-uncovered-functions <MAX>
+            Exit with a status of 1 if the uncovered functions are greater than MAX
+
+        --show-missing-lines
+            Show lines with no coverage
+
+        --include-build-script
+            Include build script in coverage report
+
+        --dep-coverage <NAME>
+            Show coverage of the specified dependency instead of the crates in the current workspace. (unstable)
+
+        --skip-functions
+            Skip exporting per-function coverage data.
+
+            This flag can only be used together with --json, --lcov, or --cobertura.
+
+        --branch
+            Enable branch coverage. (unstable)
+
+        --mcdc
+            Enable mcdc coverage. (unstable)
+
+        --ignore-run-fail
+            Run all tests regardless of failure and generate report
+
+            If tests failed but report generation succeeded, exit with a status of 0.
+
+    -q, --quiet
+            No output printed to stdout
+
+        --bin <NAME>
+            Name of the bin target to run
+
+        --example <NAME>
+            Name of the example target to run
+
+        --exclude-from-report <SPEC>
+            Exclude packages from the report
+
+    -p, --package <SPEC>
+            Package with the target to run
+
+    -j, --jobs <N>
+            Number of parallel jobs, defaults to # of CPUs
+
+    -r, --release
+            Build artifacts in release mode, with optimizations
+
+        --profile <PROFILE-NAME>
+            Build artifacts with the specified profile
+
+    -F, --features <FEATURES>
+            Space or comma separated list of features to activate
+
+        --all-features
+            Activate all available features
+
+        --no-default-features
+            Do not activate the `default` feature
+
+        --target <TRIPLE>
+            Build for the target triple
+
+            When this option is used, coverage for proc-macro and build script will not be displayed
+            because cargo does not pass RUSTFLAGS to them.
+
+        --coverage-target-only
+            Activate coverage reporting only for the target triple
+
+            Activate coverage reporting only for the target triple specified via `--target`. This is
+            important, if the project uses multiple targets via the cargo bindeps feature, and not
+            all targets can use `instrument-coverage`, e.g. a microkernel, or an embedded binary.
+
+    -v, --verbose
+            Use verbose output
+
+            Use -vv (-vvv) to propagate verbosity to cargo.
+
+        --color <WHEN>
+            Coloring: auto, always, never
+
+        --remap-path-prefix
+            Use --remap-path-prefix for workspace root
+
+            Note that this does not fully compatible with doctest.
+
+        --include-ffi
+            Include coverage of C/C++ code linked to Rust library/binary
+
+            Note that `CC`/`CXX`/`LLVM_COV`/`LLVM_PROFDATA` environment variables must be set to
+            Clang/LLVM compatible with the LLVM version used in rustc.
+
+        --keep-going
+            Do not abort the build as soon as there is an error (unstable)
+
+        --ignore-rust-version
+            Ignore `rust-version` specification in packages
+
+        --manifest-path <PATH>
+            Path to Cargo.toml
+
+        --frozen
+            Require Cargo.lock and cache are up to date
+
+        --locked
+            Require Cargo.lock is up to date
+
+        --offline
+            Run without accessing the network
+
+    -Z <FLAG>
+            Unstable (nightly-only) flags to Cargo, see 'cargo -Z help' for
+            details
+
+    -h, --help
+            Print help information

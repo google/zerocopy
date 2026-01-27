@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  merge_group:
+    types: [checks_requested]
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  read_msrv:
+    name: Read MSRV
+    uses: actions-rust-lang/msrv/.github/workflows/msrv.yml@v0.1.0
+
+  rust:
+    needs: read_msrv
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - { name: Linux, runner: ubuntu-latest }
+          - { name: macOS, runner: macos-latest }
+          - { name: Windows, runner: windows-latest }
+        toolchain:
+          - { name: stable, version: stable }
+          - { name: msrv, version: "${{ needs.read_msrv.outputs.msrv }}" }
+
+    name: ${{ matrix.os.name }} / ${{ matrix.toolchain.name }}
+    runs-on: ${{ matrix.os.runner }}
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Rust (${{ matrix.toolchain.name }})
+        uses: actions-rust-lang/setup-rust-toolchain@v1.15.2
+        with:
+          toolchain: ${{ matrix.toolchain.version }}
+          target: thumbv6m-none-eabi
+
+      - name: Install just, nextest
+        uses: taiki-e/install-action@v2.62.43
+        with:
+          tool: just,nextest
+
+      - name: Work around MSRV issues
+        if: matrix.toolchain.name == 'msrv'
+        run: just downgrade-for-msrv
+
+      - name: Test
+        run: just test
+
+      - name: Build (no-std)
+        if: matrix.toolchain.name == 'stable'
+        run: just build-no-std

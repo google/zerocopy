@@ -1,0 +1,33 @@
+[package]
+name = "usdt-impl"
+version = "0.6.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Main implementation crate for the USDT package"
+repository = "https://github.com/oxidecomputer/usdt.git"
+
+[dependencies]
+byteorder = "1"
+dtrace-parser = { path = "../dtrace-parser", version = "=0.3.0" }
+libc = "0.2"
+proc-macro2 = "1"
+quote = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+syn = { version = "2", features = ["full", "extra-traits"] }
+thiserror = "2"
+thread-id = "5"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+dof = { path = "../dof", optional = true, default-features = false, version = "=0.4.0" }
+
+[target.'cfg(not(target_os = "macos"))'.dependencies]
+dof = { path = "../dof", default-features = false, version = "=0.4.0" }
+
+[features]
+default = []
+# The `des` feature enables `dof` and company to be able to deserialize special
+# sections emitted in the binary which describe the probes.  Except on
+# platforms with linker integration for USDT probes (currently only MacOS),
+# that data is required in order to register the probes with the kernel.
+des = ["dof", "dof/des"]

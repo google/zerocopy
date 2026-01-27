@@ -1,0 +1,8 @@
+# We use a specific toolchain revision to ensure our tests - which
+# occasionally depend on specific compiler output - remain stable
+# for all developers until the toolchain is explicitly advanced.
+# The intent is to keep this updated as new stable versions are relased.
+
+[toolchain]
+channel = "1.80.1"
+profile = "default"

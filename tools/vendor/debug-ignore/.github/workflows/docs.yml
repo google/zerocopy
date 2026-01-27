@@ -1,0 +1,29 @@
+on:
+  push:
+    branches:
+      - main
+
+name: Docs
+
+jobs:
+  docs:
+    name: Build and deploy documentation
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Build rustdoc
+        run: cargo doc --all-features --workspace
+      - name: Organize
+        run: |
+          rm -rf target/gh-pages
+          mkdir target/gh-pages
+          mv target/doc target/gh-pages/rustdoc
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@releases/v4
+        with:
+          branch: gh-pages
+          folder: target/gh-pages
+          single-commit: true

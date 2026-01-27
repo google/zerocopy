@@ -1,0 +1,11 @@
+error[E0277]: the trait bound `NotZerocopy: Immutable` is not satisfied
+  --> tests/ui-msrv/diagnostic-not-implemented-immutable.rs:16:23
+   |
+16 |     takes_immutable::<NotZerocopy>();
+   |                       ^^^^^^^^^^^ the trait `Immutable` is not implemented for `NotZerocopy`
+   |
+note: required by a bound in `takes_immutable`
+  --> tests/ui-msrv/diagnostic-not-implemented-immutable.rs:19:23
+   |
+19 | fn takes_immutable<T: Immutable>() {}
+   |                       ^^^^^^^^^ required by this bound in `takes_immutable`

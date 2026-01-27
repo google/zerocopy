@@ -1,12 +1,11 @@
-use proc_macro2::{Delimiter, TokenStream, TokenTree};
-use std::hash::{Hash, Hasher};
+use alloc::string::ToString;
+use core::hash::{Hash, Hasher};
+use proc_macro2::{Delimiter, Spacing, TokenStream, TokenTree};
 
 pub(crate) struct TokenTreeHelper<'a>(pub &'a TokenTree);
 
 impl<'a> PartialEq for TokenTreeHelper<'a> {
     fn eq(&self, other: &Self) -> bool {
-        use proc_macro2::Spacing;
-
         match (self.0, other.0) {
             (TokenTree::Group(g1), TokenTree::Group(g2)) => {
                 match (g1.delimiter(), g2.delimiter()) {
@@ -17,19 +16,7 @@ impl<'a> PartialEq for TokenTreeHelper<'a> {
                     _ => return false,
                 }
 
-                let s1 = g1.stream().into_iter();
-                let mut s2 = g2.stream().into_iter();
-
-                for item1 in s1 {
-                    let item2 = match s2.next() {
-                        Some(item) => item,
-                        None => return false,
-                    };
-                    if TokenTreeHelper(&item1) != TokenTreeHelper(&item2) {
-                        return false;
-                    }
-                }
-                s2.next().is_none()
+                TokenStreamHelper(&g1.stream()) == TokenStreamHelper(&g2.stream())
             }
             (TokenTree::Punct(o1), TokenTree::Punct(o2)) => {
                 o1.as_char() == o2.as_char()
@@ -47,8 +34,6 @@ impl<'a> PartialEq for TokenTreeHelper<'a> {
 
 impl<'a> Hash for TokenTreeHelper<'a> {
     fn hash<H: Hasher>(&self, h: &mut H) {
-        use proc_macro2::Spacing;
-
         match self.0 {
             TokenTree::Group(g) => {
                 0u8.hash(h);
@@ -62,7 +47,7 @@ impl<'a> Hash for TokenTreeHelper<'a> {
                 for item in g.stream() {
                     TokenTreeHelper(&item).hash(h);
                 }
-                0xffu8.hash(h); // terminator w/ a variant we don't normally hash
+                0xFFu8.hash(h); // terminator w/ a variant we don't normally hash
             }
             TokenTree::Punct(op) => {
                 1u8.hash(h);
@@ -82,25 +67,30 @@ pub(crate) struct TokenStreamHelper<'a>(pub &'a TokenStream);
 
 impl<'a> PartialEq for TokenStreamHelper<'a> {
     fn eq(&self, other: &Self) -> bool {
-        let left = self.0.clone().into_iter().collect::<Vec<_>>();
-        let right = other.0.clone().into_iter().collect::<Vec<_>>();
-        if left.len() != right.len() {
-            return false;
-        }
-        for (a, b) in left.into_iter().zip(right) {
-            if TokenTreeHelper(&a) != TokenTreeHelper(&b) {
+        let left = self.0.clone().into_iter();
+        let mut right = other.0.clone().into_iter();
+
+        for item1 in left {
+            let item2 = match right.next() {
+                Some(item) => item,
+                None => return false,
+            };
+            if TokenTreeHelper(&item1) != TokenTreeHelper(&item2) {
                 return false;
             }
         }
-        true
+
+        right.next().is_none()
     }
 }
 
 impl<'a> Hash for TokenStreamHelper<'a> {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        let tts = self.0.clone().into_iter().collect::<Vec<_>>();
-        tts.len().hash(state);
-        for tt in tts {
+        let tokens = self.0.clone().into_iter();
+
+        tokens.clone().count().hash(state);
+
+        for tt in tokens {
             TokenTreeHelper(&tt).hash(state);
         }
     }

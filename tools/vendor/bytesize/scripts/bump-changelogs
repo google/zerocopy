@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+# updates changelog version indicated by release-plz
+
+set -eEuo pipefail
+
+### START HELPERS
+
+function bump_changelog_version() {
+    local package_dir="$1"
+    local version="$2"
+
+    local cargo_manifest="${package_dir}/Cargo.toml"
+    local current_version="$(sed -nE 's/^version ?= ?"([^"]+)"$/\1/ p' "$cargo_manifest" | head -n 1)"
+    local changelog_file="${package_dir}/CHANGELOG.md"
+    local change_chunk_file="$(mktemp)"
+    local readme_file="${package_dir}/README.md"
+
+    echo "${package_dir}/CHANGELOG.md | $current_version -> $version"
+
+    # get changelog chunk and save to temp file
+    cat "$changelog_file" |
+        # skip up to unreleased heading
+        sed '1,/Unreleased/ d' |
+        # take up to previous version heading
+        sed "/$current_version/ q" |
+        # drop last line
+        sed '$d' \
+            >"$change_chunk_file"
+
+    # if word count of changelog chunk is 0 then insert filler changelog chunk
+    if [[ "$(wc -w "$change_chunk_file" | awk '{ print $1 }')" == "0" ]]; then
+        echo >"$change_chunk_file"
+        echo "- No significant changes since \`$current_version\`." >>"$change_chunk_file"
+        echo >>"$change_chunk_file"
+    fi
+
+    (
+        sed '/Unreleased/ q' "$changelog_file"                   # up to unreleased heading
+        echo                                                     # blank line
+        echo "## $version"                                       # new version heading
+        cat "$change_chunk_file"                                 # previously unreleased changes
+        sed "/$current_version/ q" "$changelog_file" | tail -n 1 # the previous version heading
+        sed "1,/$current_version/ d" "$changelog_file"           # everything after previous version heading
+    ) >"$changelog_file.bak"
+
+    mv "$changelog_file.bak" "$changelog_file"
+
+    # update readme links
+    if [ -f "$readme_file" ]; then
+        sed -i.bak -E "s#([=/])$current_version([/)])#\1$version\2#g" "$readme_file"
+        rm -f "${readme_file}.bak"
+    fi
+}
+
+### END HELPERS
+
+RELEASE_PLZ_PR_JSON="$1"
+
+specs="$(echo "$RELEASE_PLZ_PR_JSON" | jq -r '.releases[] | "\(.package_name):\(.version)"')"
+
+for spec in $specs; do
+    name="$(echo "$spec" | cut -d: -f1)"
+    version="$(echo "$spec" | cut -d: -f2)"
+    
+    bump_changelog_version "." "$version"
+done
+
+PR_NUMBER="$(echo "$RELEASE_PLZ_PR_JSON" | jq -r '.number')"
+
+# update release PR if one was created
+if [[ -n "$PR_NUMBER" ]]; then
+    gh pr checkout "$PR_NUMBER"
+    git add --all
+    git commit -m "docs: update changelog versions"
+    git push
+fi

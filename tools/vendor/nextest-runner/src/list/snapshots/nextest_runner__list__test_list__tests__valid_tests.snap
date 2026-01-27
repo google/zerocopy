@@ -1,0 +1,24 @@
+---
+source: nextest-runner/src/list/test_list.rs
+expression: results
+---
+[
+    (
+        "simple_test",
+        RustTestKind(
+            "test",
+        ),
+    ),
+    (
+        "module::nested_test",
+        RustTestKind(
+            "test",
+        ),
+    ),
+    (
+        "deeply::nested::module::test_name",
+        RustTestKind(
+            "test",
+        ),
+    ),
+]

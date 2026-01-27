@@ -1,0 +1,51 @@
+[package]
+name = "action-validator"
+description = "Validator for GitHub action and workflow YAML files"
+license = "GPL-3.0-only"
+homepage = "https://github.com/mpalmer/action-validator"
+repository = "https://github.com/mpalmer/action-validator"
+include = [
+	"/LICENCE",
+	"/src/*.rs",
+	"/src/**/*.rs",
+	"/src/schemastore/src/schemas/json/github-workflow.json",
+	"/src/schemastore/src/schemas/json/github-action.json"
+]
+version = "0.8.0"
+authors = ["Matt Palmer <matt@hezmatt.org>"]
+edition = "2021"
+# If this is changed, .github/workflows/qa.yml build matrix needs updating as well
+rust-version = "1.84.0"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+js = ["console_error_panic_hook", "valico/js"]
+
+[dependencies]
+clap = { version = "4.0", features = ["derive"] }
+glob = "0.3"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9.17"
+valico = "4.0"
+
+wasm-bindgen = "0.2.84"
+
+# The `console_error_panic_hook` crate provides better debugging of panics by
+# logging them with `console.error`. This is great for development, but requires
+# all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
+# code size when deploying.
+console_error_panic_hook = { version = "0.1.7", optional = true }
+
+serde-wasm-bindgen = "0.4.5"
+js-sys = "0.3.77"
+is-terminal = "0.4.7"
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.34"
+
+[profile.release]
+# Tell `rustc` to optimize for small code size.
+opt-level = "s"

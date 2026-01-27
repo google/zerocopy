@@ -1,0 +1,24 @@
+---
+source: nextest-runner/src/list/test_list.rs
+expression: results
+---
+[
+    (
+        "test_with_underscore_123",
+        RustTestKind(
+            "test",
+        ),
+    ),
+    (
+        "test::with::colons",
+        RustTestKind(
+            "test",
+        ),
+    ),
+    (
+        "test_with_numbers_42",
+        RustTestKind(
+            "test",
+        ),
+    ),
+]

@@ -1,0 +1,43 @@
+on:
+  push:
+    branches: [main, auto, canary]
+  pull_request:
+    branches:
+      - main
+
+name: Test coverage
+
+jobs:
+  coverage:
+    name: Collect test coverage
+    runs-on: ubuntu-latest
+    # nightly rust might break from time to time
+    continue-on-error: true
+    env:
+      RUSTFLAGS: -D warnings
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        # Nightly Rust is used for cargo llvm-cov --doc below.
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: llvm-tools-preview
+      - uses: Swatinem/rust-cache@82a92a6e8fbeee089604da2575dc567ae9ddeaab # v2
+
+      - name: Install latest nextest release
+        uses: taiki-e/install-action@nextest
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+
+      - name: Collect coverage data
+        # Generate separate reports for nextest and doctests, and combine them.
+        run: |
+          cargo llvm-cov --no-report nextest --all-features
+          cargo llvm-cov --no-report --doc
+          cargo llvm-cov report --doctests --lcov --output-path lcov.info
+      - name: Upload coverage data to codecov
+        uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          files: lcov.info

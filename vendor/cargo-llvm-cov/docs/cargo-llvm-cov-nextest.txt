@@ -1,0 +1,10 @@
+cargo-llvm-cov-nextest
+Run tests with cargo nextest
+This internally calls `cargo nextest run`.
+
+USAGE:
+    cargo llvm-cov nextest [OPTIONS] [NEXTEST_OPTIONS]
+
+ARGS:
+    [OPTIONS]          Options for cargo-llvm-cov; For more information try `cargo llvm-cov --help`
+    [NEXTEST_OPTIONS]  Options for cargo-nextest; For more information try `cargo nextest run --help`

@@ -248,11 +248,12 @@
 //! - **`proc-macro`** *(enabled by default)* — Runtime dependency on the
 //!   dynamic library libproc_macro from rustc toolchain.
 
-// Syn types in rustdoc of other crates get linked to here.
-#![doc(html_root_url = "https://docs.rs/syn/2.0.56")]
-#![cfg_attr(doc_cfg, feature(doc_cfg))]
+#![no_std]
+#![doc(html_root_url = "https://docs.rs/syn/2.0.114")]
+#![cfg_attr(docsrs, feature(doc_cfg), doc(auto_cfg = false))]
 #![deny(unsafe_op_in_unsafe_fn)]
 #![allow(non_camel_case_types)]
+#![cfg_attr(not(check_cfg), allow(unexpected_cfgs))]
 #![allow(
     clippy::bool_to_int_with_if,
     clippy::cast_lossless,
@@ -263,8 +264,11 @@
     clippy::derivable_impls,
     clippy::diverging_sub_expression,
     clippy::doc_markdown,
+    clippy::elidable_lifetime_names,
+    clippy::enum_glob_use,
     clippy::expl_impl_clone_on_copy,
     clippy::explicit_auto_deref,
+    clippy::fn_params_excessive_bools,
     clippy::if_not_else,
     clippy::inherent_to_string,
     clippy::into_iter_without_iter,
@@ -273,8 +277,8 @@
     clippy::let_underscore_untyped, // https://github.com/rust-lang/rust-clippy/issues/10410
     clippy::manual_assert,
     clippy::manual_let_else,
+    clippy::manual_map,
     clippy::match_like_matches_macro,
-    clippy::match_on_vec_items,
     clippy::match_same_arms,
     clippy::match_wildcard_for_single_variants, // clippy bug: https://github.com/rust-lang/rust-clippy/issues/6984
     clippy::missing_errors_doc,
@@ -282,13 +286,17 @@
     clippy::module_name_repetitions,
     clippy::must_use_candidate,
     clippy::needless_doctest_main,
+    clippy::needless_lifetimes,
     clippy::needless_pass_by_value,
+    clippy::needless_update,
     clippy::never_loop,
     clippy::range_plus_one,
     clippy::redundant_else,
+    clippy::ref_option,
     clippy::return_self_not_must_use,
     clippy::similar_names,
     clippy::single_match_else,
+    clippy::struct_excessive_bools,
     clippy::too_many_arguments,
     clippy::too_many_lines,
     clippy::trivially_copy_pass_by_ref,
@@ -300,6 +308,12 @@
     clippy::used_underscore_binding,
     clippy::wildcard_imports,
 )]
+#![allow(unknown_lints, mismatched_lifetime_syntaxes)]
+
+extern crate alloc;
+extern crate std;
+
+extern crate self as syn;
 
 #[cfg(feature = "proc-macro")]
 extern crate proc_macro;
@@ -317,14 +331,20 @@ pub mod token;
 #[cfg(any(feature = "full", feature = "derive"))]
 mod attr;
 #[cfg(any(feature = "full", feature = "derive"))]
-#[cfg_attr(doc_cfg, doc(cfg(any(feature = "full", feature = "derive"))))]
+#[cfg_attr(docsrs, doc(cfg(any(feature = "full", feature = "derive"))))]
 pub use crate::attr::{AttrStyle, Attribute, Meta, MetaList, MetaNameValue};
 
 mod bigint;
 
 #[cfg(feature = "parsing")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "parsing")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "parsing")))]
 pub mod buffer;
+
+#[cfg(any(
+    all(feature = "parsing", feature = "full"),
+    all(feature = "printing", any(feature = "full", feature = "derive")),
+))]
+mod classify;
 
 mod custom_keyword;
 
@@ -333,13 +353,13 @@ mod custom_punctuation;
 #[cfg(any(feature = "full", feature = "derive"))]
 mod data;
 #[cfg(any(feature = "full", feature = "derive"))]
-#[cfg_attr(doc_cfg, doc(cfg(any(feature = "full", feature = "derive"))))]
+#[cfg_attr(docsrs, doc(cfg(any(feature = "full", feature = "derive"))))]
 pub use crate::data::{Field, Fields, FieldsNamed, FieldsUnnamed, Variant};
 
 #[cfg(any(feature = "full", feature = "derive"))]
 mod derive;
 #[cfg(feature = "derive")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "derive")))]
 pub use crate::derive::{Data, DataEnum, DataStruct, DataUnion, DeriveInput};
 
 mod drops;
@@ -350,45 +370,49 @@ pub use crate::error::{Error, Result};
 #[cfg(any(feature = "full", feature = "derive"))]
 mod expr;
 #[cfg(feature = "full")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "full")))]
-pub use crate::expr::{Arm, Label, RangeLimits};
+#[cfg_attr(docsrs, doc(cfg(feature = "full")))]
+pub use crate::expr::{Arm, Label, PointerMutability, RangeLimits};
 #[cfg(any(feature = "full", feature = "derive"))]
-#[cfg_attr(doc_cfg, doc(cfg(any(feature = "full", feature = "derive"))))]
+#[cfg_attr(docsrs, doc(cfg(any(feature = "full", feature = "derive"))))]
 pub use crate::expr::{
     Expr, ExprBinary, ExprCall, ExprCast, ExprField, ExprIndex, ExprLit, ExprMacro, ExprMethodCall,
     ExprParen, ExprPath, ExprReference, ExprStruct, ExprUnary, FieldValue, Index, Member,
 };
 #[cfg(any(feature = "full", feature = "derive"))]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "full")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "full")))]
 pub use crate::expr::{
     ExprArray, ExprAssign, ExprAsync, ExprAwait, ExprBlock, ExprBreak, ExprClosure, ExprConst,
     ExprContinue, ExprForLoop, ExprGroup, ExprIf, ExprInfer, ExprLet, ExprLoop, ExprMatch,
-    ExprRange, ExprRepeat, ExprReturn, ExprTry, ExprTryBlock, ExprTuple, ExprUnsafe, ExprWhile,
-    ExprYield,
+    ExprRange, ExprRawAddr, ExprRepeat, ExprReturn, ExprTry, ExprTryBlock, ExprTuple, ExprUnsafe,
+    ExprWhile, ExprYield,
 };
 
-#[cfg(feature = "parsing")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "parsing")))]
 pub mod ext;
 
 #[cfg(feature = "full")]
 mod file;
 #[cfg(feature = "full")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "full")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "full")))]
 pub use crate::file::File;
+
+#[cfg(all(any(feature = "full", feature = "derive"), feature = "printing"))]
+mod fixup;
 
 #[cfg(any(feature = "full", feature = "derive"))]
 mod generics;
 #[cfg(any(feature = "full", feature = "derive"))]
-#[cfg_attr(doc_cfg, doc(cfg(any(feature = "full", feature = "derive"))))]
+#[cfg_attr(docsrs, doc(cfg(any(feature = "full", feature = "derive"))))]
 pub use crate::generics::{
     BoundLifetimes, ConstParam, GenericParam, Generics, LifetimeParam, PredicateLifetime,
     PredicateType, TraitBound, TraitBoundModifier, TypeParam, TypeParamBound, WhereClause,
     WherePredicate,
 };
+#[cfg(feature = "full")]
+#[cfg_attr(docsrs, doc(cfg(feature = "full")))]
+pub use crate::generics::{CapturedParam, PreciseCapture};
 #[cfg(all(any(feature = "full", feature = "derive"), feature = "printing"))]
 #[cfg_attr(
-    doc_cfg,
+    docsrs,
     doc(cfg(all(any(feature = "full", feature = "derive"), feature = "printing")))
 )]
 pub use crate::generics::{ImplGenerics, Turbofish, TypeGenerics};
@@ -400,7 +424,7 @@ pub use crate::ident::Ident;
 #[cfg(feature = "full")]
 mod item;
 #[cfg(feature = "full")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "full")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "full")))]
 pub use crate::item::{
     FnArg, ForeignItem, ForeignItemFn, ForeignItemMacro, ForeignItemStatic, ForeignItemType,
     ImplItem, ImplItemConst, ImplItemFn, ImplItemMacro, ImplItemType, ImplRestriction, Item,
@@ -418,7 +442,9 @@ mod lit;
 #[doc(hidden)] // https://github.com/dtolnay/syn/issues/1566
 pub use crate::lit::StrStyle;
 #[doc(inline)]
-pub use crate::lit::{Lit, LitBool, LitByte, LitByteStr, LitChar, LitFloat, LitInt, LitStr};
+pub use crate::lit::{
+    Lit, LitBool, LitByte, LitByteStr, LitCStr, LitChar, LitFloat, LitInt, LitStr,
+};
 
 #[cfg(feature = "parsing")]
 mod lookahead;
@@ -426,12 +452,12 @@ mod lookahead;
 #[cfg(any(feature = "full", feature = "derive"))]
 mod mac;
 #[cfg(any(feature = "full", feature = "derive"))]
-#[cfg_attr(doc_cfg, doc(cfg(any(feature = "full", feature = "derive"))))]
+#[cfg_attr(docsrs, doc(cfg(any(feature = "full", feature = "derive"))))]
 pub use crate::mac::{Macro, MacroDelimiter};
 
 #[cfg(all(feature = "parsing", any(feature = "full", feature = "derive")))]
 #[cfg_attr(
-    doc_cfg,
+    docsrs,
     doc(cfg(all(feature = "parsing", any(feature = "full", feature = "derive"))))
 )]
 pub mod meta;
@@ -439,11 +465,11 @@ pub mod meta;
 #[cfg(any(feature = "full", feature = "derive"))]
 mod op;
 #[cfg(any(feature = "full", feature = "derive"))]
-#[cfg_attr(doc_cfg, doc(cfg(any(feature = "full", feature = "derive"))))]
+#[cfg_attr(docsrs, doc(cfg(any(feature = "full", feature = "derive"))))]
 pub use crate::op::{BinOp, UnOp};
 
 #[cfg(feature = "parsing")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "parsing")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "parsing")))]
 pub mod parse;
 
 #[cfg(all(feature = "parsing", feature = "proc-macro"))]
@@ -455,7 +481,7 @@ mod parse_quote;
 #[cfg(feature = "full")]
 mod pat;
 #[cfg(feature = "full")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "full")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "full")))]
 pub use crate::pat::{
     FieldPat, Pat, PatConst, PatIdent, PatLit, PatMacro, PatOr, PatParen, PatPath, PatRange,
     PatReference, PatRest, PatSlice, PatStruct, PatTuple, PatTupleStruct, PatType, PatWild,
@@ -464,11 +490,17 @@ pub use crate::pat::{
 #[cfg(any(feature = "full", feature = "derive"))]
 mod path;
 #[cfg(any(feature = "full", feature = "derive"))]
-#[cfg_attr(doc_cfg, doc(cfg(any(feature = "full", feature = "derive"))))]
+#[cfg_attr(docsrs, doc(cfg(any(feature = "full", feature = "derive"))))]
 pub use crate::path::{
     AngleBracketedGenericArguments, AssocConst, AssocType, Constraint, GenericArgument,
     ParenthesizedGenericArguments, Path, PathArguments, PathSegment, QSelf,
 };
+
+#[cfg(all(
+    any(feature = "full", feature = "derive"),
+    any(feature = "parsing", feature = "printing")
+))]
+mod precedence;
 
 #[cfg(all(any(feature = "full", feature = "derive"), feature = "printing"))]
 mod print;
@@ -478,21 +510,24 @@ pub mod punctuated;
 #[cfg(any(feature = "full", feature = "derive"))]
 mod restriction;
 #[cfg(any(feature = "full", feature = "derive"))]
-#[cfg_attr(doc_cfg, doc(cfg(any(feature = "full", feature = "derive"))))]
+#[cfg_attr(docsrs, doc(cfg(any(feature = "full", feature = "derive"))))]
 pub use crate::restriction::{FieldMutability, VisRestricted, Visibility};
 
 mod sealed;
 
+#[cfg(all(feature = "parsing", feature = "derive", not(feature = "full")))]
+mod scan_expr;
+
 mod span;
 
 #[cfg(all(feature = "parsing", feature = "printing"))]
-#[cfg_attr(doc_cfg, doc(cfg(all(feature = "parsing", feature = "printing"))))]
+#[cfg_attr(docsrs, doc(cfg(all(feature = "parsing", feature = "printing"))))]
 pub mod spanned;
 
 #[cfg(feature = "full")]
 mod stmt;
 #[cfg(feature = "full")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "full")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "full")))]
 pub use crate::stmt::{Block, Local, LocalInit, Stmt, StmtMacro};
 
 mod thread;
@@ -503,7 +538,7 @@ mod tt;
 #[cfg(any(feature = "full", feature = "derive"))]
 mod ty;
 #[cfg(any(feature = "full", feature = "derive"))]
-#[cfg_attr(doc_cfg, doc(cfg(any(feature = "full", feature = "derive"))))]
+#[cfg_attr(docsrs, doc(cfg(any(feature = "full", feature = "derive"))))]
 pub use crate::ty::{
     Abi, BareFnArg, BareVariadic, ReturnType, Type, TypeArray, TypeBareFn, TypeGroup,
     TypeImplTrait, TypeInfer, TypeMacro, TypeNever, TypeParen, TypePath, TypePtr, TypeReference,
@@ -516,6 +551,7 @@ mod verbatim;
 #[cfg(all(feature = "parsing", feature = "full"))]
 mod whitespace;
 
+#[rustfmt::skip] // https://github.com/rust-lang/rustfmt/issues/6176
 mod gen {
     /// Syntax tree traversal to transform the nodes of an owned syntax tree.
     ///
@@ -598,7 +634,7 @@ mod gen {
     /// }
     /// ```
     #[cfg(feature = "fold")]
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "fold")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "fold")))]
     #[rustfmt::skip]
     pub mod fold;
 
@@ -717,7 +753,7 @@ mod gen {
     /// }
     /// ```
     #[cfg(feature = "visit")]
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "visit")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "visit")))]
     #[rustfmt::skip]
     pub mod visit;
 
@@ -811,7 +847,7 @@ mod gen {
     /// }
     /// ```
     #[cfg(feature = "visit-mut")]
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "visit-mut")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "visit-mut")))]
     #[rustfmt::skip]
     pub mod visit_mut;
 
@@ -830,28 +866,27 @@ mod gen {
     #[cfg(feature = "extra-traits")]
     #[rustfmt::skip]
     mod hash;
-
-    #[cfg(any(feature = "full", feature = "derive"))]
-    #[path = "../gen_helper.rs"]
-    mod helper;
 }
 
 #[cfg(feature = "fold")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "fold")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "fold")))]
 pub use crate::gen::fold;
 
 #[cfg(feature = "visit")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "visit")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "visit")))]
 pub use crate::gen::visit;
 
 #[cfg(feature = "visit-mut")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "visit-mut")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "visit-mut")))]
 pub use crate::gen::visit_mut;
 
 // Not public API.
 #[doc(hidden)]
 #[path = "export.rs"]
 pub mod __private;
+
+#[cfg(all(feature = "parsing", feature = "full"))]
+use alloc::string::ToString;
 
 /// Parse tokens of source code into the chosen syntax tree node.
 ///
@@ -866,41 +901,15 @@ pub mod __private;
 ///
 /// [`syn::parse2`]: parse2
 ///
-/// # Examples
-///
-/// ```
-/// # extern crate proc_macro;
-/// #
-/// use proc_macro::TokenStream;
-/// use quote::quote;
-/// use syn::DeriveInput;
-///
-/// # const IGNORE_TOKENS: &str = stringify! {
-/// #[proc_macro_derive(MyMacro)]
-/// # };
-/// pub fn my_macro(input: TokenStream) -> TokenStream {
-///     // Parse the tokens into a syntax tree
-///     let ast: DeriveInput = syn::parse(input).unwrap();
-///
-///     // Build the output, possibly using quasi-quotation
-///     let expanded = quote! {
-///         /* ... */
-///     };
-///
-///     // Convert into a token stream and return it
-///     expanded.into()
-/// }
-/// ```
+/// This function enforces that the input is fully parsed. If there are any
+/// unparsed tokens at the end of the stream, an error is returned.
 #[cfg(all(feature = "parsing", feature = "proc-macro"))]
-#[cfg_attr(doc_cfg, doc(cfg(all(feature = "parsing", feature = "proc-macro"))))]
+#[cfg_attr(docsrs, doc(cfg(all(feature = "parsing", feature = "proc-macro"))))]
 pub fn parse<T: parse::Parse>(tokens: proc_macro::TokenStream) -> Result<T> {
     parse::Parser::parse(T::parse, tokens)
 }
 
 /// Parse a proc-macro2 token stream into the chosen syntax tree node.
-///
-/// This function will check that the input is fully parsed. If there are
-/// any unparsed tokens at the end of the stream, an error is returned.
 ///
 /// This function parses a `proc_macro2::TokenStream` which is commonly useful
 /// when the input comes from a node of the Syn syntax tree, for example the
@@ -909,13 +918,19 @@ pub fn parse<T: parse::Parse>(tokens: proc_macro::TokenStream) -> Result<T> {
 /// instead.
 ///
 /// [`syn::parse`]: parse()
+///
+/// This function enforces that the input is fully parsed. If there are any
+/// unparsed tokens at the end of the stream, an error is returned.
 #[cfg(feature = "parsing")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "parsing")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "parsing")))]
 pub fn parse2<T: parse::Parse>(tokens: proc_macro2::TokenStream) -> Result<T> {
     parse::Parser::parse2(T::parse, tokens)
 }
 
 /// Parse a string of Rust code into the chosen syntax tree node.
+///
+/// This function enforces that the input is fully parsed. If there are any
+/// unparsed tokens at the end of the stream, an error is returned.
 ///
 /// # Hygiene
 ///
@@ -937,13 +952,11 @@ pub fn parse2<T: parse::Parse>(tokens: proc_macro2::TokenStream) -> Result<T> {
 /// # run().unwrap();
 /// ```
 #[cfg(feature = "parsing")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "parsing")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "parsing")))]
 pub fn parse_str<T: parse::Parse>(s: &str) -> Result<T> {
     parse::Parser::parse_str(T::parse, s)
 }
 
-// FIXME the name parse_file makes it sound like you might pass in a path to a
-// file, rather than the content.
 /// Parse the content of a file of Rust code.
 ///
 /// This is different from `syn::parse_str::<File>(content)` in two ways:
@@ -957,14 +970,11 @@ pub fn parse_str<T: parse::Parse>(s: &str) -> Result<T> {
 ///
 /// ```no_run
 /// use std::error::Error;
-/// use std::fs::File;
+/// use std::fs;
 /// use std::io::Read;
 ///
 /// fn run() -> Result<(), Box<dyn Error>> {
-///     let mut file = File::open("path/to/code.rs")?;
-///     let mut content = String::new();
-///     file.read_to_string(&mut content)?;
-///
+///     let content = fs::read_to_string("path/to/code.rs")?;
 ///     let ast = syn::parse_file(&content)?;
 ///     if let Some(shebang) = ast.shebang {
 ///         println!("{}", shebang);
@@ -977,7 +987,7 @@ pub fn parse_str<T: parse::Parse>(s: &str) -> Result<T> {
 /// # run().unwrap();
 /// ```
 #[cfg(all(feature = "parsing", feature = "full"))]
-#[cfg_attr(doc_cfg, doc(cfg(all(feature = "parsing", feature = "full"))))]
+#[cfg_attr(docsrs, doc(cfg(all(feature = "parsing", feature = "full"))))]
 pub fn parse_file(mut content: &str) -> Result<File> {
     // Strip the BOM if it is present
     const BOM: &str = "\u{feff}";

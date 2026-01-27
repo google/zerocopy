@@ -1,0 +1,35 @@
+[package]
+name = "buf-list"
+version = "1.1.2"
+edition = "2021"
+description = "A list of buffers that implements the bytes::Buf trait"
+categories = ["network-programming", "data-structures"]
+keywords = ["buffers", "zero-copy", "io"]
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/sunshowers-code/buf-list"
+rust-version = "1.70"
+
+[lints]
+rust.unexpected_cfgs = { level = "warn", check-cfg = ["cfg(doc_cfg)"] }
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg=doc_cfg"]
+
+[dependencies]
+bytes = "1.3.0"
+futures-io-03 = { package = "futures-io", version = "0.3.25", optional = true }
+tokio = { version = "1.0.0", features = ["io-std"], optional = true }
+
+[dev-dependencies]
+anyhow = "1.0.70"
+dummy-waker = "1.1.0"
+futures = "0.3.25"
+proptest = "1.1.0"
+test-strategy = "0.3.0"
+tokio = { version = "1.0.0", features = ["io-std", "io-util", "macros", "rt"] }
+
+[features]
+futures03 = ["futures-io-03"]
+tokio1 = ["tokio"]

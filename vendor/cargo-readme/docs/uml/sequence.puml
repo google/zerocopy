@@ -1,0 +1,113 @@
+@startuml flow
+
+actor User
+boundary Main
+participant ConfigHelper
+participant ManifestHelper
+participant EntrypointHelper
+participant Renderer
+participant Extractor
+participant Processor
+
+User -> Main
+activate Main
+
+Main -> ConfigHelper: find_configuration()
+activate ConfigHelper
+note right: Search for configuration
+
+ConfigHelper -> ConfigHelper: try environment
+ConfigHelper -> ConfigHelper: try file
+ConfigHelper -> ConfigHelper: try command line
+
+Main <-- ConfigHelper: configuration
+deactivate ConfigHelper
+
+Main -> ManifestHelper: manifest(manifest)
+activate ManifestHelper
+note right: Transform badges into markdown
+
+ManifestHelper -> ManifestHelper: process badges
+
+Main <-- ManifestHelper: crate info
+deactivate ManifestHelper
+
+opt no entrypoint given
+    Main -> EntrypointHelper: find_entrypoint()
+    activate EntrypointHelper
+    Main <-- EntrypointHelper: entrypoint: File
+    deactivate EntrypointHelper
+end
+
+Main -> Extractor: extract_docs(File)
+activate Extractor
+
+Extractor -> Processor: process_docs(String[])
+note over Processor
+    - change fence blocks to
+      remove rustdoc specifics
+    - optionally indent heading
+end note
+activate Processor
+
+Extractor <-- Processor: processed docs
+deactivate Processor
+
+Main <-- Extractor: processed docs
+deactivate Extractor
+
+Main -> Renderer: render(docs, manifest)
+ref over Renderer, Extractor, Processor: render template
+Main <-- Renderer: readme
+
+User <-- Main: result
+
+deactivate Main
+
+@enduml
+
+@startuml render
+
+participant Renderer
+participant Extractor
+participant Processor
+
+[-> Renderer: render(docs, manifest)
+activate Renderer
+
+alt without template
+    Renderer -> Renderer: add crate info
+    note left
+        Add title
+        Add badges
+        Add license
+    end note
+else using template
+    Renderer -> Renderer: process\nsubstitutions
+    Renderer -> Renderer: process\ninclusions
+    activate Renderer
+
+    loop included files
+        note left of Renderer
+            Include doc string
+            from other files
+        end note
+        Renderer -> Extractor: extract_docs(file)
+        activate Extractor
+        Extractor -> Processor: process_docs(docs)
+        activate Processor
+        Extractor <-- Processor: processed docs
+        deactivate Processor
+        Renderer <-- Extractor: extracted docs
+        deactivate Extractor
+        Renderer -> Renderer: include docs
+    end
+    |||
+    deactivate Renderer
+    |||
+end
+
+[<-- Renderer: rendered readme
+deactivate Renderer
+
+@enduml

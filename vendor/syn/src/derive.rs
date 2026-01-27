@@ -5,10 +5,11 @@ use crate::ident::Ident;
 use crate::punctuated::Punctuated;
 use crate::restriction::Visibility;
 use crate::token;
+use alloc::vec::Vec;
 
 ast_struct! {
     /// Data structure sent to a `proc_macro_derive` macro.
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "derive")))]
     pub struct DeriveInput {
         pub attrs: Vec<Attribute>,
         pub vis: Visibility,
@@ -26,7 +27,7 @@ ast_enum! {
     /// This type is a [syntax tree enum].
     ///
     /// [syntax tree enum]: crate::expr::Expr#syntax-tree-enums
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "derive")))]
     pub enum Data {
         Struct(DataStruct),
         Enum(DataEnum),
@@ -36,7 +37,7 @@ ast_enum! {
 
 ast_struct! {
     /// A struct input to a `proc_macro_derive` macro.
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "derive")))]
     pub struct DataStruct {
         pub struct_token: Token![struct],
         pub fields: Fields,
@@ -46,7 +47,7 @@ ast_struct! {
 
 ast_struct! {
     /// An enum input to a `proc_macro_derive` macro.
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "derive")))]
     pub struct DataEnum {
         pub enum_token: Token![enum],
         pub brace_token: token::Brace,
@@ -56,7 +57,7 @@ ast_struct! {
 
 ast_struct! {
     /// An untagged union input to a `proc_macro_derive` macro.
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "derive")))]
     pub struct DataUnion {
         pub union_token: Token![union],
         pub fields: FieldsNamed,
@@ -76,7 +77,7 @@ pub(crate) mod parsing {
     use crate::restriction::Visibility;
     use crate::token;
 
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "parsing")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "parsing")))]
     impl Parse for DeriveInput {
         fn parse(input: ParseStream) -> Result<Self> {
             let attrs = input.call(Attribute::parse_outer)?;
@@ -213,7 +214,7 @@ mod printing {
     use proc_macro2::TokenStream;
     use quote::ToTokens;
 
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "printing")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "printing")))]
     impl ToTokens for DeriveInput {
         fn to_tokens(&self, tokens: &mut TokenStream) {
             for attr in self.attrs.outer() {

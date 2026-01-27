@@ -1,0 +1,17 @@
+error: type `private::_::_::_::ẕb` is private
+   --> tests/ui-nightly/privacy.rs:100:9
+    |
+100 |         _,
+    |         ^ private type
+
+error: type `private::_::_::_::ẕ1` is private
+   --> tests/ui-nightly/privacy.rs:113:9
+    |
+113 |         _,
+    |         ^ private type
+
+error: type `private::_::_::_::ẕb` is private
+   --> tests/ui-nightly/privacy.rs:122:49
+    |
+122 |     let _: <Union as zerocopy_renamed::HasField<_, _, { zerocopy_renamed::ident_id!(b) }>>::Type =
+    |                                                 ^ private type

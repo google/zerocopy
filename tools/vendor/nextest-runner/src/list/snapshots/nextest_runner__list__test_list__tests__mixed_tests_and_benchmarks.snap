@@ -1,0 +1,30 @@
+---
+source: nextest-runner/src/list/test_list.rs
+expression: results
+---
+[
+    (
+        "test_one",
+        RustTestKind(
+            "test",
+        ),
+    ),
+    (
+        "bench_one",
+        RustTestKind(
+            "bench",
+        ),
+    ),
+    (
+        "test_two",
+        RustTestKind(
+            "test",
+        ),
+    ),
+    (
+        "bench_two",
+        RustTestKind(
+            "bench",
+        ),
+    ),
+]
