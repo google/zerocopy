@@ -839,7 +839,7 @@ pub trait TransmuteRefDst<'a> {
 
 impl<'a, Src: ?Sized, Dst: ?Sized> TransmuteRefDst<'a> for Wrap<&'a Src, &'a Dst>
 where
-    Src: KnownLayout<PointerMetadata = usize> + IntoBytes + Immutable,
+    Src: KnownLayout + IntoBytes + Immutable,
     Dst: KnownLayout<PointerMetadata = usize> + FromBytes + Immutable,
 {
     type Dst = Dst;
@@ -872,7 +872,7 @@ pub trait TransmuteMutDst<'a> {
 
 impl<'a, Src: ?Sized, Dst: ?Sized> TransmuteMutDst<'a> for Wrap<&'a mut Src, &'a mut Dst>
 where
-    Src: KnownLayout<PointerMetadata = usize> + FromBytes + IntoBytes,
+    Src: KnownLayout + FromBytes + IntoBytes,
     Dst: KnownLayout<PointerMetadata = usize> + FromBytes + IntoBytes,
 {
     type Dst = Dst;
