@@ -1224,11 +1224,13 @@ where
                     _enum_variant => {
                         use crate::invariant::{Validity, ValidityKind};
                         match I::Validity::KIND {
-                            // The projectability of a field from an `Uninit` or
-                            // `Initialized` union cannot generally depend on
-                            // the referent's value, because the union's
-                            // discriminant is not in a valid state, and thus
-                            // cannot be used to discriminate between variants.
+                            // The `Uninit` and `Initialized` validity
+                            // invariants do not depend on the enum's tag. In
+                            // particular, we don't actually care about what
+                            // variant is present – we can treat *any* range of
+                            // uninitialized or initialized memory as containing
+                            // an uninitialized or initialized instance of *any*
+                            // type – the type itself is irrelevant.
                             ValidityKind::Uninit | ValidityKind::Initialized => true,
                             // The projectability of an enum field from an
                             // `AsInitialized` or `Valid` state is a dynamic
