@@ -22,15 +22,13 @@
 #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 #[cfg(not(target_pointer_width = "16"))]
 use core::ptr::{self, NonNull};
-use core::{
-    marker::PhantomData,
-    mem::{self, ManuallyDrop},
-};
+use core::{marker::PhantomData, mem, num::Wrapping};
 
 use crate::{
     pointer::{
         cast::CastSized,
         invariant::{Aligned, Initialized, Valid},
+        BecauseImmutable,
     },
     FromBytes, Immutable, IntoBytes, KnownLayout, Ptr, ReadOnly, TryFromBytes, ValidityError,
 };
@@ -80,48 +78,6 @@ impl<T: ?Sized> PaddingFree<T, 0> for () {}
 )]
 pub trait DynamicPaddingFree<T: ?Sized, const HAS_PADDING: bool> {}
 impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
-
-/// A type whose size is equal to `align_of::<T>()`.
-#[repr(C)]
-pub struct AlignOf<T> {
-    // This field ensures that:
-    // - The size is always at least 1 (the minimum possible alignment).
-    // - If the alignment is greater than 1, Rust has to round up to the next
-    //   multiple of it in order to make sure that `Align`'s size is a multiple
-    //   of that alignment. Without this field, its size could be 0, which is a
-    //   valid multiple of any alignment.
-    _u: u8,
-    _a: [T; 0],
-}
-
-impl<T> AlignOf<T> {
-    #[inline(never)] // Make `missing_inline_in_public_items` happy.
-    #[cfg_attr(
-        all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
-        coverage(off)
-    )]
-    pub fn into_t(self) -> T {
-        unreachable!()
-    }
-}
-
-/// A type whose size is equal to `max(align_of::<T>(), align_of::<U>())`.
-#[repr(C)]
-pub union MaxAlignsOf<T, U> {
-    _t: ManuallyDrop<AlignOf<T>>,
-    _u: ManuallyDrop<AlignOf<U>>,
-}
-
-impl<T, U> MaxAlignsOf<T, U> {
-    #[inline(never)] // Make `missing_inline_in_public_items` happy.
-    #[cfg_attr(
-        all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
-        coverage(off)
-    )]
-    pub fn new(_t: T, _u: U) -> MaxAlignsOf<T, U> {
-        unreachable!()
-    }
-}
 
 #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 #[cfg(not(target_pointer_width = "16"))]
@@ -470,66 +426,6 @@ macro_rules! enum_padding {
     }};
 }
 
-/// Does `t` have alignment greater than or equal to `u`?  If not, this macro
-/// produces a compile error. It must be invoked in a dead codepath. This is
-/// used in `transmute_ref!` and `transmute_mut!`.
-#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
-#[macro_export]
-macro_rules! assert_align_gt_eq {
-    ($t:ident, $u: ident) => {{
-        // The comments here should be read in the context of this macro's
-        // invocations in `transmute_ref!` and `transmute_mut!`.
-        if false {
-            // The type wildcard in this bound is inferred to be `T` because
-            // `align_of.into_t()` is assigned to `t` (which has type `T`).
-            let align_of: $crate::util::macro_util::AlignOf<_> = unreachable!();
-            $t = align_of.into_t();
-            // `max_aligns` is inferred to have type `MaxAlignsOf<T, U>` because
-            // of the inferred types of `t` and `u`.
-            let mut max_aligns = $crate::util::macro_util::MaxAlignsOf::new($t, $u);
-
-            // This transmute will only compile successfully if
-            // `align_of::<T>() == max(align_of::<T>(), align_of::<U>())` - in
-            // other words, if `align_of::<T>() >= align_of::<U>()`.
-            //
-            // SAFETY: This code is never run.
-            max_aligns = unsafe {
-                // Clippy: We can't annotate the types; this macro is designed
-                // to infer the types from the calling context.
-                #[allow(clippy::missing_transmute_annotations)]
-                $crate::util::macro_util::core_reexport::mem::transmute(align_of)
-            };
-        } else {
-            loop {}
-        }
-    }};
-}
-
-/// Do `t` and `u` have the same size?  If not, this macro produces a compile
-/// error. It must be invoked in a dead codepath. This is used in
-/// `transmute_ref!` and `transmute_mut!`.
-#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
-#[macro_export]
-macro_rules! assert_size_eq {
-    ($t:ident, $u: ident) => {{
-        // The comments here should be read in the context of this macro's
-        // invocations in `transmute_ref!` and `transmute_mut!`.
-        if false {
-            // SAFETY: This code is never run.
-            $u = unsafe {
-                // Clippy:
-                // - It's okay to transmute a type to itself.
-                // - We can't annotate the types; this macro is designed to
-                //   infer the types from the calling context.
-                #[allow(clippy::useless_transmute, clippy::missing_transmute_annotations)]
-                $crate::util::macro_util::core_reexport::mem::transmute($t)
-            };
-        } else {
-            loop {}
-        }
-    }};
-}
-
 /// Unwraps an infallible `Result`.
 #[doc(hidden)]
 #[macro_export]
@@ -645,80 +541,127 @@ where
     }
 }
 
-/// Attempts to transmute `&Src` into `&Dst`.
-///
-/// A helper for `try_transmute_ref!`.
-///
-/// # Panics
-///
-/// `try_transmute_ref` may either produce a post-monomorphization error or a
-/// panic if `Dst` is bigger or has a stricter alignment requirement than `Src`.
-/// Otherwise, `try_transmute_ref` panics under the same circumstances as
-/// [`is_bit_valid`].
-///
-/// [`is_bit_valid`]: TryFromBytes::is_bit_valid
-#[inline(always)]
-pub fn try_transmute_ref<Src, Dst>(src: &Src) -> Result<&Dst, ValidityError<&Src, Dst>>
+/// See `try_transmute_ref!` documentation.
+pub trait TryTransmuteRefDst<'a> {
+    type Dst: ?Sized;
+
+    /// See `try_transmute_ref!` documentation.
+    fn try_transmute_ref(self) -> Result<&'a Self::Dst, ValidityError<&'a Self::Src, Self::Dst>>
+    where
+        Self: TryTransmuteRefSrc<'a>,
+        Self::Src: IntoBytes,
+        Self::Dst: TryFromBytes;
+}
+
+pub trait TryTransmuteRefSrc<'a> {
+    type Src: ?Sized;
+}
+
+impl<'a, Src, Dst> TryTransmuteRefSrc<'a> for Wrap<&'a Src, &'a Dst>
 where
-    Src: IntoBytes + Immutable,
-    Dst: TryFromBytes + Immutable,
+    Src: ?Sized,
+    Dst: ?Sized,
 {
-    let ptr = Ptr::from_ref(src);
-    #[rustfmt::skip]
-    let res = ptr.try_with(#[inline(always)] |ptr| {
-        let ptr = ptr.recall_validity::<Initialized, _>();
-        let ptr = ptr.cast::<_, CastSized, _>();
-        ptr.try_into_valid()
-    });
-    match res {
-        Ok(ptr) => {
-            static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
-            // SAFETY: We have checked that `Dst` does not have a stricter
-            // alignment requirement than `Src`.
-            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
-            Ok(ptr.as_ref())
+    type Src = Src;
+}
+
+impl<'a, Src, Dst> TryTransmuteRefDst<'a> for Wrap<&'a Src, &'a Dst>
+where
+    Src: IntoBytes + Immutable + KnownLayout + ?Sized,
+    Dst: TryFromBytes + Immutable + KnownLayout + ?Sized,
+{
+    type Dst = Dst;
+
+    #[inline(always)]
+    fn try_transmute_ref(
+        self,
+    ) -> Result<
+        &'a Dst,
+        ValidityError<&'a <Wrap<&'a Src, &'a Dst> as TryTransmuteRefSrc<'a>>::Src, Dst>,
+    > {
+        let ptr = Ptr::from_ref(self.0);
+        #[rustfmt::skip]
+        let res = ptr.try_with(#[inline(always)] |ptr| {
+            let ptr = ptr.recall_validity::<Initialized, _>();
+            let ptr = ptr.cast::<_, crate::layout::CastFrom<Dst>, _>();
+            ptr.try_into_valid()
+        });
+        match res {
+            Ok(ptr) => {
+                static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
+                    Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
+                }, "cannot transmute reference when destination type has higher alignment than source type");
+                // SAFETY: We have checked that `Dst` does not have a stricter
+                // alignment requirement than `Src`.
+                let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+                Ok(ptr.as_ref())
+            }
+            Err(err) => Err(err.map_src(Ptr::as_ref)),
         }
-        Err(err) => Err(err.map_src(Ptr::as_ref)),
     }
 }
 
-/// Attempts to transmute `&mut Src` into `&mut Dst`.
-///
-/// A helper for `try_transmute_mut!`.
-///
-/// # Panics
-///
-/// `try_transmute_mut` may either produce a post-monomorphization error or a
-/// panic if `Dst` is bigger or has a stricter alignment requirement than `Src`.
-/// Otherwise, `try_transmute_mut` panics under the same circumstances as
-/// [`is_bit_valid`].
-///
-/// [`is_bit_valid`]: TryFromBytes::is_bit_valid
-#[inline(always)]
-pub fn try_transmute_mut<Src, Dst>(src: &mut Src) -> Result<&mut Dst, ValidityError<&mut Src, Dst>>
+pub trait TryTransmuteMutDst<'a> {
+    type Dst: ?Sized;
+
+    /// See `try_transmute_mut!` documentation.
+    fn try_transmute_mut(
+        self,
+    ) -> Result<&'a mut Self::Dst, ValidityError<&'a mut Self::Src, Self::Dst>>
+    where
+        Self: TryTransmuteMutSrc<'a>,
+        Self::Src: IntoBytes,
+        Self::Dst: TryFromBytes;
+}
+
+pub trait TryTransmuteMutSrc<'a> {
+    type Src: ?Sized;
+}
+
+impl<'a, Src, Dst> TryTransmuteMutSrc<'a> for Wrap<&'a mut Src, &'a mut Dst>
 where
-    Src: FromBytes + IntoBytes,
-    Dst: TryFromBytes + IntoBytes,
+    Src: ?Sized,
+    Dst: ?Sized,
 {
-    let ptr = Ptr::from_mut(src);
-    // SAFETY: The provided closure returns the only copy of `ptr`.
-    #[rustfmt::skip]
-    let res = unsafe {
-        ptr.try_with_unchecked(#[inline(always)] |ptr| {
-            let ptr = ptr.recall_validity::<Initialized, (_, (_, _))>();
-            let ptr = ptr.cast::<_, CastSized, _>();
-            ptr.try_into_valid()
-        })
-    };
-    match res {
-        Ok(ptr) => {
-            static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
-            // SAFETY: We have checked that `Dst` does not have a stricter
-            // alignment requirement than `Src`.
-            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
-            Ok(ptr.as_mut())
+    type Src = Src;
+}
+
+impl<'a, Src, Dst> TryTransmuteMutDst<'a> for Wrap<&'a mut Src, &'a mut Dst>
+where
+    Src: FromBytes + IntoBytes + KnownLayout + ?Sized,
+    Dst: TryFromBytes + IntoBytes + KnownLayout + ?Sized,
+{
+    type Dst = Dst;
+
+    #[inline(always)]
+    fn try_transmute_mut(
+        self,
+    ) -> Result<
+        &'a mut Dst,
+        ValidityError<&'a mut <Wrap<&'a mut Src, &'a mut Dst> as TryTransmuteMutSrc<'a>>::Src, Dst>,
+    > {
+        let ptr = Ptr::from_mut(self.0);
+        // SAFETY: The provided closure returns the only copy of `ptr`.
+        #[rustfmt::skip]
+        let res = unsafe {
+            ptr.try_with_unchecked(#[inline(always)] |ptr| {
+                let ptr = ptr.recall_validity::<Initialized, (_, (_, _))>();
+                let ptr = ptr.cast::<_, crate::layout::CastFrom<Dst>, _>();
+                ptr.try_into_valid()
+            })
+        };
+        match res {
+            Ok(ptr) => {
+                static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
+                    Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
+                }, "cannot transmute reference when destination type has higher alignment than source type");
+                // SAFETY: We have checked that `Dst` does not have a stricter
+                // alignment requirement than `Src`.
+                let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+                Ok(ptr.as_mut())
+            }
+            Err(err) => Err(err.map_src(Ptr::as_mut)),
         }
-        Err(err) => Err(err.map_src(Ptr::as_mut)),
     }
 }
 
@@ -791,6 +734,35 @@ impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst> {
             mem::transmute(dst)
         }
     }
+
+    #[inline(always)]
+    pub fn try_transmute_ref(self) -> Result<&'a Dst, ValidityError<&'a Src, Dst>>
+    where
+        Src: IntoBytes + Immutable,
+        Dst: TryFromBytes + Immutable,
+    {
+        static_assert!(Src => mem::align_of::<Src>() == mem::align_of::<Wrapping<Src>>());
+        static_assert!(Dst => mem::align_of::<Dst>() == mem::align_of::<Wrapping<Dst>>());
+
+        // SAFETY: By the preceding assert, `Src` and `Wrapping<Src>` have the
+        // same alignment.
+        let src: &Wrapping<Src> =
+            unsafe { crate::util::transmute_ref::<_, _, BecauseImmutable>(self.0) };
+        let src = Wrap::new(src);
+        <Wrap<&'a Wrapping<Src>, &'a Wrapping<Dst>> as TryTransmuteRefDst<'a>>::try_transmute_ref(
+            src,
+        )
+        // SAFETY: By the preceding assert, `Dst` and `Wrapping<Dst>` have the
+        // same alignment.
+        .map(|dst| unsafe { crate::util::transmute_ref::<_, _, BecauseImmutable>(dst) })
+        .map_err(|err| {
+            // SAFETY: By the preceding assert, `Src` and `Wrapping<Src>` have the
+            // same alignment.
+            ValidityError::new(unsafe {
+                crate::util::transmute_ref::<_, _, BecauseImmutable>(err.into_src())
+            })
+        })
+    }
 }
 
 impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst>
@@ -835,6 +807,34 @@ impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
         // - We know that the returned lifetime will not outlive the input
         //   lifetime thanks to the lifetime bounds on this function.
         unsafe { &mut *dst }
+    }
+
+    #[inline(always)]
+    pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
+    where
+        Src: FromBytes + IntoBytes,
+        Dst: TryFromBytes + IntoBytes,
+    {
+        static_assert!(Src => mem::align_of::<Src>() == mem::align_of::<Wrapping<Src>>());
+        static_assert!(Dst => mem::align_of::<Dst>() == mem::align_of::<Wrapping<Dst>>());
+
+        // SAFETY: By the preceding assert, `Src` and `Wrapping<Src>` have the
+        // same alignment.
+        let src: &mut Wrapping<Src> =
+            unsafe { crate::util::transmute_mut::<_, _, (_, (_, _))>(self.0) };
+        let src = Wrap::new(src);
+        <Wrap<&'a mut Wrapping<Src>, &'a mut Wrapping<Dst>> as TryTransmuteMutDst<'a>>
+            ::try_transmute_mut(src)
+            // SAFETY: By the preceding assert, `Dst` and `Wrapping<Dst>` have the
+            // same alignment.
+            .map(|dst| unsafe { crate::util::transmute_mut::<_, _, (_, (_, _))>(dst) })
+            .map_err(|err| {
+                // SAFETY: By the preceding assert, `Src` and `Wrapping<Src>` have the
+                // same alignment.
+                ValidityError::new(unsafe {
+                    crate::util::transmute_mut::<_, _, (_, (_, _))>(err.into_src())
+                })
+            })
     }
 }
 
@@ -927,210 +927,163 @@ pub mod core_reexport {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::util::testutil::*;
 
-    #[test]
-    fn test_align_of() {
-        macro_rules! test {
-            ($ty:ty) => {
-                assert_eq!(mem::size_of::<AlignOf<$ty>>(), mem::align_of::<$ty>());
-            };
-        }
-
-        test!(());
-        test!(u8);
-        test!(AU64);
-        test!([AU64; 2]);
-    }
-
-    #[test]
-    fn test_max_aligns_of() {
-        macro_rules! test {
-            ($t:ty, $u:ty) => {
-                assert_eq!(
-                    mem::size_of::<MaxAlignsOf<$t, $u>>(),
-                    core::cmp::max(mem::align_of::<$t>(), mem::align_of::<$u>())
-                );
-            };
-        }
-
-        test!(u8, u8);
-        test!(u8, AU64);
-        test!(AU64, u8);
-    }
-
-    #[test]
-    fn test_typed_align_check() {
-        // Test that the type-based alignment check used in
-        // `assert_align_gt_eq!` behaves as expected.
-
-        macro_rules! assert_t_align_gteq_u_align {
-            ($t:ty, $u:ty, $gteq:expr) => {
-                assert_eq!(
-                    mem::size_of::<MaxAlignsOf<$t, $u>>() == mem::size_of::<AlignOf<$t>>(),
-                    $gteq
-                );
-            };
-        }
-
-        assert_t_align_gteq_u_align!(u8, u8, true);
-        assert_t_align_gteq_u_align!(AU64, AU64, true);
-        assert_t_align_gteq_u_align!(AU64, u8, true);
-        assert_t_align_gteq_u_align!(u8, AU64, false);
-    }
-
-    // FIXME(#29), FIXME(https://github.com/rust-lang/rust/issues/69835): Remove
-    // this `cfg` when `size_of_val_raw` is stabilized.
-    #[allow(clippy::decimal_literal_representation)]
     #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
-    #[test]
-    fn test_trailing_field_offset() {
-        assert_eq!(mem::align_of::<Aligned64kAllocation>(), _64K);
+    mod nightly {
+        use super::super::*;
+        use crate::util::testutil::*;
 
-        macro_rules! test {
-            (#[$cfg:meta] ($($ts:ty),* ; $trailing_field_ty:ty) => $expect:expr) => {{
-                #[$cfg]
-                struct Test($(#[allow(dead_code)] $ts,)* #[allow(dead_code)] $trailing_field_ty);
-                assert_eq!(test!(@offset $($ts),* ; $trailing_field_ty), $expect);
-            }};
-            (#[$cfg:meta] $(#[$cfgs:meta])* ($($ts:ty),* ; $trailing_field_ty:ty) => $expect:expr) => {
-                test!(#[$cfg] ($($ts),* ; $trailing_field_ty) => $expect);
-                test!($(#[$cfgs])* ($($ts),* ; $trailing_field_ty) => $expect);
-            };
-            (@offset ; $_trailing:ty) => { trailing_field_offset!(Test, 0) };
-            (@offset $_t:ty ; $_trailing:ty) => { trailing_field_offset!(Test, 1) };
+        // FIXME(#29), FIXME(https://github.com/rust-lang/rust/issues/69835):
+        // Remove this `cfg` when `size_of_val_raw` is stabilized.
+        #[allow(clippy::decimal_literal_representation)]
+        #[test]
+        fn test_trailing_field_offset() {
+            assert_eq!(mem::align_of::<Aligned64kAllocation>(), _64K);
+
+            macro_rules! test {
+                (#[$cfg:meta] ($($ts:ty),* ; $trailing_field_ty:ty) => $expect:expr) => {{
+                    #[$cfg]
+                    struct Test($(#[allow(dead_code)] $ts,)* #[allow(dead_code)] $trailing_field_ty);
+                    assert_eq!(test!(@offset $($ts),* ; $trailing_field_ty), $expect);
+                }};
+                (#[$cfg:meta] $(#[$cfgs:meta])* ($($ts:ty),* ; $trailing_field_ty:ty) => $expect:expr) => {
+                    test!(#[$cfg] ($($ts),* ; $trailing_field_ty) => $expect);
+                    test!($(#[$cfgs])* ($($ts),* ; $trailing_field_ty) => $expect);
+                };
+                (@offset ; $_trailing:ty) => { trailing_field_offset!(Test, 0) };
+                (@offset $_t:ty ; $_trailing:ty) => { trailing_field_offset!(Test, 1) };
+            }
+
+            test!(#[repr(C)] #[repr(transparent)] #[repr(packed)](; u8) => Some(0));
+            test!(#[repr(C)] #[repr(transparent)] #[repr(packed)](; [u8]) => Some(0));
+            test!(#[repr(C)] #[repr(C, packed)] (u8; u8) => Some(1));
+            test!(#[repr(C)] (; AU64) => Some(0));
+            test!(#[repr(C)] (; [AU64]) => Some(0));
+            test!(#[repr(C)] (u8; AU64) => Some(8));
+            test!(#[repr(C)] (u8; [AU64]) => Some(8));
+
+            #[derive(
+                Immutable, FromBytes, Eq, PartialEq, Ord, PartialOrd, Default, Debug, Copy, Clone,
+            )]
+            #[repr(C)]
+            pub(crate) struct Nested<T, U: ?Sized> {
+                _t: T,
+                _u: U,
+            }
+
+            test!(#[repr(C)] (; Nested<u8, AU64>) => Some(0));
+            test!(#[repr(C)] (; Nested<u8, [AU64]>) => Some(0));
+            test!(#[repr(C)] (u8; Nested<u8, AU64>) => Some(8));
+            test!(#[repr(C)] (u8; Nested<u8, [AU64]>) => Some(8));
+
+            // Test that `packed(N)` limits the offset of the trailing field.
+            test!(#[repr(C, packed(        1))] (u8; elain::Align<        2>) => Some(        1));
+            test!(#[repr(C, packed(        2))] (u8; elain::Align<        4>) => Some(        2));
+            test!(#[repr(C, packed(        4))] (u8; elain::Align<        8>) => Some(        4));
+            test!(#[repr(C, packed(        8))] (u8; elain::Align<       16>) => Some(        8));
+            test!(#[repr(C, packed(       16))] (u8; elain::Align<       32>) => Some(       16));
+            test!(#[repr(C, packed(       32))] (u8; elain::Align<       64>) => Some(       32));
+            test!(#[repr(C, packed(       64))] (u8; elain::Align<      128>) => Some(       64));
+            test!(#[repr(C, packed(      128))] (u8; elain::Align<      256>) => Some(      128));
+            test!(#[repr(C, packed(      256))] (u8; elain::Align<      512>) => Some(      256));
+            test!(#[repr(C, packed(      512))] (u8; elain::Align<     1024>) => Some(      512));
+            test!(#[repr(C, packed(     1024))] (u8; elain::Align<     2048>) => Some(     1024));
+            test!(#[repr(C, packed(     2048))] (u8; elain::Align<     4096>) => Some(     2048));
+            test!(#[repr(C, packed(     4096))] (u8; elain::Align<     8192>) => Some(     4096));
+            test!(#[repr(C, packed(     8192))] (u8; elain::Align<    16384>) => Some(     8192));
+            test!(#[repr(C, packed(    16384))] (u8; elain::Align<    32768>) => Some(    16384));
+            test!(#[repr(C, packed(    32768))] (u8; elain::Align<    65536>) => Some(    32768));
+            test!(#[repr(C, packed(    65536))] (u8; elain::Align<   131072>) => Some(    65536));
+            /* Alignments above 65536 are not yet supported.
+            test!(#[repr(C, packed(   131072))] (u8; elain::Align<   262144>) => Some(   131072));
+            test!(#[repr(C, packed(   262144))] (u8; elain::Align<   524288>) => Some(   262144));
+            test!(#[repr(C, packed(   524288))] (u8; elain::Align<  1048576>) => Some(   524288));
+            test!(#[repr(C, packed(  1048576))] (u8; elain::Align<  2097152>) => Some(  1048576));
+            test!(#[repr(C, packed(  2097152))] (u8; elain::Align<  4194304>) => Some(  2097152));
+            test!(#[repr(C, packed(  4194304))] (u8; elain::Align<  8388608>) => Some(  4194304));
+            test!(#[repr(C, packed(  8388608))] (u8; elain::Align< 16777216>) => Some(  8388608));
+            test!(#[repr(C, packed( 16777216))] (u8; elain::Align< 33554432>) => Some( 16777216));
+            test!(#[repr(C, packed( 33554432))] (u8; elain::Align< 67108864>) => Some( 33554432));
+            test!(#[repr(C, packed( 67108864))] (u8; elain::Align< 33554432>) => Some( 67108864));
+            test!(#[repr(C, packed( 33554432))] (u8; elain::Align<134217728>) => Some( 33554432));
+            test!(#[repr(C, packed(134217728))] (u8; elain::Align<268435456>) => Some(134217728));
+            test!(#[repr(C, packed(268435456))] (u8; elain::Align<268435456>) => Some(268435456));
+            */
+
+            // Test that `align(N)` does not limit the offset of the trailing field.
+            test!(#[repr(C, align(        1))] (u8; elain::Align<        2>) => Some(        2));
+            test!(#[repr(C, align(        2))] (u8; elain::Align<        4>) => Some(        4));
+            test!(#[repr(C, align(        4))] (u8; elain::Align<        8>) => Some(        8));
+            test!(#[repr(C, align(        8))] (u8; elain::Align<       16>) => Some(       16));
+            test!(#[repr(C, align(       16))] (u8; elain::Align<       32>) => Some(       32));
+            test!(#[repr(C, align(       32))] (u8; elain::Align<       64>) => Some(       64));
+            test!(#[repr(C, align(       64))] (u8; elain::Align<      128>) => Some(      128));
+            test!(#[repr(C, align(      128))] (u8; elain::Align<      256>) => Some(      256));
+            test!(#[repr(C, align(      256))] (u8; elain::Align<      512>) => Some(      512));
+            test!(#[repr(C, align(      512))] (u8; elain::Align<     1024>) => Some(     1024));
+            test!(#[repr(C, align(     1024))] (u8; elain::Align<     2048>) => Some(     2048));
+            test!(#[repr(C, align(     2048))] (u8; elain::Align<     4096>) => Some(     4096));
+            test!(#[repr(C, align(     4096))] (u8; elain::Align<     8192>) => Some(     8192));
+            test!(#[repr(C, align(     8192))] (u8; elain::Align<    16384>) => Some(    16384));
+            test!(#[repr(C, align(    16384))] (u8; elain::Align<    32768>) => Some(    32768));
+            test!(#[repr(C, align(    32768))] (u8; elain::Align<    65536>) => Some(    65536));
+            /* Alignments above 65536 are not yet supported.
+            test!(#[repr(C, align(    65536))] (u8; elain::Align<   131072>) => Some(   131072));
+            test!(#[repr(C, align(   131072))] (u8; elain::Align<   262144>) => Some(   262144));
+            test!(#[repr(C, align(   262144))] (u8; elain::Align<   524288>) => Some(   524288));
+            test!(#[repr(C, align(   524288))] (u8; elain::Align<  1048576>) => Some(  1048576));
+            test!(#[repr(C, align(  1048576))] (u8; elain::Align<  2097152>) => Some(  2097152));
+            test!(#[repr(C, align(  2097152))] (u8; elain::Align<  4194304>) => Some(  4194304));
+            test!(#[repr(C, align(  4194304))] (u8; elain::Align<  8388608>) => Some(  8388608));
+            test!(#[repr(C, align(  8388608))] (u8; elain::Align< 16777216>) => Some( 16777216));
+            test!(#[repr(C, align( 16777216))] (u8; elain::Align< 33554432>) => Some( 33554432));
+            test!(#[repr(C, align( 33554432))] (u8; elain::Align< 67108864>) => Some( 67108864));
+            test!(#[repr(C, align( 67108864))] (u8; elain::Align< 33554432>) => Some( 33554432));
+            test!(#[repr(C, align( 33554432))] (u8; elain::Align<134217728>) => Some(134217728));
+            test!(#[repr(C, align(134217728))] (u8; elain::Align<268435456>) => Some(268435456));
+            */
         }
 
-        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)](; u8) => Some(0));
-        test!(#[repr(C)] #[repr(transparent)] #[repr(packed)](; [u8]) => Some(0));
-        test!(#[repr(C)] #[repr(C, packed)] (u8; u8) => Some(1));
-        test!(#[repr(C)] (; AU64) => Some(0));
-        test!(#[repr(C)] (; [AU64]) => Some(0));
-        test!(#[repr(C)] (u8; AU64) => Some(8));
-        test!(#[repr(C)] (u8; [AU64]) => Some(8));
-
-        #[derive(
-            Immutable, FromBytes, Eq, PartialEq, Ord, PartialOrd, Default, Debug, Copy, Clone,
-        )]
-        #[repr(C)]
-        pub(crate) struct Nested<T, U: ?Sized> {
-            _t: T,
-            _u: U,
+        // FIXME(#29), FIXME(https://github.com/rust-lang/rust/issues/69835):
+        // Remove this `cfg` when `size_of_val_raw` is stabilized.
+        #[allow(clippy::decimal_literal_representation)]
+        #[test]
+        fn test_align_of_dst() {
+            // Test that `align_of!` correctly computes the alignment of DSTs.
+            assert_eq!(align_of!([elain::Align<1>]), Some(1));
+            assert_eq!(align_of!([elain::Align<2>]), Some(2));
+            assert_eq!(align_of!([elain::Align<4>]), Some(4));
+            assert_eq!(align_of!([elain::Align<8>]), Some(8));
+            assert_eq!(align_of!([elain::Align<16>]), Some(16));
+            assert_eq!(align_of!([elain::Align<32>]), Some(32));
+            assert_eq!(align_of!([elain::Align<64>]), Some(64));
+            assert_eq!(align_of!([elain::Align<128>]), Some(128));
+            assert_eq!(align_of!([elain::Align<256>]), Some(256));
+            assert_eq!(align_of!([elain::Align<512>]), Some(512));
+            assert_eq!(align_of!([elain::Align<1024>]), Some(1024));
+            assert_eq!(align_of!([elain::Align<2048>]), Some(2048));
+            assert_eq!(align_of!([elain::Align<4096>]), Some(4096));
+            assert_eq!(align_of!([elain::Align<8192>]), Some(8192));
+            assert_eq!(align_of!([elain::Align<16384>]), Some(16384));
+            assert_eq!(align_of!([elain::Align<32768>]), Some(32768));
+            assert_eq!(align_of!([elain::Align<65536>]), Some(65536));
+            /* Alignments above 65536 are not yet supported.
+            assert_eq!(align_of!([elain::Align<131072>]), Some(131072));
+            assert_eq!(align_of!([elain::Align<262144>]), Some(262144));
+            assert_eq!(align_of!([elain::Align<524288>]), Some(524288));
+            assert_eq!(align_of!([elain::Align<1048576>]), Some(1048576));
+            assert_eq!(align_of!([elain::Align<2097152>]), Some(2097152));
+            assert_eq!(align_of!([elain::Align<4194304>]), Some(4194304));
+            assert_eq!(align_of!([elain::Align<8388608>]), Some(8388608));
+            assert_eq!(align_of!([elain::Align<16777216>]), Some(16777216));
+            assert_eq!(align_of!([elain::Align<33554432>]), Some(33554432));
+            assert_eq!(align_of!([elain::Align<67108864>]), Some(67108864));
+            assert_eq!(align_of!([elain::Align<33554432>]), Some(33554432));
+            assert_eq!(align_of!([elain::Align<134217728>]), Some(134217728));
+            assert_eq!(align_of!([elain::Align<268435456>]), Some(268435456));
+            */
         }
-
-        test!(#[repr(C)] (; Nested<u8, AU64>) => Some(0));
-        test!(#[repr(C)] (; Nested<u8, [AU64]>) => Some(0));
-        test!(#[repr(C)] (u8; Nested<u8, AU64>) => Some(8));
-        test!(#[repr(C)] (u8; Nested<u8, [AU64]>) => Some(8));
-
-        // Test that `packed(N)` limits the offset of the trailing field.
-        test!(#[repr(C, packed(        1))] (u8; elain::Align<        2>) => Some(        1));
-        test!(#[repr(C, packed(        2))] (u8; elain::Align<        4>) => Some(        2));
-        test!(#[repr(C, packed(        4))] (u8; elain::Align<        8>) => Some(        4));
-        test!(#[repr(C, packed(        8))] (u8; elain::Align<       16>) => Some(        8));
-        test!(#[repr(C, packed(       16))] (u8; elain::Align<       32>) => Some(       16));
-        test!(#[repr(C, packed(       32))] (u8; elain::Align<       64>) => Some(       32));
-        test!(#[repr(C, packed(       64))] (u8; elain::Align<      128>) => Some(       64));
-        test!(#[repr(C, packed(      128))] (u8; elain::Align<      256>) => Some(      128));
-        test!(#[repr(C, packed(      256))] (u8; elain::Align<      512>) => Some(      256));
-        test!(#[repr(C, packed(      512))] (u8; elain::Align<     1024>) => Some(      512));
-        test!(#[repr(C, packed(     1024))] (u8; elain::Align<     2048>) => Some(     1024));
-        test!(#[repr(C, packed(     2048))] (u8; elain::Align<     4096>) => Some(     2048));
-        test!(#[repr(C, packed(     4096))] (u8; elain::Align<     8192>) => Some(     4096));
-        test!(#[repr(C, packed(     8192))] (u8; elain::Align<    16384>) => Some(     8192));
-        test!(#[repr(C, packed(    16384))] (u8; elain::Align<    32768>) => Some(    16384));
-        test!(#[repr(C, packed(    32768))] (u8; elain::Align<    65536>) => Some(    32768));
-        test!(#[repr(C, packed(    65536))] (u8; elain::Align<   131072>) => Some(    65536));
-        /* Alignments above 65536 are not yet supported.
-        test!(#[repr(C, packed(   131072))] (u8; elain::Align<   262144>) => Some(   131072));
-        test!(#[repr(C, packed(   262144))] (u8; elain::Align<   524288>) => Some(   262144));
-        test!(#[repr(C, packed(   524288))] (u8; elain::Align<  1048576>) => Some(   524288));
-        test!(#[repr(C, packed(  1048576))] (u8; elain::Align<  2097152>) => Some(  1048576));
-        test!(#[repr(C, packed(  2097152))] (u8; elain::Align<  4194304>) => Some(  2097152));
-        test!(#[repr(C, packed(  4194304))] (u8; elain::Align<  8388608>) => Some(  4194304));
-        test!(#[repr(C, packed(  8388608))] (u8; elain::Align< 16777216>) => Some(  8388608));
-        test!(#[repr(C, packed( 16777216))] (u8; elain::Align< 33554432>) => Some( 16777216));
-        test!(#[repr(C, packed( 33554432))] (u8; elain::Align< 67108864>) => Some( 33554432));
-        test!(#[repr(C, packed( 67108864))] (u8; elain::Align< 33554432>) => Some( 67108864));
-        test!(#[repr(C, packed( 33554432))] (u8; elain::Align<134217728>) => Some( 33554432));
-        test!(#[repr(C, packed(134217728))] (u8; elain::Align<268435456>) => Some(134217728));
-        test!(#[repr(C, packed(268435456))] (u8; elain::Align<268435456>) => Some(268435456));
-        */
-
-        // Test that `align(N)` does not limit the offset of the trailing field.
-        test!(#[repr(C, align(        1))] (u8; elain::Align<        2>) => Some(        2));
-        test!(#[repr(C, align(        2))] (u8; elain::Align<        4>) => Some(        4));
-        test!(#[repr(C, align(        4))] (u8; elain::Align<        8>) => Some(        8));
-        test!(#[repr(C, align(        8))] (u8; elain::Align<       16>) => Some(       16));
-        test!(#[repr(C, align(       16))] (u8; elain::Align<       32>) => Some(       32));
-        test!(#[repr(C, align(       32))] (u8; elain::Align<       64>) => Some(       64));
-        test!(#[repr(C, align(       64))] (u8; elain::Align<      128>) => Some(      128));
-        test!(#[repr(C, align(      128))] (u8; elain::Align<      256>) => Some(      256));
-        test!(#[repr(C, align(      256))] (u8; elain::Align<      512>) => Some(      512));
-        test!(#[repr(C, align(      512))] (u8; elain::Align<     1024>) => Some(     1024));
-        test!(#[repr(C, align(     1024))] (u8; elain::Align<     2048>) => Some(     2048));
-        test!(#[repr(C, align(     2048))] (u8; elain::Align<     4096>) => Some(     4096));
-        test!(#[repr(C, align(     4096))] (u8; elain::Align<     8192>) => Some(     8192));
-        test!(#[repr(C, align(     8192))] (u8; elain::Align<    16384>) => Some(    16384));
-        test!(#[repr(C, align(    16384))] (u8; elain::Align<    32768>) => Some(    32768));
-        test!(#[repr(C, align(    32768))] (u8; elain::Align<    65536>) => Some(    65536));
-        /* Alignments above 65536 are not yet supported.
-        test!(#[repr(C, align(    65536))] (u8; elain::Align<   131072>) => Some(   131072));
-        test!(#[repr(C, align(   131072))] (u8; elain::Align<   262144>) => Some(   262144));
-        test!(#[repr(C, align(   262144))] (u8; elain::Align<   524288>) => Some(   524288));
-        test!(#[repr(C, align(   524288))] (u8; elain::Align<  1048576>) => Some(  1048576));
-        test!(#[repr(C, align(  1048576))] (u8; elain::Align<  2097152>) => Some(  2097152));
-        test!(#[repr(C, align(  2097152))] (u8; elain::Align<  4194304>) => Some(  4194304));
-        test!(#[repr(C, align(  4194304))] (u8; elain::Align<  8388608>) => Some(  8388608));
-        test!(#[repr(C, align(  8388608))] (u8; elain::Align< 16777216>) => Some( 16777216));
-        test!(#[repr(C, align( 16777216))] (u8; elain::Align< 33554432>) => Some( 33554432));
-        test!(#[repr(C, align( 33554432))] (u8; elain::Align< 67108864>) => Some( 67108864));
-        test!(#[repr(C, align( 67108864))] (u8; elain::Align< 33554432>) => Some( 33554432));
-        test!(#[repr(C, align( 33554432))] (u8; elain::Align<134217728>) => Some(134217728));
-        test!(#[repr(C, align(134217728))] (u8; elain::Align<268435456>) => Some(268435456));
-        */
-    }
-
-    // FIXME(#29), FIXME(https://github.com/rust-lang/rust/issues/69835): Remove
-    // this `cfg` when `size_of_val_raw` is stabilized.
-    #[allow(clippy::decimal_literal_representation)]
-    #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
-    #[test]
-    fn test_align_of_dst() {
-        // Test that `align_of!` correctly computes the alignment of DSTs.
-        assert_eq!(align_of!([elain::Align<1>]), Some(1));
-        assert_eq!(align_of!([elain::Align<2>]), Some(2));
-        assert_eq!(align_of!([elain::Align<4>]), Some(4));
-        assert_eq!(align_of!([elain::Align<8>]), Some(8));
-        assert_eq!(align_of!([elain::Align<16>]), Some(16));
-        assert_eq!(align_of!([elain::Align<32>]), Some(32));
-        assert_eq!(align_of!([elain::Align<64>]), Some(64));
-        assert_eq!(align_of!([elain::Align<128>]), Some(128));
-        assert_eq!(align_of!([elain::Align<256>]), Some(256));
-        assert_eq!(align_of!([elain::Align<512>]), Some(512));
-        assert_eq!(align_of!([elain::Align<1024>]), Some(1024));
-        assert_eq!(align_of!([elain::Align<2048>]), Some(2048));
-        assert_eq!(align_of!([elain::Align<4096>]), Some(4096));
-        assert_eq!(align_of!([elain::Align<8192>]), Some(8192));
-        assert_eq!(align_of!([elain::Align<16384>]), Some(16384));
-        assert_eq!(align_of!([elain::Align<32768>]), Some(32768));
-        assert_eq!(align_of!([elain::Align<65536>]), Some(65536));
-        /* Alignments above 65536 are not yet supported.
-        assert_eq!(align_of!([elain::Align<131072>]), Some(131072));
-        assert_eq!(align_of!([elain::Align<262144>]), Some(262144));
-        assert_eq!(align_of!([elain::Align<524288>]), Some(524288));
-        assert_eq!(align_of!([elain::Align<1048576>]), Some(1048576));
-        assert_eq!(align_of!([elain::Align<2097152>]), Some(2097152));
-        assert_eq!(align_of!([elain::Align<4194304>]), Some(4194304));
-        assert_eq!(align_of!([elain::Align<8388608>]), Some(8388608));
-        assert_eq!(align_of!([elain::Align<16777216>]), Some(16777216));
-        assert_eq!(align_of!([elain::Align<33554432>]), Some(33554432));
-        assert_eq!(align_of!([elain::Align<67108864>]), Some(67108864));
-        assert_eq!(align_of!([elain::Align<33554432>]), Some(33554432));
-        assert_eq!(align_of!([elain::Align<134217728>]), Some(134217728));
-        assert_eq!(align_of!([elain::Align<268435456>]), Some(268435456));
-        */
     }
 
     #[test]
