@@ -228,6 +228,7 @@ impl PaddingCheck {
 #[derive(Clone)]
 pub(crate) enum Trait {
     KnownLayout,
+    HasTag,
     HasField {
         variant_id: Box<Expr>,
         field: Box<Type>,
@@ -266,6 +267,7 @@ impl ToTokens for Trait {
             Trait::HasField { .. } => "HasField",
             Trait::ProjectField { .. } => "ProjectField",
             Trait::KnownLayout => "KnownLayout",
+            Trait::HasTag => "HasTag",
             Trait::Immutable => "Immutable",
             Trait::TryFromBytes => "TryFromBytes",
             Trait::FromZeros => "FromZeros",
@@ -286,6 +288,7 @@ impl ToTokens for Trait {
                 Some(parse_quote!(<#field, #invariants, #variant_id, #field_id>))
             }
             Trait::KnownLayout
+            | Trait::HasTag
             | Trait::Immutable
             | Trait::TryFromBytes
             | Trait::FromZeros
@@ -670,7 +673,7 @@ pub(crate) fn generate_tag_enum(ctx: &Ctx, repr: &EnumRepr, data: &DataEnum) -> 
     quote! {
         #repr
         #[allow(dead_code)]
-        enum ___ZerocopyTag {
+        pub enum ___ZerocopyTag {
             #(#variants,)*
         }
 
