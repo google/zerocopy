@@ -818,8 +818,11 @@ mod _casts {
 
     use super::*;
     use crate::{
-        pointer::cast::{AsBytesCast, Cast},
-        ProjectField,
+        pointer::{
+            cast::{AsBytesCast, Cast, HasWrappedField, Wrapped},
+            TransmuteFrom,
+        },
+        HasField, ProjectField,
     };
 
     impl<'a, T, I> Ptr<'a, T, I>
@@ -914,6 +917,89 @@ mod _casts {
                 Err(err) => Err(err),
             }
         }
+
+        #[must_use]
+        #[inline(always)]
+        pub fn project_wrapped<F, V, const FIELD_ID: i128>(
+            self,
+        ) -> Ptr<'a, T::WrappedField, (I::Aliasing, Unaligned, I::Validity)>
+        where
+            T: Wrapped
+                + HasWrappedField<
+                    <<T as Wrapped>::Unwrapped as HasField<
+                        F,
+                        { crate::STRUCT_VARIANT_ID },
+                        FIELD_ID,
+                    >>::Type,
+                >,
+            T::Unwrapped: 'a + HasField<F, { crate::STRUCT_VARIANT_ID }, FIELD_ID>,
+            T::Unwrapped: TransmuteFrom<T, I::Validity, V>,
+            T::WrappedField: TransmuteFrom<
+                <<T as Wrapped>::Unwrapped as HasField<
+                    F,
+                    { crate::STRUCT_VARIANT_ID },
+                    FIELD_ID,
+                >>::Type,
+                V,
+                I::Validity,
+            >,
+        {
+            // SAFETY: TODO
+            unsafe {
+                self.project_transmute_unchecked::<_, _, crate::pointer::cast::WrappedProjection<
+                    T,
+                    F,
+                    { crate::STRUCT_VARIANT_ID },
+                    FIELD_ID,
+                >>()
+            }
+        }
+
+        // // FIXME(#196): Support all validity invariants (not just those that are
+        // // `CastableFrom`).
+        // #[must_use]
+        // #[inline(always)]
+        // pub fn project_wrapped<F, V, const FIELD_ID: i128, R>(
+        //     self,
+        // ) -> Ptr<'a, T::WrappedField, (I::Aliasing, Unaligned, I::Validity)>
+        // where
+        //     T: Wrapped
+        //         + HasWrappedField<
+        //             <<T as Wrapped>::Unwrapped as HasField<
+        //                 F,
+        //                 { crate::STRUCT_VARIANT_ID },
+        //                 FIELD_ID,
+        //             >>::Type,
+        //         >,
+        //     T::Unwrapped: 'a
+        //         + ProjectField<
+        //             F,
+        //             (I::Aliasing, Unaligned, V),
+        //             { crate::STRUCT_VARIANT_ID },
+        //             FIELD_ID,
+        //             Invariants = (I::Aliasing, Unaligned, V),
+        //             Error = core::convert::Infallible,
+        //         >,
+        //     T::Unwrapped: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, R>,
+        //     T::WrappedField: TransmuteFromPtr<
+        //         <<T as Wrapped>::Unwrapped as HasField<
+        //             F,
+        //             { crate::STRUCT_VARIANT_ID },
+        //             FIELD_ID,
+        //         >>::Type,
+        //         I::Aliasing,
+        //         V,
+        //         I::Validity,
+        //         R,
+        //     >,
+        //     V: Validity,
+        //     <T::Unwrapped as HasField<F, { crate::STRUCT_VARIANT_ID }, FIELD_ID>>::Type: 'a,
+        // {
+        //     let inner = self.transmute_with::<T::Unwrapped, V, T::CastToUnwrapped, _>();
+        //     let field_inner =
+        //         crate::into_inner!(inner.project::<F, { crate::STRUCT_VARIANT_ID }, FIELD_ID>());
+        //     field_inner.transmute_with::<T::WrappedField, _, <<T as HasWrappedField<_>>::WrappedField as Wrapped>::CastFromUnwrapped, _>()
+        // }
     }
 
     impl<'a, T, I> Ptr<'a, T, I>
