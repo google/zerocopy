@@ -22,15 +22,13 @@
 #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 #[cfg(not(target_pointer_width = "16"))]
 use core::ptr::{self, NonNull};
-use core::{
-    marker::PhantomData,
-    mem::{self, ManuallyDrop},
-};
+use core::{marker::PhantomData, mem, num::Wrapping};
 
 use crate::{
     pointer::{
         cast::CastSized,
         invariant::{Aligned, Initialized, Valid},
+        BecauseImmutable,
     },
     FromBytes, Immutable, IntoBytes, KnownLayout, Ptr, ReadOnly, TryFromBytes, ValidityError,
 };
@@ -80,48 +78,6 @@ impl<T: ?Sized> PaddingFree<T, 0> for () {}
 )]
 pub trait DynamicPaddingFree<T: ?Sized, const HAS_PADDING: bool> {}
 impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
-
-/// A type whose size is equal to `align_of::<T>()`.
-#[repr(C)]
-pub struct AlignOf<T> {
-    // This field ensures that:
-    // - The size is always at least 1 (the minimum possible alignment).
-    // - If the alignment is greater than 1, Rust has to round up to the next
-    //   multiple of it in order to make sure that `Align`'s size is a multiple
-    //   of that alignment. Without this field, its size could be 0, which is a
-    //   valid multiple of any alignment.
-    _u: u8,
-    _a: [T; 0],
-}
-
-impl<T> AlignOf<T> {
-    #[inline(never)] // Make `missing_inline_in_public_items` happy.
-    #[cfg_attr(
-        all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
-        coverage(off)
-    )]
-    pub fn into_t(self) -> T {
-        unreachable!()
-    }
-}
-
-/// A type whose size is equal to `max(align_of::<T>(), align_of::<U>())`.
-#[repr(C)]
-pub union MaxAlignsOf<T, U> {
-    _t: ManuallyDrop<AlignOf<T>>,
-    _u: ManuallyDrop<AlignOf<U>>,
-}
-
-impl<T, U> MaxAlignsOf<T, U> {
-    #[inline(never)] // Make `missing_inline_in_public_items` happy.
-    #[cfg_attr(
-        all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
-        coverage(off)
-    )]
-    pub fn new(_t: T, _u: U) -> MaxAlignsOf<T, U> {
-        unreachable!()
-    }
-}
 
 #[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)]
 #[cfg(not(target_pointer_width = "16"))]
@@ -470,66 +426,6 @@ macro_rules! enum_padding {
     }};
 }
 
-/// Does `t` have alignment greater than or equal to `u`?  If not, this macro
-/// produces a compile error. It must be invoked in a dead codepath. This is
-/// used in `transmute_ref!` and `transmute_mut!`.
-#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
-#[macro_export]
-macro_rules! assert_align_gt_eq {
-    ($t:ident, $u: ident) => {{
-        // The comments here should be read in the context of this macro's
-        // invocations in `transmute_ref!` and `transmute_mut!`.
-        if false {
-            // The type wildcard in this bound is inferred to be `T` because
-            // `align_of.into_t()` is assigned to `t` (which has type `T`).
-            let align_of: $crate::util::macro_util::AlignOf<_> = unreachable!();
-            $t = align_of.into_t();
-            // `max_aligns` is inferred to have type `MaxAlignsOf<T, U>` because
-            // of the inferred types of `t` and `u`.
-            let mut max_aligns = $crate::util::macro_util::MaxAlignsOf::new($t, $u);
-
-            // This transmute will only compile successfully if
-            // `align_of::<T>() == max(align_of::<T>(), align_of::<U>())` - in
-            // other words, if `align_of::<T>() >= align_of::<U>()`.
-            //
-            // SAFETY: This code is never run.
-            max_aligns = unsafe {
-                // Clippy: We can't annotate the types; this macro is designed
-                // to infer the types from the calling context.
-                #[allow(clippy::missing_transmute_annotations)]
-                $crate::util::macro_util::core_reexport::mem::transmute(align_of)
-            };
-        } else {
-            loop {}
-        }
-    }};
-}
-
-/// Do `t` and `u` have the same size?  If not, this macro produces a compile
-/// error. It must be invoked in a dead codepath. This is used in
-/// `transmute_ref!` and `transmute_mut!`.
-#[doc(hidden)] // `#[macro_export]` bypasses this module's `#[doc(hidden)]`.
-#[macro_export]
-macro_rules! assert_size_eq {
-    ($t:ident, $u: ident) => {{
-        // The comments here should be read in the context of this macro's
-        // invocations in `transmute_ref!` and `transmute_mut!`.
-        if false {
-            // SAFETY: This code is never run.
-            $u = unsafe {
-                // Clippy:
-                // - It's okay to transmute a type to itself.
-                // - We can't annotate the types; this macro is designed to
-                //   infer the types from the calling context.
-                #[allow(clippy::useless_transmute, clippy::missing_transmute_annotations)]
-                $crate::util::macro_util::core_reexport::mem::transmute($t)
-            };
-        } else {
-            loop {}
-        }
-    }};
-}
-
 /// Unwraps an infallible `Result`.
 #[doc(hidden)]
 #[macro_export]
@@ -645,80 +541,127 @@ where
     }
 }
 
-/// Attempts to transmute `&Src` into `&Dst`.
-///
-/// A helper for `try_transmute_ref!`.
-///
-/// # Panics
-///
-/// `try_transmute_ref` may either produce a post-monomorphization error or a
-/// panic if `Dst` is bigger or has a stricter alignment requirement than `Src`.
-/// Otherwise, `try_transmute_ref` panics under the same circumstances as
-/// [`is_bit_valid`].
-///
-/// [`is_bit_valid`]: TryFromBytes::is_bit_valid
-#[inline(always)]
-pub fn try_transmute_ref<Src, Dst>(src: &Src) -> Result<&Dst, ValidityError<&Src, Dst>>
+/// See `try_transmute_ref!` documentation.
+pub trait TryTransmuteRefDst<'a> {
+    type Dst: ?Sized;
+
+    /// See `try_transmute_ref!` documentation.
+    fn try_transmute_ref(self) -> Result<&'a Self::Dst, ValidityError<&'a Self::Src, Self::Dst>>
+    where
+        Self: TryTransmuteRefSrc<'a>,
+        Self::Src: IntoBytes,
+        Self::Dst: TryFromBytes;
+}
+
+pub trait TryTransmuteRefSrc<'a> {
+    type Src: ?Sized;
+}
+
+impl<'a, Src, Dst> TryTransmuteRefSrc<'a> for Wrap<&'a Src, &'a Dst>
 where
-    Src: IntoBytes + Immutable,
-    Dst: TryFromBytes + Immutable,
+    Src: ?Sized,
+    Dst: ?Sized,
 {
-    let ptr = Ptr::from_ref(src);
-    #[rustfmt::skip]
-    let res = ptr.try_with(#[inline(always)] |ptr| {
-        let ptr = ptr.recall_validity::<Initialized, _>();
-        let ptr = ptr.cast::<_, CastSized, _>();
-        ptr.try_into_valid()
-    });
-    match res {
-        Ok(ptr) => {
-            static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
-            // SAFETY: We have checked that `Dst` does not have a stricter
-            // alignment requirement than `Src`.
-            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
-            Ok(ptr.as_ref())
+    type Src = Src;
+}
+
+impl<'a, Src, Dst> TryTransmuteRefDst<'a> for Wrap<&'a Src, &'a Dst>
+where
+    Src: IntoBytes + Immutable + KnownLayout + ?Sized,
+    Dst: TryFromBytes + Immutable + KnownLayout + ?Sized,
+{
+    type Dst = Dst;
+
+    #[inline(always)]
+    fn try_transmute_ref(
+        self,
+    ) -> Result<
+        &'a Dst,
+        ValidityError<&'a <Wrap<&'a Src, &'a Dst> as TryTransmuteRefSrc<'a>>::Src, Dst>,
+    > {
+        let ptr = Ptr::from_ref(self.0);
+        #[rustfmt::skip]
+        let res = ptr.try_with(#[inline(always)] |ptr| {
+            let ptr = ptr.recall_validity::<Initialized, _>();
+            let ptr = ptr.cast::<_, crate::layout::CastFrom<Dst>, _>();
+            ptr.try_into_valid()
+        });
+        match res {
+            Ok(ptr) => {
+                static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
+                    Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
+                }, "cannot transmute reference when destination type has higher alignment than source type");
+                // SAFETY: We have checked that `Dst` does not have a stricter
+                // alignment requirement than `Src`.
+                let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+                Ok(ptr.as_ref())
+            }
+            Err(err) => Err(err.map_src(Ptr::as_ref)),
         }
-        Err(err) => Err(err.map_src(Ptr::as_ref)),
     }
 }
 
-/// Attempts to transmute `&mut Src` into `&mut Dst`.
-///
-/// A helper for `try_transmute_mut!`.
-///
-/// # Panics
-///
-/// `try_transmute_mut` may either produce a post-monomorphization error or a
-/// panic if `Dst` is bigger or has a stricter alignment requirement than `Src`.
-/// Otherwise, `try_transmute_mut` panics under the same circumstances as
-/// [`is_bit_valid`].
-///
-/// [`is_bit_valid`]: TryFromBytes::is_bit_valid
-#[inline(always)]
-pub fn try_transmute_mut<Src, Dst>(src: &mut Src) -> Result<&mut Dst, ValidityError<&mut Src, Dst>>
+pub trait TryTransmuteMutDst<'a> {
+    type Dst: ?Sized;
+
+    /// See `try_transmute_mut!` documentation.
+    fn try_transmute_mut(
+        self,
+    ) -> Result<&'a mut Self::Dst, ValidityError<&'a mut Self::Src, Self::Dst>>
+    where
+        Self: TryTransmuteMutSrc<'a>,
+        Self::Src: IntoBytes,
+        Self::Dst: TryFromBytes;
+}
+
+pub trait TryTransmuteMutSrc<'a> {
+    type Src: ?Sized;
+}
+
+impl<'a, Src, Dst> TryTransmuteMutSrc<'a> for Wrap<&'a mut Src, &'a mut Dst>
 where
-    Src: FromBytes + IntoBytes,
-    Dst: TryFromBytes + IntoBytes,
+    Src: ?Sized,
+    Dst: ?Sized,
 {
-    let ptr = Ptr::from_mut(src);
-    // SAFETY: The provided closure returns the only copy of `ptr`.
-    #[rustfmt::skip]
-    let res = unsafe {
-        ptr.try_with_unchecked(#[inline(always)] |ptr| {
-            let ptr = ptr.recall_validity::<Initialized, (_, (_, _))>();
-            let ptr = ptr.cast::<_, CastSized, _>();
-            ptr.try_into_valid()
-        })
-    };
-    match res {
-        Ok(ptr) => {
-            static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
-            // SAFETY: We have checked that `Dst` does not have a stricter
-            // alignment requirement than `Src`.
-            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
-            Ok(ptr.as_mut())
+    type Src = Src;
+}
+
+impl<'a, Src, Dst> TryTransmuteMutDst<'a> for Wrap<&'a mut Src, &'a mut Dst>
+where
+    Src: FromBytes + IntoBytes + KnownLayout + ?Sized,
+    Dst: TryFromBytes + IntoBytes + KnownLayout + ?Sized,
+{
+    type Dst = Dst;
+
+    #[inline(always)]
+    fn try_transmute_mut(
+        self,
+    ) -> Result<
+        &'a mut Dst,
+        ValidityError<&'a mut <Wrap<&'a mut Src, &'a mut Dst> as TryTransmuteMutSrc<'a>>::Src, Dst>,
+    > {
+        let ptr = Ptr::from_mut(self.0);
+        // SAFETY: The provided closure returns the only copy of `ptr`.
+        #[rustfmt::skip]
+        let res = unsafe {
+            ptr.try_with_unchecked(#[inline(always)] |ptr| {
+                let ptr = ptr.recall_validity::<Initialized, (_, (_, _))>();
+                let ptr = ptr.cast::<_, crate::layout::CastFrom<Dst>, _>();
+                ptr.try_into_valid()
+            })
+        };
+        match res {
+            Ok(ptr) => {
+                static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
+                    Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
+                }, "cannot transmute reference when destination type has higher alignment than source type");
+                // SAFETY: We have checked that `Dst` does not have a stricter
+                // alignment requirement than `Src`.
+                let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+                Ok(ptr.as_mut())
+            }
+            Err(err) => Err(err.map_src(Ptr::as_mut)),
         }
-        Err(err) => Err(err.map_src(Ptr::as_mut)),
     }
 }
 
@@ -791,6 +734,26 @@ impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst> {
             mem::transmute(dst)
         }
     }
+
+    #[inline(always)]
+    pub fn try_transmute_ref(self) -> Result<&'a Dst, ValidityError<&'a Src, Dst>>
+    where
+        Src: IntoBytes + Immutable,
+        Dst: TryFromBytes + Immutable,
+    {
+        let src: &Wrapping<Src> =
+            unsafe { crate::util::transmute_ref::<_, _, BecauseImmutable>(self.0) };
+        let src = Wrap::new(src);
+        <Wrap<&'a Wrapping<Src>, &'a Wrapping<Dst>> as TryTransmuteRefDst<'a>>::try_transmute_ref(
+            src,
+        )
+        .map(|dst| unsafe { crate::util::transmute_ref::<_, _, BecauseImmutable>(dst) })
+        .map_err(|err| {
+            ValidityError::new(unsafe {
+                crate::util::transmute_ref::<_, _, BecauseImmutable>(err.into_src())
+            })
+        })
+    }
 }
 
 impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst>
@@ -835,6 +798,25 @@ impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
         // - We know that the returned lifetime will not outlive the input
         //   lifetime thanks to the lifetime bounds on this function.
         unsafe { &mut *dst }
+    }
+
+    #[inline(always)]
+    pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
+    where
+        Src: FromBytes + IntoBytes,
+        Dst: TryFromBytes + IntoBytes,
+    {
+        let src: &mut Wrapping<Src> =
+            unsafe { crate::util::transmute_mut::<_, _, (_, (_, _))>(self.0) };
+        let src = Wrap::new(src);
+        <Wrap<&'a mut Wrapping<Src>, &'a mut Wrapping<Dst>> as TryTransmuteMutDst<'a>>
+            ::try_transmute_mut(src)
+            .map(|dst| unsafe { crate::util::transmute_mut::<_, _, (_, (_, _))>(dst) })
+            .map_err(|err| {
+                ValidityError::new(unsafe {
+                    crate::util::transmute_mut::<_, _, (_, (_, _))>(err.into_src())
+                })
+            })
     }
 }
 
@@ -929,56 +911,6 @@ pub mod core_reexport {
 mod tests {
     use super::*;
     use crate::util::testutil::*;
-
-    #[test]
-    fn test_align_of() {
-        macro_rules! test {
-            ($ty:ty) => {
-                assert_eq!(mem::size_of::<AlignOf<$ty>>(), mem::align_of::<$ty>());
-            };
-        }
-
-        test!(());
-        test!(u8);
-        test!(AU64);
-        test!([AU64; 2]);
-    }
-
-    #[test]
-    fn test_max_aligns_of() {
-        macro_rules! test {
-            ($t:ty, $u:ty) => {
-                assert_eq!(
-                    mem::size_of::<MaxAlignsOf<$t, $u>>(),
-                    core::cmp::max(mem::align_of::<$t>(), mem::align_of::<$u>())
-                );
-            };
-        }
-
-        test!(u8, u8);
-        test!(u8, AU64);
-        test!(AU64, u8);
-    }
-
-    #[test]
-    fn test_typed_align_check() {
-        // Test that the type-based alignment check used in
-        // `assert_align_gt_eq!` behaves as expected.
-
-        macro_rules! assert_t_align_gteq_u_align {
-            ($t:ty, $u:ty, $gteq:expr) => {
-                assert_eq!(
-                    mem::size_of::<MaxAlignsOf<$t, $u>>() == mem::size_of::<AlignOf<$t>>(),
-                    $gteq
-                );
-            };
-        }
-
-        assert_t_align_gteq_u_align!(u8, u8, true);
-        assert_t_align_gteq_u_align!(AU64, AU64, true);
-        assert_t_align_gteq_u_align!(AU64, u8, true);
-        assert_t_align_gteq_u_align!(u8, AU64, false);
-    }
 
     // FIXME(#29), FIXME(https://github.com/rust-lang/rust/issues/69835): Remove
     // this `cfg` when `size_of_val_raw` is stabilized.
