@@ -760,6 +760,30 @@ const _: () = {
     )]
     pub enum value {}
 
+    // SAFETY: See safety comment on `ProjectToTag`.
+    unsafe impl<T: ?Sized> HasTag for ManuallyDrop<T> {
+        #[inline]
+        fn only_derive_is_allowed_to_implement_this_trait()
+        where
+            Self: Sized,
+        {
+        }
+
+        type Tag = ();
+
+        // SAFETY: It is trivially sound to project any pointer to a pointer to
+        // a type of size zero and alignment 1 (which `()` is [1]). Such a
+        // pointer will trivially satisfy its aliasing and validity requirements
+        // (since it has a zero-sized referent), and its alignment requirement
+        // (since it is aligned to 1).
+        //
+        // [1] Per https://doc.rust-lang.org/1.92.0/reference/type-layout.html#r-layout.tuple.unit:
+        //
+        //     [T]he unit tuple (`()`)... is guaranteed as a zero-sized type to
+        //     have a size of 0 and an alignment of 1.
+        type ProjectToTag = crate::pointer::cast::CastToUnit;
+    }
+
     // SAFETY: `ManuallyDrop<T>` has a field of type `T` at offset `0` without
     // any safety invariants beyond those of `T`.  Its existence is not
     // explicitly documented, but it can be inferred; per [1] `ManuallyDrop<T>`
@@ -779,14 +803,14 @@ const _: () = {
         HasField<value, { crate::STRUCT_VARIANT_ID }, { crate::ident_id!(value) }>
         for ManuallyDrop<T>
     {
-        type Type = T;
-
         #[inline]
         fn only_derive_is_allowed_to_implement_this_trait()
         where
             Self: Sized,
         {
         }
+
+        type Type = T;
 
         #[inline(always)]
         fn project(slf: PtrInner<'_, Self>) -> *mut T {
@@ -1015,6 +1039,29 @@ mod tuples {
 
             // SAFETY: If all fields in `Self` are `FromBytes`, so too is `Self`.
             unsafe_impl!($($head_T: FromBytes,)* $next_T: FromBytes => FromBytes for ($($head_T,)* $next_T,));
+
+            // SAFETY: See safety comment on `ProjectToTag`.
+            unsafe impl<$($head_T,)* $next_T> crate::HasTag for ($($head_T,)* $next_T,) {
+                #[inline]
+                fn only_derive_is_allowed_to_implement_this_trait()
+                where
+                    Self: Sized
+                {}
+
+                type Tag = ();
+
+                // SAFETY: It is trivially sound to project any pointer to a
+                // pointer to a type of size zero and alignment 1 (which `()` is
+                // [1]). Such a pointer will trivially satisfy its aliasing and
+                // validity requirements (since it has a zero-sized referent),
+                // and its alignment requirement (since it is aligned to 1).
+                //
+                // [1] Per https://doc.rust-lang.org/1.92.0/reference/type-layout.html#r-layout.tuple.unit:
+                //
+                //     [T]he unit tuple (`()`)... is guaranteed as a zero-sized
+                //     type to have a size of 0 and an alignment of 1.
+                type ProjectToTag = crate::pointer::cast::CastToUnit;
+            }
 
             // Generate impls that depend on tuple index.
             impl_tuple!(@variants

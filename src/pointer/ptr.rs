@@ -819,7 +819,7 @@ mod _casts {
     use super::*;
     use crate::{
         pointer::cast::{AsBytesCast, Cast},
-        ProjectField,
+        HasTag, ProjectField,
     };
 
     impl<'a, T, I> Ptr<'a, T, I>
@@ -886,15 +886,16 @@ mod _casts {
 
         #[inline(always)]
         pub fn project<F, const VARIANT_ID: i128, const FIELD_ID: i128>(
-            self,
+            mut self,
         ) -> Result<Ptr<'a, T::Type, T::Invariants>, T::Error>
         where
             T: ProjectField<F, I, VARIANT_ID, FIELD_ID>,
+            I::Aliasing: Reference,
         {
             use crate::pointer::cast::Projection;
-            match T::is_projectable(self) {
-                Ok(ptr) => {
-                    let inner = ptr.as_inner();
+            match T::is_projectable(self.reborrow().project_tag()) {
+                Ok(()) => {
+                    let inner = self.as_inner();
                     let projected = inner.project::<_, Projection<F, VARIANT_ID, FIELD_ID>>();
                     // SAFETY: By `T: ProjectField<F, I, VARIANT_ID, FIELD_ID>`,
                     // for `self: Ptr<'_, T, I>` such that `T::is_projectable`
@@ -913,6 +914,21 @@ mod _casts {
                 }
                 Err(err) => Err(err),
             }
+        }
+
+        #[must_use]
+        #[inline(always)]
+        pub(crate) fn project_tag(self) -> Ptr<'a, T::Tag, I>
+        where
+            T: HasTag,
+        {
+            // SAFETY: By invariant on `Self::ProjectToTag`, this is a sound
+            // projection.
+            let tag = unsafe { self.project_transmute_unchecked::<_, _, T::ProjectToTag>() };
+            // SAFETY: By invariant on `Self::ProjectToTag`, the projected
+            // pointer has the same alignment as `ptr`.
+            let tag = unsafe { tag.assume_alignment() };
+            tag.unify_invariants()
         }
     }
 
