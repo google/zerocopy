@@ -293,7 +293,7 @@ help: the trait `PaddingFree<IntoBytes2, 1>` is not implemented for `()`
       but trait `PaddingFree<IntoBytes2, 0>` is implemented for it
    --> $WORKSPACE/src/util/macro_util.rs
     |
- 65 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
+ 68 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -311,7 +311,7 @@ help: the trait `PaddingFree<IntoBytes3, 1>` is not implemented for `()`
       but trait `PaddingFree<IntoBytes3, 0>` is implemented for it
    --> $WORKSPACE/src/util/macro_util.rs
     |
- 65 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
+ 68 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -365,7 +365,7 @@ help: the trait `DynamicPaddingFree<IntoBytes5, true>` is not implemented for `(
       but trait `DynamicPaddingFree<IntoBytes5, false>` is implemented for it
    --> $WORKSPACE/src/util/macro_util.rs
     |
- 83 | impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
+ 86 | impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -383,7 +383,7 @@ help: the trait `DynamicPaddingFree<IntoBytes6, true>` is not implemented for `(
       but trait `DynamicPaddingFree<IntoBytes6, false>` is implemented for it
    --> $WORKSPACE/src/util/macro_util.rs
     |
- 83 | impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
+ 86 | impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -401,7 +401,7 @@ help: the trait `DynamicPaddingFree<IntoBytes7, true>` is not implemented for `(
       but trait `DynamicPaddingFree<IntoBytes7, false>` is implemented for it
    --> $WORKSPACE/src/util/macro_util.rs
     |
- 83 | impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
+ 86 | impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
