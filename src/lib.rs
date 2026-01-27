@@ -747,7 +747,7 @@ pub unsafe trait KnownLayout {
 
     /// The type of metadata stored in a pointer to `Self`.
     ///
-    /// This is `()` for sized types and `usize` for slice DSTs.
+    /// This is [`()`] for sized types and [`usize`] for slice DSTs.
     type PointerMetadata: PointerMetadata;
 
     /// A maybe-uninitialized analog of `Self`
@@ -830,9 +830,9 @@ pub unsafe trait KnownLayout {
     /// # Safety
     ///
     /// `size_for_metadata` promises to return `None` if and only if the
-    /// resulting size would not fit in a `usize`. Note that the returned size
+    /// resulting size would not fit in a [`usize`]. Note that the returned size
     /// could exceed the actual maximum valid size of an allocated object,
-    /// `isize::MAX`.
+    /// [`isize::MAX`].
     ///
     /// # Examples
     ///
