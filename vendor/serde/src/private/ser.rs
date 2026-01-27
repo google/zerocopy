@@ -54,9 +54,11 @@ enum Unsupported {
     Sequence,
     Tuple,
     TupleStruct,
+    #[cfg(not(any(feature = "std", feature = "alloc")))]
     Enum,
 }
 
+#[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
 impl Display for Unsupported {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         match *self {
@@ -70,6 +72,7 @@ impl Display for Unsupported {
             Unsupported::Sequence => formatter.write_str("a sequence"),
             Unsupported::Tuple => formatter.write_str("a tuple"),
             Unsupported::TupleStruct => formatter.write_str("a tuple struct"),
+            #[cfg(not(any(feature = "std", feature = "alloc")))]
             Unsupported::Enum => formatter.write_str("an enum"),
         }
     }
@@ -87,6 +90,7 @@ where
     }
 }
 
+#[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
 impl<S> Serializer for TaggedSerializer<S>
 where
     S: Serializer,
@@ -353,6 +357,7 @@ mod content {
         }
     }
 
+    #[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
     impl<M> ser::SerializeTupleVariant for SerializeTupleVariantAsMapValue<M>
     where
         M: ser::SerializeMap,
@@ -393,6 +398,7 @@ mod content {
         }
     }
 
+    #[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
     impl<M> ser::SerializeStructVariant for SerializeStructVariantAsMapValue<M>
     where
         M: ser::SerializeMap,
@@ -460,6 +466,7 @@ mod content {
         ),
     }
 
+    #[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
     impl Serialize for Content {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
@@ -552,6 +559,7 @@ mod content {
         }
     }
 
+    #[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
     impl<E> Serializer for ContentSerializer<E>
     where
         E: ser::Error,
@@ -763,6 +771,7 @@ mod content {
         error: PhantomData<E>,
     }
 
+    #[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
     impl<E> ser::SerializeSeq for SerializeSeq<E>
     where
         E: ser::Error,
@@ -789,6 +798,7 @@ mod content {
         error: PhantomData<E>,
     }
 
+    #[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
     impl<E> ser::SerializeTuple for SerializeTuple<E>
     where
         E: ser::Error,
@@ -816,6 +826,7 @@ mod content {
         error: PhantomData<E>,
     }
 
+    #[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
     impl<E> ser::SerializeTupleStruct for SerializeTupleStruct<E>
     where
         E: ser::Error,
@@ -845,6 +856,7 @@ mod content {
         error: PhantomData<E>,
     }
 
+    #[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
     impl<E> ser::SerializeTupleVariant for SerializeTupleVariant<E>
     where
         E: ser::Error,
@@ -877,6 +889,7 @@ mod content {
         error: PhantomData<E>,
     }
 
+    #[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
     impl<E> ser::SerializeMap for SerializeMap<E>
     where
         E: ser::Error,
@@ -928,6 +941,7 @@ mod content {
         error: PhantomData<E>,
     }
 
+    #[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
     impl<E> ser::SerializeStruct for SerializeStruct<E>
     where
         E: ser::Error,
@@ -957,6 +971,7 @@ mod content {
         error: PhantomData<E>,
     }
 
+    #[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
     impl<E> ser::SerializeStructVariant for SerializeStructVariant<E>
     where
         E: ser::Error,
@@ -1001,6 +1016,7 @@ where
 }
 
 #[cfg(any(feature = "std", feature = "alloc"))]
+#[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
 impl<'a, M> Serializer for FlatMapSerializer<'a, M>
 where
     M: SerializeMap + 'a,
@@ -1095,9 +1111,9 @@ where
         self,
         _: &'static str,
         _: u32,
-        _: &'static str,
+        variant: &'static str,
     ) -> Result<Self::Ok, Self::Error> {
-        Err(Self::bad_type(Unsupported::Enum))
+        self.0.serialize_entry(variant, &())
     }
 
     fn serialize_newtype_struct<T>(
@@ -1182,6 +1198,7 @@ where
 pub struct FlatMapSerializeMap<'a, M: 'a>(&'a mut M);
 
 #[cfg(any(feature = "std", feature = "alloc"))]
+#[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
 impl<'a, M> ser::SerializeMap for FlatMapSerializeMap<'a, M>
 where
     M: SerializeMap + 'a,
@@ -1220,6 +1237,7 @@ where
 pub struct FlatMapSerializeStruct<'a, M: 'a>(&'a mut M);
 
 #[cfg(any(feature = "std", feature = "alloc"))]
+#[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
 impl<'a, M> ser::SerializeStruct for FlatMapSerializeStruct<'a, M>
 where
     M: SerializeMap + 'a,
@@ -1261,6 +1279,7 @@ where
 }
 
 #[cfg(any(feature = "std", feature = "alloc"))]
+#[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
 impl<'a, M> ser::SerializeTupleVariant for FlatMapSerializeTupleVariantAsMapValue<'a, M>
 where
     M: SerializeMap + 'a,
@@ -1307,6 +1326,7 @@ where
 }
 
 #[cfg(any(feature = "std", feature = "alloc"))]
+#[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
 impl<'a, M> ser::SerializeStructVariant for FlatMapSerializeStructVariantAsMapValue<'a, M>
 where
     M: SerializeMap + 'a,
@@ -1337,6 +1357,7 @@ pub struct AdjacentlyTaggedEnumVariant {
     pub variant_name: &'static str,
 }
 
+#[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
 impl Serialize for AdjacentlyTaggedEnumVariant {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -1350,6 +1371,7 @@ impl Serialize for AdjacentlyTaggedEnumVariant {
 // that is not recognized.
 pub struct CannotSerializeVariant<T>(pub T);
 
+#[cfg_attr(not(no_diagnostic_namespace), diagnostic::do_not_recommend)]
 impl<T> Display for CannotSerializeVariant<T>
 where
     T: Debug,

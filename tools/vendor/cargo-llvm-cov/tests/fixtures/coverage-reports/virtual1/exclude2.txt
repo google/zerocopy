@@ -1,0 +1,64 @@
+member1/src/lib.rs:
+    1|      2|pub fn func(x: u32) {
+    2|      2|    match x {
+    3|      0|        0 => {}
+    4|      1|        1 => {}
+    5|      0|        2 => {}
+    6|      1|        _ => {}
+    7|       |    }
+    8|      2|}
+    9|       |
+   10|       |#[test]
+   11|      1|fn test() {
+   12|      1|    func(1);
+   13|      1|    func(3);
+   14|      1|    member2::func(0);
+   15|      1|    member3::func(0);
+   16|      1|    member4::func(0);
+   17|      1|}
+
+member2/member3/src/lib.rs:
+    1|      1|pub fn func(x: u32) {
+    2|      1|    match x {
+    3|      1|        0 => {}
+    4|      0|        1 => {}
+    5|      0|        2 => {}
+    6|      0|        _ => {}
+    7|       |    }
+    8|      1|}
+  ------------------
+  | member3::func:
+  |    1|      1|pub fn func(x: u32) {
+  |    2|      1|    match x {
+  |    3|      1|        0 => {}
+  |    4|      0|        1 => {}
+  |    5|      0|        2 => {}
+  |    6|      0|        _ => {}
+  |    7|       |    }
+  |    8|      1|}
+  ------------------
+  | Unexecuted instantiation: member3::func
+  ------------------
+
+member2/src/member4/src/lib.rs:
+    1|      1|pub fn func(x: u32) {
+    2|      1|    match x {
+    3|      1|        0 => {}
+    4|      0|        1 => {}
+    5|      0|        2 => {}
+    6|      0|        _ => {}
+    7|       |    }
+    8|      1|}
+  ------------------
+  | member4::func:
+  |    1|      1|pub fn func(x: u32) {
+  |    2|      1|    match x {
+  |    3|      1|        0 => {}
+  |    4|      0|        1 => {}
+  |    5|      0|        2 => {}
+  |    6|      0|        _ => {}
+  |    7|       |    }
+  |    8|      1|}
+  ------------------
+  | Unexecuted instantiation: member4::func
+  ------------------

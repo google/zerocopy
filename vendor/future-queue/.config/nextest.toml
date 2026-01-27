@@ -1,0 +1,3 @@
+[[profile.default.overrides]]
+filter = 'test(test_empty)'
+slow-timeout = { period = "250ms", terminate-after = 1 }

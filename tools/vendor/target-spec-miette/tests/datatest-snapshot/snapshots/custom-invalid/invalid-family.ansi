@@ -1,0 +1,8 @@
+  [31m×[0m error deserializing custom target JSON for `my-target`
+    ╭─[33:27]
+ [2m32[0m │     "target-endian": "big",
+ [2m33[0m │     "target-family": "none",
+    · [35;1m                          ▲[0m
+    ·                           [35;1m╰── [35;1minvalid type: string "none", expected a sequence[0m[0m
+ [2m34[0m │     "target-mcount": "_mcount",
+    ╰────

@@ -1,0 +1,22 @@
+[package]
+name = "psl"
+description = "Extract root domain and suffix from a domain name"
+version = "2.1.183"
+license = "MIT/Apache-2.0"
+repository = "https://github.com/addr-rs/psl"
+documentation = "https://docs.rs/psl"
+readme = "README.md"
+keywords = ["tld", "no_std", "tldextract", "domain", "publicsuffix"]
+authors = ["rushmorem <rushmore@webenchanter.com>"]
+edition = "2018"
+exclude = ["/tests"]
+
+[features]
+default = ["helpers"]
+helpers = [ ]
+
+[dependencies]
+psl-types = "2.0.11"
+
+[dev-dependencies]
+rspec = "1.0.0"

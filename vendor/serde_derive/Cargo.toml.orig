@@ -1,18 +1,18 @@
 [package]
 name = "serde_derive"
-version = "1.0.210"
+version = "1.0.228"
 authors = ["Erick Tryzelaar <erick.tryzelaar@gmail.com>", "David Tolnay <dtolnay@gmail.com>"]
 categories = ["no-std", "no-std::no-alloc"]
 description = "Macros 1.1 implementation of #[derive(Serialize, Deserialize)]"
 documentation = "https://serde.rs/derive.html"
-edition = "2015"
+edition = "2021"
 exclude = ["build.rs"]
 homepage = "https://serde.rs"
 keywords = ["serde", "serialization", "no_std", "derive"]
 license = "MIT OR Apache-2.0"
 readme = "crates-io.md"
 repository = "https://github.com/serde-rs/serde"
-rust-version = "1.56"
+rust-version = "1.61"
 
 [features]
 default = []
@@ -32,4 +32,11 @@ serde = { version = "1", path = "../serde" }
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
-rustdoc-args = ["--generate-link-to-definition"]
+rustdoc-args = [
+    "--generate-link-to-definition",
+    "--generate-macro-expansion",
+    "--extern-html-root-url=core=https://doc.rust-lang.org",
+    "--extern-html-root-url=alloc=https://doc.rust-lang.org",
+    "--extern-html-root-url=std=https://doc.rust-lang.org",
+    "--extern-html-root-url=proc_macro=https://doc.rust-lang.org",
+]

@@ -1,0 +1,16 @@
+---
+source: nextest-runner/src/reporter/events.rs
+expression: json
+---
+{
+  "status": "fail",
+  "failure": {
+    "kind": "abort",
+    "abort": {
+      "kind": "windows-nt-status",
+      "code": -1073741819,
+      "message": null
+    }
+  },
+  "leaked": false
+}

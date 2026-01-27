@@ -1,0 +1,16 @@
+---
+source: nextest-runner/src/reporter/events.rs
+expression: json
+---
+{
+  "status": "fail",
+  "failure": {
+    "kind": "abort",
+    "abort": {
+      "kind": "unix-signal",
+      "signal": 11,
+      "name": "SEGV"
+    }
+  },
+  "leaked": false
+}

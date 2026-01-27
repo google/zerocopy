@@ -1,0 +1,20 @@
+[package]
+name = "debug-ignore"
+description = "A newtype wrapper that causes a field to be skipped while printing out Debug output."
+version = "1.0.5"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/sunshowers-code/debug-ignore"
+documentation = "https://docs.rs/debug-ignore"
+keywords = ["no-std"]
+
+[dependencies]
+serde = { version = "1", optional = true, default-features = false, features = [
+    "derive",
+] }
+
+[dev-dependencies]
+serde_json = "1"
+
+[[test]]
+name = "serde"
+required-features = ["serde"]

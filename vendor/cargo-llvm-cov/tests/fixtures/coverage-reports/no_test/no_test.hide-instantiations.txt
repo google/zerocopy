@@ -1,0 +1,16 @@
+src/lib.rs:
+    1|       |mod module;
+    2|       |pub use module::*;
+    3|       |
+    4|       |#[test]
+    5|      1|fn f() {}
+
+src/module.rs:
+    1|      0|pub fn func(x: u32) {
+    2|      0|    match x {
+    3|      0|        0 => {}
+    4|      0|        1 => {}
+    5|      0|        2 => {}
+    6|      0|        _ => {}
+    7|       |    }
+    8|      0|}

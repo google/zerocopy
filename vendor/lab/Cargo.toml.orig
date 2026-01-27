@@ -1,0 +1,34 @@
+[package]
+name = "lab"
+version = "0.11.0"
+authors = ["Jesse Bees <jesse@toomanybees.com>"]
+description = """
+Tools for converting RGB colors to the CIE-L*a*b* color space, and
+comparing differences in color.
+"""
+homepage = "https://github.com/TooManyBees/lab"
+repository = "https://github.com/TooManyBees/lab"
+documentation = "https://docs.rs/lab"
+readme = "README.md"
+keywords = ["lab", "color", "pixel", "rgb"]
+categories = ["multimedia::images", "multimedia::video"]
+license = "MIT"
+include = ["src/**/*", "benches/**/*", "Cargo.toml", "README.md", "LICENSE"]
+
+[lib]
+bench = false
+
+[dev-dependencies]
+rand = "0.8"
+criterion = { version = "0.3", default-features = false }
+lazy_static = "1.3.0"
+pretty_assertions = "0.7"
+approx = "0.5"
+
+[[bench]]
+name = "rgb_to_lab"
+harness = false
+
+[[bench]]
+name = "lab_to_rgb"
+harness = false

@@ -1,0 +1,19 @@
+member2/member3/src/lib.rs:
+    1|      0|pub fn func(x: u32) {
+    2|      0|    match x {
+    3|      0|        0 => {}
+    4|      0|        1 => {}
+    5|      0|        2 => {}
+    6|      0|        _ => {}
+    7|       |    }
+    8|      0|}
+
+member2/src/member4/src/lib.rs:
+    1|      0|pub fn func(x: u32) {
+    2|      0|    match x {
+    3|      0|        0 => {}
+    4|      0|        1 => {}
+    5|      0|        2 => {}
+    6|      0|        _ => {}
+    7|       |    }
+    8|      0|}

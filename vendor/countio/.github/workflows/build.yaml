@@ -1,0 +1,62 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  ci:
+    name: CI
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        toolchain: [ stable ]
+    runs-on: ${{ matrix.os }}
+    steps:
+
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up ${{ matrix.toolchain }} Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.toolchain }}
+
+      - name: Set up Cache
+        uses: Swatinem/rust-cache@v2
+
+      - name: Install Tarpaulin
+        if: matrix.os == 'ubuntu-latest'
+        continue-on-error: true
+        run: cargo install cargo-tarpaulin
+
+      - name: Install & Run Semver
+        if: matrix.os == 'ubuntu-latest'
+        uses: obi1kenobi/cargo-semver-checks-action@v2
+        with:
+          rust-toolchain: ${{ matrix.toolchain }}
+          feature-group: all-features
+          verbose: true
+
+      - name: Run Cargo:fmt
+        run: cargo fmt --all -- --check
+
+      - name: Run Cargo:clippy
+        run: cargo clippy --all-features -- -D warnings
+
+      - name: Run Cargo:test
+        run: cargo test --verbose --all-features
+
+      - name: Run Cargo:tarpaulin
+        if: matrix.os == 'ubuntu-latest'
+        run: cargo tarpaulin --verbose --all-features --out Xml --output-dir ./coverage
+
+      - name: Upload Codecov
+        if: matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/cobertura.xml
+          verbose: true

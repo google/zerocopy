@@ -1,0 +1,615 @@
+{
+    "data": [
+        {
+            "files": [
+                {
+                    "branches": [],
+                    "expansions": [],
+                    "filename": "src/lib.rs",
+                    "segments": [
+                        [
+                            1,
+                            0,
+                            1,
+                            true,
+                            true,
+                            false
+                        ],
+                        [
+                            1,
+                            1,
+                            0,
+                            false,
+                            false,
+                            false
+                        ],
+                        [
+                            3,
+                            1,
+                            1,
+                            true,
+                            true,
+                            false
+                        ],
+                        [
+                            5,
+                            2,
+                            0,
+                            false,
+                            false,
+                            false
+                        ],
+                        [
+                            7,
+                            1,
+                            1,
+                            true,
+                            true,
+                            false
+                        ],
+                        [
+                            8,
+                            13,
+                            0,
+                            true,
+                            true,
+                            false
+                        ],
+                        [
+                            8,
+                            14,
+                            0,
+                            false,
+                            false,
+                            false
+                        ],
+                        [
+                            9,
+                            1,
+                            1,
+                            true,
+                            true,
+                            false
+                        ],
+                        [
+                            9,
+                            2,
+                            0,
+                            false,
+                            false,
+                            false
+                        ],
+                        [
+                            11,
+                            10,
+                            1,
+                            true,
+                            true,
+                            false
+                        ],
+                        [
+                            11,
+                            14,
+                            1,
+                            true,
+                            true,
+                            false
+                        ],
+                        [
+                            11,
+                            27,
+                            1,
+                            true,
+                            true,
+                            false
+                        ],
+                        [
+                            11,
+                            28,
+                            0,
+                            false,
+                            false,
+                            false
+                        ],
+                        [
+                            15,
+                            1,
+                            0,
+                            true,
+                            true,
+                            false
+                        ],
+                        [
+                            15,
+                            27,
+                            0,
+                            false,
+                            false,
+                            false
+                        ],
+                        [
+                            17,
+                            1,
+                            0,
+                            true,
+                            true,
+                            false
+                        ],
+                        [
+                            17,
+                            28,
+                            0,
+                            false,
+                            false,
+                            false
+                        ],
+                        [
+                            22,
+                            5,
+                            1,
+                            true,
+                            true,
+                            false
+                        ],
+                        [
+                            22,
+                            12,
+                            0,
+                            false,
+                            false,
+                            false
+                        ],
+                        [
+                            23,
+                            5,
+                            1,
+                            true,
+                            true,
+                            false
+                        ],
+                        [
+                            28,
+                            6,
+                            0,
+                            false,
+                            false,
+                            false
+                        ]
+                    ],
+                    "summary": {
+                        "branches": {
+                            "count": 0,
+                            "covered": 0,
+                            "notcovered": 0,
+                            "percent": 0
+                        },
+                        "functions": {
+                            "count": 8,
+                            "covered": 6,
+                            "percent": 75
+                        },
+                        "instantiations": {
+                            "count": 16,
+                            "covered": 7,
+                            "percent": 43.75
+                        },
+                        "lines": {
+                            "count": 17,
+                            "covered": 15,
+                            "percent": 88.23529411764706
+                        },
+                        "regions": {
+                            "count": 13,
+                            "covered": 9,
+                            "notcovered": 4,
+                            "percent": 69.23076923076923
+                        }
+                    }
+                }
+            ],
+            "functions": [
+                {
+                    "branches": [],
+                    "count": 0,
+                    "filenames": [
+                        "src/lib.rs"
+                    ],
+                    "name": "_RNvXNvXNvCs3mOZD6jzFXo_1t1__NtB7_12RelationDictNtNtCsg9DttykPyGd_5serde2de11Deserialize11deserializeNtB2_14___FieldVisitorNtBL_7Visitor9expecting",
+                    "regions": [
+                        [
+                            11,
+                            10,
+                            11,
+                            28,
+                            0,
+                            0,
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "filenames": [
+                        "src/lib.rs"
+                    ],
+                    "name": "_RINvXNvXNvCs3mOZD6jzFXo_1t1__NtB8_12RelationDictNtNtCsg9DttykPyGd_5serde2de11Deserialize11deserializeNtB3_14___FieldVisitorNtBM_7Visitor11visit_bytespEB8_",
+                    "regions": [
+                        [
+                            11,
+                            10,
+                            11,
+                            28,
+                            0,
+                            0,
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "filenames": [
+                        "src/lib.rs"
+                    ],
+                    "name": "_RINvXNvXNvCs3mOZD6jzFXo_1t1__NtB8_12RelationDictNtNtCsg9DttykPyGd_5serde2de11Deserialize11deserializeNtB3_14___FieldVisitorNtBM_7Visitor9visit_u64pEB8_",
+                    "regions": [
+                        [
+                            11,
+                            10,
+                            11,
+                            28,
+                            0,
+                            0,
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "filenames": [
+                        "src/lib.rs"
+                    ],
+                    "name": "_RNvCs3mOZD6jzFXo_1t3baz",
+                    "regions": [
+                        [
+                            15,
+                            1,
+                            15,
+                            27,
+                            0,
+                            0,
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "filenames": [
+                        "src/lib.rs"
+                    ],
+                    "name": "_RNvCs3mOZD6jzFXo_1t4blah",
+                    "regions": [
+                        [
+                            17,
+                            1,
+                            17,
+                            28,
+                            0,
+                            0,
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "filenames": [
+                        "src/lib.rs"
+                    ],
+                    "name": "_RNvNtCs3mOZD6jzFXo_1t5testss_8it_works",
+                    "regions": [
+                        [
+                            23,
+                            5,
+                            28,
+                            6,
+                            1,
+                            0,
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "filenames": [
+                        "src/lib.rs"
+                    ],
+                    "name": "_RNCNvNtCs3mOZD6jzFXo_1t5tests8it_works0B5_",
+                    "regions": [
+                        [
+                            22,
+                            5,
+                            22,
+                            12,
+                            1,
+                            0,
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "filenames": [
+                        "src/lib.rs"
+                    ],
+                    "name": "_RINvXNvXNvCs3mOZD6jzFXo_1t1__NtB8_12RelationDictNtNtCsg9DttykPyGd_5serde2de11Deserialize11deserializeNtB3_14___FieldVisitorNtBM_7Visitor9visit_strNtNtCslhrkzO8v5XQ_10serde_json5error5ErrorEB8_",
+                    "regions": [
+                        [
+                            11,
+                            10,
+                            11,
+                            28,
+                            0,
+                            0,
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "filenames": [
+                        "src/lib.rs"
+                    ],
+                    "name": "_RINvXs_NvXNvCs3mOZD6jzFXo_1t1__NtBa_12RelationDictNtNtCsg9DttykPyGd_5serde2de11Deserialize11deserializeNtB5_7___FieldBM_11deserializeNtNtNtCslhrkzO8v5XQ_10serde_json5value2de18MapKeyDeserializerEBa_",
+                    "regions": [
+                        [
+                            11,
+                            10,
+                            11,
+                            28,
+                            0,
+                            0,
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "filenames": [
+                        "src/lib.rs"
+                    ],
+                    "name": "_RNvCs3mOZD6jzFXo_1t3bar",
+                    "regions": [
+                        [
+                            7,
+                            1,
+                            8,
+                            13,
+                            1,
+                            0,
+                            0,
+                            0
+                        ],
+                        [
+                            8,
+                            13,
+                            8,
+                            14,
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        [
+                            9,
+                            1,
+                            9,
+                            2,
+                            1,
+                            0,
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "filenames": [
+                        "src/lib.rs"
+                    ],
+                    "name": "_RNvCs3mOZD6jzFXo_1t4main",
+                    "regions": [
+                        [
+                            1,
+                            0,
+                            1,
+                            1,
+                            1,
+                            0,
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "filenames": [
+                        "src/lib.rs"
+                    ],
+                    "name": "_RNvCs3mOZD6jzFXo_1t3foo",
+                    "regions": [
+                        [
+                            3,
+                            1,
+                            5,
+                            2,
+                            1,
+                            0,
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "filenames": [
+                        "src/lib.rs"
+                    ],
+                    "name": "_RINvXNvCs3mOZD6jzFXo_1t1__NtB5_12RelationDictNtNtCsg9DttykPyGd_5serde2de11Deserialize11deserializeNtNtCslhrkzO8v5XQ_10serde_json5value5ValueEB5_",
+                    "regions": [
+                        [
+                            11,
+                            10,
+                            11,
+                            28,
+                            1,
+                            0,
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "filenames": [
+                        "src/lib.rs"
+                    ],
+                    "name": "_RNvXs0_NvXNvCs3mOZD6jzFXo_1t1__NtBa_12RelationDictNtNtCsg9DttykPyGd_5serde2de11Deserialize11deserializeNtB5_9___VisitorNtBO_7Visitor9expecting",
+                    "regions": [
+                        [
+                            11,
+                            10,
+                            11,
+                            28,
+                            0,
+                            0,
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "branches": [],
+                    "count": 0,
+                    "filenames": [
+                        "src/lib.rs"
+                    ],
+                    "name": "_RINvXs0_NvXNvCs3mOZD6jzFXo_1t1__NtBb_12RelationDictNtNtCsg9DttykPyGd_5serde2de11Deserialize11deserializeNtB6_9___VisitorNtBP_7Visitor9visit_seqQNtNtNtCslhrkzO8v5XQ_10serde_json5value2de15SeqDeserializerEBb_",
+                    "regions": [
+                        [
+                            11,
+                            10,
+                            11,
+                            28,
+                            0,
+                            0,
+                            0,
+                            0
+                        ]
+                    ]
+                },
+                {
+                    "branches": [],
+                    "count": 1,
+                    "filenames": [
+                        "src/lib.rs"
+                    ],
+                    "name": "_RINvXs0_NvXNvCs3mOZD6jzFXo_1t1__NtBb_12RelationDictNtNtCsg9DttykPyGd_5serde2de11Deserialize11deserializeNtB6_9___VisitorNtBP_7Visitor9visit_mapQNtNtNtCslhrkzO8v5XQ_10serde_json5value2de15MapDeserializerEBb_",
+                    "regions": [
+                        [
+                            11,
+                            10,
+                            11,
+                            14,
+                            1,
+                            0,
+                            0,
+                            0
+                        ],
+                        [
+                            11,
+                            10,
+                            11,
+                            28,
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        [
+                            11,
+                            14,
+                            11,
+                            28,
+                            1,
+                            0,
+                            0,
+                            0
+                        ],
+                        [
+                            11,
+                            27,
+                            11,
+                            28,
+                            1,
+                            0,
+                            0,
+                            0
+                        ]
+                    ]
+                }
+            ],
+            "totals": {
+                "branches": {
+                    "count": 0,
+                    "covered": 0,
+                    "notcovered": 0,
+                    "percent": 0
+                },
+                "functions": {
+                    "count": 8,
+                    "covered": 6,
+                    "percent": 75
+                },
+                "instantiations": {
+                    "count": 16,
+                    "covered": 7,
+                    "percent": 43.75
+                },
+                "lines": {
+                    "count": 17,
+                    "covered": 15,
+                    "percent": 88.23529411764706
+                },
+                "regions": {
+                    "count": 13,
+                    "covered": 9,
+                    "notcovered": 4,
+                    "percent": 69.23076923076923
+                }
+            }
+        }
+    ],
+    "type": "llvm.coverage.json.export",
+    "version": "3.0.1"
+}

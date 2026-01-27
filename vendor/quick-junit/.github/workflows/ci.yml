@@ -1,0 +1,87 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+name: CI
+env:
+  RUSTFLAGS: -D warnings
+  CARGO_TERM_COLOR: always
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@82a92a6e8fbeee089604da2575dc567ae9ddeaab # v2
+      - name: Install just
+        uses: taiki-e/install-action@just
+      - name: Install cargo-hack
+        uses: taiki-e/install-action@cargo-hack
+      - name: Lint (clippy)
+        run: just powerset clippy --all-targets
+      - name: Lint (rustfmt)
+        run: cargo xfmt --check
+      - name: Install cargo readme
+        uses: taiki-e/install-action@44c6d64aa62cd779e873306675c7a58e86d6d532 # v2
+        with:
+          tool: cargo-readme
+      - name: Run cargo readme
+        run: ./scripts/regenerate-readmes.sh
+      - name: Check for differences
+        run: git diff --exit-code
+
+  build-rustdoc:
+    name: Build documentation
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@82a92a6e8fbeee089604da2575dc567ae9ddeaab # v2
+      - name: Build rustdoc
+        run: cargo doc --all-features
+
+  build:
+    name: Build and test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          # macos-14 for M1 runners
+          - macos-14
+          - windows-latest
+        # 1.70 is the MSRV
+        rust-version: ["1.70", stable]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust-version }}
+      - uses: Swatinem/rust-cache@82a92a6e8fbeee089604da2575dc567ae9ddeaab # v2
+        with:
+          key: ${{ matrix.rust-version }}
+      - name: Install latest nextest release
+        uses: taiki-e/install-action@nextest
+      - name: Install just
+        uses: taiki-e/install-action@just
+      - name: Install cargo-hack
+        uses: taiki-e/install-action@cargo-hack
+      - name: Build quick-junit
+        run: just powerset build
+      - name: Run tests
+        run: just powerset nextest run
+      - name: Run doctests
+        run: just powerset test --doc

@@ -1,0 +1,17 @@
+cargo-llvm-cov-clean
+Remove artifacts that cargo-llvm-cov has generated in the past
+
+USAGE:
+    cargo llvm-cov clean [OPTIONS]
+
+OPTIONS:
+        --profraw-only            Remove only profraw files
+        --workspace               Remove artifacts that may affect the coverage results of packages
+                                  in the workspace
+    -v, --verbose                 Use verbose output
+        --color <WHEN>            Coloring: auto, always, never
+        --manifest-path <PATH>    Path to Cargo.toml
+        --frozen                  Require Cargo.lock and cache are up to date
+        --locked                  Require Cargo.lock is up to date
+        --offline                 Run without accessing the network
+    -h, --help                    Print help information

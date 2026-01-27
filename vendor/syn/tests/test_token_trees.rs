@@ -1,7 +1,13 @@
-#![allow(clippy::uninlined_format_args)]
+#![allow(
+    clippy::elidable_lifetime_names,
+    clippy::needless_lifetimes,
+    clippy::uninlined_format_args
+)]
 
 #[macro_use]
-mod macros;
+mod snapshot;
+
+mod debug;
 
 use proc_macro2::TokenStream;
 use quote::quote;
@@ -17,11 +23,11 @@ fn test_struct() {
         }
     ";
 
-    snapshot!(input as TokenStream, @r###"
+    snapshot!(input as TokenStream, @r##"
     TokenStream(
         `# [derive (Debug , Clone)] pub struct Item { pub ident : Ident , pub attrs : Vec < Attribute >, }`,
     )
-    "###);
+    "##);
 }
 
 #[test]

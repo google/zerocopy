@@ -1,0 +1,18 @@
+[package]
+name = "humantime-serde"
+version = "1.1.1"
+authors = ["jean-airoldie <maxence.caron@protonmail.com>"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+description = "Serde support for the `humantime` crate"
+repository = "https://github.com/jean-airoldie/humantime-serde"
+readme = "README.md"
+keywords = ["serde", "humantime", "time", "duration"]
+
+[dependencies]
+humantime = "2.0.0"
+serde = { version = "1.0", features = ["derive"] }
+
+[dev-dependencies]
+serde_json = "1.0"
+version-sync = "0.8"

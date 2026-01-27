@@ -1,0 +1,40 @@
+[package]
+name = "fancy-regex"
+version = "0.11.0" # remember to update html_root_url
+authors = ["Raph Levien <raph@google.com>", "Robin Stocker <robin@nibor.org>"]
+edition = "2018"
+license = "MIT"
+description = "An implementation of regexes, supporting a relatively rich set of features, including backreferences and look-around."
+readme = "README.md"
+repository = "https://github.com/fancy-regex/fancy-regex"
+documentation = "https://docs.rs/fancy-regex"
+categories = ["text-processing"]
+exclude = ["/.github/*", "/Cargo.lock.msrv"]
+
+[features]
+default = ["unicode", "perf"]
+# Enable #[track_caller] in unit tests.
+track_caller = []
+perf = ["regex/perf"]
+perf-dfa = ["regex/perf-dfa"]
+perf-inline = ["regex/perf-inline"]
+perf-literal = ["regex/perf-literal"]
+perf-cache = ["regex/perf-cache"]
+unicode = ["regex/unicode"]
+
+[dependencies.regex]
+version = "1.3.8"
+default-features = false
+features = ["std"]
+
+[dependencies]
+bit-set = "0.5"
+
+[dev-dependencies]
+criterion = "0.3.0"
+matches = "0.1.8"
+quickcheck = "1.0.1"
+
+[[bench]]
+name = "bench"
+harness = false

@@ -1,0 +1,48 @@
+[package]
+name = "bytesize"
+description = "Semantic wrapper for byte count representations"
+version = "2.3.1"
+authors = [
+    "Hyunsik Choi <hyunsik.choi@gmail.com>",
+    "MrCroxx <mrcroxx@outlook.com>",
+    "Rob Ede <robjtede@icloud.com>",
+]
+keywords = ["byte", "byte-size", "utility", "human-readable", "format"]
+categories = ["development-tools", "filesystem", "no-std"]
+repository = "https://github.com/bytesize-rs/bytesize"
+license = "Apache-2.0"
+edition = "2021"
+rust-version = "1.70"
+
+[package.metadata.cargo_check_external_types]
+allowed_external_types = ["arbitrary::*", "serde_core::*"]
+
+[package.metadata.docs.rs]
+all-features = true
+
+[features]
+default = ["std"]
+std = []
+arbitrary = ["dep:arbitrary"]
+serde = ["dep:serde_core"]
+
+[dependencies]
+arbitrary = { version = "1", optional = true }
+serde_core = { version = "1", optional = true }
+
+[dev-dependencies]
+divan = "0.1"
+quickcheck = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.9"
+
+[[bench]]
+name = "display"
+harness = false
+
+[lints.rust]
+rust-2018-idioms = { level = "deny" }
+future-incompatible = { level = "deny" }
+nonstandard-style = { level = "deny" }
+missing-docs = { level = "warn" }

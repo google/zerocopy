@@ -1,0 +1,7 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc db330d5785485e1f4da6fd06b7225b11ddaff2fa0c16555102f3372d24d377f9 # shrinks to graph = Graph { Ty: "Directed", node_count: 2, edge_count: 1, edges: (0, 0) }

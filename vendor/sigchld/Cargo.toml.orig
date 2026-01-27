@@ -1,0 +1,25 @@
+[package]
+name = "sigchld"
+version = "0.2.4"
+authors = ["Jack O'Connor"]
+description = "waiting for SIGCHLD from many threads at once"
+repository = "https://github.com/oconnor663/sigchld.rs"
+readme = "README.md"
+documentation = "https://docs.rs/sigchld"
+license = "MIT"
+edition = "2021"
+
+[dependencies]
+libc = "0.2.172"
+os_pipe = { version = "1.2.2", optional = true }
+signal-hook = { version = "0.3.18", default-features = false }
+
+[dev-dependencies]
+anyhow = "1.0.98"
+duct = "1.0.0"
+rand = "0.9.1"
+
+[features]
+default = ["os_pipe"]
+# Replacement for std::io::pipe. Without this, the MSRV is 1.63, inherited from libc.
+os_pipe = ["dep:os_pipe"]

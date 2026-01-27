@@ -1,0 +1,6 @@
+  [31m×[0m error parsing cfg() expression
+   ╭────
+ [2m1[0m │ cfg(target_does_not_exist = "unix")
+   · [35;1m    ──────────┬──────────[0m
+   ·               [35;1m╰── [35;1mexpected one of `target_arch`, `target_feature`, `target_os`, `target_family`, `target_env`, `target_endian`, `target_has_atomic`, `target_pointer_width`, `target_vendor` here[0m[0m
+   ╰────

@@ -1,0 +1,28 @@
+# adapted from https://github.com/taiki-e/cargo-hack/blob/main/.github/workflows/release.yml
+
+name: Publish releases to GitHub
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  create-release:
+    if: github.repository_owner == 'nextest-rs'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - run: cargo publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+      - uses: taiki-e/create-gh-release-action@72d65cee1f8033ef0c8b5d79eaf0c45c7c578ce3 # v1
+        with:
+          changelog: CHANGELOG.md
+          title: future-queue $version
+          branch: main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

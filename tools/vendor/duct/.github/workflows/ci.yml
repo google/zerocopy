@@ -1,0 +1,34 @@
+name: tests
+
+on: [push]
+
+env:
+  RUSTFLAGS: "-D warnings"
+  RUST_BACKTRACE: "1"
+
+jobs:
+  test:
+    name: Rust ${{ matrix.rust_version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        rust_version: [stable, beta, nightly]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.rust_version }}
+        override: true
+    - run: cargo test
+    - run: cargo test --no-default-features
+    - run: cargo test --all-features
+    - name: test duct_sh
+      run: cargo test
+      working-directory: ./duct_sh
+    # One more run with a very long test duration for test_pipe_inheritance.
+    - name: run test_pipe_inheritance for 5 minutes
+      run: cargo test --all-features
+      env:
+        DUCT_RACE_TEST_SECONDS: 300

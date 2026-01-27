@@ -1,0 +1,83 @@
+[package]
+name = "iddqd"
+version = "0.3.17"
+description = "Maps where keys borrow from values, including bijective and trijective maps."
+readme = "README.md"
+documentation = "https://docs.rs/iddqd"
+repository = "https://github.com/oxidecomputer/iddqd"
+keywords = ["iddqd", "id_map", "bijective", "hashmap", "btreemap"]
+categories = ["data-structures", "no-std"]
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg=doc_cfg"]
+
+[lints]
+workspace = true
+
+[dependencies]
+# We have to turn on allocator-api2 here even if we don't expose it in our
+# public API. Even if the allocator-api2 feature is not enabled, we still rely
+# on being able to implement it for our Global type, so we can pass it into
+# hashbrown.
+allocator-api2 = { workspace = true }
+daft = { workspace = true, optional = true }
+equivalent.workspace = true
+foldhash = { workspace = true, optional = true }
+hashbrown.workspace = true
+ref-cast = { workspace = true, optional = true }
+rustc-hash.workspace = true
+schemars = { workspace = true, optional = true }
+serde_core = { workspace = true, optional = true }
+serde_json = { workspace = true, optional = true }
+proptest = { workspace = true, optional = true }
+
+[dev-dependencies]
+expectorate.workspace = true
+iddqd-test-utils.workspace = true
+proptest.workspace = true
+serde.workspace = true
+test-strategy.workspace = true
+
+[features]
+allocator-api2 = ["iddqd-test-utils/allocator-api2"]
+daft = ["dep:daft", "dep:ref-cast"]
+default = ["allocator-api2", "std", "default-hasher"]
+default-hasher = ["dep:foldhash", "iddqd-test-utils/default-hasher"]
+proptest = ["dep:proptest"]
+schemars08 = ["dep:schemars", "dep:serde_json", "serde"]
+serde = ["dep:serde_core", "iddqd-test-utils/serde"]
+std = ["dep:foldhash", "iddqd-test-utils/std", "rustc-hash/std"]
+
+# Internal-only feature for testing that schemars/preserve_order works.
+internal-schemars08-preserve-order = ["schemars08", "schemars/preserve_order"]
+
+[package.metadata.cargo-sync-rdme.badge.badges]
+license = true
+crates-io = true
+docs-rs = true
+rust-version = true
+
+[[example]]
+name = "id-complex"
+required-features = ["default-hasher", "std"]
+
+[[example]]
+name = "bi-complex"
+required-features = ["default-hasher"]
+
+[[example]]
+name = "tri-complex"
+required-features = ["default-hasher"]
+
+[[example]]
+name = "schemars-examples"
+required-features = ["default-hasher", "schemars08"]
+
+[package.metadata.release]
+pre-release-replacements = [
+    { file = "../iddqd-extended-examples/examples/typify-types.rs", search = "iddqd\" = \".*\"", replace = "iddqd\" = \"{{version}}\"", exactly = 1 },
+]

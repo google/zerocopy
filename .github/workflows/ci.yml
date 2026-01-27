@@ -447,6 +447,8 @@ jobs:
       run: |
         set -eo pipefail
 
+        cargo install --locked cargo-nextest
+
         # FIXME(#2906): We do this because `cargo vendor` doesn't currently
         # support vendoring std's dependencies (required in order to build std
         # from source, which Miri does). As a workaround, we simply temporarily
@@ -462,14 +464,6 @@ jobs:
         # Spawn twice the number of workers as there are CPU cores.
         THREADS=$(echo "$(nproc) * 2" | bc)
         echo "Running Miri tests with $THREADS threads" | tee -a $GITHUB_STEP_SUMMARY
-
-        # FIXME(https://github.com/nextest-rs/nextest/issues/2990): Once the fix
-        # [1] for this `cargo miri nextest` bug is published, either go back to
-        # installing the latest version of `cargo-nextest` or pin and set up a
-        # roller.
-        #
-        # [1] https://github.com/nextest-rs/nextest/pull/2991
-        cargo install --locked --version 0.9.122 cargo-nextest
 
         # Run under both the stacked borrows model (default) and under the tree 
         # borrows model to ensure we're compliant with both.
@@ -888,17 +882,15 @@ jobs:
             # We background all jobs and then wait for them so that they can run
             # in parallel.
             #
-            # [1]  https://stackoverflow.com/a/42139535/836390
+            # [1] https://stackoverflow.com/a/42139535/836390
 
             cargo check --workspace --tests                         &> /dev/null &
-            # On our MSRV toolchain, updating the Cargo index takes a long time, so
-            # it is worth specifically caching the MSRV index.
-            ./cargo.sh +msrv check --workspace --tests              &> /dev/null &
+
             cargo metadata                                          &> /dev/null &
-            cargo install cargo-readme --version 3.2.0              &> /dev/null &
+            cargo install --locked cargo-readme                     &> /dev/null &
             cargo install --locked action-validator --version 0.8.0 &> /dev/null &
             cargo install --locked kani-verifier                    &> /dev/null &
-            cargo install cargo-nextest                             &> /dev/null &
+            cargo install --locked cargo-nextest                    &> /dev/null &
             cargo kani setup                                        &> /dev/null &
 
             wait

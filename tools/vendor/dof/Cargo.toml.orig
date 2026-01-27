@@ -1,0 +1,18 @@
+[package]
+name = "dof"
+version = "0.4.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Tools to read and write the DTrace Object Format (DOF)"
+repository = "https://github.com/oxidecomputer/usdt.git"
+
+[dependencies]
+goblin = { version = "0.10", optional = true, features = ["elf64", "mach64"] }
+pretty-hex = { version = "0.4", optional = true }
+thiserror = "2"
+zerocopy = { version = "0.8.26", features = [ "derive" ] }
+serde = { version = "1", features = [ "derive" ] }
+serde_json = "1"
+
+[features]
+des = ["pretty-hex", "goblin"]

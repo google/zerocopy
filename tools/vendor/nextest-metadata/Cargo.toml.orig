@@ -1,0 +1,36 @@
+[package]
+name = "nextest-metadata"
+version = "0.13.3"
+description = "Structured access to nextest machine-readable output."
+license = "MIT OR Apache-2.0"
+# On older edition due to earlier MSRV.
+edition = "2021"
+readme = "README.md"
+repository = "https://github.com/nextest-rs/nextest"
+documentation = "https://docs.rs/nextest-metadata"
+keywords = ["nextest", "test-runner"]
+categories = ["development-tools::testing"]
+# Older version for nextest-metadata.
+rust-version = "1.78"
+exclude.workspace = true
+
+[dependencies]
+camino = { workspace = true, features = ["serde1"] }
+nextest-workspace-hack.workspace = true
+serde_json.workspace = true
+serde.workspace = true
+smol_str.workspace = true
+target-spec.workspace = true
+
+# Optional dependencies for proptest feature.
+proptest = { workspace = true, optional = true }
+
+[dev-dependencies]
+test-case.workspace = true
+
+[features]
+default = []
+proptest1 = ["dep:proptest"]
+
+[lints]
+workspace = true

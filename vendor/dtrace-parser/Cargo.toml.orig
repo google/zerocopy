@@ -1,0 +1,15 @@
+[package]
+name = "dtrace-parser"
+version = "0.3.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Parse DTrace provider definitions into Rust"
+repository = "https://github.com/oxidecomputer/usdt.git"
+
+[dependencies]
+pest = "2.8.1"
+pest_derive = "2.8.1"
+thiserror = "2.0.16"
+
+[dev-dependencies]
+rstest = "0.26.1"

@@ -1,0 +1,19 @@
+name: test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: test
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test

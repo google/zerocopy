@@ -1,0 +1,25 @@
+language: rust
+cache: cargo
+sudo: false
+
+rust:
+  - nightly
+  - beta
+  - stable
+
+before_script:
+  - export PATH=$HOME/.cargo/bin:$HOME/.local/bin:$PATH
+  - pip install -v 'travis-cargo<0.2' --user
+  - travis-cargo --only nightly install rustfmt-nightly -- --force
+
+script:
+  - travis-cargo --only nighlty fmt -- --write-mode=diff
+  - cargo build
+  - cargo test
+  - travis-cargo --only stable doc
+after_success:
+  - travis-cargo --only stable doc-upload
+
+env:
+  global:
+    - TRAVIS_CARGO_NIGHTLY_FEATURE=""

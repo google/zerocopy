@@ -1,0 +1,8 @@
+[workspace]
+changelog_update = false
+dependencies_update = false
+pr_draft = true
+pr_labels = ["release"]
+publish_all_features = true
+git_tag_name = "{{ package }}-v{{ version }}"
+git_release_name = "{{ package }}: v{{ version }}"

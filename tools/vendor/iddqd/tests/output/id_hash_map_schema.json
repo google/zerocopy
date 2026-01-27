@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "IdHashMap",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/TestUser"
+  },
+  "uniqueItems": true,
+  "x-rust-type": {
+    "crate": "iddqd",
+    "parameters": [
+      {
+        "$ref": "#/definitions/TestUser"
+      }
+    ],
+    "path": "iddqd::IdHashMap",
+    "version": "*"
+  },
+  "definitions": {
+    "TestUser": {
+      "type": "object",
+      "required": [
+        "age",
+        "email",
+        "id",
+        "name"
+      ],
+      "properties": {
+        "age": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "email": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

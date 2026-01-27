@@ -1,17 +1,22 @@
 #[cfg(feature = "parsing")]
 use crate::buffer::Cursor;
+use crate::ext::{PunctExt as _, TokenStreamExt as _};
 use crate::thread::ThreadBound;
+#[cfg(feature = "parsing")]
+use alloc::format;
+use alloc::string::{String, ToString};
+use alloc::vec;
+use alloc::vec::Vec;
+use core::fmt::{self, Debug, Display};
+use core::slice;
 use proc_macro2::{
     Delimiter, Group, Ident, LexError, Literal, Punct, Spacing, Span, TokenStream, TokenTree,
 };
 #[cfg(feature = "printing")]
 use quote::ToTokens;
-use std::fmt::{self, Debug, Display};
-use std::slice;
-use std::vec;
 
 /// The result of a Syn parser.
-pub type Result<T> = std::result::Result<T, Error>;
+pub type Result<T> = core::result::Result<T, Error>;
 
 /// Error returned when a Syn parser cannot parse the input tokens.
 ///
@@ -22,7 +27,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 /// [`compile_error!`] in the generated code. This produces a better diagnostic
 /// message than simply panicking the macro.
 ///
-/// [`compile_error!`]: std::compile_error!
+/// [`compile_error!`]: core::compile_error!
 ///
 /// When parsing macro input, the [`parse_macro_input!`] macro handles the
 /// conversion to `compile_error!` automatically.
@@ -111,7 +116,7 @@ struct ErrorMessage {
     message: String,
 }
 
-// Cannot use std::ops::Range<Span> because that does not implement Copy,
+// Cannot use core::ops::Range<Span> because that does not implement Copy,
 // whereas ThreadBound<T> requires a Copy impl as a way to ensure no Drop impls
 // are involved.
 struct SpanRange {
@@ -185,7 +190,7 @@ impl Error {
     /// When in doubt it's recommended to stick to `Error::new` (or
     /// `ParseStream::error`)!
     #[cfg(feature = "printing")]
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "printing")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "printing")))]
     pub fn new_spanned<T: ToTokens, U: Display>(tokens: T, message: U) -> Self {
         return new_spanned(tokens.into_token_stream(), message.to_string());
 
@@ -220,18 +225,19 @@ impl Error {
     /// The [`parse_macro_input!`] macro provides a convenient way to invoke
     /// this method correctly in a procedural macro.
     ///
-    /// [`compile_error!`]: std::compile_error!
+    /// [`compile_error!`]: core::compile_error!
     /// [`parse_macro_input!`]: crate::parse_macro_input!
     pub fn to_compile_error(&self) -> TokenStream {
-        self.messages
-            .iter()
-            .map(ErrorMessage::to_compile_error)
-            .collect()
+        let mut tokens = TokenStream::new();
+        for msg in &self.messages {
+            ErrorMessage::to_compile_error(msg, &mut tokens);
+        }
+        tokens
     }
 
     /// Render the error as an invocation of [`compile_error!`].
     ///
-    /// [`compile_error!`]: std::compile_error!
+    /// [`compile_error!`]: core::compile_error!
     ///
     /// # Example
     ///
@@ -273,53 +279,52 @@ impl Error {
 }
 
 impl ErrorMessage {
-    fn to_compile_error(&self) -> TokenStream {
+    fn to_compile_error(&self, tokens: &mut TokenStream) {
         let (start, end) = match self.span.get() {
             Some(range) => (range.start, range.end),
             None => (Span::call_site(), Span::call_site()),
         };
 
         // ::core::compile_error!($message)
-        TokenStream::from_iter(vec![
-            TokenTree::Punct({
-                let mut punct = Punct::new(':', Spacing::Joint);
-                punct.set_span(start);
-                punct
-            }),
-            TokenTree::Punct({
-                let mut punct = Punct::new(':', Spacing::Alone);
-                punct.set_span(start);
-                punct
-            }),
-            TokenTree::Ident(Ident::new("core", start)),
-            TokenTree::Punct({
-                let mut punct = Punct::new(':', Spacing::Joint);
-                punct.set_span(start);
-                punct
-            }),
-            TokenTree::Punct({
-                let mut punct = Punct::new(':', Spacing::Alone);
-                punct.set_span(start);
-                punct
-            }),
-            TokenTree::Ident(Ident::new("compile_error", start)),
-            TokenTree::Punct({
-                let mut punct = Punct::new('!', Spacing::Alone);
-                punct.set_span(start);
-                punct
-            }),
-            TokenTree::Group({
-                let mut group = Group::new(Delimiter::Brace, {
-                    TokenStream::from_iter(vec![TokenTree::Literal({
-                        let mut string = Literal::string(&self.message);
-                        string.set_span(end);
-                        string
-                    })])
-                });
-                group.set_span(end);
-                group
-            }),
-        ])
+        tokens.append(TokenTree::Punct(Punct::new_spanned(
+            ':',
+            Spacing::Joint,
+            start,
+        )));
+        tokens.append(TokenTree::Punct(Punct::new_spanned(
+            ':',
+            Spacing::Alone,
+            start,
+        )));
+        tokens.append(TokenTree::Ident(Ident::new("core", start)));
+        tokens.append(TokenTree::Punct(Punct::new_spanned(
+            ':',
+            Spacing::Joint,
+            start,
+        )));
+        tokens.append(TokenTree::Punct(Punct::new_spanned(
+            ':',
+            Spacing::Alone,
+            start,
+        )));
+        tokens.append(TokenTree::Ident(Ident::new("compile_error", start)));
+        tokens.append(TokenTree::Punct(Punct::new_spanned(
+            '!',
+            Spacing::Alone,
+            start,
+        )));
+        tokens.append(TokenTree::Group({
+            let mut group = Group::new(
+                Delimiter::Brace,
+                TokenStream::from({
+                    let mut string = Literal::string(&self.message);
+                    string.set_span(end);
+                    TokenTree::Literal(string)
+                }),
+            );
+            group.set_span(end);
+            group
+        }));
     }
 }
 
@@ -400,6 +405,7 @@ impl Clone for SpanRange {
 
 impl Copy for SpanRange {}
 
+// TODO: impl core::error::Error (requires Rust 1.81+)
 impl std::error::Error for Error {}
 
 impl From<LexError> for Error {
