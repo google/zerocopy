@@ -659,27 +659,29 @@ macro_rules! try_transmute_ref {
         // (note that mutable references are implicitly reborrowed here).
         let e: &_ = $e;
 
-        #[allow(unreachable_code, unused, clippy::diverging_sub_expression)]
+        #[allow(unused_imports)]
+        use $crate::util::macro_util::TryTransmuteRefDst as _;
+        let t = $crate::util::macro_util::Wrap::new(e);
         if false {
-            // This branch, though never taken, ensures that `size_of::<T>() ==
-            // size_of::<U>()` and that that `align_of::<T>() >=
-            // align_of::<U>()`.
-
-            // `t` is inferred to have type `T` because it's assigned to `e` (of
-            // type `&T`) as `&t`.
-            let mut t = loop {};
-            e = &t;
-
-            // `u` is inferred to have type `U` because it's used as `Ok(&u)` as
-            // the value returned from this branch.
-            let u;
-
-            $crate::assert_size_eq!(t, u);
-            $crate::assert_align_gt_eq!(t, u);
-
-            Ok(&u)
+            // This branch exists solely to force the compiler to infer the type
+            // of `Dst` *before* it attempts to resolve the method call to
+            // `try_transmute_ref` in the `else` branch.
+            //
+            // Without this, if `Src` is `Sized` but `Dst` is `!Sized`, the
+            // compiler will eagerly select the inherent impl of
+            // `try_transmute_ref` (which requires `Dst: Sized`) because
+            // inherent methods take priority over trait methods. It does this
+            // before it realizes `Dst` is `!Sized`, leading to a compile error
+            // when it checks the bounds later.
+            //
+            // By calling this helper (which returns `&Dst`), we force `Dst`
+            // to be fully resolved. By the time it gets to the `else`
+            // branch, the compiler knows `Dst` is `!Sized`, properly
+            // disqualifies the inherent method, and falls back to the trait
+            // implementation.
+            Ok(t.transmute_ref_inference_helper())
         } else {
-            $crate::util::macro_util::try_transmute_ref::<_, _>(e)
+            t.try_transmute_ref()
         }
     }}
 }
@@ -768,27 +770,29 @@ macro_rules! try_transmute_mut {
         // Ensure that the source type is a mutable reference.
         let e: &mut _ = $e;
 
-        #[allow(unreachable_code, unused, clippy::diverging_sub_expression)]
+        #[allow(unused_imports)]
+        use $crate::util::macro_util::TryTransmuteMutDst as _;
+        let t = $crate::util::macro_util::Wrap::new(e);
         if false {
-            // This branch, though never taken, ensures that `size_of::<T>() ==
-            // size_of::<U>()` and that that `align_of::<T>() >=
-            // align_of::<U>()`.
-
-            // `t` is inferred to have type `T` because it's assigned to `e` (of
-            // type `&mut T`) as `&mut t`.
-            let mut t = loop {};
-            e = &mut t;
-
-            // `u` is inferred to have type `U` because it's used as `Ok(&mut
-            // u)` as the value returned from this branch.
-            let u;
-
-            $crate::assert_size_eq!(t, u);
-            $crate::assert_align_gt_eq!(t, u);
-
-            Ok(&mut u)
+            // This branch exists solely to force the compiler to infer the type
+            // of `Dst` *before* it attempts to resolve the method call to
+            // `try_transmute_mut` in the `else` branch.
+            //
+            // Without this, if `Src` is `Sized` but `Dst` is `!Sized`, the
+            // compiler will eagerly select the inherent impl of
+            // `try_transmute_mut` (which requires `Dst: Sized`) because
+            // inherent methods take priority over trait methods. It does this
+            // before it realizes `Dst` is `!Sized`, leading to a compile error
+            // when it checks the bounds later.
+            //
+            // By calling this helper (which returns `&Dst`), we force `Dst`
+            // to be fully resolved. By the time it gets to the `else`
+            // branch, the compiler knows `Dst` is `!Sized`, properly
+            // disqualifies the inherent method, and falls back to the trait
+            // implementation.
+            Ok(t.transmute_mut_inference_helper())
         } else {
-            $crate::util::macro_util::try_transmute_mut::<_, _>(e)
+            t.try_transmute_mut()
         }
     }}
 }
@@ -1347,6 +1351,27 @@ mod tests {
         #[allow(clippy::useless_transmute)]
         let y: Result<&u8, _> = try_transmute_ref!(&mut x);
         assert_eq!(y, Ok(&0));
+
+        // Test that sized types work which don't implement `KnownLayout`.
+        let array_of_nkl_u8s = Nkl([0u8, 1, 2, 3, 4, 5, 6, 7]);
+        let array_of_nkl_arrays = Nkl([[0, 1], [2, 3], [4, 5], [6, 7]]);
+        let x: Result<&Nkl<[[u8; 2]; 4]>, _> = try_transmute_ref!(&array_of_nkl_u8s);
+        assert_eq!(x, Ok(&array_of_nkl_arrays));
+
+        // Test sized -> unsized transmutation.
+        let array_of_u8s = [0u8, 1, 2, 3, 4, 5, 6, 7];
+        let array_of_arrays = [[0, 1], [2, 3], [4, 5], [6, 7]];
+        let slice_of_arrays = &array_of_arrays[..];
+        let x: Result<&[[u8; 2]], _> = try_transmute_ref!(&array_of_u8s);
+        assert_eq!(x, Ok(slice_of_arrays));
+
+        // Test unsized -> unsized transmutation.
+        let slice_dst_of_u8s =
+            SliceDst::<U16, [u8; 2]>::ref_from_bytes(&[0, 1, 2, 3, 4, 5][..]).unwrap();
+        let slice_dst_of_u16s =
+            SliceDst::<U16, U16>::ref_from_bytes(&[0, 1, 2, 3, 4, 5][..]).unwrap();
+        let x: Result<&SliceDst<U16, U16>, _> = try_transmute_ref!(slice_dst_of_u8s);
+        assert_eq!(x, Ok(slice_dst_of_u16s));
     }
 
     #[test]
@@ -1382,6 +1407,27 @@ mod tests {
         #[allow(clippy::useless_transmute)]
         let y: Result<&mut u8, _> = try_transmute_mut!(&mut x);
         assert_eq!(y, Ok(&mut 0));
+
+        // Test that sized types work which don't implement `KnownLayout`.
+        let mut array_of_nkl_u8s = Nkl([0u8, 1, 2, 3, 4, 5, 6, 7]);
+        let mut array_of_nkl_arrays = Nkl([[0, 1], [2, 3], [4, 5], [6, 7]]);
+        let x: Result<&mut Nkl<[[u8; 2]; 4]>, _> = try_transmute_mut!(&mut array_of_nkl_u8s);
+        assert_eq!(x, Ok(&mut array_of_nkl_arrays));
+
+        // Test sized -> unsized transmutation.
+        let mut array_of_u8s = [0u8, 1, 2, 3, 4, 5, 6, 7];
+        let mut array_of_arrays = [[0, 1], [2, 3], [4, 5], [6, 7]];
+        let slice_of_arrays = &mut array_of_arrays[..];
+        let x: Result<&mut [[u8; 2]], _> = try_transmute_mut!(&mut array_of_u8s);
+        assert_eq!(x, Ok(slice_of_arrays));
+
+        // Test unsized -> unsized transmutation.
+        let mut bytes = [0, 1, 2, 3, 4, 5, 6];
+        let slice_dst_of_u8s = SliceDst::<u8, [u8; 2]>::mut_from_bytes(&mut bytes[..]).unwrap();
+        let mut bytes = [0, 1, 2, 3, 4, 5, 6];
+        let slice_dst_of_u16s = SliceDst::<u8, U16>::mut_from_bytes(&mut bytes[..]).unwrap();
+        let x: Result<&mut SliceDst<u8, U16>, _> = try_transmute_mut!(slice_dst_of_u8s);
+        assert_eq!(x, Ok(slice_dst_of_u16s));
     }
 
     #[test]
