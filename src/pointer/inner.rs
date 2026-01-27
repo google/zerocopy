@@ -99,6 +99,22 @@ mod _def {
             Self { ptr, _marker: PhantomData }
         }
 
+        /// Produces a `PtrInner` with the given address and metadata.
+        ///
+        /// # Safety
+        ///
+        /// TODO
+        #[inline(always)]
+        pub(crate) unsafe fn from_ptr_meta(ptr: NonNull<u8>, meta: MetadataOf<T>) -> Self
+        where
+            T: KnownLayout,
+        {
+            let raw = T::raw_from_ptr_len(ptr, meta.get());
+
+            // SAFETY: TODO
+            unsafe { PtrInner::new(raw) }
+        }
+
         /// Converts this `PtrInner<T>` to a [`NonNull<T>`].
         ///
         /// Note that this method does not consume `self`. The caller should
