@@ -46,6 +46,15 @@ impl<T: FromBytes + IntoBytes, U: FromBytes + IntoBytes> SliceDst<T, U> {
 /// let mut src = [0u8; 2];
 /// let increase_alignment: &mut u16 = zerocopy::transmute_mut!(&mut src);
 /// ```
+///
+/// ```compile_fail,E0080
+/// let increase_alignment: &u16 = zerocopy::try_transmute_ref!(&[0u8; 2]).unwrap();
+/// ```
+///
+/// ```compile_fail,E0080
+/// let mut src = [0u8; 2];
+/// let increase_alignment: &mut u16 = zerocopy::try_transmute_mut!(&mut src).unwrap();
+/// ```
 enum TransmuteRefMutAlignmentIncrease {}
 
 /// We require that the size of the destination type is not larger than the size
@@ -59,6 +68,15 @@ enum TransmuteRefMutAlignmentIncrease {}
 /// let mut src = 0u8;
 /// let increase_size: &mut [u8; 2] = zerocopy::transmute_mut!(&mut src);
 /// ```
+///
+/// ```compile_fail,E0080
+/// let increase_size: &[u8; 2] = zerocopy::try_transmute_ref!(&0u8).unwrap();
+/// ```
+///
+/// ```compile_fail,E0080
+/// let mut src = 0u8;
+/// let increase_size: &mut [u8; 2] = zerocopy::try_transmute_mut!(&mut src).unwrap();
+/// ```
 enum TransmuteRefMutSizeIncrease {}
 
 /// We require that the size of the destination type is not smaller than the
@@ -71,6 +89,15 @@ enum TransmuteRefMutSizeIncrease {}
 /// ```compile_fail,E0080
 /// let mut src = [0u8; 2];
 /// let decrease_size: &mut u8 = zerocopy::transmute_mut!(&mut src);
+/// ```
+///
+/// ```compile_fail,E0080
+/// let decrease_size: &u8 = zerocopy::try_transmute_ref!(&[0u8; 2]).unwrap();
+/// ```
+///
+/// ```compile_fail,E0080
+/// let mut src = [0u8; 2];
+/// let decrease_size: &mut u8 = zerocopy::try_transmute_mut!(&mut src).unwrap();
 /// ```
 enum TransmuteRefMutSizeDecrease {}
 
