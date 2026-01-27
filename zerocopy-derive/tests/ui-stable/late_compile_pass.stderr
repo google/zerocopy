@@ -29,7 +29,7 @@ help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZero
              (A, B, C, D, E, F, G, H)
            and $N others
    = help: see issue #48214
-   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-25183351d3a53518.long-type-4202580092983927181.txt'
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-25183351d3a53518.long-type-7050678734323828300.txt'
    = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `TryFromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -56,7 +56,7 @@ help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZero
              (A, B, C, D, E, F, G, H)
            and $N others
    = help: see issue #48214
-   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-25183351d3a53518.long-type-4202580092983927181.txt'
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-25183351d3a53518.long-type-7050678734323828300.txt'
    = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -83,7 +83,7 @@ help: the trait `FromZeros` is not implemented for `NotZerocopy`
              (A, B, C, D, E, F, G, H)
            and $N others
    = help: see issue #48214
-   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-25183351d3a53518.long-type-4202580092983927181.txt'
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-25183351d3a53518.long-type-7050678734323828300.txt'
    = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromZeros` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -110,7 +110,7 @@ help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZero
              (A, B, C, D, E, F, G, H)
            and $N others
    = help: see issue #48214
-   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-25183351d3a53518.long-type-4202580092983927181.txt'
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-25183351d3a53518.long-type-7050678734323828300.txt'
    = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -137,7 +137,7 @@ help: the trait `FromZeros` is not implemented for `NotZerocopy`
              (A, B, C, D, E, F, G, H)
            and $N others
    = help: see issue #48214
-   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-25183351d3a53518.long-type-4202580092983927181.txt'
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-25183351d3a53518.long-type-7050678734323828300.txt'
    = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -164,7 +164,7 @@ help: the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocop
              (A, B, C, D, E, F, G, H)
            and $N others
    = help: see issue #48214
-   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-25183351d3a53518.long-type-4202580092983927181.txt'
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-25183351d3a53518.long-type-7050678734323828300.txt'
    = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -300,6 +300,6 @@ note: required by a bound in `_::_::<impl zerocopy_renamed::TryFromBytes for Fro
    |
 49 | #[derive(FromBytes)]
    |          ^^^^^^^^^ required by this bound in `assert_is_from_bytes`
-   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-25183351d3a53518.long-type-4202580092983927181.txt'
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-25183351d3a53518.long-type-7050678734323828300.txt'
    = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromBytes` (in Nightly builds, run with -Z macro-backtrace for more info)

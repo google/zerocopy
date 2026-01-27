@@ -5,6 +5,6 @@ error[E0271]: type mismatch resolving `<[u8; 1] as KnownLayout>::PointerMetadata
    |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `()`
    |
    = note: required for `Wrap<&mut [u8], &mut [u8; 1]>` to implement `zerocopy::util::macro_util::TransmuteMutDst<'_>`
-   = note: the full name for the type has been written to '$DIR/target/by-toolchain/nightly/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-391aaafd7dd47660.long-type-11549362531080374422.txt'
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/nightly/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-391aaafd7dd47660.long-type-10439105477654634710.txt'
    = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)

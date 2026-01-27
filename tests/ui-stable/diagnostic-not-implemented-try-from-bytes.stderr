@@ -25,5 +25,5 @@ note: required by a bound in `takes_try_from_bytes`
    |
 19 | fn takes_try_from_bytes<T: TryFromBytes>() {}
    |                            ^^^^^^^^^^^^ required by this bound in `takes_try_from_bytes`
-   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-fecab2a23513d057.long-type-7375804376969570508.txt'
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-fecab2a23513d057.long-type-2742335687546960466.txt'
    = note: consider using `--verbose` to print the full type name to the console
