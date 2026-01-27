@@ -29,12 +29,9 @@ use core::{
 
 use crate::{
     pointer::{
-        cast::{CastSized, IdCast},
-        invariant::{
-            Aligned, BecauseExclusive, BecauseImmutable, Initialized, Invariants, Read, Reference,
-            Unaligned, Valid,
-        },
-        BecauseInvariantsEq, TryTransmuteFromPtr,
+        cast::CastSized,
+        invariant::{Aligned, Initialized, Valid},
+        BecauseInvariantsEq,
     },
     FromBytes, Immutable, IntoBytes, KnownLayout, Ptr, ReadOnly, TryFromBytes, ValidityError,
 };
@@ -603,60 +600,6 @@ pub const fn hash_name(name: &str) -> i128 {
     i128::from_ne_bytes(hash.to_ne_bytes())
 }
 
-/// Is a given source a valid instance of `Dst`?
-///
-/// If so, returns `src` casted to a `Ptr<Dst, _>`. Otherwise returns `None`.
-///
-/// # Safety
-///
-/// Unsafe code may assume that, if `try_cast_or_pme(src)` returns `Ok`,
-/// `*src` is a bit-valid instance of `Dst`, and that the size of `Src` is
-/// greater than or equal to the size of `Dst`.
-///
-/// Unsafe code may assume that, if `try_cast_or_pme(src)` returns `Err`, the
-/// encapsulated `Ptr` value is the original `src`. `try_cast_or_pme` cannot
-/// guarantee that the referent has not been modified, as it calls user-defined
-/// code (`TryFromBytes::is_bit_valid`).
-///
-/// # Panics
-///
-/// `try_cast_or_pme` may either produce a post-monomorphization error or a
-/// panic if `Dst` not the same size as `Src`. Otherwise, `try_cast_or_pme`
-/// panics under the same circumstances as [`is_bit_valid`].
-///
-/// [`is_bit_valid`]: TryFromBytes::is_bit_valid
-#[doc(hidden)]
-#[inline]
-fn try_cast_or_pme<Src, Dst, I, R, S>(
-    src: Ptr<'_, Src, I>,
-) -> Result<Ptr<'_, Dst, (I::Aliasing, Unaligned, Valid)>, ValidityError<Ptr<'_, Src, I>, Dst>>
-where
-    // FIXME(#2226): There should be a `Src: FromBytes` bound here, but doing so
-    // requires deeper surgery.
-    Src: Read<I::Aliasing, R>,
-    Dst: TryFromBytes
-        + Read<I::Aliasing, R>
-        + TryTransmuteFromPtr<Dst, I::Aliasing, Initialized, Valid, IdCast, S>,
-    ReadOnly<Dst>: Read<I::Aliasing, R>,
-    I: Invariants<Validity = Initialized>,
-    I::Aliasing: Reference,
-{
-    let c_ptr = src.cast::<_, CastSized, _>();
-    match c_ptr.try_into_valid() {
-        Ok(ptr) => Ok(ptr),
-        Err(err) => {
-            // Re-cast `Ptr<Dst>` to `Ptr<Src>`.
-            let ptr = err.into_src();
-            let ptr = ptr.cast::<_, CastSized, _>();
-            // SAFETY: `ptr` is `src`, and has the same alignment invariant.
-            let ptr = unsafe { ptr.assume_alignment::<I::Alignment>() };
-            // SAFETY: `ptr` is `src` and has the same validity invariant.
-            let ptr = unsafe { ptr.assume_validity::<I::Validity>() };
-            Err(ValidityError::new(ptr.unify_invariants()))
-        }
-    }
-}
-
 /// Attempts to transmute `Src` into `Dst`.
 ///
 /// A helper for `try_transmute!`.
@@ -677,32 +620,28 @@ where
     static_assert!(Src, Dst => mem::size_of::<Dst>() == mem::size_of::<Src>());
 
     let mu_src = mem::MaybeUninit::new(src);
-    // SAFETY: By invariant on `&`, the following are satisfied:
-    // - `&mu_src` is valid for reads
-    // - `&mu_src` is properly aligned
-    // - `&mu_src`'s referent is bit-valid
-    let mu_src_copy = unsafe { core::ptr::read(&mu_src) };
-    // SAFETY: `MaybeUninit` has no validity constraints.
+    // SAFETY: `MaybeUninit` has no validity requirements.
     let mu_dst: mem::MaybeUninit<ReadOnly<Dst>> =
-        unsafe { crate::util::transmute_unchecked(mu_src_copy) };
+        unsafe { crate::util::transmute_unchecked(mu_src) };
 
     let ptr = Ptr::from_ref(&mu_dst);
 
     // SAFETY: Since `Src: IntoBytes`, and since `size_of::<Src>() ==
     // size_of::<Dst>()` by the preceding assertion, all of `mu_dst`'s bytes are
-    // initialized.
+    // initialized. `MaybeUninit` has no validity requirements, so even if
+    // `ptr` is used to mutate its referent (which it actually can't be - it's
+    // a shared `ReadOnly` pointer), that won't violate its referent's validity.
     let ptr = unsafe { ptr.assume_validity::<Initialized>() };
-
-    let ptr: Ptr<'_, ReadOnly<Dst>, _> = ptr.cast::<_, crate::pointer::cast::CastSized, _>();
-
-    if Dst::is_bit_valid(ptr.transmute::<_, _, BecauseImmutable>().forget_aligned()) {
+    if Dst::is_bit_valid(ptr.cast::<_, CastSized, _>()) {
         // SAFETY: Since `Dst::is_bit_valid`, we know that `ptr`'s referent is
         // bit-valid for `Dst`. `ptr` points to `mu_dst`, and no intervening
         // operations have mutated it, so it is a bit-valid `Dst`.
         Ok(ReadOnly::into_inner(unsafe { mu_dst.assume_init() }))
     } else {
-        // SAFETY: `mu_src` was constructed from `src` and never modified, so it
-        // is still bit-valid.
+        // SAFETY: `MaybeUninit` has no validity requirements.
+        let mu_src: mem::MaybeUninit<Src> = unsafe { crate::util::transmute_unchecked(mu_dst) };
+        // SAFETY: `mu_dst`/`mu_src` was constructed from `src` and never
+        // modified, so it is still bit-valid.
         Err(ValidityError::new(unsafe { mu_src.assume_init() }))
     }
 }
@@ -727,7 +666,8 @@ where
 {
     let ptr = Ptr::from_ref(src);
     let ptr = ptr.recall_validity::<Initialized, _>();
-    match try_cast_or_pme::<Src, Dst, _, BecauseImmutable, _>(ptr) {
+    let ptr = ptr.cast::<_, CastSized, _>();
+    match ptr.try_into_valid() {
         Ok(ptr) => {
             static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
             // SAFETY: We have checked that `Dst` does not have a stricter
@@ -736,13 +676,17 @@ where
             Ok(ptr.as_ref())
         }
         Err(err) => Err(err.map_src(|ptr| {
+            let ptr = ptr.cast::<_, CastSized, _>();
+            // SAFETY: `ptr` has the same address as `src: &Src`, which is
+            // aligned by invariant on `&Src`.
+            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
             // SAFETY: Because `Src: Immutable` and we create a `Ptr` via
             // `Ptr::from_ref`, the resulting `Ptr` is a shared-and-`Immutable`
             // `Ptr`, which does not permit mutation of its referent. Therefore,
             // no mutation could have happened during the call to
-            // `try_cast_or_pme` (any such mutation would be unsound).
+            // `try_into_valid` (any such mutation would be unsound).
             //
-            // `try_cast_or_pme` promises to return its original argument, and
+            // `try_into_valid` promises to return its original argument, and
             // so we know that we are getting back the same `ptr` that we
             // originally passed, and that `ptr` was a bit-valid `Src`.
             let ptr = unsafe { ptr.assume_valid() };
@@ -771,7 +715,8 @@ where
 {
     let ptr = Ptr::from_mut(src);
     let ptr = ptr.recall_validity::<Initialized, (_, (_, _))>();
-    match try_cast_or_pme::<Src, Dst, _, BecauseExclusive, _>(ptr) {
+    let ptr = ptr.cast::<_, CastSized, _>();
+    match ptr.try_into_valid() {
         Ok(ptr) => {
             static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
             // SAFETY: We have checked that `Dst` does not have a stricter
@@ -780,7 +725,13 @@ where
             Ok(ptr.as_mut())
         }
         Err(err) => {
-            Err(err.map_src(|ptr| ptr.recall_validity::<_, (_, BecauseInvariantsEq)>().as_mut()))
+            Err(err.map_src(|ptr| {
+                let ptr = ptr.cast::<_, CastSized, _>();
+                // SAFETY: `ptr` has the same address as `src: &mut Src`, which
+                // is aligned by invariant on `&mut Src`.
+                let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+                ptr.recall_validity::<_, (_, BecauseInvariantsEq)>().as_mut()
+            }))
         }
     }
 }
@@ -895,14 +846,14 @@ where
 
     #[inline(always)]
     fn transmute_ref(self) -> &'a Dst {
-        static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
-            Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
-        }, "cannot transmute reference when destination type has higher alignment than source type");
-
         let ptr = Ptr::from_ref(self.0)
             .recall_validity::<Initialized, _>()
             .transmute_with::<Dst, Initialized, crate::layout::CastFrom<Dst>, (crate::pointer::BecauseMutationCompatible, _)>()
             .recall_validity::<Valid, _>();
+
+        static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
+            Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
+        }, "cannot transmute reference when destination type has higher alignment than source type");
 
         // SAFETY: The preceding `static_assert!` ensures that
         // `Src::LAYOUT.align >= Dst::LAYOUT.align`. Since `self` is
@@ -928,16 +879,15 @@ where
 
     #[inline(always)]
     fn transmute_mut(self) -> &'a mut Dst {
-        static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
-            Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
-        }, "cannot transmute reference when destination type has higher alignment than source type");
-
         let ptr = Ptr::from_mut(self.0)
             .recall_validity::<Initialized, (_, (_, _))>()
             .transmute_with::<Dst, Initialized, crate::layout::CastFrom<Dst>, _>()
             .recall_validity::<Valid, (_, (_, _))>();
 
-        #[allow(unused_unsafe)]
+        static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
+            Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
+        }, "cannot transmute reference when destination type has higher alignment than source type");
+
         // SAFETY: The preceding `static_assert!` ensures that
         // `Src::LAYOUT.align >= Dst::LAYOUT.align`. Since `self` is
         // validly-aligned for `Src`, it is also validly-aligned for `Dst`.
