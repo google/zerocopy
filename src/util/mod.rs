@@ -20,6 +20,10 @@ use core::{
 };
 
 use super::*;
+use crate::pointer::{
+    invariant::{Exclusive, Shared, Valid},
+    SizeEq, TransmuteFromPtr,
+};
 
 /// Like [`PhantomData`], but [`Send`] and [`Sync`] regardless of whether the
 /// wrapped `T` is.
@@ -319,6 +323,40 @@ pub(crate) const unsafe fn transmute_unchecked<Src, Dst>(src: Src) -> Dst {
     //     representation is analogous to a transmute from the type used for
     //     writing to the type used for reading.
     unsafe { ManuallyDrop::into_inner(Transmute { src: ManuallyDrop::new(src) }.dst) }
+}
+
+/// # Safety
+///
+/// `Src` must have a greater or equal alignment to `Dst`.
+pub(crate) unsafe fn transmute_ref<Src, Dst, R>(src: &Src) -> &Dst
+where
+    Src: ?Sized,
+    Dst: SizeEq<Src>
+        + TransmuteFromPtr<Src, Shared, Valid, Valid, <Dst as SizeEq<Src>>::CastFrom, R>
+        + ?Sized,
+{
+    let dst = Ptr::from_ref(src).transmute();
+    // SAFETY: The caller promises that `Src`'s alignment is at least as large
+    // as `Dst`'s alignment.
+    let dst = unsafe { dst.assume_alignment() };
+    dst.as_ref()
+}
+
+/// # Safety
+///
+/// `Src` must have a greater or equal alignment to `Dst`.
+pub(crate) unsafe fn transmute_mut<Src, Dst, R>(src: &mut Src) -> &mut Dst
+where
+    Src: ?Sized,
+    Dst: SizeEq<Src>
+        + TransmuteFromPtr<Src, Exclusive, Valid, Valid, <Dst as SizeEq<Src>>::CastFrom, R>
+        + ?Sized,
+{
+    let dst = Ptr::from_mut(src).transmute();
+    // SAFETY: The caller promises that `Src`'s alignment is at least as large
+    // as `Dst`'s alignment.
+    let dst = unsafe { dst.assume_alignment() };
+    dst.as_mut()
 }
 
 /// Uses `allocate` to create a `Box<T>`.
