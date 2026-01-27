@@ -660,17 +660,19 @@ where
 #[inline(always)]
 pub fn try_transmute_ref<Src, Dst>(src: &Src) -> Result<&Dst, ValidityError<&Src, Dst>>
 where
-    Src: IntoBytes + Immutable + KnownLayout,
-    Dst: TryFromBytes + Immutable,
+    Src: IntoBytes + Immutable + KnownLayout + ?Sized,
+    Dst: TryFromBytes + Immutable + KnownLayout + ?Sized,
 {
     let ptr = Ptr::from_ref(src);
     ptr.try_with(|ptr| {
         let ptr = ptr.recall_validity::<Initialized, _>();
-        let ptr = ptr.cast::<_, CastSized, _>();
+        let ptr = ptr.cast::<_, crate::layout::CastFrom<Dst>, _>();
         ptr.try_into_valid()
     })
     .map(|ptr| {
-        static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
+        static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
+            Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
+        }, "cannot transmute reference when destination type has higher alignment than source type");
         // SAFETY: We have checked that `Dst` does not have a stricter
         // alignment requirement than `Src`.
         let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
@@ -694,17 +696,19 @@ where
 #[inline(always)]
 pub fn try_transmute_mut<Src, Dst>(src: &mut Src) -> Result<&mut Dst, ValidityError<&mut Src, Dst>>
 where
-    Src: FromBytes + IntoBytes + KnownLayout,
-    Dst: TryFromBytes + IntoBytes,
+    Src: FromBytes + IntoBytes + KnownLayout + ?Sized,
+    Dst: TryFromBytes + IntoBytes + KnownLayout + ?Sized,
 {
     let ptr = Ptr::from_mut(src);
     ptr.try_with(|ptr| {
         let ptr = ptr.recall_validity::<Initialized, (_, (_, _))>();
-        let ptr = ptr.cast::<_, CastSized, _>();
+        let ptr = ptr.cast::<_, crate::layout::CastFrom<Dst>, _>();
         ptr.try_into_valid()
     })
     .map(|ptr| {
-        static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
+        static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
+            Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
+        }, "cannot transmute reference when destination type has higher alignment than source type");
         // SAFETY: We have checked that `Dst` does not have a stricter
         // alignment requirement than `Src`.
         let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
