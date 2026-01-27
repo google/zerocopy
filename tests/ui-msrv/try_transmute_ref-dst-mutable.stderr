@@ -15,7 +15,7 @@ error[E0308]: mismatched types
    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^
    |                                 |
    |                                 types differ in mutability
-   |                                 help: try using a variant of the expected enum: `Err($crate::util::macro_util::try_transmute_ref::<_, _>(e))`
+   |                                 help: try using a variant of the expected enum: `Err(t.try_transmute_ref())`
    |
    = note: expected enum `Result<&mut u8, _>`
               found enum `Result<&_, ValidityError<&u8, _>>`

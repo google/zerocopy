@@ -2,7 +2,7 @@ error[E0599]: the method `transmute_mut` exists for struct `zerocopy::util::macr
  --> tests/ui-nightly/transmute-mut-src-unsized.rs:15:35
   |
  15 | const SRC_UNSIZED: &mut [u8; 1] = transmute_mut!(&mut [0u8][..]);
-    |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method cannot be called due to unsatisfied trait bounds
+    |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     |
    ::: src/util/macro_util.rs
     |
