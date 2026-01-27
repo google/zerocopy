@@ -1418,10 +1418,10 @@ mod tests {
         }
 
         test!(ZstDst, 8, 0, Some(0));
-        test!(ZstDst, 7, 0, None);
+        test!(ZstDst, 7, 0, None::<usize>);
 
         test!(ZstDst, 8, usize::MAX, Some(usize::MAX));
-        test!(ZstDst, 7, usize::MAX, None);
+        test!(ZstDst, 7, usize::MAX, None::<usize>);
 
         #[derive(KnownLayout, Immutable)]
         #[repr(C)]
@@ -1431,14 +1431,14 @@ mod tests {
         }
 
         test!(Dst, 8, 0, Some(0));
-        test!(Dst, 7, 0, None);
+        test!(Dst, 7, 0, None::<usize>);
 
         test!(Dst, 9, 1, Some(1));
-        test!(Dst, 8, 1, None);
+        test!(Dst, 8, 1, None::<usize>);
 
         // If we didn't properly check for overflow, this would cause the
         // metadata to overflow to 0, and thus the cast would spuriously
         // succeed.
-        test!(Dst, 8, usize::MAX - 8 + 1, None);
+        test!(Dst, 8, usize::MAX - 8 + 1, None::<usize>);
     }
 }

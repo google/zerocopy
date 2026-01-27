@@ -107,11 +107,13 @@ std = ["alloc"]
 __internal_use_only_features_that_work_on_stable = [
     "alloc",
     "derive",
+    "serde",
     "simd",
     "std",
 ]
 
 [dependencies]
+serde = { version = "1.0.144", default-features = false, optional = true }
 zerocopy-derive = { version = "=0.8.34", path = "zerocopy-derive", optional = true }
 
 # The "associated proc macro pattern" ensures that the versions of zerocopy and
@@ -128,6 +130,7 @@ rand = { version = "0.8.5", default-features = false, features = ["small_rng"] }
 rustversion = "1.0"
 static_assertions = "1.1"
 testutil = { path = "testutil" }
+serde_json = "1.0.143"
 # Pinned to a specific version so that the version used for local development
 # and the version used in CI are guaranteed to be the same. Future versions
 # sometimes change the output format slightly, so a version mismatch can cause
