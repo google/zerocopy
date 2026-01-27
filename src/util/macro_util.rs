@@ -30,8 +30,11 @@ use core::{
 use crate::{
     pointer::{
         cast::{CastSized, IdCast},
-        invariant::{self, BecauseExclusive, BecauseImmutable, Invariants},
-        BecauseInvariantsEq, Read, TryTransmuteFromPtr,
+        invariant::{
+            Aligned, BecauseExclusive, BecauseImmutable, Initialized, Invariants, Read, Reference,
+            Unaligned, Valid,
+        },
+        BecauseInvariantsEq, TryTransmuteFromPtr,
     },
     FromBytes, Immutable, IntoBytes, KnownLayout, Ptr, ReadOnly, TryFromBytes, ValidityError,
 };
@@ -626,20 +629,17 @@ pub const fn hash_name(name: &str) -> i128 {
 #[inline]
 fn try_cast_or_pme<Src, Dst, I, R, S>(
     src: Ptr<'_, Src, I>,
-) -> Result<
-    Ptr<'_, Dst, (I::Aliasing, invariant::Unaligned, invariant::Valid)>,
-    ValidityError<Ptr<'_, Src, I>, Dst>,
->
+) -> Result<Ptr<'_, Dst, (I::Aliasing, Unaligned, Valid)>, ValidityError<Ptr<'_, Src, I>, Dst>>
 where
     // FIXME(#2226): There should be a `Src: FromBytes` bound here, but doing so
     // requires deeper surgery.
-    Src: invariant::Read<I::Aliasing, R>,
+    Src: Read<I::Aliasing, R>,
     Dst: TryFromBytes
-        + invariant::Read<I::Aliasing, R>
-        + TryTransmuteFromPtr<Dst, I::Aliasing, invariant::Initialized, invariant::Valid, IdCast, S>,
+        + Read<I::Aliasing, R>
+        + TryTransmuteFromPtr<Dst, I::Aliasing, Initialized, Valid, IdCast, S>,
     ReadOnly<Dst>: Read<I::Aliasing, R>,
-    I: Invariants<Validity = invariant::Initialized>,
-    I::Aliasing: invariant::Reference,
+    I: Invariants<Validity = Initialized>,
+    I::Aliasing: Reference,
 {
     let c_ptr = src.cast::<_, CastSized, _>();
     match c_ptr.try_into_valid() {
@@ -691,7 +691,7 @@ where
     // SAFETY: Since `Src: IntoBytes`, and since `size_of::<Src>() ==
     // size_of::<Dst>()` by the preceding assertion, all of `mu_dst`'s bytes are
     // initialized.
-    let ptr = unsafe { ptr.assume_validity::<invariant::Initialized>() };
+    let ptr = unsafe { ptr.assume_validity::<Initialized>() };
 
     let ptr: Ptr<'_, ReadOnly<Dst>, _> = ptr.cast::<_, crate::pointer::cast::CastSized, _>();
 
@@ -726,13 +726,13 @@ where
     Dst: TryFromBytes + Immutable,
 {
     let ptr = Ptr::from_ref(src);
-    let ptr = ptr.recall_validity::<invariant::Initialized, _>();
+    let ptr = ptr.recall_validity::<Initialized, _>();
     match try_cast_or_pme::<Src, Dst, _, BecauseImmutable, _>(ptr) {
         Ok(ptr) => {
             static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
             // SAFETY: We have checked that `Dst` does not have a stricter
             // alignment requirement than `Src`.
-            let ptr = unsafe { ptr.assume_alignment::<invariant::Aligned>() };
+            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
             Ok(ptr.as_ref())
         }
         Err(err) => Err(err.map_src(|ptr| {
@@ -770,13 +770,13 @@ where
     Dst: TryFromBytes + IntoBytes,
 {
     let ptr = Ptr::from_mut(src);
-    let ptr = ptr.recall_validity::<invariant::Initialized, (_, (_, _))>();
+    let ptr = ptr.recall_validity::<Initialized, (_, (_, _))>();
     match try_cast_or_pme::<Src, Dst, _, BecauseExclusive, _>(ptr) {
         Ok(ptr) => {
             static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
             // SAFETY: We have checked that `Dst` does not have a stricter
             // alignment requirement than `Src`.
-            let ptr = unsafe { ptr.assume_alignment::<invariant::Aligned>() };
+            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
             Ok(ptr.as_mut())
         }
         Err(err) => {
@@ -900,9 +900,9 @@ where
         }, "cannot transmute reference when destination type has higher alignment than source type");
 
         let ptr = Ptr::from_ref(self.0)
-            .recall_validity::<invariant::Initialized, _>()
-            .transmute_with::<Dst, invariant::Initialized, crate::layout::CastFrom<Dst>, (crate::pointer::BecauseMutationCompatible, _)>()
-            .recall_validity::<invariant::Valid, _>();
+            .recall_validity::<Initialized, _>()
+            .transmute_with::<Dst, Initialized, crate::layout::CastFrom<Dst>, (crate::pointer::BecauseMutationCompatible, _)>()
+            .recall_validity::<Valid, _>();
 
         // SAFETY: The preceding `static_assert!` ensures that
         // `Src::LAYOUT.align >= Dst::LAYOUT.align`. Since `self` is
@@ -933,9 +933,9 @@ where
         }, "cannot transmute reference when destination type has higher alignment than source type");
 
         let ptr = Ptr::from_mut(self.0)
-            .recall_validity::<invariant::Initialized, (_, (_, _))>()
-            .transmute_with::<Dst, invariant::Initialized, crate::layout::CastFrom<Dst>, _>()
-            .recall_validity::<invariant::Valid, (_, (_, _))>();
+            .recall_validity::<Initialized, (_, (_, _))>()
+            .transmute_with::<Dst, Initialized, crate::layout::CastFrom<Dst>, _>()
+            .recall_validity::<Valid, (_, (_, _))>();
 
         #[allow(unused_unsafe)]
         // SAFETY: The preceding `static_assert!` ensures that
