@@ -747,7 +747,7 @@ pub unsafe trait KnownLayout {
 
     /// The type of metadata stored in a pointer to `Self`.
     ///
-    /// This is [`()`] for sized types and [`usize`] for slice DSTs.
+    /// This is `()` for sized types and [`usize`] for slice DSTs.
     type PointerMetadata: PointerMetadata;
 
     /// A maybe-uninitialized analog of `Self`
