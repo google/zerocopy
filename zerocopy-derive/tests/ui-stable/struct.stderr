@@ -1,7 +1,7 @@
 error: this conflicts with another representation hint
    --> tests/ui-stable/struct.rs:185:11
     |
-185 | #[repr(C, C)] // zerocopy-derive conservatively treats these as conflicting reprs
+185 | #[repr(C, C)] // zerocopy-derive conservatively treats these as conflicti...
     |           ^
 
 error: must have a non-align #[repr(...)] attribute in order to guarantee this type's memory layout
@@ -184,6 +184,8 @@ error[E0277]: the trait bound `UnsafeCell<()>: zerocopy_renamed::Immutable` is n
              (A, B, C, D, E, F)
            and $N others
    = help: see issue #48214
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-bf0e73bea3a07d1e.long-type-10645459413463858074.txt'
+   = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy_renamed::Immutable` is not satisfied
@@ -205,6 +207,8 @@ error[E0277]: the trait bound `UnsafeCell<u8>: zerocopy_renamed::Immutable` is n
            and $N others
    = note: required for `[UnsafeCell<u8>; 0]` to implement `zerocopy_renamed::Immutable`
    = help: see issue #48214
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/stable/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-bf0e73bea3a07d1e.long-type-10645459413463858074.txt'
+   = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
@@ -293,7 +297,7 @@ help: the trait `PaddingFree<IntoBytes2, 1>` is not implemented for `()`
       but trait `PaddingFree<IntoBytes2, 0>` is implemented for it
    --> $WORKSPACE/src/util/macro_util.rs
     |
- 65 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
+ 68 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -311,7 +315,7 @@ help: the trait `PaddingFree<IntoBytes3, 1>` is not implemented for `()`
       but trait `PaddingFree<IntoBytes3, 0>` is implemented for it
    --> $WORKSPACE/src/util/macro_util.rs
     |
- 65 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
+ 68 | impl<T: ?Sized> PaddingFree<T, 0> for () {}
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -365,7 +369,7 @@ help: the trait `DynamicPaddingFree<IntoBytes5, true>` is not implemented for `(
       but trait `DynamicPaddingFree<IntoBytes5, false>` is implemented for it
    --> $WORKSPACE/src/util/macro_util.rs
     |
- 83 | impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
+ 86 | impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -383,7 +387,7 @@ help: the trait `DynamicPaddingFree<IntoBytes6, true>` is not implemented for `(
       but trait `DynamicPaddingFree<IntoBytes6, false>` is implemented for it
    --> $WORKSPACE/src/util/macro_util.rs
     |
- 83 | impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
+ 86 | impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -401,7 +405,7 @@ help: the trait `DynamicPaddingFree<IntoBytes7, true>` is not implemented for `(
       but trait `DynamicPaddingFree<IntoBytes7, false>` is implemented for it
    --> $WORKSPACE/src/util/macro_util.rs
     |
- 83 | impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
+ 86 | impl<T: ?Sized> DynamicPaddingFree<T, false> for () {}
     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = help: see issue #48214
     = note: this error originates in the derive macro `IntoBytes` (in Nightly builds, run with -Z macro-backtrace for more info)

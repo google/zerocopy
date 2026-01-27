@@ -35,6 +35,8 @@ note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
    |
 35 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: TryFromBytes);
    | ------------------------------------------------------------------- in this macro invocation
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/nightly/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-3e2685812b6fb2a8.long-type-9596172538377863834.txt'
+   = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
@@ -74,6 +76,8 @@ note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
    |
 36 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromZeros);
    | ---------------------------------------------------------------- in this macro invocation
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/nightly/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-3e2685812b6fb2a8.long-type-9596172538377863834.txt'
+   = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
@@ -113,6 +117,8 @@ note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
    |
 37 | util_assert_impl_all!(TransparentStruct<NotZerocopy>: FromBytes);
    | ---------------------------------------------------------------- in this macro invocation
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/nightly/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-3e2685812b6fb2a8.long-type-9596172538377863834.txt'
+   = note: consider using `--verbose` to print the full type name to the console
    = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::IntoBytes` is not satisfied

@@ -25,3 +25,5 @@ note: required by a bound in `takes_from_zeros`
    |
 19 | fn takes_from_zeros<T: FromZeros>() {}
    |                        ^^^^^^^^^ required by this bound in `takes_from_zeros`
+   = note: the full name for the type has been written to '$DIR/target/by-toolchain/nightly/tests/trybuild/x86_64-unknown-linux-gnu/debug/deps/$CRATE-304c27672daa0f84.long-type-16391473163263367733.txt'
+   = note: consider using `--verbose` to print the full type name to the console
