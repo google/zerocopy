@@ -661,36 +661,39 @@ where
 #[inline(always)]
 pub fn try_transmute_ref<Src, Dst>(src: &Src) -> Result<&Dst, ValidityError<&Src, Dst>>
 where
-    Src: IntoBytes + Immutable,
-    Dst: TryFromBytes + Immutable,
+    Src: IntoBytes + Immutable + KnownLayout + ?Sized,
+    Dst: TryFromBytes + Immutable + KnownLayout + ?Sized,
 {
     let ptr = Ptr::from_ref(src);
     let ptr = ptr.recall_validity::<Initialized, _>();
-    let ptr = ptr.cast::<_, CastSized, _>();
+    let ptr = ptr.cast::<_, crate::layout::CastFrom<Dst>, _>();
     match ptr.try_into_valid() {
         Ok(ptr) => {
-            static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
+            static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
+                Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
+            }, "cannot transmute reference when destination type has higher alignment than source type");
             // SAFETY: We have checked that `Dst` does not have a stricter
             // alignment requirement than `Src`.
             let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
             Ok(ptr.as_ref())
         }
         Err(err) => Err(err.map_src(|ptr| {
-            let ptr = ptr.cast::<_, CastSized, _>();
-            // SAFETY: `ptr` has the same address as `src: &Src`, which is
-            // aligned by invariant on `&Src`.
-            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
-            // SAFETY: Because `Src: Immutable` and we create a `Ptr` via
-            // `Ptr::from_ref`, the resulting `Ptr` is a shared-and-`Immutable`
-            // `Ptr`, which does not permit mutation of its referent. Therefore,
-            // no mutation could have happened during the call to
-            // `try_into_valid` (any such mutation would be unsound).
-            //
-            // `try_into_valid` promises to return its original argument, and
-            // so we know that we are getting back the same `ptr` that we
-            // originally passed, and that `ptr` was a bit-valid `Src`.
-            let ptr = unsafe { ptr.assume_valid() };
-            ptr.as_ref()
+            todo!()
+            // let ptr = ptr.cast::<_, CastSized, _>();
+            // // SAFETY: `ptr` has the same address as `src: &Src`, which is
+            // // aligned by invariant on `&Src`.
+            // let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+            // // SAFETY: Because `Src: Immutable` and we create a `Ptr` via
+            // // `Ptr::from_ref`, the resulting `Ptr` is a shared-and-`Immutable`
+            // // `Ptr`, which does not permit mutation of its referent. Therefore,
+            // // no mutation could have happened during the call to
+            // // `try_into_valid` (any such mutation would be unsound).
+            // //
+            // // `try_into_valid` promises to return its original argument, and
+            // // so we know that we are getting back the same `ptr` that we
+            // // originally passed, and that `ptr` was a bit-valid `Src`.
+            // let ptr = unsafe { ptr.assume_valid() };
+            // ptr.as_ref()
         })),
     }
 }
@@ -710,15 +713,17 @@ where
 #[inline(always)]
 pub fn try_transmute_mut<Src, Dst>(src: &mut Src) -> Result<&mut Dst, ValidityError<&mut Src, Dst>>
 where
-    Src: FromBytes + IntoBytes,
-    Dst: TryFromBytes + IntoBytes,
+    Src: FromBytes + IntoBytes + KnownLayout + ?Sized,
+    Dst: TryFromBytes + IntoBytes + KnownLayout + ?Sized,
 {
     let ptr = Ptr::from_mut(src);
     let ptr = ptr.recall_validity::<Initialized, (_, (_, _))>();
-    let ptr = ptr.cast::<_, CastSized, _>();
+    let ptr = ptr.cast::<_, crate::layout::CastFrom<Dst>, _>();
     match ptr.try_into_valid() {
         Ok(ptr) => {
-            static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
+            static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
+                Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
+            }, "cannot transmute reference when destination type has higher alignment than source type");
             // SAFETY: We have checked that `Dst` does not have a stricter
             // alignment requirement than `Src`.
             let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
@@ -726,11 +731,12 @@ where
         }
         Err(err) => {
             Err(err.map_src(|ptr| {
-                let ptr = ptr.cast::<_, CastSized, _>();
-                // SAFETY: `ptr` has the same address as `src: &mut Src`, which
-                // is aligned by invariant on `&mut Src`.
-                let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
-                ptr.recall_validity::<_, (_, BecauseInvariantsEq)>().as_mut()
+                todo!()
+                // let ptr = ptr.cast::<_, CastSized, _>();
+                // // SAFETY: `ptr` has the same address as `src: &mut Src`, which
+                // // is aligned by invariant on `&mut Src`.
+                // let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+                // ptr.recall_validity::<_, (_, BecauseInvariantsEq)>().as_mut()
             }))
         }
     }
