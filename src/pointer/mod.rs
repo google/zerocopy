@@ -347,4 +347,20 @@ pub mod cast {
 
     // SAFETY: The `Project::project` impl preserves the set of referent bytes.
     unsafe impl<T: ?Sized + KnownLayout> CastExact<T, [u8]> for AsBytesCast {}
+
+    /// A cast from any type to `()`.
+    #[allow(missing_copy_implementations, missing_debug_implementations)]
+    pub struct CastToUnit;
+
+    // SAFETY: The `project` implementation projects to a subset of its
+    // argument's referent using provenance-preserving operations.
+    unsafe impl<T: ?Sized> Project<T, ()> for CastToUnit {
+        #[inline(always)]
+        fn project(src: PtrInner<'_, T>) -> *mut () {
+            src.as_ptr().cast::<()>()
+        }
+    }
+
+    // SAFETY: The `project` implementation preserves referent address.
+    unsafe impl<T: ?Sized> Cast<T, ()> for CastToUnit {}
 }
