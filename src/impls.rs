@@ -781,6 +781,10 @@ const _: () = {
     {
         type Type = T;
 
+        type Tag = ();
+
+        type ProjectToTag = crate::pointer::cast::CastToUnit;
+
         #[inline]
         fn only_derive_is_allowed_to_implement_this_trait()
         where
@@ -1057,6 +1061,10 @@ mod tuples {
                 {}
 
                 type Type = $CurrT;
+
+                type Tag = ();
+
+                type ProjectToTag = crate::pointer::cast::CastToUnit;
 
                 #[inline(always)]
                 fn project(slf: crate::PtrInner<'_, Self>) -> *mut Self::Type {

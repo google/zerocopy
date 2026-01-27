@@ -886,15 +886,16 @@ mod _casts {
 
         #[inline(always)]
         pub fn project<F, const VARIANT_ID: i128, const FIELD_ID: i128>(
-            self,
+            mut self,
         ) -> Result<Ptr<'a, T::Type, T::Invariants>, T::Error>
         where
             T: ProjectField<F, I, VARIANT_ID, FIELD_ID>,
+            I::Aliasing: Reference,
         {
             use crate::pointer::cast::Projection;
-            match T::is_projectable(self) {
-                Ok(ptr) => {
-                    let inner = ptr.as_inner();
+            match T::is_projectable(T::project_tag(self.reborrow())) {
+                Ok(()) => {
+                    let inner = self.as_inner();
                     let projected = inner.project::<_, Projection<F, VARIANT_ID, FIELD_ID>>();
                     // SAFETY: By `T: ProjectField<F, I, VARIANT_ID, FIELD_ID>`,
                     // for `self: Ptr<'_, T, I>` such that `T::is_projectable`
