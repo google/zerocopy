@@ -751,8 +751,8 @@ mod cast_from {
     // of the referent – it only modifies pointer metadata.
     unsafe impl<Src, Dst> crate::pointer::cast::Cast<Src, Dst> for CastFrom<Dst>
     where
-        Src: KnownLayout<PointerMetadata = usize> + ?Sized,
-        Dst: KnownLayout<PointerMetadata = usize> + ?Sized,
+        Src: KnownLayout + ?Sized,
+        Dst: KnownLayout + ?Sized,
     {
     }
 
@@ -760,8 +760,8 @@ mod cast_from {
     // the referent (see inline comments for a more detailed proof of this).
     unsafe impl<Src, Dst> crate::pointer::cast::CastExact<Src, Dst> for CastFrom<Dst>
     where
-        Src: KnownLayout<PointerMetadata = usize> + ?Sized,
-        Dst: KnownLayout<PointerMetadata = usize> + ?Sized,
+        Src: KnownLayout + ?Sized,
+        Dst: KnownLayout + ?Sized,
     {
     }
 
@@ -771,8 +771,8 @@ mod cast_from {
     // operations.
     unsafe impl<Src, Dst> crate::pointer::cast::Project<Src, Dst> for CastFrom<Dst>
     where
-        Src: KnownLayout<PointerMetadata = usize> + ?Sized,
-        Dst: KnownLayout<PointerMetadata = usize> + ?Sized,
+        Src: KnownLayout + ?Sized,
+        Dst: KnownLayout + ?Sized,
     {
         /// # PME
         ///
@@ -847,74 +847,131 @@ mod cast_from {
             /// described above.
             ///
             /// `Src`'s alignment must not be smaller than `Dst`'s alignment.
-            #[derive(Copy, Clone)]
-            struct CastParams {
-                offset_delta_elems: usize,
-                elem_multiple: usize,
+            struct CastParams<Src: ?Sized, Dst: ?Sized> {
+                inner: CastParamsInner,
+                _src: PhantomData<Src>,
+                _dst: PhantomData<Dst>,
             }
 
-            impl CastParams {
-                const fn try_compute(src: &DstLayout, dst: &DstLayout) -> Option<CastParams> {
+            #[derive(Copy, Clone)]
+            enum CastParamsInner {
+                UnsizedToUnsized { offset_delta_elems: usize, elem_multiple: usize },
+                SizedToUnsized { dst_meta: usize },
+                SizedToSized,
+            }
+
+            impl<Src: ?Sized, Dst: ?Sized> Copy for CastParams<Src, Dst> {}
+            impl<Src: ?Sized, Dst: ?Sized> Clone for CastParams<Src, Dst> {
+                fn clone(&self) -> Self {
+                    *self
+                }
+            }
+
+            impl<Src: ?Sized, Dst: ?Sized> CastParams<Src, Dst> {
+                const fn try_compute(
+                    src: &DstLayout,
+                    dst: &DstLayout,
+                ) -> Option<CastParams<Src, Dst>> {
                     if src.align.get() < dst.align.get() {
                         return None;
                     }
 
-                    let (src, dst) = if let (SizeInfo::SliceDst(src), SizeInfo::SliceDst(dst)) =
-                        (src.size_info, dst.size_info)
-                    {
-                        (src, dst)
-                    } else {
-                        return None;
+                    let inner = match (src.size_info, dst.size_info) {
+                        (
+                            SizeInfo::Sized { size: src_size },
+                            SizeInfo::Sized { size: dst_size },
+                        ) => {
+                            if src_size != dst_size {
+                                return None;
+                            }
+                            CastParamsInner::SizedToSized
+                        }
+                        (SizeInfo::Sized { size: src_size }, SizeInfo::SliceDst(dst)) => {
+                            let offset_delta = if let Some(od) = src_size.checked_sub(dst.offset) {
+                                od
+                            } else {
+                                return None;
+                            };
+
+                            let dst_elem_size = if let Some(e) = NonZeroUsize::new(dst.elem_size) {
+                                e
+                            } else {
+                                return None;
+                            };
+
+                            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
+                            // divide by zero.
+                            #[allow(clippy::arithmetic_side_effects)]
+                            let delta_mod_other_elem = offset_delta % dst_elem_size.get();
+
+                            if delta_mod_other_elem != 0 {
+                                return None;
+                            }
+
+                            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
+                            // divide by zero.
+                            #[allow(clippy::arithmetic_side_effects)]
+                            let dst_meta = offset_delta / dst_elem_size.get();
+
+                            CastParamsInner::SizedToUnsized { dst_meta }
+                        }
+                        (SizeInfo::SliceDst(src), SizeInfo::SliceDst(dst)) => {
+                            let offset_delta = if let Some(od) = src.offset.checked_sub(dst.offset)
+                            {
+                                od
+                            } else {
+                                return None;
+                            };
+
+                            let dst_elem_size = if let Some(e) = NonZeroUsize::new(dst.elem_size) {
+                                e
+                            } else {
+                                return None;
+                            };
+
+                            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
+                            // divide by zero.
+                            #[allow(clippy::arithmetic_side_effects)]
+                            let delta_mod_other_elem = offset_delta % dst_elem_size.get();
+
+                            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
+                            // divide by zero.
+                            #[allow(clippy::arithmetic_side_effects)]
+                            let elem_remainder = src.elem_size % dst_elem_size.get();
+
+                            if delta_mod_other_elem != 0
+                                || src.elem_size < dst.elem_size
+                                || elem_remainder != 0
+                            {
+                                return None;
+                            }
+
+                            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
+                            // divide by zero.
+                            #[allow(clippy::arithmetic_side_effects)]
+                            let offset_delta_elems = offset_delta / dst_elem_size.get();
+
+                            // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
+                            // divide by zero.
+                            #[allow(clippy::arithmetic_side_effects)]
+                            let elem_multiple = src.elem_size / dst_elem_size.get();
+
+                            // SAFETY: We checked above that `src.align >= dst.align`.
+                            CastParamsInner::UnsizedToUnsized {
+                                // SAFETY: We checked above that this is an exact ratio.
+                                offset_delta_elems,
+                                // SAFETY: We checked above that this is an exact ratio.
+                                elem_multiple,
+                            }
+                        }
+                        _ => return None,
                     };
 
-                    let offset_delta = if let Some(od) = src.offset.checked_sub(dst.offset) {
-                        od
-                    } else {
-                        return None;
-                    };
-
-                    let dst_elem_size = if let Some(e) = NonZeroUsize::new(dst.elem_size) {
-                        e
-                    } else {
-                        return None;
-                    };
-
-                    // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                    // divide by zero.
-                    #[allow(clippy::arithmetic_side_effects)]
-                    let delta_mod_other_elem = offset_delta % dst_elem_size.get();
-
-                    // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                    // divide by zero.
-                    #[allow(clippy::arithmetic_side_effects)]
-                    let elem_remainder = src.elem_size % dst_elem_size.get();
-
-                    if delta_mod_other_elem != 0
-                        || src.elem_size < dst.elem_size
-                        || elem_remainder != 0
-                    {
-                        return None;
-                    }
-
-                    // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                    // divide by zero.
-                    #[allow(clippy::arithmetic_side_effects)]
-                    let offset_delta_elems = offset_delta / dst_elem_size.get();
-
-                    // PANICS: `dst_elem_size: NonZeroUsize`, so this won't
-                    // divide by zero.
-                    #[allow(clippy::arithmetic_side_effects)]
-                    let elem_multiple = src.elem_size / dst_elem_size.get();
-
-                    // SAFETY: We checked above that `src.align >= dst.align`.
-                    Some(CastParams {
-                        // SAFETY: We checked above that this is an exact ratio.
-                        offset_delta_elems,
-                        // SAFETY: We checked above that this is an exact ratio.
-                        elem_multiple,
-                    })
+                    Some(CastParams { inner, _src: PhantomData, _dst: PhantomData })
                 }
+            }
 
+            impl<Src: KnownLayout + ?Sized, Dst: KnownLayout + ?Sized> CastParams<Src, Dst> {
                 /// # Safety
                 ///
                 /// `src_meta` describes a `Src` whose size is no larger than
@@ -922,41 +979,57 @@ mod cast_from {
                 ///
                 /// The returned metadata describes a `Dst` of the same size as
                 /// the original `Src`.
-                unsafe fn cast_metadata(self, src_meta: usize) -> usize {
+                #[inline(always)]
+                unsafe fn cast_metadata(
+                    self,
+                    src_meta: Src::PointerMetadata,
+                ) -> Dst::PointerMetadata {
                     #[allow(unused)]
                     use crate::util::polyfills::*;
 
-                    // SAFETY: `self` is a witness that the following equation
-                    // holds:
-                    //
-                    //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
-                    //
-                    // Since the caller promises that `src_meta` is valid `Src`
-                    // metadata, this math will not overflow, and the returned
-                    // value will describe a `Dst` of the same size.
-                    #[allow(unstable_name_collisions, clippy::multiple_unsafe_ops_per_block)]
-                    unsafe {
-                        self.offset_delta_elems
-                            .unchecked_add(src_meta.unchecked_mul(self.elem_multiple))
-                    }
+                    let dst_meta = match self.inner {
+                        CastParamsInner::UnsizedToUnsized { offset_delta_elems, elem_multiple } => {
+                            let src_meta = src_meta.to_elem_count();
+                            #[allow(
+                                unstable_name_collisions,
+                                clippy::multiple_unsafe_ops_per_block
+                            )]
+                            // SAFETY: `self` is a witness that the following
+                            // equation holds:
+                            //
+                            //   D_OFF + d_meta * D_ELEM = S_OFF + s_meta * S_ELEM
+                            //
+                            // Since the caller promises that `src_meta` is
+                            // valid `Src` metadata, this math will not
+                            // overflow, and the returned value will describe a
+                            // `Dst` of the same size.
+                            unsafe {
+                                offset_delta_elems
+                                    .unchecked_add(src_meta.unchecked_mul(elem_multiple))
+                            }
+                        }
+                        CastParamsInner::SizedToUnsized { dst_meta } => dst_meta,
+                        CastParamsInner::SizedToSized => 0,
+                    };
+                    Dst::PointerMetadata::from_elem_count(dst_meta)
                 }
             }
 
             trait Params<Src: ?Sized> {
-                const CAST_PARAMS: CastParams;
+                const CAST_PARAMS: CastParams<Src, Self>;
             }
 
             impl<Src, Dst> Params<Src> for Dst
             where
                 Src: KnownLayout + ?Sized,
-                Dst: KnownLayout<PointerMetadata = usize> + ?Sized,
+                Dst: KnownLayout + ?Sized,
             {
-                const CAST_PARAMS: CastParams =
+                const CAST_PARAMS: CastParams<Src, Dst> =
                     match CastParams::try_compute(&Src::LAYOUT, &Dst::LAYOUT) {
                         Some(params) => params,
                         None => const_panic!(
-                        "cannot `transmute_ref!` or `transmute_mut!` between incompatible types"
-                    ),
+                            "cannot `transmute_ref!` or `transmute_mut!` between incompatible types"
+                        ),
                     };
             }
 
