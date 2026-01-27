@@ -991,6 +991,17 @@ mod _casts {
         }
     }
 
+    impl<Src, NewSrc, Dst> Map<NewSrc> for crate::CastError<Src, Dst>
+    where
+        Dst: ?Sized,
+    {
+        type Input = Src;
+        type Output = crate::CastError<NewSrc, Dst>;
+        fn map<F: FnOnce(Src) -> NewSrc>(self, f: F) -> Self::Output {
+            self.map_src(f)
+        }
+    }
+
     impl<'a, T, I> Ptr<'a, T, I>
     where
         T: 'a + KnownLayout + ?Sized,
@@ -1155,30 +1166,19 @@ mod _casts {
             U: 'a + ?Sized + KnownLayout + Read<I::Aliasing, R>,
             [u8]: Read<I::Aliasing, R>,
         {
-            // FIXME(#67): Remove this allow. See NonNullExt for more details.
-            #[allow(unstable_name_collisions)]
-            match self.try_cast_into(CastType::Prefix, meta) {
-                Ok((slf, remainder)) => {
-                    if remainder.len() == 0 {
-                        Ok(slf)
-                    } else {
-                        // Undo the cast so we can return the original bytes.
-                        let slf = slf.as_bytes();
-                        // Restore the initial alignment invariant of `self`.
-                        //
-                        // SAFETY: The referent type of `slf` is now equal to
-                        // that of `self`, but the alignment invariants
-                        // nominally differ. Since `slf` and `self` refer to the
-                        // same memory and no actions have been taken that would
-                        // violate the original invariants on `self`, it is
-                        // sound to apply the alignment invariant of `self` onto
-                        // `slf`.
-                        let slf = unsafe { slf.assume_alignment::<I::Alignment>() };
-                        let slf = slf.unify_invariants();
-                        Err(CastError::Size(SizeError::<_, U>::new(slf)))
-                    }
-                }
-                Err(err) => Err(err),
+            // SAFETY: TODO
+            unsafe {
+                self.try_with_unchecked(|slf| {
+                    slf.try_cast_into(CastType::Prefix, meta)
+                        .map_err(|err| err.map_src(|_slf| ()))
+                        .and_then(|(slf, remainder)| {
+                            if remainder.len() == 0 {
+                                Ok(slf)
+                            } else {
+                                Err(CastError::Size(SizeError::<_, U>::new(())))
+                            }
+                        })
+                })
             }
         }
     }
@@ -1515,5 +1515,19 @@ mod tests {
         // metadata to overflow to 0, and thus the cast would spuriously
         // succeed.
         test!(Dst, 8, usize::MAX - 8 + 1, None);
+    }
+
+    #[test]
+    fn test_try_cast_into_no_leftover_restores_original_slice() {
+        let bytes = [0u8; 4];
+        let ptr = Ptr::from_ref(&bytes[..]);
+        let res = ptr.try_cast_into_no_leftover::<u16, BecauseImmutable>(None);
+        match res {
+            Ok(_) => panic!("should have failed due to leftover bytes"),
+            Err(CastError::Size(e)) => {
+                assert_eq!(e.into_src().len(), 4, "Should return original slice length");
+            }
+            Err(e) => panic!("wrong error type: {:?}", e),
+        }
     }
 }
