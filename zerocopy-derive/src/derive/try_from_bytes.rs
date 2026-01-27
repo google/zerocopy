@@ -218,6 +218,12 @@ pub(crate) fn derive_is_bit_valid(
     let (impl_generics, ty_generics, where_clause) = ctx.ast.generics.split_for_impl();
 
     let zerocopy_crate = &ctx.zerocopy_crate;
+    let has_tag = ImplBlockBuilder::new(ctx, data, Trait::HasTag, FieldBounds::None)
+        .inner_extras(quote! {
+            type Tag = ___ZerocopyTag;
+            type ProjectToTag = #zerocopy_crate::pointer::cast::CastSized;
+        })
+        .build();
     let has_fields = data.variants().into_iter().flat_map(|(variant, fields)| {
         let variant_ident = &variant.unwrap().ident;
         let variants_union_field_ident = variants_union_field_ident(variant_ident);
@@ -384,6 +390,8 @@ pub(crate) fn derive_is_bit_valid(
 
             #raw_enum
 
+            #has_tag
+
             #(#has_fields)*
 
             let tag = {
@@ -464,6 +472,12 @@ fn derive_has_field_struct_union(ctx: &Ctx, data: &dyn DataExt) -> TokenStream {
         Data::Enum(..) | Data::Struct(..) => false,
     };
     let core = ctx.core_path();
+    let has_tag = ImplBlockBuilder::new(ctx, data, Trait::HasTag, FieldBounds::None)
+        .inner_extras(quote! {
+            type Tag = ();
+            type ProjectToTag = #zerocopy_crate::pointer::cast::CastToUnit;
+        })
+        .build();
     let has_fields = fields.iter().map(move |(_, ident, ty)| {
         let field_token = ident!(("ẕ{}", ident), ident.span());
         let field: Box<Type> = parse_quote!(#field_token);
@@ -581,7 +595,7 @@ fn derive_has_field_struct_union(ctx: &Ctx, data: &dyn DataExt) -> TokenStream {
         .build()
     });
 
-    const_block(field_tokens.into_iter().chain(has_fields).map(Some))
+    const_block(field_tokens.into_iter().chain(Some(has_tag)).chain(has_fields).map(Some))
 }
 fn derive_try_from_bytes_struct(
     ctx: &Ctx,

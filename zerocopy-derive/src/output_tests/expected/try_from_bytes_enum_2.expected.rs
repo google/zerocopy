@@ -33,7 +33,7 @@ const _: () = {
         {
             #[repr(u32)]
             #[allow(dead_code)]
-            enum ___ZerocopyTag {
+            pub enum ___ZerocopyTag {
                 UnitLike,
                 StructLike,
                 TupleLike,
@@ -253,6 +253,34 @@ const _: () = {
                     enum ẕ4 {}
                     enum ẕ5 {}
                     enum ẕ6 {}
+                    #[allow(
+                        deprecated,
+                        private_bounds,
+                        non_local_definitions,
+                        non_camel_case_types,
+                        non_upper_case_globals,
+                        non_snake_case,
+                        non_ascii_idents,
+                        clippy::missing_inline_in_public_items,
+                    )]
+                    #[deny(ambiguous_associated_items)]
+                    #[automatically_derived]
+                    const _: () = {
+                        unsafe impl<
+                            'a: 'static,
+                            X,
+                            Y: Deref,
+                            const N: usize,
+                        > ::zerocopy::HasTag
+                        for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+                        where
+                            X: Deref<Target = &'a [(X, Y); N]>,
+                        {
+                            fn only_derive_is_allowed_to_implement_this_trait() {}
+                            type Tag = ();
+                            type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
+                        }
+                    };
                     #[allow(
                         deprecated,
                         private_bounds,
@@ -1018,6 +1046,34 @@ const _: () = {
                             X,
                             Y: Deref,
                             const N: usize,
+                        > ::zerocopy::HasTag
+                        for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+                        where
+                            X: Deref<Target = &'a [(X, Y); N]>,
+                        {
+                            fn only_derive_is_allowed_to_implement_this_trait() {}
+                            type Tag = ();
+                            type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
+                        }
+                    };
+                    #[allow(
+                        deprecated,
+                        private_bounds,
+                        non_local_definitions,
+                        non_camel_case_types,
+                        non_upper_case_globals,
+                        non_snake_case,
+                        non_ascii_idents,
+                        clippy::missing_inline_in_public_items,
+                    )]
+                    #[deny(ambiguous_associated_items)]
+                    #[automatically_derived]
+                    const _: () = {
+                        unsafe impl<
+                            'a: 'static,
+                            X,
+                            Y: Deref,
+                            const N: usize,
                         > ::zerocopy::HasField<
                             ẕ0,
                             { ::zerocopy::STRUCT_VARIANT_ID },
@@ -1465,6 +1521,30 @@ const _: () = {
                         X,
                         Y: Deref,
                         const N: usize,
+                    > ::zerocopy::HasTag for ___ZerocopyVariants<'a, { N }, X, Y> {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Tag = ();
+                        type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        const N: usize,
                     > ::zerocopy::HasField<
                         ẕ__field_StructLike,
                         { ::zerocopy::UNION_VARIANT_ID },
@@ -1672,6 +1752,30 @@ const _: () = {
                         X,
                         Y: Deref,
                         const N: usize,
+                    > ::zerocopy::HasTag for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+                        fn only_derive_is_allowed_to_implement_this_trait() {}
+                        type Tag = ();
+                        type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
+                    }
+                };
+                #[allow(
+                    deprecated,
+                    private_bounds,
+                    non_local_definitions,
+                    non_camel_case_types,
+                    non_upper_case_globals,
+                    non_snake_case,
+                    non_ascii_idents,
+                    clippy::missing_inline_in_public_items,
+                )]
+                #[deny(ambiguous_associated_items)]
+                #[automatically_derived]
+                const _: () = {
+                    unsafe impl<
+                        'a: 'static,
+                        X,
+                        Y: Deref,
+                        const N: usize,
                     > ::zerocopy::HasField<
                         ẕtag,
                         { ::zerocopy::STRUCT_VARIANT_ID },
@@ -1808,6 +1912,29 @@ const _: () = {
                         }
                     };
                 };
+            };
+            #[allow(
+                deprecated,
+                private_bounds,
+                non_local_definitions,
+                non_camel_case_types,
+                non_upper_case_globals,
+                non_snake_case,
+                non_ascii_idents,
+                clippy::missing_inline_in_public_items,
+            )]
+            #[deny(ambiguous_associated_items)]
+            #[automatically_derived]
+            const _: () = {
+                unsafe impl<'a: 'static, X, Y: Deref, const N: usize> ::zerocopy::HasTag
+                for ComplexWithGenerics<'a, { N }, X, Y>
+                where
+                    X: Deref<Target = &'a [(X, Y); N]>,
+                {
+                    fn only_derive_is_allowed_to_implement_this_trait() {}
+                    type Tag = ___ZerocopyTag;
+                    type ProjectToTag = ::zerocopy::pointer::cast::CastSized;
+                }
             };
             #[allow(
                 deprecated,
