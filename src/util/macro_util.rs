@@ -31,7 +31,6 @@ use crate::{
     pointer::{
         cast::CastSized,
         invariant::{Aligned, Initialized, Valid},
-        BecauseInvariantsEq,
     },
     FromBytes, Immutable, IntoBytes, KnownLayout, Ptr, ReadOnly, TryFromBytes, ValidityError,
 };
@@ -665,34 +664,19 @@ where
     Dst: TryFromBytes + Immutable,
 {
     let ptr = Ptr::from_ref(src);
-    let ptr = ptr.recall_validity::<Initialized, _>();
-    let ptr = ptr.cast::<_, CastSized, _>();
-    match ptr.try_into_valid() {
-        Ok(ptr) => {
-            static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
-            // SAFETY: We have checked that `Dst` does not have a stricter
-            // alignment requirement than `Src`.
-            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
-            Ok(ptr.as_ref())
-        }
-        Err(err) => Err(err.map_src(|ptr| {
-            let ptr = ptr.cast::<_, CastSized, _>();
-            // SAFETY: `ptr` has the same address as `src: &Src`, which is
-            // aligned by invariant on `&Src`.
-            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
-            // SAFETY: Because `Src: Immutable` and we create a `Ptr` via
-            // `Ptr::from_ref`, the resulting `Ptr` is a shared-and-`Immutable`
-            // `Ptr`, which does not permit mutation of its referent. Therefore,
-            // no mutation could have happened during the call to
-            // `try_into_valid` (any such mutation would be unsound).
-            //
-            // `try_into_valid` promises to return its original argument, and
-            // so we know that we are getting back the same `ptr` that we
-            // originally passed, and that `ptr` was a bit-valid `Src`.
-            let ptr = unsafe { ptr.assume_valid() };
-            ptr.as_ref()
-        })),
-    }
+    ptr.try_with(|ptr| {
+        let ptr = ptr.recall_validity::<Initialized, _>();
+        let ptr = ptr.cast::<_, CastSized, _>();
+        ptr.try_into_valid()
+    })
+    .map(|ptr| {
+        static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
+        // SAFETY: We have checked that `Dst` does not have a stricter
+        // alignment requirement than `Src`.
+        let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+        ptr.as_ref()
+    })
+    .map_err(|err| err.map_src(Ptr::as_ref))
 }
 
 /// Attempts to transmute `&mut Src` into `&mut Dst`.
@@ -714,26 +698,22 @@ where
     Dst: TryFromBytes + IntoBytes,
 {
     let ptr = Ptr::from_mut(src);
-    let ptr = ptr.recall_validity::<Initialized, (_, (_, _))>();
-    let ptr = ptr.cast::<_, CastSized, _>();
-    match ptr.try_into_valid() {
-        Ok(ptr) => {
-            static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
-            // SAFETY: We have checked that `Dst` does not have a stricter
-            // alignment requirement than `Src`.
-            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
-            Ok(ptr.as_mut())
-        }
-        Err(err) => {
-            Err(err.map_src(|ptr| {
-                let ptr = ptr.cast::<_, CastSized, _>();
-                // SAFETY: `ptr` has the same address as `src: &mut Src`, which
-                // is aligned by invariant on `&mut Src`.
-                let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
-                ptr.recall_validity::<_, (_, BecauseInvariantsEq)>().as_mut()
-            }))
-        }
-    }
+    // SAFETY: TODO
+    let res = unsafe {
+        ptr.try_with_unchecked(|ptr| {
+            let ptr = ptr.recall_validity::<Initialized, (_, (_, _))>();
+            let ptr = ptr.cast::<_, CastSized, _>();
+            ptr.try_into_valid()
+        })
+    };
+    res.map(|ptr| {
+        static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
+        // SAFETY: We have checked that `Dst` does not have a stricter
+        // alignment requirement than `Src`.
+        let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+        ptr.as_mut()
+    })
+    .map_err(|err| err.map_src(Ptr::as_mut))
 }
 
 // Used in `transmute_ref!` and friends.

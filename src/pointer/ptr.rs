@@ -912,6 +912,81 @@ mod _casts {
             let tag = unsafe { tag.assume_alignment() };
             tag.unify_invariants()
         }
+
+        /// Attempts to transform the pointer, restoring the original on
+        /// failure.
+        ///
+        /// # Safety
+        ///
+        /// - `f` must not mutate its argument's referent.
+        /// - If `I::Aliasing != Shared`, then if `f` returns `Err(err)`, no
+        ///   copy of `f`'s argument must exist outside of `err`.
+        pub(crate) unsafe fn try_with_unchecked<U, J, V, K, E, F>(
+            self,
+            f: F,
+        ) -> Result<Ptr<'a, V, K>, E::Output>
+        where
+            U: 'a + ?Sized,
+            J: Invariants,
+            V: 'a + ?Sized,
+            K: Invariants,
+            E: Map<Ptr<'a, U, J>, Self>,
+            F: FnOnce(Ptr<'a, T, I>) -> Result<Ptr<'a, V, K>, E>,
+        {
+            let old_inner = self.as_inner();
+            f(self).map_err(move |err| {
+                err.map(|_ptr| {
+                    // SAFETY: TODO
+                    //
+                    // Need to rely on:
+                    // - The caller promises that `f` doesn't mutate its
+                    //   argument's referent
+                    // - TODO: If `I::Aliasing != Shared`, then if `f` returns
+                    //   `Err(err)`, no copy of `f`'s argument must exist
+                    //   outside of `err`
+                    // - TODO: Need to make `Map` an `unsafe` trait that
+                    //   guarantees that no other copies are made
+                    unsafe { Ptr::from_inner(old_inner) }
+                })
+            })
+        }
+
+        /// Attempts to transform the pointer, restoring the original on
+        /// failure.
+        pub(crate) fn try_with<U, J, V, K, E, F>(self, f: F) -> Result<Ptr<'a, V, K>, E::Output>
+        where
+            U: 'a + ?Sized,
+            J: Invariants,
+            V: 'a + ?Sized,
+            K: Invariants,
+            E: Map<Ptr<'a, U, J>, Self>,
+            F: FnOnce(Ptr<'a, T, I>) -> Result<Ptr<'a, V, K>, E>,
+            I: Invariants<Aliasing = Shared>,
+            T: crate::Immutable,
+        {
+            // SAFETY:
+            // - By `I: Invariants<Aliasing = Shared>` and `T: Immutable`, `f`
+            //   cannot mutate its argument's referent, since that referent does
+            //   not permit mutation.
+            // - `I::Aliasing = Shared`, so the second safety condition does not
+            //   apply.
+            unsafe { self.try_with_unchecked(f) }
+        }
+    }
+
+    pub(crate) trait Map<I, O> {
+        type Output;
+        fn map<F: FnOnce(I) -> O>(self, f: F) -> Self::Output;
+    }
+
+    impl<Src, NewSrc, Dst> Map<Src, NewSrc> for crate::ValidityError<Src, Dst>
+    where
+        Dst: TryFromBytes + ?Sized,
+    {
+        type Output = crate::ValidityError<NewSrc, Dst>;
+        fn map<F: FnOnce(Src) -> NewSrc>(self, f: F) -> Self::Output {
+            self.map_src(f)
+        }
     }
 
     impl<'a, T, I> Ptr<'a, T, I>
