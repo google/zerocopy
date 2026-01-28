@@ -910,6 +910,9 @@ mod cast_from {
                             if src_size != dst_size {
                                 return None;
                             }
+
+                            // SAFETY: We checked above that `src_size ==
+                            // dst_size`.
                             CastParamsInner::SizedToSized
                         }
                         (SizeInfo::Sized { size: src_size }, SizeInfo::SliceDst(dst)) => {
@@ -939,6 +942,8 @@ mod cast_from {
                             #[allow(clippy::arithmetic_side_effects)]
                             let dst_meta = offset_delta / dst_elem_size.get();
 
+                            // SAFETY: The preceding math ensures that a `Dst`
+                            // with `dst_meta` addresses `src_size` bytes.
                             CastParamsInner::SizedToUnsized { dst_meta }
                         }
                         (SizeInfo::SliceDst(src), SizeInfo::SliceDst(dst)) => {
@@ -982,7 +987,6 @@ mod cast_from {
                             #[allow(clippy::arithmetic_side_effects)]
                             let elem_multiple = src.elem_size / dst_elem_size.get();
 
-                            // SAFETY: We checked above that `src.align >= dst.align`.
                             CastParamsInner::UnsizedToUnsized {
                                 // SAFETY: We checked above that this is an exact ratio.
                                 offset_delta_elems,
@@ -993,6 +997,7 @@ mod cast_from {
                         _ => return None,
                     };
 
+                    // SAFETY: We checked above that `src.align >= dst.align`.
                     Some(CastParams { inner, _src: PhantomData, _dst: PhantomData })
                 }
             }

@@ -846,14 +846,17 @@ impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst> {
         Src: IntoBytes + Immutable,
         Dst: TryFromBytes + Immutable,
     {
-        let src: &Wrapping<Src> = crate::util::transmute_ref::<_, _, BecauseImmutable>(self.0);
+        let src: &Wrapping<Src> =
+            unsafe { crate::util::transmute_ref::<_, _, BecauseImmutable>(self.0) };
         let src = Wrap::new(src);
         <Wrap<&'a Wrapping<Src>, &'a Wrapping<Dst>> as TryTransmuteRefDst<'a>>::try_transmute_ref(
             src,
         )
-        .map(crate::util::transmute_ref::<_, _, BecauseImmutable>)
+        .map(|dst| unsafe { crate::util::transmute_ref::<_, _, BecauseImmutable>(dst) })
         .map_err(|err| {
-            ValidityError::new(crate::util::transmute_ref::<_, _, BecauseImmutable>(err.into_src()))
+            ValidityError::new(unsafe {
+                crate::util::transmute_ref::<_, _, BecauseImmutable>(err.into_src())
+            })
         })
     }
 }
@@ -925,7 +928,7 @@ pub trait TransmuteRefDst<'a> {
 
 impl<'a, Src: ?Sized, Dst: ?Sized> TransmuteRefDst<'a> for Wrap<&'a Src, &'a Dst>
 where
-    Src: KnownLayout<PointerMetadata = usize> + IntoBytes + Immutable,
+    Src: KnownLayout + IntoBytes + Immutable,
     Dst: KnownLayout<PointerMetadata = usize> + FromBytes + Immutable,
 {
     type Dst = Dst;
@@ -958,7 +961,7 @@ pub trait TransmuteMutDst<'a> {
 
 impl<'a, Src: ?Sized, Dst: ?Sized> TransmuteMutDst<'a> for Wrap<&'a mut Src, &'a mut Dst>
 where
-    Src: KnownLayout<PointerMetadata = usize> + FromBytes + IntoBytes,
+    Src: KnownLayout + FromBytes + IntoBytes,
     Dst: KnownLayout<PointerMetadata = usize> + FromBytes + IntoBytes,
 {
     type Dst = Dst;

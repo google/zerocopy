@@ -325,7 +325,10 @@ pub(crate) const unsafe fn transmute_unchecked<Src, Dst>(src: Src) -> Dst {
     unsafe { ManuallyDrop::into_inner(Transmute { src: ManuallyDrop::new(src) }.dst) }
 }
 
-pub(crate) fn transmute_ref<Src, Dst, R>(src: &Src) -> &Dst
+/// # Safety
+///
+/// `Src` must have a greater or equal alignment to `Dst`.
+pub(crate) unsafe fn transmute_ref<Src, Dst, R>(src: &Src) -> &Dst
 where
     Src: ?Sized,
     Dst: SizeEq<Src>
@@ -333,11 +336,15 @@ where
         + ?Sized,
 {
     let dst = Ptr::from_ref(src).transmute();
-    // SAFETY: TODO
+    // SAFETY: The caller promises that `Src`'s alignment is at least as large
+    // as `Dst`'s alignment.
     let dst = unsafe { dst.assume_alignment() };
     dst.as_ref()
 }
 
+/// # Safety
+///
+/// `Src` must have a greater or equal alignment to `Dst`.
 pub(crate) fn transmute_mut<Src, Dst, R>(src: &mut Src) -> &mut Dst
 where
     Src: ?Sized,
@@ -346,7 +353,8 @@ where
         + ?Sized,
 {
     let dst = Ptr::from_mut(src).transmute();
-    // SAFETY: TODO
+    // SAFETY: The caller promises that `Src`'s alignment is at least as large
+    // as `Dst`'s alignment.
     let dst = unsafe { dst.assume_alignment() };
     dst.as_mut()
 }
