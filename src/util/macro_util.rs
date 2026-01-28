@@ -810,6 +810,16 @@ impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst> {
     }
 }
 
+impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst>
+where
+    Src: ?Sized,
+    Dst: ?Sized,
+{
+    pub const fn transmute_ref_inference_helper(self) -> &'a Dst {
+        loop {}
+    }
+}
+
 impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst> {
     /// # Safety
     /// The caller must guarantee that:
@@ -847,6 +857,16 @@ impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst> {
         unsafe {
             mem::transmute(dst)
         }
+    }
+}
+
+impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst>
+where
+    Src: ?Sized,
+    Dst: ?Sized,
+{
+    pub fn transmute_mut_inference_helper(self) -> &'a mut Dst {
+        loop {}
     }
 }
 
@@ -907,7 +927,7 @@ pub trait TransmuteRefDst<'a> {
 
 impl<'a, Src: ?Sized, Dst: ?Sized> TransmuteRefDst<'a> for Wrap<&'a Src, &'a Dst>
 where
-    Src: KnownLayout<PointerMetadata = usize> + IntoBytes + Immutable,
+    Src: KnownLayout + IntoBytes + Immutable,
     Dst: KnownLayout<PointerMetadata = usize> + FromBytes + Immutable,
 {
     type Dst = Dst;
@@ -940,7 +960,7 @@ pub trait TransmuteMutDst<'a> {
 
 impl<'a, Src: ?Sized, Dst: ?Sized> TransmuteMutDst<'a> for Wrap<&'a mut Src, &'a mut Dst>
 where
-    Src: KnownLayout<PointerMetadata = usize> + FromBytes + IntoBytes,
+    Src: KnownLayout + FromBytes + IntoBytes,
     Dst: KnownLayout<PointerMetadata = usize> + FromBytes + IntoBytes,
 {
     type Dst = Dst;
