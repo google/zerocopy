@@ -184,6 +184,8 @@ macro_rules! transmute {
     }};
 }
 
+// TODO: Update these docs to mention sized -> unsized.
+
 /// Safely transmutes a mutable or immutable reference of one type to an
 /// immutable reference of another type of the same size and compatible
 /// alignment.
@@ -351,12 +353,34 @@ macro_rules! transmute_ref {
             // SAFETY: The `if false` branch ensures that:
             // - `Src: IntoBytes + Immutable`
             // - `Dst: FromBytes + Immutable`
-            unsafe {
-                t.transmute_ref()
+            if false {
+                // This branch exists solely to force the compiler to infer the
+                // type of `Dst` *before* it attempts to resolve the method call
+                // to `transmute_ref` in the `else` branch.
+                //
+                // Without this, if `Src` is `Sized` but `Dst` is `!Sized`, the
+                // compiler will eagerly select the inherent impl of
+                // `transmute_ref` (which requires `Dst: Sized`) because inherent
+                // methods take priority over trait methods. It does this before
+                // it realizes `Dst` is `!Sized`, leading to a compile error when
+                // it checks the bounds later.
+                //
+                // By calling this helper (which returns `&Dst`), we force `Dst`
+                // to be fully resolved. By the time it gets to the `else`
+                // branch, the compiler knows `Dst` is `!Sized`, properly
+                // disqualifies the inherent method, and falls back to the trait
+                // implementation.
+                t.transmute_ref_inference_helper()
+            } else {
+                unsafe {
+                    t.transmute_ref()
+                }
             }
         }
     }}
 }
+
+// TODO: Update these docs to mention sized -> unsized.
 
 /// Safely transmutes a mutable reference of one type to a mutable reference of
 /// another type of the same size and compatible alignment.
@@ -503,7 +527,26 @@ macro_rules! transmute_mut {
         #[allow(unused)]
         use $crate::util::macro_util::TransmuteMutDst as _;
         let t = $crate::util::macro_util::Wrap::new(e);
-        t.transmute_mut()
+        if false {
+            // This branch exists solely to force the compiler to infer the type
+            // of `Dst` *before* it attempts to resolve the method call to
+            // `transmute_mut` in the `else` branch.
+            //
+            // Without this, if `Src` is `Sized` but `Dst` is `!Sized`, the
+            // compiler will eagerly select the inherent impl of `transmute_mut`
+            // (which requires `Dst: Sized`) because inherent methods take
+            // priority over trait methods. It does this before it realizes
+            // `Dst` is `!Sized`, leading to a compile error when it checks the
+            // bounds later.
+            //
+            // By calling this helper (which returns `&mut Dst`), we force `Dst`
+            // to be fully resolved. By the time it gets to the `else` branch,
+            // the compiler knows `Dst` is `!Sized`, properly disqualifies the
+            // inherent method, and falls back to the trait implementation.
+            t.transmute_mut_inference_helper()
+        } else {
+            t.transmute_mut()
+        }
     }}
 }
 
@@ -1241,6 +1284,13 @@ mod tests {
         const X: &'static [[u8; 2]; 4] = transmute_ref!(&ARRAY_OF_U8S);
         assert_eq!(*X, ARRAY_OF_ARRAYS);
 
+        // Test sized -> unsized transmutation.
+        let array_of_u8s = [0u8, 1, 2, 3, 4, 5, 6, 7];
+        let array_of_arrays = [[0, 1], [2, 3], [4, 5], [6, 7]];
+        let slice_of_arrays = &array_of_arrays[..];
+        let x: &[[u8; 2]] = transmute_ref!(&array_of_u8s);
+        assert_eq!(x, slice_of_arrays);
+
         // Before 1.61.0, we can't define the `const fn transmute_ref` function
         // that we do on and after 1.61.0.
         #[cfg(no_zerocopy_generic_bounds_in_const_fn_1_61_0)]
@@ -1532,6 +1582,13 @@ mod tests {
         let slice_dst_small = SliceDst::<U16, u8>::mut_from_bytes(&mut bytes[..]).unwrap();
         let x: &mut SliceDst<U16, u8> = transmute_mut!(slice_dst_big);
         assert_eq!(x, slice_dst_small);
+
+        // Test sized -> unsized transmutation.
+        let mut array_of_u8s = [0u8, 1, 2, 3, 4, 5, 6, 7];
+        let mut array_of_arrays = [[0, 1], [2, 3], [4, 5], [6, 7]];
+        let slice_of_arrays = &mut array_of_arrays[..];
+        let x: &mut [[u8; 2]] = transmute_mut!(&mut array_of_u8s);
+        assert_eq!(x, slice_of_arrays);
     }
 
     #[test]
