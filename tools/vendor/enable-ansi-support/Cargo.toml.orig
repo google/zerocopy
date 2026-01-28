@@ -1,0 +1,19 @@
+[package]
+name = "enable-ansi-support"
+description = "Enable ANSI escape code support on Windows 10"
+version = "0.3.1"
+edition = "2021"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/sunshowers-code/enable-ansi-support"
+rust-version = "1.71"
+keywords = ["ansi", "windows", "console", "terminal", "color"]
+categories = ["command-line-interface", "os::windows-apis"]
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61.0", features = [
+    "Win32_Foundation",
+    "Win32_Storage_FileSystem",
+    "Win32_Security",
+    "Win32_System_Console",
+] }

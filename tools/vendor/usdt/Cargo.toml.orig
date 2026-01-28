@@ -1,0 +1,35 @@
+[package]
+name = "usdt"
+version = "0.6.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Cross-platform Userland Statically Defined Tracing probes"
+repository = "https://github.com/oxidecomputer/usdt.git"
+rust-version = "1.85.0"
+
+# NOTE: The use of path and version dependencies is deliberate and load-bearing.
+#
+# When building from source, this will select the version in the workspace, by
+# path. When publishing the specific version will be used. Combined with the
+# exact version requirements, this prevents issues like oxidecomputer/usdt#69,
+# where the public-facing `usdt` crate may pick up different versions of the
+# internal implementation crates.
+[dependencies]
+serde = "1"
+usdt-impl = { path = "../usdt-impl", default-features = false, version = "=0.6.0", features = [
+  "des",
+] }
+usdt-macro = { path = "../usdt-macro", default-features = false, version = "=0.6.0" }
+usdt-attr-macro = { path = "../usdt-attr-macro", default-features = false, version = "=0.6.0" }
+dof = { path = "../dof", features = ["des"], version = "=0.4.0" }
+goblin = { version = "0.10", features = ["elf32", "elf64"] }
+memmap2 = { version = "0.9.8" }
+
+[features]
+default = ["asm"]
+# This feature used to be functional, but is now a no-op because inline `asm` is available on all
+# supported versions of Rust. It's kept around for BC reasons, but whenever there's a breaking
+# change to the `usdt` crate, this feature should be removed.
+#
+# There's also a comment about this in lib.rs -- remove it when this feature is removed.
+asm = []

@@ -1,0 +1,10 @@
+IdHashMap<TestItem, DefaultHashBuilder>: 80
+IdHashMap<TestItem, RandomState>: 88
+
+BiHashMap<TestItem, DefaultHashBuilder>: 112
+BiHashMap<TestItem, RandomState>: 120
+
+TriHashMap<TestItem, DefaultHashBuilder>: 144
+TriHashMap<TestItem, RandomState>: 152
+
+IdOrdMap<TestItem>: 72

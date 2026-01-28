@@ -1,0 +1,28 @@
+[package]
+name = "atomicwrites"
+version = "0.4.4"
+
+authors = ["Markus Unterwaditzer <markus-honeypot@unterwaditzer.net>"]
+license = "MIT"
+keywords = ["filesystem", "posix"]
+readme = "README.md"
+
+description = "Atomic file-writes."
+documentation = "https://docs.rs/crate/atomicwrites"
+homepage = "https://github.com/untitaker/rust-atomicwrites"
+repository = "https://github.com/untitaker/rust-atomicwrites"
+
+exclude = ["/.travis.yml", "/Makefile", "/appveyor.yml"]
+
+[dependencies]
+tempfile = "3.1"
+
+[target.'cfg(unix)'.dependencies]
+rustix = { version = "0.38.0", features = ["fs"] }
+
+[target.'cfg(windows)'.dependencies.windows-sys]
+version = "0.52.0"
+features = [
+    "Win32_Foundation",
+    "Win32_Storage_FileSystem",
+]

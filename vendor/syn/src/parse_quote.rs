@@ -53,18 +53,29 @@
 ///
 /// - [`Attribute`] — parses one attribute, allowing either outer like `#[...]`
 ///   or inner like `#![...]`
+/// - [`Vec<Attribute>`] — parses multiple attributes, including mixed kinds in
+///   any order
 /// - [`Punctuated<T, P>`] — parses zero or more `T` separated by punctuation
 ///   `P` with optional trailing punctuation
+/// - [`Vec<Arm>`] — parses arms separated by optional commas according to the
+///   same grammar as the inside of a `match` expression
 /// - [`Vec<Stmt>`] — parses the same as `Block::parse_within`
+/// - [`Pat`], [`Box<Pat>`] — parses the same as
+///   `Pat::parse_multi_with_leading_vert`
+/// - [`Field`] — parses a named or unnamed struct field
 ///
+/// [`Vec<Attribute>`]: Attribute
+/// [`Vec<Arm>`]: Arm
 /// [`Vec<Stmt>`]: Block::parse_within
+/// [`Pat`]: Pat::parse_multi_with_leading_vert
+/// [`Box<Pat>`]: Pat::parse_multi_with_leading_vert
 ///
 /// # Panics
 ///
 /// Panics if the tokens fail to parse as the expected syntax tree type. The
 /// caller is responsible for ensuring that the input tokens are syntactically
 /// valid.
-#[cfg_attr(doc_cfg, doc(cfg(all(feature = "parsing", feature = "printing"))))]
+#[cfg_attr(docsrs, doc(cfg(all(feature = "parsing", feature = "printing"))))]
 #[macro_export]
 macro_rules! parse_quote {
     ($($tt:tt)*) => {
@@ -92,11 +103,11 @@ macro_rules! parse_quote {
 ///         ReturnType::Type(_, ret) => quote!(#ret),
 ///     };
 ///     sig.output = parse_quote_spanned! {ret.span()=>
-///         -> ::std::pin::Pin<::std::boxed::Box<dyn ::std::future::Future<Output = #ret>>>
+///         -> ::core::pin::Pin<::alloc::boxed::Box<dyn ::core::future::Future<Output = #ret>>>
 ///     };
 /// }
 /// ```
-#[cfg_attr(doc_cfg, doc(cfg(all(feature = "parsing", feature = "printing"))))]
+#[cfg_attr(docsrs, doc(cfg(all(feature = "parsing", feature = "printing"))))]
 #[macro_export]
 macro_rules! parse_quote_spanned {
     ($span:expr=> $($tt:tt)*) => {
@@ -109,10 +120,15 @@ macro_rules! parse_quote_spanned {
 
 use crate::error::Result;
 use crate::parse::{Parse, ParseStream, Parser};
+#[cfg(feature = "full")]
+use alloc::boxed::Box;
+#[cfg(any(feature = "full", feature = "derive"))]
+use alloc::vec::Vec;
 use proc_macro2::TokenStream;
 
 // Not public API.
 #[doc(hidden)]
+#[track_caller]
 pub fn parse<T: ParseQuote>(token_stream: TokenStream) -> T {
     let parser = T::parse;
     match parser.parse2(token_stream) {
@@ -139,7 +155,7 @@ use crate::punctuated::Punctuated;
 #[cfg(any(feature = "full", feature = "derive"))]
 use crate::{attr, Attribute, Field, FieldMutability, Ident, Type, Visibility};
 #[cfg(feature = "full")]
-use crate::{Block, Pat, Stmt};
+use crate::{Arm, Block, Pat, Stmt};
 
 #[cfg(any(feature = "full", feature = "derive"))]
 impl ParseQuote for Attribute {
@@ -149,6 +165,17 @@ impl ParseQuote for Attribute {
         } else {
             attr::parsing::single_parse_outer(input)
         }
+    }
+}
+
+#[cfg(any(feature = "full", feature = "derive"))]
+impl ParseQuote for Vec<Attribute> {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let mut attrs = Vec::new();
+        while !input.is_empty() {
+            attrs.push(ParseQuote::parse(input)?);
+        }
+        Ok(attrs)
     }
 }
 
@@ -206,5 +233,12 @@ impl<T: Parse, P: Parse> ParseQuote for Punctuated<T, P> {
 impl ParseQuote for Vec<Stmt> {
     fn parse(input: ParseStream) -> Result<Self> {
         Block::parse_within(input)
+    }
+}
+
+#[cfg(feature = "full")]
+impl ParseQuote for Vec<Arm> {
+    fn parse(input: ParseStream) -> Result<Self> {
+        Arm::parse_multiple(input)
     }
 }

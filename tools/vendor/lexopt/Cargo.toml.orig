@@ -1,0 +1,17 @@
+[package]
+name = "lexopt"
+version = "0.3.1"
+authors = ["Jan Verbeek <jan.verbeek@posteo.nl>"]
+description = "Minimalist pedantic command line parser"
+keywords = ["args", "arguments", "cli", "parser", "getopt"]
+categories = ["command-line-interface"]
+repository = "https://github.com/blyxxyz/lexopt"
+documentation = "https://docs.rs/lexopt"
+license = "MIT"
+readme = "README.md"
+edition = "2018"
+exclude = [".github", ".gitignore"]
+
+[profile.test]
+# The basic_fuzz test benefits greatly from this.
+opt-level = 2

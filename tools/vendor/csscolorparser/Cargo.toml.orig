@@ -1,0 +1,34 @@
+[package]
+name = "csscolorparser"
+version = "0.6.2"
+authors = ["Nor Khasyatillah <mazznoer@ymail.com>"]
+edition = "2018"
+description = "CSS color parser library"
+readme = "README.md"
+repository = "https://github.com/mazznoer/csscolorparser-rs"
+documentation = "https://docs.rs/csscolorparser/"
+license = "MIT OR Apache-2.0"
+keywords = ["color", "colour", "css", "parser"]
+categories = ["graphics", "parser-implementations"]
+exclude = [
+	".github/*",
+	"tests/*",
+]
+
+[package.metadata.docs.rs]
+features = ["named-colors", "lab", "rust-rgb", "cint", "serde"]
+
+[features]
+default = ["named-colors"]
+named-colors = ["phf"]
+rust-rgb = ["rgb"]
+
+[dependencies]
+cint = { version = "^0.3.1", optional = true }
+lab = { version = "0.11.0", optional = true }
+phf = { version = "0.11.0", optional = true, features = ["macros"] }
+rgb = { version = "0.8.33", optional = true }
+serde = { version = "1.0.139", optional = true, features = ["derive"] }
+
+[dev-dependencies]
+serde_test = "1.0.139"

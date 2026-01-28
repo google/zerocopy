@@ -1,0 +1,7 @@
+  [31m×[0m error deserializing custom target JSON for `my-target`
+    ╭─[40:13]
+ [2m39[0m │     "leak",
+ [2m40[0m │     "memory",
+    · [35;1m            ▲[0m
+    ·             [35;1m╰── [35;1mEOF while parsing a value[0m[0m
+    ╰────

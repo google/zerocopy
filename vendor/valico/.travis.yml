@@ -1,0 +1,10 @@
+language: rust
+script:
+- cargo build --verbose
+- cargo test --verbose -- --nocapture
+- cargo doc
+after_success:
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && ./.travis/update_docs.sh
+env:
+  global:
+    secure: RIMyNfCB2URVtat4FbM2LNqa+TEXRSTyZiwBdhpETUnJOWpocjA0DyAvSPQKikyOoM4S35PTGK9QTMg4NgK0uPTzkbrhw22hPrC8g1J193bm6PNiQEqI24BPVJcBOxWsVO8EtGsA6PS65hLCeB1pz+1UnMRHjkwaB9nh4l0JLUs=

@@ -1,0 +1,70 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+    tags:
+      - "*"
+  workflow_dispatch:
+
+jobs:
+  rustfmt:
+    name: Formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly
+          components: rustfmt
+
+      - run: cargo fmt --all --check
+
+  outdated:
+    name: Outdated
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: dtolnay/install@cargo-outdated
+
+      - run: cargo outdated --exit-code 1
+
+  miri:
+    name: Miri
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: dtolnay/rust-toolchain@miri
+
+      - run: cargo miri test
+        env:
+          MIRIFLAGS: -Zmiri-strict-provenance -Zmiri-disable-isolation
+
+  ci:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        toolchain: [beta, stable, 1.87.0]
+
+    name: Test on ${{ matrix.os }} with Rust ${{ matrix.toolchain }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          components: clippy
+
+      - run: cargo clippy -- -Dwarnings
+
+      - run: cargo test

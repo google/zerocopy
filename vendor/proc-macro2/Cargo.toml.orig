@@ -1,6 +1,6 @@
 [package]
 name = "proc-macro2"
-version = "1.0.80"
+version = "1.0.106"
 authors = ["David Tolnay <dtolnay@gmail.com>", "Alex Crichton <alex@alexcrichton.com>"]
 autobenches = false
 categories = ["development-tools::procedural-macro-helpers"]
@@ -10,12 +10,20 @@ edition = "2021"
 keywords = ["macros", "syn"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/dtolnay/proc-macro2"
-rust-version = "1.56"
+rust-version = "1.68"
 
 [package.metadata.docs.rs]
-rustc-args = ["--cfg", "procmacro2_semver_exempt"]
-rustdoc-args = ["--cfg", "procmacro2_semver_exempt", "--cfg", "doc_cfg", "--generate-link-to-definition"]
+rustc-args = ["--cfg=procmacro2_semver_exempt"]
 targets = ["x86_64-unknown-linux-gnu"]
+rustdoc-args = [
+    "--cfg=procmacro2_semver_exempt",
+    "--generate-link-to-definition",
+    "--generate-macro-expansion",
+    "--extern-html-root-url=core=https://doc.rust-lang.org",
+    "--extern-html-root-url=alloc=https://doc.rust-lang.org",
+    "--extern-html-root-url=std=https://doc.rust-lang.org",
+    "--extern-html-root-url=proc_macro=https://doc.rust-lang.org",
+]
 
 [package.metadata.playground]
 features = ["span-locations"]
@@ -25,7 +33,7 @@ unicode-ident = "1.0"
 
 [dev-dependencies]
 flate2 = "1.0"
-quote = { version = "1.0", default_features = false }
+quote = { version = "1.0", default-features = false }
 rayon = "1.0"
 rustversion = "1"
 tar = "0.4"
@@ -40,9 +48,6 @@ span-locations = []
 
 # This feature no longer means anything.
 nightly = []
-
-[lib]
-doc-scrape-examples = false
 
 [workspace]
 members = ["benches/bench-libproc-macro", "tests/ui"]

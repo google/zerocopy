@@ -1,0 +1,44 @@
+[package]
+name = "ruzstd"
+version = "0.8.2"
+authors = ["Moritz Borcherding <moritz.borcherding@web.de>"]
+edition = "2018"
+license = "MIT"
+homepage = "https://github.com/KillingSpark/zstd-rs"
+repository = "https://github.com/KillingSpark/zstd-rs"
+description = "A decoder for the zstd compression format"
+exclude = ["decodecorpus_files/*", "dict_tests/*", "fuzz_decodecorpus/*"]
+readme = "../Readme.md"
+keywords = ["zstd", "zstandard", "decompression"]
+categories = ["compression"]
+
+[dependencies]
+# Locked behind the `hash` feature flag
+twox-hash = { version = "2.0", default-features = false, features = ["xxhash64"], optional = true }
+fastrand = {version = "2.3.0", optional = true }
+
+# Internal feature, only used when building as part of libstd, not part of the
+# stable interface of this crate.
+compiler_builtins = { version = "0.1.2", optional = true }
+core = { version = "1.0.0", optional = true, package = "rustc-std-workspace-core" }
+alloc = { version = "1.0.0", optional = true, package = "rustc-std-workspace-alloc" }
+
+[dev-dependencies]
+criterion = "0.5"
+rand = { version = "0.8.5", features = ["small_rng"] }
+zstd = "0.13.2"
+
+[features]
+default = ["hash", "std"]
+dict_builder = ["std", "dep:fastrand"]
+hash = ["dep:twox-hash"]
+fuzz_exports = []
+std = []
+
+# Internal feature, only used when building as part of libstd, not part of the
+# stable interface of this crate.
+rustc-dep-of-std = ["dep:compiler_builtins", "dep:core", "dep:alloc"]
+
+[[bench]]
+name = "decode_all"
+harness = false

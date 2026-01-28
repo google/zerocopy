@@ -1,0 +1,92 @@
+@startuml
+
+package std::iter {
+    interface Iterator<T>
+}
+
+package config {
+    class ConfigHelper {
+        + get_config(defaults_from_cli)
+        - try_environment()
+        - try_file(Option<File>)
+    }
+
+    class ReadmeConfig {
+        + project_root: Path
+        + entrypoint: Path
+        + template: Option<Path>
+        + add_title: bool
+        + add_badges: bool
+        + add_license: bool
+        + indent_headings: bool
+    }
+
+    class ProjectHelper {
+        + find_root(cwd: &Path)
+        + find_entrypoint(cwd: &Path, Manifest)
+        + find_template(cwd: &Path)
+    }
+
+    class ManifestHelper {
+        + crate_info()
+        - process_badges()
+    }
+
+    class Manifest {
+        + name: String
+        + license: String
+        + lib: Pair<String, bool>
+        + bin: Pair<String, bool>[]
+        + badges: String[]
+    }
+
+    ConfigHelper ..> ReadmeConfig: <<creates>>
+    ManifestHelper .> Manifest: <<creates>>
+    ProjectHelper ..> Manifest
+    ConfigHelper ---> ManifestHelper
+    ConfigHelper --> ProjectHelper
+}
+
+package docs {
+    class Renderer {
+        + render(docs, crate_info)
+        - render_template()
+        - render_no_template()
+    }
+
+    Renderer ..> ReadmeConfig
+    Renderer ..> Manifest
+
+    class Extractor {
+        + extract(entrypoint)
+    }
+
+    class Processor<T: String> {
+        + process()
+    }
+
+    Iterator <|--- Processor
+    Extractor --o Processor
+
+    enum Section {
+        CodeRust
+        CodeOther
+        None
+    }
+
+    Processor --> Section
+}
+
+class Main
+Main --> ConfigHelper
+Main -> Readme
+
+class Readme {
+    + generate_readme(ReadmeConfig, Manifest)
+}
+
+Readme --> Renderer
+Readme --> Extractor
+' Readme ..> ReadmeConfig
+
+@enduml

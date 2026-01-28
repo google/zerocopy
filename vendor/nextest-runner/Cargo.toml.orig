@@ -1,0 +1,188 @@
+[package]
+name = "nextest-runner"
+description = "Core runner logic for cargo nextest."
+version = "0.105.0"
+readme = "README.md"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/nextest-rs/nextest"
+documentation = "https://docs.rs/nextest-runner"
+edition.workspace = true
+rust-version.workspace = true
+keywords = ["nextest", "test-runner"]
+categories = ["development-tools::testing"]
+exclude.workspace = true
+# For an example build script that gates by compiler version, see the history for build.rs in this
+# directory.
+
+[dependencies]
+aho-corasick.workspace = true
+async-scoped.workspace = true
+atomicwrites.workspace = true
+bstr.workspace = true
+bytes.workspace = true
+bytesize.workspace = true
+camino = { workspace = true, features = ["serde1"] }
+camino-tempfile.workspace = true
+cargo_metadata.workspace = true
+config.workspace = true
+cfg-if.workspace = true
+chrono.workspace = true
+countio.workspace = true
+crossterm.workspace = true
+debug-ignore.workspace = true
+derive-where.workspace = true
+duct.workspace = true
+etcetera.workspace = true
+future-queue.workspace = true
+futures.workspace = true
+guppy.workspace = true
+# Used to find the cargo root directory, which is needed in case the user has
+# added a config.toml there
+home.workspace = true
+humantime-serde.workspace = true
+iddqd.workspace = true
+indexmap = { workspace = true, features = ["serde"] }
+indicatif.workspace = true
+is_ci.workspace = true
+itertools.workspace = true
+miette.workspace = true
+newtype-uuid = { workspace = true, features = ["serde"] }
+nextest-filtering.workspace = true
+nextest-metadata.workspace = true
+nextest-workspace-hack.workspace = true
+owo-colors.workspace = true
+pin-project-lite.workspace = true
+petgraph.workspace = true
+quick-junit.workspace = true
+rand.workspace = true
+regex.workspace = true
+sapling-streampager.workspace = true
+semver.workspace = true
+serde.workspace = true
+serde_ignored.workspace = true
+serde_json.workspace = true
+serde_path_to_error.workspace = true
+shell-words.workspace = true
+smallvec.workspace = true
+smol_str = { workspace = true, features = ["serde"] }
+strip-ansi-escapes.workspace = true
+supports-unicode.workspace = true
+swrite.workspace = true
+tar.workspace = true
+# For cfg expression evaluation for [target.'cfg()'] expressions
+target-spec.workspace = true
+target-spec-miette.workspace = true
+thiserror.workspace = true
+# For parsing of .cargo/config.toml files
+tokio = { workspace = true, features = [
+    "fs",
+    "io-std",
+    "io-util",
+    "macros",
+    "process",
+    "rt",
+    "rt-multi-thread",
+    "signal",
+    "sync",
+    "time",
+] }
+tokio-stream = { workspace = true, features = ["signal"] }
+toml.workspace = true
+toml_edit = { workspace = true, features = ["serde"] }
+tracing.workspace = true
+unicode-ident.workspace = true
+unicode-normalization.workspace = true
+xxhash-rust.workspace = true
+zip.workspace = true
+zstd.workspace = true
+
+###
+### Update-related features, optionally enabled
+###
+hex = { workspace = true, optional = true }
+http = { workspace = true, optional = true }
+mukti-metadata = { workspace = true, optional = true }
+sha2 = { workspace = true, optional = true }
+# TODO: remove dependency on self_update, build our own thing on top of mukti
+self_update = { workspace = true, optional = true }
+
+###
+### tokio-console support, not enabled by default
+###
+console-subscriber = { workspace = true, optional = true }
+tracing-subscriber = { workspace = true, optional = true }
+console = "0.16.2"
+unicode-width = "0.2.2"
+
+[target.'cfg(unix)'.dependencies]
+libc.workspace = true
+nix.workspace = true
+
+# Enable USDT on these platforms. In particular, don't enable it on aarch64
+# Linux because usdt 0.6.0 crashes with:
+#
+# Message: unsafe precondition(s) violated: ptr::read_volatile requires that the
+# pointer argument is aligned and non-null
+#
+# Also, usdt 0.6.0 fails to compile on x86_64-apple-darwin, so restrict it to
+# aarch64-apple-darwin.
+[target.'cfg(any(all(target_arch = "x86_64", any(target_os = "linux", target_os = "freebsd", target_os = "illumos")), all(target_arch = "aarch64", any(target_os = "macos", target_os = "freebsd", target_os = "illumos"))))'.dependencies]
+usdt = "0.6.0"
+
+[target.'cfg(windows)'.dependencies]
+dunce.workspace = true
+windows-sys = { workspace = true, features = [
+    "Win32_Foundation",
+    "Win32_Globalization",
+    "Win32_Security",
+    "Win32_Storage_FileSystem",
+    "Win32_System_Console",
+    "Win32_System_JobObjects",
+    "Win32_System_Pipes",
+] }
+win32job.workspace = true
+
+# Use rustls by default, OpenSSL on platforms where rustls isn't available:
+# RISC-V: https://github.com/nextest-rs/nextest/issues/820
+# (default features for self_update turns on openssl)
+[target.'cfg(not(any(target_arch = "riscv32", target_arch = "riscv64")))'.dependencies]
+self_update = { workspace = true, optional = true, default-features = false, features = [
+    "rustls",
+] }
+
+[target.'cfg(any(target_arch = "riscv32", target_arch = "riscv64"))'.dependencies]
+self_update = { workspace = true, optional = true, default-features = true }
+
+
+[dev-dependencies]
+camino-tempfile-ext.workspace = true
+color-eyre.workspace = true
+fixture-data.workspace = true
+indoc.workspace = true
+insta.workspace = true
+maplit.workspace = true
+newtype-uuid = { workspace = true, features = ["proptest1"] }
+nextest-metadata = { workspace = true, features = ["proptest1"] }
+pathdiff.workspace = true
+pretty_assertions.workspace = true
+proptest.workspace = true
+test-strategy.workspace = true
+test-case.workspace = true
+tracing-subscriber.workspace = true
+
+[features]
+self-update = [
+    "dep:hex",
+    "dep:self_update",
+    "dep:http",
+    "dep:mukti-metadata",
+    "dep:sha2",
+]
+experimental-tokio-console = [
+    "dep:console-subscriber",
+    "dep:tracing-subscriber",
+    "tokio/tracing",
+]
+
+[lints]
+workspace = true

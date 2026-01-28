@@ -1,0 +1,22 @@
+{
+  "arch": "avr",
+  "atomic-cas": false,
+  "cpu": "atmega2560",
+  "data-layout": "e-P1-p:16:8-i8:8-i16:8-i32:8-i64:8-f32:8-f64:8-n8-a:8",
+  "eh-frame-header": false,
+  "exe-suffix": ".elf",
+  "executables": true,
+  "late-link-args": {
+    "gcc": ["-lgcc"]
+  },
+  "linker": "avr-gcc",
+  "llvm-target": "avr-unknown-unknown",
+  "max-atomic-width": 16,
+  "no-default-libraries": false,
+  "pre-link-args": {
+    "gcc": ["-mmcu=atmega2560"]
+  },
+  "relocation-model": "static",
+  "target-c-int-width": 16,
+  "target-pointer-width": 16
+}

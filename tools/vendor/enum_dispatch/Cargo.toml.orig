@@ -1,0 +1,29 @@
+[package]
+name = "enum_dispatch"
+version = "0.3.13"
+authors = ["Anton Lazarev <https://antonok.com>"]
+edition = "2018"
+description = "Near drop-in replacement for dynamic-dispatched method calls with up to 10x the speed"
+repository = "https://gitlab.com/antonok/enum_dispatch"
+readme = "README.md"
+keywords = ["speed", "performance", "traits", "dynamic", "optimization"]
+categories = ["rust-patterns", "development-tools::procedural-macro-helpers"]
+license = "MIT OR Apache-2.0"
+exclude = ["benches"]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+once_cell = "^1.0.1"
+quote = "^1.0"
+proc-macro2 = "^1.0"
+syn = { version = "^2.0", features = ["full"] }
+
+[dev-dependencies]
+rand = ">= 0.5.5, <= 0.6.1"
+enum_derive = "= 0.1.7"
+custom_derive = "= 0.1.7"
+serde = { version = "= 1.0.136", features = ["derive"] }
+serde_json = "= 1.0.78"
+smol = "1.3.0"

@@ -1,6 +1,6 @@
 [package]
 name = "syn"
-version = "2.0.56" # don't forget to update html_root_url and syn.json
+version = "2.0.114"
 authors = ["David Tolnay <dtolnay@gmail.com>"]
 categories = ["development-tools::procedural-macro-helpers", "parser-implementations"]
 description = "Parser for Rust source code"
@@ -18,43 +18,42 @@ include = [
 keywords = ["macros", "syn"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/dtolnay/syn"
-rust-version = "1.56"
+rust-version = "1.68"
 
 [features]
 default = ["derive", "parsing", "printing", "clone-impls", "proc-macro"]
 derive = []
 full = []
 parsing = []
-printing = ["quote"]
+printing = ["dep:quote"]
 visit = []
 visit-mut = []
 fold = []
 clone-impls = []
 extra-traits = []
-proc-macro = ["proc-macro2/proc-macro", "quote/proc-macro"]
+proc-macro = ["proc-macro2/proc-macro", "quote?/proc-macro"]
 test = ["syn-test-suite/all-features"]
 
 [dependencies]
-proc-macro2 = { version = "1.0.75", default-features = false }
+proc-macro2 = { version = "1.0.91", default-features = false }
 quote = { version = "1.0.35", optional = true, default-features = false }
 unicode-ident = "1"
 
 [dev-dependencies]
 anyhow = "1"
 automod = "1"
-flate2 = "1"
 insta = "1"
-rayon = "1"
 ref-cast = "1"
-reqwest = { version = "0.12", features = ["blocking"] }
 rustversion = "1"
 syn-test-suite = { version = "0", path = "tests/features" }
-tar = "0.4.16"
 termcolor = "1"
-walkdir = "2.3.2"
 
-[lib]
-doc-scrape-examples = false
+[target.'cfg(not(miri))'.dev-dependencies]
+flate2 = "1"
+rayon = "1"
+reqwest = { version = "0.13", features = ["blocking"] }
+tar = "0.4.16"
+walkdir = "2.3.2"
 
 [[bench]]
 name = "rust"
@@ -68,7 +67,15 @@ required-features = ["full", "parsing"]
 [package.metadata.docs.rs]
 all-features = true
 targets = ["x86_64-unknown-linux-gnu"]
-rustdoc-args = ["--cfg", "doc_cfg", "--generate-link-to-definition"]
+rustdoc-args = [
+    "--generate-link-to-definition",
+    "--generate-macro-expansion",
+    "--extend-css=src/gen/token.css",
+    "--extern-html-root-url=core=https://doc.rust-lang.org",
+    "--extern-html-root-url=alloc=https://doc.rust-lang.org",
+    "--extern-html-root-url=std=https://doc.rust-lang.org",
+    "--extern-html-root-url=proc_macro=https://doc.rust-lang.org",
+]
 
 [package.metadata.playground]
 features = ["full", "visit", "visit-mut", "fold", "extra-traits"]

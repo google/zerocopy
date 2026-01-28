@@ -1,0 +1,270 @@
+# This file is generated from build.rcl.
+{
+  "env": {"CARGO_TERM_COLOR": "always"},
+  "jobs": {
+    "linux-1-71-0": {
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {"uses": "actions/checkout@v4.2.1"},
+        {
+          "name": "Install toolchain",
+          "run": "rustup toolchain install 1.71.0\nrustup target add x86_64-unknown-linux-gnu --toolchain 1.71.0\n"
+        },
+        {
+          "name": "Build",
+          "run": "cargo +1.71.0 build --target x86_64-unknown-linux-gnu --verbose"
+        },
+        {
+          "name": "Run tests",
+          "run": "cargo +1.71.0 test --target x86_64-unknown-linux-gnu --verbose"
+        }
+      ]
+    },
+    "linux-1-81-0": {
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {"uses": "actions/checkout@v4.2.1"},
+        {
+          "name": "Install toolchain",
+          "run": "rustup toolchain install 1.81.0\nrustup target add x86_64-unknown-linux-gnu --toolchain 1.81.0\n"
+        },
+        {
+          "name": "Build",
+          "run": "cargo +1.81.0 build --target x86_64-unknown-linux-gnu --verbose"
+        },
+        {
+          "name": "Run tests",
+          "run": "cargo +1.81.0 test --target x86_64-unknown-linux-gnu --verbose"
+        }
+      ]
+    },
+    "linux-beta": {
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {"uses": "actions/checkout@v4.2.1"},
+        {
+          "name": "Install toolchain",
+          "run": "rustup toolchain install beta\nrustup target add x86_64-unknown-linux-gnu --toolchain beta\n"
+        },
+        {
+          "name": "Build",
+          "run": "cargo +beta build --target x86_64-unknown-linux-gnu --verbose"
+        },
+        {
+          "name": "Run tests",
+          "run": "cargo +beta test --target x86_64-unknown-linux-gnu --verbose"
+        }
+      ]
+    },
+    "linux-nightly": {
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {"uses": "actions/checkout@v4.2.1"},
+        {
+          "name": "Install toolchain",
+          "run": "rustup toolchain install nightly\nrustup target add x86_64-unknown-linux-gnu --toolchain nightly\n"
+        },
+        {
+          "name": "Build",
+          "run": "cargo +nightly build --target x86_64-unknown-linux-gnu --verbose"
+        },
+        {
+          "name": "Run tests",
+          "run": "cargo +nightly test --target x86_64-unknown-linux-gnu --verbose"
+        }
+      ]
+    },
+    "sgx-msrv": {
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {"uses": "actions/checkout@v4.2.1"},
+        {
+          "name": "Install toolchain",
+          "run": "rustup toolchain install 1.71.0\nrustup target add x86_64-fortanix-unknown-sgx --toolchain 1.71.0\n"
+        },
+        {
+          "name": "Build",
+          "run": "cargo +1.71.0 build --target x86_64-fortanix-unknown-sgx --verbose"
+        }
+      ]
+    },
+    "wasm-msrv": {
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {"uses": "actions/checkout@v4.2.1"},
+        {
+          "name": "Install toolchain",
+          "run": "rustup toolchain install 1.71.0\nrustup target add wasm32-unknown-unknown --toolchain 1.71.0\n"
+        },
+        {
+          "name": "Build",
+          "run": "cargo +1.71.0 build --target wasm32-unknown-unknown --verbose"
+        }
+      ]
+    },
+    "windows-gnu-beta-x86_64": {
+      "runs-on": "windows-latest",
+      "steps": [
+        {"uses": "actions/checkout@v4.2.1"},
+        {
+          "name": "Install toolchain",
+          "run": "rustup toolchain install beta\nrustup target add x86_64-pc-windows-gnu --toolchain beta\n"
+        },
+        {
+          "name": "Build",
+          "run": "cargo +beta build --target x86_64-pc-windows-gnu --verbose"
+        },
+        {
+          "name": "Run tests",
+          "run": "cargo +beta test --target x86_64-pc-windows-gnu --verbose"
+        }
+      ]
+    },
+    "windows-msvc-1-71-0-i686": {
+      "runs-on": "windows-latest",
+      "steps": [
+        {"uses": "actions/checkout@v4.2.1"},
+        {
+          "name": "Install toolchain",
+          "run": "rustup toolchain install 1.71.0\nrustup target add i686-pc-windows-msvc --toolchain 1.71.0\n"
+        },
+        {
+          "name": "Build",
+          "run": "cargo +1.71.0 build --target i686-pc-windows-msvc --verbose"
+        },
+        {
+          "name": "Run tests",
+          "run": "cargo +1.71.0 test --target i686-pc-windows-msvc --verbose"
+        }
+      ]
+    },
+    "windows-msvc-1-71-0-x86_64": {
+      "runs-on": "windows-latest",
+      "steps": [
+        {"uses": "actions/checkout@v4.2.1"},
+        {
+          "name": "Install toolchain",
+          "run": "rustup toolchain install 1.71.0\nrustup target add x86_64-pc-windows-msvc --toolchain 1.71.0\n"
+        },
+        {
+          "name": "Build",
+          "run": "cargo +1.71.0 build --target x86_64-pc-windows-msvc --verbose"
+        },
+        {
+          "name": "Run tests",
+          "run": "cargo +1.71.0 test --target x86_64-pc-windows-msvc --verbose"
+        }
+      ]
+    },
+    "windows-msvc-1-81-0-i686": {
+      "runs-on": "windows-latest",
+      "steps": [
+        {"uses": "actions/checkout@v4.2.1"},
+        {
+          "name": "Install toolchain",
+          "run": "rustup toolchain install 1.81.0\nrustup target add i686-pc-windows-msvc --toolchain 1.81.0\n"
+        },
+        {
+          "name": "Build",
+          "run": "cargo +1.81.0 build --target i686-pc-windows-msvc --verbose"
+        },
+        {
+          "name": "Run tests",
+          "run": "cargo +1.81.0 test --target i686-pc-windows-msvc --verbose"
+        }
+      ]
+    },
+    "windows-msvc-1-81-0-x86_64": {
+      "runs-on": "windows-latest",
+      "steps": [
+        {"uses": "actions/checkout@v4.2.1"},
+        {
+          "name": "Install toolchain",
+          "run": "rustup toolchain install 1.81.0\nrustup target add x86_64-pc-windows-msvc --toolchain 1.81.0\n"
+        },
+        {
+          "name": "Build",
+          "run": "cargo +1.81.0 build --target x86_64-pc-windows-msvc --verbose"
+        },
+        {
+          "name": "Run tests",
+          "run": "cargo +1.81.0 test --target x86_64-pc-windows-msvc --verbose"
+        }
+      ]
+    },
+    "windows-msvc-beta-i686": {
+      "runs-on": "windows-latest",
+      "steps": [
+        {"uses": "actions/checkout@v4.2.1"},
+        {
+          "name": "Install toolchain",
+          "run": "rustup toolchain install beta\nrustup target add i686-pc-windows-msvc --toolchain beta\n"
+        },
+        {
+          "name": "Build",
+          "run": "cargo +beta build --target i686-pc-windows-msvc --verbose"
+        },
+        {
+          "name": "Run tests",
+          "run": "cargo +beta test --target i686-pc-windows-msvc --verbose"
+        }
+      ]
+    },
+    "windows-msvc-beta-x86_64": {
+      "runs-on": "windows-latest",
+      "steps": [
+        {"uses": "actions/checkout@v4.2.1"},
+        {
+          "name": "Install toolchain",
+          "run": "rustup toolchain install beta\nrustup target add x86_64-pc-windows-msvc --toolchain beta\n"
+        },
+        {
+          "name": "Build",
+          "run": "cargo +beta build --target x86_64-pc-windows-msvc --verbose"
+        },
+        {
+          "name": "Run tests",
+          "run": "cargo +beta test --target x86_64-pc-windows-msvc --verbose"
+        }
+      ]
+    },
+    "windows-msvc-nightly-i686": {
+      "runs-on": "windows-latest",
+      "steps": [
+        {"uses": "actions/checkout@v4.2.1"},
+        {
+          "name": "Install toolchain",
+          "run": "rustup toolchain install nightly\nrustup target add i686-pc-windows-msvc --toolchain nightly\n"
+        },
+        {
+          "name": "Build",
+          "run": "cargo +nightly build --target i686-pc-windows-msvc --verbose"
+        },
+        {
+          "name": "Run tests",
+          "run": "cargo +nightly test --target i686-pc-windows-msvc --verbose"
+        }
+      ]
+    },
+    "windows-msvc-nightly-x86_64": {
+      "runs-on": "windows-latest",
+      "steps": [
+        {"uses": "actions/checkout@v4.2.1"},
+        {
+          "name": "Install toolchain",
+          "run": "rustup toolchain install nightly\nrustup target add x86_64-pc-windows-msvc --toolchain nightly\n"
+        },
+        {
+          "name": "Build",
+          "run": "cargo +nightly build --target x86_64-pc-windows-msvc --verbose"
+        },
+        {
+          "name": "Run tests",
+          "run": "cargo +nightly test --target x86_64-pc-windows-msvc --verbose"
+        }
+      ]
+    }
+  },
+  "name": "Build",
+  "on": {"pull_request": {"branches": ["master"]}, "push": {"branches": ["*"]}}
+}

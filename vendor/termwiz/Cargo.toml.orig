@@ -1,0 +1,94 @@
+[package]
+authors = ["Wez Furlong"]
+name = "termwiz"
+version = "0.23.3"
+edition = "2018"
+repository = "https://github.com/wezterm/wezterm"
+description = "Terminal Wizardry for Unix and Windows"
+license = "MIT"
+documentation = "https://docs.rs/termwiz"
+keywords = ["terminal", "readline", "console", "curses"]
+readme = "README.md"
+
+[dependencies]
+anyhow.workspace = true
+base64.workspace = true
+bitflags = "2.0"
+cassowary = {workspace=true, optional=true}
+fancy-regex.workspace = true
+filedescriptor.workspace = true
+finl_unicode.workspace = true
+fixedbitset.workspace = true
+fnv = {workspace=true, optional=true}
+hex.workspace = true
+image = {workspace=true, optional=true}
+lazy_static.workspace = true
+libc.workspace = true
+log.workspace = true
+memmem.workspace = true
+num-derive.workspace = true
+num-traits.workspace = true
+ordered-float.workspace = true
+pest.workspace = true
+pest_derive.workspace = true
+phf.workspace = true
+serde = {workspace=true, features = ["rc", "derive"], optional=true}
+sha2.workspace = true
+siphasher.workspace = true
+terminfo.workspace = true
+thiserror.workspace = true
+ucd-trie.workspace = true
+unicode-segmentation.workspace = true
+vtparse.workspace = true
+wezterm-bidi.workspace = true
+wezterm-blob-leases.workspace = true
+wezterm-color-types.workspace = true
+wezterm-dynamic.workspace = true
+wezterm-input-types.workspace = true
+
+[features]
+widgets = ["cassowary", "fnv"]
+use_serde = ["serde", "wezterm-color-types/use_serde", "wezterm-blob-leases/serde", "bitflags/serde", "wezterm-input-types/serde"]
+use_image = ["image"]
+docs = ["widgets", "use_serde"]
+
+[dev-dependencies]
+criterion.workspace = true
+env_logger.workspace = true
+k9.workspace = true
+varbincode.workspace = true
+
+
+[target."cfg(unix)".dependencies]
+signal-hook.workspace = true
+termios.workspace = true
+nix = {workspace=true, features=["mman", "fs"]}
+
+[target."cfg(windows)".dependencies.winapi]
+features = [
+    "winbase",
+    "winerror",
+    "winnls",
+    "winuser",
+    "consoleapi",
+    "handleapi",
+    "fileapi",
+    "synchapi",
+    "memoryapi",
+    "winnt",
+    "impl-default"
+]
+workspace = true
+
+[package.metadata.docs.rs]
+features = ["docs"]
+rustdoc-args = ["--cfg", "feature=\"docs\""]
+
+[[bench]]
+name = "wcwidth"
+harness = false
+
+[[bench]]
+name = "cell"
+harness = false
+

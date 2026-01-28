@@ -1,0 +1,2 @@
+[alias]
+xfmt = "fmt -- --config imports_granularity=Crate"

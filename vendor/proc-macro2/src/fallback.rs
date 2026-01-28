@@ -1,24 +1,41 @@
+#[cfg(wrap_proc_macro)]
+use crate::imp;
 #[cfg(span_locations)]
 use crate::location::LineColumn;
 use crate::parse::{self, Cursor};
 use crate::rcvec::{RcVec, RcVecBuilder, RcVecIntoIter, RcVecMut};
 use crate::{Delimiter, Spacing, TokenTree};
+use alloc::borrow::ToOwned as _;
+use alloc::boxed::Box;
 #[cfg(all(span_locations, not(fuzzing)))]
 use alloc::collections::BTreeMap;
+use alloc::format;
+use alloc::string::{String, ToString as _};
+#[cfg(all(span_locations, not(fuzzing)))]
+use alloc::vec;
+use alloc::vec::Vec;
 #[cfg(all(span_locations, not(fuzzing)))]
 use core::cell::RefCell;
 #[cfg(span_locations)]
 use core::cmp;
+#[cfg(all(span_locations, not(fuzzing)))]
+use core::cmp::Ordering;
+use core::ffi::CStr;
 use core::fmt::{self, Debug, Display, Write};
 use core::mem::ManuallyDrop;
 #[cfg(span_locations)]
 use core::ops::Range;
 use core::ops::RangeBounds;
 use core::ptr;
-use core::str::{self, FromStr};
-use std::ffi::CStr;
-#[cfg(procmacro2_semver_exempt)]
+use core::str;
+#[cfg(feature = "proc-macro")]
+use core::str::FromStr;
+#[cfg(wrap_proc_macro)]
+use std::panic;
+#[cfg(span_locations)]
 use std::path::PathBuf;
+#[cfg(all(span_locations, not(fuzzing)))]
+use std::thread_local;
 
 /// Force use of proc-macro2's fallback implementation of the API for now, even
 /// if the compiler's implementation is available.
@@ -57,13 +74,31 @@ impl LexError {
 }
 
 impl TokenStream {
-    pub fn new() -> Self {
+    pub(crate) fn new() -> Self {
         TokenStream {
             inner: RcVecBuilder::new().build(),
         }
     }
 
-    pub fn is_empty(&self) -> bool {
+    pub(crate) fn from_str_checked(src: &str) -> Result<Self, LexError> {
+        // Create a dummy file & add it to the source map
+        let mut cursor = get_cursor(src);
+
+        // Strip a byte order mark if present
+        const BYTE_ORDER_MARK: &str = "\u{feff}";
+        if cursor.starts_with(BYTE_ORDER_MARK) {
+            cursor = cursor.advance(BYTE_ORDER_MARK.len());
+        }
+
+        parse::token_stream(cursor)
+    }
+
+    #[cfg(feature = "proc-macro")]
+    pub(crate) fn from_str_unchecked(src: &str) -> Self {
+        Self::from_str_checked(src).unwrap()
+    }
+
+    pub(crate) fn is_empty(&self) -> bool {
         self.inner.len() == 0
     }
 
@@ -101,21 +136,32 @@ fn push_token_from_proc_macro(mut vec: RcVecMut<TokenTree>, token: TokenTree) {
 // Nonrecursive to prevent stack overflow.
 impl Drop for TokenStream {
     fn drop(&mut self) {
-        let mut inner = match self.inner.get_mut() {
-            Some(inner) => inner,
+        let mut stack = Vec::new();
+        let mut current = match self.inner.get_mut() {
+            Some(inner) => inner.take().into_iter(),
             None => return,
         };
-        while let Some(token) = inner.pop() {
-            let group = match token {
-                TokenTree::Group(group) => group.inner,
-                _ => continue,
-            };
-            #[cfg(wrap_proc_macro)]
-            let group = match group {
-                crate::imp::Group::Fallback(group) => group,
-                crate::imp::Group::Compiler(_) => continue,
-            };
-            inner.extend(group.stream.take_inner());
+        loop {
+            while let Some(token) = current.next() {
+                let group = match token {
+                    TokenTree::Group(group) => group.inner,
+                    _ => continue,
+                };
+                #[cfg(wrap_proc_macro)]
+                let group = match group {
+                    crate::imp::Group::Fallback(group) => group,
+                    crate::imp::Group::Compiler(_) => continue,
+                };
+                let mut group = group;
+                if let Some(inner) = group.stream.inner.get_mut() {
+                    stack.push(current);
+                    current = inner.take().into_iter();
+                }
+            }
+            match stack.pop() {
+                Some(next) => current = next,
+                None => return,
+            }
         }
     }
 }
@@ -125,23 +171,23 @@ pub(crate) struct TokenStreamBuilder {
 }
 
 impl TokenStreamBuilder {
-    pub fn new() -> Self {
+    pub(crate) fn new() -> Self {
         TokenStreamBuilder {
             inner: RcVecBuilder::new(),
         }
     }
 
-    pub fn with_capacity(cap: usize) -> Self {
+    pub(crate) fn with_capacity(cap: usize) -> Self {
         TokenStreamBuilder {
             inner: RcVecBuilder::with_capacity(cap),
         }
     }
 
-    pub fn push_token_from_parser(&mut self, tt: TokenTree) {
+    pub(crate) fn push_token_from_parser(&mut self, tt: TokenTree) {
         self.inner.push(tt);
     }
 
-    pub fn build(self) -> TokenStream {
+    pub(crate) fn build(self) -> TokenStream {
         TokenStream {
             inner: self.inner.build(),
         }
@@ -170,23 +216,6 @@ fn get_cursor(src: &str) -> Cursor {
     Cursor { rest: src }
 }
 
-impl FromStr for TokenStream {
-    type Err = LexError;
-
-    fn from_str(src: &str) -> Result<TokenStream, LexError> {
-        // Create a dummy file & add it to the source map
-        let mut cursor = get_cursor(src);
-
-        // Strip a byte order mark if present
-        const BYTE_ORDER_MARK: &str = "\u{feff}";
-        if cursor.starts_with(BYTE_ORDER_MARK) {
-            cursor = cursor.advance(BYTE_ORDER_MARK.len());
-        }
-
-        parse::token_stream(cursor)
-    }
-}
-
 impl Display for LexError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.write_str("cannot parse string into token stream")
@@ -202,13 +231,13 @@ impl Display for TokenStream {
             }
             joint = false;
             match tt {
-                TokenTree::Group(tt) => Display::fmt(tt, f),
-                TokenTree::Ident(tt) => Display::fmt(tt, f),
+                TokenTree::Group(tt) => write!(f, "{}", tt),
+                TokenTree::Ident(tt) => write!(f, "{}", tt),
                 TokenTree::Punct(tt) => {
                     joint = tt.spacing() == Spacing::Joint;
-                    Display::fmt(tt, f)
+                    write!(f, "{}", tt)
                 }
-                TokenTree::Literal(tt) => Display::fmt(tt, f),
+                TokenTree::Literal(tt) => write!(f, "{}", tt),
             }?;
         }
 
@@ -226,20 +255,14 @@ impl Debug for TokenStream {
 #[cfg(feature = "proc-macro")]
 impl From<proc_macro::TokenStream> for TokenStream {
     fn from(inner: proc_macro::TokenStream) -> Self {
-        inner
-            .to_string()
-            .parse()
-            .expect("compiler token stream parse failed")
+        TokenStream::from_str_unchecked(&inner.to_string())
     }
 }
 
 #[cfg(feature = "proc-macro")]
 impl From<TokenStream> for proc_macro::TokenStream {
     fn from(inner: TokenStream) -> Self {
-        inner
-            .to_string()
-            .parse()
-            .expect("failed to parse to compiler tokens")
+        proc_macro::TokenStream::from_str_unchecked(&inner.to_string())
     }
 }
 
@@ -299,34 +322,6 @@ impl IntoIterator for TokenStream {
     }
 }
 
-#[cfg(procmacro2_semver_exempt)]
-#[derive(Clone, PartialEq, Eq)]
-pub(crate) struct SourceFile {
-    path: PathBuf,
-}
-
-#[cfg(procmacro2_semver_exempt)]
-impl SourceFile {
-    /// Get the path to this source file as a string.
-    pub fn path(&self) -> PathBuf {
-        self.path.clone()
-    }
-
-    pub fn is_real(&self) -> bool {
-        false
-    }
-}
-
-#[cfg(procmacro2_semver_exempt)]
-impl Debug for SourceFile {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.debug_struct("SourceFile")
-            .field("path", &self.path())
-            .field("is_real", &self.is_real())
-            .finish()
-    }
-}
-
 #[cfg(all(span_locations, not(fuzzing)))]
 thread_local! {
     static SOURCE_MAP: RefCell<SourceMap> = RefCell::new(SourceMap {
@@ -380,38 +375,52 @@ impl FileInfo {
     }
 
     fn byte_range(&mut self, span: Span) -> Range<usize> {
-        let lo_char = (span.lo - self.span.lo) as usize;
+        self.byte(span.lo)..self.byte(span.hi)
+    }
+
+    fn byte(&mut self, ch: u32) -> usize {
+        let char_index = (ch - self.span.lo) as usize;
 
         // Look up offset of the largest already-computed char index that is
-        // less than or equal to the current requested one. We resume counting
-        // chars from that point.
-        let (&last_char_index, &last_byte_offset) = self
+        // less than or equal to the current requested one.
+        let (&previous_char_index, &previous_byte_offset) = self
             .char_index_to_byte_offset
-            .range(..=lo_char)
+            .range(..=char_index)
             .next_back()
             .unwrap_or((&0, &0));
 
-        let lo_byte = if last_char_index == lo_char {
-            last_byte_offset
-        } else {
-            let total_byte_offset = match self.source_text[last_byte_offset..]
-                .char_indices()
-                .nth(lo_char - last_char_index)
+        if previous_char_index == char_index {
+            return previous_byte_offset;
+        }
+
+        // Look up next char index that is greater than the requested one. We
+        // resume counting chars from whichever point is closer.
+        let byte_offset = match self.char_index_to_byte_offset.range(char_index..).next() {
+            Some((&next_char_index, &next_byte_offset))
+                if next_char_index - char_index < char_index - previous_char_index =>
             {
-                Some((additional_offset, _ch)) => last_byte_offset + additional_offset,
-                None => self.source_text.len(),
-            };
-            self.char_index_to_byte_offset
-                .insert(lo_char, total_byte_offset);
-            total_byte_offset
+                self.source_text[..next_byte_offset]
+                    .char_indices()
+                    .nth_back(next_char_index - char_index - 1)
+                    .unwrap()
+                    .0
+            }
+            _ => {
+                match self.source_text[previous_byte_offset..]
+                    .char_indices()
+                    .nth(char_index - previous_char_index)
+                {
+                    Some((byte_offset_from_previous, _ch)) => {
+                        previous_byte_offset + byte_offset_from_previous
+                    }
+                    None => self.source_text.len(),
+                }
+            }
         };
 
-        let trunc_lo = &self.source_text[lo_byte..];
-        let char_len = (span.hi - span.lo) as usize;
-        lo_byte..match trunc_lo.char_indices().nth(char_len) {
-            Some((offset, _ch)) => lo_byte + offset,
-            None => self.source_text.len(),
-        }
+        self.char_index_to_byte_offset
+            .insert(char_index, byte_offset);
+        byte_offset
     }
 
     fn source_text(&mut self, span: Span) -> String {
@@ -471,36 +480,39 @@ impl SourceMap {
         span
     }
 
-    #[cfg(procmacro2_semver_exempt)]
-    fn filepath(&self, span: Span) -> PathBuf {
-        for (i, file) in self.files.iter().enumerate() {
-            if file.span_within(span) {
-                return PathBuf::from(if i == 0 {
-                    "<unspecified>".to_owned()
-                } else {
-                    format!("<parsed string {}>", i)
-                });
+    fn find(&self, span: Span) -> usize {
+        match self.files.binary_search_by(|file| {
+            if file.span.hi < span.lo {
+                Ordering::Less
+            } else if file.span.lo > span.hi {
+                Ordering::Greater
+            } else {
+                assert!(file.span_within(span));
+                Ordering::Equal
             }
+        }) {
+            Ok(i) => i,
+            Err(_) => unreachable!("Invalid span with no related FileInfo!"),
         }
-        unreachable!("Invalid span with no related FileInfo!");
+    }
+
+    fn filepath(&self, span: Span) -> String {
+        let i = self.find(span);
+        if i == 0 {
+            "<unspecified>".to_owned()
+        } else {
+            format!("<parsed string {}>", i)
+        }
     }
 
     fn fileinfo(&self, span: Span) -> &FileInfo {
-        for file in &self.files {
-            if file.span_within(span) {
-                return file;
-            }
-        }
-        unreachable!("Invalid span with no related FileInfo!");
+        let i = self.find(span);
+        &self.files[i]
     }
 
     fn fileinfo_mut(&mut self, span: Span) -> &mut FileInfo {
-        for file in &mut self.files {
-            if file.span_within(span) {
-                return file;
-            }
-        }
-        unreachable!("Invalid span with no related FileInfo!");
+        let i = self.find(span);
+        &mut self.files[i]
     }
 }
 
@@ -514,52 +526,37 @@ pub(crate) struct Span {
 
 impl Span {
     #[cfg(not(span_locations))]
-    pub fn call_site() -> Self {
+    pub(crate) fn call_site() -> Self {
         Span {}
     }
 
     #[cfg(span_locations)]
-    pub fn call_site() -> Self {
+    pub(crate) fn call_site() -> Self {
         Span { lo: 0, hi: 0 }
     }
 
-    pub fn mixed_site() -> Self {
+    pub(crate) fn mixed_site() -> Self {
         Span::call_site()
     }
 
     #[cfg(procmacro2_semver_exempt)]
-    pub fn def_site() -> Self {
+    pub(crate) fn def_site() -> Self {
         Span::call_site()
     }
 
-    pub fn resolved_at(&self, _other: Span) -> Span {
+    pub(crate) fn resolved_at(&self, _other: Span) -> Span {
         // Stable spans consist only of line/column information, so
         // `resolved_at` and `located_at` only select which span the
         // caller wants line/column information from.
         *self
     }
 
-    pub fn located_at(&self, other: Span) -> Span {
+    pub(crate) fn located_at(&self, other: Span) -> Span {
         other
     }
 
-    #[cfg(procmacro2_semver_exempt)]
-    pub fn source_file(&self) -> SourceFile {
-        #[cfg(fuzzing)]
-        return SourceFile {
-            path: PathBuf::from("<unspecified>"),
-        };
-
-        #[cfg(not(fuzzing))]
-        SOURCE_MAP.with(|sm| {
-            let sm = sm.borrow();
-            let path = sm.filepath(*self);
-            SourceFile { path }
-        })
-    }
-
     #[cfg(span_locations)]
-    pub fn byte_range(&self) -> Range<usize> {
+    pub(crate) fn byte_range(&self) -> Range<usize> {
         #[cfg(fuzzing)]
         return 0..0;
 
@@ -574,7 +571,7 @@ impl Span {
     }
 
     #[cfg(span_locations)]
-    pub fn start(&self) -> LineColumn {
+    pub(crate) fn start(&self) -> LineColumn {
         #[cfg(fuzzing)]
         return LineColumn { line: 0, column: 0 };
 
@@ -587,7 +584,7 @@ impl Span {
     }
 
     #[cfg(span_locations)]
-    pub fn end(&self) -> LineColumn {
+    pub(crate) fn end(&self) -> LineColumn {
         #[cfg(fuzzing)]
         return LineColumn { line: 0, column: 0 };
 
@@ -599,13 +596,30 @@ impl Span {
         })
     }
 
+    #[cfg(span_locations)]
+    pub(crate) fn file(&self) -> String {
+        #[cfg(fuzzing)]
+        return "<unspecified>".to_owned();
+
+        #[cfg(not(fuzzing))]
+        SOURCE_MAP.with(|sm| {
+            let sm = sm.borrow();
+            sm.filepath(*self)
+        })
+    }
+
+    #[cfg(span_locations)]
+    pub(crate) fn local_file(&self) -> Option<PathBuf> {
+        None
+    }
+
     #[cfg(not(span_locations))]
-    pub fn join(&self, _other: Span) -> Option<Span> {
+    pub(crate) fn join(&self, _other: Span) -> Option<Span> {
         Some(Span {})
     }
 
     #[cfg(span_locations)]
-    pub fn join(&self, other: Span) -> Option<Span> {
+    pub(crate) fn join(&self, other: Span) -> Option<Span> {
         #[cfg(fuzzing)]
         return {
             let _ = other;
@@ -627,12 +641,12 @@ impl Span {
     }
 
     #[cfg(not(span_locations))]
-    pub fn source_text(&self) -> Option<String> {
+    pub(crate) fn source_text(&self) -> Option<String> {
         None
     }
 
     #[cfg(span_locations)]
-    pub fn source_text(&self) -> Option<String> {
+    pub(crate) fn source_text(&self) -> Option<String> {
         #[cfg(fuzzing)]
         return None;
 
@@ -709,7 +723,7 @@ pub(crate) struct Group {
 }
 
 impl Group {
-    pub fn new(delimiter: Delimiter, stream: TokenStream) -> Self {
+    pub(crate) fn new(delimiter: Delimiter, stream: TokenStream) -> Self {
         Group {
             delimiter,
             stream,
@@ -717,27 +731,27 @@ impl Group {
         }
     }
 
-    pub fn delimiter(&self) -> Delimiter {
+    pub(crate) fn delimiter(&self) -> Delimiter {
         self.delimiter
     }
 
-    pub fn stream(&self) -> TokenStream {
+    pub(crate) fn stream(&self) -> TokenStream {
         self.stream.clone()
     }
 
-    pub fn span(&self) -> Span {
+    pub(crate) fn span(&self) -> Span {
         self.span
     }
 
-    pub fn span_open(&self) -> Span {
+    pub(crate) fn span_open(&self) -> Span {
         self.span.first_byte()
     }
 
-    pub fn span_close(&self) -> Span {
+    pub(crate) fn span_close(&self) -> Span {
         self.span.last_byte()
     }
 
-    pub fn set_span(&mut self, span: Span) {
+    pub(crate) fn set_span(&mut self, span: Span) {
         self.span = span;
     }
 }
@@ -781,45 +795,45 @@ impl Debug for Group {
 
 #[derive(Clone)]
 pub(crate) struct Ident {
-    sym: String,
+    sym: Box<str>,
     span: Span,
     raw: bool,
 }
 
 impl Ident {
     #[track_caller]
-    pub fn new_checked(string: &str, span: Span) -> Self {
+    pub(crate) fn new_checked(string: &str, span: Span) -> Self {
         validate_ident(string);
         Ident::new_unchecked(string, span)
     }
 
-    pub fn new_unchecked(string: &str, span: Span) -> Self {
+    pub(crate) fn new_unchecked(string: &str, span: Span) -> Self {
         Ident {
-            sym: string.to_owned(),
+            sym: Box::from(string),
             span,
             raw: false,
         }
     }
 
     #[track_caller]
-    pub fn new_raw_checked(string: &str, span: Span) -> Self {
+    pub(crate) fn new_raw_checked(string: &str, span: Span) -> Self {
         validate_ident_raw(string);
         Ident::new_raw_unchecked(string, span)
     }
 
-    pub fn new_raw_unchecked(string: &str, span: Span) -> Self {
+    pub(crate) fn new_raw_unchecked(string: &str, span: Span) -> Self {
         Ident {
-            sym: string.to_owned(),
+            sym: Box::from(string),
             span,
             raw: true,
         }
     }
 
-    pub fn span(&self) -> Span {
+    pub(crate) fn span(&self) -> Span {
         self.span
     }
 
-    pub fn set_span(&mut self, span: Span) {
+    pub(crate) fn set_span(&mut self, span: Span) {
         self.span = span;
     }
 }
@@ -886,9 +900,9 @@ where
     fn eq(&self, other: &T) -> bool {
         let other = other.as_ref();
         if self.raw {
-            other.starts_with("r#") && self.sym == other[2..]
+            other.starts_with("r#") && *self.sym == other[2..]
         } else {
-            self.sym == other
+            *self.sym == *other
         }
     }
 }
@@ -898,7 +912,7 @@ impl Display for Ident {
         if self.raw {
             f.write_str("r#")?;
         }
-        Display::fmt(&self.sym, f)
+        f.write_str(&self.sym)
     }
 }
 
@@ -933,7 +947,7 @@ pub(crate) struct Literal {
 
 macro_rules! suffixed_numbers {
     ($($name:ident => $kind:ident,)*) => ($(
-        pub fn $name(n: $kind) -> Literal {
+        pub(crate) fn $name(n: $kind) -> Literal {
             Literal::_new(format!(concat!("{}", stringify!($kind)), n))
         }
     )*)
@@ -941,7 +955,7 @@ macro_rules! suffixed_numbers {
 
 macro_rules! unsuffixed_numbers {
     ($($name:ident => $kind:ident,)*) => ($(
-        pub fn $name(n: $kind) -> Literal {
+        pub(crate) fn $name(n: $kind) -> Literal {
             Literal::_new(n.to_string())
         }
     )*)
@@ -953,6 +967,36 @@ impl Literal {
             repr,
             span: Span::call_site(),
         }
+    }
+
+    pub(crate) fn from_str_checked(repr: &str) -> Result<Self, LexError> {
+        let mut cursor = get_cursor(repr);
+        #[cfg(span_locations)]
+        let lo = cursor.off;
+
+        let negative = cursor.starts_with_char('-');
+        if negative {
+            cursor = cursor.advance(1);
+            if !cursor.starts_with_fn(|ch| ch.is_ascii_digit()) {
+                return Err(LexError::call_site());
+            }
+        }
+
+        if let Ok((rest, mut literal)) = parse::literal(cursor) {
+            if rest.is_empty() {
+                if negative {
+                    literal.repr.insert(0, '-');
+                }
+                literal.span = Span {
+                    #[cfg(span_locations)]
+                    lo,
+                    #[cfg(span_locations)]
+                    hi: rest.off,
+                };
+                return Ok(literal);
+            }
+        }
+        Err(LexError::call_site())
     }
 
     pub(crate) unsafe fn from_str_unchecked(repr: &str) -> Self {
@@ -992,7 +1036,7 @@ impl Literal {
         isize_unsuffixed => isize,
     }
 
-    pub fn f32_unsuffixed(f: f32) -> Literal {
+    pub(crate) fn f32_unsuffixed(f: f32) -> Literal {
         let mut s = f.to_string();
         if !s.contains('.') {
             s.push_str(".0");
@@ -1000,7 +1044,7 @@ impl Literal {
         Literal::_new(s)
     }
 
-    pub fn f64_unsuffixed(f: f64) -> Literal {
+    pub(crate) fn f64_unsuffixed(f: f64) -> Literal {
         let mut s = f.to_string();
         if !s.contains('.') {
             s.push_str(".0");
@@ -1008,7 +1052,7 @@ impl Literal {
         Literal::_new(s)
     }
 
-    pub fn string(string: &str) -> Literal {
+    pub(crate) fn string(string: &str) -> Literal {
         let mut repr = String::with_capacity(string.len() + 2);
         repr.push('"');
         escape_utf8(string, &mut repr);
@@ -1016,7 +1060,7 @@ impl Literal {
         Literal::_new(repr)
     }
 
-    pub fn character(ch: char) -> Literal {
+    pub(crate) fn character(ch: char) -> Literal {
         let mut repr = String::new();
         repr.push('\'');
         if ch == '"' {
@@ -1029,7 +1073,7 @@ impl Literal {
         Literal::_new(repr)
     }
 
-    pub fn byte_character(byte: u8) -> Literal {
+    pub(crate) fn byte_character(byte: u8) -> Literal {
         let mut repr = "b'".to_string();
         #[allow(clippy::match_overlapping_arm)]
         match byte {
@@ -1048,7 +1092,7 @@ impl Literal {
         Literal::_new(repr)
     }
 
-    pub fn byte_string(bytes: &[u8]) -> Literal {
+    pub(crate) fn byte_string(bytes: &[u8]) -> Literal {
         let mut repr = "b\"".to_string();
         let mut bytes = bytes.iter();
         while let Some(&b) = bytes.next() {
@@ -1074,7 +1118,7 @@ impl Literal {
         Literal::_new(repr)
     }
 
-    pub fn c_string(string: &CStr) -> Literal {
+    pub(crate) fn c_string(string: &CStr) -> Literal {
         let mut repr = "c\"".to_string();
         let mut bytes = string.to_bytes();
         while !bytes.is_empty() {
@@ -1102,15 +1146,15 @@ impl Literal {
         Literal::_new(repr)
     }
 
-    pub fn span(&self) -> Span {
+    pub(crate) fn span(&self) -> Span {
         self.span
     }
 
-    pub fn set_span(&mut self, span: Span) {
+    pub(crate) fn set_span(&mut self, span: Span) {
         self.span = span;
     }
 
-    pub fn subspan<R: RangeBounds<usize>>(&self, range: R) -> Option<Span> {
+    pub(crate) fn subspan<R: RangeBounds<usize>>(&self, range: R) -> Option<Span> {
         #[cfg(not(span_locations))]
         {
             let _ = range;
@@ -1152,40 +1196,6 @@ impl Literal {
     }
 }
 
-impl FromStr for Literal {
-    type Err = LexError;
-
-    fn from_str(repr: &str) -> Result<Self, Self::Err> {
-        let mut cursor = get_cursor(repr);
-        #[cfg(span_locations)]
-        let lo = cursor.off;
-
-        let negative = cursor.starts_with_char('-');
-        if negative {
-            cursor = cursor.advance(1);
-            if !cursor.starts_with_fn(|ch| ch.is_ascii_digit()) {
-                return Err(LexError::call_site());
-            }
-        }
-
-        if let Ok((rest, mut literal)) = parse::literal(cursor) {
-            if rest.is_empty() {
-                if negative {
-                    literal.repr.insert(0, '-');
-                }
-                literal.span = Span {
-                    #[cfg(span_locations)]
-                    lo,
-                    #[cfg(span_locations)]
-                    hi: rest.off,
-                };
-                return Ok(literal);
-            }
-        }
-        Err(LexError::call_site())
-    }
-}
-
 impl Display for Literal {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         Display::fmt(&self.repr, f)
@@ -1222,5 +1232,48 @@ fn escape_utf8(string: &str, repr: &mut String) {
         } else {
             repr.extend(ch.escape_debug());
         }
+    }
+}
+
+#[cfg(feature = "proc-macro")]
+pub(crate) trait FromStr2: FromStr<Err = proc_macro::LexError> {
+    #[cfg(wrap_proc_macro)]
+    fn valid(src: &str) -> bool;
+
+    #[cfg(wrap_proc_macro)]
+    fn from_str_checked(src: &str) -> Result<Self, imp::LexError> {
+        // Validate using fallback parser, because rustc is incapable of
+        // returning a recoverable Err for certain invalid token streams, and
+        // will instead permanently poison the compilation.
+        if !Self::valid(src) {
+            return Err(imp::LexError::CompilerPanic);
+        }
+
+        // Catch panic to work around https://github.com/rust-lang/rust/issues/58736.
+        match panic::catch_unwind(|| Self::from_str(src)) {
+            Ok(Ok(ok)) => Ok(ok),
+            Ok(Err(lex)) => Err(imp::LexError::Compiler(lex)),
+            Err(_panic) => Err(imp::LexError::CompilerPanic),
+        }
+    }
+
+    fn from_str_unchecked(src: &str) -> Self {
+        Self::from_str(src).unwrap()
+    }
+}
+
+#[cfg(feature = "proc-macro")]
+impl FromStr2 for proc_macro::TokenStream {
+    #[cfg(wrap_proc_macro)]
+    fn valid(src: &str) -> bool {
+        TokenStream::from_str_checked(src).is_ok()
+    }
+}
+
+#[cfg(feature = "proc-macro")]
+impl FromStr2 for proc_macro::Literal {
+    #[cfg(wrap_proc_macro)]
+    fn valid(src: &str) -> bool {
+        Literal::from_str_checked(src).is_ok()
     }
 }

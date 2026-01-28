@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cargo +nightly llvm-cov nextest:*)",
+      "Bash(cargo +nightly llvm-cov:*)",
+      "Bash(cargo build:*)",
+      "Bash(cargo clippy:*)",
+      "Bash(cargo nextest run:*)",
+      "Bash(cargo run:*)",
+      "Bash(cargo test:*)",
+      "Bash(cargo xfmt:*)",
+      "Bash(jj s:*)",
+      "Bash(rustc:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

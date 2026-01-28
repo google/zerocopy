@@ -1,0 +1,18 @@
+[package]
+name = "thread-id"
+version = "5.1.0"
+authors = ["Ruud van Asseldonk <dev@veniogames.com>"]
+license = "MIT OR Apache-2.0"
+readme = "readme.md"
+keywords = ["thread", "pthread", "getcurrentthreadid"]
+categories = ["concurrency", "os"]
+description = "Get a unique thread ID"
+repository = "https://github.com/ruuda/thread-id"
+documentation = "https://docs.rs/thread-id"
+edition = "2021"
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2.147"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61.2", features = ["Win32_System_Threading"] }

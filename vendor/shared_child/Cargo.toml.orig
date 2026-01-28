@@ -1,0 +1,26 @@
+[package]
+name = "shared_child"
+version = "1.1.1"
+authors = ["jacko"]
+license = "MIT"
+repository = "https://github.com/oconnor663/shared_child.rs"
+documentation = "https://docs.rs/shared_child"
+readme = "README.md"
+description = "a library for using child processes from multiple threads"
+keywords = ["command", "process", "child", "subprocess"]
+categories = ["os"]
+rust-version = "1.74"
+edition = "2021"
+
+[target.'cfg(not(windows))'.dependencies]
+libc = "0.2.42"
+sigchld = { version = "0.2.3", optional = true }
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.60.2", features = ["Win32_Foundation", "Win32_System_Threading"] }
+
+[features]
+# Unix doesn't support waiting on a child with a timeout, so we have to emulate
+# that by handling the SIGCHLD signal.
+timeout = ["dep:sigchld"]
+default = ["timeout"]

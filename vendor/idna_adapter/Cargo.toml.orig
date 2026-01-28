@@ -1,0 +1,19 @@
+[package]
+name = "idna_adapter"
+version = "1.0.0"
+rust-version = "1.57" # Must not be lower than unicode-rs branch (1.57) or the main branch (1.67)
+edition = "2021"
+license = "Apache-2.0 OR MIT"
+authors = ["The rust-url developers"]
+readme = "README.md"
+description = "Back end adapter for idna"
+categories = ["no-std", "internationalization"]
+keywords = ["unicode", "dns", "idna"]
+documentation = "https://docs.rs/idna_adapter/latest/idna_adapter/"
+homepage = "https://docs.rs/crate/idna_adapter/latest" # README link
+repository = "https://github.com/hsivonen/idna_adapter"
+
+[dependencies]
+
+[features]
+compiled_data = []

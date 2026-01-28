@@ -1,0 +1,27 @@
+stages:
+- build
+- test
+default:
+  before_script:
+    - rustc --version
+    - cargo --version
+.build:
+  stage: build
+  script:
+    - cargo build --verbose --workspace --color=always
+.test:
+  stage: test
+  script:
+    - cargo test --verbose --workspace --color=always
+build-nightly:
+  image: rustlang/rust:nightly
+  extends: .build
+build-stable:
+  image: rust:latest
+  extends: .build
+test-nightly:
+  image: rustlang/rust:nightly
+  extends: .test
+test-stable:
+  image: rust:latest
+  extends: .test

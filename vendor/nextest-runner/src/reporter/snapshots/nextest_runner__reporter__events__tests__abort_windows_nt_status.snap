@@ -1,0 +1,9 @@
+---
+source: nextest-runner/src/reporter/events.rs
+expression: json
+---
+{
+  "kind": "windows-nt-status",
+  "code": -1073741510,
+  "message": "The application terminated as a result of a CTRL+C."
+}

@@ -1,0 +1,11 @@
+[package]
+name = "psl-types"
+description = "Common types for the public suffix implementation crates"
+version = "2.0.11"
+license = "MIT/Apache-2.0"
+repository = "https://github.com/addr-rs/psl-types"
+documentation = "https://docs.rs/psl-types"
+readme = "README.md"
+keywords = ["tld", "gtld", "cctld", "psl", "no_std"]
+authors = ["rushmorem <rushmore@webenchanter.com>"]
+edition = "2018"

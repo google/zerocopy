@@ -1,0 +1,10 @@
+[package]
+name = "locked-tripwire"
+license = "MIT OR Apache-2.0"
+version = "0.1.1002"
+description = "Prevent cargo installs without --locked"
+repository = "https://github.com/nextest-rs/locked-tripwire"
+readme = "README.md"
+
+[features]
+nextest = []

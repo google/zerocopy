@@ -1,0 +1,43 @@
+<svg width="810px" height="182px" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .fg { fill: #AAAAAA }
+    .bg { background: #000000 }
+    .fg-magenta { fill: #AA00AA }
+    .fg-red { fill: #AA0000 }
+    .container {
+      padding: 0 10px;
+      line-height: 18px;
+    }
+    .bold { font-weight: bold; }
+    .dimmed { opacity: 0.7; }
+    tspan {
+      font: 14px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+      white-space: pre;
+      line-height: 18px;
+    }
+  </style>
+
+  <rect width="100%" height="100%" y="0" rx="4.5" class="bg" />
+
+  <text xml:space="preserve" class="container fg">
+    <tspan x="10px" y="28px"><tspan>  </tspan><tspan class="fg-red">×</tspan><tspan> error deserializing custom target JSON for `my-target`</tspan>
+</tspan>
+    <tspan x="10px" y="46px"><tspan>    ╭─[52:30]</tspan>
+</tspan>
+    <tspan x="10px" y="64px"><tspan> </tspan><tspan class="dimmed">51</tspan><tspan> │   ],</tspan>
+</tspan>
+    <tspan x="10px" y="82px"><tspan> </tspan><tspan class="dimmed">52</tspan><tspan> │   "target-pointer-width": "xx",</tspan>
+</tspan>
+    <tspan x="10px" y="100px"><tspan>    · </tspan><tspan class="fg-magenta bold">                             ▲</tspan>
+</tspan>
+    <tspan x="10px" y="118px"><tspan>    ·                              </tspan><tspan class="fg-magenta bold">╰── error parsing as integer: invalid digit found in string</tspan>
+</tspan>
+    <tspan x="10px" y="136px"><tspan> </tspan><tspan class="dimmed">53</tspan><tspan> │   "supports-xray": true,</tspan>
+</tspan>
+    <tspan x="10px" y="154px"><tspan>    ╰────</tspan>
+</tspan>
+    <tspan x="10px" y="172px">
+</tspan>
+  </text>
+
+</svg>

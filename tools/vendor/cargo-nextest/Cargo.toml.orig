@@ -1,0 +1,83 @@
+[package]
+name = "cargo-nextest"
+description = "A next-generation test runner for Rust."
+version = "0.9.124"
+readme = "README.md"
+license = "Apache-2.0 OR MIT"
+repository = "https://github.com/nextest-rs/nextest"
+documentation = "https://nexte.st"
+keywords = ["nextest", "test-runner", "flaky-tests", "junit"]
+categories = ["development-tools::cargo-plugins", "development-tools::testing"]
+edition.workspace = true
+rust-version.workspace = true
+exclude.workspace = true
+
+[dependencies]
+buf-list.workspace = true
+bytes.workspace = true
+camino.workspace = true
+cfg-if.workspace = true
+chrono.workspace = true
+clap = { workspace = true, features = ["derive", "env", "unicode", "wrap_help"] }
+color-eyre.workspace = true
+dialoguer = { workspace = true, optional = true }
+duct.workspace = true
+enable-ansi-support.workspace = true
+guppy.workspace = true
+humantime.workspace = true
+idna_adapter.workspace = true
+itertools.workspace = true
+locked-tripwire.workspace = true
+miette = { workspace = true, features = ["fancy"] }
+# Instead of using workspace dependencies which have floating versions, we pin exact versions here
+# to avoid compatibility issues.
+nextest-filtering = { version = "=0.18.0", path = "../nextest-filtering" }
+nextest-metadata = { version = "=0.13.3", path = "../nextest-metadata" }
+nextest-runner = { version = "=0.105.0", path = "../nextest-runner" }
+nextest-workspace-hack.workspace = true
+owo-colors.workspace = true
+pathdiff.workspace = true
+quick-junit.workspace = true
+semver.workspace = true
+serde_json.workspace = true
+shell-words.workspace = true
+supports-color.workspace = true
+supports-unicode.workspace = true
+swrite.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+tracing-subscriber = { workspace = true, default-features = false }
+
+[build-dependencies]
+camino.workspace = true
+
+[dev-dependencies]
+camino-tempfile.workspace = true
+insta.workspace = true
+
+[features]
+default = ["default-no-update", "self-update"]
+experimental-tokio-console = ["nextest-runner/experimental-tokio-console"]
+# Perform self-updates (enabled by default)
+self-update = ["dep:dialoguer", "nextest-runner/self-update"]
+# Default set of features excluding self-update. This is the recommended set of features for
+# distributor and custom CI builds.
+default-no-update = []
+
+# Metadata for cargo-binstall to get the right artifacts.
+# NOTE: The URLs use GitHub Releases rather than get.nexte.st. This is so that cargo-nextest package
+# publishing doesn't race with Netlify updates.
+[package.metadata.binstall]
+pkg-url = "{ repo }/releases/download/cargo-nextest-{ version }/{ name }-{ version }-{ target }.tar.gz"
+bin-dir = "{ bin }{ binary-ext }"
+pkg-fmt = "tgz"
+
+# Mac x86_64 and aarch64 use the same universal binary.
+[package.metadata.binstall.overrides.x86_64-apple-darwin]
+pkg-url = "{ repo }/releases/download/cargo-nextest-{ version }/{ name }-{ version }-universal-apple-darwin.tar.gz"
+
+[package.metadata.binstall.overrides.aarch64-apple-darwin]
+pkg-url = "{ repo }/releases/download/cargo-nextest-{ version }/{ name }-{ version }-universal-apple-darwin.tar.gz"
+
+[lints]
+workspace = true

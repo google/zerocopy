@@ -1,0 +1,40 @@
+[package]
+name = "target-spec"
+version = "3.5.6"
+description = "Evaluate Cargo.toml target specifications"
+documentation = "https://docs.rs/target-spec"
+repository = "https://github.com/guppy-rs/guppy"
+authors = ["Jack Moffitt <metajack@fb.com>", "Rain <rain1@fb.com>"]
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+keywords = ["cargo", "targets", "platforms", "os", "cpu"]
+categories = ["development-tools", "parser-implementations"]
+edition = "2024"
+rust-version.workspace = true
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg=doc_cfg"]
+
+[badges]
+maintenance = { status = "actively-developed" }
+
+[dependencies]
+cfg-expr = { workspace = true, features = ["targets"] }
+proptest = { version = "1.7.0", optional = true }
+serde = { version = "1.0.228", optional = true, features = ["derive"] }
+serde_json = { version = "1.0.145", optional = true }
+target-lexicon = { version = "0.13.2", features = ["std"] }
+guppy-workspace-hack.workspace = true
+
+[dev-dependencies]
+test-case = "3.3.1"
+toml = "0.5.11"
+
+[features]
+custom = ["dep:serde", "dep:serde_json"]
+proptest1 = ["proptest"]
+summaries = ["dep:serde"]
+
+[lints]
+workspace = true

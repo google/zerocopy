@@ -1,0 +1,18 @@
+---
+source: nextest-runner/src/list/test_list.rs
+expression: results
+---
+[
+    (
+        "simple_bench",
+        RustTestKind(
+            "bench",
+        ),
+    ),
+    (
+        "benches::module::my_benchmark",
+        RustTestKind(
+            "bench",
+        ),
+    ),
+]

@@ -1,0 +1,5 @@
+overrides:
+  - files: '*.md'
+    options:
+      proseWrap: never
+      printWidth: 9999

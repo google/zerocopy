@@ -1,0 +1,22 @@
+[package]
+name = "deltae"
+version = "0.3.2"
+authors = ["Ryan O'Beirne <ryanobeirne@ryanobeirne.com>"]
+description = "Calculate Delta E between two colors in CIE Lab space."
+edition = "2018"
+license = "MIT"
+documentation = "https://docs.rs/deltae"
+homepage = "https://gitlab.com/ryanobeirne/deltae"
+repository = "https://gitlab.com/ryanobeirne/deltae.git"
+readme = "README.md"
+
+# [[example]]
+# name = "deltae"
+# path = "examples/deltae/deltae.rs"
+
+# [[example]]
+# name = "readme"
+# path = "examples/readme.rs"
+
+[dev-dependencies]
+clap = "4.2.1"

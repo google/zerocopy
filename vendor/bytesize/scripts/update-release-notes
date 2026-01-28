@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+# updates changelog version indicated by release-plz
+
+set -eEuo pipefail
+
+### START HELPERS
+
+function update_release_notes() {
+    local package_dir="$1"
+    local version="$2"
+    local tag="$3"
+
+    local changelog_file="${package_dir}/CHANGELOG.md"
+    
+    echo "Updating $tag using $changelog_file"
+
+    local notes="$(sed -n "/^## ${version}$/,/^## /p" "$changelog_file" | sed '1d;$d')"
+
+    gh release edit "$tag" --notes="$notes"
+}
+
+### END HELPERS
+
+RELEASE_PLZ_RELEASES_JSON="$1"
+
+specs="$(echo "$RELEASE_PLZ_RELEASES_JSON" | jq -r '.[] | "\(.package_name):\(.version):\(.tag)"')"
+
+for spec in $specs; do
+    name="$(echo "$spec" | cut -d: -f1)"
+    version="$(echo "$spec" | cut -d: -f2)"
+    tag="$(echo "$spec" | cut -d: -f3)"
+    
+    update_release_notes "." "$version" "$tag"
+done

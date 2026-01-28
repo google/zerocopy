@@ -1,0 +1,5 @@
+edition = "2024"
+fn_params_layout = "Compressed"
+style_edition = "2024"
+use_field_init_shorthand = true
+use_try_shorthand = true

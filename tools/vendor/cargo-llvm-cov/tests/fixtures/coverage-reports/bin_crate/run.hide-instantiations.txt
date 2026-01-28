@@ -1,0 +1,8 @@
+    1|      1|fn main() {
+    2|      1|    match std::env::args().skip(1).next().unwrap().parse::<u8>().unwrap() {
+    3|      0|        0 => {}
+    4|      1|        1 => {}
+    5|      0|        2 => {}
+    6|      0|        _ => {}
+    7|       |    }
+    8|      1|}

@@ -9,6 +9,7 @@
 [workspace]
 members = [
     "cargo-zerocopy",
+    "ci-deps",
     "generate-readme",
 ]
 resolver = "2"

@@ -1,0 +1,34 @@
+[package]
+name = "zipsign-api"
+description = "Sign and verify `.zip` and `.tar.gz` files with an ed25519 signing key"
+version = "0.1.5"
+edition = "2021"
+authors = ["René Kijewski <crates.io@k6i.de>"]
+repository = "https://github.com/Kijewski/zipsign"
+license = "MIT OR Apache-2.0 OR Apache-2.0 WITH LLVM-exception"
+rust-version = "1.73"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--generate-link-to-definition", "--cfg=docsrs"]
+
+[dependencies]
+base64 = { workspace = true, optional = true }
+ed25519-dalek.workspace = true
+thiserror.workspace = true
+zip = { workspace = true, optional = true }
+
+[features]
+default = ["tar", "zip"]
+
+verify-tar = ["dep:base64"]
+verify-zip = []
+
+unsign-tar = ["dep:base64"]
+unsign-zip = ["dep:zip"]
+
+sign-tar = ["dep:base64"]
+sign-zip = ["dep:zip"]
+
+tar = ["sign-tar", "unsign-tar", "verify-tar"]
+zip = ["sign-zip", "unsign-zip", "verify-zip"]

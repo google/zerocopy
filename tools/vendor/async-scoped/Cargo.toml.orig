@@ -1,0 +1,42 @@
+[package]
+name = "async-scoped"
+version = "0.9.0"
+authors = ["Rajsekar Manokaran <rajsekar@gmail.com>"]
+edition = "2018"
+
+documentation = "https://docs.rs/async-scoped"
+description = "Spawn scoped (non 'static) asynchronous futures for async_std and tokio runtimes"
+homepage = "https://github.com/rmanoka/async-scoped"
+repository = "https://github.com/rmanoka/async-scoped"
+readme = "README.md"
+
+categories = [ "asynchronous", "concurrency" ]
+keywords = [ "async", "async-std", "tokio", "scoped", "spawn" ]
+license = "Apache-2.0/MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+pin-project = "1.0"
+async-std = { version = "1.12.0", optional = true }
+futures = "0.3.15"
+tokio = {version = "1.0", features = ["rt-multi-thread", "macros", "sync"], optional = true}
+
+[features]
+# Verify package.metadata.docs.rs when updating
+use-async-std = ["async-std"]
+use-tokio = ["tokio"]
+
+
+[dev-dependencies]
+femme = "2.2.1"
+log = { version = "0.4.20", features = ["kv_unstable"] }
+async-std = { version = "1.12.0", features = ["attributes"] }
+
+[package.metadata.docs.rs]
+features = ["use-async-std", "use-tokio"]
+
+[[bench]]
+name = "spawner"
+path = "benches/spawner.rs"
+harness = false

@@ -1,0 +1,25 @@
+[package]
+name = "uritemplate-next"
+version = "0.2.0"
+authors = ["Amit <amitc97@gmail.com>", "Julia DeMille <me@jdemille.com>"]
+description = """Rust implementation of RFC6570 - URI Template that can process\
+ URI Templates up and to including ones designated Level 4."""
+documentation = "https://chowdhurya.github.io/rust-uritemplate/uritemplate/"
+homepage = "https://github.com/judemille/rust-uritemplate/"
+repository = "https://github.com/judemille/rust-uritemplate/"
+readme = "README.md"
+keywords = [
+  "uritemplates",
+  "URL",
+  "URI",
+  "template",
+  "RFC6570"
+]
+license = "BSD-3-Clause"
+edition = "2018"
+
+[lib]
+name = "uritemplate"
+
+[dependencies]
+regex = "1"

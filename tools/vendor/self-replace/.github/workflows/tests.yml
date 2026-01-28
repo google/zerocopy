@@ -1,0 +1,74 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  test-latest-linux:
+    name: Test on Latest Linux
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+      - name: Test
+        run: make test
+      - name: Demo
+        run: ./demo.sh
+
+  test-latest-windows:
+    name: Test on Latest Windows
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+      - name: Test
+        run: make test
+      - name: Demo
+        run: ./demo.bat
+
+  test-stable-linux:
+    name: Test on 1.63.0 Linux
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.63.0
+      - name: Restore MSRV Lock
+        run: cp Cargo.lock.msrv Cargo.lock
+      - name: Test
+        run: make test
+
+  test-stable-macos:
+    name: Test on 1.63.0 macOS
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.63.0
+      - name: Restore MSRV Lock
+        run: cp Cargo.lock.msrv Cargo.lock
+      - name: Test
+        run: make test
+
+  test-stable-windows:
+    name: Test on 1.63.0 Windows
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.63.0
+      - name: Restore MSRV Lock
+        run: cp Cargo.lock.msrv Cargo.lock
+      - name: Test
+        run: make test

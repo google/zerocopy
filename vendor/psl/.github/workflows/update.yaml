@@ -1,0 +1,62 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  schedule:
+  - cron: '0 0 * * *' # midnight UTC
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
+        components: rustfmt
+
+    - name: Install deps
+      run: |
+        sudo apt update
+        sudo apt install --yes gcc pkg-config libssl-dev
+
+    - name: Install cargo play
+      run: cargo install --locked cargo-play
+
+    - name: Install cargo make
+      run: cargo install --locked cargo-make
+
+    - name: Download the list and run tests
+      run: cargo make test
+
+    - name: Publish
+      env:
+        CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_TOKEN }}
+        GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      shell: bash
+      run: |
+        if ! git diff --exit-code --quiet data/rules.txt; then
+                cargo doc --all-features
+                git config --local user.email "actions@users.noreply.github.com"
+                git config --local user.name "github-actions[bot]"
+                git remote add upstream https://rushmorem:${{ secrets.GITHUB_TOKEN }}@github.com/addr-rs/psl.git
+                git add data/rules.txt src/list.rs
+                git commit -m 'update the list'
+                cargo install --force --locked --version 0.3.108 release-plz
+                /home/runner/.cargo/bin/release-plz update --no-changelog
+                git add Cargo.toml
+                git commit -m 'bump version'
+                git push upstream main
+                /home/runner/.cargo/bin/release-plz release
+        fi

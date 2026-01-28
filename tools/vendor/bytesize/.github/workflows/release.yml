@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Install Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1.15.2
+
+      - name: release-plz
+        uses: MarcoIeni/release-plz-action@v0.5.118
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        id: release-plz
+
+      - name: Bump changelog versions
+        if: ${{ steps.release-plz.outputs.prs_created == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/bump-changelogs '${{ steps.release-plz.outputs.pr }}'
+
+      - name: Update release notes
+        if: ${{ steps.release-plz.outputs.releases_created == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/update-release-notes '${{ steps.release-plz.outputs.releases }}'

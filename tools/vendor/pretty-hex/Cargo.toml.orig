@@ -1,0 +1,21 @@
+[package]
+name = "pretty-hex"
+version = "0.4.1"
+authors = ["Andrei Volnin <wolandr@gmail.com>"]
+license = "MIT"
+description = "Pretty hex dump of bytes slice in the common style."
+readme = "README.md"
+homepage = "https://github.com/wolandr/pretty-hex"
+repository = "https://github.com/wolandr/pretty-hex"
+documentation = "https://docs.rs/pretty-hex"
+categories = ["development-tools::debugging", "no-std"]
+keywords = ["logging", "hex", "dump", "binary"]
+
+[dependencies]
+
+[dev-dependencies]
+heapless = "0.8"
+
+[features]
+default = ["alloc"]
+alloc = []

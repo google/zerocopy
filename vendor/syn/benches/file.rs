@@ -3,11 +3,13 @@
 #![feature(rustc_private, test)]
 #![recursion_limit = "1024"]
 #![allow(
+    clippy::elidable_lifetime_names,
     clippy::items_after_statements,
     clippy::manual_let_else,
     clippy::match_like_matches_macro,
     clippy::missing_panics_doc,
     clippy::must_use_candidate,
+    clippy::needless_lifetimes,
     clippy::uninlined_format_args
 )]
 

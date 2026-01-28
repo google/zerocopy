@@ -1,0 +1,25 @@
+[workspace]
+resolver = "2"
+members = [
+    ".",
+    "testlib",
+    "ui-tests",
+]
+
+[package]
+name = "serde_tokenstream"
+version = "0.2.2"
+edition = "2021"
+license = "Apache-2.0"
+description = "A serde deserializer for proc_macro::TokenStreams"
+repository = "https://github.com/oxidecomputer/serde_tokenstream"
+readme = "README.md"
+keywords = ["serde", "tokenstream", "proc_macro"]
+categories = ["development-tools::procedural-macro-helpers", "parsing"]
+rust-version = "1.75"
+
+[dependencies]
+proc-macro2  = "1.0"
+quote = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+syn = { version = "2.0", features = ["full"] }

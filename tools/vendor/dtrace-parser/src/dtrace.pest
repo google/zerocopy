@@ -1,0 +1,71 @@
+// A definition of the basic grammar of DTrace provider definitions.
+// Copyright 2022 Oxide Computer Company
+
+// Some basic tokens
+PROBE_KEY = @{ "probe" }
+PROVIDER_KEY = @{ "provider" }
+SEMICOLON = @{ ";" }
+LEFT_PAREN = @{ "(" }
+RIGHT_PAREN = @{ ")" }
+LEFT_BRACE = @{ "{" }
+RIGHT_BRACE = @{ "}" }
+
+// A valid identifier for a provider or probe
+IDENTIFIER = @{ ASCII_ALPHA+ ~ (ASCII_ALPHANUMERIC | "_")* }
+
+// Data types
+BIT_WIDTH = @{ "8" | "16" | "32" | "64" }
+PTR_T = @{ "ptr" }
+SIGNED_INT = ${ "int" ~ (BIT_WIDTH | PTR_T) ~ "_t" }
+UNSIGNED_INT = ${ "uint" ~ (BIT_WIDTH | PTR_T) ~ "_t" }
+INTEGER = ${ (SIGNED_INT | UNSIGNED_INT) }
+STAR = ${ "*" }
+INTEGER_POINTER = ${ INTEGER ~ STAR }
+STRING = { "char" ~ STAR }
+DATA_TYPE = { INTEGER_POINTER | INTEGER | STRING }
+
+// A list of probe arguments, which are just data types
+ARGUMENT_LIST = { ( DATA_TYPE ~ ("," ~ DATA_TYPE)* )* }
+
+// Definition of a probe
+PROBE = {
+	PROBE_KEY
+	~ IDENTIFIER
+	~ LEFT_PAREN
+	~ ARGUMENT_LIST
+	~ RIGHT_PAREN
+	~ SEMICOLON
+}
+
+// Definition of a provider
+PROVIDER = {
+	PROVIDER_KEY
+    ~ IDENTIFIER
+    ~ LEFT_BRACE
+    ~ (PROBE)+
+    ~ RIGHT_BRACE
+    ~ SEMICOLON
+}
+
+PRAGMA = ${
+	"#pragma"
+	~ SPACE+
+	~ (!("\n") ~ ANY)*
+	~ SPACE*
+	~ "\n"
+}
+
+SPACE = _{ " " | "\t" }
+
+// Files consist of providers and pragmas
+FILE = {
+	SOI
+	~(
+		PROVIDER
+		| PRAGMA
+	)*
+	~EOI
+}
+
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+COMMENT = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }

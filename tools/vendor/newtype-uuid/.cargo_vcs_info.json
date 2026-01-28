@@ -1,0 +1,6 @@
+{
+  "git": {
+    "sha1": "cffa78e43c0ef5021c3d8188e833db4fd1dc4da4"
+  },
+  "path_in_vcs": "crates/newtype-uuid"
+}

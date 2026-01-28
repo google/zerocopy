@@ -1,0 +1,12 @@
+---
+source: nextest-runner/src/reporter/events.rs
+expression: json
+---
+{
+  "status": "fail",
+  "failure": {
+    "kind": "exit-code",
+    "code": 1
+  },
+  "leaked": true
+}

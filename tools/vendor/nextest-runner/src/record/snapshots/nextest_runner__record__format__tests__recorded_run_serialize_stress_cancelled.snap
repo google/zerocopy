@@ -1,0 +1,45 @@
+---
+source: nextest-runner/src/record/format.rs
+expression: json
+---
+{
+  "run-id": "550e8400-e29b-41d4-a716-446655440000",
+  "store-format-version": 1,
+  "nextest-version": "0.9.111",
+  "started-at": "2024-12-19T14:22:33-08:00",
+  "last-written-at": "2024-12-19T22:22:33Z",
+  "duration-secs": 12.345,
+  "cli-args": [
+    "cargo",
+    "nextest",
+    "run",
+    "--workspace"
+  ],
+  "build-scope-args": [
+    "--workspace"
+  ],
+  "env-vars": {
+    "CARGO_TERM_COLOR": "always",
+    "NEXTEST_PROFILE": "ci"
+  },
+  "parent-run-id": "550e7400-e29b-41d4-a716-446655440000",
+  "sizes": {
+    "log": {
+      "compressed": 2345,
+      "uncompressed": 5678,
+      "entries": 42
+    },
+    "store": {
+      "compressed": 10000,
+      "uncompressed": 40000,
+      "entries": 15
+    }
+  },
+  "status": {
+    "status": "stress-cancelled",
+    "initial-iteration-count": 100,
+    "success-count": 45,
+    "failed-count": 5,
+    "exit-code": 100
+  }
+}
