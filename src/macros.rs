@@ -1204,6 +1204,13 @@ mod tests {
         const X: &'static [[u8; 2]; 4] = transmute_ref!(&ARRAY_OF_U8S);
         assert_eq!(*X, ARRAY_OF_ARRAYS);
 
+        // Test sized -> unsized transmutation.
+        let array_of_u8s = [0u8, 1, 2, 3, 4, 5, 6, 7];
+        let array_of_arrays = [[0, 1], [2, 3], [4, 5], [6, 7]];
+        let slice_of_arrays = &array_of_arrays[..];
+        let x: &[[u8; 2]] = transmute_ref!(&array_of_u8s);
+        assert_eq!(x, slice_of_arrays);
+
         // Before 1.61.0, we can't define the `const fn transmute_ref` function
         // that we do on and after 1.61.0.
         #[cfg(no_zerocopy_generic_bounds_in_const_fn_1_61_0)]
