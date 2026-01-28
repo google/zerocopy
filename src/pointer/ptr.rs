@@ -795,6 +795,7 @@ mod _transitions {
 }
 
 /// Casts of the referent type.
+pub(crate) use _casts::TryWithError;
 mod _casts {
     use core::cell::UnsafeCell;
 
@@ -912,6 +913,79 @@ mod _casts {
             let tag = unsafe { tag.assume_alignment() };
             tag.unify_invariants()
         }
+
+        /// Attempts to transform the pointer, restoring the original on
+        /// failure.
+        ///
+        /// # Safety
+        ///
+        /// If `I::Aliasing != Shared`, then if `f` returns `Err(err)`, no copy
+        /// of `f`'s argument must exist outside of `err`.
+        pub(crate) unsafe fn try_with_unchecked<U, J, E, F>(
+            self,
+            f: F,
+        ) -> Result<Ptr<'a, U, J>, E::Output>
+        where
+            U: 'a + ?Sized,
+            J: Invariants<Aliasing = I::Aliasing>,
+            E: TryWithError<Self>,
+            F: FnOnce(Ptr<'a, T, I>) -> Result<Ptr<'a, U, J>, E>,
+        {
+            let old_inner = self.as_inner();
+            f(self).map_err(move |err| {
+                err.map(|_src| {
+                    // TODO: This needs to rely on `err.map` not "stashing"
+                    // a copy of the original `Ptr` somewhere. `Map` probably
+                    // needs to be `unsafe` to promise it doesn't do this.
+
+                    // SAFETY:
+                    // 0. Aliasing is either `Shared` or `Exclusive`:
+                    //    - If aliasing is `Shared`, then it cannot violate
+                    //      aliasing make another copy of this pointer (in fact,
+                    //      using `I::Aliasing = Shared`, we could have just
+                    //      cloned `self`).
+                    //    - If aliasing is `Exclusive`, then `f` is not allowed
+                    //      to make another copy of `self` (see the second
+                    //      safety condition). In `map_err`, we are consuming
+                    //      the only value in the returned `Result`. (TODO:
+                    //      something about `Map::map`) Since `self` was, by
+                    //      invariant on `Exclusive`, the only `Ptr`/reference
+                    //      live for `'a` with this referent, there are no copies
+                    //      left, and so we are creating the only copy.
+                    // 1. `self` conforms to `I::Aliasing` by invariant on
+                    //    `Ptr`, and `old_inner` has the same address, so it
+                    //    does too.
+                    // 2. `f` could not have violated `self`'s validity without
+                    //    itself being unsound. Assuming that `f` is sound, the
+                    //    referent of `self` is still valid for `T`.
+                    unsafe { Ptr::from_inner(old_inner) }
+                })
+            })
+        }
+
+        /// Attempts to transform the pointer, restoring the original on
+        /// failure.
+        pub(crate) fn try_with<U, J, E, F>(self, f: F) -> Result<Ptr<'a, U, J>, E::Output>
+        where
+            U: 'a + ?Sized,
+            J: Invariants<Aliasing = I::Aliasing>,
+            E: TryWithError<Self>,
+            F: FnOnce(Ptr<'a, T, I>) -> Result<Ptr<'a, U, J>, E>,
+            I: Invariants<Aliasing = Shared>,
+        {
+            // SAFETY: `I::Aliasing = Shared`, so the second safety condition
+            // does not apply.
+            unsafe { self.try_with_unchecked(f) }
+        }
+    }
+
+    /// # Safety
+    ///
+    /// TODO
+    pub(crate) unsafe trait TryWithError<O> {
+        type Input;
+        type Output;
+        fn map<F: FnOnce(Self::Input) -> O>(self, f: F) -> Self::Output;
     }
 
     impl<'a, T, I> Ptr<'a, T, I>

@@ -653,6 +653,19 @@ impl<Src: Clone, Dst: ?Sized + TryFromBytes> Clone for ValidityError<Src, Dst> {
     }
 }
 
+// SAFETY: TODO
+unsafe impl<Src, NewSrc, Dst> crate::pointer::TryWithError<NewSrc>
+    for crate::ValidityError<Src, Dst>
+where
+    Dst: TryFromBytes + ?Sized,
+{
+    type Input = Src;
+    type Output = crate::ValidityError<NewSrc, Dst>;
+    fn map<F: FnOnce(Src) -> NewSrc>(self, f: F) -> Self::Output {
+        self.map_src(f)
+    }
+}
+
 impl<Src: PartialEq, Dst: ?Sized + TryFromBytes> PartialEq for ValidityError<Src, Dst> {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -772,6 +785,19 @@ impl<Src, Dst: ?Sized> CastError<Src, Dst> {
             Self::Size(e) => TryCastError::Size(e),
             Self::Validity(i) => match i {},
         }
+    }
+}
+
+// SAFETY: TODO
+unsafe impl<Src, NewSrc, Dst> crate::pointer::TryWithError<NewSrc> for crate::CastError<Src, Dst>
+where
+    Dst: ?Sized,
+{
+    type Input = Src;
+    type Output = crate::CastError<NewSrc, Dst>;
+
+    fn map<F: FnOnce(Src) -> NewSrc>(self, f: F) -> Self::Output {
+        self.map_src(f)
     }
 }
 
