@@ -1,8 +1,16 @@
-error[E0271]: type mismatch resolving `<[u8; 1] as KnownLayout>::PointerMetadata == usize`
-  --> tests/ui-nightly/transmute-mut-src-unsized.rs:15:35
-   |
-15 | const SRC_UNSIZED: &mut [u8; 1] = transmute_mut!(&mut [0u8][..]);
-   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found `()`
-   |
-   = note: required for `zerocopy::util::macro_util::Wrap<&mut [u8], &mut [u8; 1]>` to implement `zerocopy::util::macro_util::TransmuteMutDst<'_>`
-   = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
+error[E0599]: the method `transmute_mut` exists for struct `zerocopy::util::macro_util::Wrap<&mut [u8], &mut [u8; 1]>`, but its trait bounds were not satisfied
+ --> tests/ui-nightly/transmute-mut-src-unsized.rs:15:35
+  |
+ 15 | const SRC_UNSIZED: &mut [u8; 1] = transmute_mut!(&mut [0u8][..]);
+    |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method cannot be called due to unsatisfied trait bounds
+    |
+   ::: src/util/macro_util.rs
+    |
+    | pub struct Wrap<Src, Dst>(pub Src, pub PhantomData<Dst>);
+    | ------------------------- doesn't satisfy `_: TransmuteMutDst<'_>`
+    |
+    = note: the following trait bounds were not satisfied:
+            `[u8]: Sized`
+            `<[u8; 1] as KnownLayout>::PointerMetadata = usize`
+            which is required by `zerocopy::util::macro_util::Wrap<&mut [u8], &mut [u8; 1]>: zerocopy::util::macro_util::TransmuteMutDst<'_>`
+    = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)

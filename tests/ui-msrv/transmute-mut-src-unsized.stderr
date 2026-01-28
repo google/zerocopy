@@ -1,8 +1,16 @@
-error[E0271]: type mismatch resolving `<[u8; 1] as KnownLayout>::PointerMetadata == usize`
+error[E0599]: the method `transmute_mut` exists for struct `Wrap<&mut [u8], &mut [u8; 1]>`, but its trait bounds were not satisfied
   --> tests/ui-msrv/transmute-mut-src-unsized.rs:15:35
    |
 15 | const SRC_UNSIZED: &mut [u8; 1] = transmute_mut!(&mut [0u8][..]);
-   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `()`, found `usize`
+   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ method cannot be called on `Wrap<&mut [u8], &mut [u8; 1]>` due to unsatisfied trait bounds
    |
-   = note: required because of the requirements on the impl of `TransmuteMutDst<'_>` for `Wrap<&mut [u8], &mut [u8; 1]>`
+  ::: src/util/macro_util.rs
+   |
+   | pub struct Wrap<Src, Dst>(pub Src, pub PhantomData<Dst>);
+   | --------------------------------------------------------- doesn't satisfy `Wrap<&mut [u8], &mut [u8; 1]>: TransmuteMutDst`
+   |
+   = note: the following trait bounds were not satisfied:
+           `[u8]: Sized`
+           `<[u8; 1] as KnownLayout>::PointerMetadata = usize`
+           which is required by `Wrap<&mut [u8], &mut [u8; 1]>: TransmuteMutDst`
    = note: this error originates in the macro `transmute_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
