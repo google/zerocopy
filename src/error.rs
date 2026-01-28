@@ -653,6 +653,20 @@ impl<Src: Clone, Dst: ?Sized + TryFromBytes> Clone for ValidityError<Src, Dst> {
     }
 }
 
+// SAFETY: `ValidityError` contains a single `Self::Inner = Src`, and no other
+// non-ZST fields. `map` passes ownership of `self`'s sole `Self::Inner` to `f`.
+unsafe impl<Src, NewSrc, Dst> crate::pointer::TryWithError<NewSrc>
+    for crate::ValidityError<Src, Dst>
+where
+    Dst: TryFromBytes + ?Sized,
+{
+    type Inner = Src;
+    type Mapped = crate::ValidityError<NewSrc, Dst>;
+    fn map<F: FnOnce(Src) -> NewSrc>(self, f: F) -> Self::Mapped {
+        self.map_src(f)
+    }
+}
+
 impl<Src: PartialEq, Dst: ?Sized + TryFromBytes> PartialEq for ValidityError<Src, Dst> {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -772,6 +786,22 @@ impl<Src, Dst: ?Sized> CastError<Src, Dst> {
             Self::Size(e) => TryCastError::Size(e),
             Self::Validity(i) => match i {},
         }
+    }
+}
+
+// SAFETY: `CastError` is either a single `AlignmentError` or a single
+// `SizeError`. In either case, it contains a single `Self::Inner = Src`, and no
+// other non-ZST fields. `map` passes ownership of `self`'s sole `Self::Inner`
+// to `f`.
+unsafe impl<Src, NewSrc, Dst> crate::pointer::TryWithError<NewSrc> for crate::CastError<Src, Dst>
+where
+    Dst: ?Sized,
+{
+    type Inner = Src;
+    type Mapped = crate::CastError<NewSrc, Dst>;
+
+    fn map<F: FnOnce(Src) -> NewSrc>(self, f: F) -> Self::Mapped {
+        self.map_src(f)
     }
 }
 

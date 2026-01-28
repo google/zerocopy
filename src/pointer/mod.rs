@@ -19,7 +19,7 @@ pub use {inner::PtrInner, transmute::*};
 #[doc(hidden)]
 pub use {
     invariant::{BecauseExclusive, BecauseImmutable, Read},
-    ptr::Ptr,
+    ptr::*,
 };
 
 use crate::wrappers::ReadOnly;
