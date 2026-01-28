@@ -778,6 +778,13 @@ where
 #[derive(Copy, Clone)]
 pub struct Wrap<Src, Dst>(pub Src, pub PhantomData<Dst>);
 
+// TODO: Try to make it so that there's a *single* bound which is either
+// satisfied or not. Maybe that will make the autoref trick work?
+pub trait BothSized {}
+
+impl<'a, Src, Dst> BothSized for Wrap<&'a Src, &'a Dst> {}
+impl<'a, Src, Dst> BothSized for Wrap<&'a mut Src, &'a mut Dst> {}
+
 impl<Src, Dst> Wrap<Src, Dst> {
     #[inline(always)]
     pub const fn new(src: Src) -> Self {
@@ -785,7 +792,10 @@ impl<Src, Dst> Wrap<Src, Dst> {
     }
 }
 
-impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst> {
+impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst>
+where
+    Self: BothSized,
+{
     #[inline(always)]
     pub fn try_transmute_ref(self) -> Result<&'a Dst, ValidityError<&'a Src, Dst>>
     where
@@ -804,7 +814,10 @@ impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst> {
     }
 }
 
-impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst> {
+impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst>
+where
+    Self: BothSized,
+{
     /// # Safety
     /// The caller must guarantee that:
     /// - `Src: IntoBytes + Immutable`
@@ -844,7 +857,10 @@ impl<'a, Src, Dst> Wrap<&'a Src, &'a Dst> {
     }
 }
 
-impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
+impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst>
+where
+    Self: BothSized,
+{
     /// Transmutes a mutable reference of one type to a mutable reference of
     /// another type.
     ///
@@ -901,7 +917,7 @@ pub trait TransmuteRefDst<'a> {
 
 impl<'a, Src: ?Sized, Dst: ?Sized> TransmuteRefDst<'a> for Wrap<&'a Src, &'a Dst>
 where
-    Src: KnownLayout<PointerMetadata = usize> + IntoBytes + Immutable,
+    Src: KnownLayout + IntoBytes + Immutable,
     Dst: KnownLayout<PointerMetadata = usize> + FromBytes + Immutable,
 {
     type Dst = Dst;
@@ -934,7 +950,7 @@ pub trait TransmuteMutDst<'a> {
 
 impl<'a, Src: ?Sized, Dst: ?Sized> TransmuteMutDst<'a> for Wrap<&'a mut Src, &'a mut Dst>
 where
-    Src: KnownLayout<PointerMetadata = usize> + FromBytes + IntoBytes,
+    Src: KnownLayout + FromBytes + IntoBytes,
     Dst: KnownLayout<PointerMetadata = usize> + FromBytes + IntoBytes,
 {
     type Dst = Dst;
