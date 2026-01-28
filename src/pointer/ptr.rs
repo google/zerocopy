@@ -912,6 +912,58 @@ mod _casts {
             let tag = unsafe { tag.assume_alignment() };
             tag.unify_invariants()
         }
+
+        /// Attempts to transform the pointer, restoring the original on
+        /// failure.
+        pub(crate) fn try_with<U, J, V, K, E, F>(self, f: F) -> Result<Ptr<'a, V, K>, E::Output>
+        where
+            T: KnownLayout,
+            U: 'a + ?Sized,
+            J: Invariants,
+            V: 'a + ?Sized,
+            K: Invariants,
+            E: Map<Ptr<'a, U, J>, Self>,
+            F: FnOnce(Ptr<'a, T, I>) -> Result<Ptr<'a, V, K>, E>,
+        {
+            // NOTE: The reason we only save the `meta` is that we can't save
+            // the pointer itself without violating provenance – in particular,
+            // `self` will retain provenance and any copy will lose its
+            // provenance.
+            //
+            // For an ongoing discussion about the provenance issues here:
+            // https://github.com/rust-lang/unsafe-code-guidelines/issues/600
+            let meta = self.as_inner().meta();
+            f(self).map_err(move |err| {
+                err.map(|ptr| {
+                    let ptr = ptr.as_inner().as_non_null();
+                    let ptr = ptr.cast::<u8>();
+                    // SAFETY: TODO
+                    let ptr = unsafe { PtrInner::from_ptr_meta(ptr, meta) };
+                    // SAFETY: TODO
+                    //
+                    // Note that we need to prove that the validity is preserved,
+                    // which means that we need to prove that the referent has
+                    // not been mutated. That may require either extra bounds or
+                    // making `try_with` unsafe.
+                    unsafe { Ptr::from_inner(ptr) }
+                })
+            })
+        }
+    }
+
+    pub(crate) trait Map<I, O> {
+        type Output;
+        fn map<F: FnOnce(I) -> O>(self, f: F) -> Self::Output;
+    }
+
+    impl<Src, NewSrc, Dst> Map<Src, NewSrc> for crate::ValidityError<Src, Dst>
+    where
+        Dst: TryFromBytes + ?Sized,
+    {
+        type Output = crate::ValidityError<NewSrc, Dst>;
+        fn map<F: FnOnce(Src) -> NewSrc>(self, f: F) -> Self::Output {
+            self.map_src(f)
+        }
     }
 
     impl<'a, T, I> Ptr<'a, T, I>
