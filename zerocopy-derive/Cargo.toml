@@ -9,7 +9,7 @@
 [package]
 edition = "2021"
 name = "zerocopy-derive"
-version = "0.8.34"
+version = "0.8.35"
 authors = ["Joshua Liebow-Feeser <joshlf@google.com>", "Jack Wrenn <jswrenn@amazon.com>"]
 description = "Custom derive for traits from the zerocopy crate"
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
