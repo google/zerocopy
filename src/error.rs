@@ -125,7 +125,9 @@ use core::{
 #[cfg(all(no_zerocopy_core_error_1_81_0, any(feature = "std", test)))]
 use std::error::Error;
 
-use crate::{util::SendSyncPhantomData, KnownLayout, TryFromBytes, Unaligned};
+use crate::{
+    pointer::TryWithError, util::SendSyncPhantomData, KnownLayout, TryFromBytes, Unaligned,
+};
 #[cfg(doc)]
 use crate::{FromBytes, Ref};
 
@@ -354,6 +356,16 @@ impl<Src: PartialEq, Dst: ?Sized> PartialEq for AlignmentError<Src, Dst> {
 }
 
 impl<Src: Eq, Dst: ?Sized> Eq for AlignmentError<Src, Dst> {}
+
+// SAFETY: `AlignmentError` contains a single `Self::Inner = Src`, and no other
+// non-ZST fields. `map` passes ownership of `self`'s sole `Self::Inner` to `f`.
+unsafe impl<Src, NewSrc, Dst: ?Sized> TryWithError<NewSrc> for AlignmentError<Src, Dst> {
+    type Inner = Src;
+    type Mapped = AlignmentError<NewSrc, Dst>;
+    fn map<F: FnOnce(Src) -> NewSrc>(self, f: F) -> Self::Mapped {
+        self.map_src(f)
+    }
+}
 
 impl<Src, Dst: ?Sized + Unaligned> From<AlignmentError<Src, Dst>> for Infallible {
     #[inline(always)]
@@ -655,13 +667,12 @@ impl<Src: Clone, Dst: ?Sized + TryFromBytes> Clone for ValidityError<Src, Dst> {
 
 // SAFETY: `ValidityError` contains a single `Self::Inner = Src`, and no other
 // non-ZST fields. `map` passes ownership of `self`'s sole `Self::Inner` to `f`.
-unsafe impl<Src, NewSrc, Dst> crate::pointer::TryWithError<NewSrc>
-    for crate::ValidityError<Src, Dst>
+unsafe impl<Src, NewSrc, Dst> TryWithError<NewSrc> for ValidityError<Src, Dst>
 where
     Dst: TryFromBytes + ?Sized,
 {
     type Inner = Src;
-    type Mapped = crate::ValidityError<NewSrc, Dst>;
+    type Mapped = ValidityError<NewSrc, Dst>;
     fn map<F: FnOnce(Src) -> NewSrc>(self, f: F) -> Self::Mapped {
         self.map_src(f)
     }
@@ -793,12 +804,12 @@ impl<Src, Dst: ?Sized> CastError<Src, Dst> {
 // `SizeError`. In either case, it contains a single `Self::Inner = Src`, and no
 // other non-ZST fields. `map` passes ownership of `self`'s sole `Self::Inner`
 // to `f`.
-unsafe impl<Src, NewSrc, Dst> crate::pointer::TryWithError<NewSrc> for crate::CastError<Src, Dst>
+unsafe impl<Src, NewSrc, Dst> TryWithError<NewSrc> for CastError<Src, Dst>
 where
     Dst: ?Sized,
 {
     type Inner = Src;
-    type Mapped = crate::CastError<NewSrc, Dst>;
+    type Mapped = CastError<NewSrc, Dst>;
 
     fn map<F: FnOnce(Src) -> NewSrc>(self, f: F) -> Self::Mapped {
         self.map_src(f)

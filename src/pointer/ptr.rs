@@ -160,7 +160,10 @@ mod _external {
 /// Methods for converting to and from `Ptr` and Rust's safe reference types.
 mod _conversions {
     use super::*;
-    use crate::pointer::cast::{CastExact, CastSized, IdCast};
+    use crate::{
+        pointer::cast::{CastExact, CastSized, IdCast},
+        Unalign,
+    };
 
     /// `&'a T` → `Ptr<'a, T>`
     impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
@@ -371,9 +374,10 @@ mod _conversions {
     }
 
     /// `Ptr<'a, T>` → `&'a mut T`
-    impl<'a, T> Ptr<'a, T, (Exclusive, Aligned, Valid)>
+    impl<'a, T, I> Ptr<'a, T, I>
     where
         T: 'a + ?Sized,
+        I: Invariants<Aliasing = Exclusive, Alignment = Aligned, Validity = Valid>,
     {
         /// Converts `self` to a mutable reference.
         #[allow(clippy::wrong_self_convention)]
@@ -548,7 +552,7 @@ mod _conversions {
         /// `Unalign<T>`.
         pub(crate) fn into_unalign(
             self,
-        ) -> Ptr<'a, crate::Unalign<T>, (I::Aliasing, Aligned, I::Validity)> {
+        ) -> Ptr<'a, Unalign<T>, (I::Aliasing, Aligned, I::Validity)> {
             // FIXME(#1359): This should be a `transmute_with` call.
             // Unfortunately, to avoid blanket impl conflicts, we only implement
             // `TransmuteFrom<T>` for `Unalign<T>` (and vice versa) specifically
@@ -966,6 +970,56 @@ mod _casts {
                 })
             });
             res
+        }
+    }
+
+    impl<'a, T, I> Ptr<'a, T, I>
+    where
+        T: 'a + ?Sized,
+        I: Invariants<Aliasing = Shared, Alignment = Aligned, Validity = Valid>,
+    {
+        /// Like [`try_with`], but returns a reference instead of a pointer
+        /// in both the success and error cases.
+        pub(crate) fn try_with_as_ref<U, J, E, F>(
+            self,
+            f: F,
+        ) -> Result<&'a U, <E::Mapped as TryWithError<&'a T>>::Mapped>
+        where
+            U: 'a + ?Sized,
+            J: Invariants<Aliasing = Shared, Alignment = Aligned, Validity = Valid>,
+            E: TryWithError<Self>,
+            E::Mapped: TryWithError<&'a T, Inner = Self>,
+            F: for<'b> FnOnce(Ptr<'b, T, I>) -> Result<Ptr<'b, U, J>, E>,
+        {
+            match self.try_with(f) {
+                Ok(ptr) => Ok(ptr.as_ref()),
+                Err(err) => Err(TryWithError::map(err, Ptr::as_ref)),
+            }
+        }
+    }
+
+    impl<'a, T, I> Ptr<'a, T, I>
+    where
+        T: 'a + ?Sized,
+        I: Invariants<Aliasing = Exclusive, Alignment = Aligned, Validity = Valid>,
+    {
+        /// Like [`try_with`], but returns a mutable reference instead of a
+        /// pointer in both the success and error cases.
+        pub(crate) fn try_with_as_mut<U, J, E, F>(
+            self,
+            f: F,
+        ) -> Result<&'a mut U, <E::Mapped as TryWithError<&'a mut T>>::Mapped>
+        where
+            U: 'a + ?Sized,
+            J: Invariants<Aliasing = Exclusive, Alignment = Aligned, Validity = Valid>,
+            E: TryWithError<Self>,
+            E::Mapped: TryWithError<&'a mut T, Inner = Self>,
+            F: for<'b> FnOnce(Ptr<'b, T, I>) -> Result<Ptr<'b, U, J>, E>,
+        {
+            match self.try_with(f) {
+                Ok(ptr) => Ok(ptr.as_mut()),
+                Err(err) => Err(TryWithError::map(err, Ptr::as_mut)),
+            }
         }
     }
 
