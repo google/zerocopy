@@ -1779,6 +1779,11 @@ pub unsafe trait TryFromBytes {
         Self: KnownLayout + Immutable,
     {
         static_assert_dst_is_not_zst!(Self);
+        // Ptr::from_ref(source).try_with_as_ref(|ptr| {
+        //     let ptr = ptr.try_cast_into_no_leftover::<Self, BecauseImmutable>(None)
+        //         .map_err(|e| e.map_src(|_src| ()))?;
+        //     ptr.try_into_valid().map_err(|e| e.map_src(|_src| ()))
+        // })
         match Ptr::from_ref(source).try_cast_into_no_leftover::<Self, BecauseImmutable>(None) {
             Ok(source) => {
                 // This call may panic. If that happens, it doesn't cause any soundness
@@ -3775,10 +3780,9 @@ pub unsafe trait FromBytes: FromZeros {
         Self: KnownLayout + Immutable,
     {
         static_assert_dst_is_not_zst!(Self);
-        match Ptr::from_ref(source).try_cast_into_no_leftover::<_, BecauseImmutable>(None) {
-            Ok(ptr) => Ok(ptr.recall_validity().as_ref()),
-            Err(err) => Err(err.map_src(|src| src.as_ref())),
-        }
+        Ptr::from_ref(source).try_with_as_ref(|ptr| {
+            ptr.try_cast_into_no_leftover::<_, BecauseImmutable>(None).map(Ptr::recall_validity)
+        })
     }
 
     /// Interprets the prefix of the given `source` as a `&Self` without
@@ -4011,9 +4015,12 @@ pub unsafe trait FromBytes: FromZeros {
         Self: IntoBytes + KnownLayout,
     {
         static_assert_dst_is_not_zst!(Self);
-        match Ptr::from_mut(source).try_cast_into_no_leftover::<_, BecauseExclusive>(None) {
-            Ok(ptr) => Ok(ptr.recall_validity::<_, (_, (_, _))>().as_mut()),
-            Err(err) => Err(err.map_src(|src| src.as_mut())),
+        // SAFETY: TODO
+        unsafe {
+            Ptr::from_mut(source).try_with_as_mut_unchecked(|ptr| {
+                ptr.try_cast_into_no_leftover::<_, BecauseExclusive>(None)
+                    .map(Ptr::recall_validity::<_, (_, (_, _))>)
+            })
         }
     }
 
@@ -4248,12 +4255,10 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: KnownLayout<PointerMetadata = usize> + Immutable,
     {
-        let source = Ptr::from_ref(source);
-        let maybe_slf = source.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
-        match maybe_slf {
-            Ok(slf) => Ok(slf.recall_validity().as_ref()),
-            Err(err) => Err(err.map_src(|s| s.as_ref())),
-        }
+        Ptr::from_ref(source).try_with_as_ref(|ptr| {
+            ptr.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count))
+                .map(Ptr::recall_validity)
+        })
     }
 
     /// Interprets the prefix of the given `source` as a DST `&Self` with length
@@ -4479,11 +4484,12 @@ pub unsafe trait FromBytes: FromZeros {
     where
         Self: IntoBytes + KnownLayout<PointerMetadata = usize> + Immutable,
     {
-        let source = Ptr::from_mut(source);
-        let maybe_slf = source.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count));
-        match maybe_slf {
-            Ok(slf) => Ok(slf.recall_validity::<_, (_, (_, BecauseExclusive))>().as_mut()),
-            Err(err) => Err(err.map_src(|s| s.as_mut())),
+        // SAFETY: TODO
+        unsafe {
+            Ptr::from_mut(source).try_with_as_mut_unchecked(|ptr| {
+                ptr.try_cast_into_no_leftover::<_, BecauseImmutable>(Some(count))
+                    .map(Ptr::recall_validity::<_, (_, (_, BecauseExclusive))>)
+            })
         }
     }
 

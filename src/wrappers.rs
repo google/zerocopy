@@ -198,11 +198,8 @@ impl<T> Unalign<T> {
     /// may prefer [`Deref::deref`], which is infallible.
     #[inline(always)]
     pub fn try_deref(&self) -> Result<&T, AlignmentError<&Self, T>> {
-        let inner = Ptr::from_ref(self).transmute();
-        match inner.try_into_aligned() {
-            Ok(aligned) => Ok(aligned.as_ref()),
-            Err(err) => Err(err.map_src(|src| src.into_unalign().as_ref())),
-        }
+        let ptr = Ptr::from_ref(self);
+        ptr.try_with_as_ref(|ptr| ptr.transmute().try_into_aligned())
     }
 
     /// Attempts to return a mutable reference to the wrapped `T`, failing if

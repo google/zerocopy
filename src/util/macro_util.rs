@@ -665,21 +665,16 @@ where
 {
     let ptr = Ptr::from_ref(src);
     #[rustfmt::skip]
-    let res = ptr.try_with(#[inline(always)] |ptr| {
+    return ptr.try_with_as_ref(#[inline(always)] |ptr| {
         let ptr = ptr.recall_validity::<Initialized, _>();
         let ptr = ptr.cast::<_, CastSized, _>();
-        ptr.try_into_valid()
-    });
-    match res {
-        Ok(ptr) => {
+        ptr.try_into_valid().map(#[inline(always)] |ptr| {
             static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
             // SAFETY: We have checked that `Dst` does not have a stricter
             // alignment requirement than `Src`.
-            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
-            Ok(ptr.as_ref())
-        }
-        Err(err) => Err(err.map_src(Ptr::as_ref)),
-    }
+            unsafe { ptr.assume_alignment::<Aligned>() }
+        })
+    });
 }
 
 /// Attempts to transmute `&mut Src` into `&mut Dst`.
@@ -703,23 +698,18 @@ where
     let ptr = Ptr::from_mut(src);
     // SAFETY: The provided closure returns the only copy of `ptr`.
     #[rustfmt::skip]
-    let res = unsafe {
-        ptr.try_with_unchecked(#[inline(always)] |ptr| {
+    return unsafe {
+        ptr.try_with_as_mut_unchecked(#[inline(always)] |ptr| {
             let ptr = ptr.recall_validity::<Initialized, (_, (_, _))>();
             let ptr = ptr.cast::<_, CastSized, _>();
-            ptr.try_into_valid()
+            ptr.try_into_valid().map(#[inline(always)] |ptr| {
+                static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
+                // SAFETY: We have checked that `Dst` does not have a stricter
+                // alignment requirement than `Src`.
+                unsafe { ptr.assume_alignment::<Aligned>() }
+            })
         })
     };
-    match res {
-        Ok(ptr) => {
-            static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
-            // SAFETY: We have checked that `Dst` does not have a stricter
-            // alignment requirement than `Src`.
-            let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
-            Ok(ptr.as_mut())
-        }
-        Err(err) => Err(err.map_src(Ptr::as_mut)),
-    }
 }
 
 // Used in `transmute_ref!` and friends.
