@@ -679,7 +679,12 @@ macro_rules! try_transmute_ref {
 
             Ok(&u)
         } else {
-            $crate::util::macro_util::try_transmute_ref::<_, _>(e)
+            use $crate::util::macro_util::TryTransmuteRefDst;
+            let t = $crate::util::macro_util::Wrap::new(e);
+            // SAFETY: The `if false` branch ensures that:
+            // - `Src: IntoBytes + Immutable`
+            // - `Dst: TryFromBytes + Immutable`
+            t.try_transmute_ref()
         }
     }}
 }
@@ -788,7 +793,10 @@ macro_rules! try_transmute_mut {
 
             Ok(&mut u)
         } else {
-            $crate::util::macro_util::try_transmute_mut::<_, _>(e)
+            #[allow(unused)]
+            use $crate::util::macro_util::TryTransmuteMutDst as _;
+            let t = $crate::util::macro_util::Wrap::new(e);
+            t.try_transmute_mut()
         }
     }}
 }
@@ -1347,6 +1355,14 @@ mod tests {
         #[allow(clippy::useless_transmute)]
         let y: Result<&u8, _> = try_transmute_ref!(&mut x);
         assert_eq!(y, Ok(&0));
+
+        // Test that sized types work which don't implement `KnownLayout`.
+        let array_of_nkl_u8s = Nkl([0u8, 1, 2, 3, 4, 5, 6, 7]);
+        let array_of_nkl_arrays = Nkl([[0, 1], [2, 3], [4, 5], [6, 7]]);
+        let x: Result<&Nkl<[[u8; 2]; 4]>, _> = try_transmute_ref!(&array_of_nkl_u8s);
+        assert_eq!(x, Ok(&array_of_nkl_arrays));
+
+        // TODO: Add tests for sized -> unsized, unsized -> unsized.
     }
 
     #[test]
@@ -1382,6 +1398,14 @@ mod tests {
         #[allow(clippy::useless_transmute)]
         let y: Result<&mut u8, _> = try_transmute_mut!(&mut x);
         assert_eq!(y, Ok(&mut 0));
+
+        // Test that sized types work which don't implement `KnownLayout`.
+        let mut array_of_nkl_u8s = Nkl([0u8, 1, 2, 3, 4, 5, 6, 7]);
+        let mut array_of_nkl_arrays = Nkl([[0, 1], [2, 3], [4, 5], [6, 7]]);
+        let x: Result<&mut Nkl<[[u8; 2]; 4]>, _> = try_transmute_mut!(&mut array_of_nkl_u8s);
+        assert_eq!(x, Ok(&mut array_of_nkl_arrays));
+
+        // TODO: Add tests for sized -> unsized, unsized -> unsized.
     }
 
     #[test]
