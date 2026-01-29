@@ -700,7 +700,7 @@ where
         // SAFETY: `self.source.as_mut()` points to exactly the same referent as
         // `self.source` and thus maintains the invariants of `self` with
         // respect to `l_len`.
-        unsafe { Split::new(self.source.unify_invariants().as_mut(), self.l_len) }
+        unsafe { Split::new(self.source.as_mut(), self.l_len) }
     }
 
     /// Produces the length of `self`'s left part.
