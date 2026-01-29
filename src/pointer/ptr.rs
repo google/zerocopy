@@ -795,6 +795,7 @@ mod _transitions {
 }
 
 /// Casts of the referent type.
+pub(crate) use _casts::TryWithError;
 mod _casts {
     use core::cell::UnsafeCell;
 
@@ -912,6 +913,89 @@ mod _casts {
             let tag = unsafe { tag.assume_alignment() };
             tag.unify_invariants()
         }
+
+        /// Attempts to transform the pointer, restoring the original on
+        /// failure.
+        ///
+        /// # Safety
+        ///
+        /// If `I::Aliasing != Shared`, then if `f` returns `Err(err)`, no copy
+        /// of `f`'s argument must exist outside of `err`.
+        #[inline(always)]
+        pub(crate) unsafe fn try_with_unchecked<U, J, E, F>(
+            self,
+            f: F,
+        ) -> Result<Ptr<'a, U, J>, E::Mapped>
+        where
+            U: 'a + ?Sized,
+            J: Invariants<Aliasing = I::Aliasing>,
+            E: TryWithError<Self>,
+            F: FnOnce(Ptr<'a, T, I>) -> Result<Ptr<'a, U, J>, E>,
+        {
+            let old_inner = self.as_inner();
+            #[rustfmt::skip]
+            let res = f(self).map_err(#[inline(always)] move |err: E| {
+                err.map(#[inline(always)] |src| {
+                    drop(src);
+
+                    // SAFETY:
+                    // 0. Aliasing is either `Shared` or `Exclusive`:
+                    //    - If aliasing is `Shared`, then it cannot violate
+                    //      aliasing make another copy of this pointer (in fact,
+                    //      using `I::Aliasing = Shared`, we could have just
+                    //      cloned `self`).
+                    //    - If aliasing is `Exclusive`, then `f` is not allowed
+                    //      to make another copy of `self`. In `map_err`, we are
+                    //      consuming the only value in the returned `Result`.
+                    //      By invariant on `E: TryWithError<Self>`, that `err:
+                    //      E` only contains a single `Self` and no other
+                    //      non-ZST fields which could be `Ptr`s or references
+                    //      to `self`'s referent. By the same invariant, `map`
+                    //      consumes this single `Self` and passes it to this
+                    //      closure. Since `self` was, by invariant on
+                    //      `Exclusive`, the only `Ptr` or reference live for
+                    //      `'a` with this referent, and since we `drop(src)`
+                    //      above, there are no copies left, and so we are
+                    //      creating the only copy.
+                    // 1. `self` conforms to `I::Aliasing` by invariant on
+                    //    `Ptr`, and `old_inner` has the same address, so it
+                    //    does too.
+                    // 2. `f` could not have violated `self`'s validity without
+                    //    itself being unsound. Assuming that `f` is sound, the
+                    //    referent of `self` is still valid for `T`.
+                    unsafe { Ptr::from_inner(old_inner) }
+                })
+            });
+            res
+        }
+
+        /// Attempts to transform the pointer, restoring the original on
+        /// failure.
+        pub(crate) fn try_with<U, J, E, F>(self, f: F) -> Result<Ptr<'a, U, J>, E::Mapped>
+        where
+            U: 'a + ?Sized,
+            J: Invariants<Aliasing = I::Aliasing>,
+            E: TryWithError<Self>,
+            F: FnOnce(Ptr<'a, T, I>) -> Result<Ptr<'a, U, J>, E>,
+            I: Invariants<Aliasing = Shared>,
+        {
+            // SAFETY: `I::Aliasing = Shared`, so the safety condition does not
+            // apply.
+            unsafe { self.try_with_unchecked(f) }
+        }
+    }
+
+    /// # Safety
+    ///
+    /// `Self` only contains a single `Self::Inner`, and `Self::Mapped` only
+    /// contains a single `MappedInner`. Other than that, `Self` and
+    /// `Self::Mapped` contain no non-ZST fields.
+    ///
+    /// `map` must pass ownership of `self`'s sole `Self::Inner` to `f`.
+    pub(crate) unsafe trait TryWithError<MappedInner> {
+        type Inner;
+        type Mapped;
+        fn map<F: FnOnce(Self::Inner) -> MappedInner>(self, f: F) -> Self::Mapped;
     }
 
     impl<'a, T, I> Ptr<'a, T, I>
