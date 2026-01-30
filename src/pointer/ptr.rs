@@ -916,27 +916,26 @@ mod _casts {
 
         /// Attempts to transform the pointer, restoring the original on
         /// failure.
-        ///
-        /// # Safety
-        ///
-        /// If `I::Aliasing != Shared`, then if `f` returns `Err(err)`, no copy
-        /// of `f`'s argument must exist outside of `err`.
         #[inline(always)]
-        pub(crate) unsafe fn try_with_unchecked<U, J, E, F>(
-            self,
-            f: F,
-        ) -> Result<Ptr<'a, U, J>, E::Mapped>
+        pub(crate) fn try_with<U, J, E, F>(self, f: F) -> Result<Ptr<'a, U, J>, E::Mapped>
         where
             U: 'a + ?Sized,
             J: Invariants<Aliasing = I::Aliasing>,
             E: TryWithError<Self>,
-            F: FnOnce(Ptr<'a, T, I>) -> Result<Ptr<'a, U, J>, E>,
+            // TODO: The invariance issue is caused by `E` not being bound by
+            // `'b`, which thus requires it to be `'static`. If we can somehow
+            // polyfill a GAT so that it's actually `E<'b>` here, then we should
+            // be able to solve the `'static` issue.
+            F: for<'b> FnOnce(Ptr<'b, T, I>) -> Result<Ptr<'b, U, J>, E>,
         {
             let old_inner = self.as_inner();
             #[rustfmt::skip]
             let res = f(self).map_err(#[inline(always)] move |err: E| {
                 err.map(#[inline(always)] |src| {
                     drop(src);
+
+                    // TODO: Mention the `for<'b>` variance on `F` to prove that
+                    // `f` cannot make another copy of `self`.
 
                     // SAFETY:
                     // 0. Aliasing is either `Shared` or `Exclusive`:
@@ -967,21 +966,6 @@ mod _casts {
                 })
             });
             res
-        }
-
-        /// Attempts to transform the pointer, restoring the original on
-        /// failure.
-        pub(crate) fn try_with<U, J, E, F>(self, f: F) -> Result<Ptr<'a, U, J>, E::Mapped>
-        where
-            U: 'a + ?Sized,
-            J: Invariants<Aliasing = I::Aliasing>,
-            E: TryWithError<Self>,
-            F: FnOnce(Ptr<'a, T, I>) -> Result<Ptr<'a, U, J>, E>,
-            I: Invariants<Aliasing = Shared>,
-        {
-            // SAFETY: `I::Aliasing = Shared`, so the safety condition does not
-            // apply.
-            unsafe { self.try_with_unchecked(f) }
         }
     }
 
@@ -1162,19 +1146,17 @@ mod _casts {
             U: 'a + ?Sized + KnownLayout + Read<I::Aliasing, R>,
             [u8]: Read<I::Aliasing, R>,
         {
-            // SAFETY: The provided closure returns the only copy of `slf`.
-            unsafe {
-                self.try_with_unchecked(|slf| match slf.try_cast_into(CastType::Prefix, meta) {
-                    Ok((slf, remainder)) => {
-                        if remainder.len() == 0 {
-                            Ok(slf)
-                        } else {
-                            Err(CastError::Size(SizeError::<_, U>::new(())))
-                        }
+            #[rustfmt::skip]
+            return self.try_with(#[inline(always)] |slf| match slf.try_cast_into(CastType::Prefix, meta) {
+                Ok((slf, remainder)) => {
+                    if remainder.len() == 0 {
+                        Ok(slf)
+                    } else {
+                        Err(CastError::Size(SizeError::<_, U>::new(())))
                     }
-                    Err(err) => Err(err.map_src(|_slf| ())),
-                })
-            }
+                }
+                Err(err) => Err(err.map_src(|_slf| ())),
+            });
         }
     }
 
