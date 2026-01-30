@@ -581,23 +581,21 @@ where
     > {
         let ptr = Ptr::from_ref(self.0);
         #[rustfmt::skip]
-        let res = ptr.try_with(#[inline(always)] |ptr| {
+        return ptr.try_with_as_ref(#[inline(always)] |ptr| {
             let ptr = ptr.recall_validity::<Initialized, _>();
             let ptr = ptr.cast::<_, crate::layout::CastFrom<Dst>, _>();
-            ptr.try_into_valid().map_err(|err| err.map_src(drop))
-        });
-        match res {
-            Ok(ptr) => {
-                static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
-                    Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
-                }, "cannot transmute reference when destination type has higher alignment than source type");
-                // SAFETY: We have checked that `Dst` does not have a stricter
-                // alignment requirement than `Src`.
-                let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
-                Ok(ptr.as_ref())
+            match ptr.try_into_valid() {
+                Ok(ptr) => {
+                    static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
+                        Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
+                    }, "cannot transmute reference when destination type has higher alignment than source type");
+                    // SAFETY: We have checked that `Dst` does not have a
+                    // stricter alignment requirement than `Src`.
+                    Ok(unsafe { ptr.assume_alignment::<Aligned>() })
+                }
+                Err(err) => Err(err.map_src(drop)),
             }
-            Err(err) => Err(err.map_src(Ptr::as_ref)),
-        }
+        });
     }
 }
 
@@ -643,23 +641,21 @@ where
         let ptr = Ptr::from_mut(self.0);
         // SAFETY: The provided closure returns the only copy of `ptr`.
         #[rustfmt::skip]
-        let res = ptr.try_with(#[inline(always)] |ptr| {
+        return ptr.try_with_as_mut(#[inline(always)] |ptr| {
             let ptr = ptr.recall_validity::<Initialized, (_, (_, _))>();
             let ptr = ptr.cast::<_, crate::layout::CastFrom<Dst>, _>();
-            ptr.try_into_valid().map_err(|err| err.map_src(drop))
-        });
-        match res {
-            Ok(ptr) => {
-                static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
-                    Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
-                }, "cannot transmute reference when destination type has higher alignment than source type");
-                // SAFETY: We have checked that `Dst` does not have a stricter
-                // alignment requirement than `Src`.
-                let ptr = unsafe { ptr.assume_alignment::<Aligned>() };
-                Ok(ptr.as_mut())
+            match ptr.try_into_valid() {
+                Ok(ptr) => {
+                    static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
+                        Src::LAYOUT.align.get() >= Dst::LAYOUT.align.get()
+                    }, "cannot transmute reference when destination type has higher alignment than source type");
+                    // SAFETY: We have checked that `Dst` does not have a
+                    // stricter alignment requirement than `Src`.
+                    Ok(unsafe { ptr.assume_alignment::<Aligned>() })
+                }
+                Err(err) => Err(err.map_src(drop)),
             }
-            Err(err) => Err(err.map_src(Ptr::as_mut)),
-        }
+        });
     }
 }
 
