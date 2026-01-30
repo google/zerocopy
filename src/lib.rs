@@ -334,6 +334,7 @@ extern crate test;
 #[macro_use]
 pub mod util;
 
+pub mod atomic;
 pub mod byte_slice;
 pub mod byteorder;
 mod deprecated;
@@ -759,6 +760,10 @@ pub unsafe trait KnownLayout {
     #[doc(hidden)]
     type MaybeUninit: ?Sized + KnownLayout<PointerMetadata = Self::PointerMetadata>;
 
+    #[allow(private_bounds)]
+    #[doc(hidden)]
+    type Atomic: Send + Sync + atomic::AtomicOps;
+
     /// The layout of `Self`.
     ///
     /// # Safety
@@ -1000,6 +1005,8 @@ unsafe impl<T> KnownLayout for [T] {
     //   element of the array is offset from the start of the array by `n *
     //   size_of::<T>()` bytes.
     type MaybeUninit = [CoreMaybeUninit<T>];
+
+    type Atomic = ();
 
     const LAYOUT: DstLayout = DstLayout::for_slice::<T>();
 

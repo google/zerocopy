@@ -93,6 +93,7 @@ fn derive_known_layout_for_repr_c_struct<'a>(
             type PointerMetadata = <#trailing_field_ty as #zerocopy_crate::KnownLayout>::PointerMetadata;
 
             type MaybeUninit = __ZerocopyKnownLayoutMaybeUninit #ty_generics;
+            type Atomic = ();
 
             // SAFETY: `LAYOUT` accurately describes the layout of `Self`.
             // The documentation of `DstLayout::for_repr_c_struct` vows that
@@ -235,6 +236,7 @@ fn derive_known_layout_for_repr_c_struct<'a>(
                 type PointerMetadata = <#ident #ty_generics as #zerocopy_crate::KnownLayout>::PointerMetadata;
 
                 type MaybeUninit = Self;
+                type Atomic = ();
 
                 const LAYOUT: #zerocopy_crate::DstLayout = <#ident #ty_generics as #zerocopy_crate::KnownLayout>::LAYOUT;
 
@@ -281,6 +283,9 @@ pub(crate) fn derive(ctx: &Ctx, _top_level: Trait) -> Result<TokenStream, Error>
                     type PointerMetadata = ();
                     type MaybeUninit =
                         #core::mem::MaybeUninit<Self>;
+                    // TODO: Support these types.
+                    type Atomic = ();
+                    // type Atomic = <() as #zerocopy_crate::atomic::macro_util::AtomicSelector<{ #zerocopy_crate::atomic::macro_util::selector_for_type::<Self>() }>>::AtomicType;
 
                     // SAFETY: `LAYOUT` is guaranteed to accurately describe the
                     // layout of `Self`, because that is the documented safety
