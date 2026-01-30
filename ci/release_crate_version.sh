@@ -19,3 +19,6 @@ VERSION="$1"
 
 sed -i -e "s/^zerocopy-derive = { version = \"=[0-9a-zA-Z\.-]*\"/zerocopy-derive = { version = \"=$VERSION\"/" Cargo.toml
 sed -i -e "s/^version = \"[0-9a-zA-Z\.-]*\"/version = \"$VERSION\"/" Cargo.toml zerocopy-derive/Cargo.toml
+
+# Ensure that `Cargo.lock` is updated.
+cargo generate-lockfile
