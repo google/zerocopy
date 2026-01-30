@@ -437,6 +437,9 @@ macro_rules! impl_known_layout {
                 //   `MaybeUninit<T>` is guaranteed to have the same size,
                 //   alignment, and ABI as `T`
                 type MaybeUninit = core::mem::MaybeUninit<Self>;
+                // TODO: Support these types.
+                type Atomic = ();
+                // type Atomic = <() as AtomicSelector<{ atomic::macro_util::selector_for_type::<$ty>() }>>::AtomicType;
 
                 const LAYOUT: crate::DstLayout = crate::DstLayout::for_type::<$ty>();
 
@@ -483,6 +486,7 @@ macro_rules! unsafe_impl_known_layout {
 
             type PointerMetadata = <$repr as KnownLayout>::PointerMetadata;
             type MaybeUninit = <$repr as KnownLayout>::MaybeUninit;
+            type Atomic = <$repr as KnownLayout>::Atomic;
 
             const LAYOUT: DstLayout = <$repr as KnownLayout>::LAYOUT;
 
@@ -552,7 +556,7 @@ macro_rules! const_panic {
         // This will type check to whatever type is expected based on the call
         // site.
         let panic: [_; 0] = [];
-        // This will always fail (since we're indexing into an array of size 0.
+        // This will always fail (since we're indexing into an array of size 0).
         #[allow(unconditional_panic)]
         panic[0]
     }};
