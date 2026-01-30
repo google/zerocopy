@@ -552,7 +552,7 @@ macro_rules! const_panic {
         // This will type check to whatever type is expected based on the call
         // site.
         let panic: [_; 0] = [];
-        // This will always fail (since we're indexing into an array of size 0.
+        // This will always fail (since we're indexing into an array of size 0).
         #[allow(unconditional_panic)]
         panic[0]
     }};
