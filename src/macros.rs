@@ -367,8 +367,8 @@ macro_rules! transmute_ref {
 /// const fn transmute_mut<'src, 'dst, Src, Dst>(src: &'src mut Src) -> &'dst mut Dst
 /// where
 ///     'src: 'dst,
-///     Src: FromBytes + IntoBytes,
-///     Dst: FromBytes + IntoBytes,
+///     Src: FromBytes + IntoBytes + ?Sized,
+///     Dst: FromBytes + IntoBytes + ?Sized,
 ///     align_of::<Src>() >= align_of::<Dst>(),
 ///     size_compatible::<Src, Dst>(),
 /// {
