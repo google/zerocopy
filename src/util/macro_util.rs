@@ -668,7 +668,7 @@ where
     let res = ptr.try_with(#[inline(always)] |ptr| {
         let ptr = ptr.recall_validity::<Initialized, _>();
         let ptr = ptr.cast::<_, CastSized, _>();
-        ptr.try_into_valid()
+        ptr.try_into_valid().map_err(|err| err.map_src(drop))
     });
     match res {
         Ok(ptr) => {
@@ -701,15 +701,12 @@ where
     Dst: TryFromBytes + IntoBytes,
 {
     let ptr = Ptr::from_mut(src);
-    // SAFETY: The provided closure returns the only copy of `ptr`.
     #[rustfmt::skip]
-    let res = unsafe {
-        ptr.try_with_unchecked(#[inline(always)] |ptr| {
-            let ptr = ptr.recall_validity::<Initialized, (_, (_, _))>();
-            let ptr = ptr.cast::<_, CastSized, _>();
-            ptr.try_into_valid()
-        })
-    };
+    let res = ptr.try_with(#[inline(always)] |ptr| {
+        let ptr = ptr.recall_validity::<Initialized, (_, (_, _))>();
+        let ptr = ptr.cast::<_, CastSized, _>();
+        ptr.try_into_valid().map_err(|err| err.map_src(drop))
+    });
     match res {
         Ok(ptr) => {
             static_assert!(Src, Dst => mem::align_of::<Dst>() <= mem::align_of::<Src>());
