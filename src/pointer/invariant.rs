@@ -91,7 +91,7 @@ pub enum ValidityKind {
     Uninit,
     AsInitialized,
     Initialized,
-    Valid,
+    Safe,
 }
 
 /// An [`Aliasing`] invariant which is either [`Shared`] or [`Exclusive`].
@@ -195,13 +195,13 @@ unsafe impl Validity for Initialized {
     const KIND: ValidityKind = ValidityKind::Initialized;
 }
 
-/// The referent of a `Ptr<T>` is valid for `T`, upholding bit validity and any
+/// The referent of a `Ptr<T>` is safe for `T`, upholding bit validity and any
 /// library safety invariants.
-pub enum Valid {}
-// SAFETY: `Valid`'s validity is well-defined for all `T: ?Sized`, and is not a
+pub enum Safe {}
+// SAFETY: `Safe`'s validity is well-defined for all `T: ?Sized`, and is not a
 // function of any property of `T` other than its bit validity.
-unsafe impl Validity for Valid {
-    const KIND: ValidityKind = ValidityKind::Valid;
+unsafe impl Validity for Safe {
+    const KIND: ValidityKind = ValidityKind::Safe;
 }
 
 /// # Safety
@@ -261,7 +261,7 @@ mod sealed {
     impl Sealed for Uninit {}
     impl Sealed for AsInitialized {}
     impl Sealed for Initialized {}
-    impl Sealed for Valid {}
+    impl Sealed for Safe {}
 
     impl<A: Sealed, AA: Sealed, V: Sealed> Sealed for (A, AA, V) {}
 

@@ -21,7 +21,7 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
-  RUSTFLAGS: -Dwarnings
+  RUSTFLAGS: -Dwarnings --verbose
   RUSTDOCFLAGS: -Dwarnings
   # `ZC_NIGHTLY_XXX` are flags that we add to `XXX` only on the nightly
   # toolchain.

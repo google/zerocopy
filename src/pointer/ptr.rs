@@ -163,7 +163,7 @@ mod _conversions {
     use crate::pointer::cast::{CastExact, CastSized, IdCast};
 
     /// `&'a T` → `Ptr<'a, T>`
-    impl<'a, T> Ptr<'a, T, (Shared, Aligned, Valid)>
+    impl<'a, T> Ptr<'a, T, (Shared, Aligned, Safe)>
     where
         T: 'a + ?Sized,
     {
@@ -178,7 +178,7 @@ mod _conversions {
             // 1. `ptr`, by invariant on `&'a T`, conforms to the alignment
             //    invariant of `Aligned`.
             // 2. `ptr`'s referent, by invariant on `&'a T`, is a bit-valid `T`.
-            //    This satisfies the requirement that a `Ptr<T, (_, _, Valid)>`
+            //    This satisfies the requirement that a `Ptr<T, (_, _, Safe)>`
             //    point to a bit-valid `T`. Even if `T` permits interior
             //    mutation, this invariant guarantees that the returned `Ptr`
             //    can only ever be used to modify the referent to store
@@ -191,7 +191,7 @@ mod _conversions {
     }
 
     /// `&'a mut T` → `Ptr<'a, T>`
-    impl<'a, T> Ptr<'a, T, (Exclusive, Aligned, Valid)>
+    impl<'a, T> Ptr<'a, T, (Exclusive, Aligned, Safe)>
     where
         T: 'a + ?Sized,
     {
@@ -207,7 +207,7 @@ mod _conversions {
             //    invariant of `Aligned`.
             // 2. `ptr`'s referent, by invariant on `&'a mut T`, is a bit-valid
             //    `T`. This satisfies the requirement that a `Ptr<T, (_, _,
-            //    Valid)>` point to a bit-valid `T`. This invariant guarantees
+            //    Safe)>` point to a bit-valid `T`. This invariant guarantees
             //    that the returned `Ptr` can only ever be used to modify the
             //    referent to store bit-valid `T`s, which ensures that the
             //    returned `Ptr` cannot be used to violate the soundness of the
@@ -220,7 +220,7 @@ mod _conversions {
     impl<'a, T, I> Ptr<'a, T, I>
     where
         T: 'a + ?Sized,
-        I: Invariants<Alignment = Aligned, Validity = Valid>,
+        I: Invariants<Alignment = Aligned, Validity = Safe>,
         I::Aliasing: Reference,
     {
         /// Converts `self` to a shared reference.
@@ -258,7 +258,7 @@ mod _conversions {
             //
             // 3. The pointer must point to a validly-initialized instance of
             //    `T`. This is ensured by-contract on `Ptr`, because the
-            //    `I::Validity` is `Valid`.
+            //    `I::Validity` is `Safe`.
             //
             // 4. You must enforce Rust’s aliasing rules. This is ensured by
             //    contract on `Ptr`, because `I::Aliasing: Reference`. Either it
@@ -371,7 +371,7 @@ mod _conversions {
     }
 
     /// `Ptr<'a, T>` → `&'a mut T`
-    impl<'a, T> Ptr<'a, T, (Exclusive, Aligned, Valid)>
+    impl<'a, T> Ptr<'a, T, (Exclusive, Aligned, Safe)>
     where
         T: 'a + ?Sized,
     {
@@ -406,7 +406,7 @@ mod _conversions {
             //
             // 3. The pointer must point to a validly-initialized instance of
             //    `T`. This is ensured by-contract on `Ptr`, because the
-            //    validity invariant is `Valid`.
+            //    validity invariant is `Safe`.
             //
             // 4. You must enforce Rust’s aliasing rules. This is ensured by
             //    contract on `Ptr`, because the `ALIASING_INVARIANT` is
@@ -552,7 +552,7 @@ mod _conversions {
             // FIXME(#1359): This should be a `transmute_with` call.
             // Unfortunately, to avoid blanket impl conflicts, we only implement
             // `TransmuteFrom<T>` for `Unalign<T>` (and vice versa) specifically
-            // for `Valid` validity, not for all validity types.
+            // for `Safe` validity, not for all validity types.
 
             // SAFETY:
             // - By `CastSized: Cast`, `CastSized` preserves referent address,
@@ -579,7 +579,7 @@ mod _conversions {
     impl<'a, T, I> Ptr<'a, T, I>
     where
         T: ?Sized,
-        I: Invariants<Validity = Valid>,
+        I: Invariants<Validity = Safe>,
         I::Aliasing: Reference,
     {
         /// Reads the referent.
@@ -728,23 +728,23 @@ mod _transitions {
             unsafe { self.assume_validity::<Initialized>() }
         }
 
-        /// A shorthand for `self.assume_validity<Valid>()`.
+        /// A shorthand for `self.assume_validity<Safe>()`.
         ///
         /// # Safety
         ///
         /// The caller promises to uphold the safety preconditions of
-        /// `self.assume_validity<Valid>()`.
+        /// `self.assume_validity<Safe>()`.
         #[doc(hidden)]
         #[must_use]
         #[inline]
-        pub unsafe fn assume_valid(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)> {
+        pub unsafe fn assume_safe(self) -> Ptr<'a, T, (I::Aliasing, I::Alignment, Safe)> {
             // SAFETY: The caller has promised to uphold the safety
             // preconditions.
-            unsafe { self.assume_validity::<Valid>() }
+            unsafe { self.assume_validity::<Safe>() }
         }
 
         /// Checks that `self`'s referent is validly initialized for `T`,
-        /// returning a `Ptr` with `Valid` on success.
+        /// returning a `Ptr` with `Safe` on success.
         ///
         /// # Panics
         ///
@@ -758,11 +758,11 @@ mod _transitions {
         #[inline]
         pub(crate) fn try_into_valid<R, S>(
             mut self,
-        ) -> Result<Ptr<'a, T, (I::Aliasing, I::Alignment, Valid)>, ValidityError<Self, T>>
+        ) -> Result<Ptr<'a, T, (I::Aliasing, I::Alignment, Safe)>, ValidityError<Self, T>>
         where
             T: TryFromBytes
                 + Read<I::Aliasing, R>
-                + TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, IdCast, S>,
+                + TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Safe, IdCast, S>,
             ReadOnly<T>: Read<I::Aliasing, R>,
             I::Aliasing: Reference,
             I: Invariants<Validity = Initialized>,
@@ -773,11 +773,11 @@ mod _transitions {
             if T::is_bit_valid(self.reborrow().transmute::<_, _, _>().reborrow_shared()) {
                 // SAFETY: If `T::is_bit_valid`, code may assume that `self`
                 // contains a bit-valid instance of `T`. By `T:
-                // TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Valid>`, so
-                // long as `self`'s referent conforms to the `Valid` validity
+                // TryTransmuteFromPtr<T, I::Aliasing, I::Validity, Safe>`, so
+                // long as `self`'s referent conforms to the `Safe` validity
                 // for `T` (which we just confirmed), then this transmute is
                 // sound.
-                Ok(unsafe { self.assume_valid() })
+                Ok(unsafe { self.assume_safe() })
             } else {
                 Err(ValidityError::new(self))
             }
@@ -1007,11 +1007,11 @@ mod _casts {
         #[allow(clippy::wrong_self_convention)]
         #[must_use]
         #[inline]
-        pub fn as_bytes<R>(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Valid)>
+        pub fn as_bytes<R>(self) -> Ptr<'a, [u8], (I::Aliasing, Aligned, Safe)>
         where
-            [u8]: TransmuteFromPtr<T, I::Aliasing, I::Validity, Valid, AsBytesCast, R>,
+            [u8]: TransmuteFromPtr<T, I::Aliasing, I::Validity, Safe, AsBytesCast, R>,
         {
-            self.transmute_with::<[u8], Valid, AsBytesCast, _>().bikeshed_recall_aligned()
+            self.transmute_with::<[u8], Safe, AsBytesCast, _>().bikeshed_recall_aligned()
         }
     }
 
@@ -1061,7 +1061,7 @@ mod _casts {
     /// alignment of `[u8]` is 1.
     impl<'a, I> Ptr<'a, [u8], I>
     where
-        I: Invariants<Validity = Valid>,
+        I: Invariants<Validity = Safe>,
     {
         /// Attempts to cast `self` to a `U` using the given cast type.
         ///
@@ -1120,7 +1120,7 @@ mod _casts {
             //    it is derived from `try_cast_into`, which promises that the
             //    object described by `target` is validly aligned for `U`.
             // 2. By trait bound, `self` - and thus `target` - is a bit-valid
-            //    `[u8]`. `Ptr<[u8], (_, _, Valid)>` and `Ptr<_, (_, _,
+            //    `[u8]`. `Ptr<[u8], (_, _, Safe)>` and `Ptr<_, (_, _,
             //    Initialized)>` have the same bit validity, and so neither
             //    `self` nor `res` can be used to write a value to the referent
             //    which violates the other's validity invariant.
@@ -1131,7 +1131,7 @@ mod _casts {
             //    have `UnsafeCell`s at the same locations. Type casting does
             //    not affect aliasing.
             // 1. `[u8]` has no alignment requirement.
-            // 2. `self` has validity `Valid` and has type `[u8]`. Since
+            // 2. `self` has validity `Safe` and has type `[u8]`. Since
             //    `remainder` references a subset of `self`'s referent, it is
             //    also a bit-valid `[u8]`. Thus, neither `self` nor `remainder`
             //    can be used to write a value to the referent which violates

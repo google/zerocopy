@@ -22,7 +22,85 @@ help: the trait `IntoBytes` is not implemented for `NotZerocopy<AU16>`
              AtomicI64
              AtomicI8
              AtomicIsize
-           and $N others
+             AtomicU16
+             AtomicU32
+             AtomicU64
+             AtomicU8
+             AtomicUsize
+             Cell<T>
+             F32<O>
+             F64<O>
+             I128<O>
+             I16<O>
+             I32<O>
+             I64<O>
+             Isize<O>
+             ManuallyDrop<T>
+             NonZero<i128>
+             NonZero<i16>
+             NonZero<i32>
+             NonZero<i64>
+             NonZero<i8>
+             NonZero<isize>
+             NonZero<u128>
+             NonZero<u16>
+             NonZero<u32>
+             NonZero<u64>
+             NonZero<u8>
+             NonZero<usize>
+             Option<NonZero<i128>>
+             Option<NonZero<i16>>
+             Option<NonZero<i32>>
+             Option<NonZero<i64>>
+             Option<NonZero<i8>>
+             Option<NonZero<isize>>
+             Option<NonZero<u128>>
+             Option<NonZero<u16>>
+             Option<NonZero<u32>>
+             Option<NonZero<u64>>
+             Option<NonZero<u8>>
+             Option<NonZero<usize>>
+             PhantomData<T>
+             ReadOnly<T>
+             U128<O>
+             U16<O>
+             U32<O>
+             U64<O>
+             Unalign<T>
+             UnsafeCell<T>
+             Usize<O>
+             Wrapping<T>
+             [T; N]
+             [T]
+             __m128
+             __m128d
+             __m128i
+             __m256
+             __m256d
+             __m256i
+             __m512
+             __m512bh
+             __m512d
+             __m512i
+             bool
+             char
+             f128
+             f16
+             f32
+             f64
+             i128
+             i16
+             i32
+             i64
+             i8
+             isize
+             str
+             u128
+             u16
+             u32
+             u64
+             u8
+             usize
 note: required by a bound in `SRC_NOT_AS_BYTES::transmute`
   --> tests/ui-nightly/transmute-src-not-intobytes.rs:17:32
    |

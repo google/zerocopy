@@ -22,7 +22,96 @@ help: the trait `FromBytes` is not implemented for `Dst`
              (A, B, C, D, E, F)
              (A, B, C, D, E, F, G)
              (A, B, C, D, E, F, G, H)
-           and $N others
+             (A, B, C, D, E, F, G, H, I)
+             (A, B, C, D, E, F, G, H, I, J)
+             (A, B, C, D, E, F, G, H, I, J, K)
+             (A, B, C, D, E, F, G, H, I, J, K, L)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y)
+             (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z)
+             (A,)
+             AU16
+             AtomicI16
+             AtomicI32
+             AtomicI64
+             AtomicI8
+             AtomicIsize
+             AtomicU16
+             AtomicU32
+             AtomicU64
+             AtomicU8
+             AtomicUsize
+             Cell<T>
+             F32<O>
+             F64<O>
+             I128<O>
+             I16<O>
+             I32<O>
+             I64<O>
+             Isize<O>
+             ManuallyDrop<T>
+             MaybeUninit<T>
+             Option<NonZero<i128>>
+             Option<NonZero<i16>>
+             Option<NonZero<i32>>
+             Option<NonZero<i64>>
+             Option<NonZero<i8>>
+             Option<NonZero<isize>>
+             Option<NonZero<u128>>
+             Option<NonZero<u16>>
+             Option<NonZero<u32>>
+             Option<NonZero<u64>>
+             Option<NonZero<u8>>
+             Option<NonZero<usize>>
+             PhantomData<T>
+             ReadOnly<T>
+             U128<O>
+             U16<O>
+             U32<O>
+             U64<O>
+             Unalign<T>
+             UnsafeCell<T>
+             Usize<O>
+             Wrapping<T>
+             [T; N]
+             [T]
+             __m128
+             __m128d
+             __m128i
+             __m256
+             __m256d
+             __m256i
+             __m512
+             __m512bh
+             __m512d
+             __m512i
+             f128
+             f16
+             f32
+             f64
+             i128
+             i16
+             i32
+             i64
+             i8
+             isize
+             u128
+             u16
+             u32
+             u64
+             u8
+             usize
 note: required by a bound in `AssertDstIsFromBytes`
   --> tests/ui-nightly/transmute-ref-dst-not-frombytes.rs:21:34
    |

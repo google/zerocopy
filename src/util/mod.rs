@@ -21,7 +21,7 @@ use core::{
 
 use super::*;
 use crate::pointer::{
-    invariant::{Exclusive, Shared, Valid},
+    invariant::{Exclusive, Shared, Safe},
     SizeEq, TransmuteFromPtr,
 };
 
@@ -332,7 +332,7 @@ pub(crate) unsafe fn transmute_ref<Src, Dst, R>(src: &Src) -> &Dst
 where
     Src: ?Sized,
     Dst: SizeEq<Src>
-        + TransmuteFromPtr<Src, Shared, Valid, Valid, <Dst as SizeEq<Src>>::CastFrom, R>
+        + TransmuteFromPtr<Src, Shared, Safe, Safe, <Dst as SizeEq<Src>>::CastFrom, R>
         + ?Sized,
 {
     let dst = Ptr::from_ref(src).transmute();
@@ -349,7 +349,7 @@ pub(crate) unsafe fn transmute_mut<Src, Dst, R>(src: &mut Src) -> &mut Dst
 where
     Src: ?Sized,
     Dst: SizeEq<Src>
-        + TransmuteFromPtr<Src, Exclusive, Valid, Valid, <Dst as SizeEq<Src>>::CastFrom, R>
+        + TransmuteFromPtr<Src, Exclusive, Safe, Safe, <Dst as SizeEq<Src>>::CastFrom, R>
         + ?Sized,
 {
     let dst = Ptr::from_mut(src).transmute();
