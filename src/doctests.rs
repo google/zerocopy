@@ -18,13 +18,14 @@ use crate::*;
 
 #[derive(KnownLayout, FromBytes, IntoBytes, Immutable)]
 #[repr(C)]
-#[allow(missing_debug_implementations, missing_copy_implementations)]
+#[doc(hidden)]
 pub struct SliceDst<T, U> {
     pub t: T,
     pub u: [U],
 }
 
 #[allow(clippy::must_use_candidate, clippy::missing_inline_in_public_items, clippy::todo)]
+#[doc(hidden)]
 impl<T: FromBytes + IntoBytes, U: FromBytes + IntoBytes> SliceDst<T, U> {
     pub fn new() -> &'static SliceDst<T, U> {
         todo!()

@@ -164,17 +164,19 @@ fn install_toolchain_or_exit(versions: &Versions, name: &str) -> Result<(), Erro
     Ok(())
 }
 
-fn get_rustflags(name: &str) -> &'static str {
+fn get_rustflags(name: &str) -> String {
     // See #1792 for context on zerocopy_derive_union_into_bytes.
+    let mut flags = "--cfg zerocopy_derive_union_into_bytes --cfg __ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE".to_string();
+
     if name == "nightly" {
-        "--cfg __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS --cfg zerocopy_derive_union_into_bytes "
-    } else {
-        "--cfg zerocopy_derive_union_into_bytes "
+        flags += " --cfg __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS";
     }
+
+    flags
 }
 
 fn get_toolchain_rustflags(name: &str) -> String {
-    format!("--cfg __ZEROCOPY_TOOLCHAIN=\"{}\" ", name)
+    format!("--cfg __ZEROCOPY_TOOLCHAIN=\"{}\"", name)
 }
 
 fn rustup<'a>(args: impl IntoIterator<Item = &'a str>, env: Option<(&str, &str)>) -> Command {
@@ -228,7 +230,7 @@ fn delegate_cargo() -> Result<(), Error> {
                     .unwrap_or_default();
 
                 let rustflags = format!(
-                    "{}{}{}",
+                    "{} {} {}",
                     get_rustflags(name),
                     get_toolchain_rustflags(name),
                     env_rustflags,
