@@ -338,7 +338,7 @@ pub mod byte_slice;
 pub mod byteorder;
 mod deprecated;
 
-#[doc(hidden)]
+#[cfg(__ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE)]
 pub mod doctests;
 
 // This module is `pub` so that zerocopy's error types and error handling
