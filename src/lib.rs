@@ -334,6 +334,7 @@ extern crate test;
 #[macro_use]
 pub mod util;
 
+pub mod atomic;
 pub mod byte_slice;
 pub mod byteorder;
 mod deprecated;
