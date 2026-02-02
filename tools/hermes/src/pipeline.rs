@@ -16,7 +16,7 @@ use walkdir::WalkDir;
 
 use crate::{
     orchestration::{run_aeneas, run_charon, run_lake_build},
-    parser::{ProofBlock, SpecBlock, extract_blocks},
+    parser::{ParsedFunction, extract_blocks},
 };
 
 fn get_crate_name(
@@ -81,12 +81,19 @@ fn get_crate_name(
     Err(anyhow!("Could not determine crate name from Cargo.toml"))
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Sorry {
+    AllowSorry,
+    RejectSorry,
+}
+
 pub fn run_pipeline(
     crate_name: Option<String>,
     crate_root: &Path,
     dest: &Path,
     aeneas_path: Option<PathBuf>,
     manifest_path: Option<PathBuf>,
+    sorry_mode: Sorry,
 ) -> Result<()> {
     let crate_name = get_crate_name(manifest_path.as_deref(), crate_name, crate_root)?;
 
@@ -139,13 +146,14 @@ pub fn run_pipeline(
         &camel_name,
         dest,
         manifest_path.as_deref(),
+        sorry_mode,
     )?;
 
     // 5. Verify
     println!("Step 4: Verifying...");
     // ensure lakefile exists
     // Note: lakefile still uses snake_case for package name and roots, but `CamelCase` structure for imports
-    write_lakefile(dest, &crate_name_snake, &camel_name, aeneas_path)?;
+    write_lakefile(dest, &crate_name_snake, &camel_name, aeneas_path, sorry_mode)?;
     run_lake_build(dest)?;
 
     println!("Verification Successful!");
@@ -158,9 +166,9 @@ fn stitch_user_proofs(
     crate_name_camel: &str,
     dest: &Path,
     source_file: Option<&Path>,
+    sorry_mode: Sorry,
 ) -> Result<()> {
-    let mut all_specs = Vec::new();
-    let mut all_proofs = Vec::new();
+    let mut all_functions = Vec::new();
 
     if let Some(path) = source_file {
         // If a specific source file is provided (e.g. script), uses that.
@@ -168,8 +176,7 @@ fn stitch_user_proofs(
         if path.exists() {
             let content = fs::read_to_string(path)?;
             let extracted = extract_blocks(&content)?;
-            all_specs.extend(extracted.specs);
-            all_proofs.extend(extracted.proofs);
+            all_functions.extend(extracted.functions);
         }
     } else {
         // Otherwise scan src dir
@@ -180,22 +187,21 @@ fn stitch_user_proofs(
                 if entry.path().extension().map_or(false, |ext| ext == "rs") {
                     let content = fs::read_to_string(entry.path())?;
                     let extracted = extract_blocks(&content)?;
-                    all_specs.extend(extracted.specs);
-                    all_proofs.extend(extracted.proofs);
+                    all_functions.extend(extracted.functions);
                 }
             }
         }
     }
 
-    generate_lean_file(dest, crate_name_snake, crate_name_camel, &all_specs, &all_proofs)
+    generate_lean_file(dest, crate_name_snake, crate_name_camel, &all_functions, sorry_mode)
 }
 
 fn generate_lean_file(
     dest: &Path,
     namespace_name: &str,
     import_name: &str,
-    specs: &[SpecBlock],
-    proofs: &[ProofBlock],
+    functions: &[ParsedFunction],
+    sorry_mode: Sorry,
 ) -> Result<()> {
     let mut content = String::new();
     content.push_str(&format!("import {}\n", import_name));
@@ -203,45 +209,69 @@ fn generate_lean_file(
     content.push_str("open Aeneas Aeneas.Std Result Error\n\n");
     content.push_str(&format!("open {}\n\n", namespace_name));
 
-    // For the initial version, we assume a strict one-to-one mapping between
-    // spec blocks and proof blocks.
-    // Future improvements should support matching by name or more complex interleaving.
-    //
-    // The current implementation expects:
-    // /*@ lean spec ... @*/
-    // /*@ proof ... @*/
-    // appearing in pairs.
+    for func in functions {
+        // Only generate for functions that have a spec.
+        let spec_body = match &func.spec {
+            Some(s) => s,
+            None => continue,
+        };
 
-    if specs.len() != proofs.len() {
-        eprintln!(
-            "Warning: Number of specs ({}) does not match number of proofs ({})",
-            specs.len(),
-            proofs.len()
-        );
-    }
+        let proof_body = match (&func.proof, sorry_mode) {
+            (Some(proof), _) => proof.as_str(),
+            (None, Sorry::AllowSorry) => "sorry",
+            (None, Sorry::RejectSorry) => anyhow::bail!(
+                "Missing proof for function '{}'. Use --allow-sorry to fallback to sorry.",
+                func.fn_name
+            ),
+        };
 
-    for (i, spec) in specs.iter().enumerate() {
-        let proof = proofs.get(i).map(|p| p.body.as_str()).unwrap_or("sorry");
+        // Context Injection
+        let context = extract_generics_context(&func.generics);
 
         // Transform the spec body into a valid Lean theorem type.
         // If the body contains "ensures", we format it as a return type check.
         //
         // Example Input: "ensures |ret| ..."
         // Example Output: ": ensures |ret| ..."
-        let body = if spec.body.contains("ensures") && !spec.body.contains(": ensures") {
-            spec.body.replacen("ensures", ": ensures", 1)
+        let body = if spec_body.contains("ensures") && !spec_body.contains(": ensures") {
+            spec_body.replacen("ensures", ": ensures", 1)
         } else {
-            spec.body.clone()
+            spec_body.clone()
         };
 
-        content.push_str(&format!("theorem {}_spec {}\n", spec.function_name, body));
+        content.push_str(&format!("theorem {}_spec {} {}\n", func.fn_name, context, body));
         content.push_str("  :=\n");
         content.push_str("  by\n");
-        content.push_str(proof);
+        content.push_str(proof_body);
         content.push_str("\n\n");
     }
 
     fs::write(dest.join("UserProofs.lean"), content).map_err(Into::into)
+}
+
+fn extract_generics_context(generics: &syn::Generics) -> String {
+    let mut context = String::new();
+    for param in &generics.params {
+        if let syn::GenericParam::Type(type_param) = param {
+            let name = &type_param.ident;
+            // {T : Type}
+            context.push_str(&format!("{{{name} : Type}} "));
+
+            // Bounds
+            // Simplistic mapping: T: Foo -> [inst : Foo T]
+            for bound in &type_param.bounds {
+                if let syn::TypeParamBound::Trait(trait_bound) = bound {
+                    // This is tricky if it's a complex path, but let's try to get the last segment
+                    if let Some(segment) = trait_bound.path.segments.last() {
+                        let trait_name = &segment.ident;
+                        context
+                            .push_str(&format!("[inst{name}{trait_name} : {trait_name} {name}] "));
+                    }
+                }
+            }
+        }
+    }
+    context
 }
 
 fn write_lakefile(
@@ -249,6 +279,7 @@ fn write_lakefile(
     crate_name_snake: &str,
     crate_name_camel: &str,
     aeneas_path: Option<PathBuf>,
+    sorry_mode: Sorry,
 ) -> Result<()> {
     let lakefile_path = dest.join("lakefile.lean");
     // Only create if missing. If the user wants to force regen, they should delete it or we add a flag.
@@ -256,6 +287,13 @@ fn write_lakefile(
         format!("require aeneas from \"{}\"", path.display())
     } else {
         r#"require aeneas from git "https://github.com/AeneasVerif/aeneas" @ "main""#.to_string()
+    };
+
+    let more_lean_args = match sorry_mode {
+        // If sorry is NOT allowed, we want to fail on warnings (like
+        // 'declaration uses sorry')
+        Sorry::RejectSorry => "\n  moreLeanArgs := #[\"-DwarningAsError=true\"]",
+        Sorry::AllowSorry => "",
     };
 
     let content = format!(
@@ -269,10 +307,10 @@ package {}
 
 @[default_target]
 lean_lib {} {{
-  roots := #[`{}, `UserProofs]
+  roots := #[`{}, `UserProofs]{}
 }}
 "#,
-        crate_name_snake, require_line, crate_name_snake, crate_name_camel
+        crate_name_snake, require_line, crate_name_snake, crate_name_camel, more_lean_args
     );
     fs::write(lakefile_path, content).map_err(Into::into)
 }

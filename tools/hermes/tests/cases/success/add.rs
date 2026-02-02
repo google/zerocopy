@@ -8,13 +8,10 @@
 //! [dependencies]
 //! ```
 
-/*@ lean
-spec add (a b : U32)
-: ∃ ret, add a b = ok ret ∧ ret.val = (a.val + b.val) % 4294967296
-@*/
-/*@ proof
-  sorry
-@*/
+///@ lean spec add (a b : U32)
+///@ : ∃ ret, add a b = ok ret ∧ ret.val = (a.val + b.val) % U32.size
+///@ proof
+///@   simp [add]
 pub fn add(a: u32, b: u32) -> u32 {
     a.wrapping_add(b)
 }

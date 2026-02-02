@@ -8,14 +8,11 @@
 //! [dependencies]
 //! ```
 
-/*@ lean
-spec incorrect (x : U32)
-: ∃ ret, incorrect x = ok ret ∧ ret.val = x.val + 1
-@*/
-/*@ proof
-  simp [incorrect]
-  -- Error: x != x + 1, so this goal remains unsolved
-@*/
+///@ lean spec incorrect (x : U32)
+///@ : ∃ ret, incorrect x = ok ret ∧ ret.val = x.val + 1
+///@ proof
+///@   simp [incorrect]
+///@   -- Error: x != x + 1, so this goal remains unsolved
 pub fn incorrect(x: u32) -> u32 {
     x
 }
