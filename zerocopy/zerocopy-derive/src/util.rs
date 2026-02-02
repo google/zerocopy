@@ -459,7 +459,7 @@ pub(crate) struct FieldProjection {
 #[derive(Clone)]
 pub(crate) enum Trait {
     KnownLayout,
-    HasTag { client: Client },
+    HasTag { client: Client, validity: Box<Type> },
     HasField { client: Client, projection: FieldProjection },
     ProjectField { client: Client, projection: FieldProjection, invariants: Box<Type> },
     Immutable,
@@ -505,7 +505,7 @@ impl ToTokens for Trait {
         };
         let ident = Ident::new(s, Span::call_site());
         let arguments: Option<syn::AngleBracketedGenericArguments> = match self {
-            Trait::HasTag { client } => Some(parse_quote!(<#client>)),
+            Trait::HasTag { client, validity } => Some(parse_quote!(<#client, #validity>)),
             Trait::HasField { client, projection } => {
                 let FieldProjection { variant_id, field, field_id } = projection;
                 Some(parse_quote!(<#client, #field, #variant_id, #field_id>))
@@ -537,9 +537,9 @@ impl Trait {
         let core = ctx.core_path();
         match self {
             Self::Sized => parse_quote!(#core::marker::#self),
-            Self::HasTag { client } => {
+            Self::HasTag { client, validity } => {
                 let client = client.crate_path(ctx);
-                parse_quote!(#zerocopy_crate::HasTag<#client>)
+                parse_quote!(#zerocopy_crate::HasTag<#client, #validity>)
             }
             Self::HasField { client, projection } => {
                 let FieldProjection { variant_id, field, field_id } = projection;

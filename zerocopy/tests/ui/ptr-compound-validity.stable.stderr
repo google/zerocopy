@@ -1,0 +1,69 @@
+error[E0599]: the method `project` exists for struct `Ptr<'_, (u8, u8), (Shared, Aligned, (zerocopy::invariant::Safe,))>`, but its trait bounds were not satisfied
+  --> $DIR/ptr-compound-validity.rs:23:17
+   |
+23 |     let _ = ptr.project::<TryFromBytesDerive, _, { zerocopy::STRUCT_VARIANT_ID }, 0>();
+   |                 ^^^^^^^
+   |
+   = note: the following trait bounds were not satisfied:
+           `(u8, u8): zerocopy::ProjectField<_, _, (Shared, Aligned, (zerocopy::invariant::Safe,)), _, _>`
+
+error[E0599]: the method `as_ref` exists for struct `Ptr<'_, bool, (Shared, Aligned, zerocopy::invariant::Uninit)>`, but its trait bounds were not satisfied
+  --> $DIR/ptr-compound-validity.rs:29:19
+   |
+29 |     let _ = field.as_ref();
+   |                   ^^^^^^ method cannot be called due to unsatisfied trait bounds
+   |
+   = note: the following trait bounds were not satisfied:
+           `<(Shared, Aligned, zerocopy::invariant::Uninit) as Invariants>::Validity = zerocopy::invariant::Safe`
+
+error[E0599]: the method `as_ref` exists for struct `Ptr<'_, Unalign<bool>, (Shared, Aligned, Uninit)>`, but its trait bounds were not satisfied
+  --> $DIR/ptr-compound-validity.rs:38:19
+   |
+38 |     let _ = field.as_ref();
+   |                   ^^^^^^ method cannot be called on `Ptr<'_, Unalign<bool>, (Shared, Aligned, Uninit)>` due to unsatisfied trait bounds
+   |
+   = note: the following trait bounds were not satisfied:
+           `<(Shared, Aligned, zerocopy::invariant::Uninit) as Invariants>::Validity = zerocopy::invariant::Safe`
+   = note: the full name for the type has been written to '/long-type-HASH.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+
+error[E0599]: the method `project` exists for struct `Ptr<'_, Unalign<(u8, u8)>, (Shared, Aligned, _)>`, but its trait bounds were not satisfied
+  --> $DIR/ptr-compound-validity.rs:43:17
+   |
+43 |     let _ = ptr.project::<TryFromBytesDerive, _, { zerocopy::STRUCT_VARIANT_ID }, 0>();
+   |                 ^^^^^^^
+   |
+   = note: the following trait bounds were not satisfied:
+           `(u8, u8): zerocopy::ProjectField<_, _, (Shared, zerocopy::invariant::Unaligned, ((zerocopy::invariant::Safe, zerocopy::invariant::Safe),)), _, _>`
+   = note: the full name for the type has been written to '/long-type-HASH.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+
+error[E0599]: the method `get_mut` exists for struct `Ptr<'_, UnsafeCell<(u8, bool)>, (Shared, _, _)>`, but its trait bounds were not satisfied
+  --> $DIR/ptr-compound-validity.rs:50:17
+   |
+50 |     let _ = ptr.get_mut();
+   |                 ^^^^^^^ method cannot be called on `Ptr<'_, UnsafeCell<(u8, bool)>, (Shared, _, _)>` due to unsatisfied trait bounds
+   |
+   = note: the following trait bounds were not satisfied:
+           `<(Shared, Aligned, (zerocopy::invariant::Safe, zerocopy::invariant::Uninit)) as Invariants>::Aliasing = Exclusive`
+   = note: the full name for the type has been written to '/long-type-HASH.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+
+error[E0599]: the method `as_ref` exists for struct `Ptr<'_, bool, (Exclusive, Aligned, zerocopy::invariant::Uninit)>`, but its trait bounds were not satisfied
+  --> $DIR/ptr-compound-validity.rs:61:19
+   |
+61 |     let _ = field.as_ref();
+   |                   ^^^^^^ method cannot be called due to unsatisfied trait bounds
+   |
+   = note: the following trait bounds were not satisfied:
+           `<(Exclusive, Aligned, zerocopy::invariant::Uninit) as Invariants>::Validity = zerocopy::invariant::Safe`
+
+error[E0599]: no method named `set` found for reference `&ReadOnly<Cell<u8>>` in the current scope
+  --> $DIR/ptr-compound-validity.rs:67:20
+   |
+67 |     field.as_ref().set(1);
+   |                    ^^^ method not found in `&ReadOnly<Cell<u8>>`
+
+error: aborting due to 7 previous errors
+
+For more information about this error, try `rustc --explain E0599`.

@@ -25,10 +25,13 @@ const _: () = {
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
     const _: () = {
-        unsafe impl ::zerocopy::HasTag<::zerocopy::project_clients::ProjectDerive>
+        unsafe impl<
+            ___ZcValidity: ::zerocopy::invariant::Validity,
+        > ::zerocopy::HasTag<::zerocopy::project_clients::ProjectDerive, ___ZcValidity>
         for Foo {
             fn only_derive_is_allowed_to_implement_this_trait() {}
             type Tag = ();
+            type TagValidity = ::zerocopy::invariant::Safe;
             type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
         }
     };

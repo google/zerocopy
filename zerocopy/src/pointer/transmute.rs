@@ -387,18 +387,28 @@ where
 
 // SAFETY:
 // - `ManuallyDrop<T>` has the same size as `T` [1]
-// - `ManuallyDrop<T>` has the same validity as `T` [1]
+// - `ManuallyDrop<T>` has the same bit validity as `T` [1]
+// - Its safe `DerefMut` implementation exposes the inner `T` and permits
+//   mutation preserving `T`'s safety invariants. Thus `Safe` requires the
+//   inner `T`'s safety invariants, but no additional value restriction. In
+//   particular, a manually dropped value is not `Safe` [2].
 //
 // [1] Per https://doc.rust-lang.org/1.81.0/std/mem/struct.ManuallyDrop.html:
 //
 //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
 //   `T`
+//
+// [2] Per https://doc.rust-lang.org/1.99.0/core/mem/struct.ManuallyDrop.html:
+//
+//   a `ManuallyDrop<T>` whose content has been dropped must not be exposed
+//   through a public safe API.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T: ?Sized => ManuallyDrop<T>) };
 
 // SAFETY:
 // - `Unalign<T>` promises to have the same size as `T`.
-// - `Unalign<T>` promises to have the same validity as `T`.
+// - `Unalign<T>` promises to have the same bit validity and library safety
+//   invariants as `T`.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T => Unalign<T>) };
 // SAFETY: `Unalign<T>` promises to have the same size and validity as `T`.
@@ -421,6 +431,9 @@ const _: () = unsafe { unsafe_impl_shared_compatible!(T => T, Unalign<T>) };
 //     guarantee.
 //   - `Wrapping` could add or change its fields, but this would be a
 //     stability-breaking change.
+// - The public field can be read and replaced by safe code. It must therefore
+//   satisfy `T`'s safety invariants, and the wrapper cannot require an
+//   additional invariant that such replacement could violate.
 //
 // [1] Per https://doc.rust-lang.org/1.85.0/core/num/struct.Wrapping.html#layout-1:
 //
@@ -448,12 +461,20 @@ const _: () = unsafe { unsafe_impl_shared_compatible!(T => T, Wrapping<T>) };
 // - Per [1], `UnsafeCell<T>` has the same bit validity as `T`. Technically the
 //   term "representation" doesn't guarantee this, but the subsequent sentence
 //   in the documentation makes it clear that this is the intention.
+// - Safe mutable access to the contents [2] requires `T`'s safety invariants
+//   and permits mutation preserving those invariants. Thus the wrapper adds
+//   no value restriction. Its different shared-mutation permissions are
+//   aliasing requirements, which `TransmuteFrom` does not establish.
 //
 // [1] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout:
 //
 //   `UnsafeCell<T>` has the same in-memory representation as its inner type
 //   `T`. A consequence of this guarantee is that it is possible to convert
 //   between `T` and `UnsafeCell<T>`.
+//
+// [2] Per https://doc.rust-lang.org/1.99.0/core/cell/struct.UnsafeCell.html#method.get_mut:
+//
+//   Returns a mutable reference to the underlying data.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T: ?Sized => UnsafeCell<T>) };
 
@@ -464,6 +485,10 @@ const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T: ?Sized => Uns
 //   "same memory layout and caveats as `UnsafeCell<T>`." The `UnsafeCell` docs
 //   [2] make it clear that bit validity is the intention even if that phrase
 //   isn't used.
+// - As with `UnsafeCell`, safe mutable access [3] requires `T`'s safety
+//   invariants and permits mutation preserving them, so the wrapper adds no
+//   value restriction. Shared-mutation permissions are checked separately
+//   from `TransmuteFrom`.
 //
 // [1] Per https://doc.rust-lang.org/1.85.0/std/cell/struct.Cell.html#memory-layout:
 //
@@ -476,6 +501,10 @@ const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T: ?Sized => Uns
 //   `UnsafeCell<T>` has the same in-memory representation as its inner type
 //   `T`. A consequence of this guarantee is that it is possible to convert
 //   between `T` and `UnsafeCell<T>`.
+//
+// [3] Per https://doc.rust-lang.org/1.99.0/core/cell/struct.Cell.html#method.get_mut:
+//
+//   Returns a mutable reference to the underlying data.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T: ?Sized => Cell<T>) };
 
