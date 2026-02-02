@@ -86,14 +86,18 @@ const _: () = {
                 'a: 'static,
                 X,
                 Y: Deref,
+                ___ZcValidity: ::zerocopy::invariant::Validity,
                 const N: usize,
-            > ::zerocopy::HasTag<::zerocopy::project_clients::ProjectDerive>
-            for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
+            > ::zerocopy::HasTag<
+                ::zerocopy::project_clients::ProjectDerive,
+                ___ZcValidity,
+            > for ___ZerocopyVariantStruct_StructLike<'a, { N }, X, Y>
             where
                 X: Deref<Target = &'a [(X, Y); N]>,
             {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
                 type Tag = ();
+                type TagValidity = ::zerocopy::invariant::Safe;
                 type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
             }
         };
@@ -1299,14 +1303,18 @@ const _: () = {
                 'a: 'static,
                 X,
                 Y: Deref,
+                ___ZcValidity: ::zerocopy::invariant::Validity,
                 const N: usize,
-            > ::zerocopy::HasTag<::zerocopy::project_clients::ProjectDerive>
-            for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
+            > ::zerocopy::HasTag<
+                ::zerocopy::project_clients::ProjectDerive,
+                ___ZcValidity,
+            > for ___ZerocopyVariantStruct_TupleLike<'a, { N }, X, Y>
             where
                 X: Deref<Target = &'a [(X, Y); N]>,
             {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
                 type Tag = ();
+                type TagValidity = ::zerocopy::invariant::Safe;
                 type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
             }
         };
@@ -2178,11 +2186,15 @@ const _: () = {
                 'a: 'static,
                 X,
                 Y: Deref,
+                ___ZcValidity: ::zerocopy::invariant::Validity,
                 const N: usize,
-            > ::zerocopy::HasTag<::zerocopy::project_clients::ProjectDerive>
-            for ___ZerocopyVariants<'a, { N }, X, Y> {
+            > ::zerocopy::HasTag<
+                ::zerocopy::project_clients::ProjectDerive,
+                ___ZcValidity,
+            > for ___ZerocopyVariants<'a, { N }, X, Y> {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
                 type Tag = ();
+                type TagValidity = ::zerocopy::invariant::Safe;
                 type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
             }
         };
@@ -2576,11 +2588,15 @@ const _: () = {
                 'a: 'static,
                 X,
                 Y: Deref,
+                ___ZcValidity: ::zerocopy::invariant::Validity,
                 const N: usize,
-            > ::zerocopy::HasTag<::zerocopy::project_clients::ProjectDerive>
-            for ___ZerocopyRawEnum<'a, { N }, X, Y> {
+            > ::zerocopy::HasTag<
+                ::zerocopy::project_clients::ProjectDerive,
+                ___ZcValidity,
+            > for ___ZerocopyRawEnum<'a, { N }, X, Y> {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
                 type Tag = ();
+                type TagValidity = ::zerocopy::invariant::Safe;
                 type ProjectToTag = ::zerocopy::pointer::cast::CastToUnit;
             }
         };
@@ -2907,13 +2923,109 @@ const _: () = {
             X,
             Y: Deref,
             const N: usize,
-        > ::zerocopy::HasTag<::zerocopy::project_clients::ProjectDerive>
-        for ComplexWithGenerics<'a, { N }, X, Y>
+        > ::zerocopy::HasTag<
+            ::zerocopy::project_clients::ProjectDerive,
+            ::zerocopy::invariant::Uninit,
+        > for ComplexWithGenerics<'a, { N }, X, Y>
         where
             X: Deref<Target = &'a [(X, Y); N]>,
         {
             fn only_derive_is_allowed_to_implement_this_trait() {}
             type Tag = ___ZerocopyTag;
+            type TagValidity = ::zerocopy::invariant::Uninit;
+            type ProjectToTag = ::zerocopy::pointer::cast::CastSized;
+        }
+    };
+    #[allow(
+        deprecated,
+        private_bounds,
+        non_local_definitions,
+        non_camel_case_types,
+        non_upper_case_globals,
+        non_snake_case,
+        non_ascii_idents,
+        clippy::missing_inline_in_public_items,
+    )]
+    #[deny(ambiguous_associated_items)]
+    #[automatically_derived]
+    const _: () = {
+        unsafe impl<
+            'a: 'static,
+            X,
+            Y: Deref,
+            const N: usize,
+        > ::zerocopy::HasTag<
+            ::zerocopy::project_clients::ProjectDerive,
+            ::zerocopy::invariant::AsInitialized,
+        > for ComplexWithGenerics<'a, { N }, X, Y>
+        where
+            X: Deref<Target = &'a [(X, Y); N]>,
+        {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+            type Tag = ___ZerocopyTag;
+            type TagValidity = ::zerocopy::invariant::AsInitialized;
+            type ProjectToTag = ::zerocopy::pointer::cast::CastSized;
+        }
+    };
+    #[allow(
+        deprecated,
+        private_bounds,
+        non_local_definitions,
+        non_camel_case_types,
+        non_upper_case_globals,
+        non_snake_case,
+        non_ascii_idents,
+        clippy::missing_inline_in_public_items,
+    )]
+    #[deny(ambiguous_associated_items)]
+    #[automatically_derived]
+    const _: () = {
+        unsafe impl<
+            'a: 'static,
+            X,
+            Y: Deref,
+            const N: usize,
+        > ::zerocopy::HasTag<
+            ::zerocopy::project_clients::ProjectDerive,
+            ::zerocopy::invariant::Initialized,
+        > for ComplexWithGenerics<'a, { N }, X, Y>
+        where
+            X: Deref<Target = &'a [(X, Y); N]>,
+        {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+            type Tag = ___ZerocopyTag;
+            type TagValidity = ::zerocopy::invariant::Initialized;
+            type ProjectToTag = ::zerocopy::pointer::cast::CastSized;
+        }
+    };
+    #[allow(
+        deprecated,
+        private_bounds,
+        non_local_definitions,
+        non_camel_case_types,
+        non_upper_case_globals,
+        non_snake_case,
+        non_ascii_idents,
+        clippy::missing_inline_in_public_items,
+    )]
+    #[deny(ambiguous_associated_items)]
+    #[automatically_derived]
+    const _: () = {
+        unsafe impl<
+            'a: 'static,
+            X,
+            Y: Deref,
+            const N: usize,
+        > ::zerocopy::HasTag<
+            ::zerocopy::project_clients::ProjectDerive,
+            ::zerocopy::invariant::Safe,
+        > for ComplexWithGenerics<'a, { N }, X, Y>
+        where
+            X: Deref<Target = &'a [(X, Y); N]>,
+        {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+            type Tag = ___ZerocopyTag;
+            type TagValidity = ::zerocopy::invariant::Safe;
             type ProjectToTag = ::zerocopy::pointer::cast::CastSized;
         }
     };
@@ -3118,6 +3230,7 @@ const _: () = {
                     '_,
                     <Self as ::zerocopy::HasTag<
                         ::zerocopy::project_clients::ProjectDerive,
+                        ::zerocopy::invariant::Safe,
                     >>::Tag,
                     (
                         ::zerocopy::invariant::Shared,
@@ -3336,6 +3449,7 @@ const _: () = {
                     '_,
                     <Self as ::zerocopy::HasTag<
                         ::zerocopy::project_clients::ProjectDerive,
+                        ::zerocopy::invariant::Safe,
                     >>::Tag,
                     (
                         ::zerocopy::invariant::Shared,
@@ -3554,6 +3668,7 @@ const _: () = {
                     '_,
                     <Self as ::zerocopy::HasTag<
                         ::zerocopy::project_clients::ProjectDerive,
+                        ::zerocopy::invariant::Safe,
                     >>::Tag,
                     (
                         ::zerocopy::invariant::Shared,
@@ -3772,6 +3887,7 @@ const _: () = {
                     '_,
                     <Self as ::zerocopy::HasTag<
                         ::zerocopy::project_clients::ProjectDerive,
+                        ::zerocopy::invariant::Safe,
                     >>::Tag,
                     (
                         ::zerocopy::invariant::Shared,
@@ -3990,6 +4106,7 @@ const _: () = {
                     '_,
                     <Self as ::zerocopy::HasTag<
                         ::zerocopy::project_clients::ProjectDerive,
+                        ::zerocopy::invariant::Safe,
                     >>::Tag,
                     (
                         ::zerocopy::invariant::Shared,
@@ -4208,6 +4325,7 @@ const _: () = {
                     '_,
                     <Self as ::zerocopy::HasTag<
                         ::zerocopy::project_clients::ProjectDerive,
+                        ::zerocopy::invariant::Safe,
                     >>::Tag,
                     (
                         ::zerocopy::invariant::Shared,
@@ -4426,6 +4544,7 @@ const _: () = {
                     '_,
                     <Self as ::zerocopy::HasTag<
                         ::zerocopy::project_clients::ProjectDerive,
+                        ::zerocopy::invariant::Safe,
                     >>::Tag,
                     (
                         ::zerocopy::invariant::Shared,
@@ -4644,6 +4763,7 @@ const _: () = {
                     '_,
                     <Self as ::zerocopy::HasTag<
                         ::zerocopy::project_clients::ProjectDerive,
+                        ::zerocopy::invariant::Safe,
                     >>::Tag,
                     (
                         ::zerocopy::invariant::Shared,

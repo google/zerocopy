@@ -739,10 +739,10 @@ macro_rules! define_cast {
 ///
 /// # Safety
 ///
-/// `T` and `$wrapper<T>` must have the same bit validity, and must have the
-/// same size in the sense of `CastExact` (specifically, both a
-/// `T`-to-`$wrapper<T>` cast and a `$wrapper<T>`-to-`T` cast must be
-/// size-preserving).
+/// `T` and `$wrapper<T>` must have the same bit validity and library safety
+/// invariants, and must have the same size in the sense of `CastExact`
+/// (specifically, both a `T`-to-`$wrapper<T>` cast and a
+/// `$wrapper<T>`-to-`T` cast must be size-preserving).
 macro_rules! unsafe_impl_for_transparent_wrapper {
     ($vis:vis T $(: ?$optbound:ident)? => $wrapper:ident<T>) => {{
         crate::util::macros::__unsafe();
@@ -751,7 +751,8 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
         use crate::wrappers::ReadOnly;
 
         // SAFETY: The caller promises that `T` and `$wrapper<T>` have the same
-        // bit validity.
+        // bit validity and library safety invariants. Thus each is `Safe`
+        // exactly when the other is, as required by `TransmuteFrom`.
         unsafe impl<T $(: ?$optbound)?> TransmuteFrom<T, Safe, Safe> for $wrapper<T> {}
         // SAFETY: See previous safety comment.
         unsafe impl<T $(: ?$optbound)?> TransmuteFrom<$wrapper<T>, Safe, Safe> for T {}

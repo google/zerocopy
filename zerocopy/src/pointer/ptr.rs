@@ -565,7 +565,7 @@ mod _conversions {
     where
         I: Invariants,
     {
-        /// Converts a `Ptr` an unaligned `T` into a `Ptr` to an aligned
+        /// Converts a `Ptr` to an unaligned `T` into a `Ptr` to an aligned
         /// `Unalign<T>`.
         #[inline]
         #[must_use]
@@ -581,7 +581,7 @@ mod _conversions {
             // - By `CastSized: Cast`, `CastSized` preserves referent address,
             //   and so we don't need to consider projections in the following
             //   safety arguments.
-            // - Since `Unalign<T>` has the same layout as `T`, the returned
+            // - Since `Unalign<T>` has the same byte layout as `T`, the returned
             //   pointer refers to `UnsafeCell`s at the same locations as
             //   `self`.
             // - `Uninit` and `Initialized` depend only on initialization of
@@ -589,9 +589,11 @@ mod _conversions {
             //   including whether valid instances exist, so their
             //   `AsInitialized` requirements agree. It also has the same
             //   library safety invariants as its inner `T`, so their
-            //   `Safe` requirements agree. Thus `S(Unalign<T>, V) = S(T, V)`
-            //   for every `V`, and mutation preserving either pointer's
-            //   validity preserves the other's validity.
+            //   `Safe` requirements agree. For compound validity, `Validity`
+            //   defines `Unalign<T>` to inherit `T`'s logical fields, so the
+            //   requirements agree recursively. Thus `S(Unalign<T>, V) =
+            //   S(T, V)` for every `V`, and mutation preserving either
+            //   pointer's validity preserves the other's validity.
             let ptr = unsafe { self.project_transmute_unchecked::<_, _, CastSized>() };
             ptr.bikeshed_recall_aligned()
         }
@@ -939,16 +941,20 @@ mod _casts {
         #[inline(always)]
         pub fn project_tag<Client>(
             self,
-        ) -> Ptr<'a, <T as HasTag<Client>>::Tag, (Shared, I::Alignment, I::Validity)>
+        ) -> Ptr<
+            'a,
+            <T as HasTag<Client, I::Validity>>::Tag,
+            (Shared, I::Alignment, <T as HasTag<Client, I::Validity>>::TagValidity),
+        >
         where
-            T: HasTag<Client>,
+            T: HasTag<Client, I::Validity>,
             I::Aliasing: Reference,
         {
             let ptr = self.into_shared();
             // SAFETY: By invariant on `ProjectToTag`, it is sound to project
-            // `ptr` to a shared tag pointer with the same validity invariant.
+            // `ptr` to a shared tag pointer with `T::TagValidity`.
             let ptr = unsafe {
-                ptr.project_transmute_unchecked::<_, _, <T as HasTag<Client>>::ProjectToTag>()
+                ptr.project_transmute_unchecked::<_, _, <T as HasTag<Client, I::Validity>>::ProjectToTag>()
             };
             // SAFETY: By invariant on `ProjectToTag`, the projected pointer has
             // the same alignment as `self`.
@@ -1081,7 +1087,8 @@ mod _casts {
             //    requirements are also identical: every element must be safe
             //    for `T`. `Uninit` and `Initialized` constrain only the byte
             //    range. In each case, mutation through either pointer
-            //    preserves the other's validity.
+            //    preserves the other's validity. Compound validity admits
+            //    no array states, so `self` cannot have compound validity.
             //
             // [1] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#array-layout:
             //
@@ -1246,6 +1253,7 @@ mod _casts {
         /// guarantees that we possess the only reference.
         ///
         /// This is like [`UnsafeCell::get_mut`], but for `Ptr`.
+        /// The validity invariant is preserved, including compound validity.
         ///
         /// [`UnsafeCell::get_mut`]: core::cell::UnsafeCell::get_mut
         #[must_use]
@@ -1269,9 +1277,11 @@ mod _casts {
             //   exclusive access, `UnsafeCell<T>` has the same library safety
             //   requirements as its inner `T`, so `Safe` is preserved too.
             //   `Uninit` and `Initialized` constrain only the byte range.
-            //   These cases exhaust `I::Validity`, and each permits the same
-            //   states before and after the cast. Thus, mutation through
-            //   either pointer preserves the other's validity.
+            //   For compound validity, `Validity` explicitly gives
+            //   `UnsafeCell<T>` the requirements of `T`. These cases exhaust
+            //   `I::Validity`, and each permits the same states before and
+            //   after the cast. Thus, mutation through either pointer
+            //   preserves the other's validity.
             //
             // [1] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout:
             //
@@ -1330,7 +1340,8 @@ mod _project {
             //    Arrays are laid out so that the zero-based `nth` element of
             //    the array is offset from the start of the array by `n *
             //    size_of::<T>()` bytes. Thus, `elem` addresses a valid `T`
-            //    within the slice. `self` has validity `Uninit`, `Initialized`,
+            //    within the slice. Compound validity admits no slice states,
+            //    so `self` must have validity `Uninit`, `Initialized`,
             //    `AsInitialized`, or `Safe`. Respectively, each
             //    element may be uninitialized, is fully initialized, is
             //    initialized wherever `T` requires, or is safe for `T`.
@@ -1378,6 +1389,397 @@ mod tests {
     use crate::util::AsAddress;
     use crate::{pointer::BecauseImmutable, util::testutil::AU64, FromBytes, Immutable};
 
+    mod compound {
+        use super::*;
+        use crate::{
+            pointer::cast::CastSized,
+            project_clients::{ProjectDerive, TryFromBytesDerive},
+            util::testutil::ForceUnalign,
+            ReadOnly, Unalign, STRUCT_VARIANT_ID,
+        };
+
+        macro_rules! field {
+            ($ptr:expr, $index:tt) => {{
+                let ptr = $ptr;
+                ptr.project::<TryFromBytesDerive, _, STRUCT_VARIANT_ID, $index>().unwrap()
+            }};
+        }
+
+        #[test]
+        fn partially_initialized() {
+            let mut storage = MaybeUninit::<(bool, u64)>::uninit();
+            let inner = PtrInner::from_mut(&mut storage).project::<(bool, u64), CastSized>();
+            // SAFETY: `inner` addresses the live, exclusively borrowed storage
+            // for the tuple. This initializes only its first field; no tuple
+            // reference is created and neither padding nor field 1 is read.
+            let first = unsafe { core::ptr::addr_of_mut!((*inner.as_ptr()).0) };
+            // SAFETY: The projected field is aligned and exclusively borrowed.
+            unsafe { first.write(true) };
+            // SAFETY: `MaybeUninit<T>` has `T`'s size and alignment. The mutable
+            // borrow owns the whole allocation for the returned lifetime.
+            // Field 0 contains a valid bool; field 1 may remain uninitialized.
+            let mut ptr: Ptr<'_, (bool, u64), (Exclusive, Aligned, (Safe, Uninit))> =
+                unsafe { Ptr::from_inner(inner) };
+
+            assert!(*field!(ptr.reborrow(), 0).as_ref());
+            let _: Ptr<'_, (), (Shared, Aligned, Safe)> =
+                ptr.reborrow().project_tag::<crate::project_clients::TryFromBytesDerive>();
+
+            let second: Ptr<'_, u64, (Exclusive, Aligned, Uninit)> = field!(ptr.reborrow(), 1);
+            // SAFETY: The projected pointer is aligned and exclusively borrows
+            // field 1. Writing a u64 preserves its `Uninit` requirement.
+            unsafe { second.as_inner().as_ptr().write(42) };
+            // Check that accessing the other field did not disturb field 0.
+            assert!(*field!(ptr.reborrow(), 0).as_ref());
+            // SAFETY: Both fields are now initialized with valid values.
+            assert_eq!(unsafe { storage.assume_init() }, (true, 42));
+        }
+
+        #[test]
+        fn uninhabited_field() {
+            enum Never {}
+
+            let mut storage = MaybeUninit::<(u8, Never)>::uninit();
+            let inner = PtrInner::from_mut(&mut storage).project::<(u8, Never), CastSized>();
+            // SAFETY: This projects within the live tuple storage without
+            // creating a reference to its uninhabited field or to the tuple.
+            let first = unsafe { core::ptr::addr_of_mut!((*inner.as_ptr()).0) };
+            // SAFETY: The first field is aligned and exclusively borrowed.
+            unsafe { first.write(42) };
+            // SAFETY: Field 0 is `Safe`; `Uninit` does not require field 1 to
+            // be inhabited. The allocation stays live and exclusively borrowed.
+            let ptr: Ptr<'_, (u8, Never), (Exclusive, Aligned, (Safe, Uninit))> =
+                unsafe { Ptr::from_inner(inner) };
+            assert_eq!(*field!(ptr, 0).as_ref(), 42);
+        }
+
+        #[test]
+        fn nested_and_zero_sized() {
+            let value = ((true, 42u32), ());
+            // SAFETY: These ordinary tuples have no additional library safety
+            // invariants, and each component is `Safe` for its field.
+            let ptr = unsafe { Ptr::from_ref(&value).assume_validity::<((Safe, Safe), Safe)>() };
+            let unit: Ptr<'_, (), (Shared, Aligned, Safe)> = field!(ptr, 1);
+            assert_eq!(*unit.as_ref(), ());
+            let nested = field!(ptr, 0);
+            assert!(*field!(nested, 0).as_ref());
+            assert_eq!(*field!(nested, 1).as_ref(), 42);
+
+            // SAFETY: Unit has no fields, so it satisfies the empty compound
+            // validity. There are no bytes or library invariants to preserve.
+            let _: Ptr<'_, (), (Shared, Aligned, ())> =
+                unsafe { Ptr::from_ref(&()).assume_validity::<()>() };
+        }
+
+        #[test]
+        fn shared_interior_mutation() {
+            let value = (core::cell::Cell::new(1u32), core::cell::Cell::new(2u32));
+            // SAFETY: Each field is `Safe`. `Cell::set` preserves this state,
+            // so the compound and original shared-reference requirements agree.
+            let ptr = unsafe { Ptr::from_ref(&value).assume_validity::<(Safe, Safe)>() };
+            let first = field!(ptr, 0).as_ref();
+            let second = field!(ptr, 1).as_ref();
+            first.set(3);
+            second.set(4);
+            assert_eq!((value.0.get(), value.1.get()), (3, 4));
+        }
+
+        #[test]
+        fn exclusive_mutation() {
+            let mut value = (core::cell::UnsafeCell::new(1u32), 2u32);
+            // SAFETY: Both fields are `Safe`, and preserving their individual
+            // safety invariants preserves those of this ordinary tuple.
+            let mut ptr = unsafe { Ptr::from_mut(&mut value).assume_validity::<(Safe, Safe)>() };
+            *field!(ptr.reborrow(), 0).get_mut().as_mut() = 3;
+            *field!(ptr.reborrow(), 1).as_mut() = 4;
+            assert_eq!((*value.0.get_mut(), value.1), (3, 4));
+        }
+
+        #[test]
+        fn unsafe_cell_partially_initialized() {
+            use core::cell::UnsafeCell;
+
+            let mut storage = MaybeUninit::<UnsafeCell<(bool, u32)>>::uninit();
+            let inner = PtrInner::from_mut(&mut storage).project::<(bool, u32), CastSized>();
+            // SAFETY: This projects within the live tuple storage without
+            // creating a reference to the partially initialized tuple.
+            let first = unsafe { core::ptr::addr_of_mut!((*inner.as_ptr()).0) };
+            // SAFETY: The bool field is aligned and exclusively borrowed.
+            unsafe { first.write(true) };
+            let inner = inner.project::<UnsafeCell<(bool, u32)>, CastSized>();
+            // SAFETY: UnsafeCell inherits the tuple's compound validity and
+            // layout. Field 0 is safe, field 1 may remain uninitialized, and
+            // the storage is live and exclusively borrowed.
+            let mut ptr: Ptr<'_, UnsafeCell<(bool, u32)>, (Exclusive, Aligned, (Safe, Uninit))> =
+                unsafe { Ptr::from_inner(inner) };
+
+            let mut tuple: Ptr<'_, (bool, u32), (Exclusive, Aligned, (Safe, Uninit))> =
+                ptr.reborrow().get_mut();
+            assert!(*field!(tuple.reborrow(), 0).as_ref());
+            *field!(tuple.reborrow(), 0).as_mut() = false;
+            let second: Ptr<'_, u32, (Exclusive, Aligned, Uninit)> = field!(tuple, 1);
+            // SAFETY: The field is aligned and exclusively borrowed. Writing
+            // a u32 preserves its Uninit requirement.
+            unsafe { second.as_inner().as_ptr().write(42) };
+            assert!(!*field!(ptr.get_mut(), 0).as_ref());
+            // SAFETY: Both fields now contain safe values.
+            assert_eq!(unsafe { storage.assume_init() }.into_inner(), (false, 42));
+        }
+
+        #[test]
+        fn unsafe_cell_nested() {
+            use core::cell::UnsafeCell;
+
+            let mut value = UnsafeCell::new((UnsafeCell::new((true, 42u32)), UnsafeCell::new(())));
+            // SAFETY: UnsafeCell contributes no compound-validity level.
+            // Each nonempty field is safe; unit satisfies empty compound
+            // validity. Preserving these states preserves the original
+            // value's safety, and the borrow is exclusive.
+            let ptr = unsafe { Ptr::from_mut(&mut value).assume_validity::<((Safe, Safe), ())>() };
+            let mut tuple = ptr.get_mut();
+            let mut nested: Ptr<'_, (bool, u32), (Exclusive, Aligned, (Safe, Safe))> =
+                field!(tuple.reborrow(), 0).get_mut();
+            *field!(nested.reborrow(), 0).as_mut() = false;
+            *field!(nested, 1).as_mut() = 43;
+            let _: Ptr<'_, (), (Exclusive, Aligned, ())> = field!(tuple, 1).get_mut();
+            let value = value.into_inner();
+            assert_eq!(value.0.into_inner(), (false, 43));
+        }
+
+        #[test]
+        fn unsafe_cell_unaligned() {
+            use core::cell::UnsafeCell;
+
+            let mut value =
+                ForceUnalign::<_, AU64>::new(Unalign::new(UnsafeCell::new((true, 42u32))));
+            let inner =
+                PtrInner::from_mut(&mut value.t).project::<UnsafeCell<(bool, u32)>, CastSized>();
+            // SAFETY: Unalign preserves the inner byte range, and UnsafeCell
+            // inherits the tuple's compound validity. Both fields are safe;
+            // preserving their safety preserves the original value's. The
+            // storage is exclusively borrowed, and alignment is not assumed.
+            let ptr: Ptr<'_, UnsafeCell<(bool, u32)>, (Exclusive, Unaligned, (Safe, Safe))> =
+                unsafe { Ptr::from_inner(inner) };
+            let ptr: Ptr<'_, (bool, u32), (Exclusive, Unaligned, (Safe, Safe))> = ptr.get_mut();
+            let mut ptr = ptr.into_unalign();
+            assert!(field!(ptr.reborrow(), 0).as_ref().get());
+            field!(ptr, 1).as_mut().set(43);
+            assert_eq!(value.t.into_inner().into_inner(), (true, 43));
+        }
+
+        #[test]
+        fn arity_boundaries() {
+            // SAFETY: The sole field of this tuple is `Safe`.
+            let ptr = unsafe { Ptr::from_ref(&(42u8,)).assume_validity::<(Safe,)>() };
+            assert_eq!(*field!(ptr, 0).as_ref(), 42);
+
+            let value = (
+                0u8, 1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8, 9u8, 10u8, 11u8, 12u8, 13u8, 14u8,
+                15u8, 16u8, 17u8, 18u8, 19u8, 20u8, 21u8, 22u8, 23u8, 24u8, 25u8,
+            );
+            // SAFETY: Every field is `Safe`, in declaration order, and these
+            // shared pointers permit no mutation of the u8 fields.
+            let ptr = unsafe {
+                Ptr::from_ref(&value).assume_validity::<(
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                    Safe,
+                )>()
+            };
+            assert_eq!(*field!(ptr, 0).as_ref(), 0);
+            assert_eq!(*field!(ptr, 12).as_ref(), 12);
+            assert_eq!(*field!(ptr, 25).as_ref(), 25);
+        }
+
+        #[test]
+        fn unaligned() {
+            #[repr(C, align(16))]
+            struct Storage {
+                pad: u8,
+                value: crate::Unalign<(bool, u32)>,
+            }
+            let storage = Storage { pad: 0, value: crate::Unalign::new((true, 42)) };
+            let inner = PtrInner::from_ref(&storage.value).project::<(bool, u32), CastSized>();
+            // SAFETY: `Unalign` has the same size and bit validity as its inner
+            // tuple. Both fields are `Safe`; the shared borrow stays live and
+            // no interior mutation is possible. Alignment is not assumed.
+            let ptr: Ptr<'_, (bool, u32), (Shared, Unaligned, (Safe, Safe))> =
+                unsafe { Ptr::from_inner(inner) };
+            assert!(field!(ptr, 0).read::<BecauseImmutable>());
+            assert_eq!(field!(ptr, 1).read::<BecauseImmutable>(), 42);
+        }
+
+        #[test]
+        fn unalign_partially_initialized() {
+            let mut storage =
+                ForceUnalign::<_, AU64>::new(MaybeUninit::<Unalign<(bool, u32)>>::uninit());
+            let inner = PtrInner::from_mut(&mut storage.t).project::<(bool, u32), CastSized>();
+            // SAFETY: The pointer addresses the exclusively borrowed storage
+            // for the tuple. Projecting its bool field stays within that
+            // storage and does not create a reference to the tuple.
+            let first = unsafe { core::ptr::addr_of_mut!((*inner.as_ptr()).0) };
+            // SAFETY: The bool field is exclusively borrowed and has
+            // alignment 1. This write initializes only that field.
+            unsafe { first.write(true) };
+            // SAFETY: Field 0 is a safe bool, and field 1 may remain
+            // uninitialized. The storage is live and exclusively borrowed;
+            // no alignment of the tuple is assumed.
+            let ptr: Ptr<'_, (bool, u32), (Exclusive, Unaligned, (Safe, Uninit))> =
+                unsafe { Ptr::from_inner(inner) };
+            let mut ptr: Ptr<'_, Unalign<(bool, u32)>, (Exclusive, Aligned, (Safe, Uninit))> =
+                ptr.into_unalign();
+
+            let tag: Ptr<'_, Unalign<()>, (Shared, Aligned, Safe)> =
+                ptr.reborrow().project_tag::<TryFromBytesDerive>();
+            assert_eq!(tag.as_ref().get(), ());
+            let first: Ptr<'_, Unalign<bool>, (Exclusive, Aligned, Safe)> =
+                field!(ptr.reborrow(), 0);
+            assert!(first.as_ref().get());
+            field!(ptr.reborrow(), 0).as_mut().set(false);
+
+            let second: Ptr<'_, Unalign<u32>, (Exclusive, Aligned, Uninit)> =
+                field!(ptr.reborrow(), 1);
+            // SAFETY: The projected pointer exclusively borrows field 1,
+            // wrapped in an alignment-1 type. Writing it preserves `Uninit`.
+            unsafe { second.as_inner().as_ptr().write(Unalign::new(42)) };
+            assert!(!field!(ptr, 0).as_ref().get());
+            // SAFETY: Both fields now contain safe values.
+            assert_eq!(unsafe { storage.t.assume_init() }.into_inner(), (false, 42));
+        }
+
+        #[test]
+        fn read_only_partially_initialized() {
+            let mut storage = MaybeUninit::<ReadOnly<(bool, u32)>>::uninit();
+            let inner = PtrInner::from_mut(&mut storage).project::<(bool, u32), CastSized>();
+            // SAFETY: This projects the bool within the live tuple storage
+            // without creating a reference to the uninitialized tuple.
+            let first = unsafe { core::ptr::addr_of_mut!((*inner.as_ptr()).0) };
+            // SAFETY: The bool field is aligned and exclusively borrowed.
+            unsafe { first.write(true) };
+            let inner = inner.project::<ReadOnly<(bool, u32)>, CastSized>();
+            // SAFETY: ReadOnly inherits the tuple's compound validity and
+            // layout. Field 0 is safe, field 1 may remain uninitialized, and
+            // the storage is exclusively borrowed.
+            let mut ptr: Ptr<'_, ReadOnly<(bool, u32)>, (Exclusive, Aligned, (Safe, Uninit))> =
+                unsafe { Ptr::from_inner(inner) };
+
+            let tag: Ptr<'_, (), (Shared, Aligned, Safe)> =
+                ptr.reborrow().project_tag::<TryFromBytesDerive>();
+            assert_eq!(*tag.as_ref(), ());
+            let first: Ptr<'_, ReadOnly<bool>, (Exclusive, Aligned, Safe)> =
+                field!(ptr.reborrow(), 0);
+            assert!(**first.as_ref());
+            let second: Ptr<'_, ReadOnly<u32>, (Exclusive, Aligned, Uninit)> = field!(ptr, 1);
+            // SAFETY: The projected field is aligned and exclusively
+            // borrowed. Writing a safe value preserves `Uninit`.
+            unsafe { second.as_inner().as_ptr().write(ReadOnly::new(42)) };
+            // SAFETY: Both fields now contain safe values.
+            assert_eq!(ReadOnly::into_inner(unsafe { storage.assume_init() }), (true, 42));
+        }
+
+        #[test]
+        fn nested_wrappers() {
+            let value = ReadOnly::new(Unalign::new(((true, 42u32), ())));
+            // SAFETY: Wrappers add no validity level. The inner tuple's
+            // fields are safe, and unit satisfies the empty compound state.
+            // Shared access through ReadOnly prevents mutation.
+            let ptr = unsafe { Ptr::from_ref(&value).assume_validity::<((Safe, Safe), ())>() };
+            // Exercise both wrapper orders, including repeated Unalign.
+            let ptr = ptr.into_unalign();
+            let nested: Ptr<
+                '_,
+                Unalign<ReadOnly<Unalign<(bool, u32)>>>,
+                (Shared, Aligned, (Safe, Safe)),
+            > = field!(ptr, 0);
+            assert!(field!(nested, 0).as_ref().get().get());
+            assert_eq!(field!(nested, 1).as_ref().get().get(), 42);
+            let _: Ptr<'_, Unalign<ReadOnly<Unalign<()>>>, (Shared, Aligned, ())> = field!(ptr, 1);
+        }
+
+        #[test]
+        fn read_only_exclusive_mutation() {
+            let mut value = ReadOnly::new((core::cell::Cell::new(1u32), 2u32));
+            // SAFETY: Both logical fields are safe. Preserving their safety
+            // preserves the tuple's; exclusive access permits mutation
+            // through ReadOnly.
+            let mut ptr = unsafe { Ptr::from_mut(&mut value).assume_validity::<(Safe, Safe)>() };
+            let cell: &mut core::cell::Cell<u32> = field!(ptr.reborrow(), 0).as_mut().as_mut();
+            cell.set(3);
+            **field!(ptr, 1).as_mut() = 4;
+            let value = ReadOnly::into_inner(value);
+            assert_eq!((value.0.get(), value.1), (3, 4));
+        }
+
+        #[test]
+        fn unalign_shared_interior_mutation() {
+            let value = Unalign::new((core::cell::Cell::new(1u8), core::cell::Cell::new(2u8)));
+            // SAFETY: Both logical fields are safe. Cell::set preserves
+            // their validity, and Unalign preserves their UnsafeCell ranges.
+            let ptr = unsafe { Ptr::from_ref(&value).assume_validity::<(Safe, Safe)>() };
+            let first = field!(ptr, 0).as_ref().try_deref().unwrap();
+            let second = field!(ptr, 1).as_ref().try_deref().unwrap();
+            first.set(3);
+            second.set(4);
+            let value = value.into_inner();
+            assert_eq!((value.0.get(), value.1.get()), (3, 4));
+        }
+
+        #[test]
+        fn unalign_enum_projection() {
+            #[allow(dead_code)]
+            #[derive(zerocopy_derive::Project)]
+            #[repr(u16)]
+            enum Enum {
+                A(u32),
+                B(u32),
+            }
+
+            let mut value = ForceUnalign::<_, AU64>::new(Unalign::new(Enum::A(42)));
+            let mut ptr = Ptr::from_mut(&mut value.t);
+            let field: Ptr<'_, Unalign<u32>, (Exclusive, Aligned, Safe)> =
+                ptr.reborrow().project::<ProjectDerive, _, { crate::ident_id!(A) }, 0>().unwrap();
+            assert_eq!(field.as_ref().get(), 42);
+            ptr.reborrow().project::<ProjectDerive, _, { crate::ident_id!(B) }, 0>().unwrap_err();
+            ptr.project::<ProjectDerive, _, { crate::ident_id!(A) }, 0>().unwrap().as_mut().set(43);
+            assert!(matches!(value.t.into_inner(), Enum::A(43)));
+
+            let mut storage = MaybeUninit::<Unalign<Enum>>::uninit();
+            let inner = PtrInner::from_mut(&mut storage).project::<Unalign<Enum>, CastSized>();
+            // SAFETY: The live storage is exclusively borrowed and has the
+            // wrapper's size and alignment. Uninit permits all its bytes to
+            // remain uninitialized, including the enum tag.
+            let mut ptr: Ptr<'_, Unalign<Enum>, (Exclusive, Aligned, Uninit)> =
+                unsafe { Ptr::from_inner(inner) };
+            let _: Ptr<'_, Unalign<_>, (Shared, Aligned, Uninit)> =
+                ptr.reborrow().project_tag::<ProjectDerive>();
+            let _: Ptr<'_, Unalign<u32>, (Exclusive, Aligned, Uninit)> =
+                ptr.project::<ProjectDerive, _, { crate::ident_id!(A) }, 0>().unwrap();
+        }
+    }
+
     #[test]
     fn test_project_tag_uninhabited() {
         use crate::{pointer::cast::CastSized, project_clients::ProjectDerive};
@@ -1412,6 +1814,16 @@ mod tests {
         // AsInitialized. Reading it as u8 permits the invalid discriminant
         // 0xFF and requires alignment one. The shared pointer permits reading.
         assert_eq!(unsafe { tag.as_inner().as_ptr().cast::<u8>().read() }, 0xFF);
+        let _: Ptr<'_, crate::Unalign<_>, (Shared, Aligned, AsInitialized)> =
+            ptr.into_unalign().project_tag::<ProjectDerive>();
+
+        let inner = PtrInner::from_mut(&mut storage).project::<crate::ReadOnly<Enum>, CastSized>();
+        // SAFETY: ReadOnly preserves Enum's layout and uninhabitedness. All
+        // bytes remain initialized, satisfying AsInitialized. The storage is
+        // live, aligned and exclusively borrowed.
+        let ptr: Ptr<'_, crate::ReadOnly<Enum>, (Exclusive, Aligned, AsInitialized)> =
+            unsafe { Ptr::from_inner(inner) };
+        let _: Ptr<'_, _, (Shared, Aligned, AsInitialized)> = ptr.project_tag::<ProjectDerive>();
     }
 
     #[test]
@@ -1429,6 +1841,63 @@ mod tests {
             <Enum as crate::HasTag<crate::project_clients::ProjectDerive>>::Tag,
             (Shared, Aligned, Safe),
         > = Ptr::from_mut(&mut value).project_tag::<crate::project_clients::ProjectDerive>();
+    }
+
+    #[test]
+    fn test_project_tag_unit_from_uninit() {
+        use crate::{pointer::cast::CastSized, project_clients::ProjectDerive};
+
+        fn check<T: crate::HasTag<ProjectDerive, Uninit, Tag = (), TagValidity = Safe>>() {
+            let mut storage = MaybeUninit::<T>::uninit();
+            let inner = PtrInner::from_mut(&mut storage).project::<T, CastSized>();
+            // SAFETY: `MaybeUninit<T>` has `T`'s size and alignment, and the
+            // mutable borrow owns the storage. `Uninit` permits all its bytes
+            // to remain uninitialized.
+            let ptr: Ptr<'_, T, (Exclusive, Aligned, Uninit)> = unsafe { Ptr::from_inner(inner) };
+            let tag: Ptr<'_, (), (Shared, Aligned, Safe)> = ptr.project_tag::<ProjectDerive>();
+            assert_eq!(*tag.as_ref(), ());
+        }
+
+        #[allow(dead_code)]
+        #[derive(zerocopy_derive::Project)]
+        struct Struct {
+            flag: bool,
+            value: u32,
+        }
+
+        check::<Struct>();
+        check::<(bool, u32)>();
+        check::<core::mem::ManuallyDrop<bool>>();
+    }
+
+    #[test]
+    fn test_project_tag_read_only() {
+        use crate::{pointer::cast::CastSized, project_clients::ProjectDerive, ReadOnly};
+
+        #[allow(dead_code)]
+        #[derive(zerocopy_derive::Project)]
+        #[repr(u8)]
+        enum Enum {
+            Unused,
+            Variant(u8),
+        }
+
+        let value = ReadOnly::new(Enum::Variant(42));
+        let ptr = Ptr::from_ref(&value);
+        let tag: Ptr<'_, _, (Shared, Aligned, Safe)> = ptr.project_tag::<ProjectDerive>();
+        let expected = Ptr::from_ref(&Enum::Variant(0))
+            .project_tag::<ProjectDerive>()
+            .read::<BecauseImmutable>();
+        assert!(tag.read::<BecauseImmutable>() == expected);
+
+        let mut storage = MaybeUninit::<ReadOnly<Enum>>::uninit();
+        let inner = PtrInner::from_mut(&mut storage).project::<ReadOnly<Enum>, CastSized>();
+        // SAFETY: The live, exclusively borrowed storage has the wrapper's
+        // size and alignment. Its bytes may remain uninitialized.
+        let ptr: Ptr<'_, ReadOnly<Enum>, (Exclusive, Aligned, Uninit)> =
+            unsafe { Ptr::from_inner(inner) };
+        // The tag is projected without reading the uninitialized discriminant.
+        let _: Ptr<'_, _, (Shared, Aligned, Uninit)> = ptr.project_tag::<ProjectDerive>();
     }
 
     mod test_ptr_try_cast_into_soundness {

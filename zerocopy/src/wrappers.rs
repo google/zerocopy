@@ -100,7 +100,7 @@ use crate::pointer::{invariant::Safe, SizeEq, TransmuteFrom};
 ///
 /// `Unalign<T>` is guaranteed to have the same size and bit validity as `T`,
 /// and to have [`UnsafeCell`]s covering the same byte ranges as `T`.
-/// `Unalign<T>` is guaranteed to have alignment 1.
+/// It has the same library safety invariants as `T` and alignment 1.
 // NOTE: This type is sound to use with types that need to be dropped. The
 // reason is that the compiler-generated drop code automatically moves all
 // values to aligned memory slots before dropping them in-place. This is not
@@ -113,7 +113,7 @@ use crate::pointer::{invariant::Safe, SizeEq, TransmuteFrom};
 // [3] https://github.com/google/zerocopy/issues/209
 #[allow(missing_debug_implementations)]
 #[derive(Default, Copy)]
-#[cfg_attr(any(feature = "derive", test), derive(Immutable, FromBytes, IntoBytes, Unaligned))]
+#[cfg_attr(any(feature = "derive", test), derive(Immutable, IntoBytes, Unaligned))]
 #[repr(C, packed)]
 pub struct Unalign<T>(T);
 
@@ -122,41 +122,141 @@ pub struct Unalign<T>(T);
 // `KnownLayout` impl bounded on `T: KnownLayout.` This is overly restrictive.
 impl_known_layout!(T => Unalign<T>);
 
-// FIXME(https://github.com/rust-lang/rust-clippy/issues/16087): Move these
-// attributes below the comment once this Clippy bug is fixed.
-#[cfg_attr(
-    all(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS, any(feature = "derive", test)),
-    expect(unused_unsafe)
-)]
-#[cfg_attr(
-    all(
-        not(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
-        any(feature = "derive", test)
-    ),
-    allow(unused_unsafe)
-)]
 // SAFETY:
 // - `Unalign<T>` promises to have alignment 1, and so we don't require that `T:
 //   Unaligned`.
-// - `Unalign<T>` has the same bit validity as `T`, and so it is `FromZeros`,
-//   `FromBytes`, or `IntoBytes` exactly when `T` is as well.
-// - `Immutable`: `Unalign<T>` has the same fields as `T`, so it permits interior
-//   mutation exactly when `T` does.
-// - `TryFromBytes`: `Unalign<T>` has the same the same bit validity as `T`, so
-//   `T::is_safe` is a sound implementation of `is_safe`.
+// - `Unalign<T>` preserves `T`'s byte range, bit validity and library safety
+//   invariants. Thus, zeroed or arbitrary initialized bytes are safe for the
+//   wrapper whenever they are safe for `T`, establishing `FromZeros` and
+//   `FromBytes`. Its bytes, including padding, are initialized whenever `T`'s
+//   are, establishing `IntoBytes`.
+// - `Immutable`: `Unalign<T>` has `UnsafeCell`s covering the same byte ranges
+//   as `T`, so it permits interior mutation exactly when `T` does.
+// - `TryFromBytes`: The candidate cast preserves the byte range and its
+//   `Initialized` validity. Both candidate types are wrapped in `ReadOnly`,
+//   so the cast's `BecauseImmutable` bound excludes mutation. The cast
+//   conservatively supplies `Unaligned` to `T::is_safe`. If that validator
+//   returns true, the bytes satisfy `T`'s bit validity and library safety
+//   invariants, which are also those of `Unalign<T>`. If it returns false or
+//   panics, no referent is moved or dropped and no validity is strengthened.
 //
+// `FromBytes` and its supertraits are implemented manually in all
+// configurations: their derives would generate projections of the wrapper's
+// physical field, whereas `Unalign` forwards projections through `T`.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
     impl_or_verify!(T => Unaligned for Unalign<T>);
     impl_or_verify!(T: Immutable => Immutable for Unalign<T>);
-    impl_or_verify!(
+    unsafe_impl!(
         T: TryFromBytes => TryFromBytes for Unalign<T>;
         |c| T::is_safe(c.transmute::<_, _, BecauseImmutable>())
     );
-    impl_or_verify!(T: FromZeros => FromZeros for Unalign<T>);
-    impl_or_verify!(T: FromBytes => FromBytes for Unalign<T>);
+    unsafe_impl!(T: FromZeros => FromZeros for Unalign<T>);
+    unsafe_impl!(T: FromBytes => FromBytes for Unalign<T>);
     impl_or_verify!(T: IntoBytes => IntoBytes for Unalign<T>);
 };
+
+// SAFETY: See the safety comment on `ProjectToTag`.
+unsafe impl<T: HasTag<Client, V>, Client, V: invariant::Validity> HasTag<Client, V> for Unalign<T> {
+    #[inline]
+    fn only_derive_is_allowed_to_implement_this_trait() {}
+
+    type Tag = Unalign<T::Tag>;
+    type TagValidity = T::TagValidity;
+
+    // SAFETY: `Unalign<T>` occupies the same bytes as `T`, with the same
+    // `UnsafeCell` coverage and library safety invariants. Simple validity
+    // therefore agrees, and compound validity agrees by `Validity`'s explicit
+    // wrapper rule. The initial cast preserves shared aliasing and validity,
+    // while supplying only `Unaligned` for `T`. Its tag projection then
+    // supplies a shared, unaligned tag with `T::TagValidity`. Wrapping that
+    // tag preserves its byte range and validity by the same argument. The
+    // wrapped tag is `Immutable` because `T::Tag` is, and has alignment 1,
+    // satisfying either source alignment invariant. These equal validity
+    // requirements are preserved by any permitted mutation of the source.
+    type ProjectToTag = crate::pointer::cast::TransitiveProject<
+        T,
+        crate::pointer::cast::CastSized,
+        crate::pointer::cast::TransitiveProject<
+            T::Tag,
+            T::ProjectToTag,
+            crate::pointer::cast::CastSized,
+        >,
+    >;
+}
+
+// SAFETY: `HasField` defines `Unalign<T>`'s fields to be the projections of
+// `T`, wrapped in `Unalign`. The identifiers and visibility are inherited
+// through the bound on `T`. Both casts preserve address, byte range, and
+// provenance; the intervening field projection preserves provenance and
+// selects a subset of the source bytes by `T: HasField`.
+unsafe impl<T, Client, Field, const VARIANT_ID: i128, const FIELD_ID: i128>
+    HasField<Client, Field, VARIANT_ID, FIELD_ID> for Unalign<T>
+where
+    T: HasField<Client, Field, VARIANT_ID, FIELD_ID>,
+    T::Type: Sized,
+{
+    #[inline]
+    fn only_derive_is_allowed_to_implement_this_trait() {}
+
+    type Type = Unalign<T::Type>;
+
+    #[inline(always)]
+    fn project(slf: PtrInner<'_, Self>) -> *mut Self::Type {
+        use crate::pointer::cast::{CastSized, Projection};
+
+        slf.project::<T, CastSized>()
+            .project::<_, Projection<Client, Field, VARIANT_ID, FIELD_ID>>()
+            .project::<_, CastSized>()
+            .as_ptr()
+    }
+}
+
+// SAFETY: The wrapper preserves the inner type's byte range, `UnsafeCell`
+// coverage, and validity requirements, including compound validity. Treating
+// the source as an unaligned `T` therefore preserves aliasing and validity.
+// The delegated tag check establishes the precondition of `T: ProjectField`,
+// which supplies the field's aliasing and validity, including preservation
+// under mutation. Wrapping that field preserves both, and alignment 1 makes
+// the resulting pointer `Aligned` regardless of the inner field's alignment.
+unsafe impl<T, Client, Field, I, const VARIANT_ID: i128, const FIELD_ID: i128>
+    ProjectField<Client, Field, I, VARIANT_ID, FIELD_ID> for Unalign<T>
+where
+    I: invariant::Invariants,
+    T: ProjectField<
+        Client,
+        Field,
+        (I::Aliasing, invariant::Unaligned, I::Validity),
+        VARIANT_ID,
+        FIELD_ID,
+    >,
+    T::Type: Sized,
+{
+    #[inline]
+    fn only_derive_is_allowed_to_implement_this_trait() {}
+
+    type Invariants =
+        (I::Aliasing, invariant::Aligned, <T::Invariants as invariant::Invariants>::Validity);
+
+    type Error = T::Error;
+
+    #[inline(always)]
+    fn is_projectable<'a>(
+        ptr: Ptr<
+            'a,
+            <Self as HasTag<Client, I::Validity>>::Tag,
+            (invariant::Shared, I::Alignment, <Self as HasTag<Client, I::Validity>>::TagValidity),
+        >,
+    ) -> Result<(), Self::Error> {
+        // SAFETY: Removing `Unalign` preserves the tag's byte range and
+        // validity. Both tag types are `Immutable`, so shared access permits
+        // no mutation. The cast returns an `Unaligned` pointer as required by
+        // the underlying projection; it does not assume the tag is aligned.
+        let ptr =
+            unsafe { ptr.project_transmute_unchecked::<_, _, crate::pointer::cast::CastSized>() };
+        T::is_projectable(ptr)
+    }
+}
 
 // Note that `Unalign: Clone` only if `T: Copy`. Since the inner `T` may not be
 // aligned, there's no way to safely call `T::clone`, and so a `T: Clone` bound
@@ -714,12 +814,17 @@ const _: () = {
     }
 };
 
-// SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
-// it has the same bit validity as `T`.
+// SAFETY: `ReadOnly<T>` has only its `T` field, with the same layout and bit
+// validity. Its value must satisfy `T`'s library safety invariants, since safe
+// exclusive access exposes that field. Conversely, exclusive access permits
+// any mutation preserving those invariants. The wrapper's additional invariant
+// forbids mutation through shared access; it does not constrain the value.
+// `TransmuteFrom` establishes only validity, leaving that access restriction
+// to the pointer conversion's separate aliasing proof.
 unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe> for ReadOnly<T> {}
 
-// SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
-// it has the same bit validity as `T`.
+// SAFETY: The preceding argument establishes equal validity requirements in
+// both directions.
 unsafe impl<T: ?Sized> TransmuteFrom<ReadOnly<T>, Safe, Safe> for T {}
 
 impl<T: Default> Default for ReadOnly<T> {
@@ -840,7 +945,9 @@ macro_rules! impl_read_only_fmt {
 impl_read_only_fmt!(Debug, Display, Binary, Octal, LowerHex, UpperHex, LowerExp, UpperExp);
 
 // SAFETY: See safety comment on `ProjectToTag`.
-unsafe impl<T: HasTag<Client> + ?Sized, Client> HasTag<Client> for ReadOnly<T> {
+unsafe impl<T: HasTag<Client, V> + ?Sized, Client, V: invariant::Validity> HasTag<Client, V>
+    for ReadOnly<T>
+{
     #[allow(clippy::missing_inline_in_public_items)]
     fn only_derive_is_allowed_to_implement_this_trait()
     where
@@ -848,44 +955,29 @@ unsafe impl<T: HasTag<Client> + ?Sized, Client> HasTag<Client> for ReadOnly<T> {
     {
     }
 
-    type Tag = <T as HasTag<Client>>::Tag;
+    type Tag = <T as HasTag<Client, V>>::Tag;
+    type TagValidity = <T as HasTag<Client, V>>::TagValidity;
 
-    // SAFETY: `<T as SizeEq<ReadOnly<T>>>::CastFrom` is a no-op projection that
-    // produces a pointer with the same referent. By invariant, for any
-    // `Ptr<'_, T, I>` it is sound to use
-    // `<T as HasTag<Client>>::ProjectToTag` to project to a
-    // shared `Ptr<'_, <T as HasTag<Client>>::Tag,
-    // (_, I::Alignment, I::Validity)>`. Since `ReadOnly<T>` has the same
-    // layout and validity as `T`, the same is true of projecting from a
-    // `Ptr<'_, ReadOnly<T>, I>`.
+    // SAFETY: `ReadOnly<T>` has the same layout as `T`. Simple validity has
+    // the same initialization and bit-validity requirements; `Safe` also
+    // retains `T`'s library safety invariants. Compound validity is inherited
+    // from `T` by `Validity`'s explicit wrapper rule. Shared access through
+    // the wrapper prohibits mutation, so the no-op `CastFrom` preserves
+    // alignment, shared aliasing, and `V` for the inner `T`. Its tag-projection
+    // guarantee supplies `Tag` and `TagValidity`. The tag is `Immutable`, so
+    // projecting it does not grant mutation of the shared `ReadOnly` source.
     type ProjectToTag = crate::pointer::cast::TransitiveProject<
         T,
         <T as SizeEq<ReadOnly<T>>>::CastFrom,
-        <T as HasTag<Client>>::ProjectToTag,
+        <T as HasTag<Client, V>>::ProjectToTag,
     >;
 }
 
-// SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
-// has the same fields at the same offsets. Thus, it satisfies the safety
-// invariants of `HasField<Client, Field, VARIANT_ID, FIELD_ID>` for field `f`
-// exactly when `T` does, as guaranteed by the `T: HasField` bound:
-// - If `VARIANT_ID` is `STRUCT_VARIANT_ID`, `UNION_VARIANT_ID`, or
-//   `REPR_C_UNION_VARIANT_ID`, then `T` has the layout of a struct, non-C union,
-//   or C union type respectively. Since `ReadOnly<T>` is a transparent wrapper
-//   around `T`, it does too. Otherwise, `VARIANT_ID` is the identifier ID of an
-//   enum variant; `T` has the layout of an enum type, and `ReadOnly<T>` does too.
-// - By `T: HasField<_, _, _, FIELD_ID>`:
-//   - `T` has a field `f` with name `n` such that
-//     `FIELD_ID = zerocopy::ident_id!(n)` or at index `i` such that
-//     `FIELD_ID = zerocopy::ident_id!(i)`.
-//   - `Field` has the same visibility as `f`.
-//   - `T::Type` has the same type as `f`. Thus, `ReadOnly<T::Type>` has the
-//     same type as `f`, wrapped in `ReadOnly`.
-//
-// `project` satisfies its post-condition – namely, that the returned pointer
-// refers to a non-strict subset of the bytes of `slf`'s referent, and has the
-// same provenance as `slf` – because all intermediate operations satisfy those
-// same conditions.
+// SAFETY: `HasField` defines `ReadOnly<T>`'s fields to be the projections of
+// `T`, wrapped in `ReadOnly`. The identifiers and visibility are inherited
+// through the bound on `T`. Both casts preserve address, metadata, byte range,
+// and provenance; the intervening field projection preserves provenance and
+// selects a subset of the source bytes by `T: HasField`.
 unsafe impl<T, Client, Field, const VARIANT_ID: i128, const FIELD_ID: i128>
     HasField<Client, Field, VARIANT_ID, FIELD_ID> for ReadOnly<T>
 where
@@ -910,10 +1002,15 @@ where
     }
 }
 
-// SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
-// has the same fields at the same offsets. `is_projectable` simply delegates to
-// `T::is_projectable`, which is sound because a `Ptr<'_, ReadOnly<T>, I>` will
-// be projectable exactly when a `Ptr<'_, T, I>` referent is.
+// SAFETY: `ReadOnly<T>` has the same layout as `T`. Simple validity preserves
+// the inner type's initialization, bit validity, and library safety
+// requirements; compound validity is inherited from `T` by `Validity`'s
+// wrapper rule. The tag check is delegated unchanged, so `T: ProjectField`
+// supplies the projected field's alignment, aliasing, and validity. Wrapping
+// that field preserves alignment and validity and prevents shared mutation,
+// retaining the source wrapper's restriction. Exclusive mutation is allowed
+// and preserves source validity by `T`'s projection guarantee. This reasoning
+// applies recursively when either validity is compound.
 unsafe impl<T, Client, Field, I, const VARIANT_ID: i128, const FIELD_ID: i128>
     ProjectField<Client, Field, I, VARIANT_ID, FIELD_ID> for ReadOnly<T>
 where
@@ -933,7 +1030,11 @@ where
 
     #[inline(always)]
     fn is_projectable<'a>(
-        ptr: Ptr<'a, <Self as HasTag<Client>>::Tag, (invariant::Shared, I::Alignment, I::Validity)>,
+        ptr: Ptr<
+            'a,
+            <Self as HasTag<Client, I::Validity>>::Tag,
+            (invariant::Shared, I::Alignment, <Self as HasTag<Client, I::Validity>>::TagValidity),
+        >,
     ) -> Result<(), Self::Error> {
         <T as ProjectField<Client, Field, I, VARIANT_ID, FIELD_ID>>::is_projectable(ptr)
     }

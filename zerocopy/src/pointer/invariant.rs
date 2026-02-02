@@ -58,13 +58,39 @@ pub trait Alignment: Sealed {
 /// In this section, we will use `Ptr<T, V>` as a shorthand for `Ptr<T, I:
 /// Invariants<Validity = V>>` for brevity.
 ///
-/// Each `V: Validity` defines a set of bit values which may appear in the
-/// referent of a `Ptr<T, V>`, denoted `S(T, V)`. Each `V: Validity`, in its
-/// documentation, provides a definition of `S(T, V)` which must be valid for
-/// all `T: ?Sized`. Any `V: Validity` must guarantee that this set is only a
-/// function of the *bit validity* of the referent type, `T`, and not of any
-/// other property of `T`. As a consequence, given `V: Validity`, `T`, and `U`
-/// where `T` and `U` have the same bit validity, `S(T, V) = S(U, V)`.
+/// Each `V: Validity` defines a set of allowed referent states, denoted
+/// `S(T, V)`, for every `T: ?Sized` and its pointer metadata. A state includes
+/// initialization and any library safety invariants required by `V`, not just
+/// the values of initialized bytes. `KIND` must describe exactly this set,
+/// according to the definitions on [`ValidityKind`].
+///
+/// A compound validity is a tuple of validity types, one for each logical
+/// field of a struct or tuple in declaration order. The field's state must
+/// satisfy the corresponding validity; padding outside the fields is
+/// unconstrained. These requirements apply recursively to compound components.
+/// They do not require the containing type's library safety invariants to
+/// hold. For other referent types, or a different number of fields, the set of
+/// allowed states is empty. In particular, compound validity does not describe
+/// enum or union variants.
+///
+/// The logical fields of a struct or tuple are its declared fields, except
+/// that [`Unalign<T>`][crate::Unalign], [`ReadOnly<T>`][crate::ReadOnly], and
+/// [`UnsafeCell<T>`][core::cell::UnsafeCell] inherit the logical fields of `T`.
+/// These wrappers contribute no additional level to compound validity:
+/// `S(Unalign<T>, V)`, `S(ReadOnly<T>, V)`, and `S(UnsafeCell<T>, V)` are
+/// defined by `S(T, V)` when `V` is compound. This rule applies recursively,
+/// including to wrappers around fields. For example, `(Safe, Uninit)` on
+/// `Unalign<(bool, u32)>` requires a safe `bool` and permits an uninitialized
+/// `u32`. The wrappers' alignment and aliasing requirements still apply:
+/// shared access through `ReadOnly` must not permit interior mutation, and
+/// [`Ptr::get_mut`][super::Ptr::get_mut] requires exclusive access to remove
+/// `UnsafeCell`. This transparency is explicit, and is not inferred from a
+/// type's representation.
+///
+/// Equal layout or bit validity does not imply equal `S` sets: compound
+/// validity depends on field boundaries and declaration order, and [`Safe`]
+/// also requires library safety invariants. A conversion must establish the
+/// relationship between the actual source and destination states.
 ///
 /// It is guaranteed that the referent of any `ptr: Ptr<T, V>` is a member of
 /// `S(T, V)`. Unsafe code must ensure that this guarantee will be upheld for
@@ -81,15 +107,15 @@ pub trait Alignment: Sealed {
 /// - If `dst` permits mutation of its referent (e.g. via `Exclusive` aliasing
 ///   or interior mutation under `Shared` aliasing), then it must hold that
 ///   `S(T, V) ⊇ S(U, W)` - in other words, the reinterpretation must not expand
-///   the set of allowed referent bit patterns. A violation of this requirement
+///   the set of allowed referent states. A violation of this requirement
 ///   would permit using `dst` to write `x` where `x ∈ S(U, W)` but `x ∉ S(T,
 ///   V)`, which would violate the guarantee that `src`'s referent may only
 ///   contain values in `S(T, V)`.
 /// - If the referent may be mutated without going through `dst` while `dst` is
 ///   live (e.g. via interior mutation on a `Shared`-aliased `Ptr` or `&`
 ///   reference), then it must hold that `S(T, V) ⊆ S(U, W)` - in other words,
-///   the reinterpretation must not shrink the set of allowed referent bit
-///   patterns. A violation of this requirement would permit using `src` or
+///   the reinterpretation must not shrink the set of allowed referent states.
+///   A violation of this requirement would permit using `src` or
 ///   another mechanism (e.g. a `&` reference used to derive `src`) to write `x`
 ///   where `x ∈ S(T, V)` but `x ∉ S(U, W)`, which would violate the guarantee
 ///   that `dst`'s referent may only contain values in `S(U, W)`.
@@ -101,11 +127,24 @@ pub unsafe trait Validity: Sealed {
     const KIND: ValidityKind;
 }
 
+/// The interpretation of a [`Validity`] implementation.
+///
+/// The simple variants have the semantics of the corresponding marker
+/// types. `Compound` has the field-wise semantics specified by [`Validity`];
+/// its slice lists the logical fields' validity kinds in declaration order.
+/// An empty slice describes `()` or a fieldless struct, including either type
+/// inside the transparent wrappers specified by `Validity`.
 pub enum ValidityKind {
     Uninit,
     AsInitialized,
     Initialized,
     Safe,
+    Compound(&'static [ValidityKind]),
+}
+
+// SAFETY: `()` describes the empty list of field requirements.
+unsafe impl Validity for () {
+    const KIND: ValidityKind = ValidityKind::Compound(&[]);
 }
 
 /// An [`Aliasing`] invariant which is either [`Shared`] or [`Exclusive`].
@@ -176,10 +215,7 @@ impl Alignment for Aligned {
 /// Any bit pattern is allowed in the `Ptr`'s referent, including uninitialized
 /// bytes.
 pub enum Uninit {}
-// SAFETY: `Uninit`'s validity is well-defined for all `T: ?Sized`, and is not a
-// function of any property of `T` other than its bit validity (in fact, it's
-// not even a property of `T`'s bit validity, but this is more than we are
-// required to uphold).
+// SAFETY: `KIND` names `Uninit`'s unrestricted set of referent states.
 unsafe impl Validity for Uninit {
     const KIND: ValidityKind = ValidityKind::Uninit;
 }
@@ -254,8 +290,7 @@ unsafe impl Validity for Uninit {
 /// that condition. The `Uninit` pointer is permitted, but the unsafe assertion
 /// of `AsInitialized` is not justified.
 pub enum AsInitialized {}
-// SAFETY: `AsInitialized`'s validity is well-defined for all `T: ?Sized`, and
-// is not a function of any property of `T` other than its bit validity.
+// SAFETY: `KIND` names the initialization requirements defined above.
 unsafe impl Validity for AsInitialized {
     const KIND: ValidityKind = ValidityKind::AsInitialized;
 }
@@ -263,10 +298,7 @@ unsafe impl Validity for AsInitialized {
 /// The byte ranges in the referent are fully initialized. In other words, if
 /// the referent is `N` bytes long, then it contains a bit-valid `[u8; N]`.
 pub enum Initialized {}
-// SAFETY: `Initialized`'s validity is well-defined for all `T: ?Sized`, and is
-// not a function of any property of `T` other than its bit validity (in fact,
-// it's not even a property of `T`'s bit validity, but this is more than we are
-// required to uphold).
+// SAFETY: `KIND` names the requirement that all referent bytes be initialized.
 unsafe impl Validity for Initialized {
     const KIND: ValidityKind = ValidityKind::Initialized;
 }
@@ -274,8 +306,7 @@ unsafe impl Validity for Initialized {
 /// The referent of a `Ptr<T>` is valid for `T`, upholding bit validity and any
 /// library safety invariants.
 pub enum Safe {}
-// SAFETY: `Safe`'s validity is well-defined for all `T: ?Sized`, and is not a
-// function of any property of `T` other than its bit validity.
+// SAFETY: `KIND` names `Safe`'s bit-validity and library-safety requirements.
 unsafe impl Validity for Safe {
     const KIND: ValidityKind = ValidityKind::Safe;
 }
@@ -328,7 +359,7 @@ pub enum BecauseExclusive {}
 pub enum BecauseImmutable {}
 
 use sealed::Sealed;
-mod sealed {
+pub(crate) mod sealed {
     use super::*;
 
     pub trait Sealed {}
@@ -343,8 +374,7 @@ mod sealed {
     impl Sealed for AsInitialized {}
     impl Sealed for Initialized {}
     impl Sealed for Safe {}
-
-    impl<A: Sealed, AA: Sealed, V: Sealed> Sealed for (A, AA, V) {}
+    impl Sealed for () {}
 
     impl Sealed for BecauseImmutable {}
     impl Sealed for BecauseExclusive {}

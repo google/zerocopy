@@ -1249,27 +1249,41 @@ pub use zerocopy_derive::Project;
 
 /// # Safety
 ///
-/// `<Self as HasTag<Client>>::ProjectToTag` must satisfy its safety invariant.
+/// `<Self as HasTag<Client, V>>::ProjectToTag` must satisfy its safety invariant.
 ///
 /// The `Client` parameter exists solely to disambiguate between implementations
 /// of `HasTag` that would otherwise conflict.
 #[doc(hidden)]
-pub unsafe trait HasTag<Client = project_clients::TryFromBytesDerive> {
+pub unsafe trait HasTag<
+    Client = project_clients::TryFromBytesDerive,
+    V: invariant::Validity = invariant::Safe,
+>
+{
     fn only_derive_is_allowed_to_implement_this_trait()
     where
         Self: Sized;
 
-    /// The type's enum tag, or `()` for non-enum types.
+    /// The enum tag of the type being projected, or `()` for a non-enum.
+    ///
+    /// `ReadOnly<T>` inherits `T`'s tag. `Unalign<T>` wraps `T`'s tag in
+    /// `Unalign` so that projecting the tag preserves the alignment invariant.
     type Tag: Immutable;
+
+    /// The validity of the tag projected from a referent with validity `V`.
+    ///
+    /// Unlike field validity, this describes the tag itself: a unit tag can
+    /// always be `Safe`, even when the containing value is uninitialized or
+    /// has compound validity.
+    type TagValidity: invariant::Validity;
 
     /// A pointer projection from `Self` to its tag.
     ///
     /// # Safety
     ///
     /// It must be the case that, for all `slf: Ptr<'_, Self, I>` where
-    /// `I::Aliasing` is `Shared`, it is sound to project it using this
-    /// projection to a `Ptr<'_, Self::Tag, (Shared, I::Alignment,
-    /// I::Validity)>`.
+    /// `I::Aliasing` is `Shared` and `I::Validity` is `V`, it is sound to
+    /// project it using this projection to a
+    /// `Ptr<'_, Self::Tag, (Shared, I::Alignment, Self::TagValidity)>`.
     type ProjectToTag: pointer::cast::Project<Self, Self::Tag>;
 }
 
@@ -1283,6 +1297,13 @@ pub unsafe trait HasTag<Client = project_clients::TryFromBytesDerive> {
 /// of `HasField` that would otherwise conflict.
 ///
 /// # Safety
+///
+/// `Unalign<T>` and `ReadOnly<T>` inherit `T`'s projections recursively. They
+/// use the same `Client`, `Field`, `VARIANT_ID`, and `FIELD_ID` as `T`, and
+/// project the same byte range with the same pointer metadata, wrapping the
+/// projected type in `Unalign` or `ReadOnly`, respectively. They expose no
+/// additional field for their inner `T`. The rules below apply to the
+/// underlying field after removing these wrappers.
 ///
 /// A field `f` is `HasField` for `Self` if and only if:
 ///
@@ -1307,9 +1328,7 @@ pub unsafe trait HasTag<Client = project_clients::TryFromBytesDerive> {
 ///
 /// The implementation of `project` must satisfy its safety post-condition.
 #[doc(hidden)]
-pub unsafe trait HasField<Client, Field, const VARIANT_ID: i128, const FIELD_ID: i128>:
-    HasTag<Client>
-{
+pub unsafe trait HasField<Client, Field, const VARIANT_ID: i128, const FIELD_ID: i128> {
     fn only_derive_is_allowed_to_implement_this_trait()
     where
         Self: Sized;
@@ -1351,7 +1370,7 @@ pub unsafe trait HasField<Client, Field, const VARIANT_ID: i128, const FIELD_ID:
 /// conforms to `T::Invariants`.
 #[doc(hidden)]
 pub unsafe trait ProjectField<Client, Field, I, const VARIANT_ID: i128, const FIELD_ID: i128>:
-    HasField<Client, Field, VARIANT_ID, FIELD_ID>
+    HasField<Client, Field, VARIANT_ID, FIELD_ID> + HasTag<Client, I::Validity>
 where
     I: invariant::Invariants,
 {
@@ -1380,8 +1399,8 @@ where
     fn is_projectable<'a>(
         _ptr: Ptr<
             'a,
-            <Self as HasTag<Client>>::Tag,
-            (invariant::Shared, I::Alignment, I::Validity),
+            <Self as HasTag<Client, I::Validity>>::Tag,
+            (invariant::Shared, I::Alignment, <Self as HasTag<Client, I::Validity>>::TagValidity),
         >,
     ) -> Result<(), Self::Error> {
         trait IsInfallible {
@@ -1415,18 +1434,18 @@ where
                     _enum_variant => {
                         use crate::invariant::{Validity, ValidityKind};
                         match I::Validity::KIND {
-                            // The `Uninit` and `Initialized` validity
-                            // invariants do not depend on the enum's tag. In
-                            // particular, we don't actually care about what
-                            // variant is present – we can treat *any* range of
-                            // uninitialized or initialized memory as containing
-                            // an uninitialized or initialized instance of *any*
-                            // type – the type itself is irrelevant.
+                            // `Uninit` and `Initialized` constrain only the
+                            // bytes in the projected region, independently of
+                            // the active variant.
                             ValidityKind::Uninit | ValidityKind::Initialized => true,
                             // The projectability of an enum field from an
                             // `AsInitialized` or `Safe` state is a dynamic
                             // property of its tag.
                             ValidityKind::AsInitialized | ValidityKind::Safe => false,
+                            // Compound validity describes structs and tuples,
+                            // not enum variants. It provides no basis for
+                            // infallible projection of an enum field.
+                            ValidityKind::Compound(..) => false,
                         }
                     }
                 };
