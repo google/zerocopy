@@ -994,19 +994,19 @@ mod tuples {
     ///
     /// # Safety
     ///
-    /// `impl_tuple!` should be provided name-number pairs, where each number is
-    /// the ordinal of the preceding type name.
+    /// `impl_tuple!` should be provided name-validity-number triplets, where
+    /// each number is the ordinal of the triplet.
     macro_rules! impl_tuple {
         // Entry point.
-        ($($T:ident $I:tt),+ $(,)?) => {
+        ($($T:ident $V:ident $I:tt),+ $(,)?) => {
             crate::util::macros::__unsafe();
-            impl_tuple!(@all [] [$($T $I)+]);
+            impl_tuple!(@all [] [$($T $V $I)+]);
         };
 
         // Build up the set of tuple types (i.e., `(A,)`, `(A, B)`, `(A, B, C)`,
         // etc.) Trait implementations that do not depend on field index may be
         // added to this branch.
-        (@all [$($head_T:ident $head_I:tt)*] [$next_T:ident $next_I:tt $($tail:tt)*]) => {
+        (@all [$($head_T:ident $head_V:ident $head_I:tt)*] [$next_T:ident $next_V:ident $next_I:tt $($tail:tt)*]) => {
             // SAFETY: If all fields of the tuple `Self` are `Immutable`, so too is `Self`.
             unsafe_impl!($($head_T: Immutable,)* $next_T: Immutable => Immutable for ($($head_T,)* $next_T,));
 
@@ -1022,6 +1022,19 @@ mod tuples {
 
             // SAFETY: If all fields in `Self` are `FromBytes`, so too is `Self`.
             unsafe_impl!($($head_T: FromBytes,)* $next_T: FromBytes => FromBytes for ($($head_T,)* $next_T,));
+
+            // SAFETY: TODO
+            unsafe impl<$($head_T,)* $next_T> crate::invariant::Validity for ($($head_T,)* $next_T,)
+            where
+                $($head_T: crate::invariant::Validity,)*
+                $next_T: crate::invariant::Validity,
+            {
+                const KIND: crate::invariant::ValidityKind = crate::invariant::ValidityKind::Compound(&[
+                    $($head_T::KIND,)*
+                    $next_T::KIND,
+                ]);
+            }
+            impl<$($head_T,)* $next_T> crate::invariant::sealed::Sealed for ($($head_T,)* $next_T,) {}
 
             // SAFETY: See safety comment on `ProjectToTag`.
             unsafe impl<$($head_T,)* $next_T> crate::HasTag for ($($head_T,)* $next_T,) {
@@ -1048,24 +1061,24 @@ mod tuples {
 
             // Generate impls that depend on tuple index.
             impl_tuple!(@variants
-                [$($head_T $head_I)* $next_T $next_I]
+                [$($head_T $head_V $head_I)* $next_T $next_V $next_I]
                 []
-                [$($head_T $head_I)* $next_T $next_I]
+                [$($head_T $head_V $head_I)* $next_T $next_V $next_I]
             );
 
             // Recurse to next tuple size
-            impl_tuple!(@all [$($head_T $head_I)* $next_T $next_I] [$($tail)*]);
+            impl_tuple!(@all [$($head_T $head_V $head_I)* $next_T $next_V $next_I] [$($tail)*]);
         };
-        (@all [$($head_T:ident $head_I:tt)*] []) => {};
+        (@all [$($head_T:ident $head_V:ident $head_I:tt)*] []) => {};
 
         // Emit trait implementations that depend on field index.
         (@variants
-            // The full tuple definition in type–index pairs.
-            [$($AllT:ident $AllI:tt)+]
+            // The full tuple definition in type–ident-index triplets.
+            [$($AllT:ident $AllV:ident $AllI:tt)+]
             // Types before the current index.
-            [$($BeforeT:ident)*]
+            [$($BeforeT:ident $BeforeV:ident)*]
             // The types and indices at and after the current index.
-            [$CurrT:ident $CurrI:tt $($AfterT:ident $AfterI:tt)*]
+            [$CurrT:ident $CurrV:ident $CurrI:tt $($AfterT:ident $AfterV:ident $AfterI:tt)*]
         ) => {
             // SAFETY:
             // - `Self` is a struct (albeit anonymous), so `VARIANT_ID` is
@@ -1178,47 +1191,75 @@ mod tuples {
                 type Error = core::convert::Infallible;
             }
 
+            // SAFETY: See comments on items.
+            unsafe impl<Aliasing, Alignment, $($AllT,)+ $($AllV),+> crate::ProjectField<
+                (),
+                (Aliasing, Alignment, ($($AllV,)+)),
+                { crate::STRUCT_VARIANT_ID },
+                { crate::ident_id!($CurrI)}
+            > for ($($AllT,)+)
+            where
+                Aliasing: crate::invariant::Aliasing,
+                Alignment: crate::invariant::Alignment,
+                $($AllV: crate::invariant::Validity,)*
+            {
+                #[inline]
+                fn only_derive_is_allowed_to_implement_this_trait()
+                where
+                    Self: Sized
+                {}
+
+                // SAFETY: Tuples are product types whose fields are
+                // well-aligned, so projection preserves the alignment invariant
+                // of the outer pointer. The outer pointer's validity is a tuple
+                // of the validity of its fields, so the validity of the
+                // projected field is the projected of that validity tuple.
+                type Invariants = (Aliasing, Alignment, $CurrV);
+
+                // SAFETY: Tuples are product types and so projection is infallible;
+                type Error = core::convert::Infallible;
+            }
+
             // Recurse to the next index.
-            impl_tuple!(@variants [$($AllT $AllI)+] [$($BeforeT)* $CurrT] [$($AfterT $AfterI)*]);
+            impl_tuple!(@variants [$($AllT $AllV $AllI)+] [$($BeforeT $BeforeV)* $CurrT $CurrV] [$($AfterT $AfterV $AfterI)*]);
         };
-        (@variants [$($AllT:ident $AllI:tt)+] [$($BeforeT:ident)*] []) => {};
+        (@variants [$($AllT:ident $AllV:ident $AllI:tt)+] [$($BeforeT:ident $BeforeV:ident)*] []) => {};
     }
 
-    // SAFETY: `impl_tuple` is provided name-number pairs, where number is the
-    // ordinal of the name.
+    // SAFETY: `impl_tuple` is provided name-validity-number triplets, where
+    // number is the ordinal of the triplet.
     #[allow(clippy::multiple_unsafe_ops_per_block)]
     const _: () = unsafe {
         impl_tuple! {
-            A 0,
-            B 1,
-            C 2,
-            D 3,
-            E 4,
-            F 5,
-            G 6,
-            H 7,
-            I 8,
-            J 9,
-            K 10,
-            L 11,
-            M 12,
-            N 13,
-            O 14,
-            P 15,
-            Q 16,
-            R 17,
-            S 18,
-            T 19,
-            U 20,
-            V 21,
-            W 22,
-            X 23,
-            Y 24,
-            Z 25,
+            A VA 0,
+            B VB 1,
+            C VC 2,
+            D VD 3,
+            E VE 4,
+            F VF 5,
+            G VG 6,
+            H VH 7,
+            I VI 8,
+            J VJ 9,
+            K VK 10,
+            L VL 11,
+            M VM 12,
+            N VN 13,
+            O VO 14,
+            P VP 15,
+            Q VQ 16,
+            R VR 17,
+            S VS 18,
+            T VT 19,
+            U VU 20,
+            V VV 21,
+            W VW 22,
+            X VX 23,
+            Y VY 24,
+            Z VZ 25,
         };
     };
 }
-
 // SIMD support
 //
 // Per the Unsafe Code Guidelines Reference [1]:
