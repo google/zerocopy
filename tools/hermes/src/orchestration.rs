@@ -22,6 +22,7 @@ pub fn run_charon(crate_root: &Path, dest_file: &Path, manifest_path: Option<&Pa
 
     println!("Running charon in {:?}", crate_root);
     let mut cmd = Command::new("charon");
+    cmd.env_remove("CARGO_TARGET_DIR"); // Avoid deadlock with outer cargo
     cmd.current_dir(crate_root);
     cmd.arg("cargo");
 
