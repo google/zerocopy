@@ -9,7 +9,7 @@
 use std::path::PathBuf;
 
 use anyhow::Result;
-use cargo_hermes::pipeline::run_pipeline;
+use cargo_hermes::pipeline::{Sorry, run_pipeline};
 use clap::{Parser, Subcommand};
 
 #[derive(Parser, Debug)]
@@ -43,14 +43,19 @@ pub enum Commands {
         /// Path to Cargo.toml or Cargo script
         #[arg(long)]
         manifest_path: Option<PathBuf>,
+        /// Allow missing proofs (substitutes 'sorry') and instruct Lean to accept 'sorry'
+        #[arg(long)]
+        allow_sorry: bool,
     },
 }
 
 fn main() -> Result<()> {
     let CargoCli::Hermes(args) = CargoCli::parse();
-    let Commands::Verify { crate_name, dest, aeneas_path, manifest_path } = args.command;
+    let Commands::Verify { crate_name, dest, aeneas_path, manifest_path, allow_sorry } =
+        args.command;
 
     let crate_root = std::env::current_dir()?;
     let dest = dest.canonicalize()?;
-    run_pipeline(crate_name, &crate_root, &dest, aeneas_path, manifest_path)
+    let sorry_mode = if allow_sorry { Sorry::AllowSorry } else { Sorry::RejectSorry };
+    run_pipeline(crate_name, &crate_root, &dest, aeneas_path, manifest_path, sorry_mode)
 }
