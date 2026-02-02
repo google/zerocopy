@@ -8,6 +8,7 @@
 
 [workspace]
 members = [
+    "hermes",
     "cargo-zerocopy",
     "generate-readme",
 ]
