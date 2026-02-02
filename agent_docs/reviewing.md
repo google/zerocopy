@@ -92,6 +92,14 @@ resolved. When you encounter a `TODO` comment:
     be resolved*.
 2.  **Critique** only if the `TODO` is insufficient (i.e., the code would still
     be problematic *even if* the `TODO` were resolved).
+3.  **Safety Placeholders:** A `// SAFETY: TODO` comment is a valid placeholder
+    for a safety comment, and a `/// TODO` comment in a `/// # Safety` doc
+    section is a valid placeholder for safety documentation. **DO NOT** flag
+    the first as a missing safety justification or a critical issue, and **DO
+    NOT** flag the second as missing safety documentation. You must assume the
+    author will write a sound justification or accurate safety documentation
+    before merging.
+
 <!-- TODO-check-enable -->
 
 ## 4. Anti-Patterns (NEVER Do This)
