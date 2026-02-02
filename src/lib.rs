@@ -1268,14 +1268,18 @@ where
                     _enum_variant => {
                         use crate::invariant::{Validity, ValidityKind};
                         match I::Validity::KIND {
-                            // The `Uninit` and `Initialized` validity
-                            // invariants do not depend on the enum's tag. In
-                            // particular, we don't actually care about what
-                            // variant is present – we can treat *any* range of
-                            // uninitialized or initialized memory as containing
-                            // an uninitialized or initialized instance of *any*
-                            // type – the type itself is irrelevant.
-                            ValidityKind::Uninit | ValidityKind::Initialized => true,
+                            // The `Uninit`, `Initialized` and `Compound`
+                            // validity invariants do not depend on the enum's
+                            // tag. In particular, we don't actually care about
+                            // what variant is present – we can treat *any*
+                            // range of uninitialized or initialized memory as
+                            // containing an uninitialized or initialized
+                            // instance of *any* type – the type itself is
+                            // irrelevant.
+                            // TODO: What about compound validity?
+                            ValidityKind::Uninit
+                            | ValidityKind::Initialized
+                            | ValidityKind::Compound(..) => true,
                             // The projectability of an enum field from an
                             // `AsInitialized` or `Valid` state is a dynamic
                             // property of its tag.
