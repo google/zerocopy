@@ -9,9 +9,9 @@
 //! ```
 
 ///@ lean spec id (x : T)
-///@ : generic_id.id x = ok x
+///@ ensures |ret| ret = x
 ///@ proof
-///@   simp [generic_id.id]
+///@   simp [id]
 pub fn id<T>(x: T) -> T {
     x
 }

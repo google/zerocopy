@@ -55,6 +55,7 @@ fn main() -> Result<()> {
         args.command;
 
     let crate_root = std::env::current_dir()?;
+    std::fs::create_dir_all(&dest)?;
     let dest = dest.canonicalize()?;
     let sorry_mode = if allow_sorry { Sorry::AllowSorry } else { Sorry::RejectSorry };
     run_pipeline(crate_name, &crate_root, &dest, aeneas_path, manifest_path, sorry_mode)

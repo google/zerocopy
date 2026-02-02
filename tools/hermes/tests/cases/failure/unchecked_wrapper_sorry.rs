@@ -9,7 +9,7 @@
 //! ```
 
 ///@ lean spec raw_inc (x : U32)
-///@ : ∃ ret, raw_inc x = ok ret ∧ ret.val = x.val + 1
+///@ ensures |ret| ret.val = x.val + 1
 ///@ proof sorry
 #[allow(unused_unsafe)]
 unsafe fn raw_inc(x: u32) -> u32 {
@@ -17,8 +17,7 @@ unsafe fn raw_inc(x: u32) -> u32 {
 }
 
 ///@ lean spec safe_inc (x : U32)
-///@ : ∃ ret, safe_inc x = ok ret ∧
-///@   (if x.val < U32.rMax then ret.val = x.val + 1 else ret.val = 0)
+///@ ensures |ret| if x.val < U32.rMax then ret.val = x.val + 1 else ret.val = 0
 ///@ proof
 ///@     simp [safe_inc]
 ///@     split

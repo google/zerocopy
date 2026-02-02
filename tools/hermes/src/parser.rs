@@ -15,8 +15,7 @@ use syn::{
 /// Represents a function parsed from the source code, including its signature and attached specs.
 #[derive(Debug, Clone)]
 pub struct ParsedFunction {
-    pub fn_name: String,
-    pub generics: syn::Generics,
+    pub sig: syn::Signature,
     pub spec: Option<String>,
     pub proof: Option<String>,
 }
@@ -51,7 +50,6 @@ impl SpecVisitor {
 
 impl<'ast> Visit<'ast> for SpecVisitor {
     fn visit_item_fn(&mut self, node: &'ast ItemFn) {
-        let fn_name = node.sig.ident.to_string();
         let mut spec_lines = Vec::new();
         let mut proof_lines = Vec::new();
         let mut current_mode = None; // None, Some("spec"), Some("proof")
@@ -66,7 +64,11 @@ impl<'ast> Visit<'ast> for SpecVisitor {
                         current_mode = Some("spec");
                         spec_lines.push(content.to_string());
                     } else if let Some(content) = trimmed.strip_prefix("@ lean model") {
-                        current_mode = Some("spec"); // Treat model as spec
+                        current_mode = Some("spec"); // Treat model as spec for now? Or maybe distinct?
+                        // The design doc says "model" is for unsafe functions, "spec" for safe.
+                        // For now we treat them somewhat similarly but we might want to distinguish later.
+                        // The user prompt said: "Translate ... functions into rigorous Lean 4 theorems".
+                        // Let's just capture it as spec for now, desugarer can parse the content if needed.
                         spec_lines.push(content.to_string());
                     } else if let Some(content) = trimmed.strip_prefix("@ proof") {
                         current_mode = Some("proof");
@@ -75,13 +77,6 @@ impl<'ast> Visit<'ast> for SpecVisitor {
                         // Continuation line
                         match current_mode {
                             Some("spec") => {
-                                // strip leading @ and space?
-                                // User types `///@ ...` -> extracted `@ ...`
-                                // If we just extract `@`, we get ` ...`
-                                // The user might put `///@   ...`.
-                                // If I strip `@`, I get `   ...`.
-                                // I should probably strip the leading `@` and one optional space?
-                                // `trimmed` starts with `@`.
                                 let content = &trimmed[1..];
                                 spec_lines.push(content.to_string());
                             }
@@ -90,10 +85,9 @@ impl<'ast> Visit<'ast> for SpecVisitor {
                                 proof_lines.push(content.to_string());
                             }
                             None => {
-                                // Orphaned @ line? or maybe not meant for us?
-                                self.errors.push(anyhow::anyhow!("Found `///@` line without preceding `lean spec` or `proof` on function '{}'", fn_name));
+                                self.errors.push(anyhow::anyhow!("Found `///@` line without preceding `lean spec` or `proof` on function '{}'", node.sig.ident));
                             }
-                            _ => {} // Should not be possible with current_mode logic
+                            _ => {}
                         }
                     }
                 }
@@ -103,12 +97,13 @@ impl<'ast> Visit<'ast> for SpecVisitor {
         let spec = if !spec_lines.is_empty() {
             let full_spec = spec_lines.join("\n");
             let trimmed_spec = full_spec.trim();
-            // Strip function name from the beginning of the spec
-            if let Some(rest) = trimmed_spec.strip_prefix(fn_name.as_str()) {
-                Some(rest.trim().to_string())
-            } else {
-                Some(trimmed_spec.to_string())
-            }
+            // Strip function name from the beginning of the spec if present?
+            // Actually, typically `lean spec foo ...` -> logic strips `foo`.
+            // But here we just capture the raw lines after `@ lean spec`.
+            // `strip_prefix("@ lean spec")` above leaves the rest of the line.
+            // e.g. `///@ lean spec foo (x : ...)` -> ` foo (x : ...)`
+            // We should trim it.
+            Some(trimmed_spec.to_string())
         } else {
             None
         };
@@ -116,15 +111,10 @@ impl<'ast> Visit<'ast> for SpecVisitor {
         let proof = if !proof_lines.is_empty() { Some(proof_lines.join("\n")) } else { None };
 
         if spec.is_some() || proof.is_some() {
-            self.functions.push(ParsedFunction {
-                fn_name,
-                generics: node.sig.generics.clone(),
-                spec,
-                proof,
-            });
+            self.functions.push(ParsedFunction { sig: node.sig.clone(), spec, proof });
         }
 
-        // Continue visiting children
+        // Continue visiting children (though heavily nested functions are rare/unsupported for specs usually)
         visit::visit_item_fn(self, node);
     }
 
@@ -148,10 +138,6 @@ impl<'ast> Visit<'ast> for SpecVisitor {
         visit::visit_item_const(self, node);
     }
 
-    // Catch-all for other items with attributes?
-    // Ideally we'd cover all items, but these are the most common places users might mistakenly put docs.
-    // Let's also cover TypeAlias and Trait
-
     fn visit_item_type(&mut self, node: &'ast syn::ItemType) {
         self.check_attrs_for_misplaced_spec(&node.attrs, "type alias");
         visit::visit_item_type(self, node);
@@ -168,7 +154,6 @@ fn parse_doc_attr(attr: &Attribute) -> Option<String> {
         return None;
     }
 
-    // syn 2.0: doc = "..." is a NameValue meta
     match &attr.meta {
         syn::Meta::NameValue(nv) => match &nv.value {
             syn::Expr::Lit(syn::ExprLit { lit: syn::Lit::Str(s), .. }) => Some(s.value()),
@@ -184,10 +169,32 @@ pub fn extract_blocks(content: &str) -> Result<ExtractedBlocks> {
     visitor.visit_file(&ast);
 
     if !visitor.errors.is_empty() {
-        // Return the first error for now, or bundle them
         let msg = visitor.errors.iter().map(|e| e.to_string()).collect::<Vec<_>>().join("\n");
         bail!("Spec extraction failed:\n{}", msg);
     }
 
     Ok(ExtractedBlocks { functions: visitor.functions })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_add_mod() {
+        let content = r#"///@ lean spec add_mod (x y : Usize)
+///@ requires _h_safe : x.val + y.val < 100
+///@ ensures |ret| ret.val = (x.val + y.val) % Usize.size
+///@ proof
+///@   simp [add]
+fn add(x: usize, y: usize) -> usize {
+    x.wrapping_add(y)
+}
+"#;
+        let res = parse_file(content);
+        if let Err(e) = &res {
+            println!("Error: {}", e);
+        }
+        assert!(res.is_ok());
+    }
 }

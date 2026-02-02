@@ -9,7 +9,7 @@
 //! ```
 
 ///@ lean spec add (a b : U32)
-///@ : ∃ ret, add a b = ok ret ∧ ret.val = (a.val + b.val) % U32.size
+///@ ensures |ret| ret.val = (a.val + b.val) % U32.size
 ///@ proof
 ///@   simp [add]
 pub fn add(a: u32, b: u32) -> u32 {

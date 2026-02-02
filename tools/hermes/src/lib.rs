@@ -13,6 +13,8 @@
 //! - Orchestrating the execution of Charon and Aeneas.
 //! - Stitching generated Lean code with user-provided proofs.
 
+pub mod desugar;
 pub mod orchestration;
 pub mod parser;
 pub mod pipeline;
+pub mod translator;
