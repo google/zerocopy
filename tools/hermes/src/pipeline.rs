@@ -152,7 +152,7 @@ pub fn run_pipeline(
         return Err(anyhow!("Aeneas did not produce expected output file: {:?}", generated_camel));
     }
 
-    stitch_user_proofs(&crate_root, &crate_name_snake, &camel_name, dest, source_file, sorry_mode)?;
+    stitch_user_proofs(&shadow_crate_root, &crate_name_snake, &camel_name, dest, sorry_mode)?;
 
     println!("Step 4: Verifying...");
     write_lakefile(dest, &crate_name_snake, &camel_name, aeneas_path, sorry_mode)?;
@@ -167,35 +167,32 @@ fn stitch_user_proofs(
     crate_name_snake: &str,
     crate_name_camel: &str,
     dest: &Path,
-    source_file: Option<&Path>,
     sorry_mode: Sorry,
 ) -> Result<()> {
     let mut all_functions = Vec::new();
     let mut all_structs = Vec::new();
 
-    if let Some(path) = source_file {
-        if path.exists() {
-            let content = fs::read_to_string(path)?;
-            let extracted = extract_blocks(&content)?;
-            all_functions.extend(extracted.functions);
-            all_structs.extend(extracted.structs);
-        }
-    } else {
-        let src_dir = crate_root.join("src");
-        if src_dir.exists() {
-            for entry in WalkDir::new(src_dir) {
-                let entry = entry?;
-                if entry.path().extension().map_or(false, |ext| ext == "rs") {
-                    let content = fs::read_to_string(entry.path())?;
-                    let extracted = extract_blocks(&content)?;
-                    all_functions.extend(extracted.functions);
-                    all_structs.extend(extracted.structs);
-                }
+    let src_dir = crate_root.join("src");
+    if src_dir.exists() {
+        for entry in WalkDir::new(src_dir) {
+            let entry = entry?;
+            if entry.path().extension().map_or(false, |ext| ext == "rs") {
+                let content = fs::read_to_string(entry.path())?;
+                let extracted = extract_blocks(&content)?;
+                all_functions.extend(extracted.functions);
+                all_structs.extend(extracted.structs);
             }
         }
     }
 
-    generate_lean_file(dest, crate_name_snake, crate_name_camel, &all_functions, &all_structs, sorry_mode)
+    generate_lean_file(
+        dest,
+        crate_name_snake,
+        crate_name_camel,
+        &all_functions,
+        &all_structs,
+        sorry_mode,
+    )
 }
 
 fn generate_lean_file(
@@ -207,48 +204,29 @@ fn generate_lean_file(
     sorry_mode: Sorry,
 ) -> Result<()> {
     let mut content = String::new();
-    content.push_str(&format!("import {}\n", import_name));
-    content.push_str("import Aeneas\n");
-    content.push_str("open Aeneas Aeneas.Std Result Error\n");
-    content.push_str("set_option linter.unusedVariables false\n\n");
-    content.push_str(&format!("namespace {}\n\n", namespace_name));
+    content.push_str(&format!(
+        "import {}
+import Aeneas
+import Hermes.Std
+open Aeneas Aeneas.Std Result Error
+open Hermes.Std
+open Hermes.Std.Memory
+open Hermes.Std.Memory
+open Hermes.Std.Platform
+open {}.hermes_std.ptr
+set_option linter.unusedVariables false
 
-    // Inject Prelude: Verifiable Class and Primitives
-    content.push_str(
-        "
-class Verifiable (α : Type) where
-  is_valid : α -> Prop
+namespace {}
 
-attribute [simp] Verifiable.is_valid
+",
+        import_name, namespace_name, namespace_name
+    ));
 
-instance : Verifiable U8 where is_valid _ := True
-instance : Verifiable U16 where is_valid _ := True
-instance : Verifiable U32 where is_valid _ := True
-instance : Verifiable U64 where is_valid _ := True
-instance : Verifiable U128 where is_valid _ := True
-instance : Verifiable I8 where is_valid _ := True
-instance : Verifiable I16 where is_valid _ := True
-instance : Verifiable I32 where is_valid _ := True
-instance : Verifiable I64 where is_valid _ := True
-instance : Verifiable I128 where is_valid _ := True
-instance : Verifiable Usize where is_valid _ := True
-instance : Verifiable Isize where is_valid _ := True
-instance : Verifiable Bool where is_valid _ := True
-instance : Verifiable Unit where is_valid _ := True
-
-"
-    );
-
-    // Inject OfNat instances
-    content.push_str(
-        "
-instance : OfNat U32 n where ofNat := UScalar.mk (BitVec.ofNat 32 n)
-instance : OfNat I32 n where ofNat := IScalar.mk (BitVec.ofNat 32 n)
-instance : OfNat Usize n where ofNat := UScalar.mk (BitVec.ofNat System.Platform.numBits n)
-instance : OfNat Isize n where ofNat := IScalar.mk (BitVec.ofNat System.Platform.numBits n)
-
-"
-    );
+    // Write Hermes/Std.lean
+    let hermes_std_path = dest.join("Hermes");
+    fs::create_dir_all(&hermes_std_path)?;
+    fs::write(hermes_std_path.join("Std.lean"), include_str!("include/Std.lean"))?;
+    fs::write(dest.join("Hermes.lean"), include_str!("Hermes.lean"))?;
 
     // Struct Instances
     // Dedup structs just in case
@@ -266,7 +244,7 @@ instance : OfNat Isize n where ofNat := IScalar.mk (BitVec.ofNat System.Platform
         if invariant.is_empty() {
             invariant = "True";
         }
-        
+
         // Handle Generics: [Verifiable T] for each T
         let mut generic_params = String::new();
         let mut generic_constraints = String::new();
@@ -279,7 +257,7 @@ instance : OfNat Isize n where ofNat := IScalar.mk (BitVec.ofNat System.Platform
                 type_args.push_str(&format!("{} ", t.ident));
             }
         }
-        
+
         // Format: instance {T} [Verifiable T] : Verifiable (Wrapper T) where
         let type_str = if type_args.is_empty() {
             name.to_string()
@@ -287,7 +265,10 @@ instance : OfNat Isize n where ofNat := IScalar.mk (BitVec.ofNat System.Platform
             format!("({} {})", name, type_args.trim())
         };
 
-        let header = format!("instance {}{} : Verifiable {} where", generic_params, generic_constraints, type_str);
+        let header = format!(
+            "instance {}{} : Verifiable {} where",
+            generic_params, generic_constraints, type_str
+        );
         content.push_str(&header);
         content.push_str(&format!("\n  is_valid self := {}\n\n", invariant));
     }
@@ -331,7 +312,7 @@ instance : OfNat Isize n where ofNat := IScalar.mk (BitVec.ofNat System.Platform
         if let Some(args) = desugared.signature_args {
             signature_parts.push(args);
         }
-        
+
         // INJECT ARGUMENT VALIDITY CHECKS
         // For each arg `x : T`, inject `(h_x : Verifiable.is_valid x)`
         // We need to parse inputs to get names.
@@ -343,7 +324,8 @@ instance : OfNat Isize n where ofNat := IScalar.mk (BitVec.ofNat System.Platform
                     // The signature args in `desugared.signature_args` already listed them as `(x : T)`.
                     // We just append validity hypotheses.
                     // Note: This relies on `x` being available in scope, which it is in the signature.
-                    signature_parts.push(format!("(h_{}_valid : Verifiable.is_valid {})", name, name));
+                    signature_parts
+                        .push(format!("(h_{}_valid : Verifiable.is_valid {})", name, name));
                 }
             }
         }
@@ -402,7 +384,7 @@ package {}
 
 @[default_target]
 lean_lib {} {{
-  roots := #[`{}, `UserProofs]{}
+  roots := #[`{}, `UserProofs, `Hermes]{}
 }}
 "#,
         crate_name_snake, require_line, crate_name_snake, crate_name_camel, more_lean_args

@@ -31,10 +31,11 @@ pub fn desugar_spec(
             }
             ensures_clause = Some(ens.trim().to_string());
         } else if signature_args.is_none() && extra_args.is_empty() && ensures_clause.is_none() {
-            // Check if this line looks like signature args.
+            // Check if this file looks like signature args.
             // It might be `(x y : Usize)` or `add_mod (x y : Usize)`.
-            if let Some(start_idx) = line.find('(') {
-                // Assume everything from ( onwards is args.
+            // We also support instance arguments like `[Layout T]`.
+            if let Some(start_idx) = line.find(|c| c == '(' || c == '[') {
+                // Assume everything from start_idx onwards is args.
                 // And ignore what's before it (likely function name).
                 signature_args = Some(line[start_idx..].to_string());
             } else {

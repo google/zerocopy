@@ -137,7 +137,7 @@ impl<'ast> Visit<'ast> for SpecVisitor {
                         if content == node.ident.to_string() {
                             content = "";
                         }
-                        
+
                         // Strip "is_valid self :=" or "is_valid :="
                         if let Some(rest) = content.strip_prefix("is_valid") {
                             let rest = rest.trim();
@@ -152,10 +152,10 @@ impl<'ast> Visit<'ast> for SpecVisitor {
                         }
 
                         if !content.is_empty() {
-                             invariant_lines.push(content.to_string());
+                            invariant_lines.push(content.to_string());
                         }
                     } else {
-                         match current_mode {
+                        match current_mode {
                             Some("invariant") => {
                                 let content = &trimmed[1..];
                                 invariant_lines.push(content.to_string());
@@ -176,24 +176,24 @@ impl<'ast> Visit<'ast> for SpecVisitor {
         }
 
         let invariant = if !invariant_lines.is_empty() {
-             let mut full_inv = invariant_lines.join("\n").trim().to_string();
-             // Strip "is_valid self :=" or "is_valid :="
-             if let Some(rest) = full_inv.strip_prefix("is_valid") {
-                 let rest = rest.trim();
-                 if let Some(rest) = rest.strip_prefix("self") {
-                     let rest = rest.trim();
-                     if let Some(rest) = rest.strip_prefix(":=") {
-                         full_inv = rest.trim().to_string();
-                     }
-                 } else if let Some(rest) = rest.strip_prefix(":=") {
-                     full_inv = rest.trim().to_string();
-                 }
-             }
-             Some(full_inv)
+            let mut full_inv = invariant_lines.join("\n").trim().to_string();
+            // Strip "is_valid self :=" or "is_valid :="
+            if let Some(rest) = full_inv.strip_prefix("is_valid") {
+                let rest = rest.trim();
+                if let Some(rest) = rest.strip_prefix("self") {
+                    let rest = rest.trim();
+                    if let Some(rest) = rest.strip_prefix(":=") {
+                        full_inv = rest.trim().to_string();
+                    }
+                } else if let Some(rest) = rest.strip_prefix(":=") {
+                    full_inv = rest.trim().to_string();
+                }
+            }
+            Some(full_inv)
         } else {
             None
         };
-        
+
         // We always collect structs now because we need to generate Verifiable instances for ALL structs
         // Ensure we don't add duplicate structs if for some reason we visit twice (unlikely but safe)
         // Checking by ident is enough for this context
